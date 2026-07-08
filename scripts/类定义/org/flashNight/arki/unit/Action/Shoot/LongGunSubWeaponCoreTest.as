@@ -28,6 +28,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         testSubweaponNormalization();
         testConfigureUnitAndImpactChainMultiplier();
+        testImpactZeroPreservesForcedKnockdown();
         testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier();
         testEquipmentGunpowerRequiresImpactChain();
         testDirtyRefreshUpdatesRuntimeBridgeFields();
@@ -55,6 +56,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testManualReloadMovementLockClearsOnFinish();
         testManualReloadAnimationCommit();
         testLinkedReload();
+        testSubweaponTacticalRecoveryAccumulatesOnPaidReload();
+        testSubweaponTacticalRecoveryFreeReloadWithoutReserve();
         testLinkedReloadRequiresReserve();
         testReloadKeyMarksCombinedReloadWhenBothNeedAmmo();
         testGunslingerLevel9StillLinksPartialSubweaponReload();
@@ -91,6 +94,19 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.副武器子弹威力 == 2000, "impact chain level 10 applies 2x shotgun-host subweapon bonus");
         assert(unit.副武器子弹击倒率 == 2.5, "impact chain level 10 doubles subweapon impact force");
         assert(unit.副武器伤害类型 == "破击", "configureUnit writes damage type field");
+    }
+
+    private static function testImpactZeroPreservesForcedKnockdown():Void {
+        var unit:Object = makeUnit();
+        var sub:Object = makeSubweapon(false);
+        sub.impact = 0;
+        var ok:Boolean = LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: sub});
+
+        assert(ok, "configureUnit accepts subweapon with zero impact");
+        assert(unit.副武器子弹击倒率 == 0, "zero impact keeps forced knockdown bridge value");
+
+        var props:Object = LongGunSubWeaponCore.prepareManBulletProps(unit, unit.man);
+        assert(props.击倒率 == 0, "zero impact keeps forced knockdown bullet prop");
     }
 
     private static function testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier():Void {
@@ -768,6 +784,49 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪.value.subweaponShot == 0, "linked reload resets stored fired count");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "linked reload consumes reserve on commit");
         assertSubweaponSnapshots(unit, 0, "linked reload keeps ammo snapshots consistent");
+        restoreMockInventory();
+    }
+
+    private static function testSubweaponTacticalRecoveryAccumulatesOnPaidReload():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        var unit:Object = makeUnit();
+        unit.被动技能.枪械师 = {启用: true, 等级: 10};
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 2);
+        installMockHero(unit);
+
+        var ok:Boolean = LongGunSubWeaponCore.reloadManual(unit);
+
+        assert(ok, "subweapon tactical recovery allows paid manual reload");
+        assert(unit.长枪副武器.value.reloadCount == 3, "subweapon tactical recovery stores recovered partial magazine");
+        assert(unit.长枪副武器状态.reloadCount == 3, "subweapon tactical recovery mirrors recovered count to state");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "paid tactical recovery still consumes reserve when pool is short");
+        assertSubweaponSnapshots(unit, 0, "subweapon paid tactical recovery reload keeps snapshots consistent");
+
+        restoreMockHero();
+        restoreMockInventory();
+    }
+
+    private static function testSubweaponTacticalRecoveryFreeReloadWithoutReserve():Void {
+        installMockInventory("火焰喷射器燃料罐", 0);
+        var unit:Object = makeUnit();
+        unit.被动技能.枪械师 = {启用: true, 等级: 10};
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 2);
+        unit.长枪副武器.value.reloadCount = 2;
+        unit.长枪副武器状态.reloadCount = 2;
+        installMockHero(unit);
+
+        assert(LongGunSubWeaponCore.canReloadManual(unit), "subweapon tactical recovery free pool opens manual reload without reserve");
+        var ok:Boolean = LongGunSubWeaponCore.reloadManual(unit);
+
+        assert(ok, "subweapon tactical recovery completes free reload without reserve");
+        assert(unit.长枪副武器.value.reloadCount == 0, "subweapon tactical free reload spends recovered pool");
+        assert(unit.长枪副武器状态.reloadCount == 0, "subweapon tactical free reload syncs spent pool to state");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "subweapon tactical free reload does not consume missing reserve");
+        assertSubweaponSnapshots(unit, 0, "subweapon tactical free reload keeps snapshots consistent");
+
+        restoreMockHero();
         restoreMockInventory();
     }
 

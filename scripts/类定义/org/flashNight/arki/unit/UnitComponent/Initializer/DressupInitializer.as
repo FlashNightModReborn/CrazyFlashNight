@@ -391,7 +391,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target.shield.refreshStanceResistance();
         }
 
-        LongGunSubWeaponCore.markRuntimeStatsDirty(target);
         LongGunSubWeaponCore.refreshRuntimeStats(target);
 
         // AI DPS 估算缓存失效（装备变化 → 武器威力/弹匣容量/伤害类型可能全变）

@@ -25,6 +25,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             loaded: getLoadedCountFromFired(config.capacity, firedCount),
             capacity: config.capacity,
             reserveName: config.reserveName,
+            reloadCount: 0,
             groupPaid: config.consumeMode != "onLoadGroup" || config.initialLoaded > 0,
             nextFireTime: 0
         };
@@ -281,7 +282,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
-        if (!hasReloadReserve(config)) {
+        if (!hasReloadReserve(config) && !canTacticalFreeReload(unit, config, state)) {
             updateAmmoDisplay(unit);
             return false;
         }
@@ -296,7 +297,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             updateAmmoDisplay(unit);
             return false;
         }
-        if (!hasReloadReserve(config)) {
+        if (!hasReloadReserve(config) && !canTacticalFreeReload(unit, config, state)) {
             updateAmmoDisplay(unit);
             return false;
         }
@@ -558,7 +559,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     public static function calculateImpact(unit:Object, config:Object):Number {
         var baseImpact:Number = Number(config.impact);
-        if (isNaN(baseImpact) || baseImpact <= 0) baseImpact = 0.01;
+        if (isNaN(baseImpact)) baseImpact = 0.01;
+        if (baseImpact == 0) return 0;
+        if (baseImpact < 0) baseImpact = 0.01;
 
         var passiveSkills:Object = unit.被动技能;
         if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
@@ -655,10 +658,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     private static function installVirtualWeapon(unit:Object, config:Object, state:Object, firedCount:Number):Void {
         var fired:Number = clampFiredCount(firedCount, getStateCapacity(state));
+        var reloadCount:Number = Number(state.reloadCount);
+        if (isNaN(reloadCount) || reloadCount < 0) reloadCount = 0;
 
         unit.长枪副武器 = {
             name: config.name,
-            value: {shot: fired}
+            value: {shot: fired, reloadCount: reloadCount}
         };
         unit.长枪副武器弹匣容量 = state.capacity;
         unit.长枪副武器属性 = {
@@ -721,12 +726,17 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
-        if (!hasReloadReserve(config)) {
+        var hasReserve:Boolean = hasReloadReserve(config);
+        var hasTacticalFreeReload:Boolean = canTacticalFreeReload(unit, config, state);
+        if (!hasReserve && !hasTacticalFreeReload) {
             updateAmmoDisplay(unit);
             return false;
         }
 
-        if (config.consumeMode == "onLoadGroup" && (config.consumeTiming == "onReloadCommit" || manual)) {
+        var tacticalFreeReload:Boolean = applyTacticalRecovery(unit, config, state);
+        if (tacticalFreeReload) {
+            state.groupPaid = true;
+        } else if (config.consumeMode == "onLoadGroup" && (config.consumeTiming == "onReloadCommit" || manual)) {
             if (config.clipCostPerLoad > 0 && !ItemUtil.singleSubmit(config.reserveName, config.clipCostPerLoad)) {
                 updateAmmoDisplay(unit);
                 return false;
@@ -742,6 +752,40 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         ensureRuntimeStatsFresh(unit);
         updateAmmoDisplay(unit);
         return true;
+    }
+
+    private static function canTacticalFreeReload(unit:Object, config:Object, state:Object):Boolean {
+        if (!canUseTacticalRecovery(unit, config)) return false;
+        return org.flashNight.arki.unit.Action.Shoot.ReloadManager.canTacticalFreeReloadValue(
+            unit.长枪副武器.value,
+            state.capacity,
+            getGunslingerLevel(unit)
+        );
+    }
+
+    private static function applyTacticalRecovery(unit:Object, config:Object, state:Object):Boolean {
+        if (!canUseTacticalRecovery(unit, config)) return false;
+        var freeReload:Boolean = org.flashNight.arki.unit.Action.Shoot.ReloadManager.applyTacticalRecovery(
+            unit.长枪副武器.value,
+            state.capacity,
+            getGunslingerLevel(unit)
+        );
+        state.reloadCount = unit.长枪副武器.value.reloadCount;
+        return freeReload;
+    }
+
+    private static function canUseTacticalRecovery(unit:Object, config:Object):Boolean {
+        if (!isHero(unit)) return false;
+        if (config.consumeMode != "onLoadGroup") return false;
+        if (!unit.被动技能 || !unit.被动技能.枪械师 || !unit.被动技能.枪械师.启用) return false;
+        return true;
+    }
+
+    private static function getGunslingerLevel(unit:Object):Number {
+        var lv:Number = Number(unit.被动技能.枪械师.等级 || 1);
+        if (isNaN(lv) || lv < 1) lv = 1;
+        if (lv > 10) lv = 10;
+        return lv;
     }
 
     private static function reloadInternalFree(unit:Object):Boolean {

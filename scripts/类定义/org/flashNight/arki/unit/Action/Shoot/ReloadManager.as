@@ -166,7 +166,7 @@ import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
  * ----------------------------------------------------------------------------
  * startReload → 入口检查（有弹匣 → 正常 / 无弹匣 + canTacticalFreeReload → 放行）
  *     ↓
- * reloadMagazine（单武器）/ createHandReloadFunction（双枪）→ _applyTacticalRecovery
+ * reloadMagazine（单武器）/ createHandReloadFunction（双枪）→ applyTacticalRecovery
  *     ├─ 回收率 × 剩余弹药 → 累积到 reloadCount
  *     ├─ reloadCount >= capacity → 免费换弹（shot=0，reloadCount -= capacity）
  *     └─ reloadCount < capacity → 正常消耗弹匣（reloadCount 保留继续累积）
@@ -620,13 +620,26 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @return 是否可以免费换弹
      */
     public static function canTacticalFreeReload(parentRef:Object, weaponType:String, gunslingerLevel:Number):Boolean {
-        var wv:Object = parentRef[weaponType].value;
-        var capacity:Number = parentRef[weaponType + "弹匣容量"];
-        var remaining:Number = capacity - wv.shot;
-        var recovered:Number = Math.floor(remaining * (0.5 + (gunslingerLevel - 1) * 0.5 / 9));
-        var rc:Number = Number(wv.reloadCount);
+        return ReloadManager.canTacticalFreeReloadValue(
+            parentRef[weaponType].value,
+            parentRef[weaponType + "弹匣容量"],
+            gunslingerLevel
+        );
+    }
+
+    public static function canTacticalFreeReloadValue(weaponValue:Object, capacity:Number, gunslingerLevel:Number):Boolean {
+        if (!weaponValue) return false;
+        var cap:Number = Number(capacity);
+        if (isNaN(cap) || cap <= 0) return false;
+        var lv:Number = normalizeGunslingerLevel(gunslingerLevel);
+        var shot:Number = Number(weaponValue.shot);
+        if (isNaN(shot) || shot < 0) shot = 0;
+        if (shot > cap) shot = cap;
+        var remaining:Number = cap - shot;
+        var recovered:Number = Math.floor(remaining * (0.5 + (lv - 1) * 0.5 / 9));
+        var rc:Number = Number(weaponValue.reloadCount);
         if (isNaN(rc) || rc < 0) rc = 0;
-        return (rc + recovered) >= capacity;
+        return (rc + recovered) >= cap;
     }
 
     /**
@@ -638,21 +651,39 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param gunslingerLevel 枪械师等级
      * @return true = 免费换弹已完成（shot已重置），false = 需正常消耗弹匣
      */
-    private static function _applyTacticalRecovery(weaponValue:Object, capacity:Number, gunslingerLevel:Number):Boolean {
-        var remaining:Number = capacity - weaponValue.shot;
-        var recovered:Number = Math.floor(remaining * (0.5 + (gunslingerLevel - 1) * 0.5 / 9));
+    public static function applyTacticalRecovery(weaponValue:Object, capacity:Number, gunslingerLevel:Number):Boolean {
+        if (!weaponValue) return false;
+        var cap:Number = Number(capacity);
+        if (isNaN(cap) || cap <= 0) return false;
+        var lv:Number = normalizeGunslingerLevel(gunslingerLevel);
+        var shot:Number = Number(weaponValue.shot);
+        if (isNaN(shot) || shot < 0) shot = 0;
+        if (shot > cap) shot = cap;
+        var remaining:Number = cap - shot;
+        var recovered:Number = Math.floor(remaining * (0.5 + (lv - 1) * 0.5 / 9));
         var rc:Number = Number(weaponValue.reloadCount);
         if (isNaN(rc) || rc < 0) rc = 0;
         rc += recovered;
 
-        if (rc >= capacity) {
-            weaponValue.reloadCount = rc - capacity;
+        if (rc >= cap) {
+            weaponValue.reloadCount = rc - cap;
             weaponValue.shot = 0;
             return true;
         }
 
         weaponValue.reloadCount = rc;
         return false;
+    }
+
+    private static function _applyTacticalRecovery(weaponValue:Object, capacity:Number, gunslingerLevel:Number):Boolean {
+        return ReloadManager.applyTacticalRecovery(weaponValue, capacity, gunslingerLevel);
+    }
+
+    private static function normalizeGunslingerLevel(gunslingerLevel:Number):Number {
+        var lv:Number = Number(gunslingerLevel);
+        if (isNaN(lv) || lv < 1) lv = 1;
+        if (lv > 10) lv = 10;
+        return lv;
     }
 
     // ============================================================
