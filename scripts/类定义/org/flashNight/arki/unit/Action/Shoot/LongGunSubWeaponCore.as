@@ -34,7 +34,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         unit.subWeapon = state;
         installVirtualWeapon(unit, config, state, firedCount);
         syncSnapshots(unit);
-        writeRuntimeBridgeFields(unit, config);
+        refreshRuntimeStats(unit);
         updateAmmoDisplay(unit);
         return true;
     }
@@ -88,6 +88,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     public static function prepareManBulletProps(unit:Object, man:Object):Object {
         if (!hasSubweapon(unit) || !man) return null;
+        ensureRuntimeStatsFresh(unit);
         var config:Object = unit.长枪副武器配置;
         var props:Object = man.副武器子弹属性;
         if (!props) props = {};
@@ -102,11 +103,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         props.移动子弹散射度 = config.diffusion;
         props.发射效果 = "";
         props.子弹种类 = config.bullet;
-        props.子弹威力 = calculatePower(unit, config);
+        props.子弹威力 = config.resolvedPower;
         props.子弹速度 = config.velocity;
         props.击中地图效果 = "";
         props.Z轴攻击范围 = config.range;
-        props.击倒率 = config.impact;
+        props.击倒率 = config.resolvedImpact;
         props.击中后子弹的效果 = "";
         props.发射者 = unit._name;
         props.角度偏移 = angleOffset;
@@ -199,7 +200,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
         state.nextFireTime = getTimer() + config.cd;
         syncSnapshots(unit);
-        writeRuntimeBridgeFields(unit, config);
+        ensureRuntimeStatsFresh(unit);
         updateAmmoDisplay(unit);
         if (isHero(unit)) _root.玩家信息界面.刷新mp显示();
         return true;
@@ -475,6 +476,64 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
     }
 
+    public static function markRuntimeStatsDirty(unit:Object):Void {
+        if (!hasSubweapon(unit)) return;
+        unit.长枪副武器配置.runtimeStatsDirty = true;
+    }
+
+    public static function refreshRuntimeStats(unit:Object):Void {
+        if (!hasSubweapon(unit)) return;
+        var config:Object = unit.长枪副武器配置;
+        var signature:String = buildRuntimeStatsSignature(unit, config);
+        var stats:Object = resolveRuntimeStats(unit, config);
+
+        config.resolvedPower = stats.power;
+        config.resolvedImpact = stats.impact;
+        config.runtimeStatsSignature = signature;
+        config.runtimeStatsDirty = false;
+        writeRuntimeBridgeFields(unit, config);
+    }
+
+    private static function ensureRuntimeStatsFresh(unit:Object):Void {
+        if (!hasSubweapon(unit)) return;
+        var config:Object = unit.长枪副武器配置;
+        var signature:String = buildRuntimeStatsSignature(unit, config);
+        if (config.runtimeStatsDirty
+            || config.runtimeStatsSignature != signature
+            || config.resolvedPower == undefined
+            || config.resolvedImpact == undefined) {
+            refreshRuntimeStats(unit);
+        }
+    }
+
+    private static function resolveRuntimeStats(unit:Object, config:Object):Object {
+        return {
+            power: calculatePower(unit, config),
+            impact: calculateImpact(unit, config)
+        };
+    }
+
+    private static function buildRuntimeStatsSignature(unit:Object, config:Object):String {
+        var passiveSkills:Object = unit.被动技能;
+        var chain:Object = passiveSkills ? passiveSkills.冲击连携 : null;
+        var chainEnabled:Number = (chain && chain.启用) ? 1 : 0;
+        var chainLevel:Number = chain ? Number(chain.等级 || 1) : 0;
+        if (isNaN(chainLevel)) chainLevel = 0;
+        var gunpower:Number = Number(unit.装备枪械威力加成);
+        if (isNaN(gunpower)) gunpower = 0;
+
+        return [
+            config.basePower,
+            config.powerMultiplier,
+            config.hostPowerMultiplier,
+            config.hostWeaponType,
+            config.impact,
+            chainEnabled,
+            chainLevel,
+            gunpower
+        ].join("|");
+    }
+
     public static function calculatePower(unit:Object, config:Object):Number {
         var power:Number = config.basePower * config.powerMultiplier * config.hostPowerMultiplier;
         var passiveSkills:Object = unit.被动技能;
@@ -482,10 +541,34 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             var lv:Number = passiveSkills.冲击连携.等级 || 1;
             if (lv < 1) lv = 1;
             if (lv > 10) lv = 10;
-            var damageBonus:Number = 0.15 + (lv - 1) * (0.25 - 0.15) / 9;
-            power *= (1 + damageBonus);
+            var damageMultiplier:Number = 1.5 + (lv - 1) * (2.0 - 1.5) / 9;
+            power *= damageMultiplier;
+        }
+        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+            var impactLv:Number = passiveSkills.冲击连携.等级 || 1;
+            if (impactLv < 1) impactLv = 1;
+            if (impactLv > 10) impactLv = 10;
+            var gunpower:Number = Number(unit.装备枪械威力加成);
+            if (!isNaN(gunpower) && gunpower > 0) {
+                power += gunpower * ((impactLv - 1) * 0.50 / 9);
+            }
         }
         return power;
+    }
+
+    public static function calculateImpact(unit:Object, config:Object):Number {
+        var baseImpact:Number = Number(config.impact);
+        if (isNaN(baseImpact) || baseImpact <= 0) baseImpact = 0.01;
+
+        var passiveSkills:Object = unit.被动技能;
+        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+            var lv:Number = passiveSkills.冲击连携.等级 || 1;
+            if (lv < 1) lv = 1;
+            if (lv > 10) lv = 10;
+            var impactBonus:Number = 0.50 + (lv - 1) * (1.00 - 0.50) / 9;
+            return baseImpact / (1 + impactBonus);
+        }
+        return baseImpact;
     }
 
     public static function getManualReloadBurden(unit:Object):Number {
@@ -656,7 +739,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
 
         setFiredCount(unit, 0);
-        writeRuntimeBridgeFields(unit, config);
+        ensureRuntimeStatsFresh(unit);
         updateAmmoDisplay(unit);
         return true;
     }
@@ -672,7 +755,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
         state.groupPaid = true;
         setFiredCount(unit, 0);
-        writeRuntimeBridgeFields(unit, config);
+        ensureRuntimeStatsFresh(unit);
         updateAmmoDisplay(unit);
         return true;
     }
@@ -922,7 +1005,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     private static function writeRuntimeBridgeFields(unit:Object, config:Object):Void {
-        unit.副武器子弹威力 = calculatePower(unit, config);
+        var power:Number = Number(config.resolvedPower);
+        if (isNaN(power)) power = calculatePower(unit, config);
+        var impact:Number = Number(config.resolvedImpact);
+        if (isNaN(impact)) impact = calculateImpact(unit, config);
+
+        unit.副武器子弹威力 = power;
         unit.副武器可发射数 = config.capacity;
         unit.副武器弹药类型 = config.reserveName;
         unit.副武器子弹种类 = config.bullet;
@@ -931,7 +1019,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         unit.副武器子弹散射度 = config.diffusion;
         unit.副武器子弹速度 = config.velocity;
         unit.副武器子弹Z轴攻击范围 = config.range;
-        unit.副武器子弹击倒率 = config.impact;
+        unit.副武器子弹击倒率 = impact;
         unit.副武器即时消耗弹药 = config.consumeMode == "onFire";
         unit.副武器伤害类型 = config.damageType;
         unit.副武器魔法伤害属性 = config.magicType;

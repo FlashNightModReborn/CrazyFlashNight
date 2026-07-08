@@ -216,10 +216,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             // 获取武器属性，检查是否为逐发换弹类型
             var weaponAttr:Object = parentRef[attackMode + "属性"];
             var reloadType:String = weaponAttr.reloadType;
-            var canLinkSubweaponReload:Boolean = attackMode == "长枪"
-                                                && (reloadType != "tube"
-                                                    || parentRef[attackMode].value.shot >= parentRef[attackMode + "弹匣容量"])
-                                                && LongGunSubWeaponCore.canReloadLinked(parentRef);
+            var canLinkSubweaponReload:Boolean = ReloadManager._canLinkSubweaponReload(parentRef, reloadType);
 
             // 逐发换弹（tube类型）：有残余换弹值时可以继续换弹，无需弹匣
             if (reloadType == "tube" && parentRef[attackMode].value.reloadCount > 0) {
@@ -257,6 +254,20 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             target.换弹标签 = true;
             target.gotoAndPlay("换弹匣");
         }
+    }
+
+    private static function _canLinkSubweaponReload(parentRef:Object, reloadType:String):Boolean {
+        var attackMode:String = parentRef.攻击模式;
+        if (attackMode != "长枪") return false;
+        if (reloadType == "tube" && parentRef[attackMode].value.shot < parentRef[attackMode + "弹匣容量"]) return false;
+        if (!LongGunSubWeaponCore.canReloadLinked(parentRef)) return false;
+
+        var gs:Object = parentRef.被动技能.枪械师;
+        var gsLv:Number = gs ? (gs.等级 || 1) : 0;
+        if (gs && gs.启用 && gsLv >= 10) {
+            return LongGunSubWeaponCore.getLoadedCount(parentRef) <= 0;
+        }
+        return true;
     }
     
     /**

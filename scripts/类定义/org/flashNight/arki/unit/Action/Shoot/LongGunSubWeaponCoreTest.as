@@ -28,6 +28,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         testSubweaponNormalization();
         testConfigureUnitAndImpactChainMultiplier();
+        testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier();
+        testEquipmentGunpowerRequiresImpactChain();
+        testDirtyRefreshUpdatesRuntimeBridgeFields();
+        testPrepareManBulletPropsRefreshesRuntimeStatsBySignature();
         testConfigureUnitRestoresStoredFiredCount();
         testSetFiredCountKeepsSnapshotsConsistent();
         testLoadedSnapshotIsNotAuthority();
@@ -53,6 +57,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testLinkedReload();
         testLinkedReloadRequiresReserve();
         testReloadKeyMarksCombinedReloadWhenBothNeedAmmo();
+        testGunslingerLevel9StillLinksPartialSubweaponReload();
+        testGunslingerLevel10SkipsLinkedReloadWhenSubweaponNotEmpty();
         testReloadKeyStartsSubweaponWhenMainFull();
         testCombinedReloadBurdenAddsSubweaponBurden();
         testNonHeroRollReloadRefillsSubweaponWithoutInventory();
@@ -82,8 +88,59 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ok, "configureUnit accepts canonical subweapon");
         assert(unit.长枪副武器状态.loaded == 5, "configureUnit initializes loaded capacity");
         assert(unit.长枪副武器状态.groupPaid == true, "configureUnit treats initial magazine as preloaded");
-        assert(unit.副武器子弹威力 == 1250, "impact chain level 10 applies 25 percent subweapon bonus");
+        assert(unit.副武器子弹威力 == 2000, "impact chain level 10 applies 2x shotgun-host subweapon bonus");
+        assert(unit.副武器子弹击倒率 == 2.5, "impact chain level 10 doubles subweapon impact force");
         assert(unit.副武器伤害类型 == "破击", "configureUnit writes damage type field");
+    }
+
+    private static function testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier():Void {
+        var unit:Object = makeUnit();
+        unit.装备枪械威力加成 = 600;
+        var itemData:Object = {weapontype: "霰弹枪", subweapon: makeSubweapon(false)};
+        var ok:Boolean = LongGunSubWeaponCore.configureUnit(unit, itemData);
+
+        assert(ok, "configureUnit accepts shotgun-host subweapon with gunpower");
+        assert(unit.副武器子弹威力 == 2300, "impact chain adds 50 percent equipment gunpower after shotgun multiplier");
+    }
+
+    private static function testEquipmentGunpowerRequiresImpactChain():Void {
+        var unit:Object = makeUnit();
+        unit.装备枪械威力加成 = 600;
+        unit.被动技能.冲击连携.启用 = false;
+        var itemData:Object = {weapontype: "突击步枪", subweapon: makeSubweapon(false)};
+        var ok:Boolean = LongGunSubWeaponCore.configureUnit(unit, itemData);
+
+        assert(ok, "configureUnit accepts subweapon without impact chain");
+        assert(unit.副武器子弹威力 == 1000, "equipment gunpower does not affect subweapon without impact chain");
+    }
+
+    private static function testDirtyRefreshUpdatesRuntimeBridgeFields():Void {
+        var unit:Object = makeUnit();
+        var itemData:Object = {weapontype: "霰弹枪", subweapon: makeSubweapon(false)};
+        LongGunSubWeaponCore.configureUnit(unit, itemData);
+        assert(unit.副武器子弹威力 == 2000, "runtime bridge starts with resolved shotgun-host power");
+
+        unit.装备枪械威力加成 = 600;
+        LongGunSubWeaponCore.markRuntimeStatsDirty(unit);
+        assert(unit.副武器子弹威力 == 2000, "dirty mark alone does not mutate bridge fields");
+
+        LongGunSubWeaponCore.refreshRuntimeStats(unit);
+        assert(unit.副武器子弹威力 == 2300, "runtime refresh updates bridge fields from resolver");
+    }
+
+    private static function testPrepareManBulletPropsRefreshesRuntimeStatsBySignature():Void {
+        var unit:Object = makeUnit();
+        unit.装备枪械威力加成 = 600;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "霰弹枪", subweapon: makeSubweapon(false)});
+        assert(unit.副武器子弹威力 == 2300, "signature test starts with impact-chain gunpower power");
+
+        unit.被动技能.冲击连携.启用 = false;
+        var props:Object = LongGunSubWeaponCore.prepareManBulletProps(unit, unit.man);
+
+        assert(props.子弹威力 == 1000, "prepareManBulletProps refreshes stale power when skill signature changes");
+        assert(props.击倒率 == 5, "prepareManBulletProps refreshes stale impact when skill signature changes");
+        assert(unit.副武器子弹威力 == 1000, "signature refresh updates bridge power field");
+        assert(unit.副武器子弹击倒率 == 5, "signature refresh updates bridge impact field");
     }
 
     private static function testConfigureUnitRestoresStoredFiredCount():Void {
@@ -751,6 +808,56 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ItemUtil.getTotal("主武器弹匣") == 0, "combined R reload consumes main reserve");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "combined R reload consumes subweapon reserve");
         assertSubweaponSnapshots(unit, 0, "combined R reload keeps ammo snapshots consistent");
+
+        restoreMockHero();
+        restoreMockInventory();
+    }
+
+    private static function testGunslingerLevel9StillLinksPartialSubweaponReload():Void {
+        installMockInventory("火焰喷射器燃料罐", 2, "主武器弹匣", 1);
+        var unit:Object = makeUnit();
+        unit.被动技能.枪械师 = {启用: true, 等级: 9};
+        unit.长枪 = {value: {shot: 3, reloadCount: 0}};
+        unit.长枪弹匣容量 = 30;
+        unit.长枪属性 = {reloadType: "normal", reloadPenalty: 50};
+        unit.man = makeReloadClip(unit);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 2);
+        installMockHero(unit);
+
+        ReloadManager.startReload(unit.man, unit, _root);
+        assert(LongGunSubWeaponCore.isLinkedReloadRequest(unit.man), "gunslinger level 9 still links partial subweapon reload");
+
+        ReloadManager.reloadMagazine(unit.man, unit, _root);
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "gunslinger level 9 linked reload refills partial subweapon");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "gunslinger level 9 linked reload consumes subweapon reserve");
+        assertSubweaponSnapshots(unit, 0, "gunslinger level 9 linked reload keeps snapshots consistent");
+
+        restoreMockHero();
+        restoreMockInventory();
+    }
+
+    private static function testGunslingerLevel10SkipsLinkedReloadWhenSubweaponNotEmpty():Void {
+        installMockInventory("火焰喷射器燃料罐", 2, "主武器弹匣", 1);
+        var unit:Object = makeUnit();
+        unit.被动技能.枪械师 = {启用: true, 等级: 10};
+        unit.长枪 = {value: {shot: 3, reloadCount: 0}};
+        unit.长枪弹匣容量 = 30;
+        unit.长枪属性 = {reloadType: "normal", reloadPenalty: 50};
+        unit.man = makeReloadClip(unit);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 2);
+        installMockHero(unit);
+
+        ReloadManager.startReload(unit.man, unit, _root);
+        assert(!LongGunSubWeaponCore.isLinkedReloadRequest(unit.man), "gunslinger level 10 keeps non-empty subweapon out of main reload");
+        assert(unit.man.playFrame == "换弹匣", "gunslinger level 10 still starts main reload");
+
+        ReloadManager.reloadMagazine(unit.man, unit, _root);
+        assert(unit.长枪.value.shot == 0, "gunslinger level 10 reload refills main weapon");
+        assert(unit.长枪副武器状态.loaded == 3, "gunslinger level 10 keeps existing subweapon loaded rounds");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 2, "gunslinger level 10 does not consume subweapon reserve");
+        assertSubweaponSnapshots(unit, 2, "gunslinger level 10 keeps subweapon snapshots unchanged");
 
         restoreMockHero();
         restoreMockInventory();
