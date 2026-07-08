@@ -51,9 +51,8 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
     PlacementVisual.hookVisualUpdate(actor, "长枪_引用", ref, _root.装备生命周期函数.GM6_LYNX视觉更新);
 
     // 订阅“长枪射击”
-    actor.dispatcher.subscribe("processShot", function() {
-        // 仅在“长枪”姿态下响应
-        if (actor.攻击模式 != "长枪")
+    actor.dispatcher.subscribe("processShot", function(owner:MovieClip, weaponType:String) {
+        if (!EquipmentFireIntent.isMainLongGunProcessShot(actor, weaponType))
             return;
 
         if (ref.state == ref.STATE_READY) {
@@ -90,7 +89,7 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
                 actor.长枪.value.shot = fireCount;
             }
             var bulletDisplayCount = cap - fireCount;
-            actor.dispatcher.publish("updateBullet", actor, "长枪射击中", bulletDisplayCount, "子弹数");
+            EquipmentFireIntent.publishMainLongGunUpdateBullet(actor.dispatcher, actor, "长枪射击中", bulletDisplayCount);
         }
 
 

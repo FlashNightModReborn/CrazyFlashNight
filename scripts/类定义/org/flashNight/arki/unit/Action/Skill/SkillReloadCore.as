@@ -37,11 +37,11 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
      * 1. 检查 weapon.value.shot 是否大于0（是否有已发射弹药）
      * 2. 从武器属性中获取弹夹道具名称（weaponAttr.clipname）
      * 3. 调用 ItemUtil.singleSubmit 尝试提交1个弹夹道具
-     * 4. 提交成功后重置 weapon.value.shot 和 unit.当前弹夹副武器已发射数 为0
+     * 4. 提交成功后重置 weapon.value.shot；长枪副武器由 LongGunSubWeaponCore 联动同步
      *
      * @param weapon 武器对象（如 unit.长枪、unit.手枪）
      * @param weaponAttr 武器属性对象（如 unit.长枪属性、unit.手枪属性），需包含 clipname 字段
-     * @param unit 单位对象（用于重置 当前弹夹副武器已发射数）
+     * @param unit 单位对象（用于长枪副武器联动换弹）
      * @return void
      *
      * @example 在技能中使用
@@ -58,7 +58,6 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
             if (ItemUtil.singleSubmit(clipName, 1)) {
                 // 提交成功，重置已发射数
                 weapon.value.shot = 0;
-                unit.当前弹夹副武器已发射数 = 0;
                 if (weapon == unit.长枪) {
                     LongGunSubWeaponCore.reloadLinked(unit);
                 }
@@ -98,7 +97,6 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
         if (_root.控制目标 != unit._name) {
             // 非玩家控制，直接重置（不消耗道具）
             unit.长枪.value.shot = 0;
-            unit.当前弹夹副武器已发射数 = 0;
             LongGunSubWeaponCore.reloadLinkedFree(unit);
             unit.手枪.value.shot = 0;
             unit.手枪2.value.shot = 0;

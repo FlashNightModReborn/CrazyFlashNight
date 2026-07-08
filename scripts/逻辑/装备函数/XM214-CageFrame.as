@@ -50,9 +50,8 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
         // _root.服务器.发布服务器消息("fire:" + prop.霰弹值);
     });
 
-    target.dispatcher.subscribe("updateBullet", function() {
-        if (target.攻击模式 != "长枪")
-            return;
+    target.dispatcher.subscribe("updateBullet", function(owner:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String, weaponType:String) {
+        if (!EquipmentFireIntent.isMainLongGunUpdateBullet(target, playerBulletField, weaponType)) return;
         var prop:Object = target.man.子弹属性;
         var bulletCount:Number = target.长枪.value.shot;
         var bulletDisplay:Number = target.长枪.value.shot = Math.min(ref.maxBulletCapacity, bulletCount + prop.霰弹值 - 1);

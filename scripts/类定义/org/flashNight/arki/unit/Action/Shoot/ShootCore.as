@@ -31,6 +31,26 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         playerBulletField: "子弹数_2"
     };
 
+    public static var subweaponParams:Object = {
+        shootingStateName: "副武器射击中",
+        actionFlagName: "动作B",
+        prefix: "",
+        bulletAttrKeys: ["副武器子弹属性"],
+        shootBulletAttrKey: "副武器子弹属性",
+        gunPath: "枪.枪.装扮.枪口位置",
+        taskName: "keepshootingSubweapon",
+        playerBulletField: "子弹数_2",
+        weaponType: "长枪副武器",
+        fireMethodName: "长枪副武器射击",
+        preFireEventName: null,
+        postShotEventName: "长枪副武器射击",
+        emptyPolicy: "denyNoReload",
+        useSemiAuto: false,
+        useGunslinger: false,
+        useGlobalRecoilTask: false,
+        recoilPolicy: "aggregate"
+    };
+
     /**
      * 全局缓存池：以 params 对象的 UID 作为键，存储解析后的配置
      */
@@ -90,6 +110,87 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (level >= 10) return 0.85;
         // 线性插值：1级=1.0，10级=0.85
         return 1.0 - (level - 1) * 0.15 / 9;
+    }
+
+    private static function getParamsConfig(params:Object):Object {
+        var uid:Number = Dictionary.getStaticUID(params);
+        var config:Object = _paramsCache[uid];
+        if (!config) {
+            config = {
+                shootingStateName:  params.shootingStateName,
+                actionFlagName:     params.actionFlagName,
+                prefix:             params.prefix,
+                bulletAttrKeys:     params.bulletAttrKeys,
+                shootBulletAttrKey: params.shootBulletAttrKey,
+                taskName:           params.taskName,
+                playerBulletField:  params.playerBulletField,
+                gunPathArray:       params.gunPath.split("."),
+                baseShootFrame:     "射击" + params.prefix
+            };
+            _paramsCache[uid] = config;
+        }
+        return config;
+    }
+
+    public static function createDefaultShootContext(core:Object, protagonist:Object, params:Object):Object {
+        var attackMode:String = core.攻击模式;
+        return {
+            params: params,
+            weaponType: (params.weaponType != null) ? params.weaponType : attackMode,
+            fireMethodName: (params.fireMethodName != null) ? params.fireMethodName : attackMode + "射击",
+            preFireEventName: (params.preFireEventName != undefined) ? params.preFireEventName : attackMode + "射击",
+            postShotEventName: params.postShotEventName,
+            interval: protagonist.射击速度,
+            emptyPolicy: params.emptyPolicy,
+            useSemiAuto: (params.useSemiAuto != false),
+            useGunslinger: (params.useGunslinger != false),
+            useGlobalRecoilTask: (params.useGlobalRecoilTask != false),
+            recoilPolicy: params.recoilPolicy,
+            blockOnReload: true
+        };
+    }
+
+    public static function isAnyShooting(core:Object):Boolean {
+        if (!core) return false;
+        return Boolean(
+            core[primaryParams.shootingStateName] ||
+            core[secondaryParams.shootingStateName] ||
+            core[subweaponParams.shootingStateName]
+        );
+    }
+
+    private static function updateAggregateRecoil(core:Object):Void {
+        core.射击最大后摇中 = ShootCore.isAnyShooting(core);
+    }
+
+    private static function resolveMagazineShot(core:Object, weaponType:String, context:Object):Number {
+        if (context.shotOwner != null && context.shotOwner.value != null) {
+            return context.shotOwner.value.shot;
+        }
+        return core[weaponType].value.shot;
+    }
+
+    private static function resolveMagazineCapacity(core:Object, weaponType:String, context:Object):Number {
+        if (context.magazineCapacity != undefined) {
+            return Number(context.magazineCapacity);
+        }
+        return Number(core[weaponType + "弹匣容量"]);
+    }
+
+    private static function resolveMagazineRemaining(core:Object, weaponType:String, bulletAttr:Object, context:Object):Number {
+        if (typeof context.magazineRemainingProvider == "function") {
+            return context.magazineRemainingProvider(core, weaponType, bulletAttr, context);
+        }
+        var capacity:Number = ShootCore.resolveMagazineCapacity(core, weaponType, context);
+        var shot:Number = ShootCore.resolveMagazineShot(core, weaponType, context);
+        return bulletAttr.ammoCost * (capacity - shot);
+    }
+
+    private static function resolveBulletAttr(core:Object, man:Object, config:Object, context:Object):Object {
+        if (typeof context.bulletPropsProvider == "function") {
+            return context.bulletPropsProvider(core, man, config, context);
+        }
+        return man[config.shootBulletAttrKey];
     }
 
     /**
@@ -220,7 +321,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             // 更新弹匣剩余子弹数量
             var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[attackMode].value.shot);
-            dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
+            dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField, attackMode);
             if (shootSpeed > 300) {
                 // [v1.3] 使用生命周期 API 自动管理后摇任务
                 EnhancedCooldownWheel.I().addOrUpdateTask(
@@ -237,6 +338,105 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
         // 移除现有射击任务
         ShootCore.removeStoredTask(core, config.taskName);
+        return false;
+    }
+
+    public static function continuousShootAs(core:Object, context:Object, effectiveInterval:Number):Boolean {
+        var root:Object = _root;
+        var man:Object = (context.man != null) ? context.man : core.man;
+        var params:Object = context.params;
+        var config:Object = ShootCore.getParamsConfig(params);
+        var shootStateName:String = config.shootingStateName;
+        var actionFlagName:String = config.actionFlagName;
+        var weaponType:String = context.weaponType;
+        var interval:Number = (context.interval > 0) ? context.interval : effectiveInterval;
+
+        if (man.换弹标签) {
+            core[shootStateName] = false;
+            ShootCore.removeStoredTask(core, config.taskName);
+            if (context.recoilPolicy == "aggregate") {
+                ShootCore.updateAggregateRecoil(core);
+            } else {
+                core.射击最大后摇中 = false;
+            }
+            return false;
+        }
+
+        if (context.recoilPolicy != "aggregate") {
+            core.射击最大后摇中 = false;
+        }
+
+        if (!man.射击许可标签) {
+            core[shootStateName] = false;
+            ShootCore.removeStoredTask(core, config.taskName);
+            if (context.recoilPolicy == "aggregate") ShootCore.updateAggregateRecoil(core);
+            return false;
+        }
+
+        var offset:Number = 0;
+        var jumpFrameName:String = config.baseShootFrame;
+        var isControlTarget:Boolean = (root.控制目标 === core._name);
+        var dispatcher:EventDispatcher = core.dispatcher;
+        if (isControlTarget && !core.上下移动射击) {
+            if (core.下行) {
+                offset = 30;
+                jumpFrameName = "下射击" + config.prefix;
+            } else if (core.上行) {
+                offset = -30;
+                jumpFrameName = "上射击" + config.prefix;
+            }
+        }
+
+        var bulletAttrKeys:Array = config.bulletAttrKeys;
+        var len:Number = bulletAttrKeys.length;
+        for (var i:Number = 0; i < len; i++) {
+            if (man[bulletAttrKeys[i]] != null) {
+                man[bulletAttrKeys[i]].角度偏移 = offset;
+            }
+        }
+
+        core[shootStateName] = false;
+        if (core[actionFlagName]) {
+            if (context.preFireEventName != null) {
+                dispatcher.publish(context.preFireEventName, core, weaponType, context);
+            }
+            man.gotoAndPlay(jumpFrameName);
+
+            var gunRef:Object = man;
+            var gunPath:Array = config.gunPathArray;
+            var pathLen:Number = gunPath.length;
+            for (var p:Number = 0; p < pathLen; p++) {
+                gunRef = gunRef[gunPath[p]];
+            }
+
+            var bulletAttr:Object = ShootCore.resolveBulletAttr(core, man, config, context);
+            core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : interval;
+            core[shootStateName] = core[context.fireMethodName](gunRef, bulletAttr);
+
+            if (core[shootStateName]) {
+                core.射击最大后摇中 = true;
+                if (context.postShotEventName != null) {
+                    dispatcher.publish(context.postShotEventName, core, weaponType, bulletAttr, context);
+                }
+            }
+
+            var magazineRemaining:Number = ShootCore.resolveMagazineRemaining(core, weaponType, bulletAttr, context);
+            dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField, weaponType);
+            if (context.useGlobalRecoilTask && interval > 300) {
+                EnhancedCooldownWheel.I().addOrUpdateTask(
+                    core, "结束射击后摇",
+                    function(target:Object):Void { target.射击最大后摇中 = false; },
+                    300, false, 0, [core]
+                );
+            }
+        }
+
+        if (core[shootStateName]) {
+            return true;
+        }
+
+        ShootCore.removeStoredTask(core, config.taskName);
+        if (context.recoilPolicy == "aggregate") ShootCore.updateAggregateRecoil(core);
         return false;
     }
 
@@ -431,6 +631,63 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 }
             }
         }
+    }
+
+    public static function startShootingAs(
+        core:Object,
+        protagonist:Object,
+        params:Object,
+        context:Object
+    ):Boolean {
+        if (!context) {
+            context = ShootCore.createDefaultShootContext(core, protagonist, params);
+        }
+        context.params = params;
+        context.man = protagonist;
+        if (context.weaponType == null) context.weaponType = params.weaponType;
+        if (context.fireMethodName == null) context.fireMethodName = params.fireMethodName;
+        if (context.interval <= 0) context.interval = protagonist.射击速度;
+
+        if (core[params.shootingStateName]) return false;
+        if (context.blockOnReload != false && protagonist.换弹标签) return false;
+
+        var weaponType:String = context.weaponType;
+        var currentShot:Number = ShootCore.resolveMagazineShot(core, weaponType, context);
+        var magazineCapacity:Number = ShootCore.resolveMagazineCapacity(core, weaponType, context);
+        if (currentShot >= magazineCapacity) {
+            if (context.emptyPolicy == "denyNoReload") return false;
+            if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name
+                || (core[weaponType + "属性"].reloadType != "tube"
+                    && core.被动技能.枪械师 && core.被动技能.枪械师.启用
+                    && ReloadManager.canTacticalFreeReload(core, weaponType, core.被动技能.枪械师.等级 || 1))) {
+                protagonist.开始换弹();
+            }
+            return false;
+        }
+
+        if (!protagonist.射击许可标签) return false;
+
+        var interval:Number = Number(context.interval);
+        if (interval <= 0 || isNaN(interval)) interval = protagonist.射击速度;
+
+        if (context.useSemiAuto != false || context.useGunslinger != false) {
+            ShootCore.startShooting(core, protagonist, params);
+            return false;
+        }
+
+        if (ShootCore.continuousShootAs(core, context, interval)) {
+            ShootCore.removeStoredTask(core, params.taskName);
+            core[params.taskName] = EnhancedCooldownWheel.I().addTask(
+                ShootCore.continuousShootAs,
+                interval,
+                true,
+                core,
+                context,
+                interval
+            );
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -756,6 +1013,30 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
     }
 
+    public static function cleanupLane(core:Object, params:Object):Void {
+        if (!core || !params) return;
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+
+        ShootCore.removeStoredTask(core, params.taskName);
+        _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + params.taskName);
+
+        var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;
+        if (core[pollProp] != null) {
+            wheel.removeTask(core[pollProp]);
+            delete core[pollProp];
+        }
+
+        var chainProp:String = GUNSLINGER_CHAIN_PREFIX + params.taskName;
+        if (core[chainProp] != null) {
+            wheel.removeTask(core[chainProp]);
+            delete core[chainProp];
+        }
+
+        delete _lastShotTimes[core._name + "_" + params.taskName];
+        delete core[SEMI_RELEASED_PREFIX + params.taskName];
+        core[params.shootingStateName] = false;
+    }
+
     /**
      * 清理指定单位的所有射击相关任务
      * 用于在武器切换或刷新装扮时清理遗留的射击任务
@@ -767,53 +1048,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
 
-        // 清理主副手射击任务
-        ShootCore.removeStoredTask(core, primaryParams.taskName);
-        ShootCore.removeStoredTask(core, secondaryParams.taskName);
+        // 清理各射击 lane 任务
+        ShootCore.cleanupLane(core, primaryParams);
+        ShootCore.cleanupLane(core, secondaryParams);
+        ShootCore.cleanupLane(core, subweaponParams);
 
         // [v1.3] 使用生命周期 API 清理射击后摇任务
         wheel.removeTaskByLabel(core, "结束射击后摇");
 
-        // 清理半自动冷却锁定（包括可能存在的轮询任务）
-        _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + primaryParams.taskName);
-        _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + secondaryParams.taskName);
-
-        // 清理枪械师半自动释放轮询任务
-        var pollProp1:String = GUNSLINGER_RELEASE_POLL_PREFIX + primaryParams.taskName;
-        if (core[pollProp1] != null) {
-            wheel.removeTask(core[pollProp1]);
-            delete core[pollProp1];
-        }
-        var pollProp2:String = GUNSLINGER_RELEASE_POLL_PREFIX + secondaryParams.taskName;
-        if (core[pollProp2] != null) {
-            wheel.removeTask(core[pollProp2]);
-            delete core[pollProp2];
-        }
-
-        // 清理枪械师半自动连射链任务
-        var chainProp1:String = GUNSLINGER_CHAIN_PREFIX + primaryParams.taskName;
-        if (core[chainProp1] != null) {
-            wheel.removeTask(core[chainProp1]);
-            delete core[chainProp1];
-        }
-        var chainProp2:String = GUNSLINGER_CHAIN_PREFIX + secondaryParams.taskName;
-        if (core[chainProp2] != null) {
-            wheel.removeTask(core[chainProp2]);
-            delete core[chainProp2];
-        }
-
-        // 清理半自动射速时间戳
-        var namePrefix:String = core._name + "_";
-        delete _lastShotTimes[namePrefix + primaryParams.taskName];
-        delete _lastShotTimes[namePrefix + secondaryParams.taskName];
-
-        // 清理枪械师半自动点按标记
-        delete core[SEMI_RELEASED_PREFIX + primaryParams.taskName];
-        delete core[SEMI_RELEASED_PREFIX + secondaryParams.taskName];
-
-        // 重置射击状态标志
-        core[primaryParams.shootingStateName] = false;
-        core[secondaryParams.shootingStateName] = false;
+        // 重置全局后摇标志
         core.射击最大后摇中 = false;
     }
 }

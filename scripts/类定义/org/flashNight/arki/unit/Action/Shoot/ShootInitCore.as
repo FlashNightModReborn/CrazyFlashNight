@@ -406,6 +406,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         // 生成子弹属性
         target.子弹属性 = generateBulletProps(parentRef, config.weaponType, weaponData, extraParams);
+        if (config.weaponType == "长枪") {
+            LongGunSubWeaponCore.prepareManBulletProps(parentRef, target);
+        }
 
         // 单武器使用标准的开始射击和换弹匣函数，已在_bindCoreFunctions中绑定
     }

@@ -29,7 +29,7 @@
 			目标状态 = _parent.攻击模式 + "行走";
 		}
 		if (_parent.动作B && !_parent.动作A && 需要切换状态) {
-			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.fire(_parent);
+			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.requestShoot(_parent);
 			return;
 		}
 		if (需要切换状态) {

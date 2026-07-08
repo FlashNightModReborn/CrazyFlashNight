@@ -199,7 +199,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         if (target.换弹标签) {
             return;
         }
-        delete target.subweaponLinkedReload;
+        LongGunSubWeaponCore.clearReloadRequest(target);
 
         // 检查是否为玩家控制的角色
         var isHero:Boolean = (parentRef === TargetCacheManager.findHero());
@@ -230,7 +230,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             // 检查是否有可用弹匣
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
-                if (canLinkSubweaponReload) target.subweaponLinkedReload = true;
+                if (canLinkSubweaponReload) LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
                 target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
                 return;
@@ -242,7 +242,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 && parentRef.被动技能.枪械师
                 && parentRef.被动技能.枪械师.启用
                 && ReloadManager.canTacticalFreeReload(parentRef, attackMode, parentRef.被动技能.枪械师.等级 || 1)) {
-                if (canLinkSubweaponReload) target.subweaponLinkedReload = true;
+                if (canLinkSubweaponReload) LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
                 target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
                 return;
@@ -266,8 +266,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function reloadMagazine(target:MovieClip, parentRef:Object, rootRef:Object):Void {
-        if (target.subweaponManualReload) {
-            LongGunSubWeaponCore.reloadManual(parentRef);
+        if (LongGunSubWeaponCore.isManualReloadRequest(target)) {
+            LongGunSubWeaponCore.commitReloadRequest(target, parentRef);
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
             return;
         }
@@ -289,8 +289,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             if (gs && gs.启用
                 && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1)) {
                 // 免费换弹完成（shot已重置，reloadCount已扣减）
-                parentRef.当前弹夹副武器已发射数 = 0;
-                LongGunSubWeaponCore.reloadLinked(parentRef);
+                LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
                 ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
                 return;
             }
@@ -307,9 +306,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 rootRef.发布消息("弹匣耗尽！");
             }
 
-            // 重置副武器发射数据
-            parentRef.当前弹夹副武器已发射数 = 0;
-            LongGunSubWeaponCore.reloadLinked(parentRef);
+            // 联动提交副武器换弹；弹仓快照由 LongGunSubWeaponCore 统一同步。
+            LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
 
             // 刷新UI显示
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
@@ -324,12 +322,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 目标MovieClip (原this引用)
      */
     public static function finishReload(target:MovieClip):Void {
-        var wasSubweaponManualReload:Boolean = (target.subweaponManualReload === true);
+        var wasSubweaponManualReload:Boolean = LongGunSubWeaponCore.isManualReloadRequest(target);
         // 清理双枪换弹序列标记，避免影响下一次换弹
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
-        delete target.subweaponManualReload;
-        delete target.subweaponLinkedReload;
+        LongGunSubWeaponCore.clearReloadRequest(target);
         delete target.reloadBurden;
         delete target.reloadFrameControlRequest;
         delete target.reloadFrameControlActive;
@@ -715,8 +712,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var weaponValue:Object = parent[attackMode].value;
         var capacity:Number = parent[attackMode + "弹匣容量"];
         var shot:Number = weaponValue.shot;
-        var useSubweaponManualReload:Boolean = target.subweaponManualReload === true;
-        var useSubweaponLinkedReload:Boolean = target.subweaponLinkedReload === true;
+        var useSubweaponManualReload:Boolean = LongGunSubWeaponCore.isManualReloadRequest(target);
+        var useSubweaponLinkedReload:Boolean = LongGunSubWeaponCore.isLinkedReloadRequest(target);
 
         // 检查快速换弹被动技能（枪械师）
         var isHero:Boolean = (parent === TargetCacheManager.findHero());

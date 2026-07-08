@@ -6,7 +6,10 @@ import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
+import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEventComponent;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentFireIntent;
 
 /**
  * LongGunSubWeaponCoreTest
@@ -26,11 +29,20 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testSubweaponNormalization();
         testConfigureUnitAndImpactChainMultiplier();
         testConfigureUnitRestoresStoredFiredCount();
+        testSetFiredCountKeepsSnapshotsConsistent();
+        testLoadedSnapshotIsNotAuthority();
+        testClearUnitPreservesStoredFiredMirror();
+        testSceneRefillPersistentShotConfiguresFullMagazine();
         testControlSlotMarker();
         testWeaponSkillInputBypassesSharedCooldownForSubweapon();
         testWeaponSkillInputKeepsSharedCooldownForNormalSkill();
-        testFireFromRunPlaysDirectionalAnimation();
+        testSubweaponWithoutMoveShootDoesNotFireFromRun();
+        testSubweaponCommitRejectsWalkWithoutMoveShoot();
+        testFireFromRunWithMoveShootPlaysDirectionalAnimation();
         testFireFromManUsesPassedCurrentMan();
+        testSubweaponEventIsolationAndInterval();
+        testEquipmentFireIntentMainLongGunGate();
+        testSubweaponEmptyDoesNotTriggerMainReload();
         testDeferredFireAbortDoesNotCommitCostOrCooldown();
         testDeferredFireInvalidatedStateDoesNotCommit();
         testDeferredManualReloadAfterClearUnitDoesNotMutateMan();
@@ -84,6 +96,56 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.loaded == 2, "configureUnit restores loaded rounds from weapon value");
         assert(unit.当前弹夹副武器已发射数 == 3, "configureUnit restores runtime fired count from weapon value");
         assert(unit.长枪.value.subweaponShot == 3, "configureUnit keeps stored subweapon fired count on equipment value");
+    }
+
+    private static function testSetFiredCountKeepsSnapshotsConsistent():Void {
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        LongGunSubWeaponCore.setFiredCount(unit, 4);
+
+        assertSubweaponSnapshots(unit, 4, "setFiredCount keeps all subweapon ammo snapshots consistent");
+        assert(LongGunSubWeaponCore.getLoadedCount(unit) == 1, "getLoadedCount derives remaining rounds from fired count");
+    }
+
+    private static function testLoadedSnapshotIsNotAuthority():Void {
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 4);
+
+        unit.长枪副武器状态.loaded = unit.长枪副武器状态.capacity;
+        unit.当前弹夹副武器已发射数 = 0;
+        unit.长枪.value.subweaponShot = 0;
+        LongGunSubWeaponCore.syncSnapshots(unit);
+
+        assertSubweaponSnapshots(unit, 4, "legacy loaded/current/stored mirrors do not override virtual fired authority");
+    }
+
+    private static function testClearUnitPreservesStoredFiredMirror():Void {
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 3);
+
+        LongGunSubWeaponCore.clearUnit(unit);
+        assert(!LongGunSubWeaponCore.hasSubweapon(unit), "clearUnit removes runtime subweapon state");
+        assert(unit.长枪.value.subweaponShot == 3, "clearUnit preserves stored fired mirror for next configure");
+        assert(unit.当前弹夹副武器已发射数 == 0, "clearUnit clears legacy runtime fired snapshot");
+
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        assertSubweaponSnapshots(unit, 3, "configureUnit restores subweapon ammo after clearUnit");
+    }
+
+    private static function testSceneRefillPersistentShotConfiguresFullMagazine():Void {
+        var unit:Object = makeUnit();
+        unit.长枪.value.subweaponShot = 5;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        assert(unit.长枪副武器状态.loaded == 0, "configureUnit sees empty subweapon before scene refill mirror reset");
+
+        LongGunSubWeaponCore.clearUnit(unit);
+        unit.长枪.value.subweaponShot = 0;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        assertSubweaponSnapshots(unit, 0, "scene refill persistent mirror reset configures full subweapon magazine");
     }
 
     private static function testControlSlotMarker():Void {
@@ -147,7 +209,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         restoreMockHero();
     }
 
-    private static function testFireFromRunPlaysDirectionalAnimation():Void {
+    private static function testSubweaponWithoutMoveShootDoesNotFireFromRun():Void {
         var oldShoot:Function = _root.子弹区域shoot传递;
         var oldControlTarget:String = _root.控制目标;
         var previousGameworld:Object = _root.gameworld;
@@ -162,6 +224,65 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         var unit:Object = makeUnit();
         unit.状态 = "长枪跑";
         unit.移动射击 = false;
+        unit.man = makeActionClip(unit, 0, 0, 0, 0);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+        assert(!ok, "subweapon without move-shoot does not fire from run state");
+        assert(unit.状态 == "长枪站立", "subweapon without move-shoot only normalizes run to stand");
+        assert(unit.行走冷却帧 == 2, "subweapon without move-shoot protects normalized pose");
+        assert(shot == null, "subweapon without move-shoot does not emit bullet while moving");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "subweapon without move-shoot does not consume loaded round while moving");
+        assert(unit.长枪.value.subweaponShot == 0, "subweapon without move-shoot does not mutate stored fired count while moving");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.控制目标 = oldControlTarget;
+        _root.gameworld = previousGameworld;
+    }
+
+    private static function testSubweaponCommitRejectsWalkWithoutMoveShoot():Void {
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var previousGameworld:Object = _root.gameworld;
+        var shot:Object = null;
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shot = props;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪行走";
+        unit.移动射击 = false;
+        unit.man = makeActionClip(unit, 100, 50, 3, 4);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        var props:Object = LongGunSubWeaponCore.prepareManBulletProps(unit, unit.man);
+        var muzzle:Object = unit.man.枪.枪.装扮.枪口位置;
+
+        var ok:Boolean = unit.长枪副武器射击(muzzle, props);
+        assert(!ok, "subweapon commit rejects walk state without move-shoot");
+        assert(shot == null, "subweapon commit does not emit bullet while walking without move-shoot");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "subweapon commit does not consume loaded round while walking without move-shoot");
+        assert(unit.长枪副武器.value.shot == 0, "subweapon commit does not increment virtual shot while walking without move-shoot");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.gameworld = previousGameworld;
+    }
+
+    private static function testFireFromRunWithMoveShootPlaysDirectionalAnimation():Void {
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var oldControlTarget:String = _root.控制目标;
+        var previousGameworld:Object = _root.gameworld;
+        var shot:Object = null;
+        _root.控制目标 = "testUnit";
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shot = props;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪跑";
+        unit.移动射击 = true;
         unit.下行 = true;
         unit.man = makeActionClip(unit, 0, 0, 0, 0);
         var oldMan:Object = unit.man;
@@ -180,8 +301,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
 
         var ok:Boolean = LongGunSubWeaponCore.fire(unit);
-        assert(ok, "subweapon fire succeeds from long-gun run state");
-        assert(unit.状态 == "长枪站立", "subweapon fire normalizes run to stand when move-shoot is disabled");
+        assert(ok, "subweapon fire succeeds from long-gun run state when move-shoot is enabled");
+        assert(unit.状态 == "长枪行走", "subweapon fire normalizes run to walk when move-shoot is enabled");
         assert(unit.行走冷却帧 == 2, "subweapon fire protects normalized pose from next walk tick");
         assert(unit.man !== oldMan, "subweapon fire waits for refreshed man after pose transition");
         assert(oldMan.playFrame == undefined, "subweapon fire does not play stale run man");
@@ -191,6 +312,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(shot != null && shot.shootY == 109, "subweapon fire reads refreshed muzzle Y");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity - 1, "subweapon fire consumes one loaded round");
         assert(unit.长枪.value.subweaponShot == 1, "subweapon fire stores fired count on long gun value");
+        assertSubweaponSnapshots(unit, 1, "subweapon fire keeps ammo snapshots consistent");
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
@@ -229,6 +351,98 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         _root.gameworld = previousGameworld;
     }
 
+    private static function testSubweaponEventIsolationAndInterval():Void {
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var previousGameworld:Object = _root.gameworld;
+        var shot:Object = null;
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shot = props;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪站立";
+        unit.man = makeActionClip(unit, 50, 40, 5, 6);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        var mainProcessCount:Number = 0;
+        var subProcessCount:Number = 0;
+        var mainUpdateCount:Number = 0;
+        var subUpdateCount:Number = 0;
+        unit.dispatcher.subscribe("processShot", function(owner:MovieClip, weaponType:String) {
+            if (weaponType == "长枪") mainProcessCount++;
+            if (weaponType == "长枪副武器") subProcessCount++;
+        });
+        unit.dispatcher.subscribe("updateBullet", function(owner:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String, weaponType:String) {
+            if (weaponType == "长枪") mainUpdateCount++;
+            if (weaponType == "长枪副武器") subUpdateCount++;
+        });
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+
+        assert(ok, "subweapon lane fire succeeds through ShootCore");
+        assert(mainProcessCount == 0, "subweapon processShot does not masquerade as long-gun shot");
+        assert(subProcessCount == 1, "subweapon processShot publishes subweapon weaponType");
+        assert(mainUpdateCount == 0, "subweapon updateBullet does not masquerade as long-gun update");
+        assert(subUpdateCount == 1, "subweapon updateBullet publishes subweapon weaponType");
+        assert(shot != null && shot.发射间隔毫秒 == unit.长枪副武器配置.cd, "subweapon lane uses config.cd as fire interval");
+        assert(unit.长枪副武器.value.shot == 1, "subweapon lane increments virtual shot through processShot");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity - 1, "subweapon lane syncs loaded snapshot after processShot");
+        assertSubweaponSnapshots(unit, 1, "subweapon lane fire keeps ammo snapshots consistent");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.gameworld = previousGameworld;
+    }
+
+    private static function testEquipmentFireIntentMainLongGunGate():Void {
+        var unit:Object = makeUnit();
+        unit.攻击模式 = "长枪";
+
+        assert(EquipmentFireIntent.isMainLongGunProcessShot(unit, "长枪"), "fire intent accepts main long-gun processShot");
+        assert(!EquipmentFireIntent.isMainLongGunProcessShot(unit, "长枪副武器"), "fire intent rejects subweapon processShot");
+
+        assert(EquipmentFireIntent.isMainLongGunUpdateBullet(unit, "子弹数", "长枪"), "fire intent accepts typed main long-gun updateBullet");
+        assert(!EquipmentFireIntent.isMainLongGunUpdateBullet(unit, "子弹数_2", "长枪副武器"), "fire intent rejects typed subweapon updateBullet");
+        assert(EquipmentFireIntent.isMainLongGunUpdateBullet(unit, "子弹数", undefined), "fire intent accepts legacy main long-gun updateBullet");
+        assert(!EquipmentFireIntent.isMainLongGunUpdateBullet(unit, "子弹数_2", undefined), "fire intent rejects legacy non-main updateBullet");
+
+        unit.攻击模式 = "手枪";
+        assert(!EquipmentFireIntent.isMainLongGunProcessShot(unit, "长枪"), "fire intent rejects processShot outside long-gun mode");
+        assert(!EquipmentFireIntent.isMainLongGunUpdateBullet(unit, "子弹数", "长枪"), "fire intent rejects updateBullet outside long-gun mode");
+
+        var publishCount:Number = 0;
+        var publishedWeaponType:String = null;
+        var publishedBulletField:String = null;
+        unit.dispatcher.subscribe("updateBullet", function(owner:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String, weaponType:String) {
+            publishCount++;
+            publishedBulletField = playerBulletField;
+            publishedWeaponType = weaponType;
+        });
+        EquipmentFireIntent.publishMainLongGunUpdateBullet(unit.dispatcher, unit, "长枪射击中", 7);
+
+        assert(publishCount == 1, "fire intent publishes one updateBullet event");
+        assert(publishedBulletField == "子弹数", "fire intent publish uses main bullet field");
+        assert(publishedWeaponType == "长枪", "fire intent publish carries main long-gun weaponType");
+    }
+
+    private static function testSubweaponEmptyDoesNotTriggerMainReload():Void {
+        var unit:Object = makeUnit();
+        unit.man = makeActionClip(unit, 0, 0, 0, 0);
+        unit.man.mainReloadCount = 0;
+        unit.man.开始换弹 = function():Void {
+            this.mainReloadCount++;
+        };
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        markSubweaponEmpty(unit, true);
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+
+        assert(!ok, "empty subweapon K fire is rejected");
+        assert(unit.man.mainReloadCount == 0, "empty subweapon K fire does not trigger main reload");
+        assert(unit.长枪.value.shot == 0, "empty subweapon K fire does not mutate main long-gun shot");
+    }
+
     private static function testDeferredFireAbortDoesNotCommitCostOrCooldown():Void {
         installMockInventory("火焰喷射器燃料罐", 1);
         EnhancedCooldownWheel.I().reset();
@@ -244,7 +458,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         var unit:Object = makeUnit();
         unit.状态 = "长枪跑";
-        unit.移动射击 = false;
+        unit.移动射击 = true;
         unit.man = makeActionClip(unit, 0, 0, 0, 0);
         var badMan:Object = makeActionClip(unit, undefined, 0, 0, 0);
         unit.状态改变 = function(state:String):Void {
@@ -305,7 +519,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         var unit:Object = makeUnit();
         unit.状态 = "长枪跑";
-        unit.移动射击 = false;
+        unit.移动射击 = true;
         unit.man = makeActionClip(unit, 0, 0, 0, 0);
         var newMan:Object = makeActionClip(unit, 120, 80, 6, 8);
         unit.状态改变 = function(state:String):Void {
@@ -359,9 +573,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             }
         };
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         var ok:Boolean = LongGunSubWeaponCore.startManualReloadAnimation(unit);
         var readyMan:Object = makeReloadClip(unit);
@@ -384,9 +596,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         installMockInventory("火焰喷射器燃料罐", 2);
         var unit:Object = makeUnit();
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         var ok:Boolean = LongGunSubWeaponCore.reloadManual(unit);
         assert(ok, "manual reload succeeds when reserve is available");
@@ -395,6 +605,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "manual reload consumes one reserve clip on commit");
         assert(unit.当前弹夹副武器已发射数 == 0, "manual reload resets fired count");
         assert(unit.长枪.value.subweaponShot == 0, "manual reload resets stored fired count");
+        assertSubweaponSnapshots(unit, 0, "manual reload keeps ammo snapshots consistent");
         restoreMockInventory();
     }
 
@@ -418,17 +629,16 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             }
         };
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         var ok:Boolean = LongGunSubWeaponCore.startManualReloadAnimation(unit);
         assert(ok, "subweapon manual reload starts from long-gun run state");
         assert(unit.状态 == "长枪站立", "subweapon manual reload normalizes run to stand");
         assert(unit.行走冷却帧 == 2, "subweapon manual reload protects normalized pose from next walk tick");
         assert(unit.man !== oldMan, "subweapon manual reload waits for refreshed man after pose transition");
-        assert(oldMan.subweaponManualReload != true, "subweapon manual reload does not mark stale run man");
-        assert(unit.man.subweaponManualReload === true, "subweapon manual reload marks manual reload path");
+        assert(!LongGunSubWeaponCore.isManualReloadRequest(oldMan), "subweapon manual reload does not mark stale run man");
+        assert(LongGunSubWeaponCore.isManualReloadRequest(unit.man), "subweapon manual reload marks manual reload request");
+        assert(unit.man.subweaponManualReload == undefined, "subweapon manual reload does not use legacy manual marker");
         assert(LongGunSubWeaponCore.isManualReloadMovementLocked(unit), "subweapon manual reload keeps unit-level movement lock");
         assert(!LongGunSubWeaponCore.canReloadManual(unit), "subweapon manual reload lock rejects duplicate manual reload");
         assert(unit.man.playFrame == "换弹匣", "subweapon manual reload enters reload animation");
@@ -440,9 +650,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         var unit:Object = makeUnit();
         unit.man = makeReloadClip(unit);
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         var ok:Boolean = LongGunSubWeaponCore.startManualReloadAnimation(unit);
         assert(ok, "subweapon manual reload starts on current pose");
@@ -463,12 +671,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.man = makeReloadClip(unit);
 
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         assert(LongGunSubWeaponCore.canReloadManual(unit), "manual reload precheck passes before animation");
-        unit.man.subweaponManualReload = true;
+        LongGunSubWeaponCore.setManualReloadRequest(unit.man, unit);
         unit.man.换弹标签 = true;
 
         ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
@@ -482,9 +688,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.groupPaid == true, "subweapon animation commit marks group paid");
         assert(unit.长枪.value.subweaponShot == 0, "subweapon animation commit resets stored fired count");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "subweapon animation commit consumes one reserve clip");
+        assertSubweaponSnapshots(unit, 0, "subweapon animation commit keeps ammo snapshots consistent");
 
         ReloadManager.finishReload(unit.man);
-        assert(unit.man.subweaponManualReload == undefined, "finish reload clears subweapon manual marker");
+        assert(LongGunSubWeaponCore.getReloadRequest(unit.man) == null, "finish reload clears subweapon reload request");
+        assert(unit.man.subweaponManualReload == undefined, "finish reload clears legacy subweapon manual marker");
         assert(unit.man.换弹标签 == false, "finish reload clears reload tag");
         assert(unit.man.stopFrame == "空闲", "finish reload returns timeline to idle");
         restoreMockInventory();
@@ -494,9 +702,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         installMockInventory("火焰喷射器燃料罐", 1);
         var unit:Object = makeUnit();
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         var ok:Boolean = LongGunSubWeaponCore.reloadLinked(unit);
         assert(ok, "linked reload succeeds with reserve commit");
@@ -504,6 +710,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.groupPaid == true, "linked reload marks group paid on commit");
         assert(unit.长枪.value.subweaponShot == 0, "linked reload resets stored fired count");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "linked reload consumes reserve on commit");
+        assertSubweaponSnapshots(unit, 0, "linked reload keeps ammo snapshots consistent");
         restoreMockInventory();
     }
 
@@ -511,9 +718,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         installMockInventory("火焰喷射器燃料罐", 0);
         var unit:Object = makeUnit();
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
 
         var ok:Boolean = LongGunSubWeaponCore.reloadLinked(unit);
         assert(!ok, "linked reload fails when reserve is unavailable");
@@ -530,14 +735,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.长枪属性 = {reloadType: "normal", reloadPenalty: 50};
         unit.man = makeReloadClip(unit);
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
         installMockHero(unit);
 
         ReloadManager.startReload(unit.man, unit, _root);
-        assert(unit.man.subweaponLinkedReload === true, "R marks combined reload when main and subweapon both need ammo");
-        assert(unit.man.subweaponManualReload != true, "combined R reload keeps main reload path");
+        assert(LongGunSubWeaponCore.isLinkedReloadRequest(unit.man), "R marks combined reload request when main and subweapon both need ammo");
+        assert(!LongGunSubWeaponCore.isManualReloadRequest(unit.man), "combined R reload keeps main reload path");
+        assert(unit.man.subweaponLinkedReload == undefined, "combined R reload does not use legacy linked marker");
+        assert(unit.man.subweaponManualReload == undefined, "combined R reload does not use legacy manual marker");
         assert(unit.man.playFrame == "换弹匣", "combined R reload enters main reload animation");
 
         ReloadManager.reloadMagazine(unit.man, unit, _root);
@@ -545,6 +750,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "combined R reload refills subweapon");
         assert(ItemUtil.getTotal("主武器弹匣") == 0, "combined R reload consumes main reserve");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "combined R reload consumes subweapon reserve");
+        assertSubweaponSnapshots(unit, 0, "combined R reload keeps ammo snapshots consistent");
 
         restoreMockHero();
         restoreMockInventory();
@@ -559,18 +765,18 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.man = makeReloadClip(unit);
 
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = true;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, true);
         installMockHero(unit);
 
         ReloadManager.startReload(unit.man, unit, _root);
-        assert(unit.man.subweaponManualReload === true, "R starts subweapon reload when main weapon is full");
+        assert(LongGunSubWeaponCore.isManualReloadRequest(unit.man), "R starts subweapon reload request when main weapon is full");
+        assert(unit.man.subweaponManualReload == undefined, "R subweapon reload does not use legacy manual marker");
         assert(unit.man.playFrame == "换弹匣", "R subweapon reload enters reload animation");
 
         ReloadManager.reloadMagazine(unit.man, unit, _root);
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "R subweapon reload refills loaded state");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "R subweapon reload consumes reserve on commit");
+        assertSubweaponSnapshots(unit, 0, "R subweapon reload keeps ammo snapshots consistent");
 
         restoreMockHero();
         restoreMockInventory();
@@ -589,7 +795,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         ReloadManager.finishReload(unit.man);
         unit.man = makeReloadClip(unit);
-        unit.man.subweaponLinkedReload = true;
+        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man, unit);
         ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
         assert(unit.man.reloadBurden == 175, "combined reload burden adds subweapon burden");
     }
@@ -602,9 +808,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.手枪 = {value: {shot: 2}};
         unit.手枪2 = {value: {shot: 1}};
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = false;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, false);
         var previousControlTarget:String = _root.控制目标;
         _root.控制目标 = "heroUnit";
 
@@ -616,6 +820,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "non-hero roll reload refills subweapon without reserve");
         assert(unit.长枪副武器状态.groupPaid == true, "non-hero roll reload marks free subweapon group paid");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "non-hero roll reload does not consume player reserve");
+        assertSubweaponSnapshots(unit, 0, "non-hero roll reload keeps ammo snapshots consistent");
         _root.控制目标 = previousControlTarget;
         restoreMockInventory();
     }
@@ -631,9 +836,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.手枪2 = {value: {shot: 0}};
         unit.手枪2属性 = {clipname: "手枪弹匣"};
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
-        unit.长枪副武器状态.loaded = 0;
-        unit.长枪副武器状态.groupPaid = false;
-        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        markSubweaponEmpty(unit, false);
         installMockHero(unit);
 
         SkillReloadCore.reloadAllWeapons(unit);
@@ -642,6 +845,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "hero roll reload refills subweapon when main is full");
         assert(unit.长枪副武器状态.groupPaid == true, "hero roll reload marks linked subweapon group paid");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "hero roll reload consumes one subweapon reserve");
+        assertSubweaponSnapshots(unit, 0, "hero roll reload keeps ammo snapshots consistent");
         restoreMockHero();
         restoreMockInventory();
     }
@@ -655,6 +859,21 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assertContains(joined, "火焰喷射器燃料罐", "tooltip shows subweapon ammo");
         assertContains(joined, "破击", "tooltip shows damage type");
         assertContains(joined, "100", "tooltip shows mp cost");
+    }
+
+    private static function markSubweaponEmpty(unit:Object, groupPaid:Boolean):Void {
+        LongGunSubWeaponCore.setFiredCount(unit, unit.长枪副武器状态.capacity);
+        unit.长枪副武器状态.groupPaid = groupPaid;
+    }
+
+    private static function assertSubweaponSnapshots(unit:Object, fired:Number, msg:String):Void {
+        var loaded:Number = unit.长枪副武器状态.capacity - fired;
+        assert(LongGunSubWeaponCore.getFiredCount(unit) == fired, msg + ": fired count");
+        assert(unit.长枪副武器.value.shot == fired, msg + ": virtual shot");
+        assert(unit.当前弹夹副武器已发射数 == fired, msg + ": legacy fired count");
+        assert(unit.长枪.value.subweaponShot == fired, msg + ": stored mirror");
+        assert(unit.长枪副武器状态.loaded == loaded, msg + ": loaded snapshot");
+        assert(unit.subWeapon.loaded == loaded, msg + ": subWeapon loaded snapshot");
     }
 
     private static function makeSubweapon(onFire:Boolean):Object {
@@ -693,17 +912,24 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             攻击模式: "长枪",
             状态: "长枪站立",
             man: {},
+            enableShoot: true,
+            dispatcher: new EventDispatcher(),
+            动作A: false,
+            动作B: true,
+            上下移动射击: false,
+            射击最大后摇中: false,
             长枪: {value: {shot: 0, reloadCount: 0}},
             被动技能: {冲击连携: {启用: true, 等级: 10}}
         };
         unit.状态改变 = function(state:String):Void {
             this.状态 = state;
         };
+        unit.dispatcher.subscribe("processShot", FireEventComponent.processShot, unit);
         return unit;
     }
 
     private static function makeActionClip(parent:Object, worldX:Number, worldY:Number, muzzleX:Number, muzzleY:Number):Object {
-        var clip:Object = {_parent: parent};
+        var clip:Object = {_parent: parent, 射击许可标签: true, 换弹标签: false, 射击速度: 300, 剩余弹匣数: 0, 是否单发: false};
         clip.gotoAndPlay = function(frame:String):Void {
             this.playFrame = frame;
         };
@@ -714,6 +940,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
                 point.y += this.worldY;
             };
             holder.枪口位置 = {_x: muzzleX, _y: muzzleY};
+            holder.枪口位置._parent = holder;
             clip.枪 = {枪: {装扮: holder}};
         }
         return clip;

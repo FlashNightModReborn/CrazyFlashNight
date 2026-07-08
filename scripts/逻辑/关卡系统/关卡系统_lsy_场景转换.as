@@ -719,6 +719,9 @@ _root.场景转换函数.场景切换时补充玩家弹药 = function(){
 		if(item.value.level > 0){
 			item.value.shot = 0;
 			item.value.reloadCount = 0;
+			if (keys[i] == "长枪") {
+				item.value.subweaponShot = 0;
+			}
 		}
 	}
 }

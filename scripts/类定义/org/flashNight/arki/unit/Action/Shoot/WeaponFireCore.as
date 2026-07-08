@@ -59,14 +59,21 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
      * 
      * @return Boolean 射击是否成功执行（弹药不足时返回false）
      */
-    public static function executeShot(owner, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object):Boolean {
+    public static function executeShot(owner, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object, commitGuard:Function):Boolean {
         // 获取当前武器的弹药信息
         var currentShot:Number = owner[weaponType].value.shot;
         var maxAmmo:Number = owner[weaponType + "弹匣容量"];
         
         // 检查是否有足够的弹药
-        if (currentShot >= maxAmmo)
+        if (currentShot >= maxAmmo) {
+            owner.__pendingFireInterval = 0;
             return false;
+        }
+
+        if (commitGuard != null && !commitGuard(owner, weaponType, bulletProps)) {
+            owner.__pendingFireInterval = 0;
+            return false;
+        }
         
         var dispatcher:EventDispatcher = owner.dispatcher;
 

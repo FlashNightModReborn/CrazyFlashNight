@@ -145,12 +145,12 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
     });
 
     target.dispatcher.subscribe
-    ("processShot", function () {
-        if(target.攻击模式 !== "长枪") return;
+    ("processShot", function (owner:MovieClip, weaponType:String) {
+        if(!EquipmentFireIntent.isMainLongGunProcessShot(target, weaponType)) return;
         var prop:Object = target.man.子弹属性;
         if(prop.子弹种类 != "铁枪磁轨弹") return;
         var aimTarget = ref.autoTarget;
-        if (!(aimTarget.hp > 0)) return;
+        if (!(aimTarget && aimTarget.hp > 0)) return;
             // 计算到目标的轨迹
         var distX:Number = aimTarget._x - prop.shootX;
         var defaultHeight:Number = UnitUtil.calculateCenterOffset(aimTarget);
@@ -175,8 +175,8 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
 
     target.dispatcher.subscribe
-    ("updateBullet", function () {
-        if(target.攻击模式 !== "长枪") return;
+    ("updateBullet", function (owner:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String, weaponType:String) {
+        if(!EquipmentFireIntent.isMainLongGunUpdateBullet(target, playerBulletField, weaponType)) return;
         ref.fireRequest = true;
     });
 

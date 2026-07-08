@@ -38,8 +38,8 @@ _root.装备生命周期函数.RShG4Я初始化 = function(ref, param)
     PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.RShG4Я视觉);
 
     // 触发一次射击请求（由周期函数消化）
-    target.dispatcher.subscribe("updateBullet", function () {
-        if (target.攻击模式 !== "长枪") return;
+    target.dispatcher.subscribe("updateBullet", function (owner:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String, weaponType:String) {
+        if (!EquipmentFireIntent.isMainLongGunUpdateBullet(target, playerBulletField, weaponType)) return;
         ref.fireRequest = true;
     });
 

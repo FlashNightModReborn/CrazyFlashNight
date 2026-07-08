@@ -423,14 +423,12 @@ _root.主角函数.行走_玩家 = function() {
     var upMove = self.上行;
     var downMove = self.下行;
     var currentDirection = self.方向;
-    var isMainHandShooting = self.主手射击中;
-    var isOffHandShooting = self.副手射击中;
+    var isShooting = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
     var isReloading = self.man.换弹标签 || org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.isManualReloadMovementLocked(self);
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
     // 提前计算复合条件
-    var isShooting = isMainHandShooting || isOffHandShooting;
     var isMoving = rightMove || leftMove || upMove || downMove;
     var isShootingRestricted = isShooting && (射击最大后摇中 || isActionA || isActionB);
     var shouldRestrictMovement = (isShootingRestricted || isReloading);
@@ -532,14 +530,12 @@ _root.主角函数.行走 = function() {
     var upMove = self.上行;
     var downMove = self.下行;
     var currentDirection = self.方向;
-    var isMainHandShooting = self.主手射击中;
-    var isOffHandShooting = self.副手射击中;
+    var isShooting = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
     var isReloading = self.man.换弹标签 || org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.isManualReloadMovementLocked(self);
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
     // 提前计算复合条件
-    var isShooting = isMainHandShooting || isOffHandShooting;
     var isMoving = rightMove || leftMove || upMove || downMove;
     var isShootingRestricted = isShooting && (射击最大后摇中 || isActionA || isActionB);
     var shouldRestrictMovement = (isShootingRestricted || isReloading);

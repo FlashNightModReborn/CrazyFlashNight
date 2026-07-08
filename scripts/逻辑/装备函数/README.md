@@ -155,6 +155,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - `BladeFireSpinController.tick(ref, gunAnim)` — 加特林族连射计数 → 浮点帧推进
 - `StaleRefCache.snapshot(target, saber, position)` — 刀口坐标快照（stale window 回落）
 - `KeyEdgeTrigger.onRise(ref, unit, keyName, wasKeyPropName):Boolean` — 按键上升沿
+- `EquipmentFireIntent.isMainLongGunProcessShot / isMainLongGunUpdateBullet / publishMainLongGunUpdateBullet` — 装备订阅 `processShot` / `updateBullet` 时判断“主长枪开火”意图，兼容旧 4 参数 `updateBullet`
 
 战斗 / 工具：
 - `MuzzleWorldShoot.populate(刀口, 自机, 子弹属性[, xOff, yOff, 身高修正比])` — 写 shootX/Y/Z
