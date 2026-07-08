@@ -161,6 +161,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return requestShoot(unit);
     }
 
+    // 兼容 / 测试入口。运行时输入入口必须使用 requestShoot(unit)，避免跨状态持有旧 man。
     public static function fireFromMan(unit:Object, man:Object):Boolean {
         return fireInternal(unit, man, false);
     }

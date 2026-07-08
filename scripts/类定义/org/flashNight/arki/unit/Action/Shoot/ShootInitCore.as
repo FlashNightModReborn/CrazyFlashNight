@@ -78,7 +78,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         };
 
         target.开始副武器射击 = function() {
-            LongGunSubWeaponCore.fireFromMan(parentRef, target);
+            LongGunSubWeaponCore.requestShoot(parentRef);
         };
         
         // 持续射击函数（targetRef 为双枪调用方传入的主角函数引用，此处不使用；

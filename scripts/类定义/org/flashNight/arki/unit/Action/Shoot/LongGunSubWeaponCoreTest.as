@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
+import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
 import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
 import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 import org.flashNight.arki.item.ItemUtil;
@@ -47,6 +48,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testSubweaponCommitRejectsWalkWithoutMoveShoot();
         testFireFromRunWithMoveShootPlaysDirectionalAnimation();
         testFireFromManUsesPassedCurrentMan();
+        testShootInitSubweaponBindingRequestsCurrentMan();
         testSubweaponContinuousShootRefreshesManEachTick();
         testSubweaponEventIsolationAndInterval();
         testEquipmentFireIntentMainLongGunGate();
@@ -455,6 +457,66 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
         _root.gameworld = previousGameworld;
+    }
+
+    private static function testShootInitSubweaponBindingRequestsCurrentMan():Void {
+        installMockInventory("主武器弹匣", 3);
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var oldControlTarget:String = _root.控制目标;
+        var previousGameworld:Object = _root.gameworld;
+        var shot:Object = null;
+        _root.控制目标 = "testUnit";
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shot = props;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪站立";
+        unit.下行 = true;
+        unit.长枪数据 = {weapontype: "突击步枪"};
+        unit.长枪弹匣容量 = 30;
+        var staleMan:MovieClip = _root.createEmptyMovieClip("__subweaponBindingStaleMan" + getTimer(), _root.getNextHighestDepth());
+        var currentMan:Object = makeActionClip(unit, 400, 150, 9, 12);
+        unit.man = currentMan;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        var weaponData:Object = {
+            interval: 300,
+            clipname: "主武器弹匣",
+            singleshoot: false,
+            split: 1,
+            diffusion: 3,
+            sound: "test.wav",
+            muzzle: "",
+            bullet: "测试子弹",
+            velocity: 30,
+            bullethit: "",
+            power: 100,
+            bulletsize: 50,
+            impact: 5,
+            targethit: ""
+        };
+        ShootInitCore.initWeaponSystem(staleMan, unit, {
+            weaponType: "长枪",
+            isDualGun: false,
+            weaponData: weaponData,
+            extraParams: {}
+        });
+
+        staleMan.开始副武器射击();
+
+        assert(staleMan.playFrame == undefined, "ShootInitCore subweapon binding does not play bound stale man");
+        assert(currentMan.playFrame == "下射击", "ShootInitCore subweapon binding plays current unit.man");
+        assert(shot != null && shot.shootX == 409, "ShootInitCore subweapon binding uses current muzzle X");
+        assert(shot != null && shot.shootY == 162, "ShootInitCore subweapon binding uses current muzzle Y");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.控制目标 = oldControlTarget;
+        _root.gameworld = previousGameworld;
+        staleMan.removeMovieClip();
+        restoreMockInventory();
     }
 
     private static function testSubweaponContinuousShootRefreshesManEachTick():Void {

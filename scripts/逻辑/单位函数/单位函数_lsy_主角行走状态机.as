@@ -42,9 +42,7 @@
 			_parent.man.开始射击();
 		}
 		if (_parent.动作B) {
-			if (_parent.man.开始副武器射击) {
-				_parent.man.开始副武器射击();
-			}
+			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.requestShoot(_parent);
 		}
 	}
 	
