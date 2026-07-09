@@ -270,14 +270,19 @@ function buildAvatarRows(mapData, pageIds, avatarSourceData) {
                 ? avatarSourceData.getByAssetUrl(slot.assetUrl)
                 : null;
             let sourceRect = null;
-            if (sourceSlot && sourceSlot.size && sourceSlot.hotspotId) {
-                const owner = mapData.findHotspot(pageId, sourceSlot.hotspotId);
+            if (sourceSlot && sourceSlot.size) {
+                const ownerHotspotId = slot.hotspotId || sourceSlot.hotspotId;
+                const owner = ownerHotspotId ? mapData.findHotspot(pageId, ownerHotspotId) : null;
                 if (owner && owner.rect) {
+                    const relX = slot.relX !== undefined ? Number(slot.relX) : sourceSlot.relX;
+                    const relY = slot.relY !== undefined ? Number(slot.relY) : sourceSlot.relY;
+                    const w = slot.w !== undefined ? Number(slot.w) : sourceSlot.size.w;
+                    const h = slot.h !== undefined ? Number(slot.h) : sourceSlot.size.h;
                     sourceRect = {
-                        x: owner.rect.x + sourceSlot.relX,
-                        y: owner.rect.y + sourceSlot.relY,
-                        w: sourceSlot.size.w,
-                        h: sourceSlot.size.h
+                        x: owner.rect.x + relX,
+                        y: owner.rect.y + relY,
+                        w: w,
+                        h: h
                     };
                 }
             }

@@ -244,7 +244,7 @@ var MapPanelHarnessQA = (function() {
             if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return true;
             sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
             if (!sourceSlot || !sourceSlot.size) return false;
-            hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+            hotspotId = slot.hotspotId || sourceSlot.hotspotId;
             return !!(hotspotId && MapPanelData.findHotspot(pageId, hotspotId));
         });
     }
@@ -329,14 +329,18 @@ var MapPanelHarnessQA = (function() {
         return (page && page.staticAvatars ? page.staticAvatars : []).map(function(slot) {
             var sourceSlot = hasSourceData ? MapAvatarSourceData.getByAssetUrl(slot.assetUrl || '') : null;
             var sourceSize = sourceSlot && sourceSlot.size ? sourceSlot.size : null;
-            var halfW = sourceSize ? sourceSize.w / 2 : 0;
-            var halfH = sourceSize ? sourceSize.h / 2 : 0;
-            // C 阶段后 source-data 不带 rect, 用 hotspotId+relX+relY 推导
-            var ownerHotspotId = sourceSlot ? (sourceSlot.hotspotId || slot.hotspotId) : slot.hotspotId;
+            var w = sourceSize ? (slot.w !== undefined ? Number(slot.w) : sourceSize.w) : 0;
+            var h = sourceSize ? (slot.h !== undefined ? Number(slot.h) : sourceSize.h) : 0;
+            var halfW = w / 2;
+            var halfH = h / 2;
+            var relX = sourceSlot ? (slot.relX !== undefined ? Number(slot.relX) : sourceSlot.relX) : 0;
+            var relY = sourceSlot ? (slot.relY !== undefined ? Number(slot.relY) : sourceSlot.relY) : 0;
+            // C 阶段后 source-data 不带 rect, 用 hotspotId+relX+relY 推导；slot 可覆盖复用头像的位置。
+            var ownerHotspotId = sourceSlot ? (slot.hotspotId || sourceSlot.hotspotId) : slot.hotspotId;
             var ownerHotspot = ownerHotspotId ? MapPanelData.findHotspot(pageId, ownerHotspotId) : null;
             var center = (sourceSlot && ownerHotspot && ownerHotspot.rect) ? {
-                x: ownerHotspot.rect.x + sourceSlot.relX + halfW,
-                y: ownerHotspot.rect.y + sourceSlot.relY + halfH
+                x: ownerHotspot.rect.x + relX + halfW,
+                y: ownerHotspot.rect.y + relY + halfH
             } : { x: 0, y: 0 };
             var containingHotspotIds = hotspots.filter(function(hotspot) {
                 return rectContainsPoint(hotspot.rect, center.x, center.y);
@@ -701,14 +705,15 @@ var MapPanelHarnessQA = (function() {
                                             var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
                                             var expectedRect;
                                             api.assert(!!sourceSlot, pageId + ' missing avatar source meta for ' + slot.id);
-                                            api.assert(!!(sourceSlot && sourceSlot.size && sourceSlot.hotspotId), pageId + ' avatar missing source schema for ' + slot.id);
-                                            var ownerHotspot = MapPanelData.findHotspot(pageId, sourceSlot.hotspotId);
+                                            api.assert(!!(sourceSlot && sourceSlot.size), pageId + ' avatar missing source schema for ' + slot.id);
+                                            var ownerHotspotId = slot.hotspotId || sourceSlot.hotspotId;
+                                            var ownerHotspot = MapPanelData.findHotspot(pageId, ownerHotspotId);
                                             api.assert(!!(ownerHotspot && ownerHotspot.rect), pageId + ' avatar owner hotspot missing for ' + slot.id);
                                             expectedRect = {
-                                                x: ownerHotspot.rect.x + sourceSlot.relX,
-                                                y: ownerHotspot.rect.y + sourceSlot.relY,
-                                                w: sourceSlot.size.w,
-                                                h: sourceSlot.size.h
+                                                x: ownerHotspot.rect.x + (slot.relX !== undefined ? Number(slot.relX) : sourceSlot.relX),
+                                                y: ownerHotspot.rect.y + (slot.relY !== undefined ? Number(slot.relY) : sourceSlot.relY),
+                                                w: slot.w !== undefined ? Number(slot.w) : sourceSlot.size.w,
+                                                h: slot.h !== undefined ? Number(slot.h) : sourceSlot.size.h
                                             };
                                             api.assert(expectedRect.x >= 0 && expectedRect.x <= page.width, pageId + ' avatar left outside page for ' + slot.id);
                                             api.assert(expectedRect.y >= 0 && expectedRect.y <= page.height, pageId + ' avatar top outside page for ' + slot.id);

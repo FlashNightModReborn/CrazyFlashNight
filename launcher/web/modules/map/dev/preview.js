@@ -650,11 +650,11 @@ var MapPreview = (function() {
         if (slot.assetUrl) {
             var sourceSlot = getAvatarSourceSlot(slot.assetUrl);
             if (!sourceSlot || !sourceSlot.size) return null;
-            hotspotId = sourceSlot.hotspotId || slot.hotspotId;
-            relX = sourceSlot.relX;
-            relY = sourceSlot.relY;
-            w = sourceSlot.size.w;
-            h = sourceSlot.size.h;
+            hotspotId = slot.hotspotId || sourceSlot.hotspotId;
+            relX = slot.relX !== undefined ? Number(slot.relX) : sourceSlot.relX;
+            relY = slot.relY !== undefined ? Number(slot.relY) : sourceSlot.relY;
+            w = slot.w !== undefined ? Number(slot.w) : sourceSlot.size.w;
+            h = slot.h !== undefined ? Number(slot.h) : sourceSlot.size.h;
         } else if (slot.hotspotId && typeof slot.relX === 'number' && typeof slot.relY === 'number') {
             hotspotId = slot.hotspotId;
             relX = slot.relX;

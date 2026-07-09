@@ -332,10 +332,12 @@
       "get_requirements": [-1],
       "get_conversation": "$ZOMBIE_INVASION_GET",
       "get_npc": "前治安官",
+      "get_npc_hotspot": "base_lobby",
 
       "finish_requirements": ["僵尸逆袭#简单"],
       "finish_conversation": "$ZOMBIE_INVASION_FINISH",
       "finish_npc": "前治安官",
+      "finish_npc_hotspot": "base_lobby",
       "recommended_level": "11-15",
       "restricted_level": 10,
       "deposit": 1000,

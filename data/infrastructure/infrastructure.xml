@@ -11,6 +11,24 @@
         </Level>
     </Infrastructure>
     <Infrastructure>
+        <Name>前线调度板</Name>
+        <Level id="0">
+            <Description>第一防线的公告栏，佣兵可以在这里获取任务和信息。</Description>
+            <Price>5000</Price>
+            <Material>
+                <Name>可塑式钢板</Name>
+                <Value>1</Value>
+            </Material>
+            <Material>
+                <Name>螺丝套件</Name>
+                <Value>2</Value>
+            </Material>
+        </Level>
+        <Level id="1">
+            <Description>调度板已经建造完成，现在你可以在这里接取各种关于第一防线防务的任务。</Description>
+        </Level>
+    </Infrastructure>
+    <Infrastructure>
         <Name>自行车</Name>
         <Level id="0">
             <Description>自行车在短距离仍然是很优秀的代步工具，尤其是在废城的城市道路中。现已在车库开放售卖，也可线上购买。</Description>

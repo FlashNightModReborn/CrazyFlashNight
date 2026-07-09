@@ -411,12 +411,35 @@ _root.初始化NPC = function(目标) {
         目标._visible = false;
         return;
     }
-    目标._name = 目标.名字;
+    var npcBaseName:String = String(目标.名字);
+    var npcDialogueName:String = npcBaseName;
+    var npcTaskName:String = npcBaseName;
+    var npcShopName:String = npcBaseName;
+    var npcSkillName:String = npcBaseName;
+
+    if (目标.对话名 != undefined && 目标.对话名 != null && String(目标.对话名).length > 0) {
+        npcDialogueName = String(目标.对话名);
+    }
+    if (目标.任务名 != undefined && 目标.任务名 != null && String(目标.任务名).length > 0) {
+        npcTaskName = String(目标.任务名);
+    }
+    if (目标.商店检索名 != undefined && 目标.商店检索名 != null && String(目标.商店检索名).length > 0) {
+        npcShopName = String(目标.商店检索名);
+    }
+    if (目标.技能检索名 != undefined && 目标.技能检索名 != null && String(目标.技能检索名).length > 0) {
+        npcSkillName = String(目标.技能检索名);
+    }
+
+    目标._name = npcBaseName;
+    目标.NPC对话名 = npcDialogueName;
+    目标.NPC任务名 = npcTaskName;
+    目标.NPC商店检索名 = npcShopName;
+    目标.NPC技能检索名 = npcSkillName;
 
     // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）
-    // 注意：用 目标._name（line 422 已赋值），AS2 中 _name 作局部变量名会引发编译器冲突
+    // 注意：AS2 中 _name 作局部变量名会引发编译器冲突
     if (目标.默认对话 == null) {
-        var npcNameStr:String = 目标._name;
+        var npcNameStr:String = npcDialogueName;
         if (npcNameStr != undefined && npcNameStr != null && npcNameStr.length > 0) {
             目标.默认对话 = [];  // 占位
             var npcRef:MovieClip = 目标;
@@ -444,10 +467,10 @@ _root.初始化NPC = function(目标) {
 
         // _root.服务器.发布服务器消息("NPC默认对话: " + ObjectUtil.stringify(目标.默认对话));
     if (目标.物品栏 == null)
-        目标.物品栏 = _root.getNPCShop(目标.名字);
+        目标.物品栏 = _root.getNPCShop(npcShopName);
     if (目标.可学的技能 == null)
-        目标.可学的技能 = _root.getNPCSkills(目标.名字);
-    if (_root.NPCTaskCheck(目标.名字).result == "接受任务") {
+        目标.可学的技能 = _root.getNPCSkills(npcSkillName);
+    if (_root.NPCTaskCheck(npcTaskName).result == "接受任务") {
         _root.发布消息(目标.名字 + "也许需要你的帮助");
         //目标.文字信息.任务接取提示._visible = 1;
         // if (目标.文字信息 && !目标.文字信息.任务接取提示) {

@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="04.挂件/灯/应急灯-1-照明" itemID="66c9b37b-00001f8a" lastModified="1724494715">
+  <timeline>
+    <DOMTimeline name="应急灯-1-照明">
+      <layers>
+        <DOMLayer name="Layer_1" color="#F6E0A7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方向光" centerPoint3DX="96.45" centerPoint3DY="60.45">
+                  <matrix>
+                    <Matrix a="0.60052490234375" b="0.225326538085938" c="-0.225326538085938" d="0.60052490234375" tx="23.6" ty="-49.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="10"/>
+                    <AdjustColorFilter brightness="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#F894C9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="04.挂件/灯/应急灯-1-完好" centerPoint3DX="84.9" centerPoint3DY="-8.95">
+                  <matrix>
+                    <Matrix a="0.089691162109375" b="-0.235885620117188" c="0.235885620117188" d="0.089691162109375" tx="16.1" ty="-57.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

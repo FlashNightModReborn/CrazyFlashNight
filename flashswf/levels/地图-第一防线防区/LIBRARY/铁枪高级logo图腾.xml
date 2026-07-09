@@ -1,0 +1,74 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪高级logo图腾" itemID="685e57a7-00000725" lastModified="1755007379" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="铁枪高级logo图腾" currentFrame="17">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图腾" centerPoint3DX="391.45" centerPoint3DY="604.75">
+                  <transformationPoint>
+                    <Point x="391.45" y="604.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图腾" selected="true" centerPoint3DX="391.45" centerPoint3DY="708.25">
+                  <matrix>
+                    <Matrix ty="103.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="391.45" y="604.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图腾" selected="true" centerPoint3DX="391.45" centerPoint3DY="604.75">
+                  <transformationPoint>
+                    <Point x="391.45" y="604.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图腾" centerPoint3DX="391.45" centerPoint3DY="501.25">
+                  <matrix>
+                    <Matrix ty="-103.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="391.45" y="604.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.313634262222306" y="0.654768815442041"/>
+                  <Point x="0.646167396799615" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="图腾" centerPoint3DX="391.45" centerPoint3DY="603.95">
+                  <matrix>
+                    <Matrix ty="-0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="391.45" y="604.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

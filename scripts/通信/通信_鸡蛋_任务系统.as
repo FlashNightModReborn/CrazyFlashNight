@@ -503,7 +503,11 @@ _root.难度是否达到 = function(等级描述:String):Boolean{
 }
 
 _root.点击npc后检测任务 = function(npc名字, 目标) {
-    var ret = NPCTaskCheck(npc名字);
+    var npcTaskName:String = String(npc名字);
+    if (目标 != undefined && 目标 != null && 目标.任务名 != undefined && 目标.任务名 != null && String(目标.任务名).length > 0) {
+        npcTaskName = String(目标.任务名);
+    }
+    var ret = NPCTaskCheck(npcTaskName);
     switch (ret.result) {
         case "完成任务":
             _root.FinishTask(ret.id);

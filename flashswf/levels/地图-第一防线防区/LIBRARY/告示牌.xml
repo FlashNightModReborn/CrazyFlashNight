@@ -1,0 +1,74 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="告示牌" itemID="6a4f5db4-00000141" lastModified="1783587223" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="告示牌" currentFrame="4">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" name="描边" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="前线调度板" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="608.95" y="502.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="前线调度板" centerPoint3DX="608.95" centerPoint3DY="502.75">
+                  <transformationPoint>
+                    <Point x="608.95" y="502.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#66FF00" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="597.4" centerPoint3DY="946.35">
+                  <matrix>
+                    <Matrix a="6.40623474121094" d="3.11051940917969" tx="-229.3" ty="829.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="129.05" y="37.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="597.4" centerPoint3DY="946.35">
+                  <matrix>
+                    <Matrix a="6.40623474121094" d="3.11051940917969" tx="-229.3" ty="829.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="129.05" y="37.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

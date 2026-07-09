@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5631 unique assets -->
+  <!-- 5641 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -4601,14 +4601,23 @@
   <asset id="男变装-幻影腿甲屁股" swf="flashswf/arts/things.swf" symbolName="0.防具相关/幻影套装/男变装-幻影腿甲屁股" />
   <asset id="男变装-幻影腿甲左大腿" swf="flashswf/arts/things.swf" symbolName="0.防具相关/幻影套装/男变装-幻影腿甲左大腿" />
   <asset id="男变装-幻影装甲鞋" swf="flashswf/arts/things.swf" symbolName="0.防具相关/幻影套装/男变装-幻影装甲鞋" />
+  <asset id="男变装-废城军装上装上臂" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装上装身体" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装下装右大腿" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装下装小腿" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装下装屁股" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装下装左大腿" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装右大腿" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装右手" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装小腿" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装屁股" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装左大腿" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装左手" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城军装帽" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装手套右手" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装手套左手" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装脚" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城军装面具帽" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城加强军装下装右大腿" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城加强军装下装小腿" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城加强军装下装屁股" swf="flashswf/arts/new/原体融合生物.swf" />
@@ -4619,6 +4628,7 @@
   <asset id="男变装-废城防弹军装上装上臂" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城防弹军装上装右下臂" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-废城防弹军装上装左下臂" swf="flashswf/arts/new/原体融合生物.swf" />
+  <asset id="男变装-废城防弹军装上装身体" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="男变装-廉价西服上臂" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-廉价西服上臂" />
   <asset id="男变装-廉价西服右下臂" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-廉价西服右下臂" />
   <asset id="男变装-廉价西服左下臂" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-廉价西服左下臂" />
@@ -5712,7 +5722,7 @@
     <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
   </duplicate>
 
-  <!-- 97 CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->
+  <!-- 87 CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->
   <conflict id="公共素材位3">
     <source swf="flashswf/arts/new/公共素材位3.swf" />
     <source swf="flashswf/arts/公共素材位3.swf" />
@@ -5957,46 +5967,6 @@
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-基本脸型" />
     <source swf="flashswf/levels/地图-第一防线防区.swf" symbolName="待整理防具相关汇总/Symbol 97" />
     <source swf="flashswf/portraits/artist.swf" symbolName="待整理防具相关汇总/Symbol 97" />
-  </conflict>
-  <conflict id="男变装-废城军装上装上臂">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装下装右大腿">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装下装小腿">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装下装左大腿">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装屁股">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装手套右手">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装手套左手">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装脚">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城军装面具帽">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
-  </conflict>
-  <conflict id="男变装-废城防弹军装上装身体">
-    <source swf="flashswf/arts/new/原体融合生物.swf" />
-    <source swf="flashswf/levels/地图-第一防线防区.swf" />
   </conflict>
   <conflict id="男变装-牙狼铠上臂">
     <source swf="flashswf/arts/new/伊恩的素材.swf" symbolName="牙狼素材/男变装-牙狼铠上臂" />

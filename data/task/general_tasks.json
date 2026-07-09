@@ -54,6 +54,7 @@
             "finish_requirements": [],
             "finish_conversation": "$SIDE_FINISH_30003",
             "finish_npc": "前治安官",
+            "finish_npc_hotspot": "base_lobby",
             "rewards": [
                 "金币#10000",
                 "经验值#20000",
@@ -71,12 +72,14 @@
             "get_requirements": [30003],
             "get_conversation": "$SIDE_GET_30004",
             "get_npc": "前治安官",
+            "get_npc_hotspot": "base_lobby",
 
             "finish_requirements": [
                 "僵尸逆袭#修罗"
             ],
             "finish_conversation": "$SIDE_FINISH_30004",
             "finish_npc": "前治安官",
+            "finish_npc_hotspot": "base_lobby",
             "rewards": [
                 "金币#100000",
                 "经验值#100000",
@@ -95,6 +98,7 @@
             "get_requirements": [30004],
             "get_conversation": "$SIDE_GET_30005",
             "get_npc": "前治安官",
+            "get_npc_hotspot": "base_lobby",
 
             "finish_requirements": [],
             "finish_conversation": "$SIDE_FINISH_30005",

@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 6" itemID="67c94ec9-00000287" symbolType="graphic" lastModified="1699960314">
+  <timeline>
+    <DOMTimeline name="Symbol 6">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <BitmapFill bitmapPath="bitmap4.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-72.85" ty="-68.55"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <BitmapFill bitmapPath="bitmap5.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-375.35" ty="-100.05"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!4971 -4339|6053 -3079"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!6053 -3079|6053 4338!6053 4338|-4966 4338"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!-4966 4338|-6048 3080"/>
+                    <Edge fillStyle1="3" strokeStyle="2" edges="!-6048 3080|-6046 -4339"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!-6046 -4339|4971 -4339"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!-4976 -3070|-4966 -3059"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!-4966 -3059|-4966 -3079"/>
+                    <Edge fillStyle1="1" edges="!-4966 -3079|-4976 -3070"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!-4976 -3070|-6046 -4339"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="2" edges="!-4966 -3059|-4966 4338"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!6053 -3079|-4966 -3079"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

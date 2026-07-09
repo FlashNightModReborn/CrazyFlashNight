@@ -152,19 +152,26 @@ var MapPanelData = (function() {
         }
     };
 
-    function buildStaticAvatarSlot(id, label, hotspotId, assetName) {
-        return {
+    function buildStaticAvatarSlot(id, label, hotspotId, assetName, options) {
+        var slot = {
             id: id,
             label: label,
             hotspotId: hotspotId,
             assetUrl: 'assets/map/avatars/' + assetName
         };
+        if (options) {
+            if (options.relX !== undefined) slot.relX = options.relX;
+            if (options.relY !== undefined) slot.relY = options.relY;
+            if (options.w !== undefined) slot.w = options.w;
+            if (options.h !== undefined) slot.h = options.h;
+        }
+        return slot;
     }
 
     function buildStaticAvatarSlots(defs) {
         var slots = [];
         for (var i = 0; i < defs.length; i++) {
-            slots.push(buildStaticAvatarSlot(defs[i][0], defs[i][1], defs[i][2], defs[i][3]));
+            slots.push(buildStaticAvatarSlot(defs[i][0], defs[i][1], defs[i][2], defs[i][3], defs[i][4]));
         }
         return slots;
     }
@@ -215,6 +222,7 @@ var MapPanelData = (function() {
         defense: buildStaticAvatarSlots([
             ['artist_avatar', 'artist', 'first_defense', 'artist头像.png'],
             ['soldier_avatar', 'soldier', 'first_defense', 'soldier头像.png'],
+            ['sheriff_first_defense_avatar', '前治安官', 'first_defense', '前治安官头像.png', { relX: 220, relY: 55 }],
             ['master_swordman_first_defense_avatar', '武器大师', 'first_defense', '武器大师头像第一防线.png'],
             ['paigu_avatar', '排骨', 'alliance_dock', '排骨头像.png'],
             ['jige_avatar', '机哥', 'alliance_dock', '机哥头像.png'],
@@ -1096,15 +1104,19 @@ var MapPanelData = (function() {
         if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return null;
         var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
         if (!sourceSlot || !sourceSlot.size) return null;
-        var hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+        var hotspotId = slot.hotspotId || sourceSlot.hotspotId;
         if (!hotspotId) return null;
         var hotspot = findHotspot(pageId, hotspotId);
         if (!hotspot || !hotspot.rect) return null;
+        var relX = slot.relX !== undefined ? Number(slot.relX) : sourceSlot.relX;
+        var relY = slot.relY !== undefined ? Number(slot.relY) : sourceSlot.relY;
+        var w = slot.w !== undefined ? Number(slot.w) : sourceSlot.size.w;
+        var h = slot.h !== undefined ? Number(slot.h) : sourceSlot.size.h;
         return {
-            x: hotspot.rect.x + sourceSlot.relX,
-            y: hotspot.rect.y + sourceSlot.relY,
-            w: sourceSlot.size.w,
-            h: sourceSlot.size.h
+            x: hotspot.rect.x + relX,
+            y: hotspot.rect.y + relY,
+            w: w,
+            h: h
         };
     }
 

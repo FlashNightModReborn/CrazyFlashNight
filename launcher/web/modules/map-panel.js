@@ -1368,15 +1368,19 @@ var MapPanel = (function() {
         if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return null;
         var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
         if (!sourceSlot || !sourceSlot.size) return null;
-        var hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+        var hotspotId = slot.hotspotId || sourceSlot.hotspotId;
         if (!hotspotId) return null;
         var hotspot = MapPanelData.findHotspot(_activePage.id, hotspotId);
         if (!hotspot || !hotspot.rect) return null;
+        var relX = slot.relX !== undefined ? Number(slot.relX) : sourceSlot.relX;
+        var relY = slot.relY !== undefined ? Number(slot.relY) : sourceSlot.relY;
+        var w = slot.w !== undefined ? Number(slot.w) : sourceSlot.size.w;
+        var h = slot.h !== undefined ? Number(slot.h) : sourceSlot.size.h;
         return {
-            x: hotspot.rect.x + sourceSlot.relX,
-            y: hotspot.rect.y + sourceSlot.relY,
-            w: sourceSlot.size.w,
-            h: sourceSlot.size.h
+            x: hotspot.rect.x + relX,
+            y: hotspot.rect.y + relY,
+            w: w,
+            h: h
         };
     }
 
