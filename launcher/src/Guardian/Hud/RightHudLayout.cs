@@ -8,26 +8,33 @@ namespace CF7Launcher.Guardian.Hud
     /// <summary>
     /// 右上角常驻 HUD 的共享布局模型。
     ///
-    /// 这些数值复刻 web overlay.css / notch.js 的右侧 cluster 常量：
-    /// right:80px, width:170px, tool unit:34px, toolbar:32px,
-    /// map:86px, quest row:32px, notice:32px, jukebox titlebar:24px。
+    /// Native HUD 右侧动作行与居中刘海共用的几何契约。
+    /// 右侧保留 right:48px；前三个双字入口各 50px、后三个图标入口各 34px，总宽 252px；
+    /// 刘海与动作行之间至少保留 12px。所有值均以 1024×576 设计坐标为基准。
     /// </summary>
     public static class RightHudLayout
     {
-        public const int RightOffsetBase = 80;
-        public const int ClusterWidthBase = 170;
-        public const int ToolButtonWidthBase = 34;
-        public const int ToolButtonCount = 5;
-        public const int ToolBarHeightBase = 32;
-        public const int MapHeightBase = 86;
-        public const int QuestRowHeightBase = 32;
-        public const int QuestNoticeHeightBase = 32;
-        public const int JukeboxHeightBase = 24;
+        public const int RightOffsetBase = 48;
+        public const int RightActionButtonCount = 6;
+        public const int PrimaryActionButtonCount = 3;
+        public const int PrimaryActionButtonWidthBase = 50;
+        public const int UtilityActionButtonWidthBase = 34;
+        public const int RightActionRowWidthBase =
+            PrimaryActionButtonCount * PrimaryActionButtonWidthBase
+            + (RightActionButtonCount - PrimaryActionButtonCount) * UtilityActionButtonWidthBase;
+        public const int ClusterWidthBase = RightActionRowWidthBase;
+        public const int ToolButtonCount = RightActionButtonCount;
+        public const int ToolBarHeightBase = NativeHudTheme.TopBarHeightBase;
+        public const int NotchRightGapBase = 12;
+        public const int PreferredNotchMaxWidthBase = 400;
+        public const int CompactMapHeightBase = 64;
+        public const int ExpandedMapHeightBase = 112;
+        public const int StatusSlotHeightBase = 32;
 
-        public const int SafeExitContentWidthBase = 120;
+        public const int SafeExitContentWidthBase = RightActionRowWidthBase - SafeExitPaddingXBase * 2;
         public const int SafeExitPaddingXBase = 10;
         public const int SafeExitPaddingYBase = 8;
-        public const int SafeExitTotalWidthBase = SafeExitContentWidthBase + SafeExitPaddingXBase * 2;
+        public const int SafeExitTotalWidthBase = RightActionRowWidthBase;
 
         public static float ScaleForViewport(Rectangle viewport)
         {
@@ -75,49 +82,56 @@ namespace CF7Launcher.Guardian.Hud
             return new Rectangle((int)vpX, (int)vpY, (int)vpW, (int)vpH);
         }
 
+        /// <summary>
+        /// 计算居中刘海在不侵入右侧动作行最小间隙时的最大宽度。
+        /// safe = 2 × (rightRowLeft - gap - viewportCenterX)，再与首选 400px clamp。
+        /// 极窄视口下至少返回 collapsedWidth；调用方可据此切换响应式降级布局。
+        /// </summary>
+        internal static int SafeNotchMaxWidthFromViewport(Rectangle viewport, float scale, int collapsedWidth)
+        {
+            int collapsed = Math.Max(1, collapsedWidth);
+            if (viewport.Width <= 0 || viewport.Height <= 0) return collapsed;
+            int rightOffset = WidgetScaler.Px(RightOffsetBase, scale);
+            int actionWidth = WidgetScaler.Px(RightActionRowWidthBase, scale);
+            int gap = WidgetScaler.Px(NotchRightGapBase, scale);
+            int rightRowLeft = viewport.Right - rightOffset - actionWidth;
+            double centerX = viewport.Left + viewport.Width / 2.0;
+            int safe = (int)Math.Floor(2.0 * (rightRowLeft - gap - centerX));
+            int preferred = WidgetScaler.Px(PreferredNotchMaxWidthBase, scale);
+            if (safe < collapsed) return collapsed;
+            return Math.Max(collapsed, Math.Min(preferred, safe));
+        }
+
         public static Rectangle GetTopToolsRect(Control anchor, FlashCoordinateMapper mapper)
         {
             Rectangle viewport = GetViewportRect(anchor, mapper);
             return TopToolsRectFromViewport(viewport, ScaleForViewport(viewport));
         }
 
-        public static Rectangle GetContextPanelRect(Control anchor, FlashCoordinateMapper mapper, bool showMap, bool showNotice)
+        public static Rectangle GetContextPanelRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return ContextPanelRectFromViewport(viewport, ScaleForViewport(viewport), showMap, showNotice);
+            return ContextPanelRectFromViewport(viewport, ScaleForViewport(viewport), mapMode, showNotice);
         }
 
-        public static Rectangle GetMapRect(Control anchor, FlashCoordinateMapper mapper, bool showMap, bool showNotice)
+        public static Rectangle GetMapRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
-            Rectangle context = GetContextPanelRect(anchor, mapper, showMap, showNotice);
+            Rectangle context = GetContextPanelRect(anchor, mapper, mapMode, showNotice);
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return MapRectFromContext(context, ScaleForViewport(viewport), showMap);
+            return MapRectFromContext(context, ScaleForViewport(viewport), mapMode, showNotice);
         }
 
-        public static Rectangle GetQuestRowRect(Control anchor, FlashCoordinateMapper mapper, bool showMap, bool showNotice)
+        public static Rectangle GetStatusSlotRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
-            Rectangle context = GetContextPanelRect(anchor, mapper, showMap, showNotice);
+            Rectangle context = GetContextPanelRect(anchor, mapper, mapMode, showNotice);
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return QuestRowRectFromContext(context, ScaleForViewport(viewport), showMap);
+            return StatusSlotRectFromContext(context, ScaleForViewport(viewport), showNotice);
         }
 
-        public static Rectangle GetQuestNoticeRect(Control anchor, FlashCoordinateMapper mapper, bool showMap, bool showNotice)
-        {
-            Rectangle context = GetContextPanelRect(anchor, mapper, showMap, showNotice);
-            Rectangle viewport = GetViewportRect(anchor, mapper);
-            return QuestNoticeRectFromContext(context, ScaleForViewport(viewport), showMap, showNotice);
-        }
-
-        public static Rectangle GetJukeboxRect(Control anchor, FlashCoordinateMapper mapper, bool showMap, bool showNotice)
+        public static Rectangle GetClusterRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return JukeboxRectFromViewport(viewport, ScaleForViewport(viewport), showMap, showNotice);
-        }
-
-        public static Rectangle GetClusterRect(Control anchor, FlashCoordinateMapper mapper, bool showMap, bool showNotice, bool showJukebox)
-        {
-            Rectangle viewport = GetViewportRect(anchor, mapper);
-            return ClusterRectFromViewport(viewport, ScaleForViewport(viewport), showMap, showNotice, showJukebox);
+            return ClusterRectFromViewport(viewport, ScaleForViewport(viewport), mapMode, showNotice);
         }
 
         public static Rectangle GetSafeExitRect(Control anchor, FlashCoordinateMapper mapper, int totalHeight)
@@ -136,55 +150,72 @@ namespace CF7Launcher.Guardian.Hud
             return new Rectangle(x, viewport.Y, w, h);
         }
 
-        internal static Rectangle ContextPanelRectFromViewport(Rectangle viewport, float scale, bool showMap, bool showNotice)
+        internal static int ActionButtonWidth(float scale, int index)
+        {
+            int baseWidth = index < PrimaryActionButtonCount
+                ? PrimaryActionButtonWidthBase
+                : UtilityActionButtonWidthBase;
+            return WidgetScaler.Px(baseWidth, scale);
+        }
+
+        internal static Rectangle ActionButtonRectFromTools(Rectangle tools, float scale, int index)
+        {
+            if (tools.Width <= 0 || tools.Height <= 0 || index < 0 || index >= RightActionButtonCount)
+                return Rectangle.Empty;
+            int x = tools.X;
+            for (int i = 0; i < index; i++) x += ActionButtonWidth(scale, i);
+            int w = index == RightActionButtonCount - 1
+                ? Math.Max(1, tools.Right - x)
+                : ActionButtonWidth(scale, index);
+            return new Rectangle(x, tools.Y, w, tools.Height);
+        }
+
+        internal static int ActionButtonIndexAt(Rectangle tools, float scale, int screenX)
+        {
+            if (screenX < tools.Left || screenX >= tools.Right) return -1;
+            for (int i = 0; i < RightActionButtonCount; i++)
+            {
+                if (ActionButtonRectFromTools(tools, scale, i).Contains(screenX, tools.Top)) return i;
+            }
+            return -1;
+        }
+
+        internal static Rectangle ContextPanelRectFromViewport(Rectangle viewport, float scale, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
             Rectangle tools = TopToolsRectFromViewport(viewport, scale);
             if (tools.Width <= 0 || tools.Height <= 0) return Rectangle.Empty;
-            int h = WidgetScaler.Px(QuestRowHeightBase, scale);
-            if (showMap) h += WidgetScaler.Px(MapHeightBase, scale);
-            if (showNotice) h += WidgetScaler.Px(QuestNoticeHeightBase, scale);
+            int h = 0;
+            if (showNotice) h += WidgetScaler.Px(StatusSlotHeightBase, scale);
+            if (mapMode == EffectiveMapDisplayMode.Compact)
+                h += WidgetScaler.Px(CompactMapHeightBase, scale);
+            else if (mapMode == EffectiveMapDisplayMode.Expanded)
+                h += WidgetScaler.Px(ExpandedMapHeightBase, scale);
+            if (h <= 0) return Rectangle.Empty;
             return new Rectangle(tools.X, tools.Bottom, tools.Width, h);
         }
 
-        internal static Rectangle MapRectFromContext(Rectangle context, float scale, bool showMap)
+        internal static Rectangle MapRectFromContext(Rectangle context, float scale, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
-            if (!showMap || context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            return new Rectangle(context.X, context.Y, context.Width, WidgetScaler.Px(MapHeightBase, scale));
+            if (mapMode == EffectiveMapDisplayMode.Hidden || context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
+            int y = context.Y + (showNotice ? WidgetScaler.Px(StatusSlotHeightBase, scale) : 0);
+            int h = WidgetScaler.Px(
+                mapMode == EffectiveMapDisplayMode.Expanded ? ExpandedMapHeightBase : CompactMapHeightBase,
+                scale);
+            return new Rectangle(context.X, y, context.Width, h);
         }
 
-        internal static Rectangle QuestRowRectFromContext(Rectangle context, float scale, bool showMap)
-        {
-            if (context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            int y = context.Y + (showMap ? WidgetScaler.Px(MapHeightBase, scale) : 0);
-            return new Rectangle(context.X, y, context.Width, WidgetScaler.Px(QuestRowHeightBase, scale));
-        }
-
-        internal static Rectangle QuestNoticeRectFromContext(Rectangle context, float scale, bool showMap, bool showNotice)
+        internal static Rectangle StatusSlotRectFromContext(Rectangle context, float scale, bool showNotice)
         {
             if (!showNotice || context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            Rectangle row = QuestRowRectFromContext(context, scale, showMap);
-            return new Rectangle(context.X, row.Bottom, context.Width, WidgetScaler.Px(QuestNoticeHeightBase, scale));
+            return new Rectangle(context.X, context.Y, context.Width, WidgetScaler.Px(StatusSlotHeightBase, scale));
         }
 
-        internal static Rectangle JukeboxRectFromViewport(Rectangle viewport, float scale, bool showMap, bool showNotice)
-        {
-            Rectangle context = ContextPanelRectFromViewport(viewport, scale, showMap, showNotice);
-            if (context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            return new Rectangle(context.X, context.Bottom, context.Width, WidgetScaler.Px(JukeboxHeightBase, scale));
-        }
-
-        internal static Rectangle ClusterRectFromViewport(Rectangle viewport, float scale, bool showMap, bool showNotice, bool showJukebox)
+        internal static Rectangle ClusterRectFromViewport(Rectangle viewport, float scale, EffectiveMapDisplayMode mapMode, bool showNotice)
         {
             Rectangle tools = TopToolsRectFromViewport(viewport, scale);
             if (tools.Width <= 0 || tools.Height <= 0) return Rectangle.Empty;
-            Rectangle context = ContextPanelRectFromViewport(viewport, scale, showMap, showNotice);
-            Rectangle union = Rectangle.Union(tools, context);
-            if (showJukebox)
-            {
-                Rectangle jukebox = JukeboxRectFromViewport(viewport, scale, showMap, showNotice);
-                if (jukebox.Width > 0 && jukebox.Height > 0) union = Rectangle.Union(union, jukebox);
-            }
-            return union;
+            Rectangle context = ContextPanelRectFromViewport(viewport, scale, mapMode, showNotice);
+            return context.Width > 0 && context.Height > 0 ? Rectangle.Union(tools, context) : tools;
         }
 
         internal static Rectangle SafeExitRectFromViewport(Rectangle viewport, float scale, int totalHeight)

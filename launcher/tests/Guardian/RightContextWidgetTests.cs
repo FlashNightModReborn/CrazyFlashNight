@@ -10,8 +10,6 @@ namespace CF7Launcher.Tests.Guardian
     {
         private class Capture
         {
-            public int PauseToggleCount;
-            public int ExpandCount;
             public List<string> Posts = new List<string>();
         }
 
@@ -66,8 +64,7 @@ namespace CF7Launcher.Tests.Guardian
                 anchor,
                 router,
                 MapHudDataCatalog.FromPayload(BuildPayload()),
-                delegate { local.PauseToggleCount++; },
-                delegate { local.ExpandCount++; });
+                MapDisplayPreference.Compact);
             w.ForceGameReady(true);
             return w;
         }
@@ -107,27 +104,76 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void MapSection_CollapseHidesCardButKeepsWidgetVisible()
+        public void MapSection_DisplayPreferenceDoesNotOverwriteRuntimeMode()
         {
             Capture c;
             RightContextWidget w = MakeWidget(out c);
             w.ForceMapMode("1");
             w.ForceMapHotspot("base_dorm");
             Assert.True(w.MapSectionVisibleForTest);
-            w.ToggleMapCollapsed();
+            Assert.Equal(RuntimeMapMode.Navigation, w.RuntimeMapModeForTest);
+
+            w.ToggleMapDisplaySize();
+            Assert.Equal(MapDisplayPreference.Expanded, w.MapDisplayPreferenceForTest);
+            Assert.True(w.MapSectionVisibleForTest);
+
+            w.ToggleMapDisplaySize();
+            Assert.Equal(MapDisplayPreference.Compact, w.MapDisplayPreferenceForTest);
+            Assert.True(w.MapSectionVisibleForTest);
+
+            w.ToggleMapVisibility();
+            Assert.Equal(MapDisplayPreference.Off, w.MapDisplayPreferenceForTest);
             Assert.True(w.IsMapCollapsed);
             Assert.False(w.MapSectionVisibleForTest);
+
+            w.ToggleMapVisibility();
+            Assert.Equal(MapDisplayPreference.Compact, w.MapDisplayPreferenceForTest);
+            Assert.True(w.MapSectionVisibleForTest);
             Assert.True(w.Visible);
+            Assert.Equal(RuntimeMapMode.Navigation, w.RuntimeMapModeForTest);
         }
 
         [Fact]
-        public void QuestRowRoutes_MatchWebButtons()
+        public void CombatRuntimeMode_BlocksDeliveryRegardlessOfDisplayPreference()
         {
             Capture c;
             RightContextWidget w = MakeWidget(out c);
-            Assert.Equal("MAPHUD_TOGGLE", w.ResolveQuestRowRoute(0));
-            Assert.Equal("EQUIP_UI", w.ResolveQuestRowRoute(1));
-            Assert.Equal("TASK_UI", w.ResolveQuestRowRoute(2));
+            w.ForceDeliverState(true, "base_dorm", true, "3");
+            w.SetMapDisplayPreference(MapDisplayPreference.Expanded);
+
+            Assert.Equal(RuntimeMapMode.Combat, w.RuntimeMapModeForTest);
+            Assert.Equal(MapDisplayPreference.Expanded, w.MapDisplayPreferenceForTest);
+            Assert.Equal(EffectiveMapDisplayMode.Hidden, w.EffectiveMapDisplayModeForTest);
+            Assert.False(w.CanDeliver());
+        }
+
+        [Fact]
+        public void PersistentActionRow_UsesSixPrimaryRoutes()
+        {
+            Capture c;
+            RightContextWidget w = MakeWidget(out c);
+            Assert.Equal("TASK_MAP", w.ResolveActionRoute(0));
+            Assert.Equal("TASK_UI", w.ResolveActionRoute(1));
+            Assert.Equal("EQUIP_UI", w.ResolveActionRoute(2));
+            Assert.Equal("GAMESETTINGS", w.ResolveActionRoute(3));
+            Assert.Equal("PAUSE", w.ResolveActionRoute(4));
+            Assert.Equal("SAFEEXIT", w.ResolveActionRoute(5));
+        }
+
+        [Fact]
+        public void SafeExitReservation_IsConditionalAndIndependentFromMapHeader()
+        {
+            Capture c;
+            RightContextWidget w = MakeWidget(out c);
+            Assert.False(w.ExternalStatusSlotActiveForTest);
+            Assert.False(w.StatusSlotVisibleForTest);
+
+            w.SetExternalStatusSlotActive(true);
+            Assert.True(w.ExternalStatusSlotActiveForTest);
+            Assert.True(w.StatusSlotVisibleForTest);
+
+            w.SetExternalStatusSlotActive(false);
+            Assert.False(w.StatusSlotVisibleForTest);
         }
 
         [Fact]
@@ -171,31 +217,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void BgmTitle_EnrollsAnimationTickAndPauseTogglesCallback()
-        {
-            Capture c;
-            RightContextWidget w = MakeWidget(out c);
-            Assert.False(w.WantsAnimationTick);
-            w.ForceBgmTitle("Track");
-            w.ForceIsPlaying(true);
-            Assert.True(w.WantsAnimationTick);
-            w.SimulatePauseClick();
-            Assert.True(w.IsPausedForTest);
-            Assert.Equal(1, c.PauseToggleCount);
-            Assert.False(w.WantsAnimationTick);
-        }
-
-        [Fact]
-        public void ExpandClick_CallsExpandCallbackWithoutBgm()
-        {
-            Capture c;
-            RightContextWidget w = MakeWidget(out c);
-            w.SimulateExpandClick();
-            Assert.Equal(1, c.ExpandCount);
-        }
-
-        [Fact]
-        public void UiData_FullChainUpdatesMapNoticeAndBgm()
+        public void UiData_FullChainUpdatesMapAndNotice()
         {
             Capture c;
             RightContextWidget w = MakeWidget(out c);
@@ -205,8 +227,6 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.True(w.MapSectionVisibleForTest);
             Assert.True(w.QuestNoticeVisibleForTest);
-            Assert.Equal("Final Sky", w.CurrentTitle);
-            Assert.True(w.DisableVisualizersForTest);
         }
     }
 }

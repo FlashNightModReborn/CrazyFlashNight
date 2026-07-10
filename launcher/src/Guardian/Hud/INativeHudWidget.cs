@@ -65,6 +65,16 @@ namespace CF7Launcher.Guardian.Hud
     }
 
     /// <summary>
+    /// 可选的合成边界声明。CompositeBounds 只决定 NativeHud 的分层窗口/位图保留范围，
+    /// 不参与鼠标命中；实际交互区域始终由 INativeHudWidget.TryHitTest 决定。
+    /// 典型用途是为尺寸动画预留稳定的最大矩形，避免每帧重建宿主窗口。
+    /// </summary>
+    public interface INativeHudCompositeBoundsProvider
+    {
+        Rectangle CompositeBounds { get; }
+    }
+
+    /// <summary>
     /// Widget 实现此接口表示需要从 UiData snapshot 接收推送。
     /// NativeHudOverlay 在 snapshot 变化时遍历 _widgets.OfType IUiDataConsumer 并调 OnUiDataChanged。
     ///

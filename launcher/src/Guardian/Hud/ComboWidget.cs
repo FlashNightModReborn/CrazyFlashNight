@@ -33,7 +33,7 @@ namespace CF7Launcher.Guardian.Hud
         // 设计基准 (1024x576)：Web #combo-status 是 #notch-pill 的兄弟节点，收起态紧贴 pill 下沿。
         private const int INPUT_BAR_H_BASE = 26;
         private const int HIT_BAR_H_BASE = 32;
-        private const int NOTCH_PILL_H_BASE = 28;
+        private const int NOTCH_PILL_H_BASE = NativeHudTheme.TopBarHeightBase;
         private const int COMBO_STATUS_PAD_TOP_BASE = 2;
         private const int BORDER_W_BASE = 1;
         private const int BAR_PADDING_X_BASE = 8;
@@ -76,9 +76,9 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly Color COLOR_DIVIDER = Color.FromArgb(60, 255, 255, 255);
         private static readonly Color COLOR_HIT_DFA = Color.FromArgb(255, 215, 0);
         private static readonly Color COLOR_HIT_SYNC = Color.FromArgb(102, 204, 255);
-        private static readonly Color COLOR_BG_INPUT = Color.FromArgb(199, 24, 24, 26);
-        private static readonly Color COLOR_BG_HIT   = Color.FromArgb(229, 24, 24, 26);
-        private static readonly Color COLOR_BORDER_INPUT = Color.FromArgb(26, 255, 255, 255);
+        private static readonly Color COLOR_BG_INPUT = NativeHudTheme.PanelFill;
+        private static readonly Color COLOR_BG_HIT   = NativeHudTheme.PanelFillDense;
+        private static readonly Color COLOR_BORDER_INPUT = NativeHudTheme.FrameNormal;
         private static readonly Color COLOR_BORDER_HIT_DFA = Color.FromArgb(140, 255, 215, 0);
         private static readonly Color COLOR_BORDER_HIT_SYNC = Color.FromArgb(140, 102, 204, 255);
 
@@ -425,7 +425,7 @@ namespace CF7Launcher.Guardian.Hud
                 barRect.Height);
             TraceLayoutIfChanged(mode, scale, r, barRect, contentRect, contentW, padForMode, borderPx);
 
-            DrawBottomRoundedBar(g, barRect, WidgetScaler.Px(mode == BarMode.Hit ? 6 : 5, scale), bgColor, borderColor, alpha);
+            DrawFlashFrameBar(g, barRect, scale, bgColor, borderColor, alpha);
             GraphicsState clipState = g.Save();
             try
             {
@@ -744,36 +744,20 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
-        private static void DrawBottomRoundedBar(Graphics g, Rectangle r, int radius, Color bg, Color border, float alpha)
+        private static void DrawFlashFrameBar(Graphics g, Rectangle r, float scale, Color bg, Color border, float alpha)
         {
-            using (GraphicsPath path = CreateBottomRoundedPath(r, radius))
+            int stroke = NativeHudTheme.StrokePx(scale);
+            int inset = Math.Max(0, stroke / 2);
+            Rectangle rr = new Rectangle(r.X + inset, r.Y + inset,
+                Math.Max(1, r.Width - stroke), Math.Max(1, r.Height - stroke));
+            using (GraphicsPath path = NativeHudTheme.CreateCutCornerPath(rr,
+                NativeHudTheme.CornerCutPx(scale)))
             using (SolidBrush bgBrush = new SolidBrush(WithAlpha(bg, alpha)))
-            using (Pen borderPen = new Pen(WithAlpha(border, alpha)))
+            using (Pen borderPen = new Pen(WithAlpha(border, alpha), stroke))
             {
                 g.FillPath(bgBrush, path);
                 g.DrawPath(borderPen, path);
             }
-        }
-
-        private static GraphicsPath CreateBottomRoundedPath(Rectangle r, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            int rr = Math.Max(0, Math.Min(radius, Math.Min(r.Width, r.Height) / 2));
-            if (rr <= 0)
-            {
-                path.AddRectangle(r);
-                return path;
-            }
-            int d = rr * 2;
-            path.StartFigure();
-            path.AddLine(r.Left, r.Top, r.Right, r.Top);
-            path.AddLine(r.Right, r.Top, r.Right, r.Bottom - rr);
-            path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
-            path.AddLine(r.Right - rr, r.Bottom, r.Left + rr, r.Bottom);
-            path.AddArc(r.Left, r.Bottom - d, d, d, 90, 90);
-            path.AddLine(r.Left, r.Bottom - rr, r.Left, r.Top);
-            path.CloseFigure();
-            return path;
         }
 
         private static void FillRoundedRect(Graphics g, RectangleF r, float radius, Brush brush)
@@ -1340,7 +1324,7 @@ namespace CF7Launcher.Guardian.Hud
                         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
                         Rectangle barRect = new Rectangle(0, 0, barW, barH);
                         Rectangle contentRect = new Rectangle(borderPx, 0, Math.Max(1, barW - borderPx * 2), barH);
-                        DrawBottomRoundedBar(g, barRect, WidgetScaler.Px(5, scale), COLOR_BG_INPUT, COLOR_BORDER_INPUT, 1f);
+                        DrawFlashFrameBar(g, barRect, scale, COLOR_BG_INPUT, COLOR_BORDER_INPUT, 1f);
                         PaintInput(g, contentRect, padX, typedFont, remainFont, nameFont, fmt, scale);
 
                         for (int y = 0; y < b.Height; y++)
@@ -1409,6 +1393,11 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         internal enum BarModeForTest { Idle = 0, Input = 1, Hit = 2 }
+
+        internal static int NotchPillHeightBaseForTest
+        {
+            get { return NOTCH_PILL_H_BASE; }
+        }
 
         private void FireBounds()
         {

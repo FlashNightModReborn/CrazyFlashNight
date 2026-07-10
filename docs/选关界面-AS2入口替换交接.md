@@ -26,7 +26,7 @@
 
 已验证能力：
 
-- 刘海屏“其他 → 选关测试”可打开 `stage-select`
+- 刘海屏“系统 → 其他 → 测试 → 选关测试”可打开 `stage-select`
 - `stageSelectSnapshot` 读取真实解锁状态、挑战模式、`StageInfoDict` 简介/限制词条、`tasks_to_do` 任务提示和推荐难度
 - `stageSelectEnter` 可从 Web 难度按钮进入已解锁关卡
 - 锁定关卡不会发 enter

@@ -62,8 +62,8 @@ namespace CF7Launcher.Guardian
         public Action OnSafeExitArm { get; set; }
 
         /// <summary>
-        /// 来自 web `#quest-row > #map-hud-toggle` 的 click → 切 C# MapHudWidget 折叠态。
-        /// Program.cs 在 widget 实例化后注入 `() => mapHudWidget.ToggleCollapsed()`。
+        /// 来自刘海“地图开关”的 click → 切 C# 小地图显示/关闭。
+        /// 地图卡片自己的尺寸按钮不走此路由，只在 compact / expanded 间切换。
         /// </summary>
         public Action OnMapHudToggle { get; set; }
 

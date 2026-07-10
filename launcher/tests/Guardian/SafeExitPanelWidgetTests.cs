@@ -135,6 +135,62 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(w.IsDoneState);
         }
 
+        [Fact]
+        public void DoneRow_RightmostPixelStillHitsExitButton()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+
+            Assert.Equal(1, w.HitButtonForTest(203, 16, new System.Drawing.Rectangle(0, 0, 204, 32)));
+        }
+
+        [Fact]
+        public void DoneRow_AutoDismissesAfterFiveSecondsWithoutExiting()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+
+            Assert.Equal(5000, SafeExitPanelWidget.DoneAutoDismissMsForTest);
+            Assert.Equal(5000, w.DoneAutoDismissRemainingMsForTest);
+            Assert.True(w.WantsAnimationTick);
+
+            w.Tick(4999);
+            Assert.True(w.Visible);
+            Assert.Equal(0, cap.Exit);
+
+            w.Tick(1);
+            Assert.False(w.Visible);
+            Assert.False(w.IsArmed);
+            Assert.True(w.IsDismissed);
+            Assert.False(w.IsDoneState);
+            Assert.Equal(0, cap.Exit);
+        }
+
+        [Fact]
+        public void DoneRow_ButtonHoverPausesAutoDismissUntilPointerLeaves()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+
+            w.SetHoverForTest(1);
+            Assert.False(w.WantsAnimationTick);
+            w.Tick(5000);
+            Assert.True(w.Visible);
+            Assert.Equal(5000, w.DoneAutoDismissRemainingMsForTest);
+
+            w.SetHoverForTest(-1);
+            Assert.True(w.WantsAnimationTick);
+            w.Tick(5000);
+            Assert.False(w.Visible);
+            Assert.Equal(0, cap.Exit);
+        }
+
         // ── 取消 → 重开 ──
         [Fact]
         public void Cancel_DisarmsAndDismisses_ThenRearmRestores()

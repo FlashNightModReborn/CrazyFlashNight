@@ -1,6 +1,6 @@
-# 情报 H5 Webfont 资源
+# Launcher Web / Native HUD 字体资源
 
-本目录下的字体被 `launcher/web/css/panels.css` 顶部的 `@font-face` 引用，用于情报系统多 skin 表达力。文件**缺失也不会破坏渲染**——CSS 已配置 `font-display: swap` 与系统字体回退链。
+本目录下的字体由 `launcher/web/css/panels.css` 的 `@font-face` 与 C# `NativeHudFonts` 共用。Web 用于情报系统多 skin 表达力；Native HUD 只读取思源宋体。文件**缺失也不会破坏渲染**——Web 使用 `font-display: swap`，Native 使用系统字体回退链。
 
 字体清单的权威源是 [`font-pack-manifest.json`](font-pack-manifest.json)（FontPackTask 按需下载到 `%LOCALAPPDATA%/CF7FlashNight/fonts/`，cfn-fonts.local 虚拟主机优先映射该目录）。本 README 是人类可读说明，新增/修改字体时**两处都要改**。
 
@@ -20,7 +20,7 @@
 | `jason-handwriting-8.ttf` | 清松手写体 8 号 Casual | NPC 笔迹差异化 / handwritten voice="rough" / 老周/盗贼/雇佣兵 / `--intel-font-character-rough` | 7.7 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `jason-handwriting-2.ttf` | 清松手写体 2 号 不规则 | NPC 笔迹差异化 / handwritten voice="plain" / 浑浑噩噩小市民 / `--intel-font-character-plain` | 5.1 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `jason-handwriting-9.ttf` | 清松手写体 9 号 | NPC 笔迹差异化 / handwritten voice="weary" / 流民/逃难者疲惫笔迹 / `--intel-font-character-weary` | 8.0 MB | SIL OFL 1.1 | `expressive-handwriting` |
-| `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / 中立编纂 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
+| `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / Native HUD 常用中文 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
 
 **Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 53.6 MB（猫啃 6.1 + 清松1 8.5 + 清松7 8.8 + 清松8 7.7 + 4 旧字 22.5）+ expressive-archive 11.1 MB ≈ **89 MB 全矩阵**
 
@@ -94,6 +94,7 @@ pyftsubset launcher/web/assets/fonts/lxgw-wenkai-screen.ttf \
 - 楷体路径：`'LXGW WenKai Screen' → 'LXGW WenKai' → 'STKaiti' → '楷体' → 'KaiTi' → 'serif'`
 - 等宽路径：`'JetBrains Mono' → Consolas → 'Courier New' → monospace'`
 - 衬线路径：`'Source Han Serif CN' → 'Noto Serif CJK SC' → 'SimSun' → '宋体' → 'serif'`
+- Native HUD：FontPack AppData OTF → 系统 Source Han / Noto Serif → SimSun → Microsoft YaHei；不读取 `闪7重置版字体`（该目录仅服务 Flash CS6/FLa 编辑）。
 - 标题手写：`'Ma Shan Zheng' → 'Zhi Mang Xing' → 'STKaiti' → ...`
 - 批注手写：`'Klee One' → 'LXGW WenKai Screen' → 'STKaiti' → ...`
 - 戏剧草书：`'Liu Jian Mao Cao' → 'Ma Shan Zheng' → 'STKaiti' → ...`

@@ -17,6 +17,7 @@ namespace CF7Launcher.Config
     ///   UiFontScale     — 引导页字号缩放倍率, 网页侧作用于 :root --fs-scale (bootstrap/welcome.css)
     ///                    允许值 [FontScaleMin..FontScaleMax], 默认 FontScaleDefault (略放大基线)
     ///   SuppressedHighDpiWarningRaw — 用户选择不再提示的高 DPI 兼容性 raw value
+    ///   MapDisplayPreference — 小地图显示偏好: auto/off/compact/expanded；与 AS2 mm 运行态分离
     ///
     /// 未来扩展: 往 Load/Save 加字段, 并在 JSON schema 里读容错默认值.
     /// </summary>
@@ -32,6 +33,7 @@ namespace CF7Launcher.Config
         public bool AmbientEnabled { get; set; }
         public double UiFontScale { get; set; }
         public string SuppressedHighDpiWarningRaw { get; set; }
+        public string MapDisplayPreference { get; set; }
 
         private readonly string _path;
         private readonly string _legacyPath;
@@ -58,6 +60,7 @@ namespace CF7Launcher.Config
             AmbientEnabled = false;
             UiFontScale = FontScaleDefault;
             SuppressedHighDpiWarningRaw = null;
+            MapDisplayPreference = "auto";
             Load();
         }
 
@@ -67,6 +70,14 @@ namespace CF7Launcher.Config
             if (v < FontScaleMin) return FontScaleMin;
             if (v > FontScaleMax) return FontScaleMax;
             return v;
+        }
+
+        public static string NormalizeMapDisplayPreference(string value)
+        {
+            string normalized = (value ?? "").Trim().ToLowerInvariant();
+            if (normalized == "off" || normalized == "compact" || normalized == "expanded")
+                return normalized;
+            return "auto";
         }
 
         private void Load()
@@ -89,6 +100,7 @@ namespace CF7Launcher.Config
                 double? scale = obj.Value<double?>("uiFontScale");
                 if (scale.HasValue) UiFontScale = ClampFontScale(scale.Value);
                 SuppressedHighDpiWarningRaw = obj.Value<string>("suppressedHighDpiWarningRaw");
+                MapDisplayPreference = NormalizeMapDisplayPreference(obj.Value<string>("mapDisplayPreference"));
                 if (readPath == _legacyPath && _path != _legacyPath)
                 {
                     // One-shot migration: stop mutating repo-root prefs after first successful read.
@@ -104,6 +116,7 @@ namespace CF7Launcher.Config
                 AmbientEnabled = false;
                 UiFontScale = FontScaleDefault;
                 SuppressedHighDpiWarningRaw = null;
+                MapDisplayPreference = "auto";
             }
         }
 
@@ -121,6 +134,7 @@ namespace CF7Launcher.Config
                 obj["sfxEnabled"] = SfxEnabled;
                 obj["ambientEnabled"] = AmbientEnabled;
                 obj["uiFontScale"] = UiFontScale;
+                obj["mapDisplayPreference"] = NormalizeMapDisplayPreference(MapDisplayPreference);
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))
                     obj["suppressedHighDpiWarningRaw"] = SuppressedHighDpiWarningRaw;
                 File.WriteAllText(_path, obj.ToString(Newtonsoft.Json.Formatting.Indented));

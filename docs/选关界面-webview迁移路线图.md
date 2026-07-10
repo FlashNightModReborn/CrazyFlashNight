@@ -14,7 +14,7 @@
 Stage 1 已完成表现层与开发闭环：
 
 - 新增独立 panel id：`stage-select`
-- 通过刘海屏“其他 → 选关测试”打开
+- 通过刘海屏“系统 → 其他 → 测试 → 选关测试”打开
 - 由 XFL/XML 生成 `StageSelectManifest`
 - 渲染 16 个原版 frame label、背景、选关按钮、页内导航按钮、hover 预览、难度按钮
 - 使用 `allUnlocked` / `mixed` / `challenge` 三套 fixture 覆盖锁定、任务闪光、挑战模式

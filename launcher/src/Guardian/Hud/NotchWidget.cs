@@ -22,7 +22,7 @@ namespace CF7Launcher.Guardian.Hud
     /// - 自身 Tick 由 NativeHud anim tick 驱动；33ms render coalesce 由 NativeHud 控制
     /// - 局部坐标（widget-local，原点 0,0）；Paint 时加 (ScreenBounds.X - hudOrigin.X, ScreenBounds.Y - hudOrigin.Y) 偏移
     /// </summary>
-    public sealed class NotchWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
+    public sealed class NotchWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
     {
         #region 状态机
 
@@ -33,7 +33,7 @@ namespace CF7Launcher.Guardian.Hud
 
         #region 常量（与 NotchOverlay 完全一致）
 
-        private const int CollapsedH = 28;
+        private const int CollapsedH = NativeHudTheme.TopBarHeightBase;
         private const int RowPadX = 6;
         private const int CurrencyIconW = 20;
         private const int CurrencyMinValueW = 48;
@@ -47,8 +47,10 @@ namespace CF7Launcher.Guardian.Hud
         private const int ToolbarPadX = 8;
         private const int ToolbarPadTop = 2;
         private const int ToolbarPadBottom = 4;
-        private const int ToolbarButtonH = 22;
+        private const int ToolbarButtonH = NativeHudTheme.ToolbarButtonHeightBase;
         private const int ToolbarButtonGap = 2;
+        private const int ToolbarRowGap = 2;
+        private const int ToolbarGroupLabelW = 38;
         private const int ButtonPadX = 8;
 
         private const int AutoHideDelayMs = 500;
@@ -139,23 +141,43 @@ namespace CF7Launcher.Guardian.Hud
             new NotchButtonDef("情报", "INTELLIGENCE", Keys.None, true, false),
             new NotchButtonDef("商城", "SHOP", Keys.None, true, false)
         };
-        private static readonly NotchButtonDef[] OtherButtons = {
+        private static readonly NotchButtonDef[] ToolbarUtilityButtons = {
+            new NotchButtonDef("点歌机", "JUKEBOX_EXPAND", Keys.None, true, false),
+            new NotchButtonDef("地图开关", "MAPHUD_TOGGLE", Keys.None, true, false),
+            new NotchButtonDef("修改器", "SETTINGS", Keys.None, true, false),
+            new NotchButtonDef("帮助", "HELP", Keys.None, true, false)
+        };
+        private static readonly NotchButtonDef[] OtherGroupButtons = {
+            new NotchButtonDef("控制", "OTHER_GROUP_0", Keys.None, false, false),
+            new NotchButtonDef("测试", "OTHER_GROUP_1", Keys.None, false, false),
+            new NotchButtonDef("工具", "OTHER_GROUP_2", Keys.None, false, false)
+        };
+        private static readonly NotchButtonDef[] OtherControlButtons = {
             new NotchButtonDef("Q 强退", "Q", Keys.Q, false, false),
             new NotchButtonDef("W 关闭", "W", Keys.W, false, false),
             new NotchButtonDef("R 重置", "R", Keys.R, false, false),
             new NotchButtonDef("P 截图", "P", Keys.P, false, false),
-            new NotchButtonDef("O 打开", "O", Keys.O, false, false),
+            new NotchButtonDef("O 打开", "O", Keys.O, false, false)
+        };
+        private static readonly NotchButtonDef[] OtherTestButtons = {
             new NotchButtonDef("高安箱测试", "LOCKBOX_TEST", Keys.None, false, false),
             new NotchButtonDef("锁芯校准测试", "PINALIGN_TEST", Keys.None, false, false),
             new NotchButtonDef("铁枪会入侵测试", "GOBANG_TEST", Keys.None, false, false),
             new NotchButtonDef("情报测试", "INTELLIGENCE_TEST", Keys.None, false, false),
             new NotchButtonDef("选关测试", "STAGE_SELECT_TEST", Keys.None, false, false),
             new NotchButtonDef("角斗场测试", "ARENA_TEST", Keys.None, false, false),
+            new NotchButtonDef("新任务界面", "NEW_TASK_UI", Keys.None, true, false)
+        };
+        private static readonly NotchButtonDef[] OtherToolButtons = {
             new NotchButtonDef("动画测试", "CUTSCENE_TEST", Keys.None, false, false),
             new NotchButtonDef("烘焙图标", "BAKE", Keys.None, false, false),
             new NotchButtonDef("烘焙测试(10)", "BAKE10", Keys.None, false, false),
-            new NotchButtonDef("烘焙技能图标", "BAKE_SKILL", Keys.None, false, false),
-            new NotchButtonDef("新任务界面", "NEW_TASK_UI", Keys.None, true, false)
+            new NotchButtonDef("烘焙技能图标", "BAKE_SKILL", Keys.None, false, false)
+        };
+        private static readonly NotchButtonDef[][] OtherButtonGroups = {
+            OtherControlButtons,
+            OtherTestButtons,
+            OtherToolButtons
         };
 
         #endregion
@@ -165,6 +187,7 @@ namespace CF7Launcher.Guardian.Hud
         private readonly Control _anchor;
         private readonly FlashCoordinateMapper _mapper;
         private readonly FpsRingBuffer _fpsBuffer;
+        private readonly AudioHudState _audioHudState;
         private readonly Action _onToggleFullscreen;
         private readonly Action _onToggleLog;
         private readonly Action _onForceExit;
@@ -188,7 +211,10 @@ namespace CF7Launcher.Guardian.Hud
         private int _gameNoticeSerial;
 
         private bool _otherMenuOpen;
+        private int _otherMenuGroupIndex;
         private bool _chartVisible;
+        // 展开/收起动画期间保留最大合成矩形；实际命中仍只认 ScreenBounds。
+        private bool _reserveExpandedCompositeBounds;
 
         // widget-local hit rects（widget 自身 ScreenBounds 原点为 (0,0)）
         private Rectangle[] _buttonRects = new Rectangle[0];
@@ -205,13 +231,15 @@ namespace CF7Launcher.Guardian.Hud
 
         public NotchWidget(Control anchor, FpsRingBuffer fpsBuffer, string projectRoot,
             Action onToggleFullscreen, Action onToggleLog,
-            Action onForceExit, Action<Keys> onSendKey)
+            Action onForceExit, Action<Keys> onSendKey,
+            AudioHudState audioHudState = null)
         {
             if (anchor == null) throw new ArgumentNullException("anchor");
             if (fpsBuffer == null) throw new ArgumentNullException("fpsBuffer");
             _anchor = anchor;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _fpsBuffer = fpsBuffer;
+            _audioHudState = audioHudState ?? new AudioHudState();
             _onToggleFullscreen = onToggleFullscreen;
             _onToggleLog = onToggleLog;
             _onForceExit = onForceExit;
@@ -248,6 +276,27 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
+        public Rectangle CompositeBounds
+        {
+            get
+            {
+                if (!_reserveExpandedCompositeBounds) return ScreenBounds;
+                if (_anchor == null || !_anchor.IsHandleCreated) return Rectangle.Empty;
+                try
+                {
+                    Point origin = _anchor.PointToScreen(Point.Empty);
+                    float vpX, vpY, vpW, vpH;
+                    _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
+                    int w, h;
+                    GetSizeForProgress(1f, out w, out h);
+                    int scrX = origin.X + (int)vpX + ((int)vpW - w) / 2;
+                    int scrY = origin.Y + (int)vpY;
+                    return new Rectangle(scrX, scrY, Math.Max(1, w), Math.Max(1, h));
+                }
+                catch { return Rectangle.Empty; }
+            }
+        }
+
         public bool Visible { get { return _anchor != null && _anchor.IsHandleCreated; } }
 
         public bool WantsAnimationTick
@@ -264,6 +313,7 @@ namespace CF7Launcher.Guardian.Hud
                 // FPS sparkline / clock 走 stable refresh（每 250ms 重绘）；
                 // 这里强制需要 tick 推动 _stableRefreshElapsedMs 累加
                 if (_fpsBuffer != null && _fpsBuffer.HasData) return true;
+                if (_audioHudState != null && _audioHudState.WantsTick) return true;
                 return false;
             }
         }
@@ -286,7 +336,6 @@ namespace CF7Launcher.Guardian.Hud
                     _expandProgress += (float)dt / ExpandAnimMs;
                     if (_expandProgress >= 1f) { _expandProgress = 1f; _state = NotchState.Expanded; }
                     needsPaint = true;
-                    boundsChanged = true;
                     break;
                 case NotchState.Expanded:
                     if (_autoHideCountdown > 0)
@@ -296,18 +345,23 @@ namespace CF7Launcher.Guardian.Hud
                         {
                             _autoHideCountdown = 0;
                             _state = NotchState.Collapsing;
+                            CloseOtherMenu();
                             _chartVisible = false;
                             _expandedChartRect = Rectangle.Empty;
                             needsPaint = true;
-                            boundsChanged = true;
                         }
                     }
                     break;
                 case NotchState.Collapsing:
                     _expandProgress -= (float)dt / CollapseAnimMs;
-                    if (_expandProgress <= 0f) { _expandProgress = 0f; _state = NotchState.Collapsed; }
+                    if (_expandProgress <= 0f)
+                    {
+                        _expandProgress = 0f;
+                        _state = NotchState.Collapsed;
+                        _reserveExpandedCompositeBounds = false;
+                        boundsChanged = true;
+                    }
                     needsPaint = true;
-                    boundsChanged = true;
                     break;
                 case NotchState.Collapsed:
                     break;
@@ -315,6 +369,7 @@ namespace CF7Launcher.Guardian.Hud
 
             if (TickCurrencySlot(_gold, dt)) needsPaint = true;
             if (TickCurrencySlot(_kp, dt)) needsPaint = true;
+            if (_audioHudState != null && _audioHudState.Tick(dt)) needsPaint = true;
             if (_gameThrottleRemainingMs > 0)
             {
                 _gameThrottleRemainingMs -= dt;
@@ -391,21 +446,29 @@ namespace CF7Launcher.Guardian.Hud
             float t = _expandProgress;
             float eased = t * (2f - t);
             int row1H = Px(CollapsedH, scale);
-            int toolbarH = _gameReady ? (int)(Px(ToolbarPadTop + ToolbarButtonH + ToolbarPadBottom, scale) * eased) : 0;
+            int toolbarH = _gameReady ? (int)(ExpandedToolbarHeight(scale) * eased) : 0;
             int pillH = row1H + toolbarH;
 
             GraphicsState saved = g.Save();
             try
             {
                 g.TranslateTransform(offX, offY);
+                // 最后一道绘制护栏：即使未来按钮测量回归，也不得越过 Notch 自身视觉矩形侵入右侧 HUD。
+                g.SetClip(new Rectangle(0, 0, w, h), CombineMode.Intersect);
 
-                DrawRoundedRect(g, 0, 0, w, pillH, Px(8, scale), ResolvePillColor());
+                NativeHudTheme.DrawPanel(g, new Rectangle(0, 0, w, pillH), scale,
+                    ResolvePillColor(), Color.Empty, false);
+                if (toolbarH > 2)
+                {
+                    using (Pen separator = new Pen(NativeHudTheme.Separator, NativeHudTheme.StrokePx(scale)))
+                        g.DrawLine(separator, Px(4, scale), row1H, w - Px(4, scale), row1H);
+                }
 
                 using (Font fpsFont = new Font("Consolas", Pxf(13f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font textFont = new Font("Microsoft YaHei", Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                using (Font textFont = NativeHudFonts.CreateUiFont(Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
                 using (Font monoFont = new Font("Consolas", Pxf(12f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
                 {
-                    PaintRow1(g, w, row1H, scale, fpsFont, textFont, monoFont, eased);
+                    PaintRow1(g, row1H, scale, fpsFont, textFont, monoFont);
                     if (_gameReady && toolbarH > 2)
                     {
                         byte buttonAlpha = (byte)(255 * Math.Min(1f, Math.Max(0f, (eased - 0.15f) / 0.85f)));
@@ -418,7 +481,7 @@ namespace CF7Launcher.Guardian.Hud
                 int rowPadX = Px(6, scale);
                 int scaledRowH = Px(RowH, scale);
                 int scaledRowGap = Px(RowGap, scale);
-                int rowsStartY = pillH + (_otherMenuOpen ? OtherButtons.Length * (Px(ToolbarButtonH, scale) + Px(1, scale)) + Px(8, scale) : 0);
+                int rowsStartY = pillH + (_otherMenuOpen ? OtherMenuHeight(scale) : 0);
                 using (Font infoFont = CreateInfoRowFont(false, scale))
                 using (Font gameInfoFont = CreateInfoRowFont(true, scale))
                 {
@@ -443,7 +506,8 @@ namespace CF7Launcher.Guardian.Hud
                             ? Color.FromArgb((byte)(ra * (0.10f + 0.10f * pulse)), 255, 255, 255)
                             : Color.FromArgb((byte)(ra * (row.Persistent ? 0.82f : 0.70f)), 20, 20, 22);
 
-                        DrawRoundedRect(g, 0, rowY, w, scaledRowH, Px(4, scale), rowBg);
+                        NativeHudTheme.DrawPanel(g, new Rectangle(0, rowY, w, scaledRowH), scale,
+                            rowBg, row.Persistent ? row.AccentColor : Color.Empty, row.Persistent || row.IsGame);
                         if (row.Persistent)
                         {
                             using (SolidBrush accent = new SolidBrush(Color.FromArgb(ra, row.AccentColor)))
@@ -538,6 +602,7 @@ namespace CF7Launcher.Guardian.Hud
                     bool canHoverExpand = _state == NotchState.Collapsed || _state == NotchState.Collapsing;
                     if (ShouldStartHoverExpand(canHoverExpand, _expandClickCooldown))
                     {
+                        _reserveExpandedCompositeBounds = true;
                         _state = NotchState.Expanding;
                         FireBounds();
                         FireAnimationStateChanged();
@@ -552,6 +617,7 @@ namespace CF7Launcher.Guardian.Hud
                     bool canHoverExpand = _state == NotchState.Collapsed || _state == NotchState.Collapsing;
                     if (ShouldStartHoverExpand(canHoverExpand, _expandClickCooldown))
                     {
+                        _reserveExpandedCompositeBounds = true;
                         _state = NotchState.Expanding;
                         FireBounds();
                         FireAnimationStateChanged();
@@ -756,6 +822,8 @@ namespace CF7Launcher.Guardian.Hud
             bool repaint = false;
             bool bounds = false;
             string fullPiece;
+            if (_audioHudState != null && _audioHudState.ApplyUiData(snapshot, changedKeys))
+                repaint = true;
             if (snapshot.TryGetValue("s", out fullPiece))
             {
                 bool ready = StripPrefix(fullPiece, "s") == "1";
@@ -853,6 +921,8 @@ namespace CF7Launcher.Guardian.Hud
             _chartVisible = !_chartVisible;
             if (_chartVisible)
             {
+                CloseOtherMenu();
+                _reserveExpandedCompositeBounds = true;
                 _state = NotchState.Expanded;
                 _expandProgress = 1f;
                 _autoHideCountdown = 0;
@@ -874,15 +944,17 @@ namespace CF7Launcher.Guardian.Hud
                 || _expandProgress > 0.01f;
             if (expandedLike)
             {
+                _reserveExpandedCompositeBounds = true;
                 _chartVisible = false;
                 _expandedChartRect = Rectangle.Empty;
-                _otherMenuOpen = false;
+                CloseOtherMenu();
                 _autoHideCountdown = 0;
                 _expandClickCooldown = ExpandClickCooldownMs;
                 _state = _expandProgress <= 0f ? NotchState.Collapsed : NotchState.Collapsing;
             }
             else
             {
+                _reserveExpandedCompositeBounds = true;
                 _expandClickCooldown = 0;
                 _autoHideCountdown = 0;
                 _state = NotchState.Expanding;
@@ -899,11 +971,32 @@ namespace CF7Launcher.Guardian.Hud
             if (def == null) return;
             if (def.Label == "其他 ▸")
             {
-                _otherMenuOpen = !_otherMenuOpen;
+                if (_otherMenuOpen) CloseOtherMenu();
+                else
+                {
+                    _otherMenuOpen = true;
+                    _otherMenuGroupIndex = 0;
+                }
                 FireBounds();
                 FireRepaint();
                 return;
             }
+            if (!string.IsNullOrEmpty(def.CommandKey)
+                && def.CommandKey.StartsWith("OTHER_GROUP_", StringComparison.Ordinal))
+            {
+                int nextGroup;
+                if (int.TryParse(def.CommandKey.Substring("OTHER_GROUP_".Length), out nextGroup)
+                    && nextGroup >= 0 && nextGroup < OtherButtonGroups.Length
+                    && nextGroup != _otherMenuGroupIndex)
+                {
+                    _otherMenuGroupIndex = nextGroup;
+                    FireBounds();
+                    FireRepaint();
+                }
+                return;
+            }
+            bool closeOtherAfterCommand = _otherMenuOpen;
+            if (closeOtherAfterCommand) CloseOtherMenu();
             if (def.CommandKey == "LOG")
             {
                 if (_onToggleLog != null) _onToggleLog();
@@ -927,7 +1020,11 @@ namespace CF7Launcher.Guardian.Hud
             }
             else
             {
-                _otherMenuOpen = false;
+                FireRepaint();
+            }
+            if (closeOtherAfterCommand)
+            {
+                FireBounds();
                 FireRepaint();
             }
         }
@@ -947,40 +1044,61 @@ namespace CF7Launcher.Guardian.Hud
 
         private void GetCurrentSize(out int w, out int h)
         {
+            GetSizeForProgress(_expandProgress, out w, out h);
+        }
+
+        private void GetSizeForProgress(float progress, out int w, out int h)
+        {
             float vpX, vpY, vpW, vpH;
             _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
             float scale = GetScale(vpH);
             int collapsedW = ComputeCollapsedWidth(scale);
-            int expandedW = ComputeExpandedWidth(scale, (int)vpW);
+            Rectangle viewport = new Rectangle(0, 0, Math.Max(1, (int)vpW), Math.Max(1, (int)vpH));
+            int expandedW = ComputeExpandedWidth(scale, viewport);
 
-            float t = _expandProgress;
+            float t = Math.Max(0f, Math.Min(1f, progress));
             float eased = t * (2f - t);
 
             w = collapsedW + (int)((expandedW - collapsedW) * eased);
             int row1H = Px(CollapsedH, scale);
-            int toolbarH = _gameReady ? Px(ToolbarPadTop + ToolbarButtonH + ToolbarPadBottom, scale) : 0;
+            int toolbarH = _gameReady ? ExpandedToolbarHeight(scale) : 0;
             h = row1H + (int)(toolbarH * eased);
             int rowCount = _infoRows.Count;
             if (rowCount > 0)
                 h += rowCount * (Px(RowGap, scale) + Px(RowH, scale));
-            if (_otherMenuOpen)
-                h += OtherButtons.Length * (Px(ToolbarButtonH, scale) + Px(1, scale)) + Px(8, scale);
+            if (_otherMenuOpen) h += OtherMenuHeight(scale);
             if (_chartVisible)
                 h += ExpandedChartHeight(scale);
         }
 
         private void DrawToolbarButtons(Graphics g, int totalW, int row1H, float scale, Font font, byte alpha)
         {
+            int firstY = row1H + Px(ToolbarPadTop, scale);
+            DrawToolbarButtonRow(g, "游戏", ToolbarButtons, firstY, scale, font, alpha);
+            int secondY = firstY + Px(ToolbarButtonH + ToolbarRowGap, scale);
+            DrawToolbarButtonRow(g, "辅助", ToolbarUtilityButtons, secondY, scale, font, alpha);
+            int thirdY = secondY + Px(ToolbarButtonH + ToolbarRowGap, scale);
+            DrawToolbarButtonRow(g, "系统", Row1Buttons, thirdY, scale, font, alpha);
+        }
+
+        private void DrawToolbarButtonRow(Graphics g, string groupLabel, NotchButtonDef[] source, int y, float scale, Font font, byte alpha)
+        {
             List<Rectangle> rects = new List<Rectangle>();
             List<NotchButtonDef> defs = new List<NotchButtonDef>();
             int btnH = Px(ToolbarButtonH, scale);
             int gap = Px(ToolbarButtonGap, scale);
             int x = Px(ToolbarPadX, scale);
-            int y = row1H + Px(ToolbarPadTop, scale);
+            int labelW = Px(ToolbarGroupLabelW, scale);
+            Rectangle labelRect = new Rectangle(x, y, labelW, btnH);
+            using (SolidBrush labelBrush = new SolidBrush(NativeHudTheme.WithAlpha(
+                NativeHudTheme.TextSecondary, Math.Min(210, (int)alpha))))
+            using (StringFormat labelFmt = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center })
+                g.DrawString(groupLabel, font, labelBrush, labelRect, labelFmt);
+            x += labelW;
 
-            for (int i = 0; i < ToolbarButtons.Length; i++)
+            for (int i = 0; i < source.Length; i++)
             {
-                NotchButtonDef def = ToolbarButtons[i];
+                NotchButtonDef def = source[i];
                 if (!ShouldShowButton(def)) continue;
                 int btnW = MeasureButtonWidth(g, font, def.Label, scale);
                 Rectangle r = new Rectangle(x, y, btnW, btnH);
@@ -993,7 +1111,15 @@ namespace CF7Launcher.Guardian.Hud
             AppendButtonRects(rects, defs);
         }
 
-        private void PaintRow1(Graphics g, int totalW, int row1H, float scale, Font fpsFont, Font textFont, Font monoFont, float expandedEase)
+        private static int ExpandedToolbarHeight(float scale)
+        {
+            return Px(ToolbarPadTop, scale)
+                + Px(ToolbarButtonH, scale) * 3
+                + Px(ToolbarRowGap, scale) * 2
+                + Px(ToolbarPadBottom, scale);
+        }
+
+        private void PaintRow1(Graphics g, int row1H, float scale, Font fpsFont, Font textFont, Font monoFont)
         {
             List<Rectangle> rects = new List<Rectangle>();
             List<NotchButtonDef> defs = new List<NotchButtonDef>();
@@ -1026,7 +1152,7 @@ namespace CF7Launcher.Guardian.Hud
             }
             if (_gameReady)
             {
-                int goldW = ComputeCurrencyWidth(_gold.Current, scale);
+                int goldW = ComputeCurrencyWidth(_gold, scale);
                 Rectangle goldRect = new Rectangle(x, 0, goldW, row1H);
                 DrawCurrencyPanel(g, goldRect, "$", _gold, Color.FromArgb(255, 215, 0), monoFont, true, scale);
                 x += goldW;
@@ -1043,44 +1169,18 @@ namespace CF7Launcher.Guardian.Hud
                 g.DrawString(fpsText, fpsFont, fpsBrush, fpsRect, sf);
             x += fpsW + Px(CenterGap, scale);
 
-            if (expandedEase > 0.65f)
-            {
-                string badge = "L" + _fpsBuffer.PerfLevel;
-                int badgeW = Px(24, scale);
-                Rectangle badgeRect = new Rectangle(x, (row1H - Px(14, scale)) / 2, badgeW, Px(14, scale));
-                Color badgeColor = GetPerfColor(_fpsBuffer.PerfLevel);
-                using (SolidBrush bg = new SolidBrush(Color.FromArgb(38, badgeColor)))
-                using (SolidBrush fg = new SolidBrush(badgeColor))
-                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                {
-                    g.FillRectangle(bg, badgeRect);
-                    g.DrawString(badge, textFont, fg, badgeRect, sf);
-                }
-                x += badgeW + Px(CenterGap, scale);
-            }
-
             int sparkW = Px(SparklineW, scale);
             int sparkH = Px(SparklineH, scale);
             int sparkY = (row1H - sparkH) / 2;
             _sparklineRect = new Rectangle(x, sparkY, sparkW, sparkH);
             DrawLightBackground(g, x, sparkY, sparkW, sparkH);
+            DrawAudioEnvelope(g, _sparklineRect);
             DrawSparkline(g, x, sparkY, sparkW, sparkH, fpsColor);
             x += sparkW + Px(CenterGap + 1, scale);
 
             int clockSize = Px(16, scale);
             DrawClock(g, x + clockSize / 2, centerY, clockSize / 2, _fpsBuffer.GameHour);
             x += clockSize + Px(CenterGap, scale);
-
-            if (expandedEase > 0.65f)
-            {
-                string time = FormatGameTime(_fpsBuffer.GameHour);
-                int statsW = Px(44, scale);
-                Rectangle statsRect = new Rectangle(x, 0, statsW, row1H);
-                using (SolidBrush b = new SolidBrush(Color.FromArgb(128, 255, 255, 255)))
-                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center })
-                    g.DrawString(time, textFont, b, statsRect, sf);
-                x += statsW;
-            }
 
             using (SolidBrush arrowBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 255)))
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
@@ -1095,37 +1195,10 @@ namespace CF7Launcher.Guardian.Hud
             {
                 DrawDivider(g, x, row1H, scale);
                 x += Px(DividerW + DividerMarginX * 2, scale);
-                int kpW = ComputeCurrencyWidth(_kp.Current, scale);
+                int kpW = ComputeCurrencyWidth(_kp, scale);
                 Rectangle kpRect = new Rectangle(x, 0, kpW, row1H);
                 DrawCurrencyPanel(g, kpRect, "K", _kp, Color.FromArgb(102, 204, 255), monoFont, false, scale);
                 x += kpW;
-            }
-
-            if (expandedEase > 0.55f)
-            {
-                int gap = Px(Row1RightGap, scale);
-                int totalButtonsW = 0;
-                int visibleCount = 0;
-                for (int i = 0; i < Row1Buttons.Length; i++)
-                {
-                    if (!ShouldShowButton(Row1Buttons[i])) continue;
-                    totalButtonsW += MeasureButtonWidth(g, textFont, Row1Buttons[i].Label, scale);
-                    visibleCount++;
-                }
-                if (visibleCount > 1) totalButtonsW += gap * (visibleCount - 1);
-                int bx = Math.Max(totalW - Px(RowPadX, scale) - totalButtonsW, x + gap);
-                for (int i = 0; i < Row1Buttons.Length; i++)
-                {
-                    NotchButtonDef def = Row1Buttons[i];
-                    if (!ShouldShowButton(def)) continue;
-                    int btnW = MeasureButtonWidth(g, textFont, def.Label, scale);
-                    Rectangle r = new Rectangle(bx, (row1H - Px(ToolbarButtonH, scale)) / 2, btnW, Px(ToolbarButtonH, scale));
-                    int idx = defs.Count;
-                    PaintButton(g, r, textFont, def.Label, (byte)220, idx == _hoverButtonIndex, scale);
-                    rects.Add(r);
-                    defs.Add(def);
-                    bx += btnW + gap;
-                }
             }
 
             _buttonRects = rects.ToArray();
@@ -1136,32 +1209,73 @@ namespace CF7Launcher.Guardian.Hud
         {
             int btnH = Px(ToolbarButtonH, scale);
             int gap = Px(1, scale);
-            int menuW = 0;
-            for (int i = 0; i < OtherButtons.Length; i++)
-                menuW = Math.Max(menuW, MeasureButtonWidth(g, font, OtherButtons[i].Label, scale));
-            menuW = Math.Max(menuW, Px(108, scale));
+            int pad = Px(4, scale);
+            NotchButtonDef[] activeButtons = GetActiveOtherButtons();
+            int menuW = Px(210, scale);
+            for (int i = 0; i < activeButtons.Length; i++)
+                menuW = Math.Max(menuW, MeasureButtonWidth(g, font, activeButtons[i].Label, scale) + pad * 2);
+            menuW = Math.Min(menuW, Math.Max(Px(120, scale), totalW - Px(RowPadX * 2, scale)));
             int x = totalW - Px(RowPadX, scale) - menuW;
-            int menuH = OtherButtons.Length * (btnH + gap) + Px(8, scale);
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb(225, 24, 24, 26)))
-            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
-            {
-                DrawRoundedRectFill(g, x, y, menuW, menuH, Px(4, scale), bg);
-                g.DrawRectangle(border, x, y, menuW - 1, menuH - 1);
-            }
+            int menuH = OtherMenuHeight(scale);
+            NativeHudTheme.DrawPanel(g, new Rectangle(x, y, menuW, menuH), scale,
+                NativeHudTheme.PanelFillDense, Color.Empty, true);
 
             List<Rectangle> rects = new List<Rectangle>();
             List<NotchButtonDef> defs = new List<NotchButtonDef>();
-            int itemY = y + Px(4, scale);
-            for (int i = 0; i < OtherButtons.Length; i++)
+            int innerX = x + pad;
+            int innerW = menuW - pad * 2;
+            int tabY = y + pad;
+            int tabW = Math.Max(1, innerW / OtherGroupButtons.Length);
+            for (int i = 0; i < OtherGroupButtons.Length; i++)
             {
-                Rectangle r = new Rectangle(x, itemY, menuW, btnH);
+                int tabX = innerX + i * tabW;
+                int width = i == OtherGroupButtons.Length - 1 ? x + menuW - pad - tabX : tabW;
+                Rectangle r = new Rectangle(tabX, tabY, width, btnH);
                 int idx = _buttonDefs.Length + defs.Count;
-                PaintButton(g, r, font, OtherButtons[i].Label, 230, idx == _hoverButtonIndex, scale);
+                PaintButton(g, r, font, OtherGroupButtons[i].Label, 230, idx == _hoverButtonIndex, scale);
+                if (i == _otherMenuGroupIndex)
+                {
+                    using (SolidBrush accent = new SolidBrush(NativeHudTheme.Cyan))
+                        g.FillRectangle(accent, r.X + Px(3, scale), r.Bottom - Px(2, scale),
+                            Math.Max(1, r.Width - Px(6, scale)), Px(2, scale));
+                }
                 rects.Add(r);
-                defs.Add(OtherButtons[i]);
+                defs.Add(OtherGroupButtons[i]);
+            }
+
+            int itemY = tabY + btnH + Px(3, scale);
+            for (int i = 0; i < activeButtons.Length; i++)
+            {
+                if (!ShouldShowButton(activeButtons[i])) continue;
+                Rectangle r = new Rectangle(innerX, itemY, innerW, btnH);
+                int idx = _buttonDefs.Length + defs.Count;
+                PaintButton(g, r, font, activeButtons[i].Label, 230, idx == _hoverButtonIndex, scale);
+                rects.Add(r);
+                defs.Add(activeButtons[i]);
                 itemY += btnH + gap;
             }
             AppendButtonRects(rects, defs);
+        }
+
+        private NotchButtonDef[] GetActiveOtherButtons()
+        {
+            if (_otherMenuGroupIndex < 0 || _otherMenuGroupIndex >= OtherButtonGroups.Length)
+                _otherMenuGroupIndex = 0;
+            return OtherButtonGroups[_otherMenuGroupIndex];
+        }
+
+        private int OtherMenuHeight(float scale)
+        {
+            int count = CountVisibleButtons(GetActiveOtherButtons());
+            int btnH = Px(ToolbarButtonH, scale);
+            int gap = Px(1, scale);
+            return Px(4 + 3 + 4, scale) + btnH + count * btnH + Math.Max(0, count - 1) * gap;
+        }
+
+        private void CloseOtherMenu()
+        {
+            _otherMenuOpen = false;
+            _otherMenuGroupIndex = 0;
         }
 
         private void AppendButtonRects(List<Rectangle> rects, List<NotchButtonDef> defs)
@@ -1186,26 +1300,21 @@ namespace CF7Launcher.Guardian.Hud
 
         private void PaintButton(Graphics g, Rectangle r, Font font, string text, byte alpha, bool hover, float scale)
         {
-            using (SolidBrush bg = new SolidBrush(hover
-                ? Color.FromArgb(alpha, 60, 60, 64)
-                : Color.FromArgb((byte)(alpha * 0.34f), 255, 255, 255)))
+            NativeHudTheme.DrawButton(g, r, scale, hover, false, false, false);
             using (SolidBrush fg = new SolidBrush(hover
-                ? Color.FromArgb(alpha, 255, 255, 255)
-                : Color.FromArgb((byte)(alpha * 0.82f), 255, 255, 255)))
+                ? NativeHudTheme.WithAlpha(NativeHudTheme.TextPrimary, alpha)
+                : NativeHudTheme.WithAlpha(NativeHudTheme.TextSecondary, (byte)(alpha * 0.9f))))
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
             {
-                DrawRoundedRectFill(g, r.X, r.Y, r.Width, r.Height, Px(3, scale), bg);
                 g.DrawString(text, font, fg, r, sf);
             }
         }
 
         private void DrawDivider(Graphics g, int x, int rowH, float scale)
         {
-            using (SolidBrush b = new SolidBrush(Color.FromArgb(38, 255, 255, 255)))
-            {
-                int hh = Px(14, scale);
-                g.FillRectangle(b, x + Px(DividerMarginX, scale), (rowH - hh) / 2, Px(DividerW, scale), hh);
-            }
+            int hh = Px(18, scale);
+            NativeHudTheme.DrawSeparator(g, x + Px(DividerMarginX, scale),
+                (rowH - hh) / 2, (rowH + hh) / 2, scale);
         }
 
         private void DrawCurrencyPanel(Graphics g, Rectangle rect, string icon, CurrencySlot slot, Color accent, Font font, bool leftAlign, float scale)
@@ -1219,11 +1328,13 @@ namespace CF7Launcher.Guardian.Hud
                 : new Rectangle(rect.X, 0, iconR.X - rect.X - Px(CurrencyGap, scale), rect.Height);
             using (SolidBrush iconBg = new SolidBrush(Color.FromArgb(38, accent)))
             using (SolidBrush iconFg = new SolidBrush(accent))
-            using (SolidBrush valFg = new SolidBrush(Color.FromArgb(230, 255, 255, 255)))
+            using (SolidBrush valFg = new SolidBrush(NativeHudTheme.TextPrimary))
             using (StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
             using (StringFormat valueFmt = new StringFormat { Alignment = leftAlign ? StringAlignment.Near : StringAlignment.Far, LineAlignment = StringAlignment.Center })
             {
                 g.FillRectangle(iconBg, iconR);
+                using (Pen iconFrame = new Pen(NativeHudTheme.FrameNormal, NativeHudTheme.StrokePx(scale)))
+                    g.DrawRectangle(iconFrame, iconR.X, iconR.Y, Math.Max(0, iconR.Width - 1), Math.Max(0, iconR.Height - 1));
                 g.DrawString(icon, font, iconFg, iconR, center);
                 g.DrawString(FormatNumber(slot.Current), font, valFg, valR, valueFmt);
             }
@@ -1241,7 +1352,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             float basePx = isGame ? 13f : 12f;
             FontStyle style = isGame ? FontStyle.Bold : FontStyle.Regular;
-            return new Font("Microsoft YaHei", Pxf(basePx, scale), style, GraphicsUnit.Pixel);
+            return NativeHudFonts.CreateUiFont(Pxf(basePx, scale), style, GraphicsUnit.Pixel);
         }
 
         private static bool ShouldStartHoverExpand(bool canHoverExpand, int expandCooldownMs)
@@ -1255,8 +1366,8 @@ namespace CF7Launcher.Guardian.Hud
             int w = Px(RowPadX * 2, scale) + center;
             if (_gameReady)
             {
-                w += ComputeCurrencyWidth(_gold.Current, scale);
-                w += ComputeCurrencyWidth(_kp.Current, scale);
+                w += ComputeCurrencyWidth(_gold, scale);
+                w += ComputeCurrencyWidth(_kp, scale);
                 w += Px((DividerW + DividerMarginX * 2) * 2, scale);
             }
             else
@@ -1266,18 +1377,29 @@ namespace CF7Launcher.Guardian.Hud
             return w;
         }
 
-        private int ComputeExpandedWidth(float scale, int viewportW)
+        private int ComputeExpandedWidth(float scale, Rectangle viewport)
         {
             int collapsed = ComputeCollapsedWidth(scale);
-            int row1Right = MeasureButtonsApprox(Row1Buttons, scale) + Px(Row1RightGap * (CountVisibleButtons(Row1Buttons) + 1), scale);
             int toolbar = _gameReady
-                ? Px(ToolbarPadX * 2, scale) + MeasureButtonsApprox(ToolbarButtons, scale) + Px(ToolbarButtonGap * Math.Max(0, CountVisibleButtons(ToolbarButtons) - 1), scale)
+                ? Math.Max(
+                    MeasureToolbarRowApprox(ToolbarButtons, scale),
+                    Math.Max(
+                        MeasureToolbarRowApprox(ToolbarUtilityButtons, scale),
+                        MeasureToolbarRowApprox(Row1Buttons, scale)))
                 : 0;
-            int desired = Math.Max(collapsed + row1Right, toolbar);
+            int desired = Math.Max(collapsed, toolbar);
             if (_chartVisible) desired = Math.Max(desired, Px(ExpandedChartW, scale));
             desired = Math.Max(desired, collapsed);
-            int max = Math.Min(viewportW, Px(600, scale));
+            int max = RightHudLayout.SafeNotchMaxWidthFromViewport(viewport, scale, collapsed);
             return Math.Min(Math.Max(desired, collapsed), Math.Max(collapsed, max));
+        }
+
+        private int MeasureToolbarRowApprox(NotchButtonDef[] defs, float scale)
+        {
+            int count = CountVisibleButtons(defs);
+            return Px(ToolbarPadX * 2 + ToolbarGroupLabelW, scale)
+                + MeasureButtonsApprox(defs, scale)
+                + Px(ToolbarButtonGap * Math.Max(0, count - 1), scale);
         }
 
         private static int ExpandedChartHeight(float scale)
@@ -1285,10 +1407,15 @@ namespace CF7Launcher.Guardian.Hud
             return Px(ExpandedChartPad * 2 + ExpandedChartCanvasH + ExpandedChartHintGap + ExpandedChartHintH, scale);
         }
 
-        private int ComputeCurrencyWidth(int value, float scale)
+        private int ComputeCurrencyWidth(CurrencySlot slot, float scale)
         {
-            string text = FormatNumber(value);
-            int chars = Math.Max(6, text.Length);
+            int chars = 6;
+            if (slot != null)
+            {
+                chars = Math.Max(chars, FormatNumber(slot.Current).Length);
+                chars = Math.Max(chars, FormatNumber(slot.Target).Length);
+                chars = Math.Max(chars, FormatNumber(slot.From).Length);
+            }
             int valueW = Math.Max(Px(CurrencyMinValueW, scale), Px(chars * 8, scale));
             return Px(CurrencyIconW + CurrencyGap, scale) + valueW;
         }
@@ -1332,26 +1459,11 @@ namespace CF7Launcher.Guardian.Hud
         {
             int hour = ((int)Math.Floor(_fpsBuffer.GameHour)) % 24;
             int level = (_lightLevels != null && _lightLevels.Length >= 24) ? _lightLevels[hour] : 7;
-            if (level >= 7) return Color.FromArgb(174, 30, 30, 32);
-            if (level >= 4) return Color.FromArgb(199, 28, 26, 24);
-            return Color.FromArgb(224, 18, 20, 28);
-        }
-
-        private static Color GetPerfColor(int level)
-        {
-            if (level <= 0) return Color.FromArgb(102, 255, 102);
-            if (level == 1) return Color.FromArgb(255, 170, 0);
-            if (level == 2) return Color.FromArgb(255, 102, 51);
-            return Color.FromArgb(255, 68, 68);
-        }
-
-        private static string FormatGameTime(float hour)
-        {
-            int h = ((int)Math.Floor(hour)) % 24;
-            int m = (int)Math.Floor((hour - (float)Math.Floor(hour)) * 60f);
-            if (m < 0) m = 0;
-            if (m > 59) m = 59;
-            return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+            if (level >= 7)
+                return NativeHudTheme.Blend(NativeHudTheme.PanelFill, Color.FromArgb(48, 48, 44), 0.08f, 218);
+            if (level >= 4)
+                return NativeHudTheme.Blend(NativeHudTheme.PanelFill, Color.FromArgb(54, 42, 28), 0.08f, 228);
+            return NativeHudTheme.Blend(NativeHudTheme.PanelFillDense, Color.FromArgb(24, 32, 48), 0.10f, 238);
         }
 
         private static void StartCurrencyUpdate(CurrencySlot slot, int value, int deltaOverride)
@@ -1446,6 +1558,33 @@ namespace CF7Launcher.Guardian.Hud
                 g.DrawLines(outlinePen, outline);
         }
 
+        private void DrawAudioEnvelope(Graphics g, Rectangle area)
+        {
+            if (_audioHudState == null || _audioHudState.DisableVisualizers || !_audioHudState.HasSamples) return;
+            if (area.Width <= 0 || area.Height <= 0) return;
+
+            int count = _audioHudState.SampleCount;
+            float stepX = (float)area.Width / Math.Max(1, count);
+            float midY = area.Y + area.Height / 2f;
+            float maxHalfH = Math.Max(1f, area.Height / 2f - 1f);
+            int alpha = _audioHudState.IsPlaying ? 48 : 18;
+            using (SolidBrush leftBrush = new SolidBrush(Color.FromArgb(alpha, 82, 172, 220)))
+            using (SolidBrush rightBrush = new SolidBrush(Color.FromArgb(Math.Max(10, alpha - 10), 120, 202, 238)))
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    float left, right;
+                    _audioHudState.GetSample(i, out left, out right);
+                    float x = area.X + i * stepX;
+                    float barW = Math.Max(1f, stepX - 0.5f);
+                    float leftH = Math.Max(0.5f, left * maxHalfH);
+                    float rightH = Math.Max(0.5f, right * maxHalfH);
+                    g.FillRectangle(leftBrush, x, midY - leftH, barW, leftH);
+                    g.FillRectangle(rightBrush, x, midY, barW, rightH);
+                }
+            }
+        }
+
         private void DrawSparkline(Graphics g, int x, int y, int w, int h, Color lineColor)
         {
             if (!_fpsBuffer.HasData)
@@ -1491,12 +1630,8 @@ namespace CF7Launcher.Guardian.Hud
         {
             _expandedChartRect = panel;
 
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb(224, 24, 24, 26)))
-            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
-            {
-                DrawBottomRoundedRectFill(g, panel.X, panel.Y, panel.Width, panel.Height, Px(8, scale), bg);
-                DrawBottomRoundedRectBorder(g, panel.X, panel.Y, panel.Width, panel.Height, Px(8, scale), border);
-            }
+            NativeHudTheme.DrawPanel(g, panel, scale, NativeHudTheme.PanelFillDense,
+                NativeHudTheme.Cyan, true);
 
             int pad = Px(ExpandedChartPad, scale);
             int hintGap = Px(ExpandedChartHintGap, scale);
@@ -1507,8 +1642,8 @@ namespace CF7Launcher.Guardian.Hud
                 Math.Max(1, panel.Width - pad * 2),
                 Math.Max(1, panel.Height - pad * 2 - hintGap - hintH));
 
-            using (SolidBrush canvasBg = new SolidBrush(Color.FromArgb(76, 0, 0, 0)))
-                DrawRoundedRectFill(g, canvas.X, canvas.Y, canvas.Width, canvas.Height, Px(4, scale), canvasBg);
+            NativeHudTheme.DrawPanel(g, canvas, scale, Color.FromArgb(188, 0, 0, 0),
+                Color.Empty, false);
 
             DrawLightBackground(g, canvas.X, canvas.Y, canvas.Width, canvas.Height);
 
@@ -1793,60 +1928,6 @@ namespace CF7Launcher.Guardian.Hud
             return Color.FromArgb(255, 60, 60);
         }
 
-        private static void DrawRoundedRect(Graphics g, int x, int y, int w, int h, int r, Color color)
-        {
-            using (SolidBrush brush = new SolidBrush(color))
-                DrawRoundedRectFill(g, x, y, w, h, r, brush);
-        }
-
-        private static void DrawRoundedRectFill(Graphics g, int x, int y, int w, int h, int r, Brush brush)
-        {
-            if (r <= 0) { g.FillRectangle(brush, x, y, w, h); return; }
-            int d = r * 2;
-            using (GraphicsPath path = new GraphicsPath())
-            {
-                path.AddArc(x, y, d, d, 180, 90);
-                path.AddArc(x + w - d, y, d, d, 270, 90);
-                path.AddArc(x + w - d, y + h - d, d, d, 0, 90);
-                path.AddArc(x, y + h - d, d, d, 90, 90);
-                path.CloseFigure();
-                g.FillPath(brush, path);
-            }
-        }
-
-        private static void DrawBottomRoundedRectFill(Graphics g, int x, int y, int w, int h, int r, Brush brush)
-        {
-            if (r <= 0) { g.FillRectangle(brush, x, y, w, h); return; }
-            using (GraphicsPath path = CreateBottomRoundedRectPath(x, y, w, h, r))
-                g.FillPath(brush, path);
-        }
-
-        private static void DrawBottomRoundedRectBorder(Graphics g, int x, int y, int w, int h, int r, Pen pen)
-        {
-            if (r <= 0) { g.DrawRectangle(pen, x, y, w - 1, h - 1); return; }
-            using (GraphicsPath path = CreateBottomRoundedRectPath(x, y, w - 1, h - 1, r))
-                g.DrawPath(pen, path);
-        }
-
-        private static GraphicsPath CreateBottomRoundedRectPath(int x, int y, int w, int h, int r)
-        {
-            int maxR = Math.Min(r, Math.Min(w, h) / 2);
-            int d = maxR * 2;
-            GraphicsPath path = new GraphicsPath();
-            if (maxR <= 0)
-            {
-                path.AddRectangle(new Rectangle(x, y, w, h));
-                return path;
-            }
-            path.AddLine(x, y, x + w, y);
-            path.AddLine(x + w, y, x + w, y + h - maxR);
-            path.AddArc(x + w - d, y + h - d, d, d, 0, 90);
-            path.AddArc(x, y + h - d, d, d, 90, 90);
-            path.AddLine(x, y + h - maxR, x, y);
-            path.CloseFigure();
-            return path;
-        }
-
         #endregion
 
         private static int[] LoadLightLevels(string projectRoot)
@@ -1895,6 +1976,58 @@ namespace CF7Launcher.Guardian.Hud
         {
             EventHandler h = AnimationStateChanged;
             if (h != null) h(this, EventArgs.Empty);
+        }
+
+        internal string ResolveUtilityRouteForTest(int index)
+        {
+            if (index < 0 || index >= ToolbarUtilityButtons.Length) return null;
+            return ToolbarUtilityButtons[index].CommandKey;
+        }
+
+        internal static int CollapsedHeightBaseForTest
+        {
+            get { return CollapsedH; }
+        }
+
+        internal void BeginExpandForTest()
+        {
+            _reserveExpandedCompositeBounds = true;
+            _state = NotchState.Expanding;
+            _expandProgress = 0f;
+            FireBounds();
+        }
+
+        internal void BeginCollapseForTest()
+        {
+            _reserveExpandedCompositeBounds = true;
+            _state = NotchState.Collapsing;
+            _expandProgress = 1f;
+            CloseOtherMenu();
+        }
+
+        internal bool HasCompositeReservationForTest { get { return _reserveExpandedCompositeBounds; } }
+        internal bool IsOtherMenuOpenForTest { get { return _otherMenuOpen; } }
+        internal int OtherMenuGroupIndexForTest { get { return _otherMenuGroupIndex; } }
+        internal int OtherMenuItemCountForTest { get { return CountVisibleButtons(GetActiveOtherButtons()); } }
+        internal void OpenOtherMenuForTest(int groupIndex)
+        {
+            _otherMenuOpen = true;
+            _otherMenuGroupIndex = Math.Max(0, Math.Min(OtherButtonGroups.Length - 1, groupIndex));
+        }
+        internal void ForceGameReadyForTest(bool ready)
+        {
+            _gameReady = ready;
+        }
+        internal void ForceCurrenciesForTest(int gold, int kpoint)
+        {
+            _gold.Current = _gold.Target = _gold.From = gold;
+            _kp.Current = _kp.Target = _kp.From = kpoint;
+        }
+        internal Size SizeForProgressForTest(float progress)
+        {
+            int width, height;
+            GetSizeForProgress(progress, out width, out height);
+            return new Size(width, height);
         }
 
         public void Dispose() { }

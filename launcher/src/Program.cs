@@ -770,21 +770,31 @@ class Program
             string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
             CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
                 CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFileAsync(mapHudJsonPath);
-            // pause/expand 走两条独立路径：
-            //   pause → webOverlay.ToggleBgmPause（与 HandleJukeboxMessage 共享 _bgmPaused 镜像，避免双权威源）
-            //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox") (Phase 5：jukebox-panel.js 已注册 Panels.register)
-            WebOverlayForm capturedWebForJukebox = webOverlay;
-            LauncherCommandRouter capturedRouterForJukebox = commandRouter;
             CF7Launcher.Guardian.Hud.RightContextWidget rightContext =
                 new CF7Launcher.Guardian.Hud.RightContextWidget(
                     form.FlashHostPanel,
                     commandRouter,
                     mapCatalog,
-                    delegate { capturedWebForJukebox.ToggleBgmPause(); },
-                    delegate { capturedRouterForJukebox.Dispatch("JUKEBOX_EXPAND"); });
+                    CF7Launcher.Guardian.Hud.MapDisplayPolicy.ParsePreference(userPrefs.MapDisplayPreference),
+                    delegate(CF7Launcher.Guardian.Hud.MapDisplayPreference preference)
+                    {
+                        userPrefs.MapDisplayPreference =
+                            CF7Launcher.Guardian.Hud.MapDisplayPolicy.ToPersistedValue(preference);
+                        if (!userPrefs.Save())
+                            LogManager.Log("[NativeHud] mapDisplayPreference save failed; keeping process-local value="
+                                + userPrefs.MapDisplayPreference);
+                        nativeHud.AddMessage("地图显示："
+                            + CF7Launcher.Guardian.Hud.MapDisplayPolicy.ToDisplayLabel(preference));
+                    });
             nativeHud.AddWidget(rightContext);
             CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
+            // 地图不再常驻预留 header；仅 SafeExit 真正可见时通知 RightContext 留出状态槽，
+            // 避免确认条覆盖地图顶部，同时保持普通地图紧贴动作行。
+            safeExitPanel.BoundsOrVisibilityChanged += delegate
+            {
+                rightContext.SetExternalStatusSlotActive(safeExitPanel.Visible);
+            };
             nativeHud.AddWidget(safeExitPanel);
             // 必须在 widget 实例化后注入：router SAFEEXIT click → widget.Arm() → 进 Saving 显示状态条。
             // 否则 widget 仅靠 sv 推送决定可见，会被普通自动存盘（商店关闭/升级/saveAll）误触发。
@@ -798,22 +808,27 @@ class Program
                 new CF7Launcher.Guardian.Hud.ToastWidget(form.FlashHostPanel);
             nativeHud.AddWidget(toastWidget);
             // NotchWidget 顶替原 NotchOverlay 独立 ULW（FPS 药丸 + 工具栏 + 通知栈 + 展开图表）。
+            // AudioHudState 在此成为 native HUD 唯一的 BGM 峰值历史；低频包络绘于 FPS 折线背景。
             // INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此 widget。
+            CF7Launcher.Guardian.Hud.AudioHudState audioHudState =
+                new CF7Launcher.Guardian.Hud.AudioHudState();
             CF7Launcher.Guardian.Hud.NotchWidget notchWidget =
                 new CF7Launcher.Guardian.Hud.NotchWidget(
                     form.FlashHostPanel, frameTask.FpsBuffer, projectRoot,
                     new Action(form.ToggleFullscreen),
                     new Action(form.ToggleLog),
                     new Action(form.ForceExit),
-                    new Action<Keys>(form.HandleButtonClick));
+                    new Action<Keys>(form.HandleButtonClick),
+                    audioHudState);
             notchWidget.SetCommandRouter(commandRouter);
             nativeHud.AddWidget(notchWidget);
             // 升级 webOverlay 的 toast/notch fallback：先前以 toastOverlay=null/notchOverlay=null 注入，
             // nativeHud 就绪后接管 IToastSink + INotchSink。webOverlay.AddMessage/AddNotice 在
             // _useNativeHud=true 时直接转发 _toastFallback / _notchFallback，无需 ExecScript。
             webOverlay.SetFallback(nativeHud, nativeHud);
-            // web `#quest-row > #map-hud-toggle` click → router MAPHUD_TOGGLE → C# 折叠态切换
-            commandRouter.OnMapHudToggle = delegate { rightContext.ToggleMapCollapsed(); };
+            // 刘海 MAPHUD_TOGGLE 只管显示/关闭；卡片尺寸按钮在 compact/expanded 间往返。
+            // 两者都只写用户显示偏好；AS2 mm runtimeMapMode 保持只读并继续承担玩法门控。
+            commandRouter.OnMapHudToggle = delegate { rightContext.ToggleMapVisibility(); };
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);

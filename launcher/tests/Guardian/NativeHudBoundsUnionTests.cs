@@ -90,6 +90,31 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void CompositeBoundsProvider_UsesReservedBoundsForUnion()
+        {
+            var widget = new FakeCompositeWidget(
+                new Rectangle(100, 100, 40, 20),
+                new Rectangle(60, 100, 120, 50));
+
+            Rectangle? r = NativeHudOverlay.ComputeBoundsUnion(new[] { widget }, 0);
+
+            Assert.True(r.HasValue);
+            Assert.Equal(new Rectangle(60, 100, 120, 50), r.Value);
+        }
+
+        [Fact]
+        public void TransparentReservedArea_DoesNotBecomeInteractive()
+        {
+            var widget = new FakeCompositeWidget(
+                new Rectangle(100, 100, 40, 20),
+                new Rectangle(60, 100, 120, 50));
+            INativeHudWidget[] widgets = { widget };
+
+            Assert.Null(NativeHudOverlay.FindHitWidget(widgets, new Point(70, 110)));
+            Assert.Same(widget, NativeHudOverlay.FindHitWidget(widgets, new Point(110, 110)));
+        }
+
+        [Fact]
         public void ShouldRunAnimationTick_NoVisibleWidgetWantsTick_ReturnsFalse()
         {
             var widgets = new List<INativeHudWidget>
@@ -301,6 +326,30 @@ namespace CF7Launcher.Tests.Guardian
             public bool TryHitTest(Point screenPt) { return false; }
             public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind) { }
             public bool WantsAnimationTick { get { return _wantsTick; } }
+            public void Tick(int deltaMs) { }
+            public event EventHandler BoundsOrVisibilityChanged { add { } remove { } }
+            public event EventHandler RepaintRequested { add { } remove { } }
+            public event EventHandler AnimationStateChanged { add { } remove { } }
+        }
+
+        private sealed class FakeCompositeWidget : INativeHudWidget, INativeHudCompositeBoundsProvider
+        {
+            private readonly Rectangle _visualBounds;
+            private readonly Rectangle _compositeBounds;
+
+            public FakeCompositeWidget(Rectangle visualBounds, Rectangle compositeBounds)
+            {
+                _visualBounds = visualBounds;
+                _compositeBounds = compositeBounds;
+            }
+
+            public Rectangle ScreenBounds { get { return _visualBounds; } }
+            public Rectangle CompositeBounds { get { return _compositeBounds; } }
+            public bool Visible { get { return true; } }
+            public void Paint(Graphics g, float dpr, Point hudOrigin) { }
+            public bool TryHitTest(Point screenPt) { return _visualBounds.Contains(screenPt); }
+            public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind) { }
+            public bool WantsAnimationTick { get { return false; } }
             public void Tick(int deltaMs) { }
             public event EventHandler BoundsOrVisibilityChanged { add { } remove { } }
             public event EventHandler RepaintRequested { add { } remove { } }

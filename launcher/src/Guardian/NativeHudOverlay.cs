@@ -265,7 +265,9 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// 计算 widget 集合的 bounds union（含 padding）。internal static 便于单测。
         /// 返回 null 表示无 visible widget（NativeHud 应 SW_HIDE）。
-        /// 跳过非 Visible widget 与零宽高 ScreenBounds（widget 可能在 collapsing 中段返回零矩形）。
+        /// 若 widget 实现 INativeHudCompositeBoundsProvider，则使用其 CompositeBounds；否则使用 ScreenBounds。
+        /// CompositeBounds 只影响合成窗口，不扩大 TryHitTest 的实际交互区域。
+        /// 跳过非 Visible widget 与零宽高矩形（widget 可能在 collapsing 中段返回零矩形）。
         /// </summary>
         internal static Rectangle? ComputeBoundsUnion(IEnumerable<INativeHudWidget> widgets, int padding)
         {
@@ -274,12 +276,29 @@ namespace CF7Launcher.Guardian
             foreach (INativeHudWidget w in widgets)
             {
                 if (w == null || !w.Visible) continue;
-                Rectangle r = w.ScreenBounds;
+                INativeHudCompositeBoundsProvider provider = w as INativeHudCompositeBoundsProvider;
+                Rectangle r = provider != null ? provider.CompositeBounds : w.ScreenBounds;
                 if (r.Width <= 0 || r.Height <= 0) continue;
                 union = union.HasValue ? Rectangle.Union(union.Value, r) : r;
             }
             if (!union.HasValue) return null;
             return Rectangle.Inflate(union.Value, padding, padding);
+        }
+
+        /// <summary>
+        /// 按绘制层级从上到下解析实际交互命中。合成保留区不会绕过 TryHitTest，
+        /// 因而透明预留像素在 WM_NCHITTEST 中保持 HTTRANSPARENT。
+        /// </summary>
+        internal static INativeHudWidget FindHitWidget(IList<INativeHudWidget> widgets, Point screenPt)
+        {
+            if (widgets == null) return null;
+            for (int i = widgets.Count - 1; i >= 0; i--)
+            {
+                INativeHudWidget w = widgets[i];
+                if (w == null || !w.Visible) continue;
+                if (w.TryHitTest(screenPt)) return w;
+            }
+            return null;
         }
 
         /// <summary>
@@ -666,15 +685,10 @@ namespace CF7Launcher.Guardian
 
                 INativeHudWidget[] snapshot;
                 lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
-                for (int i = 0; i < snapshot.Length; i++)
+                if (FindHitWidget(snapshot, screenPt) != null)
                 {
-                    INativeHudWidget w = snapshot[i];
-                    if (!w.Visible) continue;
-                    if (w.TryHitTest(screenPt))
-                    {
-                        m.Result = (IntPtr)1; // HTCLIENT
-                        return;
-                    }
+                    m.Result = (IntPtr)1; // HTCLIENT
+                    return;
                 }
                 m.Result = (IntPtr)HTTRANSPARENT;
                 return;
@@ -690,13 +704,7 @@ namespace CF7Launcher.Guardian
         {
             INativeHudWidget[] snapshot;
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
-            for (int i = snapshot.Length - 1; i >= 0; i--)
-            {
-                INativeHudWidget w = snapshot[i];
-                if (w == null || !w.Visible) continue;
-                if (w.TryHitTest(screenPt)) return w;
-            }
-            return null;
+            return FindHitWidget(snapshot, screenPt);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

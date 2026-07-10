@@ -65,7 +65,7 @@ namespace CF7Launcher.Guardian.Hud
             if (anchor == null) throw new ArgumentNullException("anchor");
             _anchor = anchor;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
-            _textFont = new Font("Microsoft YaHei", ToastFontPxForScale(1f), FontStyle.Regular, GraphicsUnit.Pixel);
+            _textFont = NativeHudFonts.CreateUiFont(ToastFontPxForScale(1f), FontStyle.Regular, GraphicsUnit.Pixel);
             _anchor.Resize += delegate { FireBounds(); };
         }
 
@@ -262,7 +262,7 @@ namespace CF7Launcher.Guardian.Hud
             if (Math.Abs(scale - _lastFontScale) < 0.01f && _textFont != null) return;
             _lastFontScale = scale;
             if (_textFont != null) _textFont.Dispose();
-            _textFont = new Font("Microsoft YaHei", ToastFontPxForScale(scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _textFont = NativeHudFonts.CreateUiFont(ToastFontPxForScale(scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _lastBoundsScale = -1f;
         }
 

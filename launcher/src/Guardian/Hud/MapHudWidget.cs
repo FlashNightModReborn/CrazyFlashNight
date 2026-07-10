@@ -269,7 +269,7 @@ namespace CF7Launcher.Guardian.Hud
             int marginY = WidgetScaler.Px(6, Scale);
             int maxLabelW = card.Width - marginX * 2;
 
-            using (Font font = new Font("Microsoft YaHei", fontPx, FontStyle.Bold, GraphicsUnit.Pixel))
+            using (Font font = NativeHudFonts.CreateUiFont(fontPx, FontStyle.Bold, GraphicsUnit.Pixel))
             using (StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
                    { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
             {

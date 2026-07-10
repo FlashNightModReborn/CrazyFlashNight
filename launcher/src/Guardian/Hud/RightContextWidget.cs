@@ -4,29 +4,20 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
-using CF7Launcher.Audio;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// Phase 5.7 右侧组合 HUD。
-    ///
-    /// 复刻旧 Web 右上 cluster：top-right-tools + context-panel + jukebox collapsed titlebar。
+    /// 收敛后的右侧组合 HUD：六入口常驻动作行 + 条件状态槽 + 可选地图预览。
     /// 业务命令仍全部通过 LauncherCommandRouter.Dispatch，不在 widget 内复制业务分支。
     /// </summary>
-    public class RightContextWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
+    public class RightContextWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
     {
         private const int NOTICE_MS = 5000;
-        private const int MINI_RENDER_MS = 100;
-        private const int PLAY_POLL_MS = 250;
-        private const int HISTORY = 100;
         private const int ICON_W_BASE = 28;
         private const int NOTICE_TEXT_PAD_BASE = 8;
         private const int NOTICE_ARROW_W_BASE = 24;
-        private const int JUKE_PAUSE_W_BASE = 28;
-        private const int JUKE_EXPAND_W_BASE = 22;
-        private const int TITLE_PAD_BASE = 6;
         private const int MAP_BODY_INSET_BASE = 8;
         private const int MAP_LABEL_PAD_X_BASE = 6;
         private const int MAP_LABEL_PAD_Y_BASE = 2;
@@ -36,10 +27,11 @@ namespace CF7Launcher.Guardian.Hud
         private const string ICON_TASK_DONE = "❗";
         private const string ICON_PLACEHOLDER = "◆";
 
-        private static readonly string[] TOOL_KEYS = { "GAMESETTINGS", "SETTINGS", "PAUSE", "HELP", "SAFEEXIT" };
-        private static readonly string[] TOOL_LABELS_DEFAULT = { "⚙", "\U0001F527", "Ⅱ", "?", "×" };
-        private static readonly string[] TOOL_LABELS_PAUSED = { "⚙", "\U0001F527", "▶", "?", "×" };
-        private const int IDX_PAUSE = 2;
+        private static readonly string[] TOOL_KEYS = { "TASK_MAP", "TASK_UI", "EQUIP_UI", "GAMESETTINGS", "PAUSE", "SAFEEXIT" };
+        private static readonly string[] TOOL_LABELS_DEFAULT = { "地图", "任务", "装备", "⚙", "Ⅱ", "×" };
+        private static readonly string[] TOOL_LABELS_PAUSED = { "地图", "任务", "装备", "⚙", "▶", "×" };
+        private static readonly string[] TOOL_TOOLTIPS = { "完整地图｜显示模式在刘海", "任务", "装备", "系统设置", "暂停游戏", "安全退出" };
+        private const int IDX_PAUSE = 4;
 
         private static readonly string[] LEGACY_TYPES = { "task", "announce" };
 
@@ -48,12 +40,8 @@ namespace CF7Launcher.Guardian.Hud
             None,
             Tool,
             MapCard,
-            QuestMap,
-            QuestEquip,
-            QuestTask,
-            Notice,
-            JukeboxPause,
-            JukeboxExpand
+            MapDisplayToggle,
+            Notice
         }
 
         private struct HitInfo
@@ -74,16 +62,19 @@ namespace CF7Launcher.Guardian.Hud
         private readonly LauncherCommandRouter _router;
         private readonly MapHudDataCatalog _catalog;
         private readonly FlashCoordinateMapper _mapper;
-        private readonly Action _onTogglePause;
-        private readonly Action _onExpand;
 
         private volatile bool _gameReady;
         private volatile bool _paused;
+        private volatile bool _externalStatusSlotActive;
 
-        private string _mapMode = "0";
+        // AS2 mm 运行态只负责玩法语义；显示偏好与派生态必须独立，禁止互相覆盖。
+        private RuntimeMapMode _runtimeMapMode = RuntimeMapMode.None;
+        private MapDisplayPreference _mapDisplayPreference;
+        private EffectiveMapDisplayMode _effectiveMapDisplayMode = EffectiveMapDisplayMode.Hidden;
+        private bool _tacticalMapDataAvailable;
         private string _mapHotspotId = "";
         private MapHudHotspotEntry _mapEntry;
-        private bool _mapCollapsed;
+        private readonly Action<MapDisplayPreference> _onMapDisplayPreferenceChanged;
 
         private volatile bool _taskDone;
         private volatile bool _navigable;
@@ -96,81 +87,33 @@ namespace CF7Launcher.Guardian.Hud
         private string _noticeText = "";
         private string _noticeIcon = ICON_PLACEHOLDER;
 
-        private string _bgmTitle = "";
-        private bool _disableVisualizers;
-        private readonly float[] _peakL = new float[HISTORY];
-        private readonly float[] _peakR = new float[HISTORY];
-        private int _peakIdx;
-        private int _peakLen;
-        private int _peakAccumMs;
-        private int _playPollAccumMs;
-        private volatile bool _isPlaying;
-        private volatile bool _isPaused;
-
         private HitInfo _hover;
         private HitInfo _down;
 
         // ── P0 perf：GDI+ 资源静态/实例缓存 ──
-        // 旧版 PaintTools / PaintMapLabel / PaintQuestRow / PaintNotice / PaintJukebox 各自 new 5+ 个
-        // SolidBrush + Pen + Font + StringFormat 每帧；30Hz 下整 widget 触发数百个 GDI+ 对象创建。
+        // PaintTools / PaintMapLabel / PaintNotice 的稳定 GDI+ 资源复用。
+        // SolidBrush + Font + StringFormat 每帧；30Hz 下整 widget 触发数百个 GDI+ 对象创建。
         // 静态化后：
-        //   - 颜色 const 的 SolidBrush / Pen 进程级共享（不 dispose）
+        //   - 文本颜色 const 的 SolidBrush 进程级共享（不 dispose）
         //   - StringFormat 4 种 shape 静态共享
         //   - Font 实例缓存按 (family,size,style) 三元组复用，scale 变化时整体重建
         //
         // hover/theme-color 分支的 brush 仍按需分配（频率低且需要 alpha/color 注入）。
 
-        // 颜色常量
-        private static readonly Color C_TOOLS_BG          = Color.FromArgb(209, 24, 24, 26);
-        private static readonly Color C_TOOLS_BG_HOVER    = Color.FromArgb(229, 60, 60, 64);
-        private static readonly Color C_TOOLS_BG_PAUSED   = Color.FromArgb(229, 80, 20, 20);
-        private static readonly Color C_TOOLS_FG          = Color.FromArgb(178, 255, 255, 255);
-        private static readonly Color C_TOOLS_FG_HOVER    = Color.White;
-        private static readonly Color C_TOOLS_FG_PAUSED   = Color.FromArgb(255, 255, 102, 102);
-        private static readonly Color C_BORDER_FAINT      = Color.FromArgb(31, 255, 255, 255);
-        private static readonly Color C_BORDER_NOTICE     = Color.FromArgb(36, 255, 255, 255);
-        private static readonly Color C_CTX_BG            = Color.FromArgb(196, 20, 22, 24);
-        private static readonly Color C_QUEST_BG          = Color.FromArgb(214, 24, 24, 26);
-        private static readonly Color C_QUEST_BG_HOVER    = Color.FromArgb(232, 44, 48, 52);
-        private static readonly Color C_QUEST_FG          = Color.FromArgb(205, 235, 238, 240);
-        private static readonly Color C_QUEST_FG_DISABLED = Color.FromArgb(105, 235, 238, 240);
-        private static readonly Color C_JUKE_BG           = Color.FromArgb(209, 24, 24, 26);
-        private static readonly Color C_JUKE_BTN_HOVER    = Color.FromArgb(229, 60, 60, 64);
-        private static readonly Color C_JUKE_BTN_IDLE     = Color.FromArgb(209, 16, 16, 18);
-        private static readonly Color C_JUKE_FG_HOVER     = Color.White;
-        private static readonly Color C_JUKE_FG_BGM       = Color.FromArgb(229, 102, 204, 255);
-        private static readonly Color C_JUKE_FG_NOBGM     = Color.FromArgb(102, 255, 255, 255);
-        private static readonly Color C_JUKE_FG_DEFAULT   = Color.FromArgb(178, 255, 255, 255);
-        private static readonly Color C_JUKE_TITLE_NOBGM  = Color.FromArgb(76, 255, 255, 255);
-        private static readonly Color C_JUKE_TITLE_BGM    = Color.FromArgb(178, 255, 255, 255);
-        private static readonly Color C_LABEL_TEXT        = Color.FromArgb(238, 246, 248, 250);
+        // 文本与容器颜色常量
+        private static readonly Color C_TOOLS_FG          = NativeHudTheme.TextSecondary;
+        private static readonly Color C_TOOLS_FG_HOVER    = NativeHudTheme.TextPrimary;
+        private static readonly Color C_TOOLS_FG_PAUSED   = NativeHudTheme.Danger;
+        private static readonly Color C_CTX_BG            = NativeHudTheme.PanelFill;
+        private static readonly Color C_QUEST_FG          = NativeHudTheme.TextSecondary;
+        private static readonly Color C_LABEL_TEXT        = NativeHudTheme.TextPrimary;
 
-        // 静态 SolidBrush（非动态 alpha/color；进程级共享）
-        private static readonly SolidBrush BR_TOOLS_BG          = new SolidBrush(C_TOOLS_BG);
-        private static readonly SolidBrush BR_TOOLS_BG_HOVER    = new SolidBrush(C_TOOLS_BG_HOVER);
-        private static readonly SolidBrush BR_TOOLS_BG_PAUSED   = new SolidBrush(C_TOOLS_BG_PAUSED);
+        // 静态文本 SolidBrush（非动态 alpha/color；进程级共享）
         private static readonly SolidBrush BR_TOOLS_FG          = new SolidBrush(C_TOOLS_FG);
         private static readonly SolidBrush BR_TOOLS_FG_HOVER    = new SolidBrush(C_TOOLS_FG_HOVER);
         private static readonly SolidBrush BR_TOOLS_FG_PAUSED   = new SolidBrush(C_TOOLS_FG_PAUSED);
-        private static readonly SolidBrush BR_CTX_BG            = new SolidBrush(C_CTX_BG);
-        private static readonly SolidBrush BR_QUEST_BG          = new SolidBrush(C_QUEST_BG);
-        private static readonly SolidBrush BR_QUEST_BG_HOVER    = new SolidBrush(C_QUEST_BG_HOVER);
         private static readonly SolidBrush BR_QUEST_FG          = new SolidBrush(C_QUEST_FG);
-        private static readonly SolidBrush BR_QUEST_FG_DISABLED = new SolidBrush(C_QUEST_FG_DISABLED);
-        private static readonly SolidBrush BR_JUKE_BG           = new SolidBrush(C_JUKE_BG);
-        private static readonly SolidBrush BR_JUKE_BTN_HOVER    = new SolidBrush(C_JUKE_BTN_HOVER);
-        private static readonly SolidBrush BR_JUKE_BTN_IDLE     = new SolidBrush(C_JUKE_BTN_IDLE);
-        private static readonly SolidBrush BR_JUKE_FG_HOVER     = new SolidBrush(C_JUKE_FG_HOVER);
-        private static readonly SolidBrush BR_JUKE_FG_BGM       = new SolidBrush(C_JUKE_FG_BGM);
-        private static readonly SolidBrush BR_JUKE_FG_NOBGM     = new SolidBrush(C_JUKE_FG_NOBGM);
-        private static readonly SolidBrush BR_JUKE_FG_DEFAULT   = new SolidBrush(C_JUKE_FG_DEFAULT);
-        private static readonly SolidBrush BR_JUKE_TITLE_NOBGM  = new SolidBrush(C_JUKE_TITLE_NOBGM);
-        private static readonly SolidBrush BR_JUKE_TITLE_BGM    = new SolidBrush(C_JUKE_TITLE_BGM);
         private static readonly SolidBrush BR_LABEL_TEXT        = new SolidBrush(C_LABEL_TEXT);
-
-        // 静态 Pen（线宽默认 1px；不动态色彩）
-        private static readonly Pen PEN_BORDER_FAINT  = new Pen(C_BORDER_FAINT);
-        private static readonly Pen PEN_BORDER_NOTICE = new Pen(C_BORDER_NOTICE);
 
         // 静态 StringFormat（共享；GDI+ 文档允许多线程读，但本项目 paint 都是 UI 线程）
         private static readonly StringFormat FMT_CENTER       = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.None);
@@ -190,16 +133,16 @@ namespace CF7Launcher.Guardian.Hud
         // 实例字段不能跨线程：Prewarm 走静态 base font，Paint 走实例 scaled font，二者互不触碰
         // —— 避免 PrewarmGdi (ThreadPool) 与 Paint (UI) 之间 EnsureFonts 重建期的 Font 竞争。
         private float _cachedFontScale = -1f;
-        private Font _fontTools15Bold;        // PaintTools "Segoe UI Symbol" 15 Bold
-        private Font _fontJukeIcon12;         // DrawJukeboxPause/Expand "Segoe UI Symbol" 12 Regular
+        private Font _fontTools15Bold;        // PaintTools 受控中文双字标签
+        private Font _fontToolsIcon15;        // 设置/暂停/退出受控符号字体
         private Font _fontMapLabel115Bold;    // PaintMapLabel "Microsoft YaHei" 11.5 Bold
-        private Font _fontQuest12;            // PaintQuestRow "Microsoft YaHei" 12 Regular
-        private Font _fontNoticeJuke11;       // PaintNotice & DrawJukeboxTitle "Microsoft YaHei" 11 Regular
+        private Font _fontQuest12;            // 地图预览尺寸切换按钮
+        private Font _fontNoticeJuke11;       // 条件状态槽 / hover tooltip
 
         // 静态 base font（scale=1）：Prewarm + 测试探针专用，避免与实例 _font* 跨线程共用。
         // 进程级共享 + 不 dispose（与 ComboWidget._baseTypedFont 等同形）；double-checked lock 懒初始化。
         private static Font _baseTools15Bold;
-        private static Font _baseJukeIcon12;
+        private static Font _baseToolsIcon15;
         private static Font _baseMapLabel115Bold;
         private static Font _baseQuest12;
         private static Font _baseNoticeJuke11;
@@ -211,11 +154,11 @@ namespace CF7Launcher.Guardian.Hud
             lock (_baseFontLock)
             {
                 if (_baseTools15Bold != null) return;
-                _baseTools15Bold     = new Font("Segoe UI Symbol", 15f,   FontStyle.Regular, GraphicsUnit.Pixel);
-                _baseJukeIcon12      = new Font("Segoe UI Symbol", 12f,   FontStyle.Regular, GraphicsUnit.Pixel);
-                _baseMapLabel115Bold = new Font("Microsoft YaHei", 11.5f, FontStyle.Bold,    GraphicsUnit.Pixel);
-                _baseQuest12         = new Font("Microsoft YaHei", 12f,   FontStyle.Regular, GraphicsUnit.Pixel);
-                _baseNoticeJuke11    = new Font("Microsoft YaHei", 11f,   FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseTools15Bold     = NativeHudFonts.CreateUiFont(14f, FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseToolsIcon15     = new Font("Segoe UI Symbol", 14f,   FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseMapLabel115Bold = NativeHudFonts.CreateUiFont(11.5f, FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseQuest12         = NativeHudFonts.CreateUiFont(12f, FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseNoticeJuke11    = NativeHudFonts.CreateUiFont(11f, FontStyle.Regular, GraphicsUnit.Pixel);
             }
         }
 
@@ -227,29 +170,26 @@ namespace CF7Launcher.Guardian.Hud
         {
             try
             {
-                // 触发静态 cctor：21 brush + 2 pen + 3 StringFormat 进程级常量。
-                // BR_TOOLS_BG 是 static readonly + 在 cctor 内 new SolidBrush(...) 赋值；
-                // 只要 cctor 没抛异常就不可能为 null —— 不需要 null 守卫。
-                // 用 GC.KeepAlive 表达"touch to force cctor 执行"的意图，比 if(null)return 清晰。
-                System.GC.KeepAlive(BR_TOOLS_BG);
+                // 触发静态 cctor：文本 brush + StringFormat 进程级常量。
+                System.GC.KeepAlive(BR_TOOLS_FG);
                 EnsureBaseFonts();
                 using (System.Drawing.Bitmap warm = new System.Drawing.Bitmap(128, 64, System.Drawing.Imaging.PixelFormat.Format32bppPArgb))
                 using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(warm))
                 {
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                    // 覆盖 RightContext 全部已知字符：toolbar 图标 + 任务行 + jukebox + notice
+                    // 覆盖 RightContext 全部已知字符：六入口 + 地图尺寸按钮 + 条件状态槽
                     string[] samples = {
-                        "⚙ \U0001F527 Ⅱ ▶ ? × ▾ ▸ ☰ ▼ ➤",
-                        "地图 装备 任务 未播放 存盘中 存盘成功 取消 退出",
-                        "0123456789"
+                        "地图 任务 装备",
+                        "⚙ Ⅱ ▶ × ＋ － ➤",
+                        "展开预览 缩略预览 任务已达成 可交付"
                     };
                     // 只接静态 base font，不触碰任何实例 _font*；与 UI 线程 Paint 路径完全无共享状态
                     g.DrawString(samples[0], _baseTools15Bold,     BR_TOOLS_FG,         0f,  0f);
-                    g.DrawString(samples[1], _baseQuest12,         BR_QUEST_FG,         0f, 16f);
-                    g.DrawString(samples[1], _baseNoticeJuke11,    BR_JUKE_TITLE_BGM,   0f, 32f);
-                    g.DrawString(samples[1], _baseMapLabel115Bold, BR_LABEL_TEXT,       0f, 48f);
-                    g.DrawString(samples[2], _baseJukeIcon12,      BR_JUKE_FG_DEFAULT,  0f, 60f);
+                    g.DrawString(samples[1], _baseToolsIcon15,     BR_TOOLS_FG,         0f, 16f);
+                    g.DrawString(samples[2], _baseQuest12,         BR_QUEST_FG,         0f, 32f);
+                    g.DrawString(samples[2], _baseNoticeJuke11,    BR_QUEST_FG,         0f, 48f);
+                    g.DrawString(samples[2], _baseMapLabel115Bold, BR_LABEL_TEXT,       0f, 60f);
                 }
             }
             catch (Exception ex) { LogManager.Log("[RightContextWidget] PrewarmGdi failed: " + ex.Message); }
@@ -259,18 +199,18 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (Math.Abs(scale - _cachedFontScale) < 0.001f && _fontTools15Bold != null) return;
             DisposeFonts();
-            _fontTools15Bold     = new Font("Segoe UI Symbol", WidgetScaler.Pxf(15f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
-            _fontJukeIcon12      = new Font("Segoe UI Symbol", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
-            _fontMapLabel115Bold = new Font("Microsoft YaHei", WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
-            _fontQuest12         = new Font("Microsoft YaHei", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
-            _fontNoticeJuke11    = new Font("Microsoft YaHei", WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontTools15Bold     = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
+            _fontToolsIcon15     = new Font("Segoe UI Symbol", WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
+            _fontMapLabel115Bold = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
+            _fontQuest12         = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontNoticeJuke11    = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _cachedFontScale = scale;
         }
 
         private void DisposeFonts()
         {
             if (_fontTools15Bold != null)     { _fontTools15Bold.Dispose();     _fontTools15Bold = null; }
-            if (_fontJukeIcon12 != null)      { _fontJukeIcon12.Dispose();      _fontJukeIcon12 = null; }
+            if (_fontToolsIcon15 != null)     { _fontToolsIcon15.Dispose();     _fontToolsIcon15 = null; }
             if (_fontMapLabel115Bold != null) { _fontMapLabel115Bold.Dispose(); _fontMapLabel115Bold = null; }
             if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
             if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
@@ -294,16 +234,16 @@ namespace CF7Launcher.Guardian.Hud
             Control anchor,
             LauncherCommandRouter router,
             MapHudDataCatalog catalog,
-            Action onTogglePause,
-            Action onExpand)
+            MapDisplayPreference mapDisplayPreference = MapDisplayPreference.Auto,
+            Action<MapDisplayPreference> onMapDisplayPreferenceChanged = null)
         {
             if (anchor == null) throw new ArgumentNullException("anchor");
             if (router == null) throw new ArgumentNullException("router");
             _anchor = anchor;
             _router = router;
             _catalog = catalog;
-            _onTogglePause = onTogglePause;
-            _onExpand = onExpand;
+            _mapDisplayPreference = mapDisplayPreference;
+            _onMapDisplayPreferenceChanged = onMapDisplayPreferenceChanged;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _hover.Kind = HitKind.None;
             _down.Kind = HitKind.None;
@@ -315,7 +255,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private bool IsMapModeRenderable
         {
-            get { return _mapMode == "1" || _mapMode == "2"; }
+            get { return MapDisplayPolicy.IsRenderableRuntime(_runtimeMapMode); }
         }
 
         private bool MapAvailable
@@ -331,7 +271,24 @@ namespace CF7Launcher.Guardian.Hud
 
         private bool ShowMapSection
         {
-            get { return _gameReady && !_mapCollapsed && MapAvailable; }
+            get { return _gameReady && _effectiveMapDisplayMode != EffectiveMapDisplayMode.Hidden && MapAvailable; }
+        }
+
+        private EffectiveMapDisplayMode LayoutMapMode
+        {
+            get { return ShowMapSection ? _effectiveMapDisplayMode : EffectiveMapDisplayMode.Hidden; }
+        }
+
+        private bool RecomputeEffectiveMapDisplayMode()
+        {
+            EffectiveMapDisplayMode next = MapDisplayPolicy.Resolve(
+                _runtimeMapMode,
+                _mapDisplayPreference,
+                MapAvailable,
+                _tacticalMapDataAvailable);
+            if (next == _effectiveMapDisplayMode) return false;
+            _effectiveMapDisplayMode = next;
+            return true;
         }
 
         private NoticeMode CurrentNoticeMode
@@ -350,6 +307,12 @@ namespace CF7Launcher.Guardian.Hud
             get { return CurrentNoticeMode != NoticeMode.Idle; }
         }
 
+        private bool ShowStatusSlot
+        {
+            // 状态槽只承载任务/SafeExit 语义；地图预览不再强制附带一条冗余 header。
+            get { return ShowNotice || _externalStatusSlotActive; }
+        }
+
         public bool Visible { get { return _gameReady; } }
 
         public Rectangle ScreenBounds
@@ -358,7 +321,25 @@ namespace CF7Launcher.Guardian.Hud
             {
                 if (!Visible) return Rectangle.Empty;
                 if (_anchor == null || !_anchor.IsHandleCreated) return Rectangle.Empty;
-                return RightHudLayout.GetClusterRect(_anchor, _mapper, ShowMapSection, ShowNotice, true);
+                return RightHudLayout.GetClusterRect(_anchor, _mapper, LayoutMapMode, ShowStatusSlot);
+            }
+        }
+
+        public Rectangle CompositeBounds
+        {
+            get
+            {
+                Rectangle visual = ScreenBounds;
+                if (visual.Width <= 0 || visual.Height <= 0) return visual;
+                Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+                float scale = RightHudLayout.ScaleForViewport(viewport);
+                Rectangle tools = RightHudLayout.TopToolsRectFromViewport(viewport, scale);
+                Rectangle tooltipReserve = new Rectangle(
+                    tools.X,
+                    tools.Y,
+                    tools.Width,
+                    tools.Height + WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale));
+                return Rectangle.Union(visual, tooltipReserve);
             }
         }
 
@@ -368,7 +349,6 @@ namespace CF7Launcher.Guardian.Hud
             {
                 if (!Visible) return false;
                 if (_activeFlash != null) return true;
-                if (!string.IsNullOrEmpty(_bgmTitle) && !_isPaused && !_disableVisualizers) return true;
                 return false;
             }
         }
@@ -393,41 +373,6 @@ namespace CF7Launcher.Guardian.Hud
                 repaint = true;
             }
 
-            if (!string.IsNullOrEmpty(_bgmTitle) && !_isPaused)
-            {
-                _playPollAccumMs += deltaMs;
-                if (_playPollAccumMs >= PLAY_POLL_MS)
-                {
-                    _playPollAccumMs = 0;
-                    int playingFlag = SafeIsPlaying();
-                    bool nowPlaying = playingFlag == 1;
-                    if (nowPlaying != _isPlaying)
-                    {
-                        _isPlaying = nowPlaying;
-                        if (nowPlaying) _isPaused = false;
-                        repaint = true;
-                    }
-                }
-
-                if (_isPlaying && !_disableVisualizers)
-                {
-                    _peakAccumMs += deltaMs;
-                    if (_peakAccumMs >= MINI_RENDER_MS)
-                    {
-                        _peakAccumMs = 0;
-                        float l, r;
-                        SafeGetPeak(out l, out r);
-                        InjectPeakSample(l, r);
-                        repaint = true;
-                    }
-                }
-            }
-            else
-            {
-                _peakAccumMs = 0;
-                _playPollAccumMs = 0;
-            }
-
             if (repaint) FireRepaint();
             if (tickDirty || !WantsAnimationTick) FireAnimState();
         }
@@ -438,22 +383,20 @@ namespace CF7Launcher.Guardian.Hud
             Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
             if (viewport.Width <= 0 || viewport.Height <= 0) return;
             float scale = RightHudLayout.ScaleForViewport(viewport);
-            bool showMap = ShowMapSection;
+            EffectiveMapDisplayMode mapMode = LayoutMapMode;
+            bool showMap = mapMode != EffectiveMapDisplayMode.Hidden;
             bool showNotice = ShowNotice;
+            bool showStatusSlot = ShowStatusSlot;
 
             Rectangle tools = RightHudLayout.TopToolsRectFromViewport(viewport, scale);
-            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, showMap, showNotice);
-            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, showMap);
-            Rectangle row = RightHudLayout.QuestRowRectFromContext(context, scale, showMap);
-            Rectangle notice = RightHudLayout.QuestNoticeRectFromContext(context, scale, showMap, showNotice);
-            Rectangle jukebox = RightHudLayout.JukeboxRectFromViewport(viewport, scale, showMap, showNotice);
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot);
+            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, mapMode, showStatusSlot);
+            Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot);
 
             tools.Offset(-hudOrigin.X, -hudOrigin.Y);
             context.Offset(-hudOrigin.X, -hudOrigin.Y);
             map.Offset(-hudOrigin.X, -hudOrigin.Y);
-            row.Offset(-hudOrigin.X, -hudOrigin.Y);
             notice.Offset(-hudOrigin.X, -hudOrigin.Y);
-            jukebox.Offset(-hudOrigin.X, -hudOrigin.Y);
 
             EnsureFonts(scale);
 
@@ -464,11 +407,12 @@ namespace CF7Launcher.Guardian.Hud
             try
             {
                 PaintTools(g, tools, scale);
-                PaintContextBackground(g, context);
-                if (showMap) PaintMapCard(g, map, scale);
-                PaintQuestRow(g, row, scale);
+                if (_hover.Kind == HitKind.Tool && !showStatusSlot && !showMap)
+                    PaintActionTooltip(g, new Rectangle(tools.X, tools.Bottom, tools.Width,
+                        WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale)), scale);
+                PaintContextBackground(g, context, scale);
                 if (showNotice) PaintNotice(g, notice, scale);
-                PaintJukebox(g, jukebox, scale);
+                if (showMap) PaintMapCard(g, map, scale);
             }
             finally
             {
@@ -480,58 +424,83 @@ namespace CF7Launcher.Guardian.Hud
         private void PaintTools(Graphics g, Rectangle r, float scale)
         {
             if (r.Width <= 0 || r.Height <= 0) return;
-            int btnW = WidgetScaler.Px(RightHudLayout.ToolButtonWidthBase, scale);
             string[] labels = _paused ? TOOL_LABELS_PAUSED : TOOL_LABELS_DEFAULT;
-            // P0 perf：复用静态 brush/pen/font/fmt
-            Font font = _fontTools15Bold;
+            // Flash 白框：每个入口保持独立分舱，hover/pressed/暂停/危险态共用主题语义。
             StringFormat fmt = FMT_CENTER;
-            Pen border = PEN_BORDER_FAINT;
             for (int i = 0; i < TOOL_KEYS.Length; i++)
             {
-                int x = r.X + i * btnW;
-                int w = (i == TOOL_KEYS.Length - 1) ? r.Right - x : btnW;
-                Rectangle btn = new Rectangle(x, r.Y, w, r.Height);
+                Rectangle btn = RightHudLayout.ActionButtonRectFromTools(r, scale, i);
+                Font font = i < RightHudLayout.PrimaryActionButtonCount ? _fontTools15Bold : _fontToolsIcon15;
                 bool hover = _hover.Kind == HitKind.Tool && _hover.Index == i;
+                bool pressed = _down.Kind == HitKind.Tool && _down.Index == i;
                 bool paused = _paused && i == IDX_PAUSE;
-                Brush bgBrush = paused ? BR_TOOLS_BG_PAUSED : (hover ? BR_TOOLS_BG_HOVER : (Brush)BR_TOOLS_BG);
+                bool danger = i == TOOL_KEYS.Length - 1;
                 Brush fgBrush = paused ? BR_TOOLS_FG_PAUSED : (hover ? BR_TOOLS_FG_HOVER : (Brush)BR_TOOLS_FG);
-                g.FillRectangle(bgBrush, btn);
-                g.DrawLine(border, btn.X, btn.Bottom - 1, btn.Right - 1, btn.Bottom - 1);
-                if (i == 0) g.DrawLine(border, btn.X, btn.Y, btn.X, btn.Bottom - 1);
-                if (i == TOOL_KEYS.Length - 1) g.DrawLine(border, btn.Right - 1, btn.Y, btn.Right - 1, btn.Bottom - 1);
+                NativeHudTheme.DrawButton(g, btn, scale, hover, pressed, paused, danger);
                 g.DrawString(labels[i], font, fgBrush, btn, fmt);
             }
         }
 
-        private void PaintContextBackground(Graphics g, Rectangle r)
+        private void PaintActionTooltip(Graphics g, Rectangle r, float scale)
+        {
+            int index = _hover.Index;
+            if (index < 0 || index >= TOOL_TOOLTIPS.Length || r.Width <= 0 || r.Height <= 0) return;
+            NativeHudTheme.DrawPanel(g, r, scale, NativeHudTheme.PanelFillDense,
+                Color.Empty, true);
+            g.DrawString(TOOL_TOOLTIPS[index], _fontNoticeJuke11, BR_QUEST_FG, r, FMT_CENTER_ELLIPSIS);
+        }
+
+        private void PaintContextBackground(Graphics g, Rectangle r, float scale)
         {
             if (r.Width <= 0 || r.Height <= 0) return;
-            // P0 perf：静态 brush + pen
-            g.FillRectangle(BR_CTX_BG, r);
-            g.DrawRectangle(PEN_BORDER_NOTICE, r.X, r.Y, r.Width - 1, r.Height - 1);
+            NativeHudTheme.DrawPanel(g, r, scale, C_CTX_BG, Color.Empty, true);
         }
 
         private void PaintMapCard(Graphics g, Rectangle card, float scale)
         {
             if (card.Width <= 0 || card.Height <= 0 || _mapEntry == null || _mapEntry.Outline == null) return;
             MapHudWidget.ThemeColors theme = MapHudWidget.ResolveTheme(_mapEntry.Meta != null ? _mapEntry.Meta.Group : null);
-            int radius = WidgetScaler.Px(8, scale);
             bool hover = _hover.Kind == HitKind.MapCard;
-            using (GraphicsPath p = MakeRoundedRect(card, radius))
-            using (LinearGradientBrush bg = new LinearGradientBrush(
-                new Rectangle(card.X, card.Y, card.Width, card.Height + 1),
-                Color.FromArgb(hover ? 245 : 228, theme.StageA),
-                Color.FromArgb(hover ? 245 : 236, theme.StageB),
-                LinearGradientMode.Vertical))
-            using (Pen border = new Pen(Color.FromArgb(hover ? 104 : 58, theme.Accent)))
-            {
-                g.FillPath(bg, p);
-                g.DrawPath(border, p);
-            }
+            Color fill = NativeHudTheme.Blend(NativeHudTheme.PanelFillDense,
+                hover ? theme.StageB : theme.StageA, hover ? 0.20f : 0.12f, hover ? 244 : 232);
+            NativeHudTheme.DrawPanel(g, card, scale, fill, theme.Accent, true);
 
             Rectangle body = Rectangle.Inflate(card, -WidgetScaler.Px(MAP_BODY_INSET_BASE, scale), -WidgetScaler.Px(MAP_BODY_INSET_BASE, scale));
             PaintMapBody(g, body, theme, scale);
             PaintMapLabel(g, card, theme, scale);
+            PaintMapDisplayToggle(g, card, scale);
+        }
+
+        private void PaintMapDisplayToggle(Graphics g, Rectangle card, float scale)
+        {
+            Rectangle toggle = GetMapDisplayToggleRect(card, scale);
+            if (toggle.Width <= 0 || toggle.Height <= 0) return;
+            bool hover = _hover.Kind == HitKind.MapDisplayToggle;
+            bool pressed = _down.Kind == HitKind.MapDisplayToggle;
+            string glyph = _effectiveMapDisplayMode == EffectiveMapDisplayMode.Compact ? "＋" : "－";
+            NativeHudTheme.DrawButton(g, toggle, scale, hover, pressed, false, false);
+            using (SolidBrush fg = new SolidBrush(hover ? NativeHudTheme.TextPrimary : NativeHudTheme.TextSecondary))
+            {
+                g.DrawString(glyph, _fontQuest12, fg, toggle, FMT_CENTER);
+            }
+            if (hover)
+            {
+                int tooltipW = WidgetScaler.Px(74, scale);
+                Rectangle tip = new Rectangle(Math.Max(card.X + WidgetScaler.Px(4, scale), toggle.X - tooltipW),
+                    toggle.Y, tooltipW, toggle.Height);
+                NativeHudTheme.DrawPanel(g, tip, scale, NativeHudTheme.PanelFillDense,
+                    Color.Empty, false);
+                string text = _effectiveMapDisplayMode == EffectiveMapDisplayMode.Compact ? "展开预览" : "缩略预览";
+                g.DrawString(text, _fontNoticeJuke11, BR_QUEST_FG, tip, FMT_CENTER_ELLIPSIS);
+            }
+        }
+
+        private static Rectangle GetMapDisplayToggleRect(Rectangle card, float scale)
+        {
+            if (card.Width <= 0 || card.Height <= 0) return Rectangle.Empty;
+            int size = WidgetScaler.Px(24, scale);
+            int margin = WidgetScaler.Px(4, scale);
+            return new Rectangle(card.Right - size - margin, card.Y + margin, size, size);
         }
 
         private void PaintMapBody(Graphics g, Rectangle body, MapHudWidget.ThemeColors theme, float scale)
@@ -556,49 +525,19 @@ namespace CF7Launcher.Guardian.Hud
             int padY = WidgetScaler.Px(MAP_LABEL_PAD_Y_BASE, scale);
             int margin = WidgetScaler.Px(6, scale);
             int maxW = Math.Max(1, card.Width - margin * 2);
-            // P0 perf：font + fmt + textBrush 复用静态/缓存；
-            // pb/pe 仍按需 new（依赖 theme.StageA/StageB/Accent，theme 可能因 hotspot 改变而切换）
+            // P0 perf：font + fmt + textBrush 复用静态/缓存。
             Font font = _fontMapLabel115Bold;
             StringFormat fmt = FMT_NEAR_NOWRAP_ELLIPSIS;
             SizeF measured = g.MeasureString(text, font, maxW, fmt);
             int pillW = Math.Min(maxW, (int)Math.Ceiling(measured.Width) + padX * 2);
             int pillH = (int)Math.Ceiling(measured.Height) + padY * 2;
             Rectangle pill = new Rectangle(card.X + margin, card.Y + margin, pillW, pillH);
-            using (GraphicsPath pp = MakeRoundedRect(pill, pillH / 2))
-            using (LinearGradientBrush pb = new LinearGradientBrush(pill,
-                Color.FromArgb(196, theme.StageA), Color.FromArgb(232, theme.StageB), LinearGradientMode.Vertical))
-            using (Pen pe = new Pen(Color.FromArgb(96, theme.Accent)))
-            {
-                g.FillPath(pb, pp);
-                g.DrawPath(pe, pp);
-                Rectangle textRect = new Rectangle(pill.X + padX, pill.Y, Math.Max(1, pill.Width - padX * 2), pill.Height);
-                g.DrawString(text, font, BR_LABEL_TEXT, textRect, fmt);
-            }
-        }
-
-        private void PaintQuestRow(Graphics g, Rectangle r, float scale)
-        {
-            if (r.Width <= 0 || r.Height <= 0) return;
-            string[] labels = { (_mapCollapsed ? "▸ 地图" : "▾ 地图"), "☰ 装备", "☰ 任务" };
-            HitKind[] kinds = { HitKind.QuestMap, HitKind.QuestEquip, HitKind.QuestTask };
-            int colW = r.Width / 3;
-            // P0 perf：全部复用静态 brush/pen + 缓存 font + 静态 fmt
-            Font font = _fontQuest12;
-            StringFormat fmt = FMT_CENTER_ELLIPSIS;
-            Pen border = PEN_BORDER_FAINT;
-            for (int i = 0; i < labels.Length; i++)
-            {
-                int x = r.X + i * colW;
-                int w = (i == labels.Length - 1) ? r.Right - x : colW;
-                Rectangle cell = new Rectangle(x, r.Y, w, r.Height);
-                bool hover = _hover.Kind == kinds[i];
-                g.FillRectangle(hover ? BR_QUEST_BG_HOVER : (Brush)BR_QUEST_BG, cell);
-                if (i > 0) g.DrawLine(border, cell.X, cell.Y + 3, cell.X, cell.Bottom - 4);
-                bool dimMap = i == 0 && !MapAvailable;
-                g.DrawString(labels[i], font, dimMap ? BR_QUEST_FG_DISABLED : (Brush)BR_QUEST_FG, cell, fmt);
-            }
-            g.DrawLine(border, r.X, r.Y, r.Right - 1, r.Y);
-            g.DrawLine(border, r.X, r.Bottom - 1, r.Right - 1, r.Bottom - 1);
+            NativeHudTheme.DrawPanel(g, pill, scale,
+                NativeHudTheme.Blend(NativeHudTheme.PanelFillDense, theme.StageA, 0.12f, 236),
+                theme.Accent, false);
+            Rectangle textRect = new Rectangle(pill.X + padX, pill.Y,
+                Math.Max(1, pill.Width - padX * 2), pill.Height);
+            g.DrawString(text, font, BR_LABEL_TEXT, textRect, fmt);
         }
 
         private void PaintNotice(Graphics g, Rectangle r, float scale)
@@ -611,20 +550,11 @@ namespace CF7Launcher.Guardian.Hud
             bool showArrow = mode == NoticeMode.TaskDone && CanDeliver();
             bool hover = _hover.Kind == HitKind.Notice;
 
-            Color bgTop;
-            Color bgBottom;
-            if (mode == NoticeMode.Flash)
-            {
-                bgTop = Color.FromArgb(235, 60, 44, 20);
-                bgBottom = Color.FromArgb(229, 28, 22, 14);
-            }
-            else
-            {
-                bgTop = hover ? Color.FromArgb(240, 48, 28, 28) : Color.FromArgb(235, 34, 22, 22);
-                bgBottom = hover ? Color.FromArgb(235, 26, 18, 20) : Color.FromArgb(229, 20, 14, 16);
-            }
-            using (LinearGradientBrush bg = new LinearGradientBrush(r, bgTop, bgBottom, LinearGradientMode.Vertical))
-                g.FillRectangle(bg, r);
+            Color noticeAccent = mode == NoticeMode.Flash
+                ? NativeHudTheme.Warning
+                : (CanDeliver() ? NativeHudTheme.Cyan : NativeHudTheme.Gold);
+            Color noticeFill = hover ? NativeHudTheme.ButtonHover : NativeHudTheme.PanelFillDense;
+            NativeHudTheme.DrawPanel(g, r, scale, noticeFill, noticeAccent, true);
 
             Rectangle iconRect = new Rectangle(r.X, r.Y, iconW, r.Height);
             Rectangle textRect = new Rectangle(iconRect.Right + pad, r.Y,
@@ -638,13 +568,13 @@ namespace CF7Launcher.Guardian.Hud
 
             // P0 perf：font/sep/center/textFmt 复用；iconBrush/textBrush 颜色按 hover/mode 动态选，仍按需 new
             Font font = _fontNoticeJuke11;
-            Pen sep = PEN_BORDER_FAINT;
             StringFormat center = FMT_CENTER;
             StringFormat textFmt = FMT_NEAR_NOWRAP_ELLIPSIS;
             using (SolidBrush iconBrush = new SolidBrush(iconColor))
             using (SolidBrush textBrush = new SolidBrush(textColor))
             {
-                g.DrawLine(sep, iconRect.Right, r.Y + 2, iconRect.Right, r.Bottom - 3);
+                NativeHudTheme.DrawSeparator(g, iconRect.Right, r.Y + WidgetScaler.Px(4, scale),
+                    r.Bottom - WidgetScaler.Px(4, scale), scale);
                 g.DrawString(_noticeIcon, font, iconBrush, iconRect, center);
                 g.DrawString(_noticeText, font, textBrush, textRect, textFmt);
                 if (showArrow)
@@ -654,96 +584,12 @@ namespace CF7Launcher.Guardian.Hud
                     using (SolidBrush arrowBrush = new SolidBrush(hover ? Color.FromArgb(255, 223, 246, 255) : Color.FromArgb(229, 160, 226, 255)))
                     {
                         g.FillRectangle(arrowBg, arrowRect);
-                        g.DrawLine(sep, arrowRect.X, r.Y + 2, arrowRect.X, r.Bottom - 3);
+                        NativeHudTheme.DrawSeparator(g, arrowRect.X, r.Y + WidgetScaler.Px(4, scale),
+                            r.Bottom - WidgetScaler.Px(4, scale), scale);
                         g.DrawString("➤", font, arrowBrush, arrowRect, center);
                     }
                 }
             }
-        }
-
-        private void PaintJukebox(Graphics g, Rectangle r, float scale)
-        {
-            if (r.Width <= 0 || r.Height <= 0) return;
-            int pauseW = WidgetScaler.Px(JUKE_PAUSE_W_BASE, scale);
-            int expandW = WidgetScaler.Px(JUKE_EXPAND_W_BASE, scale);
-            int titlePad = WidgetScaler.Px(TITLE_PAD_BASE, scale);
-            Rectangle pause = new Rectangle(r.X, r.Y, pauseW, r.Height);
-            Rectangle expand = new Rectangle(r.Right - expandW, r.Y, expandW, r.Height);
-            Rectangle title = new Rectangle(pause.Right, r.Y, Math.Max(1, r.Width - pauseW - expandW), r.Height);
-
-            // P0 perf：复用静态 brush + pen
-            g.FillRectangle(BR_JUKE_BG, r);
-            if (!string.IsNullOrEmpty(_bgmTitle) && _peakLen > 0 && !_disableVisualizers)
-                DrawMiniWave(g, title);
-            DrawJukeboxPause(g, pause, scale);
-            DrawJukeboxTitle(g, title, titlePad, scale);
-            DrawJukeboxExpand(g, expand, scale);
-            Pen border = PEN_BORDER_FAINT;
-            g.DrawLine(border, pause.Right, r.Y + 2, pause.Right, r.Bottom - 3);
-            g.DrawLine(border, expand.X, r.Y + 2, expand.X, r.Bottom - 3);
-            g.DrawLine(border, r.X, r.Bottom - 1, r.Right - 1, r.Bottom - 1);
-        }
-
-        private void DrawMiniWave(Graphics g, Rectangle area)
-        {
-            if (area.Width <= 0 || area.Height <= 0) return;
-            float midY = area.Y + area.Height / 2f;
-            float maxH = area.Height / 2f - 1f;
-            float barW = (float)area.Width / HISTORY;
-            for (int i = 0; i < _peakLen; i++)
-            {
-                int idx = (_peakIdx - _peakLen + i + HISTORY) % HISTORY;
-                float lv = _peakL[idx];
-                float rv = _peakR[idx];
-                float age = (_peakLen - 1 - i) / (float)Math.Max(_peakLen - 1, 1);
-                float alpha = (_isPlaying && !_isPaused) ? (0.2f + 0.5f * (1 - age)) : 0.1f;
-                int aL = ClampByte(alpha * 255f);
-                int aR = ClampByte(alpha * 0.7f * 255f);
-                float x = area.X + i * barW;
-                float hL = Math.Max(1f, lv * maxH);
-                float hR = Math.Max(1f, rv * maxH);
-                using (SolidBrush bL = new SolidBrush(Color.FromArgb(aL, 102, 204, 255)))
-                using (SolidBrush bR = new SolidBrush(Color.FromArgb(aR, 150, 220, 255)))
-                {
-                    g.FillRectangle(bL, x, midY - hL, Math.Max(barW - 0.5f, 1f), hL);
-                    g.FillRectangle(bR, x, midY, Math.Max(barW - 0.5f, 1f), hR);
-                }
-            }
-        }
-
-        private void DrawJukeboxPause(Graphics g, Rectangle r, float scale)
-        {
-            bool hover = _hover.Kind == HitKind.JukeboxPause;
-            bool hasBgm = !string.IsNullOrEmpty(_bgmTitle);
-            // P0 perf：4 种 (hover, hasBgm) 状态对应 4 个静态 brush 组合
-            SolidBrush bgBrush = (hover && hasBgm) ? BR_JUKE_BTN_HOVER : BR_JUKE_BTN_IDLE;
-            SolidBrush fgBrush = hasBgm ? (hover ? BR_JUKE_FG_HOVER : BR_JUKE_FG_BGM) : BR_JUKE_FG_NOBGM;
-            string icon = (_isPlaying && !_isPaused) ? "Ⅱ" : "▶";
-            Font font = _fontJukeIcon12;
-            StringFormat fmt = FMT_CENTER;
-            g.FillRectangle(bgBrush, r);
-            g.DrawString(icon, font, fgBrush, r, fmt);
-        }
-
-        private void DrawJukeboxTitle(Graphics g, Rectangle r, int pad, float scale)
-        {
-            string text = string.IsNullOrEmpty(_bgmTitle) ? "未播放" : _bgmTitle;
-            SolidBrush brush = string.IsNullOrEmpty(_bgmTitle) ? BR_JUKE_TITLE_NOBGM : BR_JUKE_TITLE_BGM;
-            Rectangle textRect = new Rectangle(r.X + pad, r.Y, Math.Max(1, r.Width - pad * 2), r.Height);
-            Font font = _fontNoticeJuke11;
-            StringFormat fmt = FMT_NEAR_NOWRAP_ELLIPSIS;
-            g.DrawString(text, font, brush, textRect, fmt);
-        }
-
-        private void DrawJukeboxExpand(Graphics g, Rectangle r, float scale)
-        {
-            bool hover = _hover.Kind == HitKind.JukeboxExpand;
-            SolidBrush bg = hover ? BR_JUKE_BTN_HOVER : BR_JUKE_BTN_IDLE;
-            SolidBrush fg = hover ? BR_JUKE_FG_HOVER : BR_JUKE_FG_DEFAULT;
-            Font font = _fontJukeIcon12;
-            StringFormat fmt = FMT_CENTER;
-            g.FillRectangle(bg, r);
-            g.DrawString("▼", font, fg, r, fmt);
         }
 
         public bool TryHitTest(Point screenPt)
@@ -766,12 +612,15 @@ namespace CF7Launcher.Guardian.Hud
                     break;
                 case MouseEventKind.Down:
                     _down = (e.Button == MouseButtons.Left) ? hit : NoHit();
+                    FireRepaint();
                     break;
                 case MouseEventKind.Up:
+                    FireRepaint();
                     break;
                 case MouseEventKind.Click:
                     if (SameHit(_down, hit) || _down.Kind == HitKind.None) DispatchHit(hit);
                     _down = NoHit();
+                    FireRepaint();
                     break;
             }
         }
@@ -781,40 +630,26 @@ namespace CF7Launcher.Guardian.Hud
             if (!Visible) return NoHit();
             Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
             float scale = RightHudLayout.ScaleForViewport(viewport);
-            bool showMap = ShowMapSection;
+            EffectiveMapDisplayMode mapMode = LayoutMapMode;
             bool showNotice = ShowNotice;
+            bool showStatusSlot = ShowStatusSlot;
             Rectangle tools = RightHudLayout.TopToolsRectFromViewport(viewport, scale);
             if (tools.Contains(pt))
             {
-                int btnW = WidgetScaler.Px(RightHudLayout.ToolButtonWidthBase, scale);
-                int idx = (pt.X - tools.X) / Math.Max(1, btnW);
-                if (idx < 0) idx = 0;
-                if (idx >= TOOL_KEYS.Length) idx = TOOL_KEYS.Length - 1;
+                int idx = RightHudLayout.ActionButtonIndexAt(tools, scale, pt.X);
+                if (idx < 0) return NoHit();
                 return Hit(HitKind.Tool, idx);
             }
 
-            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, showMap, showNotice);
-            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, showMap);
-            if (map.Contains(pt)) return Hit(HitKind.MapCard, 0);
-            Rectangle row = RightHudLayout.QuestRowRectFromContext(context, scale, showMap);
-            if (row.Contains(pt))
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot);
+            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, mapMode, showStatusSlot);
+            if (map.Contains(pt))
             {
-                int colW = Math.Max(1, row.Width / 3);
-                int idx = (pt.X - row.X) / colW;
-                if (idx <= 0) return Hit(HitKind.QuestMap, 0);
-                if (idx == 1) return Hit(HitKind.QuestEquip, 0);
-                return Hit(HitKind.QuestTask, 0);
+                if (GetMapDisplayToggleRect(map, scale).Contains(pt)) return Hit(HitKind.MapDisplayToggle, 0);
+                return Hit(HitKind.MapCard, 0);
             }
-            Rectangle notice = RightHudLayout.QuestNoticeRectFromContext(context, scale, showMap, showNotice);
-            if (notice.Contains(pt)) return Hit(HitKind.Notice, 0);
-            Rectangle jukebox = RightHudLayout.JukeboxRectFromViewport(viewport, scale, showMap, showNotice);
-            if (jukebox.Contains(pt))
-            {
-                int pauseW = WidgetScaler.Px(JUKE_PAUSE_W_BASE, scale);
-                int expandW = WidgetScaler.Px(JUKE_EXPAND_W_BASE, scale);
-                if (pt.X < jukebox.X + pauseW) return Hit(HitKind.JukeboxPause, 0);
-                if (pt.X >= jukebox.Right - expandW) return Hit(HitKind.JukeboxExpand, 0);
-            }
+            Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot);
+            if (showNotice && notice.Contains(pt)) return Hit(HitKind.Notice, 0);
             return NoHit();
         }
 
@@ -830,23 +665,11 @@ namespace CF7Launcher.Guardian.Hud
                     case HitKind.MapCard:
                         _router.Dispatch("TASK_MAP");
                         break;
-                    case HitKind.QuestMap:
-                        _router.Dispatch("MAPHUD_TOGGLE");
-                        break;
-                    case HitKind.QuestEquip:
-                        _router.Dispatch("EQUIP_UI");
-                        break;
-                    case HitKind.QuestTask:
-                        _router.Dispatch("TASK_UI");
+                    case HitKind.MapDisplayToggle:
+                        ToggleMapDisplaySize();
                         break;
                     case HitKind.Notice:
                         DispatchNoticeClick();
-                        break;
-                    case HitKind.JukeboxPause:
-                        HandlePauseClick();
-                        break;
-                    case HitKind.JukeboxExpand:
-                        HandleExpandClick();
                         break;
                 }
             }
@@ -867,22 +690,6 @@ namespace CF7Launcher.Guardian.Hud
             {
                 _router.Dispatch("TASK_UI");
             }
-        }
-
-        private void HandlePauseClick()
-        {
-            if (string.IsNullOrEmpty(_bgmTitle)) return;
-            _isPaused = !_isPaused;
-            try { if (_onTogglePause != null) _onTogglePause(); }
-            catch (Exception ex) { LogManager.Log("[RightContextWidget] togglePause failed ex=" + ex.Message); }
-            FireRepaint();
-            FireAnimState();
-        }
-
-        private void HandleExpandClick()
-        {
-            try { if (_onExpand != null) _onExpand(); }
-            catch (Exception ex) { LogManager.Log("[RightContextWidget] expand failed ex=" + ex.Message); }
         }
 
         private void SetHover(HitInfo hit)
@@ -917,14 +724,16 @@ namespace CF7Launcher.Guardian.Hud
                 bool paused = UiValueParser.ParseUiBoolValue(piece);
                 if (paused != _paused) { _paused = paused; repaintDirty = true; }
             }
+            bool mapInputsDirty = false;
             if (changedKeys.Contains("mm") && snapshot.TryGetValue("mm", out piece))
             {
-                string nextMode = MapHudWidget.SanitizeMode(MapHudWidget.StripPrefix(piece, "mm"));
-                if (nextMode != _mapMode)
+                RuntimeMapMode nextMode = MapDisplayPolicy.ParseRuntimeMode(MapHudWidget.StripPrefix(piece, "mm"));
+                if (nextMode != _runtimeMapMode)
                 {
-                    _mapMode = nextMode;
+                    _runtimeMapMode = nextMode;
                     boundsDirty = true;
                     textDirty = true;
+                    mapInputsDirty = true;
                 }
             }
             if (changedKeys.Contains("mh") && snapshot.TryGetValue("mh", out piece))
@@ -937,6 +746,7 @@ namespace CF7Launcher.Guardian.Hud
                     if (_mapEntry == null && !string.IsNullOrEmpty(_mapHotspotId))
                         LogManager.Log("[RightContextWidget] map hotspot not in catalog: " + _mapHotspotId);
                     boundsDirty = true;
+                    mapInputsDirty = true;
                 }
             }
             if (changedKeys.Contains("td") && snapshot.TryGetValue("td", out piece))
@@ -969,32 +779,7 @@ namespace CF7Launcher.Guardian.Hud
                     textDirty = true;
                 }
             }
-            if (changedKeys.Contains("bgm") && snapshot.TryGetValue("bgm", out piece))
-            {
-                string next = StripPrefix(piece, "bgm");
-                if (!string.Equals(next, _bgmTitle, StringComparison.Ordinal))
-                {
-                    bool wasEmpty = string.IsNullOrEmpty(_bgmTitle);
-                    bool nowEmpty = string.IsNullOrEmpty(next);
-                    _bgmTitle = next ?? "";
-                    _peakLen = 0;
-                    _peakIdx = 0;
-                    repaintDirty = true;
-                    if (wasEmpty != nowEmpty || !nowEmpty) tickDirty = true;
-                }
-            }
-            if (changedKeys.Contains("pl") && snapshot.TryGetValue("pl", out piece))
-            {
-                int level = ParseIntPiece(piece, "pl", 0);
-                bool disable = level >= 2;
-                if (disable != _disableVisualizers)
-                {
-                    _disableVisualizers = disable;
-                    repaintDirty = true;
-                    tickDirty = true;
-                }
-            }
-
+            if (mapInputsDirty && RecomputeEffectiveMapDisplayMode()) boundsDirty = true;
             if (textDirty) RebuildNoticeText();
             if (boundsDirty) FireBounds();
             else if (repaintDirty) FireRepaint();
@@ -1008,12 +793,6 @@ namespace CF7Launcher.Guardian.Hud
             _flashElapsedMs = 0;
             _hover = NoHit();
             _down = NoHit();
-            _peakLen = 0;
-            _peakIdx = 0;
-            _playPollAccumMs = 0;
-            _bgmTitle = "";
-            _isPlaying = false;
-            _isPaused = false;
         }
 
         public IEnumerable<string> LegacyTypes { get { return LEGACY_TYPES; } }
@@ -1086,14 +865,14 @@ namespace CF7Launcher.Guardian.Hud
             if (!_taskDone) return false;
             if (!_navigable) return false;
             if (string.IsNullOrEmpty(_deliverHotspotId)) return false;
-            if (_mapMode == "3") return false;
+            if (_runtimeMapMode == RuntimeMapMode.Combat) return false;
             return true;
         }
 
         internal string BuildTaskDoneText()
         {
             if (CanDeliver()) return "任务已达成 · 可交付";
-            if (_mapMode == "3") return "任务已达成 · 战后交付";
+            if (_runtimeMapMode == RuntimeMapMode.Combat) return "任务已达成 · 战后交付";
             if (string.IsNullOrEmpty(_deliverHotspotId)) return "任务已达成 · 暂无交付目标";
             if (!_navigable) return "任务已达成 · 交付点未解锁";
             return "任务已达成";
@@ -1101,14 +880,49 @@ namespace CF7Launcher.Guardian.Hud
 
         public void SetMapCollapsed(bool collapsed)
         {
-            if (_mapCollapsed == collapsed) return;
-            _mapCollapsed = collapsed;
-            FireBounds();
+            SetMapDisplayPreference(collapsed ? MapDisplayPreference.Off : MapDisplayPreference.Compact);
         }
 
         public void ToggleMapCollapsed()
         {
-            SetMapCollapsed(!_mapCollapsed);
+            ToggleMapVisibility();
+        }
+
+        public void SetMapDisplayPreference(MapDisplayPreference preference)
+        {
+            if (_mapDisplayPreference == preference) return;
+            _mapDisplayPreference = preference;
+            RecomputeEffectiveMapDisplayMode();
+            if (_onMapDisplayPreferenceChanged != null)
+            {
+                try { _onMapDisplayPreferenceChanged(preference); }
+                catch (Exception ex) { LogManager.Log("[RightContextWidget] persist map display preference failed: " + ex.Message); }
+            }
+            FireBounds();
+        }
+
+        public void SetExternalStatusSlotActive(bool active)
+        {
+            if (_externalStatusSlotActive == active) return;
+            _externalStatusSlotActive = active;
+            FireBounds();
+        }
+
+        public void ToggleMapVisibility()
+        {
+            SetMapDisplayPreference(MapDisplayPolicy.ToggleVisibility(_effectiveMapDisplayMode));
+        }
+
+        public void ToggleMapDisplaySize()
+        {
+            SetMapDisplayPreference(MapDisplayPolicy.ToggleSize(_effectiveMapDisplayMode));
+        }
+
+        public void SetTacticalMapDataAvailable(bool available)
+        {
+            if (_tacticalMapDataAvailable == available) return;
+            _tacticalMapDataAvailable = available;
+            if (RecomputeEffectiveMapDisplayMode()) FireBounds();
         }
 
         private static string StripPrefix(string fullPiece, string key)
@@ -1120,53 +934,10 @@ namespace CF7Launcher.Guardian.Hud
             return fullPiece;
         }
 
-        private static int ParseIntPiece(string fullPiece, string key, int fallback)
-        {
-            string val = StripPrefix(fullPiece, key);
-            int parsed;
-            if (int.TryParse(val, out parsed)) return parsed;
-            return fallback;
-        }
-
         private static string EscapeJson(string s)
         {
             if (string.IsNullOrEmpty(s)) return "";
             return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
-        }
-
-        private static float ClampPeak(float v)
-        {
-            if (float.IsNaN(v) || float.IsInfinity(v) || v < 0f) return 0f;
-            if (v > 1f) return 1f;
-            return v;
-        }
-
-        private static int ClampByte(float v)
-        {
-            if (float.IsNaN(v) || float.IsInfinity(v)) return 0;
-            if (v < 0f) return 0;
-            if (v > 255f) return 255;
-            return (int)Math.Round(v);
-        }
-
-        private static int SafeIsPlaying()
-        {
-            try { return AudioEngine.ma_bridge_bgm_is_playing(); }
-            catch { return 0; }
-        }
-
-        private static void SafeGetPeak(out float l, out float r)
-        {
-            try { AudioEngine.ma_bridge_bgm_get_peak(out l, out r); }
-            catch { l = 0f; r = 0f; }
-        }
-
-        private void InjectPeakSample(float l, float r)
-        {
-            _peakL[_peakIdx] = ClampPeak(l);
-            _peakR[_peakIdx] = ClampPeak(r);
-            _peakIdx = (_peakIdx + 1) % HISTORY;
-            if (_peakLen < HISTORY) _peakLen++;
         }
 
         private static HitInfo Hit(HitKind kind, int index)
@@ -1185,30 +956,6 @@ namespace CF7Launcher.Guardian.Hud
         private static bool SameHit(HitInfo a, HitInfo b)
         {
             return a.Kind == b.Kind && a.Index == b.Index;
-        }
-
-        private static GraphicsPath MakeRoundedRect(Rectangle r, int radius)
-        {
-            return MakeRoundedRectF(r.X, r.Y, r.Width, r.Height, radius);
-        }
-
-        private static GraphicsPath MakeRoundedRectF(float x, float y, float w, float h, float radius)
-        {
-            GraphicsPath p = new GraphicsPath();
-            if (radius <= 0)
-            {
-                p.AddRectangle(new RectangleF(x, y, w, h));
-                return p;
-            }
-            float d = radius * 2f;
-            if (d > w) d = w;
-            if (d > h) d = h;
-            p.AddArc(x, y, d, d, 180, 90);
-            p.AddArc(x + w - d, y, d, d, 270, 90);
-            p.AddArc(x + w - d, y + h - d, d, d, 0, 90);
-            p.AddArc(x, y + h - d, d, d, 90, 90);
-            p.CloseFigure();
-            return p;
         }
 
         private void FireBounds()
@@ -1230,7 +977,7 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         // ── test seams ──
-        internal bool IsMapCollapsed { get { return _mapCollapsed; } }
+        internal bool IsMapCollapsed { get { return _effectiveMapDisplayMode == EffectiveMapDisplayMode.Hidden; } }
         internal bool MapSectionVisibleForTest { get { return ShowMapSection; } }
         internal bool QuestNoticeVisibleForTest { get { return ShowNotice; } }
         internal bool HasActiveFlash { get { return _activeFlash != null; } }
@@ -1238,35 +985,35 @@ namespace CF7Launcher.Guardian.Hud
         internal bool IsTaskDone { get { return _taskDone; } }
         internal bool IsNavigable { get { return _navigable; } }
         internal string DeliverHotspotId { get { return _deliverHotspotId; } }
-        internal string MapMode { get { return _mapMode; } }
+        internal string MapMode { get { return ((int)_runtimeMapMode).ToString(); } }
+        internal RuntimeMapMode RuntimeMapModeForTest { get { return _runtimeMapMode; } }
+        internal MapDisplayPreference MapDisplayPreferenceForTest { get { return _mapDisplayPreference; } }
+        internal bool ExternalStatusSlotActiveForTest { get { return _externalStatusSlotActive; } }
+        internal bool StatusSlotVisibleForTest { get { return ShowStatusSlot; } }
+        internal EffectiveMapDisplayMode EffectiveMapDisplayModeForTest { get { return _effectiveMapDisplayMode; } }
         internal string DisplayText { get { return _noticeText; } }
-        internal string CurrentTitle { get { return _bgmTitle; } }
-        internal bool IsPausedForTest { get { return _isPaused; } }
-        internal bool DisableVisualizersForTest { get { return _disableVisualizers; } }
-        internal int PeakHistoryLen { get { return _peakLen; } }
         internal void ForceGameReady(bool ready) { _gameReady = ready; }
         internal void ForceTaskDone(bool done) { _taskDone = done; RebuildNoticeText(); }
-        internal void ForceMapMode(string mode) { _mapMode = MapHudWidget.SanitizeMode(mode); }
+        internal void ForceMapMode(string mode)
+        {
+            _runtimeMapMode = MapDisplayPolicy.ParseRuntimeMode(mode);
+            RecomputeEffectiveMapDisplayMode();
+        }
         internal void ForceMapHotspot(string hotspot)
         {
             _mapHotspotId = hotspot ?? "";
             _mapEntry = string.IsNullOrEmpty(_mapHotspotId) || _catalog == null ? null : _catalog.GetEntry(_mapHotspotId);
+            RecomputeEffectiveMapDisplayMode();
         }
         internal void ForceDeliverState(bool done, string hotspot, bool navigable, string mapMode)
         {
             _taskDone = done;
             _deliverHotspotId = hotspot ?? "";
             _navigable = navigable;
-            _mapMode = MapHudWidget.SanitizeMode(mapMode);
+            _runtimeMapMode = MapDisplayPolicy.ParseRuntimeMode(mapMode);
+            RecomputeEffectiveMapDisplayMode();
             RebuildNoticeText();
         }
-        internal void ForceBgmTitle(string title) { _bgmTitle = title ?? ""; }
-        internal void ForceIsPlaying(bool playing) { _isPlaying = playing; }
-        internal void ForceIsPaused(bool paused) { _isPaused = paused; }
-        internal void ForceDisableVisualizers(bool disabled) { _disableVisualizers = disabled; }
-        internal void InjectPeakSampleForTest(float l, float r) { InjectPeakSample(l, r); }
-        internal void SimulatePauseClick() { HandlePauseClick(); }
-        internal void SimulateExpandClick() { HandleExpandClick(); }
         internal void AdvanceFlashMs(int ms)
         {
             if (_activeFlash == null) return;
@@ -1283,12 +1030,9 @@ namespace CF7Launcher.Guardian.Hud
         {
             return CanDeliver() ? ClickRoute.TaskDeliver : ClickRoute.TaskUi;
         }
-        internal string ResolveQuestRowRoute(int index)
+        internal string ResolveActionRoute(int index)
         {
-            if (index == 0) return "MAPHUD_TOGGLE";
-            if (index == 1) return "EQUIP_UI";
-            if (index == 2) return "TASK_UI";
-            return null;
+            return index >= 0 && index < TOOL_KEYS.Length ? TOOL_KEYS[index] : null;
         }
     }
 }
