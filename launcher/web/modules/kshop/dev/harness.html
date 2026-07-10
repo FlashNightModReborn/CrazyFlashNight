@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KShop Reliability Harness</title>
+<base href="../../../">
+<link rel="stylesheet" href="css/game-ui-behavior.css">
+<link rel="stylesheet" href="css/panels.css">
+<style>
+html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#05070b; color:#ddd; font-family:"Microsoft YaHei",sans-serif; }
+#panel-container,#panel-backdrop,#panel-content { position:absolute; inset:0; }
+#panel-backdrop { background:#05070b; }
+#panel-content { display:flex; align-items:center; justify-content:center; }
+#panel-tooltip { display:none; }
+#qa-status { position:fixed; left:8px; bottom:8px; z-index:9999; padding:5px 8px; background:#111d; font-size:12px; }
+</style>
+</head>
+<body>
+<div id="panel-container">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<div id="panel-tooltip"></div>
+<div id="qa-status">running</div>
+
+<script>
+(function() {
+    'use strict';
+    var listeners = {};
+    window.Bridge = {
+        on: function(type, callback) { (listeners[type] || (listeners[type] = [])).push(callback); },
+        off: function(type, callback) {
+            var list = listeners[type] || [];
+            var index = list.indexOf(callback);
+            if (index >= 0) list.splice(index, 1);
+        },
+        send: function(message) { window.KShopHarnessHost.handle(message); }
+    };
+    window.__emitBridge = function(type, data) {
+        var list = (listeners[type] || []).slice();
+        for (var i = 0; i < list.length; i++) list[i](data);
+    };
+})();
+
+window.__KSHOP_RUNTIME_CONFIG__ = {
+    sessionNonce: 'harness',
+    requestTimeoutMs: 220,
+    cartSaveDebounceMs: 45,
+    dragTimeoutMs: 120
+};
+window.Notch = { reportRect: function() {} };
+window.Toast = { messages: [], add: function(message) { this.messages.push(String(message)); } };
+window.BootstrapAudio = {
+    playSelect:function(){}, playConfirm:function(){}, playSuccess:function(){}, playError:function(){},
+    playCancel:function(){}, playClick:function(){}, playModalOpen:function(){}
+};
+window.PanelTooltip = {
+    visible:false,
+    showAtMouse:function(){ this.visible=true; }, showAnchored:function(){ this.visible=true; }, followMouse:function(){}, hide:function(){ this.visible=false; },
+    isVisible:function(){ return this.visible; }, updateContent:function(){}, inferLayoutType:function(){ return 'narrow'; },
+    dynamicIconHtml:function(name){ return '<span data-rich-icon="'+String(name)+'"></span>'; },
+    staticIconUrl:function(){ return null; }, buildItemRichHtml:function(){ return '<div>detail</div>'; }
+};
+window.Icons = {
+    load:function(callback){ if (callback) callback(); },
+    html:function(name, cls){ return '<span class="'+(cls || 'kshop-icon')+'" data-icon="'+String(name)+'"></span>'; }
+};
+</script>
+<script src="modules/game-ui-behavior.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/panel-scale.js"></script>
+<script src="modules/uidata.js"></script>
+<script src="modules/workbench.js"></script>
+<script src="modules/kshop-runtime.js"></script>
+<script src="modules/inventory-runtime.js"></script>
+<script src="modules/kshop.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function wait(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
+    async function waitFor(predicate, timeout) {
+        var started = Date.now();
+        while (Date.now() - started < timeout) {
+            if (predicate()) return true;
+            await wait(10);
+        }
+        return !!predicate();
+    }
+    function countCmd(cmd) {
+        return Host.sent.filter(function(message) { return message.cmd === cmd; }).length;
+    }
+    function countInventoryCmd(cmd) {
+        return Host.sent.filter(function(message) { return message.domain === 'inventory' && message.cmd === cmd; }).length;
+    }
+    function click(selector) {
+        var element = document.querySelector(selector);
+        if (!element) throw new Error('missing element: ' + selector);
+        element.click();
+        return element;
+    }
+    function confirmCheckout() {
+        click('#kshop-checkout');
+        return click('.workbench-modal-action[data-action="confirm"]');
+    }
+    function dispatchPointer(target, type, pointerId, x, y) {
+        var event = new PointerEvent(type, {
+            bubbles:true, cancelable:true, pointerId:pointerId, pointerType:'mouse',
+            isPrimary:true, button:type === 'pointerdown' ? 0 : -1, buttons:type === 'pointerup' ? 0 : 1,
+            clientX:x, clientY:y
+        });
+        target.dispatchEvent(event);
+    }
+    function addEquipment() { click('.kshop-add-btn[data-idx="0"]'); }
+    function addStackable(quantity) {
+        if (!document.querySelector('.kshop-add-btn[data-idx="1"]')) click('.kshop-cat-btn[data-cat="消耗品"]');
+        click('.kshop-add-btn[data-idx="1"]');
+        var input = document.querySelector('.kshop-qty-input');
+        if (!input) throw new Error('quantity popup did not open');
+        input.value = String(quantity);
+        input.dispatchEvent(new Event('input', { bubbles:true }));
+        click('.kshop-qty-confirm');
+    }
+
+    var BASE_CATALOG = [
+        {idx:0,id:'w0',item:'测试手枪',type:'武器',price:30,displayname:'测试手枪',majorType:'武器',subType:'手枪',level:1,icon:'图标-测试手枪'},
+        {idx:1,id:'c1',item:'测试药剂',type:'消耗品',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂'},
+        {idx:2,id:'l2',item:'锁定装备',type:'武器',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',level:99,icon:'图标-锁定装备'}
+    ];
+    var BASE_PURCHASED = [
+        ['w0','测试手枪','武器',30,1],
+        ['c1','测试药剂','消耗品',5,2]
+    ];
+
+    var Host = window.KShopHarnessHost = {
+        sent: [],
+        closeCount: 0,
+        delays: {},
+        nextSaveAmbiguous: false,
+        nextCheckoutAmbiguous: false,
+        nextCheckoutMalformed: false,
+        leaseSeq: 0,
+        inventorySession: 0,
+        inventorySnapshotSeq: 0,
+        inventoryEpochs: null,
+        leases: {},
+        state: null,
+
+        reset: function() {
+            this.sent = [];
+            this.closeCount = 0;
+            this.delays = {};
+            this.nextSaveAmbiguous = false;
+            this.nextCheckoutAmbiguous = false;
+            this.nextCheckoutMalformed = false;
+            this.leaseSeq = 0;
+            this.inventorySession = 0;
+            this.inventorySnapshotSeq = 0;
+            this.inventoryEpochs = {背包:1,仓库:1};
+            this.leases = {};
+            this.state = {
+                catalog: clone(BASE_CATALOG),
+                cart: [],
+                purchased: clone(BASE_PURCHASED),
+                kpoints: 500,
+                playerLevel: 20,
+                reverseLevel: 0,
+                purchasedToken: 'shop.harness.1',
+                inventory: {背包:new Array(50),仓库:new Array(1200)}
+            };
+            this.state.inventory.背包[0] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',itemKind:'stack',quantity:2};
+            this.state.inventory.背包[1] = {name:'背包装备',displayName:'背包装备',icon:'背包装备',itemKind:'equipment',quantity:1};
+            this.state.inventory.背包[2] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',itemKind:'stack',quantity:3};
+            this.state.inventory.仓库[0] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',itemKind:'stack',quantity:4};
+            this.state.inventory.仓库[2] = {name:'仓库装备',displayName:'仓库装备',icon:'仓库装备',itemKind:'equipment',quantity:1};
+            this.state.inventory.仓库[50] = {name:'Zulu仓储件',displayName:'Zulu仓储件',icon:'Zulu仓储件',itemKind:'equipment',quantity:1};
+            this.state.inventory.仓库[51] = {name:'Alpha仓储件',displayName:'Alpha仓储件',icon:'Alpha仓储件',itemKind:'stack',quantity:9};
+            this.state.inventory.仓库[1199] = {name:'末页校验件',displayName:'末页校验件',icon:'末页校验件',itemKind:'equipment',quantity:1};
+            Toast.messages = [];
+        },
+
+        rotatePurchasedToken: function() {
+            var next = Number(this.state.purchasedToken.split('.').pop()) + 1;
+            this.state.purchasedToken = 'shop.harness.' + next;
+            return this.state.purchasedToken;
+        },
+
+        snapshotFor: function(request) {
+            var containerId = String(request.containerId);
+            var items = this.state.inventory[containerId];
+            var offset = Number(request.offset);
+            var limit = Number(request.limit);
+            var slots = [];
+            for (var slot=offset; slot<Math.min(items.length,offset+limit); slot++) {
+                this.leaseSeq += 1;
+                var token = 'invh.' + this.inventorySession + '.' + this.leaseSeq;
+                var item = items[slot] || null;
+                this.leases[containerId + ':' + slot] = {token:token,item:item,quantity:item ? item.quantity : 0};
+                var entry = {physicalSlot:slot,occupied:!!item,slotLease:token};
+                if (item) {
+                    entry.item = clone(item);
+                    entry.confirmProjection = {
+                        itemKind:item.itemKind,displayName:item.displayName,quantity:item.quantity,
+                        enhancementLevel:item.enhancementLevel || 0,rarity:item.rarity || ''
+                    };
+                }
+                slots.push(entry);
+            }
+            this.inventorySnapshotSeq += 1;
+            return {containerId:containerId,capacity:items.length,snapshotSeq:this.inventorySnapshotSeq,
+                containerEpoch:this.inventoryEpochs[containerId] || 1,offset:offset,limit:slots.length,slots:slots};
+        },
+
+        inventorySnapshots: function(requests, rotate) {
+            if (rotate) { this.inventorySession += 1; this.leases = {}; }
+            return (requests || [
+                {containerId:'背包',offset:0,limit:50},{containerId:'仓库',offset:0,limit:50}
+            ]).map(this.snapshotFor.bind(this));
+        },
+
+        open: async function() {
+            if (Panels.getActive && Panels.getActive()) Panels.close();
+            this.reset();
+            Panels.open('kshop');
+            await waitFor(function() {
+                var loading = document.querySelector('#kshop-loading');
+                return Host.sent.some(function(message){ return message.cmd === 'bulkQuery'; })
+                    && loading && loading.style.display === 'none'
+                    && document.querySelectorAll('.kshop-card').length >= 2
+                    && KShop.debugState().inventory.ready;
+            }, 1000);
+        },
+
+        respond: function(request, response, delay) {
+            response.type = 'panel_resp';
+            response.callId = request.callId;
+            if (request.domain) { response.domain = request.domain; response.cmd = request.cmd; }
+            setTimeout(function() { window.__emitBridge('panel_resp', response); }, delay || 0);
+        },
+
+        handle: function(message) {
+            this.sent.push(clone(message));
+            if (message.cmd === 'close') { this.closeCount += 1; return; }
+            var delay = Number(this.delays[message.cmd]) || 0;
+            if (message.domain === 'inventory') {
+                var payload = message.payload || {};
+                if (message.cmd === 'snapshot') {
+                    this.respond(message, {success:true,v:1,snapshots:this.inventorySnapshots(payload.requests,true)}, delay);
+                    return;
+                }
+                if (message.cmd === 'sortAndMerge') {
+                    var container = payload.container || {};
+                    var methodName = String(payload.methodName || '');
+                    var allowed = {byType:1,byUse:1,byPrice:1,byLevel:1,byID:1,byName:1,byValue:1,byTime:1};
+                    if (container.containerId !== '仓库') {
+                        this.respond(message, {success:false,error:'sort_forbidden'}, delay);
+                        return;
+                    }
+                    if (!allowed[methodName]) {
+                        this.respond(message, {success:false,error:'unsupported_sort_method'}, delay);
+                        return;
+                    }
+                    var warehouse = this.state.inventory.仓库;
+                    var compact = warehouse.filter(function(item){ return !!item; });
+                    var stackIndex = {};
+                    var merged = [];
+                    compact.forEach(function(item) {
+                        if (item.itemKind === 'stack') {
+                            if (stackIndex[item.name] != null) merged[stackIndex[item.name]].quantity += Number(item.quantity || 0);
+                            else { stackIndex[item.name] = merged.length; merged.push(item); }
+                        } else merged.push(item);
+                    });
+                    if (methodName === 'byName') merged.sort(function(a,b){ return String(a.displayName).localeCompare(String(b.displayName),'zh-CN'); });
+                    else if (methodName === 'byValue') merged.sort(function(a,b){ return Number(b.quantity || 1)-Number(a.quantity || 1); });
+                    this.state.inventory.仓库 = new Array(1200);
+                    for (var mi=0; mi<merged.length; mi++) this.state.inventory.仓库[mi] = merged[mi];
+                    Object.keys(this.leases).forEach(function(key){ if (key.indexOf('仓库:') === 0) delete Host.leases[key]; });
+                    this.inventoryEpochs.仓库 += 1;
+                    this.respond(message, {success:true,v:1,operation:'sortAndMerge',methodName:methodName,snapshots:this.inventorySnapshots([
+                        {containerId:'仓库',offset:Number(container.offset),limit:Number(container.limit)}
+                    ],false)}, delay);
+                    return;
+                }
+                var source = payload.source || {};
+                var target = payload.target || {};
+                var sourceKey = source.containerId + ':' + source.slot;
+                var targetKey = target.containerId + ':' + target.slot;
+                var sourceLease = this.leases[sourceKey];
+                var targetLease = this.leases[targetKey];
+                if (!sourceLease || sourceLease.token !== source.expectedLease
+                        || (message.cmd !== 'discard' && (!targetLease || targetLease.token !== target.expectedLease))) {
+                    this.respond(message, {success:false,error:'stale_state'}, delay);
+                    return;
+                }
+                var sourceItems = this.state.inventory[source.containerId];
+                if (message.cmd === 'discard') {
+                    sourceItems[source.slot] = null;
+                    this.respond(message, {success:true,operation:'discard',snapshots:this.inventorySnapshots([
+                        {containerId:'背包',offset:0,limit:50}
+                    ],false)}, delay);
+                    return;
+                }
+                var targetItems = this.state.inventory[target.containerId];
+                if (source.containerId === target.containerId && Number(source.slot) === Number(target.slot)) {
+                    this.respond(message, {success:false,error:'same_slot'}, delay);
+                    return;
+                }
+                if (message.cmd === 'move') {
+                    targetItems[target.slot] = sourceItems[source.slot]; sourceItems[source.slot] = null;
+                } else if (message.cmd === 'merge') {
+                    targetItems[target.slot].quantity += sourceItems[source.slot].quantity; sourceItems[source.slot] = null;
+                } else if (message.cmd === 'swap') {
+                    var held = targetItems[target.slot]; targetItems[target.slot] = sourceItems[source.slot]; sourceItems[source.slot] = held;
+                }
+                var sourceWindow = {containerId:source.containerId,offset:Math.floor(Number(source.slot)/50)*50,limit:50};
+                var targetWindow = {containerId:target.containerId,offset:Math.floor(Number(target.slot)/50)*50,limit:50};
+                var affectedWindows = [sourceWindow];
+                if (sourceWindow.containerId !== targetWindow.containerId || sourceWindow.offset !== targetWindow.offset) {
+                    affectedWindows.push(targetWindow);
+                }
+                this.respond(message, {success:true,operation:message.cmd,
+                    snapshots:this.inventorySnapshots(affectedWindows,false)}, delay);
+                return;
+            }
+            if (message.cmd === 'bulkQuery') {
+                this.rotatePurchasedToken();
+                this.respond(message, {
+                    success:true,
+                    catalog:clone(this.state.catalog), cart:clone(this.state.cart), purchased:clone(this.state.purchased),
+                    purchasedToken:this.state.purchasedToken,
+                    kpoints:this.state.kpoints, playerLevel:this.state.playerLevel, reverseLevel:this.state.reverseLevel
+                }, delay);
+                return;
+            }
+            if (message.cmd === 'tooltip') {
+                this.respond(message, {success:true,introHTML:'<b>测试</b>',descHTML:'说明'}, delay);
+                return;
+            }
+            if (message.cmd === 'saveCart') {
+                this.state.cart = clone(message.cart || []);
+                if (this.nextSaveAmbiguous) {
+                    this.nextSaveAmbiguous = false;
+                    this.respond(message, {success:false,error:'reconcile_required'}, delay);
+                } else {
+                    this.respond(message, {success:true}, delay);
+                }
+                return;
+            }
+            if (message.cmd === 'checkout') {
+                var cart = clone(message.cart || []);
+                var total = 0;
+                for (var i = 0; i < cart.length; i++) {
+                    var item = this.state.catalog[cart[i].idx];
+                    total += Number(item.price) * Number(cart[i].qty);
+                    this.state.purchased.push([item.id,item.item,item.type,item.price,cart[i].qty]);
+                }
+                this.state.kpoints -= total;
+                this.state.cart = [];
+                if (this.nextCheckoutMalformed) {
+                    this.nextCheckoutMalformed = false;
+                    this.respond(message, {success:true}, delay);
+                } else if (this.nextCheckoutAmbiguous) {
+                    this.nextCheckoutAmbiguous = false;
+                    this.respond(message, {success:false,error:'reconcile_required'}, delay);
+                } else {
+                    this.respond(message, {success:true,newBalance:this.state.kpoints,purchased:clone(this.state.purchased),purchasedToken:this.rotatePurchasedToken()}, delay);
+                }
+                return;
+            }
+            if (message.cmd === 'claim') {
+                var index = Number(message.purchasedIdx);
+                if (String(message.expectedPurchasedToken) !== this.state.purchasedToken) {
+                    this.respond(message, {success:false,error:'stale_state',purchasedToken:this.state.purchasedToken}, delay);
+                } else if (index < 0 || index >= this.state.purchased.length) {
+                    this.respond(message, {success:false,error:'item_not_found',purchasedToken:this.state.purchasedToken}, delay);
+                } else {
+                    var receipt = this.state.purchased[index];
+                    var vacancy = this.state.inventory.背包.findIndex(function(item){ return !item; });
+                    if (vacancy < 0) { this.respond(message,{success:false,error:'inventory_full',purchasedToken:this.state.purchasedToken},delay); return; }
+                    this.state.inventory.背包[vacancy] = {name:String(receipt[1]),displayName:String(receipt[1]),icon:String(receipt[1]),itemKind:'stack',quantity:Number(receipt[receipt.length-1])};
+                    this.state.purchased.splice(index, 1);
+                    this.respond(message, {success:true,purchased:clone(this.state.purchased),purchasedToken:this.rotatePurchasedToken()}, delay);
+                }
+            }
+        }
+    };
+
+    Panels.init();
+    var results = [];
+    function assert(id, title, pass, detail) {
+        results.push({id:id,title:title,pass:!!pass,detail:detail || ''});
+    }
+
+    async function run() {
+        await Host.open();
+        assert('kshop-ui1','首次打开使用 namespaced callId 并渲染目录',
+            /^wb\.harness\.\d+\.\d+$/.test(Host.sent[0].callId) && document.querySelectorAll('.kshop-card').length >= 2,
+            Host.sent[0] && Host.sent[0].callId);
+        assert('kshop-ui2','生产格子走动态图标 HTML 入口',
+            document.querySelectorAll('[data-icon]').length >= 3,
+            document.querySelectorAll('[data-icon]').length + ' icons');
+
+        var nativeProbe = document.createElement('input');
+        nativeProbe.value = 'editable';
+        document.body.appendChild(nativeProbe);
+        var selectionEvent = new Event('selectstart',{bubbles:true,cancelable:true});
+        document.querySelector('.workbench-title').dispatchEvent(selectionEvent);
+        var dragProbe = document.createElement('img');
+        document.body.appendChild(dragProbe);
+        var dragEvent = new Event('dragstart',{bubbles:true,cancelable:true});
+        dragProbe.dispatchEvent(dragEvent);
+        var contextEvent = new Event('contextmenu',{bubbles:true,cancelable:true});
+        document.querySelector('.workbench-title').dispatchEvent(contextEvent);
+        var editableSelectEvent = new Event('selectstart',{bubbles:true,cancelable:true});
+        nativeProbe.dispatchEvent(editableSelectEvent);
+        var editableContextEvent = new Event('contextmenu',{bubbles:true,cancelable:true});
+        nativeProbe.dispatchEvent(editableContextEvent);
+        assert('kshop-ui2d','游戏 UI 统一抑制原生选取/拖影/菜单，编辑控件显式放行',
+            selectionEvent.defaultPrevented && dragEvent.defaultPrevented && contextEvent.defaultPrevented
+                && !editableSelectEvent.defaultPrevented && !editableContextEvent.defaultPrevented
+                && getComputedStyle(document.querySelector('.workbench-title')).userSelect === 'none'
+                && getComputedStyle(nativeProbe).userSelect === 'text'
+                && GameUiBehavior.debugState().blocked.selectstart >= 1);
+        dragProbe.remove();
+        nativeProbe.remove();
+
+        var shell = document.querySelector('.workbench-shell.kshop-workbench');
+        var leftHost = document.querySelector('.workbench-slot[data-slot="L"] .workbench-view-host');
+        var rightHost = document.querySelector('.workbench-slot[data-slot="R"] .workbench-view-host');
+        document.querySelector('.workbench-slot[data-slot="R"]').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:61,pointerType:'mouse',isPrimary:true,button:0}));
+        var focusMoved = shell.getAttribute('data-active-slot') === 'R';
+        assert('kshop-ui2a','Gate A1 双栏壳挂载 CatalogView 与 CartView',
+            !!shell && leftHost && rightHost
+                && leftHost.getAttribute('data-instance-key') === 'shop:catalog'
+                && rightHost.getAttribute('data-instance-key') === 'shop:cart'
+                && document.querySelector('[data-item-model="intent"]')
+                && document.querySelector('[data-item-model="owned-pending"]') && focusMoved);
+
+        var shellRect = shell.getBoundingClientRect();
+        var leftRect = document.querySelector('.workbench-slot[data-slot="L"]').getBoundingClientRect();
+        var rightRect = document.querySelector('.workbench-slot[data-slot="R"]').getBoundingClientRect();
+        assert('kshop-ui2b','1024×576 设计画布经 PanelScale 保形且双栏不重叠',
+            Math.abs((shellRect.width / shellRect.height) - (1024 / 576)) < 0.02
+                && leftRect.right < rightRect.left && shell.scrollHeight <= shell.clientHeight,
+            Math.round(shellRect.width) + 'x' + Math.round(shellRect.height));
+
+        var primitiveNames = ['DualPaneShell','WorkbenchViewHost','ViewChrome','GridRenderer','ContainerViewAdapter','GridContainerView','InteractionBroker','PointerDragController'];
+        var contractStatus = Workbench.contractStatus();
+        assert('kshop-ui2c','Gate A1/A2 已验收，完整仓库窗口进入 Gate A3 candidate',
+            primitiveNames.every(function(name){ return typeof Workbench[name] === 'function'; })
+                && contractStatus.shell === 'gate-a1-accepted'
+                && contractStatus.interactionBroker === 'gate-a2-accepted'
+                && contractStatus.ownedTransfer === 'gate-a2-accepted'
+                && contractStatus.warehouseWindow === 'gate-a3-candidate',
+            primitiveNames.join(',') + ' / warehouse=' + contractStatus.warehouseWindow);
+
+        var muxSent = [], muxCalls = 0, muxErrors = 0;
+        var mux = new KShopRequestMux({
+            send:function(message){ muxSent.push(message); }, sessionNonce:'mux', timeoutMs:500,
+            onProtocolError:function(){ muxErrors += 1; }
+        });
+        mux.openSession();
+        var muxId = mux.request('shop','bulkQuery',{},function(){ muxCalls += 1; });
+        var wrongConsumed = mux.handleResponse({type:'panel_resp',panel:'map',callId:muxId,success:true});
+        var rightConsumed = mux.handleResponse({type:'panel_resp',callId:muxId,success:true});
+        assert('kshop-ui3','错通道回包不消费 pending，正确回包只完成一次',
+            !wrongConsumed && rightConsumed && muxErrors === 1 && muxCalls === 1 && mux.pendingCount() === 0);
+
+        var lateCalls = 0;
+        var lateId = mux.request('shop','tooltip',{},function(){ lateCalls += 1; });
+        mux.closeSession();
+        mux.openSession();
+        var lateConsumed = mux.handleResponse({type:'panel_resp',callId:lateId,success:true});
+        assert('kshop-ui4','close/open generation 隔离迟到回包',!lateConsumed && lateCalls === 0 && mux.pendingCount() === 0);
+        mux.closeSession();
+
+        await Host.open();
+        addEquipment();
+        addStackable(3);
+        await wait(140);
+        assert('kshop-ui5','连续购物车编辑合并为单个 saveCart',countCmd('saveCart') === 1,
+            'saveCart=' + countCmd('saveCart'));
+
+        await Host.open();
+        Host.delays.saveCart = 120;
+        Host.nextSaveAmbiguous = true;
+        addEquipment();
+        await wait(65);
+        addStackable(2);
+        await waitFor(function(){ return countCmd('saveCart') === 2 && Host.state.cart.length === 2; }, 1200);
+        assert('kshop-ui5b','saveCart 结果不确定时先 bulkQuery，再只同步一次最新购物车',
+            countCmd('saveCart') === 2 && countCmd('bulkQuery') === 2 && Host.state.cart.length === 2,
+            'save=' + countCmd('saveCart') + ' bulk=' + countCmd('bulkQuery') + ' cart=' + Host.state.cart.length);
+
+        await Host.open();
+        Host.delays.saveCart = 170;
+        addEquipment();
+        await wait(65);
+        confirmCheckout();
+        await wait(50);
+        var checkoutBeforeSave = countCmd('checkout');
+        await waitFor(function(){ return countCmd('checkout') === 1; }, 600);
+        var saveIndex = Host.sent.findIndex(function(x){ return x.cmd === 'saveCart'; });
+        var checkoutIndex = Host.sent.findIndex(function(x){ return x.cmd === 'checkout'; });
+        assert('kshop-ui6','checkout 等待 save pipeline 清空后才下发',
+            checkoutBeforeSave === 0 && saveIndex >= 0 && checkoutIndex > saveIndex,
+            'before=' + checkoutBeforeSave + ' order=' + saveIndex + '/' + checkoutIndex);
+
+        await Host.open();
+        Host.delays.claim = 160;
+        Host.delays.snapshot = 120;
+        var snapshotsBeforeClaim = countInventoryCmd('snapshot');
+        var claimButtons = document.querySelectorAll('.kshop-claim-btn');
+        claimButtons[0].click();
+        var allLocked = Array.from(document.querySelectorAll('.kshop-claim-btn')).every(function(button){ return button.disabled; });
+        claimButtons[1].click();
+        await wait(40);
+        var claimMessage = Host.sent.find(function(message){ return message.cmd === 'claim'; });
+        await waitFor(function(){ return countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1
+            && !KShop.debugState().inventory.busyOwner; }, 800);
+        assert('kshop-ui7','claim 全局单飞、携 purchased token，并锁到背包 snapshot 完成',
+            countCmd('claim') === 1 && allLocked && claimMessage && !!claimMessage.expectedPurchasedToken
+                && countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1,
+            'claim=' + countCmd('claim') + ' inventorySnapshot=' + countInventoryCmd('snapshot'));
+
+        await Host.open();
+        addEquipment();
+        await wait(120);
+        Host.nextCheckoutMalformed = true;
+        confirmCheckout();
+        await waitFor(function(){ return countCmd('bulkQuery') >= 2 && !document.querySelector('.kshop-write-busy'); }, 1000);
+        assert('kshop-ui8','畸形成功 checkout 只 bulkQuery 对账且不重放 checkout',
+            countCmd('checkout') === 1 && countCmd('bulkQuery') === 2 && document.querySelectorAll('.kshop-cart-row').length === 0,
+            'checkout=' + countCmd('checkout') + ' bulk=' + countCmd('bulkQuery'));
+
+        await Host.open();
+        addEquipment();
+        await wait(100);
+        var checkoutBeforeModal = countCmd('checkout');
+        click('#kshop-checkout');
+        var modalVisible = !!document.querySelector('.workbench-modal[data-modal-kind="commit"]');
+        var checkoutBeforeConfirm = countCmd('checkout');
+        window.__emitBridge('panel_esc',{});
+        assert('kshop-ui8a','模态②在确认前不下发 checkout，ESC 先退模态且保持购物车',
+            checkoutBeforeModal === 0 && checkoutBeforeConfirm === 0 && modalVisible
+                && countCmd('checkout') === 0 && !document.querySelector('.workbench-modal')
+                && Panels.isOpen() && document.querySelectorAll('.kshop-cart-row').length === 1);
+
+        await Host.open();
+        var selectCard = document.querySelector('.kshop-card[data-idx="0"]');
+        selectCard.click();
+        click('.kshop-cart-drop-target');
+        await wait(20);
+        assert('kshop-ui8b','点击 source→sink 生成中性意图并加入购物车',
+            document.querySelectorAll('.kshop-cart-row').length === 1
+                && KShop.debugState().selectedCatalogIdx === null);
+
+        await Host.open();
+        var dragCard = document.querySelector('.kshop-card[data-idx="0"]');
+        var dragTarget = document.querySelector('.kshop-cart-drop-target');
+        var from = dragCard.getBoundingClientRect();
+        var to = dragTarget.getBoundingClientRect();
+        dragCard.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:from.left + 10,clientY:from.top + 10}));
+        var tooltipBeforeDrag = PanelTooltip.isVisible();
+        dispatchPointer(dragCard,'pointerdown',71,from.left + 10,from.top + 10);
+        dispatchPointer(document,'pointermove',71,to.left + to.width / 2,to.top + to.height / 2);
+        var ghostVisible = !!document.querySelector('.workbench-drag-ghost');
+        var tooltipHiddenDuringDrag = !PanelTooltip.isVisible();
+        dragCard.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:to.left,clientY:to.top}));
+        var tooltipStayedHidden = !PanelTooltip.isVisible();
+        dispatchPointer(document,'pointerup',71,to.left + to.width / 2,to.top + to.height / 2);
+        await wait(20);
+        assert('kshop-ui8c','pointer 自绘拖拽经 Offer×Accept 落购物车',
+            tooltipBeforeDrag && tooltipHiddenDuringDrag && tooltipStayedHidden && !PanelTooltip.isVisible()
+                && ghostVisible && document.querySelectorAll('.kshop-cart-row').length === 1
+                && !document.querySelector('.workbench-drag-ghost'),
+            'tooltip=' + tooltipBeforeDrag + '/' + tooltipHiddenDuringDrag + '/' + tooltipStayedHidden + ' drag=' + JSON.stringify(KShop.debugState().drag));
+
+        await Host.open();
+        var timeoutCard = document.querySelector('.kshop-card[data-idx="0"]');
+        var timeoutRect = timeoutCard.getBoundingClientRect();
+        dispatchPointer(timeoutCard,'pointerdown',72,timeoutRect.left + 8,timeoutRect.top + 8);
+        await wait(170);
+        assert('kshop-ui8d','无 move/up 的 pointerdown 超时后清理 capture 与幽灵',
+            !KShop.debugState().drag.active && !document.querySelector('.workbench-drag-ghost'));
+
+        var probeShell = new Workbench.DualPaneShell({title:'probe'});
+        function probeView(key, slots) {
+            var node = document.createElement('div');
+            return {
+                instanceKey:key, instancePolicy:'singletonByBinding', allowedSlots:slots,
+                mount:function(container){ container.appendChild(node); },
+                unmount:function(){ if(node.parentNode) node.parentNode.removeChild(node); },
+                render:function(){}
+            };
+        }
+        var probeCatalog = probeView('probe:catalog',['L']);
+        var probeCart = probeView('probe:cart',['L','R']);
+        var probeFallback = probeView('probe:fallback',['R']);
+        probeShell.setDefault('L',probeCatalog);
+        probeShell.setDefault('R',probeFallback);
+        probeShell.mountInitial(probeCatalog,probeCart);
+        var moved = probeShell.moveView('L',probeCart);
+        assert('kshop-ui8e','singletonByBinding 冲突原子搬移并让 displaced 槽回落默认 View',
+            moved && probeShell.getHost('L').currentView === probeCart
+                && probeShell.getHost('R').currentView === probeFallback);
+        probeShell.destroy();
+
+        var renderProbe = new Workbench.GridRenderer({
+            keyOf:function(item){ return item; },
+            renderItem:function(item){ var node=document.createElement('div'); node.textContent=String(item); return node; }
+        });
+        var renderItems = [];
+        for (var rp=0; rp<1200; rp++) renderItems.push(rp);
+        var renderStart = performance.now();
+        renderProbe.render(renderItems);
+        var renderElapsed = performance.now() - renderStart;
+        assert('kshop-ui8f','GridRenderer 1200 项离屏基线不发生数量截断或灾难性退化',
+            renderProbe.root.children.length === 1200 && renderElapsed < 1000,
+            renderElapsed.toFixed(1) + 'ms');
+        renderProbe.destroy();
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        assert('kshop-ui8g','Gate A2 挂载背包与仓库 owned View，保留 physicalSlot',
+            document.querySelector('.workbench-slot[data-slot="L"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:背包'
+                && document.querySelector('.workbench-slot[data-slot="R"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:仓库'
+                && document.querySelectorAll('[data-item-model="owned"]').length === 2
+                && document.querySelectorAll('.inventory-slot-card[data-physical-slot]').length === 100);
+
+        var operationCases = [
+            InventoryRuntime.operationForIntent({sourceRef:{occupied:true,item:{itemKind:'equipment',name:'A'}},targetRef:{occupied:false,item:null}}),
+            InventoryRuntime.operationForIntent({sourceRef:{occupied:true,item:{itemKind:'stack',name:'S'}},targetRef:{occupied:true,item:{itemKind:'stack',name:'S'}}}),
+            InventoryRuntime.operationForIntent({sourceRef:{occupied:true,item:{itemKind:'equipment',name:'A'}},targetRef:{occupied:true,item:{itemKind:'stack',name:'S'}}})
+        ];
+        assert('kshop-ui8h','InventoryCoordinator 仅按目标态选择 move/merge/swap',
+            operationCases.join(',') === 'move,merge,swap', operationCases.join(','));
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        var sameMoveSource = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        var sameMoveTarget = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="3"]');
+        var sameMoveFrom = sameMoveSource.getBoundingClientRect();
+        var sameMoveTo = sameMoveTarget.getBoundingClientRect();
+        dispatchPointer(sameMoveSource,'pointerdown',81,sameMoveFrom.left + 8,sameMoveFrom.top + 8);
+        dispatchPointer(document,'pointermove',81,sameMoveTo.left + sameMoveTo.width / 2,sameMoveTo.top + sameMoveTo.height / 2);
+        dispatchPointer(document,'pointerup',81,sameMoveTo.left + sameMoveTo.width / 2,sameMoveTo.top + sameMoveTo.height / 2);
+        await waitFor(function(){ return countInventoryCmd('move') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8q','背包内 pointer 拖拽到空 physicalSlot 走 whole-slot move',
+            countInventoryCmd('move') === 1 && !Host.state.inventory.背包[1]
+                && Host.state.inventory.背包[3] && Host.state.inventory.背包[3].name === '背包装备'
+                && !document.querySelector('.workbench-drag-ghost'));
+        await wait(90); // pointer controller 的防重复 click 窗口结束后再开下一独立场景
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="2"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
+        await waitFor(function(){ return countInventoryCmd('merge') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8r','背包内同名 stack 落 occupied target 走 whole-stack merge',
+            countInventoryCmd('merge') === 1 && !Host.state.inventory.背包[2]
+                && Host.state.inventory.背包[0].quantity === 5,
+            'merge=' + countInventoryCmd('merge') + ' source=' + JSON.stringify(Host.state.inventory.背包[2])
+                + ' target=' + JSON.stringify(Host.state.inventory.背包[0]));
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"]');
+        await waitFor(function(){ return countInventoryCmd('swap') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8s','仓库内异类 occupied target 走 whole-slot swap',
+            countInventoryCmd('swap') === 1 && Host.state.inventory.仓库[0].name === '仓库装备'
+                && Host.state.inventory.仓库[2].name === '背包药剂');
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        var selfSlot = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
+        var selfRect = selfSlot.getBoundingClientRect();
+        dispatchPointer(selfSlot,'pointerdown',82,selfRect.left + 8,selfRect.top + 8);
+        dispatchPointer(document,'pointermove',82,selfRect.right - 8,selfRect.bottom - 8);
+        dispatchPointer(document,'pointerup',82,selfRect.right - 8,selfRect.bottom - 8);
+        await wait(30);
+        assert('kshop-ui8t','拖回原 physicalSlot 作为无写入操作清理选择与拖拽镜像',
+            countInventoryCmd('move') + countInventoryCmd('merge') + countInventoryCmd('swap') === 0
+                && Host.state.inventory.背包[0].quantity === 2
+                && !document.querySelector('.workbench-source-selected')
+                && !document.querySelector('.workbench-drag-ghost'));
+        await wait(90);
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        var moveBefore = countInventoryCmd('move');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="1"]');
+        await waitFor(function(){ return countInventoryCmd('move') === moveBefore + 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="1"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        await waitFor(function(){ return countInventoryCmd('move') === moveBefore + 2 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8i','背包↔仓库左右反转仍发同一 inventory move operation',
+            countInventoryCmd('move') === moveBefore + 2 && Host.state.inventory.背包[1] && !Host.state.inventory.仓库[1],
+            'move=' + countInventoryCmd('move'));
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"]');
+        await waitFor(function(){ return countInventoryCmd('merge') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8j','同名 stack 落 occupied target 走 whole-stack merge',
+            countInventoryCmd('merge') === 1 && Host.state.inventory.仓库[0].quantity === 6 && !Host.state.inventory.背包[0]);
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"]');
+        await waitFor(function(){ return countInventoryCmd('swap') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8k','异类 occupied target 走 whole-slot swap',
+            countInventoryCmd('swap') === 1 && Host.state.inventory.背包[1].itemKind === 'stack'
+                && Host.state.inventory.仓库[0].itemKind === 'equipment');
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"] .inventory-discard-btn');
+        var discardModal = !!document.querySelector('.workbench-modal[data-modal-kind="discard"]');
+        click('.workbench-modal-action[data-action="discard"]');
+        await waitFor(function(){ return countInventoryCmd('discard') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
+        assert('kshop-ui8l','discard 经显式确认、source lease 与同回包背包刷新',
+            discardModal && countInventoryCmd('discard') === 1 && !Host.state.inventory.背包[0]);
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"]');
+        var snapshotBeforePage = countInventoryCmd('snapshot');
+        click('.inventory-page-next');
+        await waitFor(function(){
+            var requests = KShop.debugState().inventory.requests || [];
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 50;
+        }, 600);
+        var pageRequest = Host.sent.filter(function(message){ return message.domain === 'inventory' && message.cmd === 'snapshot'; }).pop();
+        assert('kshop-ui8m','Gate A3 仓库按 50 槽窗口翻页，清除旧选择且不渲染 1200 个 DOM',
+            countInventoryCmd('snapshot') === snapshotBeforePage + 1
+                && pageRequest.payload.requests[1].offset === 50
+                && document.querySelector('.inventory-page-label').textContent === '2 / 24'
+                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 50
+                && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="50"]')
+                && !document.querySelector('.inventory-owned-warehouse .workbench-source-selected'));
+
+        var displayWritesBefore = countInventoryCmd('sortAndMerge');
+        var displaySelect = document.querySelector('.inventory-display-sort');
+        displaySelect.value = 'name';
+        displaySelect.dispatchEvent(new Event('change',{bubbles:true}));
+        var displayedOccupied = document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card.occupied');
+        assert('kshop-ui8n','displaySort 只重排当前页 DOM，physicalSlot 绑定与权威仓库均不改写',
+            displayedOccupied.length === 2
+                && displayedOccupied[0].getAttribute('data-physical-slot') === '51'
+                && displayedOccupied[1].getAttribute('data-physical-slot') === '50'
+                && Host.state.inventory.仓库[50].name === 'Zulu仓储件'
+                && Host.state.inventory.仓库[51].name === 'Alpha仓储件'
+                && countInventoryCmd('sortAndMerge') === displayWritesBefore);
+
+        var oldWarehouseLease = Host.leases['仓库:50'] && Host.leases['仓库:50'].token;
+        var authoritySelect = document.querySelector('.inventory-authority-sort');
+        authoritySelect.value = 'byName';
+        click('.inventory-sort-commit');
+        var sortModal = !!document.querySelector('.workbench-modal[data-modal-kind="warehouse-sort"]');
+        click('.workbench-modal-action[data-action="sort"]');
+        await waitFor(function(){ return countInventoryCmd('sortAndMerge') === 1 && !KShop.debugState().inventory.busyOwner; }, 700);
+        var sortMessage = Host.sent.find(function(message){ return message.domain === 'inventory' && message.cmd === 'sortAndMerge'; });
+        assert('kshop-ui8o','权威 sortAndMerge 携当前窗口与严格策略，epoch+1 并使旧 page lease 失效',
+            sortModal && sortMessage && sortMessage.payload.methodName === 'byName'
+                && sortMessage.payload.container.containerId === '仓库'
+                && sortMessage.payload.container.offset === 50 && sortMessage.payload.container.limit === 50
+                && Host.inventoryEpochs.仓库 === 2
+                && Host.leases['仓库:50'].token !== oldWarehouseLease
+                && document.querySelector('.inventory-page-label').textContent === '2 / 24'
+                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card.occupied').length === 0);
+
+        click('.inventory-page-prev');
+        await waitFor(function(){
+            var requests = KShop.debugState().inventory.requests || [];
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 0;
+        }, 600);
+        assert('kshop-ui8p','整理后回首页按需重拉并显示新 physicalSlot 权威投影',
+            document.querySelector('.inventory-page-label').textContent === '1 / 24'
+                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 50
+                && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"].occupied'));
+
+        await Host.open();
+        Host.delays.saveCart = 160;
+        addEquipment();
+        await wait(65);
+        click('.kshop-close-btn');
+        await wait(50);
+        var closeBeforeSave = Host.closeCount;
+        await waitFor(function(){ return Host.closeCount === 1; }, 800);
+        assert('kshop-ui9','正常关闭等待在途 save 完成后再发送 close',
+            closeBeforeSave === 0 && Host.closeCount === 1 && !Panels.isOpen(),
+            'closeBefore=' + closeBeforeSave + ' close=' + Host.closeCount);
+
+        await Host.open();
+        var callIds = Host.sent.filter(function(x){ return x.type === 'panel' && x.cmd !== 'close'; }).map(function(x){ return x.callId; });
+        assert('kshop-ui10','当前 open generation 内 callId 唯一且符合 Host 白名单',
+            callIds.length === new Set(callIds).size && callIds.every(function(id){ return /^[A-Za-z0-9._-]{1,96}$/.test(id); }),
+            callIds.join(','));
+        Panels.close();
+
+        var passed = results.filter(function(item){ return item.pass; }).length;
+        var qa = {total:results.length,passed:passed,failed:results.length-passed,results:results};
+        window.__qaResult = {qa:qa};
+        document.getElementById('qa-status').textContent = passed + '/' + results.length + ' passed';
+    }
+
+    async function runVisualScenario(mode) {
+        await Host.open();
+        addEquipment();
+        addStackable(3);
+        await wait(120);
+        var firstCategory = document.querySelector('.kshop-cat-btn');
+        if (firstCategory) firstCategory.click();
+        if (mode === 'modal') click('#kshop-checkout');
+        if (mode === 'inventory') {
+            click('.workbench-mode-btn[data-mode="inventory"]');
+            await wait(160);
+        }
+        window.__visualReady = true;
+        document.getElementById('qa-status').style.display = 'none';
+    }
+
+    var visualMode = new URLSearchParams(location.search).get('visual');
+    var execution = visualMode ? runVisualScenario(visualMode) : run();
+    execution.catch(function(error) {
+        window.__qaResult = {qa:{total:1,passed:0,failed:1,results:[{id:'fatal',title:'harness fatal',pass:false,detail:error && error.stack ? error.stack : String(error)}]}};
+        document.getElementById('qa-status').textContent = 'fatal';
+    });
+})();
+</script>
+</body>
+</html>

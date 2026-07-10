@@ -27,7 +27,10 @@
 
     // ── kshop ──
     Panels.registerLazy('kshop',
-        ['modules/kshop.js'],
+        ['modules/workbench.js',
+         'modules/kshop-runtime.js',
+         'modules/inventory-runtime.js',
+         'modules/kshop.js'],
         noop);
 
     // ── help ──

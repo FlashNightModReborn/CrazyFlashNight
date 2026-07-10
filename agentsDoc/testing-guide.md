@@ -1,5 +1,5 @@
 # 测试约定与验证矩阵
-**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：commit `22fb317ba5`（2026-07-06）。
+**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：commit `11d2e9b245`（2026-07-10）；KShop Step 0–5a / Gate A1–A3 另核对本轮工作树实现。
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 ## 0. 通用前缀
 PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
@@ -7,7 +7,7 @@ PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；
 | 任务类型 | 必跑 | 视改动追加 |
 |----------|------|------------|
 | AS2 / Flash CS6 | 按 §2 三层先选 `-Target publish\|test\|main` | TestLoader 专项套件、真机 smoke、Flash IDE 复核、`tools/swf-audit/`、`node tools/audit-as2-class-embedding.js --policy child-only` |
-| AS2 UI → Web Panel 迁移 | 按 [as2-web-panel-migration.md](as2-web-panel-migration.md) 补闭环表 + `launcher/build.ps1` + `launcher/tests/run_tests.ps1` | AS2 fresh trace / Web harness / 游戏内端到端手测按改动面追加 |
+| AS2 UI → Web Panel 迁移 | 按 [as2-web-panel-migration.md](as2-web-panel-migration.md) 补闭环表 + `launcher/build.ps1` + `launcher/tests/run_tests.ps1`；改 Overlay 游戏 UI 行为、KShop/工作台 `ShopTask` / `InventoryTask` / `game-ui-behavior.*` / `workbench.js` / `kshop-runtime.js` / `inventory-runtime.js` / `kshop.js` / 对应 CSS 时追加 `node tools/run-kshop-harness.js`（Step 0–5a 当前 35/35 + 原生行为守卫/架构禁词/owned pair 零分支/同容器转移审计） | AS2 fresh trace / Web harness / 游戏内端到端手测按改动面追加；Gate A1–A3 视觉用 `--visual=workbench|modal|inventory --viewport=WIDTHxHEIGHT --shot=<path>`；inventory AS2 固定回归=`InventoryPanelServiceTest` 46/46（含同容器 move/merge/swap、自槽保护/回滚、50/400/1200 × 三档占用 × 100 次窗口与 1200 满仓整理），真机须覆盖动态图标/InputShield、同容器与跨容器转移、分页/displaySort/sortAndMerge、discard/claim、未知物品防丢、断线重开对账及重启回读 |
 | XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
 | 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |

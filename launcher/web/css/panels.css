@@ -2741,6 +2741,498 @@
                            box-shadow:0 0 6px rgba(0,240,255,0.2); }
 
 /* ═══════════════════════════════════════════════════════
+   Dual Pane Workbench — Gate A1 shared shell / KShop trial
+   ═══════════════════════════════════════════════════════ */
+.workbench-shell {
+    --wb-bg:#090a0c;
+    --wb-surface:#101216;
+    --wb-surface-2:#15181d;
+    --wb-line:#34383f;
+    --wb-line-soft:#23272d;
+    --wb-text:#eef0f2;
+    --wb-muted:#8a9099;
+    --wb-accent:#f0a43a;
+    --wb-accent-soft:rgba(240,164,58,0.14);
+    position:relative;
+    display:grid;
+    grid-template-rows:64px minmax(0,1fr);
+    width:1024px;
+    height:576px;
+    box-sizing:border-box;
+    overflow:hidden;
+    color:var(--wb-text);
+    background:
+        linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(255,255,255,0.012) 1px,transparent 1px),
+        var(--wb-bg);
+    background-size:32px 32px;
+    border:1px solid #25282d;
+    font:12px/1.4 "Microsoft YaHei","Segoe UI",sans-serif;
+}
+.workbench-shell::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    z-index:40;
+    pointer-events:none;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.025),inset 0 -80px 100px rgba(0,0,0,0.18);
+}
+.workbench-header {
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    min-width:0;
+    padding:9px 14px 9px 18px;
+    box-sizing:border-box;
+    background:linear-gradient(90deg,#17191d 0%,#101216 62%,#0c0e11 100%);
+    border-bottom:1px solid var(--wb-line);
+}
+.workbench-header::before {
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-1px;
+    width:210px;
+    height:2px;
+    background:var(--wb-accent);
+}
+.workbench-identity { flex:1 1 auto; min-width:0; }
+.workbench-eyebrow,
+.workbench-view-kicker,
+.workbench-slot-marker,
+.workbench-modal-kicker {
+    color:var(--wb-muted);
+    font:600 9px/1.2 "Consolas","Microsoft YaHei",monospace;
+    letter-spacing:1.6px;
+}
+.workbench-title {
+    margin-top:2px;
+    color:#fff;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+.workbench-subtitle {
+    overflow:hidden;
+    margin-top:1px;
+    color:#777d86;
+    font-size:9px;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.workbench-status {
+    flex:0 0 auto;
+    min-width:118px;
+    padding:5px 9px;
+    color:#aeb3ba;
+    background:#0d0f12;
+    border:1px solid var(--wb-line-soft);
+    font:10px/1.2 "Consolas","Microsoft YaHei",monospace;
+    text-align:center;
+    letter-spacing:.5px;
+}
+.workbench-status::before { content:'●'; margin-right:6px; color:#69707a; }
+.workbench-status[data-state="ready"]::before { color:#70b886; }
+.workbench-status[data-state="busy"]::before { color:var(--wb-accent); animation:kshop-pulse 1s ease-in-out infinite; }
+.workbench-status[data-state="pending"]::before { color:#d6bd69; }
+.workbench-status[data-state="warning"] { color:#f0b8b8; border-color:#6e3838; }
+.workbench-status[data-state="warning"]::before { color:#df6262; }
+.workbench-metrics { display:flex; align-items:stretch; gap:6px; }
+.workbench-metric {
+    min-width:96px;
+    padding:4px 10px;
+    box-sizing:border-box;
+    background:#0b0d0f;
+    border-left:2px solid var(--wb-accent);
+}
+.workbench-metric span { display:block; color:var(--wb-muted); font-size:9px; letter-spacing:1px; }
+.workbench-metric b { display:block; color:#fff1c7; font:700 17px/1.15 "Consolas",monospace; }
+.workbench-header-actions { display:flex; align-items:center; }
+.workbench-close-btn,
+.kshop-workbench .kshop-close-btn {
+    width:34px;
+    height:34px;
+    padding:0;
+    color:#b7bbc1;
+    background:#121419;
+    border:1px solid #3a3e45;
+    border-radius:0;
+    clip-path:none;
+    box-shadow:none;
+    font:300 22px/30px "Segoe UI",sans-serif;
+}
+.workbench-close-btn:hover,
+.kshop-workbench .kshop-close-btn:hover { color:#fff; background:#722b32; border-color:#b44a53; box-shadow:none; }
+
+.workbench-body {
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:minmax(0,1.55fr) 34px minmax(330px,.95fr);
+    gap:8px;
+    min-height:0;
+    padding:10px;
+    box-sizing:border-box;
+}
+.workbench-slot {
+    position:relative;
+    display:grid;
+    grid-template-rows:22px minmax(0,1fr);
+    min-width:0;
+    min-height:0;
+    overflow:hidden;
+    background:rgba(12,14,17,.94);
+    border:1px solid var(--wb-line);
+    outline:none;
+}
+.workbench-slot.active { border-color:#565c65; box-shadow:inset 0 0 0 1px rgba(255,255,255,.025); }
+.workbench-slot.active .workbench-slot-marker b { background:var(--wb-accent); }
+.workbench-slot-marker {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 9px;
+    color:#737981;
+    background:#0c0e11;
+    border-bottom:1px solid var(--wb-line-soft);
+}
+.workbench-slot-marker b {
+    display:inline-grid;
+    place-items:center;
+    width:16px;
+    height:16px;
+    color:#15171a;
+    background:#9ba0a8;
+    font-size:9px;
+}
+.workbench-view-host,
+.workbench-view,
+.workbench-grid-container { min-width:0; min-height:0; }
+.workbench-view-host { position:relative; overflow:hidden; }
+.workbench-view { width:100%; height:100%; box-sizing:border-box; }
+.workbench-flow-rail {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    color:#575d65;
+    background:linear-gradient(180deg,transparent,#111419 18%,#111419 82%,transparent);
+    border-left:1px solid #20242a;
+    border-right:1px solid #20242a;
+}
+.workbench-flow-arrow {
+    display:grid;
+    place-items:center;
+    width:24px;
+    height:24px;
+    color:#15171a;
+    background:var(--wb-accent);
+    font:700 22px/20px "Consolas",monospace;
+}
+.workbench-flow-label {
+    writing-mode:vertical-rl;
+    font:600 8px/1 "Consolas",monospace;
+    letter-spacing:2px;
+}
+
+.workbench-view-chrome {
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    gap:1px 8px;
+    padding:8px 10px 7px;
+    box-sizing:border-box;
+    background:#14171b;
+    border-bottom:1px solid var(--wb-line);
+}
+.workbench-view-heading { min-width:0; }
+.workbench-view-title { color:#f1f2f4; font-size:15px; font-weight:700; letter-spacing:.5px; }
+.workbench-view-meta { align-self:center; color:#8d939b; font:10px/1.2 "Consolas","Microsoft YaHei",monospace; }
+.workbench-view-toolbar { grid-column:1 / -1; min-width:0; }
+.workbench-grid-renderer { position:relative; min-width:0; min-height:0; }
+.workbench-grid-empty {
+    display:grid;
+    place-items:center;
+    min-height:84px;
+    padding:12px;
+    box-sizing:border-box;
+    color:#666c74;
+    border:1px dashed #2d3137;
+    font-size:10px;
+    text-align:center;
+    letter-spacing:.5px;
+}
+.workbench-grid-container { display:flex; flex-direction:column; overflow:hidden; background:#0e1013; }
+.workbench-source-selected { outline:1px solid var(--wb-accent) !important; outline-offset:-2px; background:var(--wb-accent-soft) !important; }
+.workbench-drop-active { border-color:var(--wb-accent) !important; color:#ffe5b8 !important; background:rgba(240,164,58,.2) !important; }
+.workbench-drag-ghost {
+    position:fixed;
+    z-index:10000;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    max-width:230px;
+    padding:8px 10px;
+    box-sizing:border-box;
+    pointer-events:none;
+    color:#fff;
+    background:rgba(17,19,23,.97);
+    border:1px solid var(--wb-accent);
+    box-shadow:0 8px 24px rgba(0,0,0,.5);
+    font-size:11px;
+}
+
+.workbench-modal-layer { position:absolute; inset:0; z-index:60; }
+.workbench-modal-backdrop {
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    box-sizing:border-box;
+    background:rgba(3,4,6,.78);
+    backdrop-filter:blur(2px);
+}
+.workbench-modal {
+    width:430px;
+    max-width:100%;
+    padding:20px 22px;
+    box-sizing:border-box;
+    color:var(--wb-text);
+    background:#14161a;
+    border:1px solid #555a62;
+    border-top:3px solid var(--wb-accent);
+    box-shadow:0 24px 70px rgba(0,0,0,.6);
+}
+.workbench-modal-title { margin:5px 0 9px; color:#fff; font-size:19px; font-weight:700; }
+.workbench-modal-message { color:#c9cdd2; font-size:13px; }
+.workbench-modal-detail { margin-top:8px; color:#858b94; font-size:11px; line-height:1.7; }
+.workbench-modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
+.workbench-modal-action {
+    min-width:98px;
+    padding:7px 12px;
+    color:#b9bec5;
+    background:#1a1d22;
+    border:1px solid #454a52;
+    border-radius:0;
+    font:11px/1.2 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+}
+.workbench-modal-action:hover { color:#fff; border-color:#757c86; background:#24282e; }
+.workbench-modal-action.primary { color:#17191c; background:var(--wb-accent); border-color:#ffd18c; font-weight:700; }
+.workbench-modal-action.danger { color:#efb0b5; border-color:#7a3a40; background:#281519; }
+
+/* KShop trial views consume the shared workbench primitives without changing the wire protocol. */
+.kshop-catalog-view { display:flex; flex-direction:column; overflow:hidden; }
+.kshop-catalog-view .workbench-view-chrome { padding-bottom:5px; }
+.kshop-workbench .kshop-categories {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    max-width:100%;
+    max-height:58px;
+    padding:5px 0 0;
+    overflow-x:hidden;
+    overflow-y:auto;
+    background:none;
+    border:0;
+}
+.kshop-workbench .kshop-categories::-webkit-scrollbar { width:2px; height:2px; }
+.kshop-workbench .kshop-categories::-webkit-scrollbar-thumb { background:#484e56; }
+.kshop-workbench .kshop-cat-btn {
+    flex:0 0 auto;
+    padding:3px 8px;
+    color:#8c929a;
+    background:#0f1114;
+    border:1px solid #292d33;
+    clip-path:none;
+    font:9px/1.3 "Microsoft YaHei",sans-serif;
+    letter-spacing:0;
+}
+.kshop-workbench .kshop-cat-btn:hover { color:#fff; background:#1b1e23; border-color:#4a5059; }
+.kshop-workbench .kshop-cat-btn.active { color:#17191c; background:var(--wb-accent); border-color:#ffcf87; box-shadow:none; text-shadow:none; }
+.kshop-workbench .kshop-grid-wrap { min-height:0; background:#0b0d10; }
+.kshop-workbench .kshop-loading { color:var(--wb-accent); background:rgba(9,10,12,.92); text-shadow:none; }
+.kshop-workbench .kshop-grid {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-auto-rows:minmax(88px,auto);
+    gap:6px;
+    padding:8px;
+    align-content:start;
+}
+.kshop-workbench .kshop-card {
+    position:relative;
+    display:grid;
+    grid-template-columns:48px minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) 22px;
+    gap:5px 8px;
+    min-height:88px;
+    padding:8px;
+    box-sizing:border-box;
+    overflow:hidden;
+    color:var(--wb-text);
+    background:#15181c;
+    border:1px solid #2e3339;
+    clip-path:none;
+    cursor:pointer;
+    transition:border-color .12s,background .12s,transform .12s;
+}
+.kshop-workbench .kshop-card::before { display:none; }
+.kshop-workbench .kshop-card:hover { background:#1a1e23; border-color:#5d646e; box-shadow:none; transform:translateY(-1px); }
+.kshop-card-icon-frame {
+    grid-row:1 / 3;
+    display:grid;
+    place-items:center;
+    width:48px;
+    height:48px;
+    align-self:center;
+    background:#0c0e11;
+    border:1px solid #2a2e34;
+}
+.kshop-workbench .kshop-icon,
+.kshop-workbench .kshop-icon.cfn-layered-icon { width:42px; height:42px; filter:none; }
+.kshop-workbench .kshop-card-info { display:block; min-width:0; }
+.kshop-workbench .kshop-card-name { color:#f2f3f4; font-size:11px; line-height:1.35; white-space:normal; max-height:30px; }
+.kshop-card-type { margin-top:3px; color:#757c85; font-size:8px; text-transform:uppercase; }
+.kshop-workbench .kshop-card-price { align-self:end; color:#f2c77e; font:700 11px/1.1 "Consolas",monospace; text-shadow:none; }
+.kshop-workbench .kshop-card-price span { color:#8e949b; font-size:8px; }
+.kshop-workbench .kshop-lock { color:#b8777c; font:8px/1.2 "Consolas",monospace; text-shadow:none; }
+.kshop-workbench .kshop-add-btn {
+    position:absolute;
+    right:7px;
+    bottom:6px;
+    width:auto;
+    min-width:34px;
+    height:21px;
+    padding:0 7px;
+    color:#17191c;
+    background:#b8bdc4;
+    border:0;
+    clip-path:none;
+    font:700 9px/21px "Microsoft YaHei",sans-serif;
+}
+.kshop-workbench .kshop-add-btn:hover { color:#161719; background:var(--wb-accent); box-shadow:none; }
+.kshop-card-drag-hint { position:absolute; left:7px; bottom:5px; color:#4d535b; font:7px/1 "Consolas",monospace; letter-spacing:1px; }
+.kshop-workbench .kshop-card-nosale,
+.kshop-workbench .kshop-card-locked { opacity:.42; cursor:not-allowed; }
+
+.kshop-order-view {
+    display:grid;
+    grid-template-rows:minmax(0,1.2fr) minmax(138px,.8fr);
+    gap:7px;
+    padding:7px;
+    box-sizing:border-box;
+    overflow:hidden;
+    background:#0b0d10;
+}
+.kshop-order-view .workbench-grid-container { border:1px solid #292d33; }
+.kshop-order-view .workbench-view-chrome { padding:7px 9px 6px; }
+.kshop-order-view .workbench-view-title { font-size:13px; }
+.kshop-cart-drop-target {
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:6px 7px 0;
+    padding:6px 8px;
+    color:#9ca2aa;
+    background:#111419;
+    border:1px dashed #3a4048;
+    border-radius:0;
+    text-align:left;
+    cursor:pointer;
+}
+.kshop-cart-drop-target:hover,
+.kshop-cart-drop-target.has-selection { color:#ffd89e; border-color:#866233; background:rgba(240,164,58,.08); }
+.kshop-cart-drop-target.disabled { opacity:.38; cursor:not-allowed; }
+.kshop-drop-glyph { color:var(--wb-accent); font:300 22px/1 "Segoe UI",sans-serif; }
+.kshop-drop-copy { min-width:0; }
+.kshop-drop-copy b { display:block; color:inherit; font-size:10px; }
+.kshop-drop-copy small { display:block; overflow:hidden; color:#6f757e; font-size:8px; white-space:nowrap; text-overflow:ellipsis; }
+.kshop-workbench .kshop-cart-list,
+.kshop-workbench .kshop-claim-list {
+    flex:1 1 auto;
+    display:block;
+    min-height:0;
+    padding:5px 7px;
+    overflow-y:auto;
+}
+.kshop-workbench .kshop-cart-row,
+.kshop-workbench .kshop-claim-row {
+    display:flex;
+    align-items:center;
+    min-height:38px;
+    padding:5px 4px;
+    box-sizing:border-box;
+    border:0;
+    border-bottom:1px solid #24282e;
+    background:transparent;
+}
+.kshop-workbench .kshop-cart-row:hover,
+.kshop-workbench .kshop-claim-row:hover { background:#171a1f; }
+.kshop-cart-copy,
+.kshop-claim-copy { flex:1 1 auto; min-width:0; }
+.kshop-workbench .kshop-cart-name,
+.kshop-workbench .kshop-claim-name { display:block; color:#e4e6e9; font-size:10px; }
+.kshop-cart-copy small,
+.kshop-claim-copy small { display:block; color:#737982; font-size:8px; }
+.kshop-workbench .kshop-cart-qty { display:flex; align-items:center; gap:3px; color:#a8adb4; }
+.kshop-workbench .kshop-cart-qty b { min-width:16px; text-align:center; font:700 10px/1 "Consolas",monospace; }
+.kshop-workbench .kshop-qty-btn {
+    display:grid;
+    place-items:center;
+    width:18px;
+    height:18px;
+    padding:0;
+    color:#bdc2c8;
+    background:#171a1f;
+    border:1px solid #383d44;
+    line-height:1;
+}
+.kshop-workbench .kshop-qty-btn:hover { color:#17191c; background:var(--wb-accent); border-color:var(--wb-accent); }
+.kshop-workbench .kshop-cart-sub { min-width:36px; margin-left:5px; color:#efc57c; font:700 10px/1 "Consolas",monospace; }
+.kshop-workbench .kshop-remove-btn { color:#d68b91; background:#27171a; border-color:#5c3035; }
+.kshop-workbench .kshop-claim-btn {
+    margin-left:6px;
+    padding:4px 8px;
+    color:#17191c;
+    background:#b8bdc4;
+    border:0;
+    clip-path:none;
+    font-size:9px;
+}
+.kshop-workbench .kshop-claim-btn:hover:not(:disabled) { color:#17191c; background:var(--wb-accent); box-shadow:none; }
+.kshop-workbench .kshop-cart-footer {
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:7px 8px;
+    background:#171a1f;
+    border-top:1px solid #343941;
+}
+.workbench-commit-summary { color:#9298a0; font-size:9px; }
+.workbench-commit-summary b { color:#f3cd88; font:700 14px/1 "Consolas",monospace; }
+.kshop-workbench .kshop-checkout-btn {
+    padding:6px 10px;
+    color:#17191c;
+    background:var(--wb-accent);
+    border:1px solid #ffcf87;
+    clip-path:none;
+    font:700 10px/1.2 "Microsoft YaHei",sans-serif;
+    letter-spacing:.5px;
+}
+.kshop-workbench .kshop-checkout-btn:hover:not(:disabled) { background:#ffc36a; border-color:#ffe0ae; box-shadow:none; text-shadow:none; }
+.kshop-workbench .kshop-checkout-btn:disabled { opacity:.25; }
+.kshop-workbench.kshop-write-busy .workbench-slot { border-color:#4b4640; }
+
+/* ═══════════════════════════════════════════════════════
    Help Panel — Cyberpunk 2077 Style
    ═══════════════════════════════════════════════════════ */
 .help-panel {
@@ -11428,3 +11920,85 @@ html.perf-low-effects .map-panel-close-btn:hover {
    arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
    只允许 override 视觉 token（--tt-divider-color / --tt-icon-glow 等），
    不要 override 尺寸/间距类变量。 ── */
+
+/* ── Workbench Gate A2: owned backpack ↔ warehouse thin slice ── */
+.workbench-mode-switch { display:flex; align-items:center; gap:5px; }
+.workbench-mode-btn {
+    min-height:27px; padding:0 10px; border:1px solid rgba(168,178,190,.24);
+    background:#12161b; color:#8e98a4; font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif;
+    letter-spacing:.04em; cursor:pointer;
+}
+.workbench-mode-btn:hover,.workbench-mode-btn.active { color:#f2a04b; border-color:rgba(242,160,75,.66); background:#1b1712; }
+.workbench-mode-btn.warning { color:#f3bf72; border-color:rgba(243,191,114,.48); }
+.inventory-owned-view { height:100%; min-height:0; }
+.inventory-owned-grid {
+    min-height:0; overflow:auto; padding:7px;
+    display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-content:start; gap:5px;
+    scrollbar-width:thin; scrollbar-color:rgba(242,160,75,.35) rgba(255,255,255,.03);
+}
+.inventory-owned-warehouse .inventory-owned-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.inventory-slot-card {
+    position:relative; min-width:0; height:68px; display:flex; align-items:center; gap:5px;
+    padding:7px 5px 5px; border:1px solid rgba(154,166,180,.17); background:#0d1116;
+    color:#b9c0c8; cursor:pointer; overflow:hidden;
+}
+.inventory-slot-card.occupied:hover,.inventory-slot-card.workbench-source-selected {
+    border-color:rgba(242,160,75,.72); background:#181610;
+}
+.inventory-slot-card.workbench-drop-active { outline:1px solid #f2a04b; outline-offset:-3px; }
+.inventory-slot-card.write-locked { opacity:.55; cursor:not-allowed; }
+.inventory-slot-card.empty { border-style:dashed; background:#0a0d11; color:#46505b; }
+.inventory-slot-index { position:absolute; left:3px; top:2px; color:#59636e; font:9px/1 Consolas,monospace; }
+.inventory-empty-mark { width:100%; text-align:center; font:9px/1 Consolas,monospace; letter-spacing:.12em; }
+.inventory-slot-icon { width:30px; height:30px; flex:0 0 30px; display:flex; align-items:center; justify-content:center; }
+.inventory-owned-icon { width:30px; height:30px; object-fit:contain; }
+.inventory-slot-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.inventory-slot-copy b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 10px/1.1 "Microsoft YaHei",sans-serif; }
+.inventory-slot-copy small { color:#77818b; font:9px/1 Consolas,"Microsoft YaHei",sans-serif; }
+.inventory-discard-btn {
+    position:absolute; right:2px; top:2px; width:17px; height:17px; padding:0; border:1px solid rgba(220,95,77,.3);
+    background:#1b1110; color:#bd6d60; font:12px/14px sans-serif; cursor:pointer;
+}
+.inventory-discard-btn:hover { color:#ff8e78; border-color:#d96854; }
+.inventory-drag-ghost { min-width:150px; }
+
+/* ── Workbench Gate A3: 1200-slot warehouse window + display/authority sort split ── */
+.inventory-warehouse-toolbar {
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    grid-template-areas:
+        "pager display display"
+        "authority authority commit";
+    align-items:center;
+    gap:5px;
+    padding-top:5px;
+}
+.inventory-warehouse-pager { grid-area:pager; display:flex; align-items:center; gap:3px; }
+.inventory-toolbar-btn,
+.inventory-toolbar-field select {
+    height:23px;
+    box-sizing:border-box;
+    border:1px solid #3b424a;
+    border-radius:0;
+    background:#0d1115;
+    color:#aab2bb;
+    font:9px/1 Consolas,"Microsoft YaHei",sans-serif;
+}
+.inventory-toolbar-btn { min-width:23px; padding:0 6px; cursor:pointer; }
+.inventory-toolbar-btn:hover:not(:disabled) { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
+.inventory-toolbar-btn:disabled,
+.inventory-toolbar-field select:disabled { opacity:.34; cursor:not-allowed; }
+.inventory-page-label { min-width:38px; color:#9098a2; font:9px/1 Consolas,monospace; text-align:center; }
+.inventory-toolbar-field {
+    display:flex;
+    align-items:center;
+    gap:4px;
+    min-width:0;
+    color:#67717c;
+    font:8px/1 Consolas,"Microsoft YaHei",sans-serif;
+    white-space:nowrap;
+}
+.inventory-toolbar-field:not(.authority) { grid-area:display; }
+.inventory-toolbar-field select { min-width:0; width:100%; padding:0 3px; }
+.inventory-toolbar-field.authority { grid-area:authority; color:#a17b4f; }
+.inventory-sort-commit { grid-area:commit; color:#f0bd78; border-color:#725532; background:#1b1510; white-space:nowrap; }

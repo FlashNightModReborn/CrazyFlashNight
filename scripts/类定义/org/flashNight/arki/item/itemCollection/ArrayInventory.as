@@ -90,6 +90,68 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         }
     }
 
+    /**
+     * inventory-domain 事务提交用的无事件单槽写入口。
+     *
+     * 该入口只负责一次不可重入的提交阶段：调用方必须先完整预检全部槽位，
+     * 再用本方法写入，并在所有槽都成功后通过 publishTransactionChange 统一派发事件。
+     * 不能用它替代普通 add/remove；普通业务仍应走原生命周期方法。
+     */
+    public function transactionWrite(key:Number, item:Object):Boolean {
+        if (isNaN(key) || Math.floor(key) != key || key < 0 || key >= capacity) return false;
+        if (item != null) {
+            if (item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
+            if (typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
+        }
+
+        if (item == null) delete items[key];
+        else items[key] = item;
+
+        indexesDirty = true;
+        rebuildIndexesFromItems();
+        return true;
+    }
+
+    /**
+     * inventory-domain 整容器事务提交入口。
+     *
+     * 调用方先在隔离副本中完成排序/合并计划，本方法完整校验 orderedItems 后
+     * 才一次替换底层 items，因而不会把半份 setItems 暴露给同步事件回调。
+     */
+    public function transactionReplaceAll(orderedItems:Array):Boolean {
+        if (!(orderedItems instanceof Array) || orderedItems.length > capacity) return false;
+        var replacement:Object = {};
+        for (var i:Number = 0; i < orderedItems.length; i++) {
+            var item:Object = orderedItems[i];
+            if (item == null || item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
+            if (typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
+            replacement[String(i)] = item;
+        }
+        items = replacement;
+        indexesDirty = true;
+        rebuildIndexesFromItems();
+        return true;
+    }
+
+    /**
+     * transactionWrite 全部提交成功后统一派发兼容既有 UI 的生命周期事件。
+     * changeKind: added / removed / replaced / value。
+     */
+    public function publishTransactionChange(key:Number, changeKind:String):Void {
+        var eventDispatcher = getDispatcher();
+        if (eventDispatcher == null) return;
+        if (changeKind == "value") {
+            eventDispatcher.publish("ItemValueChanged", this, String(key));
+            return;
+        }
+        if (changeKind == "removed" || changeKind == "replaced") {
+            eventDispatcher.publish("ItemRemoved", this, String(key));
+        }
+        if (changeKind == "added" || changeKind == "replaced") {
+            eventDispatcher.publish("ItemAdded", this, String(key));
+        }
+    }
+
     //返回索引TreeSet的数组形式
     public function getIndexes():Array{
         return getValidatedIndexes();

@@ -1,0 +1,298 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using Newtonsoft.Json.Linq;
+using Xunit;
+using CF7Launcher.Guardian;
+using CF7Launcher.Tasks;
+
+namespace CF7Launcher.Tests.Tasks
+{
+    public class InventoryTaskTests
+    {
+        private static JObject ParseSent(string payload)
+        {
+            return JObject.Parse(payload.TrimEnd('\0'));
+        }
+
+        private static JObject SlotRef(string containerId, int slot, string lease)
+        {
+            return new JObject
+            {
+                ["containerId"] = containerId,
+                ["slot"] = slot,
+                ["expectedLease"] = lease
+            };
+        }
+
+        private static JObject Request(string cmd, string callId = "wb.inventory.1.1")
+        {
+            var payload = new JObject { ["v"] = 1 };
+            if (cmd == "snapshot")
+            {
+                payload["requests"] = new JArray
+                {
+                    new JObject { ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 50 },
+                    new JObject { ["containerId"] = "仓库", ["offset"] = 50, ["limit"] = 50 }
+                };
+            }
+            else if (cmd == "sortAndMerge")
+            {
+                payload["container"] = new JObject
+                {
+                    ["containerId"] = "仓库",
+                    ["offset"] = 50,
+                    ["limit"] = 50
+                };
+                payload["methodName"] = "byType";
+            }
+            else
+            {
+                payload["source"] = SlotRef("背包", 2, "inv100.2");
+                if (cmd != "discard") payload["target"] = SlotRef("仓库", 52, "inv100.52");
+            }
+            return new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "kshop",
+                ["domain"] = "inventory",
+                ["cmd"] = cmd,
+                ["callId"] = callId,
+                ["payload"] = payload
+            };
+        }
+
+        [Theory]
+        [InlineData("snapshot", "inventorySnapshot")]
+        [InlineData("discard", "inventoryDiscard")]
+        [InlineData("move", "inventoryMove")]
+        [InlineData("merge", "inventoryMerge")]
+        [InlineData("swap", "inventorySwap")]
+        [InlineData("sortAndMerge", "inventorySortAndMerge")]
+        public void KnownCommands_MapToTrustedActionAndUnwrapNormalizedPayload(string cmd, string action)
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request(cmd);
+            request["action"] = "evil";
+            request["task"] = "evil";
+            request["op"] = "evil";
+            ((JObject)request["payload"])["unknown"] = "drop-me";
+
+            task.HandleWebRequest(cmd, request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("cmd", (string)message["task"]);
+            Assert.Equal(action, (string)message["action"]);
+            Assert.Equal(1, (int)message["v"]);
+            Assert.Null(message["payload"]);
+            Assert.Null(message["domain"]);
+            Assert.Null(message["panel"]);
+            Assert.Null(message["cmd"]);
+            Assert.Null(message["op"]);
+            Assert.Null(message["unknown"]);
+        }
+
+        [Fact]
+        public void Snapshot_RebuildsOnlyRangeWhitelist()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("snapshot");
+            ((JObject)((JArray)request["payload"]["requests"])[0])["action"] = "evil";
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal(2, ((JArray)message["requests"]).Count);
+            Assert.Equal("仓库", (string)message["requests"][1]["containerId"]);
+            Assert.Equal(50, (int)message["requests"][1]["offset"]);
+            Assert.Null(message["requests"][0]["action"]);
+        }
+
+        [Fact]
+        public void SortAndMerge_RebuildsContainerAndStrictMethodWhitelist()
+        {
+            string sent = null;
+            var posted = new List<JObject>();
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+            JObject request = Request("sortAndMerge", "wb.inventory.sort.1");
+            request["payload"]["container"]["action"] = "evil";
+            request["payload"]["unknown"] = "drop-me";
+
+            task.HandleWebRequest("sortAndMerge", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("inventorySortAndMerge", (string)message["action"]);
+            Assert.Equal("仓库", (string)message["container"]["containerId"]);
+            Assert.Equal(50, (int)message["container"]["offset"]);
+            Assert.Equal("byType", (string)message["methodName"]);
+            Assert.Null(message["container"]["action"]);
+            Assert.Null(message["unknown"]);
+
+            JObject bad = Request("sortAndMerge", "wb.inventory.sort.2");
+            bad["payload"]["methodName"] = "fallback-please";
+            task.HandleWebRequest("sortAndMerge", bad);
+            Assert.Equal("invalid_payload", (string)posted[0]["error"]);
+        }
+
+        [Fact]
+        public void TransferRejectsPartialCountAndMalformedLease()
+        {
+            int sends = 0;
+            var posted = new List<JObject>();
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+
+            JObject withCount = Request("move", "wb.inventory.1.1");
+            withCount["payload"]["count"] = 1;
+            task.HandleWebRequest("move", withCount);
+
+            JObject badLease = Request("swap", "wb.inventory.1.2");
+            badLease["payload"]["target"]["expectedLease"] = "bad lease";
+            task.HandleWebRequest("swap", badLease);
+
+            Assert.Equal(0, sends);
+            Assert.All(posted, response => Assert.Equal("invalid_payload", (string)response["error"]));
+        }
+
+        [Fact]
+        public void SameContainerTransferPreservesDistinctPhysicalSlotRefs()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("move", "wb.inventory.same.1");
+            request["payload"]["target"] = SlotRef("背包", 7, "inv100.7");
+
+            task.HandleWebRequest("move", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("背包", (string)message["source"]["containerId"]);
+            Assert.Equal("背包", (string)message["target"]["containerId"]);
+            Assert.Equal(2, (int)message["source"]["slot"]);
+            Assert.Equal(7, (int)message["target"]["slot"]);
+            Assert.Equal("inv100.2", (string)message["source"]["expectedLease"]);
+            Assert.Equal("inv100.7", (string)message["target"]["expectedLease"]);
+        }
+
+        [Theory]
+        [InlineData("bogus", 1, "unsupported_cmd")]
+        [InlineData("snapshot", 2, "unsupported_version")]
+        public void LocalRejectsPreserveInventoryRoutingShape(string cmd, int version, string error)
+        {
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => true);
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot");
+            request["cmd"] = cmd;
+            request["payload"]["v"] = version;
+
+            task.HandleWebRequest(cmd, request);
+
+            JObject response = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)response["type"]);
+            Assert.Equal("inventory", (string)response["domain"]);
+            Assert.Equal(cmd, (string)response["cmd"]);
+            Assert.Equal("wb.inventory.1.1", (string)response["callId"]);
+            Assert.Equal(error, (string)response["error"]);
+        }
+
+        [Fact]
+        public void DisconnectedAndInvalidCallIdNeverReachFlash()
+        {
+            int sends = 0;
+            var posted = new List<JObject>();
+            var task = new InventoryTask(() => false, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+
+            task.HandleWebRequest("snapshot", Request("snapshot", "wb.inventory.1.1"));
+            task.HandleWebRequest("snapshot", Request("snapshot", "bad call id"));
+
+            Assert.Equal(0, sends);
+            Assert.Equal("disconnected", (string)posted[0]["error"]);
+            Assert.Equal("invalid_call_id", (string)posted[1]["error"]);
+        }
+
+        [Fact]
+        public void FlashResponseRestoresDomainCmdAndWebCallId()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            task.SetPostToWeb(json => posted = json);
+            task.HandleWebRequest("move", Request("move", "wb.inventory.4.9"));
+            JObject flashRequest = ParseSent(sent);
+
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "inventory_response",
+                ["callId"] = (int)flashRequest["callId"],
+                ["success"] = true,
+                ["operation"] = "move",
+                ["snapshots"] = new JArray()
+            }, _ => { });
+
+            JObject response = JObject.Parse(posted);
+            Assert.Null(response["task"]);
+            Assert.Equal("inventory", (string)response["domain"]);
+            Assert.Equal("move", (string)response["cmd"]);
+            Assert.Equal("wb.inventory.4.9", (string)response["callId"]);
+        }
+
+        [Fact]
+        public void TimeoutIsRoutableAndWriteIsNotReplayed()
+        {
+            int sends = 0;
+            string posted = null;
+            using var signaled = new ManualResetEventSlim(false);
+            var task = new InventoryTask(() => true, _ => { sends++; return true; }, 20);
+            task.SetPostToWeb(json => { posted = json; signaled.Set(); });
+            JObject request = Request("discard", "wb.inventory.timeout.1");
+
+            task.HandleWebRequest("discard", request);
+            Assert.True(signaled.Wait(TimeSpan.FromSeconds(2)));
+            task.HandleWebRequest("discard", request);
+
+            JObject response = JObject.Parse(posted);
+            Assert.Equal("timeout", (string)response["error"]);
+            Assert.Equal("discard", (string)response["cmd"]);
+            Assert.Equal(1, sends);
+        }
+
+        [Fact]
+        public void DuplicateActiveAndRecentCallIdAreNeverForwardedTwice()
+        {
+            var sent = new List<string>();
+            var task = new InventoryTask(() => true, payload => { sent.Add(payload); return true; });
+            JObject request = Request("snapshot");
+            task.HandleWebRequest("snapshot", request);
+            task.HandleWebRequest("snapshot", request);
+            Assert.Single(sent);
+
+            JObject flashRequest = ParseSent(sent[0]);
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "inventory_response",
+                ["callId"] = (int)flashRequest["callId"],
+                ["success"] = true,
+                ["snapshots"] = new JArray()
+            }, _ => { });
+            task.HandleWebRequest("snapshot", request);
+            Assert.Single(sent);
+        }
+
+        [Fact]
+        public void DomainRoutingKeepsCloseFirstAndNeverFallsBackToLegacy()
+        {
+            Assert.Equal(WebOverlayForm.PanelDomainRoute.Inventory,
+                WebOverlayForm.ResolvePanelDomainRoute("snapshot", "inventory"));
+            Assert.Equal(WebOverlayForm.PanelDomainRoute.Close,
+                WebOverlayForm.ResolvePanelDomainRoute("close", "inventory"));
+            Assert.Equal(WebOverlayForm.PanelDomainRoute.Unsupported,
+                WebOverlayForm.ResolvePanelDomainRoute("claim", "unknown"));
+            Assert.Equal(WebOverlayForm.PanelDomainRoute.Legacy,
+                WebOverlayForm.ResolvePanelDomainRoute("snapshot", null));
+        }
+    }
+}

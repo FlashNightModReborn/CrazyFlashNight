@@ -1,0 +1,29 @@
+/*
+ * Game UI browser-behavior boundary.
+ *
+ * WebView2 is a renderer for the game shell, not a document browser. Keep
+ * browser-native selection and drag affordances out of the visual language,
+ * while preserving real text editors and explicit opt-in islands.
+ */
+html,
+body,
+body * {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+img,
+a,
+[draggable="true"] {
+    -webkit-user-drag: none;
+}
+
+input,
+textarea,
+[contenteditable="true"],
+[contenteditable="true"] *,
+[data-browser-native],
+[data-browser-native] * {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+}

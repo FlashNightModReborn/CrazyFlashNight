@@ -1,0 +1,507 @@
+﻿import org.flashNight.arki.item.InventoryPanelService;
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
+
+/** Gate A2/A3：inventory-domain lease、原子事务、窗口化与整容器整理回归。 */
+class org.flashNight.arki.item.InventoryPanelServiceTest {
+    private static var _passed:Number = 0;
+    private static var _failed:Number = 0;
+
+    public static function runAllTests():Void {
+        _passed = 0;
+        _failed = 0;
+        trace("=== InventoryPanelServiceTest start ===");
+
+        testRangeSnapshot();
+        testSourceAndTargetStale();
+        testMergeCountStale();
+        testDomainReject();
+        testMoveMergeSwapAndReverse();
+        testSameContainerTransfersAndRollback();
+        testEventReentrancy();
+        testCommitFailureRollback();
+        testDiscardProjectionAndSuccess();
+        testSortValidationMergeEpochAndLease();
+        testSortRejectsLossyPlan();
+        testSortCommitFailureRollback();
+        testSortEventReentrancy();
+        testWindowPerformanceMatrix();
+        testFullWarehouseSortPerformance();
+
+        trace("InventoryPanelServiceTest Tests Passed: " + _passed);
+        trace("InventoryPanelServiceTest Tests Failed: " + _failed);
+        trace("=== InventoryPanelServiceTest end ===");
+    }
+
+    private static function resetInventories():Void {
+        _root.物品栏 = {
+            背包: new ArrayInventory(null, 50),
+            仓库: new ArrayInventory(null, 1200)
+        };
+        _root.存档系统 = {dirtyMark: false};
+        InventoryPanelService.testOnlyReset();
+    }
+
+    private static function item(name:String, value):Object {
+        return {name: name, value: value, lastUpdate: 1};
+    }
+
+    private static function snapshot(backpackLimit:Number, warehouseLimit:Number):Object {
+        return InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [
+                {containerId: "背包", offset: 0, limit: backpackLimit},
+                {containerId: "仓库", offset: 0, limit: warehouseLimit}
+            ]
+        });
+    }
+
+    private static function warehouseSnapshot(offset:Number, limit:Number):Object {
+        return InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [{containerId: "仓库", offset: offset, limit: limit}]
+        });
+    }
+
+    private static function refFrom(response:Object, snapshotIndex:Number, slotIndex:Number):Object {
+        var container:Object = response.snapshots[snapshotIndex];
+        var slot:Object = container.slots[slotIndex];
+        return {
+            containerId: container.containerId,
+            slot: slot.physicalSlot,
+            expectedLease: slot.slotLease
+        };
+    }
+
+    private static function assertTrue(condition:Boolean, message:String):Void {
+        if (condition) {
+            _passed++;
+            trace("PASS: " + message);
+        } else {
+            _failed++;
+            trace("FAIL: " + message);
+        }
+    }
+
+    private static function installSortTestMetadata(names:Array):Object {
+        var state:Object = {
+            names: names,
+            itemDictWasUndefined: org.flashNight.arki.item.ItemUtil.itemDataDict == undefined,
+            equipmentDictWasUndefined: org.flashNight.arki.item.ItemUtil.equipmentDict == undefined,
+            previous: {}
+        };
+        if (state.itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        if (state.equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = {};
+        for (var i:Number = 0; i < names.length; i++) {
+            var name:String = String(names[i]);
+            state.previous[name] = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+            org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
+                type: "测试装备", use: "测试", price: i + 1, level: 1, id: 900000 + i
+            };
+        }
+        return state;
+    }
+
+    private static function restoreSortTestMetadata(state:Object):Void {
+        for (var i:Number = 0; i < state.names.length; i++) {
+            var name:String = String(state.names[i]);
+            if (state.previous[name] == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+            else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = state.previous[name];
+        }
+        if (state.itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+        if (state.equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = undefined;
+    }
+
+    private static function testRangeSnapshot():Void {
+        resetInventories();
+        _root.物品栏.背包.add(0, item("药剂", 3));
+        var response:Object = snapshot(50, 10);
+        assertTrue(response.success && response.snapshots.length == 2, "range snapshot 返回两个容器窗口");
+        assertTrue(response.snapshots[0].slots.length == 50 && response.snapshots[1].slots.length == 10,
+            "range snapshot 严格按 limit 返回");
+        assertTrue(response.snapshots[0].slots[0].occupied && response.snapshots[0].slots[1].occupied == false,
+            "占用槽与空槽都获得可校验投影");
+        assertTrue(String(response.snapshots[0].slots[1].slotLease).length > 0,
+            "空目标槽也由 AS2 铸造 lease");
+    }
+
+    private static function testSourceAndTargetStale():Void {
+        resetInventories();
+        _root.物品栏.背包.add(0, item("药剂", 3));
+        var response:Object = snapshot(10, 10);
+        var source:Object = refFrom(response, 0, 0);
+        var target:Object = refFrom(response, 1, 0);
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.背包.add(0, item("另一物品", 1));
+        var staleSource:Object = InventoryPanelService.execute("move", {v: 1, source: source, target: target});
+        assertTrue(!staleSource.success && staleSource.error == "stale_state", "source occupant 被替换后拒绝旧 lease");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("药剂", 3));
+        response = snapshot(10, 10);
+        source = refFrom(response, 0, 0);
+        target = refFrom(response, 1, 0);
+        _root.物品栏.仓库.add(0, item("抢占目标", 1));
+        var staleTarget:Object = InventoryPanelService.execute("move", {v: 1, source: source, target: target});
+        assertTrue(!staleTarget.success && staleTarget.error == "stale_state", "空 target 变 occupied 后拒绝旧 lease");
+    }
+
+    private static function testMergeCountStale():Void {
+        resetInventories();
+        _root.物品栏.背包.add(0, item("药剂", 3));
+        _root.物品栏.仓库.add(0, item("药剂", 4));
+        var response:Object = snapshot(10, 10);
+        var source:Object = refFrom(response, 0, 0);
+        var target:Object = refFrom(response, 1, 0);
+        _root.物品栏.仓库.addValue("0", 1);
+        var result:Object = InventoryPanelService.execute("merge", {v: 1, source: source, target: target});
+        assertTrue(!result.success && result.error == "stale_state", "merge 目标数量变化后双端 count lease 拒绝");
+    }
+
+    private static function testDomainReject():Void {
+        resetInventories();
+        var result:Object = InventoryPanelService.execute("move", {
+            v: 1,
+            source: {containerId: "战备箱", slot: 0, expectedLease: "fake"},
+            target: {containerId: "仓库", slot: 0, expectedLease: "fake"}
+        });
+        assertTrue(!result.success && result.error == "unsupported_container", "AS2 容器白名单最终拒绝未开放领域");
+    }
+
+    private static function testMoveMergeSwapAndReverse():Void {
+        resetInventories();
+        var moving:Object = item("武器", {level: 2});
+        _root.物品栏.背包.add(0, moving);
+        var response:Object = snapshot(10, 10);
+        var result:Object = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && _root.物品栏.仓库.getItem("0") === moving && _root.物品栏.背包.getItem("0") == null,
+            "whole-slot move 保持 BaseItem 外壳引用并提交两端");
+        assertTrue(_root.存档系统.dirtyMark == true, "成功 move 设置 dirtyMark");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("药剂", 3));
+        var mergeTarget:Object = item("药剂", 4);
+        _root.物品栏.仓库.add(0, mergeTarget);
+        response = snapshot(10, 10);
+        result = InventoryPanelService.execute("merge", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && mergeTarget.value == 7 && _root.物品栏.背包.getItem("0") == null,
+            "whole-stack merge 原地更新目标并清源");
+
+        resetInventories();
+        var left:Object = item("左物品", {level: 1});
+        var right:Object = item("右物品", {level: 1});
+        _root.物品栏.背包.add(0, left);
+        _root.物品栏.仓库.add(0, right);
+        response = snapshot(10, 10);
+        result = InventoryPanelService.execute("swap", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && _root.物品栏.背包.getItem("0") === right && _root.物品栏.仓库.getItem("0") === left,
+            "whole-slot swap 原子交换两端引用");
+
+        resetInventories();
+        var reverseItem:Object = item("反向物品", 2);
+        _root.物品栏.仓库.add(0, reverseItem);
+        response = snapshot(10, 10);
+        result = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 1, 0), target: refFrom(response, 0, 0)
+        });
+        assertTrue(result.success && result.operation == "move" && _root.物品栏.背包.getItem("0") === reverseItem,
+            "仓库→背包反向仍调用同一 move operation");
+    }
+
+    private static function testSameContainerTransfersAndRollback():Void {
+        resetInventories();
+        var moving:Object = item("背包内移动", {level: 2});
+        _root.物品栏.背包.add(0, moving);
+        var response:Object = snapshot(10, 10);
+        var result:Object = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 0, 2)
+        });
+        assertTrue(result.success && _root.物品栏.背包.getItem("2") === moving
+                && _root.物品栏.背包.getItem("0") == null,
+            "背包内 whole-slot move 保持引用并移动 physicalSlot");
+        assertTrue(result.snapshots.length == 1 && result.snapshots[0].containerId == "背包",
+            "同容器同窗口 transfer 只返回一个去重 snapshot");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("背包药剂", 3));
+        var mergeTarget:Object = item("背包药剂", 4);
+        _root.物品栏.背包.add(1, mergeTarget);
+        response = snapshot(10, 10);
+        result = InventoryPanelService.execute("merge", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 0, 1)
+        });
+        assertTrue(result.success && mergeTarget.value == 7 && _root.物品栏.背包.getItem("0") == null,
+            "背包内同名 stack whole-stack merge 成立");
+
+        resetInventories();
+        var warehouseLeft:Object = item("仓库左物品", {level: 1});
+        var warehouseRight:Object = item("仓库右物品", {level: 1});
+        _root.物品栏.仓库.add(0, warehouseLeft);
+        _root.物品栏.仓库.add(1, warehouseRight);
+        response = snapshot(10, 10);
+        result = InventoryPanelService.execute("swap", {
+            v: 1, source: refFrom(response, 1, 0), target: refFrom(response, 1, 1)
+        });
+        assertTrue(result.success && _root.物品栏.仓库.getItem("0") === warehouseRight
+                && _root.物品栏.仓库.getItem("1") === warehouseLeft,
+            "仓库内异类 whole-slot swap 原子换位");
+
+        resetInventories();
+        var selfStack:Object = item("同槽保护", 5);
+        _root.物品栏.背包.add(0, selfStack);
+        response = snapshot(10, 10);
+        var selfRef:Object = refFrom(response, 0, 0);
+        result = InventoryPanelService.execute("merge", {v: 1, source: selfRef, target: selfRef});
+        assertTrue(!result.success && result.error == "same_slot" && selfStack.value == 5
+                && _root.物品栏.背包.getItem("0") === selfStack,
+            "同 physicalSlot 在提交前拒绝，避免自 merge 数据损坏");
+
+        resetInventories();
+        var rollbackItem:Object = item("同容器回滚", 2);
+        _root.物品栏.背包.add(0, rollbackItem);
+        response = snapshot(10, 10);
+        InventoryPanelService.testOnlyFailNextCommit("背包", 1);
+        result = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 0, 1)
+        });
+        assertTrue(!result.success && result.error == "commit_failed",
+            "同容器第二槽提交失败返回 commit_failed");
+        assertTrue(_root.物品栏.背包.getItem("0") === rollbackItem
+                && _root.物品栏.背包.getItem("1") == null && _root.存档系统.dirtyMark == false,
+            "同容器第二槽失败完整回滚且不标脏");
+    }
+
+    private static function testEventReentrancy():Void {
+        resetInventories();
+        _root.物品栏.背包.add(0, item("药剂", 2));
+        var holder:MovieClip = _root.createEmptyMovieClip("__inventoryPanelServiceTest", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        _root.物品栏.背包.setDispatcher(dispatcher);
+        var reentryResult:Object = null;
+        dispatcher.subscribe("ItemRemoved", function():Void {
+            reentryResult = InventoryPanelService.execute("snapshot", {
+                v: 1, requests: [{containerId: "背包", offset: 0, limit: 10}]
+            });
+        });
+
+        var response:Object = snapshot(10, 10);
+        var result:Object = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && reentryResult != null && reentryResult.error == "busy",
+            "生命周期事件同步重入被事务守卫拒绝");
+        _root.物品栏.背包.setDispatcher(null);
+        holder.removeMovieClip();
+    }
+
+    private static function testCommitFailureRollback():Void {
+        resetInventories();
+        var sourceItem:Object = item("药剂", 2);
+        _root.物品栏.背包.add(0, sourceItem);
+        var response:Object = snapshot(10, 10);
+        InventoryPanelService.testOnlyFailNextCommit("仓库", 0);
+        var result:Object = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 1, 0)
+        });
+        assertTrue(!result.success && result.error == "commit_failed", "提交段失败返回 commit_failed");
+        assertTrue(_root.物品栏.背包.getItem("0") === sourceItem && _root.物品栏.仓库.getItem("0") == null,
+            "第二端提交失败后第一端完整回滚，无部分写");
+        assertTrue(_root.存档系统.dirtyMark == false, "回滚路径不设置 dirtyMark");
+    }
+
+    private static function testDiscardProjectionAndSuccess():Void {
+        resetInventories();
+        var stack:Object = item("药剂", 2);
+        _root.物品栏.背包.add(0, stack);
+        var response:Object = snapshot(10, 10);
+        var source:Object = refFrom(response, 0, 0);
+        stack.value = 3;
+        var stale:Object = InventoryPanelService.execute("discard", {v: 1, source: source});
+        assertTrue(!stale.success && stale.error == "stale_state", "确认框展示数量变化后 discard 要求重新确认");
+
+        response = snapshot(10, 10);
+        source = refFrom(response, 0, 0);
+        var result:Object = InventoryPanelService.execute("discard", {v: 1, source: source});
+        assertTrue(result.success && _root.物品栏.背包.getItem("0") == null && result.snapshots[0].slots[0].occupied == false,
+            "discard 删除整槽、标脏并在同一回包刷新背包");
+    }
+
+    private static function testSortValidationMergeEpochAndLease():Void {
+        resetInventories();
+        var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        var equipmentDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.equipmentDict == undefined;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        if (equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = {};
+        var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"];
+        var previousAlphaMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["Alpha"];
+        var previousZuluMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"];
+        org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"] = {type: "材料", use: "材料", price: 1, level: 0, id: 1};
+        org.flashNight.arki.item.ItemUtil.itemDataDict["Alpha"] = {type: "测试装备", use: "测试", price: 2, level: 1, id: 2};
+        org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"] = {type: "测试装备", use: "测试", price: 3, level: 1, id: 3};
+        _root.物品栏.仓库.add(50, item("强化石", 2));
+        _root.物品栏.仓库.add(51, item("强化石", 3));
+        _root.物品栏.仓库.add(52, item("Zulu", {level: 1}));
+        _root.物品栏.仓库.add(53, item("Alpha", {level: 1}));
+        var before:Object = warehouseSnapshot(50, 50);
+        var oldLease:Object = refFrom(before, 0, 0);
+        var invalid:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1, container: {containerId: "仓库", offset: 50, limit: 50}, methodName: "unknown"
+        });
+        assertTrue(!invalid.success && invalid.error == "unsupported_sort_method" && _root.存档系统.dirtyMark == false,
+            "未知整理策略严格拒绝且不写入");
+
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1, container: {containerId: "仓库", offset: 50, limit: 50}, methodName: "byName"
+        });
+        assertTrue(result.success && result.snapshots[0].offset == 50 && result.snapshots[0].containerEpoch == 2,
+            "sortAndMerge 保持当前窗口并递增整容器 epoch");
+        var mergedFound:Boolean = false;
+        var alphaSlot:Number = -1;
+        var zuluSlot:Number = -1;
+        for (var sortedSlot:Number = 0; sortedSlot < _root.物品栏.仓库.capacity; sortedSlot++) {
+            var sortedItem:Object = _root.物品栏.仓库.getItem(String(sortedSlot));
+            if (sortedItem == null) continue;
+            if (sortedSlot < 8) trace("[InventoryPanelService SORT] slot=" + sortedSlot + " name=" + sortedItem.name + " value=" + sortedItem.value);
+            if (sortedItem.name == "强化石" && Number(sortedItem.value) == 5) mergedFound = true;
+            if (sortedItem.name == "Alpha") alphaSlot = sortedSlot;
+            if (sortedItem.name == "Zulu") zuluSlot = sortedSlot;
+        }
+        trace("[InventoryPanelService SORT] size=" + _root.物品栏.仓库.size() + " merged=" + mergedFound
+            + " alphaSlot=" + alphaSlot + " zuluSlot=" + zuluSlot);
+        assertTrue(_root.物品栏.仓库.size() == 3 && mergedFound && alphaSlot >= 0 && zuluSlot > alphaSlot,
+            "权威整理按名称重排并合并可堆叠物品");
+        assertTrue(_root.存档系统.dirtyMark == true, "成功整理显式 dirtyMark");
+        var stale:Object = InventoryPanelService.execute("move", {
+            v: 1,
+            source: oldLease,
+            target: {containerId: "背包", slot: 0, expectedLease: "old"}
+        });
+        assertTrue(!stale.success && stale.error == "stale_state", "整容器整理后旧仓库 page lease 全部失效");
+        if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"] = previousMeta;
+        if (previousAlphaMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["Alpha"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["Alpha"] = previousAlphaMeta;
+        if (previousZuluMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"] = previousZuluMeta;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+        if (equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = undefined;
+    }
+
+    private static function testSortCommitFailureRollback():Void {
+        resetInventories();
+        var metadata:Object = installSortTestMetadata(["Alpha", "Zulu"]);
+        var first:Object = item("Zulu", {level: 1});
+        var second:Object = item("Alpha", {level: 1});
+        _root.物品栏.仓库.add(70, first);
+        _root.物品栏.仓库.add(71, second);
+        InventoryPanelService.testOnlyFailNextCommit("仓库", -1);
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1, container: {containerId: "仓库", offset: 50, limit: 50}, methodName: "byName"
+        });
+        assertTrue(!result.success && result.error == "commit_failed", "整容器提交失败返回 commit_failed");
+        assertTrue(_root.物品栏.仓库.getItem("70") === first && _root.物品栏.仓库.getItem("71") === second,
+            "整理计划隔离执行，提交失败保持所有 physicalSlot 原状");
+        assertTrue(_root.存档系统.dirtyMark == false, "整理回滚路径不标脏");
+        restoreSortTestMetadata(metadata);
+    }
+
+    private static function testSortRejectsLossyPlan():Void {
+        resetInventories();
+        var legacy:Object = item("未注册历史物品", 7);
+        _root.物品栏.仓库.add(33, legacy);
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1, container: {containerId: "仓库", offset: 0, limit: 50}, methodName: "byName"
+        });
+        assertTrue(!result.success && result.error == "sort_failed"
+                && _root.物品栏.仓库.getItem("33") === legacy && _root.存档系统.dirtyMark == false,
+            "整理计划若过滤未知历史物品则拒绝提交，不静默丢物");
+    }
+
+    private static function testSortEventReentrancy():Void {
+        resetInventories();
+        var metadata:Object = installSortTestMetadata(["Alpha", "Zulu"]);
+        _root.物品栏.仓库.add(0, item("Zulu", {level: 1}));
+        _root.物品栏.仓库.add(1, item("Alpha", {level: 1}));
+        var holder:MovieClip = _root.createEmptyMovieClip("__inventorySortServiceTest", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        _root.物品栏.仓库.setDispatcher(dispatcher);
+        var reentry:Object = null;
+        dispatcher.subscribe("ItemRemoved", function():Void {
+            if (reentry == null) reentry = warehouseSnapshot(0, 50);
+        });
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1, container: {containerId: "仓库", offset: 0, limit: 50}, methodName: "byName"
+        });
+        assertTrue(result.success && reentry != null && reentry.error == "busy",
+            "整理提交后的生命周期事件仍处于事务重入守卫内");
+        _root.物品栏.仓库.setDispatcher(null);
+        holder.removeMovieClip();
+        restoreSortTestMetadata(metadata);
+    }
+
+    private static function testWindowPerformanceMatrix():Void {
+        var capacities:Array = [50, 400, 1200];
+        var ratios:Array = [0, 0.5, 1];
+        for (var c:Number = 0; c < capacities.length; c++) {
+            for (var r:Number = 0; r < ratios.length; r++) {
+                var capacity:Number = capacities[c];
+                _root.物品栏 = {
+                    背包: new ArrayInventory(null, 50),
+                    仓库: new ArrayInventory(null, capacity)
+                };
+                _root.存档系统 = {dirtyMark: false};
+                InventoryPanelService.testOnlyReset();
+                var occupied:Number = Math.floor(capacity * Number(ratios[r]));
+                for (var slot:Number = 0; slot < occupied; slot++) {
+                    _root.物品栏.仓库.add(slot, item("Perf" + slot, 1));
+                }
+                var started:Number = getTimer();
+                var response:Object = null;
+                for (var iteration:Number = 0; iteration < 100; iteration++) {
+                    response = warehouseSnapshot(0, Math.min(50, capacity));
+                }
+                var elapsed:Number = getTimer() - started;
+                var payloadChars:Number = new LiteJSON().stringify(response).length;
+                trace("[InventoryPanelService PERF] capacity=" + capacity + " occupancy=" + occupied
+                    + " window=50 iterations=100 elapsedMs=" + elapsed + " payloadChars=" + payloadChars);
+                assertTrue(response.success && response.snapshots[0].slots.length == Math.min(50, capacity)
+                        && elapsed < 5000 && payloadChars < 100000,
+                    "窗口快照性能门 " + capacity + " 槽 / " + Math.round(Number(ratios[r]) * 100) + "% 占用");
+            }
+        }
+    }
+
+    private static function testFullWarehouseSortPerformance():Void {
+        resetInventories();
+        var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        var equipmentDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.equipmentDict == undefined;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        if (equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = {};
+        var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["GateA3性能堆叠"];
+        org.flashNight.arki.item.ItemUtil.itemDataDict["GateA3性能堆叠"] = {
+            type: "材料", use: "材料", price: 1, level: 0, id: 999999
+        };
+        for (var slot:Number = 0; slot < 1200; slot++) {
+            _root.物品栏.仓库.add(slot, item("GateA3性能堆叠", 1));
+        }
+        var started:Number = getTimer();
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1, container: {containerId: "仓库", offset: 0, limit: 50}, methodName: "byType"
+        });
+        var elapsed:Number = getTimer() - started;
+        trace("[InventoryPanelService PERF] fullWarehouseSort capacity=1200 occupancy=1200 elapsedMs=" + elapsed);
+        assertTrue(result.success && _root.物品栏.仓库.size() == 1
+                && Number(_root.物品栏.仓库.getItem("0").value) == 1200 && elapsed < 5000,
+            "1200/1200 满仓权威整理与合并性能门");
+        if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["GateA3性能堆叠"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["GateA3性能堆叠"] = previousMeta;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+        if (equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = undefined;
+    }
+}

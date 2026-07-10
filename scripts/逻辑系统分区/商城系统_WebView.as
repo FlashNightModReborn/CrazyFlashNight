@@ -4,6 +4,13 @@
 _root.UI系统 = _root.UI系统 || {};
 _root.UI系统.商城WebView = _root.UI系统.商城WebView || {};
 _root.UI系统.商城WebView.json = new LiteJSON();
+_root.UI系统.商城WebView.purchasedTokenSeq = Number(_root.UI系统.商城WebView.purchasedTokenSeq) || 0;
+_root.UI系统.商城WebView.rotatePurchasedToken = function():String {
+    this.purchasedTokenSeq++;
+    this.purchasedToken = "shop" + getTimer() + "." + this.purchasedTokenSeq;
+    return this.purchasedToken;
+};
+_root.UI系统.商城WebView.rotatePurchasedToken();
 // 暂停 lease id（由 PauseManager.lease 返回；undefined 表示当前未持有 lease）
 _root.UI系统.商城WebView.pauseLeaseId = undefined;
 
@@ -58,6 +65,8 @@ _root.gameCommands["shopPanelClose"] = function(params) {
 // ========== 批量查询 ==========
 _root.gameCommands["shopBulkQuery"] = function(params) {
     _root.UI系统.商城WebView.ensureState();
+    // bulkQuery 是 purchased-list snapshot 边界：铸新 token，让旧 Web 会话的 index 失效。
+    _root.UI系统.商城WebView.rotatePurchasedToken();
     var callId = params.callId;
     _root.UI系统.商城WebView.log("shopBulkQuery callId=" + callId + " kshop_list.length=" + _root.kshop_list.length);
     var catalog = [];
@@ -104,7 +113,8 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
         reverseLevel: Number(_root.主角被动技能.逆向.启用 ? _root.主角被动技能.逆向.等级 : 0),
         kpoints: Number(_root.虚拟币),
         cart: cartMigrated,
-        purchased: _root.商城已购买物品
+        purchased: _root.商城已购买物品,
+        purchasedToken: _root.UI系统.商城WebView.purchasedToken
     };
     var respStr = _root.UI系统.商城WebView.json.stringify(resp);
     _root.UI系统.商城WebView.log("bulkQuery resp type=" + typeof(respStr) + " len=" + respStr.length + " catalog=" + catalog.length);
@@ -141,6 +151,7 @@ _root.gameCommands["shopCheckout"] = function(params) {
         resp.success = true;
         resp.newBalance = _root.虚拟币;
         resp.purchased = _root.商城已购买物品;
+        resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
         // Plan A: 商城 checkout 真实扣 K 点 + 写入已购列表，必达。
         // 删除原本的 _root.存盘商城已购买物品() / _root.保存购物车() 子层 flush：
         // 子层只写 shop/cart 子层 SOL，与下方 mydata 顶层完整 flushNow 之间存在崩溃窗口
@@ -168,8 +179,12 @@ _root.gameCommands["shopClaim"] = function(params) {
     _root.UI系统.商城WebView.log("shopClaim callId=" + callId + " idx=" + claimIdx);
     var resp = { task: "shop_response", callId: callId };
 
-    if (claimIdx < 0 || claimIdx >= _root.商城已购买物品.length) {
+    if (String(params.expectedPurchasedToken) != String(_root.UI系统.商城WebView.purchasedToken)) {
+        resp.success = false; resp.error = "stale_state";
+        resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+    } else if (claimIdx < 0 || claimIdx >= _root.商城已购买物品.length) {
         resp.success = false; resp.error = "item_not_found";
+        resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
     } else {
         var item = _root.商城已购买物品[claimIdx];
         var itemName = item[1];
@@ -178,10 +193,12 @@ _root.gameCommands["shopClaim"] = function(params) {
 
         if (_root.物品栏.背包.getFirstVacancy() == -1) {
             resp.success = false; resp.error = "inventory_full";
+            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
         } else if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty)) {
             _root.商城已购买物品.splice(claimIdx, 1);
             resp.success = true;
             resp.purchased = _root.商城已购买物品;
+            resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
             // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。
             // 删除原本的 _root.存盘商城已购买物品() 子层 flush：
             // 子层 SOL 写入与下方 mydata 顶层 flushNow 之间存在崩溃窗口
@@ -193,6 +210,7 @@ _root.gameCommands["shopClaim"] = function(params) {
             _root.强制存盘();
         } else {
             resp.success = false; resp.error = "acquire_failed";
+            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
         }
     }
     _root.UI系统.商城WebView.sendResponse(resp);

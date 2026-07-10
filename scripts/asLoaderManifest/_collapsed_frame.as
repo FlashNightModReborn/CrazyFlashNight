@@ -328,6 +328,7 @@ _root.__boot.f41_1 = function() {
     #include "../展现/UI交互/UI交互_lsy_UI管理.as"
     #include "../展现/UI交互/UI交互_lsy_对话文本.as"
     #include "../逻辑系统分区/商城系统_WebView.as"
+    #include "../逻辑系统分区/物品系统_WebView.as"
     #include "../逻辑系统分区/地图系统_WebView.as"
     #include "../逻辑系统分区/选关系统_WebView.as"
     #include "../逻辑系统分区/竞技场系统_WebView.as"

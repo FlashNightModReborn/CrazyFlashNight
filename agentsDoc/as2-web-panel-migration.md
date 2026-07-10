@@ -85,6 +85,7 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 - close 按钮、ESC、backdrop click 必须最终触发同一套本地 close 清理，再通知 C#。
 - 任何 async callback 返回时要校验 session，避免旧面板回包污染新会话。
 - 用户可输入文本进入 `innerHTML` 前必须 escape；优先用 `textContent`。
+- 运行态 WebView2 是游戏 UI renderer，不是文档浏览器：Overlay 统一加载 `css/game-ui-behavior.css` + `modules/game-ui-behavior.js`，默认抑制文本选取、原生 `dragstart` 拖影与 `contextmenu`；真实编辑器只通过 `input/textarea/contenteditable/[data-browser-native]` 显式放行。不要在各 panel 重复绑一套互相冲突的 `selectstart` handler。
 - runtime 文本必须考虑 1024×576、1366×768、1920×1080 视口，按钮文本不能溢出。
 
 使用资源时，必须有 fallback：图标、头像、背景 missing 时不能让 panel 空白或 JS 抛异常。共享图标体系要主动加载 manifest，例如佣兵装备图标需要先 `Icons.load()`；普通物品图标若只需要 URL 用 `Icons.resolve()` 首帧静态显示，列表/格子里的可动画图标用 `Icons.html()` / `applyIconToImage()` 交给共享模块播放，只有 manifest 显式声明 `playback` / `animated` 的图标才会按时间线切帧。

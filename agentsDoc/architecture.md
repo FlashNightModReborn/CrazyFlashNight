@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `e7205600d0`（2026-06-17）。
+**最后核对代码基线**：commit `11d2e9b245`（2026-07-10）；inventory-domain Gate A2/A3 与 Web 游戏 UI 行为边界另核对本轮工作树实现。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
@@ -64,6 +64,7 @@
 ### D. Launcher Web / Minigames / Overlay 链
 
 - WebView2 前端已承担启动引导、运行态 overlay、Panel 系统和小游戏 UI
+- 运行态 Overlay 由 `GameUiBehavior` 统一抑制文档浏览器式文本选取、原生拖影与菜单；输入/可编辑/显式 opt-in 区域保留浏览器原生编辑语义，避免各 panel 分叉实现。
 - 小游戏当前采用统一壳层与宿主协议：
   - 共享结构类：`minigame-*`
   - 共享宿主上报：`minigame_session`
@@ -97,6 +98,7 @@
 
 - Bootstrap 阶段：`chrome.webview.postMessage({cmd, ...})`
 - 运行态：Bridge / Panel / UiData / Notch / overlay 消息桥
+- Panel domain 路由：通用 `close` 始终最优先；其余携 `domain` 的请求先做领域分流，当前 `domain=inventory` 独占 `InventoryTask → inventory_response → panel_resp(domain/cmd/callId)`，覆盖 range snapshot、move/merge/swap/discard 与 Gate A3 `sortAndMerge`，不得回落 legacy 全局 cmd/MapTask catch-all。无 domain 请求继续走既有 panel/cmd 路由。
 - Minigame：统一 `minigame_session` envelope
 - 性能诊断边界：运行态 Web overlay 可分别启用 `webOverlayDisableCssAnimations`、`webOverlayDisableVisualizers` 做 A/B；`webOverlayLowEffects` 是聚合保护开关，并额外降低 map panel 的全屏 scanline / radar / pulse、CSS filter/drop-shadow 与覆膜合成成本。`webView2DisableGpu` 同时作用于 BootstrapPanel 与运行态 WebOverlayForm，用于定位 WebView2 GPU 合成责任面，不作为默认运行方案。`nativeCursorOverlay=false` 只关闭 C# cursor layered window，恢复系统鼠标，用于隔离 cursor 迁移与 WebView2 overlay 满载。双显卡调度通过 `tools/set-launcher-gpu-preference.ps1` 管理 Windows 每应用高性能 GPU 偏好；运行态采样用 `tools/sample-launcher-gpu.ps1` 按 launcher / flash / bootstrap / web_overlay 分组读取 GPU engine；静态复杂度审计用 `tools/audit-web-overlay-complexity.js` 统计 overlay CSS / JS 中的合成与布局风险点。GPU 偏好只能影响系统调度意愿，不能保证无 MUX 笔记本的最终桌面合成绕过核显。
 - WebView2 user-data 边界：BootstrapPanel 与运行态 WebOverlayForm 使用不同 user-data 目录，避免诊断参数改变 WebView2 browser process group 后互相破坏初始化。BootstrapPanel 在 reveal 后隐藏时请求 WebView2 suspend，避免启动页在游戏态继续占 GPU。

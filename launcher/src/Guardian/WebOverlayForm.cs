@@ -119,6 +119,23 @@ namespace CF7Launcher.Guardian
             return parsed.Value<bool?>("returnBase") ?? false;
         }
 
+        internal enum PanelDomainRoute
+        {
+            Legacy,
+            Close,
+            Inventory,
+            Unsupported
+        }
+
+        /// <summary>close 始终优先；其余带 domain 的请求不得回落 legacy 全局 cmd 路由。</summary>
+        internal static PanelDomainRoute ResolvePanelDomainRoute(string cmd, string domain)
+        {
+            if (cmd == "close") return PanelDomainRoute.Close;
+            if (string.IsNullOrEmpty(domain)) return PanelDomainRoute.Legacy;
+            if (domain == "inventory") return PanelDomainRoute.Inventory;
+            return PanelDomainRoute.Unsupported;
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
         {
@@ -225,6 +242,7 @@ namespace CF7Launcher.Guardian
 
         // 面板系统
         private ShopTask _shopTask;
+        private InventoryTask _inventoryTask;
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
         private ArenaTask _arenaTask;
@@ -2784,6 +2802,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetInventoryTask(InventoryTask task)
+        {
+            _inventoryTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetGomokuTask(GomokuTask task)
         {
             _gomokuTask = task;
@@ -3397,6 +3422,21 @@ namespace CF7Launcher.Guardian
             try { parsed = JObject.Parse(json); } catch { LogManager.Log("[Panel] JSON parse failed"); return; }
             string cmd = parsed.Value<string>("cmd");
             if (cmd == null) { LogManager.Log("[Panel] cmd is null"); return; }
+            string domain = parsed.Value<string>("domain");
+            PanelDomainRoute domainRoute = ResolvePanelDomainRoute(cmd, domain);
+            if (domainRoute == PanelDomainRoute.Inventory)
+            {
+                LogManager.Log("[Panel] Routing domain=inventory cmd=" + cmd
+                    + " to InventoryTask, _inventoryTask=" + (_inventoryTask != null ? "ok" : "NULL"));
+                if (_inventoryTask != null) _inventoryTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "inventory_unavailable");
+                return;
+            }
+            if (domainRoute == PanelDomainRoute.Unsupported)
+            {
+                RespondPanelDomainError(parsed, "unsupported_domain");
+                return;
+            }
             switch (cmd)
             {
                 case "close":
@@ -3584,6 +3624,20 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void RespondPanelDomainError(JObject request, string error)
+        {
+            var response = new JObject
+            {
+                ["type"] = "panel_resp",
+                ["domain"] = request != null ? (request.Value<string>("domain") ?? "") : "",
+                ["cmd"] = request != null ? (request.Value<string>("cmd") ?? "") : "",
+                ["callId"] = request != null ? (request.Value<string>("callId") ?? "") : "",
+                ["success"] = false,
+                ["error"] = error
+            };
+            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
         private void HandleMapOpenStageSelectRequest(JObject parsed)
         {
             string webCallId = parsed.Value<string>("callId");
@@ -3731,6 +3785,7 @@ namespace CF7Launcher.Guardian
                 _panelHost.ClosePanel();
             }
             if (_shopTask != null) _shopTask.ClearPending();
+            if (_inventoryTask != null) _inventoryTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
             if (_arenaTask != null) _arenaTask.ClearPending();
