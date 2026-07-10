@@ -272,6 +272,106 @@ _root.cheatFunction.stopcllog = function() {
 	_root.最上层发布文字提示("闭环日志已迁移到 C# launcher 端");
 };
 
+_root._cheatNormalizeTaskChainName = function(chainName:String):String {
+	var name:String = String(chainName).split(" ").join("").split("　").join("").split("\t").join("");
+	var lower:String = name.toLowerCase();
+	if (name == "主" || name == "主线任务" || lower == "main" || lower == "story") return "主线";
+	if (name == "铁枪" || name == "铁枪会支线" || lower == "iron" || lower == "ironspear" || lower == "tieqiang") return "铁枪会";
+	return name;
+};
+
+_root._cheatTaskChainMaxProgress = function(chainName:String):Number {
+	var seqArr:Array = TaskUtil.task_in_chains_by_sequence[chainName];
+	if (seqArr == undefined) return 0;
+	var maxProgress:Number = 0;
+	for (var i:Number = 0; i < seqArr.length; i++) {
+		var seq:Number = Number(seqArr[i]);
+		if (!isNaN(seq) && seq > maxProgress) maxProgress = seq;
+	}
+	return maxProgress;
+};
+
+_root._cheatRemoveActiveTasksInChain = function(chainName:String):Number {
+	if (_root.tasks_to_do == undefined) return 0;
+	var removed:Number = 0;
+	for (var i:Number = _root.tasks_to_do.length - 1; i > -1; i--) {
+		var taskID = _root.tasks_to_do[i].id;
+		var taskData:Object = TaskUtil.getRawTaskData(taskID);
+		if (taskData != undefined && taskData.chain != undefined && taskData.chain[0] == chainName) {
+			_root.tasks_to_do.splice(i, 1);
+			removed++;
+		}
+	}
+	return removed;
+};
+
+_root._cheatSetTaskChainProgress = function(rawChainName:String, rawProgress:Number):Boolean {
+	if (TaskUtil.task_chains == undefined || TaskUtil.task_in_chains_by_sequence == undefined) {
+		_root.最上层发布文字提示("任务数据未加载，无法调整任务进度");
+		return false;
+	}
+
+	var chainName:String = _root._cheatNormalizeTaskChainName(rawChainName);
+	var chainObj:Object = TaskUtil.task_chains[chainName];
+	var seqArr:Array = TaskUtil.task_in_chains_by_sequence[chainName];
+	if (chainObj == undefined || seqArr == undefined) {
+		_root.最上层发布文字提示("不存在任务链：" + chainName);
+		return false;
+	}
+
+	var targetProgress:Number = Math.floor(Number(rawProgress));
+	if (isNaN(targetProgress) || targetProgress < 0) targetProgress = 0;
+	var maxProgress:Number = _root._cheatTaskChainMaxProgress(chainName);
+	if (targetProgress > maxProgress) targetProgress = maxProgress;
+
+	if (_root.tasks_finished == undefined) _root.tasks_finished = {};
+	if (_root.task_chains_progress == undefined) _root.task_chains_progress = {};
+
+	var marked:Number = 0;
+	var cleared:Number = 0;
+	for (var i:Number = 0; i < seqArr.length; i++) {
+		var seq:Number = Number(seqArr[i]);
+		var taskID = chainObj[seqArr[i]];
+		var taskKey:String = String(taskID);
+		if (!isNaN(seq) && seq <= targetProgress && targetProgress > 0) {
+			_root.tasks_finished[taskKey] = 1;
+			marked++;
+		} else {
+			if (_root.tasks_finished[taskKey] > 0) {
+				delete _root.tasks_finished[taskKey];
+				cleared++;
+			}
+		}
+	}
+
+	_root.task_chains_progress[chainName] = targetProgress;
+	var removed:Number = _root._cheatRemoveActiveTasksInChain(chainName);
+	if (typeof _root.UpdateTaskProgress == "function") _root.UpdateTaskProgress();
+	if (typeof _root.检查任务数据完整性 == "function") _root.检查任务数据完整性();
+	if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+
+	_root.最上层发布文字提示("任务链进度已设置：" + chainName + " = " + targetProgress + "/" + maxProgress + "，完成" + marked + "项，清理" + cleared + "项，移除进行中" + removed + "项");
+	return true;
+};
+
+_root.cheatFunction.taskprogress = function() {
+	if (TaskUtil.task_chains == undefined) {
+		_root.最上层发布文字提示("任务数据未加载");
+		return;
+	}
+	var lines:Array = [];
+	lines.push("=== 任务链进度 ===");
+	for (var chainName in TaskUtil.task_chains) {
+		var progress:Number = Number(_root.task_chains_progress[chainName]);
+		if (isNaN(progress)) progress = 0;
+		lines.push(chainName + ": " + progress + "/" + _root._cheatTaskChainMaxProgress(chainName));
+	}
+	lines.push("进行中任务: " + (_root.tasks_to_do == undefined ? 0 : _root.tasks_to_do.length));
+	_root.最上层发布文字提示(lines.join("\n"));
+};
+_root.cheatFunction.taskstatus = _root.cheatFunction.taskprogress;
+
 _root.cheatCode = function(作弊码){
 	if(typeof _root.cheatFunction[作弊码] === "function"){
 		_root.cheatFunction[作弊码]();
@@ -399,6 +499,19 @@ _root.cheatCode = function(作弊码){
 			EvalParser.setPropertyValue(_root, setPath, setVal);
 		}
 		_root.发布消息("_root." + setPath + " = " + EvalParser.getPropertyValue(_root, setPath));
+	}else if(作弊码.indexOf("#task:")>-1){
+		var taskSpec:String = 作弊码.split("#task:")[1];
+		taskSpec = taskSpec.split("，").join(",");
+		taskSpec = taskSpec.split(";").join(",");
+		taskSpec = taskSpec.split("；").join(",");
+		var taskParts:Array = taskSpec.split(",");
+		if (taskParts.length < 2) {
+			_root.最上层发布文字提示("用法：#task:任务链名,进度  例如 #task:主线,13 或 #task:铁枪会,1");
+		} else {
+			var taskChainName:String = taskParts[0].split(" ").join("").split("　").join("").split("\t").join("");
+			var taskProgress:Number = Number(taskParts[1].split(" ").join("").split("　").join("").split("\t").join(""));
+			_root._cheatSetTaskChainProgress(taskChainName, taskProgress);
+		}
 	}else if(作弊码.indexOf("#gold:")>-1){
 		var goldVal:Number = Number(作弊码.split("#gold:")[1].split(" ").join(""));
 		_root.金钱 = goldVal;
@@ -465,6 +578,8 @@ getallintelligence  获得所有情报
 unlockkills         解锁所有敌方兵种击杀记录
 unlockallenemies    unlockkills 的别名
 arenakills          unlockkills 的别名
+taskprogress        查看所有任务链进度
+taskstatus          taskprogress 的别名
 
 === 前缀命令 ===
 #level:15           设置等级为15
@@ -475,6 +590,7 @@ arenakills          unlockkills 的别名
 #spawn:兵种,等级    召唤单位（如 #spawn:敌人-光头军人僵尸1,5）
 #tp:100,200         传送到坐标
 #change:兵种名      变更操控单位
+#task:链名,进度      设置任务链进度（如 #task:主线,13 / #task:铁枪会,1 / #task:铁枪会,0）
 
 === 变量操作 ===
 #_root.变量=值;类型  设置_root变量（如 #_root.abc=123;int）

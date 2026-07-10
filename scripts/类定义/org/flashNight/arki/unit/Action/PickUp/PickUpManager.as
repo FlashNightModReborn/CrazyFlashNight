@@ -7,6 +7,7 @@ import org.flashNight.gesh.depth.DepthManager;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ProgressValidator;
 import org.flashNight.naki.RandomNumberEngine.*;
 
 class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
@@ -14,6 +15,31 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     private var count:Number;
     private var pickupItemDict:Object;
     private var dispatcher:Object; // LifecycleEventDispatcher
+
+    /**
+     * 查询一次性拾取物是否已经被当前角色领取。
+     */
+    public static function isOneTimeClaimed(claimId):Boolean {
+        if (claimId == undefined || claimId == null || String(claimId).length == 0) return false;
+        if (_root._saveExt == undefined || _root._saveExt.一次性领取 == undefined) return false;
+        return Number(_root._saveExt.一次性领取[String(claimId)]) > 0;
+    }
+
+    /**
+     * 在物品成功进入背包后登记一次性领取标记。
+     */
+    public static function claimOneTimePickup(claimId):Void {
+        if (claimId == undefined || claimId == null || String(claimId).length == 0) return;
+
+        if (_root._saveExt == undefined) _root._saveExt = {};
+        if (_root._saveExt.一次性领取 == undefined) _root._saveExt.一次性领取 = {};
+
+        var key:String = String(claimId);
+        if (Number(_root._saveExt.一次性领取[key]) > 0) return;
+
+        _root._saveExt.一次性领取[key] = 1;
+        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+    }
     
     /**
      * 构造函数
@@ -45,6 +71,13 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      * 拾取物品
      */
     public function pickup(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Void {
+        // 同一领取 ID 即使因重复配置同时生成多个实体，也只允许首个成功进入背包。
+        if (PickUpManager.isOneTimeClaimed(target.一次性领取ID)) {
+            target.gotoAndPlay("消失");
+            delete this.pickupItemDict[target.index];
+            return;
+        }
+
         var str:String = "获得";
         var itemName:String = target.物品名;
         var value:Number = target.数量;
@@ -67,6 +100,8 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             _root.发布消息("物品栏空间不足，无法拾取！");
             return;
         }
+
+        PickUpManager.claimOneTimePickup(target.一次性领取ID);
         
         // 销毁对象
         _root.发布消息(str);
@@ -141,6 +176,10 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      * 创建可拾取物
      */
     public function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
+        if (!parameterObject) parameterObject = new Object();
+        if (!ProgressValidator.meetsRequirements(parameterObject)) return;
+        if (PickUpManager.isOneTimeClaimed(parameterObject.一次性领取ID)) return;
+
         if (数量 <= 0) {
             数量 = 1;
         }
@@ -177,10 +216,6 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                     数量 = Math.floor(数量 * 0.5);
                 }
             }
-        }
-        
-        if (!parameterObject) {
-            parameterObject = new Object();
         }
         
         parameterObject.index = this.count;

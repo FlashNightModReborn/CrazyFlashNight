@@ -54,5 +54,13 @@ _root.基建系统.初始化基建元件(this, "厨房", [null, "锅", "大锅",
 
 _root.基建系统.第一防线调度板 = new Object();
 _root.基建系统.第一防线调度板.启动任务面板 = function():Void{
-	_root.发布消息("第一防线调度板.启动任务面板");
+	if (!_root.基建系统.检查基建等级("前线调度板", 1)) {
+		_root.发布消息("前线调度板尚未建成");
+		return;
+	}
+	if (_root.gameCommands != undefined && _root.gameCommands.openWebDispatchBoard != undefined) {
+		_root.gameCommands.openWebDispatchBoard({boardId: "first_defense", skin: "first-defense"});
+		return;
+	}
+	_root.发布消息("前线调度板通信尚未就绪");
 }

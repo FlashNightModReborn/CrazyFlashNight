@@ -144,6 +144,22 @@ namespace CF7Launcher.Tasks
                     // 扣费+AddTask+委托界面进入关卡，回 entered:true（前端关面板让场景淡出跳转）
                     action = "dungeonEnter";
                     break;
+                case "dispatchBoardSnapshot":
+                    // 调度板目录（只读）：AS2 按 boardId 筛选已登记/可登记任务并返回精简目录。
+                    action = "dispatchBoardSnapshot";
+                    break;
+                case "dispatchBoardDetail":
+                    // 调度任务详情（只读）：taskId + boardId 双重校验，返回与副本简报兼容的 detail。
+                    action = "dispatchBoardDetail";
+                    break;
+                case "dispatchBoardBriefing":
+                    // 调度任务接取对话（只读）：仅对当前公告板可见任务返回。
+                    action = "dispatchBoardBriefing";
+                    break;
+                case "dispatchBoardEnter":
+                    // 剧情调度任务出击（写操作）：AS2 要求任务已在进行中，并按任务关卡要求进图。
+                    action = "dispatchBoardEnter";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

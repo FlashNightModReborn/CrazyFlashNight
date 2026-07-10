@@ -116,6 +116,8 @@
     var _achViewEl;              // 成就 tab 容器（实现在 achievement-tab.js，lazy deps 先加载）
     var _dungeonViewEl;          // 副本任务 tab 容器（NPC 触发，单副本上下文）
     var _dungeonTabBtn;          // 副本任务 tab 按钮（无 NPC 上下文时隐藏）
+    var _dispatchViewEl;         // 前线调度板聚合模式容器
+    var _isDispatchContext = false;
 
     // ── 副本任务（委托任务）tab：旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价 ──
     //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon(panel_request initData{view,taskId})；
@@ -211,6 +213,7 @@
                     '</div>' +
                     '<div class="task-panel-achview" id="task-panel-achview"></div>' +
                     '<div class="task-panel-dungeonview" id="task-panel-dungeonview"></div>' +
+                    '<div class="task-panel-dispatchview" id="task-panel-dispatchview"></div>' +
                     '<div class="task-confirm-overlay" id="task-confirm-overlay" hidden>' +
                         '<div class="task-confirm-dialog">' +
                             '<div class="task-confirm-title">放弃任务</div>' +
@@ -241,6 +244,7 @@
         _achViewEl = _el.querySelector('#task-panel-achview');
         _dungeonViewEl = _el.querySelector('#task-panel-dungeonview');
         _dungeonTabBtn = _el.querySelector('.task-tab[data-tab="dungeon"]');
+        _dispatchViewEl = _el.querySelector('#task-panel-dispatchview');
 
         // 成就 tab 装配（achievement-tab.js 经 lazy deps 先加载；缺失时优雅降级为空 tab）。
         // claim 在途复用本面板 beginOp/endOp 的 _busy 锁——切 tab/关面板/二次点击三处口径统一。
@@ -256,6 +260,27 @@
                 endOp: endOp,
                 isBusy: function() { return _busy; },
                 session: function() { return _session; }
+            });
+        }
+        if (typeof DispatchBoardView !== 'undefined') {
+            DispatchBoardView.install({
+                paneEl: _dispatchViewEl,
+                send: sendPanelMsg,
+                toast: toast,
+                escHtml: escHtml,
+                escAttr: escAttr,
+                limitsHtml: dungeonLimitChips,
+                rewardsHtml: dungeonRewardsHtml,
+                dialogueHtml: dialogueHtml,
+                renderDialogue: renderDialogueReplay,
+                getDialogueMode: function() { return _dialogueMode; },
+                dialogueModeButtonText: dialogueModeButtonText,
+                toggleDialogueMode: toggleDialogueMode,
+                beginOp: beginOp,
+                endOp: endOp,
+                isBusy: function() { return _busy; },
+                requestClose: requestClose,
+                closeForEnter: closeForStageEnter
             });
         }
 
@@ -333,6 +358,7 @@
         _filterMode = 'all';
         _sortMode = 'default';
         _tab = 'mine';
+        _isDispatchContext = !!(initData && initData.view === 'dispatch-board');
         _dungeonTaskId = null;      // 副本上下文每次开面板清空（仅 NPC initData 注入）
         _dungeonMode = 'normal';
         _dungeonDetail = null;
@@ -360,6 +386,7 @@
         closeAbandonConfirm();
         if (_containerEl) _containerEl.classList.remove('task-busy');
         if (_containerEl) _containerEl.setAttribute('data-tab', 'mine');
+        if (_containerEl) _containerEl.setAttribute('data-context', _isDispatchContext ? 'dispatch-board' : 'tasks');
         setActiveTabButton('mine');
         resetToolbarControls();
         _rightEl.innerHTML = '<div class="task-empty-hint">请从左侧选择一个任务</div>';
@@ -380,6 +407,14 @@
         updateFitScale();
         bindScaleWatcher();
         document.addEventListener('click', closeSortMenu); // 仅面板打开期间生效；addEventListener 对同一引用幂等
+
+        if (_isDispatchContext) {
+            if (_dungeonTabBtn) _dungeonTabBtn.hidden = true;
+            if (typeof DispatchBoardView !== 'undefined') DispatchBoardView.open(initData || {});
+            else if (_dispatchViewEl) _dispatchViewEl.innerHTML = '<div class="dispatch-detail-empty is-error">调度板模块未加载</div>';
+            return;
+        }
+
         requestSnapshot();
 
         // 副本任务入口：NPC 交互携 {view:'dungeon', taskId} → 直接切副本 tab 加载该副本
@@ -400,13 +435,21 @@
         Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
     }
 
+    function closeForStageEnter() {
+        Panels.close();
+        Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', dismissReturnStack: true });
+    }
+
     function onClose() {
+        if (typeof DispatchBoardView !== 'undefined') DispatchBoardView.close();
         _pendingReq = {};
         _busy = false;
+        _isDispatchContext = false;
         _session++;
         hideTip();
         closeAbandonConfirm();
         if (_containerEl) _containerEl.classList.remove('task-busy');
+        if (_containerEl) _containerEl.setAttribute('data-context', 'tasks');
         endChartDrag();   // 清掉拖拽平移可能残留的 document 监听
         unbindScaleWatcher();
         document.removeEventListener('click', closeSortMenu);
@@ -1560,6 +1603,19 @@
         var posterBg = poster
             ? '<div class="dgn-left-poster-bg"><img src="' + escAttr(poster) + '" alt=""/></div>'
             : '<div class="dgn-left-poster-bg dgn-left-poster-none">WANTED</div>';
+        var missionInfo = (typeof MissionBriefView !== 'undefined' && MissionBriefView.render)
+            ? MissionBriefView.render({
+                detail: d,
+                difficulty: diff,
+                limits: limits,
+                limitsHtml: dungeonLimitChips,
+                rewardsHtml: dungeonRewardsHtml,
+                escHtml: escHtml,
+                dialogueHtml: dialogueHtml,
+                dialogueMode: _dialogueMode,
+                dialogueButtonText: dialogueModeButtonText()
+            })
+            : '<div class="dgn-info"><div class="dgn-name">' + escHtml(d.title || d.stageName || '副本任务') + '</div></div>';
 
         _dungeonViewEl.innerHTML =
             '<div class="dgn-shell">' +
@@ -1577,23 +1633,7 @@
                     (d.alreadyActive ? '<div class="dgn-active-note">该委托已在进行中</div>' : '') +
                 '</div>' +
                 '<div class="dgn-right">' +
-                    '<div class="dgn-info">' +
-                        '<div class="dgn-summary">' +
-                            '<div class="dgn-name">' + escHtml(d.title || d.stageName || '副本任务') + '</div>' +
-                            '<div class="dgn-meta">' +
-                                (d.npcName ? '<span class="dgn-npc">委托人：' + escHtml(d.npcName) + '</span>' : '') +
-                                (d.recommendedLevel ? '<span class="dgn-lv">推荐等级 ' + escHtml(d.recommendedLevel) + '</span>' : '') +
-                                (diff ? '<span class="dgn-diff">难度 ' + escHtml(diff) + '</span>' : '') +
-                            '</div>' +
-                            (d.description ? '<div class="dgn-desc">' + dialogueHtml(d.description) + '</div>' : '') +
-                        '</div>' +
-                        '<div class="dgn-section-title">限制词条</div>' +
-                        '<div class="dgn-limits">' + dungeonLimitChips(limits) + '</div>' +
-                        ((d.rewards && d.rewards.length) ? '<div class="dgn-section-title">任务奖励</div><div class="dgn-rewards">' + dungeonRewardsHtml(d.rewards) + '</div>' : '') +
-                        '<div class="dgn-section-title dgn-dialogue-title"><span>委托对话</span>' +
-                            '<button type="button" class="tlv-dia-mode-btn dgn-dia-mode-btn" data-dialogue-mode-toggle="1">' + dialogueModeButtonText() + '</button></div>' +
-                        '<div class="dgn-dialogue cf-dialogue" data-dialogue-mode="' + _dialogueMode + '"><div class="tlv-dia-empty">加载对话…</div></div>' +
-                    '</div>' +
+                    missionInfo +
                 '</div>' +
             '</div>';
     }
@@ -2143,7 +2183,9 @@
                     tab: _tab, filterMode: _filterMode, sortMode: _sortMode, viewMode: _viewMode,
                     activeIndex: _activeIndex, taskCount: _tasks.length,
                     visibleCount: visibleTasks().length,
-                    categoryCounts: categoryCounts()
+                    categoryCounts: categoryCounts(),
+                    context: _isDispatchContext ? 'dispatch-board' : 'tasks',
+                    dispatch: (typeof DispatchBoardView !== 'undefined' && DispatchBoardView.getState) ? DispatchBoardView.getState() : null
                 };
             },
             // 暴露纯函数供单元断言

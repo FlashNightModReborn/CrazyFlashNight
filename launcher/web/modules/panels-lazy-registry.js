@@ -147,6 +147,8 @@
          'modules/dressup-doll-renderer.js',
          'modules/dialogue/dialogue-view.js',
          'modules/tasks/achievement-tab.js',
+         'modules/tasks/mission-brief-view.js',
+         'modules/tasks/dispatch-board-view.js',
          'modules/tasks/task-panel.js'],
         noop);
 })();

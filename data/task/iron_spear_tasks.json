@@ -4,20 +4,29 @@
             "id": 70001,
             "title": "$SIDE_TITLE_70001",
             "description": "$SIDE_DESCRIPTION_70001",
+            "priority": 100,
             "get_requirements": [
                 13
             ],
             "get_conversation": "$SIDE_GET_70001",
-            "get_npc": "武器大师",
-            "get_npc_hotspot": "gym",
+            "get_npc": "Shop Girl",
             "finish_requirements": [],
+            "conditions": [
+                {
+                    "type": "infraLevel",
+                    "params": {
+                        "name": "前线调度板"
+                    },
+                    "target": 1,
+                    "label": "前线调度板建成"
+                }
+            ],
             "finish_conversation": "$SIDE_FINISH_70001",
-            "finish_npc": "冷兵器商人",
-            "finish_npc_hotspot": "base_garage",
+            "finish_npc": "前治安官",
+            "finish_npc_hotspot": "first_defense",
             "rewards": [
-                "金币#500",
-                "经验值#500",
-                "石英磨刀石#1"
+                "金币#1500",
+                "经验值#1200"
             ],
             "chain": "铁枪会#1"
         },
@@ -29,20 +38,24 @@
                 70001
             ],
             "get_conversation": "$SIDE_GET_70002",
-            "get_npc": "冷兵器商人",
-            "get_npc_hotspot": "base_garage",
-            "finish_requirements": [],
-            "finish_submit_items": [
-                "石英磨刀石#1"
+            "mission_briefing": "$SIDE_BRIEFING_70002",
+            "get_npc": "前治安官",
+            "get_npc_hotspot": "first_defense",
+            "finish_requirements": [
+                "新人救援#简单"
             ],
             "finish_conversation": "$SIDE_FINISH_70002",
-            "finish_npc": "武器大师",
+            "finish_npc": "前治安官",
             "finish_npc_hotspot": "first_defense",
             "rewards": [
-                "金币#1000",
-                "经验值#1000",
-                "石英磨刀石#1"
+                "金币#3000",
+                "经验值#2500"
             ],
+            "recommended_level": "15-20",
+            "dispatch_board": "first_defense",
+            "dispatch_order": 10,
+            "dispatch_kind": "story",
+            "dispatch_replayable": true,
             "chain": "铁枪会#2"
         }
     ]

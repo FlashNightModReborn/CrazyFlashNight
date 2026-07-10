@@ -1,6 +1,7 @@
 ﻿// import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.naki.Sort.InsertionSort;
 /*
  * TaskUtil 静态类，存储任务数据，任务文本数据与任务相关函数
  */
@@ -42,12 +43,45 @@ class org.flashNight.arki.task.TaskUtil{
         }
     }
 
+    private static function taskPriorityOf(taskID):Number{
+        var taskData:Object = tasks[taskID];
+        if(taskData == undefined) return 0;
+        var priority:Number = Number(taskData.priority);
+        return isNaN(priority) ? 0 : priority;
+    }
+
+    private static function taskLoadOrderOf(taskID):Number{
+        var taskData:Object = tasks[taskID];
+        if(taskData == undefined) return 999999;
+        var order:Number = Number(taskData._loadOrder);
+        return isNaN(order) ? 999999 : order;
+    }
+
+    private static function compareNpcTaskOrder(a, b):Number{
+        var pa:Number = taskPriorityOf(a);
+        var pb:Number = taskPriorityOf(b);
+        if(pa > pb) return -1;
+        if(pa < pb) return 1;
+
+        var oa:Number = taskLoadOrderOf(a);
+        var ob:Number = taskLoadOrderOf(b);
+        if(oa < ob) return -1;
+        if(oa > ob) return 1;
+        return 0;
+    }
+
+    private static function sortNpcTaskIds(ids:Array):Void{
+        if(ids == undefined || ids.length < 2) return;
+        InsertionSort.sort(ids, compareNpcTaskOrder);
+    }
+
     public static function getTasksForNpc(npcName:String, hotspotId:String):Array{
         var out:Array = [];
         if(hotspotId != undefined && hotspotId != ""){
             appendTaskIdList(out, tasks_of_npc[getNpcHotspotKey(npcName, hotspotId)]);
         }
         appendTaskIdList(out, tasks_of_npc[npcName]);
+        sortNpcTaskIds(out);
         return out;
     }
 
@@ -91,6 +125,9 @@ class org.flashNight.arki.task.TaskUtil{
         tasks_of_npc = new Object();
         for(var i = 0; i < rawTaskData.length; i++){
             var taskData = rawTaskData[i];
+            taskData._loadOrder = i;
+            taskData.priority = Number(taskData.priority);
+            if(isNaN(taskData.priority)) taskData.priority = 0;
             // 分解chain
             taskData.chain = taskData.chain.split("#");
             var chainName = taskData.chain[0];

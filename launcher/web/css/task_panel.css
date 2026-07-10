@@ -1888,3 +1888,129 @@
 .dgn-reward .task-item { animation: none; }
 .dgn-reward-x { color: var(--task-text-dim); }
 .dgn-dialogue { padding: 4px 0; min-height: 60px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   前线调度板聚合模式。复用 tasks panel 宿主与 mission brief，隐藏通用任务页签。
+   ═══════════════════════════════════════════════════════════════ */
+.task-panel-dispatchview { display: none; }
+.task-panel-container[data-context="dispatch-board"] {
+    background:
+        linear-gradient(90deg, rgba(8, 10, 9, 0.34), rgba(12, 14, 12, 0.27)),
+        url('../modules/tasks/assets/dispatch_board_first_defense.png') center / 100% 100% no-repeat,
+        #707768;
+    background-blend-mode: normal, multiply;
+}
+.task-panel-container[data-context="dispatch-board"] > .task-panel-header,
+.task-panel-container[data-context="dispatch-board"] > .task-panel-toolbar,
+.task-panel-container[data-context="dispatch-board"] > .task-panel-body,
+.task-panel-container[data-context="dispatch-board"] > .task-panel-logview,
+.task-panel-container[data-context="dispatch-board"] > .task-panel-achview,
+.task-panel-container[data-context="dispatch-board"] > .task-panel-dungeonview {
+    display: none !important;
+}
+.task-panel-container[data-context="dispatch-board"] > .task-panel-dispatchview {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+.task-panel-container.task-busy .task-panel-dispatchview { pointer-events: none; }
+
+.dispatch-shell {
+    --dispatch-olive: #7f8d68;
+    --dispatch-paper: #d4d0bc;
+    --dispatch-ink: #20231d;
+    --dispatch-hazard: #e0b83e;
+    --dispatch-alert: #a23a2f;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    color: #e6e7df;
+    background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 5px),
+        rgba(8, 10, 9, 0.22);
+}
+.dispatch-header {
+    flex: 0 0 78px;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 22px 0 26px;
+    border-bottom: 1px solid rgba(224, 184, 62, 0.42);
+    box-shadow: 0 5px 16px rgba(0,0,0,0.38);
+    background: rgba(15, 18, 15, 0.80);
+}
+.dispatch-heading { min-width: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: baseline; }
+.dispatch-eyebrow { grid-column: 1; grid-row: 1; color: var(--dispatch-hazard); font: 700 10px/1.2 Arial, sans-serif; letter-spacing: 1.5px; }
+.dispatch-title { grid-column: 1 / span 2; grid-row: 2; font: 700 23px/1.25 var(--task-serif); letter-spacing: 1px; color: #f0f0e8; }
+.dispatch-subtitle { grid-column: 2; grid-row: 1; min-width: 0; color: rgba(230,231,223,0.55); font-size: 11px; white-space: nowrap; }
+.dispatch-header-status { margin-left: auto; display: flex; align-items: center; gap: 7px; color: #aeb9a1; font-size: 12px; white-space: nowrap; }
+.dispatch-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #72b45f; box-shadow: 0 0 8px rgba(114,180,95,0.8); }
+.dispatch-close {
+    width: 42px; height: 42px; flex: 0 0 42px; cursor: pointer;
+    color: #dadbd3; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 2px; font-size: 20px;
+}
+.dispatch-close:hover { color: #fff; border-color: rgba(224,184,62,0.75); background: rgba(224,184,62,0.09); }
+
+.dispatch-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 336px minmax(0, 1fr); }
+.dispatch-index {
+    min-height: 0; display: flex; flex-direction: column; padding: 18px 16px 14px 20px;
+    border-right: 1px solid rgba(255,255,255,0.10);
+    background: rgba(12, 15, 12, 0.72);
+}
+.dispatch-index-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 10px; color: #a9aea4; font-size: 12px; letter-spacing: 1px; }
+.dispatch-index-head b { min-width: 24px; text-align: center; color: #1b1e18; background: var(--dispatch-hazard); padding: 2px 6px; border-radius: 2px; }
+.dispatch-entry-list { min-height: 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 2px 5px 10px 2px; }
+.dispatch-entry {
+    position: relative; width: 100%; min-height: 108px; padding: 22px 16px 14px; cursor: pointer; overflow: hidden;
+    display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 5px;
+    color: var(--dispatch-ink); background: var(--dispatch-paper); border: 1px solid rgba(255,255,255,0.28); border-radius: 2px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.42); transform: rotate(-0.35deg);
+}
+.dispatch-entry:nth-child(even) { transform: rotate(0.3deg); }
+.dispatch-entry:hover, .dispatch-entry.selected { transform: translateX(3px) rotate(0deg); border-color: var(--dispatch-hazard); box-shadow: 0 4px 13px rgba(0,0,0,0.55), inset 4px 0 0 var(--dispatch-alert); }
+.dispatch-entry-pin { position: absolute; left: 50%; top: 7px; width: 8px; height: 8px; border-radius: 50%; background: #33372f; box-shadow: 0 1px 2px #000, inset 0 1px rgba(255,255,255,0.35); }
+.dispatch-entry-kind { color: var(--dispatch-alert); font: 700 10px/1 Arial, sans-serif; letter-spacing: 1px; }
+.dispatch-entry strong { width: 100%; font: 700 17px/1.25 var(--task-serif); letter-spacing: 1px; overflow-wrap: anywhere; }
+.dispatch-entry-route { max-width: 80%; color: rgba(32,35,29,0.67); font-size: 11px; }
+.dispatch-entry-order { position: absolute; right: 10px; bottom: 9px; color: rgba(32,35,29,0.40); font: 700 10px/1 monospace; }
+.dispatch-entry.is-available { filter: saturate(0.55); opacity: 0.78; }
+.dispatch-entry.is-replay { color: #25271f; background: #bbb9a8; border-style: dashed; filter: saturate(0.72); }
+.dispatch-entry.is-replay .dispatch-entry-kind { color: #58694a; }
+.dispatch-entry-loading { display: grid; gap: 9px; }
+.dispatch-entry-loading i { display: block; height: 76px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+.dispatch-entry-empty { padding: 26px 14px; color: rgba(230,231,223,0.52); text-align: center; border: 1px dashed rgba(255,255,255,0.14); font-size: 12px; }
+.dispatch-protocol { margin-top: auto; padding: 12px 4px 0; border-top: 1px solid rgba(255,255,255,0.08); color: rgba(230,231,223,0.46); font-size: 10px; line-height: 1.55; }
+
+.dispatch-detail { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 18px 24px 16px; background: rgba(13,15,14,0.64); }
+.dispatch-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: rgba(230,231,223,0.48); font-size: 13px; }
+.dispatch-detail-empty strong { color: #c9ccbf; font-size: 20px; letter-spacing: 1px; }
+.dispatch-detail-empty.is-error { color: #d77869; }
+.dispatch-brief-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-right: 8px; scrollbar-color: rgba(224,184,62,0.38) rgba(255,255,255,0.03); }
+.dispatch-detail .mission-brief-info { gap: 7px; }
+.dispatch-detail .dgn-name { font-size: 24px; color: #f2f2e9; }
+.dispatch-detail .dgn-limits,
+.dispatch-detail .dgn-rewards { border-left-color: var(--dispatch-hazard); }
+.dispatch-brief-status { color: #92b47c; }
+.dispatch-actions { flex: 0 0 62px; display: flex; align-items: center; gap: 18px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.10); }
+.dispatch-action-note { flex: 1; min-width: 0; color: rgba(230,231,223,0.52); font-size: 11px; line-height: 1.45; }
+.dispatch-enter {
+    min-width: 210px; height: 42px; cursor: pointer; color: #17190f; background: var(--dispatch-hazard);
+    border: 1px solid #f1d36e; border-radius: 2px; box-shadow: 0 3px 10px rgba(0,0,0,0.42);
+    font: 700 15px/1 var(--task-serif); letter-spacing: 1px;
+}
+.dispatch-enter:hover:not(:disabled) { filter: brightness(1.08); }
+.dispatch-enter:disabled { cursor: not-allowed; color: #777a70; background: #2a2d28; border-style: dashed; border-color: #555950; box-shadow: none; }
+
+@media (max-width: 760px) {
+    .dispatch-body { grid-template-columns: 240px minmax(0, 1fr); }
+    .dispatch-title { font-size: 19px; }
+    .dispatch-subtitle, .dispatch-header-status { display: none; }
+    .dispatch-index { padding-left: 12px; }
+    .dispatch-detail { padding-left: 16px; padding-right: 14px; }
+    .dispatch-enter { min-width: 176px; }
+}

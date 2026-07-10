@@ -114,6 +114,14 @@
     </StageInfo>
     <StageInfo>
         <Type>无限过图</Type>
+        <Name>新人救援</Name>
+        <UnlockCondition>13</UnlockCondition>
+        <Description>第一防线调度板的首项救援行动。当前关卡数据为联调测试版本。</Description>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
+        <StartFrame>地图-第一防线防区</StartFrame>
+    </StageInfo>
+    <StageInfo>
+        <Type>无限过图</Type>
         <Name>制霸黑铁会</Name>
         <UnlockCondition>69</UnlockCondition>
         <Description />

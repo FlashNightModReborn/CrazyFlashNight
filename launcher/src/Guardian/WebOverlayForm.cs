@@ -3478,6 +3478,10 @@ namespace CF7Launcher.Guardian
                 case "dungeonDetail":
                 case "dungeonBriefing":
                 case "dungeonEnter":
+                case "dispatchBoardSnapshot":
+                case "dispatchBoardDetail":
+                case "dispatchBoardBriefing":
+                case "dispatchBoardEnter":
                 case "navigate":
                 case "refresh":
                 case "open_stage_select":

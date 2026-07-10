@@ -105,6 +105,23 @@ class org.flashNight.arki.task.TaskPanelService {
             org.flashNight.arki.task.TaskPanelService.handleOpenWebDungeon(params);
         };
 
+        // ── 前线调度板：聚合剧情任务目录，出击与旧委托扣费/接取链分离 ──
+        _root.gameCommands["dispatchBoardSnapshot"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDispatchBoardSnapshot(params);
+        };
+        _root.gameCommands["dispatchBoardDetail"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDispatchBoardDetail(params);
+        };
+        _root.gameCommands["dispatchBoardBriefing"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDispatchBoardBriefing(params);
+        };
+        _root.gameCommands["dispatchBoardEnter"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDispatchBoardEnter(params);
+        };
+        _root.gameCommands["openWebDispatchBoard"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleOpenWebDispatchBoard(params);
+        };
+
         _inited = true;
     }
 
@@ -612,6 +629,263 @@ class org.flashNight.arki.task.TaskPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
+    // 前线调度板：任务数据用 dispatch_board 标记归属。目录可显示“已可登记”，
+    // 但剧情任务只有进入 tasks_to_do 后才能出击，避免公告板绕过 NPC 接取对话。
+    // ═══════════════════════════════════════════════════════════
+    private static function isDispatchTask(taskData:Object, boardId:String):Boolean {
+        if (taskData == undefined || boardId == "") return false;
+        var board = taskData.dispatch_board;
+        if (typeof board == "string") return String(board) == boardId;
+        if (board instanceof Array) {
+            for (var i:Number = 0; i < board.length; i++) {
+                if (String(board[i]) == boardId) return true;
+            }
+        }
+        return false;
+    }
+
+    private static function isDispatchTaskVisible(taskData:Object):Boolean {
+        if (taskData == undefined || taskData.id == undefined) return false;
+        if (isTaskInTodo(taskData.id)) return true;
+        if (isDispatchTaskReplay(taskData)) return true;
+        return (typeof _root.taskAvailable == "function" && _root.taskAvailable(taskData.id) == true);
+    }
+
+    private static function isTaskFinished(taskId):Boolean {
+        return _root.tasks_finished != undefined && Number(_root.tasks_finished[String(taskId)]) > 0;
+    }
+
+    private static function isDispatchTaskReplay(taskData:Object):Boolean {
+        return taskData != undefined && taskData.dispatch_replayable == true && isTaskFinished(taskData.id);
+    }
+
+    private static function dispatchTaskOrder(taskData:Object):Number {
+        var order:Number = Number(taskData.dispatch_order);
+        return isNaN(order) ? 9999 : order;
+    }
+
+    private static function dispatchTaskKind(taskData:Object):String {
+        return taskData.dispatch_kind != undefined ? String(taskData.dispatch_kind) : "story";
+    }
+
+    public static function handleDispatchBoardSnapshot(params:Object):Void {
+        var callId = params.callId;
+        var boardId:String = String(params.boardId || "");
+        if (boardId == "") {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "invalid_board"});
+            return;
+        }
+
+        var entries:Array = [];
+        var seen:Object = {};
+        for (var key in TaskUtil.tasks) {
+            var taskData:Object = TaskUtil.tasks[key];
+            if (!isDispatchTask(taskData, boardId) || taskData.id == undefined) continue;
+            var idKey:String = String(taskData.id);
+            if (seen[idKey] == true) continue;
+            seen[idKey] = true;
+            if (!isDispatchTaskVisible(taskData)) continue;
+
+            var active:Boolean = isTaskInTodo(taskData.id);
+            var replay:Boolean = isDispatchTaskReplay(taskData);
+            entries.push({
+                taskId: taskData.id,
+                title: String(TaskUtil.getTaskText(taskData.title)),
+                stageName: dungeonStageName(taskData),
+                order: dispatchTaskOrder(taskData),
+                kind: dispatchTaskKind(taskData),
+                active: active,
+                replay: replay,
+                finished: isTaskFinished(taskData.id),
+                available: !active && !replay
+            });
+        }
+        org.flashNight.naki.Sort.InsertionSort.sort(entries, function(a:Object, b:Object):Number {
+            var orderDiff:Number = Number(a.order) - Number(b.order);
+            if (orderDiff != 0) return orderDiff;
+            return Number(a.taskId) - Number(b.taskId);
+        });
+
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            boardId: boardId,
+            entries: entries
+        });
+    }
+
+    public static function handleDispatchBoardDetail(params:Object):Void {
+        var callId = params.callId;
+        var boardId:String = String(params.boardId || "");
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (!isDispatchTask(taskData, boardId)) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "board_mismatch"});
+            return;
+        }
+        if (!isDispatchTaskVisible(taskData)) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "task_locked"});
+            return;
+        }
+
+        var active:Boolean = isTaskInTodo(taskData.id);
+        var replay:Boolean = isDispatchTaskReplay(taskData);
+        var stageName:String = dungeonStageName(taskData);
+        var stageInfo:Object = stageName != "" ? _root.StageInfoDict[stageName] : undefined;
+        var stageDifficulty:String = dungeonStageDifficulty(taskData);
+        var blockReason:String = "";
+        if (!active && !replay) blockReason = "任务尚未登记，请先与前治安官确认。";
+        else if (stageInfo == undefined) blockReason = "任务关卡数据尚未就绪。";
+
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            detail: {
+                taskId: taskData.id,
+                stageName: stageName,
+                stageDifficulty: stageDifficulty,
+                stageFound: stageInfo != undefined,
+                title: String(TaskUtil.getTaskText(taskData.title)),
+                description: String(TaskUtil.getTaskText(taskData.description)),
+                npcName: String(taskData.get_npc != undefined ? taskData.get_npc : ""),
+                rewards: parseItemStacks(taskData.rewards, undefined),
+                imageurl: taskData.imageurl != undefined ? String(taskData.imageurl) : "",
+                normalLimits: stageInfo != undefined ? limitationArray(stageInfo.Limitation) : [],
+                restrictedLevel: taskData.restricted_level > 0 ? Number(taskData.restricted_level) : 1,
+                recommendedLevel: taskData.recommended_level != undefined ? String(taskData.recommended_level) : "",
+                active: active,
+                replay: replay,
+                finished: isTaskFinished(taskData.id),
+                available: !active && !replay,
+                canEnter: (active || replay) && stageInfo != undefined && stageDifficulty != "",
+                blockReason: blockReason
+            }
+        });
+    }
+
+    public static function handleDispatchBoardBriefing(params:Object):Void {
+        var callId = params.callId;
+        var boardId:String = String(params.boardId || "");
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (!isDispatchTask(taskData, boardId)) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "board_mismatch"});
+            return;
+        }
+        if (!isDispatchTaskVisible(taskData)) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "task_locked"});
+            return;
+        }
+
+        // 调度板只播放可重复的战前简报，禁止回退到一次性接取对白，避免重玩割裂与提前剧透。
+        var conv = TaskUtil.getTaskText(taskData.mission_briefing);
+        if (conv == undefined || conv.length == 0) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "no_dialogue"});
+            return;
+        }
+        var hasResolver:Boolean = typeof _root.getDialogueSpecialString == "function";
+        var lines:Array = [];
+        for (var i:Number = 0; i < conv.length; i++) {
+            var lineData:Object = conv[i];
+            if (lineData == undefined) continue;
+            var speaker = hasResolver ? _root.getDialogueSpecialString(lineData.name) : lineData.name;
+            var sub = hasResolver ? _root.getDialogueSpecialString(lineData.title) : lineData.title;
+            var rawChar:String = lineData.char != undefined ? String(lineData.char) : "";
+            var charParts:Array = rawChar.split("#");
+            var rawCharBase:String = charParts.length > 0 ? String(charParts[0]) : "";
+            var expression:String = charParts.length > 1 ? String(charParts[1]) : "普通";
+            var charBase = hasResolver ? _root.getDialogueSpecialString(rawCharBase) : rawCharBase;
+            lines.push({
+                speaker: speaker != undefined ? String(speaker) : "",
+                sub: sub != undefined ? String(sub) : "",
+                text: lineData.text != undefined ? String(lineData.text) : "",
+                char: rawChar,
+                charBase: charBase != undefined ? String(charBase) : "",
+                expression: expression,
+                portraitType: (rawCharBase == "$PC_CHAR" || charBase == "玩家" || charBase == "主角模板") ? "hero" : "npc"
+            });
+        }
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            lines: lines,
+            heroPortrait: buildHeroPortraitState()
+        });
+    }
+
+    public static function handleDispatchBoardEnter(params:Object):Void {
+        var callId = params.callId;
+        var boardId:String = String(params.boardId || "");
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (!isDispatchTask(taskData, boardId)) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "board_mismatch"});
+            return;
+        }
+        var active:Boolean = resolveIndexByTaskId(taskData.id) >= 0;
+        var replay:Boolean = isDispatchTaskReplay(taskData);
+        if (!active && !replay) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "task_not_active"});
+            return;
+        }
+
+        var stageName:String = dungeonStageName(taskData);
+        var stageDifficulty:String = dungeonStageDifficulty(taskData);
+        if (stageName == "" || stageDifficulty == "" || _root.StageInfoDict[stageName] == undefined) {
+            sendResponse({task: "task_response", callId: callId, success: false, error: "stage_not_found"});
+            return;
+        }
+
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            entered: true,
+            taskId: taskData.id,
+            stageName: stageName,
+            difficulty: stageDifficulty,
+            replay: replay
+        });
+        performTaskStageEnter(stageName, stageDifficulty, []);
+    }
+
+    public static function handleOpenWebDispatchBoard(params:Object):Void {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
+        var boardId:String = params != undefined && params.boardId != undefined ? String(params.boardId) : "first_defense";
+        var skin:String = params != undefined && params.skin != undefined ? String(params.skin) : "first-defense";
+        sendResponse({
+            task: "panel_request",
+            panel: "tasks",
+            source: "infrastructure_dispatch_board",
+            initData: {view: "dispatch-board", boardId: boardId, skin: skin}
+        });
+    }
+
+    private static function performTaskStageEnter(stageName:String, difficulty:String, extraLimitations:Array):Void {
+        var stageInfo:Object = _root.StageInfoDict[stageName];
+        _root.载入关卡数据(stageInfo.Type, stageInfo.url);
+        _root.当前通关的关卡 = "";
+        _root.当前关卡难度 = difficulty ? difficulty : _root.当前关卡难度;
+        _root.难度等级 = _root.计算难度等级(_root.当前关卡难度);
+        _root.当前关卡名 = stageInfo.Name;
+        _root.场景进入位置名 = "出生地";
+        _root.关卡类型 = stageInfo.Type;
+        if (stageInfo.StartFrame) _root.关卡地图帧值 = stageInfo.StartFrame;
+
+        var normalLimits:Array = limitationArray(stageInfo.Limitation);
+        if (normalLimits.length > 0) _root.限制系统.openEntries(normalLimits);
+        if (stageInfo.LimitLevel) _root.限制系统.addLimitLevel(stageInfo.LimitLevel);
+        if (extraLimitations != undefined && extraLimitations.length > 0) {
+            _root.限制系统.openEntries(extraLimitations);
+        }
+        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
+            _root.soundEffectManager.stopBGMForTransition();
+        }
+        if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
+        _root.淡出动画.淡出跳转帧(stageInfo.FadeTransitionFrame);
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // 副本任务（委托任务）面板 —— 旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价。
     //   入口严格 NPC 领取：NPC「获得任务」→ handleOpenWebDungeon 发 panel_request 带 taskId。
     //   权威数据一律读 TaskUtil.tasks[taskId]（不信 web 传来的金额/限制/难度）。
@@ -703,7 +977,7 @@ class org.flashNight.arki.task.TaskPanelService {
         });
     }
 
-    // ── dungeonBriefing（只读）：委托简报对话 lines（接取前 get_conversation，无防剧透 gate）──
+    // ── dungeonBriefing（只读）：优先使用可重复 mission_briefing；旧委托暂时兼容 get_conversation ──
     public static function handleDungeonBriefing(params:Object):Void {
         var callId = params.callId;
         var taskData:Object = TaskUtil.tasks[params.taskId];
@@ -711,7 +985,8 @@ class org.flashNight.arki.task.TaskPanelService {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "not_dungeon_task" });
             return;
         }
-        var conv = TaskUtil.getTaskText(taskData.get_conversation);
+        var briefingSource = taskData.mission_briefing != undefined ? taskData.mission_briefing : taskData.get_conversation;
+        var conv = TaskUtil.getTaskText(briefingSource);
         if (conv == undefined || conv.length == 0) {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "no_dialogue" });
             return;
@@ -803,38 +1078,15 @@ class org.flashNight.arki.task.TaskPanelService {
         // 接取任务
         _root.AddTask(taskData.id);
 
-        // 进图：内联复刻 委托界面进入关卡（关卡系统_lsy_无限过图.as:33-55），显式读 StageInfo + 显式 _root 赋值。
-        // ⚠ 不挂普通对象 ctx 调用原函数：该函数读裸名 当前关卡名/起点帧/淡出跳转帧，AVM1 仅当 this 是
-        //   MovieClip（在 scope chain 上）才解析到实例属性；普通对象会误解析为 _root.* → 进图错帧。
-        //   逻辑值与旧 clip 一致，权威读 StageInfoDict + TaskUtil.tasks（不重写经济/限制语义）。
+        // 进图：复用剧情调度与委托共同的权威 StageInfo 进入函数；扣费/AddTask 仍只在本委托分支发生。
         var enterDifficulty:String = (mode == "challenge") ? String(taskData.challenge.difficulty) : dungeonStageDifficulty(taskData);
-        var si:Object = _root.StageInfoDict[stageName];
-        _root.载入关卡数据(si.Type, si.url);
-        _root.当前通关的关卡 = "";
-        _root.当前关卡难度 = enterDifficulty ? enterDifficulty : _root.当前关卡难度;
-        _root.难度等级 = _root.计算难度等级(_root.当前关卡难度);
-        _root.当前关卡名 = si.Name;
-        _root.场景进入位置名 = "出生地";
-        _root.关卡类型 = si.Type;
-        if (si.StartFrame) _root.关卡地图帧值 = si.StartFrame;
-        var normalLimits:Array = limitationArray(si.Limitation);
-        if (normalLimits.length > 0) _root.限制系统.openEntries(normalLimits);
-        if (si.LimitLevel) _root.限制系统.addLimitLevel(si.LimitLevel);
-        if (mode == "challenge" && (taskData.challenge.limitations instanceof Array) && taskData.challenge.limitations.length > 0) {
-            _root.限制系统.openEntries(taskData.challenge.limitations);
-        }
-        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-            _root.soundEffectManager.stopBGMForTransition();
-        }
-
-        // 进图前关闭可能残留的旧对话框（复刻 Symbol 1873:100-101/132-133）：新 NPC 流程已不经
-        // SetDialogue，但若有前置剧情对话框开着，fade-out 期间会露脸（场景转换 清除游戏世界组件 要等
-        // 全黑才 关闭()）；这里先隐藏，与旧版"进图前 _root.对话框界面._visible = false"对齐，零成本兜底。
-        if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
+        var extraLimitations:Array = (mode == "challenge" && (taskData.challenge.limitations instanceof Array))
+            ? taskData.challenge.limitations
+            : [];
 
         // 先回包再触发淡出跳转（场景切换后 socket 仍在；web 收 entered 关面板）
         sendResponse({ task: "task_response", callId: callId, success: true, entered: true, mode: mode });
-        _root.淡出动画.淡出跳转帧(si.FadeTransitionFrame);
+        performTaskStageEnter(stageName, enterDifficulty, extraLimitations);
     }
 
     // ── openWebDungeon（AS2 内部）：NPC「获得任务」触发，发 panel_request 打开 web 副本视图 ──

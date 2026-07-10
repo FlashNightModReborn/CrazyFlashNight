@@ -84,6 +84,8 @@
     <script src="modules/dialogue/dialogue-view.js"></script>
     <script src="modules/icons.js"></script>
     <script src="modules/tasks/achievement-tab.js"></script>
+    <script src="modules/tasks/mission-brief-view.js"></script>
+    <script src="modules/tasks/dispatch-board-view.js"></script>
     <script src="modules/tasks/task-panel.js"></script>
 
     <script>
@@ -228,6 +230,7 @@
             // satisfied 覆盖表：模拟 AS2 taskCompleteCheck 的判定结果随游戏状态变化（如补齐提交物品）。
             // Web 端只消费此布尔，不自行从 stageReq/itemReqs 推断完成——本表用于验证该契约。
             _satisfiedOverride: {},
+            _dispatchReplay: false,
             // 成就 mock 状态（镜像 AS2 AchievementService）：unlocked/claimed/progress/hiddenReveals
             _achUnlocked: [],
             _achClaimed: [],
@@ -415,6 +418,29 @@
                     case 'dungeonEnter':
                         resp({ success: true, entered: true, mode: m.mode || 'normal' });
                         break;
+                    case 'dispatchBoardSnapshot':
+                        resp({ success: true, boardId: m.boardId || 'first_defense', entries: [
+                            { taskId: 70002, title: '新人救援', stageName: '新人救援', order: 10, kind: 'story', active: !self._dispatchReplay, replay: self._dispatchReplay, finished: self._dispatchReplay, available: false }
+                        ] });
+                        break;
+                    case 'dispatchBoardDetail':
+                        resp({ success: true, detail: {
+                            taskId: 70002, stageName: '新人救援', stageDifficulty: '简单', stageFound: true,
+                            title: '新人救援', description: '公社外勤新人被困在废城临时封锁线。杀入尸群，把还活着的人带回第一防线。',
+                            npcName: '前治安官', rewards: ['金币#3000', '经验值#2500'], imageurl: '',
+                            normalLimits: [], restrictedLevel: 1, recommendedLevel: '15-20',
+                            active: !self._dispatchReplay, replay: self._dispatchReplay, finished: self._dispatchReplay, available: false, canEnter: true, blockReason: ''
+                        } });
+                        break;
+                    case 'dispatchBoardBriefing':
+                        resp({ success: true, heroPortrait: { gender: '男', appearance: { '脸型': '0', '发型': '0' }, equipment: {} }, lines: [
+                            { speaker: '前治安官', sub: '警长', text: '求援信号还在。路线已经钉上板，接应点和撤离顺序照登记执行。', char: '前治安官', charBase: '前治安官', expression: '严肃', portraitType: 'npc' },
+                            { speaker: 'fs', sub: "<FONT COLOR='#FFCC00'>佣兵队长</FONT>", text: '我去把人带回来。', char: '$PC_CHAR#普通', charBase: '玩家', expression: '普通', portraitType: 'hero' }
+                        ] });
+                        break;
+                    case 'dispatchBoardEnter':
+                        resp({ success: true, entered: true, taskId: m.taskId, stageName: '新人救援', replay: self._dispatchReplay });
+                        break;
                     case 'close': break;
                     default: resp({ success: false, error: 'unknown cmd ' + m.cmd });
                 }
@@ -439,7 +465,7 @@
             log('state: ' + JSON.stringify(window.TaskPanel ? window.TaskPanel.getState() : null));
         });
 
-        // ── query 驱动（截图/调试用）: ?vp= ?empty=1 ?filter=副本 ?view=list ?tab=log ?detail=N ?qa=1 ?hover=1 ──
+        // ── query 驱动（截图/调试用）: ?vp= ?empty=1 ?filter=副本 ?view=list ?tab=log ?detail=N ?dungeon=1 ?board=1|replay ?qa=1 ──
         var vp = q('vp'); if (vp) { var opt = document.querySelector('#vp option[value="' + vp + '"]'); if (opt) document.getElementById('vp').value = vp; }
         if (q('empty')) document.getElementById('empty').checked = true;
         applyVp();
@@ -696,6 +722,14 @@
                 return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
                     host.open({ view: 'dungeon', taskId: 106 });
                     return waitFor(function() { return document.querySelector('.dgn-shell .dgn-enter-btn'); }, 4000);
+                });
+            }
+            function reopenDispatchBoard(respDelay) {
+                host._respDelay = respDelay == null ? 50 : respDelay;
+                host.close();
+                return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
+                    host.open({ view: 'dispatch-board', boardId: 'first_defense', skin: 'first-defense' });
+                    return waitFor(function() { return document.querySelector('.dispatch-entry[data-task-id="70002"]'); }, 4000);
                 });
             }
             function clickIcon(idx) { var b = document.querySelector('.task-icon[data-index="' + idx + '"]'); if (b) b.click(); return b; }
@@ -1345,6 +1379,47 @@
                 return firstCount === 1 && stillOne && finalCount === 2 && autoFollowOk;
             });
 
+            await check('task-ui46', '调度板聚合模式：独立页头 + 委托目录，不暴露通用任务标签', async function() {
+                await reopenDispatchBoard();
+                var state = window.TaskPanel.getState();
+                var normalHeader = document.querySelector('.task-panel-header');
+                return state.context === 'dispatch-board' && state.dispatch.entryCount === 1 &&
+                    !!document.querySelector('.dispatch-title') &&
+                    !!document.querySelector('.dispatch-entry[data-task-id="70002"]') &&
+                    normalHeader && getComputedStyle(normalHeader).display === 'none';
+            });
+
+            await check('task-ui47', '调度板详情：复用任务简报组件并加载独立战前简报', async function() {
+                await waitFor(function() { return document.querySelector('.dispatch-detail .mission-brief-info'); }, 4000);
+                await waitFor(function() { return document.querySelectorAll('.dispatch-detail .dgn-dialogue .tlv-dia-line').length === 2; }, 3000);
+                var briefingText = document.querySelector('.dispatch-detail .dgn-dialogue').textContent;
+                return document.querySelector('.dispatch-detail .dgn-name').textContent === '新人救援' &&
+                    !!document.querySelector('.dispatch-enter:not(:disabled)') &&
+                    document.querySelectorAll('.dispatch-detail .dgn-dialogue .tlv-dia-line').length === 2 &&
+                    briefingText.indexOf('接应点和撤离顺序') >= 0 && briefingText.indexOf('带队佣兵还能不能回话') < 0;
+            });
+
+            await check('task-ui48', '调度板出击：写请求成功后关闭面板交还 Flash', async function() {
+                var enter = document.querySelector('.dispatch-enter');
+                if (!enter || enter.disabled) return false;
+                enter.click();
+                await waitFor(function() { return !Panels.isOpen(); }, 3000);
+                return !Panels.isOpen();
+            });
+
+            await check('task-ui49', '调度板复盘：结案任务保留入口，不重复展示任务奖励语义', async function() {
+                host._dispatchReplay = true;
+                await reopenDispatchBoard();
+                await waitFor(function() { return document.querySelector('.dispatch-detail .mission-brief-info'); }, 4000);
+                var entry = document.querySelector('.dispatch-entry.is-replay');
+                var button = document.querySelector('.dispatch-enter');
+                var pageText = document.querySelector('.dispatch-detail').textContent;
+                host._dispatchReplay = false;
+                return !!entry && entry.textContent.indexOf('复盘案例') >= 0 &&
+                    !!button && button.textContent.indexOf('进入战例复盘') >= 0 &&
+                    pageText.indexOf('首次结案奖励') >= 0 && pageText.indexOf('不会重复结算任务奖励') >= 0;
+            });
+
             var passed = results.filter(function(r) { return r.pass; }).length;
             window.__qaResult = {
                 qa: { passed: passed, total: results.length, failed: results.length - passed, results: results },
@@ -1358,7 +1433,11 @@
         } else {
             window.addEventListener('load', function() {
                 var dgn = q('dungeon');
-                var initData = dgn ? { view: 'dungeon', taskId: (Number(dgn) || 106) } : undefined;
+                var board = q('board');
+                host._dispatchReplay = board === 'replay';
+                var initData = board
+                    ? { view: 'dispatch-board', boardId: 'first_defense', skin: 'first-defense' }
+                    : (dgn ? { view: 'dungeon', taskId: (Number(dgn) || 106) } : undefined);
                 setTimeout(function() { host.open(initData); setTimeout(applyShotState, 150); }, 100);
             });
         }

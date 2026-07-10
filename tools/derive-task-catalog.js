@@ -16,7 +16,7 @@
 //   文本解析镜像 AS2 TaskUtil.getTaskText：'$' 前缀查 task_texts，否则字面量。
 //
 // 闭包校验器（设计 C2，审计 Phase 1 前置硬门控）：
-//   任务的 title/description/get_conversation/finish_conversation 若值以 '$' 开头，
+//   任务的 title/description/get_conversation/mission_briefing/finish_conversation 若值以 '$' 开头，
 //   该键必须存在于合并后的 task_texts，否则 exit 1（防 $KEY 缺失运行时显示原始键）。
 //   外加 dup-id 守卫、chain 序号完整性。
 //
@@ -270,6 +270,7 @@ function buildCatalog(rawTasks, taskTexts) {
         const title = resolveText(t.title, taskTexts, ctx + '.title');
         const description = resolveText(t.description, taskTexts, ctx + '.description');
         const getConv = resolveText(t.get_conversation, taskTexts, ctx + '.get_conversation');
+        resolveText(t.mission_briefing, taskTexts, ctx + '.mission_briefing');
         const finishConv = resolveText(t.finish_conversation, taskTexts, ctx + '.finish_conversation');
 
         // 关卡需求（取首条，镜像 handleDetail）

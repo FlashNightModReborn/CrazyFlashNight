@@ -648,5 +648,49 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False((bool)resp["success"]);
             Assert.Equal("insufficient_kpoint", (string)resp["error"]);
         }
+
+        [Theory]
+        [InlineData("dispatchBoardSnapshot", "dispatchBoardSnapshot")]
+        [InlineData("dispatchBoardDetail", "dispatchBoardDetail")]
+        [InlineData("dispatchBoardBriefing", "dispatchBoardBriefing")]
+        [InlineData("dispatchBoardEnter", "dispatchBoardEnter")]
+        public void HandleWebRequest_DispatchBoardCommands_MapToTrustedActions(string cmd, string expectedAction)
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest(cmd,
+                JObject.Parse("{\"callId\":\"web-dispatch\",\"boardId\":\"first_defense\",\"taskId\":70002,\"action\":\"taskDelete\",\"task\":\"evil\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal(expectedAction, (string)msg["action"]);
+            Assert.Equal("first_defense", (string)msg["boardId"]);
+            Assert.Equal(70002, (int)msg["taskId"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_DispatchBoardSnapshot_PreservesEntries()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("dispatchBoardSnapshot",
+                JObject.Parse("{\"callId\":\"web-ds\",\"boardId\":\"first_defense\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"boardId\":\"first_defense\",\"entries\":[{\"taskId\":70002,\"active\":true}]}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("dispatchBoardSnapshot", (string)resp["cmd"]);
+            Assert.Equal("first_defense", (string)resp["boardId"]);
+            Assert.Equal(70002, (int)((JArray)resp["entries"])[0]["taskId"]);
+            Assert.True((bool)((JArray)resp["entries"])[0]["active"]);
+        }
     }
 }

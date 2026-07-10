@@ -363,6 +363,8 @@ fs修改：
 无限火力（可能产生bug）的简写：fire
 获得所有配件材料：getallmods
 获得所有情报（满额）：getallintelligence
+查看所有任务链进度：taskprogress
+设置主线/支线任务链进度：#task:主线,13 / #task:铁枪会,1 / #task:铁枪会,0（逗号、全角逗号和分号均可）
 
 _root.变量值变更（字符串型）：#_root.abc=AAA
 _root.变量值变更（非字符串型）：#_root.abc=123;int

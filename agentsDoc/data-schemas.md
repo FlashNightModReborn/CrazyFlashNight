@@ -129,6 +129,35 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 > 完整列表见 `org/flashNight/gesh/xml/LoadXml/`。另有 `BaseStageXMLLoader`（按路径加载单个关卡 XML）和 `StageXMLLoader`（非单例，支持 CaseSwitch 条件值解析）。
 
+### 关卡进度门控与一次性拾取
+
+`data/stages/**.xml` 的地图元件 `Instances.Instance.Parameters` 与直接拾取物 `Pickups.Pickup.Parameters` 共用 `ProgressValidator` 门控。所有已配置条件按 AND 合取：
+
+- `最小主线进度` / `最大主线进度`：既有主线闭区间门控。
+- `任务链名称` + `最小任务链进度` / `最大任务链进度`：读取 `_root.task_chains_progress[任务链名称]`；配置任一任务链区间但漏写链名时失败关闭。
+- `要求进行中任务ID`：仅当 `_root.tasks_to_do` 中存在该任务 ID 时通过；用于区分首次剧情行动与任务完成后的副本复盘。
+- `一次性领取ID`：仅用于可拾取物。成功进入背包后写入 `_root._saveExt.一次性领取[ID]` 并标记存档为脏；生成前若已领取则不再创建。背包满、未实际拾取或仅进入关卡不会消耗领取资格。`_saveExt` 由 `SaveManager` 透传，无需扩展存档主体或 `save_repair_dict.json`。
+
+首次剧情遗物推荐同时使用任务门控和一次性领取：前者控制时间线与复盘显示，后者阻止玩家在任务交付前退出重进重复领取。
+
+```xml
+<Pickups>
+    <Pickup>
+        <Name>Type56R</Name>
+        <Value>1</Value>
+        <x>1200</x>
+        <y>500</y>
+        <Parameters>
+            <任务链名称>铁枪会</任务链名称>
+            <最小任务链进度>1</最小任务链进度>
+            <最大任务链进度>1</最大任务链进度>
+            <要求进行中任务ID>70002</要求进行中任务ID>
+            <一次性领取ID>iron_spear_70002_veteran_type56r</一次性领取ID>
+        </Parameters>
+    </Pickup>
+</Pickups>
+```
+
 ### 射线子弹 `<rayConfig>`
 
 `data/items/bullets_cases.xml` 的 `<attribute><rayConfig>` 会由 `TeslaRayConfig.fromXML()` 解析，并自动把子弹标记为射线类型。`rayMode` 现支持 `single | chain | pierce | fork | flame`；`flame` 是连续喷火模式：每帧重扫沿线目标，以第 `pierceLimit` 个有效目标作为阻挡长度，`flameGrowSpeed/flameRetractSpeed` 控制当前长度追随目标长度，`flameTickInterval` 控制伤害脉冲帧间隔，`flameLifetime` 控制单发喷火束存活帧数。喷火常用的段数/预算字段：`flamePulseCount`（单发伤害脉冲段数）、`flameHotPulseStart/flameHotPulseCount`（热属性段窗口）、`flameHotDamageType/flameHotMagicType`（热段临时覆盖伤害属性）、`flameTotalHitBudget`（单发总伤害结算预算，0 为不限）、`flameMaxHitsPerTarget`（同一目标单发内最多吃几段，0 为不限）。`flameUseWeaponVelocity=true` 时，喷火束会按发射武器 `<velocity>` 缩放 `flameGrowSpeed/flameRetractSpeed`；`flameVelocityBase` 是基准速度，`flameVelocityMinScale/flameVelocityMaxScale` 是钳制范围，用于避免低速配置让火束完全爬不出去或高速配置退化为瞬时射线。`flameReuseMaxOriginDist` 控制同喷口连续火束视觉复用允许的起点偏移半径（默认 32px），只影响显示对象复用与淡出刷新，不改变命中扫描或伤害结算。
@@ -267,6 +296,12 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 形状：`{ version, taskCount, tasks:{ "<id>":{ id, chain:[name,seq|null], type, title, description, npcName, stageReq, itemReqs, rewards, req:[前置id...], hasGetConv, hasFinishConv } }, chains:{ name:[id...按seq升序] }, chainsUnsequenced:{ name:[id...] } }`。`req`=get_requirements（前置任务 id），供图表视图画前置依赖连线 + 算拓扑深度（约 +3KB；多数任务 0-1 个前置）。
 
 **不含**：对话文本本体（留 AS2，catalog 仅持 `hasGetConv/hasFinishConv` 布尔；点「接取/完成对话」时 `replayDialogue` 按需回传【单任务】对话文本行 `lines:[{speaker,sub,text}]`，web 内联展开纯文本、不关面板）、`finish_remote`（写路径权威字段留 AS2）、`conditions`（cur 是运行态读数须 AS2 现算，detail 回 `conditions:[{label,cur,target}]`；catalog 不带）。
+
+**任务接取优先级 `priority`（可选）**：默认 `0`。同一 NPC 在同一时刻存在多个可接任务时，运行时按 `priority` 降序选择；优先级相同则保持 `data/task/list.xml` 合并后的加载顺序。该字段只影响 NPC 点击接取顺序，不改变 `get_requirements`、任务链进度或 Web catalog 拓扑。
+
+**场景调度板字段（可选，运行时权威）**：`dispatch_board` 为字符串或字符串数组，声明任务归属的调度板 ID；`dispatch_order` 为板内升序权重，缺省 `9999`；`dispatch_kind` 为表现分类，当前正式使用值为 `story`；`dispatch_replayable:true` 允许任务完成后以“已结案·复盘案例”继续留在板上。复盘进入关卡不重新 AddTask，因此不会重复触发任务奖励和完成对白，关卡内常规收益仍按关卡自身规则处理。这些字段由 AS2 `TaskPanelService` 直接读取，不进入派生 `task-catalog.json`。调度板 snapshot 只暴露已接取、当前可接取或已完成且可复盘的归属任务；进入关卡时必须再次校验任务仍归属该板，并满足“任务进行中”或“已完成且可复盘”之一及首个关卡完成需求有效。`contract` / `mode` 等长期玩法分类仅保留设计空间，未实现前不得只靠改数据启用。
+
+**任务对白分层字段 `mission_briefing`（可选）**：用于关卡入口反复播放的战前简报，与一次性 `get_conversation` 和结果型 `finish_conversation` 隔离。内容只能描述目标、路线、限制、撤离规则和已公开威胁，不应包含关卡中才揭示的伤亡、背叛、首领或结局。调度板任务不会回退读取 `get_conversation`，缺字段时显示“暂无任务简报”；既有委托副本为兼容旧数据，暂时按 `mission_briefing` 优先、`get_conversation` 回退。`tools/derive-task-catalog.js` 对 `$` 引用执行同等文本闭包校验，但不把对白本体写入 catalog。
 
 **任务 `conditions` 字段（可选，2026-06-11 判定层共享）**：`[{type, params, target, label, sinceAccept?}]`——与成就共享 `ObjectiveEvaluator.rawOf` 的 9 类指标（枚举单源 `tools/lib/objective-types.js`，两 derive 共用）；`label` 必填（面板直显）；`sinceAccept:true` 仅限单调类型（killTotal/economyCount），AddTask 拍基线进 `requirements.condBase` 走窗口语义；derive-task-catalog build gate 全量校验（economyCount 白名单单源 / taskFinished 闭包+禁自引用 / 布尔型 taskFinished·itemOwned 的 `target` 必须=1（rawOf 返 0/1，>1 永不可达）/ itemOwned `count`≥1（count=0 时 containTaskItems 恒真=错误达成）/ chainProgress 引用须为**有序号链**且 `target`≤链最大 seq（无序号链永不写 `task_chains_progress`）/ **条件死锁=单调 AND-OR 不动点**——按运行时真实语义建模（`taskAvailable` 接取门控只查 `get_requirements`，链序号不约束完成顺序）：任务可完成 ⇔ get_requirements 全可完成 ∧ taskFinished 引用可完成 ∧ 每个 chainProgress 存在**任一** seq≥target 候选可完成（析取，环检测表达不了 OR）；基线集与带条件集之差 = 条件死锁，逐任务报阻塞条件；只证无结构性死锁不证可完成。回归矩阵：`node tools/test-derive-task-conditions.js`（23 合成用例）。与老字段（关卡/交物/持有/特殊）合取判定，缺省零成本。**运行态回包**：`taskDetail` 实时回 `conditions:[{label,cur,target}]` + 权威 `satisfied`（web 详情缓存只固化静态字段，conditions/satisfied/finishNavigable 在缓存命中时后台复查就地修补，防旧进度/按钮态永久陈旧）。设计：docs/任务成就-判定层共享-设计-2026-06-11.md。
 

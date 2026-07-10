@@ -313,7 +313,8 @@ namespace CF7Launcher.Guardian
                 }
             }
             LogManager.Log("[Router] OpenTasksPanel view=" + (jo["view"] != null ? jo["view"].ToString() : "?")
-                + " taskId=" + (jo["taskId"] != null ? jo["taskId"].ToString() : "?"));
+                + " taskId=" + (jo["taskId"] != null ? jo["taskId"].ToString() : "?")
+                + " boardId=" + (jo["boardId"] != null ? jo["boardId"].ToString() : "?"));
             OpenPanel("tasks", jo.ToString(Newtonsoft.Json.Formatting.None));
         }
 
