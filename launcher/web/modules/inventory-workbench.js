@@ -9,6 +9,7 @@ var InventoryWorkbench = (function() {
 
     var _el, _shellEl, _shell, _backpackView, _rightView, _pager, _retryButton;
     var _backpackSortControls, _rightSortControls;
+    var _quickDepositButton, _quickWithdrawButton, _quickStatusNode;
     var _broker, _dragControllers = [], _scaleHandle = null;
     var _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
     var _tooltipCache = {}, _tooltipHovering = null, _tooltipSuppressed = false;
@@ -16,6 +17,9 @@ var InventoryWorkbench = (function() {
     var _profile = 'battlebox';
     var _rightContainerId = '战备箱';
     var _rightLimit = 40;
+    var _quickMode = null, _quickPending = [], _quickInFlight = null, _quickKeys = {};
+    var _quickCompleted = 0, _quickAccepted = 0;
+    var QUICK_QUEUE_LIMIT = 24;
     var _runtimeConfig = (typeof window !== 'undefined' && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _mux = new KShopRequestMux({
         send: function(message) { Bridge.send(message); },
@@ -73,8 +77,12 @@ var InventoryWorkbench = (function() {
         _pager = null;
         _backpackSortControls = null;
         _rightSortControls = null;
+        _quickDepositButton = null;
+        _quickWithdrawButton = null;
+        _quickStatusNode = null;
         _broker = null;
         _dragControllers = [];
+        resetQuickTransfer();
 
         _profile = config.profile;
         _rightContainerId = config.rightContainerId;
@@ -92,6 +100,8 @@ var InventoryWorkbench = (function() {
         _el.setAttribute('data-workbench-skin', 'inventory');
         _el.setAttribute('data-inventory-profile', _profile);
 
+        if (_profile === 'warehouse') installQuickTransferActions();
+
         _retryButton = document.createElement('button');
         _retryButton.type = 'button';
         _retryButton.className = 'workbench-mode-btn warning';
@@ -106,7 +116,7 @@ var InventoryWorkbench = (function() {
         closeButton.textContent = '×';
         closeButton.setAttribute('aria-label', '关闭' + config.title);
         closeButton.setAttribute('data-audio-cue', 'cancel');
-        closeButton.addEventListener('click', closePanel);
+        closeButton.addEventListener('click', function() { closePanel(true); });
         _shell.addHeaderAction(closeButton);
 
         _backpackView = createInventoryView('背包', '背包');
@@ -119,7 +129,7 @@ var InventoryWorkbench = (function() {
             getSnapshot:function() { return _coordinator.getWindow(_rightContainerId); },
             getRequest:function() { return _coordinator.getRequest(_rightContainerId); },
             shortcutEnabled:shortcutsEnabled,
-            onBeforeChange:function() { clearSelection(); hideTooltip(); },
+            onBeforeChange:function() { exitQuickMode(); clearSelection(); hideTooltip(); },
             onRequest:function(offset, limit, callback) {
                 return _coordinator.setWindow(_rightContainerId, offset, limit, callback);
             },
@@ -138,6 +148,32 @@ var InventoryWorkbench = (function() {
         _shellEl.appendChild(_el);
     }
 
+    function installQuickTransferActions() {
+        _quickStatusNode = document.createElement('div');
+        _quickStatusNode.className = 'inventory-quick-transfer-status';
+        _quickStatusNode.setAttribute('role', 'status');
+        _quickStatusNode.setAttribute('aria-live', 'polite');
+        _shell.addHeaderAction(_quickStatusNode);
+
+        _quickDepositButton = createQuickModeButton('deposit', '快速存入', '背包 → 仓库');
+        _quickWithdrawButton = createQuickModeButton('withdraw', '快速取出', '仓库 → 背包');
+        _shell.addHeaderAction(_quickDepositButton);
+        _shell.addHeaderAction(_quickWithdrawButton);
+        updateQuickTransferUI();
+    }
+
+    function createQuickModeButton(mode, label, direction) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'workbench-mode-btn inventory-quick-transfer-btn';
+        button.setAttribute('data-quick-mode', mode);
+        button.setAttribute('aria-pressed', 'false');
+        button.textContent = label;
+        button.title = label + '（' + direction + '）；也可随时 Ctrl+单击单件快速转移';
+        button.addEventListener('click', function() { setQuickMode(mode); });
+        return button;
+    }
+
     function createInventoryToolbar(containerId, pager) {
         var toolbar = document.createElement('div');
         toolbar.className = 'inventory-warehouse-toolbar inventory-container-toolbar'
@@ -154,11 +190,13 @@ var InventoryWorkbench = (function() {
             authorityAriaLabel:containerId + '整理方式',
             commitLabel:'整理' + containerId,
             onDisplayChange:function(methodName) {
+                exitQuickMode();
                 view.displaySortMethod = methodName;
                 clearSelection();
                 renderInventories();
             },
             onFilterChange:function(filterKey) {
+                exitQuickMode();
                 clearSelection();
                 hideTooltip();
                 if (!_coordinator.setFilter(containerId, filterKey, function(result) {
@@ -246,6 +284,8 @@ var InventoryWorkbench = (function() {
         node.addEventListener('click', function(event) {
             if (consumeDragClick()) return;
             if (event.target && event.target.closest && event.target.closest('.inventory-discard-btn')) return;
+            if (handleQuickTransferClick(event, containerId, slot)) return;
+            if (_state.busyOwner || _state.refreshRequired) return;
             var view = containerId === '背包' ? _backpackView : _rightView;
             if (_broker.debugState().selectedInstanceKey) _broker.activateSelected(view, {item:slot, node:node}, 'click');
             else if (slot.occupied) _broker.select(view, slot, node);
@@ -286,7 +326,7 @@ var InventoryWorkbench = (function() {
             broker:_broker,
             timeoutMs:_runtimeConfig.dragTimeoutMs || 1400,
             getSource:function(target) {
-                if (!_state.ready || _state.busyOwner || _state.refreshRequired) return null;
+                if (_quickMode || !_state.ready || _state.busyOwner || _state.refreshRequired) return null;
                 var hit = view.renderer.itemFromTarget(target);
                 if (!hit || !hit.item || !hit.item.occupied) return null;
                 return {view:view, item:hit.item, node:hit.node};
@@ -321,11 +361,244 @@ var InventoryWorkbench = (function() {
         return false;
     }
 
+    function handleQuickTransferClick(event, containerId, slot) {
+        if (_profile !== 'warehouse') return false;
+        var modifierRequested = !!event.ctrlKey;
+        if (!_quickMode && !modifierRequested) return false;
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (_quickMode === 'deposit' && containerId !== '背包') {
+            toast('快速存入模式：请点击背包中的物品。');
+            return true;
+        }
+        if (_quickMode === 'withdraw' && containerId !== _rightContainerId) {
+            toast('快速取出模式：请点击仓库中的物品。');
+            return true;
+        }
+        if (!slot || !slot.occupied) return true;
+        enqueueQuickTransfer(containerId, slot);
+        return true;
+    }
+
+    function setQuickMode(mode) {
+        if (_profile !== 'warehouse' || (mode !== 'deposit' && mode !== 'withdraw')) return;
+        if (_quickMode === mode) {
+            exitQuickMode();
+            return;
+        }
+        if (!_state.ready || _state.refreshRequired
+                || (_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer')) {
+            toast('库存尚未就绪。');
+            return;
+        }
+        if (_quickInFlight) {
+            toast('请等待当前快速转移完成。');
+            return;
+        }
+        clearQuickPending();
+        _quickMode = mode;
+        _quickCompleted = 0;
+        _quickAccepted = 0;
+        clearSelection();
+        hideTooltip();
+        updateQuickTransferUI();
+        renderInventories();
+    }
+
+    function exitQuickMode() {
+        if (!_quickMode && !_quickPending.length) return false;
+        _quickMode = null;
+        clearQuickPending();
+        updateQuickTransferUI();
+        renderInventories();
+        return true;
+    }
+
+    function resetQuickTransfer() {
+        _quickMode = null;
+        _quickPending = [];
+        _quickInFlight = null;
+        _quickKeys = {};
+        _quickCompleted = 0;
+        _quickAccepted = 0;
+        updateQuickTransferUI();
+    }
+
+    function clearQuickPending() {
+        for (var i = 0; i < _quickPending.length; i++) delete _quickKeys[_quickPending[i].key];
+        _quickPending = [];
+    }
+
+    function enqueueQuickTransfer(containerId, slot) {
+        if (!_state.ready || _state.refreshRequired
+                || (_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer')) {
+            toast('库存正在处理另一项操作。');
+            return false;
+        }
+        var key = quickTransferKey(containerId, slot.physicalSlot);
+        if (_quickInFlight && _quickInFlight.key === key) {
+            toast('该物品正在转移，无法取消。');
+            return false;
+        }
+        if (_quickKeys[key]) {
+            for (var i = 0; i < _quickPending.length; i++) {
+                if (_quickPending[i].key !== key) continue;
+                _quickPending.splice(i, 1);
+                delete _quickKeys[key];
+                _quickAccepted = Math.max(_quickCompleted, _quickAccepted - 1);
+                updateQuickTransferUI();
+                renderInventories();
+                return true;
+            }
+        }
+        if (_quickPending.length + (_quickInFlight ? 1 : 0) >= QUICK_QUEUE_LIMIT) {
+            toast('快速转移队列已满，请等待当前项目完成。');
+            return false;
+        }
+        if (!_quickMode && !_quickInFlight && !_quickPending.length) {
+            _quickCompleted = 0;
+            _quickAccepted = 0;
+        }
+        var entry = {
+            key:key,
+            containerId:String(containerId),
+            slot:Number(slot.physicalSlot),
+            signature:slotSignature(slot),
+            targetContainerId:containerId === '背包' ? _rightContainerId : '背包'
+        };
+        _quickKeys[key] = entry;
+        _quickPending.push(entry);
+        _quickAccepted++;
+        clearSelection();
+        hideTooltip();
+        updateQuickTransferUI();
+        renderInventories();
+        drainQuickTransferQueue();
+        return true;
+    }
+
+    function drainQuickTransferQueue() {
+        if (_quickInFlight || !_quickPending.length) return;
+        var entry = _quickPending.shift();
+        var currentSlot = findCurrentSlot(entry.containerId, entry.slot);
+        if (!currentSlot || !currentSlot.occupied || slotSignature(currentSlot) !== entry.signature) {
+            delete _quickKeys[entry.key];
+            haltQuickTransferQueue({success:false, error:'stale_state'});
+            return;
+        }
+        _quickInFlight = entry;
+        updateQuickTransferUI();
+        renderInventories();
+        var generation = _openGeneration;
+        var started = _coordinator.autoTransfer(
+            slotRef(entry.containerId, currentSlot),
+            entry.targetContainerId,
+            function(result) {
+                if (generation !== _openGeneration) return;
+                delete _quickKeys[entry.key];
+                _quickInFlight = null;
+                if (result && result.success === true) {
+                    _quickCompleted++;
+                    updateQuickTransferUI();
+                    renderInventories();
+                    drainQuickTransferQueue();
+                } else {
+                    haltQuickTransferQueue(result || {success:false, error:'invalid_response'});
+                }
+            }
+        );
+        if (!started) {
+            delete _quickKeys[entry.key];
+            _quickInFlight = null;
+            haltQuickTransferQueue({success:false, error:'busy'});
+        }
+    }
+
+    function haltQuickTransferQueue(result) {
+        clearQuickPending();
+        _quickMode = null;
+        updateQuickTransferUI();
+        renderInventories();
+        var error = result && result.error;
+        if (error === 'target_full') toast('目标容器已满，快速转移已停止。');
+        else if (error === 'slot_locked') toast('目标容器尚未解锁，快速转移已停止。');
+        else if (result && result.reconciled) toast('库存状态已变化；已重新同步并停止队列。');
+        else toast(errorMessage(error));
+    }
+
+    function findCurrentSlot(containerId, physicalSlot) {
+        var snapshot = _coordinator.getWindow(containerId);
+        var slots = snapshot ? snapshot.slots : [];
+        for (var i = 0; i < slots.length; i++) {
+            if (Number(slots[i].physicalSlot) === Number(physicalSlot)) return slots[i];
+        }
+        return null;
+    }
+
+    function slotSignature(slot) {
+        var item = slot && slot.item ? slot.item : {};
+        var confirm = slot && slot.confirmProjection ? slot.confirmProjection : item;
+        return [
+            String(item.name || ''),
+            String(confirm.itemKind || item.itemKind || ''),
+            String(confirm.displayName || item.displayName || ''),
+            Number(confirm.quantity == null ? item.quantity : confirm.quantity),
+            Number(confirm.enhancementLevel == null ? item.enhancementLevel || 0 : confirm.enhancementLevel),
+            String(confirm.rarity || item.rarity || '')
+        ].join('|');
+    }
+
+    function quickTransferKey(containerId, physicalSlot) {
+        return String(containerId) + ':' + Number(physicalSlot);
+    }
+
+    function updateQuickTransferUI() {
+        if (_quickDepositButton) {
+            _quickDepositButton.classList.toggle('active', _quickMode === 'deposit');
+            _quickDepositButton.setAttribute('aria-pressed', _quickMode === 'deposit' ? 'true' : 'false');
+        }
+        if (_quickWithdrawButton) {
+            _quickWithdrawButton.classList.toggle('active', _quickMode === 'withdraw');
+            _quickWithdrawButton.setAttribute('aria-pressed', _quickMode === 'withdraw' ? 'true' : 'false');
+        }
+        if (_el) {
+            if (_quickMode) _el.setAttribute('data-quick-transfer-mode', _quickMode);
+            else _el.removeAttribute('data-quick-transfer-mode');
+        }
+        if (!_quickStatusNode) return;
+        var queued = _quickPending.length + (_quickInFlight ? 1 : 0);
+        if (_quickMode === 'deposit') _quickStatusNode.textContent = '快速存入：背包 → 仓库';
+        else if (_quickMode === 'withdraw') _quickStatusNode.textContent = '快速取出：仓库 → 背包';
+        else _quickStatusNode.textContent = 'Ctrl+单击：快速转移';
+        if (queued || _quickCompleted) {
+            _quickStatusNode.textContent += ' · 待处理 ' + queued + ' · 已完成 ' + _quickCompleted;
+        }
+    }
+
+    function applyQuickTransferSlotState() {
+        if (!_el) return;
+        var nodes = _el.querySelectorAll('.inventory-slot-card');
+        for (var i = 0; i < nodes.length; i++) {
+            nodes[i].classList.remove('quick-transfer-pending', 'quick-transfer-inflight');
+        }
+        for (var key in _quickKeys) {
+            var entry = _quickKeys[key];
+            var view = entry.containerId === '背包' ? _backpackView : _rightView;
+            if (!view) continue;
+            var node = view.root.querySelector('[data-physical-slot="' + entry.slot + '"]');
+            if (!node) continue;
+            node.classList.add('quick-transfer-pending');
+            if (_quickInFlight && _quickInFlight.key === key) node.classList.add('quick-transfer-inflight');
+        }
+    }
+
     function renderInventories() {
         if (!_backpackView || !_rightView) return;
         renderView(_backpackView);
         renderView(_rightView);
         if (_pager) _pager.refresh();
+        applyQuickTransferSlotState();
     }
 
     function renderView(view) {
@@ -351,8 +624,10 @@ var InventoryWorkbench = (function() {
     function refreshControls() {
         if (!_el) return;
         var blocked = !_state.ready || !!_state.busyOwner || !!_state.refreshRequired;
+        var slotBlocked = !_state.ready || !!_state.refreshRequired
+            || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer');
         var nodes = _el.querySelectorAll('.inventory-slot-card');
-        for (var i = 0; i < nodes.length; i++) nodes[i].classList.toggle('write-locked', blocked);
+        for (var i = 0; i < nodes.length; i++) nodes[i].classList.toggle('write-locked', slotBlocked);
         if (_pager) _pager.setDisabled(blocked);
         if (_backpackSortControls) _backpackSortControls.setDisabled(blocked);
         if (_rightSortControls) {
@@ -362,6 +637,11 @@ var InventoryWorkbench = (function() {
                 || !rightSnapshot || Number(rightSnapshot.accessibleCapacity) <= 0);
         }
         if (_retryButton) _retryButton.style.display = _state.refreshRequired ? '' : 'none';
+        var quickBlocked = !_state.ready || !!_state.refreshRequired
+            || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer');
+        if (_quickDepositButton) _quickDepositButton.disabled = quickBlocked;
+        if (_quickWithdrawButton) _quickWithdrawButton.disabled = quickBlocked;
+        updateQuickTransferUI();
         if (!_shell) return;
         if (_state.refreshRequired) _shell.setStatus('同步失败', 'warning');
         else if (_state.busyOwner) _shell.setStatus('处理中', 'busy');
@@ -391,6 +671,7 @@ var InventoryWorkbench = (function() {
 
     function confirmSort(containerId, methodName, label) {
         if (!_state.ready || _state.busyOwner || _state.refreshRequired) return;
+        exitQuickMode();
         methodName = methodName || 'byType';
         label = label || methodName;
         var scope = containerId === '战备箱' ? '当前已解锁区域' : '全部物品';
@@ -454,6 +735,7 @@ var InventoryWorkbench = (function() {
     function onOpen(el, initData) {
         var generation = ++_openGeneration;
         buildProfileDOM(resolveProfile(initData));
+        resetQuickTransfer();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _tooltipCache = {};
@@ -489,12 +771,14 @@ var InventoryWorkbench = (function() {
         clearSelection();
         hideTooltip();
         if (_shell) _shell.closeModal();
+        resetQuickTransfer();
         _coordinator.close();
         _mux.closeSession();
     }
 
-    function closePanel() {
+    function closePanel(forceClose) {
         if (_shell && _shell.hasModal()) { _shell.closeModal(); return; }
+        if (!forceClose && exitQuickMode()) return;
         Panels.close();
         Bridge.send({type:'panel', cmd:'close', panel:'workbench'});
     }
@@ -561,7 +845,15 @@ var InventoryWorkbench = (function() {
                 coordinator:_coordinator.debugState(),
                 rightAccessibleCapacity:right ? Number(right.accessibleCapacity) : null,
                 battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,
-                page:_pager ? _pager.getState() : null
+                page:_pager ? _pager.getState() : null,
+                quickTransfer:{
+                    mode:_quickMode,
+                    pending:_quickPending.length,
+                    inFlight:_quickInFlight ? _quickInFlight.key : null,
+                    completed:_quickCompleted,
+                    accepted:_quickAccepted,
+                    limit:QUICK_QUEUE_LIMIT
+                }
             };
         }
     };

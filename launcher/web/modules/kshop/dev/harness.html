@@ -161,6 +161,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         nextSaveAmbiguous: false,
         nextCheckoutAmbiguous: false,
         nextCheckoutMalformed: false,
+        nextAutoTransferError: null,
         leaseSeq: 0,
         inventorySession: 0,
         inventorySnapshotSeq: 0,
@@ -177,6 +178,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.nextSaveAmbiguous = false;
             this.nextCheckoutAmbiguous = false;
             this.nextCheckoutMalformed = false;
+            this.nextAutoTransferError = null;
             this.leaseSeq = 0;
             this.inventorySession = 0;
             this.inventorySnapshotSeq = 0;
@@ -402,6 +404,69 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                             containerId:sortContainerId,offset:Number(container.offset),limit:Number(container.limit),
                             filterKey:String(container.filterKey || 'all')
                         }],false)}, delay);
+                    return;
+                }
+                if (message.cmd === 'autoTransfer') {
+                    var autoSource = payload.source || {};
+                    var autoSourceKey = autoSource.containerId + ':' + autoSource.slot;
+                    var autoSourceLease = this.leases[autoSourceKey];
+                    var autoTargetContainerId = String(payload.targetContainerId || '');
+                    var autoPairAllowed = (autoSource.containerId === '背包'
+                            && (autoTargetContainerId === '仓库' || autoTargetContainerId === '战备箱'))
+                        || (autoTargetContainerId === '背包'
+                            && (autoSource.containerId === '仓库' || autoSource.containerId === '战备箱'));
+                    if (!autoSourceLease || autoSourceLease.token !== autoSource.expectedLease || !autoSourceLease.item) {
+                        this.respond(message, {success:false,error:'stale_state'}, delay);
+                        return;
+                    }
+                    if (this.nextAutoTransferError) {
+                        var injectedAutoError = this.nextAutoTransferError;
+                        this.nextAutoTransferError = null;
+                        this.respond(message, {success:false,error:injectedAutoError}, delay);
+                        return;
+                    }
+                    if (!autoPairAllowed || payload.policy !== 'mergeThenEmpty') {
+                        this.respond(message, {success:false,error:'transfer_forbidden'}, delay);
+                        return;
+                    }
+                    var autoSourceItems = this.state.inventory[autoSource.containerId];
+                    var autoTargetItems = this.state.inventory[autoTargetContainerId];
+                    var autoCapacity = autoTargetContainerId === '战备箱'
+                        ? this.battleboxAccessibleCapacity : autoTargetItems.length;
+                    if (autoCapacity <= 0) {
+                        this.respond(message, {success:false,error:'slot_locked'}, delay);
+                        return;
+                    }
+                    var autoTargetSlot = -1;
+                    var autoFirstEmpty = -1;
+                    var autoSourceItem = autoSourceItems[autoSource.slot];
+                    for (var autoSlot=0; autoSlot<autoCapacity; autoSlot++) {
+                        var autoCandidate = autoTargetItems[autoSlot];
+                        if (!autoCandidate) {
+                            if (autoFirstEmpty < 0) autoFirstEmpty = autoSlot;
+                        } else if (autoSourceItem.itemKind === 'stack' && autoCandidate.itemKind === 'stack'
+                                && autoSourceItem.name === autoCandidate.name) {
+                            autoTargetSlot = autoSlot;
+                            break;
+                        }
+                    }
+                    var autoOperation = 'merge';
+                    if (autoTargetSlot < 0) {
+                        if (autoFirstEmpty < 0) {
+                            this.respond(message, {success:false,error:'target_full'}, delay);
+                            return;
+                        }
+                        autoTargetSlot = autoFirstEmpty;
+                        autoOperation = 'move';
+                    }
+                    if (autoOperation === 'merge') autoTargetItems[autoTargetSlot].quantity += autoSourceItem.quantity;
+                    else autoTargetItems[autoTargetSlot] = autoSourceItem;
+                    autoSourceItems[autoSource.slot] = null;
+                    delete this.leases[autoSourceKey];
+                    delete this.leases[autoTargetContainerId + ':' + autoTargetSlot];
+                    this.respond(message, {success:true,v:1,operation:autoOperation,policy:'mergeThenEmpty',
+                        destination:{containerId:autoTargetContainerId,slot:autoTargetSlot},
+                        snapshots:this.inventorySnapshots(payload.windows,false)}, delay);
                     return;
                 }
                 var source = payload.source || {};
@@ -1348,6 +1413,73 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 title:document.querySelector('.inventory-workbench-panel .workbench-title').textContent,battleboxNode:!!document.querySelector('.inventory-owned-battlebox'),
                 pageOptions:warehousePageOptions.length,lastSlot:!!document.querySelector('.inventory-owned-warehouse [data-physical-slot="1199"]'),
                 moves:countInventoryCmd('move') + '/' + warehouseMoveBefore,backpack1:Host.state.inventory.背包[1],warehouse1:Host.state.inventory.仓库[1],bulk:countCmd('bulkQuery')}));
+
+        await Host.openWorkbench(240, 'warehouse');
+        Host.state.inventory.仓库[0] = null;
+        Host.state.inventory.仓库[100] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',majorType:'消耗品',use:'药剂',itemKind:'stack',quantity:4};
+        var autoBefore = countInventoryCmd('autoTransfer');
+        var ctrlSource = document.querySelector('.inventory-owned-backpack [data-physical-slot="0"]');
+        ctrlSource.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,ctrlKey:true}));
+        await waitFor(function(){ return countInventoryCmd('autoTransfer') === autoBefore + 1
+            && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 700);
+        var ctrlMessage = Host.sent.filter(function(message){ return message.domain === 'inventory' && message.cmd === 'autoTransfer'; }).pop();
+        assert('workbench-ui6','Ctrl+单击由 AS2 语义自动落位：跨未加载页优先合并且不跳仓库当前页',
+            ctrlMessage && ctrlMessage.payload.targetContainerId === '仓库'
+                && ctrlMessage.payload.policy === 'mergeThenEmpty' && !ctrlMessage.payload.target
+                && ctrlMessage.payload.windows[1].offset === 0
+                && Host.state.inventory.仓库[100].quantity === 6 && !Host.state.inventory.背包[0]
+                && InventoryWorkbench.debugState().page.page === 1);
+
+        await Host.openWorkbench(240, 'warehouse');
+        Host.delays.autoTransfer = 45;
+        click('.inventory-quick-transfer-btn[data-quick-mode="deposit"]');
+        click('.inventory-owned-backpack [data-physical-slot="1"]');
+        click('.inventory-owned-backpack [data-physical-slot="4"]');
+        var rapidPendingVisual = document.querySelectorAll('.quick-transfer-pending').length === 2
+            && InventoryWorkbench.debugState().quickTransfer.pending === 1
+            && !!InventoryWorkbench.debugState().quickTransfer.inFlight;
+        await waitFor(function(){ return countInventoryCmd('autoTransfer') === 2
+            && !InventoryWorkbench.debugState().coordinator.busyOwner
+            && InventoryWorkbench.debugState().quickTransfer.completed === 2; }, 1200);
+        var rapidState = InventoryWorkbench.debugState().quickTransfer;
+        assert('workbench-ui7','常驻快速存入把连续点击排入单飞队列，并在每次回包后续用新 lease',
+            rapidPendingVisual && rapidState.mode === 'deposit' && rapidState.pending === 0
+                && !rapidState.inFlight && rapidState.completed === 2
+                && !Host.state.inventory.背包[1] && !Host.state.inventory.背包[4]
+                && document.querySelector('.inventory-quick-transfer-status').textContent.indexOf('背包 → 仓库') >= 0);
+
+        await Host.openWorkbench(240, 'warehouse');
+        Host.delays.autoTransfer = 60;
+        click('.inventory-quick-transfer-btn[data-quick-mode="deposit"]');
+        click('.inventory-owned-backpack [data-physical-slot="1"]');
+        click('.inventory-owned-backpack [data-physical-slot="4"]');
+        click('.inventory-owned-backpack [data-physical-slot="4"]');
+        await waitFor(function(){ return countInventoryCmd('autoTransfer') === 1
+            && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 1000);
+        window.__emitBridge('panel_esc', {});
+        await wait(20);
+        var cancelState = InventoryWorkbench.debugState().quickTransfer;
+        assert('workbench-ui8','再次点击可取消未发送项；Esc 仅退出常驻模式并保留工作台',
+            Host.state.inventory.背包[4] && countInventoryCmd('autoTransfer') === 1
+                && Panels.getActive() === 'workbench' && cancelState.mode === null
+                && cancelState.pending === 0 && !cancelState.inFlight);
+
+        await Host.openWorkbench(240, 'warehouse');
+        Host.nextAutoTransferError = 'stale_state';
+        Host.delays.autoTransfer = 40;
+        var staleSnapshotBefore = countInventoryCmd('snapshot');
+        click('.inventory-quick-transfer-btn[data-quick-mode="deposit"]');
+        click('.inventory-owned-backpack [data-physical-slot="1"]');
+        click('.inventory-owned-backpack [data-physical-slot="4"]');
+        await waitFor(function(){ return countInventoryCmd('autoTransfer') === 1
+            && countInventoryCmd('snapshot') === staleSnapshotBefore + 1
+            && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 1000);
+        var staleQueueState = InventoryWorkbench.debugState().quickTransfer;
+        assert('workbench-ui9','首项 stale 会先对账再停队，后续点击不重放且两件来源保持原状',
+            countInventoryCmd('autoTransfer') === 1
+                && Host.state.inventory.背包[1] && Host.state.inventory.背包[4]
+                && staleQueueState.mode === null && staleQueueState.pending === 0
+                && !staleQueueState.inFlight && staleQueueState.completed === 0);
         Panels.close();
 
         var passed = results.filter(function(item){ return item.pass; }).length;

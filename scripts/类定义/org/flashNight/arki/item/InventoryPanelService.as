@@ -63,6 +63,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         _root.gameCommands["inventorySwap"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("swap", params);
         };
+        _root.gameCommands["inventoryAutoTransfer"] = function(params) {
+            org.flashNight.arki.item.InventoryPanelService.handle("autoTransfer", params);
+        };
         _root.gameCommands["inventorySortAndMerge"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("sortAndMerge", params);
         };
@@ -92,6 +95,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (commandName == "move" || commandName == "merge" || commandName == "swap") {
             return executeTransfer(commandName, params);
         }
+        if (commandName == "autoTransfer") return executeAutoTransfer(params);
         if (commandName == "sortAndMerge") return executeSortAndMerge(params);
         return fail("unsupported_cmd");
     }
@@ -117,42 +121,12 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function executeSnapshot(params:Object):Object {
-        var requests:Array = params.requests;
-        if (!(requests instanceof Array) || requests.length < 1 || requests.length > 4) {
-            return fail("invalid_payload");
-        }
-
-        var normalized:Array = [];
-        var i:Number;
-        for (i = 0; i < requests.length; i++) {
-            var request:Object = requests[i];
-            var containerId:String = request == undefined ? "" : String(request.containerId);
-            var filterKey:String = request == undefined || request.filterKey == undefined
-                ? "all" : String(request.filterKey);
-            var inventory:ArrayInventory = resolveContainer(containerId);
-            if (inventory == null) return fail("unsupported_container");
-            if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
-            if (!isWholeNumber(request.offset) || !isWholeNumber(request.limit)) return fail("invalid_payload");
-            var offset:Number = Number(request.offset);
-            var limit:Number = Number(request.limit);
-            if (offset < 0 || offset >= inventory.capacity || limit < 1 || limit > 100) {
-                return fail("invalid_payload");
-            }
-            var accessibleCapacity:Number = getAccessibleCapacity(containerId);
-            if ((accessibleCapacity <= 0 && offset != 0)
-                || (accessibleCapacity > 0 && offset >= accessibleCapacity)) {
-                return fail("slot_locked");
-            }
-            normalized.push({containerId: containerId, inventory: inventory, offset: offset, limit: limit, filterKey: filterKey});
-        }
+        var windowCheck:Object = validateWindowRequests(params.requests);
+        if (!windowCheck.success) return windowCheck;
 
         // 每次显式读取都开启新的 snapshot-local lease session；旧 Web 会话 token 立即失效。
         beginSession();
-        var snapshots:Array = [];
-        for (i = 0; i < normalized.length; i++) {
-            var entry:Object = normalized[i];
-            snapshots.push(buildSnapshot(entry.containerId, entry.inventory, entry.offset, entry.limit, entry.filterKey));
-        }
+        var snapshots:Array = buildWindowSnapshots(windowCheck.normalized);
         return {success: true, v: 1, sessionNonce: _sessionNonce, snapshots: snapshots};
     }
 
@@ -260,6 +234,97 @@ class org.flashNight.arki.item.InventoryPanelService {
         var snapshots:Array = buildAffectedSnapshots(sourceCheck, targetCheck);
         _busy = false;
         return {success: true, v: 1, operation: commandName, snapshots: snapshots};
+    }
+
+    /**
+     * 快速转移只接收来源 lease 与目标容器，不接收目标槽位。目标落位由 AS2 在完整可访问范围内
+     * 按“同名数字堆叠优先，其次首个空槽”决定；绝不为了腾位自动交换异类物品。
+     * windows 只描述 Web 当前视图，提交后按这些窗口重铸 lease，既不泄漏落位权威也不强制翻页。
+     */
+    private static function executeAutoTransfer(params:Object):Object {
+        var sourceCheck:Object = validateSlotRef(params.source, true, false);
+        if (!sourceCheck.success) return sourceCheck;
+
+        var targetContainerId:String = params.targetContainerId == undefined
+            ? "" : String(params.targetContainerId);
+        if (!isAllowedAutoTransferPair(sourceCheck.containerId, targetContainerId)) {
+            return fail("transfer_forbidden");
+        }
+        if (String(params.policy) != "mergeThenEmpty") return fail("unsupported_policy");
+
+        var windowCheck:Object = validateWindowRequests(params.windows);
+        if (!windowCheck.success) return windowCheck;
+        var seenSource:Boolean = false;
+        var seenTarget:Boolean = false;
+        var seenContainers:Object = {};
+        for (var windowIndex:Number = 0; windowIndex < windowCheck.normalized.length; windowIndex++) {
+            var windowEntry:Object = windowCheck.normalized[windowIndex];
+            if (seenContainers[windowEntry.containerId] === true) return fail("invalid_payload");
+            seenContainers[windowEntry.containerId] = true;
+            if (windowEntry.containerId == sourceCheck.containerId) seenSource = true;
+            else if (windowEntry.containerId == targetContainerId) seenTarget = true;
+            else return fail("invalid_payload");
+        }
+        if (!seenSource || !seenTarget) return fail("invalid_payload");
+
+        var targetInventory:ArrayInventory = resolveContainer(targetContainerId);
+        if (targetInventory == null) return fail("unsupported_container");
+        var targetCapacity:Number = getAccessibleCapacity(targetContainerId);
+        if (targetCapacity <= 0) return fail("slot_locked");
+
+        var sourceIsStack:Boolean = typeof sourceCheck.item.value == "number";
+        var targetSlot:Number = -1;
+        var firstEmptySlot:Number = -1;
+        var targetItem:Object = null;
+        for (var slot:Number = 0; slot < targetCapacity; slot++) {
+            var candidate:Object = targetInventory.getItem(String(slot));
+            if (candidate == null) {
+                if (firstEmptySlot < 0) firstEmptySlot = slot;
+            } else if (sourceIsStack && typeof candidate.value == "number"
+                    && candidate.name == sourceCheck.item.name) {
+                targetSlot = slot;
+                targetItem = candidate;
+                break;
+            }
+        }
+        var operation:String = "merge";
+        if (targetSlot < 0) {
+            if (firstEmptySlot < 0) return fail("target_full");
+            targetSlot = firstEmptySlot;
+            targetItem = null;
+            operation = "move";
+        }
+
+        var targetCheck:Object = {
+            success: true,
+            containerId: targetContainerId,
+            inventory: targetInventory,
+            slot: targetSlot,
+            item: targetItem
+        };
+        _busy = true;
+        var committed:Boolean = operation == "merge"
+            ? commitMerge(sourceCheck, targetCheck)
+            : commitMove(sourceCheck, targetCheck);
+        if (!committed) {
+            _busy = false;
+            return fail("commit_failed");
+        }
+
+        invalidateSlot(sourceCheck.containerId, sourceCheck.slot);
+        invalidateSlot(targetCheck.containerId, targetCheck.slot);
+        markDirty();
+        publishTransferEvents(operation, sourceCheck, targetCheck);
+        var snapshots:Array = buildWindowSnapshots(windowCheck.normalized);
+        _busy = false;
+        return {
+            success: true,
+            v: 1,
+            operation: operation,
+            policy: "mergeThenEmpty",
+            destination: {containerId: targetContainerId, slot: targetSlot},
+            snapshots: snapshots
+        };
     }
 
     private static function executeSortAndMerge(params:Object):Object {
@@ -412,6 +477,64 @@ class org.flashNight.arki.item.InventoryPanelService {
             mass[key] = current + amount;
         }
         return mass;
+    }
+
+    private static function validateWindowRequests(requests:Array):Object {
+        if (!(requests instanceof Array) || requests.length < 1 || requests.length > 4) {
+            return fail("invalid_payload");
+        }
+        var normalized:Array = [];
+        for (var i:Number = 0; i < requests.length; i++) {
+            var request:Object = requests[i];
+            var containerId:String = request == undefined ? "" : String(request.containerId);
+            var filterKey:String = request == undefined || request.filterKey == undefined
+                ? "all" : String(request.filterKey);
+            var inventory:ArrayInventory = resolveContainer(containerId);
+            if (inventory == null) return fail("unsupported_container");
+            if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
+            if (!isWholeNumber(request.offset) || !isWholeNumber(request.limit)) return fail("invalid_payload");
+            var offset:Number = Number(request.offset);
+            var limit:Number = Number(request.limit);
+            if (offset < 0 || offset >= inventory.capacity || limit < 1 || limit > 100) {
+                return fail("invalid_payload");
+            }
+            var accessibleCapacity:Number = getAccessibleCapacity(containerId);
+            if ((accessibleCapacity <= 0 && offset != 0)
+                || (accessibleCapacity > 0 && offset >= accessibleCapacity)) {
+                return fail("slot_locked");
+            }
+            normalized.push({
+                containerId: containerId,
+                inventory: inventory,
+                offset: offset,
+                limit: limit,
+                filterKey: filterKey
+            });
+        }
+        return {success: true, normalized: normalized};
+    }
+
+    private static function buildWindowSnapshots(normalized:Array):Array {
+        var snapshots:Array = [];
+        for (var i:Number = 0; i < normalized.length; i++) {
+            var entry:Object = normalized[i];
+            snapshots.push(buildSnapshot(
+                entry.containerId,
+                entry.inventory,
+                entry.offset,
+                entry.limit,
+                entry.filterKey
+            ));
+        }
+        return snapshots;
+    }
+
+    private static function isAllowedAutoTransferPair(sourceContainerId:String, targetContainerId:String):Boolean {
+        if (sourceContainerId == "背包") {
+            return targetContainerId == "仓库" || targetContainerId == "战备箱";
+        }
+        if (targetContainerId != "背包") return false;
+        return sourceContainerId == "仓库" || sourceContainerId == "战备箱";
     }
 
     private static function validateSlotRef(ref:Object, mustOccupy:Boolean, checkCount:Boolean):Object {

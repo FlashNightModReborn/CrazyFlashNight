@@ -47,6 +47,17 @@ namespace CF7Launcher.Tests.Tasks
                 };
                 payload["methodName"] = "byType";
             }
+            else if (cmd == "autoTransfer")
+            {
+                payload["source"] = SlotRef("背包", 2, "inv100.2");
+                payload["targetContainerId"] = "仓库";
+                payload["policy"] = "mergeThenEmpty";
+                payload["windows"] = new JArray
+                {
+                    new JObject { ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 50, ["filterKey"] = "all" },
+                    new JObject { ["containerId"] = "仓库", ["offset"] = 50, ["limit"] = 50, ["filterKey"] = "material" }
+                };
+            }
             else
             {
                 payload["source"] = SlotRef("背包", 2, "inv100.2");
@@ -70,6 +81,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("move", "inventoryMove")]
         [InlineData("merge", "inventoryMerge")]
         [InlineData("swap", "inventorySwap")]
+        [InlineData("autoTransfer", "inventoryAutoTransfer")]
         [InlineData("sortAndMerge", "inventorySortAndMerge")]
         public void KnownCommands_MapToTrustedActionAndUnwrapNormalizedPayload(string cmd, string action)
         {
@@ -221,6 +233,47 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(containerId, (string)message["container"]["containerId"]);
             Assert.Equal(filterKey, (string)message["container"]["filterKey"]);
             Assert.Equal("inventorySortAndMerge", (string)message["action"]);
+        }
+
+        [Fact]
+        public void AutoTransfer_RebuildsSourceTargetPolicyAndVisibleWindowsOnly()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("autoTransfer", "wb.inventory.auto.1");
+            request["payload"]["target"] = SlotRef("仓库", 999, "spoofed.target");
+            request["payload"]["windows"][0]["action"] = "evil";
+
+            task.HandleWebRequest("autoTransfer", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("inventoryAutoTransfer", (string)message["action"]);
+            Assert.Equal("仓库", (string)message["targetContainerId"]);
+            Assert.Equal("mergeThenEmpty", (string)message["policy"]);
+            Assert.Equal("背包", (string)message["source"]["containerId"]);
+            Assert.Equal(2, ((JArray)message["windows"]).Count);
+            Assert.Equal("material", (string)message["windows"][1]["filterKey"]);
+            Assert.Null(message["target"]);
+            Assert.Null(message["windows"][0]["action"]);
+        }
+
+        [Theory]
+        [InlineData("swapThenEmpty", "仓库")]
+        [InlineData("mergeThenEmpty", "秘密容器")]
+        public void AutoTransfer_RejectsUntrustedPolicyAndTargetContainer(string policy, string targetContainerId)
+        {
+            int sends = 0;
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("autoTransfer", "wb.inventory.auto.bad." + sends + policy.Length);
+            request["payload"]["policy"] = policy;
+            request["payload"]["targetContainerId"] = targetContainerId;
+
+            task.HandleWebRequest("autoTransfer", request);
+
+            Assert.Equal(0, sends);
+            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
         }
 
         [Fact]

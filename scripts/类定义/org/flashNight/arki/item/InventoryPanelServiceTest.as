@@ -23,6 +23,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testDomainReject();
         testBattleboxAccessPolicy();
         testBattleboxTransfers();
+        testAutoTransferAuthorityQueueAndFailure();
         testMoveMergeSwapAndReverse();
         testSameContainerTransfersAndRollback();
         testEventReentrancy();
@@ -412,6 +413,112 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(result.success && _root.物品栏.背包.getItem("1") === moving
                 && _root.物品栏.战备箱.getItem("0") == null,
             "战备箱→背包反向移动复用同一事务协议");
+    }
+
+    private static function testAutoTransferAuthorityQueueAndFailure():Void {
+        resetInventories();
+        var firstSource:Object = item("快速材料", 3);
+        var secondSource:Object = item("快速装备", {level: 2});
+        _root.物品栏.背包.add(0, firstSource);
+        _root.物品栏.背包.add(1, secondSource);
+        _root.物品栏.仓库.add(100, item("快速材料", 4));
+        var response:Object = snapshot(10, 10);
+        var windows:Array = [
+            {containerId: "背包", offset: 0, limit: 10, filterKey: "all"},
+            {containerId: "仓库", offset: 0, limit: 10, filterKey: "all"}
+        ];
+        var result:Object = InventoryPanelService.execute("autoTransfer", {
+            v: 1,
+            source: refFrom(response, 0, 0),
+            targetContainerId: "仓库",
+            policy: "mergeThenEmpty",
+            windows: windows
+        });
+        assertTrue(result.success && result.operation == "merge"
+                && result.destination.containerId == "仓库" && result.destination.slot == 100
+                && _root.物品栏.仓库.getItem("100").value == 7,
+            "autoTransfer 跨未加载页优先合并同名堆叠");
+        assertTrue(result.snapshots[1].offset == 0 && result.snapshots[1].slots[0].physicalSlot == 0,
+            "autoTransfer 按 Web 原窗口重铸 lease 且不跳到真实落位页");
+
+        result = InventoryPanelService.execute("autoTransfer", {
+            v: 1,
+            source: refFrom(result, 0, 1),
+            targetContainerId: "仓库",
+            policy: "mergeThenEmpty",
+            windows: windows
+        });
+        assertTrue(result.success && result.operation == "move" && result.destination.slot == 0
+                && _root.物品栏.仓库.getItem("0") === secondSource
+                && _root.物品栏.仓库.getItem("100").value == 7,
+            "连续快速转移使用上一回包新 lease，并只占首个空槽不交换其他物品");
+
+        response = snapshot(10, 10);
+        var badPolicy:Object = InventoryPanelService.execute("autoTransfer", {
+            v: 1,
+            source: refFrom(response, 1, 0),
+            targetContainerId: "背包",
+            policy: "swapThenEmpty",
+            windows: windows
+        });
+        assertTrue(!badPolicy.success && badPolicy.error == "unsupported_policy",
+            "autoTransfer 拒绝可诱发自动交换的未知策略");
+        var badPair:Object = InventoryPanelService.execute("autoTransfer", {
+            v: 1,
+            source: refFrom(response, 1, 0),
+            targetContainerId: "仓库",
+            policy: "mergeThenEmpty",
+            windows: windows
+        });
+        assertTrue(!badPair.success && badPair.error == "transfer_forbidden",
+            "autoTransfer 只允许背包与仓库或战备箱成对传输");
+
+        resetInventories();
+        _root.主线任务进度 = 14;
+        var blockedSource:Object = item("无法转移", {level: 1});
+        _root.物品栏.背包.add(0, blockedSource);
+        for (var slot:Number = 0; slot < 40; slot++) {
+            _root.物品栏.战备箱.add(slot, item("占位装备" + slot, {level: 1}));
+        }
+        response = InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [
+                {containerId: "背包", offset: 0, limit: 50},
+                {containerId: "战备箱", offset: 0, limit: 40}
+            ]
+        });
+        result = InventoryPanelService.execute("autoTransfer", {
+            v: 1,
+            source: refFrom(response, 0, 0),
+            targetContainerId: "战备箱",
+            policy: "mergeThenEmpty",
+            windows: [
+                {containerId: "背包", offset: 0, limit: 50, filterKey: "all"},
+                {containerId: "战备箱", offset: 0, limit: 40, filterKey: "all"}
+            ]
+        });
+        assertTrue(!result.success && result.error == "target_full"
+                && _root.物品栏.背包.getItem("0") === blockedSource
+                && !_root.存档系统.dirtyMark,
+            "autoTransfer 目标已满时来源与 dirty 状态保持不变");
+
+        resetInventories();
+        var rollbackSource:Object = item("回滚装备", {level: 3});
+        _root.物品栏.背包.add(0, rollbackSource);
+        response = snapshot(10, 10);
+        InventoryPanelService.testOnlyFailNextCommit("仓库", 0);
+        result = InventoryPanelService.execute("autoTransfer", {
+            v: 1,
+            source: refFrom(response, 0, 0),
+            targetContainerId: "仓库",
+            policy: "mergeThenEmpty",
+            windows: windows
+        });
+        assertTrue(!result.success && result.error == "commit_failed"
+                && _root.物品栏.背包.getItem("0") === rollbackSource
+                && _root.物品栏.仓库.getItem("0") == null
+                && !_root.存档系统.dirtyMark,
+            "autoTransfer 目标提交失败时原子回滚且不发布 dirty");
     }
 
     private static function testMoveMergeSwapAndReverse():Void {

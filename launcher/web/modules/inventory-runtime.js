@@ -1,6 +1,6 @@
 /**
  * inventory-domain Web runtime.
- * Owns visible range projections, one write owner, round-trip transfer/discard, and failure refresh.
+ * Owns visible range projections, one write owner, round-trip transfer/discard/auto-transfer, and failure refresh.
  */
 (function(root, factory) {
     'use strict';
@@ -259,6 +259,52 @@
                     refreshError: refreshResult.success ? null : refreshResult.error
                 };
                 if (typeof callback === 'function') callback(result);
+            });
+        });
+        return true;
+    };
+
+    /**
+     * Lease-bound source + authority-selected destination. The Web supplies its current windows only so
+     * AS2 can return fresh leases without moving the user's pager to the physical destination slot.
+     */
+    InventoryCoordinator.prototype.autoTransfer = function(sourceRef, targetContainerId, callback) {
+        if (!sourceRef || !sourceRef.occupied || !sourceRef.item
+                || !this.beginExternalWrite('inventory.autoTransfer')) return false;
+        var self = this;
+        this._request('autoTransfer', {
+            v: 1,
+            source: wireRef(sourceRef),
+            targetContainerId: String(targetContainerId),
+            policy: 'mergeThenEmpty',
+            windows: cloneRequests(this._requests)
+        }, function(response) {
+            if (response && response.success === true && self._applySnapshots(response.snapshots)) {
+                self._owner = null;
+                self._refreshRequired = false;
+                self._ready = true;
+                self._emitState();
+                if (typeof callback === 'function') callback(response);
+                return;
+            }
+            var original = response || {success: false, error: 'invalid_response'};
+            // target_full/slot_locked are authoritative no-op failures. Releasing locally preserves the
+            // source lease and avoids an unnecessary second round trip; all ambiguous failures reconcile.
+            if (original.error === 'target_full' || original.error === 'slot_locked') {
+                self._owner = null;
+                self._refreshRequired = false;
+                self._ready = true;
+                self._emitState();
+                if (typeof callback === 'function') callback(original);
+                return;
+            }
+            self._refreshWhileOwned(function(refreshResult) {
+                if (typeof callback === 'function') callback({
+                    success: false,
+                    error: original.error || 'invalid_response',
+                    reconciled: !!refreshResult.success,
+                    refreshError: refreshResult.success ? null : refreshResult.error
+                });
             });
         });
         return true;

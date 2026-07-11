@@ -2854,6 +2854,15 @@
 .workbench-metric span { display:block; color:var(--wb-muted); font-size:9px; letter-spacing:1px; }
 .workbench-metric b { display:block; color:#fff1c7; font:700 17px/1.15 "Consolas",monospace; }
 .workbench-header-actions { display:flex; align-items:center; }
+.inventory-quick-transfer-status {
+    max-width:210px; margin-right:6px; padding:4px 8px; border:1px solid rgba(214,189,105,.28);
+    color:#c9c1a5; background:rgba(16,17,18,.72); font:10px/1.25 "Microsoft YaHei",sans-serif;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.inventory-quick-transfer-btn.active {
+    color:#17120a; border-color:#ffd27a; background:linear-gradient(#f2c56d,#bd8430);
+    box-shadow:0 0 10px rgba(240,164,58,.32);
+}
 .workbench-close-btn,
 .kshop-workbench .kshop-close-btn {
     width:34px;
@@ -11951,6 +11960,21 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .inventory-slot-card.workbench-drop-active { outline:1px solid #f2a04b; outline-offset:-3px; }
 .inventory-slot-card.write-locked { opacity:.55; cursor:not-allowed; }
+.inventory-workbench-panel[data-quick-transfer-mode="deposit"] .inventory-owned-backpack .inventory-slot-card:not(.empty),
+.inventory-workbench-panel[data-quick-transfer-mode="withdraw"] .inventory-owned-warehouse .inventory-slot-card:not(.empty) {
+    cursor:pointer; box-shadow:inset 0 0 0 1px rgba(240,164,58,.55);
+}
+.inventory-slot-card.quick-transfer-pending {
+    opacity:.7; box-shadow:inset 0 0 0 2px rgba(240,164,58,.85) !important;
+}
+.inventory-slot-card.quick-transfer-pending::before {
+    content:'待'; position:absolute; right:3px; top:3px; z-index:7; min-width:15px; height:15px;
+    color:#211507; background:#e7aa4b; border:1px solid #ffdc94; border-radius:2px;
+    font:700 9px/14px "Microsoft YaHei",sans-serif; text-align:center;
+}
+.inventory-slot-card.quick-transfer-inflight::before {
+    content:'转'; animation:kshop-pulse .75s ease-in-out infinite;
+}
 .inventory-slot-card.empty { border-style:dashed; background:#0a0d11; color:#46505b; }
 .inventory-slot-index { position:absolute; left:3px; top:2px; color:#59636e; font:9px/1 Consolas,monospace; }
 .inventory-empty-mark { width:100%; text-align:center; font:9px/1 Consolas,monospace; letter-spacing:.12em; }

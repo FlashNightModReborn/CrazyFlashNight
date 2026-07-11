@@ -194,6 +194,7 @@ namespace CF7Launcher.Tasks
                 case "move": action = "inventoryMove"; return true;
                 case "merge": action = "inventoryMerge"; return true;
                 case "swap": action = "inventorySwap"; return true;
+                case "autoTransfer": action = "inventoryAutoTransfer"; return true;
                 case "sortAndMerge": action = "inventorySortAndMerge"; return true;
                 default: action = null; return false;
             }
@@ -204,29 +205,8 @@ namespace CF7Launcher.Tasks
             normalized = new JObject { ["v"] = 1 };
             if (cmd == "snapshot")
             {
-                JArray requests = payload["requests"] as JArray;
-                if (requests == null || requests.Count < 1 || requests.Count > 4) return false;
-                var cleanRequests = new JArray();
-                foreach (JToken token in requests)
-                {
-                    JObject request = token as JObject;
-                    if (request == null) return false;
-                    string containerId = request.Value<string>("containerId");
-                    string filterKey = request.Value<string>("filterKey") ?? "all";
-                    int offset;
-                    int limit;
-                    if (!IsContainerId(containerId)
-                        || !TryReadNonNegativeInteger(request["offset"], out offset)
-                        || !TryReadPositiveInteger(request["limit"], 100, out limit)
-                        || !IsFilterKey(filterKey)) return false;
-                    cleanRequests.Add(new JObject
-                    {
-                        ["containerId"] = containerId,
-                        ["offset"] = offset,
-                        ["limit"] = limit,
-                        ["filterKey"] = filterKey
-                    });
-                }
+                JArray cleanRequests;
+                if (!TryNormalizeWindows(payload["requests"] as JArray, out cleanRequests)) return false;
                 normalized["requests"] = cleanRequests;
                 return true;
             }
@@ -262,9 +242,52 @@ namespace CF7Launcher.Tasks
             normalized["source"] = source;
             if (cmd == "discard" || cmd == "tooltip") return true;
 
+            if (cmd == "autoTransfer")
+            {
+                string targetContainerId = payload.Value<string>("targetContainerId");
+                string policy = payload.Value<string>("policy");
+                JArray windows;
+                if (!IsKnownContainerId(targetContainerId)
+                    || !string.Equals(policy, "mergeThenEmpty", StringComparison.Ordinal)
+                    || !TryNormalizeWindows(payload["windows"] as JArray, out windows)) return false;
+                normalized["targetContainerId"] = targetContainerId;
+                normalized["policy"] = policy;
+                normalized["windows"] = windows;
+                return true;
+            }
+
             JObject target;
             if (!TryNormalizeSlotRef(payload["target"] as JObject, out target)) return false;
             normalized["target"] = target;
+            return true;
+        }
+
+        private static bool TryNormalizeWindows(JArray requests, out JArray normalized)
+        {
+            normalized = null;
+            if (requests == null || requests.Count < 1 || requests.Count > 4) return false;
+            var cleanRequests = new JArray();
+            foreach (JToken token in requests)
+            {
+                JObject request = token as JObject;
+                if (request == null) return false;
+                string containerId = request.Value<string>("containerId");
+                string filterKey = request.Value<string>("filterKey") ?? "all";
+                int offset;
+                int limit;
+                if (!IsContainerId(containerId)
+                    || !TryReadNonNegativeInteger(request["offset"], out offset)
+                    || !TryReadPositiveInteger(request["limit"], 100, out limit)
+                    || !IsFilterKey(filterKey)) return false;
+                cleanRequests.Add(new JObject
+                {
+                    ["containerId"] = containerId,
+                    ["offset"] = offset,
+                    ["limit"] = limit,
+                    ["filterKey"] = filterKey
+                });
+            }
+            normalized = cleanRequests;
             return true;
         }
 
@@ -291,6 +314,11 @@ namespace CF7Launcher.Tasks
         private static bool IsContainerId(string value)
         {
             return !string.IsNullOrEmpty(value) && value.Length <= 16;
+        }
+
+        private static bool IsKnownContainerId(string value)
+        {
+            return value == "背包" || value == "仓库" || value == "战备箱";
         }
 
         private static bool IsSortMethod(string value)
