@@ -134,6 +134,40 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
     /**
+     * inventory-domain 前缀事务提交入口。
+     *
+     * 只把 [0, prefixCapacity) 重建为紧凑 orderedItems；prefixCapacity 之后的
+     * 物理槽位按原 key / 原对象引用完整保留。战备箱用它整理剧情已解锁前缀，
+     * 避免 400 槽存档保留区被排序或压缩。
+     */
+    public function transactionReplacePrefix(orderedItems:Array, prefixCapacity:Number):Boolean {
+        if (!(orderedItems instanceof Array)
+            || isNaN(prefixCapacity)
+            || Math.floor(prefixCapacity) != prefixCapacity
+            || prefixCapacity < 0
+            || prefixCapacity > capacity
+            || orderedItems.length > prefixCapacity) return false;
+
+        var replacement:Object = {};
+        var i:Number;
+        for (i = 0; i < orderedItems.length; i++) {
+            var item:Object = orderedItems[i];
+            if (item == null || item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
+            if (typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
+            replacement[String(i)] = item;
+        }
+        for (i = prefixCapacity; i < capacity; i++) {
+            var preserved:Object = items[i];
+            if (preserved != null) replacement[String(i)] = preserved;
+        }
+
+        items = replacement;
+        indexesDirty = true;
+        rebuildIndexesFromItems();
+        return true;
+    }
+
+    /**
      * transactionWrite 全部提交成功后统一派发兼容既有 UI 的生命周期事件。
      * changeKind: added / removed / replaced / value。
      */

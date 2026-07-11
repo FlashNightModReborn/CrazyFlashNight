@@ -682,6 +682,8 @@ $requiredWebPaths = @(
     "modules\workbench.js",
     "modules\kshop-runtime.js",
     "modules\inventory-runtime.js",
+    "modules\inventory-ui.js",
+    "modules\inventory-workbench.js",
     "modules\kshop.js",
     "modules\help-panel.js",
     "modules\intelligence-components.js",

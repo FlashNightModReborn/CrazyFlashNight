@@ -17,7 +17,8 @@
             out.push({
                 containerId: String(requests[i].containerId),
                 offset: Number(requests[i].offset),
-                limit: Number(requests[i].limit)
+                limit: Number(requests[i].limit),
+                filterKey: normalizeFilterKey(requests[i].filterKey)
             });
         }
         return out;
@@ -27,6 +28,15 @@
         byType: true, byUse: true, byPrice: true, byLevel: true,
         byID: true, byName: true, byValue: true, byTime: true
     };
+
+    var FILTER_KEYS = {
+        all: true, weapon: true, armor: true, consumable: true, material: true, other: true
+    };
+
+    function normalizeFilterKey(value) {
+        value = String(value || 'all');
+        return FILTER_KEYS[value] ? value : 'all';
+    }
 
     function displaySortSlots(slots, methodName) {
         var sorted = (slots || []).slice();
@@ -48,9 +58,20 @@
     }
 
     function isValidSnapshot(snapshot) {
+        var accessible = snapshot && snapshot.accessibleCapacity != null
+            ? Number(snapshot.accessibleCapacity) : Number(snapshot && snapshot.capacity);
+        var viewCapacity = snapshot && snapshot.viewCapacity != null
+            ? Number(snapshot.viewCapacity) : accessible;
         return !!snapshot
             && typeof snapshot.containerId === 'string'
             && isFinite(Number(snapshot.capacity))
+            && isFinite(accessible)
+            && accessible >= 0
+            && accessible <= Number(snapshot.capacity)
+            && isFinite(viewCapacity)
+            && viewCapacity >= 0
+            && viewCapacity <= accessible
+            && FILTER_KEYS[String(snapshot.filterKey || 'all')] === true
             && isFinite(Number(snapshot.snapshotSeq))
             && isFinite(Number(snapshot.offset))
             && Array.isArray(snapshot.slots);
@@ -129,11 +150,31 @@
                 return {
                     containerId: containerId,
                     offset: Number(this._requests[i].offset),
-                    limit: Number(this._requests[i].limit)
+                    limit: Number(this._requests[i].limit),
+                    filterKey: normalizeFilterKey(this._requests[i].filterKey)
                 };
             }
         }
         return null;
+    };
+
+    InventoryCoordinator.prototype.resetWindow = function(containerId, offset, limit, filterKey) {
+        if (this._opened) return false;
+        containerId = String(containerId);
+        offset = Number(offset);
+        limit = Number(limit);
+        if (!isFinite(offset) || Math.floor(offset) !== offset || offset < 0
+                || !isFinite(limit) || Math.floor(limit) !== limit || limit < 1 || limit > 100) return false;
+        filterKey = filterKey == null ? null : String(filterKey);
+        if (filterKey != null && !FILTER_KEYS[filterKey]) return false;
+        for (var i = 0; i < this._requests.length; i++) {
+            if (this._requests[i].containerId !== containerId) continue;
+            this._requests[i].offset = offset;
+            this._requests[i].limit = limit;
+            if (filterKey != null) this._requests[i].filterKey = filterKey;
+            return true;
+        }
+        return false;
     };
 
     InventoryCoordinator.prototype.isReady = function() { return this._ready; };
@@ -173,6 +214,13 @@
             source: wireRef(intent.sourceRef),
             target: wireRef(intent.targetRef)
         }, function(response) {
+            if (response && response.success === true && self._hasActiveFilter()) {
+                self._refreshWhileOwned(function(refreshResult) {
+                    response.viewRefreshSucceeded = !!refreshResult.success;
+                    if (typeof callback === 'function') callback(response);
+                });
+                return;
+            }
             if (response && response.success === true && self._applySnapshots(response.snapshots)) {
                 self._owner = null;
                 self._refreshRequired = false;
@@ -199,6 +247,13 @@
         if (!slotRef || !this.beginExternalWrite('inventory.discard')) return false;
         var self = this;
         this._request('discard', {v: 1, source: wireRef(slotRef)}, function(response) {
+            if (response && response.success === true && self._hasActiveFilter()) {
+                self._refreshWhileOwned(function(refreshResult) {
+                    response.viewRefreshSucceeded = !!refreshResult.success;
+                    if (typeof callback === 'function') callback(response);
+                });
+                return;
+            }
             if (response && response.success === true && self._applySnapshots(response.snapshots)) {
                 self._owner = null;
                 self._refreshRequired = false;
@@ -252,7 +307,10 @@
         }
         if (!request) return false;
         var snapshot = this.getWindow(containerId);
-        if (snapshot && offset >= Number(snapshot.capacity)) return false;
+        var viewCapacity = snapshot && snapshot.viewCapacity != null
+            ? Number(snapshot.viewCapacity) : snapshot && snapshot.accessibleCapacity != null
+                ? Number(snapshot.accessibleCapacity) : Number(snapshot && snapshot.capacity);
+        if (snapshot && (viewCapacity <= 0 ? offset !== 0 : offset >= viewCapacity)) return false;
         request.offset = offset;
         request.limit = limit;
         this._owner = 'window.' + containerId;
@@ -266,10 +324,41 @@
         var snapshot = this.getWindow(containerId);
         if (!request || !snapshot) return false;
         var pageSize = request.limit;
-        var maxOffset = Math.max(0, Math.floor((Number(snapshot.capacity) - 1) / pageSize) * pageSize);
+        var viewCapacity = snapshot.viewCapacity != null
+            ? Number(snapshot.viewCapacity) : snapshot.accessibleCapacity != null
+                ? Number(snapshot.accessibleCapacity) : Number(snapshot.capacity);
+        var maxOffset = Math.max(0, Math.floor((viewCapacity - 1) / pageSize) * pageSize);
         var nextOffset = Math.max(0, Math.min(maxOffset, request.offset + Number(direction) * pageSize));
         if (nextOffset === request.offset) return false;
         return this.setWindow(containerId, nextOffset, pageSize, callback);
+    };
+
+    InventoryCoordinator.prototype.setFilter = function(containerId, filterKey, callback) {
+        if (!this._opened || !this._ready || this._owner || this._refreshRequired) return false;
+        containerId = String(containerId);
+        filterKey = String(filterKey || 'all');
+        if (!FILTER_KEYS[filterKey]) return false;
+        var request = null;
+        for (var i = 0; i < this._requests.length; i++) {
+            if (this._requests[i].containerId === containerId) {
+                request = this._requests[i];
+                break;
+            }
+        }
+        if (!request || normalizeFilterKey(request.filterKey) === filterKey) return false;
+        request.filterKey = filterKey;
+        request.offset = 0;
+        this._owner = 'filter.' + containerId;
+        this._emitState();
+        this._refreshWhileOwned(callback);
+        return true;
+    };
+
+    InventoryCoordinator.prototype._hasActiveFilter = function() {
+        for (var i = 0; i < this._requests.length; i++) {
+            if (normalizeFilterKey(this._requests[i].filterKey) !== 'all') return true;
+        }
+        return false;
     };
 
     InventoryCoordinator.prototype.sortAndMerge = function(containerId, methodName, callback) {
@@ -287,6 +376,13 @@
             container: request,
             methodName: methodName
         }, function(response) {
+            if (response && response.success === true && self._hasActiveFilter()) {
+                self._refreshWhileOwned(function(refreshResult) {
+                    response.viewRefreshSucceeded = !!refreshResult.success;
+                    if (typeof callback === 'function') callback(response);
+                });
+                return;
+            }
             if (response && response.success === true && self._applySnapshots(response.snapshots)) {
                 self._owner = null;
                 self._refreshRequired = false;
@@ -326,12 +422,29 @@
         if (!Array.isArray(snapshots) || !snapshots.length) return false;
         for (var i = 0; i < snapshots.length; i++) {
             if (!isValidSnapshot(snapshots[i])) return false;
+            for (var q = 0; q < this._requests.length; q++) {
+                if (this._requests[q].containerId === snapshots[i].containerId
+                        && normalizeFilterKey(this._requests[q].filterKey) !== String(snapshots[i].filterKey || 'all')) {
+                    return false;
+                }
+            }
         }
         for (i = 0; i < snapshots.length; i++) {
             var snapshot = snapshots[i];
+            var request = null;
+            for (var r = 0; r < this._requests.length; r++) {
+                if (this._requests[r].containerId === snapshot.containerId) {
+                    request = this._requests[r];
+                    break;
+                }
+            }
             var old = this._windows[snapshot.containerId];
             if (!old || Number(snapshot.snapshotSeq) >= Number(old.snapshotSeq)) {
                 this._windows[snapshot.containerId] = snapshot;
+                if (request) {
+                    request.offset = Number(snapshot.offset);
+                    request.filterKey = String(snapshot.filterKey || 'all');
+                }
             }
         }
         return true;
@@ -359,6 +472,7 @@
         wireRef: wireRef,
         isValidSnapshot: isValidSnapshot,
         displaySortSlots: displaySortSlots,
-        sortMethods: SORT_METHODS
+        sortMethods: SORT_METHODS,
+        filterKeys: FILTER_KEYS
     };
 });

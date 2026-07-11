@@ -30,7 +30,17 @@
         ['modules/workbench.js',
          'modules/kshop-runtime.js',
          'modules/inventory-runtime.js',
+         'modules/inventory-ui.js',
          'modules/kshop.js'],
+        noop);
+
+    // ── 背包—战备箱（独立 inventory-domain 工作台，不进入商城生命周期）──
+    Panels.registerLazy('workbench',
+        ['modules/workbench.js',
+         'modules/kshop-runtime.js',
+         'modules/inventory-runtime.js',
+         'modules/inventory-ui.js',
+         'modules/inventory-workbench.js'],
         noop);
 
     // ── help ──

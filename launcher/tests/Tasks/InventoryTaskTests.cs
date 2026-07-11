@@ -32,8 +32,8 @@ namespace CF7Launcher.Tests.Tasks
             {
                 payload["requests"] = new JArray
                 {
-                    new JObject { ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 50 },
-                    new JObject { ["containerId"] = "仓库", ["offset"] = 50, ["limit"] = 50 }
+                    new JObject { ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 50, ["filterKey"] = "all" },
+                    new JObject { ["containerId"] = "仓库", ["offset"] = 50, ["limit"] = 50, ["filterKey"] = "material" }
                 };
             }
             else if (cmd == "sortAndMerge")
@@ -42,7 +42,8 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     ["containerId"] = "仓库",
                     ["offset"] = 50,
-                    ["limit"] = 50
+                    ["limit"] = 50,
+                    ["filterKey"] = "all"
                 };
                 payload["methodName"] = "byType";
             }
@@ -108,7 +109,49 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(2, ((JArray)message["requests"]).Count);
             Assert.Equal("仓库", (string)message["requests"][1]["containerId"]);
             Assert.Equal(50, (int)message["requests"][1]["offset"]);
+            Assert.Equal("material", (string)message["requests"][1]["filterKey"]);
             Assert.Null(message["requests"][0]["action"]);
+        }
+
+        [Fact]
+        public void Snapshot_FilterWhitelistRejectsUnknownCategory()
+        {
+            int sends = 0;
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "wb.inventory.filter.bad");
+            request["payload"]["requests"][0]["filterKey"] = "developer-secret";
+
+            task.HandleWebRequest("snapshot", request);
+
+            Assert.Equal(0, sends);
+            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+        }
+
+        [Fact]
+        public void BattleboxWorkbench_NormalizesSnapshotAndCrossContainerTransfer()
+        {
+            var sent = new List<JObject>();
+            var task = new InventoryTask(() => true, payload => { sent.Add(ParseSent(payload)); return true; });
+            JObject snapshot = Request("snapshot", "wb.battlebox.snapshot.1");
+            snapshot["panel"] = "workbench";
+            snapshot["payload"]["requests"] = new JArray
+            {
+                new JObject { ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 50 },
+                new JObject { ["containerId"] = "战备箱", ["offset"] = 40, ["limit"] = 40 }
+            };
+            task.HandleWebRequest("snapshot", snapshot);
+
+            JObject move = Request("move", "wb.battlebox.move.1");
+            move["panel"] = "workbench";
+            move["payload"]["target"] = SlotRef("战备箱", 41, "inv200.41");
+            task.HandleWebRequest("move", move);
+
+            Assert.Equal("战备箱", (string)sent[0]["requests"][1]["containerId"]);
+            Assert.Equal(40, (int)sent[0]["requests"][1]["limit"]);
+            Assert.Equal("inventoryMove", (string)sent[1]["action"]);
+            Assert.Equal("战备箱", (string)sent[1]["target"]["containerId"]);
         }
 
         [Fact]
@@ -150,6 +193,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("仓库", (string)message["container"]["containerId"]);
             Assert.Equal(50, (int)message["container"]["offset"]);
             Assert.Equal("byType", (string)message["methodName"]);
+            Assert.Equal("all", (string)message["container"]["filterKey"]);
             Assert.Null(message["container"]["action"]);
             Assert.Null(message["unknown"]);
 
@@ -157,6 +201,26 @@ namespace CF7Launcher.Tests.Tasks
             bad["payload"]["methodName"] = "fallback-please";
             task.HandleWebRequest("sortAndMerge", bad);
             Assert.Equal("invalid_payload", (string)posted[0]["error"]);
+        }
+
+        [Theory]
+        [InlineData("背包", "weapon")]
+        [InlineData("仓库", "material")]
+        [InlineData("战备箱", "other")]
+        public void SortAndMerge_AllInventoryContainersPreserveTrustedFilterWindow(string containerId, string filterKey)
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("sortAndMerge", "wb.inventory.sort.scope");
+            request["payload"]["container"]["containerId"] = containerId;
+            request["payload"]["container"]["filterKey"] = filterKey;
+
+            task.HandleWebRequest("sortAndMerge", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal(containerId, (string)message["container"]["containerId"]);
+            Assert.Equal(filterKey, (string)message["container"]["filterKey"]);
+            Assert.Equal("inventorySortAndMerge", (string)message["action"]);
         }
 
         [Fact]

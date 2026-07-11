@@ -8,8 +8,9 @@ import org.flashNight.arki.item.equipment.TierSystem;
 /**
  * Web 双栏工作台的 inventory-domain 权威服务。
  *
- * v1 开放：range snapshot、lease-bound tooltip、背包 discard、背包↔仓库 whole-slot
- * move/merge/swap，以及仓库整容器 sortAndMerge。所有写入都在同一重入守卫内完成：双端 lease 校验 →
+ * v1 开放：全局分类窗口 snapshot、lease-bound tooltip、背包 discard、背包↔仓库/战备箱 whole-slot
+ * move/merge/swap，以及背包/仓库整容器、战备箱已解锁前缀的 sortAndMerge。战备箱只暴露剧情当前
+ * 解锁的槽位窗口，物理容量不等于可访问容量。所有写入都在同一重入守卫内完成：双端 lease 校验 →
  * 领域预检 → 无事件提交/失败回滚 → dirtyMark → 统一生命周期事件 → snapshot。
  */
 class org.flashNight.arki.item.InventoryPanelService {
@@ -29,6 +30,10 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static var _sortMethods:Object = {
         byType: true, byUse: true, byPrice: true, byLevel: true,
         byID: true, byName: true, byValue: true, byTime: true
+    };
+    private static var _filterKeys:Object = {
+        all: true, weapon: true, armor: true, consumable: true,
+        material: true, other: true
     };
 
     // Gate A2 的确定性失败注入，仅供 TestLoader 验证 rollback；生产默认永不命中。
@@ -99,15 +104,23 @@ class org.flashNight.arki.item.InventoryPanelService {
         for (i = 0; i < requests.length; i++) {
             var request:Object = requests[i];
             var containerId:String = request == undefined ? "" : String(request.containerId);
+            var filterKey:String = request == undefined || request.filterKey == undefined
+                ? "all" : String(request.filterKey);
             var inventory:ArrayInventory = resolveContainer(containerId);
             if (inventory == null) return fail("unsupported_container");
+            if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
             if (!isWholeNumber(request.offset) || !isWholeNumber(request.limit)) return fail("invalid_payload");
             var offset:Number = Number(request.offset);
             var limit:Number = Number(request.limit);
             if (offset < 0 || offset >= inventory.capacity || limit < 1 || limit > 100) {
                 return fail("invalid_payload");
             }
-            normalized.push({containerId: containerId, inventory: inventory, offset: offset, limit: limit});
+            var accessibleCapacity:Number = getAccessibleCapacity(containerId);
+            if ((accessibleCapacity <= 0 && offset != 0)
+                || (accessibleCapacity > 0 && offset >= accessibleCapacity)) {
+                return fail("slot_locked");
+            }
+            normalized.push({containerId: containerId, inventory: inventory, offset: offset, limit: limit, filterKey: filterKey});
         }
 
         // 每次显式读取都开启新的 snapshot-local lease session；旧 Web 会话 token 立即失效。
@@ -115,7 +128,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         var snapshots:Array = [];
         for (i = 0; i < normalized.length; i++) {
             var entry:Object = normalized[i];
-            snapshots.push(buildSnapshot(entry.containerId, entry.inventory, entry.offset, entry.limit));
+            snapshots.push(buildSnapshot(entry.containerId, entry.inventory, entry.offset, entry.limit, entry.filterKey));
         }
         return {success: true, v: 1, sessionNonce: _sessionNonce, snapshots: snapshots};
     }
@@ -158,8 +171,10 @@ class org.flashNight.arki.item.InventoryPanelService {
             displayname: String(projection.displayName),
             iconName: String(projection.icon),
             itemType: itemType,
-            descHTML: descHTML.split('"').join("&quot;"),
-            introHTML: introHTML.split('"').join("&quot;")
+            // LiteJSON 不转义字符串中的双引号；改用 HTML 等价的单引号属性，
+            // 避免 &quot; 被浏览器解析为属性值本身的一对引号而丢失字体样式。
+            descHTML: descHTML.split('"').join("'"),
+            introHTML: introHTML.split('"').join("'")
         };
     }
 
@@ -180,7 +195,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         invalidateSlot(sourceCheck.containerId, sourceCheck.slot);
         markDirty();
         sourceCheck.inventory.publishTransactionChange(sourceCheck.slot, "removed");
-        var snapshots:Array = [buildSnapshot("背包", sourceCheck.inventory, 0, Math.min(50, sourceCheck.inventory.capacity))];
+        var snapshots:Array = [buildSnapshot("背包", sourceCheck.inventory, 0, Math.min(50, sourceCheck.inventory.capacity), "all")];
         _busy = false;
         return {success: true, v: 1, operation: "discard", discarded: buildItemProjection(oldItem), snapshots: snapshots};
     }
@@ -228,7 +243,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         var container:Object = params.container;
         if (container == undefined) return fail("invalid_payload");
         var containerId:String = String(container.containerId);
-        if (containerId != "仓库") return fail("sort_forbidden");
+        if (containerId != "背包" && containerId != "仓库" && containerId != "战备箱") return fail("sort_forbidden");
         var inventory:ArrayInventory = resolveContainer(containerId);
         if (inventory == null) return fail("unsupported_container");
         if (!isWholeNumber(container.offset) || !isWholeNumber(container.limit)) return fail("invalid_payload");
@@ -237,16 +252,22 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (offset < 0 || offset >= inventory.capacity || limit < 1 || limit > 100) return fail("invalid_payload");
         var methodName:String = String(params.methodName);
         if (_sortMethods[methodName] !== true) return fail("unsupported_sort_method");
+        var filterKey:String = container.filterKey == undefined ? "all" : String(container.filterKey);
+        if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
+        var sortCapacity:Number = getAccessibleCapacity(containerId);
+        if (sortCapacity <= 0) return fail("sort_forbidden");
 
         var oldSlots:Array = [];
+        var scopeItems:Array = [];
         for (var slot:Number = 0; slot < inventory.capacity; slot++) {
             var current:Object = inventory.getItem(String(slot));
             oldSlots[slot] = current;
+            if (slot < sortCapacity && current != null) scopeItems.push(current);
         }
 
         _busy = true;
-        var working:ArrayInventory = new ArrayInventory(null, inventory.capacity);
-        if (!working.transactionReplaceAll(inventory.getItemArray())) {
+        var working:ArrayInventory = new ArrayInventory(null, sortCapacity);
+        if (!working.transactionReplaceAll(scopeItems)) {
             _busy = false;
             return fail("sort_failed");
         }
@@ -258,11 +279,11 @@ class org.flashNight.arki.item.InventoryPanelService {
             _busy = false;
             return fail("sort_failed");
         }
-        if (!sameInventoryMass(inventory.getItemArray(), planned)) {
+        if (!sameInventoryMass(scopeItems, planned)) {
             _busy = false;
             return fail("sort_failed");
         }
-        if (!commitReplaceAll(containerId, inventory, planned)) {
+        if (!commitReplacePrefix(containerId, inventory, planned, sortCapacity)) {
             _busy = false;
             return fail("commit_failed");
         }
@@ -271,13 +292,14 @@ class org.flashNight.arki.item.InventoryPanelService {
         bumpContainerEpoch(containerId);
         markDirty();
         publishRebuildEvents(inventory, oldSlots);
-        var snapshots:Array = [buildSnapshot(containerId, inventory, offset, limit)];
+        var snapshots:Array = [buildSnapshot(containerId, inventory, offset, limit, filterKey)];
         _busy = false;
         return {
             success: true,
             v: 1,
             operation: "sortAndMerge",
             methodName: methodName,
+            sortedCapacity: sortCapacity,
             snapshots: snapshots
         };
     }
@@ -377,6 +399,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (!isWholeNumber(ref.slot)) return fail("invalid_payload");
         var slot:Number = Number(ref.slot);
         if (slot < 0 || slot >= inventory.capacity) return fail("invalid_slot");
+        if (slot >= getAccessibleCapacity(containerId)) return fail("slot_locked");
         var expectedLease:String = String(ref.expectedLease);
         if (expectedLease == "" || leaseArray(_leaseIds, containerId)[slot] != expectedLease) {
             return fail("stale_state");
@@ -406,42 +429,97 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function buildAffectedSnapshots(source:Object, target:Object):Array {
         var snapshots:Array = [];
-        var sourceOffset:Number = Math.floor(source.slot / 50) * 50;
-        var targetOffset:Number = Math.floor(target.slot / 50) * 50;
-        snapshots.push(buildSnapshot(source.containerId, source.inventory, sourceOffset, 50));
+        var sourcePageSize:Number = getPageSizeHint(source.containerId);
+        var targetPageSize:Number = getPageSizeHint(target.containerId);
+        var sourceOffset:Number = Math.floor(source.slot / sourcePageSize) * sourcePageSize;
+        var targetOffset:Number = Math.floor(target.slot / targetPageSize) * targetPageSize;
+        snapshots.push(buildSnapshot(source.containerId, source.inventory, sourceOffset, sourcePageSize, "all"));
         if (source.containerId != target.containerId || sourceOffset != targetOffset) {
-            snapshots.push(buildSnapshot(target.containerId, target.inventory, targetOffset, 50));
+            snapshots.push(buildSnapshot(target.containerId, target.inventory, targetOffset, targetPageSize, "all"));
         }
         return snapshots;
     }
 
-    private static function buildSnapshot(containerId:String, inventory:ArrayInventory, offset:Number, limit:Number):Object {
-        var end:Number = Math.min(inventory.capacity, offset + limit);
+    private static function buildSnapshot(containerId:String, inventory:ArrayInventory, offset:Number, limit:Number, filterKey:String):Object {
+        var accessibleCapacity:Number = getAccessibleCapacity(containerId);
+        if (_filterKeys[filterKey] !== true) filterKey = "all";
         var slots:Array = [];
-        for (var slot:Number = offset; slot < end; slot++) {
-            var item:Object = inventory.getItem(String(slot));
-            var lease:String = issueLease(containerId, slot, item);
-            var slotSnapshot:Object = {
-                physicalSlot: slot,
-                occupied: item != null,
-                slotLease: lease
-            };
-            if (item != null) {
-                slotSnapshot.item = buildItemProjection(item);
-                slotSnapshot.confirmProjection = buildConfirmProjection(item);
+        var viewCapacity:Number = accessibleCapacity;
+        var effectiveOffset:Number = offset;
+        var slot:Number;
+        var item:Object;
+
+        if (filterKey == "all") {
+            if (viewCapacity <= 0) effectiveOffset = 0;
+            else if (effectiveOffset >= viewCapacity) {
+                effectiveOffset = Math.floor((viewCapacity - 1) / limit) * limit;
             }
-            slots.push(slotSnapshot);
+            var end:Number = Math.min(accessibleCapacity, effectiveOffset + limit);
+            for (slot = effectiveOffset; slot < end; slot++) {
+                item = inventory.getItem(String(slot));
+                slots.push(buildSlotSnapshot(containerId, slot, item));
+            }
+        } else {
+            var matches:Array = [];
+            for (slot = 0; slot < accessibleCapacity; slot++) {
+                item = inventory.getItem(String(slot));
+                if (item != null && itemMatchesFilter(item, filterKey)) matches.push(slot);
+            }
+            viewCapacity = matches.length;
+            if (viewCapacity <= 0) effectiveOffset = 0;
+            else if (effectiveOffset >= viewCapacity) {
+                effectiveOffset = Math.floor((viewCapacity - 1) / limit) * limit;
+            }
+            var matchEnd:Number = Math.min(viewCapacity, effectiveOffset + limit);
+            for (var matchIndex:Number = effectiveOffset; matchIndex < matchEnd; matchIndex++) {
+                slot = Number(matches[matchIndex]);
+                item = inventory.getItem(String(slot));
+                slots.push(buildSlotSnapshot(containerId, slot, item));
+            }
         }
         _snapshotSeq++;
         return {
             containerId: containerId,
             capacity: inventory.capacity,
+            accessibleCapacity: accessibleCapacity,
+            viewCapacity: viewCapacity,
+            filterKey: filterKey,
+            pageSizeHint: getPageSizeHint(containerId),
+            locked: accessibleCapacity <= 0,
             snapshotSeq: _snapshotSeq,
             containerEpoch: getContainerEpoch(containerId),
-            offset: offset,
-            limit: end - offset,
+            offset: effectiveOffset,
+            limit: slots.length,
             slots: slots
         };
+    }
+
+    private static function buildSlotSnapshot(containerId:String, slot:Number, item:Object):Object {
+        var lease:String = issueLease(containerId, slot, item);
+        var slotSnapshot:Object = {
+            physicalSlot: slot,
+            occupied: item != null,
+            slotLease: lease
+        };
+        if (item != null) {
+            slotSnapshot.item = buildItemProjection(item);
+            slotSnapshot.confirmProjection = buildConfirmProjection(item);
+        }
+        return slotSnapshot;
+    }
+
+    private static function itemMatchesFilter(item:Object, filterKey:String):Boolean {
+        if (filterKey == "all") return true;
+        var data:Object = item != null && typeof item.getData == "function"
+            ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+        var majorType:String = data == null ? "" : String(data.type != undefined ? data.type : data.类型);
+        var useName:String = data == null || data.use == undefined ? "" : String(data.use);
+        if (filterKey == "weapon") return majorType == "武器";
+        if (filterKey == "armor") return majorType == "防具";
+        if (filterKey == "consumable") return majorType == "消耗品";
+        if (filterKey == "material") return majorType == "材料" || (majorType == "收集品" && useName == "材料");
+        return majorType != "武器" && majorType != "防具" && majorType != "消耗品"
+            && majorType != "材料" && !(majorType == "收集品" && useName == "材料");
     }
 
     private static function buildItemProjection(item:Object):Object {
@@ -596,11 +674,45 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function resolveContainer(containerId:String):ArrayInventory {
-        if (containerId != "背包" && containerId != "仓库") return null;
+        if (containerId != "背包" && containerId != "仓库" && containerId != "战备箱") return null;
         if (_root.物品栏 == undefined) return null;
         var inventory:ArrayInventory = _root.物品栏[containerId];
         if (!(inventory instanceof ArrayInventory)) return null;
         return inventory;
+    }
+
+    /**
+     * 返回 Web 与旧 Flash 仓库界面共同采用的权威可访问容量。
+     * 战备箱物理容量固定用于存档兼容；剧情只逐页开放前 0..240 个槽位。
+     */
+    public static function getAccessibleCapacity(containerId:String):Number {
+        var inventory:ArrayInventory = resolveContainer(containerId);
+        if (inventory == null) return 0;
+        if (containerId != "战备箱") return inventory.capacity;
+
+        var mainProgress:Number = Number(_root.主线任务进度);
+        if (isNaN(mainProgress) || mainProgress <= 13) return 0;
+
+        var pages:Number = 1;
+        var challengeProgress:Number = NaN;
+        if (_root.task_chains_progress != undefined) {
+            challengeProgress = Number(_root.task_chains_progress.挑战);
+        }
+        if (!isNaN(challengeProgress)) {
+            if (challengeProgress > 0) pages++;
+            if (challengeProgress > 2) pages++;
+        }
+        if (mainProgress > 77) pages += 2;
+        if (_root.基建系统 != undefined
+            && _root.基建系统.infrastructure != undefined
+            && _root.基建系统.infrastructure.越野车) {
+            pages++;
+        }
+        return Math.min(inventory.capacity, pages * getPageSizeHint(containerId));
+    }
+
+    private static function getPageSizeHint(containerId:String):Number {
+        return containerId == "战备箱" ? 40 : 50;
     }
 
     private static function getContainerEpoch(containerId:String):Number {
@@ -634,6 +746,15 @@ class org.flashNight.arki.item.InventoryPanelService {
             return false;
         }
         return inventory.transactionReplaceAll(orderedItems);
+    }
+
+    private static function commitReplacePrefix(containerId:String, inventory:ArrayInventory, orderedItems:Array, prefixCapacity:Number):Boolean {
+        if (_testFailContainerId == containerId && _testFailSlot < 0) {
+            _testFailContainerId = "";
+            _testFailSlot = -1;
+            return false;
+        }
+        return inventory.transactionReplacePrefix(orderedItems, prefixCapacity);
     }
 
     private static function markDirty():Void {

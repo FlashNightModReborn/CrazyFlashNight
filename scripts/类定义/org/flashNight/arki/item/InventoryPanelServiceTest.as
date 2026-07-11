@@ -14,17 +14,22 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         trace("=== InventoryPanelServiceTest start ===");
 
         testRangeSnapshot();
+        testFilteredSnapshot();
         testPresentationProjection();
         testTooltipLeaseAndInstance();
         testSourceAndTargetStale();
         testMergeCountStale();
         testDomainReject();
+        testBattleboxAccessPolicy();
+        testBattleboxTransfers();
         testMoveMergeSwapAndReverse();
         testSameContainerTransfersAndRollback();
         testEventReentrancy();
         testCommitFailureRollback();
         testDiscardProjectionAndSuccess();
         testSortValidationMergeEpochAndLease();
+        testBackpackAuthoritySort();
+        testBattleboxAccessiblePrefixSort();
         testSortRejectsLossyPlan();
         testSortCommitFailureRollback();
         testSortEventReentrancy();
@@ -39,8 +44,12 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
     private static function resetInventories():Void {
         _root.物品栏 = {
             背包: new ArrayInventory(null, 50),
-            仓库: new ArrayInventory(null, 1200)
+            仓库: new ArrayInventory(null, 1200),
+            战备箱: new ArrayInventory(null, 400)
         };
+        _root.主线任务进度 = 0;
+        _root.task_chains_progress = {挑战: 0};
+        _root.基建系统 = {infrastructure: {越野车: false}};
         _root.存档系统 = {dirtyMark: false};
         InventoryPanelService.testOnlyReset();
     }
@@ -63,6 +72,20 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         return InventoryPanelService.execute("snapshot", {
             v: 1,
             requests: [{containerId: "仓库", offset: offset, limit: limit}]
+        });
+    }
+
+    private static function battleboxSnapshot(offset:Number, limit:Number):Object {
+        return InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [{containerId: "战备箱", offset: offset, limit: limit}]
+        });
+    }
+
+    private static function filteredSnapshot(containerId:String, offset:Number, limit:Number, filterKey:String):Object {
+        return InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [{containerId: containerId, offset: offset, limit: limit, filterKey: filterKey}]
         });
     }
 
@@ -128,6 +151,44 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             "空目标槽也由 AS2 铸造 lease");
     }
 
+    private static function testFilteredSnapshot():Void {
+        resetInventories();
+        var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        var previousMaterial:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"];
+        var previousWeapon:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"];
+        org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"] = {type: "收集品", use: "材料", price: 1};
+        org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = {type: "武器", use: "手枪", price: 2};
+        for (var slot:Number = 0; slot < 51; slot++) {
+            _root.物品栏.仓库.add(slot, new BaseItem("筛选材料", 1, slot + 1));
+        }
+        _root.物品栏.仓库.add(100, new BaseItem("筛选武器", {level: 1}, 1));
+
+        var secondPage:Object = filteredSnapshot("仓库", 50, 50, "material");
+        assertTrue(secondPage.success && secondPage.snapshots[0].filterKey == "material"
+                && secondPage.snapshots[0].viewCapacity == 51
+                && secondPage.snapshots[0].slots.length == 1
+                && secondPage.snapshots[0].slots[0].physicalSlot == 50,
+            "全容器分类筛选按匹配数量分页并保留真实 physicalSlot");
+        var weapon:Object = filteredSnapshot("仓库", 0, 50, "weapon");
+        assertTrue(weapon.success && weapon.snapshots[0].viewCapacity == 1
+                && weapon.snapshots[0].slots[0].physicalSlot == 100,
+            "分类筛选跨越未加载物理页查找匹配物品");
+        var clamped:Object = filteredSnapshot("仓库", 50, 50, "weapon");
+        assertTrue(clamped.success && clamped.snapshots[0].offset == 0
+                && clamped.snapshots[0].slots[0].physicalSlot == 100,
+            "筛选结果缩减后把过期页码收敛到合法末页");
+        var invalid:Object = filteredSnapshot("仓库", 0, 50, "unknown");
+        assertTrue(!invalid.success && invalid.error == "unsupported_filter",
+            "未知分类筛选在 AS2 权威层严格拒绝");
+
+        if (previousMaterial == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"] = previousMaterial;
+        if (previousWeapon == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = previousWeapon;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+    }
+
     private static function testTooltipLeaseAndInstance():Void {
         resetInventories();
         var name:String = "GateA3库存注释";
@@ -136,7 +197,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
         org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
             name: name, displayname: name, type: "收集品", use: "材料", price: 1,
-            description: "库存实例注释测试"
+            description: "<FONT COLOR=\"#FF00FF\">库存实例注释测试</FONT>"
         };
         var owned:BaseItem = new BaseItem(name, 3, 1);
         _root.物品栏.背包.add(0, owned);
@@ -144,8 +205,10 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var source:Object = refFrom(response, 0, 0);
         var tooltip:Object = InventoryPanelService.execute("tooltip", {v: 1, source: source});
         assertTrue(tooltip.success && tooltip.itemName == name
-            && tooltip.introHTML != undefined && tooltip.descHTML != undefined,
-            "tooltip 按 lease 读取真实库存实例并返回富文本");
+            && tooltip.introHTML != undefined && tooltip.descHTML != undefined
+            && tooltip.descHTML.indexOf("&quot;") < 0
+            && tooltip.descHTML.indexOf("COLOR='#FF00FF'") >= 0,
+            "tooltip 按 lease 读取真实库存实例并返回 Web 可解析的富文本");
 
         _root.物品栏.背包.remove(0);
         _root.物品栏.背包.add(0, new BaseItem(name, 1, 2));
@@ -248,12 +311,80 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
 
     private static function testDomainReject():Void {
         resetInventories();
-        var result:Object = InventoryPanelService.execute("move", {
+        var result:Object = InventoryPanelService.execute("snapshot", {
             v: 1,
-            source: {containerId: "战备箱", slot: 0, expectedLease: "fake"},
-            target: {containerId: "仓库", slot: 0, expectedLease: "fake"}
+            requests: [{containerId: "未开放容器", offset: 0, limit: 10}]
         });
-        assertTrue(!result.success && result.error == "unsupported_container", "AS2 容器白名单最终拒绝未开放领域");
+        assertTrue(!result.success && result.error == "unsupported_container", "AS2 容器白名单最终拒绝未知领域");
+    }
+
+    private static function testBattleboxAccessPolicy():Void {
+        resetInventories();
+        var result:Object = battleboxSnapshot(0, 40);
+        assertTrue(result.success && result.snapshots[0].capacity == 400
+                && result.snapshots[0].accessibleCapacity == 0
+                && result.snapshots[0].pageSizeHint == 40
+                && result.snapshots[0].locked && result.snapshots[0].slots.length == 0,
+            "未解锁战备箱保留物理容量但返回零可访问容量与锁定快照");
+
+        _root.主线任务进度 = 14;
+        assertTrue(InventoryPanelService.getAccessibleCapacity("战备箱") == 40,
+            "主线越过初始门槛后开放战备箱第一页");
+        _root.task_chains_progress.挑战 = 3;
+        assertTrue(InventoryPanelService.getAccessibleCapacity("战备箱") == 120,
+            "挑战进度最多追加两页战备箱容量");
+        _root.主线任务进度 = 78;
+        assertTrue(InventoryPanelService.getAccessibleCapacity("战备箱") == 200,
+            "后期主线追加两页战备箱容量");
+        _root.基建系统.infrastructure.越野车 = true;
+        assertTrue(InventoryPanelService.getAccessibleCapacity("战备箱") == 240,
+            "越野车基建追加最终一页且不暴露存档保留槽位");
+
+        result = battleboxSnapshot(240, 40);
+        assertTrue(!result.success && result.error == "slot_locked",
+            "range snapshot 拒绝越过剧情可访问容量的窗口");
+
+        _root.主线任务进度 = 14;
+        _root.task_chains_progress.挑战 = 0;
+        _root.基建系统.infrastructure.越野车 = false;
+        result = InventoryPanelService.execute("move", {
+            v: 1,
+            source: {containerId: "战备箱", slot: 40, expectedLease: "fake"},
+            target: {containerId: "背包", slot: 0, expectedLease: "fake"}
+        });
+        assertTrue(!result.success && result.error == "slot_locked",
+            "写操作在 lease 校验前拒绝战备箱未解锁槽位");
+    }
+
+    private static function testBattleboxTransfers():Void {
+        resetInventories();
+        _root.主线任务进度 = 78;
+        _root.task_chains_progress.挑战 = 3;
+        _root.基建系统.infrastructure.越野车 = true;
+        var moving:Object = item("战备物资", 2);
+        _root.物品栏.背包.add(0, moving);
+        var response:Object = InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [
+                {containerId: "背包", offset: 0, limit: 50},
+                {containerId: "战备箱", offset: 0, limit: 40}
+            ]
+        });
+        var result:Object = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(response, 0, 0), target: refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && _root.物品栏.战备箱.getItem("0") === moving
+                && result.snapshots[0].pageSizeHint == 50
+                && result.snapshots[1].pageSizeHint == 40
+                && result.snapshots[1].slots.length == 40,
+            "背包→战备箱 whole-slot move 返回两端各自的权威页大小");
+
+        result = InventoryPanelService.execute("move", {
+            v: 1, source: refFrom(result, 1, 0), target: refFrom(result, 0, 1)
+        });
+        assertTrue(result.success && _root.物品栏.背包.getItem("1") === moving
+                && _root.物品栏.战备箱.getItem("0") == null,
+            "战备箱→背包反向移动复用同一事务协议");
     }
 
     private static function testMoveMergeSwapAndReverse():Void {
@@ -481,6 +612,54 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         else org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"] = previousZuluMeta;
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
         if (equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = undefined;
+    }
+
+    private static function testBackpackAuthoritySort():Void {
+        resetInventories();
+        var metadata:Object = installSortTestMetadata(["Alpha", "Zulu"]);
+        _root.物品栏.背包.add(2, item("Zulu", {level: 1}));
+        _root.物品栏.背包.add(40, item("Alpha", {level: 1}));
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1,
+            container: {containerId: "背包", offset: 0, limit: 50, filterKey: "all"},
+            methodName: "byName"
+        });
+        assertTrue(result.success && result.sortedCapacity == 50
+                && _root.物品栏.背包.getItem("0").name == "Alpha"
+                && _root.物品栏.背包.getItem("1").name == "Zulu"
+                && result.snapshots[0].containerEpoch == 2,
+            "背包复用事务化权威整理并重铸整容器 epoch");
+        assertTrue(_root.存档系统.dirtyMark == true,
+            "背包权威整理成功后显式标脏");
+        restoreSortTestMetadata(metadata);
+    }
+
+    private static function testBattleboxAccessiblePrefixSort():Void {
+        resetInventories();
+        _root.主线任务进度 = 14;
+        var metadata:Object = installSortTestMetadata(["Alpha", "Zulu"]);
+        _root.物品栏.战备箱.add(3, item("Zulu", {level: 1}));
+        _root.物品栏.战备箱.add(35, item("Alpha", {level: 1}));
+        var reservedA:Object = item("保留区A", {level: 1});
+        var reservedB:Object = item("保留区B", {level: 1});
+        _root.物品栏.战备箱.add(80, reservedA);
+        _root.物品栏.战备箱.add(399, reservedB);
+
+        var result:Object = InventoryPanelService.execute("sortAndMerge", {
+            v: 1,
+            container: {containerId: "战备箱", offset: 0, limit: 40, filterKey: "all"},
+            methodName: "byName"
+        });
+        assertTrue(result.success && result.sortedCapacity == 40
+                && _root.物品栏.战备箱.getItem("0").name == "Alpha"
+                && _root.物品栏.战备箱.getItem("1").name == "Zulu",
+            "战备箱权威整理只压缩当前剧情已解锁前缀");
+        assertTrue(_root.物品栏.战备箱.getItem("80") === reservedA
+                && _root.物品栏.战备箱.getItem("399") === reservedB,
+            "战备箱400槽锁定保留区逐槽保持原 key 与对象引用");
+        assertTrue(_root.存档系统.dirtyMark == true && result.snapshots[0].containerEpoch == 2,
+            "战备箱前缀整理标脏并使可见 lease 失效");
+        restoreSortTestMetadata(metadata);
     }
 
     private static function testSortCommitFailureRollback():Void {

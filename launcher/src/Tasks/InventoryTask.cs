@@ -212,16 +212,19 @@ namespace CF7Launcher.Tasks
                     JObject request = token as JObject;
                     if (request == null) return false;
                     string containerId = request.Value<string>("containerId");
+                    string filterKey = request.Value<string>("filterKey") ?? "all";
                     int offset;
                     int limit;
                     if (!IsContainerId(containerId)
                         || !TryReadNonNegativeInteger(request["offset"], out offset)
-                        || !TryReadPositiveInteger(request["limit"], 100, out limit)) return false;
+                        || !TryReadPositiveInteger(request["limit"], 100, out limit)
+                        || !IsFilterKey(filterKey)) return false;
                     cleanRequests.Add(new JObject
                     {
                         ["containerId"] = containerId,
                         ["offset"] = offset,
-                        ["limit"] = limit
+                        ["limit"] = limit,
+                        ["filterKey"] = filterKey
                     });
                 }
                 normalized["requests"] = cleanRequests;
@@ -232,6 +235,7 @@ namespace CF7Launcher.Tasks
             {
                 JObject container = payload["container"] as JObject;
                 string containerId = container != null ? container.Value<string>("containerId") : null;
+                string filterKey = container != null ? (container.Value<string>("filterKey") ?? "all") : null;
                 string methodName = payload.Value<string>("methodName");
                 int offset;
                 int limit;
@@ -239,12 +243,14 @@ namespace CF7Launcher.Tasks
                     || !IsContainerId(containerId)
                     || !TryReadNonNegativeInteger(container["offset"], out offset)
                     || !TryReadPositiveInteger(container["limit"], 100, out limit)
+                    || !IsFilterKey(filterKey)
                     || !IsSortMethod(methodName)) return false;
                 normalized["container"] = new JObject
                 {
                     ["containerId"] = containerId,
                     ["offset"] = offset,
-                    ["limit"] = limit
+                    ["limit"] = limit,
+                    ["filterKey"] = filterKey
                 };
                 normalized["methodName"] = methodName;
                 return true;
@@ -299,6 +305,22 @@ namespace CF7Launcher.Tasks
                 case "byName":
                 case "byValue":
                 case "byTime":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private static bool IsFilterKey(string value)
+        {
+            switch (value)
+            {
+                case "all":
+                case "weapon":
+                case "armor":
+                case "consumable":
+                case "material":
+                case "other":
                     return true;
                 default:
                     return false;

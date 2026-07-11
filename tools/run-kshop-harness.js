@@ -11,8 +11,12 @@ const WEB_ROOT = path.join(ROOT, 'launcher', 'web');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
 const WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench.js');
 const INVENTORY_RUNTIME_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-runtime.js');
+const INVENTORY_UI_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-ui.js');
+const INVENTORY_WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-workbench.js');
 const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior.js');
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
+const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
+const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
 const visualArg = process.argv.find(arg => arg.startsWith('--visual='));
 const shotArg = process.argv.find(arg => arg.startsWith('--shot='));
 const viewportArg = process.argv.find(arg => arg.startsWith('--viewport='));
@@ -46,8 +50,39 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory operation resolver branches on concrete container pair');
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
+    const panelsSource = fs.readFileSync(PANELS_SOURCE, 'utf8');
+    const panelsCssSource = fs.readFileSync(PANELS_CSS_SOURCE, 'utf8');
     if (kshopSource.includes('same_container_unsupported')) {
         throw new Error('KShop still rejects generic same-container owned transfer');
+    }
+    const inventoryUiSource = fs.readFileSync(INVENTORY_UI_SOURCE, 'utf8');
+    const inventoryWorkbenchSource = fs.readFileSync(INVENTORY_WORKBENCH_SOURCE, 'utf8');
+    const extractedUiTokens = ['function warehousePageState(', 'function renderWarehousePageMenu(',
+        'function onWarehousePageShortcut(', 'function changeWarehousePage(', 'function jumpWarehouseToPage('];
+    const uiLeaks = extractedUiTokens.filter(token => kshopSource.includes(token));
+    if (uiLeaks.length) throw new Error('KShop still owns extracted inventory UI: ' + uiLeaks.join(', '));
+    if (!inventoryUiSource.includes('function InventoryWindowPager(')
+            || !inventoryUiSource.includes('function InventorySortControls(')
+            || !inventoryUiSource.includes('function derivePageState(')
+            || !inventoryUiSource.includes('function renderOwnedSlot(')) {
+        throw new Error('Inventory UI component boundary is incomplete');
+    }
+    if (inventoryWorkbenchSource.includes("requestShop(")
+            || inventoryWorkbenchSource.includes("'bulkQuery'")
+            || inventoryWorkbenchSource.includes('shopPanelOpen')) {
+        throw new Error('Standalone inventory workbench leaked into shop lifecycle');
+    }
+    if (!kshopSource.includes('InventoryUI.renderOwnedSlot(')
+            || !inventoryWorkbenchSource.includes('InventoryUI.renderOwnedSlot(')) {
+        throw new Error('Owned-slot renderer is not shared by shop and standalone workbench');
+    }
+    if (!panelsSource.includes('ensureRequiredAssets(')
+            || !panelsSource.includes('Icons.load(finishRequiredAssets)')
+            || !panelsSource.includes('openAfterRequiredAssets(id)')) {
+        throw new Error('Panels lifecycle no longer gates first open on the shared icon manifest');
+    }
+    if (!/#panel-container\[data-panel="workbench"\]\s+#panel-content\s*\{[\s\S]*?inset:\s*0\s*;/.test(panelsCssSource)) {
+        throw new Error('Standalone workbench no longer uses the full panel anchor');
     }
     const behaviorSource = fs.readFileSync(GAME_UI_BEHAVIOR_SOURCE, 'utf8');
     const behaviorEvents = ['selectstart', 'dragstart', 'contextmenu'];
@@ -60,6 +95,10 @@ function auditArchitectureBoundaries() {
         gridRendererTransportFree:true,
         ownedPairBranchFree:true,
         sameContainerTransfer:true,
+        inventoryUiComponents:true,
+        standaloneBattleboxWorkbench:true,
+        sharedIconManifestGate:true,
+        workbenchFullAnchor:true,
         nativeBehaviorGuard:behaviorEvents
     };
 }
@@ -121,11 +160,32 @@ function createServer() {
             const shotPath = path.resolve(ROOT, shotArg.slice('--shot='.length));
             await page.screenshot({path:shotPath,fullPage:true});
         }
-        const visualState = await page.evaluate(() => ({
-            state:KShop.debugState(),
+        const visualState = await page.evaluate(mode => ({
+            state:mode.indexOf('battlebox') === 0 ? InventoryWorkbench.debugState() : KShop.debugState(),
             shellRect:(() => { const r=document.querySelector('.workbench-shell').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })(),
+            contentRect:(() => { const r=document.getElementById('panel-content').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })(),
+            fullAnchor:(() => { const r=document.getElementById('panel-content').getBoundingClientRect(); return Math.abs(r.x)<1 && Math.abs(r.y)<1 && Math.abs(r.width-innerWidth)<1 && Math.abs(r.height-innerHeight)<1; })(),
+            inventoryLayout:(() => {
+                const out={};
+                ['backpack','warehouse','battlebox'].forEach(name => {
+                    const root=document.querySelector('.inventory-owned-'+name);
+                    if(!root) return;
+                    if(name==='warehouse' && root.classList.contains('inventory-owned-battlebox')) return;
+                    const title=root.querySelector('.workbench-view-title');
+                    const toolbar=root.querySelector('.inventory-container-toolbar');
+                    const grid=root.querySelector('.inventory-owned-grid');
+                    out[name]={
+                        occupied:root.querySelectorAll('.inventory-slot-card.occupied').length,
+                        title:title ? title.textContent : '',
+                        titleClipped:!!(title && (title.scrollWidth-title.clientWidth>2 || title.scrollHeight-title.clientHeight>2)),
+                        toolbarOverflow:!!(toolbar && (toolbar.scrollWidth>toolbar.clientWidth || toolbar.scrollHeight>toolbar.clientHeight)),
+                        gridOverflow:!!(grid && (grid.scrollWidth>grid.clientWidth || grid.scrollHeight>grid.clientHeight))
+                    };
+                });
+                return out;
+            })(),
             bodyOverflow:document.body.scrollWidth > document.body.clientWidth || document.body.scrollHeight > document.body.clientHeight
-        }));
+        }), visualMode);
         await browser.close();
         server.close();
         process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');

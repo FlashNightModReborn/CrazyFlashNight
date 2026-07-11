@@ -395,6 +395,7 @@ safeNotchWidth = 2 × (724 - 12 - 512) = 400
 - `powershell -ExecutionPolicy Bypass -File launcher/build.ps1`：通过；Web runtime 116 项资源检查、Native cursor、map HUD 数据、save repair 字典和 Release 优化门均通过。既有 pet roster 8 条 warning、MSVC miniaudio warning、WindowsBase 引用 warning 未由本施工引入。
 - `powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1`：合入上游 `dd40d0f5cf` 后 713/713 通过。
 - 新增/强化确定性覆盖：地图三层状态与 UserPrefs 归一化、显示/尺寸切换职责分离且不污染 `mm=3/CanDeliver`、无通知地图紧贴动作行、SafeExit 条件预留状态槽与 5 秒安全自动收起/悬停暂停、1024/1600/1920 几何、252px 混合按钮宽度、刘海 400px 上限与 12px 间隙、“其他”三分类与折叠生命周期、CompositeBounds union/透明命中、Notch 动画端点 bounds、AudioHudState、六入口路由、SafeExit 状态机与单行布局、FontPack 字体路径不越界到 Flash 编辑字体目录，以及共享 32px 顶行、直角外框、常见缩放 1px 发丝线和主题对比层级。
+- 2026-07-11 补充：刘海“战备箱”已由 Flash `warehouse` 切到独立 Web `workbench`（背包—战备箱），默认不创建旧 Flash 仓库层；`CF7_WEB_INVENTORY_WORKBENCH=0` 保留诊断回退。路由、40 槽/页与 0..6 页权限窗口由 Launcher xUnit、Web harness 和 Flash fresh trace 共同守门。
 - `node tools/validate-doc-governance.js`：通过（`[doc-governance] ok`）。
 
 发布前仍需人类在真游戏进程完成：1024×576 与常用分辨率截图、100/125/150/175% DPI、双屏混合 DPI、鼠标透传手点、panel suspend/resume、`nativeHud.boundsSource/repaintSource/commit` 真实计数对比。自动测试已经证明状态机和几何契约，不等价于声称这些人工视觉项已通过。
@@ -534,6 +535,7 @@ safeNotchWidth = 2 × (724 - 12 - 512) = 400
 - [x] 条件第二行优先级：SafeExit > 可交付任务 > 普通任务通知
 - [x] SafeExit 重锚为条件状态槽上的单行覆盖层
 - [x] 当前版本地图默认 `auto`（当前无战术数据时等价 hidden；用户可固定 compact/expanded）
+- [x] 刘海“战备箱”直达背包—战备箱 Web 双栏工作台，不再以 Flash 仓库界面伪装
 - [ ] 350～500ms hover-intent 艺术预览：本期不做，不阻塞施工完成
 - [x] surface 拆分仅在真实 A/B 后裁决；本期保留稳定单 surface
 - [x] 核心阶段分别落测试与文档；由于用户要求本轮完成，工作树尚未人为切成多次 commit

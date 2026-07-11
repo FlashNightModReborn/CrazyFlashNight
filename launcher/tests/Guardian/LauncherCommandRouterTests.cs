@@ -89,6 +89,32 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void WAREHOUSE_DefaultRoute_OpensBattleboxWorkbenchWithoutFlashWarehouseCommand()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.Dispatch("WAREHOUSE");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
+            Assert.Contains("\"leftContainer\":\"背包\"", c.Posts[0]);
+            Assert.Contains("\"rightContainer\":\"战备箱\"", c.Posts[0]);
+            Assert.Equal(new[] { "workbench" }, c.ActivePanels);
+            Assert.Equal(new[] { true }, c.StateCallbacks);
+        }
+
+        [Fact]
+        public void WAREHOUSE_DisabledRoute_DoesNotOpenWebPanel()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.WebInventoryWorkbenchEnabled = false;
+            r.Dispatch("WAREHOUSE");
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+        }
+
+        [Fact]
         public void GOBANG_TEST_OpenPanelFallback_IncludesInitData()
         {
             Capture c = new Capture();

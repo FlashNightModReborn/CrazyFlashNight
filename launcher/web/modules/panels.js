@@ -14,8 +14,13 @@ var Panels = (function() {
     var _registry = {};
     var _active = null;
     var _container, _backdrop, _content;
-    // _pendingOpen：lazy 加载期间记录最新 open 请求；中途若被 close/切面板，这里被覆盖或清空，
-    //   完成时按当前值决定是否真正打开。避免乱序导致已关闭的面板又被拉起。
+    // 所有生产 Panel 共用的最低资源门：物品 / 装备 / 奖励图标 manifest。
+    // icons.js 本身是 boot 脚本，但 manifest 是异步加载；若不在生命周期层拦住首次 open，
+    // 新迁移面板很容易在 Icons.html() 仍为空时完成第一次渲染。
+    var _requiredAssetsState = 'idle';
+    var _requiredAssetsQueue = [];
+    // _pendingOpen：required-assets / lazy 加载期间记录最新 open 请求；中途若被 close/切面板，
+    //   这里被覆盖或清空。完成时按当前值决定是否真正打开，避免已关闭面板被异步拉起。
     var _pendingOpen = null;
 
     function cancelPendingOpen(notifyHost, reason) {
@@ -38,6 +43,42 @@ var Panels = (function() {
         _backdrop  = document.getElementById('panel-backdrop');
         _content   = document.getElementById('panel-content');
         _backdrop.addEventListener('click', function() { triggerRequestClose(); });
+        // 尽早预热；open() 仍会等待该门完成，因此即使 C# 紧接 ready 下发 open 也不会抢跑。
+        ensureRequiredAssets();
+    }
+
+    function finishRequiredAssets() {
+        if (_requiredAssetsState === 'ready') return;
+        _requiredAssetsState = 'ready';
+        var queue = _requiredAssetsQueue.slice();
+        _requiredAssetsQueue = [];
+        for (var i = 0; i < queue.length; i++) {
+            try { queue[i](); }
+            catch (e) { console.error('[Panels] required asset callback failed:', e); }
+        }
+    }
+
+    function ensureRequiredAssets(callback) {
+        if (_requiredAssetsState === 'ready') {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+        if (typeof callback === 'function') _requiredAssetsQueue.push(callback);
+        if (_requiredAssetsState === 'loading') return;
+        _requiredAssetsState = 'loading';
+        if (typeof Icons === 'undefined' || !Icons || typeof Icons.load !== 'function') {
+            // 不把整个 overlay 永久锁死；这是 boot 清单错误，记录后让面板以缺图 fallback 继续。
+            console.error('[Panels] required Icons loader is unavailable');
+            finishRequiredAssets();
+            return;
+        }
+        try {
+            // Icons.load 在成功和失败（空 map fallback）两条路径都会回调。
+            Icons.load(finishRequiredAssets);
+        } catch (e) {
+            console.error('[Panels] required Icons manifest load threw:', e);
+            finishRequiredAssets();
+        }
     }
 
     function _doOpen(id, initData) {
@@ -60,14 +101,17 @@ var Panels = (function() {
         }, 50);
     }
 
-    function open(id, initData) {
-        console.log('[Panels] open called: id=' + id + ', _active=' + _active + ', registered=' + !!_registry[id]);
+    function openAfterRequiredAssets(id) {
+        var pending = _pendingOpen;
+        if (!pending || pending.id !== id) return;
         var panel = _registry[id];
-        if (!panel) { console.error('[Panels] panel not registered: ' + id); return; }
+        if (!panel) {
+            _pendingOpen = null;
+            console.error('[Panels] panel not registered after asset gate: ' + id);
+            return;
+        }
 
         if (panel._lazy) {
-            // 加载中再次请求同一 panel：覆盖最新 initData，借用同一 in-flight promise
-            _pendingOpen = { id: id, initData: initData };
             console.log('[Panels] lazy-loading deps for: ' + id);
             LazyLoader.load(panel._deps).then(function() {
                 try {
@@ -99,7 +143,18 @@ var Panels = (function() {
             return;
         }
 
-        _doOpen(id, initData);
+        _pendingOpen = null;
+        _doOpen(id, pending.initData);
+    }
+
+    function open(id, initData) {
+        console.log('[Panels] open called: id=' + id + ', _active=' + _active + ', registered=' + !!_registry[id]);
+        if (!_registry[id]) { console.error('[Panels] panel not registered: ' + id); return; }
+
+        // 同一字段同时覆盖“资源门等待”和“lazy 依赖等待”的最新请求；close / 切 panel
+        // 都能沿用既有取消语义，不会在 manifest 到达后把已关闭面板重新拉起。
+        _pendingOpen = { id: id, initData: initData };
+        ensureRequiredAssets(function() { openAfterRequiredAssets(id); });
     }
 
     function close() {
@@ -164,6 +219,7 @@ var Panels = (function() {
         close: close,
         isOpen: function() { return _active !== null; },
         getActive: function() { return _active; },
+        requiredAssetsReady: function() { return _requiredAssetsState === 'ready'; },
         getHitRects: function(pushRect) {
             if (_active && _container && _container.style.display !== 'none') pushRect(_container);
         },

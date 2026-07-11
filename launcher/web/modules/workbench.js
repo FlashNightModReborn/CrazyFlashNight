@@ -102,7 +102,7 @@
         this._eyebrow = makeElement('div', 'workbench-eyebrow');
         this._title = makeElement('div', 'workbench-title');
         this._subtitle = makeElement('div', 'workbench-subtitle');
-        this._eyebrow.textContent = options.eyebrow || 'DUAL PANE / WORKBENCH';
+        this._eyebrow.textContent = options.eyebrow == null ? '' : String(options.eyebrow);
         this._title.textContent = options.title || '工作台';
         this._subtitle.textContent = options.subtitle || '';
         identity.appendChild(this._eyebrow);
@@ -112,6 +112,10 @@
         this._status = makeElement('div', 'workbench-status');
         this._status.setAttribute('data-state', 'idle');
         this._status.textContent = options.status || '待命';
+        this._status.setAttribute('role', 'status');
+        this._status.setAttribute('aria-live', 'polite');
+        this._status.setAttribute('aria-label', this._status.textContent);
+        this._status.title = this._status.textContent;
         this._metrics = makeElement('div', 'workbench-metrics');
         this._actions = makeElement('div', 'workbench-header-actions');
         this._header.appendChild(identity);
@@ -122,7 +126,13 @@
         this._body = makeElement('main', 'workbench-body');
         var left = this._createSlot('L', options.leftLabel || 'SOURCE');
         this._rail = makeElement('div', 'workbench-flow-rail');
-        this._rail.innerHTML = '<span class="workbench-flow-arrow">›</span><span class="workbench-flow-label">INTENT</span>';
+        this._rail.innerHTML = '<span class="workbench-flow-arrow">›</span>';
+        var flowLabel = options.flowLabel == null ? '' : String(options.flowLabel);
+        if (flowLabel) {
+            var flowLabelNode = makeElement('span', 'workbench-flow-label');
+            flowLabelNode.textContent = flowLabel;
+            this._rail.appendChild(flowLabelNode);
+        }
         var right = this._createSlot('R', options.rightLabel || 'TARGET');
         this._body.appendChild(left.frame);
         this._body.appendChild(this._rail);
@@ -200,8 +210,11 @@
     };
 
     DualPaneShell.prototype.setStatus = function(text, state) {
-        this._status.textContent = text || '';
+        var label = text || '';
+        this._status.textContent = label;
         this._status.setAttribute('data-state', state || 'idle');
+        this._status.setAttribute('aria-label', label);
+        this._status.title = label;
     };
 
     DualPaneShell.prototype.setMetric = function(key, label, value) {
@@ -296,7 +309,7 @@
         dialog.setAttribute('aria-modal', 'true');
         dialog.setAttribute('data-modal-kind', spec.kind || 'notice');
         var kicker = makeElement('div', 'workbench-modal-kicker');
-        kicker.textContent = spec.kicker || 'WORKBENCH / CONFIRM';
+        kicker.textContent = spec.kicker == null ? '' : String(spec.kicker);
         var title = makeElement('h2', 'workbench-modal-title');
         title.textContent = spec.title || '';
         var message = makeElement('div', 'workbench-modal-message');

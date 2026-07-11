@@ -493,16 +493,7 @@ _root.物品UI函数.创建仓库图标 = function(inventory, page){
 
 
 _root.物品UI函数.计算战备箱总页数 = function():Number{
-	if(_root.主线任务进度 <= 13) return 0;
-	var 页数 = 1;
-	var 挑战 = _root.task_chains_progress.挑战;
-	if (!isNaN(挑战)){
-		if(挑战 > 0) 页数++;
-		if(挑战 > 2) 页数++;
-	}
-	if (_root.主线任务进度 > 77) 页数 += 2;
-	if (_root.基建系统.infrastructure.越野车) 页数++;
-	return 页数;
+	return org.flashNight.arki.item.InventoryPanelService.getAccessibleCapacity("战备箱") / 40;
 }
 
 

@@ -27,6 +27,7 @@ namespace CF7Launcher.Guardian
             switch (name)
             {
                 case "kshop":    return Centered(anchorScreenRect, 1024, 720);
+                case "workbench": return Centered(anchorScreenRect, 1024, 720);
                 case "help":     return Centered(anchorScreenRect, 720, 540);
                 case "map":      return anchorScreenRect;
                 case "stage-select": return anchorScreenRect;
