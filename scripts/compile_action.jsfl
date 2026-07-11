@@ -1,6 +1,13 @@
 // compile_action.jsfl - 实际编译逻辑
 // 可通过 fl.runScript(path, "main") 或 eval() 调用
 
+function normalizeDocumentURI(uri) {
+	var value = String(uri || "");
+	try { value = FLfile.uriToPlatformPath(value); } catch (e1) {}
+	try { value = decodeURI(value); } catch (e2) {}
+	return value.replace(/\\/g, "/").replace(/\/+$/, "").toLowerCase();
+}
+
 function main() {
 	var cfgPath = fl.configURI + "Commands/flash_project_path.cfg";
 	var projectURI = FLfile.read(cfgPath);
@@ -35,8 +42,11 @@ function main() {
 			return;
 		}
 		// 目标若已打开 → 先关（false=不存盘，丢弃 in-memory，强制从盘重读外部编辑），再开 = 与活动文档路径同款 reload。
+		// pathURI 对中文路径可能返回 percent-encoded URI，而 cfg 可能是直写 Unicode；必须归一为平台路径比较，
+		// 否则 openDocument 会复用带 * 的旧文档，publish 虽刷新 SWF 时间戳却仍编进旧 symbol bytecode。
+		var targetKey = normalizeDocumentURI(targetURI);
 		for (var i = fl.documents.length - 1; i >= 0; i--) {
-			if (fl.documents[i].pathURI == targetURI) {
+			if (normalizeDocumentURI(fl.documents[i].pathURI) == targetKey) {
 				fl.trace("[compile] close opened target: " + targetURI);
 				fl.closeDocument(fl.documents[i], false);
 			}

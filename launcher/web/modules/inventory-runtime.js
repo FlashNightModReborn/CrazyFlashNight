@@ -158,6 +158,27 @@
         return null;
     };
 
+    InventoryCoordinator.prototype.configureRequests = function(requests) {
+        if (this._opened || !Array.isArray(requests) || requests.length < 1 || requests.length > 4) return false;
+        var normalized = cloneRequests(requests);
+        var seen = {};
+        for (var i = 0; i < normalized.length; i++) {
+            var request = normalized[i];
+            if (!request.containerId || seen[request.containerId]
+                    || !isFinite(request.offset) || Math.floor(request.offset) !== request.offset || request.offset < 0
+                    || !isFinite(request.limit) || Math.floor(request.limit) !== request.limit
+                    || request.limit < 1 || request.limit > 100) return false;
+            seen[request.containerId] = true;
+        }
+        this._requests = normalized;
+        this._windows = {};
+        this._ready = false;
+        this._refreshRequired = false;
+        this._owner = null;
+        this._emitState();
+        return true;
+    };
+
     InventoryCoordinator.prototype.resetWindow = function(containerId, offset, limit, filterKey) {
         if (this._opened) return false;
         containerId = String(containerId);

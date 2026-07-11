@@ -53,7 +53,7 @@ var KShop = (function() {
         },
         requests: [
             {containerId: '背包', offset: 0, limit: 50},
-            {containerId: '仓库', offset: 0, limit: 50}
+            {containerId: '战备箱', offset: 0, limit: 40}
         ]
     });
 
@@ -198,7 +198,12 @@ var KShop = (function() {
         for (var k = 0; k < ownedNodes.length; k++) ownedNodes[k].classList.toggle('write-locked', inventoryBlocked);
         if (_warehousePager) _warehousePager.setDisabled(inventoryBlocked);
         if (_backpackSortControls) _backpackSortControls.setDisabled(inventoryBlocked);
-        if (_warehouseSortControls) _warehouseSortControls.setDisabled(inventoryBlocked);
+        if (_warehouseSortControls) {
+            _warehouseSortControls.setDisabled(inventoryBlocked);
+            var battleboxSnapshot = _inventoryCoordinator.getWindow('战备箱');
+            _warehouseSortControls.setAuthorityDisabled(inventoryBlocked
+                || !battleboxSnapshot || Number(battleboxSnapshot.accessibleCapacity) <= 0);
+        }
         if (_inventoryRetryButton) _inventoryRetryButton.style.display = _inventoryState.refreshRequired ? '' : 'none';
         if (_cartDropTarget) {
             _cartDropTarget.classList.toggle('disabled', !!blockEdits);
@@ -295,7 +300,7 @@ var KShop = (function() {
         _inventoryModeButton.type = 'button';
         _inventoryModeButton.className = 'workbench-mode-btn';
         _inventoryModeButton.setAttribute('data-mode', 'inventory');
-        _inventoryModeButton.textContent = '仓库';
+        _inventoryModeButton.textContent = '战备箱';
         _inventoryModeButton.addEventListener('click', showInventoryMode);
         _inventoryRetryButton = document.createElement('button');
         _inventoryRetryButton.type = 'button';
@@ -327,11 +332,11 @@ var KShop = (function() {
         _catalogView = createCatalogWorkbenchView();
         _orderView = createOrderWorkbenchView();
         _backpackView = createOwnedInventoryView('背包', '', '背包');
-        _warehouseView = createOwnedInventoryView('仓库', '', '仓库');
+        _warehouseView = createOwnedInventoryView('战备箱', '', '战备箱');
         _backpackView.displaySortMethod = 'physicalSlot';
         _warehouseView.displaySortMethod = 'physicalSlot';
         _backpackView.chrome.setToolbar(createInventoryToolbar('背包', null));
-        _warehouseView.chrome.setToolbar(createInventoryToolbar('仓库', createWarehousePager()));
+        _warehouseView.chrome.setToolbar(createInventoryToolbar('战备箱', createWarehousePager()));
         _ownedViews = [_backpackView, _warehouseView];
         _workbenchShell.registerView(_backpackView);
         _workbenchShell.registerView(_warehouseView);
@@ -488,26 +493,26 @@ var KShop = (function() {
 
     function createWarehousePager() {
         _warehousePager = new InventoryUI.InventoryWindowPager({
-            containerId: '仓库',
-            containerLabel: '仓库',
-            columns: 6,
-            defaultLimit: 50,
-            defaultCapacity: 1200,
-            getSnapshot: function() { return _inventoryCoordinator.getWindow('仓库'); },
-            getRequest: function() { return _inventoryCoordinator.getRequest('仓库'); },
+            containerId: '战备箱',
+            containerLabel: '战备箱',
+            columns: 3,
+            defaultLimit: 40,
+            defaultCapacity: 0,
+            getSnapshot: function() { return _inventoryCoordinator.getWindow('战备箱'); },
+            getRequest: function() { return _inventoryCoordinator.getRequest('战备箱'); },
             shortcutEnabled: warehouseShortcutsEnabled,
             onBeforeChange: function() {
                 if (_interactionBroker) _interactionBroker.clearSelection();
                 hideTooltip();
             },
             onRequest: function(offset, limit, callback) {
-                return _inventoryCoordinator.setWindow('仓库', offset, limit, callback);
+                return _inventoryCoordinator.setWindow('战备箱', offset, limit, callback);
             },
             onResult: function(result) {
                 renderOwnedInventories();
                 if (!result.success) {
                     if (typeof console !== 'undefined' && console.warn) console.warn('[KShop inventory page]', result.error || 'inventory_refresh_failed');
-                    toast('仓库翻页失败，请重试。');
+                    toast('战备箱翻页失败，请重试。');
                 }
             }
         });
@@ -659,13 +664,17 @@ var KShop = (function() {
             var snapshot = _inventoryCoordinator.getWindow(view.containerId);
             var slots = snapshot ? snapshot.slots : [];
             var filtered = snapshot && String(snapshot.filterKey || 'all') !== 'all';
-            view.renderer.options.emptyText = filtered ? '当前分类暂无物品' : '本页暂无物品';
+            view.renderer.options.emptyText = view.containerId === '战备箱'
+                && snapshot && Number(snapshot.accessibleCapacity) <= 0
+                ? '战备箱尚未解锁' : filtered ? '当前分类暂无物品' : '本页暂无物品';
             if (view.displaySortMethod && typeof InventoryRuntime.displaySortSlots === 'function') {
                 slots = InventoryRuntime.displaySortSlots(slots, view.displaySortMethod);
             }
             view.renderer.render(slots);
             if (!snapshot) {
                 view.chrome.setMeta('同步中');
+            } else if (view.containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0) {
+                view.chrome.setMeta('未解锁');
             } else if (view.containerId === '背包') {
                 var occupied = 0;
                 for (var s = 0; s < snapshot.slots.length; s++) if (snapshot.slots[s].occupied) occupied++;
@@ -693,12 +702,15 @@ var KShop = (function() {
         if (!_inventoryState.ready || _inventoryState.busyOwner || _inventoryState.refreshRequired) return;
         methodName = methodName || 'byType';
         label = label || methodName;
+        var isBattlebox = containerId === '战备箱';
         _workbenchShell.openModal({
             kind: 'warehouse-sort',
             kicker: '',
             title: '按' + label + '整理' + containerId + '？',
-            message: '将重新排列' + containerId + '全部物品，并合并可堆叠物品。',
-            detail: '原有摆放顺序会改变，完成后仍停留在当前页。',
+            message: '将重新排列' + (isBattlebox ? '当前已解锁区域' : containerId + '全部物品') + '，并合并可堆叠物品。',
+            detail: isBattlebox
+                ? '未解锁的存档保留区不会被读取或移动。'
+                : '原有摆放顺序会改变，完成后仍停留在当前页。',
             actions: [
                 {id: 'cancel', label: '取消', audioCue: 'cancel'},
                 {id: 'sort', label: '整理并合并', primary: true, audioCue: 'confirm', onSelect: function() {
@@ -737,7 +749,7 @@ var KShop = (function() {
         _shopModeButton.classList.remove('active');
         _inventoryModeButton.classList.add('active');
         _workbenchShell.setSlotLabel('L', '背包');
-        _workbenchShell.setSlotLabel('R', '仓库');
+        _workbenchShell.setSlotLabel('R', '战备箱');
         _workbenchShell.setTitle('物品管理', '');
         renderOwnedInventories();
     }
@@ -898,9 +910,9 @@ var KShop = (function() {
         showShopMode();
         // 页码继续按会话记忆；分类筛选不跨打开/存档保留，避免新存档初始视图被旧筛选隐藏。
         var backpackRequest = _inventoryCoordinator.getRequest('背包');
-        var warehouseRequest = _inventoryCoordinator.getRequest('仓库');
+        var warehouseRequest = _inventoryCoordinator.getRequest('战备箱');
         _inventoryCoordinator.resetWindow('背包', backpackRequest ? backpackRequest.offset : 0, 50, 'all');
-        _inventoryCoordinator.resetWindow('仓库', warehouseRequest ? warehouseRequest.offset : 0, 50, 'all');
+        _inventoryCoordinator.resetWindow('战备箱', warehouseRequest ? warehouseRequest.offset : 0, 40, 'all');
         if (_backpackSortControls) _backpackSortControls.setFilterKey('all');
         if (_warehouseSortControls) _warehouseSortControls.setFilterKey('all');
         _inventoryCoordinator.open(function(result) {

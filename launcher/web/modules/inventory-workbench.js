@@ -1,5 +1,5 @@
 /**
- * Standalone 背包—战备箱 workbench.
+ * Standalone owned-inventory workbench（背包—仓库 / 背包—战备箱）。
  *
  * This panel never enters the shop lifecycle. InventoryPanelService remains the
  * authority; the Web layer only renders leased windows and emits operation intents.
@@ -7,12 +7,15 @@
 var InventoryWorkbench = (function() {
     'use strict';
 
-    var _el, _shellEl, _shell, _backpackView, _battleboxView, _pager, _retryButton;
-    var _backpackSortControls, _battleboxSortControls;
+    var _el, _shellEl, _shell, _backpackView, _rightView, _pager, _retryButton;
+    var _backpackSortControls, _rightSortControls;
     var _broker, _dragControllers = [], _scaleHandle = null;
     var _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
     var _tooltipCache = {}, _tooltipHovering = null, _tooltipSuppressed = false;
     var _openGeneration = 0;
+    var _profile = 'battlebox';
+    var _rightContainerId = '战备箱';
+    var _rightLimit = 40;
     var _runtimeConfig = (typeof window !== 'undefined' && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _mux = new KShopRequestMux({
         send: function(message) { Bridge.send(message); },
@@ -40,17 +43,54 @@ var InventoryWorkbench = (function() {
         onOpen: onOpen,
         onClose: cleanup,
         onRequestClose: closePanel,
-        onForceClose: function() { cleanup(); toast('连接断开，战备箱已关闭'); }
+        onForceClose: function() { cleanup(); toast('连接断开，物品工作台已关闭'); }
     });
 
     function createDOM() {
+        _shellEl = document.createElement('div');
+        _shellEl.className = 'panel-scale-shell kshop-scale-shell inventory-workbench-scale-shell';
+        return _shellEl;
+    }
+
+    function resolveProfile(initData) {
+        var profile = initData && initData.profile === 'warehouse' ? 'warehouse' : 'battlebox';
+        return profile === 'warehouse'
+            ? {profile:'warehouse', title:'仓库', rightContainerId:'仓库', rightLimit:50, rightCapacity:1200, pageColumns:6}
+            : {profile:'battlebox', title:'战备箱', rightContainerId:'战备箱', rightLimit:40, rightCapacity:0, pageColumns:3};
+    }
+
+    function buildProfileDOM(config) {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required');
+        if (_pager) _pager.detach();
+        for (var oldDrag = 0; oldDrag < _dragControllers.length; oldDrag++) _dragControllers[oldDrag].cancel();
+        if (_broker) _broker.clearSelection();
+        if (_shell) _shell.destroy();
+        while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
+        _shell = null;
+        _el = null;
+        _backpackView = null;
+        _rightView = null;
+        _pager = null;
+        _backpackSortControls = null;
+        _rightSortControls = null;
+        _broker = null;
+        _dragControllers = [];
+
+        _profile = config.profile;
+        _rightContainerId = config.rightContainerId;
+        _rightLimit = config.rightLimit;
+        if (!_coordinator.configureRequests([
+            {containerId:'背包', offset:0, limit:50, filterKey:'all'},
+            {containerId:_rightContainerId, offset:0, limit:_rightLimit, filterKey:'all'}
+        ])) throw new Error('Inventory workbench request profile rejected: ' + _profile);
+
         _shell = new Workbench.DualPaneShell({
-            title:'战备箱', status:'同步中', leftLabel:'背包', rightLabel:'战备箱'
+            title:config.title, status:'同步中', leftLabel:'背包', rightLabel:config.title
         });
         _el = _shell.getRoot();
         _el.classList.add('kshop-workbench', 'inventory-workbench-panel');
         _el.setAttribute('data-workbench-skin', 'inventory');
+        _el.setAttribute('data-inventory-profile', _profile);
 
         _retryButton = document.createElement('button');
         _retryButton.type = 'button';
@@ -64,49 +104,45 @@ var InventoryWorkbench = (function() {
         closeButton.type = 'button';
         closeButton.className = 'workbench-close-btn';
         closeButton.textContent = '×';
-        closeButton.setAttribute('aria-label', '关闭战备箱');
+        closeButton.setAttribute('aria-label', '关闭' + config.title);
         closeButton.setAttribute('data-audio-cue', 'cancel');
         closeButton.addEventListener('click', closePanel);
         _shell.addHeaderAction(closeButton);
 
         _backpackView = createInventoryView('背包', '背包');
-        _battleboxView = createInventoryView('战备箱', '战备箱');
+        _rightView = createInventoryView(_rightContainerId, config.title);
         _backpackView.displaySortMethod = 'physicalSlot';
-        _battleboxView.displaySortMethod = 'physicalSlot';
+        _rightView.displaySortMethod = 'physicalSlot';
         _pager = new InventoryUI.InventoryWindowPager({
-            containerId:'战备箱', containerLabel:'战备箱', columns:3,
-            defaultOffset:0, defaultLimit:40, defaultCapacity:0,
-            getSnapshot:function() { return _coordinator.getWindow('战备箱'); },
-            getRequest:function() { return _coordinator.getRequest('战备箱'); },
+            containerId:_rightContainerId, containerLabel:config.title, columns:config.pageColumns,
+            defaultOffset:0, defaultLimit:_rightLimit, defaultCapacity:config.rightCapacity,
+            getSnapshot:function() { return _coordinator.getWindow(_rightContainerId); },
+            getRequest:function() { return _coordinator.getRequest(_rightContainerId); },
             shortcutEnabled:shortcutsEnabled,
             onBeforeChange:function() { clearSelection(); hideTooltip(); },
             onRequest:function(offset, limit, callback) {
-                return _coordinator.setWindow('战备箱', offset, limit, callback);
+                return _coordinator.setWindow(_rightContainerId, offset, limit, callback);
             },
             onResult:function(result) {
                 renderInventories();
-                if (!result || !result.success) toast('战备箱翻页失败，请重试。');
+                if (!result || !result.success) toast(config.title + '翻页失败，请重试。');
             }
         });
         _backpackView.chrome.setToolbar(createInventoryToolbar('背包', null));
-        _battleboxView.chrome.setToolbar(createInventoryToolbar('战备箱', _pager));
+        _rightView.chrome.setToolbar(createInventoryToolbar(_rightContainerId, _pager));
 
-        if (!_shell.mountInitial(_backpackView, _battleboxView)) {
+        if (!_shell.mountInitial(_backpackView, _rightView)) {
             throw new Error('Inventory workbench initial view configuration rejected');
         }
         installInteractions();
-
-        _shellEl = document.createElement('div');
-        _shellEl.className = 'panel-scale-shell kshop-scale-shell inventory-workbench-scale-shell';
         _shellEl.appendChild(_el);
-        return _shellEl;
     }
 
     function createInventoryToolbar(containerId, pager) {
         var toolbar = document.createElement('div');
         toolbar.className = 'inventory-warehouse-toolbar inventory-container-toolbar'
             + (pager ? ' inventory-battlebox-toolbar' : ' inventory-no-pager');
-        var view = containerId === '背包' ? _backpackView : _battleboxView;
+        var view = containerId === '背包' ? _backpackView : _rightView;
         var controls = new InventoryUI.InventorySortControls({
             displayOptions:InventoryUI.displaySortOptions(),
             displayLabel:'查看',
@@ -142,7 +178,7 @@ var InventoryWorkbench = (function() {
             }
         });
         if (containerId === '背包') _backpackSortControls = controls;
-        else _battleboxSortControls = controls;
+        else _rightSortControls = controls;
         if (pager) toolbar.appendChild(pager.root);
         toolbar.appendChild(controls.root);
         return toolbar;
@@ -210,7 +246,7 @@ var InventoryWorkbench = (function() {
         node.addEventListener('click', function(event) {
             if (consumeDragClick()) return;
             if (event.target && event.target.closest && event.target.closest('.inventory-discard-btn')) return;
-            var view = containerId === '背包' ? _backpackView : _battleboxView;
+            var view = containerId === '背包' ? _backpackView : _rightView;
             if (_broker.debugState().selectedInstanceKey) _broker.activateSelected(view, {item:slot, node:node}, 'click');
             else if (slot.occupied) _broker.select(view, slot, node);
         });
@@ -240,7 +276,7 @@ var InventoryWorkbench = (function() {
             }
         });
         _dragControllers = [];
-        var views = [_backpackView, _battleboxView];
+        var views = [_backpackView, _rightView];
         for (var i = 0; i < views.length; i++) installDragForView(views[i]);
     }
 
@@ -271,7 +307,7 @@ var InventoryWorkbench = (function() {
 
     function resolveDropTarget(clientX, clientY) {
         var target = document.elementFromPoint(clientX, clientY);
-        var views = [_backpackView, _battleboxView];
+        var views = [_backpackView, _rightView];
         for (var i = 0; i < views.length; i++) {
             if (!views[i].root.contains(target)) continue;
             var hit = views[i].renderer.itemFromTarget(target);
@@ -286,9 +322,9 @@ var InventoryWorkbench = (function() {
     }
 
     function renderInventories() {
-        if (!_backpackView || !_battleboxView) return;
+        if (!_backpackView || !_rightView) return;
         renderView(_backpackView);
-        renderView(_battleboxView);
+        renderView(_rightView);
         if (_pager) _pager.refresh();
     }
 
@@ -319,11 +355,11 @@ var InventoryWorkbench = (function() {
         for (var i = 0; i < nodes.length; i++) nodes[i].classList.toggle('write-locked', blocked);
         if (_pager) _pager.setDisabled(blocked);
         if (_backpackSortControls) _backpackSortControls.setDisabled(blocked);
-        if (_battleboxSortControls) {
-            _battleboxSortControls.setDisabled(blocked);
-            var battleboxSnapshot = _coordinator.getWindow('战备箱');
-            _battleboxSortControls.setAuthorityDisabled(blocked
-                || !battleboxSnapshot || Number(battleboxSnapshot.accessibleCapacity) <= 0);
+        if (_rightSortControls) {
+            _rightSortControls.setDisabled(blocked);
+            var rightSnapshot = _coordinator.getWindow(_rightContainerId);
+            _rightSortControls.setAuthorityDisabled(blocked
+                || !rightSnapshot || Number(rightSnapshot.accessibleCapacity) <= 0);
         }
         if (_retryButton) _retryButton.style.display = _state.refreshRequired ? '' : 'none';
         if (!_shell) return;
@@ -415,8 +451,9 @@ var InventoryWorkbench = (function() {
         });
     }
 
-    function onOpen() {
+    function onOpen(el, initData) {
         var generation = ++_openGeneration;
+        buildProfileDOM(resolveProfile(initData));
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _tooltipCache = {};
@@ -425,9 +462,9 @@ var InventoryWorkbench = (function() {
         clearSelection();
         // 不跨存档记忆剧情容器页码；换到解锁更少的存档时必须从合法首页重新取 lease。
         _coordinator.resetWindow('背包', 0, 50, 'all');
-        _coordinator.resetWindow('战备箱', 0, 40, 'all');
+        _coordinator.resetWindow(_rightContainerId, 0, _rightLimit, 'all');
         if (_backpackSortControls) _backpackSortControls.setFilterKey('all');
-        if (_battleboxSortControls) _battleboxSortControls.setFilterKey('all');
+        if (_rightSortControls) _rightSortControls.setFilterKey('all');
         // Panels 的共享 required-assets 门已保证 Icons manifest 先于任何 panel onOpen 就绪；
         // 这里仅负责 inventory session，避免每个物品面板各自复制一套图标加载竞态。
         openInventory(generation);
@@ -506,7 +543,7 @@ var InventoryWorkbench = (function() {
         return icon || '<div class="' + (cls || 'kshop-icon') + ' kshop-icon-placeholder"></div>';
     }
     function errorMessage(error) {
-        if (error === 'slot_locked') return '该战备箱槽位尚未解锁。';
+        if (error === 'slot_locked') return '该容器槽位尚未解锁。';
         if (error === 'stale_state') return '库存已经变化，请重试。';
         if (error === 'client_timeout' || error === 'timeout') return '库存响应超时，请重试。';
         if (error === 'inventory_refresh_failed') return '库存同步失败，请重试。';
@@ -517,10 +554,13 @@ var InventoryWorkbench = (function() {
 
     return {
         debugState:function() {
-            var battlebox = _coordinator.getWindow('战备箱');
+            var right = _coordinator.getWindow(_rightContainerId);
             return {
+                profile:_profile,
+                rightContainerId:_rightContainerId,
                 coordinator:_coordinator.debugState(),
-                battleboxAccessibleCapacity:battlebox ? Number(battlebox.accessibleCapacity) : null,
+                rightAccessibleCapacity:right ? Number(right.accessibleCapacity) : null,
+                battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,
                 page:_pager ? _pager.getState() : null
             };
         }

@@ -96,8 +96,7 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("WAREHOUSE");
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
-            Assert.Contains("\"leftContainer\":\"背包\"", c.Posts[0]);
-            Assert.Contains("\"rightContainer\":\"战备箱\"", c.Posts[0]);
+            Assert.Contains("\"profile\":\"battlebox\"", c.Posts[0]);
             Assert.Equal(new[] { "workbench" }, c.ActivePanels);
             Assert.Equal(new[] { true }, c.StateCallbacks);
         }
@@ -251,6 +250,31 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"view\":\"hire\"", c.Posts[0]);
             Assert.Contains("\"kind\":\"merc\"", c.Posts[0]);
             Assert.Contains("\"source\":\"npc_hire\"", c.Posts[0]);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_WorkbenchWarehouse_UsesStrictWarehouseProfile()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("workbench", "dormitory", null, null, null, null, null,
+                "{\"profile\":\"warehouse\",\"rightContainer\":\"任意容器\"}");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
+            Assert.Contains("\"profile\":\"warehouse\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"dormitory\"", c.Posts[0]);
+            Assert.DoesNotContain("rightContainer", c.Posts[0]);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_WorkbenchUnknownProfile_IsRejected()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("workbench", "dormitory", null, null, null, null, null,
+                "{\"profile\":\"仓库\"}");
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]

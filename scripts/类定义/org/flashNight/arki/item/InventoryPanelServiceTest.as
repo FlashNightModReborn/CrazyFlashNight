@@ -13,6 +13,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         _failed = 0;
         trace("=== InventoryPanelServiceTest start ===");
 
+        testWorkbenchPanelRequest();
         testRangeSnapshot();
         testFilteredSnapshot();
         testPresentationProjection();
@@ -56,6 +57,32 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
 
     private static function item(name:String, value):Object {
         return {name: name, value: value, lastUpdate: 1};
+    }
+
+    private static function testWorkbenchPanelRequest():Void {
+        var previousServer:Object = _root.server;
+        var captured:String = "";
+        var sendCount:Number = 0;
+        _root.server = {
+            sendSocketMessage: function(message:String):Boolean {
+                captured = message;
+                sendCount++;
+                return true;
+            }
+        };
+        var opened:Boolean = InventoryPanelService.requestOpenWorkbench({
+            profile: "warehouse",
+            source: "dormitory"
+        });
+        assertTrue(opened && sendCount == 1, "宿舍仓库入口发送一次 panel_request");
+        assertTrue(captured.indexOf('"task":"panel_request"') >= 0
+            && captured.indexOf('"panel":"workbench"') >= 0
+            && captured.indexOf('"profile":"warehouse"') >= 0
+            && captured.indexOf('"source":"dormitory"') >= 0,
+            "宿舍仓库入口只发送枚举 profile 与来源");
+        var rejected:Boolean = InventoryPanelService.requestOpenWorkbench({profile: "仓库"});
+        assertTrue(!rejected && sendCount == 1, "工作台入口拒绝非枚举 profile 且不发送消息");
+        _root.server = previousServer;
     }
 
     private static function snapshot(backpackLimit:Number, warehouseLimit:Number):Object {

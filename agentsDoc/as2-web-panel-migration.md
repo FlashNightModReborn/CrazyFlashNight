@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `b852c0eba1`（2026-06-17）。
+**最后核对代码基线**：commit `b852c0eba1`（2026-06-17）；物品工作台 profile 路由另核对 2026-07-11 工作树。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
@@ -34,7 +34,7 @@
 | `dispatchBoardBriefing` | `dispatchBoardBriefing` | `handleDispatchBoardBriefing` | `task_response` | `panel_resp panel=tasks cmd=dispatchBoardBriefing` | `DialogueView` / `DispatchBoardView` | 读 |
 | `dispatchBoardEnter` | `dispatchBoardEnter` | `handleDispatchBoardEnter` | `task_response` | `panel_resp panel=tasks cmd=dispatchBoardEnter` | `DispatchBoardView` callback | 进入关卡（不直接改存档） |
 
-共享 inventory domain 同时服务 `kshop` 库存态与独立 `workbench`（背包—战备箱）；两者不得复制权威逻辑：
+共享 inventory domain 同时服务 `kshop` 库存态与独立 `workbench`；商城库存态固定为背包—战备箱，`workbench` 只接受严格枚举 profile：`battlebox`（背包—战备箱，Native HUD 默认）或 `warehouse`（背包—真实仓库，仅宿舍场景入口）。三条入口不得复制权威逻辑：
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
 |---------|-----------|-------------|-------------------|---------------|------------|--------|
@@ -45,6 +45,8 @@
 | `sortAndMerge` | `inventorySortContainer` | `executeSortContainer` | `inventory_response` | `panel_resp domain=inventory cmd=sortAndMerge` | `InventoryCoordinator` | 容器写 |
 
 snapshot 请求的 `filterKey=all|weapon|armor|consumable|material|other` 由 C# 严格枚举后交给 AS2；AS2 必须扫描容器权威范围再分页，返回匹配项 `viewCapacity`、真实 `physicalSlot` 与 slot lease，禁止 Web 只筛当前页。背包、仓库和战备箱共用显示排序、全局分类与权威整理组件；显示排序只改 DOM，权威整理仍经上述写闭环。战备箱 snapshot 同时返回物理 `capacity=400` 与剧情权威 `accessibleCapacity=0..240`、`pageSizeHint=40`；Web 分页与筛选只允许使用可访问前缀，`sortAndMerge` 也只重写该前缀并逐槽保留 240..399 锁定区。旧 Flash `计算战备箱总页数` 调用同一 AS2 权威函数，禁止在 JS/C# 复制主线、挑战或基建解锁公式。
+
+世界内入口统一调用 AS2 `openInventoryWorkbench({profile,source})`，发送 `panel_request panel=workbench initData.profile`；C# `LauncherCommandRouter` 再做一次 `warehouse|battlebox` 白名单并重建固定 runtime initData。XFL 不得直接传 `containerId`、容量或任意 `initData`。宿舍入口在 Launcher 不可用或发送失败时才回退旧 Flash 仓库 MovieClip；真实仓库不得重新暴露给商城或通用 HUD。
 
 检查点：
 

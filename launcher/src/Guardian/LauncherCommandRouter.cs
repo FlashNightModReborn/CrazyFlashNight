@@ -97,7 +97,7 @@ namespace CF7Launcher.Guardian
                     if (WebInventoryWorkbenchEnabled)
                     {
                         LogManager.Log("[Router] WAREHOUSE clicked -> web inventory workbench");
-                        OpenPanel("workbench", "{\"mode\":\"runtime\",\"leftContainer\":\"背包\",\"rightContainer\":\"战备箱\",\"source\":\"nativehud\",\"debug\":false}");
+                        OpenPanel("workbench", "{\"mode\":\"runtime\",\"profile\":\"battlebox\",\"source\":\"nativehud\",\"debug\":false}");
                     }
                     else
                     {
@@ -228,7 +228,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
-        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel（mode 固化为 runtime）；其他 panel 保持 unsupported。
+        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile 枚举；其他 panel 保持各自显式分支或 unsupported。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
@@ -255,8 +255,8 @@ namespace CF7Launcher.Guardian
         /// 完整签名：
         ///   - returnToPanel 非空时，关闭本 panel 后会自动 reopen returnTo（带 returnToInitDataJson）
         ///   - initDataExtrasJson 是 panel-specific 额外字段的 JSON object（例如 arena 接 stage-select
-        ///     redirect 时附带的 {"difficulty":"冒险"}），由 caller 显式构造，C# 端 merge 到 base initData
-        ///     后透传给 web。base 字段（mode/source/debug）由本类负责，AS2 端不需要懂。
+        ///     redirect 时附带的 {"difficulty":"冒险"}），由 caller 显式构造；各 panel 分支只提取自己的
+        ///     白名单字段后重建 initData。base 字段（mode/source/debug）由本类负责，AS2 端不需要懂。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
             string returnToPanel, string returnToInitDataJson, string initDataExtrasJson)
@@ -271,6 +271,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "stage-select", StringComparison.OrdinalIgnoreCase))
             {
                 OpenStageSelectPanel(safeSource, frameLabel, returnFrameLabel);
+                return;
+            }
+            if (string.Equals(panelName, "workbench", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenInventoryWorkbench(safeSource, initDataExtrasJson);
                 return;
             }
             if (string.Equals(panelName, "arena", StringComparison.OrdinalIgnoreCase))
@@ -308,6 +313,39 @@ namespace CF7Launcher.Guardian
                 EscapeJsonString(safeFrameLabel) + "\",\"returnFrameLabel\":\"" + EscapeJsonString(safeReturnFrameLabel) +
                 "\",\"debug\":false,\"source\":\"" + EscapeJsonString(source) + "\"}";
             OpenPanel("stage-select", initData);
+        }
+
+        private void OpenInventoryWorkbench(string source, string initDataExtrasJson)
+        {
+            string profile = "battlebox";
+            if (!string.IsNullOrEmpty(initDataExtrasJson))
+            {
+                try
+                {
+                    JObject extras = JObject.Parse(initDataExtrasJson);
+                    string requested = extras.Value<string>("profile");
+                    if (!string.IsNullOrEmpty(requested)) profile = requested;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Router] OpenInventoryWorkbench extras parse failed: " + ex.Message);
+                    return;
+                }
+            }
+            if (!string.Equals(profile, "warehouse", StringComparison.Ordinal)
+                && !string.Equals(profile, "battlebox", StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] OpenInventoryWorkbench rejected profile=" + profile);
+                return;
+            }
+            var initData = new JObject
+            {
+                ["mode"] = "runtime",
+                ["profile"] = profile,
+                ["source"] = source,
+                ["debug"] = false
+            };
+            OpenPanel("workbench", initData.ToString(Formatting.None));
         }
 
         // 副本任务（委托任务）：NPC「获得任务」→ AS2 openWebDungeon 发 panel_request panel="tasks"，

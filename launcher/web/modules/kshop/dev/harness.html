@@ -219,12 +219,20 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.state.inventory.仓库[50] = {name:'Zulu仓储件',displayName:'Zulu仓储件',icon:'Zulu仓储件',majorType:'防具',use:'头部装备',itemKind:'equipment',quantity:1};
             this.state.inventory.仓库[51] = {name:'Alpha仓储件',displayName:'Alpha仓储件',icon:'Alpha仓储件',majorType:'收集品',use:'材料',itemKind:'stack',quantity:9};
             this.state.inventory.仓库[1199] = {name:'末页校验件',displayName:'末页校验件',icon:'末页校验件',majorType:'武器',use:'刀',itemKind:'equipment',quantity:1};
+            this.state.inventory.战备箱[0] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',majorType:'消耗品',use:'药剂',itemKind:'stack',quantity:4};
             this.state.inventory.战备箱[2] = {
                 name:'镜之虎彻',displayName:'镜之虎彻',icon:'镜之虎彻',majorType:'武器',use:'刀',itemKind:'equipment',quantity:1,
                 enhancementLevel:13,maxEnhancementLevel:13,isMaxEnhancement:true,
-                tierSlotAvailable:true,tierSlotUsed:false,modSlotCapacity:0,modSlotUsed:0,modSlots:[]
+                tierSlotAvailable:true,tierSlotUsed:true,modSlotCapacity:3,modSlotUsed:2,
+                modSlots:[
+                    {name:'螺丝套件',grade:'low',gradeLabel:'低级',gradeColor:'#006600',role:'firepower',roleLabel:'火力',symbol:'triangle-solid'},
+                    {name:'传动装置',grade:'high',gradeLabel:'高等',gradeColor:'#0099FF',role:'sustain',roleLabel:'续航',symbol:'circle-outline'}
+                ]
             };
+            this.state.inventory.战备箱[40] = {name:'Zulu战备件',displayName:'Zulu战备件',icon:'Zulu战备件',majorType:'防具',use:'头部装备',itemKind:'equipment',quantity:1};
+            this.state.inventory.战备箱[41] = {name:'Alpha战备件',displayName:'Alpha战备件',icon:'Alpha战备件',majorType:'收集品',use:'材料',itemKind:'stack',quantity:9};
             this.state.inventory.战备箱[120] = {name:'远页战备刀',displayName:'远页战备刀',icon:'远页战备刀',majorType:'武器',use:'刀',itemKind:'equipment',quantity:1};
+            this.state.inventory.战备箱[239] = {name:'末页战备件',displayName:'末页战备件',icon:'末页战备件',majorType:'武器',use:'刀',itemKind:'equipment',quantity:1};
             this.state.inventory.战备箱[300] = {name:'锁定保留件',displayName:'锁定保留件',icon:'锁定保留件',majorType:'收集品',use:'材料',itemKind:'stack',quantity:7};
             Toast.messages = [];
         },
@@ -293,7 +301,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         inventorySnapshots: function(requests, rotate) {
             if (rotate) { this.inventorySession += 1; this.leases = {}; }
             return (requests || [
-                {containerId:'背包',offset:0,limit:50},{containerId:'仓库',offset:0,limit:50}
+                {containerId:'背包',offset:0,limit:50},{containerId:'战备箱',offset:0,limit:40}
             ]).map(this.snapshotFor.bind(this));
         },
 
@@ -310,11 +318,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             }, 1000);
         },
 
-        openWorkbench: async function(accessibleCapacity) {
+        openWorkbench: async function(accessibleCapacity, profile) {
             if (Panels.getActive && Panels.getActive()) Panels.close();
             this.reset();
             this.battleboxAccessibleCapacity = Number(accessibleCapacity);
-            Panels.open('workbench', {mode:'runtime',leftContainer:'背包',rightContainer:'战备箱'});
+            Panels.open('workbench', {mode:'runtime',profile:profile === 'warehouse' ? 'warehouse' : 'battlebox'});
             await waitFor(function() {
                 return Panels.getActive() === 'workbench'
                     && InventoryWorkbench.debugState().coordinator.ready;
@@ -572,7 +580,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui2g','商城默认只显示玩家决策文案，正常同步状态收敛为状态点',
             shell.querySelector('.workbench-title').textContent === 'K点商城'
                 && shell.querySelector('.workbench-mode-btn[data-mode="shop"]').textContent === '商城'
-                && shell.querySelector('.workbench-mode-btn[data-mode="inventory"]').textContent === '仓库'
+                && shell.querySelector('.workbench-mode-btn[data-mode="inventory"]').textContent === '战备箱'
                 && !/(PROCUREMENT|WORKBENCH|CATALOG|INTENT|RECEIPT|DRAG|LOCKED|权威|AS2)/.test(shopPlayerText)
                 && !shell.querySelector('.kshop-card-drag-hint')
                 && getComputedStyle(shell.querySelector('.workbench-slot-marker')).display === 'none'
@@ -600,7 +608,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         var primitiveNames = ['DualPaneShell','WorkbenchViewHost','ViewChrome','GridRenderer','ContainerViewAdapter','GridContainerView','InteractionBroker','PointerDragController'];
         var contractStatus = Workbench.contractStatus();
-        assert('kshop-ui2c','Gate A1/A2 已验收，完整仓库窗口进入 Gate A3 candidate',
+        assert('kshop-ui2c','Gate A1/A2 复用于商城背包—战备箱库存态',
             primitiveNames.every(function(name){ return typeof Workbench[name] === 'function'; })
                 && contractStatus.shell === 'gate-a1-accepted'
                 && contractStatus.interactionBroker === 'gate-a2-accepted'
@@ -800,22 +808,22 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
         await wait(20);
-        assert('kshop-ui8g','Gate A2 挂载背包与仓库 owned View，保留 physicalSlot',
+        assert('kshop-ui8g','Gate A2 挂载背包与战备箱 owned View，保留 physicalSlot',
             document.querySelector('.workbench-shell.kshop-workbench').getAttribute('data-workbench-skin') === 'inventory'
                 && document.querySelector('.workbench-slot[data-slot="L"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:背包'
-                && document.querySelector('.workbench-slot[data-slot="R"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:仓库'
+                && document.querySelector('.workbench-slot[data-slot="R"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:战备箱'
                 && document.querySelectorAll('[data-item-model="owned"]').length === 2
-                && document.querySelectorAll('.inventory-slot-card[data-physical-slot]').length === 100);
-        assert('kshop-ui8ga','背包与仓库共用展示排序、全容器分类筛选和权威整理组件',
+                && document.querySelectorAll('.inventory-slot-card[data-physical-slot]').length === 90);
+        assert('kshop-ui8ga','背包与战备箱共用展示排序、全容器分类筛选和权威整理组件',
             document.querySelectorAll('.inventory-owned-backpack .inventory-sort-controls').length === 1
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-sort-controls').length === 1
                 && document.querySelectorAll('.inventory-category-filter').length === 2
                 && document.querySelectorAll('.inventory-authority-sort').length === 2
                 && InventoryUI.categoryFilterOptions().length === 6);
         var inventoryPlayerText = shell.innerText;
-        assert('kshop-ui8y','背包仓库隐藏槽号、空槽字样与重复范围，只保留玩家操作信息',
+        assert('kshop-ui8y','背包战备箱隐藏槽号、空槽字样与重复范围，只保留玩家操作信息',
             shell.querySelector('.workbench-title').textContent === '物品管理'
-                && document.querySelector('.inventory-page-jump').textContent === '1 / 24'
+                && document.querySelector('.inventory-page-jump').textContent === '1 / 6'
                 && getComputedStyle(document.querySelector('.inventory-page-range')).display === 'none'
                 && !document.querySelector('.inventory-slot-index')
                 && !document.querySelector('.inventory-empty-mark')
@@ -824,9 +832,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         var presentationEquip = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
         var presentationStack = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="4"]');
-        var presentationWarehouseEquip = document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
+        var presentationBattleboxEquip = document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
         var presentationUsedSlots = presentationEquip.querySelectorAll('.inventory-equip-slot.used');
-        var presentationWarehouseUsedSlots = presentationWarehouseEquip.querySelectorAll('.inventory-equip-slot.used');
+        var presentationBattleboxUsedSlots = presentationBattleboxEquip.querySelectorAll('.inventory-equip-slot.used');
         assert('kshop-ui8w','owned 格使用 displayname、独立升阶菱形与三插件槽，插件按档级色和实心/线框角色符号编码',
             presentationEquip.classList.contains('max-enhancement')
                 && presentationEquip.querySelector('.inventory-slot-copy b').textContent === '烈火吉他'
@@ -847,18 +855,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && getComputedStyle(presentationUsedSlots[1]).backgroundColor === 'rgb(11, 15, 19)'
                 && getComputedStyle(presentationUsedSlots[1]).getPropertyValue('--mod-grade-color').trim() === '#FFFF00'
                 && getComputedStyle(presentationUsedSlots[1].querySelector('.symbol-star-solid')).backgroundColor === 'rgb(255, 241, 113)'
-                && presentationWarehouseEquip.querySelector('.inventory-tier-marker.used')
-                && presentationWarehouseUsedSlots[0].classList.contains('grade-low')
-                && presentationWarehouseUsedSlots[0].querySelector('.symbol-triangle-solid')
-                && getComputedStyle(presentationWarehouseUsedSlots[0]).backgroundColor === 'rgb(11, 15, 19)'
-                && getComputedStyle(presentationWarehouseUsedSlots[0]).getPropertyValue('--mod-grade-color').trim() === '#006600'
-                && getComputedStyle(presentationWarehouseUsedSlots[0].querySelector('.symbol-triangle-solid')).backgroundColor === 'rgb(113, 201, 113)'
-                && presentationWarehouseUsedSlots[1].classList.contains('grade-high')
-                && presentationWarehouseUsedSlots[1].querySelector('.symbol-circle-outline')
-                && getComputedStyle(presentationWarehouseUsedSlots[1]).backgroundColor === 'rgb(11, 15, 19)'
-                && getComputedStyle(presentationWarehouseUsedSlots[1]).getPropertyValue('--mod-grade-color').trim() === '#0099FF'
-                && getComputedStyle(presentationWarehouseUsedSlots[1].querySelector('.symbol-circle-outline')).backgroundColor === 'rgba(0, 0, 0, 0)'
-                && getComputedStyle(presentationWarehouseUsedSlots[1].querySelector('.symbol-circle-outline')).borderTopColor === 'rgb(127, 201, 251)'
+                && presentationBattleboxEquip.querySelector('.inventory-tier-marker.used')
+                && presentationBattleboxUsedSlots[0].classList.contains('grade-low')
+                && presentationBattleboxUsedSlots[0].querySelector('.symbol-triangle-solid')
+                && getComputedStyle(presentationBattleboxUsedSlots[0]).backgroundColor === 'rgb(11, 15, 19)'
+                && getComputedStyle(presentationBattleboxUsedSlots[0]).getPropertyValue('--mod-grade-color').trim() === '#006600'
+                && getComputedStyle(presentationBattleboxUsedSlots[0].querySelector('.symbol-triangle-solid')).backgroundColor === 'rgb(113, 201, 113)'
+                && presentationBattleboxUsedSlots[1].classList.contains('grade-high')
+                && presentationBattleboxUsedSlots[1].querySelector('.symbol-circle-outline')
+                && getComputedStyle(presentationBattleboxUsedSlots[1]).backgroundColor === 'rgb(11, 15, 19)'
+                && getComputedStyle(presentationBattleboxUsedSlots[1]).getPropertyValue('--mod-grade-color').trim() === '#0099FF'
+                && getComputedStyle(presentationBattleboxUsedSlots[1].querySelector('.symbol-circle-outline')).backgroundColor === 'rgba(0, 0, 0, 0)'
+                && getComputedStyle(presentationBattleboxUsedSlots[1].querySelector('.symbol-circle-outline')).borderTopColor === 'rgb(127, 201, 251)'
                 && !presentationEquip.querySelector('small')
                 && presentationStack.querySelector('.inventory-slot-value.quantity').textContent === '8.4万'
                 && presentationStack.querySelector('.inventory-slot-value.quantity').getAttribute('title') === '数量 84,286'
@@ -866,15 +874,15 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
-        var warehouseFilter = document.querySelector('.inventory-owned-warehouse .inventory-category-filter');
-        warehouseFilter.value = 'weapon';
-        warehouseFilter.dispatchEvent(new Event('change',{bubbles:true}));
+        var battleboxFilterInShop = document.querySelector('.inventory-owned-warehouse .inventory-category-filter');
+        battleboxFilterInShop.value = 'weapon';
+        battleboxFilterInShop.dispatchEvent(new Event('change',{bubbles:true}));
         await waitFor(function(){
             var request = KShop.debugState().inventory.requests[1];
             return !KShop.debugState().inventory.busyOwner && request.filterKey === 'weapon';
         }, 600);
-        var globalWarehouseFilter = document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 1
-            && !!document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="1199"]')
+        var globalBattleboxFilter = document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 3
+            && !!document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="239"]')
             && document.querySelector('.inventory-page-jump').textContent === '1 / 1';
         var backpackFilter = document.querySelector('.inventory-owned-backpack .inventory-category-filter');
         backpackFilter.value = 'material';
@@ -884,7 +892,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             return !KShop.debugState().inventory.busyOwner && request.filterKey === 'material';
         }, 600);
         assert('kshop-ui8gb','分类筛选查询完整容器并保持跨物理页 physicalSlot/lease',
-            globalWarehouseFilter
+            globalBattleboxFilter
                 && document.querySelectorAll('.inventory-owned-backpack .inventory-slot-card').length === 1
                 && document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="4"]')
                 && KShop.debugState().inventory.requests[0].offset === 0,
@@ -917,7 +925,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         ownedHoverSlot.click();
         var ownedTooltipHiddenOnSelection = !PanelTooltip.isVisible();
         ownedHoverSlot.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:ownedHoverRect.left + 12,clientY:ownedHoverRect.top + 12}));
-        assert('kshop-ui8u','背包/仓库 occupied 槽悬浮读取 lease-bound 富注释，选取后立即隐藏',
+        assert('kshop-ui8u','背包/战备箱 occupied 槽悬浮读取 lease-bound 富注释，选取后立即隐藏',
             ownedTooltipVisible && ownedTooltipColorPreserved && ownedTooltipHiddenOnSelection && !PanelTooltip.isVisible()
                 && ownedTooltipRequest && ownedTooltipRequest.payload.source.containerId === '背包'
                 && ownedTooltipRequest.payload.source.slot === 0
@@ -987,9 +995,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
         click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"]');
         await waitFor(function(){ return countInventoryCmd('swap') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
-        assert('kshop-ui8s','仓库内异类 occupied target 走 whole-slot swap',
-            countInventoryCmd('swap') === 1 && Host.state.inventory.仓库[0].name === '仓库装备'
-                && Host.state.inventory.仓库[2].name === '背包药剂');
+        assert('kshop-ui8s','战备箱内异类 occupied target 走 whole-slot swap',
+            countInventoryCmd('swap') === 1 && Host.state.inventory.战备箱[0].name === '镜之虎彻'
+                && Host.state.inventory.战备箱[2].name === '背包药剂');
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
@@ -1017,8 +1025,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="1"]');
         click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
         await waitFor(function(){ return countInventoryCmd('move') === moveBefore + 2 && !KShop.debugState().inventory.busyOwner; }, 500);
-        assert('kshop-ui8i','背包↔仓库左右反转仍发同一 inventory move operation',
-            countInventoryCmd('move') === moveBefore + 2 && Host.state.inventory.背包[1] && !Host.state.inventory.仓库[1],
+        assert('kshop-ui8i','背包↔战备箱左右反转仍发同一 inventory move operation',
+            countInventoryCmd('move') === moveBefore + 2 && Host.state.inventory.背包[1] && !Host.state.inventory.战备箱[1],
             'move=' + countInventoryCmd('move'));
 
         await Host.open();
@@ -1027,7 +1035,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"]');
         await waitFor(function(){ return countInventoryCmd('merge') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
         assert('kshop-ui8j','同名 stack 落 occupied target 走 whole-stack merge',
-            countInventoryCmd('merge') === 1 && Host.state.inventory.仓库[0].quantity === 6 && !Host.state.inventory.背包[0]);
+            countInventoryCmd('merge') === 1 && Host.state.inventory.战备箱[0].quantity === 6 && !Host.state.inventory.背包[0]);
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
@@ -1036,7 +1044,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await waitFor(function(){ return countInventoryCmd('swap') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
         assert('kshop-ui8k','异类 occupied target 走 whole-slot swap',
             countInventoryCmd('swap') === 1 && Host.state.inventory.背包[1].itemKind === 'stack'
-                && Host.state.inventory.仓库[0].itemKind === 'equipment');
+                && Host.state.inventory.战备箱[0].itemKind === 'equipment');
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
@@ -1057,16 +1065,16 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         click('.inventory-page-next');
         await waitFor(function(){
             var requests = KShop.debugState().inventory.requests || [];
-            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 50;
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 40;
         }, 600);
         var pageRequest = Host.sent.filter(function(message){ return message.domain === 'inventory' && message.cmd === 'snapshot'; }).pop();
-        assert('kshop-ui8m','Gate A3 仓库按 50 槽窗口翻页，清除旧选择且不渲染 1200 个 DOM',
+        assert('kshop-ui8m','Gate A3 战备箱按 40 槽可访问窗口翻页，清除旧选择且不渲染锁定保留区',
             countInventoryCmd('snapshot') === snapshotBeforePage + 1
-                && pageRequest.payload.requests[1].offset === 50
-                && document.querySelector('.inventory-page-jump').textContent === '2 / 24'
-                && document.querySelector('.inventory-page-range').textContent === '51–100 / 1200'
-                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 50
-                && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="50"]')
+                && pageRequest.payload.requests[1].offset === 40
+                && document.querySelector('.inventory-page-jump').textContent === '2 / 6'
+                && document.querySelector('.inventory-page-range').textContent === '41–80 / 240'
+                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 40
+                && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="40"]')
                 && !document.querySelector('.inventory-owned-warehouse .workbench-source-selected'));
 
         var displayWritesBefore = countInventoryCmd('sortAndMerge');
@@ -1074,32 +1082,32 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         displaySelect.value = 'name';
         displaySelect.dispatchEvent(new Event('change',{bubbles:true}));
         var displayedOccupied = document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card.occupied');
-        assert('kshop-ui8n','displaySort 只重排当前页 DOM，physicalSlot 绑定与权威仓库均不改写',
+        assert('kshop-ui8n','displaySort 只重排当前页 DOM，physicalSlot 绑定与权威战备箱均不改写',
             displayedOccupied.length === 2
-                && displayedOccupied[0].getAttribute('data-physical-slot') === '51'
-                && displayedOccupied[1].getAttribute('data-physical-slot') === '50'
-                && Host.state.inventory.仓库[50].name === 'Zulu仓储件'
-                && Host.state.inventory.仓库[51].name === 'Alpha仓储件'
+                && displayedOccupied[0].getAttribute('data-physical-slot') === '41'
+                && displayedOccupied[1].getAttribute('data-physical-slot') === '40'
+                && Host.state.inventory.战备箱[40].name === 'Zulu战备件'
+                && Host.state.inventory.战备箱[41].name === 'Alpha战备件'
                 && countInventoryCmd('sortAndMerge') === displayWritesBefore);
 
-        var oldWarehouseLease = Host.leases['仓库:50'] && Host.leases['仓库:50'].token;
+        var oldBattleboxLease = Host.leases['战备箱:40'] && Host.leases['战备箱:40'].token;
         var authoritySelect = document.querySelector('.inventory-owned-warehouse .inventory-authority-sort');
         authoritySelect.value = 'byName';
         click('.inventory-owned-warehouse .inventory-sort-commit');
         var sortModalNode = document.querySelector('.workbench-modal[data-modal-kind="warehouse-sort"]');
         var sortModal = !!sortModalNode
             && !/(physicalSlot|slot|lease|AS2|权威)/i.test(sortModalNode.innerText)
-            && sortModalNode.innerText.indexOf('原有摆放顺序会改变') >= 0;
+            && sortModalNode.innerText.indexOf('未解锁的存档保留区不会被读取或移动') >= 0;
         click('.workbench-modal-action[data-action="sort"]');
         await waitFor(function(){ return countInventoryCmd('sortAndMerge') === 1 && !KShop.debugState().inventory.busyOwner; }, 700);
         var sortMessage = Host.sent.find(function(message){ return message.domain === 'inventory' && message.cmd === 'sortAndMerge'; });
         assert('kshop-ui8o','权威 sortAndMerge 携当前窗口与严格策略，epoch+1 并使旧 page lease 失效',
             sortModal && sortMessage && sortMessage.payload.methodName === 'byName'
-                && sortMessage.payload.container.containerId === '仓库'
-                && sortMessage.payload.container.offset === 50 && sortMessage.payload.container.limit === 50
-                && Host.inventoryEpochs.仓库 === 2
-                && Host.leases['仓库:50'].token !== oldWarehouseLease
-                && document.querySelector('.inventory-page-jump').textContent === '2 / 24'
+                && sortMessage.payload.container.containerId === '战备箱'
+                && sortMessage.payload.container.offset === 40 && sortMessage.payload.container.limit === 40
+                && Host.inventoryEpochs.战备箱 === 2
+                && Host.leases['战备箱:40'].token !== oldBattleboxLease
+                && document.querySelector('.inventory-page-jump').textContent === '2 / 6'
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card.occupied').length === 0);
 
         click('.inventory-page-prev');
@@ -1108,8 +1116,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 0;
         }, 600);
         assert('kshop-ui8p','整理后回首页按需重拉并显示新 physicalSlot 权威投影',
-            document.querySelector('.inventory-page-jump').textContent === '1 / 24'
-                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 50
+            document.querySelector('.inventory-page-jump').textContent === '1 / 6'
+                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 40
                 && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"].occupied'));
 
         var directSnapshotsBefore = countInventoryCmd('snapshot');
@@ -1121,42 +1129,42 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         pageMenu.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
         var escapeClosed = pageMenu.hidden && document.activeElement === document.querySelector('.inventory-page-jump');
         click('.inventory-page-jump');
-        click('.inventory-page-option[data-page="14"]');
+        click('.inventory-page-option[data-page="4"]');
         await waitFor(function(){
             var requests = KShop.debugState().inventory.requests || [];
-            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 650;
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 120;
         }, 600);
         document.dispatchEvent(new KeyboardEvent('keydown',{key:'PageDown',bubbles:true,cancelable:true}));
         await waitFor(function(){
             var requests = KShop.debugState().inventory.requests || [];
-            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 700;
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 160;
         }, 600);
         document.dispatchEvent(new KeyboardEvent('keydown',{key:'End',ctrlKey:true,bubbles:true,cancelable:true}));
         await waitFor(function(){
             var requests = KShop.debugState().inventory.requests || [];
-            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 1150;
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 200;
         }, 600);
-        var reachedLastPage = document.querySelector('.inventory-page-jump').textContent === '24 / 24'
-            && document.querySelector('.inventory-page-range').textContent === '1151–1200 / 1200'
+        var reachedLastPage = document.querySelector('.inventory-page-jump').textContent === '6 / 6'
+            && document.querySelector('.inventory-page-range').textContent === '201–240 / 240'
             && document.querySelector('.inventory-page-next').disabled;
         var directJumpSnapshots = countInventoryCmd('snapshot') - directSnapshotsBefore;
         Panels.close();
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
         await wait(20);
-        var rememberedLastPage = KShop.debugState().inventory.requests[1].offset === 1150
-            && document.querySelector('.inventory-page-jump').textContent === '24 / 24';
+        var rememberedLastPage = KShop.debugState().inventory.requests[1].offset === 200
+            && document.querySelector('.inventory-page-jump').textContent === '6 / 6';
         document.dispatchEvent(new KeyboardEvent('keydown',{key:'Home',ctrlKey:true,bubbles:true,cancelable:true}));
         await waitFor(function(){
             var requests = KShop.debugState().inventory.requests || [];
             return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 0;
         }, 600);
-        assert('kshop-ui8x','24 页仓库支持页码矩阵、槽位范围、键盘首末/前后页与会话内位置记忆',
-            menuOpened && pageOptions.length === 24 && escapeClosed
-                && pageOptions[13].title === '第 14 页 · 槽位 651–700'
+        assert('kshop-ui8x','6 页战备箱支持页码矩阵、槽位范围、键盘首末/前后页与会话内位置记忆',
+            menuOpened && pageOptions.length === 6 && escapeClosed
+                && pageOptions[3].title === '第 4 页 · 槽位 121–160'
                 && reachedLastPage && rememberedLastPage
-                && document.querySelector('.inventory-page-jump').textContent === '1 / 24'
-                && document.querySelector('.inventory-page-range').textContent === '1–50 / 1200'
+                && document.querySelector('.inventory-page-jump').textContent === '1 / 6'
+                && document.querySelector('.inventory-page-range').textContent === '1–40 / 240'
                 && directJumpSnapshots === 3 && countInventoryCmd('snapshot') === 2,
             'menu=' + menuOpened + '/' + escapeClosed + ' options=' + pageOptions.length
                 + ' last=' + reachedLastPage + ' remembered=' + rememberedLastPage
@@ -1226,10 +1234,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             var requests = InventoryWorkbench.debugState().coordinator.requests || [];
             return !InventoryWorkbench.debugState().coordinator.busyOwner && requests[1].filterKey === 'weapon';
         }, 600);
-        var weaponFilterAcrossPages = InventoryWorkbench.debugState().page.capacity === 2
-            && document.querySelectorAll('.inventory-owned-battlebox .inventory-slot-card').length === 2
+        var weaponFilterAcrossPages = InventoryWorkbench.debugState().page.capacity === 3
+            && document.querySelectorAll('.inventory-owned-battlebox .inventory-slot-card').length === 3
             && document.querySelector('.inventory-owned-battlebox [data-physical-slot="2"]')
-            && document.querySelector('.inventory-owned-battlebox [data-physical-slot="120"]');
+            && document.querySelector('.inventory-owned-battlebox [data-physical-slot="120"]')
+            && document.querySelector('.inventory-owned-battlebox [data-physical-slot="239"]');
         battleboxFilter.value = 'material';
         battleboxFilter.dispatchEvent(new Event('change',{bubbles:true}));
         await waitFor(function(){
@@ -1238,9 +1247,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         }, 600);
         assert('workbench-ui1c','战备箱分类筛选覆盖全部已解锁页，但绝不暴露400槽锁定保留区',
             weaponFilterAcrossPages
-                && InventoryWorkbench.debugState().page.capacity === 0
+                && InventoryWorkbench.debugState().page.capacity === 1
+                && document.querySelector('.inventory-owned-battlebox [data-physical-slot="41"]')
                 && !document.querySelector('.inventory-owned-battlebox [data-physical-slot="300"]')
-                && document.querySelector('.inventory-owned-battlebox .workbench-grid-empty').textContent === '当前分类暂无物品');
+                && document.querySelectorAll('.inventory-owned-battlebox .inventory-slot-card').length === 1);
         battleboxFilter.value = 'all';
         battleboxFilter.dispatchEvent(new Event('change',{bubbles:true}));
         await waitFor(function(){
@@ -1280,17 +1290,17 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var workbenchReopenedAtFirstPage = InventoryWorkbench.debugState().coordinator.requests[1].offset === 0;
         var moveBeforeWorkbench = countInventoryCmd('move');
         click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
-        click('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="0"]');
+        click('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="1"]');
         await waitFor(function(){ return countInventoryCmd('move') === moveBeforeWorkbench + 1
             && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 600);
-        click('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="0"]');
+        click('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="1"]');
         click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
         await waitFor(function(){ return countInventoryCmd('move') === moveBeforeWorkbench + 2
             && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 600);
         assert('workbench-ui3','背包↔战备箱双向移动复用 inventory transaction 且保持 50/40 窗口',
             countInventoryCmd('move') === moveBeforeWorkbench + 2
                 && workbenchReopenedAtFirstPage
-                && Host.state.inventory.背包[1] && !Host.state.inventory.战备箱[0]
+                && Host.state.inventory.背包[1] && !Host.state.inventory.战备箱[1]
                 && InventoryWorkbench.debugState().coordinator.requests[0].limit === 50
                 && InventoryWorkbench.debugState().coordinator.requests[1].limit === 40);
 
@@ -1301,6 +1311,43 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelector('.inventory-owned-battlebox .workbench-grid-empty').textContent === '战备箱尚未解锁'
                 && document.querySelectorAll('.inventory-owned-battlebox .inventory-slot-card').length === 0
                 && countCmd('bulkQuery') === 0);
+
+        await Host.openWorkbench(240, 'warehouse');
+        var warehouseWorkbenchState = InventoryWorkbench.debugState();
+        var warehouseMoveBefore = countInventoryCmd('move');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="1"]');
+        await waitFor(function(){ return countInventoryCmd('move') === warehouseMoveBefore + 1
+            && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 600);
+        click('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="1"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        await waitFor(function(){ return countInventoryCmd('move') === warehouseMoveBefore + 2
+            && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 600);
+        click('.inventory-page-jump');
+        var warehousePageOptions = document.querySelectorAll('.inventory-page-option');
+        click('.inventory-page-option[data-page="24"]');
+        await waitFor(function(){ return InventoryWorkbench.debugState().coordinator.requests[1].offset === 1150
+            && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 600);
+        assert('workbench-ui5','宿舍仓库 profile 独立呈现背包—仓库，复用 transaction 并保留 50 槽/24 页窗口',
+            warehouseWorkbenchState.profile === 'warehouse'
+                && warehouseWorkbenchState.rightContainerId === '仓库'
+                && warehouseWorkbenchState.coordinator.requests[0].containerId === '背包'
+                && warehouseWorkbenchState.coordinator.requests[0].limit === 50
+                && warehouseWorkbenchState.coordinator.requests[1].containerId === '仓库'
+                && warehouseWorkbenchState.coordinator.requests[1].limit === 50
+                && document.querySelector('.inventory-workbench-panel').getAttribute('data-inventory-profile') === 'warehouse'
+                && document.querySelector('.inventory-workbench-panel .workbench-title').textContent === '仓库'
+                && !document.querySelector('.inventory-owned-battlebox')
+                && warehousePageOptions.length === 24
+                && document.querySelector('.inventory-page-jump').textContent === '24 / 24'
+                && document.querySelector('.inventory-owned-warehouse [data-physical-slot="1199"]')
+                && countInventoryCmd('move') === warehouseMoveBefore + 2
+                && Host.state.inventory.背包[1] && !Host.state.inventory.仓库[1]
+                && countCmd('bulkQuery') === 0,
+            JSON.stringify({state:InventoryWorkbench.debugState(),profileAttr:document.querySelector('.inventory-workbench-panel').getAttribute('data-inventory-profile'),
+                title:document.querySelector('.inventory-workbench-panel .workbench-title').textContent,battleboxNode:!!document.querySelector('.inventory-owned-battlebox'),
+                pageOptions:warehousePageOptions.length,lastSlot:!!document.querySelector('.inventory-owned-warehouse [data-physical-slot="1199"]'),
+                moves:countInventoryCmd('move') + '/' + warehouseMoveBefore,backpack1:Host.state.inventory.背包[1],warehouse1:Host.state.inventory.仓库[1],bulk:countCmd('bulkQuery')}));
         Panels.close();
 
         var passed = results.filter(function(item){ return item.pass; }).length;

@@ -73,6 +73,8 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 
 `test`|`testloader` → `scripts/TestLoader`；`publish`|`asloader` → `scripts/asLoader`（自动 `-VerifySwf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（**publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。多个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
 
+显式目标若已经在 CS6 打开，`compile_action.jsfl` 会先以“不保存”关闭再从磁盘重开，确保外部编辑的 XFL XML 是 source of truth。比较时必须把 cfg URI 与 `doc.pathURI` 归一为平台路径：中文路径在两处可能分别表现为直写 Unicode 与 percent-encoded URI；不归一会漏关带 `*` 的旧文档，使 `doc.publish()` 复用旧 symbol 缓存。部分独立 XFL 在重开时会弹缺失字体确认框，计划任务会一直等不到 marker；编译时间异常拉长时先截图/检查 CS6 前台并人工确认，不要重复触发多个编译任务。`-VerifySwf` 只能证明文件被重写，关键 XML 帧脚本还应以 FFDec 导出 script 检查新增标志串是否进入 SWF。
+
 > ⚠️ **编译单元归属铁律（踩过坑）**：`scripts/类定义/` 下的 **类**（如 `*PanelService`）与 `scripts/逻辑系统分区/*_WebView.as`、`scripts/展现/UI交互/*.as` 这些 **boot `#include` 脚本** 都编进 **asLoader**——asLoader 编译 class + 把方法注入 `_root`（`_root.gameCommands.*` 等）全局提供给主文件和其他 SWF 使用。**改这些必须 `-Target publish`（asLoader），`-Target main` 不会生效！** `-Target main` 只编主文件 FLA 自身的元件 / 时间轴帧脚本（如 `Symbol 1770`、主文件库元件增删）。判断方法：被改的东西在 `asLoaderManifest`(`grep 文件名 scripts/asLoaderManifest/`) 里 → 用 `publish`；路径属于 `CRAZYFLASHER7MercenaryEmpire/` → 用 `main`；路径属于 `flashswf/UI/*`、`flashswf/levels/*`、`flashswf/arts/*` 这类独立 XFL → 找同目录 `.xfl` 和 `PublishSettings.xml` 输出 SWF，用显式 `-Target <xfl> -PublishOnly -VerifySwf <swf>`；两边都动了 → 分别编。验证可 `ffdec -export script` 后 grep 改动标志串确认进了哪个 SWF。
 
 独立资源 XFL 的输出位置通常不在该 XFL 子目录的 `bin/` 下；`bin/` 多为 XFL cache。以 `flashswf/UI/玩家信息界面` 为例，源入口是 `flashswf/UI/玩家信息界面/玩家信息界面.xfl`，发布产物由 `PublishSettings.xml` 指向 `flashswf/UI/玩家信息界面.swf`。改 `LIBRARY/*.xml` 后，主文件 `-Target main` 刷新不代表这个 SWF 已刷新。

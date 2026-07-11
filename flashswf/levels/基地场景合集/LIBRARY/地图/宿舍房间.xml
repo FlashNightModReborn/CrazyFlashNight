@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/宿舍房间" itemID="668a9fda-0000503f" linkageExportForAS="true" linkageIdentifier="基地场景-房间" lastModified="1763381489" lastUniqueIdentifier="27">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/宿舍房间" itemID="668a9fda-0000503f" linkageExportForAS="true" linkageIdentifier="基地场景-房间" lastModified="1783775786" lastUniqueIdentifier="27">
   <timeline>
     <DOMTimeline name="宿舍房间" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;183&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -168,10 +168,12 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (_root.仓库名称 != "仓库")
-	{
+	var opened = _root.gameCommands != undefined
+		&& _root.gameCommands.openInventoryWorkbench != undefined
+		&& _root.gameCommands.openInventoryWorkbench({profile:"warehouse", source:"dormitory"});
+	if (!opened && _root.仓库名称 != "仓库") {
 		_root.仓库名称 = "仓库";
-		_root.物品UI函数.刷新仓库图标(_root.物品栏.仓库,0);
+		_root.物品UI函数.刷新仓库图标(_root.物品栏.仓库, 0);
 	}
 }]]></script>
                   </Actionscript>

@@ -66,6 +66,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         _root.gameCommands["inventorySortAndMerge"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("sortAndMerge", params);
         };
+        _root.gameCommands["openInventoryWorkbench"] = function(params) {
+            return org.flashNight.arki.item.InventoryPanelService.requestOpenWorkbench(params);
+        };
 
         beginSession();
         _inited = true;
@@ -91,6 +94,26 @@ class org.flashNight.arki.item.InventoryPanelService {
         }
         if (commandName == "sortAndMerge") return executeSortAndMerge(params);
         return fail("unsupported_cmd");
+    }
+
+    /**
+     * 世界内稳定入口：只允许枚举 profile，不允许 XFL 直接拼 containerId 或 socket JSON。
+     * warehouse = 宿舍背包—仓库；battlebox = 刘海/后勤背包—战备箱。
+     */
+    public static function requestOpenWorkbench(params:Object):Boolean {
+        var profile:String = params == undefined || params.profile == undefined
+            ? "" : String(params.profile);
+        if (profile != "warehouse" && profile != "battlebox") return false;
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
+        if (_json == undefined) _json = new LiteJSON();
+        var source:String = params == undefined || params.source == undefined
+            ? "inventory_workbench" : String(params.source);
+        return _root.server.sendSocketMessage(_json.stringify({
+            task: "panel_request",
+            panel: "workbench",
+            source: source,
+            initData: {profile: profile}
+        }));
     }
 
     private static function executeSnapshot(params:Object):Object {
