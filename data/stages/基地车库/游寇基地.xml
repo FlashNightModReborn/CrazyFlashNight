@@ -164,7 +164,7 @@
                 </WaveInformation>
                 
                 <EnemyGroup>
-                    <Enemy id="0">
+                    <Enemy>
                         <Type>兵种49</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
@@ -172,7 +172,7 @@
                         <x>1411</x>
                         <y>560</y>
                     </Enemy>
-                    <Enemy id="1">
+                    <Enemy>
                         <Type>兵种49</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
@@ -180,21 +180,21 @@
                         <x>1613</x>
                         <y>457</y>
                     </Enemy>
-                    <Enemy id="2">
+                    <Enemy>
                         <Type>兵种48</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
-                    <Enemy id="3">
+                    <Enemy>
                         <Type>兵种45</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
-                    <Enemy id="4">
+                    <Enemy>
                         <Type>兵种44</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
@@ -203,6 +203,12 @@
                         <Parameters>
                             <汽车炸弹数量>1</汽车炸弹数量>
                         </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种456</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
