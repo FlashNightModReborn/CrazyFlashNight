@@ -19,6 +19,7 @@ var KShop = (function() {
     var _kpoints = 0;
     var _playerLevel = 0;
     var _reverseLevel = 0;
+    var _shopReady = false;
     var _closing = false;
     var _activeCategory = null;
     var _categories = [];
@@ -61,10 +62,12 @@ var KShop = (function() {
     var _cartGridView, _purchasedGridView, _catalogRenderer, _interactionBroker, _dragController;
     var _ownedViews = [], _ownedDragControllers = [];
     var _shopModeButton, _inventoryModeButton, _inventoryRetryButton;
-    var _warehousePrevButton, _warehouseNextButton, _warehousePageLabel;
+    var _warehousePrevButton, _warehouseNextButton, _warehousePageLabel, _warehousePageRange;
+    var _warehousePageMenu, _warehousePageGrid;
     var _warehouseDisplaySortSelect, _warehouseAuthoritySortSelect, _warehouseSortButton;
     var _cartDropTarget, _cartDropLabel, _selectedCatalogIdx = null;
     var _dragTooltipSuppressed = false;
+    var _ownedTooltipSelectionSuppressed = false;
     var _el, _shellEl, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
     var _checkoutBtn, _claimList, _loadingEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
@@ -86,6 +89,9 @@ var KShop = (function() {
     }
     function escHtml(s) {
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function escAttr(s) {
+        return escHtml(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
     function iconHtml(iconName, cls) {
         var icon = (typeof Icons !== 'undefined' && Icons.html)
@@ -134,7 +140,16 @@ var KShop = (function() {
         return code;
     }
     function markCartDirty() {
+        if (!_shopReady) return false;
         return _writeCoordinator.markCartChanged();
+    }
+
+    function canEditCart() {
+        return _shopReady && _writeCoordinator.canEditCart();
+    }
+
+    function canStartShopWrite() {
+        return _shopReady && _writeCoordinator.debugState().canStartWrite;
     }
 
     function requestShop(cmd, payload, callback) {
@@ -168,9 +183,9 @@ var KShop = (function() {
     function refreshWriteControls(state) {
         _writeState = state;
         if (!_el) return;
-        var blockEdits = state && !state.canEditCart;
+        var blockEdits = !_shopReady || (state && !state.canEditCart);
         var inventoryBlocked = !_inventoryState.ready || !!_inventoryState.busyOwner || !!_inventoryState.refreshRequired;
-        var blockWrites = state && !state.canStartWrite;
+        var blockWrites = !_shopReady || (state && !state.canStartWrite);
         var claimBlocked = !!blockWrites || inventoryBlocked;
         _el.classList.toggle('kshop-write-busy', !!blockWrites || !!(state && state.saveInFlight));
         var editButtons = _el.querySelectorAll('.kshop-add-btn,.kshop-qty-btn,.kshop-qty-pop-btn,.kshop-qty-confirm');
@@ -182,6 +197,7 @@ var KShop = (function() {
         for (var k = 0; k < ownedNodes.length; k++) ownedNodes[k].classList.toggle('write-locked', inventoryBlocked);
         if (_warehousePrevButton) _warehousePrevButton.disabled = inventoryBlocked || _warehousePrevButton.getAttribute('data-boundary') === 'start';
         if (_warehouseNextButton) _warehouseNextButton.disabled = inventoryBlocked || _warehouseNextButton.getAttribute('data-boundary') === 'end';
+        if (_warehousePageLabel) _warehousePageLabel.disabled = inventoryBlocked;
         if (_warehouseDisplaySortSelect) _warehouseDisplaySortSelect.disabled = inventoryBlocked;
         if (_warehouseAuthoritySortSelect) _warehouseAuthoritySortSelect.disabled = inventoryBlocked;
         if (_warehouseSortButton) _warehouseSortButton.disabled = inventoryBlocked;
@@ -192,7 +208,8 @@ var KShop = (function() {
         }
         if (_dragController && blockEdits) _dragController.cancel();
         if (_workbenchShell) {
-            if (_inventoryState.refreshRequired) _workbenchShell.setStatus('库存投影刷新失败 · 写入锁定', 'warning');
+            if (!_shopReady) _workbenchShell.setStatus(_loading ? '正在读取商城权威状态' : '商城权威快照未就绪 · 写入锁定', _loading ? 'busy' : 'warning');
+            else if (_inventoryState.refreshRequired) _workbenchShell.setStatus('库存投影刷新失败 · 写入锁定', 'warning');
             else if (_inventoryState.busyOwner) _workbenchShell.setStatus('库存事务 · ' + _inventoryState.busyOwner, 'busy');
             else if (state && state.reconcileBlocked) _workbenchShell.setStatus('对账失败 · 写入锁定', 'warning');
             else if (state && state.reconciling) _workbenchShell.setStatus('正在重建权威投影', 'busy');
@@ -483,18 +500,42 @@ var KShop = (function() {
         _warehousePrevButton.textContent = '‹';
         _warehousePrevButton.setAttribute('aria-label', '上一页仓库');
         _warehousePrevButton.addEventListener('click', function() { changeWarehousePage(-1); });
-        _warehousePageLabel = document.createElement('span');
-        _warehousePageLabel.className = 'inventory-page-label';
-        _warehousePageLabel.textContent = '1 / 24';
+        _warehousePageLabel = document.createElement('button');
+        _warehousePageLabel.type = 'button';
+        _warehousePageLabel.className = 'inventory-toolbar-btn inventory-page-label inventory-page-jump';
+        _warehousePageLabel.textContent = '第 1 页';
+        _warehousePageLabel.setAttribute('aria-label', '选择仓库页码');
+        _warehousePageLabel.setAttribute('aria-haspopup', 'menu');
+        _warehousePageLabel.setAttribute('aria-expanded', 'false');
+        _warehousePageLabel.addEventListener('click', toggleWarehousePageMenu);
         _warehouseNextButton = document.createElement('button');
         _warehouseNextButton.type = 'button';
         _warehouseNextButton.className = 'inventory-toolbar-btn inventory-page-next';
         _warehouseNextButton.textContent = '›';
         _warehouseNextButton.setAttribute('aria-label', '下一页仓库');
         _warehouseNextButton.addEventListener('click', function() { changeWarehousePage(1); });
+        _warehousePageRange = document.createElement('span');
+        _warehousePageRange.className = 'inventory-page-range';
+        _warehousePageRange.textContent = '1–50 / 1200';
+        _warehousePageRange.setAttribute('aria-hidden', 'true');
+        _warehousePageMenu = document.createElement('div');
+        _warehousePageMenu.className = 'inventory-page-menu';
+        _warehousePageMenu.hidden = true;
+        _warehousePageMenu.setAttribute('role', 'menu');
+        _warehousePageMenu.setAttribute('aria-label', '仓库页码快速跳转');
+        var pageMenuCaption = document.createElement('div');
+        pageMenuCaption.className = 'inventory-page-menu-caption';
+        pageMenuCaption.textContent = '页码 / 物理槽位';
+        _warehousePageGrid = document.createElement('div');
+        _warehousePageGrid.className = 'inventory-page-grid';
+        _warehousePageMenu.appendChild(pageMenuCaption);
+        _warehousePageMenu.appendChild(_warehousePageGrid);
+        _warehousePageMenu.addEventListener('keydown', onWarehousePageMenuKeyDown);
         pager.appendChild(_warehousePrevButton);
         pager.appendChild(_warehousePageLabel);
         pager.appendChild(_warehouseNextButton);
+        pager.appendChild(_warehousePageRange);
+        pager.appendChild(_warehousePageMenu);
 
         var displayGroup = document.createElement('label');
         displayGroup.className = 'inventory-toolbar-field';
@@ -600,6 +641,83 @@ var KShop = (function() {
         };
     }
 
+    function compactOwnedQuantity(value) {
+        var quantity = Math.max(0, Math.floor(Number(value) || 0));
+        if (quantity < 10000) return String(quantity);
+        var unitValue = quantity >= 100000000 ? 100000000 : 10000;
+        var unitLabel = unitValue === 100000000 ? '亿' : '万';
+        var scaled = quantity / unitValue;
+        // 向下截断，避免 9999.9 万被四舍五入成尚未达到的 1 亿。
+        var compact = scaled < 10
+            ? Math.floor(scaled * 10) / 10
+            : Math.floor(scaled);
+        return String(compact).replace(/\.0$/, '') + unitLabel;
+    }
+
+    function exactOwnedQuantity(value) {
+        var quantity = Math.max(0, Math.floor(Number(value) || 0));
+        return String(quantity).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function normalizeModGrade(value) {
+        var grade = String(value || 'unknown');
+        return grade === 'low' || grade === 'medium' || grade === 'high' || grade === 'special'
+            ? grade : 'unknown';
+    }
+
+    function normalizeModSymbol(value) {
+        var symbol = String(value || 'diamond-outline');
+        var legacy = {
+            triangle:'triangle-solid', square:'square-outline', circle:'circle-outline',
+            diamond:'diamond-outline', star:'star-solid'
+        };
+        if (legacy[symbol]) symbol = legacy[symbol];
+        return /^(triangle|square|circle|diamond|star)-(solid|outline)$/.test(symbol)
+            ? symbol : 'diamond-outline';
+    }
+
+    function normalizeModGradeColor(value, grade) {
+        var canonical = {low:'#006600',medium:'#996600',high:'#0099FF',special:'#FFFF00',unknown:'#58636E'};
+        var color = String(value || '').toUpperCase();
+        return color === canonical[grade] ? color : canonical[grade];
+    }
+
+    function renderTierMarker(item) {
+        var tierAvailable = !!item.tierSlotAvailable || !!item.tierSlotUsed;
+        if (!tierAvailable) return '';
+        var state = item.tierSlotUsed ? 'used' : 'empty';
+        var label = state === 'used' ? '装备已升阶' : '装备可升阶但尚未升阶';
+        return '<span class="inventory-tier-marker ' + state + '" aria-label="' + label + '"></span>';
+    }
+
+    function renderEquipmentSlotRail(item) {
+        var html = '<span class="inventory-equip-slots" aria-label="三个插件槽状态">';
+        var capacity = Math.max(0, Math.floor(Number(item.modSlotCapacity) || 0));
+        var used = Math.max(0, Math.floor(Number(item.modSlotUsed) || 0));
+        var modSlots = item.modSlots instanceof Array ? item.modSlots : [];
+        for (var index = 0; index < 3; index++) {
+            var available = index < capacity;
+            var mod = index < modSlots.length ? modSlots[index] : null;
+            if (available && index < used) {
+                mod = mod || {name:'未知插件',grade:'unknown',gradeLabel:'未知档级',roleLabel:'结构与功能',symbol:'diamond-outline'};
+                var grade = normalizeModGrade(mod.grade);
+                var symbol = normalizeModSymbol(mod.symbol);
+                var color = normalizeModGradeColor(mod.gradeColor, grade);
+                var label = '插件槽 ' + (index + 1) + '：' + String(mod.name || '未知插件')
+                    + '，' + String(mod.gradeLabel || '未知档级') + '，' + String(mod.roleLabel || '结构与功能');
+                html += '<span class="inventory-equip-slot mod used grade-' + grade
+                    + '" style="--mod-grade-color:' + color + '" aria-label="' + escAttr(label) + '">'
+                    + '<span class="inventory-mod-glyph symbol-' + symbol + '" aria-hidden="true"></span></span>';
+            } else {
+                var state = available ? 'empty' : 'unavailable';
+                var emptyLabel = available ? '空闲' : '不存在';
+                html += '<span class="inventory-equip-slot mod ' + state + '" aria-label="插件槽 '
+                    + (index + 1) + '：' + emptyLabel + '"></span>';
+            }
+        }
+        return html + '</span>';
+    }
+
     function renderOwnedSlot(containerId, slot) {
         var node = document.createElement('article');
         node.className = 'inventory-slot-card ' + (slot.occupied ? 'occupied' : 'empty');
@@ -610,16 +728,34 @@ var KShop = (function() {
             return node;
         }
         var item = slot.item || {};
+        var isEquipment = item.itemKind === 'equipment';
+        var badge = '';
+        if (isEquipment && Number(item.enhancementLevel) > 1) {
+            badge = '<span class="inventory-slot-value level" title="强化等级 ' + Number(item.enhancementLevel)
+                + '" aria-label="强化等级 ' + Number(item.enhancementLevel) + '">' + Number(item.enhancementLevel) + '</span>';
+        } else if (!isEquipment && Number(item.quantity) > 1) {
+            badge = '<span class="inventory-slot-value quantity" title="数量 ' + exactOwnedQuantity(item.quantity)
+                + '" aria-label="数量 ' + exactOwnedQuantity(item.quantity) + '">' + compactOwnedQuantity(item.quantity) + '</span>';
+        }
+        node.classList.add(isEquipment ? 'equipment' : 'stack');
+        if (isEquipment && item.isMaxEnhancement) node.classList.add('max-enhancement');
         node.innerHTML =
             '<span class="inventory-slot-index">' + (Number(slot.physicalSlot) + 1) + '</span>' +
-            '<span class="inventory-slot-icon">' + iconHtml(item.icon || item.name, 'inventory-owned-icon') + '</span>' +
+            '<span class="inventory-slot-icon-frame"><span class="inventory-slot-icon">'
+                + iconHtml(item.icon || item.name, 'inventory-owned-icon') + '</span>'
+                + (isEquipment ? renderTierMarker(item) : '') + badge + '</span>' +
             '<span class="inventory-slot-copy"><b>' + escHtml(item.displayName || item.name || '未知物品') + '</b>' +
-            '<small>' + escHtml(item.itemKind || 'owned') + (Number(item.quantity) > 1 ? ' × ' + Number(item.quantity) : '') + '</small></span>' +
+                (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>' +
             (containerId === '背包' ? '<button class="inventory-discard-btn" type="button" title="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
         return node;
     }
 
     function bindOwnedSlot(containerId, node, slot) {
+        if (slot.occupied) {
+            node.addEventListener('mouseenter', function(event) { onOwnedSlotHover(event, containerId, slot); });
+            node.addEventListener('mouseleave', onOwnedSlotLeave);
+            node.addEventListener('mousemove', onOwnedSlotMove);
+        }
         node.addEventListener('click', function(event) {
             if (consumedOwnedClick()) return;
             if (event.target && event.target.closest && event.target.closest('.inventory-discard-btn')) return;
@@ -656,28 +792,159 @@ var KShop = (function() {
         refreshWarehouseToolbar();
     }
 
-    function refreshWarehouseToolbar() {
-        if (!_warehousePageLabel) return;
+    function warehousePageState() {
         var snapshot = _inventoryCoordinator.getWindow('仓库');
         var request = _inventoryCoordinator.getRequest('仓库');
         var offset = snapshot ? Number(snapshot.offset) : (request ? Number(request.offset) : 0);
         var limit = request ? Number(request.limit) : 50;
         var capacity = snapshot ? Number(snapshot.capacity) : 1200;
         var pageCount = Math.max(1, Math.ceil(capacity / limit));
-        var page = Math.min(pageCount, Math.floor(offset / limit) + 1);
-        _warehousePageLabel.textContent = page + ' / ' + pageCount;
-        if (_warehousePrevButton) _warehousePrevButton.setAttribute('data-boundary', page <= 1 ? 'start' : '');
-        if (_warehouseNextButton) _warehouseNextButton.setAttribute('data-boundary', page >= pageCount ? 'end' : '');
+        var page = Math.max(1, Math.min(pageCount, Math.floor(offset / limit) + 1));
+        var rangeStart = capacity > 0 ? Math.min(capacity, offset + 1) : 0;
+        var rangeEnd = Math.min(capacity, offset + limit);
+        return {
+            offset: offset, limit: limit, capacity: capacity,
+            page: page, pageCount: pageCount,
+            rangeStart: rangeStart, rangeEnd: rangeEnd
+        };
+    }
+
+    function renderWarehousePageMenu(state) {
+        if (!_warehousePageGrid) return;
+        _warehousePageGrid.innerHTML = '';
+        var fragment = document.createDocumentFragment();
+        for (var page = 1; page <= state.pageCount; page++) {
+            var start = (page - 1) * state.limit + 1;
+            var end = Math.min(state.capacity, page * state.limit);
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'inventory-page-option';
+            button.textContent = page < 10 ? '0' + page : String(page);
+            button.setAttribute('role', 'menuitemradio');
+            button.setAttribute('data-page', String(page));
+            button.setAttribute('aria-checked', page === state.page ? 'true' : 'false');
+            button.setAttribute('aria-label', '第 ' + page + ' 页，槽位 ' + start + ' 至 ' + end);
+            button.title = '第 ' + page + ' 页 · 槽位 ' + start + '–' + end;
+            if (page === state.page) {
+                button.classList.add('current');
+                button.setAttribute('aria-current', 'page');
+            }
+            button.addEventListener('click', function(event) {
+                jumpWarehouseToPage(Number(event.currentTarget.getAttribute('data-page')));
+            });
+            fragment.appendChild(button);
+        }
+        _warehousePageGrid.appendChild(fragment);
+    }
+
+    function setWarehousePageMenuOpen(open, returnFocus) {
+        if (!_warehousePageMenu || !_warehousePageLabel) return;
+        var nextOpen = !!open && !_warehousePageLabel.disabled;
+        _warehousePageMenu.hidden = !nextOpen;
+        _warehousePageLabel.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+        if (nextOpen) {
+            var current = _warehousePageMenu.querySelector('.inventory-page-option.current');
+            if (current) current.focus();
+        } else if (returnFocus) {
+            _warehousePageLabel.focus();
+        }
+    }
+
+    function toggleWarehousePageMenu() {
+        setWarehousePageMenuOpen(_warehousePageMenu && _warehousePageMenu.hidden, false);
+    }
+
+    function onWarehousePageMenuKeyDown(event) {
+        if (!_warehousePageMenu || _warehousePageMenu.hidden) return;
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            setWarehousePageMenuOpen(false, true);
+            return;
+        }
+        var options = Array.prototype.slice.call(_warehousePageMenu.querySelectorAll('.inventory-page-option'));
+        if (!options.length) return;
+        var index = options.indexOf(document.activeElement);
+        var nextIndex = index;
+        if (event.key === 'ArrowRight') nextIndex = Math.min(options.length - 1, index + 1);
+        else if (event.key === 'ArrowLeft') nextIndex = Math.max(0, index - 1);
+        else if (event.key === 'ArrowDown') nextIndex = Math.min(options.length - 1, index + 6);
+        else if (event.key === 'ArrowUp') nextIndex = Math.max(0, index - 6);
+        else if (event.key === 'Home') nextIndex = 0;
+        else if (event.key === 'End') nextIndex = options.length - 1;
+        else return;
+        event.preventDefault();
+        options[Math.max(0, nextIndex)].focus();
+    }
+
+    function onWarehouseOutsidePointerDown(event) {
+        if (!_warehousePageMenu || _warehousePageMenu.hidden) return;
+        var pager = _warehousePageMenu.closest('.inventory-warehouse-pager');
+        if (!pager || !pager.contains(event.target)) setWarehousePageMenuOpen(false, false);
+    }
+
+    function warehouseShortcutsEnabled(event) {
+        if (!isKShopOpen() || !_inventoryModeButton || !_inventoryModeButton.classList.contains('active')) return false;
+        if (_workbenchShell && _workbenchShell.hasModal()) return false;
+        var target = event.target;
+        if (target && target.closest && target.closest('input,textarea,select,[contenteditable="true"],[data-browser-native]')) return false;
+        return true;
+    }
+
+    function onWarehousePageShortcut(event) {
+        if (!warehouseShortcutsEnabled(event)) return;
+        var page = null;
+        var state = warehousePageState();
+        if (event.key === 'PageUp') page = state.page - 1;
+        else if (event.key === 'PageDown') page = state.page + 1;
+        else if (event.ctrlKey && event.key === 'Home') page = 1;
+        else if (event.ctrlKey && event.key === 'End') page = state.pageCount;
+        if (page == null) return;
+        event.preventDefault();
+        event.stopPropagation();
+        jumpWarehouseToPage(page);
+    }
+
+    function refreshWarehouseToolbar() {
+        if (!_warehousePageLabel) return;
+        var state = warehousePageState();
+        _warehousePageLabel.textContent = '第 ' + state.page + ' 页';
+        _warehousePageLabel.setAttribute('aria-label', '第 ' + state.page + ' 页，共 ' + state.pageCount
+            + ' 页；槽位 ' + state.rangeStart + ' 至 ' + state.rangeEnd + '，点击快速跳转');
+        if (_warehousePageRange) _warehousePageRange.textContent = state.rangeStart + '–' + state.rangeEnd + ' / ' + state.capacity;
+        if (_warehousePrevButton) _warehousePrevButton.setAttribute('data-boundary', state.page <= 1 ? 'start' : '');
+        if (_warehouseNextButton) _warehouseNextButton.setAttribute('data-boundary', state.page >= state.pageCount ? 'end' : '');
+        renderWarehousePageMenu(state);
     }
 
     function changeWarehousePage(direction) {
+        setWarehousePageMenuOpen(false, false);
         if (_interactionBroker) _interactionBroker.clearSelection();
+        hideTooltip();
         if (!_inventoryCoordinator.page('仓库', direction, function(result) {
             renderOwnedInventories();
             if (!result.success) toast('仓库翻页失败：' + (result.error || 'inventory_refresh_failed'));
         })) {
             refreshWarehouseToolbar();
         }
+    }
+
+    function jumpWarehouseToPage(page) {
+        var state = warehousePageState();
+        page = Math.max(1, Math.min(state.pageCount, Math.floor(Number(page) || 1)));
+        setWarehousePageMenuOpen(false, false);
+        if (page === state.page) return false;
+        if (_interactionBroker) _interactionBroker.clearSelection();
+        hideTooltip();
+        var offset = (page - 1) * state.limit;
+        if (!_inventoryCoordinator.setWindow('仓库', offset, state.limit, function(result) {
+            renderOwnedInventories();
+            if (!result.success) toast('仓库跳页失败：' + (result.error || 'inventory_refresh_failed'));
+        })) {
+            refreshWarehouseToolbar();
+            return false;
+        }
+        return true;
     }
 
     function showWarehouseSortConfirm() {
@@ -708,6 +975,7 @@ var KShop = (function() {
 
     function showShopMode() {
         if (!_workbenchShell) return;
+        setWarehousePageMenuOpen(false, false);
         _workbenchShell.moveView('L', _catalogView);
         _workbenchShell.moveView('R', _orderView);
         _shopModeButton.classList.add('active');
@@ -760,6 +1028,9 @@ var KShop = (function() {
             },
             onSelectionChange: function(selection) {
                 _selectedCatalogIdx = selection && selection.view === _catalogView && selection.item ? selection.item.idx : null;
+                _ownedTooltipSelectionSuppressed = !!(selection
+                    && (selection.view === _backpackView || selection.view === _warehouseView));
+                if (_ownedTooltipSelectionSuppressed) hideTooltip();
                 if (_catalogRenderer) _catalogRenderer.setSelectedKey(_selectedCatalogIdx);
                 if (_cartDropTarget) {
                     _cartDropTarget.classList.toggle('has-selection', _selectedCatalogIdx != null);
@@ -773,7 +1044,7 @@ var KShop = (function() {
             broker: _interactionBroker,
             timeoutMs: _runtimeConfig.dragTimeoutMs || 1400,
             getSource: function(target) {
-                if (!_writeCoordinator.canEditCart()) return null;
+                if (!canEditCart()) return null;
                 var hit = _catalogRenderer.itemFromTarget(target);
                 if (!hit || isLocked(hit.item) || hit.item.type === '非卖品') return null;
                 return { view: _catalogView, item: hit.item, node: hit.node };
@@ -852,8 +1123,28 @@ var KShop = (function() {
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _closing = false;
+        _shopReady = false;
+        _loading = true;
+        _catalog = [];
+        _cart = [];
+        _purchased = [];
+        _purchasedToken = '';
+        _activeCategory = null;
+        _categories = [];
+        _tooltipCache = {};
+        _tooltipHovering = -1;
+        _ownedTooltipCache = {};
+        _ownedTooltipHovering = null;
+        _ownedTooltipSelectionSuppressed = false;
+        document.removeEventListener('pointerdown', onWarehouseOutsidePointerDown);
+        document.removeEventListener('keydown', onWarehousePageShortcut);
+        document.addEventListener('pointerdown', onWarehouseOutsidePointerDown);
+        document.addEventListener('keydown', onWarehousePageShortcut);
         dismissDialog();
         if (_interactionBroker) _interactionBroker.clearSelection();
+        buildCategories();
+        renderCart();
+        renderClaimed();
         _mux.openSession();
         _writeCoordinator.open();
         showShopMode();
@@ -862,7 +1153,6 @@ var KShop = (function() {
             renderOwnedInventories();
             if (!result.success) toast('库存加载失败：' + (result.error || 'inventory_refresh_failed'));
         });
-        _loading = true;
         if (_workbenchShell) _workbenchShell.setStatus('正在读取权威状态', 'busy');
         UiData.on('k', _kHandler);
         if (_loadingEl) _loadingEl.style.display = '';
@@ -877,9 +1167,12 @@ var KShop = (function() {
                     && Array.isArray(resp.purchased) && isFinite(Number(resp.kpoints))
                     && isFinite(Number(resp.playerLevel)) && isFinite(Number(resp.reverseLevel))
                     && typeof resp.purchasedToken === 'string' && resp.purchasedToken.length > 0) {
+                _shopReady = true;
                 applyBulkSnapshot(resp);
                 _writeCoordinator.acceptAuthoritativeCart();
             } else {
+                _shopReady = false;
+                refreshWriteControls(_writeCoordinator.debugState());
                 toast('商城加载失败：' + messageForError('save', resp.error || 'invalid_response'));
             }
         });
@@ -1010,7 +1303,7 @@ var KShop = (function() {
     }
 
     function onCatalogCardDoubleClick(event) {
-        if (!_writeCoordinator.canEditCart()) return;
+        if (!canEditCart()) return;
         var idx = Number(event.currentTarget.getAttribute('data-idx'));
         var item = findCatalogItem(idx);
         if (!item) return;
@@ -1018,7 +1311,7 @@ var KShop = (function() {
     }
 
     function probeCartAccept(offer) {
-        if (!_writeCoordinator.canEditCart()) return { accepted: false, reason: 'write_locked' };
+        if (!canEditCart()) return { accepted: false, reason: 'write_locked' };
         if (!offer || offer.subjectKind !== 'catalogEntry') return { accepted: false, reason: 'unsupported_subject' };
         var operations = offer.offeredOperations || [];
         var accepts = false;
@@ -1033,7 +1326,7 @@ var KShop = (function() {
     }
 
     function onCartSinkClick() {
-        if (!_writeCoordinator.canEditCart()) {
+        if (!canEditCart()) {
             toast('商城正在处理写入，请稍后再加购。');
             return;
         }
@@ -1062,7 +1355,7 @@ var KShop = (function() {
     }
 
     function addCatalogIntent(idx, qty) {
-        if (!_writeCoordinator.canEditCart()) return false;
+        if (!canEditCart()) return false;
         var item = findCatalogItem(idx);
         if (!item || isLocked(item) || item.type === '非卖品') return false;
         if (!isStackable(item)) {
@@ -1085,6 +1378,8 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     var _tooltipCache = {};  // idx → {descHTML, introHTML}
     var _tooltipHovering = -1; // 当前 hover 的 idx，离开时置 -1
+    var _ownedTooltipCache = {}; // container:slot:lease → 富文本；lease 变化即自然失效
+    var _ownedTooltipHovering = null;
 
     function onCardHover(e) {
         if (_dragTooltipSuppressed) return;
@@ -1157,12 +1452,76 @@ var KShop = (function() {
         });
     }
 
+    function ownedTooltipKey(containerId, slot) {
+        return String(containerId) + ':' + Number(slot.physicalSlot) + ':' + String(slot.slotLease || '');
+    }
+
+    function onOwnedSlotHover(event, containerId, slot) {
+        if (_dragTooltipSuppressed || _ownedTooltipSelectionSuppressed || !slot || !slot.occupied) return;
+        var key = ownedTooltipKey(containerId, slot);
+        _ownedTooltipHovering = key;
+        PanelTooltip.showAtMouse(_ownedTooltipCache[key]
+            ? buildOwnedRichHtml(slot.item || {}, _ownedTooltipCache[key])
+            : buildOwnedBasicHtml(slot.item || {}), event);
+        if (!_ownedTooltipCache[key]) requestOwnedTooltip(containerId, slot, key);
+    }
+
+    function onOwnedSlotLeave() {
+        _ownedTooltipHovering = null;
+        PanelTooltip.hide();
+    }
+
+    function onOwnedSlotMove(event) {
+        if (_dragTooltipSuppressed || _ownedTooltipSelectionSuppressed) return;
+        PanelTooltip.followMouse(event);
+    }
+
+    function buildOwnedBasicHtml(item) {
+        var typeLabel = item.majorType || item.use || item.itemKind || '物品';
+        return '<div class="kshop-tt-header"><b>' + escHtml(item.displayName || item.name || '未知物品') + '</b></div>'
+            + '<div class="kshop-tt-divider"></div>'
+            + '<span class="kshop-tt-dim">类型</span> ' + escHtml(typeLabel) + '<br>'
+            + (Number(item.quantity) > 1 ? '<span class="kshop-tt-dim">数量</span> ' + Number(item.quantity) + '<br>' : '')
+            + (Number(item.enhancementLevel) > 0 ? '<span class="kshop-tt-dim">强化</span> +' + Number(item.enhancementLevel) + '<br>' : '')
+            + '<div class="kshop-tt-loading">加载中…</div>';
+    }
+
+    function buildOwnedRichHtml(item, data) {
+        var iconKey = data.iconName || item.icon || item.name;
+        return PanelTooltip.buildItemRichHtml({
+            iconHtml: PanelTooltip.dynamicIconHtml(iconKey),
+            iconUrl: PanelTooltip.staticIconUrl(iconKey),
+            introHTML: data.introHTML || '',
+            descHTML: data.descHTML || '',
+            rootClass: 'kshop-tt-rich-context inventory-owned-tt-context',
+            layoutType: PanelTooltip.inferLayoutType(data.itemType || item.majorType || item.use)
+        });
+    }
+
+    function requestOwnedTooltip(containerId, slot, key) {
+        requestInventory('tooltip', {v: 1, source: ownedSlotRef(containerId, slot)}, function(resp) {
+            if (!isKShopOpen() || !resp || resp.success !== true) return;
+            _ownedTooltipCache[key] = {
+                descHTML: resp.descHTML || '',
+                introHTML: resp.introHTML || '',
+                iconName: resp.iconName || '',
+                itemType: resp.itemType || ''
+            };
+            if (_ownedTooltipHovering === key
+                    && !_dragTooltipSuppressed
+                    && !_ownedTooltipSelectionSuppressed
+                    && PanelTooltip.isVisible()) {
+                PanelTooltip.updateContent(buildOwnedRichHtml(slot.item || {}, _ownedTooltipCache[key]));
+            }
+        });
+    }
+
     // ══════════════════════════════════════════
     //  Cart — 购买分流：装备qty固定1，消耗品/收集品可叠加
     // ══════════════════════════════════════════
     function onAddToCart(e) {
         e.stopPropagation();
-        if (!_writeCoordinator.canEditCart()) {
+        if (!canEditCart()) {
             toast('商城正在处理写入，请稍后再编辑购物车。');
             return;
         }
@@ -1199,7 +1558,7 @@ var KShop = (function() {
     // 消耗品批量数量输入弹窗
     var _qtyPopup = null;
     function showQtyInput(anchor, idx) {
-        if (!_writeCoordinator.canEditCart()) return;
+        if (!canEditCart()) return;
         dismissQtyInput();
         var item = findCatalogItem(idx);
         if (!item) return;
@@ -1265,7 +1624,7 @@ var KShop = (function() {
         _qtyPopup.querySelector('.kshop-qty-confirm').addEventListener('click', confirmAdd);
 
         function confirmAdd() {
-            if (!_writeCoordinator.canEditCart()) return;
+            if (!canEditCart()) return;
             var qty = Math.max(1, Math.floor(Number(input.value) || 1));
             addToCartDirect(idx, qty);
             dismissQtyInput();
@@ -1295,7 +1654,7 @@ var KShop = (function() {
     }
 
     function addToCartDirect(idx, qty) {
-        if (!_writeCoordinator.canEditCart()) return;
+        if (!canEditCart()) return;
         for (var i = 0; i < _cart.length; i++) {
             if (_cart[i].idx === idx) {
                 _cart[i].qty += qty;
@@ -1363,7 +1722,7 @@ var KShop = (function() {
                 var cidx = Number(btn.getAttribute('data-idx'));
                 var delta = Number(btn.getAttribute('data-delta'));
                 holdRepeat(btn, function() {
-                    if (!_writeCoordinator.canEditCart()) return;
+                    if (!canEditCart()) return;
                     for (var j = 0; j < _cart.length; j++) {
                         if (_cart[j].idx === cidx) {
                             _cart[j].qty += delta;
@@ -1386,7 +1745,7 @@ var KShop = (function() {
 
     function onQtyChange(e) {
         e.stopPropagation();
-        if (!_writeCoordinator.canEditCart()) return;
+        if (!canEditCart()) return;
         var idx = Number(e.target.getAttribute('data-idx'));
         var delta = Number(e.target.getAttribute('data-delta'));
         for (var i = 0; i < _cart.length; i++) {
@@ -1420,7 +1779,7 @@ var KShop = (function() {
     //  Checkout
     // ══════════════════════════════════════════
     function showCheckoutConfirm() {
-        if (_cart.length === 0 || !_writeCoordinator.debugState().canStartWrite) return;
+        if (_cart.length === 0 || !canStartShopWrite()) return;
         var total = 0;
         for (var i = 0; i < _cart.length; i++) {
             var item = findCatalogItem(_cart[i].idx);
@@ -1441,7 +1800,7 @@ var KShop = (function() {
     }
 
     function checkout() {
-        if (_cart.length === 0) return;
+        if (_cart.length === 0 || !canStartShopWrite()) return;
         if (!_writeCoordinator.checkout(function(resp) {
             if (!isKShopOpen()) return;
             if (resp.success) {
@@ -1517,6 +1876,10 @@ var KShop = (function() {
 
     function onClaim(e) {
         e.stopPropagation();
+        if (!canStartShopWrite()) {
+            toast('商城权威状态尚未同步，请稍后再领取。');
+            return;
+        }
         var pidx = Number(e.target.getAttribute('data-pidx'));
         if (!_inventoryCoordinator.beginExternalWrite('shop.claim')) {
             toast('背包尚未同步或正在处理另一笔写入。');
@@ -1579,11 +1942,16 @@ var KShop = (function() {
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         // 统一解绑 K 点订阅，避免 C# 直接关闭路径下重复累积
         UiData.off('k', _kHandler);
+        document.removeEventListener('pointerdown', onWarehouseOutsidePointerDown);
+        document.removeEventListener('keydown', onWarehousePageShortcut);
+        setWarehousePageMenuOpen(false, false);
         if (_dragController) _dragController.cancel();
         for (var i = 0; i < _ownedDragControllers.length; i++) _ownedDragControllers[i].cancel();
         if (_interactionBroker) _interactionBroker.clearSelection();
         dismissDialog();
         hideTooltip();
+        _shopReady = false;
+        _loading = false;
         _writeCoordinator.forceClose();
         _inventoryCoordinator.close();
         _mux.closeSession();
@@ -1601,6 +1969,7 @@ var KShop = (function() {
 
     function hideTooltip() {
         _tooltipHovering = -1;
+        _ownedTooltipHovering = null;
         PanelTooltip.hide();
     }
 
@@ -1632,6 +2001,11 @@ var KShop = (function() {
 
     function onForceClose() {
         _closing = false;
+        _shopReady = false;
+        _loading = false;
+        document.removeEventListener('pointerdown', onWarehouseOutsidePointerDown);
+        document.removeEventListener('keydown', onWarehousePageShortcut);
+        setWarehousePageMenuOpen(false, false);
         if (_dragController) _dragController.cancel();
         for (var i = 0; i < _ownedDragControllers.length; i++) _ownedDragControllers[i].cancel();
         if (_interactionBroker) _interactionBroker.clearSelection();
@@ -1657,6 +2031,7 @@ var KShop = (function() {
                 inventory: _inventoryCoordinator.debugState(),
                 drag: _dragController ? _dragController.debugState() : null,
                 selectedCatalogIdx: _selectedCatalogIdx,
+                shopReady: _shopReady,
                 cartCount: _cart.length,
                 purchasedCount: _purchased.length
             };

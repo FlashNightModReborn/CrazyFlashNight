@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
+  <!-- 插件格角色/符号展示词典；由 EquipModListLoader 与子文件并行加载。 -->
+  <uiPresentation>ui_presentation.xml</uiPresentation>
+
   <!-- 低级材料 -->
   <items>低级材料_防具专用.xml</items>
   <items>低级材料_枪械专用.xml</items>

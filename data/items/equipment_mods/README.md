@@ -8,9 +8,13 @@
 
 ```
 equipment_mods/
-├── list.xml          # 主列表文件，列出所有子配件文件
-├── README.md         # 本说明文件
-└── all_mods.xml      # 所有配件数据（当前单文件，后续可拆分）
+├── list.xml                # 主列表文件，列出所有材料档级/用途子文件与展示词典
+├── ui_presentation.xml     # 插件格档级色、角色→符号、tag→默认角色词典
+├── 低级材料_*.xml          # 低级插件定义
+├── 中等材料_*.xml          # 中等插件定义
+├── 高等材料_*.xml          # 高等插件定义
+├── 特殊材料_*.xml          # 特殊插件定义
+└── README.md               # 本说明文件
 ```
 
 ---
@@ -18,15 +22,44 @@ equipment_mods/
 ## 🔄 加载流程
 
 1. `EquipModListLoader` 读取 `list.xml`
-2. 根据 `list.xml` 中的 `<items>` 列表逐个加载子文件
-3. 合并所有子文件中的 `<mod>` 节点
-4. 传递给 `EquipmentUtil.loadModData()` 进行初始化
+2. 并行加载 `list.xml/<uiPresentation>` 与 `<items>` 子文件
+3. 按来源文件前缀为每个插件派生 `uiGrade`，再用展示词典解析 `uiRole/uiSymbol`
+4. 合并所有子文件中的 `<mod>` 节点
+5. 将已带展示元数据的插件数组传递给 `EquipmentUtil.loadModData()` 初始化
 
 ---
 
 ## 📖 配置语法完整说明
 
 > **注意：** 如需了解如何在佣兵装备上配置插件，请参阅：`data/merc/mercenaries_README.md`
+
+---
+
+### 【插件格展示元数据】
+
+插件格使用四档固定标准色：低级 `#006600`、中等 `#996600`、高等 `#0099FF`、特殊 `#FFFF00`。这些颜色只驱动暗色金属槽内的角色符号与短辉光，不对整个插件槽填色。档级由插件所在文件的 `低级材料_` / `中等材料_` / `高等材料_` / `特殊材料_` 前缀派生，不在每个 `<mod>` 中重复填写。现有特殊档原图边框错色属于美术资产问题，运行时不从图片取色，也不为错色建立兼容分支。
+
+`ui_presentation.xml` 集中维护受控角色、符号 token 和 `tag` 默认角色。解析顺序为：插件显式 `<uiRole>` → `tagDefault`；未知角色、符号、档级或未覆盖的 `tag` 会让加载/构建审计失败。符号 token 由形状与填充方式组成，白名单为 `triangle|square|circle|diamond|star` × `solid|outline`，例如火力使用 `triangle-solid`（▲）、精准与操控使用 `triangle-outline`（△）。稳定与防护、续航、结构与功能分别使用线框方形、圆形、菱形，特殊机制保留实心星。Web 使用 CSS 图形渲染，不直接执行 XML 中的任意 Unicode 或 HTML。
+
+一般插件不需要重复声明角色；只有 `tag` 默认角色无法准确表达主要功能时才覆盖：
+
+```xml
+<mod>
+  <name>示例插件</name>
+  <use>长枪,手枪</use>
+  <tag>枪口</tag>
+  <uiRole>firepower</uiRole>
+  <stats>...</stats>
+</mod>
+```
+
+修改插件文件、展示词典或 `list.xml` 后运行：
+
+```powershell
+node tools/validate-equipment-mod-ui.js
+```
+
+该审计也已接入 `launcher/build.ps1`，会验证所有插件都能解析出档级、角色和受控符号。
 
 ---
 

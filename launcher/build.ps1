@@ -13,6 +13,7 @@
 #   1f. 派生 web/modules/tasks/achievement-catalog.json
 #   1g. 审计 Web 可见物品 icon → launcher/web/icons/manifest.json 闭包
 #   1h. 审计 Web 图标渲染入口（tooltip 必须接入 Icons.html 动态/分层播放链）
+#   1h2. 审计装备插件档级、角色与符号展示闭包
 #   2.  native miniaudio.dll 构建（cl.exe via vcvars64）
 #   3.  native sol_parser.dll 构建（cargo via rustup）
 #   4.  native bootstrap.exe 构建（cl.exe，用户面入口 wrapper）
@@ -263,6 +264,21 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 Write-Host "  web icon render entrypoints OK." -ForegroundColor Green
+
+# Step 1h2: 装备插件展示闭包审计。
+# ui_presentation.xml 是角色→符号与 tag 默认角色的单一词典；材料子文件名前缀是四档来源。
+Write-Host "[Step 1h2/7] Audit equipment mod UI presentation..." -ForegroundColor Yellow
+$validateEquipmentModUiScript = Join-Path $projectRoot "tools\validate-equipment-mod-ui.js"
+if (-not (Test-Path $validateEquipmentModUiScript)) {
+    Write-Host "[FAIL] validate-equipment-mod-ui.js missing: $validateEquipmentModUiScript" -ForegroundColor Red
+    exit 1
+}
+node $validateEquipmentModUiScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] equipment mod UI presentation audit failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  equipment mod UI presentation OK." -ForegroundColor Green
 
 # Step 1i: 派生竞技场定制赛单位浏览目录。
 Write-Host "[Step 1i/7] Derive launcher/web/modules/arena-unit-catalog.js..." -ForegroundColor Yellow

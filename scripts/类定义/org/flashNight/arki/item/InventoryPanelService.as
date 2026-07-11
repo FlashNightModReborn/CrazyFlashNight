@@ -1,9 +1,14 @@
 ﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
 
+import org.flashNight.gesh.tooltip.TooltipComposer;
+import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.equipment.TierSystem;
+
 /**
  * Web 双栏工作台的 inventory-domain 权威服务。
  *
- * v1 开放：range snapshot、背包 discard、背包↔仓库 whole-slot
+ * v1 开放：range snapshot、lease-bound tooltip、背包 discard、背包↔仓库 whole-slot
  * move/merge/swap，以及仓库整容器 sortAndMerge。所有写入都在同一重入守卫内完成：双端 lease 校验 →
  * 领域预检 → 无事件提交/失败回滚 → dirtyMark → 统一生命周期事件 → snapshot。
  */
@@ -38,6 +43,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         _root.gameCommands["inventorySnapshot"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("snapshot", params);
         };
+        _root.gameCommands["inventoryTooltip"] = function(params) {
+            org.flashNight.arki.item.InventoryPanelService.handle("tooltip", params);
+        };
         _root.gameCommands["inventoryDiscard"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("discard", params);
         };
@@ -71,6 +79,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (params == undefined || Number(params.v) != 1) return fail("unsupported_version");
 
         if (commandName == "snapshot") return executeSnapshot(params);
+        if (commandName == "tooltip") return executeTooltip(params);
         if (commandName == "discard") return executeDiscard(params);
         if (commandName == "move" || commandName == "merge" || commandName == "swap") {
             return executeTransfer(commandName, params);
@@ -109,6 +118,49 @@ class org.flashNight.arki.item.InventoryPanelService {
             snapshots.push(buildSnapshot(entry.containerId, entry.inventory, entry.offset, entry.limit));
         }
         return {success: true, v: 1, sessionNonce: _sessionNonce, snapshots: snapshots};
+    }
+
+    /**
+     * 读取当前 lease 对应的真实物品实例，避免只按名称生成的基础 tooltip 丢失强化、进阶和配件信息。
+     * 这是纯读操作；槽位或实例已变化时返回 stale_state，不回退到 Web 投影猜测。
+     */
+    private static function executeTooltip(params:Object):Object {
+        var sourceCheck:Object = validateSlotRef(params.source, true, false);
+        if (!sourceCheck.success) return sourceCheck;
+
+        var item:Object = sourceCheck.item;
+        // ItemUtil.getItemData 以 __proto__ 区分 String/Number；保留 BaseItem.name 原始值，
+        // 不额外套 String(...)，否则部分 AS2 运行时会落到 null 分支。
+        var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+        if (itemData == undefined) return fail("item_data_missing");
+
+        // TooltipComposer 的 baseItem 分支面向 value:Object 的装备实例；数值型 stack
+        // 若也传 BaseItem，会把数量当装备 value 读取。stack 只需基础物品数据与默认等级。
+        var instanceValue:Object = typeof item.value == "object" ? item.value : {level: 1};
+        var baseItem = typeof item.value == "object" && typeof item.getData == "function" ? item : null;
+        var descHTML:String;
+        var introHTML:String;
+        try {
+            descHTML = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
+            introHTML = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue);
+        } catch (error) {
+            trace("[InventoryPanelService tooltip] compose failed: " + error);
+            return fail("tooltip_failed");
+        }
+
+        var projection:Object = buildItemProjection(item);
+        var itemType:String = String(projection.majorType);
+        if (itemType == "消耗品" && projection.use != undefined) itemType = String(projection.use);
+        return {
+            success: true,
+            v: 1,
+            itemName: String(item.name),
+            displayname: String(projection.displayName),
+            iconName: String(projection.icon),
+            itemType: itemType,
+            descHTML: descHTML.split('"').join("&quot;"),
+            introHTML: introHTML.split('"').join("&quot;")
+        };
     }
 
     private static function executeDiscard(params:Object):Object {
@@ -394,23 +446,93 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function buildItemProjection(item:Object):Object {
         var data:Object = item != null && typeof item.getData == "function" ? item.getData() : null;
-        var quantity:Number = typeof item.value == "number" ? Number(item.value) : 1;
-        var enhancementLevel:Number = typeof item.value == "object" ? Number(item.value.level) : 0;
+        var isEquipment:Boolean = typeof item.value == "object";
+        var quantity:Number = !isEquipment ? Number(item.value) : 1;
+        var enhancementLevel:Number = isEquipment ? Number(item.value.level) : 0;
         if (isNaN(enhancementLevel)) enhancementLevel = 0;
         var rarity = data == null ? "" : (data.rarity != undefined ? data.rarity : data.品质);
         var majorType = data == null ? "" : (data.type != undefined ? data.type : data.类型);
         var useName = data == null ? "" : data.use;
         var iconName = data == null || data.icon == undefined ? item.name : data.icon;
+        var displayName = data == null || data.displayname == undefined || String(data.displayname).length == 0
+            ? item.name : data.displayname;
+        var maxEnhancementLevel:Number = EquipmentUtil.getMaxLevel();
+        var tierSlotUsed:Boolean = isEquipment && item.value.tier != undefined
+            && item.value.tier != null && String(item.value.tier) != "";
+        var tierSlotAvailable:Boolean = tierSlotUsed;
+        var modSlotCapacity:Number = 0;
+        var modSlotUsed:Number = 0;
+        var modSlots:Array = [];
+        if (isEquipment) {
+            if (data != null && data.data != undefined && !isNaN(Number(data.data.modslot))) {
+                modSlotCapacity = Math.max(0, Math.floor(Number(data.data.modslot)));
+            }
+            var mods:Object = item.value.mods;
+            if (mods instanceof Array) {
+                modSlotUsed = mods.length;
+                for (var modIndex:Number = 0; modIndex < mods.length && modIndex < 3; modIndex++) {
+                    modSlots.push(buildModSlotProjection(String(mods[modIndex])));
+                }
+            } else if (mods != undefined && mods != null) {
+                for (var modKey:String in mods) {
+                    modSlotUsed++;
+                    var legacyModValue:Object = mods[modKey];
+                    var legacyModName:String = typeof legacyModValue == "string" ? String(legacyModValue) : modKey;
+                    if (modSlots.length < 3) modSlots.push(buildModSlotProjection(legacyModName));
+                }
+            }
+            // 生产库存是 BaseItem；测试/未知历史对象缺 getData 时保持关闭，不在 Web 端猜升阶资格。
+            if (typeof item.getData == "function") {
+                try {
+                    var tierOptions:Array = TierSystem.getAvailableTierMaterials(BaseItem(item));
+                    if (tierOptions != null && tierOptions.length > 0) tierSlotAvailable = true;
+                } catch (tierError) {
+                    trace("[InventoryPanelService projection] tier probe failed: " + tierError);
+                }
+            }
+        }
         return {
             name: item.name,
-            displayName: item.name,
+            displayName: displayName,
             icon: iconName,
             majorType: majorType == undefined ? "" : majorType,
             use: useName == undefined ? "" : useName,
-            itemKind: typeof item.value == "number" ? "stack" : "equipment",
+            itemKind: isEquipment ? "equipment" : "stack",
             quantity: quantity,
             enhancementLevel: enhancementLevel,
+            maxEnhancementLevel: maxEnhancementLevel,
+            isMaxEnhancement: isEquipment && enhancementLevel >= maxEnhancementLevel,
+            tierSlotAvailable: tierSlotAvailable,
+            tierSlotUsed: tierSlotUsed,
+            modSlotCapacity: modSlotCapacity,
+            modSlotUsed: modSlotUsed,
+            modSlots: modSlots,
             rarity: rarity == undefined ? "" : rarity
+        };
+    }
+
+    /** 将存档中的插件名解析为纯展示投影；未知旧插件使用中性线框菱形，绝不影响库存读取。 */
+    private static function buildModSlotProjection(modName:String):Object {
+        var modData:Object = EquipmentUtil.modDict == undefined ? null : EquipmentUtil.modDict[modName];
+        if (modData == null) {
+            return {
+                name: modName,
+                grade: "unknown",
+                gradeLabel: "未知档级",
+                gradeColor: "#58636E",
+                role: "utility",
+                roleLabel: "结构与功能",
+                symbol: "diamond-outline"
+            };
+        }
+        return {
+            name: modName,
+            grade: String(modData.uiGrade || "unknown"),
+            gradeLabel: String(modData.uiGradeLabel || "未知档级"),
+            gradeColor: String(modData.uiGradeColor || "#58636E"),
+            role: String(modData.uiRole || "utility"),
+            roleLabel: String(modData.uiRoleLabel || "结构与功能"),
+            symbol: String(modData.uiSymbol || "diamond-outline")
         };
     }
 

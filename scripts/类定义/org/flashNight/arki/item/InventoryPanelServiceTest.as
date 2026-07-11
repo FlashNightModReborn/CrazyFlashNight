@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.BaseItem;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 /** Gate A2/A3：inventory-domain lease、原子事务、窗口化与整容器整理回归。 */
@@ -13,6 +14,8 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         trace("=== InventoryPanelServiceTest start ===");
 
         testRangeSnapshot();
+        testPresentationProjection();
+        testTooltipLeaseAndInstance();
         testSourceAndTargetStale();
         testMergeCountStale();
         testDomainReject();
@@ -123,6 +126,91 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             "占用槽与空槽都获得可校验投影");
         assertTrue(String(response.snapshots[0].slots[1].slotLease).length > 0,
             "空目标槽也由 AS2 铸造 lease");
+    }
+
+    private static function testTooltipLeaseAndInstance():Void {
+        resetInventories();
+        var name:String = "GateA3库存注释";
+        var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
+            name: name, displayname: name, type: "收集品", use: "材料", price: 1,
+            description: "库存实例注释测试"
+        };
+        var owned:BaseItem = new BaseItem(name, 3, 1);
+        _root.物品栏.背包.add(0, owned);
+        var response:Object = snapshot(10, 10);
+        var source:Object = refFrom(response, 0, 0);
+        var tooltip:Object = InventoryPanelService.execute("tooltip", {v: 1, source: source});
+        assertTrue(tooltip.success && tooltip.itemName == name
+            && tooltip.introHTML != undefined && tooltip.descHTML != undefined,
+            "tooltip 按 lease 读取真实库存实例并返回富文本");
+
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.背包.add(0, new BaseItem(name, 1, 2));
+        var stale:Object = InventoryPanelService.execute("tooltip", {v: 1, source: source});
+        assertTrue(!stale.success && stale.error == "stale_state",
+            "tooltip 不接受已替换 occupant 的旧 lease");
+
+        if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previousMeta;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+    }
+
+    private static function testPresentationProjection():Void {
+        resetInventories();
+        var name:String = "GateA3槽位展示装备";
+        var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        var previousModDict:Object = org.flashNight.arki.item.EquipmentUtil.modDict;
+        org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
+            name: name, displayname: "GateA3展示名称", type: "武器", use: "手枪", price: 1,
+            data: {level: 1, modslot: 3}, data_2: {level: 2}
+        };
+        org.flashNight.arki.item.EquipmentUtil.modDict = {
+            插件A: {
+                uiGrade: "medium", uiGradeLabel: "中等", uiGradeColor: "#996600",
+                uiRole: "precision", uiRoleLabel: "精准与操控", uiSymbol: "triangle-outline"
+            },
+            插件B: {
+                uiGrade: "special", uiGradeLabel: "特殊", uiGradeColor: "#FFFF00",
+                uiRole: "mechanism", uiRoleLabel: "特殊机制", uiSymbol: "star-solid"
+            }
+        };
+        var equipment:Object = {
+            name: name,
+            value: {level: org.flashNight.arki.item.EquipmentUtil.getMaxLevel(), tier: "二阶", mods: ["插件A", "插件B"]},
+            lastUpdate: 1,
+            getData: function():Object {
+                return {name: name, displayname: "GateA3展示名称", type: "武器", use: "手枪", icon: name, data: {modslot: 3}};
+            }
+        };
+        _root.物品栏.背包.add(0, equipment);
+        _root.物品栏.背包.add(1, item("大堆叠材料", 12345));
+        var response:Object = snapshot(10, 10);
+        var equipmentProjection:Object = response.snapshots[0].slots[0].item;
+        var stackProjection:Object = response.snapshots[0].slots[1].item;
+        assertTrue(equipmentProjection.isMaxEnhancement
+            && equipmentProjection.maxEnhancementLevel == org.flashNight.arki.item.EquipmentUtil.getMaxLevel()
+            && equipmentProjection.tierSlotAvailable && equipmentProjection.tierSlotUsed
+            && equipmentProjection.modSlotCapacity == 3 && equipmentProjection.modSlotUsed == 2
+            && equipmentProjection.modSlots.length == 2
+            && equipmentProjection.name == name && equipmentProjection.displayName == "GateA3展示名称"
+            && equipmentProjection.modSlots[0].grade == "medium"
+            && equipmentProjection.modSlots[0].symbol == "triangle-outline"
+            && equipmentProjection.modSlots[1].gradeColor == "#FFFF00"
+            && equipmentProjection.modSlots[1].symbol == "star-solid",
+            "装备投影优先 displayname，并提供动态满级、独立升阶状态与插件档级/角色符号");
+        assertTrue(stackProjection.itemKind == "stack" && stackProjection.quantity == 12345
+            && !stackProjection.isMaxEnhancement && stackProjection.modSlotCapacity == 0,
+            "非装备投影只保留精确数量且不伪造装备槽状态");
+
+        if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previousMeta;
+        org.flashNight.arki.item.EquipmentUtil.modDict = previousModDict;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
     }
 
     private static function testSourceAndTargetStale():Void {
@@ -341,7 +429,9 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"];
         var previousAlphaMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["Alpha"];
         var previousZuluMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"];
-        org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"] = {type: "材料", use: "材料", price: 1, level: 0, id: 1};
+        // 对齐 data/items 正式 schema：材料是 type=收集品 + use=材料。
+        // 禁止用不存在的 type=材料 夹具把 ItemSortUtil 的分类错误遮住。
+        org.flashNight.arki.item.ItemUtil.itemDataDict["强化石"] = {type: "收集品", use: "材料", price: 1, level: 0, id: 1};
         org.flashNight.arki.item.ItemUtil.itemDataDict["Alpha"] = {type: "测试装备", use: "测试", price: 2, level: 1, id: 2};
         org.flashNight.arki.item.ItemUtil.itemDataDict["Zulu"] = {type: "测试装备", use: "测试", price: 3, level: 1, id: 3};
         _root.物品栏.仓库.add(50, item("强化石", 2));
@@ -485,7 +575,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         if (equipmentDictWasUndefined) org.flashNight.arki.item.ItemUtil.equipmentDict = {};
         var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["GateA3性能堆叠"];
         org.flashNight.arki.item.ItemUtil.itemDataDict["GateA3性能堆叠"] = {
-            type: "材料", use: "材料", price: 1, level: 0, id: 999999
+            type: "收集品", use: "材料", price: 1, level: 0, id: 999999
         };
         for (var slot:Number = 0; slot < 1200; slot++) {
             _root.物品栏.仓库.add(slot, item("GateA3性能堆叠", 1));

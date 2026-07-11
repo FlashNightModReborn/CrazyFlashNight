@@ -185,6 +185,10 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
 
+### 装备插件格展示词典
+
+`data/items/equipment_mods/ui_presentation.xml` 是插件格角色→受控符号、`tag`→默认角色的展示单源；`list.xml/<uiPresentation>` 声明其入口。`EquipModListLoader` 与插件子文件并行加载该表，并按来源文件前缀派生四档：`低级材料_→low/#006600`、`中等材料_→medium/#996600`、`高等材料_→high/#0099FF`、`特殊材料_→special/#FFFF00`。角色符号采用 `形状-solid|outline` 受控 token；当前以 `triangle-solid/triangle-outline` 区分火力与精准操控，其余常规角色优先线框，特殊机制保留实心星。单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖；禁止在插件里直接填写 Unicode/HTML 符号。构建门 `node tools/validate-equipment-mod-ui.js` 必须覆盖所有插件、全部现役 `tag`、角色和符号白名单。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
+
 ### 长枪副武器 `<subweapon>`
 
 长枪下挂 / 内置副武器使用根层 `<subweapon>`，与普通 `<skill>` 共享长枪特殊槽，不能并存。`EquipmentCalculator` 会把配件根层 `subweapon` 写入宿主 `itemData.subweapon`；`DressupInitializer` 装载长枪时读取 `subweapon` 并交给 `LongGunSubWeaponCore`，不会装入普通主动战技。

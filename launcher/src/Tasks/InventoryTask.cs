@@ -189,6 +189,7 @@ namespace CF7Launcher.Tasks
             switch (cmd)
             {
                 case "snapshot": action = "inventorySnapshot"; return true;
+                case "tooltip": action = "inventoryTooltip"; return true;
                 case "discard": action = "inventoryDiscard"; return true;
                 case "move": action = "inventoryMove"; return true;
                 case "merge": action = "inventoryMerge"; return true;
@@ -253,7 +254,7 @@ namespace CF7Launcher.Tasks
             JObject source;
             if (!TryNormalizeSlotRef(payload["source"] as JObject, out source)) return false;
             normalized["source"] = source;
-            if (cmd == "discard") return true;
+            if (cmd == "discard" || cmd == "tooltip") return true;
 
             JObject target;
             if (!TryNormalizeSlotRef(payload["target"] as JObject, out target)) return false;

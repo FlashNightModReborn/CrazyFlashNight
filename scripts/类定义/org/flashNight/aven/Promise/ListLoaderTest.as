@@ -353,8 +353,18 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             assert("mod-data-consistency",
                 modArr != null && modArr.length >= 10,
                 "modCount=" + (modArr != null ? modArr.length : "null") + " (expected >=10)");
+            var presentationOk:Boolean = modArr != null && modArr.length > 0 && data.uiPresentation != null;
+            for (var mi:Number = 0; presentationOk && mi < modArr.length; mi++) {
+                presentationOk = modArr[mi].uiGrade != undefined
+                    && modArr[mi].uiGradeColor != undefined
+                    && modArr[mi].uiRole != undefined
+                    && modArr[mi].uiSymbol != undefined;
+            }
+            assert("mod-ui-presentation", presentationOk,
+                "modCount=" + (modArr != null ? modArr.length : "null") + " allResolved=" + presentationOk);
         }, function():Void {
             assert("mod-data-consistency", false, "load failed");
+            assert("mod-ui-presentation", false, "load failed");
         });
 
         // 16. 数据一致性 — StageInfoLoader

@@ -49,7 +49,7 @@ namespace CF7Launcher.Tests.Tasks
             else
             {
                 payload["source"] = SlotRef("背包", 2, "inv100.2");
-                if (cmd != "discard") payload["target"] = SlotRef("仓库", 52, "inv100.52");
+                if (cmd != "discard" && cmd != "tooltip") payload["target"] = SlotRef("仓库", 52, "inv100.52");
             }
             return new JObject
             {
@@ -64,6 +64,7 @@ namespace CF7Launcher.Tests.Tasks
 
         [Theory]
         [InlineData("snapshot", "inventorySnapshot")]
+        [InlineData("tooltip", "inventoryTooltip")]
         [InlineData("discard", "inventoryDiscard")]
         [InlineData("move", "inventoryMove")]
         [InlineData("merge", "inventoryMerge")]
@@ -108,6 +109,27 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("仓库", (string)message["requests"][1]["containerId"]);
             Assert.Equal(50, (int)message["requests"][1]["offset"]);
             Assert.Null(message["requests"][0]["action"]);
+        }
+
+        [Fact]
+        public void Tooltip_IsLeaseBoundAndDropsSpoofedItemIdentity()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("tooltip", "wb.inventory.tooltip.1");
+            request["payload"]["itemName"] = "伪造物品";
+            request["payload"]["raw"] = "伪造存档串";
+
+            task.HandleWebRequest("tooltip", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("inventoryTooltip", (string)message["action"]);
+            Assert.Equal("背包", (string)message["source"]["containerId"]);
+            Assert.Equal(2, (int)message["source"]["slot"]);
+            Assert.Equal("inv100.2", (string)message["source"]["expectedLease"]);
+            Assert.Null(message["itemName"]);
+            Assert.Null(message["raw"]);
+            Assert.Null(message["target"]);
         }
 
         [Fact]

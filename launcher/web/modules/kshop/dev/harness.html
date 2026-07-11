@@ -171,10 +171,27 @@ window.Icons = {
                 inventory: {背包:new Array(50),仓库:new Array(1200)}
             };
             this.state.inventory.背包[0] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',itemKind:'stack',quantity:2};
-            this.state.inventory.背包[1] = {name:'背包装备',displayName:'背包装备',icon:'背包装备',itemKind:'equipment',quantity:1};
+            this.state.inventory.背包[1] = {
+                name:'吉他喷火器',displayName:'烈火吉他',icon:'吉他喷火器',itemKind:'equipment',quantity:1,
+                enhancementLevel:13,maxEnhancementLevel:13,isMaxEnhancement:true,
+                tierSlotAvailable:true,tierSlotUsed:false,modSlotCapacity:3,modSlotUsed:2,
+                modSlots:[
+                    {name:'脉冲式惯性阻尼器',grade:'medium',gradeLabel:'中等',gradeColor:'#996600',role:'precision',roleLabel:'精准与操控',symbol:'triangle-outline'},
+                    {name:'成长的勋章',grade:'special',gradeLabel:'特殊',gradeColor:'#FFFF00',role:'mechanism',roleLabel:'特殊机制',symbol:'star-solid'}
+                ]
+            };
             this.state.inventory.背包[2] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',itemKind:'stack',quantity:3};
+            this.state.inventory.背包[4] = {name:'大宗弹药',displayName:'大宗弹药',icon:'大宗弹药',itemKind:'stack',quantity:84286};
             this.state.inventory.仓库[0] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',itemKind:'stack',quantity:4};
-            this.state.inventory.仓库[2] = {name:'仓库装备',displayName:'仓库装备',icon:'仓库装备',itemKind:'equipment',quantity:1};
+            this.state.inventory.仓库[2] = {
+                name:'仓库装备',displayName:'仓库装备',icon:'仓库装备',itemKind:'equipment',quantity:1,
+                enhancementLevel:7,maxEnhancementLevel:13,isMaxEnhancement:false,
+                tierSlotAvailable:true,tierSlotUsed:true,modSlotCapacity:3,modSlotUsed:2,
+                modSlots:[
+                    {name:'螺丝套件',grade:'low',gradeLabel:'低级',gradeColor:'#006600',role:'firepower',roleLabel:'火力',symbol:'triangle-solid'},
+                    {name:'传动装置',grade:'high',gradeLabel:'高等',gradeColor:'#0099FF',role:'sustain',roleLabel:'续航',symbol:'circle-outline'}
+                ]
+            };
             this.state.inventory.仓库[50] = {name:'Zulu仓储件',displayName:'Zulu仓储件',icon:'Zulu仓储件',itemKind:'equipment',quantity:1};
             this.state.inventory.仓库[51] = {name:'Alpha仓储件',displayName:'Alpha仓储件',icon:'Alpha仓储件',itemKind:'stack',quantity:9};
             this.state.inventory.仓库[1199] = {name:'末页校验件',displayName:'末页校验件',icon:'末页校验件',itemKind:'equipment',quantity:1};
@@ -248,6 +265,21 @@ window.Icons = {
                 var payload = message.payload || {};
                 if (message.cmd === 'snapshot') {
                     this.respond(message, {success:true,v:1,snapshots:this.inventorySnapshots(payload.requests,true)}, delay);
+                    return;
+                }
+                if (message.cmd === 'tooltip') {
+                    var tooltipSource = payload.source || {};
+                    var tooltipLease = this.leases[tooltipSource.containerId + ':' + tooltipSource.slot];
+                    if (!tooltipLease || tooltipLease.token !== tooltipSource.expectedLease || !tooltipLease.item) {
+                        this.respond(message, {success:false,error:'stale_state'}, delay);
+                    } else {
+                        this.respond(message, {
+                            success:true,v:1,itemName:tooltipLease.item.name,
+                            displayname:tooltipLease.item.displayName,iconName:tooltipLease.item.icon,
+                            itemType:tooltipLease.item.majorType || tooltipLease.item.itemKind,
+                            introHTML:'<b>' + tooltipLease.item.displayName + '</b>',descHTML:'库存实例注释'
+                        }, delay);
+                    }
                     return;
                 }
                 if (message.cmd === 'sortAndMerge') {
@@ -456,6 +488,26 @@ window.Icons = {
                 && contractStatus.warehouseWindow === 'gate-a3-candidate',
             primitiveNames.join(',') + ' / warehouse=' + contractStatus.warehouseWindow);
 
+        addEquipment();
+        Panels.close();
+        Host.reset();
+        Host.state.cart = [{idx:1,qty:2}];
+        Host.delays.bulkQuery = 140;
+        Panels.open('kshop');
+        await wait(20);
+        var loadingGateState = KShop.debugState();
+        var loadingCheckout = document.querySelector('#kshop-checkout');
+        if (loadingCheckout) loadingCheckout.click();
+        var loadingGateBlocked = !loadingGateState.shopReady
+            && loadingGateState.cartCount === 0
+            && loadingCheckout && loadingCheckout.disabled
+            && countCmd('saveCart') === 0 && countCmd('checkout') === 0;
+        await waitFor(function(){ return KShop.debugState().shopReady; }, 500);
+        assert('kshop-ui2e','重开必须等待新 bulkQuery 后才恢复购物车编辑与结账',
+            loadingGateBlocked && KShop.debugState().cartCount === 1
+                && !document.querySelector('#kshop-checkout').disabled,
+            'before=' + JSON.stringify(loadingGateState) + ' after=' + JSON.stringify(KShop.debugState()));
+
         var muxSent = [], muxCalls = 0, muxErrors = 0;
         var mux = new KShopRequestMux({
             send:function(message){ muxSent.push(message); }, sessionNonce:'mux', timeoutMs:500,
@@ -631,6 +683,84 @@ window.Icons = {
                 && document.querySelectorAll('[data-item-model="owned"]').length === 2
                 && document.querySelectorAll('.inventory-slot-card[data-physical-slot]').length === 100);
 
+        var presentationEquip = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        var presentationStack = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="4"]');
+        var presentationWarehouseEquip = document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
+        var presentationUsedSlots = presentationEquip.querySelectorAll('.inventory-equip-slot.used');
+        var presentationWarehouseUsedSlots = presentationWarehouseEquip.querySelectorAll('.inventory-equip-slot.used');
+        assert('kshop-ui8w','owned 格使用 displayname、独立升阶菱形与三插件槽，插件按档级色和实心/线框角色符号编码',
+            presentationEquip.classList.contains('max-enhancement')
+                && presentationEquip.querySelector('.inventory-slot-copy b').textContent === '烈火吉他'
+                && presentationEquip.textContent.indexOf('吉他喷火器') < 0
+                && presentationEquip.querySelector('.inventory-slot-value.level').textContent === '13'
+                && presentationEquip.querySelector('.inventory-tier-marker.empty')
+                && presentationEquip.querySelectorAll('.inventory-equip-slot').length === 3
+                && presentationUsedSlots.length === 2
+                && presentationEquip.querySelectorAll('.inventory-equip-slot.empty').length === 1
+                && presentationUsedSlots[0].classList.contains('grade-medium')
+                && presentationUsedSlots[0].querySelector('.symbol-triangle-outline')
+                && getComputedStyle(presentationUsedSlots[0]).backgroundColor === 'rgb(11, 15, 19)'
+                && getComputedStyle(presentationUsedSlots[0]).getPropertyValue('--mod-grade-color').trim() === '#996600'
+                && getComputedStyle(presentationUsedSlots[0].querySelector('.symbol-triangle-outline')).backgroundColor === 'rgb(214, 173, 88)'
+                && getComputedStyle(presentationUsedSlots[0].querySelector('.symbol-triangle-outline')).filter !== 'none'
+                && presentationUsedSlots[1].classList.contains('grade-special')
+                && presentationUsedSlots[1].querySelector('.symbol-star-solid')
+                && getComputedStyle(presentationUsedSlots[1]).backgroundColor === 'rgb(11, 15, 19)'
+                && getComputedStyle(presentationUsedSlots[1]).getPropertyValue('--mod-grade-color').trim() === '#FFFF00'
+                && getComputedStyle(presentationUsedSlots[1].querySelector('.symbol-star-solid')).backgroundColor === 'rgb(255, 241, 113)'
+                && presentationWarehouseEquip.querySelector('.inventory-tier-marker.used')
+                && presentationWarehouseUsedSlots[0].classList.contains('grade-low')
+                && presentationWarehouseUsedSlots[0].querySelector('.symbol-triangle-solid')
+                && getComputedStyle(presentationWarehouseUsedSlots[0]).backgroundColor === 'rgb(11, 15, 19)'
+                && getComputedStyle(presentationWarehouseUsedSlots[0]).getPropertyValue('--mod-grade-color').trim() === '#006600'
+                && getComputedStyle(presentationWarehouseUsedSlots[0].querySelector('.symbol-triangle-solid')).backgroundColor === 'rgb(113, 201, 113)'
+                && presentationWarehouseUsedSlots[1].classList.contains('grade-high')
+                && presentationWarehouseUsedSlots[1].querySelector('.symbol-circle-outline')
+                && getComputedStyle(presentationWarehouseUsedSlots[1]).backgroundColor === 'rgb(11, 15, 19)'
+                && getComputedStyle(presentationWarehouseUsedSlots[1]).getPropertyValue('--mod-grade-color').trim() === '#0099FF'
+                && getComputedStyle(presentationWarehouseUsedSlots[1].querySelector('.symbol-circle-outline')).backgroundColor === 'rgba(0, 0, 0, 0)'
+                && getComputedStyle(presentationWarehouseUsedSlots[1].querySelector('.symbol-circle-outline')).borderTopColor === 'rgb(127, 201, 251)'
+                && !presentationEquip.querySelector('small')
+                && presentationStack.querySelector('.inventory-slot-value.quantity').textContent === '8.4万'
+                && presentationStack.querySelector('.inventory-slot-value.quantity').getAttribute('title') === '数量 84,286'
+                && presentationStack.textContent.indexOf('stack') < 0 && presentationEquip.textContent.indexOf('equipment') < 0);
+
+        var ownedHoverSlot = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
+        var ownedHoverRect = ownedHoverSlot.getBoundingClientRect();
+        ownedHoverSlot.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:ownedHoverRect.left + 8,clientY:ownedHoverRect.top + 8}));
+        await waitFor(function(){ return countInventoryCmd('tooltip') === 1; }, 300);
+        var ownedTooltipRequest = Host.sent.find(function(message){ return message.domain === 'inventory' && message.cmd === 'tooltip'; });
+        var ownedTooltipVisible = PanelTooltip.isVisible();
+        ownedHoverSlot.click();
+        var ownedTooltipHiddenOnSelection = !PanelTooltip.isVisible();
+        ownedHoverSlot.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:ownedHoverRect.left + 12,clientY:ownedHoverRect.top + 12}));
+        assert('kshop-ui8u','背包/仓库 occupied 槽悬浮读取 lease-bound 富注释，选取后立即隐藏',
+            ownedTooltipVisible && ownedTooltipHiddenOnSelection && !PanelTooltip.isVisible()
+                && ownedTooltipRequest && ownedTooltipRequest.payload.source.containerId === '背包'
+                && ownedTooltipRequest.payload.source.slot === 0
+                && ownedTooltipRequest.payload.source.expectedLease === Host.leases['背包:0'].token,
+            'visible=' + ownedTooltipVisible + ' hidden=' + ownedTooltipHiddenOnSelection);
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        var ownedDragSource = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
+        var ownedDragTarget = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="3"]');
+        var ownedDragFrom = ownedDragSource.getBoundingClientRect();
+        var ownedDragTo = ownedDragTarget.getBoundingClientRect();
+        ownedDragSource.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:ownedDragFrom.left + 8,clientY:ownedDragFrom.top + 8}));
+        var ownedTooltipBeforeDrag = PanelTooltip.isVisible();
+        dispatchPointer(ownedDragSource,'pointerdown',80,ownedDragFrom.left + 8,ownedDragFrom.top + 8);
+        dispatchPointer(document,'pointermove',80,ownedDragTo.left + ownedDragTo.width / 2,ownedDragTo.top + ownedDragTo.height / 2);
+        var ownedTooltipHiddenDuringDrag = !PanelTooltip.isVisible();
+        ownedDragSource.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:ownedDragTo.left,clientY:ownedDragTo.top}));
+        var ownedTooltipStayedHidden = !PanelTooltip.isVisible();
+        dispatchPointer(document,'pointerup',80,ownedDragTo.left + ownedDragTo.width / 2,ownedDragTo.top + ownedDragTo.height / 2);
+        await wait(20);
+        assert('kshop-ui8v','抓取 owned 物品时隐藏并持续抑制注释，释放后不在原 hover 上自动重弹',
+            ownedTooltipBeforeDrag && ownedTooltipHiddenDuringDrag && ownedTooltipStayedHidden && !PanelTooltip.isVisible(),
+            'tooltip=' + ownedTooltipBeforeDrag + '/' + ownedTooltipHiddenDuringDrag + '/' + ownedTooltipStayedHidden);
+
         var operationCases = [
             InventoryRuntime.operationForIntent({sourceRef:{occupied:true,item:{itemKind:'equipment',name:'A'}},targetRef:{occupied:false,item:null}}),
             InventoryRuntime.operationForIntent({sourceRef:{occupied:true,item:{itemKind:'stack',name:'S'}},targetRef:{occupied:true,item:{itemKind:'stack',name:'S'}}}),
@@ -652,7 +782,7 @@ window.Icons = {
         await waitFor(function(){ return countInventoryCmd('move') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
         assert('kshop-ui8q','背包内 pointer 拖拽到空 physicalSlot 走 whole-slot move',
             countInventoryCmd('move') === 1 && !Host.state.inventory.背包[1]
-                && Host.state.inventory.背包[3] && Host.state.inventory.背包[3].name === '背包装备'
+                && Host.state.inventory.背包[3] && Host.state.inventory.背包[3].name === '吉他喷火器'
                 && !document.querySelector('.workbench-drag-ghost'));
         await wait(90); // pointer controller 的防重复 click 窗口结束后再开下一独立场景
 
@@ -747,7 +877,8 @@ window.Icons = {
         assert('kshop-ui8m','Gate A3 仓库按 50 槽窗口翻页，清除旧选择且不渲染 1200 个 DOM',
             countInventoryCmd('snapshot') === snapshotBeforePage + 1
                 && pageRequest.payload.requests[1].offset === 50
-                && document.querySelector('.inventory-page-label').textContent === '2 / 24'
+                && document.querySelector('.inventory-page-jump').textContent === '第 2 页'
+                && document.querySelector('.inventory-page-range').textContent === '51–100 / 1200'
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 50
                 && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="50"]')
                 && !document.querySelector('.inventory-owned-warehouse .workbench-source-selected'));
@@ -779,7 +910,7 @@ window.Icons = {
                 && sortMessage.payload.container.offset === 50 && sortMessage.payload.container.limit === 50
                 && Host.inventoryEpochs.仓库 === 2
                 && Host.leases['仓库:50'].token !== oldWarehouseLease
-                && document.querySelector('.inventory-page-label').textContent === '2 / 24'
+                && document.querySelector('.inventory-page-jump').textContent === '第 2 页'
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card.occupied').length === 0);
 
         click('.inventory-page-prev');
@@ -788,9 +919,59 @@ window.Icons = {
             return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 0;
         }, 600);
         assert('kshop-ui8p','整理后回首页按需重拉并显示新 physicalSlot 权威投影',
-            document.querySelector('.inventory-page-label').textContent === '1 / 24'
+            document.querySelector('.inventory-page-jump').textContent === '第 1 页'
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 50
                 && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="0"].occupied'));
+
+        var directSnapshotsBefore = countInventoryCmd('snapshot');
+        click('.inventory-page-jump');
+        var pageMenu = document.querySelector('.inventory-page-menu');
+        var pageOptions = document.querySelectorAll('.inventory-page-option');
+        var menuOpened = pageMenu && !pageMenu.hidden
+            && document.querySelector('.inventory-page-jump').getAttribute('aria-expanded') === 'true';
+        pageMenu.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+        var escapeClosed = pageMenu.hidden && document.activeElement === document.querySelector('.inventory-page-jump');
+        click('.inventory-page-jump');
+        click('.inventory-page-option[data-page="14"]');
+        await waitFor(function(){
+            var requests = KShop.debugState().inventory.requests || [];
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 650;
+        }, 600);
+        document.dispatchEvent(new KeyboardEvent('keydown',{key:'PageDown',bubbles:true,cancelable:true}));
+        await waitFor(function(){
+            var requests = KShop.debugState().inventory.requests || [];
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 700;
+        }, 600);
+        document.dispatchEvent(new KeyboardEvent('keydown',{key:'End',ctrlKey:true,bubbles:true,cancelable:true}));
+        await waitFor(function(){
+            var requests = KShop.debugState().inventory.requests || [];
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 1150;
+        }, 600);
+        var reachedLastPage = document.querySelector('.inventory-page-jump').textContent === '第 24 页'
+            && document.querySelector('.inventory-page-range').textContent === '1151–1200 / 1200'
+            && document.querySelector('.inventory-page-next').disabled;
+        var directJumpSnapshots = countInventoryCmd('snapshot') - directSnapshotsBefore;
+        Panels.close();
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        await wait(20);
+        var rememberedLastPage = KShop.debugState().inventory.requests[1].offset === 1150
+            && document.querySelector('.inventory-page-jump').textContent === '第 24 页';
+        document.dispatchEvent(new KeyboardEvent('keydown',{key:'Home',ctrlKey:true,bubbles:true,cancelable:true}));
+        await waitFor(function(){
+            var requests = KShop.debugState().inventory.requests || [];
+            return !KShop.debugState().inventory.busyOwner && requests[1] && requests[1].offset === 0;
+        }, 600);
+        assert('kshop-ui8x','24 页仓库支持页码矩阵、槽位范围、键盘首末/前后页与会话内位置记忆',
+            menuOpened && pageOptions.length === 24 && escapeClosed
+                && pageOptions[13].title === '第 14 页 · 槽位 651–700'
+                && reachedLastPage && rememberedLastPage
+                && document.querySelector('.inventory-page-jump').textContent === '第 1 页'
+                && document.querySelector('.inventory-page-range').textContent === '1–50 / 1200'
+                && directJumpSnapshots === 3 && countInventoryCmd('snapshot') === 2,
+            'menu=' + menuOpened + '/' + escapeClosed + ' options=' + pageOptions.length
+                + ' last=' + reachedLastPage + ' remembered=' + rememberedLastPage
+                + ' snapshots=' + directJumpSnapshots + '/' + countInventoryCmd('snapshot'));
 
         await Host.open();
         Host.delays.saveCart = 160;
@@ -825,9 +1006,10 @@ window.Icons = {
         var firstCategory = document.querySelector('.kshop-cat-btn');
         if (firstCategory) firstCategory.click();
         if (mode === 'modal') click('#kshop-checkout');
-        if (mode === 'inventory') {
+        if (mode === 'inventory' || mode === 'inventory-pages') {
             click('.workbench-mode-btn[data-mode="inventory"]');
             await wait(160);
+            if (mode === 'inventory-pages') click('.inventory-page-jump');
         }
         window.__visualReady = true;
         document.getElementById('qa-status').style.display = 'none';

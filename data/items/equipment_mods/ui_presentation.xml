@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <!-- 档级由来源文件名前缀确定；角色决定受控符号，单个 mod 可用 uiRole 覆盖 tag 默认值。 -->
+  <fallbackRole>utility</fallbackRole>
+
+  <grade><id>low</id><label>低级</label><color>#006600</color></grade>
+  <grade><id>medium</id><label>中等</label><color>#996600</color></grade>
+  <grade><id>high</id><label>高等</label><color>#0099FF</color></grade>
+  <grade><id>special</id><label>特殊</label><color>#FFFF00</color></grade>
+
+  <role><id>firepower</id><label>火力</label><symbol>triangle-solid</symbol></role>
+  <role><id>precision</id><label>精准与操控</label><symbol>triangle-outline</symbol></role>
+  <role><id>stability</id><label>稳定与防护</label><symbol>square-outline</symbol></role>
+  <role><id>sustain</id><label>续航</label><symbol>circle-outline</symbol></role>
+  <role><id>utility</id><label>结构与功能</label><symbol>diamond-outline</symbol></role>
+  <role><id>mechanism</id><label>特殊机制</label><symbol>star-solid</symbol></role>
+
+  <tagDefault><tag>表面涂层</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>柄侧板</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>柄尾</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>柄芯</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>材料升级</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>侧导轨</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>弹匣</tag><role>sustain</role></tagDefault>
+  <tagDefault><tag>弹药</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>刀身</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>导轨基座</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>等级校正</tag><role>mechanism</role></tagDefault>
+  <tagDefault><tag>电子模块</tag><role>mechanism</role></tagDefault>
+  <tagDefault><tag>动力接口</tag><role>sustain</role></tagDefault>
+  <tagDefault><tag>骨架</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>挂饰</tag><role>mechanism</role></tagDefault>
+  <tagDefault><tag>核心模块</tag><role>mechanism</role></tagDefault>
+  <tagDefault><tag>缓冲层</tag><role>stability</role></tagDefault>
+  <tagDefault><tag>机匣内构</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>肩挂系统</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>瞄具</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>内衬层</tag><role>stability</role></tagDefault>
+  <tagDefault><tag>内力槽</tag><role>sustain</role></tagDefault>
+  <tagDefault><tag>枪管</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>枪管外设</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>枪机</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>枪口</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>强化辅材</tag><role>utility</role></tagDefault>
+  <tagDefault><tag>刃面处理</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>手环</tag><role>mechanism</role></tagDefault>
+  <tagDefault><tag>外部紧固</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>外覆基层</tag><role>stability</role></tagDefault>
+  <tagDefault><tag>外覆加固</tag><role>stability</role></tagDefault>
+  <tagDefault><tag>握柄包覆</tag><role>precision</role></tagDefault>
+  <tagDefault><tag>握柄核心</tag><role>firepower</role></tagDefault>
+  <tagDefault><tag>下导轨</tag><role>mechanism</role></tagDefault>
+</root>

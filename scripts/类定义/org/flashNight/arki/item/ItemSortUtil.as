@@ -181,8 +181,10 @@ class org.flashNight.arki.item.ItemSortUtil {
         if (!itemData) return false;
         // 排除非数值型value物品（如装备）
         if (typeof item.value != "number") return false;
-        // 根据类型判断可堆叠性
-        return ["消耗品", "材料"].indexOf(itemData.type) != -1;
+        // data/items 的材料属于 type="收集品"、use="材料"；历史上的
+        // type="材料" 并不是正式 schema。与商城/背包投影统一：数值型
+        // 消耗品和收集品都可堆叠，装备等对象 value 已在上方排除。
+        return itemData.type == "消耗品" || itemData.type == "收集品";
     }
 
     /**
