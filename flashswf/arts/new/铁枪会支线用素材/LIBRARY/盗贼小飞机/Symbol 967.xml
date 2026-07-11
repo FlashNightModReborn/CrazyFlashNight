@@ -1,0 +1,1867 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="盗贼小飞机/Symbol 967" itemID="65e1d4ea-00000565" lastModified="1783767238" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="Symbol 967" currentFrame="109">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="32" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="44" name="a2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" duration="54" name="a3" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#7CC46D" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+	if (_parent.方向 == "右")
+	{
+		if (Key.isDown(_root.右键) == true)
+		{
+			_parent.移动("右",快速度);
+		}
+		else
+		{
+			_parent.移动("右",慢速度);
+		}
+	}
+	else if (_parent.方向 == "左")
+	{
+		if (Key.isDown(_root.左键) == true)
+		{
+			_parent.移动("左",快速度);
+		}
+		else
+		{
+			_parent.移动("左",慢速度);
+		}
+	}
+}
+
+Z轴追踪移动 = _root.敌人二级函数.Z轴追踪移动;
+X轴追踪移动 = _root.敌人二级函数.X轴追踪移动;
+
+function 到达高度(预定高度, 爬升距离)
+{
+	if(_parent.锁定高度)
+	{
+		return;
+	}
+	
+	var 高度差 = 预定高度 - _parent.浮空高度;
+	
+if(_parent.浮空高度< 210 && !_parent.锁定高度){
+	已降低高度 -= 30;
+	_parent.浮空高度 += 30;
+}}
+
+
+if (_parent.完成充能)
+{
+	_parent.完成充能 = false;
+	gotoAndPlay(_parent.下次攻击标签);
+
+
+}
+else
+{
+	if (random(2) == 0)
+	{
+		_parent.攻击保持距离 = 50;
+		_parent.下次攻击标签 = "a2";
+	}
+	else
+	{
+		_parent.攻击保持距离 = 150;
+		_parent.下次攻击标签 = "a1";
+	}
+	gotoAndPlay("a3");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 20;
+	_parent.浮空高度 -= 20;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(已降低高度>40 && !_parent.锁定高度){
+	已降低高度 -= 40;
+	_parent.浮空高度 += 40;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(已降低高度>40 && !_parent.锁定高度){
+	已降低高度 -= 40;
+	_parent.浮空高度 += 40;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度>30 && !_parent.锁定高度){
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(已降低高度>40 && !_parent.锁定高度){
+	已降低高度 -= 40;
+	_parent.浮空高度 += 40;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="64" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(已降低高度>40 && !_parent.锁定高度){
+	已降低高度 -= 40;
+	_parent.浮空高度 += 40;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度< 210 && !_parent.锁定高度){
+	已降低高度 -= 30;
+	_parent.浮空高度 += 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="82" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度< 210 && !_parent.锁定高度){
+	已降低高度 -= 30;
+	_parent.浮空高度 += 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度< 210 && !_parent.锁定高度){
+	已降低高度 -= 30;
+	_parent.浮空高度 += 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度< 210 && !_parent.锁定高度){
+	已降低高度 -= 30;
+	_parent.浮空高度 += 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="100" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.浮空高度< 210 && !_parent.锁定高度){
+	已降低高度 -= 30;
+	_parent.浮空高度 += 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_parent.浮空高度 > 30 && !_parent.锁定高度)
+{
+	已降低高度 += 30;
+	_parent.浮空高度 -= 30;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="109" duration="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.完成充能 = true;
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F95FA4" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-33.9">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-46.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-33.9">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-46.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 76" centerPoint3DX="19.45" centerPoint3DY="-40.85">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="6.95" ty="-53.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 76" centerPoint3DX="12.2" centerPoint3DY="-36.2">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.3" ty="-48.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "普通麻醉子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 30;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 76" centerPoint3DX="-7" centerPoint3DY="-27.3">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-19.5" ty="-39.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "镇暴射线";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 30;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 0;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="77" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A2C290" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 75" centerPoint3DX="-18.75" centerPoint3DY="-35.2">
+                  <matrix>
+                    <Matrix a="0.300750732421875" b="0.109329223632813" c="-0.109329223632813" d="0.300750732421875" tx="-26.1" ty="-51"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.攻击时移动(20,20);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 75" centerPoint3DX="2.85" centerPoint3DY="-57.15">
+                  <matrix>
+                    <Matrix a="0.300750732421875" b="0.109329223632813" c="-0.109329223632813" d="0.300750732421875" tx="-4.5" ty="-72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.Z轴追踪移动(10);
+   _parent.X轴追踪移动(250,-10,20)
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 75" centerPoint3DX="10.1" centerPoint3DY="-27.65">
+                  <matrix>
+                    <Matrix a="0.300750732421875" b="0.109329223632813" c="-0.109329223632813" d="0.300750732421875" tx="2.75" ty="-43.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.攻击时移动(-20,-20);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 75" centerPoint3DX="-4.7" centerPoint3DY="-24.95">
+                  <matrix>
+                    <Matrix a="0.300750732421875" b="0.109329223632813" c="-0.109329223632813" d="0.300750732421875" tx="-12.05" ty="-40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.Z轴追踪移动(10);
+   _parent.X轴追踪移动(_parent.攻击保持距离,-10,10)
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#F0AA11">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36907958984375" b="0.287033081054688" c="0.287033081054688" d="0.36907958984375" tx="-29.85" ty="-66.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.416290283203125" b="-0.212844848632813" c="-0.212844848632813" d="0.416290283203125" tx="-25.85" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.267257690429688" b="-0.383712768554688" c="-0.383712768554688" d="-0.267257690429688" tx="-19.6" ty="-60.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.267257690429688" b="-0.383712768554688" c="-0.383712768554688" d="-0.267257690429688" tx="-19.6" ty="-60.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.168533325195313" b="-0.436172485351563" c="-0.436172485351563" d="0.168533325195313" tx="-30.4" ty="-44.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.436737060546875" b="-0.167098999023438" c="-0.167098999023438" d="0.436737060546875" tx="-30.35" ty="-47.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36907958984375" b="0.287033081054688" c="0.287033081054688" d="0.36907958984375" tx="-39.7" ty="-35.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.389663696289063" b="-0.258392333984375" c="-0.258392333984375" d="0.389663696289063" tx="-39.7" ty="-32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.442276000976563" b="-0.151809692382813" c="-0.151809692382813" d="0.442276000976563" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.27447509765625" b="0.378570556640625" c="0.378570556640625" d="0.27447509765625" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0423736572265625" b="0.465682983398438" c="0.465682983398438" d="0.0423736572265625" tx="-27.45" ty="-42.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.010528564453125" b="0.467483520507813" c="0.467483520507813" d="-0.010528564453125" tx="-29.15" ty="-38.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.010528564453125" b="0.467483520507813" c="0.467483520507813" d="-0.010528564453125" tx="-26.25" ty="-39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.010528564453125" b="0.467483520507813" c="0.467483520507813" d="-0.010528564453125" tx="-26.25" ty="-39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.160842895507813" b="0.439071655273438" c="0.439071655273438" d="0.160842895507813" tx="-49.9" ty="-39.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.458389282226563" b="0.092315673828125" c="0.092315673828125" d="0.458389282226563" tx="-42.9" ty="-49.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.41070556640625" b="-0.223526000976563" c="-0.223526000976563" d="0.41070556640625" tx="-45.9" ty="-64.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.28790283203125" b="-0.368453979492188" c="-0.368453979492188" d="0.28790283203125" tx="-30.25" ty="-61.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.299240112304688" b="-0.359298706054688" c="-0.359298706054688" d="0.299240112304688" tx="-23.9" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.299240112304688" b="-0.359298706054688" c="-0.359298706054688" d="0.299240112304688" tx="-23.9" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="76" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.462478637695313" b="-0.069122314453125" c="-0.069122314453125" d="0.462478637695313" tx="-25.35" ty="-73.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="82" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.175994873046875" b="-0.4332275390625" c="-0.4332275390625" d="0.175994873046875" tx="-27.75" ty="-72.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="92" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.464157104492188" b="0.05670166015625" c="0.05670166015625" d="0.464157104492188" tx="-26.15" ty="-76.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="97" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0087738037109375" b="-0.467514038085938" c="-0.467514038085938" d="0.0087738037109375" tx="-26.15" ty="-88.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376220703125" b="-0.277694702148438" c="-0.277694702148438" d="0.376220703125" tx="-26.15" ty="-48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="103" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0794525146484375" b="-0.459579467773438" c="-0.462081909179688" d="0.0791473388671875" tx="-20.3" ty="-36.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246734619140625" b="-0.397201538085938" c="-0.397201538085938" d="0.246734619140625" tx="-21.3" ty="-48.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#ECC726">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392791748046875" b="0.256332397460938" c="0.256332397460938" d="0.392791748046875" tx="-7.95" ty="-87.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45672607421875" b="0.106719970703125" c="0.106719970703125" d="0.45672607421875" tx="3.95" ty="-77.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.401870727539063" b="-0.242080688476563" c="-0.242080688476563" d="0.401870727539063" tx="10.6" ty="-53.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.401870727539063" b="-0.242080688476563" c="-0.242080688476563" d="0.401870727539063" tx="10.6" ty="-53.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463455200195313" b="0.07293701171875" c="0.07293701171875" d="0.463455200195313" tx="3.4" ty="-61.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.445816040039063" b="0.1461181640625" c="0.1461181640625" d="0.445816040039063" tx="-1.6" ty="-66.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392791748046875" b="0.256332397460938" c="0.256332397460938" d="0.392791748046875" tx="-15.95" ty="-57.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392791748046875" b="0.256332397460938" c="0.256332397460938" d="0.392791748046875" tx="-15.95" ty="-57.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.431365966796875" b="0.184463500976563" c="0.184463500976563" d="0.431365966796875" tx="-0.4" ty="-63.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.407745361328125" b="0.232025146484375" c="0.232025146484375" d="0.407745361328125" tx="-4.6" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.437515258789063" b="0.169342041015625" c="0.169342041015625" d="0.437515258789063" tx="3.55" ty="-58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.437515258789063" b="0.169342041015625" c="0.169342041015625" d="0.437515258789063" tx="3.55" ty="-58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399444580078125" b="0.246047973632813" c="0.246047973632813" d="0.399444580078125" tx="-22.15" ty="-63.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.432281494140625" b="0.182281494140625" c="0.182281494140625" d="0.432281494140625" tx="-14.8" ty="-70.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.432281494140625" b="0.182281494140625" c="0.182281494140625" d="0.432281494140625" tx="-17.8" ty="-85.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.460296630859375" b="0.0906524658203125" c="0.0906524658203125" d="0.460296630859375" tx="1.95" ty="-78.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4688720703125" b="0.015899658203125" c="0.015899658203125" d="0.4688720703125" tx="10.65" ty="-66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4688720703125" b="0.015899658203125" c="0.015899658203125" d="0.4688720703125" tx="10.65" ty="-66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="76" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="7.2" ty="-83.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="82" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-85.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="92" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="97" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468643188476563" b="0.0217132568359375" c="0.0217132568359375" d="0.468643188476563" tx="6.4" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="103" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.43341064453125" b="-0.179855346679688" c="-0.18206787109375" d="0.432235717773438" tx="13.45" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.443405151367188" b="-0.15325927734375" c="-0.15325927734375" d="0.443405151367188" tx="12.6" ty="-45.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#B2B086">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.23052978515625" b="0.406845092773438" c="0.406845092773438" d="0.23052978515625" tx="-19" ty="-85.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.127456665039063" b="0.449905395507813" c="0.449905395507813" d="0.127456665039063" tx="-13.2" ty="-81.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0569305419921875" b="0.464218139648438" c="0.464218139648438" d="0.0569305419921875" tx="-10.2" ty="-74.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0569305419921875" b="0.464218139648438" c="0.464218139648438" d="0.0569305419921875" tx="-10.2" ty="-74.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07965087890625" b="0.460845947265625" c="0.460845947265625" d="-0.07965087890625" tx="-20.8" ty="-68.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0039215087890625" b="0.467666625976563" c="0.467666625976563" d="0.0039215087890625" tx="-23.35" ty="-68.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.23052978515625" b="0.406845092773438" c="0.406845092773438" d="0.23052978515625" tx="-27" ty="-55.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.01361083984375" b="0.4674072265625" c="0.4674072265625" d="-0.01361083984375" tx="-34.4" ty="-56.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.199066162109375" b="0.423202514648438" c="0.423202514648438" d="0.199066162109375" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2591552734375" b="0.3892822265625" c="0.3892822265625" d="0.2591552734375" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.19476318359375" b="0.4251708984375" c="0.4251708984375" d="0.19476318359375" tx="-22.35" ty="-63.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.145462036132813" b="0.4444580078125" c="0.4444580078125" d="0.145462036132813" tx="-26.45" ty="-60.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0748291015625" b="0.461639404296875" c="0.461639404296875" d="0.0748291015625" tx="-22.8" ty="-58.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0748291015625" b="0.461639404296875" c="0.461639404296875" d="0.0748291015625" tx="-22.8" ty="-58.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0892486572265625" b="0.459060668945313" c="0.459060668945313" d="-0.0892486572265625" tx="-48.05" ty="-58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.108673095703125" b="0.454849243164063" c="0.454849243164063" d="-0.108673095703125" tx="-39.15" ty="-70.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.157318115234375" b="0.440383911132813" c="0.440383911132813" d="-0.157318115234375" tx="-42.15" ty="-85.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.13995361328125" b="0.446197509765625" c="0.446197509765625" d="-0.13995361328125" tx="-23.95" ty="-83.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0102996826171875" b="0.467514038085938" c="0.467514038085938" d="-0.0102996826171875" tx="-14.1" ty="-75.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0102996826171875" b="0.467514038085938" c="0.467514038085938" d="-0.0102996826171875" tx="-14.1" ty="-75.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="76" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" centerPoint3DX="8.55" centerPoint3DY="-71" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0018310546875" b="0.467681884765625" c="0.468841552734375" d="0.296798706054688" tx="-13.05" ty="-92.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="82" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.121124267578125" b="0.45172119140625" c="0.45172119140625" d="-0.121124267578125" tx="-19.55" ty="-94.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="92" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.30792236328125" b="0.352005004882813" c="0.352005004882813" d="0.30792236328125" tx="-6" ty="-92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="97" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.148178100585938" b="0.443588256835938" c="0.443588256835938" d="-0.148178100585938" tx="-21.3" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12872314453125" b="0.449615478515625" c="0.449615478515625" d="0.12872314453125" tx="-13.85" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="103" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.069244384765625" b="0.46319580078125" c="0.462203979492188" d="0.066925048828125" tx="-7.6" ty="-50.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="盗贼小飞机/Symbol 959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.285980224609375" b="0.37005615234375" c="0.37005615234375" d="0.285980224609375" tx="-3.15" ty="-61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#72AE88" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#E88483">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="129" keyMode="9728" soundName="盗贼小飞机/sound328.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
