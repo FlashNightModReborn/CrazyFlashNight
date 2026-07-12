@@ -466,6 +466,14 @@ function hasReadyBlocker(status, blocker) {
   return list.includes(blocker);
 }
 
+function shouldRequestAgentEnter(status, enterRequested) {
+  return !enterRequested
+    && status
+    && status.launchState === "Ready"
+    && status.revealPerformed === true
+    && hasReadyBlocker(status, "runtime_save_not_loaded");
+}
+
 async function waitForAgentControl(port, timeoutMs, pollMs) {
   const deadline = Date.now() + timeoutMs;
   let last = null;
@@ -497,7 +505,11 @@ async function ensureGameReady(port, args) {
   while (Date.now() <= deadline) {
     status = await agent(port, "status");
     if (status.readyForArenaCalibration) return status;
-    if (!enterRequested && status.launchState === "Ready" && hasReadyBlocker(status, "runtime_save_not_loaded")) {
+    // 必须等 bootstrap_reveal_ready / 主 SWF handoff 完成后再消费 launcher snapshot。
+    // 若在 asLoader 仍持有 _root 时提前 loadAll，snapshot 会在临时 root 上被消费；主菜单
+    // 接管后只能看到 runtime loaded 回报，却没有已初始化的物品栏，纯 json_shadow 的
+    // agent 槽会永久卡在主菜单。
+    if (shouldRequestAgentEnter(status, enterRequested)) {
       enterRequested = true;
       const entered = await consoleCommand(port, "#func:_root.agentEnterResolvedSave()");
       if (entered && entered.success === false) {
@@ -1041,6 +1053,25 @@ function runCheck() {
   }
   if (expandBuildGates(["none", "launcher", "arena-tools"]).join(",") !== "launcher-build,launcher-tests,arena-tools") {
     throw new Error("build gate expansion check failed");
+  }
+  const beforeReveal = {
+    launchState: "Ready",
+    revealPerformed: false,
+    readyBlockedBy: ["flash_not_revealed", "runtime_save_not_loaded"],
+  };
+  const afterReveal = {
+    launchState: "Ready",
+    revealPerformed: true,
+    readyBlockedBy: ["runtime_save_not_loaded"],
+  };
+  if (shouldRequestAgentEnter(beforeReveal, false)) {
+    throw new Error("agent enter must not consume save before Flash reveal");
+  }
+  if (!shouldRequestAgentEnter(afterReveal, false)) {
+    throw new Error("agent enter must run after reveal when runtime save is pending");
+  }
+  if (shouldRequestAgentEnter(afterReveal, true)) {
+    throw new Error("agent enter must remain single-shot after request");
   }
   const report = {
     schema: "arena-calibration.unattended-run.v1",

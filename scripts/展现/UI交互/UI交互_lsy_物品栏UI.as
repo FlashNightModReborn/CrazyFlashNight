@@ -432,6 +432,16 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 }
 
 _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
+	// 旧场景 NPC/素材入口只传目录对象；先按 _root.shops 的对象身份反查 shopId，
+	// 统一导向 NPC 商店 Web Panel。Launcher/协议不可用时继续执行原版 UI 回退。
+	var NPC商店服务 = _root.UI系统 == undefined ? undefined : _root.UI系统.NPC商店WebView;
+	if (NPC商店服务 != undefined && NPC商店服务.resolveShopIdByCatalog != undefined
+			&& _root.gameCommands != undefined && _root.gameCommands["openNpcShop"] != undefined) {
+		var NPC商店ID = NPC商店服务.resolveShopIdByCatalog(NPC物品栏);
+		if (NPC商店ID != "" && _root.gameCommands["openNpcShop"]({shopId:NPC商店ID, source:"legacy_shop_refresh"})) {
+			return true;
+		}
+	}
 	if(!_root.购买物品界面.图标列表) {
 		_root.物品UI函数.创建商店图标(NPC物品栏);
 	}else{
@@ -450,6 +460,7 @@ _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
 		}
 	}
 	_root.购买物品界面.NPC物品栏 = NPC物品栏;
+	return false;
 }
 
 

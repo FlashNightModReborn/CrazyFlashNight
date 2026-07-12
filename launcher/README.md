@@ -423,6 +423,7 @@ launcher/
 │   │   ├── ToastTask.cs                   UI toast 通知（fire-and-forget）
 │   │   ├── ShopTask.cs                    K 点商城桥接 + 单写 owner / needs_reconcile / callId 重放保护
 │   │   ├── InventoryTask.cs               inventory-domain v1 白名单桥 + domain/cmd/callId 回包重写
+│   │   ├── NpcShopTask.cs                 NPC 金币商店桥 + 严格 payload 白名单 / 写对账 / 防重放
 │   │   ├── MapTask.cs                     Web 地图 panel snapshot / refresh / navigate
 │   │   ├── StageSelectTask.cs             Web 选关 panel snapshot / enter / jump_frame / return_frame
 │   │   ├── IntelligenceTask.cs            情报详情 state / snapshot(itemName) / tooltip（按需读白名单 H5 正文）
@@ -539,6 +540,9 @@ launcher/
 │       ├── kshop.js                       采购态 + 背包↔战备箱库存态组合层
 │       ├── inventory-workbench.js         battlebox/warehouse 双 profile 独立库存工作台
 │       ├── kshop/dev/harness.html          KShop Step 0–5a / Gate A1–A3 browser + visual harness
+│       ├── npcshop-runtime.js             NPC 商店独立 request mux + callId/session 隔离
+│       ├── npcshop.js                     NPC 商品目录 + 待购/待售选择 + 权威原子二级结算
+│       ├── npcshop/dev/harness.html        NPC 商店 browser harness
 │       ├── team/team-panel.js             战队唯一生产 Panel（薄协调器：无独立顶栏，唯一 tab 条迁移注入子面板 header 槽位）
 │       ├── team/dev/harness.html           战队 browser harness（四标签 / 分类 / 佣兵卡片 / 详情栏 / 会话记忆）
 │       ├── pet-panel.js                   可嵌入宠物子控制器（管理/领养/进阶；伙伴/战宠/机械按 rosterType 过滤；列表页 header 含 .team-tabs-slot）
@@ -768,7 +772,7 @@ powershell -File launcher/tests/run_tests.ps1
 
 ### 测试覆盖
 
-当前 `Launcher.Tests.csproj` 采用 SDK glob 自动纳入测试源码；2026-07-11 全量执行为 **766/766** 通过，其中 `ShopTaskTests` 覆盖 KShop Host 写 gate、成功载荷校验、对账与防重放，`InventoryTaskTests` 覆盖 lease-bound `tooltip`、三容器 source/target、`filterKey` 严格枚举、三容器 `sortAndMerge` 与 `autoTransfer` 来源/策略/窗口白名单透传，`LauncherCommandRouterTests` 另守 `WAREHOUSE → workbench profile=battlebox`、宿舍 `panel_request → profile=warehouse`、未知 profile 拒绝与 Flash 回退开关。`SaveMigratorTests` 继续使用代码内 helper 数据；外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
+当前 `Launcher.Tests.csproj` 采用 SDK glob 自动纳入测试源码；2026-07-11 全量执行为 **777/777** 通过，其中 `ShopTaskTests` 覆盖 KShop Host 写 gate、成功载荷校验、对账与防重放，`InventoryTaskTests` 覆盖 lease-bound `tooltip`、三容器 source/target、`filterKey` 严格枚举、三容器 `sortAndMerge` 与 `autoTransfer` 来源/策略/窗口白名单透传，`NpcShopTaskTests` 覆盖 6 条命令映射、背包/材料出售白名单、callId 回写、样品名去重、确定性 shop_not_found 拒绝与未知写结果 snapshot 对账，`LauncherCommandRouterTests` 另守 `WAREHOUSE → workbench profile=battlebox`、宿舍 `panel_request → profile=warehouse`、未知 profile 拒绝与 Flash 回退开关。`SaveMigratorTests` 继续使用代码内 helper 数据；外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
 
 | 分组 | 覆盖面 |
 |------|--------|
@@ -1165,7 +1169,7 @@ WebView2 通过 `chrome.webview.postMessage({cmd, ...})` 发消息。所有 27 �
 
 `status` 返回 `launchState`、`revealPerformed`、`socketConnected`、`readyForArenaCalibration`、`readyBlockedBy`、`save`、`saveRuntime` 和内嵌的 `arenaCalibration` 状态。`readyForArenaCalibration` 只有在 `launchState=Ready`、Flash reveal 已完成、socket 已连接、`arena_calibration status` 可读、Launcher 存档决议为 `decision=snapshot/kind=Snapshot`，且 AS2 运行态已通过 `agent_runtime_status` 回报同一 `attemptId/savePath` 的已加载存档时才为 true；坏档会停在 `save_decision_unsafe` / `runtime_save_not_loaded`，不得进入标定批次。`start` 默认 `requireFlashReveal:true`，与 Bootstrap 无片头启动路径一致，会等 Flash 封面帧 `bootstrap_reveal_ready` 后再执行 panel swap；`deferReveal` 默认 false，避免无人值守路径卡在 JS 片头 gate。slot 只允许普通槽位名，拒绝路径分隔符和保留路径字符；`start` 默认不写 `lastPlayedSlot`，只有显式传 `rememberSlot:true` 才更新用户默认槽位。
 
-AS2 在 `SaveManager.loadAll()` 成功后通过内部 JSON task `agent_runtime_status` 上报 `{loaded, savePath, attemptId, source, role, level}`；该 task 仅 AS2→C#，不对 HTTP 暴露。无人值守 runner 会在 Flash reveal 后通过 `/console` 调用 `_root.agentEnterResolvedSave()`，复用原“确认存档进入游戏”路径触发 `loadAll()`；这一步不放在 `agent_control` 里长等，`agent_control` 只提供生命周期和状态安全门。
+AS2 在 `SaveManager.loadAll()` 成功后通过内部 JSON task `agent_runtime_status` 上报 `{loaded, savePath, attemptId, source, role, level}`；该 task 仅 AS2→C#，不对 HTTP 暴露。无人值守 runner 会在 Flash reveal 后通过 `/console` 调用 `_root.agentEnterResolvedSave()`；该入口只跳到主时间轴 `读盘` 帧，由原“进入游戏”流程统一执行 `loadAll()`、任务恢复、出生点和地图跳转，不得提前自行消费 launcher snapshot。这一步不放在 `agent_control` 里长等，`agent_control` 只提供生命周期和状态安全门。
 
 ### Idle 守卫：`RequireIdleOrTearDown` 语义
 
@@ -1548,6 +1552,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 | 帮助界面 (帮助界面.swf) | Panel 系统 `help-panel.js` (Markdown tab) | Bridge → C# panel_cmd open help |
 | K点商城 / 库存管理 (旧商城界面 MC 已退役) | `game-ui-behavior.*` + `workbench.js` + `kshop-runtime.js` + `inventory-runtime.js` + `inventory-ui.js` + `kshop.js` | `SHOP` → `kshop`；采购态与背包—战备箱库存态，40 槽/页、剧情权威 0..6 页、displaySort、权威 sortAndMerge、discard 与 claim |
 | 独立物品工作台 | `inventory-workbench.js` + 上述共享 inventory/workbench 组件 | 严格 `profile=battlebox|warehouse`：刘海 `WAREHOUSE` 默认背包—战备箱；宿舍 XFL 经 AS2 `panel_request` 打开背包—真实仓库（50 槽/页、24 页）；两者均复用 move/merge/swap 且不进入商城生命周期，`warehouse` 额外开放 Ctrl+单击与“快速存入/快速取出”单飞队列 |
+| NPC 物品商店 | `npcshop-runtime.js` + `npcshop.js` + 共享 `workbench.js`/图标/tooltip | 场景 NPC 对话与平板联系人 `openNpcShop` → `npcshop`；主页面选择待购/待售，右栏顶层切背包/收集品，二级结算页调整数量并以 AS2 opaque token 原子提交整单 |
 | 战队界面 | Panel 系统 `team/team-panel.js`（佣兵 / 伙伴 / 战宠 / 机械；宠物管理/领养/进阶 + 佣兵管理/雇佣/培养） | `TEAM` → `mercPanelOpen` + `team`；子控制器继续使用 `pets` / `mercs` Task 协议 |
 | 竞技场 (DEATH MATCH) | Panel 系统 `arena-panel.js` (标准档位卡 + 死线警报隐藏卡) | `arena`，ArenaTask 双层 callId |
 | 情报界面 | Panel 系统 `intelligence-panel.js` (H5 富文本) | `情报`/`INTELLIGENCE`，IntelligenceTask 按需正文 |
@@ -1600,6 +1605,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 **面板类型**：
 - **kshop**（K 点商城 + 战备箱库存态）: 唯一支持入口为 Launcher `SHOP` → Web Panel；旧 Flash `shopMainMC` 已退役。采购态继续使用 catalog/cart 与既有可靠写 gate；库存态固定挂载背包 50 槽和战备箱 40 槽，只显示剧情可访问的 0..240 前缀，不再向商城暴露真实仓库。共享 `inventory-ui.js` / `InventoryCoordinator` 继续提供分页、显示排序、全容器分类、权威整理、同/跨容器 move/merge/swap、discard 与 claim 刷新。每次打开仍须等新 `bulkQuery` 完整成功才开放商城写入。
 - **workbench**（独立物品工作台）: `web/modules/inventory-workbench.js` 按 Host 固化的严格 profile 重新配置同一 `InventoryCoordinator`：`battlebox`=背包 50 + 战备箱 40（Native HUD `WAREHOUSE` 默认；`CF7_WEB_INVENTORY_WORKBENCH=0` 可回退旧 Flash），`warehouse`=背包 50 + 真实仓库 50（宿舍 `openInventoryWorkbench` → `panel_request` 专用，24 页）。两种 profile 均不请求商城目录、不触发 `shopPanelOpen/Close`；图标 required-assets 门、全屏 anchor、tooltip、分类、排序、lease 与事务实现完全共享。`warehouse` 首批开放 Ctrl+单击单件快速转移与“快速存入/快速取出”常驻模式：Web 最多缓存 24 个点击并顺序提交，AS2 `inventoryAutoTransfer` 在完整目标可访问范围执行 merge-first→首空位，不接受 Web 目标槽、不自动交换、目标满仓零写入；回包按当前 `windows` 重铸 lease 而不强制跳页，未发送项可再次点击取消，Esc 先退模式。未知 profile 在 C# 路由拒绝，XFL 不能传任意 containerId。确定性门为 Edge harness 59/59、Launcher xUnit 766/766、Flash `InventoryPanelServiceTest` 78/78 fresh trace；宿舍场景合集独立 XFL 发布也须确认目标 SWF 刷新。真游戏仍需复核宿舍 Ctrl/常驻连续点击、满仓停队、不同剧情战备箱页数、真实物品转移及重启回读。
+- **npcshop**（NPC 金币物品商店）: `web/modules/npcshop-runtime.js` + `web/modules/npcshop.js`；场景 NPC 主入口、平板联系人和 legacy refresh 兜底继续共用 `openNpcShop`，Host 只接受权威 shopId 并打开 1024×576 panel。`data/shops/list.xml` 现引用 `data/shops/npcs/*.json`，每 NPC 一个 `npc-shop.v2` 文件；稳定 `catalogIndex` 仍进入 `_root.shops`。当前 35 个生产商店均不配置 `sections`：Web 从 AS2 投影的现有 `majorType/use/actionType/weaponType` 建立“大类→use→武器子类”互斥分类树，只显示本店存在的节点、单子节点自动下钻、未知值进入“其他”。可选 `sections` 仍进入 `_root.shopLayouts` 并完整覆盖自动树，只用于无法从物品属性推导的人工经营分组；配置见 `data/shops/README.md`。目录对象条目可用 `purchaseLimit=1..100` 覆盖单笔采购上限。主页面左栏点击加入待购，右栏在背包/收集品及材料/情报之间切换并点击加入待售，情报只读；不再渲染原生 number input、内联买卖或样品栏。二级结算页提供 `−/+5/最大`、逐行移除和装备“同名全售”；批售 wire 只带背包 seed lease + `same_name/plain_only`，AS2 扫描全部同名实例并保护强化、进阶、带插件装备。不可堆叠装备数量在 AS2 获得计划中展开为独立实例，preview 同时返回单行金钱/容量上限与整单缺格数。`inventory_full` 可进入嵌入式背包—战备箱整理页，复用 `InventoryCoordinator` + inventory-domain `autoTransfer`，返回后重铸仍存在的待售 lease 并重新 preview；首轮不支持直接购买到战备箱。标题栏“？”可打开意图保留的二级帮助页，说明选择/结算/同名全售/整理空间四条流程；从选购或结算返回都恢复原状态且不发权威请求。首次结算、首次批售和首次容量不足另有 `localStorage` 一次性非阻塞提示，结算页文案随当前阻塞与批售状态变化。防具套装尚无运行时权威 ID，`tools/audit-equipment-set-candidates.js` 仅生成供人工审核的候选。`tradeCommit` 一次复核并原子提交整单，允许售款抵购和售出腾格，失败不留下部分出售，token 单次消费。旧 buy/sell/batch 命令仅保留 Flash 兼容。`NpcShopTask` 对 commit 使用 `idle/write_pending/needs_reconcile`，未知结果只以 snapshot 解锁、不重放。自动门：数据 35 NPC/833 商品（manual-shops=0）、browser harness 40/40、Launcher xUnit 788/788、Flash `NpcShopPanelServiceTest` 32/32 fresh trace；Launcher 构建与 asLoader 发布门按 NPC shop 验证矩阵执行。
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，无面板专属 AS2 清理命令；仍走统一 Web Panel 生命周期，打开时发 `webPanelPause`、关闭时发 `webPanelUnpause`
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-canvas-stage-renderer.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `open_stage_select` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面的舞台视觉由 Canvas 2D renderer 绘制（DOM 仅保留透明热点、hover 标签、右侧 rail 与操作按钮），右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；`map-panel.js` 会懒加载 `stage-select-data.js`，用 `RootFadeTransitionFrame` 为已解锁且有选关页签的热点提供二级“选关”动作，成功后交给 PanelHost 关闭 map 并打开 `stage-select`，主热点点击仍发送 `navigate`；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **stage-select**（选关界面 Stage 2 runtime）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；可通过 Native HUD “系统 → 其他 → 测试 → 选关测试” 的 `STAGE_SELECT_TEST` 打开，也可由 AS2 场景门 `openWebStageSelect` → `panel_request stage-select` 正式打开。支持 16 个 frame label、182 个源 XML 入口实例、164 个 Web 运行时渲染实例（含 13 个 `entryKind=map/task` 直达入口）、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，普通难度按钮通过 `stageSelectEnter entryKind=difficulty` 进入已解锁关卡，外交地图按原版绿色点直达、从源符号内部 `shape/外交地图点` / `DOMDynamicText` 矩阵复原点和文字位置、通过 `entryKind=map` 走 AS2 淡出跳转且不显示二次选择，旧外交地图 SWF 内仍指向 Flash `关卡地图` 的门由公共 `切换场景` 捕获后打开 Web 选关，`地图-*` frameLabel 会按 `StageInfoDict.RootFadeTransitionFrame` 反查回选关页签，魔神/副本任务区域把 `Symbol 3325 -> Symbol 3323 -> bitmap3321` 导出的法阵底图放在装饰层，文字按钮仍按 XFL 源矢量 CSS 复刻，`entryKind=task` 改发 `openWebDungeon` 跳转 Web `tasks` 面板副本 tab（旧 Flash `委托任务界面` 已退役删除；`StageSelectPanelService.handleEnter` 走 closePanel:false 重定向），`localFrame` 通过 `jump_frame` / `stageSelectJumpFrame` 同步 Web 当前选关页但不改 `_root.关卡地图帧值`，return 类 nav 通过独立 `returnFrameLabel` + `return_frame` / `stageSelectReturnFrame` 复刻原版 `_root.淡出动画.淡出跳转帧(_root.关卡地图帧值)`，同场景返回会直接关闭 Web panel、跨场景返回仍淡出跳转，避免旧外交地图底层场景泄露。runtime 布局隐藏测试标题、fixture/dev 控件与右侧空栏，frame tab 默认收纳到可展开区域菜单，旧 Flash `关卡地图` 保留为 fallback
@@ -1654,7 +1660,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/registerLazy/open/close/force_close)
-- `panels-lazy-registry.js` + `lazy-loader.js`: 面板懒注册表（id → deps[]）+ 按需 `<script>` 注入，首次 `Panels.open(id)` 才加载对应模块（kshop/help/jukebox/dressup/map/stage-select/intelligence/arena/team/lockbox/pinalign/gobang/tasks/cutscene-test）
+- `panels-lazy-registry.js` + `lazy-loader.js`: 面板懒注册表（id → deps[]）+ 按需 `<script>` 注入，首次 `Panels.open(id)` 才加载对应模块（kshop/workbench/npcshop/help/jukebox/dressup/map/stage-select/intelligence/arena/team/lockbox/pinalign/gobang/tasks/cutscene-test）
 - `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换；商城、情报、任务、佣兵、竞技场 runtime tooltip 共用，图标通过 `PanelTooltip.dynamicIconHtml` 接入动态图/分层图播放链
 - `asset-timeline.js`: 图标与纸娃娃共享的烘焙时间线选择器，统一解释 `timelineFrames[]` / `durationFrames` / nested layer 独立周期
 - `icons.js`: 物品图标 manifest 加载 + 上游 `icon` 名→URL / frame list 解析；任务/成就奖励由 AS2 或 build catalog 提交真实 `icon` 字段，情报详情面板也复用该入口；生产格子/tooltip 默认走 `Icons.html`/`PanelTooltip.dynamicIconHtml`，`Icons.resolve` 仅作首帧 fallback

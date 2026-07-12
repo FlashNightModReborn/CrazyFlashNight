@@ -14,6 +14,7 @@
 #   1g. 审计 Web 可见物品 icon → launcher/web/icons/manifest.json 闭包
 #   1h. 审计 Web 图标渲染入口（tooltip 必须接入 Icons.html 动态/分层播放链）
 #   1h2. 审计装备插件档级、角色与符号展示闭包
+#   1h3. 校验 NPC 商店分文件目录、索引与开发者分组覆盖
 #   2.  native miniaudio.dll 构建（cl.exe via vcvars64）
 #   3.  native sol_parser.dll 构建（cargo via rustup）
 #   4.  native bootstrap.exe 构建（cl.exe，用户面入口 wrapper）
@@ -279,6 +280,21 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 Write-Host "  equipment mod UI presentation OK." -ForegroundColor Green
+
+# Step 1h3: NPC 商店数据与开发者分组配置审计。
+# 每个 NPC 独立文件；catalogIndex 仍是 Flash 协议身份，人工 sections 必须完整覆盖目录。
+Write-Host "[Step 1h3/7] Validate NPC shop catalogs..." -ForegroundColor Yellow
+$validateNpcShopsScript = Join-Path $projectRoot "tools\validate-npc-shops.js"
+if (-not (Test-Path $validateNpcShopsScript)) {
+    Write-Host "[FAIL] validate-npc-shops.js missing: $validateNpcShopsScript" -ForegroundColor Red
+    exit 1
+}
+node $validateNpcShopsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] NPC shop catalog validation failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  NPC shop catalogs OK." -ForegroundColor Green
 
 # Step 1i: 派生竞技场定制赛单位浏览目录。
 Write-Host "[Step 1i/7] Derive launcher/web/modules/arena-unit-catalog.js..." -ForegroundColor Yellow
@@ -685,6 +701,8 @@ $requiredWebPaths = @(
     "modules\inventory-ui.js",
     "modules\inventory-workbench.js",
     "modules\kshop.js",
+    "modules\npcshop-runtime.js",
+    "modules\npcshop.js",
     "modules\help-panel.js",
     "modules\intelligence-components.js",
     "modules\font-pack-banner.js",

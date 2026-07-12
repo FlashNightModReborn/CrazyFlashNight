@@ -426,6 +426,8 @@ namespace CF7Launcher.Tests.Tasks
         {
             Assert.Equal(WebOverlayForm.PanelDomainRoute.Inventory,
                 WebOverlayForm.ResolvePanelDomainRoute("snapshot", "inventory"));
+            Assert.Equal(WebOverlayForm.PanelDomainRoute.NpcShop,
+                WebOverlayForm.ResolvePanelDomainRoute("snapshot", "npcshop"));
             Assert.Equal(WebOverlayForm.PanelDomainRoute.Close,
                 WebOverlayForm.ResolvePanelDomainRoute("close", "inventory"));
             Assert.Equal(WebOverlayForm.PanelDomainRoute.Unsupported,

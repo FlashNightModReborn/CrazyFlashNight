@@ -1,5 +1,7 @@
 ﻿
-_root.UI系统 = {};
+// UI系统 是跨帧共享命名空间；禁止在后置 UI 初始化阶段整对象重置，
+// 否则会抹掉早期注册的 NPC 商店等 WebView 服务。
+_root.UI系统 = _root.UI系统 || {};
 _root.UI系统.血条刷新显示 = function() 
 {
     var 控制对象 = TargetCacheManager.findHero();

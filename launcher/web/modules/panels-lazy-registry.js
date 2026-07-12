@@ -43,6 +43,15 @@
          'modules/inventory-workbench.js'],
         noop);
 
+    // ── NPC 金币商店（商品目录 + 背包/材料/情报同级 View）──
+    Panels.registerLazy('npcshop',
+        ['modules/workbench.js',
+         'modules/inventory-runtime.js',
+         'modules/inventory-ui.js',
+         'modules/npcshop-runtime.js',
+         'modules/npcshop.js'],
+        noop);
+
     // ── help ──
     // marked.min.js 在 boot 时已加载（panel content 用 markdown 渲染）
     Panels.registerLazy('help',

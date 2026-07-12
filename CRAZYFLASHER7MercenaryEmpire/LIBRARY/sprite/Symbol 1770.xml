@@ -128,7 +128,15 @@ _root.全部翻译(this);
 	var NPC对象 = _root.gameworld[当前NPC];
 	if (NPC对象.物品栏 != undefined)
 	{
-		_root.物品UI函数.刷新商店图标(NPC对象.物品栏);
+		var opened = false;
+		if (_root.gameCommands != undefined && _root.gameCommands["openNpcShop"] != undefined)
+		{
+			opened = _root.gameCommands["openNpcShop"]({shopId:String(NPC对象.NPC商店检索名), source:"world_npc_dialogue"});
+		}
+		if (!opened)
+		{
+			_root.物品UI函数.刷新商店图标(NPC对象.物品栏);
+		}
 	}
 	else
 	{

@@ -62,6 +62,7 @@ namespace CF7Launcher.Bus
             IconBakeTask iconBake,
             ShopTask shopTask,
             InventoryTask inventoryTask,
+            NpcShopTask npcShopTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
             ArenaTask arenaTask,
@@ -96,6 +97,10 @@ namespace CF7Launcher.Bus
             // 双栏工作台共享 inventory-domain 回包路由
             if (inventoryTask != null)
                 router.RegisterAsync("inventory_response", inventoryTask.HandleFlashResponse);
+
+            // NPC 金币商店 domain 回包路由
+            if (npcShopTask != null)
+                router.RegisterAsync("npcshop_response", npcShopTask.HandleFlashResponse);
 
             // 地图面板回包路由
             if (mapTask != null)
@@ -263,6 +268,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "inventory_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "npcshop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);

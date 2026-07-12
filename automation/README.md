@@ -69,7 +69,7 @@ node tools/arena-calibration/run-unattended.js `
 
 `--slot` 缺省为 `cf7_agent_arena_calibration`，也可以显式传入；runner 会在启动前把该专用槽位从 `--seed-slot` 或最新有效 shadow 存档播种，并备份/移除目标槽位残留 SOL，避免复用运行中的旧 SOL。默认拒绝 `crazyflasher7_saves*` 正式槽位与 `--fresh`，除非显式传 `--allow-live-slot` / `--allow-fresh`，这两个开关只用于人工取证，不用于无人值守批跑。
 
-该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；Flash reveal 后通过 AS2 agent 入口执行原“确认进入游戏”动作，等待 `readyForArenaCalibration`。该 ready 必须同时满足 Launcher 存档决议为安全 snapshot、AS2 已完成 `SaveManager.loadAll()` 并回报 `agent_runtime_status`、socket/reveal/arena status 均就绪；随后才调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
+该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；必须等 `bootstrap_reveal_ready` 已完成（`agent_control.revealPerformed=true`）后，才通过 AS2 agent 入口复用主时间轴 `读盘` 帧的原“进入游戏”流程，避免在 asLoader 临时 `_root` 上提前消费 snapshot、交接后卡在主菜单。随后等待 `readyForArenaCalibration`；该 ready 必须同时满足 Launcher 存档决议为安全 snapshot、AS2 已完成 `SaveManager.loadAll()` 并回报 `agent_runtime_status`、socket/reveal/arena status 均就绪，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
 
 默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。如本轮确实需要重编译或验证指定栈，可显式传：
 

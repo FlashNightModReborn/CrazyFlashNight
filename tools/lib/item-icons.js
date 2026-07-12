@@ -25,6 +25,12 @@ function childText(xml, tagName) {
     return m ? decodeXmlText(m[1].trim()) : '';
 }
 
+function attributeText(xml, attributeName) {
+    const re = new RegExp('(?:^|\\s)' + attributeName + '\\s*=\\s*(["\\\'])([\\s\\S]*?)\\1');
+    const m = re.exec(String(xml || ''));
+    return m ? decodeXmlText(m[2]) : '';
+}
+
 function readItemManifest(itemDir, fail) {
     const raw = readText(path.join(itemDir, 'list.xml'), fail);
     const out = [];
@@ -42,10 +48,10 @@ function loadItemMeta(projectRoot, fail) {
     for (let i = 0; i < files.length; i += 1) {
         const rel = files[i];
         const raw = readText(path.join(itemDir, rel), fail);
-        const itemRe = /<item\b[^>]*>([\s\S]*?)<\/item>/g;
+        const itemRe = /<item\b([^>]*)>([\s\S]*?)<\/item>/g;
         let m;
         while ((m = itemRe.exec(raw)) !== null) {
-            const block = m[1];
+            const attributes = m[1], block = m[2];
             const name = childText(block, 'name');
             if (!name) continue;
             byName[name] = {
@@ -54,6 +60,8 @@ function loadItemMeta(projectRoot, fail) {
                 icon: childText(block, 'icon'),
                 type: childText(block, 'type'),
                 use: childText(block, 'use'),
+                actiontype: attributeText(attributes, 'actiontype') || childText(block, 'actiontype'),
+                weapontype: attributeText(attributes, 'weapontype') || childText(block, 'weapontype'),
                 source: rel
             };
         }

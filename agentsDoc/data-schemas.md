@@ -64,6 +64,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/map/` | WebView 地图面板配置（`map_panel.xml` 单文件） |
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
 | `data/intelligence_h5/` | Launcher Web 情报面板 H5 JSON 组件树正文 |
+| `data/shops/` | NPC 金币商店清单、逐 NPC 商品目录与开发者分组 |
 | `config/` | 系统配置 |
 
 大多数采用 **list.xml 主从模式**：
@@ -77,7 +78,28 @@ data/stages/                  → 按地点组织的关卡数据
 data/dictionaries/            → 材料/情报字典
 data/intelligence/            → 按情报名称存放的 legacy txt 正文
 data/intelligence_h5/         → 按情报名称存放的 H5 JSON 组件树正文
+data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一个文件）
 ```
+
+### NPC 商店 `npc-shop.v2`
+
+`data/shops/list.xml` 中每个 `<shops>` 指向一个独立 NPC JSON。运行时加载器把 v2 文档归一化回 `_root.shops[shopId] = catalog`，因此旧 NPC 对目录对象的引用与 `catalogIndex` 协议身份不变；展示配置进入 `_root.shopLayouts[shopId]`。
+
+```json
+{
+  "schema": "npc-shop.v2",
+  "shopId": "冷兵器商人",
+  "title": "冷兵器商人",
+  "catalog": { "0": "爪刀", "38": { "name": "旧世残篇", "requiredInfo": "符线溯源笔记", "purchaseLimit": 20 } }
+}
+```
+
+- `catalog` 键必须是稳定的非负整数索引；值只能是物品名字符串或 `{name,requiredInfo,purchaseLimit}`。`purchaseLimit` 可省略，存在时必须为 `1..100` 整数；装备默认单笔 50，其他物品默认 100。该字段只限制单笔采购意图，不改变背包容量或物品堆叠规则。
+- `sections` 可省略；省略时 Web 从物品现有字段构建互斥分类树：一级 `type=武器/防具/消耗品/收集品`，二级使用 `use`，武器三级以刀的 `actiontype` 或枪械的 `weapontype` 细分。未知值进入“其他”，不会隐藏商品；AS2 snapshot 只透传这些现有展示字段，不改变物品 XML 权威。
+- `sections` 存在时完整替代自动分类，必须覆盖目录内全部索引，`all` 为 Web 隐式保留分组。当前生产目录不启用人工分组；配置规则与示例见 [`data/shops/README.md`](../data/shops/README.md)。
+- 空目录合法，用于显式停用但仍需保留身份的 NPC。
+- 防具套装没有可靠结构化 ID，运行时不得用名称、描述、`dressup` 或配方直接生成整套购买。`node tools/audit-equipment-set-candidates.js` 只输出 `runtimeAuthoritative:false` 的人工复核候选；可变件数与同槽变体须等审核清单另行建模。
+- 改动后运行 `node tools/validate-npc-shops.js`；它同时校验商品名能映射到 `data/items` 并统计自动分类 fallback。`launcher/build.ps1` Step 1h3 同样 fail-fast 执行。
 
 ### 配置文件索引
 

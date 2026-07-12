@@ -228,7 +228,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
-        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile 枚举；其他 panel 保持各自显式分支或 unsupported。
+        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile 枚举；npcshop 只接收 shopId；其他 panel 保持各自显式分支或 unsupported。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
@@ -276,6 +276,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "workbench", StringComparison.OrdinalIgnoreCase))
             {
                 OpenInventoryWorkbench(safeSource, initDataExtrasJson);
+                return;
+            }
+            if (string.Equals(panelName, "npcshop", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenNpcShopPanel(safeSource, initDataExtrasJson);
                 return;
             }
             if (string.Equals(panelName, "arena", StringComparison.OrdinalIgnoreCase))
@@ -346,6 +351,30 @@ namespace CF7Launcher.Guardian
                 ["debug"] = false
             };
             OpenPanel("workbench", initData.ToString(Formatting.None));
+        }
+
+        private void OpenNpcShopPanel(string source, string initDataExtrasJson)
+        {
+            if (string.IsNullOrEmpty(initDataExtrasJson)) return;
+            try
+            {
+                JObject extras = JObject.Parse(initDataExtrasJson);
+                string shopId = extras.Value<string>("shopId");
+                if (string.IsNullOrEmpty(shopId) || shopId.Length > 80) return;
+                for (int i = 0; i < shopId.Length; i++) if (char.IsControl(shopId[i])) return;
+                var initData = new JObject
+                {
+                    ["mode"] = "runtime",
+                    ["shopId"] = shopId,
+                    ["source"] = source,
+                    ["debug"] = false
+                };
+                OpenPanel("npcshop", initData.ToString(Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Router] OpenNpcShopPanel extras parse failed: " + ex.Message);
+            }
         }
 
         // 副本任务（委托任务）：NPC「获得任务」→ AS2 openWebDungeon 发 panel_request panel="tasks"，

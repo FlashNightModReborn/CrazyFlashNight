@@ -562,6 +562,26 @@ class org.flashNight.arki.item.InventoryPanelService {
         return {success: true, containerId: containerId, inventory: inventory, slot: slot, item: item};
     }
 
+    /**
+     * 供显式领域命令（NPC 金币出售、后续 equip）复用 owned-slot lease。
+     * 调用方仍须自行持有领域重入守卫，并在同一同步调用栈内完成校验与写入。
+     */
+    public static function validateExternalSlotRef(ref:Object, checkCount:Boolean):Object {
+        return validateSlotRef(ref, true, checkCount == true);
+    }
+
+    /** 显式领域命令提交后，使被写槽位的旧 lease 失效。 */
+    public static function invalidateExternalSlot(containerId:String, slot:Number):Void {
+        invalidateSlot(containerId, slot);
+    }
+
+    /** 显式领域命令完成后重投影可见窗口，不开启新的 inventory session。 */
+    public static function buildExternalSnapshot(containerId:String, offset:Number, limit:Number):Object {
+        var inventory:ArrayInventory = resolveContainer(containerId);
+        if (inventory == null) return null;
+        return buildSnapshot(containerId, inventory, offset, limit, "all");
+    }
+
     private static function confirmProjectionMatches(slotCheck:Object):Boolean {
         var expected:Object = leaseArray(_leaseConfirm, slotCheck.containerId)[slotCheck.slot];
         var current:Object = buildConfirmProjection(slotCheck.item);

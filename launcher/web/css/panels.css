@@ -296,7 +296,8 @@
 }
 
 #panel-container[data-panel="kshop"] #panel-content,
-#panel-container[data-panel="workbench"] #panel-content {
+#panel-container[data-panel="workbench"] #panel-content,
+#panel-container[data-panel="npcshop"] #panel-content {
     inset: 0;
 }
 #panel-container[data-panel="kshop"] #panel-backdrop {
@@ -305,6 +306,7 @@
 #panel-container[data-panel="workbench"] #panel-backdrop {
     background: #09090a;
 }
+#panel-container[data-panel="npcshop"] #panel-backdrop { background:#09090a; }
 
 #panel-container[data-panel="help"] #panel-content {
     inset: 0;
@@ -12568,3 +12570,168 @@ html.perf-low-effects .map-panel-close-btn:hover {
 @media (prefers-reduced-motion:reduce) {
     .kshop-workbench[data-workbench-skin] * { transition-duration:.001s !important; }
 }
+
+/* NPC 金币商店：主页面选择意图，二级页面以 AS2 权威预览执行整单原子结算。 */
+.npcshop-panel { --wb-accent:#e5a64d; }
+.npcshop-catalog-view,.npcshop-owned-view { display:flex; min-height:0; flex-direction:column; overflow:hidden; }
+.npcshop-category-tabs { display:grid; gap:3px; }
+.npcshop-category-row { display:flex; gap:3px; flex-wrap:wrap; }
+.npcshop-category-row + .npcshop-category-row { padding-top:3px; border-top:1px solid #282d34; }
+.npcshop-collection-tabs { display:flex; gap:3px; flex-wrap:wrap; }
+.npcshop-category-tabs button,.npcshop-collection-tabs button {
+    min-height:22px; padding:2px 7px; color:#9ca3ab; border:1px solid #343941; background:#101318;
+    font:10px/1.2 "Microsoft YaHei",sans-serif; cursor:pointer;
+}
+.npcshop-category-tabs button { display:inline-flex; align-items:center; gap:5px; }
+.npcshop-category-tabs button small { min-width:12px; color:#666f79; font:8px/1 Consolas,monospace; text-align:right; }
+.npcshop-category-tabs button:hover,.npcshop-category-tabs button.active,
+.npcshop-collection-tabs button:hover,.npcshop-collection-tabs button.active {
+    color:#17191c; border-color:#f1c177; background:#e5a64d;
+}
+.npcshop-category-tabs button:hover small,.npcshop-category-tabs button.active small { color:#5c3e17; }
+.npcshop-catalog-grid {
+    flex:1 1 auto; min-height:0; padding:7px; overflow-y:auto; overflow-x:hidden;
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; gap:5px;
+    scrollbar-width:thin; scrollbar-color:#7b6240 #111419;
+}
+.npcshop-catalog-grid::-webkit-scrollbar,.npcshop-owned-grid::-webkit-scrollbar,.npcshop-settlement-list::-webkit-scrollbar { width:7px; height:7px; }
+.npcshop-catalog-grid::-webkit-scrollbar-track,.npcshop-owned-grid::-webkit-scrollbar-track,.npcshop-settlement-list::-webkit-scrollbar-track { background:#111419; }
+.npcshop-catalog-grid::-webkit-scrollbar-thumb,.npcshop-owned-grid::-webkit-scrollbar-thumb,.npcshop-settlement-list::-webkit-scrollbar-thumb { background:#705a3c; border:1px solid #a47d43; }
+.npcshop-catalog-card {
+    position:relative; min-width:0; min-height:76px; display:grid; grid-template-columns:48px minmax(0,1fr);
+    align-items:center; gap:7px; padding:6px; border:1px solid #292e35; background:#0d1014;
+    cursor:pointer;
+}
+.npcshop-catalog-card:hover { border-color:#626a74; background:#171b20; }
+.npcshop-catalog-card.selected,.npcshop-owned-card.selected { border-color:#e5a64d; background:rgba(229,166,77,.11); box-shadow:inset 0 0 0 1px rgba(229,166,77,.2); }
+.npcshop-catalog-card.locked { opacity:.55; cursor:not-allowed; }
+.npcshop-card-icon { display:grid; place-items:center; width:46px; height:46px; border:1px solid #292e35; background:#080a0d; }
+.npcshop-card-icon .kshop-icon,.npcshop-card-icon .cfn-layered-icon { width:42px; height:42px; object-fit:contain; }
+.npcshop-card-copy { min-width:0; display:flex; flex-direction:column; gap:2px; }
+.npcshop-card-copy b { overflow:hidden; color:#edf0f2; font-size:11px; white-space:nowrap; text-overflow:ellipsis; }
+.npcshop-card-copy small { color:#737b84; font-size:8px; }
+.npcshop-card-copy strong { color:#efbd70; font:700 11px/1.2 Consolas,monospace; }
+.npcshop-selection-marker {
+    position:absolute; right:4px; bottom:3px; max-width:calc(100% - 8px); padding:1px 4px;
+    overflow:hidden; color:#8e969f; background:rgba(8,10,13,.88); font:8px/15px "Microsoft YaHei",sans-serif;
+    white-space:nowrap; text-overflow:ellipsis; pointer-events:none;
+}
+.npcshop-catalog-card.selected .npcshop-selection-marker,.npcshop-owned-card.selected .npcshop-selection-marker { color:#f4c77f; }
+.npcshop-owned-grid {
+    flex:1 1 auto; min-height:0; padding:7px; overflow-y:auto; overflow-x:hidden;
+    display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-content:start; gap:5px;
+    scrollbar-width:thin; scrollbar-color:#7b6240 #111419;
+}
+.npcshop-owned-grid .inventory-slot-card {
+    min-width:0; height:72px; padding:4px 4px 19px; box-sizing:border-box; overflow:hidden; cursor:pointer;
+}
+.npcshop-owned-grid .inventory-slot-card.empty { padding:4px; cursor:default; }
+.npcshop-owned-grid .inventory-slot-card .inventory-slot-name { max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.npcshop-owned-grid .inventory-slot-card.read-only { cursor:default; }
+.npcshop-selection-hint { color:#818892; font-size:9px; }
+.npcshop-checkout-btn:not(:disabled) { color:#17191c !important; border-color:#f1c177 !important; background:#e5a64d !important; }
+.npcshop-help-btn { min-width:28px !important; padding:2px 7px !important; font:700 13px/1 Consolas,monospace !important; }
+.npcshop-helping .npcshop-help-btn { color:#17191c !important; border-color:#f1c177 !important; background:#e5a64d !important; }
+
+.npcshop-settling .workbench-body { visibility:hidden; pointer-events:none; }
+.npcshop-settlement-page {
+    position:absolute; z-index:8; top:64px; right:0; bottom:0; left:0; display:none;
+    grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
+    color:#e8ebee; background:linear-gradient(135deg,#0d1014,#090b0e 70%); border-top:1px solid #292e35;
+}
+.npcshop-settlement-page.active { display:grid; }
+.npcshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
+.npcshop-settlement-header button,.npcshop-settlement-summary button,.npcshop-stepper button {
+    color:#e9b96d; border:1px solid #68502e; background:#1c1710; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
+}
+.npcshop-settlement-header button { min-height:28px; padding:3px 10px; }
+.npcshop-settlement-header h2 { margin:0; font-size:18px; }
+.npcshop-settlement-header p { margin:2px 0 0; color:#818892; font-size:9px; }
+.npcshop-settlement-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding:9px 0; }
+.npcshop-settlement-columns > section { display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; border:1px solid #292e35; background:#0d1014; }
+.npcshop-settlement-columns h3 { margin:0; padding:6px 9px; color:#b8bdc4; border-bottom:1px solid #292e35; font-size:11px; }
+.npcshop-settlement-list { min-height:0; padding:6px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#7b6240 #111419; }
+.npcshop-settlement-line { display:grid; grid-template-columns:48px minmax(0,1fr) auto; align-items:center; gap:7px; min-height:58px; margin-bottom:5px; padding:5px; border:1px solid #272c33; background:#11151a; }
+.npcshop-settlement-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.npcshop-settlement-copy b { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.npcshop-settlement-copy small { color:#e5a64d; font:10px Consolas,monospace; }
+.npcshop-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:132px; }
+.npcshop-stepper b { text-align:center; font:11px Consolas,monospace; }
+.npcshop-stepper button { width:22px; height:23px; padding:0; }
+.npcshop-stepper button.wide { width:auto; min-width:47px; padding:0 5px; font-size:8px; }
+.npcshop-settlement-copy em { color:#858d96; font:normal 8px/1.35 "Microsoft YaHei",sans-serif; }
+.npcshop-stepper button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary button:hover:not(:disabled) { color:#17191c; background:#e5a64d; border-color:#f4ca88; }
+.npcshop-stepper button:disabled,.npcshop-settlement-summary button:disabled { opacity:.35; cursor:not-allowed; }
+.npcshop-stepper button.remove { color:#d77d7d; border-color:#663d3d; background:#211313; }
+.npcshop-settlement-empty { margin:30px 0; color:#656d76; text-align:center; }
+.npcshop-settlement-summary { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; align-items:center; gap:12px; min-height:46px; padding-top:8px; border-top:1px solid #2d3239; }
+.npcshop-settlement-summary [data-trade-economy] { display:flex; gap:16px; align-items:center; }
+.npcshop-settlement-summary [data-trade-economy] b { color:#9da4ac; font:10px Consolas,monospace; }
+.npcshop-settlement-summary [data-trade-economy] strong { color:#f0bd6c; font:14px Consolas,monospace; }
+.npcshop-settlement-summary [data-trade-economy] small { color:#727a83; font:8px "Microsoft YaHei",sans-serif; }
+.npcshop-settlement-summary [data-trade-error] { color:#7fbe86; font-size:10px; }
+.npcshop-settlement-summary [data-trade-error].error { color:#df7f7f; }
+.npcshop-settlement-summary > button { min-width:104px; min-height:31px; padding:4px 13px; }
+
+.npcshop-space-page {
+    position:absolute; z-index:4; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);
+    min-height:0; padding:10px 14px 12px; box-sizing:border-box; background:linear-gradient(135deg,#0d1014,#090b0e 70%);
+}
+.npcshop-space-page.active { display:grid; }
+.npcshop-space-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
+.npcshop-space-header button { min-height:28px; padding:3px 10px; color:#e9b96d; border:1px solid #68502e; background:#1c1710; cursor:pointer; }
+.npcshop-space-header h2 { margin:0; font-size:18px; }
+.npcshop-space-header p { margin:2px 0 0; color:#818892; font-size:9px; }
+.npcshop-space-header [data-space-status] { margin-left:auto; color:#d7aa67; font-size:9px; }
+.npcshop-space-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding-top:9px; }
+.npcshop-space-columns > section { display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; border:1px solid #292e35; background:#0d1014; }
+.npcshop-space-columns h3 { display:flex; align-items:center; gap:8px; min-height:29px; margin:0; padding:4px 8px; box-sizing:border-box; color:#b8bdc4; border-bottom:1px solid #292e35; font-size:11px; }
+.npcshop-space-columns h3 small { margin-left:auto; color:#737b84; font-weight:400; }
+.npcshop-space-columns [data-space-pager] { margin-left:auto; }
+.npcshop-space-grid {
+    min-height:0; padding:6px; overflow-y:auto; overflow-x:hidden; display:grid;
+    grid-template-columns:repeat(10,minmax(0,1fr)); align-content:start; gap:3px;
+    scrollbar-width:thin; scrollbar-color:#7b6240 #111419;
+}
+.npcshop-space-grid.battlebox { grid-template-columns:repeat(8,minmax(0,1fr)); }
+.npcshop-space-grid .inventory-slot-card { min-width:0; height:43px; padding:2px; overflow:hidden; cursor:default; }
+.npcshop-space-grid .inventory-slot-copy { display:none; }
+.npcshop-space-grid .inventory-slot-icon-frame,.npcshop-space-grid .inventory-slot-icon { width:35px; height:35px; }
+.npcshop-space-grid .inventory-owned-icon,.npcshop-space-grid .cfn-layered-icon { width:32px; height:32px; }
+.npcshop-space-grid .npcshop-space-transferable { cursor:pointer; }
+.npcshop-space-grid .npcshop-space-transferable:hover { border-color:#e5a64d; background:rgba(229,166,77,.11); }
+.npcshop-space-grid::-webkit-scrollbar { width:7px; }
+.npcshop-space-grid::-webkit-scrollbar-track { background:#111419; }
+.npcshop-space-grid::-webkit-scrollbar-thumb { background:#705a3c; border:1px solid #a47d43; }
+
+.npcshop-help-page {
+    position:absolute; z-index:12; top:64px; right:0; bottom:0; left:0; display:none;
+    grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
+    color:#e8ebee; background:linear-gradient(135deg,#101318,#090b0e 72%); border-top:1px solid #292e35;
+}
+.npcshop-help-page.active { display:grid; }
+.npcshop-help-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
+.npcshop-help-header button { min-height:28px; padding:3px 10px; color:#e9b96d; border:1px solid #68502e; background:#1c1710; cursor:pointer; }
+.npcshop-help-header button:hover { color:#17191c; border-color:#f4ca88; background:#e5a64d; }
+.npcshop-help-header h2 { margin:0; font-size:18px; }
+.npcshop-help-header p { margin:2px 0 0; color:#818892; font-size:9px; }
+.npcshop-help-grid {
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:8px;
+    min-height:0; padding:9px 0; overflow:hidden;
+}
+.npcshop-help-card {
+    position:relative; display:grid; grid-template-columns:34px minmax(0,1fr); gap:9px; min-height:0;
+    padding:10px; box-sizing:border-box; overflow:hidden; border:1px solid #2b3037; background:#0d1014;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
+}
+.npcshop-help-index { color:#e5a64d; font:700 21px/1 Consolas,monospace; opacity:.9; }
+.npcshop-help-card h3 { margin:0 0 5px; color:#edf0f2; font-size:12px; }
+.npcshop-help-card p { margin:0; color:#b1b7be; font-size:9px; line-height:1.55; }
+.npcshop-help-card small { display:block; margin-top:4px; color:#727a83; font-size:8px; line-height:1.45; }
+.npcshop-help-flow { display:flex; align-items:center; gap:7px; margin-top:8px; }
+.npcshop-help-flow i { padding:3px 7px; color:#e6b66b; border:1px solid #59462c; background:#19150f; font:normal 8px "Microsoft YaHei",sans-serif; }
+.npcshop-help-flow b { color:#6f7780; font:10px Consolas,monospace; }
+.npcshop-help-rules { display:flex; align-items:center; gap:10px; min-height:42px; padding-top:8px; border-top:1px solid #2d3239; }
+.npcshop-help-rules > b { color:#e5a64d; font-size:10px; }
+.npcshop-help-rules > span { padding:3px 7px; color:#aeb4bb; border:1px solid #30353c; background:#11151a; font-size:8px; }
+.npcshop-help-rules > small { margin-left:auto; max-width:235px; color:#68717a; font-size:8px; line-height:1.4; text-align:right; }

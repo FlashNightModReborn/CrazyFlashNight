@@ -54,9 +54,16 @@ else
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.购买物品界面._x = 43.5;
-	_root.购买物品界面._y = 101.5;
-	_root.物品UI函数.刷新商店图标(_root.getNPCShop(this.NPC头像.名字));
+	var shopId = String(this.NPC头像.名字);
+	var opened = false;
+	if (_root.gameCommands != undefined && _root.gameCommands["openNpcShop"] != undefined) {
+		opened = _root.gameCommands["openNpcShop"]({shopId:shopId, source:"tablet_contacts"});
+	}
+	if (!opened) {
+		_root.购买物品界面._x = 43.5;
+		_root.购买物品界面._y = 101.5;
+		_root.物品UI函数.刷新商店图标(_root.getNPCShop(shopId));
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

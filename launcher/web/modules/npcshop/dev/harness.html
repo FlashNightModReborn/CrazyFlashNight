@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>NPC Shop Harness</title>
+  <link rel="stylesheet" href="../../../css/panels.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607;color:#eee}
+    #panel-content{position:absolute;inset:0}
+    #qa-output{position:fixed;z-index:1000;right:8px;bottom:8px;max-width:420px;padding:8px;background:#111;border:1px solid #555;font:11px Consolas;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+<div id="panel-content"></div><pre id="qa-output">running…</pre>
+<script>
+window.__NPCSHOP_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness'};
+window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;
+window.Bridge={
+  on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
+  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd!=='close')setTimeout(function(){respond(message)},0)}
+};
+window.Toast={add:function(message){__toasts.push(message)}};
+window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+window.PanelScale={attach:function(el,w,h){el.style.setProperty('--pss-w',w+'px');el.style.setProperty('--pss-h',h+'px');return{detach:function(){}}}};
+window.PanelTooltip={
+  _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},isVisible:function(){return this._visible},updateContent:function(){},
+  dynamicIconHtml:function(){return ''},staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(){return '<div>rich</div>'}
+};
+window.Panels=(function(){var specs={},active=null;return{
+  register:function(id,spec){specs[id]=spec},getActive:function(){return active},isOpen:function(){return!!active},
+  open:function(id,init){active=id;var host=document.getElementById('panel-content');host.innerHTML='';host.appendChild(specs[id].create());specs[id].onOpen(host,init||{})},
+  close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},_specs:specs
+}})();
+
+var balance=10000,materialQty=3,npcLeaseSeq=0,inventorySeq=0,spaceFreed=false,manualLayout=false;
+var catalog=[
+  {catalogIndex:0,itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
+  {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false},
+  {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'',locked:false},
+  {catalogIndex:3,itemName:'训练步枪',displayName:'训练步枪',icon:'训练步枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'突击步枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
+  {catalogIndex:4,itemName:'训练霰弹枪',displayName:'训练霰弹枪',icon:'训练霰弹枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'霰弹枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
+  {catalogIndex:5,itemName:'训练背心',displayName:'训练背心',icon:'训练背心',majorType:'防具',use:'上装装备',actionType:'',weaponType:'',basePrice:500,unitPrice:500,maxQuantity:50,requiredInfo:'',locked:false},
+  {catalogIndex:6,itemName:'食材',displayName:'食材',icon:'食材',majorType:'消耗品',use:'材料',actionType:'',weaponType:'',basePrice:20,unitPrice:20,maxQuantity:100,requiredInfo:'',locked:false}
+];
+var bagItems=[
+  {name:'训练手枪',displayName:'训练手枪',itemKind:'equipment',majorType:'武器',use:'手枪',quantity:1,enhancementLevel:1},
+  {name:'训练手枪',displayName:'训练手枪',itemKind:'equipment',majorType:'武器',use:'手枪',quantity:1,enhancementLevel:1},
+  {name:'训练手枪',displayName:'训练手枪 +3',itemKind:'equipment',majorType:'武器',use:'手枪',quantity:1,enhancementLevel:3},
+  {name:'药剂',displayName:'药剂',itemKind:'stack',majorType:'消耗品',use:'消耗品',quantity:5,enhancementLevel:0}
+];
+var battleItems=[];
+function slot(index,name,display,qty,lease,use,itemKind,level){return{physicalSlot:index,collectionKey:use==='材料'?name:undefined,occupied:true,slotLease:lease,item:{itemKind:itemKind||'stack',name:name,displayName:display,icon:name,majorType:itemKind==='equipment'?'武器':'收集品',use:use||'',quantity:qty,enhancementLevel:level||0,rarity:''}}}
+function inventorySnapshot(containerId){
+  var items=containerId==='背包'?bagItems:battleItems,capacity=containerId==='背包'?50:40,seq=++inventorySeq,slots=[];
+  for(var i=0;i<Math.max(items.length,containerId==='背包'?5:8);i++)slots.push(items[i]?slot(i,items[i].name,items[i].displayName,items[i].quantity,'iw.'+seq+'.'+i,items[i].use,items[i].itemKind,items[i].enhancementLevel):{physicalSlot:i,occupied:false,slotLease:'iw.'+seq+'.'+i});
+  return{containerId:containerId,capacity:capacity,accessibleCapacity:capacity,viewCapacity:capacity,offset:0,limit:containerId==='背包'?50:40,filterKey:'all',snapshotSeq:seq,slots:slots};
+}
+function state(){return{
+  success:true,v:1,shopId:'前治安官',balance:balance,buyMultiplier:1,catalog:catalog,
+  layout:manualLayout?{title:'前治安官',defaultSection:'weapons',sections:[{id:'weapons',label:'制式武器',entries:[0,3,4]},{id:'supplies',label:'补给与其他',entries:[1,2,5,6]}]}:{title:'前治安官',defaultSection:'',sections:[]},
+  views:{
+    bag:(function(){var seq=++npcLeaseSeq,slots=[];for(var i=0;i<5;i++)slots.push(bagItems[i]?slot(i,bagItems[i].name,bagItems[i].displayName,bagItems[i].quantity,'npc.b'+seq+'.'+i,bagItems[i].use,bagItems[i].itemKind,bagItems[i].enhancementLevel):{physicalSlot:i,occupied:false,slotLease:'npc.b'+seq+'.'+i});return{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:50,offset:0,limit:5,filterKey:'all',slots:slots}})(),
+    material:{containerId:'材料',capacity:1,accessibleCapacity:1,viewCapacity:1,offset:0,limit:1,filterKey:'all',slots:materialQty>0?[slot(0,'强化石','强化石',materialQty,'npc.c1','材料')]:[]},
+    intelligence:{containerId:'情报',capacity:1,accessibleCapacity:1,viewCapacity:1,offset:0,limit:1,filterKey:'all',slots:[slot(0,'符线溯源笔记','符线溯源笔记',1,'npc.c2','情报')]}
+  }
+}}
+function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
+function tradePreview(payload){
+  var capacityMax=spaceFreed?3:2;
+  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0];return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:item.unitPrice,total:item.unitPrice*line.quantity,maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:5,maxByCapacity:capacityMax,maxPurchasable:Math.min(5,capacityMax),destinationView:item.use==='材料'?'material':'bag'}});
+  var saleLines=payload.sales.map(function(line){var material=line.source.viewId==='material';if(material)return{itemName:'强化石',displayName:'强化石',icon:'强化石',itemKind:'stack',quantity:line.quantity,total:25*line.quantity,sourceIdentity:'material:'+line.source.key,scope:'slot',matchedCount:1,eligibleCount:1,protectedCount:0};var bulk=line.scope==='same_name';return{itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:bulk?2:1,total:bulk?500:250,sourceIdentity:'bag:'+line.source.slot,scope:bulk?'same_name':'slot',matchedCount:bulk?3:1,eligibleCount:bulk?2:1,protectedCount:bulk?1:0}});
+  var buyTotal=purchaseLines.reduce(function(n,x){return n+x.total},0),sellTotal=saleLines.reduce(function(n,x){return n+x.total},0);
+  var requested=purchaseLines.reduce(function(n,x){return n+(x.itemKind==='equipment'?x.quantity:0)},0),missing=Math.max(0,requested-capacityMax),moneyOk=balance+sellTotal>=buyTotal;
+  return{success:true,tradeToken:'npctrade.'+(++__tradeSeq),purchaseLines:purchaseLines,saleLines:saleLines,buyTotal:buyTotal,sellTotal:sellTotal,netDelta:sellTotal-buyTotal,projectedBalance:balance+sellTotal-buyTotal,requiredSlots:requested,availableSlots:capacityMax,missingSlots:missing,canCommit:moneyOk&&missing===0,blockingError:!moneyOk?'insufficient_money':missing?'inventory_full':''};
+}
+function respond(message){var result={type:'panel_resp',domain:message.domain,cmd:message.cmd,callId:message.callId,success:true};
+  if(message.domain==='inventory'){
+    if(message.cmd==='snapshot')result.snapshots=[inventorySnapshot('背包'),inventorySnapshot('战备箱')];
+    else if(message.cmd==='autoTransfer'){
+      var from=message.payload.source.containerId==='背包'?bagItems:battleItems,to=message.payload.targetContainerId==='背包'?bagItems:battleItems;
+      to.push(from.splice(message.payload.source.slot,1)[0]);spaceFreed=true;
+      result.snapshots=[inventorySnapshot('背包'),inventorySnapshot('战备箱')];
+    }
+    emit(result);return;
+  }
+  if(message.cmd==='snapshot')Object.assign(result,state());
+  else if(message.cmd==='tooltip')Object.assign(result,{displayname:'物品',descHTML:'说明',introHTML:'简介'});
+  else if(message.cmd==='tradePreview'){window.__lastTrade=tradePreview(message.payload);Object.assign(result,window.__lastTrade)}
+  else if(message.cmd==='tradeCommit'){
+    var plan=window.__lastTrade;balance=plan.projectedBalance;
+    plan.purchaseLines.forEach(function(line){if(line.itemName==='强化石')materialQty+=line.quantity});
+    Object.assign(result,state(),{operation:'tradeCommit',trade:{buyTotal:plan.buyTotal,sellTotal:plan.sellTotal,netDelta:plan.netDelta}})
+  }
+  emit(result)
+}
+</script>
+<script src="../../workbench.js"></script>
+<script src="../../inventory-runtime.js"></script>
+<script src="../../inventory-ui.js"></script>
+<script src="../../npcshop-runtime.js"></script>
+<script src="../../npcshop.js"></script>
+<script>
+(async function(){
+  var checks=[];function ok(name,value){checks.push({name:name,ok:!!value})}function wait(){return new Promise(function(r){setTimeout(r,25)})}
+  ['settlement','bulk_sale','inventory_full'].forEach(function(topic){try{localStorage.removeItem('cf7.npcshop.guide.v1.'+topic)}catch(error){}});
+  Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  ok('opens catalog + bag',document.querySelector('[data-instance-key="npcshop:catalog"]')&&document.querySelector('[data-instance-key="npcshop:bag"]'));
+  ok('automatic top level is major-type exclusive',document.querySelector('[data-category="auto:武器"]')&&document.querySelector('[data-category="auto:防具"]')&&document.querySelector('[data-category="auto:消耗品"]')&&document.querySelector('[data-category="auto:收集品"]')&&document.querySelectorAll('.npcshop-category-row').length===1);
+  document.querySelector('[data-category="auto:武器"]').click();
+  ok('weapon level expands into existing use branches',document.querySelector('[data-category="auto:武器:手枪"]')&&document.querySelector('[data-category="auto:武器:长枪"]')&&document.querySelectorAll('.npcshop-catalog-card').length===3&&document.querySelectorAll('.npcshop-category-row').length===2);
+  document.querySelector('[data-category="auto:武器:长枪"]').click();
+  ok('single path drills into weapon subtype level',document.querySelector('[data-category="auto:武器:长枪:突击步枪"]')&&document.querySelector('[data-category="auto:武器:长枪:霰弹枪"]')&&document.querySelectorAll('.npcshop-catalog-card').length===2&&document.querySelectorAll('.npcshop-category-row').length===3);
+  document.querySelector('[data-category="auto:武器:长枪:突击步枪"]').click();
+  ok('weapon subtype filters a stable catalog leaf',document.querySelectorAll('.npcshop-catalog-card').length===1&&document.querySelector('.npcshop-catalog-card').getAttribute('data-catalog-index')==='3');
+  document.querySelector('[data-category="auto:消耗品"]').click();
+  ok('consumable material stays out of collectible branch',document.querySelectorAll('.npcshop-catalog-card').length===1&&document.querySelector('.npcshop-catalog-card').getAttribute('data-catalog-index')==='6'&&document.querySelectorAll('.npcshop-category-row').length===1);
+  document.querySelector('[data-category="auto:收集品"]').click();
+  ok('collectibles branch contains material and intelligence only',document.querySelectorAll('.npcshop-catalog-card').length===2&&document.querySelector('[data-category="auto:收集品:材料"]')&&document.querySelector('[data-category="auto:收集品:情报"]')&&document.querySelectorAll('.npcshop-category-row').length===2);
+  document.querySelector('[data-category="auto:all"]').click();
+  ok('main page contains no native number inputs',document.querySelectorAll('.npcshop-panel input[type="number"]').length===0);
+  document.querySelector('.npcshop-catalog-card').click();
+  ok('catalog click selects purchase intent',NpcShop.debugState().purchaseCount===1&&document.querySelector('.npcshop-catalog-card.selected'));
+  document.querySelector('.npcshop-bag-view .npcshop-owned-card').click();
+  ok('equipment click selects lease-bound sale intent',NpcShop.debugState().saleCount===1&&document.querySelector('.npcshop-bag-view .selected'));
+  var sentBeforeHelp=__sent.length;
+  document.querySelector('.npcshop-help-btn').click();
+  ok('header help opens a secondary guide page',document.querySelector('.npcshop-help-page.active')&&NpcShop.debugState().helping);
+  var helpPage=document.querySelector('.npcshop-help-page');
+  ok('help page covers four workflows without canvas overflow',document.querySelectorAll('.npcshop-help-card').length===4&&helpPage.textContent.indexOf('选择 ≠ 交易')>=0&&helpPage.textContent.indexOf('商品不会直接购买到战备箱')>=0&&helpPage.scrollWidth<=helpPage.clientWidth+1&&helpPage.scrollHeight<=helpPage.clientHeight+1);
+  ok('opening help preserves intents and sends no authority request',__sent.length===sentBeforeHelp&&NpcShop.debugState().purchaseCount===1&&NpcShop.debugState().saleCount===1);
+  document.querySelector('[data-help-back]').click();
+  ok('leaving help returns to selection without clearing intents',!NpcShop.debugState().helping&&NpcShop.debugState().purchaseCount===1&&NpcShop.debugState().saleCount===1);
+  document.querySelector('[data-view-id="collection"]').click();
+  ok('collection defaults to material child',document.querySelector('[data-instance-key="npcshop:material"]'));
+  document.querySelector('[data-collection-view="intelligence"]').click();
+  ok('intelligence stays read-only',document.querySelector('.npcshop-intelligence-view .read-only')&&!document.querySelector('.npcshop-intelligence-view .selected'));
+  document.querySelector('.npcshop-checkout-btn').click();await wait();
+  ok('checkout requests one authoritative preview',__sent.some(function(m){return m.cmd==='tradePreview'&&m.payload.purchases.length===1&&m.payload.sales[0].source.containerId==='背包'}));
+  ok('secondary settlement page opens',document.querySelector('.npcshop-settlement-page.active')&&NpcShop.debugState().settling);
+  ok('first settlement visit explains that confirmation is required',__toasts.some(function(message){return message.indexOf('交易清单')>=0&&message.indexOf('确认交易')>=0}));
+  ok('settlement uses authoritative totals and slot bounds',document.querySelector('[data-trade-economy]').textContent.indexOf('结余 $9,250')>=0&&document.querySelector('[data-trade-economy]').textContent.indexOf('可用 2 格')>=0);
+  sentBeforeHelp=__sent.length;
+  document.querySelector('.npcshop-help-btn').click();
+  ok('help can overlay settlement without closing it',NpcShop.debugState().helping&&NpcShop.debugState().settling);
+  document.querySelector('[data-help-back]').click();
+  ok('returning from help restores the existing settlement',!NpcShop.debugState().helping&&NpcShop.debugState().settling&&__sent.length===sentBeforeHelp);
+  Array.from(document.querySelectorAll('[data-sale-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='同名全售'})[0].click();await wait();
+  var previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
+  ok('same-name bulk sale sends only seed lease and plain-only policy',previews[previews.length-1].payload.sales[0].scope==='same_name'&&previews[previews.length-1].payload.sales[0].policy==='plain_only'&&previews[previews.length-1].payload.sales[0].quantity===undefined);
+  ok('bulk preview reports eligible and protected equipment',document.querySelector('[data-sale-lines]').textContent.indexOf('售出 2 格，保护 1 格')>=0);
+  ok('first bulk sale explains protected equipment',__toasts.some(function(message){return message.indexOf('自动保护强化、进阶和带插件')>=0}));
+  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
+  ok('equipment purchase supports +5 quantity and authoritative re-preview',previews[previews.length-1].payload.purchases[0].quantity===6);
+  ok('inventory-full settlement offers organization route',!document.querySelector('[data-space-organize]').hidden&&document.querySelector('[data-trade-error]').textContent.indexOf('背包空间不足')>=0);
+  ok('first inventory-full result explains the organizer route',__toasts.some(function(message){return message.indexOf('整理空间')>=0&&message.indexOf('重新核算')>=0}));
+  document.querySelector('[data-space-organize]').click();await wait();
+  ok('organization route uses shared inventory domain',NpcShop.debugState().organizingSpace&&__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='snapshot'}));
+  var transferable=document.querySelector('[data-space-grid="背包"] .npcshop-space-transferable');
+  ok('organization route renders transferable inventory slots',transferable);
+  if(transferable)transferable.click();await wait();
+  ok('organizer quick-transfers through authority autoTransfer',__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'&&m.payload.targetContainerId==='战备箱'}));
+  document.querySelector('[data-space-back]').click();await wait();await wait();
+  ok('returning from organizer refreshes shop snapshot and re-previews',!NpcShop.debugState().organizingSpace&&__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length>=2);
+  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
+  ok('authoritative max clamps equipment purchase after space change',previews[previews.length-1].payload.purchases[0].quantity===3);
+  ok('settlement still contains no native form control',document.querySelectorAll('.npcshop-settlement-page input').length===0);
+  document.querySelector('[data-trade-commit]').click();await wait();
+  ok('commit sends opaque AS2 trade token',__sent.some(function(m){return m.cmd==='tradeCommit'&&/^npctrade\./.test(m.payload.expectedTradeToken)}));
+  ok('successful commit clears intents and returns main page',NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0&&!NpcShop.debugState().settling);
+  var owned=document.querySelector('.npcshop-owned-grid');ok('owned grid has no horizontal overflow',owned.scrollWidth<=owned.clientWidth+1);
+  ok('panel remains within design canvas',document.querySelector('.workbench-shell').getBoundingClientRect().width===1024);
+  Panels.close();manualLayout=true;Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  ok('developer sections remain an explicit full override',document.querySelector('[data-category="manual:weapons"]')&&document.querySelector('[data-category="manual:supplies"]')&&!document.querySelector('[data-category="auto:武器"]'));
+  ok('manual default section remains supported',document.querySelector('[data-category="manual:weapons"].active')&&document.querySelectorAll('.npcshop-catalog-card').length===3);
+  window.__qaResult={total:checks.length,passed:checks.filter(function(c){return c.ok}).length,checks:checks};window.__qaDone=true;
+  document.getElementById('qa-output').textContent=JSON.stringify(__qaResult,null,2);
+})().catch(function(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError});
+</script>
+</body>
+</html>
