@@ -114,6 +114,26 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Tooltip_BagSource_NormalizesLeaseBoundSlotRef()
+        {
+            string sent = null;
+            var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            JObject request = Request("tooltip", "npc.tooltip.bag.1");
+            request["payload"]["source"] = new JObject
+            {
+                ["containerId"] = "背包", ["slot"] = 5, ["expectedLease"] = "inv1.s5"
+            };
+
+            task.HandleWebRequest("tooltip", request);
+
+            JObject flash = ParseSent(sent);
+            Assert.Equal("npcShopTooltip", (string)flash["action"]);
+            Assert.Equal("背包", (string)flash["source"]["containerId"]);
+            Assert.Equal(5, (int)flash["source"]["slot"]);
+            Assert.Equal("inv1.s5", (string)flash["source"]["expectedLease"]);
+        }
+
+        [Fact]
         public void FlashResponse_RestoresNpcShopDomainCmdAndWebCallId()
         {
             string sent = null;

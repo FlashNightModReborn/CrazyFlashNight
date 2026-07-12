@@ -14,6 +14,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
     public static function runAllTests():Void {
         setup();
         testSnapshotAndGate();
+        testBagTooltip();
         testLegacyCatalogResolution();
         testOpenRequestWire();
         testPanelRequestEnvelopeEscaping();
@@ -111,6 +112,18 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(snapshot.layout.title == "测试商人" && snapshot.layout.sections[0].entries.length == 5,"developer curated layout projected");
         var denied:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:3,quantity:1});
         check(!denied.success && denied.error == "locked" && _root.金钱 == 5000,"locked buy has no write");
+    }
+
+    private static function testBagTooltip():Void {
+        resetOwned();
+        _root.物品栏.背包.add(0, BaseItem.create("测试手枪", 1));
+        var snapshot:Object = service().execute("snapshot", {shopId:"测试商店"});
+        var lease:String = snapshot.views.bag.slots[0].slotLease;
+        var tooltip:Object = service().execute("tooltip", {
+            source:{containerId:"背包", slot:0, expectedLease:lease}
+        });
+        check(tooltip.success && tooltip.introHTML != undefined && tooltip.descHTML != undefined,
+            "bag tooltip resolves through inventory lease with v=1");
     }
 
     private static function testBuyRoutesCollections():Void {

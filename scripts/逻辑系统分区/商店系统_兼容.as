@@ -328,7 +328,7 @@ _root.UI系统.NPC商店WebView.executeSnapshot = function(params:Object):Object
 _root.UI系统.NPC商店WebView.executeTooltip = function(params:Object):Object {
     if (params != undefined && params.source != undefined
             && String(params.source.containerId) == "背包") {
-        return org.flashNight.arki.item.InventoryPanelService.execute("tooltip", {source:params.source});
+        return org.flashNight.arki.item.InventoryPanelService.execute("tooltip", {v:1, source:params.source});
     }
     var itemName:String = params == undefined ? "" : String(params.itemName || "");
     if (!org.flashNight.arki.item.ItemUtil.isItem(itemName)) return this.fail("item_not_found");
