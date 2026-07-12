@@ -4,6 +4,7 @@ import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
 import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
 import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
+import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
@@ -44,21 +45,30 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testControlSlotMarker();
         testWeaponSkillInputBypassesSharedCooldownForSubweapon();
         testWeaponSkillInputKeepsSharedCooldownForNormalSkill();
+        testWeaponSkillFrameInputWaitsForCooldownAndLatches();
+        testWeaponSkillFrameInputConsumesFailedSubweaponAttempt();
+        testWeaponSkillFrameInputRearmsOnReleaseWhileDisabled();
+        testManualReloadIntentQueuesForHeldGunStateMachine();
+        testPrimaryReloadWinsAndConsumesManualReloadIntent();
+        testManualReloadIntentExpiresAndRevalidates();
+        testCombatIntentPriorityAndKindIsolation();
         testSubweaponWithoutMoveShootDoesNotFireFromRun();
         testSubweaponCommitRejectsWalkWithoutMoveShoot();
         testFireFromRunWithMoveShootPlaysDirectionalAnimation();
         testFireFromManUsesPassedCurrentMan();
         testShootInitSubweaponBindingRequestsCurrentMan();
         testSubweaponContinuousShootRefreshesManEachTick();
+        testLongCooldownSubweaponRecoilEndsBeforeFireGate();
         testSubweaponEventIsolationAndInterval();
         testEquipmentFireIntentMainLongGunGate();
         testSubweaponEmptyDoesNotTriggerMainReload();
         testDeferredFireAbortDoesNotCommitCostOrCooldown();
         testDeferredFireInvalidatedStateDoesNotCommit();
-        testDeferredManualReloadAfterClearUnitDoesNotMutateMan();
+        testManualReloadRejectsUnavailableCurrentManWithoutPendingState();
         testManualReload();
         testManualReloadFromRunNormalizesPose();
-        testManualReloadMovementLockClearsOnFinish();
+        testManualReloadUsesCurrentManLifecycle();
+        testManualReloadInterruptionDoesNotLeakUnitState();
         testManualReloadAnimationCommit();
         testLinkedReload();
         testSubweaponTacticalRecoveryAccumulatesOnPaidReload();
@@ -267,27 +277,26 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testWeaponSkillInputBypassesSharedCooldownForSubweapon():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
         var unit:Object = makeUnit();
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        markSubweaponEmpty(unit, true);
         unit.主动战技 = {长枪: LongGunSubWeaponCore.buildControlSlot(unit.长枪副武器配置)};
         unit.releaseCount = 0;
         unit.释放主动战技 = function():Boolean {
             this.releaseCount++;
             return true;
         };
-        installMockHero(unit);
-        installWeaponSkillInputRootState();
 
-        var controller:Object = makeSkillController("", false, 3000);
-        assert(WeaponSkillInputService.canTrigger(controller), "subweapon control bypasses shared active-skill cooldown gate without visible skill UI");
-        var result:Object = WeaponSkillInputService.release(controller);
-        assert(result.released === true, "subweapon control release succeeds through input service");
+        assert(WeaponSkillInputService.canTriggerUnit(unit, false), "subweapon control bypasses shared active-skill cooldown gate without visible skill UI");
+        var result:Object = WeaponSkillInputService.releaseUnit(unit, 100);
+        assert(result.released === true, "subweapon control accepts a combat intent through input service");
         assert(result.isSubweaponControl === true, "subweapon control result keeps semantic marker");
         assert(result.startSharedCooldown === false, "subweapon control does not start shared active-skill cooldown");
-        assert(unit.releaseCount == 1, "subweapon control delegates to unit release once");
-
-        restoreWeaponSkillInputRootState();
-        restoreMockHero();
+        assert(unit.releaseCount == 0, "subweapon control no longer delegates to direct unit skill release");
+        assert(UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 100), "subweapon control queues generic combat intent");
+        assert(unit.__subweaponManualReloadIntent == undefined, "subweapon control creates no dedicated reload mailbox");
+        restoreMockInventory();
     }
 
     private static function testWeaponSkillInputKeepsSharedCooldownForNormalSkill():Void {
@@ -298,23 +307,197 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             this.releaseCount++;
             return true;
         };
-        installMockHero(unit);
-        installWeaponSkillInputRootState();
 
-        var blockedController:Object = makeSkillController("测试战技", false, 2200);
-        assert(!WeaponSkillInputService.canTrigger(blockedController), "normal weapon skill waits for shared active-skill cooldown");
+        assert(!WeaponSkillInputService.canTriggerUnit(unit, false), "normal weapon skill waits for shared active-skill cooldown");
 
-        var readyController:Object = makeSkillController("测试战技", true, 2200);
-        assert(WeaponSkillInputService.canTrigger(readyController), "normal weapon skill triggers when shared cooldown is ready");
-        var result:Object = WeaponSkillInputService.release(readyController);
+        assert(WeaponSkillInputService.canTriggerUnit(unit, true), "normal weapon skill triggers when shared cooldown is ready");
+        var result:Object = WeaponSkillInputService.releaseUnit(unit, 110);
         assert(result.released === true, "normal weapon skill release succeeds through input service");
         assert(result.isSubweaponControl === false, "normal weapon skill result is not subweapon control");
         assert(result.startSharedCooldown === true, "normal weapon skill starts shared active-skill cooldown");
-        assert(result.cooldownTime == 2200, "normal weapon skill uses UI cooldown time for visual bar");
+        assert(result.cooldownTime == 2500, "normal weapon skill result keeps configured cooldown time");
         assert(unit.releaseCount == 1, "normal weapon skill delegates to unit release once");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_WEAPON_SKILL, 110), "normal weapon skill consumes generic combat intent in the same frame");
+    }
 
-        restoreWeaponSkillInputRootState();
-        restoreMockHero();
+    private static function testWeaponSkillFrameInputWaitsForCooldownAndLatches():Void {
+        var unit:Object = makeUnit();
+        unit.主动战技 = {长枪: {名字: "测试战技", 冷却时间: 2500, 消耗hp: 0, 消耗mp: 0}};
+        unit.releaseCount = 0;
+        unit.释放主动战技 = function():Boolean {
+            this.releaseCount++;
+            return true;
+        };
+        var cooldownPort:Object = makeCooldownPort(false, 2200);
+
+        var waiting:Object = WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 120);
+        assert(waiting == null, "held weapon-skill input waits while shared cooldown is unavailable");
+        assert(unit.releaseCount == 0, "waiting weapon-skill input does not release early");
+        assert(unit.__weaponSkillInputConsumed !== true, "waiting weapon-skill input remains armed during the same hold");
+
+        cooldownPort.ready = true;
+        var released:Object = WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 121);
+        assert(released != null && released.released === true, "held weapon-skill input releases when shared cooldown becomes ready");
+        assert(unit.releaseCount == 1, "frame input delegates exactly one release when cooldown opens");
+        assert(unit.__weaponSkillInputConsumed === true, "successful frame input consumes the current hold");
+        assert(cooldownPort.startCount == 1 && cooldownPort.lastCooldown == 2200, "frame input starts shared cooldown through compatibility port");
+
+        WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 121);
+        assert(unit.releaseCount == 1, "consumed weapon-skill hold does not repeat release");
+
+        WeaponSkillInputService.updateUnit(unit, false, true, cooldownPort, 122);
+        cooldownPort.ready = true;
+        WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 123);
+        assert(unit.releaseCount == 2, "key release rearms weapon-skill input for the next hold");
+    }
+
+    private static function testWeaponSkillFrameInputConsumesFailedSubweaponAttempt():Void {
+        var unit:Object = makeUnit();
+        unit.主动战技 = {长枪: {名字: "副武器快装", isSubweaponControl: true, 冷却时间: 3000}};
+        unit.releaseCount = 0;
+        unit.释放主动战技 = function():Boolean {
+            this.releaseCount++;
+            return false;
+        };
+        var cooldownPort:Object = makeCooldownPort(false, 3000);
+
+        var failed:Object = WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 130);
+        assert(failed != null && failed.released === false, "failed subweapon control still records one release attempt");
+        assert(unit.__weaponSkillInputConsumed === true, "failed subweapon control consumes the current hold");
+        assert(unit.releaseCount == 0, "failed subweapon control does not call direct unit skill release");
+        assert(cooldownPort.startCount == 0, "subweapon control never starts shared weapon-skill cooldown");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 130), "failed subweapon control leaves no pending combat intent");
+
+        WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 131);
+        assert(unit.releaseCount == 0, "failed subweapon control does not retry every frame while held");
+    }
+
+    private static function testWeaponSkillFrameInputRearmsOnReleaseWhileDisabled():Void {
+        var unit:Object = makeUnit();
+        unit.主动战技 = {长枪: {名字: "测试战技", 冷却时间: 1000}};
+        unit.releaseCount = 0;
+        unit.释放主动战技 = function():Boolean {
+            this.releaseCount++;
+            return true;
+        };
+        unit.__weaponSkillInputConsumed = true;
+        var cooldownPort:Object = makeCooldownPort(true, 1000);
+
+        WeaponSkillInputService.updateUnit(unit, false, false, cooldownPort, 140);
+        assert(unit.__weaponSkillInputConsumed === false, "key release rearms input even while pause or player-count gate disables triggering");
+
+        WeaponSkillInputService.updateUnit(unit, true, false, cooldownPort, 141);
+        assert(unit.releaseCount == 0, "disabled frame input does not release weapon skill");
+        assert(unit.__weaponSkillInputConsumed !== true, "disabled held input remains armed for resume");
+
+        WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 142);
+        assert(unit.releaseCount == 1, "held input releases once after input gate resumes");
+    }
+
+    private static function testManualReloadIntentQueuesForHeldGunStateMachine():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        markSubweaponEmpty(unit, true);
+        unit.主动战技 = {长枪: LongGunSubWeaponCore.buildControlSlot(unit.长枪副武器配置)};
+
+        var accepted:Boolean = WeaponSkillInputService.requestSubweaponControl(unit, 200);
+        assert(accepted, "manual reload input accepts a valid subweapon reload request");
+        assert(UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200), "accepted manual reload input queues generic combat intent");
+
+        var consumed:Object = UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200, false);
+        assert(consumed != null && LongGunSubWeaponCore.canReloadManual(unit), "held-gun state machine consumes and revalidates fresh subweapon reload intent");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200), "subweapon reload intent is cleared on first consumption");
+        assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200, false) == null, "subweapon reload intent cannot be consumed twice");
+        assert(WeaponSkillInputService.requestSubweaponControl(unit, 200), "clearUnit fixture queues another generic reload intent");
+        LongGunSubWeaponCore.clearUnit(unit);
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200), "clearUnit removes queued generic reload intent");
+
+        restoreMockInventory();
+    }
+
+    private static function testPrimaryReloadWinsAndConsumesManualReloadIntent():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        markSubweaponEmpty(unit, true);
+        unit.主动战技 = {长枪: LongGunSubWeaponCore.buildControlSlot(unit.长枪副武器配置)};
+
+        assert(WeaponSkillInputService.requestSubweaponControl(unit, 210), "simultaneous R/F fixture queues F combat intent");
+        assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 210, true) == null, "primary R reload suppresses same-frame F reload intent");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 210), "R priority clears the losing F combat intent");
+
+        restoreMockInventory();
+    }
+
+    private static function testManualReloadIntentExpiresAndRevalidates():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        markSubweaponEmpty(unit, true);
+        unit.主动战技 = {长枪: LongGunSubWeaponCore.buildControlSlot(unit.长枪副武器配置)};
+
+        assert(WeaponSkillInputService.requestSubweaponControl(unit, 220), "expiry fixture queues generic reload intent");
+        assert(UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 222), "subweapon reload intent survives two frames for run-to-walk man initialization");
+        assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 223, false) == null, "subweapon reload intent expires after the bounded man-ready window");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 223), "expired subweapon reload intent is cleared while failing closed");
+
+        assert(WeaponSkillInputService.requestSubweaponControl(unit, 224), "revalidation fixture queues a fresh generic reload intent");
+        unit.man.换弹标签 = true;
+        var intent:Object = UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 224, false);
+        assert(intent != null && !LongGunSubWeaponCore.canReloadManual(unit), "state-machine consumption revalidates current-man reload availability outside generic mailbox");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 224), "failed business revalidation still consumes one-shot generic intent");
+
+        restoreMockInventory();
+    }
+
+    private static function testCombatIntentPriorityAndKindIsolation():Void {
+        var unit:Object = {};
+        var subQueued:Boolean = UnitActionIntentService.submit(
+            unit,
+            UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_SUBWEAPON_RELOAD,
+            230,
+            1,
+            null,
+            20
+        );
+        assert(subQueued, "generic combat mailbox accepts first high-priority intent");
+
+        var normalQueued:Boolean = UnitActionIntentService.submit(
+            unit,
+            UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_WEAPON_SKILL,
+            230,
+            1,
+            null,
+            10
+        );
+        assert(!normalQueued, "lower-priority combat intent cannot overwrite pending higher-priority intent");
+        assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_WEAPON_SKILL, 230, false) == null, "consumer cannot take another kind from the same combat channel");
+        assert(UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 230), "kind mismatch leaves pending combat intent intact");
+        assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 230, false) != null, "matching consumer takes pending combat intent");
+
+        assert(UnitActionIntentService.submit(
+            unit,
+            UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_SUBWEAPON_RELOAD,
+            231,
+            2,
+            null,
+            20
+        ), "manual reload can queue before primary reload arbitration");
+        assert(UnitActionIntentService.submit(
+            unit,
+            UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_PRIMARY_RELOAD,
+            231,
+            2,
+            null,
+            30
+        ), "primary reload overwrites lower-priority F intent while waiting for man readiness");
+        assert(UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_PRIMARY_RELOAD, 233), "one-shot running R survives the bounded man-ready window");
+        assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_PRIMARY_RELOAD, 233, false) != null, "ready held-gun state consumes the preserved running R intent");
     }
 
     private static function testSubweaponWithoutMoveShootDoesNotFireFromRun():Void {
@@ -460,7 +643,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testShootInitSubweaponBindingRequestsCurrentMan():Void {
-        installMockInventory("主武器弹匣", 3);
+        installMockInventory("主武器弹匣", 3, "火焰喷射器燃料罐", 1);
         var oldShoot:Function = _root.子弹区域shoot传递;
         var oldControlTarget:String = _root.控制目标;
         var previousGameworld:Object = _root.gameworld;
@@ -505,12 +688,17 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             extraParams: {}
         });
 
+        assert(typeof staleMan.开始副武器换弹 == "function", "ShootInitCore binds explicit subweapon reload entry after man initialization");
         staleMan.开始副武器射击();
 
         assert(staleMan.playFrame == undefined, "ShootInitCore subweapon binding does not play bound stale man");
         assert(currentMan.playFrame == "下射击", "ShootInitCore subweapon binding plays current unit.man");
         assert(shot != null && shot.shootX == 409, "ShootInitCore subweapon binding uses current muzzle X");
         assert(shot != null && shot.shootY == 162, "ShootInitCore subweapon binding uses current muzzle Y");
+
+        var reloadStarted:Boolean = staleMan.开始副武器换弹();
+        assert(reloadStarted, "initialized man subweapon reload entry starts reload on current unit.man");
+        assert(currentMan.换弹标签 === true && currentMan.playFrame == "换弹匣", "explicit subweapon reload entry owns the current man timeline");
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
@@ -559,6 +747,45 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(shots[1].shootY == 204, "scheduled subweapon shot uses refreshed muzzle Y");
         assert(unit.长枪.value.subweaponShot >= 2, "scheduled subweapon shot commits ammo on refreshed man");
 
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.控制目标 = oldControlTarget;
+        _root.gameworld = previousGameworld;
+        EnhancedCooldownWheel.I().reset();
+    }
+
+    private static function testLongCooldownSubweaponRecoilEndsBeforeFireGate():Void {
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var oldControlTarget:String = _root.控制目标;
+        var previousGameworld:Object = _root.gameworld;
+        EnhancedCooldownWheel.I().reset();
+
+        var shotCount:Number = 0;
+        _root.控制目标 = "testUnit";
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shotCount++;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪行走";
+        unit.移动射击 = true;
+        unit.man = makeActionClip(unit, 10, 20, 1, 2);
+        var sub:Object = makeSubweapon(false);
+        sub.cd = 3000;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: sub});
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+        assert(ok && shotCount == 1, "long-cooldown subweapon commits its first shot");
+        assert(unit.副武器射击中 === true && unit.射击最大后摇中 === true, "long-cooldown subweapon initially enters shooting recoil state");
+        for (var i:Number = 0; i < 10; i++) {
+            EnhancedCooldownWheel.I().tick();
+        }
+        assert(unit.副武器射击中 === false && unit.射击最大后摇中 === false, "subweapon movement recoil ends at the 300ms cap");
+        assert(unit.长枪副武器状态.nextFireTime > getTimer(), "full subweapon fire-rate gate remains active after movement recoil ends");
+        assert(!LongGunSubWeaponCore.fire(unit) && shotCount == 1, "recoil release cannot bypass the remaining subweapon fire-rate gate");
+
+        org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
         _root.gameworld = previousGameworld;
@@ -766,25 +993,18 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         restoreMockInventory();
     }
 
-    private static function testDeferredManualReloadAfterClearUnitDoesNotMutateMan():Void {
+    private static function testManualReloadRejectsUnavailableCurrentManWithoutPendingState():Void {
         installMockInventory("火焰喷射器燃料罐", 1);
         EnhancedCooldownWheel.I().reset();
 
         var unit:Object = makeUnit();
         unit.状态 = "长枪跑";
         unit.移动射击 = false;
-        unit.man = {};
+        unit.man = makeReloadClip(unit);
         var notReadyMan:Object = {};
         unit.状态改变 = function(state:String):Void {
             this.状态 = state;
             this.man = notReadyMan;
-            var job:Object = this.__stateTransitionJob;
-            if (job != undefined && job.callback != undefined) {
-                var cb:Function = job.callback;
-                job.callback = undefined;
-                job.gotoLabel = undefined;
-                cb(this);
-            }
         };
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
         markSubweaponEmpty(unit, true);
@@ -797,10 +1017,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             EnhancedCooldownWheel.I().tick();
         }
 
-        assert(ok, "deferred subweapon manual reload starts before clearUnit");
-        assert(!LongGunSubWeaponCore.hasSubweapon(unit), "clearUnit removes subweapon before deferred reload task runs");
-        assert(readyMan.playFrame == undefined, "deferred manual reload task does not play after subweapon is cleared");
-        assert(readyMan.换弹标签 !== true, "deferred manual reload task does not mark man reloading after subweapon is cleared");
+        assert(!ok, "subweapon manual reload fails closed when refreshed current man cannot play reload animation");
+        assert(LongGunSubWeaponCore.getReloadRequest(notReadyMan) == null, "unavailable current man receives no reload request");
+        assert(notReadyMan.换弹标签 !== true, "unavailable current man receives no reload tag");
+        assert(unit.__subweaponManualReloadLock == undefined, "synchronous manual reload creates no unit-level movement lock");
+        assert(unit.__subweaponDeferredReloadRetries == undefined, "synchronous manual reload creates no deferred retry state");
+        assert(!LongGunSubWeaponCore.hasSubweapon(unit), "clearUnit removes subweapon after synchronous reload rejection");
+        assert(readyMan.playFrame == undefined, "rejected manual reload schedules no delayed mutation after clearUnit");
+        assert(readyMan.换弹标签 !== true, "rejected manual reload cannot revive on a later current man");
 
         EnhancedCooldownWheel.I().reset();
         restoreMockInventory();
@@ -853,13 +1077,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(!LongGunSubWeaponCore.isManualReloadRequest(oldMan), "subweapon manual reload does not mark stale run man");
         assert(LongGunSubWeaponCore.isManualReloadRequest(unit.man), "subweapon manual reload marks manual reload request");
         assert(unit.man.subweaponManualReload == undefined, "subweapon manual reload does not use legacy manual marker");
-        assert(LongGunSubWeaponCore.isManualReloadMovementLocked(unit), "subweapon manual reload keeps unit-level movement lock");
-        assert(!LongGunSubWeaponCore.canReloadManual(unit), "subweapon manual reload lock rejects duplicate manual reload");
+        assert(unit.__subweaponManualReloadLock == undefined, "subweapon manual reload does not create unit-level movement lock");
+        assert(unit.__subweaponDeferredReloadRetries == undefined, "subweapon manual reload does not create deferred retry state");
+        assert(!LongGunSubWeaponCore.canReloadManual(unit), "current man reload request rejects duplicate manual reload");
         assert(unit.man.playFrame == "换弹匣", "subweapon manual reload enters reload animation");
         restoreMockInventory();
     }
 
-    private static function testManualReloadMovementLockClearsOnFinish():Void {
+    private static function testManualReloadUsesCurrentManLifecycle():Void {
         installMockInventory("火焰喷射器燃料罐", 2);
         var unit:Object = makeUnit();
         unit.man = makeReloadClip(unit);
@@ -868,11 +1093,36 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         var ok:Boolean = LongGunSubWeaponCore.startManualReloadAnimation(unit);
         assert(ok, "subweapon manual reload starts on current pose");
-        assert(LongGunSubWeaponCore.isManualReloadMovementLocked(unit), "subweapon manual reload locks movement while animation owns timeline");
+        assert(LongGunSubWeaponCore.isManualReloadRequest(unit.man), "current man owns manual reload request during animation");
+        assert(unit.man.换弹标签 === true, "current man reload tag gates movement during animation");
+        assert(unit.__subweaponManualReloadLock == undefined, "manual reload lifecycle has no unit-level movement lock");
 
         ReloadManager.finishReload(unit.man);
-        assert(!LongGunSubWeaponCore.isManualReloadMovementLocked(unit), "finish reload clears subweapon movement lock");
-        assert(unit.man.换弹标签 == false, "finish reload clears current reload tag after movement lock cleanup");
+        assert(LongGunSubWeaponCore.getReloadRequest(unit.man) == null, "finish reload clears current man reload request");
+        assert(unit.man.换弹标签 == false, "finish reload clears current man reload tag");
+        restoreMockInventory();
+    }
+
+    private static function testManualReloadInterruptionDoesNotLeakUnitState():Void {
+        installMockInventory("火焰喷射器燃料罐", 2);
+        var unit:Object = makeUnit();
+        var reloadMan:Object = makeReloadClip(unit);
+        unit.man = reloadMan;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        markSubweaponEmpty(unit, true);
+
+        var ok:Boolean = LongGunSubWeaponCore.startManualReloadAnimation(unit);
+        assert(ok && LongGunSubWeaponCore.isManualReloadRequest(reloadMan), "manual reload interruption fixture starts on original man");
+
+        unit.状态 = "技能";
+        unit.man = makeReloadClip(unit);
+        assert(LongGunSubWeaponCore.getReloadRequest(unit.man) == null, "replacement man does not inherit interrupted manual reload request");
+        assert(unit.man.换弹标签 !== true, "replacement man is not movement-locked by interrupted reload");
+        assert(unit.__subweaponManualReloadLock == undefined, "interrupted manual reload leaves no unit-level lock");
+        assert(unit.__subweaponDeferredReloadRetries == undefined, "interrupted manual reload leaves no deferred retry state");
+
+        unit.状态 = "长枪站立";
+        assert(LongGunSubWeaponCore.canReloadManual(unit), "unit can start a fresh subweapon reload after interrupted man is replaced");
         restoreMockInventory();
     }
 
@@ -1273,11 +1523,26 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         return clip;
     }
 
-    private static function makeSkillController(skillName:String, cooldownReady:Boolean, cooldownTime:Number):Object {
-        var holder:Object = {};
-        holder.战技栏 = {已装备名: skillName, 冷却时间: cooldownTime};
-        holder.战技进度条 = {冷却: cooldownReady};
-        return {_parent: holder, 控制参数: "战技栏", 控制参数2: "战技进度条"};
+    private static function makeCooldownPort(ready:Boolean, cooldownTime:Number):Object {
+        var port:Object = {
+            ready: ready,
+            cooldownTime: cooldownTime,
+            startCount: 0,
+            lastCooldown: 0
+        };
+        port.isReady = function():Boolean {
+            return this.ready;
+        };
+        port.getCooldownTime = function(skill:Object):Number {
+            return this.cooldownTime;
+        };
+        port.start = function(value:Number):Boolean {
+            this.startCount++;
+            this.lastCooldown = value;
+            this.ready = false;
+            return true;
+        };
+        return port;
     }
 
     private static var oldInventory:Object;
@@ -1287,8 +1552,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     private static var oldInformationDict:Object;
     private static var oldGameworld:Object;
     private static var oldControlTarget:String;
-    private static var oldPaused:Object;
-    private static var oldPlayerCount:Object;
 
     private static function installMockInventory(itemName:String, count:Number, itemName2:String, count2:Number):Void {
         oldInventory = _root.物品栏;
@@ -1357,18 +1620,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     private static function restoreMockHero():Void {
         _root.gameworld = oldGameworld;
         _root.控制目标 = oldControlTarget;
-    }
-
-    private static function installWeaponSkillInputRootState():Void {
-        oldPaused = _root.暂停;
-        oldPlayerCount = _root.当前玩家总数;
-        _root.暂停 = false;
-        _root.当前玩家总数 = 1;
-    }
-
-    private static function restoreWeaponSkillInputRootState():Void {
-        _root.暂停 = oldPaused;
-        _root.当前玩家总数 = oldPlayerCount;
     }
 
     private static function assert(cond:Boolean, msg:String):Void {

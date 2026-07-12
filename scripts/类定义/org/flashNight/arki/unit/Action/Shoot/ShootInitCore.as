@@ -100,6 +100,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             ShootCore.cleanup(parentRef);
             ReloadManager.startReload(target, parentRef, rootRef);
         };
+
+        // F 副武器换弹的显式 man 入口。
+        // 该函数只会在 man 第 0 帧初始化完成后存在，状态机以其作为就绪握手，
+        // 避免跑姿切换当帧提前 gotoAndPlay("换弹匣") 跳过本初始化帧。
+        target.开始副武器换弹 = function():Boolean {
+            return LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
+        };
         
         target.换弹匣 = function() {
             ReloadManager.reloadMagazine(target, parentRef, rootRef);

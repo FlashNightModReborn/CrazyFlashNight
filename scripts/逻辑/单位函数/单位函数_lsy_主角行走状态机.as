@@ -7,17 +7,156 @@
 		_parent.行走();
 	}
 	
-    if (_parent.操控编号 != -1 && !_root.控制目标全自动 && !_root.全鼠标控制){
-        _parent.按键控制攻击模式();
+	if (_parent.操控编号 != -1 && !_root.控制目标全自动 && !_root.全鼠标控制){
+		_parent.按键控制攻击模式();
 	}
-	if (_parent.动作C){
+	// R/F 在同一个持枪动作仲裁点消费：R > F > A/B。
+	// 跑姿切换后的 man 要到下一帧才绑定换弹函数：意图只在 man ready 后消费，
+	// 不使用 unit 锁、轮询任务或无界延迟重试。
+	var 当前输入帧:Number = _root.帧计时器.当前帧数;
+	var 待处理战斗意图:Object = org.flashNight.arki.unit.Action.Input.UnitActionIntentService.peek(
+		_parent,
+		org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+		当前输入帧
+	);
+	if (_parent.动作C || 待处理战斗意图 != null) {
+		org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+			"ARBITRATE",
+			_parent,
+			"actionC=" + _parent.动作C
+				+ " intentKind=" + (待处理战斗意图 ? 待处理战斗意图.kind : "none")
+				+ " intentFrame=" + (待处理战斗意图 ? 待处理战斗意图.frame : "none")
+				+ " " + org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.describeReloadMan(_parent.man)
+		);
+	}
+	var 有副武器换弹意图:Boolean = 待处理战斗意图 != null
+		&& 待处理战斗意图.kind == org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_SUBWEAPON_RELOAD;
+	var 有主武器换弹意图:Boolean = 待处理战斗意图 != null
+		&& 待处理战斗意图.kind == org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_PRIMARY_RELOAD;
+
+	// 同采样帧 R 永远压过 F，并立即清除输掉的 F 意图。
+	if (_parent.动作C && 有副武器换弹意图) {
+		org.flashNight.arki.unit.Action.Input.UnitActionIntentService.take(
+			_parent,
+			org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+			org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_SUBWEAPON_RELOAD,
+			当前输入帧,
+			true
+		);
+		org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+			"F_INTENT_TAKE",
+			_parent,
+			"suppressed=true returned=false businessAccepted=false"
+		);
+		待处理战斗意图 = null;
+		有副武器换弹意图 = false;
+	}
+
+	var 主武器换弹请求:Boolean = _parent.动作C || 有主武器换弹意图;
+	var 副武器换弹请求:Boolean = 有副武器换弹意图
+		&& org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.canReloadManual(_parent);
+	if (有副武器换弹意图 && !副武器换弹请求) {
+		org.flashNight.arki.unit.Action.Input.UnitActionIntentService.take(
+			_parent,
+			org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+			org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_SUBWEAPON_RELOAD,
+			当前输入帧,
+			false
+		);
+		org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+			"F_INTENT_TAKE",
+			_parent,
+			"suppressed=false returned=true businessAccepted=false"
+		);
+	}
+
+	if (主武器换弹请求 || 副武器换弹请求){
+		var 仲裁前状态:String = _parent.状态;
+		var 仲裁前man:Object = _parent.man;
 		if(!_parent.移动射击 && _parent.状态 != _parent.攻击模式 + "站立"){
 			_parent.状态改变(_parent.攻击模式 + "站立");
 			_parent.行走冷却帧 = 2;
 		}else if(_parent.移动射击 && _parent.状态 === _parent.攻击模式 + "跑"){
 			_parent.状态改变(_parent.攻击模式 + "行走");
+			// 换弹请求需要等新姿态 man 的第 0 帧完成函数绑定。
+			// 暂停两帧行走判定，避免持续方向输入在下一帧把行走重新切回跑，
+			// 使 man 永远停在第 1 帧并让有界意图正常过期。
+			_parent.行走冷却帧 = 2;
 		}
-		_parent.man.开始换弹();
+		org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+			"POSE_RESULT",
+			_parent,
+			"winner=" + (主武器换弹请求 ? "R" : "F")
+				+ " before=" + 仲裁前状态
+				+ " manChanged=" + (仲裁前man !== _parent.man)
+				+ " " + org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.describeReloadMan(_parent.man)
+		);
+		if (主武器换弹请求) {
+			var 主武器换弹就绪:Boolean = typeof _parent.man.开始换弹 == "function";
+			if (!主武器换弹就绪) {
+				// 将跑姿 R 的一次性点按延续到 ready man；holding R 仍保持原有连续候补语义。
+				if (!有主武器换弹意图) {
+					org.flashNight.arki.unit.Action.Input.UnitActionIntentService.submit(
+						_parent,
+						org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+						org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_PRIMARY_RELOAD,
+						当前输入帧,
+						2,
+						null,
+						30
+					);
+				}
+				org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+					"R_WAIT_MAN",
+					_parent,
+					org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.describeReloadMan(_parent.man)
+				);
+				return;
+			}
+			if (有主武器换弹意图) {
+				org.flashNight.arki.unit.Action.Input.UnitActionIntentService.take(
+					_parent,
+					org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+					org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_PRIMARY_RELOAD,
+					当前输入帧,
+					false
+				);
+			}
+			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+				"R_MAN_CALL",
+				_parent,
+				org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.describeReloadMan(_parent.man)
+			);
+			_parent.man.开始换弹();
+			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+				"R_MAN_RETURN",
+				_parent,
+				org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.describeReloadMan(_parent.man)
+			);
+		} else {
+			var 副武器换弹就绪:Boolean = typeof _parent.man.开始副武器换弹 == "function";
+			if (!副武器换弹就绪) {
+				org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+					"F_WAIT_MAN",
+					_parent,
+					org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.describeReloadMan(_parent.man)
+				);
+				return;
+			}
+			var 已消费副武器意图:Object = org.flashNight.arki.unit.Action.Input.UnitActionIntentService.take(
+				_parent,
+				org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+				org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_SUBWEAPON_RELOAD,
+				当前输入帧,
+				false
+			);
+			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.emitActionFlow(
+				"F_INTENT_TAKE",
+				_parent,
+				"suppressed=false returned=" + (已消费副武器意图 != null) + " businessAccepted=true"
+			);
+			if (已消费副武器意图 != null) _parent.man.开始副武器换弹();
+		}
 	}else if (_parent.动作A || _parent.动作B){
 		var 需要切换状态 = false;
 		var 目标状态 = _parent.状态;

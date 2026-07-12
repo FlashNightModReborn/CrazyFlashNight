@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.SubweaponDataUtil;
+import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 /**
@@ -8,6 +9,50 @@ import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
  * 长枪副武器运行时核心。负责副武器状态装载、K 发射、F 快装、R 联动补装与 UI 弹药同步。
  */
 class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
+
+    /**
+     * 临时动作流诊断开关（2026-07-12）。
+     * 仅在 F/R 提交、仲裁、换弹里程碑触发，不允许放进逐帧热路径。
+     * 运行时输出到 logs/launcher.log；TestLoader 同时保留 trace。
+     */
+    public static var actionFlowTelemetryEnabled:Boolean = true;
+
+    public static function emitActionFlow(eventName:String, unit:Object, payload:String):Void {
+        if (!actionFlowTelemetryEnabled) return;
+        // 运行时只记录控制目标，避免 AI 换弹污染日志；TestLoader 无 gameworld 时仍可 trace。
+        if (_root.gameworld != undefined && _root.控制目标 != undefined
+            && unit && unit._name != _root.控制目标) return;
+        var timer:Object = _root.帧计时器;
+        var frame:Number = timer ? Number(timer.当前帧数) : -1;
+        if (isNaN(frame)) frame = -1;
+        var unitName:String = unit && unit._name != undefined ? String(unit._name) : "?";
+        var stateName:String = unit && unit.状态 != undefined ? String(unit.状态) : "?";
+        var msg:String = "[SUBWEAPON_FLOW] event=" + eventName
+            + " frame=" + frame
+            + " unit=" + unitName
+            + " state=" + stateName;
+        if (payload != null && payload != "") msg += " " + payload;
+        trace(msg);
+        if (_root.服务器 != undefined && _root.服务器.发布服务器消息 != undefined) {
+            _root.服务器.发布服务器消息(msg);
+        }
+    }
+
+    public static function describeReloadMan(man:Object):String {
+        if (!man) return "man=null";
+        var request:Object = getReloadRequest(man);
+        var requestKind:String = request && request.kind != undefined ? String(request.kind) : "none";
+        return "man=" + String(man)
+            + " mcFrame=" + man._currentframe
+            + " init=" + (man.初始化长枪射击函数 === true)
+            + " start=" + (typeof man.开始换弹 == "function")
+            + " subStart=" + (typeof man.开始副武器换弹 == "function")
+            + " reload=" + (typeof man.换弹匣 == "function")
+            + " finish=" + (typeof man.结束换弹 == "function")
+            + " goto=" + (typeof man.gotoAndPlay == "function")
+            + " tag=" + man.换弹标签
+            + " request=" + requestKind;
+    }
 
     private static var DEFERRED_RETRY_MS:Number = 34;
     private static var MAX_DEFERRED_RETRIES:Number = 4;
@@ -44,7 +89,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     public static function clearUnit(unit:Object, persistStoredMirror:Boolean):Void {
         if (!unit) return;
         cancelPendingFire(unit);
-        clearDeferredManualReload(unit);
+        UnitActionIntentService.cancelKind(
+            unit,
+            UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_SUBWEAPON_RELOAD
+        );
         if (persistStoredMirror !== false) {
             syncSnapshots(unit);
         }
@@ -60,7 +109,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         delete unit.长枪副武器射击;
         unit.subWeapon = null;
         unit.当前弹夹副武器已发射数 = 0;
-        delete unit.__subweaponManualReloadLock;
         delete unit.__subweaponShootingMan;
         if (unit.man) {
             clearReloadRequest(unit.man);
@@ -147,6 +195,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             useGunslinger: false,
             useGlobalRecoilTask: false,
             recoilPolicy: "aggregate",
+            // 射速门禁仍使用完整 config.cd；动作/转向后摇最多 300ms。
+            shootingStateCapMs: 300,
             blockOnReload: true,
             refreshManEachTick: true,
             shootingManFieldName: "__subweaponShootingMan",
@@ -278,7 +328,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (!hasSubweapon(unit)) return false;
         if (unit.攻击模式 != "长枪") return false;
         if (!isLongGunActionState(unit)) return false;
-        if (isManualReloadMovementLocked(unit)) return false;
         if (!unit.man || unit.man.换弹标签 || isManualReloadRequest(unit.man)) return false;
 
         var config:Object = unit.长枪副武器配置;
@@ -364,33 +413,27 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     public static function startManualReloadAnimation(unit:Object):Boolean {
-        if (!canReloadManual(unit)) return false;
+        emitActionFlow("F_CORE_ENTER", unit, describeReloadMan(unit ? unit.man : null));
+        if (!canReloadManual(unit)) {
+            emitActionFlow("F_CORE_REJECT", unit, describeReloadMan(unit ? unit.man : null));
+            return false;
+        }
 
-        unit.__subweaponManualReloadLock = true;
         org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
         var targetState:String = getNormalizedLongGunActionState(unit);
         if (targetState != unit.状态) {
+            var oldMan:Object = unit.man;
             unit.行走冷却帧 = 2;
-            submitManualReloadAfterPoseChange(unit, targetState);
-        } else {
-            startManualReloadOnCurrentMan(unit);
+            changeUnitState(unit, targetState);
+            emitActionFlow(
+                "F_CORE_POSE_CHANGED",
+                unit,
+                "manChanged=" + (oldMan !== unit.man) + " " + describeReloadMan(unit.man)
+            );
         }
-        return true;
-    }
-
-    public static function isManualReloadMovementLocked(unit:Object):Boolean {
-        if (!unit) return false;
-        if (unit.__subweaponManualReloadLock === true) return true;
-        return unit.man != null && isManualReloadRequest(unit.man);
-    }
-
-    public static function clearManualReloadMovementLock(unit:Object):Void {
-        if (!unit) return;
-        delete unit.__subweaponManualReloadLock;
-        if (unit.man && isManualReloadRequest(unit.man)) {
-            clearReloadRequest(unit.man);
-        }
-        clearDeferredManualReload(unit);
+        var started:Boolean = startManualReloadOnCurrentMan(unit);
+        emitActionFlow("F_CORE_RESULT", unit, "started=" + started + " " + describeReloadMan(unit.man));
+        return started;
     }
 
     public static function reloadManual(unit:Object):Boolean {
@@ -867,27 +910,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
     }
 
-    private static function submitManualReloadAfterPoseChange(unit:Object, targetState:String):Void {
-        var job:Object = unit.__stateTransitionJob;
-        if (job == undefined) {
-            job = {};
-            unit.__stateTransitionJob = job;
-        }
-        job.gotoLabel = undefined;
-        job.callback = LongGunSubWeaponCore.startManualReloadOnCurrentMan;
-        job.arg_containerName = undefined;
-        job.arg_targetLabel = undefined;
-
-        changeUnitState(unit, targetState);
-
-        // 非 StateTransition 夹具或异常兜底：生产路径应由状态切换作业在新 man 上消费。
-        if (job.callback != undefined) {
-            job.callback = undefined;
-            job.gotoLabel = undefined;
-            startManualReloadOnCurrentMan(unit);
-        }
-    }
-
     private static function startShootingOnCurrentMan(unit:Object):Void {
         if (!unit) return;
         delete unit.__subweaponPoseChangePending;
@@ -968,20 +990,23 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return sanitizeReloadCount(unit.长枪副武器状态.reloadCount);
     }
 
-    private static function startManualReloadOnCurrentMan(unit:Object):Void {
-        var man:MovieClip = unit.man;
+    private static function startManualReloadOnCurrentMan(unit:Object):Boolean {
+        var man:MovieClip = unit ? unit.man : null;
         if (!canCommitManualReload(unit, man)) {
-            clearManualReloadMovementLock(unit);
-            return;
+            emitActionFlow("F_MAN_REJECT_COMMIT", unit, describeReloadMan(man));
+            return false;
         }
-        if (!isManualReloadManReady(man)) {
-            deferStartManualReloadOnCurrentMan(unit);
-            return;
+        // 与普通换弹一致：状态改变返回后直接由当前 man 持有 request 与换弹标签。
+        // unit 不保存跨动画移动锁；技能/受伤等替换 man 时，换弹所有权随旧 man 自然退场。
+        if (!man.gotoAndPlay) {
+            emitActionFlow("F_MAN_REJECT_GOTO", unit, describeReloadMan(man));
+            return false;
         }
-        clearDeferredManualReload(unit);
         setManualReloadRequest(man, unit);
         man.换弹标签 = true;
+        emitActionFlow("F_ANIM_START", unit, describeReloadMan(man));
         man.gotoAndPlay("换弹匣");
+        return true;
     }
 
     private static function changeUnitState(unit:Object, state:String):Void {
@@ -1027,10 +1052,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return man != null && getMuzzlePosition(man) != null;
     }
 
-    private static function isManualReloadManReady(man:Object):Boolean {
-        return man != null && man.gotoAndPlay != null && man.开始换弹 != null && man.换弹匣 != null && man.结束换弹 != null;
-    }
-
     private static function deferFinishFireOnCurrentMan(unit:Object):Void {
         if (!hasSubweapon(unit)) return;
         var tries:Number = unit.__subweaponDeferredFireRetries || 0;
@@ -1064,23 +1085,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             state.nextFireTime = 0;
         }
         clearPendingFire(unit);
-    }
-
-    private static function deferStartManualReloadOnCurrentMan(unit:Object):Void {
-        if (!hasSubweapon(unit)) return;
-        var tries:Number = unit.__subweaponDeferredReloadRetries || 0;
-        if (tries >= MAX_DEFERRED_RETRIES) {
-            clearManualReloadMovementLock(unit);
-            clearDeferredManualReload(unit);
-            return;
-        }
-        unit.__subweaponDeferredReloadRetries = tries + 1;
-        EnhancedCooldownWheel.I().addTask(LongGunSubWeaponCore.startManualReloadOnCurrentMan, DEFERRED_RETRY_MS, 1, unit);
-    }
-
-    private static function clearDeferredManualReload(unit:Object):Void {
-        if (!unit) return;
-        delete unit.__subweaponDeferredReloadRetries;
     }
 
     private static function writeRuntimeBridgeFields(unit:Object, config:Object):Void {

@@ -426,6 +426,21 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 if (context.postShotEventName != null) {
                     dispatcher.publish(context.postShotEventName, core, weaponType, bulletAttr, context);
                 }
+                // 单发/长间隔 lane 的动作状态不能跟完整射击间隔同寿命。
+                // 射速门禁由业务层 nextFireTime/调度任务继续持有；这里只在上限到达时
+                // 清 shootingState，让移动射击转向与最大后摇恢复。
+                var shootingStateCapMs:Number = Number(context.shootingStateCapMs);
+                if (!isNaN(shootingStateCapMs) && shootingStateCapMs > 0 && interval > shootingStateCapMs) {
+                    EnhancedCooldownWheel.I().addOrUpdateTask(
+                        core,
+                        "结束射击后摇_" + config.taskName,
+                        ShootCore._endLaneRecoil,
+                        shootingStateCapMs,
+                        false,
+                        0,
+                        [core, shootStateName]
+                    );
+                }
             }
 
             var magazineRemaining:Number = ShootCore.resolveMagazineRemaining(core, weaponType, bulletAttr, context);
@@ -714,6 +729,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     public static function _endSemiRecoil(core:Object, shootingStateName:String):Void {
         core.射击最大后摇中 = false;
         core[shootingStateName] = false;
+    }
+
+    /** 长间隔独立 lane 的动作后摇结束；保留完整射速门禁与下一发调度。 */
+    public static function _endLaneRecoil(core:Object, shootingStateName:String):Void {
+        if (!core) return;
+        core[shootingStateName] = false;
+        ShootCore.updateAggregateRecoil(core);
     }
 
     /**
@@ -1026,6 +1048,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
 
         ShootCore.removeStoredTask(core, params.taskName);
+        wheel.removeTaskByLabel(core, "结束射击后摇_" + params.taskName);
         _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + params.taskName);
 
         var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;

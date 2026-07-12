@@ -424,7 +424,7 @@ _root.主角函数.行走_玩家 = function() {
     var downMove = self.下行;
     var currentDirection = self.方向;
     var isShooting = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
-    var isReloading = self.man.换弹标签 || org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.isManualReloadMovementLocked(self);
+    var isReloading = self.man.换弹标签;
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
@@ -531,7 +531,7 @@ _root.主角函数.行走 = function() {
     var downMove = self.下行;
     var currentDirection = self.方向;
     var isShooting = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
-    var isReloading = self.man.换弹标签 || org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.isManualReloadMovementLocked(self);
+    var isReloading = self.man.换弹标签;
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
@@ -1760,7 +1760,7 @@ _root.主角函数.释放主动战技 = function() {
         return false;
 
     if (当前战技.isSubweaponControl) {
-        return org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.startManualReloadAnimation(this);
+        return WeaponSkillInputService.requestSubweaponControl(this, _root.帧计时器.当前帧数);
     }
 
     if (!当前战技.战技函数)

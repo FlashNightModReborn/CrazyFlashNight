@@ -194,9 +194,18 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      */
     public static function startReload(target:MovieClip, parentRef:Object, rootRef:Object):Void {
         var attackMode:String = parentRef.攻击模式;
+        LongGunSubWeaponCore.emitActionFlow(
+            "R_START_ENTER",
+            parentRef,
+            "mainShot=" + parentRef[attackMode].value.shot
+                + " mainCap=" + parentRef[attackMode + "弹匣容量"]
+                + " subLoaded=" + LongGunSubWeaponCore.getLoadedCount(parentRef)
+                + " " + LongGunSubWeaponCore.describeReloadMan(target)
+        );
 
         // 如果已在换弹，则直接返回
         if (target.换弹标签) {
+            LongGunSubWeaponCore.emitActionFlow("R_START_REJECT_TAG", parentRef, LongGunSubWeaponCore.describeReloadMan(target));
             return;
         }
         LongGunSubWeaponCore.clearReloadRequest(target);
@@ -207,6 +216,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 长枪副武器把 R 视为换弹请求的一部分：主武器满弹时，允许副武器作为候补目标。
         if (parentRef[attackMode].value.shot == 0) {
             if (isHero && attackMode == "长枪") {
+                LongGunSubWeaponCore.emitActionFlow("R_MAIN_FULL_FALLBACK_F", parentRef, LongGunSubWeaponCore.describeReloadMan(target));
                 LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
             }
             return;
@@ -221,6 +231,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             // 逐发换弹（tube类型）：有残余换弹值时可以继续换弹，无需弹匣
             if (reloadType == "tube" && parentRef[attackMode].value.reloadCount > 0) {
                 target.换弹标签 = true;
+                LongGunSubWeaponCore.emitActionFlow("R_ANIM_START", parentRef, "kind=tubeContinue linked=false " + LongGunSubWeaponCore.describeReloadMan(target));
                 target.gotoAndPlay("换弹匣");
                 return;
             }
@@ -229,6 +240,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
                 if (canLinkSubweaponReload) LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
                 target.换弹标签 = true;
+                LongGunSubWeaponCore.emitActionFlow("R_ANIM_START", parentRef, "kind=main linked=" + canLinkSubweaponReload + " " + LongGunSubWeaponCore.describeReloadMan(target));
                 target.gotoAndPlay("换弹匣");
                 return;
             }
@@ -241,12 +253,14 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 && ReloadManager.canTacticalFreeReload(parentRef, attackMode, parentRef.被动技能.枪械师.等级 || 1)) {
                 if (canLinkSubweaponReload) LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
                 target.换弹标签 = true;
+                LongGunSubWeaponCore.emitActionFlow("R_ANIM_START", parentRef, "kind=tactical linked=" + canLinkSubweaponReload + " " + LongGunSubWeaponCore.describeReloadMan(target));
                 target.gotoAndPlay("换弹匣");
                 return;
             }
 
             // 主武器当前不能换弹时，长枪副武器作为 R 键候补换弹目标。
             if (attackMode == "长枪") {
+                LongGunSubWeaponCore.emitActionFlow("R_MAIN_REJECT_FALLBACK_F", parentRef, LongGunSubWeaponCore.describeReloadMan(target));
                 LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
             }
         } else {
@@ -277,8 +291,16 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function reloadMagazine(target:MovieClip, parentRef:Object, rootRef:Object):Void {
+        var flowRequest:Object = LongGunSubWeaponCore.getReloadRequest(target);
+        var flowKind:String = flowRequest && flowRequest.kind != undefined ? String(flowRequest.kind) : "none";
+        LongGunSubWeaponCore.emitActionFlow(
+            "RELOAD_COMMIT_ENTER",
+            parentRef,
+            "kind=" + flowKind + " mcFrame=" + target._currentframe + " " + LongGunSubWeaponCore.describeReloadMan(target)
+        );
         if (LongGunSubWeaponCore.isManualReloadRequest(target)) {
-            LongGunSubWeaponCore.commitReloadRequest(target, parentRef);
+            var manualCommitted:Boolean = LongGunSubWeaponCore.commitReloadRequest(target, parentRef);
+            LongGunSubWeaponCore.emitActionFlow("RELOAD_COMMIT_RESULT", parentRef, "kind=manual committed=" + manualCommitted);
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
             return;
         }
@@ -300,7 +322,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             if (gs && gs.启用
                 && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1)) {
                 // 免费换弹完成（shot已重置，reloadCount已扣减）
-                LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
+                var tacticalLinkedCommitted:Boolean = LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
+                LongGunSubWeaponCore.emitActionFlow("RELOAD_COMMIT_RESULT", parentRef, "kind=tactical linkedCommitted=" + tacticalLinkedCommitted);
                 ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
                 return;
             }
@@ -318,7 +341,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             }
 
             // 联动提交副武器换弹；弹仓快照由 LongGunSubWeaponCore 统一同步。
-            LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
+            var linkedCommitted:Boolean = LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
+            LongGunSubWeaponCore.emitActionFlow("RELOAD_COMMIT_RESULT", parentRef, "kind=main linkedCommitted=" + linkedCommitted);
 
             // 刷新UI显示
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
@@ -333,7 +357,12 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 目标MovieClip (原this引用)
      */
     public static function finishReload(target:MovieClip):Void {
-        var wasSubweaponManualReload:Boolean = LongGunSubWeaponCore.isManualReloadRequest(target);
+        var flowParent:Object = target ? target._parent : null;
+        LongGunSubWeaponCore.emitActionFlow(
+            "RELOAD_FINISH",
+            flowParent,
+            "mcFrame=" + target._currentframe + " " + LongGunSubWeaponCore.describeReloadMan(target)
+        );
         // 清理双枪换弹序列标记，避免影响下一次换弹
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
@@ -342,10 +371,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         delete target.reloadFrameControlRequest;
         delete target.reloadFrameControlActive;
         delete target.reloadFrameProgress;
+        delete target.__subweaponFlowGateLogged;
         target.换弹标签 = false;
-        if (wasSubweaponManualReload) {
-            LongGunSubWeaponCore.clearManualReloadMovementLock(target._parent);
-        }
         target.gotoAndStop("空闲");
     }
     
@@ -882,6 +909,18 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             target.reloadFrameControlRequest = true;
             target.reloadFrameProgress = 0;
         }
+        if (useSubweaponManualReload || useSubweaponLinkedReload) {
+            LongGunSubWeaponCore.emitActionFlow(
+                "RELOAD_INIT",
+                parent,
+                "kind=" + (useSubweaponManualReload ? "manual" : "linked")
+                    + " burden=" + burden
+                    + " startFrame=" + startFrame
+                    + " gateFrame=" + gateFrame
+                    + " endFrame=" + endFrame
+                    + " mcFrame=" + target._currentframe
+            );
+        }
     }
 
     // ============================================================
@@ -1208,6 +1247,17 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 缓存parent引用和核心属性
         var parent:Object = target._parent;
         var attackMode:String = parent.攻击模式;
+        if (!target.__subweaponFlowGateLogged && LongGunSubWeaponCore.isSubweaponReloadRequest(target)) {
+            target.__subweaponFlowGateLogged = true;
+            LongGunSubWeaponCore.emitActionFlow(
+                "RELOAD_GATE",
+                parent,
+                "perRound=" + target.perRoundReload
+                    + " mcFrame=" + target._currentframe
+                    + " start=" + target.reloadStartFrame
+                    + " end=" + target.reloadEndFrame
+            );
+        }
 
         // 非tube类型或未启用逐发换弹模式：直接返回，让动画继续播放到换弹匣()
         if (!target.perRoundReload) {
@@ -1290,6 +1340,15 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         if (target.reloadFrameControlRequest) {
             target.reloadFrameControlRequest = false;
             target.reloadFrameControlActive = true;
+            if (LongGunSubWeaponCore.isSubweaponReloadRequest(target)) {
+                LongGunSubWeaponCore.emitActionFlow(
+                    "RELOAD_CONTROL_START",
+                    target._parent,
+                    "burden=" + target.reloadBurden
+                        + " mcFrame=" + target._currentframe
+                        + " end=" + target.reloadEndFrame
+                );
+            }
             target.stop();
             return;
         }
