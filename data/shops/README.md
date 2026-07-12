@@ -34,6 +34,8 @@
 - `requiredInfo`：持有指定情报后才可购买。
 - `purchaseLimit`：单笔采购上限，整数 `1..100`；装备默认 50，其他物品默认 100。
 
+`purchaseLimit` 只作用于新 Web 原子交易的 `tradePreview/tradeCommit`。旧 Flash 兼容命令 `buy` 仍保持原版语义：装备单次最多购买 1 件，其他物品最多 100；新 Web 不调用该命令。复数装备采购必须经过 `tradePreview`，由 AS2 展开为多个独立装备实例。
+
 ## 人工分组（谨慎使用）
 
 只有“科技武器”“剧情商品”“限时商品”等无法从物品属性推导的经营语义，才应配置人工分组。只要存在 `sections`，它就会完整替代默认分类树，因此必须覆盖目录全部索引；`defaultSection` 必须引用已声明的 section。

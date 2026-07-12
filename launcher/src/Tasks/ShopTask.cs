@@ -18,7 +18,7 @@ namespace CF7Launcher.Tasks
     ///   Flash -> C#    {task:"shop_response", callId:fid, success, ...}
     ///   C#    -> Web   {type:"panel_resp", callId:webCallId, success, ...}
     ///
-    /// saveCart / checkout / claim 共享单写 owner。写结果超时、断线、发送失败或畸形时进入
+    /// saveCart / checkoutCommit / legacy checkout / claim 共享单写 owner。写结果超时、断线、发送失败或畸形时进入
     /// needs_reconcile；此后只允许读请求，且只有进入该状态后新发起并成功的 bulkQuery
     /// 能解除写门。活动/近期 callId 不会再次下发 Flash。
     /// </summary>
@@ -198,7 +198,7 @@ namespace CF7Launcher.Tasks
             int fid = msg != null ? msg.Value<int>("callId") : 0;
             PendingRequest entry;
             bool ambiguousWrite = false;
-            bool invalidBulkResponse = false;
+            bool invalidReadResponse = false;
 
             lock (_lock)
             {
@@ -224,7 +224,11 @@ namespace CF7Launcher.Tasks
                 }
                 else if (entry.WebCmd == "bulkQuery" && !IsValidBulkResponse(msg))
                 {
-                    invalidBulkResponse = true;
+                    invalidReadResponse = true;
+                }
+                else if (entry.WebCmd == "checkoutPreview" && !IsValidCheckoutPreviewResponse(msg))
+                {
+                    invalidReadResponse = true;
                 }
                 else if (entry.IsReconcileProbe
                     && entry.ReconcileEpoch == _reconcileEpoch
@@ -246,7 +250,7 @@ namespace CF7Launcher.Tasks
                 webMsg["error"] = "reconcile_required";
                 webMsg["cause"] = string.IsNullOrEmpty(originalError) ? "invalid_response" : originalError;
             }
-            else if (invalidBulkResponse)
+            else if (invalidReadResponse)
             {
                 webMsg["success"] = false;
                 webMsg["error"] = "invalid_response";
@@ -287,6 +291,8 @@ namespace CF7Launcher.Tasks
                 case "bulkQuery": action = "shopBulkQuery"; return true;
                 case "tooltip": action = "shopTooltip"; return true;
                 case "saveCart": action = "shopSaveCart"; isWrite = true; return true;
+                case "checkoutPreview": action = "shopCheckoutPreview"; return true;
+                case "checkoutCommit": action = "shopCheckoutCommit"; isWrite = true; return true;
                 case "checkout": action = "shopCheckout"; isWrite = true; return true;
                 case "claim": action = "shopClaim"; isWrite = true; return true;
                 default: action = null; return false;
@@ -325,14 +331,32 @@ namespace CF7Launcher.Tasks
                 && IsNumber(msg["reverseLevel"]);
         }
 
+        private static bool IsValidCheckoutPreviewResponse(JObject msg)
+        {
+            JToken success = msg != null ? msg["success"] : null;
+            if (!IsBoolean(success)) return false;
+            if (!success.Value<bool>()) return !string.IsNullOrEmpty(msg.Value<string>("error"));
+            return msg.Value<int?>("v") == 1
+                && !string.IsNullOrEmpty(msg.Value<string>("checkoutToken"))
+                && msg["purchaseLines"] != null && msg["purchaseLines"].Type == JTokenType.Array
+                && IsNumber(msg["total"])
+                && IsNumber(msg["balance"])
+                && IsNumber(msg["projectedBalance"])
+                && IsBoolean(msg["canCommit"])
+                && msg["blockingError"] != null && msg["blockingError"].Type == JTokenType.String;
+        }
+
         private static bool IsDefinitiveWriteResponse(string cmd, JObject msg)
         {
             JToken success = msg != null ? msg["success"] : null;
             if (!IsBoolean(success)) return false;
             if (success.Value<bool>())
             {
-                if (cmd == "checkout")
+                if (cmd == "checkout" || cmd == "checkoutCommit")
                     return IsNumber(msg["newBalance"])
+                        && (cmd != "checkoutCommit" || (msg.Value<int?>("v") == 1
+                            && msg["delivered"] != null && msg["delivered"].Type == JTokenType.Array
+                            && msg["cart"] != null && msg["cart"].Type == JTokenType.Array))
                         && msg["purchased"] != null && msg["purchased"].Type == JTokenType.Array
                         && !string.IsNullOrEmpty(msg.Value<string>("purchasedToken"));
                 if (cmd == "claim")
@@ -343,6 +367,8 @@ namespace CF7Launcher.Tasks
 
             string error = msg.Value<string>("error") ?? "";
             if (cmd == "checkout") return error == "insufficient_kpoints";
+            if (cmd == "checkoutCommit") return error == "insufficient_kpoints"
+                || error == "inventory_full" || error == "stale_state";
             if (cmd == "claim")
             {
                 return error == "item_not_found"

@@ -107,21 +107,30 @@ namespace CF7Launcher.Tasks
         {
             int fid = msg != null ? msg.Value<int>("callId") : 0;
             PendingRequest entry;
+            bool malformed = false;
+            bool definitiveWrite = false;
             lock (_lock)
             {
                 if (!_pending.TryGetValue(fid, out entry)) { if (respond != null) respond(null); return; }
+                malformed = IsMalformedResponse(msg, entry);
+                definitiveWrite = entry.IsWrite && !malformed && IsDefinitiveWriteResponse(msg, entry.WebCmd);
                 CompletePendingLocked(fid, entry);
                 if (entry.IsWrite)
-                    _writeState = IsDefinitiveWriteResponse(msg) ? "idle" : "needs_reconcile";
-                else if (entry.WebCmd == "snapshot" && msg != null && msg.Value<bool?>("success") == true)
+                    _writeState = definitiveWrite ? "idle" : "needs_reconcile";
+                else if (entry.WebCmd == "snapshot" && !malformed
+                    && msg != null && msg.Value<bool?>("success") == true
+                    && _writeState == "needs_reconcile")
                     _writeState = "idle";
             }
-            JObject web = msg != null ? (JObject)msg.DeepClone() : new JObject();
+            JObject web = malformed
+                ? new JObject { ["success"] = false, ["error"] = "malformed_response" }
+                : (msg != null ? (JObject)msg.DeepClone() : new JObject());
             web.Remove("task");
             web["type"] = "panel_resp";
             web["domain"] = "npcshop";
             web["cmd"] = entry.WebCmd;
             web["callId"] = entry.WebCallId;
+            if (entry.IsWrite && !definitiveWrite) web["requiresReconcile"] = true;
             PostToWeb(web.ToString(Formatting.None));
             if (respond != null) respond(null);
         }
@@ -343,10 +352,10 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsDefinitiveWriteResponse(JObject msg)
+        private static bool IsDefinitiveWriteResponse(JObject msg, string cmd)
         {
             if (msg == null || msg["success"] == null || msg["success"].Type != JTokenType.Boolean) return false;
-            if (msg.Value<bool>("success")) return true;
+            if (msg.Value<bool>("success")) return IsAuthoritativeWriteSuccess(msg, cmd);
             switch (msg.Value<string>("error"))
             {
                 case "invalid_payload": case "shop_not_found": case "item_not_found": case "invalid_quantity": case "locked":
@@ -355,6 +364,40 @@ namespace CF7Launcher.Tasks
                 case "duplicate_line": case "invalid_price": return true;
                 default: return false;
             }
+        }
+
+        private static bool IsMalformedResponse(JObject msg, PendingRequest entry)
+        {
+            if (msg == null || msg["success"] == null || msg["success"].Type != JTokenType.Boolean) return true;
+            bool success = msg.Value<bool>("success");
+            if (entry.IsWrite)
+            {
+                if (success) return !IsAuthoritativeWriteSuccess(msg, entry.WebCmd);
+                return string.IsNullOrEmpty(msg.Value<string>("error"));
+            }
+            if (entry.WebCmd == "snapshot")
+                return success ? !IsAuthoritativeState(msg) : string.IsNullOrEmpty(msg.Value<string>("error"));
+            return false;
+        }
+
+        private static bool IsAuthoritativeWriteSuccess(JObject msg, string cmd)
+        {
+            if (!IsAuthoritativeState(msg) || msg.Value<string>("operation") != cmd) return false;
+            return cmd != "tradeCommit" || msg["trade"] is JObject;
+        }
+
+        private static bool IsAuthoritativeState(JObject msg)
+        {
+            if (msg == null || msg.Value<int?>("v") != 1 || string.IsNullOrEmpty(msg.Value<string>("shopId"))) return false;
+            if (!IsNumber(msg["balance"]) || !(msg["catalog"] is JArray) || !(msg["layout"] is JObject)) return false;
+            JObject views = msg["views"] as JObject;
+            return views != null && views["bag"] is JObject
+                && views["material"] is JObject && views["intelligence"] is JObject;
+        }
+
+        private static bool IsNumber(JToken token)
+        {
+            return token != null && (token.Type == JTokenType.Integer || token.Type == JTokenType.Float);
         }
 
         private void HandleTimeout(int fid)

@@ -15,6 +15,7 @@
 import org.flashNight.arki.map.MapPanelCatalog;
 import org.flashNight.arki.map.MapTaskNpcRegistry;
 import org.flashNight.arki.map.MapHotspotResolver;
+import org.flashNight.arki.ui.PanelRequestEnvelope;
 
 class org.flashNight.arki.map.MapPanelService {
     private static var _json:LiteJSON;
@@ -176,9 +177,8 @@ class org.flashNight.arki.map.MapPanelService {
             return;
         }
 
-        var payload:String = '{"task":"panel_request","panel":"map","source":"' + source + '"';
-        if (pageId != "") payload += ',"pageId":"' + pageId + '"';
-        payload += '}';
+        var fields:Array = pageId == "" ? [] : [{name:"pageId", value:pageId}];
+        var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build("map", source, fields, []);
         _root.server.sendSocketMessage(payload);
     }
 

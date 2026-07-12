@@ -2,9 +2,9 @@
  * KShop runtime reliability primitives.
  *
  * KShopRequestMux owns the WebView-session callId namespace and validates response channels.
- * KShopWriteCoordinator serializes saveCart/checkout/claim, coalesces cart saves and forces
- * bulkQuery reconciliation after any ambiguous write result. Neither primitive changes the
- * legacy shop* wire shape.
+ * KShopWriteCoordinator serializes saveCart/checkoutCommit/legacy claim, coalesces cart saves
+ * and forces bulkQuery reconciliation after any ambiguous write result. checkoutPreview stays
+ * read-only outside the write owner; checkoutCommit consumes an AS2-issued opaque plan token.
  */
 (function(root, factory) {
     'use strict';
@@ -260,20 +260,22 @@
         return true;
     };
 
-    KShopWriteCoordinator.prototype.checkout = function(callback) {
-        if (!this._beginExclusive('checkout')) return false;
+    KShopWriteCoordinator.prototype.checkout = function(expectedCheckoutToken, callback) {
+        if (!this._beginExclusive('checkoutCommit')) return false;
         var self = this;
         this._ensureSaved(function(saveResult) {
             if (!saveResult.success) {
                 self._finishExclusive(saveResult, callback);
                 return;
             }
-            var cart = cloneCart(self._getCart());
-            self._request('checkout', { cart: cart }, function(response) {
-                if (self._isDefinitive('checkout', response)) {
+            self._request('checkoutCommit', {
+                v: 1,
+                expectedCheckoutToken: String(expectedCheckoutToken || '')
+            }, function(response) {
+                if (self._isDefinitive('checkoutCommit', response)) {
                     self._finishExclusive(response, callback);
                 } else {
-                    self._startReconcile('checkout', response, function(result) {
+                    self._startReconcile('checkoutCommit', response, function(result) {
                         self._finishExclusive(result, callback);
                     });
                 }
@@ -475,14 +477,16 @@
     KShopWriteCoordinator.prototype._isDefinitive = function(cmd, response) {
         if (!response || typeof response.success !== 'boolean') return false;
         if (response.success) {
-            if (cmd === 'checkout') return isFiniteNumber(response.newBalance) && Array.isArray(response.purchased)
+            if (cmd === 'checkoutCommit') return response.v === 1 && isFiniteNumber(response.newBalance)
+                && Array.isArray(response.delivered) && Array.isArray(response.cart) && Array.isArray(response.purchased)
                 && typeof response.purchasedToken === 'string' && response.purchasedToken.length > 0;
             if (cmd === 'claim') return Array.isArray(response.purchased)
                 && typeof response.purchasedToken === 'string' && response.purchasedToken.length > 0;
             return false;
         }
         if (response.error === 'busy') return true;
-        if (cmd === 'checkout') return response.error === 'insufficient_kpoints';
+        if (cmd === 'checkoutCommit') return response.error === 'insufficient_kpoints'
+            || response.error === 'inventory_full' || response.error === 'stale_state';
         if (cmd === 'claim') return response.error === 'inventory_full'
             || response.error === 'acquire_failed';
         return false;

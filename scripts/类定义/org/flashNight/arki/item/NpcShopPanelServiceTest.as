@@ -5,6 +5,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.ui.PanelRequestEnvelope;
 
 class org.flashNight.arki.item.NpcShopPanelServiceTest {
     private static var passed:Number = 0;
@@ -15,6 +16,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testSnapshotAndGate();
         testLegacyCatalogResolution();
         testOpenRequestWire();
+        testPanelRequestEnvelopeEscaping();
         testSnapshotResponseWire();
         testTradePreviewResponseWire();
         testBuyRoutesCollections();
@@ -23,7 +25,10 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testAtomicTrade();
         testTradeUsesSaleProceeds();
         testSameNamePlainEquipmentSale();
+        testOverlappingBulkAndExactSaleRejected();
+        testReturnedModsAreAggregated();
         testMultipleEquipmentPurchaseAndBounds();
+        testPurchaseBoundsAtConfiguredLimit();
         testTradeRejectsStaleAndReplay();
         trace("NpcShopPanelServiceTest Tests Passed: " + passed);
         trace("NpcShopPanelServiceTest Tests Failed: " + failed);
@@ -37,11 +42,13 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         itemDict["门槛商品"] = itemData("门槛商品", "消耗品", "消耗品", 400);
         itemDict["测试手枪"] = itemData("测试手枪", "武器", "手枪", 1000);
         itemDict["测试手枪"].weapontype = "手枪";
+        itemDict["测试插件"] = itemData("测试插件", "收集品", "材料", 50);
         ItemUtil.itemDataDict = itemDict;
         ItemUtil.equipmentDict = {};
         ItemUtil.equipmentDict["测试手枪"] = true;
         ItemUtil.materialDict = {};
         ItemUtil.materialDict["强化石"] = true;
+        ItemUtil.materialDict["测试插件"] = true;
         ItemUtil.informationMaxValueDict = {};
         ItemUtil.informationMaxValueDict["解锁情报"] = 1;
         _root.shops = {};
@@ -128,6 +135,20 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.server.sendSocketMessage = function(message:String):Boolean { this.sent = message; return true; };
         var opened:Boolean = _root.gameCommands["openNpcShop"]({shopId:"测试商店",source:"world_npc_dialogue"});
         check(opened && String(_root.server.sent) == '{"task":"panel_request","panel":"npcshop","source":"world_npc_dialogue","initData":{"shopId":"测试商店"}}',"open entry sends concrete panel_request wire payload");
+    }
+
+    private static function testPanelRequestEnvelopeEscaping():Void {
+        var source:String = "source\\line\nnext";
+        var shopId:String = "带\"引号\\路径\n商店";
+        var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
+            "npcshop",
+            source,
+            [],
+            [{name:"shopId", value:shopId}]
+        );
+        var parsed:Object = new JSON().parse(payload);
+        check(parsed.panel == "npcshop" && parsed.source == source && parsed.initData.shopId == shopId,
+            "panel request envelope escapes quotes, slashes and controls");
     }
 
     private static function testSnapshotResponseWire():Void {
@@ -242,6 +263,46 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             "same-name commit sells every eligible instance and retains protected equipment");
     }
 
+    private static function testOverlappingBulkAndExactSaleRejected():Void {
+        resetOwned();
+        var first:Object = BaseItem.create("测试手枪",1);
+        var second:Object = BaseItem.create("测试手枪",1);
+        _root.物品栏.背包.add(0,first);
+        _root.物品栏.背包.add(1,second);
+        var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var preview:Object = service().execute("tradePreview",{
+            shopId:"测试商店",purchases:[],
+            sales:[
+                {scope:"same_name",policy:"plain_only",source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}},
+                {scope:"slot",quantity:1,source:{containerId:"背包",slot:1,expectedLease:snapshot.views.bag.slots[1].slotLease}}
+            ]
+        });
+        check(!preview.success && preview.error == "duplicate_line","expanded bulk sale rejects an overlapping exact slot");
+        check(_root.物品栏.背包.getItem(0) === first && _root.物品栏.背包.getItem(1) === second
+            && _root.金钱 == 5000,"overlapping sale rejection leaves inventory and money unchanged");
+    }
+
+    private static function testReturnedModsAreAggregated():Void {
+        resetOwned();
+        var first:Object = BaseItem.create("测试手枪",1);
+        var second:Object = BaseItem.create("测试手枪",1);
+        first.value.mods = ["测试插件"];
+        second.value.mods = ["测试插件"];
+        _root.物品栏.背包.add(0,first);
+        _root.物品栏.背包.add(1,second);
+        var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var preview:Object = service().execute("tradePreview",{
+            shopId:"测试商店",purchases:[],
+            sales:[
+                {scope:"slot",quantity:1,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}},
+                {scope:"slot",quantity:1,source:{containerId:"背包",slot:1,expectedLease:snapshot.views.bag.slots[1].slotLease}}
+            ]
+        });
+        var commit:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
+        check(commit.success && _root.收集品栏.材料.getValue("测试插件") == 2,
+            "trade commit aggregates identical returned mods without loss");
+    }
+
     private static function testMultipleEquipmentPurchaseAndBounds():Void {
         resetOwned();
         for (var slot:Number = 0; slot < 48; slot++) {
@@ -265,6 +326,19 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             && typeof _root.物品栏.背包.getItem(48).value == "object"
             && typeof _root.物品栏.背包.getItem(49).value == "object",
             "equipment quantity expands into independent acquired instances");
+    }
+
+    private static function testPurchaseBoundsAtConfiguredLimit():Void {
+        resetOwned();
+        _root.金钱 = 100000;
+        var preview:Object = service().execute("tradePreview",{
+            shopId:"测试商店",purchases:[{catalogIndex:0,quantity:1}],sales:[]
+        });
+        check(preview.success && preview.purchaseLines[0].purchaseLimit == 100
+            && preview.purchaseLines[0].maxAffordable == 100
+            && preview.purchaseLines[0].maxByCapacity == 100
+            && preview.purchaseLines[0].maxPurchasable == 100,
+            "purchase bound search preserves the configured upper limit");
     }
 
     private static function testTradeRejectsStaleAndReplay():Void {

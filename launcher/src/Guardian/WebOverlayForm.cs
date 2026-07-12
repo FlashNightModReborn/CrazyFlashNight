@@ -3498,6 +3498,8 @@ namespace CF7Launcher.Guardian
                     }
                     break;
                 case "bulkQuery":
+                case "checkoutPreview":
+                case "checkoutCommit":
                 case "checkout":
                 case "claim":
                 case "saveCart":

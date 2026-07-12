@@ -10,6 +10,23 @@ namespace CF7Launcher.Tests.Tasks
     {
         private static JObject ParseSent(string payload) { return JObject.Parse(payload.TrimEnd('\0')); }
 
+        private static JObject StateResponse(int fid, string operation = null)
+        {
+            var response = new JObject
+            {
+                ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
+                ["shopId"] = "前治安官", ["balance"] = 5000, ["catalog"] = new JArray(),
+                ["layout"] = new JObject(),
+                ["views"] = new JObject
+                {
+                    ["bag"] = new JObject(), ["material"] = new JObject(), ["intelligence"] = new JObject()
+                }
+            };
+            if (!string.IsNullOrEmpty(operation)) response["operation"] = operation;
+            if (operation == "tradeCommit") response["trade"] = new JObject { ["buyTotal"] = 0, ["sellTotal"] = 0 };
+            return response;
+        }
+
         private static JObject Request(string cmd, string callId = "npc.test.1")
         {
             var payload = new JObject { ["v"] = 1 };
@@ -106,11 +123,7 @@ namespace CF7Launcher.Tests.Tasks
             task.HandleWebRequest("snapshot", Request("snapshot", "npc.web.snapshot.7"));
             int fid = (int)ParseSent(sent)["callId"];
 
-            task.HandleFlashResponse(new JObject
-            {
-                ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true,
-                ["shopId"] = "前治安官", ["catalog"] = new JArray()
-            }, _ => { });
+            task.HandleFlashResponse(StateResponse(fid), _ => { });
 
             JObject web = JObject.Parse(posted);
             Assert.Equal("panel_resp", (string)web["type"]);
@@ -141,11 +154,7 @@ namespace CF7Launcher.Tests.Tasks
 
             task.HandleWebRequest("snapshot", Request("snapshot", "npc.snapshot.2"));
             int fid = (int)sent[sent.Count - 1]["callId"];
-            task.HandleFlashResponse(new JObject
-            {
-                ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true,
-                ["catalog"] = new JArray(), ["views"] = new JObject()
-            }, _ => { });
+            task.HandleFlashResponse(StateResponse(fid), _ => { });
 
             Assert.Equal("idle", task.WriteState);
         }
@@ -291,6 +300,62 @@ namespace CF7Launcher.Tests.Tasks
             {
                 ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = false, ["error"] = "stale_state"
             }, _ => { });
+
+            Assert.Equal("idle", task.WriteState);
+        }
+
+        [Fact]
+        public void MalformedSuccessfulWrite_RequiresSnapshotReconcile()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            task.SetPostToWeb(json => posted = json);
+            task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.malformed.1"));
+            int fid = (int)ParseSent(sent)["callId"];
+
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true
+            }, _ => { });
+
+            JObject web = JObject.Parse(posted);
+            Assert.Equal("needs_reconcile", task.WriteState);
+            Assert.False((bool)web["success"]);
+            Assert.Equal("malformed_response", (string)web["error"]);
+            Assert.True((bool)web["requiresReconcile"]);
+        }
+
+        [Fact]
+        public void EarlierSnapshot_DoesNotClearAWriteStillInFlight()
+        {
+            var sent = new List<JObject>();
+            var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; });
+            task.HandleWebRequest("snapshot", Request("snapshot", "npc.snapshot.concurrent.1"));
+            int snapshotFid = (int)sent[0]["callId"];
+            task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.concurrent.1"));
+            int writeFid = (int)sent[1]["callId"];
+
+            task.HandleFlashResponse(StateResponse(snapshotFid), _ => { });
+            Assert.Equal("write_pending", task.WriteState);
+
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "npcshop_response", ["callId"] = writeFid,
+                ["success"] = false, ["error"] = "stale_state"
+            }, _ => { });
+            Assert.Equal("idle", task.WriteState);
+        }
+
+        [Fact]
+        public void AuthoritativeTradeCommitSuccess_ReopensWriteGate()
+        {
+            string sent = null;
+            var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.success.1"));
+            int fid = (int)ParseSent(sent)["callId"];
+
+            task.HandleFlashResponse(StateResponse(fid, "tradeCommit"), _ => { });
 
             Assert.Equal("idle", task.WriteState);
         }

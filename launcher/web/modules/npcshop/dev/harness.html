@@ -14,7 +14,7 @@
 <div id="panel-content"></div><pre id="qa-output">running…</pre>
 <script>
 window.__NPCSHOP_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness'};
-window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;
+window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;window.__malformedCommit=false;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd!=='close')setTimeout(function(){respond(message)},0)}
@@ -87,6 +87,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   else if(message.cmd==='tooltip')Object.assign(result,{displayname:'物品',descHTML:'说明',introHTML:'简介'});
   else if(message.cmd==='tradePreview'){window.__lastTrade=tradePreview(message.payload);Object.assign(result,window.__lastTrade)}
   else if(message.cmd==='tradeCommit'){
+    if(window.__malformedCommit){Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
     var plan=window.__lastTrade;balance=plan.projectedBalance;
     plan.purchaseLines.forEach(function(line){if(line.itemName==='强化石')materialQty+=line.quantity});
     Object.assign(result,state(),{operation:'tradeCommit',trade:{buyTotal:plan.buyTotal,sellTotal:plan.sellTotal,netDelta:plan.netDelta}})
@@ -174,6 +175,11 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   Panels.close();manualLayout=true;Panels.open('npcshop',{shopId:'前治安官'});await wait();
   ok('developer sections remain an explicit full override',document.querySelector('[data-category="manual:weapons"]')&&document.querySelector('[data-category="manual:supplies"]')&&!document.querySelector('[data-category="auto:武器"]'));
   ok('manual default section remains supported',document.querySelector('[data-category="manual:weapons"].active')&&document.querySelectorAll('.npcshop-catalog-card').length===3);
+  Panels.close();manualLayout=false;Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  var snapshotsBeforeMalformed=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
+  window.__malformedCommit=true;document.querySelector('[data-trade-commit]').click();await wait();await wait();window.__malformedCommit=false;
+  ok('malformed write response reconciles by snapshot without replay',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===snapshotsBeforeMalformed+1&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===2);
   window.__qaResult={total:checks.length,passed:checks.filter(function(c){return c.ok}).length,checks:checks};window.__qaDone=true;
   document.getElementById('qa-output').textContent=JSON.stringify(__qaResult,null,2);
 })().catch(function(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError});

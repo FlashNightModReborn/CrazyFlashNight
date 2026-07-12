@@ -71,7 +71,7 @@
 5. **Excel标准**：不满足任何加权加分条件
 
 **获取渠道检查结果**：
-- ✓ 普通商店：`data/shops/shops.json` - King商店、soldier商店
+- ✓ 普通商店：现位于 `data/shops/npcs/*.json`（原历史路径 `data/shops/shops.json`）— King、soldier 等逐 NPC 目录
 - × K点商店：`data/kshop/*` - 未找到
 - × 合成系统：`data/crafting/*` - 未找到  
 - × 任务奖励：`data/task/*` - 未找到
@@ -140,7 +140,7 @@ grep "武器ID" data/kshop/* data/crafting/* data/shops/* data/task/*
 2. **获取渠道检查**：
    - K点商店：`data/kshop/`
    - 合成系统：`data/crafting/`
-   - 普通商店：`data/shops/shops.json`
+   - 普通商店：`data/shops/npcs/*.json`（原 `data/shops/shops.json` 已拆分）
    - 任务奖励：`data/task/`
 
 3. **工作流文档**：

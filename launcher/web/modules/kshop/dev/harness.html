@@ -93,6 +93,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/kshop-runtime.js"></script>
 <script src="modules/inventory-runtime.js"></script>
 <script src="modules/inventory-ui.js"></script>
+<script src="modules/kshop-views.js"></script>
 <script src="modules/kshop.js"></script>
 <script src="modules/inventory-workbench.js"></script>
 <script>
@@ -121,9 +122,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         element.click();
         return element;
     }
-    function confirmCheckout() {
+    async function confirmCheckout() {
         click('#kshop-checkout');
-        return click('.workbench-modal-action[data-action="confirm"]');
+        await waitFor(function(){
+            var button=document.querySelector('[data-kshop-settlement-commit]');
+            return button && !button.disabled;
+        },500);
+        return click('[data-kshop-settlement-commit]');
     }
     function dispatchPointer(target, type, pointerId, x, y) {
         var event = new PointerEvent(type, {
@@ -166,6 +171,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         inventorySession: 0,
         inventorySnapshotSeq: 0,
         inventoryEpochs: null,
+        checkoutSeq: 0,
+        checkoutPlan: null,
         battleboxAccessibleCapacity: 240,
         leases: {},
         lastTooltipDescHTML: '',
@@ -183,6 +190,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.inventorySession = 0;
             this.inventorySnapshotSeq = 0;
             this.inventoryEpochs = {背包:1,仓库:1,战备箱:1};
+            this.checkoutSeq = 0;
+            this.checkoutPlan = null;
             this.battleboxAccessibleCapacity = 240;
             this.leases = {};
             this.lastTooltipDescHTML = '';
@@ -536,15 +545,57 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 }
                 return;
             }
-            if (message.cmd === 'checkout') {
+            if (message.cmd === 'checkoutPreview') {
                 var cart = clone(message.cart || []);
                 var total = 0;
+                var lines = [];
+                var requiredSlots = 0;
                 for (var i = 0; i < cart.length; i++) {
                     var item = this.state.catalog[cart[i].idx];
                     total += Number(item.price) * Number(cart[i].qty);
-                    this.state.purchased.push([item.id,item.item,item.type,item.price,cart[i].qty]);
+                    var equipment = item.majorType === '武器' || item.majorType === '防具';
+                    var maxQuantity = equipment ? 1 : 999;
+                    var maxAffordable = Math.max(0,Math.min(maxQuantity,Math.floor(this.state.kpoints / Number(item.price))));
+                    var vacancyCount = 0;
+                    for (var vacancyIndex=0;vacancyIndex<this.state.inventory.背包.length;vacancyIndex++) {
+                        if (!this.state.inventory.背包[vacancyIndex]) vacancyCount++;
+                    }
+                    var maxByCapacity = equipment ? vacancyCount : 999;
+                    if (equipment) requiredSlots += Number(cart[i].qty);
+                    lines.push({catalogIndex:item.idx,itemName:item.item,displayName:item.displayname,icon:item.icon,
+                        quantity:Number(cart[i].qty),unitPrice:Number(item.price),total:Number(item.price)*Number(cart[i].qty),
+                        maxQuantity:maxQuantity,maxAffordable:maxAffordable,maxByCapacity:maxByCapacity,
+                        maxPurchasable:Math.min(maxQuantity,maxAffordable,maxByCapacity),itemKind:equipment?'equipment':'stack'});
                 }
-                this.state.kpoints -= total;
+                var vacancies = 0;
+                for (var countIndex=0;countIndex<this.state.inventory.背包.length;countIndex++) {
+                    if (!this.state.inventory.背包[countIndex]) vacancies++;
+                }
+                var blocking = this.state.kpoints < total ? 'insufficient_kpoints' : (requiredSlots > vacancies ? 'inventory_full' : '');
+                this.checkoutSeq += 1;
+                var token = 'kcheckout.harness.' + this.checkoutSeq;
+                this.checkoutPlan = {token:token,cart:cart,total:total,lines:lines,balance:this.state.kpoints};
+                this.respond(message,{success:true,v:1,checkoutToken:token,purchaseLines:clone(lines),total:total,
+                    balance:this.state.kpoints,projectedBalance:this.state.kpoints-total,canCommit:!blocking,blockingError:blocking},delay);
+                return;
+            }
+            if (message.cmd === 'checkoutCommit') {
+                var plan = this.checkoutPlan;
+                if (!plan || String(message.expectedCheckoutToken) !== plan.token) {
+                    this.respond(message,{success:false,error:'stale_state'},delay); return;
+                }
+                this.checkoutPlan = null;
+                this.state.kpoints -= plan.total;
+                for (var lineIndex=0;lineIndex<plan.lines.length;lineIndex++) {
+                    var delivery=plan.lines[lineIndex];
+                    var mergeSlot=this.state.inventory.背包.findIndex(function(entry){ return entry&&entry.name===delivery.itemName&&entry.itemKind==='stack'; });
+                    if (delivery.itemKind==='stack'&&mergeSlot>=0) this.state.inventory.背包[mergeSlot].quantity+=delivery.quantity;
+                    else {
+                        var deliverySlot=this.state.inventory.背包.findIndex(function(entry){ return !entry; });
+                        this.state.inventory.背包[deliverySlot]={name:delivery.itemName,displayName:delivery.displayName,icon:delivery.icon,
+                            majorType:delivery.itemKind==='equipment'?'武器':'消耗品',itemKind:delivery.itemKind,quantity:delivery.quantity};
+                    }
+                }
                 this.state.cart = [];
                 if (this.nextCheckoutMalformed) {
                     this.nextCheckoutMalformed = false;
@@ -553,7 +604,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     this.nextCheckoutAmbiguous = false;
                     this.respond(message, {success:false,error:'reconcile_required'}, delay);
                 } else {
-                    this.respond(message, {success:true,newBalance:this.state.kpoints,purchased:clone(this.state.purchased),purchasedToken:this.rotatePurchasedToken()}, delay);
+                    this.respond(message, {success:true,v:1,newBalance:this.state.kpoints,delivered:clone(plan.lines),cart:[],
+                        purchased:clone(this.state.purchased),purchasedToken:this.state.purchasedToken}, delay);
                 }
                 return;
             }
@@ -694,7 +746,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var loadingGateBlocked = !loadingGateState.shopReady
             && loadingGateState.cartCount === 0
             && loadingCheckout && loadingCheckout.disabled
-            && countCmd('saveCart') === 0 && countCmd('checkout') === 0;
+            && countCmd('saveCart') === 0 && countCmd('checkoutCommit') === 0;
         await waitFor(function(){ return KShop.debugState().shopReady; }, 500);
         assert('kshop-ui2e','重开必须等待新 bulkQuery 后才恢复购物车编辑与结账',
             loadingGateBlocked && KShop.debugState().cartCount === 1
@@ -743,15 +795,22 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         Host.delays.saveCart = 170;
         addEquipment();
         await wait(65);
-        confirmCheckout();
+        await confirmCheckout();
         await wait(50);
-        var checkoutBeforeSave = countCmd('checkout');
-        await waitFor(function(){ return countCmd('checkout') === 1; }, 600);
+        var checkoutBeforeSave = countCmd('checkoutCommit');
+        await waitFor(function(){ return countCmd('checkoutCommit') === 1; }, 600);
         var saveIndex = Host.sent.findIndex(function(x){ return x.cmd === 'saveCart'; });
-        var checkoutIndex = Host.sent.findIndex(function(x){ return x.cmd === 'checkout'; });
-        assert('kshop-ui6','checkout 等待 save pipeline 清空后才下发',
+        var checkoutIndex = Host.sent.findIndex(function(x){ return x.cmd === 'checkoutCommit'; });
+        assert('kshop-ui6','checkoutCommit 等待 save pipeline 清空后才下发',
             checkoutBeforeSave === 0 && saveIndex >= 0 && checkoutIndex > saveIndex,
-            'before=' + checkoutBeforeSave + ' order=' + saveIndex + '/' + checkoutIndex);
+            'before=' + checkoutBeforeSave + ' order=' + saveIndex + '/' + checkoutIndex
+                + ' state=' + JSON.stringify(KShop.debugState()));
+        await waitFor(function(){ return KShop.debugState().cartCount === 0 && !KShop.debugState().inventory.busyOwner; },600);
+        assert('kshop-ui6b','新结算直接交付背包且不新增历史待领取记录',
+            Host.state.purchased.length === BASE_PURCHASED.length
+                && Host.state.inventory.背包.some(function(item){ return item && item.name === '测试手枪'; })
+                && KShop.debugState().purchasedCount === BASE_PURCHASED.length,
+            'purchased=' + Host.state.purchased.length + ' cart=' + KShop.debugState().cartCount);
 
         await Host.open();
         Host.delays.claim = 160;
@@ -774,27 +833,42 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         addEquipment();
         await wait(120);
         Host.nextCheckoutMalformed = true;
-        confirmCheckout();
+        await confirmCheckout();
         await waitFor(function(){ return countCmd('bulkQuery') >= 2 && !document.querySelector('.kshop-write-busy'); }, 1000);
-        assert('kshop-ui8','畸形成功 checkout 只 bulkQuery 对账且不重放 checkout',
-            countCmd('checkout') === 1 && countCmd('bulkQuery') === 2 && document.querySelectorAll('.kshop-cart-row').length === 0,
-            'checkout=' + countCmd('checkout') + ' bulk=' + countCmd('bulkQuery'));
+        assert('kshop-ui8','畸形成功 checkoutCommit 只 bulkQuery 对账且不重放提交',
+            countCmd('checkoutCommit') === 1 && countCmd('bulkQuery') === 2 && document.querySelectorAll('.kshop-cart-row').length === 0,
+            'checkoutCommit=' + countCmd('checkoutCommit') + ' bulk=' + countCmd('bulkQuery'));
 
         await Host.open();
         addEquipment();
         await wait(100);
-        var checkoutBeforeModal = countCmd('checkout');
+        var checkoutBeforeModal = countCmd('checkoutCommit');
         click('#kshop-checkout');
-        var checkoutModalNode = document.querySelector('.workbench-modal[data-modal-kind="commit"]');
-        var modalVisible = !!checkoutModalNode;
-        var checkoutModalPlayerCopy = checkoutModalNode && !/(BATCH|COMMIT|权威|AS2|写请求)/.test(checkoutModalNode.innerText)
-            && checkoutModalNode.querySelector('.workbench-modal-title').textContent === '确认结账？';
-        var checkoutBeforeConfirm = countCmd('checkout');
+        await waitFor(function(){ return document.querySelector('.kshop-settlement-page.active'); },300);
+        var settlementNode = document.querySelector('.kshop-settlement-page.active');
+        var settlementVisible = !!settlementNode;
+        var settlementPlayerCopy = settlementNode && !/(BATCH|COMMIT|AS2|写请求)/.test(settlementNode.innerText)
+            && settlementNode.querySelector('h2').textContent === '结算核对';
+        var checkoutBeforeConfirm = countCmd('checkoutCommit');
         window.__emitBridge('panel_esc',{});
-        assert('kshop-ui8a','模态②在确认前不下发 checkout，ESC 先退模态且保持购物车',
-            checkoutBeforeModal === 0 && checkoutBeforeConfirm === 0 && modalVisible && checkoutModalPlayerCopy
-                && countCmd('checkout') === 0 && !document.querySelector('.workbench-modal')
+        assert('kshop-ui8a','二级结算在确认前不下发 commit，ESC 先返回商城且保持购物车',
+            checkoutBeforeModal === 0 && checkoutBeforeConfirm === 0 && settlementVisible && settlementPlayerCopy
+                && countCmd('checkoutCommit') === 0 && !document.querySelector('.kshop-settlement-page.active')
                 && Panels.isOpen() && document.querySelectorAll('.kshop-cart-row').length === 1);
+
+        await Host.open();
+        for (var fullSlot=0;fullSlot<Host.state.inventory.背包.length;fullSlot++) {
+            Host.state.inventory.背包[fullSlot] = {name:'占位'+fullSlot,displayName:'占位',icon:'占位',majorType:'武器',itemKind:'equipment',quantity:1};
+        }
+        addEquipment();
+        await wait(100);
+        click('#kshop-checkout');
+        await waitFor(function(){ return document.querySelector('[data-kshop-settlement-status]')
+            && /容量不足/.test(document.querySelector('[data-kshop-settlement-status]').textContent); },500);
+        assert('kshop-ui8aa','权威预览在满背包时阻止提交且不扣 K 点',
+            document.querySelector('[data-kshop-settlement-commit]').disabled
+                && countCmd('checkoutCommit') === 0 && Host.state.kpoints === 500
+                && KShop.debugState().settling);
 
         await Host.open();
         var selectCard = document.querySelector('.kshop-card[data-idx="0"]');
@@ -1507,7 +1581,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await wait(120);
         var firstCategory = document.querySelector('.kshop-cat-btn');
         if (firstCategory) firstCategory.click();
-        if (mode === 'modal') click('#kshop-checkout');
+        if (mode === 'modal' || mode === 'settlement') {
+            click('#kshop-checkout');
+            await waitFor(function(){ var button=document.querySelector('[data-kshop-settlement-commit]'); return button && !button.disabled; },500);
+        }
         if (mode === 'inventory' || mode === 'inventory-pages') {
             click('.workbench-mode-btn[data-mode="inventory"]');
             await wait(160);

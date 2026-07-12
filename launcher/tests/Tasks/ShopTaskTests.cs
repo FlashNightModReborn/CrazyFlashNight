@@ -41,6 +41,26 @@ namespace CF7Launcher.Tests.Tasks
                 response["purchased"] = new JArray();
                 response["purchasedToken"] = "shop.test.2";
             }
+            if (success && (string)sent["action"] == "shopCheckoutPreview")
+            {
+                response["v"] = 1;
+                response["checkoutToken"] = "kcheckout.test.1";
+                response["purchaseLines"] = new JArray();
+                response["total"] = 0;
+                response["balance"] = 10;
+                response["projectedBalance"] = 10;
+                response["canCommit"] = true;
+                response["blockingError"] = "";
+            }
+            if (success && (string)sent["action"] == "shopCheckoutCommit")
+            {
+                response["v"] = 1;
+                response["newBalance"] = 0;
+                response["delivered"] = new JArray();
+                response["cart"] = new JArray();
+                response["purchased"] = new JArray();
+                response["purchasedToken"] = "shop.test.2";
+            }
             if (success && (string)sent["action"] == "shopClaim")
             {
                 response["purchased"] = new JArray();
@@ -70,6 +90,8 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("bulkQuery", "shopBulkQuery")]
         [InlineData("tooltip", "shopTooltip")]
         [InlineData("saveCart", "shopSaveCart")]
+        [InlineData("checkoutPreview", "shopCheckoutPreview")]
+        [InlineData("checkoutCommit", "shopCheckoutCommit")]
         [InlineData("checkout", "shopCheckout")]
         [InlineData("claim", "shopClaim")]
         public void HandleWebRequest_KnownCommand_ForwardsTrustedAction(string cmd, string action)
@@ -177,6 +199,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Theory]
+        [InlineData("checkoutCommit")]
         [InlineData("checkout")]
         [InlineData("claim")]
         public void MalformedSuccessfulWriteResponse_IsRewrittenToReconcileRequired(string cmd)
@@ -232,6 +255,9 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Theory]
+        [InlineData("checkoutCommit", "insufficient_kpoints")]
+        [InlineData("checkoutCommit", "inventory_full")]
+        [InlineData("checkoutCommit", "stale_state")]
         [InlineData("checkout", "insufficient_kpoints")]
         [InlineData("claim", "item_not_found")]
         [InlineData("claim", "inventory_full")]
@@ -295,6 +321,28 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(response["task"]);
             Assert.Null(response["panel"]);
             Assert.Null(response["cmd"]);
+        }
+
+        [Fact]
+        public void CheckoutPreview_MalformedSuccess_IsRejectedWithoutEnteringWriteGate()
+        {
+            var sent = new List<string>();
+            var posted = new List<JObject>();
+            var task = new ShopTask(() => true, payload => { sent.Add(payload); return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+
+            task.HandleWebRequest("checkoutPreview", JObject.Parse("{\"callId\":\"wb.s.1.1\",\"v\":1,\"cart\":[]}"));
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "shop_response",
+                ["callId"] = (int)ParseSent(sent[0])["callId"],
+                ["success"] = true
+            }, _ => { });
+            task.HandleWebRequest("checkoutCommit", JObject.Parse("{\"callId\":\"wb.s.1.2\",\"expectedCheckoutToken\":\"x\"}"));
+
+            Assert.Equal("invalid_response", (string)posted[0]["error"]);
+            Assert.Equal(2, sent.Count);
+            Assert.Equal("shopCheckoutCommit", (string)ParseSent(sent[1])["action"]);
         }
     }
 }

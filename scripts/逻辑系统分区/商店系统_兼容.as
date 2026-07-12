@@ -355,6 +355,8 @@ _root.UI系统.NPC商店WebView.executeBuy = function(params:Object):Object {
     var itemName:String = resolved.itemName;
     var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
     var quantity:Number = Number(params.quantity);
+    // legacy buy 保持原版“一次一件装备”；npc-shop.v2 purchaseLimit 只作用于
+    // 新 tradePreview/tradeCommit 协议，后者会把复数装备展开为独立实例。
     var maxQuantity:Number = org.flashNight.arki.item.ItemUtil.isEquipment(itemName) ? 1 : 100;
     if (quantity > maxQuantity) return this.fail("invalid_quantity");
     var requiredInfo:String = typeof resolved.raw == "string" || resolved.raw.requiredInfo == undefined
@@ -736,12 +738,17 @@ _root.UI系统.NPC商店WebView.resolveTradeSale = function(request:Object):Obje
 
 _root.UI系统.NPC商店WebView.buildAcquireItems = function(purchases:Array, sales:Array):Array {
     var result:Array = [];
+    var collectionTotals:Object = {};
     for (var i:Number = 0; i < purchases.length; i++) {
         var purchase:Object = purchases[i];
         if (org.flashNight.arki.item.ItemUtil.isEquipment(purchase.itemName)) {
             for (var instance:Number = 0; instance < Number(purchase.quantity); instance++) {
                 result.push({name:purchase.itemName, value:1});
             }
+        } else if (org.flashNight.arki.item.ItemUtil.isMaterial(purchase.itemName)
+                || org.flashNight.arki.item.ItemUtil.isInformation(purchase.itemName)) {
+            collectionTotals[purchase.itemName] = Number(collectionTotals[purchase.itemName] || 0)
+                + Number(purchase.quantity);
         } else {
             result.push({name:purchase.itemName, value:purchase.quantity});
         }
@@ -749,8 +756,13 @@ _root.UI系统.NPC商店WebView.buildAcquireItems = function(purchases:Array, sa
     for (var j:Number = 0; j < sales.length; j++) {
         var sale:Object = sales[j];
         for (var modIndex:Number = 0; modIndex < sale.returnedMods.length; modIndex++) {
-            result.push(sale.returnedMods[modIndex]);
+            var returned:Object = sale.returnedMods[modIndex];
+            collectionTotals[returned.name] = Number(collectionTotals[returned.name] || 0)
+                + Number(returned.value);
         }
+    }
+    for (var collectionName:String in collectionTotals) {
+        result.push({name:collectionName, value:Number(collectionTotals[collectionName])});
     }
     return result;
 };
@@ -807,20 +819,49 @@ _root.UI系统.NPC商店WebView.checkTradeCapacity = function(plan:Object):Boole
 _root.UI系统.NPC商店WebView.getPurchaseBounds = function(plan:Object, target:Object):Object {
     var otherBuyTotal:Number = Number(plan.buyTotal) - Number(target.total);
     var budget:Number = Number(plan.balance) + Number(plan.sellTotal) - otherBuyTotal;
-    var maxAffordable:Number = 0;
-    var maxByCapacity:Number = 0;
     var limit:Number = Number(target.maxQuantity);
-    for (var quantity:Number = 1; quantity <= limit; quantity++) {
-        var candidate:Object = this.resolveTradePurchase(plan.shopId, {catalogIndex:target.catalogIndex, quantity:quantity});
-        if (!candidate.success) break;
-        if (Number(candidate.total) <= budget) maxAffordable = quantity;
+    var low:Number = 1;
+    var high:Number = limit;
+    var maxAffordable:Number = 0;
+    while (low <= high) {
+        var affordableMid:Number = Math.floor((low + high) / 2);
+        var affordableCandidate:Object = this.resolveTradePurchase(plan.shopId, {
+            catalogIndex:target.catalogIndex,
+            quantity:affordableMid
+        });
+        if (affordableCandidate.success && Number(affordableCandidate.total) <= budget) {
+            maxAffordable = affordableMid;
+            low = affordableMid + 1;
+        } else {
+            high = affordableMid - 1;
+        }
+    }
+
+    low = 1;
+    high = limit;
+    var maxByCapacity:Number = 0;
+    while (low <= high) {
+        var capacityMid:Number = Math.floor((low + high) / 2);
+        var candidate:Object = this.resolveTradePurchase(plan.shopId, {
+            catalogIndex:target.catalogIndex,
+            quantity:capacityMid
+        });
+        if (!candidate.success) {
+            high = capacityMid - 1;
+            continue;
+        }
         var trialPurchases:Array = [];
         for (var i:Number = 0; i < plan.purchases.length; i++) {
             trialPurchases.push(plan.purchases[i] === target ? candidate : plan.purchases[i]);
         }
         var trial:Object = {purchases:trialPurchases, sales:plan.sales};
         trial.acquireItems = this.buildAcquireItems(trialPurchases, plan.sales);
-        if (this.checkTradeCapacity(trial)) maxByCapacity = quantity;
+        if (this.checkTradeCapacity(trial)) {
+            maxByCapacity = capacityMid;
+            low = capacityMid + 1;
+        } else {
+            high = capacityMid - 1;
+        }
     }
     return {
         purchaseLimit:limit,
@@ -840,6 +881,7 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
     var plan:Object = {shopId:shopId, purchases:[], sales:[], publicSales:[], acquireItems:[], buyTotal:0, sellTotal:0, balance:Number(_root.金钱)};
     var purchaseIds:Object = {};
     var saleIds:Object = {};
+    var expandedSaleIds:Object = {};
     for (var i:Number = 0; i < purchases.length; i++) {
         var purchase:Object = this.resolveTradePurchase(shopId, purchases[i]);
         if (!purchase.success) return purchase;
@@ -855,7 +897,10 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         if (saleIds[saleGroup.groupIdentity]) return this.fail("duplicate_line");
         saleIds[saleGroup.groupIdentity] = true;
         for (var entryIndex:Number = 0; entryIndex < saleGroup.entries.length; entryIndex++) {
-            plan.sales.push(saleGroup.entries[entryIndex]);
+            var expandedSale:Object = saleGroup.entries[entryIndex];
+            if (expandedSaleIds[expandedSale.identity]) return this.fail("duplicate_line");
+            expandedSaleIds[expandedSale.identity] = true;
+            plan.sales.push(expandedSale);
         }
         plan.publicSales.push({
             itemName:saleGroup.itemName,
@@ -1048,10 +1093,11 @@ _root.gameCommands["openNpcShop"] = function(params):Boolean {
     var source:String = params.source == undefined ? "world_npc" : String(params.source);
     if (source != "world_npc" && source != "world_npc_dialogue"
             && source != "tablet_contacts" && source != "legacy_shop_refresh") source = "world_npc";
-    if (shopId.indexOf('"') >= 0) return false;
-    // source 是代码内严格枚举，shopId 来自权威 _root.shops 键；LiteJSON 不支持引号转义，
-    // 因此这里与 MapPanelService 的生产入口一致，直接构造最小受控信封。
-    var payload:String = '{"task":"panel_request","panel":"npcshop","source":"' + source
-        + '","initData":{"shopId":"' + shopId + '"}}';
+    var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
+        "npcshop",
+        source,
+        [],
+        [{name:"shopId", value:shopId}]
+    );
     return _root.server.sendSocketMessage(payload);
 };

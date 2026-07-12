@@ -15,6 +15,7 @@ const INVENTORY_UI_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-ui.js');
 const INVENTORY_WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-workbench.js');
 const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior.js');
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
+const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
 const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
 const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
 const visualArg = process.argv.find(arg => arg.startsWith('--visual='));
@@ -50,10 +51,17 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory operation resolver branches on concrete container pair');
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
+    const kshopViewsSource = fs.readFileSync(KSHOP_VIEWS_SOURCE, 'utf8');
     const panelsSource = fs.readFileSync(PANELS_SOURCE, 'utf8');
     const panelsCssSource = fs.readFileSync(PANELS_CSS_SOURCE, 'utf8');
     if (kshopSource.includes('same_container_unsupported')) {
         throw new Error('KShop still rejects generic same-container owned transfer');
+    }
+    if (!kshopSource.includes('new KShopViews.SettlementPage(')
+            || !kshopViewsSource.includes('function SettlementPage(')
+            || !kshopViewsSource.includes('function createCatalog(')
+            || !kshopViewsSource.includes('function createOrder(')) {
+        throw new Error('KShop view/settlement composition boundary is incomplete');
     }
     const inventoryUiSource = fs.readFileSync(INVENTORY_UI_SOURCE, 'utf8');
     const inventoryWorkbenchSource = fs.readFileSync(INVENTORY_WORKBENCH_SOURCE, 'utf8');
@@ -81,7 +89,8 @@ function auditArchitectureBoundaries() {
             || !panelsSource.includes('openAfterRequiredAssets(id)')) {
         throw new Error('Panels lifecycle no longer gates first open on the shared icon manifest');
     }
-    if (!/#panel-container\[data-panel="workbench"\]\s+#panel-content\s*\{[\s\S]*?inset:\s*0\s*;/.test(panelsCssSource)) {
+    const fullAnchorBlocks = panelsCssSource.match(/[^{}]+\{[^{}]*inset:\s*0\s*;[^{}]*\}/g) || [];
+    if (!fullAnchorBlocks.some(block => block.includes('#panel-container[data-panel="workbench"] #panel-content'))) {
         throw new Error('Standalone workbench no longer uses the full panel anchor');
     }
     const behaviorSource = fs.readFileSync(GAME_UI_BEHAVIOR_SOURCE, 'utf8');
@@ -96,6 +105,7 @@ function auditArchitectureBoundaries() {
         ownedPairBranchFree:true,
         sameContainerTransfer:true,
         inventoryUiComponents:true,
+        kshopViewComposition:true,
         standaloneBattleboxWorkbench:true,
         sharedIconManifestGate:true,
         workbenchFullAnchor:true,

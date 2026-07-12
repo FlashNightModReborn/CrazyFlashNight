@@ -899,7 +899,8 @@ var NpcShop = (function() {
     }
     function handleWriteError(response) {
         var error = response && response.error;
-        if (error === 'timeout' || error === 'client_timeout' || error === 'disconnected' || error === 'reconcile_required') {
+        if ((response && response.requiresReconcile) || error === 'timeout' || error === 'client_timeout'
+                || error === 'disconnected' || error === 'reconcile_required' || error === 'malformed_response') {
             _needsReconcile = true; refreshControls(); refreshSnapshot(); return;
         }
         if (error === 'stale_state') { toast('物品状态已经变化，正在重新同步。'); refreshSnapshot(); return; }
@@ -949,7 +950,8 @@ var NpcShop = (function() {
             shop_not_found:'未找到该 NPC 的商店。', locked:'尚未获得所需情报。', insufficient_money:'金币不足。', inventory_full:'背包空间不足。',
             stale_state:'物品状态已经变化。', sell_forbidden:'该容器不允许出售。', insufficient_quantity:'物品数量不足。', duplicate_line:'交易清单包含重复物品。',
             invalid_quantity:'购买或出售数量无效。', nothing_to_sell:'没有可批量出售的普通实例。', target_full:'目标容器已满。', slot_locked:'该战备箱槽位尚未解锁。',
-            busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', timeout:'商店响应超时。', client_timeout:'商店响应超时。', disconnected:'连接已断开。'
+            busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', malformed_response:'交易回包不完整，正在重新同步。',
+            timeout:'商店响应超时。', client_timeout:'商店响应超时。', disconnected:'连接已断开。'
         };
         return messages[error] || '操作失败，请重试。';
     }

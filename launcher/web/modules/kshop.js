@@ -5,9 +5,11 @@
  *         → bulkQuery → Flash 回包 → 渲染商品列表
  * 关闭:   ESC/遮罩/关闭按钮 → requestClose → 写协调器收口/对账 → close → shopPanelClose
  *
- * 旧系统行为保留:
+ * 商城行为:
  *   - 等级限制: item.level <= playerLevel + reverseLevel 才可购买
  *   - 购买分流: 消耗品/收集品 → 数量+/-, 其他(装备) → 单次加购(qty固定1)
+ *   - 新购买: checkoutPreview 权威核算 → checkoutCommit 原子直接入包
+ *   - 旧存档: 商城已购买物品仅保留历史 claim 兼容，不再增长
  */
 var KShop = (function() {
     'use strict';
@@ -26,6 +28,10 @@ var KShop = (function() {
     var _iconsLoaded = false;
     var _loading = false;
     var _writeState = null;
+    var _checkoutPreview = null;
+    var _previewBusy = false;
+    var _previewQueued = false;
+    var _previewRevision = 0;
     var _runtimeConfig = (typeof window !== 'undefined' && window.__KSHOP_RUNTIME_CONFIG__) || {};
     var _mux = new KShopRequestMux({
         send: function(message) { Bridge.send(message); },
@@ -59,7 +65,7 @@ var KShop = (function() {
 
     // Gate A1 workbench primitives + DOM refs
     var _workbenchShell, _catalogView, _orderView, _catalogChrome, _backpackView, _warehouseView;
-    var _cartGridView, _purchasedGridView, _catalogRenderer, _interactionBroker, _dragController;
+    var _cartGridView, _purchasedGridView, _catalogRenderer, _interactionBroker, _dragController, _settlementView;
     var _ownedViews = [], _ownedDragControllers = [];
     var _shopModeButton, _inventoryModeButton, _inventoryRetryButton;
     var _warehousePager, _backpackSortControls, _warehouseSortControls;
@@ -114,6 +120,8 @@ var KShop = (function() {
         var code = error || 'unknown';
         if (scope === 'checkout') {
             if (code === 'insufficient_kpoints') return 'K点不足！';
+            if (code === 'inventory_full') return '背包容量不足，整单未扣款。';
+            if (code === 'stale_state') return '商品、余额或背包状态已变化，请重新核对。';
             if (code === 'busy') return '商城正在处理另一笔写入，请稍后再试。';
             if (code === 'timeout' || code === 'client_timeout' || code === 'reconcile_required') return '结账结果不确定，已按服务器状态刷新，未自动重试。';
             if (code === 'disconnected') return '商城连接已断开，结账不会自动重试。';
@@ -192,6 +200,7 @@ var KShop = (function() {
         var editButtons = _el.querySelectorAll('.kshop-add-btn,.kshop-qty-btn,.kshop-qty-pop-btn,.kshop-qty-confirm');
         for (var i = 0; i < editButtons.length; i++) editButtons[i].disabled = !!blockEdits;
         if (_checkoutBtn) _checkoutBtn.disabled = _cart.length === 0 || !!blockWrites;
+        if (_settlementView) _settlementView.render();
         var claimButtons = _el.querySelectorAll('.kshop-claim-btn');
         for (var j = 0; j < claimButtons.length; j++) claimButtons[j].disabled = claimBlocked;
         var ownedNodes = _el.querySelectorAll('.inventory-slot-card');
@@ -275,6 +284,7 @@ var KShop = (function() {
 
     function createDOM() {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required before KShop');
+        if (typeof KShopViews === 'undefined') throw new Error('KShop view composition is required before KShop');
         _workbenchShell = new Workbench.DualPaneShell({
             eyebrow: '',
             title: 'K点商城',
@@ -345,6 +355,22 @@ var KShop = (function() {
         if (!_workbenchShell.mountInitial(_catalogView, _orderView)) {
             throw new Error('KShop workbench initial view configuration rejected');
         }
+        _settlementView = new KShopViews.SettlementPage({
+            panelRoot: _el,
+            getCart: function() { return _cart; },
+            getBalance: function() { return _kpoints; },
+            findCatalogItem: findCatalogItem,
+            isStackable: isStackable,
+            iconHtml: iconHtml,
+            canEditCart: canEditCart,
+            canCheckout: canStartShopWrite,
+            adjustQuantity: adjustCartQuantity,
+            setQuantity: setCartQuantity,
+            onInspect: showItemDetail,
+            onBack: closeSettlement,
+            onCommit: checkout
+        });
+        _settlementView.mount(_el);
         installWorkbenchInteractions();
 
         // 沉浸全屏化 2026-06-11：把固定 1024×576 画布(.kshop-panel)包进共享 .panel-scale-shell，
@@ -356,46 +382,9 @@ var KShop = (function() {
     }
 
     function createCatalogWorkbenchView() {
-        var root = document.createElement('div');
-        root.className = 'workbench-view kshop-catalog-view';
-        root.setAttribute('data-view-binding', 'shop:catalog');
-        _catalogChrome = new Workbench.ViewChrome({
-            kicker: '',
-            title: '商品',
-            meta: '同步中'
-        });
-        _catBar = document.createElement('div');
-        _catBar.className = 'kshop-categories';
-        _catBar.id = 'kshop-cat-bar';
-        _catalogChrome.setToolbar(_catBar);
-
-        var gridWrap = document.createElement('div');
-        gridWrap.className = 'kshop-grid-wrap workbench-grid-wrap';
-        _loadingEl = document.createElement('div');
-        _loadingEl.className = 'kshop-loading';
-        _loadingEl.id = 'kshop-loading';
-        _loadingEl.textContent = '正在加载商品…';
-        _catalogRenderer = new Workbench.GridRenderer({
-            className: 'kshop-grid workbench-catalog-grid',
-            emptyText: '当前分类暂无商品',
-            keyOf: function(item) { return item.idx; },
+        var composition = KShopViews.createCatalog({
             renderItem: renderCatalogCard,
-            bindItem: bindCatalogCard
-        });
-        _grid = _catalogRenderer.root;
-        _grid.id = 'kshop-grid';
-        gridWrap.appendChild(_loadingEl);
-        gridWrap.appendChild(_grid);
-        root.appendChild(_catalogChrome.root);
-        root.appendChild(gridWrap);
-
-        return {
-            instanceKey: 'shop:catalog',
-            instancePolicy: 'singletonByBinding',
-            allowedSlots: ['L'],
-            viewKind: 'catalog',
-            mount: function(container) { container.appendChild(root); },
-            unmount: function() { if (root.parentNode) root.parentNode.removeChild(root); },
+            bindItem: bindCatalogCard,
             render: renderGrid,
             exportOffer: function(item) {
                 if (!item || isLocked(item) || item.type === '非卖品') return null;
@@ -404,91 +393,39 @@ var KShop = (function() {
                     sourceRef: { catalogIdx: item.idx },
                     offeredOperations: ['shop.addCartIntent']
                 };
-            },
-            getRoot: function() { return root; }
-        };
+            }
+        });
+        _catalogChrome = composition.chrome;
+        _catBar = composition.categoryBar;
+        _catalogRenderer = composition.renderer;
+        _grid = composition.grid;
+        _loadingEl = composition.loading;
+        return composition.view;
     }
 
     function createOrderWorkbenchView() {
-        var root = document.createElement('div');
-        root.className = 'workbench-view kshop-order-view';
-        root.setAttribute('data-view-binding', 'shop:cart');
-
-        var cartAdapter = new Workbench.ContainerViewAdapter({
-            instanceKey: 'shop:cart-items',
-            itemModel: 'intent',
+        var composition = KShopViews.createOrder({
             getItems: function() { return _cart; },
-            keyOf: function(item) { return item.idx; },
-            renderItem: renderCartRow,
-            bindItem: bindCartRow,
-            probeAccept: probeCartAccept
-        });
-        _cartGridView = new Workbench.GridContainerView({
-            adapter: cartAdapter,
-            title: '购物车',
-            kicker: '',
-            meta: '0 种 / 0 件',
-            className: 'kshop-cart-section',
-            gridClassName: 'kshop-cart-list',
-            emptyText: '购物车为空'
-        });
-        _cartList = _cartGridView.renderer.root;
-        _cartList.id = 'kshop-cart-list';
-
-        _cartDropTarget = document.createElement('button');
-        _cartDropTarget.type = 'button';
-        _cartDropTarget.className = 'kshop-cart-drop-target';
-        _cartDropTarget.setAttribute('data-audio-cue', 'select');
-        _cartDropTarget.innerHTML = '<span class="kshop-drop-glyph">＋</span><span class="kshop-drop-copy"><b>添加商品</b><small>选择或拖入</small></span>';
-        _cartDropTarget.title = '选择商品后点击，或将商品拖入购物车';
-        _cartDropLabel = _cartDropTarget.querySelector('small');
-        _cartDropTarget.addEventListener('click', onCartSinkClick);
-        _cartGridView.root.insertBefore(_cartDropTarget, _cartGridView.renderer.root);
-
-        var footer = document.createElement('div');
-        footer.className = 'kshop-cart-footer workbench-commit-bar';
-        footer.innerHTML =
-            '<span class="workbench-commit-summary">预计结算 <b id="kshop-cart-total">0</b> K</span>' +
-            '<button class="kshop-checkout-btn" id="kshop-checkout" data-audio-cue="confirm">核对并结账</button>';
-        _cartTotal = footer.querySelector('#kshop-cart-total');
-        _checkoutBtn = footer.querySelector('#kshop-checkout');
-        _checkoutBtn.addEventListener('click', showCheckoutConfirm);
-        _cartGridView.root.appendChild(footer);
-
-        var purchasedAdapter = new Workbench.ContainerViewAdapter({
-            instanceKey: 'shop:purchased-items',
-            itemModel: 'owned-pending',
-            getItems: function() { return _purchased; },
-            keyOf: function(item, index) { return index + ':' + String(item && item[1]); },
-            renderItem: renderClaimRow,
-            bindItem: bindClaimRow
-        });
-        _purchasedGridView = new Workbench.GridContainerView({
-            adapter: purchasedAdapter,
-            title: '待领取',
-            kicker: '',
-            meta: '',
-            className: 'kshop-purchased-section',
-            gridClassName: 'kshop-claim-list',
-            emptyText: '暂无待领取商品'
-        });
-        _claimList = _purchasedGridView.renderer.root;
-        _claimList.id = 'kshop-claim-list';
-
-        _cartGridView.mount(root);
-        _purchasedGridView.mount(root);
-
-        return {
-            instanceKey: 'shop:cart',
-            instancePolicy: 'singletonByBinding',
-            allowedSlots: ['L', 'R'],
-            viewKind: 'intent-composite',
-            mount: function(container) { container.appendChild(root); },
-            unmount: function() { if (root.parentNode) root.parentNode.removeChild(root); },
-            render: function() { renderCart(); renderClaimed(); },
+            getCart: function() { return _cart; },
+            getPurchased: function() { return _purchased; },
+            renderCartItem: renderCartRow,
+            bindCartItem: bindCartRow,
+            renderPurchasedItem: renderClaimRow,
+            bindPurchasedItem: bindClaimRow,
             probeAccept: probeCartAccept,
-            getRoot: function() { return root; }
-        };
+            onCartSinkClick: onCartSinkClick,
+            onCheckout: openSettlement,
+            render: function() { renderCart(); renderClaimed(); },
+        });
+        _cartGridView = composition.cartGridView;
+        _purchasedGridView = composition.purchasedGridView;
+        _cartList = composition.cartList;
+        _claimList = composition.claimList;
+        _cartDropTarget = composition.dropTarget;
+        _cartDropLabel = composition.dropLabel;
+        _cartTotal = composition.cartTotal;
+        _checkoutBtn = composition.checkoutButton;
+        return composition.view;
     }
 
     function createWarehousePager() {
@@ -743,6 +680,7 @@ var KShop = (function() {
 
     function showInventoryMode() {
         if (!_workbenchShell) return;
+        closeSettlement();
         _el.setAttribute('data-workbench-skin', 'inventory');
         _workbenchShell.moveView('L', _backpackView);
         _workbenchShell.moveView('R', _warehouseView);
@@ -889,6 +827,10 @@ var KShop = (function() {
         _cart = [];
         _purchased = [];
         _purchasedToken = '';
+        _checkoutPreview = null;
+        _previewBusy = false;
+        _previewQueued = false;
+        _previewRevision++;
         _activeCategory = null;
         _categories = [];
         _tooltipCache = {};
@@ -901,6 +843,7 @@ var KShop = (function() {
             _warehousePager.attach();
         }
         dismissDialog();
+        closeSettlement();
         if (_interactionBroker) _interactionBroker.clearSelection();
         buildCategories();
         renderCart();
@@ -1440,6 +1383,35 @@ var KShop = (function() {
         markCartDirty();
     }
 
+    function adjustCartQuantity(idx, delta, removeAll) {
+        if (!canEditCart()) return;
+        for (var i = 0; i < _cart.length; i++) {
+            if (_cart[i].idx !== idx) continue;
+            if (removeAll) _cart.splice(i, 1);
+            else {
+                _cart[i].qty += Number(delta) || 0;
+                if (_cart[i].qty <= 0) _cart.splice(i, 1);
+            }
+            renderCart();
+            markCartDirty();
+            if (_settlementView && _settlementView.isActive()) requestCheckoutPreview();
+            return;
+        }
+    }
+
+    function setCartQuantity(idx, quantity) {
+        if (!canEditCart()) return;
+        var target = Math.max(1, Math.floor(Number(quantity) || 1));
+        for (var i = 0; i < _cart.length; i++) {
+            if (_cart[i].idx !== idx) continue;
+            _cart[i].qty = target;
+            renderCart();
+            markCartDirty();
+            if (_settlementView && _settlementView.isActive()) requestCheckoutPreview();
+            return;
+        }
+    }
+
     function renderCart() {
         killAllHoldTimers();
         var total = 0;
@@ -1455,6 +1427,7 @@ var KShop = (function() {
         }
         if (_cartDropTarget) _cartDropTarget.classList.toggle('has-items', _cart.length > 0);
         _cartTotal.textContent = total;
+        if (_settlementView) _settlementView.render();
         refreshWriteControls(_writeState || _writeCoordinator.debugState());
     }
 
@@ -1495,16 +1468,7 @@ var KShop = (function() {
                 var cidx = Number(btn.getAttribute('data-idx'));
                 var delta = Number(btn.getAttribute('data-delta'));
                 holdRepeat(btn, function() {
-                    if (!canEditCart()) return;
-                    for (var j = 0; j < _cart.length; j++) {
-                        if (_cart[j].idx === cidx) {
-                            _cart[j].qty += delta;
-                            if (_cart[j].qty <= 0) _cart.splice(j, 1);
-                            renderCart();
-                            markCartDirty();
-                            return;
-                        }
-                    }
+                    adjustCartQuantity(cidx, delta, false);
                 });
             })(btns[b]);
         }
@@ -1521,15 +1485,7 @@ var KShop = (function() {
         if (!canEditCart()) return;
         var idx = Number(e.target.getAttribute('data-idx'));
         var delta = Number(e.target.getAttribute('data-delta'));
-        for (var i = 0; i < _cart.length; i++) {
-            if (_cart[i].idx === idx) {
-                _cart[i].qty += delta;
-                if (_cart[i].qty <= 0) _cart.splice(i, 1);
-                renderCart();
-                markCartDirty();
-                return;
-            }
-        }
+        adjustCartQuantity(idx, delta, false);
     }
 
     // ══════════════════════════════════════════
@@ -1551,30 +1507,63 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     //  Checkout
     // ══════════════════════════════════════════
-    function showCheckoutConfirm() {
+    function openSettlement() {
         if (_cart.length === 0 || !canStartShopWrite()) return;
-        var total = 0;
-        for (var i = 0; i < _cart.length; i++) {
-            var item = findCatalogItem(_cart[i].idx);
-            if (item) total += Number(item.price) * Number(_cart[i].qty);
-        }
         playCue('modalOpen');
-        _workbenchShell.openModal({
-            kind: 'commit',
-            kicker: '',
-            title: '确认结账？',
-            message: _cart.length + ' 种商品，共 ' + cartQuantity() + ' 件',
-            detail: '需支付 K ' + total + '，商品将进入“待领取”。',
-            actions: [
-                { id: 'cancel', label: '返回核对', audioCue: 'cancel' },
-                { id: 'confirm', label: '确认结账', primary: true, audioCue: 'confirm', onSelect: checkout }
-            ]
+        _settlementView.show();
+        requestCheckoutPreview();
+    }
+
+    function closeSettlement() {
+        _previewRevision++;
+        _previewBusy = false;
+        _previewQueued = false;
+        _checkoutPreview = null;
+        if (_settlementView) _settlementView.hide();
+    }
+
+    function isValidCheckoutPreview(resp) {
+        return !!resp && resp.success === true && resp.v === 1
+            && typeof resp.checkoutToken === 'string' && resp.checkoutToken.length > 0
+            && Array.isArray(resp.purchaseLines) && typeof resp.canCommit === 'boolean'
+            && isFinite(Number(resp.total)) && isFinite(Number(resp.balance))
+            && isFinite(Number(resp.projectedBalance)) && typeof resp.blockingError === 'string';
+    }
+
+    function requestCheckoutPreview() {
+        if (!_settlementView || !_settlementView.isActive()) return;
+        if (_cart.length === 0) { closeSettlement(); return; }
+        if (_previewBusy) { _previewQueued = true; return; }
+        _previewBusy = true;
+        _previewQueued = false;
+        _checkoutPreview = null;
+        _previewRevision++;
+        var revision = _previewRevision;
+        _settlementView.setLoading();
+        requestShop('checkoutPreview', {v: 1, cart: buildCartPayload()}, function(resp) {
+            if (revision !== _previewRevision || !_settlementView.isActive()) return;
+            _previewBusy = false;
+            if (isValidCheckoutPreview(resp)) {
+                _checkoutPreview = resp;
+                _settlementView.setPreview(resp);
+            } else {
+                _settlementView.setError(messageForError('checkout', resp && resp.error));
+            }
+            if (_previewQueued) requestCheckoutPreview();
         });
     }
 
     function checkout() {
-        if (_cart.length === 0 || !canStartShopWrite()) return;
-        if (!_writeCoordinator.checkout(function(resp) {
+        if (_cart.length === 0 || !canStartShopWrite() || !_checkoutPreview || !_checkoutPreview.canCommit) return;
+        var token = _checkoutPreview.checkoutToken;
+        _checkoutPreview = null;
+        if (!_inventoryCoordinator.beginExternalWrite('shop.checkoutCommit')) {
+            toast('背包尚未同步或正在处理另一笔写入。');
+            requestCheckoutPreview();
+            return;
+        }
+        _settlementView.setLoading();
+        if (!_writeCoordinator.checkout(token, function(resp) {
             if (!isKShopOpen()) return;
             if (resp.success) {
                 _kpoints = resp.newBalance;
@@ -1583,19 +1572,29 @@ var KShop = (function() {
                 _purchasedToken = String(resp.purchasedToken || _purchasedToken);
                 _cart = [];
                 _writeCoordinator.acceptAuthoritativeCart();
+                closeSettlement();
                 renderCart();
                 renderClaimed();
-                toast('购买成功！');
-                playCue('success');
-            } else if (resp.reconciled) {
-                toast(messageForError('checkout', resp.error));
-                playCue('error');
-            } else {
-                toast(messageForError('checkout', resp.error));
-                playCue('error');
             }
+            var needsInventoryRefresh = !!resp.success || !!resp.reconciled;
+            _inventoryCoordinator.completeExternalWrite(needsInventoryRefresh, function(refreshResult) {
+                renderOwnedInventories();
+                if (resp.success && refreshResult.success) {
+                    toast('购买成功，商品已直接交付！');
+                    playCue('success');
+                } else if (resp.success) {
+                    toast('购买已成功，但背包刷新失败；请点击“重试库存同步”。');
+                    playCue('error');
+                } else {
+                    toast(messageForError('checkout', resp.error));
+                    playCue('error');
+                    if (_settlementView && _settlementView.isActive()) requestCheckoutPreview();
+                }
+            });
         })) {
+            _inventoryCoordinator.completeExternalWrite(false);
             toast('商城正在处理另一笔写入，请稍后再结账。');
+            requestCheckoutPreview();
         }
     }
 
@@ -1694,6 +1693,10 @@ var KShop = (function() {
     //  Close — saveCart 失败对话框
     // ══════════════════════════════════════════
     function requestClose() {
+        if (_settlementView && _settlementView.isActive()) {
+            closeSettlement();
+            return;
+        }
         if (_workbenchShell && _workbenchShell.getModalKind() === 'commit') {
             dismissDialog();
             return;
@@ -1724,6 +1727,7 @@ var KShop = (function() {
         for (var i = 0; i < _ownedDragControllers.length; i++) _ownedDragControllers[i].cancel();
         if (_interactionBroker) _interactionBroker.clearSelection();
         dismissDialog();
+        closeSettlement();
         hideTooltip();
         _shopReady = false;
         _loading = false;
@@ -1735,6 +1739,7 @@ var KShop = (function() {
 
     function doClose() {
         dismissDialog();
+        closeSettlement();
         dismissQtyInput();
         hideTooltip();
         Panels.close();
@@ -1786,6 +1791,7 @@ var KShop = (function() {
         _inventoryCoordinator.close();
         _mux.closeSession();
         dismissDialog();
+        closeSettlement();
         dismissQtyInput();
         hideTooltip();
         toast('连接断开，商城已关闭');
@@ -1806,7 +1812,11 @@ var KShop = (function() {
                 selectedCatalogIdx: _selectedCatalogIdx,
                 shopReady: _shopReady,
                 cartCount: _cart.length,
-                purchasedCount: _purchased.length
+                purchasedCount: _purchased.length,
+                settling: !!(_settlementView && _settlementView.isActive()),
+                previewBusy: _previewBusy,
+                hasCheckoutPreview: !!_checkoutPreview,
+                settlement: _settlementView ? _settlementView.debugState() : null
             };
         }
     };

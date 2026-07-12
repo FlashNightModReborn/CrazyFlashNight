@@ -31,6 +31,7 @@
          'modules/kshop-runtime.js',
          'modules/inventory-runtime.js',
          'modules/inventory-ui.js',
+         'modules/kshop-views.js',
          'modules/kshop.js'],
         noop);
 
