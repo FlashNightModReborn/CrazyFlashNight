@@ -1,6 +1,6 @@
 ﻿// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。
 // ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。
-// 联合头 82 包 | staged fN 13 | loader-fire fN 16 | s0..s9 分组 + BootSequencer.run
+// 联合头 81 包 + 具体类 6 | staged fN 13 | loader-fire fN 16 | s0..s9 分组 + BootSequencer.run
 // 异步/控制帧(f4握手/f5,6 await/f7→s5_parseTask/f26 最终化2 队列/f75 craft/f91 handoff) 由 BootSequencer.as 编排。
 this._lockroot = false;
 this.stop();
@@ -62,7 +62,6 @@ import org.flashNight.arki.unit.Action.Melee.*;
 import org.flashNight.arki.unit.Action.PickUp.*;
 import org.flashNight.arki.unit.Action.Regeneration.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
-import org.flashNight.arki.unit.Action.Skill.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.unit.UnitComponent.Dressup.*;
 import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
@@ -96,7 +95,13 @@ import org.flashNight.neur.Server.*;
 import org.flashNight.neur.StateMachine.*;
 import org.flashNight.sara.*;
 import org.flashNight.sara.util.*;
-import org.flashNight.boot.BootSequencer;   // 显式 import（L42 陷阱：CS6 会话缓存对会话内新类需显式 import，FQN 亦可能失败）
+// === 会话内新增类的具体 import 白名单（L42 陷阱；FQN 亦可能失败） ===
+import org.flashNight.boot.BootSequencer;
+import org.flashNight.arki.unit.Action.Skill.QuickSkillInputService;
+import org.flashNight.arki.unit.Action.Skill.SkillAttributeCore;
+import org.flashNight.arki.unit.Action.Skill.SkillDamageCore;
+import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
+import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 
 // === staged 同步代码函数（仅定义，无内联调用；#include 编译期展开） ===
 if (_root.__boot == undefined) _root.__boot = {};

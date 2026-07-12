@@ -16,6 +16,21 @@ var STAGED = [2, 3, 9, 10, 18, 32, 36, 37, 38, 39, 40, 41, 42]; // 同步 #inclu
 var S7_LOADERS = [53, 54, 55, 56, 58, 59];                       // S7 杂项 loader-fire（子弹/发型/色彩/宠物/技能/过场）
 var S8_LOADERS = [62, 63, 64, 65, 66, 67, 68, 69, 70, 74];       // S8 fire-and-forget fanout
 
+// CS6 常驻会话对“本会话内新增类”的包索引可能陈旧：即使已有通配 import/FQN，仍可能无法解析。
+// 只允许在这里维护需要绕过该 L42 陷阱的具体 import，生成后由 exact-match 门守住白名单。
+var SPECIFIC_IMPORTS = [
+  'org.flashNight.boot.BootSequencer',
+  'org.flashNight.arki.unit.Action.Skill.QuickSkillInputService',
+  'org.flashNight.arki.unit.Action.Skill.SkillAttributeCore',
+  'org.flashNight.arki.unit.Action.Skill.SkillDamageCore',
+  'org.flashNight.arki.unit.Action.Skill.SkillReloadCore',
+  'org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService'
+];
+// AS2 不允许同包通配 import 与具体 import 同时出现。Action.Skill 包因此整体改为具体类集合。
+var SPECIFIC_IMPORT_PACKAGES = {
+  'org.flashNight.arki.unit.Action.Skill': true
+};
+
 // 与 stage-wrap-frame.js 同源（分号可选、标识符分段式防贪婪吞 .*）
 var IMPORT_RE = /^[ \t]*import\s+([A-Za-z_][\w$]*(?:\.[\w$]+)*(?:\.\*)?)[ \t]*;?[ \t]*\r?\n?/gm;
 
@@ -87,7 +102,8 @@ var loaderDefs = S7_LOADERS.concat(S8_LOADERS).map(function (N) {
   var t = readBom(path.join(MAN, 'frame' + N + '.as')); collectPkgs(t); return wrapLoaderFire(N, t);
 });
 // 3) 联合头（收集去重排序；lint --fold-specific 已证 82 超集 0 碰撞，子集必 0）
-var header = Object.keys(_pkgs).sort().map(function (p) { return 'import ' + p + '.*;'; }).join('\n');
+var headerPackages = Object.keys(_pkgs).filter(function (p) { return !SPECIFIC_IMPORT_PACKAGES[p]; }).sort();
+var header = headerPackages.map(function (p) { return 'import ' + p + '.*;'; }).join('\n');
 
 // 4) stage 分组（手写：调用顺序 + s5/s9 移植 this→host/data，s7 含 f48 打印）
 var s7calls = [36, 37, 38, 39, 40, 41, 42].map(callsFor).join(' ');   // ⚠ 用 callsFor：f36/f37/f41 是 chunk 帧，无 base fN
@@ -146,7 +162,7 @@ var wiring = [
 var out = [
   '// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。',
   '// ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。',
-  '// 联合头 ' + Object.keys(_pkgs).length + ' 包 | staged fN ' + STAGED.length + ' | loader-fire fN ' + (S7_LOADERS.length + S8_LOADERS.length) + ' | s0..s9 分组 + BootSequencer.run',
+  '// 联合头 ' + headerPackages.length + ' 包 + 具体类 ' + SPECIFIC_IMPORTS.length + ' | staged fN ' + STAGED.length + ' | loader-fire fN ' + (S7_LOADERS.length + S8_LOADERS.length) + ' | s0..s9 分组 + BootSequencer.run',
   '// 异步/控制帧(f4握手/f5,6 await/f7→s5_parseTask/f26 最终化2 队列/f75 craft/f91 handoff) 由 BootSequencer.as 编排。',
   'this._lockroot = false;',
   'this.stop();',
@@ -161,7 +177,8 @@ var out = [
   '',
   '// === 联合通配 import 头（收集去重；lint --fold-specific 已证 82 超集 0 碰撞，子集亦 0） ===',
   header,
-  'import org.flashNight.boot.BootSequencer;   // 显式 import（L42 陷阱：CS6 会话缓存对会话内新类需显式 import，FQN 亦可能失败）',
+  '// === 会话内新增类的具体 import 白名单（L42 陷阱；FQN 亦可能失败） ===',
+  SPECIFIC_IMPORTS.map(function (className) { return 'import ' + className + ';'; }).join('\n'),
   '',
   '// === staged 同步代码函数（仅定义，无内联调用；#include 编译期展开） ===',
   'if (_root.__boot == undefined) _root.__boot = {};',
@@ -186,19 +203,21 @@ out = out.replace(/\r\n/g, '\n').replace(/\r/g, '').split('\n').map(function (li
   return lead.replace(/\t/g, '    ') + line.slice(lead.length);
 }).join('\n').replace(/\n{3,}/g, '\n\n');        // 折叠 2+ 连续空行为单空行（去残余分隔噪声）
 
-// F10 守门：联合头之外**只允许唯一一条具体 import**（BootSequencer，L42 CS6 会话缓存 workaround）。
-//   防后续组装逻辑误把第二条具体 import 混进产物（白名单例外悄悄扩散 = 违反 C3 单帧通配头纪律）。
+// F10 守门：联合头之外只允许 SPECIFIC_IMPORTS 中 exact-match 的具体 import。
+//   防后续组装逻辑把其它具体 import 混进产物（白名单例外悄悄扩散 = 违反 C3 单帧通配头纪律）。
 var importLines = out.split('\n').filter(function (l) { return /^[ \t]*import\s+/.test(l); });
 var specificImports = importLines.filter(function (l) { return !/\.\*\s*;?\s*$/.test(l.replace(/\/\/.*$/, '').replace(/[ \t]+$/, '')); });
 var normalizedSpecificImports = specificImports.map(function (l) {
   return l.replace(/\/\/.*$/, '').replace(/[ \t]+/g, ' ').replace(/\s*;?\s*$/, '').replace(/^\s+/, '');
 });
-if (normalizedSpecificImports.length !== 1 || normalizedSpecificImports[0] !== 'import org.flashNight.boot.BootSequencer') {
-  console.error('[ASSERT FAIL] 联合头外的具体 import 应恰为 1 条 import org.flashNight.boot.BootSequencer，实得 ' + specificImports.length + ' 条:\n  ' + specificImports.join('\n  '));
+var expectedSpecificImports = SPECIFIC_IMPORTS.map(function (className) { return 'import ' + className; });
+if (normalizedSpecificImports.join('\n') !== expectedSpecificImports.join('\n')) {
+  console.error('[ASSERT FAIL] 联合头外的具体 import 必须与 SPECIFIC_IMPORTS exact-match，期望:\n  ' +
+    expectedSpecificImports.join('\n  ') + '\n实得:\n  ' + normalizedSpecificImports.join('\n  '));
   process.exit(1);
 }
 
 fs.writeFileSync(OUT, Buffer.concat([BOM, Buffer.from(out, 'utf8')]));
 console.log('[DONE] 写出 ' + path.relative(REPO, OUT).replace(/\\/g, '/'));
-console.log('  联合头 ' + Object.keys(_pkgs).length + ' 包 | staged fN ' + STAGED.length + ' | loader-fire fN ' + (S7_LOADERS.length + S8_LOADERS.length));
+console.log('  联合头 ' + headerPackages.length + ' 包 + 具体类 ' + SPECIFIC_IMPORTS.length + ' | staged fN ' + STAGED.length + ' | loader-fire fN ' + (S7_LOADERS.length + S8_LOADERS.length));
 console.log('  ⚠ 评审产物，未改 asLoader.xml。需配合 BootSequencer S5 调 this.b.s5_parseTask(this.host)。');

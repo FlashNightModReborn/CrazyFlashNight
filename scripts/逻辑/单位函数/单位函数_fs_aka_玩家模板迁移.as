@@ -1739,6 +1739,7 @@ _root.主角函数.创建主动战技槽位表 = function() {
 }
 
 WeaponSkillInputService.installRootBridge(_root);
+QuickSkillInputService.installRootBridge(_root);
 
 _root.主角函数.获取装备主动战技种类 = function(装备类型, 装备种类) {
     switch (装备种类) {

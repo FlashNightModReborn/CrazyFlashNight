@@ -4,6 +4,7 @@ import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
 import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
 import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
+import org.flashNight.arki.unit.Action.Skill.QuickSkillInputService;
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
@@ -48,6 +49,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testWeaponSkillFrameInputWaitsForCooldownAndLatches();
         testWeaponSkillFrameInputConsumesFailedSubweaponAttempt();
         testWeaponSkillFrameInputRearmsOnReleaseWhileDisabled();
+        testQuickSkillInputWaitsForCooldownAndLatchesPerSlot();
+        testQuickSkillInputConsumesFailedAttempt();
+        testQuickSkillInputRearmsAcrossDisabledFrames();
+        testQuickSkillInputKeepsSlotLatchesIndependent();
+        testQuickSkillInputSyncsLiveKeyLabelAndClearsUnit();
+        testQuickSkillInputPreservesTruthyLegacyPorts();
+        testQuickSkillInputFailsClosedWithoutCooldownStarter();
         testManualReloadIntentQueuesForHeldGunStateMachine();
         testPrimaryReloadWinsAndConsumesManualReloadIntent();
         testManualReloadIntentExpiresAndRevalidates();
@@ -392,6 +400,158 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 142);
         assert(unit.releaseCount == 1, "held input releases once after input gate resumes");
+    }
+
+    private static function testQuickSkillInputWaitsForCooldownAndLatchesPerSlot():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        unit.quickSkillReleaseCount = 0;
+        unit.释放技能 = function(skillName:String, mpCost:Number, keyCode:Number):Boolean {
+            this.quickSkillReleaseCount++;
+            this.lastQuickSkillName = skillName;
+            this.lastQuickSkillMp = mpCost;
+            this.lastQuickSkillKey = keyCode;
+            return true;
+        };
+        view.进度条1.冷却 = false;
+
+        var waiting:Object = QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+        assert(waiting == null, "held quick-skill input waits while its slot cooldown is unavailable");
+        assert(unit.quickSkillReleaseCount == 0, "waiting quick-skill input does not release early");
+        assert(unit.__quickSkillInputConsumedSlots[1] !== true, "cooldown wait leaves the quick-skill slot armed");
+
+        view.进度条1.冷却 = true;
+        var released:Object = QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+        assert(released != null && released.released === true, "held quick-skill input releases when its cooldown opens");
+        assert(unit.quickSkillReleaseCount == 1, "quick-skill slot releases exactly once for one hold");
+        assert(unit.lastQuickSkillName == "测试快捷技能1" && unit.lastQuickSkillMp == 11, "quick-skill release keeps slot name and mp cost");
+        assert(unit.lastQuickSkillKey == 49, "quick-skill release forwards the live key code");
+        assert(view.进度条1.startCount == 1 && view.进度条1.lastCooldown == 1001, "successful quick skill starts its own cooldown bar");
+
+        view.进度条1.冷却 = true;
+        QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+        assert(unit.quickSkillReleaseCount == 1, "consumed quick-skill hold does not repeat after cooldown is forced ready");
+
+        QuickSkillInputService.updateSlot(unit, 1, false, true, view, 49);
+        QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+        assert(unit.quickSkillReleaseCount == 2, "key release rearms the same quick-skill slot");
+    }
+
+    private static function testQuickSkillInputConsumesFailedAttempt():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        unit.quickSkillReleaseCount = 0;
+        unit.释放技能 = function():Boolean {
+            this.quickSkillReleaseCount++;
+            return false;
+        };
+
+        var failed:Object = QuickSkillInputService.updateSlot(unit, 2, true, true, view, 50);
+        assert(failed != null && failed.released === false, "failed quick skill records one release attempt");
+        assert(unit.__quickSkillInputConsumedSlots[2] === true, "failed quick skill consumes the current slot hold");
+        assert(view.进度条2.startCount == 0, "failed quick skill does not start cooldown");
+
+        QuickSkillInputService.updateSlot(unit, 2, true, true, view, 50);
+        assert(unit.quickSkillReleaseCount == 1, "failed quick skill does not retry every frame while held");
+
+        QuickSkillInputService.updateSlot(unit, 2, false, true, view, 50);
+        QuickSkillInputService.updateSlot(unit, 2, true, true, view, 50);
+        assert(unit.quickSkillReleaseCount == 2, "failed quick skill retries after release and repress");
+    }
+
+    private static function testQuickSkillInputRearmsAcrossDisabledFrames():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        unit.quickSkillReleaseCount = 0;
+        unit.释放技能 = function():Boolean {
+            this.quickSkillReleaseCount++;
+            return true;
+        };
+        unit.__quickSkillInputConsumedSlots = [];
+        unit.__quickSkillInputConsumedSlots[3] = true;
+
+        QuickSkillInputService.updateSlot(unit, 3, false, false, view, 51);
+        assert(unit.__quickSkillInputConsumedSlots[3] === false, "quick-skill release rearms its slot while input is disabled");
+
+        QuickSkillInputService.updateSlot(unit, 3, true, false, view, 51);
+        assert(unit.quickSkillReleaseCount == 0, "disabled held quick skill does not release");
+        assert(unit.__quickSkillInputConsumedSlots[3] !== true, "disabled held quick skill stays armed for resume");
+
+        QuickSkillInputService.updateSlot(unit, 3, true, true, view, 51);
+        assert(unit.quickSkillReleaseCount == 1, "held quick skill releases once when input gate resumes");
+    }
+
+    private static function testQuickSkillInputKeepsSlotLatchesIndependent():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        unit.quickSkillReleaseCount = 0;
+        unit.释放技能 = function(skillName:String):Boolean {
+            this.quickSkillReleaseCount++;
+            this.lastQuickSkillName = skillName;
+            return true;
+        };
+
+        QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+        QuickSkillInputService.updateSlot(unit, 12, true, true, view, 123);
+        assert(unit.quickSkillReleaseCount == 2, "different quick-skill slots may release during the same frame");
+        assert(unit.__quickSkillInputConsumedSlots[1] === true && unit.__quickSkillInputConsumedSlots[12] === true, "quick-skill slots keep independent consumed latches");
+
+        QuickSkillInputService.updateSlot(unit, 1, false, true, view, 49);
+        view.进度条1.冷却 = true;
+        view.进度条12.冷却 = true;
+        QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+        QuickSkillInputService.updateSlot(unit, 12, true, true, view, 123);
+        assert(unit.quickSkillReleaseCount == 3, "rearming one quick-skill slot does not rearm another held slot");
+    }
+
+    private static function testQuickSkillInputSyncsLiveKeyLabelAndClearsUnit():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        var root:Object = {};
+        root.keyshow = function(keyCode:Number):String {
+            return "KEY-" + keyCode;
+        };
+
+        QuickSkillInputService.syncKeyLabel(view, 4, 52, root);
+        assert(view.控制器4.inputOwnedByAS === true, "quick-skill controller is marked as AS-owned display shell");
+        assert(view.控制器4.mytext.text == "KEY-52", "quick-skill controller displays the live key binding");
+
+        QuickSkillInputService.syncKeyLabel(view, 4, 90, root);
+        assert(view.控制器4.mytext.text == "KEY-90", "quick-skill key label refreshes after runtime remap");
+
+        QuickSkillInputService.updateSlot(unit, 4, false, true, view, 90);
+        QuickSkillInputService.clearUnit(unit);
+        assert(unit.__quickSkillInputConsumedSlots == undefined, "quick-skill input cleanup removes all per-slot latches");
+        assert(QuickSkillInputService.getKeyName(12) == "快捷技能栏键12", "quick-skill key table covers all twelve slots");
+    }
+
+    private static function testQuickSkillInputPreservesTruthyLegacyPorts():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        view.进度条5.冷却 = 1;
+        unit.释放技能 = function():Number {
+            return 1;
+        };
+
+        var released:Object = QuickSkillInputService.updateSlot(unit, 5, true, true, view, 53);
+        assert(released != null && released.released === true, "quick-skill input preserves truthy legacy release result semantics");
+        assert(view.进度条5.startCount == 1, "truthy legacy cooldown-ready port starts cooldown");
+    }
+
+    private static function testQuickSkillInputFailsClosedWithoutCooldownStarter():Void {
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        unit.quickSkillReleaseCount = 0;
+        unit.释放技能 = function():Boolean {
+            this.quickSkillReleaseCount++;
+            return true;
+        };
+        view.进度条6.冷却开始 = null;
+
+        var result:Object = QuickSkillInputService.updateSlot(unit, 6, true, true, view, 54);
+        assert(result == null, "quick-skill input fails closed when cooldown starter is unavailable");
+        assert(unit.quickSkillReleaseCount == 0, "missing cooldown starter cannot release a skill without cooldown");
+        assert(unit.__quickSkillInputConsumedSlots[6] !== true, "missing cooldown starter leaves the slot armed for UI recovery");
     }
 
     private static function testManualReloadIntentQueuesForHeldGunStateMachine():Void {
@@ -1543,6 +1703,31 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             return true;
         };
         return port;
+    }
+
+    private static function makeQuickSkillView():Object {
+        var view:Object = {};
+        for (var slotIndex:Number = 1; slotIndex <= QuickSkillInputService.SLOT_COUNT; slotIndex++) {
+            view["快捷技能栏" + slotIndex] = {
+                已装备名: "测试快捷技能" + slotIndex,
+                消耗mp: 10 + slotIndex,
+                冷却时间: 1000 + slotIndex
+            };
+
+            var cooldownBar:Object = {
+                冷却: true,
+                startCount: 0,
+                lastCooldown: 0
+            };
+            cooldownBar.冷却开始 = function(cooldownTime:Number):Void {
+                this.startCount++;
+                this.lastCooldown = cooldownTime;
+                this.冷却 = false;
+            };
+            view["进度条" + slotIndex] = cooldownBar;
+            view["控制器" + slotIndex] = {mytext: {text: ""}};
+        }
+        return view;
     }
 
     private static var oldInventory:Object;

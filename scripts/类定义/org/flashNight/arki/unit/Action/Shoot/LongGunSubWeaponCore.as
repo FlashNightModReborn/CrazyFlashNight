@@ -10,50 +10,6 @@ import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
  */
 class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
-    /**
-     * 临时动作流诊断开关（2026-07-12）。
-     * 仅在 F/R 提交、仲裁、换弹里程碑触发，不允许放进逐帧热路径。
-     * 运行时输出到 logs/launcher.log；TestLoader 同时保留 trace。
-     */
-    public static var actionFlowTelemetryEnabled:Boolean = true;
-
-    public static function emitActionFlow(eventName:String, unit:Object, payload:String):Void {
-        if (!actionFlowTelemetryEnabled) return;
-        // 运行时只记录控制目标，避免 AI 换弹污染日志；TestLoader 无 gameworld 时仍可 trace。
-        if (_root.gameworld != undefined && _root.控制目标 != undefined
-            && unit && unit._name != _root.控制目标) return;
-        var timer:Object = _root.帧计时器;
-        var frame:Number = timer ? Number(timer.当前帧数) : -1;
-        if (isNaN(frame)) frame = -1;
-        var unitName:String = unit && unit._name != undefined ? String(unit._name) : "?";
-        var stateName:String = unit && unit.状态 != undefined ? String(unit.状态) : "?";
-        var msg:String = "[SUBWEAPON_FLOW] event=" + eventName
-            + " frame=" + frame
-            + " unit=" + unitName
-            + " state=" + stateName;
-        if (payload != null && payload != "") msg += " " + payload;
-        trace(msg);
-        if (_root.服务器 != undefined && _root.服务器.发布服务器消息 != undefined) {
-            _root.服务器.发布服务器消息(msg);
-        }
-    }
-
-    public static function describeReloadMan(man:Object):String {
-        if (!man) return "man=null";
-        var request:Object = getReloadRequest(man);
-        var requestKind:String = request && request.kind != undefined ? String(request.kind) : "none";
-        return "man=" + String(man)
-            + " mcFrame=" + man._currentframe
-            + " init=" + (man.初始化长枪射击函数 === true)
-            + " start=" + (typeof man.开始换弹 == "function")
-            + " subStart=" + (typeof man.开始副武器换弹 == "function")
-            + " reload=" + (typeof man.换弹匣 == "function")
-            + " finish=" + (typeof man.结束换弹 == "function")
-            + " goto=" + (typeof man.gotoAndPlay == "function")
-            + " tag=" + man.换弹标签
-            + " request=" + requestKind;
-    }
-
     private static var DEFERRED_RETRY_MS:Number = 34;
     private static var MAX_DEFERRED_RETRIES:Number = 4;
 
@@ -413,27 +369,15 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     public static function startManualReloadAnimation(unit:Object):Boolean {
-        emitActionFlow("F_CORE_ENTER", unit, describeReloadMan(unit ? unit.man : null));
-        if (!canReloadManual(unit)) {
-            emitActionFlow("F_CORE_REJECT", unit, describeReloadMan(unit ? unit.man : null));
-            return false;
-        }
+        if (!canReloadManual(unit)) return false;
 
         org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
         var targetState:String = getNormalizedLongGunActionState(unit);
         if (targetState != unit.状态) {
-            var oldMan:Object = unit.man;
             unit.行走冷却帧 = 2;
             changeUnitState(unit, targetState);
-            emitActionFlow(
-                "F_CORE_POSE_CHANGED",
-                unit,
-                "manChanged=" + (oldMan !== unit.man) + " " + describeReloadMan(unit.man)
-            );
         }
-        var started:Boolean = startManualReloadOnCurrentMan(unit);
-        emitActionFlow("F_CORE_RESULT", unit, "started=" + started + " " + describeReloadMan(unit.man));
-        return started;
+        return startManualReloadOnCurrentMan(unit);
     }
 
     public static function reloadManual(unit:Object):Boolean {
@@ -992,19 +936,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     private static function startManualReloadOnCurrentMan(unit:Object):Boolean {
         var man:MovieClip = unit ? unit.man : null;
-        if (!canCommitManualReload(unit, man)) {
-            emitActionFlow("F_MAN_REJECT_COMMIT", unit, describeReloadMan(man));
-            return false;
-        }
+        if (!canCommitManualReload(unit, man)) return false;
         // 与普通换弹一致：状态改变返回后直接由当前 man 持有 request 与换弹标签。
         // unit 不保存跨动画移动锁；技能/受伤等替换 man 时，换弹所有权随旧 man 自然退场。
-        if (!man.gotoAndPlay) {
-            emitActionFlow("F_MAN_REJECT_GOTO", unit, describeReloadMan(man));
-            return false;
-        }
+        if (!man.gotoAndPlay) return false;
         setManualReloadRequest(man, unit);
         man.换弹标签 = true;
-        emitActionFlow("F_ANIM_START", unit, describeReloadMan(man));
         man.gotoAndPlay("换弹匣");
         return true;
     }

@@ -180,17 +180,9 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
      */
     public static function requestSubweaponControl(unit:Object, inputFrame:Number):Boolean {
         if (!unit || !isSubweaponControlSkill(getCurrentSkill(unit))) return false;
-        if (!LongGunSubWeaponCore.canReloadManual(unit)) {
-            LongGunSubWeaponCore.emitActionFlow(
-                "F_INPUT_REJECT",
-                unit,
-                "inputFrame=" + resolveInputFrame(inputFrame) + " actionC=" + unit.动作C
-                    + " " + LongGunSubWeaponCore.describeReloadMan(unit.man)
-            );
-            return false;
-        }
+        if (!LongGunSubWeaponCore.canReloadManual(unit)) return false;
         var frame:Number = resolveInputFrame(inputFrame);
-        var submitted:Boolean = UnitActionIntentService.submit(
+        return UnitActionIntentService.submit(
             unit,
             UnitActionIntentService.CHANNEL_COMBAT,
             UnitActionIntentService.KIND_SUBWEAPON_RELOAD,
@@ -199,13 +191,6 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
             null,
             SUBWEAPON_RELOAD_PRIORITY
         );
-        LongGunSubWeaponCore.emitActionFlow(
-            "F_INTENT_SUBMIT",
-            unit,
-            "inputFrame=" + frame + " submitted=" + submitted + " actionC=" + unit.动作C
-                + " " + LongGunSubWeaponCore.describeReloadMan(unit.man)
-        );
-        return submitted;
     }
 
     public static function isCurrentSubweaponControl(unit:Object):Boolean {
