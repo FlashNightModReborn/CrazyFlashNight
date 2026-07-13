@@ -1,0 +1,177 @@
+{
+  "monster": "敌人-僵尸1-狗",
+  "linkage": "敌人-僵尸1-狗",
+  "outputDir": "tmp/monster-reskin/敌人-僵尸1-狗/reference-package",
+  "ignoreTopFraction": 0.68,
+  "keyposePadding": 28,
+  "keyposeColumns": 4,
+  "partColumns": 4,
+  "heroFrame": 2,
+  "export": {
+    "ffdec": "tools/ffdec/ffdec-cli.exe",
+    "stagingDir": "tmp/monster-reskin/敌人-僵尸1-狗/_ffdec-pipeline",
+    "rootZoom": 4,
+    "partZoom": 8
+  },
+  "source": {
+    "xfl": "flashswf/arts/things1/things1.xfl",
+    "swf": "flashswf/arts/things1.swf",
+    "rootSymbol": "敌人-僵尸1-狗",
+    "rootCharacterId": 1377,
+    "normalActionSymbols": [
+      "Symbol 739",
+      "Symbol 741",
+      "Symbol 743",
+      "Symbol 744",
+      "Symbol 745",
+      "Symbol 746"
+    ],
+    "deathActionSymbol": "Symbol 772"
+  },
+  "keyposes": [
+    {"slug": "idle", "label": "空手站立", "frame": 2, "note": "站姿与默认轮廓"},
+    {"slug": "walk-compress", "label": "空手行走", "frame": 15, "note": "后腿压缩极值"},
+    {"slug": "run-stretch", "label": "空手跑", "frame": 25, "note": "奔跑伸展极值"},
+    {"slug": "attack-bite", "label": "空手攻击", "frame": 46, "note": "扑咬与张口极值"},
+    {"slug": "dodge", "label": "躲闪", "frame": 66, "note": "无攻击动作"},
+    {"slug": "hit", "label": "被击", "frame": 75, "note": "受击弯折"},
+    {"slug": "knockdown", "label": "击倒", "frame": 84, "note": "翻滚与倒置"},
+    {"slug": "down", "label": "倒地", "frame": 92, "note": "倒地轮廓"},
+    {"slug": "thrown", "label": "被投", "frame": 100, "note": "被投倒置"},
+    {"slug": "death-start", "label": "血腥死", "frame": 105, "note": "死亡起始"},
+    {"slug": "death-breakup", "label": "血腥死", "frame": 110, "note": "碎裂中段"},
+    {"slug": "death-end", "label": "血腥死", "frame": 114, "note": "消失前末段"}
+  ],
+  "parts": [
+    {"slug": "front-upper-leg", "label": "前腿上段", "symbol": "Symbol 726", "characterId": 1331, "group": "normal-rig"},
+    {"slug": "front-middle-leg", "label": "前腿中段", "symbol": "Symbol 727", "characterId": 1332, "group": "normal-rig"},
+    {"slug": "front-lower-leg", "label": "前腿下段", "symbol": "Symbol 728", "characterId": 1333, "group": "normal-rig"},
+    {"slug": "paw", "label": "共用脚掌", "symbol": "Symbol 729", "characterId": 1334, "group": "normal-rig"},
+    {"slug": "hind-upper-leg", "label": "后腿上段", "symbol": "Symbol 730", "characterId": 1335, "group": "normal-rig"},
+    {"slug": "hind-middle-leg", "label": "后腿中段", "symbol": "Symbol 731", "characterId": 1336, "group": "normal-rig"},
+    {"slug": "hind-lower-leg", "label": "后腿下段", "symbol": "Symbol 732", "characterId": 1337, "group": "normal-rig"},
+    {"slug": "torso", "label": "躯干", "symbol": "Symbol 733", "characterId": 1338, "group": "normal-rig"},
+    {"slug": "neck-shoulder", "label": "颈肩与胸腔", "symbol": "Symbol 734", "characterId": 1339, "group": "normal-rig"},
+    {"slug": "lower-jaw", "label": "下颌与下排牙", "symbol": "Symbol 735", "characterId": 1340, "group": "normal-rig"},
+    {"slug": "ear", "label": "共用耳片", "symbol": "Symbol 736", "characterId": 1341, "group": "normal-rig"},
+    {"slug": "head", "label": "头部、上吻与上排牙", "symbol": "Symbol 737", "characterId": 1342, "group": "normal-rig"},
+    {"slug": "tail", "label": "尾巴", "symbol": "Symbol 738", "characterId": 1343, "group": "normal-rig"},
+    {"slug": "death-only-01", "label": "血腥死专用帧图形 01", "symbol": "Symbol 748+", "characterId": 1351, "group": "death-only"},
+    {"slug": "death-only-02", "label": "血腥死专用件 02", "symbol": "Symbol 748+", "characterId": 1352, "group": "death-only"},
+    {"slug": "death-only-03", "label": "血腥死专用件 03", "symbol": "Symbol 748+", "characterId": 1353, "group": "death-only"},
+    {"slug": "death-only-04", "label": "血腥死专用件 04", "symbol": "Symbol 748+", "characterId": 1354, "group": "death-only"},
+    {"slug": "death-only-05", "label": "血腥死专用件 05", "symbol": "Symbol 748+", "characterId": 1355, "group": "death-only"},
+    {"slug": "death-only-06", "label": "血腥死专用件 06", "symbol": "Symbol 748+", "characterId": 1356, "group": "death-only"},
+    {"slug": "death-only-07", "label": "血腥死专用件 07", "symbol": "Symbol 748+", "characterId": 1357, "group": "death-only"},
+    {"slug": "death-only-08", "label": "血腥死专用件 08", "symbol": "Symbol 748+", "characterId": 1358, "group": "death-only"},
+    {"slug": "death-only-09", "label": "血腥死专用件 09", "symbol": "Symbol 748+", "characterId": 1359, "group": "death-only"},
+    {"slug": "death-only-10", "label": "血腥死专用件 10", "symbol": "Symbol 748+", "characterId": 1360, "group": "death-only"},
+    {"slug": "death-only-11", "label": "血腥死专用件 11", "symbol": "Symbol 748+", "characterId": 1361, "group": "death-only"},
+    {"slug": "death-only-12", "label": "血腥死专用件 12", "symbol": "Symbol 748+", "characterId": 1362, "group": "death-only"},
+    {"slug": "death-only-13", "label": "血腥死专用件 13", "symbol": "Symbol 748+", "characterId": 1363, "group": "death-only"},
+    {"slug": "death-only-14", "label": "血腥死专用件 14", "symbol": "Symbol 748+", "characterId": 1364, "group": "death-only"},
+    {"slug": "death-only-15", "label": "血腥死专用件 15", "symbol": "Symbol 748+", "characterId": 1365, "group": "death-only"},
+    {"slug": "death-only-16", "label": "血腥死专用件 16", "symbol": "Symbol 748+", "characterId": 1366, "group": "death-only"},
+    {"slug": "death-only-17", "label": "血腥死专用件 17", "symbol": "Symbol 748+", "characterId": 1367, "group": "death-only"},
+    {"slug": "death-only-18", "label": "血腥死专用件 18", "symbol": "Symbol 748+", "characterId": 1368, "group": "death-only"},
+    {"slug": "death-only-19", "label": "血腥死专用件 19", "symbol": "Symbol 748+", "characterId": 1369, "group": "death-only"},
+    {"slug": "death-only-20", "label": "血腥死专用件 20", "symbol": "Symbol 748+", "characterId": 1370, "group": "death-only"},
+    {"slug": "death-only-21", "label": "血腥死专用件 21", "symbol": "Symbol 748+", "characterId": 1371, "group": "death-only"},
+    {"slug": "death-only-22", "label": "血腥死专用件 22", "symbol": "Symbol 748+", "characterId": 1372, "group": "death-only"},
+    {"slug": "death-only-23", "label": "血腥死专用件 23", "symbol": "Symbol 748+", "characterId": 1373, "group": "death-only"},
+    {"slug": "death-only-24", "label": "血腥死专用件 24", "symbol": "Symbol 748+", "characterId": 1374, "group": "death-only"},
+    {"slug": "death-only-25", "label": "血腥死专用件 25", "symbol": "Symbol 748+", "characterId": 1375, "group": "death-only"}
+  ],
+  "tailPlans": [
+    {
+      "variant": "牧羊犬型——制式军警犬",
+      "lengthScale": 1.9,
+      "reason": "拉到接近飞节的工作犬长度；仍保持单一刚性 Symbol 738，不增加关节。"
+    },
+    {
+      "variant": "斗牛梗型——盗贼撕咬犬",
+      "lengthScale": 1.5,
+      "reason": "短而渐细、近水平，消除断尾桩感，同时保留斗牛梗型的紧凑轮廓。"
+    },
+    {
+      "variant": "装甲獒系混种——军阀重型护卫犬",
+      "lengthScale": 1.4,
+      "reason": "根部稍粗、轮廓简单；控制击倒与死亡翻滚时的扫掠范围。"
+    }
+  ],
+  "warlordRecognitionYoke": {
+    "lore": "军阀作为统合正规军遗产的继承者，把犬的嗅觉与听觉同旧式被动识别设备组合使用。犬负责察觉润滑剂、非生物气味和微型伺服声；识别鞍复核仿生皮肤下的高密度金属与电磁异常，用于筛查终结者渗透者。",
+    "visual": "一个厚红色缓冲颈环、一条深色 U 形感应线圈、一个大块青色传感窗和一枚琥珀告警灯；全部并入 Symbol 734 颈肩轮廓。",
+    "boundary": "它只提供近距离异常复核，不是万能身份识别器，也不读取天网语义层；误报与被针对性规避仍然成立。"
+  },
+  "vectorRedrawGuardrails": [
+    "每只狗最多 4 个主填色加 1 个阴影色；金属片最多再加 1 个统一高光形。",
+    "使用粗黑外轮廓和大块闭合色面，不画毛丝、点描、微划痕或连续渐变。",
+    "军警犬背鞍控制为 3—4 块大面；盗贼犬只保留宽项圈和一条宽束带；军阀犬只保留 3 块主甲片与识别鞍。",
+    "铆钉、扣具和警示灯只保留影响小尺寸识别的少数大形，禁止装饰性密铺。",
+    "所有装备烘入现有头、颈肩、躯干或尾巴叶子件，不新增独立摆动物。"
+  ],
+  "variants": [
+    {
+      "name": "牧羊犬型——制式军警犬",
+      "feasibility": "纯换皮可行度高",
+      "boundary": "允许加背鞍、警用项圈和毛层轮廓；保持长腿、尖耳、长吻、肩胯和脚掌落点。"
+    },
+    {
+      "name": "斗牛梗型——盗贼撕咬犬",
+      "feasibility": "纯换皮可行度中高",
+      "boundary": "使用蛋形上吻、短毛、粗颈与较宽前胸建立差异，但不做真正短腿巨头；头部鼻尖与下颌末端必须仍落在原咬合端点。"
+    },
+    {
+      "name": "獒犬型——军阀重型护卫犬",
+      "feasibility": "真重獒纯换皮可行度低；装甲獒系混种可行度中",
+      "boundary": "不得缩短腿骨或大幅扩大头胸；用厚颈圈、肩甲、胸甲、背负板和深色块表达重量。若要真正短腿巨头宽胸，需另做比例矩阵和步态/扑咬/倒地动画。"
+    }
+  ],
+  "guardrails": [
+    "只把生成图当作概念参考，最终在 Flash 叶子元件副本中人工重绘矢量。",
+    "复制美术依赖并创建新 linkage，禁止覆盖敌人-僵尸1-狗及其共享叶子 Symbol。",
+    "保持每个叶子件的局部原点、关节重叠区、肩胯位置、脚掌落点和层级顺序。",
+    "头部可换轮廓，但鼻尖、下颌铰点、牙口闭合区与攻击点不能漂移。",
+    "常规 13 件与血腥死亡专用 25 件分开审查；不改死亡件就会在死亡时露出原皮。",
+    "重型感优先由护甲、颈圈、鞍具、色块和材质表达，不用纯轮廓强行改变骨架比例。"
+  ],
+  "componentSheetOrder": [
+    "第一行：1331 前腿上段、1332 前腿中段、1333 前腿下段、1334 共用脚掌",
+    "第二行：1335 后腿上段、1336 后腿中段、1337 后腿下段、1338 躯干",
+    "第三行：1339 颈肩与胸腔、1340 下颌与下排牙、1341 共用耳片、1342 头部/上吻/上排牙",
+    "第四行：1343 尾巴；其余格留空"
+  ],
+  "componentConcepts": [
+    {
+      "variant": "牧羊犬型——制式军警犬",
+      "file": "imagegen/components/v2/01-制式军警犬-13件组件参考.png",
+      "splitDir": "imagegen/components/v2/split/01-制式军警犬",
+      "designBrief": "黑背与棕色工作犬色块；少量警用背鞍和胸背带；尾巴约为原件 1.9 倍，保持单一刚性叶子件。",
+      "allocation": "警用背鞍烘入 1338；胸背带烘入 1339；尾巴只改 1343。"
+    },
+    {
+      "variant": "斗牛梗型——盗贼撕咬犬",
+      "file": "imagegen/components/v2/02-盗贼撕咬犬-13件组件参考.png",
+      "splitDir": "imagegen/components/v2/split/02-盗贼撕咬犬",
+      "designBrief": "米白与棕色大斑块；蛋形上吻、粗颈、宽项圈与一条宽束带；尾巴约为原件 1.5 倍。",
+      "allocation": "躯干宽束带烘入 1338；宽项圈烘入 1339；尾巴只改 1343。"
+    },
+    {
+      "variant": "装甲獒系混种——军阀重型护卫犬",
+      "file": "imagegen/components/v2/03-军阀重型护卫犬-13件组件参考.png",
+      "splitDir": "imagegen/components/v2/split/03-军阀重型护卫犬",
+      "designBrief": "深棕黑短毛；只保留三块大背甲和一套旧政府反渗透识别轭；头部基本不披甲；尾巴约为原件 1.4 倍。",
+      "allocation": "三块主背甲和腹带烘入 1338；红色缓冲环、U 形感应线圈、青色传感窗、琥珀灯组成的识别轭烘入 1339；尾巴只改 1343。"
+    }
+  ],
+  "componentRedrawCaveats": [
+    "组件概念图只用于轮廓、色块和装备分配参考，不能直接覆盖 XFL 叶子元件。",
+    "生成图的 1342 头部格可能为了可读性画出完整嘴形；正式重绘时 1342 只保留头部、上吻和上排牙，1340 独占下颌与下排牙。",
+    "每格红十字表示原叶子元件的局部原点；重绘后不得移动原点，也不得改变关节重叠区。",
+    "所有装备都烘入既有 1338 或 1339 轮廓，不新增摆动物、骨骼或独立动画层。",
+    "常规 13 件完成后仍需单独处理 1351—1375 的 25 件血腥死亡专用资产，否则死亡动画会露出原皮。"
+  ],
+  "componentImagegenPromptTemplate": "Use case: precise-object-edit\nInput 1 is the exact original 4-by-4 normal-rig component sheet; input 2 is the approved whole-dog concept for appearance only. Repaint the thirteen occupied cells in place and preserve every cell boundary, Chinese label, Symbol note, red local-origin cross, joint endpoint, overlap allowance and transparent/neutral background. Keep the exact order 1331 through 1343 and leave the final three cells empty. Bake all equipment into 1338 torso or 1339 neck/chest according to the variant brief. The 1342 cell is only head, upper muzzle and upper teeth; the 1340 cell alone owns lower jaw and lower teeth. Use flat Flash vector art, bold black contours, large closed color regions, no fur strands, no gradients, no micro-scratches, no loose accessories, no extra pieces, no text changes, no watermark.",
+  "imagegenPrompt": "Use case: precise-object-edit\nAsset type: vector-redraw-ready v2 concept sheet for a 2D Flash CS6 enemy family\nInput images: v1 three-dog concept as edit target; original animation keyposes as skeleton invariant; exact 13-part sheet as cutout invariant\nPrimary request: keep the three identities and pose, lengthen the shepherd, bull-terrier and armored mastiff-cross tails to 1.9x, 1.5x and 1.4x as single rigid pieces; give only the warlord dog an old-unified-government anti-infiltration recognition yoke made of one red padded neck ring, one dark U-shaped passive induction coil, one cyan sensor window and one amber warning lamp\nStyle/medium: flat Flash vector illustration, bold clean black contour, large closed color regions, at most four main fills plus one shadow tone per dog\nComposition/framing: exactly three full dogs in one horizontal row on a neutral light background, no callouts or text\nConstraints: preserve joint centers, limb lengths, paw contacts, jaw hinge, bite endpoint, tail root, overlap zones and 13-part decomposability; bake equipment into existing leaf silhouettes\nAvoid: fur strands, painterly gradients, micro-scratches, tiny rivets, dense buckles, chains, dangling parts, excessive plates, short-legged mastiff anatomy, changed pose, extra dogs, logo or watermark"
+}

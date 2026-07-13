@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+"""Read-only FFDec exporter for monster reskin reference packages."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def repo_path(value: str | Path) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else REPO_ROOT / path
+
+
+def rel(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    except ValueError:
+        return str(path.resolve())
+
+
+def load_config(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as handle:
+        config = json.load(handle)
+    required = ["monster", "outputDir", "source", "export"]
+    missing = [key for key in required if key not in config]
+    if missing:
+        raise ValueError(f"配置缺少字段：{', '.join(missing)}")
+    for key in ["swf", "rootCharacterId"]:
+        if key not in config["source"]:
+            raise ValueError(f"source 缺少字段：{key}")
+    return config
+
+
+def safe_recreate(path: Path, staging: Path) -> None:
+    resolved = path.resolve()
+    root = staging.resolve()
+    if resolved != root and root not in resolved.parents:
+        raise ValueError(f"拒绝清理 staging 之外的目录：{resolved}")
+    if path.exists():
+        shutil.rmtree(path)
+    path.mkdir(parents=True, exist_ok=True)
+
+
+def run_ffdec(ffdec: Path, swf: Path, output: Path, character_ids: list[int], kind: str, fmt: str, zoom: int) -> None:
+    ids = ",".join(str(value) for value in character_ids)
+    command = [
+        str(ffdec),
+        "-onerror", "abort",
+        "-ignorebackground",
+        "-zoom", str(zoom),
+        "-selectid", ids,
+        "-format", f"{kind}:{fmt}",
+        "-export", kind,
+        str(output),
+        str(swf),
+    ]
+    result = subprocess.run(command, cwd=REPO_ROOT, text=True, encoding="utf-8", errors="replace")
+    if result.returncode != 0:
+        raise RuntimeError(f"FFDec 导出失败（{kind}:{fmt}，ID={ids}，exit={result.returncode}）")
+
+
+def find_frame_dir(root: Path) -> Path:
+    candidates = sorted({path.parent for path in root.rglob("*.png") if path.stem.isdigit()})
+    if not candidates:
+        raise FileNotFoundError(f"未在 {root} 找到数字帧 PNG")
+    return max(candidates, key=lambda path: len(list(path.glob("*.png"))))
+
+
+def find_id_file(root: Path, character_id: int, suffix: str) -> Path:
+    direct = root / f"{character_id}{suffix}"
+    if direct.exists():
+        return direct
+    matches = sorted(root.rglob(f"{character_id}{suffix}"))
+    if not matches:
+        raise FileNotFoundError(f"未找到 character {character_id} 的 {suffix} 文件：{root}")
+    return matches[0]
+
+
+def svg_origin(svg_path: Path) -> dict[str, float] | None:
+    text = svg_path.read_text(encoding="utf-8", errors="replace")
+    match = re.search(r'<g\s+transform="matrix\(([^)]+)\)"', text)
+    if not match:
+        return None
+    values = [float(value.strip()) for value in match.group(1).split(",")]
+    if len(values) != 6:
+        return None
+    return {"x": values[4], "y": values[5]}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--check-only", action="store_true")
+    args = parser.parse_args()
+
+    config = load_config(repo_path(args.config))
+    export = config["export"]
+    source = config["source"]
+    ffdec = repo_path(export.get("ffdec", "tools/ffdec/ffdec-cli.exe"))
+    swf = repo_path(source["swf"])
+    staging = repo_path(export["stagingDir"])
+
+    for path, label in [(ffdec, "FFDec"), (swf, "SWF")]:
+        if not path.exists():
+            raise FileNotFoundError(f"{label} 不存在：{path}")
+    part_ids = [int(part["characterId"]) for part in config.get("parts", [])]
+    if not part_ids:
+        raise ValueError("parts 不能为空")
+    if args.check_only:
+        print(f"OK: {config['monster']} / root {source['rootCharacterId']} / {len(part_ids)} parts")
+        return 0
+
+    staging.mkdir(parents=True, exist_ok=True)
+    root_png = staging / f"root-{source['rootCharacterId']}-png"
+    parts_png = staging / "parts-png"
+    parts_svg = staging / "parts-svg"
+    for target in [root_png, parts_png, parts_svg]:
+        safe_recreate(target, staging)
+
+    run_ffdec(ffdec, swf, root_png, [int(source["rootCharacterId"])], "sprite", "png", int(export.get("rootZoom", 4)))
+    run_ffdec(ffdec, swf, parts_png, part_ids, "shape", "png", int(export.get("partZoom", 8)))
+    run_ffdec(ffdec, swf, parts_svg, part_ids, "shape", "svg", int(export.get("partZoom", 8)))
+
+    frame_dir = find_frame_dir(root_png)
+    manifest_parts: list[dict[str, Any]] = []
+    for part in config["parts"]:
+        character_id = int(part["characterId"])
+        png = find_id_file(parts_png, character_id, ".png")
+        svg = find_id_file(parts_svg, character_id, ".svg")
+        origin = part.get("localOriginPx") or svg_origin(svg)
+        manifest_parts.append({
+            "slug": part["slug"],
+            "characterId": character_id,
+            "png": rel(png),
+            "svg": rel(svg),
+            "localOriginPx": origin,
+        })
+
+    manifest = {
+        "schemaVersion": 1,
+        "monster": config["monster"],
+        "sourceSwf": rel(swf),
+        "root": {
+            "characterId": int(source["rootCharacterId"]),
+            "frameDir": rel(frame_dir),
+            "frameCount": len(list(frame_dir.glob("*.png"))),
+        },
+        "parts": manifest_parts,
+    }
+    manifest_path = staging / "export-manifest.json"
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"OK: {manifest_path}")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (FileNotFoundError, ValueError, RuntimeError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        raise SystemExit(1)
