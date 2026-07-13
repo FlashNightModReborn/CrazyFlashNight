@@ -704,7 +704,6 @@ var NpcShop = (function() {
         if (!_inventoryCoordinator.autoTransfer(source, target, function(result) {
             if (result && result.success) {
                 _spaceMutated = true;
-                rebindSaleIntentsFromViews({bag:_inventoryCoordinator.getWindow('背包')});
             } else toast(errorMessage(result && result.error));
             renderSpaceOrganizer(); refreshControls();
         })) toast('库存正在处理另一项操作。');
@@ -713,20 +712,44 @@ var NpcShop = (function() {
 
     function closeSpaceOrganizer() {
         if (!_spacePage || !_spacePage.classList.contains('active') || _inventoryState.busyOwner) return;
-        _spacePage.classList.remove('active');
-        _settlementPage.classList.remove('organizing-space');
         _spaceBusy = true; renderSettlementLoading(); refreshControls();
-        request('snapshot', {shopId:_shopId}, function(response) {
-            _spaceBusy = false;
-            if (!response.success) { handleWriteError(response); return; }
-            rebindSaleIntentsFromViews({
-                bag:_inventoryCoordinator.getWindow('背包'),
-                material:response.views && response.views.material
+        var inventoryCallId = requestInventory('snapshot', {
+            v:1,
+            requests:[{containerId:'背包', offset:0, limit:50, filterKey:'all'}]
+        }, function(inventoryResponse) {
+            var snapshots = inventoryResponse && inventoryResponse.snapshots;
+            var fullBag = null;
+            if (inventoryResponse && inventoryResponse.success && Array.isArray(snapshots)) {
+                for (var i = 0; i < snapshots.length; i++) {
+                    if (snapshots[i] && snapshots[i].containerId === '背包'
+                            && String(snapshots[i].filterKey || 'all') === 'all') {
+                        fullBag = snapshots[i]; break;
+                    }
+                }
+            }
+            if (!fullBag) {
+                _spaceBusy = false; renderSpaceOrganizer(); refreshControls();
+                toast('完整背包同步失败，暂时无法返回结算。');
+                return;
+            }
+            request('snapshot', {shopId:_shopId}, function(response) {
+                _spaceBusy = false;
+                if (!response.success) { handleWriteError(response); return; }
+                rebindSaleIntentsFromViews({
+                    bag:fullBag,
+                    material:response.views && response.views.material
+                });
+                _spacePage.classList.remove('active');
+                _settlementPage.classList.remove('organizing-space');
+                applyState(response);
+                requestTradePreview();
+                if (_spaceMutated) toast('库存已整理，交易数量与容量已重新核算。');
             });
-            applyState(response);
-            requestTradePreview();
-            if (_spaceMutated) toast('库存已整理，交易数量与容量已重新核算。');
         });
+        if (!inventoryCallId) {
+            _spaceBusy = false; renderSpaceOrganizer(); refreshControls();
+            toast('完整背包同步失败，暂时无法返回结算。');
+        }
     }
 
     function rebindSaleIntentsFromViews(views) {

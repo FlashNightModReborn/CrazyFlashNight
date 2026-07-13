@@ -214,6 +214,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('catalog click selects purchase intent',NpcShop.debugState().purchaseCount===1&&document.querySelector('.npcshop-catalog-card.selected'));
   document.querySelector('.npcshop-bag-view .npcshop-owned-card').click();
   ok('equipment click selects lease-bound sale intent',NpcShop.debugState().saleCount===1&&document.querySelector('.npcshop-bag-view .selected'));
+  bagFilter.querySelector('[data-filter-path="consumable"]').click();await wait();
   var sentBeforeHelp=__sent.length;
   document.querySelector('.npcshop-help-btn').click();
   ok('header help opens a secondary guide page',document.querySelector('.npcshop-help-page.active')&&NpcShop.debugState().helping);
@@ -256,7 +257,8 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   if(transferable)transferable.click();await wait();
   ok('organizer quick-transfers through authority autoTransfer',__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'&&m.payload.targetContainerId==='战备箱'}));
   document.querySelector('[data-space-back]').click();await wait();await wait();
-  ok('returning from organizer refreshes shop snapshot and re-previews',!NpcShop.debugState().organizingSpace&&__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length>=2);
+  var fullBagRebind=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='snapshot'&&m.payload.requests&&m.payload.requests.length===1&&m.payload.requests[0].containerId==='背包'&&m.payload.requests[0].filterKey==='all'}).pop();
+  ok('returning from organizer uses a full bag snapshot, preserves filtered-out sales, and re-previews',fullBagRebind&&NpcShop.debugState().saleCount===1&&!NpcShop.debugState().organizingSpace&&__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length>=2);
   Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('authoritative max clamps equipment purchase after space change',previews[previews.length-1].payload.purchases[0].quantity===3);
