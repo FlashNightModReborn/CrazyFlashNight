@@ -144,6 +144,15 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_BLOCKED_TAGS:String = "禁止挂点";
   public static var LBL_MOD_GRANTS_USE:String = "扩展装备类型池";
   public static var LBL_MOD_GRANTS_WEAPON_TYPE:String = "扩展武器子类";
+  public static var LBL_SCOPE_USE:String = "装备类型";
+  public static var LBL_SCOPE_WEAPON_TYPE:String = "武器子类";
+  public static var LBL_HIT_BEHAVIOR:String = "破韧易伤标记";
+  public static var LBL_MARK_DURATION:String = "命中维持";
+  public static var LBL_BREAK_EXTEND:String = "破韧续时";
+  public static var LBL_MAX_DURATION:String = "持续上限";
+  public static var LBL_MAX_STACKS:String = "最多叠加";
+  public static var LBL_DAMAGE_PER_STACK:String = "每层易伤";
+  public static var TIP_SAME_SOURCE_ONLY:String = "仅施加者破韧可叠层";
 
   // 子弹类型标识符到中文名的映射
   public static var BULLET_TYPE_NAMES:Object = {

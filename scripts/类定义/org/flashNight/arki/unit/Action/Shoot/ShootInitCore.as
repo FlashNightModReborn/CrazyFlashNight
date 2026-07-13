@@ -599,6 +599,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         bulletProps.击中地图效果   = wd.击中地图效果;
         bulletProps.Z轴攻击范围    = wd.Z轴攻击范围;
         bulletProps.击中后子弹的效果 = wd.击中后子弹效果;
+        // 声明式命中行为与视觉 hitEffect 分离；对象仅透传，结算阶段按 type 分发。
+        if (weaponData.hitBehavior != undefined) {
+            bulletProps.hitBehavior = weaponData.hitBehavior;
+        }
 
         // 计算子弹威力（使用统一的武器威力计算函数）
         var basePower:Number = wd.子弹威力Base;

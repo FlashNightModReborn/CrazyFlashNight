@@ -207,6 +207,16 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
 
+`useSwitch` / `skillSwitch` 的无前缀 `name` 继续匹配宿主 `use` 与 `weapontype` 的联合集合。需要消除同名歧义时可写 `use:值` 或 `weapontype:值`：例如 `weapontype:手枪` 只命中精确子类，不会命中仅因 `use=手枪` 而共用装备槽的冲锋手枪和大威力手枪。`grantsUse` 同时进入无前缀集合与 `use:` 限定集合。Tooltip 必须隐藏内部限定符，显示为“装备类型：…”或“武器子类：…”。
+
+### 声明式子弹命中行为 `<hitBehavior>`
+
+武器运行时数据可包含 `<hitBehavior>` 对象；插件通过 `<stats><merge><hitBehavior>...</hitBehavior></merge></stats>` 写入。`ShootInitCore.generateBulletProps` 将该对象透传到子弹，`BulletQueueProcessor.settleHit` 仅在实际伤害结算成功且非 MISS 时按封闭 `type` 分发。该字段表达游戏行为，不得与既有视觉命中特效字段混用，也不得存任意 AS2 函数名或可执行字符串。
+
+当前唯一合法类型是 `toughnessVulnerabilityPrimer`，字段为：`duration`（命中保底刷新帧数）、`breakExtend`（每次破韧追加帧数）、`maxDuration`（续时上限）、`maxStacks`、`damagePerStack`（小数倍率）、`sameSourceOnly`。对应破韧事件名为 `ToughnessBroken`，仅在地面常规冲击流程真实越过韧性上限时、归零前发布；刚体破韧也发布，击杀、闪避、浮空/倒地分支清槽不发布。当前结算顺序保证同一发先挂标记，再由通用 `hit` 监听链触发冲击与破韧，因此该发可获得首层。
+
+该对象允许由 `useSwitch` 分支通过 `merge.hitBehavior` 局部提高字段；深度 merge 保留未声明的基础参数。当前灰蛊裂隙弹基础档为 `180/60/300` 帧、3 层、每层 6%，精确 `weapontype:手枪` 分支只把 `duration/maxDuration/damagePerStack` 提高到 `240/360/0.07`，用于普通手枪的行为型补弱。
+
 ### 装备插件格展示词典
 
 `data/items/equipment_mods/ui_presentation.xml` 是插件格角色→受控符号、`tag`→默认角色的展示单源；`list.xml/<uiPresentation>` 声明其入口。`EquipModListLoader` 与插件子文件并行加载该表，并按来源文件前缀派生四档：`低级材料_→low/#006600`、`中等材料_→medium/#996600`、`高等材料_→high/#0099FF`、`特殊材料_→special/#FFFF00`。角色符号采用 `形状-solid|outline` 受控 token；当前以 `triangle-solid/triangle-outline` 区分火力与精准操控，其余常规角色优先线框，特殊机制保留实心星。单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖；禁止在插件里直接填写 Unicode/HTML 符号。构建门 `node tools/validate-equipment-mod-ui.js` 必须覆盖所有插件、全部现役 `tag`、角色和符号白名单。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。

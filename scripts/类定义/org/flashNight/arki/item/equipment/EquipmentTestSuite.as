@@ -474,6 +474,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testModRegistry_Performance();
         result += testModRegistry_NormalizationOnce();
         result += testModRegistry_UseSwitchNormalization();
+        result += testModRegistry_QualifiedUseSwitchMatching();
 
         return result;
     }
@@ -623,6 +624,50 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ useSwitch 归一化测试通过\n";
+    }
+
+    /**
+     * useSwitch 限定字段匹配测试。
+     * 保证旧的无前缀 name 继续匹配 use/weapontype 联合集合，同时允许精确区分两者。
+     */
+    private static function testModRegistry_QualifiedUseSwitchMatching():String {
+        ModRegistry.loadModData([{
+            name: "限定字段匹配测试",
+            use: "手枪",
+            stats: {
+                useSwitch: {
+                    use: [
+                        {name: "手枪", flat: {legacyHit: 1}},
+                        {name: "use:手枪", flat: {useHit: 1}},
+                        {name: "weapontype:手枪", flat: {weaponTypeHit: 1}}
+                    ]
+                }
+            }
+        }]);
+
+        var modData:Object = ModRegistry.getModData("限定字段匹配测试");
+        var standardHandgun:Object = ModRegistry.buildItemUseLookup("手枪", "手枪", null);
+        var machinePistol:Object = ModRegistry.buildItemUseLookup("手枪", "冲锋枪", null);
+        var standardMatches:Array = ModRegistry.matchUseSwitchAll(modData, standardHandgun);
+        var machinePistolMatches:Array = ModRegistry.matchUseSwitchAll(modData, machinePistol);
+
+        var lookupPassed:Boolean = (
+            standardHandgun["手枪"] == true &&
+            standardHandgun["use:手枪"] == true &&
+            standardHandgun["weapontype:手枪"] == true &&
+            machinePistol["手枪"] == true &&
+            machinePistol["use:手枪"] == true &&
+            machinePistol["weapontype:冲锋枪"] == true &&
+            machinePistol["weapontype:手枪"] != true
+        );
+        var matchPassed:Boolean = (standardMatches.length == 3 && machinePistolMatches.length == 2);
+
+        if (!lookupPassed || !matchPassed) {
+            return "✗ useSwitch限定字段匹配测试失败（普通手枪=" + standardMatches.length +
+                   "，冲锋手枪=" + machinePistolMatches.length + "）\n";
+        }
+
+        return "✓ useSwitch限定字段匹配测试通过\n";
     }
 
     // ==================== TagManager 测试 ====================
@@ -1401,6 +1446,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testEquipmentCalculator_CurveOperator();
         result += testEquipmentCalculator_PureVsNormal();
         result += testEquipmentCalculator_UseSwitchMatching();
+        result += testEquipmentCalculator_QualifiedHandgunHitBehavior();
 
         return result;
     }
@@ -1627,6 +1673,86 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ useSwitch多分支匹配测试通过\n";
+    }
+
+    /**
+     * 精确手枪分支与嵌套 hitBehavior 合并测试。
+     * 普通手枪获得专属档位，冲锋手枪只保留插件基础档位。
+     */
+    private static function testEquipmentCalculator_QualifiedHandgunHitBehavior():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+
+        ModRegistry.loadModData([{
+            name: "手枪行为补弱测试配件",
+            use: "手枪",
+            stats: {
+                merge: {
+                    hitBehavior: {
+                        type: "toughnessVulnerabilityPrimer",
+                        duration: 180,
+                        maxDuration: 300,
+                        maxStacks: 3,
+                        damagePerStack: 0.06
+                    }
+                },
+                useSwitch: {
+                    use: [{
+                        name: "weapontype:手枪",
+                        merge: {
+                            hitBehavior: {
+                                duration: 240,
+                                maxDuration: 360,
+                                damagePerStack: 0.07
+                            }
+                        }
+                    }]
+                }
+            }
+        }]);
+
+        var modRegistry:Object = {
+            手枪行为补弱测试配件: ModRegistry.getModData("手枪行为补弱测试配件")
+        };
+        var value:Object = {level: 1, mods: ["手枪行为补弱测试配件"]};
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        var standardResult:Object = EquipmentCalculator.calculatePure(
+            {name: "测试普通手枪", use: "手枪", weapontype: "手枪", data: {}},
+            value,
+            cfg,
+            modRegistry
+        );
+        var machinePistolResult:Object = EquipmentCalculator.calculatePure(
+            {name: "测试冲锋手枪", use: "手枪", weapontype: "冲锋枪", data: {}},
+            value,
+            cfg,
+            modRegistry
+        );
+
+        var standardBehavior:Object = standardResult.data.hitBehavior;
+        var machinePistolBehavior:Object = machinePistolResult.data.hitBehavior;
+        var passed:Boolean = (
+            standardBehavior.duration == 240 &&
+            standardBehavior.maxDuration == 360 &&
+            standardBehavior.maxStacks == 3 &&
+            standardBehavior.damagePerStack == 0.07 &&
+            machinePistolBehavior.duration == 180 &&
+            machinePistolBehavior.maxDuration == 300 &&
+            machinePistolBehavior.maxStacks == 3 &&
+            machinePistolBehavior.damagePerStack == 0.06
+        );
+
+        if (!passed) {
+            return "✗ 精确手枪hitBehavior合并测试失败（普通手枪=" +
+                   standardBehavior.duration + "/" + standardBehavior.maxDuration + "/" + standardBehavior.damagePerStack +
+                   "，冲锋手枪=" + machinePistolBehavior.duration + "/" +
+                   machinePistolBehavior.maxDuration + "/" + machinePistolBehavior.damagePerStack + "）\n";
+        }
+
+        return "✓ 精确手枪hitBehavior合并测试通过\n";
     }
 
     // ==================== 集成测试 ====================

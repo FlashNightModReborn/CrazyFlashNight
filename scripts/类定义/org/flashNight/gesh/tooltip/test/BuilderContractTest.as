@@ -78,7 +78,9 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_ObtainMethodsBuilder_no_index();
         test_ModStatBuilder_unknown_item();
         test_ModStatBuilder_curve();
+        test_ModStatBuilder_hitBehavior_useSwitch();
         test_ModStatBuilder_skillSwitch();
+        test_ModsBlockBuilder_hitBehavior_useSwitch();
         test_ModsBlockBuilder_skillSwitch();
 
         trace("--- BuilderContractTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
@@ -414,6 +416,61 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         assertContains(joined, TooltipConstants.PROPERTY_DICT["diffusion"], "ModStatBuilder curve has diffusion label");
     }
 
+    private static function test_ModStatBuilder_hitBehavior_useSwitch():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["行为弹药插件"] = buildHitBehaviorUseSwitchFixture();
+        EquipmentUtil.modDict = dict;
+
+        var result:Array = ModStatBuilder.build("行为弹药插件");
+        var joined:String = result.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(joined, TooltipConstants.LBL_HIT_BEHAVIOR, "ModStatBuilder hitBehavior has behavior label");
+        assertContains(joined, "6秒", "ModStatBuilder hitBehavior has base duration");
+        assertContains(joined, "+6%", "ModStatBuilder hitBehavior has base stack value");
+        assertContains(joined, "武器子类：手枪", "ModStatBuilder translates qualified useSwitch label");
+        assertContains(joined, "8秒", "ModStatBuilder has handgun duration override");
+        assertContains(joined, "+7%", "ModStatBuilder has handgun stack override");
+        assertContains(joined, "12秒", "ModStatBuilder has handgun duration cap override");
+        assertNotContains(joined, "weapontype:手枪", "ModStatBuilder hides qualified token");
+        assertNotContains(joined, "[object Object]", "ModStatBuilder never stringifies hitBehavior object");
+    }
+
+    private static function test_ModsBlockBuilder_hitBehavior_useSwitch():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["行为弹药插件"] = buildHitBehaviorUseSwitchFixture();
+        EquipmentUtil.modDict = dict;
+
+        var handgunResult:Array = [];
+        ModsBlockBuilder.build(
+            handgunResult,
+            null,
+            {use: "手枪", weapontype: "手枪"},
+            {mods: ["行为弹药插件"]}
+        );
+        var handgunJoined:String = handgunResult.join("");
+
+        var machinePistolResult:Array = [];
+        ModsBlockBuilder.build(
+            machinePistolResult,
+            null,
+            {use: "手枪", weapontype: "冲锋枪"},
+            {mods: ["行为弹药插件"]}
+        );
+        var machinePistolJoined:String = machinePistolResult.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(handgunJoined, "武器子类：手枪", "ModsBlockBuilder shows matched qualified handgun branch");
+        assertContains(handgunJoined, "每层易伤+7%", "ModsBlockBuilder summarizes handgun behavior bonus");
+        assertContains(handgunJoined, "命中维持8秒", "ModsBlockBuilder summarizes handgun mark duration");
+        assertNotContains(machinePistolJoined, "武器子类：手枪", "ModsBlockBuilder does not match handgun branch for machine pistol");
+        assertNotContains(machinePistolJoined, "每层易伤+7%", "ModsBlockBuilder does not leak handgun bonus to machine pistol");
+    }
+
     private static function test_ModStatBuilder_skillSwitch():Void {
         var oldDict:Object = EquipmentUtil.modDict;
         var dict:Object = {};
@@ -429,8 +486,10 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         assertContains(joined, "其他情况", "ModStatBuilder skillSwitch has default label");
         assertContains(joined, "黑刀斩术", "ModStatBuilder skillSwitch has default skill name");
         assertContains(joined, "手枪", "ModStatBuilder skillSwitch has use label");
+        assertContains(joined, "装备类型：手枪", "ModStatBuilder skillSwitch translates qualified use label");
         assertContains(joined, "闪现", "ModStatBuilder skillSwitch has skill name");
         assertNotContains(joined, "对手枪", "ModStatBuilder skillSwitch avoids additive wording");
+        assertNotContains(joined, "use:手枪", "ModStatBuilder skillSwitch hides qualified token");
     }
 
     private static function test_ModsBlockBuilder_skillSwitch():Void {
@@ -463,7 +522,7 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
                         mp: 45
                     },
                     {
-                        name: "手枪",
+                        name: "use:手枪",
                         skillname: "闪现",
                         description: "条件分支战技说明。",
                         cd: 6000,
@@ -471,6 +530,39 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
                         level: 1
                     }
                 ]
+            }
+        };
+    }
+
+    private static function buildHitBehaviorUseSwitchFixture():Object {
+        return {
+            name: "行为弹药插件",
+            use: "手枪",
+            tagValue: "弹药",
+            stats: {
+                merge: {
+                    hitBehavior: {
+                        type: "toughnessVulnerabilityPrimer",
+                        duration: 180,
+                        breakExtend: 60,
+                        maxDuration: 300,
+                        maxStacks: 3,
+                        damagePerStack: 0.06,
+                        sameSourceOnly: true
+                    }
+                },
+                useSwitch: {
+                    useCases: [{
+                        name: "weapontype:手枪",
+                        merge: {
+                            hitBehavior: {
+                                duration: 240,
+                                maxDuration: 360,
+                                damagePerStack: 0.07
+                            }
+                        }
+                    }]
+                }
             }
         };
     }

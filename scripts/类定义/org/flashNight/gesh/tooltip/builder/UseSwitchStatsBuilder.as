@@ -46,7 +46,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 // default 分支：显示"其他情况"
                 result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_DEFAULT_BRANCH + "：</font><BR>");
             } else {
-                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_FOR + " " + useCase.name + "：</font><BR>");
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_FOR + " " + getUseCaseDisplayName(useCase.name) + "：</font><BR>");
             }
 
             // 【新增】显示条件性 provideTags
@@ -201,7 +201,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             for (var i = 0; i < sortedList.length; i++) {
                 var key = sortedList[i];
                 // 跳过嵌套对象，它们需要特殊处理
-                if (key == "magicdefence" || key == "skillmultipliers") continue;
+                if (key == "magicdefence" || key == "skillmultipliers" || key == "hitBehavior") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "merge", key, statsObj.merge[key], null);
             }
@@ -277,13 +277,16 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             }
         }
 
-        // 处理 merge 中的特殊对象（magicdefence/skillmultipliers）
+        // 处理 merge 中的特殊对象（magicdefence/skillmultipliers/hitBehavior）
         if (statsObj.merge) {
             if (statsObj.merge.magicdefence) {
                 result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.merge.magicdefence, TooltipConstants.TXT_MERGE));
             }
             if (statsObj.merge.skillmultipliers) {
                 result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.merge.skillmultipliers, TooltipConstants.TXT_MERGE));
+            }
+            if (statsObj.merge.hitBehavior) {
+                appendHitBehavior(result, indent, statsObj.merge.hitBehavior);
             }
         }
 
@@ -292,6 +295,97 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             result.push(indent);
             TooltipTextBuilder.quickBuildDamageType(result, statsObj.override);
         }
+    }
+
+    /**
+     * 将 useSwitch 内部限定符转换为玩家可读标签。
+     * 未限定的旧配置保持原样，以免改变既有文案。
+     */
+    public static function getUseCaseDisplayName(rawName:String):String {
+        if (!rawName) return "";
+
+        var rawParts:Array = rawName.split(",");
+        var displayParts:Array = [];
+        for (var i:Number = 0; i < rawParts.length; i++) {
+            var token:String = trimSimple(String(rawParts[i]));
+            if (token.indexOf("weapontype:") == 0) {
+                displayParts.push(TooltipConstants.LBL_SCOPE_WEAPON_TYPE + "：" + token.substring(11));
+            } else if (token.indexOf("use:") == 0) {
+                displayParts.push(TooltipConstants.LBL_SCOPE_USE + "：" + token.substring(4));
+            } else if (token.length > 0) {
+                displayParts.push(token);
+            }
+        }
+        return displayParts.join("/");
+    }
+
+    /**
+     * 为已安装配件列表构建紧凑命中行为摘要。
+     * 只显示分支实际提供的字段，避免把基础值误写成条件增益。
+     */
+    public static function buildHitBehaviorSummary(behavior:Object):String {
+        if (!behavior) return "";
+
+        var parts:Array = [];
+        if (behavior.duration != undefined) {
+            parts.push(TooltipConstants.LBL_MARK_DURATION + formatFramesAsSeconds(behavior.duration));
+        }
+        if (behavior.damagePerStack != undefined) {
+            parts.push(TooltipConstants.LBL_DAMAGE_PER_STACK + "+" + formatPercent(behavior.damagePerStack));
+        }
+        if (behavior.maxDuration != undefined) {
+            parts.push(TooltipConstants.LBL_MAX_DURATION + formatFramesAsSeconds(behavior.maxDuration));
+        }
+        if (behavior.maxStacks != undefined) {
+            parts.push(TooltipConstants.LBL_MAX_STACKS + behavior.maxStacks + "层");
+        }
+        if (behavior.breakExtend != undefined) {
+            parts.push(TooltipConstants.LBL_BREAK_EXTEND + "+" + formatFramesAsSeconds(behavior.breakExtend));
+        }
+        return parts.join("，");
+    }
+
+    private static function appendHitBehavior(result:Array, indent:String, behavior:Object):Void {
+        if (!behavior) return;
+
+        result.push(indent, "<FONT COLOR='", TooltipConstants.COL_USE_SWITCH, "'>", TooltipConstants.LBL_HIT_BEHAVIOR, "</FONT><BR>");
+        if (behavior.duration != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_MARK_DURATION, " ", formatFramesAsSeconds(behavior.duration), "<BR>");
+        }
+        if (behavior.breakExtend != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_BREAK_EXTEND, " +", formatFramesAsSeconds(behavior.breakExtend), "<BR>");
+        }
+        if (behavior.maxDuration != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_MAX_DURATION, " ", formatFramesAsSeconds(behavior.maxDuration), "<BR>");
+        }
+        if (behavior.maxStacks != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_MAX_STACKS, " ", behavior.maxStacks, "层<BR>");
+        }
+        if (behavior.damagePerStack != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_DAMAGE_PER_STACK, " +", formatPercent(behavior.damagePerStack), "<BR>");
+        }
+        if (behavior.sameSourceOnly == true || behavior.sameSourceOnly == "true") {
+            result.push(indent, "  ", TooltipConstants.TIP_SAME_SOURCE_ONLY, "<BR>");
+        }
+    }
+
+    private static function formatFramesAsSeconds(frameValue:Object):String {
+        var frames:Number = Number(frameValue);
+        if (isNaN(frames)) return String(frameValue);
+        var seconds:Number = Math.round(frames / 30 * 10) / 10;
+        return seconds + TooltipConstants.SUF_SECOND;
+    }
+
+    private static function formatPercent(value:Object):String {
+        var numericValue:Number = Number(value);
+        if (isNaN(numericValue)) return String(value);
+        return (Math.round(numericValue * 1000) / 10) + TooltipConstants.SUF_PERCENT;
+    }
+
+    private static function trimSimple(value:String):String {
+        while (value.length > 0 && value.charAt(0) == " ") value = value.substring(1);
+        while (value.length > 0 && value.charAt(value.length - 1) == " ") value = value.substring(0, value.length - 1);
+        return value;
     }
 
     private static function appendCurveLine(result:Array, indent:String, key:String, curveConfig):Void {

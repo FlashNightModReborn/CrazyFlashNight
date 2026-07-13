@@ -171,7 +171,9 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
             if(!skill || !skill.skillname) continue;
 
             var isDefault:Boolean = (useCase._isDefault || !useCase.name);
-            var useLabel:String = isDefault ? TooltipConstants.TIP_DEFAULT_BRANCH : useCase.name;
+            var useLabel:String = isDefault
+                ? TooltipConstants.TIP_DEFAULT_BRANCH
+                : UseSwitchStatsBuilder.getUseCaseDisplayName(useCase.name);
             if(isDefault) {
                 hasDefault = true;
             } else {

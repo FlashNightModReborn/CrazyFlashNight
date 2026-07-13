@@ -597,6 +597,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         );
         bullet.hitCount += damageResult.actualScatterUsed;
 
+        // 声明式命中行为在伤害结算后、通用 hit 事件前执行：同一发造成破韧时，
+        // 控制器已先挂载，随后 HitUpdater 发布的 ToughnessBroken 不会丢失。
+        // 普通子弹没有该字段，不进入注册表，保持热路径成本接近零。
+        if (bullet.hitBehavior != undefined) {
+            BulletHitEffectRegistry.apply(bullet, shooter, hitTarget, damageResult);
+        }
+
         // 死亡类型在 hit 事件前取快照；injectHit 未来若误重入也不污染本次 kill/death 判定。
         var isNormalKill:Boolean = (ctx.flags & ctx.meleeMask) == 0;
 

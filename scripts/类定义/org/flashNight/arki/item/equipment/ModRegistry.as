@@ -848,7 +848,13 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     }
 
     /**
-     * 构建装备的use/weapontype查找表
+     * 构建装备的use/weapontype查找表。
+     *
+     * 为保持旧配置兼容，每个值仍写入无前缀键；同时写入限定键：
+     * - use:手枪：只匹配 use 字段
+     * - weapontype:手枪：只匹配 weapontype 字段
+     *
+     * grantsUse 属于 use 类型池扩展，因此同时写入 use: 限定键。
      * @param itemUse 装备的use属性
      * @param itemWeaponType 装备的weapontype属性
      * @return 查找表对象
@@ -863,6 +869,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                 var trimmedUse:String = StringUtils.trim(useList[i]);
                 if (trimmedUse.length > 0) {
                     lookup[trimmedUse] = true;
+                    lookup["use:" + trimmedUse] = true;
                 }
             }
         }
@@ -872,8 +879,11 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             var weaponList:Array = itemWeaponType.split(",");
             for (var j:Number = 0; j < weaponList.length; j++) {
                 var trimmedWeapon:String = StringUtils.trim(weaponList[j]);
-                if (trimmedWeapon.length > 0 && !lookup[trimmedWeapon]) {
-                    lookup[trimmedWeapon] = true;
+                if (trimmedWeapon.length > 0) {
+                    if (!lookup[trimmedWeapon]) {
+                        lookup[trimmedWeapon] = true;
+                    }
+                    lookup["weapontype:" + trimmedWeapon] = true;
                 }
             }
         }
@@ -884,6 +894,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                 if (!lookup[gu]) {
                     lookup[gu] = true;
                 }
+                lookup["use:" + gu] = true;
             }
         }
 

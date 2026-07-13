@@ -423,6 +423,30 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 ### 【其他重要标签说明】
 
+#### hitBehavior - 声明式子弹命中行为
+
+行为配置通过 `merge` 写入武器运行时数据，并由射击初始化透传到子弹。它与视觉命中特效字段相互独立；只允许注册表支持的封闭 `type`，禁止填写任意函数名或可执行字符串。
+
+```xml
+<stats>
+    <merge>
+        <hitBehavior>
+            <type>toughnessVulnerabilityPrimer</type>
+            <duration>180</duration>
+            <breakExtend>60</breakExtend>
+            <maxDuration>300</maxDuration>
+            <maxStacks>3</maxStacks>
+            <damagePerStack>0.06</damagePerStack>
+            <sameSourceOnly>true</sameSourceOnly>
+        </hitBehavior>
+    </merge>
+</stats>
+```
+
+当前类型表示：有效命中挂载/刷新破韧标记；标记期间由同一 shooter 完成破韧时叠加全局易伤。命中保底刷新但不缩短已延长时间，破韧在剩余时间上延长并受 `maxDuration` 限制，叠层受 `maxStacks` 限制。同一发命中若随后造成破韧，计入首层。
+
+嵌套字段可在 `useSwitch` 的 `merge` 中局部覆写。灰蛊裂隙弹当前用 `name="weapontype:手枪"` 将普通手枪调整为 `duration=240`、`maxDuration=360`、`damagePerStack=0.07`；没有写入分支的 `breakExtend/maxStacks/sameSourceOnly/type` 会保留基础值。Tooltip 会把帧数换算成秒并把限定符显示为可读的“武器子类：手枪”。
+
 #### tag - 插件位置标签
 **作用：** 同tag的插件不能同时装备（互斥机制）
 **示例：** 挂饰、柄尾、枪机、表面涂层 等
@@ -775,12 +799,29 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 - 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
 
 **匹配规则：**
-- 分支的name与装备的use或weapontype字段进行匹配
+- 无前缀分支的 name 与装备的 use 或 weapontype 联合集合匹配；这是兼容既有数据的默认语义
+- 需要精确字段时使用 `use:值` 或 `weapontype:值`，例如 `name="weapontype:手枪"` 只匹配普通手枪子类，不会因宿主共享 `use=手枪` 而命中大威力手枪或冲锋手枪
+- `grantsUse` 扩展值同时参与无前缀匹配和 `use:` 限定匹配
 - name支持多个类型，用逗号分隔（如 "发射器,榴弹发射器"）
 - 装备的use/weapontype也可能是多值（如 use="步枪,发射器"）
 - 只要分支name与装备use/weapontype有任一相同，分支就会生效
 - 多个分支可以同时生效（按XML顺序累加效果）
 - 支持 **default（兜底）分支**：省略 name 属性的 `<use>` 节点为 default 分支，仅在无命名分支命中时生效
+
+```xml
+<!-- 普通手枪专属；不匹配 use=手枪、weapontype=冲锋枪 的冲锋手枪 -->
+<useSwitch>
+    <use name="weapontype:手枪">
+        <merge>
+            <hitBehavior>
+                <duration>240</duration>
+                <maxDuration>360</maxDuration>
+                <damagePerStack>0.07</damagePerStack>
+            </hitBehavior>
+        </merge>
+    </use>
+</useSwitch>
+```
 
 **实际示例：**
 ```

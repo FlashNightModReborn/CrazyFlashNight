@@ -291,6 +291,75 @@
         <tag>弹药</tag>
     </mod>
     <mod>
+        <name>黑爪扩张弹</name>
+        <use>手枪,长枪</use>
+        <weapontype>手枪,大威力手枪,冲锋枪</weapontype>
+        <stats>
+            <curve>
+                <impact>
+                    <type>sqrtScale</type>
+                    <coefficient>1.8</coefficient>
+                    <min>25</min>
+                </impact>
+            </curve>
+        </stats>
+        <description>以高停止作用著称的特种扩张弹。使原生冲击较弱的手枪与冲锋枪获得显著破韧能力。
+        原生击倒率低于曲线结果的武器保持原值，不会因安装而降低冲击力。</description>
+        <tag>弹药</tag>
+    </mod>
+    <!--
+        灰蛊裂隙弹平衡锚点（2026-07-13 数据快照）：
+        竞争品磁稳贯穿弹默认间隔 I'=(I+50)×1.2；冲锋枪中位 I=85 时，
+        单体稳定2判上限约 +4.9%，三判群伤上限约 +57.4%。
+        本插件 6%×3层=18% 峰值，取上述区间低位；实战收益应按
+        damagePerStack × 伤害加权平均层数计算，通常显著低于峰值。
+        因其为全队易伤且会提高后续冲击，未经实测不应超过 8%/层。
+        精确子类 weapontype:手枪 使用 7%×3层=21% 档位，并把基础维持/续时上限
+        从 180/300 帧提高到 240/360 帧；它仍低于 8%/层警戒线，且不增加面板输出。
+        该分支只补偿普通手枪的行为工具弱势，不覆盖大威力手枪或冲锋手枪。
+        完整模型见 docs/冲锋枪错位竞争与双枪插件-设计备忘-2026-07-13.md §6.9。
+
+        设定/兼容性契约：灰蛊系列以可剥离纳米机器涂层在目标裂隙中扩散；
+        涂层沉积需要牺牲性外被，与 pierce 所需的硬质低摩擦侵彻外被不兼容。
+        “弹药”tag 阻止与其他弹药插件叠加，excludeBulletTypes 另行排除原生穿刺弹。
+    -->
+    <mod>
+        <name>灰蛊裂隙弹</name>
+        <use>手枪,长枪</use>
+        <weapontype>手枪,大威力手枪,冲锋枪</weapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
+        <stats>
+            <merge>
+                <hitBehavior>
+                    <type>toughnessVulnerabilityPrimer</type>
+                    <duration>180</duration>
+                    <breakExtend>60</breakExtend>
+                    <maxDuration>300</maxDuration>
+                    <maxStacks>3</maxStacks>
+                    <damagePerStack>0.06</damagePerStack>
+                    <sameSourceOnly>true</sameSourceOnly>
+                </hitBehavior>
+            </merge>
+            <useSwitch>
+                <!-- 普通手枪补弱：只匹配精确 weapontype，不匹配共享 use=手枪 的冲锋手枪/大威力手枪 -->
+                <use name="weapontype:手枪">
+                    <merge>
+                        <hitBehavior>
+                            <duration>240</duration>
+                            <maxDuration>360</maxDuration>
+                            <damagePerStack>0.07</damagePerStack>
+                        </hitBehavior>
+                    </merge>
+                </use>
+            </useSwitch>
+        </stats>
+        <description>灰蛊系列的牺牲性纳米涂层弹。
+        命中后涂层剥落并附着目标；同一使用者完成破韧时，纳米群会沿结构裂隙扩散，使目标承受的伤害提高6%，最多叠加3层。
+        命中会补充并维持涂层，破韧会延长群落活性。安装于普通手枪时，较低的膛压与弹道载荷能保存更多纳米群，使标记维持更久且每层易伤提高至7%。
+        该涂层无法兼容穿刺弹的硬质侵彻外被。</description>
+        <tag>弹药</tag>
+    </mod>
+    <mod>
         <name>磁稳贯穿弹</name>
         <use>手枪,长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
