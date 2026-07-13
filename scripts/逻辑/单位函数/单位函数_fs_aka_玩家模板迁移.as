@@ -1710,15 +1710,17 @@ _root.主角函数.刀口位置生成子弹 = BladeShootCore.shoot;
 
 //释放技能与战技
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {
-    // 防护：技能名为空时直接返回，避免空技能栏触发导致异常
-    if (!技能名 || 技能名 == "" || 技能名 == "空")
+    // 统一校验原始空值、已学习技能、技能数据与 MP 消耗，禁止无效名称进入默认技能路由。
+    var 技能释放信息:Object = SkillReleaseGuard.resolve(_root, 技能名, 消耗mp);
+    if (!技能释放信息)
         return false;
+
+    技能名 = 技能释放信息.skillName;
+    消耗mp = 技能释放信息.mpCost;
     if (this.hp <= 0 || this.mp < 消耗mp)
         return false;
 
-    var 技能等级 = Number(_root.根据技能名查找主角技能等级(技能名));
-    if (技能等级 <= 0 || isNaN(技能等级) || 技能等级 > 10)
-        技能等级 = 1;
+    var 技能等级:Number = 技能释放信息.skillLevel;
     //用函数托管技能的释放条件
     var 释放条件函数 = _root.技能函数.释放条件[技能名] ? _root.技能函数.释放条件[技能名] : _root.技能函数.释放条件.默认;
     var 释放许可 = 释放条件函数.apply(this);

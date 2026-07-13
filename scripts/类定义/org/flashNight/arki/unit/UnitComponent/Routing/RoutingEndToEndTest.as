@@ -14,7 +14,7 @@
  *   - MISSING SILENT_CONTINUE 路径 + undefined man 下游验证（user 2026-05-19 风险点）：
  *       * handleFloat(undefined, unit, ...) AS2 silent 不崩
  *       * bindEndCleanup(undefined, unit, ...) AS2 silent 不崩
- *       * unit 业务字段不被错改
+ *       * unit 业务字段不被错改，技能生产路由调用 canonical recovery 退出空容器
  *   - bindContainerEndState 端到端：attach → bind → removeMovieClip → onUnload chain →
  *       UpdateBigSmallState(BIG_END_PUNCH, SMALL_END_WEAPON) 触发
  *   - removeMovieClip 端到端：parent.man 引用清理
@@ -118,6 +118,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         u.__spy_bigStateLastBig = undefined;
         u.__spy_bigStateLastSmall = undefined;
         u.__spy_bonusModeCount = 0;
+        u.__spy_animationEndCount = 0;
         u.UpdateBigSmallState = function(big, small) {
             this.__spy_bigStateCount++;
             this.__spy_bigStateLastBig = big;
@@ -125,6 +126,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         };
         u.根据模式重新读取武器加成 = function(mode) {
             this.__spy_bonusModeCount++;
+        };
+        u.动画完毕 = function() {
+            this.__spy_animationEndCount++;
+            this.技能名 = null;
         };
         return u;
     }
@@ -265,7 +270,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
     //                 scripts/引擎/引擎_fs_战技路由.as 短路落地）
     //
     // 复现 fix 后 _root.技能路由.载入后跳转技能容器 / 战技路由.载入后跳转战技容器 的
-    // 核心算法：missing 容器时 STATUS !== OK 立即 return，不调 handleFloat/bindEndCleanup。
+    // 核心算法：missing 容器时 STATUS !== OK，不调 handleFloat/bindEndCleanup，
+    // 改走 recoverMissingSkillContainer 退出空容器状态。
     //
     // **如果生产代码回归（去掉 status !== OK 短路），下面三条 production 断言会同步 FAIL。**
     // 维护规则：生产代码改动时这里要同步；保持 fix 落地的唯一证据。
@@ -277,7 +283,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         var attachResult:Object = ContainerAttachAction.attach(
             unit, ContainerSpec.KIND_SKILL, 技能名, containerInit);
         if (attachResult.status !== ContainerAttachAction.STATUS_OK) {
-            return {man: undefined, shortCircuited: true};
+            RoutingLifecycle.recoverMissingSkillContainer(unit);
+            return {man: undefined, shortCircuited: true, recovered: true};
         }
         var man:MovieClip = attachResult.man;
         RoutingLifecycle.handleFloat(man, unit, "技能浮空");
@@ -315,6 +322,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         assertEquals("unit.技能浮空 未被污染", false, unit.技能浮空);
         assertEquals("unit._y 未被改写 (保留 100)", 100, unit._y);
         assertTrue("unit.起始Y 未被改写", unit.起始Y === undefined);
+        assertEquals("missing 技能走动画结束恢复", 1, unit.__spy_animationEndCount);
+        assertEquals("missing 技能恢复攻击模式加成", 1, unit.__spy_bonusModeCount);
+        assertEquals("missing 技能清理技能名", null, unit.技能名);
         // bindEndCleanup 也未调（没有 man.onUnload 被设置 → unit.__spy_bigStateCount 仍 0）
         assertEquals("UpdateBigSmallState 未触发", 0, unit.__spy_bigStateCount);
     }

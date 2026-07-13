@@ -1,7 +1,7 @@
 # asLoader BootSequencer · 权威启动契约 · 构建标准 · 2026-06-16
 
 **文档角色**：BootSequencer（C2 全量异步-B）施工的**权威跨时间轴启动契约**。
-**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
+**最后核对代码基线**：commit `e9af7030e7`（2026-07-13）；具体 import 白名单含本轮待提交 `SkillReleaseGuard`。
 **来源**：8-agent workflow（3 readers → 综合 → 3 对抗校验 → spec），全部 file:line 二次核对。
 **上游设计**：[asLoader重构-架构设计-2026-06-15.md](asLoader重构-架构设计-2026-06-15.md)。
 **状态**：契约已闭合；BootSequencer 已编译落地——happy-path 真机 boot + L1 单测（BootSequencerTest / BootstrapHandshakeTest）+ trace 等价门通过；§5 七边界真机验收推进中（见 §5.3）。
@@ -297,7 +297,7 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 折叠（把每帧 #include 包成 `_root.__boot.sN=function(){...}` 由状态机调度）有两处静态风险，原 Runbook 只有 TODO 没有工具。现各建一门，**两门均给出确定性绿灯结论**：
 
 - **门 ① 联合 import 头碰撞**：`node tools/lint-frame-imports.js --fold-specific [--strict]`。把 47 个具体 import 的「包」并入通配并集（= 子文件剥具体 import、靠单帧联合头解析的终态），重算跨包叶名碰撞。**结论：折叠新增 6 包（`gesh.pratt`/`gesh.text`/`gesh.xml.LoadXml`/`neur.InputCommand`/`neur.PerformanceOptimizer`/`arki.unit.Action.Melee`）→ 并集 76→82，新引入碰撞 = 0**。⇒ 折叠时子文件**仅需删掉自带具体 import，零 FQN 改写**。`--strict --fold-specific` exit 0。
-  - **⚠ 具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化；2026-07-12 扩为显式列表）**：塌缩产物 `_collapsed_frame.as` 为规避 L42 陷阱（CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败）保留由 `assemble-collapsed-frame.js::SPECIFIC_IMPORTS` 管理的具体 import。当前 exact-match 白名单为 `org.flashNight.boot.BootSequencer`，以及 `org.flashNight.arki.unit.Action.Skill` 包内 5 个现役类（`QuickSkillInputService / SkillAttributeCore / SkillDamageCore / SkillReloadCore / WeaponSkillInputService`）。12 槽切片中新建且被帧脚本直接引用的 `QuickSkillInputService` 必须显式导入；又因 AS2 编译器拒绝同包 `Action.Skill.*` 与具体 import 并存，该包整体从 82 包通配头移出并改为 5 个具体类，最终为 81 包通配 + 6 具体类。组装器生成后逐项 exact-match，任何未登记具体 import、同包通配回流或顺序漂移都 fail-fast；这些 import 不在被 lint 扫描的源帧内，故 `lint --fold-specific` 的 strict 分支仍只判折叠碰撞。新增白名单项必须有“本会话新增类被帧脚本直接引用”的证据并同步本文，不能把列表当通用逃生口。
+  - **⚠ 具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化；2026-07-13 扩为 9 项）**：塌缩产物 `_collapsed_frame.as` 为规避 L42 陷阱（CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败）保留由 `assemble-collapsed-frame.js::SPECIFIC_IMPORTS` 管理的具体 import。当前 exact-match 白名单为 `org.flashNight.boot.BootSequencer`，以及 `org.flashNight.arki.unit.Action.Skill` 包内 8 个现役类（`DrugInputService / ManualCooldownService / QuickSkillInputService / SkillReleaseGuard / SkillAttributeCore / SkillDamageCore / SkillReloadCore / WeaponSkillInputService`）。其中会话期新增且被帧脚本直接引用的 `QuickSkillInputService`、`SkillReleaseGuard` 必须显式导入；又因 AS2 编译器拒绝同包 `Action.Skill.*` 与具体 import 并存，该包整体从 82 包通配头移出并改为具体类集合，最终为 81 包通配 + 9 具体 import。组装器生成后逐项 exact-match，任何未登记具体 import、同包通配回流或顺序漂移都 fail-fast；这些 import 不在被 lint 扫描的源帧内，故 `lint --fold-specific` 的 strict 分支仍只判折叠碰撞。新增白名单项必须有“本会话新增类被帧脚本直接引用”的证据并同步本文，不能把列表当通用逃生口。
   - **权威联合头（82 包，已验证 0 碰撞）= 折叠后单帧 CDATA 顶部固定块**：
 
 ```as2

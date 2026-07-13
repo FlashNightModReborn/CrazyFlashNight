@@ -6,7 +6,9 @@ import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
 import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 import org.flashNight.arki.unit.Action.Skill.QuickSkillInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard;
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
+import org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
@@ -55,6 +57,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testQuickSkillInputRearmsAcrossDisabledFrames();
         testQuickSkillInputKeepsSlotLatchesIndependent();
         testQuickSkillInputSyncsLiveKeyLabelAndClearsUnit();
+        testQuickSkillInputRejectsEmptyAndMalformedSlots();
+        testSkillReleaseGuardRejectsUnknownSkillsAndInvalidCost();
+        testMissingSkillContainerRecoveryUsesCanonicalExit();
         testQuickSkillInputPreservesTruthyLegacyPorts();
         testQuickSkillInputFailsClosedWithoutCooldownStarter();
         testManualReloadIntentQueuesForHeldGunStateMachine();
@@ -534,6 +539,76 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         QuickSkillInputService.clearUnit(unit);
         assert(unit.__quickSkillInputConsumedSlots == undefined, "quick-skill input cleanup removes all per-slot latches");
         assert(QuickSkillInputService.getKeyName(12) == "快捷技能栏键12", "quick-skill key table covers all twelve slots");
+    }
+
+    private static function testQuickSkillInputRejectsEmptyAndMalformedSlots():Void {
+        resetManualCooldown();
+        var unit:Object = makeUnit();
+        var view:Object = makeQuickSkillView();
+        unit.quickSkillReleaseCount = 0;
+        unit.释放技能 = function():Boolean {
+            this.quickSkillReleaseCount++;
+            return true;
+        };
+
+        var emptyNames:Array = [null, undefined, "", "空", "null", "undefined"];
+        for (var i:Number = 0; i < emptyNames.length; i++) {
+            view.快捷技能栏1 = {是否装备: 1, 已装备名: emptyNames[i], 消耗mp: 10, 冷却时间: 1000};
+            var emptyResult:Object = QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
+            assert(emptyResult == null, "quick-skill input rejects empty sentinel index " + i);
+            assert(unit.__quickSkillInputConsumedSlots[1] !== true, "rejected empty slot does not consume input index " + i);
+        }
+
+        view.快捷技能栏1 = {是否装备: 0, 已装备名: "残留技能名", 消耗mp: 10, 冷却时间: 1000};
+        assert(QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49) == null, "visually empty stale-name slot is rejected");
+
+        view.快捷技能栏1 = {是否装备: 1, 已装备名: "测试快捷技能", 消耗mp: undefined, 冷却时间: 1000};
+        assert(QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49) == null, "slot with missing mp cost is rejected");
+
+        view.快捷技能栏1 = {是否装备: 1, 已装备名: "测试快捷技能", 消耗mp: 10, 冷却时间: undefined};
+        assert(QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49) == null, "slot with missing cooldown is rejected");
+        assert(unit.quickSkillReleaseCount == 0, "empty or malformed slots never reach unit release boundary");
+    }
+
+    private static function testSkillReleaseGuardRejectsUnknownSkillsAndInvalidCost():Void {
+        var root:Object = {};
+        root.根据技能名查找主角技能等级 = function(skillName:String):Number {
+            return skillName == "合法技能" ? 3 : 0;
+        };
+        root.根据技能名查找全部属性 = function(skillName:String):Object {
+            return skillName == "合法技能" ? {CD: 1000, MP: 20} : null;
+        };
+
+        var valid:Object = SkillReleaseGuard.resolve(root, "合法技能", 20);
+        assert(valid != null && valid.skillName == "合法技能" && valid.skillLevel == 3, "release guard accepts learned skill with data");
+        assert(valid != null && valid.mpCost == 20, "release guard normalizes valid mp cost");
+        assert(SkillReleaseGuard.resolve(root, null, 20) == null, "release guard rejects raw null before string coercion");
+        assert(SkillReleaseGuard.resolve(root, "null", 20) == null, "release guard rejects serialized null sentinel");
+        assert(SkillReleaseGuard.resolve(root, "不存在的技能", 20) == null, "release guard rejects unknown skill name");
+        assert(SkillReleaseGuard.resolve(root, "合法技能", undefined) == null, "release guard rejects missing mp cost");
+        assert(SkillReleaseGuard.resolve(root, "合法技能", -1) == null, "release guard rejects negative mp cost");
+    }
+
+    private static function testMissingSkillContainerRecoveryUsesCanonicalExit():Void {
+        var unit = {攻击模式: "兵器", bonusRestoreCount: 0, animationEndCount: 0};
+        unit.根据模式重新读取武器加成 = function(mode:String):Void {
+            this.bonusRestoreCount++;
+            this.lastBonusMode = mode;
+        };
+        unit.动画完毕 = function():Void {
+            this.animationEndCount++;
+        };
+
+        RoutingLifecycle.recoverMissingSkillContainer(unit);
+        assert(unit.bonusRestoreCount == 1 && unit.lastBonusMode == "兵器", "missing skill container restores attack-mode bonus");
+        assert(unit.animationEndCount == 1, "missing skill container exits through canonical animation end");
+
+        var fallbackUnit = {攻击模式: "空手", 技能名: "坏技能"};
+        fallbackUnit.状态改变 = function(stateName:String):Void {
+            this.recoveredState = stateName;
+        };
+        RoutingLifecycle.recoverMissingSkillContainer(fallbackUnit);
+        assert(fallbackUnit.技能名 == null && fallbackUnit.recoveredState == "空手站立", "nonstandard unit falls back to safe standing state");
     }
 
     private static function testQuickSkillInputPreservesTruthyLegacyPorts():Void {
@@ -1733,6 +1808,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         var view:Object = {};
         for (var slotIndex:Number = 1; slotIndex <= QuickSkillInputService.SLOT_COUNT; slotIndex++) {
             view["快捷技能栏" + slotIndex] = {
+                是否装备: 1,
                 已装备名: "测试快捷技能" + slotIndex,
                 消耗mp: 10 + slotIndex,
                 冷却时间: 1000 + slotIndex

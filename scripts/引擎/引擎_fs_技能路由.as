@@ -80,9 +80,9 @@ _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, u
     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
     var attachResult:Object = ContainerAttachAction.attach(unit, ContainerSpec.KIND_SKILL, 技能名, initObj);
     if (attachResult.status !== ContainerAttachAction.STATUS_OK) {
-        // missing 容器 = 资源/数据错配。handleFloat 会把 unit.浮空 / unit.技能浮空 / unit._y
-        // 写脏（AS2 silent no-op 仅作用于 man.落地 = ...，unit 上的副作用照常发生），且无 man
-        // 让 onUnload 把状态收回。短路：不报错、不 fallback、不执行依赖 man 的 lifecycle。
+        // 数据/资源错配的最后防线：不执行依赖 man 的生命周期，并立即退出空容器状态。
+        // recoverMissingSkillContainer 内部以 unit.动画完毕() 复用死亡/浮空/攻击模式的既有恢复语义。
+        RoutingLifecycle.recoverMissingSkillContainer(unit);
         return;
     }
     var man:MovieClip = attachResult.man;

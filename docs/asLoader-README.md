@@ -1,7 +1,7 @@
 # asLoader 启动架构 · 导览与待测
 
 **文档角色**：asLoader 启动子系统的**入口导览**（反直觉架构的心智地图 + 验证状态 + 测试入口）。深层细节下沉到设计 / 施工 doc，本文只回答「这是什么、为什么这么怪、验了什么、还要测什么」。
-**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
+**最后核对代码基线**：commit `e9af7030e7`（2026-07-13）；具体 import 白名单含本轮待提交 `SkillReleaseGuard`。
 **深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）。
 
 ## 0. TL;DR（先读这段）
@@ -12,14 +12,14 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**承载全�
 1. **整个 boot 是一帧**。这帧定义一堆 `_root.__boot.fN = function(){…}` staged 函数，最后 `BootSequencer.run(this)`。没有多帧时间轴。
 2. **异步 boot 逻辑住在 class**（BootSequencer），靠挂在 `_root` 上的 `onEnterFrame` tick clip 驱动——因为 asLoader 自身 boot 完会自删，tick 必须挂 `_root` 才存活。
 3. **大帧被切成 chunk 函数** `fN_1..fN_k`：AVM1 单函数体 ≤64KB（`DefineFunction2.codeSize` 是 UI16），单位函数 506KB / 装备 456KB 装不进一个 function。
-4. **常规 import 是一个 81 包通配并集头**；另有由组装器 exact-match 守门的具体 import 白名单。当前为 `BootSequencer` + `Action.Skill` 包内 5 个现役类：该包因新建 `QuickSkillInputService` 需要显式导入而整体从通配头改为具体类集合（AS2 不允许同包通配与具体 import 并存），用于规避 Flash CS6 常驻会话包索引陈旧。
+4. **常规 import 是一个 81 包通配并集头**；另有由组装器 exact-match 守门的 9 个具体 import：`BootSequencer` + `Action.Skill` 包内 8 个现役类。该包因会话期新增类需要显式导入而整体从通配头改为具体类集合（AS2 不允许同包通配与具体 import 并存），用于规避 Flash CS6 常驻会话包索引陈旧。
 
 ## 1. 文件地图（boot 散落 4 处）
 
 | 件 | 路径 | 作用 |
 |---|---|---|
 | symbol | `scripts/asLoader/LIBRARY/asLoader.xml` | 单帧，`#include _collapsed_frame.as`；备份 `asLoader.xml.pre-collapse.bak`（回退用） |
-| 帧 CDATA | `scripts/asLoaderManifest/_collapsed_frame.as` | **生成物，勿手改**：81 包并集头 + 6 个具体类白名单 + staged fN 定义 + s0..s9 编排 + `BootSequencer.run(this)` |
+| 帧 CDATA | `scripts/asLoaderManifest/_collapsed_frame.as` | **生成物，勿手改**：81 包并集头 + 9 个具体 import 白名单 + staged fN 定义 + s0..s9 编排 + `BootSequencer.run(this)` |
 | 生成器 | `tools/assemble-collapsed-frame.js` | 重生成 `_collapsed_frame.as`（改 boot 同步逻辑改这个再 regen） |
 | 状态机 | `scripts/类定义/org/flashNight/boot/BootSequencer.as` | S0-S10 异步序列（握手 / loader 队列 / await / handoff） |
 | 主 SWF 改 A | `CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml`（f33） | `_root.__boot.mainReadyToContinue = true`（替代旧 `_root.asLoader.play()`） |

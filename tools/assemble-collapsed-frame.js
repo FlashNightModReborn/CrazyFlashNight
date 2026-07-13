@@ -23,6 +23,7 @@ var SPECIFIC_IMPORTS = [
   'org.flashNight.arki.unit.Action.Skill.DrugInputService',
   'org.flashNight.arki.unit.Action.Skill.ManualCooldownService',
   'org.flashNight.arki.unit.Action.Skill.QuickSkillInputService',
+  'org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard',
   'org.flashNight.arki.unit.Action.Skill.SkillAttributeCore',
   'org.flashNight.arki.unit.Action.Skill.SkillDamageCore',
   'org.flashNight.arki.unit.Action.Skill.SkillReloadCore',

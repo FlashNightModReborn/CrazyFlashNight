@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/QuickSkillInputService.as
 
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard;
 
 /**
  * @class QuickSkillInputService
@@ -112,7 +113,9 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         skillSlot:Object,
         keyCode:Number
     ):Object {
-        var skillName:String = String(skillSlot.已装备名);
+        if (!unit || typeof unit.释放技能 != "function" || !isEquippedSkill(skillSlot)) return null;
+
+        var skillName:String = SkillReleaseGuard.normalizeSkillName(skillSlot.已装备名);
         var cooldownTime:Number = Number(skillSlot.冷却时间);
         var released:Boolean = unit.释放技能(skillName, skillSlot.消耗mp, keyCode) ? true : false;
         var cooldownStarted:Boolean = false;
@@ -189,8 +192,6 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     }
 
     private static function isEquippedSkill(skillSlot:Object):Boolean {
-        if (!skillSlot) return false;
-        var skillName:String = String(skillSlot.已装备名);
-        return skillName != null && skillName != "" && skillName != "undefined" && skillName != "空";
+        return SkillReleaseGuard.isEquippedSlot(skillSlot);
     }
 }

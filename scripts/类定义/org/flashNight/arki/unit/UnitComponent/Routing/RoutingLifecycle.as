@@ -44,6 +44,29 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
         return ContainerInitScratch.getPublic(container);
     }
 
+    /**
+     * 技能容器 linkage 缺失时立即退出空容器状态。
+     * 动画完毕是角色既有的安全恢复入口，会按死亡、浮空与攻击模式选择正确状态。
+     */
+    public static function recoverMissingSkillContainer(unit:MovieClip):Void {
+        if (!unit) return;
+
+        if (unit.根据模式重新读取武器加成) {
+            unit.根据模式重新读取武器加成(unit.攻击模式);
+        }
+        if (unit.动画完毕) {
+            unit.动画完毕();
+            return;
+        }
+
+        // 非标准单位缺少动画完毕时的保底，仅用于防止永久停留在空容器。
+        unit.技能名 = null;
+        if (unit.状态改变) {
+            var attackMode:String = unit.攻击模式 ? String(unit.攻击模式) : "空手";
+            unit.状态改变(attackMode + "站立");
+        }
+    }
+
     public static function bindEndCleanup(clip:MovieClip, unit:MovieClip, excludeState:String, endBigState:String, floatFlag:String):Void {
         var prevOnUnload:Function = clip.onUnload;
         var targetUnit:MovieClip = unit;
