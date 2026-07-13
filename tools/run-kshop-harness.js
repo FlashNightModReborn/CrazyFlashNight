@@ -80,6 +80,11 @@ function auditArchitectureBoundaries() {
             || !inventoryUiSource.includes('function renderOwnedSlot(')) {
         throw new Error('Inventory UI component boundary is incomplete');
     }
+    if ([inventoryUiSource, inventoryWorkbenchSource, kshopSource].some(text =>
+            text.includes('DisplaySortControl') || text.includes('displaySortMethod')
+            || text.includes('inventory-display-sort'))) {
+        throw new Error('Owned inventory display sort must stay retired in favor of the authority tree');
+    }
     if (!inventoryUiSource.includes('item-card item-card-owned inventory-slot-card')
             || !inventoryUiSource.includes('item-card-body inventory-slot-copy')
             || !npcshopSource.includes('item-card-auxiliary item-card-selection-marker')
@@ -121,9 +126,16 @@ function auditArchitectureBoundaries() {
     }
     const itemFilterSource = fs.readFileSync(ITEM_FILTER_SOURCE, 'utf8');
     if (!itemFilterSource.includes('function FilterNavigator(')
+            || !itemFilterSource.includes('function branchTree(')
             || !kshopSource.includes('ItemFilter.build(')
+            || !kshopSource.includes("{id:'curated', label:'专柜'")
             || !npcshopSource.includes('ItemFilter.build(')) {
         throw new Error('Shared item taxonomy/navigation boundary is incomplete');
+    }
+    if (kshopSource.includes('weaponSubtype:false')
+            || !panelsCssSource.includes('height:48px;')
+            || !panelsCssSource.includes('transition:none;')) {
+        throw new Error('KShop subtype drilldown or stable category rail contract is incomplete');
     }
     if (!kshopSource.includes('Workbench.ItemCard.renderCatalog') || !npcshopSource.includes('Workbench.ItemCard.renderCatalog')) {
         throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
@@ -141,6 +153,7 @@ function auditArchitectureBoundaries() {
         ownedPairBranchFree:true,
         sameContainerTransfer:true,
         inventoryUiComponents:true,
+        authorityTreeReplacesDisplaySort:true,
         unifiedOwnedInventoryShell:true,
         semanticItemCardDensityContract:true,
         kshopViewComposition:true,

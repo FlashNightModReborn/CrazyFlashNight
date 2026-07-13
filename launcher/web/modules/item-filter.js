@@ -141,6 +141,41 @@
         return root;
     }
 
+    function cloneBranchNode(source, parentPath) {
+        var node = {
+            id:text(source.id),
+            label:text(source.label || source.id),
+            path:parentPath.concat([text(source.id)]),
+            count:Math.max(0, Math.floor(Number(source.count) || 0)),
+            children:[]
+        };
+        var children = Array.isArray(source.children) ? source.children : [];
+        for (var i = 0; i < children.length; i++) node.children.push(cloneBranchNode(children[i], node.path));
+        return node;
+    }
+
+    function branchTree(branches, total) {
+        var root = createRoot(total);
+        branches = Array.isArray(branches) ? branches : [];
+        for (var i = 0; i < branches.length; i++) {
+            var branch = branches[i] || {}, id = text(branch.id), tree = branch.tree;
+            if (!id || !tree) continue;
+            var node = {
+                id:id,
+                label:text(branch.label || id),
+                path:[id],
+                count:Math.max(0, Math.floor(Number(tree.count) || 0)),
+                children:[]
+            };
+            var children = Array.isArray(tree.children) ? tree.children : [];
+            for (var childIndex = 0; childIndex < children.length; childIndex++) {
+                node.children.push(cloneBranchNode(children[childIndex], node.path));
+            }
+            root.children.push(node);
+        }
+        return root;
+    }
+
     function orderFor(parentPath) {
         var key = clonePath(parentPath).join('/');
         if (!key) {
@@ -358,6 +393,7 @@
         build:build,
         fromFacets:fromFacets,
         manualSections:manualSections,
+        branchTree:branchTree,
         nodeAt:nodeAt,
         validPath:validPath,
         expandSingleChildren:expandSingleChildren,

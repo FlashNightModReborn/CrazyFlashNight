@@ -3049,9 +3049,12 @@
     display:flex;
     flex-wrap:wrap;
     gap:4px;
+    height:48px;
+    min-height:48px;
     max-width:100%;
-    max-height:58px;
+    max-height:48px;
     padding:5px 0 0;
+    box-sizing:border-box;
     overflow-x:hidden;
     overflow-y:auto;
     background:none;
@@ -3069,6 +3072,7 @@
     clip-path:none;
     font:9px/1.3 "Microsoft YaHei",sans-serif;
     letter-spacing:0;
+    transition:none;
 }
 .kshop-workbench .kshop-cat-btn:hover { color:#fff; background:#1b1e23; border-color:#4a5059; }
 .kshop-workbench .kshop-cat-btn.active { color:#17191c; background:var(--wb-accent); border-color:#ffcf87; box-shadow:none; text-shadow:none; }
@@ -12093,21 +12097,20 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .inventory-discard-btn:hover { color:#ff8e78; border-color:#d96854; }
 .inventory-drag-ghost { min-width:150px; }
 
-/* ── Workbench Gate A3: 1200-slot warehouse window + display/authority sort split ── */
+/* ── Workbench Gate A3: authoritative tree filter + explicit authority sort ── */
 .inventory-warehouse-toolbar {
     display:grid;
     grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;
     grid-template-areas:
-        "pager display filter filter"
+        "pager filter filter filter"
         "authority authority authority commit";
     align-items:center;
     gap:5px;
     padding-top:5px;
 }
 .inventory-warehouse-toolbar.inventory-no-pager {
-    grid-template-areas:
-        "display display filter filter"
-        "authority authority authority commit";
+    grid-template-columns:minmax(0,1.5fr) minmax(112px,.7fr) auto;
+    grid-template-areas:"filter authority commit";
 }
 .inventory-sort-controls { display:contents; }
 .inventory-owned-warehouse .workbench-view-chrome { position:relative; z-index:3; }
@@ -12168,7 +12171,6 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font:8px/1 Consolas,"Microsoft YaHei",sans-serif;
     white-space:nowrap;
 }
-.inventory-toolbar-field.display { grid-area:display; }
 .inventory-toolbar-field.filter { grid-area:filter; }
 .inventory-filter-control.tree { align-items:stretch; overflow:hidden; }
 .inventory-filter-control.tree .inventory-filter-navigator { flex:1 1 auto; min-width:0; }
@@ -12695,10 +12697,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .npcshop-owned-grid .inventory-slot-card.empty { padding:4px; cursor:default; }
 .npcshop-owned-grid .inventory-slot-card .inventory-slot-name { max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .npcshop-owned-grid .inventory-slot-card.read-only { cursor:default; }
-.npcshop-bag-toolbar { display:grid; gap:4px; min-width:0; }
-.npcshop-selection-hint { color:#818892; font-size:9px; }
-.npcshop-bag-toolbar .inventory-filter-control { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; gap:4px; }
-.npcshop-bag-toolbar .inventory-filter-navigator { max-height:78px; overflow-y:auto; scrollbar-width:thin; }
+.npcshop-bag-view .workbench-view-title { display:flex; align-items:baseline; gap:7px; min-width:0; }
+.npcshop-selection-hint { min-width:0; overflow:hidden; color:#818892; font:400 9px/1.2 "Microsoft YaHei",sans-serif; white-space:nowrap; text-overflow:ellipsis; }
+.npcshop-bag-toolbar { display:block; min-width:0; width:100%; }
+.npcshop-bag-toolbar .inventory-filter-control { display:block; grid-area:auto; min-width:0; width:100%; }
+.npcshop-bag-toolbar .inventory-filter-navigator { width:100%; min-height:23px; max-height:52px; overflow-y:auto; scrollbar-width:thin; }
 .inventory-filter-control.popover.tree { position:relative; overflow:visible; }
 .inventory-filter-tree-trigger {
     position:relative; min-width:0; width:100%; height:24px; padding:0 22px 0 7px; overflow:hidden;

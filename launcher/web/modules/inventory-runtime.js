@@ -89,25 +89,6 @@
             && String(a.subtype || '') === String(b.subtype || '');
     }
 
-    function displaySortSlots(slots, methodName) {
-        var sorted = (slots || []).slice();
-        methodName = methodName || 'physicalSlot';
-        sorted.sort(function(a, b) {
-            if (methodName === 'name') {
-                var aName = a && a.item ? String(a.item.displayName || a.item.name || '') : '\uffff';
-                var bName = b && b.item ? String(b.item.displayName || b.item.name || '') : '\uffff';
-                var byName = aName.localeCompare(bName, 'zh-CN');
-                if (byName) return byName;
-            } else if (methodName === 'quantity') {
-                var aQuantity = a && a.item ? Number(a.item.quantity || 1) : -1;
-                var bQuantity = b && b.item ? Number(b.item.quantity || 1) : -1;
-                if (aQuantity !== bQuantity) return bQuantity - aQuantity;
-            }
-            return Number(a.physicalSlot) - Number(b.physicalSlot);
-        });
-        return sorted;
-    }
-
     function isValidSnapshot(snapshot) {
         var accessible = snapshot && snapshot.accessibleCapacity != null
             ? Number(snapshot.accessibleCapacity) : Number(snapshot && snapshot.capacity);
@@ -623,7 +604,6 @@
         samePhysicalSlot: samePhysicalSlot,
         wireRef: wireRef,
         isValidSnapshot: isValidSnapshot,
-        displaySortSlots: displaySortSlots,
         sortMethods: SORT_METHODS,
         filterKeys: FILTER_KEYS
         ,filterMajors: FILTER_MAJORS

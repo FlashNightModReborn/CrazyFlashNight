@@ -16,6 +16,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testWorkbenchPanelRequest();
         testRangeSnapshot();
         testFilteredSnapshot();
+        testFacetCacheInvalidation();
         testPresentationProjection();
         testTooltipLeaseAndInstance();
         testSourceAndTargetStale();
@@ -230,6 +231,9 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         });
         assertTrue(!invalidSpec.success && invalidSpec.error == "unsupported_filter",
             "结构化筛选拒绝缺少用途的武器子类路径");
+        var mismatchedSpec:Object = structuredSnapshot("仓库", 0, 50, "all", {major:"weapon"});
+        assertTrue(!mismatchedSpec.success && mismatchedSpec.error == "unsupported_filter",
+            "结构化筛选拒绝与 legacy filterKey 矛盾的路径");
         var clamped:Object = filteredSnapshot("仓库", 50, 50, "weapon");
         assertTrue(clamped.success && clamped.snapshots[0].offset == 0
                 && clamped.snapshots[0].slots[0].physicalSlot == 100,
@@ -242,6 +246,48 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         else org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"] = previousMaterial;
         if (previousWeapon == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"];
         else org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = previousWeapon;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+    }
+
+    private static function testFacetCacheInvalidation():Void {
+        resetInventories();
+        var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        var name:String = "Facet缓存移动武器";
+        var previous:Object = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
+            type:"武器", use:"长枪", weapontype:"突击步枪", price:1
+        };
+        _root.物品栏.背包.add(0, new BaseItem(name, {level:1}, 1));
+
+        // 首次 snapshot 同时建立背包与仓库 facet 缓存，再走正常跨容器写路径。
+        var before:Object = snapshot(50, 50);
+        var moved:Object = InventoryPanelService.execute("move", {
+            v:1,
+            source:refFrom(before, 0, 0),
+            target:refFrom(before, 1, 0)
+        });
+        var backpackSnapshot:Object = moved.success ? moved.snapshots[0] : null;
+        var warehouseAfterMove:Object = moved.success ? moved.snapshots[1] : null;
+        var warehouseWeapon:Object = warehouseAfterMove == null
+            ? null : facetAt(warehouseAfterMove.filterFacets, "weapon");
+        assertTrue(moved.success
+                && backpackSnapshot.filterItemCount == 0
+                && facetAt(backpackSnapshot.filterFacets, "weapon") == null
+                && warehouseAfterMove.filterItemCount == 1
+                && warehouseWeapon != null && warehouseWeapon.count == 1,
+            "跨容器写入后 facet 缓存立即反映来源移除与目标新增");
+
+        // 普通游戏逻辑可直接走 ArrayInventory.add/remove，不会调用 inventory-domain 失效入口。
+        _root.物品栏.仓库.remove(0);
+        var afterExternalRemove:Object = warehouseSnapshot(0, 50);
+        assertTrue(afterExternalRemove.success
+                && afterExternalRemove.snapshots[0].filterItemCount == 0
+                && facetAt(afterExternalRemove.snapshots[0].filterFacets, "weapon") == null,
+            "外部容器写入通过槽位对象引用核对自动击穿 facet 缓存");
+
+        if (previous == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previous;
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
     }
 

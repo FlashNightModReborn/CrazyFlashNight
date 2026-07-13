@@ -114,9 +114,7 @@ var NpcShop = (function() {
             presentation:'drilldown',
             onChange:function(path) {
                 var mode = _categoryToolbar && _categoryToolbar.getAttribute('data-filter-mode');
-                _category = mode === 'manual'
-                    ? {mode:'manual', sectionId:path.length ? path[0] : 'all'}
-                    : {mode:'auto', path:path};
+                _category = {mode:mode || 'auto', path:path};
                 decorateCategoryButtons(mode || 'auto');
                 if (_catalogRenderer && _catalogRenderer.root) _catalogRenderer.root.scrollTop = 0;
                 renderCatalog();
@@ -190,18 +188,16 @@ var NpcShop = (function() {
 
     function installBagToolbar(view) {
         var toolbar = document.createElement('div'); toolbar.className = 'npcshop-bag-toolbar';
-        var hint = document.createElement('div'); hint.className = 'npcshop-selection-hint';
+        var hint = document.createElement('span'); hint.className = 'npcshop-selection-hint';
         hint.textContent = '点击加入待售，不会立即出售；数量在结算页调整';
+        view.chrome.title.appendChild(hint);
         _bagFilterControl = new InventoryUI.InventoryFilterControl({
             options:InventoryUI.categoryFilterOptions(),
-            label:'分类',
             ariaLabel:'商店背包分类筛选',
-            presentation:'popover',
             navigatorPresentation:'drilldown',
             onLegacyChange:changeBagFilterLegacy,
             onSpecChange:changeBagFilterSpec
         });
-        toolbar.appendChild(hint);
         toolbar.appendChild(_bagFilterControl.root);
         view.inventoryFilterControl = _bagFilterControl;
         if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar); else view.chrome.setToolbar(toolbar);
@@ -295,17 +291,24 @@ var NpcShop = (function() {
         var sections = _state && _state.layout && Array.isArray(_state.layout.sections) ? _state.layout.sections : [];
         var catalog = _state && _state.catalog ? _state.catalog : [];
         if (sections.length) {
-            var valid = _category && _category.mode === 'manual'
-                && (_category.sectionId === 'all' || sections.some(function(section) { return String(section.id) === _category.sectionId; }));
+            var automaticTree = ItemFilter.build(catalog, function(item) { return ItemFilter.catalogPath(item); });
+            var curatedTree = ItemFilter.manualSections(sections, catalog.length);
+            _categoryTree = ItemFilter.branchTree([
+                {id:'category', label:'类别', tree:automaticTree},
+                {id:'curated', label:'专柜', tree:curatedTree}
+            ], catalog.length);
+            var currentPath = _category && _category.mode === 'combined' ? (_category.path || []) : [];
+            var valid = ItemFilter.validPath(_categoryTree, currentPath);
             if (!_categoryInitialized || !valid) {
                 var configured = String((_state.layout && _state.layout.defaultSection) || '');
                 var hasConfigured = sections.some(function(section) { return String(section.id) === configured; });
-                _category = {mode:'manual', sectionId:hasConfigured ? configured : 'all'};
+                _category = {mode:'combined', path:hasConfigured ? ['curated', configured] : []};
+            } else {
+                _category = {mode:'combined', path:valid};
             }
-            _categoryTree = ItemFilter.manualSections(sections, catalog.length);
-            _categoryToolbar.setAttribute('data-filter-mode', 'manual');
-            _categoryNavigator.setModel(_categoryTree, _category.sectionId === 'all' ? [] : [_category.sectionId]);
-            decorateCategoryButtons('manual');
+            _categoryToolbar.setAttribute('data-filter-mode', 'combined');
+            _categoryNavigator.setModel(_categoryTree, _category.path);
+            decorateCategoryButtons('combined');
         } else {
             if (!_categoryInitialized || !_category || _category.mode !== 'auto') _category = {mode:'auto', path:[]};
             _categoryTree = ItemFilter.build(catalog, function(item) { return ItemFilter.catalogPath(item); });
@@ -327,7 +330,7 @@ var NpcShop = (function() {
                 if (!node) break;
                 labels.push(node.label);
             }
-            var legacyPath = mode === 'manual' ? path : labels;
+            var legacyPath = mode === 'auto' ? labels : path;
             buttons[i].setAttribute('data-category', mode + ':' + (legacyPath.length ? legacyPath.join(':') : 'all'));
         }
     }
@@ -342,9 +345,17 @@ var NpcShop = (function() {
     function matchesCategory(item) {
         var sections = _state && _state.layout && Array.isArray(_state.layout.sections) ? _state.layout.sections : [];
         if (sections.length) {
-            if (!_category || _category.mode !== 'manual' || _category.sectionId === 'all') return true;
-            for (var i = 0; i < sections.length; i++) {
-                if (String(sections[i].id) === _category.sectionId) return (sections[i].entries || []).indexOf(Number(item.catalogIndex)) >= 0;
+            var browsePath = _category && _category.mode === 'combined' ? (_category.path || []) : [];
+            if (!browsePath.length || browsePath.length === 1) return true;
+            if (browsePath[0] === 'category') {
+                return ItemFilter.matchesPath(item, browsePath.slice(1), function(entry) { return ItemFilter.catalogPath(entry); });
+            }
+            if (browsePath[0] === 'curated') {
+                for (var i = 0; i < sections.length; i++) {
+                    if (String(sections[i].id) === String(browsePath[1])) {
+                        return (sections[i].entries || []).indexOf(Number(item.catalogIndex)) >= 0;
+                    }
+                }
             }
             return false;
         }

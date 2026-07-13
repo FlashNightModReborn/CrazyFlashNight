@@ -351,8 +351,6 @@ var KShop = (function() {
         _orderView = createOrderWorkbenchView();
         _backpackView = createOwnedInventoryView({containerId:'背包', kicker:'', title:'背包', layoutMode:_layoutMode});
         _warehouseView = createOwnedInventoryView({containerId:'战备箱', kicker:'', title:'战备箱', layoutMode:_layoutMode});
-        _backpackView.displaySortMethod = 'physicalSlot';
-        _warehouseView.displaySortMethod = 'physicalSlot';
         _backpackView.chrome.setToolbar(createInventoryToolbar('背包', null));
         _warehouseView.chrome.setToolbar(createInventoryToolbar('战备箱', createWarehousePager()));
         _ownedViews = [_backpackView, _warehouseView];
@@ -486,8 +484,6 @@ var KShop = (function() {
             + (pager ? '' : ' inventory-no-pager');
         var view = containerId === '背包' ? _backpackView : _warehouseView;
         var controls = new InventoryUI.InventorySortControls({
-            displayOptions: InventoryUI.displaySortOptions(),
-            displayLabel: '查看',
             filterOptions: InventoryUI.categoryFilterOptions(),
             filterLabel: '',
             filterAriaLabel: containerId + '分类筛选',
@@ -495,11 +491,6 @@ var KShop = (function() {
             authorityLabel: '',
             commitLabel: '整理' + containerId,
             authorityOptions: InventoryUI.authoritySortOptions(),
-            onDisplayChange: function(methodName) {
-                view.displaySortMethod = methodName;
-                if (_interactionBroker) _interactionBroker.clearSelection();
-                renderOwnedInventories();
-            },
             onFilterChange: function(filterKey) {
                 if (_interactionBroker) _interactionBroker.clearSelection();
                 hideTooltip();
@@ -645,7 +636,7 @@ var KShop = (function() {
             } else if (snapshot) meta = '';
             if (view.ownedInventoryShell) {
                 view.ownedInventoryShell.syncSnapshot(snapshot, {
-                    displaySortMethod:view.displaySortMethod, emptyText:emptyText, meta:meta
+                    emptyText:emptyText, meta:meta
                 });
             }
         }
@@ -927,9 +918,17 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     function buildCategories() {
         if (_interactionBroker) _interactionBroker.clearSelection();
-        _categoryTree = ItemFilter.build(_catalog, function(item) {
-            return ItemFilter.catalogPath(item, {weaponSubtype:false});
+        var automaticTree = ItemFilter.build(_catalog, function(item) {
+            return ItemFilter.catalogPath(item);
         });
+        var curatedTree = ItemFilter.build(_catalog, function(item) {
+            var group = String(item && item.type || '未分组');
+            return [{id:group, label:group}];
+        });
+        _categoryTree = ItemFilter.branchTree([
+            {id:'category', label:'类别', tree:automaticTree},
+            {id:'curated', label:'专柜', tree:curatedTree}
+        ], _catalog.length);
         _categoryPath = ItemFilter.validPath(_categoryTree, _categoryPath);
         if (_categoryNavigator) _categoryNavigator.setModel(_categoryTree, _categoryPath);
         decorateKShopCategoryButtons();
@@ -954,9 +953,7 @@ var KShop = (function() {
         var visible = [];
         for (var i = 0; i < _catalog.length; i++) {
             var item = _catalog[i];
-            if (!ItemFilter.matchesPath(item, _categoryPath, function(entry) {
-                return ItemFilter.catalogPath(entry, {weaponSubtype:false});
-            })) continue;
+            if (!matchesKShopCategory(item, _categoryPath)) continue;
             visible.push(item);
         }
         _catalogRenderer.render(visible);
@@ -966,6 +963,16 @@ var KShop = (function() {
             Icons.load(function() { _iconsLoaded = true; renderGrid(); renderCart(); renderClaimed(); });
         }
         refreshWriteControls(_writeState || _writeCoordinator.debugState());
+    }
+
+    function matchesKShopCategory(item, path) {
+        path = path || [];
+        if (!path.length || path.length === 1) return true;
+        if (path[0] === 'category') {
+            return ItemFilter.matchesPath(item, path.slice(1), function(entry) { return ItemFilter.catalogPath(entry); });
+        }
+        if (path[0] === 'curated') return String(item && item.type || '未分组') === String(path[1]);
+        return false;
     }
 
     function renderCatalogCard(item) {

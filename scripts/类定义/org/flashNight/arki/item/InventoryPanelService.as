@@ -349,6 +349,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
         var filterSpec:Object = normalizeFilterSpec(container.filterSpec);
         if (container.filterSpec != undefined && filterSpec == null) return fail("unsupported_filter");
+        if (filterSpec != null && !filterSpecMatchesKey(filterKey, filterSpec)) return fail("unsupported_filter");
         var sortCapacity:Number = getAccessibleCapacity(containerId);
         if (sortCapacity <= 0) return fail("sort_forbidden");
 
@@ -501,6 +502,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             if (inventory == null) return fail("unsupported_container");
             if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
             if (request != undefined && request.filterSpec != undefined && filterSpec == null) return fail("unsupported_filter");
+            if (filterSpec != null && !filterSpecMatchesKey(filterKey, filterSpec)) return fail("unsupported_filter");
             if (!isWholeNumber(request.offset) || !isWholeNumber(request.limit)) return fail("invalid_payload");
             var offset:Number = Number(request.offset);
             var limit:Number = Number(request.limit);
@@ -727,6 +729,13 @@ class org.flashNight.arki.item.InventoryPanelService {
         return normalized;
     }
 
+    private static function filterSpecMatchesKey(filterKey:String, filterSpec:Object):Boolean {
+        if (filterSpec == null) return true;
+        var major:String = String(filterSpec.major || "all");
+        var expectedKey:String = major == "collection" ? "other" : major;
+        return filterKey == expectedKey;
+    }
+
     private static function safeFilterValue(value:String):Boolean {
         if (value == undefined || value.length > 64) return false;
         for (var i:Number = 0; i < value.length; i++) {
@@ -763,11 +772,14 @@ class org.flashNight.arki.item.InventoryPanelService {
         var epoch:Number = getContainerEpoch(containerId);
         var cached:Object = _facetCache[containerId];
         if (cached != undefined && Number(cached.epoch) == epoch
-                && Number(cached.accessibleCapacity) == accessibleCapacity) return cached;
+                && Number(cached.accessibleCapacity) == accessibleCapacity
+                && facetCacheMatchesInventory(cached, inventory, accessibleCapacity)) return cached;
         var facets:Array = [];
+        var itemRefs:Array = [];
         var itemCount:Number = 0;
         for (var slot:Number = 0; slot < accessibleCapacity; slot++) {
             var item:Object = inventory.getItem(String(slot));
+            itemRefs[slot] = item;
             if (item == null) continue;
             itemCount++;
             var taxonomy:Object = itemTaxonomy(item);
@@ -780,9 +792,28 @@ class org.flashNight.arki.item.InventoryPanelService {
                 subtypeNode.count++;
             }
         }
-        cached = {epoch:epoch, accessibleCapacity:accessibleCapacity, facets:facets, itemCount:itemCount};
+        cached = {
+            epoch:epoch,
+            accessibleCapacity:accessibleCapacity,
+            itemRefs:itemRefs,
+            facets:facets,
+            itemCount:itemCount
+        };
         _facetCache[containerId] = cached;
         return cached;
+    }
+
+    /**
+     * 外部游戏逻辑也会通过 ArrayInventory.add/remove 改容器，未必经过 inventory-domain。
+     * 缓存命中前按槽位对象引用做轻量校验，避免 facet/count 在拾取、购买或跨容器移动后陈旧。
+     */
+    private static function facetCacheMatchesInventory(cached:Object, inventory:ArrayInventory, accessibleCapacity:Number):Boolean {
+        var itemRefs:Array = cached == undefined ? null : cached.itemRefs;
+        if (!(itemRefs instanceof Array) || itemRefs.length != accessibleCapacity) return false;
+        for (var slot:Number = 0; slot < accessibleCapacity; slot++) {
+            if (itemRefs[slot] !== inventory.getItem(String(slot))) return false;
+        }
+        return true;
     }
 
     private static function facetNode(nodes:Array, id:String, label:String):Object {
@@ -914,6 +945,7 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function invalidateSlot(containerId:String, slot:Number):Void {
+        delete _facetCache[containerId];
         leaseArray(_leaseIds, containerId)[slot] = null;
         leaseArray(_leaseRefs, containerId)[slot] = null;
         leaseArray(_leaseCounts, containerId)[slot] = null;
@@ -922,6 +954,7 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function invalidateContainer(containerId:String):Void {
+        delete _facetCache[containerId];
         _leaseIds[containerId] = [];
         _leaseRefs[containerId] = [];
         _leaseCounts[containerId] = [];

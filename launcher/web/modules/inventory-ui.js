@@ -406,26 +406,6 @@
         this._attached = false;
     };
 
-    function DisplaySortControl(options) {
-        options = options || {};
-        var self = this;
-        this.root = document.createElement('label');
-        this.root.className = 'inventory-toolbar-field display';
-        if (options.label) this.root.appendChild(document.createTextNode(String(options.label)));
-        this.select = document.createElement('select');
-        this.select.className = 'inventory-display-sort';
-        this.select.setAttribute('aria-label', options.ariaLabel || '当前页展示排序');
-        var values = options.options || [];
-        for (var i = 0; i < values.length; i++) appendSelectOption(this.select, values[i].value, values[i].label);
-        this.select.addEventListener('change', function() {
-            if (options.onChange) options.onChange(self.select.value);
-        });
-        this.root.appendChild(this.select);
-    }
-
-    DisplaySortControl.prototype.setDisabled = function(disabled) { this.select.disabled = !!disabled; };
-    DisplaySortControl.prototype.getValue = function() { return this.select.value; };
-
     function filterSpecFromPath(path) {
         path = Array.isArray(path) ? path : [];
         var spec = {major:path.length ? String(path[0]) : 'all'};
@@ -646,10 +626,6 @@
         options = options || {};
         if (this.controls && typeof this.controls.setSnapshot === 'function') this.controls.setSnapshot(snapshot);
         var slots = snapshot && snapshot.slots ? snapshot.slots : [];
-        if (options.displaySortMethod && typeof InventoryRuntime !== 'undefined'
-                && typeof InventoryRuntime.displaySortSlots === 'function') {
-            slots = InventoryRuntime.displaySortSlots(slots, options.displaySortMethod);
-        }
         if (options.emptyText != null) this.view.renderer.options.emptyText = String(options.emptyText);
         this.view.renderer.render(slots);
         if (options.meta != null) this.view.chrome.setMeta(String(options.meta));
@@ -666,19 +642,6 @@
         var self = this;
         this.root = document.createElement('div');
         this.root.className = 'inventory-sort-controls';
-
-        var displayOptions = options.displayOptions || [];
-        this.displayGroup = null;
-        this.displaySelect = null;
-        if (displayOptions.length) {
-            var displayLabel = Object.prototype.hasOwnProperty.call(options, 'displayLabel')
-                ? String(options.displayLabel || '') : '查看';
-            this.displayControl = new DisplaySortControl({options:displayOptions, label:displayLabel,
-                ariaLabel:options.displayAriaLabel, onChange:options.onDisplayChange});
-            this.displayGroup = this.displayControl.root;
-            this.displaySelect = this.displayControl.select;
-            this.root.appendChild(this.displayGroup);
-        }
 
         var filterOptions = options.filterOptions || [];
         this.filterGroup = null;
@@ -712,7 +675,6 @@
         }
     }
 
-    InventorySortControls.prototype.getDisplayMethod = function() { return this.displaySelect ? this.displaySelect.value : null; };
     InventorySortControls.prototype.getFilterKey = function() { return this.filterSelect ? this.filterSelect.value : 'all'; };
     InventorySortControls.prototype.getAuthorityMethod = function() { return this.authoritySelect ? this.authoritySelect.value : null; };
     InventorySortControls.prototype.getAuthorityLabel = function() {
@@ -730,7 +692,6 @@
         if (this.filterControl) this.filterControl.rejectPending(snapshot);
     };
     InventorySortControls.prototype.setDisabled = function(disabled) {
-        if (this.displaySelect) this.displaySelect.disabled = !!disabled;
         if (this.filterControl) this.filterControl.setDisabled(disabled);
         if (this.authoritySelect) this.authoritySelect.disabled = !!disabled;
         if (this.commitButton) this.commitButton.disabled = !!disabled;
@@ -739,14 +700,6 @@
         if (this.authoritySelect) this.authoritySelect.disabled = !!disabled;
         if (this.commitButton) this.commitButton.disabled = !!disabled;
     };
-
-    function displaySortOptions() {
-        return [
-            {value:'physicalSlot', label:'槽位顺序'},
-            {value:'name', label:'名称'},
-            {value:'quantity', label:'数量'}
-        ];
-    }
 
     function categoryFilterOptions() {
         return [
@@ -772,11 +725,9 @@
         derivePageState: derivePageState,
         pageFromShortcut: pageFromShortcut,
         renderOwnedSlot: renderOwnedSlot,
-        displaySortOptions: displaySortOptions,
         categoryFilterOptions: categoryFilterOptions,
         authoritySortOptions: authoritySortOptions,
         InventoryWindowPager: InventoryWindowPager,
-        DisplaySortControl: DisplaySortControl,
         InventoryFilterControl: InventoryFilterControl,
         AuthoritySortControl: AuthoritySortControl,
         OwnedInventoryViewShell: OwnedInventoryViewShell,

@@ -375,12 +375,19 @@ namespace CF7Launcher.Tasks
             if (!IsFilterMajor(major)
                 || !IsSafeFilterValue(use)
                 || !IsSafeFilterValue(subtype)
+                || !FilterSpecMatchesKey(fallbackKey, major)
                 || (major == "all" && (use.Length > 0 || subtype.Length > 0))
                 || (subtype.Length > 0 && (major != "weapon" || use.Length == 0))) return false;
             normalized = new JObject { ["major"] = major };
             if (use.Length > 0) normalized["use"] = use;
             if (subtype.Length > 0) normalized["subtype"] = subtype;
             return true;
+        }
+
+        private static bool FilterSpecMatchesKey(string filterKey, string major)
+        {
+            string expectedKey = major == "collection" ? "other" : major;
+            return filterKey == expectedKey;
         }
 
         private static bool IsFilterMajor(string value)

@@ -21,13 +21,15 @@ function audit(){
   if(!panel.includes('npcshop-settlement-page'))throw new Error('secondary settlement route missing');
   if(!panel.includes('npcshop-help-page')||!panel.includes('cf7.npcshop.guide.v1.'))throw new Error('intent-preserving help and one-time guide flow missing');
   const itemFilter=fs.readFileSync(ITEM_FILTER_SOURCE,'utf8');
-  if(!panel.includes('ItemFilter.build(')||!panel.includes('ItemFilter.manualSections(')
+  if(!panel.includes('ItemFilter.build(')||!panel.includes('ItemFilter.manualSections(')||!panel.includes('ItemFilter.branchTree(')
       ||!itemFilter.includes('function FilterNavigator(')||!itemFilter.includes('item.weaponType || item.actionType'))throw new Error('shared hierarchical grouping or manual override missing');
   if(itemFilter.includes('npcshop-category-row'))throw new Error('shared navigator leaked an NPC-shop skin class');
   if(!panel.includes('new InventoryUI.InventoryFilterControl(')||!panel.includes("setFilterSpec('背包'")
       ||!panel.includes('workbench-secondary-page npcshop-help-page')||!css.includes('top:var(--workbench-header-height,48px)'))throw new Error('shop bag authority tree or secondary-page coverage contract missing');
-  if(!panel.includes("presentation:'drilldown'")||!panel.includes("presentation:'popover'")
-      ||!itemFilter.includes('FilterNavigator.prototype._renderDrilldown')||!css.includes('.inventory-filter-tree-trigger'))throw new Error('adaptive hierarchy navigation contract missing');
+  if(!panel.includes("presentation:'drilldown'")||panel.includes("presentation:'popover'")
+      ||!panel.includes("navigatorPresentation:'drilldown'")
+      ||!panel.includes('view.chrome.title.appendChild(hint)')
+      ||!itemFilter.includes('FilterNavigator.prototype._renderDrilldown'))throw new Error('unified full-width inline hierarchy navigation contract missing');
   if(!panel.includes("scope:'same_name'")||!panel.includes("policy:'plain_only'"))throw new Error('same-name protected bulk sale flow missing');
   if(!panel.includes("stepButton('+5'")||!panel.includes("stepButton('最大'"))throw new Error('equipment quantity accelerators missing');
   if(!panel.includes('InventoryRuntime.InventoryCoordinator')||!panel.includes('autoTransfer(source, target'))throw new Error('battlebox organization route must reuse inventory authority');

@@ -88,6 +88,8 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
                 displayname: String(itemData.displayname || entry.item),
                 majorType:   String(attrs[2]),
                 subType:     String(attrs[3]),
+                actionType:  String(itemData.actiontype || ""),
+                weaponType:  String(itemData.weapontype || ""),
                 level:       Number(attrs[9]),
                 icon:        String(attrs[1])
             });

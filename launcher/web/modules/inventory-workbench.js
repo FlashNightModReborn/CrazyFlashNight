@@ -128,8 +128,6 @@ var InventoryWorkbench = (function() {
 
         _backpackView = createInventoryView('背包', '背包', _layoutMode);
         _rightView = createInventoryView(_rightContainerId, config.title, _layoutMode);
-        _backpackView.displaySortMethod = 'physicalSlot';
-        _rightView.displaySortMethod = 'physicalSlot';
 
         _pager = new InventoryUI.InventoryWindowPager({
             containerId:_rightContainerId, containerLabel:config.title, columns:config.pageColumns,
@@ -188,8 +186,6 @@ var InventoryWorkbench = (function() {
             + (pager ? ' inventory-battlebox-toolbar' : ' inventory-no-pager');
         var view = containerId === '背包' ? _backpackView : _rightView;
         var controls = new InventoryUI.InventorySortControls({
-            displayOptions:InventoryUI.displaySortOptions(),
-            displayLabel:'查看',
             filterOptions:InventoryUI.categoryFilterOptions(),
             filterLabel:'',
             filterAriaLabel:containerId + '分类筛选',
@@ -197,12 +193,6 @@ var InventoryWorkbench = (function() {
             authorityLabel:'',
             authorityAriaLabel:containerId + '整理方式',
             commitLabel:'整理' + containerId,
-            onDisplayChange:function(methodName) {
-                exitQuickMode();
-                view.displaySortMethod = methodName;
-                clearSelection();
-                renderInventories();
-            },
             onFilterChange:function(filterKey) {
                 exitQuickMode();
                 clearSelection();
@@ -629,7 +619,7 @@ var InventoryWorkbench = (function() {
             : view.containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0 ? '未解锁'
             : view.containerId === '背包' ? countOccupied(snapshot.slots) + ' / ' + Number(snapshot.accessibleCapacity || snapshot.capacity) : '';
         if (view.ownedInventoryShell) view.ownedInventoryShell.syncSnapshot(snapshot, {
-            displaySortMethod:view.displaySortMethod, emptyText:emptyText, meta:meta
+            emptyText:emptyText, meta:meta
         });
     }
 

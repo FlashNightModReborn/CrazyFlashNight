@@ -12,6 +12,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
 
     public static function runAllTests():Void {
         setup();
+        testCatalogProjection();
         testDirectDelivery();
         testExactBalance();
         testMaterialRouting();
@@ -37,9 +38,9 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         ItemUtil.informationMaxValueDict = {};
 
         _root.kshop_list = [
-            {id:"potion", item:"药剂", type:"消耗品", price:40},
-            {id:"material", item:"强化石", type:"收集品", price:25},
-            {id:"pistol", item:"测试手枪", type:"武器", price:500}
+            {id:"potion", item:"药剂", type:"医疗专柜", price:40},
+            {id:"material", item:"强化石", type:"研究专柜", price:25},
+            {id:"pistol", item:"测试手枪", type:"训练专柜", price:500}
         ];
         _root.等级 = 20;
         _root.主角被动技能 = {逆向:{启用:false, 等级:0}};
@@ -80,6 +81,17 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         _root.UI系统.商城WebView.checkoutPlan = null;
         _root.kshop_list[0].price = 40;
         _root.server.sent = null;
+    }
+
+    private static function testCatalogProjection():Void {
+        resetState();
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(response.success && response.catalog[2].type == "训练专柜"
+            && response.catalog[2].majorType == "武器" && response.catalog[2].subType == "手枪"
+            && response.catalog[2].weaponType == "手枪" && response.catalog[2].actionType == "",
+            "catalog projects curated group and automatic weapon taxonomy independently");
     }
 
     private static function testDirectDelivery():Void {

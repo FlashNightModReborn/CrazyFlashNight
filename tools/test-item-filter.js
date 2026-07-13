@@ -33,10 +33,18 @@ const manual = ItemFilter.manualSections([
 assert.deepStrictEqual(manual.children.map(node => node.path.join('/')), ['featured', 'supplies']);
 assert.deepStrictEqual(manual.children.map(node => node.count), [2, 1]);
 
+const branches = ItemFilter.branchTree([
+    {id:'category', label:'类别', tree:tree},
+    {id:'curated', label:'专柜', tree:manual}
+], items.length);
+assert.deepStrictEqual(branches.children.map(node => node.path.join('/')), ['category', 'curated']);
+assert.strictEqual(ItemFilter.nodeAt(branches, ['category', 'weapon', '刀']).count, 1);
+assert.strictEqual(ItemFilter.nodeAt(branches, ['curated', 'featured']).count, 2);
+
 const singleUseTree = ItemFilter.build([
     {majorType:'武器', use:'长枪', weaponType:'突击步枪'},
     {majorType:'武器', use:'长枪', weaponType:'霰弹枪'}
 ], item => ItemFilter.catalogPath(item));
 assert.deepStrictEqual(ItemFilter.expandSingleChildren(singleUseTree, ['weapon']), ['weapon', '长枪']);
 
-console.log('item-filter model 12/12 passed');
+console.log('item-filter model 16/16 passed');

@@ -28,7 +28,7 @@
     .matrix-overlay-stage .npcshop-help-page{padding:10px;grid-template-rows:auto minmax(0,1fr)}
     .matrix-overlay-stage .npcshop-help-header{min-height:32px}.matrix-overlay-stage .npcshop-help-grid{grid-template-columns:1fr;grid-template-rows:1fr}
     .matrix-filter-stage{overflow:visible}.matrix-filter-stage h3{margin:0 0 6px;color:#929ca7;font-size:10px}
-    .matrix-filter-wide{min-height:64px;padding:6px;border:1px solid #252c34}.matrix-filter-narrow{position:relative;width:250px;min-height:96px;margin-top:9px;padding:6px;border:1px solid #252c34}
+    .matrix-filter-wide,.matrix-filter-narrow{min-height:64px;padding:6px;border:1px solid #252c34}.matrix-filter-narrow{width:250px;margin-top:9px}
     .matrix-icon{display:grid;place-items:center;width:100%;height:100%;color:#121820;background:linear-gradient(135deg,#d5a34b,#657938);font:700 11px Consolas,monospace}
     .matrix-icon.weapon{background:linear-gradient(135deg,#c8d1dc,#4b5868)}
     .matrix-icon.locked{background:linear-gradient(135deg,#5b6066,#20252b)}
@@ -87,10 +87,10 @@
     }
     function addFilterCase(){
       var stage=section('自适应层级筛选','responsive','filter');stage.classList.add('matrix-filter-stage');
-      var items=[{majorType:'武器',use:'刀',actionType:'刀剑'},{majorType:'武器',use:'长枪',weaponType:'冲锋枪'},{majorType:'武器',use:'长枪',weaponType:'霰弹枪'},{majorType:'消耗品',use:'药剂'}],tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)});
-      var wide=document.createElement('div');wide.className='matrix-filter-wide';wide.innerHTML='<h3>宽区：当前层下钻</h3>';var nav=new ItemFilter.FilterNavigator({tree:tree,presentation:'drilldown'});wide.appendChild(nav.root);nav.select(['weapon']);stage.appendChild(wide);
-      var narrow=document.createElement('div');narrow.className='matrix-filter-narrow';narrow.innerHTML='<h3>窄区：固定触发器 + 浮层</h3>';var control=new InventoryUI.InventoryFilterControl({options:InventoryUI.categoryFilterOptions(),label:'分类',presentation:'popover',navigatorPresentation:'drilldown'});narrow.appendChild(control.root);control.setSnapshot({filterKey:'all',filterFacets:tree.children,filterItemCount:tree.count});control.trigger.click();stage.appendChild(narrow);
-      stage._matrixFilter={wide:wide,nav:nav,narrow:narrow,control:control};stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>single-level drilldown</span><span>custom popover</span><span>one scroll owner</span></div>');
+      var items=[{majorType:'武器',use:'刀',actionType:'刀剑',type:'武术联盟'},{majorType:'武器',use:'长枪',weaponType:'冲锋枪',type:'军火专柜'},{majorType:'武器',use:'长枪',weaponType:'霰弹枪',type:'军火专柜'},{majorType:'消耗品',use:'药剂',type:'医疗专柜'}],tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)}),curated=ItemFilter.build(items,function(item){return [{id:item.type,label:item.type}]}),browseTree=ItemFilter.branchTree([{id:'category',label:'类别',tree:tree},{id:'curated',label:'专柜',tree:curated}],items.length);
+      var wide=document.createElement('div');wide.className='matrix-filter-wide';wide.innerHTML='<h3>目录：类别 / 专柜双入口</h3>';var nav=new ItemFilter.FilterNavigator({tree:browseTree,presentation:'drilldown'});wide.appendChild(nav.root);nav.select(['category']);stage.appendChild(wide);
+      var narrow=document.createElement('div');narrow.className='matrix-filter-narrow npcshop-bag-toolbar';narrow.innerHTML='<h3>背包：整行行内下钻</h3>';var control=new InventoryUI.InventoryFilterControl({options:InventoryUI.categoryFilterOptions(),navigatorPresentation:'drilldown'});narrow.appendChild(control.root);control.setSnapshot({filterKey:'all',filterFacets:tree.children,filterItemCount:tree.count});stage.appendChild(narrow);
+      stage._matrixFilter={wide:wide,nav:nav,narrow:narrow,control:control};stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>single-level drilldown</span><span>inline parity</span><span>no popover motion</span></div>');
     }
     addCatalogCase('kshop','full');addCatalogCase('kshop','compact');addCatalogCase('npcshop','full');addCatalogCase('npcshop','compact');addOwnedCase('full');addOwnedCase('compact');addOverlayCase();addFilterCase();
     var compact=document.querySelectorAll('[data-matrix-case$="-compact"]');
@@ -105,7 +105,7 @@
     check('secondary overlay exactly covers workbench body',Math.abs(overlayRect.top-overlayBodyRect.top)<1&&Math.abs(overlayRect.bottom-overlayBodyRect.bottom)<1&&getComputedStyle(overlayBody).visibility==='hidden');
     var filterStage=document.querySelector('.matrix-filter-stage'),filterState=filterStage._matrixFilter,filterControl=filterState.control;
     check('wide hierarchy keeps exactly one in-flow drilldown row',filterState.nav.root.querySelectorAll('.item-filter-row').length===1&&filterState.wide.scrollWidth<=filterState.wide.clientWidth+1);
-    check('narrow hierarchy uses custom popover with native select hidden',filterControl.select.hidden&&!filterControl.trigger.hidden&&filterControl.root.classList.contains('open')&&getComputedStyle(filterControl.navigator.root).display==='flex'&&filterControl.navigator.root.scrollWidth<=filterControl.navigator.root.clientWidth+1&&filterControl.root.getBoundingClientRect().height<32);
+    check('narrow hierarchy uses the same inline drilldown with native select hidden',filterControl.select.hidden&&!filterControl.trigger&&filterControl.navigator.root.classList.contains('item-filter-drilldown')&&getComputedStyle(filterControl.navigator.root).display==='flex'&&filterControl.navigator.root.querySelectorAll('.item-filter-row').length===1&&filterControl.navigator.root.scrollWidth<=filterControl.navigator.root.clientWidth+1);
     var failed=checks.filter(function(item){return !item.ok});window.__qaResult={total:checks.length,passed:checks.length-failed.length,failed:failed.length,checks:checks};window.__qaDone=true;window.__visualReady=true;
     document.getElementById('matrix-status').textContent=failed.length?'FAILED '+failed.length:'PASSED '+checks.length+'/'+checks.length;document.getElementById('matrix-output').textContent=JSON.stringify(window.__qaResult,null,2);
   })();

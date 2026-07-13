@@ -142,9 +142,10 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('opens catalog + bag',document.querySelector('[data-instance-key="npcshop:catalog"]')&&document.querySelector('[data-instance-key="npcshop:bag"]'));
   var bagFilter=document.querySelector('.npcshop-bag-view .inventory-filter-control.tree');
   var bagFilterTrigger=bagFilter&&bagFilter.querySelector('.inventory-filter-tree-trigger'),bagFilterNavigator=bagFilter&&bagFilter.querySelector('.inventory-filter-navigator');
-  ok('shop bag uses a custom fixed-height filter trigger without native select or nested scrollbars',bagFilter&&bagFilterTrigger&&!bagFilterTrigger.hidden&&bagFilter.querySelector('select').hidden&&getComputedStyle(bagFilterNavigator).display==='none'&&bagFilter.getBoundingClientRect().height<32);
-  bagFilterTrigger.click();
-  ok('shop bag popover exposes authoritative hierarchical facets without reflow',bagFilter.classList.contains('open')&&getComputedStyle(bagFilterNavigator).display==='flex'&&bagFilterNavigator.querySelector('[data-filter-path="weapon"]')&&bagFilterNavigator.querySelector('[data-filter-path="consumable"]')&&bagFilterNavigator.scrollWidth<=bagFilterNavigator.clientWidth+1);
+  ok('shop bag and catalog use the same inline current-level drilldown',bagFilter&&!bagFilterTrigger&&bagFilter.querySelector('select').hidden&&getComputedStyle(bagFilterNavigator).display==='flex'&&bagFilterNavigator.classList.contains('item-filter-drilldown')&&document.querySelector('.npcshop-category-tabs.item-filter-drilldown')&&bagFilterNavigator.querySelectorAll('.item-filter-row').length===1);
+  var bagToolbar=document.querySelector('.npcshop-bag-toolbar'),bagHint=document.querySelector('.npcshop-selection-hint');
+  ok('shop bag hint stays beside the title and leaves the full toolbar row to facets',bagHint&&bagHint.parentNode.classList.contains('workbench-view-title')&&!bagToolbar.querySelector('.npcshop-selection-hint')&&bagFilter.getBoundingClientRect().width>=bagToolbar.getBoundingClientRect().width-1&&bagFilterNavigator.getBoundingClientRect().width>=bagFilter.getBoundingClientRect().width-1);
+  ok('shop bag inline facets remain inside the available toolbar width',bagFilterNavigator.querySelector('[data-filter-path="weapon"]')&&bagFilterNavigator.querySelector('[data-filter-path="consumable"]')&&bagFilterNavigator.scrollWidth<=bagFilterNavigator.clientWidth+1);
   bagFilter.querySelector('[data-filter-path="weapon"]').click();await wait();
   var bagFilterRequest=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'&&message.payload.requests.some(function(request){return request.containerId==='背包'&&request.filterSpec&&request.filterSpec.major==='weapon'&&request.filterSpec.use==='手枪'})}).pop();
   ok('shop bag tree sends authority path and reveals subtype grandchildren',bagFilterRequest&&document.querySelector('.npcshop-bag-view [data-filter-path="weapon/手枪/手枪"]')&&document.querySelectorAll('.npcshop-bag-view .inventory-slot-card.occupied').length===3);
@@ -265,8 +266,11 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   var owned=document.querySelector('.npcshop-owned-grid');ok('owned grid has no horizontal overflow',owned.scrollWidth<=owned.clientWidth+1);
   ok('panel remains within design canvas',document.querySelector('.workbench-shell').getBoundingClientRect().width===1024);
   Panels.close();manualLayout=true;Panels.open('npcshop',{shopId:'前治安官'});await wait();
-  ok('developer sections remain an explicit full override',document.querySelector('[data-category="manual:weapons"]')&&document.querySelector('[data-category="manual:supplies"]')&&!document.querySelector('[data-category="auto:武器"]'));
-  ok('manual default section remains supported',document.querySelector('[data-category="manual:weapons"].active')&&document.querySelectorAll('.npcshop-catalog-card').length===3);
+  ok('developer curated sections remain selectable without replacing automatic categories',document.querySelector('[data-category="combined:curated:weapons"]')&&document.querySelector('[data-category="combined:curated:supplies"]'));
+  ok('curated default section remains supported',document.querySelector('[data-category="combined:curated:weapons"].active')&&document.querySelectorAll('.npcshop-catalog-card').length===3);
+  document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();
+  document.querySelector('.npcshop-category-tabs [data-filter-path="category"]').click();
+  ok('configured shops expose category and curated as peer browse modes',document.querySelector('[data-category="combined:category:weapon"]')&&document.querySelector('[data-category="combined:category:consumable"]'));
   Panels.close();manualLayout=false;Panels.open('npcshop',{shopId:'前治安官'});await wait();
   document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
   var snapshotsBeforeMalformed=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;

@@ -186,6 +186,44 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
         }
 
+        [Theory]
+        [InlineData("all", "weapon")]
+        [InlineData("weapon", "armor")]
+        [InlineData("material", "collection")]
+        public void Snapshot_StructuredFilterRejectsFilterKeyMismatch(string filterKey, string major)
+        {
+            int sends = 0;
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "wb.inventory.filter.mismatch." + filterKey);
+            var window = (JObject)request["payload"]["requests"][0];
+            window["filterKey"] = filterKey;
+            window["filterSpec"] = new JObject { ["major"] = major };
+
+            task.HandleWebRequest("snapshot", request);
+
+            Assert.Equal(0, sends);
+            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_CollectionFilterUsesLegacyOtherKey()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("snapshot", "wb.inventory.filter.collection");
+            var window = (JObject)request["payload"]["requests"][0];
+            window["filterKey"] = "other";
+            window["filterSpec"] = new JObject { ["major"] = "collection", ["use"] = "材料" };
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("other", (string)message["requests"][0]["filterKey"]);
+            Assert.Equal("collection", (string)message["requests"][0]["filterSpec"]["major"]);
+        }
+
         [Fact]
         public void BattleboxWorkbench_NormalizesSnapshotAndCrossContainerTransfer()
         {
