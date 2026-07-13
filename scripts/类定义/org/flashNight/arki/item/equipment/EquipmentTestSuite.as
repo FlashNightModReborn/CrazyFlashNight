@@ -1692,6 +1692,8 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 merge: {
                     hitBehavior: {
                         type: "toughnessVulnerabilityPrimer",
+                        stackGroup: "grayGooVulnerability",
+                        profileId: "base",
                         duration: 180,
                         maxDuration: 300,
                         maxStacks: 3,
@@ -1703,6 +1705,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                         name: "weapontype:手枪",
                         merge: {
                             hitBehavior: {
+                                profileId: "handgun",
                                 duration: 240,
                                 maxDuration: 360,
                                 damagePerStack: 0.07
@@ -1736,10 +1739,14 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var machinePistolBehavior:Object = machinePistolResult.data.hitBehavior;
         var passed:Boolean = (
             standardBehavior.duration == 240 &&
+            standardBehavior.stackGroup == "grayGooVulnerability" &&
+            standardBehavior.profileId == "handgun" &&
             standardBehavior.maxDuration == 360 &&
             standardBehavior.maxStacks == 3 &&
             standardBehavior.damagePerStack == 0.07 &&
             machinePistolBehavior.duration == 180 &&
+            machinePistolBehavior.stackGroup == "grayGooVulnerability" &&
+            machinePistolBehavior.profileId == "base" &&
             machinePistolBehavior.maxDuration == 300 &&
             machinePistolBehavior.maxStacks == 3 &&
             machinePistolBehavior.damagePerStack == 0.06

@@ -211,11 +211,11 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 声明式子弹命中行为 `<hitBehavior>`
 
-武器运行时数据可包含 `<hitBehavior>` 对象；插件通过 `<stats><merge><hitBehavior>...</hitBehavior></merge></stats>` 写入。`ShootInitCore.generateBulletProps` 将该对象透传到子弹，`BulletQueueProcessor.settleHit` 仅在实际伤害结算成功且非 MISS 时按封闭 `type` 分发。该字段表达游戏行为，不得与既有视觉命中特效字段混用，也不得存任意 AS2 函数名或可执行字符串。
+武器运行时数据可包含 `<hitBehavior>` 对象；插件通过 `<stats><merge><hitBehavior>...</hitBehavior></merge></stats>` 写入。`ShootInitCore.generateBulletProps` 将该对象透传到子弹，`BulletQueueProcessor.settleHit` 仅在实际伤害结算成功且至少一个分段真实命中时按封闭 `type` 分发；联弹分段模型中 `scatterMissCount >= actualScatterUsed` 的全 MISS/直感结果不得挂载行为。该字段表达游戏行为，不得与既有视觉命中特效字段混用，也不得存任意 AS2 函数名或可执行字符串。
 
-当前唯一合法类型是 `toughnessVulnerabilityPrimer`，字段为：`duration`（命中保底刷新帧数）、`breakExtend`（每次破韧追加帧数）、`maxDuration`（续时上限）、`maxStacks`、`damagePerStack`（小数倍率）、`sameSourceOnly`。对应破韧事件名为 `ToughnessBroken`，仅在地面常规冲击流程真实越过韧性上限时、归零前发布；刚体破韧也发布，击杀、闪避、浮空/倒地分支清槽不发布。当前结算顺序保证同一发先挂标记，再由通用 `hit` 监听链触发冲击与破韧，因此该发可获得首层。
+当前唯一合法类型是 `toughnessVulnerabilityPrimer`，字段为：`stackGroup`（共享最终数值输出的聚合域）、`profileId`（同一来源下独立刷新/到期的数值档身份）、`duration`（命中保底刷新帧数）、`breakExtend`（每次破韧追加帧数）、`maxDuration`（续时上限）、`maxStacks`、`damagePerStack`（小数倍率）、`sameSourceOnly`。同一 `stackGroup` 内按 `(sourceUID, profileId)` 保存候选状态，只对每个候选完整计算出的倍率取 MAX；禁止把不同 profile 的时长、层数和单层倍率逐字段拼成合成档位。未声明 `profileId` 的旧数据会按完整数值形状派生兼容身份，但新数据必须显式声明。对应破韧事件名为 `ToughnessBroken`，仅在地面常规冲击流程真实越过韧性上限时、归零前发布；刚体破韧也发布，击杀、闪避、浮空/倒地分支清槽不发布。当前结算顺序保证同一发先挂标记，再由通用 `hit` 监听链触发冲击与破韧，因此该发可获得首层。
 
-该对象允许由 `useSwitch` 分支通过 `merge.hitBehavior` 局部提高字段；深度 merge 保留未声明的基础参数。当前灰蛊裂隙弹基础档为 `180/60/300` 帧、3 层、每层 6%，精确 `weapontype:手枪` 分支只把 `duration/maxDuration/damagePerStack` 提高到 `240/360/0.07`，用于普通手枪的行为型补弱。
+该对象允许由 `useSwitch` 分支通过 `merge.hitBehavior` 局部提高字段；深度 merge 保留未声明的基础参数。当前灰蛊裂隙弹基础档使用 `stackGroup=grayGooVulnerability/profileId=base`，参数为 `180/60/300` 帧、3 层、每层 6%；精确 `weapontype:手枪` 分支把 `profileId` 改为 `handgun`，并将 `duration/maxDuration/damagePerStack` 提高到 `240/360/0.07`。两档可同时短暂存活，但弱档命中只刷新弱档，最终承伤始终取存活候选中的强值而不相加。
 
 ### 装备插件格展示词典
 

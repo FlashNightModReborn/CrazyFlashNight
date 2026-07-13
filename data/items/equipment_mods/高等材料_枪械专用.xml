@@ -332,6 +332,8 @@
             <merge>
                 <hitBehavior>
                     <type>toughnessVulnerabilityPrimer</type>
+                    <stackGroup>grayGooVulnerability</stackGroup>
+                    <profileId>base</profileId>
                     <duration>180</duration>
                     <breakExtend>60</breakExtend>
                     <maxDuration>300</maxDuration>
@@ -345,6 +347,7 @@
                 <use name="weapontype:手枪">
                     <merge>
                         <hitBehavior>
+                            <profileId>handgun</profileId>
                             <duration>240</duration>
                             <maxDuration>360</maxDuration>
                             <damagePerStack>0.07</damagePerStack>

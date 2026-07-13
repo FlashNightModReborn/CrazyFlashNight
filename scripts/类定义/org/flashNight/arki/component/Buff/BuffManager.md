@@ -176,6 +176,7 @@ var mgr:BuffManager = new BuffManager(
 |------|------|
 | `addBuff(buff:IBuff, id?:String):String` | 添加 Buff，返回注册 ID |
 | `addBuffImmediate(buff:IBuff, id?:String):String` | 添加并**立即生效**（内部调用 `update(0)`） |
+| `setPodBuffValue(id:String, value:Number):Boolean` | 原位更新 Pod 数值；update 外立即重算，update 内并入本轮脏属性重算 |
 | `addBuffs(buffs:Array, ids?:Array):Array` | **[v2.9]** 批量添加，返回 ID 数组 |
 | `removeBuff(id:String):Boolean` | 延迟移除 Buff |
 | `removeBuffImmediate(id:String):Boolean` | 移除并**立即生效** |

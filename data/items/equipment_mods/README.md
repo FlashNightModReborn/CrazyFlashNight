@@ -432,6 +432,8 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
     <merge>
         <hitBehavior>
             <type>toughnessVulnerabilityPrimer</type>
+            <stackGroup>grayGooVulnerability</stackGroup>
+            <profileId>base</profileId>
             <duration>180</duration>
             <breakExtend>60</breakExtend>
             <maxDuration>300</maxDuration>
@@ -443,9 +445,9 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 </stats>
 ```
 
-当前类型表示：有效命中挂载/刷新破韧标记；标记期间由同一 shooter 完成破韧时叠加全局易伤。命中保底刷新但不缩短已延长时间，破韧在剩余时间上延长并受 `maxDuration` 限制，叠层受 `maxStacks` 限制。同一发命中若随后造成破韧，计入首层。
+当前类型表示：有效命中挂载/刷新破韧标记；联弹全段 MISS/直感不算有效命中。标记期间由同一 shooter 完成破韧时叠加全局易伤。命中保底刷新但不缩短已延长时间，破韧在剩余时间上延长并受 `maxDuration` 限制，叠层受 `maxStacks` 限制。同一发命中若随后造成破韧，计入首层。
 
-嵌套字段可在 `useSwitch` 的 `merge` 中局部覆写。灰蛊裂隙弹当前用 `name="weapontype:手枪"` 将普通手枪调整为 `duration=240`、`maxDuration=360`、`damagePerStack=0.07`；没有写入分支的 `breakExtend/maxStacks/sameSourceOnly/type` 会保留基础值。Tooltip 会把帧数换算成秒并把限定符显示为可读的“武器子类：手枪”。
+`stackGroup` 定义共享最终输出的聚合域，`profileId` 定义同一来源下独立刷新/到期的候选档位。同一组只对各候选的完整倍率取 MAX，不跨档拼接字段，也不把多来源相加；新配置必须显式填写稳定的 `profileId`。嵌套字段可在 `useSwitch` 的 `merge` 中局部覆写。灰蛊裂隙弹当前用 `name="weapontype:手枪"` 将普通手枪的 `profileId` 改为 `handgun`，并调整为 `duration=240`、`maxDuration=360`、`damagePerStack=0.07`；没有写入分支的 `stackGroup/breakExtend/maxStacks/sameSourceOnly/type` 会保留基础值。Tooltip 会把帧数换算成秒并把限定符显示为可读的“武器子类：手枪”，内部聚合身份不展示给玩家。
 
 #### tag - 插件位置标签
 **作用：** 同tag的插件不能同时装备（互斥机制）

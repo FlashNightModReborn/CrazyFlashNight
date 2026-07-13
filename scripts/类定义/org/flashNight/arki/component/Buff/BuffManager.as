@@ -2,6 +2,9 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v3.1 (2026-07) - 动态 Pod 数值刷新
+ *   [FEAT] 新增 setPodBuffValue(buffId, value)，原位更新 Pod 并按 update 重入状态安全重算
+ *
  * v3.0.2 (2026-01) - Base API 路径支持 & 重入安全
  *   [FIX] getBaseValue/setBaseValue/addBaseValue 对路径属性的正确支持
  *   [FIX] _syncPathBindings() 使用快照数组防止回调重入修改导致跳过容器
@@ -306,6 +309,37 @@ class org.flashNight.arki.component.Buff.BuffManager {
             this.update(0);
         }
         return id;
+    }
+
+    /**
+     * 原位更新已注册 PodBuff 的数值，并安全刷新对应属性。
+     *
+     * - update 外调用：通过 update(0) 立即重算，调用后可直接读取新属性值
+     * - update 内调用：只标记对应属性为脏，由本轮 update 的统一重分配阶段重算
+     * - 支持外部 ID 与 MetaBuff 注入 Pod 的内部 ID
+     *
+     * 该接口只改变既有 Pod 的数值，不改变成员关系，可避免用同 ID 替换 MetaBuff
+     * 带来的对象分配、事件退订/重订与短暂效果空窗。
+     */
+    public function setPodBuffValue(buffId:String, value:Number):Boolean {
+        if (buffId == null || (value - value) != 0) return false;
+
+        var buff:IBuff = this._lookupById(buffId);
+        if (!buff || !buff.isPod()) return false;
+
+        var pod:PodBuff = PodBuff(buff);
+        var prop:String = pod.getTargetProperty();
+        if (prop == null || prop.length == 0 || prop == "undefined" || prop == "null") {
+            return false;
+        }
+        if (pod.getValue() === value) return true;
+
+        pod.setValue(value);
+        this._markPropDirty(prop);
+        if (!this._inUpdate) {
+            this.update(0);
+        }
+        return true;
     }
 
     /**
