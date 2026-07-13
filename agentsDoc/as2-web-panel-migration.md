@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `dc10eefd8b`（2026-07-13）；NPC 金币商店领域边界与稳定 lease 另核对本轮工作树。
+**最后核对代码基线**：commit `08084a577e`（2026-07-13）；合成工作台 C0-C3 另核对本轮工作树。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
@@ -65,6 +65,25 @@ NPC 金币商店使用独立 `npcshop` domain 与 `NpcShopTask`，不复用 K �
 | `tooltip` | `npcShopTooltip` | `executeTooltip` | `npcshop_response` | `panel_resp domain=npcshop cmd=tooltip` | tooltip callback | 读 |
 | `tradePreview` | `npcShopTradePreview` | `executeTradePreview` | `npcshop_response` | `panel_resp domain=npcshop cmd=tradePreview` | 二级结算页 callback | 读；铸造单次 trade token |
 | `tradeCommit` | `npcShopTradeCommit` | `executeTradeCommit` | `npcshop_response` | `panel_resp domain=npcshop cmd=tradeCommit` | 二级结算页 callback | 背包/材料 + 实际买入容器 + 金钱原子写 |
+
+合成工作台使用独立 `crafting` domain 与 `CraftingTask`，不复用 inventory/NPC/KShop 的写协议。旧 `_root.改装系统.加载改装清单(分类)` 先尝试发送 `panel_request panel=crafting initData.category`，Launcher 或 socket 不可用时才回退 `物品改装界面` SWF。Host 与 AS2 对分类均固定白名单：`铁枪会/属性武器/烹饪/化学生产/武器合成/饰品合成/进阶防具/基础防具/公社防具/黑白契约/插件合成/大学装备`；Web 不能提交任意配方对象、物品名、材料数、价格、技能折扣或强化继承结果。
+
+| Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
+|---------|-----------|-------------|-------------------|---------------|------------|--------|
+| `snapshot` | `craftingSnapshot` | `CraftingPanelService.executeSnapshot` | `crafting_response` | `panel_resp domain=crafting cmd=snapshot` | `CraftingRuntime.RequestMux` callback | 读；配方目录 + 当前余额/技能 + 单份可合成状态 |
+| `preview` | `craftingPreview` | `executePreview` | `crafting_response` | `panel_resp domain=crafting cmd=preview` | 详情栏 callback | 读；接收 `craftCount=1..99`，重算总材料/余额/容量并铸 `craftToken` |
+| `tooltip` | `craftingTooltip` | `executeTooltip` | `crafting_response` | `panel_resp domain=crafting cmd=tooltip` | tooltip callback | 读 |
+| `commit` | `craftingCommit` | `executeCommit` | `crafting_response` | `panel_resp domain=crafting cmd=commit` | 提交 callback | 材料/背包/金币/K 点原子写 |
+
+`snapshot` 下发配方索引、标题、产物展示投影、基础货币消耗、材料条数、`batchEligible`，并为每条配方增加 `canCraftOne + availability`；仍不把当前材料拥有量批量复制进最多 90 项的目录。Flash 对每条配方只构造一次 `craftCount=1` 的只读计划，复用与 preview 相同的等级、材料、货币与保守容量语义，但不做 `maxCraftCount` 二分探测；因此 snapshot 工作量被约束为“一条配方一次单份计划、零最大份数探测”。产物投影包含 `majorType/use/actionType/weaponType`，Web 复用共享 `ItemFilter` 在完整 snapshot 上做纯展示树筛选，筛选不改变稳定 `recipeIndex`；目录可显示状态标记、可合成计数和本地“只看可合成”，这些均为最近一次 snapshot 的引导信息，提交权威仍只来自随后 preview/token。选择单项后由 `preview` 解析 `#`（装备强化门槛 / 普通物品数量）、`##`（装备数量）和可选阶数，情报/图纸只门控不消耗。Flash 同时重算角色等级 + 逆向等级、铁匠 `max(0,1-level×0.05)` 双货币倍率、装备素材最高强化继承、余额和容量，返回逐材料 `owned/required/enough/consumed`、产物、调整后价格、阻塞原因与 `canCommit`。容量保持旧系统的保守语义：在扣素材前调用 `ItemUtil.require`，不依赖“同笔消耗腾格”；这可能拒绝一个理论上可由消耗腾格完成的合成，但不会产生部分写。
+
+批量只对“堆叠产物且没有任何装备素材”的配方开放，装备产物、单 `#` 强化素材与 `##` 装备数量素材首轮都固定 1 份。`craftCount` 必须是 `1..99` 整数；消耗材料与金币/K 点按份数放大，情报/图纸等不消耗凭证只检查原需求一次，产出总量为 `recipe.value × craftCount`。Flash 用不超过 7 次二分权威探测计算当前 `maxCraftCount`，预览返回总数并把份数写入状态签名/token；Web 只呈现 `− / 数量 / + / 最大`，不使用浏览器原生 number spinner。`data/crafting/化学生产.json` 原先 7 条手工“批量 ×10”重复配方已收敛为单条基础配方，由统一份数协议替代。
+
+材料不足时 Web 可先用一次 `snapshot` 撤销当前 token，再在同一 Overlay 内切到既有 `workbench profile=battlebox`；玩家只能经 `domain=inventory` 的 lease/transaction 显式把装备或普通堆叠物品移回背包，合成服务绝不直接读取或暗扣战备箱。工作台的“返回合成”只保留 category/recipeIndex/craftCount 作为 UI 意图，返回后强制重新 `snapshot + preview`；同分类的展示筛选和“只看可合成”可保留，但不得携带旧 snapshot 或 token。收集品材料本就由 `_root.收集品栏.材料` 全局计数，不经过战备箱搬运。合成必须与商城/独立工作台同走全 anchor：`#panel-content inset:0`，内部 1024×576 `PanelScale` 等比铺满；双栏采用同一宽左窄右语言（约 60:40）。KShop/NPC/合成目录的 `FilterNavigator` 统一使用 `visualStyle=catalog` 视觉契约，宿主只用 CSS 变量覆盖强调色，禁止回退浏览器默认白色按钮或复制专属按钮类。目录与详情继续使用浏览器原生滚动行为，但由 crafting CSS 统一窄轨皮肤与 `scrollbar-gutter`，不得改成 JS 假滚动条。
+
+只有可提交预览才签发 opaque 单次 `craftToken`。`commit` 先消费 token，再按分类 + recipeIndex 重取配方，并比较配方签名、金币/K 点、等级/技能、背包/药剂栏 `mutationRevision` 与相关材料/情报/装备拥有态；任一变化返回 `stale_state` 且零写。复核成功后先备份四个容器与余额，`ItemUtil.submit` 扣材料、`ItemUtil.singleAcquire` 交付，交付失败则恢复容器/余额/dirty 状态；成功后才扣调整后的金币/K 点并标 dirty。内部 recipe/ref/备份不得进入 wire，token 在成功、失败或再次 snapshot/preview 后均不可重放。
+
+`CraftingTask` 与 Web 均采用 `idle/write_pending/needs_reconcile`。超时、断线、发送失败、未知结果或畸形 commit 回包后禁止自动重放；合成的对账读必须是同一 recipeIndex 的结构完整 `preview`，因为它同时覆盖材料、余额、容量和产物状态，成功 preview 才解除 Host 写门。单独 `snapshot` 不足以证明具体配方资源状态，不得解除 `needs_reconcile`。
 
 资源 lease 与交易计划 token 必须分开治理。`slotLease` 是 inventory 资源的 OCC 版本：同一 `ArrayInventory` 实例、同一 `mutationRevision`、同一槽位引用与确认指纹上的重复 snapshot 必须返回同一 opaque lease，纯读不得调用全局 session reset 或使其他面板刚取得的 lease 失效；snapshot 同时回显 `containerVersion` 供诊断。任一真实容器写入推进 `mutationRevision`，容器替换、引用/数量/名称/强化/进阶/插件/更新时间变化也必须使旧 lease 返回 `stale_state`。NPC 材料/情报的 collection lease 同理：同商店、同 view/key/count 的重复读保持稳定，切换商店、键消失或数量变化才轮换并清理旧映射。`tradeToken` / `checkoutToken` / batch token 是一次性交易计划，显式重同步或一次提交尝试后仍须失效，不能为了“稳定 lease”改成可重放。
 

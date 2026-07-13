@@ -16,6 +16,7 @@ var InventoryWorkbench = (function() {
     var _layoutMode = 'full', _densityController = null;
     var _openGeneration = 0;
     var _profile = 'battlebox';
+    var _returnTarget = null;
     var _rightContainerId = '战备箱';
     var _rightLimit = 40;
     var _quickMode = null, _quickPending = [], _quickInFlight = null, _quickKeys = {};
@@ -62,6 +63,17 @@ var InventoryWorkbench = (function() {
         return profile === 'warehouse'
             ? {profile:'warehouse', title:'仓库', rightContainerId:'仓库', rightLimit:50, rightCapacity:1200, pageColumns:6}
             : {profile:'battlebox', title:'战备箱', rightContainerId:'战备箱', rightLimit:40, rightCapacity:0, pageColumns:3};
+    }
+
+    function resolveReturnTarget(initData) {
+        var target = initData && initData.returnTo;
+        if (!target || target.panel !== 'crafting' || !target.initData
+                || typeof target.initData.category !== 'string' || !target.initData.category) return null;
+        var recipeIndex = Math.floor(Number(target.initData.preferredRecipeIndex));
+        var craftCount = Math.floor(Number(target.initData.preferredCraftCount));
+        return {panel:'crafting', initData:{category:target.initData.category,
+            preferredRecipeIndex:isNaN(recipeIndex) ? -1 : recipeIndex,
+            preferredCraftCount:isNaN(craftCount) ? 1 : Math.max(1, Math.min(99, craftCount))}};
     }
 
     function buildProfileDOM(config) {
@@ -116,6 +128,16 @@ var InventoryWorkbench = (function() {
         _retryButton.style.display = 'none';
         _retryButton.addEventListener('click', retryRefresh);
         _shell.addHeaderAction(_retryButton);
+
+        if (_returnTarget) {
+            var returnButton = document.createElement('button');
+            returnButton.type = 'button';
+            returnButton.className = 'workbench-mode-btn inventory-return-crafting-btn';
+            returnButton.textContent = '返回合成';
+            returnButton.title = '返回后重新核算原配方与份数';
+            returnButton.addEventListener('click', returnToPanel);
+            _shell.addHeaderAction(returnButton);
+        }
 
         var closeButton = document.createElement('button');
         closeButton.type = 'button';
@@ -738,6 +760,7 @@ var InventoryWorkbench = (function() {
 
     function onOpen(el, initData) {
         var generation = ++_openGeneration;
+        _returnTarget = resolveReturnTarget(initData);
         buildProfileDOM(resolveProfile(initData));
         resetQuickTransfer();
         if (_scaleHandle) _scaleHandle.detach();
@@ -784,8 +807,20 @@ var InventoryWorkbench = (function() {
     function closePanel(forceClose) {
         if (_shell && _shell.hasModal()) { _shell.closeModal(); return; }
         if (!forceClose && exitQuickMode()) return;
+        if (!forceClose && _returnTarget) { returnToPanel(); return; }
         Panels.close();
         Bridge.send({type:'panel', cmd:'close', panel:'workbench'});
+    }
+
+    function returnToPanel() {
+        if (!_returnTarget) return false;
+        if (_state.busyOwner || _quickInFlight || _quickPending.length) {
+            toast('库存写入尚未完成，请稍候返回。'); return false;
+        }
+        var target = _returnTarget;
+        _returnTarget = null;
+        Panels.open(target.panel, target.initData);
+        return true;
     }
 
     function retryRefresh() {
@@ -850,6 +885,7 @@ var InventoryWorkbench = (function() {
                 coordinator:_coordinator.debugState(),
                 rightAccessibleCapacity:right ? Number(right.accessibleCapacity) : null,
                 battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,
+                returnTarget:_returnTarget ? {panel:_returnTarget.panel, initData:_returnTarget.initData} : null,
                 page:_pager ? _pager.getState() : null,
                 quickTransfer:{
                     mode:_quickMode,

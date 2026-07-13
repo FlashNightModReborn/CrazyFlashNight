@@ -919,6 +919,7 @@ class Program
         ShopTask shopTask = new ShopTask(socketServer);
         InventoryTask inventoryTask = new InventoryTask(socketServer);
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
+        CraftingTask craftingTask = new CraftingTask(socketServer);
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArenaTask arenaTask = new ArenaTask(socketServer);
@@ -1003,7 +1004,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, craftingTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -1014,6 +1015,7 @@ class Program
         webOverlay.SetShopTask(shopTask);
         webOverlay.SetInventoryTask(inventoryTask);
         webOverlay.SetNpcShopTask(npcShopTask);
+        webOverlay.SetCraftingTask(craftingTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
         webOverlay.SetStageSelectTask(stageSelectTask);

@@ -239,6 +239,8 @@
         options = options || {};
         this.root = document.createElement('div');
         this.root.className = options.className || 'item-filter-navigator';
+        this.visualStyle = options.visualStyle === 'catalog' ? 'catalog' : 'compact';
+        if (this.visualStyle === 'catalog') this.root.classList.add('item-filter-catalog');
         this.root.setAttribute('role', 'navigation');
         this.root.setAttribute('aria-label', options.ariaLabel || '物品分类');
         this.tree = options.tree || createRoot(0);

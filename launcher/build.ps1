@@ -699,6 +699,8 @@ $requiredWebPaths = @(
     "modules\kshop.js",
     "modules\npcshop-runtime.js",
     "modules\npcshop.js",
+    "modules\crafting-runtime.js",
+    "modules\crafting.js",
     "modules\help-panel.js",
     "modules\intelligence-components.js",
     "modules\font-pack-banner.js",

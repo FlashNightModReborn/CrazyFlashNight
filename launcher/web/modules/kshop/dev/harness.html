@@ -166,7 +166,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     }
     function addEquipment() { click('.kshop-add-btn[data-idx="0"]'); }
     function addStackable(quantity) {
-        if (!document.querySelector('.kshop-add-btn[data-idx="1"]')) click('.kshop-cat-btn[data-cat="消耗品"]');
+        if (!document.querySelector('.kshop-add-btn[data-idx="1"]')) click('.kshop-category-navigator [data-cat="消耗品"]');
         click('.kshop-add-btn[data-idx="1"]');
         var input = document.querySelector('.kshop-qty-input');
         if (!input) throw new Error('quantity popup did not open');
@@ -726,7 +726,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             && !!document.querySelector('.kshop-card[data-idx="3"]');
         var categoryRailStable = Math.abs(categoryRail.getBoundingClientRect().height - categoryRailHeight) < 1
             && Math.abs(categoryGridWrap.getBoundingClientRect().top - categoryGridTop) < 1
-            && getComputedStyle(document.querySelector('.kshop-cat-btn')).transitionDuration === '0s';
+            && getComputedStyle(document.querySelector('.kshop-category-navigator .item-filter-option')).transitionDuration === '0s';
         assert('kshop-ui2l','商城刀类继续下钻到模组子型，切层不改变筛选轨道或物品格位置',
             browseModesVisible && curatedGroupsVisible && curatedGroupFiltered
                 && knifeSubtypeVisible && knifeLeafFiltered && categoryRailStable,
@@ -1746,6 +1746,30 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && !staleQueueState.inFlight && staleQueueState.completed === 0);
         Panels.close();
 
+        var returnedCraftingInit = null;
+        Panels.register('crafting', {
+            create:function() { return document.createElement('div'); },
+            onOpen:function(el, initData) { returnedCraftingInit = clone(initData || {}); }
+        });
+        Host.reset();
+        Panels.open('workbench', {mode:'runtime',profile:'battlebox',returnTo:{panel:'crafting',initData:{
+            category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
+        }}});
+        await waitFor(function(){ return Panels.getActive() === 'workbench'
+            && InventoryWorkbench.debugState().coordinator.ready; }, 1000);
+        var localReturnCloseBefore = Host.closeCount;
+        var returnState = InventoryWorkbench.debugState();
+        click('.inventory-return-crafting-btn');
+        await waitFor(function(){ return Panels.getActive() === 'crafting'; }, 500);
+        assert('workbench-ui10','合成子路由返回只恢复 UI 意图，不关闭 Host overlay 或复用库存写状态',
+            returnState.returnTarget && returnState.returnTarget.panel === 'crafting'
+                && returnedCraftingInit && returnedCraftingInit.category === '化学生产'
+                && returnedCraftingInit.preferredRecipeIndex === 3
+                && returnedCraftingInit.preferredCraftCount === 7
+                && Host.closeCount === localReturnCloseBefore,
+            JSON.stringify({returnState:returnState.returnTarget,initData:returnedCraftingInit,closeCount:Host.closeCount}));
+        Panels.close();
+
         var passed = results.filter(function(item){ return item.pass; }).length;
         var qa = {total:results.length,passed:passed,failed:results.length-passed,results:results};
         window.__qaResult = {qa:qa};
@@ -1770,7 +1794,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         addEquipment();
         addStackable(3);
         await wait(120);
-        var firstCategory = document.querySelector('.kshop-cat-btn');
+        var firstCategory = document.querySelector('.kshop-category-navigator .item-filter-option');
         if (firstCategory) firstCategory.click();
         if (mode === 'knife') {
             click('.kshop-categories [data-filter-path="category"]');

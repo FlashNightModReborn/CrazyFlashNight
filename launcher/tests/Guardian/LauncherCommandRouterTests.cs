@@ -114,6 +114,31 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void CraftingRequest_WhitelistsCategoryAndBuildsRuntimeInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("crafting", "legacy_crafting_entry", null, null, null, null, null,
+                "{\"category\":\"武器合成\",\"ignored\":\"x\"}");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"crafting\"", c.Posts[0]);
+            Assert.Contains("\"category\":\"武器合成\"", c.Posts[0]);
+            Assert.DoesNotContain("ignored", c.Posts[0]);
+            Assert.Equal(new[] { "crafting" }, c.ActivePanels);
+        }
+
+        [Fact]
+        public void CraftingRequest_RejectsUnknownCategory()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("crafting", "legacy_crafting_entry", null, null, null, null, null,
+                "{\"category\":\"未知分类\"}");
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
         public void GOBANG_TEST_OpenPanelFallback_IncludesInitData()
         {
             Capture c = new Capture();

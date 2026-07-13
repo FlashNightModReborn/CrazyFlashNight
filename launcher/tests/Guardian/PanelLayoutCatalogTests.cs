@@ -18,7 +18,7 @@ namespace CF7Launcher.Tests.Guardian
         public void AllRuntimePanels_ReturnFullAnchor()
         {
             // 沉浸全屏化后 jukebox / arena 也回全 anchor（原 Centered 子矩形已退役）
-            string[] names = { "map", "kshop", "workbench", "help", "lockbox", "pinalign", "gobang", "team", "arena",
+            string[] names = { "map", "kshop", "workbench", "crafting", "help", "lockbox", "pinalign", "gobang", "team", "arena",
                                "jukebox", "intelligence", "stage-select", "tasks", "unknown", null };
             foreach (string n in names)
             {

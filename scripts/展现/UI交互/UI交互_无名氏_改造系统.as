@@ -1,8 +1,11 @@
 ﻿
 _root.改装系统 = new Object();
 _root.改装系统.当前页数 = 1;
+org.flashNight.arki.item.CraftingPanelService.install();
 
 _root.改装系统.加载改装清单 = function(清单){
+    // Web 合成工作台可用时接管入口；发送失败仍回退旧 Flash UI，避免启动期断路。
+    if(org.flashNight.arki.item.CraftingPanelService.openPanel(String(清单), "legacy_crafting_entry")) return;
     _root.改装系统.当前页数 = 1;
     var 物品改装界面 = _root.从库中加载外部UI("物品改装界面");
     物品改装界面.改装清单 = _root.改装清单[清单];

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Crafting Harness</title>
+  <link rel="stylesheet" href="../../../css/panels.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607;color:#eee}
+    #qa-output{position:fixed;z-index:1000;right:8px;bottom:8px;max-width:420px;padding:8px;background:#111;border:1px solid #555;font:11px Consolas;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+<div id="panel-container" data-panel="crafting"><div id="panel-backdrop"></div><div id="panel-content"></div></div><pre id="qa-output">running…</pre>
+<script>
+window.__CRAFTING_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness'};
+window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;
+window.Bridge={
+  on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
+  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd!=='close')setTimeout(function(){respond(message)},message.cmd==='preview'?__previewDelay:0)}
+};
+window.Toast={add:function(message){__toasts.push(message)}};
+window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+window.PanelTooltip={
+  _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},
+  isVisible:function(){return this._visible},updateContent:function(){},dynamicIconHtml:function(){return ''},
+  staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(){return '<div>rich</div>'},
+  bindAsyncHover:function(node,options){node.addEventListener('pointerenter',function(e){
+    var item=options.item;options.renderBasic(item);options.fetch(item,function(response){if(response&&response.success)options.renderRich(item,response)});
+  })}
+};
+window.Panels=(function(){var specs={},active=null,lastOpen=null;return{
+  register:function(id,spec){specs[id]=spec},open:function(id,init){if(active&&specs[active].onClose)specs[active].onClose();active=id;lastOpen={id:id,init:init||{}};var host=document.getElementById('panel-content');host.innerHTML='';host.appendChild(specs[id].create());if(specs[id].onOpen)specs[id].onOpen(host,init||{})},
+  close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},getActive:function(){return active},lastOpen:function(){return lastOpen},_specs:specs
+}})();
+Panels.register('workbench',{create:function(){var node=document.createElement('div');node.className='workbench-route-stub';return node},onOpen:function(){},onClose:function(){}});
+var money=1000,materials=2,commitCount=0;
+function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
+function availability(index){
+  if(index===0){if(materials<2)return'material_missing';if(money<90)return'insufficient_money';return'ready'}
+  return materials>=1?'ready':'material_missing'
+}
+function recipe(index,value){value.canCraftOne=availability(index)==='ready';value.availability=availability(index);return value}
+function snapshot(){return{success:true,v:1,category:'武器合成',note:'铁匠效果：减少货币消耗',
+  balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
+    recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:{name:'新测试枪',displayName:'新测试枪',icon:'新测试枪',itemKind:'equipment',enhancementLevel:1,majorType:'武器',use:'手枪',weaponType:'手枪'},baseCost:{money:100,kpoints:0},materialCount:2}),
+    recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3,majorType:'消耗品',use:'药剂'},baseCost:{money:0,kpoints:0},materialCount:1})
+  ]}}
+function preview(index,count){count=Number(count)||1;var batch=index===1,max=batch?Math.min(99,materials):1,enough=index===0?(materials>=2&&money>=90):materials>=count;return{success:true,v:1,category:'武器合成',recipeIndex:index,craftCount:count,batchEligible:batch,maxCraftCount:max,
+  output:index===0?{name:'新测试枪',displayName:'新测试枪',icon:'新测试枪',itemKind:'equipment',enhancementLevel:5,requiredLevel:12,majorType:'武器',use:'手枪',weaponType:'手枪'}:{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3*count,requiredLevel:1,majorType:'消耗品',use:'药剂'},
+  materials:index===0?[{name:'测试图纸',displayName:'测试图纸',icon:'测试图纸',itemKind:'stack',required:1,owned:1,consumed:false,enough:true},{name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',itemKind:'stack',required:2,owned:materials,consumed:true,enough:materials>=2}]:[{name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',itemKind:'stack',required:count,owned:materials,consumed:true,enough:enough}],
+  cost:{money:index===0?90:0,kpoints:0},balance:{money:money,kpoints:100},enoughSpace:true,canCommit:enough,
+  blockingError:enough?'':(index===0&&materials>=2?'insufficient_money':'material_missing'),craftToken:enough?'craft.harness.'+index+'.'+commitCount:undefined}}
+function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:message.cmd,callId:message.callId};
+  if(message.cmd==='snapshot')Object.assign(result,snapshot());
+  else if(message.cmd==='preview')Object.assign(result,preview(message.payload.recipeIndex,message.payload.craftCount));
+  else if(message.cmd==='tooltip')Object.assign(result,{success:true,v:1,itemName:message.payload.itemName,displayname:message.payload.itemName,descHTML:'说明',introHTML:'简介'});
+  else if(message.cmd==='commit'){
+    if(__ambiguous){__ambiguous=false;Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
+    commitCount++;materials-=2;money-=90;Object.assign(result,{success:true,v:1,operation:'commit',category:'武器合成',recipeIndex:0,craftCount:1,crafted:{name:'新测试枪',displayName:'新测试枪'},balance:{money:money,kpoints:100}})
+  }
+  emit(result)
+}
+</script>
+<script src="../../workbench.js"></script>
+<script src="../../item-filter.js"></script>
+<script src="../../panel-scale.js"></script>
+<script src="../../crafting-runtime.js"></script>
+<script src="../../crafting.js"></script>
+<script>
+(async function(){var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(){return new Promise(function(r){setTimeout(r,35)})}async function waitFor(test,timeout){var deadline=Date.now()+(timeout||1000);while(Date.now()<deadline){if(test())return true;await wait()}return false}
+try{
+  Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
+  ok('mounts dual panes',document.querySelector('[data-instance-key="crafting:catalog"]')&&document.querySelector('[data-instance-key="crafting:detail"]'));
+  var panelRect=document.getElementById('panel-container').getBoundingClientRect(),contentRect=document.getElementById('panel-content').getBoundingClientRect(),shellRect=document.querySelector('.crafting-scale-shell').getBoundingClientRect();
+  ok('crafting uses production full-screen anchor',contentRect.width/panelRect.width>.999&&contentRect.height/panelRect.height>.999&&shellRect.width/contentRect.width>.998&&shellRect.height/contentRect.height>.998,JSON.stringify({panel:[panelRect.width,panelRect.height],content:[contentRect.width,contentRect.height],shell:[shellRect.width,shellRect.height]}));
+  var filterButton=document.querySelector('.crafting-catalog-toolbar .item-filter-option'),filterStyle=getComputedStyle(filterButton);
+  ok('shared catalog filter contract removes native white buttons',document.querySelector('.crafting-catalog-toolbar .item-filter-catalog')&&filterStyle.appearance==='none'&&filterStyle.backgroundColor!=='rgb(239, 239, 239)');
+  var leftWidth=document.querySelector('[data-slot="L"]').getBoundingClientRect().width,rightWidth=document.querySelector('[data-slot="R"]').getBoundingClientRect().width;
+  ok('crafting panes use shop-like 60:40 ratio',leftWidth/rightWidth>1.45&&leftWidth/rightWidth<1.75,leftWidth+'/'+rightWidth);
+  ok('renders authoritative catalog',document.querySelectorAll('.crafting-recipe-card').length===2);
+  ok('snapshot marks cards and craftable count',document.querySelectorAll('.crafting-recipe-card.craftable').length===2&&document.querySelector('.crafting-catalog-view .workbench-view-meta').textContent.indexOf('可合成 2 / 2')>=0);
+  ok('reuses shared recipe tree',document.querySelector('[data-filter-path="weapon"]')&&document.querySelector('[data-filter-path="consumable"]'));
+  ok('auto previews first recipe',__sent.some(function(x){return x.domain==='crafting'&&x.cmd==='preview'&&x.payload.recipeIndex===0}));
+  ok('renders inherited output',document.querySelector('.crafting-output-card').textContent.indexOf('强化 +5')>=0);
+  ok('marks retained blueprint',document.querySelector('.crafting-material-list').textContent.indexOf('图纸保留')>=0);
+  ok('renders Flash adjusted cost',document.querySelector('.crafting-cost-summary').textContent.indexOf('90')>=0);
+  var firstMaterial=document.querySelector('.crafting-material-row');firstMaterial.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
+  ok('tooltip uses crafting domain',__sent.some(function(x){return x.cmd==='tooltip'&&x.payload.itemName==='测试图纸'}));
+  var commit=document.querySelector('.crafting-commit-btn');ok('eligible preview enables commit',commit&&!commit.disabled);commit.click();await wait();await wait();
+  ok('commit sends one-use token',__sent.some(function(x){return x.cmd==='commit'&&/^craft\.harness\./.test(x.payload.expectedCraftToken)}));
+  ok('success refreshes snapshot and preview',__sent.filter(function(x){return x.cmd==='snapshot'}).length>=2&&__sent.filter(function(x){return x.cmd==='preview'}).length>=2);
+  ok('success applies new balance',document.querySelector('[data-metric="money"] b').textContent.replace(/,/g,'')==='910');
+  ok('snapshot refreshes craftable state after mutation',document.querySelectorAll('.crafting-recipe-card.craftable').length===0&&document.querySelectorAll('.crafting-recipe-card.blocked').length===2&&document.querySelector('.crafting-catalog-view .workbench-view-meta').textContent.indexOf('可合成 0 / 2')>=0);
+  materials=5;Panels.open('crafting',{category:'武器合成'});await wait();
+  window.__ambiguous=true;document.querySelector('.crafting-commit-btn').click();await wait();await wait();
+  ok('ambiguous commit triggers preview reconcile',__toasts.some(function(x){return x.indexOf('对账')>=0})&&__sent.filter(function(x){return x.cmd==='preview'}).length>=3);
+  ok('preview clears reconcile gate',!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled);
+  window.__previewDelay=60;var cards=document.querySelectorAll('.crafting-recipe-card');cards[1].click();cards[0].click();await new Promise(function(r){setTimeout(r,160)});window.__previewDelay=0;
+  ok('rapid switch releases preview gate',!CraftingPanel.debugState().previewBusy&&document.querySelector('.crafting-output-card').textContent.indexOf('新测试枪')>=0);
+  document.querySelectorAll('.crafting-recipe-card')[1].click();await wait();
+  var plus=document.querySelector('.crafting-quantity-btn[aria-label="增加一份"]');ok('stack recipe exposes styled batch stepper',plus&&!plus.disabled);plus.click();await wait();
+  ok('batch preview binds count and total output',__sent.some(function(x){return x.cmd==='preview'&&x.payload.recipeIndex===1&&x.payload.craftCount===2})&&document.querySelector('.crafting-output-card').textContent.indexOf('×6')>=0);
+  var consumableFilter=document.querySelector('[data-filter-path^="consumable"]');consumableFilter.click();await wait();
+  ok('shared tree filters recipe cards locally',document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath[0]==='consumable');
+  materials=0;Panels.open('crafting',{category:'武器合成'});await wait();document.querySelector('[data-filter-path=""]').click();await wait();
+  var snapshotsBeforeToggle=__sent.filter(function(x){return x.cmd==='snapshot'}).length,toggle=document.querySelector('.crafting-craftable-toggle');toggle.click();await wait();
+  ok('only-craftable toggle filters locally without snapshot',document.querySelectorAll('.crafting-recipe-card').length===0&&CraftingPanel.debugState().craftableOnly&&__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeToggle);
+  toggle.click();await wait();
+  ok('disabling only-craftable restores blocked cards',document.querySelectorAll('.crafting-recipe-card.blocked').length===2&&!CraftingPanel.debugState().craftableOnly);
+  document.querySelectorAll('.crafting-recipe-card')[1].click();await wait();
+  ok('blocked preview has disabled submit',document.querySelector('.crafting-commit-status').textContent.indexOf('材料不足')>=0&&document.querySelector('.crafting-commit-btn').disabled);
+  var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();
+  var route=Panels.lastOpen();ok('organizer revokes token then routes to battlebox',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeRoute+1&&Panels.getActive()==='workbench'&&route.init.profile==='battlebox'&&route.init.returnTo.initData.preferredRecipeIndex===1);
+  var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
+}catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}})();
+</script>
+</body>
+</html>

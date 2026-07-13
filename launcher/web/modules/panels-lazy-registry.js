@@ -56,6 +56,14 @@
          'modules/npcshop.js'],
         noop);
 
+    // ── 合成工作台（配方目录 + Flash 权威预览/一次性提交）──
+    Panels.registerLazy('crafting',
+        ['modules/workbench.js',
+         'modules/item-filter.js',
+         'modules/crafting-runtime.js',
+         'modules/crafting.js'],
+        noop);
+
     // ── help ──
     // marked.min.js 在 boot 时已加载（panel content 用 markdown 渲染）
     Panels.registerLazy('help',

@@ -27,7 +27,7 @@
     ]
   },
   {
-    "title": "普通hp药剂升级（逐个）",
+    "title": "普通hp药剂升级",
     "name": "抗生素",
     "value": 1,
     "price": 100,
@@ -37,17 +37,7 @@
     ]
   },
   {
-    "title": "普通hp药剂升级（批量）",
-    "name": "抗生素",
-    "value": 10,
-    "price": 1000,
-    "kprice": 0,
-    "materials": [
-      "普通hp药剂#10"
-    ]
-  },
-  {
-    "title": "抗生素升级（逐个）",
+    "title": "抗生素升级",
     "name": "加强抗生素药剂",
     "value": 1,
     "price": 250,
@@ -57,17 +47,7 @@
     ]
   },
   {
-    "title": "抗生素升级（批量）",
-    "name": "加强抗生素药剂",
-    "value": 10,
-    "price": 2500,
-    "kprice": 0,
-    "materials": [
-      "抗生素#10"
-    ]
-  },
-  {
-    "title": "普通mp药剂升级（逐个）",
+    "title": "普通mp药剂升级",
     "name": "肾上腺素",
     "value": 1,
     "price": 150,
@@ -77,17 +57,7 @@
     ]
   },
   {
-    "title": "普通mp药剂升级（批量）",
-    "name": "肾上腺素",
-    "value": 10,
-    "price": 1500,
-    "kprice": 0,
-    "materials": [
-      "普通mp药剂#10"
-    ]
-  },
-  {
-    "title": "肾上腺素升级（逐个）",
+    "title": "肾上腺素升级",
     "name": "加强mp药剂",
     "value": 1,
     "price": 200,
@@ -97,17 +67,7 @@
     ]
   },
   {
-    "title": "肾上腺素升级（批量）",
-    "name": "加强mp药剂",
-    "value": 10,
-    "price": 2000,
-    "kprice": 0,
-    "materials": [
-      "肾上腺素#10"
-    ]
-  },
-  {
-    "title": "加强mp药剂升级（逐个）",
+    "title": "加强mp药剂升级",
     "name": "大MP药剂",
     "value": 1,
     "price": 700,
@@ -117,33 +77,13 @@
     ]
   },
   {
-    "title": "加强mp药剂升级（批量）",
-    "name": "大MP药剂",
-    "value": 10,
-    "price": 7000,
-    "kprice": 0,
-    "materials": [
-      "加强mp药剂#10"
-    ]
-  },
-  {
-    "title": "加强hp药剂升级（逐个）",
+    "title": "加强hp药剂升级",
     "name": "大HP药剂",
     "value": 1,
     "price": 700,
     "kprice": 0,
     "materials": [
       "加强抗生素药剂#1"
-    ]
-  },
-  {
-    "title": "加强hp药剂升级（批量）",
-    "name": "大HP药剂",
-    "value": 10,
-    "price": 7000,
-    "kprice": 0,
-    "materials": [
-      "加强抗生素药剂#10"
     ]
   },
   {
@@ -155,17 +95,6 @@
     "materials": [
       "普通hp粉尘#1",
       "增效剂#1"
-    ]
-  },
-  {
-    "title": "普通hp粉尘升级（批量）",
-    "name": "战队药箱",
-    "value": 10,
-    "price": 3000,
-    "kprice": 0,
-    "materials": [
-      "普通hp粉尘#10",
-      "增效剂#10"
     ]
   }
 ]

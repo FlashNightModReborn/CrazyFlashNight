@@ -125,6 +125,7 @@ namespace CF7Launcher.Guardian
             Close,
             Inventory,
             NpcShop,
+            Crafting,
             Unsupported
         }
 
@@ -135,6 +136,7 @@ namespace CF7Launcher.Guardian
             if (string.IsNullOrEmpty(domain)) return PanelDomainRoute.Legacy;
             if (domain == "inventory") return PanelDomainRoute.Inventory;
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
+            if (domain == "crafting") return PanelDomainRoute.Crafting;
             return PanelDomainRoute.Unsupported;
         }
 
@@ -246,6 +248,7 @@ namespace CF7Launcher.Guardian
         private ShopTask _shopTask;
         private InventoryTask _inventoryTask;
         private NpcShopTask _npcShopTask;
+        private CraftingTask _craftingTask;
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
         private ArenaTask _arenaTask;
@@ -2819,6 +2822,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetCraftingTask(CraftingTask task)
+        {
+            _craftingTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetGomokuTask(GomokuTask task)
         {
             _gomokuTask = task;
@@ -3450,6 +3460,14 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "npcshop_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Crafting)
+            {
+                LogManager.Log("[Panel] Routing domain=crafting cmd=" + cmd
+                    + " to CraftingTask, _craftingTask=" + (_craftingTask != null ? "ok" : "NULL"));
+                if (_craftingTask != null) _craftingTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "crafting_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Unsupported)
             {
                 RespondPanelDomainError(parsed, "unsupported_domain");
@@ -3807,6 +3825,7 @@ namespace CF7Launcher.Guardian
             if (_shopTask != null) _shopTask.ClearPending();
             if (_inventoryTask != null) _inventoryTask.ClearPending();
             if (_npcShopTask != null) _npcShopTask.ClearPending();
+            if (_craftingTask != null) _craftingTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
             if (_arenaTask != null) _arenaTask.ClearPending();

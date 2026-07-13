@@ -112,6 +112,7 @@ var NpcShop = (function() {
             className:'npcshop-category-tabs item-filter-navigator',
             ariaLabel:'商店商品分类',
             presentation:'drilldown',
+            visualStyle:'catalog',
             onChange:function(path) {
                 var mode = _categoryToolbar && _categoryToolbar.getAttribute('data-filter-mode');
                 _category = {mode:mode || 'auto', path:path};

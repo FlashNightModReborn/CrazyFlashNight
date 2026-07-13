@@ -283,6 +283,11 @@ namespace CF7Launcher.Guardian
                 OpenNpcShopPanel(safeSource, initDataExtrasJson);
                 return;
             }
+            if (string.Equals(panelName, "crafting", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenCraftingPanel(safeSource, initDataExtrasJson);
+                return;
+            }
             if (string.Equals(panelName, "arena", StringComparison.OrdinalIgnoreCase))
             {
                 OpenArenaPanel(safeSource, initDataExtrasJson, returnToPanel, returnToInitDataJson);
@@ -374,6 +379,44 @@ namespace CF7Launcher.Guardian
             catch (Exception ex)
             {
                 LogManager.Log("[Router] OpenNpcShopPanel extras parse failed: " + ex.Message);
+            }
+        }
+
+        private void OpenCraftingPanel(string source, string initDataExtrasJson)
+        {
+            if (string.IsNullOrEmpty(initDataExtrasJson)) return;
+            try
+            {
+                JObject extras = JObject.Parse(initDataExtrasJson);
+                string category = extras.Value<string>("category");
+                if (!IsCraftingCategory(category))
+                {
+                    LogManager.Log("[Router] OpenCraftingPanel rejected category=" + category);
+                    return;
+                }
+                var initData = new JObject
+                {
+                    ["mode"] = "runtime",
+                    ["category"] = category,
+                    ["source"] = source,
+                    ["debug"] = false
+                };
+                OpenPanel("crafting", initData.ToString(Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Router] OpenCraftingPanel extras parse failed: " + ex.Message);
+            }
+        }
+
+        private static bool IsCraftingCategory(string category)
+        {
+            switch (category)
+            {
+                case "铁枪会": case "属性武器": case "烹饪": case "化学生产":
+                case "武器合成": case "饰品合成": case "进阶防具": case "基础防具":
+                case "公社防具": case "黑白契约": case "插件合成": case "大学装备": return true;
+                default: return false;
             }
         }
 

@@ -411,6 +411,7 @@ var KShop = (function() {
             className:'kshop-category-navigator item-filter-navigator',
             ariaLabel:'商城商品分类',
             presentation:'drilldown',
+            visualStyle:'catalog',
             onChange:function(path) {
                 _categoryPath = path;
                 if (_interactionBroker) _interactionBroker.clearSelection();
@@ -938,7 +939,6 @@ var KShop = (function() {
         if (!_categoryNavigator) return;
         var buttons = _categoryNavigator.root.querySelectorAll('[data-filter-path]');
         for (var i = 0; i < buttons.length; i++) {
-            buttons[i].classList.add('kshop-cat-btn');
             var label = buttons[i].querySelector('span');
             buttons[i].setAttribute('data-cat', label ? label.textContent.replace(/^全部/, '') || '全部' : '全部');
             buttons[i].setAttribute('data-audio-cue', 'select');
