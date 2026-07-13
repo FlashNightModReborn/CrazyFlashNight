@@ -34,6 +34,8 @@
         var filterKey = snapshot && snapshot.filterKey != null
             ? String(snapshot.filterKey) : request && request.filterKey != null
                 ? String(request.filterKey) : 'all';
+        var filterSpec = snapshot && snapshot.filterSpec != null
+            ? snapshot.filterSpec : request && request.filterSpec != null ? request.filterSpec : null;
         offset = Math.max(0, offset);
         limit = Math.max(1, limit);
         capacity = Math.max(0, capacity);
@@ -46,7 +48,8 @@
             accessibleCapacity: Math.max(0, accessibleCapacity),
             physicalCapacity: Math.max(capacity, physicalCapacity),
             filterKey: filterKey,
-            filtered: filterKey !== 'all',
+            filterSpec: filterSpec,
+            filtered: filterKey !== 'all' || !!(filterSpec && String(filterSpec.major || 'all') !== 'all'),
             page: page,
             pageCount: pageCount,
             rangeStart: capacity > 0 ? Math.min(capacity, offset + 1) : 0,
@@ -151,7 +154,7 @@
     function renderOwnedSlot(containerId, slot, options) {
         options = options || {};
         var node = document.createElement('article');
-        node.className = 'inventory-slot-card ' + (slot.occupied ? 'occupied' : 'empty');
+        node.className = 'item-card item-card-owned inventory-slot-card ' + (slot.occupied ? 'occupied' : 'empty');
         node.setAttribute('data-container-id', containerId);
         node.setAttribute('data-physical-slot', slot.physicalSlot);
         if (!slot.occupied) {
@@ -174,9 +177,9 @@
             + String(item.displayName || item.name || '未知物品'));
         var icon = typeof options.iconHtml === 'function'
             ? options.iconHtml(item.icon || item.name, 'inventory-owned-icon') : '';
-        node.innerHTML = '<span class="inventory-slot-icon-frame"><span class="inventory-slot-icon">'
+        node.innerHTML = '<span class="item-card-icon inventory-slot-icon-frame"><span class="inventory-slot-icon">'
             + icon + '</span>' + (isEquipment ? renderTierMarker(item) : '') + badge + '</span>'
-            + '<span class="inventory-slot-copy"><b>' + escapeHtml(item.displayName || item.name || '未知物品') + '</b>'
+            + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || item.name || '未知物品') + '</b>'
             + (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>'
             + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" title="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
         return node;
@@ -403,6 +406,261 @@
         this._attached = false;
     };
 
+    function DisplaySortControl(options) {
+        options = options || {};
+        var self = this;
+        this.root = document.createElement('label');
+        this.root.className = 'inventory-toolbar-field display';
+        if (options.label) this.root.appendChild(document.createTextNode(String(options.label)));
+        this.select = document.createElement('select');
+        this.select.className = 'inventory-display-sort';
+        this.select.setAttribute('aria-label', options.ariaLabel || '当前页展示排序');
+        var values = options.options || [];
+        for (var i = 0; i < values.length; i++) appendSelectOption(this.select, values[i].value, values[i].label);
+        this.select.addEventListener('change', function() {
+            if (options.onChange) options.onChange(self.select.value);
+        });
+        this.root.appendChild(this.select);
+    }
+
+    DisplaySortControl.prototype.setDisabled = function(disabled) { this.select.disabled = !!disabled; };
+    DisplaySortControl.prototype.getValue = function() { return this.select.value; };
+
+    function filterSpecFromPath(path) {
+        path = Array.isArray(path) ? path : [];
+        var spec = {major:path.length ? String(path[0]) : 'all'};
+        if (path.length > 1) spec.use = String(path[1]);
+        if (path.length > 2) spec.subtype = String(path[2]);
+        return spec;
+    }
+
+    function filterPathFromSpec(spec, filterKey) {
+        if (!spec || typeof spec !== 'object') {
+            filterKey = String(filterKey || 'all');
+            return filterKey === 'all' ? [] : [filterKey];
+        }
+        var path = String(spec.major || 'all') === 'all' ? [] : [String(spec.major)];
+        if (spec.use) path.push(String(spec.use));
+        if (spec.subtype) path.push(String(spec.subtype));
+        return path;
+    }
+
+    function InventoryFilterControl(options) {
+        options = options || {};
+        var self = this;
+        this.options = options;
+        this.presentation = options.presentation === 'popover' ? 'popover' : 'inline';
+        this.root = document.createElement('div');
+        this.root.className = 'inventory-toolbar-field filter inventory-filter-control';
+        if (this.presentation === 'popover') this.root.classList.add('popover');
+        if (options.label) {
+            var label = document.createElement('span');
+            label.className = 'inventory-toolbar-label';
+            label.textContent = String(options.label);
+            this.root.appendChild(label);
+        }
+        this.select = document.createElement('select');
+        this.select.className = 'inventory-category-filter';
+        this.select.setAttribute('aria-label', options.ariaLabel || '库存分类筛选');
+        var values = options.options || [];
+        for (var i = 0; i < values.length; i++) appendSelectOption(this.select, values[i].value, values[i].label);
+        this.select.addEventListener('change', function() {
+            if (options.onLegacyChange) options.onLegacyChange(self.select.value);
+        });
+        this.root.appendChild(this.select);
+        this.trigger = null;
+        if (this.presentation === 'popover') {
+            this.trigger = document.createElement('button');
+            this.trigger.type = 'button';
+            this.trigger.className = 'inventory-filter-tree-trigger';
+            this.trigger.hidden = true;
+            this.trigger.setAttribute('aria-haspopup', 'true');
+            this.trigger.setAttribute('aria-expanded', 'false');
+            this.trigger.addEventListener('click', function() {
+                if (self.disabled) return;
+                var open = !self.root.classList.contains('open');
+                self.root.classList.toggle('open', open);
+                self.trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                if (open && self.navigator) {
+                    var active = self.navigator.root.querySelector('.active');
+                    if (active) active.focus();
+                }
+            });
+            this.root.insertBefore(this.trigger, this.select);
+            this.root.addEventListener('focusout', function() {
+                setTimeout(function() {
+                    if (!self.root.contains(document.activeElement)) self.closePopover();
+                }, 0);
+            });
+            this.root.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && self.root.classList.contains('open')) {
+                    event.preventDefault(); event.stopPropagation(); self.closePopover(); self.trigger.focus();
+                }
+            });
+        }
+        this.navigator = null;
+        this.disabled = false;
+        this.pendingSpec = null;
+    }
+
+    InventoryFilterControl.prototype.setSnapshot = function(snapshot) {
+        if (!snapshot || !Array.isArray(snapshot.filterFacets) || typeof ItemFilter === 'undefined') {
+            this.root.classList.remove('tree');
+            this.closePopover();
+            if (this.trigger) this.trigger.hidden = true;
+            this.select.hidden = false;
+            this.select.value = String(snapshot && snapshot.filterKey || this.select.value || 'all');
+            if (this.navigator) this.navigator.root.hidden = true;
+            return false;
+        }
+        var self = this;
+        if (!this.navigator) {
+            this.navigator = new ItemFilter.FilterNavigator({
+                className:'inventory-filter-navigator item-filter-navigator',
+                ariaLabel:this.options.ariaLabel || '库存分类筛选',
+                presentation:this.options.navigatorPresentation || 'drilldown',
+                onChange:function(path, node) {
+                    self.pendingSpec = filterSpecFromPath(path);
+                    if (!node || !(node.children || []).length) self.closePopover();
+                    if (self.options.onSpecChange) self.options.onSpecChange(self.pendingSpec, path);
+                }
+            });
+            this.root.appendChild(this.navigator.root);
+        }
+        var tree = ItemFilter.fromFacets(snapshot.filterFacets, Number(snapshot.filterItemCount) || 0);
+        var authoritativePath = filterPathFromSpec(snapshot.filterSpec, snapshot.filterKey);
+        var pendingPath = this.pendingSpec ? filterPathFromSpec(this.pendingSpec, 'all') : null;
+        if (pendingPath && pendingPath.join('/') === authoritativePath.join('/')) this.pendingSpec = null;
+        var path = this.pendingSpec ? pendingPath : authoritativePath;
+        this.navigator.root.hidden = false;
+        this.navigator.setModel(tree, path);
+        this.navigator.setDisabled(this.disabled);
+        this.select.hidden = true;
+        if (this.trigger) {
+            this.trigger.hidden = false;
+            var labels = [], cursor = tree;
+            for (var i = 0; i < path.length; i++) {
+                cursor = ItemFilter.nodeAt(cursor, [path[i]]);
+                if (!cursor) break;
+                labels.push(cursor.label);
+            }
+            this.trigger.textContent = (labels.length ? labels.join(' / ') : '全部') + '  ' + Number(tree.count || 0);
+            this.trigger.title = labels.length ? labels.join(' / ') : '全部分类';
+        }
+        this.root.classList.add('tree');
+        return true;
+    };
+
+    InventoryFilterControl.prototype.closePopover = function() {
+        this.root.classList.remove('open');
+        if (this.trigger) this.trigger.setAttribute('aria-expanded', 'false');
+    };
+
+    InventoryFilterControl.prototype.getFilterKey = function() { return this.select.value || 'all'; };
+    InventoryFilterControl.prototype.setFilterKey = function(filterKey) { this.select.value = String(filterKey || 'all'); };
+    InventoryFilterControl.prototype.setDisabled = function(disabled) {
+        this.disabled = !!disabled;
+        this.select.disabled = this.disabled;
+        if (this.trigger) this.trigger.disabled = this.disabled;
+        if (this.disabled) this.closePopover();
+        if (this.navigator) this.navigator.setDisabled(this.disabled);
+    };
+    InventoryFilterControl.prototype.rejectPending = function(snapshot) {
+        this.pendingSpec = null;
+        this.setSnapshot(snapshot);
+    };
+
+    function AuthoritySortControl(options) {
+        options = options || {};
+        var self = this;
+        this.root = document.createElement('label');
+        this.root.className = 'inventory-toolbar-field authority';
+        if (options.label) this.root.appendChild(document.createTextNode(String(options.label)));
+        this.select = document.createElement('select');
+        this.select.className = 'inventory-authority-sort';
+        this.select.setAttribute('aria-label', options.ariaLabel || '库存整理方式');
+        var values = options.options || [];
+        for (var i = 0; i < values.length; i++) appendSelectOption(this.select, values[i].value, values[i].label);
+        this.root.appendChild(this.select);
+        this.button = document.createElement('button');
+        this.button.type = 'button';
+        this.button.className = 'inventory-toolbar-btn inventory-sort-commit';
+        this.button.textContent = options.commitLabel || '整理';
+        this.button.addEventListener('click', function() {
+            if (options.onCommit) options.onCommit(self.select.value, self.getLabel());
+        });
+    }
+
+    AuthoritySortControl.prototype.getLabel = function() {
+        var option = this.select.options[this.select.selectedIndex];
+        return option ? option.textContent : this.select.value;
+    };
+    AuthoritySortControl.prototype.setDisabled = function(disabled) {
+        this.select.disabled = !!disabled;
+        this.button.disabled = !!disabled;
+    };
+
+    /**
+     * Shared owned-item view shell. It only composes Workbench primitives and
+     * presentation callbacks; leases, writes and domain policies remain with
+     * the caller's coordinator.
+     */
+    function OwnedInventoryViewShell(options) {
+        options = options || {};
+        if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required');
+        this.containerId = String(options.containerId || options.viewId || 'owned');
+        this.grid = new Workbench.ItemGrid({
+            instanceKey:options.instanceKey || 'inventory:' + this.containerId,
+            instancePolicy:options.instancePolicy,
+            itemModel:'owned',
+            getItems:options.getItems,
+            keyOf:options.keyOf,
+            renderItem:options.renderItem,
+            bindItem:options.bindItem,
+            exportOffer:options.exportOffer,
+            probeAccept:options.probeAccept,
+            title:options.title,
+            kicker:options.kicker,
+            meta:options.meta || '同步中',
+            className:options.className || 'inventory-owned-view',
+            gridClassName:options.gridClassName || 'inventory-owned-grid',
+            emptyText:options.emptyText || '正在同步库存…',
+            allowedSlots:options.allowedSlots || ['L','R'],
+            layoutMode:options.layoutMode || 'full',
+            densityController:options.densityController
+        });
+        this.view = this.grid.view;
+        this.view.containerId = this.containerId;
+        this.view.ownedInventoryShell = this;
+        this.controls = null;
+        this.pager = null;
+    }
+
+    OwnedInventoryViewShell.prototype.setToolbar = function(toolbar, controls, pager) {
+        this.controls = controls || null;
+        this.pager = pager || null;
+        this.view.chrome.setToolbar(toolbar);
+    };
+
+    OwnedInventoryViewShell.prototype.syncSnapshot = function(snapshot, options) {
+        options = options || {};
+        if (this.controls && typeof this.controls.setSnapshot === 'function') this.controls.setSnapshot(snapshot);
+        var slots = snapshot && snapshot.slots ? snapshot.slots : [];
+        if (options.displaySortMethod && typeof InventoryRuntime !== 'undefined'
+                && typeof InventoryRuntime.displaySortSlots === 'function') {
+            slots = InventoryRuntime.displaySortSlots(slots, options.displaySortMethod);
+        }
+        if (options.emptyText != null) this.view.renderer.options.emptyText = String(options.emptyText);
+        this.view.renderer.render(slots);
+        if (options.meta != null) this.view.chrome.setMeta(String(options.meta));
+        if (this.pager) this.pager.refresh();
+    };
+
+    OwnedInventoryViewShell.prototype.setDisabled = function(disabled) {
+        if (this.controls) this.controls.setDisabled(disabled);
+        if (this.pager) this.pager.setDisabled(disabled);
+    };
+
     function InventorySortControls(options) {
         options = options || {};
         var self = this;
@@ -413,21 +671,12 @@
         this.displayGroup = null;
         this.displaySelect = null;
         if (displayOptions.length) {
-            this.displayGroup = document.createElement('label');
-            this.displayGroup.className = 'inventory-toolbar-field display';
             var displayLabel = Object.prototype.hasOwnProperty.call(options, 'displayLabel')
                 ? String(options.displayLabel || '') : '查看';
-            if (displayLabel) this.displayGroup.appendChild(document.createTextNode(displayLabel));
-            this.displaySelect = document.createElement('select');
-            this.displaySelect.className = 'inventory-display-sort';
-            this.displaySelect.setAttribute('aria-label', options.displayAriaLabel || '当前页展示排序');
-            for (var i = 0; i < displayOptions.length; i++) {
-                appendSelectOption(this.displaySelect, displayOptions[i].value, displayOptions[i].label);
-            }
-            this.displaySelect.addEventListener('change', function() {
-                if (options.onDisplayChange) options.onDisplayChange(self.displaySelect.value);
-            });
-            this.displayGroup.appendChild(this.displaySelect);
+            this.displayControl = new DisplaySortControl({options:displayOptions, label:displayLabel,
+                ariaLabel:options.displayAriaLabel, onChange:options.onDisplayChange});
+            this.displayGroup = this.displayControl.root;
+            this.displaySelect = this.displayControl.select;
             this.root.appendChild(this.displayGroup);
         }
 
@@ -435,21 +684,13 @@
         this.filterGroup = null;
         this.filterSelect = null;
         if (filterOptions.length) {
-            this.filterGroup = document.createElement('label');
-            this.filterGroup.className = 'inventory-toolbar-field filter';
             var filterLabel = Object.prototype.hasOwnProperty.call(options, 'filterLabel')
                 ? String(options.filterLabel || '') : '分类';
-            if (filterLabel) this.filterGroup.appendChild(document.createTextNode(filterLabel));
-            this.filterSelect = document.createElement('select');
-            this.filterSelect.className = 'inventory-category-filter';
-            this.filterSelect.setAttribute('aria-label', options.filterAriaLabel || '库存分类筛选');
-            for (i = 0; i < filterOptions.length; i++) {
-                appendSelectOption(this.filterSelect, filterOptions[i].value, filterOptions[i].label);
-            }
-            this.filterSelect.addEventListener('change', function() {
-                if (options.onFilterChange) options.onFilterChange(self.filterSelect.value);
-            });
-            this.filterGroup.appendChild(this.filterSelect);
+            this.filterControl = new InventoryFilterControl({options:filterOptions, label:filterLabel,
+                ariaLabel:options.filterAriaLabel, onLegacyChange:options.onFilterChange,
+                onSpecChange:options.onFilterSpecChange});
+            this.filterGroup = this.filterControl.root;
+            this.filterSelect = this.filterControl.select;
             this.root.appendChild(this.filterGroup);
         }
 
@@ -458,26 +699,14 @@
         this.authoritySelect = null;
         this.commitButton = null;
         if (authorityOptions.length && typeof options.onAuthorityCommit === 'function') {
-            this.authorityGroup = document.createElement('label');
-            this.authorityGroup.className = 'inventory-toolbar-field authority';
             var authorityLabel = Object.prototype.hasOwnProperty.call(options, 'authorityLabel')
                 ? String(options.authorityLabel || '') : '整理';
-            if (authorityLabel) this.authorityGroup.appendChild(document.createTextNode(authorityLabel));
-            this.authoritySelect = document.createElement('select');
-            this.authoritySelect.className = 'inventory-authority-sort';
-            this.authoritySelect.setAttribute('aria-label', options.authorityAriaLabel || '库存整理方式');
-            for (i = 0; i < authorityOptions.length; i++) {
-                appendSelectOption(this.authoritySelect, authorityOptions[i].value, authorityOptions[i].label);
-            }
-            this.authorityGroup.appendChild(this.authoritySelect);
-
-            this.commitButton = document.createElement('button');
-            this.commitButton.type = 'button';
-            this.commitButton.className = 'inventory-toolbar-btn inventory-sort-commit';
-            this.commitButton.textContent = options.commitLabel || '整理';
-            this.commitButton.addEventListener('click', function() {
-                options.onAuthorityCommit(self.authoritySelect.value, self.getAuthorityLabel());
-            });
+            this.authorityControl = new AuthoritySortControl({options:authorityOptions, label:authorityLabel,
+                ariaLabel:options.authorityAriaLabel, commitLabel:options.commitLabel,
+                onCommit:options.onAuthorityCommit});
+            this.authorityGroup = this.authorityControl.root;
+            this.authoritySelect = this.authorityControl.select;
+            this.commitButton = this.authorityControl.button;
             this.root.appendChild(this.authorityGroup);
             this.root.appendChild(this.commitButton);
         }
@@ -492,11 +721,17 @@
         return option ? option.textContent : this.authoritySelect.value;
     };
     InventorySortControls.prototype.setFilterKey = function(filterKey) {
-        if (this.filterSelect) this.filterSelect.value = String(filterKey || 'all');
+        if (this.filterControl) this.filterControl.setFilterKey(filterKey);
+    };
+    InventorySortControls.prototype.setSnapshot = function(snapshot) {
+        return this.filterControl ? this.filterControl.setSnapshot(snapshot) : false;
+    };
+    InventorySortControls.prototype.rejectFilterChange = function(snapshot) {
+        if (this.filterControl) this.filterControl.rejectPending(snapshot);
     };
     InventorySortControls.prototype.setDisabled = function(disabled) {
         if (this.displaySelect) this.displaySelect.disabled = !!disabled;
-        if (this.filterSelect) this.filterSelect.disabled = !!disabled;
+        if (this.filterControl) this.filterControl.setDisabled(disabled);
         if (this.authoritySelect) this.authoritySelect.disabled = !!disabled;
         if (this.commitButton) this.commitButton.disabled = !!disabled;
     };
@@ -541,6 +776,12 @@
         categoryFilterOptions: categoryFilterOptions,
         authoritySortOptions: authoritySortOptions,
         InventoryWindowPager: InventoryWindowPager,
-        InventorySortControls: InventorySortControls
+        DisplaySortControl: DisplaySortControl,
+        InventoryFilterControl: InventoryFilterControl,
+        AuthoritySortControl: AuthoritySortControl,
+        OwnedInventoryViewShell: OwnedInventoryViewShell,
+        InventorySortControls: InventorySortControls,
+        filterSpecFromPath: filterSpecFromPath,
+        filterPathFromSpec: filterPathFromSpec
     };
 });

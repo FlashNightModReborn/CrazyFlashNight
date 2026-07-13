@@ -831,6 +831,7 @@
     box-shadow:0 0 10px rgba(0,240,255,0.06), inset 0 0 15px rgba(0,240,255,0.02);
 }
 .kshop-card-nosale { opacity:0.45; filter:saturate(0.3); }
+.item-card-overlays { display:contents; }
 .kshop-card-locked { opacity:0.55; }
 .kshop-card-locked .kshop-card-price { color:var(--cp-dim); text-shadow:none; }
 
@@ -3056,6 +3057,7 @@
     background:none;
     border:0;
 }
+.kshop-workbench .kshop-categories > .item-filter-navigator { flex:1 1 100%; width:100%; }
 .kshop-workbench .kshop-categories::-webkit-scrollbar { width:2px; height:2px; }
 .kshop-workbench .kshop-categories::-webkit-scrollbar-thumb { background:#484e56; }
 .kshop-workbench .kshop-cat-btn {
@@ -12168,6 +12170,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .inventory-toolbar-field.display { grid-area:display; }
 .inventory-toolbar-field.filter { grid-area:filter; }
+.inventory-filter-control.tree { align-items:stretch; overflow:hidden; }
+.inventory-filter-control.tree .inventory-filter-navigator { flex:1 1 auto; min-width:0; }
+.inventory-filter-control.tree .item-filter-row { gap:3px; }
+.inventory-filter-control.tree .item-filter-option {
+    height:23px; padding:0 6px; border:1px solid #343c44; background:#0d1115; color:#89949f;
+    font:8px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
+}
+.inventory-filter-control.tree .item-filter-option small { margin-left:4px; color:#65717c; font:7px/1 Consolas,monospace; }
+.inventory-filter-control.tree .item-filter-option:hover,
+.inventory-filter-control.tree .item-filter-option:focus-visible { color:#f3d3a4; border-color:#9b7040; outline:none; }
+.inventory-filter-control.tree .item-filter-option.active { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
+.inventory-filter-control.tree .item-filter-option.active small { color:#5a3b17; }
 .inventory-toolbar-field select { min-width:0; width:100%; padding:0 3px; }
 .inventory-toolbar-field.authority { grid-area:authority; color:#a17b4f; }
 .inventory-sort-commit { grid-area:commit; color:#f0bd78; border-color:#725532; background:#1b1510; white-space:nowrap; }
@@ -12433,6 +12447,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 /* ── Player-facing density: technical labels stay out of the visual hierarchy. ── */
 .kshop-workbench {
+    --workbench-header-height:48px;
     grid-template-rows:48px minmax(0,1fr);
 }
 .kshop-workbench .workbench-header {
@@ -12526,9 +12541,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .kshop-workbench .inventory-owned-backpack .inventory-slot-card:focus-within .inventory-slot-copy b { padding-right:12px; }
 .kshop-workbench .kshop-card-drag-hint { display:none; }
 
-/* Standalone 战备箱：右栏延续原版图标柜精神，40 槽以 5×8 紧凑阵列一次看全；
-   物品名交给悬浮注释，避免窄格里的截断文字挤占识别空间。 */
-.inventory-workbench-panel .inventory-owned-battlebox .inventory-owned-grid {
+/* Standalone 战备箱的紧凑态延续原版图标柜精神，40 槽以 5×8 阵列一次看全；
+   完整态回到带名称和状态条的通用卡片，不再让两种密度看起来相同。 */
+.inventory-workbench-panel .inventory-owned-battlebox .inventory-owned-grid.item-grid-compact {
     grid-template-columns:repeat(5,minmax(0,1fr));
     grid-template-rows:repeat(8,minmax(0,1fr));
     align-content:stretch;
@@ -12536,20 +12551,20 @@ html.perf-low-effects .map-panel-close-btn:hover {
     padding:6px;
     overflow:hidden;
 }
-.inventory-workbench-panel .inventory-owned-battlebox .inventory-slot-card {
+.inventory-workbench-panel .inventory-owned-battlebox .item-grid-compact .inventory-slot-card {
     height:auto;
     min-height:0;
     justify-content:center;
     padding:4px;
 }
-.inventory-workbench-panel .inventory-owned-battlebox .inventory-slot-copy { display:none; }
-.inventory-workbench-panel .inventory-owned-battlebox .inventory-slot-icon-frame {
+.inventory-workbench-panel .inventory-owned-battlebox .item-grid-compact .inventory-slot-copy { display:none; }
+.inventory-workbench-panel .inventory-owned-battlebox .item-grid-compact .inventory-slot-icon-frame {
     width:38px;
     height:38px;
     flex-basis:38px;
 }
-.inventory-workbench-panel .inventory-owned-battlebox .inventory-slot-icon,
-.inventory-workbench-panel .inventory-owned-battlebox .inventory-owned-icon { width:34px; height:34px; }
+.inventory-workbench-panel .inventory-owned-battlebox .item-grid-compact .inventory-slot-icon,
+.inventory-workbench-panel .inventory-owned-battlebox .item-grid-compact .inventory-owned-icon { width:34px; height:34px; }
 .inventory-workbench-panel .inventory-owned-battlebox .workbench-grid-empty {
     grid-column:1 / -1;
     grid-row:1 / -1;
@@ -12574,7 +12589,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* K 点商城二级结算：权威预览后原子扣款并直接交付；旧待领取仅兼容历史存档。 */
 .kshop-settling .workbench-body { visibility:hidden; pointer-events:none; }
 .kshop-settlement-page {
-    position:absolute; z-index:8; top:64px; right:0; bottom:0; left:0; display:none;
+    position:absolute; z-index:8; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:none;
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8f1df; background:linear-gradient(135deg,#0b110f,#070b0c 72%); border-top:1px solid rgba(200,255,76,.18);
 }
@@ -12623,14 +12638,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .npcshop-panel { --wb-accent:#e5a64d; }
 .npcshop-catalog-view,.npcshop-owned-view { display:flex; min-height:0; flex-direction:column; overflow:hidden; }
 .npcshop-category-tabs { display:grid; gap:3px; }
-.npcshop-category-row { display:flex; gap:3px; flex-wrap:wrap; }
-.npcshop-category-row + .npcshop-category-row { padding-top:3px; border-top:1px solid #282d34; }
+.npcshop-category-tabs .item-filter-row { display:flex; gap:3px; flex-wrap:wrap; }
+.npcshop-category-tabs .item-filter-row + .item-filter-row { padding-top:3px; border-top:1px solid #282d34; }
 .npcshop-collection-tabs { display:flex; gap:3px; flex-wrap:wrap; }
 .npcshop-category-tabs button,.npcshop-collection-tabs button {
     min-height:22px; padding:2px 7px; color:#9ca3ab; border:1px solid #343941; background:#101318;
     font:10px/1.2 "Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .npcshop-category-tabs button { display:inline-flex; align-items:center; gap:5px; }
+.item-filter-navigator { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.item-filter-row { display:flex; align-items:center; gap:4px; min-width:0; overflow-x:auto; scrollbar-width:thin; }
+.item-filter-drilldown .item-filter-row { flex-wrap:wrap; overflow:visible; }
+.item-filter-option { flex:0 0 auto; }
 .npcshop-category-tabs button small { min-width:12px; color:#666f79; font:8px/1 Consolas,monospace; text-align:right; }
 .npcshop-category-tabs button:hover,.npcshop-category-tabs button.active,
 .npcshop-collection-tabs button:hover,.npcshop-collection-tabs button.active {
@@ -12676,14 +12695,37 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .npcshop-owned-grid .inventory-slot-card.empty { padding:4px; cursor:default; }
 .npcshop-owned-grid .inventory-slot-card .inventory-slot-name { max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .npcshop-owned-grid .inventory-slot-card.read-only { cursor:default; }
+.npcshop-bag-toolbar { display:grid; gap:4px; min-width:0; }
 .npcshop-selection-hint { color:#818892; font-size:9px; }
+.npcshop-bag-toolbar .inventory-filter-control { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; gap:4px; }
+.npcshop-bag-toolbar .inventory-filter-navigator { max-height:78px; overflow-y:auto; scrollbar-width:thin; }
+.inventory-filter-control.popover.tree { position:relative; overflow:visible; }
+.inventory-filter-tree-trigger {
+    position:relative; min-width:0; width:100%; height:24px; padding:0 22px 0 7px; overflow:hidden;
+    color:#c8cfd6; border:1px solid #3a424b; background:#0c1014; font:9px/22px "Microsoft YaHei",sans-serif;
+    text-align:left; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;
+}
+.inventory-filter-tree-trigger::after { content:'▾'; position:absolute; top:0; right:7px; color:#dba454; }
+.inventory-filter-control.popover.open .inventory-filter-tree-trigger { color:#17191c; border-color:#f2c278; background:#e5a64d; }
+.inventory-filter-control.popover .inventory-filter-navigator {
+    display:none; position:absolute; z-index:30; top:calc(100% + 3px); right:0; width:min(330px,calc(100vw - 40px));
+    max-height:220px; padding:7px; overflow-x:hidden; overflow-y:auto; color:#d8dde2;
+    border:1px solid #72552f; background:linear-gradient(145deg,#15191e,#0a0d11); box-shadow:0 12px 32px rgba(0,0,0,.68);
+    scrollbar-width:thin; scrollbar-color:#8d6a3d #111419;
+}
+.inventory-filter-control.popover.open .inventory-filter-navigator { display:flex; }
+.inventory-filter-control.popover .inventory-filter-navigator .item-filter-row { flex-wrap:wrap; overflow:visible; }
+.inventory-filter-control.popover .inventory-filter-navigator::-webkit-scrollbar { width:6px; }
+.inventory-filter-control.popover .inventory-filter-navigator::-webkit-scrollbar-track { background:#111419; }
+.inventory-filter-control.popover .inventory-filter-navigator::-webkit-scrollbar-thumb { background:#8d6a3d; border:1px solid #c28d4a; }
 .npcshop-checkout-btn:not(:disabled) { color:#17191c !important; border-color:#f1c177 !important; background:#e5a64d !important; }
 .npcshop-help-btn { min-width:28px !important; padding:2px 7px !important; font:700 13px/1 Consolas,monospace !important; }
 .npcshop-helping .npcshop-help-btn { color:#17191c !important; border-color:#f1c177 !important; background:#e5a64d !important; }
 
-.npcshop-settling .workbench-body { visibility:hidden; pointer-events:none; }
+.npcshop-settling .workbench-body,
+.npcshop-helping .workbench-body { visibility:hidden; pointer-events:none; }
 .npcshop-settlement-page {
-    position:absolute; z-index:8; top:64px; right:0; bottom:0; left:0; display:none;
+    position:absolute; z-index:8; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:none;
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8ebee; background:linear-gradient(135deg,#0d1014,#090b0e 70%); border-top:1px solid #292e35;
 }
@@ -12753,7 +12795,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .npcshop-space-grid::-webkit-scrollbar-thumb { background:#705a3c; border:1px solid #a47d43; }
 
 .npcshop-help-page {
-    position:absolute; z-index:12; top:64px; right:0; bottom:0; left:0; display:none;
+    position:absolute; z-index:12; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:none;
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8ebee; background:linear-gradient(135deg,#101318,#090b0e 72%); border-top:1px solid #292e35;
 }
@@ -12783,3 +12825,222 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .npcshop-help-rules > b { color:#e5a64d; font-size:10px; }
 .npcshop-help-rules > span { padding:3px 7px; color:#aeb4bb; border:1px solid #30353c; background:#11151a; font-size:8px; }
 .npcshop-help-rules > small { margin-left:auto; max-width:235px; color:#68717a; font-size:8px; line-height:1.4; text-align:right; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ItemGrid compact / full layout toggle
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Icon-first density: one outer hit/selection boundary is retained, while the
+   tile hugs the icon frame and never becomes smaller than a 44px pointer target.
+   Quantity, enhancement and pending-transfer badges stay on the icon layer. */
+.inventory-owned-grid.item-grid-compact,
+.npcshop-owned-grid.item-grid-compact,
+.item-grid-compact .inventory-owned-grid,
+.item-grid-compact .npcshop-owned-grid {
+    grid-template-columns:repeat(auto-fill,minmax(46px,1fr));
+    grid-auto-rows:48px;
+    gap:4px;
+    padding:6px;
+    align-content:start;
+    scrollbar-gutter:stable;
+}
+.item-grid-compact .inventory-slot-card,
+.npcshop-owned-grid.item-grid-compact .inventory-slot-card {
+    box-sizing:border-box;
+    width:100%;
+    height:48px;
+    min-height:48px;
+    justify-content:center;
+    padding:2px;
+    gap:0;
+}
+.npcshop-owned-grid.item-grid-compact .inventory-slot-card,
+.npcshop-owned-grid.item-grid-compact .inventory-slot-card.empty { padding:2px; }
+.item-grid-compact .item-card-body,
+.item-grid-compact .item-card-auxiliary,
+.npcshop-owned-grid.item-grid-compact .item-card-body,
+.npcshop-owned-grid.item-grid-compact .item-card-auxiliary { display:none; }
+.item-grid-compact .inventory-slot-icon-frame,
+.npcshop-owned-grid.item-grid-compact .inventory-slot-icon-frame {
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+}
+.item-grid-compact .inventory-slot-icon,
+.item-grid-compact .inventory-owned-icon,
+.npcshop-owned-grid.item-grid-compact .inventory-slot-icon,
+.npcshop-owned-grid.item-grid-compact .inventory-owned-icon { width:40px; height:40px; }
+.item-grid-compact .inventory-discard-btn {
+    right:2px;
+    top:2px;
+    z-index:8;
+}
+
+/* Catalog cards (KShop / NPC shop) in compact mode:
+   collapse to a readable icon grid. Names and prices remain available through
+   the shared tooltip; selection and direct actions stay visible on the tile. */
+.kshop-grid.item-grid-compact,
+.npcshop-catalog-grid.item-grid-compact,
+.item-grid-compact .kshop-grid,
+.item-grid-compact .npcshop-catalog-grid {
+    grid-template-columns:repeat(auto-fill,minmax(54px,1fr));
+    grid-auto-rows:54px;
+    gap:4px;
+    padding:6px;
+    align-content:start;
+    scrollbar-gutter:stable;
+}
+
+/* KShop compact icon tile */
+.item-grid-compact .kshop-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing:border-box;
+    width:100%;
+    height:54px;
+    min-height:54px;
+    padding:2px;
+    overflow: hidden;
+}
+.item-grid-compact .kshop-card-icon-frame {
+    grid-row: auto;
+    width:48px;
+    height:48px;
+    background:transparent;
+    border:0;
+}
+.item-grid-compact .kshop-card-info { display: none; }
+.item-grid-compact .kshop-add-btn {
+    position: absolute;
+    right:2px;
+    top:2px;
+    width:20px;
+    height:20px;
+    min-width: 0;
+    padding: 0;
+    font-size: 0;
+    line-height:20px;
+    text-align: center;
+    background:rgba(200,255,76,.94);
+    color:#101505;
+    border:1px solid rgba(255,255,255,.34);
+    clip-path: none;
+    z-index: 2;
+}
+.item-grid-compact .kshop-add-btn::after { content:'+'; font-size:13px; font-weight:700; }
+.item-grid-compact .kshop-card-locked .kshop-add-btn,
+.item-grid-compact .kshop-card-nosale .kshop-add-btn { display: none; }
+.item-grid-compact .kshop-card-locked,
+.item-grid-compact .kshop-card-nosale { opacity: .5; filter: grayscale(.6); }
+
+/* NPC shop compact icon tile */
+.item-grid-compact .npcshop-catalog-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing:border-box;
+    width:100%;
+    height:54px;
+    min-height:54px;
+    padding:2px;
+    gap: 0;
+    overflow: hidden;
+}
+.item-grid-compact .npcshop-catalog-card .npcshop-card-icon {
+    width:48px;
+    height:48px;
+    background:transparent;
+    border:0;
+}
+.item-grid-compact .npcshop-catalog-card .npcshop-card-copy { display: none; }
+.item-grid-compact .item-card-selected .item-card-selection-marker,
+.npcshop-owned-grid.item-grid-compact .item-card-selected .item-card-selection-marker {
+    display:grid;
+    place-items:center;
+    right:2px;
+    top:2px;
+    bottom:auto;
+    width:16px;
+    height:16px;
+    max-width:none;
+    padding:0;
+    color:#1b1208;
+    background:#e5a64d;
+    border:1px solid #ffe0a1;
+    font-size:0;
+    line-height:16px;
+    z-index:6;
+}
+.item-grid-compact .item-card-selected .item-card-selection-marker::after,
+.npcshop-owned-grid.item-grid-compact .item-card-selected .item-card-selection-marker::after {
+    content:'✓';
+    font:700 10px/14px "Segoe UI Symbol","Microsoft YaHei",sans-serif;
+}
+.item-grid-compact .item-card-selected,
+.npcshop-owned-grid.item-grid-compact .item-card-selected {
+    border-color: #e5a64d;
+    background:rgba(229,166,77,.1);
+    box-shadow:inset 0 0 0 1px rgba(229,166,77,.45);
+}
+.item-grid-compact .npcshop-catalog-card.locked { opacity:.5; filter:grayscale(.6); }
+.item-grid-compact .npcshop-catalog-card.locked::after {
+    content:'锁';
+    position:absolute;
+    right:2px;
+    top:2px;
+    min-width:16px;
+    height:16px;
+    color:#d7dbe0;
+    background:rgba(8,10,13,.9);
+    border:1px solid #555d66;
+    font:700 8px/16px "Microsoft YaHei",sans-serif;
+    text-align:center;
+}
+
+/* Explicit two-choice density control. Both destinations remain visible, so
+   the label always describes the result of clicking instead of current state. */
+.item-grid-mode-switch {
+    display:inline-flex;
+    align-items:center;
+    min-height:27px;
+    margin:0 6px;
+    padding:2px;
+    box-sizing:border-box;
+    background:#0d1014;
+    border:1px solid rgba(168,178,190,.24);
+}
+.item-grid-mode-label {
+    padding:0 6px 0 5px;
+    color:#68727d;
+    font:600 8px/1 Consolas,"Microsoft YaHei",sans-serif;
+    letter-spacing:.08em;
+}
+.item-grid-mode-switch .item-grid-mode-option {
+    min-width:42px;
+    min-height:23px;
+    padding:0 7px;
+    border:0;
+    background:transparent;
+    color:#7f8994;
+}
+.item-grid-mode-switch .item-grid-mode-option + .item-grid-mode-option {
+    border-left:1px solid rgba(168,178,190,.2);
+}
+.item-grid-mode-switch .item-grid-mode-option:hover {
+    color:#e6e9ec;
+    border-color:rgba(168,178,190,.2);
+    background:#1a1e23;
+}
+.item-grid-mode-switch .item-grid-mode-option[aria-pressed="true"],
+.item-grid-mode-switch .item-grid-mode-option[aria-pressed="true"]:hover {
+    color:#17191c;
+    background:var(--wb-accent,#c8ff4c);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
+}
+.item-grid-mode-switch .item-grid-mode-option:focus-visible {
+    outline:1px solid #fff;
+    outline-offset:-2px;
+}

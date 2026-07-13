@@ -225,13 +225,17 @@ namespace CF7Launcher.Tasks
                     || !TryReadPositiveInteger(container["limit"], 100, out limit)
                     || !IsFilterKey(filterKey)
                     || !IsSortMethod(methodName)) return false;
-                normalized["container"] = new JObject
+                var cleanContainer = new JObject
                 {
                     ["containerId"] = containerId,
                     ["offset"] = offset,
                     ["limit"] = limit,
                     ["filterKey"] = filterKey
                 };
+                JObject filterSpec;
+                if (!TryNormalizeFilterSpec(container["filterSpec"], filterKey, out filterSpec)) return false;
+                if (filterSpec != null) cleanContainer["filterSpec"] = filterSpec;
+                normalized["container"] = cleanContainer;
                 normalized["methodName"] = methodName;
                 return true;
             }
@@ -279,13 +283,17 @@ namespace CF7Launcher.Tasks
                     || !TryReadNonNegativeInteger(request["offset"], out offset)
                     || !TryReadPositiveInteger(request["limit"], 100, out limit)
                     || !IsFilterKey(filterKey)) return false;
-                cleanRequests.Add(new JObject
+                var cleanRequest = new JObject
                 {
                     ["containerId"] = containerId,
                     ["offset"] = offset,
                     ["limit"] = limit,
                     ["filterKey"] = filterKey
-                });
+                };
+                JObject filterSpec;
+                if (!TryNormalizeFilterSpec(request["filterSpec"], filterKey, out filterSpec)) return false;
+                if (filterSpec != null) cleanRequest["filterSpec"] = filterSpec;
+                cleanRequests.Add(cleanRequest);
             }
             normalized = cleanRequests;
             return true;
@@ -353,6 +361,43 @@ namespace CF7Launcher.Tasks
                 default:
                     return false;
             }
+        }
+
+        private static bool TryNormalizeFilterSpec(JToken token, string fallbackKey, out JObject normalized)
+        {
+            normalized = null;
+            if (token == null || token.Type == JTokenType.Null) return true;
+            JObject input = token as JObject;
+            if (input == null) return false;
+            string major = input.Value<string>("major") ?? fallbackKey;
+            string use = input.Value<string>("use") ?? string.Empty;
+            string subtype = input.Value<string>("subtype") ?? string.Empty;
+            if (!IsFilterMajor(major)
+                || !IsSafeFilterValue(use)
+                || !IsSafeFilterValue(subtype)
+                || (major == "all" && (use.Length > 0 || subtype.Length > 0))
+                || (subtype.Length > 0 && (major != "weapon" || use.Length == 0))) return false;
+            normalized = new JObject { ["major"] = major };
+            if (use.Length > 0) normalized["use"] = use;
+            if (subtype.Length > 0) normalized["subtype"] = subtype;
+            return true;
+        }
+
+        private static bool IsFilterMajor(string value)
+        {
+            return value == "all" || value == "weapon" || value == "armor"
+                || value == "consumable" || value == "material"
+                || value == "collection" || value == "other";
+        }
+
+        private static bool IsSafeFilterValue(string value)
+        {
+            if (value == null || value.Length > 64) return false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (char.IsControl(value[i])) return false;
+            }
+            return true;
         }
 
         private static bool TryReadNonNegativeInteger(JToken token, out int value)

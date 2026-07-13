@@ -14,12 +14,14 @@
         var out = [];
         requests = requests || [];
         for (var i = 0; i < requests.length; i++) {
-            out.push({
+            var cloned = {
                 containerId: String(requests[i].containerId),
                 offset: Number(requests[i].offset),
                 limit: Number(requests[i].limit),
                 filterKey: normalizeFilterKey(requests[i].filterKey)
-            });
+            };
+            if (requests[i].filterSpec != null) cloned.filterSpec = normalizeFilterSpec(requests[i].filterSpec, cloned.filterKey);
+            out.push(cloned);
         }
         return out;
     }
@@ -36,6 +38,55 @@
     function normalizeFilterKey(value) {
         value = String(value || 'all');
         return FILTER_KEYS[value] ? value : 'all';
+    }
+
+    var FILTER_MAJORS = {
+        all:true, weapon:true, armor:true, consumable:true,
+        material:true, collection:true, other:true
+    };
+
+    function isSafeFilterValue(value) {
+        return typeof value === 'string' && value.length <= 64 && !/[\u0000-\u001f\u007f]/.test(value);
+    }
+
+    function isValidFilterSpec(value) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+        var major = String(value.major || 'all');
+        var use = value.use == null ? '' : String(value.use);
+        var subtype = value.subtype == null ? '' : String(value.subtype);
+        return FILTER_MAJORS[major] === true
+            && isSafeFilterValue(use) && isSafeFilterValue(subtype)
+            && !(major === 'all' && (use || subtype))
+            && !(subtype && (major !== 'weapon' || !use));
+    }
+
+    function normalizeFilterSpec(value, fallbackKey) {
+        if (value == null) return null;
+        var candidate = {
+            major:String(value.major || fallbackKey || 'all'),
+            use:value.use == null ? '' : String(value.use),
+            subtype:value.subtype == null ? '' : String(value.subtype)
+        };
+        if (!isValidFilterSpec(candidate)) return null;
+        var normalized = {major:candidate.major};
+        if (candidate.use) normalized.use = candidate.use;
+        if (candidate.subtype) normalized.subtype = candidate.subtype;
+        return normalized;
+    }
+
+    function filterKeyForSpec(spec) {
+        spec = normalizeFilterSpec(spec, 'all');
+        if (!spec) return 'all';
+        if (spec.major === 'collection') return 'other';
+        return FILTER_KEYS[spec.major] ? spec.major : 'all';
+    }
+
+    function sameFilterSpec(a, b) {
+        a = normalizeFilterSpec(a, 'all');
+        b = normalizeFilterSpec(b, 'all');
+        if (!a || !b) return a === b;
+        return a.major === b.major && String(a.use || '') === String(b.use || '')
+            && String(a.subtype || '') === String(b.subtype || '');
     }
 
     function displaySortSlots(slots, methodName) {
@@ -72,6 +123,9 @@
             && viewCapacity >= 0
             && viewCapacity <= accessible
             && FILTER_KEYS[String(snapshot.filterKey || 'all')] === true
+            && (snapshot.filterSpec == null || isValidFilterSpec(snapshot.filterSpec))
+            && (snapshot.filterFacets == null || Array.isArray(snapshot.filterFacets))
+            && (snapshot.filterItemCount == null || (isFinite(Number(snapshot.filterItemCount)) && Number(snapshot.filterItemCount) >= 0))
             && isFinite(Number(snapshot.snapshotSeq))
             && isFinite(Number(snapshot.offset))
             && Array.isArray(snapshot.slots);
@@ -147,12 +201,14 @@
         containerId = String(containerId);
         for (var i = 0; i < this._requests.length; i++) {
             if (this._requests[i].containerId === containerId) {
-                return {
+                var result = {
                     containerId: containerId,
                     offset: Number(this._requests[i].offset),
                     limit: Number(this._requests[i].limit),
                     filterKey: normalizeFilterKey(this._requests[i].filterKey)
                 };
+                if (this._requests[i].filterSpec != null) result.filterSpec = normalizeFilterSpec(this._requests[i].filterSpec, result.filterKey);
+                return result;
             }
         }
         return null;
@@ -192,7 +248,10 @@
             if (this._requests[i].containerId !== containerId) continue;
             this._requests[i].offset = offset;
             this._requests[i].limit = limit;
-            if (filterKey != null) this._requests[i].filterKey = filterKey;
+            if (filterKey != null) {
+                this._requests[i].filterKey = filterKey;
+                delete this._requests[i].filterSpec;
+            }
             return true;
         }
         return false;
@@ -412,8 +471,28 @@
                 break;
             }
         }
-        if (!request || normalizeFilterKey(request.filterKey) === filterKey) return false;
+        if (!request || (normalizeFilterKey(request.filterKey) === filterKey && request.filterSpec == null)) return false;
         request.filterKey = filterKey;
+        delete request.filterSpec;
+        request.offset = 0;
+        this._owner = 'filter.' + containerId;
+        this._emitState();
+        this._refreshWhileOwned(callback);
+        return true;
+    };
+
+    InventoryCoordinator.prototype.setFilterSpec = function(containerId, filterSpec, callback) {
+        if (!this._opened || !this._ready || this._owner || this._refreshRequired) return false;
+        containerId = String(containerId);
+        var normalized = normalizeFilterSpec(filterSpec, 'all');
+        if (!normalized) return false;
+        var request = null;
+        for (var i = 0; i < this._requests.length; i++) {
+            if (this._requests[i].containerId === containerId) { request = this._requests[i]; break; }
+        }
+        if (!request || sameFilterSpec(request.filterSpec, normalized)) return false;
+        request.filterSpec = normalized;
+        request.filterKey = filterKeyForSpec(normalized);
         request.offset = 0;
         this._owner = 'filter.' + containerId;
         this._emitState();
@@ -423,7 +502,9 @@
 
     InventoryCoordinator.prototype._hasActiveFilter = function() {
         for (var i = 0; i < this._requests.length; i++) {
-            if (normalizeFilterKey(this._requests[i].filterKey) !== 'all') return true;
+            var spec = normalizeFilterSpec(this._requests[i].filterSpec, 'all');
+            if ((spec && (spec.major !== 'all' || spec.use || spec.subtype))
+                    || normalizeFilterKey(this._requests[i].filterKey) !== 'all') return true;
         }
         return false;
     };
@@ -494,6 +575,9 @@
                         && normalizeFilterKey(this._requests[q].filterKey) !== String(snapshots[i].filterKey || 'all')) {
                     return false;
                 }
+                if (this._requests[q].containerId === snapshots[i].containerId
+                        && this._requests[q].filterSpec != null
+                        && !sameFilterSpec(this._requests[q].filterSpec, snapshots[i].filterSpec)) return false;
             }
         }
         for (i = 0; i < snapshots.length; i++) {
@@ -511,6 +595,7 @@
                 if (request) {
                     request.offset = Number(snapshot.offset);
                     request.filterKey = String(snapshot.filterKey || 'all');
+                    if (snapshot.filterSpec != null) request.filterSpec = normalizeFilterSpec(snapshot.filterSpec, request.filterKey);
                 }
             }
         }
@@ -541,5 +626,8 @@
         displaySortSlots: displaySortSlots,
         sortMethods: SORT_METHODS,
         filterKeys: FILTER_KEYS
+        ,filterMajors: FILTER_MAJORS
+        ,normalizeFilterSpec: normalizeFilterSpec
+        ,filterKeyForSpec: filterKeyForSpec
     };
 });

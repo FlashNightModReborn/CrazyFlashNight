@@ -2,15 +2,16 @@
 var NpcShop = (function() {
     'use strict';
 
-    var _shellEl, _shell, _catalogView, _catalogRenderer, _categoryToolbar;
+    var _shellEl, _shell, _catalogView, _catalogRenderer, _categoryToolbar, _categoryNavigator, _categoryTree;
     var _rightViews = {}, _viewButtons = {}, _activeRight = 'bag', _activeCollection = 'material';
     var _state = null, _shopId = '', _busy = false, _needsReconcile = false, _generation = 0;
     var _scaleHandle = null, _retryButton, _checkoutButton, _helpButton, _category = {mode:'auto', path:[]}, _categoryInitialized = false;
     var _purchaseIntents = {}, _saleIntents = {}, _settlement = null, _settlementPage = null;
     var _previewBusy = false, _previewQueued = false, _previewRevision = 0;
-    var _tooltipCache = {}, _tooltipHover = null;
+    var _tooltipCache = {};
+    var _layoutMode = 'full', _densityController = null;
     var _spacePage = null, _spaceGrids = {}, _spacePager = null, _spaceBusy = false, _spaceMutated = false;
-    var _helpPage = null;
+    var _helpPage = null, _bagFilterControl = null;
     var _config = (typeof window !== 'undefined' && window.__NPCSHOP_CONFIG__) || {};
     var _mux = new NpcShopRuntime.RequestMux({
         send:function(message) { Bridge.send(message); },
@@ -32,7 +33,9 @@ var NpcShop = (function() {
         ],
         onStateChange:function(state) {
             _inventoryState = state;
+            renderOwnedViews();
             renderSpaceOrganizer();
+            refreshControls();
         }
     });
 
@@ -68,6 +71,12 @@ var NpcShop = (function() {
             _viewButtons[pair[0]] = button; _shell.addHeaderAction(button);
         });
 
+        if (_densityController) _densityController.destroy();
+        _densityController = new Workbench.GridDensityController({panelId:'npcshop'});
+        _layoutMode = _densityController.mode;
+        var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
+        _shell.addHeaderAction(layoutToggle);
+
         _helpButton = document.createElement('button');
         _helpButton.type = 'button'; _helpButton.className = 'workbench-mode-btn npcshop-help-btn'; _helpButton.textContent = '？';
         _helpButton.setAttribute('aria-label', '商店操作帮助');
@@ -87,23 +96,39 @@ var NpcShop = (function() {
         close.addEventListener('click', requestClose); _shell.addHeaderAction(close);
 
         _catalogView = createCatalogView();
-        _rightViews.bag = createOwnedView('bag', '背包', true);
-        _rightViews.material = createOwnedView('material', '材料', true);
-        _rightViews.intelligence = createOwnedView('intelligence', '情报', false);
+        _rightViews.bag = createOwnedView({viewId:'bag', title:'背包', canSell:true, layoutMode:_layoutMode});
+        _rightViews.material = createOwnedView({viewId:'material', title:'材料', canSell:true, layoutMode:_layoutMode});
+        _rightViews.intelligence = createOwnedView({viewId:'intelligence', title:'情报', canSell:false, layoutMode:_layoutMode});
         _shell.setDefault('L', _catalogView); _shell.setDefault('R', _rightViews.bag);
         _shell.mountInitial(_catalogView, _rightViews.bag);
+
         switchRightView(_activeRight); refreshControls();
     }
 
     function createCatalogView() {
         var root = document.createElement('div'); root.className = 'workbench-view npcshop-catalog-view';
         var chrome = new Workbench.ViewChrome({title:'商品目录', meta:'同步中'});
-        _categoryToolbar = document.createElement('div'); _categoryToolbar.className = 'npcshop-category-tabs';
+        _categoryNavigator = new ItemFilter.FilterNavigator({
+            className:'npcshop-category-tabs item-filter-navigator',
+            ariaLabel:'商店商品分类',
+            presentation:'drilldown',
+            onChange:function(path) {
+                var mode = _categoryToolbar && _categoryToolbar.getAttribute('data-filter-mode');
+                _category = mode === 'manual'
+                    ? {mode:'manual', sectionId:path.length ? path[0] : 'all'}
+                    : {mode:'auto', path:path};
+                decorateCategoryButtons(mode || 'auto');
+                if (_catalogRenderer && _catalogRenderer.root) _catalogRenderer.root.scrollTop = 0;
+                renderCatalog();
+            }
+        });
+        _categoryToolbar = _categoryNavigator.root;
         chrome.setToolbar(_categoryToolbar);
         _catalogRenderer = new Workbench.GridRenderer({
             className:'npcshop-catalog-grid', emptyText:'当前分组暂无商品',
             keyOf:function(item) { return item.catalogIndex; }, renderItem:renderCatalogCard, bindItem:bindCatalogCard
         });
+        if (_densityController) _densityController.register(_catalogRenderer);
         root.appendChild(chrome.root); root.appendChild(_catalogRenderer.root);
         return {
             instanceKey:'npcshop:catalog', instancePolicy:'singletonByBinding', allowedSlots:['L'], viewKind:'catalog',
@@ -114,8 +139,13 @@ var NpcShop = (function() {
         };
     }
 
-    function createOwnedView(viewId, title, canSell) {
-        var adapter = new Workbench.ContainerViewAdapter({
+    function createOwnedView(options) {
+        options = options || {};
+        var viewId = options.viewId;
+        var title = options.title;
+        var canSell = options.canSell;
+        var ownedShell = new InventoryUI.OwnedInventoryViewShell({
+            containerId:viewId,
             instanceKey:'npcshop:' + viewId,
             itemModel:'owned',
             getItems:function() { var view = getView(viewId); return view && view.slots ? view.slots : []; },
@@ -128,8 +158,10 @@ var NpcShop = (function() {
                     var identity = saleIdentity(viewId, slot);
                     var selected = !!_saleIntents[identity];
                     node.classList.toggle('selected', selected);
+                    node.classList.toggle('item-card-selected', selected);
                     node.setAttribute('aria-pressed', selected ? 'true' : 'false');
-                    var marker = document.createElement('span'); marker.className = 'npcshop-selection-marker';
+                    var marker = document.createElement('span');
+                    marker.className = 'item-card-auxiliary item-card-selection-marker npcshop-selection-marker';
                     marker.textContent = selected ? '待售 ×' + _saleIntents[identity].quantity : '点击加入待售';
                     node.appendChild(marker);
                     node.addEventListener('click', function(event) {
@@ -141,20 +173,64 @@ var NpcShop = (function() {
                 }
                 return node;
             },
-            bindItem:function(node, slot) { bindOwnedTooltip(node, viewId, slot); }
+            bindItem:function(node, slot) { bindOwnedTooltip(node, viewId, slot); },
+            title:title,
+            meta:'同步中',
+            emptyText:'暂无' + title,
+            className:'npcshop-owned-view npcshop-' + viewId + '-view',
+            gridClassName:'npcshop-owned-grid',
+            allowedSlots:['R'],
+            layoutMode: options.layoutMode || 'full',
+            densityController: _densityController
         });
-        var view = new Workbench.GridContainerView({
-            adapter:adapter, title:title, meta:'同步中', emptyText:'暂无' + title,
-            className:'npcshop-owned-view npcshop-' + viewId + '-view', gridClassName:'npcshop-owned-grid', allowedSlots:['R']
-        });
-        view.viewId = viewId;
-        if (viewId === 'bag') installBagToolbar(view); else installCollectionToolbar(view);
-        return view;
+        ownedShell.view.viewId = viewId;
+        if (viewId === 'bag') installBagToolbar(ownedShell.view); else installCollectionToolbar(ownedShell.view);
+        return ownedShell.view;
     }
 
     function installBagToolbar(view) {
+        var toolbar = document.createElement('div'); toolbar.className = 'npcshop-bag-toolbar';
         var hint = document.createElement('div'); hint.className = 'npcshop-selection-hint';
-        hint.textContent = '点击加入待售，不会立即出售；数量在结算页调整'; view.chrome.setToolbar(hint);
+        hint.textContent = '点击加入待售，不会立即出售；数量在结算页调整';
+        _bagFilterControl = new InventoryUI.InventoryFilterControl({
+            options:InventoryUI.categoryFilterOptions(),
+            label:'分类',
+            ariaLabel:'商店背包分类筛选',
+            presentation:'popover',
+            navigatorPresentation:'drilldown',
+            onLegacyChange:changeBagFilterLegacy,
+            onSpecChange:changeBagFilterSpec
+        });
+        toolbar.appendChild(hint);
+        toolbar.appendChild(_bagFilterControl.root);
+        view.inventoryFilterControl = _bagFilterControl;
+        if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar); else view.chrome.setToolbar(toolbar);
+    }
+
+    function changeBagFilterLegacy(filterKey) {
+        var snapshot = _inventoryCoordinator.getWindow('背包');
+        if (!_inventoryCoordinator.setFilter('背包', filterKey, function(result) {
+            if (!result || !result.success) {
+                if (_bagFilterControl) _bagFilterControl.rejectPending(snapshot);
+                toast('背包分类筛选失败。');
+            }
+            renderOwnedViews(); refreshControls();
+        })) {
+            if (_bagFilterControl) _bagFilterControl.setSnapshot(snapshot);
+        }
+    }
+
+    function changeBagFilterSpec(filterSpec) {
+        var snapshot = _inventoryCoordinator.getWindow('背包');
+        if (!_inventoryCoordinator.setFilterSpec('背包', filterSpec, function(result) {
+            if (!result || !result.success) {
+                if (_bagFilterControl) _bagFilterControl.rejectPending(snapshot);
+                toast('背包分类筛选失败。');
+            }
+            renderOwnedViews(); refreshControls();
+        })) {
+            if (_bagFilterControl) _bagFilterControl.setSnapshot(snapshot);
+        }
     }
 
     function installCollectionToolbar(view) {
@@ -164,29 +240,26 @@ var NpcShop = (function() {
             button.textContent = pair[1]; button.setAttribute('data-collection-view', pair[0]);
             button.addEventListener('click', function() { switchRightView(pair[0]); }); toolbar.appendChild(button);
         });
-        view.chrome.setToolbar(toolbar);
+        if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar); else view.chrome.setToolbar(toolbar);
     }
 
     function renderCatalogCard(item) {
         var selected = !!_purchaseIntents[String(item.catalogIndex)];
-        var node = document.createElement('article');
-        node.className = 'npcshop-catalog-card' + (item.locked ? ' locked' : '') + (selected ? ' selected' : '');
-        node.setAttribute('data-catalog-index', String(item.catalogIndex)); node.setAttribute('aria-pressed', selected ? 'true' : 'false');
-        var icon = document.createElement('span'); icon.className = 'npcshop-card-icon'; icon.innerHTML = iconHtml(item.icon || item.itemName, 'kshop-icon');
-        var copy = document.createElement('span'); copy.className = 'npcshop-card-copy';
-        var name = document.createElement('b'); name.textContent = item.displayName || item.itemName;
-        var meta = document.createElement('small'); meta.textContent = autoClassificationPath(item).join(' · ');
-        var price = document.createElement('strong'); price.textContent = '$ ' + Number(item.unitPrice || 0).toLocaleString();
-        copy.appendChild(name); copy.appendChild(meta); copy.appendChild(price);
-        var marker = document.createElement('span'); marker.className = 'npcshop-selection-marker';
-        marker.textContent = item.locked ? '未解锁' : (selected ? '待购 ×' + _purchaseIntents[String(item.catalogIndex)].quantity : '点击加入待购');
-        node.appendChild(icon); node.appendChild(copy); node.appendChild(marker);
-        if (!item.locked) node.addEventListener('click', function(event) {
-            if (event.button && event.button !== 0) return;
-            togglePurchase(item);
+        var markerText = item.locked ? '未解锁' : (selected ? '待购 ×' + _purchaseIntents[String(item.catalogIndex)].quantity : '点击加入待购');
+        var lockTitle = item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁';
+        return Workbench.ItemCard.renderCatalog({
+            skin: 'npcshop',
+            item: item,
+            id: item.catalogIndex,
+            iconHtml: iconHtml(item.icon || item.itemName, 'kshop-icon'),
+            name: item.displayName || item.itemName,
+            meta: ItemFilter.catalogPath(item).map(function(part) { return part.label; }).join(' · '),
+            priceText: '$ ' + Number(item.unitPrice || 0).toLocaleString(),
+            locked: item.locked,
+            lockTitle: lockTitle,
+            selected: selected,
+            markerText: markerText
         });
-        if (item.locked) node.title = item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁';
-        return node;
     }
 
     function togglePurchase(item) {
@@ -218,175 +291,45 @@ var NpcShop = (function() {
     }
 
     function renderCategoryToolbar() {
-        if (!_categoryToolbar) return;
-        while (_categoryToolbar.firstChild) _categoryToolbar.removeChild(_categoryToolbar.firstChild);
+        if (!_categoryNavigator) return;
         var sections = _state && _state.layout && Array.isArray(_state.layout.sections) ? _state.layout.sections : [];
+        var catalog = _state && _state.catalog ? _state.catalog : [];
         if (sections.length) {
-            renderManualCategoryToolbar(sections);
-            return;
-        }
-        renderAutoCategoryToolbar(_state && _state.catalog ? _state.catalog : []);
-    }
-
-    function renderManualCategoryToolbar(sections) {
-        var valid = _category && _category.mode === 'manual'
-            && (_category.sectionId === 'all' || sections.some(function(section) { return String(section.id) === _category.sectionId; }));
-        if (!_categoryInitialized || !valid) {
-            var configured = String((_state.layout && _state.layout.defaultSection) || '');
-            var hasConfigured = sections.some(function(section) { return String(section.id) === configured; });
-            _category = {mode:'manual', sectionId:hasConfigured ? configured : 'all'};
+            var valid = _category && _category.mode === 'manual'
+                && (_category.sectionId === 'all' || sections.some(function(section) { return String(section.id) === _category.sectionId; }));
+            if (!_categoryInitialized || !valid) {
+                var configured = String((_state.layout && _state.layout.defaultSection) || '');
+                var hasConfigured = sections.some(function(section) { return String(section.id) === configured; });
+                _category = {mode:'manual', sectionId:hasConfigured ? configured : 'all'};
+            }
+            _categoryTree = ItemFilter.manualSections(sections, catalog.length);
+            _categoryToolbar.setAttribute('data-filter-mode', 'manual');
+            _categoryNavigator.setModel(_categoryTree, _category.sectionId === 'all' ? [] : [_category.sectionId]);
+            decorateCategoryButtons('manual');
+        } else {
+            if (!_categoryInitialized || !_category || _category.mode !== 'auto') _category = {mode:'auto', path:[]};
+            _categoryTree = ItemFilter.build(catalog, function(item) { return ItemFilter.catalogPath(item); });
+            _category.path = ItemFilter.validPath(_categoryTree, _category.path || []);
+            _categoryToolbar.setAttribute('data-filter-mode', 'auto');
+            _categoryNavigator.setModel(_categoryTree, _category.path);
+            decorateCategoryButtons('auto');
         }
         _categoryInitialized = true;
-        var row = categoryRow('manual');
-        row.appendChild(categoryButton('全部', null, _category.sectionId === 'all', 'manual:all', function() {
-            _category = {mode:'manual', sectionId:'all'}; renderCategoryToolbar(); renderCatalog();
-        }));
-        sections.forEach(function(section) {
-            var id = String(section.id), count = (section.entries || []).length;
-            row.appendChild(categoryButton(String(section.label), count, _category.sectionId === id, 'manual:' + id, function() {
-                _category = {mode:'manual', sectionId:id}; renderCategoryToolbar(); renderCatalog();
-            }));
-        });
-        _categoryToolbar.appendChild(row);
     }
 
-    function renderAutoCategoryToolbar(catalog) {
-        var tree = buildAutoCategoryTree(catalog);
-        if (!_categoryInitialized || !_category || _category.mode !== 'auto') _category = {mode:'auto', path:[]};
-        _category.path = validAutoPath(tree, _category.path || []);
-        _categoryInitialized = true;
-
-        var majorRow = categoryRow('major');
-        majorRow.appendChild(categoryButton('全部', catalog.length, !_category.path.length, 'auto:all', function() {
-            selectAutoCategory([], tree);
-        }));
-        orderedCategoryChildren(tree, []).forEach(function(node) {
-            majorRow.appendChild(categoryButton(node.label, node.items.length, _category.path[0] === node.key, 'auto:' + node.key, function() {
-                selectAutoCategory([node.key], tree);
-            }));
-        });
-        _categoryToolbar.appendChild(majorRow);
-
-        if (!_category.path.length) return;
-        var major = categoryNodeAt(tree, _category.path.slice(0, 1));
-        if (!major) return;
-        var uses = orderedCategoryChildren(major, [major.key]);
-        if (uses.length > 1) {
-            var useRow = categoryRow('use');
-            useRow.appendChild(categoryButton('全部' + major.label, major.items.length, _category.path.length === 1, 'auto:' + major.key + ':all', function() {
-                selectAutoCategory([major.key], tree);
-            }));
-            uses.forEach(function(node) {
-                useRow.appendChild(categoryButton(node.label, node.items.length, _category.path[1] === node.key, 'auto:' + major.key + ':' + node.key, function() {
-                    selectAutoCategory([major.key, node.key], tree);
-                }));
-            });
-            _categoryToolbar.appendChild(useRow);
+    function decorateCategoryButtons(mode) {
+        var buttons = _categoryToolbar.querySelectorAll('[data-filter-path]');
+        for (var i = 0; i < buttons.length; i++) {
+            var path = String(buttons[i].getAttribute('data-filter-path') || '').split('/').filter(Boolean);
+            var labels = [], node = _categoryTree;
+            for (var depth = 0; depth < path.length; depth++) {
+                node = ItemFilter.nodeAt(node, [path[depth]]);
+                if (!node) break;
+                labels.push(node.label);
+            }
+            var legacyPath = mode === 'manual' ? path : labels;
+            buttons[i].setAttribute('data-category', mode + ':' + (legacyPath.length ? legacyPath.join(':') : 'all'));
         }
-
-        if (_category.path.length < 2) return;
-        var use = categoryNodeAt(tree, _category.path.slice(0, 2));
-        if (!use) return;
-        var subtypes = orderedCategoryChildren(use, _category.path.slice(0, 2));
-        if (subtypes.length > 1) {
-            var subtypeRow = categoryRow('subtype');
-            subtypeRow.appendChild(categoryButton('全部' + use.label, use.items.length, _category.path.length === 2, 'auto:' + major.key + ':' + use.key + ':all', function() {
-                selectAutoCategory([major.key, use.key], tree);
-            }));
-            subtypes.forEach(function(node) {
-                subtypeRow.appendChild(categoryButton(node.label, node.items.length, _category.path[2] === node.key, 'auto:' + major.key + ':' + use.key + ':' + node.key, function() {
-                    selectAutoCategory([major.key, use.key, node.key], tree);
-                }));
-            });
-            _categoryToolbar.appendChild(subtypeRow);
-        }
-    }
-
-    function categoryRow(level) {
-        var row = document.createElement('div'); row.className = 'npcshop-category-row'; row.setAttribute('data-category-level', level); return row;
-    }
-
-    function categoryButton(label, count, active, key, handler) {
-        var button = document.createElement('button'); button.type = 'button'; button.setAttribute('data-category', key);
-        var text = document.createElement('span'); text.textContent = label; button.appendChild(text);
-        if (count !== null && count !== undefined) { var badge = document.createElement('small'); badge.textContent = String(count); button.appendChild(badge); }
-        button.classList.toggle('active', !!active); button.addEventListener('click', handler); return button;
-    }
-
-    function selectAutoCategory(path, tree) {
-        var expanded = validAutoPath(tree, path);
-        var node = categoryNodeAt(tree, expanded);
-        while (expanded.length && node && node.children.length === 1) {
-            expanded.push(node.children[0].key); node = node.children[0];
-        }
-        _category = {mode:'auto', path:expanded}; renderCategoryToolbar(); renderCatalog();
-    }
-
-    function buildAutoCategoryTree(catalog) {
-        var root = {key:'', label:'', items:catalog.slice(), children:[]};
-        catalog.forEach(function(item) {
-            var path = autoClassificationPath(item), node = root;
-            path.forEach(function(key) {
-                var child = null;
-                for (var i = 0; i < node.children.length; i++) if (node.children[i].key === key) { child = node.children[i]; break; }
-                if (!child) { child = {key:key, label:key, items:[], children:[]}; node.children.push(child); }
-                child.items.push(item); node = child;
-            });
-        });
-        return root;
-    }
-
-    function autoClassificationPath(item) {
-        var known = {武器:true,防具:true,消耗品:true,收集品:true};
-        var major = item && known[String(item.majorType)] ? String(item.majorType) : '其他';
-        if (major === '其他') return [major];
-        var use = item && String(item.use || '') ? String(item.use) : '其他';
-        var path = [major, use];
-        if (major === '武器') path.push(String(item.weaponType || item.actionType || '') || '其他');
-        return path;
-    }
-
-    function categoryNodeAt(tree, path) {
-        var node = tree;
-        for (var depth = 0; depth < path.length; depth++) {
-            var next = null;
-            for (var i = 0; i < node.children.length; i++) if (node.children[i].key === path[depth]) { next = node.children[i]; break; }
-            if (!next) return null; node = next;
-        }
-        return node;
-    }
-
-    function validAutoPath(tree, path) {
-        var valid = [], node = tree;
-        for (var depth = 0; depth < path.length; depth++) {
-            var next = null;
-            for (var i = 0; i < node.children.length; i++) if (node.children[i].key === String(path[depth])) { next = node.children[i]; break; }
-            if (!next) break; valid.push(next.key); node = next;
-        }
-        return valid;
-    }
-
-    function orderedCategoryChildren(node, parentPath) {
-        var order = categoryOrder(parentPath);
-        return node.children.slice().sort(function(a, b) {
-            var ai = order.indexOf(a.key), bi = order.indexOf(b.key);
-            if (ai < 0) ai = 1000; if (bi < 0) bi = 1000;
-            if (ai !== bi) return ai - bi; return a.label.localeCompare(b.label, 'zh-CN');
-        });
-    }
-
-    function categoryOrder(parentPath) {
-        if (!parentPath.length) return ['武器','防具','消耗品','收集品','其他'];
-        if (parentPath.length === 1) {
-            if (parentPath[0] === '武器') return ['刀','手枪','长枪','其他'];
-            if (parentPath[0] === '防具') return ['头部装备','颈部装备','上装装备','手部装备','下装装备','脚部装备','其他'];
-            if (parentPath[0] === '消耗品') return ['药剂','弹夹','手雷','材料','货币','其他'];
-            if (parentPath[0] === '收集品') return ['材料','情报','其他'];
-        }
-        if (parentPath[0] === '武器' && parentPath[1] === '刀') {
-            return ['刀剑','直剑','长刀','重斩','狂野','短兵','短柄','镰刀','长枪','长柄','长棍','双刀','迅捷','棍棒','疾影','其他'];
-        }
-        return ['手枪','大威力手枪','冲锋枪','压制冲锋枪','突击步枪','战斗步枪','霰弹枪','狙击步枪','反器材武器','机枪','压制机枪','发射器','弓弩','近战','压制近战','特殊','其他'];
     }
 
     function renderCatalog() {
@@ -406,17 +349,16 @@ var NpcShop = (function() {
             return false;
         }
         var selected = _category && _category.mode === 'auto' ? (_category.path || []) : [];
-        if (!selected.length) return true;
-        var path = autoClassificationPath(item);
-        for (var depth = 0; depth < selected.length; depth++) if (path[depth] !== selected[depth]) return false;
-        return true;
+        return ItemFilter.matchesPath(item, selected, function(entry) { return ItemFilter.catalogPath(entry); });
     }
 
     function renderOwnedViews() {
         for (var key in _rightViews) {
             var view = _rightViews[key]; if (!view) continue; view.render();
             var data = getView(key); var occupied = data && data.slots ? data.slots.filter(function(slot) { return slot.occupied; }).length : 0;
-            view.chrome.setMeta(_state ? occupied + ' 项' : '同步中');
+            if (key === 'bag' && view.inventoryFilterControl) view.inventoryFilterControl.setSnapshot(data);
+            var total = data && data.filterItemCount != null ? Number(data.filterItemCount) : occupied;
+            view.chrome.setMeta(_state ? (occupied === total ? occupied : occupied + ' / ' + total) + ' 项' : '同步中');
         }
     }
 
@@ -450,7 +392,8 @@ var NpcShop = (function() {
     }
 
     function createSettlementPage() {
-        _settlementPage = document.createElement('section'); _settlementPage.className = 'npcshop-settlement-page';
+        _settlementPage = document.createElement('section');
+        _settlementPage.className = 'workbench-secondary-page npcshop-settlement-page';
         _settlementPage.innerHTML = '<header class="npcshop-settlement-header"><button type="button" data-trade-back>← 返回选购</button>'
             + '<div><h2>交易结算</h2><p data-trade-context>价格与容量由游戏实时核算；确认后整单一次生效。</p></div></header>'
             + '<div class="npcshop-settlement-columns"><section><h3>待购</h3><div class="npcshop-settlement-list" data-purchase-lines></div></section>'
@@ -631,7 +574,7 @@ var NpcShop = (function() {
 
     function createHelpPage() {
         _helpPage = document.createElement('section');
-        _helpPage.className = 'npcshop-help-page';
+        _helpPage.className = 'workbench-secondary-page npcshop-help-page';
         _helpPage.setAttribute('role', 'dialog');
         _helpPage.setAttribute('aria-label', 'NPC 商店操作帮助');
         _helpPage.innerHTML = '<header class="npcshop-help-header"><button type="button" data-help-back>← 返回商店</button>'
@@ -667,7 +610,9 @@ var NpcShop = (function() {
         _spacePage.classList.add('active');
         _settlementPage.classList.add('organizing-space');
         _spaceBusy = true; _spaceMutated = false; refreshControls();
-        _inventoryCoordinator.open(function(result) {
+        if (_inventoryState.opened && _inventoryState.ready && !_inventoryState.refreshRequired) {
+            _spaceBusy = false; renderSpaceOrganizer(); refreshControls();
+        } else refreshInventory(function(result) {
             _spaceBusy = false; renderSpaceOrganizer(); refreshControls();
             if (!result.success) toast('库存同步失败，暂时无法整理空间。');
         });
@@ -686,6 +631,10 @@ var NpcShop = (function() {
             '背包':_spacePage.querySelector('[data-space-grid="背包"]'),
             '战备箱':_spacePage.querySelector('[data-space-grid="战备箱"]')
         };
+        if (_densityController) {
+            _densityController.register(_spaceGrids['背包']);
+            _densityController.register(_spaceGrids['战备箱']);
+        }
         _spacePager = new InventoryUI.InventoryWindowPager({
             containerId:'战备箱', containerLabel:'战备箱', columns:5,
             defaultOffset:0, defaultLimit:40, defaultCapacity:0,
@@ -755,7 +704,6 @@ var NpcShop = (function() {
         if (!_spacePage || !_spacePage.classList.contains('active') || _inventoryState.busyOwner) return;
         _spacePage.classList.remove('active');
         _settlementPage.classList.remove('organizing-space');
-        _inventoryCoordinator.close();
         _spaceBusy = true; renderSettlementLoading(); refreshControls();
         request('snapshot', {shopId:_shopId}, function(response) {
             _spaceBusy = false;
@@ -819,34 +767,55 @@ var NpcShop = (function() {
         write('tradeCommit', {shopId:_shopId, expectedTradeToken:String(_settlement.tradeToken)}, function(response) {
             if (!response.success) { handleWriteError(response); return; }
             var trade = response.trade || {}; _purchaseIntents = {}; _saleIntents = {}; closeSettlement();
-            applyState(response); toast('交易完成：购买 $' + Number(trade.buyTotal || 0).toLocaleString() + '，出售 $' + Number(trade.sellTotal || 0).toLocaleString());
+            applyState(response); refreshInventory();
+            toast('交易完成：购买 $' + Number(trade.buyTotal || 0).toLocaleString() + '，出售 $' + Number(trade.sellTotal || 0).toLocaleString());
         });
     }
 
-    function bindCatalogCard(node, item) { bindTooltip(node, 'catalog:' + item.itemName, {itemName:item.itemName}, item); }
+    function bindCatalogCard(node, item) {
+        PanelTooltip.bindAsyncHover(node, {
+            cache: _tooltipCache,
+            key: 'catalog:' + item.itemName,
+            item: item,
+            renderBasic: buildTooltipBasic,
+            renderRich: buildTooltipRich,
+            fetch: function(item, callback) {
+                request('tooltip', {itemName: item.itemName}, callback);
+            }
+        });
+        if (!item.locked) {
+            node.addEventListener('click', function(event) {
+                if (event.button && event.button !== 0) return;
+                togglePurchase(item);
+            });
+        }
+    }
     function bindOwnedTooltip(node, viewId, slot) {
         if (!slot || !slot.occupied) return;
+        var key = viewId + ':' + String(slot.slotLease || slot.collectionKey);
+        var item = slot.item || {};
         var payload = viewId === 'bag'
             ? {source:{containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)}}
-            : {itemName:String(slot.item && slot.item.name || '')};
-        bindTooltip(node, viewId + ':' + String(slot.slotLease || slot.collectionKey), payload, slot.item || {});
-    }
-    function bindTooltip(node, key, payload, item) {
-        node.addEventListener('pointerenter', function(event) {
-            _tooltipHover = key; PanelTooltip.showAtMouse(buildTooltip(item, _tooltipCache[key]), event);
-            if (!_tooltipCache[key]) request('tooltip', payload, function(response) {
-                if (response.success) { _tooltipCache[key] = response; if (_tooltipHover === key && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildTooltip(item, response)); }
-            });
+            : {itemName:String(item.name || '')};
+        PanelTooltip.bindAsyncHover(node, {
+            cache: _tooltipCache,
+            key: key,
+            item: item,
+            renderBasic: buildTooltipBasic,
+            renderRich: buildTooltipRich,
+            fetch: function(_, callback) {
+                request('tooltip', payload, callback);
+            }
         });
-        node.addEventListener('pointermove', function(event) { PanelTooltip.followMouse(event); });
-        node.addEventListener('pointerleave', function() { _tooltipHover = null; PanelTooltip.hide(); });
     }
-    function buildTooltip(item, rich) {
-        if (rich) return PanelTooltip.buildItemRichHtml({
+    function buildTooltipBasic(item) {
+        return '<div class="kshop-tt-header"><b>' + escapeHtml(item.displayName || item.itemName || item.name || '物品') + '</b></div><div class="kshop-tt-loading">加载中…</div>';
+    }
+    function buildTooltipRich(item, rich) {
+        return PanelTooltip.buildItemRichHtml({
             iconHtml:PanelTooltip.dynamicIconHtml(item.icon || item.name || item.itemName), iconUrl:PanelTooltip.staticIconUrl(item.icon || item.name || item.itemName),
             introHTML:rich.introHTML || '', descHTML:rich.descHTML || '', rootClass:'npcshop-tooltip', layoutType:PanelTooltip.inferLayoutType(item.majorType || item.use)
         });
-        return '<div class="kshop-tt-header"><b>' + escapeHtml(item.displayName || item.itemName || item.name || '物品') + '</b></div><div class="kshop-tt-loading">加载中…</div>';
     }
 
     function switchRightGroup(groupId) { switchRightView(groupId === 'collection' ? _activeCollection : 'bag'); }
@@ -865,16 +834,20 @@ var NpcShop = (function() {
         _generation++; _shopId = initData && typeof initData.shopId === 'string' ? initData.shopId : '';
         _state = null; _busy = false; _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null;
         _spacePage = null; _spaceGrids = {}; _spacePager = null; _spaceBusy = false; _spaceMutated = false;
-        _helpPage = null; _helpButton = null;
+        _helpPage = null; _helpButton = null; _bagFilterControl = null;
         _previewBusy = false; _previewQueued = false; _previewRevision = 0; _category = {mode:'auto', path:[]}; _categoryInitialized = false;
-        _activeRight = 'bag'; _activeCollection = 'material'; _tooltipCache = {}; _tooltipHover = null;
+        _activeRight = 'bag'; _activeCollection = 'material'; _tooltipCache = {};
         buildDOM(); if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
-        _mux.openSession(); _inventoryMux.openSession(); refreshSnapshot();
+        _mux.openSession(); _inventoryMux.openSession();
+        _inventoryCoordinator.resetWindow('背包', 0, 50, 'all');
+        _inventoryCoordinator.resetWindow('战备箱', 0, 40, 'all');
+        refreshSnapshot();
     }
 
     function refreshSnapshot() {
         if (!_shopId || _busy) return false;
+        refreshInventory();
         _shell.setStatus('同步中', 'loading'); var generation = _generation;
         return !!request('snapshot', {shopId:_shopId}, function(response) {
             if (generation !== _generation) return;
@@ -892,6 +865,13 @@ var NpcShop = (function() {
 
     function request(cmd, payload, callback) { payload = payload || {}; payload.v = 1; return _mux.request(cmd, payload, callback); }
     function requestInventory(cmd, payload, callback) { return _inventoryMux.request(cmd, payload || {}, callback); }
+    function refreshInventory(callback) {
+        _inventoryCoordinator.open(function(result) {
+            if (result && result.success) rebindSaleIntentsFromViews({bag:_inventoryCoordinator.getWindow('背包')});
+            renderOwnedViews(); refreshControls();
+            if (callback) callback(result || {success:false});
+        });
+    }
     function write(cmd, payload, callback) {
         if (_busy || _needsReconcile) { toast(_needsReconcile ? '请先重新同步商店状态。' : '正在处理上一项交易。'); return false; }
         _busy = true; refreshControls();
@@ -915,6 +895,7 @@ var NpcShop = (function() {
         var count = selectionCount();
         if (_checkoutButton) { _checkoutButton.textContent = count ? '结算 (' + count + ')' : '结算'; _checkoutButton.disabled = !count || _busy || _needsReconcile; }
         if (_helpButton) _helpButton.disabled = _busy || !!_inventoryState.busyOwner;
+        if (_bagFilterControl) _bagFilterControl.setDisabled(_busy || !_inventoryState.ready || !!_inventoryState.busyOwner);
         for (var key in _viewButtons) _viewButtons[key].disabled = _busy;
         var buttons = _shell.getRoot().querySelectorAll('[data-collection-view]'); for (var i = 0; i < buttons.length; i++) buttons[i].disabled = _busy;
         if (_settlement) renderSettlement();
@@ -925,8 +906,9 @@ var NpcShop = (function() {
         if (_spacePager) { _spacePager.detach(); _spacePager = null; }
         _inventoryCoordinator.close(); _inventoryMux.closeSession();
         if (_shell) _shell.closeModal(); _mux.closeSession();
-        _busy = false; _previewBusy = false; _state = null; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null; _tooltipHover = null;
-        _helpPage = null; _helpButton = null;
+        _busy = false; _previewBusy = false; _state = null; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null;
+        _helpPage = null; _helpButton = null; _bagFilterControl = null;
+        if (_densityController) { _densityController.destroy(); _densityController = null; }
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
     }
     function requestClose() {
@@ -938,7 +920,13 @@ var NpcShop = (function() {
         Panels.close(); Bridge.send({type:'panel', cmd:'close', panel:'npcshop'});
     }
 
-    function getView(viewId) { return _state && _state.views ? _state.views[viewId] : null; }
+    function getView(viewId) {
+        if (viewId === 'bag') {
+            var authoritative = _inventoryCoordinator.getWindow('背包');
+            if (authoritative) return authoritative;
+        }
+        return _state && _state.views ? _state.views[viewId] : null;
+    }
     function iconHtml(iconName, cls) {
         var html = typeof Icons !== 'undefined' && Icons.html ? Icons.html(iconName, cls || 'kshop-icon', ' onerror="this.style.display=\'none\'"') : '';
         return html || '<span class="kshop-icon-placeholder"></span>';

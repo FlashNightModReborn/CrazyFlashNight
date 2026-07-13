@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>CF7 Item Grid Visual Matrix</title>
+  <link rel="stylesheet" href="/launcher/web/css/panels.css">
+  <style>
+    :root{color-scheme:dark}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-width:1180px;min-height:760px;background:#07090c;color:#e8ebee;font-family:"Microsoft YaHei",sans-serif}
+    body{padding:22px}
+    .matrix-header{display:flex;align-items:end;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #343a42}
+    .matrix-header h1{margin:0;font-size:22px}.matrix-header p{margin:4px 0 0;color:#7f8994;font-size:11px}
+    #matrix-status{color:#dca552;font:11px Consolas,monospace}
+    #matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .matrix-case{--wb-accent:#e5a64d;min-width:0;padding:10px;border:1px solid #2c3239;background:#0c0f13;box-shadow:inset 0 0 0 1px rgba(255,255,255,.018)}
+    .matrix-case h2{display:flex;justify-content:space-between;margin:0 0 8px;color:#cdd3da;font-size:12px}.matrix-case h2 small{color:#737e89;font:9px Consolas,monospace}
+    .matrix-stage{min-height:180px;padding:8px;border:1px solid #222831;background:#080b0e;overflow:hidden}
+    .matrix-stage.kshop-workbench{display:block;width:auto;height:auto;min-height:180px;grid-template-rows:none}
+    .matrix-stage .kshop-grid,.matrix-stage .npcshop-catalog-grid,.matrix-stage .inventory-owned-grid{position:relative;display:grid;align-content:start;overflow:visible}
+    .matrix-stage .kshop-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto}
+    .matrix-stage .npcshop-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .matrix-stage .inventory-owned-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:0}
+    .matrix-stage .inventory-slot-card{height:72px}
+    .matrix-stage .inventory-slot-card.empty{border-style:dashed}
+    .matrix-overlay-stage .workbench-shell{width:100%;height:180px;min-height:180px}
+    .matrix-overlay-stage .workbench-body{padding:6px;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr)}
+    .matrix-overlay-stage .npcshop-help-page{padding:10px;grid-template-rows:auto minmax(0,1fr)}
+    .matrix-overlay-stage .npcshop-help-header{min-height:32px}.matrix-overlay-stage .npcshop-help-grid{grid-template-columns:1fr;grid-template-rows:1fr}
+    .matrix-filter-stage{overflow:visible}.matrix-filter-stage h3{margin:0 0 6px;color:#929ca7;font-size:10px}
+    .matrix-filter-wide{min-height:64px;padding:6px;border:1px solid #252c34}.matrix-filter-narrow{position:relative;width:250px;min-height:96px;margin-top:9px;padding:6px;border:1px solid #252c34}
+    .matrix-icon{display:grid;place-items:center;width:100%;height:100%;color:#121820;background:linear-gradient(135deg,#d5a34b,#657938);font:700 11px Consolas,monospace}
+    .matrix-icon.weapon{background:linear-gradient(135deg,#c8d1dc,#4b5868)}
+    .matrix-icon.locked{background:linear-gradient(135deg,#5b6066,#20252b)}
+    .matrix-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;color:#7f8994;font-size:9px}.matrix-legend span{padding:2px 5px;border:1px solid #2d343c}
+    #matrix-output{position:absolute;left:-10000px;top:0}
+  </style>
+</head>
+<body>
+  <header class="matrix-header"><div><h1>物品格统一视觉样本矩阵</h1><p>同一语义组件在目录 / owned、完整 / 紧凑、普通 / 选中 / 禁用状态下的正交样本。</p></div><b id="matrix-status">RUNNING</b></header>
+  <main id="matrix"></main><pre id="matrix-output"></pre>
+  <script src="/launcher/web/modules/workbench.js"></script>
+  <script src="/launcher/web/modules/item-filter.js"></script>
+  <script src="/launcher/web/modules/inventory-runtime.js"></script>
+  <script src="/launcher/web/modules/inventory-ui.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    var checks=[];
+    function check(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''});}
+    function icon(label,kind){return '<span class="matrix-icon '+(kind||'')+'">'+label+'</span>';}
+    function section(title,density,kind){
+      var shell=document.createElement('section');shell.className='matrix-case';shell.setAttribute('data-matrix-case',kind+'-'+density);
+      shell.innerHTML='<h2>'+title+'<small>'+density.toUpperCase()+'</small></h2>';
+      var stage=document.createElement('div');stage.className='matrix-stage kshop-workbench';stage.setAttribute('data-workbench-skin',kind==='kshop'?'shop':'npcshop');shell.appendChild(stage);
+      document.getElementById('matrix').appendChild(shell);return stage;
+    }
+    function catalogCard(skin,id,state){
+      state=state||{};return Workbench.ItemCard.renderCatalog({skin:skin,id:id,name:state.name||'训练步枪',meta:state.meta||'长枪 · 突击步枪',priceText:state.price||'$ 1,250',priceLabel:skin==='kshop'?'K':'',iconHtml:icon(state.icon||'AR','weapon'),locked:!!state.locked,nosale:!!state.disabled,selected:!!state.selected,markerText:state.selected?'待购 ×1':'点击加入待购',lockReason:'Lv.20',lockTitle:'未解锁',extraHtml:skin==='kshop'?'<button class="kshop-add-btn">加入</button>':''});
+    }
+    function ownedCard(slot,state){
+      state=state||{};var node=InventoryUI.renderOwnedSlot('背包',slot,{iconHtml:function(){return icon(state.icon||'ITEM',state.locked?'locked':'weapon')}});
+      node.classList.add('npcshop-owned-card');
+      if(state.readOnly)node.classList.add('read-only');
+      node.classList.toggle('selected',!!state.selected);node.classList.toggle('item-card-selected',!!state.selected);
+      if(slot.occupied){var marker=document.createElement('span');marker.className='item-card-auxiliary item-card-selection-marker npcshop-selection-marker';marker.textContent=state.selected?'待售 ×1':'点击加入待售';node.appendChild(marker)}
+      return node;
+    }
+    function addCatalogCase(skin,density){
+      var stage=section((skin==='kshop'?'KShop':'NPC 商店')+'目录',density,skin),grid=document.createElement('div');
+      grid.className=(skin==='kshop'?'kshop-grid':'npcshop-catalog-grid')+(density==='compact'?' item-grid-compact':'');stage.appendChild(grid);
+      grid.appendChild(catalogCard(skin,1,{}));grid.appendChild(catalogCard(skin,2,{selected:true,name:'已选商品'}));grid.appendChild(catalogCard(skin,3,{locked:true,name:'锁定商品'}));grid.appendChild(catalogCard(skin,4,{disabled:true,name:'不可购买'}));
+      stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>普通</span><span>选中</span><span>锁定</span><span>禁用</span></div>');
+    }
+    function addOwnedCase(density){
+      var stage=section('Owned 库存格',density,'owned'),grid=document.createElement('div');grid.className='inventory-owned-grid npcshop-owned-grid'+(density==='compact'?' item-grid-compact':'');stage.appendChild(grid);
+      var stack={physicalSlot:0,occupied:true,item:{name:'药剂',displayName:'高级药剂',icon:'药剂',itemKind:'stack',quantity:6806,majorType:'消耗品',use:'药剂'}};
+      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪'}};
+      grid.appendChild(ownedCard(stack,{}));grid.appendChild(ownedCard(equip,{selected:true,icon:'EQ'}));grid.appendChild(ownedCard(Object.assign({},stack,{physicalSlot:2}),{readOnly:true,icon:'RO'}));grid.appendChild(ownedCard({physicalSlot:3,occupied:false},{}));
+      stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>堆叠</span><span>装备·选中</span><span>只读</span><span>空槽</span></div>');
+    }
+    function addOverlayCase(){
+      var stage=section('二级页面覆盖','body-overlay','overlay');stage.classList.add('matrix-overlay-stage');
+      var shell=new Workbench.DualPaneShell({title:'商店',status:''}),root=shell.getRoot();root.classList.add('kshop-workbench','npcshop-panel','npcshop-helping');
+      var overlay=document.createElement('section');overlay.className='workbench-secondary-page npcshop-help-page active';overlay.innerHTML='<header class="npcshop-help-header"><div><h2>商店操作帮助</h2><p>覆盖层从 48px 顶栏下沿开始。</p></div></header><div class="npcshop-help-grid"><article class="npcshop-help-card"><span class="npcshop-help-index">✓</span><div><h3>底层双栏不可见</h3><p>帮助、结算等二级页面共享同一覆盖锚点。</p></div></article></div>';
+      root.appendChild(overlay);stage.appendChild(root);stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>48px header</span><span>body fully covered</span></div>');
+    }
+    function addFilterCase(){
+      var stage=section('自适应层级筛选','responsive','filter');stage.classList.add('matrix-filter-stage');
+      var items=[{majorType:'武器',use:'刀',actionType:'刀剑'},{majorType:'武器',use:'长枪',weaponType:'冲锋枪'},{majorType:'武器',use:'长枪',weaponType:'霰弹枪'},{majorType:'消耗品',use:'药剂'}],tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)});
+      var wide=document.createElement('div');wide.className='matrix-filter-wide';wide.innerHTML='<h3>宽区：当前层下钻</h3>';var nav=new ItemFilter.FilterNavigator({tree:tree,presentation:'drilldown'});wide.appendChild(nav.root);nav.select(['weapon']);stage.appendChild(wide);
+      var narrow=document.createElement('div');narrow.className='matrix-filter-narrow';narrow.innerHTML='<h3>窄区：固定触发器 + 浮层</h3>';var control=new InventoryUI.InventoryFilterControl({options:InventoryUI.categoryFilterOptions(),label:'分类',presentation:'popover',navigatorPresentation:'drilldown'});narrow.appendChild(control.root);control.setSnapshot({filterKey:'all',filterFacets:tree.children,filterItemCount:tree.count});control.trigger.click();stage.appendChild(narrow);
+      stage._matrixFilter={wide:wide,nav:nav,narrow:narrow,control:control};stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>single-level drilldown</span><span>custom popover</span><span>one scroll owner</span></div>');
+    }
+    addCatalogCase('kshop','full');addCatalogCase('kshop','compact');addCatalogCase('npcshop','full');addCatalogCase('npcshop','compact');addOwnedCase('full');addOwnedCase('compact');addOverlayCase();addFilterCase();
+    var compact=document.querySelectorAll('[data-matrix-case$="-compact"]');
+    check('eight orthogonal matrix cases',document.querySelectorAll('[data-matrix-case]').length===8);
+    check('compact cards keep minimum pointer target',Array.prototype.every.call(compact,function(scope){return Array.prototype.every.call(scope.querySelectorAll('.item-card'),function(card){return card.classList.contains('empty')||card.getBoundingClientRect().height>=44})}));
+    check('compact semantic bodies are hidden',Array.prototype.every.call(compact,function(scope){return Array.prototype.every.call(scope.querySelectorAll('.item-card-body'),function(node){return getComputedStyle(node).display==='none'})}));
+    check('compact unselected auxiliaries are hidden',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .item-card:not(.item-card-selected) .item-card-auxiliary'),function(node){return getComputedStyle(node).display==='none'}));
+    check('compact selected markers are icon-only',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .item-card-selected .item-card-selection-marker'),function(node){var style=getComputedStyle(node);return style.display==='grid'&&style.fontSize==='0px'}));
+    check('full semantic bodies remain visible',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-full"] .item-card-body'),function(node){return getComputedStyle(node).display!=='none'}));
+    check('all matrix stages avoid horizontal overflow',Array.prototype.every.call(document.querySelectorAll('.matrix-stage'),function(node){return node.scrollWidth<=node.clientWidth+1}));
+    var overlay=document.querySelector('.matrix-overlay-stage .npcshop-help-page'),overlayBody=document.querySelector('.matrix-overlay-stage .workbench-body'),overlayRect=overlay.getBoundingClientRect(),overlayBodyRect=overlayBody.getBoundingClientRect();
+    check('secondary overlay exactly covers workbench body',Math.abs(overlayRect.top-overlayBodyRect.top)<1&&Math.abs(overlayRect.bottom-overlayBodyRect.bottom)<1&&getComputedStyle(overlayBody).visibility==='hidden');
+    var filterStage=document.querySelector('.matrix-filter-stage'),filterState=filterStage._matrixFilter,filterControl=filterState.control;
+    check('wide hierarchy keeps exactly one in-flow drilldown row',filterState.nav.root.querySelectorAll('.item-filter-row').length===1&&filterState.wide.scrollWidth<=filterState.wide.clientWidth+1);
+    check('narrow hierarchy uses custom popover with native select hidden',filterControl.select.hidden&&!filterControl.trigger.hidden&&filterControl.root.classList.contains('open')&&getComputedStyle(filterControl.navigator.root).display==='flex'&&filterControl.navigator.root.scrollWidth<=filterControl.navigator.root.clientWidth+1&&filterControl.root.getBoundingClientRect().height<32);
+    var failed=checks.filter(function(item){return !item.ok});window.__qaResult={total:checks.length,passed:checks.length-failed.length,failed:failed.length,checks:checks};window.__qaDone=true;window.__visualReady=true;
+    document.getElementById('matrix-status').textContent=failed.length?'FAILED '+failed.length:'PASSED '+checks.length+'/'+checks.length;document.getElementById('matrix-output').textContent=JSON.stringify(window.__qaResult,null,2);
+  })();
+  </script>
+</body>
+</html>

@@ -23,8 +23,9 @@ var KShop = (function() {
     var _reverseLevel = 0;
     var _shopReady = false;
     var _closing = false;
-    var _activeCategory = null;
-    var _categories = [];
+    var _categoryPath = [];
+    var _categoryTree = null;
+    var _categoryNavigator = null;
     var _iconsLoaded = false;
     var _loading = false;
     var _writeState = null;
@@ -72,6 +73,7 @@ var KShop = (function() {
     var _cartDropTarget, _cartDropLabel, _selectedCatalogIdx = null;
     var _dragTooltipSuppressed = false;
     var _ownedTooltipSelectionSuppressed = false;
+    var _layoutMode = 'full', _densityController = null;
     var _el, _shellEl, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
     var _checkoutBtn, _claimList, _loadingEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
@@ -330,6 +332,12 @@ var KShop = (function() {
         modeSwitch.appendChild(_inventoryRetryButton);
         _workbenchShell.addHeaderAction(modeSwitch);
 
+        if (_densityController) _densityController.destroy();
+        _densityController = new Workbench.GridDensityController({panelId:'kshop'});
+        _layoutMode = _densityController.mode;
+        var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
+        _workbenchShell.addHeaderAction(layoutToggle);
+
         var closeButton = document.createElement('button');
         closeButton.className = 'kshop-close-btn workbench-close-btn';
         closeButton.type = 'button';
@@ -341,13 +349,14 @@ var KShop = (function() {
 
         _catalogView = createCatalogWorkbenchView();
         _orderView = createOrderWorkbenchView();
-        _backpackView = createOwnedInventoryView('背包', '', '背包');
-        _warehouseView = createOwnedInventoryView('战备箱', '', '战备箱');
+        _backpackView = createOwnedInventoryView({containerId:'背包', kicker:'', title:'背包', layoutMode:_layoutMode});
+        _warehouseView = createOwnedInventoryView({containerId:'战备箱', kicker:'', title:'战备箱', layoutMode:_layoutMode});
         _backpackView.displaySortMethod = 'physicalSlot';
         _warehouseView.displaySortMethod = 'physicalSlot';
         _backpackView.chrome.setToolbar(createInventoryToolbar('背包', null));
         _warehouseView.chrome.setToolbar(createInventoryToolbar('战备箱', createWarehousePager()));
         _ownedViews = [_backpackView, _warehouseView];
+
         _workbenchShell.registerView(_backpackView);
         _workbenchShell.registerView(_warehouseView);
         _workbenchShell.setDefault('L', _catalogView);
@@ -400,6 +409,21 @@ var KShop = (function() {
         _catalogRenderer = composition.renderer;
         _grid = composition.grid;
         _loadingEl = composition.loading;
+        _categoryNavigator = new ItemFilter.FilterNavigator({
+            className:'kshop-category-navigator item-filter-navigator',
+            ariaLabel:'商城商品分类',
+            presentation:'drilldown',
+            onChange:function(path) {
+                _categoryPath = path;
+                if (_interactionBroker) _interactionBroker.clearSelection();
+                if (_grid) _grid.scrollTop = 0;
+                renderGrid();
+                decorateKShopCategoryButtons();
+            }
+        });
+        while (_catBar.firstChild) _catBar.removeChild(_catBar.firstChild);
+        _catBar.appendChild(_categoryNavigator.root);
+        if (_densityController) _densityController.register(_catalogRenderer);
         return composition.view;
     }
 
@@ -491,6 +515,17 @@ var KShop = (function() {
                     controls.setFilterKey(request ? request.filterKey : 'all');
                 }
             },
+            onFilterSpecChange: function(filterSpec) {
+                if (_interactionBroker) _interactionBroker.clearSelection();
+                hideTooltip();
+                if (!_inventoryCoordinator.setFilterSpec(containerId, filterSpec, function(result) {
+                    renderOwnedInventories();
+                    if (!result.success) {
+                        controls.rejectFilterChange(_inventoryCoordinator.getWindow(containerId));
+                        toast(containerId + '筛选失败，请重试。');
+                    }
+                })) controls.rejectFilterChange(_inventoryCoordinator.getWindow(containerId));
+            },
             onAuthorityCommit: function(methodName, label) {
                 showInventorySortConfirm(containerId, methodName, label);
             }
@@ -499,11 +534,15 @@ var KShop = (function() {
         else _warehouseSortControls = controls;
         if (pager) toolbar.appendChild(pager.root);
         toolbar.appendChild(controls.root);
+        if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar, controls, pager);
         return toolbar;
     }
 
-    function createOwnedInventoryView(containerId, kicker, title) {
-        var adapter = new Workbench.ContainerViewAdapter({
+    function createOwnedInventoryView(options) {
+        options = options || {};
+        var containerId = options.containerId;
+        var ownedShell = new InventoryUI.OwnedInventoryViewShell({
+            containerId: containerId,
             instanceKey: 'inventory:' + containerId,
             itemModel: 'owned',
             getItems: function() {
@@ -536,20 +575,18 @@ var KShop = (function() {
                     targetRef: targetRef,
                     hint: targetSlot.occupied ? 'merge-or-swap' : 'move'
                 };
-            }
-        });
-        var view = new Workbench.GridContainerView({
-            adapter: adapter,
-            title: title,
-            kicker: kicker,
+            },
+            title: options.title,
+            kicker: options.kicker,
             meta: '同步中',
             className: 'inventory-owned-view inventory-owned-' + (containerId === '背包' ? 'backpack' : 'warehouse'),
             gridClassName: 'inventory-owned-grid',
             emptyText: '正在同步库存…',
-            allowedSlots: ['L', 'R']
+            allowedSlots: ['L', 'R'],
+            layoutMode: options.layoutMode || 'full',
+            densityController: _densityController
         });
-        view.containerId = containerId;
-        return view;
+        return ownedShell.view;
     }
 
     function ownedSlotRef(containerId, slot) {
@@ -570,11 +607,7 @@ var KShop = (function() {
     }
 
     function bindOwnedSlot(containerId, node, slot) {
-        if (slot.occupied) {
-            node.addEventListener('mouseenter', function(event) { onOwnedSlotHover(event, containerId, slot); });
-            node.addEventListener('mouseleave', onOwnedSlotLeave);
-            node.addEventListener('mousemove', onOwnedSlotMove);
-        }
+        if (slot.occupied) bindOwnedTooltip(node, containerId, slot);
         node.addEventListener('click', function(event) {
             if (consumedOwnedClick()) return;
             if (event.target && event.target.closest && event.target.closest('.inventory-discard-btn')) return;
@@ -599,25 +632,21 @@ var KShop = (function() {
             var view = views[i];
             if (!view) continue;
             var snapshot = _inventoryCoordinator.getWindow(view.containerId);
-            var slots = snapshot ? snapshot.slots : [];
             var filtered = snapshot && String(snapshot.filterKey || 'all') !== 'all';
-            view.renderer.options.emptyText = view.containerId === '战备箱'
+            var emptyText = view.containerId === '战备箱'
                 && snapshot && Number(snapshot.accessibleCapacity) <= 0
                 ? '战备箱尚未解锁' : filtered ? '当前分类暂无物品' : '本页暂无物品';
-            if (view.displaySortMethod && typeof InventoryRuntime.displaySortSlots === 'function') {
-                slots = InventoryRuntime.displaySortSlots(slots, view.displaySortMethod);
-            }
-            view.renderer.render(slots);
-            if (!snapshot) {
-                view.chrome.setMeta('同步中');
-            } else if (view.containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0) {
-                view.chrome.setMeta('未解锁');
-            } else if (view.containerId === '背包') {
+            var meta = '同步中';
+            if (snapshot && view.containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0) meta = '未解锁';
+            else if (snapshot && view.containerId === '背包') {
                 var occupied = 0;
                 for (var s = 0; s < snapshot.slots.length; s++) if (snapshot.slots[s].occupied) occupied++;
-                view.chrome.setMeta(occupied + ' / ' + snapshot.capacity);
-            } else {
-                view.chrome.setMeta('');
+                meta = occupied + ' / ' + snapshot.capacity;
+            } else if (snapshot) meta = '';
+            if (view.ownedInventoryShell) {
+                view.ownedInventoryShell.syncSnapshot(snapshot, {
+                    displaySortMethod:view.displaySortMethod, emptyText:emptyText, meta:meta
+                });
             }
         }
         refreshInventoryToolbar();
@@ -831,12 +860,9 @@ var KShop = (function() {
         _previewBusy = false;
         _previewQueued = false;
         _previewRevision++;
-        _activeCategory = null;
-        _categories = [];
+        _categoryPath = [];
         _tooltipCache = {};
-        _tooltipHovering = -1;
         _ownedTooltipCache = {};
-        _ownedTooltipHovering = null;
         _ownedTooltipSelectionSuppressed = false;
         if (_warehousePager) {
             _warehousePager.detach();
@@ -901,37 +927,23 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     function buildCategories() {
         if (_interactionBroker) _interactionBroker.clearSelection();
-        var seen = {};
-        _categories = [];
-        for (var i = 0; i < _catalog.length; i++) {
-            var t = _catalog[i].type;
-            if (!seen[t]) { seen[t] = true; _categories.push(t); }
-        }
-        _activeCategory = _categories[0] || null;
-        renderCatBar();
+        _categoryTree = ItemFilter.build(_catalog, function(item) {
+            return ItemFilter.catalogPath(item, {weaponSubtype:false});
+        });
+        _categoryPath = ItemFilter.validPath(_categoryTree, _categoryPath);
+        if (_categoryNavigator) _categoryNavigator.setModel(_categoryTree, _categoryPath);
+        decorateKShopCategoryButtons();
     }
 
-    function renderCatBar() {
-        _catBar.innerHTML = '';
-        for (var i = 0; i < _categories.length; i++) {
-            var btn = document.createElement('button');
-            btn.className = 'kshop-cat-btn' + (_categories[i] === _activeCategory ? ' active' : '');
-            btn.textContent = _categories[i];
-            btn.setAttribute('data-cat', _categories[i]);
-            btn.setAttribute('data-audio-cue', 'select');
-            btn.addEventListener('click', onCatClick);
-            _catBar.appendChild(btn);
+    function decorateKShopCategoryButtons() {
+        if (!_categoryNavigator) return;
+        var buttons = _categoryNavigator.root.querySelectorAll('[data-filter-path]');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].classList.add('kshop-cat-btn');
+            var label = buttons[i].querySelector('span');
+            buttons[i].setAttribute('data-cat', label ? label.textContent.replace(/^全部/, '') || '全部' : '全部');
+            buttons[i].setAttribute('data-audio-cue', 'select');
         }
-    }
-
-    function onCatClick(e) {
-        var cat = e.target.getAttribute('data-cat');
-        if (cat === _activeCategory) return;
-        _activeCategory = cat;
-        if (_interactionBroker) _interactionBroker.clearSelection();
-        renderCatBar();
-        _grid.scrollTop = 0; // 切类回顶
-        renderGrid();
     }
 
     // ══════════════════════════════════════════
@@ -942,7 +954,9 @@ var KShop = (function() {
         var visible = [];
         for (var i = 0; i < _catalog.length; i++) {
             var item = _catalog[i];
-            if (item.type !== _activeCategory) continue;
+            if (!ItemFilter.matchesPath(item, _categoryPath, function(entry) {
+                return ItemFilter.catalogPath(entry, {weaponSubtype:false});
+            })) continue;
             visible.push(item);
         }
         _catalogRenderer.render(visible);
@@ -958,35 +972,31 @@ var KShop = (function() {
         var locked = isLocked(item);
         var nosale = item.type === '非卖品';
         var stackable = isStackable(item);
-        var card = document.createElement('article');
-        card.className = 'kshop-card';
-        if (nosale) card.classList.add('kshop-card-nosale');
-        if (locked) card.classList.add('kshop-card-locked');
-        card.setAttribute('data-idx', item.idx);
-        card.setAttribute('tabindex', locked || nosale ? '-1' : '0');
-        card.setAttribute('aria-label', item.displayname + '，K ' + item.price);
         var actionHtml = '';
         if (!nosale && !locked) {
             actionHtml = '<button class="kshop-add-btn' + (stackable ? '' : ' kshop-add-single') + '" data-idx="' + item.idx + '" data-audio-cue="select" title="加入购物车">' + (stackable ? '+' : '加入') + '</button>';
         }
-        var lockHtml = locked
-            ? '<div class="kshop-lock" title="等级 ' + item.level + ' 解锁">Lv.' + item.level + ' 解锁</div>'
-            : '<div class="kshop-card-type">' + escHtml(item.subType || item.majorType || item.type) + '</div>';
-        card.innerHTML =
-            '<div class="kshop-card-icon-frame">' + iconHtml(item.icon) + '</div>' +
-            '<div class="kshop-card-info">' +
-                '<div class="kshop-card-name">' + escHtml(item.displayname) + '</div>' +
-                lockHtml +
-                '<div class="kshop-card-price"><span>K</span> ' + item.price + '</div>' +
-            '</div>' +
-            actionHtml;
-        return card;
+        return Workbench.ItemCard.renderCatalog({
+            skin: 'kshop',
+            item: item,
+            id: item.idx,
+            iconHtml: iconHtml(item.icon),
+            name: item.displayname,
+            meta: item.subType || item.majorType || item.type,
+            price: item.price,
+            priceLabel: 'K',
+            locked: locked,
+            lockReason: 'Lv.' + item.level + ' 解锁',
+            nosale: nosale,
+            ariaLabel: item.displayname + '，K ' + item.price,
+            extraHtml: actionHtml
+        });
     }
 
     function bindCatalogCard(card) {
-        card.addEventListener('mouseenter', onCardHover);
-        card.addEventListener('mouseleave', onCardLeave);
-        card.addEventListener('mousemove', onCardMove);
+        var idx = Number(card.getAttribute('data-idx'));
+        var item = findCatalogItem(idx);
+        if (item) bindCatalogTooltip(card, item);
         card.addEventListener('click', onCatalogCardClick);
         card.addEventListener('dblclick', onCatalogCardDoubleClick);
         card.addEventListener('keydown', function(event) {
@@ -1092,32 +1102,42 @@ var KShop = (function() {
     //  hover 即时显示基础信息，异步拉取 Flash TooltipComposer 的富文本
     // ══════════════════════════════════════════
     var _tooltipCache = {};  // idx → {descHTML, introHTML}
-    var _tooltipHovering = -1; // 当前 hover 的 idx，离开时置 -1
     var _ownedTooltipCache = {}; // container:slot:lease → 富文本；lease 变化即自然失效
-    var _ownedTooltipHovering = null;
 
-    function onCardHover(e) {
-        if (_dragTooltipSuppressed) return;
-        var idx = Number(e.currentTarget.getAttribute('data-idx'));
-        var item = findCatalogItem(idx);
-        if (!item) return;
-        _tooltipHovering = idx;
-
-        var html = _tooltipCache[idx]
-            ? buildRichHtml(item, _tooltipCache[idx])
-            : buildBasicHtml(item);
-        PanelTooltip.showAtMouse(html, e);
-        if (!_tooltipCache[idx]) requestFlashTooltip(idx);
+    function bindCatalogTooltip(card, item) {
+        PanelTooltip.bindAsyncHover(card, {
+            cache: _tooltipCache,
+            key: item.idx,
+            item: item,
+            isSuppressed: function() { return _dragTooltipSuppressed; },
+            renderBasic: buildBasicHtml,
+            renderRich: buildRichHtml,
+            fetch: function(item, callback) {
+                requestShop('tooltip', { idx: item.idx }, function(resp) {
+                    if (!isKShopOpen()) return;
+                    callback(resp);
+                });
+            }
+        });
     }
 
-    function onCardLeave() {
-        _tooltipHovering = -1;
-        PanelTooltip.hide();
-    }
-
-    function onCardMove(e) {
-        if (_dragTooltipSuppressed) return;
-        PanelTooltip.followMouse(e);
+    function bindOwnedTooltip(node, containerId, slot) {
+        var key = ownedTooltipKey(containerId, slot);
+        var item = slot.item || {};
+        PanelTooltip.bindAsyncHover(node, {
+            cache: _ownedTooltipCache,
+            key: key,
+            item: item,
+            isSuppressed: function() { return _dragTooltipSuppressed || _ownedTooltipSelectionSuppressed; },
+            renderBasic: buildOwnedBasicHtml,
+            renderRich: buildOwnedRichHtml,
+            fetch: function(_, callback) {
+                requestInventory('tooltip', {v: 1, source: ownedSlotRef(containerId, slot)}, function(resp) {
+                    if (!isKShopOpen()) return;
+                    callback(resp);
+                });
+            }
+        });
     }
 
     function buildBasicHtml(item) {
@@ -1154,41 +1174,8 @@ var KShop = (function() {
         });
     }
 
-    function requestFlashTooltip(idx) {
-        requestShop('tooltip', { idx: idx }, function(resp) {
-            if (!isKShopOpen()) return;
-            if (resp.success) {
-                _tooltipCache[idx] = { descHTML: resp.descHTML || '', introHTML: resp.introHTML || '' };
-                if (_tooltipHovering === idx && PanelTooltip.isVisible() && isKShopOpen()) {
-                    var item = findCatalogItem(idx);
-                    if (item) PanelTooltip.updateContent(buildRichHtml(item, _tooltipCache[idx]));
-                }
-            }
-        });
-    }
-
     function ownedTooltipKey(containerId, slot) {
         return String(containerId) + ':' + Number(slot.physicalSlot) + ':' + String(slot.slotLease || '');
-    }
-
-    function onOwnedSlotHover(event, containerId, slot) {
-        if (_dragTooltipSuppressed || _ownedTooltipSelectionSuppressed || !slot || !slot.occupied) return;
-        var key = ownedTooltipKey(containerId, slot);
-        _ownedTooltipHovering = key;
-        PanelTooltip.showAtMouse(_ownedTooltipCache[key]
-            ? buildOwnedRichHtml(slot.item || {}, _ownedTooltipCache[key])
-            : buildOwnedBasicHtml(slot.item || {}), event);
-        if (!_ownedTooltipCache[key]) requestOwnedTooltip(containerId, slot, key);
-    }
-
-    function onOwnedSlotLeave() {
-        _ownedTooltipHovering = null;
-        PanelTooltip.hide();
-    }
-
-    function onOwnedSlotMove(event) {
-        if (_dragTooltipSuppressed || _ownedTooltipSelectionSuppressed) return;
-        PanelTooltip.followMouse(event);
     }
 
     function buildOwnedBasicHtml(item) {
@@ -1213,20 +1200,11 @@ var KShop = (function() {
         });
     }
 
-    function requestOwnedTooltip(containerId, slot, key) {
-        requestInventory('tooltip', {v: 1, source: ownedSlotRef(containerId, slot)}, function(resp) {
-            if (!isKShopOpen() || !resp || resp.success !== true) return;
-            _ownedTooltipCache[key] = {
-                descHTML: resp.descHTML || '',
-                introHTML: resp.introHTML || '',
-                iconName: resp.iconName || '',
-                itemType: resp.itemType || ''
-            };
-            if (_ownedTooltipHovering === key
-                    && !_dragTooltipSuppressed
-                    && !_ownedTooltipSelectionSuppressed
-                    && PanelTooltip.isVisible()) {
-                PanelTooltip.updateContent(buildOwnedRichHtml(slot.item || {}, _ownedTooltipCache[key]));
+    function requestFlashTooltip(idx) {
+        requestShop('tooltip', { idx: idx }, function(resp) {
+            if (!isKShopOpen()) return;
+            if (resp.success) {
+                _tooltipCache[idx] = { descHTML: resp.descHTML || '', introHTML: resp.introHTML || '' };
             }
         });
     }
@@ -1496,7 +1474,6 @@ var KShop = (function() {
         var item = findCatalogItem(idx);
         if (!item) return;
 
-        _tooltipHovering = idx;
         var html = _tooltipCache[idx]
             ? buildRichHtml(item, _tooltipCache[idx])
             : buildBasicHtml(item);
@@ -1748,8 +1725,6 @@ var KShop = (function() {
     }
 
     function hideTooltip() {
-        _tooltipHovering = -1;
-        _ownedTooltipHovering = null;
         PanelTooltip.hide();
     }
 

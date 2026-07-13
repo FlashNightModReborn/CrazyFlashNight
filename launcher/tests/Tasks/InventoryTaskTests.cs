@@ -142,6 +142,51 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Snapshot_StructuredFilterRebuildsBoundedWhitelist()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("snapshot", "wb.inventory.filter.structured");
+            var window = (JObject)request["payload"]["requests"][0];
+            window["filterKey"] = "weapon";
+            window["filterSpec"] = new JObject
+            {
+                ["major"] = "weapon", ["use"] = "长枪", ["subtype"] = "突击步枪", ["predicate"] = "evil"
+            };
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject message = ParseSent(sent);
+            JObject spec = (JObject)message["requests"][0]["filterSpec"];
+            Assert.Equal("weapon", (string)spec["major"]);
+            Assert.Equal("长枪", (string)spec["use"]);
+            Assert.Equal("突击步枪", (string)spec["subtype"]);
+            Assert.Null(spec["predicate"]);
+        }
+
+        [Theory]
+        [InlineData("weapon", "", "突击步枪")]
+        [InlineData("all", "长枪", "")]
+        [InlineData("developer-secret", "", "")]
+        public void Snapshot_StructuredFilterRejectsInvalidPaths(string major, string use, string subtype)
+        {
+            int sends = 0;
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "wb.inventory.filter.structured.bad." + major);
+            request["payload"]["requests"][0]["filterSpec"] = new JObject
+            {
+                ["major"] = major, ["use"] = use, ["subtype"] = subtype
+            };
+
+            task.HandleWebRequest("snapshot", request);
+
+            Assert.Equal(0, sends);
+            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+        }
+
+        [Fact]
         public void BattleboxWorkbench_NormalizesSnapshotAndCrossContainerTransfer()
         {
             var sent = new List<JObject>();

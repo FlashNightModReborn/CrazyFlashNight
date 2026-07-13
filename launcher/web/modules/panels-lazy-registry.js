@@ -28,6 +28,7 @@
     // ── kshop ──
     Panels.registerLazy('kshop',
         ['modules/workbench.js',
+         'modules/item-filter.js',
          'modules/kshop-runtime.js',
          'modules/inventory-runtime.js',
          'modules/inventory-ui.js',
@@ -38,6 +39,7 @@
     // ── 背包—战备箱（独立 inventory-domain 工作台，不进入商城生命周期）──
     Panels.registerLazy('workbench',
         ['modules/workbench.js',
+         'modules/item-filter.js',
          'modules/kshop-runtime.js',
          'modules/inventory-runtime.js',
          'modules/inventory-ui.js',
@@ -47,6 +49,7 @@
     // ── NPC 金币商店（商品目录 + 背包/材料/情报同级 View）──
     Panels.registerLazy('npcshop',
         ['modules/workbench.js',
+         'modules/item-filter.js',
          'modules/inventory-runtime.js',
          'modules/inventory-ui.js',
          'modules/npcshop-runtime.js',

@@ -65,7 +65,32 @@ if (new URLSearchParams(location.search).get('visual') !== 'battlebox-real-icons
     isVisible:function(){ return this.visible; }, updateContent:function(){}, inferLayoutType:function(){ return 'narrow'; },
     dynamicIconHtml:function(name){ return Icons.html(name,'tooltip-rich-icon'); },
     staticIconUrl:function(){ return null; },
-    buildItemRichHtml:function(options){ this.lastRichOptions=options || {}; return '<div>'+(options && options.iconHtml || '')+'detail</div>'; }
+    buildItemRichHtml:function(options){ this.lastRichOptions=options || {}; return '<div>'+(options && options.iconHtml || '')+'detail</div>'; },
+    bindAsyncHover:function(node, options){
+        var cache = options.cache || {};
+        function resolveKey(e){
+            if (typeof options.key === 'function') return String(options.key(e, node) || '');
+            return String(options.key);
+        }
+        function onEnter(e){
+            if (typeof options.isSuppressed === 'function' && options.isSuppressed(e)) return;
+            var key = resolveKey(e);
+            var item = options.item;
+            var html = cache[key] && options.renderRich ? options.renderRich(item, cache[key]) : options.renderBasic(item);
+            PanelTooltip.showAtMouse(html, e);
+            if (cache[key] || typeof options.fetch !== 'function') return;
+            options.fetch(item, function(response){
+                if (!response || response.success !== true) return;
+                cache[key] = response;
+                if (PanelTooltip.isVisible()) PanelTooltip.updateContent(options.renderRich(item, response));
+            });
+        }
+        function onMove(e){ PanelTooltip.followMouse(e); }
+        function onLeave(){ PanelTooltip.hide(); }
+        node.addEventListener('mouseenter', onEnter);
+        node.addEventListener('mousemove', onMove);
+        node.addEventListener('mouseleave', onLeave);
+    }
 };
 if (new URLSearchParams(location.search).get('visual') !== 'battlebox-real-icons') window.Icons = {
     loaded:false,
@@ -90,6 +115,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/panel-scale.js"></script>
 <script src="modules/uidata.js"></script>
 <script src="modules/workbench.js"></script>
+<script src="modules/item-filter.js"></script>
 <script src="modules/kshop-runtime.js"></script>
 <script src="modules/inventory-runtime.js"></script>
 <script src="modules/inventory-ui.js"></script>
@@ -242,7 +268,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             };
             this.state.inventory.战备箱[40] = {name:'Zulu战备件',displayName:'Zulu战备件',icon:'Zulu战备件',majorType:'防具',use:'头部装备',itemKind:'equipment',quantity:1};
             this.state.inventory.战备箱[41] = {name:'Alpha战备件',displayName:'Alpha战备件',icon:'Alpha战备件',majorType:'收集品',use:'材料',itemKind:'stack',quantity:9};
-            this.state.inventory.战备箱[120] = {name:'远页战备刀',displayName:'远页战备刀',icon:'远页战备刀',majorType:'武器',use:'刀',itemKind:'equipment',quantity:1};
+            this.state.inventory.战备箱[120] = {name:'远页战备刀',displayName:'远页战备刀',icon:'远页战备刀',majorType:'武器',use:'长枪',itemKind:'equipment',quantity:1};
             this.state.inventory.战备箱[239] = {name:'末页战备件',displayName:'末页战备件',icon:'末页战备件',majorType:'武器',use:'刀',itemKind:'equipment',quantity:1};
             this.state.inventory.战备箱[300] = {name:'锁定保留件',displayName:'锁定保留件',icon:'锁定保留件',majorType:'收集品',use:'材料',itemKind:'stack',quantity:7};
             Toast.messages = [];
@@ -266,21 +292,39 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && type !== '材料' && !(type === '收集品' && use === '材料');
         },
 
+        inventoryFacetTree: function(items, accessibleCapacity) {
+            var occupied = [];
+            for (var i=0; i<accessibleCapacity; i++) if (items[i]) occupied.push(items[i]);
+            return ItemFilter.build(occupied, function(item){ return ItemFilter.catalogPath(item); });
+        },
+
+        itemMatchesFilterSpec: function(item, filterSpec) {
+            if (!item || !filterSpec) return !!item;
+            var path = InventoryUI.filterPathFromSpec(filterSpec, 'all');
+            return ItemFilter.matchesPath(item, path, function(entry){ return ItemFilter.catalogPath(entry); });
+        },
+
         snapshotFor: function(request) {
             var containerId = String(request.containerId);
             var items = this.state.inventory[containerId];
             var offset = Number(request.offset);
             var limit = Number(request.limit);
             var filterKey = String(request.filterKey || 'all');
+            var filterSpec = request.filterSpec ? clone(request.filterSpec) : null;
             var accessibleCapacity = containerId === '战备箱' ? this.battleboxAccessibleCapacity : items.length;
             var physicalSlots = [];
-            if (filterKey === 'all') {
+            if (filterSpec && filterSpec.major !== 'all') {
+                for (var structuredPhysical=0; structuredPhysical<accessibleCapacity; structuredPhysical++) {
+                    if (items[structuredPhysical] && this.itemMatchesFilterSpec(items[structuredPhysical],filterSpec)) physicalSlots.push(structuredPhysical);
+                }
+            } else if (filterKey === 'all') {
                 for (var physical=0; physical<accessibleCapacity; physical++) physicalSlots.push(physical);
             } else {
                 for (physical=0; physical<accessibleCapacity; physical++) {
                     if (items[physical] && this.itemMatchesFilter(items[physical],filterKey)) physicalSlots.push(physical);
                 }
             }
+            var facetTree = this.inventoryFacetTree(items, accessibleCapacity);
             var viewCapacity = physicalSlots.length;
             if (viewCapacity <= 0) offset = 0;
             else if (offset >= viewCapacity) offset = Math.floor((viewCapacity-1)/limit)*limit;
@@ -302,11 +346,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 slots.push(entry);
             }
             this.inventorySnapshotSeq += 1;
-            return {containerId:containerId,capacity:items.length,accessibleCapacity:accessibleCapacity,
+            var snapshot = {containerId:containerId,capacity:items.length,accessibleCapacity:accessibleCapacity,
                 viewCapacity:viewCapacity,filterKey:filterKey,
+                filterFacets:facetTree.children,filterItemCount:facetTree.count,
                 pageSizeHint:containerId === '战备箱' ? 40 : 50,locked:accessibleCapacity <= 0,
                 snapshotSeq:this.inventorySnapshotSeq,containerEpoch:this.inventoryEpochs[containerId] || 1,
                 offset:offset,limit:slots.length,slots:slots};
+            if (filterSpec) snapshot.filterSpec = filterSpec;
+            return snapshot;
         },
 
         inventorySnapshots: function(requests, rotate) {
@@ -628,6 +675,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     };
 
     Panels.init();
+    try { localStorage.removeItem('cf7.itemgrid.mode.kshop'); } catch (e) {}
     var results = [];
     function assert(id, title, pass, detail) {
         results.push({id:id,title:title,pass:!!pass,detail:detail || ''});
@@ -705,6 +753,43 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && readyStatus.getAttribute('aria-label') === '已同步'
                 && parseFloat(getComputedStyle(readyStatus).width) <= 24,
             shopPlayerText.replace(/\s+/g,' ').trim());
+
+        assert('kshop-ui2h','共享 ItemCard/ItemGrid 原语已导出',
+            typeof Workbench.ItemCard === 'function' && typeof Workbench.ItemCard.renderCatalog === 'function'
+                && typeof Workbench.ItemGrid === 'function');
+        var densityToggle = document.querySelector('.item-grid-mode-toggle');
+        var fullDensityOption = densityToggle && densityToggle.querySelector('[data-layout-mode="full"]');
+        var compactDensityOption = densityToggle && densityToggle.querySelector('[data-layout-mode="compact"]');
+        var densityCloseButton = document.querySelector('.workbench-header-actions .workbench-close-btn');
+        var catalogGrid = document.querySelector('.kshop-grid');
+        assert('kshop-ui2i','默认完整模式且完整/紧凑目标均可直接选择',
+            densityToggle && fullDensityOption && compactDensityOption
+                && fullDensityOption.getAttribute('aria-pressed') === 'true'
+                && compactDensityOption.getAttribute('aria-pressed') === 'false' && catalogGrid
+                && !!(densityToggle.compareDocumentPosition(densityCloseButton) & Node.DOCUMENT_POSITION_FOLLOWING)
+                && !catalogGrid.classList.contains('item-grid-compact'));
+        compactDensityOption.click();
+        var catalogCompact = document.querySelector('.kshop-grid').classList.contains('item-grid-compact');
+        var compactStored = false;
+        try { compactStored = localStorage.getItem('cf7.itemgrid.mode.kshop') === 'compact'; } catch (e) {}
+        assert('kshop-ui2j','紧凑模式切换立即作用于目录网格并持久化',
+            catalogCompact && compactDensityOption.getAttribute('aria-pressed') === 'true' && compactStored);
+        var compactCard = document.querySelector('.kshop-card[data-idx="0"]');
+        var lockedCompactCard = document.querySelector('.kshop-card[data-idx="2"]');
+        var compactInfo = compactCard && compactCard.querySelector('.kshop-card-info');
+        var compactInfoHidden = !compactInfo || getComputedStyle(compactInfo).display === 'none';
+        assert('kshop-ui2j2','紧凑目录卡片保持可读图标瓦片：隐藏名称/价格，保留图标与加购按钮',
+            compactInfoHidden
+                && !!compactCard.querySelector('.kshop-card-icon-frame')
+                && !!compactCard.querySelector('.kshop-add-btn')
+                && parseFloat(getComputedStyle(compactCard).height) >= 54
+                && parseFloat(getComputedStyle(compactCard.querySelector('.kshop-add-btn')).width) >= 20
+                && lockedCompactCard && !lockedCompactCard.querySelector('.kshop-add-btn'));
+        fullDensityOption.click();
+        assert('kshop-ui2k','切回完整模式恢复目录网格密度',
+            !document.querySelector('.kshop-grid').classList.contains('item-grid-compact')
+                && fullDensityOption.getAttribute('aria-pressed') === 'true');
+
         document.querySelector('.workbench-slot[data-slot="R"]').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:61,pointerType:'mouse',isPrimary:true,button:0}));
         var focusMoved = shell.getAttribute('data-active-slot') === 'R';
         assert('kshop-ui2a','Gate A1 双栏壳挂载 CatalogView 与 CartView',
@@ -969,6 +1054,31 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && !/(PLAYER OWNED|STORAGE OWNED|EMPTY|物理槽位|权威整理|snapshot|lease|AS2)/.test(inventoryPlayerText),
             inventoryPlayerText.replace(/\s+/g,' ').trim());
 
+        var invDensityToggle = document.querySelector('.item-grid-mode-toggle');
+        var invFullDensityOption = invDensityToggle && invDensityToggle.querySelector('[data-layout-mode="full"]');
+        var invCompactDensityOption = invDensityToggle && invDensityToggle.querySelector('[data-layout-mode="compact"]');
+        var backpackGrid = document.querySelector('.inventory-owned-backpack .inventory-owned-grid');
+        var warehouseGrid = document.querySelector('.inventory-owned-warehouse .inventory-owned-grid');
+        assert('kshop-ui8z','库存子视图默认完整模式',
+            invDensityToggle && invFullDensityOption && invCompactDensityOption
+                && invFullDensityOption.getAttribute('aria-pressed') === 'true' && backpackGrid
+                && !backpackGrid.classList.contains('item-grid-compact')
+                && warehouseGrid && !warehouseGrid.classList.contains('item-grid-compact'));
+        invCompactDensityOption.click();
+        var ownedCompact = document.querySelector('.inventory-owned-backpack .inventory-owned-grid').classList.contains('item-grid-compact')
+            && document.querySelector('.inventory-owned-warehouse .inventory-owned-grid').classList.contains('item-grid-compact');
+        var compactOwnedCard = document.querySelector('.inventory-owned-backpack .inventory-slot-card.occupied');
+        assert('kshop-ui8za','紧凑模式切换作用于背包与战备箱网格',
+            ownedCompact && invCompactDensityOption.getAttribute('aria-pressed') === 'true'
+                && parseFloat(getComputedStyle(compactOwnedCard).height) >= 46
+                && getComputedStyle(compactOwnedCard.querySelector('.inventory-slot-icon-frame')).height === '42px'
+                && getComputedStyle(compactOwnedCard.querySelector('.inventory-discard-btn')).display !== 'none');
+        invFullDensityOption.click();
+        assert('kshop-ui8zb','切回完整模式恢复 owned 网格密度',
+            !document.querySelector('.inventory-owned-backpack .inventory-owned-grid').classList.contains('item-grid-compact')
+                && !document.querySelector('.inventory-owned-warehouse .inventory-owned-grid').classList.contains('item-grid-compact')
+                && invFullDensityOption.getAttribute('aria-pressed') === 'true');
+
         var presentationEquip = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="1"]');
         var presentationStack = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="4"]');
         var presentationBattleboxEquip = document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
@@ -1036,6 +1146,33 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="4"]')
                 && KShop.debugState().inventory.requests[0].offset === 0,
             JSON.stringify(KShop.debugState().inventory.requests));
+
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        var warehouseToolbar = document.querySelector('.inventory-owned-warehouse .workbench-view-toolbar');
+        await waitFor(function(){ return !!warehouseToolbar.querySelector('[data-filter-path="weapon"]'); },600);
+        var weaponTreeButton = warehouseToolbar.querySelector('[data-filter-path="weapon"]');
+        weaponTreeButton.click();
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.filterSpec && request.filterSpec.major === 'weapon';
+        },600);
+        var bladeTreeButton = warehouseToolbar.querySelector('[data-filter-path="weapon/刀"]');
+        bladeTreeButton.click();
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.filterSpec && request.filterSpec.use === '刀';
+        },600);
+        var structuredRequest = Host.sent.filter(function(message){ return message.domain === 'inventory' && message.cmd === 'snapshot'; }).pop();
+        assert('kshop-ui8gd','树状筛选发送结构化路径并使用全容器 facet 数量，不退化为当前页过滤',
+            weaponTreeButton && bladeTreeButton
+                && structuredRequest.payload.requests[1].filterSpec.major === 'weapon'
+                && structuredRequest.payload.requests[1].filterSpec.use === '刀'
+                && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 2
+                && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="239"]')
+                && warehouseToolbar.querySelector('[data-filter-path="weapon"] small').textContent === '3'
+                && warehouseToolbar.querySelector('[data-filter-path="weapon/刀"] small').textContent === '2',
+            JSON.stringify(KShop.debugState().inventory.requests[1]));
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
@@ -1227,7 +1364,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && displayedOccupied[1].getAttribute('data-physical-slot') === '40'
                 && Host.state.inventory.战备箱[40].name === 'Zulu战备件'
                 && Host.state.inventory.战备箱[41].name === 'Alpha战备件'
-                && countInventoryCmd('sortAndMerge') === displayWritesBefore);
+                && countInventoryCmd('sortAndMerge') === displayWritesBefore,
+            JSON.stringify(Array.prototype.map.call(displayedOccupied,function(node){return {slot:node.getAttribute('data-physical-slot'),name:(node.querySelector('.inventory-slot-name')||{}).textContent};})));
 
         var oldBattleboxLease = Host.leases['战备箱:40'] && Host.leases['战备箱:40'].token;
         var authoritySelect = document.querySelector('.inventory-owned-warehouse .inventory-authority-sort');
@@ -1332,6 +1470,23 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await Host.openWorkbench(240);
         var workbenchState = InventoryWorkbench.debugState();
         var workbenchBulkQueries = countCmd('bulkQuery');
+        var standaloneBattleboxGrid = document.querySelector('.inventory-owned-battlebox .inventory-owned-grid');
+        var standaloneBattleboxCard = document.querySelector('.inventory-owned-battlebox .inventory-slot-card.occupied');
+        var standaloneFullCopyVisible = standaloneBattleboxCard
+            && getComputedStyle(standaloneBattleboxCard.querySelector('.inventory-slot-copy')).display !== 'none';
+        click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="compact"]');
+        var standaloneCompactMetrics = {
+            active:standaloneBattleboxGrid.classList.contains('item-grid-compact'),
+            scrollHeight:standaloneBattleboxGrid.scrollHeight,
+            clientHeight:standaloneBattleboxGrid.clientHeight,
+            cardHeight:parseFloat(getComputedStyle(standaloneBattleboxCard).height),
+            iconHeight:parseFloat(getComputedStyle(standaloneBattleboxCard.querySelector('.inventory-slot-icon-frame')).height)
+        };
+        var standaloneCompactReadable = standaloneCompactMetrics.active
+            && standaloneCompactMetrics.scrollHeight <= standaloneCompactMetrics.clientHeight
+            && standaloneCompactMetrics.cardHeight >= 44
+            && standaloneCompactMetrics.iconHeight >= 34;
+        click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="full"]');
         click('.inventory-page-jump');
         var battleboxPageOptions = document.querySelectorAll('.inventory-page-option');
         assert('workbench-ui1','独立战备箱工作台使用全屏 anchor，不进入商城生命周期，并按 40 槽显示最多 6 页',
@@ -1342,8 +1497,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && battleboxPageOptions.length === 6
                 && document.querySelectorAll('.inventory-owned-battlebox .inventory-slot-card').length === 40
                 && document.querySelector('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="2"] [data-icon="镜之虎彻"]')
-                && document.querySelector('.inventory-owned-battlebox .inventory-owned-grid').scrollHeight
-                    <= document.querySelector('.inventory-owned-battlebox .inventory-owned-grid').clientHeight
+                && standaloneFullCopyVisible && standaloneCompactReadable
                 && document.querySelectorAll('.inventory-sort-controls').length === 2
                 && document.querySelectorAll('.inventory-category-filter').length === 2
                 && document.querySelectorAll('.inventory-authority-sort').length === 2
@@ -1352,7 +1506,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     return Math.abs(rect.left) < 1 && Math.abs(rect.top) < 1
                         && Math.abs(rect.width - innerWidth) < 1 && Math.abs(rect.height - innerHeight) < 1;
                 })(),
-            'bulk=' + workbenchBulkQueries + ' page=' + JSON.stringify(workbenchState.page));
+            'bulk=' + workbenchBulkQueries + ' page=' + JSON.stringify(workbenchState.page)
+                + ' fullCopy=' + standaloneFullCopyVisible + ' compact=' + standaloneCompactReadable
+                + ' compactMetrics=' + JSON.stringify(standaloneCompactMetrics));
         click('.inventory-page-jump');
 
         var battleboxTooltipBefore = countInventoryCmd('tooltip');
@@ -1565,6 +1721,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     async function runVisualScenario(mode) {
         if (mode.indexOf('battlebox') === 0) {
             await Host.openWorkbench(240);
+            if (mode === 'battlebox-compact') click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="compact"]');
             if (mode === 'battlebox-real-icons') {
                 var realIconSlot = document.querySelector('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="2"]');
                 realIconSlot.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:1120,clientY:220}));
@@ -1585,9 +1742,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             click('#kshop-checkout');
             await waitFor(function(){ var button=document.querySelector('[data-kshop-settlement-commit]'); return button && !button.disabled; },500);
         }
-        if (mode === 'inventory' || mode === 'inventory-pages') {
+        if (mode === 'inventory' || mode === 'inventory-pages' || mode === 'inventory-compact') {
             click('.workbench-mode-btn[data-mode="inventory"]');
             await wait(160);
+            if (mode === 'inventory-compact') click('.item-grid-mode-option[data-layout-mode="compact"]');
             if (mode === 'inventory-pages') click('.inventory-page-jump');
         }
         window.__visualReady = true;

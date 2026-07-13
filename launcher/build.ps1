@@ -70,13 +70,9 @@ function Copy-IfDifferent {
     return $true
 }
 
-# dotnet host 探测：优先 user-scope (%LOCALAPPDATA%\Microsoft\dotnet)，否则系统 PATH
-$userDotnet = Join-Path $env:LOCALAPPDATA "Microsoft\dotnet\dotnet.exe"
-if (Test-Path $userDotnet) {
-    $dotnet = $userDotnet
-} else {
-    $dotnet = "dotnet"
-}
+# dotnet host 探测：按 global.json feature band 在用户级与系统级安装中选择，不改机器 PATH。
+. (Join-Path $launcherDir 'resolve-dotnet.ps1')
+$dotnet = Resolve-Cf7Dotnet -ProjectRoot $projectRoot
 
 Write-Host "=== CF7:ME Guardian Build (net10.0-windows) ===" -ForegroundColor Cyan
 Write-Host "  Project Root: $projectRoot"

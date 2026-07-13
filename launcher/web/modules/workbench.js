@@ -695,6 +695,295 @@
         };
     };
 
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    /**
+     * Shared item card primitive. Every catalog card uses the same semantic
+     * shell (icon/body/name/meta/price/overlays); legacy skin class names stay
+     * attached as compatibility tokens while panel CSS migrates gradually.
+     */
+    function ItemCard() {}
+
+    ItemCard.renderCatalog = function(options) {
+        options = options || {};
+        var skin = options.skin || 'kshop';
+        if (skin !== 'kshop' && skin !== 'npcshop') throw new Error('Unsupported ItemCard skin: ' + skin);
+
+        var locked = !!options.locked;
+        var selected = !!options.selected;
+        var nosale = !!options.nosale;
+        var node = makeElement('article', 'item-card item-card-catalog item-card-' + skin);
+        node.classList.add(skin === 'kshop' ? 'kshop-card' : 'npcshop-catalog-card');
+        node.classList.toggle('item-card-locked', locked);
+        node.classList.toggle('item-card-selected', selected);
+        node.classList.toggle('item-card-disabled', nosale);
+
+        if (skin === 'kshop') {
+            node.classList.toggle('kshop-card-nosale', nosale);
+            node.classList.toggle('kshop-card-locked', locked);
+            node.setAttribute('data-idx', String(options.id));
+            node.setAttribute('tabindex', locked || nosale ? '-1' : '0');
+            node.setAttribute('aria-label', options.ariaLabel || '');
+        } else {
+            node.classList.toggle('locked', locked);
+            node.classList.toggle('selected', selected);
+            node.setAttribute('data-catalog-index', String(options.id));
+            node.setAttribute('aria-pressed', selected ? 'true' : 'false');
+            if (locked && options.lockTitle) node.title = options.lockTitle;
+        }
+
+        var icon = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-icon '
+            + (skin === 'kshop' ? 'kshop-card-icon-frame' : 'npcshop-card-icon'));
+        icon.innerHTML = options.iconHtml || '';
+        node.appendChild(icon);
+
+        var body = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-body '
+            + (skin === 'kshop' ? 'kshop-card-info' : 'npcshop-card-copy'));
+        var name = makeElement(skin === 'kshop' ? 'div' : 'b', 'item-card-name'
+            + (skin === 'kshop' ? ' kshop-card-name' : ''));
+        name.textContent = options.name || '';
+        body.appendChild(name);
+
+        var meta;
+        if (locked && skin === 'kshop') {
+            meta = makeElement('div', 'item-card-meta item-card-lock kshop-lock');
+            meta.textContent = options.lockReason || '';
+            meta.title = options.lockReason || '';
+        } else {
+            meta = makeElement(skin === 'kshop' ? 'div' : 'small', 'item-card-meta'
+                + (skin === 'kshop' ? ' kshop-card-type' : ''));
+            meta.textContent = options.meta || '';
+        }
+        body.appendChild(meta);
+
+        var price = makeElement(skin === 'kshop' ? 'div' : 'strong', 'item-card-price'
+            + (skin === 'kshop' ? ' kshop-card-price' : ''));
+        if (skin === 'kshop' && options.priceLabel) {
+            var priceLabel = makeElement('span', 'item-card-price-label');
+            priceLabel.textContent = options.priceLabel;
+            price.appendChild(priceLabel);
+            price.appendChild(document.createTextNode(' '));
+        }
+        price.appendChild(document.createTextNode(String(options.priceText != null ? options.priceText : options.price || '')));
+        body.appendChild(price);
+        node.appendChild(body);
+
+        var overlays = makeElement('span', 'item-card-overlays');
+        if (skin === 'npcshop') {
+            var marker = makeElement('span', 'item-card-auxiliary item-card-selection-marker npcshop-selection-marker');
+            marker.textContent = options.markerText || '';
+            overlays.appendChild(marker);
+        }
+        if (options.extraHtml) {
+            var extra = makeElement('span', 'item-card-extra');
+            extra.innerHTML = options.extraHtml;
+            while (extra.firstChild) overlays.appendChild(extra.firstChild);
+        }
+        node.appendChild(overlays);
+
+        return node;
+    };
+
+    /**
+     * Shared item grid primitive. Wraps GridContainerView/ContainerViewAdapter
+     * and adds layoutMode support (full/compact) by toggling the
+     * `item-grid-compact` class on the grid root. Panels can persist the mode
+     * per panel id through localStorage.
+     */
+    function ItemGrid(options) {
+        options = options || {};
+        this.layoutMode = options.layoutMode || 'full';
+        this._gridClassName = options.gridClassName || '';
+
+        var adapter = new ContainerViewAdapter({
+            instanceKey: options.instanceKey,
+            instancePolicy: options.instancePolicy,
+            itemModel: options.itemModel || 'owned',
+            getItems: options.getItems || function() { return []; },
+            keyOf: options.keyOf || null,
+            renderItem: options.renderItem || function() { return makeElement('div'); },
+            bindItem: options.bindItem || null,
+            exportOffer: options.exportOffer || null,
+            probeAccept: options.probeAccept || null
+        });
+        this.adapter = adapter;
+
+        this.view = new GridContainerView({
+            adapter: adapter,
+            title: options.title,
+            kicker: options.kicker,
+            meta: options.meta,
+            className: options.className,
+            gridClassName: this._effectiveGridClassName(),
+            emptyText: options.emptyText,
+            allowedSlots: options.allowedSlots
+        });
+        this.view.viewKind = options.viewKind || this.view.viewKind;
+        if (options.toolbar) this.view.chrome.setToolbar(options.toolbar);
+
+        this.renderer = this.view.renderer;
+        this.root = this.view.root;
+        this.chrome = this.view.chrome;
+        this.view.itemGrid = this;
+        if (options.densityController && typeof options.densityController.register === 'function') {
+            options.densityController.register(this);
+        }
+    }
+
+    ItemGrid.prototype._effectiveGridClassName = function() {
+        return this._gridClassName + (this.layoutMode === 'compact' ? ' item-grid-compact' : '');
+    };
+
+    ItemGrid.prototype.setLayoutMode = function(mode) {
+        if (mode !== 'full' && mode !== 'compact') return false;
+        if (this.layoutMode === mode) return false;
+        this.layoutMode = mode;
+        this.renderer.root.classList.toggle('item-grid-compact', mode === 'compact');
+        return true;
+    };
+
+    ItemGrid.prototype.render = function() {
+        this.view.render();
+    };
+
+    ItemGrid.getLayoutMode = function(panelId) {
+        try {
+            var v = window.localStorage.getItem('cf7.itemgrid.mode.' + panelId);
+            if (v === 'compact' || v === 'full') return v;
+        } catch (e) {}
+        return 'full';
+    };
+
+    ItemGrid.setLayoutMode = function(panelId, mode) {
+        try { window.localStorage.setItem('cf7.itemgrid.mode.' + panelId, mode); } catch (e) {}
+    };
+
+    ItemGrid.createToggle = function(panelId, currentMode, callback) {
+        currentMode = currentMode === 'compact' ? 'compact' : 'full';
+        var group = makeElement('div', 'item-grid-mode-switch item-grid-mode-toggle');
+        group.setAttribute('role', 'group');
+        group.setAttribute('aria-label', '物品格布局');
+
+        var label = makeElement('span', 'item-grid-mode-label');
+        label.textContent = '布局';
+        group.appendChild(label);
+
+        var buttons = {};
+        function updateSelection(mode) {
+            currentMode = mode;
+            group.setAttribute('data-layout-mode', mode);
+            for (var key in buttons) {
+                var active = key === mode;
+                buttons[key].classList.toggle('active', active);
+                buttons[key].setAttribute('aria-pressed', active ? 'true' : 'false');
+            }
+        }
+
+        function addOption(mode, text, title) {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'workbench-mode-btn item-grid-mode-option';
+            button.setAttribute('data-layout-mode', mode);
+            button.textContent = text;
+            button.title = title;
+            button.addEventListener('click', function() {
+                if (mode === currentMode) return;
+                ItemGrid.setLayoutMode(panelId, mode);
+                updateSelection(mode);
+                if (typeof callback === 'function') callback(mode);
+            });
+            buttons[mode] = button;
+            group.appendChild(button);
+        }
+
+        addOption('full', '完整', '显示名称、价格与物品状态');
+        addOption('compact', '紧凑', '使用完整图标瓦片，一屏查看更多物品');
+        updateSelection(currentMode);
+        return group;
+    };
+
+    /**
+     * One density state for every grid owned by a panel. Targets may be an
+     * ItemGrid, GridRenderer, view, or raw grid element. Registering a target
+     * immediately applies the current mode, so late-created subviews stay in
+     * sync without panel-specific applyLayoutMode loops.
+     */
+    function GridDensityController(options) {
+        options = options || {};
+        this.panelId = String(options.panelId || 'default');
+        this.mode = options.mode === 'compact' || options.mode === 'full'
+            ? options.mode : ItemGrid.getLayoutMode(this.panelId);
+        this._targets = [];
+        this._listeners = [];
+    }
+
+    GridDensityController.prototype._elementOf = function(target) {
+        if (!target) return null;
+        if (target instanceof ItemGrid) return target.renderer && target.renderer.root;
+        if (target.renderer && target.renderer.root) return target.renderer.root;
+        if (target.root && target.root.classList) return target.root;
+        return target.classList ? target : null;
+    };
+
+    GridDensityController.prototype.register = function(target) {
+        var element = this._elementOf(target);
+        if (!element) return false;
+        for (var i = 0; i < this._targets.length; i++) if (this._targets[i] === target) return true;
+        this._targets.push(target);
+        if (target instanceof ItemGrid) target.setLayoutMode(this.mode);
+        else element.classList.toggle('item-grid-compact', this.mode === 'compact');
+        return true;
+    };
+
+    GridDensityController.prototype.unregister = function(target) {
+        for (var i = this._targets.length - 1; i >= 0; i--) {
+            if (this._targets[i] === target) this._targets.splice(i, 1);
+        }
+    };
+
+    GridDensityController.prototype.setMode = function(mode) {
+        if (mode !== 'full' && mode !== 'compact') return false;
+        var changed = this.mode !== mode;
+        this.mode = mode;
+        ItemGrid.setLayoutMode(this.panelId, mode);
+        for (var i = 0; i < this._targets.length; i++) {
+            var target = this._targets[i];
+            var element = this._elementOf(target);
+            if (!element) continue;
+            if (target instanceof ItemGrid) target.setLayoutMode(mode);
+            else element.classList.toggle('item-grid-compact', mode === 'compact');
+        }
+        if (changed) {
+            for (i = 0; i < this._listeners.length; i++) this._listeners[i](mode);
+        }
+        return changed;
+    };
+
+    GridDensityController.prototype.createToggle = function(callback) {
+        var self = this;
+        return ItemGrid.createToggle(this.panelId, this.mode, function(mode) {
+            self.setMode(mode);
+            if (typeof callback === 'function') callback(mode);
+        });
+    };
+
+    GridDensityController.prototype.subscribe = function(listener) {
+        if (typeof listener !== 'function') return function() {};
+        var self = this;
+        this._listeners.push(listener);
+        return function() {
+            var index = self._listeners.indexOf(listener);
+            if (index >= 0) self._listeners.splice(index, 1);
+        };
+    };
+
+    GridDensityController.prototype.destroy = function() {
+        this._targets = [];
+        this._listeners = [];
+    };
+
     return {
         contractStatus: function() {
             return {
@@ -714,6 +1003,9 @@
         ContainerViewAdapter: ContainerViewAdapter,
         GridContainerView: GridContainerView,
         InteractionBroker: InteractionBroker,
-        PointerDragController: PointerDragController
+        PointerDragController: PointerDragController,
+        ItemCard: ItemCard,
+        ItemGrid: ItemGrid,
+        GridDensityController: GridDensityController
     };
 });

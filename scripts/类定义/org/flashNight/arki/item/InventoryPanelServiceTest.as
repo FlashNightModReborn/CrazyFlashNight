@@ -117,6 +117,18 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         });
     }
 
+    private static function structuredSnapshot(containerId:String, offset:Number, limit:Number, filterKey:String, filterSpec:Object):Object {
+        return InventoryPanelService.execute("snapshot", {
+            v: 1,
+            requests: [{containerId: containerId, offset: offset, limit: limit, filterKey: filterKey, filterSpec: filterSpec}]
+        });
+    }
+
+    private static function facetAt(nodes:Array, id:String):Object {
+        for (var i:Number = 0; i < nodes.length; i++) if (String(nodes[i].id) == id) return nodes[i];
+        return null;
+    }
+
     private static function refFrom(response:Object, snapshotIndex:Number, slotIndex:Number):Object {
         var container:Object = response.snapshots[snapshotIndex];
         var slot:Object = container.slots[slotIndex];
@@ -186,7 +198,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var previousMaterial:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"];
         var previousWeapon:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"];
         org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"] = {type: "收集品", use: "材料", price: 1};
-        org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = {type: "武器", use: "手枪", price: 2};
+        org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = {type: "武器", use: "长枪", weapontype: "突击步枪", price: 2};
         for (var slot:Number = 0; slot < 51; slot++) {
             _root.物品栏.仓库.add(slot, new BaseItem("筛选材料", 1, slot + 1));
         }
@@ -202,6 +214,22 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(weapon.success && weapon.snapshots[0].viewCapacity == 1
                 && weapon.snapshots[0].slots[0].physicalSlot == 100,
             "分类筛选跨越未加载物理页查找匹配物品");
+        var structured:Object = structuredSnapshot("仓库", 0, 50, "weapon", {
+            major:"weapon", use:"长枪", subtype:"突击步枪"
+        });
+        var weaponFacet:Object = facetAt(structured.snapshots[0].filterFacets, "weapon");
+        var longGunFacet:Object = weaponFacet == null ? null : facetAt(weaponFacet.children, "长枪");
+        var rifleFacet:Object = longGunFacet == null ? null : facetAt(longGunFacet.children, "突击步枪");
+        assertTrue(structured.success && structured.snapshots[0].viewCapacity == 1
+                && structured.snapshots[0].filterSpec.subtype == "突击步枪"
+                && structured.snapshots[0].filterItemCount == 52
+                && rifleFacet != null && rifleFacet.count == 1,
+            "结构化筛选由权威层匹配用途/子类并返回全容器 facet 数量");
+        var invalidSpec:Object = structuredSnapshot("仓库", 0, 50, "weapon", {
+            major:"weapon", subtype:"突击步枪"
+        });
+        assertTrue(!invalidSpec.success && invalidSpec.error == "unsupported_filter",
+            "结构化筛选拒绝缺少用途的武器子类路径");
         var clamped:Object = filteredSnapshot("仓库", 50, 50, "weapon");
         assertTrue(clamped.success && clamped.snapshots[0].offset == 0
                 && clamped.snapshots[0].slots[0].physicalSlot == 100,

@@ -12,9 +12,11 @@ const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwrig
 const WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench.js');
 const INVENTORY_RUNTIME_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-runtime.js');
 const INVENTORY_UI_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-ui.js');
+const ITEM_FILTER_SOURCE = path.join(WEB_ROOT, 'modules', 'item-filter.js');
 const INVENTORY_WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-workbench.js');
 const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior.js');
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
+const NPCSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop.js');
 const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
 const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
 const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
@@ -51,6 +53,7 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory operation resolver branches on concrete container pair');
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
+    const npcshopSource = fs.readFileSync(NPCSHOP_SOURCE, 'utf8');
     const kshopViewsSource = fs.readFileSync(KSHOP_VIEWS_SOURCE, 'utf8');
     const panelsSource = fs.readFileSync(PANELS_SOURCE, 'utf8');
     const panelsCssSource = fs.readFileSync(PANELS_CSS_SOURCE, 'utf8');
@@ -71,9 +74,22 @@ function auditArchitectureBoundaries() {
     if (uiLeaks.length) throw new Error('KShop still owns extracted inventory UI: ' + uiLeaks.join(', '));
     if (!inventoryUiSource.includes('function InventoryWindowPager(')
             || !inventoryUiSource.includes('function InventorySortControls(')
+            || !inventoryUiSource.includes('function InventoryFilterControl(')
+            || !inventoryUiSource.includes('function OwnedInventoryViewShell(')
             || !inventoryUiSource.includes('function derivePageState(')
             || !inventoryUiSource.includes('function renderOwnedSlot(')) {
         throw new Error('Inventory UI component boundary is incomplete');
+    }
+    if (!inventoryUiSource.includes('item-card item-card-owned inventory-slot-card')
+            || !inventoryUiSource.includes('item-card-body inventory-slot-copy')
+            || !npcshopSource.includes('item-card-auxiliary item-card-selection-marker')
+            || !panelsCssSource.includes('.item-grid-compact .item-card-auxiliary')) {
+        throw new Error('Semantic item-card density contract is incomplete');
+    }
+    const ownedCompositions = [kshopSource, npcshopSource, inventoryWorkbenchSource];
+    if (!ownedCompositions.every(text => text.includes('new InventoryUI.OwnedInventoryViewShell('))
+            || ownedCompositions.some(text => text.includes('new Workbench.ItemGrid('))) {
+        throw new Error('Owned inventory composition bypasses OwnedInventoryViewShell');
     }
     if (inventoryWorkbenchSource.includes("requestShop(")
             || inventoryWorkbenchSource.includes("'bulkQuery'")
@@ -99,12 +115,34 @@ function auditArchitectureBoundaries() {
             || !behaviorSource.includes('[data-browser-native]')) {
         throw new Error('Game UI behavior guard is missing a required native-browser boundary');
     }
+    if (!source.includes('function ItemCard(') || !source.includes('function ItemGrid(')
+            || !source.includes('function GridDensityController(')) {
+        throw new Error('Workbench item/density primitives missing');
+    }
+    const itemFilterSource = fs.readFileSync(ITEM_FILTER_SOURCE, 'utf8');
+    if (!itemFilterSource.includes('function FilterNavigator(')
+            || !kshopSource.includes('ItemFilter.build(')
+            || !npcshopSource.includes('ItemFilter.build(')) {
+        throw new Error('Shared item taxonomy/navigation boundary is incomplete');
+    }
+    if (!kshopSource.includes('Workbench.ItemCard.renderCatalog') || !npcshopSource.includes('Workbench.ItemCard.renderCatalog')) {
+        throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
+    }
+    if (!kshopSource.includes('PanelTooltip.bindAsyncHover') || !npcshopSource.includes('PanelTooltip.bindAsyncHover')
+            || !inventoryWorkbenchSource.includes('PanelTooltip.bindAsyncHover')) {
+        throw new Error('Panel async tooltip binding is not shared across shop and workbench panels');
+    }
+    if (!panelsCssSource.includes('.item-grid-compact')) {
+        throw new Error('Compact item-grid modifier styles missing');
+    }
     return {
         forbiddenTokens:forbidden,
         gridRendererTransportFree:true,
         ownedPairBranchFree:true,
         sameContainerTransfer:true,
         inventoryUiComponents:true,
+        unifiedOwnedInventoryShell:true,
+        semanticItemCardDensityContract:true,
         kshopViewComposition:true,
         standaloneBattleboxWorkbench:true,
         sharedIconManifestGate:true,
@@ -175,6 +213,17 @@ function createServer() {
             shellRect:(() => { const r=document.querySelector('.workbench-shell').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })(),
             contentRect:(() => { const r=document.getElementById('panel-content').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })(),
             fullAnchor:(() => { const r=document.getElementById('panel-content').getBoundingClientRect(); return Math.abs(r.x)<1 && Math.abs(r.y)<1 && Math.abs(r.width-innerWidth)<1 && Math.abs(r.height-innerHeight)<1; })(),
+            headerLayout:(() => {
+                const header=document.querySelector('.workbench-header');
+                const actions=header && header.querySelector('.workbench-header-actions');
+                if(!header || !actions) return null;
+                const rectOf=node => { const r=node.getBoundingClientRect(); return {x:r.x,width:r.width,right:r.right}; };
+                return {
+                    header:rectOf(header), actions:rectOf(actions),
+                    overflow:actions.scrollWidth>actions.clientWidth || actions.getBoundingClientRect().right>innerWidth+1,
+                    children:Array.from(actions.children).map(node=>({text:(node.textContent||'').replace(/\s+/g,' ').trim(),display:getComputedStyle(node).display,rect:rectOf(node)}))
+                };
+            })(),
             inventoryLayout:(() => {
                 const out={};
                 ['backpack','warehouse','battlebox'].forEach(name => {
@@ -186,6 +235,9 @@ function createServer() {
                     const grid=root.querySelector('.inventory-owned-grid');
                     out[name]={
                         occupied:root.querySelectorAll('.inventory-slot-card.occupied').length,
+                        compact:!!(grid && grid.classList.contains('item-grid-compact')),
+                        cardHeight:(() => { const card=root.querySelector('.inventory-slot-card'); return card ? parseFloat(getComputedStyle(card).height) : 0; })(),
+                        iconHeight:(() => { const icon=root.querySelector('.inventory-slot-icon-frame'); return icon ? parseFloat(getComputedStyle(icon).height) : 0; })(),
                         title:title ? title.textContent : '',
                         titleClipped:!!(title && (title.scrollWidth-title.clientWidth>2 || title.scrollHeight-title.clientHeight>2)),
                         toolbarOverflow:!!(toolbar && (toolbar.scrollWidth>toolbar.clientWidth || toolbar.scrollHeight>toolbar.clientHeight)),

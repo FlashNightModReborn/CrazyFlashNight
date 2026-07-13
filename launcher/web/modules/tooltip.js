@@ -692,6 +692,90 @@ var PanelTooltip = (function() {
         }
     }
 
+    /**
+     * 异步 hover tooltip 通用绑定。
+     *
+     * 生命周期：pointerenter 先显示 renderBasic，异步 fetch 成功后若仍 hover 则
+     * updateContent(renderRich)；pointermove 跟随鼠标；pointerleave 隐藏。
+     *
+     * options:
+     *   - key: string | function(event, node) -> string   缓存键
+     *   - resolveItem: function(event, node) -> item      可选，解析 hover 对应的 item
+     *   - item: any                                       静态 item（resolveItem 的替代）
+     *   - cache: Object                                   可选外部缓存对象（按 key 存 fetch 结果）
+     *   - renderBasic: function(item) -> html             未缓存/加载中显示的内容
+     *   - renderRich: function(item, data) -> html        fetch 成功后显示的内容
+     *   - fetch: function(item, callback(response))       发起异步请求，成功后调 callback
+     *   - isSuppressed: function(event) -> boolean        可选，拖拽等场景抑制 tooltip
+     *   - events: 'pointer' | 'mouse'                     默认 pointer；mouse 兼容旧代码
+     */
+    function bindAsyncHover(node, options) {
+        if (!node || !options) return;
+        var cache = options.cache || {};
+        var hoverKey = null;
+        var hoverDepth = 0;
+
+        function resolveKey(e) {
+            if (typeof options.key === 'function') return String(options.key(e, node) || '');
+            return String(options.key);
+        }
+
+        function resolveItem(e) {
+            if (typeof options.resolveItem === 'function') return options.resolveItem(e, node);
+            return options.item;
+        }
+
+        function suppressed(e) {
+            if (typeof options.isSuppressed === 'function') return !!options.isSuppressed(e);
+            return false;
+        }
+
+        function onEnter(e) {
+            if (suppressed(e)) return;
+            if (hoverDepth++ > 0) return; // 同时绑定 pointer + mouse 时避免重复触发
+            var key = resolveKey(e);
+            var item = resolveItem(e);
+            hoverKey = key;
+            var html = cache[key] && options.renderRich
+                ? options.renderRich(item, cache[key])
+                : options.renderBasic(item);
+            PanelTooltip.showAtMouse(html, e);
+            if (cache[key] || typeof options.fetch !== 'function') return;
+            options.fetch(item, function(response) {
+                if (!response || response.success !== true) return;
+                cache[key] = response;
+                if (hoverKey === key && PanelTooltip.isVisible()) {
+                    PanelTooltip.updateContent(options.renderRich(item, response));
+                }
+            });
+        }
+
+        function onMove(e) {
+            if (suppressed(e)) return;
+            PanelTooltip.followMouse(e);
+        }
+
+        function onLeave() {
+            if (--hoverDepth > 0) return;
+            hoverKey = null;
+            PanelTooltip.hide();
+        }
+
+        // 同时监听 pointer 与 mouse：真实浏览器中 mouse 是 pointer 的兼容回退事件，
+        // 会嵌套触发；测试 harness 可能直接派发 MouseEvent，需要 mouse 监听兜底。
+        var useMouse = options.events === 'mouse';
+        if (!useMouse) {
+            node.addEventListener('pointerenter', onEnter);
+            node.addEventListener('pointermove', onMove);
+            node.addEventListener('pointerleave', onLeave);
+        }
+        if (useMouse || options.events !== 'pointer') {
+            node.addEventListener('mouseenter', onEnter);
+            node.addEventListener('mousemove', onMove);
+            node.addEventListener('mouseleave', onLeave);
+        }
+    }
+
     function staticIconUrl(iconKey) {
         if (!iconKey || typeof Icons === 'undefined' || !Icons || !Icons.resolve) return null;
         try {
@@ -736,6 +820,7 @@ var PanelTooltip = (function() {
         showAnchored: showAnchored,
         updateContent: updateContent,
         hide: hide,
+        bindAsyncHover: bindAsyncHover,
         convertAS2Html: convertAS2Html,
         buildItemRichHtml: buildItemRichHtml,
         dynamicIconHtml: dynamicIconHtml,

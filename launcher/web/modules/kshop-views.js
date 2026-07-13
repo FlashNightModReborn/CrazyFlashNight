@@ -152,7 +152,7 @@
         this._preview = null;
         this._loading = false;
         this.root = document.createElement('section');
-        this.root.className = 'kshop-settlement-page';
+        this.root.className = 'workbench-secondary-page kshop-settlement-page';
         this.root.setAttribute('role', 'dialog');
         this.root.setAttribute('aria-label', 'K 点商城结算核对');
         this.root.innerHTML = '<header class="kshop-settlement-header">'

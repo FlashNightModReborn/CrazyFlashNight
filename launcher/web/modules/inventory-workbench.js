@@ -12,7 +12,8 @@ var InventoryWorkbench = (function() {
     var _quickDepositButton, _quickWithdrawButton, _quickStatusNode;
     var _broker, _dragControllers = [], _scaleHandle = null;
     var _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
-    var _tooltipCache = {}, _tooltipHovering = null, _tooltipSuppressed = false;
+    var _tooltipCache = {}, _tooltipSuppressed = false;
+    var _layoutMode = 'full', _densityController = null;
     var _openGeneration = 0;
     var _profile = 'battlebox';
     var _rightContainerId = '战备箱';
@@ -102,6 +103,12 @@ var InventoryWorkbench = (function() {
 
         if (_profile === 'warehouse') installQuickTransferActions();
 
+        if (_densityController) _densityController.destroy();
+        _densityController = new Workbench.GridDensityController({panelId:'workbench'});
+        _layoutMode = _densityController.mode;
+        var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
+        _shell.addHeaderAction(layoutToggle);
+
         _retryButton = document.createElement('button');
         _retryButton.type = 'button';
         _retryButton.className = 'workbench-mode-btn warning';
@@ -119,10 +126,11 @@ var InventoryWorkbench = (function() {
         closeButton.addEventListener('click', function() { closePanel(true); });
         _shell.addHeaderAction(closeButton);
 
-        _backpackView = createInventoryView('背包', '背包');
-        _rightView = createInventoryView(_rightContainerId, config.title);
+        _backpackView = createInventoryView('背包', '背包', _layoutMode);
+        _rightView = createInventoryView(_rightContainerId, config.title, _layoutMode);
         _backpackView.displaySortMethod = 'physicalSlot';
         _rightView.displaySortMethod = 'physicalSlot';
+
         _pager = new InventoryUI.InventoryWindowPager({
             containerId:_rightContainerId, containerLabel:config.title, columns:config.pageColumns,
             defaultOffset:0, defaultLimit:_rightLimit, defaultCapacity:config.rightCapacity,
@@ -211,6 +219,18 @@ var InventoryWorkbench = (function() {
                     controls.setFilterKey(request ? request.filterKey : 'all');
                 }
             },
+            onFilterSpecChange:function(filterSpec) {
+                exitQuickMode();
+                clearSelection();
+                hideTooltip();
+                if (!_coordinator.setFilterSpec(containerId, filterSpec, function(result) {
+                    renderInventories();
+                    if (!result.success) {
+                        controls.rejectFilterChange(_coordinator.getWindow(containerId));
+                        toast(containerId + '筛选失败，请重试。');
+                    }
+                })) controls.rejectFilterChange(_coordinator.getWindow(containerId));
+            },
             onAuthorityCommit:function(methodName, label) {
                 confirmSort(containerId, methodName, label);
             }
@@ -219,11 +239,13 @@ var InventoryWorkbench = (function() {
         else _rightSortControls = controls;
         if (pager) toolbar.appendChild(pager.root);
         toolbar.appendChild(controls.root);
+        if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar, controls, pager);
         return toolbar;
     }
 
-    function createInventoryView(containerId, title) {
-        var adapter = new Workbench.ContainerViewAdapter({
+    function createInventoryView(containerId, title, layoutMode) {
+        var ownedShell = new InventoryUI.OwnedInventoryViewShell({
+            containerId:containerId,
             instanceKey:'inventory:' + containerId,
             itemModel:'owned',
             getItems:function() {
@@ -257,30 +279,22 @@ var InventoryWorkbench = (function() {
                     targetRef:targetRef,
                     hint:target.occupied ? 'merge-or-swap' : 'move'
                 };
-            }
-        });
-        var view = new Workbench.GridContainerView({
-            adapter:adapter,
+            },
             title:title,
             meta:'同步中',
             className:'inventory-owned-view inventory-owned-' + (containerId === '背包' ? 'backpack' : 'warehouse')
                 + (containerId === '战备箱' ? ' inventory-owned-battlebox' : ''),
             gridClassName:'inventory-owned-grid',
             emptyText:'正在同步库存…',
-            allowedSlots:containerId === '背包' ? ['L'] : ['R']
+            allowedSlots:containerId === '背包' ? ['L'] : ['R'],
+            layoutMode: layoutMode || 'full',
+            densityController: _densityController
         });
-        view.containerId = containerId;
-        return view;
+        return ownedShell.view;
     }
 
     function bindSlot(containerId, node, slot) {
-        if (slot.occupied) {
-            node.addEventListener('mouseenter', function(event) { showTooltip(event, containerId, slot); });
-            node.addEventListener('mouseleave', hideTooltip);
-            node.addEventListener('mousemove', function(event) {
-                if (!_tooltipSuppressed) PanelTooltip.followMouse(event);
-            });
-        }
+        if (slot.occupied) bindSlotTooltip(node, containerId, slot);
         node.addEventListener('click', function(event) {
             if (consumeDragClick()) return;
             if (event.target && event.target.closest && event.target.closest('.inventory-discard-btn')) return;
@@ -603,22 +617,20 @@ var InventoryWorkbench = (function() {
 
     function renderView(view) {
         var snapshot = _coordinator.getWindow(view.containerId);
-        var slots = snapshot ? snapshot.slots : [];
         var filtered = snapshot && String(snapshot.filterKey || 'all') !== 'all';
-        if (view.displaySortMethod && typeof InventoryRuntime.displaySortSlots === 'function') {
-            slots = InventoryRuntime.displaySortSlots(slots, view.displaySortMethod);
-        }
+        var emptyText;
         if (view.containerId === '战备箱') {
-            view.renderer.options.emptyText = snapshot && Number(snapshot.accessibleCapacity) <= 0
+            emptyText = snapshot && Number(snapshot.accessibleCapacity) <= 0
                 ? '战备箱尚未解锁' : filtered ? '当前分类暂无物品' : '本页暂无物品';
         } else {
-            view.renderer.options.emptyText = filtered ? '当前分类暂无物品' : '本页暂无物品';
+            emptyText = filtered ? '当前分类暂无物品' : '本页暂无物品';
         }
-        view.renderer.render(slots);
-        if (!snapshot) view.chrome.setMeta('同步中');
-        else if (view.containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0) view.chrome.setMeta('未解锁');
-        else if (view.containerId === '背包') view.chrome.setMeta(countOccupied(slots) + ' / ' + Number(snapshot.accessibleCapacity || snapshot.capacity));
-        else view.chrome.setMeta('');
+        var meta = !snapshot ? '同步中'
+            : view.containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0 ? '未解锁'
+            : view.containerId === '背包' ? countOccupied(snapshot.slots) + ' / ' + Number(snapshot.accessibleCapacity || snapshot.capacity) : '';
+        if (view.ownedInventoryShell) view.ownedInventoryShell.syncSnapshot(snapshot, {
+            displaySortMethod:view.displaySortMethod, emptyText:emptyText, meta:meta
+        });
     }
 
     function refreshControls() {
@@ -694,19 +706,21 @@ var InventoryWorkbench = (function() {
         });
     }
 
-    function showTooltip(event, containerId, slot) {
-        if (_tooltipSuppressed || !slot || !slot.occupied) return;
+    function bindSlotTooltip(node, containerId, slot) {
         var key = containerId + ':' + slot.physicalSlot + ':' + String(slot.slotLease || '');
-        _tooltipHovering = key;
-        PanelTooltip.showAtMouse(_tooltipCache[key]
-            ? buildRichTooltip(slot.item || {}, _tooltipCache[key])
-            : buildBasicTooltip(slot.item || {}), event);
-        if (_tooltipCache[key]) return;
-        requestInventory('tooltip', {v:1, source:slotRef(containerId, slot)}, function(response) {
-            if (!isOpen() || !response || response.success !== true) return;
-            _tooltipCache[key] = response;
-            if (_tooltipHovering === key && !_tooltipSuppressed && PanelTooltip.isVisible()) {
-                PanelTooltip.updateContent(buildRichTooltip(slot.item || {}, response));
+        var item = slot.item || {};
+        PanelTooltip.bindAsyncHover(node, {
+            cache: _tooltipCache,
+            key: key,
+            item: item,
+            isSuppressed: function() { return _tooltipSuppressed; },
+            renderBasic: buildBasicTooltip,
+            renderRich: buildRichTooltip,
+            fetch: function(_, callback) {
+                requestInventory('tooltip', {v:1, source:slotRef(containerId, slot)}, function(response) {
+                    if (!isOpen()) return;
+                    callback(response);
+                });
             }
         });
     }
@@ -774,6 +788,7 @@ var InventoryWorkbench = (function() {
         resetQuickTransfer();
         _coordinator.close();
         _mux.closeSession();
+        if (_densityController) { _densityController.destroy(); _densityController = null; }
     }
 
     function closePanel(forceClose) {
@@ -817,7 +832,7 @@ var InventoryWorkbench = (function() {
     }
 
     function clearSelection() { if (_broker) _broker.clearSelection(); }
-    function hideTooltip() { _tooltipHovering = null; if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide(); }
+    function hideTooltip() { if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide(); }
     function isOpen() { return Panels.getActive ? Panels.getActive() === 'workbench' : Panels.isOpen(); }
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
