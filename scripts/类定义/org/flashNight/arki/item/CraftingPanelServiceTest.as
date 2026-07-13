@@ -76,7 +76,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         _root.存档系统 = {dirtyMark:false};
         _root.改装清单 = {};
         _root.改装清单["武器合成"] = [
-            {title:"新测试枪图纸", name:"新测试枪", price:100, kprice:20,
+            {title:"新测试枪图纸", name:"新测试枪", price:101, kprice:21,
                 materials:["测试图纸#1", "旧测试枪#3", "测试矿石#2"]},
             {title:"测试药剂图纸", name:"测试药剂", value:3, price:0, kprice:0,
                 materials:["测试矿石#9"]}
@@ -141,7 +141,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         check(result.success && result.canCommit && String(result.craftToken).indexOf("craft.") == 0,
             "eligible preview issues one-use token");
         check(result.cost.money == 90 && result.cost.kpoints == 18,
-            "smith multiplier is applied to both currencies");
+            "smith multiplier floors each currency to legacy integer cost");
         check(result.output.enhancementLevel == 5 && result.levelAllowed,
             "equipment inherits highest material enhancement and reverse level opens gate");
         check(result.materials[0].consumed == false && result.materials[0].enough,
@@ -151,6 +151,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static function testBatchAuthority():Void {
         resetOwned();
         _root.收集品栏.材料.addValue("测试矿石", 20);
+        _root.改装清单["武器合成"][1].price = 51;
         var result:Object = CraftingPanelService.execute("preview", {
             category:"武器合成", recipeIndex:1, craftCount:2
         });
@@ -161,6 +162,8 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "stack recipe preview exposes authoritative batch limit and total output");
         check(result.materials[0].required == 18 && result.canCommit && result.craftToken != undefined,
             "batch preview scales consumed material and issues count-bound token");
+        check(result.cost.money == 90,
+            "batch cost floors the discounted unit price before multiplying the craft count");
         var commit:Object = CraftingPanelService.execute("commit", {
             category:"武器合成", expectedCraftToken:result.craftToken
         });

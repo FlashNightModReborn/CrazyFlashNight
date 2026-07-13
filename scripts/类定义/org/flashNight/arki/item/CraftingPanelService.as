@@ -65,14 +65,7 @@ class org.flashNight.arki.item.CraftingPanelService {
 
     public static function handle(commandName:String, params:Object):Void {
         var callId:Number = params == undefined ? 0 : Number(params.callId);
-        var response:Object;
-        try {
-            response = execute(commandName, params || {});
-        } catch (error) {
-            trace("[CraftingPanelService] " + commandName + " failed: " + error);
-            response = fail("internal_error");
-            _busy = false;
-        }
+        var response:Object = execute(commandName, params || {});
         response.task = "crafting_response";
         response.callId = callId;
         sendResponse(response);
@@ -217,8 +210,10 @@ class org.flashNight.arki.item.CraftingPanelService {
             outputValue = Math.max(outputValue, inheritedLevel);
         }
         var multiplier:Number = smith.enabled ? Math.max(0, 1 - smith.level * 0.05) : 1;
-        var cost:Object = {money:Math.max(0, Number(recipe.price || 0) * multiplier * craftCount),
-            kpoints:Math.max(0, Number(recipe.kprice || 0) * multiplier * craftCount)};
+        // 旧 Flash 合成界面对每份折扣价先向下取整；批量等价于重复单份合成。
+        // 不能在总价层最后取整，否则会改变批量成本，也会把小数余额写入存档。
+        var cost:Object = {money:adjustedUnitCost(recipe.price, multiplier) * craftCount,
+            kpoints:adjustedUnitCost(recipe.kprice, multiplier) * craftCount};
         var requiredLevel:Number = outputData.data == undefined ? 0 : Number(outputData.data.level || 0);
         var reverseLevel:Number = reverseSkillLevel();
         var levelAllowed:Boolean = Number(_root.等级) + reverseLevel >= requiredLevel;
@@ -305,11 +300,17 @@ class org.flashNight.arki.item.CraftingPanelService {
     private static function canCraftCount(recipe:Object, requirements:Array,
             craftCount:Number, multiplier:Number):Boolean {
         if (ItemUtil.contain(scaleRequirements(requirements, craftCount)) == null) return false;
-        if (Number(_root.金钱) < Math.max(0, Number(recipe.price || 0) * multiplier * craftCount)) return false;
-        if (Number(_root.虚拟币) < Math.max(0, Number(recipe.kprice || 0) * multiplier * craftCount)) return false;
+        if (Number(_root.金钱) < adjustedUnitCost(recipe.price, multiplier) * craftCount) return false;
+        if (Number(_root.虚拟币) < adjustedUnitCost(recipe.kprice, multiplier) * craftCount) return false;
         var outputValue:Number = Number(recipe.value);
         if (isNaN(outputValue) || outputValue <= 0) outputValue = 1;
         return ItemUtil.singleRequire(String(recipe.name), outputValue * craftCount) != null;
+    }
+
+    private static function adjustedUnitCost(rawCost:Object, multiplier:Number):Number {
+        var cost:Number = Number(rawCost || 0);
+        if (isNaN(cost) || cost < 0) cost = 0;
+        return Math.floor(cost * multiplier);
     }
 
     private static function projectRequirement(req:Object):Object {
