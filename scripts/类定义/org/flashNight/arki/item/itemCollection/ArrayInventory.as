@@ -13,9 +13,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     private var indexes:TreeSet; //索引TreeSet
     private var indexesDirty:Boolean; //索引树是否需要重建（索引树异常时标记，避免空位判断误判）
     private var occupiedCount:Number; //当前占用格子数（与 items 对齐，用于快速校验 indexes 完整性）
+    private var mutationRevision:Number; //每次成功写入后单调递增，供只读投影缓存做 O(1) 失效判断
 
     public function ArrayInventory(_items:Object,_capacity:Number) {
         super(_items);
+        mutationRevision = 1;
         if(_capacity <= 1) _capacity = 8;
         this.capacity = _capacity;
         // 建立索引TreeSet（强制使用 WAVL：性能更优；并配合索引自修复避免长时间运行后的索引失真）
@@ -41,7 +43,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             key = getFirstVacancy();
         }
         if (isNaN(key) || Math.floor(key) != key || key < 0 || key >= capacity) return false;
-        if (!super.add(String(key), item)) return false;
+        bumpMutationRevision();
+        if (!super.add(String(key), item)) {
+            mutationRevision--;
+            return false;
+        }
 
         // 增量维护索引树；若索引树异常则回退为全量重建
         if (this.indexes == null || this.indexesDirty) {
@@ -67,6 +73,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         if(isNaN(key) || Math.floor(key) != key) return;
         if(key < 0 || key >= capacity) return;
         if(items[key] == null) return;
+        bumpMutationRevision();
         super.remove(String(key));
 
         // 增量维护索引树；若索引树异常则回退为全量重建
@@ -91,6 +98,33 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
     /**
+     * 数量型物品写入也推进版本。版本必须先于基类的同步 ItemValueChanged/ItemRemoved
+     * 事件可见；若本次归零又触发 remove()，版本可能再推进一次，调用方只依赖单调性。
+     */
+    public function addValue(key:String, value:Number):Void {
+        if (isNaN(value)) return;
+        var current:Object = getItem(key);
+        if (current == null) {
+            super.addValue(key, value);
+            return;
+        }
+        bumpMutationRevision();
+        super.addValue(key, value);
+    }
+
+    /** 返回容器级单调写版本；不使用帧号/毫秒 tick，避免同帧多写碰撞。 */
+    public function getMutationRevision():Number {
+        var current:Number = Number(mutationRevision);
+        return isNaN(current) || current < 0 ? 0 : current;
+    }
+
+    private function bumpMutationRevision():Void {
+        var current:Number = Number(mutationRevision);
+        if (isNaN(current) || current < 0) current = 0;
+        mutationRevision = current + 1;
+    }
+
+    /**
      * inventory-domain 事务提交用的无事件单槽写入口。
      *
      * 该入口只负责一次不可重入的提交阶段：调用方必须先完整预检全部槽位，
@@ -109,6 +143,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
         indexesDirty = true;
         rebuildIndexesFromItems();
+        bumpMutationRevision();
         return true;
     }
 
@@ -130,6 +165,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         items = replacement;
         indexesDirty = true;
         rebuildIndexesFromItems();
+        bumpMutationRevision();
         return true;
     }
 
@@ -164,6 +200,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         items = replacement;
         indexesDirty = true;
         rebuildIndexesFromItems();
+        bumpMutationRevision();
         return true;
     }
 
@@ -202,6 +239,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         super.setItems(_items);
         indexesDirty = true;
         rebuildIndexesFromItems();
+        bumpMutationRevision();
     }
 
     

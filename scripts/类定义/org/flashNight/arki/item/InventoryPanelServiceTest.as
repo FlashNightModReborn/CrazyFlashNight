@@ -16,6 +16,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testWorkbenchPanelRequest();
         testRangeSnapshot();
         testFilteredSnapshot();
+        testArrayInventoryMutationRevision();
         testFacetCacheInvalidation();
         testPresentationProjection();
         testTooltipLeaseAndInstance();
@@ -249,6 +250,60 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
     }
 
+    private static function testArrayInventoryMutationRevision():Void {
+        var inventory:ArrayInventory = new ArrayInventory(null, 8);
+        var holder:MovieClip = _root.createEmptyMovieClip("__inventoryRevisionTest", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        var addEventVersion:Number = -1;
+        var valueEventVersion:Number = -1;
+        var removeEventVersion:Number = -1;
+        inventory.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemAdded", function():Void {
+            addEventVersion = inventory.getMutationRevision();
+        });
+        dispatcher.subscribe("ItemValueChanged", function():Void {
+            valueEventVersion = inventory.getMutationRevision();
+        });
+        dispatcher.subscribe("ItemRemoved", function():Void {
+            removeEventVersion = inventory.getMutationRevision();
+        });
+        var v0:Number = inventory.getMutationRevision();
+        var added:Boolean = inventory.add(0, item("版本堆叠", 2));
+        var v1:Number = inventory.getMutationRevision();
+        inventory.addValue("0", 1);
+        var v2:Number = inventory.getMutationRevision();
+        inventory.addValue("0", -3);
+        var v3:Number = inventory.getMutationRevision();
+        var zeroRemoveEventVersion:Number = removeEventVersion;
+        var readded:Boolean = inventory.add(0, item("版本重建", 1));
+        var v4:Number = inventory.getMutationRevision();
+        var wrote:Boolean = inventory.transactionWrite(1, item("事务单槽", 1));
+        var v5:Number = inventory.getMutationRevision();
+        var replacedAll:Boolean = inventory.transactionReplaceAll([
+            item("整表一", 1), item("整表二", 2)
+        ]);
+        var v6:Number = inventory.getMutationRevision();
+        var replacedPrefix:Boolean = inventory.transactionReplacePrefix([
+            item("前缀一", 1)
+        ], 4);
+        var v7:Number = inventory.getMutationRevision();
+        inventory.remove(0);
+        var v8:Number = inventory.getMutationRevision();
+        inventory.setItems({});
+        var v9:Number = inventory.getMutationRevision();
+        var failed:Boolean = inventory.add(99, item("越界写入", 1));
+        var v10:Number = inventory.getMutationRevision();
+
+        assertTrue(added && readded && wrote && replacedAll && replacedPrefix && !failed
+                && v1 > v0 && v2 > v1 && v3 > v2 && v4 > v3 && v5 > v4
+                && v6 > v5 && v7 > v6 && v8 > v7 && v9 > v8 && v10 == v9
+                && addEventVersion == v4 && valueEventVersion == v2
+                && zeroRemoveEventVersion == v3,
+            "ArrayInventory 全部成功写入口在同步事件前推进单调版本，失败写入保持版本不变");
+        inventory.setDispatcher(null);
+        holder.removeMovieClip();
+    }
+
     private static function testFacetCacheInvalidation():Void {
         resetInventories();
         var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
@@ -279,12 +334,14 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             "跨容器写入后 facet 缓存立即反映来源移除与目标新增");
 
         // 普通游戏逻辑可直接走 ArrayInventory.add/remove，不会调用 inventory-domain 失效入口。
+        var versionBeforeRemove:Number = _root.物品栏.仓库.getMutationRevision();
         _root.物品栏.仓库.remove(0);
         var afterExternalRemove:Object = warehouseSnapshot(0, 50);
         assertTrue(afterExternalRemove.success
+                && _root.物品栏.仓库.getMutationRevision() > versionBeforeRemove
                 && afterExternalRemove.snapshots[0].filterItemCount == 0
                 && facetAt(afterExternalRemove.snapshots[0].filterFacets, "weapon") == null,
-            "外部容器写入通过槽位对象引用核对自动击穿 facet 缓存");
+            "外部容器写入通过单调版本自动击穿 facet 缓存");
 
         if (previous == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
         else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previous;

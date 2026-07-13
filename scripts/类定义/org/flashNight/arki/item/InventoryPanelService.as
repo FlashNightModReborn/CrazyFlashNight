@@ -773,13 +773,11 @@ class org.flashNight.arki.item.InventoryPanelService {
         var cached:Object = _facetCache[containerId];
         if (cached != undefined && Number(cached.epoch) == epoch
                 && Number(cached.accessibleCapacity) == accessibleCapacity
-                && facetCacheMatchesInventory(cached, inventory, accessibleCapacity)) return cached;
+                && facetCacheMatchesInventory(cached, inventory)) return cached;
         var facets:Array = [];
-        var itemRefs:Array = [];
         var itemCount:Number = 0;
         for (var slot:Number = 0; slot < accessibleCapacity; slot++) {
             var item:Object = inventory.getItem(String(slot));
-            itemRefs[slot] = item;
             if (item == null) continue;
             itemCount++;
             var taxonomy:Object = itemTaxonomy(item);
@@ -795,7 +793,8 @@ class org.flashNight.arki.item.InventoryPanelService {
         cached = {
             epoch:epoch,
             accessibleCapacity:accessibleCapacity,
-            itemRefs:itemRefs,
+            inventoryRef:inventory,
+            mutationRevision:inventory.getMutationRevision(),
             facets:facets,
             itemCount:itemCount
         };
@@ -804,16 +803,13 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     /**
-     * 外部游戏逻辑也会通过 ArrayInventory.add/remove 改容器，未必经过 inventory-domain。
-     * 缓存命中前按槽位对象引用做轻量校验，避免 facet/count 在拾取、购买或跨容器移动后陈旧。
+     * 外部游戏逻辑也会通过 ArrayInventory 写接口改容器，未必经过 inventory-domain。
+     * 容器实例 + 单调写版本提供 O(1) 校验，避免每次 snapshot 重扫 50/400/1200 槽可访问前缀。
      */
-    private static function facetCacheMatchesInventory(cached:Object, inventory:ArrayInventory, accessibleCapacity:Number):Boolean {
-        var itemRefs:Array = cached == undefined ? null : cached.itemRefs;
-        if (!(itemRefs instanceof Array) || itemRefs.length != accessibleCapacity) return false;
-        for (var slot:Number = 0; slot < accessibleCapacity; slot++) {
-            if (itemRefs[slot] !== inventory.getItem(String(slot))) return false;
-        }
-        return true;
+    private static function facetCacheMatchesInventory(cached:Object, inventory:ArrayInventory):Boolean {
+        return cached != undefined
+            && cached.inventoryRef === inventory
+            && Number(cached.mutationRevision) == inventory.getMutationRevision();
     }
 
     private static function facetNode(nodes:Array, id:String, label:String):Object {
