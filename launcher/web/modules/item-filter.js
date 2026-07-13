@@ -162,6 +162,7 @@
         var node = {
             id:text(source.id),
             label:text(source.label || source.id),
+            order:isFinite(Number(source.order)) ? Number(source.order) : 0,
             path:parentPath.concat([text(source.id)]),
             count:Math.max(0, Math.floor(Number(source.count) || 0)),
             children:[]

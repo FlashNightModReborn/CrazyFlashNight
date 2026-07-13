@@ -2,7 +2,7 @@
 'use strict';
 
 const path = require('path');
-const { loadItemMeta } = require('./lib/item-icons');
+const { loadItemMeta, loadItemSetMeta } = require('./lib/item-icons');
 
 const ROOT = path.resolve(__dirname, '..');
 const errors = [];
@@ -10,41 +10,51 @@ const errors = [];
 function fail(message) { errors.push(message); }
 
 const meta = loadItemMeta(ROOT, fail);
+const catalog = loadItemSetMeta(ROOT, fail);
 const sets = new Map();
+const names = new Map();
+const orders = new Map();
+
+catalog.forEach((entry, index) => {
+    const id = String(entry.id || '').trim();
+    const name = String(entry.name || '').trim();
+    const orderText = String(entry.order || '').trim();
+    const order = Number(orderText);
+    const context = entry.source + ' / set #' + (index + 1);
+    const validId = /^[a-z][a-z0-9_]{1,63}$/.test(id);
+    const validName = !!name && name.length <= 64 && !/[\u0000-\u001f\u007f]/.test(name);
+    const validOrder = /^\d+$/.test(orderText) && order <= 9999;
+    if (!validId) fail(context + ': invalid or missing id "' + id + '"');
+    if (!validName) fail(context + ': invalid or missing name');
+    if (name && !name.endsWith('套装')) fail(context + ': name must end with "套装"');
+    if (!validOrder) fail(context + ': invalid or missing order');
+    if (sets.has(id)) fail(context + ': duplicate id "' + id + '"');
+    if (names.has(name)) fail(context + ': duplicate name "' + name + '" (also used by "' + names.get(name) + '")');
+    if (orders.has(order)) fail(context + ': duplicate order "' + orderText + '" (also used by "' + orders.get(order) + '")');
+    if (!validId || !validName || !validOrder || !name.endsWith('套装') || sets.has(id) || names.has(name) || orders.has(order)) return;
+    sets.set(id, {id, name, order, items:[]});
+    names.set(name, id);
+    orders.set(order, id);
+});
 
 Object.values(meta).forEach((item) => {
     const id = String(item.setId || '').trim();
-    const name = String(item.setName || '').trim();
-    const orderText = String(item.setOrder || '').trim();
-    if (!id && !name && !orderText) return;
     const context = item.source + ' / ' + item.name;
-    if (!id || !name) {
-        fail(context + ': setId and setName must be declared together');
-        return;
-    }
-    if (!/^[a-z][a-z0-9_]{1,63}$/.test(id)) fail(context + ': invalid setId "' + id + '"');
-    if (name.length > 64 || /[\u0000-\u001f\u007f]/.test(name)) fail(context + ': invalid setName');
-    if (!name.endsWith('套装')) fail(context + ': setName must end with "套装"');
+    if (item.setName) fail(context + ': setName must come from item_sets.xml, not the item XML');
+    if (item.setOrder) fail(context + ': setOrder must come from item_sets.xml, not the item XML');
+    if (!id) return;
     if (item.type !== '武器' && item.type !== '防具') fail(context + ': only equipment may declare a set');
-    if (orderText && (!/^\d+$/.test(orderText) || Number(orderText) > 9999)) fail(context + ': invalid setOrder');
-
-    const declaresOrder = orderText.length > 0;
-    if (!sets.has(id)) sets.set(id, {
-        id, name, order: declaresOrder ? Number(orderText) : 0, declaresOrder, items: []
-    });
     const group = sets.get(id);
-    if (group.name !== name) fail(context + ': setId "' + id + '" maps to both "' + group.name + '" and "' + name + '"');
-    if (group.declaresOrder !== declaresOrder) {
-        fail(context + ': setOrder must be declared on every member of "' + id + '" or omitted from all members');
-    } else if (declaresOrder && group.order !== Number(orderText)) {
-        fail(context + ': inconsistent setOrder for "' + id + '"');
+    if (!group) {
+        fail(context + ': setId "' + id + '" is missing from item_sets.xml');
+        return;
     }
     group.items.push({ name:item.name, use:item.use, source:item.source });
 });
 
 sets.forEach((group) => {
-    if (group.items.length < 2) fail('setId "' + group.id + '" has fewer than 2 items');
-    delete group.declaresOrder;
+    if (group.items.length === 0) fail('setId "' + group.id + '" has no item members');
+    else if (group.items.length < 2) fail('setId "' + group.id + '" has fewer than 2 items');
 });
 
 if (errors.length) {

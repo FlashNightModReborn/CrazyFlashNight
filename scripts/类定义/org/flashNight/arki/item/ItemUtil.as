@@ -61,6 +61,48 @@ class org.flashNight.arki.item.ItemUtil{
     public static var itemSetDict:Object; // 套装 ID → 权威展示信息与成员列表
     public static var itemSetByItem:Object; // 物品名 → 套装投影
 
+    /**
+     * 按 item_sets.xml 中心表补齐逐物品套装展示字段。
+     * 保持旧 AS2 → Host → Web 投影协议不变。
+     */
+    public static function hydrateItemSetMetadata(combinedData):Void {
+        var itemSetCatalog:Object = new Object();
+        var rawItemSetEntries = combinedData.itemSets;
+        var itemSetEntries:Array = new Array();
+        if (rawItemSetEntries instanceof Array) {
+            itemSetEntries = rawItemSetEntries;
+        } else if (rawItemSetEntries != undefined && rawItemSetEntries != null) {
+            itemSetEntries.push(rawItemSetEntries);
+        }
+        for (var catalogIndex:Number = 0; catalogIndex < itemSetEntries.length; catalogIndex++) {
+            var catalogEntry:Object = itemSetEntries[catalogIndex];
+            var catalogId:String = catalogEntry.id == undefined ? "" : String(catalogEntry.id);
+            if (catalogId == "") continue;
+            var catalogOrder:Number = Number(catalogEntry.order);
+            if (isNaN(catalogOrder)) catalogOrder = 0;
+            itemSetCatalog[catalogId] = {
+                id:catalogId,
+                name:catalogEntry.name == undefined ? "" : String(catalogEntry.name),
+                order:catalogOrder
+            };
+        }
+        for (var itemIndex in combinedData) {
+            if (itemIndex == "itemSets") continue;
+            var itemData:Object = combinedData[itemIndex];
+            var itemSetId:String = itemData.setId == undefined ? "" : String(itemData.setId);
+            if (itemSetId == "") continue;
+            var itemSetMeta:Object = itemSetCatalog[itemSetId];
+            if (itemSetMeta != undefined) {
+                itemData.setName = itemSetMeta.name;
+                itemData.setOrder = itemSetMeta.order;
+            } else if (itemSetEntries.length > 0) {
+                trace("[ItemUtil] 未找到套装元数据: item=" + itemData.name + ", setId=" + itemSetId);
+                delete itemData.setName;
+                delete itemData.setOrder;
+            }
+        }
+    }
+
 
     /*
      * 加载物品数据
@@ -79,10 +121,15 @@ class org.flashNight.arki.item.ItemUtil{
             _multiTierDict[multiTierList[tierIndex]] = {};
         }
 
+        // item_sets.xml 是套装展示元数据的单一权威；物品 XML 只声明 setId。
+        // 测试夹具可继续直接携带 setName/setOrder，因此缺少目录时保持兼容。
+        hydrateItemSetMetadata(combinedData);
+
         // 自动生成ID：完全忽略XML中的ID配置
         var autoIncrementID = 1;
 
         for(var i in combinedData){
+            if (i == "itemSets") continue;
             var itemData = combinedData[i];
             var itemName = itemData.name;
 
@@ -113,7 +160,7 @@ class org.flashNight.arki.item.ItemUtil{
         // 这样可以通过调整XML中物品的位置来直观控制显示顺序
         _itemDataArray.reverse();
 
-        // 套装只从物品 XML 的显式 setId/setName 派生，不根据名称、描述或配方猜测。
+        // 套装成员只从物品 XML 的显式 setId 派生；名称与排序已由中心表注入。
         // 按已恢复的 XML 顺序建索引，保证各界面对同槽变体的展示顺序一致。
         var _itemSetDict:Object = new Object();
         var _itemSetByItem:Object = new Object();

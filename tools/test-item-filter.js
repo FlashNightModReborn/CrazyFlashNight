@@ -47,10 +47,20 @@ assert.deepStrictEqual(branches.children.map(node => node.path.join('/')), ['cat
 assert.strictEqual(ItemFilter.nodeAt(branches, ['category', 'weapon', '刀']).count, 1);
 assert.strictEqual(ItemFilter.nodeAt(branches, ['curated', 'featured']).count, 2);
 
+const orderedSetTree = ItemFilter.buildSetTree([
+    {setId:'late_set', setName:'后序套装', setOrder:20},
+    {setId:'early_set', setName:'前序套装', setOrder:10}
+]);
+const orderedBranches = ItemFilter.branchTree([
+    {id:'set', label:'套装', tree:orderedSetTree}
+], 2);
+assert.deepStrictEqual(orderedBranches.children[0].children.map(node => node.id), ['early_set', 'late_set']);
+assert.deepStrictEqual(orderedBranches.children[0].children.map(node => node.order), [10, 20]);
+
 const singleUseTree = ItemFilter.build([
     {majorType:'武器', use:'长枪', weaponType:'突击步枪'},
     {majorType:'武器', use:'长枪', weaponType:'霰弹枪'}
 ], item => ItemFilter.catalogPath(item));
 assert.deepStrictEqual(ItemFilter.expandSingleChildren(singleUseTree, ['weapon']), ['weapon', '长枪']);
 
-console.log('item-filter model 20/20 passed');
+console.log('item-filter model 22/22 passed');

@@ -2,7 +2,7 @@
  * org.flashNight.aven.Promise.ListLoaderTest
  *
  * ListLoader / LoaderPromise 基础设施测试 + 迁移后 API 契约回归测试。
- * 14 个测试用例，全部基于真实数据文件。
+ * 22 个测试用例，覆盖基础设施、领域加载器契约、真实数据一致性与性能。
  */
 import org.flashNight.aven.Promise.Promise;
 import org.flashNight.aven.Promise.LoaderPromise;
@@ -71,7 +71,7 @@ class org.flashNight.aven.Promise.ListLoaderTest {
         _total = 0;
         _timerSeq = 0;
         _reported = false;
-        _expectedTests = 21; // 基础设施 3 + ListLoader 5 + 契约回归 3 + 数据一致性 8 + 性能 2
+        _expectedTests = 22; // 基础设施 3 + ListLoader 5 + 契约回归 3 + 数据一致性 9 + 性能 2
 
         trace("=== ListLoader Infrastructure Tests ===");
 
@@ -289,8 +289,8 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             });
         });
 
-        // 13. 数据一致性 — ItemData + 14. 加载耗时
-        //     50 个 XML 文件应产生大量 item
+        // 13. 数据一致性 — ItemData + 套装中心表 + 14. 加载耗时
+        //     物品清单应产生大量 item，并并行携带 item_sets.xml 元数据。
         //     test 14 在 test 13 完成后 reload，避免 _isLoading 守卫竞争
         var itemLoader:ItemDataLoader = ItemDataLoader.getInstance();
         itemLoader.load(function(data:Object):Void {
@@ -301,6 +301,14 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             assert("item-data-consistency",
                 itemCount >= 100,
                 "itemCount=" + itemCount + " (expected >=100 items)");
+            var itemSetCount:Number = data.itemSets instanceof Array ? data.itemSets.length : 0;
+            var firstItemSet:Object = itemSetCount > 0 ? data.itemSets[0] : null;
+            assert("item-set-catalog-consistency",
+                itemSetCount == 66 && firstItemSet != null
+                    && String(firstItemSet.id) == "police_riot_gear"
+                    && String(firstItemSet.name) == "警用防爆服套装"
+                    && Number(firstItemSet.order) == 10,
+                "itemSetCount=" + itemSetCount);
 
             // 14-15. 串行 vs 并行性能对比
             //   获取 entries 用于直接调 ListLoader（不经过 ItemDataLoader 缓存）

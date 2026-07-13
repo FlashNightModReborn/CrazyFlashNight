@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.InventoryPanelService;
+import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
@@ -13,6 +14,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         _failed = 0;
         trace("=== InventoryPanelServiceTest start ===");
 
+        testItemSetMetadataHydration();
         testWorkbenchPanelRequest();
         testRangeSnapshot();
         testStableReadLeaseAndMutationVersion();
@@ -61,6 +63,15 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
 
     private static function item(name:String, value):Object {
         return {name: name, value: value, lastUpdate: 1};
+    }
+
+    private static function testItemSetMetadataHydration():Void {
+        var fixture:Array = [{name:"中心表注入测试装备", setId:"test_center_set"}];
+        fixture.itemSets = [{id:"test_center_set", name:"中心表注入测试套装", order:77}];
+        ItemUtil.hydrateItemSetMetadata(fixture);
+        assertTrue(fixture[0].setName == "中心表注入测试套装"
+                && Number(fixture[0].setOrder) == 77,
+            "ItemUtil hydrates setName/setOrder from item_sets metadata");
     }
 
     private static function testWorkbenchPanelRequest():Void {

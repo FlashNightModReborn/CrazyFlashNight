@@ -70,7 +70,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 大多数采用 **list.xml 主从模式**：
 
 ```
-data/items/list.xml          → 引用 50 个分类文件（武器_刀_*.xml、防具_*.xml、消耗品_*.xml …）
+data/items/list.xml          → 引用 52 个物品分类文件 + item_sets.xml 套装中心表
 data/enemy_properties/list.xml → 引用 11 个敌人定义文件
 data/dialogues/list.xml       → 引用 16 个对话文件
 data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml
@@ -98,9 +98,10 @@ data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一
 - `sections` 可省略；省略时 Web 从物品现有字段构建互斥分类树：一级 `type=武器/防具/消耗品/收集品`，二级使用 `use`，武器三级以刀的 `actiontype` 或枪械的 `weapontype` 细分。未知值进入“其他”，不会隐藏商品；AS2 snapshot 只透传这些现有展示字段，不改变物品 XML 权威。
 - `sections` 存在时完整替代自动分类，必须覆盖目录内全部索引，`all` 为 Web 隐式保留分组。当前生产目录不启用人工分组；配置规则与示例见 [`data/shops/README.md`](../data/shops/README.md)。
 - 空目录合法，用于显式停用但仍需保留身份的 NPC。
-- 物品根节点可选套装字段为 `<setId>ascii_snake</setId>`、`<setName>中文套装名</setName>`、`<setOrder>整数</setOrder>`；`setId/setName` 必须成对出现，`setOrder` 仅控制套装分组排序。同一套装若使用 `setOrder`，每个成员都必须声明相同值；不得只在部分成员上声明，否则不同目录 / 库存投影会失去唯一排序。运行时只信显式标注，不得用名称、描述、`dressup` 或配方猜测归属；同槽变体也必须逐物品人工决定是否标注。当前经人工复核的高置信度基线为 66 套 / 327 件，升级版、同槽变体与缺槽套仅在人工确认后纳入；NPC 版及归属不确定成员仍不得自动纳入。
-- `ItemUtil.loadItemData()` 在 XML 全量加载后构建 `_root.物品套装索引` 与 item→set 投影；Web 共享筛选模型把“套装”作为与“类别”并列的分支。库存类界面使用 `{branch:"set",setId:"..."}` 请求 AS2 对完整权威容器筛选，省略 `setId` 表示全部显式标注物品，不能用当前 Web 页做汇总。
-- 改动后运行 `node tools/validate-item-sets.js` 与 `node tools/validate-npc-shops.js`；前者校验字段配对、ID/名称一致、装备类型和最小成套数量，后者校验商品映射与自动分类 fallback。`launcher/build.ps1` Step 1h3 同样 fail-fast 执行两项门禁。
+- 套装元数据单一权威为 `data/items/item_sets.xml`，由 `data/items/list.xml/<itemSets>` 声明入口。中心表每个 `<set>` 必须含唯一的 `<id>ascii_snake</id>`、唯一中文 `<name>` 与唯一整数 `<order>`；`order` 控制所有 Web / 库存投影的套装分组顺序。
+- 物品根节点只可选声明 `<setId>ascii_snake</setId>` 表达成员归属，不得重复写 `setName/setOrder`。运行时只信显式 `setId`，不得用名称、描述、`dressup` 或配方猜测归属；同槽变体也必须逐物品人工决定是否标注。当前经人工复核的高置信度基线为 66 套 / 327 件，升级版、同槽变体与缺槽套仅在人工确认后纳入；NPC 版及归属不确定成员仍不得自动纳入。
+- `ItemDataLoader` 并行加载物品分类文件与中心套装表；`ItemUtil.loadItemData()` 在构建 `_root.物品套装索引` 前按 `setId` 注入 `setName/setOrder`，因此 AS2 → Host → Web 的既有逐物品协议保持不变。Web 共享筛选模型把“套装”作为与“类别”并列的分支。库存类界面使用 `{branch:"set",setId:"..."}` 请求 AS2 对完整权威容器筛选，省略 `setId` 表示全部显式标注物品，不能用当前 Web 页做汇总。
+- 改动后运行 `node tools/validate-item-sets.js` 与 `node tools/validate-npc-shops.js`；前者校验每个物品 `setId` 命中中心表、中心 ID/名称/排序唯一、仅装备可入套、每套至少两个成员且中心表无零成员套装，后者校验商品映射与自动分类 fallback。`launcher/build.ps1` Step 1h3 同样 fail-fast 执行两项门禁。
 
 ### 配置文件索引
 
@@ -139,7 +140,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 | 加载器 | 数据路径 | 说明 |
 |--------|---------|------|
-| `ItemDataLoader` | `data/items/list.xml` | 全部物品（50 个分类文件合并为数组） |
+| `ItemDataLoader` | `data/items/list.xml` | 并行加载 52 个物品分类文件与 `item_sets.xml`；合并数组附带中心套装元数据 |
 | `EnemyPropertiesLoader` | `data/enemy_properties/list.xml` | 敌人属性（11 文件合并，按名称索引） |
 | `NpcDialogueLoader` | `data/dialogues/list.xml` | NPC 对话数据 |
 | `BulletsCasesLoader` | `data/items/bullets_cases.xml` | 弹药数据；联弹支持「模板×单元体」双层配置（`<chainTemplate>` + `<chainUnit>`，加载期由 `ChainBulletConfigResolver` 派生合并，显式条目优先） |

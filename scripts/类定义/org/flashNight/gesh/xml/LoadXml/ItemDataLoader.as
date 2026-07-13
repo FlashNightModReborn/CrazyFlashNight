@@ -1,6 +1,8 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.aven.Promise.Promise;
 import org.flashNight.aven.Promise.ListLoader;
+import org.flashNight.aven.Promise.LoaderPromise;
 
 class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
     private static var instance:ItemDataLoader = null;
@@ -53,14 +55,21 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
                 return;
             }
             var entries:Array = ListLoader.normalizeToArray(data.items);
+            var itemSetFile:String = String(data.itemSets || "item_sets.xml");
 
-            ListLoader.loadChildren({
+            var itemPromise:Promise = ListLoader.loadChildren({
                 entries:      entries,
                 basePath:     path,
                 mergeFn:      ListLoader.concatField("item"),
                 initialValue: []
-            }).then(function(result:Object):Void {
-                var arr = result;
+            });
+            var itemSetPromise:Promise = LoaderPromise.loadXML(path + itemSetFile);
+
+            Promise.all([itemPromise, itemSetPromise]).then(function(result:Object):Void {
+                var resultList = result;
+                var arr = resultList[0];
+                var itemSetDocument:Object = resultList[1];
+                arr.itemSets = ListLoader.normalizeToArray(itemSetDocument.set);
                 self.combinedData = arr;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }).onCatch(function(reason:Object):Void {

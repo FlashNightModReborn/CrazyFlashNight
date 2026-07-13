@@ -72,6 +72,28 @@ function loadItemMeta(projectRoot, fail) {
     return byName;
 }
 
+function loadItemSetMeta(projectRoot, fail) {
+    const itemDir = path.join(projectRoot, 'data', 'items');
+    const manifest = readText(path.join(itemDir, 'list.xml'), fail);
+    const declaredCatalogFile = childText(manifest, 'itemSets');
+    if (!declaredCatalogFile) fail('data/items/list.xml has no <itemSets> entry');
+    const catalogFile = declaredCatalogFile || 'item_sets.xml';
+    const raw = readText(path.join(itemDir, catalogFile), fail);
+    const sets = [];
+    const setRe = /<set\b[^>]*>([\s\S]*?)<\/set>/g;
+    let m;
+    while ((m = setRe.exec(raw)) !== null) {
+        sets.push({
+            id: childText(m[1], 'id'),
+            name: childText(m[1], 'name'),
+            order: childText(m[1], 'order'),
+            source: catalogFile
+        });
+    }
+    if (sets.length === 0) fail('data/items/' + catalogFile + ' has no <set> entries');
+    return sets;
+}
+
 function itemIcon(metaByName, name) {
     const meta = metaByName[String(name)];
     return meta && meta.icon ? meta.icon : String(name);
@@ -84,4 +106,4 @@ function attachIcon(stack, metaByName) {
     return stack;
 }
 
-module.exports = { loadItemMeta, itemIcon, attachIcon };
+module.exports = { loadItemMeta, loadItemSetMeta, itemIcon, attachIcon };
