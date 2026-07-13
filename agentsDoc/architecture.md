@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `11d2e9b245`（2026-07-10）；inventory-domain Gate A2/A3 与 Web 游戏 UI 行为边界另核对本轮工作树实现。
+**最后核对代码基线**：commit `114321099d`（2026-07-13）；玩家手动输入冷却权威与药剂输入迁移另核对本轮工作树实现。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
@@ -38,6 +38,7 @@
 - `_root`、MovieClip、帧驱动 FSM、XML 数据加载仍是核心工程现实
 - 这条链的验证与构建依赖 Flash / JSFL / IDE 协同，不属于可直接命令行编译的普通脚本项目
 - **启动子系统（asLoader）**：承载 `org.flashNight.*` 类字节码 + boot 序列的 symbol，2026-06 已从 82 帧塌成**单帧 + `BootSequencer` 状态机**（反直觉，架构导览 + 待测见 [../docs/asLoader-README.md](../docs/asLoader-README.md)）
+- **玩家手动输入权威**：`通信_fs_帧计时器.as` 每帧把武器技能、12 槽快捷技能与 4 槽药剂交给 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService`；`ManualCooldownService` 独占 `weapon:shared + quick:1..12 + drug:0..3` 共 17 条逻辑冷却并继续使用 CooldownWheel 调度，因而保持暂停期间推进与跨场景存活。玩家信息 XFL 的控制器只显示键位、`Symbol 1791` 只投影动画，二者缺失或时间轴重绑都不能成为输入门控；旧第 5 药剂格是装饰残留，不进入权威容量。药剂服务仍按既有顺序调用 `_root.使用药剂`、启动冷却、扣权威药剂栏数量并在最后一瓶后清根镜像；快捷技能的装备槽内容当前仍由玩家信息 view 提供，装备/卸下/回写迁移属于后续双栏工作台范围，不与输入权威混做。
 
 ### B. Flash CS6 编译与自动化 smoke 链
 

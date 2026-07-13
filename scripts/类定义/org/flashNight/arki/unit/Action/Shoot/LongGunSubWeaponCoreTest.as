@@ -5,6 +5,7 @@ import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
 import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
 import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 import org.flashNight.arki.unit.Action.Skill.QuickSkillInputService;
+import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
@@ -329,6 +330,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testWeaponSkillFrameInputWaitsForCooldownAndLatches():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         unit.主动战技 = {长枪: {名字: "测试战技", 冷却时间: 2500, 消耗hp: 0, 消耗mp: 0}};
         unit.releaseCount = 0;
@@ -337,29 +339,33 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             return true;
         };
         var cooldownPort:Object = makeCooldownPort(false, 2200);
+        ManualCooldownService.start(ManualCooldownService.WEAPON_SKILL_KEY, 34);
 
         var waiting:Object = WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 120);
         assert(waiting == null, "held weapon-skill input waits while shared cooldown is unavailable");
         assert(unit.releaseCount == 0, "waiting weapon-skill input does not release early");
         assert(unit.__weaponSkillInputConsumed !== true, "waiting weapon-skill input remains armed during the same hold");
 
-        cooldownPort.ready = true;
+        drainManualCooldown();
         var released:Object = WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 121);
         assert(released != null && released.released === true, "held weapon-skill input releases when shared cooldown becomes ready");
         assert(unit.releaseCount == 1, "frame input delegates exactly one release when cooldown opens");
         assert(unit.__weaponSkillInputConsumed === true, "successful frame input consumes the current hold");
-        assert(cooldownPort.startCount == 1 && cooldownPort.lastCooldown == 2200, "frame input starts shared cooldown through compatibility port");
+        assert(!ManualCooldownService.isReady(ManualCooldownService.WEAPON_SKILL_KEY)
+            && ManualCooldownService.getSnapshot(ManualCooldownService.WEAPON_SKILL_KEY).totalSteps == Math.ceil(2200 / 33.33333),
+            "frame input starts the shared authoritative cooldown using the compatibility duration source");
 
         WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 121);
         assert(unit.releaseCount == 1, "consumed weapon-skill hold does not repeat release");
 
         WeaponSkillInputService.updateUnit(unit, false, true, cooldownPort, 122);
-        cooldownPort.ready = true;
+        drainManualCooldown();
         WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 123);
         assert(unit.releaseCount == 2, "key release rearms weapon-skill input for the next hold");
     }
 
     private static function testWeaponSkillFrameInputConsumesFailedSubweaponAttempt():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         unit.主动战技 = {长枪: {名字: "副武器快装", isSubweaponControl: true, 冷却时间: 3000}};
         unit.releaseCount = 0;
@@ -373,7 +379,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(failed != null && failed.released === false, "failed subweapon control still records one release attempt");
         assert(unit.__weaponSkillInputConsumed === true, "failed subweapon control consumes the current hold");
         assert(unit.releaseCount == 0, "failed subweapon control does not call direct unit skill release");
-        assert(cooldownPort.startCount == 0, "subweapon control never starts shared weapon-skill cooldown");
+        assert(ManualCooldownService.isReady(ManualCooldownService.WEAPON_SKILL_KEY), "subweapon control never starts shared weapon-skill cooldown");
         assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 130), "failed subweapon control leaves no pending combat intent");
 
         WeaponSkillInputService.updateUnit(unit, true, true, cooldownPort, 131);
@@ -381,6 +387,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testWeaponSkillFrameInputRearmsOnReleaseWhileDisabled():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         unit.主动战技 = {长枪: {名字: "测试战技", 冷却时间: 1000}};
         unit.releaseCount = 0;
@@ -403,6 +410,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testQuickSkillInputWaitsForCooldownAndLatchesPerSlot():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         unit.quickSkillReleaseCount = 0;
@@ -413,31 +421,32 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             this.lastQuickSkillKey = keyCode;
             return true;
         };
-        view.进度条1.冷却 = false;
+        ManualCooldownService.start(ManualCooldownService.quickSkillKey(1), 34);
 
         var waiting:Object = QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
         assert(waiting == null, "held quick-skill input waits while its slot cooldown is unavailable");
         assert(unit.quickSkillReleaseCount == 0, "waiting quick-skill input does not release early");
         assert(unit.__quickSkillInputConsumedSlots[1] !== true, "cooldown wait leaves the quick-skill slot armed");
 
-        view.进度条1.冷却 = true;
+        drainManualCooldown();
         var released:Object = QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
         assert(released != null && released.released === true, "held quick-skill input releases when its cooldown opens");
         assert(unit.quickSkillReleaseCount == 1, "quick-skill slot releases exactly once for one hold");
         assert(unit.lastQuickSkillName == "测试快捷技能1" && unit.lastQuickSkillMp == 11, "quick-skill release keeps slot name and mp cost");
         assert(unit.lastQuickSkillKey == 49, "quick-skill release forwards the live key code");
-        assert(view.进度条1.startCount == 1 && view.进度条1.lastCooldown == 1001, "successful quick skill starts its own cooldown bar");
+        assert(!ManualCooldownService.isReady(ManualCooldownService.quickSkillKey(1)), "successful quick skill starts its own authoritative cooldown");
 
-        view.进度条1.冷却 = true;
         QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
         assert(unit.quickSkillReleaseCount == 1, "consumed quick-skill hold does not repeat after cooldown is forced ready");
 
         QuickSkillInputService.updateSlot(unit, 1, false, true, view, 49);
+        drainManualCooldown();
         QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
         assert(unit.quickSkillReleaseCount == 2, "key release rearms the same quick-skill slot");
     }
 
     private static function testQuickSkillInputConsumesFailedAttempt():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         unit.quickSkillReleaseCount = 0;
@@ -449,7 +458,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         var failed:Object = QuickSkillInputService.updateSlot(unit, 2, true, true, view, 50);
         assert(failed != null && failed.released === false, "failed quick skill records one release attempt");
         assert(unit.__quickSkillInputConsumedSlots[2] === true, "failed quick skill consumes the current slot hold");
-        assert(view.进度条2.startCount == 0, "failed quick skill does not start cooldown");
+        assert(ManualCooldownService.isReady(ManualCooldownService.quickSkillKey(2)), "failed quick skill does not start cooldown");
 
         QuickSkillInputService.updateSlot(unit, 2, true, true, view, 50);
         assert(unit.quickSkillReleaseCount == 1, "failed quick skill does not retry every frame while held");
@@ -460,6 +469,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testQuickSkillInputRearmsAcrossDisabledFrames():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         unit.quickSkillReleaseCount = 0;
@@ -482,6 +492,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testQuickSkillInputKeepsSlotLatchesIndependent():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         unit.quickSkillReleaseCount = 0;
@@ -497,14 +508,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.__quickSkillInputConsumedSlots[1] === true && unit.__quickSkillInputConsumedSlots[12] === true, "quick-skill slots keep independent consumed latches");
 
         QuickSkillInputService.updateSlot(unit, 1, false, true, view, 49);
-        view.进度条1.冷却 = true;
-        view.进度条12.冷却 = true;
+        drainManualCooldown();
         QuickSkillInputService.updateSlot(unit, 1, true, true, view, 49);
         QuickSkillInputService.updateSlot(unit, 12, true, true, view, 123);
         assert(unit.quickSkillReleaseCount == 3, "rearming one quick-skill slot does not rearm another held slot");
     }
 
     private static function testQuickSkillInputSyncsLiveKeyLabelAndClearsUnit():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         var root:Object = {};
@@ -526,6 +537,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testQuickSkillInputPreservesTruthyLegacyPorts():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         view.进度条5.冷却 = 1;
@@ -535,10 +547,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         var released:Object = QuickSkillInputService.updateSlot(unit, 5, true, true, view, 53);
         assert(released != null && released.released === true, "quick-skill input preserves truthy legacy release result semantics");
-        assert(view.进度条5.startCount == 1, "truthy legacy cooldown-ready port starts cooldown");
+        assert(!ManualCooldownService.isReady(ManualCooldownService.quickSkillKey(5)), "truthy legacy release result starts authoritative cooldown");
     }
 
     private static function testQuickSkillInputFailsClosedWithoutCooldownStarter():Void {
+        resetManualCooldown();
         var unit:Object = makeUnit();
         var view:Object = makeQuickSkillView();
         unit.quickSkillReleaseCount = 0;
@@ -546,12 +559,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             this.quickSkillReleaseCount++;
             return true;
         };
-        view.进度条6.冷却开始 = null;
+        view.进度条6 = null;
 
         var result:Object = QuickSkillInputService.updateSlot(unit, 6, true, true, view, 54);
-        assert(result == null, "quick-skill input fails closed when cooldown starter is unavailable");
-        assert(unit.quickSkillReleaseCount == 0, "missing cooldown starter cannot release a skill without cooldown");
-        assert(unit.__quickSkillInputConsumedSlots[6] !== true, "missing cooldown starter leaves the slot armed for UI recovery");
+        assert(result != null && result.released === true, "quick-skill input remains reachable when cooldown renderer is unavailable");
+        assert(unit.quickSkillReleaseCount == 1, "missing renderer does not block authoritative skill release");
+        assert(!ManualCooldownService.isReady(ManualCooldownService.quickSkillKey(6)), "missing renderer still starts authoritative cooldown");
     }
 
     private static function testManualReloadIntentQueuesForHeldGunStateMachine():Void {
@@ -1683,24 +1696,35 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         return clip;
     }
 
+    private static var manualCooldownQueue:Array = [];
+
+    private static function resetManualCooldown():Void {
+        manualCooldownQueue = [];
+        ManualCooldownService.resetForTests();
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {
+            manualCooldownQueue.push(callback);
+        });
+    }
+
+    private static function drainManualCooldown():Void {
+        var guard:Number = 0;
+        while (manualCooldownQueue.length > 0 && guard++ < 10000) {
+            var callback = manualCooldownQueue.shift();
+            callback();
+        }
+    }
+
     private static function makeCooldownPort(ready:Boolean, cooldownTime:Number):Object {
         var port:Object = {
             ready: ready,
             cooldownTime: cooldownTime,
-            startCount: 0,
-            lastCooldown: 0
-        };
-        port.isReady = function():Boolean {
-            return this.ready;
+            renderer: {冷却: ready}
         };
         port.getCooldownTime = function(skill:Object):Number {
             return this.cooldownTime;
         };
-        port.start = function(value:Number):Boolean {
-            this.startCount++;
-            this.lastCooldown = value;
-            this.ready = false;
-            return true;
+        port.bindRenderer = function():Void {
+            ManualCooldownService.bindRenderer(ManualCooldownService.WEAPON_SKILL_KEY, this.renderer);
         };
         return port;
     }

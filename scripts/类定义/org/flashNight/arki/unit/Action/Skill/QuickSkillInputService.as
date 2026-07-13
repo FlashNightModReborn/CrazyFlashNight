@@ -1,11 +1,14 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/QuickSkillInputService.as
 
+import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+
 /**
  * @class QuickSkillInputService
  * @description 12 槽快捷技能输入语义服务
  *
  * 帧计时器只负责逐帧调用根桥。本服务统一采样实时键位、维护每槽按住锁存，
- * 并编排技能释放、MP 刷新与旧 UI 冷却条启动。旧技能控制器仅保留键位显示。
+ * 并编排技能释放、MP 刷新与权威冷却启动。旧技能控制器仅保留键位显示，
+ * 旧冷却条只接受 ManualCooldownService 投影，缺失时不阻塞输入。
  */
 class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
 
@@ -78,6 +81,10 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     ):Object {
         if (!unit || !isValidSlotIndex(slotIndex)) return null;
 
+        var cooldownKey:String = ManualCooldownService.quickSkillKey(slotIndex);
+        var cooldownBar:Object = getCooldownBar(view, slotIndex);
+        if (cooldownBar) ManualCooldownService.bindRenderer(cooldownKey, cooldownBar);
+
         var consumedSlots:Array = getConsumedSlots(unit);
         if (!keyDown) {
             consumedSlots[slotIndex] = false;
@@ -87,14 +94,13 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         if (!inputEnabled || consumedSlots[slotIndex] === true) return null;
 
         var skillSlot:Object = getSkillSlot(view, slotIndex);
-        var cooldownBar:Object = getCooldownBar(view, slotIndex);
-        if (!isEquippedSkill(skillSlot) || !cooldownBar || !cooldownBar.冷却 || !cooldownBar.冷却开始) {
+        if (!isEquippedSkill(skillSlot) || !ManualCooldownService.isReady(cooldownKey)) {
             return null;
         }
 
         // 与旧控制器一致：只要进入一次释放尝试，无论成功与否都必须松键后再触发。
         consumedSlots[slotIndex] = true;
-        return releaseSlot(unit, slotIndex, skillSlot, cooldownBar, keyCode);
+        return releaseSlot(unit, slotIndex, skillSlot, keyCode);
     }
 
     /**
@@ -104,7 +110,6 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         unit:Object,
         slotIndex:Number,
         skillSlot:Object,
-        cooldownBar:Object,
         keyCode:Number
     ):Object {
         var skillName:String = String(skillSlot.已装备名);
@@ -113,8 +118,10 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         var cooldownStarted:Boolean = false;
 
         if (released) {
-            cooldownBar.冷却开始(cooldownTime);
-            cooldownStarted = true;
+            cooldownStarted = ManualCooldownService.start(
+                ManualCooldownService.quickSkillKey(slotIndex),
+                cooldownTime
+            );
         }
 
         return {

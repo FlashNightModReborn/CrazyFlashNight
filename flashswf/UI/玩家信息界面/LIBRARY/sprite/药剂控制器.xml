@@ -26,35 +26,8 @@ stop();
             </DOMFrame>
             <DOMFrame index="9" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.icon = _parent[控制参数].itemIcon;
-this.药剂进度条 = _parent[控制参数2];
-
-function 解除快捷物品栏装备()
-{
-	_root.发布消息(drugName + "耗尽！");
-	_root[控制参数] = "";
-}
-
-var 控制对象 = _root.gameworld[_root.控制目标];
-
-if (控制对象.hp > 0)
-{
-	if (icon.value > 0)
-	{
-		var drugName = icon.name;
-		_root.使用药剂(icon.name);
-		药剂进度条.冷却开始(_root.吃药冷却时间);
-		icon.collection.addValue(icon.index,-1);
-		if (!icon.item)
-		{
-			解除快捷物品栏装备(drugName);
-		}
-	}
-	else
-	{
-		解除快捷物品栏装备();
-	}
-}
+                <script><![CDATA[// 输入、药效调用、扣减与耗尽同步均由 DrugInputService 负责。
+gotoAndStop("没扣扳机");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -96,17 +69,6 @@ if (控制对象.hp > 0)
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	if (!_root.暂停 && _root.当前玩家总数 == 1)
-	{
-		if (_parent.药剂栏.itemIcon.item && Key.isDown(_root[_parent.扳机键]) && _parent._parent[_parent.控制参数2].冷却)
-		{
-			_parent.gotoAndStop("已扣扳机");
-		}
-	}
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -119,14 +81,6 @@ if (控制对象.hp > 0)
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	if (Key.isDown(_root[_parent.扳机键]) == false)
-	{
-		_parent.gotoAndStop("没扣扳机");
-	}
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

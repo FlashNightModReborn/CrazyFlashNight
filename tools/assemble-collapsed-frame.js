@@ -20,6 +20,8 @@ var S8_LOADERS = [62, 63, 64, 65, 66, 67, 68, 69, 70, 74];       // S8 fire-and-
 // 只允许在这里维护需要绕过该 L42 陷阱的具体 import，生成后由 exact-match 门守住白名单。
 var SPECIFIC_IMPORTS = [
   'org.flashNight.boot.BootSequencer',
+  'org.flashNight.arki.unit.Action.Skill.DrugInputService',
+  'org.flashNight.arki.unit.Action.Skill.ManualCooldownService',
   'org.flashNight.arki.unit.Action.Skill.QuickSkillInputService',
   'org.flashNight.arki.unit.Action.Skill.SkillAttributeCore',
   'org.flashNight.arki.unit.Action.Skill.SkillDamageCore',

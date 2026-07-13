@@ -2,13 +2,14 @@
 
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
+import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 
 /**
  * @class WeaponSkillInputService
  * @description 武器技能键输入语义服务
  *
  * 帧计时器负责把 F 键当前状态交给本服务；本服务持有按住锁存、触发门控与释放编排。
- * 旧玩家信息界面只通过 cooldown port 暂时提供共享冷却状态与进度条渲染，不再检测按键。
+ * 共享冷却状态由 ManualCooldownService 持有；旧玩家信息界面只提供时长与可选渲染器。
  * 副武器快装不是普通主动战技，因此可绕过共享战技冷却，并且成功后不启动共享冷却。
  */
 class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
@@ -23,10 +24,10 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
 
         var rootRef:Object = root;
         var cooldownPort:Object = {};
-        cooldownPort.isReady = function():Boolean {
+        cooldownPort.bindRenderer = function():Void {
             var info:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.玩家必要信息界面 : null;
             var bar:Object = info ? info.战技进度条 : null;
-            return bar != null && bar.冷却 === true;
+            if (bar) ManualCooldownService.bindRenderer(ManualCooldownService.WEAPON_SKILL_KEY, bar);
         };
         cooldownPort.getCooldownTime = function(skill:Object):Number {
             var info:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.玩家必要信息界面 : null;
@@ -35,13 +36,6 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
                 return Number(slot.冷却时间);
             }
             return skill && Number(skill.冷却时间) > 0 ? Number(skill.冷却时间) : 0;
-        };
-        cooldownPort.start = function(cooldownTime:Number):Boolean {
-            var info:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.玩家必要信息界面 : null;
-            var bar:Object = info ? info.战技进度条 : null;
-            if (!bar || !bar.冷却开始) return false;
-            bar.冷却开始(cooldownTime);
-            return true;
         };
 
         var bridge:Object = {};
@@ -80,6 +74,7 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
                                       cooldownPort:Object,
                                       inputFrame:Number):Object {
         if (!unit) return null;
+        bindCooldownRenderer(cooldownPort);
 
         if (!keyDown) {
             unit.__weaponSkillInputConsumed = false;
@@ -89,7 +84,7 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
             return null;
         }
 
-        var sharedCooldownReady:Boolean = isCooldownPortReady(cooldownPort);
+        var sharedCooldownReady:Boolean = ManualCooldownService.isReady(ManualCooldownService.WEAPON_SKILL_KEY);
         if (!canTriggerUnit(unit, sharedCooldownReady)) {
             return null;
         }
@@ -99,7 +94,9 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
         var result:Object = releaseUnit(unit, inputFrame);
         if (result.startSharedCooldown) {
             result.cooldownTime = getCooldownTimeFromPort(cooldownPort, result.skill);
-            startCooldownPort(cooldownPort, result.cooldownTime);
+            if (result.cooldownTime > 0) {
+                ManualCooldownService.start(ManualCooldownService.WEAPON_SKILL_KEY, result.cooldownTime);
+            }
         }
         return result;
     }
@@ -216,8 +213,8 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
         return skill && skill.isSubweaponControl === true;
     }
 
-    private static function isCooldownPortReady(cooldownPort:Object):Boolean {
-        return cooldownPort && cooldownPort.isReady && cooldownPort.isReady() === true;
+    private static function bindCooldownRenderer(cooldownPort:Object):Void {
+        if (cooldownPort && cooldownPort.bindRenderer) cooldownPort.bindRenderer();
     }
 
     private static function getCooldownTimeFromPort(cooldownPort:Object, skill:Object):Number {
@@ -229,11 +226,6 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
             return Number(skill.冷却时间);
         }
         return 0;
-    }
-
-    private static function startCooldownPort(cooldownPort:Object, cooldownTime:Number):Boolean {
-        if (!cooldownPort || !cooldownPort.start || cooldownTime <= 0) return false;
-        return cooldownPort.start(cooldownTime) === true;
     }
 
     private static function resolveInputFrame(inputFrame:Number):Number {
