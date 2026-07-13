@@ -633,7 +633,8 @@ class org.flashNight.arki.item.InventoryPanelService {
         var slot:Number;
         var item:Object;
 
-        if (filterKey == "all") {
+        var setFilterActive:Boolean = filterSpec != null && String(filterSpec.branch) == "set";
+        if (filterKey == "all" && !setFilterActive) {
             if (viewCapacity <= 0) effectiveOffset = 0;
             else if (effectiveOffset >= viewCapacity) {
                 effectiveOffset = Math.floor((viewCapacity - 1) / limit) * limit;
@@ -678,7 +679,9 @@ class org.flashNight.arki.item.InventoryPanelService {
             limit: slots.length,
             slots: slots,
             filterFacets: facetSummary.facets,
-            filterItemCount: facetSummary.itemCount
+            filterItemCount: facetSummary.itemCount,
+            setFacets: facetSummary.setFacets,
+            setFilterItemCount: facetSummary.setItemCount
         };
         if (filterSpec != null) snapshot.filterSpec = filterSpec;
         return snapshot;
@@ -700,6 +703,13 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function itemMatchesFilter(item:Object, filterKey:String, filterSpec:Object):Boolean {
         if (filterSpec != null) {
+            if (String(filterSpec.branch || "category") == "set") {
+                var setData:Object = item != null && typeof item.getData == "function"
+                    ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+                var itemSetId:String = setData == null || setData.setId == undefined ? "" : String(setData.setId);
+                var requestedSetId:String = filterSpec.setId == undefined ? "" : String(filterSpec.setId);
+                return itemSetId != "" && (requestedSetId == "" || requestedSetId == itemSetId);
+            }
             var taxonomy:Object = itemTaxonomy(item);
             var major:String = String(filterSpec.major || "all");
             if (major != "all" && taxonomy.major != major) return false;
@@ -722,6 +732,15 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function normalizeFilterSpec(input:Object):Object {
         if (input == undefined || input == null) return null;
+        var branch:String = String(input.branch == undefined ? "category" : input.branch);
+        if (branch == "set") {
+            var setId:String = input.setId == undefined ? "" : String(input.setId);
+            if (!safeFilterValue(setId) || input.use != undefined || input.subtype != undefined) return null;
+            var setSpec:Object = {branch:"set"};
+            if (setId != "") setSpec.setId = setId;
+            return setSpec;
+        }
+        if (branch != "category") return null;
         var major:String = String(input.major == undefined ? "all" : input.major);
         var useName:String = input.use == undefined ? "" : String(input.use);
         var subtype:String = input.subtype == undefined ? "" : String(input.subtype);
@@ -729,6 +748,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (major == "all" && (useName != "" || subtype != "")) return null;
         if (subtype != "" && (major != "weapon" || useName == "")) return null;
         var normalized:Object = {major: major};
+        if (input.branch != undefined) normalized.branch = "category";
         if (useName != "") normalized.use = useName;
         if (subtype != "") normalized.subtype = subtype;
         return normalized;
@@ -736,6 +756,7 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function filterSpecMatchesKey(filterKey:String, filterSpec:Object):Boolean {
         if (filterSpec == null) return true;
+        if (String(filterSpec.branch || "category") == "set") return filterKey == "all";
         var major:String = String(filterSpec.major || "all");
         var expectedKey:String = major == "collection" ? "other" : major;
         return filterKey == expectedKey;
@@ -781,6 +802,8 @@ class org.flashNight.arki.item.InventoryPanelService {
                 && facetCacheMatchesInventory(cached, inventory)) return cached;
         var facets:Array = [];
         var itemCount:Number = 0;
+        var setFacets:Array = [];
+        var setItemCount:Number = 0;
         for (var slot:Number = 0; slot < accessibleCapacity; slot++) {
             var item:Object = inventory.getItem(String(slot));
             if (item == null) continue;
@@ -794,6 +817,16 @@ class org.flashNight.arki.item.InventoryPanelService {
                 var subtypeNode:Object = facetNode(useNode.children, taxonomy.subtype, taxonomy.subtype);
                 subtypeNode.count++;
             }
+            var setData:Object = typeof item.getData == "function"
+                ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+            var setId:String = setData == null || setData.setId == undefined ? "" : String(setData.setId);
+            var setName:String = setData == null || setData.setName == undefined ? "" : String(setData.setName);
+            if (setId != "" && setName != "") {
+                setItemCount++;
+                var setOrder:Number = Number(setData.setOrder);
+                if (isNaN(setOrder)) setOrder = 0;
+                facetNode(setFacets, setId, setName, setOrder).count++;
+            }
         }
         cached = {
             epoch:epoch,
@@ -801,7 +834,9 @@ class org.flashNight.arki.item.InventoryPanelService {
             inventoryRef:inventory,
             mutationRevision:inventory.getMutationRevision(),
             facets:facets,
-            itemCount:itemCount
+            itemCount:itemCount,
+            setFacets:setFacets,
+            setItemCount:setItemCount
         };
         _facetCache[containerId] = cached;
         return cached;
@@ -817,11 +852,12 @@ class org.flashNight.arki.item.InventoryPanelService {
             && Number(cached.mutationRevision) == inventory.getMutationRevision();
     }
 
-    private static function facetNode(nodes:Array, id:String, label:String):Object {
+    private static function facetNode(nodes:Array, id:String, label:String, order:Number):Object {
         for (var i:Number = 0; i < nodes.length; i++) {
             if (String(nodes[i].id) == id) return nodes[i];
         }
-        var node:Object = {id:id, label:label, count:0, children:[]};
+        if (isNaN(order)) order = 0;
+        var node:Object = {id:id, label:label, order:order, count:0, children:[]};
         nodes.push(node);
         return node;
     }
@@ -837,6 +873,10 @@ class org.flashNight.arki.item.InventoryPanelService {
         var useName = data == null ? "" : data.use;
         var actionType = data == null ? "" : (data.actiontype != undefined ? data.actiontype : data.actionType);
         var weaponType = data == null ? "" : (data.weapontype != undefined ? data.weapontype : data.weaponType);
+        var setId = data == null || data.setId == undefined ? "" : data.setId;
+        var setName = data == null || data.setName == undefined ? "" : data.setName;
+        var setOrder:Number = data == null ? 0 : Number(data.setOrder);
+        if (isNaN(setOrder)) setOrder = 0;
         var iconName = data == null || data.icon == undefined ? item.name : data.icon;
         var displayName = data == null || data.displayname == undefined || String(data.displayname).length == 0
             ? item.name : data.displayname;
@@ -883,6 +923,9 @@ class org.flashNight.arki.item.InventoryPanelService {
             use: useName == undefined ? "" : useName,
             actionType: actionType == undefined ? "" : actionType,
             weaponType: weaponType == undefined ? "" : weaponType,
+            setId: setId,
+            setName: setName,
+            setOrder: setOrder,
             itemKind: isEquipment ? "equipment" : "stack",
             quantity: quantity,
             enhancementLevel: enhancementLevel,

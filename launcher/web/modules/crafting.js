@@ -149,14 +149,23 @@ var CraftingPanel = (function() {
 
     function rebuildFilterTree() {
         var recipes = _snapshot && _snapshot.recipes ? _snapshot.recipes : [];
-        _filterTree = ItemFilter.build(recipes, function(recipe) { return ItemFilter.catalogPath(recipe.output || {}); });
+        var categoryTree = ItemFilter.build(recipes, function(recipe) { return ItemFilter.catalogPath(recipe.output || {}); });
+        var setTree = ItemFilter.buildSetTree(recipes.map(function(recipe) { return recipe.output || {}; }));
+        _filterTree = setTree.children.length ? ItemFilter.branchTree([
+            {id:'category', label:'类别', tree:categoryTree},
+            {id:'set', label:'套装', tree:setTree}
+        ], recipes.length) : categoryTree;
         _filterPath = ItemFilter.validPath(_filterTree, _filterPath);
         if (_filterNavigator) _filterNavigator.setModel(_filterTree, _filterPath);
     }
 
     function filteredRecipes(recipes) {
         return recipes.filter(function(recipe) {
-            return (!_filterPath.length || ItemFilter.matchesPath(recipe.output || {}, _filterPath, ItemFilter.catalogPath))
+            var path = _filterPath || [], item = recipe.output || {}, matches = true;
+            if (path[0] === 'category') matches = ItemFilter.matchesPath(item, path.slice(1), ItemFilter.catalogPath);
+            else if (path[0] === 'set') matches = ItemFilter.matchesPath(item, path.slice(1), ItemFilter.setPath);
+            else if (path.length) matches = ItemFilter.matchesPath(item, path, ItemFilter.catalogPath);
+            return matches
                 && (!_craftableOnly || recipe.canCraftOne === true);
         });
     }

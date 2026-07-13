@@ -926,10 +926,11 @@ var KShop = (function() {
             var group = String(item && item.type || '未分组');
             return [{id:group, label:group}];
         });
-        _categoryTree = ItemFilter.branchTree([
-            {id:'category', label:'类别', tree:automaticTree},
-            {id:'curated', label:'专柜', tree:curatedTree}
-        ], _catalog.length);
+        var setTree = ItemFilter.buildSetTree(_catalog);
+        var branches = [{id:'category', label:'类别', tree:automaticTree}];
+        if (setTree.children.length) branches.push({id:'set', label:'套装', tree:setTree});
+        branches.push({id:'curated', label:'专柜', tree:curatedTree});
+        _categoryTree = ItemFilter.branchTree(branches, _catalog.length);
         _categoryPath = ItemFilter.validPath(_categoryTree, _categoryPath);
         if (_categoryNavigator) _categoryNavigator.setModel(_categoryTree, _categoryPath);
         decorateKShopCategoryButtons();
@@ -971,6 +972,7 @@ var KShop = (function() {
         if (path[0] === 'category') {
             return ItemFilter.matchesPath(item, path.slice(1), function(entry) { return ItemFilter.catalogPath(entry); });
         }
+        if (path[0] === 'set') return ItemFilter.matchesPath(item, path.slice(1), ItemFilter.setPath);
         if (path[0] === 'curated') return String(item && item.type || '未分组') === String(path[1]);
         return false;
     }

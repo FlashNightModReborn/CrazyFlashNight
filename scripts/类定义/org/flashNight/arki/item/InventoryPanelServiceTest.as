@@ -230,7 +230,8 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var previousMaterial:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"];
         var previousWeapon:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"];
         org.flashNight.arki.item.ItemUtil.itemDataDict["筛选材料"] = {type: "收集品", use: "材料", price: 1};
-        org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = {type: "武器", use: "长枪", weapontype: "突击步枪", price: 2};
+        org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = {type: "武器", use: "长枪", weapontype: "突击步枪",
+            setId:"test_rifle", setName:"测试长枪套装", price: 2};
         for (var slot:Number = 0; slot < 51; slot++) {
             _root.物品栏.仓库.add(slot, new BaseItem("筛选材料", 1, slot + 1));
         }
@@ -257,6 +258,17 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && structured.snapshots[0].filterItemCount == 52
                 && rifleFacet != null && rifleFacet.count == 1,
             "结构化筛选由权威层匹配用途/子类并返回全容器 facet 数量");
+        var setFiltered:Object = structuredSnapshot("仓库", 0, 50, "all", {branch:"set", setId:"test_rifle"});
+        var setFacet:Object = facetAt(setFiltered.snapshots[0].setFacets, "test_rifle");
+        assertTrue(setFiltered.success && setFiltered.snapshots[0].viewCapacity == 1
+                && setFiltered.snapshots[0].slots[0].physicalSlot == 100
+                && setFiltered.snapshots[0].filterSpec.setId == "test_rifle"
+                && setFiltered.snapshots[0].setFilterItemCount == 1
+                && setFacet != null && setFacet.label == "测试长枪套装" && setFacet.count == 1,
+            "套装筛选跨物理页由权威层匹配并返回套装 facet");
+        var allSets:Object = structuredSnapshot("仓库", 0, 50, "all", {branch:"set"});
+        assertTrue(allSets.success && allSets.snapshots[0].viewCapacity == 1,
+            "套装分支根节只显示已显式标注的物品");
         var invalidSpec:Object = structuredSnapshot("仓库", 0, 50, "weapon", {
             major:"weapon", subtype:"突击步枪"
         });

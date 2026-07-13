@@ -43,6 +43,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         itemDict["门槛商品"] = itemData("门槛商品", "消耗品", "消耗品", 400);
         itemDict["测试手枪"] = itemData("测试手枪", "武器", "手枪", 1000);
         itemDict["测试手枪"].weapontype = "手枪";
+        itemDict["测试手枪"].setId = "test_sidearm";
+        itemDict["测试手枪"].setName = "测试侧武器套装";
         itemDict["测试插件"] = itemData("测试插件", "收集品", "材料", 50);
         ItemUtil.itemDataDict = itemDict;
         ItemUtil.equipmentDict = {};
@@ -112,7 +114,9 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(snapshot.views.material.slots[0].slotLease == second.views.material.slots[0].slotLease,
             "unchanged collection resource lease survives repeated read snapshots");
         check(snapshot.catalog[3].locked == true,"required information gate projected");
-        check(snapshot.catalog[4].weaponType == "手枪" && snapshot.catalog[4].actionType == "","existing weapon subtype fields projected for automatic grouping");
+        check(snapshot.catalog[4].weaponType == "手枪" && snapshot.catalog[4].actionType == ""
+            && snapshot.catalog[4].setId == "test_sidearm" && snapshot.catalog[4].setName == "测试侧武器套装",
+            "existing weapon subtype and set fields projected for automatic grouping");
         check(snapshot.layout.title == "测试商人" && snapshot.layout.sections[0].entries.length == 5,"developer curated layout projected");
         var denied:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:3,quantity:1});
         check(!denied.success && denied.error == "locked" && _root.金钱 == 5000,"locked buy has no write");

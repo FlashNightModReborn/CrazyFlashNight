@@ -291,17 +291,17 @@ var NpcShop = (function() {
         if (!_categoryNavigator) return;
         var sections = _state && _state.layout && Array.isArray(_state.layout.sections) ? _state.layout.sections : [];
         var catalog = _state && _state.catalog ? _state.catalog : [];
-        if (sections.length) {
-            var automaticTree = ItemFilter.build(catalog, function(item) { return ItemFilter.catalogPath(item); });
-            var curatedTree = ItemFilter.manualSections(sections, catalog.length);
-            _categoryTree = ItemFilter.branchTree([
-                {id:'category', label:'类别', tree:automaticTree},
-                {id:'curated', label:'专柜', tree:curatedTree}
-            ], catalog.length);
+        var setTree = ItemFilter.buildSetTree(catalog);
+        if (sections.length || setTree.children.length) {
+            var automaticTree = ItemFilter.build(catalog, ItemFilter.catalogPath);
+            var branches = [{id:'category', label:'类别', tree:automaticTree}];
+            if (setTree.children.length) branches.push({id:'set', label:'套装', tree:setTree});
+            if (sections.length) branches.push({id:'curated', label:'专柜', tree:ItemFilter.manualSections(sections, catalog.length)});
+            _categoryTree = ItemFilter.branchTree(branches, catalog.length);
             var currentPath = _category && _category.mode === 'combined' ? (_category.path || []) : [];
             var valid = ItemFilter.validPath(_categoryTree, currentPath);
             if (!_categoryInitialized || !valid) {
-                var configured = String((_state.layout && _state.layout.defaultSection) || '');
+                var configured = sections.length ? String((_state.layout && _state.layout.defaultSection) || '') : '';
                 var hasConfigured = sections.some(function(section) { return String(section.id) === configured; });
                 _category = {mode:'combined', path:hasConfigured ? ['curated', configured] : []};
             } else {
@@ -345,12 +345,13 @@ var NpcShop = (function() {
 
     function matchesCategory(item) {
         var sections = _state && _state.layout && Array.isArray(_state.layout.sections) ? _state.layout.sections : [];
-        if (sections.length) {
+        if (_category && _category.mode === 'combined') {
             var browsePath = _category && _category.mode === 'combined' ? (_category.path || []) : [];
             if (!browsePath.length || browsePath.length === 1) return true;
             if (browsePath[0] === 'category') {
                 return ItemFilter.matchesPath(item, browsePath.slice(1), function(entry) { return ItemFilter.catalogPath(entry); });
             }
+            if (browsePath[0] === 'set') return ItemFilter.matchesPath(item, browsePath.slice(1), ItemFilter.setPath);
             if (browsePath[0] === 'curated') {
                 for (var i = 0; i < sections.length; i++) {
                     if (String(sections[i].id) === String(browsePath[1])) {

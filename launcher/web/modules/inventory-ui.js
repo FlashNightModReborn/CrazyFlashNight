@@ -408,20 +408,29 @@
 
     function filterSpecFromPath(path) {
         path = Array.isArray(path) ? path : [];
-        var spec = {major:path.length ? String(path[0]) : 'all'};
-        if (path.length > 1) spec.use = String(path[1]);
-        if (path.length > 2) spec.subtype = String(path[2]);
+        if (path[0] === 'set') {
+            var setSpec = {branch:'set'};
+            if (path.length > 1) setSpec.setId = String(path[1]);
+            return setSpec;
+        }
+        var offset = path[0] === 'category' ? 1 : 0;
+        var spec = {major:path.length > offset ? String(path[offset]) : 'all'};
+        if (offset) spec.branch = 'category';
+        if (path.length > offset + 1) spec.use = String(path[offset + 1]);
+        if (path.length > offset + 2) spec.subtype = String(path[offset + 2]);
         return spec;
     }
 
-    function filterPathFromSpec(spec, filterKey) {
+    function filterPathFromSpec(spec, filterKey, branched) {
         if (!spec || typeof spec !== 'object') {
             filterKey = String(filterKey || 'all');
-            return filterKey === 'all' ? [] : [filterKey];
+            return filterKey === 'all' ? [] : (branched ? ['category', filterKey] : [filterKey]);
         }
+        if (spec.branch === 'set') return spec.setId ? ['set', String(spec.setId)] : ['set'];
         var path = String(spec.major || 'all') === 'all' ? [] : [String(spec.major)];
         if (spec.use) path.push(String(spec.use));
         if (spec.subtype) path.push(String(spec.subtype));
+        if (branched && (path.length || spec.branch === 'category')) path.unshift('category');
         return path;
     }
 
@@ -507,9 +516,16 @@
             });
             this.root.appendChild(this.navigator.root);
         }
-        var tree = ItemFilter.fromFacets(snapshot.filterFacets, Number(snapshot.filterItemCount) || 0);
-        var authoritativePath = filterPathFromSpec(snapshot.filterSpec, snapshot.filterKey);
-        var pendingPath = this.pendingSpec ? filterPathFromSpec(this.pendingSpec, 'all') : null;
+        var categoryTree = ItemFilter.fromFacets(snapshot.filterFacets, Number(snapshot.filterItemCount) || 0);
+        var branched = (Array.isArray(snapshot.setFacets) && snapshot.setFacets.length > 0)
+            || (snapshot.filterSpec && snapshot.filterSpec.branch === 'set')
+            || (this.pendingSpec && this.pendingSpec.branch === 'set');
+        var tree = branched ? ItemFilter.branchTree([
+            {id:'category', label:'类别', tree:categoryTree},
+            {id:'set', label:'套装', tree:ItemFilter.fromFacets(snapshot.setFacets, Number(snapshot.setFilterItemCount) || 0)}
+        ], Number(snapshot.filterItemCount) || 0) : categoryTree;
+        var authoritativePath = filterPathFromSpec(snapshot.filterSpec, snapshot.filterKey, branched);
+        var pendingPath = this.pendingSpec ? filterPathFromSpec(this.pendingSpec, 'all', branched) : null;
         if (pendingPath && pendingPath.join('/') === authoritativePath.join('/')) this.pendingSpec = null;
         var path = this.pendingSpec ? pendingPath : authoritativePath;
         this.navigator.root.hidden = false;

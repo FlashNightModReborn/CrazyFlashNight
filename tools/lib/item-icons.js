@@ -60,6 +60,9 @@ function loadItemMeta(projectRoot, fail) {
                 icon: childText(block, 'icon'),
                 type: childText(block, 'type'),
                 use: childText(block, 'use'),
+                setId: childText(block, 'setId'),
+                setName: childText(block, 'setName'),
+                setOrder: childText(block, 'setOrder'),
                 actiontype: attributeText(attributes, 'actiontype') || childText(block, 'actiontype'),
                 weapontype: attributeText(attributes, 'weapontype') || childText(block, 'weapontype'),
                 source: rel

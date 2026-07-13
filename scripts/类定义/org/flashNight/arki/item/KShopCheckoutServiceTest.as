@@ -30,6 +30,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         itemDict["强化石"] = itemData("强化石", "收集品", "材料", 200);
         itemDict["测试手枪"] = itemData("测试手枪", "武器", "手枪", 1000);
         itemDict["测试手枪"].weapontype = "手枪";
+        itemDict["测试手枪"].setId = "test_sidearm";
+        itemDict["测试手枪"].setName = "测试侧武器套装";
         ItemUtil.itemDataDict = itemDict;
         ItemUtil.equipmentDict = {};
         ItemUtil.equipmentDict["测试手枪"] = true;
@@ -90,8 +92,9 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(response.success && response.catalog[2].type == "训练专柜"
             && response.catalog[2].majorType == "武器" && response.catalog[2].subType == "手枪"
-            && response.catalog[2].weaponType == "手枪" && response.catalog[2].actionType == "",
-            "catalog projects curated group and automatic weapon taxonomy independently");
+            && response.catalog[2].weaponType == "手枪" && response.catalog[2].actionType == ""
+            && response.catalog[2].setId == "test_sidearm" && response.catalog[2].setName == "测试侧武器套装",
+            "catalog projects curated group, automatic taxonomy and set metadata independently");
     }
 
     private static function testDirectDelivery():Void {

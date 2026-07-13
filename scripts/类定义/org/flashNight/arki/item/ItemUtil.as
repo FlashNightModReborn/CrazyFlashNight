@@ -58,6 +58,8 @@ class org.flashNight.arki.item.ItemUtil{
     public static var materialDict:Object; // 材料字典，快速判断物品是否为材料
     public static var informationMaxValueDict:Object; // 情报持有上限字典，可以顺便判断物品是否为情报
     public static var multiTierDict:Object; // 进阶字典，检查物品是否存进多阶属性
+    public static var itemSetDict:Object; // 套装 ID → 权威展示信息与成员列表
+    public static var itemSetByItem:Object; // 物品名 → 套装投影
 
 
     /*
@@ -111,6 +113,29 @@ class org.flashNight.arki.item.ItemUtil{
         // 这样可以通过调整XML中物品的位置来直观控制显示顺序
         _itemDataArray.reverse();
 
+        // 套装只从物品 XML 的显式 setId/setName 派生，不根据名称、描述或配方猜测。
+        // 按已恢复的 XML 顺序建索引，保证各界面对同槽变体的展示顺序一致。
+        var _itemSetDict:Object = new Object();
+        var _itemSetByItem:Object = new Object();
+        for (var setIndex:Number = 0; setIndex < _itemDataArray.length; setIndex++) {
+            var setItemData:Object = _itemDataArray[setIndex];
+            var setId:String = setItemData.setId == undefined ? "" : String(setItemData.setId);
+            var setName:String = setItemData.setName == undefined ? "" : String(setItemData.setName);
+            if (setId == "" || setName == "") continue;
+            var setGroup:Object = _itemSetDict[setId];
+            if (setGroup == undefined) {
+                var setOrder:Number = Number(setItemData.setOrder);
+                if (isNaN(setOrder)) setOrder = 0;
+                setGroup = {id:setId, name:setName, order:setOrder, items:[], itemsByUse:{}};
+                _itemSetDict[setId] = setGroup;
+            }
+            setGroup.items.push(setItemData.name);
+            var setUse:String = setItemData.use == undefined || String(setItemData.use) == "" ? "其他" : String(setItemData.use);
+            if (setGroup.itemsByUse[setUse] == undefined) setGroup.itemsByUse[setUse] = [];
+            setGroup.itemsByUse[setUse].push(setItemData.name);
+            _itemSetByItem[setItemData.name] = {id:setGroup.id, name:setGroup.name, order:setGroup.order};
+        }
+
         itemDataDict = _itemDataDict;
         itemDataArray = _itemDataArray;
         itemNamesByID = _itemNamesByID;
@@ -119,8 +144,11 @@ class org.flashNight.arki.item.ItemUtil{
         materialDict = _materialDict;
         informationMaxValueDict = _informationMaxValueDict;
         multiTierDict = _multiTierDict;
+        itemSetDict = _itemSetDict;
+        itemSetByItem = _itemSetByItem;
         _root.物品属性列表 = _itemDataDict;
         _root.物品属性数组 = _itemDataArray;
+        _root.物品套装索引 = _itemSetDict;
         _root.id物品名对应表 = _itemNamesByID;
         _root.物品最大id = _maxID;
         _root.物品总数 = _itemDataDict.length;
@@ -154,6 +182,14 @@ class org.flashNight.arki.item.ItemUtil{
         if (index.__proto__ == String.prototype) return ItemUtil.itemDataDict[index];
         if (index.__proto__ == Number.prototype) return ItemUtil.itemDataDict[itemNamesByID[index]];
         return null;
+    }
+
+    /**
+     * 返回物品的只读套装投影；未标注物品返回 null。
+     */
+    public static function getItemSet(name:String):Object{
+        var projection:Object = itemSetByItem[name];
+        return projection == undefined ? null : projection;
     }
 
 

@@ -98,8 +98,9 @@ data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一
 - `sections` 可省略；省略时 Web 从物品现有字段构建互斥分类树：一级 `type=武器/防具/消耗品/收集品`，二级使用 `use`，武器三级以刀的 `actiontype` 或枪械的 `weapontype` 细分。未知值进入“其他”，不会隐藏商品；AS2 snapshot 只透传这些现有展示字段，不改变物品 XML 权威。
 - `sections` 存在时完整替代自动分类，必须覆盖目录内全部索引，`all` 为 Web 隐式保留分组。当前生产目录不启用人工分组；配置规则与示例见 [`data/shops/README.md`](../data/shops/README.md)。
 - 空目录合法，用于显式停用但仍需保留身份的 NPC。
-- 防具套装没有可靠结构化 ID，运行时不得用名称、描述、`dressup` 或配方直接生成整套购买。`node tools/audit-equipment-set-candidates.js` 只输出 `runtimeAuthoritative:false` 的人工复核候选；可变件数与同槽变体须等审核清单另行建模。
-- 改动后运行 `node tools/validate-npc-shops.js`；它同时校验商品名能映射到 `data/items` 并统计自动分类 fallback。`launcher/build.ps1` Step 1h3 同样 fail-fast 执行。
+- 物品根节点可选套装字段为 `<setId>ascii_snake</setId>`、`<setName>中文套装名</setName>`、`<setOrder>整数</setOrder>`；`setId/setName` 必须成对出现，`setOrder` 仅控制套装分组排序。运行时只信显式标注，不得用名称、描述、`dressup` 或配方猜测归属；同槽变体也必须逐物品人工决定是否标注。当前高置信度基线为 6 套 / 29 件，升级版、NPC 版与归属不确定的变体均未自动纳入。
+- `ItemUtil.loadItemData()` 在 XML 全量加载后构建 `_root.物品套装索引` 与 item→set 投影；Web 共享筛选模型把“套装”作为与“类别”并列的分支。库存类界面使用 `{branch:"set",setId:"..."}` 请求 AS2 对完整权威容器筛选，省略 `setId` 表示全部显式标注物品，不能用当前 Web 页做汇总。
+- 改动后运行 `node tools/validate-item-sets.js` 与 `node tools/validate-npc-shops.js`；前者校验字段配对、ID/名称一致、装备类型和最小成套数量，后者校验商品映射与自动分类 fallback。`launcher/build.ps1` Step 1h3 同样 fail-fast 执行两项门禁。
 
 ### 配置文件索引
 

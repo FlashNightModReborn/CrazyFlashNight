@@ -186,6 +186,28 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
         }
 
+        [Fact]
+        public void Snapshot_SetFilterRebuildsBoundedWhitelist()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("snapshot", "wb.inventory.filter.set");
+            var window = (JObject)request["payload"]["requests"][0];
+            window["filterKey"] = "all";
+            window["filterSpec"] = new JObject
+            {
+                ["branch"] = "set", ["setId"] = "hazmat_b", ["predicate"] = "evil"
+            };
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject spec = (JObject)ParseSent(sent)["requests"][0]["filterSpec"];
+            Assert.Equal("set", (string)spec["branch"]);
+            Assert.Equal("hazmat_b", (string)spec["setId"]);
+            Assert.Null(spec["predicate"]);
+            Assert.Null(spec["major"]);
+        }
+
         [Theory]
         [InlineData("all", "weapon")]
         [InlineData("weapon", "armor")]

@@ -43,7 +43,10 @@
         return MAJORS[MAJORS.length - 1];
     }
 
-    function segment(id, label) { return {id:text(id), label:text(label == null ? id : label)}; }
+    function segment(id, label, order) {
+        order = Number(order);
+        return {id:text(id), label:text(label == null ? id : label), order:isFinite(order) ? order : 0};
+    }
 
     function catalogPath(item, options) {
         item = item || {};
@@ -58,6 +61,18 @@
             if (subtype) path.push(segment(subtype, subtype));
         }
         return path;
+    }
+
+    function setPath(item) {
+        item = item || {};
+        var id = text(item.setId || '');
+        var name = text(item.setName || '');
+        return id && name ? [segment(id, name, item.setOrder)] : [];
+    }
+
+    function buildSetTree(items) {
+        items = Array.isArray(items) ? items : [];
+        return build(items.filter(function(item) { return setPath(item).length > 0; }), setPath);
     }
 
     function clonePath(path) {
@@ -84,11 +99,12 @@
             var node = root;
             for (var depth = 0; depth < rawPath.length; depth++) {
                 var raw = rawPath[depth];
-                var part = segment(raw && raw.id != null ? raw.id : raw, raw && raw.label != null ? raw.label : raw);
+                var part = segment(raw && raw.id != null ? raw.id : raw, raw && raw.label != null ? raw.label : raw,
+                    raw && raw.order != null ? raw.order : 0);
                 if (!part.id) continue;
                 var child = findChild(node, part.id);
                 if (!child) {
-                    child = {id:part.id, label:part.label, path:node.path.concat([part.id]), count:0, children:[]};
+                    child = {id:part.id, label:part.label, order:part.order, path:node.path.concat([part.id]), count:0, children:[]};
                     node.children.push(child);
                 }
                 child.count++;
@@ -114,6 +130,7 @@
         var node = {
             id:id,
             label:text(source.label || id),
+            order:isFinite(Number(source.order)) ? Number(source.order) : 0,
             path:parentPath.concat([id]),
             count:Math.max(0, Math.floor(Number(source.count) || 0)),
             children:[]
@@ -193,6 +210,9 @@
             if (ai < 0) ai = 1000;
             if (bi < 0) bi = 1000;
             if (ai !== bi) return ai - bi;
+            var ao = isFinite(Number(a.order)) ? Number(a.order) : 0;
+            var bo = isFinite(Number(b.order)) ? Number(b.order) : 0;
+            if (ao !== bo) return ao - bo;
             return a.label.localeCompare(b.label, 'zh-CN');
         });
         for (var i = 0; i < node.children.length; i++) sortTree(node.children[i]);
@@ -392,6 +412,8 @@
         majors:MAJORS,
         majorDefinition:majorDefinition,
         catalogPath:catalogPath,
+        setPath:setPath,
+        buildSetTree:buildSetTree,
         build:build,
         fromFacets:fromFacets,
         manualSections:manualSections,

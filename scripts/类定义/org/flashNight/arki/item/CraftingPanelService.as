@@ -376,7 +376,10 @@ class org.flashNight.arki.item.CraftingPanelService {
             majorType:data == null ? "" : String(data.type || ""),
             use:data == null ? "" : String(data.use || ""),
             actionType:actionType == undefined ? "" : String(actionType),
-            weaponType:weaponType == undefined ? "" : String(weaponType)};
+            weaponType:weaponType == undefined ? "" : String(weaponType),
+            setId:data == null ? "" : String(data.setId || ""),
+            setName:data == null ? "" : String(data.setName || ""),
+            setOrder:data == null ? 0 : Number(data.setOrder || 0)};
     }
 
     private static function resolveRecipe(category:String, recipeIndex:Number):Object {

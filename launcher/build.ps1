@@ -292,6 +292,18 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  NPC shop catalogs OK." -ForegroundColor Green
 
+$validateItemSetsScript = Join-Path $projectRoot "tools\validate-item-sets.js"
+if (-not (Test-Path $validateItemSetsScript)) {
+    Write-Host "[FAIL] validate-item-sets.js missing: $validateItemSetsScript" -ForegroundColor Red
+    exit 1
+}
+node $validateItemSetsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] Item set metadata validation failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  Item set metadata OK." -ForegroundColor Green
+
 # Step 1i: 派生竞技场定制赛单位浏览目录。
 Write-Host "[Step 1i/7] Derive launcher/web/modules/arena-unit-catalog.js..." -ForegroundColor Yellow
 $deriveArenaUnitCatalogScript = Join-Path $projectRoot "tools\derive-arena-unit-catalog.js"

@@ -31,6 +31,8 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         data["测试图纸"] = itemData("测试图纸", "收集品", "情报", 0);
         data["旧测试枪"] = itemData("旧测试枪", "武器", "手枪", 1);
         data["新测试枪"] = itemData("新测试枪", "武器", "手枪", 12);
+        data["新测试枪"].setId = "test_sidearm";
+        data["新测试枪"].setName = "测试侧武器套装";
         data["测试药剂"] = itemData("测试药剂", "消耗品", "药剂", 1);
         ItemUtil.itemDataDict = data;
         ItemUtil.equipmentDict = {};
@@ -106,8 +108,10 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             && !result.recipes[1].canCraftOne && result.recipes[1].availability == "material_missing",
             "snapshot exposes static output and authoritative one-craft availability");
         check(!result.recipes[0].batchEligible && result.recipes[1].batchEligible
-            && result.recipes[0].output.weaponType == "手枪",
-            "snapshot exposes batch eligibility and shared filter taxonomy");
+            && result.recipes[0].output.weaponType == "手枪"
+            && result.recipes[0].output.setId == "test_sidearm"
+            && result.recipes[0].output.setName == "测试侧武器套装",
+            "snapshot exposes batch eligibility and shared category/set taxonomy");
         check(result.balance.money == 1000 && result.skills.smithLevel == 2,
             "snapshot exposes authoritative balances and skills");
     }

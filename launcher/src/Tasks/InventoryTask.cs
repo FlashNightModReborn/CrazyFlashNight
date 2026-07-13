@@ -369,6 +369,16 @@ namespace CF7Launcher.Tasks
             if (token == null || token.Type == JTokenType.Null) return true;
             JObject input = token as JObject;
             if (input == null) return false;
+            string branch = input.Value<string>("branch") ?? "category";
+            if (branch == "set")
+            {
+                string setId = input.Value<string>("setId") ?? string.Empty;
+                if (fallbackKey != "all" || !IsSafeFilterValue(setId)) return false;
+                normalized = new JObject { ["branch"] = "set" };
+                if (setId.Length > 0) normalized["setId"] = setId;
+                return true;
+            }
+            if (branch != "category") return false;
             string major = input.Value<string>("major") ?? fallbackKey;
             string use = input.Value<string>("use") ?? string.Empty;
             string subtype = input.Value<string>("subtype") ?? string.Empty;
@@ -379,6 +389,7 @@ namespace CF7Launcher.Tasks
                 || (major == "all" && (use.Length > 0 || subtype.Length > 0))
                 || (subtype.Length > 0 && (major != "weapon" || use.Length == 0))) return false;
             normalized = new JObject { ["major"] = major };
+            if (input["branch"] != null) normalized["branch"] = "category";
             if (use.Length > 0) normalized["use"] = use;
             if (subtype.Length > 0) normalized["subtype"] = subtype;
             return true;

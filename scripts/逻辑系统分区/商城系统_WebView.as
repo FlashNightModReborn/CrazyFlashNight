@@ -90,6 +90,9 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
                 subType:     String(attrs[3]),
                 actionType:  String(itemData.actiontype || ""),
                 weaponType:  String(itemData.weapontype || ""),
+                setId:       String(itemData.setId || ""),
+                setName:     String(itemData.setName || ""),
+                setOrder:    Number(itemData.setOrder || 0),
                 level:       Number(attrs[9]),
                 icon:        String(attrs[1])
             });

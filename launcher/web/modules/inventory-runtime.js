@@ -51,6 +51,12 @@
 
     function isValidFilterSpec(value) {
         if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+        var branch = String(value.branch || 'category');
+        if (branch === 'set') {
+            var setId = value.setId == null ? '' : String(value.setId);
+            return isSafeFilterValue(setId) && value.use == null && value.subtype == null;
+        }
+        if (branch !== 'category') return false;
         var major = String(value.major || 'all');
         var use = value.use == null ? '' : String(value.use);
         var subtype = value.subtype == null ? '' : String(value.subtype);
@@ -62,13 +68,21 @@
 
     function normalizeFilterSpec(value, fallbackKey) {
         if (value == null) return null;
+        var branch = String(value.branch || 'category');
+        if (branch === 'set') {
+            var setCandidate = {branch:'set', setId:value.setId == null ? '' : String(value.setId)};
+            if (!isValidFilterSpec(setCandidate)) return null;
+            return setCandidate.setId ? setCandidate : {branch:'set'};
+        }
         var candidate = {
+            branch:branch,
             major:String(value.major || fallbackKey || 'all'),
             use:value.use == null ? '' : String(value.use),
             subtype:value.subtype == null ? '' : String(value.subtype)
         };
         if (!isValidFilterSpec(candidate)) return null;
         var normalized = {major:candidate.major};
+        if (value.branch === 'category') normalized.branch = 'category';
         if (candidate.use) normalized.use = candidate.use;
         if (candidate.subtype) normalized.subtype = candidate.subtype;
         return normalized;
@@ -77,6 +91,7 @@
     function filterKeyForSpec(spec) {
         spec = normalizeFilterSpec(spec, 'all');
         if (!spec) return 'all';
+        if (spec.branch === 'set') return 'all';
         if (spec.major === 'collection') return 'other';
         return FILTER_KEYS[spec.major] ? spec.major : 'all';
     }
@@ -85,6 +100,8 @@
         a = normalizeFilterSpec(a, 'all');
         b = normalizeFilterSpec(b, 'all');
         if (!a || !b) return a === b;
+        if (String(a.branch || 'category') !== String(b.branch || 'category')) return false;
+        if (a.branch === 'set') return String(a.setId || '') === String(b.setId || '');
         return a.major === b.major && String(a.use || '') === String(b.use || '')
             && String(a.subtype || '') === String(b.subtype || '');
     }
@@ -106,7 +123,9 @@
             && FILTER_KEYS[String(snapshot.filterKey || 'all')] === true
             && (snapshot.filterSpec == null || isValidFilterSpec(snapshot.filterSpec))
             && (snapshot.filterFacets == null || Array.isArray(snapshot.filterFacets))
+            && (snapshot.setFacets == null || Array.isArray(snapshot.setFacets))
             && (snapshot.filterItemCount == null || (isFinite(Number(snapshot.filterItemCount)) && Number(snapshot.filterItemCount) >= 0))
+            && (snapshot.setFilterItemCount == null || (isFinite(Number(snapshot.setFilterItemCount)) && Number(snapshot.setFilterItemCount) >= 0))
             && isFinite(Number(snapshot.snapshotSeq))
             && isFinite(Number(snapshot.offset))
             && Array.isArray(snapshot.slots);
