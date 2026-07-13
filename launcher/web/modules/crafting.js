@@ -163,7 +163,9 @@ var CraftingPanel = (function() {
         return recipes.filter(function(recipe) {
             var path = _filterPath || [], item = recipe.output || {}, matches = true;
             if (path[0] === 'category') matches = ItemFilter.matchesPath(item, path.slice(1), ItemFilter.catalogPath);
-            else if (path[0] === 'set') matches = ItemFilter.matchesPath(item, path.slice(1), ItemFilter.setPath);
+            else if (path[0] === 'set') matches = path.length === 1
+                ? ItemFilter.setPath(item).length > 0
+                : ItemFilter.matchesPath(item, path.slice(1), ItemFilter.setPath);
             else if (path.length) matches = ItemFilter.matchesPath(item, path, ItemFilter.catalogPath);
             return matches
                 && (!_craftableOnly || recipe.canCraftOne === true);

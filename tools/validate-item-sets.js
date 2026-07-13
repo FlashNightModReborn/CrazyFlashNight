@@ -28,16 +28,23 @@ Object.values(meta).forEach((item) => {
     if (item.type !== '武器' && item.type !== '防具') fail(context + ': only equipment may declare a set');
     if (orderText && (!/^\d+$/.test(orderText) || Number(orderText) > 9999)) fail(context + ': invalid setOrder');
 
-    if (!sets.has(id)) sets.set(id, { id, name, order: orderText ? Number(orderText) : 0, items: [] });
+    const declaresOrder = orderText.length > 0;
+    if (!sets.has(id)) sets.set(id, {
+        id, name, order: declaresOrder ? Number(orderText) : 0, declaresOrder, items: []
+    });
     const group = sets.get(id);
     if (group.name !== name) fail(context + ': setId "' + id + '" maps to both "' + group.name + '" and "' + name + '"');
-    if (orderText && group.order && group.order !== Number(orderText)) fail(context + ': inconsistent setOrder for "' + id + '"');
-    if (orderText && !group.order) group.order = Number(orderText);
+    if (group.declaresOrder !== declaresOrder) {
+        fail(context + ': setOrder must be declared on every member of "' + id + '" or omitted from all members');
+    } else if (declaresOrder && group.order !== Number(orderText)) {
+        fail(context + ': inconsistent setOrder for "' + id + '"');
+    }
     group.items.push({ name:item.name, use:item.use, source:item.source });
 });
 
 sets.forEach((group) => {
     if (group.items.length < 2) fail('setId "' + group.id + '" has fewer than 2 items');
+    delete group.declaresOrder;
 });
 
 if (errors.length) {

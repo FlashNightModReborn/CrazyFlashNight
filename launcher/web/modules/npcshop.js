@@ -347,7 +347,10 @@ var NpcShop = (function() {
         var sections = _state && _state.layout && Array.isArray(_state.layout.sections) ? _state.layout.sections : [];
         if (_category && _category.mode === 'combined') {
             var browsePath = _category && _category.mode === 'combined' ? (_category.path || []) : [];
-            if (!browsePath.length || browsePath.length === 1) return true;
+            if (!browsePath.length) return true;
+            if (browsePath.length === 1) {
+                return browsePath[0] === 'set' ? ItemFilter.setPath(item).length > 0 : true;
+            }
             if (browsePath[0] === 'category') {
                 return ItemFilter.matchesPath(item, browsePath.slice(1), function(entry) { return ItemFilter.catalogPath(entry); });
             }

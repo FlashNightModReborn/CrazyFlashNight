@@ -278,8 +278,9 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('configured shops expose category, set and curated as peer browse modes',document.querySelector('[data-category="combined:category:weapon"]')&&document.querySelector('[data-category="combined:category:consumable"]'));
   document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();
   document.querySelector('.npcshop-category-tabs [data-filter-path="set"]').click();
+  var setRootCount=document.querySelectorAll('.npcshop-catalog-card').length;
   document.querySelector('.npcshop-category-tabs [data-filter-path="set/training_long_gun"]').click();
-  ok('set branch filters the current NPC catalog without inventing unavailable pieces',document.querySelectorAll('.npcshop-catalog-card').length===2&&document.querySelector('[data-category="combined:set:training_long_gun"]'));
+  ok('set branch filters the current NPC catalog without inventing unavailable pieces',setRootCount===2&&document.querySelectorAll('.npcshop-catalog-card').length===2&&document.querySelector('[data-category="combined:set:training_long_gun"]'));
   Panels.close();manualLayout=false;Panels.open('npcshop',{shopId:'前治安官'});await wait();
   document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
   var snapshotsBeforeMalformed=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;

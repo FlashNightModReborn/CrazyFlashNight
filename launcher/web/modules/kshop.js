@@ -968,7 +968,10 @@ var KShop = (function() {
 
     function matchesKShopCategory(item, path) {
         path = path || [];
-        if (!path.length || path.length === 1) return true;
+        if (!path.length) return true;
+        if (path.length === 1) {
+            return path[0] === 'set' ? ItemFilter.setPath(item).length > 0 : true;
+        }
         if (path[0] === 'category') {
             return ItemFilter.matchesPath(item, path.slice(1), function(entry) { return ItemFilter.catalogPath(entry); });
         }

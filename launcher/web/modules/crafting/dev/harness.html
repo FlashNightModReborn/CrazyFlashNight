@@ -80,8 +80,8 @@ try{
   ok('renders authoritative catalog',document.querySelectorAll('.crafting-recipe-card').length===2);
   ok('snapshot marks cards and craftable count',document.querySelectorAll('.crafting-recipe-card.craftable').length===2&&document.querySelector('.crafting-catalog-view .workbench-view-meta').textContent.indexOf('可合成 2 / 2')>=0);
   ok('reuses shared category/set recipe tree',document.querySelector('[data-filter-path="category"]')&&document.querySelector('[data-filter-path="set"]'));
-  document.querySelector('[data-filter-path="set"]').click();document.querySelector('[data-filter-path="set/test_sidearm"]').click();await wait();
-  ok('set branch filters recipes locally',document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath.join('/')==='set/test_sidearm');
+  document.querySelector('[data-filter-path="set"]').click();var setRootCount=document.querySelectorAll('.crafting-recipe-card').length;document.querySelector('[data-filter-path="set/test_sidearm"]').click();await wait();
+  ok('set branch filters recipes locally',setRootCount===1&&document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath.join('/')==='set/test_sidearm');
   document.querySelector('[data-filter-path="set"]').click();document.querySelector('[data-filter-path=""]').click();await wait();
   ok('auto previews first recipe',__sent.some(function(x){return x.domain==='crafting'&&x.cmd==='preview'&&x.payload.recipeIndex===0}));
   ok('renders inherited output',document.querySelector('.crafting-output-card').textContent.indexOf('强化 +5')>=0);
