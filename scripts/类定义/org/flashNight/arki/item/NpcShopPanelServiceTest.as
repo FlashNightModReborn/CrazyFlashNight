@@ -106,7 +106,11 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.收集品栏.材料.add("强化石",3);
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
         check(snapshot.success && snapshot.catalog.length == 5,"projects sparse catalog");
-        check(snapshot.views.bag.containerId == "背包" && snapshot.views.material.containerId == "材料" && snapshot.views.intelligence.containerId == "情报","three sibling owned views");
+        check(snapshot.views.bag == undefined && snapshot.views.material.containerId == "材料"
+            && snapshot.views.intelligence.containerId == "情报","NPC snapshot owns collections while bag stays in inventory domain");
+        var second:Object = service().execute("snapshot",{shopId:"测试商店"});
+        check(snapshot.views.material.slots[0].slotLease == second.views.material.slots[0].slotLease,
+            "unchanged collection resource lease survives repeated read snapshots");
         check(snapshot.catalog[3].locked == true,"required information gate projected");
         check(snapshot.catalog[4].weaponType == "手枪" && snapshot.catalog[4].actionType == "","existing weapon subtype fields projected for automatic grouping");
         check(snapshot.layout.title == "测试商人" && snapshot.layout.sections[0].entries.length == 5,"developer curated layout projected");
@@ -117,11 +121,15 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
     private static function testBagTooltip():Void {
         resetOwned();
         _root.物品栏.背包.add(0, BaseItem.create("测试手枪", 1));
-        var snapshot:Object = service().execute("snapshot", {shopId:"测试商店"});
-        var lease:String = snapshot.views.bag.slots[0].slotLease;
+        var before:Object = bagView();
+        service().execute("snapshot", {shopId:"测试商店"});
+        var after:Object = bagView();
+        var lease:String = before.slots[0].slotLease;
         var tooltip:Object = service().execute("tooltip", {
             source:{containerId:"背包", slot:0, expectedLease:lease}
         });
+        check(lease == after.slots[0].slotLease,
+            "parallel inventory and NPC read snapshots preserve the same bag lease");
         check(tooltip.success && tooltip.introHTML != undefined && tooltip.descHTML != undefined,
             "bag tooltip resolves through inventory lease with v=1");
     }
@@ -171,17 +179,19 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.gameCommands["npcShopSnapshot"]({shopId:"测试商店",callId:7});
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(response.task == "npcshop_response" && response.callId == 7 && response.success == true
-            && response.catalog.length == 5 && response.views.bag.containerId == "背包","snapshot handler sends parseable authoritative response wire");
+            && response.catalog.length == 5 && response.views.bag == undefined
+            && response.views.material.containerId == "材料","snapshot handler sends parseable domain-scoped response wire");
     }
 
     private static function testTradePreviewResponseWire():Void {
         resetOwned();
         _root.物品栏.背包.add(0,BaseItem.create("药剂",2));
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         _root.server.sent = null;
         _root.gameCommands["npcShopTradePreview"]({
             shopId:"测试商店",callId:8,purchases:[],
-            sales:[{quantity:1,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}}]
+            sales:[{quantity:1,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}}]
         });
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(response.task == "npcshop_response" && response.callId == 8 && response.success
@@ -195,9 +205,10 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.物品栏.背包.add(0,BaseItem.create("药剂",4));
         _root.收集品栏.材料.add("强化石",5);
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
-        var wrongShop:Object = service().execute("sell",{shopId:"另一商店",quantity:1,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}});
+        var bag:Object = bagView();
+        var wrongShop:Object = service().execute("sell",{shopId:"另一商店",quantity:1,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}});
         check(!wrongShop.success && wrongShop.error == "stale_state" && _root.物品栏.背包.getItem("0").value == 4,"owned lease is bound to active shop session");
-        var bagSell:Object = service().execute("sell",{shopId:"测试商店",quantity:2,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}});
+        var bagSell:Object = service().execute("sell",{shopId:"测试商店",quantity:2,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}});
         check(bagSell.success && _root.物品栏.背包.getItem("0").value == 2 && _root.金钱 == 5050,"bag partial sell uses inventory lease");
         var materialSell:Object = service().execute("sell",{shopId:"测试商店",quantity:3,source:{viewId:"material",key:"强化石",expectedLease:bagSell.views.material.slots[0].slotLease}});
         check(materialSell.success && _root.收集品栏.材料.getValue("强化石") == 2 && _root.金钱 == 5200,"material sell uses collection lease");
@@ -222,11 +233,12 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.物品栏.背包.add(0,BaseItem.create("药剂",4));
         _root.收集品栏.材料.add("强化石",5);
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         var preview:Object = service().execute("tradePreview",{
             shopId:"测试商店",
             purchases:[{catalogIndex:1,quantity:2}],
             sales:[
-                {quantity:2,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}},
+                {quantity:2,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}},
                 {quantity:3,source:{viewId:"material",key:"强化石",expectedLease:snapshot.views.material.slots[0].slotLease}}
             ]
         });
@@ -243,10 +255,11 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.金钱 = 0;
         _root.物品栏.背包.add(0,BaseItem.create("药剂",4));
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         var preview:Object = service().execute("tradePreview",{
             shopId:"测试商店",
             purchases:[{catalogIndex:0,quantity:1}],
-            sales:[{quantity:4,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}}]
+            sales:[{quantity:4,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}}]
         });
         check(preview.success && preview.canCommit && preview.buyTotal == 100 && preview.sellTotal == 100,
             "atomic preview allows selected sales to finance purchases");
@@ -262,9 +275,10 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         var protectedItem:Object = BaseItem.create("测试手枪",3);
         _root.物品栏.背包.add(2,protectedItem);
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         var preview:Object = service().execute("tradePreview",{
             shopId:"测试商店",purchases:[],
-            sales:[{scope:"same_name",policy:"plain_only",source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}}]
+            sales:[{scope:"same_name",policy:"plain_only",source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}}]
         });
         check(preview.success && preview.saleLines[0].scope == "same_name"
             && preview.saleLines[0].matchedCount == 3 && preview.saleLines[0].eligibleCount == 2
@@ -283,11 +297,12 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.物品栏.背包.add(0,first);
         _root.物品栏.背包.add(1,second);
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         var preview:Object = service().execute("tradePreview",{
             shopId:"测试商店",purchases:[],
             sales:[
-                {scope:"same_name",policy:"plain_only",source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}},
-                {scope:"slot",quantity:1,source:{containerId:"背包",slot:1,expectedLease:snapshot.views.bag.slots[1].slotLease}}
+                {scope:"same_name",policy:"plain_only",source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}},
+                {scope:"slot",quantity:1,source:{containerId:"背包",slot:1,expectedLease:bag.slots[1].slotLease}}
             ]
         });
         check(!preview.success && preview.error == "duplicate_line","expanded bulk sale rejects an overlapping exact slot");
@@ -304,11 +319,12 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.物品栏.背包.add(0,first);
         _root.物品栏.背包.add(1,second);
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         var preview:Object = service().execute("tradePreview",{
             shopId:"测试商店",purchases:[],
             sales:[
-                {scope:"slot",quantity:1,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}},
-                {scope:"slot",quantity:1,source:{containerId:"背包",slot:1,expectedLease:snapshot.views.bag.slots[1].slotLease}}
+                {scope:"slot",quantity:1,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}},
+                {scope:"slot",quantity:1,source:{containerId:"背包",slot:1,expectedLease:bag.slots[1].slotLease}}
             ]
         });
         var commit:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
@@ -358,9 +374,10 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         resetOwned();
         _root.物品栏.背包.add(0,BaseItem.create("药剂",4));
         var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var bag:Object = bagView();
         var preview:Object = service().execute("tradePreview",{
             shopId:"测试商店",purchases:[],
-            sales:[{quantity:2,source:{containerId:"背包",slot:0,expectedLease:snapshot.views.bag.slots[0].slotLease}}]
+            sales:[{quantity:2,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}}]
         });
         _root.物品栏.背包.addValue(0,1);
         var stale:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
@@ -371,6 +388,12 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
     }
 
     private static function service():Object { return _root.UI系统.NPC商店WebView; }
+    private static function bagView():Object {
+        var response:Object = InventoryPanelService.execute("snapshot", {
+            v:1, requests:[{containerId:"背包", offset:0, limit:50, filterKey:"all"}]
+        });
+        return response.snapshots[0];
+    }
     private static function itemData(name:String,type:String,useName:String,price:Number):Object { return {name:name,displayname:name,icon:name,type:type,use:useName,price:price,data:{level:1}}; }
     private static function check(value:Boolean,label:String):Void { if(value){passed++;trace("[PASS] "+label);}else{failed++;trace("[FAIL] "+label);} }
 }

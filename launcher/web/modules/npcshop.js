@@ -719,7 +719,10 @@ var NpcShop = (function() {
         request('snapshot', {shopId:_shopId}, function(response) {
             _spaceBusy = false;
             if (!response.success) { handleWriteError(response); return; }
-            rebindSaleIntentsFromViews(response.views || {});
+            rebindSaleIntentsFromViews({
+                bag:_inventoryCoordinator.getWindow('背包'),
+                material:response.views && response.views.material
+            });
             applyState(response);
             requestTradePreview();
             if (_spaceMutated) toast('库存已整理，交易数量与容量已重新核算。');

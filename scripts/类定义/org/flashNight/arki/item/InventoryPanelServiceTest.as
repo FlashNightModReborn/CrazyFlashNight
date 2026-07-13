@@ -15,6 +15,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
 
         testWorkbenchPanelRequest();
         testRangeSnapshot();
+        testStableReadLeaseAndMutationVersion();
         testFilteredSnapshot();
         testArrayInventoryMutationRevision();
         testFacetCacheInvalidation();
@@ -191,6 +192,35 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             "占用槽与空槽都获得可校验投影");
         assertTrue(String(response.snapshots[0].slots[1].slotLease).length > 0,
             "空目标槽也由 AS2 铸造 lease");
+    }
+
+    private static function testStableReadLeaseAndMutationVersion():Void {
+        resetInventories();
+        _root.物品栏.背包.add(0, item("稳定租约物品", 3));
+        var first:Object = snapshot(10, 10);
+        var firstRef:Object = refFrom(first, 0, 0);
+        var second:Object = snapshot(10, 10);
+        var secondRef:Object = refFrom(second, 0, 0);
+        assertTrue(firstRef.expectedLease == secondRef.expectedLease
+                && first.snapshots[0].containerVersion == second.snapshots[0].containerVersion,
+            "相同容器版本的重复纯读复用槽位 lease");
+        assertTrue(InventoryPanelService.validateExternalSlotRef(firstRef, true).success,
+            "后续纯读不会使先前响应中的 lease 失效");
+
+        _root.物品栏.背包.add(1, item("容器版本推进", 1));
+        var stale:Object = InventoryPanelService.validateExternalSlotRef(firstRef, true);
+        assertTrue(!stale.success && stale.error == "stale_state",
+            "任一真实容器写入推进版本并拒绝旧 lease");
+
+        resetInventories();
+        var equipment:Object = item("原位变化装备", {level:1, mods:[]});
+        _root.物品栏.背包.add(0, equipment);
+        first = snapshot(10, 10);
+        firstRef = refFrom(first, 0, 0);
+        equipment.value.mods.push("新插件");
+        stale = InventoryPanelService.validateExternalSlotRef(firstRef, false);
+        assertTrue(!stale.success && stale.error == "stale_state",
+            "同一对象引用的装备原位变化也由指纹拒绝旧 lease");
     }
 
     private static function testFilteredSnapshot():Void {

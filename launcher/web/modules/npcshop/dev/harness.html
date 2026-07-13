@@ -57,7 +57,7 @@ window.Panels=(function(){var specs={},active=null;return{
   close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},_specs:specs
 }})();
 
-var balance=10000,materialQty=3,npcLeaseSeq=0,inventorySeq=0,spaceFreed=false,manualLayout=false;
+var balance=10000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=false,manualLayout=false;
 var catalog=[
   {catalogIndex:0,itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
   {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false},
@@ -80,7 +80,7 @@ function inventorySnapshot(containerId){
   var spec=request.filterSpec||null,path=spec&&spec.major!=='all'?[spec.major].concat(spec.use?[spec.use]:[]).concat(spec.subtype?[spec.subtype]:[]):[];
   for(var i=0;i<items.length;i++){
     if(path.length&&!ItemFilter.matchesPath(items[i],path,function(item){return ItemFilter.catalogPath(item)}))continue;
-    var projected=slot(i,items[i].name,items[i].displayName,items[i].quantity,'iw.'+seq+'.'+i,items[i].use,items[i].itemKind,items[i].enhancementLevel);
+    var projected=slot(i,items[i].name,items[i].displayName,items[i].quantity,'iw.r'+inventoryRevision+'.'+i,items[i].use,items[i].itemKind,items[i].enhancementLevel);
     projected.item.majorType=items[i].majorType||projected.item.majorType;projected.item.weaponType=items[i].weaponType||'';projected.item.actionType=items[i].actionType||'';slots.push(projected);
   }
   var tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)});
@@ -91,7 +91,6 @@ function state(){return{
   success:true,v:1,shopId:'前治安官',balance:balance,buyMultiplier:1,catalog:catalog,
   layout:manualLayout?{title:'前治安官',defaultSection:'weapons',sections:[{id:'weapons',label:'制式武器',entries:[0,3,4]},{id:'supplies',label:'补给与其他',entries:[1,2,5,6]}]}:{title:'前治安官',defaultSection:'',sections:[]},
   views:{
-    bag:(function(){var seq=++npcLeaseSeq,slots=[];for(var i=0;i<5;i++)slots.push(bagItems[i]?slot(i,bagItems[i].name,bagItems[i].displayName,bagItems[i].quantity,'npc.b'+seq+'.'+i,bagItems[i].use,bagItems[i].itemKind,bagItems[i].enhancementLevel):{physicalSlot:i,occupied:false,slotLease:'npc.b'+seq+'.'+i});return{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:50,offset:0,limit:5,filterKey:'all',slots:slots}})(),
     material:{containerId:'材料',capacity:1,accessibleCapacity:1,viewCapacity:1,offset:0,limit:1,filterKey:'all',slots:materialQty>0?[slot(0,'强化石','强化石',materialQty,'npc.c1','材料')]:[]},
     intelligence:{containerId:'情报',capacity:1,accessibleCapacity:1,viewCapacity:1,offset:0,limit:1,filterKey:'all',slots:[slot(0,'符线溯源笔记','符线溯源笔记',1,'npc.c2','情报')]}
   }
@@ -110,12 +109,12 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     if(message.cmd==='snapshot')result.snapshots=(message.payload.requests||[]).map(function(request){return inventorySnapshot(request.containerId,request)});
     else if(message.cmd==='autoTransfer'){
       var from=message.payload.source.containerId==='背包'?bagItems:battleItems,to=message.payload.targetContainerId==='背包'?bagItems:battleItems;
-      to.push(from.splice(message.payload.source.slot,1)[0]);spaceFreed=true;
+      to.push(from.splice(message.payload.source.slot,1)[0]);inventoryRevision++;spaceFreed=true;
       result.snapshots=(message.payload.windows||[]).map(function(request){return inventorySnapshot(request.containerId,request)});
     }
     emit(result);return;
   }
-  if(message.cmd==='snapshot')Object.assign(result,state());
+  if(message.cmd==='snapshot'){window.__lastNpcState=state();Object.assign(result,window.__lastNpcState)}
   else if(message.cmd==='tooltip')Object.assign(result,{displayname:'物品',descHTML:'说明',introHTML:'简介'});
   else if(message.cmd==='tradePreview'){window.__lastTrade=tradePreview(message.payload);Object.assign(result,window.__lastTrade)}
   else if(message.cmd==='tradeCommit'){
@@ -140,6 +139,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   try{localStorage.removeItem('cf7.itemgrid.mode.npcshop')}catch(error){}
   Panels.open('npcshop',{shopId:'前治安官'});await wait();
   ok('opens catalog + bag',document.querySelector('[data-instance-key="npcshop:catalog"]')&&document.querySelector('[data-instance-key="npcshop:bag"]'));
+  ok('NPC domain response excludes duplicate bag authority',__lastNpcState&&__lastNpcState.views&&__lastNpcState.views.bag===undefined);
   var bagFilter=document.querySelector('.npcshop-bag-view .inventory-filter-control.tree');
   var bagFilterTrigger=bagFilter&&bagFilter.querySelector('.inventory-filter-tree-trigger'),bagFilterNavigator=bagFilter&&bagFilter.querySelector('.inventory-filter-navigator');
   ok('shop bag and catalog use the same inline current-level drilldown',bagFilter&&!bagFilterTrigger&&bagFilter.querySelector('select').hidden&&getComputedStyle(bagFilterNavigator).display==='flex'&&bagFilterNavigator.classList.contains('item-filter-drilldown')&&document.querySelector('.npcshop-category-tabs.item-filter-drilldown')&&bagFilterNavigator.querySelectorAll('.item-filter-row').length===1);
@@ -230,6 +230,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('intelligence stays read-only',document.querySelector('.npcshop-intelligence-view .read-only')&&!document.querySelector('.npcshop-intelligence-view .selected'));
   document.querySelector('.npcshop-checkout-btn').click();await wait();
   ok('checkout requests one authoritative preview',__sent.some(function(m){return m.cmd==='tradePreview'&&m.payload.purchases.length===1&&m.payload.sales[0].source.containerId==='背包'}));
+  ok('checkout uses the stable inventory-domain lease',__sent.some(function(m){return m.cmd==='tradePreview'&&/^iw\.r1\./.test(m.payload.sales[0].source.expectedLease)}));
   ok('secondary settlement page opens',document.querySelector('.npcshop-settlement-page.active')&&NpcShop.debugState().settling);
   ok('first settlement visit explains that confirmation is required',__toasts.some(function(message){return message.indexOf('交易清单')>=0&&message.indexOf('确认交易')>=0}));
   ok('settlement uses authoritative totals and slot bounds',document.querySelector('[data-trade-economy]').textContent.indexOf('结余 $9,250')>=0&&document.querySelector('[data-trade-economy]').textContent.indexOf('可用 2 格')>=0);

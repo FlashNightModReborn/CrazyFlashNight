@@ -24,6 +24,8 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static var _containerEpochs:Object = {};
     private static var _facetCache:Object = {};
     private static var _leaseIds:Object = {};
+    private static var _leaseInventories:Object = {};
+    private static var _leaseRevisions:Object = {};
     private static var _leaseRefs:Object = {};
     private static var _leaseCounts:Object = {};
     private static var _leaseMergeKeys:Object = {};
@@ -129,8 +131,8 @@ class org.flashNight.arki.item.InventoryPanelService {
         var windowCheck:Object = validateWindowRequests(params.requests);
         if (!windowCheck.success) return windowCheck;
 
-        // 每次显式读取都开启新的 snapshot-local lease session；旧 Web 会话 token 立即失效。
-        beginSession();
+        // snapshot 是纯读：相同容器版本上的槽位 lease 必须保持稳定，不能让并行面板读取互相失效。
+        // beginSession 只用于服务安装/测试隔离；真实写入由 ArrayInventory.mutationRevision 使旧 lease 失效。
         var snapshots:Array = buildWindowSnapshots(windowCheck.normalized);
         return {success: true, v: 1, sessionNonce: _sessionNonce, snapshots: snapshots};
     }
@@ -563,16 +565,22 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (expectedLease == "" || leaseArray(_leaseIds, containerId)[slot] != expectedLease) {
             return fail("stale_state");
         }
+        if (leaseArray(_leaseInventories, containerId)[slot] !== inventory
+                || Number(leaseArray(_leaseRevisions, containerId)[slot]) != inventory.getMutationRevision()) {
+            return fail("stale_state");
+        }
 
         var item:Object = inventory.getItem(String(slot));
         if (item !== leaseArray(_leaseRefs, containerId)[slot]) return fail("stale_state");
         if (mustOccupy && item == null) return fail("stale_state");
+        var slotCheck:Object = {success: true, containerId: containerId, inventory: inventory, slot: slot, item: item};
+        if (!confirmProjectionMatches(slotCheck)) return fail("stale_state");
         if (checkCount) {
             if (item == null || typeof item.value != "number") return fail("stale_state");
             if (Number(item.value) != Number(leaseArray(_leaseCounts, containerId)[slot])) return fail("stale_state");
             if (String(item.name) != String(leaseArray(_leaseMergeKeys, containerId)[slot])) return fail("stale_state");
         }
-        return {success: true, containerId: containerId, inventory: inventory, slot: slot, item: item};
+        return slotCheck;
     }
 
     /**
@@ -598,12 +606,7 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static function confirmProjectionMatches(slotCheck:Object):Boolean {
         var expected:Object = leaseArray(_leaseConfirm, slotCheck.containerId)[slotCheck.slot];
         var current:Object = buildConfirmProjection(slotCheck.item);
-        if (expected == null || current == null) return expected == current;
-        return expected.itemKind == current.itemKind
-            && expected.displayName == current.displayName
-            && Number(expected.quantity) == Number(current.quantity)
-            && Number(expected.enhancementLevel) == Number(current.enhancementLevel)
-            && String(expected.rarity) == String(current.rarity);
+        return confirmProjectionsEqual(expected, current);
     }
 
     private static function buildAffectedSnapshots(source:Object, target:Object):Array {
@@ -621,6 +624,7 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function buildSnapshot(containerId:String, inventory:ArrayInventory, offset:Number, limit:Number, filterKey:String, filterSpec:Object):Object {
         var accessibleCapacity:Number = getAccessibleCapacity(containerId);
+        var mutationRevision:Number = inventory.getMutationRevision();
         if (_filterKeys[filterKey] !== true) filterKey = "all";
         filterSpec = normalizeFilterSpec(filterSpec);
         var slots:Array = [];
@@ -637,7 +641,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             var end:Number = Math.min(accessibleCapacity, effectiveOffset + limit);
             for (slot = effectiveOffset; slot < end; slot++) {
                 item = inventory.getItem(String(slot));
-                slots.push(buildSlotSnapshot(containerId, slot, item));
+                slots.push(buildSlotSnapshot(containerId, inventory, mutationRevision, slot, item));
             }
         } else {
             var matches:Array = [];
@@ -654,7 +658,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             for (var matchIndex:Number = effectiveOffset; matchIndex < matchEnd; matchIndex++) {
                 slot = Number(matches[matchIndex]);
                 item = inventory.getItem(String(slot));
-                slots.push(buildSlotSnapshot(containerId, slot, item));
+                slots.push(buildSlotSnapshot(containerId, inventory, mutationRevision, slot, item));
             }
         }
         _snapshotSeq++;
@@ -669,6 +673,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             locked: accessibleCapacity <= 0,
             snapshotSeq: _snapshotSeq,
             containerEpoch: getContainerEpoch(containerId),
+            containerVersion: mutationRevision,
             offset: effectiveOffset,
             limit: slots.length,
             slots: slots,
@@ -679,8 +684,8 @@ class org.flashNight.arki.item.InventoryPanelService {
         return snapshot;
     }
 
-    private static function buildSlotSnapshot(containerId:String, slot:Number, item:Object):Object {
-        var lease:String = issueLease(containerId, slot, item);
+    private static function buildSlotSnapshot(containerId:String, inventory:ArrayInventory, mutationRevision:Number, slot:Number, item:Object):Object {
+        var lease:String = issueLease(containerId, inventory, mutationRevision, slot, item);
         var slotSnapshot:Object = {
             physicalSlot: slot,
             occupied: item != null,
@@ -920,29 +925,92 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static function buildConfirmProjection(item:Object):Object {
         if (item == null) return null;
         var projection:Object = buildItemProjection(item);
+        var lastUpdate:Number = Number(item.lastUpdate);
+        if (isNaN(lastUpdate)) lastUpdate = 0;
         return {
             itemKind: projection.itemKind,
+            name: String(projection.name),
             displayName: projection.displayName,
             quantity: projection.quantity,
             enhancementLevel: projection.enhancementLevel,
-            rarity: projection.rarity
+            rarity: projection.rarity,
+            tier: typeof item.value == "object" && item.value != null && item.value.tier != undefined
+                ? String(item.value.tier) : "",
+            modSignature: buildModifierSignature(item),
+            lastUpdate: lastUpdate
         };
     }
 
-    private static function issueLease(containerId:String, slot:Number, item:Object):String {
+    private static function buildModifierSignature(item:Object):String {
+        if (item == null || typeof item.value != "object" || item.value == null) return "";
+        var mods:Object = item.value.mods;
+        if (mods == undefined || mods == null) return "";
+        var names:Array = [];
+        var i:Number;
+        if (mods instanceof Array) {
+            for (i = 0; i < mods.length; i++) names.push(String(mods[i]));
+        } else {
+            for (var key:String in mods) {
+                var value:Object = mods[key];
+                names.push(typeof value == "string" ? String(value) : key);
+            }
+            names.sort();
+        }
+        var signature:String = "";
+        for (i = 0; i < names.length; i++) {
+            signature += names[i].length + ":" + names[i] + ";";
+        }
+        return signature;
+    }
+
+    private static function confirmProjectionsEqual(expected:Object, current:Object):Boolean {
+        if (expected == null || current == null) return expected == current;
+        return expected.itemKind == current.itemKind
+            && expected.name == current.name
+            && expected.displayName == current.displayName
+            && Number(expected.quantity) == Number(current.quantity)
+            && Number(expected.enhancementLevel) == Number(current.enhancementLevel)
+            && String(expected.rarity) == String(current.rarity)
+            && String(expected.tier) == String(current.tier)
+            && String(expected.modSignature) == String(current.modSignature)
+            && Number(expected.lastUpdate) == Number(current.lastUpdate);
+    }
+
+    private static function issueLease(containerId:String, inventory:ArrayInventory, mutationRevision:Number, slot:Number, item:Object):String {
+        var ids:Array = leaseArray(_leaseIds, containerId);
+        var inventories:Array = leaseArray(_leaseInventories, containerId);
+        var revisions:Array = leaseArray(_leaseRevisions, containerId);
+        var refs:Array = leaseArray(_leaseRefs, containerId);
+        var counts:Array = leaseArray(_leaseCounts, containerId);
+        var mergeKeys:Array = leaseArray(_leaseMergeKeys, containerId);
+        var confirms:Array = leaseArray(_leaseConfirm, containerId);
+        var count:Number = item != null && typeof item.value == "number" ? Number(item.value) : 0;
+        var mergeKey:String = item == null ? "" : String(item.name);
+        var confirm:Object = buildConfirmProjection(item);
+        var existing:String = ids[slot] == undefined || ids[slot] == null ? "" : String(ids[slot]);
+        if (existing != "" && inventories[slot] === inventory
+                && Number(revisions[slot]) == mutationRevision && refs[slot] === item
+                && Number(counts[slot]) == count && String(mergeKeys[slot]) == mergeKey
+                && confirmProjectionsEqual(confirms[slot], confirm)) {
+            return existing;
+        }
         _leaseSeq++;
         var token:String = _sessionNonce + "." + _leaseSeq;
-        leaseArray(_leaseIds, containerId)[slot] = token;
-        leaseArray(_leaseRefs, containerId)[slot] = item;
-        leaseArray(_leaseCounts, containerId)[slot] = item != null && typeof item.value == "number" ? Number(item.value) : 0;
-        leaseArray(_leaseMergeKeys, containerId)[slot] = item == null ? "" : String(item.name);
-        leaseArray(_leaseConfirm, containerId)[slot] = buildConfirmProjection(item);
+        ids[slot] = token;
+        inventories[slot] = inventory;
+        revisions[slot] = mutationRevision;
+        refs[slot] = item;
+        counts[slot] = count;
+        mergeKeys[slot] = mergeKey;
+        confirms[slot] = confirm;
         return token;
     }
 
     private static function invalidateSlot(containerId:String, slot:Number):Void {
         delete _facetCache[containerId];
         leaseArray(_leaseIds, containerId)[slot] = null;
+        leaseArray(_leaseInventories, containerId)[slot] = null;
+        leaseArray(_leaseRevisions, containerId)[slot] = null;
         leaseArray(_leaseRefs, containerId)[slot] = null;
         leaseArray(_leaseCounts, containerId)[slot] = null;
         leaseArray(_leaseMergeKeys, containerId)[slot] = null;
@@ -952,6 +1020,8 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static function invalidateContainer(containerId:String):Void {
         delete _facetCache[containerId];
         _leaseIds[containerId] = [];
+        _leaseInventories[containerId] = [];
+        _leaseRevisions[containerId] = [];
         _leaseRefs[containerId] = [];
         _leaseCounts[containerId] = [];
         _leaseMergeKeys[containerId] = [];
@@ -963,6 +1033,8 @@ class org.flashNight.arki.item.InventoryPanelService {
         _sessionNonce = "inv" + getTimer() + "." + _sessionCounter;
         _leaseSeq = 0;
         _leaseIds = {};
+        _leaseInventories = {};
+        _leaseRevisions = {};
         _leaseRefs = {};
         _leaseCounts = {};
         _leaseMergeKeys = {};

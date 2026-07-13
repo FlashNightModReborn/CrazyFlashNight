@@ -19,7 +19,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["layout"] = new JObject(),
                 ["views"] = new JObject
                 {
-                    ["bag"] = new JObject(), ["material"] = new JObject(), ["intelligence"] = new JObject()
+                    ["material"] = new JObject(), ["intelligence"] = new JObject()
                 }
             };
             if (!string.IsNullOrEmpty(operation)) response["operation"] = operation;
@@ -322,6 +322,25 @@ namespace CF7Launcher.Tests.Tasks
             }, _ => { });
 
             Assert.Equal("idle", task.WriteState);
+        }
+
+        [Fact]
+        public void SnapshotWithoutDuplicateBagProjection_IsAuthoritative()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            task.SetPostToWeb(json => posted = json);
+            task.HandleWebRequest("snapshot", Request("snapshot", "npc.snapshot.domain.1"));
+            int fid = (int)ParseSent(sent)["callId"];
+
+            task.HandleFlashResponse(StateResponse(fid), _ => { });
+
+            JObject web = JObject.Parse(posted);
+            Assert.True((bool)web["success"]);
+            Assert.Null(web["views"]["bag"]);
+            Assert.NotNull(web["views"]["material"]);
+            Assert.NotNull(web["views"]["intelligence"]);
         }
 
         [Fact]

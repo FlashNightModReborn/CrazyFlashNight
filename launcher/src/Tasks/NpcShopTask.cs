@@ -391,8 +391,8 @@ namespace CF7Launcher.Tasks
             if (msg == null || msg.Value<int?>("v") != 1 || string.IsNullOrEmpty(msg.Value<string>("shopId"))) return false;
             if (!IsNumber(msg["balance"]) || !(msg["catalog"] is JArray) || !(msg["layout"] is JObject)) return false;
             JObject views = msg["views"] as JObject;
-            return views != null && views["bag"] is JObject
-                && views["material"] is JObject && views["intelligence"] is JObject;
+            // 背包由独立 inventory domain 负责；NPC 状态只拥有材料/情报集合投影。
+            return views != null && views["material"] is JObject && views["intelligence"] is JObject;
         }
 
         private static bool IsNumber(JToken token)

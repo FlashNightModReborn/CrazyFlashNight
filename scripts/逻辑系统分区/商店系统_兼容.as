@@ -74,6 +74,7 @@ _root.UI系统.NPC商店WebView.busy = false;
 _root.UI系统.NPC商店WebView.sessionSeq = 0;
 _root.UI系统.NPC商店WebView.leaseSeq = 0;
 _root.UI系统.NPC商店WebView.collectionLeases = {};
+_root.UI系统.NPC商店WebView.collectionLeaseIds = {};
 _root.UI系统.NPC商店WebView.batchSeq = 0;
 _root.UI系统.NPC商店WebView.batchPlan = null;
 _root.UI系统.NPC商店WebView.tradeSeq = 0;
@@ -123,21 +124,48 @@ _root.UI系统.NPC商店WebView.isWholeNumber = function(value):Boolean {
     return !isNaN(numberValue) && numberValue >= 0 && Math.floor(numberValue) == numberValue;
 };
 
-_root.UI系统.NPC商店WebView.beginCollectionSession = function(shopId:String):Void {
+_root.UI系统.NPC商店WebView.beginCollectionSnapshot = function(shopId:String):Void {
+    // 交易计划是一次性的，显式重同步后必须重新预览；资源 lease 则只在切换商店或资源变化时轮换。
+    this.batchPlan = null;
+    this.tradePlan = null;
+    if (this.activeShopId == shopId && this.sessionNonce != undefined && this.sessionNonce != "") return;
     this.sessionSeq++;
     this.leaseSeq = 0;
     this.sessionNonce = "npc" + getTimer() + "." + this.sessionSeq;
     this.activeShopId = shopId;
     this.collectionLeases = {};
-    this.batchPlan = null;
-    this.tradePlan = null;
+    this.collectionLeaseIds = {};
 };
 
 _root.UI系统.NPC商店WebView.issueCollectionLease = function(viewId:String, key:String, count:Number):String {
+    var viewIds:Object = this.collectionLeaseIds[viewId];
+    if (viewIds == undefined) {
+        viewIds = {};
+        this.collectionLeaseIds[viewId] = viewIds;
+    }
+    var identity:String = "$" + key;
+    var existingToken:String = viewIds[identity] == undefined ? "" : String(viewIds[identity]);
+    var existing:Object = existingToken == "" ? null : this.collectionLeases[existingToken];
+    if (existing != null && existing.shopId == this.activeShopId
+            && existing.viewId == viewId && existing.key == key && Number(existing.count) == Number(count)) {
+        return existingToken;
+    }
+    if (existingToken != "") delete this.collectionLeases[existingToken];
     this.leaseSeq++;
     var token:String = this.sessionNonce + ".c" + this.leaseSeq;
-    this.collectionLeases[token] = {viewId:viewId, key:key, count:Number(count)};
+    viewIds[identity] = token;
+    this.collectionLeases[token] = {shopId:this.activeShopId, viewId:viewId, key:key, count:Number(count)};
     return token;
+};
+
+_root.UI系统.NPC商店WebView.pruneCollectionLeases = function(viewId:String, seen:Object):Void {
+    var viewIds:Object = this.collectionLeaseIds[viewId];
+    if (viewIds == undefined) return;
+    for (var identity:String in viewIds) {
+        if (seen[identity] === true) continue;
+        delete this.collectionLeases[String(viewIds[identity])];
+        delete viewIds[identity];
+    }
 };
 
 _root.UI系统.NPC商店WebView.getBuyMultiplier = function():Number {
@@ -239,6 +267,7 @@ _root.UI系统.NPC商店WebView.buildLayout = function(shopId:String):Object {
 
 _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, collection:Object):Object {
     var slots:Array = [];
+    var seen:Object = {};
     var values:Object = collection == undefined ? {} : collection.getItems();
     var names:Array = [];
     for (var name in values) {
@@ -250,6 +279,7 @@ _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, co
         var quantity:Number = Number(values[itemName]);
         var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
         if (itemData == null) continue;
+        seen["$" + itemName] = true;
         slots.push({
             physicalSlot:i,
             collectionKey:itemName,
@@ -268,6 +298,7 @@ _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, co
             }
         });
     }
+    this.pruneCollectionLeases(viewId, seen);
     return {
         containerId:viewId == "material" ? "材料" : "情报",
         capacity:slots.length,
@@ -281,11 +312,8 @@ _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, co
 };
 
 _root.UI系统.NPC商店WebView.buildState = function(shopId:String):Object {
-    var inventoryResult:Object = org.flashNight.arki.item.InventoryPanelService.execute("snapshot", {
-        v:1, requests:[{containerId:"背包", offset:0, limit:50, filterKey:"all"}]
-    });
-    if (!inventoryResult.success) return inventoryResult;
-    this.beginCollectionSession(shopId);
+    // 背包只由 inventory-domain 投影；NPC 域不再嵌套第二份背包快照与 lease 生命周期。
+    this.beginCollectionSnapshot(shopId);
     var catalog:Array = this.buildCatalog(shopId);
     var materialView:Object = this.buildCollectionView("material", _root.收集品栏.材料);
     var intelligenceView:Object = this.buildCollectionView("intelligence", _root.收集品栏.情报);
@@ -298,7 +326,6 @@ _root.UI系统.NPC商店WebView.buildState = function(shopId:String):Object {
         catalog:catalog,
         layout:this.buildLayout(shopId),
         views:{
-            bag:inventoryResult.snapshots[0],
             material:materialView,
             intelligence:intelligenceView
         }
@@ -390,7 +417,8 @@ _root.UI系统.NPC商店WebView.validateCollectionSource = function(source:Objec
     var token:String = String(source.expectedLease || "");
     var lease:Object = this.collectionLeases[token];
     var key:String = String(source.key || "");
-    if (lease == undefined || lease.viewId != "material" || lease.key != key) return this.fail("stale_state");
+    if (lease == undefined || lease.shopId != this.activeShopId
+            || lease.viewId != "material" || lease.key != key) return this.fail("stale_state");
     var count:Number = Number(_root.收集品栏.材料.getValue(key));
     if (count != Number(lease.count)) return this.fail("stale_state");
     return {success:true, collection:_root.收集品栏.材料, key:key, count:count};
