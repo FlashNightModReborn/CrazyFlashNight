@@ -13,6 +13,7 @@ from PIL import Image
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+MANAGED_OUTPUT_ROOT = REPO_ROOT / "tmp" / "monster-reskin"
 GRID_COLUMNS = 4
 GRID_ROWS = 4
 
@@ -25,6 +26,18 @@ def repo_path(value: str | Path) -> Path:
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def require_within(path: Path, root: Path, label: str, allow_root: bool = False) -> Path:
+    resolved = path.resolve()
+    resolved_root = root.resolve()
+    try:
+        relative = resolved.relative_to(resolved_root)
+    except ValueError as exc:
+        raise ValueError(f"{label} 必须位于 {resolved_root} 下：{resolved}") from exc
+    if not allow_root and not relative.parts:
+        raise ValueError(f"{label} 不得直接指向受管根目录：{resolved_root}")
+    return resolved
 
 
 def cell_bounds(width: int, height: int, index: int) -> tuple[int, int, int, int]:
@@ -57,7 +70,7 @@ def main() -> int:
     args = parser.parse_args()
 
     config = load_json(repo_path(args.config))
-    output = repo_path(config["outputDir"])
+    output = require_within(repo_path(config["outputDir"]), MANAGED_OUTPUT_ROOT, "outputDir")
     concepts = config.get("componentConcepts", [])
     if not concepts:
         raise ValueError("配置中没有 componentConcepts")
@@ -65,13 +78,17 @@ def main() -> int:
 
     records: list[dict[str, Any]] = []
     for concept in concepts:
-        sheet = output / concept["file"]
+        sheet = require_within(output / concept["file"], output, "componentConcepts[].file", allow_root=False)
         if not sheet.exists():
             raise FileNotFoundError(f"缺少组件概念板：{sheet}")
-        split_dir = output / concept["splitDir"] if concept.get("splitDir") else default_split_dir(sheet)
+        requested_split_dir = output / concept["splitDir"] if concept.get("splitDir") else default_split_dir(sheet)
+        split_dir = require_within(requested_split_dir, output, "componentConcepts[].splitDir", allow_root=False)
         if args.check_only:
             continue
         split_dir.mkdir(parents=True, exist_ok=True)
+        for stale in list(split_dir.glob("*.png")) + [split_dir / "manifest.json"]:
+            if stale.exists():
+                stale.unlink()
         with Image.open(sheet) as source:
             image = source.convert("RGB")
             crops: list[dict[str, Any]] = []

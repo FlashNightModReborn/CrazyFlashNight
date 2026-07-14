@@ -2,11 +2,10 @@
   "monster": "敌人-僵尸1-狗",
   "linkage": "敌人-僵尸1-狗",
   "outputDir": "tmp/monster-reskin/敌人-僵尸1-狗/reference-package",
-  "ignoreTopFraction": 0.68,
   "keyposePadding": 28,
   "keyposeColumns": 4,
   "partColumns": 4,
-  "heroFrame": 2,
+  "heroPose": "idle",
   "export": {
     "ffdec": "tools/ffdec/ffdec-cli.exe",
     "stagingDir": "tmp/monster-reskin/敌人-僵尸1-狗/_ffdec-pipeline",
@@ -28,19 +27,28 @@
     ],
     "deathActionSymbol": "Symbol 772"
   },
+  "sequences": [
+    {"slug": "idle-dodge", "label": "站立 / 躲闪", "characterId": 1344, "startFrame": 1, "endFrame": 10},
+    {"slug": "walk-run", "label": "行走 / 奔跑", "characterId": 1345, "startFrame": 1, "endFrame": 15},
+    {"slug": "attack", "label": "扑咬", "characterId": 1347, "startFrame": 1, "endFrame": 10},
+    {"slug": "hit", "label": "被击", "characterId": 1348, "startFrame": 1, "endFrame": 8},
+    {"slug": "knockdown", "label": "击倒", "characterId": 1349, "startFrame": 1, "endFrame": 9},
+    {"slug": "down-thrown", "label": "倒地 / 被投", "characterId": 1350, "startFrame": 1, "endFrame": 16},
+    {"slug": "death", "label": "血腥死", "characterId": 1376, "startFrame": 1, "endFrame": 10}
+  ],
   "keyposes": [
-    {"slug": "idle", "label": "空手站立", "frame": 2, "note": "站姿与默认轮廓"},
-    {"slug": "walk-compress", "label": "空手行走", "frame": 15, "note": "后腿压缩极值"},
-    {"slug": "run-stretch", "label": "空手跑", "frame": 25, "note": "奔跑伸展极值"},
-    {"slug": "attack-bite", "label": "空手攻击", "frame": 46, "note": "扑咬与张口极值"},
-    {"slug": "dodge", "label": "躲闪", "frame": 66, "note": "无攻击动作"},
-    {"slug": "hit", "label": "被击", "frame": 75, "note": "受击弯折"},
-    {"slug": "knockdown", "label": "击倒", "frame": 84, "note": "翻滚与倒置"},
-    {"slug": "down", "label": "倒地", "frame": 92, "note": "倒地轮廓"},
-    {"slug": "thrown", "label": "被投", "frame": 100, "note": "被投倒置"},
-    {"slug": "death-start", "label": "血腥死", "frame": 105, "note": "死亡起始"},
-    {"slug": "death-breakup", "label": "血腥死", "frame": 110, "note": "碎裂中段"},
-    {"slug": "death-end", "label": "血腥死", "frame": 114, "note": "消失前末段"}
+    {"slug": "idle", "label": "空手站立", "sequence": "idle-dodge", "frame": 1, "note": "站姿与默认轮廓"},
+    {"slug": "walk-compress", "label": "空手行走", "sequence": "walk-run", "frame": 5, "note": "后腿压缩极值"},
+    {"slug": "run-stretch", "label": "空手跑", "sequence": "walk-run", "frame": 15, "note": "奔跑伸展极值"},
+    {"slug": "attack-bite", "label": "空手攻击", "sequence": "attack", "frame": 4, "note": "扑咬与张口极值"},
+    {"slug": "dodge", "label": "躲闪", "sequence": "idle-dodge", "frame": 4, "note": "无攻击动作"},
+    {"slug": "hit", "label": "被击", "sequence": "hit", "frame": 4, "note": "受击弯折"},
+    {"slug": "knockdown", "label": "击倒", "sequence": "knockdown", "frame": 5, "note": "翻滚与倒置"},
+    {"slug": "down", "label": "倒地", "sequence": "down-thrown", "frame": 4, "note": "倒地轮廓"},
+    {"slug": "thrown", "label": "被投", "sequence": "down-thrown", "frame": 12, "note": "被投倒置"},
+    {"slug": "death-start", "label": "血腥死", "sequence": "death", "frame": 1, "note": "死亡起始"},
+    {"slug": "death-breakup", "label": "血腥死", "sequence": "death", "frame": 6, "note": "碎裂中段"},
+    {"slug": "death-end", "label": "血腥死", "sequence": "death", "frame": 10, "note": "消失前末段"}
   ],
   "parts": [
     {"slug": "front-upper-leg", "label": "前腿上段", "symbol": "Symbol 726", "characterId": 1331, "group": "normal-rig"},
