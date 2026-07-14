@@ -713,7 +713,10 @@ var PanelTooltip = (function() {
         if (!node || !options) return;
         var cache = options.cache || {};
         var hoverKey = null;
-        var hoverDepth = 0;
+        // 用 pointerId 集合替代 hoverDepth 计数器，解决 pointer + mouse 双事件在快速
+        // 滑动时计数器失衡、导致相邻卡片 tooltip 不刷新或无法显示的问题。
+        // key 规则：pointer 事件用 e.pointerId；mouse 事件无 pointerId，用固定 'mouse'。
+        var activePointers = {};
 
         function resolveKey(e) {
             if (typeof options.key === 'function') return String(options.key(e, node) || '');
@@ -730,9 +733,22 @@ var PanelTooltip = (function() {
             return false;
         }
 
+        function pointerIdOf(e) {
+            return (e && typeof e.pointerId === 'number') ? e.pointerId : 'mouse';
+        }
+
+        function hasActivePointer() {
+            for (var k in activePointers) {
+                if (activePointers[k]) return true;
+            }
+            return false;
+        }
+
         function onEnter(e) {
             if (suppressed(e)) return;
-            if (hoverDepth++ > 0) return; // 同时绑定 pointer + mouse 时避免重复触发
+            var pid = pointerIdOf(e);
+            if (activePointers[pid]) return; // 同一指针已处于 hover，避免重复触发
+            activePointers[pid] = true;
             var key = resolveKey(e);
             var item = resolveItem(e);
             hoverKey = key;
@@ -744,9 +760,19 @@ var PanelTooltip = (function() {
             options.fetch(item, function(response) {
                 if (!response || response.success !== true) return;
                 cache[key] = response;
-                if (hoverKey === key && PanelTooltip.isVisible()) {
+                if (hoverKey !== key || !PanelTooltip.isVisible()) return;
+                // 富文本可能包含图标；若图标 manifest 尚未就绪，先等 Icons.load()
+                // 完成再刷新，避免首次 hover 时图标区域空白。Icons.load() 已加载时
+                // 会同步回调，不会引入额外延迟。
+                if (typeof Icons === 'undefined' || !Icons || !Icons.load) {
                     PanelTooltip.updateContent(options.renderRich(item, response));
+                    return;
                 }
+                Icons.load(function() {
+                    if (hoverKey === key && PanelTooltip.isVisible()) {
+                        PanelTooltip.updateContent(options.renderRich(item, response));
+                    }
+                });
             });
         }
 
@@ -755,21 +781,26 @@ var PanelTooltip = (function() {
             PanelTooltip.followMouse(e);
         }
 
-        function onLeave() {
-            if (--hoverDepth > 0) return;
+        function onLeave(e) {
+            var pid = pointerIdOf(e);
+            if (!activePointers[pid]) return;
+            delete activePointers[pid];
+            if (hasActivePointer()) return;
             hoverKey = null;
             PanelTooltip.hide();
         }
 
-        // 同时监听 pointer 与 mouse：真实浏览器中 mouse 是 pointer 的兼容回退事件，
-        // 会嵌套触发；测试 harness 可能直接派发 MouseEvent，需要 mouse 监听兜底。
-        var useMouse = options.events === 'mouse';
+        // 优先 pointer 事件；在不支持 PointerEvent 的环境或调用方显式要求时回退到 mouse。
+        // 不再同时监听两套，避免 pointer + mouse 嵌套触发导致同一轮 hover 被去重为两次、
+        // 快速滑动时 activePointers 集合无法正确归零的问题。
+        var hasPointerEvent = typeof window !== 'undefined' && typeof window.PointerEvent === 'function';
+        var useMouse = options.events === 'mouse' || (!hasPointerEvent && options.events !== 'pointer');
         if (!useMouse) {
             node.addEventListener('pointerenter', onEnter);
             node.addEventListener('pointermove', onMove);
             node.addEventListener('pointerleave', onLeave);
         }
-        if (useMouse || options.events !== 'pointer') {
+        if (useMouse) {
             node.addEventListener('mouseenter', onEnter);
             node.addEventListener('mousemove', onMove);
             node.addEventListener('mouseleave', onLeave);

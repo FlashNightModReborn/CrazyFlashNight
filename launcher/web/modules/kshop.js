@@ -951,6 +951,9 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     function renderGrid() {
         if (!_catalogRenderer) return;
+        // 重建卡片网格前主动隐藏 tooltip，避免旧卡片的 leave 与新卡片的 enter 事件
+        // 交错导致 pointerId 集合无法正确归零。
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip.hide) PanelTooltip.hide();
         var visible = [];
         for (var i = 0; i < _catalog.length; i++) {
             var item = _catalog[i];
@@ -1127,6 +1130,7 @@ var KShop = (function() {
             fetch: function(item, callback) {
                 requestShop('tooltip', { idx: item.idx }, function(resp) {
                     if (!isKShopOpen()) return;
+                    if (!document.documentElement.contains(card)) return;
                     callback(resp);
                 });
             }
@@ -1146,21 +1150,37 @@ var KShop = (function() {
             fetch: function(_, callback) {
                 requestInventory('tooltip', {v: 1, source: ownedSlotRef(containerId, slot)}, function(resp) {
                     if (!isKShopOpen()) return;
+                    if (!document.documentElement.contains(node)) return;
                     callback(resp);
                 });
             }
         });
     }
 
+    // 图标未就绪时返回占位，避免 tooltip 从 basic → rich 切换时图标区域从无到有导致
+    // 布局突变；真实图标加载完成后会再刷新一次。
+    function iconHtmlOrPlaceholder(iconKey) {
+        var html = PanelTooltip.dynamicIconHtml(iconKey);
+        if (html) return html;
+        return '<div class="kshop-tt-icon-placeholder"></div>';
+    }
+
     function buildBasicHtml(item) {
         var locked = isLocked(item);
-        return '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
-            '<div class="kshop-tt-divider"></div>' +
-            '<span class="kshop-tt-dim">类型</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
-            '<span class="kshop-tt-dim">等级</span> ' + item.level +
-            (locked ? ' <span class="kshop-tt-locked">⚿ 锁定</span>' : '') + '<br>' +
-            '<span class="kshop-tt-price">K ' + item.price + '</span>' +
-            '<div class="kshop-tt-loading">加载中…</div>';
+        var iconKey = item.icon;
+        var layoutType = PanelTooltip.inferLayoutType(item.majorType);
+        // basic 与 rich 共用 buildItemRichHtml 布局，只替换 intro 内容，减少切换时突变。
+        return PanelTooltip.buildItemRichHtml({
+            iconHtml:   iconHtmlOrPlaceholder(iconKey),
+            introHTML:  '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
+                '<span class="kshop-tt-dim">类型</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
+                '<span class="kshop-tt-dim">等级</span> ' + item.level +
+                (locked ? ' <span class="kshop-tt-locked">⚿ 锁定</span>' : '') + '<br>' +
+                '<span class="kshop-tt-price">K ' + item.price + '</span>',
+            descHTML:   '',
+            rootClass:  'kshop-tt-rich-context',
+            layoutType: layoutType
+        });
     }
 
     function buildRichHtml(item, data) {
@@ -1176,7 +1196,7 @@ var KShop = (function() {
         var layoutType = PanelTooltip.inferLayoutType(item.majorType);
 
         return PanelTooltip.buildItemRichHtml({
-            iconHtml:   PanelTooltip.dynamicIconHtml(iconKey),
+            iconHtml:   iconHtmlOrPlaceholder(iconKey),
             iconUrl:    PanelTooltip.staticIconUrl(iconKey),
             introHTML:  data.introHTML,
             descHTML:   data.descHTML,
@@ -1192,18 +1212,25 @@ var KShop = (function() {
 
     function buildOwnedBasicHtml(item) {
         var typeLabel = item.majorType || item.use || item.itemKind || '物品';
-        return '<div class="kshop-tt-header"><b>' + escHtml(item.displayName || item.name || '未知物品') + '</b></div>'
-            + '<div class="kshop-tt-divider"></div>'
+        var iconKey = item.icon || item.name;
+        var layoutType = PanelTooltip.inferLayoutType(item.majorType || item.use);
+        var intro = '<div class="kshop-tt-header"><b>' + escHtml(item.displayName || item.name || '未知物品') + '</b></div>'
             + '<span class="kshop-tt-dim">类型</span> ' + escHtml(typeLabel) + '<br>'
             + (Number(item.quantity) > 1 ? '<span class="kshop-tt-dim">数量</span> ' + Number(item.quantity) + '<br>' : '')
-            + (Number(item.enhancementLevel) > 0 ? '<span class="kshop-tt-dim">强化</span> +' + Number(item.enhancementLevel) + '<br>' : '')
-            + '<div class="kshop-tt-loading">加载中…</div>';
+            + (Number(item.enhancementLevel) > 0 ? '<span class="kshop-tt-dim">强化</span> +' + Number(item.enhancementLevel) + '<br>' : '');
+        return PanelTooltip.buildItemRichHtml({
+            iconHtml:   iconHtmlOrPlaceholder(iconKey),
+            introHTML:  intro,
+            descHTML:   '',
+            rootClass:  'kshop-tt-rich-context inventory-owned-tt-context',
+            layoutType: layoutType
+        });
     }
 
     function buildOwnedRichHtml(item, data) {
         var iconKey = data.iconName || item.icon || item.name;
         return PanelTooltip.buildItemRichHtml({
-            iconHtml: PanelTooltip.dynamicIconHtml(iconKey),
+            iconHtml: iconHtmlOrPlaceholder(iconKey),
             iconUrl: PanelTooltip.staticIconUrl(iconKey),
             introHTML: data.introHTML || '',
             descHTML: data.descHTML || '',

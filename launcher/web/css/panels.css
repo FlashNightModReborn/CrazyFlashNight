@@ -648,6 +648,16 @@
     height: var(--tt-icon-size);
     flex: 0 0 var(--tt-icon-size);
 }
+/* 图标 manifest 尚未就绪时的占位，保持 tooltip 布局稳定，避免 basic → rich 切换突变。 */
+.flash-tt-icon-placeholder,
+.kshop-tt-icon-placeholder {
+    width: var(--tt-icon-size);
+    height: var(--tt-icon-size);
+    flex: 0 0 var(--tt-icon-size);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed var(--tt-divider-color);
+    box-sizing: border-box;
+}
 
 /* Intro 文字段（在 intro-panel 内 icon 下方） */
 .flash-tt-intro,
