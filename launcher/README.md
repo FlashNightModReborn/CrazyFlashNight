@@ -535,7 +535,7 @@ launcher/
 │       ├── icons.js                       图标 manifest 加载与解析（播放时间线消费 asset-timeline.js）
 │       ├── game-ui-behavior.js            Overlay 统一禁原生选取/拖影/菜单（编辑控件显式放行）
 │       ├── workbench.js                   Gate A1 primitive + Gate A2 accepted InteractionBroker
-│       ├── item-filter.js                  物品类别/套装模型 + 渐进树导航（目录本地计数 / 库存权威 facets 共用）
+│       ├── item-filter.js                  物品类别/套装模型 + 渐进树导航 + 标题区单行折叠面包屑（目录本地计数 / 库存权威 facets 共用）
 │       ├── kshop-runtime.js               KShop request mux + save/checkoutCommit/legacy claim 写协调
 │       ├── inventory-runtime.js           range/window snapshot / category|set filterSpec / owned write gate / transfer·discard·sortAndMerge Coordinator
 │       ├── inventory-ui.js                页码/类别·套装树筛选/权威整理 + OwnedInventoryViewShell
@@ -1672,6 +1672,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - `panels.js`: 面板注册/生命周期管理 (register/registerLazy/open/close/force_close)
 - `panels-lazy-registry.js` + `lazy-loader.js`: 面板懒注册表（id → deps[]）+ 按需 `<script>` 注入，首次 `Panels.open(id)` 才加载对应模块（kshop/workbench/npcshop/crafting/help/jukebox/dressup/map/stage-select/intelligence/arena/team/lockbox/pinalign/gobang/tasks/cutscene-test）
 - `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换；商城、情报、任务、佣兵、竞技场 runtime tooltip 共用，图标通过 `PanelTooltip.dynamicIconHtml` 接入动态图/分层图播放链
+- `workbench.js` + `item-filter.js`: 共享工作台标题提供筛选路径挂载点；目录、背包、仓库与战备箱的树筛选在标题同一行渲染可点击祖先路径，宽度不足时隐藏中段并保留根级和最近两级
 - `asset-timeline.js`: 图标与纸娃娃共享的烘焙时间线选择器，统一解释 `timelineFrames[]` / `durationFrames` / nested layer 独立周期
 - `icons.js`: 物品图标 manifest 加载 + 上游 `icon` 名→URL / frame list 解析；任务/成就奖励由 AS2 或 build catalog 提交真实 `icon` 字段，情报详情面板也复用该入口；生产格子/tooltip 默认走 `Icons.html`/`PanelTooltip.dynamicIconHtml`，`Icons.resolve` 仅作首帧 fallback
 - `web/modules/minigames/shared/host-bridge.js`: 小游戏 → 宿主的统一桥接

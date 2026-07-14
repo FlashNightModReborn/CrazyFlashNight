@@ -741,12 +741,20 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         document.querySelector('.kshop-categories [data-filter-path="category/weapon/刀/刀剑"]').click();
         var knifeLeafFiltered = document.querySelectorAll('.kshop-card').length === 1
             && !!document.querySelector('.kshop-card[data-idx="3"]');
+        var catalogBreadcrumb = document.querySelector('.kshop-catalog-view .workbench-view-breadcrumb-host');
+        var catalogBreadcrumbRoot = catalogBreadcrumb && catalogBreadcrumb.querySelector('[data-filter-breadcrumb-path=""]');
+        var catalogBreadcrumbCurrent = catalogBreadcrumb && catalogBreadcrumb.querySelector('[data-filter-breadcrumb-path="category/weapon/刀/刀剑"][aria-current="page"]');
+        var catalogBreadcrumbAncestor = catalogBreadcrumb && catalogBreadcrumb.querySelector('[data-filter-breadcrumb-path="category/weapon"]');
+        var catalogBreadcrumbSingleLine = !!(catalogBreadcrumb && catalogBreadcrumb.scrollHeight <= catalogBreadcrumb.clientHeight + 1);
+        if (catalogBreadcrumbAncestor) catalogBreadcrumbAncestor.click();
+        var catalogBreadcrumbReturned = !!document.querySelector('.kshop-categories [data-filter-path="category/weapon/刀"]');
         var categoryRailStable = Math.abs(categoryRail.getBoundingClientRect().height - categoryRailHeight) < 1
             && Math.abs(categoryGridWrap.getBoundingClientRect().top - categoryGridTop) < 1
             && getComputedStyle(document.querySelector('.kshop-category-navigator .item-filter-option')).transitionDuration === '0s';
-        assert('kshop-ui2l','商城刀类继续下钻到模组子型，切层不改变筛选轨道或物品格位置',
+        assert('kshop-ui2l','商城刀类继续下钻，并可从标题面包屑单行快速返回上级',
             browseModesVisible && setRootFiltered && setGroupFiltered && curatedGroupsVisible && curatedGroupFiltered
-                && knifeSubtypeVisible && knifeLeafFiltered && categoryRailStable,
+                && knifeSubtypeVisible && knifeLeafFiltered && categoryRailStable
+                && catalogBreadcrumbRoot && catalogBreadcrumbCurrent && catalogBreadcrumbReturned && catalogBreadcrumbSingleLine,
             'rail=' + categoryRailHeight + '/' + categoryRail.getBoundingClientRect().height
                 + ' gridTop=' + categoryGridTop + '/' + categoryGridWrap.getBoundingClientRect().top);
         document.querySelector('.kshop-categories [data-filter-path="category/weapon/刀"]').click();
@@ -1234,7 +1242,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-slot-card').length === 2
                 && document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="239"]')
                 && warehouseToolbar.querySelector('[data-filter-path="category/weapon"] small').textContent === '3'
-                && warehouseToolbar.querySelector('[data-filter-path="category/weapon/刀"] small').textContent === '2',
+                && warehouseToolbar.querySelector('[data-filter-path="category/weapon/刀"] small').textContent === '2'
+                && document.querySelector('.inventory-owned-warehouse .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="category/weapon/刀"][aria-current="page"]')
+                && document.querySelector('.inventory-owned-warehouse .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="category/weapon"]'),
             JSON.stringify(KShop.debugState().inventory.requests[1]));
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
@@ -1835,8 +1845,22 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             if (mode === 'battlebox-compact') click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="compact"]');
             if (mode === 'battlebox-real-icons') {
                 var realIconSlot = document.querySelector('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="2"]');
-                realIconSlot.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:1120,clientY:220}));
+                if (!realIconSlot) throw new Error('real tooltip probe slot missing');
+                var HoverEvent = window.PointerEvent || window.MouseEvent;
+                realIconSlot.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter',{
+                    bubbles:false,clientX:1120,clientY:220,pointerId:1,pointerType:'mouse',isPrimary:true
+                }));
+                var tooltipNode = document.getElementById('panel-tooltip');
+                var basicStyled = !!(tooltipNode
+                    && tooltipNode.querySelector('.kshop-tt-header')
+                    && tooltipNode.querySelector('.kshop-tt-dim'));
                 await wait(100);
+                window.__visualTooltipState = {
+                    visible:PanelTooltip.isVisible(),
+                    basicStyled:basicStyled,
+                    hasRichLayout:!!(tooltipNode && tooltipNode.querySelector('.flash-tt-rich')),
+                    hasIcon:!!(tooltipNode && tooltipNode.querySelector('.flash-tt-icon img'))
+                };
             }
             if (mode === 'battlebox-pages') click('.inventory-page-jump');
             window.__visualReady = true;

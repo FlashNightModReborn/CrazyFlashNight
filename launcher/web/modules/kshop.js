@@ -412,6 +412,7 @@ var KShop = (function() {
             ariaLabel:'商城商品分类',
             presentation:'drilldown',
             visualStyle:'catalog',
+            breadcrumbHost:_catalogChrome.breadcrumbHost,
             onChange:function(path) {
                 _categoryPath = path;
                 if (_interactionBroker) _interactionBroker.clearSelection();
@@ -1172,11 +1173,11 @@ var KShop = (function() {
         // basic 与 rich 共用 buildItemRichHtml 布局，只替换 intro 内容，减少切换时突变。
         return PanelTooltip.buildItemRichHtml({
             iconHtml:   iconHtmlOrPlaceholder(iconKey),
-            introHTML:  '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
+            introWebHTML: '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
                 '<span class="kshop-tt-dim">类型</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
-                '<span class="kshop-tt-dim">等级</span> ' + item.level +
+                '<span class="kshop-tt-dim">等级</span> ' + escHtml(item.level) +
                 (locked ? ' <span class="kshop-tt-locked">⚿ 锁定</span>' : '') + '<br>' +
-                '<span class="kshop-tt-price">K ' + item.price + '</span>',
+                '<span class="kshop-tt-price">K ' + escHtml(item.price) + '</span>',
             descHTML:   '',
             rootClass:  'kshop-tt-rich-context',
             layoutType: layoutType
@@ -1220,7 +1221,7 @@ var KShop = (function() {
             + (Number(item.enhancementLevel) > 0 ? '<span class="kshop-tt-dim">强化</span> +' + Number(item.enhancementLevel) + '<br>' : '');
         return PanelTooltip.buildItemRichHtml({
             iconHtml:   iconHtmlOrPlaceholder(iconKey),
-            introHTML:  intro,
+            introWebHTML: intro,
             descHTML:   '',
             rootClass:  'kshop-tt-rich-context inventory-owned-tt-context',
             layoutType: layoutType

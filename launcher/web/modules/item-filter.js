@@ -272,10 +272,127 @@
         this.allLabel = options.allLabel || '全部';
         this.onChange = typeof options.onChange === 'function' ? options.onChange : function() {};
         this.disabled = false;
+        this.breadcrumbHost = null;
+        this.breadcrumbRoot = null;
+        this._breadcrumbObserver = null;
+        this._breadcrumbView = null;
+        this._breadcrumbFrame = 0;
+        this._breadcrumbResizeHandler = this.refreshBreadcrumbLayout.bind(this);
         this._keyHandler = this._onKeyDown.bind(this);
         this.root.addEventListener('keydown', this._keyHandler);
+        if (options.breadcrumbHost) this.setBreadcrumbHost(options.breadcrumbHost);
         this.render();
     }
+
+    FilterNavigator.prototype.setBreadcrumbHost = function(host) {
+        if (host === this.breadcrumbHost) return;
+        if (this._breadcrumbObserver) this._breadcrumbObserver.disconnect();
+        if (this._breadcrumbView && this._breadcrumbFrame) this._breadcrumbView.cancelAnimationFrame(this._breadcrumbFrame);
+        if (this._breadcrumbView && !this._breadcrumbObserver) {
+            this._breadcrumbView.removeEventListener('resize', this._breadcrumbResizeHandler);
+        }
+        if (this.breadcrumbRoot && this.breadcrumbRoot.parentNode) this.breadcrumbRoot.parentNode.removeChild(this.breadcrumbRoot);
+        if (this.breadcrumbHost) this.breadcrumbHost.hidden = true;
+        this.breadcrumbHost = host && host.nodeType === 1 ? host : null;
+        this.breadcrumbRoot = null;
+        this._breadcrumbObserver = null;
+        this._breadcrumbView = this.breadcrumbHost && this.breadcrumbHost.ownerDocument
+            ? this.breadcrumbHost.ownerDocument.defaultView : null;
+        this._breadcrumbFrame = 0;
+        if (this.breadcrumbHost) {
+            this.breadcrumbRoot = document.createElement('nav');
+            this.breadcrumbRoot.className = 'item-filter-breadcrumbs';
+            this.breadcrumbRoot.setAttribute('aria-label', '当前筛选路径');
+            this.breadcrumbHost.appendChild(this.breadcrumbRoot);
+            if (this._breadcrumbView && this._breadcrumbView.ResizeObserver) {
+                this._breadcrumbObserver = new this._breadcrumbView.ResizeObserver(this._breadcrumbResizeHandler);
+                this._breadcrumbObserver.observe(this.breadcrumbHost);
+            } else if (this._breadcrumbView) {
+                this._breadcrumbView.addEventListener('resize', this._breadcrumbResizeHandler);
+            }
+        }
+        this._renderBreadcrumb();
+    };
+
+    FilterNavigator.prototype._queueBreadcrumbLayout = function() {
+        var self = this;
+        this.refreshBreadcrumbLayout();
+        if (!this._breadcrumbView || !this._breadcrumbView.requestAnimationFrame) return;
+        if (this._breadcrumbFrame) this._breadcrumbView.cancelAnimationFrame(this._breadcrumbFrame);
+        this._breadcrumbFrame = this._breadcrumbView.requestAnimationFrame(function() {
+            self._breadcrumbFrame = 0;
+            self.refreshBreadcrumbLayout();
+        });
+    };
+
+    FilterNavigator.prototype.refreshBreadcrumbLayout = function() {
+        var root = this.breadcrumbRoot;
+        if (!root || root.hidden) return;
+        root.classList.remove('is-collapsed');
+        if (root.querySelector('.item-filter-breadcrumb-middle')
+                && root.clientWidth > 0 && root.scrollWidth > root.clientWidth + 1) {
+            root.classList.add('is-collapsed');
+        }
+    };
+
+    FilterNavigator.prototype._renderBreadcrumb = function() {
+        var root = this.breadcrumbRoot;
+        if (!root || !this.breadcrumbHost) return;
+        while (root.firstChild) root.removeChild(root.firstChild);
+        root.classList.remove('is-collapsed');
+        if (!this.path.length) {
+            root.hidden = true;
+            this.breadcrumbHost.hidden = true;
+            return;
+        }
+        var crumbs = [{label:this.allLabel, path:[]}];
+        var cursor = this.tree;
+        for (var i = 0; cursor && i < this.path.length; i++) {
+            cursor = findChild(cursor, this.path[i]);
+            if (!cursor) break;
+            crumbs.push({label:cursor.label, path:cursor.path.slice()});
+        }
+        var self = this;
+        var hasMiddle = crumbs.length > 3;
+        for (var index = 0; index < crumbs.length; index++) {
+            if (index === 1 && hasMiddle) {
+                var ellipsis = document.createElement('span');
+                ellipsis.className = 'item-filter-breadcrumb-segment item-filter-breadcrumb-ellipsis';
+                ellipsis.setAttribute('aria-hidden', 'true');
+                ellipsis.innerHTML = '<span class="item-filter-breadcrumb-separator">›</span><span>…</span>';
+                root.appendChild(ellipsis);
+            }
+            var crumb = crumbs[index];
+            var segmentNode = document.createElement('span');
+            segmentNode.className = 'item-filter-breadcrumb-segment';
+            if (index > 0 && index < crumbs.length - 2) segmentNode.classList.add('item-filter-breadcrumb-middle');
+            if (index >= crumbs.length - 2) segmentNode.classList.add('item-filter-breadcrumb-tail');
+            if (index > 0) {
+                var separator = document.createElement('span');
+                separator.className = 'item-filter-breadcrumb-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = '›';
+                segmentNode.appendChild(separator);
+            }
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'item-filter-breadcrumb';
+            button.textContent = crumb.label;
+            button.title = crumbs.slice(0, index + 1).map(function(entry) { return entry.label; }).join(' › ');
+            button.setAttribute('data-filter-breadcrumb-path', crumb.path.join('/'));
+            if (index === crumbs.length - 1) button.setAttribute('aria-current', 'page');
+            button.disabled = this.disabled;
+            (function(path) {
+                button.addEventListener('click', function() { self.setPath(path, false); });
+            })(crumb.path.slice());
+            segmentNode.appendChild(button);
+            root.appendChild(segmentNode);
+        }
+        root.hidden = false;
+        this.breadcrumbHost.hidden = false;
+        root.title = crumbs.map(function(entry) { return entry.label; }).join(' › ');
+        this._queueBreadcrumbLayout();
+    };
 
     FilterNavigator.prototype.setModel = function(tree, path) {
         this.tree = tree || createRoot(0);
@@ -299,6 +416,10 @@
         this.disabled = !!disabled;
         var buttons = this.root.querySelectorAll('button');
         for (var i = 0; i < buttons.length; i++) buttons[i].disabled = this.disabled;
+        if (this.breadcrumbRoot) {
+            buttons = this.breadcrumbRoot.querySelectorAll('button');
+            for (i = 0; i < buttons.length; i++) buttons[i].disabled = this.disabled;
+        }
     };
 
     FilterNavigator.prototype._button = function(label, count, path, active, exactPath) {
@@ -327,6 +448,7 @@
 
     FilterNavigator.prototype.render = function() {
         while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
+        this._renderBreadcrumb();
         if (this.presentation === 'drilldown') {
             this._renderDrilldown();
             return;
@@ -407,6 +529,7 @@
 
     FilterNavigator.prototype.destroy = function() {
         this.root.removeEventListener('keydown', this._keyHandler);
+        this.setBreadcrumbHost(null);
     };
 
     return {

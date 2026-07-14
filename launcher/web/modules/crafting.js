@@ -65,7 +65,8 @@ var CraftingPanel = (function() {
         var chrome = new Workbench.ViewChrome({title:'配方目录', kicker:_category, meta:'同步中'});
         _filterNavigator = new ItemFilter.FilterNavigator({
             tree:ItemFilter.build([]), path:[], presentation:'drilldown', allLabel:'全部配方',
-            ariaLabel:'合成产物分类', visualStyle:'catalog', onChange:onFilterChange
+            ariaLabel:'合成产物分类', visualStyle:'catalog', breadcrumbHost:chrome.breadcrumbHost,
+            onChange:onFilterChange
         });
         var toolbar = document.createElement('div'); toolbar.className = 'crafting-catalog-toolbar';
         _craftableToggle = document.createElement('button');

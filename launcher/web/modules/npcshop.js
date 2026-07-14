@@ -113,6 +113,7 @@ var NpcShop = (function() {
             ariaLabel:'商店商品分类',
             presentation:'drilldown',
             visualStyle:'catalog',
+            breadcrumbHost:chrome.breadcrumbHost,
             onChange:function(path) {
                 var mode = _categoryToolbar && _categoryToolbar.getAttribute('data-filter-mode');
                 _category = {mode:mode || 'auto', path:path};
@@ -201,7 +202,7 @@ var NpcShop = (function() {
         });
         toolbar.appendChild(_bagFilterControl.root);
         view.inventoryFilterControl = _bagFilterControl;
-        if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar); else view.chrome.setToolbar(toolbar);
+        if (view.ownedInventoryShell) view.ownedInventoryShell.setToolbar(toolbar, _bagFilterControl); else view.chrome.setToolbar(toolbar);
     }
 
     function changeBagFilterLegacy(filterKey) {

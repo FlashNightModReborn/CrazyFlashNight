@@ -617,6 +617,7 @@ var PanelTooltip = (function() {
     //   iconUrl        - 已 resolved 的 URL；为空且 iconPlaceholder 未提供则不渲图标
     //   iconPlaceholder- iconUrl 缺失时的占位 HTML（如 '?' 字符 span）
     //   introHTML      - AS2 原始 HTML（自动 convertAS2Html）
+    //   introWebHTML   - 可选，调用方已转义动态值的可信 Web HTML；用于保留 Web 专用 class
     //   descHTML       - 同上
     //   metaHTML       - 可选附加到 intro 段末尾的 HTML（如"已发现 X/Y 页"）
     //   rootClass      - 附加到 .flash-tt-rich 的额外类（per-panel 视觉 override）
@@ -647,9 +648,11 @@ var PanelTooltip = (function() {
         var doSplit;
         if (splitMode === 'split') doSplit = true;
         else if (splitMode === 'merge') doSplit = false;
-        else doSplit = shouldSplitWeb(opts.descHTML, opts.introHTML);
+        else doSplit = shouldSplitWeb(opts.descHTML, opts.introWebHTML || opts.introHTML);
 
-        var intro = opts.introHTML ? convertAS2Html(opts.introHTML) : '';
+        var intro = opts.introWebHTML != null
+            ? String(opts.introWebHTML)
+            : (opts.introHTML ? convertAS2Html(opts.introHTML) : '');
         var desc  = opts.descHTML  ? convertAS2Html(opts.descHTML)  : '';
 
         // desc 是空时也无所谓 split 不 split；强制走 merge

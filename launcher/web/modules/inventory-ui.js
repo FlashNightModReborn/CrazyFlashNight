@@ -499,7 +499,10 @@
             if (this.trigger) this.trigger.hidden = true;
             this.select.hidden = false;
             this.select.value = String(snapshot && snapshot.filterKey || this.select.value || 'all');
-            if (this.navigator) this.navigator.root.hidden = true;
+            if (this.navigator) {
+                this.navigator.root.hidden = true;
+                this.navigator.setPath([], true);
+            }
             return false;
         }
         var self = this;
@@ -508,6 +511,7 @@
                 className:'inventory-filter-navigator item-filter-navigator',
                 ariaLabel:this.options.ariaLabel || '库存分类筛选',
                 presentation:this.options.navigatorPresentation || 'drilldown',
+                breadcrumbHost:this.options.breadcrumbHost,
                 onChange:function(path, node) {
                     self.pendingSpec = filterSpecFromPath(path);
                     if (!node || !(node.children || []).length) self.closePopover();
@@ -554,6 +558,10 @@
 
     InventoryFilterControl.prototype.getFilterKey = function() { return this.select.value || 'all'; };
     InventoryFilterControl.prototype.setFilterKey = function(filterKey) { this.select.value = String(filterKey || 'all'); };
+    InventoryFilterControl.prototype.setBreadcrumbHost = function(host) {
+        this.options.breadcrumbHost = host || null;
+        if (this.navigator) this.navigator.setBreadcrumbHost(this.options.breadcrumbHost);
+    };
     InventoryFilterControl.prototype.setDisabled = function(disabled) {
         this.disabled = !!disabled;
         this.select.disabled = this.disabled;
@@ -635,6 +643,9 @@
     OwnedInventoryViewShell.prototype.setToolbar = function(toolbar, controls, pager) {
         this.controls = controls || null;
         this.pager = pager || null;
+        if (this.controls && typeof this.controls.setBreadcrumbHost === 'function') {
+            this.controls.setBreadcrumbHost(this.view.chrome.breadcrumbHost);
+        }
         this.view.chrome.setToolbar(toolbar);
     };
 
@@ -700,6 +711,9 @@
     };
     InventorySortControls.prototype.setFilterKey = function(filterKey) {
         if (this.filterControl) this.filterControl.setFilterKey(filterKey);
+    };
+    InventorySortControls.prototype.setBreadcrumbHost = function(host) {
+        if (this.filterControl) this.filterControl.setBreadcrumbHost(host);
     };
     InventorySortControls.prototype.setSnapshot = function(snapshot) {
         return this.filterControl ? this.filterControl.setSnapshot(snapshot) : false;

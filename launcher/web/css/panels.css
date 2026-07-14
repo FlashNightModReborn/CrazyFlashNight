@@ -2965,8 +2965,30 @@
     background:#14171b;
     border-bottom:1px solid var(--wb-line);
 }
-.workbench-view-heading { min-width:0; }
-.workbench-view-title { color:#f1f2f4; font-size:15px; font-weight:700; letter-spacing:.5px; }
+.workbench-view-heading { min-width:0; overflow:hidden; }
+.workbench-view-title-row { display:flex; align-items:baseline; gap:8px; min-width:0; }
+.workbench-view-title { flex:0 1 auto; min-width:0; color:#f1f2f4; font-size:15px; font-weight:700; letter-spacing:.5px; white-space:nowrap; }
+.workbench-view-breadcrumb-host { flex:1 1 auto; min-width:0; overflow:hidden; color:#848d96; }
+.workbench-view-breadcrumb-host[hidden] { display:none; }
+.item-filter-breadcrumbs {
+    display:flex; align-items:center; width:100%; min-width:0; overflow:hidden; white-space:nowrap;
+    font:9px/1.2 "Microsoft YaHei",sans-serif;
+}
+.item-filter-breadcrumb-segment { display:inline-flex; flex:0 0 auto; align-items:center; min-width:0; }
+.item-filter-breadcrumb-separator { flex:0 0 auto; margin:0 3px; color:#58616a; }
+.item-filter-breadcrumb {
+    max-width:112px; padding:0; overflow:hidden; color:inherit; border:0; background:none;
+    font:inherit; white-space:nowrap; text-overflow:ellipsis; cursor:pointer;
+}
+.item-filter-breadcrumb:hover,
+.item-filter-breadcrumb:focus-visible { color:var(--wb-accent,#e5a64d); outline:none; text-decoration:underline; }
+.item-filter-breadcrumb[aria-current="page"] { color:#c9d0d6; }
+.item-filter-breadcrumb:disabled { opacity:.45; cursor:not-allowed; text-decoration:none; }
+.item-filter-breadcrumb-ellipsis { display:none; color:#737c85; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-middle { display:none; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-ellipsis { display:inline-flex; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-tail { flex:0 1 auto; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-tail .item-filter-breadcrumb { max-width:88px; }
 .workbench-view-meta { align-self:center; color:#8d939b; font:10px/1.2 "Consolas","Microsoft YaHei",monospace; }
 .workbench-view-toolbar { grid-column:1 / -1; min-width:0; }
 .workbench-grid-renderer { position:relative; min-width:0; min-height:0; }

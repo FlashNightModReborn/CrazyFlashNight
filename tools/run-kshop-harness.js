@@ -259,22 +259,31 @@ function createServer() {
                 });
                 return out;
             })(),
+            tooltip:window.__visualTooltipState || null,
             bodyOverflow:document.body.scrollWidth > document.body.clientWidth || document.body.scrollHeight > document.body.clientHeight
         }), visualMode);
         await browser.close();
         server.close();
         process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');
-        if (pageErrors.length || failedRequests.length) process.exit(1);
+        const tooltipFailed = visualMode === 'battlebox-real-icons'
+            && (!visualState.tooltip || !visualState.tooltip.visible || !visualState.tooltip.basicStyled
+                || !visualState.tooltip.hasRichLayout || !visualState.tooltip.hasIcon);
+        if (pageErrors.length || failedRequests.length || tooltipFailed) process.exit(1);
         return;
     }
     await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, {timeout:20000});
     const qa = await page.evaluate(() => window.__qaResult.qa);
+    await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html?visual=battlebox-real-icons', {waitUntil:'load'});
+    await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
+    const realTooltip = await page.evaluate(() => window.__visualTooltipState || null);
     await browser.close();
     server.close();
 
-    const output = {browser:'edge',executablePath,architectureAudit,qa,pageErrors,failedRequests};
+    const output = {browser:'edge',executablePath,architectureAudit,qa,realTooltip,pageErrors,failedRequests};
     process.stdout.write(JSON.stringify(output, null, 2) + '\n');
-    if (qa.failed || pageErrors.length || failedRequests.length) process.exit(1);
+    const tooltipFailed = !realTooltip || !realTooltip.visible || !realTooltip.basicStyled
+        || !realTooltip.hasRichLayout || !realTooltip.hasIcon;
+    if (qa.failed || tooltipFailed || pageErrors.length || failedRequests.length) process.exit(1);
 })().catch(error => {
     console.error(error && error.stack ? error.stack : String(error));
     process.exit(2);
