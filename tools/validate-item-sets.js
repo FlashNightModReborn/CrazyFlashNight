@@ -20,7 +20,18 @@ function indexedBlocks(xml, prefix) {
     while ((match = re.exec(String(xml || ''))) !== null) result.push({index:Number(match[1]), raw:match[2]});
     return result.sort((a, b) => a.index - b.index);
 }
-function finiteNumber(value) { const n = Number(value); return Number.isFinite(n); }
+function requireContiguousIndexes(blocks, prefix, context) {
+    blocks.forEach((block, expectedIndex) => {
+        if (block.index !== expectedIndex) {
+            fail(context + ': ' + prefix + ' indexes must be contiguous from 0; expected ' +
+                prefix + expectedIndex + ' but found ' + prefix + block.index);
+        }
+    });
+}
+function finiteNumber(value) {
+    const text = String(value == null ? '' : value).trim();
+    return text !== '' && Number.isFinite(Number(text));
+}
 
 const meta = loadItemMeta(ROOT, fail);
 const catalog = loadItemSetMeta(ROOT, fail);
@@ -73,6 +84,7 @@ sets.forEach((group) => {
 const resistanceAttributes = new Map();
 sets.forEach((group) => {
     const effectBlocks = indexedBlocks(xmlBlock(group.raw, 'effects'), 'effect_');
+    requireContiguousIndexes(effectBlocks, 'effect_', 'setId "' + group.id + '" / effects');
     const groupThresholds = new Map();
 
     effectBlocks.forEach(({index, raw}) => {
@@ -116,6 +128,7 @@ sets.forEach((group) => {
             if (xmlText(raw, 'mode') !== 'member_components') fail(context + ': routine mode must be member_components');
             if (!xmlText(raw, 'prepareRoutine')) fail(context + ': prepareRoutine is required');
             const componentBlocks = indexedBlocks(xmlBlock(raw, 'components'), 'component_');
+            requireContiguousIndexes(componentBlocks, 'component_', context + ' / components');
             const slots = new Set();
             componentBlocks.forEach(({index:componentIndex, raw:componentRaw}) => {
                 const componentId = xmlText(componentRaw, 'id');
