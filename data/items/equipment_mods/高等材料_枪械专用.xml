@@ -295,15 +295,29 @@
         <use>手枪,长枪</use>
         <weapontype>手枪,大威力手枪,冲锋枪</weapontype>
         <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>精英</magictype>
+            </override>
             <curve>
                 <impact>
                     <type>sqrtScale</type>
-                    <coefficient>1.8</coefficient>
-                    <min>25</min>
+                    <coefficient>1.4</coefficient>
+                    <min>20</min>
                 </impact>
             </curve>
+            <bulletSwitch>
+                <!-- 原生穿刺宿主保留射速与既有反怪海能力，但不获得暴击保底 -->
+                <bullet name="pierce" />
+                <bullet>
+                    <merge>
+                        <criticalhit>25</criticalhit>
+                    </merge>
+                </bullet>
+            </bulletSwitch>
         </stats>
-        <description>以高停止作用著称的特种扩张弹。使原生冲击较弱的手枪与冲锋枪获得显著破韧能力。
+        <description>以高停止作用著称的特种扩张弹。针对精英目标提供破击伤害，并使原生冲击较弱的手枪与冲锋枪获得显著破韧能力。
+        非穿刺武器的暴击率至少提升至25%；原生穿刺武器保留射速与反怪海能力，但不获得暴击保底。
         原生击倒率低于曲线结果的武器保持原值，不会因安装而降低冲击力。</description>
         <tag>弹药</tag>
     </mod>
