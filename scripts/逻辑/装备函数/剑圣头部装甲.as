@@ -3,13 +3,14 @@
  * 剑圣头部装甲 - 装备生命周期函数
  *
  * 进阶等级效果（视觉增强系统）：
- * - 无进阶：无特殊视觉效果，移除周期函数
+ * - 无进阶：无特殊视觉效果，返回 ready_static
  * - 二阶：使用"高级夜视仪"预设 + 敌人AABB高亮 + 扫描标记（约4%输出等效提升）
  * - 三阶：使用"剑圣视觉三阶"预设 + 更强扫描标记（约6%输出等效提升）
  * - 四阶：使用"剑圣视觉四阶"预设 + 最强扫描标记（约8%输出等效提升），完美暗视
  *
  * 功能特性：
- * - 在低光照环境下自动扫描并高亮最近的敌人
+ * - 夜视仪只在低光照环境生效，但注册跨越完整昼夜周期
+ * - 扫描、高亮和锁定debuff不依赖光照，始终按配置间隔运行
  * - 使用AABBRenderer绘制科技感扫描框
  * - 为扫描到的敌人施加"扫描标记"debuff，降低其闪避成功率
  * - 进阶等级越高，效果越强，扫描范围越大
@@ -42,15 +43,9 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
     var tier:String = equipItem && equipItem.value ? equipItem.value.tier : null;
     ref.tier = tier;
 
-    // 无进阶：无视觉增强，移除周期函数
+    // 无进阶：组件合法，但没有周期行为
     if (!tier) {
-        _root.装备生命周期函数.移除周期函数(ref);
-        return;
-    }
-
-    // 非主角不启用视觉增强功能（夜视仪是玩家专属）
-    if (_root.装备生命周期函数.移除非主角周期函数(ref)) {
-        return;
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.READY_STATIC;
     }
 
     // ========== 配置初始化 ==========
@@ -61,15 +56,13 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
         case "三阶": tierNum = "3"; break;
         case "四阶": tierNum = "4"; break;
         default:
-            _root.装备生命周期函数.移除周期函数(ref);
-            return;
+            return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
     }
 
     var config:Object = param ? param["tier_" + tierNum] : null;
     // _root.发布消息("剑圣头部装甲读取配置 - " + _root.常用工具函数.对象转JSON(config, true));
     if (!config) {
-        _root.装备生命周期函数.移除周期函数(ref);
-        return;
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
     }
 
     // 从XML配置读取参数
@@ -87,33 +80,29 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
     ref.当前目标 = null;
 
     // ========== 夜视仪系统注册 ==========
-    // 创建视觉系统对象并注册到天气系统
-    var 视觉系统:Object = {
-        视觉情况: ref.视觉情况,
-        最小启动亮度: ref.最小启动亮度,
-        最大启动亮度: ref.最大启动亮度,
-        启用装备: ref.装备名称,
-        装备类型: ref.装备类型,
-        进阶等级: tier
-    };
-    function 注销夜视仪():Void {
-        WeatherSystem.getInstance().unregisterNightVision(视觉系统);
+    // 夜视是主角专属显示效果；注册本身不设超时，昼夜切换由 WeatherSystem 判定。
+    // 非主角仍保留扫描/锁定周期，避免把战斗效果错误绑到玩家视觉系统。
+    if (ref.是否为主角) {
+        var 视觉系统:Object = {
+            视觉情况: ref.视觉情况,
+            最小启动亮度: ref.最小启动亮度,
+            最大启动亮度: ref.最大启动亮度,
+            启用装备: ref.装备名称,
+            装备类型: ref.装备类型,
+            进阶等级: tier
+        };
+        var weather:Object = WeatherSystem.getInstance();
+        weather.registerNightVision(视觉系统);
+        if (!org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.registerResource(
+            ref, function():Void { weather.unregisterNightVision(视觉系统); })) {
+            weather.unregisterNightVision(视觉系统);
+            return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+        }
     }
-
-    WeatherSystem.getInstance().registerNightVision(视觉系统);
-
-    // ========== 生命周期卸载回调 ==========
-    // 只保留生命周期函数列表（装备系统标准机制）
-    var 卸载对象:Object = {
-        动作: function(额外参数) {
-            注销夜视仪();
-        },
-        额外参数: {}
-    };
-    ref.生命周期函数列表.push(卸载对象);
 
     // 发布启动消息
     // _root.发布消息("剑圣视觉系统启动 - " + tier);
+    return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.READY_CYCLE;
 };
 
 /**
@@ -173,14 +162,6 @@ _root.装备生命周期函数.剑圣头部装甲周期 = function(ref:Object) {
         return;
     }
 
-    // 检查当前光照等级是否在有效范围内
-    var 当前光照:Number = WeatherSystem.getInstance().currentLightLevel;
-    if (当前光照 > ref.最大启动亮度) {
-        // 光照太亮，不需要高亮
-        ref.当前目标 = null;
-        return;
-    }
-
     // 帧计数递增
     ref.帧计数++;
 
@@ -192,8 +173,9 @@ _root.装备生命周期函数.剑圣头部装甲周期 = function(ref:Object) {
     // 重置帧计数
     ref.帧计数 = 0;
 
-    // 搜索最近的一个敌人
-    ref.当前目标 = TargetCacheManager.findNearestEnemy(target, ref.绘制间隔);
+    // 搜索配置范围内最近的敌人；第二参数是缓存刷新间隔，不能代替 searchRange。
+    ref.当前目标 = TargetCacheManager.findNearestEnemyInRange(
+        target, ref.绘制间隔, ref.搜索距离);
 
     // 处理当前目标
     var enemy:MovieClip = ref.当前目标;

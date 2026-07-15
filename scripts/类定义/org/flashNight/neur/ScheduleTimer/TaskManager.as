@@ -71,6 +71,15 @@ import org.flashNight.aven.Coordinator.*;
  * 4. taskLabel 命名空间：
  *    - 同一 obj + labelName 不得跨 TaskManager / EnhancedCooldownWheel 混用。
  *    - 两套系统 ID 类型不同（String vs Number），混用会导致标签互相覆盖。
+ *
+ * 5. 零间隔持久任务顺序契约：
+ *    - 同一 TaskManager 中，进入 zeroFrameTasks 的 addLifecycleTask/addOrUpdateTask
+ *      按本次入表顺序执行；持续留表的 0→0 更新不换位，离表后重入则排到尾部。
+ *    - ID 快照在时间轮任务与 _pendingReschedule 处理之后、零间隔分发阶段
+ *      入口收集。因此时间轮回调创建的零任务可在本次 updateFrame 执行；
+ *      只有快照完成后、在零任务回调中创建的新 ID 必然延后到下次 updateFrame。
+ *    - 依赖同帧生产者→消费者关系时，必须先注册生产者，再注册消费者；修改
+ *      zeroFrameTasks 的收集或遍历方向时必须保持 TaskManagerTester 的顺序契约通过。
  * =====================================================================
  */
 class org.flashNight.neur.ScheduleTimer.TaskManager {
@@ -293,7 +302,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             zeroIds[zeroIds.length] = id;
         }
 
-        // 遍历收集的ID数组执行任务
+        // 顺序契约：AS2 for...in 按 reverse insertion order 收集自身属性；此处再逆向
+        // 遍历，最终恢复为本次进入 zeroFrameTasks 的顺序。生产者先入表即可
+        // 保证同次零间隔分发中早于消费者执行。
         var toDelete:Array = this._reusableToDelete;
         toDelete.length = 0;  // 清空复用数组
         var i:Number = zeroIds.length;

@@ -60,6 +60,7 @@ class org.flashNight.arki.item.ItemUtil{
     public static var multiTierDict:Object; // 进阶字典，检查物品是否存进多阶属性
     public static var itemSetDict:Object; // 套装 ID → 权威展示信息与成员列表
     public static var itemSetByItem:Object; // 物品名 → 套装投影
+    public static var itemSetConfigDict:Object; // 套装 ID → item_sets.xml 完整配置
 
     /**
      * 按 item_sets.xml 中心表补齐逐物品套装展示字段。
@@ -67,6 +68,7 @@ class org.flashNight.arki.item.ItemUtil{
      */
     public static function hydrateItemSetMetadata(combinedData):Void {
         var itemSetCatalog:Object = new Object();
+        var itemSetConfigs:Object = new Object();
         var rawItemSetEntries = combinedData.itemSets;
         var itemSetEntries:Array = new Array();
         if (rawItemSetEntries instanceof Array) {
@@ -85,6 +87,7 @@ class org.flashNight.arki.item.ItemUtil{
                 name:catalogEntry.name == undefined ? "" : String(catalogEntry.name),
                 order:catalogOrder
             };
+            itemSetConfigs[catalogId] = catalogEntry;
         }
         for (var itemIndex in combinedData) {
             if (itemIndex == "itemSets") continue;
@@ -101,6 +104,8 @@ class org.flashNight.arki.item.ItemUtil{
                 delete itemData.setOrder;
             }
         }
+        itemSetConfigDict = itemSetConfigs;
+        _root.物品套装配置索引 = itemSetConfigs;
     }
 
 

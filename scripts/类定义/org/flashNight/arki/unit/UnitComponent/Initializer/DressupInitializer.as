@@ -6,6 +6,7 @@ import org.flashNight.arki.unit.UnitUtil;
 import org.flashNight.arki.unit.UnitComponent.Initializer.SpeedDeriveInitializer;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.item.equipment.SubweaponDataUtil;
+import org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController;
 
 /**
  * DressupInitializer - 装备初始化器
@@ -627,13 +628,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         }
     }
 
-    public static function updateLifeCycles(__target:MovieClip):Void{
-        var target:MovieClip = __target;
-
-        if (!target.生命周期函数列表) {
-            target.生命周期函数列表 = [];
+    public static function teardownLifeCycles(target:MovieClip):Void{
+        if (!target || !target.生命周期函数列表) {
+            SetEffectController.clearController(target);
+            return;
         }
-
         for (var i:Number = target.生命周期函数列表.length - 1; i >= 0; --i) {
             var 卸载对象:Object = target.生命周期函数列表[i];
             if (卸载对象 && 卸载对象.动作) {
@@ -641,6 +640,17 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             }
         }
         target.生命周期函数列表.length = 0;
+        SetEffectController.clearController(target);
+    }
+
+    public static function updateLifeCycles(__target:MovieClip):Void{
+        var target:MovieClip = __target;
+
+        if (!target.生命周期函数列表) {
+            target.生命周期函数列表 = [];
+        }
+
+        SetEffectController.prepare(target);
 
         target.装载生命周期函数(target.头部装备数据.lifecycle, "头部装备");
         target.装载生命周期函数(target.上装装备数据.lifecycle, "上装装备");

@@ -80,6 +80,41 @@
         <id>sword_saint_armor</id>
         <name>剑圣装甲套装</name>
         <order>160</order>
+        <description>集齐五件后启动剑圣装甲协同系统。</description>
+        <effects>
+            <effect_0>
+                <id>proto_resistance_entry</id>
+                <threshold>5</threshold>
+                <activationGroup>sword_saint_full_set</activationGroup>
+                <requires><effectId>combat_suite</effectId></requires>
+                <kind>template</kind>
+                <template>resistance_entry</template>
+                <params>
+                    <attribute>原体</attribute>
+                    <calculation>add</calculation>
+                    <baseIfMissing>10</baseIfMissing>
+                    <value>75</value>
+                </params>
+                <description>集齐五件后呈现原体抗性；可被原体定向特攻破击。</description>
+            </effect_0>
+            <effect_1>
+                <id>combat_suite</id>
+                <threshold>5</threshold>
+                <activationGroup>sword_saint_full_set</activationGroup>
+                <kind>routine</kind>
+                <mode>member_components</mode>
+                <prepareRoutine>剑圣装甲套装准备</prepareRoutine>
+                <cycleRoutine>剑圣装甲套装预计算周期</cycleRoutine>
+                <components>
+                    <component_0><id>head_scan</id><slot>头部装备</slot></component_0>
+                    <component_1><id>chest_cannon</id><slot>上装装备</slot></component_1>
+                    <component_2><id>leg_sword_case</id><slot>下装装备</slot></component_2>
+                    <component_3><id>foot_skill_boost</id><slot>脚部装备</slot></component_3>
+                    <component_4><id>hand_wrist_blade</id><slot>手部装备</slot></component_4>
+                </components>
+                <description>启动战术扫描、腕刃、剑匣、铁血肩炮及战技强化。</description>
+            </effect_1>
+        </effects>
     </set>
     <set>
         <id>andy_standard</id>

@@ -49,6 +49,7 @@
 | 通信层 | `_root.帧计时器` | `scripts/通信/通信_fs_帧计时器.as` | TaskManager 全局 API 封装 + PerformanceScheduler |
 
 - **禁用原生 `setTimeout`/`setInterval`**：游戏逻辑与帧动画深度耦合，必须使用帧驱动计时器
+- **零间隔持久任务顺序契约**：同一 `TaskManager` 按任务本次进入 `zeroFrameTasks` 的顺序执行；持续留表的 `0→0` 更新不换位，分发外 `0→正→0` 按重新入队排尾。ID 快照在时间轮和 pending reschedule 之后的零间隔分发阶段入口收集：时间轮回调新建零任务本次 `updateFrame()` 执行，零任务回调新建 ID 下次执行。快照时已有 ID 在分发中重入不提供延后保证；生产者必须先于消费者入表
 - **审查文档**：`tools/TimerSystem_Review_Prompt_CN.md`
 
 ### 选用决策
@@ -120,4 +121,9 @@
 - **用途索引 + API 快查 + 新增 7 步流程**：`scripts/逻辑/装备函数/README.md`（就近 hub）
 - **编译真源**：`scripts/asLoaderManifest/frame37.as`（f37_N chunk，**非**旧 `装备函数列表.as`，后者已退役删除）；三方一致性门 `tools/validate-equip-fn-coverage.js`
 - ⚠ 与 `org.flashNight.arki.item.equipment`（class 化装备**数值计算**系统）是两套平行系统，勿混
+
+## 14. 套装效果系统（一期实现与实机复核中）
+- **设计与验收真源**：[套装系统设计与剑圣一期验收](../docs/套装系统-设计与剑圣一期验收-2026-07-14.md)
+- **运行边界**：每单位一个逻辑 `SetEffectController`；一期保留子装备自治 tick 和成员 `<lifecycle>` 完整配置，用 `setGate/effectId/componentId` 在通用 loader 解析前门控。中心 routine 保存必需组件 manifest、共享 context 和 placement 通道；placement 在引用重建后即时校正，预计算任务每帧各采样一次有效肢体的 target-local 基向量，胸甲/腿甲共享 `身体_引用`，手甲消费 `左下臂_引用`，组件 tick 逐帧消费缓存而不重复执行肢体坐标换算。五个 ref 由既有 loader 创建后登记到 effect record，preflight/commit/rollback 保证任一组件失败时整套不提交。头甲的低光夜视与常驻扫描/锁定相互独立。原体抗性表项是开启对应定向破击的负向暴露，不是普通 Buff；一期按 `baseIfMissing=10 + value=75` 聚合为 85，写入层不钳制
+- **接线点**：`updateLifeCycles()` 清理后先 `prepare`，再装载单件生命周期，最后由 `_root.主角函数.完成生命周期函数装载()` 执行 `finalize`；一期以仅在五件齐全时激活的剑圣装甲重构作为纵向验收
 

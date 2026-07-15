@@ -112,6 +112,7 @@ _root.__boot.f37_7 = function() {
     #include "../逻辑/装备函数/喷气背包.as"
 
     #include "../逻辑/装备函数/剑圣胸甲.as"
+    #include "../逻辑/装备函数/剑圣套装.as"
     #include "../逻辑/装备函数/剑圣头部装甲.as"
 };
 _root.__boot.f37_8 = function() {

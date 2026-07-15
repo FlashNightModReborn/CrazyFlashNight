@@ -101,6 +101,7 @@ data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一
 - 套装元数据单一权威为 `data/items/item_sets.xml`，由 `data/items/list.xml/<itemSets>` 声明入口。中心表每个 `<set>` 必须含唯一的 `<id>ascii_snake</id>`、唯一中文 `<name>` 与唯一整数 `<order>`；`order` 控制所有 Web / 库存投影的套装分组顺序。
 - 物品根节点只可选声明 `<setId>ascii_snake</setId>` 表达成员归属，不得重复写 `setName/setOrder`。运行时只信显式 `setId`，不得用名称、描述、`dressup` 或配方猜测归属；同槽变体也必须逐物品人工决定是否标注。当前经人工复核的高置信度基线为 66 套 / 327 件，升级版、同槽变体与缺槽套仅在人工确认后纳入；NPC 版及归属不确定成员仍不得自动纳入。
 - `ItemDataLoader` 并行加载物品分类文件与中心套装表；`ItemUtil.loadItemData()` 在构建 `_root.物品套装索引` 前按 `setId` 注入 `setName/setOrder`，因此 AS2 → Host → Web 的既有逐物品协议保持不变。Web 共享筛选模型把“套装”作为与“类别”并列的分支。库存类界面使用 `{branch:"set",setId:"..."}` 请求 AS2 对完整权威容器筛选，省略 `setId` 表示全部显式标注物品，不能用当前 Web 页做汇总。
+- **效果扩展**：`item_sets.xml` 以可选 `<effects>/<effect_N>` 承载声明式属性表项、routine 门控和必需组件 manifest；成员的 init/tier/bullet 等完整配置留在物品 `<lifecycle>/<attr_N>`，只用 `setGate/effectId/componentId` 引用中心效果，不复制参数树。没有 `effects` 的套装继续只作展示分组。一期 `SetEffectController` 已消费 `member_components` routine 与 `resistance_entry`：gated init 在 commit 内登记可回滚资源，`finalize` 统一排序 context/子周期并最后写入 `魔法抗性`。该字段存在会开启对应定向特攻破击，属于负向暴露而非普通 Buff；仅开放 `add`，字段缺失时使用 `baseIfMissing`，写入层不钳制。剑圣固定 `baseIfMissing=10/value=75`，无其他来源时最终为 85。字段闭集、事务接线与验收以 [套装系统设计](../docs/套装系统-设计与剑圣一期验收-2026-07-14.md) 为真源。
 - 改动后运行 `node tools/validate-item-sets.js` 与 `node tools/validate-npc-shops.js`；前者校验每个物品 `setId` 命中中心表、中心 ID/名称/排序唯一、仅装备可入套、每套至少两个成员且中心表无零成员套装，后者校验商品映射与自动分类 fallback。`launcher/build.ps1` Step 1h3 同样 fail-fast 执行两项门禁。
 
 ### 配置文件索引

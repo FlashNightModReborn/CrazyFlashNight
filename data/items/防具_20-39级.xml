@@ -85,6 +85,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>head_scan</componentId></setGate>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
           <initParam>
@@ -187,6 +188,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>head_scan</componentId></setGate>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
           <initParam>
@@ -248,7 +250,6 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -262,7 +263,6 @@
       <defence>155</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -276,7 +276,6 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -290,11 +289,11 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>head_scan</componentId></setGate>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
           <initParam>
@@ -356,7 +355,6 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -370,7 +368,6 @@
       <defence>155</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -384,7 +381,6 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -398,11 +394,11 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>chest_cannon</componentId></setGate>
         <init>
           <initRoutines>剑圣胸甲初始化</initRoutines>
           <initParam>
@@ -507,7 +503,6 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -521,7 +516,6 @@
       <defence>155</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -535,7 +529,6 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -549,11 +542,11 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>leg_sword_case</componentId></setGate>
         <init>
           <initRoutines>剑圣腿甲初始化</initRoutines>
           <initParam>
@@ -598,7 +591,6 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -614,7 +606,6 @@
       <defence>150</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -630,7 +621,6 @@
       <defence>175</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -646,11 +636,11 @@
       <defence>195</defence>
       <magicdefence>
         <蚀>12</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>hand_wrist_blade</componentId></setGate>
         <init>
           <initRoutines>剑圣手甲初始化</initRoutines>
           <initParam>
@@ -705,7 +695,6 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -719,7 +708,6 @@
       <defence>155</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -733,7 +721,6 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -747,11 +734,11 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
-        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
       <attr_0>
+        <setGate><effectId>combat_suite</effectId><componentId>foot_skill_boost</componentId></setGate>
         <init>
           <initRoutines>剑圣装甲鞋初始化</initRoutines>
           <initParam>
@@ -765,7 +752,7 @@
               <enableReflect>true</enableReflect>
             </tier_2>
             <tier_3>
-              <!-- 三阶：速度+12%，追踪+反弹，居合4段，落雷5段 -->
+              <!-- 三阶：速度+12%，追踪+反弹，居合3段，落雷4段 -->
               <speedMultiplier>1.12</speedMultiplier>
               <enableTracking>true</enableTracking>
               <enableReflect>true</enableReflect>
@@ -773,7 +760,7 @@
               <raidenCount>4</raidenCount>
             </tier_3>
             <tier_4>
-              <!-- 四阶：速度+15%，追踪+反弹，居合6段，落雷8段 -->
+              <!-- 四阶：速度+15%，追踪+反弹，居合5段，落雷7段 -->
               <speedMultiplier>1.15</speedMultiplier>
               <enableTracking>true</enableTracking>
               <enableReflect>true</enableReflect>

@@ -16,7 +16,7 @@ import org.flashNight.aven.Coordinator.*;
  *  2. 利用闭包捕获测试对象引用（self），确保回调函数中可以正确获取 currentFrame 等成员变量。
  *  3. 对循环中使用闭包问题通过辅助函数 createCallbackForIndex 进行处理。
  *  4. 包含对添加单次任务、循环任务、更新任务、生命周期任务、任务删除、任务延迟、
- *     零/负间隔任务、重复次数为 0 或负数任务、任务ID唯一性、混合测试以及并发任务等场景的测试。
+ *     零/负间隔任务、零间隔注册/更新/分发新增顺序契约、重复次数为 0 或负数任务、任务ID唯一性、混合测试以及并发任务等场景的测试。
  *
  * 使用方法：
  *  直接调用 TaskManagerTester.runAllTests() 即可运行所有测试用例，每个测试用例均在一个全新的测试环境中执行，
@@ -437,6 +437,159 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         );
         assert(executed, "Task with zero interval should execute immediately");
         assert(taskID == null, "Zero interval task should return null ID");
+    }
+
+    /**
+     * testZeroFrameLifecycleRegistrationOrderContract
+     * ---------------------------------------------------------------------------
+     * 验证同一 TaskManager、同一帧注册的零间隔生命周期任务按注册顺序执行。
+     * 套装预计算任务可据此先注册，随后装载的子装备周期消费同帧上下文。
+     */
+    public function testZeroFrameLifecycleRegistrationOrderContract():Void {
+        trace("Running testZeroFrameLifecycleRegistrationOrderContract...");
+
+        var owner:Object = {};
+        var executionOrder:Array = [];
+
+        this.taskManager.addLifecycleTask(owner, "order_first", function():Void {
+            executionOrder.push("first");
+        }, 0, []);
+        this.taskManager.addLifecycleTask(owner, "order_second", function():Void {
+            executionOrder.push("second");
+        }, 0, []);
+        this.taskManager.addLifecycleTask(owner, "order_third", function():Void {
+            executionOrder.push("third");
+        }, 0, []);
+
+        this.taskManager.updateFrame();
+        var firstFrameOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] frame1=" + firstFrameOrder);
+        assert(firstFrameOrder == "first,second,third",
+            "Zero-frame lifecycle tasks must execute in registration order, got " + firstFrameOrder);
+
+        executionOrder.length = 0;
+        this.taskManager.updateFrame();
+        var secondFrameOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] frame2=" + secondFrameOrder);
+        assert(secondFrameOrder == "first,second,third",
+            "Registration order must remain stable across frames, got " + secondFrameOrder);
+    }
+
+    /** 持续留在 zeroFrameTasks 的 0→0 更新只替换回调，不换位。 */
+    public function testZeroFrameUpdatePreservesRegistrationOrder():Void {
+        trace("Running testZeroFrameUpdatePreservesRegistrationOrder...");
+
+        var owner:Object = {};
+        var executionOrder:Array = [];
+
+        this.taskManager.addLifecycleTask(owner, "update_first", function():Void {
+            executionOrder.push("first");
+        }, 0, []);
+        var originalId:String = this.taskManager.addLifecycleTask(owner, "update_second", function():Void {
+            executionOrder.push("second_old");
+        }, 0, []);
+        this.taskManager.addLifecycleTask(owner, "update_third", function():Void {
+            executionOrder.push("third");
+        }, 0, []);
+
+        var updatedId:String = this.taskManager.addOrUpdateTask(owner, "update_second", function():Void {
+            executionOrder.push("second_updated");
+        }, 0, []);
+
+        assert(updatedId == originalId, "Updating an existing label must preserve its task ID");
+        this.taskManager.updateFrame();
+
+        var actualOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] updated=" + actualOrder);
+        assert(actualOrder == "first,second_updated,third",
+            "Updating an existing zero-frame task must preserve registration order, got " + actualOrder);
+    }
+
+    /** 零间隔分发入口快照完成后，零任务回调新建的 ID 下次 updateFrame 才执行。 */
+    public function testZeroFrameDispatchAdditionStartsNextFrame():Void {
+        trace("Running testZeroFrameDispatchAdditionStartsNextFrame...");
+
+        var self:TaskManagerTester = this;
+        var owner:Object = {};
+        var executionOrder:Array = [];
+        var lateRegistered:Boolean = false;
+
+        this.taskManager.addLifecycleTask(owner, "dispatch_producer", function():Void {
+            executionOrder.push("producer");
+            if (!lateRegistered) {
+                lateRegistered = true;
+                self.taskManager.addLifecycleTask(owner, "dispatch_late", function():Void {
+                    executionOrder.push("late");
+                }, 0, []);
+            }
+        }, 0, []);
+        this.taskManager.addLifecycleTask(owner, "dispatch_consumer", function():Void {
+            executionOrder.push("consumer");
+        }, 0, []);
+
+        this.taskManager.updateFrame();
+        var firstFrameOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] dispatchFrame1=" + firstFrameOrder);
+        assert(firstFrameOrder == "producer,consumer",
+            "Task registered during dispatch must not execute in the same frame, got " + firstFrameOrder);
+
+        executionOrder.length = 0;
+        this.taskManager.updateFrame();
+        var secondFrameOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] dispatchFrame2=" + secondFrameOrder);
+        assert(secondFrameOrder == "producer,consumer,late",
+            "Late task must join at the end on the next frame, got " + secondFrameOrder);
+    }
+
+    /** 时间轮阶段新建的零任务早于零分发入口快照，应在同次 updateFrame 执行。 */
+    public function testTimedDispatchAdditionJoinsCurrentZeroPhase():Void {
+        trace("Running testTimedDispatchAdditionJoinsCurrentZeroPhase...");
+
+        var self:TaskManagerTester = this;
+        var owner:Object = {};
+        var executionOrder:Array = [];
+        this.taskManager.addOrUpdateTask(owner, "timed_producer", function():Void {
+            executionOrder.push("timed");
+            self.taskManager.addLifecycleTask(owner, "timed_created_zero", function():Void {
+                executionOrder.push("zero");
+            }, 0, []);
+        }, 1, []);
+
+        this.taskManager.updateFrame();
+        var actualOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] timedCreatesZero=" + actualOrder);
+        assert(actualOrder == "timed,zero",
+            "Zero task created by a timed callback must join the current zero phase, got " + actualOrder);
+    }
+
+    /** 分发外离开零表后再进入，应按本次入表顺序排到尾部。 */
+    public function testZeroFrameLeaveAndReenterQueuesAtTail():Void {
+        trace("Running testZeroFrameLeaveAndReenterQueuesAtTail...");
+
+        var owner:Object = {};
+        var executionOrder:Array = [];
+        this.taskManager.addLifecycleTask(owner, "reentry_first", function():Void {
+            executionOrder.push("first");
+        }, 0, []);
+        this.taskManager.addLifecycleTask(owner, "reentry_second", function():Void {
+            executionOrder.push("second");
+        }, 0, []);
+        this.taskManager.addLifecycleTask(owner, "reentry_third", function():Void {
+            executionOrder.push("third");
+        }, 0, []);
+
+        this.taskManager.addOrUpdateTask(owner, "reentry_second", function():Void {
+            executionOrder.push("second_positive");
+        }, 1000, []);
+        this.taskManager.addOrUpdateTask(owner, "reentry_second", function():Void {
+            executionOrder.push("second");
+        }, 0, []);
+
+        this.taskManager.updateFrame();
+        var actualOrder:String = executionOrder.join(",");
+        trace("[TASK_ORDER_PROBE] reentry=" + actualOrder);
+        assert(actualOrder == "first,third,second",
+            "A zero task that leaves and re-enters must queue at the tail, got " + actualOrder);
     }
 
     /**
@@ -891,7 +1044,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         var coreTests:Array = [
             "testAddSingleTask", "testAddLoopTask", "testAddOrUpdateTask",
             "testAddLifecycleTask", "testRemoveTask", "testLocateTask",
-            "testDelayTask", "testZeroIntervalTask",
+            "testDelayTask", "testZeroIntervalTask", "testZeroFrameLifecycleRegistrationOrderContract",
+            "testZeroFrameUpdatePreservesRegistrationOrder", "testZeroFrameLeaveAndReenterQueuesAtTail",
+            "testTimedDispatchAdditionJoinsCurrentZeroPhase", "testZeroFrameDispatchAdditionStartsNextFrame",
             "testNegativeIntervalTask", "testZeroRepeatCount", "testNegativeRepeatCount",
             "testTaskIDUniqueness", "testMixedScenarios", "testConcurrentTasks",
             "testTaskIDCounterConsistency",
@@ -945,6 +1100,22 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
 
         // 输出分组汇总
         _printTestResultsGrouped(coreStats, coreTests.length, knownIssueTests.length);
+    }
+
+    /**
+     * 只运行零帧生命周期任务顺序契约，供 TestLoader 快速 smoke 使用。
+     */
+    public static function runOrderingContractTests():Void {
+        trace("=====================================================");
+        trace("【TaskManager 零帧任务顺序契约】");
+        trace("=====================================================");
+        _resetStats();
+        _safeRunTest("testZeroFrameLifecycleRegistrationOrderContract", new TaskManagerTester());
+        _safeRunTest("testZeroFrameUpdatePreservesRegistrationOrder", new TaskManagerTester());
+        _safeRunTest("testZeroFrameLeaveAndReenterQueuesAtTail", new TaskManagerTester());
+        _safeRunTest("testTimedDispatchAdditionJoinsCurrentZeroPhase", new TaskManagerTester());
+        _safeRunTest("testZeroFrameDispatchAdditionStartsNextFrame", new TaskManagerTester());
+        _printTestResults();
     }
 
     /**

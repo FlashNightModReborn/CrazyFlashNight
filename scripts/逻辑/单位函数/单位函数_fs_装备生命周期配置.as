@@ -40,8 +40,24 @@
             var skill = attributes.skill;    //兼容主动战技
             var bullet = attributes.bullet;  //自动配置子弹 
             var data = attributes.data;      //自动配置备用武器数据
+            var setGate = attributes.setGate;
+            var isGated:Boolean = setGate != undefined;
+            var setId:String = "";
+            var effectId:String = "";
+            var componentId:String = "";
 
-            var 标签名 = 装备名称 + "_" + 装备类型 +  "_" + cycle.cycleRoutines + each; // 构建标签名，用于周期性任务的唯一标识
+            if(isGated)
+            {
+                setId = String(this[装备类型 + "数据"].setId || "");
+                effectId = String(setGate.effectId || "");
+                componentId = String(setGate.componentId || "");
+                if(!org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.isGateActive(
+                    this, setId, effectId, 装备类型, componentId)) continue;
+            }
+
+            var 标签名 = isGated
+                ? "set:" + setId + ":" + effectId + ":" + 装备类型 + ":" + componentId
+                : 装备名称 + "_" + 装备类型 +  "_" + cycle.cycleRoutines + each; // 构建标签名，用于周期性任务的唯一标识
 
             var 反射对象 = {标签名:标签名,
                            初始化函数:init.initRoutines,
@@ -56,11 +72,20 @@
                            版本号:this.version,
                            自机:this}
 
+            if(isGated && !org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.bindRef(
+                this, 反射对象, setId, effectId, 装备类型, componentId)) continue;
+
             if(skill)
             {
                 if(战技种类 && !this.主动战技[战技种类] && !(装备种类 == "长枪" && this[装备类型 + "数据"].subweapon))
                 {
+                    var 旧战技:Object = this.主动战技[战技种类];
                     this.装载主动战技(skill,战技种类);
+                    if(isGated)
+                    {
+                        org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.registerSkillRestore(
+                            反射对象, this, 战技种类, 旧战技);
+                    }
 
                     if(是否为主角)
                     {
@@ -79,8 +104,10 @@
                     反射对象.子弹配置[b] = _root.子弹属性初始化(null, null, this);
                     var 子弹属性 = 反射对象.子弹配置[b];
                     var 子弹参数对象 = bullet[b];
-                    var 子弹威力 = 子弹参数对象.power
-                    var 威力百分比 = Number(子弹威力.split("%")[0]);
+                    var 子弹威力 = 子弹参数对象.power;
+                    if(子弹威力 == undefined || String(子弹威力) == "") 子弹威力 = 威力基数;
+                    var 子弹威力文本:String = String(子弹威力);
+                    var 威力百分比 = Number(子弹威力文本.split("%")[0]);
 
                     子弹属性.声音 = 子弹参数对象.sound != undefined ? 子弹参数对象.sound : "";
                     子弹属性.霰弹值 = 子弹参数对象.split != undefined ? 子弹参数对象.split : 1;
@@ -92,7 +119,8 @@
                     子弹属性.Z轴攻击范围 = 子弹参数对象.range != undefined ? 子弹参数对象.range : 300;
                     子弹属性.击倒率 = 子弹参数对象.impact != undefined ? 子弹参数对象.impact : 1;
                     子弹属性.水平击退速度 = 子弹参数对象.knockback != undefined ? 子弹参数对象.knockback : 0;
-                    子弹属性.子弹威力 = (子弹威力.indexOf("%")  === 子弹威力.length - 1 && 威力百分比 > 0) ? (威力百分比 / 100 * 威力基数) : 子弹威力 ? 子弹威力 : 威力基数;
+                    子弹属性.子弹威力 = (子弹威力文本.indexOf("%") === 子弹威力文本.length - 1 && 威力百分比 > 0)
+                        ? (威力百分比 / 100 * 威力基数) : Number(子弹威力);
                     // 伤害类型和魔法属性
                     if (子弹参数对象.damagetype != undefined) 子弹属性.伤害类型 = 子弹参数对象.damagetype;
                     // magictype: 支持显式设置为null/undefined（空字符串或"null"/"undefined"视为无属性）
@@ -111,18 +139,33 @@
                 反射对象.data = data;
             }
 
+            var initResult;
+            var initFunc:Function;
             if(init)
             {
-                var initFunc = _root.装备生命周期函数[init.initRoutines];
+                initFunc = _root.装备生命周期函数[init.initRoutines];
                 if(initFunc)
                 {
-                    initFunc(反射对象, init.initParam || {});// 额外传入标签名，用于模拟反射
+                    initResult = initFunc(反射对象, init.initParam || {});// 额外传入标签名，用于模拟反射
                 }
+            }
+
+            var cycleFunc:Function = cycle ? _root.装备生命周期函数[cycle.cycleRoutines] : null;
+            if(isGated)
+            {
+                if(!initFunc)
+                {
+                    org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.failRef(
+                        反射对象, "missing component init: " + componentId);
+                    continue;
+                }
+                org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.registerComponent(
+                    反射对象, String(initResult), cycleFunc);
+                continue;
             }
             
             if(cycle)
             {
-                var cycleFunc = _root.装备生命周期函数[cycle.cycleRoutines];
                 if(cycleFunc)
                 {
                     var 任务ID = _root.帧计时器.taskManager.addLifecycleTask(
@@ -130,7 +173,7 @@
                         标签名,
                         cycleFunc,
                         0,
-                        [反射对象, cycle.cycleParam || {}]
+                        [反射对象, 反射对象.生命周期参数 || {}]
                     );
                     反射对象.生命周期任务ID = 任务ID;
                     反射对象.标签名 = 标签名;  // [FIX v1.6] 保存标签名供移除时使用
@@ -259,7 +302,7 @@ _root.装备生命周期函数.获得身高修正比.toString = function(){retur
 
 _root.主角函数.完成生命周期函数装载 = function()
 {
-
+    org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.finalize(this);
 }; //用于套装检测
 
 _root.主角函数.完成生命周期函数装载.toString = function(){return "_root.主角函数.完成生命周期函数装载";}

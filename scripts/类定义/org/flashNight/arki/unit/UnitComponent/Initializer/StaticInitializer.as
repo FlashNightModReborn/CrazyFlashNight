@@ -36,6 +36,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 如果单位是重初始化，则就会播报UnitReInitialized事件
         target.dispatcher.publish("UnitReInitialized", target);
 
+        // 必须在旧 dispatcher / BuffManager 销毁前释放上一次装备生命周期与套装资源。
+        // gated 清理会捕获注册时 dispatcher；前移可避免旧清理覆盖本次属性/战技重建。
+        DressupInitializer.teardownLifeCycles(target);
+
         // 速度派生初始化（第一次尝试）：
         // 敌人模板在调用StaticInitializer之前已设置行走X速度，此时可以设置getter
         // 主角模板此时行走X速度还不存在，会直接return，由DressupInitializer后触发

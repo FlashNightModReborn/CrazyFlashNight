@@ -146,6 +146,7 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandleTest {
         test_破击_标志和emoji_非魔法属性();
         test_破击_零抗性值不被误判();
         test_破击_null属性默认能();
+        test_破击_剑圣原体85精确分量();
 
         // --- 边界 ---
         test_边界_防御力为零();
@@ -450,6 +451,17 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandleTest {
         // physPart = 100, magicPart = 100*0.5*(100-40)/100 = 30
         // total = 130
         assertFloatEq(130, t.损伤值, 0.01, "破击null属性: 默认'能', phys=100+bonus=30=130");
+    }
+
+    private static function test_破击_剑圣原体85精确分量():Void {
+        var b:Object = makeBullet("破击", 100, true, "原体");
+        var t:Object = makeTarget(0, 1, {原体:85});
+        var r:DamageResult = freshResult();
+        handler.handleBulletDamage(b, null, t, null, r);
+        // 原体是非元素定向标签：额外分量 = power * 0.5 * (100 - 85) / 100 = power * 0.075。
+        assertFloatEq(107.5, t.损伤值, 0.001,
+            "剑圣原体85: phys=100 + directed bonus=power*0.075=7.5");
+        assertEq("原体", r._efText, "剑圣原体破击: 展示定向标签");
     }
 
     // ==================== 边界条件 ====================

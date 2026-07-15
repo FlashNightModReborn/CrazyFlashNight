@@ -75,7 +75,7 @@
  * - "retracting": 收回中，每帧推进68-87帧，完成后进入冷却
  *
  * 进阶等级效果：
- * - 无进阶：不挂载肩炮，直接移除周期函数
+ * - 无进阶：不挂载肩炮，返回 ready_static
  * - 二阶：bullet_1 普通铁血飞弹（无击杀减CD）
  * - 三阶：bullet_2 追踪铁血飞弹 + 双系数击杀减CD
  * - 四阶：bullet_3 追踪铁血飞弹 + 魔法伤害 + 双系数击杀减CD
@@ -108,10 +108,12 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     var tier:String = equipItem && equipItem.value ? equipItem.value.tier : null;
     ref.tier = tier;
 
-    // 无进阶：不挂载肩炮，直接移除周期函数
+    // 无进阶：不挂载肩炮，以 ready_static 参与完整套装
     if (!tier) {
-        _root.装备生命周期函数.移除周期函数(ref);
-        return;
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.READY_STATIC;
+    }
+    if (tier != "二阶" && tier != "三阶" && tier != "四阶") {
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
     }
 
     ref.weaponAsset = param.weapon ? param.weapon : "武士铁血肩炮";
@@ -121,9 +123,16 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     var layer:MovieClip = target.底层背景;
 
     var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+    if (!weapon) return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    weapon._visible = false;
     weapon.stop(); // 停止自动播放，完全手动控制
     ref.weapon = weapon;
     ref.currentLayer = "底层背景";
+    if (!_root.装备生命周期函数.剑圣套装登记挂件(ref, target, ref.weaponName)) {
+        weapon.removeMovieClip();
+        ref.weapon = null;
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    }
 
     // 帧数配置（从param读取，带默认值）
     ref.readyFrame = param.readyFrame ? Number(param.readyFrame) : 14;
@@ -218,6 +227,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     } else {
         ref.bulletProps = ref.子弹配置.bullet_1;
     }
+    if (!ref.bulletProps) return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
     // 锁定发射者属性：肩炮作为独立装备，不继承当前武器模式的吸血/暴击/斩杀等
     ref.bulletProps.lockShooterAttributes = true;
 
@@ -230,22 +240,11 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     ref.pX = {x: 100, y: 0};
     ref.pY = {x: 0, y: 100};
 
-    target.dispatcher.subscribe("UnitReInitialized", function() {
-        // 玩家模板重新初始化时，清理残留weapon
-        var layer:MovieClip = target.底层背景;
-
-        if (layer[ref.weaponName]) {
-            layer[ref.weaponName].removeMovieClip();
-        }
-        if (target[ref.weaponName]) {
-            target[ref.weaponName].removeMovieClip();
-        }
-    }, target);
-
-    // 身体引用就位时同步渲染
-    DressupSubscriber.onPlacement(target, "身体_引用", function(unit) {
-        _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
-    }, target);
+    // 身体引用就位后，通过套装共享通道同步渲染。
+    if (!_root.装备生命周期函数.剑圣套装登记就位消费者(
+        ref, "身体_引用", _root.装备生命周期函数.剑圣胸甲渲染更新)) {
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // 【三阶及以上：双系数击杀减CD事件处理】
@@ -265,7 +264,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     // | 首领   | 4.55s   | 6.95s    |
     // ═══════════════════════════════════════════════════════════════════════
     if (tier == "三阶" || tier == "四阶") {
-        target.dispatcher.subscribe("enemyKilled", function(hitTarget:MovieClip, bullet:MovieClip) {
+        var enemyKilledHandler:Function = function(hitTarget:MovieClip, bullet:MovieClip) {
             var currentFrameCount:Number = _root.帧计时器.当前帧数;
 
             // 获取敌人精英等级：0=普通, 1=精英, 2=首领
@@ -298,10 +297,14 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
             // 调试信息（取消注释可查看效果）
             // var levelNames:Array = ["普通", "精英", "首领"];
             // _root.发布消息(levelNames[level] + " 连杀x" + ref.comboCount + " 减CD:" + (reduction / fps) + "秒");
-        }, target);
+        };
+        if (!_root.装备生命周期函数.剑圣套装登记事件(
+            ref, target.dispatcher, "enemyKilled", enemyKilledHandler, ref)) {
+            return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+        }
     }
 
-    target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
+    var weaponSkillHandler:Function = function(mode:String) {
         // 只有在待机状态才响应战技信号
         if (ref.state == "ready") {
             ref.state = "firing";
@@ -311,14 +314,20 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
             var weapon:MovieClip = ref.weapon;
             weapon.removeMovieClip();
             weapon = target.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+            weapon._visible = false;
             weapon.stop();
             weapon.gotoAndStop(ref.currentFrame);
             ref.weapon = weapon;
             ref.currentLayer = "target";
+            _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
         }
-    }, target);
+    };
+    if (!_root.装备生命周期函数.剑圣套装登记事件(
+        ref, target.dispatcher, "WeaponSkill", weaponSkillHandler, ref)) {
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    }
 
-    target.dispatcher.subscribe("铁血肩炮射击", function() {
+    var shoulderFireHandler:Function = function() {
         // 使用预解析的子弹配置，更新坐标
         var bp:Object = ref.bulletProps;
         var attackPoint:MovieClip = ref.weapon.攻击点;
@@ -338,7 +347,13 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         bp.子弹威力 = ((target.刀属性.power || 0) + target.内力) * ref.powerMultiplier;
 
         _root.子弹区域shoot传递(bp);
-    });
+    };
+    if (!_root.装备生命周期函数.剑圣套装登记事件(
+        ref, target.dispatcher, "铁血肩炮射击", shoulderFireHandler, ref)) {
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    }
+
+    return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.READY_CYCLE;
 };
 
 /**
@@ -350,9 +365,8 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
 _root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
     var weapon:MovieClip = ref.weapon;
     var target:MovieClip = ref.自机;
-    var cuirass:MovieClip = target.身体_引用;
 
-    if (!weapon || !cuirass)
+    if (!weapon || !weapon._parent)
         return;
 
     // 更新weapon显示帧
@@ -360,33 +374,15 @@ _root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
 
     // weapon 的实际容器（以 weapon._parent 为准，避免状态与容器不同步）
     var container:MovieClip = weapon._parent ? weapon._parent : (ref.state == "firing" ? target : target.底层背景);
-
-    // —— 位移：以 身体_引用 的原点作为挂点 ——
-    // 复用缓存的点对象，重置坐标值
-    var localPoint:Object = ref.localPoint;
-    localPoint.x = 0;
-    localPoint.y = 0;
-    cuirass.localToGlobal(localPoint);
-    container.globalToLocal(localPoint);
-    weapon._x = localPoint.x;
-    weapon._y = localPoint.y;
-
-    // —— 旋转/翻转：用坐标变换求真实朝向，兼容动作中身体引用被镜像 ——
-    // 取 身体_引用 的局部坐标系基向量，映射到 container 坐标系，得到旋转角与镜像符号
-    // 复用缓存的点对象，重置坐标值
+    // placement 事件已经把身体基向量缓存到 target-local；这里只转换到实际容器。
     var p0:Object = ref.p0;
     var pX:Object = ref.pX;
     var pY:Object = ref.pY;
-    p0.x = 0;   p0.y = 0;
-    pX.x = 100; pX.y = 0;
-    pY.x = 0;   pY.y = 100;
-
-    cuirass.localToGlobal(p0);
-    cuirass.localToGlobal(pX);
-    cuirass.localToGlobal(pY);
-    container.globalToLocal(p0);
-    container.globalToLocal(pX);
-    container.globalToLocal(pY);
+    if (!_root.装备生命周期函数.剑圣套装读取就位基向量(
+        ref, "身体_引用", container, p0, pX, pY)) return;
+    weapon._x = p0.x;
+    weapon._y = p0.y;
+    weapon._visible = true;
 
     var vxX:Number = pX.x - p0.x;
     var vxY:Number = pX.y - p0.y;
@@ -457,9 +453,11 @@ _root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object) {
                 // 切换回底层背景
                 weapon.removeMovieClip();
                 weapon = target.底层背景.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+                weapon._visible = false;
                 weapon.stop();
                 ref.weapon = weapon;
                 ref.currentLayer = "底层背景";
+                _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
             }
             break;
 
@@ -474,6 +472,6 @@ _root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object) {
             break;
     }
 
-    // 调用渲染更新
+    // 每帧消费共享身体基向量，跟随动作时间轴内部的连续运动。
     _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
 };

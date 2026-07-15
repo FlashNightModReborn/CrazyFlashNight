@@ -63,6 +63,7 @@ function loadItemMeta(projectRoot, fail) {
                 setId: childText(block, 'setId'),
                 setName: childText(block, 'setName'),
                 setOrder: childText(block, 'setOrder'),
+                raw: block,
                 actiontype: attributeText(attributes, 'actiontype') || childText(block, 'actiontype'),
                 weapontype: attributeText(attributes, 'weapontype') || childText(block, 'weapontype'),
                 source: rel
@@ -87,7 +88,8 @@ function loadItemSetMeta(projectRoot, fail) {
             id: childText(m[1], 'id'),
             name: childText(m[1], 'name'),
             order: childText(m[1], 'order'),
-            source: catalogFile
+            source: catalogFile,
+            raw: m[1]
         });
     }
     if (sets.length === 0) fail('data/items/' + catalogFile + ' has no <set> entries');

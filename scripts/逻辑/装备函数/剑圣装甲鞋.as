@@ -9,8 +9,8 @@
  * 进阶等级效果：
  * - 无进阶：无速度加成，无技能增强
  * - 二阶：行走速度 +10%，启动追踪+消弹反弹
- * - 三阶：行走速度 +12%，启动追踪+消弹反弹，居合段数4，落雷段数5
- * - 四阶：行走速度 +15%，启动追踪+消弹反弹，居合段数6，落雷段数8
+ * - 三阶：行走速度 +12%，启动追踪+消弹反弹，居合段数3，落雷段数4
+ * - 四阶：行走速度 +15%，启动追踪+消弹反弹，居合段数5，落雷段数7
  *
  * @param {Object} ref 生命周期反射对象
  * @param {Object} param 生命周期参数：
@@ -18,8 +18,8 @@
  *     - speedMultiplier: 速度倍率（二阶1.10，三阶1.12，四阶1.15）
  *     - enableTracking: 启动追踪（默认true）
  *     - enableReflect: 消弹反弹（默认true）
- *     - iaiCount: 居合段数（二阶无，三阶4，四阶6）
- *     - raidenCount: 落雷段数（二阶无，三阶5，四阶8）
+ *     - iaiCount: 居合段数（二阶无，三阶3，四阶5）
+ *     - raidenCount: 落雷段数（二阶无，三阶4，四阶7）
  */
 _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
@@ -29,10 +29,9 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
     var tier:String = equipItem && equipItem.value ? equipItem.value.tier : null;
     ref.tier = tier;
 
-    // 无进阶：无速度加成，移除周期函数
+    // 无进阶：无速度加成，以 ready_static 参与完整套装
     if (!tier) {
-        _root.装备生命周期函数.移除周期函数(ref);
-        return;
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.READY_STATIC;
     }
 
     // 进阶等级映射
@@ -48,12 +47,12 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
             tierNum = "4";
             break;
         default:
-            _root.装备生命周期函数.移除周期函数(ref);
-            return;
+            return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
     }
 
     // 从XML读取进阶配置
     var tierConfig:Object = param ? param["tier_" + tierNum] : null;
+    if (!tierConfig) return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
 
     // 默认速度倍率（如果XML未配置则使用默认值）
     // 空洞数组：索引2/3/4对应二阶/三阶/四阶
@@ -68,20 +67,20 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
     //
     // 进阶效果：
     // - 二阶：启动追踪+消弹反弹（基础增强）
-    // - 三阶：居合段数4，落雷段数5
-    // - 四阶：居合段数6，落雷段数8
+    // - 三阶：居合段数3，落雷段数4
+    // - 四阶：居合段数5，落雷段数7
     // ═══════════════════════════════════════════════════════════════════════
 
     // 默认技能增强配置
     var defaultIaiCount:Array = [];
     defaultIaiCount[2] = 0;  // 二阶不改变居合段数
-    defaultIaiCount[3] = 4;  // 三阶居合段数4
-    defaultIaiCount[4] = 6;  // 四阶居合段数6
+    defaultIaiCount[3] = 3;  // 三阶居合段数3
+    defaultIaiCount[4] = 5;  // 四阶居合段数5
 
     var defaultRaidenCount:Array = [];
     defaultRaidenCount[2] = 0;  // 二阶不改变落雷段数
-    defaultRaidenCount[3] = 5;  // 三阶落雷段数5
-    defaultRaidenCount[4] = 8;  // 四阶落雷段数8
+    defaultRaidenCount[3] = 4;  // 三阶落雷段数4
+    defaultRaidenCount[4] = 7;  // 四阶落雷段数7
 
     // 读取配置或使用默认值
     var enableTracking:Boolean = (tierConfig && tierConfig.enableTracking != undefined) ? (tierConfig.enableTracking == "true" || tierConfig.enableTracking == true) : true;
@@ -95,13 +94,13 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
     ref.iaiCount = iaiCount;
     ref.raidenCount = raidenCount;
 
-    // 订阅单位初始化完成事件，应用buff
-    target.dispatcher.subscribe("UnitInitialized", function() {
-        _root.装备生命周期函数.剑圣装甲鞋应用Buff(ref, speedMultiplier);
-    }, target);
+    // BuffManager 已在 Dressup 前 reset；初始化型 Buff 必须在 commit 内创建。
+    if (!_root.装备生命周期函数.剑圣装甲鞋应用Buff(ref, speedMultiplier)) {
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    }
 
     // 订阅战技事件，增强一文字落雷技能
-    target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
+    var weaponSkillHandler:Function = function(mode:String) {
         var target:MovieClip = ref.自机;
         if (target.技能名 == "一文字落雷") {
             var man:MovieClip = target.man;
@@ -125,12 +124,14 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
             // 调试信息（取消注释可查看效果）
             // _root.发布消息("一文字落雷增强: 追踪=" + ref.enableTracking + " 反弹=" + ref.enableReflect + " 居合=" + ref.iaiCount + " 落雷=" + ref.raidenCount);
         }
-    }, target);
-
-    // 移除周期函数，不需要每帧更新
-    _root.装备生命周期函数.移除周期函数(ref);
+    };
+    if (!_root.装备生命周期函数.剑圣套装登记事件(
+        ref, target.dispatcher, "WeaponSkill", weaponSkillHandler, ref)) {
+        return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.FAILURE;
+    }
 
     // _root.发布消息("剑圣装甲鞋系统启动 - " + tier + " 速度倍率=" + speedMultiplier);
+    return org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.READY_STATIC;
 };
 
 /**
@@ -140,10 +141,10 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
  * @param {Object} ref 生命周期反射对象
  * @param {Number} speedMultiplier 速度倍率
  */
-_root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, speedMultiplier:Number):Void {
+_root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, speedMultiplier:Number):Boolean {
     var target:MovieClip = ref.自机;
     if (!target.buffManager)
-        return;
+        return false;
 
     // 构建MetaBuff：行走X速度乘算（使用保守语义，多个速度buff只取最大值）
     var childBuffs:Array = [new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, speedMultiplier)];
@@ -153,7 +154,8 @@ _root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, 
     var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
     // 使用固定ID添加buff，重复调用会替换而非叠加
-    target.buffManager.addBuff(metaBuff, "剑圣装甲鞋速度增强");
+    var buffId:String = target.buffManager.addBuff(metaBuff, "剑圣装甲鞋速度增强");
+    return _root.装备生命周期函数.剑圣套装登记Buff(ref, target.buffManager, buffId);
 };
 
 /**
