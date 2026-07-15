@@ -693,6 +693,8 @@ powershell -File build.ps1
 
 > build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
 
+> **运行时产物必须按一次构建的原子集合处理**：根目录 `CRAZYFLASHER7MercenaryEmpire.exe`、`runtime/CRAZYFLASHER7MercenaryEmpire.Core.*`、`runtime/miniaudio.dll`、`runtime/sol_parser.dll` 与 `runtime/cf7-runtime-manifest.tsv` 必须来自同一次 `launcher/build.ps1`。构建后不得单独恢复其中某个二进制或只保留 manifest/Core；否则 bootstrap 会在进入地图、Web 或 AS2 前以 `CF7-BOOT-FILE-INTEGRITY` 拒绝启动。发生任何单文件恢复、覆盖安装或冲突取舍后，重新完整运行 `launcher/build.ps1`，并以 `logs/bootstrap.log` 的 `[manifest] verification OK files=21` 作为真启动判据。
+
 ### 产物（部署到项目根目录）
 
 net10 FDD 模式 + bootstrap + runtime/ 子目录隐藏：
