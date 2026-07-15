@@ -80,6 +80,9 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
      * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // 与击溃共用真实命中门：闪避或联弹全段 MISS 不得触发处决。
+        if (!DamageResult.hasActualHit(result)) return;
+
         var executeValue:Number = bullet.斩杀;
         if (!(executeValue > 0)) {
             return;

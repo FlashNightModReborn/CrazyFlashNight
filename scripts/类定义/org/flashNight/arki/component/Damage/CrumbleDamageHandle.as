@@ -61,6 +61,10 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
      * @param result 伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // DodgeState / MultiShot 均先于本处理器执行，此时 DamageResult 已能区分
+        // 普通 MISS 与联弹全段 MISS。无真实命中不得扣血量上限或追加伤害。
+        if (!DamageResult.hasActualHit(result)) return;
+
         // 护盾强度检查：子弹威力必须超过护盾强度才能触发击溃
         var shield:IShield = target.shield;
         if (shield && bullet.子弹威力 <= shield.getStrength()) {

@@ -186,6 +186,22 @@ class org.flashNight.arki.component.Damage.DamageResult {
     }
 
     /**
+     * 判定本次伤害结果是否至少包含一次真实命中。
+     * 普通闪避通过 dodgeStatus 标记；联弹分段模型必须额外排除全段 MISS/直感。
+     * 伤害处理器与命中后行为共用本入口，避免“特殊效果已结算但层数未推进”。
+     */
+    public static function hasActualHit(result:Object):Boolean {
+        if (!result || result === DamageResult.NULL) return false;
+        if (result.dodgeStatus == "MISS" || result.dodgeStatus == "躲闪") return false;
+        if (result.scatterModelEnabled === true &&
+            result.actualScatterUsed > 0 &&
+            !(result.scatterMissCount < result.actualScatterUsed)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 获取可复用的 IMPACT 实例（用于计算复用，避免频繁创建对象）
      */
     public static function getIMPACT():DamageResult {
