@@ -39,12 +39,12 @@ const BOUNDS_MARGIN_X = 12;
 const BOUNDS_MARGIN_Y = 16;
 const PAGE_GAIN_THRESHOLD = 0.12;
 const FILTER_GAIN_THRESHOLD = 0.1;
-// stage max scale 与 map-panel.js syncStageLayout 的 maxStageScale 必须保持一致;
-// 改动时两处同步, 否则离线算分与运行时实际 fit 会偏差。
-const STAGE_MAX_SCALE = 1.3;
+// 产品级舞台异常兜底；运行时还会叠加素材清晰度与 Canvas backing-pixel 预算。
+// 与 map-scale-policy.js PRODUCT_STAGE_SCALE_MAX 保持一致。
+const STAGE_MAX_SCALE = 1.75;
 // composite "视觉放大倍数" = stageScale * fitScale / sourceRatio (PNG px / logical rect)
 // 超过此阈值说明 PNG 被拉伸绘制到屏幕, 有明显 pixelated 风险。
-// 此阈值既用于告警, 也用于在 selectFilterOverride 里 clip candidate maxScale, 防止生成超采 preset。
+// 此阈值用于告警并写入生成态 capability；运行时由 MapScalePolicy 联合舞台缩放动态限幅。
 //
 // 1.75 是配合 map-panel.js 中 scene-node unsharp mask 后处理 (amount=0.45) 的视觉容忍阈;
 // 锐化把"可接受放大"从无后处理的 ~1.5 抬到 ~1.75。改这个常量必须重跑 --write 重新生成
@@ -453,30 +453,10 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
     const baseline = evaluateFilter(page, bounds, basePreset);
     const baselineCoverage = averageCoverage(baseline.stageMetrics);
 
-    // PNG source 能支撑的最大 fitScale: visualCap * sourceRatio / STAGE_MAX_SCALE
-    // 保证在最大 stage (roomy/1.3×) 下 composite 视觉放大 <= COMPOSITE_VISUAL_SCALE_CAP
+    // 素材倍率写入 capability manifest；运行时 MapScalePolicy 优先放大外层舞台，
+    // 再按 stageScale 动态裁切 content-fit。离线 tuner 只负责内容覆盖率，不再把最坏
+    // 大视口假设固化进 preset，否则低清单块会让紧凑视口也失去本可安全使用的 fit。
     const safeRatio = Number(sourceRatio) > 0 ? Number(sourceRatio) : DEFAULT_SOURCE_RATIO;
-    const sourceAwareCap = (COMPOSITE_VISUAL_SCALE_CAP * safeRatio) / STAGE_MAX_SCALE;
-    // fitScale=1 是下限 (Math.max(1, ...) clamp), 所以 clipCap 至少 1.0;
-    // 但 maxScale 设成 < 1.0 对运行时无意义 (fit 不会小于 1)
-    const clipCap = Math.max(1.0, sourceAwareCap);
-
-    // === 向下强制 clip: basePreset 超出 source 能力时, 强制降级 maxScale ===
-    // 即使没有 cap-bound stage, 也必须生成 override 压住 maxScale, 否则运行时会撞上限
-    if (basePreset.maxScale > clipCap + 0.005) {
-        const clippedPreset = mergePreset(basePreset, { maxScale: round(clipCap) });
-        const clippedMetrics = evaluateFilter(page, bounds, clippedPreset);
-        return {
-            changed: pickChangedKeys(clippedPreset, basePreset),
-            baselineMetrics: baseline,
-            candidateMetrics: clippedMetrics,
-            baselineCoverage: baselineCoverage,
-            candidateCoverage: averageCoverage(clippedMetrics.stageMetrics),
-            sourceRatio: safeRatio,
-            sourceAwareCap: round(sourceAwareCap),
-            reason: 'source_cap_clip'
-        };
-    }
 
     const capBoundCount = countCapBoundStages(baseline.stageMetrics);
     if (!capBoundCount) {
@@ -491,7 +471,6 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
 
     for (let i = 0; i < FILTER_MAX_SCALE_CANDIDATES.length; i += 1) {
         const rawCandidateMax = FILTER_MAX_SCALE_CANDIDATES[i];
-        if (rawCandidateMax > clipCap) continue; // 超出 source 能力, 丢弃
         const candidatePreset = mergePreset(basePreset, {
             maxScale: rawCandidateMax
         });
@@ -519,7 +498,6 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
         baselineCoverage: baselineCoverage,
         candidateCoverage: averageCoverage(best.metrics.stageMetrics),
         sourceRatio: safeRatio,
-        sourceAwareCap: round(sourceAwareCap),
         reason: 'upward_override'
     };
 }
@@ -527,6 +505,7 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
 function buildTuningReport(mapData, avatarSource) {
     const pageOrder = mapData.getPageOrder();
     const presets = {};
+    const capabilities = {};
     const report = {
         stagePresets: STAGE_PRESETS.map(function(stage) {
             return {
@@ -550,6 +529,7 @@ function buildTuningReport(mapData, avatarSource) {
             pageDefault: {},
             filters: []
         };
+        capabilities[pageId] = {};
 
         for (let j = 0; j < filters.length; j += 1) {
             boundsByFilter[filters[j].id] = buildFilterBounds(mapData, avatarSource, pageId, filters[j].id);
@@ -566,6 +546,10 @@ function buildTuningReport(mapData, avatarSource) {
         for (let j = 0; j < filters.length; j += 1) {
             const filterId = filters[j].id;
             const sourceCeiling = computeFilterSourceCeiling(mapData, pageId, filterId);
+            capabilities[pageId][filterId] = {
+                sourceRatio: sourceCeiling.sourceRatio,
+                worstAsset: sourceCeiling.worstAsset ? sourceCeiling.worstAsset.assetUrl : ''
+            };
             const filterOverride = selectFilterOverride(page, filterId, boundsByFilter[filterId], pagePreset, sourceCeiling.sourceRatio);
             const tunedEvaluation = filterOverride
                 ? filterOverride.candidateMetrics
@@ -597,12 +581,21 @@ function buildTuningReport(mapData, avatarSource) {
             }
         }
 
+        let pageWorst = null;
+        const capabilityIds = Object.keys(capabilities[pageId]);
+        for (let j = 0; j < capabilityIds.length; j += 1) {
+            const entry = capabilities[pageId][capabilityIds[j]];
+            if (!pageWorst || entry.sourceRatio < pageWorst.sourceRatio) pageWorst = entry;
+        }
+        capabilities[pageId]['*'] = pageWorst || { sourceRatio: DEFAULT_SOURCE_RATIO, worstAsset: '' };
+
         report.pages.push(pageEntry);
     }
 
     return {
         defaults: mergePreset(DEFAULT_PRESET),
         presets: presets,
+        capabilities: capabilities,
         report: report
     };
 }
@@ -615,6 +608,7 @@ function buildRuntimeFile(runtimePresets) {
         '',
         '    var _defaults = ' + JSON.stringify(runtimePresets.defaults, null, 4).replace(/\n/g, '\n    ') + ';',
         '    var _presets = ' + JSON.stringify(runtimePresets.presets, null, 4).replace(/\n/g, '\n    ') + ';',
+        '    var _capabilities = ' + JSON.stringify(runtimePresets.capabilities, null, 4).replace(/\n/g, '\n    ') + ';',
         '',
         '    function copy(src) {',
         '        return JSON.parse(JSON.stringify(src));',
@@ -650,12 +644,20 @@ function buildRuntimeFile(runtimePresets) {
         '    function getManifest() {',
         '        return {',
         '            defaults: copy(_defaults),',
-        '            presets: copy(_presets)',
+        '            presets: copy(_presets),',
+        '            capabilities: copy(_capabilities)',
         '        };',
+        '    }',
+        '',
+        '    function resolveCapability(pageId, filterId) {',
+        '        var pageCapabilities = _capabilities[pageId] || null;',
+        '        var capability = pageCapabilities ? (pageCapabilities[filterId] || pageCapabilities["*"]) : null;',
+        '        return capability ? copy(capability) : { sourceRatio: 1, worstAsset: "" };',
         '    }',
         '',
         '    return {',
         '        resolve: resolve,',
+        '        resolveCapability: resolveCapability,',
         '        getManifest: getManifest',
         '    };',
         '})();',
@@ -679,7 +681,9 @@ function collectPixelWarnings(report) {
                 const entry = stageMetrics[k];
                 const m = entry.metrics;
                 if (!m) continue;
-                const total = m.stageScale * m.fitScale;
+                const runtimeFitCap = Math.max(1, (COMPOSITE_VISUAL_SCALE_CAP * sourceRatio) / m.stageScale);
+                const effectiveFitScale = Math.min(m.fitScale, runtimeFitCap);
+                const total = m.stageScale * effectiveFitScale;
                 const visualScale = total / sourceRatio;
                 if (visualScale > COMPOSITE_VISUAL_SCALE_CAP) {
                     warnings.push({
@@ -687,7 +691,8 @@ function collectPixelWarnings(report) {
                         filterId: filter.filterId,
                         stageId: entry.stageId,
                         stageScale: m.stageScale,
-                        fitScale: m.fitScale,
+                        fitScale: effectiveFitScale,
+                        requestedFitScale: m.fitScale,
                         totalScale: round(total),
                         sourceRatio: round(sourceRatio),
                         visualScale: round(visualScale),

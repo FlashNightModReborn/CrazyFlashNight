@@ -606,6 +606,10 @@ var MapPanelHarnessQA = (function() {
                             return fullscreened && fullscreened.activePageId === 'base' && !fullscreened.compactMode && fullscreened.stageScale > baselineCompactScale ? fullscreened : null;
                         }, 1500, 'grow to fullscreen layout').then(function(fullscreened) {
                             api.assert(fullscreened.contentFitScale >= 1.02, 'fullscreen layout should restore roomy content fit');
+                            api.assert(fullscreened.stageScale > 1.3, 'fullscreen layout should no longer stop at legacy 1.3 cap');
+                            api.assert(!!fullscreened.stageScalePolicy, 'fullscreen layout should expose scale policy diagnostics');
+                            api.assert(fullscreened.stageScalePolicy.estimatedStaticPixels <= fullscreened.stageScalePolicy.staticPixelBudget,
+                                'fullscreen scale should stay inside static canvas pixel budget');
                             host.setViewport('1024x576');
                             return api.waitFor(function() {
                                 var downshifted = currentState();
@@ -2307,6 +2311,55 @@ var MapPanelHarnessQA = (function() {
                             });
                         });
                     });
+                }
+            },
+            {
+                id: 'map-ui33',
+                title: 'dynamic scale policy combines viewport, asset clarity and canvas pixel budgets',
+                run: function() {
+                    api.assert(typeof MapScalePolicy !== 'undefined' && !!MapScalePolicy.resolve, 'MapScalePolicy should be loaded');
+                    var roomy = MapScalePolicy.resolve({
+                        pageWidth: 1031,
+                        pageHeight: 608,
+                        availableWidth: 1900,
+                        availableHeight: 1100,
+                        dpr: 1.5,
+                        sourceRatio: 2,
+                        fitMaxScale: 1.36
+                    });
+                    var assetBound = MapScalePolicy.resolve({
+                        pageWidth: 1031,
+                        pageHeight: 608,
+                        availableWidth: 2400,
+                        availableHeight: 1400,
+                        dpr: 1,
+                        sourceRatio: 0.8,
+                        fitMaxScale: 1.2
+                    });
+                    var canvasBound = MapScalePolicy.resolve({
+                        pageWidth: 1031,
+                        pageHeight: 608,
+                        availableWidth: 2400,
+                        availableHeight: 1400,
+                        dpr: 3,
+                        sourceRatio: 4,
+                        fitMaxScale: 1,
+                        staticPixelBudget: 6000000
+                    });
+                    api.assert(roomy.stageScale > 1.3 && roomy.stageScale <= 1.75, 'roomy high-resolution asset should exceed legacy cap');
+                    api.assertEqual(assetBound.limiter, 'asset', 'low-resolution asset should be clarity-bound');
+                    api.assertEqual(canvasBound.limiter, 'canvas', 'high-DPR stage should be canvas-budget-bound');
+                    api.assert(canvasBound.estimatedStaticPixels <= canvasBound.staticPixelBudget + 2,
+                        'canvas-bound estimate should not exceed budget');
+                    var schoolCapability = MapFitPresets.resolveCapability('school', 'outside');
+                    var defenseCapability = MapFitPresets.resolveCapability('defense', 'all');
+                    api.assert(schoolCapability.sourceRatio >= 1.6,
+                        'school 2x export should provide at least 1.6x effective source ratio');
+                    api.assert(defenseCapability.sourceRatio === 1 && defenseCapability.worstAsset.indexOf('subway') >= 0,
+                        'source-only defense subway asset should remain an explicit runtime limiter');
+                    return 'roomy=' + roomy.stageScale.toFixed(3) +
+                        ', asset=' + assetBound.stageScale.toFixed(3) +
+                        ', canvas=' + canvasBound.stageScale.toFixed(3);
                 }
             }
         ];

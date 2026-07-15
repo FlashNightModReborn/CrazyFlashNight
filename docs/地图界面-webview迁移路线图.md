@@ -1,7 +1,7 @@
 # 地图界面 WebView 迁移路线图
 
 **文档角色**：地图界面迁移 canonical doc。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `e5e8f43b80`（2026-07-15）。
 
 ## 1. 结论
 
@@ -375,6 +375,26 @@ Phase 1 的实现细化、协议草案、文件落点与验收清单统一看：
 阶段结论：
 
 - Phase 7 视为已完成；当前地图迁移路线的“替代 / parity / 默认切换 / preview / 轻量构建器”已闭环，后续演进进入持续优化与作者工作流细化，而不再属于首轮迁移必经阶段
+
+### 7.9 持续优化：动态缩放与选择性高分辨率资产
+
+2026-07-15 起，地图仍以 `1031×608` 作为逻辑坐标和热点真相源，但运行态不再使用固定 `1.3` 舞台缩放上限。`launcher/web/modules/map-scale-policy.js` 统一联合以下约束求最终舞台比例：
+
+- viewport 可用宽高
+- 当前 page/filter composite 的有效 `sourceRatio`
+- `devicePixelRatio` 与 Canvas backing-pixel 预算（常规 1000 万像素，低特效 600 万像素）
+- 产品异常上限 `1.75`
+
+`tools/tune-map-filter-fit.js --write` 会扫描 composite PNG 尺寸，把每个 page/filter 的最差 `sourceRatio` 与资产路径写入生成态 `map-fit-presets.js` capability manifest。运行时先扩大舞台利用 viewport，再动态收敛二次 content-fit，避免固定阈值同时造成大屏浪费与低清素材过度放大。
+
+资产侧采用选择性重导，不重建逻辑坐标：`faction`、`defense`、`school` 中具有冻结 Flash 导出源的 composite 已按 FFDec `-zoom 2` 重导，`base` 现有采样率充足而保持不变。重导入口为：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/export-map-composite-assets.ps1 -Page faction -Zoom 2
+node tools/tune-map-filter-fit.js --write
+```
+
+`faction/fallen-entrance.png` 与 `defense/subway.png` 没有对应冻结导出源，不做伪 2× 插值；它们会作为 capability 的明确瓶颈触发运行时 content-fit 限幅。缩放策略、Canvas 预算和选择性资产能力由 browser harness `map-ui33` 固定回归。
 
 ## 8. 实施顺序与依赖
 

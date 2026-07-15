@@ -1,5 +1,7 @@
 ﻿param(
-    [string]$Page = 'all'
+    [string]$Page = 'all',
+    [ValidateRange(1, 4)]
+    [double]$Zoom = 1
 )
 
 $ErrorActionPreference = 'Stop'
@@ -101,8 +103,8 @@ if (Test-Path -LiteralPath $tempExportDir) {
     Remove-Item -LiteralPath $tempExportDir -Recurse -Force
 }
 
-Write-Host ("[map-composite] exporting sprite ids: {0}" -f $selectIdArg)
-& $ffdecCli -format sprite:png -selectid $selectIdArg -export sprite $tempExportDir $sourceSwf
+Write-Host ("[map-composite] exporting sprite ids: {0} zoom={1}" -f $selectIdArg, $Zoom)
+& $ffdecCli -zoom $Zoom -format sprite:png -selectid $selectIdArg -export sprite $tempExportDir $sourceSwf
 if ($LASTEXITCODE -ne 0) {
     throw "FFDec export failed with exit code $LASTEXITCODE"
 }

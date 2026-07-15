@@ -65,7 +65,7 @@
 
 #### B1. map（地图）⚠️ 最高优先级
 - **当前布局**: 弹性 flex row，左侧 `.map-stage-shell`（`max-width:1380px`）+ 右侧 `.map-rail-shell`
-- **缩放机制**: 无全局固定比例。`syncStageLayout()` 按 activePage 尺寸和可用空间计算 `_stageScale = Math.min(widthScale, heightScale, STAGE_MAX_SCALE=1.3)`，仅作用于 stage 内部 canvas/DOM 层
+- **缩放机制**（2026-07-15 更新）: 无全局固定比例。`syncStageLayout()` 由 `MapScalePolicy` 联合 activePage 尺寸、可用空间、素材 source ratio、DPR 与 Canvas backing-pixel 预算计算 `_stageScale`（产品异常上限 1.75），仅作用于 stage 内部 canvas/DOM 层
 - **割裂感来源**:
   1. `max-width:1380px` 在大视口（如 1920×1080）下 stage 仅占宽度 72%，两侧留白
   2. 右侧 rail 固定逻辑宽度，不会随视口等比缩放

@@ -1,12 +1,6 @@
 var MapPanel = (function() {
     'use strict';
 
-    // Stage 最大 scale · 单一真相源
-    //   - map-panel.js syncStageLayout 的一级缩放上限
-    //   - tools/tune-map-filter-fit.js STAGE_MAX_SCALE 必须同步 (离线 fit 算分才能对齐)
-    //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
-    var STAGE_MAX_SCALE = 1.3;
-
     var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl, _coordinateReadoutEl;
     var _activePage = null;
@@ -44,6 +38,7 @@ var MapPanel = (function() {
     var _closing = false;
     var _session = 0;
     var _stageScale = 1;
+    var _stageScalePolicy = null;
     var _contentFitScale = 1;
     var _contentFitOffsetX = 0;
     var _contentFitOffsetY = 0;
@@ -328,6 +323,7 @@ var MapPanel = (function() {
         _busyLookup = {};
         _debugTelemetryEnabled = false;
         _stageScale = 1;
+        _stageScalePolicy = null;
         resetCanvasRenderCache();
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
@@ -2531,6 +2527,10 @@ var MapPanel = (function() {
 
         var activeFilter = getActiveFilter(_activePage);
         var fitPreset = resolveContentFitPreset(_activePage.id, activeFilter ? activeFilter.id : '');
+        var policyFitMax = _stageScalePolicy && isFinite(_stageScalePolicy.contentFitMaxScale)
+            ? _stageScalePolicy.contentFitMaxScale
+            : fitPreset.maxScale;
+        var effectiveFitMax = Math.min(fitPreset.maxScale, policyFitMax);
         var stageRect = _stageEl.getBoundingClientRect();
         var stageWidth = Math.max(0, _stageEl.clientWidth || stageRect.width);
         var stageHeight = Math.max(0, _stageEl.clientHeight || stageRect.height);
@@ -2571,7 +2571,7 @@ var MapPanel = (function() {
             Math.min(
                 (stageWidth - (padX * 2)) / bounds.w,
                 (stageHeight - (padY * 2)) / bounds.h,
-                fitPreset.maxScale
+                effectiveFitMax
             )
         );
 
@@ -2594,7 +2594,7 @@ var MapPanel = (function() {
             padY: padY,
             padXRate: fitPreset.padXRate,
             padYRate: fitPreset.padYRate,
-            maxScale: fitPreset.maxScale,
+            maxScale: effectiveFitMax,
             biasX: fitPreset.biasX,
             biasY: fitPreset.biasY
         });
@@ -2621,6 +2621,7 @@ var MapPanel = (function() {
             activeFilterId: activeFilter ? activeFilter.id : null,
             currentHotspotId: _currentHotspotId,
             stageScale: roundLayoutValue(_stageScale),
+            stageScalePolicy: _stageScalePolicy,
             contentFitScale: roundLayoutValue(_contentFitScale),
             contentFitOffsetX: roundLayoutValue(_contentFitOffsetX),
             contentFitOffsetY: roundLayoutValue(_contentFitOffsetY),
@@ -2756,12 +2757,28 @@ var MapPanel = (function() {
         var bodyAvailableHeight = Math.max(0, (_bodyEl.clientHeight || 0) - bodyPaddingTop - bodyPaddingBottom);
         var availableWidth = Math.max(320, Math.floor(_stageShellEl.clientWidth || shellRect.width));
         var availableHeight = Math.max(220, Math.floor(Math.max(_stageShellEl.clientHeight || 0, shellRect.height || 0, bodyAvailableHeight)));
-        var widthScale = availableWidth / _activePage.width;
-        var heightScale = availableHeight / _activePage.height;
-        _stageScale = Math.min(widthScale, heightScale, STAGE_MAX_SCALE);
-        if (!isFinite(_stageScale) || _stageScale <= 0) {
-            _stageScale = 1;
-        }
+        var activeFilter = getActiveFilter(_activePage);
+        var fitPreset = resolveContentFitPreset(_activePage.id, activeFilter ? activeFilter.id : '');
+        var capability = (typeof MapFitPresets !== 'undefined' && MapFitPresets && typeof MapFitPresets.resolveCapability === 'function')
+            ? MapFitPresets.resolveCapability(_activePage.id, activeFilter ? activeFilter.id : '')
+            : null;
+        _stageScalePolicy = (typeof MapScalePolicy !== 'undefined' && MapScalePolicy && typeof MapScalePolicy.resolve === 'function')
+            ? MapScalePolicy.resolve({
+                pageWidth: _activePage.width,
+                pageHeight: _activePage.height,
+                availableWidth: availableWidth,
+                availableHeight: availableHeight,
+                dpr: (typeof window !== 'undefined' && window.devicePixelRatio) ? window.devicePixelRatio : 1,
+                lowEffects: isLowEffectsMode(),
+                sourceRatio: capability ? capability.sourceRatio : 1,
+                fitMaxScale: fitPreset.maxScale
+            })
+            : null;
+        _stageScale = _stageScalePolicy ? _stageScalePolicy.stageScale : Math.min(
+            availableWidth / _activePage.width,
+            availableHeight / _activePage.height,
+            1.3
+        );
 
         _stageEl.style.width = Math.round(_activePage.width * _stageScale) + 'px';
         _stageEl.style.height = Math.round(_activePage.height * _stageScale) + 'px';
@@ -2771,8 +2788,9 @@ var MapPanel = (function() {
             availableWidth: availableWidth,
             availableHeight: availableHeight,
             bodyAvailableHeight: roundLayoutValue(bodyAvailableHeight),
-            widthScale: roundLayoutValue(widthScale),
-            heightScale: roundLayoutValue(heightScale),
+            widthScale: _stageScalePolicy ? _stageScalePolicy.widthScale : roundLayoutValue(availableWidth / _activePage.width),
+            heightScale: _stageScalePolicy ? _stageScalePolicy.heightScale : roundLayoutValue(availableHeight / _activePage.height),
+            stageScalePolicy: _stageScalePolicy,
             shellRect: describeDomRect(shellRect),
             stageRect: describeDomRect(_stageEl.getBoundingClientRect()),
             bodyRect: describeDomRect(_bodyEl.getBoundingClientRect())
@@ -2861,6 +2879,7 @@ var MapPanel = (function() {
             sceneVisualCount: _activePage ? buildCanvasSceneVisuals(_activePage).length : 0,
             canvasRequestedRevision: _canvasRevision,
             stageScale: _stageScale,
+            stageScalePolicy: _stageScalePolicy,
             contentFitScale: _contentFitScale,
             contentFitOffsetX: roundLayoutValue(_contentFitOffsetX),
             contentFitOffsetY: roundLayoutValue(_contentFitOffsetY),

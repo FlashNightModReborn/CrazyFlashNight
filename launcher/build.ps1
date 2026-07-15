@@ -722,6 +722,7 @@ $requiredWebPaths = @(
     "modules\map-avatar-source-data.js",
     "modules\map-panel-data.js",
     "modules\map-fit-presets.js",
+    "modules\map-scale-policy.js",
     "modules\map-canvas-stage-renderer.js",
     "modules\map-panel.js",
     "modules\map-hud.js",

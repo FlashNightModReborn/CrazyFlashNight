@@ -38,13 +38,10 @@ var MapFitPresets = (function() {
                 "maxScale": 1.72
             },
             "rock": {
-                "maxScale": 1.346
+                "maxScale": 1.72
             },
-            "fallen": {
-                "maxScale": 1.346
-            },
-            "all": {
-                "maxScale": 1.346
+            "blackiron": {
+                "maxScale": 1.72
             }
         },
         "defense": {
@@ -53,13 +50,10 @@ var MapFitPresets = (function() {
                 "padYRate": 0.045
             },
             "first_line": {
-                "maxScale": 1.346
+                "maxScale": 1.6
             },
             "restricted": {
-                "maxScale": 1.346
-            },
-            "all": {
-                "maxScale": 1.346
+                "maxScale": 1.72
             }
         },
         "school": {
@@ -67,14 +61,106 @@ var MapFitPresets = (function() {
                 "padXRate": 0.04,
                 "padYRate": 0.045
             },
-            "inside": {
-                "maxScale": 1.111
-            },
             "outside": {
-                "maxScale": 1.082
+                "maxScale": 1.72
+            }
+        }
+    };
+    var _capabilities = {
+        "base": {
+            "roof": {
+                "sourceRatio": 4.976,
+                "worstAsset": "assets/map/composite/base/base-roof.png"
+            },
+            "first_floor": {
+                "sourceRatio": 6.64,
+                "worstAsset": "assets/map/composite/base/merc-bar.png"
+            },
+            "basement1": {
+                "sourceRatio": 8.72,
+                "worstAsset": "assets/map/composite/base/gym.png"
+            },
+            "basement2": {
+                "sourceRatio": 1.836,
+                "worstAsset": "assets/map/composite/base/lab.png"
+            },
+            "water": {
+                "sourceRatio": 8.721,
+                "worstAsset": "assets/map/composite/base/underground-water.png"
             },
             "all": {
-                "maxScale": 1.082
+                "sourceRatio": 1.836,
+                "worstAsset": "assets/map/composite/base/lab.png"
+            },
+            "hierarchy": {
+                "sourceRatio": 1.836,
+                "worstAsset": "assets/map/composite/base/lab.png"
+            },
+            "*": {
+                "sourceRatio": 1.836,
+                "worstAsset": "assets/map/composite/base/lab.png"
+            }
+        },
+        "faction": {
+            "warlord": {
+                "sourceRatio": 6.668,
+                "worstAsset": "assets/map/composite/faction/warlord-base.png"
+            },
+            "rock": {
+                "sourceRatio": 2,
+                "worstAsset": "assets/map/composite/faction/rock-park.png"
+            },
+            "blackiron": {
+                "sourceRatio": 2.085,
+                "worstAsset": "assets/map/composite/faction/blackiron-training.png"
+            },
+            "fallen": {
+                "sourceRatio": 1.425,
+                "worstAsset": "assets/map/composite/faction/fallen-entrance.png"
+            },
+            "all": {
+                "sourceRatio": 1.425,
+                "worstAsset": "assets/map/composite/faction/fallen-entrance.png"
+            },
+            "*": {
+                "sourceRatio": 1.425,
+                "worstAsset": "assets/map/composite/faction/fallen-entrance.png"
+            }
+        },
+        "defense": {
+            "first_line": {
+                "sourceRatio": 1,
+                "worstAsset": "assets/map/composite/defense/subway.png"
+            },
+            "restricted": {
+                "sourceRatio": 2,
+                "worstAsset": "assets/map/composite/defense/alliance-dock.png"
+            },
+            "all": {
+                "sourceRatio": 1,
+                "worstAsset": "assets/map/composite/defense/subway.png"
+            },
+            "*": {
+                "sourceRatio": 1,
+                "worstAsset": "assets/map/composite/defense/subway.png"
+            }
+        },
+        "school": {
+            "inside": {
+                "sourceRatio": 1.649,
+                "worstAsset": "assets/map/composite/school/teaching-interior.png"
+            },
+            "outside": {
+                "sourceRatio": 1.609,
+                "worstAsset": "assets/map/composite/school/union-university.png"
+            },
+            "all": {
+                "sourceRatio": 1.609,
+                "worstAsset": "assets/map/composite/school/union-university.png"
+            },
+            "*": {
+                "sourceRatio": 1.609,
+                "worstAsset": "assets/map/composite/school/union-university.png"
             }
         }
     };
@@ -113,12 +199,20 @@ var MapFitPresets = (function() {
     function getManifest() {
         return {
             defaults: copy(_defaults),
-            presets: copy(_presets)
+            presets: copy(_presets),
+            capabilities: copy(_capabilities)
         };
+    }
+
+    function resolveCapability(pageId, filterId) {
+        var pageCapabilities = _capabilities[pageId] || null;
+        var capability = pageCapabilities ? (pageCapabilities[filterId] || pageCapabilities["*"]) : null;
+        return capability ? copy(capability) : { sourceRatio: 1, worstAsset: "" };
     }
 
     return {
         resolve: resolve,
+        resolveCapability: resolveCapability,
         getManifest: getManifest
     };
 })();
