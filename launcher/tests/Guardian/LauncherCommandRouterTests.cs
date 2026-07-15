@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
+using CF7Launcher.Tasks;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian
@@ -312,6 +315,292 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RequestOpenPanel_SkillsTrainer_RebuildsStrictRuntimeInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("skills", "untrusted_source", null, null, null, null, null,
+                "{\"view\":\"trainer\",\"trainerSession\":\"trainer.session.7\"}");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"world_skill_trainer\"", c.Posts[0]);
+            Assert.Contains("\"view\":\"trainer\"", c.Posts[0]);
+            Assert.Contains("\"trainerSession\":\"trainer.session.7\"", c.Posts[0]);
+            Assert.DoesNotContain("untrusted_source", c.Posts[0]);
+        }
+
+        [Fact]
+        public void SkillsButton_WhenSocketPreflightFails_DoesNotOpenEmptyPanel()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.Dispatch("SKILLS");
+            Assert.Single(c.Posts);
+            Assert.Contains("旧物品界面", c.Posts[0]);
+            Assert.DoesNotContain("\"cmd\":\"open\"", c.Posts[0]);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void SkillsButton_SendTrueWaitsForPanelRequestAndTimesOutWithoutOpening()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
+            r.SkillOpenTimeoutMs = 20;
+
+            r.Dispatch("SKILLS");
+
+            Assert.Single(commands);
+            Assert.Contains("skillPanelOpen", commands[0]);
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.True(System.Threading.SpinWait.SpinUntil(() => c.Posts.Count == 1, 2000));
+            Assert.Contains("技能服务未就绪", c.Posts[0]);
+            Assert.DoesNotContain("\"cmd\":\"open\"", c.Posts[0]);
+        }
+
+        [Fact]
+        public void SkillsButton_ReadyPanelRequestOpensOnceAndCancelsTimeoutToast()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.SetGameCommandSenderForTests(value => true);
+            r.SkillOpenTimeoutMs = 40;
+
+            r.Dispatch("SKILLS");
+            Assert.Empty(c.Posts);
+            r.RequestOpenPanel("skills", "nativehud", null, null, null, null, null, "{\"view\":\"manage\"}");
+            System.Threading.Thread.Sleep(100);
+
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
+            Assert.DoesNotContain("技能服务未就绪", c.Posts[0]);
+        }
+
+        [Fact]
+        public void SkillsButton_SynchronousPanelRequestDuringSendCannotInstallStaleTimeout()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.SkillOpenTimeoutMs = 20;
+            r.SetGameCommandSenderForTests(value =>
+            {
+                if (value.Contains("skillPanelOpen"))
+                    r.RequestOpenPanel("skills", "nativehud", null, null, null, null, null, "{\"view\":\"manage\"}");
+                return true;
+            });
+
+            r.Dispatch("SKILLS");
+            System.Threading.Thread.Sleep(80);
+
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
+            Assert.DoesNotContain("技能服务未就绪", c.Posts[0]);
+        }
+
+        [Theory]
+        [InlineData("{\"view\":\"trainer\"}")]
+        [InlineData("{\"view\":\"manage\",\"trainerSession\":\"trainer.one\"}")]
+        [InlineData("{\"view\":\"trainer\",\"trainerSession\":\"bad token\"}")]
+        [InlineData("{\"view\":\"trainer\",\"trainerSession\":\"trainer.one\",\"catalog\":[]}")]
+        public void RequestOpenPanel_SkillsRejectsMalformedOrRawExtras(string extras)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("skills", "world", null, null, null, null, null, extras);
+            Assert.Empty(c.Posts);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_TwoTrainerSessions_GetDistinctPanelInstancesAndLatestContext()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("skills", "world", null, null, null, null, null,
+                "{\"view\":\"trainer\",\"trainerSession\":\"trainer.a\"}");
+            r.RequestOpenPanel("skills", "world", null, null, null, null, null,
+                "{\"view\":\"trainer\",\"trainerSession\":\"trainer.b\"}");
+            Assert.Equal(2, c.Posts.Count);
+            var first = Newtonsoft.Json.Linq.JObject.Parse(c.Posts[0]);
+            var second = Newtonsoft.Json.Linq.JObject.Parse(c.Posts[1]);
+            Assert.NotEqual((string)first["panelInstanceId"], (string)second["panelInstanceId"]);
+            Assert.Equal("trainer.a", (string)first["initData"]["trainerSession"]);
+            Assert.Equal("trainer.b", (string)second["initData"]["trainerSession"]);
+        }
+
+        [Fact]
+        public void SkillsTrainerManageRoundTrip_PreservesFocusButKeepsCapabilityInsideHost()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                r.SetSkillTask(task);
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null,
+                    "{\"view\":\"trainer\",\"trainerSession\":\"trainer.switch\"}");
+                string trainerInstance = r.ActiveFallbackPanelInstanceId;
+                task.BindPanelInstance(trainerInstance);
+
+                Assert.True(r.RebindSkillsToManage(trainerInstance, "闪现"));
+                Assert.Equal(2, c.Posts.Count);
+                JObject manage = JObject.Parse(c.Posts[1]);
+                Assert.Equal("manage", (string)manage["initData"]["view"]);
+                Assert.Equal("闪现", (string)manage["initData"]["focusSkillKey"]);
+                Assert.True((bool)manage["initData"]["canReturnTrainer"]);
+                Assert.Null(manage["initData"]["trainerSession"]);
+                Assert.NotEqual(trainerInstance, (string)manage["panelInstanceId"]);
+                Assert.Empty(sent); // 返回凭据只暂存在 Host；切换本身不提前清理。
+                Assert.False(r.RebindSkillsToManage(trainerInstance, "闪现"));
+                Assert.Equal(2, c.Posts.Count);
+
+                string manageInstance = (string)manage["panelInstanceId"];
+                task.BindPanelInstance(manageInstance);
+                Assert.True(r.RebindSkillsToTrainer(manageInstance, "闪现"));
+                Assert.Equal(3, c.Posts.Count);
+                JObject trainer = JObject.Parse(c.Posts[2]);
+                Assert.Equal("trainer", (string)trainer["initData"]["view"]);
+                Assert.Equal("trainer.switch", (string)trainer["initData"]["trainerSession"]);
+                Assert.Equal("闪现", (string)trainer["initData"]["focusSkillKey"]);
+                Assert.False(r.RebindSkillsToTrainer(manageInstance, "闪现"));
+            }
+        }
+
+        [Fact]
+        public void FallbackSkillsRebind_PreservesOldInstanceThroughUnknownWriteReconcileThenAppliesLatestManageIntent()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                task.SetPostToWeb(value => web.Add(JObject.Parse(value)));
+                r.SetSkillTask(task);
+                task.SetCoordinatorSettled(r.FlushDeferredFallbackSkillRebind);
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null, "{\"view\":\"manage\"}");
+                Assert.Single(c.Posts);
+                string oldInstance = (string)JObject.Parse(c.Posts[0])["panelInstanceId"];
+                task.BindPanelInstance(oldInstance);
+                task.HandleFlashResponse(SkillCleanupAck((int)sent[0]["callId"], 12), null);
+
+                JObject write = SkillRequest("equip", "fallback.write");
+                write["panelInstanceId"] = oldInstance;
+                task.HandleWebRequest("equip", write);
+                int writeFid = (int)sent[sent.Count - 1]["callId"];
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null,
+                    "{\"view\":\"trainer\",\"trainerSession\":\"trainer.new\"}");
+                Assert.Single(c.Posts);
+                Assert.Equal(oldInstance, r.ActiveFallbackPanelInstanceId);
+
+                task.HandleFlashResponse(SkillError(writeFid, "future_error", 12), null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+                JObject reconcile = SkillRequest("snapshot", "fallback.reconcile");
+                reconcile["panelInstanceId"] = oldInstance;
+                reconcile["payload"]["reconcileId"] = "fallback.probe";
+                reconcile["payload"]["reconcileAfterCallId"] = "fallback.write";
+                task.HandleWebRequest("snapshot", reconcile);
+                int reconcileFid = (int)sent[sent.Count - 1]["callId"];
+                JObject snapshot = SkillSnapshot(12);
+                snapshot["task"] = "skill_response";
+                snapshot["callId"] = reconcileFid;
+                task.HandleFlashResponse(snapshot, null);
+                Assert.Single(c.Posts);
+                task.HandleFlashResponse(SkillCleanupAck((int)sent[sent.Count - 1]["callId"], 12), null);
+
+                Assert.Equal(2, c.Posts.Count);
+                JObject reopened = JObject.Parse(c.Posts[1]);
+                Assert.NotEqual(oldInstance, (string)reopened["panelInstanceId"]);
+                Assert.Equal("manage", (string)reopened["initData"]["view"]);
+                Assert.Equal(oldInstance, (string)web[web.Count - 1]["panelInstanceId"]);
+            }
+        }
+
+        [Fact]
+        public void FallbackDisconnectClear_AllowsRealRecoveryOpenWhileTaskNeedsReconcile()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                r.SetSkillTask(task);
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null, "{\"view\":\"manage\"}");
+                string oldInstance = r.ActiveFallbackPanelInstanceId;
+                task.BindPanelInstance(oldInstance);
+                JObject write = SkillRequest("equip", "fallback.disconnect.write");
+                write["panelInstanceId"] = oldInstance;
+                task.HandleWebRequest("equip", write);
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null, "{\"view\":\"manage\"}");
+                Assert.Single(c.Posts);
+
+                task.ClearPending();
+                r.ClearFallbackPanelInstance();
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null, "{\"view\":\"manage\"}");
+
+                Assert.Equal(2, c.Posts.Count);
+                JObject recovery = JObject.Parse(c.Posts[1]);
+                Assert.NotEqual(oldInstance, (string)recovery["panelInstanceId"]);
+                Assert.Equal("needs_reconcile", (string)recovery["initData"]["writeState"]);
+                Assert.Equal("fallback.disconnect.write", (string)recovery["initData"]["reconcileAfterCallId"]);
+            }
+        }
+
+        [Fact]
+        public void FallbackTrainerSwitchToOtherPanel_ClosesScopedCapabilityBeforeFirstBusinessRequest()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                r.SetSkillTask(task);
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null,
+                    "{\"view\":\"trainer\",\"trainerSession\":\"trainer.first\"}");
+                Assert.Single(c.Posts);
+
+                r.RequestOpenPanel("map", "switch_test", null);
+
+                Assert.Equal(2, c.Posts.Count);
+                Assert.Single(sent);
+                Assert.Equal("skillPanelClose", (string)sent[0]["action"]);
+                Assert.Equal("trainer.first", (string)sent[0]["trainerSession"]);
+            }
+        }
+
+        [Fact]
+        public void ForceCleanupInFlight_TrainerRequestDowngradesToManageThenRunsScopedCleanup()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                r.SetSkillTask(task);
+                task.RequestTrainerCleanup(null);
+                Assert.Single(sent);
+                Assert.Null(sent[0]["trainerSession"]);
+
+                r.RequestOpenPanel("skills", "world", null, null, null, null, null,
+                    "{\"view\":\"trainer\",\"trainerSession\":\"trainer.candidate.C\"}");
+                Assert.Single(c.Posts);
+                JObject opened = JObject.Parse(c.Posts[0]);
+                Assert.Equal("manage", (string)opened["initData"]["view"]);
+
+                task.HandleFlashResponse(SkillCleanupAck((int)sent[0]["callId"], 12), null);
+                Assert.Equal(2, sent.Count);
+                Assert.Equal("skillPanelClose", (string)sent[1]["action"]);
+                Assert.Equal("trainer.candidate.C", (string)sent[1]["trainerSession"]);
+                Assert.False(task.CanOpenTrainer);
+
+                task.HandleFlashResponse(SkillCleanupAck((int)sent[1]["callId"], 12), null);
+                Assert.True(task.CanOpenTrainer);
+            }
+        }
+
+        [Fact]
         public void EmptyKey_SilentlyIgnored()
         {
             Capture c = new Capture();
@@ -331,5 +620,58 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Empty(c.SentKeys);
             Assert.Empty(c.Posts);
         }
+
+        private static JObject SkillRequest(string cmd, string callId)
+        {
+            JObject payload = new JObject { ["v"] = 1 };
+            if (cmd == "snapshot") payload["view"] = "manage";
+            else if (cmd == "equip")
+            {
+                payload["skillKey"] = "闪现"; payload["slot"] = 4; payload["expectedRevision"] = 12;
+            }
+            return new JObject
+            {
+                ["type"] = "panel", ["panel"] = "skills", ["domain"] = "skills",
+                ["cmd"] = cmd, ["callId"] = callId,
+                ["panelInstanceId"] = "fallback.unbound", ["payload"] = payload
+            };
+        }
+
+        private static JObject SkillError(int callId, string error, int revision)
+        {
+            return new JObject
+            {
+                ["task"] = "skill_response", ["callId"] = callId, ["success"] = false,
+                ["v"] = 1, ["error"] = error, ["revision"] = revision
+            };
+        }
+
+        private static JObject SkillCleanupAck(int callId, int revision)
+        {
+            return new JObject
+            {
+                ["task"] = "skill_response", ["callId"] = callId, ["success"] = true,
+                ["v"] = 1, ["changed"] = false, ["revision"] = revision
+            };
+        }
+
+        private static JObject SkillSnapshot(int revision)
+        {
+            var loadout = new JArray();
+            for (int slot = 1; slot <= 12; slot++) loadout.Add(new JObject
+            {
+                ["slot"] = slot, ["skillKey"] = null, ["keyLabel"] = slot.ToString(),
+                ["stateHealth"] = "ok", ["writeBlocked"] = false
+            });
+            return new JObject
+            {
+                ["success"] = true, ["v"] = 1, ["revision"] = revision, ["view"] = "manage",
+                ["player"] = new JObject { ["level"] = 20, ["skillPoints"] = 10, ["easyMode"] = false },
+                ["learned"] = new JArray(), ["loadout"] = loadout, ["trainer"] = null,
+                ["diagnostics"] = new JArray()
+            };
+        }
+
+        private static JObject ParseWire(string value) { return JObject.Parse(value.TrimEnd('\0')); }
     }
 }

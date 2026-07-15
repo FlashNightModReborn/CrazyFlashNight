@@ -28,19 +28,11 @@ function 刷新技能等级显示()
 
 function 取消装备技能(编号)
 {
-	_root["快捷技能栏" + 编号] = "";
-	var 技能栏 = this.技能栏列表[编号];
-	技能栏.已装备名 = "";
-	技能栏.是否装备 = 0;
-	技能栏.gotoAndStop(1);
-	_root.主角技能表[技能栏.对应数组号][2] = false;
-	_root.主角技能表[技能栏.对应数组号][4] = false;
-	if (_root.主角技能表[技能栏.对应数组号][3].indexOf("被动") > -1)
+	var 卸载结果 = _root.legacySkillUnequip(编号);
+	if (!卸载结果.success)
 	{
-		_root.更新主角被动技能();
-		_root.gameworld[_root.控制目标].被动技能 = _root.主角被动技能;
+		_root.发布消息(_root.获得翻译("技能卸载失败") + "：" + 卸载结果.error);
 	}
-	_root.排列技能图标();
 }
 
 stop();

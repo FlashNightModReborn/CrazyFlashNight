@@ -98,5 +98,15 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(0, widget.OtherMenuGroupIndexForTest);
             }
         }
+
+
+        [Fact]
+        public void GameToolbar_ModernAndLegacyExposeSameSixRoutesIncludingSkills()
+        {
+            string[] modern = NotchWidget.ToolbarRoutesForTest();
+            string[] legacy = NotchOverlay.ToolbarRoutesForTest();
+            Assert.Equal(new[] { "TEAM", "TABLET", "WAREHOUSE", "INTELLIGENCE", "SKILLS", "SHOP" }, modern);
+            Assert.Equal(modern, legacy);
+        }
     }
 }

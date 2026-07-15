@@ -344,9 +344,15 @@ on (release) {
 	}
 	else if (_parent.总价 <= _root.技能点数)
 	{
-		_root.技能点数 -= _parent.总价;
-		_root.学习技能(_parent.准备购买的物品,_parent.准备购买的技能等级);
-		_parent.gotoAndPlay("成功");
+		var 学习结果 = _root.legacySkillLearnCommit(_parent.准备购买的物品, _parent.准备购买的技能等级, _parent.教师对象);
+		if (学习结果.success)
+		{
+			_parent.gotoAndPlay("成功");
+		}
+		else
+		{
+			_parent.mytext.text = _root.获得翻译("技能学习失败") + "：" + 学习结果.error;
+		}
 	}
 	else
 	{

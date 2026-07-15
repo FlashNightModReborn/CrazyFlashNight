@@ -1,8 +1,8 @@
 # 玩家信息界面 → C# NativeHud：只读镜像迁移 架构设计（阶段0 行为基线 + 停止线裁决）
 
-**文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻只读 HUD + AS2 保留状态权威与隐形逻辑层」的**纲领设计 / ADR**。阶段0 已完成行为基线盘点与停止线对抗审计；2026-07-12 以战技输入和 12 槽快捷技能输入 AS2 化进入阶段1，后续路线见 §5。
+**文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻只读 HUD + AS2 服务持有状态权威」的**纲领设计 / ADR**。阶段0 已完成行为基线盘点与停止线对抗审计；截至 2026-07-15，战技/快捷技能/药剂输入、17 路手动冷却与 Skill 装备管理已脱离 HUD 时间轴，后续路线见 §5。
 
-**最后核对代码基线**：commit `b31eebb49a`（2026-07-11，代码树）；战技与 12 槽快捷技能输入 AS2 化另核对 2026-07-12 工作树及 Flash 发布产物；技能管理域拆分另核对 commit `6ff3308f38`（2026-07-15）。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
+**最后核对代码基线**：commit `0f51b55eaf`（2026-07-15）及本轮 Skill S0–S5 代码工作树；Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
 
 **前置必读 / 关键定位修正**：
 - 本迁移**不走 Web Panel snapshot+command 范式**（merc/pet/arena/kshop 那条），而走 **`FrameBroadcaster.pushUiState` 快车道 + GDI+ `INativeHudWidget` 只读镜像**。详见 §4。
@@ -14,9 +14,9 @@
 
 ## 0. 状态
 
-- 阶段：**阶段0 完成，阶段1 已完成战技输入和 12 槽快捷技能输入两块 AS2 化切片，停止线仍未完全解除**（详见 §2.2 / §5）。尚未进入 C# PlayerInfoWidget 复刻。
-- **核心裁决（颠覆早期"纯展示层"判断）**：`玩家信息界面` SWF **不是只读 HUD**。阶段0 时它在 MovieClip 时间轴里承载技能/战技/药剂三条输入主链；2026-07-12 起，战技键采样、按住锁存与释放编排已迁入 `WeaponSkillInputService`，并以 `UnitActionIntentService` 的 combat channel 完成动作输入试水：普通战技同帧提交/消费，副武器 F 换弹延迟到持枪行走状态机按 `R > F > A/B` 仲裁，`战技控制器` 降为显示壳。随后 12 槽快捷技能的实时键位采样、逐槽按住锁存、暂停/单玩家门控、`释放技能`、MP 刷新与逐槽冷却启动迁入 `QuickSkillInputService`，`技能控制器` 同样降为显示壳。药剂输入以及**全部手动玩家冷却权威状态机**仍在 XFL，技能装备/被动技能回写、消耗品库存扣减也尚未抽离。（注：早期审计把 `frameEnd` 性能心跳列入本 SWF 是误报，详见 §3.1。）
-- **直接后果**：不能把整个 symbol 一并搬走或停止实例化。迁移范围必须**沿"显示 vs 逻辑"切线重切**——只读显示层进 C#，输入/冷却逻辑层留在 AS2（或在 C# 化前先从 MC 时间轴**剥离重写**成 AS2 类）。最小可行形态是**双轨**：C# 画只读条 + AS2 保留隐形逻辑壳，而非"用纯 Object facade 顶替"。
+- 阶段：**阶段0 完成；阶段1 的战技/快捷技能/药剂输入、手动冷却与 Skill 管理停止线已完成 AS2 服务化**（详见 §2.2 / §5）。C# PlayerInfoWidget 复刻尚未开始；快捷药剂拖放等剩余 MovieClip 能力仍阻止整体删壳。
+- **核心裁决（颠覆早期"纯展示层"判断）**：`玩家信息界面` SWF 在阶段0 时确实承载输入、冷却和装备写，不可直接搬空。现状是 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService` 承接三条手动输入，`ManualCooldownService` 持有 17 路逻辑冷却，`SkillLoadoutService` / `SkillPanelService` 持有技能描述符、学习、装备、排序和被动写；旧控制器与进度条已退化为可选显示投影。消耗品快捷槽拖放 hitTest 和其他显示列表调用仍需按 §2.2 单独处置。（早期把 `frameEnd` 性能心跳列入本 SWF 是误报，详见 §3.1。）
+- **直接后果**：迁移仍须沿“显示 vs 逻辑”切线推进，但目标已从“保活承载输入/冷却的隐形逻辑壳”收敛为“C# 只读 HUD + AS2 纯服务 + 尚未退役的兼容 renderer/hit target”。只有剩余 MovieClip 能力逐项替代并通过观察门后，才可停止实例化整个 symbol；纯 Object facade 仍不能提前代替这些显示列表能力。
 - 已确认可安全只读迁移的显示层：HP / MP / 韧性 / 经验 / 等级 / 弹药数 / 攻击模式视图 / 角色名 / SP / buff 图标条（见 §2.1）。
 - hover 注释明确为**第一阶段放弃项**（计划既定）。
 - 排序原则：state-first（AS2 先重构、全功能壳作"贬值中的视觉 oracle"），含两条排序无关硬约束（缓动入 `cur/target` 契约、frameEnd 批量发布）。详见 §4，已记入 agent 记忆。
@@ -101,21 +101,21 @@ C# 层只负责**常驻只读 HUD 显示**；AS2 端保留**游戏状态权威 +
 
 ### 2.2 隐藏游戏逻辑清单（停止线 —— 不可只读迁移）
 
-下列职责活在 UI MovieClip 时间轴里，**不是显示**。整体搬走或停止实例化会造成功能回归。
+下表以阶段0 的 UI MovieClip 隐藏职责为基线，并在“处置”列回写 2026-07-15 现状。标为“已解除”的职责已迁到 AS2 服务；未解除项仍禁止随 HUD 整体搬走。
 
 | # | 隐藏逻辑 | 证据位置 | 后果（若随 HUD 移除而不补偿） | 处置 |
 |---|---|---|---|---|
-| 1 | **12 槽快捷技能输入已迁 AS2，逐槽冷却端口仍依赖旧 UI**：帧计时器调用 `QuickSkillInputService`，服务按 1→12 的稳定顺序读取 live `_root.快捷技能栏键N`，维护单位级 12 份独立按住锁存；只在槽已装备、`进度条N.冷却` 就绪且 `冷却开始` 端口存在时尝试 `释放技能`，尝试成功或失败都会消费本次按住，松键（包括暂停期间）才重新武装。成功后同帧启动该槽旧冷却条，整帧至多刷新一次 MP。服务直接编排 12 个可并发槽，不进入单槽 combat mailbox；`技能控制器.xml` 只保留键位文字与两个 `stop()` 帧 | QuickSkillInputService.as；通信_fs_帧计时器.as；玩家模板迁移.as；技能控制器.xml | 快捷技能行为不再依赖隐藏 MC enterFrame，运行时改键的行为与文字都读取 live 投影；删除旧进度条或冷却启动端口会使对应槽 fail-closed | 下一切片把逐槽冷却权威迁入 AS state，旧进度条退化为 renderer；装备/卸载与图标载体保持原路径 |
-| 1a | **战技输入已迁 AS2，冷却端口仍依赖旧 UI**：帧计时器采样 F，`WeaponSkillInputService` 持有按住锁存、暂停/单玩家门控、release 与共享冷却启动编排；`战技控制器.xml` 只保留键位文字。普通战技仍从 `战技进度条.冷却/冷却开始()` 读取和启动共享冷却。两类战技先提交到 `UnitActionIntentService` combat channel：普通战技同帧消费后保持旧释放语义；副武器控制槽绕过共享冷却，以较高优先级提交 `KIND_SUBWEAPON_RELOAD`，由持枪状态机在至多两帧的 man-ready 窗口内消费并按 `R > F > A/B` 仲裁；跑姿一次性 R 同样可用 `KIND_PRIMARY_RELOAD` 跨过新 man 初始化帧 | UnitActionIntentService.as；WeaponSkillInputService.as；通信_fs_帧计时器.as；玩家模板迁移.as；单位函数_lsy_主角行走状态机.as；战技控制器.xml | 战技输入不再依赖隐藏 MC enterFrame；副武器 F 与普通 R 共用动作仲裁和姿态归一化；通用意图层只承载 kind/frame/priority/payload，不持有弹药、冷却或动画所有权；删除进度条仍会让普通战技 fail-closed | 下一切片把战技冷却权威迁入 AS state，旧进度条退化为 renderer；技能/药剂协议在本试水通过前不接入 |
-| 1b | **药剂输入仍在 XFL**：透明控件 enterFrame 每帧读取 live `_root[扳机键]`，命中后进入 `使用药剂` 与库存扣减路径 | 药剂控制器.xml:29-57,100-127 | 若停止实例化，手动玩家无法使用药剂 | 后续独立剥离；不得与本次 12 槽技能输入的逐槽锁存混用 |
-| 2 | **手动玩家唯一冷却权威**：`Symbol 1791.冷却` 布尔 + `冷却开始(CD)` → `总步数=ceil(CD/33.333)` + `帧计时器.添加冷却任务` 逐格推进。引擎 `释放技能/释放主动战技/使用药剂` **完全不判冷却** | Symbol 1791.xml:11-48；玩家模板迁移.as:1710-1759 | **技能无冷却连发**（冷却 gate 丢失） | 留 AS2 或 facade 自建冷却状态机 |
+| 1 | **12 槽快捷技能输入、槽描述符与逐槽冷却已脱 HUD**：`QuickSkillInputService` 按 1→12 读取 live 键位，从 `SkillLoadoutService.getSlotDescriptor()` 取装备态，并以 `ManualCooldownService.quickSkillKey(1..12)` 判定/启动冷却；旧 `进度条N` 只在存在时绑定为 renderer，缺失不阻塞释放 | QuickSkillInputService.as；SkillLoadoutService.as；ManualCooldownService.as；通信_fs_帧计时器.as | HUD 不再是快捷技能输入、装备或冷却权威 | **已解除该停止线**；S6 前保留旧 renderer/fallback 作观察对照 |
+| 1a | **战技输入与共享冷却已脱 HUD**：`WeaponSkillInputService` 持有锁存与 release 编排，`ManualCooldownService.WEAPON_SKILL_KEY` 持有共享冷却；旧战技进度条只接受投影。普通战技与副武器 F/R 仲裁仍经 `UnitActionIntentService` 保持既有语义 | UnitActionIntentService.as；WeaponSkillInputService.as；ManualCooldownService.as；通信_fs_帧计时器.as | 删除旧进度条不再让普通战技 fail-closed | **已解除该停止线**；保留 renderer 回归直到 HUD 退场门 |
+| 1b | **4 槽药剂输入与库存扣减已脱 HUD**：`DrugInputService` 读取 live 键位与权威药剂栏，调用 `_root.使用药剂`，经 `ManualCooldownService.drugKey(0..3)` 启动冷却，再 `addValue(-1)` 并在耗尽时清快捷槽镜像 | DrugInputService.as；ManualCooldownService.as；通信_fs_帧计时器.as | 药剂控制器不再是输入或扣库存权威 | **已解除输入/扣减停止线**；药剂拖放 hitTest 仍见 #6 |
+| 2 | **手动玩家冷却权威已迁 AS2 服务**：`ManualCooldownService` 独占 `weapon:shared + quick:1..12 + drug:0..3` 共 17 路状态并沿 CooldownWheel 调度；旧 `Symbol 1791` 的字段和 `冷却开始()` 只做代理/投影 | ManualCooldownService.as；ManualCooldownServiceTest.as；Symbol 1791.xml | 旧进度条缺失或重绑不再导致无冷却连发或无法施放 | **已解除**；50/50 fresh trace 覆盖生命周期、renderer 重绑与暂停推进 |
 | ~~3~~ | ~~frameEnd 性能心跳~~ → **误报更正：已不在本 SWF**。活跃心跳是主 FLA 舞台上独立的 `frameend事件发生器` symbol；玩家信息界面 库内 `性能帧率显示器` 仅为空层 leftover（玩家信息界面.xml:15-21 `<elements/>`，全 SWF 零放置）。见 §3 误报更正 | 玩家信息界面.xml:15-21（空层）；主 FLA DOMDocument.xml:1666（活跃 placed） | **无**（已解耦） | 无需处理 |
-| 4 | **取消装备技能** 写回游戏态：改 `主角技能表[i][2]/[4]=false`、清 `快捷技能栏N`、`更新主角被动技能()` + 写 `gameworld[控制目标].被动技能` | 快捷技能界面.xml:29-44 | 装备/被动技能管理逻辑丢失 | 留 AS2 或剥离成命令 |
-| 5 | **药剂控制器库存扣减**：`icon.collection.addValue(icon.index,-1)`，耗尽 `_root[控制参数]=""` 解除装备 | 药剂控制器.xml:29-57 | 消耗品不扣减 / 快捷栏不清空 | 随 #1 一起处置 |
+| 4 | **技能装备/卸下/排序/被动写已服务化**：`SkillLoadoutService` 原子维护 `主角技能表`、`快捷技能栏1..12`、被动缓存、动态 CD/MP 投影和 `dirtyMark`；旧叉按钮只调用 `legacySkillUnequip()` 委托 | SkillLoadoutService.as；SkillPanelService.as；快捷技能界面.xml | HUD 不再持有技能写权威；旧按钮仍可作 fallback | **已解除 Skill 侧停止线**；S6 观察门前不删除旧入口 |
+| 5 | **药剂控制器库存扣减已迁服务**：`DrugInputService` 在成功使用后扣权威集合并处理耗尽清栏 | DrugInputService.as | 时间轴控制器缺失不再造成不扣库存 | **已解除**；药剂装备/拖放仍单列 #6 |
 | 6 | **快捷药剂 hitTest 拖放落点**：`快捷药剂界面.hitTest(_xmouse,_ymouse,true)` 判断药剂拖入；`attachMovie` 图标容器 | InventoryIcon.as:152；快捷药剂界面.xml:12-13 | 拖放装药失效 | 留 AS2 真 MC，或 DOM 矩形命中替代 |
 | 7 | **显示列表引擎 by-reference 驱动装饰孙级动画**：`默认播放动画(玩家信息界面.主角hp显示界面.血槽内动画 / .网格动画 / 快捷药剂界面.姓名框.网格动画)` 按性能等级 play | 显示列表引擎.as:73-77 | 装饰动画全停 / 路径解析 undefined | 装饰可砍（纯外观），路径需重设计 |
 
-> **关键不变量（load-bearing，写进注释勿丢）**：底层 `释放技能/释放主动战技/使用药剂` 不自行裁决手动冷却。快捷技能现由 `QuickSkillInputService` 读取各自旧 `Symbol 1791.冷却` 端口；战技由 `WeaponSkillInputService` 读取共享旧冷却端口；药剂仍由 XFL 控制器读取旧冷却。副武器快装不是普通战技，允许绕过共享战技冷却且不启动它。AI（ActionArbiter/各 strategy）与佣兵 ai 仍走逻辑层独立时间制冷却，不读 UI。
+> **关键不变量（load-bearing，写进注释勿丢）**：底层 `释放技能/释放主动战技/使用药剂` 不自行裁决手动冷却；三条手动输入服务必须先查询并启动同一 `ManualCooldownService` authority。旧 `Symbol 1791` 只能接受投影，不得重新成为 gate。副武器快装不是普通战技，允许绕过共享战技冷却且不启动它。AI（ActionArbiter/各 strategy）与佣兵 ai 仍走逻辑层独立时间制冷却，不读 UI。
 
 ### 2.3 旧入口清单（全调用点普查）
 
@@ -162,8 +162,8 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 但"停止线触发"**不等于放弃**——它的意义是**强制沿"显示 vs 逻辑"切线重切范围**：
 
 - **进 C#（只读显示层）**：§2.1 全部——HP/MP/韧性/经验/等级/弹药/攻击模式视图/角色名/SP/buff 显示 + 缓动。
-- **留 AS2（隐形逻辑层）**：已抽离的快捷技能/战技输入分别由 `QuickSkillInputService` / `WeaponSkillInputService` 承载；药剂输入、全部手动冷却状态机、取消装备技能、库存扣减、拖放 hitTest 继续留 AS2，不迁入 C#。
-- **最终形态 = 双轨**：C# 画只读条（可见层）；AS2 保留一个**不可见的逻辑壳**（继续承载输入/冷却）。计划原阶段8"不再实例化重的 symbol"必须改写为"**隐藏可见图层、保活隐形逻辑壳**"。
+- **留 AS2（领域服务层）**：`WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService`、`ManualCooldownService`、`SkillLoadoutService` / `SkillPanelService` 持有输入、冷却和技能管理权威；这些职责不迁入 C#。旧 HUD 仅保留可选 renderer，以及尚未替换的药剂拖放 hitTest 等显示列表能力。
+- **最终形态 = 双轨后收敛**：当前是 C# 只读显示目标 + AS2 服务权威 + XFL 兼容投影/命中壳。阶段8 可先隐藏可见图层，但只有药剂拖放等剩余 MC 能力替代、Skill S6 观察门通过后，才能停止实例化对应旧壳；AS2 服务本身继续存活。
 
 **这正是阶段0的价值**：它在写一行 C# 之前就拦下了会造成严重回归的陷阱——技能无冷却连发 / 技能完全无法施放（冷却权威丢失）/ 键盘施放链路被切断。
 
@@ -220,7 +220,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 **经阶段0 修正的两条额外约束**：
 
-- **C3 — 阶段1 不只是"时间轴脚本外置"，必须同时把 §2.2 的输入/冷却逻辑从 MC 时间轴剥离成 AS2 类**。2026-07-12 已完成两刀：F 键采样、按住锁存与 release 编排进 `WeaponSkillInputService`，动作请求统一进入 `UnitActionIntentService`；随后 12 槽快捷技能的 live 键位采样、逐槽锁存与 release/cooldown 编排进入 `QuickSkillInputService`。两者都保留旧进度条作为 compatibility port；药剂输入与全部冷却权威仍待迁移。不先完成剩余剥离就做阶段7/8 必炸。
+- **C3 — 阶段1 不只是"时间轴脚本外置"，必须同时把 §2.2 的输入/冷却/技能写从 MC 时间轴剥离成 AS2 类**。2026-07-15 已完成：战技、12 槽快捷技能与 4 槽药剂分别进入 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService`，17 路冷却进入 `ManualCooldownService`，技能装备/卸下/排序/被动写进入 `SkillLoadoutService`。旧进度条仅为可选 renderer，旧 Skill 入口只委托服务；阶段7/8 的剩余停止线已缩小到药剂拖放等显式 MC 能力和观察门。
 - **C4 —（作废，误报）frameEnd 心跳迁出**：经核对 frameEnd 心跳已是主 FLA 舞台上独立的 `frameend事件发生器` symbol，玩家信息界面 库内为空层 leftover（见 §3.1）。**无需迁出动作**。
 - **C5 — 动作输入试水使用“边沿意图”，不新增 `动作D`**：`动作A/B/C` 是跨帧 held-state，且 Launcher 输入采样协议的 8-bit mask 已被方向、A/B/C、Shift 占满；把 F/战技硬塞成 `动作D` 会同时扩大单位字段、AI/状态机和 Launcher 协议面。本轮只新增本地 `UnitActionIntentService`：每个 channel 至多一个短寿命意图，以 `kind/inputFrame/ttl/priority/payload` 描述一次动作请求，消费即删除；业务层自行裁决冷却、弹药、当前 man 与动画。combat channel 目前接普通战技、副武器 F 换弹，以及仅用于跨越跑姿归一化初始化帧的一次性主武器 R 换弹；F/R 的 man-ready 意图窗口均有两帧上限，不是动作锁或后台重试。12 槽快捷技能刻意**不接 combat mailbox**：同一帧允许多个独立槽各尝试一次，单槽邮箱会产生覆盖；它们用单位上的逐槽按住锁存直接调用既有 `释放技能`。药剂、Launcher mask 及 A/B/C 语义保持不变。
 
@@ -229,7 +229,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 已知长期脆弱点：玩家改键后，技能槽 HUD 显示的键 与 实际触发键 常不同步。经 4-agent 追踪定性——**这是单源投影失效（缓存陈旧），不是双存储分裂**，故新架构能结构性消除它，无需当下专门修 bug，只需把取数语义钉对。
 
 - **键位唯一权威 = `_root.键值设定`**（35 项 `[显示名, 键名, 键码]`，UI交互_fs_按键设定.as:15-51）；`KeyManager.refreshKeySettings` 从它同步派生 `_root[键名]` 全局 + `keySettingsCache`。
-- **历史脱钩发生地 = 技能控制器（快捷技能栏×12）**：旧帧0 把键码一次性快照进 `扳机键值`，按下/显示/释放用快照，唯独松开读 live `_root[扳机键]`。2026-07-12 已消除此快照：`QuickSkillInputService` 每帧从 `_root.快捷技能栏键N` 读取行为键码，并在键码变化时刷新 `控制器N.mytext`；旧 `技能控制器` 不再含 `Key.isDown`、`释放技能` 或 `扳机键值`。药剂控制器仍读 live；战技行为侧由帧计时器读取 live `_root.武器技能键`，显示文字仍是 XFL load 时快照，后续显示迁移需继续治理。
+- **历史脱钩发生地 = 技能控制器（快捷技能栏×12）**：旧帧0 把键码一次性快照进 `扳机键值`，按下/显示/释放用快照，唯独松开读 live `_root[扳机键]`。2026-07-12 已消除此快照：`QuickSkillInputService` 每帧从 `_root.快捷技能栏键N` 读取行为键码，并在键码变化时刷新 `控制器N.mytext`；旧 `技能控制器` 不再含 `Key.isDown`、`释放技能` 或 `扳机键值`。药剂行为也已由 `DrugInputService` 读取 live 键位；战技行为侧由帧计时器读取 live `_root.武器技能键`，显示文字仍是 XFL load 时快照，后续显示迁移需继续治理。
 - **第二条更隐蔽的脱钩源**：`SaveManager.as:1386` 读档 `_root.键值设定 = 主角储存数据[10]` 后**不调** `刷新键值设定()`（全仓仅 2 处调用：启动 + 改键 UI）→ 自定义键档载入后 live 投影整体陈旧，**行为与显示双双停旧值**（这条连行为都错，非仅显示）。
 
 **新架构以 state→projection 模型继续收口**。快捷技能已经在 AS2 层保证“行为读 = 显示读 = live 投影”，下列钩子留给 PlayerInfoState/读档链：
@@ -243,25 +243,25 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 **本切片已完成**：快捷技能行为侧快照与显示快照同批移除，并发布独立 UI SWF。**仍不做（留后续治理）**：① 移动键侧潜在第二脱钩（`_root.按键设定表` 仅 12 项 vs `_root.键值设定` 35 项）；② 木偶版 vs 主角函数版 `获取键值` 语义不一致；③ SaveManager 读档后补 `刷新键值设定()`；④ 战技显示文字的运行时改键同步。
 
-> **⚠️ 治理顺序风险**：快捷技能已通过同批迁移行为采样与文字刷新解除此风险。后续战技/药剂和 C# PlayerInfoState 仍必须遵守“显示侧与行为侧同批，或显式记账先后”，不得重新引入键码快照。
+> **⚠️ 治理顺序风险**：快捷技能已通过同批迁移行为采样与文字刷新解除此风险，药剂行为采样也已服务化；战技/药剂显示与 C# PlayerInfoState 后续仍必须遵守“显示侧与行为侧同批，或显式记账先后”，不得重新引入键码快照。
 
 ### 4.2 跨主线依赖：技能独立主线 + 物品/药剂主线
 
-玩家当前给药剂/技能"装备"= 从技能/背包界面把图标**拖到 HUD 槽**，"卸载"= 点槽上的叉（技能）/ 冷却态点槽（药剂）。HUD 槽既是【显示目标】（本主线A）又是【拖放落点 + 卸载控件】；但管理域现已按权威模型拆开：药剂归 [物品/药剂主线](物品系统-双栏工作台-架构设计-2026-06-15.md)，技能归 [Skill 独立主线](技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md)。**回答"是否必须先完成双栏才能干净迁 HUD"：否；技能也不再等待物品装备纵切。**
+阶段0 时，药剂/技能“装备”都依赖把图标拖到 HUD 槽，“卸载”依赖技能叉或药剂槽交互。现已按权威模型拆开：技能归 [Skill 独立主线](技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md)，S0–S5 已接管技能学习/装备/卸下/排序/被动写；药剂仍归 [物品/药剂主线](物品系统-双栏工作台-架构设计-2026-06-15.md)。**回答"是否必须先完成双栏才能干净迁 HUD"：否；Skill 侧已经独立解除，药剂侧另行收口。**
 
-事实（角度1/2 核实）：装/卸的**落点/控件物理上就是 HUD 槽 MC**（药剂=`快捷药剂界面.hitTest`+`药剂图标列表[i].area.hitTest` InventoryIcon.as:152/156；技能=`快捷技能界面.hitTest`+`快捷技能栏i.hitTest` 技能图标.xml:325/331；技能卸载=12 个叉 button `on(release) 取消装备技能(N)` 快捷技能界面.xml:308-467；药剂卸载无叉=`DrugIcon.Press` 冷却态 + 耗尽自动卸）。**但这是实现耦合非本质耦合**——所有写权威（`物品栏.药剂栏`/`快捷技能栏N`/`主角技能表`/`主角被动技能`/`gameworld[控制目标].被动技能`）全在 HUD MC 之外、由 SaveManager 落盘；HUD MC 只是落点+显示+触发重绘。
+阶段0 事实：装/卸的**落点/控件物理上就是 HUD 槽 MC**（药剂=`快捷药剂界面.hitTest`+`药剂图标列表[i].area.hitTest`；技能=`快捷技能界面.hitTest`+`快捷技能栏i.hitTest`；技能卸载为 12 个叉 button）。当前 Skill 入口已全部委托 `SkillLoadoutService`，Web 面板也不需要 HUD hitTest；旧技能 MC 只作 fallback/renderer。药剂拖放落点仍保留该物理耦合，因此不能从 Skill 已解耦倒推出整个玩家信息 symbol 可删除。
 
 依赖分层：
 
 | HUD 阶段 | 对管理主线的依赖 |
 |---|---|
-| 1-6 只读镜像 + 双轨 | **零依赖，并行**。双轨保留 AS2 隐形逻辑壳（hitTest 落点 + 叉），装/卸照旧 |
-| 7-8 facade / 隐藏可见层 | **不阻塞，但有硬约束**：隐藏 = `_visible=0` on **真 MC**，**绝不可** facade→Object / 停 placement（否则 hitTest + 叉 on(release) 全失效，见 R4）；且 AS2 隐形 hitTest MC 必须与 C# 可见槽**坐标对齐**，拖放才落对槽 |
-| 9 彻底删壳 / 移除 §2.2#6 停止线 | 分域软依赖：技能槽依赖 Skill 主线 S1（输入描述符脱 HUD）+ S3（装卸写接管）；药剂槽仍依赖物品/药剂管理切片。两者均完成后 HUD 槽才退化为纯 renderer |
+| 1-6 只读镜像 + 双轨 | **零依赖，并行**。AS2 服务继续持有输入/冷却/Skill 权威；旧 MC 可保留为视觉 oracle 和药剂命中壳 |
+| 7-8 facade / 隐藏可见层 | Skill 侧不再要求 HUD hitTest/叉；药剂侧仍要求 `_visible=0` 的真 MC 与 C# 可见槽坐标对齐，未替代前不可 facade→Object / 停 placement |
+| 9 彻底删壳 / 移除 §2.2#6 停止线 | Skill S1/S3 已完成，但旧技能 UI 退役仍受 S6 观察门约束；药剂槽仍依赖物品/药剂管理切片。两者门均闭合后 HUD 槽才可只剩新 renderer |
 
-**结论与建议**：三线并行。HUD 的只读镜像不等待任何管理面板；Skill S1 先把 `QuickSkillInputService` 的槽描述符从 HUD MovieClip 抽到 `SkillLoadoutService`，Skill S3 再接管技能 equip/unequip，由此独立解除技能删壳停止线。药剂另走自己的 AS2 权威服务/物品域写，不能为等待它重新把技能并回通用 equip。**概念上：equip/unequip 不属于 HUD 显示；当前借 HUD 当落点只是可移除的实现耦合。**
+**结论与建议**：三线并行不变。HUD 的只读镜像不等待管理面板；Skill S1/S3 已把槽描述符与 equip/unequip/reorder/passive 写迁到 `SkillLoadoutService`，独立解除了技能功能对 HUD 的依赖。药剂继续走自己的 AS2 权威服务/物品域写，不能为等待它重新把技能并回通用 equip。**概念上：equip/unequip 不属于 HUD 显示；旧 HUD 落点只是正在退役的实现耦合。**
 
-**留给两条管理主线接手的接口缺口（记此备查，不在本主线修）**：① 两种快捷栏都不注册成 inventory-domain owned 容器；技能使用 `skillKey + targetSlot + skillRevision` 的独立 `skills` 协议，药剂使用 `containerId=药剂栏 + targetSlot` 写 `DrugInventory`，HUD 镜像均由 AS2 投影、Web 不得直写；② Skill 主线必须保留被动技能重算、动态 CD/MP 和 EasyMode 重复装备语义；③ 药剂 unequip 必须保留冷却门控 + 耗尽自动清栏；④ `技能图标` 多份同源 symbol 的运行态命中仍需在 Skill S0 核查，S6 清理前消解 duplicate linkage，不倒推采用旧 1-6 槽语义。
+**接口闭环状态**：① 技能已使用 `skillKey + slot + expectedRevision` 的独立 `skills` 协议，且不注册为 inventory-domain 容器；被动重算、动态 CD/MP、EasyMode 重复装备语义与坏档重复行 fail-closed 均已落地。② 药剂仍应以独立容器写处理装备，必须保留冷却门控、耗尽自动清栏与 4 槽权威。③ Skill S6 清理前仍须完成观察样本和旧 UI 退役审计；这不是重新开放 Skill/装备域耦合的理由。
 
 ---
 
@@ -271,7 +271,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 |---|---|---|
 | 0 | 行为基线盘点 | ✅ 本文完成；停止线触发 |
 | ~~0.5~~ | — | **作废（误报）**：frameEnd 心跳已迁出主 FLA（见 §3.1），无需新增阶段 |
-| 1 | AS2 外部脚本化（仅 bootstrap） | **进行中**：战技输入已迁 `WeaponSkillInputService`，12 槽快捷技能输入已迁 `QuickSkillInputService`；两者旧 cooldown port 暂留。后续继续剥离药剂输入与全部冷却权威（C3） |
+| 1 | AS2 外部脚本化（仅 bootstrap） | **核心停止线已完成**：战技/快捷技能/药剂输入、17 路冷却与 Skill 装备写均已进入 AS2 服务；旧进度条只作 renderer。剩余为药剂拖放等独立 MC 能力与退役观察门 |
 | 2 | 建立 PlayerInfoState | 不变；显式 `cur/target`（C1）；先收 HP/MP/exp/mode/ammo，技能/药剂/战技后置 |
 | 3 | UiData 发布 | 不变；frameEnd 批量（C2）；新增 `pi_charName/pi_sp/pi_buffs` |
 | 4 | 资源管线 | 不变；静态图标复用 `launcher/web/icons`；装饰动画（血槽网格/光效）可砍 |
@@ -283,12 +283,21 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 ### 5.1 12 槽快捷技能输入抽离施工记录（2026-07-12）
 
+> 本节保留 2026-07-12 当日历史切片，描述的是“输入已抽离、冷却与装备尚未抽离”的中间态；当前闭环以 §5.2 为准。
+
 - **AS2 入口**：玩家模板初始化安装 `_root.快捷技能输入控制器`；`通信_fs_帧计时器.as::键盘输入控制目标` 每帧调用 `update(控制对象)`。即使暂停也继续采样松键，是否允许触发由服务内部的“未暂停且当前玩家总数为 1”判定。
 - **输入与锁存**：`QuickSkillInputService` 固定按槽 1→12 读取 `_root.快捷技能栏键N`，单位字段 `__quickSkillInputConsumedSlots[N]` 独立记录本次按住是否消费。冷却未就绪时按住不消费、就绪后可直接触发；进入一次业务尝试后，无论释放成功或失败都必须松键再触发。
 - **业务编排**：服务调用既有 `unit.释放技能(已装备名, 消耗mp, liveKeyCode)`；仅成功时调用对应 `进度条N.冷却开始(冷却时间)`，并在一帧内合并 MP 刷新。该服务不持有技能装备、MP、技能条件或冷却计时权威。
 - **UI 降级**：`sprite/技能控制器.xml` 的透明控件不再挂 `onClipEvent(enterFrame)`；帧1只初始化键位文字并 `stop()`，帧10仅 `stop()`。AS 服务在 live 键码变化时刷新 `控制器N.mytext`，因此行为与显示不再使用旧 `扳机键值` 快照。
 - **验证证据**：TestLoader 新鲜 trace 为 `LongGunSubWeaponCoreTest: 446/446 passed, 0 failed`，编译器 `0 个错误, 0 个警告`；`scripts/asLoader.swf` 与 `flashswf/UI/玩家信息界面.swf` 均经刷新门重新发布。FFDec 导出确认 asLoader 含 `QuickSkillInputService`、根桥安装与帧计时器调用；快捷技能 DefineSprite 仅余 `inputOwnedByAS`、live 键位文字与两个 `stop()`，无 `Key.isDown`/`释放技能`/`扳机键值`。
-- **边界**：本切片不迁移 `Symbol 1791` 冷却状态机、技能装备/卸载、图标 attachMovie/拖放 hitTest、药剂输入与库存扣减；这些仍是后续停止线项目。
+- **当日边界**：该切片当时未迁移 `Symbol 1791` 冷却状态机、技能装备/卸载、图标 attachMovie/拖放 hitTest、药剂输入与库存扣减；其中冷却、Skill 写、药剂输入/扣减已于 2026-07-15 后续切片关闭，仅药剂拖放等 MC 能力仍开放。
+
+### 5.2 手动冷却、药剂输入与 Skill 管理闭环（2026-07-15）
+
+- `ManualCooldownService` 成为 17 路手动冷却唯一 authority，旧进度条支持随时绑定/重绑但只接受投影；`WeaponSkillInputService`、`QuickSkillInputService`、`DrugInputService` 均不因 renderer 缺失而 fail-closed。
+- `DrugInputService` 接管 4 槽 live 键位、使用、冷却、库存扣减和耗尽清栏；`SkillLoadoutService` 接管描述符、装备/卸下/排序/被动、动态 CD/MP、副作用回滚与 `dirtyMark`，`SkillPanelService` 提供教师学习和完整 snapshot。
+- 旧玩家信息界面的技能叉、技能图标及学习入口均改为服务委托并保留 fallback；Skill Web 面板 S0–S5 已工程落地，但旧 UI 删除仍受 S6 的 7 天 / 100 次管理入口 / 30 次教师入口观察门约束。
+- fresh CS6 trace：`SkillLoadoutServiceTest` 45/45、`SkillPanelServiceTest` 42/42、`LongGunSubWeaponCoreTest` 472/472、`ManualCooldownServiceTest` 50/50、`DrugInputServiceTest` 19/19，编译器 0 error / 0 warning；`scripts/asLoader.swf` 与 `flashswf/UI/玩家信息界面.swf` 已刷新。
 
 ---
 
@@ -297,7 +306,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 | ID | 风险 | 等级 | 缓解 |
 |---|---|---|---|
 | R1 | **弹药 ~60 写点在 SWF 美术帧脚本**（variableName 绑定），无法类 setter 拦截 | 高 | facade 用 `addProperty`/动态字段兜底；阶段6 专项核验弹药显示不静默失效 |
-| R2 | **手动冷却权威仍在 UI**（§2.2#2），剥离/复刻错位 = 无冷却连发或无法施放；战技与快捷技能输入虽已迁 AS2，仍分别经共享/逐槽 cooldown port 依赖旧进度条 | 高 | 下一切片把冷却状态迁入 AS2，端口切为 AS authority + 旧进度条 renderer；保留 `当前玩家总数==1` 守卫；AI 路径不受影响 |
+| ~~R2~~ | ~~手动冷却权威仍在 UI~~ → **已解除**：`ManualCooldownService` 持有 17 路逻辑冷却，三条输入服务只读写该 authority，旧进度条只作 renderer | — | 50/50 fresh trace + LongGun/Drug 回归；继续禁止底层释放函数绕过服务自行判冷却 |
 | ~~R3~~ | ~~frameEnd 心跳随 HUD 砍 = FPS 调度断源~~ → **已解除（误报）**：心跳是主 FLA 独立 symbol，本 SWF 为空层 leftover（见 §3.1） | — | 无需处理 |
 | R4 | **阶段7 facade 破坏面**：onEnterFrame/`_currentframe`/gotoAndStop 帧标签/命名 TextField/variableName 绑定/深层子 MC 路径/attachMovie/hitTest/`_visible` 九类 MC 能力 | 高 | facade 最小必须保留这九类能力（见盘点 facade 视角清单）；或先剥离逻辑后 facade 仅承显示 |
 | R5 | **裸别名 `_root.玩家必要信息界面`**：dominator 武器/暴走怪攻击模式帧脚本可能依赖 | 中 | 真机确认是否已失效；活跃则重定向到 `_root.玩家信息界面.玩家必要信息界面` |
@@ -306,7 +315,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 | R8 | **误把"技能图标 asLoader 故障幸存"当成"技能子系统健壮"**（§3.2）：健壮的只是 SWF 原生出图载体 + 稳态 boot 数据；CD/MP/释放/键位/冷却同在 s7、同样脆 | 中 | 阶段1 区分【显示载体（原生 attachMovie linkage，勿改走 staged 函数）】vs【数据/交互（按 asLoader 依赖对待）】；换图靠 linkage ID 非帧标签；populate 源是 SaveManager |
 | R9 | **键位投影仍有剩余治理面**（§4.1）：快捷技能的行为/显示快照已同批解除；但 SaveManager 读档不刷新 live 投影、战技文字仍为 load 快照，PlayerInfoState 若发"算好的字母"还会把快照失效搬进 C# | 中 | 保留 H1-H4（发键名/改键标脏/读档纳入触发集/注释钉不变量）；后续战技/药剂仍要求显示侧与行为侧同批治理 |
 | R10 | **快捷药剂第 5 格结构齐全但无数据**（§3.3）：按视觉/实例数（5）推断功能槽 → 误布 5 槽超 `DrugInventory` 容量 4；控制器4 是真实例易被当成已接逻辑 | 中 | 功能槽数以数据层（`初始化药剂栏图标` cap 4 / `DrugInventory` 容量 4）为准；第 5 格作保留占位，勿接逻辑 |
-| R11 | **装备/卸载交互末端跨主线依赖**（§4.2）：技能与药剂若仍借 HUD hitTest/叉作写入口，阶段8 用 facade→Object/停 placement 会使交互失效 | 中 | HUD/Skill/药剂三线并行；技能删壳等 Skill S1+S3，药剂删壳等药剂管理切片；此前隐藏仍用 `_visible=0` 真 MC + 坐标对齐 |
+| R11 | **装备/卸载交互末端跨主线依赖只剩药剂侧**（§4.2）：Skill S1/S3 已接管技能写，旧叉仅委托；药剂拖放仍借 HUD hitTest，阶段8 提前 facade→Object/停 placement 会使其失效 | 中 | Skill 旧 UI 等 S6 观察门后退役；药剂删壳等物品/药剂管理切片，未完成前药剂命中壳仍用 `_visible=0` 真 MC + 坐标对齐 |
 
 ---
 
@@ -317,11 +326,11 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 | C# NativeHud | ★★★★★ 生产就绪 | `INativeHudWidget`/`IUiDataConsumer` + 5 widget + GDI+ layered window + 点击穿透全 ready，新 widget ~90% 复用 ComboWidget 范式 |
 | UiData 通道 | ★★★★☆ | `FrameBroadcaster.pushUiState` 在跑，加 20-30 字段协议零破坏、C# 处理 1.25μs/帧 |
 | 资源管线 | ★★★★☆ | FFDec CLI 内置；静态图标 100% 复用 `launcher/web/icons`；多帧/矢量/动态文字需 C# 新建 |
-| AS2 玩家信息界面 | ★★☆☆☆ | **非纯展示层**：战技与 12 槽快捷技能输入已抽离；药剂输入、冷却权威及装备/库存写操作仍在 XFL；另有 161 个历史调用点与 onEnterFrame 缓动 |
+| AS2 玩家信息界面 | ★★★☆☆ | **权威逻辑已大幅脱壳**：战技/快捷技能/药剂输入、17 路冷却及 Skill 装备写均已服务化；旧 XFL 主要保留 renderer、药剂拖放命中和 161 个历史显示列表调用点 |
 
 **难度分层**：
 - **只读 C# 显示镜像（阶段3-6 核心）**：中等偏低、低风险（基础设施成熟）。
-- **完整迁移（含逻辑剥离 + facade + 退场）**：**中等偏高**，风险集中在 C3（逻辑剥离）、R1（弹药散点）、R2（冷却权威）。
+- **完整迁移（含 facade + 退场）**：**中等**；C3 与 R2 已关闭，剩余风险集中在 R1（弹药散点）、R4（显示列表能力）、R11（药剂命中）及真实观察门。
 - **建议**：先做一个最小纵切（HP/MP 显示双轨对比），验证镜像保真与 state-first 链路，再决定是否投入逻辑剥离。
 
 ---

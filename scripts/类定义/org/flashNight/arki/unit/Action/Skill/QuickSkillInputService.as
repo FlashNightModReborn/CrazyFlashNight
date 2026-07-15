@@ -2,6 +2,7 @@
 
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard;
+import org.flashNight.arki.skill.SkillLoadoutService;
 
 /**
  * @class QuickSkillInputService
@@ -115,9 +116,12 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     ):Object {
         if (!unit || typeof unit.释放技能 != "function" || !isEquippedSkill(skillSlot)) return null;
 
-        var skillName:String = SkillReleaseGuard.normalizeSkillName(skillSlot.已装备名);
-        var cooldownTime:Number = Number(skillSlot.冷却时间);
-        var released:Boolean = unit.释放技能(skillName, skillSlot.消耗mp, keyCode) ? true : false;
+        var skillName:String = SkillReleaseGuard.normalizeSkillName(
+            skillSlot.__domainDescriptor === true ? skillSlot.skillKey : skillSlot.已装备名
+        );
+        var cooldownTime:Number = Number(skillSlot.__domainDescriptor === true ? skillSlot.cooldownMs : skillSlot.冷却时间);
+        var mpCost:Number = Number(skillSlot.__domainDescriptor === true ? skillSlot.mp : skillSlot.消耗mp);
+        var released:Boolean = unit.释放技能(skillName, mpCost, keyCode) ? true : false;
         var cooldownStarted:Boolean = false;
 
         if (released) {
@@ -180,7 +184,12 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     }
 
     private static function getSkillSlot(view:Object, slotIndex:Number):Object {
-        return view ? view["快捷技能栏" + slotIndex] : null;
+        // TestLoader 的显式 fixture 仍可隔离测试输入锁存；生产读路径只认领域描述符。
+        if (view && view.__skillInputFixture === true) return view["快捷技能栏" + slotIndex];
+        var descriptor:Object = SkillLoadoutService.getSlotDescriptor(slotIndex);
+        if (!descriptor || descriptor.stateHealth != "ok" || descriptor.writeBlocked === true) return null;
+        descriptor.__domainDescriptor = true;
+        return descriptor;
     }
 
     private static function getCooldownBar(view:Object, slotIndex:Number):Object {
@@ -192,6 +201,12 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     }
 
     private static function isEquippedSkill(skillSlot:Object):Boolean {
+        if (skillSlot && skillSlot.__domainDescriptor === true) {
+            return skillSlot.equipped === true
+                && SkillReleaseGuard.normalizeSkillName(skillSlot.skillKey) != null
+                && !isNaN(Number(skillSlot.mp)) && Number(skillSlot.mp) >= 0
+                && !isNaN(Number(skillSlot.cooldownMs)) && Number(skillSlot.cooldownMs) >= 0;
+        }
         return SkillReleaseGuard.isEquippedSlot(skillSlot);
     }
 }

@@ -1,5 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/SkillReleaseGuard.as
 
+import org.flashNight.arki.skill.SkillLoadoutService;
+
 /**
  * @class SkillReleaseGuard
  * @description 快捷技能从 UI 槽位进入角色状态机前的统一校验边界。
@@ -31,6 +33,8 @@ class org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard {
 
         var skillName:String = normalizeSkillName(rawSkillName);
         if (skillName == null) return null;
+        // 生产根对象必须先通过唯一行/合法等级守卫；重复或坏档技能不得靠旧 first-match helper 施法。
+        if (root === SkillLoadoutService.root() && !SkillLoadoutService.isReleaseAllowed(skillName)) return null;
         if (typeof root.根据技能名查找主角技能等级 != "function"
             || typeof root.根据技能名查找全部属性 != "function") {
             return null;

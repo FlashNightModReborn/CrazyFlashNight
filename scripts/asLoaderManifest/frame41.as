@@ -12,6 +12,7 @@ import org.flashNight.arki.item.itemIcon.*;
 import org.flashNight.arki.key.*;
 import org.flashNight.arki.map.*;
 import org.flashNight.arki.merc.*;
+import org.flashNight.arki.skill.*;
 import org.flashNight.arki.stageSelect.*;
 import org.flashNight.arki.task.*;
 import org.flashNight.arki.unit.*;
@@ -35,6 +36,7 @@ _root.__boot.f41_1 = function() {
     #include "../展现/UI交互/UI交互_lsy_对话文本.as"
     #include "../逻辑系统分区/商城系统_WebView.as"
     #include "../逻辑系统分区/物品系统_WebView.as"
+    #include "../逻辑系统分区/技能系统_WebView.as"
     #include "../逻辑系统分区/地图系统_WebView.as"
     #include "../逻辑系统分区/选关系统_WebView.as"
     #include "../逻辑系统分区/竞技场系统_WebView.as"

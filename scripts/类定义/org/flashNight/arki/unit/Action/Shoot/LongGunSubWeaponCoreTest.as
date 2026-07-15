@@ -1805,7 +1805,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function makeQuickSkillView():Object {
-        var view:Object = {};
+        var view:Object = {__skillInputFixture:true};
         for (var slotIndex:Number = 1; slotIndex <= QuickSkillInputService.SLOT_COUNT; slotIndex++) {
             view["快捷技能栏" + slotIndex] = {
                 是否装备: 1,

@@ -28,12 +28,19 @@ var Panels = (function() {
         var pending = _pendingOpen;
         _pendingOpen = null;
         if (notifyHost && typeof Bridge !== 'undefined' && Bridge && Bridge.send) {
-            Bridge.send({
+            var closeMessage = {
                 type: 'panel',
                 cmd: 'close',
-                panel: pending.id,
-                reason: reason || 'lazy_cancel'
-            });
+                panel: pending.id
+            };
+            if (pending.id === 'skills') {
+                // skills close 是独立的四键 exact envelope。即使面板尚未完成 lazy
+                // 注册，也要用 Host 下发的实例撤销教师 capability，不能夹带 reason。
+                closeMessage.panelInstanceId = String(pending.initData && pending.initData.panelInstanceId || '');
+            } else {
+                closeMessage.reason = reason || 'lazy_cancel';
+            }
+            Bridge.send(closeMessage);
         }
         return pending;
     }
@@ -82,7 +89,11 @@ var Panels = (function() {
     }
 
     function _doOpen(id, initData) {
-        if (_active === id) return;
+        if (_active === id) {
+            var activePanel = _registry[id];
+            if (activePanel && activePanel.onRebind) activePanel.onRebind(activePanel._el, initData);
+            return;
+        }
         if (_active) close();
         var panel = _registry[id];
         if (!panel) { console.error('[Panels] panel not registered: ' + id); return; }
@@ -150,6 +161,15 @@ var Panels = (function() {
     function open(id, initData) {
         console.log('[Panels] open called: id=' + id + ', _active=' + _active + ', registered=' + !!_registry[id]);
         if (!_registry[id]) { console.error('[Panels] panel not registered: ' + id); return; }
+
+        // Most panels intentionally keep same-name open as a no-op. Stateful panels that
+        // receive a new Host capability/session (skills manage <-> trainer) opt into an
+        // explicit rebind hook so the existing pause lease and DOM host stay in place.
+        if (_active === id) {
+            var activePanel = _registry[id];
+            if (activePanel && activePanel.onRebind) activePanel.onRebind(activePanel._el, initData);
+            return;
+        }
 
         // 同一字段同时覆盖“资源门等待”和“lazy 依赖等待”的最新请求；close / 切 panel
         // 都能沿用既有取消语义，不会在 manifest 到达后把已关闭面板重新拉起。

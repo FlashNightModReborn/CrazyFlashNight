@@ -64,6 +64,7 @@ namespace CF7Launcher.Bus
             InventoryTask inventoryTask,
             NpcShopTask npcShopTask,
             CraftingTask craftingTask,
+            SkillTask skillTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
             ArenaTask arenaTask,
@@ -106,6 +107,10 @@ namespace CF7Launcher.Bus
             // 合成工作台 domain 回包路由
             if (craftingTask != null)
                 router.RegisterAsync("crafting_response", craftingTask.HandleFlashResponse);
+
+            // 独立技能面板 domain 回包路由
+            if (skillTask != null)
+                router.RegisterAsync("skill_response", skillTask.HandleFlashResponse);
 
             // 地图面板回包路由
             if (mapTask != null)
@@ -275,6 +280,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "inventory_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "npcshop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);

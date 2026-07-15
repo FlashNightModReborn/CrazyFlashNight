@@ -1,11 +1,13 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `08084a577e`（2026-07-13）；合成工作台 C0-C3 另核对本轮工作树；Skill 独立迁移边界另核对 commit `6ff3308f38`（2026-07-15）。
+**最后核对代码基线**：commit `36666b3cf1`（2026-07-15）+ 当前 Skill 施工工作树；合成工作台 C0-C3 另核对本轮工作树。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
-专题规划：[技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md](../docs/技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md) 已冻结 `panel/domain=skills`、管理/教师双模式、学习 token 原子提交和快捷栏模型抽离路线；当前仍是规划态，未落地的 `skill*` 命令不得提前加入下方“已接入”闭环表。
+专题规划与施工记录：[技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md](../docs/技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md) 已落地 `panel/domain=skills`、管理/教师双模式、学习 token 原子提交和快捷栏模型抽离；我的技能主入口归 NativeHud / fallback Notch 的独立 `SKILLS`，NPC 教师保留情境入口，旧物品栏技能页不迁成 Web 转发器。Skill 使用 same-panel rebind + 顶层 `panelInstanceId`、`reconcileId/reconcileAfterCallId` 显式未知写对账、active/candidate/return trainer capability 撤销、正确 escaping JSON encoder，以及观察期旧 UI writer 领域 bridge；这些差异不得照抄 Crafting 的普通 snapshot/generation 恢复。教师页提供 Host 盖章的 `switch_manage`；只有该路径派生的 manage 实例得到 `canReturnTrainer=true` 并可发 `switch_trainer`，trainer session 始终留在 Host、learnToken 不跨 view。Web 展示层复用 `GridDensityController`、`FilterNavigator` 的按钮/计数/键盘 primitive、`PointerDragController/InteractionBroker` 与 `PanelTooltip.convertAS2Html`，manage 采用全宽技能库 + 1—12 单排技能带；紧凑态与物品 owned grid 共用 `48px` 格、`40px` 图标和 `4px` 间距，完整卡共用 `68px` 高度节奏，但不复用物品 taxonomy/facets/lease。技能→快捷槽保持 equip 确认，技能→技能格直接调用既有 reorder 交换；常驻上移/下移退役，`Alt+↑/↓` 保留非指针兜底。已装备目标、普通模式已装备源及异常行在排序落点阶段拒绝；EasyMode 只放宽已装备源。Skill 不再照搬物品目录树：形态、配置/学习、流派三组直接 facet 始终同时可见，首击即生效、跨组可组合并支持一键清除；武术、科技等流派按真实 `Type` 投影。名称搜索默认收起；manage 不显示 metric，trainer 只保留等级/技能点，稳定同步/刷新/协议术语退出常态视觉层。异常态才显示玩家语言的重试/确认结果与诊断复制，复制内容保留实例/revision/callId/reconcile 但禁止输出 trainer session/learnToken。S0–S5 代码与自动门、四个实际 Flash 目标发布及 FFDec 静态证据已接入；NativeHud `SKILLS` 的真实 Win32 manage 点击已覆盖常规、生产最小、4:3 与 1920×1080 几何，真实 `The Girl → 学习技能` 已打开 `技能研习` 并渲染 `兴奋剂 / 能量盾`，此前 trainer→manage same-panel rebind 也已通过；新布局/往返尚只有自动几何证据。旧技能页的两个 live 图标实例以互斥 child-depth 指纹确认实际命中 main `DefineSprite 53`，不是 things id2706；S4C 现只缺 legacy fallback 事务等价/重启回读，S5 现只缺 legacy Notch/fallback、pending-write/断线真机 Gate，S6 观察/旧 UI 删除仍按专题规划保持未完成。
+
+Skill 最新展示收口又视觉隐藏通用 L/R slot marker，但不删除 slot/ARIA/焦点语义；顶栏 `?` 以同一 Web 模态按 manage/trainer 投影不同操作说明，帮助开闭不触发 AS2/Host 消息也不清理筛选或选择。三组 direct facet 与真实流派映射加入后，manage 以两行承载三组筛选；物品/技能共享尺寸 token、技能格交换拖拽、排序拒绝落点和 `Alt+↑/↓` 均已接入。完整/紧凑现在明确只控制技能库，Hotbar 固定为居中的 `12×64px` 方槽、`48px` 图标与 `3px` 间距，使用连续底板；选中态保留等级，卸载 `×` 仅在悬停/聚焦时与等级切换。帮助模态提供本机安全/快速快捷栏确认偏好：安全模式空槽直装而替换/卸载确认，快速模式三者直写，但两种模式都不能绕过技能学习确认；偏好不进入存档或 wire。Edge 三视口门为 `102/102`，物品格视觉矩阵仍为 `10/10`。内置交互浏览器仍无实例，故该变化只有自动 DOM/几何证据。
 
 ## 1. 迁移分级
 
@@ -76,6 +78,20 @@ NPC 金币商店使用独立 `npcshop` domain 与 `NpcShopTask`，不复用 K �
 | `preview` | `craftingPreview` | `executePreview` | `crafting_response` | `panel_resp domain=crafting cmd=preview` | 详情栏 callback | 读；接收 `craftCount=1..99`，重算总材料/余额/容量并铸 `craftToken` |
 | `tooltip` | `craftingTooltip` | `executeTooltip` | `crafting_response` | `panel_resp domain=crafting cmd=tooltip` | tooltip callback | 读 |
 | `commit` | `craftingCommit` | `executeCommit` | `crafting_response` | `panel_resp domain=crafting cmd=commit` | 提交 callback | 材料/背包/金币/K 点原子写 |
+
+Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，业务字段只进 `payload`。Host 同时维护写水位与 trainer active/candidate 清理 backlog，不同未发送 scoped cleanup 必须收敛 global cleanup：
+
+| Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
+|---------|-----------|-------------|-------------------|---------------|------------|--------|
+| `snapshot` | `skillSnapshot` | `SkillPanelService.handle("snapshot")` | `skill_response` | `panel_resp domain=skills cmd=snapshot` | `SkillCoordinator` callback | 读 / 显式 reconcile probe |
+| `learnPreview` | `skillLearnPreview` | `handle("learnPreview")` | `skill_response` | `panel_resp domain=skills cmd=learnPreview` | preview callback | 读；签发单次 learn token |
+| `learnCommit` | `skillLearnCommit` | `handle("learnCommit")` | `skill_response` | `panel_resp domain=skills cmd=learnCommit` | `SkillCoordinator` | 技能行 + SP 原子写 |
+| `equip` | `skillEquip` | `handle("equip")` | `skill_response` | `panel_resp domain=skills cmd=equip` | `SkillCoordinator` | 12 槽写 |
+| `unequip` | `skillUnequip` | `handle("unequip")` | `skill_response` | `panel_resp domain=skills cmd=unequip` | `SkillCoordinator` | 12 槽写 |
+| `setPassive` | `skillSetPassive` | `handle("setPassive")` | `skill_response` | `panel_resp domain=skills cmd=setPassive` | `SkillCoordinator` | 被动启停写 |
+| `reorder` | `skillReorder` | `handle("reorder")` | `skill_response` | `panel_resp domain=skills cmd=reorder` | `SkillCoordinator` | 80 行顺序写 |
+
+`switch_manage/switch_trainer` 是 panel-control，不进入上表的 AS2 业务闭环：固定 envelope 均为 `{type:"panel",panel:"skills",cmd,panelInstanceId,payload:{v:1,focusSkillKey}}`。Host 必须验证 exact top-level/payload 键集、当前 active skills 实例和 `SkillTask` 当前 view。trainer→manage 时 learnToken 失效，session 只暂存 Host，manage initData 仅投影 `canReturnTrainer=true`；manage→trainer 只允许这个派生实例，并从 Host 恢复 session，Web 不得上传 session。关闭/断线清理暂存能力，NativeHud manage 仍须通过真实 NPC `panel_request` 才能进入 trainer。展示复用保持窄边界：Skill 可用共享密度、`FilterNavigator` 按钮/计数/键盘、pointer drag 和 AS2 HTML 白名单注释 primitive；Skill 自建三组 direct facet，不使用物品 `branchTree`/面包屑，分类器、状态与 DOM class 均归 Skill，自始至终不得引入 inventory domain、AS2 facets 或 slot lease。
 
 `snapshot` 下发配方索引、标题、产物展示投影、基础货币消耗、材料条数、`batchEligible`，并为每条配方增加 `canCraftOne + availability`；仍不把当前材料拥有量批量复制进最多 90 项的目录。Flash 对每条配方只构造一次 `craftCount=1` 的只读计划，复用与 preview 相同的等级、材料、货币与保守容量语义，但不做 `maxCraftCount` 二分探测；因此 snapshot 工作量被约束为“一条配方一次单份计划、零最大份数探测”。产物投影包含 `majorType/use/actionType/weaponType`，Web 复用共享 `ItemFilter` 在完整 snapshot 上做纯展示树筛选，筛选不改变稳定 `recipeIndex`；目录可显示状态标记、可合成计数和本地“只看可合成”，这些均为最近一次 snapshot 的引导信息，提交权威仍只来自随后 preview/token。选择单项后由 `preview` 解析 `#`（装备强化门槛 / 普通物品数量）、`##`（装备数量）和可选阶数，情报/图纸只门控不消耗。Flash 同时重算角色等级 + 逆向等级、铁匠 `max(0,1-level×0.05)` 双货币倍率、装备素材最高强化继承、余额和容量，返回逐材料 `owned/required/enough/consumed`、产物、调整后价格、阻塞原因与 `canCommit`。容量保持旧系统的保守语义：在扣素材前调用 `ItemUtil.require`，不依赖“同笔消耗腾格”；这可能拒绝一个理论上可由消耗腾格完成的合成，但不会产生部分写。
 

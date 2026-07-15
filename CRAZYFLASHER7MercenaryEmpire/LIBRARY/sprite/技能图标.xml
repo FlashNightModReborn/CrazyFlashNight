@@ -105,59 +105,20 @@ stop();]]></script>
 	this._visible = 0;
 	if (_parent._parent._name == "物品栏界面")
 	{
-		switch (_root.主角技能表[_parent.对应数组号][0])
+		var 技能行 = _root.主角技能表[_parent.对应数组号];
+		var 技能名 = 技能行[0];
+		for (var i = 1; i < 13; i++)
 		{
-			case _root.快捷技能栏1 :
+			if (_root["快捷技能栏" + i] == 技能名)
+			{
 				this._visible = 1;
 				break;
-			case _root.快捷技能栏2 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏3 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏4 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏5 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏6 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏7 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏8 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏9 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏10 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏11 :
-				this._visible = 1;
-				break;
-			case _root.快捷技能栏12 :
-				this._visible = 1;
-				break;
-			default :
-				_root.主角技能表[_parent.对应数组号][2] = "false";
-				this._visible = 0;
+			}
 		}
-		if (this._visible == 1)
+		var 技能元数据 = _root.技能表对象[技能名];
+		if (技能元数据 && 技能元数据.Passive && !技能元数据.Equippable)
 		{
-			_root.主角技能表[_parent.对应数组号][2] = "true";
-		}
-		if (_root.主角技能表[_parent.对应数组号][3] == "被动")
-		{
-			this._visible = _root.主角技能表[_parent.对应数组号][4];
-		}
-		else
-		{
-			_root.主角技能表[_parent.对应数组号][4] = this._visible == 1 ? true : false;
+			this._visible = 技能行[4] == true || 技能行[4] == "true";
 		}
 	}
 }]]></script>
@@ -262,15 +223,17 @@ stop();]]></script>
 	{
 		_root.技能栏技能图标注释(this.对应数组号);
 		var 技能信息 = _root.主角技能表[this.对应数组号];
-		if (技能信息[2] == "true")
+		var 已装备 = false;
+		for (var i = 1; i < 13; i++)
 		{
-			技能信息[2] = true;
+			if (_root["快捷技能栏" + i] == 技能信息[0])
+			{
+				已装备 = true;
+				break;
+			}
 		}
-		else if (技能信息[2] == "false")
-		{
-			技能信息[2] = false;
-		}
-		if (!技能信息[2] && 技能信息[3] != "被动")
+		var 技能元数据 = _root.技能表对象[技能信息[0]];
+		if (!已装备 && 技能元数据 && 技能元数据.Equippable)
 		{
 			_root.鼠标.gotoAndStop("手型准备抓取");
 		}
@@ -288,19 +251,35 @@ on (press) {
 	_root.注释结束();
 	if (_parent._name == "物品栏界面")
 	{
-		if (_root.主角技能表[this.对应数组号][3] == "被动")
+		var 技能信息 = _root.主角技能表[this.对应数组号];
+		var 技能元数据 = _root.技能表对象[技能信息[0]];
+		if (技能元数据 && 技能元数据.Passive && !技能元数据.Equippable)
 		{
-			_root.主角技能表[this.对应数组号][4] = !_root.主角技能表[this.对应数组号][4];
-			_root.更新主角被动技能();
-			_root.gameworld[_root.控制目标].被动技能 = _root.主角被动技能;
+			var 当前启用 = 技能信息[4] == true || 技能信息[4] == "true";
+			var 被动结果 = _root.legacySkillSetPassive(技能信息[0], !当前启用);
+			if (!被动结果.success)
+			{
+				_root.发布消息(_root.获得翻译("技能操作失败") + "：" + 被动结果.error);
+			}
 		}
-		else if (!_root.主角技能表[this.对应数组号][2] || _root.isEasyMode())
+		else if (技能元数据 && 技能元数据.Equippable)
 		{
-			this.图标壳.图标.gotoAndStop(2);
-			startDrag(this,1);
-
-			_root.鼠标.gotoAndStop("手型抓取");
-			this.swapDepths(500 + random(100));
+			var 已装备 = false;
+			for (var i = 1; i < 13; i++)
+			{
+				if (_root["快捷技能栏" + i] == 技能信息[0])
+				{
+					已装备 = true;
+					break;
+				}
+			}
+			if (!已装备 || _root.isEasyMode())
+			{
+				this.图标壳.图标.gotoAndStop(2);
+				startDrag(this,1);
+				_root.鼠标.gotoAndStop("手型抓取");
+				this.swapDepths(500 + random(100));
+			}
 		}
 	}
 }
@@ -309,48 +288,39 @@ on (release) {
 	this.图标壳.图标.gotoAndStop(1);
 	if (_parent._name == "物品栏界面")
 	{
+		var 技能信息 = _root.主角技能表[this.对应数组号];
+		var 已处理 = false;
 		for (each in _root.物品栏界面)
 		{
 			var 技能格 = _root.物品栏界面[each];
-			if (技能格.area.hitTest(_root._xmouse, _root._ymouse, true) && 技能格.图标是否可对换位置 == 1 && !_root.主角技能表[技能格.对应数组号][2])
+			if (!已处理 && 技能格.area.hitTest(_root._xmouse, _root._ymouse, true) && 技能格.图标是否可对换位置 == 1 && 技能格._name != this._name)
 			{
-				if (技能格._name != this._name)
+				var 排序结果 = _root.legacySkillReorder(技能信息[0], 技能格.对应数组号);
+				已处理 = true;
+				if (!排序结果.success)
 				{
-					temp_h = 技能格.对应数组号;
-					temp_s = _root.主角技能表[temp_h];
-					_root.主角技能表[temp_h] = _root.主角技能表[this.对应数组号];
-					_root.主角技能表[this.对应数组号] = temp_s;
+					_root.发布消息(_root.获得翻译("技能排序失败") + "：" + 排序结果.error);
 				}
 			}
-			if (技能格.area.hitTest(_root._xmouse, _root._ymouse, true) && _root.玩家信息界面.快捷技能界面.hitTest(_root._xmouse, _root._ymouse, true))
+			if (!已处理 && 技能格.area.hitTest(_root._xmouse, _root._ymouse, true) && _root.玩家信息界面.快捷技能界面.hitTest(_root._xmouse, _root._ymouse, true))
 			{
-				var 技能信息 = _root.主角技能表[this.对应数组号];
 				for (var i = 1; i < 13; i++)
 				{
 					var 当前技能栏 = _root.玩家信息界面.快捷技能界面["快捷技能栏" + i];
 					if (当前技能栏.hitTest(_root._xmouse, _root._ymouse, true))
 					{
-						_root["快捷技能栏" + i] = 技能信息[0];
-						当前技能栏.对应数组号 = this.对应数组号;
-						当前技能栏.已装备名 = 技能信息[0];
-						当前技能栏.是否装备 = 1;
-						var 该技能全部属性 = _root.根据技能名查找全部属性(技能信息[0]);
-						当前技能栏.冷却时间 = 该技能全部属性.CD;
-						当前技能栏.消耗mp = 该技能全部属性.MP;
-						当前技能栏.图标 = "图标-" + _root["快捷技能栏" + i];
-						当前技能栏.数量 = 技能信息[1];
-						当前技能栏.gotoAndStop("默认图标");
-						技能信息[2] = true;
-						技能信息[4] = true;
-						_root.更新主角被动技能();
-						_root.gameworld[_root.控制目标].被动技能 = _root.主角被动技能;
+						var 装备结果 = _root.legacySkillEquip(技能信息[0], i);
+						已处理 = true;
+						if (!装备结果.success)
+						{
+							_root.发布消息(_root.获得翻译("技能装备失败") + "：" + 装备结果.error);
+						}
 						break;
 					}
 				}
 			}
 		}
 		_root.排列技能图标();
-		this.removeMovieClip();
 	}
 	else if (_parent._name == "学习技能界面")
 	{
@@ -363,12 +333,6 @@ on (release) {
 		_parent.准备购买的物品等级限制 = 技能信息.UnlockLevel;
 		_parent.gotoAndStop("结算");
 	}
-	/*else if (_parent._name == "快捷技能界面" && _root.全鼠标控制 == true)
-	{
-		if (this.已装备名 != "" && _parent[进度条].冷却 == true)
-		{
-		}
-	}*/
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

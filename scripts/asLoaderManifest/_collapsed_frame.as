@@ -1,6 +1,6 @@
 ﻿// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。
 // ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。
-// 联合头 81 包 + 具体类 9 | staged fN 13 | loader-fire fN 16 | s0..s9 分组 + BootSequencer.run
+// 联合头 82 包 + 具体类 9 | staged fN 13 | loader-fire fN 16 | s0..s9 分组 + BootSequencer.run
 // 异步/控制帧(f4握手/f5,6 await/f7→s5_parseTask/f26 最终化2 队列/f75 craft/f91 handoff) 由 BootSequencer.as 编排。
 this._lockroot = false;
 this.stop();
@@ -52,6 +52,7 @@ import org.flashNight.arki.map.*;
 import org.flashNight.arki.merc.*;
 import org.flashNight.arki.render.*;
 import org.flashNight.arki.scene.*;
+import org.flashNight.arki.skill.*;
 import org.flashNight.arki.spatial.animation.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.spatial.transform.*;
@@ -338,6 +339,7 @@ _root.__boot.f41_1 = function() {
     #include "../展现/UI交互/UI交互_lsy_对话文本.as"
     #include "../逻辑系统分区/商城系统_WebView.as"
     #include "../逻辑系统分区/物品系统_WebView.as"
+    #include "../逻辑系统分区/技能系统_WebView.as"
     #include "../逻辑系统分区/地图系统_WebView.as"
     #include "../逻辑系统分区/选关系统_WebView.as"
     #include "../逻辑系统分区/竞技场系统_WebView.as"

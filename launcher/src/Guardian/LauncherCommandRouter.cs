@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian
 {
@@ -31,6 +32,16 @@ namespace CF7Launcher.Guardian
         private readonly Action<bool> _onPanelStateChanged;
         private readonly Action<string> _setActivePanel;
         private PanelHostController _panelHost;
+        private string _activeFallbackPanelInstanceId;
+        private string _activeFallbackPanelName;
+        private string _deferredFallbackSkillInitData;
+        private static long _fallbackPanelInstanceSequence;
+        private SkillTask _skillTask;
+        private Func<string, bool> _gameCommandSenderOverride;
+        private readonly object _skillOpenLock = new object();
+        private System.Threading.Timer _skillOpenTimer;
+        private int _skillOpenGeneration;
+        internal int SkillOpenTimeoutMs { get; set; } = 1800;
 
         public LauncherCommandRouter(
             Bus.XmlSocketServer socketServer,
@@ -58,6 +69,25 @@ namespace CF7Launcher.Guardian
 
         /// <summary>二阶段注入：Program.cs 先 new Router，再 new PanelHostController(...)，最后 SetPanelHost 回注。</summary>
         public void SetPanelHost(PanelHostController host) { _panelHost = host; }
+        public void SetSkillTask(SkillTask task) { _skillTask = task; }
+        internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
+        internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
+        internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
+        internal void ClearFallbackPanelInstance()
+        {
+            _activeFallbackPanelInstanceId = null;
+            _activeFallbackPanelName = null;
+            _deferredFallbackSkillInitData = null;
+        }
+
+        internal void FlushDeferredFallbackSkillRebind()
+        {
+            if (_panelHost != null || _skillTask == null || !_skillTask.CanRebind) return;
+            string initData = _deferredFallbackSkillInitData;
+            if (initData == null) return;
+            _deferredFallbackSkillInitData = null;
+            OpenPanel("skills", initData);
+        }
 
         /// <summary>
         /// SAFEEXIT click → 触发 SafeExitPanelWidget.Arm()。Program.cs 在 widget 实例化后注入。
@@ -187,6 +217,18 @@ namespace CF7Launcher.Guardian
                 case "INTELLIGENCE":
                     OpenPanel("intelligence", "{\"mode\":\"prod\",\"source\":\"runtime\",\"debug\":false}");
                     break;
+                case "SKILLS":
+                    LogManager.Log("[Router] SKILLS clicked");
+                    LogManager.Log("event=skill_panel_open_requested source=notch");
+                    int skillOpenGeneration = BeginSkillOpenWait();
+                    if (!TrySendGameCommand("skillPanelOpen"))
+                    {
+                        CancelSkillOpenWait(skillOpenGeneration);
+                        LogManager.Log("[Router] SKILLS skillPanelOpen preflight failed");
+                        LogManager.Log("event=skill_panel_open_failed reason=preflight_send");
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"技能面板暂时不可用，请从旧物品界面进入\"}");
+                    }
+                    break;
                 case "BAKE": SendGameCommand("bakeIcons"); break;
                 case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
                 case "BAKE_SKILL": SendGameCommand("bakeSkillIcons"); break;
@@ -286,6 +328,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "crafting", StringComparison.OrdinalIgnoreCase))
             {
                 OpenCraftingPanel(safeSource, initDataExtrasJson);
+                return;
+            }
+            if (string.Equals(panelName, "skills", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenSkillsPanel(initDataExtrasJson);
                 return;
             }
             if (string.Equals(panelName, "arena", StringComparison.OrdinalIgnoreCase))
@@ -420,6 +467,136 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void OpenSkillsPanel(string initDataExtrasJson)
+        {
+            JObject initData;
+            if (!TryBuildSkillsInitData(initDataExtrasJson, out initData))
+            {
+                LogManager.Log("[Router] OpenSkillsPanel rejected extras");
+                LogManager.Log("event=skill_panel_open_failed reason=invalid_panel_request");
+                return;
+            }
+            CancelSkillOpenWait();
+            if (initData.Value<string>("view") == "trainer" && _skillTask != null && !_skillTask.CanOpenTrainer)
+            {
+                // 旧写状态/旧教师能力尚未安全清理时，不展示刚由 AS2 建立的新 session。
+                // 先打开 manage 完成显式 reconcile；cleanup 落地后玩家可再次与教师交互。
+                LogManager.Log("[Router] trainer open downgraded to manage until skill reconcile/cleanup settles");
+                LogManager.Log("event=skill_panel_open_fallback reason=trainer_gate target=manage");
+                _skillTask.RequestTrainerCleanup(initData.Value<string>("trainerSession"));
+                initData = BuildSkillsManageInitData();
+            }
+            OpenPanel("skills", initData.ToString(Formatting.None));
+            LogManager.Log("event=skill_panel_opened view=" + initData.Value<string>("view"));
+        }
+
+        internal bool RebindSkillsToManage(string expectedPanelInstanceId, string focusSkillKey)
+        {
+            string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
+            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : _activeFallbackPanelInstanceId;
+            if (_skillTask == null || activeName != "skills" || string.IsNullOrEmpty(activeInstance)
+                || !string.Equals(activeInstance, expectedPanelInstanceId, StringComparison.Ordinal)
+                || !IsPresentationSkillKey(focusSkillKey)
+                || !_skillTask.TrySuspendTrainerForManage(activeInstance))
+            {
+                LogManager.Log("[Router] rejected stale/malformed skills manage rebind");
+                return false;
+            }
+            OpenPanel("skills", BuildSkillsManageInitData(focusSkillKey).ToString(Formatting.None));
+            LogManager.Log("event=skill_panel_rebound from=trainer to=manage");
+            return true;
+        }
+
+        internal bool RebindSkillsToTrainer(string expectedPanelInstanceId, string focusSkillKey)
+        {
+            string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
+            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : _activeFallbackPanelInstanceId;
+            string trainerSession;
+            if (_skillTask == null || activeName != "skills" || string.IsNullOrEmpty(activeInstance)
+                || !string.Equals(activeInstance, expectedPanelInstanceId, StringComparison.Ordinal)
+                || !IsPresentationSkillKey(focusSkillKey)
+                || !_skillTask.TryGetTrainerReturnSession(activeInstance, out trainerSession))
+            {
+                LogManager.Log("[Router] rejected stale/malformed skills trainer return rebind");
+                return false;
+            }
+            OpenPanel("skills", BuildSkillsTrainerReturnInitData(trainerSession, focusSkillKey).ToString(Formatting.None));
+            LogManager.Log("event=skill_panel_rebound from=manage to=trainer source=trainer_return");
+            return true;
+        }
+
+        private static JObject BuildSkillsManageInitData(string focusSkillKey = null)
+        {
+            JObject result = new JObject
+            {
+                ["mode"] = "runtime", ["source"] = "nativehud", ["debug"] = false, ["view"] = "manage"
+            };
+            if (!string.IsNullOrEmpty(focusSkillKey)) result["focusSkillKey"] = focusSkillKey;
+            return result;
+        }
+
+        private static JObject BuildSkillsTrainerReturnInitData(string trainerSession, string focusSkillKey)
+        {
+            JObject result = new JObject
+            {
+                ["mode"] = "runtime", ["source"] = "world_skill_trainer", ["debug"] = false,
+                ["view"] = "trainer", ["trainerSession"] = trainerSession
+            };
+            if (!string.IsNullOrEmpty(focusSkillKey)) result["focusSkillKey"] = focusSkillKey;
+            return result;
+        }
+
+        internal static bool IsPresentationSkillKey(string value)
+        {
+            if (value == null || value.Length > 160) return false;
+            for (int i = 0; i < value.Length; i++)
+                if (char.IsControl(value[i]) || char.IsSurrogate(value[i])) return false;
+            return true;
+        }
+
+        internal static bool TryBuildSkillsInitData(string initDataExtrasJson, out JObject initData)
+        {
+            initData = null;
+            if (string.IsNullOrEmpty(initDataExtrasJson)) return false;
+            JObject extras;
+            try { extras = JObject.Parse(initDataExtrasJson); }
+            catch { return false; }
+            string view = extras.Value<string>("view");
+            if (view != "manage" && view != "trainer") return false;
+            int expected = view == "trainer" ? 2 : 1;
+            if (extras.Count != expected) return false;
+            foreach (JProperty property in extras.Properties())
+                if (property.Name != "view" && property.Name != "trainerSession") return false;
+            string session = extras.Value<string>("trainerSession");
+            if (view == "trainer")
+            {
+                if (!IsOpaqueToken(session)) return false;
+            }
+            else if (extras["trainerSession"] != null) return false;
+            initData = new JObject
+            {
+                ["mode"] = "runtime",
+                ["source"] = view == "trainer" ? "world_skill_trainer" : "nativehud",
+                ["debug"] = false,
+                ["view"] = view
+            };
+            if (view == "trainer") initData["trainerSession"] = session;
+            return true;
+        }
+
+        private static bool IsOpaqueToken(string value)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length > 160) return false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                bool allowed = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+                    || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '~' || c == '-';
+                if (!allowed) return false;
+            }
+            return true;
+        }
+
         // 副本任务（委托任务）：NPC「获得任务」→ AS2 openWebDungeon 发 panel_request panel="tasks"，
         // initData={view:"dungeon",taskId}。与刘海屏 TASK_UI 同走 OpenPanel("tasks", ...)，但携带
         // 副本上下文；task-panel.js onOpen 据 initData.view==="dungeon" 切副本 tab 加载该副本。
@@ -533,12 +710,34 @@ namespace CF7Launcher.Guardian
                 return;
             }
             // Flag OFF fallback：行为与本 PR 之前等价；returnTo 在该路径下不生效
-            string msg;
-            if (string.IsNullOrEmpty(initDataJson))
-                msg = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + panelName + "\"}";
-            else
-                msg = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + panelName + "\",\"initData\":" + initDataJson + "}";
-            PostToWeb(msg);
+            if (_activeFallbackPanelName == "skills" && panelName != "skills" && _skillTask != null)
+                _skillTask.HandleAuthoritativePanelClosed(_activeFallbackPanelInstanceId);
+            if (panelName == "skills" && _skillTask != null
+                && _activeFallbackPanelName == "skills" && !_skillTask.CanRebind)
+            {
+                // 保留旧 instance 供其 RequestMux 完成未知写对账；只记最后一次打开意图。
+                _deferredFallbackSkillInitData = initDataJson;
+                LogManager.Log("[Router] fallback skills rebind deferred");
+                return;
+            }
+            string instanceId = "fallback." + DateTime.UtcNow.Ticks.ToString("x") + "."
+                + System.Threading.Interlocked.Increment(ref _fallbackPanelInstanceSequence).ToString("x");
+            JObject init;
+            if (panelName == "skills" && _skillTask != null)
+                initDataJson = _skillTask.EnrichPanelInitData(initDataJson);
+            try { init = string.IsNullOrEmpty(initDataJson) ? new JObject() : JObject.Parse(initDataJson); }
+            catch { init = new JObject(); }
+            init["panelInstanceId"] = instanceId;
+            JObject msg = new JObject
+            {
+                ["type"] = "panel_cmd", ["cmd"] = "open", ["panel"] = panelName,
+                ["panelInstanceId"] = instanceId, ["initData"] = init
+            };
+            PostToWeb(msg.ToString(Formatting.None));
+            // Post 成功返回才切换 Host 盖章实例，避免旧 RequestMux 的在途 reconcile 被提前改绑。
+            _activeFallbackPanelInstanceId = instanceId;
+            _activeFallbackPanelName = panelName;
+            if (panelName != "skills") _deferredFallbackSkillInitData = null;
             if (_setActivePanel != null) _setActivePanel(panelName);
             if (_onPanelStateChanged != null) _onPanelStateChanged(true);
         }
@@ -565,8 +764,58 @@ namespace CF7Launcher.Guardian
         {
             // 与 WebOverlayForm.TrySendGameCommand 一致：先校验 IsClientReady，再走 TrySend 真实回传 false。
             // 不能依赖 Send() —— Send 在无连接时只是 return（不抛），会让 router 误判 panel 打开成功。
+            string payload = "{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0";
+            if (_gameCommandSenderOverride != null) return _gameCommandSenderOverride(payload);
             if (_socketServer == null || !_socketServer.IsClientReady) return false;
-            return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
+            return _socketServer.TrySend(payload);
+        }
+
+        private int BeginSkillOpenWait()
+        {
+            System.Threading.Timer previous;
+            int generation;
+            lock (_skillOpenLock)
+            {
+                generation = ++_skillOpenGeneration;
+                previous = _skillOpenTimer;
+                _skillOpenTimer = new System.Threading.Timer(delegate { OnSkillOpenTimeout(generation); },
+                    null, Math.Max(1, SkillOpenTimeoutMs), System.Threading.Timeout.Infinite);
+            }
+            if (previous != null) previous.Dispose();
+            return generation;
+        }
+
+        private void OnSkillOpenTimeout(int generation)
+        {
+            System.Threading.Timer timer;
+            bool showToast;
+            lock (_skillOpenLock)
+            {
+                if (generation != _skillOpenGeneration) return;
+                string active = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
+                showToast = active != "skills";
+                _skillOpenGeneration++;
+                timer = _skillOpenTimer;
+                _skillOpenTimer = null;
+            }
+            if (timer != null) timer.Dispose();
+            if (!showToast) return;
+            LogManager.Log("[Router] SKILLS panel_request timeout generation=" + generation);
+            LogManager.Log("event=skill_panel_open_fallback reason=panel_request_timeout target=legacy_inventory");
+            PostToWeb("{\"type\":\"toast\",\"text\":\"技能服务未就绪，请从旧物品界面进入\"}");
+        }
+
+        private void CancelSkillOpenWait(int expectedGeneration = 0)
+        {
+            System.Threading.Timer timer;
+            lock (_skillOpenLock)
+            {
+                if (expectedGeneration != 0 && expectedGeneration != _skillOpenGeneration) return;
+                _skillOpenGeneration++;
+                timer = _skillOpenTimer;
+                _skillOpenTimer = null;
+            }
+            if (timer != null) timer.Dispose();
         }
 
         private static string EscapeJsonString(string s)

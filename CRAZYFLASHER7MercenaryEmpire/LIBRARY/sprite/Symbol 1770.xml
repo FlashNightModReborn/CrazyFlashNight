@@ -55,11 +55,17 @@ _root.全部翻译(this);
                     <script><![CDATA[on (press) {
 	if (_root.gameworld[当前NPC].可学的技能 != undefined)
 	{
-		_root.学习技能界面.可学的技能 = _root.gameworld[当前NPC].可学的技能;
-		_root.学习技能界面.排列技能图标();
-		_root.学习技能界面._visible = 1;
-		_root.物品栏界面.gotoAndStop("技能");
-		_root.物品栏界面._visible = 1;
+		var 教师对象 = _root.gameworld[当前NPC];
+		var 打开结果 = _root.openSkillTrainer(教师对象, "world_skill_trainer");
+		if (!打开结果.success || !打开结果.opened)
+		{
+			_root.学习技能界面.教师对象 = 教师对象;
+			_root.学习技能界面.可学的技能 = 教师对象.可学的技能;
+			_root.学习技能界面.排列技能图标();
+			_root.学习技能界面._visible = 1;
+			_root.物品栏界面.gotoAndStop("技能");
+			_root.物品栏界面._visible = 1;
+		}
 	}
 	else
 	{

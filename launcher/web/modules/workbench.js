@@ -646,9 +646,15 @@
         var nextTarget = this._resolveTarget ? this._resolveTarget(event.clientX, event.clientY, event) : null;
         if (gesture.target && gesture.target.node && (!nextTarget || nextTarget.node !== gesture.target.node)) {
             gesture.target.node.classList.remove('workbench-drop-active');
+            gesture.target.node.classList.remove('workbench-drop-rejected');
         }
         gesture.target = nextTarget;
-        if (gesture.target && gesture.target.node) gesture.target.node.classList.add('workbench-drop-active');
+        if (gesture.target && gesture.target.node) {
+            gesture.target.node.classList.remove(gesture.target.accepted === false
+                ? 'workbench-drop-active' : 'workbench-drop-rejected');
+            gesture.target.node.classList.add(gesture.target.accepted === false
+                ? 'workbench-drop-rejected' : 'workbench-drop-active');
+        }
     };
 
     PointerDragController.prototype._onPointerUp = function(event) {
@@ -672,7 +678,10 @@
         var gesture = this._gesture;
         if (!gesture) return;
         clearTimeout(gesture.timer);
-        if (gesture.target && gesture.target.node) gesture.target.node.classList.remove('workbench-drop-active');
+        if (gesture.target && gesture.target.node) {
+            gesture.target.node.classList.remove('workbench-drop-active');
+            gesture.target.node.classList.remove('workbench-drop-rejected');
+        }
         if (gesture.ghost && gesture.ghost.parentNode) gesture.ghost.parentNode.removeChild(gesture.ghost);
         try {
             if (gesture.captureNode && gesture.captureNode.releasePointerCapture)
@@ -918,6 +927,7 @@
     function GridDensityController(options) {
         options = options || {};
         this.panelId = String(options.panelId || 'default');
+        this.compactClass = String(options.compactClass || 'item-grid-compact');
         this.mode = options.mode === 'compact' || options.mode === 'full'
             ? options.mode : ItemGrid.getLayoutMode(this.panelId);
         this._targets = [];
@@ -938,7 +948,7 @@
         for (var i = 0; i < this._targets.length; i++) if (this._targets[i] === target) return true;
         this._targets.push(target);
         if (target instanceof ItemGrid) target.setLayoutMode(this.mode);
-        else element.classList.toggle('item-grid-compact', this.mode === 'compact');
+        else element.classList.toggle(this.compactClass, this.mode === 'compact');
         return true;
     };
 
@@ -958,7 +968,7 @@
             var element = this._elementOf(target);
             if (!element) continue;
             if (target instanceof ItemGrid) target.setLayoutMode(mode);
-            else element.classList.toggle('item-grid-compact', mode === 'compact');
+            else element.classList.toggle(this.compactClass, mode === 'compact');
         }
         if (changed) {
             for (i = 0; i < this._listeners.length; i++) this._listeners[i](mode);

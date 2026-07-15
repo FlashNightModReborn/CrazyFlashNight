@@ -53,7 +53,7 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSecond
 不传 `-Target` = 编译 **Flash 当前活动文档**（旧行为）。传 `-Target` 则由参数指定，脚本写 `scripts/compile_target.cfg`；`compile_action.jsfl` 读取后立即删除该文件，并据此 close+reopen 目标 FLA 从盘重读：
 
 ```powershell
-# 测试构建（带 trace）：跑 TestLoader 当前入口；物品格/合成施工固定包含 InventoryPanelServiceTest / CraftingPanelServiceTest
+# 测试构建（带 trace）：跑本机被 gitignore 的 TestLoader scratch 入口；仓库不保证固定 suite，专项施工须显式装入并记录 aggregate/template、suite 名与断言数
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -TimeoutSeconds 180
 
 # 发布构建：编 asLoader（自动启用 -VerifySwf scripts/asLoader.swf 刷新门）

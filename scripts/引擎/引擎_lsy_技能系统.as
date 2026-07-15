@@ -10,164 +10,103 @@ _root.根据技能名查找主角技能等级 = function(技能名){
 };
 
 _root.学习技能 = function(技能名, 等级){
-	var 主角技能表 = _root.主角技能表;
-	var 技能信息 = _root.技能表对象[技能名];
-	var 已获得该技能 = false;
-	for(var i = 0; i < 主角技能表.length; i++){
-		var 技能 = 主角技能表[i];
-		if (技能[0] == 技能名){
-			已获得该技能 = true;
-			if (技能[1] < 等级){
-				技能[1] = 等级;
-				_root.排列技能图标();
-				_root.发布消息(_root.获得翻译(技能名) + "，" + _root.获得翻译("技能升级成功！"));
-				if(技能信息.Passive){
-					_root.更新主角被动技能();
-				}
-				return true;
-			}
-		}
+	// 兼容 API 只保留 Boolean 返回/旧提示；写权威统一进入 SkillPanelService 事务。
+	// service 尚未安装、当前 NPC 无教师目录或校验失败时一律 fail-closed。
+	if(typeof _root.legacySkillLearnCommit != "function") return false;
+	var 当前等级:Number = Number(_root.根据技能名查找主角技能等级(技能名));
+	var 教师对象:Object = _root.gameworld ? _root.gameworld[_root.当前NPC] : null;
+	var 结果:Object = _root.legacySkillLearnCommit(技能名, Number(等级), 教师对象);
+	if(!结果 || 结果.success !== true){
+		if(结果 && 结果.error == "skill_table_full" && typeof _root.发布消息 == "function") _root.发布消息(_root.获得翻译("技能槽已满！"));
+		return false;
 	}
-	for(var i = 0; i < 主角技能表.length; i++){
-		var 技能 = 主角技能表[i];
-		if (技能[0] == "" && !已获得该技能){
-			技能[0] = 技能名;
-			技能[1] = 等级;
-			技能[2] = false;
-			技能[3] = 技能信息.Type;
-			技能[4] = false;
-			//被动技能学习时默认开启
-			if(!技能信息.Equippable){
-				技能[2] = true;
-				技能[4] = true;
-			}
-			_root.排列技能图标();
-			_root.发布消息(_root.获得翻译(技能名) + "，" + _root.获得翻译("新技能获得！"));
-			if(技能信息.Passive){
-				_root.更新主角被动技能();
-			}
-			return true;
-		}
+	if(typeof _root.发布消息 == "function"){
+		var 提示:String = 当前等级 > 0 ? "技能升级成功！" : "新技能获得！";
+		_root.发布消息(_root.获得翻译(技能名) + "，" + _root.获得翻译(提示));
 	}
-	_root.发布消息(_root.获得翻译("技能槽已满！"));
-	return false;
+	return true;
 }
 
-_root.更新主角被动技能 = function(){
-	// 确保技能表对象已加载
-	if(!_root.技能表对象){
-		_root.发布调试消息("技能表对象未加载，延迟更新被动技能");
-		return;
-	}
-
+// 纯领域层：不读取 hero、HUD 或物品栏 MovieClip。
+_root.重建主角被动技能领域 = function(){
+	if(!_root.技能表对象 || !(_root.主角技能表 instanceof Array)) return false;
 	_root.主角被动技能 = {};
-	for(var i = 0; i < _root.主角技能表.length; i++){
+	var seen:Object = {};
+	for(var i = 0; i < Math.min(80, _root.主角技能表.length); i++){
 		var 技能 = _root.主角技能表[i];
-		if(技能[0] != ""){
-			var 技能对象 = _root.技能表对象[技能[0]];
-			if(技能对象 && 技能对象.Passive){
-				_root.主角被动技能[技能[0]] = {技能名:技能[0], 等级:技能[1], 启用:技能[4]};
-			}
+		if(!(技能 instanceof Array) || typeof 技能[0] != "string" || 技能[0] == "" || seen["$" + 技能[0]]) continue;
+		seen["$" + 技能[0]] = true;
+		var 技能对象 = _root.技能表对象[技能[0]];
+		if(技能对象 && 技能对象.Passive){
+			var enabled = 技能[4];
+			var enabledBool:Boolean = enabled === true || enabled === 1 || enabled === "true" || enabled === "1";
+			_root.主角被动技能[技能[0]] = {技能名:技能[0], 等级:Number(技能[1]), 启用:enabledBool};
 		}
 	}
+	return _root.动态更新技能冷却领域() !== false;
+};
 
+_root.技能系统投影Hero = function(){
+	if(typeof TargetCacheManager == "undefined" || typeof TargetCacheManager.findHero != "function") return false;
 	var hero:Object = TargetCacheManager.findHero();
 	if(hero){
 		hero.被动技能 = _root.主角被动技能;
-		hero.读取被动效果();
+		if(typeof hero.读取被动效果 == "function") hero.读取被动效果();
+		return true;
 	}
-    _root.动态更新技能冷却();
-}
+	return false;
+};
 
-_root.动态更新技能冷却 = function() {
-	// 初始化原始值记录（如果不存在）
-	if (!_root._技能原始数值) {
-		_root._技能原始数值 = {};
+_root.更新主角被动技能 = function(){
+	if(!_root.重建主角被动技能领域()){
+		if(typeof _root.发布调试消息 == "function") _root.发布调试消息("技能表对象未加载，延迟更新被动技能");
+		return;
 	}
-    // 处理内力爆发被动效果
-    if (_root.主角被动技能 && _root.主角被动技能.内力爆发 && _root.主角被动技能.内力爆发.启用 && _root.主角被动技能.内力爆发.等级 > 0) {
-        var 内力爆发等级 = _root.主角被动技能.内力爆发.等级;
-        var 最大等级 = 10;
-        var 冷却减少比例 = (内力爆发等级 / 最大等级) * 0.5; // 最大减少50%
-        var 额外MP消耗 = 2 * 内力爆发等级;
+	_root.技能系统投影Hero();
+	_root.技能系统投影快捷栏();
+};
 
+_root.动态更新技能冷却领域 = function() {
+	return SkillLoadoutService.recalculateDynamicCooldownDomain();
+};
 
-        // 处理闪现技能
-        var 闪现技能 = _root.技能表对象["闪现"];
-        if (闪现技能) {
-            if (!_root._技能原始数值["闪现"]) {
-                _root._技能原始数值["闪现"] = {
-                    CD: 闪现技能.CD,
-                    MP: 闪现技能.MP
-                };
-            }
-            var 闪现新CD = Math.round(_root._技能原始数值["闪现"].CD * (1 - 冷却减少比例));
-            var 闪现新MP = _root._技能原始数值["闪现"].MP + 额外MP消耗;
-            闪现技能.CD = 闪现新CD;
-            闪现技能.MP = 闪现新MP;
-        }
-
-        // 处理一瞬千击技能
-        var 一瞬千击技能 = _root.技能表对象["一瞬千击"];
-        if (一瞬千击技能) {
-            if (!_root._技能原始数值["一瞬千击"]) {
-                _root._技能原始数值["一瞬千击"] = {
-                    CD: 一瞬千击技能.CD,
-                    MP: 一瞬千击技能.MP
-                };
-            }
-            var 一瞬千击新CD = Math.round(_root._技能原始数值["一瞬千击"].CD * (1 - 冷却减少比例));
-            var 一瞬千击新MP = _root._技能原始数值["一瞬千击"].MP + 额外MP消耗;
-            一瞬千击技能.CD = 一瞬千击新CD;
-            一瞬千击技能.MP = 一瞬千击新MP;
-        }
-    } else {
-        // 内力爆发未启用，恢复原始值
-        if (_root._技能原始数值) {
-            // 恢复闪现原始值
-            if (_root._技能原始数值["闪现"] && _root.技能表对象["闪现"]) {
-                _root.技能表对象["闪现"].CD = _root._技能原始数值["闪现"].CD;
-                _root.技能表对象["闪现"].MP = _root._技能原始数值["闪现"].MP;
-            }
-            // 恢复一瞬千击原始值
-            if (_root._技能原始数值["一瞬千击"] && _root.技能表对象["一瞬千击"]) {
-                _root.技能表对象["一瞬千击"].CD = _root._技能原始数值["一瞬千击"].CD;
-                _root.技能表对象["一瞬千击"].MP = _root._技能原始数值["一瞬千击"].MP;
-            }
-        }
-    }
-	// 处理自动移动射击
-	var 移动射击技能 = _root.技能表对象["移动射击"];
-	if (移动射击技能) {
-		if (!_root._技能原始数值["移动射击"]) {
-			_root._技能原始数值["移动射击"] = {
-				CD: 移动射击技能.CD,
-				MP: 移动射击技能.MP
-			};
+// 可选快捷 HUD renderer：只投影，不参与领域读写。
+_root.技能系统投影快捷栏 = function(){
+	var 玩家界面:Object = _root.玩家信息界面;
+	var 快捷界面:Object = 玩家界面 ? 玩家界面.快捷技能界面 : null;
+	if(!快捷界面) return false;
+	for (var i = 1; i < 13; i++){
+		var 当前技能栏:Object = 快捷界面["快捷技能栏" + i];
+		if(!当前技能栏) continue;
+		var 技能名 = _root["快捷技能栏" + i];
+		if(技能名 == null || 技能名 == ""){
+			当前技能栏.是否装备 = 0;
+			当前技能栏.已装备名 = "";
+			continue;
 		}
-		if(_root.主角被动技能 && _root.主角被动技能.移动射击 && _root.主角被动技能.移动射击.启用 && _root.主角被动技能.移动射击.等级 >= 10){
-			var 移动射击新CD = 1000;
-			移动射击技能.CD = 移动射击新CD;
-		}
+		var 该技能全部属性:Object = _root.技能表对象 ? _root.技能表对象[技能名] : null;
+		if(!该技能全部属性) continue;
+		当前技能栏.是否装备 = 1;
+		当前技能栏.已装备名 = 技能名;
+		当前技能栏.冷却时间 = Number(该技能全部属性.CD);
+		当前技能栏.消耗mp = Number(该技能全部属性.MP);
 	}
-	//尝试自动刷新
-	for (var i = 1; i < 13; i++)
-	{
-		var 当前技能栏 = _root.玩家信息界面.快捷技能界面["快捷技能栏" + i];
-		if(当前技能栏.已装备名 == "闪现" || 当前技能栏.已装备名 == "一瞬千击" || 当前技能栏.已装备名 == "移动射击"){
-			var 该技能全部属性 = _root.根据技能名查找全部属性(当前技能栏.已装备名);
-			if(该技能全部属性.CD && 该技能全部属性.MP){
-				当前技能栏.冷却时间 = 该技能全部属性.CD;
-				当前技能栏.消耗mp = 该技能全部属性.MP;
-			}
-		}
-	}
-}
+	return true;
+};
 
-_root.排列技能图标 = function(){
-	var 物品栏界面 = _root.物品栏界面;
-	_root.玩家信息界面.刷新技能等级显示();
-	if (_root.物品栏界面.界面 == "技能"){
+_root.动态更新技能冷却 = function(){
+	_root.动态更新技能冷却领域();
+	_root.技能系统投影快捷栏();
+};
+
+// 可选旧技能列表 renderer：HUD/物品栏不存在时正常跳过。
+_root.技能系统投影旧列表 = function(){
+	var 物品栏界面:Object = _root.物品栏界面;
+	var 玩家界面:Object = _root.玩家信息界面;
+	if(玩家界面 && typeof 玩家界面.刷新技能等级显示 == "function") 玩家界面.刷新技能等级显示();
+	if (物品栏界面 && 物品栏界面.界面 == "技能" && 物品栏界面.技能图标
+		&& _root.主角技能表 instanceof Array && typeof 物品栏界面.attachMovie == "function"
+		&& typeof 物品栏界面.getNextHighestDepth == "function"){
 		var 图标x = 物品栏界面.技能图标._x;
 		var 图标y = 物品栏界面.技能图标._y;
 		var 图标高度 = 28;
@@ -177,10 +116,12 @@ _root.排列技能图标 = function(){
 		var 换行计数 = 0;
 		
 		for(var i = 0; i < 列数 * 行数; i++){
-			var 技能信息 = 主角技能表[i];
+			var 技能信息 = _root.主角技能表[i];
+			if(!(技能信息 instanceof Array)) 技能信息 = ["", 0, false, "", false];
 
-			物品栏界面["技能图标" + i].removeMovieClip();
+			if(物品栏界面["技能图标" + i]) 物品栏界面["技能图标" + i].removeMovieClip();
 			var 当前技能图标 = 物品栏界面.attachMovie("技能图标","技能图标" + i,物品栏界面.getNextHighestDepth(),{数量:技能信息[1]});
+			if(!当前技能图标) continue;
 
 			当前技能图标._x = 图标x;
 			当前技能图标._y = 图标y;
@@ -202,11 +143,17 @@ _root.排列技能图标 = function(){
 			}
 		}
 	}
-	TargetCacheManager.findHero().读取被动效果();
-}
+	return true;
+};
+
+_root.排列技能图标 = function(){
+	_root.技能系统投影旧列表();
+	_root.技能系统投影Hero();
+};
 
 _root.删除技能图标 = function(){
-	for(var i = 0; i < 80; i ++) _root.物品栏界面["技能图标" + i].removeMovieClip();
+	if(!_root.物品栏界面) return;
+	for(var i = 0; i < 80; i ++) if(_root.物品栏界面["技能图标" + i]) _root.物品栏界面["技能图标" + i].removeMovieClip();
 }
 
 _root.根据技能名查找全部属性 = function(技能名){

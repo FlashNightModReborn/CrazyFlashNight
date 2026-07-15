@@ -9,7 +9,9 @@
   },
   "scripts": {
     "scan": "tsx src/index.ts",
+    "repair-skill-duplicates": "tsx src/skill-duplicate-repair.ts",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "test:watch": "vitest"
   },
   "devDependencies": {

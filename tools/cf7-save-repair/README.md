@@ -21,6 +21,30 @@ npm run scan -- <save.json> --project-root <project-root> --apply
 npm run scan -- <save.json> --project-root <project-root> --json
 ```
 
+## 重复技能行修复
+
+Skill Web 面板会对同名物理技能行 fail-closed，避免排序、装备或施法定位到错误行。
+本工具提供独立的显式修复入口；它不会尝试猜测应保留哪一行，也不会自动合并等级或启用状态。
+
+```bash
+cd tools/cf7-save-repair
+
+# 1. 默认 dry-run：不改原存档；列出每个重复 skillKey 的全部物理行并写审计报告
+npm run repair-skill-duplicates -- <save.json>
+
+# 2. 人工比较后，每组恰好选择一个保留行；apply 还要求固定确认短语
+npm run repair-skill-duplicates -- <save.json> --apply \
+  --keep-row 12 --keep-row 37 \
+  --confirm DUPLICATE-SKILL-ROWS
+```
+
+apply 会先写入 `<save_dir>/.repair-backups/<slot>/` 备份和审计 JSON，再把未选中的
+重复行原位置换为 `["",0,false,"",true]`。技能表不 `splice`、不重排，快捷槽也不修改；
+写回前会再次校验报告绑定的行，防止基于过期扫描结果施工，并 bump `lastSaved` 以走
+Launcher shadow 决议链；保留行和清除行任一发生变化、磁盘文件在原子替换前变化，都会
+拒绝施工。备份名含毫秒且禁止覆盖已有文件。若任一重复组没有且仅有一个 `--keep-row`，
+命令会拒绝修改。
+
 `<project-root>` 必填，用于反推 `launcher/data/save_repair_dict.json` 路径。
 推荐填仓库根：
 `C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight`。
@@ -62,6 +86,7 @@ npm run scan -- <save.json> --project-root <project-root> --json
 
 ```bash
 npm test
+npm run typecheck
 ```
 
-5 个 vitest suite，覆盖 layering / matcher / scan / repair / dict-loader 集成。
+6 个 vitest suite，覆盖 layering / matcher / scan / repair / dict-loader 与重复技能行修复。

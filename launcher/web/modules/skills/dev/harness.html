@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Skills Panel Harness</title>
+  <link rel="stylesheet" href="../../../css/panels.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050709;color:#eee}
+    #qa-output{position:fixed;z-index:5000;right:6px;bottom:6px;max-width:430px;max-height:42vh;overflow:auto;padding:7px;background:#080b0d;border:1px solid #40545c;font:10px/1.35 Consolas;white-space:pre-wrap;pointer-events:none}
+  </style>
+</head>
+<body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<div id="panel-tooltip" style="display:none"></div>
+<pre id="qa-output">running…</pre>
+<script>
+'use strict';
+try{localStorage.removeItem('cf7.skills.loadoutConfirmationMode')}catch(error){}
+window.__copiedDiagnostic='';
+window.__SKILLS_CONFIG__={requestTimeoutMs:120,sessionNonce:'harness',copyText:function(value){window.__copiedDiagnostic=String(value)}};
+window.__sent=[];window.__toasts=[];window.__handlers={};window.__iconKeys=[];
+window.__host={instance:'inst-manage',view:'manage',trainerSession:'trainer-A',revision:7,writeEpoch:0,
+  snapshotDelay:0,previewDelay:0,invalidTrainer:false,previewBlocked:false,unknownNextWrite:false,malformedNextWrite:false,
+  expireNextSnapshot:false,expireNextPreview:false,expireNextWrite:false,writeDelay:8,pendingWriteUntil:0,switchSeq:0,
+  canReturnTrainer:false,returnSession:null};
+
+function copy(value){return JSON.parse(JSON.stringify(value))}
+function learned(skillKey,orderIndex,options){options=options||{};return{
+  skillKey:skillKey,orderIndex:orderIndex,level:options.level==null?1:options.level,maxLevel:options.maxLevel||10,
+  type:options.type||'武术-内力',passive:!!options.passive,equippable:options.equippable!==false,
+  enabled:options.enabled!==false,equippedSlots:options.equippedSlots||[],unlockLevel:options.unlockLevel||1,
+  unlockSP:options.unlockSP||10,upgradeSP:options.upgradeSP||5,mp:options.mp==null?8:options.mp,
+  cooldownMs:options.cooldownMs==null?1200:options.cooldownMs,iconKey:options.iconKey||skillKey,
+  description:options.description||('技能说明：'+skillKey),stateHealth:options.stateHealth||'ok',writeBlocked:!!options.writeBlocked
+}}
+var learnedRows=[
+  learned('闪现',2,{level:3,maxLevel:20,equippedSlots:[4],description:'跨越短距离。\n<font color="#fff">保持为普通文本</font> \\ 路径'}),
+  learned('旋风斩',5,{level:2,type:'武术-兵器'}),
+  learned('铁壁',8,{level:4,type:'被动',passive:true,equippable:false,enabled:true}),
+  learned('缺图技能',10,{level:1,type:'科技',iconKey:'不存在的精确键'}),
+  learned('重复技',12,{level:2,type:'超能力',stateHealth:'duplicate',writeBlocked:true})
+];
+var slotNames={1:'空格',2:'Q',3:'E',4:'R',5:'T',6:'Y',7:'F',8:'G',9:'H',10:'V',11:'B',12:'N'};
+var loadout=[];for(var s=1;s<=12;s++)loadout.push({slot:s,skillKey:null,keyLabel:slotNames[s],stateHealth:'ok',writeBlocked:false});
+loadout[1].skillKey='旧技能';loadout[1].level=null;loadout[1].iconKey=null;loadout[1].stateHealth='unknown';
+loadout[2].skillKey='重复技';loadout[2].level=2;loadout[2].iconKey='重复技';loadout[2].stateHealth='duplicate';loadout[2].writeBlocked=true;
+loadout[3].skillKey='闪现';loadout[3].level=3;loadout[3].iconKey='闪现';
+loadout[11].skillKey='遗留未知技';loadout[11].level=null;loadout[11].iconKey=null;loadout[11].stateHealth='unknown';
+
+function trainerEntries(){return[
+  {skillKey:'闪现',currentLevel:3,maxLevel:20,type:'武术-内力',passive:false,equippable:true,unlockLevel:15,unlockSP:20,upgradeSP:20,mp:14,cooldownMs:1700,iconKey:'闪现',description:'教师提供的闪现说明',stateHealth:'ok',writeBlocked:false},
+  {skillKey:'新手冲拳',currentLevel:0,maxLevel:10,type:'武术-拳法',passive:false,equippable:true,unlockLevel:1,unlockSP:5,upgradeSP:5,mp:3,cooldownMs:500,iconKey:'新手冲拳',description:'尚未学习，目标只能为 1。',stateHealth:'ok',writeBlocked:false},
+  {skillKey:'重复技',currentLevel:2,maxLevel:10,type:'武术-异常',passive:false,equippable:true,unlockLevel:1,unlockSP:1,upgradeSP:1,mp:1,cooldownMs:100,iconKey:'重复技',description:'坏档展示',stateHealth:'duplicate',writeBlocked:true}
+]}
+function authoritativeSnapshot(view,revision){
+  var result={success:true,v:1,revision:revision==null?__host.revision:revision,view:view,
+    player:{level:35,skillPoints:240,easyMode:false},learned:copy(learnedRows),loadout:copy(loadout),trainer:null,
+    diagnostics:[{code:'duplicate_skill_rows',skillKey:'重复技',rowCount:2}]};
+  if(view==='trainer')result.trainer={session:__host.trainerSession,entries:__host.invalidTrainer?['闪现']:trainerEntries()};
+  return result
+}
+function emit(data){(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(data)})}
+function responseBase(message,ctx){return{type:'panel_resp',panel:'skills',domain:'skills',cmd:message.cmd,callId:message.callId,panelInstanceId:ctx.instance,writeEpoch:ctx.writeEpoch}}
+function applyWrite(message){var p=message.payload;
+  if(message.cmd==='equip'){
+    loadout.forEach(function(slot){if(slot.skillKey===p.skillKey){slot.skillKey=null;slot.level=null;slot.iconKey=null;slot.stateHealth='ok'}});
+    var target=loadout[p.slot-1];target.skillKey=p.skillKey;target.level=learnedRows.find(function(x){return x.skillKey===p.skillKey}).level;target.iconKey=p.skillKey;target.stateHealth='ok';target.writeBlocked=false;
+    learnedRows.forEach(function(row){row.equippedSlots=loadout.filter(function(x){return x.skillKey===row.skillKey}).map(function(x){return x.slot})})
+  }else if(message.cmd==='unequip'){
+    var clear=loadout[p.slot-1];clear.skillKey=null;clear.level=null;clear.iconKey=null;clear.stateHealth='ok';clear.writeBlocked=false;
+    learnedRows.forEach(function(row){row.equippedSlots=loadout.filter(function(x){return x.skillKey===row.skillKey}).map(function(x){return x.slot})})
+  }else if(message.cmd==='setPassive'){
+    var passive=learnedRows.find(function(x){return x.skillKey===p.skillKey});if(passive)passive.enabled=!!p.enabled
+  }else if(message.cmd==='reorder'){
+    var source=learnedRows.find(function(x){return x.skillKey===p.skillKey}),target=learnedRows.find(function(x){return x.orderIndex===p.targetIndex});
+    if(source&&target){var old=source.orderIndex;source.orderIndex=target.orderIndex;target.orderIndex=old}
+  }else if(message.cmd==='learnCommit'){
+    var entry=learnedRows.find(function(x){return x.skillKey==='新手冲拳'});if(!entry)learnedRows.push(learned('新手冲拳',14,{level:1,type:'武术-拳法'}));else entry.level=Math.max(entry.level,4)
+  }
+  __host.revision++;__host.writeEpoch++
+}
+function respond(message,ctx){var base=responseBase(message,ctx),p=message.payload||{};
+  if(message.cmd==='snapshot'){
+    if(__host.expireNextSnapshot){__host.expireNextSnapshot=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
+    if(p.reconcileId&&Date.now()<__host.pendingWriteUntil){setTimeout(function(){respond(message,{instance:ctx.instance,view:ctx.view,trainerSession:ctx.trainerSession,revision:__host.revision,writeEpoch:__host.writeEpoch})},__host.pendingWriteUntil-Date.now()+4);return}
+    var snap=authoritativeSnapshot(ctx.view,ctx.revision);Object.assign(base,snap);
+    if(p.reconcileId){base.reconciled=true;base.reconcileId=p.reconcileId;base.writeEpoch=__host.writeEpoch;base.revision=__host.revision;Object.assign(base,authoritativeSnapshot(ctx.view))}
+    emit(base);return
+  }
+  if(message.cmd==='learnPreview'){
+    if(__host.expireNextPreview){__host.expireNextPreview=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
+    var blocked=__host.previewBlocked;Object.assign(base,{success:true,v:1,trainerSession:p.trainerSession,skillKey:p.skillKey,
+      currentLevel:p.skillKey==='新手冲拳'?0:3,desiredLevel:p.desiredLevel,cost:p.skillKey==='新手冲拳'?5:(p.desiredLevel-3)*20,
+      revision:__host.revision,canCommit:!blocked,blockingError:blocked?'insufficient_sp':null,learnToken:blocked?null:'learn.harness.token'});emit(base);return
+  }
+  if(__host.expireNextWrite){__host.expireNextWrite=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
+  var resultCtx={instance:ctx.instance,view:ctx.view,writeEpoch:__host.writeEpoch,revision:__host.revision};
+  applyWrite(message);base.writeEpoch=__host.writeEpoch;base.revision=__host.revision;
+  if(__host.malformedNextWrite){__host.malformedNextWrite=false;Object.assign(base,{success:false,error:'malformed_response',requiresReconcile:true});emit(base);return}
+  var success=Object.assign(base,{success:true,v:1,changed:true,snapshot:authoritativeSnapshot(ctx.view)});
+  if(__host.unknownNextWrite){__host.unknownNextWrite=false;__host.pendingWriteUntil=Date.now()+175;setTimeout(function(){__host.pendingWriteUntil=0;emit(success)},175);return}
+  setTimeout(function(){emit(success)},__host.writeDelay)
+}
+window.Bridge={
+  on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
+  off:function(type,fn){var list=__handlers[type]||[],i=list.indexOf(fn);if(i>=0)list.splice(i,1)},
+  send:function(message){__sent.push(copy(message));if(message.cmd==='close')return true;
+    if(message.cmd==='switch_manage'){
+      setTimeout(function(){__host.switchSeq++;__host.returnSession=__host.trainerSession;__host.canReturnTrainer=true;
+        __host.instance='inst-manage-switch-'+__host.switchSeq;__host.view='manage';
+        Panels.open('skills',{panelInstanceId:__host.instance,view:'manage',focusSkillKey:message.payload.focusSkillKey,canReturnTrainer:true})},0);return true
+    }
+    if(message.cmd==='switch_trainer'){
+      setTimeout(function(){__host.switchSeq++;__host.instance='inst-trainer-return-'+__host.switchSeq;__host.view='trainer';
+        __host.trainerSession=__host.returnSession;__host.canReturnTrainer=false;
+        Panels.open('skills',{panelInstanceId:__host.instance,view:'trainer',trainerSession:__host.trainerSession,focusSkillKey:message.payload.focusSkillKey})},0);return true
+    }
+    var ctx={instance:__host.instance,view:__host.view,trainerSession:__host.trainerSession,revision:__host.revision,writeEpoch:__host.writeEpoch};
+    var delay=message.cmd==='snapshot'?__host.snapshotDelay:message.cmd==='learnPreview'?__host.previewDelay:0;
+    setTimeout(function(){respond(message,ctx)},delay);return true
+  }
+};
+window.Toast={add:function(message){__toasts.push(message)}};
+window.Notch={reportRect:function(){}};
+window.Icons={
+  load:function(callback){callback()},
+  html:function(name,cls){__iconKeys.push(name);if(name==='不存在的精确键')return'';return'<span class="'+(cls||'')+'" data-icon-name="'+String(name).replace(/"/g,'')+'"></span>'}
+};
+</script>
+<script src="../../panel-scale.js"></script>
+<script src="../../workbench.js"></script>
+<script src="../../item-filter.js"></script>
+<script src="../../tooltip.js"></script>
+<script src="../../panels.js"></script>
+<script src="../../skills-runtime.js"></script>
+<script src="../../skills.js"></script>
+<script>
+(async function(){
+  var checks=[];
+  function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}
+  function wait(ms){return new Promise(function(resolve){setTimeout(resolve,ms==null?25:ms)})}
+  async function until(test,timeout){var end=Date.now()+(timeout||1200);while(Date.now()<end){if(test())return true;await wait(15)}return false}
+  function sent(cmd){return __sent.filter(function(item){return item.cmd===cmd})}
+  function row(key){return Array.prototype.find.call(document.querySelectorAll('.skills-library-row'),function(node){return node.getAttribute('data-skill-key')===key})}
+  function clickModalConfirm(){var node=document.querySelector('.workbench-modal-action.primary');if(node)node.click();return!!node}
+  function setHost(init){Object.assign(__host,init);Panels.open('skills',{panelInstanceId:__host.instance,view:__host.view,
+    trainerSession:__host.view==='trainer'?__host.trainerSession:undefined,canReturnTrainer:__host.view==='manage'&&__host.canReturnTrainer===true})}
+  try{
+    Panels.init();setHost({instance:'inst-manage',view:'manage',snapshotDelay:0,invalidTrainer:false,canReturnTrainer:false,returnSession:null});
+    await until(function(){return document.querySelectorAll('.skills-slot').length===12});
+    ok('manage mounts library plus action-strip workbench views',document.querySelector('[data-instance-key="skills:library"]')&&document.querySelector('[data-instance-key="skills:actions"]'));
+    var skillFrames=document.querySelectorAll('.skills-panel .workbench-slot'),skillMarkers=document.querySelectorAll('.skills-panel .workbench-slot-marker');
+    ok('redundant L/R marker bars are visually removed while slot semantics remain',skillMarkers.length===2
+      &&Array.prototype.every.call(skillMarkers,function(node){return getComputedStyle(node).display==='none'})
+      &&skillFrames[0].getAttribute('aria-label').indexOf('技能库')>=0
+      &&skillFrames[1].getAttribute('aria-label').indexOf('快捷技能带')>=0);
+    ok('manage removes routine technical chrome',document.querySelectorAll('.workbench-metric').length===0
+      &&getComputedStyle(document.querySelector('.workbench-status')).display==='none'
+      &&document.querySelector('.skills-refresh-btn').hidden
+      &&document.querySelector('.skills-panel').textContent.indexOf('权威')<0
+      &&document.querySelector('.skills-panel').textContent.indexOf('版本')<0);
+    var beforeHelp=__sent.length,manageHelpButton=document.querySelector('.skills-help-btn');manageHelpButton.focus();manageHelpButton.click();
+    ok('manage help explains equip reorder keyboard fallback filters and search without transport',document.querySelector('.workbench-modal[data-modal-kind="skills-help"]')
+      &&document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能管理帮助'
+      &&document.querySelector('.workbench-modal').textContent.indexOf('拖到另一个技能格')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('Alt + ↑ / ↓')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('形态、配置和流派')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('按 /')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('当前：安全模式')>=0
+      &&document.querySelector('[data-action="confirmation-mode"]')&&__sent.length===beforeHelp);
+    var helpRect=document.querySelector('.workbench-modal').getBoundingClientRect(),panelRect=document.querySelector('.skills-panel').getBoundingClientRect();
+    ok('help modal stays inside the smallest scaled panel canvas',helpRect.top>=panelRect.top-1&&helpRect.left>=panelRect.left-1
+      &&helpRect.right<=panelRect.right+1&&helpRect.bottom<=panelRect.bottom+1);
+    document.querySelector('.workbench-modal-action.primary').click();
+    ok('closing help restores the header help-button focus',document.activeElement===manageHelpButton&&!document.querySelector('.workbench-modal'));
+    var wrongManageView=authoritativeSnapshot('trainer');
+    ok('manage rejects a trainer-view snapshot',SkillsPanel.validateSnapshot(wrongManageView).ok===false);
+    var leakedTrainer=authoritativeSnapshot('manage');leakedTrainer.trainer={session:'trainer-leak',entries:trainerEntries()};
+    ok('manage rejects leaked trainer capability',SkillsPanel.validateSnapshot(leakedTrainer).ok===false);
+    var envelope=sent('snapshot')[0];
+    ok('business envelope uses exact nested payload and instance route metadata',envelope&&Object.keys(envelope).sort().join(',')==='callId,cmd,domain,panel,panelInstanceId,payload,type'&&envelope.panelInstanceId==='inst-manage'&&envelope.payload.v===1&&envelope.payload.view==='manage');
+    ok('business fields never leak to top level',envelope&&!('v'in envelope)&&!('view'in envelope)&&!('expectedRevision'in envelope));
+    ok('renders complete twelve-slot loadout',document.querySelectorAll('.skills-slot').length===12&&document.querySelector('[data-slot="12"]'));
+    var slotTops=Array.prototype.map.call(document.querySelectorAll('.skills-slot'),function(node){return Math.round(node.getBoundingClientRect().top)});
+    ok('manage presents the twelve shortcuts as one continuous skill band',Math.max.apply(Math,slotTops)-Math.min.apply(Math,slotTops)<=1);
+    var densityToggle=document.querySelector('.skills-density-toggle');
+    ok('density switch is explicitly scoped to the skill library',densityToggle.getAttribute('aria-label')==='技能库布局'
+      &&densityToggle.querySelector('.item-grid-mode-label').textContent==='技能库'&&densityToggle.title.indexOf('快捷技能带保持固定')>=0);
+    var firstSlot=document.querySelector('[data-slot="1"]'),firstSlotIcon=firstSlot.querySelector('.skills-slot-icon');
+    var fixedSlotGeometry={width:firstSlot.offsetWidth,height:firstSlot.offsetHeight,icon:firstSlotIcon.offsetWidth};
+    ok('hotbar uses fixed item-like square slots with larger readable icons',fixedSlotGeometry.width===64&&fixedSlotGeometry.height===64
+      &&fixedSlotGeometry.icon===48&&document.querySelector('.skills-loadout-grid').offsetWidth===801);
+    var bandRect=document.querySelector('.skills-loadout-section').getBoundingClientRect(),gridRect=document.querySelector('.skills-loadout-grid').getBoundingClientRect();
+    ok('fixed twelve-slot rail stays centered without stretching cards',Math.abs((bandRect.left+bandRect.right-gridRect.left-gridRect.right)/2)<=1
+      &&gridRect.left>=bandRect.left&&gridRect.right<=bandRect.right&&document.querySelector('.skills-loadout-section > .skills-section-title').textContent==='快捷技能');
+    var idleClear=document.querySelector('[data-slot="2"] .skills-slot-clear'),idleClearStyle=getComputedStyle(idleClear);
+    var clearHidden=idleClearStyle.opacity==='0'&&idleClearStyle.pointerEvents==='none';idleClear.focus();await wait(100);
+    ok('unequip control stays quiet until hover or focus',clearHidden&&getComputedStyle(idleClear).opacity==='1'
+      &&getComputedStyle(idleClear).pointerEvents==='auto');
+    row('闪现').focus();
+    var selectedSlot=document.querySelector('[data-slot="4"]'),selectedClear=selectedSlot.querySelector('.skills-slot-clear'),selectedLevel=selectedSlot.querySelector('.skills-slot-level');
+    ok('selection keeps the level badge visible without a permanent clear-button collision',selectedSlot.classList.contains('selected')
+      &&selectedLevel.textContent==='Lv.3'&&getComputedStyle(selectedLevel).opacity==='1'&&getComputedStyle(selectedClear).opacity==='0');
+    selectedSlot.querySelector('.skills-slot-main').focus();
+    ok('hover or focus explicitly swaps the level badge for the clear action',getComputedStyle(selectedLevel).opacity==='0'
+      &&getComputedStyle(selectedClear).opacity==='1'&&getComputedStyle(selectedClear).pointerEvents==='auto');
+    row('闪现').focus();
+    ok('uses exact snapshot iconKey values',__iconKeys.indexOf('闪现')>=0&&__iconKeys.indexOf('不存在的精确键')>=0);
+    ok('missing icon has visible fallback',document.querySelector('.skills-row-icon.missing .skills-icon-fallback'));
+    ok('manage removes the permanent description hero',!document.querySelector('.skills-detail-hero')&&!document.querySelector('.skills-detail-copy'));
+    row('闪现').dispatchEvent(new PointerEvent('pointerenter',{pointerId:7,clientX:180,clientY:180}));await wait(20);
+    ok('skill annotation safely translates the AS2 htmlText subset',document.querySelector('#panel-tooltip .skills-tooltip span[style*="color"]')
+      &&document.getElementById('panel-tooltip').textContent.indexOf('<font')<0&&!document.querySelector('#panel-tooltip font'));
+    row('闪现').dispatchEvent(new PointerEvent('pointerleave',{pointerId:7,clientX:180,clientY:180}));
+    var facetGroups=document.querySelectorAll('.skills-filter-group'),beforeFacet=sent('snapshot').length;
+    ok('form status and school facets stay visible together',facetGroups.length===3
+      &&document.querySelector('[data-skill-filter="form"]')&&document.querySelector('[data-skill-filter="status"]')
+      &&document.querySelector('[data-skill-filter="school"]'));
+    var formFacetRect=document.querySelector('[data-skill-filter="form"]').getBoundingClientRect();
+    var statusFacetRect=document.querySelector('[data-skill-filter="status"]').getBoundingClientRect();
+    var schoolFacetRect=document.querySelector('[data-skill-filter="school"]').getBoundingClientRect();
+    ok('manage keeps three facets in two compact rows',Math.abs(formFacetRect.top-statusFacetRect.top)<=1
+      &&schoolFacetRect.top>formFacetRect.top&&schoolFacetRect.bottom<=document.querySelector('.skills-library-list').getBoundingClientRect().top+1);
+    ok('school facet exposes actual martial technology and superpower choices',document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]')
+      &&document.querySelector('[data-skill-filter="school"] [data-filter-path="科技"]')
+      &&document.querySelector('[data-skill-filter="school"] [data-filter-path="超能力"]'));
+    document.querySelector('[data-skill-filter="status"] [data-filter-path="equipped"]').click();
+    ok('one facet click immediately filters without authority traffic',document.querySelectorAll('.skills-library-row').length===1&&row('闪现')
+      &&SkillsPanel.debugState().filterPaths.status[0]==='equipped'&&sent('snapshot').length===beforeFacet);
+    document.querySelector('.skills-filter-reset').click();
+    document.querySelector('[data-skill-filter="form"] [data-filter-path="equippable"]').click();
+    document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]').click();
+    ok('independent skill facets compose locally',document.querySelectorAll('.skills-library-row').length===2&&row('闪现')&&row('旋风斩')
+      &&SkillsPanel.debugState().filterPaths.form[0]==='equippable'&&SkillsPanel.debugState().filterPaths.school[0]==='武术');
+    document.querySelector('.skills-filter-reset').click();
+    ok('clear filters restores the full library in one click',document.querySelectorAll('.skills-library-row').length===5
+      &&document.querySelector('.skills-filter-reset').hidden&&sent('snapshot').length===beforeFacet);
+    document.querySelector('.item-grid-mode-option[data-layout-mode="compact"]').click();
+    ok('shared density controller applies the compact skill layout',SkillsPanel.debugState().densityMode==='compact'&&document.querySelector('.skills-panel').classList.contains('skills-density-compact'));
+    var compactTile=row('闪现').getBoundingClientRect();
+    ok('compact density matches the owned-item tile rhythm',Math.abs(compactTile.width-compactTile.height)<12
+      &&row('闪现').offsetHeight===48&&row('闪现').querySelector('.skills-row-icon').offsetWidth===40
+      &&getComputedStyle(row('闪现').querySelector('.skills-row-copy')).display==='none');
+    ok('compact mode leaves the fixed gameplay hotbar geometry unchanged',firstSlot.offsetWidth===fixedSlotGeometry.width
+      &&firstSlot.offsetHeight===fixedSlotGeometry.height&&firstSlotIcon.offsetWidth===fixedSlotGeometry.icon
+      &&document.querySelector('.skills-loadout-grid').offsetWidth===801);
+    document.querySelector('.item-grid-mode-option[data-layout-mode="full"]').click();
+    ok('full density restores the complete skill layout',SkillsPanel.debugState().densityMode==='full'&&!document.querySelector('.skills-panel').classList.contains('skills-density-compact'));
+    ok('search stays collapsed without consuming a normal content row',document.querySelector('.skills-library-controls').hidden
+      &&SkillsPanel.debugState().searchExpanded===false);
+    var searchOrigin=row('闪现');searchOrigin.focus();searchOrigin.dispatchEvent(new KeyboardEvent('keydown',{key:'/',bubbles:true}));await wait(5);
+    ok('slash opens and focuses the on-demand search',!document.querySelector('.skills-library-controls').hidden
+      &&document.activeElement===document.querySelector('.skills-library-controls input')&&SkillsPanel.debugState().searchExpanded===true);
+    var beforeFilter=sent('snapshot').length;document.querySelector('.skills-library-controls input').value='铁壁';document.querySelector('.skills-library-controls input').dispatchEvent(new Event('input',{bubbles:true}));
+    ok('search is local and does not request authority',document.querySelectorAll('.skills-library-row').length===1&&sent('snapshot').length===beforeFilter);
+    document.querySelector('.skills-library-controls input').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+    ok('closing search clears its invisible filter',document.querySelector('.skills-library-controls').hidden
+      &&SkillsPanel.debugState().searchQuery===''&&document.querySelectorAll('.skills-library-row').length===5);
+    var first=document.querySelector('.skills-library-row');first.focus();first.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+    ok('keyboard arrows move library focus',document.activeElement!==first&&document.activeElement.classList.contains('skills-library-row'));
+    row('闪现').click();document.querySelector('[data-slot="2"] .skills-slot-main').click();
+    ok('slot replacement is explicit before write',document.querySelector('.workbench-modal-detail').textContent.indexOf('将替换「旧技能」')>=0&&sent('equip').length===0);
+    clickModalConfirm();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey==='闪现'});
+    var equip=sent('equip').slice(-1)[0];
+    ok('equip sends one atomic write with revision',equip&&equip.payload.skillKey==='闪现'&&equip.payload.slot===2&&equip.payload.expectedRevision===7);
+    ok('equip success redraws authoritative snapshot',document.querySelector('[data-slot="2"] .skills-slot-name').textContent==='闪现');
+    document.querySelector('.skills-help-btn').click();var fastToggle=document.querySelector('[data-action="confirmation-mode"]');fastToggle.click();
+    ok('help switches and persists the opt-in fast loadout mode without closing',document.querySelector('.workbench-modal[data-modal-kind="skills-help"]')
+      &&SkillsPanel.debugState().loadoutConfirmationMode==='fast'
+      &&localStorage.getItem('cf7.skills.loadoutConfirmationMode')==='fast'
+      &&document.querySelector('.workbench-modal-detail').textContent.indexOf('当前：快速模式')>=0);
+    document.querySelector('.workbench-modal-action.primary').click();
+    row('旋风斩').click();var fastEquipCount=sent('equip').length;document.querySelector('[data-slot="2"] .skills-slot-main').click();
+    ok('fast mode bypasses replacement confirmation and starts the same atomic equip',!document.querySelector('.workbench-modal')&&sent('equip').length===fastEquipCount+1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey==='旋风斩'},300);
+    var fastUnequipCount=sent('unequip').length;document.querySelector('[data-slot="2"] .skills-slot-clear').click();
+    ok('fast mode bypasses unequip confirmation without changing the write contract',!document.querySelector('.workbench-modal')&&sent('unequip').length===fastUnequipCount+1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey===null},300);
+    document.querySelector('.skills-help-btn').click();document.querySelector('[data-action="confirmation-mode"]').click();
+    ok('confirmation preference can return to the safe default in place',SkillsPanel.debugState().loadoutConfirmationMode==='safe'
+      &&localStorage.getItem('cf7.skills.loadoutConfirmationMode')==='safe'
+      &&document.querySelector('.workbench-modal-detail').textContent.indexOf('当前：安全模式')>=0);
+    document.querySelector('.workbench-modal-action.primary').click();
+    row('闪现').click();var emptyEquipCount=sent('equip').length;document.querySelector('[data-slot="4"] .skills-slot-main').click();
+    ok('safe mode equips an empty slot directly without a redundant modal',!document.querySelector('.workbench-modal')&&sent('equip').length===emptyEquipCount+1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[3].skillKey==='闪现'},300);
+    row('铁壁').click();var passiveButton=document.querySelector('.skills-detail-actions .skills-action-btn.primary');passiveButton.click();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&learnedRows[2].enabled===false});
+    ok('pure passive uses setPassive rather than a slot',sent('setPassive').slice(-1)[0].payload.enabled===false);
+    ok('persistent up/down reorder buttons are removed from the action strip',!document.querySelector('.skills-order-actions')
+      &&document.querySelector('.skills-panel').textContent.indexOf('上移')<0&&document.querySelector('.skills-panel').textContent.indexOf('下移')<0);
+    var keyboardOrderSource=row('缺图技能'),keyboardTargetIndex=learnedRows.find(function(x){return x.skillKey==='铁壁'}).orderIndex;
+    keyboardOrderSource.focus();keyboardOrderSource.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',altKey:true,bubbles:true}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
+    var keyboardReorder=sent('reorder').slice(-1)[0];
+    ok('Alt plus arrow keeps a nonvisual reorder fallback',keyboardReorder.payload.skillKey==='缺图技能'
+      &&keyboardReorder.payload.targetIndex===keyboardTargetIndex&&document.activeElement===row('缺图技能'));
+    var unknownClear=document.querySelector('[data-slot="12"] .skills-slot-clear');unknownClear.click();clickModalConfirm();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
+    ok('unknown legacy slot remains safely unequippable',sent('unequip').some(function(x){return x.payload.slot===12})&&loadout[11].skillKey===null);
+    row('重复技').click();
+    ok('duplicate skill exposes a player-facing warning and blocks writes',document.querySelector('.skills-corrupt-warning')
+      &&document.querySelector('.skills-corrupt-warning').textContent.indexOf('技能数据异常')>=0
+      &&Array.prototype.every.call(document.querySelectorAll('.skills-detail-actions .skills-action-btn'),function(x){return x.disabled}));
+    document.querySelector('.skills-inline-diagnostic').click();await wait(5);
+    var duplicateDiagnostic=JSON.parse(window.__copiedDiagnostic);
+    ok('exception-only diagnosis copies useful internals without trainer capability',duplicateDiagnostic.reason==='skill_data_error'
+      &&duplicateDiagnostic.panelInstanceId==='inst-manage'&&duplicateDiagnostic.selectedSkill==='重复技'
+      &&duplicateDiagnostic.revision===__host.revision&&!('trainerSession'in duplicateDiagnostic)
+      &&window.__copiedDiagnostic.indexOf('trainerSession')<0&&window.__copiedDiagnostic.indexOf('learnToken')<0);
+    ok('duplicate loadout slot cannot be cleared',document.querySelector('[data-slot="3"] .skills-slot-clear').disabled===true);
+    var reorderDragSource=row('旋风斩'),reorderDragTarget=row('铁壁');
+    var reorderSourceRect=reorderDragSource.getBoundingClientRect(),reorderTargetRect=reorderDragTarget.getBoundingClientRect();
+    var reorderTargetIndex=learnedRows.find(function(x){return x.skillKey==='铁壁'}).orderIndex;
+    reorderDragSource.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:44,button:0,isPrimary:true,clientX:reorderSourceRect.left+4,clientY:reorderSourceRect.top+4}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:44,clientX:reorderTargetRect.left+20,clientY:reorderTargetRect.top+20}));
+    ok('skill-to-skill drag uses the same ghost and valid-target feedback',document.querySelector('.skills-drag-ghost')&&reorderDragTarget.classList.contains('workbench-drop-active'));
+    document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:44,clientX:reorderTargetRect.left+20,clientY:reorderTargetRect.top+20}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
+    var dragReorder=sent('reorder').slice(-1)[0];
+    ok('skill-to-skill drop sends the existing atomic swap contract',dragReorder.payload.skillKey==='旋风斩'
+      &&dragReorder.payload.targetIndex===reorderTargetIndex&&!document.querySelector('.workbench-modal'));
+    row('旋风斩').click();var dragRow=row('旋风斩'),rect=dragRow.getBoundingClientRect();
+    dragRow.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:41,button:0,isPrimary:true,clientX:rect.left+4,clientY:rect.top+4}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:41,clientX:rect.left+30,clientY:rect.top+20}));
+    document.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,pointerId:41}));
+    ok('shared pointer drag cancel cleans source and ghost state',!dragRow.classList.contains('dragging')&&!document.querySelector('.skills-drag-ghost')&&!document.querySelector('.workbench-modal'));
+    var blockedRect=document.querySelector('[data-slot="3"]').getBoundingClientRect();
+    dragRow.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:43,button:0,isPrimary:true,clientX:rect.left+4,clientY:rect.top+4}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:43,clientX:blockedRect.left+15,clientY:blockedRect.top+15}));
+    ok('drag marks a blocked loadout slot as an invalid target',document.querySelector('[data-slot="3"]').classList.contains('workbench-drop-rejected'));
+    document.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,pointerId:43}));
+    var equippedRect=row('闪现').getBoundingClientRect();
+    dragRow.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:45,button:0,isPrimary:true,clientX:rect.left+4,clientY:rect.top+4}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:45,clientX:equippedRect.left+20,clientY:equippedRect.top+20}));
+    ok('equipped skill rows reject order swapping before authority write',row('闪现').classList.contains('workbench-drop-rejected'));
+    document.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,pointerId:45}));
+    var dropRect=document.querySelector('[data-slot="7"]').getBoundingClientRect();dragRow.focus();
+    dragRow.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:42,button:0,isPrimary:true,clientX:rect.left+4,clientY:rect.top+4,pointerType:'touch'}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:42,clientX:dropRect.left+15,clientY:dropRect.top+15,pointerType:'touch'}));
+    ok('drag renders a skill ghost and valid-slot feedback',document.querySelector('.skills-drag-ghost')&&document.querySelector('[data-slot="7"]').classList.contains('workbench-drop-active'));
+    document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:42,clientX:dropRect.left+15,clientY:dropRect.top+15,pointerType:'touch'}));
+    ok('pointer/touch drag to an empty slot shares the direct safe-mode equip path',!document.querySelector('.workbench-modal')&&sent('equip').slice(-1)[0].payload.slot===7);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[6].skillKey==='旋风斩'},300);
+    var slotSevenClear=document.querySelector('[data-slot="7"] .skills-slot-clear');slotSevenClear.focus();slotSevenClear.click();
+    ok('safe-mode unequip still asks before the reversible write',document.querySelector('.workbench-modal[data-modal-kind="skills-unequip-confirm"]'));
+    document.querySelector('.workbench-modal-action[data-action="cancel"]').click();
+    ok('modal cancel restores keyboard focus',document.activeElement===slotSevenClear);
+    document.querySelector('[data-slot="7"] .skills-slot-clear').click();clickModalConfirm();
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[6].skillKey===null},300);
+
+    document.querySelector('.skills-help-btn').click();document.querySelector('[data-action="confirmation-mode"]').click();document.querySelector('.workbench-modal-action.primary').click();
+    ok('fast confirmation preference remains active for trainer safety coverage',SkillsPanel.debugState().loadoutConfirmationMode==='fast');
+    __host.snapshotDelay=90;document.querySelector('.skills-refresh-btn').click();
+    setHost({instance:'inst-trainer-A',view:'trainer',trainerSession:'trainer-A',snapshotDelay:0});
+    await until(function(){return SkillsPanel.debugState().view==='trainer'&&document.querySelector('.skills-trainer-actions')});await wait(110);
+    ok('same-panel manage to trainer performs real rebind',Panels.getActive()==='skills'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-trainer-A');
+    ok('late old-instance snapshot cannot overwrite trainer view',document.querySelector('.workbench-title').textContent==='技能研习'&&SkillsPanel.debugState().view==='trainer');
+    ok('trainer consumes full projected entries',row('新手冲拳')&&document.querySelector('.skills-detail-meta').textContent.indexOf('MP')>=0);
+    ok('trainer keeps only player decision metrics and plain language',document.querySelectorAll('.workbench-metric').length===2
+      &&document.querySelector('[data-metric="level"]')&&document.querySelector('[data-metric="sp"]')
+      &&!document.querySelector('[data-metric="revision"]')
+      &&document.querySelector('.skills-panel').textContent.indexOf('权威')<0);
+    document.querySelector('.skills-help-btn').click();
+    ok('trainer help switches to learning rules and page navigation',document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能研习帮助'
+      &&document.querySelector('.workbench-modal').textContent.indexOf('调整目标等级')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('第一次固定学习 1 级')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('“管理技能”')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('直接拖到目标槽位')<0);
+    document.querySelector('.workbench-modal-action.primary').click();
+    var wrongTrainerSession=authoritativeSnapshot('trainer');wrongTrainerSession.trainer.session='trainer-other';
+    ok('trainer rejects a snapshot from another capability',SkillsPanel.validateSnapshot(wrongTrainerSession).ok===false);
+    row('新手冲拳').click();
+    ok('unlearned target is frozen to level one',document.querySelector('.skills-level-stepper').textContent.indexOf('Lv.1（初学固定）')>=0&&!document.querySelector('.skills-level-btn'));
+    document.querySelector('.skills-trainer-actions > .skills-action-btn').click();await wait(30);
+    var preview=sent('learnPreview').slice(-1)[0];
+    ok('preview binds trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
+    ok('valid preview alone enables commit',document.querySelector('.skills-preview-result.ok .skills-action-btn.primary')&&!document.querySelector('.skills-preview-result.ok .skills-action-btn.primary').disabled);
+    document.querySelector('.skills-preview-result.ok .skills-action-btn.primary').click();
+    ok('fast loadout mode never bypasses the skill-point learning confirmation',document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')
+      &&SkillsPanel.debugState().loadoutConfirmationMode==='fast'&&sent('learnCommit').length===0);
+    clickModalConfirm();await wait(40);
+    ok('learn commit sends only opaque token in nested payload',sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token'&&Object.keys(sent('learnCommit').slice(-1)[0].payload).sort().join(',')==='expectedLearnToken,v');
+    __host.previewBlocked=true;row('闪现').click();document.querySelector('.skills-trainer-actions > .skills-action-btn').click();await until(function(){return document.querySelector('.skills-preview-result.blocked')},300);
+    ok('deterministic preview rejection has no commit path',document.querySelector('.skills-preview-result.blocked')&&document.querySelector('.skills-preview-result .skills-action-btn.primary').disabled,document.querySelector('.skills-preview-result')&&document.querySelector('.skills-preview-result').textContent);
+    __host.previewBlocked=false;__host.invalidTrainer=true;setHost({instance:'inst-trainer-bad',view:'trainer',trainerSession:'trainer-B'});await wait(45);
+    ok('pure skillKey trainer catalog is rejected',SkillsPanel.debugState().schemaError.indexOf('纯 skillKey')>=0);
+    ok('invalid catalog keeps raw schema details behind exception diagnostics',document.querySelector('.skills-panel').textContent.indexOf('纯 skillKey')<0
+      &&document.querySelector('.skills-header-diagnostic')&&!document.querySelector('.skills-header-diagnostic').hidden
+      &&document.querySelector('.skills-refresh-btn')&&!document.querySelector('.skills-refresh-btn').hidden);
+    __host.invalidTrainer=false;__host.expireNextSnapshot=true;setHost({instance:'inst-trainer-expired-snapshot',view:'trainer',trainerSession:'trainer-ES'});
+    await until(function(){return Panels.getActive()===null});
+    ok('expired trainer snapshot exits the unusable capability view',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-snapshot');
+    setHost({instance:'inst-trainer-expired-preview',view:'trainer',trainerSession:'trainer-EP'});await until(function(){return row('新手冲拳')});
+    row('新手冲拳').click();__host.expireNextPreview=true;document.querySelector('.skills-trainer-actions > .skills-action-btn').click();
+    await until(function(){return Panels.getActive()===null});
+    ok('expired preview exits trainer and requires a fresh dialogue',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-preview');
+    setHost({instance:'inst-trainer-expired-commit',view:'trainer',trainerSession:'trainer-EC'});await until(function(){return row('新手冲拳')});
+    row('新手冲拳').click();document.querySelector('.skills-trainer-actions > .skills-action-btn').click();await until(function(){return document.querySelector('.skills-preview-result.ok .skills-action-btn.primary')});
+    __host.expireNextWrite=true;document.querySelector('.skills-preview-result.ok .skills-action-btn.primary').click();clickModalConfirm();
+    await until(function(){return Panels.getActive()===null});
+    ok('expired commit exits trainer without replaying the write',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-commit');
+    ok('trainer expiry has one explicit re-dialogue message',__toasts.filter(function(x){return x.indexOf('重新与教师对话')>=0}).length===3);
+    setHost({instance:'inst-trainer-switch',view:'trainer',trainerSession:'trainer-S'});await until(function(){return row('闪现')&&document.querySelector('.skills-switch-manage-btn')});
+    row('闪现').click();document.querySelector('.skills-switch-manage-btn').click();
+    await until(function(){return SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.panelInstanceId.indexOf('inst-manage-switch-')===0});
+    var switchManage=sent('switch_manage').slice(-1)[0];
+    ok('trainer to manage uses an exact instance-bound nested control envelope',Object.keys(switchManage).sort().join(',')==='cmd,panel,panelInstanceId,payload,type'&&switchManage.panelInstanceId==='inst-trainer-switch'&&Object.keys(switchManage.payload).sort().join(',')==='focusSkillKey,v');
+    ok('trainer-origin manage preserves focus and exposes the scoped return action',SkillsPanel.debugState().selectedKey==='闪现'
+      &&!document.querySelector('.skills-switch-manage-btn')&&!document.querySelector('.skills-trainer-actions')&&document.querySelector('.skills-switch-trainer-btn'));
+    var returnManageInstance=SkillsPanel.debugState().coordinator.panelInstanceId;
+    document.querySelector('.skills-switch-trainer-btn').click();
+    await until(function(){return SkillsPanel.debugState().view==='trainer'
+      &&SkillsPanel.debugState().coordinator.panelInstanceId.indexOf('inst-trainer-return-')===0
+      &&document.querySelector('.skills-trainer-actions')});
+    var switchTrainer=sent('switch_trainer').slice(-1)[0];
+    ok('return to trainer uses the current manage instance and nested presentation payload',switchTrainer.panelInstanceId===returnManageInstance
+      &&Object.keys(switchTrainer).sort().join(',')==='cmd,panel,panelInstanceId,payload,type'
+      &&Object.keys(switchTrainer.payload).sort().join(',')==='focusSkillKey,v');
+    ok('returned trainer restores learning actions without leaking return control',SkillsPanel.debugState().selectedKey==='闪现'
+      &&document.querySelector('.skills-trainer-actions')&&!document.querySelector('.skills-switch-trainer-btn'));
+    setHost({instance:'inst-manage-B',view:'manage',canReturnTrainer:false,returnSession:null});await until(function(){return row('闪现')});
+
+    row('闪现').click();__host.writeDelay=75;document.querySelector('[data-slot="1"] .skills-slot-main').click();clickModalConfirm();
+    __host.instance='inst-trainer-queued';__host.view='trainer';__host.trainerSession='trainer-Q';Panels.open('skills',{panelInstanceId:'inst-trainer-queued',view:'trainer',trainerSession:'trainer-Q'});
+    __host.instance='inst-manage-last';__host.view='manage';Panels.open('skills',{panelInstanceId:'inst-manage-last',view:'manage'});
+    ok('write-pending rebind keeps old session busy',SkillsPanel.debugState().coordinator.queuedRebind&&SkillsPanel.debugState().coordinator.state==='write_pending');
+    await until(function(){return SkillsPanel.debugState().coordinator.panelInstanceId==='inst-manage-last'},800);
+    ok('pending rebind applies only the last intent after settlement',SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-manage-last');
+
+    row('旋风斩').click();__host.unknownNextWrite=true;__host.writeDelay=8;
+    document.querySelector('[data-slot="5"] .skills-slot-main').click();clickModalConfirm();
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='needs_reconcile'},500);
+    var reconcileRequest=sent('snapshot').filter(function(x){return x.payload.reconcileId}).slice(-1)[0];
+    ok('client timeout enters needs_reconcile',SkillsPanel.debugState().coordinator.state==='needs_reconcile');
+    ok('reconcile probe binds id and original write callId',reconcileRequest&&reconcileRequest.payload.reconcileId&&reconcileRequest.payload.reconcileAfterCallId===sent('equip').slice(-1)[0].callId);
+    ok('unknown result shows player wording plus exception-only diagnosis',document.querySelector('.workbench-status').textContent==='结果待确认'
+      &&!document.querySelector('.skills-header-diagnostic').hidden&&!document.querySelector('.skills-refresh-btn').hidden
+      &&document.querySelector('.skills-refresh-btn').textContent==='确认结果');
+    ok('needs_reconcile disables every skill write control',Array.prototype.every.call(document.querySelectorAll('.skills-action-view button'),function(x){return x.disabled}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},900);
+    ok('post-write reconciled watermark is the only clear path',SkillsPanel.debugState().coordinator.lastAppliedWriteEpoch===__host.writeEpoch);
+    ok('unknown writes are never automatically replayed',sent('equip').filter(function(x){return x.payload.slot===5}).length===1);
+
+    row('闪现').click();__host.malformedNextWrite=true;document.querySelector('[data-slot="6"] .skills-slot-main').click();clickModalConfirm();
+    await until(function(){return sent('snapshot').filter(function(x){return x.payload.reconcileId}).length>=2},500);
+    ok('Host requiresReconcile starts a player-facing automatic check',__toasts.some(function(x){return x.indexOf('正在自动核对')>=0}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},500);
+
+    __host.snapshotDelay=115;var revisionBeforeLate=__host.revision;document.querySelector('.skills-refresh-btn').click();
+    row('闪现').click();document.querySelector('[data-slot="8"] .skills-slot-main').click();clickModalConfirm();
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&__host.revision>revisionBeforeLate},500);
+    var appliedAfterWrite=SkillsPanel.debugState().snapshotRevision;await wait(140);__host.snapshotDelay=0;
+    ok('same-instance R1 then write then late R1 cannot roll revision back',SkillsPanel.debugState().snapshotRevision===appliedAfterWrite&&appliedAfterWrite===__host.revision);
+
+    var oldRevision=__host.revision-2,oldEpoch=Math.max(0,__host.writeEpoch-1);
+    emit(Object.assign({type:'panel_resp',panel:'skills',domain:'skills',cmd:'snapshot',callId:'orphan'},authoritativeSnapshot('manage',oldRevision),{panelInstanceId:__host.instance,writeEpoch:oldEpoch}));
+    ok('orphan/old ordinary snapshot cannot roll UI back',SkillsPanel.debugState().snapshotRevision===__host.revision);
+
+    __host.snapshotDelay=100;document.querySelector('.skills-refresh-btn').click();var activeInstance=SkillsPanel.debugState().coordinator.panelInstanceId;
+    document.querySelector('.workbench-close-btn').click();
+    var close=sent('close').slice(-1)[0];
+    ok('close uses dedicated instance-bound envelope',Object.keys(close).sort().join(',')==='cmd,panel,panelInstanceId,type'&&close.panelInstanceId===activeInstance);
+    ok('close immediately clears local pending and session state',SkillsPanel.debugState().coordinator.state==='closed'&&SkillsPanel.debugState().coordinator.mux.pendingCount===0);
+    await wait(130);
+    ok('late response after close cannot reopen panel',Panels.getActive()===null&&document.getElementById('panel-container').style.display==='none');
+
+    setHost({instance:'inst-final',view:'manage',snapshotDelay:0});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
+    var container=document.getElementById('panel-container').getBoundingClientRect(),content=document.getElementById('panel-content').getBoundingClientRect(),scale=document.querySelector('.skills-scale-shell').getBoundingClientRect();
+    ok('production anchor and PanelScale fill current viewport',content.width/container.width>.999&&content.height/container.height>.999&&scale.width/content.width>.995&&scale.height/content.height>.995,JSON.stringify({container:[container.width,container.height],content:[content.width,content.height],scale:[scale.width,scale.height]}));
+    document.getElementById('panel-backdrop').click();await wait(15);
+    ok('backdrop close shares instance-bound cleanup',Panels.getActive()===null&&sent('close').slice(-1)[0].panelInstanceId==='inst-final');
+    setHost({instance:'inst-esc',view:'manage'});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
+    (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(15);
+    ok('ESC close shares local cleanup',Panels.getActive()===null&&SkillsPanel.debugState().coordinator.state==='closed');
+    setHost({instance:'inst-disconnect',view:'manage'});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
+    (__handlers.panel_cmd||[]).forEach(function(fn){fn({type:'panel_cmd',cmd:'force_close',reason:'disconnected'})});await wait(15);
+    ok('force-close/disconnect clears session and pending work',Panels.getActive()===null&&SkillsPanel.debugState().coordinator.state==='closed'&&SkillsPanel.debugState().coordinator.mux.pendingCount===0);
+    var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks,viewport:[innerWidth,innerHeight]};
+    window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
+  }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
+})();
+</script>
+</body>
+</html>

@@ -64,6 +64,14 @@
          'modules/crafting.js'],
         noop);
 
+    // ── 技能（独立 domain；不复用物品格 lease/write coordinator）──
+    Panels.registerLazy('skills',
+        ['modules/workbench.js',
+         'modules/item-filter.js',
+         'modules/skills-runtime.js',
+         'modules/skills.js'],
+        noop);
+
     // ── help ──
     // marked.min.js 在 boot 时已加载（panel content 用 markdown 渲染）
     Panels.registerLazy('help',

@@ -126,6 +126,7 @@ namespace CF7Launcher.Guardian
             Inventory,
             NpcShop,
             Crafting,
+            Skills,
             Unsupported
         }
 
@@ -137,7 +138,57 @@ namespace CF7Launcher.Guardian
             if (domain == "inventory") return PanelDomainRoute.Inventory;
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
             if (domain == "crafting") return PanelDomainRoute.Crafting;
+            if (domain == "skills") return PanelDomainRoute.Skills;
             return PanelDomainRoute.Unsupported;
+        }
+
+        internal static bool IsValidSkillCloseEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
+        {
+            if (parsed == null || parsed.Count != 4 || activePanel != "skills") return false;
+            foreach (JProperty property in parsed.Properties())
+                if (property.Name != "type" && property.Name != "panel" && property.Name != "cmd"
+                    && property.Name != "panelInstanceId") return false;
+            return parsed.Value<string>("type") == "panel"
+                && parsed.Value<string>("panel") == "skills"
+                && parsed.Value<string>("cmd") == "close"
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && parsed.Value<string>("panelInstanceId") == activePanelInstanceId;
+        }
+
+        internal static bool IsActiveSkillPanel(string activePanel, string activePanelInstanceId)
+        {
+            return activePanel == "skills" && !string.IsNullOrEmpty(activePanelInstanceId);
+        }
+
+        internal static bool IsValidSkillManageSwitchEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
+        {
+            return IsValidSkillViewSwitchEnvelope(parsed, activePanel, activePanelInstanceId, "switch_manage");
+        }
+
+        internal static bool IsValidSkillTrainerSwitchEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
+        {
+            return IsValidSkillViewSwitchEnvelope(parsed, activePanel, activePanelInstanceId, "switch_trainer");
+        }
+
+        private static bool IsValidSkillViewSwitchEnvelope(JObject parsed, string activePanel,
+            string activePanelInstanceId, string expectedCommand)
+        {
+            if (parsed == null || parsed.Count != 5 || activePanel != "skills") return false;
+            foreach (JProperty property in parsed.Properties())
+                if (property.Name != "type" && property.Name != "panel" && property.Name != "cmd"
+                    && property.Name != "panelInstanceId" && property.Name != "payload") return false;
+            JObject payload = parsed["payload"] as JObject;
+            if (payload == null || payload.Count != 2) return false;
+            foreach (JProperty property in payload.Properties())
+                if (property.Name != "v" && property.Name != "focusSkillKey") return false;
+            return parsed.Value<string>("type") == "panel"
+                && parsed.Value<string>("panel") == "skills"
+                && parsed.Value<string>("cmd") == expectedCommand
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && parsed.Value<string>("panelInstanceId") == activePanelInstanceId
+                && payload["v"] != null && payload["v"].Type == JTokenType.Integer && payload.Value<int>("v") == 1
+                && payload["focusSkillKey"] != null && payload["focusSkillKey"].Type == JTokenType.String
+                && LauncherCommandRouter.IsPresentationSkillKey(payload.Value<string>("focusSkillKey"));
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -249,6 +300,7 @@ namespace CF7Launcher.Guardian
         private InventoryTask _inventoryTask;
         private NpcShopTask _npcShopTask;
         private CraftingTask _craftingTask;
+        private SkillTask _skillTask;
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
         private ArenaTask _arenaTask;
@@ -2829,6 +2881,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetSkillTask(SkillTask task)
+        {
+            _skillTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetGomokuTask(GomokuTask task)
         {
             _gomokuTask = task;
@@ -3442,6 +3501,26 @@ namespace CF7Launcher.Guardian
             try { parsed = JObject.Parse(json); } catch { LogManager.Log("[Panel] JSON parse failed"); return; }
             string cmd = parsed.Value<string>("cmd");
             if (cmd == null) { LogManager.Log("[Panel] cmd is null"); return; }
+            if (cmd == "switch_manage" || cmd == "switch_trainer")
+            {
+                string activeName = _panelHost != null ? _panelHost.ActivePanelName
+                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                bool valid = cmd == "switch_manage"
+                    ? IsValidSkillManageSwitchEnvelope(parsed, activeName, activeInstance)
+                    : IsValidSkillTrainerSwitchEnvelope(parsed, activeName, activeInstance);
+                string focusSkillKey = parsed["payload"] is JObject switchPayload
+                    ? switchPayload.Value<string>("focusSkillKey") : null;
+                bool rebound = valid && (cmd == "switch_manage"
+                    ? _commandRouter != null && _commandRouter.RebindSkillsToManage(activeInstance, focusSkillKey)
+                    : _commandRouter != null && _commandRouter.RebindSkillsToTrainer(activeInstance, focusSkillKey));
+                if (!rebound)
+                {
+                    LogManager.Log("[SkillTask] rejected stale/malformed " + cmd + " envelope");
+                }
+                return;
+            }
             string domain = parsed.Value<string>("domain");
             PanelDomainRoute domainRoute = ResolvePanelDomainRoute(cmd, domain);
             if (domainRoute == PanelDomainRoute.Inventory)
@@ -3468,6 +3547,28 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Skills)
+            {
+                LogManager.Log("[Panel] Routing domain=skills cmd=" + cmd
+                    + " to SkillTask, _skillTask=" + (_skillTask != null ? "ok" : "NULL"));
+                if (_skillTask != null)
+                {
+                    string activeName = _panelHost != null ? _panelHost.ActivePanelName
+                        : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                    string instanceId = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                        : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                    if (!IsActiveSkillPanel(activeName, instanceId))
+                    {
+                        LogManager.Log("[SkillTask] rejected skills domain request outside active skills panel");
+                        RespondPanelDomainError(parsed, "panel_not_active");
+                        return;
+                    }
+                    _skillTask.BindPanelInstance(instanceId);
+                    _skillTask.HandleWebRequest(cmd, parsed);
+                }
+                else RespondPanelDomainError(parsed, "skills_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Unsupported)
             {
                 RespondPanelDomainError(parsed, "unsupported_domain");
@@ -3478,6 +3579,24 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
+                        if (panel == "skills")
+                        {
+                            string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activePanel;
+                            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                                : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                            if (!IsValidSkillCloseEnvelope(parsed, activeName, activeInstance))
+                            {
+                                LogManager.Log("[SkillTask] rejected stale/malformed close envelope");
+                                return;
+                            }
+                            // skills runtime 可能尚未 lazy-load，因而还没有任何 domain 请求触发 Bind。
+                            // close 已通过 Host active name+instance 校验，可安全先绑定再关闭。
+                            if (_skillTask == null || !_skillTask.HandleAuthoritativePanelClosed(activeInstance))
+                            {
+                                LogManager.Log("[SkillTask] close rejected by coordinator");
+                                return;
+                            }
+                        }
                         // dismissReturnStack=true 表示业务流程触发的关闭（如 arena enter success 后 AS2
                         // 已跳关到战场），必须清整个 return stack 防止 PanelHostController 自动 reopen
                         // 上层 panel 遮挡 Flash 视野。默认 false = 用户主动取消，pop 一层。
@@ -3501,6 +3620,7 @@ namespace CF7Launcher.Guardian
                         TrySendGameCommand("webPanelUnpause");
                         // help 等纯 web 面板无需通知 Flash
                         _activePanel = null;
+                        if (_commandRouter != null) _commandRouter.ClearFallbackPanelInstance();
                         if (_onPanelStateChanged != null) _onPanelStateChanged(false);
                         // panel close 回流：让 PanelHostController 把 backdrop/HUD/shield 拨回 idle 不变量
                         // Phase 1 _panelHost._activePanel 始终为 null（PanelHost 未接管打开路径）→ ClosePanel 走 ExecuteCommand 内
@@ -3806,6 +3926,11 @@ namespace CF7Launcher.Guardian
             // 必须独立联动——否则 backdrop / NativeHud Suspend / InputShield telemetry 会残留。
             if (_activePanel != null)
             {
+                if (_activePanel == "skills" && _skillTask != null && _commandRouter != null)
+                {
+                    string fallbackInstance = _commandRouter.ActiveFallbackPanelInstanceId;
+                    _skillTask.HandleAuthoritativePanelClosed(fallbackInstance);
+                }
                 PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
                 // 只有需要 Flash 交互的面板才需要恢复暂停状态
                 if (_activePanel == "kshop")
@@ -3816,16 +3941,24 @@ namespace CF7Launcher.Guardian
             // PanelHost 接管路径：联动关闭，确保 backdrop/HUD/Shield 都拨回 idle
             if (_panelHost != null && _panelHost.IsPanelOpen)
             {
+                if (_panelHost.ActivePanelName == "skills" && _skillTask != null)
+                {
+                    _skillTask.HandleAuthoritativePanelClosed(_panelHost.ActivePanelInstanceId);
+                }
                 if (_panelHost.ActivePanelName == "kshop") _pauseNeedsRestore = true;
                 PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
                 // 断线属异常路径，不要让 returnTo 链路在已经混乱的状态上又拉起上层 panel。
                 _panelHost.ClearReturnStack();
                 _panelHost.ClosePanel();
             }
+            // fallback force_close 不经过 Web 的正常 close 回流；必须清掉旧 name/instance，
+            // 否则重连后的 manage 恢复面板会被同名 rebind gate 永久挡住。
+            if (_commandRouter != null) _commandRouter.ClearFallbackPanelInstance();
             if (_shopTask != null) _shopTask.ClearPending();
             if (_inventoryTask != null) _inventoryTask.ClearPending();
             if (_npcShopTask != null) _npcShopTask.ClearPending();
             if (_craftingTask != null) _craftingTask.ClearPending();
+            if (_skillTask != null) _skillTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
             if (_arenaTask != null) _arenaTask.ClearPending();
@@ -3849,6 +3982,7 @@ namespace CF7Launcher.Guardian
             // "webpanel" lease 会残留 → 游戏永久卡在暂停。断线时所有面板已 force-close，重连后必无
             // web 面板在开，故无条件补发 webPanelUnpause 释放残留 lease（AS2 幂等，无 lease 则 no-op）。
             TrySendGameCommand("webPanelUnpause");
+            if (_skillTask != null) _skillTask.OnSocketReconnected();
         }
 
         #endregion

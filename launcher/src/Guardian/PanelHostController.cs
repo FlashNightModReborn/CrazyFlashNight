@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian.Hud;
 
@@ -101,12 +103,19 @@ namespace CF7Launcher.Guardian
 
         private readonly Queue<PanelCommand> _queue = new Queue<PanelCommand>();
         private readonly object _queueLock = new object();
+        private Func<string, bool> _rebindGate;
+        private Func<string, string, string> _initDataEnricher;
+        private Action<string, string> _panelCloseObserver;
+        private PanelCommand? _deferredRebind;
         private bool _processing;
         private bool _delayedKickRegistered;
 
         private string _activePanel; // null = closed
+        private string _activePanelInstanceId;
+        private static long _panelInstanceSequence;
         public bool IsPanelOpen { get { return _activePanel != null; } }
         public string ActivePanelName { get { return _activePanel; } }
+        public string ActivePanelInstanceId { get { return _activePanelInstanceId; } }
 
         private int _consecutiveFailures;
         private const int FAILURE_CIRCUIT_BREAKER = 5;
@@ -189,7 +198,28 @@ namespace CF7Launcher.Guardian
         public void ClosePanel()
         {
             if (_disposed) return;
+            lock (_queueLock) { _deferredRebind = null; }
             EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null));
+        }
+
+        public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
+        public void SetInitDataEnricher(Func<string, string, string> enricher) { _initDataEnricher = enricher; }
+        public void SetPanelCloseObserver(Action<string, string> observer) { _panelCloseObserver = observer; }
+
+        /// <summary>协调器回到可 rebind 状态后，只恢复最后一次同 panel 意图。</summary>
+        public void FlushDeferredRebind(string panelName)
+        {
+            PanelCommand? deferred = null;
+            lock (_queueLock)
+            {
+                if (_deferredRebind.HasValue
+                    && string.Equals(_deferredRebind.Value.Name, panelName, StringComparison.Ordinal))
+                {
+                    deferred = _deferredRebind;
+                    _deferredRebind = null;
+                }
+            }
+            if (deferred.HasValue) EnqueueAndPump(deferred.Value);
         }
 
         /// <summary>
@@ -288,7 +318,20 @@ namespace CF7Launcher.Guardian
         {
             if (cmd.Kind == PanelCommandKind.Open)
             {
-                if (_activePanel == cmd.Name) { _consecutiveFailures = 0; return; }
+                if (_activePanel == cmd.Name)
+                {
+                    Func<string, bool> gate = _rebindGate;
+                    if (gate != null && !gate(cmd.Name))
+                    {
+                        lock (_queueLock) { _deferredRebind = cmd; }
+                        LogManager.Log("[PanelHost] rebind deferred: " + cmd.Name);
+                        _consecutiveFailures = 0;
+                        return;
+                    }
+                    DoRebind(cmd.Name, cmd.InitDataJson);
+                    _consecutiveFailures = 0;
+                    return;
+                }
                 if (_activePanel != null) DoClose();
                 // 调用方显式带了 returnTo → push 进栈，关闭本 panel 时 pop 出来自动 reopen。
                 // B 时代会改成：无 returnTo 参数时，open 自动 push 前一个 _activePanel。
@@ -424,10 +467,10 @@ namespace CF7Launcher.Guardian
                 _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
             EnsurePanelZOrder();
             // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
-            string payload = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + EscapeJson(name) + "\"";
-            if (!string.IsNullOrEmpty(initDataJson))
-                payload += ",\"initData\":" + initDataJson;
-            payload += "}";
+            string instanceId = NextPanelInstanceId();
+            Func<string, string, string> enricher = _initDataEnricher;
+            if (enricher != null) initDataJson = enricher(name, initDataJson);
+            string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             try { _web.PostToWeb(payload); }
             catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb open failed: " + ex.Message); }
             // Step 8: 把 HitNumber/Cursor 重新顶置（Backdrop/WebOverlay 的 SetWindowPos HWND_TOP 把它们压下去了）
@@ -443,6 +486,7 @@ namespace CF7Launcher.Guardian
             _lastOwnerPanelRect = panelRect;
 
             _activePanel = name;
+            _activePanelInstanceId = instanceId;
             // 任意真实打开 → 暂停游戏。覆盖 returnTo 自动重开（ExecuteCommand 从 _returnStack
             // enqueue 的 Open 不经 LauncherCommandRouter.OpenPanel，否则重开面板背后游戏已恢复运行）。
             // AS2 webPanelPause 幂等，首次打开与 router 路径重复发也安全。
@@ -455,6 +499,20 @@ namespace CF7Launcher.Guardian
             // B0 诊断: panel-open 后立即 dump layered HWND 结构, 捕获 visible_layered 峰值时刻
             if (DiagnosticsBootstrap.LayerAuditEnabled)
                 LayerAuditDump.DumpToLog("panel-open:" + name);
+        }
+
+        /// <summary>同名 panel 的上下文切换不拆 backdrop/HUD，只换实例水位并让 Web 重建 session。</summary>
+        private void DoRebind(string name, string initDataJson)
+        {
+            string instanceId = NextPanelInstanceId();
+            Func<string, string, string> enricher = _initDataEnricher;
+            if (enricher != null) initDataJson = enricher(name, initDataJson);
+            string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
+            try { _web.PostToWeb(payload); }
+            catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb rebind failed: " + ex.Message); throw; }
+            _activePanelInstanceId = instanceId;
+            try { _web.AssertWebPanelPause(); } catch { }
+            LogManager.Log("[PanelHost] rebound: " + name + " instance=" + instanceId);
         }
 
         private Control GetFlashPanelOrNull()
@@ -602,7 +660,14 @@ namespace CF7Launcher.Guardian
         {
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             string closingName = _activePanel;
+            string closingInstance = _activePanelInstanceId;
             PerfTrace.Mark("panel.close_start", closingName ?? "<null>");
+            Action<string, string> closeObserver = _panelCloseObserver;
+            if (closeObserver != null)
+            {
+                try { closeObserver(closingName, closingInstance); }
+                catch (Exception ex) { LogManager.Log("[PanelHost] close observer failed: " + ex.Message); }
+            }
             // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
             UnsubscribeOwnerLayout();
             // Step 1: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
@@ -634,6 +699,7 @@ namespace CF7Launcher.Guardian
             catch (Exception ex) { LogManager.Log("[PanelHost] cursor refresh failed: " + ex.Message); }
 
             _activePanel = null;
+            _activePanelInstanceId = null;
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
             PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));
@@ -652,6 +718,7 @@ namespace CF7Launcher.Guardian
                 _queue.Clear();
                 _processing = false;
                 _returnStack.Clear();
+                _deferredRebind = null;
             }
             try { UnsubscribeOwnerLayout(); } catch { }
             if (_ownerLayoutSettleTimer != null)
@@ -706,6 +773,12 @@ namespace CF7Launcher.Guardian
         private void ResetToClosedState()
         {
             UnsubscribeOwnerLayout();
+            Action<string, string> closeObserver = _panelCloseObserver;
+            if (closeObserver != null && _activePanel != null)
+            {
+                try { closeObserver(_activePanel, _activePanelInstanceId); }
+                catch (Exception ex) { LogManager.Log("[PanelHost] reset close observer failed: " + ex.Message); }
+            }
             // _activePanel 此时尚未置 null（line 613 才置），优先传它作为 closingPanelName；
             // ResetToClosedState 路径是异常恢复，reason 后缀 ":reset" 用于日志区分正常 close。
             string resetTag = (_activePanel != null) ? (_activePanel + ":reset") : "reset";
@@ -718,6 +791,7 @@ namespace CF7Launcher.Guardian
             if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }
             if (_escSource != null) { try { _escSource.SetPanelEscapeEnabled(false); } catch { } }
             _activePanel = null;
+            _activePanelInstanceId = null;
 
             // 异常路径不应触发 returnTo reopen：清栈避免在已经混乱的状态上叠加新 panel 命令。
             _returnStack.Clear();
@@ -738,6 +812,29 @@ namespace CF7Launcher.Guardian
         {
             if (string.IsNullOrEmpty(s)) return "";
             return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        internal static string BuildPanelOpenPayload(string name, string initDataJson, string panelInstanceId)
+        {
+            JObject initData;
+            try { initData = string.IsNullOrEmpty(initDataJson) ? new JObject() : JObject.Parse(initDataJson); }
+            catch (JsonException) { initData = new JObject(); }
+            initData["panelInstanceId"] = panelInstanceId;
+            JObject payload = new JObject
+            {
+                ["type"] = "panel_cmd",
+                ["cmd"] = "open",
+                ["panel"] = name,
+                ["panelInstanceId"] = panelInstanceId,
+                ["initData"] = initData
+            };
+            return payload.ToString(Formatting.None);
+        }
+
+        private static string NextPanelInstanceId()
+        {
+            long seq = System.Threading.Interlocked.Increment(ref _panelInstanceSequence);
+            return "panel." + DateTime.UtcNow.Ticks.ToString("x") + "." + seq.ToString("x");
         }
     }
 }

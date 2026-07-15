@@ -139,6 +139,7 @@ namespace CF7Launcher.Guardian.Hud
             new NotchButtonDef("平板", "TABLET", Keys.None, true, false),
             new NotchButtonDef("战备箱", "WAREHOUSE", Keys.None, true, true),
             new NotchButtonDef("情报", "INTELLIGENCE", Keys.None, true, false),
+            new NotchButtonDef("技能", "SKILLS", Keys.None, true, false),
             new NotchButtonDef("商城", "SHOP", Keys.None, true, false)
         };
         private static readonly NotchButtonDef[] ToolbarUtilityButtons = {
@@ -1982,6 +1983,13 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (index < 0 || index >= ToolbarUtilityButtons.Length) return null;
             return ToolbarUtilityButtons[index].CommandKey;
+        }
+
+        internal static string[] ToolbarRoutesForTest()
+        {
+            string[] routes = new string[ToolbarButtons.Length];
+            for (int i = 0; i < ToolbarButtons.Length; i++) routes[i] = ToolbarButtons[i].CommandKey;
+            return routes;
         }
 
         internal static int CollapsedHeightBaseForTest

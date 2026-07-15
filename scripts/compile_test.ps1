@@ -232,10 +232,11 @@ if (Test-Path $BomChecker) {
         $StateMachineDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\neur\StateMachine'
         $CommDir = Join-Path $ProjectDir 'scripts\通信'
         $TestLoaderEntry = Join-Path $ProjectDir 'scripts\TestLoader.as'
-        # 主文件 classpath = scripts\类定义\；web-panel 迁移类（task/merc/stageSelect）近期高频编辑，
+        # 主文件 classpath = scripts\类定义\；web-panel 迁移类（task/merc/skill/stageSelect）近期高频编辑，
         #   BOM 丢失会被 CS6 静默跳过整类 → 入门 BOM 门覆盖这些 arki 子树，配合 main 目标 publish 验证。
         $TaskClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\task'
         $MercClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\merc'
+        $SkillClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\skill'
         $StageSelectClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\stageSelect'
         $BomArgs = @()
         if (Test-Path $BootClassDir) { $BomArgs += @('--dir', $BootClassDir) }
@@ -244,9 +245,10 @@ if (Test-Path $BomChecker) {
         if (Test-Path $CommDir) { $BomArgs += @('--dir', $CommDir) }
         if (Test-Path $TaskClassDir) { $BomArgs += @('--dir', $TaskClassDir) }
         if (Test-Path $MercClassDir) { $BomArgs += @('--dir', $MercClassDir) }
+        if (Test-Path $SkillClassDir) { $BomArgs += @('--dir', $SkillClassDir) }
         if (Test-Path $StageSelectClassDir) { $BomArgs += @('--dir', $StageSelectClassDir) }
         if (Test-Path $TestLoaderEntry) { $BomArgs += @('--file', $TestLoaderEntry) }
-        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\stageSelect --file scripts/TestLoader.as'
+        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --file scripts/TestLoader.as'
         & node $BomChecker @BomArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'

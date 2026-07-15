@@ -920,6 +920,28 @@ class Program
         InventoryTask inventoryTask = new InventoryTask(socketServer);
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
         CraftingTask craftingTask = new CraftingTask(socketServer);
+        SkillTask skillTask = new SkillTask(socketServer);
+        commandRouter.SetSkillTask(skillTask);
+        if (panelHost != null)
+        {
+            panelHost.SetRebindGate(delegate(string panelName)
+            {
+                return panelName != "skills" || skillTask.CanRebind;
+            });
+            panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson)
+            {
+                return panelName == "skills" ? skillTask.EnrichPanelInitData(initDataJson) : initDataJson;
+            });
+            panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)
+            {
+                if (panelName == "skills") skillTask.HandleAuthoritativePanelClosed(panelInstanceId);
+            });
+        }
+        skillTask.SetCoordinatorSettled(delegate
+        {
+            if (panelHost != null) panelHost.FlushDeferredRebind("skills");
+            commandRouter.FlushDeferredFallbackSkillRebind();
+        });
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArenaTask arenaTask = new ArenaTask(socketServer);
@@ -1004,7 +1026,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, craftingTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, craftingTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -1016,6 +1038,7 @@ class Program
         webOverlay.SetInventoryTask(inventoryTask);
         webOverlay.SetNpcShopTask(npcShopTask);
         webOverlay.SetCraftingTask(craftingTask);
+        webOverlay.SetSkillTask(skillTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
         webOverlay.SetStageSelectTask(stageSelectTask);
@@ -1109,6 +1132,7 @@ class Program
             try { socketServer.SetNotchHandler(null); } catch { }
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
+            try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
             try { stageSelectTask.Dispose(); } catch { }
             try { socketServer.Dispose(); } catch { }
