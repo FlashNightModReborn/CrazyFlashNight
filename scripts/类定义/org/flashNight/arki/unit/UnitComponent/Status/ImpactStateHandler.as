@@ -172,11 +172,12 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
             } else if (hitTarget.remainingImpactForce > hitTarget.韧性上限) {
                 // 冲击力超过韧性上限，如非刚体则设为击倒状态，并重置冲击力
                 impactReason = "TOUGH_BREAK";
-                // 精确语义：只在韧性槽跨过上限的分支发布；刚体仍会破韧，因此也发布。
+                // ToughnessBroken 表示玩家可感知的真实破韧。刚体只发生阈值溢出与槽归零，
+                // 不发生击倒/破韧状态，因此不发布该事件，避免隐藏机制奖励与视觉反馈冲突。
                 // 发布发生在归零前，监听者可读取本次破韧快照；参数均为只读约定。
-                if (hitTarget.dispatcher) {
+                if (!isRigid && hitTarget.dispatcher) {
                     hitTarget.dispatcher.publish(
-                        "ToughnessBroken", hitTarget, bullet.shooter, bullet, damageResult, isRigid
+                        "ToughnessBroken", hitTarget, bullet.shooter, bullet, damageResult, false
                     );
                 }
                 if (!isRigid) {

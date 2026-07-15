@@ -146,12 +146,20 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_MOD_GRANTS_WEAPON_TYPE:String = "扩展武器子类";
   public static var LBL_SCOPE_USE:String = "装备类型";
   public static var LBL_SCOPE_WEAPON_TYPE:String = "武器子类";
-  public static var LBL_HIT_BEHAVIOR:String = "破韧易伤标记";
+  public static var LBL_HIT_BEHAVIOR:String = "命中行为标记";
+  public static var LBL_GRAY_GOO_BEHAVIOR:String = "灰蛊蚀刻";
   public static var LBL_MARK_DURATION:String = "命中维持";
   public static var LBL_BREAK_EXTEND:String = "破韧续时";
   public static var LBL_MAX_DURATION:String = "持续上限";
   public static var LBL_MAX_STACKS:String = "最多叠加";
   public static var LBL_DAMAGE_PER_STACK:String = "每层易伤";
+  public static var LBL_DECAY_DELAY:String = "停火衰减等待";
+  public static var LBL_DECAY_INTERVAL:String = "逐层衰减间隔";
+  public static var LBL_HIT_STACKS:String = "每次命中沉积";
+  public static var LBL_BREAK_STACKS:String = "真实破韧追加";
+  public static var LBL_MILESTONE_INTERVAL:String = "击溃节点";
+  public static var LBL_CRUMBLE_PER_MILESTONE:String = "节点击溃";
+  public static var LBL_EXECUTE_AT_MAX:String = "满层斩杀";
   public static var TIP_SAME_SOURCE_ONLY:String = "仅施加者破韧可叠层";
 
   // 子弹类型标识符到中文名的映射

@@ -322,16 +322,18 @@
         <tag>弹药</tag>
     </mod>
     <!--
-        灰蛊裂隙弹平衡锚点（2026-07-13 数据快照）：
-        竞争品磁稳贯穿弹默认间隔 I'=(I+50)×1.2；冲锋枪中位 I=85 时，
-        单体稳定2判上限约 +4.9%，三判群伤上限约 +57.4%。
-        本插件 6%×3层=18% 峰值，取上述区间低位；实战收益应按
-        damagePerStack × 伤害加权平均层数计算，通常显著低于峰值。
-        因其为全队易伤且会提高后续冲击，未经实测不应超过 8%/层。
-        精确子类 weapontype:手枪 使用 7%×3层=21% 档位，并把基础维持/续时上限
-        从 180/300 帧提高到 240/360 帧；它仍低于 8%/层警戒线，且不增加面板输出。
-        该分支只补偿普通手枪的行为工具弱势，不覆盖大威力手枪或冲锋手枪。
-        完整模型见 docs/冲锋枪错位竞争与双枪插件-设计备忘-2026-07-13.md §6.9。
+        灰蛊裂隙弹平衡锚点（2026-07-15）：
+        内部采用18格蚀刻值，玩家只需识别6/12/18三个结算节点。
+        冲锋枪/大威力手枪/普通手枪每次有效命中分别沉积1/2/3格；
+        真实破韧追加一次本枪种等价命中，刚体阈值溢出不视为真实破韧。
+        每格提供1%全队易伤；每跨过6格，本发获得一次血量上限击溃；
+        满18格的命中解锁斩杀。冲锋枪保持一发一格的慢启动，以1%节点击溃和
+        8%斩杀补偿自建自吃；大威力手枪按双枪追猎射击的12~15发典型技能窗口
+        锁定为0.1%节点击溃和5%斩杀，避免快速挂层后切长枪的共享收益继续膨胀。
+        普通手枪仅提高留存，并沿用0.3%节点击溃和8%斩杀的低负担工具枪档位。
+        6格节点采用整段回差：分别退至0/6/12格后才重新武装，允许游击退层循环，
+        但阻止在节点附近微停火反复刷取。
+        完整模型见 docs/冲锋枪错位竞争与双枪插件-设计备忘-2026-07-13.md §15。
 
         设定/兼容性契约：灰蛊系列以可剥离纳米机器涂层在目标裂隙中扩散；
         涂层沉积需要牺牲性外被，与 pierce 所需的硬质低摩擦侵彻外被不兼容。
@@ -343,36 +345,64 @@
         <weapontype>手枪,大威力手枪,冲锋枪</weapontype>
         <excludeBulletTypes>pierce</excludeBulletTypes>
         <stats>
+            <curve>
+                <impact>
+                    <type>sqrtScale</type>
+                    <coefficient>1.4</coefficient>
+                    <min>20</min>
+                </impact>
+            </curve>
             <merge>
                 <hitBehavior>
-                    <type>toughnessVulnerabilityPrimer</type>
+                    <type>grayGooPrimer</type>
                     <stackGroup>grayGooVulnerability</stackGroup>
                     <profileId>base</profileId>
-                    <duration>180</duration>
-                    <breakExtend>60</breakExtend>
-                    <maxDuration>300</maxDuration>
-                    <maxStacks>3</maxStacks>
-                    <damagePerStack>0.06</damagePerStack>
+                    <decayDelay>90</decayDelay>
+                    <decayInterval>10</decayInterval>
+                    <maxStacks>18</maxStacks>
+                    <hitStacks>1</hitStacks>
+                    <breakStacks>1</breakStacks>
+                    <milestoneInterval>6</milestoneInterval>
+                    <damagePerStack>0.01</damagePerStack>
+                    <crumblePerMilestone>1</crumblePerMilestone>
+                    <executeAtMax>8</executeAtMax>
                     <sameSourceOnly>true</sameSourceOnly>
                 </hitBehavior>
             </merge>
             <useSwitch>
+                <!-- 大威力手枪按追猎射击双枪窗口标定：一发2格，并显式锁定双枪收益，避免继承冲锋枪补偿 -->
+                <use name="weapontype:大威力手枪">
+                    <merge>
+                        <hitBehavior>
+                            <profileId>highPowerHandgun</profileId>
+                            <hitStacks>2</hitStacks>
+                            <breakStacks>2</breakStacks>
+                            <crumblePerMilestone>0.1</crumblePerMilestone>
+                            <executeAtMax>5</executeAtMax>
+                        </hitBehavior>
+                    </merge>
+                </use>
                 <!-- 普通手枪补弱：只匹配精确 weapontype，不匹配共享 use=手枪 的冲锋手枪/大威力手枪 -->
                 <use name="weapontype:手枪">
                     <merge>
                         <hitBehavior>
                             <profileId>handgun</profileId>
-                            <duration>240</duration>
-                            <maxDuration>360</maxDuration>
-                            <damagePerStack>0.07</damagePerStack>
+                            <decayDelay>150</decayDelay>
+                            <decayInterval>15</decayInterval>
+                            <hitStacks>3</hitStacks>
+                            <breakStacks>3</breakStacks>
+                            <crumblePerMilestone>0.3</crumblePerMilestone>
+                            <executeAtMax>8</executeAtMax>
                         </hitBehavior>
                     </merge>
                 </use>
             </useSwitch>
         </stats>
         <description>灰蛊系列的牺牲性纳米涂层弹。
-        命中后涂层剥落并附着目标；同一使用者完成破韧时，纳米群会沿结构裂隙扩散，使目标承受的伤害提高6%，最多叠加3层。
-        命中会补充并维持涂层，破韧会延长群落活性。安装于普通手枪时，较低的膛压与弹道载荷能保存更多纳米群，使标记维持更久且每层易伤提高至7%。
+        有效命中会沉积蚀刻层，使目标承受的伤害逐步提高，最多18层；冲锋枪、大威力手枪与普通手枪每次命中分别沉积1、2、3层。
+        每累计6层，纳米群会击溃一部分血量上限；满18层后解锁斩杀。真实破韧会追加一次本枪种等价沉积，但刚体目标的韧性阈值溢出不视为破韧。
+        冲锋枪沉积较慢，但每个结算节点具有更强的击溃能力；普通手枪的低膛压能保存更多纳米群，使层数维持更久。停止命中后层数会逐步衰减，完全退层可重新触发各阶段击溃。
+        原生冲击较弱的手枪与冲锋枪会获得显著破韧能力；原生击倒率更低的武器不会被曲线削弱。
         该涂层无法兼容穿刺弹的硬质侵彻外被。</description>
         <tag>弹药</tag>
     </mod>

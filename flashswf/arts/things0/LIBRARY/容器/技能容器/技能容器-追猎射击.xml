@@ -229,6 +229,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		}
 		当前已持续帧 = 0;
 		子弹属性 = _root.子弹属性初始化(this);
+		if (_parent._parent.手枪属性.hitBehavior)
+		{
+			子弹属性.hitBehavior = _parent._parent.手枪属性.hitBehavior;
+		}
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = _parent.声音;
@@ -382,6 +386,10 @@ onClipEvent (load) {
 		}
 		当前已持续帧 = 0;
 		子弹属性 = _root.子弹属性初始化(this);
+		if (_parent._parent.手枪2属性.hitBehavior)
+		{
+			子弹属性.hitBehavior = _parent._parent.手枪2属性.hitBehavior;
+		}
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = _parent.声音_2;
@@ -533,6 +541,10 @@ onClipEvent (load) {
 		}
 		当前已持续帧 = 0;
 		子弹属性 = _root.子弹属性初始化(this);
+		if (_parent._parent.手枪属性.hitBehavior)
+		{
+			子弹属性.hitBehavior = _parent._parent.手枪属性.hitBehavior;
+		}
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = _parent.声音;
@@ -683,6 +695,10 @@ onClipEvent (load) {
 		}
 		当前已持续帧 = 0;
 		子弹属性 = _root.子弹属性初始化(this);
+		if (_parent._parent.手枪2属性.hitBehavior)
+		{
+			子弹属性.hitBehavior = _parent._parent.手枪2属性.hitBehavior;
+		}
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = _parent.声音_2;
@@ -849,6 +865,10 @@ onClipEvent (load) {
 			}
 		}
 		子弹属性 = _root.子弹属性初始化(this);
+		if (_parent._parent.手枪属性.hitBehavior)
+		{
+			子弹属性.hitBehavior = _parent._parent.手枪属性.hitBehavior;
+		}
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = _parent.声音;
@@ -937,6 +957,10 @@ onClipEvent (load) {
 			}
 		}
 		子弹属性 = _root.子弹属性初始化(this);
+		if (_parent._parent.手枪2属性.hitBehavior)
+		{
+			子弹属性.hitBehavior = _parent._parent.手枪2属性.hitBehavior;
+		}
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = _parent.声音_2;

@@ -216,9 +216,9 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 武器运行时数据可包含 `<hitBehavior>` 对象；插件通过 `<stats><merge><hitBehavior>...</hitBehavior></merge></stats>` 写入。`ShootInitCore.generateBulletProps` 将该对象透传到子弹，`BulletQueueProcessor.settleHit` 仅在实际伤害结算成功且至少一个分段真实命中时按封闭 `type` 分发；联弹分段模型中 `scatterMissCount >= actualScatterUsed` 的全 MISS/直感结果不得挂载行为。该字段表达游戏行为，不得与既有视觉命中特效字段混用，也不得存任意 AS2 函数名或可执行字符串。
 
-当前唯一合法类型是 `toughnessVulnerabilityPrimer`，字段为：`stackGroup`（共享最终数值输出的聚合域）、`profileId`（同一来源下独立刷新/到期的数值档身份）、`duration`（命中保底刷新帧数）、`breakExtend`（每次破韧追加帧数）、`maxDuration`（续时上限）、`maxStacks`、`damagePerStack`（小数倍率）、`sameSourceOnly`。同一 `stackGroup` 内按 `(sourceUID, profileId)` 保存候选状态，只对每个候选完整计算出的倍率取 MAX；禁止把不同 profile 的时长、层数和单层倍率逐字段拼成合成档位。未声明 `profileId` 的旧数据会按完整数值形状派生兼容身份，但新数据必须显式声明。对应破韧事件名为 `ToughnessBroken`，仅在地面常规冲击流程真实越过韧性上限时、归零前发布；刚体破韧也发布，击杀、闪避、浮空/倒地分支清槽不发布。当前结算顺序保证同一发先挂标记，再由通用 `hit` 监听链触发冲击与破韧，因此该发可获得首层。
+当前正式类型为 `grayGooPrimer`（读取端仍接受旧名 `toughnessVulnerabilityPrimer`）。字段为：`stackGroup`、`profileId`、`decayDelay`（停火后开始衰减的帧数）、`decayInterval`（逐格衰减间隔）、`maxStacks`、`hitStacks`、`breakStacks`、`milestoneInterval`、`damagePerStack`（小数倍率）、`crumblePerMilestone`（击溃的原始百分比数值）、`executeAtMax`（斩杀的原始百分比数值）与 `sameSourceOnly`。同一 `stackGroup` 内按 `(sourceUID, profileId)` 保存候选，最终易伤只取完整候选的 MAX，不跨 profile 拼接字段。命中在伤害管线前预测是否跨过节点，临时配给击溃/斩杀并重选 `DamageManager`；伤害有效后才实际增加层数。
 
-该对象允许由 `useSwitch` 分支通过 `merge.hitBehavior` 局部提高字段；深度 merge 保留未声明的基础参数。当前灰蛊裂隙弹基础档使用 `stackGroup=grayGooVulnerability/profileId=base`，参数为 `180/60/300` 帧、3 层、每层 6%；精确 `weapontype:手枪` 分支把 `profileId` 改为 `handgun`，并将 `duration/maxDuration/damagePerStack` 提高到 `240/360/0.07`。两档可同时短暂存活，但弱档命中只刷新弱档，最终承伤始终取存活候选中的强值而不相加。
+灰蛊裂隙弹使用 18 格、6/12/18 三个节点、每格 1% 全队易伤；冲锋枪/大威力手枪/普通手枪每次有效命中分别增加 1/2/3 格，真实破韧追加一次本 profile 等价命中。基础档仅由冲锋枪完整使用，参数为 `decayDelay=90/decayInterval=10/crumblePerMilestone=1/executeAtMax=8`；大威力手枪分支显式锁定为 `90/10/0.1/5`，防止继承冲锋枪的自建自吃补偿；普通手枪是 `150/15/0.3/8`。节点分别在衰减到 0/6/12 格时重新武装。`ToughnessBroken` 只表示非刚体真实破韧；刚体越阈仅清槽、不发布。层数变化发布 `GrayGooStacksChanged(target, stacks, maxStacks, profileId)`，并同步写入 `target.grayGooStackCount/grayGooMaxStacks`。`useSwitch.merge.hitBehavior` 是深度 merge；追猎射击的六个发射点也必须从两把手枪属性透传该对象。
 
 ### 装备插件格展示词典
 

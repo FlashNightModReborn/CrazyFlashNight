@@ -591,14 +591,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         bullet.hitTarget = hitTarget;
         bullet.命中对象 = hitTarget;
 
+        // 灰蛊的节点击溃/满层斩杀属于当前命中的动态属性，必须在 DamageManager 执行前配给。
+        // 普通子弹无 hitBehavior，不进入注册表。
+        if (bullet.hitBehavior != undefined) {
+            BulletHitEffectRegistry.prepare(bullet, shooter, hitTarget);
+        }
+
         // 伤害计算
         var damageResult:Object = ctx.Damage.calculateDamage(
             bullet, shooter, hitTarget, dmgMult, dodgeState
         );
         bullet.hitCount += damageResult.actualScatterUsed;
 
-        // 声明式命中行为在伤害结算后、通用 hit 事件前执行：同一发造成破韧时，
-        // 控制器已先挂载，随后 HitUpdater 发布的 ToughnessBroken 不会丢失。
+        // 有效命中在伤害结算后沉积层数；随后 HitUpdater 发布的 ToughnessBroken
+        // 可为同一候选追加一次枪种等价命中。
         // 普通子弹没有该字段，不进入注册表，保持热路径成本接近零。
         if (bullet.hitBehavior != undefined) {
             BulletHitEffectRegistry.apply(bullet, shooter, hitTarget, damageResult);

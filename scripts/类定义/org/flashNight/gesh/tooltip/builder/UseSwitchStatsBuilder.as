@@ -325,6 +325,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
      */
     public static function buildHitBehaviorSummary(behavior:Object):String {
         if (!behavior) return "";
+        if (isGrayGooBehavior(behavior)) return buildGrayGooSummary(behavior);
 
         var parts:Array = [];
         if (behavior.duration != undefined) {
@@ -342,11 +343,36 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         if (behavior.breakExtend != undefined) {
             parts.push(TooltipConstants.LBL_BREAK_EXTEND + "+" + formatFramesAsSeconds(behavior.breakExtend));
         }
+        if (behavior.decayDelay != undefined) {
+            parts.push(TooltipConstants.LBL_DECAY_DELAY + formatFramesAsSeconds(behavior.decayDelay));
+        }
+        if (behavior.decayInterval != undefined) {
+            parts.push(TooltipConstants.LBL_DECAY_INTERVAL + formatFramesAsSeconds(behavior.decayInterval));
+        }
+        if (behavior.hitStacks != undefined) {
+            parts.push(TooltipConstants.LBL_HIT_STACKS + behavior.hitStacks + "格");
+        }
+        if (behavior.breakStacks != undefined) {
+            parts.push(TooltipConstants.LBL_BREAK_STACKS + behavior.breakStacks + "格");
+        }
+        if (behavior.milestoneInterval != undefined) {
+            parts.push("每" + behavior.milestoneInterval + "格" + TooltipConstants.LBL_MILESTONE_INTERVAL);
+        }
+        if (behavior.crumblePerMilestone != undefined) {
+            parts.push(TooltipConstants.LBL_CRUMBLE_PER_MILESTONE + formatRawPercent(behavior.crumblePerMilestone));
+        }
+        if (behavior.executeAtMax != undefined) {
+            parts.push(TooltipConstants.LBL_EXECUTE_AT_MAX + formatRawPercent(behavior.executeAtMax));
+        }
         return parts.join("，");
     }
 
     private static function appendHitBehavior(result:Array, indent:String, behavior:Object):Void {
         if (!behavior) return;
+        if (isGrayGooBehavior(behavior)) {
+            appendGrayGooBehavior(result, indent, behavior);
+            return;
+        }
 
         result.push(indent, "<FONT COLOR='", TooltipConstants.COL_USE_SWITCH, "'>", TooltipConstants.LBL_HIT_BEHAVIOR, "</FONT><BR>");
         if (behavior.duration != undefined) {
@@ -364,9 +390,108 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         if (behavior.damagePerStack != undefined) {
             result.push(indent, "  ", TooltipConstants.LBL_DAMAGE_PER_STACK, " +", formatPercent(behavior.damagePerStack), "<BR>");
         }
+        if (behavior.decayDelay != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_DECAY_DELAY, " ", formatFramesAsSeconds(behavior.decayDelay), "<BR>");
+        }
+        if (behavior.decayInterval != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_DECAY_INTERVAL, " ", formatFramesAsSeconds(behavior.decayInterval), "<BR>");
+        }
+        if (behavior.hitStacks != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_HIT_STACKS, " ", behavior.hitStacks, "格<BR>");
+        }
+        if (behavior.breakStacks != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_BREAK_STACKS, " ", behavior.breakStacks, "格<BR>");
+        }
+        if (behavior.milestoneInterval != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_MILESTONE_INTERVAL, " 每", behavior.milestoneInterval, "格<BR>");
+        }
+        if (behavior.crumblePerMilestone != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_CRUMBLE_PER_MILESTONE, " ", formatRawPercent(behavior.crumblePerMilestone), "<BR>");
+        }
+        if (behavior.executeAtMax != undefined) {
+            result.push(indent, "  ", TooltipConstants.LBL_EXECUTE_AT_MAX, " ", formatRawPercent(behavior.executeAtMax), "<BR>");
+        }
         if (behavior.sameSourceOnly == true || behavior.sameSourceOnly == "true") {
             result.push(indent, "  ", TooltipConstants.TIP_SAME_SOURCE_ONLY, "<BR>");
         }
+    }
+
+    private static function isGrayGooBehavior(behavior:Object):Boolean {
+        return String(behavior.type) == "grayGooPrimer" ||
+               behavior.hitStacks != undefined ||
+               behavior.crumblePerMilestone != undefined ||
+               behavior.executeAtMax != undefined;
+    }
+
+    /** 已安装插件的枪种分支只显示相对基础档发生的变化。 */
+    private static function buildGrayGooSummary(behavior:Object):String {
+        var parts:Array = [];
+        if (behavior.hitStacks != undefined && behavior.breakStacks == behavior.hitStacks) {
+            parts.push("命中/破韧+" + behavior.hitStacks + "格");
+        } else {
+            if (behavior.hitStacks != undefined) parts.push("命中+" + behavior.hitStacks + "格");
+            if (behavior.breakStacks != undefined) parts.push("破韧+" + behavior.breakStacks + "格");
+        }
+        if (behavior.maxStacks != undefined) parts.push("上限" + behavior.maxStacks + "格");
+        if (behavior.damagePerStack != undefined) {
+            parts.push("每格易伤+" + formatPercent(behavior.damagePerStack));
+        }
+        if (behavior.crumblePerMilestone != undefined) {
+            var milestone:String = behavior.milestoneInterval != undefined
+                ? "每" + behavior.milestoneInterval + "格" : "节点";
+            parts.push(milestone + "击溃" + formatRawPercent(behavior.crumblePerMilestone));
+        }
+        if (behavior.executeAtMax != undefined) {
+            parts.push("满层斩杀" + formatRawPercent(behavior.executeAtMax));
+        }
+        if (behavior.decayDelay != undefined) {
+            parts.push("停火" + formatFramesAsSeconds(behavior.decayDelay) + "后衰减");
+        }
+        return parts.join("；");
+    }
+
+    /** 详细插件面板也只展示三条玩家语义，不展开内部协议字段。 */
+    private static function appendGrayGooBehavior(result:Array, indent:String,
+                                                   behavior:Object):Void {
+        var isBase:Boolean = behavior.type != undefined;
+        if (!isBase) {
+            var summary:String = buildGrayGooSummary(behavior);
+            if (summary.length > 0) result.push(indent, "  ", summary, "<BR>");
+            return;
+        }
+
+        result.push(indent, "<FONT COLOR='", TooltipConstants.COL_USE_SWITCH, "'>",
+                    TooltipConstants.LBL_GRAY_GOO_BEHAVIOR, "</FONT><BR>");
+
+        var overview:Array = [];
+        if (behavior.maxStacks != undefined) overview.push(behavior.maxStacks + "格");
+        if (behavior.damagePerStack != undefined) {
+            overview.push("每格易伤+" + formatPercent(behavior.damagePerStack));
+        }
+        if (overview.length > 0) result.push(indent, "  ", overview.join("，"), "<BR>");
+
+        var trigger:Array = [];
+        if (behavior.hitStacks != undefined && behavior.breakStacks == behavior.hitStacks) {
+            trigger.push("命中/破韧+" + behavior.hitStacks + "格");
+        } else {
+            if (behavior.hitStacks != undefined) trigger.push("命中+" + behavior.hitStacks + "格");
+            if (behavior.breakStacks != undefined) trigger.push("破韧+" + behavior.breakStacks + "格");
+        }
+        if (behavior.crumblePerMilestone != undefined) {
+            var milestone:String = behavior.milestoneInterval != undefined
+                ? "每" + behavior.milestoneInterval + "格" : "节点";
+            trigger.push(milestone + "击溃" + formatRawPercent(behavior.crumblePerMilestone));
+        }
+        if (trigger.length > 0) result.push(indent, "  ", trigger.join("；"), "<BR>");
+
+        var sustain:Array = [];
+        if (behavior.executeAtMax != undefined) {
+            sustain.push("满层斩杀" + formatRawPercent(behavior.executeAtMax));
+        }
+        if (behavior.decayDelay != undefined) {
+            sustain.push("停火" + formatFramesAsSeconds(behavior.decayDelay) + "后衰减");
+        }
+        if (sustain.length > 0) result.push(indent, "  ", sustain.join("；"), "<BR>");
     }
 
     private static function formatFramesAsSeconds(frameValue:Object):String {
@@ -380,6 +505,12 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         var numericValue:Number = Number(value);
         if (isNaN(numericValue)) return String(value);
         return (Math.round(numericValue * 1000) / 10) + TooltipConstants.SUF_PERCENT;
+    }
+
+    private static function formatRawPercent(value:Object):String {
+        var numericValue:Number = Number(value);
+        if (isNaN(numericValue)) return String(value);
+        return (Math.round(numericValue * 10) / 10) + TooltipConstants.SUF_PERCENT;
     }
 
     private static function trimSimple(value:String):String {

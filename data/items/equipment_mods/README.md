@@ -431,23 +431,27 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 <stats>
     <merge>
         <hitBehavior>
-            <type>toughnessVulnerabilityPrimer</type>
+            <type>grayGooPrimer</type>
             <stackGroup>grayGooVulnerability</stackGroup>
             <profileId>base</profileId>
-            <duration>180</duration>
-            <breakExtend>60</breakExtend>
-            <maxDuration>300</maxDuration>
-            <maxStacks>3</maxStacks>
-            <damagePerStack>0.06</damagePerStack>
+            <decayDelay>90</decayDelay>
+            <decayInterval>10</decayInterval>
+            <maxStacks>18</maxStacks>
+            <hitStacks>1</hitStacks>
+            <breakStacks>1</breakStacks>
+            <milestoneInterval>6</milestoneInterval>
+            <damagePerStack>0.01</damagePerStack>
+            <crumblePerMilestone>1</crumblePerMilestone>
+            <executeAtMax>8</executeAtMax>
             <sameSourceOnly>true</sameSourceOnly>
         </hitBehavior>
     </merge>
 </stats>
 ```
 
-当前类型表示：有效命中挂载/刷新破韧标记；联弹全段 MISS/直感不算有效命中。标记期间由同一 shooter 完成破韧时叠加全局易伤。命中保底刷新但不缩短已延长时间，破韧在剩余时间上延长并受 `maxDuration` 限制，叠层受 `maxStacks` 限制。同一发命中若随后造成破韧，计入首层。
+当前类型表示：有效命中按 `hitStacks` 沉积，真实破韧按 `breakStacks` 追加；联弹全段 MISS/直感不算有效命中。每格易伤为 `damagePerStack`，每跨过 `milestoneInterval` 格为当发配给 `crumblePerMilestone` 击溃，预测达到 `maxStacks` 时配给 `executeAtMax` 斩杀。停火 `decayDelay` 帧后每 `decayInterval` 帧退一格。击溃/斩杀字段使用原始百分比（`0.1` 即 0.1%，`5` 即 5%），`damagePerStack` 使用小数倍率（`0.01` 即 1%）。
 
-`stackGroup` 定义共享最终输出的聚合域，`profileId` 定义同一来源下独立刷新/到期的候选档位。同一组只对各候选的完整倍率取 MAX，不跨档拼接字段，也不把多来源相加；新配置必须显式填写稳定的 `profileId`。嵌套字段可在 `useSwitch` 的 `merge` 中局部覆写。灰蛊裂隙弹当前用 `name="weapontype:手枪"` 将普通手枪的 `profileId` 改为 `handgun`，并调整为 `duration=240`、`maxDuration=360`、`damagePerStack=0.07`；没有写入分支的 `stackGroup/breakExtend/maxStacks/sameSourceOnly/type` 会保留基础值。Tooltip 会把帧数换算成秒并把限定符显示为可读的“武器子类：手枪”，内部聚合身份不展示给玩家。
+`stackGroup` 定义共享最终输出的聚合域，`profileId` 定义同一来源下独立衰减的候选档位。同一组只对各候选的完整倍率取 MAX，不跨档拼接字段，也不把多来源相加。灰蛊裂隙弹基础档由冲锋枪使用：每命中 1 格、节点 `1%` 击溃、满层 `8%` 斩杀；精确 `weapontype:大威力手枪` 分支覆写为每命中 2 格，并显式锁回节点 `0.1%` 击溃与满层 `5%` 斩杀，避免深度 merge 继承冲锋枪补偿；精确 `weapontype:手枪` 分支覆写为每命中 3 格，并把衰减参数改为 `150/15` 帧、击溃改为 `0.3%`、斩杀改为 `8%`。Tooltip 不逐字段展开运行协议：基础档压缩为三条玩家语义，每个枪种分支只用一条摘要展示相对变化。`ToughnessBroken` 仅在非刚体真实破韧时发布；刚体越阈仍清槽，但不对灰蛊追加层数。
 
 #### tag - 插件位置标签
 **作用：** 同tag的插件不能同时装备（互斥机制）

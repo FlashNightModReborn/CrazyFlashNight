@@ -427,13 +427,15 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
 
         EquipmentUtil.modDict = oldDict;
 
-        assertContains(joined, TooltipConstants.LBL_HIT_BEHAVIOR, "ModStatBuilder hitBehavior has behavior label");
-        assertContains(joined, "6秒", "ModStatBuilder hitBehavior has base duration");
-        assertContains(joined, "+6%", "ModStatBuilder hitBehavior has base stack value");
+        assertContains(joined, TooltipConstants.LBL_GRAY_GOO_BEHAVIOR, "ModStatBuilder uses compact gray-goo label");
+        assertContains(joined, "18格，每格易伤+1%", "ModStatBuilder combines cap and vulnerability");
+        assertContains(joined, "命中/破韧+1格；每6格击溃0.1%", "ModStatBuilder combines base triggers");
+        assertContains(joined, "满层斩杀5%；停火3秒后衰减", "ModStatBuilder combines sustain rules");
         assertContains(joined, "武器子类：手枪", "ModStatBuilder translates qualified useSwitch label");
-        assertContains(joined, "8秒", "ModStatBuilder has handgun duration override");
-        assertContains(joined, "+7%", "ModStatBuilder has handgun stack override");
-        assertContains(joined, "12秒", "ModStatBuilder has handgun duration cap override");
+        assertContains(joined, "命中/破韧+3格；节点击溃0.3%；满层斩杀8%；停火5秒后衰减",
+                       "ModStatBuilder compresses handgun overrides to one line");
+        assertNotContains(joined, TooltipConstants.LBL_DECAY_INTERVAL,
+                          "ModStatBuilder hides internal per-layer decay interval");
         assertNotContains(joined, "weapontype:手枪", "ModStatBuilder hides qualified token");
         assertNotContains(joined, "[object Object]", "ModStatBuilder never stringifies hitBehavior object");
     }
@@ -465,10 +467,10 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         EquipmentUtil.modDict = oldDict;
 
         assertContains(handgunJoined, "武器子类：手枪", "ModsBlockBuilder shows matched qualified handgun branch");
-        assertContains(handgunJoined, "每层易伤+7%", "ModsBlockBuilder summarizes handgun behavior bonus");
-        assertContains(handgunJoined, "命中维持8秒", "ModsBlockBuilder summarizes handgun mark duration");
+        assertContains(handgunJoined, "命中/破韧+3格；节点击溃0.3%；满层斩杀8%；停火5秒后衰减",
+                       "ModsBlockBuilder uses one semantic handgun summary");
         assertNotContains(machinePistolJoined, "武器子类：手枪", "ModsBlockBuilder does not match handgun branch for machine pistol");
-        assertNotContains(machinePistolJoined, "每层易伤+7%", "ModsBlockBuilder does not leak handgun bonus to machine pistol");
+        assertNotContains(machinePistolJoined, "命中/破韧+3格", "ModsBlockBuilder does not leak handgun bonus to machine pistol");
     }
 
     private static function test_ModStatBuilder_skillSwitch():Void {
@@ -542,12 +544,16 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
             stats: {
                 merge: {
                     hitBehavior: {
-                        type: "toughnessVulnerabilityPrimer",
-                        duration: 180,
-                        breakExtend: 60,
-                        maxDuration: 300,
-                        maxStacks: 3,
-                        damagePerStack: 0.06,
+                        type: "grayGooPrimer",
+                        decayDelay: 90,
+                        decayInterval: 10,
+                        maxStacks: 18,
+                        hitStacks: 1,
+                        breakStacks: 1,
+                        milestoneInterval: 6,
+                        damagePerStack: 0.01,
+                        crumblePerMilestone: 0.1,
+                        executeAtMax: 5,
                         sameSourceOnly: true
                     }
                 },
@@ -556,9 +562,12 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
                         name: "weapontype:手枪",
                         merge: {
                             hitBehavior: {
-                                duration: 240,
-                                maxDuration: 360,
-                                damagePerStack: 0.07
+                                decayDelay: 150,
+                                decayInterval: 15,
+                                hitStacks: 3,
+                                breakStacks: 3,
+                                crumblePerMilestone: 0.3,
+                                executeAtMax: 8
                             }
                         }
                     }]
