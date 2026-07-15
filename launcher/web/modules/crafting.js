@@ -29,6 +29,7 @@ var CraftingPanel = (function() {
     }
 
     function buildDOM() {
+        disposeFilterNavigator();
         while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         if (_shell) _shell.destroy();
         _shell = new Workbench.DualPaneShell({title:_category || '合成工作台', subtitle:'权威预览',
@@ -440,8 +441,13 @@ var CraftingPanel = (function() {
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_shell) _shell.closeModal();
         _busy = false; _previewBusy = false; _organizerBusy = false; _snapshot = null; _preview = null;
-        _filterNavigator = null; _craftableToggle = null;
+        disposeFilterNavigator(); _craftableToggle = null;
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
+    }
+
+    function disposeFilterNavigator() {
+        if (_filterNavigator && typeof _filterNavigator.destroy === 'function') _filterNavigator.destroy();
+        _filterNavigator = null;
     }
 
     function requestClose() {

@@ -22,7 +22,7 @@
 #   6.  Copy-IfDifferent 把 Core FDD 产物 + native side-cars 拷到 projectRoot/runtime/，
 #       bootstrap.exe 改名拷到 projectRoot/CRAZYFLASHER7MercenaryEmpire.exe，生成 runtime manifest，
 #       并校验 bundled runtime installer
-#   6f. 断言发布主程序集是 optimized Release build
+#   6f. 断言发布主程序集是 optimized Release build，且 embedded PDB 不含 SourceLink commit 映射
 #   7.  Verify launcher/web 运行时资产清单
 #   7a. native cursor canvas 契约校验（tools/audit-native-cursor-assets.js）
 #   7b. launcher/data 运行时资产清单（3 项：map_hud_data / save_repair_dict / save_schema）
@@ -615,13 +615,14 @@ $pickedInstaller = $runtimeInstallerCandidates[0].Name
 Write-Host "  bundled installer: $pickedInstaller" -ForegroundColor Green
 Write-Host "  All required artifacts at projectRoot." -ForegroundColor Green
 
-# Step 6f: 优化护栏 — 断言发布目录里的托管主程序集是优化构建（非 Debug）
+# Step 6f: managed 产物护栏 — 断言主程序集是优化构建（非 Debug），且无 SourceLink commit 映射
 # 历史卡顿真因：误把 Debug 产物（DebuggableAttribute 的 DisableOptimizations=256 置位 →
 # 运行时 JIT 优化被整个关掉）当作发布版提交。详见 memory: launcher-perf-debug-vs-release。
 # net10 走 `dotnet publish -c Release` 本应永远优化，这里把"必须优化"从流程纪律升级为脚本强制
-# 校验：把 Debug/未优化产物溜进 runtime\ 这一失败模式物理堵死。
-# 工具用 BCL 的 PEReader 直接读 DebuggableAttribute 原始 blob，不解析依赖、不联网。
-Write-Host "[Step 6f/7] Assert published assembly is optimized (no Debug build)..." -ForegroundColor Yellow
+# 校验：把 Debug/未优化产物溜进 runtime\ 这一失败模式物理堵死。另拒绝 embedded PDB 的
+# SourceLink custom debug info，防当前 HEAD SHA 让受版本控制的 Core.dll/manifest 每提交漂移。
+# 工具用 BCL 的 PEReader 直接读 DebuggableAttribute 与 embedded portable PDB，不解析依赖、不联网。
+Write-Host "[Step 6f/7] Assert managed artifact is optimized and SourceLink-free..." -ForegroundColor Yellow
 $assertTool = Join-Path $projectRoot "tools\assert-optimized.cs"
 $coreManaged = Join-Path $runtimeDir "CRAZYFLASHER7MercenaryEmpire.Core.dll"
 if (-not (Test-Path $assertTool)) {
@@ -633,7 +634,7 @@ Push-Location $projectRoot
 try {
     & $dotnet run $assertTool -- $coreManaged
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "[FAIL] 发布产物优化校验未通过（上方含具体程序集与 DebuggingModes）。" -ForegroundColor Red
+        Write-Host "[FAIL] managed 产物校验未通过（上方含具体程序集、DebuggingModes 或 SourceLink 信息）。" -ForegroundColor Red
         Write-Host "       排查：确认本次走的是 build.ps1（dotnet publish -c Release），而非 IDE / 裸" -ForegroundColor Yellow
         Write-Host "       dotnet build 的 Debug 产物被拷进 runtime\；或 csproj/Directory.Build.props 被改写了 Optimize。" -ForegroundColor Yellow
         exit 1
@@ -641,7 +642,7 @@ try {
 } finally {
     Pop-Location
 }
-Write-Host "  Optimization gate OK." -ForegroundColor Green
+Write-Host "  Managed artifact gate OK." -ForegroundColor Green
 
 # Step 7: Verify required WebView2 runtime assets
 Write-Host "[Step 7/7] Verify required WebView2 runtime assets..." -ForegroundColor Yellow

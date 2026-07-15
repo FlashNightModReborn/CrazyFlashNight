@@ -33,9 +33,12 @@
          Deterministic（SDK 默认即 true，此处显式钉死）消除编译期随机 MVID / PE 时间戳；
          PathMap 把项目目录前缀归一化，使不同 checkout 路径（Steam 安装目录因人而异）产出一致字节。
          刻意不上 ContinuousIntegrationBuild/SourceLink：前者无 SourceRoot 时不归一化路径形同空操作，
-         后者会把每次都变的 commit SHA 嵌进 DLL，对受版本控制的产物反而是新 churn 源。-->
+         后者会把每次都变的 commit SHA 嵌进 DLL，对受版本控制的产物反而是新 churn 源。
+         .NET 10 SDK 会隐式导入 Git SourceLink，必须显式关闭并抑制 targets 导入。-->
     <Deterministic>true</Deterministic>
     <PathMap>$(MSBuildProjectDirectory)=/_/</PathMap>
+    <EnableSourceLink>false</EnableSourceLink>
+    <SuppressImplicitGitSourceLink>true</SuppressImplicitGitSourceLink>
   </PropertyGroup>
 
   <ItemGroup>

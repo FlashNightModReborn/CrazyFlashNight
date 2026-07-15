@@ -573,6 +573,15 @@
         this.pendingSpec = null;
         this.setSnapshot(snapshot);
     };
+    InventoryFilterControl.prototype.destroy = function() {
+        this.closePopover();
+        if (this.navigator) {
+            this.navigator.destroy();
+            this.navigator = null;
+        }
+        this.options.breadcrumbHost = null;
+        this.pendingSpec = null;
+    };
 
     function AuthoritySortControl(options) {
         options = options || {};
@@ -729,6 +738,12 @@
     InventorySortControls.prototype.setAuthorityDisabled = function(disabled) {
         if (this.authoritySelect) this.authoritySelect.disabled = !!disabled;
         if (this.commitButton) this.commitButton.disabled = !!disabled;
+    };
+    InventorySortControls.prototype.destroy = function() {
+        if (this.filterControl) {
+            this.filterControl.destroy();
+            this.filterControl = null;
+        }
     };
 
     function categoryFilterOptions() {

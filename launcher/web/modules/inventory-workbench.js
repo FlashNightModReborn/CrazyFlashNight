@@ -81,6 +81,7 @@ var InventoryWorkbench = (function() {
         if (_pager) _pager.detach();
         for (var oldDrag = 0; oldDrag < _dragControllers.length; oldDrag++) _dragControllers[oldDrag].cancel();
         if (_broker) _broker.clearSelection();
+        disposeInventoryControls();
         if (_shell) _shell.destroy();
         while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         _shell = null;
@@ -801,7 +802,15 @@ var InventoryWorkbench = (function() {
         resetQuickTransfer();
         _coordinator.close();
         _mux.closeSession();
+        disposeInventoryControls();
         if (_densityController) { _densityController.destroy(); _densityController = null; }
+    }
+
+    function disposeInventoryControls() {
+        if (_backpackSortControls && typeof _backpackSortControls.destroy === 'function') _backpackSortControls.destroy();
+        if (_rightSortControls && typeof _rightSortControls.destroy === 'function') _rightSortControls.destroy();
+        _backpackSortControls = null;
+        _rightSortControls = null;
     }
 
     function closePanel(forceClose) {

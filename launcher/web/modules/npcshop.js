@@ -54,6 +54,7 @@ var NpcShop = (function() {
     }
 
     function buildDOM() {
+        disposeFilterNavigators();
         while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         if (_shell) _shell.destroy();
         _rightViews = {}; _viewButtons = {};
@@ -877,7 +878,7 @@ var NpcShop = (function() {
         _generation++; _shopId = initData && typeof initData.shopId === 'string' ? initData.shopId : '';
         _state = null; _busy = false; _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null;
         _spacePage = null; _spaceGrids = {}; _spacePager = null; _spaceBusy = false; _spaceMutated = false;
-        _helpPage = null; _helpButton = null; _bagFilterControl = null;
+        _helpPage = null; _helpButton = null;
         _previewBusy = false; _previewQueued = false; _previewRevision = 0; _category = {mode:'auto', path:[]}; _categoryInitialized = false;
         _activeRight = 'bag'; _activeCollection = 'material'; _tooltipCache = {};
         buildDOM(); if (_scaleHandle) _scaleHandle.detach();
@@ -950,9 +951,17 @@ var NpcShop = (function() {
         _inventoryCoordinator.close(); _inventoryMux.closeSession();
         if (_shell) _shell.closeModal(); _mux.closeSession();
         _busy = false; _previewBusy = false; _state = null; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null;
-        _helpPage = null; _helpButton = null; _bagFilterControl = null;
+        _helpPage = null; _helpButton = null;
+        disposeFilterNavigators();
         if (_densityController) { _densityController.destroy(); _densityController = null; }
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
+    }
+    function disposeFilterNavigators() {
+        if (_categoryNavigator && typeof _categoryNavigator.destroy === 'function') _categoryNavigator.destroy();
+        if (_bagFilterControl && typeof _bagFilterControl.destroy === 'function') _bagFilterControl.destroy();
+        _categoryNavigator = null;
+        _categoryToolbar = null;
+        _bagFilterControl = null;
     }
     function requestClose() {
         if (_helpPage && _helpPage.classList.contains('active')) { closeHelpPage(); return; }

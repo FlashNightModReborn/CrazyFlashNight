@@ -12,6 +12,17 @@
 <body>
 <div id="panel-container" data-panel="crafting"><div id="panel-backdrop"></div><div id="panel-content"></div></div><pre id="qa-output">running…</pre>
 <script>
+// Track every ResizeObserver created by the production modules so repeated
+// panel rebuild/close paths must release them instead of retaining detached DOM.
+(function(NativeResizeObserver){
+  var stats=window.__resizeObserverStats={created:0,observed:0,disconnected:0,active:0};
+  if(!NativeResizeObserver)return;
+  function TrackedResizeObserver(callback){this.nativeObserver=new NativeResizeObserver(callback);this.active=false;stats.created++}
+  TrackedResizeObserver.prototype.observe=function(target){if(!this.active){this.active=true;stats.observed++;stats.active++}return this.nativeObserver.observe(target)};
+  TrackedResizeObserver.prototype.unobserve=function(target){return this.nativeObserver.unobserve(target)};
+  TrackedResizeObserver.prototype.disconnect=function(){if(this.active){this.active=false;stats.disconnected++;stats.active--}return this.nativeObserver.disconnect()};
+  window.ResizeObserver=TrackedResizeObserver;
+})(window.ResizeObserver);
 window.__CRAFTING_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness'};
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;
 window.Bridge={
@@ -116,6 +127,7 @@ try{
   ok('blocked preview has disabled submit',document.querySelector('.crafting-commit-status').textContent.indexOf('材料不足')>=0&&document.querySelector('.crafting-commit-btn').disabled);
   var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();
   var route=Panels.lastOpen();ok('organizer revokes token then routes to battlebox',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeRoute+1&&Panels.getActive()==='workbench'&&route.init.profile==='battlebox'&&route.init.returnTo.initData.preferredRecipeIndex===1);
+  ok('rebuild and route cleanup disconnect every ResizeObserver',__resizeObserverStats.active===0,JSON.stringify(__resizeObserverStats));
   var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
 }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}})();
 </script>

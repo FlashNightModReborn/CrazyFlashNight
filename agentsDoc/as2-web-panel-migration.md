@@ -1,9 +1,11 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `08084a577e`（2026-07-13）；合成工作台 C0-C3 另核对本轮工作树。
+**最后核对代码基线**：commit `08084a577e`（2026-07-13）；合成工作台 C0-C3 另核对本轮工作树；Skill 独立迁移边界另核对 commit `6ff3308f38`（2026-07-15）。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
+
+专题规划：[技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md](../docs/技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md) 已冻结 `panel/domain=skills`、管理/教师双模式、学习 token 原子提交和快捷栏模型抽离路线；当前仍是规划态，未落地的 `skill*` 命令不得提前加入下方“已接入”闭环表。
 
 ## 1. 迁移分级
 
