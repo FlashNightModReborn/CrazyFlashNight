@@ -75,24 +75,6 @@ namespace CF7Launcher.Guardian.Hud
             return null;
         }
 
-        /// <summary>所有 asset URL 集合（去重）；用于 P2-1 prewarm 预加载 silhouette WebP。</summary>
-        public IEnumerable<string> EnumerateAssetUrls()
-        {
-            Dictionary<string, MapHudHotspotEntry> snap = _byId;
-            if (snap == null) yield break;
-            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
-            foreach (KeyValuePair<string, MapHudHotspotEntry> kv in snap)
-            {
-                MapHudHotspotEntry entry = kv.Value;
-                if (entry == null || entry.Outline == null || entry.Outline.Visuals == null) continue;
-                foreach (MapHudVisual v in entry.Outline.Visuals)
-                {
-                    if (v == null || string.IsNullOrEmpty(v.AssetUrl)) continue;
-                    if (seen.Add(v.AssetUrl)) yield return v.AssetUrl;
-                }
-            }
-        }
-
         /// <summary>
         /// 加载入口。失败时返回不可用 catalog（IsAvailable=false），不抛。
         /// </summary>

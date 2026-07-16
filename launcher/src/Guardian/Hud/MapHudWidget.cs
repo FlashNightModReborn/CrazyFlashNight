@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 
@@ -63,10 +64,11 @@ namespace CF7Launcher.Guardian.Hud
         private bool _hoverCloseBtn;
 
         private static readonly object AssetCacheLock = new object();
-        private static readonly Dictionary<string, Image> AssetCache = new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
-        private static readonly Dictionary<string, Bitmap> TintedAssetCache = new Dictionary<string, Bitmap>(StringComparer.OrdinalIgnoreCase);
+        private const long ASSET_CACHE_BUDGET_BYTES = 24L * 1024L * 1024L;
+        private const long TINTED_CACHE_BUDGET_BYTES = 12L * 1024L * 1024L;
+        private static readonly BitmapLruCache AssetCache = new BitmapLruCache(ASSET_CACHE_BUDGET_BYTES, StringComparer.OrdinalIgnoreCase);
+        private static readonly BitmapLruCache TintedAssetCache = new BitmapLruCache(TINTED_CACHE_BUDGET_BYTES, StringComparer.Ordinal);
         private static readonly HashSet<string> MissingAssetWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private const int MAX_TINTED_CACHE = 128;
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -369,6 +371,7 @@ namespace CF7Launcher.Guardian.Hud
                 {
                     _hotspotId = nextHotspot;
                     _entry = string.IsNullOrEmpty(_hotspotId) ? null : _catalog.GetEntry(_hotspotId);
+                    PrewarmEntry(_entry);
                     if (_entry == null && !string.IsNullOrEmpty(_hotspotId))
                     {
                         LogManager.Log("[MapHud] hotspot not in catalog: " + _hotspotId);
@@ -421,11 +424,8 @@ namespace CF7Launcher.Guardian.Hud
             {
                 MapHudVisual visual = outline.Visuals[i];
                 if (visual == null || !visual.SourceRect.HasValue || string.IsNullOrEmpty(visual.AssetUrl)) continue;
-                Image img = GetAssetImage(visual.AssetUrl);
-                if (img == null) continue;
                 RectangleF dest = MapSourceRect(visual.SourceRect.Value, vp, originX, originY, s, 1f);
-                DrawTintedImage(g, img, visual.AssetUrl, dest, theme.Silhouette, 47);
-                painted = true;
+                if (DrawTintedAsset(g, visual.AssetUrl, dest, theme.Silhouette, 47)) painted = true;
             }
 
             for (int i = 0; i < outline.Visuals.Count; i++)
@@ -433,14 +433,12 @@ namespace CF7Launcher.Guardian.Hud
                 MapHudVisual visual = outline.Visuals[i];
                 if (visual == null || !visual.SourceRect.HasValue || string.IsNullOrEmpty(visual.AssetUrl)) continue;
                 if (!IsCurrentVisual(visual, currentId)) continue;
-                Image img = GetAssetImage(visual.AssetUrl);
-                if (img == null) continue;
                 RectangleF dest = MapSourceRect(visual.SourceRect.Value, vp, originX, originY, s, 1f);
                 RectangleF glow = dest;
                 float inflate = Math.Max(1.5f, 2.2f * scale);
                 glow.Inflate(inflate, inflate);
-                DrawTintedImage(g, img, visual.AssetUrl, glow, theme.Current, 82);
-                DrawTintedImage(g, img, visual.AssetUrl, dest, theme.Current, 245);
+                DrawTintedAsset(g, visual.AssetUrl, glow, theme.Current, 82);
+                DrawTintedAsset(g, visual.AssetUrl, dest, theme.Current, 245);
             }
 
             return painted;
@@ -508,42 +506,71 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         /// <summary>
-        /// P2-1 prewarm 入口：后台线程预加载 silhouette WebP 进 AssetCache。
-        /// 同步路径 GetAssetImage 走相同 lock；预加载后玩家首次打开 map 时直接命中。
+        /// 只预热当前 hotspot outline 的工作集。切换期间在后台按 512px 最长边解码，
+        /// 与同步绘制共享同一字节预算 LRU；不再启动时遍历整个 catalog。
         /// </summary>
-        public static void PrewarmAsset(string assetUrl)
+        internal static void PrewarmEntry(MapHudHotspotEntry entry)
         {
-            try { GetAssetImage(assetUrl); }
-            catch (Exception ex) { LogManager.Log("[MapHud] PrewarmAsset failed: " + (assetUrl ?? "<null>") + " ex=" + ex.Message); }
+            if (entry == null || entry.Outline == null || entry.Outline.Visuals == null) return;
+            List<string> urls = new List<string>();
+            HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < entry.Outline.Visuals.Count; i++)
+            {
+                MapHudVisual visual = entry.Outline.Visuals[i];
+                if (visual == null || string.IsNullOrEmpty(visual.AssetUrl)) continue;
+                if (seen.Add(visual.AssetUrl)) urls.Add(visual.AssetUrl);
+            }
+            if (urls.Count == 0) return;
+            ThreadPool.QueueUserWorkItem(delegate(object state)
+            {
+                List<string> workset = (List<string>)state;
+                for (int i = 0; i < workset.Count; i++)
+                {
+                    try { PrewarmAsset(workset[i]); }
+                    catch (Exception ex) { LogManager.Log("[MapHud] workset prewarm failed: " + workset[i] + " ex=" + ex.Message); }
+                }
+                PerfTrace.Mark("mapHud.workset_prewarm_done", "count=" + workset.Count);
+            }, urls);
         }
 
-        private static Image GetAssetImage(string assetUrl)
+        private static void PrewarmAsset(string assetUrl)
         {
             string webDir;
-            if (!TryFindDefaultWebDir(out webDir)) return null;
+            if (!TryFindDefaultWebDir(out webDir)) return;
             string path;
-            if (!TryResolveAssetPath(webDir, assetUrl, out path)) return null;
+            if (!TryResolveAssetPath(webDir, assetUrl, out path)) return;
 
             lock (AssetCacheLock)
             {
-                Image cached;
-                if (AssetCache.TryGetValue(path, out cached)) return cached;
-                if (!File.Exists(path))
+                Bitmap ignored;
+                GetAssetBitmapUnderLock(path, out ignored);
+            }
+        }
+
+        private static bool GetAssetBitmapUnderLock(string path, out Bitmap bitmap)
+        {
+            if (AssetCache.TryGet(path, out bitmap)) return true;
+            if (!File.Exists(path))
+            {
+                WarnMissingAsset(path, "[MapHud] silhouette asset not found: " + path);
+                return false;
+            }
+            try
+            {
+                Bitmap decoded = MapHudImageDecoder.LoadBitmap(path);
+                if (!AssetCache.TryAdd(path, decoded))
                 {
-                    WarnMissingAsset(path, "[MapHud] silhouette asset not found: " + path);
-                    return null;
+                    decoded.Dispose();
+                    WarnMissingAsset(path, "[MapHud] silhouette exceeds decoded cache budget: " + path);
+                    return false;
                 }
-                try
-                {
-                    Bitmap copy = MapHudImageDecoder.LoadBitmap(path);
-                    AssetCache[path] = copy;
-                    return copy;
-                }
-                catch (Exception ex)
-                {
-                    WarnMissingAsset(path, "[MapHud] silhouette asset load failed: " + path + " ex=" + ex.Message);
-                    return null;
-                }
+                bitmap = decoded;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                WarnMissingAsset(path, "[MapHud] silhouette asset load failed: " + path + " ex=" + ex.Message);
+                return false;
             }
         }
 
@@ -583,43 +610,49 @@ namespace CF7Launcher.Guardian.Hud
             return false;
         }
 
-        private static void DrawTintedImage(Graphics g, Image img, string assetKey, RectangleF dest, Color color, int alpha)
+        private static bool DrawTintedAsset(Graphics g, string assetUrl, RectangleF dest, Color color, int alpha)
         {
-            if (img == null || dest.Width <= 0 || dest.Height <= 0 || alpha <= 0) return;
+            if (g == null || string.IsNullOrEmpty(assetUrl) || dest.Width <= 0 || dest.Height <= 0 || alpha <= 0) return false;
             int dw = Math.Max(1, (int)Math.Round(dest.Width));
             int dh = Math.Max(1, (int)Math.Round(dest.Height));
-            Bitmap tinted = GetTintedBitmap(img, assetKey, dw, dh, color, alpha);
-            if (tinted == null) return;
             Rectangle destRect = new Rectangle((int)Math.Round(dest.X), (int)Math.Round(dest.Y), dw, dh);
-            g.DrawImageUnscaled(tinted, destRect);
-        }
-
-        private static Bitmap GetTintedBitmap(Image img, string assetKey, int width, int height, Color color, int alpha)
-        {
-            string key = (assetKey ?? "") + "|" + width + "x" + height + "|" + color.ToArgb().ToString("X8") + "|" + alpha.ToString();
+            string webDir;
+            if (!TryFindDefaultWebDir(out webDir)) return false;
+            string path;
+            if (!TryResolveAssetPath(webDir, assetUrl, out path)) return false;
+            string key = path + "|" + dw + "x" + dh + "|" + color.ToArgb().ToString("X8") + "|" + alpha.ToString();
             lock (AssetCacheLock)
             {
-                Bitmap cached;
-                if (TintedAssetCache.TryGetValue(key, out cached)) return cached;
-                if (TintedAssetCache.Count >= MAX_TINTED_CACHE)
+                Bitmap tinted;
+                if (!TintedAssetCache.TryGet(key, out tinted))
                 {
-                    foreach (Bitmap b in TintedAssetCache.Values)
+                    Bitmap source;
+                    if (!GetAssetBitmapUnderLock(path, out source)) return false;
+                    tinted = new Bitmap(dw, dh, PixelFormat.Format32bppPArgb);
+                    try
                     {
-                        try { b.Dispose(); } catch { }
+                        using (Graphics tg = Graphics.FromImage(tinted))
+                        {
+                            tg.Clear(Color.Transparent);
+                            tg.InterpolationMode = InterpolationMode.HighQualityBilinear;
+                            tg.PixelOffsetMode = PixelOffsetMode.Half;
+                            DrawTintedImageUncached(tg, source, new Rectangle(0, 0, dw, dh), color, alpha);
+                        }
+                        if (!TintedAssetCache.TryAdd(key, tinted))
+                        {
+                            tinted.Dispose();
+                            return false;
+                        }
                     }
-                    TintedAssetCache.Clear();
+                    catch
+                    {
+                        tinted.Dispose();
+                        throw;
+                    }
                 }
-
-                Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.Clear(Color.Transparent);
-                    g.InterpolationMode = InterpolationMode.HighQualityBilinear;
-                    g.PixelOffsetMode = PixelOffsetMode.Half;
-                    DrawTintedImageUncached(g, img, new Rectangle(0, 0, width, height), color, alpha);
-                }
-                TintedAssetCache[key] = bmp;
-                return bmp;
+                // 绘制也保持在锁内，防止并发 overlay paint 或后台预热期间淘汰仍在使用的 GDI 对象。
+                g.DrawImageUnscaled(tinted, destRect);
+                return true;
             }
         }
 
@@ -769,6 +802,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             _hotspotId = hotspotId ?? "";
             _entry = string.IsNullOrEmpty(_hotspotId) ? null : _catalog.GetEntry(_hotspotId);
+            PrewarmEntry(_entry);
             FireBounds();
         }
         internal bool VisibleForTest { get { return Visible; } }

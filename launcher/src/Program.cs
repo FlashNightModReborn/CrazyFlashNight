@@ -853,7 +853,7 @@ class Program
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
 
-            // P2-1 perf：后台预热 GDI+ 字体 / 字形栅格化 / silhouette PNG。
+            // P2-1 perf：后台预热 GDI+ 字体 / 字形栅格化；地图 WebP 在 mh 到达后按当前工作集预热。
             // 与 SFX preload / catalog async 并行，全部藏在 Flash 启动等待窗口（~4-5s）。
             // 玩家首次看到 native UI 时所有冷启动开销已被吸收。
             CF7Launcher.Guardian.Hud.NativeHudPrewarm.RunAsync(mapCatalog);

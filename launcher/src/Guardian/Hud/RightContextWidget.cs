@@ -743,6 +743,7 @@ namespace CF7Launcher.Guardian.Hud
                 {
                     _mapHotspotId = nextHotspot;
                     _mapEntry = string.IsNullOrEmpty(_mapHotspotId) || _catalog == null ? null : _catalog.GetEntry(_mapHotspotId);
+                    MapHudWidget.PrewarmEntry(_mapEntry);
                     if (_mapEntry == null && !string.IsNullOrEmpty(_mapHotspotId))
                         LogManager.Log("[RightContextWidget] map hotspot not in catalog: " + _mapHotspotId);
                     boundsDirty = true;

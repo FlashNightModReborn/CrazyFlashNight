@@ -1,5 +1,5 @@
 // CF7:ME — NativeHud 启动期预热（C# 5）
-// 把 GDI+ Font handle / ClearType glyph cache / silhouette WebP 等"首帧冷启动"成本
+// 把 GDI+ Font handle / ClearType glyph cache 等"首帧冷启动"成本
 // 推进 ThreadPool 后台线程，让 Flash 启动等待窗口（~4-5s）替玩家吸收。
 // 不在玩家可见路径上做任何 UI 操作。
 
@@ -21,7 +21,6 @@ namespace CF7Launcher.Guardian.Hud
     ///   3. ClearType 字形栅格化进 GDI 进程缓存（widget 首帧用到的所有 glyph）
     ///   4. RightContextWidget / ComboWidget 静态 cctor（21+5 brush + pen + StringFormat）
     ///   5. RightContextWidget / ComboWidget 实例 scaled font 集合
-    ///   6. MapHud silhouette WebP（SkiaSharp decode + Bitmap copy 进 AssetCache）
     ///
     /// 调用时机：Program.cs 在 widget 实例化、PerfDecisionEngine 装配之后立刻调用，
     /// 后台 ThreadPool 跑；与 SFX preload / MapCatalog async 并行，全部藏在 Flash 启动等待里。
@@ -35,7 +34,7 @@ namespace CF7Launcher.Guardian.Hud
         /// 后台异步预热。立即返回，不阻塞主线程。
         /// PrewarmGdi 是静态方法（只接静态资源），不需要 widget 实例参数。
         /// </summary>
-        /// <param name="mapCatalog">异步加载中的 MapHudDataCatalog；null 时跳过 WebP 预加载</param>
+        /// <param name="mapCatalog">保留参数以维持调用边界；地图资源改由 hotspot 切换时按工作集预热</param>
         public static void RunAsync(MapHudDataCatalog mapCatalog)
         {
             ThreadPool.QueueUserWorkItem(delegate(object state)
@@ -58,32 +57,9 @@ namespace CF7Launcher.Guardian.Hud
 
                     PerfTrace.Mark("nativeHud.prewarm_gdi_done");
 
-                    // 3) Map silhouette WebP 预加载
-                    //    catalog 异步加载完成后再开始；这里轮询等待最多 5s，超时就放弃（非关键路径）
-                    if (mapCatalog != null)
-                    {
-                        int waitedMs = 0;
-                        while (!mapCatalog.IsAvailable && waitedMs < 5000)
-                        {
-                            Thread.Sleep(100);
-                            waitedMs += 100;
-                        }
-                        if (mapCatalog.IsAvailable)
-                        {
-                            int prewarmed = 0;
-                            foreach (string url in mapCatalog.EnumerateAssetUrls())
-                            {
-                                MapHudWidget.PrewarmAsset(url);
-                                prewarmed++;
-                                if (prewarmed >= 64) break; // 上限保护：异常 catalog 防爆 GDI handle
-                            }
-                            PerfTrace.Mark("nativeHud.prewarm_assets_done", "count=" + prewarmed);
-                        }
-                        else
-                        {
-                            PerfTrace.Mark("nativeHud.prewarm_assets_skipped", "catalog_timeout");
-                        }
-                    }
+                    // 地图 WebP 不在启动期全量解码。MapHudWidget / RightContextWidget 收到 mh 后，
+                    // 只把当前 outline 的资源放入 24 MiB decoded LRU。
+                    PerfTrace.Mark("nativeHud.prewarm_map_assets_deferred", mapCatalog == null ? "no_catalog" : "workset_on_hotspot");
                 }
                 catch (Exception ex)
                 {
