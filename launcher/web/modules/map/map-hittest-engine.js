@@ -102,7 +102,7 @@ var MapHittestEngine = (function() {
         return Promise.resolve(img);
     }
 
-    // 把单个 visual 的 PNG 形状用 ID-color 二值化写入主 hitmap。
+    // 把单个 visual 的无损 WebP alpha 形状用 ID-color 二值化写入主 hitmap。
     // 后 visual 覆盖前 visual (与 drawScenes z 顺序一致)。
     function renderVisualToHitmap(pageEntry, index, img, visual) {
         var rect = visual && visual.rect;

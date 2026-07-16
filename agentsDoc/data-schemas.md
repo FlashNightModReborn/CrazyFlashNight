@@ -356,7 +356,7 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 ```jsonc
 {
   "symbolName": "<XFL 头像 MovieClip 名>",
-  "assetUrl": "assets/map/avatars/<symbolName>.png",
+  "assetUrl": "assets/map/avatars/<symbolName>.webp",
   "hotspotId": "<launcher map-panel-data hotspot id>",
   "relX": <number>,            // 头像 rect 左上角 X 偏移
   "relY": <number>,            // 头像 rect 左上角 Y 偏移

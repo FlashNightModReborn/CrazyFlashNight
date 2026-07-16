@@ -1620,9 +1620,9 @@ var MapPanel = (function() {
         if (slot.kind === 'roommateGender') {
             var gender = String(_dynamicAvatarState.roommateGender || '').toLowerCase();
             if (gender === '女' || gender === 'female' || gender === 'girl' || gender === 'f') {
-                return 'assets/map/roommate-female.png';
+                return 'assets/map/roommate-female.webp';
             }
-            return 'assets/map/roommate-male.png';
+            return 'assets/map/roommate-male.webp';
         }
 
         return slot.assetUrl || '';
@@ -2408,9 +2408,6 @@ var MapPanel = (function() {
         var scenes = buildCanvasSceneVisuals(_activePage);
         var staticAvatars = buildCanvasStaticAvatars(_activePage);
         var dynamicAvatars = buildCanvasDynamicAvatars(_activePage);
-        var taskRings = buildCanvasTaskRings(_activePage);
-        var markers = buildCanvasFeedbackMarkers(_activePage);
-        var tips = buildCanvasFeedbackTips(_activePage);
         var i;
 
         for (i = 0; i < scenes.length; i++) rects.push(scenes[i].rect);
@@ -2422,9 +2419,8 @@ var MapPanel = (function() {
         }
         for (i = 0; i < staticAvatars.length; i++) rects.push(staticAvatars[i].rect);
         for (i = 0; i < dynamicAvatars.length; i++) rects.push(dynamicAvatars[i].rect);
-        for (i = 0; i < taskRings.length; i++) rects.push(pointRect(taskRings[i].point, 28, 28));
-        for (i = 0; i < markers.length; i++) rects.push(pointRect(markers[i].point, 44, 44));
-        for (i = 0; i < tips.length; i++) rects.push(pointRect(tips[i].point, 132, 32));
+        // 任务环、反馈标记与提示是瞬态叠加层，不参与镜头取景；否则状态推送会导致
+        // 同一 page/filter 的倍率和中心跳变。它们仍在稳定场景 bounds 内正常绘制。
         // flash hint（"尚未开放"提示）锚定在锁定区域，不计入取景包围盒 —
         // 还原旧 measureContentBounds 行为（旧版 querySelector 不含 .map-feedback-hint），
         // 否则散布全图的提示会撑大包围盒，使单一解锁区无法自适应放大。

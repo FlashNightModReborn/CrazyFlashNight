@@ -33,8 +33,10 @@ var MapScalePolicy = (function() {
         var widthScale = availableWidth / pageWidth;
         var heightScale = availableHeight / pageHeight;
         var viewportScale = Math.min(widthScale, heightScale);
+        // sourceRatio 表示源位图像素 / 逻辑坐标；清晰度预算必须按物理像素计算，
+        // 因此 stage × fit × DPR / sourceRatio 才是真实的位图放大倍数。
         // 优先让外层舞台占满空间，再把剩余清晰度预算分给 content-fit。
-        var assetSafeScale = visualCap * sourceRatio;
+        var assetSafeScale = (visualCap * sourceRatio) / dpr;
         var canvasSafeScale = Math.sqrt(pixelBudget / (pageWidth * pageHeight * dpr * dpr));
         var maxScale = Math.min(productMax, assetSafeScale, canvasSafeScale);
         var stageScale = Math.min(viewportScale, maxScale);
@@ -59,7 +61,7 @@ var MapScalePolicy = (function() {
             canvasSafeScale: round(canvasSafeScale),
             sourceRatio: round(sourceRatio),
             requestedFitMaxScale: round(requestedFitMaxScale),
-            contentFitMaxScale: round(Math.max(1, (visualCap * sourceRatio) / stageScale)),
+            contentFitMaxScale: round(Math.max(1, (visualCap * sourceRatio) / (stageScale * dpr))),
             visualScaleCap: round(visualCap),
             staticPixelBudget: Math.round(pixelBudget),
             estimatedStaticPixels: Math.round(pageWidth * pageHeight * stageScale * stageScale * dpr * dpr),

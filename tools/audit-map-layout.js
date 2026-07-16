@@ -198,7 +198,7 @@ function iou(rectA, rectB) {
 function assetStem(assetUrl) {
     return String(assetUrl || '')
         .replace(/^.*[\\/]/, '')
-        .replace(/\.png$/i, '')
+        .replace(/\.(?:png|webp)$/i, '')
         .trim();
 }
 

@@ -209,7 +209,7 @@ def write_metadata_js(path: Path, entries: dict[str, dict]) -> None:
         "    function normalizeSymbolName(value) {\n"
         "        return String(value || '')\n"
             "            .replace(/^.*[\\\\/]/, '')\n"
-            "            .replace(/\\.png$/i, '')\n"
+            "            .replace(/\\.(?:png|webp)$/i, '')\n"
             "            .trim();\n"
         "    }\n\n"
         "    Object.keys(_entries).forEach(function(key) {\n"
@@ -329,7 +329,7 @@ def main() -> None:
             skipped.append(f"{symbol_name}: missing DOMBitmapItem for {spec['bitmapName']}")
             continue
 
-        output_path = output_dir / f"{symbol_name}.png"
+        output_path = output_dir / f"{symbol_name}.webp"
         rendered = None
         source_file = resolve_source_file(repo_root, xfl_dir, bitmap_meta["href"], symbol_name)
         try:
@@ -355,12 +355,12 @@ def main() -> None:
             rendered = None
 
         if rendered is not None:
-            rendered.save(output_path)
+            rendered.save(output_path, "WEBP", lossless=True, exact=True, method=6)
             exported += 1
 
         entry = {
             "symbolName": symbol_name,
-            "assetUrl": f"assets/map/avatars/{symbol_name}.png",
+            "assetUrl": f"assets/map/avatars/{symbol_name}.webp",
             "size": {"w": AVATAR_DIAMETER, "h": AVATAR_DIAMETER},
             "crop": {
                 "scaleX": round2(spec["scaleX"]),
@@ -376,16 +376,17 @@ def main() -> None:
     if ffdec_needed and ffdec_cli.exists():
         exported_pngs = export_with_ffdec(ffdec_cli, swf_path, output_dir, ffdec_needed)
         for symbol_name in ffdec_needed:
-            output_path = output_dir / f"{symbol_name}.png"
+            output_path = output_dir / f"{symbol_name}.webp"
             exported_png = exported_pngs.get(symbol_name)
             if exported_png is None:
                 skipped.append(f"{symbol_name}: FFDec fallback export missing sprite output")
                 continue
-            shutil.copyfile(exported_png, output_path)
+            with Image.open(exported_png) as image:
+                image.convert("RGBA").save(output_path, "WEBP", lossless=True, exact=True, method=6)
             exported += 1
 
     for symbol_name, entry in metadata_entries.items():
-        output_path = output_dir / f"{symbol_name}.png"
+        output_path = output_dir / f"{symbol_name}.webp"
         if output_path.exists():
             with Image.open(output_path) as img:
                 entry["assetSize"] = {"w": img.width, "h": img.height}

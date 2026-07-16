@@ -78,7 +78,7 @@ if ($resolvedContext.Count -gt 0) {
 }
 
 $prompt = ($promptLines -join [Environment]::NewLine)
-$result = & kimi.exe --print --output-format text --final-message-only -p $prompt
+$result = & kimi.exe -m "kimi-code/kimi-for-coding-highspeed" --output-format text -p $prompt
 
 if (-not [string]::IsNullOrWhiteSpace($OutputPath)) {
     Set-Content -LiteralPath $OutputPath -Value $result -Encoding utf8

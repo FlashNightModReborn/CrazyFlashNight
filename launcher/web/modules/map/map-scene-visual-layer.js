@@ -6,7 +6,7 @@ var MapSceneVisualLayer = (function() {
     //
     //   把每个 sceneVisual 渲染为一个 <div.map-scene-visual> wrapper, 含:
     //     <div.map-scene-visual-plate>   z=0  (仅 base 页 + is-visible 时显示)
-    //     <img.map-scene-visual-img>     z=1  (PNG 资源)
+    //     <img.map-scene-visual-img>     z=1  (无损 WebP 资源)
     //     <div.map-scene-visual-glow>    z=2  (focus/current 时的发光层)
     //
     //   常态: visibility:hidden + opacity:0 (双控, 因为 display 不可过渡).

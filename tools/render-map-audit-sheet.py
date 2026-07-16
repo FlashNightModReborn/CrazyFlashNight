@@ -162,7 +162,7 @@ def render_avatar_sheet(repo_root: Path, manifest: dict, audit_rows: list[dict],
     # missing 状态 (source-data 无 entry) 由 status 标签提示, 不依赖几何差异。
     for row in rows:
         runtime_rect = row.get("runtimeRect") or row.get("currentRect")
-        asset_ref = row.get("assetUrl") or f'assets/map/avatars/{row.get("symbolName", "")}.png'
+        asset_ref = row.get("assetUrl") or f'assets/map/avatars/{row.get("symbolName", "")}.webp'
         asset_path = resolve_asset_path(repo_root, asset_ref)
 
         if runtime_rect:

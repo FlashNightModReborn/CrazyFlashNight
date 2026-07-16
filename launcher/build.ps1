@@ -678,8 +678,8 @@ $requiredWebPaths = @(
     "assets\logos\cf7me-title.png",
     "assets\logos\steam.svg",
     "assets\intro.mp4",
-    "assets\map\page-base.png",
-    "assets\map\page-faction.png",
+    "assets\map\page-base.webp",
+    "assets\map\page-faction.webp",
     "modules\audio.js",
     "modules\game-ui-behavior.js",
     "modules\factions.js",
@@ -795,8 +795,34 @@ if ($missingWebPaths.Count -gt 0) {
 }
 Write-Host "  OK: launcher\\web runtime assets present ($($requiredWebPaths.Count) checks)" -ForegroundColor Green
 
-# Step 7a: Verify native cursor canvas/hotspot contract
-Write-Host "[Step 7a/7] Verify native cursor canvas contract..." -ForegroundColor Yellow
+# Step 7a: Map runtime images are lossless WebP only; reject stale PNGs and broken references.
+Write-Host "[Step 7a/7] Verify map lossless WebP asset closure..." -ForegroundColor Yellow
+$mapWebpAudit = Join-Path $projectRoot "tools\audit-map-webp-assets.js"
+if (-not (Test-Path $mapWebpAudit)) {
+    Write-Host "[FAIL] Map WebP audit missing: $mapWebpAudit" -ForegroundColor Red
+    exit 1
+}
+node $mapWebpAudit
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] Map lossless WebP asset audit failed." -ForegroundColor Red
+    exit 1
+}
+
+# Step 7b: Verify the complete map camera experience matrix and clarity debts.
+Write-Host "[Step 7b/7] Verify map scale experience matrix..." -ForegroundColor Yellow
+$mapScaleAudit = Join-Path $projectRoot "tools\audit-map-scale-experience.js"
+if (-not (Test-Path $mapScaleAudit)) {
+    Write-Host "[FAIL] Map scale experience audit missing: $mapScaleAudit" -ForegroundColor Red
+    exit 1
+}
+node $mapScaleAudit
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] Map scale experience audit failed." -ForegroundColor Red
+    exit 1
+}
+
+# Step 7c: Verify native cursor canvas/hotspot contract
+Write-Host "[Step 7c/7] Verify native cursor canvas contract..." -ForegroundColor Yellow
 $cursorAudit = Join-Path $projectRoot "tools\audit-native-cursor-assets.js"
 if (-not (Test-Path $cursorAudit)) {
     Write-Host "[FAIL] Native cursor audit missing: $cursorAudit" -ForegroundColor Red
@@ -808,8 +834,8 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Step 7b: Verify launcher\data runtime assets (NativeHud widget catalog 等)
-Write-Host "[Step 7b/7] Verify launcher\data runtime assets..." -ForegroundColor Yellow
+# Step 7d: Verify launcher\data runtime assets (NativeHud widget catalog 等)
+Write-Host "[Step 7d/7] Verify launcher\data runtime assets..." -ForegroundColor Yellow
 $dataDir = Join-Path $launcherDir "data"
 $requiredDataPaths = @(
     "map_hud_data.json",     # MapHudWidget catalog；缺失会让 useNativeHud=true 下 MapHud 静默不可见
@@ -836,10 +862,10 @@ if ($missingDataPaths.Count -gt 0) {
 }
 Write-Host "  OK: launcher\\data runtime assets present ($($requiredDataPaths.Count) checks)" -ForegroundColor Green
 
-# Step 7c: Verify save_repair_dict.json 与源头一致 (cf7-save-repair-dict-build verify gate)
+# Step 7e: Verify save_repair_dict.json 与源头一致 (cf7-save-repair-dict-build verify gate)
 # 防止 data/items/*.xml 或 SaveManager.as 改动后 dict 未同步 regenerate；
 # 不一致 = dict 漂移，会让 SaveAutoRepairService 用旧字典误判新条目
-Write-Host "[Step 7c/7] Verify save_repair_dict.json 与源头一致..." -ForegroundColor Yellow
+Write-Host "[Step 7e/7] Verify save_repair_dict.json 与源头一致..." -ForegroundColor Yellow
 $repairDictDir = Join-Path $projectRoot "tools\cf7-save-repair-dict-build"
 if (-not (Test-Path (Join-Path $repairDictDir "package.json"))) {
     Write-Host "[FAIL] cf7-save-repair-dict-build 未找到: $repairDictDir" -ForegroundColor Red

@@ -1193,8 +1193,8 @@ var MapPreview = (function() {
                 appendAvatarImage(
                     el,
                     _state.roommateGender === 'female'
-                        ? 'assets/map/roommate-female.png'
-                        : 'assets/map/roommate-male.png',
+                        ? 'assets/map/roommate-female.webp'
+                        : 'assets/map/roommate-male.webp',
                     slot.kind
                 );
             }

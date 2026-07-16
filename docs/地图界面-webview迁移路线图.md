@@ -385,16 +385,21 @@ Phase 1 的实现细化、协议草案、文件落点与验收清单统一看：
 - `devicePixelRatio` 与 Canvas backing-pixel 预算（常规 1000 万像素，低特效 600 万像素）
 - 产品异常上限 `1.75`
 
-`tools/tune-map-filter-fit.js --write` 会扫描 composite PNG 尺寸，把每个 page/filter 的最差 `sourceRatio` 与资产路径写入生成态 `map-fit-presets.js` capability manifest。运行时先扩大舞台利用 viewport，再动态收敛二次 content-fit，避免固定阈值同时造成大屏浪费与低清素材过度放大。
+`tools/tune-map-filter-fit.js --write` 会扫描 composite 无损 WebP 尺寸，把每个 page/filter 的最差 `sourceRatio` 与资产路径写入生成态 `map-fit-presets.js` capability manifest。运行时先扩大舞台利用 viewport，再按 `stageScale × contentFitScale × DPR / sourceRatio` 的物理像素倍率动态收敛二次 content-fit，避免固定阈值同时造成大屏浪费与高 DPI 下低清素材过度放大。地图运行时位图统一使用像素校验的无损 WebP；FFDec 仍导出 PNG 中间帧，由 `tools/convert-map-assets-webp.py` 转换并验证解码后的 RGBA 完全一致。
 
-资产侧采用选择性重导，不重建逻辑坐标：`faction`、`defense`、`school` 中具有冻结 Flash 导出源的 composite 已按 FFDec `-zoom 2` 重导，`base` 现有采样率充足而保持不变。重导入口为：
+资产侧采用选择性重导，不重建逻辑坐标。`tools/export-map-composite-assets.ps1` 支持 `-Asset`（可重复、逗号分隔、可省略 `.webp`），用于只替换 capability manifest 指出的真实瓶颈，不必把整页位图一起放大；导出倍率允许 `1`～`8`，但应以刚好清债为准。2026-07-16 已从冻结 `地图界面.swf` 真源重导 `lab / rock-park / rock-rehearsal / blackiron-training / blackiron-pavilion / alliance-dock / alliance-corridor` 为 `4×`，`union-university` 为 `5.5×`：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/export-map-composite-assets.ps1 -Page faction -Zoom 2
+powershell -ExecutionPolicy Bypass -File tools/export-map-composite-assets.ps1 -Page all -Zoom 4 -Asset lab,rock-park,rock-rehearsal,blackiron-training,blackiron-pavilion,alliance-dock,alliance-corridor
+powershell -ExecutionPolicy Bypass -File tools/export-map-composite-assets.ps1 -Page school -Zoom 5.5 -Asset union-university
 node tools/tune-map-filter-fit.js --write
 ```
 
-`faction/fallen-entrance.png` 与 `defense/subway.png` 没有对应冻结导出源，不做伪 2× 插值；它们会作为 capability 的明确瓶颈触发运行时 content-fit 限幅。缩放策略、Canvas 预算和选择性资产能力由 browser harness `map-ui33` 固定回归。
+`faction/fallen-entrance.webp` 与 `defense/subway.webp` 没有对应冻结导出源，不做伪高分辨率插值；它们会作为 capability 的明确瓶颈触发运行时 content-fit 限幅。缩放矩阵只允许由这两张图造成 `faction:fallen`、`defense:first_line`、`defense:all` 三项已知债务，新增 capability debt 会令审计失败。缩放策略、Canvas 预算和选择性资产能力由 browser harness `map-ui33` 固定回归。
+
+2026-07-16 的全量缩放审计将 18 个 page/filter 分为 `focus / horizontal / vertical / overview / dense` 五类体验 profile。`maxScale` 不再从最高仅 `1.72` 的固定小范围里单调追求 coverage，而是在最高 `4.5` 的异常护栏内选择第一个进入 profile 目标区间的倍率；物理清晰度仍由运行时 DPR/sourceRatio cap 裁决。当前生成结果中 `base/water` 为 `3.6`、`school/outside` 为 `3.2`，解决小场景长期偏小，同时不会提高全局 stage `1.75` 上限。
+
+`node tools/audit-map-scale-experience.js` 固定审计 18 filter × compact/standard/roomy × DPR 1/1.5/2 × normal/low-effects，共 324 组。未命中体验区间且没有 asset/canvas 限制属于构建错误；由低清资产导致的偏小作为 capability debt 明示，且必须位于上述已知债务白名单，不允许静默伪通过。瞬态任务环、反馈 marker/tip 不再参与 camera bounds，避免状态推送造成缩放跳镜；browser harness `map-ui21` 覆盖全部 18 个 profile，`map-ui34` 固定回归任务反馈不改变镜头。
 
 ## 8. 实施顺序与依赖
 

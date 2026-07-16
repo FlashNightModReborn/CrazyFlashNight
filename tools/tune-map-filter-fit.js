@@ -29,31 +29,52 @@ const PAGE_PADDING_CANDIDATES = [
     { padXRate: 0.04, padYRate: 0.045 }
 ];
 
-const FILTER_MAX_SCALE_CANDIDATES = [1.36, 1.48, 1.6, 1.72];
+// content-fit 是场景内部取景倍率，不等同于外层 stageScale。高分辨率的小场景
+// （例如地下水）需要显著高于 1.75 才能获得合理占有率；最终物理像素放大仍由
+// MapScalePolicy 的 stage * fit * DPR / sourceRatio <= 1.75 约束兜底。
+const FILTER_MAX_SCALE_CANDIDATES = [1.36, 1.48, 1.6, 1.72, 2, 2.4, 2.8, 3.2, 3.6, 4, 4.5];
 const STAGE_PRESETS = [
     { id: 'compact', width: 749, height: 441, weight: 1.4 },
     { id: 'standard', width: 980, height: 578, weight: 1.0 },
-    { id: 'roomy', width: 1207, height: 711, weight: 1.0 }
+    { id: 'roomy', width: 1334, height: 787, weight: 1.0 }
 ];
-const BOUNDS_MARGIN_X = 12;
-const BOUNDS_MARGIN_Y = 16;
 const PAGE_GAIN_THRESHOLD = 0.12;
-const FILTER_GAIN_THRESHOLD = 0.1;
+const EXPERIENCE_GAIN_THRESHOLD = 0.0005;
+const EXPERIENCE_PROFILES = {
+    focus: { minX: 0.56, maxX: 0.88, minY: 0.50, maxY: 0.84 },
+    horizontal: { minX: 0.84, maxX: 0.93, minY: 0.30, maxY: 0.56 },
+    vertical: { minX: 0.40, maxX: 0.66, minY: 0.72, maxY: 0.91 },
+    overview: { minX: 0.72, maxX: 0.93, minY: 0.72, maxY: 0.93 },
+    dense: { minX: 0.78, maxX: 0.93, minY: 0.78, maxY: 0.93 }
+};
+const FILTER_EXPERIENCE_PROFILES = {
+    base: {
+        roof: 'focus', first_floor: 'horizontal', basement1: 'focus', basement2: 'horizontal',
+        water: 'focus', all: 'overview', hierarchy: 'overview'
+    },
+    faction: {
+        warlord: 'vertical', rock: 'vertical', blackiron: 'vertical', fallen: 'horizontal', all: 'overview'
+    },
+    defense: { first_line: 'horizontal', restricted: 'vertical', all: 'overview' },
+    school: { inside: 'dense', outside: 'focus', all: 'overview' }
+};
 // 产品级舞台异常兜底；运行时还会叠加素材清晰度与 Canvas backing-pixel 预算。
 // 与 map-scale-policy.js PRODUCT_STAGE_SCALE_MAX 保持一致。
 const STAGE_MAX_SCALE = 1.75;
-// composite "视觉放大倍数" = stageScale * fitScale / sourceRatio (PNG px / logical rect)
-// 超过此阈值说明 PNG 被拉伸绘制到屏幕, 有明显 pixelated 风险。
+// composite 在 DPR=1 下的“视觉放大倍数” = stageScale * fitScale / sourceRatio。
+// 运行时真实物理像素倍率还要乘 devicePixelRatio，由 MapScalePolicy 动态裁切；
+// tuner 不预设设备 DPR，只生成 sourceRatio capability 与 DPR=1 的离线覆盖率报告。
+// 超过此阈值说明运行时位图被拉伸绘制到屏幕，有明显 pixelated 风险。
 // 此阈值用于告警并写入生成态 capability；运行时由 MapScalePolicy 联合舞台缩放动态限幅。
 //
 // 1.75 是配合 map-panel.js 中 scene-node unsharp mask 后处理 (amount=0.45) 的视觉容忍阈;
 // 锐化把"可接受放大"从无后处理的 ~1.5 抬到 ~1.75。改这个常量必须重跑 --write 重新生成
 // map-fit-presets.js, 且需同步调整 sharpen amount 才能持续匹配 (sharpen↑ → cap↑)。
 const COMPOSITE_VISUAL_SCALE_CAP = 1.75;
-// fallback: 当无法读到 PNG 时, 假设 sourceRatio = 1.0 (一张刚好够 1× 绘制的资产)
+// fallback: 当无法读取运行时图像时，假设 sourceRatio = 1.0（一张刚好够 1× 绘制的资产）
 const DEFAULT_SOURCE_RATIO = 1.0;
 const webRoot = path.join(projectRoot, 'launcher', 'web');
-const pngSizeCache = {};
+const imageSizeCache = {};
 
 function parseArgs(argv) {
     const args = {
@@ -96,37 +117,73 @@ function printHelp(exitCode, error) {
     process.exit(exitCode);
 }
 
-function readPngSize(absPath) {
-    if (pngSizeCache[absPath] !== undefined) return pngSizeCache[absPath];
+function readUInt24LE(buf, offset) {
+    return buf[offset] | (buf[offset + 1] << 8) | (buf[offset + 2] << 16);
+}
+
+function readWebpSize(buf) {
+    if (buf.length < 30 || buf.toString('ascii', 0, 4) !== 'RIFF' || buf.toString('ascii', 8, 12) !== 'WEBP') {
+        return null;
+    }
+    let offset = 12;
+    while (offset + 8 <= buf.length) {
+        const chunkType = buf.toString('ascii', offset, offset + 4);
+        const chunkSize = buf.readUInt32LE(offset + 4);
+        const dataOffset = offset + 8;
+        if (dataOffset + chunkSize > buf.length) return null;
+        if (chunkType === 'VP8X' && chunkSize >= 10) {
+            return { w: readUInt24LE(buf, dataOffset + 4) + 1, h: readUInt24LE(buf, dataOffset + 7) + 1 };
+        }
+        if (chunkType === 'VP8L' && chunkSize >= 5 && buf[dataOffset] === 0x2f) {
+            const b0 = buf[dataOffset + 1];
+            const b1 = buf[dataOffset + 2];
+            const b2 = buf[dataOffset + 3];
+            const b3 = buf[dataOffset + 4];
+            return {
+                w: 1 + b0 + ((b1 & 0x3f) << 8),
+                h: 1 + (b1 >> 6) + (b2 << 2) + ((b3 & 0x0f) << 10)
+            };
+        }
+        if (chunkType === 'VP8 ' && chunkSize >= 10
+            && buf[dataOffset + 3] === 0x9d && buf[dataOffset + 4] === 0x01 && buf[dataOffset + 5] === 0x2a) {
+            return {
+                w: buf.readUInt16LE(dataOffset + 6) & 0x3fff,
+                h: buf.readUInt16LE(dataOffset + 8) & 0x3fff
+            };
+        }
+        offset = dataOffset + chunkSize + (chunkSize % 2);
+    }
+    return null;
+}
+
+function readImageSize(absPath) {
+    if (imageSizeCache[absPath] !== undefined) return imageSizeCache[absPath];
     try {
-        const fd = fs.openSync(absPath, 'r');
-        const buf = Buffer.alloc(24);
-        fs.readSync(fd, buf, 0, 24, 0);
-        fs.closeSync(fd);
+        const buf = fs.readFileSync(absPath);
         if (buf.readUInt32BE(0) !== 0x89504e47 || buf.toString('ascii', 12, 16) !== 'IHDR') {
-            pngSizeCache[absPath] = null;
-            return null;
+            imageSizeCache[absPath] = readWebpSize(buf);
+            return imageSizeCache[absPath];
         }
         const size = { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
-        pngSizeCache[absPath] = size;
+        imageSizeCache[absPath] = size;
         return size;
     } catch (err) {
-        pngSizeCache[absPath] = null;
+        imageSizeCache[absPath] = null;
         return null;
     }
 }
 
 function computeFilterSourceCeiling(mapData, pageId, filterId) {
-    // 取 filter 下所有可见 sceneVisual 的 PNG 采样率, 返回最严 (最小) 的 ratio,
-    // 即 "PNG 能支撑的最大逻辑放大倍数"。filter 里只要有一张低清素材, 整张 fit 上限就被它锁死。
+    // 取 filter 下所有可见 sceneVisual 的运行时图像采样率，返回最严（最小）的 ratio；
+    // 即“源图能支撑的最大逻辑放大倍数”。filter 里只要有一张低清素材，整张 fit 上限就被它锁死。
     const visuals = mapData.getVisibleSceneVisuals(pageId, filterId || '');
     let minRatio = Infinity;
     let worst = null;
     for (let i = 0; i < visuals.length; i += 1) {
         const visual = visuals[i];
         if (!visual || !visual.rect || !visual.assetUrl) continue;
-        const pngPath = path.join(webRoot, visual.assetUrl.replace(/^\/+/, ''));
-        const size = readPngSize(pngPath);
+        const imagePath = path.join(webRoot, visual.assetUrl.replace(/^\/+/, ''));
+        const size = readImageSize(imagePath);
         if (!size) continue;
         const ratioW = size.w / Math.max(1, visual.rect.w);
         const ratioH = size.h / Math.max(1, visual.rect.h);
@@ -135,8 +192,8 @@ function computeFilterSourceCeiling(mapData, pageId, filterId) {
             minRatio = ratio;
             worst = {
                 assetUrl: visual.assetUrl,
-                pngW: size.w,
-                pngH: size.h,
+                imageW: size.w,
+                imageH: size.h,
                 rectW: visual.rect.w,
                 rectH: visual.rect.h,
                 ratio: round(ratio)
@@ -200,16 +257,6 @@ function unionRects(rects) {
         y: minY,
         w: maxX - minX,
         h: maxY - minY
-    };
-}
-
-function inflateRect(rect, padX, padY) {
-    if (!rect) return null;
-    return {
-        x: rect.x - padX,
-        y: rect.y - padY,
-        w: rect.w + (padX * 2),
-        h: rect.h + (padY * 2)
     };
 }
 
@@ -277,7 +324,9 @@ function buildFilterBounds(mapData, avatarSource, pageId, filterId) {
         }
     }
 
-    return inflateRect(unionRects(rects), BOUNDS_MARGIN_X, BOUNDS_MARGIN_Y);
+    // 与 runtime 的逻辑内容坐标保持同一口径；视觉留白只由 fit preset padding 负责，
+    // 不再在离线侧偷偷膨胀一次包围盒。
+    return unionRects(rects);
 }
 
 function mergePreset(basePreset, override) {
@@ -402,6 +451,36 @@ function averageCoverage(stageMetrics) {
     };
 }
 
+function resolveExperienceProfile(pageId, filterId) {
+    const pageProfiles = FILTER_EXPERIENCE_PROFILES[pageId] || {};
+    const profileId = pageProfiles[filterId] || 'focus';
+    return {
+        id: profileId,
+        target: EXPERIENCE_PROFILES[profileId]
+    };
+}
+
+function rangePenalty(value, min, max) {
+    if (value < min) return Math.pow(min - value, 2);
+    if (value > max) return Math.pow(value - max, 2);
+    return 0;
+}
+
+function scoreExperience(stageMetrics, target) {
+    let penalty = 0;
+    let weightTotal = 0;
+    for (let i = 0; i < stageMetrics.length; i += 1) {
+        const metrics = stageMetrics[i].metrics;
+        const weight = STAGE_PRESETS[i].weight;
+        penalty += (
+            rangePenalty(metrics.coverageX, target.minX, target.maxX) +
+            rangePenalty(metrics.coverageY, target.minY, target.maxY)
+        ) * weight;
+        weightTotal += weight;
+    }
+    return penalty / Math.max(1, weightTotal);
+}
+
 function selectPageDefaults(page, filters, boundsByFilter) {
     const basePreset = mergePreset(DEFAULT_PRESET);
     const baseScores = [];
@@ -424,9 +503,9 @@ function selectPageDefaults(page, filters, boundsByFilter) {
         }
 
         const padChangeCost =
-            ((DEFAULT_PRESET.padXRate - candidatePreset.padXRate) * 10) +
-            ((DEFAULT_PRESET.padYRate - candidatePreset.padYRate) * 10);
-        candidateScore += padChangeCost;
+            Math.abs(DEFAULT_PRESET.padXRate - candidatePreset.padXRate) +
+            Math.abs(DEFAULT_PRESET.padYRate - candidatePreset.padYRate);
+        candidateScore -= padChangeCost;
 
         if (candidateScore > best.score) {
             best = {
@@ -452,21 +531,19 @@ function selectPageDefaults(page, filters, boundsByFilter) {
 function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
     const baseline = evaluateFilter(page, bounds, basePreset);
     const baselineCoverage = averageCoverage(baseline.stageMetrics);
+    const experience = resolveExperienceProfile(page.id, filterId);
+    const baselinePenalty = scoreExperience(baseline.stageMetrics, experience.target);
 
     // 素材倍率写入 capability manifest；运行时 MapScalePolicy 优先放大外层舞台，
     // 再按 stageScale 动态裁切 content-fit。离线 tuner 只负责内容覆盖率，不再把最坏
     // 大视口假设固化进 preset，否则低清单块会让紧凑视口也失去本可安全使用的 fit。
     const safeRatio = Number(sourceRatio) > 0 ? Number(sourceRatio) : DEFAULT_SOURCE_RATIO;
 
-    const capBoundCount = countCapBoundStages(baseline.stageMetrics);
-    if (!capBoundCount) {
-        return null;
-    }
-
     let best = {
-        score: baseline.score,
+        objective: baselinePenalty,
         preset: basePreset,
-        metrics: baseline
+        metrics: baseline,
+        penalty: baselinePenalty
     };
 
     for (let i = 0; i < FILTER_MAX_SCALE_CANDIDATES.length; i += 1) {
@@ -475,19 +552,23 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
             maxScale: rawCandidateMax
         });
         const candidateMetrics = evaluateFilter(page, bounds, candidatePreset);
-        const changeCost = Math.max(0, candidatePreset.maxScale - basePreset.maxScale) * 0.35;
-        const candidateScore = candidateMetrics.score - changeCost;
+        const candidatePenalty = scoreExperience(candidateMetrics.stageMetrics, experience.target);
+        // 目标区间内优先采用更小倍率，避免在等价覆盖下留下无意义的高 cap。
+        const changeCost = Math.max(0, candidatePreset.maxScale - basePreset.maxScale) * 0.0001;
+        const candidateObjective = candidatePenalty + changeCost;
 
-        if (candidateScore > best.score) {
+        if (candidateObjective < best.objective) {
             best = {
-                score: candidateScore,
+                objective: candidateObjective,
                 preset: candidatePreset,
-                metrics: candidateMetrics
+                metrics: candidateMetrics,
+                penalty: candidatePenalty
             };
         }
     }
 
-    if ((best.score - baseline.score) < FILTER_GAIN_THRESHOLD) {
+    if ((baselinePenalty - best.penalty) < EXPERIENCE_GAIN_THRESHOLD ||
+            round(best.preset.maxScale) === round(basePreset.maxScale)) {
         return null;
     }
 
@@ -498,7 +579,11 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
         baselineCoverage: baselineCoverage,
         candidateCoverage: averageCoverage(best.metrics.stageMetrics),
         sourceRatio: safeRatio,
-        reason: 'upward_override'
+        experienceProfile: experience.id,
+        experienceTarget: experience.target,
+        baselinePenalty: baselinePenalty,
+        candidatePenalty: best.penalty,
+        reason: 'experience_target'
     };
 }
 
@@ -516,6 +601,8 @@ function buildTuningReport(mapData, avatarSource) {
             };
         }),
         defaultPreset: mergePreset(DEFAULT_PRESET),
+        experienceProfiles: EXPERIENCE_PROFILES,
+        filterExperienceProfiles: FILTER_EXPERIENCE_PROFILES,
         pages: []
     };
 
@@ -545,6 +632,7 @@ function buildTuningReport(mapData, avatarSource) {
 
         for (let j = 0; j < filters.length; j += 1) {
             const filterId = filters[j].id;
+            const experience = resolveExperienceProfile(pageId, filterId);
             const sourceCeiling = computeFilterSourceCeiling(mapData, pageId, filterId);
             capabilities[pageId][filterId] = {
                 sourceRatio: sourceCeiling.sourceRatio,
@@ -572,7 +660,10 @@ function buildTuningReport(mapData, avatarSource) {
                 tunedCompact: tunedEvaluation.stageMetrics[0].metrics,
                 tunedStageMetrics: tunedEvaluation.stageMetrics, // 所有 stage preset × filter 的 fit 结果, 供放大告警扫描
                 averageCoverage: filterOverride ? filterOverride.candidateCoverage : averageCoverage(tunedEvaluation.stageMetrics),
-                capBoundStages: countCapBoundStages(tunedEvaluation.stageMetrics)
+                capBoundStages: countCapBoundStages(tunedEvaluation.stageMetrics),
+                experienceProfile: experience.id,
+                experienceTarget: experience.target,
+                experiencePenalty: scoreExperience(tunedEvaluation.stageMetrics, experience.target)
             });
 
             if (filterOverride && Object.keys(filterOverride.changed).length) {
@@ -596,6 +687,8 @@ function buildTuningReport(mapData, avatarSource) {
         defaults: mergePreset(DEFAULT_PRESET),
         presets: presets,
         capabilities: capabilities,
+        experienceProfiles: EXPERIENCE_PROFILES,
+        filterExperienceProfiles: FILTER_EXPERIENCE_PROFILES,
         report: report
     };
 }
@@ -609,6 +702,8 @@ function buildRuntimeFile(runtimePresets) {
         '    var _defaults = ' + JSON.stringify(runtimePresets.defaults, null, 4).replace(/\n/g, '\n    ') + ';',
         '    var _presets = ' + JSON.stringify(runtimePresets.presets, null, 4).replace(/\n/g, '\n    ') + ';',
         '    var _capabilities = ' + JSON.stringify(runtimePresets.capabilities, null, 4).replace(/\n/g, '\n    ') + ';',
+        '    var _experienceProfiles = ' + JSON.stringify(runtimePresets.experienceProfiles, null, 4).replace(/\n/g, '\n    ') + ';',
+        '    var _filterExperienceProfiles = ' + JSON.stringify(runtimePresets.filterExperienceProfiles, null, 4).replace(/\n/g, '\n    ') + ';',
         '',
         '    function copy(src) {',
         '        return JSON.parse(JSON.stringify(src));',
@@ -645,7 +740,9 @@ function buildRuntimeFile(runtimePresets) {
         '        return {',
         '            defaults: copy(_defaults),',
         '            presets: copy(_presets),',
-        '            capabilities: copy(_capabilities)',
+        '            capabilities: copy(_capabilities),',
+        '            experienceProfiles: copy(_experienceProfiles),',
+        '            filterExperienceProfiles: copy(_filterExperienceProfiles)',
         '        };',
         '    }',
         '',
@@ -655,9 +752,16 @@ function buildRuntimeFile(runtimePresets) {
         '        return capability ? copy(capability) : { sourceRatio: 1, worstAsset: "" };',
         '    }',
         '',
+        '    function resolveExperience(pageId, filterId) {',
+        '        var pageProfiles = _filterExperienceProfiles[pageId] || {};',
+        '        var profileId = pageProfiles[filterId] || "focus";',
+        '        return { id: profileId, target: copy(_experienceProfiles[profileId] || _experienceProfiles.focus) };',
+        '    }',
+        '',
         '    return {',
         '        resolve: resolve,',
         '        resolveCapability: resolveCapability,',
+        '        resolveExperience: resolveExperience,',
         '        getManifest: getManifest',
         '    };',
         '})();',
@@ -666,7 +770,8 @@ function buildRuntimeFile(runtimePresets) {
 }
 
 function collectPixelWarnings(report) {
-    // 告警真实 composite 视觉放大 = stageScale * fitScale / sourceRatio
+    // 告警 DPR=1 下的 composite 视觉放大 = stageScale * fitScale / sourceRatio；
+    // 设备 DPR 由运行时 MapScalePolicy 计入，不在离线 stage preset 中固化。
     // (PNG 实际被绘制到屏幕时相对自身像素的放大倍数; >1 有失真可能, > CAP 明显 pixelated)
     const warnings = [];
     const pages = (report && report.pages) ? report.pages : [];
@@ -734,7 +839,7 @@ function printSummary(result, asJson) {
     const pixelWarnings = collectPixelWarnings(result.report);
     if (pixelWarnings.length) {
         console.log('');
-        console.log('[warn] composite 视觉放大 > ' + COMPOSITE_VISUAL_SCALE_CAP + 'x (PNG 相对自身像素被拉伸, 可能 pixelated):');
+        console.log('[warn] composite 视觉放大 > ' + COMPOSITE_VISUAL_SCALE_CAP + 'x (源图相对自身像素被拉伸, 可能 pixelated):');
         for (let i = 0; i < pixelWarnings.length; i += 1) {
             const w = pixelWarnings[i];
             const asset = w.worstAsset ? ' [' + w.worstAsset.assetUrl + ' ratio=' + w.worstAsset.ratio + ']' : '';
@@ -760,4 +865,25 @@ function main() {
     }
 }
 
-main();
+if (require.main === module) {
+    main();
+}
+
+module.exports = {
+    buildTuningReport,
+    buildRuntimeFile,
+    loadMapBundle,
+    computeStageMetrics,
+    mergePreset,
+    resolveExperienceProfile,
+    scoreExperience,
+    constants: {
+        DEFAULT_PRESET,
+        STAGE_PRESETS,
+        STAGE_MAX_SCALE,
+        COMPOSITE_VISUAL_SCALE_CAP,
+        FILTER_MAX_SCALE_CANDIDATES,
+        EXPERIENCE_PROFILES,
+        FILTER_EXPERIENCE_PROFILES
+    }
+};

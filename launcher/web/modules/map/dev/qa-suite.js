@@ -552,14 +552,14 @@ var MapPanelHarnessQA = (function() {
                     return bootMap(api, host, { defaultPageId: 'school', roommateGender: 'male' }).then(function() {
                         return api.waitFor(function() {
                             var src = getAvatarSrc();
-                            return src.indexOf('roommate-male.png') >= 0 ? src : null;
+                            return src.indexOf('roommate-male.webp') >= 0 ? src : null;
                         }, 1500, 'male roommate avatar');
                     }).then(function() {
                         host.setState({ roommateGender: 'female', defaultPageId: 'school' });
                         host.pushSnapshot('refresh');
                         return api.waitFor(function() {
                             var src = getAvatarSrc();
-                            return src.indexOf('roommate-female.png') >= 0 ? src : null;
+                            return src.indexOf('roommate-female.webp') >= 0 ? src : null;
                         }, 1500, 'female roommate avatar');
                     }).then(function(src) {
                         return 'avatar=' + src.split('/').slice(-1)[0];
@@ -1120,16 +1120,35 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui21',
-                title: 'filter fit presets expand sparse subsets without losing stage containment',
+                title: 'all filter cameras satisfy their experience profile without losing stage containment',
                 run: function() {
-                    // Fit floors follow MapFitPresets source-aware caps; capped PNG composites should not be forced past their clarity budget.
+                    var targets = {
+                        focus: { minX: 0.56, maxX: 0.88, minY: 0.50, maxY: 0.84 },
+                        horizontal: { minX: 0.84, maxX: 0.93, minY: 0.30, maxY: 0.56 },
+                        vertical: { minX: 0.40, maxX: 0.66, minY: 0.72, maxY: 0.91 },
+                        overview: { minX: 0.72, maxX: 0.93, minY: 0.72, maxY: 0.93 },
+                        dense: { minX: 0.78, maxX: 0.93, minY: 0.78, maxY: 0.93 }
+                    };
+                    var tolerance = 0.035;
                     var probes = [
-                        { pageId: 'base', filterId: 'roof', presetId: 'base:roof', minFitScale: 1.68, minX: 0.75, minY: 0.46 },
-                        { pageId: 'base', filterId: 'first_floor', presetId: 'base:*', minFitScale: 1.02, minX: 0.88, minY: 0.38 },
-                        { pageId: 'base', filterId: 'basement1', presetId: 'base:basement1', minFitScale: 1.68, minX: 0.54, minY: 0.43 },
-                        { pageId: 'faction', filterId: 'rock', presetId: 'faction:rock', minFitScale: 1.14, minX: 0.30, minY: 0.48 },
-                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:restricted', minFitScale: 1.14, minX: 0.30, minY: 0.43 },
-                        { pageId: 'school', filterId: 'outside', presetId: 'school:outside', minFitScale: 1.0, minX: 0.23, minY: 0.17 }
+                        { pageId: 'base', filterId: 'roof', presetId: 'base:roof', profile: 'focus' },
+                        { pageId: 'base', filterId: 'first_floor', presetId: 'base:*', profile: 'horizontal' },
+                        { pageId: 'base', filterId: 'basement1', presetId: 'base:basement1', profile: 'focus' },
+                        { pageId: 'base', filterId: 'basement2', presetId: 'base:*', profile: 'horizontal' },
+                        { pageId: 'base', filterId: 'water', presetId: 'base:water', profile: 'focus' },
+                        { pageId: 'base', filterId: 'all', presetId: 'base:*', profile: 'overview' },
+                        { pageId: 'base', filterId: 'hierarchy', presetId: 'base:*', profile: 'overview' },
+                        { pageId: 'faction', filterId: 'warlord', presetId: 'faction:warlord', profile: 'vertical' },
+                        { pageId: 'faction', filterId: 'rock', presetId: 'faction:rock', profile: 'vertical' },
+                        { pageId: 'faction', filterId: 'blackiron', presetId: 'faction:blackiron', profile: 'vertical' },
+                        { pageId: 'faction', filterId: 'fallen', presetId: 'faction:*', profile: 'horizontal' },
+                        { pageId: 'faction', filterId: 'all', presetId: 'faction:*', profile: 'overview' },
+                        { pageId: 'defense', filterId: 'first_line', presetId: 'defense:first_line', profile: 'horizontal' },
+                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:restricted', profile: 'vertical' },
+                        { pageId: 'defense', filterId: 'all', presetId: 'defense:*', profile: 'overview' },
+                        { pageId: 'school', filterId: 'inside', presetId: 'school:*', profile: 'dense' },
+                        { pageId: 'school', filterId: 'outside', presetId: 'school:outside', profile: 'focus' },
+                        { pageId: 'school', filterId: 'all', presetId: 'school:*', profile: 'overview' }
                     ];
                     var details = [];
 
@@ -1179,10 +1198,19 @@ var MapPanelHarnessQA = (function() {
                                 return activateProbe(probe).then(function(state) {
                                     var shellRect = document.getElementById('map-stage-shell').getBoundingClientRect();
                                     var stageRect = document.getElementById('map-stage-frame').getBoundingClientRect();
+                                    var target = targets[probe.profile];
+                                    var experience = MapFitPresets.resolveExperience(probe.pageId, probe.filterId);
+                                    var requestedPreset = MapFitPresets.resolve(probe.pageId, probe.filterId);
+                                    var clarityLimited = state.contentFitPreset &&
+                                        state.contentFitPreset.maxScale < requestedPreset.maxScale - 0.001;
                                     api.assertEqual(state.activeFitPresetId, probe.presetId, probe.pageId + '/' + probe.filterId + ' preset mismatch');
-                                    api.assert(state.contentFitScale >= probe.minFitScale, probe.pageId + '/' + probe.filterId + ' fit scale too low');
-                                    api.assert(state.contentCoverageX >= probe.minX, probe.pageId + '/' + probe.filterId + ' horizontal coverage too low');
-                                    api.assert(state.contentCoverageY >= probe.minY, probe.pageId + '/' + probe.filterId + ' vertical coverage too low');
+                                    api.assertEqual(experience.id, probe.profile, probe.pageId + '/' + probe.filterId + ' experience profile mismatch');
+                                    api.assert(state.contentCoverageX >= target.minX - tolerance || clarityLimited,
+                                        probe.pageId + '/' + probe.filterId + ' horizontal coverage too low without clarity debt');
+                                    api.assert(state.contentCoverageX <= target.maxX + tolerance, probe.pageId + '/' + probe.filterId + ' horizontal coverage too high');
+                                    api.assert(state.contentCoverageY >= target.minY - tolerance || clarityLimited,
+                                        probe.pageId + '/' + probe.filterId + ' vertical coverage too low without clarity debt');
+                                    api.assert(state.contentCoverageY <= target.maxY + tolerance, probe.pageId + '/' + probe.filterId + ' vertical coverage too high');
                                     api.assert(stageRect.left >= shellRect.left - 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (left)');
                                     api.assert(stageRect.right <= shellRect.right + 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (right)');
                                     api.assert(stageRect.top >= shellRect.top - 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (top)');
@@ -1190,8 +1218,9 @@ var MapPanelHarnessQA = (function() {
                                     api.assert(!!state.contentFitPreset, probe.pageId + '/' + probe.filterId + ' should expose contentFitPreset debug info');
                                     details.push(
                                         probe.pageId + '/' + probe.filterId +
-                                        '=' + state.activeFitPresetId +
+                                        '=' + probe.profile + '/' + state.activeFitPresetId +
                                         ' ' + state.contentCoverageX.toFixed(2) + '/' + state.contentCoverageY.toFixed(2) +
+                                        (clarityLimited ? ' debt=asset' : '') +
                                         ' pad=' + state.contentFitPadX.toFixed(2) + '/' + state.contentFitPadY.toFixed(2)
                                     );
                                 });
@@ -2131,10 +2160,14 @@ var MapPanelHarnessQA = (function() {
                             reopenFirstFloorWindow();
                             var c2 = pageToClient(ctx.hit, ctx.page, ctx.pageX, ctx.pageY);
                             firePointerEvent(ctx.hit, 'pointerdown', c2.x, c2.y);
+                            api.assert(MapHotspotHitcapture.debugState().deferredPending,
+                                'Part B 按下必须发生在未就绪窗口并进入暂存态');
                             return api.waitFor(function() {
                                 return firstFloorHitmapReady() ? true : null;
                             }, 3000, 'hitmap ready while held (B)').then(function() {
                                 api.assertEqual(navMessageCount(host), before2, '就绪未释放 → 仍不导航');
+                                api.assert(MapHotspotHitcapture.debugState().deferredPending,
+                                    'Part B hitmap 就绪后仍须保留按下，等待 pointerup');
                                 firePointerEvent(ctx.hit, 'pointerup', c2.x, c2.y);   // 释放 → up 检测已就绪 → 立即重放
                                 api.assertEqual(navMessageCount(host), before2 + 1, '释放后由 up 触发重放, 导航一次');
                                 api.assert(!MapHotspotHitcapture.debugState().deferredPending, 'up 重放后清空');
@@ -2336,6 +2369,15 @@ var MapPanelHarnessQA = (function() {
                         sourceRatio: 0.8,
                         fitMaxScale: 1.2
                     });
+                    var highDprAssetBound = MapScalePolicy.resolve({
+                        pageWidth: 1031,
+                        pageHeight: 608,
+                        availableWidth: 2400,
+                        availableHeight: 1400,
+                        dpr: 2,
+                        sourceRatio: 1,
+                        fitMaxScale: 1.2
+                    });
                     var canvasBound = MapScalePolicy.resolve({
                         pageWidth: 1031,
                         pageHeight: 608,
@@ -2348,6 +2390,11 @@ var MapPanelHarnessQA = (function() {
                     });
                     api.assert(roomy.stageScale > 1.3 && roomy.stageScale <= 1.75, 'roomy high-resolution asset should exceed legacy cap');
                     api.assertEqual(assetBound.limiter, 'asset', 'low-resolution asset should be clarity-bound');
+                    api.assertEqual(highDprAssetBound.limiter, 'asset', 'high-DPR low-resolution asset should be clarity-bound');
+                    api.assert(highDprAssetBound.stageScale <= 0.875,
+                        'asset clarity budget should include physical-pixel DPR');
+                    api.assert(highDprAssetBound.contentFitMaxScale === 1,
+                        'high-DPR asset-bound stage should not retain extra content-fit budget');
                     api.assertEqual(canvasBound.limiter, 'canvas', 'high-DPR stage should be canvas-budget-bound');
                     api.assert(canvasBound.estimatedStaticPixels <= canvasBound.staticPixelBudget + 2,
                         'canvas-bound estimate should not exceed budget');
@@ -2360,6 +2407,71 @@ var MapPanelHarnessQA = (function() {
                     return 'roomy=' + roomy.stageScale.toFixed(3) +
                         ', asset=' + assetBound.stageScale.toFixed(3) +
                         ', canvas=' + canvasBound.stageScale.toFixed(3);
+                }
+            },
+            {
+                id: 'map-ui34',
+                title: 'transient task feedback does not change the active camera bounds',
+                run: function() {
+                    function waitForSettledCamera(label) {
+                        var previous = '';
+                        return api.waitFor(function() {
+                            if (window.MapPanel && typeof MapPanel._debugSyncLayout === 'function') {
+                                MapPanel._debugSyncLayout('qa_camera_settle');
+                            }
+                            var state = currentState();
+                            if (!state || !state.contentBounds) return null;
+                            var signature = [
+                                state.contentFitScale,
+                                state.contentBounds.x,
+                                state.contentBounds.y,
+                                state.contentBounds.w,
+                                state.contentBounds.h
+                            ].join('|');
+                            if (signature === previous) return state;
+                            previous = signature;
+                            return null;
+                        }, 1500, label);
+                    }
+
+                    return bootMap(api, host, { defaultPageId: 'base', taskNpcHotspots: [] }).then(function() {
+                        clickByHitTest(api, getFilterButton('water'), 'water filter');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            return state && state.activeFilterId === 'water' && isCanvasCurrent(state) ? state : null;
+                        }, 1500, 'water camera ready');
+                    }).then(function() {
+                        return waitForSettledCamera('water camera settled');
+                    }).then(function(before) {
+                        var beforeBounds = before.contentBounds;
+                        var beforeStageScale = before.stageScale;
+                        var beforeCoverageX = before.contentCoverageX;
+                        var beforeCoverageY = before.contentCoverageY;
+                        var beforeRevision = before.canvasLastRevision;
+                        api.assert(!!beforeBounds, 'water camera should expose content bounds');
+                        host.setState({ taskNpcHotspots: ['underground_water'] });
+                        host.pushSnapshot('refresh');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            var hasTaskMarker = state && state.markerIds.some(function(id) { return /^task_npc_/.test(id); });
+                            return hasTaskMarker && state.canvasLastRevision > beforeRevision ? state : null;
+                        }, 1500, 'task marker refresh').then(function() {
+                            return waitForSettledCamera('task marker camera settled');
+                        }).then(function(after) {
+                            function logical(value, scale) { return value / Math.max(0.0001, scale); }
+                            api.assert(Math.abs(logical(after.contentBounds.x, after.stageScale) - logical(beforeBounds.x, beforeStageScale)) < 0.01,
+                                'task marker must not change logical bounds x');
+                            api.assert(Math.abs(logical(after.contentBounds.y, after.stageScale) - logical(beforeBounds.y, beforeStageScale)) < 0.01,
+                                'task marker must not change logical bounds y');
+                            api.assert(Math.abs(logical(after.contentBounds.w, after.stageScale) - logical(beforeBounds.w, beforeStageScale)) < 0.01,
+                                'task marker must not change logical bounds width');
+                            api.assert(Math.abs(logical(after.contentBounds.h, after.stageScale) - logical(beforeBounds.h, beforeStageScale)) < 0.01,
+                                'task marker must not change logical bounds height');
+                            api.assert(Math.abs(after.contentCoverageX - beforeCoverageX) < 0.01, 'task marker must not change horizontal coverage');
+                            api.assert(Math.abs(after.contentCoverageY - beforeCoverageY) < 0.01, 'task marker must not change vertical coverage');
+                            return 'water fit=' + after.contentFitScale.toFixed(3) + ' bounds stable';
+                        });
+                    });
                 }
             }
         ];
