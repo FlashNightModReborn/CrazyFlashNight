@@ -8,6 +8,8 @@ const tuner = require('./tune-map-filter-fit.js');
 const DPR_VALUES = [1, 1.5, 2];
 const LOW_EFFECTS_VALUES = [false, true];
 const EPSILON = 0.015;
+// 与 MapCanvasStageRenderer 对齐：可见 bg canvas + backdrop 离屏缓存各占一张全 DPR 静态画布。
+const STATIC_SURFACE_COUNT = 2;
 const PIXEL_BUDGET = 10000000;
 const PIXEL_BUDGET_LOW = 6000000;
 // These filters are limited by the only two composites without a frozen Flash
@@ -41,7 +43,8 @@ function evaluateRuntime(page, filter, preset, stagePreset, dpr, lowEffects) {
     const pixelBudget = lowEffects ? PIXEL_BUDGET_LOW : PIXEL_BUDGET;
     const viewportScale = Math.min(stagePreset.width / page.width, stagePreset.height / page.height);
     const assetSafeScale = (visualCap * filter.sourceRatio) / dpr;
-    const canvasSafeScale = Math.sqrt(pixelBudget / (page.width * page.height * dpr * dpr));
+    const canvasSafeScale = Math.sqrt(pixelBudget /
+        (page.width * page.height * dpr * dpr * STATIC_SURFACE_COUNT));
     const stageScale = Math.min(viewportScale, productCap, assetSafeScale, canvasSafeScale);
     const stageWidth = Math.round(page.width * stageScale);
     const stageHeight = Math.round(page.height * stageScale);
