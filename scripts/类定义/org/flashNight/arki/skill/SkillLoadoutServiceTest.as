@@ -22,6 +22,10 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         testNormalModeRejectsDuplicateSlot();
         testEasyModeAllowsDuplicateSlot();
         testAtomicReplacement();
+        testMoveSlotToEmpty();
+        testMoveSlotSwapsOccupied();
+        testMoveSlotNoop();
+        testMoveSlotRejectsEmptyOrCorruptSource();
         testMutationDoesNotNormalizeUnrelatedRows();
         testUnequipKeepsEasyDuplicateEnabled();
         testUnknownSlotSafeUnequip();
@@ -49,6 +53,7 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         testLearnDomainFailureRollsBackSkillPoints();
         testCooldownEffectsAreIndependent();
         testMoveShotZeroAndTenBoundary();
+        testQuickHudRendererRebuildsReplaceAndClear();
         testAllOptionalRenderersMissing();
         SkillLoadoutService.testOnlyReset();
         trace("SkillLoadoutServiceTest Tests Passed: " + passed);
@@ -155,6 +160,53 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         var r:Object = fixture(80); learn(r, 0, "闪现", 1); learn(r, 1, "刀技", 1); r.快捷技能栏3 = "刀技";
         var result:Object = SkillLoadoutService.equip("闪现", 3, SkillLoadoutService.getRevision());
         check(result.success && r.快捷技能栏3 == "闪现" && r.主角技能表[0][2] === true && r.主角技能表[1][2] === false, "replacement updates new and displaced row in one write");
+    }
+
+    private static function testMoveSlotToEmpty():Void {
+        var r:Object = fixture(80); learn(r, 0, "闪现", 1); r.快捷技能栏2 = "闪现"; r.主角技能表[0][2] = true;
+        var revision:Number = SkillLoadoutService.getRevision(); r.存档系统.dirtyMark = false;
+        var result:Object = SkillLoadoutService.moveSlot(2, 8, revision);
+        check(result.success && result.changed && result.revision == revision + 1
+            && r.快捷技能栏2 == "" && r.快捷技能栏8 == "闪现"
+            && r.主角技能表[0][2] === true && r.主角技能表[0][4] === true
+            && r.domainCalls == 0 && r.存档系统.dirtyMark,
+            "moving to an empty quick slot is one atomic revision and keeps the skill enabled");
+    }
+
+    private static function testMoveSlotSwapsOccupied():Void {
+        var r:Object = fixture(80); learn(r, 0, "闪现", 1); learn(r, 1, "刀技", 2);
+        r.快捷技能栏3 = "闪现"; r.快捷技能栏7 = "刀技";
+        r.主角技能表[0][2] = r.主角技能表[0][4] = true;
+        r.主角技能表[1][2] = r.主角技能表[1][4] = true;
+        var revision:Number = SkillLoadoutService.getRevision();
+        var result:Object = SkillLoadoutService.moveSlot(3, 7, revision);
+        check(result.success && result.revision == revision + 1
+            && r.快捷技能栏3 == "刀技" && r.快捷技能栏7 == "闪现"
+            && r.主角技能表[0][2] === true && r.主角技能表[1][2] === true
+            && result.changed && r.domainCalls == 0,
+            "occupied quick slots swap atomically without transient unequip or duplicate checks");
+    }
+
+    private static function testMoveSlotNoop():Void {
+        var r:Object = fixture(80); learn(r, 0, "闪现", 1); r.快捷技能栏4 = "闪现"; r.主角技能表[0][2] = true;
+        var revision:Number = SkillLoadoutService.getRevision(); r.存档系统.dirtyMark = false;
+        var same:Object = SkillLoadoutService.moveSlot(4, 4, revision);
+        r.easy = true; r.快捷技能栏5 = "闪现"; SkillLoadoutService.getRevision(); revision = SkillLoadoutService.getRevision();
+        var duplicate:Object = SkillLoadoutService.moveSlot(4, 5, revision);
+        check(same.success && !same.changed && duplicate.success && !duplicate.changed
+            && r.快捷技能栏4 == "闪现" && r.快捷技能栏5 == "闪现"
+            && SkillLoadoutService.getRevision() == revision && r.domainCalls == 0 && !r.存档系统.dirtyMark,
+            "same-slot and same-skill easy-mode moves are side-effect-free no-ops");
+    }
+
+    private static function testMoveSlotRejectsEmptyOrCorruptSource():Void {
+        var r:Object = fixture(80); learn(r, 0, "闪现", 1);
+        var empty:Object = SkillLoadoutService.moveSlot(1, 2, SkillLoadoutService.getRevision());
+        r.快捷技能栏1 = "坏技能";
+        var corrupt:Object = SkillLoadoutService.moveSlot(1, 2, SkillLoadoutService.getRevision());
+        check(!empty.success && empty.error == "slot_empty" && !corrupt.success && corrupt.error == "corrupt_skill_state"
+            && r.快捷技能栏1 == "坏技能" && r.快捷技能栏2 == "" && !r.存档系统.dirtyMark,
+            "empty or corrupt quick-slot sources fail without overwriting either physical slot");
     }
 
     private static function testMutationDoesNotNormalizeUnrelatedRows():Void {
@@ -401,6 +453,36 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         var tenResult:Boolean = SkillLoadoutService.recalculateDynamicCooldownDomain();
         check(zeroResult && zeroCD == 2000 && tenResult && r.技能表对象.移动射击.CD == 1000,
             "move-shot level boundary keeps level 0 unchanged and activates exactly at level 10");
+    }
+
+    private static function testQuickHudRendererRebuildsReplaceAndClear():Void {
+        var r:Object = fixture(80); learn(r, 0, "闪现", 3); learn(r, 1, "刀技", 2);
+        var slotClip:Object = {frames:[]};
+        slotClip.gotoAndStop = function(frame:String):Void { this.frames.push(frame); };
+        var quickInterface:Object = {};
+        quickInterface.快捷技能栏4 = slotClip;
+        var playerInterface:Object = {快捷技能界面:quickInterface};
+
+        r.快捷技能栏4 = "闪现";
+        var equipped:Object = SkillLoadoutService.projectQuickSlotRenderer(playerInterface);
+        var equippedOk:Boolean = equipped.success && equipped.renderedSlots == 1
+            && slotClip.已装备名 == "闪现" && slotClip.对应数组号 == 0 && slotClip.数量 == 3
+            && slotClip.冷却时间 == 2000 && slotClip.消耗mp == 10 && slotClip.图标 == "图标-闪现"
+            && slotClip.frames.length == 2 && slotClip.frames[0] == "空" && slotClip.frames[1] == "默认图标";
+
+        r.快捷技能栏4 = "刀技";
+        var replaced:Object = SkillLoadoutService.projectQuickSlotRenderer(playerInterface);
+        var replacedOk:Boolean = replaced.success && slotClip.已装备名 == "刀技"
+            && slotClip.对应数组号 == 1 && slotClip.数量 == 2 && slotClip.图标 == "图标-刀技"
+            && slotClip.frames.length == 4 && slotClip.frames[2] == "空" && slotClip.frames[3] == "默认图标";
+
+        r.快捷技能栏4 = "";
+        var cleared:Object = SkillLoadoutService.projectQuickSlotRenderer(playerInterface);
+        var clearedOk:Boolean = cleared.success && slotClip.是否装备 == 0 && slotClip.已装备名 == ""
+            && slotClip.对应数组号 == -1 && slotClip.数量 == 0 && slotClip.冷却时间 == 0
+            && slotClip.消耗mp == 0 && slotClip.图标 == "" && slotClip.frames.length == 5 && slotClip.frames[4] == "空";
+        check(equippedOk && replacedOk && clearedOk,
+            "legacy quick HUD rebuilds icon shell on equip replacement and clears the stale icon on unequip");
     }
 
     private static function testAllOptionalRenderersMissing():Void {

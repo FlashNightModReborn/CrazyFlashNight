@@ -13,6 +13,7 @@ class org.flashNight.arki.skill.SkillPanelService {
     private static var _tokenSeq:Number = 0;
     private static var SESSION_TTL_MS:Number = 120000;
     private static var TOKEN_TTL_MS:Number = 30000;
+    private static var _testNow:Number = NaN;
 
     public static function install():Void {
         if (_installed) return;
@@ -27,6 +28,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         _root.gameCommands["skillLearnCommit"] = function(params:Object):Void { SkillPanelService.handle("learnCommit", params); };
         _root.gameCommands["skillEquip"] = function(params:Object):Void { SkillPanelService.handle("equip", params); };
         _root.gameCommands["skillUnequip"] = function(params:Object):Void { SkillPanelService.handle("unequip", params); };
+        _root.gameCommands["skillMoveSlot"] = function(params:Object):Void { SkillPanelService.handle("moveSlot", params); };
         _root.gameCommands["skillSetPassive"] = function(params:Object):Void { SkillPanelService.handle("setPassive", params); };
         _root.gameCommands["skillReorder"] = function(params:Object):Void { SkillPanelService.handle("reorder", params); };
         _root.gameCommands["skillPanelClose"] = function(params:Object):Void { SkillPanelService.handle("close", params); };
@@ -58,6 +60,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (commandName == "learnCommit") return executeLearnCommit(params);
         if (commandName == "equip") return executeWrite("equip", params);
         if (commandName == "unequip") return executeWrite("unequip", params);
+        if (commandName == "moveSlot") return executeWrite("moveSlot", params);
         if (commandName == "setPassive") return executeWrite("setPassive", params);
         if (commandName == "reorder") return executeWrite("reorder", params);
         if (commandName == "close") {
@@ -177,6 +180,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         var result:Object;
         if (kind == "equip") result = SkillLoadoutService.equip(String(params.skillKey), Number(params.slot), Number(params.expectedRevision));
         else if (kind == "unequip") result = SkillLoadoutService.unequip(Number(params.slot), Number(params.expectedRevision));
+        else if (kind == "moveSlot") result = SkillLoadoutService.moveSlot(Number(params.sourceSlot), Number(params.targetSlot), Number(params.expectedRevision));
         else if (kind == "setPassive") result = SkillLoadoutService.setPassive(String(params.skillKey), params.enabled, Number(params.expectedRevision));
         else result = SkillLoadoutService.reorder(String(params.skillKey), Number(params.targetIndex), Number(params.expectedRevision));
         _busy = false;
@@ -251,14 +255,17 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (lifecycleMode == null) return fail("trainer_session_expired");
         if (sessionMatches(_session, npcRef, npcKey, lifecycleMode, scene, normalized.signature)) {
             _candidateSession = null;
+            _session.lastTouchedAt = now();
             return {success:true, v:1, session:_session, reused:true, candidate:false};
         }
         if (sessionMatches(_candidateSession, npcRef, npcKey, lifecycleMode, scene, normalized.signature)) {
+            _candidateSession.lastTouchedAt = now();
             return {success:true, v:1, session:_candidateSession, reused:true, candidate:true};
         }
-        _candidateSession = {nonce:"ts." + now() + "." + (++_sessionSeq), npcRef:npcRef, npcKey:npcKey,
+        var createdAt:Number = now();
+        _candidateSession = {nonce:"ts." + createdAt + "." + (++_sessionSeq), npcRef:npcRef, npcKey:npcKey,
             lifecycleMode:lifecycleMode, scene:scene, catalog:normalized.entries, catalogDiagnostics:normalized.diagnostics,
-            catalogSignature:normalized.signature, createdAt:now()};
+            catalogSignature:normalized.signature, createdAt:createdAt, lastTouchedAt:createdAt};
         return {success:true, v:1, session:_candidateSession, reused:false, candidate:true};
     }
 
@@ -276,7 +283,9 @@ class org.flashNight.arki.skill.SkillPanelService {
     }
 
     private static function validateSessionRecord(session:Object, candidate:Boolean):Object {
-        if (session == null || elapsed(session.createdAt) > SESSION_TTL_MS || session.scene != sceneSignature() || !npcStillValid(session)) {
+        if (session == null) return fail("trainer_session_expired");
+        var lastTouchedAt:Number = session.lastTouchedAt == undefined ? Number(session.createdAt) : Number(session.lastTouchedAt);
+        if (elapsed(lastTouchedAt) > SESSION_TTL_MS || session.scene != sceneSignature() || !npcStillValid(session)) {
             if (candidate) _candidateSession = null; else closeActiveSession();
             return fail("trainer_session_expired");
         }
@@ -287,11 +296,14 @@ class org.flashNight.arki.skill.SkillPanelService {
         }
         session.catalog = normalized.entries;
         session.catalogDiagnostics = normalized.diagnostics;
+        session.lastTouchedAt = now();
         return {success:true, v:1, session:session};
     }
 
     private static function sessionMatches(session:Object, npcRef:Object, npcKey:String, lifecycleMode:String, scene:String, signature:String):Boolean {
-        return session != null && elapsed(session.createdAt) <= SESSION_TTL_MS && session.npcRef === npcRef
+        if (session == null) return false;
+        var lastTouchedAt:Number = session.lastTouchedAt == undefined ? Number(session.createdAt) : Number(session.lastTouchedAt);
+        return elapsed(lastTouchedAt) <= SESSION_TTL_MS && session.npcRef === npcRef
             && session.npcKey == npcKey && session.lifecycleMode == lifecycleMode
             && session.scene == scene && session.catalogSignature == signature;
     }
@@ -471,7 +483,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         var mp:Number = Number(m.MP);
         return !isNaN(mp) && isFinite(mp) && mp >= 0 && mp <= 1000000 && whole(m.CD, 0, 86400000);
     }
-    private static function now():Number { return getTimer(); }
+    private static function now():Number { return isNaN(_testNow) ? getTimer() : _testNow; }
     private static function elapsed(start:Number):Number { var d:Number = now() - start; return d < 0 ? d + 4294967296 : d; }
     private static function safeSkillKey(value):Boolean {
         if (typeof value != "string") return false;
@@ -523,8 +535,9 @@ class org.flashNight.arki.skill.SkillPanelService {
     private static function fail(errorCode:String):Object { return {success:false, v:1, error:errorCode, revision:SkillLoadoutService.getRevision()}; }
 
     public static function testOnlyReset():Void {
-        _installed = false; _busy = false; _session = null; _candidateSession = null; _learnToken = null; _sessionSeq = 0; _tokenSeq = 0; _json = new JSON(false);
+        _installed = false; _busy = false; _session = null; _candidateSession = null; _learnToken = null; _sessionSeq = 0; _tokenSeq = 0; _testNow = NaN; _json = new JSON(false);
     }
+    public static function testOnlySetNow(value:Number):Void { _testNow = value; }
     public static function testOnlySession():Object { return _session; }
     public static function testOnlyCandidateSession():Object { return _candidateSession; }
 }

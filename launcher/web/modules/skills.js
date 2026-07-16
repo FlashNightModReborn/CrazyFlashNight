@@ -10,8 +10,13 @@ var SkillsPanel = (function() {
     var _refreshButton = null, _diagnosticButton = null, _switchButton = null, _helpButton = null, _closeButton = null, _returnFocus = null;
     var _snapshot = null, _view = 'manage', _initData = null, _selectedKey = '';
     var _desiredLevel = 1, _preview = null, _schemaError = '', _lastDiagnostic = null;
-    var _density = null, _densityToggle = null;
-    var _drag = null, _dragBroker = null, _dragSourceView = null, _dragTargetView = null, _dragOrderTargetView = null;
+    var _previewTimer = null, _previewIntent = 0, _previewLoading = false, _previewError = '', _previewReceivedAt = 0;
+    var _trainerExpired = false;
+    var _pendingFocusKey = '';
+    var _density = null, _densityToggle = null, _confirmationToggle = null;
+    var _drag = null, _dragBroker = null, _dragSourceView = null, _dragSlotSourceView = null;
+    var _dragTargetView = null, _dragSlotTargetView = null, _dragOrderTargetView = null;
+    var _switchWaitTimer = null, _switchPending = false;
     var _config = (typeof window !== 'undefined' && window.__SKILLS_CONFIG__) || {};
     var LOADOUT_CONFIRMATION_KEY = 'cf7.skills.loadoutConfirmationMode';
     var _loadoutConfirmationMode = readLoadoutConfirmationMode();
@@ -62,6 +67,7 @@ var SkillsPanel = (function() {
         _snapshot = null;
         _selectedKey = typeof _initData.focusSkillKey === 'string' ? _initData.focusSkillKey : '';
         _desiredLevel = 1; _preview = null; _schemaError = ''; _lastDiagnostic = null; _searchExpanded = false;
+        _previewLoading = false; _previewError = ''; _previewReceivedAt = 0; _trainerExpired = false; _pendingFocusKey = '';
         var opened = _coordinator.open(_initData);
         buildDOM();
         if (!opened) {
@@ -106,6 +112,10 @@ var SkillsPanel = (function() {
         if (fullDensity) fullDensity.title = '技能库显示名称、等级与状态';
         if (compactDensity) compactDensity.title = '技能库使用方块图标瓦片，一屏查看更多技能';
         _shell.addHeaderAction(_densityToggle);
+        if (_view === 'manage') {
+            _confirmationToggle = createLoadoutConfirmationToggle();
+            _shell.addHeaderAction(_confirmationToggle);
+        }
         if (_view === 'trainer') {
             _switchButton = button('管理技能', 'workbench-mode-btn skills-switch-manage-btn', requestManageView);
             _switchButton.title = '保留当前选择并打开技能管理';
@@ -207,6 +217,7 @@ var SkillsPanel = (function() {
     function createRightView() {
         _rightRoot = document.createElement('div');
         _rightRoot.className = 'workbench-view skills-action-view';
+        if (_view === 'trainer') _rightRoot.classList.add('skills-trainer-view');
         return simpleView('skills:actions', 'detail', ['R'], _rightRoot, renderDetail);
     }
 
@@ -412,13 +423,15 @@ var SkillsPanel = (function() {
     }
 
     function selectSkill(skillKey) {
-        _selectedKey = String(skillKey || ''); _preview = null;
+        _selectedKey = String(skillKey || ''); clearPreviewState();
         var entry = selectedEntry();
         if (_view === 'trainer' && entry) {
             var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
             _desiredLevel = current <= 0 ? 1 : Math.min(max, current + 1);
         }
-        renderList(); renderDetail();
+        renderList();
+        if (_view === 'trainer' && entry) scheduleLearnPreview(entry, false);
+        else renderDetail();
     }
 
     function selectedEntry() {
@@ -429,14 +442,19 @@ var SkillsPanel = (function() {
 
     function renderDetail() {
         if (!_rightRoot) return;
-        var focusKey = focusKeyOf(document.activeElement);
+        var focusKey = _pendingFocusKey || focusKeyOf(document.activeElement);
         while (_rightRoot.firstChild) _rightRoot.removeChild(_rightRoot.firstChild);
+        if (_trainerExpired) {
+            _rightRoot.appendChild(renderTrainerExpired());
+            restoreFocusKey(focusKey);
+            return;
+        }
         if (_schemaError) { _rightRoot.appendChild(empty('技能数据暂时无法读取，请重试。', 'error')); return; }
         var entry = selectedEntry();
         if (_view === 'trainer') {
             if (!entry) _rightRoot.appendChild(empty(_snapshot ? '从左侧选择研习目标' : '正在读取技能…'));
             else {
-                _rightRoot.appendChild(renderSelectionContext(entry, '研习目标'));
+                _rightRoot.appendChild(renderTrainerSummary(entry));
                 renderTrainerActions(entry);
             }
         } else {
@@ -445,6 +463,54 @@ var SkillsPanel = (function() {
             else _rightRoot.appendChild(empty('正在读取技能…'));
         }
         restoreFocusKey(focusKey);
+        if (_pendingFocusKey && _coordinator.getState() === 'idle') _pendingFocusKey = '';
+    }
+
+    function renderTrainerSummary(entry) {
+        var summary = document.createElement('section'); summary.className = 'skills-trainer-summary';
+        var icon = iconNode(entry.iconKey || entry.skillKey, 'skills-trainer-summary-icon');
+        summary.appendChild(icon);
+        var copy = document.createElement('div'); copy.className = 'skills-trainer-summary-copy';
+        var kicker = document.createElement('span'); kicker.className = 'skills-trainer-kicker'; kicker.textContent = '研习目标';
+        var title = document.createElement('h2'); title.textContent = entry.skillKey;
+        var meta = document.createElement('div'); meta.className = 'skills-detail-meta';
+        meta.textContent = (entry.type || '未知类型') + ' · 当前 Lv.' + safeNumber(entry.currentLevel) + '/' + safeNumber(entry.maxLevel)
+            + ' · MP ' + safeNumber(entry.mp) + ' · CD ' + cooldownText(entry.cooldownMs);
+        copy.appendChild(kicker); copy.appendChild(title); copy.appendChild(meta); summary.appendChild(copy);
+        var description = document.createElement('div'); description.className = 'skills-trainer-description';
+        var rawDescription = entry.description || '暂无技能说明。';
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.convertAS2Html)
+            description.innerHTML = PanelTooltip.convertAS2Html(normalizeAS2Description(rawDescription));
+        else description.textContent = rawDescription;
+        summary.appendChild(description);
+        if (entry.writeBlocked || entry.stateHealth !== 'ok') {
+            var warning = document.createElement('div'); warning.className = 'skills-corrupt-warning';
+            var warningText = document.createElement('span'); warningText.textContent = '技能数据异常，暂时无法研习。';
+            var diagnostic = button('复制诊断信息', 'skills-inline-diagnostic skills-diagnostic-btn', function() {
+                copyDiagnostic('skill_data_error', entry);
+            });
+            warning.appendChild(warningText); warning.appendChild(diagnostic); summary.appendChild(warning);
+        }
+        bindSkillTooltip(summary, entry);
+        return summary;
+    }
+
+    function renderTrainerExpired() {
+        var state = document.createElement('section'); state.className = 'skills-trainer-expired';
+        var marker = document.createElement('div'); marker.className = 'skills-trainer-expired-mark'; marker.textContent = '!';
+        var title = document.createElement('h2'); title.textContent = '教师连接已失效';
+        var message = document.createElement('p');
+        message.textContent = '本次研习权限已经结束。为避免误操作，页面已停止计算和研习；请返回游戏后重新与教师对话。';
+        var hint = document.createElement('small'); hint.textContent = '已选择的技能和筛选仍保留在当前画面中，未扣除技能点。';
+        var actions = document.createElement('div'); actions.className = 'skills-trainer-expired-actions';
+        var diagnostic = button('复制诊断信息', 'skills-action-btn skills-close-allowed', function() {
+            copyDiagnostic('trainer_session_expired', selectedEntry());
+        });
+        var close = button('返回游戏并重新对话', 'skills-action-btn primary skills-close-allowed', requestClose);
+        close.setAttribute('data-focus-key', 'trainer:expired-close');
+        actions.appendChild(diagnostic); actions.appendChild(close);
+        state.appendChild(marker); state.appendChild(title); state.appendChild(message); state.appendChild(hint); state.appendChild(actions);
+        return state;
     }
 
     function renderSelectionContext(entry, label) {
@@ -474,7 +540,7 @@ var SkillsPanel = (function() {
         var actions = document.createElement('section'); actions.className = 'skills-detail-actions';
         if (!entry) {
             var emptyContext = document.createElement('div'); emptyContext.className = 'skills-action-hint';
-            emptyContext.textContent = '拖到另一个技能格可交换顺序；拖到下方快捷技能带可完成装备。';
+            emptyContext.textContent = '技能格可拖到快捷栏；快捷槽之间可直接拖动调整按键布局。';
             actions.appendChild(emptyContext); _rightRoot.appendChild(actions); return;
         }
         actions.appendChild(renderSelectionContext(entry, '已选择'));
@@ -488,7 +554,7 @@ var SkillsPanel = (function() {
         } else {
             var hint = document.createElement('div'); hint.className = 'skills-action-hint';
             hint.textContent = entry.equippable
-                ? '拖到技能格可交换顺序；拖到快捷槽可装备或替换。'
+                ? '拖到技能格可交换顺序；拖到快捷槽可装备，快捷槽之间可移动或交换。'
                 : '可拖到其他技能格交换顺序；该技能不可装备到快捷栏。';
             actions.appendChild(hint);
         }
@@ -520,71 +586,328 @@ var SkillsPanel = (function() {
     function renderTrainerActions(entry) {
         var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
         var section = document.createElement('section'); section.className = 'skills-trainer-actions';
-        var gate = document.createElement('div'); gate.className = 'skills-trainer-gate';
-        gate.textContent = '解锁等级 ' + safeNumber(entry.unlockLevel) + ' · 初学 ' + safeNumber(entry.unlockSP)
-            + ' 点 · 每级 ' + safeNumber(entry.upgradeSP) + ' 点'; section.appendChild(gate);
+        var target = document.createElement('div'); target.className = 'skills-trainer-target';
+        var targetHeading = document.createElement('div'); targetHeading.className = 'skills-trainer-section-heading';
+        targetHeading.textContent = current >= max ? '技能等级' : '目标等级'; target.appendChild(targetHeading);
         var stepper = document.createElement('div'); stepper.className = 'skills-level-stepper';
-        var label = document.createElement('span'); label.textContent = '目标等级'; stepper.appendChild(label);
-        if (current <= 0) {
+        var rangeShell = null;
+        var label = document.createElement('span');
+        label.textContent = current >= max ? 'Lv.' + current + '（已满级）' : 'Lv.' + current + ' →'; stepper.appendChild(label);
+        if (current >= max) {
+            var full = document.createElement('output'); full.textContent = 'Lv.' + max; stepper.appendChild(full);
+        } else if (current <= 0) {
             var fixed = document.createElement('output'); fixed.textContent = 'Lv.1（初学固定）'; stepper.appendChild(fixed);
             _desiredLevel = 1;
         } else {
             var minus = button('−', 'skills-level-btn', function() { setDesiredLevel(_desiredLevel - 1); });
-            var value = document.createElement('output'); value.textContent = 'Lv.' + _desiredLevel;
+            var value = document.createElement('input'); value.type = 'number'; value.className = 'skills-level-value';
+            value.min = String(current + 1); value.max = String(max); value.step = '1'; value.value = String(_desiredLevel);
+            value.inputMode = 'numeric'; value.setAttribute('aria-label', '目标等级');
+            value.setAttribute('data-focus-key', 'trainer:level-value');
+            value.disabled = writesDisabled(entry);
             var plus = button('+', 'skills-level-btn', function() { setDesiredLevel(_desiredLevel + 1); });
+            minus.setAttribute('data-focus-key', 'trainer:level-minus');
+            plus.setAttribute('data-focus-key', 'trainer:level-plus');
             minus.disabled = writesDisabled(entry) || _desiredLevel <= current + 1;
             plus.disabled = writesDisabled(entry) || _desiredLevel >= max;
             stepper.appendChild(minus); stepper.appendChild(value); stepper.appendChild(plus);
+            rangeShell = document.createElement('div'); rangeShell.className = 'skills-level-range-shell';
+            var range = document.createElement('input'); range.type = 'range'; range.className = 'skills-level-range';
+            range.min = String(current + 1); range.max = String(max); range.step = '1'; range.value = String(_desiredLevel);
+            range.setAttribute('aria-label', '选择目标等级'); range.setAttribute('aria-valuetext', '目标等级 ' + _desiredLevel);
+            range.setAttribute('data-focus-key', 'trainer:level-range');
+            range.disabled = writesDisabled(entry);
+            range.addEventListener('input', function() { stageDesiredLevel(range.value, entry, target); });
+            range.addEventListener('change', function() { setDesiredLevel(range.value, true); });
+            value.addEventListener('input', function() {
+                var typed = Number(value.value);
+                if (isFinite(typed) && Math.floor(typed) === typed && typed >= current + 1 && typed <= max)
+                    stageDesiredLevel(typed, entry, target);
+            });
+            value.addEventListener('change', function() { setDesiredLevel(value.value, true); });
+            value.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') { event.preventDefault(); setDesiredLevel(value.value, true); }
+                else if (event.key === 'Escape') { event.preventDefault(); value.value = String(_desiredLevel); }
+            });
+            rangeShell.appendChild(range);
+            var marks = document.createElement('div'); marks.className = 'skills-level-marks';
+            targetMarkLevels(current + 1, max).forEach(function(level) {
+                var mark = button(String(level), 'skills-level-mark', function() { setDesiredLevel(level, true); });
+                var position = max === current + 1 ? 100 : (level - current - 1) * 100 / (max - current - 1);
+                mark.style.setProperty('--skills-level-mark-position', position + '%');
+                mark.setAttribute('data-level', String(level)); mark.setAttribute('tabindex', '-1');
+                mark.setAttribute('aria-label', '目标等级 ' + level);
+                mark.disabled = writesDisabled(entry);
+                marks.appendChild(mark);
+            });
+            rangeShell.appendChild(marks);
         }
-        section.appendChild(stepper);
-        var previewButton = button('计算消耗', 'skills-action-btn', function() { requestLearnPreview(entry); });
-        previewButton.disabled = writesDisabled(entry) || current >= max;
-        previewButton.setAttribute('data-focus-key', 'trainer:preview'); section.appendChild(previewButton);
-        var result = document.createElement('div'); result.className = 'skills-preview-result';
-        if (_preview && _preview.skillKey === entry.skillKey && Number(_preview.desiredLevel) === _desiredLevel) {
-            result.textContent = _preview.canCommit
-                ? '需要 ' + safeNumber(_preview.cost) + ' 技能点。'
-                : errorMessage(_preview.blockingError);
-            result.classList.add(_preview.canCommit ? 'ok' : 'blocked');
-            var commit = button('确认研习', 'skills-action-btn primary', function() { confirmLearn(entry); });
-            commit.disabled = writesDisabled(entry) || !_preview.canCommit || !_preview.learnToken;
-            commit.setAttribute('data-focus-key', 'trainer:commit'); result.appendChild(commit);
-        } else result.textContent = '调整目标等级后请重新计算消耗。';
-        section.appendChild(result); _rightRoot.appendChild(section);
+        target.appendChild(stepper);
+        if (rangeShell) { target.appendChild(rangeShell); syncTargetSelector(target, entry); }
+        if (current > 0 && current < max) {
+            var presets = document.createElement('div'); presets.className = 'skills-target-presets';
+            var toMax = button('升至满级', 'skills-target-preset', function() { setDesiredLevel(max, true); });
+            toMax.setAttribute('data-focus-key', 'trainer:level-max');
+            toMax.disabled = writesDisabled(entry) || _desiredLevel === max;
+            presets.appendChild(toMax); target.appendChild(presets);
+        }
+        section.appendChild(target);
+
+        var gate = document.createElement('div'); gate.className = 'skills-trainer-gate';
+        gate.textContent = '解锁 Lv.' + safeNumber(entry.unlockLevel) + ' · 初学 ' + safeNumber(entry.unlockSP)
+            + ' 点 · 升级 ' + safeNumber(entry.upgradeSP) + ' 点/级'; section.appendChild(gate);
+
+        var result = document.createElement('div'); result.className = 'skills-preview-result skills-cost-card';
+        var matchingPreview = previewMatches(entry) ? _preview : null;
+        var previousPreview = _preview && _preview.skillKey === entry.skillKey ? _preview : null;
+        if (current >= max) {
+            result.classList.add('ok');
+            appendCostRow(result, '研习状态', '技能已达到最高等级');
+        } else if (matchingPreview) {
+            appendPreviewSummary(result, matchingPreview, entry, false);
+            if (_previewLoading) {
+                result.classList.add('updating');
+                appendPreviewUpdateStatus(result, '正在刷新 Lv.' + _desiredLevel + ' 的权威消耗…', false);
+            } else if (_previewError) {
+                appendPreviewUpdateStatus(result, '消耗刷新失败：' + errorMessage(_previewError), true);
+                appendPreviewRetry(result, entry);
+            }
+        } else if (previousPreview) {
+            result.classList.add('stale'); appendPreviewSummary(result, previousPreview, entry, true);
+            if (_previewLoading) appendPreviewUpdateStatus(result, '正在更新目标 Lv.' + _desiredLevel + ' 的消耗…', false);
+            else if (_previewError) {
+                appendPreviewUpdateStatus(result, 'Lv.' + _desiredLevel + ' 更新失败：' + errorMessage(_previewError), true);
+                appendPreviewRetry(result, entry);
+            }
+        } else if (_previewLoading) {
+            result.classList.add('loading');
+            appendCostRow(result, '本次消耗', '正在计算 Lv.' + _desiredLevel + '…');
+        } else if (_previewError) {
+            result.classList.add('blocked');
+            var error = document.createElement('div'); error.className = 'skills-preview-message';
+            error.textContent = '暂时无法计算研习消耗：' + errorMessage(_previewError); result.appendChild(error);
+            appendPreviewRetry(result, entry);
+        } else {
+            appendCostRow(result, '本次消耗', '准备计算…');
+        }
+        section.appendChild(result);
+
+        var footer = document.createElement('div'); footer.className = 'skills-trainer-footer';
+        var commitText = '正在准备研习…', commitEnabled = false;
+        if (current >= max) commitText = '该技能已满级';
+        else if (_previewLoading) commitText = '正在更新 Lv.' + safeNumber(_desiredLevel) + ' 的消耗…';
+        else if (_previewError) commitText = '暂时无法研习';
+        else if (matchingPreview && matchingPreview.canCommit && matchingPreview.learnToken) {
+            commitText = '研习至 Lv.' + safeNumber(_desiredLevel) + ' · ' + safeNumber(matchingPreview.cost) + ' 点';
+            commitEnabled = !writesDisabled(entry);
+        } else if (matchingPreview) commitText = errorMessage(matchingPreview.blockingError);
+        var commit = button(commitText, 'skills-action-btn primary skills-trainer-commit', function() { prepareLearnConfirmation(entry); });
+        commit.disabled = !commitEnabled; commit.setAttribute('data-focus-key', 'trainer:commit'); footer.appendChild(commit);
+        section.appendChild(footer); _rightRoot.appendChild(section);
     }
 
-    function setDesiredLevel(level) {
+    function targetMarkLevels(min, max) {
+        var levels = [], count = max - min + 1, level;
+        if (count <= 12) {
+            for (level = min; level <= max; level++) levels.push(level);
+            return levels;
+        }
+        levels.push(min);
+        for (level = Math.ceil(min / 5) * 5; level < max; level += 5) if (level !== min) levels.push(level);
+        if (max !== min) levels.push(max);
+        return levels;
+    }
+
+    function normalizedDesiredLevel(entry, level) {
+        var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1), numeric = Number(level);
+        if (!isFinite(numeric)) numeric = current + 1;
+        numeric = Math.round(numeric);
+        return current <= 0 ? 1 : Math.max(current + 1, Math.min(max, numeric));
+    }
+
+    function syncTargetSelector(target, entry) {
+        if (!target || !entry) return;
+        var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1), min = current + 1;
+        var range = target.querySelector('.skills-level-range'), value = target.querySelector('.skills-level-value');
+        if (value && document.activeElement !== value) value.value = String(_desiredLevel);
+        if (range) {
+            range.value = String(_desiredLevel);
+            var progress = max <= min ? 100 : (_desiredLevel - min) * 100 / (max - min);
+            range.style.setProperty('--skills-level-progress', progress + '%');
+            range.setAttribute('aria-valuenow', String(_desiredLevel));
+            range.setAttribute('aria-valuetext', '目标等级 ' + _desiredLevel);
+        }
+        var marks = target.querySelectorAll('.skills-level-mark');
+        for (var i = 0; i < marks.length; i++) marks[i].classList.toggle('selected', Number(marks[i].getAttribute('data-level')) === _desiredLevel);
+    }
+
+    function stageDesiredLevel(level, entry, target) {
+        if (!entry || writesDisabled(entry)) return;
+        var normalized = normalizedDesiredLevel(entry, level);
+        if (_previewTimer !== null) { clearTimeout(_previewTimer); _previewTimer = null; }
+        _previewIntent++; _desiredLevel = normalized; _previewLoading = true; _previewError = '';
+        syncTargetSelector(target, entry);
+        var result = _rightRoot && _rightRoot.querySelector('.skills-cost-card');
+        if (result) {
+            result.classList.add('updating');
+            if (_preview && _preview.skillKey === entry.skillKey) result.classList.add('stale');
+            var status = result.querySelector('.skills-preview-update-status');
+            if (!status) { status = document.createElement('div'); status.className = 'skills-preview-update-status'; result.appendChild(status); }
+            status.textContent = '目标已选 Lv.' + normalized + '，松开或确认后更新消耗。';
+        }
+        var commit = _rightRoot && _rightRoot.querySelector('.skills-trainer-commit');
+        if (commit) { commit.disabled = true; commit.textContent = '确认目标后计算 Lv.' + normalized; }
+    }
+
+    function setDesiredLevel(level, immediate) {
         var entry = selectedEntry(); if (!entry) return;
-        var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
-        _desiredLevel = current <= 0 ? 1 : Math.max(current + 1, Math.min(max, Number(level) || current + 1));
-        _preview = null; renderDetail();
+        if (writesDisabled(entry)) return;
+        _desiredLevel = normalizedDesiredLevel(entry, level); _previewError = '';
+        scheduleLearnPreview(entry, immediate === true);
     }
 
-    function requestLearnPreview(entry) {
-        _preview = null; refreshStateControls(); renderDetail();
-        _coordinator.requestPreview({
+    function clearPreviewState() {
+        _preview = null; _previewError = ''; _previewReceivedAt = 0;
+    }
+
+    function cancelPreviewWork() {
+        if (_previewTimer !== null) { clearTimeout(_previewTimer); _previewTimer = null; }
+        _previewIntent++;
+        _previewLoading = false;
+    }
+
+    function scheduleLearnPreview(entry, immediate, callback) {
+        if (_view !== 'trainer' || _trainerExpired || !entry || writesDisabled(entry)
+                || Number(entry.currentLevel || 0) >= Number(entry.maxLevel || 1)) {
+            _previewLoading = false; renderDetail(); return false;
+        }
+        if (_previewTimer !== null) clearTimeout(_previewTimer);
+        var intent = ++_previewIntent;
+        if (_preview && _preview.skillKey !== entry.skillKey) clearPreviewState();
+        _previewError = ''; _previewLoading = true;
+        renderDetail(); refreshStateControls();
+        _previewTimer = setTimeout(function() {
+            _previewTimer = null;
+            requestLearnPreview(entry.skillKey, intent, callback);
+        }, immediate ? 0 : previewDebounceMs());
+        return true;
+    }
+
+    function requestLearnPreview(skillKey, intent, callback) {
+        var entry = entryByKey(skillKey);
+        if (!entry || intent !== _previewIntent || _trainerExpired) return;
+        var requestedLevel = _desiredLevel;
+        var callId = _coordinator.requestPreview({
             skillKey: entry.skillKey,
-            desiredLevel: _desiredLevel,
+            desiredLevel: requestedLevel,
             trainerSession: String(_initData.trainerSession || ''),
             expectedRevision: Number(_snapshot.revision)
         }, function(response) {
+            if (intent !== _previewIntent) return;
+            _previewLoading = false;
             if (response.error === 'trainer_session_expired') return;
             if (response.success === true && response.skillKey === _selectedKey
-                    && Number(response.desiredLevel) === _desiredLevel) _preview = response;
-            else if (response.error === 'initial_level_must_be_one') _desiredLevel = 1;
+                    && Number(response.desiredLevel) === _desiredLevel) {
+                _preview = response; _previewError = ''; _previewReceivedAt = Date.now();
+            } else {
+                if (!_preview || _preview.skillKey !== _selectedKey) { _preview = null; _previewReceivedAt = 0; }
+                _previewError = String(response.error || 'preview_failed');
+                if (response.error === 'initial_level_must_be_one') _desiredLevel = 1;
+            }
             renderDetail(); refreshStateControls();
+            if (callback) callback(_preview);
         });
+        if (!callId && intent === _previewIntent) {
+            _previewLoading = false; _previewError = 'busy'; renderDetail(); refreshStateControls();
+            if (callback) callback(null);
+        }
+    }
+
+    function previewMatches(entry) {
+        return !!(_preview && entry && _preview.skillKey === entry.skillKey && Number(_preview.desiredLevel) === _desiredLevel);
+    }
+
+    function previewDebounceMs() {
+        var configured = Number(_config.previewDebounceMs);
+        return isFinite(configured) && configured >= 0 ? configured : 140;
+    }
+
+    function previewTokenFreshMs() {
+        var configured = Number(_config.previewTokenFreshMs);
+        return isFinite(configured) && configured >= 50 && configured <= 29000 ? configured : 25000;
+    }
+
+    function hasFreshPreviewToken(entry) {
+        return previewMatches(entry) && _preview.canCommit && _preview.learnToken && _previewReceivedAt > 0
+            && Date.now() - _previewReceivedAt < previewTokenFreshMs();
+    }
+
+    function prepareLearnConfirmation(entry) {
+        if (!entry || writesDisabled(entry) || _trainerExpired) return;
+        if (hasFreshPreviewToken(entry)) { confirmLearn(entry); return; }
+        scheduleLearnPreview(entry, true, function(preview) {
+            var current = selectedEntry();
+            if (preview && current && hasFreshPreviewToken(current)) confirmLearn(current);
+        });
+    }
+
+    function appendCostRow(parent, label, value, strong) {
+        var row = document.createElement('div'); row.className = 'skills-cost-row';
+        var name = document.createElement('span'); name.textContent = label;
+        var amount = document.createElement(strong ? 'strong' : 'b'); amount.textContent = value;
+        row.appendChild(name); row.appendChild(amount); parent.appendChild(row);
+    }
+
+    function appendRequirement(parent, label, passed) {
+        var item = document.createElement('span'); item.className = passed ? 'ok' : 'blocked';
+        item.textContent = (passed ? '✓ ' : '× ') + label; parent.appendChild(item);
+    }
+
+    function appendPreviewSummary(parent, preview, entry, stale) {
+        var skillPoints = Number(_snapshot && _snapshot.player && _snapshot.player.skillPoints || 0);
+        var cost = Number(preview.cost || 0), remaining = skillPoints - cost;
+        parent.classList.add(stale ? 'stale' : (preview.canCommit ? 'ok' : 'blocked'));
+        appendCostRow(parent, stale ? '上次消耗 · Lv.' + safeNumber(preview.desiredLevel) : '本次消耗', safeNumber(cost) + ' 技能点', true);
+        appendCostRow(parent, stale ? '上次研习后余额' : '研习后余额', remaining >= 0
+            ? safeNumber(skillPoints) + ' → ' + safeNumber(remaining) : '还差 ' + safeNumber(-remaining) + ' 技能点');
+        if (stale) return;
+        var requirements = document.createElement('div'); requirements.className = 'skills-trainer-requirements';
+        appendRequirement(requirements, '等级要求 Lv.' + safeNumber(entry.unlockLevel), Number(_snapshot.player.level) >= Number(entry.unlockLevel));
+        appendRequirement(requirements, '教师可教', true);
+        appendRequirement(requirements, '技能点充足', skillPoints >= cost);
+        parent.appendChild(requirements);
+        if (!preview.canCommit) {
+            var blocked = document.createElement('div'); blocked.className = 'skills-preview-message';
+            blocked.textContent = errorMessage(preview.blockingError); parent.appendChild(blocked);
+        }
+    }
+
+    function appendPreviewUpdateStatus(parent, message, failed) {
+        var status = document.createElement('div'); status.className = 'skills-preview-update-status' + (failed ? ' error' : '');
+        status.textContent = message; parent.appendChild(status);
+    }
+
+    function appendPreviewRetry(parent, entry) {
+        var retry = button('重新计算', 'skills-action-btn skills-preview-retry', function() { scheduleLearnPreview(entry, true); });
+        retry.disabled = writesDisabled(entry); retry.setAttribute('data-focus-key', 'trainer:preview-retry'); parent.appendChild(retry);
     }
 
     function confirmLearn(entry) {
         if (!_preview || !_preview.learnToken) return;
-        var token = _preview.learnToken;
         _shell.openModal({kind:'skills-learn-confirm', kicker:'教师研习', title:'确认学习 ' + entry.skillKey,
             message:'Lv.' + safeNumber(_preview.currentLevel) + ' → Lv.' + safeNumber(_preview.desiredLevel),
             detail:'将消耗 ' + safeNumber(_preview.cost) + ' 技能点。', actions:[
                 {id:'cancel', label:'取消'},
                 {id:'confirm', label:'确认研习', primary:true, onSelect:function() {
-                    _preview = null; writeCommand('learnCommit', {expectedLearnToken:token});
+                    if (!hasFreshPreviewToken(entry)) {
+                        scheduleLearnPreview(entry, true, function(preview) {
+                            var current = selectedEntry();
+                            if (preview && current && hasFreshPreviewToken(current)) confirmLearn(current);
+                        });
+                        return;
+                    }
+                    var token = _preview.learnToken;
+                    clearPreviewState(); writeCommand('learnCommit', {expectedLearnToken:token});
                 }}
             ]});
     }
@@ -599,11 +922,13 @@ var SkillsPanel = (function() {
             var card = document.createElement('div'); card.className = 'skills-slot';
             card.setAttribute('data-slot', String(slot.slot)); card.setAttribute('data-state-health', slot.stateHealth || 'invalid');
             if (!slot.skillKey) card.classList.add('empty');
+            if (!readOnly && slot.skillKey && slot.stateHealth === 'ok' && !slot.writeBlocked) card.classList.add('movable');
             if (slot.skillKey && slot.skillKey === _selectedKey) card.classList.add('selected');
             if (slot.writeBlocked || slot.stateHealth === 'duplicate') card.classList.add('corrupt');
             var main = button('', 'skills-slot-main', function() { onSlotClick(slot, readOnly); });
             main.setAttribute('data-focus-key', 'slot:' + slot.slot);
-            main.title = '槽位 ' + slot.slot + ' · ' + (slot.keyLabel || '无按键') + ' · ' + (slot.skillKey || '空槽');
+            main.title = '槽位 ' + slot.slot + ' · ' + (slot.keyLabel || '无按键') + ' · ' + (slot.skillKey || '空槽')
+                + (!readOnly && slot.skillKey && slot.stateHealth === 'ok' ? ' · 可拖动调整，Alt+←/→ 与相邻槽交换' : '');
             var number = document.createElement('span'); number.className = 'skills-slot-number'; number.textContent = String(slot.slot);
             var key = document.createElement('span'); key.className = 'skills-slot-key'; key.textContent = slot.keyLabel || '';
             var icon = iconNode(slot.iconKey, 'skills-slot-icon');
@@ -612,8 +937,10 @@ var SkillsPanel = (function() {
             var name = document.createElement('span'); name.className = 'skills-slot-name';
             name.textContent = slot.skillKey || '空槽';
             main.appendChild(number); main.appendChild(key); main.appendChild(icon); main.appendChild(level); main.appendChild(name);
-            main.setAttribute('aria-label', '槽位 ' + slot.slot + '，按键 ' + (slot.keyLabel || '未设置') + '，' + (slot.skillKey || '空槽'));
+            main.setAttribute('aria-label', '槽位 ' + slot.slot + '，按键 ' + (slot.keyLabel || '未设置') + '，' + (slot.skillKey || '空槽')
+                + (!readOnly && slot.skillKey && slot.stateHealth === 'ok' ? '；可拖动调整，Alt 加左右方向键与相邻槽交换' : ''));
             main.disabled = !readOnly && (_coordinator.isWriteBlocked() || slot.writeBlocked);
+            if (!readOnly) main.addEventListener('keydown', function(event) { onSlotKeyDown(event, slot); });
             card.appendChild(main);
             if (!readOnly && slot.skillKey) {
                 var clear = button('×', 'skills-slot-clear', function(event) { event.stopPropagation(); proposeUnequip(slot); });
@@ -628,6 +955,7 @@ var SkillsPanel = (function() {
     }
 
     function onSlotClick(slot, readOnly) {
+        if (_drag && _drag.consumeClick()) return;
         if (readOnly) {
             if (slot.skillKey) selectSkill(slot.skillKey);
             return;
@@ -635,6 +963,26 @@ var SkillsPanel = (function() {
         var entry = selectedEntry();
         if (entry && entry.equippable && !entry.writeBlocked) proposeEquip(entry, slot);
         else if (slot.skillKey) selectSkill(slot.skillKey);
+    }
+
+    function onSlotKeyDown(event, slot) {
+        if (!event.altKey || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+        event.preventDefault(); event.stopPropagation();
+        var target = loadoutSlot(Number(slot.slot) + (event.key === 'ArrowLeft' ? -1 : 1));
+        if (!target) return;
+        // 焦点跟随被移动的技能，连续按 Alt+方向键可继续横向调整。
+        moveQuickSlot(slot, target, 'slot:' + target.slot);
+    }
+
+    function moveQuickSlot(source, target, focusKey) {
+        if (!source || !target || Number(source.slot) === Number(target.slot)
+                || !source.skillKey || source.stateHealth !== 'ok' || source.writeBlocked
+                || target.writeBlocked || (target.skillKey && target.stateHealth !== 'ok')
+                || _coordinator.isWriteBlocked()) return;
+        if (focusKey) _pendingFocusKey = focusKey;
+        var callId = writeCommand('moveSlot', {sourceSlot:Number(source.slot), targetSlot:Number(target.slot),
+            expectedRevision:Number(_snapshot.revision)});
+        if (!callId && focusKey) _pendingFocusKey = '';
     }
 
     function proposeEquip(entry, slot) {
@@ -679,9 +1027,49 @@ var SkillsPanel = (function() {
     }
 
     function setLoadoutConfirmationMode(mode) {
+        var previous = _loadoutConfirmationMode;
         _loadoutConfirmationMode = mode === 'fast' ? 'fast' : 'safe';
         try { window.localStorage.setItem(LOADOUT_CONFIRMATION_KEY, _loadoutConfirmationMode); } catch (error) {}
+        refreshLoadoutConfirmationToggle();
+        if (previous !== _loadoutConfirmationMode) {
+            toast(_loadoutConfirmationMode === 'fast'
+                ? '快捷栏已切换为快速操作：替换和卸载将直接执行。'
+                : '快捷栏已切换为安全操作：替换和卸载前会确认。');
+        }
         return _loadoutConfirmationMode;
+    }
+
+    function createLoadoutConfirmationToggle() {
+        var group = document.createElement('div');
+        group.className = 'item-grid-mode-switch skills-confirmation-toggle';
+        group.setAttribute('role', 'group');
+        group.setAttribute('aria-label', '快捷栏操作确认');
+        group.title = '安全模式会确认替换和卸载；快速模式直接执行。技能学习始终需要确认';
+        var label = document.createElement('span'); label.className = 'item-grid-mode-label'; label.textContent = '快捷栏';
+        group.appendChild(label);
+        [{mode:'safe', label:'安全', title:'替换和卸载前确认；空槽仍直接装备'},
+         {mode:'fast', label:'快速', title:'替换和卸载直接执行；技能学习仍需确认'}].forEach(function(option) {
+            var choice = button(option.label, 'workbench-mode-btn item-grid-mode-option skills-confirmation-option', function() {
+                setLoadoutConfirmationMode(option.mode);
+            });
+            choice.setAttribute('data-confirmation-mode', option.mode);
+            choice.setAttribute('aria-label', '快捷栏确认：' + option.label + '模式');
+            choice.title = option.title;
+            group.appendChild(choice);
+        });
+        refreshLoadoutConfirmationToggle(group);
+        return group;
+    }
+
+    function refreshLoadoutConfirmationToggle(group) {
+        group = group || _confirmationToggle;
+        if (!group) return;
+        group.setAttribute('data-current-confirmation-mode', _loadoutConfirmationMode);
+        var choices = group.querySelectorAll('.skills-confirmation-option[data-confirmation-mode]');
+        for (var i = 0; i < choices.length; i++) {
+            var selected = choices[i].getAttribute('data-confirmation-mode') === _loadoutConfirmationMode;
+            choices[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
+        }
     }
 
     function manageHelpDetail() {
@@ -689,23 +1077,11 @@ var SkillsPanel = (function() {
         var behavior = _loadoutConfirmationMode === 'fast'
             ? '装备、替换和卸载直接执行。技能学习仍须确认。'
             : '空槽直接装备；替换和卸载需要确认。';
-        return '管理技能\n• 装备到已有槽位会替换原技能；是否确认由下方模式决定。\n• 纯被动技能可以启用或停用。\n• 聚焦技能后按 Alt + ↑ / ↓ 也可交换相邻顺序。'
+        return '管理技能\n• 装备到已有槽位会替换原技能；是否确认由顶栏“快捷栏”的安全/快速选项决定。\n• 快捷槽可互相拖动：拖到空槽会移动，拖到已有技能会直接交换。\n• 聚焦快捷槽后按 Alt + ← / → 可与相邻槽交换。\n• 纯被动技能可以启用或停用。\n• 聚焦技能后按 Alt + ↑ / ↓ 也可交换相邻顺序。'
             + '\n\n查找与布局\n• 形态、配置和流派都可直接筛选，也可以组合使用。\n• 按 / 可以展开名称搜索。\n• 完整/紧凑只改变技能库；下方 12 格快捷技能保持固定。'
-            + '\n\n快捷栏操作确认\n• 当前：' + mode + '模式。' + behavior
+            + '\n\n快捷栏操作确认\n• 顶栏始终显示当前模式，可随时在“安全 / 快速”之间切换。\n• 当前：' + mode + '模式。' + behavior
+            + '\n• 快捷槽之间的移动或交换无需确认；技能学习始终需要确认。'
             + (_initData && _initData.canReturnTrainer === true ? '\n• “返回研习”只在本次教师入口中可用。' : '');
-    }
-
-    function refreshConfirmationHelp(modal) {
-        if (!modal || !modal.dialog) return;
-        var detail = modal.dialog.querySelector('.workbench-modal-detail');
-        var toggle = modal.dialog.querySelector('[data-action="confirmation-mode"]');
-        if (detail) detail.textContent = manageHelpDetail();
-        if (toggle) {
-            var fast = _loadoutConfirmationMode === 'fast';
-            toggle.textContent = fast ? '改为安全模式' : '启用快速模式';
-            toggle.setAttribute('aria-pressed', fast ? 'true' : 'false');
-            toggle.setAttribute('aria-label', '快捷栏操作确认：' + (fast ? '快速模式' : '安全模式'));
-        }
     }
 
     function writeCommand(cmd, payload) {
@@ -720,6 +1096,7 @@ var SkillsPanel = (function() {
         });
         if (!callId) toast('当前暂时不能修改技能，请稍后重试。');
         renderAll();
+        return callId;
     }
 
     function requestSnapshot() {
@@ -734,11 +1111,11 @@ var SkillsPanel = (function() {
     function onAuthoritativeSnapshot(snapshot) {
         var validation = validateSnapshot(snapshot, _view);
         if (!validation.ok) {
-            _snapshot = null; _schemaError = validation.error; _preview = null;
+            cancelPreviewWork(); _snapshot = null; _schemaError = validation.error; clearPreviewState();
             _lastDiagnostic = {source:'snapshot_validation', error:'invalid_snapshot', validationError:String(validation.error || '')};
             renderAll(); return;
         }
-        _snapshot = snapshot; _schemaError = ''; _preview = null; _lastDiagnostic = null;
+        cancelPreviewWork(); _snapshot = snapshot; _schemaError = ''; _trainerExpired = false; clearPreviewState(); _lastDiagnostic = null;
         var entries = sourceEntries();
         if (!entries.some(function(entry) { return entry.skillKey === _selectedKey; })) {
             _selectedKey = entries.length ? entries[0].skillKey : '';
@@ -748,6 +1125,10 @@ var SkillsPanel = (function() {
             }
         }
         renderAll();
+        if (_view === 'trainer') {
+            var selected = selectedEntry();
+            if (selected) scheduleLearnPreview(selected, true);
+        }
     }
 
     function validateSnapshot(snapshot, view) {
@@ -787,7 +1168,7 @@ var SkillsPanel = (function() {
         else refreshStateControls();
     }
     function onCoordinatorError(response, source) {
-        if (handleTrainerExpired(response)) return;
+        if (handleTrainerExpired(response, source)) return;
         _lastDiagnostic = {
             source:String(source || 'unknown'), error:String(response && response.error || 'unknown'),
             callId:String(response && response.callId || ''), validationError:String(response && response.validationError || '')
@@ -801,22 +1182,23 @@ var SkillsPanel = (function() {
         refreshStateControls();
     }
 
-    function handleTrainerExpired(response) {
+    function handleTrainerExpired(response, source) {
         if (_view !== 'trainer' || !response || response.error !== 'trainer_session_expired') return false;
-        _snapshot = null;
-        _preview = null;
-        _schemaError = '当前教师已无法继续研习，请重新与教师对话。';
-        toast(_schemaError);
-        // capability 已失效的 trainer 页面没有可恢复刷新路径。立即退出并让 Host
-        // 走 instance-bound close/cleanup；玩家重新与教师交互后取得全新 session。
-        requestClose();
+        cancelPreviewWork(); clearPreviewState();
+        _trainerExpired = true;
+        _lastDiagnostic = {source:String(source || 'unknown'), error:'trainer_session_expired',
+            callId:String(response.callId || ''), validationError:''};
+        toast('教师连接已失效，请返回游戏后重新与教师对话。');
+        renderDetail(); refreshStateControls();
         return true;
     }
 
     function refreshStateControls() {
         if (!_shell) return;
         var state = _coordinator.getState();
-        if (_schemaError) _shell.setStatus('技能数据异常', 'error');
+        if (_switchPending) _shell.setStatus(_view === 'trainer' ? '正在切换到技能管理' : '正在返回技能研习', 'loading');
+        else if (_trainerExpired) _shell.setStatus('教师连接已失效', 'error');
+        else if (_schemaError) _shell.setStatus('技能数据异常', 'error');
         else if (state === 'write_pending') _shell.setStatus('正在保存', 'loading');
         else if (state === 'needs_reconcile') _shell.setStatus('结果待确认', 'error');
         else if (state === 'idle' && _snapshot) _shell.setStatus('', 'idle');
@@ -831,7 +1213,7 @@ var SkillsPanel = (function() {
             _diagnosticButton.hidden = !(_schemaError || state === 'needs_reconcile');
             _diagnosticButton.disabled = false;
         }
-        if (_switchButton) _switchButton.disabled = state !== 'idle';
+        if (_switchButton) _switchButton.disabled = _trainerExpired || _switchPending || state !== 'idle';
         skillFilterDefinitions().forEach(function(definition) {
             if (_filterNavigators[definition.id]) _filterNavigators[definition.id].setDisabled(state === 'closed');
         });
@@ -851,6 +1233,13 @@ var SkillsPanel = (function() {
                     ? {subjectKind:'skill', sourceRef:{skillKey:entry.skillKey, equippable:entry.equippable === true}} : null;
             }
         };
+        _dragSlotSourceView = {
+            instanceKey:'skills:quick-slot-source',
+            exportOffer:function(slot) {
+                return slot && slot.skillKey && slot.stateHealth === 'ok' && !slot.writeBlocked
+                    ? {subjectKind:'quick_slot', sourceRef:{slot:Number(slot.slot), skillKey:String(slot.skillKey)}} : null;
+            }
+        };
         _dragTargetView = {
             instanceKey:'skills:loadout-target',
             probeAccept:function(offer, hit) {
@@ -859,6 +1248,20 @@ var SkillsPanel = (function() {
                 if (!offer.sourceRef || offer.sourceRef.equippable !== true) return {accepted:false, reason:'skill_not_equippable'};
                 if (!slot || slot.writeBlocked || _coordinator.isWriteBlocked()) return {accepted:false, reason:'slot_locked'};
                 return {accepted:true, operationId:'equip_skill', targetRef:{slot:Number(slot.slot)}};
+            }
+        };
+        _dragSlotTargetView = {
+            instanceKey:'skills:quick-slot-target',
+            probeAccept:function(offer, hit) {
+                var target = hit && hit.slot;
+                var source = offer && offer.sourceRef ? loadoutSlot(Number(offer.sourceRef.slot)) : null;
+                if (!offer || offer.subjectKind !== 'quick_slot' || !source || !source.skillKey)
+                    return {accepted:false, reason:'invalid_skill'};
+                if (!target || source.slot === target.slot || source.writeBlocked || target.writeBlocked
+                        || source.stateHealth !== 'ok' || (target.skillKey && target.stateHealth !== 'ok')
+                        || _coordinator.isWriteBlocked()) return {accepted:false, reason:'slot_locked'};
+                return {accepted:true, operationId:'move_quick_slot',
+                    targetRef:{sourceSlot:Number(source.slot), targetSlot:Number(target.slot)}};
             }
         };
         _dragOrderTargetView = {
@@ -879,6 +1282,10 @@ var SkillsPanel = (function() {
                     reorderTo(context.sourceItem, entryByKey(intent.targetRef && intent.targetRef.skillKey));
                     return;
                 }
+                if (intent && intent.operationId === 'move_quick_slot') {
+                    moveQuickSlot(loadoutSlot(Number(intent.targetRef.sourceSlot)), loadoutSlot(Number(intent.targetRef.targetSlot)));
+                    return;
+                }
                 var slot = loadoutSlot(intent && intent.targetRef && Number(intent.targetRef.slot));
                 if (slot) proposeEquip(context.sourceItem, slot);
             },
@@ -887,17 +1294,34 @@ var SkillsPanel = (function() {
             }
         });
         _drag = new Workbench.PointerDragController({
-            sourceElement:_list, broker:_dragBroker, threshold:6, timeoutMs:_config.dragTimeoutMs || 1400,
+            sourceElement:_scaleEl, broker:_dragBroker, allowInteractiveSource:true,
+            threshold:6, timeoutMs:_config.dragTimeoutMs || 1400,
             getSource:function(target) {
                 if (_view !== 'manage' || !_snapshot || _coordinator.isWriteBlocked()) return null;
                 var row = target && target.closest ? target.closest('.skills-library-row[data-skill-key]') : null;
-                if (!row || !_list.contains(row)) return null;
-                var entry = entryByKey(row.getAttribute('data-skill-key'));
-                if (!entry || writesDisabled(entry)) return null;
-                return {view:_dragSourceView, item:entry, node:row};
+                if (row && _list.contains(row)) {
+                    var entry = entryByKey(row.getAttribute('data-skill-key'));
+                    if (!entry || writesDisabled(entry)) return null;
+                    return {view:_dragSourceView, item:entry, node:row};
+                }
+                if (target && target.closest && target.closest('.skills-slot-clear')) return null;
+                var node = target && target.closest ? target.closest('.skills-slot[data-slot]') : null;
+                if (!node || !_scaleEl.contains(node)) return null;
+                var slot = loadoutSlot(Number(node.getAttribute('data-slot')));
+                if (!slot || !slot.skillKey || slot.stateHealth !== 'ok' || slot.writeBlocked) return null;
+                return {view:_dragSlotSourceView, item:slot, node:node};
             },
             resolveTarget:function(clientX, clientY) {
                 var target = document.elementFromPoint(clientX, clientY);
+                var activeSlotNode = _scaleEl.querySelector('.skills-slot.dragging[data-slot]');
+                if (activeSlotNode) {
+                    var slotNode = target && target.closest ? target.closest('.skills-slot[data-slot]') : null;
+                    if (!slotNode || !_scaleEl.contains(slotNode) || slotNode === activeSlotNode) return null;
+                    var quickTarget = loadoutSlot(Number(slotNode.getAttribute('data-slot')));
+                    return {view:_dragSlotTargetView, hit:{slot:quickTarget}, node:slotNode,
+                        accepted:!!quickTarget && !quickTarget.writeBlocked
+                            && (!quickTarget.skillKey || quickTarget.stateHealth === 'ok') && !_coordinator.isWriteBlocked()};
+                }
                 var node = target && target.closest ? target.closest('.skills-library-row[data-skill-key]') : null;
                 if (node && _list.contains(node)) {
                     if (node.classList.contains('dragging')) return null;
@@ -920,10 +1344,17 @@ var SkillsPanel = (function() {
             renderGhost:function(source) {
                 var ghost = document.createElement('div'); ghost.className = 'workbench-drag-ghost skills-drag-ghost';
                 ghost.appendChild(iconNode(source.item.iconKey, 'skills-drag-icon'));
-                var label = document.createElement('span'); label.textContent = source.item.skillKey; ghost.appendChild(label);
+                var label = document.createElement('span');
+                label.textContent = source.item.skillKey + (source.view === _dragSlotSourceView ? ' · 槽位 ' + source.item.slot : '');
+                ghost.appendChild(label);
                 return ghost;
             },
-            onDragStart:function(source) { if (source && source.node) source.node.classList.add('dragging'); },
+            onDragStart:function(source) {
+                // 已显示的注释不会仅因 isSuppressed 自动消失；拖拽开始时主动收起，
+                // 避免大尺寸技能说明遮住快捷槽落点。
+                if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
+                if (source && source.node) source.node.classList.add('dragging');
+            },
             onDragEnd:function(source) { if (source && source.node) source.node.classList.remove('dragging'); }
         });
     }
@@ -948,16 +1379,15 @@ var SkillsPanel = (function() {
     }
 
     function requestManageView() {
-        if (_view !== 'trainer' || !_initData) return;
+        if (_view !== 'trainer' || !_initData || _trainerExpired) return;
         var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData.panelInstanceId || '');
         if (!panelInstanceId || _coordinator.getState() !== 'idle') return;
-        var accepted = Bridge.send({
+        var sent = Bridge.send({
             type:'panel', panel:'skills', cmd:'switch_manage', panelInstanceId:panelInstanceId,
             payload:{v:1, focusSkillKey:String(_selectedKey || '')}
         });
-        if (!accepted) { toast('暂时无法切换到技能管理。'); return; }
-        if (_switchButton) { _switchButton.disabled = true; _switchButton.textContent = '切换中…'; }
-        if (_shell) _shell.setStatus('正在切换到技能管理', 'loading');
+        if (sent === false) { toast('启动器连接不可用，暂时无法切换页面。'); return; }
+        beginSwitchWait('切换中…', '切换到技能管理未完成，请重试。');
     }
 
     function openHelp() {
@@ -965,25 +1395,18 @@ var SkillsPanel = (function() {
         var trainer = _view === 'trainer';
         var title = trainer ? '技能研习帮助' : '技能管理帮助';
         var message = trainer
-            ? '研习技能\n• 从左侧选择想学习或升级的技能。\n• 调整目标等级后，点击“计算消耗”。\n• 确认技能点足够后再完成研习。'
-            : '装备与排序\n• 点击技能，再点击下方快捷槽。\n• 拖到快捷槽可装备，拖到另一个技能格可交换顺序。\n• 悬停或聚焦快捷槽后，点击右上角 × 可以卸载技能。';
+            ? '研习技能\n• 从左侧选择想学习或升级的技能。\n• 点击等级刻度、拖动滑条或直接输入目标等级。\n• 查看研习后余额，再确认完成研习。'
+            : '装备与排序\n• 点击技能，再点击下方快捷槽。\n• 技能可拖到快捷槽；快捷槽之间可直接拖动移动或交换。\n• 拖到另一个技能格可交换技能库顺序。\n• 悬停或聚焦快捷槽后，点击右上角 × 可以卸载技能。';
         var detail = trainer
-            ? '等级规则\n• 未学技能第一次固定学习 1 级。\n• 已学技能可以选择更高的目标等级。\n\n页面切换\n• “管理技能”可进入快捷技能管理。\n• 返回研习后需要重新计算消耗。'
+            ? '等级规则\n• 未学技能第一次固定学习 1 级。\n• 已学技能可点任意可见刻度；− / + 用于逐级微调。\n• 滑动时旧消耗会保留，松开后自动计算消耗且只计算最终等级。\n\n页面切换\n• “管理技能”可进入快捷技能管理。\n• 返回研习后会自动恢复当前目标并重新计算。'
             : manageHelpDetail();
-        var actions = trainer ? [{id:'close', label:'知道了', primary:true}] : [
-            {id:'confirmation-mode', label:'', close:false, onSelect:function() {
-                setLoadoutConfirmationMode(_loadoutConfirmationMode === 'fast' ? 'safe' : 'fast');
-                refreshConfirmationHelp(modal);
-            }},
-            {id:'close', label:'知道了', primary:true}
-        ];
+        var actions = [{id:'close', label:'知道了', primary:true}];
         var modal = _shell.openModal({
             kind:'skills-help', title:title, message:message, detail:detail,
             actions:actions
         });
         if (modal && modal.dialog) {
             modal.dialog.setAttribute('aria-label', title);
-            if (!trainer) refreshConfirmationHelp(modal);
         }
     }
 
@@ -991,13 +1414,39 @@ var SkillsPanel = (function() {
         if (_view !== 'manage' || !_initData || _initData.canReturnTrainer !== true) return;
         var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData.panelInstanceId || '');
         if (!panelInstanceId || _coordinator.getState() !== 'idle') return;
-        var accepted = Bridge.send({
+        var sent = Bridge.send({
             type:'panel', panel:'skills', cmd:'switch_trainer', panelInstanceId:panelInstanceId,
             payload:{v:1, focusSkillKey:String(_selectedKey || '')}
         });
-        if (!accepted) { toast('当前教师已无法继续研习，请重新与教师对话。'); return; }
-        if (_switchButton) { _switchButton.disabled = true; _switchButton.textContent = '返回中…'; }
-        if (_shell) _shell.setStatus('正在返回技能研习', 'loading');
+        if (sent === false) { toast('启动器连接不可用，暂时无法切换页面。'); return; }
+        beginSwitchWait('返回中…', '返回研习未完成；若教师入口已失效，请重新与教师对话。');
+    }
+
+    function beginSwitchWait(buttonText, timeoutMessage) {
+        cancelSwitchWait();
+        _switchPending = true;
+        if (_switchButton) { _switchButton.disabled = true; _switchButton.textContent = buttonText; }
+        refreshStateControls();
+        _switchWaitTimer = setTimeout(function() {
+            _switchWaitTimer = null;
+            _switchPending = false;
+            if (_switchButton) _switchButton.textContent = _view === 'trainer' ? '管理技能' : '返回研习';
+            refreshStateControls();
+            toast(timeoutMessage);
+        }, switchWaitTimeoutMs());
+    }
+
+    function cancelSwitchWait() {
+        if (_switchWaitTimer !== null) {
+            clearTimeout(_switchWaitTimer);
+            _switchWaitTimer = null;
+        }
+        _switchPending = false;
+    }
+
+    function switchWaitTimeoutMs() {
+        var configured = Number(_config.switchTimeoutMs);
+        return isFinite(configured) && configured >= 50 ? configured : 3000;
     }
 
     function requestClose() {
@@ -1014,26 +1463,31 @@ var SkillsPanel = (function() {
     }
 
     function cleanupView(detachScale) {
+        cancelSwitchWait();
+        cancelPreviewWork();
         if (_drag) { _drag.destroy(); _drag = null; }
         if (_dragBroker) { _dragBroker.clearSelection(); _dragBroker = null; }
-        _dragSourceView = null; _dragTargetView = null; _dragOrderTargetView = null;
+        _dragSourceView = null; _dragSlotSourceView = null;
+        _dragTargetView = null; _dragSlotTargetView = null; _dragOrderTargetView = null;
         skillFilterDefinitions().forEach(function(definition) {
             if (_filterNavigators[definition.id]) _filterNavigators[definition.id].destroy();
         });
         _filterNavigators = {}; _filterBoard = null; _filterResetButton = null;
         if (_density) { _density.destroy(); _density = null; }
-        _densityToggle = null;
+        _densityToggle = null; _confirmationToggle = null;
         if (_shell) { _shell.destroy(); _shell = null; }
         _leftRoot = null; _rightRoot = null; _list = null; _search = null;
         _searchToggle = null; _searchControls = null; _searchClose = null; _searchExpanded = false;
         _refreshButton = null; _diagnosticButton = null; _switchButton = null; _helpButton = null; _closeButton = null;
+        _pendingFocusKey = '';
         if (detachScale !== false && _scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         _snapshot = null; _preview = null; _schemaError = ''; _lastDiagnostic = null;
+        _previewError = ''; _previewReceivedAt = 0; _trainerExpired = false;
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
     }
 
     function writesDisabled(entry) {
-        return !_snapshot || _coordinator.isWriteBlocked() || !!(entry && (entry.writeBlocked || entry.stateHealth !== 'ok'));
+        return _trainerExpired || !_snapshot || _coordinator.isWriteBlocked() || !!(entry && (entry.writeBlocked || entry.stateHealth !== 'ok'));
     }
 
     function iconNode(iconKey, className) {
@@ -1102,6 +1556,7 @@ var SkillsPanel = (function() {
             pendingCount:state.mux ? Number(state.mux.pendingCount || 0) : 0,
             selectedSkill:String(entry && entry.skillKey || _selectedKey || ''),
             entryHealth:entry ? String(entry.stateHealth || '') : '',
+            trainerExpired:_trainerExpired,
             schemaError:String(_schemaError || ''),
             lastError:_lastDiagnostic,
             snapshotDiagnostics:redactDiagnosticValue(_snapshot && Array.isArray(_snapshot.diagnostics) ? _snapshot.diagnostics : [])
@@ -1193,13 +1648,14 @@ var SkillsPanel = (function() {
     }
     function successMessage(cmd) {
         return {learnCommit:'技能研习完成。',equip:'快捷栏已更新。',unequip:'技能已卸载。',
-            setPassive:'被动状态已更新。',reorder:'技能顺序已更新。'}[cmd] || '技能状态已更新。';
+            moveSlot:'快捷槽顺序已更新。',setPassive:'被动状态已更新。',reorder:'技能顺序已更新。'}[cmd] || '技能状态已更新。';
     }
     function errorMessage(error) {
         var messages = {invalid_payload:'无法完成技能操作，请重试。',unsupported_cmd:'暂不支持该操作。',
             skill_not_found:'技能已不存在。',not_learned:'该技能尚未学习。',stale_state:'技能状态已变化，请刷新。',
             trainer_session_expired:'当前教师已无法继续研习，请重新与教师对话。',level_locked:'角色等级不足。',insufficient_sp:'技能点不足。',
             max_level:'技能已满级。',initial_level_must_be_one:'未学技能只能先学习 1 级。',skill_table_full:'技能表已满。',
+            slot_empty:'源快捷槽为空。',
             already_equipped:'普通模式下该技能已经装备。',not_equippable:'该技能不可装备。',corrupt_skill_state:'技能数据异常，暂时无法修改。',
             service_not_ready:'技能功能尚未准备好，请稍后重试。',reconcile_required:'上次操作结果尚未确认。',busy:'技能功能正忙，请稍后重试。',
             malformed_response:'技能数据异常，请重试。',timeout:'技能请求超时。',client_timeout:'技能请求超时。',disconnect:'连接已断开。'};
@@ -1212,8 +1668,10 @@ var SkillsPanel = (function() {
     return {
         debugState: function() {
             return {view:_view, selectedKey:_selectedKey, desiredLevel:_desiredLevel, hasPreview:!!_preview,
+                previewLoading:_previewLoading, previewError:_previewError, trainerExpired:_trainerExpired,
                 schemaError:_schemaError, snapshotRevision:_snapshot && _snapshot.revision,
-                densityMode:_density && _density.mode, loadoutConfirmationMode:_loadoutConfirmationMode, filterPaths:{
+                densityMode:_density && _density.mode, loadoutConfirmationMode:_loadoutConfirmationMode,
+                switchPending:_switchPending, filterPaths:{
                     form:filterPathsForView().form.slice(), status:filterPathsForView().status.slice(),
                     school:filterPathsForView().school.slice()
                 },

@@ -159,6 +159,40 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return finishMutation([current], before);
     }
 
+    /**
+     * 在两个物理快捷槽之间原子移动或交换。
+     *
+     * 目标为空时移动并清空源槽；目标已占用时交换。不能用两次
+     * equip/unequip 拼接，否则普通模式的 already_equipped 门和中途断线
+     * 都可能留下半完成状态。
+     */
+    public static function moveSlot(sourceSlot:Number, targetSlot:Number, expectedRevision:Number):Object {
+        var gate:Object = writeGate(expectedRevision);
+        if (!gate.success) return gate;
+        if (!validSlot(sourceSlot) || !validSlot(targetSlot)) return fail("invalid_payload");
+        if (gate.scan.tailData) return fail("corrupt_skill_state");
+        if (sourceSlot == targetSlot) return writeNoop("manage", null);
+
+        var sourceKey:String = normalizeSlotName(root()["快捷技能栏" + sourceSlot]);
+        if (sourceKey == null) return fail("slot_empty");
+        var source:Object = inspectSlotOccupant(gate.scan, sourceKey);
+        if (!source.learned || source.metadata == null || source.stateHealth != "ok"
+            || source.metadata.Equippable !== true || isPurePassive(source.metadata)) return fail("corrupt_skill_state");
+
+        var targetKey:String = normalizeSlotName(root()["快捷技能栏" + targetSlot]);
+        if (targetKey == sourceKey) return writeNoop("manage", null);
+        if (targetKey != null) {
+            var target:Object = inspectSlotOccupant(gate.scan, targetKey);
+            if (!target.learned || target.metadata == null || target.stateHealth != "ok"
+                || target.metadata.Equippable !== true || isPurePassive(target.metadata)) return fail("corrupt_skill_state");
+        }
+
+        var before:Object = captureTransactionState();
+        root()["快捷技能栏" + sourceSlot] = targetKey == null ? "" : targetKey;
+        root()["快捷技能栏" + targetSlot] = sourceKey;
+        return finishMutation([sourceKey, targetKey], before);
+    }
+
     public static function setPassive(skillKey:String, enabled:Boolean, expectedRevision:Number):Object {
         var gate:Object = writeGate(expectedRevision);
         if (!gate.success) return gate;
@@ -731,6 +765,58 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         runRenderer(r, "技能系统投影Hero", "hero");
         runRenderer(r, "技能系统投影快捷栏", "quick_slot");
         runRenderer(r, "技能系统投影旧列表", "legacy_list");
+    }
+
+    /**
+     * 把领域快捷栏状态投影到观察期旧 HUD。
+     *
+     * 旧槽位的图标壳只在进入“默认图标”帧时 attachMovie。只更新
+     * 已装备名/数量会留下上一枚图标，所以替换时必须先回空帧再进图标帧。
+     * 这里只重建显示对象，不修改 root 槽位、技能行或手动冷却。
+     */
+    public static function projectQuickSlotRenderer(playerInterface:Object):Object {
+        var quickInterface:Object = playerInterface == null ? null : playerInterface.快捷技能界面;
+        if (quickInterface == null) return {success:true, v:1, rendered:false, renderedSlots:0};
+        var sync:Object = synchronize();
+        if (!sync.success) return sync;
+
+        var renderedSlots:Number = 0;
+        for (var slot:Number = 1; slot <= QUICK_SLOT_COUNT; slot++) {
+            var slotClip:Object = quickInterface["快捷技能栏" + slot];
+            if (slotClip == null) continue;
+            if (typeof slotClip.gotoAndStop != "function") {
+                return {success:false, v:1, error:"invalid_quick_slot_renderer", slot:slot};
+            }
+
+            var descriptor:Object = descriptorFromScan(slot, sync.scan);
+            slotClip.装备槽类别 = "快捷技能栏" + slot;
+            slotClip.对应装备 = "快捷技能栏" + slot;
+            if (!descriptor.equipped) {
+                slotClip.是否装备 = 0;
+                slotClip.已装备名 = "";
+                slotClip.对应数组号 = -1;
+                slotClip.数量 = 0;
+                slotClip.冷却时间 = 0;
+                slotClip.消耗mp = 0;
+                slotClip.图标 = "";
+                slotClip.gotoAndStop("空");
+                renderedSlots++;
+                continue;
+            }
+
+            var occupant:Object = inspectSlotOccupant(sync.scan, descriptor.skillKey);
+            slotClip.是否装备 = 1;
+            slotClip.已装备名 = descriptor.skillKey;
+            slotClip.对应数组号 = occupant.index;
+            slotClip.数量 = descriptor.level;
+            slotClip.冷却时间 = descriptor.cooldownMs;
+            slotClip.消耗mp = descriptor.mp;
+            slotClip.图标 = "图标-" + descriptor.skillKey;
+            slotClip.gotoAndStop("空");
+            slotClip.gotoAndStop("默认图标");
+            renderedSlots++;
+        }
+        return {success:true, v:1, rendered:renderedSlots > 0, renderedSlots:renderedSlots};
     }
 
     private static function runRenderer(r:Object, functionName:String, label:String):Void {

@@ -297,7 +297,8 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 - `ManualCooldownService` 成为 17 路手动冷却唯一 authority，旧进度条支持随时绑定/重绑但只接受投影；`WeaponSkillInputService`、`QuickSkillInputService`、`DrugInputService` 均不因 renderer 缺失而 fail-closed。
 - `DrugInputService` 接管 4 槽 live 键位、使用、冷却、库存扣减和耗尽清栏；`SkillLoadoutService` 接管描述符、装备/卸下/排序/被动、动态 CD/MP、副作用回滚与 `dirtyMark`，`SkillPanelService` 提供教师学习和完整 snapshot。
 - 旧玩家信息界面的技能叉、技能图标及学习入口均改为服务委托并保留 fallback；Skill Web 面板 S0–S5 已工程落地，但旧 UI 删除仍受 S6 的 7 天 / 100 次管理入口 / 30 次教师入口观察门约束。
-- fresh CS6 trace：`SkillLoadoutServiceTest` 45/45、`SkillPanelServiceTest` 42/42、`LongGunSubWeaponCoreTest` 472/472、`ManualCooldownServiceTest` 50/50、`DrugInputServiceTest` 19/19，编译器 0 error / 0 warning；`scripts/asLoader.swf` 与 `flashswf/UI/玩家信息界面.swf` 已刷新。
+- 2026-07-16 原生快捷技能 HUD 的可选 renderer 又收敛为 `SkillLoadoutService.projectQuickSlotRenderer`：替换时以“空 → 默认图标”帧序重建 attachMovie 图标壳，卸载时清空字段并停在空帧，修复“等级已归零但旧图标残留”。该投影不修改领域状态或手动冷却，HUD 缺失时仍可正常写技能。
+- fresh CS6 trace：`SkillLoadoutServiceTest` 50/50、`SkillPanelServiceTest` 45/45、`LongGunSubWeaponCoreTest` 472/472、`ManualCooldownServiceTest` 50/50、`DrugInputServiceTest` 19/19；新增快捷槽 `moveSlot` 空目标移动/占用交换回归。`scripts/asLoader.swf` 已刷新为 990,467 bytes，FFDec 定点命中 `skillMoveSlot` 与 class `moveSlot`。`flashswf/UI/玩家信息界面.swf` 本轮未改源 XFL，因此没有重发。
 
 ---
 

@@ -1250,6 +1250,7 @@ namespace CF7Launcher.Tasks
                 case "learnCommit": action = "skillLearnCommit"; isWrite = true; return true;
                 case "equip": action = "skillEquip"; isWrite = true; return true;
                 case "unequip": action = "skillUnequip"; isWrite = true; return true;
+                case "moveSlot": action = "skillMoveSlot"; isWrite = true; return true;
                 case "setPassive": action = "skillSetPassive"; isWrite = true; return true;
                 case "reorder": action = "skillReorder"; isWrite = true; return true;
                 default: action = null; return false;
@@ -1332,6 +1333,13 @@ namespace CF7Launcher.Tasks
             {
                 if (!IsExactObject(payload, Set("v", "slot", "expectedRevision"))
                     || !CopyInteger(payload, result, "slot", 1, 12)
+                    || !CopyInteger(payload, result, "expectedRevision", 0, int.MaxValue)) return false;
+            }
+            else if (cmd == "moveSlot")
+            {
+                if (!IsExactObject(payload, Set("v", "sourceSlot", "targetSlot", "expectedRevision"))
+                    || !CopyInteger(payload, result, "sourceSlot", 1, 12)
+                    || !CopyInteger(payload, result, "targetSlot", 1, 12)
                     || !CopyInteger(payload, result, "expectedRevision", 0, int.MaxValue)) return false;
             }
             else if (cmd == "setPassive")

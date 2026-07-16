@@ -5,6 +5,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const url = require('url');
+const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const WEB = path.join(ROOT, 'launcher', 'web');
@@ -28,6 +29,11 @@ function read(relative) { return fs.readFileSync(path.join(ROOT, relative), 'utf
 
 function staticAudit() {
     const panel = read('launcher/web/modules/skills.js');
+    const panelService = read('scripts/类定义/org/flashNight/arki/skill/SkillPanelService.as');
+    const panelServiceTest = read('scripts/类定义/org/flashNight/arki/skill/SkillPanelServiceTest.as');
+    const loadoutService = read('scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as');
+    const loadoutServiceTest = read('scripts/类定义/org/flashNight/arki/skill/SkillLoadoutServiceTest.as');
+    const bridge = read('launcher/web/modules/bridge.js');
     const runtime = read('launcher/web/modules/skills-runtime.js');
     const workbench = read('launcher/web/modules/workbench.js');
     const panels = read('launcher/web/modules/panels.js');
@@ -36,19 +42,39 @@ function staticAudit() {
     const build = read('launcher/build.ps1');
     if (!panel.includes("Panels.register('skills'") || !panel.includes('new Workbench.DualPaneShell')) throw new Error('skills production panel registration/shell missing');
     if (!panel.includes("writeCommand('equip'") || !panel.includes("writeCommand('learnCommit'") || !panel.includes('expectedLearnToken')) throw new Error('skill manage/trainer write flow missing');
-    if (!panel.includes('function handleTrainerExpired') || !panel.includes('requestClose();')) throw new Error('trainer capability expiry must close and require a fresh dialogue');
+    if (!panel.includes('function handleTrainerExpired') || !panel.includes('function renderTrainerExpired')
+        || !panel.includes("_trainerExpired = true") || !panel.includes('返回游戏并重新对话')) throw new Error('trainer capability expiry must remain visible with explicit recovery');
+    if (!panel.includes('function scheduleLearnPreview') || !panel.includes('function hasFreshPreviewToken')
+        || panel.includes("button('计算消耗'")) throw new Error('trainer selection must auto-preview and refresh stale learn tokens without a routine calculate button');
+    if (!panel.includes("range.type = 'range'") || !panel.includes('function stageDesiredLevel')
+        || !panel.includes('function targetMarkLevels') || !panel.includes("value.type = 'number'")
+        || panel.includes("button('升 1 级'")) throw new Error('trainer target level must support exact discrete range/number selection without a redundant plus-one preset');
+    if (!panel.includes("result.classList.add('stale')") || !panel.includes('appendPreviewUpdateStatus')
+        || !panel.includes('上次消耗')) throw new Error('target adjustment must retain and clearly mark the previous authority preview');
+    if (!panelService.includes('lastTouchedAt') || !panelService.includes('session.lastTouchedAt = now()')
+        || !panelServiceTest.includes('testSuccessfulReadRenewsTrainerLease') || !panelServiceTest.includes('testIdleTrainerLeaseExpires'))
+        throw new Error('trainer capability must use a tested renewable idle lease');
     if (!panel.includes("panel:'skills', cmd:'close', panelInstanceId") || !panel.includes('onRebind: onRebind')) throw new Error('instance-bound close or rebind missing');
     if (!panel.includes("cmd:'switch_manage'") || !panel.includes('focusSkillKey') || !panel.includes('skills-switch-manage-btn')) throw new Error('trainer to manage rebind UX/contract missing');
     if (!panel.includes("cmd:'switch_trainer'") || !panel.includes('canReturnTrainer') || !panel.includes('skills-switch-trainer-btn')) throw new Error('scoped manage to trainer return UX/contract missing');
+    if (!panel.includes('sent === false') || !panel.includes('function beginSwitchWait') || !panel.includes('switchPending:_switchPending')) throw new Error('skill switch transport/pending watchdog contract missing');
+    if (!bridge.includes("typeof window.chrome.webview.postMessage !== 'function'") || !bridge.includes('return true;') || !bridge.includes('return false;')) throw new Error('Bridge.send boolean transport contract missing');
     if (!panel.includes('PanelTooltip.bindAsyncHover') || !panel.includes('PanelTooltip.buildItemRichHtml') || !panel.includes('normalizeAS2Description')) throw new Error('skills must use the shared sanitized annotation system');
     if (!panel.includes('new Workbench.GridDensityController') || !panel.includes("compactClass:'skills-density-compact'")) throw new Error('skills full/compact density controller missing');
     if (!panel.includes('new Workbench.PointerDragController') || !panel.includes('new Workbench.InteractionBroker') || !panel.includes('skills-drag-ghost')) throw new Error('shared skills drag interaction missing');
+    if (!panel.includes("writeCommand('moveSlot'") || !runtime.includes('moveSlot: true') || !panel.includes("operationId:'move_quick_slot'")
+        || !panel.includes("subjectKind:'quick_slot'") || !panel.includes("event.key !== 'ArrowLeft'")
+        || !panelService.includes('skillMoveSlot') || !panelService.includes('executeWrite("moveSlot"')
+        || !loadoutService.includes('function moveSlot') || !loadoutServiceTest.includes('testMoveSlotSwapsOccupied'))
+        throw new Error('quick-slot atomic move/swap protocol and interaction missing');
     if (!panel.includes('new ItemFilter.FilterNavigator') || !panel.includes('skillFilterDefinitions')
         || !panel.includes('filterPathsForView') || !panel.includes('matchesSkillFilter')) throw new Error('direct composable skill facet integration missing');
     if (!panel.includes('function setSearchExpanded') || !panel.includes("event.key !== '/'") || !panel.includes('skills-search-toggle')) throw new Error('on-demand skill search/keyboard entry missing');
     if (!panel.includes('function openHelp') || !panel.includes("kind:'skills-help'") || !panel.includes('skills-help-btn')) throw new Error('contextual skill help modal missing');
     if (!panel.includes('cf7.skills.loadoutConfirmationMode') || !panel.includes('manageHelpDetail')
-        || !panel.includes("_loadoutConfirmationMode === 'fast'") || !panel.includes("kind:'skills-learn-confirm'")) throw new Error('scoped safe/fast loadout confirmation preference missing');
+        || !panel.includes('createLoadoutConfirmationToggle') || !panel.includes('skills-confirmation-toggle')
+        || panel.includes("id:'confirmation-mode'") || !panel.includes("_loadoutConfirmationMode === 'fast'")
+        || !panel.includes("kind:'skills-learn-confirm'")) throw new Error('visible header safe/fast preference or learning confirmation boundary missing');
     if (!panel.includes('function buildDiagnosticRecord') || !panel.includes('redactDiagnosticValue') || !panel.includes('snapshotDiagnostics') || !panel.includes('skills-header-diagnostic')) throw new Error('exception-only player diagnostic copy/redaction missing');
     if (panel.includes("setMetric('revision'") || panel.includes("setStatus('权威状态已同步'")) throw new Error('routine technical skill chrome must stay hidden from players');
     if (/domain\s*:\s*['"]inventory['"]/.test(panel) || /domain\s*:\s*['"]inventory['"]/.test(runtime)) throw new Error('skills must not call the item-grid domain');
@@ -57,7 +83,8 @@ function staticAudit() {
     if (!panels.includes('activePanel.onRebind(activePanel._el, initData)')) throw new Error('Panels same-name rebind hook missing');
     if (!panels.includes("pending.id === 'skills'") || !panels.includes('closeMessage.panelInstanceId')) throw new Error('skills lazy-cancel must use the instance-bound exact close envelope');
     if (!registry.includes("registerLazy('skills'") || !registry.includes("'modules/item-filter.js'") || !registry.includes("'modules/skills-runtime.js'")) throw new Error('skills lazy registry/filter dependency missing');
-    if (!workbench.includes("gesture.target.accepted === false") || !workbench.includes('this.compactClass')) throw new Error('shared drag rejection/custom density hooks missing');
+    if (!workbench.includes("gesture.target.accepted === false") || !workbench.includes('this.compactClass')
+        || !workbench.includes('this._allowInteractiveSource')) throw new Error('shared drag rejection/custom density hooks missing');
     if (!panel.includes("operationId:'reorder_skill'") || !panel.includes('adjacentVisibleEntry')
         || !panel.includes("reorderBlockReason(source, 'source')") || !panel.includes("reorderBlockReason(target, 'target')")
         || panel.includes("button('上移'") || panel.includes("button('下移'")) throw new Error('skill tile swap/keyboard fallback contract missing');
@@ -65,12 +92,46 @@ function staticAudit() {
         || !css.includes('.skills-density-compact') || !css.includes('--workbench-compact-tile-size:48px')
         || !css.includes('.skills-slot-icon { width:48px; height:48px; box-sizing:border-box') || !css.includes('.skills-slot:focus-within .skills-slot-clear')
         || !css.includes('.skills-slot:focus-within .skills-slot-level') || css.includes('.skills-slot.selected .skills-slot-clear')
+        || !css.includes('.skills-slot.movable.dragging')
         || !css.includes('.skills-library-row.workbench-drop-active')
         || !css.includes('.skills-filter-board') || !css.includes('.skills-filter-group') || !css.includes('.skills-tooltip')
         || !css.includes('.skills-library-controls[hidden]') || !css.includes('.skills-header-diagnostic')
+        || !css.includes('.skills-trainer-summary') || !css.includes('.skills-cost-card') || !css.includes('.skills-trainer-footer')
+        || !css.includes('.skills-level-range') || !css.includes('.skills-level-mark') || !css.includes('.skills-level-value')
+        || !css.includes('.skills-preview-result.stale') || !css.includes('.skills-preview-result.updating')
+        || !css.includes('.skills-trainer-expired') || !css.includes('.skills-confirmation-toggle')
+        || !css.includes('font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif')
         || !css.includes('.skills-panel .workbench-slot-marker') || !css.includes('data-modal-kind="skills-help"')) throw new Error('skills band/tile/tooltip/filter/search/diagnostic/help CSS missing');
     if (/\.skills-density-compact\s+\.skills-(?:loadout|slot)/.test(css)) throw new Error('skill-library density must not resize the fixed gameplay hotbar');
     if (!build.includes('"modules\\skills-runtime.js"') || !build.includes('"modules\\skills.js"')) throw new Error('launcher build required asset list missing skills');
+}
+
+function bridgeSendAudit() {
+    const source = read('launcher/web/modules/bridge.js');
+    const end = source.indexOf('var OverlayViewportMetrics');
+    if (end < 0) throw new Error('cannot isolate Bridge module for transport audit');
+    const moduleSource = source.slice(0, end);
+
+    function load(webview) {
+        const context = {window:webview ? {chrome:{webview}} : {},console};
+        vm.runInNewContext(moduleSource, context, {filename:'bridge.js'});
+        return context.Bridge;
+    }
+
+    let delivered = null;
+    const available = load({
+        postMessage(message) { delivered = message; },
+        addEventListener() {}
+    });
+    const sample = {type:'panel',cmd:'switch_manage'};
+    if (available.send(sample) !== true || delivered !== sample) throw new Error('Bridge.send must return true after local WebView2 delivery');
+    if (load(null).send(sample) !== false) throw new Error('Bridge.send must return false when WebView2 is unavailable');
+    const throwing = load({postMessage() { throw new Error('transport down'); },addEventListener() {}});
+    if (throwing.send(sample) !== false) throw new Error('Bridge.send must return false when postMessage throws');
+    let callbackCount = 0;
+    if (throwing.task('skills', {}, response => { if (response === null) callbackCount += 1; }) !== null || callbackCount !== 1) {
+        throw new Error('Bridge.task must cleanly fail when local delivery throws');
+    }
 }
 
 function browserPath(name) {
@@ -133,6 +194,7 @@ async function runViewport(browser, server, viewport) {
 (async function main() {
     const args = parseArgs(process.argv.slice(2));
     staticAudit();
+    bridgeSendAudit();
     if (!fs.existsSync(PLAYWRIGHT)) throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');
     const {chromium} = require(PLAYWRIGHT);
     const executablePath = browserPath(args.browser);

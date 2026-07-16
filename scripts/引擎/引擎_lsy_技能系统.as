@@ -73,25 +73,8 @@ _root.动态更新技能冷却领域 = function() {
 // 可选快捷 HUD renderer：只投影，不参与领域读写。
 _root.技能系统投影快捷栏 = function(){
 	var 玩家界面:Object = _root.玩家信息界面;
-	var 快捷界面:Object = 玩家界面 ? 玩家界面.快捷技能界面 : null;
-	if(!快捷界面) return false;
-	for (var i = 1; i < 13; i++){
-		var 当前技能栏:Object = 快捷界面["快捷技能栏" + i];
-		if(!当前技能栏) continue;
-		var 技能名 = _root["快捷技能栏" + i];
-		if(技能名 == null || 技能名 == ""){
-			当前技能栏.是否装备 = 0;
-			当前技能栏.已装备名 = "";
-			continue;
-		}
-		var 该技能全部属性:Object = _root.技能表对象 ? _root.技能表对象[技能名] : null;
-		if(!该技能全部属性) continue;
-		当前技能栏.是否装备 = 1;
-		当前技能栏.已装备名 = 技能名;
-		当前技能栏.冷却时间 = Number(该技能全部属性.CD);
-		当前技能栏.消耗mp = Number(该技能全部属性.MP);
-	}
-	return true;
+	if(!玩家界面 || !玩家界面.快捷技能界面) return false;
+	return SkillLoadoutService.projectQuickSlotRenderer(玩家界面);
 };
 
 _root.动态更新技能冷却 = function(){

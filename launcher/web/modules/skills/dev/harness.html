@@ -17,11 +17,13 @@
 'use strict';
 try{localStorage.removeItem('cf7.skills.loadoutConfirmationMode')}catch(error){}
 window.__copiedDiagnostic='';
-window.__SKILLS_CONFIG__={requestTimeoutMs:120,sessionNonce:'harness',copyText:function(value){window.__copiedDiagnostic=String(value)}};
+window.__SKILLS_CONFIG__={requestTimeoutMs:120,switchTimeoutMs:80,previewDebounceMs:8,previewTokenFreshMs:150,
+  sessionNonce:'harness',copyText:function(value){window.__copiedDiagnostic=String(value)}};
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__iconKeys=[];
 window.__host={instance:'inst-manage',view:'manage',trainerSession:'trainer-A',revision:7,writeEpoch:0,
   snapshotDelay:0,previewDelay:0,invalidTrainer:false,previewBlocked:false,unknownNextWrite:false,malformedNextWrite:false,
   expireNextSnapshot:false,expireNextPreview:false,expireNextWrite:false,writeDelay:8,pendingWriteUntil:0,switchSeq:0,
+  failNextSwitchTransport:false,dropNextSwitch:false,undefinedNextSwitchReturn:false,
   canReturnTrainer:false,returnSession:null};
 
 function copy(value){return JSON.parse(JSON.stringify(value))}
@@ -69,6 +71,11 @@ function applyWrite(message){var p=message.payload;
   }else if(message.cmd==='unequip'){
     var clear=loadout[p.slot-1];clear.skillKey=null;clear.level=null;clear.iconKey=null;clear.stateHealth='ok';clear.writeBlocked=false;
     learnedRows.forEach(function(row){row.equippedSlots=loadout.filter(function(x){return x.skillKey===row.skillKey}).map(function(x){return x.slot})})
+  }else if(message.cmd==='moveSlot'){
+    var sourceSlot=loadout[p.sourceSlot-1],targetSlot=loadout[p.targetSlot-1];
+    var fields=['skillKey','level','iconKey','stateHealth','writeBlocked'];
+    fields.forEach(function(field){var value=sourceSlot[field];sourceSlot[field]=targetSlot[field];targetSlot[field]=value});
+    learnedRows.forEach(function(row){row.equippedSlots=loadout.filter(function(x){return x.skillKey===row.skillKey}).map(function(x){return x.slot})})
   }else if(message.cmd==='setPassive'){
     var passive=learnedRows.find(function(x){return x.skillKey===p.skillKey});if(passive)passive.enabled=!!p.enabled
   }else if(message.cmd==='reorder'){
@@ -104,16 +111,21 @@ function respond(message,ctx){var base=responseBase(message,ctx),p=message.paylo
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   off:function(type,fn){var list=__handlers[type]||[],i=list.indexOf(fn);if(i>=0)list.splice(i,1)},
-  send:function(message){__sent.push(copy(message));if(message.cmd==='close')return true;
+  send:function(message){var switching=message.cmd==='switch_manage'||message.cmd==='switch_trainer';
+    if(switching&&__host.failNextSwitchTransport){__host.failNextSwitchTransport=false;return false}
+    __sent.push(copy(message));if(message.cmd==='close')return true;
+    if(switching&&__host.dropNextSwitch){__host.dropNextSwitch=false;return true}
+    var undefinedSwitchReturn=switching&&__host.undefinedNextSwitchReturn;
+    if(undefinedSwitchReturn)__host.undefinedNextSwitchReturn=false;
     if(message.cmd==='switch_manage'){
       setTimeout(function(){__host.switchSeq++;__host.returnSession=__host.trainerSession;__host.canReturnTrainer=true;
         __host.instance='inst-manage-switch-'+__host.switchSeq;__host.view='manage';
-        Panels.open('skills',{panelInstanceId:__host.instance,view:'manage',focusSkillKey:message.payload.focusSkillKey,canReturnTrainer:true})},0);return true
+        Panels.open('skills',{panelInstanceId:__host.instance,view:'manage',focusSkillKey:message.payload.focusSkillKey,canReturnTrainer:true})},0);return undefinedSwitchReturn?undefined:true
     }
     if(message.cmd==='switch_trainer'){
       setTimeout(function(){__host.switchSeq++;__host.instance='inst-trainer-return-'+__host.switchSeq;__host.view='trainer';
         __host.trainerSession=__host.returnSession;__host.canReturnTrainer=false;
-        Panels.open('skills',{panelInstanceId:__host.instance,view:'trainer',trainerSession:__host.trainerSession,focusSkillKey:message.payload.focusSkillKey})},0);return true
+        Panels.open('skills',{panelInstanceId:__host.instance,view:'trainer',trainerSession:__host.trainerSession,focusSkillKey:message.payload.focusSkillKey})},0);return undefinedSwitchReturn?undefined:true
     }
     var ctx={instance:__host.instance,view:__host.view,trainerSession:__host.trainerSession,revision:__host.revision,writeEpoch:__host.writeEpoch};
     var delay=message.cmd==='snapshot'?__host.snapshotDelay:message.cmd==='learnPreview'?__host.previewDelay:0;
@@ -159,15 +171,38 @@ window.Icons={
       &&document.querySelector('.skills-refresh-btn').hidden
       &&document.querySelector('.skills-panel').textContent.indexOf('权威')<0
       &&document.querySelector('.skills-panel').textContent.indexOf('版本')<0);
+    var confirmationToggle=document.querySelector('.skills-confirmation-toggle');
+    var safeConfirmation=document.querySelector('[data-confirmation-mode="safe"]');
+    var fastConfirmation=document.querySelector('[data-confirmation-mode="fast"]');
+    ok('manage exposes the current loadout confirmation mode beside the density switch',confirmationToggle
+      &&confirmationToggle.querySelector('.item-grid-mode-label').textContent==='快捷栏'
+      &&confirmationToggle.getAttribute('aria-label')==='快捷栏操作确认'
+      &&safeConfirmation.getAttribute('aria-pressed')==='true'&&fastConfirmation.getAttribute('aria-pressed')==='false');
+    var densityHeaderRect=document.querySelector('.skills-density-toggle').getBoundingClientRect();
+    var confirmationHeaderRect=confirmationToggle.getBoundingClientRect();
+    var headerActionsRect=document.querySelector('.skills-panel .workbench-header-actions').getBoundingClientRect();
+    ok('density and confirmation controls remain equal-width ordered groups inside the header',Math.abs(confirmationHeaderRect.width-densityHeaderRect.width)<=1
+      &&confirmationHeaderRect.left>=densityHeaderRect.right-1
+      &&confirmationHeaderRect.right<=headerActionsRect.right+1&&confirmationHeaderRect.top>=headerActionsRect.top-1
+      &&confirmationHeaderRect.bottom<=headerActionsRect.bottom+1);
+    var headerModeTypography=Array.prototype.map.call(document.querySelectorAll('.skills-density-toggle .item-grid-mode-option,.skills-confirmation-toggle .item-grid-mode-option'),function(node){
+      var style=getComputedStyle(node);return [style.fontSize,style.fontWeight,style.fontFamily,style.lineHeight,style.letterSpacing].join('|');
+    });
+    ok('all four header mode options share one computed typography contract',headerModeTypography.length===4
+      &&headerModeTypography.every(function(value){return value===headerModeTypography[0]})
+      &&headerModeTypography[0].indexOf('11px|600|')===0,JSON.stringify(headerModeTypography));
     var beforeHelp=__sent.length,manageHelpButton=document.querySelector('.skills-help-btn');manageHelpButton.focus();manageHelpButton.click();
     ok('manage help explains equip reorder keyboard fallback filters and search without transport',document.querySelector('.workbench-modal[data-modal-kind="skills-help"]')
       &&document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能管理帮助'
+      &&document.querySelector('.workbench-modal').textContent.indexOf('快捷槽可互相拖动')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('Alt + ← / →')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('拖到另一个技能格')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('Alt + ↑ / ↓')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('形态、配置和流派')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('按 /')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('当前：安全模式')>=0
-      &&document.querySelector('[data-action="confirmation-mode"]')&&__sent.length===beforeHelp);
+      &&document.querySelector('.workbench-modal').textContent.indexOf('顶栏始终显示当前模式')>=0
+      &&!document.querySelector('[data-action="confirmation-mode"]')&&__sent.length===beforeHelp);
     var helpRect=document.querySelector('.workbench-modal').getBoundingClientRect(),panelRect=document.querySelector('.skills-panel').getBoundingClientRect();
     ok('help modal stays inside the smallest scaled panel canvas',helpRect.top>=panelRect.top-1&&helpRect.left>=panelRect.left-1
       &&helpRect.right<=panelRect.right+1&&helpRect.bottom<=panelRect.bottom+1);
@@ -264,23 +299,23 @@ window.Icons={
     var equip=sent('equip').slice(-1)[0];
     ok('equip sends one atomic write with revision',equip&&equip.payload.skillKey==='闪现'&&equip.payload.slot===2&&equip.payload.expectedRevision===7);
     ok('equip success redraws authoritative snapshot',document.querySelector('[data-slot="2"] .skills-slot-name').textContent==='闪现');
-    document.querySelector('.skills-help-btn').click();var fastToggle=document.querySelector('[data-action="confirmation-mode"]');fastToggle.click();
-    ok('help switches and persists the opt-in fast loadout mode without closing',document.querySelector('.workbench-modal[data-modal-kind="skills-help"]')
+    var fastPreferenceTraffic=__sent.length;fastConfirmation.click();
+    ok('header switches and persists the opt-in fast loadout mode without authority traffic',!document.querySelector('.workbench-modal')
       &&SkillsPanel.debugState().loadoutConfirmationMode==='fast'
       &&localStorage.getItem('cf7.skills.loadoutConfirmationMode')==='fast'
-      &&document.querySelector('.workbench-modal-detail').textContent.indexOf('当前：快速模式')>=0);
-    document.querySelector('.workbench-modal-action.primary').click();
+      &&fastConfirmation.getAttribute('aria-pressed')==='true'&&safeConfirmation.getAttribute('aria-pressed')==='false'
+      &&__sent.length===fastPreferenceTraffic&&__toasts[__toasts.length-1].indexOf('替换和卸载将直接执行')>=0);
     row('旋风斩').click();var fastEquipCount=sent('equip').length;document.querySelector('[data-slot="2"] .skills-slot-main').click();
     ok('fast mode bypasses replacement confirmation and starts the same atomic equip',!document.querySelector('.workbench-modal')&&sent('equip').length===fastEquipCount+1);
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey==='旋风斩'},300);
     var fastUnequipCount=sent('unequip').length;document.querySelector('[data-slot="2"] .skills-slot-clear').click();
     ok('fast mode bypasses unequip confirmation without changing the write contract',!document.querySelector('.workbench-modal')&&sent('unequip').length===fastUnequipCount+1);
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey===null},300);
-    document.querySelector('.skills-help-btn').click();document.querySelector('[data-action="confirmation-mode"]').click();
+    safeConfirmation.click();
     ok('confirmation preference can return to the safe default in place',SkillsPanel.debugState().loadoutConfirmationMode==='safe'
       &&localStorage.getItem('cf7.skills.loadoutConfirmationMode')==='safe'
-      &&document.querySelector('.workbench-modal-detail').textContent.indexOf('当前：安全模式')>=0);
-    document.querySelector('.workbench-modal-action.primary').click();
+      &&safeConfirmation.getAttribute('aria-pressed')==='true'&&fastConfirmation.getAttribute('aria-pressed')==='false'
+      &&__toasts[__toasts.length-1].indexOf('替换和卸载前会确认')>=0);
     row('闪现').click();var emptyEquipCount=sent('equip').length;document.querySelector('[data-slot="4"] .skills-slot-main').click();
     ok('safe mode equips an empty slot directly without a redundant modal',!document.querySelector('.workbench-modal')&&sent('equip').length===emptyEquipCount+1);
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[3].skillKey==='闪现'},300);
@@ -318,6 +353,43 @@ window.Icons={
     var dragReorder=sent('reorder').slice(-1)[0];
     ok('skill-to-skill drop sends the existing atomic swap contract',dragReorder.payload.skillKey==='旋风斩'
       &&dragReorder.payload.targetIndex===reorderTargetIndex&&!document.querySelector('.workbench-modal'));
+    var moveEquipCount=sent('equip').length,moveUnequipCount=sent('unequip').length;
+    var quickMoveSource=document.querySelector('[data-slot="4"]'),quickMoveTarget=document.querySelector('[data-slot="5"]');
+    var quickMoveSourceRect=quickMoveSource.getBoundingClientRect(),quickMoveTargetRect=quickMoveTarget.getBoundingClientRect();
+    quickMoveSource.dispatchEvent(new PointerEvent('pointerenter',{pointerId:46,isPrimary:true,clientX:quickMoveSourceRect.left+24,clientY:quickMoveSourceRect.top+24}));
+    ok('occupied quick slot exposes its annotation before drag begins',PanelTooltip.isVisible());
+    quickMoveSource.querySelector('.skills-slot-main').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:46,button:0,isPrimary:true,clientX:quickMoveSourceRect.left+24,clientY:quickMoveSourceRect.top+24}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:46,clientX:quickMoveTargetRect.left+24,clientY:quickMoveTargetRect.top+24}));
+    ok('occupied quick slot becomes a drag source, hides annotation, and marks a valid empty target',!PanelTooltip.isVisible()&&document.querySelector('.skills-drag-ghost')
+      &&document.querySelector('.skills-drag-ghost').textContent.indexOf('槽位 4')>=0&&quickMoveTarget.classList.contains('workbench-drop-active'),
+      JSON.stringify({drag:SkillsPanel.debugState().drag,sourceClass:quickMoveSource.className,targetClass:quickMoveTarget.className}));
+    document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:46,clientX:quickMoveTargetRect.left+24,clientY:quickMoveTargetRect.top+24}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[3].skillKey===null&&loadout[4].skillKey==='闪现'},300);
+    var quickMove=sent('moveSlot').slice(-1)[0];
+    ok('quick slot to empty slot sends one atomic move without equip unequip or confirmation',quickMove&&quickMove.payload.sourceSlot===4
+      &&quickMove.payload.targetSlot===5&&Number.isInteger(quickMove.payload.expectedRevision)
+      &&sent('equip').length===moveEquipCount&&sent('unequip').length===moveUnequipCount&&!document.querySelector('.workbench-modal'),
+      JSON.stringify({move:quickMove||null,toasts:__toasts.slice(-3),state:SkillsPanel.debugState().coordinator,slots:[loadout[3],loadout[4]]}));
+    await wait(90);
+    row('旋风斩').click();document.querySelector('[data-slot="6"] .skills-slot-main').click();
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[5].skillKey==='旋风斩'},300);
+    var quickSwapSource=document.querySelector('[data-slot="5"]'),quickSwapTarget=document.querySelector('[data-slot="6"]');
+    var quickSwapSourceRect=quickSwapSource.getBoundingClientRect(),quickSwapTargetRect=quickSwapTarget.getBoundingClientRect();
+    quickSwapSource.querySelector('.skills-slot-main').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:47,button:0,isPrimary:true,clientX:quickSwapSourceRect.left+24,clientY:quickSwapSourceRect.top+24}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:47,clientX:quickSwapTargetRect.left+24,clientY:quickSwapTargetRect.top+24}));
+    document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:47,clientX:quickSwapTargetRect.left+24,clientY:quickSwapTargetRect.top+24}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[4].skillKey==='旋风斩'&&loadout[5].skillKey==='闪现'},300);
+    var quickSwap=sent('moveSlot').slice(-1)[0];
+    ok('dropping onto an occupied quick slot swaps both physical slots in one write',quickSwap&&quickSwap.payload.sourceSlot===5
+      &&quickSwap.payload.targetSlot===6&&!document.querySelector('.workbench-modal'),
+      JSON.stringify({move:quickSwap||null,toasts:__toasts.slice(-3),slots:[loadout[4],loadout[5]]}));
+    var keyboardSlot=document.querySelector('[data-slot="6"] .skills-slot-main');keyboardSlot.focus();
+    keyboardSlot.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',altKey:true,bubbles:true}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[4].skillKey==='闪现'&&loadout[5].skillKey==='旋风斩'},300);
+    var keyboardMove=sent('moveSlot').slice(-1)[0];
+    ok('Alt plus left or right swaps adjacent quick slots and follows the moved skill for repeated use',keyboardMove&&keyboardMove.payload.sourceSlot===6
+      &&keyboardMove.payload.targetSlot===5&&document.activeElement===document.querySelector('[data-slot="5"] .skills-slot-main'),
+      JSON.stringify({move:keyboardMove||null,toasts:__toasts.slice(-3),slots:[loadout[4],loadout[5]]}));
     row('旋风斩').click();var dragRow=row('旋风斩'),rect=dragRow.getBoundingClientRect();
     dragRow.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:41,button:0,isPrimary:true,clientX:rect.left+4,clientY:rect.top+4}));
     document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:41,clientX:rect.left+30,clientY:rect.top+20}));
@@ -347,60 +419,124 @@ window.Icons={
     document.querySelector('[data-slot="7"] .skills-slot-clear').click();clickModalConfirm();
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[6].skillKey===null},300);
 
-    document.querySelector('.skills-help-btn').click();document.querySelector('[data-action="confirmation-mode"]').click();document.querySelector('.workbench-modal-action.primary').click();
+    document.querySelector('[data-confirmation-mode="fast"]').click();
     ok('fast confirmation preference remains active for trainer safety coverage',SkillsPanel.debugState().loadoutConfirmationMode==='fast');
     __host.snapshotDelay=90;document.querySelector('.skills-refresh-btn').click();
     setHost({instance:'inst-trainer-A',view:'trainer',trainerSession:'trainer-A',snapshotDelay:0});
     await until(function(){return SkillsPanel.debugState().view==='trainer'&&document.querySelector('.skills-trainer-actions')});await wait(110);
     ok('same-panel manage to trainer performs real rebind',Panels.getActive()==='skills'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-trainer-A');
     ok('late old-instance snapshot cannot overwrite trainer view',document.querySelector('.workbench-title').textContent==='技能研习'&&SkillsPanel.debugState().view==='trainer');
+    ok('trainer omits the manage-only loadout confirmation control',!document.querySelector('.skills-confirmation-toggle')
+      &&document.querySelector('.skills-density-toggle')&&SkillsPanel.debugState().loadoutConfirmationMode==='fast');
     ok('trainer consumes full projected entries',row('新手冲拳')&&document.querySelector('.skills-detail-meta').textContent.indexOf('MP')>=0);
+    ok('trainer decision rail uses the right pane for persistent description and authority-backed balance',document.querySelector('.skills-trainer-summary')
+      &&document.querySelector('.skills-trainer-description').textContent.indexOf('教师提供的闪现说明')>=0
+      &&document.querySelector('.skills-cost-card')&&document.querySelector('.skills-trainer-footer'));
+    var trainerRailRect=document.querySelector('.skills-trainer-view').getBoundingClientRect();
+    var trainerSummaryRect=document.querySelector('.skills-trainer-summary').getBoundingClientRect();
+    var trainerFooterRect=document.querySelector('.skills-trainer-footer').getBoundingClientRect();
+    ok('trainer summary and sticky decision action fit the right rail at every gated viewport',trainerSummaryRect.top>=trainerRailRect.top-1
+      &&trainerSummaryRect.left>=trainerRailRect.left-1&&trainerFooterRect.right<=trainerRailRect.right+1&&trainerFooterRect.bottom<=trainerRailRect.bottom+1);
     ok('trainer keeps only player decision metrics and plain language',document.querySelectorAll('.workbench-metric').length===2
       &&document.querySelector('[data-metric="level"]')&&document.querySelector('[data-metric="sp"]')
       &&!document.querySelector('[data-metric="revision"]')
       &&document.querySelector('.skills-panel').textContent.indexOf('权威')<0);
     document.querySelector('.skills-help-btn').click();
     ok('trainer help switches to learning rules and page navigation',document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能研习帮助'
-      &&document.querySelector('.workbench-modal').textContent.indexOf('调整目标等级')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('自动计算消耗')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('第一次固定学习 1 级')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('“管理技能”')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('直接拖到目标槽位')<0);
     document.querySelector('.workbench-modal-action.primary').click();
     var wrongTrainerSession=authoritativeSnapshot('trainer');wrongTrainerSession.trainer.session='trainer-other';
     ok('trainer rejects a snapshot from another capability',SkillsPanel.validateSnapshot(wrongTrainerSession).ok===false);
-    row('新手冲拳').click();
+    var previewCountBeforeSelection=sent('learnPreview').length;row('新手冲拳').click();
     ok('unlearned target is frozen to level one',document.querySelector('.skills-level-stepper').textContent.indexOf('Lv.1（初学固定）')>=0&&!document.querySelector('.skills-level-btn'));
-    document.querySelector('.skills-trainer-actions > .skills-action-btn').click();await wait(30);
+    await until(function(){return sent('learnPreview').length>previewCountBeforeSelection&&document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled},300);
     var preview=sent('learnPreview').slice(-1)[0];
-    ok('preview binds trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
-    ok('valid preview alone enables commit',document.querySelector('.skills-preview-result.ok .skills-action-btn.primary')&&!document.querySelector('.skills-preview-result.ok .skills-action-btn.primary').disabled);
-    document.querySelector('.skills-preview-result.ok .skills-action-btn.primary').click();
+    ok('selection automatically previews with trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
+    ok('valid preview fills cost, balance and requirements before enabling the sticky action',document.querySelector('.skills-preview-result.ok').textContent.indexOf('240 → 235')>=0
+      &&document.querySelectorAll('.skills-trainer-requirements .ok').length===3&&!document.querySelector('.skills-trainer-commit').disabled);
+    var previewCountBeforeFreshen=sent('learnPreview').length;await wait(170);document.querySelector('.skills-trainer-commit').click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeFreshen&&document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')},300);
+    ok('stale automatic preview is silently refreshed before confirmation',sent('learnPreview').length===previewCountBeforeFreshen+1);
     ok('fast loadout mode never bypasses the skill-point learning confirmation',document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')
       &&SkillsPanel.debugState().loadoutConfirmationMode==='fast'&&sent('learnCommit').length===0);
     clickModalConfirm();await wait(40);
     ok('learn commit sends only opaque token in nested payload',sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token'&&Object.keys(sent('learnCommit').slice(-1)[0].payload).sort().join(',')==='expectedLearnToken,v');
-    __host.previewBlocked=true;row('闪现').click();document.querySelector('.skills-trainer-actions > .skills-action-btn').click();await until(function(){return document.querySelector('.skills-preview-result.blocked')},300);
-    ok('deterministic preview rejection has no commit path',document.querySelector('.skills-preview-result.blocked')&&document.querySelector('.skills-preview-result .skills-action-btn.primary').disabled,document.querySelector('.skills-preview-result')&&document.querySelector('.skills-preview-result').textContent);
+    row('闪现').click();await until(function(){return !SkillsPanel.debugState().previewLoading&&document.querySelectorAll('.skills-level-btn').length===2},300);
+    var targetRange=document.querySelector('.skills-level-range'),targetValue=document.querySelector('.skills-level-value');
+    ok('learned skills expose one exact integer range with number entry and no redundant plus-one preset',targetRange&&targetValue
+      &&targetRange.min==='4'&&targetRange.max==='20'&&targetRange.step==='1'&&targetRange.getAttribute('aria-valuetext')==='目标等级 4'
+      &&document.querySelector('.skills-trainer-target').textContent.indexOf('升 1 级')<0);
+    var targetRect=document.querySelector('.skills-trainer-target').getBoundingClientRect(),rangeRect=document.querySelector('.skills-level-range-shell').getBoundingClientRect();
+    var markNodes=document.querySelectorAll('.skills-level-mark'),firstMarkRect=markNodes[0].getBoundingClientRect(),lastMarkRect=markNodes[markNodes.length-1].getBoundingClientRect();
+    ok('discrete range and endpoint marks stay inside the target card at every gated viewport',rangeRect.left>=targetRect.left-1
+      &&rangeRect.right<=targetRect.right+1&&firstMarkRect.left>=targetRect.left-1&&lastMarkRect.right<=targetRect.right+1);
+    var previewCountBeforeTick=sent('learnPreview').length;document.querySelector('.skills-level-mark[data-level="5"]').click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeTick&&!SkillsPanel.debugState().previewLoading},300);
+    ok('a labeled intermediate tick selects and previews level five in one click',sent('learnPreview').length===previewCountBeforeTick+1
+      &&sent('learnPreview').slice(-1)[0].payload.desiredLevel===5&&SkillsPanel.debugState().desiredLevel===5);
+    var previewCountBeforeDrag=sent('learnPreview').length;targetRange=document.querySelector('.skills-level-range');targetRange.value='9';
+    targetRange.dispatchEvent(new Event('input',{bubbles:true}));
+    ok('range scrubbing updates the target locally while preserving the last authority cost',sent('learnPreview').length===previewCountBeforeDrag
+      &&SkillsPanel.debugState().desiredLevel===9&&document.querySelector('.skills-cost-card.stale.updating')
+      &&document.querySelector('.skills-cost-card').textContent.indexOf('技能点')>=0&&document.querySelector('.skills-trainer-commit').disabled);
+    targetRange.dispatchEvent(new Event('change',{bubbles:true}));
+    var releasedShowsPrevious=document.querySelector('.skills-cost-card').textContent.indexOf('上次消耗')>=0;
+    await until(function(){return sent('learnPreview').length>previewCountBeforeDrag&&!SkillsPanel.debugState().previewLoading},300);
+    ok('releasing the range sends only the final snapped level and replaces the retained cost',releasedShowsPrevious
+      &&sent('learnPreview').length===previewCountBeforeDrag+1&&sent('learnPreview').slice(-1)[0].payload.desiredLevel===9
+      &&!document.querySelector('.skills-cost-card.stale')&&document.querySelector('.skills-level-range').getAttribute('aria-valuenow')==='9');
+    var previewCountBeforeExact=sent('learnPreview').length;targetValue=document.querySelector('.skills-level-value');targetValue.value='7';
+    targetValue.dispatchEvent(new Event('input',{bubbles:true}));targetValue.dispatchEvent(new Event('change',{bubbles:true}));
+    await until(function(){return sent('learnPreview').length>previewCountBeforeExact&&!SkillsPanel.debugState().previewLoading},300);
+    ok('exact number entry jumps directly to an arbitrary intermediate level',sent('learnPreview').length===previewCountBeforeExact+1
+      &&sent('learnPreview').slice(-1)[0].payload.desiredLevel===7&&SkillsPanel.debugState().desiredLevel===7);
+    var previewCountBeforeRapidTarget=sent('learnPreview').length;
+    document.querySelectorAll('.skills-level-btn')[1].click();document.querySelectorAll('.skills-level-btn')[1].click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeRapidTarget&&!SkillsPanel.debugState().previewLoading},300);
+    var rapidTargetPreview=sent('learnPreview').slice(-1)[0];
+    ok('rapid fine adjustments stay interactive and debounce to the latest preview',sent('learnPreview').length===previewCountBeforeRapidTarget+1
+      &&rapidTargetPreview.payload.desiredLevel===9&&SkillsPanel.debugState().desiredLevel===9);
+    __host.previewBlocked=true;row('闪现').click();await until(function(){return document.querySelector('.skills-preview-result.blocked')},300);
+    ok('deterministic automatic preview rejection keeps a disabled reason-specific action',document.querySelector('.skills-preview-result.blocked')
+      &&document.querySelector('.skills-trainer-commit').disabled,document.querySelector('.skills-preview-result')&&document.querySelector('.skills-preview-result').textContent);
     __host.previewBlocked=false;__host.invalidTrainer=true;setHost({instance:'inst-trainer-bad',view:'trainer',trainerSession:'trainer-B'});await wait(45);
     ok('pure skillKey trainer catalog is rejected',SkillsPanel.debugState().schemaError.indexOf('纯 skillKey')>=0);
     ok('invalid catalog keeps raw schema details behind exception diagnostics',document.querySelector('.skills-panel').textContent.indexOf('纯 skillKey')<0
       &&document.querySelector('.skills-header-diagnostic')&&!document.querySelector('.skills-header-diagnostic').hidden
       &&document.querySelector('.skills-refresh-btn')&&!document.querySelector('.skills-refresh-btn').hidden);
     __host.invalidTrainer=false;__host.expireNextSnapshot=true;setHost({instance:'inst-trainer-expired-snapshot',view:'trainer',trainerSession:'trainer-ES'});
-    await until(function(){return Panels.getActive()===null});
-    ok('expired trainer snapshot exits the unusable capability view',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-snapshot');
-    setHost({instance:'inst-trainer-expired-preview',view:'trainer',trainerSession:'trainer-EP'});await until(function(){return row('新手冲拳')});
-    row('新手冲拳').click();__host.expireNextPreview=true;document.querySelector('.skills-trainer-actions > .skills-action-btn').click();
-    await until(function(){return Panels.getActive()===null});
-    ok('expired preview exits trainer and requires a fresh dialogue',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-preview');
-    setHost({instance:'inst-trainer-expired-commit',view:'trainer',trainerSession:'trainer-EC'});await until(function(){return row('新手冲拳')});
-    row('新手冲拳').click();document.querySelector('.skills-trainer-actions > .skills-action-btn').click();await until(function(){return document.querySelector('.skills-preview-result.ok .skills-action-btn.primary')});
-    __host.expireNextWrite=true;document.querySelector('.skills-preview-result.ok .skills-action-btn.primary').click();clickModalConfirm();
-    await until(function(){return Panels.getActive()===null});
-    ok('expired commit exits trainer without replaying the write',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-commit');
+    await until(function(){return SkillsPanel.debugState().trainerExpired&&document.querySelector('.skills-trainer-expired')});
+    ok('expired trainer snapshot stays visible with an explicit recovery action',Panels.getActive()==='skills'
+      &&document.querySelector('.skills-trainer-expired').textContent.indexOf('返回游戏并重新对话')>=0);
+    document.querySelector('.skills-trainer-expired .skills-action-btn.primary').click();await until(function(){return Panels.getActive()===null});
+    ok('expired snapshot closes only after the player chooses recovery',sent('close').slice(-1)[0].panelInstanceId==='inst-trainer-expired-snapshot');
+    setHost({instance:'inst-trainer-expired-preview',view:'trainer',trainerSession:'trainer-EP'});await until(function(){return row('新手冲拳')&&!SkillsPanel.debugState().previewLoading});
+    __host.expireNextPreview=true;row('新手冲拳').click();
+    await until(function(){return SkillsPanel.debugState().trainerExpired&&document.querySelector('.skills-trainer-expired')});
+    ok('expired automatic preview becomes an in-panel terminal state instead of a visual crash',Panels.getActive()==='skills');
+    document.querySelector('.skills-trainer-expired .skills-action-btn.primary').click();await until(function(){return Panels.getActive()===null});
+    setHost({instance:'inst-trainer-expired-commit',view:'trainer',trainerSession:'trainer-EC'});await until(function(){return row('新手冲拳')&&!SkillsPanel.debugState().previewLoading});
+    row('新手冲拳').click();await until(function(){return document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled});
+    __host.expireNextWrite=true;document.querySelector('.skills-trainer-commit').click();await until(function(){return document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')});clickModalConfirm();
+    await until(function(){return SkillsPanel.debugState().trainerExpired&&document.querySelector('.skills-trainer-expired')});
+    ok('expired commit stops in place without replaying the write',Panels.getActive()==='skills'&&sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token');
+    document.querySelector('.skills-trainer-expired .skills-action-btn.primary').click();await until(function(){return Panels.getActive()===null});
     ok('trainer expiry has one explicit re-dialogue message',__toasts.filter(function(x){return x.indexOf('重新与教师对话')>=0}).length===3);
     setHost({instance:'inst-trainer-switch',view:'trainer',trainerSession:'trainer-S'});await until(function(){return row('闪现')&&document.querySelector('.skills-switch-manage-btn')});
-    row('闪现').click();document.querySelector('.skills-switch-manage-btn').click();
+    var switchToastCount=__toasts.length,switchManageCount=sent('switch_manage').length;
+    __host.failNextSwitchTransport=true;document.querySelector('.skills-switch-manage-btn').click();await wait(10);
+    ok('local switch transport failure stays on the trainer view and keeps retry available',SkillsPanel.debugState().view==='trainer'
+      &&SkillsPanel.debugState().switchPending===false&&!document.querySelector('.skills-switch-manage-btn').disabled
+      &&sent('switch_manage').length===switchManageCount&&__toasts.length===switchToastCount+1
+      &&__toasts.slice(-1)[0].indexOf('启动器连接不可用')>=0);
+    row('闪现').click();__host.undefinedNextSwitchReturn=true;document.querySelector('.skills-switch-manage-btn').click();
+    ok('legacy undefined send result is not mistaken for business rejection',SkillsPanel.debugState().switchPending===true
+      &&document.querySelector('.skills-switch-manage-btn').disabled
+      &&document.querySelector('.skills-switch-manage-btn').textContent==='切换中…'
+      &&__toasts.length===switchToastCount+1);
     await until(function(){return SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.panelInstanceId.indexOf('inst-manage-switch-')===0});
     var switchManage=sent('switch_manage').slice(-1)[0];
     ok('trainer to manage uses an exact instance-bound nested control envelope',Object.keys(switchManage).sort().join(',')==='cmd,panel,panelInstanceId,payload,type'&&switchManage.panelInstanceId==='inst-trainer-switch'&&Object.keys(switchManage.payload).sort().join(',')==='focusSkillKey,v');
@@ -417,13 +553,21 @@ window.Icons={
       &&Object.keys(switchTrainer.payload).sort().join(',')==='focusSkillKey,v');
     ok('returned trainer restores learning actions without leaking return control',SkillsPanel.debugState().selectedKey==='闪现'
       &&document.querySelector('.skills-trainer-actions')&&!document.querySelector('.skills-switch-trainer-btn'));
+    __host.dropNextSwitch=true;document.querySelector('.skills-switch-manage-btn').click();
+    ok('accepted switch enters an explicit pending state while waiting for Host rebind',SkillsPanel.debugState().switchPending===true
+      &&document.querySelector('.skills-switch-manage-btn').disabled&&document.querySelector('.skills-switch-manage-btn').textContent==='切换中…');
+    await wait(110);
+    ok('missing Host rebind times out back to the same NPC trainer view with retry enabled',SkillsPanel.debugState().view==='trainer'
+      &&SkillsPanel.debugState().switchPending===false&&!document.querySelector('.skills-switch-manage-btn').disabled
+      &&document.querySelector('.skills-switch-manage-btn').textContent==='管理技能'
+      &&__toasts.slice(-1)[0].indexOf('未完成')>=0);
     setHost({instance:'inst-manage-B',view:'manage',canReturnTrainer:false,returnSession:null});await until(function(){return row('闪现')});
 
     row('闪现').click();__host.writeDelay=75;document.querySelector('[data-slot="1"] .skills-slot-main').click();clickModalConfirm();
     __host.instance='inst-trainer-queued';__host.view='trainer';__host.trainerSession='trainer-Q';Panels.open('skills',{panelInstanceId:'inst-trainer-queued',view:'trainer',trainerSession:'trainer-Q'});
     __host.instance='inst-manage-last';__host.view='manage';Panels.open('skills',{panelInstanceId:'inst-manage-last',view:'manage'});
     ok('write-pending rebind keeps old session busy',SkillsPanel.debugState().coordinator.queuedRebind&&SkillsPanel.debugState().coordinator.state==='write_pending');
-    await until(function(){return SkillsPanel.debugState().coordinator.panelInstanceId==='inst-manage-last'},800);
+    await until(function(){return SkillsPanel.debugState().coordinator.panelInstanceId==='inst-manage-last'&&row('旋风斩')},800);
     ok('pending rebind applies only the last intent after settlement',SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-manage-last');
 
     row('旋风斩').click();__host.unknownNextWrite=true;__host.writeDelay=8;

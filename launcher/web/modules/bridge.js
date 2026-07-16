@@ -16,9 +16,18 @@
             }
         }
     }
+    /**
+     * 尝试把消息交给本地 WebView2 transport。
+     * true 只表示 postMessage 已在当前页面同步投递，不代表 Host 已接受业务请求。
+     */
     function send(msg) {
-        if (window.chrome && window.chrome.webview) {
+        if (!window.chrome || !window.chrome.webview
+                || typeof window.chrome.webview.postMessage !== 'function') return false;
+        try {
             window.chrome.webview.postMessage(msg);
+            return true;
+        } catch (e) {
+            return false;
         }
     }
     /**
@@ -35,7 +44,11 @@
         taskSeq += 1;
         var callId = 'wt_' + Date.now().toString(36) + '_' + taskSeq;
         if (typeof cb === 'function') taskCallbacks[callId] = cb;
-        send({ type: 'task', task: taskName, callId: callId, payload: payload || {} });
+        if (send({ type: 'task', task: taskName, callId: callId, payload: payload || {} }) === false) {
+            delete taskCallbacks[callId];
+            if (typeof cb === 'function') cb(null);
+            return null;
+        }
         return callId;
     }
     if (window.chrome && window.chrome.webview) {

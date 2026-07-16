@@ -17,6 +17,7 @@
         learnCommit: true,
         equip: true,
         unequip: true,
+        moveSlot: true,
         setPassive: true,
         reorder: true
     };

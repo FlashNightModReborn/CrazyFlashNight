@@ -590,6 +590,7 @@
         this._onDragStart = options.onDragStart || function() {};
         this._onDragEnd = options.onDragEnd || function() {};
         this._broker = options.broker;
+        this._allowInteractiveSource = options.allowInteractiveSource === true;
         this._threshold = Math.max(2, Number(options.threshold) || 5);
         this._timeoutMs = Math.max(50, Number(options.timeoutMs) || 1400);
         this._gesture = null;
@@ -603,7 +604,8 @@
 
     PointerDragController.prototype._onPointerDown = function(event) {
         if (!this._sourceElement || !this._broker || event.button !== 0 || event.isPrimary === false) return;
-        if (event.target && event.target.closest && event.target.closest('button,input,textarea,select')) return;
+        if (!this._allowInteractiveSource && event.target && event.target.closest
+                && event.target.closest('button,input,textarea,select')) return;
         var source = this._getSource ? this._getSource(event.target, event) : null;
         if (!source || !source.view || !source.item || !source.node) return;
         this.cancel();

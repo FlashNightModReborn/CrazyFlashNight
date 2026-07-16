@@ -22,6 +22,8 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testMalformedTrainerMetadataProjectsBoundedAndBlocked();
         testTrainerDiagnosticsReachSnapshot();
         testSameTrainerReusesSession();
+        testSuccessfulReadRenewsTrainerLease();
+        testIdleTrainerLeaseExpires();
         testDifferentTrainerReplacesSession();
         testManageIntentPreservesActiveSession();
         testLastTrainerIntentWinsWithoutRevokingActive();
@@ -39,6 +41,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testForbiddenSkillIsProtocolFailure();
         testCommitIsAtomicAndReplaySafe();
         testManageWriteIgnoresResidualTrainerSession();
+        testMoveSlotDispatchesPhysicalAtomicWrite();
         testTrainerWriteContextIsRejected();
         testExplicitRendererFailureDoesNotRollbackOrStickBusy();
         testMissingRenderersSkipWithoutRollback();
@@ -60,6 +63,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
     private static function testInstallRegistersCommandsAndBridges():Void {
         fixture(); SkillPanelService.install();
         check(typeof _root.gameCommands.skillSnapshot == "function" && typeof _root.gameCommands.skillLearnCommit == "function"
+            && typeof _root.gameCommands.skillMoveSlot == "function"
             && typeof _root.legacySkillEquip == "function" && typeof _root.openSkillTrainer == "function", "install registers all command and legacy root bridges");
     }
 
@@ -153,6 +157,25 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
     private static function testSameTrainerReusesSession():Void {
         var f:Object = fixture(); var a:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer"); var b:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
         check(a.success && b.success && a.trainerSession == b.trainerSession, "same npc scene and catalog reuse one trainer capability");
+    }
+
+    private static function testSuccessfulReadRenewsTrainerLease():Void {
+        var f:Object = fixture(); SkillPanelService.testOnlySetNow(1000);
+        var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+        SkillPanelService.testOnlySetNow(120000);
+        var snap:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
+        SkillPanelService.testOnlySetNow(239000);
+        var preview:Object = SkillPanelService.execute("learnPreview", {v:1, skillKey:"闪现", desiredLevel:1,
+            trainerSession:opened.trainerSession, expectedRevision:SkillLoadoutService.getRevision()});
+        check(snap.success && preview.success, "successful trainer traffic renews the 120 second idle lease beyond absolute session age");
+    }
+
+    private static function testIdleTrainerLeaseExpires():Void {
+        var f:Object = fixture(); SkillPanelService.testOnlySetNow(1000);
+        var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+        SkillPanelService.testOnlySetNow(121001);
+        var snap:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
+        check(!snap.success && snap.error == "trainer_session_expired", "trainer capability still expires after 120 seconds without valid traffic");
     }
 
     private static function testDifferentTrainerReplacesSession():Void {
@@ -317,6 +340,16 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
             expectedRevision:SkillLoadoutService.getRevision()});
         check(result.success && result.snapshot.view == "manage" && result.snapshot.trainer == null,
             "manage write uses explicit command context and ignores a residual trainer session");
+    }
+
+    private static function testMoveSlotDispatchesPhysicalAtomicWrite():Void {
+        var f:Object = fixture(); learn(f.root, 0, "闪现", 1); learn(f.root, 1, "刀技", 2);
+        f.root.快捷技能栏2 = "闪现"; f.root.快捷技能栏9 = "刀技";
+        var result:Object = SkillPanelService.execute("moveSlot", {v:1, view:"manage", sourceSlot:2, targetSlot:9,
+            expectedRevision:SkillLoadoutService.getRevision()});
+        check(result.success && result.changed && f.root.快捷技能栏2 == "刀技" && f.root.快捷技能栏9 == "闪现"
+            && result.snapshot.loadout[1].skillKey == "刀技" && result.snapshot.loadout[8].skillKey == "闪现",
+            "moveSlot dispatcher returns one authoritative snapshot for the physical-slot swap");
     }
 
     private static function testTrainerWriteContextIsRejected():Void {

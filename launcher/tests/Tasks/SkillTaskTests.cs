@@ -15,6 +15,7 @@ namespace Launcher.Tests.Tasks
         [InlineData("learnPreview", "skillLearnPreview")]
         [InlineData("equip", "skillEquip")]
         [InlineData("unequip", "skillUnequip")]
+        [InlineData("moveSlot", "skillMoveSlot")]
         [InlineData("setPassive", "skillSetPassive")]
         [InlineData("reorder", "skillReorder")]
         public void StrictEnvelope_MapsOnlyNormalizedPayload(string cmd, string expectedAction)
@@ -33,6 +34,12 @@ namespace Launcher.Tests.Tasks
                 if (cmd == "learnPreview") Assert.Equal("trainer.one", (string)flash["trainerSession"]);
                 Assert.Equal(cmd == "learnPreview" ? "skills.instance.trainer" : "skills.instance.1",
                     (string)flash["panelInstanceId"]);
+                if (cmd == "moveSlot")
+                {
+                    Assert.Equal(4, (int)flash["sourceSlot"]);
+                    Assert.Equal(9, (int)flash["targetSlot"]);
+                    Assert.Equal(12, (int)flash["expectedRevision"]);
+                }
             }
         }
 
@@ -53,6 +60,27 @@ namespace Launcher.Tests.Tasks
                 task.HandleWebRequest("equip", payload);
                 Assert.Equal("invalid_payload", (string)web[1]["error"]);
                 Assert.Empty(sent);
+            }
+        }
+
+        [Fact]
+        public void MoveSlot_RejectsOutOfRangePhysicalSlotsBeforeFlashDispatch()
+        {
+            var sent = new List<string>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(value); return true; }, web))
+            {
+                JObject badSource = Request("moveSlot", "skill.move.bad.source");
+                badSource["payload"]["sourceSlot"] = 0;
+                task.HandleWebRequest("moveSlot", badSource);
+
+                JObject badTarget = Request("moveSlot", "skill.move.bad.target");
+                badTarget["payload"]["targetSlot"] = 13;
+                task.HandleWebRequest("moveSlot", badTarget);
+
+                Assert.Empty(sent);
+                Assert.Equal(2, web.Count);
+                Assert.All(web, response => Assert.Equal("invalid_payload", (string)response["error"]));
             }
         }
 
@@ -1085,6 +1113,8 @@ namespace Launcher.Tests.Tasks
                 case "equip":
                     payload["skillKey"] = "闪现"; payload["slot"] = 4; payload["expectedRevision"] = 12; break;
                 case "unequip": payload["slot"] = 4; payload["expectedRevision"] = 12; break;
+                case "moveSlot":
+                    payload["sourceSlot"] = 4; payload["targetSlot"] = 9; payload["expectedRevision"] = 12; break;
                 case "setPassive":
                     payload["skillKey"] = "坚韧"; payload["enabled"] = true; payload["expectedRevision"] = 12; break;
                 case "reorder":
