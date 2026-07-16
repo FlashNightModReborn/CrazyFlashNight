@@ -69,6 +69,7 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly BitmapLruCache AssetCache = new BitmapLruCache(ASSET_CACHE_BUDGET_BYTES, StringComparer.OrdinalIgnoreCase);
         private static readonly BitmapLruCache TintedAssetCache = new BitmapLruCache(TINTED_CACHE_BUDGET_BYTES, StringComparer.Ordinal);
         private static readonly HashSet<string> MissingAssetWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private static readonly LatestWorkGeneration PrewarmGeneration = new LatestWorkGeneration();
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -511,6 +512,8 @@ namespace CF7Launcher.Guardian.Hud
         /// </summary>
         internal static void PrewarmEntry(MapHudHotspotEntry entry)
         {
+            // 即使 entry 为空也推进代次：热点清空时必须让仍在运行的旧工作集尽快退出。
+            int generation = PrewarmGeneration.Advance();
             if (entry == null || entry.Outline == null || entry.Outline.Visuals == null) return;
             List<string> urls = new List<string>();
             HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -524,12 +527,15 @@ namespace CF7Launcher.Guardian.Hud
             ThreadPool.QueueUserWorkItem(delegate(object state)
             {
                 List<string> workset = (List<string>)state;
-                for (int i = 0; i < workset.Count; i++)
+                int processed = PrewarmGeneration.Process(workset, generation, delegate(string assetUrl)
                 {
-                    try { PrewarmAsset(workset[i]); }
-                    catch (Exception ex) { LogManager.Log("[MapHud] workset prewarm failed: " + workset[i] + " ex=" + ex.Message); }
-                }
-                PerfTrace.Mark("mapHud.workset_prewarm_done", "count=" + workset.Count);
+                    try { PrewarmAsset(assetUrl); }
+                    catch (Exception ex) { LogManager.Log("[MapHud] workset prewarm failed: " + assetUrl + " ex=" + ex.Message); }
+                });
+                if (processed == workset.Count && PrewarmGeneration.IsCurrent(generation))
+                    PerfTrace.Mark("mapHud.workset_prewarm_done", "count=" + processed);
+                else
+                    PerfTrace.Mark("mapHud.workset_prewarm_canceled", "processed=" + processed + "/" + workset.Count);
             }, urls);
         }
 
