@@ -431,11 +431,18 @@ if (-not (Test-Path $publishedCoreExe)) {
     Write-Host "[FAIL] Published Core exe missing: $publishedCoreExe" -ForegroundColor Red
     exit 1
 }
+# NuGet native asset packages may carry very large debugger-only PDBs even when the project
+# disables its own PDB output. They are not runtime dependencies and must never enter the
+# committed FDD set or integrity manifest (SkiaSharp 3.119.4 alone contributes ~84 MB).
+Get-ChildItem $publishDir -File -Filter '*.pdb' | ForEach-Object {
+    Remove-Item -LiteralPath $_.FullName -Force
+    Write-Host "  Removed publish debug symbol: $($_.Name)" -ForegroundColor DarkGray
+}
 $publishTotalMB = [math]::Round(((Get-ChildItem $publishDir -File | Measure-Object -Property Length -Sum).Sum / 1MB), 1)
 Write-Host "  dotnet publish OK. FDD total = ${publishTotalMB}MB / $((Get-ChildItem $publishDir -File).Count) files" -ForegroundColor Green
 
 # Step 6: 复制 publish + bootstrap + native side-cars 到 projectRoot
-# - FDD 产物（Core.exe + Core.dll + 17 DLLs + deps.json + runtimeconfig.json）从 publishDir
+# - FDD 产物（Core.exe + Core.dll + 19 DLLs + deps.json + runtimeconfig.json）从 publishDir
 #   拷到 projectRoot\runtime\（**子目录**，避免用户在 projectRoot 看到 Core.exe 误点击触发
 #   .NET apphost 的 English "you need .NET runtime" 默认对话框）
 # - bootstrap.exe 从 bin/Release 拷到 projectRoot 并改名 CRAZYFLASHER7MercenaryEmpire.exe（用户面入口）
@@ -453,9 +460,9 @@ if (-not (Test-Path $runtimeDir)) {
 # 残留（降级依赖 / 弃用 DLL）仍会被清掉。
 $expectedNames = New-Object 'System.Collections.Generic.HashSet[string]'([System.StringComparer]::OrdinalIgnoreCase)
 
-# 6b: publish/ 下除 *.xml 外全拷到 projectRoot\runtime\
+# 6b: publish/ 下除文档 XML / 调试 PDB 外全拷到 projectRoot\runtime\
 Get-ChildItem $publishDir -File | Where-Object {
-    $_.Extension -ne '.xml'
+    $_.Extension -ne '.xml' -and $_.Extension -ne '.pdb'
 } | ForEach-Object {
     $dst = Join-Path $runtimeDir $_.Name
     $copied = Copy-IfDifferent -Src $_.FullName -Dst $dst

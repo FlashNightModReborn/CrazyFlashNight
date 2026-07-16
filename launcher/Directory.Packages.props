@@ -20,6 +20,9 @@
     <!-- DXGI 适配器枚举（GpuPreferenceManager 检测独显） -->
     <PackageVersion Include="Vortice.DXGI" Version="3.6.2" />
 
+    <!-- Native HUD WebP 解码；MIT 许可并自带 Windows codec，避免依赖系统可选扩展 -->
+    <PackageVersion Include="SkiaSharp" Version="3.119.4" />
+
     <!-- 测试 -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />

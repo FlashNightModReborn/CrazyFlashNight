@@ -75,7 +75,7 @@ namespace CF7Launcher.Guardian.Hud
             return null;
         }
 
-        /// <summary>所有 asset URL 集合（去重）；用于 P2-1 prewarm 预加载 silhouette PNG。</summary>
+        /// <summary>所有 asset URL 集合（去重）；用于 P2-1 prewarm 预加载 silhouette WebP。</summary>
         public IEnumerable<string> EnumerateAssetUrls()
         {
             Dictionary<string, MapHudHotspotEntry> snap = _byId;

@@ -15,6 +15,7 @@
           "Microsoft.ClearScript.V8.Native.win-x64": "7.4.5",
           "Microsoft.Web.WebView2": "1.0.3856.49",
           "Newtonsoft.Json": "13.0.3",
+          "SkiaSharp": "3.119.4",
           "Vortice.DXGI": "3.6.2",
           "Microsoft.Web.WebView2.Core": "1.0.3856.49",
           "Microsoft.Web.WebView2.WinForms": "1.0.3856.49",
@@ -91,6 +92,27 @@
           "lib/net8.0/SharpGen.Runtime.COM.dll": {
             "assemblyVersion": "2.2.0.0",
             "fileVersion": "2.2.0.0"
+          }
+        }
+      },
+      "SkiaSharp/3.119.4": {
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "3.119.4"
+        },
+        "runtime": {
+          "lib/net10.0/SkiaSharp.dll": {
+            "assemblyVersion": "3.119.0.0",
+            "fileVersion": "3.119.4.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.Win32/3.119.4": {
+        "native": {
+          "runtimes/win-x64/native/libSkiaSharp.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libSkiaSharp.pdb": {
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -214,6 +236,20 @@
       "sha512": "sha512-4vsXC8ohyVslcUDVBoVXLDkjKprqujh3GWy+DqqULjyZ3GCx7nwRAV5DdrXZxX70iEiKyI3TxW3Qhf/oOXeC1Q==",
       "path": "sharpgen.runtime.com/2.2.0-beta",
       "hashPath": "sharpgen.runtime.com.2.2.0-beta.nupkg.sha512"
+    },
+    "SkiaSharp/3.119.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-53NOSUZ1Us+91Sm0uCkIivh/k7jOowRErZT2sIWwPFN9mLUvdxnE6rS4sWo4255+Rd2MWUSF+j0NMZHD6Cke+Q==",
+      "path": "skiasharp/3.119.4",
+      "hashPath": "skiasharp.3.119.4.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.Win32/3.119.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg==",
+      "path": "skiasharp.nativeassets.win32/3.119.4",
+      "hashPath": "skiasharp.nativeassets.win32.3.119.4.nupkg.sha512"
     },
     "Vortice.DirectX/3.6.2": {
       "type": "package",

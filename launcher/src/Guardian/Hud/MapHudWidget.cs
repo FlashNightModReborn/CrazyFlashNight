@@ -22,13 +22,13 @@ namespace CF7Launcher.Guardian.Hud
     ///
     /// 渲染层级（自底向上）：
     ///   1. 圆角卡片背景（按 group 主题色染）
-    ///   2. body：visuals PNG alpha 剪影（优先）或 fallback 圆角矩形 blocks + beacon 高亮 currentRect
+    ///   2. body：visuals WebP alpha 剪影（优先）或 fallback 圆角矩形 blocks + beacon 高亮 currentRect
     ///   3. label pill（左上角，pageLabel + label）
     ///
     /// click → LauncherCommandRouter.Dispatch("TASK_MAP")（与 web button 同入口）
     ///
-    /// PNG silhouette mask 与 web map-hud-svg-silhouette 对齐：assetUrl 以 webDir 为安全根解析，
-    /// 使用 PNG alpha 作为 mask 并按 HUD theme tint。visuals 缺失或加载失败时回退 blocks。
+    /// WebP silhouette mask 与 web map-hud-svg-silhouette 对齐：assetUrl 以 webDir 为安全根解析，
+    /// 由 SkiaSharp 解码后使用 alpha 作为 mask 并按 HUD theme tint。visuals 缺失或加载失败时回退 blocks。
     /// </summary>
     public class MapHudWidget : INativeHudWidget, IUiDataConsumer
     {
@@ -508,7 +508,7 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         /// <summary>
-        /// P2-1 prewarm 入口：后台线程预加载 silhouette PNG 进 AssetCache。
+        /// P2-1 prewarm 入口：后台线程预加载 silhouette WebP 进 AssetCache。
         /// 同步路径 GetAssetImage 走相同 lock；预加载后玩家首次打开 map 时直接命中。
         /// </summary>
         public static void PrewarmAsset(string assetUrl)
@@ -535,12 +535,9 @@ namespace CF7Launcher.Guardian.Hud
                 }
                 try
                 {
-                    using (Image src = Image.FromFile(path))
-                    {
-                        Bitmap copy = new Bitmap(src);
-                        AssetCache[path] = copy;
-                        return copy;
-                    }
+                    Bitmap copy = MapHudImageDecoder.LoadBitmap(path);
+                    AssetCache[path] = copy;
+                    return copy;
                 }
                 catch (Exception ex)
                 {
