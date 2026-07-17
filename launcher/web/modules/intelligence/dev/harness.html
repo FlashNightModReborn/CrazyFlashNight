@@ -85,10 +85,9 @@
     }
     #panel-content {
         position: absolute;
-        inset: 1.5% 2%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        /* 2026-07-17：对齐生产全 anchor（inset:0 无内缩）；面板内部由共享 PanelScale 等比铺满。 */
+        inset: 0;
+        display: block;
     }
     #harness-status {
         color: #9aa4ae;
@@ -188,6 +187,7 @@
 </script>
 <script src="../../bridge.js"></script>
 <script src="../../panels.js"></script>
+<script src="../../panel-scale.js"></script>
 <script src="../../tooltip.js"></script>
 <script src="../../minigames/shared/dev/harness-base.js"></script>
 <script>

@@ -33,10 +33,14 @@ var IntelligencePanel = (function() {
     var _currentViewMode = 'intel';    // 'intel' 或 'glossary'
     var _currentGlossaryTerm = '';
     var _glossarySnapshot = null;      // 当前名词的快照数据
+    var _catalogTab = 'items';         // 右侧目录 tab：'items' 情报物品 / 'glossary' 专有名词
+    var _scaleHandle = null;           // 共享 PanelScale.attach 句柄（T3）；不可用时回退自有实现
 
     // 沉浸全屏化（2026-06-11）：设计画布从 1180×790（aspect 1.494，宽屏下左右柱箱）
-    // 改为 1404×790（=790×16/9，严格 16:9 保字号密度）。fitPanelToParent/updateFitScale
-    // 等比逻辑不变，比例对齐 anchor 16:9 后柱箱自动消失，中列阅读区吃下多出的 224px。
+    // 改为 1404×790（=790×16/9，严格 16:9 保字号密度）。
+    // 2026-07-17 对齐双栏工作台家族：缩放改由共享 PanelScale.attach 驱动（写 --panel-scale），
+    // 自有 fitPanelToParent/updateFitScale 仅在 PanelScale 缺失时兜底；画布保持 1404×790
+    // （阅读面板非 1024×576 工作台几何，但共享同一缩放 primitive 与 --panel-scale 语义）。
     var DESIGN_WIDTH = 1404;
     var DESIGN_HEIGHT = 790;
 
@@ -58,6 +62,8 @@ var IntelligencePanel = (function() {
     function createDOM() {
         _el = document.createElement('div');
         _el.className = 'intelligence-panel';
+        // T3：以 archive skin 身份注册进双栏工作台皮肤家族（档案金独立 accent，见 panels.css token 块）
+        _el.setAttribute('data-workbench-skin', 'archive');
         _el.innerHTML =
             '<div class="intel-shell">' +
                 '<header class="intel-header">' +
@@ -76,18 +82,16 @@ var IntelligencePanel = (function() {
                     '<div class="intel-status"></div>' +
                     '<article class="intel-content"></article>' +
                 '</main>' +
-                '<aside class="intel-glossary-panel" aria-label="专有名词">' +
-                    '<div class="intel-glossary-head">专有名词</div>' +
-                    '<div class="intel-glossary-list"></div>' +
-                '</aside>' +
+                // T2（2026-07-17）：专有名词从独立左栏并入右侧目录 tab，省下的 240px 还给阅读区
                 '<aside class="intel-catalog-panel" aria-label="情报目录">' +
                     '<button class="intel-catalog-toggle" type="button" title="收纳情报栏" aria-label="收纳情报栏"><span class="intel-catalog-toggle-mark"></span></button>' +
                     '<div class="intel-catalog-body">' +
-                        '<div class="intel-catalog-head">' +
-                            '<div class="intel-catalog-title">情报物品</div>' +
-                            '<div class="intel-catalog-count"></div>' +
+                        '<div class="intel-catalog-tabs" role="tablist">' +
+                            '<button class="intel-catalog-tab active" type="button" role="tab" data-tab="items" aria-selected="true">情报物品<span class="intel-catalog-count"></span></button>' +
+                            '<button class="intel-catalog-tab" type="button" role="tab" data-tab="glossary" aria-selected="false">专有名词<span class="intel-glossary-count"></span></button>' +
                         '</div>' +
-                        '<div class="intel-catalog-list"></div>' +
+                        '<div class="intel-catalog-list" role="tabpanel"></div>' +
+                        '<div class="intel-glossary-list" role="tabpanel" hidden></div>' +
                     '</div>' +
                 '</aside>' +
                 '<footer class="intel-footer">' +
@@ -136,6 +140,7 @@ var IntelligencePanel = (function() {
             name: _el.querySelector('.intel-name'),
             meta: _el.querySelector('.intel-meta'),
             progress: _el.querySelector('.intel-progress-value'),
+            progressBox: _el.querySelector('.intel-progress-box'),
             status: _el.querySelector('.intel-status'),
             content: _el.querySelector('.intel-content'),
             pageIndicator: _el.querySelector('.intel-page-indicator'),
@@ -145,8 +150,12 @@ var IntelligencePanel = (function() {
             closeBtn: _el.querySelector('.intel-close-btn'),
             catalogPanel: _el.querySelector('.intel-catalog-panel'),
             catalogToggle: _el.querySelector('.intel-catalog-toggle'),
+            catalogTabs: _el.querySelectorAll('.intel-catalog-tab'),
             catalogList: _el.querySelector('.intel-catalog-list'),
-            catalogCount: _el.querySelector('.intel-catalog-count')
+            catalogCount: _el.querySelector('.intel-catalog-count'),
+            glossaryList: _el.querySelector('.intel-glossary-list'),
+            glossaryCount: _el.querySelector('.intel-glossary-count'),
+            shell: _el.querySelector('.intel-shell')
         };
 
         _refs.icon.addEventListener('error', function() {
@@ -173,10 +182,29 @@ var IntelligencePanel = (function() {
             togglePageStrip();
         });
         _refs.pageStrip.addEventListener('click', function(e) { e.stopPropagation(); });
-        
-        _refs.glossaryList = _el.querySelector('.intel-glossary-list');
+
+        Array.prototype.forEach.call(_refs.catalogTabs, function(tab) {
+            tab.addEventListener('click', function(e) {
+                setCatalogTab(e.currentTarget.getAttribute('data-tab'));
+            });
+        });
 
         return _el;
+    }
+
+    function setCatalogTab(tab) {
+        if (tab !== 'glossary') tab = 'items';
+        _catalogTab = tab;
+        Array.prototype.forEach.call(_refs.catalogTabs, function(el) {
+            var active = el.getAttribute('data-tab') === tab;
+            el.classList.toggle('active', active);
+            el.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        _refs.catalogList.hidden = tab !== 'items';
+        _refs.glossaryList.hidden = tab !== 'glossary';
+        if (tab === 'glossary' && (!_glossaryCatalog || !_glossaryCatalog.length)) {
+            requestGlossaryCatalog();
+        }
     }
 
     function onOpen(el, initData) {
@@ -197,6 +225,20 @@ var IntelligencePanel = (function() {
         _runtimeMode = initData.mode === 'prod' || (initData.source === 'runtime' && !_debugMode);
         _tooltipCache = {};
         _hoverTooltipName = '';
+        setCatalogTab('items');
+        // T3：尽早挂共享 PanelScale（必须在任何 showLoading/scheduleScaleUpdate 调用之前），
+        // 否则早期 scheduleScaleUpdate 会走兑底 updateFitScale 给 _el 写死内联宽高，冻结面板几何。
+        // panel-scale.js 未加载（极端场景）才回退自有 bindScaleWatcher/updateFitScale（写 --intel-scale）。
+        _scaleHandle = (typeof PanelScale !== 'undefined' && PanelScale && PanelScale.attach)
+            ? PanelScale.attach(_refs.shell, DESIGN_WIDTH, DESIGN_HEIGHT)
+            : null;
+        if (_scaleHandle) {
+            // 防御：panel._el 跨 open 缓存，若历史上兑底路径写过内联几何，在此清除
+            _el.style.width = '';
+            _el.style.height = '';
+        } else {
+            bindScaleWatcher();
+        }
         if (_debugMode) _el.classList.add('is-debug');
         else _el.classList.remove('is-debug');
         _refs.devbar.hidden = !_debugMode;
@@ -220,7 +262,6 @@ var IntelligencePanel = (function() {
                 applyCurrentItemFromBundle();
             });
         }
-        bindScaleWatcher();
         bindKeyboardAndOutsideClick();
         scheduleScaleUpdate();
         
@@ -237,6 +278,7 @@ var IntelligencePanel = (function() {
 
     function onClose() {
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
+        if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         unbindScaleWatcher();
         unbindKeyboardAndOutsideClick();
         _pagePopupOpen = false;
@@ -464,6 +506,7 @@ var IntelligencePanel = (function() {
         _refs.name.textContent = displayLabel;
         _refs.meta.textContent = '已发现 ' + unlockedPages + ' / ' + pages.length + ' 页信息';
         _refs.progress.textContent = (_snapshot.value || 0) + ' / ' + (_snapshot.maxValue || 0);
+        _refs.progressBox.style.display = '';
         _refs.content.setAttribute('data-content-mode', _snapshot.contentMode || 'legacy');
         _refs.content.setAttribute('data-skin', _snapshot.skin || 'paper');
         if (_snapshot.writerVoice) {
@@ -499,6 +542,14 @@ var IntelligencePanel = (function() {
     function renderGlossaryList() {
         if (!_refs || !_refs.glossaryList) return;
         _refs.glossaryList.innerHTML = '';
+        _refs.glossaryCount.textContent = _glossaryCatalog.length ? (_glossaryCatalog.length + ' 词') : '';
+        if (!_glossaryCatalog.length) {
+            var empty = document.createElement('div');
+            empty.className = 'intel-glossary-empty';
+            empty.textContent = '暂无可显示的名词';
+            _refs.glossaryList.appendChild(empty);
+            return;
+        }
         for (var i = 0; i < _glossaryCatalog.length; i++) {
             var term = _glossaryCatalog[i];
             var btn = document.createElement('button');
@@ -525,6 +576,8 @@ var IntelligencePanel = (function() {
         _refs.name.textContent = term.displayName || term.termName;
         _refs.meta.textContent = '';                // 不显示页数
         _refs.progress.textContent = '';            // 不显示收集进度
+        _refs.progressBox.style.display = 'none'; // metric 卡整体隐藏（避免只剩金边的空壳）
+        _refs.status.textContent = '';              // 清掉「正在读取名词释义…」加载态
         _refs.content.innerHTML = '';
         _refs.content.setAttribute('data-content-mode', 'h5');
         _refs.content.setAttribute('data-skin', term.skin || 'paper');
@@ -630,7 +683,10 @@ var IntelligencePanel = (function() {
         btn.appendChild(text);
         btn.addEventListener('click', function(e) {
             var nextName = e.currentTarget.getAttribute('data-name');
-            if (!nextName || nextName === _currentItemName) return;
+            if (!nextName) return;
+            // 名词视图下点击当前情报 = 从名词返回该情报（快照仍在本地，直接重渲染即可）
+            var returningFromGlossary = (_currentViewMode === 'glossary');
+            if (nextName === _currentItemName && !returningFromGlossary) return;
             _currentViewMode = 'intel';
             _currentItemName = nextName;
             var nextItem = _catalogByName[_currentItemName];
@@ -641,6 +697,7 @@ var IntelligencePanel = (function() {
             }
             _selectedPage = 0;
             _showPlain = true;
+            if (returningFromGlossary && _snapshot) { renderSnapshot(); return; }
             if (!_runtimeMode && _bundleByName[_currentItemName]) applyCurrentItemFromBundle();
             else requestSnapshot();
         });
@@ -811,6 +868,7 @@ var IntelligencePanel = (function() {
             _refs.pageTotal.textContent = '0';
             _refs.pageIndicator.disabled = true;
             _refs.toggleBtn.disabled = true;
+            _refs.toggleBtn.classList.remove('is-cipher-view');
             _refs.prevBtn.disabled = true;
             _refs.nextBtn.disabled = true;
             return;
@@ -826,6 +884,7 @@ var IntelligencePanel = (function() {
             _refs.status.textContent = '文本加载失败：' + _snapshot.textError;
             _refs.toggleBtn.disabled = true;
             _refs.toggleBtn.textContent = '不可用';
+            _refs.toggleBtn.classList.remove('is-cipher-view');
             _refs.content.appendChild(emptyBlock('该情报文本暂不可用。'));
             return;
         }
@@ -834,6 +893,7 @@ var IntelligencePanel = (function() {
             _refs.status.textContent = '尚未发现 · 需要收集进度达到 ' + page.value;
             _refs.toggleBtn.disabled = true;
             _refs.toggleBtn.textContent = '未解锁';
+            _refs.toggleBtn.classList.remove('is-cipher-view');
             _refs.content.appendChild(emptyBlock('情报页仍处于锁定状态。'));
             return;
         }
@@ -850,14 +910,17 @@ var IntelligencePanel = (function() {
             _refs.status.textContent = '信息未完全解明 · 需要解密等级 ' + page.encryptLevel;
             _refs.toggleBtn.disabled = true;
             _refs.toggleBtn.textContent = '密文视图';
+            _refs.toggleBtn.classList.remove('is-cipher-view');
         } else if (canDecrypt) {
             _refs.status.textContent = _showPlain ? '信息已解明' : '当前显示未解明文本';
             _refs.toggleBtn.disabled = false;
             _refs.toggleBtn.textContent = _showPlain ? '密文视图' : '明文视图';
+            _refs.toggleBtn.classList.toggle('is-cipher-view', !_showPlain);
         } else {
             _refs.status.textContent = '';
             _refs.toggleBtn.disabled = true;
             _refs.toggleBtn.textContent = '明文视图';
+            _refs.toggleBtn.classList.remove('is-cipher-view');
         }
 
         if (isH5) {
@@ -963,7 +1026,11 @@ var IntelligencePanel = (function() {
         var root = doc.body.firstChild;
         var fragment = document.createDocumentFragment();
         copySafeChildren(root, fragment);
-        target.appendChild(fragment);
+        // T2：legacy 纯文本包一层流容器，CSS 才能收敛行长/行高（文本节点无法被 max-width 约束）
+        var flow = document.createElement('div');
+        flow.className = 'intel-legacy-flow';
+        flow.appendChild(fragment);
+        target.appendChild(flow);
     }
 
     function copySafeChildren(source, target) {
@@ -1089,6 +1156,9 @@ var IntelligencePanel = (function() {
     }
 
     function scheduleScaleUpdate() {
+        // T3：PanelScale 句柄自带监听，这里只需手动触发一次同步（内容变化不改变缩放，
+        // 但保留既有调用点的语义开销为零）；PanelScale 缺失时走自有 rAF 实现。
+        if (_scaleHandle) { _scaleHandle.update(); return; }
         if (typeof requestAnimationFrame === 'function') {
             requestAnimationFrame(updateFitScale);
         } else {
@@ -1096,7 +1166,11 @@ var IntelligencePanel = (function() {
         }
     }
 
+    // 以下 updateFitScale/fitPanelToParent 为 PanelScale 缺失时的兜底实现（写 --intel-scale）。
+    // 正常路径（overlay.html boot 加载 panel-scale.js）不会走到；_scaleHandle 存在时显式空转，
+    // 防止 attach 之前排入的 rAF 回调回写内联几何。
     function updateFitScale() {
+        if (_scaleHandle) return;
         if (!_el) return;
         fitPanelToParent();
         var width = _el.clientWidth || _el.offsetWidth || 0;
@@ -1146,7 +1220,9 @@ var IntelligencePanel = (function() {
                 catalogCollapsed: _drawerCollapsed,
                 pagePopupOpen: _pagePopupOpen,
                 devbarVisible: _refs && _refs.devbar ? !_refs.devbar.hidden : false,
-                scale: _el ? Number(_el.style.getPropertyValue('--intel-scale')) || 1 : 1
+                catalogTab: _catalogTab,
+                scale: (_refs && _refs.shell && Number(_refs.shell.style.getPropertyValue('--panel-scale')))
+                    || Number(_el.style.getPropertyValue('--intel-scale')) || 1
             };
         },
         _debugSetPage: function(index) {
