@@ -28,6 +28,32 @@
         return false;
     }
 
+    /**
+     * 工作台状态机统一枚举。
+     * 旧代码中的 'busy' 视为 'loading' 的遗留同义词，仍被接受但建议逐步迁移。
+     */
+    var WorkbenchState = {
+        IDLE: 'idle',
+        LOADING: 'loading',
+        READY: 'ready',
+        PENDING: 'pending',
+        WARNING: 'warning',
+        ERROR: 'error',
+        DISCONNECTED: 'disconnected',
+        // 遗留同义词
+        BUSY: 'busy'
+    };
+    var _validStates = [
+        WorkbenchState.IDLE, WorkbenchState.LOADING, WorkbenchState.READY,
+        WorkbenchState.PENDING, WorkbenchState.WARNING, WorkbenchState.ERROR,
+        WorkbenchState.DISCONNECTED, WorkbenchState.BUSY
+    ];
+    function normalizeState(state) {
+        if (!state) return WorkbenchState.IDLE;
+        if (includes(_validStates, state)) return state;
+        return WorkbenchState.IDLE;
+    }
+
     function viewKey(view) {
         return view && view.instanceKey ? String(view.instanceKey) : '';
     }
@@ -110,7 +136,7 @@
         identity.appendChild(this._subtitle);
 
         this._status = makeElement('div', 'workbench-status');
-        this._status.setAttribute('data-state', 'idle');
+        this._status.setAttribute('data-state', WorkbenchState.IDLE);
         this._status.textContent = options.status || '待命';
         this._status.setAttribute('role', 'status');
         this._status.setAttribute('aria-live', 'polite');
@@ -211,7 +237,7 @@
     DualPaneShell.prototype.setStatus = function(text, state) {
         var label = text || '';
         this._status.textContent = label;
-        this._status.setAttribute('data-state', state || 'idle');
+        this._status.setAttribute('data-state', normalizeState(state));
         this._status.setAttribute('aria-label', label);
     };
 
@@ -577,6 +603,10 @@
 
     InteractionBroker.prototype.debugState = function() {
         return { selectedInstanceKey: this._selected ? viewKey(this._selected.view) : null };
+    };
+
+    InteractionBroker.prototype.isSelectedNode = function(node) {
+        return !!this._selected && this._selected.node === node;
     };
 
     function PointerDragController(options) {
@@ -1021,6 +1051,7 @@
         PointerDragController: PointerDragController,
         ItemCard: ItemCard,
         ItemGrid: ItemGrid,
-        GridDensityController: GridDensityController
+        GridDensityController: GridDensityController,
+        WorkbenchState: WorkbenchState
     };
 });

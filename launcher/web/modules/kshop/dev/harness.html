@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -1431,6 +1431,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
+        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
         click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"] .inventory-discard-btn');
         var discardModalNode = document.querySelector('.workbench-modal[data-modal-kind="discard"]');
         var discardModal = !!discardModalNode
@@ -1574,10 +1575,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         PanelTooltip.lastRichOptions = null;
         await Host.openWorkbench(240, 'battlebox');
-        var tuningCardButtons = document.querySelectorAll('.inventory-owned-backpack .inventory-tuning-btn');
-        var tuningStackButton = document.querySelector('.inventory-owned-backpack [data-physical-slot="0"] .inventory-tuning-btn');
-        var tuningEquipmentButton = document.querySelector('.inventory-owned-backpack [data-physical-slot="1"] .inventory-tuning-btn');
-        click('.inventory-owned-backpack [data-physical-slot="1"] .inventory-tuning-btn');
+        click('.equipment-tuning-view-switch');
         await waitFor(function(){
             return InventoryWorkbench.debugState().view === 'tuning'
                 && Host.sent.some(function(message){
@@ -1587,13 +1585,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var tuningEntryRequest = Host.sent.filter(function(message){
             return message.domain === 'equipment_tuning' && message.cmd === 'snapshot';
         })[0];
-        assert('workbench-tuning-entry','正常战备箱 storage 为每件背包装备提供卡片级调制动作并精确选择该槽',
-            tuningCardButtons.length === 1 && !tuningStackButton && !!tuningEquipmentButton
-                && InventoryWorkbench.debugState().view === 'tuning'
+        assert('workbench-tuning-entry','正常战备箱顶栏提供常驻装备调制入口，进入后自动选中背包内第一件可调制装备',
+            InventoryWorkbench.debugState().view === 'tuning'
                 && tuningEntryRequest && tuningEntryRequest.panelInstanceId === 'panel.harness.tuning-entry'
-                && tuningEntryRequest.payload.source.containerId === '背包'
-                && tuningEntryRequest.payload.source.slot === 1,
-            JSON.stringify({buttons:tuningCardButtons.length,state:InventoryWorkbench.debugState(),request:tuningEntryRequest}));
+                && tuningEntryRequest.payload.source.containerId === '背包',
+            JSON.stringify({state:InventoryWorkbench.debugState(),request:tuningEntryRequest}));
         var tuningHelpButton = document.querySelector('.workbench-header-actions .equipment-tuning-help-btn');
         if (tuningHelpButton) tuningHelpButton.click();
         var tuningHelpModal = document.querySelector('.workbench-modal[data-modal-kind="equipment-tuning-help"]');
@@ -1654,7 +1650,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelectorAll('.inventory-sort-controls').length === 2
                 && document.querySelectorAll('.inventory-category-filter').length === 2
                 && document.querySelectorAll('.inventory-authority-sort').length === 2
-                && normalTuningButtons.length === 1
+                && normalTuningButtons.length === 0
                 && !!normalTuningSwitch
                 && (function(){
                     var rect = document.getElementById('panel-content').getBoundingClientRect();

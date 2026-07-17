@@ -185,6 +185,7 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 - 用户可输入文本进入 `innerHTML` 前必须 escape；优先用 `textContent`。
 - 运行态 WebView2 是游戏 UI renderer，不是文档浏览器：Overlay 统一加载 `css/game-ui-behavior.css` + `modules/game-ui-behavior.js`，默认抑制文本选取、原生 `dragstart` 拖影与 `contextmenu`；真实编辑器只通过 `input/textarea/contenteditable/[data-browser-native]` 显式放行。不要在各 panel 重复绑一套互相冲突的 `selectstart` handler。
 - 固定 1024×576 设计画布走 `.panel-scale-shell + PanelScale` 时，生产 CSS 必须为对应 `data-panel` 声明 `#panel-content { inset:0 }`；否则会静默继承通用 `4% 6%` 卡片内缩，在任何分辨率下都浪费一圈可用空间。dev harness 不得用全局 `#panel-content{inset:0}` 遮掉这项生产约束。
+- **颜色必须走 token，禁止新增硬编码 DLS/θ-域/技能/调制色值**：canonical 色表见 `docs/dls-color-system.md`；新面板只能使用 `--dls-*`、`--theta-*`、`--wb-semantic-*` 及 skin 覆盖的 `--wb-accent-*`，不得在 `panels.css` 中再写 `#4ec9f0`/`#3dd5ff` 等一次性色值。
 - runtime 文本必须考虑 1024×576、1366×768、1920×1080 视口，按钮文本不能溢出。
 
 使用资源时，必须有 fallback：图标、头像、背景 missing 时不能让 panel 空白或 JS 抛异常。`Panels.init()` 会预热共享图标 manifest，`Panels.open()` 把该加载尝试作为所有生产 Panel 的 required-assets 门，完成前不进入 `create/onOpen`；新迁移面板不得再假设玩家先开过商城，也不应各自复制“先 `Icons.load()` 再发业务快照”的竞态代码。manifest 失败时 `Icons` 以空 map 完成并让面板走缺图 fallback，不永久锁死 Overlay。普通物品图标若只需要 URL 用 `Icons.resolve()` 首帧静态显示，列表/格子里的可动画图标用 `Icons.html()` / `applyIconToImage()` 交给共享模块播放，只有 manifest 显式声明 `playback` / `animated` 的图标才会按时间线切帧。

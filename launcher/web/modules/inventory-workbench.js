@@ -493,22 +493,10 @@ var InventoryWorkbench = (function() {
             },
             keyOf:function(slot) { return slot.physicalSlot; },
             renderItem:function(slot) {
-                var node = InventoryUI.renderOwnedSlot(containerId, slot, {
+                return InventoryUI.renderOwnedSlot(containerId, slot, {
                     iconHtml:iconHtml,
                     allowDiscard:containerId === '背包'
                 });
-                if (_profile === 'battlebox' && _tuningOrigin && _viewMode === 'storage'
-                        && containerId === '背包' && slot.occupied && slot.item
-                        && slot.item.itemKind === 'equipment') {
-                    var tuneButton = document.createElement('button');
-                    tuneButton.type = 'button';
-                    tuneButton.className = 'inventory-tuning-btn';
-                    tuneButton.textContent = '调制';
-                    tuneButton.setAttribute('aria-label', '调制' + String(slot.item.displayName || slot.item.name || '该装备'));
-                    node.classList.add('has-tuning-action');
-                    node.appendChild(tuneButton);
-                }
-                return node;
             },
             bindItem:function(node, slot) { bindSlot(containerId, node, slot); },
             exportOffer:function(slot) {
@@ -549,7 +537,7 @@ var InventoryWorkbench = (function() {
         node.addEventListener('click', function(event) {
             if (consumeDragClick()) return;
             if (event.target && event.target.closest
-                    && event.target.closest('.inventory-discard-btn,.inventory-tuning-btn')) return;
+                    && event.target.closest('.inventory-discard-btn')) return;
             if (_viewMode === 'tuning' && containerId === '背包') {
                 if (_state.busyOwner || _state.refreshRequired) return;
                 if (!slot.occupied || !slot.item || slot.item.itemKind !== 'equipment') {
@@ -563,18 +551,13 @@ var InventoryWorkbench = (function() {
             if (handleQuickTransferClick(event, containerId, slot)) return;
             if (_state.busyOwner || _state.refreshRequired) return;
             var view = containerId === '背包' ? _backpackView : _rightView;
-            if (_broker.debugState().selectedInstanceKey) _broker.activateSelected(view, {item:slot, node:node}, 'click');
+            if (_broker.debugState().selectedInstanceKey && !_broker.isSelectedNode(node)) _broker.activateSelected(view, {item:slot, node:node}, 'click');
             else if (slot.occupied) _broker.select(view, slot, node);
         });
         var discardButton = node.querySelector('.inventory-discard-btn');
         if (discardButton) discardButton.addEventListener('click', function(event) {
             event.stopPropagation();
             confirmDiscard(containerId, slot);
-        });
-        var tuningButton = node.querySelector('.inventory-tuning-btn');
-        if (tuningButton) tuningButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            if (tuningButton.disabled || !switchWorkbenchView('tuning', slot)) return;
         });
     }
 
@@ -921,8 +904,6 @@ var InventoryWorkbench = (function() {
         for (var i = 0; i < nodes.length; i++) nodes[i].classList.toggle('write-locked', slotBlocked);
         var discardButtons = _el.querySelectorAll('.inventory-discard-btn');
         for (var d = 0; d < discardButtons.length; d++) discardButtons[d].style.display = _viewMode === 'tuning' ? 'none' : '';
-        var tuningButtons = _el.querySelectorAll('.inventory-tuning-btn');
-        for (var t = 0; t < tuningButtons.length; t++) tuningButtons[t].disabled = blocked;
         if (_pager) _pager.setDisabled(blocked);
         if (_backpackSortControls) _backpackSortControls.setDisabled(blocked);
         if (_rightSortControls) {

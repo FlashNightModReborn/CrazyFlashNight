@@ -87,7 +87,7 @@
         dropTarget.setAttribute('data-audio-cue', 'select');
         dropTarget.innerHTML = '<span class="kshop-drop-glyph">＋</span>'
             + '<span class="kshop-drop-copy"><b>添加商品</b><small>选择或拖入</small></span>';
-        dropTarget.title = '选择商品后点击，或将商品拖入购物车';
+        dropTarget.setAttribute('aria-label', '选择商品后点击，或将商品拖入购物车');
         dropTarget.addEventListener('click', options.onCartSinkClick);
         cartGridView.root.insertBefore(dropTarget, cartGridView.renderer.root);
 

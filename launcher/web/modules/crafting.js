@@ -46,7 +46,7 @@ var CraftingPanel = (function() {
         _organizerButton = document.createElement('button');
         _organizerButton.type = 'button'; _organizerButton.className = 'workbench-mode-btn crafting-organizer-btn';
         _organizerButton.textContent = '背包 / 战备箱';
-        _organizerButton.title = '切换到背包—战备箱整理；返回后会重新核算当前配方';
+        _organizerButton.setAttribute('aria-label', '切换到背包—战备箱整理；返回后会重新核算当前配方');
         _organizerButton.addEventListener('click', openOrganizer);
         _shell.addHeaderAction(_organizerButton);
         var close = document.createElement('button');
@@ -122,7 +122,7 @@ var CraftingPanel = (function() {
         var availability = document.createElement('span');
         availability.className = 'crafting-card-availability ' + (ready ? 'ready' : 'blocked');
         availability.textContent = ready ? '可合成' : availabilityText(recipe.availability);
-        availability.title = ready ? '当前资源可合成 1 份' : errorMessage(recipe.availability);
+        availability.setAttribute('aria-label', ready ? '当前资源可合成 1 份' : errorMessage(recipe.availability));
         node.appendChild(icon); node.appendChild(copy); node.appendChild(availability); return node;
     }
 

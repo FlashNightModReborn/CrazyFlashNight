@@ -685,7 +685,7 @@ var NpcShop = (function() {
             var node = InventoryUI.renderOwnedSlot(containerId, slot, {iconHtml:iconHtml, allowDiscard:false});
             if (slot.occupied) {
                 node.classList.add('npcshop-space-transferable');
-                node.title = containerId === '背包' ? '移入战备箱' : '移入背包';
+                node.setAttribute('aria-label', containerId === '背包' ? '移入战备箱' : '移入背包');
                 (function(sourceContainer, sourceSlot) {
                     node.addEventListener('click', function() { transferSpaceItem(sourceContainer, sourceSlot); });
                 })(containerId, slot);

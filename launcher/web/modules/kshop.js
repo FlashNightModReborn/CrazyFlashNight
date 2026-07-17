@@ -990,7 +990,7 @@ var KShop = (function() {
         var stackable = isStackable(item);
         var actionHtml = '';
         if (!nosale && !locked) {
-            actionHtml = '<button class="kshop-add-btn' + (stackable ? '' : ' kshop-add-single') + '" data-idx="' + item.idx + '" data-audio-cue="select" title="加入购物车">' + (stackable ? '+' : '加入') + '</button>';
+            actionHtml = '<button class="kshop-add-btn' + (stackable ? '' : ' kshop-add-single') + '" data-idx="' + item.idx + '" data-audio-cue="select" aria-label="加入购物车">' + (stackable ? '+' : '加入') + '</button>';
         }
         return Workbench.ItemCard.renderCatalog({
             skin: 'kshop',
@@ -1469,7 +1469,7 @@ var KShop = (function() {
         var stackable = isStackable(item);
         var qtyHtml = stackable
             ? '<span class="kshop-cart-qty"><button class="kshop-qty-btn" data-idx="' + cartItem.idx + '" data-delta="-1" data-audio-cue="click">−</button><b>' + cartItem.qty + '</b><button class="kshop-qty-btn" data-idx="' + cartItem.idx + '" data-delta="1" data-audio-cue="click">＋</button></span>'
-            : '<span class="kshop-cart-qty"><b>1</b></span><button class="kshop-qty-btn kshop-remove-btn" data-idx="' + cartItem.idx + '" data-delta="-1" data-audio-cue="cancel" title="移除">×</button>';
+            : '<span class="kshop-cart-qty"><b>1</b></span><button class="kshop-qty-btn kshop-remove-btn" data-idx="' + cartItem.idx + '" data-delta="-1" data-audio-cue="cancel" aria-label="移除">×</button>';
         row.innerHTML =
             '<span class="kshop-cart-thumb">' + iconHtml(item.icon, 'kshop-row-icon') + '</span>' +
             '<span class="kshop-cart-copy"><b class="kshop-cart-name">' + escHtml(item.displayname) + '</b><small>K ' + item.price + ' / 件</small></span>' +
