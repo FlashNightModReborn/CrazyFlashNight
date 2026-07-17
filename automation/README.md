@@ -75,7 +75,7 @@ node tools/equipment-tuning/run-unattended.js `
   --shutdown
 ```
 
-目标槽固定默认为 `cf7_agent_equipment_tuning`，必须与显式 seed 不同。runner 永久拒绝 live target 和 `--fresh`，备份目标 shadow/SOL 后只重建专用克隆槽；随后等待 fresh handoff、同 attempt runtime load ack，调用固定 `openEquipmentTuning`，并以同一 `panelInstanceId` 的 `equipment_tuning_panel_bound` + `equipment_tuning_snapshot_confirmed` 为通过门。它在首个权威 snapshot 后停止，不点击业务控件、不发送 preview/commit。离线安全与契约回归入口为 `node tools/equipment-tuning/run-checks.js`。
+目标槽固定默认为 `cf7_agent_equipment_tuning`，必须与显式 seed 不同。runner 永久拒绝 live target 和 `--fresh`；若已有 Launcher，则在改写任何 shadow/SOL 前读取 `agent_control`，只要 Launcher 或 Flash 当前指向目标 agent 槽就 fail-fast。SOL 只按“SharedObject 随机根之后的 `localhost/<完整本地游戏路径>/CRAZYFLASHER7MercenaryEmpire.swf/<slot>.sol`”精确归属，不得用 `resources` basename 或 SWF 名模糊扫描其他安装。通过安全门后才备份目标 shadow/SOL 并重建专用克隆槽；随后等待 fresh handoff、同 attempt runtime load ack，调用固定 `openEquipmentTuning`，并以同一 `panelInstanceId` 的 `equipment_tuning_panel_bound` + `equipment_tuning_snapshot_confirmed` 为通过门。它在首个权威 snapshot 后停止，不点击业务控件、不发送 preview/commit。离线安全与契约回归入口为 `node tools/equipment-tuning/run-checks.js`。
 
 ### 无人值守斗兽标定
 
@@ -119,7 +119,7 @@ chcp.com 65001 | Out-Null
 powershell -File ..\launcher\build.ps1
 ```
 
-该入口只允许在 [运行时构建基线](../docs/runtime-build-reproducibility.md) 校验通过的发布机执行；新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境可加 `-VerifyOnly` 只做字节复核。普通开发机不要为消除源码 diff 自动重建 runtime。
+该入口只允许在 [运行时构建基线](../docs/runtime-build-reproducibility.md) 校验通过的 builder 执行；新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境可加 `-VerifyOnly` 只做字节复核。`launcher/build.ps1 -BuilderId <id>` 只生成隔离 candidate，至少两台 builder 闭包一致后由 `tools/promote-runtime-bundle.ps1` 更新正式 runtime；普通开发机不要为消除源码 diff 自动重建或手工复制 runtime。
 
 ### 改 Flash / AS2
 

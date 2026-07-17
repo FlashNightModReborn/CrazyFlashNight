@@ -1,6 +1,6 @@
 ﻿# ============================================================
 # CF7:ME Guardian Process - Build Script (net10.0-windows)
-# 构建守护进程并复制产物到项目根目录
+# 构建守护进程并写入隔离 runtime candidate；正式根目录只由 promotion 门更新
 # ============================================================
 #
 # 工作流（net10 FDD + native bootstrap）：
@@ -19,8 +19,8 @@
 #   3.  native sol_parser.dll 构建（cargo via rustup）
 #   4.  native bootstrap.exe 构建（cl.exe，用户面入口 wrapper）
 #   5.  dotnet publish -r win-x64 --self-contained false → FDD Core 进 launcher/publish/
-#   6.  Copy-IfDifferent 把 Core FDD 产物 + native side-cars 拷到 projectRoot/runtime/，
-#       bootstrap.exe 改名拷到 projectRoot/CRAZYFLASHER7MercenaryEmpire.exe，生成 runtime manifest，
+#   6.  Copy-IfDifferent 把 Core FDD 产物 + native side-cars 拷到 candidate/runtime/，
+#       bootstrap.exe 改名拷到 candidate/CRAZYFLASHER7MercenaryEmpire.exe，生成 manifest/attestation，
 #       并校验 bundled runtime installer
 #   6f. 断言发布主程序集是 optimized Release build，且 embedded PDB 不含 SourceLink commit 映射
 #   7.  Verify launcher/web 运行时资产清单
@@ -30,6 +30,11 @@
 #
 # 历史：本脚本 Phase 4 前走 nuget restore + msbuild + 手动 $managedFiles 13 个 DLL 复制；
 # 2026-05-28 短期试过 self-contained single-file（146MB），后收敛为当前 FDD runtime/ 目录 + native bootstrap。
+
+param(
+    [string]$BuilderId = $env:CF7_RUNTIME_BUILDER_ID,
+    [string]$CandidateRoot
+)
 
 $ErrorActionPreference = "Stop"
 
@@ -43,6 +48,25 @@ $publishDir = Join-Path $launcherDir "publish"
 . (Join-Path $projectRoot 'tools\runtime-build-common.ps1')
 $runtimeSourceTreeHash = Get-Cf7RuntimeSourceTreeHash -ProjectRoot $projectRoot -Mode Worktree
 $toolchainLockHash = Get-Cf7ToolchainLockHash -ProjectRoot $projectRoot
+$buildRecipeHash = Get-Cf7RuntimeBuildRecipeHash -ProjectRoot $projectRoot -Mode Worktree
+if ([string]::IsNullOrWhiteSpace($BuilderId)) {
+    throw 'Candidate build requires -BuilderId (for example builder-a) or CF7_RUNTIME_BUILDER_ID.'
+}
+if ($BuilderId -notmatch '^[a-z0-9][a-z0-9._-]{1,63}$') {
+    throw 'BuilderId must be 2-64 lowercase ASCII letters, digits, dot, underscore, or hyphen.'
+}
+$candidateBase = [IO.Path]::GetFullPath((Join-Path $projectRoot 'tmp\runtime-candidates')).TrimEnd('\')
+if (-not $CandidateRoot) {
+    $identity = $runtimeSourceTreeHash.Substring(0, 16) + '-' + $toolchainLockHash.Substring(0, 16)
+    $CandidateRoot = Join-Path (Join-Path $candidateBase $identity) $BuilderId
+}
+$deploymentRoot = [IO.Path]::GetFullPath($CandidateRoot).TrimEnd('\')
+$candidatePrefix = $candidateBase + '\'
+if (-not $deploymentRoot.StartsWith($candidatePrefix, [StringComparison]::OrdinalIgnoreCase)) {
+    throw "CandidateRoot must remain under $candidateBase"
+}
+if (Test-Path -LiteralPath $deploymentRoot) { Remove-Item -LiteralPath $deploymentRoot -Recurse -Force }
+New-Item -ItemType Directory -Path $deploymentRoot -Force | Out-Null
 
 # Formal publication proves a managed clean build too. Clear only generated managed
 # intermediates under launcher; native sidecars are rebuilt later into bin\Release.
@@ -92,6 +116,34 @@ function Copy-IfDifferent {
     return $true
 }
 
+# MSVC deterministic output still depends on raw source bytes and the physical source path.
+# Git's text filter hides CRLF/LF checkout differences from hash-object, so materialize a
+# canonical LF copy before invoking cl.exe. native/build.bat path-maps this per-process
+# directory to one stable virtual root.
+function Copy-CanonicalLfFile {
+    param(
+        [Parameter(Mandatory=$true)][string]$Src,
+        [Parameter(Mandatory=$true)][string]$Dst
+    )
+    $inputBytes = [IO.File]::ReadAllBytes($Src)
+    $buffer = New-Object byte[] $inputBytes.Length
+    $writeIndex = 0
+    for ($readIndex = 0; $readIndex -lt $inputBytes.Length; $readIndex++) {
+        $value = $inputBytes[$readIndex]
+        if ($value -eq 13) {
+            if ($readIndex + 1 -lt $inputBytes.Length -and $inputBytes[$readIndex + 1] -eq 10) {
+                continue
+            }
+            $value = 10
+        }
+        $buffer[$writeIndex] = $value
+        $writeIndex++
+    }
+    $outputBytes = New-Object byte[] $writeIndex
+    [Array]::Copy($buffer, $outputBytes, $writeIndex)
+    [IO.File]::WriteAllBytes($Dst, $outputBytes)
+}
+
 # The preflight resolved and byte-verified the exact dotnet host.
 $dotnet = $env:CF7_DOTNET_EXE
 
@@ -99,6 +151,8 @@ Write-Host "=== CF7:ME Guardian Build (net10.0-windows) ===" -ForegroundColor Cy
 Write-Host "  Project Root: $projectRoot"
 Write-Host "  Launcher Dir: $launcherDir"
 Write-Host "  Publish Dir : $publishDir"
+Write-Host "  Candidate   : $deploymentRoot"
+Write-Host "  Builder ID  : $BuilderId"
 Write-Host "  dotnet      : $dotnet"
 # 打印 dotnet 与 global.json 解析结果作为构建日志证据：
 # 1. global.json 位于 repo root（projectRoot），dotnet host 沿 CWD 向上找。本脚本所有 dotnet 调用前
@@ -376,8 +430,26 @@ if (-not (Test-Path $nativeBat)) {
 }
 $miniaudioDll = Join-Path $launcherDir 'bin\Release\miniaudio.dll'
 if (Test-Path -LiteralPath $miniaudioDll) { Remove-Item -LiteralPath $miniaudioDll -Force }
-Invoke-CmdBat $nativeBat
-if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $miniaudioDll)) {
+$nativeTempBase = [IO.Path]::GetFullPath($env:TEMP).TrimEnd('\')
+$miniaudioReproSourceDir = Join-Path $nativeTempBase ("cf7-miniaudio-repro-$PID")
+$miniaudioReproFull = [IO.Path]::GetFullPath($miniaudioReproSourceDir)
+if (-not $miniaudioReproFull.StartsWith($nativeTempBase + '\', [StringComparison]::OrdinalIgnoreCase)) {
+    throw "Refusing to stage miniaudio input outside pinned TEMP: $miniaudioReproFull"
+}
+$nativeExitCode = 1
+try {
+    if (Test-Path -LiteralPath $miniaudioReproFull) { Remove-Item -LiteralPath $miniaudioReproFull -Recurse -Force }
+    New-Item -ItemType Directory -Path $miniaudioReproFull -Force | Out-Null
+    Copy-CanonicalLfFile -Src (Join-Path $launcherDir 'native\miniaudio_bridge.c') -Dst (Join-Path $miniaudioReproFull 'miniaudio_bridge.c')
+    Copy-CanonicalLfFile -Src (Join-Path $launcherDir 'native\miniaudio.h') -Dst (Join-Path $miniaudioReproFull 'miniaudio.h')
+    $env:CF7_MINIAUDIO_REPRO_SOURCE_DIR = $miniaudioReproFull
+    Invoke-CmdBat $nativeBat
+    $nativeExitCode = $LASTEXITCODE
+} finally {
+    Remove-Item Env:CF7_MINIAUDIO_REPRO_SOURCE_DIR -ErrorAction SilentlyContinue
+    if (Test-Path -LiteralPath $miniaudioReproFull) { Remove-Item -LiteralPath $miniaudioReproFull -Recurse -Force }
+}
+if ($nativeExitCode -ne 0 -or -not (Test-Path -LiteralPath $miniaudioDll)) {
     Write-Host "[FAIL] Native build failed or did not produce miniaudio.dll." -ForegroundColor Red
     exit 1
 }
@@ -476,10 +548,10 @@ Write-Host "  dotnet publish OK. FDD total = ${publishTotalMB}MB / $((Get-ChildI
 #   .NET apphost 的 English "you need .NET runtime" 默认对话框）
 # - bootstrap.exe 从 bin/Release 拷到 projectRoot 并改名 CRAZYFLASHER7MercenaryEmpire.exe（用户面入口）
 # - miniaudio / sol_parser 从 launcher\bin\Release（独立构建）
-Write-Host "[Step 6/7] Copy runtime artifacts to projectRoot..." -ForegroundColor Yellow
+Write-Host "[Step 6/7] Copy runtime artifacts to candidate..." -ForegroundColor Yellow
 
 # 6a: 准备 projectRoot\runtime\ 子目录（Core + DLLs 落点）
-$runtimeDir = Join-Path $projectRoot "runtime"
+$runtimeDir = Join-Path $deploymentRoot "runtime"
 if (-not (Test-Path $runtimeDir)) {
     New-Item -ItemType Directory -Path $runtimeDir -Force | Out-Null
 }
@@ -504,7 +576,7 @@ Get-ChildItem $publishDir -File | Where-Object {
 }
 
 # 6c: bootstrap.exe → projectRoot\CRAZYFLASHER7MercenaryEmpire.exe（用户面入口名）
-$userFacingExe = Join-Path $projectRoot "CRAZYFLASHER7MercenaryEmpire.exe"
+$userFacingExe = Join-Path $deploymentRoot "CRAZYFLASHER7MercenaryEmpire.exe"
 $copied = Copy-IfDifferent -Src $bootstrapExe -Dst $userFacingExe
 if ($copied) {
     Write-Host "  Copied: bootstrap.exe -> CRAZYFLASHER7MercenaryEmpire.exe (user-facing entry at projectRoot)"
@@ -646,7 +718,7 @@ if ($runtimeInstallerCandidates.Count -eq 0) {
 }
 $pickedInstaller = $runtimeInstallerCandidates[0].Name
 Write-Host "  bundled installer: $pickedInstaller" -ForegroundColor Green
-Write-Host "  All required artifacts at projectRoot." -ForegroundColor Green
+Write-Host "  All required artifacts present in candidate." -ForegroundColor Green
 
 # Step 6f: managed 产物护栏 — 断言主程序集是优化构建（非 Debug），且无 SourceLink commit 映射
 # 历史卡顿真因：误把 Debug 产物（DebuggableAttribute 的 DisableOptimizations=256 置位 →
@@ -928,7 +1000,7 @@ Write-Host "  OK: save_repair_dict.json 与源头一致" -ForegroundColor Green
 
 # Final bundle gate: validate bytes against the just-written manifest, then exercise
 # the same native preflight used by normal startup without launching Core.
-& powershell.exe -ExecutionPolicy Bypass -File (Join-Path $projectRoot 'tools\verify-runtime-bundle.ps1') -ProjectRoot $projectRoot
+& powershell.exe -ExecutionPolicy Bypass -File (Join-Path $projectRoot 'tools\verify-runtime-bundle.ps1') -ProjectRoot $projectRoot -DeploymentRoot $deploymentRoot
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] runtime bundle verifier rejected the published set." -ForegroundColor Red
     exit 1
@@ -939,6 +1011,18 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+$attestation = New-Cf7RuntimeBuildAttestation -ProjectRoot $projectRoot -DeploymentRoot $deploymentRoot -BuilderId $BuilderId
+if ($attestation.sourceTreeHash -ne $runtimeSourceTreeHash `
+        -or $attestation.toolchainLockHash -ne $toolchainLockHash `
+        -or $attestation.buildRecipeHash -ne $buildRecipeHash) {
+    throw 'Runtime build inputs changed while the candidate was being built.'
+}
+$attestationPath = Join-Path $deploymentRoot 'runtime-build-attestation.json'
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[IO.File]::WriteAllText($attestationPath, ($attestation | ConvertTo-Json -Depth 8) + "`n", $utf8NoBom)
+
 Write-Host ""
 Write-Host "=== Build Complete ===" -ForegroundColor Green
-Write-Host "  Output: $projectRoot\CRAZYFLASHER7MercenaryEmpire.exe"
+Write-Host "  Candidate   : $deploymentRoot"
+Write-Host "  Attestation : $attestationPath"
+Write-Host "  Closure SHA : $($attestation.artifactClosureHash)"

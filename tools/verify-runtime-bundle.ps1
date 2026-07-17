@@ -1,11 +1,15 @@
 ﻿param(
     [string]$ProjectRoot,
+    [string]$DeploymentRoot,
     [switch]$Staged
 )
 
 $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path
+if (-not $DeploymentRoot) { $DeploymentRoot = $ProjectRoot }
+$DeploymentRoot = (Resolve-Path -LiteralPath $DeploymentRoot).Path
+if ($Staged -and $DeploymentRoot -ne $ProjectRoot) { throw '-Staged cannot be combined with a separate DeploymentRoot.' }
 . (Join-Path $ProjectRoot 'tools\runtime-build-common.ps1')
 
 function Test-Cf7ManifestPath([string]$Path) {
@@ -24,12 +28,12 @@ function Get-Cf7DeploymentFiles([bool]$FromIndex) {
     }
 
     $paths = @()
-    $rootExe = Join-Path $ProjectRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
+    $rootExe = Join-Path $DeploymentRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
     if (Test-Path -LiteralPath $rootExe -PathType Leaf) { $paths += 'CRAZYFLASHER7MercenaryEmpire.exe' }
-    $runtimeDir = Join-Path $ProjectRoot 'runtime'
+    $runtimeDir = Join-Path $DeploymentRoot 'runtime'
     if (Test-Path -LiteralPath $runtimeDir -PathType Container) {
         Get-ChildItem -LiteralPath $runtimeDir -Recurse -File | ForEach-Object {
-            $relative = $_.FullName.Substring($ProjectRoot.Length + 1).Replace('\', '/')
+            $relative = $_.FullName.Substring($DeploymentRoot.Length + 1).Replace('\', '/')
             if ($relative -ne 'runtime/cf7-runtime-manifest.tsv') { $paths += $relative }
         }
     }
@@ -40,7 +44,7 @@ if ($Staged) {
     $manifestBytes = Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath 'runtime/cf7-runtime-manifest.tsv'
     $manifestText = [Text.Encoding]::UTF8.GetString($manifestBytes)
 } else {
-    $manifestPath = Join-Path $ProjectRoot 'runtime\cf7-runtime-manifest.tsv'
+    $manifestPath = Join-Path $DeploymentRoot 'runtime\cf7-runtime-manifest.tsv'
     $manifestText = [IO.File]::ReadAllText($manifestPath, [Text.Encoding]::UTF8)
 }
 
@@ -96,7 +100,7 @@ if ($errors.Count -gt 0) {
 foreach ($row in $fileRows) {
     try {
         if ($Staged) { $bytes = Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath $row.Path }
-        else { $bytes = [IO.File]::ReadAllBytes((Join-Path $ProjectRoot ($row.Path -replace '/', '\'))) }
+        else { $bytes = [IO.File]::ReadAllBytes((Join-Path $DeploymentRoot ($row.Path -replace '/', '\'))) }
         $actualHash = Get-Cf7BytesSha256 -Bytes $bytes
         if ($bytes.LongLength -ne $row.Size) { $errors += "size $($row.Path) expected=$($row.Size) actual=$($bytes.LongLength)" }
         if ($actualHash -ne $row.Hash) { $errors += "sha256 $($row.Path) expected=$($row.Hash) actual=$actualHash" }

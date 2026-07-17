@@ -230,6 +230,24 @@ function backupFile(source, backupDir, label) {
   return destination;
 }
 
+function solOwnershipSuffix(root, slot) {
+  const absoluteRoot = path.resolve(root);
+  const volumeRoot = path.parse(absoluteRoot).root;
+  const localRoot = path.relative(volumeRoot, absoluteRoot);
+  return path.join(
+    "localhost",
+    localRoot,
+    "CRAZYFLASHER7MercenaryEmpire.swf",
+    String(slot) + ".sol"
+  );
+}
+
+function isOwnedSolPath(root, slot, candidatePath) {
+  const normalizedCandidate = path.resolve(candidatePath).toLowerCase();
+  const normalizedSuffix = solOwnershipSuffix(root, slot).toLowerCase();
+  return normalizedCandidate.endsWith(path.sep + normalizedSuffix);
+}
+
 function findSolFiles(root, slot) {
   const appData = process.env.APPDATA;
   if (!appData) return [];
@@ -237,7 +255,6 @@ function findSolFiles(root, slot) {
   if (!fs.existsSync(sharedRoot)) return [];
 
   const fileName = String(slot) + ".sol";
-  const projectNeedle = path.basename(root).toLowerCase();
   const results = [];
   const stack = [sharedRoot];
   while (stack.length > 0) {
@@ -253,15 +270,28 @@ function findSolFiles(root, slot) {
       if (entry.isDirectory()) {
         stack.push(full);
       } else if (entry.isFile() && entry.name === fileName) {
-        const lower = full.toLowerCase();
-        if (lower.includes(projectNeedle)
-            && lower.includes("crazyflasher7mercenaryempire.swf")) {
+        if (isOwnedSolPath(root, slot, full)) {
           results.push(full);
         }
       }
     }
   }
   return results.sort();
+}
+
+function assertTargetSlotNotInUse(status, targetSlot) {
+  const launcherSlot = status && status.save && status.save.slot != null
+    ? String(status.save.slot) : "";
+  const runtimeSlot = status && status.saveRuntime && status.saveRuntime.savePath != null
+    ? String(status.saveRuntime.savePath) : "";
+  if (launcherSlot === targetSlot || runtimeSlot === targetSlot) {
+    fail(
+      "target_slot_in_use",
+      "save_seed",
+      "dedicated target slot is already selected by the running Launcher/Flash instance"
+    );
+  }
+  return { launcherSlot, runtimeSlot };
 }
 
 function prepareDedicatedSave(root, args, runDir) {
@@ -1012,6 +1042,44 @@ function runCheck() {
     "seed_equals_target"
   );
 
+  const ownershipRoot = path.join("C:\\", "Games", "CF7-A", "resources");
+  const ownedSol = path.join(
+    process.env.APPDATA || path.join("C:\\", "Users", "check", "AppData", "Roaming"),
+    "Macromedia", "Flash Player", "#SharedObjects", "HASH1234",
+    solOwnershipSuffix(ownershipRoot, parsed.slot)
+  );
+  const foreignSol = path.join(
+    process.env.APPDATA || path.join("C:\\", "Users", "check", "AppData", "Roaming"),
+    "Macromedia", "Flash Player", "#SharedObjects", "HASH1234", "localhost",
+    "Games", "CF7-B", "resources", "CRAZYFLASHER7MercenaryEmpire.swf",
+    parsed.slot + ".sol"
+  );
+  if (!isOwnedSolPath(ownershipRoot, parsed.slot, ownedSol)
+      || isOwnedSolPath(ownershipRoot, parsed.slot, foreignSol)) {
+    throw new Error("SOL ownership path was not bound to the exact local game root");
+  }
+
+  expectRejected(
+    "running launcher target slot",
+    () => assertTargetSlotNotInUse({
+      save: { slot: parsed.slot },
+      saveRuntime: { savePath: "different_agent_slot" },
+    }, parsed.slot),
+    "target_slot_in_use"
+  );
+  expectRejected(
+    "running Flash target slot",
+    () => assertTargetSlotNotInUse({
+      save: { slot: "different_agent_slot" },
+      saveRuntime: { savePath: parsed.slot },
+    }, parsed.slot),
+    "target_slot_in_use"
+  );
+  assertTargetSlotNotInUse({
+    save: { slot: "different_launcher_slot" },
+    saveRuntime: { savePath: "different_runtime_slot" },
+  }, parsed.slot);
+
   const watermark = { total: 2, capturedAt: "2026-07-16T00:00:00.000Z" };
   const snapshot = {
     total: 5,
@@ -1127,7 +1195,7 @@ function runCheck() {
   console.log(JSON.stringify({
     ok: true,
     slot: DEFAULT_AGENT_SLOT,
-    checks: 12,
+    checks: 16,
     scope: "open_snapshot_gate_only",
   }, null, 2));
 }
@@ -1157,6 +1225,7 @@ async function runUnattended(args) {
     },
     timeline: [],
     savePreparation: null,
+    preparationGuard: null,
     httpPort: null,
     startLogWatermark: null,
     startResponse: null,
@@ -1171,6 +1240,29 @@ async function runUnattended(args) {
   let port = null;
   let caught = null;
   try {
+    let priorStatus = null;
+    port = await discoverPort(root);
+    if (port) {
+      priorStatus = await waitForAgentControl(
+        port,
+        args.readyTimeoutMs,
+        args.pollMs
+      );
+      report.preparationGuard = assertTargetSlotNotInUse(priorStatus, args.slot);
+      report.timeline.push({
+        phase: "existing_launcher_target_slot_guard_passed",
+        at: new Date().toISOString(),
+        launcherSlot: report.preparationGuard.launcherSlot,
+        runtimeSlot: report.preparationGuard.runtimeSlot,
+      });
+    } else {
+      report.preparationGuard = { launcherSlot: "", runtimeSlot: "" };
+      report.timeline.push({
+        phase: "no_existing_launcher_before_save_seed",
+        at: new Date().toISOString(),
+      });
+    }
+
     report.savePreparation = prepareDedicatedSave(root, args, outputs.runDir);
     report.timeline.push({
       phase: "dedicated_save_seeded",
@@ -1179,13 +1271,15 @@ async function runUnattended(args) {
       seedSlot: args.seedSlot,
     });
 
-    port = await ensureLauncherPort(root, args);
+    if (!port) port = await ensureLauncherPort(root, args);
     report.httpPort = port;
-    const priorStatus = await waitForAgentControl(
-      port,
-      args.readyTimeoutMs,
-      args.pollMs
-    );
+    if (!priorStatus) {
+      priorStatus = await waitForAgentControl(
+        port,
+        args.readyTimeoutMs,
+        args.pollMs
+      );
+    }
 
     const startLog = await readLogSnapshot(port);
     report.startLogWatermark = logWatermark(startLog);
@@ -1305,11 +1399,13 @@ module.exports = {
   HANDOFF_MARKER,
   assertRuntimeReadyStatus,
   assertSafeArgs,
+  assertTargetSlotNotInUse,
   extractLogField,
   findFreshHandoff,
   formatReportMarkdown,
   freshLogRecords,
   isValidSaveData,
+  isOwnedSolPath,
   logWatermark,
   parseArgs,
   parsePanelBoundEvidence,
@@ -1317,6 +1413,7 @@ module.exports = {
   runCheck,
   selectWorkbenchSnapshotGate,
   shouldRequestAgentEnter,
+  solOwnershipSuffix,
 };
 
 if (require.main === module) {

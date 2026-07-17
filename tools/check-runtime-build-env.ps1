@@ -12,7 +12,8 @@ $script:Cf7RuntimeBuildErrors = @()
 
 # 不允许调用者注入编译器/链接器参数。正式构建需要唯一、可审计的输入环境。
 foreach ($name in @(
-    'CL', '_CL_', 'LINK', 'RUSTFLAGS', 'RUSTDOCFLAGS', 'CARGO_ENCODED_RUSTFLAGS',
+    'CL', '_CL_', 'LINK', '_LINK_', 'INCLUDE', 'LIB', 'LIBPATH',
+    'RUSTFLAGS', 'RUSTDOCFLAGS', 'CARGO_ENCODED_RUSTFLAGS',
     'CARGO_ENCODED_RUSTDOCFLAGS', 'CARGO_BUILD_RUSTC', 'CARGO_BUILD_RUSTC_WRAPPER',
     'CARGO_BUILD_RUSTFLAGS', 'CARGO_BUILD_TARGET', 'CARGO_TARGET_DIR', 'RUSTC',
     'RUSTC_WRAPPER', 'RUSTC_WORKSPACE_WRAPPER',
@@ -22,6 +23,16 @@ foreach ($name in @(
 )) {
     [Environment]::SetEnvironmentVariable($name, $null, 'Process')
 }
+$buildTempParent = if ($env:LOCALAPPDATA) { $env:LOCALAPPDATA } else { [IO.Path]::GetTempPath() }
+$buildTempRoot = Join-Path $buildTempParent 'CF7\runtime-build-temp'
+if (-not (Test-Path -LiteralPath $buildTempRoot -PathType Container)) {
+    New-Item -ItemType Directory -Path $buildTempRoot -Force | Out-Null
+}
+$env:TMP = $buildTempRoot
+$env:TEMP = $buildTempRoot
+$env:TZ = 'UTC'
+$env:VSLANG = '1033'
+$env:DOTNET_CLI_UI_LANGUAGE = 'en-US'
 foreach ($entry in [Environment]::GetEnvironmentVariables('Process').Keys) {
     if ([string]$entry -like 'CARGO_PROFILE_RELEASE_*') { [Environment]::SetEnvironmentVariable([string]$entry, $null, 'Process') }
 }

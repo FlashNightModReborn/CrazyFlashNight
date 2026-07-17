@@ -78,8 +78,8 @@ Guardian Launcher 主逻辑 (WinForms / V8 / WebView2 / Vortice / ...)
 ### 关键路径与 hardcoded 名
 
 - 用户面 entry：`CRAZYFLASHER7MercenaryEmpire.exe`（bootstrap，在 projectRoot 根）— **不要重命名**（19+ 处脚本 / 文档 / 自动化引用此名）
-- FDD apphost：`runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe`（csproj `<AssemblyName>` 控制名，build.ps1 Step 6 部署到 runtime/ 子目录）
-- Runtime manifest：`runtime\cf7-runtime-manifest.tsv`（build.ps1 Step 6 生成，bootstrap preflight 校验入口 exe 与 runtime 文件的大小 / SHA256，覆盖安装混搭会 fail-fast）
+- FDD apphost：`runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe`（csproj `<AssemblyName>` 控制名；build.ps1 Step 6 先写 candidate，promotion 后进入正式 runtime）
+- Runtime manifest：`runtime\cf7-runtime-manifest.tsv`（build.ps1 Step 6 在 candidate 生成，bootstrap preflight 校验入口 exe 与 runtime 文件的大小 / SHA256，双 builder 一致后随 promotion 原子落盘）
 - Core projectRoot 解析：优先 `--project-root <abs>` CLI arg（bootstrap 注入）；次选 walk-up 哨兵文件 `crossdomain.xml`（覆盖 dev 直跑场景）；fallback `Environment.ProcessPath` 父目录
 - 长跑进程：Core.exe（bootstrap 启动 Core 后立即退出）— `cfn-cli.sh` / `taskkill` / GPU pref 都针对 `runtime\Core.exe`
 - Bundled runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe`（~58MB，季度更新一次）
@@ -657,7 +657,7 @@ launcher/
 ```powershell
 cd launcher
 powershell -File setup-check.ps1
-powershell -File build.ps1
+powershell -File build.ps1 -BuilderId builder-a
 ```
 
 ### build.ps1 实际执行链
@@ -675,11 +675,11 @@ powershell -File build.ps1
 | 1f   | 生成 `web/modules/tasks/achievement-catalog.json` — `node tools/derive-achievement-catalog.js`（成就 tab web 直读目录，含 objective 枚举 / 跨域闭包 / 脱敏校验；奖励 `icon` 从 `data/items/*.xml` 派生；派生失败 exit 1） |
 | 1g   | 审计 Web 可见物品图标闭包 — `node tools/audit-web-item-icon-closure.js`（任务/成就奖励与情报物品最终 `icon` 必须命中 `launcher/web/icons/manifest.json`；失败 exit 1） |
 | 1h   | 审计 Web 图标渲染入口 — `node tools/audit-web-icon-render-entrypoints.js`（rich tooltip 必须传 `iconHtml` 接入 `Icons.html` 动态/分层播放链，`Icons.resolve` 只留受控 fallback；失败 exit 1） |
-| 2    | `native/build.bat` — 用环境闸门指定的精确 vcvars 编 `miniaudio_bridge.c` → `bin/Release/miniaudio.dll` |
+| 2    | `native/build.bat` — `build.ps1` 先把 `miniaudio_bridge.c/miniaudio.h` 原始字节规范化为 LF，再用环境闸门指定的精确 vcvars、UTF-8、`/experimental:deterministic`、固定虚拟根 `/pathmap` 与 linker `/Brepro` 编译 → `bin/Release/miniaudio.dll`；因此不受 Git checkout 的 CRLF/LF、用户名或仓库绝对路径影响 |
 | 3    | `native/sol_parser/build.bat` — 固定 Rust toolchain、每次 clean、`--locked`，并以 `CARGO_ENCODED_RUSTFLAGS` 同时传入路径 remap 与 `/Brepro` 后生成 `sol_parser.dll` |
 | 4    | `native/bootstrap/build.bat` — 用同一精确 MSVC/Windows SDK 编 `bootstrap.cpp` → `bin/Release/bootstrap.exe` |
 | 5    | `dotnet publish ... -c Release -r win-x64 --self-contained false -p:DebugType=None -p:DebugSymbols=false` — 生成不携带 PDB 的 FDD Core 与依赖集合 |
-| 6    | 拷贝产物到 `projectRoot\runtime\`：(a) `publishDir/*` 除 `*.xml`（含 `CRAZYFLASHER7MercenaryEmpire.Core.*` 全套） (b) `bootstrap.exe` → projectRoot 改名 `CRAZYFLASHER7MercenaryEmpire.exe`（用户面入口） (c) `sol_parser.dll` + `miniaudio.dll` from `bin/Release`；拷贝走 `Copy-IfDifferent`（SHA256 比对，相同跳过 → 可复现构建、不污染 git）+ 定向清理过期产物；**硬断言根目录 `CRAZYFLASHER7MercenaryEmpire.exe`，以及 `runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe` + `runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll` + `runtime\sol_parser.dll` + `runtime\miniaudio.dll` 全部落盘**（任一缺失 exit 1）；bundled runtime installer（`tools/dotnet-runtime/windowsdesktop-runtime-10.*-win-x64.exe` glob）缺失现为 **fail-fast exit 1**（旧版只 WARN） |
+| 6    | 拷贝产物到 `tmp/runtime-candidates/<source-toolchain>/<builder>/`：(a) `publishDir/*` 除 `*.xml`（含 `CRAZYFLASHER7MercenaryEmpire.Core.*` 全套） (b) `bootstrap.exe` 改名为 candidate 根 `CRAZYFLASHER7MercenaryEmpire.exe` (c) `sol_parser.dll` + `miniaudio.dll`；生成 manifest 与 `runtime-build-attestation.json`，正式 projectRoot/runtime 不被触碰。至少两台 builder 的 source/toolchain/recipe/closure 全等后，`tools/promote-runtime-bundle.ps1` 才以可回滚事务更新项目根；bundled runtime installer 缺失继续 fail-fast。 |
 | 6f   | managed 产物护栏 — `dotnet run tools/assert-optimized.cs -- runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll` 用 PEReader 断言发布程序集是 optimized（非 Debug）build；正式产物关闭 PDB，项目同时禁用 SourceLink，避免 checkout 路径、源码换行 checksum 或 HEAD SHA 进入受版本控制 DLL |
 | 7    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*`（含 `map-canvas-stage-renderer.js` / `intelligence-components.js` / `intelligence-panel.js`）与 minigame 入口文件 |
 | 7a   | 运行 `node tools/audit-native-cursor-assets.js` 校验各 cursor PNG 尺寸与 manifest 声明的 canvas 一致、且 manifest 指定的 hotspot 像素具备 alpha（当前 manifest 数据值为 `64x64` / `(16,16)`，非工具硬编码契约），缺失或不合规直接 exit 1 |
@@ -688,7 +688,7 @@ powershell -File build.ps1
 
 > build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
 
-> **运行时产物必须按一次构建的原子集合处理**：根 bootstrap、`runtime/` Core/全部依赖/native DLL 与 manifest 必须来自同一次 `launcher/build.ps1`。manifest 同时绑定 `sourceTreeHash` 与 `toolchainLockHash`，并要求文件行与实际部署文件形成精确闭包；提交前用 `tools/verify-runtime-bundle.ps1 -Staged` 校验纯 Git index。构建后不得单独恢复其中某个二进制；发生覆盖或冲突取舍后必须重新完整构建。所有 headless 直启 Core 入口必须先调用 bootstrap `--verify-only`，部署态 Core 自身也会在最早入口反向调用同一 probe，封闭手工直启与未来脚本漏接。
+> **运行时产物必须按双机构建共识后的原子集合处理**：`launcher/build.ps1 -BuilderId <id>` 只生成隔离 candidate；两个不同 builder 的 `sourceTreeHash/toolchainLockHash/buildRecipeHash/artifactClosureHash` 全等后，`tools/promote-runtime-bundle.ps1` 才更新根 bootstrap、`runtime/` Core/全部依赖/native DLL、manifest 与 `config/build/runtime-release-consensus.json`。提交前同时用 `tools/verify-runtime-bundle.ps1 -Staged`、`tools/verify-runtime-consensus.ps1 -Staged` 校验纯 Git index。不得单独恢复、复制或冲突取舍其中某个二进制。所有 headless 直启 Core 入口必须先调用 bootstrap `--verify-only`，部署态 Core 自身也会在最早入口反向调用同一 probe。
 
 ### 产物（部署到项目根目录）
 
@@ -750,7 +750,7 @@ Launcher 启动时 `Program.cs` 尝试 `Process.Start("hotkey_guard.exe")`；若
     {
       "label": "Build Guardian",
       "type": "shell",
-      "command": "powershell -File launcher/build.ps1",
+      "command": "powershell -File launcher/build.ps1 -BuilderId builder-a",
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": "$msCompile"
     }

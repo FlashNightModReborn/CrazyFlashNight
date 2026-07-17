@@ -3022,7 +3022,7 @@
     border-bottom:1px solid var(--wb-line);
 }
 .workbench-view-heading { min-width:0; overflow:hidden; }
-.workbench-view-title-row { display:flex; align-items:baseline; gap:8px; min-width:0; }
+.workbench-view-title-row { display:flex; align-items:baseline; gap:8px; min-width:0; min-height:24px; }
 .workbench-view-title { flex:0 1 auto; min-width:0; color:#f1f2f4; font-size:15px; font-weight:700; letter-spacing:.5px; white-space:nowrap; }
 .workbench-view-breadcrumb-host { flex:1 1 auto; min-width:0; overflow:hidden; color:#848d96; }
 .workbench-view-breadcrumb-host[hidden] { display:none; }

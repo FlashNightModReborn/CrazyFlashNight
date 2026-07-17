@@ -157,6 +157,20 @@ namespace CF7Launcher.Guardian
                 && parsed.Value<string>("panelInstanceId") == activePanelInstanceId;
         }
 
+        internal static bool IsValidEquipmentTuningCloseEnvelope(JObject parsed,
+            string activePanel, string activePanelInstanceId)
+        {
+            if (parsed == null || parsed.Count != 4 || activePanel != "workbench") return false;
+            foreach (JProperty property in parsed.Properties())
+                if (property.Name != "type" && property.Name != "panel" && property.Name != "cmd"
+                    && property.Name != "panelInstanceId") return false;
+            return parsed.Value<string>("type") == "panel"
+                && parsed.Value<string>("panel") == "workbench"
+                && parsed.Value<string>("cmd") == "close"
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && parsed.Value<string>("panelInstanceId") == activePanelInstanceId;
+        }
+
         internal static bool IsActiveSkillPanel(string activePanel, string activePanelInstanceId)
         {
             return activePanel == "skills" && !string.IsNullOrEmpty(activePanelInstanceId);
@@ -3631,13 +3645,18 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
-                        if (panel == "workbench" && _equipmentTuningTask != null)
+                        if (panel == "workbench")
                         {
                             string activeName = _panelHost != null ? _panelHost.ActivePanelName
                                 : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : _activePanel);
                             string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
                                 : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
-                            if (activeName == "workbench" && !string.IsNullOrEmpty(activeInstance)
+                            if (!IsValidEquipmentTuningCloseEnvelope(parsed, activeName, activeInstance))
+                            {
+                                LogManager.Log("[EquipmentTuningTask] rejected stale/malformed close envelope");
+                                return;
+                            }
+                            if (_equipmentTuningTask != null
                                 && _equipmentTuningTask.PanelInstanceId == activeInstance
                                 && !_equipmentTuningTask.HandlePanelClosed(activeInstance))
                             {

@@ -21,8 +21,11 @@ function Get-Cf7RuntimeInputFiles {
         'tools/assert-optimized.cs',
         'tools/bootstrap-runtime-build-env.ps1',
         'tools/check-runtime-build-env.ps1',
+        'tools/promote-runtime-bundle.ps1',
         'tools/runtime-build-common.ps1',
-        'tools/verify-runtime-bundle.ps1'
+        'tools/test-runtime-build-consensus.ps1',
+        'tools/verify-runtime-bundle.ps1',
+        'tools/verify-runtime-consensus.ps1'
     )
     if ($Mode -eq 'Index') {
         $tracked = @(& git -C $root ls-files -- @($fixed + @('launcher/src', 'launcher/native')))
@@ -116,6 +119,149 @@ function Get-Cf7ToolchainLockHash {
     }
     $path = Join-Path $ProjectRoot 'config\build\runtime-toolchain.lock.json'
     return (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToUpperInvariant()
+}
+
+function Get-Cf7RuntimeBuildRecipeHash {
+    param(
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree'
+    )
+
+    $root = (Resolve-Path -LiteralPath $ProjectRoot).Path
+    $recipeFiles = @(
+        'config/build/runtime-toolchain.lock.json',
+        'launcher/CRAZYFLASHER7MercenaryEmpire.csproj',
+        'launcher/build.ps1',
+        'launcher/native/build.bat',
+        'launcher/native/assert-pinned-tools.bat',
+        'launcher/native/bootstrap/build.bat',
+        'launcher/native/sol_parser/build.bat',
+        'tools/check-runtime-build-env.ps1',
+        'tools/promote-runtime-bundle.ps1',
+        'tools/runtime-build-common.ps1',
+        'tools/test-runtime-build-consensus.ps1',
+        'tools/verify-runtime-bundle.ps1',
+        'tools/verify-runtime-consensus.ps1'
+    )
+    $lines = @()
+    $indexBlobs = @{}
+    if ($Mode -eq 'Index') {
+        foreach ($row in @(& git -C $root ls-files -s -- $recipeFiles)) {
+            if ($row -match '^[0-9]+\s+([0-9a-f]+)\s+[0-9]+\t(.+)$') { $indexBlobs[$Matches[2].Replace('\', '/')] = $Matches[1] }
+        }
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot read build recipe identities from Git index.' }
+    }
+    foreach ($relative in $recipeFiles) {
+        if ($Mode -eq 'Index') {
+            $hash = $indexBlobs[$relative]
+            if (-not $hash) { throw "Build recipe input is absent from Git index: $relative" }
+        } else {
+            $full = Join-Path $root ($relative -replace '/', '\')
+            if (-not (Test-Path -LiteralPath $full -PathType Leaf)) { throw "Build recipe input missing: $relative" }
+            $hash = & git -C $root hash-object "--path=$relative" -- $full
+            if ($LASTEXITCODE -ne 0 -or -not $hash) { throw "Cannot hash build recipe input: $relative" }
+            $hash = ($hash | Select-Object -First 1).Trim()
+        }
+        $lines += "$relative`t$hash"
+    }
+    $payload = [string]::Join("`n", [string[]]$lines) + "`n"
+    return Get-Cf7BytesSha256 -Bytes ([Text.Encoding]::UTF8.GetBytes($payload))
+}
+
+function Get-Cf7RuntimeArtifactClosure {
+    param(
+        [Parameter(Mandatory=$true)][string]$DeploymentRoot,
+        [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree',
+        [string]$ProjectRoot
+    )
+
+    if ($Mode -eq 'Index') {
+        if (-not $ProjectRoot) { throw 'ProjectRoot is required for index artifact closure.' }
+        $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+        $paths = @(& git -C $root ls-files -- 'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime')
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot enumerate runtime artifact closure from Git index.' }
+        $paths = @($paths | ForEach-Object { $_.Replace('\', '/') } | Sort-Object -Unique)
+    } else {
+        $root = (Resolve-Path -LiteralPath $DeploymentRoot).Path.TrimEnd('\')
+        $paths = @()
+        $rootExe = Join-Path $root 'CRAZYFLASHER7MercenaryEmpire.exe'
+        if (-not (Test-Path -LiteralPath $rootExe -PathType Leaf)) { throw "Runtime candidate lacks root bootstrap: $rootExe" }
+        $paths += 'CRAZYFLASHER7MercenaryEmpire.exe'
+        $runtimeDir = Join-Path $root 'runtime'
+        if (-not (Test-Path -LiteralPath $runtimeDir -PathType Container)) { throw "Runtime candidate lacks runtime directory: $runtimeDir" }
+        Get-ChildItem -LiteralPath $runtimeDir -Recurse -File | ForEach-Object {
+            $paths += $_.FullName.Substring($root.Length + 1).Replace('\', '/')
+        }
+        $paths = @($paths | Sort-Object -Unique)
+    }
+    $rows = @()
+    $lines = @()
+    foreach ($relative in $paths) {
+        if ($Mode -eq 'Index') {
+            $bytes = Get-Cf7GitBlobBytes -ProjectRoot $root -RelativePath $relative
+            $size = [Int64]$bytes.LongLength
+            $hash = Get-Cf7BytesSha256 -Bytes $bytes
+        } else {
+            $full = Join-Path $root ($relative -replace '/', '\')
+            $item = Get-Item -LiteralPath $full
+            $size = [Int64]$item.Length
+            $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $full).Hash.ToUpperInvariant()
+        }
+        $rows += [pscustomobject]@{ path = $relative; size = $size; sha256 = $hash }
+        $lines += "$relative`t$size`t$hash"
+    }
+    $payload = [string]::Join("`n", [string[]]$lines) + "`n"
+    return [pscustomobject]@{
+        artifactClosureHash = Get-Cf7BytesSha256 -Bytes ([Text.Encoding]::UTF8.GetBytes($payload))
+        files = $rows
+    }
+}
+
+function New-Cf7RuntimeBuildAttestation {
+    param(
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [Parameter(Mandatory=$true)][string]$DeploymentRoot,
+        [Parameter(Mandatory=$true)][string]$BuilderId
+    )
+    if ($BuilderId -notmatch '^[a-z0-9][a-z0-9._-]{1,63}$') {
+        throw 'BuilderId must be 2-64 lowercase ASCII letters, digits, dot, underscore, or hyphen.'
+    }
+    $closure = Get-Cf7RuntimeArtifactClosure -DeploymentRoot $DeploymentRoot
+    return [pscustomobject]@{
+        schema = 'cf7-runtime-build-attestation.v1'
+        builderId = $BuilderId
+        sourceTreeHash = Get-Cf7RuntimeSourceTreeHash -ProjectRoot $ProjectRoot -Mode Worktree
+        toolchainLockHash = Get-Cf7ToolchainLockHash -ProjectRoot $ProjectRoot -Mode Worktree
+        buildRecipeHash = Get-Cf7RuntimeBuildRecipeHash -ProjectRoot $ProjectRoot -Mode Worktree
+        artifactClosureHash = $closure.artifactClosureHash
+        createdAtUtc = [DateTime]::UtcNow.ToString('o')
+        files = $closure.files
+    }
+}
+
+function Test-Cf7RuntimeBuildAttestationConsensus {
+    param([Parameter(Mandatory=$true)][object[]]$Attestations)
+
+    if ($Attestations.Count -lt 2) { throw 'At least two runtime build attestations are required.' }
+    $builders = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    $reference = $null
+    foreach ($attestation in $Attestations) {
+        if ($null -eq $attestation -or $attestation.schema -ne 'cf7-runtime-build-attestation.v1') {
+            throw 'Unsupported or missing runtime build attestation schema.'
+        }
+        if ([string]$attestation.builderId -notmatch '^[a-z0-9][a-z0-9._-]{1,63}$') { throw 'Invalid attestation builderId.' }
+        if (-not $builders.Add([string]$attestation.builderId)) { throw "Duplicate runtime builderId: $($attestation.builderId)" }
+        foreach ($field in @('sourceTreeHash','toolchainLockHash','buildRecipeHash','artifactClosureHash')) {
+            if ([string]$attestation.$field -notmatch '^[0-9A-Fa-f]{64}$') { throw "Invalid attestation field: $field" }
+        }
+        if ($null -eq $reference) { $reference = $attestation; continue }
+        foreach ($field in @('sourceTreeHash','toolchainLockHash','buildRecipeHash','artifactClosureHash')) {
+            if ([string]$reference.$field -ne [string]$attestation.$field) {
+                throw "Runtime build consensus mismatch: $field builder=$($attestation.builderId)"
+            }
+        }
+    }
+    return $reference
 }
 
 function Get-Cf7GitBlobBytes {

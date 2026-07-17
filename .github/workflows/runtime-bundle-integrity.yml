@@ -10,7 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 2
       - name: Verify committed runtime bundle and build identity
         shell: powershell
         run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-runtime-bundle.ps1 -ProjectRoot $PWD.Path -Staged
+      - name: Verify cross-builder runtime consensus
+        shell: powershell
+        run: |
+          if (Test-Path -LiteralPath .\config\build\runtime-release-consensus.json) {
+            powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-runtime-consensus.ps1 -ProjectRoot $PWD.Path -Staged
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } else {
+            git cat-file -e 'HEAD^:config/build/runtime-release-consensus.json' 2>$null
+            if ($LASTEXITCODE -eq 0) { throw 'runtime-release-consensus.json cannot be removed after consensus activation.' }
+            Write-Host '[RuntimeConsensus] bootstrap pending: first two-builder promotion has not been recorded yet.'
+          }

@@ -26,13 +26,31 @@ exit /b 1
 :build
 echo [INFO] Compiling miniaudio_bridge.c ...
 
+if not defined CF7_MINIAUDIO_REPRO_SOURCE_DIR (
+    echo [FAIL] Canonical miniaudio source directory is missing. Run launcher\build.ps1.
+    exit /b 1
+)
+if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio_bridge.c" (
+    echo [FAIL] Canonical miniaudio_bridge.c is missing: %CF7_MINIAUDIO_REPRO_SOURCE_DIR%
+    exit /b 1
+)
+if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio.h" (
+    echo [FAIL] Canonical miniaudio.h is missing: %CF7_MINIAUDIO_REPRO_SOURCE_DIR%
+    exit /b 1
+)
+
 REM Output to launcher\bin\Release (relative to this script's directory)
 set "OUTDIR=%~dp0..\bin\Release"
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
-REM /Brepro 让 link.exe 写入 IMAGE_FILE_HEADER.TimeDateStamp = 0 + 用源哈希取代 PDB GUID,
-REM 让相同源码 -> 相同字节产物 (reproducible build); 同源重建后 git status 不会看到 M.
-cl /O2 /LD /W3 /D_CRT_SECURE_NO_WARNINGS "%~dp0miniaudio_bridge.c" /Fe:"%OUTDIR%\miniaudio.dll" /link /Brepro ole32.lib
+REM build.ps1 先把 C/H 规范化为 LF；/experimental:deterministic 使 /pathmap 生效，
+REM 消除 checkout 换行、用户目录和仓库绝对路径对编译器确定性种子的影响。
+REM linker /Brepro 再固定 PE reproducibility hash。同一源码应在不同 builder 上逐字节一致。
+cl /nologo /utf-8 /experimental:deterministic /O2 /LD /W3 /D_CRT_SECURE_NO_WARNINGS ^
+  "/pathmap:%CF7_MINIAUDIO_REPRO_SOURCE_DIR%=C:\cf7-runtime-src" ^
+  "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio_bridge.c" ^
+  /Fo:"%OUTDIR%\miniaudio_bridge.obj" /Fe:"%OUTDIR%\miniaudio.dll" ^
+  /link /Brepro ole32.lib
 
 if errorlevel 1 (
     echo [FAIL] Compilation failed.

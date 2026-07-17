@@ -47,6 +47,25 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void EquipmentTuningCloseEnvelope_RequiresExactActiveWorkbenchInstance()
+        {
+            JObject valid = JObject.Parse(@"{
+                'type':'panel','panel':'workbench','cmd':'close',
+                'panelInstanceId':'panel.workbench.2'
+            }");
+            Assert.True(WebOverlayForm.IsValidEquipmentTuningCloseEnvelope(
+                valid, "workbench", "panel.workbench.2"));
+            Assert.False(WebOverlayForm.IsValidEquipmentTuningCloseEnvelope(
+                valid, "workbench", "panel.workbench.old"));
+            Assert.False(WebOverlayForm.IsValidEquipmentTuningCloseEnvelope(
+                valid, "skills", "panel.workbench.2"));
+
+            valid["extra"] = true;
+            Assert.False(WebOverlayForm.IsValidEquipmentTuningCloseEnvelope(
+                valid, "workbench", "panel.workbench.2"));
+        }
+
+        [Fact]
         public void SwitchManageEnvelope_RequiresExactInstanceAndNestedPresentationPayload()
         {
             JObject valid = JObject.Parse(@"{
