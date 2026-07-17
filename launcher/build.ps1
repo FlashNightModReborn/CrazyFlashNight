@@ -37,13 +37,35 @@ $launcherDir = $PSScriptRoot
 $projectRoot = Split-Path -Parent $launcherDir
 $publishDir = Join-Path $launcherDir "publish"
 
+# Runtime publication is allowed only on the pinned baseline. This also exports the
+# exact vcvars/Rust/dotnet selections consumed by all child build scripts.
+. (Join-Path $projectRoot 'tools\check-runtime-build-env.ps1') -ProjectRoot $projectRoot -Mode RuntimePublish
+. (Join-Path $projectRoot 'tools\runtime-build-common.ps1')
+$runtimeSourceTreeHash = Get-Cf7RuntimeSourceTreeHash -ProjectRoot $projectRoot -Mode Worktree
+$toolchainLockHash = Get-Cf7ToolchainLockHash -ProjectRoot $projectRoot
+
+# Formal publication proves a managed clean build too. Clear only generated managed
+# intermediates under launcher; native sidecars are rebuilt later into bin\Release.
+$managedCleanPaths = @(
+    (Join-Path $launcherDir 'obj'),
+    (Join-Path $launcherDir 'bin\Release\net10.0-windows')
+)
+$launcherPrefix = [IO.Path]::GetFullPath($launcherDir).TrimEnd('\') + '\'
+foreach ($path in $managedCleanPaths) {
+    $resolvedTarget = [IO.Path]::GetFullPath($path)
+    if (-not $resolvedTarget.StartsWith($launcherPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to clean path outside launcher: $resolvedTarget"
+    }
+    if (Test-Path -LiteralPath $resolvedTarget) { Remove-Item -LiteralPath $resolvedTarget -Recurse -Force }
+}
+
 # PowerShell 5.1 把 cmd / native exe 的 stderr 包成 NativeCommandError，在 ErrorActionPreference=Stop
 # 下会中止脚本——即便是 cl.exe banner、vcvars64 提示这种无害 stderr 也会触发。
 # 用 cmd 内部 2>&1 把 stderr 收编到 cmd 的 stdout，PowerShell 只看到普通输出，行为与 PS7 / CI 一致。
 function Invoke-CmdBat {
     param([string]$BatPath)
     # 用 cmd /s /c 包裹整段命令；"$BatPath" 加引号兼容路径含空格；2>&1 在 cmd 内部合并 stderr
-    & cmd.exe /s /c "`"$BatPath`" 2>&1"
+    & cmd.exe /d /s /c "`"$BatPath`" 2>&1"
 }
 
 # Reproducible build 闸门：源 → 目的字节相同时跳过 Copy-Item，保留目的 mtime + 防止
@@ -70,9 +92,8 @@ function Copy-IfDifferent {
     return $true
 }
 
-# dotnet host 探测：按 global.json feature band 在用户级与系统级安装中选择，不改机器 PATH。
-. (Join-Path $launcherDir 'resolve-dotnet.ps1')
-$dotnet = Resolve-Cf7Dotnet -ProjectRoot $projectRoot
+# The preflight resolved and byte-verified the exact dotnet host.
+$dotnet = $env:CF7_DOTNET_EXE
 
 Write-Host "=== CF7:ME Guardian Build (net10.0-windows) ===" -ForegroundColor Cyan
 Write-Host "  Project Root: $projectRoot"
@@ -349,16 +370,18 @@ Write-Host "  arena-custom-presets.js OK." -ForegroundColor Green
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"
-if (Test-Path $nativeBat) {
-    Invoke-CmdBat $nativeBat
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "[FAIL] Native build failed." -ForegroundColor Red
-        exit 1
-    }
-    Write-Host "  Native build OK." -ForegroundColor Green
-} else {
-    Write-Host "  [SKIP] No native\build.bat found" -ForegroundColor Yellow
+if (-not (Test-Path $nativeBat)) {
+    Write-Host "[FAIL] Native build script missing: $nativeBat" -ForegroundColor Red
+    exit 1
 }
+$miniaudioDll = Join-Path $launcherDir 'bin\Release\miniaudio.dll'
+if (Test-Path -LiteralPath $miniaudioDll) { Remove-Item -LiteralPath $miniaudioDll -Force }
+Invoke-CmdBat $nativeBat
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $miniaudioDll)) {
+    Write-Host "[FAIL] Native build failed or did not produce miniaudio.dll." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  Native build OK." -ForegroundColor Green
 
 # Step 3: Build sol_parser DLL (Rust cdylib)
 Write-Host "[Step 3/7] Build sol_parser.dll (Rust)..." -ForegroundColor Yellow
@@ -367,13 +390,14 @@ if (-not (Test-Path $solBat)) {
     Write-Host "[FAIL] sol_parser build.bat missing: $solBat" -ForegroundColor Red
     exit 1
 }
+$solParserDll = Join-Path $launcherDir "bin\Release\sol_parser.dll"
+if (Test-Path -LiteralPath $solParserDll) { Remove-Item -LiteralPath $solParserDll -Force }
 Invoke-CmdBat $solBat
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] sol_parser build failed." -ForegroundColor Red
     exit 1
 }
 # sol_parser 的 build.bat 把产物放在 launcher/bin/Release，由 Step 5b 显式复制到 projectRoot
-$solParserDll = Join-Path $launcherDir "bin\Release\sol_parser.dll"
 if (-not (Test-Path $solParserDll)) {
     Write-Host "[FAIL] sol_parser.dll not found at $solParserDll after build." -ForegroundColor Red
     exit 1
@@ -389,12 +413,13 @@ if (-not (Test-Path $bootBat)) {
     Write-Host "[FAIL] bootstrap build.bat missing: $bootBat" -ForegroundColor Red
     exit 1
 }
+$bootstrapExe = Join-Path $launcherDir "bin\Release\bootstrap.exe"
+if (Test-Path -LiteralPath $bootstrapExe) { Remove-Item -LiteralPath $bootstrapExe -Force }
 Invoke-CmdBat $bootBat
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] bootstrap build failed." -ForegroundColor Red
     exit 1
 }
-$bootstrapExe = Join-Path $launcherDir "bin\Release\bootstrap.exe"
 if (-not (Test-Path $bootstrapExe)) {
     Write-Host "[FAIL] bootstrap.exe not found at $bootstrapExe after build." -ForegroundColor Red
     exit 1
@@ -417,7 +442,11 @@ try {
         -c Release `
         -r win-x64 `
         --self-contained false `
-        -p:DebugType=embedded `
+        -p:RestoreLockedMode=true `
+        -p:ImportDirectoryBuildProps=false `
+        -p:ImportDirectoryBuildTargets=false `
+        -p:DebugType=None `
+        -p:DebugSymbols=false `
         -o $publishDir
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[FAIL] dotnet publish failed." -ForegroundColor Red
@@ -492,19 +521,10 @@ if ($copied) {
 # 所以这里同步把两个 side-car 也复制到 runtime\，让 P/Invoke 默认搜索能命中
 $nativeDlls = @()
 $nativeDlls += @{ Src = Join-Path $launcherDir "bin\Release\sol_parser.dll"; Name = "sol_parser.dll" }
-$miniaudioCandidates = @(
-    Join-Path $launcherDir "bin\Release\miniaudio.dll"
-    Join-Path $launcherDir "native\miniaudio.dll"
-)
-foreach ($cand in $miniaudioCandidates) {
-    if (Test-Path $cand) {
-        $nativeDlls += @{ Src = $cand; Name = "miniaudio.dll" }
-        break
-    }
-}
+$nativeDlls += @{ Src = $miniaudioDll; Name = "miniaudio.dll" }
 
 foreach ($entry in $nativeDlls) {
-    if (Test-Path $entry.Src) {
+    if (Test-Path -LiteralPath $entry.Src -PathType Leaf) {
         # 只放 runtime\：Core 的 P/Invoke 走 Win32 LoadLibrary 默认搜路径（Core.exe 所在目录 → System32 → PATH）
         # 不复制到 projectRoot 根：没有 caller 在 projectRoot 找这些 DLL，root 越干净越好
         $dst = Join-Path $runtimeDir $entry.Name
@@ -516,7 +536,8 @@ foreach ($entry in $nativeDlls) {
             Write-Host "  Unchanged in runtime\: $($entry.Name)" -ForegroundColor DarkGray
         }
     } else {
-        Write-Host "  [WARN] Native DLL not found: $($entry.Src)" -ForegroundColor Yellow
+        Write-Host "[FAIL] Native DLL not produced by this build: $($entry.Src)" -ForegroundColor Red
+        exit 1
     }
 }
 
@@ -525,8 +546,9 @@ foreach ($entry in $nativeDlls) {
 # 6d.5: 清理 runtime\ 内不在本轮 expectedNames 的旧产物（替代旧版前置 Remove-Item *）。
 # 防降级依赖时旧版本 DLL 残留；只删未预期项，已对齐的不动 → 不重置 mtime 不触发 watcher。
 $staleRemoved = 0
-Get-ChildItem $runtimeDir -File -ErrorAction SilentlyContinue | Where-Object {
-    -not $expectedNames.Contains($_.Name)
+Get-ChildItem $runtimeDir -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
+    $relative = $_.FullName.Substring($runtimeDir.Length + 1).Replace('\', '/')
+    $relative.Contains('/') -or -not $expectedNames.Contains($relative)
 } | ForEach-Object {
     Remove-Item -LiteralPath $_.FullName -Force
     Write-Host "  Removed stale: $($_.Name)" -ForegroundColor DarkYellow
@@ -545,6 +567,9 @@ $manifestLines = New-Object 'System.Collections.Generic.List[string]'
 # 保持 manifest 可入库复现：构建时间、git HEAD、SDK 实际解析结果只留在 build log / 诊断 meta 中，
 # 不写入这个文件，避免每次本地 build 都把 tracked runtime 清单改脏。
 [void]$manifestLines.Add("publishMode`tframework-dependent")
+[void]$manifestLines.Add("sourceTreeHash`t$runtimeSourceTreeHash")
+[void]$manifestLines.Add("toolchainLockHash`t$toolchainLockHash")
+[void]$manifestLines.Add("toolchainBaseline`t$env:CF7_RUNTIME_BASELINE")
 
 function Add-RuntimeManifestEntry {
     param(
@@ -561,13 +586,14 @@ function Add-RuntimeManifestEntry {
 }
 
 Add-RuntimeManifestEntry -RelativePath "CRAZYFLASHER7MercenaryEmpire.exe" -FullPath $userFacingExe
-Get-ChildItem $runtimeDir -File | Where-Object {
+Get-ChildItem $runtimeDir -Recurse -File | Where-Object {
     $_.Name -ne "cf7-runtime-manifest.tsv"
-} | Sort-Object Name | ForEach-Object {
-    Add-RuntimeManifestEntry -RelativePath ("runtime/" + $_.Name) -FullPath $_.FullName
+} | Sort-Object FullName | ForEach-Object {
+    $relative = $_.FullName.Substring($runtimeDir.Length + 1).Replace('\', '/')
+    Add-RuntimeManifestEntry -RelativePath ("runtime/" + $relative) -FullPath $_.FullName
 }
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-[System.IO.File]::WriteAllLines($manifestPath, [string[]]$manifestLines.ToArray(), $utf8NoBom)
+[System.IO.File]::WriteAllText($manifestPath, ([string]::Join("`n", [string[]]$manifestLines.ToArray()) + "`n"), $utf8NoBom)
 Write-Host "  Runtime manifest: runtime\cf7-runtime-manifest.tsv ($($manifestLines.Count) line(s))" -ForegroundColor Green
 
 # 6f: 硬断言关键运行时文件落地
@@ -626,8 +652,8 @@ Write-Host "  All required artifacts at projectRoot." -ForegroundColor Green
 # 历史卡顿真因：误把 Debug 产物（DebuggableAttribute 的 DisableOptimizations=256 置位 →
 # 运行时 JIT 优化被整个关掉）当作发布版提交。详见 memory: launcher-perf-debug-vs-release。
 # net10 走 `dotnet publish -c Release` 本应永远优化，这里把"必须优化"从流程纪律升级为脚本强制
-# 校验：把 Debug/未优化产物溜进 runtime\ 这一失败模式物理堵死。另拒绝 embedded PDB 的
-# SourceLink custom debug info，防当前 HEAD SHA 让受版本控制的 Core.dll/manifest 每提交漂移。
+# 校验：把 Debug/未优化产物溜进 runtime\ 这一失败模式物理堵死。正式发布关闭 PDB；工具仍
+# 拒绝意外回流的 embedded PDB SourceLink 信息，防 HEAD SHA 让 Core.dll/manifest 每提交漂移。
 # 工具用 BCL 的 PEReader 直接读 DebuggableAttribute 与 embedded portable PDB，不解析依赖、不联网。
 Write-Host "[Step 6f/7] Assert managed artifact is optimized and SourceLink-free..." -ForegroundColor Yellow
 $assertTool = Join-Path $projectRoot "tools\assert-optimized.cs"
@@ -809,6 +835,10 @@ if (-not (Test-Path $mapWebpAudit)) {
     Write-Host "[FAIL] Map WebP audit missing: $mapWebpAudit" -ForegroundColor Red
     exit 1
 }
+Get-ChildItem $runtimeDir -Recurse -Directory -ErrorAction SilentlyContinue |
+    Sort-Object { $_.FullName.Length } -Descending | Where-Object {
+        @(Get-ChildItem -LiteralPath $_.FullName -Force).Count -eq 0
+    } | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force }
 node $mapWebpAudit
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] Map lossless WebP asset audit failed." -ForegroundColor Red
@@ -893,6 +923,19 @@ try {
     Pop-Location
 }
 Write-Host "  OK: save_repair_dict.json 与源头一致" -ForegroundColor Green
+
+# Final bundle gate: validate bytes against the just-written manifest, then exercise
+# the same native preflight used by normal startup without launching Core.
+& powershell.exe -ExecutionPolicy Bypass -File (Join-Path $projectRoot 'tools\verify-runtime-bundle.ps1') -ProjectRoot $projectRoot
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] runtime bundle verifier rejected the published set." -ForegroundColor Red
+    exit 1
+}
+& $userFacingExe --verify-only
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] bootstrap --verify-only rejected the published set." -ForegroundColor Red
+    exit 1
+}
 
 Write-Host ""
 Write-Host "=== Build Complete ===" -ForegroundColor Green

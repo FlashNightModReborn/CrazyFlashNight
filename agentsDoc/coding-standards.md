@@ -31,8 +31,8 @@
 - FDD/runtime 子目录布局硬约束：**禁止依赖 `Assembly.Location` 推断项目根目录**；需要当前进程 exe 用 `Environment.ProcessPath`，需要 Core runtime 目录用 `AppContext.BaseDirectory`，需要根目录资产时显式传入 `projectRoot`
 - Nullable 默认 `disable`；按文件灰度启用 NRT 是独立立项，不要为单个文件随意打开
 - 依赖版本统一在 [`launcher/Directory.Packages.props`](../launcher/Directory.Packages.props) 中心化锁定；csproj 只写 `PackageReference Include="..."` 不带 Version
-- SDK pin 由 repo root [`global.json`](../global.json) 控制（`10.0.300` + `rollForward: latestFeature`），所有 dotnet 调用前 Push-Location 到 projectRoot 保证 host 能找到
-- 构建入口以 `launcher/build.ps1` 为准；测试入口以 `launcher/tests/run_tests.ps1`（`dotnet test`）为准；子系统深文档以 `launcher/README.md` 为准
+- SDK pin 由 repo root [`global.json`](../global.json) 控制（`10.0.300` + `rollForward: disable`）；runtime 发布还必须匹配 [构建环境锁与原子提交规则](../docs/runtime-build-reproducibility.md)
+- 构建入口以 `launcher/build.ps1` 为准；测试入口以 `launcher/tests/run_tests.ps1`（`dotnet test`）为准；不得手工拼装或单独恢复受 manifest 管理的 runtime 文件
 
 ## 4. Web 前端 / Minigame 规范
 

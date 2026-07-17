@@ -56,9 +56,19 @@ case "${1:-status}" in
         # Core 是 FDD apphost，要求机器上已装 .NET 10 Desktop Runtime
         # Core 部署在 projectRoot\runtime\ 子目录（build.ps1 Step 6）
         EXE="$PROJECT_ROOT/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe"
+        BOOTSTRAP="$PROJECT_ROOT/CRAZYFLASHER7MercenaryEmpire.exe"
         if [ ! -f "$EXE" ]; then
             echo "Error: Launcher Core EXE not found: $EXE" >&2
             echo "  Tip: pre-built FDD artifacts at projectRoot\\runtime\\；如缺失先跑 launcher/build.ps1" >&2
+            exit 1
+        fi
+        if [ ! -f "$BOOTSTRAP" ]; then
+            echo "Error: Bootstrap integrity probe not found: $BOOTSTRAP" >&2
+            exit 1
+        fi
+        "$BOOTSTRAP" --verify-only
+        if [ "$?" -ne 0 ]; then
+            echo "Error: Runtime bundle integrity verification failed" >&2
             exit 1
         fi
         if discover_port > /dev/null 2>&1; then

@@ -13,7 +13,7 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 |------|-----------|
 | 运行时 | **.NET 10 (`net10.0-windows`)**, x64, **FDD (framework-dependent)** + 用户面 native C++ bootstrap |
 | 语言 | C# (`LangVersion=latest`，对齐 .NET 10) for Core；C++ (Win32-only，no STL) for bootstrap |
-| SDK pin | [`global.json`](../global.json) at repo root, `version: 10.0.300` + `rollForward: latestPatch` |
+| SDK pin | [`global.json`](../global.json) at repo root, `version: 10.0.300` + `rollForward: disable`；runtime 发布另受 toolchain lock 约束 |
 | UI | WinForms (`UseWindowsForms=true`, WinExe) 单窗体（GuardianForm）+ WebView2（BootstrapPanel 引导页 + WebOverlayForm 运行态 overlay） |
 | Native HUD 图像 | **SkiaSharp 3.119.4**（MIT；共享地图 WebP 按最长边 512px 解码）→ `System.Drawing.Bitmap`；decoded/tinted 分别使用 24/12 MiB 字节预算 LRU |
 | 构建 | **`dotnet publish --self-contained false`**（FDD；`build.ps1` 统一剔除 NuGet native PDB）+ MSVC `cl.exe`（miniaudio + bootstrap）+ Rust/Cargo (sol_parser cdylib) + Node.js/npm (TypeScript 编译 V8 脚本) |
@@ -633,7 +633,7 @@ launcher/
 ### 前置条件
 
 - **Windows 10 22H2+ / Windows 11，x64**
-- **.NET 10 SDK**（10.0.300 patch band，对齐 `global.json` 的 `version: 10.0.300` + `rollForward: latestPatch`）
+- **.NET 10 SDK**（精确 `10.0.300`，对齐 `global.json` 的 `rollForward: disable`；正式 runtime 发布还校验 dotnet host SHA-256）
   - user-scope 装法（无需 admin）：
     ```powershell
     iwr https://dot.net/v1/dotnet-install.ps1 -OutFile $env:TEMP\dotnet-install.ps1
@@ -668,7 +668,7 @@ powershell -File build.ps1
 
 ### build.ps1 实际执行链
 
-脚本头部先 echo `dotnet --version` + `global.json file:` 路径作为构建日志证据（CI 复现 / SDK 版本飘移诊断用）。Step 5 `dotnet publish` 调用前 `Push-Location $projectRoot` 切到 repo root，保证 dotnet host 沿 CWD 向上找到 `global.json`（不管脚本从哪个目录被调用）。**实际执行动作**：
+脚本首先执行精确环境闸门，基线与换机步骤以 [Launcher 运行时构建基线](../docs/runtime-build-reproducibility.md) 为准；随后 echo `dotnet --version` + `global.json file:` 路径作为日志证据。Step 5 `dotnet publish` 调用前 `Push-Location $projectRoot` 切到 repo root。**实际执行动作**：
 
 | 阶段 | 动作 |
 |------|------|
@@ -681,12 +681,12 @@ powershell -File build.ps1
 | 1f   | 生成 `web/modules/tasks/achievement-catalog.json` — `node tools/derive-achievement-catalog.js`（成就 tab web 直读目录，含 objective 枚举 / 跨域闭包 / 脱敏校验；奖励 `icon` 从 `data/items/*.xml` 派生；派生失败 exit 1） |
 | 1g   | 审计 Web 可见物品图标闭包 — `node tools/audit-web-item-icon-closure.js`（任务/成就奖励与情报物品最终 `icon` 必须命中 `launcher/web/icons/manifest.json`；失败 exit 1） |
 | 1h   | 审计 Web 图标渲染入口 — `node tools/audit-web-icon-render-entrypoints.js`（rich tooltip 必须传 `iconHtml` 接入 `Icons.html` 动态/分层播放链，`Icons.resolve` 只留受控 fallback；失败 exit 1） |
-| 2    | `native/build.bat` — 编 `miniaudio_bridge.c` → `bin/Release/miniaudio.dll`（自动 vcvars64） |
-| 3    | `native/sol_parser/build.bat` — `cargo build --release` → `bin/Release/sol_parser.dll`（硬依赖，缺失直接 exit 1） |
-| 4    | `native/bootstrap/build.bat` — 编 `bootstrap.cpp` (Win32-only C++) → `bin/Release/bootstrap.exe`（~259KB，零 .NET 依赖，复用 vcvars64） |
-| 5    | `dotnet publish ... -c Release -r win-x64 --self-contained false -p:DebugType=embedded -o $publishDir` — 出 FDD apphost (`CRAZYFLASHER7MercenaryEmpire.Core.exe`) + 17 个 DLL + `CRAZYFLASHER7MercenaryEmpire.Core.deps.json` + `CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json`，~37MB 散落形态 |
+| 2    | `native/build.bat` — 用环境闸门指定的精确 vcvars 编 `miniaudio_bridge.c` → `bin/Release/miniaudio.dll` |
+| 3    | `native/sol_parser/build.bat` — 固定 Rust toolchain、每次 clean、`--locked`，并以 `CARGO_ENCODED_RUSTFLAGS` 同时传入路径 remap 与 `/Brepro` 后生成 `sol_parser.dll` |
+| 4    | `native/bootstrap/build.bat` — 用同一精确 MSVC/Windows SDK 编 `bootstrap.cpp` → `bin/Release/bootstrap.exe` |
+| 5    | `dotnet publish ... -c Release -r win-x64 --self-contained false -p:DebugType=None -p:DebugSymbols=false` — 生成不携带 PDB 的 FDD Core 与依赖集合 |
 | 6    | 拷贝产物到 `projectRoot\runtime\`：(a) `publishDir/*` 除 `*.xml`（含 `CRAZYFLASHER7MercenaryEmpire.Core.*` 全套） (b) `bootstrap.exe` → projectRoot 改名 `CRAZYFLASHER7MercenaryEmpire.exe`（用户面入口） (c) `sol_parser.dll` + `miniaudio.dll` from `bin/Release`；拷贝走 `Copy-IfDifferent`（SHA256 比对，相同跳过 → 可复现构建、不污染 git）+ 定向清理过期产物；**硬断言根目录 `CRAZYFLASHER7MercenaryEmpire.exe`，以及 `runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe` + `runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll` + `runtime\sol_parser.dll` + `runtime\miniaudio.dll` 全部落盘**（任一缺失 exit 1）；bundled runtime installer（`tools/dotnet-runtime/windowsdesktop-runtime-10.*-win-x64.exe` glob）缺失现为 **fail-fast exit 1**（旧版只 WARN） |
-| 6f   | managed 产物护栏 — `dotnet run tools/assert-optimized.cs -- runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll` 用 PEReader 读取 `DebuggableAttribute` 与 embedded portable PDB，断言发布程序集是 optimized（非 Debug）build 且不含 SourceLink commit 映射；项目显式设置 `EnableSourceLink=false`、`SuppressImplicitGitSourceLink=true`，避免受版本控制的 DLL/manifest 随 HEAD SHA 漂移；任一违规命中即失败 |
+| 6f   | managed 产物护栏 — `dotnet run tools/assert-optimized.cs -- runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll` 用 PEReader 断言发布程序集是 optimized（非 Debug）build；正式产物关闭 PDB，项目同时禁用 SourceLink，避免 checkout 路径、源码换行 checksum 或 HEAD SHA 进入受版本控制 DLL |
 | 7    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*`（含 `map-canvas-stage-renderer.js` / `intelligence-components.js` / `intelligence-panel.js`）与 minigame 入口文件 |
 | 7a   | 运行 `node tools/audit-native-cursor-assets.js` 校验各 cursor PNG 尺寸与 manifest 声明的 canvas 一致、且 manifest 指定的 hotspot 像素具备 alpha（当前 manifest 数据值为 `64x64` / `(16,16)`，非工具硬编码契约），缺失或不合规直接 exit 1 |
 | 7b   | fail-fast 校验 `launcher/data/map_hud_data.json` + `save_repair_dict.json` + `save_schema.json` 三件运行时数据；缺失时分别提示对应生成命令 |
@@ -694,7 +694,7 @@ powershell -File build.ps1
 
 > build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
 
-> **运行时产物必须按一次构建的原子集合处理**：根目录 `CRAZYFLASHER7MercenaryEmpire.exe`、`runtime/CRAZYFLASHER7MercenaryEmpire.Core.*`、`runtime/miniaudio.dll`、`runtime/sol_parser.dll` 与 `runtime/cf7-runtime-manifest.tsv` 必须来自同一次 `launcher/build.ps1`。构建后不得单独恢复其中某个二进制或只保留 manifest/Core；否则 bootstrap 会在进入地图、Web 或 AS2 前以 `CF7-BOOT-FILE-INTEGRITY` 拒绝启动。发生任何单文件恢复、覆盖安装或冲突取舍后，重新完整运行 `launcher/build.ps1`，并以 `logs/bootstrap.log` 的 `[manifest] verification OK files=23` 作为真启动判据。
+> **运行时产物必须按一次构建的原子集合处理**：根 bootstrap、`runtime/` Core/全部依赖/native DLL 与 manifest 必须来自同一次 `launcher/build.ps1`。manifest 同时绑定 `sourceTreeHash` 与 `toolchainLockHash`，并要求文件行与实际部署文件形成精确闭包；提交前用 `tools/verify-runtime-bundle.ps1 -Staged` 校验纯 Git index。构建后不得单独恢复其中某个二进制；发生覆盖或冲突取舍后必须重新完整构建。所有 headless 直启 Core 入口必须先调用 bootstrap `--verify-only`，部署态 Core 自身也会在最早入口反向调用同一 probe，封闭手工直启与未来脚本漏接。
 
 ### 产物（部署到项目根目录）
 
@@ -777,9 +777,9 @@ powershell -File launcher/tests/run_tests.ps1
 ```
 
 脚本做法：
-1. 通过 `resolve-dotnet.ps1` 探测用户级与系统级 host，并确认其已安装满足 `global.json` 的 10.0.300 feature band
+1. 通过 `resolve-dotnet.ps1` 探测用户级与系统级 host，并由 `global.json` 强制选择精确 10.0.300 SDK
 2. echo `dotnet --version` 作为日志证据
-3. `Push-Location $projectRoot` 保证 dotnet host 找到 repo root 的 `global.json`（SDK pin 10.0.300 + latestPatch）
+3. `Push-Location $projectRoot` 保证 dotnet host 找到 repo root 的 `global.json`（SDK pin 10.0.300 + `rollForward: disable`）
 4. `dotnet test Launcher.Tests.csproj -c Release` —— Microsoft.NET.Test.Sdk + xunit.runner.visualstudio 自动 discover + run，连带编译主工程的 `ProjectReference`
 
 ### 测试覆盖

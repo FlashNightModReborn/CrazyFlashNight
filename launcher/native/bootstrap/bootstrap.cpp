@@ -219,6 +219,20 @@ static void TrimLineEnd(char* text);
 
 static bool BuildProjectPath(const wchar_t* exeDir, const wchar_t* relativePath, wchar_t* out, size_t cch)
 {
+    if (relativePath == NULL || relativePath[0] == L'\0' || relativePath[0] == L'/' || relativePath[0] == L'\\') return false;
+    if (wcschr(relativePath, L':') != NULL || wcschr(relativePath, L'\\') != NULL) return false;
+    if (_wcsicmp(relativePath, L"CRAZYFLASHER7MercenaryEmpire.exe") != 0 &&
+        _wcsnicmp(relativePath, L"runtime/", 8) != 0) return false;
+    const wchar_t* segment = relativePath;
+    for (const wchar_t* p = relativePath;; ++p) {
+        if (*p == L'/' || *p == L'\0') {
+            size_t len = (size_t)(p - segment);
+            if (len == 0 || (len == 1 && segment[0] == L'.') ||
+                (len == 2 && segment[0] == L'.' && segment[1] == L'.')) return false;
+            if (*p == L'\0') break;
+            segment = p + 1;
+        }
+    }
     if (FAILED(StringCchCopyW(out, cch, exeDir))) return false;
     if (FAILED(StringCchCatW(out, cch, L"\\"))) return false;
     if (FAILED(StringCchCatW(out, cch, relativePath))) return false;
@@ -226,6 +240,19 @@ static bool BuildProjectPath(const wchar_t* exeDir, const wchar_t* relativePath,
         if (out[i] == L'/') out[i] = L'\\';
     }
     return true;
+}
+
+static bool HasExactCommandLineArg(const wchar_t* expected)
+{
+    int argc = 0;
+    LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    if (argv == NULL) return false;
+    bool found = false;
+    for (int i = 1; i < argc; ++i) {
+        if (wcscmp(argv[i], expected) == 0) { found = true; break; }
+    }
+    LocalFree(argv);
+    return found;
 }
 
 static bool WriteUtf8ToFile(FILE* fp, const wchar_t* text)
@@ -596,7 +623,7 @@ static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
     outHex[0] = '\0';
 
     HANDLE file = CreateFileW(path, GENERIC_READ,
-        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+        FILE_SHARE_READ,
         NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file == INVALID_HANDLE_VALUE) {
         Logf("ERROR", L"[manifest] cannot open for hash path=%s GetLastError=%lu", path, GetLastError());
@@ -651,95 +678,114 @@ static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
     return ok;
 }
 
+static bool ManifestContainsPath(wchar_t paths[][MAX_PATH], int count, const wchar_t* path)
+{
+    for (int i = 0; i < count; ++i) if (_wcsicmp(paths[i], path) == 0) return true;
+    return false;
+}
+
+static bool VerifyRuntimeClosureRecursive(const wchar_t* dir, const wchar_t* relativeDir,
+    wchar_t manifestPaths[][MAX_PATH], int manifestCount, int* actualCount)
+{
+    wchar_t pattern[MAX_PATH];
+    if (FAILED(StringCchPrintfW(pattern, MAX_PATH, L"%s\\*", dir))) return false;
+    WIN32_FIND_DATAW fd;
+    HANDLE find = FindFirstFileW(pattern, &fd);
+    if (find == INVALID_HANDLE_VALUE) return false;
+    bool ok = true;
+    do {
+        if (wcscmp(fd.cFileName, L".") == 0 || wcscmp(fd.cFileName, L"..") == 0) continue;
+        wchar_t full[MAX_PATH], relative[MAX_PATH];
+        if (FAILED(StringCchPrintfW(full, MAX_PATH, L"%s\\%s", dir, fd.cFileName)) ||
+            FAILED(StringCchPrintfW(relative, MAX_PATH, L"%s/%s", relativeDir, fd.cFileName))) {
+            ok = false; continue;
+        }
+        if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            ok = VerifyRuntimeClosureRecursive(full, relative, manifestPaths, manifestCount, actualCount) && ok;
+        } else if (_wcsicmp(relative, L"runtime/cf7-runtime-manifest.tsv") != 0) {
+            (*actualCount)++;
+            if (!ManifestContainsPath(manifestPaths, manifestCount, relative)) {
+                Logf("ERROR", L"[manifest] undeclared runtime file rel=%s", relative);
+                ok = false;
+            }
+        }
+    } while (FindNextFileW(find, &fd));
+    FindClose(find);
+    return ok;
+}
+
 static bool VerifyRuntimeManifest(const wchar_t* exeDir)
 {
     wchar_t manifestPath[MAX_PATH];
-    if (!BuildRootPath(exeDir, RUNTIME_MANIFEST_REL, manifestPath, MAX_PATH)) {
-        Log("ERROR", L"[manifest] manifest path overflow");
-        return false;
-    }
-
+    if (!BuildRootPath(exeDir, RUNTIME_MANIFEST_REL, manifestPath, MAX_PATH)) return false;
     FILE* fp = _wfsopen(manifestPath, L"rb", _SH_DENYNO);
-    if (fp == NULL) {
-        Logf("ERROR", L"[manifest] missing runtime manifest path=%s", manifestPath);
-        return false;
-    }
+    if (fp == NULL) { Logf("ERROR", L"[manifest] missing runtime manifest path=%s", manifestPath); return false; }
 
     bool ok = true;
+    bool headerSeen = false, publishModeSeen = false, sourceSeen = false, toolchainSeen = false, baselineSeen = false;
     int fileCount = 0;
+    wchar_t manifestPaths[128][MAX_PATH] = {};
     char line[4096];
     while (fgets(line, sizeof(line), fp) != NULL) {
         TrimLineEnd(line);
-        if (strncmp(line, "file\t", 5) != 0) continue;
+        if (!headerSeen) {
+            headerSeen = true;
+            if (strcmp(line, "cf7-runtime-manifest-v1") != 0) { Log("ERROR", L"[manifest] invalid schema header"); ok = false; }
+            continue;
+        }
+        if (strncmp(line, "publishMode\t", 12) == 0) {
+            if (publishModeSeen || strcmp(line, "publishMode\tframework-dependent") != 0) ok = false;
+            publishModeSeen = true; continue;
+        }
+        if (strncmp(line, "sourceTreeHash\t", 15) == 0) { if (sourceSeen) ok = false; sourceSeen = true; continue; }
+        if (strncmp(line, "toolchainLockHash\t", 18) == 0) { if (toolchainSeen) ok = false; toolchainSeen = true; continue; }
+        if (strncmp(line, "toolchainBaseline\t", 18) == 0) { if (baselineSeen) ok = false; baselineSeen = true; continue; }
+        if (strncmp(line, "file\t", 5) != 0) { Logf("ERROR", L"[manifest] unknown row=%S", line); ok = false; continue; }
 
         char* rel = line + 5;
         char* sizeText = strchr(rel, '\t');
-        if (sizeText == NULL) {
-            ok = false;
-            Log("ERROR", L"[manifest] malformed file row (missing size)");
-            continue;
-        }
+        if (sizeText == NULL) { ok = false; continue; }
         *sizeText++ = '\0';
-        char* hashText = strchr(sizeText, '\t');
-        if (hashText == NULL) {
-            ok = false;
-            Log("ERROR", L"[manifest] malformed file row (missing hash)");
-            continue;
-        }
-        *hashText++ = '\0';
+        char* hashSep = strchr(sizeText, '\t');
+        if (hashSep == NULL) { ok = false; continue; }
+        *hashSep = '\0';
+        char* hashText = hashSep + 1;
+        if (strchr(hashText, '\t') != NULL || strlen(hashText) != 64) { ok = false; continue; }
 
-        wchar_t relPathW[MAX_PATH];
-        if (!Utf8ToWidePath(rel, relPathW, MAX_PATH)) {
-            ok = false;
-            Log("ERROR", L"[manifest] malformed UTF-8 relative path");
-            continue;
+        wchar_t relPathW[MAX_PATH], fullPath[MAX_PATH];
+        if (!Utf8ToWidePath(rel, relPathW, MAX_PATH) || !BuildProjectPath(exeDir, relPathW, fullPath, MAX_PATH)) {
+            Logf("ERROR", L"[manifest] unsafe path rel=%S", rel); ok = false; continue;
         }
-
-        wchar_t fullPath[MAX_PATH];
-        if (!BuildProjectPath(exeDir, relPathW, fullPath, MAX_PATH)) {
-            ok = false;
-            Logf("ERROR", L"[manifest] path overflow rel=%s", relPathW);
-            continue;
+        if (fileCount >= 128 || ManifestContainsPath(manifestPaths, fileCount, relPathW)) {
+            Logf("ERROR", L"[manifest] duplicate/overflow path rel=%s", relPathW); ok = false; continue;
         }
+        StringCchCopyW(manifestPaths[fileCount], MAX_PATH, relPathW);
 
         WIN32_FILE_ATTRIBUTE_DATA fad;
-        if (!GetFileAttributesExW(fullPath, GetFileExInfoStandard, &fad) ||
-            (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
-            ok = false;
-            Logf("ERROR", L"[manifest] listed file missing rel=%s path=%s GetLastError=%lu",
-                relPathW, fullPath, GetLastError());
-            continue;
+        if (!GetFileAttributesExW(fullPath, GetFileExInfoStandard, &fad) || (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            Logf("ERROR", L"[manifest] listed file missing rel=%s", relPathW); ok = false; fileCount++; continue;
         }
-
-        ULONGLONG expectedSize = _strtoui64(sizeText, NULL, 10);
+        char* sizeEnd = NULL;
+        ULONGLONG expectedSize = _strtoui64(sizeText, &sizeEnd, 10);
         ULONGLONG actualSize = (((ULONGLONG)fad.nFileSizeHigh) << 32) | fad.nFileSizeLow;
-        if (expectedSize != actualSize) {
-            ok = false;
-            Logf("ERROR", L"[manifest] size mismatch rel=%s expected=%llu actual=%llu",
-                relPathW, expectedSize, actualSize);
-            continue;
+        if (sizeEnd == sizeText || *sizeEnd != '\0' || expectedSize != actualSize) {
+            Logf("ERROR", L"[manifest] size mismatch rel=%s", relPathW); ok = false; fileCount++; continue;
         }
-
         char actualHash[65];
-        if (!ComputeFileSha256Hex(fullPath, actualHash, sizeof(actualHash))) {
-            ok = false;
-            continue;
+        if (!ComputeFileSha256Hex(fullPath, actualHash, sizeof(actualHash)) || _stricmp(hashText, actualHash) != 0) {
+            Logf("ERROR", L"[manifest] SHA256 mismatch rel=%s", relPathW); ok = false;
         }
-        if (_stricmp(hashText, actualHash) != 0) {
-            ok = false;
-            Logf("ERROR", L"[manifest] SHA256 mismatch rel=%s expected=%S actual=%S",
-                relPathW, hashText, actualHash);
-            continue;
-        }
-
         fileCount++;
     }
     fclose(fp);
 
-    if (fileCount == 0) {
-        ok = false;
-        Logf("ERROR", L"[manifest] no file rows found path=%s", manifestPath);
-    }
+    if (!headerSeen || !publishModeSeen || !sourceSeen || !toolchainSeen || !baselineSeen || fileCount == 0) ok = false;
+    if (!ManifestContainsPath(manifestPaths, fileCount, L"CRAZYFLASHER7MercenaryEmpire.exe")) ok = false;
+    wchar_t runtimeDir[MAX_PATH];
+    int actualCount = 1; // root bootstrap
+    if (!BuildRootPath(exeDir, L"\\runtime", runtimeDir, MAX_PATH) ||
+        !VerifyRuntimeClosureRecursive(runtimeDir, L"runtime", manifestPaths, fileCount, &actualCount)) ok = false;
+    if (actualCount != fileCount) { Logf("ERROR", L"[manifest] closure count mismatch listed=%d actual=%d", fileCount, actualCount); ok = false; }
 
     Logf(ok ? "INFO" : "ERROR", L"[manifest] verification %s files=%d path=%s",
         ok ? L"OK" : L"FAILED", fileCount, manifestPath);
@@ -1119,6 +1165,23 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     Logf("INFO", L"exeDir = %s", exeDir);
     Logf("INFO", L"cmdLine = %s", (cmdLine && cmdLine[0]) ? cmdLine : L"(empty)");
     Logf("INFO", L"bootstrap pid=%lu", GetCurrentProcessId());
+
+    // Build/automation integrity probe: verify the complete atomic runtime set without
+    // requiring .NET, showing UI, or launching Core.
+    if (HasExactCommandLineArg(L"--verify-only")) {
+        bool ok = PreflightCriticalFiles(exeDir);
+        Log(ok ? "INFO" : "ERROR", ok ? L"verify-only succeeded" : L"verify-only failed");
+        LogClose();
+        return ok ? 0 : 2;
+    }
+
+    // Fail before runtime installation/UAC if the deployed atomic set is incomplete.
+    // A second check immediately before Core launch narrows the replacement window.
+    if (!PreflightCriticalFiles(exeDir)) {
+        return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
+            L"启动器关键文件缺失或损坏。\n\n请验证游戏文件完整性，或重新下载完整安装包。",
+            L"请先恢复完整的启动器与 runtime 文件集，再重试。");
+    }
 
     // 1. 检测 runtime（检查 ProgramFiles、LOCALAPPDATA、USERPROFILE\.dotnet、DOTNET_ROOT env）
     wchar_t foundVer[64] = { 0 };

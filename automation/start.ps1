@@ -13,10 +13,25 @@ $scriptDirectory = (Resolve-Path -LiteralPath $scriptDirectory).Path
 $projectRoot = Split-Path -Parent $scriptDirectory
 
 $coreExe = Join-Path $projectRoot "runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+$bootstrapExe = Join-Path $projectRoot "CRAZYFLASHER7MercenaryEmpire.exe"
 
 if (-not (Test-Path $coreExe)) {
     Write-Host "[Error] Core EXE not found: $coreExe"
     Write-Host "Please run launcher\build.ps1 first."
+    exit 1
+}
+
+if (-not (Test-Path $bootstrapExe)) {
+    Write-Host "[Error] Bootstrap EXE not found: $bootstrapExe"
+    Write-Host "Please run launcher\build.ps1 first."
+    exit 1
+}
+
+# Headless launch bypasses bootstrap runtime installation, but never bypasses the atomic
+# bundle gate. A partial binary checkout must fail before Core is started.
+& $bootstrapExe --verify-only
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[Error] Runtime bundle integrity check failed. Rebuild and commit the complete manifest set."
     exit 1
 }
 
