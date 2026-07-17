@@ -425,6 +425,11 @@ var SkillsPanel = (function() {
             label = node && node.label ? node.label : navigator.path[navigator.path.length - 1];
         }
         value.textContent = label;
+        var labelEl = group.querySelector('.skills-filter-label');
+        if (labelEl) {
+            var base = skillFilterLabel(id) + '筛选';
+            labelEl.setAttribute('aria-label', label ? base + '，当前：' + label : base);
+        }
     }
     function skillFilterLabel(id) {
         var definitions = skillFilterDefinitions();
@@ -636,6 +641,7 @@ var SkillsPanel = (function() {
     function renderTrainerActions(entry) {
         var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
         var section = document.createElement('section'); section.className = 'skills-trainer-actions';
+        var matchingPreview = previewMatches(entry) ? _preview : null;
         var target = document.createElement('div'); target.className = 'skills-trainer-target';
         var targetHeading = document.createElement('div'); targetHeading.className = 'skills-trainer-section-heading';
         targetHeading.textContent = current >= max ? '技能等级' : '目标等级'; target.appendChild(targetHeading);
@@ -709,7 +715,6 @@ var SkillsPanel = (function() {
             + ' 点 · 升级 ' + safeNumber(entry.upgradeSP) + ' 点/级'; section.appendChild(gate);
 
         var result = document.createElement('div'); result.className = 'skills-preview-result skills-cost-card';
-        var matchingPreview = previewMatches(entry) ? _preview : null;
         var previousPreview = _preview && _preview.skillKey === entry.skillKey ? _preview : null;
         if (current >= max) {
             result.classList.add('ok');

@@ -13533,12 +13533,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
     color:#6f8992; font:700 9px/1 "Microsoft YaHei",sans-serif; letter-spacing:.08em; cursor:default;
 }
 .skills-filter-group.collapsible .skills-filter-label { cursor:pointer; }
-.skills-filter-label::before {
+.skills-filter-group.collapsible .skills-filter-label::before {
     content:""; display:inline-block; width:0; height:0; border-style:solid;
-    border-width:4px 0 4px 5px; border-color:transparent transparent transparent #5a8a96;
-}
-.skills-filter-group.collapsed .skills-filter-label::before {
     border-width:5px 4px 0; border-color:#5a8a96 transparent transparent transparent;
+}
+.skills-filter-group.collapsible:not(.collapsed) .skills-filter-label::before {
+    border-width:4px 0 4px 5px; border-color:transparent transparent transparent #5a8a96;
 }
 .skills-filter-value {
     display:none; align-items:center; min-height:18px; padding:0 5px; margin-left:auto;
