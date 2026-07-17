@@ -104,13 +104,13 @@ var SkillsPanel = (function() {
         _densityToggle = _density.createToggle();
         _densityToggle.classList.add('skills-density-toggle');
         _densityToggle.setAttribute('aria-label', '技能库布局');
-        _densityToggle.setAttribute('aria-label', '只切换技能库的完整卡片或紧凑瓦片；快捷技能带保持固定');
+        _densityToggle.title = '只切换技能库的完整卡片或紧凑瓦片；快捷技能带保持固定';
         var densityLabel = _densityToggle.querySelector('.item-grid-mode-label');
         if (densityLabel) densityLabel.textContent = '技能库';
         var fullDensity = _densityToggle.querySelector('[data-layout-mode="full"]');
         var compactDensity = _densityToggle.querySelector('[data-layout-mode="compact"]');
-        if (fullDensity) fullDensity.setAttribute('aria-label', '技能库显示名称、等级与状态');
-        if (compactDensity) compactDensity.setAttribute('aria-label', '技能库使用方块图标瓦片，一屏查看更多技能');
+        if (fullDensity) fullDensity.title = '技能库显示名称、等级与状态';
+        if (compactDensity) compactDensity.title = '技能库使用方块图标瓦片，一屏查看更多技能';
         _shell.addHeaderAction(_densityToggle);
         if (_view === 'manage') {
             _confirmationToggle = createLoadoutConfirmationToggle();
@@ -118,16 +118,16 @@ var SkillsPanel = (function() {
         }
         if (_view === 'trainer') {
             _switchButton = button('管理技能', 'workbench-mode-btn skills-switch-manage-btn', requestManageView);
-            _switchButton.setAttribute('aria-label', '保留当前选择并打开技能管理');
+            _switchButton.title = '保留当前选择并打开技能管理';
             _shell.addHeaderAction(_switchButton);
         } else if (_initData && _initData.canReturnTrainer === true) {
             _switchButton = button('返回研习', 'workbench-mode-btn skills-switch-trainer-btn', requestTrainerView);
-            _switchButton.setAttribute('aria-label', '仅本次教师入口有效；返回后需要重新取得学习预览');
+            _switchButton.title = '仅本次教师入口有效；返回后需要重新取得学习预览';
             _shell.addHeaderAction(_switchButton);
         }
         _helpButton = button('?', 'workbench-mode-btn skills-help-btn', openHelp);
         _helpButton.setAttribute('aria-label', '查看技能操作帮助');
-        _helpButton.setAttribute('aria-label', '查看操作帮助');
+        _helpButton.title = '查看操作帮助';
         _shell.addHeaderAction(_helpButton);
         _refreshButton = button('刷新', 'workbench-mode-btn skills-refresh-btn', function() {
             if (_coordinator.getState() === 'needs_reconcile') _coordinator.retryReconcile();
@@ -165,7 +165,7 @@ var SkillsPanel = (function() {
         _searchToggle = button('搜索', 'skills-search-toggle', function() { setSearchExpanded(!_searchExpanded); });
         _searchToggle.setAttribute('aria-expanded', 'false');
         _searchToggle.setAttribute('aria-controls', 'skills-search-controls');
-        _searchToggle.setAttribute('aria-label', '展开技能名称搜索（快捷键 /）');
+        _searchToggle.title = '展开技能名称搜索（快捷键 /）';
         titleRow.appendChild(_searchToggle); header.appendChild(titleRow);
         var controls = document.createElement('div'); controls.className = 'skills-library-controls'; controls.id = 'skills-search-controls';
         controls.hidden = true; _searchControls = controls;
@@ -196,7 +196,7 @@ var SkillsPanel = (function() {
                 label.setAttribute('tabindex', '0');
                 label.setAttribute('role', 'button');
                 label.setAttribute('aria-expanded', 'false');
-                label.setAttribute('aria-label', '点击展开“' + definition.label + '”筛选');
+                label.title = '点击展开“' + definition.label + '”筛选';
             }
             group.appendChild(label);
             var value = document.createElement('span');
@@ -410,7 +410,7 @@ var SkillsPanel = (function() {
         var label = group.querySelector('.skills-filter-label');
         if (label) {
             label.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-            label.setAttribute('aria-label', (collapsed ? '点击展开' : '点击收起') + '“' + skillFilterLabel(id) + '”筛选');
+            label.title = (collapsed ? '点击展开' : '点击收起') + '“' + skillFilterLabel(id) + '”筛选';
         }
     }
     function refreshFilterValue(id) {
@@ -983,7 +983,7 @@ var SkillsPanel = (function() {
             if (slot.writeBlocked || slot.stateHealth === 'duplicate') card.classList.add('corrupt');
             var main = button('', 'skills-slot-main', function() { onSlotClick(slot, readOnly); });
             main.setAttribute('data-focus-key', 'slot:' + slot.slot);
-            main.setAttribute('aria-label', '槽位 ' + slot.slot + ' · ' + (slot.keyLabel || '无按键') + ' · ' + (slot.skillKey || '空槽'))
+            main.title = '槽位 ' + slot.slot + ' · ' + (slot.keyLabel || '无按键') + ' · ' + (slot.skillKey || '空槽')
                 + (!readOnly && slot.skillKey && slot.stateHealth === 'ok' ? ' · 可拖动调整，Alt+←/→ 与相邻槽交换' : '');
             var number = document.createElement('span'); number.className = 'skills-slot-number'; number.textContent = String(slot.slot);
             var key = document.createElement('span'); key.className = 'skills-slot-key'; key.textContent = slot.keyLabel || '';
@@ -1100,7 +1100,7 @@ var SkillsPanel = (function() {
         group.className = 'item-grid-mode-switch skills-confirmation-toggle';
         group.setAttribute('role', 'group');
         group.setAttribute('aria-label', '快捷栏操作确认');
-        group.setAttribute('aria-label', '安全模式会确认替换和卸载；快速模式直接执行。技能学习始终需要确认');
+        group.title = '安全模式会确认替换和卸载；快速模式直接执行。技能学习始终需要确认';
         var label = document.createElement('span'); label.className = 'item-grid-mode-label'; label.textContent = '快捷栏';
         group.appendChild(label);
         [{mode:'safe', label:'安全', title:'替换和卸载前确认；空槽仍直接装备'},
@@ -1110,7 +1110,7 @@ var SkillsPanel = (function() {
             });
             choice.setAttribute('data-confirmation-mode', option.mode);
             choice.setAttribute('aria-label', '快捷栏确认：' + option.label + '模式');
-            choice.setAttribute('aria-label', option.title);
+            choice.title = option.title;
             group.appendChild(choice);
         });
         refreshLoadoutConfirmationToggle(group);

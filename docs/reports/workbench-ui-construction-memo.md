@@ -1,7 +1,7 @@
 # 双栏工作台视觉系统施工备忘
 
-> **文档角色**：施工期状态备忘，抗会话 compact，记录已拍板的决策、当前轮次范围、待办和风险。  
-> **创建时间**：2026-07-17  
+> **文档角色**：施工期状态备忘，抗会话 compact，记录已拍板的决策、当前轮次范围、待办和风险。
+> **创建时间**：2026-07-17
 > **关联文档**：
 > - `docs/dls-color-system.md`（DLS/θ-域配色 canonical）
 
@@ -38,10 +38,10 @@
 2. 装备调制：把 `--tuning-dls*` 收敛为 `--dls-crystal*`；保持 `#3dd5ff`。
 3. 技能面板：把 `--skill-energy` 和相关 `#4ec9f0`、`#63c7de` 进度条收敛到 `--dls-crystal` 色系（`#3dd5ff`）；在 `.skills-panel` 内将 `--theta-kinetic*` 覆写为 `--dls-crystal*` 别名，保持现有 CSS 规则不变。
 4. K 点商城 shop 皮肤：把 `#c8ff4c` 及所有 `rgba(200,255,76,…)` 替换为 DLS 晶体青 `#3dd5ff` / `rgba(61,213,255,…)`；文本/边框/背景同步映射为青灰体系；保留价格/结算琥珀作为功能色。
-4. 移除 `equipment-tuning` 中的 `@media (max-width:900px)`。
-5. 修复 `workbench-shell` 顶栏高度：`grid-template-rows:64px` → `48px`（与 ADR 一致）。
-6. 清理所有新增/修改规则中的 `transition: all`，改为显式属性。
-7. 验证 `panels.css` 无语法错误，且 `skills` / `equipment-tuning` harness 可正常加载。
+5. 移除 `equipment-tuning` 中的 `@media (max-width:900px)`。
+6. 修复 `workbench-shell` 顶栏高度：`grid-template-rows:64px` → `48px`（与 ADR 一致）。
+7. 清理所有新增/修改规则中的 `transition: all`，改为显式属性。
+8. 验证 `panels.css` 无语法错误，且 `skills` / `equipment-tuning` harness 可正常加载。
 
 ### 2.2 P1（已完成）
 1. ✅ 统一 scrollbar token：`--wb-scrollbar-track/thumb/border/hover` 已在 root 声明，并在商城/NPC/合成/技能/调制皮肤中覆盖复用。
@@ -55,7 +55,7 @@
 - ✅ **修复点击已选中卡片会丢失选中的问题**：`InteractionBroker` 新增 `isSelectedNode(node)`，`inventory-workbench.js` 的卡片点击处理器在“已选中且点击的是当前选中节点”时跳过 `activateSelected`，避免 same_slot 拒绝导致选择被清空。
 - ✅ **紧凑模式丢弃按钮保留角标尺寸**：compact 态下 `.inventory-discard-btn` 保持 12px 角标尺寸，避免覆盖图标。
 - ✅ **合成目录固定卡片高度**：`.crafting-recipe-card` 固定 `height:78px`；`.crafting-catalog-view` 加 `overflow:hidden`、grid 加 `flex:1 1 auto`，确保条目多时出现滚动而不是挤压卡片。
-- ✅ **移除浏览器原生 `title`**：`skills.js`、`crafting.js`、`kshop.js`、`kshop-views.js`、`npcshop.js` 中所有 `.title =` 与内联 `title=` 已替换为 `aria-label`。
+- ✅ **可访问性名称与说明分离**：`skills.js` 中关键控件保留稳定的 `aria-label` 作为可访问名称，说明文本改回 `title`（鼠标悬停提示）/ `aria-describedby`，避免覆盖名称；`crafting.js`、`kshop.js`、`kshop-views.js`、`npcshop.js` 中原本只有 `title` 的无名元素仍迁移为 `aria-label`。
 - ✅ **全局 hitbox 下限**：`panels.css` base 层新增规则，工作台内所有 `button`/`[role="button"]` 最小 24×24；主操作按钮（primary CTA）最小高 40px。
 - ⏸️ **拆分 `panels.css` 为 base/components/skins/features/utilities 五段 + cascade layers**：本轮未执行。文件 14k+ 行，物理拆分需要逐段验证所有 harness 和 AS2 面板的视觉回归，建议作为独立“CSS 架构重构”专题施工。
 - ⏸️ **抽取 `WorkbenchHeader / PaneChrome / FlowRail / SecondaryPage / WorkbenchDialog / EntityTilePrimitives / AuthorityPreviewPanel`**：本轮未执行。这些组件与 `DualPaneShell` 的 view 契约、状态管理深度耦合，直接抽取会触及多个生产面板的 JS 结构，建议随 cascade layers 重构同步进行。
@@ -93,12 +93,11 @@
 | 4 | 移除 @media | 完成 | 原 `panels.css:14287` | 移除了 `max-width:900px` 视口媒体查询，保留 `prefers-reduced-motion` |
 | 5 | 顶栏高度修复 | 完成 | `panels.css:2770` | 新增 `--wb-header-height:48px`，`grid-template-rows` 改用变量 |
 | 6 | transition:all 清理 | 完成 | 本次修改未引入 `transition:all` | 现有规则已使用显式属性列表；后续新规则必须保持 |
-| 7 | Harness 验证 | 完成 | `modules/skills/dev/harness.html`、`modules/equipment-tuning/dev/harness.html`、`modules/kshop/dev/harness.html` | Edge headless 截图 + QA 通过（skills 125/126，tuning 56/56） |
+| 7 | Harness 验证 | 完成 | `modules/skills/dev/harness.html`、`modules/equipment-tuning/dev/harness.html`、`modules/kshop/dev/harness.html` | Edge headless 截图 + QA 通过（skills 126/126，tuning 56/56） |
 | 8 | scrollbar token 统一 | 完成 | `panels.css` 多处 | 商城/NPC/合成/技能/调制皮肤均覆盖 `--wb-scrollbar-*` |
 | 9 | 语义色替换 | 完成 | `panels.css:13407` 起 crafting，`panels.css:3273` kshop remove | `--wb-semantic-success/danger` |
 | 10 | 空槽对比度 | 完成 | `panels.css:12226` | `.inventory-slot-card.empty` 新增 `border-color:rgba(255,255,255,.06)` |
 | 11 | 状态机枚举 | 完成 | `launcher/web/modules/workbench.js` | 新增 `WorkbenchState` + `normalizeState` |
-| 12 | 移除原生 title | 完成 | `skills.js/crafting.js/kshop.js/kshop-views.js/npcshop.js` | 全部替换为 `aria-label` |
+| 12 | 可访问性名称与说明分离 | 完成 | `skills.js/crafting.js/kshop.js/kshop-views.js/npcshop.js` | skills.js 保留 title 作为补充说明，其余无名元素 title 迁移为 `aria-label` |
 | 13 | hitbox 下限 | 完成 | `panels.css:2902` 起 | button/role=button 最小 24×24，主 CTA 最小高 40px |
 | 14 | CSS cascade layers / 组件抽取 | 本轮暂缓 | — | 文件 14k+ 行，需独立架构专题 |
-

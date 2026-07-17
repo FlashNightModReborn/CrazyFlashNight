@@ -123,16 +123,29 @@
         return '<span class="inventory-tier-marker ' + state + '" aria-label="' + label + '"></span>';
     }
 
-    function renderEquipmentSlotRail(item) {
-        var html = '<span class="inventory-equip-slots" aria-label="三个插件槽状态">';
+    function getEquipmentModSlots(item) {
         var capacity = Math.max(0, Math.floor(Number(item.modSlotCapacity) || 0));
         var used = Math.max(0, Math.floor(Number(item.modSlotUsed) || 0));
         var modSlots = item.modSlots instanceof Array ? item.modSlots : [];
+        var slots = [];
         for (var index = 0; index < 3; index++) {
             var available = index < capacity;
-            var mod = index < modSlots.length ? modSlots[index] : null;
+            var mod = null;
             if (available && index < used) {
-                mod = mod || {name:'未知插件',grade:'unknown',gradeLabel:'未知档级',roleLabel:'结构与功能',symbol:'diamond-outline'};
+                mod = modSlots[index] || {name:'未知插件',grade:'unknown',gradeLabel:'未知档级',roleLabel:'结构与功能',symbol:'diamond-outline'};
+            }
+            slots.push({available:available, mod:mod});
+        }
+        return slots;
+    }
+
+    function renderEquipmentSlotRail(item) {
+        var html = '<span class="inventory-equip-slots" aria-label="三个插件槽状态">';
+        var slots = getEquipmentModSlots(item);
+        for (var index = 0; index < slots.length; index++) {
+            var slot = slots[index];
+            if (slot.available && slot.mod) {
+                var mod = slot.mod;
                 var grade = normalizeModGrade(mod.grade);
                 var symbol = normalizeModSymbol(mod.symbol);
                 var color = normalizeModGradeColor(mod.gradeColor, grade);
@@ -142,9 +155,32 @@
                     + '" style="--mod-grade-color:' + color + '" aria-label="' + escapeAttr(label) + '">'
                     + '<span class="inventory-mod-glyph symbol-' + symbol + '" aria-hidden="true"></span></span>';
             } else {
-                var state = available ? 'empty' : 'unavailable';
+                var state = slot.available ? 'empty' : 'unavailable';
                 html += '<span class="inventory-equip-slot mod ' + state + '" aria-label="插件槽 '
-                    + (index + 1) + '：' + (available ? '空闲' : '不存在') + '"></span>';
+                    + (index + 1) + '：' + (slot.available ? '空闲' : '不存在') + '"></span>';
+            }
+        }
+        return html + '</span>';
+    }
+
+    function renderEquipmentSlotCompactRail(item) {
+        var html = '<span class="inventory-equip-slots-compact" aria-label="三个插件槽状态">';
+        var slots = getEquipmentModSlots(item);
+        for (var index = 0; index < slots.length; index++) {
+            var slot = slots[index];
+            if (slot.available && slot.mod) {
+                var mod = slot.mod;
+                var grade = normalizeModGrade(mod.grade);
+                var color = normalizeModGradeColor(mod.gradeColor, grade);
+                var label = '插件槽 ' + (index + 1) + '：' + String(mod.name || '未知插件')
+                    + '，' + String(mod.gradeLabel || '未知档级');
+                html += '<span class="inventory-equip-slot-compact used grade-' + grade
+                    + '" style="--mod-grade-color:' + color + '" aria-label="' + escapeAttr(label) + '"></span>';
+            } else if (slot.available) {
+                html += '<span class="inventory-equip-slot-compact empty" aria-label="插件槽 '
+                    + (index + 1) + '：空闲"></span>';
+            } else {
+                html += '<span class="inventory-equip-slot-compact unavailable" aria-hidden="true"></span>';
             }
         }
         return html + '</span>';
@@ -178,7 +214,8 @@
         var icon = typeof options.iconHtml === 'function'
             ? options.iconHtml(item.icon || item.name, 'inventory-owned-icon') : '';
         node.innerHTML = '<span class="item-card-icon inventory-slot-icon-frame"><span class="inventory-slot-icon">'
-            + icon + '</span>' + (isEquipment ? renderTierMarker(item) : '') + badge + '</span>'
+            + icon + '</span>' + (isEquipment ? renderTierMarker(item) : '') + badge
+            + (isEquipment ? renderEquipmentSlotCompactRail(item) : '') + '</span>'
             + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || item.name || '未知物品') + '</b>'
             + (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>'
             + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" aria-label="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
