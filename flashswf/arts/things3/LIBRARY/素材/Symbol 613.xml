@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 613" itemID="6577faef-0000151c" lastModified="1769882767">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 613" itemID="6577faef-0000151c" lastModified="1784309731">
   <timeline>
-    <DOMTimeline name="Symbol 613" currentFrame="36">
+    <DOMTimeline name="Symbol 613" currentFrame="54">
       <layers>
         <DOMLayer name="Labels Layer" color="#FF099F">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#A27C79" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#A27C79">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
@@ -226,6 +226,116 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 3" color="#DA7548">
+          <frames>
+            <DOMFrame index="0" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="218" keyMode="9728" soundName="音效/sound591.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 4" color="#A4B9CA">
+          <frames>
+            <DOMFrame index="0" duration="116" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="116" duration="139" keyMode="9728" soundName="音效/sound233.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 5" color="#7A5ED1">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="135" keyMode="9728" soundName="音效/sound579.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 6" color="#DF4E56">
+          <frames>
+            <DOMFrame index="0" duration="124" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="124" duration="131" keyMode="9728" soundName="音效/sound484.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 7" color="#6B84AA">
+          <frames>
+            <DOMFrame index="0" duration="143" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="143" duration="112" keyMode="9728" soundName="音效/sound591.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 8" color="#904FF3">
+          <frames>
+            <DOMFrame index="0" duration="159" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="159" duration="96" keyMode="9728" soundName="音效/sound149.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 9" color="#84E221">
+          <frames>
+            <DOMFrame index="0" duration="162" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="93" keyMode="9728" soundName="音效/sound522.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("键盘攻击音1.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="247" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("键盘武器展开音.mp3");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -9364,7 +9474,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 98" color="#FA3353" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 98" color="#FA3353" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9395,7 +9505,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 99" color="#E7DD6A" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 99" color="#E7DD6A" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9462,7 +9572,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 100" color="#D38C59" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 100" color="#D38C59" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9529,7 +9639,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 101" color="#EC5564" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 101" color="#EC5564" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9596,7 +9706,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 102" color="#C304FD" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 102" color="#C304FD" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9663,7 +9773,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 103" color="#31D7DD" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 103" color="#31D7DD" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9730,7 +9840,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 104" color="#E9C313" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 104" color="#E9C313" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9797,7 +9907,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 105" color="#A927DF" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 105" color="#A927DF" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9864,7 +9974,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 106" color="#A335DC" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 106" color="#A335DC" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9931,7 +10041,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 107" color="#8381A4" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 107" color="#8381A4" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -9998,7 +10108,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 108" color="#8EBCDC" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 108" color="#8EBCDC" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10065,7 +10175,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 109" color="#DB7B73" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 109" color="#DB7B73" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10147,7 +10257,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 110" color="#FB37D2" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 110" color="#FB37D2" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10214,7 +10324,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 111" color="#DE0D95" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 111" color="#DE0D95" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10281,7 +10391,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 112" color="#E615EB" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 112" color="#E615EB" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10363,7 +10473,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 113" color="#FD4B45" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 113" color="#FD4B45" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10430,7 +10540,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 114" color="#8F678D" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 114" color="#8F678D" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10497,7 +10607,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 115" color="#F6E0A7" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 115" color="#F6E0A7" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10564,7 +10674,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 116" color="#5972E9" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 116" color="#5972E9" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10595,7 +10705,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 117" color="#F894C9" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 117" color="#F894C9" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10662,7 +10772,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#962AC7" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 118" color="#962AC7" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10729,7 +10839,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 119" color="#D8ABAA" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 119" color="#D8ABAA" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10796,7 +10906,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#53D598" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 120" color="#53D598" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10863,7 +10973,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 121" color="#C7E6B4" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 121" color="#C7E6B4" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10894,7 +11004,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 122" color="#A714E6" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 122" color="#A714E6" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10925,7 +11035,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 123" color="#21B3E5" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 123" color="#21B3E5" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10956,7 +11066,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 124" color="#48E390" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 124" color="#48E390" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -10975,7 +11085,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 125" color="#6B9EE2" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 125" color="#6B9EE2" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -11006,7 +11116,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 126" color="#D256F8" parentLayerIndex="96" locked="true">
+        <DOMLayer name="Layer 126" color="#D256F8" parentLayerIndex="104" locked="true">
           <frames>
             <DOMFrame index="0" duration="160" keyMode="9728">
               <elements/>
@@ -19844,136 +19954,6 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#5AE881">
-          <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="8" duration="247" keyMode="9728" soundName="音效/sound233.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#23FDD0">
-          <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="13" duration="242" keyMode="9728" soundName="音效/sound579.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#8DD6F6">
-          <frames>
-            <DOMFrame index="0" duration="17" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="238" keyMode="9728" soundName="音效/sound484.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#DA7548">
-          <frames>
-            <DOMFrame index="0" duration="37" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="37" duration="218" keyMode="9728" soundName="音效/sound591.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#A4B9CA">
-          <frames>
-            <DOMFrame index="0" duration="116" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="116" duration="139" keyMode="9728" soundName="音效/sound233.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 5" color="#7A5ED1">
-          <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="120" duration="135" keyMode="9728" soundName="音效/sound579.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 6" color="#DF4E56">
-          <frames>
-            <DOMFrame index="0" duration="124" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="124" duration="131" keyMode="9728" soundName="音效/sound484.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 7" color="#6B84AA">
-          <frames>
-            <DOMFrame index="0" duration="143" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="143" duration="112" keyMode="9728" soundName="音效/sound591.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#904FF3">
-          <frames>
-            <DOMFrame index="0" duration="159" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="159" duration="96" keyMode="9728" soundName="音效/sound149.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 9" color="#84E221">
-          <frames>
-            <DOMFrame index="0" duration="162" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="162" duration="93" keyMode="9728" soundName="音效/sound522.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
