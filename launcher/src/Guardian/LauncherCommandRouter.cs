@@ -37,6 +37,7 @@ namespace CF7Launcher.Guardian
         private string _deferredFallbackSkillInitData;
         private static long _fallbackPanelInstanceSequence;
         private SkillTask _skillTask;
+        private EquipmentTuningTask _equipmentTuningTask;
         private Func<string, bool> _gameCommandSenderOverride;
         private readonly object _skillOpenLock = new object();
         private System.Threading.Timer _skillOpenTimer;
@@ -70,6 +71,7 @@ namespace CF7Launcher.Guardian
         /// <summary>二阶段注入：Program.cs 先 new Router，再 new PanelHostController(...)，最后 SetPanelHost 回注。</summary>
         public void SetPanelHost(PanelHostController host) { _panelHost = host; }
         public void SetSkillTask(SkillTask task) { _skillTask = task; }
+        public void SetEquipmentTuningTask(EquipmentTuningTask task) { _equipmentTuningTask = task; }
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
         internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
         internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
@@ -127,7 +129,7 @@ namespace CF7Launcher.Guardian
                     if (WebInventoryWorkbenchEnabled)
                     {
                         LogManager.Log("[Router] WAREHOUSE clicked -> web inventory workbench");
-                        OpenPanel("workbench", "{\"mode\":\"runtime\",\"profile\":\"battlebox\",\"source\":\"nativehud\",\"debug\":false}");
+                        OpenInventoryWorkbench("nativehud", "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
                     }
                     else
                     {
@@ -213,6 +215,7 @@ namespace CF7Launcher.Guardian
                         PostToWeb("{\"type\":\"toast\",\"text\":\"任务面板暂时不可用\"}");
                     }
                     break;
+                // D9：刘海装备键永远打开旧装备主界面；Web 调制仅从 battlebox 收纳箱反馈入口进入。
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
                 case "INTELLIGENCE":
                     OpenPanel("intelligence", "{\"mode\":\"prod\",\"source\":\"runtime\",\"debug\":false}");
@@ -270,7 +273,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
-        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile 枚举；npcshop 只接收 shopId；其他 panel 保持各自显式分支或 unsupported。
+        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile/view 枚举；npcshop 只接收 shopId；其他 panel 保持各自显式分支或 unsupported。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
@@ -317,6 +320,11 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "workbench", StringComparison.OrdinalIgnoreCase))
             {
+                if (string.Equals(safeSource, "legacy_equipment_tuning", StringComparison.Ordinal))
+                {
+                    LogManager.Log("[Router] legacy AS2 equipment tuning redirect paused; keeping native renderer");
+                    return;
+                }
                 OpenInventoryWorkbench(safeSource, initDataExtrasJson);
                 return;
             }
@@ -372,9 +380,10 @@ namespace CF7Launcher.Guardian
             OpenPanel("stage-select", initData);
         }
 
-        private void OpenInventoryWorkbench(string source, string initDataExtrasJson)
+        private bool OpenInventoryWorkbench(string source, string initDataExtrasJson)
         {
             string profile = "battlebox";
+            string view = "storage";
             if (!string.IsNullOrEmpty(initDataExtrasJson))
             {
                 try
@@ -382,27 +391,41 @@ namespace CF7Launcher.Guardian
                     JObject extras = JObject.Parse(initDataExtrasJson);
                     string requested = extras.Value<string>("profile");
                     if (!string.IsNullOrEmpty(requested)) profile = requested;
+                    string requestedView = extras.Value<string>("view");
+                    if (!string.IsNullOrEmpty(requestedView)) view = requestedView;
                 }
                 catch (Exception ex)
                 {
                     LogManager.Log("[Router] OpenInventoryWorkbench extras parse failed: " + ex.Message);
-                    return;
+                    return false;
                 }
             }
             if (!string.Equals(profile, "warehouse", StringComparison.Ordinal)
                 && !string.Equals(profile, "battlebox", StringComparison.Ordinal))
             {
                 LogManager.Log("[Router] OpenInventoryWorkbench rejected profile=" + profile);
-                return;
+                return false;
+            }
+            if (!string.Equals(view, "storage", StringComparison.Ordinal)
+                && !string.Equals(view, "tuning", StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] OpenInventoryWorkbench rejected view=" + view);
+                return false;
+            }
+            if (view == "tuning" && !string.Equals(profile, "battlebox", StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] OpenInventoryWorkbench rejected tuning profile=" + profile);
+                return false;
             }
             var initData = new JObject
             {
                 ["mode"] = "runtime",
                 ["profile"] = profile,
+                ["view"] = view,
                 ["source"] = source,
                 ["debug"] = false
             };
-            OpenPanel("workbench", initData.ToString(Formatting.None));
+            return OpenPanel("workbench", initData.ToString(Formatting.None));
         }
 
         private void OpenNpcShopPanel(string source, string initDataExtrasJson)
@@ -689,27 +712,47 @@ namespace CF7Launcher.Guardian
         /// 统一 panel 打开入口：Flag ON → _panelHost.OpenPanel（含 backdrop/EX_STYLE/HUD-suspend 序列）；
         /// Flag OFF → 旧 PostToWeb panel_cmd open + state callback（保留回滚路径）。
         /// </summary>
-        private void OpenPanel(string panelName, string initDataJson)
+        private bool OpenPanel(string panelName, string initDataJson)
         {
-            OpenPanel(panelName, initDataJson, null, null);
+            return OpenPanel(panelName, initDataJson, null, null);
         }
 
         /// <summary>
         /// returnTo 版本：关闭本 panel 后自动 reopen returnToPanel。仅 PanelHostController 路径支持；
         /// Flag OFF fallback 无 return stack 概念（旧路径已不再生产使用，returnTo 静默忽略）。
         /// </summary>
-        private void OpenPanel(string panelName, string initDataJson, string returnToPanel, string returnToInitDataJson)
+        private bool OpenPanel(string panelName, string initDataJson, string returnToPanel, string returnToInitDataJson)
         {
+            string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
+            string currentInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                : _activeFallbackPanelInstanceId;
+            bool activeTuning = currentPanel == "workbench" && _equipmentTuningTask != null
+                && !string.IsNullOrEmpty(currentInstance)
+                && _equipmentTuningTask.PanelInstanceId == currentInstance;
+            if (activeTuning && panelName != "workbench" && !_equipmentTuningTask.CanClose)
+            {
+                LogManager.Log("[Router] panel switch deferred: equipment tuning request/reconcile is pending");
+                return false;
+            }
+            if (activeTuning && panelName == "workbench" && _panelHost == null
+                && !_equipmentTuningTask.CanRebind)
+            {
+                LogManager.Log("[Router] fallback workbench rebind deferred: equipment tuning is pending");
+                return false;
+            }
             // 任意 web 面板打开 → 暂停游戏：玩家此时看不到 AS2 画面，游戏不该在背后继续跑
             // （NPC 离场 / 敌人攻击 / 计时推进）。幂等 lease（AS2 webPanelPause 只持一个），
             // 覆盖 panelHost + fallback 两条开面板路；关闭时 case "close" 的 webPanelUnpause 释放。
             TrySendGameCommand("webPanelPause");
             if (_panelHost != null)
             {
-                _panelHost.OpenPanel(panelName, initDataJson, returnToPanel, returnToInitDataJson);
-                return;
+                return _panelHost.TryOpenPanel(
+                    panelName, initDataJson, returnToPanel, returnToInitDataJson);
             }
+            if (_postToWeb == null) return false;
             // Flag OFF fallback：行为与本 PR 之前等价；returnTo 在该路径下不生效
+            if (activeTuning && panelName != "workbench"
+                && !_equipmentTuningTask.HandlePanelClosed(currentInstance)) return false;
             if (_activeFallbackPanelName == "skills" && panelName != "skills" && _skillTask != null)
                 _skillTask.HandleAuthoritativePanelClosed(_activeFallbackPanelInstanceId);
             if (panelName == "skills" && _skillTask != null
@@ -718,7 +761,7 @@ namespace CF7Launcher.Guardian
                 // 保留旧 instance 供其 RequestMux 完成未知写对账；只记最后一次打开意图。
                 _deferredFallbackSkillInitData = initDataJson;
                 LogManager.Log("[Router] fallback skills rebind deferred");
-                return;
+                return false;
             }
             string instanceId = "fallback." + DateTime.UtcNow.Ticks.ToString("x") + "."
                 + System.Threading.Interlocked.Increment(ref _fallbackPanelInstanceSequence).ToString("x");
@@ -740,6 +783,7 @@ namespace CF7Launcher.Guardian
             if (panelName != "skills") _deferredFallbackSkillInitData = null;
             if (_setActivePanel != null) _setActivePanel(panelName);
             if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+            return true;
         }
 
         private void SendKey(Keys k) { if (_onSendKey != null) _onSendKey(k); }
@@ -750,8 +794,10 @@ namespace CF7Launcher.Guardian
 
         private void SendGameCommand(string action)
         {
+            string payload = "{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0";
+            if (_gameCommandSenderOverride != null) { _gameCommandSenderOverride(payload); return; }
             if (_socketServer == null) return;
-            _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
+            _socketServer.Send(payload);
         }
 
         private void SendGameCommand(string action, string extraJsonFields)

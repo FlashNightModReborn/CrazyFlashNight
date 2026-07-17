@@ -500,6 +500,39 @@
         return true;
     };
 
+    /**
+     * Reads an authority-backed side projection without replacing the visible request/window.
+     * This is used by contextual candidate pickers (for example equipment conversion) that
+     * need fresh slot leases while preserving the player's current inventory breadcrumbs.
+     */
+    InventoryCoordinator.prototype.readProjection = function(projection, callback) {
+        if (!this._opened || !this._ready || this._owner || this._refreshRequired) return false;
+        var request = cloneRequests([projection || {}])[0];
+        if (!request || !request.containerId
+                || !isFinite(request.offset) || Math.floor(request.offset) !== request.offset || request.offset < 0
+                || !isFinite(request.limit) || Math.floor(request.limit) !== request.limit
+                || request.limit < 1 || request.limit > 100) return false;
+        if (!this.getRequest(request.containerId)) return false;
+
+        var self = this;
+        this._owner = 'projection.' + request.containerId;
+        this._emitState();
+        this._request('snapshot', {v:1, requests:[request]}, function(response) {
+            var snapshots = response && response.snapshots;
+            var snapshot = Array.isArray(snapshots) && snapshots.length === 1 ? snapshots[0] : null;
+            var valid = response && response.success === true && isValidSnapshot(snapshot)
+                && snapshot.containerId === request.containerId
+                && String(snapshot.filterKey || 'all') === normalizeFilterKey(request.filterKey)
+                && (request.filterSpec == null || sameFilterSpec(request.filterSpec, snapshot.filterSpec));
+            self._owner = null;
+            self._emitState();
+            if (typeof callback === 'function') callback(valid
+                ? {success:true, snapshot:snapshot, response:response}
+                : {success:false, error:response && response.error ? response.error : 'inventory_projection_failed'});
+        });
+        return true;
+    };
+
     InventoryCoordinator.prototype._hasActiveFilter = function() {
         for (var i = 0; i < this._requests.length; i++) {
             var spec = normalizeFilterSpec(this._requests[i].filterSpec, 'all');

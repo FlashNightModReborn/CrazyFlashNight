@@ -115,6 +115,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         var profile:String = params == undefined || params.profile == undefined
             ? "" : String(params.profile);
         if (profile != "warehouse" && profile != "battlebox") return false;
+        var view:String = params == undefined || params.view == undefined
+            ? "storage" : String(params.view);
+        if (view != "storage" && view != "tuning") return false;
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
         if (_json == undefined) _json = new LiteJSON();
         var source:String = params == undefined || params.source == undefined
@@ -123,7 +126,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             task: "panel_request",
             panel: "workbench",
             source: source,
-            initData: {profile: profile}
+            initData: {profile: profile, view: view}
         }));
     }
 
@@ -887,6 +890,10 @@ class org.flashNight.arki.item.InventoryPanelService {
         var modSlotCapacity:Number = 0;
         var modSlotUsed:Number = 0;
         var modSlots:Array = [];
+        var looseModMeta:Object = null;
+        if (!isEquipment && EquipmentUtil.modDict != undefined && EquipmentUtil.modDict[item.name] != undefined) {
+            looseModMeta = buildModSlotProjection(String(item.name));
+        }
         if (isEquipment) {
             if (data != null && data.data != undefined && !isNaN(Number(data.data.modslot))) {
                 modSlotCapacity = Math.max(0, Math.floor(Number(data.data.modslot)));
@@ -936,6 +943,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             modSlotCapacity: modSlotCapacity,
             modSlotUsed: modSlotUsed,
             modSlots: modSlots,
+            modMeta: looseModMeta,
             rarity: rarity == undefined ? "" : rarity
         };
     }
@@ -951,17 +959,19 @@ class org.flashNight.arki.item.InventoryPanelService {
                 gradeColor: "#58636E",
                 role: "utility",
                 roleLabel: "结构与功能",
-                symbol: "diamond-outline"
+                symbol: "diamond-outline",
+                scope: "unknown"
             };
         }
         return {
             name: modName,
-            grade: String(modData.uiGrade || "unknown"),
+            grade: String(modData.modGrade || "unknown"),
             gradeLabel: String(modData.uiGradeLabel || "未知档级"),
             gradeColor: String(modData.uiGradeColor || "#58636E"),
             role: String(modData.uiRole || "utility"),
             roleLabel: String(modData.uiRoleLabel || "结构与功能"),
-            symbol: String(modData.uiSymbol || "diamond-outline")
+            symbol: String(modData.uiSymbol || "diamond-outline"),
+            scope: String(modData.catalogScope || "unknown")
         };
     }
 

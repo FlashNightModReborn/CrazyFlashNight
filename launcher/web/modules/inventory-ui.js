@@ -165,11 +165,11 @@
         var isEquipment = item.itemKind === 'equipment';
         var badge = '';
         if (isEquipment && Number(item.enhancementLevel) > 1) {
-            badge = '<span class="inventory-slot-value level" title="强化等级 ' + Number(item.enhancementLevel)
-                + '" aria-label="强化等级 ' + Number(item.enhancementLevel) + '">' + Number(item.enhancementLevel) + '</span>';
+            badge = '<span class="inventory-slot-value level" aria-label="强化等级 '
+                + Number(item.enhancementLevel) + '">' + Number(item.enhancementLevel) + '</span>';
         } else if (!isEquipment && Number(item.quantity) > 1) {
-            badge = '<span class="inventory-slot-value quantity" title="数量 ' + exactQuantity(item.quantity)
-                + '" aria-label="数量 ' + exactQuantity(item.quantity) + '">' + compactQuantity(item.quantity) + '</span>';
+            badge = '<span class="inventory-slot-value quantity" aria-label="数量 '
+                + exactQuantity(item.quantity) + '">' + compactQuantity(item.quantity) + '</span>';
         }
         node.classList.add(isEquipment ? 'equipment' : 'stack');
         if (isEquipment && item.isMaxEnhancement) node.classList.add('max-enhancement');
@@ -181,7 +181,7 @@
             + icon + '</span>' + (isEquipment ? renderTierMarker(item) : '') + badge + '</span>'
             + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || item.name || '未知物品') + '</b>'
             + (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>'
-            + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" title="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
+            + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" aria-label="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
         return node;
     }
 
@@ -305,7 +305,6 @@
             button.setAttribute('aria-checked', page === state.page ? 'true' : 'false');
             var rangeName = state.filtered ? '匹配项' : '槽位';
             button.setAttribute('aria-label', '第 ' + page + ' 页，' + rangeName + ' ' + start + ' 至 ' + end);
-            button.title = '第 ' + page + ' 页 · ' + rangeName + ' ' + start + '–' + end;
             if (page === state.page) {
                 button.classList.add('current');
                 button.setAttribute('aria-current', 'page');
@@ -545,7 +544,7 @@
                 labels.push(cursor.label);
             }
             this.trigger.textContent = (labels.length ? labels.join(' / ') : '全部') + '  ' + Number(tree.count || 0);
-            this.trigger.title = labels.length ? labels.join(' / ') : '全部分类';
+            this.trigger.setAttribute('aria-label', labels.length ? labels.join(' / ') : '全部分类');
         }
         this.root.classList.add('tree');
         return true;
@@ -769,6 +768,8 @@
     return {
         derivePageState: derivePageState,
         pageFromShortcut: pageFromShortcut,
+        compactQuantity: compactQuantity,
+        exactQuantity: exactQuantity,
         renderOwnedSlot: renderOwnedSlot,
         categoryFilterOptions: categoryFilterOptions,
         authoritySortOptions: authoritySortOptions,

@@ -6,15 +6,18 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Tasks
 {
     /// <summary>
-    /// Local automation control plane for unattended arena calibration.
+    /// Local automation control plane for unattended runtime workflows.
     /// Keep this task thin: it exposes launcher lifecycle decisions, while
-    /// long waits, batch polling, analysis, and recovery live in tooling.
+    /// long waits, UI observation, batch polling, analysis, and recovery live in tooling.
     /// </summary>
     public sealed class AgentControlTask
     {
         internal delegate void StartGameHandler(string slot, bool fresh, bool deferJsReveal, bool requireFlashReveal);
 
         private static readonly Regex UnsafeSlotChars = new Regex(@"[\\/:\*\?""<>\|\r\n]", RegexOptions.Compiled);
+        private static readonly Regex AgentAutomationSlot = new Regex(
+            @"^cf7_agent_[A-Za-z0-9_-]+$",
+            RegexOptions.Compiled);
 
         private readonly Func<bool> _isSocketReady;
         private readonly Func<JObject> _getArenaStatus;
@@ -28,6 +31,8 @@ namespace CF7Launcher.Tasks
         private Action _shutdown;
         private Func<bool> _isRevealPerformed;
         private Func<JObject> _getLaunchSaveStatus;
+        private Func<bool> _openEquipmentTuning;
+        private Func<JObject> _getActivePanelStatus;
         private JObject _runtimeSaveStatus;
 
         public AgentControlTask(
@@ -102,6 +107,23 @@ namespace CF7Launcher.Tasks
             lock (_gate) { _shutdown = shutdown; }
         }
 
+        /// <summary>
+        /// Injects the narrow C# -&gt; AS2 opener used by unattended equipment-tuning tests.
+        /// The delegate must only send the fixed openInventoryWorkbench command
+        /// (profile=battlebox, view=tuning, source=agent_control); this task deliberately
+        /// does not accept a panel name or arbitrary initData from HTTP.
+        /// </summary>
+        public void SetEquipmentTuningOpenAction(Func<bool> openEquipmentTuning)
+        {
+            lock (_gate) { _openEquipmentTuning = openEquipmentTuning; }
+        }
+
+        /// <summary>Read-only panel observation for outer runners; never opens or mutates a panel.</summary>
+        public void SetActivePanelStatusProvider(Func<JObject> getActivePanelStatus)
+        {
+            lock (_gate) { _getActivePanelStatus = getActivePanelStatus; }
+        }
+
         public string Handle(JObject msg)
         {
             string action = msg.Value<string>("action") ?? "status";
@@ -119,6 +141,8 @@ namespace CF7Launcher.Tasks
                         return Cancel().ToString(Newtonsoft.Json.Formatting.None);
                     case "shutdown":
                         return Shutdown().ToString(Newtonsoft.Json.Formatting.None);
+                    case "openEquipmentTuning":
+                        return OpenEquipmentTuning(msg).ToString(Newtonsoft.Json.Formatting.None);
                     default:
                         return BuildError("unsupported_action", "unsupported action: " + action).ToString(Newtonsoft.Json.Formatting.None);
                 }
@@ -199,6 +223,92 @@ namespace CF7Launcher.Tasks
             return BuildStatus(true, "shutdown_requested");
         }
 
+        private JObject OpenEquipmentTuning(JObject msg)
+        {
+            JToken expectedSlotToken = msg["expectedSlot"];
+            string expectedSlot = expectedSlotToken != null && expectedSlotToken.Type == JTokenType.String
+                ? expectedSlotToken.Value<string>()
+                : null;
+            if (!IsAgentAutomationSlot(expectedSlot))
+            {
+                return BuildError(
+                    "invalid_expected_slot",
+                    "expectedSlot is required and must be a dedicated cf7_agent_* slot");
+            }
+
+            JToken expectedAttemptToken = msg["expectedAttemptId"];
+            string expectedAttempt = expectedAttemptToken != null && expectedAttemptToken.Type == JTokenType.String
+                ? expectedAttemptToken.Value<string>()
+                : null;
+            if (string.IsNullOrEmpty(expectedAttempt))
+            {
+                return BuildError(
+                    "invalid_expected_attempt",
+                    "expectedAttemptId is required");
+            }
+
+            JObject status = BuildStatus(true, null);
+            JArray runtimeBlockers = status.Value<JArray>("runtimeReadyBlockedBy");
+            if (runtimeBlockers == null || runtimeBlockers.Count != 0)
+            {
+                JObject error = BuildError(
+                    "runtime_not_ready",
+                    "runtime automation readiness gates have not passed");
+                error["runtimeReadyBlockedBy"] = runtimeBlockers != null
+                    ? (JToken)runtimeBlockers.DeepClone()
+                    : new JArray("runtime_status_unavailable");
+                return error;
+            }
+
+            JObject save = status["save"] as JObject;
+            JObject runtimeSave = status["saveRuntime"] as JObject;
+            string currentSlot = save != null ? save.Value<string>("slot") : null;
+            string runtimeSlot = runtimeSave != null ? runtimeSave.Value<string>("savePath") : null;
+            if (!IsAgentAutomationSlot(currentSlot)
+                || !string.Equals(expectedSlot, currentSlot, StringComparison.Ordinal)
+                || !string.Equals(expectedSlot, runtimeSlot, StringComparison.Ordinal))
+            {
+                return BuildError(
+                    "agent_slot_mismatch",
+                    "expectedSlot must match the current dedicated launcher and runtime save slot");
+            }
+
+            string currentAttempt = save != null ? save.Value<string>("attemptId") : null;
+            string runtimeAttempt = runtimeSave != null ? runtimeSave.Value<string>("attemptId") : null;
+            if (!string.Equals(expectedAttempt, currentAttempt, StringComparison.Ordinal)
+                || !string.Equals(expectedAttempt, runtimeAttempt, StringComparison.Ordinal))
+            {
+                return BuildError(
+                    "agent_attempt_mismatch",
+                    "expectedAttemptId must match the current launcher and runtime save attempt");
+            }
+
+            Func<bool> openEquipmentTuning;
+            lock (_gate) { openEquipmentTuning = _openEquipmentTuning; }
+            if (openEquipmentTuning == null)
+            {
+                return BuildError(
+                    "equipment_tuning_open_unavailable",
+                    "equipment tuning opener is not initialized");
+            }
+
+            bool sent;
+            try { sent = openEquipmentTuning(); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[AgentControlTask] equipment tuning opener exception: " + ex);
+                return BuildError("equipment_tuning_open_exception", ex.Message);
+            }
+            if (!sent)
+            {
+                return BuildError(
+                    "equipment_tuning_open_failed",
+                    "AS2 openInventoryWorkbench command was not sent");
+            }
+
+            return BuildStatus(true, "equipment_tuning_panel_open_requested");
+        }
+
         private JObject BuildStatus(bool success, string note)
         {
             string launchState;
@@ -232,6 +342,12 @@ namespace CF7Launcher.Tasks
 
             bool saveDecisionSafe = IsSaveDecisionSafe(save);
             bool runtimeSaveLoaded = IsRuntimeSaveLoaded(save, runtimeSave);
+            JArray runtimeReadyBlockedBy = BuildRuntimeReadyBlockers(
+                socketReady,
+                revealPerformed,
+                launchState,
+                saveDecisionSafe,
+                runtimeSaveLoaded);
             JArray readyBlockedBy = BuildReadyBlockers(
                 socketReady,
                 revealPerformed,
@@ -248,11 +364,19 @@ namespace CF7Launcher.Tasks
             status["launchState"] = launchState;
             status["revealPerformed"] = revealPerformed;
             status["socketConnected"] = socketReady;
+            status["readyForRuntimeAutomation"] = runtimeReadyBlockedBy.Count == 0;
+            status["runtimeReadyBlockedBy"] = runtimeReadyBlockedBy;
             status["readyForArenaCalibration"] = readyBlockedBy.Count == 0;
             status["readyBlockedBy"] = readyBlockedBy;
             status["save"] = save != null ? (JToken)save : JValue.CreateNull();
             status["saveRuntime"] = runtimeSave != null ? (JToken)runtimeSave : JValue.CreateNull();
             status["arenaCalibration"] = arena != null ? (JToken)arena : JValue.CreateNull();
+            Func<JObject> getActivePanelStatus;
+            lock (_gate) { getActivePanelStatus = _getActivePanelStatus; }
+            JObject activePanel = null;
+            try { activePanel = getActivePanelStatus != null ? getActivePanelStatus() : null; }
+            catch (Exception ex) { activePanel = BuildError("active_panel_status_exception", ex.Message); }
+            status["activePanel"] = activePanel != null ? (JToken)activePanel : JValue.CreateNull();
             return status;
         }
 
@@ -274,6 +398,11 @@ namespace CF7Launcher.Tasks
             if (slot == "." || slot == ".." || slot.IndexOf("..", StringComparison.Ordinal) >= 0)
                 return false;
             return !UnsafeSlotChars.IsMatch(slot);
+        }
+
+        private static bool IsAgentAutomationSlot(string slot)
+        {
+            return IsSafeSlot(slot) && AgentAutomationSlot.IsMatch(slot);
         }
 
         private static bool IsSaveDecisionSafe(JObject save)
@@ -326,6 +455,22 @@ namespace CF7Launcher.Tasks
             if (!revealPerformed) blockers.Add("flash_not_revealed");
             if (!string.Equals(launchState, "Ready", StringComparison.Ordinal)) blockers.Add("launcher_not_ready");
             if (!arenaStatusReadable) blockers.Add("arena_status_unreadable");
+            if (!saveDecisionSafe) blockers.Add("save_decision_unsafe");
+            if (!runtimeSaveLoaded) blockers.Add("runtime_save_not_loaded");
+            return blockers;
+        }
+
+        private static JArray BuildRuntimeReadyBlockers(
+            bool socketReady,
+            bool revealPerformed,
+            string launchState,
+            bool saveDecisionSafe,
+            bool runtimeSaveLoaded)
+        {
+            JArray blockers = new JArray();
+            if (!socketReady) blockers.Add("socket_not_connected");
+            if (!revealPerformed) blockers.Add("flash_not_revealed");
+            if (!string.Equals(launchState, "Ready", StringComparison.Ordinal)) blockers.Add("launcher_not_ready");
             if (!saveDecisionSafe) blockers.Add("save_decision_unsafe");
             if (!runtimeSaveLoaded) blockers.Add("runtime_save_not_loaded");
             return blockers;

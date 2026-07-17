@@ -1,0 +1,1024 @@
+﻿/*
+ * EquipmentTuningService —— 装备调制权威服务。
+ * snapshot/preview 零写；commit 重新验证会话、lease、规则与材料精确数量，
+ * 再以无事件批处理完成装备和材料写入，最后统一 dirty、成就、事件与投影。
+ */
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.achievement.AchievementMetrics;
+import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.tooltip.TooltipComposer;
+import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.InventoryPanelService;
+
+/** 装备调制唯一权威写服务；Web 与旧 renderer 只提交不可信意图。 */
+class org.flashNight.arki.item.EquipmentTuningService {
+    private static var _json:LiteJSON;
+    private static var _installed:Boolean = false;
+    private static var _busy:Boolean = false;
+    private static var _sessionPanel:String = "";
+    private static var _sessionView:String = "";
+    private static var _sessionGeneration:Number = 0;
+    private static var _legacyGeneration:Number = 0;
+    private static var _candidateNames:Object = {};
+    private static var _plan:Object = null;
+    private static var _tokenSeq:Number = 0;
+    private static var _transactionSeq:Number = 0;
+    private static var _tokenTransactions:Object = {};
+    private static var _tokenTransactionOrder:Array = [];
+    private static var _writeEpoch:Number = 0;
+    private static var _processedCalls:Object = {};
+    private static var _processedCallOrder:Array = [];
+    private static var _testFailNext:Boolean = false;
+    private static var _allowedOperations:Object = {
+        enhance:true, convert:true, install_tier:true,
+        install_mod:true, replace_mod:true, detach_mod:true, detach_all_mods:true
+    };
+
+    public static function install():Void {
+        if (_installed) return;
+        _json = new LiteJSON();
+        if (_root.gameCommands == undefined) _root.gameCommands = {};
+        _root.gameCommands["equipmentTuningSnapshot"] = function(params) {
+            org.flashNight.arki.item.EquipmentTuningService.handle("snapshot", params);
+        };
+        _root.gameCommands["equipmentTuningPreview"] = function(params) {
+            org.flashNight.arki.item.EquipmentTuningService.handle("preview", params);
+        };
+        _root.gameCommands["equipmentTuningCommit"] = function(params) {
+            org.flashNight.arki.item.EquipmentTuningService.handle("commit", params);
+        };
+        _root.gameCommands["equipmentTuningTooltip"] = function(params) {
+            org.flashNight.arki.item.EquipmentTuningService.handle("tooltip", params);
+        };
+        _root.gameCommands["equipmentTuningDetach"] = function(params) {
+            org.flashNight.arki.item.EquipmentTuningService.handle("detach", params);
+        };
+        _installed = true;
+    }
+
+    private static function handle(commandName:String, params:Object):Void {
+        var response:Object = execute(commandName, params);
+        response.task = "equipment_tuning_response";
+        response.callId = params == undefined ? undefined : params.callId;
+        if (params != undefined && params.requestCallId != undefined) {
+            recordProcessedCall(String(params.requestCallId));
+        }
+        sendResponse(response);
+    }
+
+    /** 同步协议入口，同时供 TestLoader 行为测试使用。 */
+    public static function execute(commandName:String, params:Object):Object {
+        var result:Object;
+        if (_busy) result = fail("busy");
+        else if (params == undefined || Number(params.v) != 1) result = fail("unsupported_version");
+        else if (commandName == "snapshot") result = executeSnapshot(params);
+        else if (commandName == "preview") result = executePreview(params);
+        else if (commandName == "commit") result = executeCommit(params);
+        else if (commandName == "tooltip") result = executeTooltip(params);
+        else if (commandName == "detach") result = executeDetach(params);
+        else result = fail("unsupported_cmd");
+        return decorateResponse(result, commandName, params);
+    }
+
+    private static function executeSnapshot(params:Object):Object {
+        var session:Object = activateWebSession(params);
+        if (!session.success) return session;
+        // fresh snapshot / 显式 reconcile 都建立新的读基线；旧 preview 不能跨基线提交。
+        revokeActivePlan();
+        var source:Object = resolveWebSlot(params.source);
+        if (!source.success) return source;
+        var snapshot:Object = buildTuningSnapshot(source, safeSourceRef(source));
+        if (snapshot == null) return fail("snapshot_failed");
+        var response:Object = {success:true, snapshot:snapshot};
+        if (params.reconcileAfterCallId != undefined) {
+            var targetCallId:String = String(params.reconcileAfterCallId);
+            response.reconcileAfterCallId = targetCallId;
+            // 同一有序 socket 上的显式 snapshot 是 barrier：读到的状态必然位于该写意图之后。
+            response.reconciled = true;
+        }
+        return response;
+    }
+
+    private static function executePreview(params:Object):Object {
+        var session:Object = activateWebSession(params);
+        if (!session.success) return session;
+        var operation:String = params.operation == undefined ? "" : String(params.operation);
+        if (_allowedOperations[operation] !== true) return fail("unsupported_operation");
+        var source:Object = resolveWebSlot(params.source);
+        if (!source.success) return source;
+        var target:Object = null;
+        if (operation == "convert") {
+            target = resolveWebSlot(params.target);
+            if (!target.success) return target;
+        }
+
+        var candidateName:String = "";
+        var replaceCandidateName:String = "";
+        if (operation == "install_tier" || operation == "install_mod"
+                || operation == "replace_mod" || operation == "detach_mod") {
+            if (params.candidateKey == undefined) return fail("invalid_payload");
+            var candidate:Object = _candidateNames[String(params.candidateKey)];
+            var expectedKind:String = operation == "install_tier" ? "tier" : "mod";
+            if (candidate == null || candidate.kind != expectedKind) return fail("unknown_candidate");
+            candidateName = String(candidate.itemName);
+        }
+        if (operation == "replace_mod") {
+            if (params.replaceCandidateKey == undefined) return fail("invalid_payload");
+            var replaceCandidate:Object = _candidateNames[String(params.replaceCandidateKey)];
+            if (replaceCandidate == null || replaceCandidate.kind != "mod") return fail("unknown_candidate");
+            replaceCandidateName = String(replaceCandidate.itemName);
+        }
+        var plan:Object = buildPlan(operation, source, target, candidateName,
+                                    replaceCandidateName, params.targetLevel);
+        if (!plan.success) return plan;
+        installPlan(plan);
+        return buildPreviewResponse(plan);
+    }
+
+    private static function executeCommit(params:Object):Object {
+        if (!sessionMatches(params)) return commitFail("view_session_expired", tokenTransaction(params));
+        var token:String = params.expectedTuningToken == undefined ? "" : String(params.expectedTuningToken);
+        var knownTransaction:String = token == "" ? "" : String(_tokenTransactions[token]);
+        if (_plan == null || token == "" || token != _plan.tuningToken) {
+            return commitFail("token_invalid", knownTransaction);
+        }
+
+        var plan:Object = _plan;
+        _plan = null;
+        var transactionId:String = String(plan.transactionId);
+        if (getTimer() - Number(plan.createdAt) > 30000) {
+            return commitFail("token_expired", transactionId);
+        }
+
+        _busy = true;
+        var source:Object = revalidateSlot(plan.source);
+        if (!source.success) {
+            _busy = false;
+            return commitFail("stale_state", transactionId);
+        }
+        var target:Object = null;
+        if (plan.target != null) {
+            target = revalidateSlot(plan.target);
+            if (!target.success) {
+                _busy = false;
+                return commitFail("stale_state", transactionId);
+            }
+        }
+
+        var fresh:Object = buildPlan(plan.operation, source, target, plan.candidateName,
+                                     plan.replaceCandidateName, plan.targetLevel);
+        if (!fresh.success || !plansEqual(plan, fresh)) {
+            _busy = false;
+            return commitFail("stale_state", transactionId);
+        }
+        fresh.tuningToken = token;
+        fresh.transactionId = transactionId;
+
+        if (fresh.noOp == true) {
+            var noOpSnapshot:Object = buildTuningSnapshot(source, safeSourceRef(source));
+            var noOpInventory:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+            _busy = false;
+            return {
+                success:true, transactionId:transactionId, tuningToken:token,
+                canCommit:false, operation:fresh.operation, noOp:true,
+                before:fresh.before, after:fresh.after, materials:fresh.materials,
+                removedMods:fresh.removedMods,
+                snapshot:noOpSnapshot,
+                inventorySnapshots:noOpInventory == null ? [] : [noOpInventory]
+            };
+        }
+
+        var materials:Object = getMaterialCollection();
+        if (materials == null || !materials.canApplyTransactionDeltas(fresh.materialDeltas)) {
+            _busy = false;
+            return commitFail("stale_state", transactionId);
+        }
+
+        var timestamp:Number = nextTimestamp(fresh.changes);
+        var valueChanges:Array = [];
+        for (var i:Number = 0; i < fresh.changes.length; i++) {
+            var plannedChange:Object = fresh.changes[i];
+            valueChanges.push({
+                slot:plannedChange.slot.slot,
+                expectedItem:plannedChange.slot.item,
+                expectedValue:plannedChange.slot.item.value,
+                expectedLastUpdate:plannedChange.slot.item.lastUpdate,
+                value:ObjectUtil.clone(plannedChange.afterValue),
+                lastUpdate:timestamp
+            });
+        }
+        var bag:ArrayInventory = ArrayInventory(source.inventory);
+        if (!bag.canApplyValueTransaction(valueChanges)) {
+            _busy = false;
+            return commitFail("stale_state", transactionId);
+        }
+        if (_testFailNext) {
+            _testFailNext = false;
+            _busy = false;
+            return commitFail("commit_failed", transactionId);
+        }
+
+        // 两个容器入口均已完整预检；以下无回调提交阶段不会暴露半状态。
+        if (!bag.transactionApplyValueChanges(valueChanges)) {
+            _busy = false;
+            return commitFail("commit_failed", transactionId);
+        }
+        var materialCommit:Object = materials.transactionApplyDeltas(fresh.materialDeltas);
+        if (!materialCommit.success) {
+            _busy = false;
+            return commitFail("commit_failed", transactionId);
+        }
+
+        _writeEpoch++;
+        markDirty();
+        if (fresh.achievementMetric != "") AchievementMetrics.record(fresh.achievementMetric, 1);
+        for (i = 0; i < fresh.affectedSlots.length; i++) {
+            InventoryPanelService.invalidateExternalSlot("背包", Number(fresh.affectedSlots[i]));
+        }
+        materials.publishTransactionChanges(materialCommit.changes);
+        for (i = 0; i < fresh.affectedSlots.length; i++) {
+            bag.publishTransactionChange(Number(fresh.affectedSlots[i]), "value");
+        }
+
+        var inventorySnapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+        var newSourceRef:Object = refFromInventorySnapshot(inventorySnapshot, source.slot);
+        var committedSnapshot:Object = buildTuningSnapshot(source, newSourceRef);
+        var committedAfter:Object = buildCommittedAfter(fresh, timestamp, inventorySnapshot);
+        _busy = false;
+        return {
+            success:true, transactionId:transactionId, tuningToken:token,
+            canCommit:false, operation:fresh.operation, noOp:false,
+            before:fresh.before, after:committedAfter,
+            materials:buildCommittedMaterials(fresh.materials),
+            removedMods:fresh.removedMods,
+            snapshot:committedSnapshot,
+            inventorySnapshots:inventorySnapshot == null ? [] : [inventorySnapshot]
+        };
+    }
+
+    private static function executeTooltip(params:Object):Object {
+        if (!sessionMatches(params)) return fail("view_session_expired");
+        if (params.candidateKey == undefined) return fail("invalid_payload");
+        var candidateKey:String = String(params.candidateKey);
+        var candidate:Object = _candidateNames[candidateKey];
+        if (candidate == null) return fail("unknown_candidate");
+        var itemData:Object = ItemUtil.getItemData(candidate.itemName);
+        if (itemData == undefined || itemData == null) return fail("item_data_missing");
+        var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, null);
+        var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, {level:1});
+        var displayName:String = itemData.displayname == undefined
+            ? String(candidate.itemName) : String(itemData.displayname);
+        var safeIntroHTML:String = introHTML.split('"').join("'");
+        var safeDescHTML:String = descHTML.split('"').join("'");
+        return {success:true, candidateKey:candidateKey,
+            // 分段字段是 Web 富注释自动分栏的权威输入；html 仅保留给旧消费者兼容。
+            introHTML:safeIntroHTML, descHTML:safeDescHTML,
+            itemType:String(itemData.type), itemUse:String(itemData.use),
+            html:safeIntroHTML + safeDescHTML, text:displayName};
+    }
+
+    /**
+     * Host 在 tuning view 卸载前发送的生命周期屏障。只撤销匹配当前 session 的
+     * 临时候选与 token，不写装备/材料；重复 detach 同一已失效 session 仍成功。
+     */
+    private static function executeDetach(params:Object):Object {
+        if (params.panelInstanceId == undefined || params.viewSessionId == undefined) {
+            return fail("invalid_session");
+        }
+        var panel:String = String(params.panelInstanceId);
+        var view:String = String(params.viewSessionId);
+        if (panel == "" || view == "") return fail("invalid_session");
+        if (_sessionPanel == "" && _sessionView == "") return {success:true};
+        if (panel != _sessionPanel || view != _sessionView) return fail("view_session_expired");
+        revokeActivePlan();
+        _candidateNames = {};
+        _sessionPanel = "";
+        _sessionView = "";
+        _sessionGeneration++;
+        return {success:true};
+    }
+
+    /** 旧 AS2 renderer 的同步适配入口，内部仍严格执行 preview → token → commit。 */
+    public static function executeLegacy(operation:String,
+                                         sourceInventory:Object,
+                                         sourceSlot:Number,
+                                         sourceItem:Object,
+                                         intent:Object,
+                                         targetInventory:Object,
+                                         targetSlot:Number,
+                                         targetItem:Object):Object {
+        if (_busy) return decorateResponse(fail("busy"), "commit", {v:1});
+        if (_allowedOperations[operation] !== true) {
+            return decorateResponse(fail("unsupported_operation"), "commit", {v:1});
+        }
+        _legacyGeneration++;
+        var params:Object = {v:1, panelInstanceId:"legacy", viewSessionId:"legacy." + _legacyGeneration};
+        activateWebSession(params);
+        var source:Object = resolveLegacySlot(sourceInventory, sourceSlot, sourceItem);
+        if (!source.success) return decorateResponse(source, "commit", params);
+        var target:Object = null;
+        if (operation == "convert") {
+            target = resolveLegacySlot(targetInventory, targetSlot, targetItem);
+            if (!target.success) return decorateResponse(target, "commit", params);
+        }
+        if (intent == null) intent = {};
+        var candidateName:String = intent.candidateName == undefined ? "" : String(intent.candidateName);
+        var replaceCandidateName:String = intent.replaceCandidateName == undefined
+            ? "" : String(intent.replaceCandidateName);
+        var plan:Object = buildPlan(operation, source, target, candidateName,
+                                    replaceCandidateName, intent.targetLevel);
+        if (!plan.success) return decorateResponse(plan, "commit", params);
+        installPlan(plan);
+        params.expectedTuningToken = plan.tuningToken;
+        return execute("commit", params);
+    }
+
+    private static function buildPlan(operation:String,
+                                      source:Object,
+                                      target:Object,
+                                      candidateName:String,
+                                      replaceCandidateName:String,
+                                      targetLevel):Object {
+        if (!source.success) return source;
+        var sourceItem:BaseItem = BaseItem(source.item);
+        var sourceValue:Object = sourceItem.value;
+        var afterSource:Object = ObjectUtil.clone(sourceValue);
+        var afterTarget:Object = null;
+        var materialDeltas:Object = {};
+        var achievementMetric:String = "";
+        var removedMods:Array = [];
+        var noOp:Boolean = false;
+        var fingerprint:String = baseRuleFingerprint();
+
+        if (operation == "enhance") {
+            if (!isWholeNumber(targetLevel)) return fail("invalid_target");
+            var requestedLevel:Number = Number(targetLevel);
+            var currentLevel:Number = Number(sourceValue.level);
+            var cap:Number = getEnhancementCap();
+            if (requestedLevel <= currentLevel || requestedLevel > cap) return fail("invalid_target");
+            var cost:Number = calculateEnhancementCost(currentLevel, requestedLevel);
+            materialDeltas["强化石"] = -cost;
+            afterSource.level = requestedLevel;
+            achievementMetric = "装备强化次数";
+            fingerprint += "|cap=" + cap + "|cost=" + cost;
+        } else if (operation == "convert") {
+            if (target == null || !target.success) return fail("invalid_target");
+            if (source.inventory !== target.inventory || source.slot == target.slot) return fail("same_slot");
+            var sourceRaw:Object = ItemUtil.getRawItemData(sourceItem.name);
+            var targetRaw:Object = ItemUtil.getRawItemData(target.item.name);
+            if (sourceRaw == null || targetRaw == null || String(sourceRaw.use) != String(targetRaw.use)) {
+                return fail("different_use");
+            }
+            afterTarget = ObjectUtil.clone(target.item.value);
+            var sourceLevel:Number = Number(sourceValue.level);
+            var otherLevel:Number = Number(target.item.value.level);
+            if (sourceLevel == otherLevel) noOp = true;
+            else {
+                afterSource.level = otherLevel;
+                afterTarget.level = sourceLevel;
+            }
+        } else if (operation == "install_tier") {
+            if (candidateName == "" || !isTierTransitionAllowed(sourceItem, candidateName)) {
+                return fail("invalid_transition");
+            }
+            materialDeltas[candidateName] = -1;
+            var tierName:String = String(EquipmentUtil.tierMaterialToNameDict[candidateName]);
+            if (tierName == "" || tierName == "undefined") return fail("unknown_candidate");
+            afterSource.tier = tierName;
+            achievementMetric = "装备进阶次数";
+            fingerprint += "|tier=" + candidateName + ">" + tierName;
+        } else if (operation == "install_mod") {
+            if (candidateName == "") return fail("unknown_candidate");
+            var itemData:Object = sourceItem.getData();
+            var availability:Number = Number(EquipmentUtil.isModMaterialAvailable(sourceItem, itemData, candidateName));
+            if (availability != 1) return fail("mod_unavailable");
+            materialDeltas[candidateName] = -1;
+            afterSource.mods = cloneArray(sourceValue.mods);
+            afterSource.mods.push(candidateName);
+            achievementMetric = "配件安装次数";
+            fingerprint += "|mod=" + candidateName + "|availability=" + availability;
+        } else if (operation == "replace_mod") {
+            if (candidateName == "" || replaceCandidateName == ""
+                    || candidateName == replaceCandidateName) return fail("invalid_payload");
+            var replacementDetach:Object = buildLegacyDetachPlan(sourceItem, replaceCandidateName);
+            if (!replacementDetach.success) return replacementDetach;
+            var replacementValue:Object = ObjectUtil.clone(sourceValue);
+            replacementValue.mods = cloneArray(replacementDetach.remainingMods);
+            var replacementProbe:BaseItem = new BaseItem(sourceItem.name, replacementValue, sourceItem.lastUpdate);
+            var replacementData:Object = sourceItem.getData();
+            var replacementAvailability:Number = Number(
+                EquipmentUtil.isModMaterialAvailable(replacementProbe, replacementData, candidateName));
+            if (replacementAvailability != 1) return fail("mod_unavailable");
+            afterSource.mods = cloneArray(replacementDetach.remainingMods);
+            afterSource.mods.push(candidateName);
+            removedMods = replacementDetach.removedMods;
+            addReturnedMaterials(materialDeltas, removedMods);
+            addMaterialDelta(materialDeltas, candidateName, -1);
+            achievementMetric = "配件安装次数";
+            fingerprint += "|replace=" + replaceCandidateName + ">" + candidateName
+                + "|" + removedMods.join(",") + "|" + replacementDetach.policy
+                + "|availability=" + replacementAvailability;
+        } else if (operation == "detach_mod") {
+            var detach:Object = buildLegacyDetachPlan(sourceItem, candidateName);
+            if (!detach.success) return detach;
+            afterSource.mods = detach.remainingMods;
+            removedMods = detach.removedMods;
+            addReturnedMaterials(materialDeltas, removedMods);
+            fingerprint += "|detach=" + candidateName + "|" + removedMods.join(",") + "|" + detach.policy;
+        } else if (operation == "detach_all_mods") {
+            if (!(sourceValue.mods instanceof Array) || sourceValue.mods.length == 0) return fail("mod_not_installed");
+            removedMods = cloneArray(sourceValue.mods);
+            afterSource.mods = [];
+            addReturnedMaterials(materialDeltas, removedMods);
+            fingerprint += "|detach_all=" + removedMods.join(",");
+        } else return fail("unsupported_operation");
+
+        var materials:Object = getMaterialCollection();
+        if (materials == null) return fail("condition_failed");
+        var materialProjection:Object = buildMaterialPlan(materials, materialDeltas);
+        if (!materialProjection.success) return materialProjection;
+
+        var changes:Array = [];
+        if (!noOp) {
+            changes.push({slot:source, afterValue:afterSource});
+            if (afterTarget != null) changes.push({slot:target, afterValue:afterTarget});
+        }
+        var before:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, sourceValue, source.item.lastUpdate)}};
+        var after:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, afterSource, source.item.lastUpdate)}};
+        var affectedSlots:Array = noOp ? [] : [source.slot];
+        if (target != null) {
+            before.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, target.item.value, target.item.lastUpdate)};
+            after.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, afterTarget, target.item.lastUpdate)};
+            if (!noOp) affectedSlots.push(target.slot);
+        }
+        return {
+            success:true, operation:operation, source:source, target:target,
+            candidateName:candidateName, replaceCandidateName:replaceCandidateName,
+            targetLevel:targetLevel, noOp:noOp,
+            before:before, after:after, materialDeltas:materialDeltas,
+            materials:materialProjection.materials, changes:changes,
+            removedMods:removedMods, affectedSlots:affectedSlots,
+            achievementMetric:achievementMetric, ruleFingerprint:fingerprint
+        };
+    }
+
+    private static function buildLegacyDetachPlan(item:BaseItem, candidateName:String):Object {
+        var mods:Array = item.value.mods;
+        if (!(mods instanceof Array) || candidateName == "") return fail("invalid_mods");
+        var index:Number = indexOfString(mods, candidateName);
+        if (index < 0) return fail("mod_not_installed");
+        var dependentMods:Array = EquipmentUtil.getDependentMods(item, candidateName);
+        var removed:Array = [];
+        var remaining:Array = [];
+        var policy:String = "single";
+        var i:Number;
+        if (dependentMods != null && dependentMods.length > 0) {
+            // 当前真实旧 UI 语义：目标 + 一跳直接依赖；不递归扩闭包。
+            policy = "direct_dependents";
+            var removeSet:Object = {};
+            removeSet[candidateName] = true;
+            for (i = 0; i < dependentMods.length; i++) removeSet[String(dependentMods[i])] = true;
+            for (i = 0; i < mods.length; i++) {
+                if (removeSet[String(mods[i])] == true) removed.push(String(mods[i]));
+                else remaining.push(String(mods[i]));
+            }
+        } else {
+            var modData:Object = EquipmentUtil.modDict == null ? null : EquipmentUtil.modDict[candidateName];
+            if (modData != null && String(modData.detachPolicy) == "cascade") {
+                policy = "cascade_all";
+                removed = cloneArray(mods);
+                remaining = [];
+            } else {
+                removed.push(candidateName);
+                remaining = cloneArray(mods);
+                remaining.splice(index, 1);
+            }
+        }
+        return {success:true, removedMods:removed, remainingMods:remaining, policy:policy};
+    }
+
+    private static function installPlan(plan:Object):Void {
+        _tokenSeq++;
+        _transactionSeq++;
+        plan.tuningToken = "tune." + _sessionGeneration + "." + _tokenSeq + "." + getTimer();
+        plan.transactionId = "tune.tx." + _transactionSeq;
+        plan.createdAt = getTimer();
+        plan.sessionPanel = _sessionPanel;
+        plan.sessionView = _sessionView;
+        plan.sessionGeneration = _sessionGeneration;
+        _plan = plan;
+        rememberTokenTransaction(plan.tuningToken, plan.transactionId);
+    }
+
+    private static function revokeActivePlan():Void {
+        if (_plan != null && _plan.tuningToken != undefined) {
+            delete _tokenTransactions[String(_plan.tuningToken)];
+        }
+        _plan = null;
+    }
+
+    private static function buildPreviewResponse(plan:Object):Object {
+        return {
+            success:true, canCommit:true,
+            tuningToken:plan.tuningToken,
+            operation:plan.operation, noOp:plan.noOp,
+            before:plan.before, after:plan.after, materials:plan.materials,
+            removedMods:plan.removedMods
+        };
+    }
+
+    private static function plansEqual(expected:Object, current:Object):Boolean {
+        return expected.operation == current.operation
+            && expected.candidateName == current.candidateName
+            && expected.replaceCandidateName == current.replaceCandidateName
+            && String(expected.targetLevel) == String(current.targetLevel)
+            && expected.noOp == current.noOp
+            && expected.achievementMetric == current.achievementMetric
+            && expected.ruleFingerprint == current.ruleFingerprint
+            && deepEqual(expected.before, current.before, 0)
+            && deepEqual(expected.after, current.after, 0)
+            && deepEqual(expected.materials, current.materials, 0)
+            && deepEqual(expected.materialDeltas, current.materialDeltas, 0)
+            && deepEqual(expected.removedMods, current.removedMods, 0)
+            && deepEqual(expected.affectedSlots, current.affectedSlots, 0);
+    }
+
+    private static function buildTuningSnapshot(source:Object, sourceRef:Object):Object {
+        if (source == null || source.item == null) return null;
+        var materials:Object = getMaterialCollection();
+        if (materials == null) return null;
+        var item:BaseItem = BaseItem(source.item);
+        var tierCandidates:Array = [];
+        var modCandidates:Array = [];
+        var materialNames:Object = {};
+        materialNames["强化石"] = true;
+        var nextCandidates:Object = {};
+
+        var tierList:Array = EquipmentUtil.getAvailableTierMaterials(item);
+        var tierSeen:Object = {};
+        for (var i:Number = 0; i < tierList.length; i++) {
+            var tierMaterial:String = String(tierList[i]);
+            if (tierSeen[tierMaterial] == true) continue;
+            tierSeen[tierMaterial] = true;
+            var tierKey:String = "tier." + tierCandidates.length;
+            var tierAllowed:Boolean = isTierTransitionAllowed(item, tierMaterial);
+            var tierOwned:Number = materials.getValue(tierMaterial);
+            nextCandidates[tierKey] = {kind:"tier", itemName:tierMaterial};
+            materialNames[tierMaterial] = true;
+            tierCandidates.push({
+                candidateKey:tierKey, itemName:tierMaterial,
+                tierName:String(EquipmentUtil.tierMaterialToNameDict[tierMaterial]),
+                owned:tierOwned, available:tierAllowed && tierOwned > 0,
+                reason:tierAllowed ? (tierOwned > 0 ? "" : "material_missing") : "tier_transition_rejected"
+            });
+        }
+
+        var availableMods:Array = EquipmentUtil.getAvailableModMaterials(item);
+        var modSeen:Object = {};
+        var modKeys:Object = {};
+        var itemData:Object = item.getData();
+        for (i = 0; i < availableMods.length; i++) {
+            var modName:String = String(availableMods[i]);
+            if (modSeen[modName] == true) continue;
+            modSeen[modName] = true;
+            var modKey:String = "mod." + modCandidates.length;
+            modKeys[modName] = modKey;
+            var availability:Number = Number(EquipmentUtil.isModMaterialAvailable(item, itemData, modName));
+            var modOwned:Number = materials.getValue(modName);
+            nextCandidates[modKey] = {kind:"mod", itemName:modName};
+            materialNames[modName] = true;
+            modCandidates.push(buildModCandidateProjection(
+                modKey, modName, modOwned, indexOfString(item.value.mods, modName) >= 0,
+                availability == 1 && modOwned > 0, availability,
+                availability == 1 ? (modOwned > 0 ? "" : "material_missing") : modAvailabilityReason(availability)
+            ));
+        }
+
+        // 历史已安装插件即使退出当前候选池，仍必须可被 detach_mod 精确引用。
+        for (i = 0; i < item.value.mods.length; i++) {
+            modName = String(item.value.mods[i]);
+            modKey = modKeys[modName];
+            if (modKey == undefined) {
+                modKey = "mod." + modCandidates.length;
+                modKeys[modName] = modKey;
+            }
+            nextCandidates[modKey] = {kind:"mod", itemName:modName};
+            materialNames[modName] = true;
+            if (modSeen[modName] != true) {
+                modSeen[modName] = true;
+                modCandidates.push(buildModCandidateProjection(
+                    modKey, modName, materials.getValue(modName), true,
+                    false, -2, modAvailabilityReason(-2)
+                ));
+            }
+        }
+
+        // 逐个模拟“先拆旧件、再装新件”的最终状态，只投影可原子替换的旧件键。
+        for (i = 0; i < modCandidates.length; i++) {
+            var replacementProjection:Object = modCandidates[i];
+            if (replacementProjection.installed == true) continue;
+            for (var installedIndex:Number = 0; installedIndex < item.value.mods.length; installedIndex++) {
+                var installedName:String = String(item.value.mods[installedIndex]);
+                if (canReplaceMod(item, itemData, installedName, String(replacementProjection.itemName))) {
+                    replacementProjection.replaceableFrom.push(String(modKeys[installedName]));
+                }
+            }
+        }
+        _candidateNames = nextCandidates;
+
+        var names:Array = [];
+        for (var materialName:String in materialNames) names.push(materialName);
+        names.sort();
+        var materialSnapshot:Array = [];
+        for (i = 0; i < names.length; i++) {
+            materialSnapshot.push({itemName:names[i], count:materials.getValue(names[i])});
+        }
+        var level:Number = Number(item.value.level);
+        var cap:Number = getEnhancementCap();
+        var hardCap:Number = EquipmentUtil.getMaxLevel();
+        return {
+            source:sourceRef,
+            equipment:buildEquipmentProjection(item, item.value, item.lastUpdate),
+            enhance:{currentLevel:level, maxLevel:cap, availableMaxLevel:cap, hardMaxLevel:hardCap},
+            tierCandidates:tierCandidates, modCandidates:modCandidates,
+            materials:materialSnapshot,
+            materialRevision:materials.getMutationRevision(),
+            inventoryRevision:source.inventory.getMutationRevision()
+        };
+    }
+
+    private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number):Object {
+        var raw:Object = ItemUtil.getRawItemData(item.name);
+        return {
+            name:String(item.name),
+            displayName:raw == null || raw.displayname == undefined ? String(item.name) : String(raw.displayname),
+            icon:raw == null || raw.icon == undefined ? "" : String(raw.icon),
+            type:raw == null || raw.type == undefined ? "" : String(raw.type),
+            use:raw == null || raw.use == undefined ? "" : String(raw.use),
+            level:Number(value.level),
+            tier:value.tier == undefined || value.tier == null ? "" : String(value.tier),
+            mods:cloneArray(value.mods), lastUpdate:Number(lastUpdate),
+            maxLevel:getEnhancementCap(), hardMaxLevel:EquipmentUtil.getMaxLevel()
+        };
+    }
+
+    private static function buildMaterialPlan(materials:Object, deltas:Object):Object {
+        if (!materials.canApplyTransactionDeltas(deltas)) return fail("insufficient_material");
+        var names:Array = [];
+        for (var key:String in deltas) names.push(key);
+        names.sort();
+        var result:Array = [];
+        for (var i:Number = 0; i < names.length; i++) {
+            var before:Number = materials.getValue(names[i]);
+            var delta:Number = Number(deltas[names[i]]);
+            result.push({itemName:names[i], before:before, delta:delta, after:before + delta});
+        }
+        return {success:true, materials:result};
+    }
+
+    private static function buildCommittedMaterials(materials:Array):Array {
+        var result:Array = [];
+        for (var i:Number = 0; i < materials.length; i++) {
+            var row:Object = materials[i];
+            result.push({itemName:row.itemName, before:row.before, delta:row.delta, after:row.after});
+        }
+        return result;
+    }
+
+    private static function buildCommittedAfter(plan:Object, timestamp:Number, inventorySnapshot:Object):Object {
+        var result:Object = {};
+        for (var i:Number = 0; i < plan.changes.length; i++) {
+            var change:Object = plan.changes[i];
+            var key:String = change.slot.slot == plan.source.slot ? "source" : "target";
+            result[key] = {
+                source:refFromInventorySnapshot(inventorySnapshot, change.slot.slot),
+                equipment:buildEquipmentProjection(change.slot.item, change.afterValue, timestamp)
+            };
+        }
+        return result;
+    }
+
+    private static function resolveWebSlot(ref:Object):Object {
+        if (ref == null) return fail("invalid_payload");
+        var checked:Object = InventoryPanelService.validateExternalSlotRef(ref, false);
+        if (!checked.success) return checked;
+        if (checked.containerId != "背包") return fail("container_forbidden");
+        var valid:Object = validateEquipment(checked.item);
+        if (!valid.success) return valid;
+        checked.ref = {containerId:"背包", slot:checked.slot, expectedLease:String(ref.expectedLease)};
+        checked.legacy = false;
+        checked.expectedValue = ObjectUtil.clone(checked.item.value);
+        checked.expectedLastUpdate = Number(checked.item.lastUpdate);
+        return checked;
+    }
+
+    private static function resolveLegacySlot(inventory:Object, slot:Number, item:Object):Object {
+        if (_root.物品栏 == undefined || inventory !== _root.物品栏.背包) return fail("container_forbidden");
+        if (!isWholeNumber(slot) || slot < 0 || slot >= inventory.capacity) return fail("invalid_slot");
+        if (inventory.getItem(String(slot)) !== item) return fail("stale_state");
+        var valid:Object = validateEquipment(item);
+        if (!valid.success) return valid;
+        return {
+            success:true, containerId:"背包", inventory:inventory,
+            slot:Number(slot), item:item, legacy:true,
+            ref:{containerId:"背包", slot:Number(slot)},
+            expectedValue:ObjectUtil.clone(item.value), expectedLastUpdate:Number(item.lastUpdate)
+        };
+    }
+
+    private static function revalidateSlot(previous:Object):Object {
+        var current:Object;
+        if (previous.legacy == true) current = resolveLegacySlot(previous.inventory, previous.slot, previous.item);
+        else current = resolveWebSlot(previous.ref);
+        if (!current.success) return current;
+        if (current.item !== previous.item
+                || Number(current.item.lastUpdate) != Number(previous.expectedLastUpdate)
+                || !deepEqual(previous.expectedValue, current.item.value, 0)) return fail("stale_state");
+        return current;
+    }
+
+    private static function validateEquipment(item:Object):Object {
+        if (item == null || item.value == null || typeof item.value != "object") return fail("invalid_equipment");
+        var raw:Object = ItemUtil.getRawItemData(item.name);
+        if (raw == null || (raw.type != "武器" && raw.type != "防具")) return fail("invalid_equipment");
+        var level:Number = Number(item.value.level);
+        if (isNaN(level) || Math.floor(level) != level || level < 1) return fail("invalid_equipment");
+        if (!(item.value.mods instanceof Array)) return fail("invalid_mods");
+        return {success:true};
+    }
+
+    private static function safeSourceRef(slot:Object):Object {
+        if (slot == null) return null;
+        var ref:Object = {containerId:"背包", slot:Number(slot.slot)};
+        if (slot.ref != null && slot.ref.expectedLease != undefined) ref.expectedLease = String(slot.ref.expectedLease);
+        return ref;
+    }
+
+    private static function refFromInventorySnapshot(snapshot:Object, slot:Number):Object {
+        if (snapshot == null || !(snapshot.slots instanceof Array)) return {containerId:"背包", slot:slot};
+        for (var i:Number = 0; i < snapshot.slots.length; i++) {
+            var row:Object = snapshot.slots[i];
+            if (Number(row.physicalSlot) == Number(slot)) {
+                return {containerId:"背包", slot:Number(slot), expectedLease:String(row.slotLease)};
+            }
+        }
+        return {containerId:"背包", slot:Number(slot)};
+    }
+
+    private static function isTierTransitionAllowed(item:BaseItem, materialName:String):Boolean {
+        if (!EquipmentUtil.isTierMaterialAvailable(item, materialName)) return false;
+        var nextTier:String = String(EquipmentUtil.tierMaterialToNameDict[materialName]);
+        if (nextTier == "" || nextTier == "undefined") return false;
+        var currentTier:String = item.value.tier == undefined || item.value.tier == null ? "" : String(item.value.tier);
+        if (currentTier == "") return nextTier != "三阶" && nextTier != "四阶";
+        if (currentTier == "二阶") return nextTier == "三阶";
+        if (currentTier == "三阶") return nextTier == "四阶";
+        return false;
+    }
+
+    private static function getEnhancementCap():Number {
+        var progress:Number = Number(_root.主线任务进度);
+        if (isNaN(progress)) progress = 0;
+        if (progress > 129) return 13;
+        var cap:Number = progress > 74 ? 9 : 7;
+        var smith:Object = _root.主角被动技能 == undefined ? null : _root.主角被动技能.铁匠;
+        if (smith != null && smith.启用 == true && Number(smith.等级) >= 10) cap++;
+        return cap;
+    }
+
+    private static function calculateEnhancementCost(currentLevel:Number, targetLevel:Number):Number {
+        var multiplier:Number = 1;
+        var smith:Object = _root.主角被动技能 == undefined ? null : _root.主角被动技能.铁匠;
+        if (smith != null && smith.启用 == true) multiplier = Math.max(1 - Number(smith.等级) * 0.05, 0);
+        var cost:Number = 0;
+        for (var i:Number = currentLevel; i < targetLevel; i++) {
+            cost += Math.floor(multiplier * (i - 1) * (i - 1) * (i - 1) + 1);
+        }
+        return cost;
+    }
+
+    private static function baseRuleFingerprint():String {
+        var progress:Number = Number(_root.主线任务进度);
+        if (isNaN(progress)) progress = 0;
+        var smith:Object = _root.主角被动技能 == undefined ? null : _root.主角被动技能.铁匠;
+        var enabled:Boolean = smith != null && smith.启用 == true;
+        var level:Number = smith == null ? 0 : Number(smith.等级);
+        if (isNaN(level)) level = 0;
+        return "progress=" + progress + "|smith=" + enabled + ":" + level;
+    }
+
+    private static function addReturnedMaterials(deltas:Object, names:Array):Void {
+        for (var i:Number = 0; i < names.length; i++) {
+            var name:String = String(names[i]);
+            addMaterialDelta(deltas, name, 1);
+        }
+    }
+
+    private static function addMaterialDelta(deltas:Object, itemName:String, delta:Number):Void {
+        var current:Number = Number(deltas[itemName]);
+        if (isNaN(current)) current = 0;
+        deltas[itemName] = current + delta;
+    }
+
+    private static function canReplaceMod(item:BaseItem, itemData:Object,
+            installedName:String, candidateName:String):Boolean {
+        if (installedName == "" || candidateName == "" || installedName == candidateName) return false;
+        var detach:Object = buildLegacyDetachPlan(item, installedName);
+        if (!detach.success) return false;
+        var probeValue:Object = ObjectUtil.clone(item.value);
+        probeValue.mods = cloneArray(detach.remainingMods);
+        var probe:BaseItem = new BaseItem(item.name, probeValue, item.lastUpdate);
+        return Number(EquipmentUtil.isModMaterialAvailable(probe, itemData, candidateName)) == 1;
+    }
+
+    private static function getMaterialCollection():Object {
+        if (_root.收集品栏 == undefined || _root.收集品栏.材料 == null) return null;
+        var collection:Object = _root.收集品栏.材料;
+        if (collection.isDict != true
+                || typeof collection.getValue != "function"
+                || typeof collection.canApplyTransactionDeltas != "function"
+                || typeof collection.transactionApplyDeltas != "function") return null;
+        return collection;
+    }
+
+    private static function nextTimestamp(changes:Array):Number {
+        var timestamp:Number = new Date().getTime();
+        for (var i:Number = 0; i < changes.length; i++) {
+            var oldTimestamp:Number = Number(changes[i].slot.item.lastUpdate);
+            if (!isNaN(oldTimestamp) && timestamp <= oldTimestamp) timestamp = oldTimestamp + 1;
+        }
+        return timestamp;
+    }
+
+    private static function activateWebSession(params:Object):Object {
+        if (params.panelInstanceId == undefined || params.viewSessionId == undefined) return fail("invalid_session");
+        var panel:String = String(params.panelInstanceId);
+        var view:String = String(params.viewSessionId);
+        if (panel == "" || view == "") return fail("invalid_session");
+        if (panel != _sessionPanel || view != _sessionView) {
+            revokeActivePlan();
+            _sessionPanel = panel;
+            _sessionView = view;
+            _sessionGeneration++;
+            _candidateNames = {};
+        }
+        return {success:true};
+    }
+
+    private static function sessionMatches(params:Object):Boolean {
+        return params != null && params.panelInstanceId != undefined && params.viewSessionId != undefined
+            && String(params.panelInstanceId) == _sessionPanel && String(params.viewSessionId) == _sessionView;
+    }
+
+    private static function decorateResponse(response:Object, commandName:String, params:Object):Object {
+        if (response == null) response = fail("internal_error");
+        response.v = 1;
+        response.command = commandName;
+        response.writeEpoch = params != null && isWholeNumber(params.writeEpoch)
+            ? Number(params.writeEpoch) : _writeEpoch;
+        if (params != null) {
+            if (params.panelInstanceId != undefined) response.panelInstanceId = String(params.panelInstanceId);
+            if (params.viewSessionId != undefined) response.viewSessionId = String(params.viewSessionId);
+            if (params.reconcileAfterCallId != undefined && response.reconcileAfterCallId == undefined) {
+                response.reconcileAfterCallId = String(params.reconcileAfterCallId);
+            }
+        }
+        return response;
+    }
+
+    private static function commitFail(errorCode:String, transactionId:String):Object {
+        var response:Object = fail(errorCode);
+        if (transactionId != "" && transactionId != "undefined") response.transactionId = transactionId;
+        return response;
+    }
+
+    private static function tokenTransaction(params:Object):String {
+        if (params == null || params.expectedTuningToken == undefined) return "";
+        var value:Object = _tokenTransactions[String(params.expectedTuningToken)];
+        return value == undefined ? "" : String(value);
+    }
+
+    private static function rememberTokenTransaction(token:String, transactionId:String):Void {
+        _tokenTransactions[token] = transactionId;
+        _tokenTransactionOrder.push(token);
+        while (_tokenTransactionOrder.length > 64) {
+            var expired:String = String(_tokenTransactionOrder.shift());
+            delete _tokenTransactions[expired];
+        }
+    }
+
+    private static function recordProcessedCall(callId:String):Void {
+        if (callId == "" || _processedCalls[callId] == true) return;
+        _processedCalls[callId] = true;
+        _processedCallOrder.push(callId);
+        while (_processedCallOrder.length > 128) {
+            var expired:String = String(_processedCallOrder.shift());
+            delete _processedCalls[expired];
+        }
+    }
+
+    private static function modAvailabilityReason(code:Number):String {
+        if (EquipmentUtil.modAvailabilityResults != null
+                && EquipmentUtil.modAvailabilityResults[code] != undefined) {
+            return String(EquipmentUtil.modAvailabilityResults[code]);
+        }
+        return "mod_install_rejected";
+    }
+
+    /** 将插件定义的单源元数据投影给 Web 候选目录；安装权威仍是 availabilityCode。 */
+    private static function buildModCandidateProjection(candidateKey:String, modName:String, owned:Number,
+            installed:Boolean, available:Boolean, availabilityCode:Number, reason:String):Object {
+        var modData:Object = EquipmentUtil.modDict == undefined ? null : EquipmentUtil.modDict[modName];
+        var result:Object = {
+            candidateKey:candidateKey,
+            itemName:modName,
+            owned:owned,
+            installed:installed,
+            available:available,
+            availabilityCode:availabilityCode,
+            reason:reason,
+            replaceableFrom:[],
+            grade:"unknown",
+            scope:"unknown",
+            role:"utility"
+        };
+        if (modData == null) return result;
+        result.grade = String(modData.modGrade || "unknown");
+        result.gradeLabel = String(modData.uiGradeLabel || "未知档级");
+        result.gradeColor = String(modData.uiGradeColor || "#58636E");
+        result.scope = String(modData.catalogScope || "unknown");
+        result.scopeLabel = String(modData.uiScopeLabel || "未分类");
+        result.role = String(modData.uiRole || "utility");
+        result.roleLabel = String(modData.uiRoleLabel || "结构与功能");
+        result.symbol = String(modData.uiSymbol || "diamond-outline");
+        return result;
+    }
+
+    private static function indexOfString(values:Array, expected:String):Number {
+        if (!(values instanceof Array)) return -1;
+        for (var i:Number = 0; i < values.length; i++) if (String(values[i]) == expected) return i;
+        return -1;
+    }
+
+    private static function cloneArray(values:Object):Array {
+        var result:Array = [];
+        if (!(values instanceof Array)) return result;
+        for (var i:Number = 0; i < values.length; i++) result.push(values[i]);
+        return result;
+    }
+
+    private static function deepEqual(left:Object, right:Object, depth:Number):Boolean {
+        if (left === right) return true;
+        if (depth > 16 || left == null || right == null || typeof left != typeof right) return false;
+        if (typeof left != "object") return String(left) == String(right);
+        var leftArray:Boolean = left instanceof Array;
+        if (leftArray != (right instanceof Array)) return false;
+        if (leftArray && left.length != right.length) return false;
+        var leftCount:Number = 0;
+        var rightCount:Number = 0;
+        for (var leftKey:String in left) {
+            leftCount++;
+            if (!deepEqual(left[leftKey], right[leftKey], depth + 1)) return false;
+        }
+        for (var rightKey:String in right) rightCount++;
+        return leftCount == rightCount;
+    }
+
+    private static function isWholeNumber(value):Boolean {
+        return typeof value == "number" && !isNaN(value) && Math.floor(value) == value;
+    }
+
+    private static function markDirty():Void {
+        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+    }
+
+    private static function fail(errorCode:String, detail):Object {
+        return {success:false, error:errorCode};
+    }
+
+    private static function sendResponse(response:Object):Void {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
+        _root.server.sendSocketMessage(_json.stringify(response));
+    }
+
+    public static function testOnlyFailNextCommit():Void {
+        _testFailNext = true;
+    }
+
+    public static function testOnlyReset():Void {
+        _busy = false;
+        _sessionPanel = "";
+        _sessionView = "";
+        _sessionGeneration++;
+        _candidateNames = {};
+        _plan = null;
+        _writeEpoch = 0;
+        _processedCalls = {};
+        _processedCallOrder = [];
+        _tokenTransactions = {};
+        _tokenTransactionOrder = [];
+        _testFailNext = false;
+    }
+}

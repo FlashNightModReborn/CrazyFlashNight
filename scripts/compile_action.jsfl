@@ -18,6 +18,14 @@ function main() {
 	var compilerErrorsLog = projectURI + "/scripts/compiler_errors.txt";
 
 	fl.outputPanel.clear();
+	// Compiler Errors 是独立面板；只清 Output Panel 会让上一个目标的错误污染本轮结果。
+	// 先清面板并删除旧导出，确保保存的只能是本次 testMovie/publish 产生的诊断。
+	try {
+		if (fl.compilerErrors && fl.compilerErrors.clear) fl.compilerErrors.clear();
+	} catch (clearCompilerErrorsError) {
+		fl.trace("[compile] WARN: compilerErrors.clear failed: " + clearCompilerErrorsError);
+	}
+	if (FLfile.exists(compilerErrorsLog)) FLfile.remove(compilerErrorsLog);
 
 	fl.trace("[compile] docs: " + fl.documents.length);
 
@@ -94,12 +102,25 @@ function main() {
 		fl.trace("[compile] testMovie: " + doc.name);
 		doc.testMovie();
 	}
+	// 靠近 AS2 单分支 32K 上限的旧大类在切换 XFL 后，CS6 冷 ASO 首编可能失败，
+	// 同目标热编则稳定通过。只对这一条可识别诊断重试一次；语法/链接等其他错误绝不重试，
+	// 第二次仍失败也会原样保存并由 PowerShell fail-closed。
+	if (fl.compilerErrors) fl.compilerErrors.save(compilerErrorsLog);
+	var firstCompilerErrors = FLfile.exists(compilerErrorsLog) ? FLfile.read(compilerErrorsLog) : "";
+	if (firstCompilerErrors && firstCompilerErrors.indexOf("32K") >= 0) {
+		fl.trace("[compile] cold ASO 32K branch detected; retry same target once");
+		try {
+			if (fl.compilerErrors && fl.compilerErrors.clear) fl.compilerErrors.clear();
+		} catch (retryClearError) {
+			fl.trace("[compile] WARN: retry compilerErrors.clear failed: " + retryClearError);
+		}
+		if (FLfile.exists(compilerErrorsLog)) FLfile.remove(compilerErrorsLog);
+		if (compileMode == "publish") doc.publish();
+		else doc.testMovie();
+		if (fl.compilerErrors) fl.compilerErrors.save(compilerErrorsLog);
+	}
 	fl.trace("[compile] done");
 	fl.outputPanel.save(outputLog);
-	// 捕获 Compiler Errors 面板内容
-	if (fl.compilerErrors) {
-		fl.compilerErrors.save(compilerErrorsLog);
-	}
 	FLfile.write(doneMarker, "ok");
 }
 

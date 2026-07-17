@@ -119,6 +119,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/kshop-runtime.js"></script>
 <script src="modules/inventory-runtime.js"></script>
 <script src="modules/inventory-ui.js"></script>
+<script src="modules/equipment-tuning-runtime.js"></script>
+<script src="modules/equipment-tuning-view.js"></script>
 <script src="modules/kshop-views.js"></script>
 <script src="modules/kshop.js"></script>
 <script src="modules/inventory-workbench.js"></script>
@@ -392,7 +394,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             if (Panels.getActive && Panels.getActive()) Panels.close();
             this.reset();
             this.battleboxAccessibleCapacity = Number(accessibleCapacity);
-            Panels.open('workbench', {mode:'runtime',profile:profile === 'warehouse' ? 'warehouse' : 'battlebox'});
+            var normalizedProfile = profile === 'warehouse' ? 'warehouse' : 'battlebox';
+            Panels.open('workbench', {
+                mode:'runtime', profile:normalizedProfile, view:'storage',
+                panelInstanceId:normalizedProfile === 'battlebox'
+                    ? 'panel.harness.tuning-entry' : 'panel.harness.storage'
+            });
             await waitFor(function() {
                 return Panels.getActive() === 'workbench'
                     && InventoryWorkbench.debugState().coordinator.ready;
@@ -1179,7 +1186,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && getComputedStyle(presentationBattleboxUsedSlots[1].querySelector('.symbol-circle-outline')).borderTopColor === 'rgb(127, 201, 251)'
                 && !presentationEquip.querySelector('small')
                 && presentationStack.querySelector('.inventory-slot-value.quantity').textContent === '8.4万'
-                && presentationStack.querySelector('.inventory-slot-value.quantity').getAttribute('title') === '数量 84,286'
+                && presentationStack.querySelector('.inventory-slot-value.quantity').getAttribute('aria-label') === '数量 84,286'
+                && !presentationStack.querySelector('.inventory-slot-value.quantity').hasAttribute('title')
                 && presentationStack.textContent.indexOf('stack') < 0 && presentationEquip.textContent.indexOf('equipment') < 0);
 
         await Host.open();
@@ -1535,7 +1543,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         }, 600);
         assert('kshop-ui8x','6 页战备箱支持页码矩阵、槽位范围、键盘首末/前后页与会话内位置记忆',
             menuOpened && pageOptions.length === 6 && escapeClosed
-                && pageOptions[3].title === '第 4 页 · 槽位 121–160'
+                && pageOptions[3].getAttribute('aria-label') === '第 4 页，槽位 121 至 160'
+                && !pageOptions[3].hasAttribute('title')
                 && reachedLastPage && rememberedLastPage
                 && document.querySelector('.inventory-page-jump').textContent === '1 / 6'
                 && document.querySelector('.inventory-page-range').textContent === '1–40 / 240'
@@ -1564,6 +1573,39 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         Panels.close();
 
         PanelTooltip.lastRichOptions = null;
+        await Host.openWorkbench(240, 'battlebox');
+        var tuningCardButtons = document.querySelectorAll('.inventory-owned-backpack .inventory-tuning-btn');
+        var tuningStackButton = document.querySelector('.inventory-owned-backpack [data-physical-slot="0"] .inventory-tuning-btn');
+        var tuningEquipmentButton = document.querySelector('.inventory-owned-backpack [data-physical-slot="1"] .inventory-tuning-btn');
+        click('.inventory-owned-backpack [data-physical-slot="1"] .inventory-tuning-btn');
+        await waitFor(function(){
+            return InventoryWorkbench.debugState().view === 'tuning'
+                && Host.sent.some(function(message){
+                    return message.domain === 'equipment_tuning' && message.cmd === 'snapshot';
+                });
+        }, 500);
+        var tuningEntryRequest = Host.sent.filter(function(message){
+            return message.domain === 'equipment_tuning' && message.cmd === 'snapshot';
+        })[0];
+        assert('workbench-tuning-entry','正常战备箱 storage 为每件背包装备提供卡片级调制动作并精确选择该槽',
+            tuningCardButtons.length === 1 && !tuningStackButton && !!tuningEquipmentButton
+                && InventoryWorkbench.debugState().view === 'tuning'
+                && tuningEntryRequest && tuningEntryRequest.panelInstanceId === 'panel.harness.tuning-entry'
+                && tuningEntryRequest.payload.source.containerId === '背包'
+                && tuningEntryRequest.payload.source.slot === 1,
+            JSON.stringify({buttons:tuningCardButtons.length,state:InventoryWorkbench.debugState(),request:tuningEntryRequest}));
+        var tuningHelpButton = document.querySelector('.workbench-header-actions .equipment-tuning-help-btn');
+        if (tuningHelpButton) tuningHelpButton.click();
+        var tuningHelpModal = document.querySelector('.workbench-modal[data-modal-kind="equipment-tuning-help"]');
+        assert('workbench-tuning-help','调制帮助与技能/商店对齐到工作台顶栏，并通过共享 modal 解释四类流程与预览后提交',
+            !!tuningHelpButton && !tuningHelpButton.hidden && !!tuningHelpModal
+                && tuningHelpModal.textContent.indexOf('“强化度”') >= 0
+                && tuningHelpModal.textContent.indexOf('“交换”') >= 0
+                && tuningHelpModal.textContent.indexOf('进阶与配件') >= 0
+                && tuningHelpModal.textContent.indexOf('不会立刻修改存档') >= 0);
+        click('.workbench-modal-action[data-action="close"]');
+        Panels.close();
+
         await Host.openWorkbench(240);
         var workbenchState = InventoryWorkbench.debugState();
         var workbenchBulkQueries = countCmd('bulkQuery');
@@ -1586,7 +1628,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="full"]');
         click('.inventory-page-jump');
         var battleboxPageOptions = document.querySelectorAll('.inventory-page-option');
-        assert('workbench-ui1','独立战备箱工作台使用全屏 anchor，不进入商城生命周期，并按 40 槽显示最多 6 页',
+        var normalTuningButtons = document.querySelectorAll('.inventory-owned-backpack .inventory-tuning-btn');
+        var normalTuningSwitch = document.querySelector('.equipment-tuning-view-switch');
+        assert('workbench-ui1','正常战备箱工作台常驻调制入口、使用全屏 anchor、不进入商城生命周期，并按 40 槽显示最多 6 页',
             workbenchBulkQueries === 0
                 && sharedIconReady && Icons.loaded
                 && workbenchState.battleboxAccessibleCapacity === 240
@@ -1598,6 +1642,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelectorAll('.inventory-sort-controls').length === 2
                 && document.querySelectorAll('.inventory-category-filter').length === 2
                 && document.querySelectorAll('.inventory-authority-sort').length === 2
+                && normalTuningButtons.length === 1
+                && !!normalTuningSwitch
                 && (function(){
                     var rect = document.getElementById('panel-content').getBoundingClientRect();
                     return Math.abs(rect.left) < 1 && Math.abs(rect.top) < 1
@@ -1605,7 +1651,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 })(),
             'bulk=' + workbenchBulkQueries + ' page=' + JSON.stringify(workbenchState.page)
                 + ' fullCopy=' + standaloneFullCopyVisible + ' compact=' + standaloneCompactReadable
-                + ' compactMetrics=' + JSON.stringify(standaloneCompactMetrics));
+                + ' compactMetrics=' + JSON.stringify(standaloneCompactMetrics)
+                + ' tuning=' + normalTuningButtons.length + '/' + !!normalTuningSwitch);
         click('.inventory-page-jump');
 
         var battleboxTooltipBefore = countInventoryCmd('tooltip');

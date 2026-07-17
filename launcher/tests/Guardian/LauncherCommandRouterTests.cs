@@ -92,7 +92,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void WAREHOUSE_DefaultRoute_OpensBattleboxWorkbenchWithoutFlashWarehouseCommand()
+        public void WAREHOUSE_DefaultRoute_UsesBattleboxStorage()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
@@ -100,8 +100,21 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
             Assert.Contains("\"profile\":\"battlebox\"", c.Posts[0]);
+            Assert.Contains("\"view\":\"storage\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"nativehud\"", c.Posts[0]);
             Assert.Equal(new[] { "workbench" }, c.ActivePanels);
             Assert.Equal(new[] { true }, c.StateCallbacks);
+        }
+
+        [Fact]
+        public void WAREHOUSE_DefaultRoute_DoesNotEmitTuningCapabilitySwitch()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.Dispatch("WAREHOUSE");
+
+            Assert.DoesNotContain("tuningAvailable", Assert.Single(c.Posts));
         }
 
         [Fact]
@@ -111,6 +124,65 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter r = MakeRouter(c);
             r.WebInventoryWorkbenchEnabled = false;
             r.Dispatch("WAREHOUSE");
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+        }
+
+        [Fact]
+        public void EQUIP_UI_AlwaysKeepsLegacyEquipmentCommand()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
+            r.Dispatch("EQUIP_UI");
+
+            Assert.Single(commands);
+            Assert.Equal("openEquipUI", (string)JObject.Parse(commands[0].TrimEnd('\0'))["action"]);
+        }
+
+        [Fact]
+        public void EQUIP_UI_DoesNotOpenWorkbenchSideRoute()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
+            r.Dispatch("EQUIP_UI");
+
+            JObject command = JObject.Parse(Assert.Single(commands).TrimEnd('\0'));
+            Assert.Equal("cmd", (string)command["task"]);
+            Assert.Equal("openEquipUI", (string)command["action"]);
+            Assert.Equal(2, command.Count);
+            Assert.Empty(c.Posts);
+        }
+
+        [Fact]
+        public void EQUIP_UI_SendFailure_DoesNotAttemptTuningSideRoute()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(value); return false; });
+            r.Dispatch("EQUIP_UI");
+
+            Assert.Single(commands);
+            Assert.Equal("openEquipUI", (string)JObject.Parse(commands[0].TrimEnd('\0'))["action"]);
+            Assert.Empty(c.Posts);
+        }
+
+        [Theory]
+        [InlineData("{\"profile\":\"battlebox\",\"view\":\"tuning\"}")]
+        [InlineData("{\"profile\":\"battlebox\",\"view\":\"storage\"}")]
+        [InlineData(null)]
+        public void RequestOpenPanel_LegacyEquipmentTuningRedirectIsPaused(string extras)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.RequestOpenPanel("workbench", "legacy_equipment_tuning", null, null, null, null, null, extras);
+
             Assert.Empty(c.Posts);
             Assert.Empty(c.ActivePanels);
             Assert.Empty(c.StateCallbacks);
@@ -290,6 +362,8 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
             Assert.Contains("\"profile\":\"warehouse\"", c.Posts[0]);
+            Assert.Contains("\"view\":\"storage\"", c.Posts[0]);
+            Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
             Assert.Contains("\"source\":\"dormitory\"", c.Posts[0]);
             Assert.DoesNotContain("rightContainer", c.Posts[0]);
         }
@@ -301,6 +375,49 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter r = MakeRouter(c);
             r.RequestOpenPanel("workbench", "dormitory", null, null, null, null, null,
                 "{\"profile\":\"仓库\"}");
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_WorkbenchTuning_AllowsNormalEquipmentSource()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("workbench", "nativehud_equipment", null, null, null, null, null,
+                "{\"profile\":\"battlebox\",\"view\":\"tuning\",\"ignored\":true}");
+
+            Assert.Single(c.Posts);
+            Assert.Contains("\"view\":\"tuning\"", c.Posts[0]);
+            Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
+            Assert.Contains("\"source\":\"nativehud_equipment\"", c.Posts[0]);
+            Assert.DoesNotContain("ignored", c.Posts[0]);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_WorkbenchTuning_AgentControlUsesSameNormalRoute()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("workbench", "agent_control", null, null, null, null, null,
+                "{\"profile\":\"battlebox\",\"view\":\"tuning\"}");
+
+            Assert.Single(c.Posts);
+            Assert.Contains("\"view\":\"tuning\"", c.Posts[0]);
+            Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
+            Assert.Contains("\"source\":\"agent_control\"", c.Posts[0]);
+        }
+
+        [Theory]
+        [InlineData("dormitory", "{\"profile\":\"warehouse\",\"view\":\"tuning\"}")]
+        [InlineData("dormitory", "{\"profile\":\"warehouse\",\"view\":\"unknown\"}")]
+        public void RequestOpenPanel_WorkbenchRejectsInvalidTuningProfileOrUnknownView(string source, string extras)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.RequestOpenPanel("workbench", source, null, null, null, null, null, extras);
+
             Assert.Empty(c.Posts);
             Assert.Empty(c.ActivePanels);
         }

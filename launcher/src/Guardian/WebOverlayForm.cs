@@ -126,6 +126,7 @@ namespace CF7Launcher.Guardian
             Inventory,
             NpcShop,
             Crafting,
+            EquipmentTuning,
             Skills,
             Unsupported
         }
@@ -138,6 +139,7 @@ namespace CF7Launcher.Guardian
             if (domain == "inventory") return PanelDomainRoute.Inventory;
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
             if (domain == "crafting") return PanelDomainRoute.Crafting;
+            if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "skills") return PanelDomainRoute.Skills;
             return PanelDomainRoute.Unsupported;
         }
@@ -158,6 +160,16 @@ namespace CF7Launcher.Guardian
         internal static bool IsActiveSkillPanel(string activePanel, string activePanelInstanceId)
         {
             return activePanel == "skills" && !string.IsNullOrEmpty(activePanelInstanceId);
+        }
+
+        internal static bool IsActiveEquipmentTuningPanel(string activePanel,
+            string activePanelInstanceId, JObject request)
+        {
+            return activePanel == "workbench"
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && request != null
+                && request.Value<string>("panel") == "workbench"
+                && request.Value<string>("panelInstanceId") == activePanelInstanceId;
         }
 
         internal static bool IsValidSkillManageSwitchEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
@@ -300,6 +312,7 @@ namespace CF7Launcher.Guardian
         private InventoryTask _inventoryTask;
         private NpcShopTask _npcShopTask;
         private CraftingTask _craftingTask;
+        private EquipmentTuningTask _equipmentTuningTask;
         private SkillTask _skillTask;
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
@@ -2881,6 +2894,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetEquipmentTuningTask(EquipmentTuningTask task)
+        {
+            _equipmentTuningTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetSkillTask(SkillTask task)
         {
             _skillTask = task;
@@ -3547,6 +3567,38 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.EquipmentTuning)
+            {
+                string activeName = _panelHost != null ? _panelHost.ActivePanelName
+                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                string instanceId = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                LogManager.Log("[Panel] Routing domain=equipment_tuning cmd=" + cmd
+                    + " to EquipmentTuningTask, _equipmentTuningTask="
+                    + (_equipmentTuningTask != null ? "ok" : "NULL"));
+                if (activeName != "workbench" || string.IsNullOrEmpty(instanceId))
+                {
+                    RespondPanelDomainError(parsed, "panel_not_active");
+                    return;
+                }
+                if (!IsActiveEquipmentTuningPanel(activeName, instanceId, parsed))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_equipmentTuningTask == null)
+                {
+                    RespondPanelDomainError(parsed, "equipment_tuning_unavailable");
+                    return;
+                }
+                if (!_equipmentTuningTask.BindPanelInstance(instanceId))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                _equipmentTuningTask.HandleWebRequest(cmd, parsed);
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Skills)
             {
                 LogManager.Log("[Panel] Routing domain=skills cmd=" + cmd
@@ -3579,6 +3631,20 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
+                        if (panel == "workbench" && _equipmentTuningTask != null)
+                        {
+                            string activeName = _panelHost != null ? _panelHost.ActivePanelName
+                                : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : _activePanel);
+                            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                                : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                            if (activeName == "workbench" && !string.IsNullOrEmpty(activeInstance)
+                                && _equipmentTuningTask.PanelInstanceId == activeInstance
+                                && !_equipmentTuningTask.HandlePanelClosed(activeInstance))
+                            {
+                                LogManager.Log("[EquipmentTuningTask] close deferred while request/reconcile is pending");
+                                return;
+                            }
+                        }
                         if (panel == "skills")
                         {
                             string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activePanel;
@@ -3787,9 +3853,12 @@ namespace CF7Launcher.Guardian
             var response = new JObject
             {
                 ["type"] = "panel_resp",
+                ["panel"] = request != null ? (request.Value<string>("panel") ?? "") : "",
                 ["domain"] = request != null ? (request.Value<string>("domain") ?? "") : "",
                 ["cmd"] = request != null ? (request.Value<string>("cmd") ?? "") : "",
                 ["callId"] = request != null ? (request.Value<string>("callId") ?? "") : "",
+                ["panelInstanceId"] = request != null
+                    ? (request.Value<string>("panelInstanceId") ?? "") : "",
                 ["success"] = false,
                 ["error"] = error
             };
@@ -3958,6 +4027,7 @@ namespace CF7Launcher.Guardian
             if (_inventoryTask != null) _inventoryTask.ClearPending();
             if (_npcShopTask != null) _npcShopTask.ClearPending();
             if (_craftingTask != null) _craftingTask.ClearPending();
+            if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
             if (_skillTask != null) _skillTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
@@ -4019,11 +4089,6 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[Panel] HandleButtonClick before router wired, key=" + key);
         }
 
-        /// <summary>
-        /// AS2 → C# 面板打开请求 (旧版 Flash UI 按钮接入 WebView 面板)。
-        /// 通过 TaskRegistry 注册的 "panel_request" task 驱动。
-        /// 路由到 LauncherCommandRouter 走统一 panel 打开通道（Flag ON → PanelHostController；Flag OFF → PostToWeb 旧路径）。
-        /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
             RequestOpenPanel(panelName, source, null, null, null, null, null, null);

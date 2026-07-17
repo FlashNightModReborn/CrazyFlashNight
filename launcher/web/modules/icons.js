@@ -545,6 +545,16 @@ var Icons = (function() {
         resolve: function(name) {
             var frameList = normalizeFrames(entry(name));
             return frameList.length ? frameList[0].url : null;
+        },
+        // 明确请求静态首帧。用于 reduced-motion、紧凑模式和不应重复播放的材料角标；
+        // animated WebP 的 resolve() 仍返回动图，不能作为静态降级入口。
+        resolveStatic: function(name) {
+            var iconEntry = entry(name);
+            if (iconEntry && typeof iconEntry.f1 === 'string' && iconEntry.f1) {
+                return iconUrl(iconEntry.f1);
+            }
+            var frameList = normalizeFrames(iconEntry);
+            return frameList.length ? frameList[0].url : null;
         }
     };
 })();

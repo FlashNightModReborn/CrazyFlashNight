@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `e9aaf0a7a6`（2026-07-16）+ 当前装备调制无人值守入口工作树。
 
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
@@ -55,6 +55,27 @@ cd "<项目根目录>\\automation"
 - 使用内嵌总线与现有宿主架构
 - 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
 
+### 无人值守运行态控制面
+
+`agent_control` 是 localhost HTTP `/task` 的窄化控制面，不是任意 GUI/DOM 遥控器。通用 `readyForRuntimeAutomation` 只在 Launcher Ready、Flash reveal、socket、安全 snapshot 决议，以及 AS2 对同一 `attemptId/savePath` 的 `SaveManager.loadAll()` ack 全部满足时成立；arena 在此基础上另加 arena status，继续使用 `readyForArenaCalibration`。
+
+面板迁移可增加领域专用动作，例如装备调制的 `openEquipmentTuning`。该动作只接受与当前状态一致的 `expectedSlot/expectedAttemptId`，slot 必须为 `cf7_agent_*`，并固定发送正式 AS2 opener；客户端不能传任意 panel/initData。返回 `panel_open_requested` 只表示命令已发送，runner 还要等待 Host active panel instance 和该实例首个领域 snapshot。禁止直接调用 `PanelHost.OpenPanel`、Web `Panels.open`，也禁止通过 `/console` 调业务 preview/commit。
+
+所有专用 runner 都应在启动前记录 `/logs` 水位，等待水位之后本轮新鲜 `[BootstrapAS] event=handoff`，再单次调用 `_root.agentEnterResolvedSave()` 复用主时间轴 `读盘` 帧。专用克隆槽负责隔离写入；真实 `crazyflasher7_saves*` 槽默认永不用于无人值守写测试。
+
+### 装备调制只读直达门
+
+从仓库根运行：
+
+```powershell
+chcp.com 65001 | Out-Null
+node tools/equipment-tuning/run-unattended.js `
+  --seed-slot crazyflasher7_saves2 `
+  --shutdown
+```
+
+目标槽固定默认为 `cf7_agent_equipment_tuning`，必须与显式 seed 不同。runner 永久拒绝 live target 和 `--fresh`，备份目标 shadow/SOL 后只重建专用克隆槽；随后等待 fresh handoff、同 attempt runtime load ack，调用固定 `openEquipmentTuning`，并以同一 `panelInstanceId` 的 `equipment_tuning_panel_bound` + `equipment_tuning_snapshot_confirmed` 为通过门。它在首个权威 snapshot 后停止，不点击业务控件、不发送 preview/commit。离线安全与契约回归入口为 `node tools/equipment-tuning/run-checks.js`。
+
 ### 无人值守斗兽标定
 
 斗兽标定的无人值守外层入口在仓库根目录运行：
@@ -69,7 +90,7 @@ node tools/arena-calibration/run-unattended.js `
 
 `--slot` 缺省为 `cf7_agent_arena_calibration`，也可以显式传入；runner 会在启动前把该专用槽位从 `--seed-slot` 或最新有效 shadow 存档播种，并备份/移除目标槽位残留 SOL，避免复用运行中的旧 SOL。默认拒绝 `crazyflasher7_saves*` 正式槽位与 `--fresh`，除非显式传 `--allow-live-slot` / `--allow-fresh`，这两个开关只用于人工取证，不用于无人值守批跑。
 
-该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；必须等 `bootstrap_reveal_ready` 已完成（`agent_control.revealPerformed=true`）后，才通过 AS2 agent 入口复用主时间轴 `读盘` 帧的原“进入游戏”流程，避免在 asLoader 临时 `_root` 上提前消费 snapshot、交接后卡在主菜单。随后等待 `readyForArenaCalibration`；该 ready 必须同时满足 Launcher 存档决议为安全 snapshot、AS2 已完成 `SaveManager.loadAll()` 并回报 `agent_runtime_status`、socket/reveal/arena status 均就绪，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
+该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；必须等 `bootstrap_reveal_ready` 已完成并观察到本轮新鲜 handoff 后，才通过 AS2 agent 入口复用主时间轴 `读盘` 帧的原“进入游戏”流程，避免在 asLoader 临时 `_root` 上提前消费 snapshot、交接后卡在主菜单。随后等待 `readyForArenaCalibration`；该 ready 必须同时满足 Launcher 存档决议为安全 snapshot、AS2 已完成 `SaveManager.loadAll()` 并回报 `agent_runtime_status`、socket/reveal/arena status 均就绪，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
 
 默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。如本轮确实需要重编译或验证指定栈，可显式传：
 

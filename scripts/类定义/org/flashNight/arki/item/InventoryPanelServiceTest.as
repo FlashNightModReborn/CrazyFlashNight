@@ -14,7 +14,6 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         _failed = 0;
         trace("=== InventoryPanelServiceTest start ===");
 
-        testItemSetMetadataHydration();
         testWorkbenchPanelRequest();
         testRangeSnapshot();
         testStableReadLeaseAndMutationVersion();
@@ -65,16 +64,14 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         return {name: name, value: value, lastUpdate: 1};
     }
 
-    private static function testItemSetMetadataHydration():Void {
+    private static function testWorkbenchPanelRequest():Void {
         var fixture:Array = [{name:"中心表注入测试装备", setId:"test_center_set"}];
         fixture.itemSets = [{id:"test_center_set", name:"中心表注入测试套装", order:77}];
         ItemUtil.hydrateItemSetMetadata(fixture);
         assertTrue(fixture[0].setName == "中心表注入测试套装"
                 && Number(fixture[0].setOrder) == 77,
             "ItemUtil hydrates setName/setOrder from item_sets metadata");
-    }
 
-    private static function testWorkbenchPanelRequest():Void {
         var previousServer:Object = _root.server;
         var captured:String = "";
         var sendCount:Number = 0;
@@ -93,10 +90,20 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(captured.indexOf('"task":"panel_request"') >= 0
             && captured.indexOf('"panel":"workbench"') >= 0
             && captured.indexOf('"profile":"warehouse"') >= 0
+            && captured.indexOf('"view":"storage"') >= 0
             && captured.indexOf('"source":"dormitory"') >= 0,
-            "宿舍仓库入口只发送枚举 profile 与来源");
+            "宿舍入口发送 storage/profile/source");
+        var tuningOpened:Boolean = InventoryPanelService.requestOpenWorkbench({
+            profile: "warehouse", view: "tuning", source: "equipment_tuning"
+        });
+        assertTrue(tuningOpened && sendCount == 2
+                && captured.indexOf('"view":"tuning"') >= 0,
+            "调制入口发送 tuning view");
         var rejected:Boolean = InventoryPanelService.requestOpenWorkbench({profile: "仓库"});
-        assertTrue(!rejected && sendCount == 1, "工作台入口拒绝非枚举 profile 且不发送消息");
+        var rejectedView:Boolean = InventoryPanelService.requestOpenWorkbench({profile:"warehouse", view:"editor"});
+        assertTrue(!rejected && !rejectedView && sendCount == 2,
+            "拒绝非法 profile/view");
+
         _root.server = previousServer;
     }
 
@@ -446,11 +453,12 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         };
         org.flashNight.arki.item.EquipmentUtil.modDict = {
             插件A: {
-                uiGrade: "medium", uiGradeLabel: "中等", uiGradeColor: "#996600",
+                modGrade: "medium", uiGradeLabel: "中等", uiGradeColor: "#996600",
+                catalogScope: "firearm", uiScopeLabel: "枪械", tag: "瞄具",
                 uiRole: "precision", uiRoleLabel: "精准与操控", uiSymbol: "triangle-outline"
             },
             插件B: {
-                uiGrade: "special", uiGradeLabel: "特殊", uiGradeColor: "#FFFF00",
+                modGrade: "special", uiGradeLabel: "特殊", uiGradeColor: "#FFFF00",
                 uiRole: "mechanism", uiRoleLabel: "特殊机制", uiSymbol: "star-solid"
             }
         };
@@ -463,7 +471,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             }
         };
         _root.物品栏.背包.add(0, equipment);
-        _root.物品栏.背包.add(1, item("大堆叠材料", 12345));
+        _root.物品栏.背包.add(1, item("插件A", 12345));
         var response:Object = snapshot(10, 10);
         var equipmentProjection:Object = response.snapshots[0].slots[0].item;
         var stackProjection:Object = response.snapshots[0].slots[1].item;
@@ -479,8 +487,11 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             && equipmentProjection.modSlots[1].symbol == "star-solid",
             "装备投影优先 displayname，并提供动态满级、独立升阶状态与插件档级/角色符号");
         assertTrue(stackProjection.itemKind == "stack" && stackProjection.quantity == 12345
-            && !stackProjection.isMaxEnhancement && stackProjection.modSlotCapacity == 0,
-            "非装备投影只保留精确数量且不伪造装备槽状态");
+            && !stackProjection.isMaxEnhancement && stackProjection.modSlotCapacity == 0
+            && stackProjection.modMeta.grade == "medium"
+            && stackProjection.modMeta.scope == "firearm"
+            && stackProjection.modMeta.role == "precision",
+            "插件材料投影读取数量与 mod 元数据");
 
         if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
         else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previousMeta;

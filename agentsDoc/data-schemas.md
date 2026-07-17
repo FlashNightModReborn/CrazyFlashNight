@@ -222,7 +222,11 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 装备插件格展示词典
 
-`data/items/equipment_mods/ui_presentation.xml` 是插件格角色→受控符号、`tag`→默认角色的展示单源；`list.xml/<uiPresentation>` 声明其入口。`EquipModListLoader` 与插件子文件并行加载该表，并按来源文件前缀派生四档：`低级材料_→low/#006600`、`中等材料_→medium/#996600`、`高等材料_→high/#0099FF`、`特殊材料_→special/#FFFF00`。角色符号采用 `形状-solid|outline` 受控 token；当前以 `triangle-solid/triangle-outline` 区分火力与精准操控，其余常规角色优先线框，特殊机制保留实心星。单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖；禁止在插件里直接填写 Unicode/HTML 符号。构建门 `node tools/validate-equipment-mod-ui.js` 必须覆盖所有插件、全部现役 `tag`、角色和符号白名单。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
+`data/items/equipment_mods/*.xml` 的插件定义是档级、用途与定位的业务元数据单源。每个 `list.xml/<items>` 子文件根层必须显式声明 `<modGrade>low|medium|high|special</modGrade>` 与 `<catalogScope>armor|firearm|blade|fist|universal|underbarrel</catalogScope>`；文件名前缀只服务人类导航，运行时禁止据此推断。`catalogScope` 只用于 Web 目录分组，精确安装权限仍由每个 `<mod>` 的 `use/weapontype/excludeWeapontype` 与 `EquipmentUtil` 决定。
+
+`data/items/equipment_mods/ui_presentation.xml` 是上述 ID 的受控标签/色号词典，以及插件格角色→符号、`tag`→默认角色的展示词典；它不得重新分配单个插件的档级或目录用途。`EquipModListLoader` 并行加载词典与子文件，向 `EquipmentUtil.modDict` 投影 `modGrade/catalogScope/uiGradeLabel/uiGradeColor/uiScopeLabel/uiRole/uiRoleLabel/uiSymbol`。角色符号采用 `形状-solid|outline` 受控 token；单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖，禁止填写任意 Unicode/HTML 符号。`EquipmentTuningService.modCandidates[]` 暴露档级/用途/定位/受控符号供候选树和紧凑瓦片展示，未知符号由 Web 白名单回退；`InventoryPanelService` 对松散插件材料附加 `modMeta`，但 `availabilityCode` 仍是安装可用性的唯一权威。
+
+`data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 固定校验 104 个 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的 100 个条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
 
 ### 长枪副武器 `<subweapon>`
 

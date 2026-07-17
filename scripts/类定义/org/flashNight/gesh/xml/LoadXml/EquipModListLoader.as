@@ -60,7 +60,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
             var modPromise:Promise = ListLoader.loadChildren({
                 entries:      entries,
                 basePath:     path,
-                mergeFn:      EquipModListLoader.mergeModsWithSourceGrade,
+                mergeFn:      EquipModListLoader.mergeModsWithSourceMetadata,
                 initialValue: []
             });
             var presentationPromise:Promise = LoaderPromise.loadXML(path + presentationFile);
@@ -118,34 +118,31 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
         return this.presentationData;
     }
 
-    /** 合并插件子文件，同时将来源文件前缀投影为稳定档级。 */
-    private static function mergeModsWithSourceGrade(acc:Object, childData:Object, index:Number, entry:String):Object {
-        var grade:String = resolveGradeFromEntry(entry);
-        if (grade == null) throw new Error("未知插件材料档级文件: " + entry);
+    /** 合并插件子文件；档级与目录用途必须由文件内元数据显式声明。 */
+    private static function mergeModsWithSourceMetadata(acc:Object, childData:Object, index:Number, entry:String):Object {
+        var grade:String = childData == null || childData.modGrade == undefined ? "" : String(childData.modGrade);
+        var scope:String = childData == null || childData.catalogScope == undefined ? "" : String(childData.catalogScope);
+        if (!isValidGrade(grade)) throw new Error("插件文件缺少或声明了非法档级: " + entry + "/" + grade);
+        if (!isValidScope(scope)) throw new Error("插件文件缺少或声明了非法目录用途: " + entry + "/" + scope);
         var mods:Array = ListLoader.normalizeToArray(childData.mod);
         var target = acc;
         for (var i:Number = 0; i < mods.length; i++) {
-            mods[i].uiGrade = grade;
+            mods[i].modGrade = grade;
+            mods[i].catalogScope = scope;
             target.push(mods[i]);
         }
         return target;
-    }
-
-    private static function resolveGradeFromEntry(entry:String):String {
-        if (entry.indexOf("低级材料_") == 0) return "low";
-        if (entry.indexOf("中等材料_") == 0) return "medium";
-        if (entry.indexOf("高等材料_") == 0) return "high";
-        if (entry.indexOf("特殊材料_") == 0) return "special";
-        return null;
     }
 
     /** 将 XMLParser 的标量/数组形状归一化为展示索引。 */
     private static function buildPresentationIndex(raw:Object):Object {
         if (raw == null) throw new Error("插件展示词典为空");
         var gradeDict:Object = {};
+        var scopeDict:Object = {};
         var roleDict:Object = {};
         var tagRoleDict:Object = {};
         var grades:Array = ListLoader.normalizeToArray(raw.grade);
+        var scopes:Array = ListLoader.normalizeToArray(raw.scope);
         var roles:Array = ListLoader.normalizeToArray(raw.role);
         var defaults:Array = ListLoader.normalizeToArray(raw.tagDefault);
         var i:Number;
@@ -157,6 +154,14 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
                 throw new Error("非法插件档级展示配置: " + gradeId + "/" + gradeColor);
             }
             gradeDict[gradeId] = {id: gradeId, label: String(grades[i].label), color: gradeColor};
+        }
+        for (i = 0; i < scopes.length; i++) {
+            var scopeId:String = String(scopes[i].id);
+            var scopeLabel:String = String(scopes[i].label);
+            if (!isValidScope(scopeId) || scopeLabel.length == 0) {
+                throw new Error("非法插件目录用途展示配置: " + scopeId + "/" + scopeLabel);
+            }
+            scopeDict[scopeId] = {id: scopeId, label: scopeLabel};
         }
         for (i = 0; i < roles.length; i++) {
             var roleId:String = String(roles[i].id);
@@ -176,15 +181,18 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
         }
         var fallbackRole:String = String(raw.fallbackRole || "utility");
         if (roleDict[fallbackRole] == undefined) throw new Error("插件展示兜底角色不存在: " + fallbackRole);
-        return {gradeDict: gradeDict, roleDict: roleDict, tagRoleDict: tagRoleDict, fallbackRole: fallbackRole};
+        return {gradeDict: gradeDict, scopeDict: scopeDict, roleDict: roleDict,
+            tagRoleDict: tagRoleDict, fallbackRole: fallbackRole};
     }
 
     /** 解析优先级：插件显式 uiRole → tag 默认角色；未知声明一律阻止启动。 */
     private static function applyPresentation(mods:Array, presentation:Object):Void {
         for (var i:Number = 0; i < mods.length; i++) {
             var mod:Object = mods[i];
-            var grade:Object = presentation.gradeDict[mod.uiGrade];
-            if (grade == undefined) throw new Error("插件档级未注册: " + mod.name + "/" + mod.uiGrade);
+            var grade:Object = presentation.gradeDict[mod.modGrade];
+            if (grade == undefined) throw new Error("插件档级未注册: " + mod.name + "/" + mod.modGrade);
+            var scope:Object = presentation.scopeDict[mod.catalogScope];
+            if (scope == undefined) throw new Error("插件目录用途未注册: " + mod.name + "/" + mod.catalogScope);
             var hasExplicitRole:Boolean = mod.uiRole != undefined && String(mod.uiRole).length > 0;
             var roleId:String = hasExplicitRole ? String(mod.uiRole) : String(presentation.tagRoleDict[String(mod.tag)]);
             if (roleId.length == 0 || roleId == "undefined") {
@@ -194,6 +202,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
             if (role == undefined) throw new Error("插件声明了未知展示角色: " + mod.name + "/" + roleId);
             mod.uiGradeLabel = grade.label;
             mod.uiGradeColor = grade.color;
+            mod.uiScopeLabel = scope.label;
             mod.uiRole = role.id;
             mod.uiRoleLabel = role.label;
             mod.uiSymbol = role.symbol;
@@ -202,6 +211,11 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
 
     private static function isValidGrade(id:String):Boolean {
         return id == "low" || id == "medium" || id == "high" || id == "special";
+    }
+
+    private static function isValidScope(id:String):Boolean {
+        return id == "armor" || id == "firearm" || id == "blade" || id == "fist"
+            || id == "universal" || id == "underbarrel";
     }
 
     private static function isValidSymbol(symbol:String):Boolean {

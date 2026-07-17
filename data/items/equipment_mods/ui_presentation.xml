@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-  <!-- 档级由来源文件名前缀确定；角色决定受控符号，单个 mod 可用 uiRole 覆盖 tag 默认值。 -->
+  <!-- 档级与目录用途由各插件定义文件显式声明；本文件只维护受控展示词典。 -->
   <fallbackRole>utility</fallbackRole>
 
   <grade><id>low</id><label>低级</label><color>#006600</color></grade>
   <grade><id>medium</id><label>中等</label><color>#996600</color></grade>
   <grade><id>high</id><label>高等</label><color>#0099FF</color></grade>
   <grade><id>special</id><label>特殊</label><color>#FFFF00</color></grade>
+
+  <scope><id>armor</id><label>防具</label></scope>
+  <scope><id>firearm</id><label>枪械</label></scope>
+  <scope><id>blade</id><label>刀具</label></scope>
+  <scope><id>fist</id><label>拳套</label></scope>
+  <scope><id>universal</id><label>通用</label></scope>
+  <scope><id>underbarrel</id><label>下挂武器</label></scope>
 
   <role><id>firepower</id><label>火力</label><symbol>triangle-solid</symbol></role>
   <role><id>precision</id><label>精准与操控</label><symbol>triangle-outline</symbol></role>

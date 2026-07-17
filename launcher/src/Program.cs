@@ -920,13 +920,18 @@ class Program
         InventoryTask inventoryTask = new InventoryTask(socketServer);
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
         CraftingTask craftingTask = new CraftingTask(socketServer);
+        EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
+        commandRouter.SetEquipmentTuningTask(equipmentTuningTask);
         SkillTask skillTask = new SkillTask(socketServer);
         commandRouter.SetSkillTask(skillTask);
         if (panelHost != null)
         {
             panelHost.SetRebindGate(delegate(string panelName)
             {
-                return panelName != "skills" || skillTask.CanRebind;
+                if (panelName == "skills") return skillTask.CanRebind;
+                if (panelName == "workbench" && equipmentTuningTask.HasBoundPanel)
+                    return equipmentTuningTask.CanRebind;
+                return true;
             });
             panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson)
             {
@@ -935,12 +940,18 @@ class Program
             panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)
             {
                 if (panelName == "skills") skillTask.HandleAuthoritativePanelClosed(panelInstanceId);
+                if (panelName == "workbench" && equipmentTuningTask.HasBoundPanel)
+                    equipmentTuningTask.HandlePanelClosed(panelInstanceId);
             });
         }
         skillTask.SetCoordinatorSettled(delegate
         {
             if (panelHost != null) panelHost.FlushDeferredRebind("skills");
             commandRouter.FlushDeferredFallbackSkillRebind();
+        });
+        equipmentTuningTask.SetCoordinatorSettled(delegate
+        {
+            if (panelHost != null) panelHost.FlushDeferredRebind("workbench");
         });
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
@@ -962,6 +973,22 @@ class Program
                     userPrefs.Save();
                 }
             });
+        agentControlTask.SetEquipmentTuningOpenAction(delegate
+        {
+            const string payload = "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
+                + "\"profile\":\"battlebox\",\"view\":\"tuning\",\"source\":\"agent_control\"}\0";
+            return socketServer != null && socketServer.IsClientReady && socketServer.TrySend(payload);
+        });
+        agentControlTask.SetActivePanelStatusProvider(delegate
+        {
+            string name = panelHost != null ? panelHost.ActivePanelName : commandRouter.ActiveFallbackPanelName;
+            string instanceId = panelHost != null ? panelHost.ActivePanelInstanceId : commandRouter.ActiveFallbackPanelInstanceId;
+            return new Newtonsoft.Json.Linq.JObject
+            {
+                ["name"] = name == null ? Newtonsoft.Json.Linq.JValue.CreateNull() : (Newtonsoft.Json.Linq.JToken)name,
+                ["instanceId"] = instanceId == null ? Newtonsoft.Json.Linq.JValue.CreateNull() : (Newtonsoft.Json.Linq.JToken)instanceId
+            };
+        });
         PetTask petTask = new PetTask(socketServer, projectRoot);
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
@@ -1026,7 +1053,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, craftingTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, craftingTask, equipmentTuningTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -1038,6 +1065,7 @@ class Program
         webOverlay.SetInventoryTask(inventoryTask);
         webOverlay.SetNpcShopTask(npcShopTask);
         webOverlay.SetCraftingTask(craftingTask);
+        webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetSkillTask(skillTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
@@ -1085,6 +1113,7 @@ class Program
             musicCatalog.Dispose();
             frameTask.Stop();
             shopTask.Dispose();
+            equipmentTuningTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
             intelligenceTask.Dispose();
@@ -1132,6 +1161,7 @@ class Program
             try { socketServer.SetNotchHandler(null); } catch { }
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
+            try { equipmentTuningTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
             try { stageSelectTask.Dispose(); } catch { }
@@ -1346,6 +1376,7 @@ class Program
         try { processManager.Dispose(); } catch { }
         try { gomokuTask.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
+        try { equipmentTuningTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }

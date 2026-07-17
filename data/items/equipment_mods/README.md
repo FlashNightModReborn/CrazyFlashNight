@@ -9,7 +9,7 @@
 ```
 equipment_mods/
 ├── list.xml                # 主列表文件，列出所有材料档级/用途子文件与展示词典
-├── ui_presentation.xml     # 插件格档级色、角色→符号、tag→默认角色词典
+├── ui_presentation.xml     # 档级/目录用途/角色的受控显示词典
 ├── 低级材料_*.xml          # 低级插件定义
 ├── 中等材料_*.xml          # 中等插件定义
 ├── 高等材料_*.xml          # 高等插件定义
@@ -23,7 +23,7 @@ equipment_mods/
 
 1. `EquipModListLoader` 读取 `list.xml`
 2. 并行加载 `list.xml/<uiPresentation>` 与 `<items>` 子文件
-3. 按来源文件前缀为每个插件派生 `uiGrade`，再用展示词典解析 `uiRole/uiSymbol`
+3. 从每个子文件根层读取 `modGrade/catalogScope`，再用展示词典解析档级色、用途名与 `uiRole/uiSymbol`
 4. 合并所有子文件中的 `<mod>` 节点
 5. 将已带展示元数据的插件数组传递给 `EquipmentUtil.loadModData()` 初始化
 
@@ -37,9 +37,21 @@ equipment_mods/
 
 ### 【插件格展示元数据】
 
-插件格使用四档固定标准色：低级 `#006600`、中等 `#996600`、高等 `#0099FF`、特殊 `#FFFF00`。这些颜色只驱动暗色金属槽内的角色符号与短辉光，不对整个插件槽填色。档级由插件所在文件的 `低级材料_` / `中等材料_` / `高等材料_` / `特殊材料_` 前缀派生，不在每个 `<mod>` 中重复填写。现有特殊档原图边框错色属于美术资产问题，运行时不从图片取色，也不为错色建立兼容分支。
+插件格使用四档固定标准色：低级 `#006600`、中等 `#996600`、高等 `#0099FF`、特殊 `#FFFF00`。这些颜色只驱动暗色金属槽内的角色符号与短辉光，不对整个插件槽填色。每个插件子文件必须在 `<root>` 下显式声明一次档级与目录用途，文件名只服务人类导航，不再参与运行时推断：
 
-`ui_presentation.xml` 集中维护受控角色、符号 token 和 `tag` 默认角色。解析顺序为：插件显式 `<uiRole>` → `tagDefault`；未知角色、符号、档级或未覆盖的 `tag` 会让加载/构建审计失败。符号 token 由形状与填充方式组成，白名单为 `triangle|square|circle|diamond|star` × `solid|outline`，例如火力使用 `triangle-solid`（▲）、精准与操控使用 `triangle-outline`（△）。稳定与防护、续航、结构与功能分别使用线框方形、圆形、菱形，特殊机制保留实心星。Web 使用 CSS 图形渲染，不直接执行 XML 中的任意 Unicode 或 HTML。
+```xml
+<root>
+    <modGrade>high</modGrade>
+    <catalogScope>blade</catalogScope>
+    <mod>...</mod>
+</root>
+```
+
+`modGrade` 仅允许 `low|medium|high|special`；`catalogScope` 仅允许 `armor|firearm|blade|fist|universal|underbarrel`。目录用途是 Web 候选浏览维度，不是安装权限；真正能否安装仍由每个 `<mod>` 的精确 `use/weapontype/excludeWeapontype` 及 `EquipmentUtil` 裁决。
+
+`ui_presentation.xml` 只维护 `modGrade/catalogScope/uiRole` ID 的标签、色号、受控符号和 `tag` 默认角色，不重新分配某个插件属于哪一档或哪类。解析顺序为：插件显式 `<uiRole>` → `tagDefault`；未知用途、角色、符号、档级或未覆盖的 `tag` 会让加载/构建审计失败。符号 token 由形状与填充方式组成，白名单为 `triangle|square|circle|diamond|star` × `solid|outline`，例如火力使用 `triangle-solid`（▲）、精准与操控使用 `triangle-outline`（△）。稳定与防护、续航、结构与功能分别使用线框方形、圆形、菱形，特殊机制保留实心星。Web 使用 CSS 图形渲染，不直接执行 XML 中的任意 Unicode 或 HTML。
+
+`data/items/收集品_材料_插件.xml` 以及 `收集品_材料.xml` 中的四个特殊材料仍只负责库存、经济、图标与说明，不重复维护档级/用途/定位。审计要求 104 个 mod 名称各自唯一对应一个物品条目，并要求 `收集品_材料_插件.xml` 的 100 个条目全部存在 mod 定义。
 
 一般插件不需要重复声明角色；只有 `tag` 默认角色无法准确表达主要功能时才覆盖：
 
@@ -59,7 +71,7 @@ equipment_mods/
 node tools/validate-equipment-mod-ui.js
 ```
 
-该审计也已接入 `launcher/build.ps1`，会验证所有插件都能解析出档级、角色和受控符号。
+该审计也已接入 `launcher/build.ps1`，会验证所有插件都能解析出档级、目录用途、角色和受控符号，并验证 mod↔材料物品唯一映射。
 
 ---
 

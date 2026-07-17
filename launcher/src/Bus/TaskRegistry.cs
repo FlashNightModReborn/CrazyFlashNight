@@ -64,6 +64,7 @@ namespace CF7Launcher.Bus
             InventoryTask inventoryTask,
             NpcShopTask npcShopTask,
             CraftingTask craftingTask,
+            EquipmentTuningTask equipmentTuningTask,
             SkillTask skillTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
@@ -107,6 +108,10 @@ namespace CF7Launcher.Bus
             // 合成工作台 domain 回包路由
             if (craftingTask != null)
                 router.RegisterAsync("crafting_response", craftingTask.HandleFlashResponse);
+
+            // 装备调制 domain 回包路由
+            if (equipmentTuningTask != null)
+                router.RegisterAsync("equipment_tuning_response", equipmentTuningTask.HandleFlashResponse);
 
             // 独立技能面板 domain 回包路由
             if (skillTask != null)
@@ -159,26 +164,45 @@ namespace CF7Launcher.Bus
 
                 router.RegisterSync("panel_request", delegate(JObject msg)
                 {
-                    string panel = msg.Value<string>("panel") ?? "";
-                    string source = msg.Value<string>("source") ?? "as2_request";
-                    string pageId = msg.Value<string>("pageId") ?? "";
-                    string frameLabel = msg.Value<string>("frameLabel") ?? "";
-                    string returnFrameLabel = msg.Value<string>("returnFrameLabel") ?? "";
+                    // fire-and-forget 旧入口字段位于顶层；需要可信 ack 的入口通过
+                    // sendTaskWithCallback 放在 payload。两种线形共享同一白名单路由。
+                    JObject callbackPayload = msg["payload"] as JObject;
+                    JObject request = callbackPayload ?? msg;
+                    string panel = request.Value<string>("panel") ?? "";
+                    string source = request.Value<string>("source") ?? "as2_request";
+                    string pageId = request.Value<string>("pageId") ?? "";
+                    string frameLabel = request.Value<string>("frameLabel") ?? "";
+                    string returnFrameLabel = request.Value<string>("returnFrameLabel") ?? "";
                     // returnTo 是 panel 嵌套返回路径：调用方（AS2）显式声明"关闭本 panel 后回到哪里"。
                     // 唯一调用方：StageSelectPanelService.requestOpenArenaPanel（returnTo="stage-select"
                     // + returnToInitData 含 frameLabel/returnFrameLabel）。其他 panel 传 null/空。
-                    string returnToPanel = msg.Value<string>("returnTo") ?? "";
-                    JToken returnToInitDataToken = msg["returnToInitData"];
+                    string returnToPanel = request.Value<string>("returnTo") ?? "";
+                    JToken returnToInitDataToken = request["returnToInitData"];
                     string returnToInitDataJson = returnToInitDataToken != null
                         ? returnToInitDataToken.ToString(Newtonsoft.Json.Formatting.None)
                         : null;
                     // initData 是 panel-specific 额外字段，被 LauncherCommandRouter merge 到 base initData。
                     // 当前唯一用法：stage-select 角斗场重定向时携带 {difficulty:"冒险"}，让 arena enter
                     // 时能回传 difficulty 给 AS2，使任务系统 FinishStage 能匹配 stage#difficulty 规则。
-                    JToken initDataToken = msg["initData"];
+                    JToken initDataToken = request["initData"];
                     string initDataExtrasJson = initDataToken != null
                         ? initDataToken.ToString(Newtonsoft.Json.Formatting.None)
                         : null;
+
+                    // Web 调制仍处在人类反馈期：旧 AS2 插件改装入口一律留在原 renderer。
+                    // 即使运行中的旧 SWF 仍发送可信 callback，也只返回明确拒绝，不打开面板。
+                    if (panel == "workbench" && source == "legacy_equipment_tuning")
+                    {
+                        return new JObject
+                        {
+                            ["success"] = true,
+                            ["accepted"] = false,
+                            ["panel"] = "workbench",
+                            ["profile"] = "battlebox",
+                            ["view"] = "tuning",
+                            ["reason"] = "migration_paused"
+                        }.ToString(Newtonsoft.Json.Formatting.None);
+                    }
                     webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel,
                         returnToPanel, returnToInitDataJson, initDataExtrasJson);
                     return null;
@@ -280,6 +304,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "inventory_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "npcshop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);

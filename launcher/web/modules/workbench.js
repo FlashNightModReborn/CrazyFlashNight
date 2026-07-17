@@ -115,7 +115,6 @@
         this._status.setAttribute('role', 'status');
         this._status.setAttribute('aria-live', 'polite');
         this._status.setAttribute('aria-label', this._status.textContent);
-        this._status.title = this._status.textContent;
         this._metrics = makeElement('div', 'workbench-metrics');
         this._actions = makeElement('div', 'workbench-header-actions');
         this._header.appendChild(identity);
@@ -214,7 +213,6 @@
         this._status.textContent = label;
         this._status.setAttribute('data-state', state || 'idle');
         this._status.setAttribute('aria-label', label);
-        this._status.title = label;
     };
 
     DualPaneShell.prototype.setMetric = function(key, label, value) {
@@ -747,7 +745,7 @@
             node.classList.toggle('selected', selected);
             node.setAttribute('data-catalog-index', String(options.id));
             node.setAttribute('aria-pressed', selected ? 'true' : 'false');
-            if (locked && options.lockTitle) node.title = options.lockTitle;
+            if (locked && options.lockTitle) node.setAttribute('aria-label', options.lockTitle);
         }
 
         var icon = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-icon '
@@ -766,7 +764,7 @@
         if (locked && skin === 'kshop') {
             meta = makeElement('div', 'item-card-meta item-card-lock kshop-lock');
             meta.textContent = options.lockReason || '';
-            meta.title = options.lockReason || '';
+            meta.setAttribute('aria-label', options.lockReason || '');
         } else {
             meta = makeElement(skin === 'kshop' ? 'div' : 'small', 'item-card-meta'
                 + (skin === 'kshop' ? ' kshop-card-type' : ''));
@@ -903,7 +901,7 @@
             button.className = 'workbench-mode-btn item-grid-mode-option';
             button.setAttribute('data-layout-mode', mode);
             button.textContent = text;
-            button.title = title;
+            button.setAttribute('aria-label', title);
             button.addEventListener('click', function() {
                 if (mode === currentMode) return;
                 ItemGrid.setLayoutMode(panelId, mode);

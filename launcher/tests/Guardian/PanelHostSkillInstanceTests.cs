@@ -27,6 +27,26 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void EquipmentTuningDomainRoute_RequiresActiveWorkbenchAndExactHostInstance()
+        {
+            JObject request = JObject.Parse(@"{
+                'type':'panel','panel':'workbench','domain':'equipment_tuning','cmd':'snapshot',
+                'callId':'tune.route.1','panelInstanceId':'panel.workbench.1','payload':{}
+            }");
+            Assert.Equal(WebOverlayForm.PanelDomainRoute.EquipmentTuning,
+                WebOverlayForm.ResolvePanelDomainRoute("snapshot", "equipment_tuning"));
+            Assert.True(WebOverlayForm.IsActiveEquipmentTuningPanel(
+                "workbench", "panel.workbench.1", request));
+            Assert.False(WebOverlayForm.IsActiveEquipmentTuningPanel(
+                "skills", "panel.workbench.1", request));
+            Assert.False(WebOverlayForm.IsActiveEquipmentTuningPanel(
+                "workbench", "panel.workbench.2", request));
+            request["panel"] = "skills";
+            Assert.False(WebOverlayForm.IsActiveEquipmentTuningPanel(
+                "workbench", "panel.workbench.1", request));
+        }
+
+        [Fact]
         public void SwitchManageEnvelope_RequiresExactInstanceAndNestedPresentationPayload()
         {
             JObject valid = JObject.Parse(@"{

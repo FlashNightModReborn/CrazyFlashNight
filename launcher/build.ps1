@@ -715,6 +715,8 @@ $requiredWebPaths = @(
     "modules\kshop-runtime.js",
     "modules\inventory-runtime.js",
     "modules\inventory-ui.js",
+    "modules\equipment-tuning-runtime.js",
+    "modules\equipment-tuning-view.js",
     "modules\inventory-workbench.js",
     "modules\kshop.js",
     "modules\npcshop-runtime.js",

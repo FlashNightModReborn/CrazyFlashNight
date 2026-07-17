@@ -102,8 +102,10 @@ compile_test.ps1 / compile_test.sh
   → Start-ScheduledTask 'CompileTriggerTask'
     → cf7_compile_loader.jsfl
       → compile_action.jsfl
+        → 清空独立 Compiler Errors 面板并删除旧导出
         → doc.testMovie()
-        → fl.compilerErrors.save()
+        → fl.compilerErrors.save()（只保存本轮诊断）
+        → 仅遇到冷 ASO「32K 分支超限」时清面板并同目标重试一次
           → publish_done.marker / flashlog / compiler_errors
 ```
 
@@ -113,13 +115,15 @@ compile_test.ps1 / compile_test.sh
 |------|------|----------|
 | `scripts/flashlog.txt` | Flash trace 副本 | 优先看是否为本次运行新鲜生成 |
 | `scripts/compile_output.txt` | Output Panel 副本 | 辅助看 JSFL / 输出面板文本 |
-| `scripts/compiler_errors.txt` | Compiler Errors 面板副本 | 有错误时应直接视为失败 |
+| `scripts/compiler_errors.txt` | 本轮 Compiler Errors 面板副本 | JSFL 会在每个目标编译前清独立面板并删除旧导出；有错误时应直接视为失败 |
 | `scripts/publish_done.marker` | JSFL 触发完成标记 | 不能单独代表编译并运行成功 |
 
 ### 正确表述
 
 - `已完成 Flash CS6 自动化 smoke 验证`
 - `已触发 Flash CS6 编译并拿到新鲜 trace`
+
+接近 AS2 单分支 32K 上限的旧类在切换 XFL 后可能出现冷 ASO 首编失败、同目标热编通过。JSFL 只对诊断中明确包含 `32K` 的这一种情况自动重试一次；第二轮诊断才写入最终 `compiler_errors.txt`。其他编译错误不重试，第二轮仍超限也照常失败。testMovie 重试可能让 trace 中出现两组同名 suite 输出，判据仍要求最后一轮无失败且最终 Compiler Errors 为 0。
 
 ### 不正确表述
 

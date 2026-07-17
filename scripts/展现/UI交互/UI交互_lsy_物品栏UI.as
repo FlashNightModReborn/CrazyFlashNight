@@ -905,6 +905,7 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.刷新强化度转换界面 = this.刷新强化度转换界面;
 	UI.添加强化度转换物品 = this.添加强化度转换物品;
 	UI.执行强化度转换 = this.执行强化度转换;
+	UI._调制 = this._调制;
 
 	UI.初始化插件改装界面 = this.初始化插件改装界面;
 	UI.刷新插件信息 = this.刷新插件信息;
@@ -919,6 +920,14 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.刷新插件材料页面 = this.刷新插件材料页面;
 
 	UI.gotoAndStop("空");
+}
+
+// 旧 renderer 的六类入口只做 UI 适配，统一委托单一业务服务。
+_root.物品UI函数._调制 = function(op, item, args, targetInventory, targetSlot, targetItem){
+	return org.flashNight.arki.item.EquipmentTuningService.executeLegacy(
+		op, this.当前物品栏, this.当前物品格, item, args,
+		targetInventory, targetSlot, targetItem
+	);
 }
 
 _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, inventory){
@@ -1105,12 +1114,8 @@ _root.物品UI函数.计算强化装备等级 = function(目标等级){
 }
 
 _root.物品UI函数.执行强化装备 = function(){
-	if(_root.singleSubmit("强化石", this.强化石需要个数)){
-		this.当前物品.value.level = this.目标强化等级;
-		// 成就记账（埋点 #6，强化成功分支）
-		if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-			org.flashNight.arki.achievement.AchievementMetrics.record("装备强化次数", 1);
-		}
+	var result = this._调制("enhance", this.当前物品, {targetLevel:this.目标强化等级});
+	if(result.success){
 		_root.最上层发布文字提示(this.强化物品图标.itemIcon.itemData.displayname + " 成功强化到 +" + this.目标强化等级);
 		this.当前物品图标.refreshValue();
 		this.强化物品图标.itemIcon.refreshValue();
@@ -1242,10 +1247,13 @@ _root.物品UI函数.执行强化度转换 = function(){
 		return;
 	}
 
-	// 交换强化度
-	var 临时等级 = this.当前物品.value.level;
-	this.当前物品.value.level = this.强化度转换物品.value.level;
-	this.强化度转换物品.value.level = 临时等级;
+	var result = this._调制("convert", this.当前物品, {},
+		this.强化度转换物品栏, this.强化度转换物品格, this.强化度转换物品
+	);
+	if(!result.success){
+		_root.发布消息("强化度转换失败，请重新选择装备！");
+		return;
+	}
 
 	// 刷新所有相关图标显示
 	this.当前物品图标.refreshValue();  // 刷新当前物品在背包中的图标
@@ -1266,11 +1274,9 @@ _root.物品UI函数.执行强化度转换 = function(){
 
 
 
+/** Web 调制仍处在人类反馈期；玩家入口保留 AS2 renderer，写入继续委托统一服务。 */
 _root.物品UI函数.初始化插件改装界面 = function(){
 	var panel = this;
-
-	this.槽位选择按钮_进阶._visible = false;
-	this.槽位选择按钮_配件._visible = false;
 
 	this.改装图标_进阶.itemIcon = new ItemIcon(this.改装图标_进阶, null, null);
 	this.改装图标_进阶.itemIcon.RollOver = function(){
@@ -1344,13 +1350,7 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	}
 	this.材料选择图标列表 = IconFactory.createIconLayout(this.材料选择图标, func, info);
 
-	// 初始化翻页状态（默认隐藏翻页控件）
-	this.插件当前页 = 0;
-	this.插件总页数 = 1;
-	this.插件改装当前页数._visible = false;
-	this.btn1._visible = false;
-	this.btn2._visible = false;
-
+	// 刷新会按当前装备同步初始化槽位、分页与翻页控件。
 	this.刷新插件信息();
 }
 
@@ -1468,14 +1468,9 @@ _root.物品UI函数.选择槽位_进阶 = function(){
 
 _root.物品UI函数.执行进阶 = function(matName:String){
 	var item = this.当前物品;
-	if(EquipmentUtil.isTierMaterialAvailable(item, matName)){
-		if(ItemUtil.singleSubmit(matName, 1)){
-			var tierName = EquipmentUtil.tierMaterialToNameDict[matName];
-			item.value.tier = tierName;
-			// 成就记账（埋点 #7，进阶成功分支）
-			if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-				org.flashNight.arki.achievement.AchievementMetrics.record("装备进阶次数", 1);
-			}
+	var result = this._调制("install_tier", item, {candidateName:matName});
+	if(result.success){
+			var tierName = item.value.tier;
 
 			// 重置物品名称
 			this.名字文本.htmlText = "<B>" + (tierName ? "[" + tierName + "]" : "" ) + this.当前物品显示名字;
@@ -1498,13 +1493,12 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 			_root.播放音效("9mmclip2.wav");
 			this.cursor.gotoAndPlay("消失");
 			this.cursor._currentLabel = "消失";
-		}else{
-			_root.发布消息("材料不足！")
-			this.cursor.gotoAndStop("空");
-			this.cursor._currentLabel = "空";
-		}
-		this.刷新插件信息();
+	}else{
+		_root.发布消息("材料不足或当前装备无法进阶！")
+		this.cursor.gotoAndStop("空");
+		this.cursor._currentLabel = "空";
 	}
+		this.刷新插件信息();
 }
 
 
@@ -1537,15 +1531,8 @@ _root.物品UI函数.选择槽位_配件 = function(){
 
 _root.物品UI函数.执行安装配件 = function(matName:String){
 	var item = this.当前物品;
-	if(this.modAvailabilityDict[matName]){
-		var mods = item.value.mods;
-		if(!(mods instanceof Array)) mods = item.value.mods = [];
-		if(ItemUtil.singleSubmit(matName, 1)){
-			mods.push(matName);
-			// 成就记账（埋点 #8，配件安装成功分支；卸下不计）
-			if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-				org.flashNight.arki.achievement.AchievementMetrics.record("配件安装次数", 1);
-			}
+	var result = this._调制("install_mod", item, {candidateName:matName});
+	if(result.success){
 
 			// 刷新可安装的配件
 			this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
@@ -1554,67 +1541,18 @@ _root.物品UI函数.执行安装配件 = function(matName:String){
 			_root.播放音效("9mmclip2.wav");
 			this.cursor.gotoAndPlay("消失");
 			this.cursor._currentLabel = "消失";
-		}else{
-			_root.发布消息("材料不足！")
-			this.cursor.gotoAndStop("空");
-			this.cursor._currentLabel = "空";
-		}
-		this.刷新插件信息();
+	}else{
+		_root.发布消息("材料不足或该配件当前不可安装！")
+		this.cursor.gotoAndStop("空");
+		this.cursor._currentLabel = "空";
 	}
+		this.刷新插件信息();
 }
 
 _root.物品UI函数.执行卸下配件 = function(matName:String){
 	var item = this.当前物品;
-	var mods = item.value.mods;
-	for(var index=0; index < mods.length; index++){
-		if(mods[index] === matName){
-			break;
-		}
-	}
-	if(mods.length > 0 && index < mods.length){
-		// 检查是否有其他插件依赖此插件
-		var dependentMods = EquipmentUtil.getDependentMods(item, matName);
-		if(dependentMods.length > 0){
-			// 有依赖关系，需要级联卸载所有依赖的插件
-			_root.发布消息("以下插件依赖此插件，将一起卸载：" + dependentMods.join(", "));
-
-			// 收集所有需要卸载的插件（包括被依赖的和要移除的）
-			var toRemove = {};
-			toRemove[matName] = true;
-			for(var d=0; d < dependentMods.length; d++){
-				toRemove[dependentMods[d]] = true;
-			}
-
-			// 返还所有要卸载的插件
-			var returnItems = [];
-			var newMods = [];
-			for(var i=0; i < mods.length; i++){
-				if(toRemove[mods[i]]){
-					returnItems.push({name:mods[i], value:1});
-				}else{
-					newMods.push(mods[i]);
-				}
-			}
-			ItemUtil.acquire(returnItems);
-			item.value.mods = newMods;
-		}else{
-			// 从配置中读取卸载行为
-			var modData = EquipmentUtil.modDict[matName];
-			if(modData && modData.detachPolicy === "cascade"){
-				// 级联卸载：卸下所有配件
-				var arr = [];
-				for(var i=0; i< mods.length; i++){
-					arr.push({name:mods[i],value:1});
-				}
-				ItemUtil.acquire(arr);
-				item.value.mods = [];
-			}else{
-				// 单个卸载：只卸下当前配件
-				ItemUtil.singleAcquire(matName, 1);
-				mods.splice(index, 1);
-			}
-		}
-
+	var result = this._调制("detach_mod", item, {candidateName:matName});
+	if(result.success){
 		// 刷新可安装的配件
 		this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
 
@@ -1636,18 +1574,11 @@ _root.物品UI函数.一键卸下所有配件 = function(){
 		return false;
 	}
 
-	var mods = item.value.mods;
-	var 卸载数量 = mods.length;
-
-	// 将所有配件返还到材料栏
-	var arr = [];
-	for(var i = 0; i < mods.length; i++){
-		arr.push({name: mods[i], value: 1});
+	var result = this._调制("detach_all_mods", item, {});
+	if(!result.success){
+		_root.发布消息("卸下配件失败，请重试！");
+		return false;
 	}
-	ItemUtil.acquire(arr);
-
-	// 清空配件槽（进阶插件tier不受影响）
-	item.value.mods = [];
 
 	// 刷新可安装的配件列表
 	this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);

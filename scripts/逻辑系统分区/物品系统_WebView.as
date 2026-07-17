@@ -2,3 +2,4 @@
 // 双栏工作台 inventory-domain 命令入口。
 // 详细实现见 org.flashNight.arki.item.InventoryPanelService。
 InventoryPanelService.install();
+EquipmentTuningService.install();

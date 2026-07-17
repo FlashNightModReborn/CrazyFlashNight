@@ -148,6 +148,48 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
     /**
+     * 装备调制等显式领域事务使用的批量原位 value 写入口。
+     *
+     * changes 中每项必须携带 slot、expectedItem、expectedValue、expectedLastUpdate、
+     * value 与 lastUpdate。方法先完整校验全部槽位，再原位写入，整个批次只推进一次
+     * mutationRevision，且不在半提交状态派发任何生命周期事件。
+     */
+    public function canApplyValueTransaction(changes:Array):Boolean {
+        if (!(changes instanceof Array)) return false;
+        var seen:Object = {};
+        for (var i:Number = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            if (change == null) return false;
+            var slot:Number = Number(change.slot);
+            if (isNaN(slot) || Math.floor(slot) != slot || slot < 0 || slot >= capacity) return false;
+            var slotKey:String = String(slot);
+            if (seen[slotKey] == true) return false;
+            seen[slotKey] = true;
+
+            var item:Object = items[slot];
+            if (item == null || item !== change.expectedItem || item.value !== change.expectedValue) return false;
+            if (Number(item.lastUpdate) != Number(change.expectedLastUpdate)) return false;
+            if (change.value == null || typeof change.value != "object") return false;
+            var timestamp:Number = Number(change.lastUpdate);
+            if (isNaN(timestamp) || timestamp < 0) return false;
+        }
+        return true;
+    }
+
+    public function transactionApplyValueChanges(changes:Array):Boolean {
+        if (!canApplyValueTransaction(changes)) return false;
+        if (changes.length == 0) return true;
+        for (var i:Number = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            var item:Object = items[Number(change.slot)];
+            item.value = change.value;
+            item.lastUpdate = Number(change.lastUpdate);
+        }
+        bumpMutationRevision();
+        return true;
+    }
+
+    /**
      * inventory-domain 整容器事务提交入口。
      *
      * 调用方先在隔离副本中完成排序/合并计划，本方法完整校验 orderedItems 后

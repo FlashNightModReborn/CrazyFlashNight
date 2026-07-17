@@ -176,12 +176,12 @@ namespace CF7Launcher.Guardian
 
         public void OpenPanel(string name)
         {
-            OpenPanel(name, null, null, null);
+            TryOpenPanel(name, null, null, null);
         }
 
         public void OpenPanel(string name, string initDataJson)
         {
-            OpenPanel(name, initDataJson, null, null);
+            TryOpenPanel(name, initDataJson, null, null);
         }
 
         /// <summary>
@@ -190,9 +190,18 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void OpenPanel(string name, string initDataJson, string returnToName, string returnInitDataJson)
         {
-            if (_disposed) return;
-            if (string.IsNullOrEmpty(name)) return;
-            EnqueueAndPump(new PanelCommand(PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
+            TryOpenPanel(name, initDataJson, returnToName, returnInitDataJson);
+        }
+
+        /// <summary>
+        /// 仅在 open 命令已进入 PanelHost 队列时返回 true。需要在上游回包中声称
+        /// “已接受”时必须使用本入口，不能把 void OpenPanel 的调用完成当作接受凭据。
+        /// </summary>
+        public bool TryOpenPanel(string name, string initDataJson, string returnToName, string returnInitDataJson)
+        {
+            if (_disposed || string.IsNullOrEmpty(name)) return false;
+            return EnqueueAndPump(new PanelCommand(
+                PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
         }
 
         public void ClosePanel()
@@ -237,13 +246,14 @@ namespace CF7Launcher.Guardian
 
         #region Queue
 
-        private void EnqueueAndPump(PanelCommand cmd)
+        private bool EnqueueAndPump(PanelCommand cmd)
         {
-            if (_disposed) return;
+            if (_disposed) return false;
             lock (_queueLock)
             {
+                if (_disposed) return false;
                 _queue.Enqueue(cmd);
-                if (_processing) return;
+                if (_processing) return true;
                 _processing = true;
             }
 
@@ -255,7 +265,7 @@ namespace CF7Launcher.Guardian
                     _delayedKickRegistered = true;
                     _ownerForm.HandleCreated += DelayedKickOnHandleCreated;
                 }
-                return;
+                return true;
             }
             try
             {
@@ -267,6 +277,7 @@ namespace CF7Launcher.Guardian
                 // 释放 _processing 让下次入队能重试
                 lock (_queueLock) { _processing = false; }
             }
+            return true;
         }
 
         private void DelayedKickOnHandleCreated(object sender, EventArgs e)

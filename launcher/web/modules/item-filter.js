@@ -378,7 +378,8 @@
             button.type = 'button';
             button.className = 'item-filter-breadcrumb';
             button.textContent = crumb.label;
-            button.title = crumbs.slice(0, index + 1).map(function(entry) { return entry.label; }).join(' › ');
+            button.setAttribute('aria-label', crumbs.slice(0, index + 1)
+                .map(function(entry) { return entry.label; }).join(' › '));
             button.setAttribute('data-filter-breadcrumb-path', crumb.path.join('/'));
             if (index === crumbs.length - 1) button.setAttribute('aria-current', 'page');
             button.disabled = this.disabled;
@@ -390,7 +391,7 @@
         }
         root.hidden = false;
         this.breadcrumbHost.hidden = false;
-        root.title = crumbs.map(function(entry) { return entry.label; }).join(' › ');
+        root.setAttribute('aria-label', crumbs.map(function(entry) { return entry.label; }).join(' › '));
         this._queueBreadcrumbLayout();
     };
 

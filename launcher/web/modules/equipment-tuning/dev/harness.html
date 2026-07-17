@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Equipment Tuning Harness</title>
+  <link rel="stylesheet" href="../../../css/panels.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607;color:#eee}
+    #host{position:absolute;inset:12px;width:min(460px,calc(100% - 24px));border:1px solid #333}
+    #qa-output{position:fixed;z-index:1000;right:8px;bottom:8px;max-width:480px;max-height:42vh;overflow:auto;padding:8px;background:#111;border:1px solid #555;font:11px Consolas;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+<div id="host"></div><pre id="qa-output">running…</pre>
+<script>
+window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;
+window.Bridge={
+  on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
+  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));var delay=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce?80:0;if(delay)__delayEnhancePreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
+};
+window.Toast={add:function(message){__toasts.push(message)}};
+window.Icons={
+  html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'},
+  resolveStatic:function(){return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='}
+};
+window.PanelTooltip={
+  _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},isVisible:function(){return this._visible},updateContent:function(html){this.lastHtml=html},
+  dynamicIconHtml:function(){return ''},staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},convertAS2Html:function(html){return html},
+  buildItemRichHtml:function(options){this.lastRichOptions=options||{};var split=!!(options&&options.descHTML);return '<div class="flash-tt-rich'+(split?'':' flash-tt-rich--merge')+'">'+(options.introHTML||options.introWebHTML||'')+(split?'<div class="flash-tt-desc">'+options.descHTML+'</div>':'')+'</div>'},
+  bindAsyncHover:function(node,options){var cache=options.cache||{};node.addEventListener('pointerenter',function(e){if(options.isSuppressed&&options.isSuppressed(e))return;var key=String(options.key),item=options.item;PanelTooltip.showAtMouse(options.renderBasic(item),e);if(!cache[key])options.fetch(item,function(response){if(response&&response.success===true){cache[key]=response;PanelTooltip.updateContent(options.renderRich(item,response))}})})}
+};
+function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
+var writeEpoch=4,transaction=0,materialCount=208589;
+var slots={
+  2:{physicalSlot:2,slotLease:'lease.2.1',occupied:true,item:{name:'测试枪',displayName:'测试枪',icon:'测试枪',itemKind:'equipment',majorType:'weapon',enhancementLevel:5,use:'手枪'}},
+  3:{physicalSlot:3,slotLease:'lease.3.1',occupied:true,item:{name:'转换枪',displayName:'转换枪',icon:'转换枪',itemKind:'equipment',majorType:'weapon',enhancementLevel:8,use:'手枪'}},
+  4:{physicalSlot:4,slotLease:'lease.4.1',occupied:true,item:{name:'同级枪',displayName:'同级枪',icon:'同级枪',itemKind:'equipment',majorType:'weapon',enhancementLevel:6,use:'手枪'}}
+};
+function modCandidates(){
+  var grades=[['low','低级','#006600'],['medium','中等','#996600'],['high','高等','#0099FF'],['special','特殊','#FFFF00']];
+  var roles=[['firepower','火力','triangle-solid'],['stability','稳定与防护','square-outline'],['sustain','续航','circle-outline'],['utility','结构与功能','diamond-outline'],['precision','精准与操控','triangle-outline'],['mechanism','特殊机制','star-solid']];
+  var list=[{candidateKey:'mod|基础导轨',itemName:'基础导轨',owned:0,available:false,installed:true,replaceableFrom:[],grade:'low',gradeLabel:'低级',gradeColor:'#006600',scope:'firearm',scopeLabel:'枪械',role:'utility',roleLabel:'结构与功能'}];
+  for(var i=1;i<=25;i++){var grade=grades[i%grades.length],role=roles[i%roles.length];list.push({candidateKey:'mod|测试配件'+i,itemName:i===1?'测试瞄具':(i===2?'禁用配件':'测试配件 '+i),owned:i+1,available:i!==2,reason:i===2?'条件不满足':'',replaceableFrom:i===2?[]:['mod|基础导轨'],grade:grade[0],gradeLabel:grade[1],gradeColor:grade[2],scope:i%5===0?'universal':'firearm',scopeLabel:i%5===0?'通用':'枪械',role:role[0],roleLabel:role[1],symbol:role[2]})}
+  return list;
+}
+function snapshot(message){var source=message.payload.source,item=slots[source.slot].item;return{source:source,equipment:{name:item.name,level:item.enhancementLevel,tier:'二阶',mods:['基础导轨'],lastUpdate:10,maxLevel:9,hardMaxLevel:13},enhance:{currentLevel:item.enhancementLevel,maxLevel:9,availableMaxLevel:9,hardMaxLevel:13},tierCandidates:[{candidateKey:'tier|二阶复合防御组件',itemName:'二阶复合防御组件',tierName:'二阶',owned:1,available:true}],modCandidates:modCandidates(),materials:[{itemName:'强化石',count:materialCount}]}}
+function projection(slot,level,mods){var item=slots[slot].item;return{source:{containerId:'背包',slot:slot,expectedLease:slots[slot].slotLease},equipment:{name:item.name,displayName:item.displayName,icon:item.icon,type:'武器',use:item.use,level:level,tier:'二阶',mods:mods||['基础导轨'],lastUpdate:10,maxLevel:9,hardMaxLevel:13}}}
+function base(message){return{type:'panel_resp',panel:'workbench',domain:'equipment_tuning',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,viewSessionId:message.payload.viewSessionId,v:1,writeEpoch:writeEpoch}}
+function respond(message){var result=base(message);
+  if(message.cmd==='snapshot'&&__resumeRequired&&!message.payload.reconcileAfterCallId){__resumeRequired=false;Object.assign(result,{success:false,error:'reconcile_required',requiresReconcile:true,reconcileAfterCallId:'tune.host.resume.1'});}
+  else if(message.cmd==='snapshot')Object.assign(result,{success:true,snapshot:snapshot(message),reconciled:!!message.payload.reconcileAfterCallId,reconcileAfterCallId:message.payload.reconcileAfterCallId});
+  else if(message.cmd==='preview'){
+    var operation=message.payload.operation,noOp=operation==='convert'&&slots[message.payload.source.slot].item.enhancementLevel===slots[message.payload.target.slot].item.enhancementLevel;
+    var sourceSlot=message.payload.source.slot,current=slots[sourceSlot].item.enhancementLevel,beforeProjection={source:projection(sourceSlot,current)},afterProjection={source:projection(sourceSlot,operation==='enhance'?message.payload.targetLevel:current,operation==='replace_mod'?['测试瞄具']:undefined)};
+    if(operation==='convert'){var targetSlot=message.payload.target.slot,targetLevel=slots[targetSlot].item.enhancementLevel;beforeProjection.target=projection(targetSlot,targetLevel);afterProjection.source=projection(sourceSlot,targetLevel);afterProjection.target=projection(targetSlot,current)}
+    Object.assign(result,{success:true,operation:operation,tuningToken:'token.'+operation+'.'+transaction,noOp:noOp,before:beforeProjection,after:afterProjection,materials:operation==='enhance'?[{itemName:'强化石',before:materialCount,delta:-3,after:materialCount-3}]:[],removedMods:operation.indexOf('detach')===0||operation==='replace_mod'?['基础导轨']:[]});
+  } else if(message.cmd==='commit'){
+    if(__disconnectedCommit){__disconnectedCommit=false;Object.assign(result,{success:false,error:'disconnected',requiresReconcile:false});emit(result);return}
+    if(__commitReconcileRequired){__commitReconcileRequired=false;Object.assign(result,{success:false,error:'reconcile_required',requiresReconcile:true,reconcileAfterCallId:'tune.host.previous.unknown.1'});emit(result);return}
+    if(__ambiguous){__ambiguous=false;Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
+    if(__staleCommit){__staleCommit=false;Object.assign(result,{success:false,error:'stale_lease',transactionId:'tx.stale'});emit(result);return}
+    transaction++;var token=message.payload.expectedTuningToken,operation=token.split('.')[1],noOp=operation==='convert'&&slots[2].item.enhancementLevel===slots[3].item.enhancementLevel;
+    if(!noOp){writeEpoch++;if(operation==='enhance'){slots[2].item.enhancementLevel=6;materialCount-=3}slots[2].slotLease='lease.2.'+(transaction+1)}
+    Object.assign(result,{success:true,operation:operation,transactionId:'tx.'+transaction,noOp:noOp,before:{source:projection(2,slots[2].item.enhancementLevel)},after:{source:projection(2,slots[2].item.enhancementLevel)},materials:[],inventorySnapshots:[],snapshot:snapshot({payload:{source:{containerId:'背包',slot:2,expectedLease:slots[2].slotLease}}})});
+  } else if(message.cmd==='tooltip')Object.assign(result,{success:true,candidateKey:message.payload.candidateKey,itemType:'收集品',itemUse:'材料',introHTML:'<b>权威候选说明</b><br>收集品 材料',descHTML:'用于改装的高等材料。<br>这是一段必须保留在主描述栏中的长材料说明。',html:'<b>权威候选说明</b><br>收集品 材料用于改装的高等材料。<br>这是一段必须保留在主描述栏中的长材料说明。',text:'权威候选说明'});
+  else if(message.cmd==='detach')Object.assign(result,{success:true});
+  emit(result)
+}
+</script>
+<script src="../../equipment-tuning-runtime.js"></script>
+<script src="../../inventory-runtime.js"></script>
+<script src="../../item-filter.js"></script>
+<script src="../../equipment-tuning-view.js"></script>
+<script>
+(async function(){
+  var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}
+  function wait(ms){return new Promise(function(resolve){setTimeout(resolve,ms||25)})}
+  async function until(test,timeout){var end=Date.now()+(timeout||1000);while(Date.now()<end){if(test())return true;await wait()}return false}
+  try{
+    var projectionRequests=[],projectionSeq=0;
+    var projectionCoordinator=new InventoryRuntime.InventoryCoordinator({
+      requests:[{containerId:'背包',offset:0,limit:50,filterKey:'material',filterSpec:{branch:'category',major:'material'}}],
+      request:function(cmd,payload,callback){var request=payload.requests[0],candidateMode=request.filterSpec&&request.filterSpec.use==='手枪';projectionRequests.push(JSON.parse(JSON.stringify(request)));callback({success:true,snapshots:[{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:candidateMode?2:0,filterKey:request.filterKey,filterSpec:request.filterSpec,snapshotSeq:++projectionSeq,offset:0,slots:candidateMode?[slots[2],slots[3]]:[]}]})}
+    });
+    var projectionOpen=null,projectionRead=null;
+    projectionCoordinator.open(function(result){projectionOpen=result});
+    var visibleRequestBefore=JSON.stringify(projectionCoordinator.getRequest('背包'));
+    var visibleWindowBefore=JSON.stringify(projectionCoordinator.getWindow('背包').filterSpec);
+    projectionCoordinator.readProjection({containerId:'背包',offset:0,limit:50,filterKey:'weapon',filterSpec:{branch:'category',major:'weapon',use:'手枪'}},function(result){projectionRead=result});
+    ok('isolated candidate projection preserves visible bag request and window',projectionOpen&&projectionOpen.success&&projectionRead&&projectionRead.success&&projectionRead.snapshot.slots.length===2&&JSON.stringify(projectionCoordinator.getRequest('背包'))===visibleRequestBefore&&JSON.stringify(projectionCoordinator.getWindow('背包').filterSpec)===visibleWindowBefore&&projectionRequests.length===2);
+    projectionCoordinator.close();
+
+    var conversionEvents=[];
+    var density={register:function(target){target.root.classList.add('item-grid-compact')},unregister:function(){}};
+    var view=EquipmentTuningView.create({instanceKey:'harness',sessionNonce:'harness',timeoutMs:300,
+      send:function(message){return Bridge.send(message)},toast:function(message){Toast.add(message)},
+      densityController:density,
+      loadConversionCandidates:function(item,source,callback){conversionEvents.push({use:item&&item.use,slot:source&&source.slot});callback({success:true,candidates:[slots[3],slots[4]],count:2});return true},
+      beginWrite:function(owner){__writes.push({kind:'begin',owner:owner});return true},
+      completeWrite:function(refresh,callback){__writes.push({kind:'complete',refresh:refresh});setTimeout(function(){if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})},0);return true},
+      refreshInventory:function(callback){__writes.push({kind:'retry-refresh'});setTimeout(function(){__refreshRetryCount++;slots[2].slotLease='lease.2.recovered.'+__refreshRetryCount;callback({success:true,refreshed:true})},0);return true},
+      resolveSlot:function(_,slot){return slots[slot]||null}});
+    view.mount(document.getElementById('host'));ok('opens Host-bound tuning session',view.openSession('panel.harness.1'));
+    view.handleInventorySelection(slots[2]);await until(function(){return view.debugState().hasPreview});
+    ok('snapshot uses strict domain envelope',__sent[0].domain==='equipment_tuning'&&__sent[0].panel==='workbench'&&__sent[0].panelInstanceId==='panel.harness.1'&&__sent[0].payload.viewSessionId);
+    ok('renders authoritative equipment summary',document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('测试枪')>=0&&document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('+5')>=0);
+    ok('equipment summary renders installed tier and mod with real item icons',document.querySelectorAll('.equipment-tuning-installed-state .equipment-tuning-status-icon').length===2&&document.querySelector('.equipment-tuning-status-icon.tier [data-icon="二阶复合防御组件"]')&&document.querySelector('.equipment-tuning-status-icon.mod [data-icon="基础导轨"]'));
+    __resumeRequired=true;view.requestSnapshot();await until(function(){return __sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId==='tune.host.resume.1'})});await until(function(){return !view.debugState().needsReconcile&&view.debugState().hasPreview});
+    ok('Host-stamped recovery hint resumes exact barrier after Web state loss',__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId==='tune.host.resume.1'})&&view.canClose());
+    ok('keeps enhance, convert, tier and mod as four top-level operation tabs',document.querySelectorAll('.equipment-tuning-tab').length===4&&!document.querySelector('.equipment-tuning-enhance-mode')&&[].slice.call(document.querySelectorAll('.equipment-tuning-tab')).map(function(node){return node.textContent}).join('|')==='强化度|交换|进阶|配件');
+    ok('compact enhancement uses DLS stone reactor, correct owned count and static motion fallback',document.querySelector('.equipment-tuning-enhance-reactor')&&document.querySelector('.equipment-tuning-stone-core').getAttribute('data-motion')==='static'&&document.querySelector('.equipment-tuning-stone-icon[data-icon-static="1"]')&&document.querySelector('.equipment-tuning-reactor-copy').textContent.indexOf('208,589')>=0&&document.querySelector('.equipment-tuning-reactor-copy').textContent.indexOf('持有 0')<0);
+    ok('enhance target controls preview automatically',document.querySelector('.equipment-tuning-level-slider')&&document.querySelectorAll('.equipment-tuning-level-mark').length===4&&document.querySelector('.equipment-tuning-commit').textContent.indexOf('强化至 +6 · 3 强化石')>=0);
+    ok('enhance preview sends intent without formula',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='enhance'&&x.payload.targetLevel===6&&!x.payload.materials}));
+    ok('enhance material delta is merged into the DLS reactor without a duplicate footer row',document.querySelector('.equipment-tuning-reactor-spend').textContent.indexOf('消耗 3')>=0&&document.querySelector('.equipment-tuning-reactor-spend').textContent.indexOf('强化后剩余 208,586')>=0&&!document.querySelector('.equipment-tuning-material-deltas')&&document.querySelector('.equipment-tuning-preview.enhance-compact'));
+    ok('enhance result stays in the reactor readout while the footer collapses to commit only',document.querySelector('.equipment-tuning-reactor-readout').textContent.indexOf('+5→+6')>=0&&document.querySelectorAll('.equipment-tuning-preview.enhance-compact > *').length===1&&document.querySelector('.equipment-tuning-preview.enhance-compact > .equipment-tuning-commit'));
+    document.querySelector('.equipment-tuning-commit').click();await until(function(){return !view.debugState().busy&&view.debugState().hasSnapshot});
+    var commits=__sent.filter(function(x){return x.cmd==='commit'});
+    ok('commit sends token only',commits.length===1&&commits[0].payload.expectedTuningToken.indexOf('token.enhance')===0&&commits[0].payload.operation===undefined&&commits[0].payload.source===undefined);
+    ok('commit holds inventory write gate through refresh',__writes[0].kind==='begin'&&__writes[0].owner==='equipment_tuning.commit'&&__writes[1].kind==='complete'&&__writes[1].refresh===true);
+    ok('success refreshes lease and authoritative level',__sent.filter(function(x){return x.cmd==='snapshot'}).length>=2&&document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('+6')>=0);
+    await until(function(){return view.debugState().hasPreview});
+    __delayEnhancePreviewOnce=true;view._chooseEnhancementLevel(8);await until(function(){return view.debugState().readPending&&view.debugState().previewPendingOperation==='enhance'});
+    view._chooseEnhancementLevel(9);
+    ok('enhance target remains editable while prior preview is in flight',!document.querySelector('.equipment-tuning-level-slider').disabled&&view.debugState().targetLevel===9);
+    await until(function(){return !view.debugState().readPending&&view.debugState().hasPreview&&view.debugState().targetLevel===9},1500);
+    var enhancePreviews=__sent.filter(function(x){return x.cmd==='preview'&&x.payload.operation==='enhance'});
+    ok('enhance preview is latest-wins under rapid target changes',enhancePreviews.slice(-2).map(function(x){return x.payload.targetLevel}).join(',')==='8,9'&&document.querySelector('.equipment-tuning-commit').textContent.indexOf('强化至 +9')>=0);
+    var tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[1].click();await wait();
+    ok('convert mode excludes same-level equipment while retaining different-level exact-use candidates',conversionEvents.length===1&&conversionEvents[0].use==='手枪'&&view.debugState().source.slot===2&&view.debugState().conversionCandidateCount===1&&document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="3"]')&&!document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="4"]')&&!view.selectConversionTarget(slots[4]));
+    var conversionCard=document.querySelector('.equipment-tuning-conversion-card'),conversionRect=conversionCard.getBoundingClientRect(),conversionIconRect=conversionCard.querySelector('.kshop-icon').getBoundingClientRect();
+    ok('compact conversion candidates reuse 48px item-grid density with level badge',Math.abs(conversionRect.width-48)<0.1&&Math.abs(conversionRect.height-48)<0.1&&Math.abs(conversionIconRect.width-40)<0.1&&Math.abs(conversionIconRect.height-40)<0.1&&getComputedStyle(conversionCard.querySelector('.equipment-tuning-conversion-level')).display!=='none');
+    document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="3"]').click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='convert'});
+    ok('right-pane convert target click previews immediately',view.debugState().source.slot===2&&view.debugState().target.slot===3&&document.querySelector('.equipment-tuning-conversion-card.selected')&&__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='convert'&&x.payload.target.slot===3}));
+    tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[2].click();await wait();
+    ok('leaving convert only clears the side projection',conversionEvents.length===1&&view.debugState().source.slot===2&&view.debugState().conversionCandidateCount===0&&!document.querySelector('.equipment-tuning-conversion-card'));
+    ok('tier view renders server candidates',document.querySelectorAll('.equipment-tuning-candidate').length===1);
+    document.querySelector('.equipment-tuning-candidate').dispatchEvent(new Event('pointerenter'));await until(function(){return PanelTooltip.lastHtml});
+    ok('candidate tooltip preserves authoritative intro/desc segments for material auto-split',__sent.some(function(x){return x.cmd==='tooltip'&&x.payload.candidateKey==='tier|二阶复合防御组件'})&&PanelTooltip.lastRichOptions&&PanelTooltip.lastRichOptions.introHTML.indexOf('权威候选说明')>=0&&PanelTooltip.lastRichOptions.descHTML.indexOf('高等材料')>=0&&String(PanelTooltip.lastHtml||'').indexOf('flash-tt-desc')>=0);
+    document.querySelector('.equipment-tuning-candidate').click();await until(function(){return view.debugState().hasPreview});
+    ok('tier preview uses candidateKey',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='install_tier'&&x.payload.candidateKey==='tier|二阶复合防御组件'}));
+    tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[3].click();await wait();
+    ok('mod view distinguishes 25 install candidates and icon-based detach actions',document.querySelectorAll('.equipment-tuning-candidate').length===25&&document.querySelector('.equipment-tuning-installed-card [data-icon="基础导轨"]'));
+    ok('mod catalog exposes compact metadata cards and shared tree filter',document.querySelector('.equipment-tuning-mod-navigator')&&document.querySelector('.item-grid-compact .equipment-tuning-candidates')&&document.querySelector('[data-filter-path="grade"]'));
+    var compactBody=document.querySelector('.equipment-tuning-body'),compactGrid=document.querySelector('.equipment-tuning-candidates'),compactTiles=[].slice.call(document.querySelectorAll('.equipment-tuning-candidate'));
+    var compactTileMetrics=compactTiles.map(function(node){var rect=node.getBoundingClientRect(),icon=node.querySelector('img,.kshop-icon,.kshop-icon-placeholder'),iconRect=icon.getBoundingClientRect();return{w:rect.width,h:rect.height,iw:iconRect.width,ih:iconRect.height,copy:getComputedStyle(node.querySelector(':scope > span:not(.kshop-icon):not(.equipment-tuning-owned-count)')).display}});
+    ok('compact mod catalog matches shared 48px tile and 40px icon contract',compactTileMetrics.length===25&&compactTileMetrics.every(function(m){return Math.abs(m.w-48)<0.1&&Math.abs(m.h-48)<0.1&&Math.abs(m.iw-40)<0.1&&Math.abs(m.ih-40)<0.1&&m.copy==='none'})&&compactTiles.every(function(node){return getComputedStyle(node.querySelector('.equipment-tuning-role-glyph')).display!=='none'}));
+    ok('compact candidates keep shared quantity badges',document.querySelectorAll('.equipment-tuning-candidate .equipment-tuning-owned-count').length===25&&[].slice.call(document.querySelectorAll('.equipment-tuning-owned-count')).every(function(node){return getComputedStyle(node).display!=='none'}));
+    ok('tuning view never exposes browser-native title tooltips',document.querySelectorAll('#host [title]').length===0);
+    ok('25 compact mod candidates remain reachable without scrolling',compactBody.scrollHeight<=compactBody.clientHeight+1&&compactGrid.getBoundingClientRect().bottom<=compactBody.getBoundingClientRect().bottom+1,JSON.stringify({body:[compactBody.clientHeight,compactBody.scrollHeight],gridBottom:compactGrid.getBoundingClientRect().bottom,bodyBottom:compactBody.getBoundingClientRect().bottom}));
+    document.querySelector('[data-filter-path="grade"]').click();await wait();document.querySelector('[data-filter-path="grade/medium"]').click();await wait();
+    var mediumCandidates=[].slice.call(document.querySelectorAll('.equipment-tuning-candidate'));
+    ok('mod breadcrumb filters by authoritative grade metadata',mediumCandidates.length>0&&mediumCandidates.length<25&&mediumCandidates.every(function(node){return node.getAttribute('data-grade')==='medium'})&&document.querySelector('.equipment-tuning-mod-breadcrumb').textContent.indexOf('中等')>=0);
+    view._modFilterPath=[];view.render();
+    var previewsBeforeReplace=__sent.filter(function(x){return x.cmd==='preview'}).length;
+    document.querySelector('.equipment-tuning-detach').click();await wait();
+    ok('installed mod click enters replacement selection without premature detach',view.debugState().replaceCandidateKey==='mod|基础导轨'&&document.querySelector('.equipment-tuning-installed-card.selected')&&!view.debugState().hasPreview&&__sent.filter(function(x){return x.cmd==='preview'}).length===previewsBeforeReplace);
+    document.querySelector('.equipment-tuning-candidate.available').click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='replace_mod'});
+    ok('replacement preview carries old and new opaque keys in one intent',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='replace_mod'&&x.payload.replaceCandidateKey==='mod|基础导轨'&&x.payload.candidateKey!=='mod|基础导轨'})&&document.querySelector('.equipment-tuning-removed').textContent.indexOf('基础导轨')>=0);
+    document.querySelector('.equipment-tuning-detach-selected').click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='detach_mod'});
+    ok('replacement mode retains explicit one-click unload fallback',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='detach_mod'&&x.payload.candidateKey==='mod|基础导轨'}));
+    tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[0].click();await until(function(){return view.debugState().hasPreview});
+    __staleCommit=true;__rotateLeaseOnRefresh=true;var staleSnapshotStart=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.equipment-tuning-commit').click();
+    await until(function(){return __sent.filter(function(x){return x.cmd==='snapshot'}).slice(staleSnapshotStart).some(function(x){return x.payload.source.expectedLease==='lease.2.external'})});await until(function(){return view.debugState().hasSnapshot&&!view.debugState().readPending});
+    ok('definitive stale lease refreshes inventory before rebinding snapshot',__writes[__writes.length-1].refresh===true&&view.debugState().source.expectedLease==='lease.2.external');
+    await until(function(){return view.debugState().hasPreview});
+    __disconnectedCommit=true;var disconnectedBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;document.querySelector('.equipment-tuning-commit').click();
+    await until(function(){return !view.debugState().busy&&view.debugState().hasSnapshot&&!view.debugState().readPending});
+    var disconnectedCommit=__sent.filter(function(x){return x.cmd==='commit'})[disconnectedBefore];
+    ok('definitive disconnected preflight never creates an undispatched barrier',!!disconnectedCommit&&!view.debugState().needsReconcile&&view.debugState().lastCommitCallId===''&&!__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId===disconnectedCommit.callId}));
+    await until(function(){return view.debugState().hasPreview});
+    __commitReconcileRequired=true;var rejectedBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;document.querySelector('.equipment-tuning-commit').click();
+    await until(function(){return __sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId==='tune.host.previous.unknown.1'})});await until(function(){return !view.debugState().needsReconcile&&!view.debugState().readPending});
+    var rejectedCommit=__sent.filter(function(x){return x.cmd==='commit'})[rejectedBefore];
+    ok('Host reconcile hint overrides rejected commit callId',!!rejectedCommit&&rejectedCommit.callId!=='tune.host.previous.unknown.1'&&__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId==='tune.host.previous.unknown.1'})&&!__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId===rejectedCommit.callId}));
+    await until(function(){return view.debugState().hasPreview});
+    __ambiguous=true;__failRefreshOnce=true;var before=__sent.filter(function(x){return x.cmd==='commit'}).length;document.querySelector('.equipment-tuning-commit').click();ok('pending tuning write blocks close/rebind',!view.canClose());
+    await until(function(){return view.debugState().refreshRetryRequired});await wait();
+    var unknownCommit=__sent.filter(function(x){return x.cmd==='commit'})[before],leaseBeforeRetry=view.debugState().source.expectedLease;
+    ok('ambiguous commit is not replayed',__sent.filter(function(x){return x.cmd==='commit'}).length===before+1);
+    ok('failed inventory refresh blocks stale-lease reconcile and close',!!unknownCommit&&!__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId===unknownCommit.callId})&&!view.canClose());
+    ok('refresh retry is available after ambiguous commit',view.retryInventoryRefresh());
+    await until(function(){return __sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId===unknownCommit.callId})});await until(function(){return !view.debugState().needsReconcile&&!view.debugState().readPending});
+    var reconcileSnapshot=__sent.filter(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId===unknownCommit.callId})[0];
+    ok('ambiguous commit reconciles by exact callId only after fresh lease',!!reconcileSnapshot&&reconcileSnapshot.payload.source.expectedLease!==leaseBeforeRetry&&reconcileSnapshot.payload.source.expectedLease.indexOf('lease.2.recovered.')===0);
+    ok('reconcile clears Web write gate',!view.debugState().needsReconcile&&view.debugState().hasSnapshot&&view.canClose());
+    await until(function(){return view.debugState().hasPreview});
+    slots[2].item.enhancementLevel=13;view.requestSnapshot();await until(function(){return view.debugState().hasSnapshot&&!view.debugState().readPending&&!view.debugState().hasPreview});
+    ok('hard cap renders a terminal +13 state without phantom +14 controls',document.querySelector('.equipment-tuning-level-panel.capped')&&document.querySelector('.equipment-tuning-level-panel.capped').textContent.indexOf('已封顶')>=0&&document.querySelector('.equipment-tuning-view').textContent.indexOf('+14')<0&&!document.querySelector('.equipment-tuning-level-slider'));
+    slots[2].item.enhancementLevel=6;view.requestSnapshot();await until(function(){return view.debugState().hasPreview});
+    var oldSession=view.debugState().mux.viewSessionId,detachResult=null;ok('trusted detach starts from a closeable view',view.detachSession(function(success){detachResult=success}));
+    ok('pending detach blocks local close/rebind',!view.canClose());await until(function(){return detachResult!==null});
+    var detachEnvelope=__sent.filter(function(x){return x.cmd==='detach'})[0];
+    ok('detach uses strict bound view envelope',!!detachEnvelope&&detachEnvelope.payload.viewSessionId===oldSession&&Object.keys(detachEnvelope.payload).sort().join(',')==='v,viewSessionId');
+    ok('detach acknowledgement clears pending token/session',detachResult===true&&!view.debugState().mux.active&&!view.debugState().source&&!view.debugState().hasPreview&&!view.commit());
+    ok('layout stays inside host',document.querySelector('#host').scrollWidth<=document.querySelector('#host').clientWidth+1&&document.querySelector('#host').scrollHeight<=document.querySelector('#host').clientHeight+1,JSON.stringify({w:document.querySelector('#host').scrollWidth,h:document.querySelector('#host').scrollHeight}));
+    var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
+  }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
+})();
+</script>
+</body>
+</html>

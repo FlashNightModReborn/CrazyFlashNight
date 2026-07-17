@@ -7,7 +7,7 @@
 var InventoryWorkbench = (function() {
     'use strict';
 
-    var _el, _shellEl, _shell, _backpackView, _rightView, _pager, _retryButton;
+    var _el, _shellEl, _shell, _backpackView, _rightView, _tuningView, _pager, _retryButton;
     var _backpackSortControls, _rightSortControls;
     var _quickDepositButton, _quickWithdrawButton, _quickStatusNode;
     var _broker, _dragControllers = [], _scaleHandle = null;
@@ -16,6 +16,8 @@ var InventoryWorkbench = (function() {
     var _layoutMode = 'full', _densityController = null;
     var _openGeneration = 0;
     var _profile = 'battlebox';
+    var _viewMode = 'storage', _panelInstanceId = '', _tuningOrigin = false;
+    var _viewSwitchButton = null, _tuningHelpButton = null;
     var _returnTarget = null;
     var _rightContainerId = '战备箱';
     var _rightLimit = 40;
@@ -47,6 +49,7 @@ var InventoryWorkbench = (function() {
     Panels.register('workbench', {
         create: createDOM,
         onOpen: onOpen,
+        onRebind: onRebind,
         onClose: cleanup,
         onRequestClose: closePanel,
         onForceClose: function() { cleanup(); toast('连接断开，物品工作台已关闭'); }
@@ -59,10 +62,16 @@ var InventoryWorkbench = (function() {
     }
 
     function resolveProfile(initData) {
-        var profile = initData && initData.profile === 'warehouse' ? 'warehouse' : 'battlebox';
+        var profile = initData && initData.profile != null ? String(initData.profile) : 'battlebox';
+        if (profile !== 'warehouse' && profile !== 'battlebox') return null;
         return profile === 'warehouse'
             ? {profile:'warehouse', title:'仓库', rightContainerId:'仓库', rightLimit:50, rightCapacity:1200, pageColumns:6}
             : {profile:'battlebox', title:'战备箱', rightContainerId:'战备箱', rightLimit:40, rightCapacity:0, pageColumns:3};
+    }
+
+    function resolveView(initData) {
+        var view = initData && initData.view != null ? String(initData.view) : 'storage';
+        return view === 'storage' || view === 'tuning' ? view : null;
     }
 
     function resolveReturnTarget(initData) {
@@ -76,18 +85,22 @@ var InventoryWorkbench = (function() {
             preferredCraftCount:isNaN(craftCount) ? 1 : Math.max(1, Math.min(99, craftCount))}};
     }
 
-    function buildProfileDOM(config) {
+    function buildProfileDOM(config, initialView) {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required');
+        if (!config || (initialView !== 'storage' && initialView !== 'tuning')) throw new Error('Inventory workbench initData rejected');
         if (_pager) _pager.detach();
         for (var oldDrag = 0; oldDrag < _dragControllers.length; oldDrag++) _dragControllers[oldDrag].cancel();
         if (_broker) _broker.clearSelection();
         disposeInventoryControls();
+        if (_tuningView) { _tuningView.destroy(); _tuningView = null; }
         if (_shell) _shell.destroy();
         while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         _shell = null;
         _el = null;
         _backpackView = null;
         _rightView = null;
+        _viewSwitchButton = null;
+        _tuningHelpButton = null;
         _pager = null;
         _backpackSortControls = null;
         _rightSortControls = null;
@@ -97,8 +110,8 @@ var InventoryWorkbench = (function() {
         _broker = null;
         _dragControllers = [];
         resetQuickTransfer();
-
         _profile = config.profile;
+        _viewMode = initialView;
         _rightContainerId = config.rightContainerId;
         _rightLimit = config.rightLimit;
         if (!_coordinator.configureRequests([
@@ -113,13 +126,18 @@ var InventoryWorkbench = (function() {
         _el.classList.add('kshop-workbench', 'inventory-workbench-panel');
         _el.setAttribute('data-workbench-skin', 'inventory');
         _el.setAttribute('data-inventory-profile', _profile);
+        _el.setAttribute('data-workbench-view', _viewMode);
 
         if (_profile === 'warehouse') installQuickTransferActions();
 
         if (_densityController) _densityController.destroy();
         _densityController = new Workbench.GridDensityController({panelId:'workbench'});
         _layoutMode = _densityController.mode;
-        var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
+        _el.setAttribute('data-layout-mode', _layoutMode);
+        var layoutToggle = _densityController.createToggle(function(mode) {
+            _layoutMode = mode;
+            if (_el) _el.setAttribute('data-layout-mode', mode);
+        });
         _shell.addHeaderAction(layoutToggle);
 
         _retryButton = document.createElement('button');
@@ -130,12 +148,30 @@ var InventoryWorkbench = (function() {
         _retryButton.addEventListener('click', retryRefresh);
         _shell.addHeaderAction(_retryButton);
 
+        if (_tuningOrigin) {
+            _viewSwitchButton = document.createElement('button');
+            _viewSwitchButton.type = 'button';
+            _viewSwitchButton.className = 'workbench-mode-btn equipment-tuning-view-switch';
+            _viewSwitchButton.addEventListener('click', function() {
+                switchWorkbenchView(_viewMode === 'tuning' ? 'storage' : 'tuning');
+            });
+            _shell.addHeaderAction(_viewSwitchButton);
+
+            _tuningHelpButton = document.createElement('button');
+            _tuningHelpButton.type = 'button';
+            _tuningHelpButton.className = 'workbench-mode-btn equipment-tuning-help-btn';
+            _tuningHelpButton.textContent = '?';
+            _tuningHelpButton.setAttribute('aria-label', '查看装备调制帮助');
+            _tuningHelpButton.addEventListener('click', openTuningHelp);
+            _shell.addHeaderAction(_tuningHelpButton);
+        }
+
         if (_returnTarget) {
             var returnButton = document.createElement('button');
             returnButton.type = 'button';
             returnButton.className = 'workbench-mode-btn inventory-return-crafting-btn';
             returnButton.textContent = '返回合成';
-            returnButton.title = '返回后重新核算原配方与份数';
+            returnButton.setAttribute('aria-label', '返回合成并重新核算原配方与份数');
             returnButton.addEventListener('click', returnToPanel);
             _shell.addHeaderAction(returnButton);
         }
@@ -151,6 +187,23 @@ var InventoryWorkbench = (function() {
 
         _backpackView = createInventoryView('背包', '背包', _layoutMode);
         _rightView = createInventoryView(_rightContainerId, config.title, _layoutMode);
+        _tuningView = EquipmentTuningView.create({
+            instanceKey:'equipment-tuning:' + _profile,
+            send:function(message) { return Bridge.send(message); },
+            timeoutMs:_runtimeConfig.requestTimeoutMs,
+            sessionNonce:_runtimeConfig.sessionNonce,
+            beginWrite:function(owner) { return _coordinator.beginExternalWrite(owner); },
+            completeWrite:function(needsRefresh, callback) { return _coordinator.completeExternalWrite(needsRefresh, callback); },
+            refreshInventory:function(callback) {
+                return _coordinator.debugState().refreshRequired
+                    ? _coordinator.retryRefresh(callback) : _coordinator.refresh(callback);
+            },
+            resolveSlot:function(containerId, physicalSlot) { return findCurrentSlot(containerId, physicalSlot); },
+            onStateChange:function() { refreshControls(); },
+            densityController:_densityController,
+            loadConversionCandidates:loadTuningConversionCandidates,
+            toast:toast
+        });
 
         _pager = new InventoryUI.InventoryWindowPager({
             containerId:_rightContainerId, containerLabel:config.title, columns:config.pageColumns,
@@ -170,11 +223,124 @@ var InventoryWorkbench = (function() {
         _backpackView.chrome.setToolbar(createInventoryToolbar('背包', null));
         _rightView.chrome.setToolbar(createInventoryToolbar(_rightContainerId, _pager));
 
-        if (!_shell.mountInitial(_backpackView, _rightView)) {
+        if (_viewMode === 'tuning') _tuningView.openSession(_panelInstanceId);
+        if (!_shell.mountInitial(_backpackView, _viewMode === 'tuning' ? _tuningView : _rightView)) {
             throw new Error('Inventory workbench initial view configuration rejected');
         }
+        updateWorkbenchViewChrome(config);
         installInteractions();
         _shellEl.appendChild(_el);
+    }
+
+    function switchWorkbenchView(nextView, preferredSlot) {
+        if (!_tuningOrigin || !_shell || !_tuningView || !_rightView
+                || (nextView !== 'storage' && nextView !== 'tuning') || nextView === _viewMode) return false;
+        if (_state.busyOwner || _quickInFlight || _quickPending.length) {
+            toast('库存或调制写入尚未完成，请稍候切换。');
+            return false;
+        }
+        if (_viewMode === 'tuning' && !_tuningView.canClose()) {
+            toast('调制请求或对账尚未完成，请稍候切换。');
+            return false;
+        }
+        if (_viewMode === 'tuning' && nextView === 'storage') {
+            var started = _tuningView.detachSession(function(detached) {
+                if (!detached) {
+                    toast('未能撤销调制令牌，仍停留在调制视图。');
+                    return;
+                }
+                finishWorkbenchViewSwitch('storage');
+            });
+            if (!started) toast('当前无法撤销调制令牌，请稍候重试。');
+            return started;
+        }
+        return finishWorkbenchViewSwitch(nextView, preferredSlot);
+    }
+
+    function finishWorkbenchViewSwitch(nextView, preferredSlot) {
+        exitQuickMode();
+        for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].cancel();
+        clearSelection();
+        hideTooltip();
+        if (nextView === 'tuning') {
+            if (!_tuningView.openSession(_panelInstanceId) || !_shell.moveView('R', _tuningView)) {
+                _tuningView.closeSession();
+                toast('无法建立装备调制会话。');
+                return false;
+            }
+        } else {
+            if (!_shell.moveView('R', _rightView)) return false;
+        }
+        _viewMode = nextView;
+        _el.setAttribute('data-workbench-view', _viewMode);
+        updateWorkbenchViewChrome(resolveProfile({profile:_profile}));
+        renderInventories();
+        refreshControls();
+        if (_viewMode === 'tuning') {
+            if (preferredSlot && preferredSlot.occupied && preferredSlot.item
+                    && preferredSlot.item.itemKind === 'equipment') {
+                _tuningView.handleInventorySelection(preferredSlot);
+            } else maybeSelectFirstTunable();
+        }
+        return true;
+    }
+
+    function updateWorkbenchViewChrome(config) {
+        if (!_shell || !config) return;
+        if (_viewMode === 'tuning') {
+            _shell.setTitle('装备调制', '背包装备 · D.L.S. 调制终端');
+            _shell.setSlotLabel('R', '调制操作');
+        } else {
+            _shell.setTitle(config.title, '');
+            _shell.setSlotLabel('R', config.title);
+        }
+        if (_viewSwitchButton) {
+            _viewSwitchButton.textContent = _viewMode === 'tuning' ? '返回收纳' : '装备调制';
+            _viewSwitchButton.setAttribute('aria-pressed', _viewMode === 'tuning' ? 'true' : 'false');
+        }
+        if (_tuningHelpButton) _tuningHelpButton.hidden = _viewMode !== 'tuning';
+    }
+
+    function maybeSelectFirstTunable() {
+        if (_viewMode !== 'tuning' || !_tuningView || !_state.ready) return false;
+        var debug = _tuningView.debugState();
+        if (debug.source) return false;
+        var snapshot = _coordinator.getWindow('背包');
+        var slots = snapshot && snapshot.slots || [];
+        for (var i = 0; i < slots.length; i++) {
+            if (slots[i].occupied && slots[i].item && slots[i].item.itemKind === 'equipment') {
+                return _tuningView.handleInventorySelection(slots[i]);
+            }
+        }
+        return false;
+    }
+
+    function loadTuningConversionCandidates(sourceItem, sourceRef, callback) {
+        callback = typeof callback === 'function' ? callback : function() {};
+        var useName = String(sourceItem && sourceItem.use || '');
+        var major = ItemFilter.majorDefinition(sourceItem && sourceItem.majorType).id;
+        if (!useName || (major !== 'weapon' && major !== 'armor')) {
+            callback({success:false, error:'invalid_equipment'});
+            return false;
+        }
+        return _coordinator.readProjection({
+            containerId:'背包', offset:0, limit:50,
+            filterKey:major, filterSpec:{branch:'category', major:major, use:useName}
+        }, function(result) {
+            if (!result || result.success !== true || !result.snapshot) {
+                callback({success:false, error:result && result.error || 'inventory_projection_failed'});
+                return;
+            }
+            var slots = result.snapshot.slots || [], candidates = [];
+            for (var i = 0; i < slots.length; i++) {
+                var slot = slots[i], item = slot && slot.item;
+                if (!slot || !slot.occupied || !item || item.itemKind !== 'equipment'
+                        || String(item.use || '') !== useName
+                        || (sourceRef && Number(slot.physicalSlot) === Number(sourceRef.slot))) continue;
+                candidates.push(slot);
+            }
+            callback({success:true, candidates:candidates, count:candidates.length});
+        });
     }
 
     function installQuickTransferActions() {
@@ -198,7 +364,7 @@ var InventoryWorkbench = (function() {
         button.setAttribute('data-quick-mode', mode);
         button.setAttribute('aria-pressed', 'false');
         button.textContent = label;
-        button.title = label + '（' + direction + '）；也可随时 Ctrl+单击单件快速转移';
+        button.setAttribute('aria-label', label + '（' + direction + '）；也可随时 Ctrl+单击单件快速转移');
         button.addEventListener('click', function() { setQuickMode(mode); });
         return button;
     }
@@ -267,10 +433,22 @@ var InventoryWorkbench = (function() {
             },
             keyOf:function(slot) { return slot.physicalSlot; },
             renderItem:function(slot) {
-                return InventoryUI.renderOwnedSlot(containerId, slot, {
+                var node = InventoryUI.renderOwnedSlot(containerId, slot, {
                     iconHtml:iconHtml,
                     allowDiscard:containerId === '背包'
                 });
+                if (_profile === 'battlebox' && _tuningOrigin && _viewMode === 'storage'
+                        && containerId === '背包' && slot.occupied && slot.item
+                        && slot.item.itemKind === 'equipment') {
+                    var tuneButton = document.createElement('button');
+                    tuneButton.type = 'button';
+                    tuneButton.className = 'inventory-tuning-btn';
+                    tuneButton.textContent = '调制';
+                    tuneButton.setAttribute('aria-label', '调制' + String(slot.item.displayName || slot.item.name || '该装备'));
+                    node.classList.add('has-tuning-action');
+                    node.appendChild(tuneButton);
+                }
+                return node;
             },
             bindItem:function(node, slot) { bindSlot(containerId, node, slot); },
             exportOffer:function(slot) {
@@ -310,7 +488,18 @@ var InventoryWorkbench = (function() {
         if (slot.occupied) bindSlotTooltip(node, containerId, slot);
         node.addEventListener('click', function(event) {
             if (consumeDragClick()) return;
-            if (event.target && event.target.closest && event.target.closest('.inventory-discard-btn')) return;
+            if (event.target && event.target.closest
+                    && event.target.closest('.inventory-discard-btn,.inventory-tuning-btn')) return;
+            if (_viewMode === 'tuning' && containerId === '背包') {
+                if (_state.busyOwner || _state.refreshRequired) return;
+                if (!slot.occupied || !slot.item || slot.item.itemKind !== 'equipment') {
+                    toast('装备调制只接受背包内武器与防具。');
+                    return;
+                }
+                clearSelection();
+                _tuningView.handleInventorySelection(slot);
+                return;
+            }
             if (handleQuickTransferClick(event, containerId, slot)) return;
             if (_state.busyOwner || _state.refreshRequired) return;
             var view = containerId === '背包' ? _backpackView : _rightView;
@@ -321,6 +510,11 @@ var InventoryWorkbench = (function() {
         if (discardButton) discardButton.addEventListener('click', function(event) {
             event.stopPropagation();
             confirmDiscard(containerId, slot);
+        });
+        var tuningButton = node.querySelector('.inventory-tuning-btn');
+        if (tuningButton) tuningButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            if (tuningButton.disabled || !switchWorkbenchView('tuning', slot)) return;
         });
     }
 
@@ -353,7 +547,7 @@ var InventoryWorkbench = (function() {
             broker:_broker,
             timeoutMs:_runtimeConfig.dragTimeoutMs || 1400,
             getSource:function(target) {
-                if (_quickMode || !_state.ready || _state.busyOwner || _state.refreshRequired) return null;
+                if (_viewMode === 'tuning' || _quickMode || !_state.ready || _state.busyOwner || _state.refreshRequired) return null;
                 var hit = view.renderer.itemFromTarget(target);
                 if (!hit || !hit.item || !hit.item.occupied) return null;
                 return {view:view, item:hit.item, node:hit.node};
@@ -389,6 +583,7 @@ var InventoryWorkbench = (function() {
     }
 
     function handleQuickTransferClick(event, containerId, slot) {
+        if (_viewMode === 'tuning') return false;
         if (_profile !== 'warehouse') return false;
         var modifierRequested = !!event.ctrlKey;
         if (!_quickMode && !modifierRequested) return false;
@@ -626,6 +821,17 @@ var InventoryWorkbench = (function() {
         renderView(_rightView);
         if (_pager) _pager.refresh();
         applyQuickTransferSlotState();
+        applyTuningConversionSlotState();
+    }
+
+    function applyTuningConversionSlotState() {
+        if (!_backpackView || !_tuningView) return;
+        var nodes = _backpackView.root.querySelectorAll('.inventory-slot-card');
+        for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('equipment-conversion-source');
+        var debug = _tuningView.debugState();
+        if (_viewMode !== 'tuning' || debug.operation !== 'convert' || !debug.source) return;
+        var source = _backpackView.root.querySelector('[data-physical-slot="' + Number(debug.source.slot) + '"]');
+        if (source) source.classList.add('equipment-conversion-source');
     }
 
     function renderView(view) {
@@ -653,6 +859,10 @@ var InventoryWorkbench = (function() {
             || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer');
         var nodes = _el.querySelectorAll('.inventory-slot-card');
         for (var i = 0; i < nodes.length; i++) nodes[i].classList.toggle('write-locked', slotBlocked);
+        var discardButtons = _el.querySelectorAll('.inventory-discard-btn');
+        for (var d = 0; d < discardButtons.length; d++) discardButtons[d].style.display = _viewMode === 'tuning' ? 'none' : '';
+        var tuningButtons = _el.querySelectorAll('.inventory-tuning-btn');
+        for (var t = 0; t < tuningButtons.length; t++) tuningButtons[t].disabled = blocked;
         if (_pager) _pager.setDisabled(blocked);
         if (_backpackSortControls) _backpackSortControls.setDisabled(blocked);
         if (_rightSortControls) {
@@ -662,10 +872,11 @@ var InventoryWorkbench = (function() {
                 || !rightSnapshot || Number(rightSnapshot.accessibleCapacity) <= 0);
         }
         if (_retryButton) _retryButton.style.display = _state.refreshRequired ? '' : 'none';
-        var quickBlocked = !_state.ready || !!_state.refreshRequired
+        var quickBlocked = _viewMode === 'tuning' || !_state.ready || !!_state.refreshRequired
             || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer');
         if (_quickDepositButton) _quickDepositButton.disabled = quickBlocked;
         if (_quickWithdrawButton) _quickWithdrawButton.disabled = quickBlocked;
+        if (_viewSwitchButton) _viewSwitchButton.disabled = !!_state.busyOwner || !!_state.refreshRequired;
         updateQuickTransferUI();
         if (!_shell) return;
         if (_state.refreshRequired) _shell.setStatus('同步失败', 'warning');
@@ -675,7 +886,7 @@ var InventoryWorkbench = (function() {
     }
 
     function confirmDiscard(containerId, slot) {
-        if (containerId !== '背包' || !slot.occupied || !_state.ready) return;
+        if (_viewMode === 'tuning' || containerId !== '背包' || !slot.occupied || !_state.ready) return;
         var projection = slot.confirmProjection || slot.item || {};
         _shell.openModal({
             kind:'discard',
@@ -761,8 +972,24 @@ var InventoryWorkbench = (function() {
 
     function onOpen(el, initData) {
         var generation = ++_openGeneration;
+        initData = initData || {};
+        var profileConfig = resolveProfile(initData);
+        var requestedView = resolveView(initData);
+        if (!profileConfig || !requestedView) {
+            toast('物品工作台启动参数无效。');
+            closePanel(true);
+            return;
+        }
+        _panelInstanceId = String(initData.panelInstanceId || '');
+        if (requestedView === 'tuning' && !EquipmentTuningRuntime.safeToken(_panelInstanceId)) {
+            toast('装备调制缺少 Host 面板实例。');
+            closePanel(true);
+            return;
+        }
+        // battlebox 就是玩家正常装备调制入口，不接受 Host/debug capability 制造无调制分支。
+        _tuningOrigin = profileConfig.profile === 'battlebox';
         _returnTarget = resolveReturnTarget(initData);
-        buildProfileDOM(resolveProfile(initData));
+        buildProfileDOM(profileConfig, requestedView);
         resetQuickTransfer();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
@@ -788,7 +1015,25 @@ var InventoryWorkbench = (function() {
             if (generation !== _openGeneration || !isOpen()) return;
             renderInventories();
             if (!result.success) toast(errorMessage(result.error));
+            else maybeSelectFirstTunable();
         });
+    }
+
+    function openTuningHelp() {
+        if (!_shell || _viewMode !== 'tuning') return false;
+        return !!_shell.openModal({
+            kind:'equipment-tuning-help',
+            title:'装备调制帮助',
+            message:'从左侧装备开始\n• 选择背包内的武器或防具，右侧会显示当前调制状态。\n• “强化度”可直接选择目标等级；顶部强化石核心会显示持有量、消耗与强化后剩余。\n• “交换”只列出同类且强化度不同的装备；选择目标即可预览。',
+            detail:'进阶与配件\n• 进阶和配件候选由当前装备、持有材料及游戏进度共同决定。\n• 配件可按档级、用途、定位和状态逐层筛选。\n• 点击已安装配件可选择新配件直接替换，也可只卸下所选；替换会一次完成新件消耗与旧件返还。\n• 紧凑模式使用物品格同尺寸图标，一屏浏览更多候选；悬停或聚焦可查看完整说明。\n\n确认操作\n• 选择装备、目标等级或候选只会生成预览，不会立刻修改存档。\n• 确认材料和前后结果后，再点击底部主按钮完成操作。\n• 显示为不可用的候选不能选择；交换候选显示在右侧，不改变左侧筛选和面包屑。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        });
+    }
+
+    function onRebind(el, initData) {
+        // Host 已为同名 reopen 盖新 panelInstanceId；旧 tuning 子会话和所有 token 必须先失效。
+        cleanup();
+        onOpen(el, initData || {});
     }
 
     function cleanup() {
@@ -802,6 +1047,7 @@ var InventoryWorkbench = (function() {
         resetQuickTransfer();
         _coordinator.close();
         _mux.closeSession();
+        if (_tuningView) _tuningView.closeSession();
         disposeInventoryControls();
         if (_densityController) { _densityController.destroy(); _densityController = null; }
     }
@@ -815,10 +1061,32 @@ var InventoryWorkbench = (function() {
 
     function closePanel(forceClose) {
         if (_shell && _shell.hasModal()) { _shell.closeModal(); return; }
+        if (_state.busyOwner || _quickInFlight || _quickPending.length) {
+            toast(_viewMode === 'tuning' ? '调制写入与对账尚未完成，请稍候关闭。' : '库存写入尚未完成，请稍候关闭。');
+            return;
+        }
+        if (_viewMode === 'tuning' && _tuningView && !_tuningView.canClose()) {
+            toast('调制请求或对账尚未完成，请稍候关闭。');
+            return;
+        }
         if (!forceClose && exitQuickMode()) return;
+        if (_viewMode === 'tuning' && _tuningView) {
+            var started = _tuningView.detachSession(function(detached) {
+                if (detached) finishClosePanel(forceClose);
+                else toast('未能撤销调制令牌，面板保持打开。');
+            });
+            if (!started) toast('当前无法撤销调制令牌，请稍候重试。');
+            return;
+        }
+        finishClosePanel(forceClose);
+    }
+
+    function finishClosePanel(forceClose) {
         if (!forceClose && _returnTarget) { returnToPanel(); return; }
         Panels.close();
-        Bridge.send({type:'panel', cmd:'close', panel:'workbench'});
+        var closeMessage = {type:'panel', cmd:'close', panel:'workbench'};
+        if (_panelInstanceId) closeMessage.panelInstanceId = _panelInstanceId;
+        Bridge.send(closeMessage);
     }
 
     function returnToPanel() {
@@ -833,6 +1101,7 @@ var InventoryWorkbench = (function() {
     }
 
     function retryRefresh() {
+        if (_tuningView && _tuningView.retryInventoryRefresh()) return;
         if (!_coordinator.retryRefresh(function(result) {
             renderInventories();
             if (!result.success) toast(errorMessage(result.error));
@@ -890,11 +1159,14 @@ var InventoryWorkbench = (function() {
             var right = _coordinator.getWindow(_rightContainerId);
             return {
                 profile:_profile,
+                view:_viewMode,
+                panelInstanceId:_panelInstanceId,
                 rightContainerId:_rightContainerId,
                 coordinator:_coordinator.debugState(),
                 rightAccessibleCapacity:right ? Number(right.accessibleCapacity) : null,
                 battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,
                 returnTarget:_returnTarget ? {panel:_returnTarget.panel, initData:_returnTarget.initData} : null,
+                tuning:_tuningView ? _tuningView.debugState() : null,
                 page:_pager ? _pager.getState() : null,
                 quickTransfer:{
                     mode:_quickMode,
