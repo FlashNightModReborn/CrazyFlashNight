@@ -504,7 +504,9 @@
    固定设计画布（--pss-w × --pss-h，默认 1024×576）+ 整体 transform:scale 等比缩放铺满父容器
    （#panel-content = 全 anchor 16:9）。JS 由 modules/panel-scale.js 的 PanelScale.attach(shellEl,
    designW, designH) 写 --panel-scale + --pss-w/--pss-h。供新接入 B 类面板复用（kshop/jukebox/
-   arena/stage-select），不强迁 tasks/pet/merc/intelligence 各自既有等价实现。*/
+   arena/stage-select），不强迁 tasks/pet/merc 各自既有等价实现。
+   2026-07-17：intelligence 已迁入共享 PanelScale（JS 层），但壳体几何保留本地 1404×790 定义
+   （阅读面板非 1024×576 工作台几何），不挂 .panel-scale-shell 类，见下方 Intelligence 区块注释。*/
 .panel-scale-shell {
     position: absolute;
     top: 0;
@@ -6812,10 +6814,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* Intelligence panel Flash-aligned pass — 沉浸全屏化（2026-06-11）：
    inset:0 铺满全 anchor；去 backdrop 与卡片 chrome（border/radius/外阴影），
    #121212 作不透明底铺满 16:9（内部 header/纸面/rail 各自有底已全覆盖，无需新底图）。*/
+
+/* ── 双栏工作台家族对齐 pass（2026-07-17，T1+T2+T3）──
+   T3：面板缩放迁入共享 PanelScale（JS attach 写 --panel-scale），自有 fitPanelToParent 仅作兜底；
+       壳体几何保留本地 1404×790 设计画布（阅读面板，不套 1024×576 工作台几何）。
+   T2：专有名词从独立左栏并入右侧目录 tab（情报物品 | 专有名词），省下的 240px 还给阅读区；
+       纯文本块行长收敛 40em 居中、行高提升、纸面纹理降对比。
+   T1：chrome 全面 token 化——色板镜像工作台 --wb-* 暗部族，accent 用「档案金」#d8b656
+       （独立身份，不并入工作台琥珀 #f0a43a）；选中态从反白改为 accent 描边/侧条；
+       去除 Flash 时代重 text-shadow 与灰渐变；字号按 ×1404/1024≈1.371 与工作台物理等效换算。
+   data-workbench-skin="archive" 是家族注册钩子：--wb-accent 桥接给任何嵌入的共享组件。 */
 #panel-container[data-panel="intelligence"] #panel-content {
     inset: 0;
-    align-items: center;
-    justify-content: center;
 }
 
 #panel-container[data-panel="intelligence"] #panel-backdrop {
@@ -6823,15 +6833,32 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .intelligence-panel {
-    width: min(100%, 1404px);
-    height: min(100%, 790px);
+    /* 档案金 token 块（T1）：暗部色板镜像工作台 --wb-* 族，accent 独立 */
+    --intel-bg: #0a0b0d;
+    --intel-surface: #101216;
+    --intel-surface-2: #15181d;
+    --intel-line: #34383f;
+    --intel-line-soft: #23272d;
+    --intel-text: #eef0f2;
+    --intel-muted: #8a9099;
+    --intel-accent: #d8b656;
+    --intel-accent-strong: #e9cd7e;
+    --intel-accent-soft: rgba(216,182,86,0.13);
+    --intel-accent-dim: rgba(216,182,86,0.45);
+    /* 家族注册钩子（T3）：让嵌入本面板的共享组件（如 tooltip/未来 ItemFilter）吃到档案金 */
+    --wb-accent: #d8b656;
+    --wb-accent-soft: rgba(216,182,86,0.13);
+    position: absolute;
+    inset: 0;
+    /* 必须显式 auto：上方老块同选择器留有 width:min(1180px,…) 规则，
+       abspos 下内联/外联 width 会压倒 inset right，冻结面板几何 */
+    width: auto;
+    height: auto;
     min-width: 0;
     min-height: 0;
-    position: relative;
     box-sizing: border-box;
-    color: #f5f5f5;
-    /* 全铺底色（留 background-image 插槽后补 16:9 美术）；去卡片 chrome 求沉浸 */
-    background: #121212;
+    color: var(--intel-text);
+    background: var(--intel-bg);
     /* 显式清零 border/box-shadow：上方约 270 行处另有一条 "Intelligence test panel" 的
        同选择器 .intelligence-panel（设 1px 描边 + 外阴影），仅删本块的 chrome 会让那条旧规则
        按层叠回灌到全屏态四角，故在此沉浸块兜底清零，确保全 16:9 无描边/阴影。*/
@@ -6843,93 +6870,118 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .intel-shell {
     position: relative;
     display: grid;
-    grid-template-columns: 240px minmax(0, 1fr) 276px;
-    grid-template-rows: 104px auto minmax(0, 1fr) 58px;
+    /* T2 后两栏：阅读区 1fr + 右侧目录 rail 276px（原 240px 名词栏已并入目录 tab）
+       行：88px 顶栏 / 1fr 内容 / 52px 底栏（顶栏 88px = 工作台 64px × 1404/1024 物理等效）*/
+    grid-template-columns: minmax(0,1fr) 276px;
+    grid-template-rows: 88px minmax(0,1fr) 52px;
     width: 1404px;
     height: 790px;
     min-width: 0;
     min-height: 0;
-    transform: scale(var(--intel-scale, 1));
+    /* 共享 PanelScale 写 --panel-scale；自有兜底实现写 --intel-scale（面板根上，继承至此）*/
+    transform: scale(var(--panel-scale, var(--intel-scale, 1)));
     transform-origin: top left;
 }
 
 .intelligence-panel.is-catalog-collapsed .intel-shell {
-    grid-template-columns: minmax(0, 1fr) 54px;
+    grid-template-columns: minmax(0,1fr) 54px;
 }
 
 .intel-header {
+    position: relative;
     display: grid;
-    grid-column: 1 / 4;
-    grid-template-columns: 84px minmax(0, 1fr) 180px 52px;
+    grid-column: 1 / 3;
+    grid-template-columns: 60px minmax(0, 1fr) auto 48px;
     gap: 14px;
     align-items: center;
-    padding: 16px 14px 14px 28px;
-    background: linear-gradient(180deg, #565656 0%, #363636 100%);
-    border-bottom: 1px solid rgba(0,0,0,0.55);
+    padding: 12px 14px 10px 26px;
+    background: var(--intel-surface);
+    border-bottom: 1px solid var(--intel-line);
+}
+
+/* 工作台 header 语言：左下 accent 发丝线 */
+.intel-header::before {
+    content: "";
+    position: absolute;
+    left: 26px;
+    bottom: -1px;
+    width: 230px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--intel-accent), rgba(216,182,86,0.05));
 }
 
 .intel-icon-wrap {
-    width: 58px;
-    height: 68px;
+    width: 40px;
+    height: 48px;
     border: 0;
     background: transparent;
-    filter: drop-shadow(12px 18px 13px rgba(0,0,0,0.55));
+    filter: drop-shadow(5px 8px 6px rgba(0,0,0,0.42));
     transform: rotate(-28deg);
 }
 
 .intel-icon {
-    width: 54px;
-    height: 54px;
+    width: 38px;
+    height: 38px;
     image-rendering: auto;
 }
 
 .intel-icon-placeholder {
-    color: #f2f2f2;
-    font-size: 28px;
-    text-shadow: 1px 1px 0 #000;
+    color: var(--intel-text);
+    font-size: 20px;
+    text-shadow: none;
 }
 
 .intel-name {
-    color: #fff;
+    color: var(--intel-text);
     font-size: 26px;
     font-weight: 700;
-    line-height: 1.1;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+    line-height: 1.15;
+    text-shadow: none;
 }
 
 .intel-meta {
-    margin-top: 12px;
-    color: #f5f5f5;
-    font-size: 22px;
-    font-weight: 700;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.78);
+    margin-top: 5px;
+    color: var(--intel-muted);
+    font-size: 13px;
+    font-weight: 400;
+    text-shadow: none;
 }
 
+/* 收集进度：工作台 metric 卡语言（左侧 accent 边 + eyebrow 标签 + Consolas 数字）*/
 .intel-progress-box {
     justify-self: end;
-    text-align: center;
-    color: #fff;
-    font-weight: 700;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.86);
+    padding: 3px 2px 3px 14px;
+    text-align: left;
+    border-left: 2px solid var(--intel-accent);
 }
 
 .intel-progress-label {
-    font-size: 22px;
+    color: var(--intel-muted);
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.6px;
     line-height: 1.15;
 }
 
 .intel-progress-value {
-    margin-top: 4px;
-    font-size: 22px;
-    letter-spacing: 1px;
+    margin-top: 3px;
+    color: var(--intel-accent-strong);
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .intel-close-btn {
     position: relative;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border: 0;
+    border-radius: 2px;
     background: transparent;
+    cursor: pointer;
+    transition: background 0.12s ease;
 }
 
 .intel-close-btn::before,
@@ -6937,11 +6989,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
     content: "";
     position: absolute;
     top: 21px;
-    left: 1px;
-    width: 48px;
-    height: 7px;
-    background: #e6e6e6;
-    box-shadow: 1px 1px 0 rgba(0,0,0,0.55);
+    left: 9px;
+    width: 26px;
+    height: 2px;
+    background: var(--intel-muted);
+    transition: background 0.12s ease;
 }
 
 .intel-close-btn::before {
@@ -6950,6 +7002,16 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .intel-close-btn::after {
     transform: rotate(-45deg);
+}
+
+/* 工作台关闭钮语言：hover 变红（覆盖老块 .intel-close-btn:hover 的 #3a3328 残留）*/
+.intel-close-btn:hover {
+    background: rgba(214,101,92,0.14);
+}
+
+.intel-close-btn:hover::before,
+.intel-close-btn:hover::after {
+    background: #ff9d94;
 }
 
 /* DEV-ONLY 浮窗：position:absolute，作为 .intel-shell 的子节点，跟随 shell 的
@@ -6971,9 +7033,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
     gap: 6px;
     width: 240px;
     padding: 8px 10px 10px;
-    background: rgba(20,20,22,0.94);
-    border: 1px solid rgba(216,182,86,0.45);
-    border-radius: 6px;
+    background: rgba(10,11,13,0.95);
+    border: 1px solid var(--intel-accent-dim);
+    border-radius: 2px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.55);
     pointer-events: auto;
 }
@@ -6983,7 +7045,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .intel-dev-label {
-    color: #d8b656;
+    color: var(--intel-accent);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -7008,17 +7070,19 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .intel-field input {
     height: 28px;
     min-width: 0;
-    color: #f4f4f4;
-    background: #0f0f0f;
-    border: 1px solid #3a3a3a;
+    color: var(--intel-text);
+    background: var(--intel-bg);
+    border: 1px solid var(--intel-line);
     border-radius: 0;
 }
 
 .intel-refresh-btn {
     height: 28px;
-    color: #f4f4f4;
-    background: #2e2e2e;
-    border: 1px solid #555;
+    color: var(--intel-text);
+    background: var(--intel-surface-2);
+    border: 1px solid var(--intel-line);
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .intel-page-list {
@@ -7037,38 +7101,47 @@ html.perf-low-effects .map-panel-close-btn:hover {
     width: 28px;
     min-height: 28px;
     padding: 0;
-    color: #dcdcdc;
-    background: #2c2c2c;
-    border: 1px solid #555;
+    color: var(--intel-text);
+    background: var(--intel-surface-2);
+    border: 1px solid var(--intel-line);
     text-align: center;
     font-size: 12px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.intel-page-btn:hover {
+    color: var(--intel-accent-strong);
+    border-color: var(--intel-accent-dim);
 }
 
 .intel-page-btn.active {
-    color: #101010;
-    background: #f1f1f1;
-    border-color: #fff;
+    color: #17191c;
+    background: var(--intel-accent);
+    border-color: var(--intel-accent-strong);
 }
 
 .intel-page-btn.locked {
-    color: #8a8a8a;
-    background: #1f1f1f;
+    color: var(--intel-muted);
+    background: var(--intel-surface);
+    opacity: 0.7;
 }
 
 .intel-reader {
     position: relative;
     display: grid;
-    grid-column: 2;
-    grid-row: 3;
+    grid-column: 1;
+    grid-row: 2;
     grid-template-rows: auto minmax(0, 1fr);
     min-width: 0;
     min-height: 0;
-    margin: 16px 10px 14px 18px;
+    margin: 14px 10px 12px 18px;
     background:
-        radial-gradient(circle, rgba(0,0,0,0.11) 0 2px, transparent 2.5px) 0 0 / 25px 25px,
-        radial-gradient(rgba(80,55,20,0.05) 1px, transparent 1.2px) 0 0 / 3px 3px,
+        radial-gradient(circle, rgba(0,0,0,0.07) 0 2px, transparent 2.5px) 0 0 / 25px 25px,
+        radial-gradient(rgba(80,55,20,0.04) 1px, transparent 1.2px) 0 0 / 3px 3px,
         radial-gradient(ellipse at 50% 50%, #f1ece0 0%, #e6dcc6 100%);
-    border-radius: 9px;
+    border: 1px solid rgba(70,52,26,0.4);
+    border-radius: 2px;
     box-shadow:
         0 1px 0 rgba(255,255,255,0.88) inset,
         inset 0 0 48px rgba(80,55,20,0.20);
@@ -7081,54 +7154,62 @@ html.perf-low-effects .map-panel-close-btn:hover {
     inset: 0;
     pointer-events: none;
     background:
-        linear-gradient(180deg, rgba(80,55,20,0.10), transparent 18%, transparent 82%, rgba(80,55,20,0.10));
+        linear-gradient(180deg, rgba(80,55,20,0.10), transparent 16%, transparent 84%, rgba(80,55,20,0.15));
     border-radius: inherit;
 }
 
 .intel-catalog-panel {
-    grid-column: 3;
-    grid-row: 3 / 5;
+    grid-column: 2;
+    grid-row: 2 / 4;
     display: grid;
-    grid-template-rows: 42px minmax(0, 1fr);
+    grid-template-rows: 40px minmax(0, 1fr);
     min-width: 0;
     min-height: 0;
-    margin: 16px 18px 16px 0;
-    background: linear-gradient(180deg, #202020 0%, #151515 100%);
-    border: 1px solid #303030;
-    border-radius: 8px;
-    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.08);
+    margin: 14px 18px 12px 0;
+    background: var(--intel-surface);
+    border: 1px solid var(--intel-line);
+    border-radius: 2px;
     overflow: hidden;
 }
 
 .intel-catalog-toggle {
     position: relative;
     width: 100%;
-    height: 42px;
+    height: 40px;
     padding: 0;
-    color: #f4f4f4;
-    background: linear-gradient(180deg, #353535 0%, #252525 100%);
+    color: var(--intel-text);
+    background: var(--intel-surface-2);
     border: 0;
-    border-bottom: 1px solid #0d0d0d;
+    border-bottom: 1px solid var(--intel-line);
     cursor: pointer;
+    transition: background 0.12s ease;
 }
 
 .intel-catalog-toggle:hover {
-    background: linear-gradient(180deg, #444 0%, #2f2f2f 100%);
+    background: #1b1f24;
 }
 
 .intel-catalog-toggle-mark {
     display: inline-block;
     width: 0;
     height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 10px solid #e0e0e0;
-    filter: drop-shadow(1px 1px 0 #000);
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-right: 9px solid var(--intel-muted);
+    transition: border-right-color 0.12s ease, border-left-color 0.12s ease;
+}
+
+.intel-catalog-toggle:hover .intel-catalog-toggle-mark {
+    border-right-color: var(--intel-accent-strong);
 }
 
 .intelligence-panel.is-catalog-collapsed .intel-catalog-toggle-mark {
     border-right: 0;
-    border-left: 10px solid #e0e0e0;
+    border-left: 9px solid var(--intel-muted);
+}
+
+.intelligence-panel.is-catalog-collapsed .intel-catalog-toggle:hover .intel-catalog-toggle-mark {
+    border-left-color: var(--intel-accent-strong);
 }
 
 .intel-catalog-body {
@@ -7142,97 +7223,143 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: none;
 }
 
-.intel-catalog-head {
+/* T2：tab 栏取代旧「情报物品」单标题——情报物品 | 专有名词 */
+.intel-catalog-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--intel-line);
+}
+
+.intel-catalog-tab {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 10px 12px 8px;
-    color: #f0f0f0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 6px;
+    color: var(--intel-muted);
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.12s ease, border-color 0.12s ease;
 }
 
-.intel-catalog-title {
-    font-size: 18px;
-    font-weight: 700;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.85);
+.intel-catalog-tab:hover {
+    color: var(--intel-text);
 }
 
-.intel-catalog-count {
-    color: #aaa;
-    font-size: 12px;
+.intel-catalog-tab.active {
+    color: var(--intel-accent-strong);
+    border-bottom-color: var(--intel-accent);
+}
+
+.intel-catalog-count,
+.intel-glossary-count {
+    color: var(--intel-muted);
+    font-family: Consolas, monospace;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.intel-catalog-tab.active .intel-catalog-count,
+.intel-catalog-tab.active .intel-glossary-count {
+    color: var(--intel-accent);
 }
 
 .intel-catalog-list {
     display: grid;
+    grid-column: 1;
+    grid-row: 2;
     grid-template-columns: 1fr;
     align-content: start;
-    gap: 6px;
+    gap: 4px;
     min-width: 0;
     min-height: 0;
-    padding: 10px;
+    padding: 8px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(216,182,86,0.35) transparent;
+}
+
+.intel-catalog-list[hidden],
+.intel-glossary-list[hidden] {
+    display: none;
 }
 
 .intel-catalog-list::-webkit-scrollbar,
+.intel-glossary-list::-webkit-scrollbar,
 .intel-content::-webkit-scrollbar,
 .intel-page-list::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 .intel-catalog-list::-webkit-scrollbar-track,
+.intel-glossary-list::-webkit-scrollbar-track,
 .intel-content::-webkit-scrollbar-track,
 .intel-page-list::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.12);
+    background: transparent;
 }
 
 .intel-catalog-list::-webkit-scrollbar-thumb,
+.intel-glossary-list::-webkit-scrollbar-thumb {
+    background: rgba(216,182,86,0.32);
+}
+
 .intel-content::-webkit-scrollbar-thumb,
 .intel-page-list::-webkit-scrollbar-thumb {
-    background: rgba(120,120,120,0.6);
+    background: rgba(120,96,52,0.5);
 }
 
 .intel-catalog-item {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-columns: 38px minmax(0, 1fr);
     gap: 8px;
     align-items: center;
     min-width: 0;
-    height: 52px;
-    padding: 5px 7px;
-    color: #e8e8e8;
-    background: #222;
-    border: 1px solid #343434;
+    height: 50px;
+    padding: 4px 8px;
+    color: var(--intel-text);
+    background: var(--intel-surface-2);
+    border: 1px solid var(--intel-line);
+    border-radius: 0;
     cursor: pointer;
     text-align: left;
+    transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
 }
 
 .intel-catalog-item:hover {
-    background: #2f2f2f;
+    background: #1b1f24;
+    border-color: var(--intel-accent-dim);
+    transform: translateY(-1px);
 }
 
+/* T1：选中态从反白改为工作台源项语言——accent 描边 + 左侧 accent 条 + accent-soft 底 */
 .intel-catalog-item.active {
-    color: #111;
-    background: #ececec;
-    border-color: #f8f8f8;
+    color: var(--intel-text);
+    background: var(--intel-accent-soft);
+    border-color: var(--intel-accent);
+    box-shadow: inset 3px 0 0 var(--intel-accent);
 }
 
 .intel-catalog-item.has-error {
-    border-color: rgba(210, 48, 48, 0.62);
+    border-color: rgba(214,101,92,0.55);
 }
 
 .intel-catalog-icon-wrap {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    filter: drop-shadow(4px 5px 4px rgba(0,0,0,0.48));
+    width: 38px;
+    height: 38px;
+    filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.35));
 }
 
 .intel-catalog-icon {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     object-fit: contain;
     image-rendering: auto;
 }
@@ -7240,10 +7367,10 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .intel-catalog-icon-placeholder {
     display: grid;
     place-items: center;
-    width: 30px;
-    height: 30px;
-    color: #d8d8d8;
-    background: #555;
+    width: 28px;
+    height: 28px;
+    color: var(--intel-text);
+    background: var(--intel-line);
     font-weight: 800;
 }
 
@@ -7258,7 +7385,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
 }
 
@@ -7267,75 +7394,84 @@ html.perf-low-effects .map-panel-close-btn:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #a9a9a9;
+    color: var(--intel-muted);
     font-size: 11px;
 }
 
 .intel-catalog-item.active .intel-catalog-meta {
-    color: #4f4f4f;
+    color: var(--intel-accent-strong);
 }
 
-.intel-glossary-panel {
-    grid-column: 1;
-    grid-row: 3 / 5;
-    display: flex;
-    flex-direction: column;
-    margin: 16px 0 16px 18px;
-    background: linear-gradient(180deg, #202020 0%, #151515 100%);
-    border: 1px solid #303030;
-    border-radius: 8px;
-    overflow: hidden;
-}
-.intel-glossary-head {
-    padding: 10px 12px 8px;
-    color: #f0f0f0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    font-weight: 700;
-}
+/* T2：名词列表已并入右侧目录 tab（原独立左栏 .intel-glossary-panel 退役）*/
 .intel-glossary-list {
-    flex: 1;
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 0;
     overflow-y: auto;
     padding: 8px;
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(216,182,86,0.35) transparent;
 }
+
 .intel-glossary-item {
     display: block;
     width: 100%;
-    padding: 10px 8px;
-    margin-bottom: 4px;
-    background: #222;
-    border: 1px solid #343434;
-    color: #e8e8e8;
-    font-size: 14px;
+    padding: 9px 10px;
+    background: var(--intel-surface-2);
+    border: 1px solid var(--intel-line);
+    border-radius: 0;
+    color: var(--intel-text);
+    font-size: 13px;
     text-align: left;
     cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
 }
-.intel-glossary-item:hover { background: #2f2f2f; }
-.intel-glossary-item.active { background: #ececec; color: #111; border-color: #f8f8f8; }
+
+.intel-glossary-item:hover {
+    background: #1b1f24;
+    border-color: var(--intel-accent-dim);
+}
+
+.intel-glossary-item.active {
+    background: var(--intel-accent-soft);
+    border-color: var(--intel-accent);
+    box-shadow: inset 3px 0 0 var(--intel-accent);
+}
+
+.intel-glossary-empty {
+    padding: 18px 10px;
+    color: var(--intel-muted);
+    font-size: 12px;
+    text-align: center;
+}
 
 .intel-status {
     min-height: 0;
-    padding: 10px 14px 0;
-    color: #666;
+    padding: 8px 18px 0;
+    color: #8a7648;
     background: transparent;
     border: 0;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .intel-status:empty {
     padding: 0;
 }
 
-/* 字体包安装条幅：插在 .intel-status 之前，沿用 cyberpunk 配色 */
+/* 字体包安装条幅：插在 .intel-status 之前；T1 从 cyberpunk 青改档案金（纸上语境）*/
 .intel-fontpack-banner {
     display: flex;
     align-items: center;
     gap: 14px;
     margin: 8px 14px 0;
     padding: 8px 14px;
-    background: rgba(0, 240, 255, 0.06);
-    border: 1px solid rgba(0, 240, 255, 0.25);
-    border-left: 3px solid var(--cp-cyan, #00f0ff);
-    color: var(--cp-text, #d0d8e8);
+    background: rgba(216,182,86,0.08);
+    border: 1px solid rgba(216,182,86,0.35);
+    border-left: 3px solid var(--intel-accent);
+    color: #5c4a22;
     font-size: 13px;
     line-height: 1.5;
     border-radius: 2px;
@@ -7351,9 +7487,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .intel-fontpack-install,
 .intel-fontpack-later {
     appearance: none;
-    border: 1px solid rgba(0, 240, 255, 0.4);
-    background: rgba(0, 240, 255, 0.1);
-    color: var(--cp-cyan, #00f0ff);
+    border: 1px solid rgba(160,124,40,0.5);
+    background: rgba(216,182,86,0.12);
+    color: #6b5518;
     font: inherit;
     font-size: 12px;
     padding: 4px 12px;
@@ -7363,7 +7499,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .intel-fontpack-install:hover:not(:disabled),
 .intel-fontpack-later:hover:not(:disabled) {
-    background: rgba(0, 240, 255, 0.2);
+    background: rgba(216,182,86,0.24);
 }
 .intel-fontpack-install:disabled,
 .intel-fontpack-later:disabled {
@@ -7371,21 +7507,23 @@ html.perf-low-effects .map-panel-close-btn:hover {
     cursor: default;
 }
 .intel-fontpack-later {
-    border-color: rgba(96, 112, 136, 0.5);
+    border-color: rgba(120,104,66,0.4);
     background: transparent;
-    color: var(--cp-dim, #607088);
+    color: #8a7648;
 }
 
 .intel-content {
     position: relative;
     min-height: 0;
-    padding: 16px 30px 24px;
+    padding: 18px 34px 32px;
     overflow: auto;
     color: #111;
     background: transparent;
     font-size: 23px;
-    line-height: 1.52;
+    line-height: 1.68;
     font-weight: 500;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,96,52,0.5) transparent;
 }
 
 .intel-content strong {
@@ -7400,6 +7538,43 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .intel-content[data-content-mode="h5"] {
     white-space: normal;
+}
+
+/* T2 阅读体验：纯文本直子块行长收敛 40em 并居中（名词栏并入 tab 后阅读区变宽，
+   不限宽会出现 45+ 字/行的密字墙）；视觉组件（paperStage/blueprint/table/hardware 等）
+   保持全宽。paperFragment 内块受 fragment 固定宽度约束，不受此 cap 影响。 */
+.intel-content > .intel-h5-heading,
+.intel-content > .intel-h5-p,
+.intel-content > .intel-legacy-flow {
+    max-width: 40em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.intel-h5-p {
+    line-height: 1.75;
+}
+
+.intel-legacy-flow {
+    line-height: 1.8;
+}
+
+/* T2 空态/锁定态：纸上虚线框，回声工作台 grid-empty 语言 */
+.intel-empty {
+    max-width: 480px;
+    margin: 56px auto;
+    padding: 26px 24px;
+    color: #6d5a35;
+    background: rgba(255,255,255,0.22);
+    border: 1px dashed rgba(101,78,38,0.45);
+    font-size: 16px;
+    text-align: center;
+}
+
+.intel-empty.error {
+    color: #8c3a30;
+    background: rgba(190,80,60,0.08);
+    border-color: rgba(160,60,45,0.5);
 }
 
 .intel-h5-p,
@@ -8699,35 +8874,38 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .intel-footer {
     position: relative;
     display: grid;
-    grid-column: 2;
-    grid-row: 4;
-    grid-template-columns: 38px 38px 1fr 112px;
-    gap: 10px;
+    grid-column: 1;
+    grid-row: 3;
+    grid-template-columns: 36px 36px 1fr 120px;
+    gap: 8px;
     align-items: center;
-    padding: 0 14px 16px 22px;
-    background: #121212;
+    padding: 0 14px 12px 22px;
+    background: transparent;
     border: 0;
 }
 
 .intel-footer button {
-    height: 38px;
+    height: 36px;
 }
 
 .intel-prev-btn,
 .intel-next-btn {
     display: grid;
     place-items: center;
-    width: 38px;
+    width: 36px;
     padding: 0;
-    background: #242424;
-    border: 1px solid #303030;
+    background: var(--intel-surface-2);
+    border: 1px solid var(--intel-line);
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .intel-prev-btn:hover,
 .intel-next-btn:hover,
 .intel-toggle-btn:hover,
 .intel-refresh-btn:hover {
-    background: #3a3a3a;
+    background: #1b1f24;
+    border-color: var(--intel-accent-dim);
 }
 
 .intel-arrow-left,
@@ -8735,35 +8913,47 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: block;
     width: 0;
     height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
 }
 
 .intel-arrow-left {
-    border-right: 12px solid #d8d8d8;
+    border-right: 10px solid var(--intel-text);
 }
 
 .intel-arrow-right {
-    border-left: 12px solid #d8d8d8;
+    border-left: 10px solid var(--intel-text);
 }
 
 .intel-footer button:disabled .intel-arrow-left {
-    border-right-color: #6a6a6a;
+    border-right-color: #5a5f66;
 }
 
 .intel-footer button:disabled .intel-arrow-right {
-    border-left-color: #6a6a6a;
+    border-left-color: #5a5f66;
 }
 
 .intel-toggle-btn {
-    color: #f4f4f4;
-    background: #252525;
-    border: 1px solid #424242;
+    padding: 0 14px;
+    color: var(--intel-text);
+    background: var(--intel-surface-2);
+    border: 1px solid var(--intel-line);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+/* 密文视图激活：accent 轮廓态（对齐工作台 mode-btn.active 的语义，但保持档案金轮廓而非实底）*/
+.intel-toggle-btn.is-cipher-view {
+    color: var(--intel-accent-strong);
+    background: var(--intel-accent-soft);
+    border-color: var(--intel-accent-dim);
 }
 
 .intel-footer button:disabled {
-    color: #777;
-    background: #1e1e1e;
+    color: var(--intel-muted);
+    background: var(--intel-surface);
+    cursor: default;
 }
 
 /* jumper：包裹 indicator + strip，作为 strip 的定位上下文（保证 strip 锚在 indicator 中心）。 */
@@ -8780,46 +8970,45 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    height: 38px;
-    padding: 0 14px;
-    color: #fff;
+    height: 36px;
+    padding: 0 12px;
+    color: var(--intel-text);
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 3px;
-    font-size: 20px;
+    border-radius: 2px;
+    font-size: 15px;
     font-weight: 500;
     line-height: 1;
     font-variant-numeric: tabular-nums;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.78);
     cursor: pointer;
     transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .intel-page-indicator:hover:not(:disabled) {
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.05);
+    border-color: var(--intel-line);
 }
 
 .intel-page-indicator[aria-expanded="true"] {
-    background: rgba(216,182,86,0.14);
-    border-color: rgba(216,182,86,0.55);
+    background: var(--intel-accent-soft);
+    border-color: var(--intel-accent-dim);
 }
 
 .intel-page-indicator:disabled {
-    color: #888;
+    color: var(--intel-muted);
     cursor: default;
 }
 
 .intel-page-current {
     min-width: 1.6em;
     text-align: right;
-    color: #fff;
+    color: var(--intel-text);
     font-weight: 700;
 }
 
 .intel-page-sep,
 .intel-page-total {
-    color: #cfcfcf;
+    color: var(--intel-muted);
     font-weight: 500;
     opacity: 0.78;
 }
@@ -8836,7 +9025,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .intel-page-unit {
     margin-left: 4px;
-    color: #b8b8b8;
+    color: var(--intel-muted);
     font-weight: 400;
     opacity: 0.85;
 }
@@ -8873,9 +9062,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
     width: max-content;
     max-width: 900px;
     padding: 6px 8px;
-    background: rgba(20,20,22,0.96);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 4px;
+    background: rgba(16,18,22,0.97);
+    border: 1px solid var(--intel-line);
+    border-radius: 2px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.55);
     pointer-events: auto;
 }
@@ -8897,8 +9086,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid rgba(20,20,22,0.96);
-    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.18));
+    border-top: 6px solid rgba(16,18,22,0.97);
+    filter: drop-shadow(0 1px 0 var(--intel-line));
 }
 
 .intel-page-strip .intel-page-list {
@@ -13285,8 +13474,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* ── 独立技能面板 ── */
 .skills-scale-shell { width:1024px; height:576px; }
 .skills-panel {
-    --wb-accent:#55b8d0;
-    --wb-accent-soft:rgba(85,184,208,.15);
+    --wb-accent:#4ec9f0;
+    --wb-accent-soft:rgba(78,201,240,.12);
+    --skill-energy:#4ec9f0;
+    --skill-muted:#5a8a96;
+    --skill-surface:#0d1215;
+    --skill-hotbar-bg:#06090b;
     --skill-ok:#75c18c;
     --skill-warn:#df6b62;
 }
@@ -13321,33 +13514,52 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-panel .workbench-flow-rail { color:var(--wb-accent); }
 .skills-library-view,
 .skills-action-view { height:100%; min-height:0; display:flex; flex-direction:column; }
-.skills-library-header { flex:0 0 auto; padding:8px; border-bottom:1px solid #26323a; background:#10161a; }
+.skills-library-header { flex:0 0 auto; padding:7px 8px 6px; border-bottom:1px solid #202b31; background:#0b1013; }
 .skills-library-title-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.skills-section-title { margin-right:auto; color:#b9dce4; font:700 10px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.12em; }
+.skills-section-title { margin-right:auto; color:#8fb5c1; font:700 10px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.12em; }
 .skills-search-toggle,
 .skills-search-close,
 .skills-filter-reset {
     flex:0 0 auto; min-height:22px; padding:0 7px; border:1px solid #34444d; border-radius:0;
     background:#0b1115; color:#8fb0b8; font:9px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
 }
+.skills-filter-reset { border-color:rgba(78,201,240,.45); color:#7fd1e6; background:rgba(78,201,240,.08); }
 .skills-search-toggle:hover,
 .skills-search-toggle:focus-visible,
 .skills-search-close:hover,
 .skills-search-close:focus-visible,
 .skills-filter-reset:hover,
-.skills-filter-reset:focus-visible { color:#e7fbff; border-color:#63c7de; outline:0; }
+.skills-filter-reset:focus-visible { color:#e7fbff; border-color:#63c7de; background:#142d36; outline:0; }
 .skills-filter-reset[hidden] { display:none; }
-.skills-filter-board { margin-top:6px; display:grid; gap:4px; }
+.skills-filter-board { margin-top:4px; display:grid; gap:3px; }
 .skills-panel[data-skill-view="manage"] .skills-filter-board { grid-template-columns:repeat(2,minmax(0,1fr)); }
 .skills-panel[data-skill-view="manage"] .skills-filter-group[data-skill-filter="school"] { grid-column:1 / -1; }
 .skills-filter-group {
-    min-width:0; display:grid; grid-template-columns:34px minmax(0,1fr); align-items:start; gap:5px;
+    min-width:0; display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:start; gap:5px;
+    padding:3px 4px; border:1px solid transparent; border-radius:0;
 }
+.skills-filter-group.collapsed { background:rgba(6,9,11,.6); border-color:#1a2529; }
 .skills-filter-label {
-    min-height:22px; display:flex; align-items:center; color:#6f8992;
-    font:700 9px/1 "Microsoft YaHei",sans-serif; letter-spacing:.08em;
+    min-height:22px; display:flex; align-items:center; gap:4px;
+    color:#6f8992; font:700 9px/1 "Microsoft YaHei",sans-serif; letter-spacing:.08em; cursor:default;
 }
-.skills-filter-navigator { min-width:0; }
+.skills-filter-group.collapsible .skills-filter-label { cursor:pointer; }
+.skills-filter-group.collapsible .skills-filter-label::before {
+    content:""; display:inline-block; width:0; height:0; border-style:solid;
+    border-width:5px 4px 0; border-color:#5a8a96 transparent transparent transparent;
+}
+.skills-filter-group.collapsible:not(.collapsed) .skills-filter-label::before {
+    border-width:4px 0 4px 5px; border-color:transparent transparent transparent #5a8a96;
+}
+.skills-filter-value {
+    display:none; align-items:center; min-height:18px; padding:0 5px; margin-left:auto;
+    border:1px solid rgba(78,201,240,.35); background:rgba(78,201,240,.08); color:#7fd1e6;
+    font:700 8px/1 "Microsoft YaHei",sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.skills-filter-group.collapsed .skills-filter-value { display:inline-flex; }
+.skills-filter-group.collapsed .skills-filter-value:empty { display:none; }
+.skills-filter-navigator { min-width:0; grid-column:2 / -1; }
+.skills-filter-group.collapsed .skills-filter-navigator { display:none; }
 .skills-filter-group .item-filter-row { min-height:22px; flex-wrap:wrap; overflow:visible; }
 .skills-library-controls { margin-top:6px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:5px; }
 .skills-library-controls[hidden] { display:none; }
@@ -13360,8 +13572,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-library-list,
 .skills-action-view { min-height:0; overflow:auto; scrollbar-width:thin; scrollbar-color:#386474 #0b1115; }
 .skills-library-list {
-    flex:1 1 auto; padding:7px; scrollbar-gutter:stable; display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(164px,1fr)); align-content:start; gap:5px;
+    flex:1 1 auto; padding:6px; scrollbar-gutter:stable; display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(172px,1fr)); align-content:start; gap:5px;
 }
 .skills-library-list::-webkit-scrollbar,
 .skills-action-view::-webkit-scrollbar { width:7px; }
@@ -13371,18 +13583,19 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-action-view::-webkit-scrollbar-thumb { background:#386474; border:1px solid #56899a; }
 .skills-library-row {
     position:relative; width:100%; height:var(--workbench-owned-card-height); min-height:var(--workbench-owned-card-height);
-    margin:0; padding:6px 7px; display:grid;
-    grid-template-columns:44px minmax(0,1fr) auto; align-items:center; gap:8px;
-    border:1px solid rgba(150,181,193,.2); border-left:3px solid #3c5d68; border-radius:0;
-    box-sizing:border-box; background:linear-gradient(135deg,#151c21,#101519); color:#dbe5e9;
+    margin:0; padding:6px 8px 6px 7px; display:grid;
+    grid-template-columns:52px minmax(0,1fr) auto; align-items:center; gap:10px;
+    border:1px solid rgba(120,151,162,.18); border-left:4px solid #3c5d68; border-radius:0;
+    box-sizing:border-box; background:var(--skill-surface); color:#dbe5e9;
     text-align:left; cursor:pointer; user-select:none;
+    transition:border-color .1s ease,background-color .1s ease,box-shadow .1s ease;
 }
-.skills-library-row:hover { border-color:rgba(105,203,226,.58); background:#19242a; }
-.skills-library-row.selected { border-color:#63c7de; box-shadow:inset 3px 0 0 #63c7de; background:#17252c; }
+.skills-library-row:hover { border-color:rgba(105,203,226,.55); background:#162328; }
+.skills-library-row.selected { border-color:var(--skill-energy); box-shadow:inset 4px 0 0 var(--skill-energy), 0 0 12px rgba(78,201,240,.14); background:#12262d; }
 .skills-library-row.corrupt { border-left-color:var(--skill-warn); background:#211617; }
 .skills-library-row.dragging { opacity:.65; outline:1px dashed #8be0f1; cursor:grabbing; }
 .skills-library-row.workbench-drop-active { outline:1px solid #75d8ec; outline-offset:-3px; }
-.skills-library-row.workbench-drop-rejected { outline:1px solid #e07a71; outline-offset:-3px; }
+.skills-library-row.workbench-drop-rejected { outline:1px solid #e07a71; outline-offset:-3px; animation:skills-reject-pulse .25s ease-in-out 2; }
 .skills-library-row:focus-visible,
 .skills-slot-main:focus-visible,
 .skills-action-btn:focus-visible,
@@ -13392,9 +13605,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-row-icon,
 .skills-slot-icon {
     position:relative; display:grid; place-items:center; flex:0 0 auto; overflow:hidden;
-    border:1px solid rgba(151,210,222,.25); background:#080c0f;
+    border:1px solid rgba(120,180,195,.22); background:#080c0f;
 }
-.skills-row-icon { width:42px; height:42px; }
+.skills-row-icon { width:50px; height:50px; }
 .skills-slot-icon { width:48px; height:48px; box-sizing:border-box; justify-self:center; }
 .skills-icon-image { display:block; width:90%; height:90%; object-fit:contain; }
 .skills-icon-fallback { display:none; color:#4e6a74; font:700 13px/1 "Microsoft YaHei",sans-serif; }
@@ -13455,24 +13668,26 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-level-btn:disabled { border-color:#30383c; background:#14191c; color:#555f63; cursor:default; }
 .skills-loadout-section { margin-top:10px; }
 .skills-panel[data-skill-view="manage"] .skills-loadout-section {
-    position:relative; min-height:0; margin:0; padding:4px 8px; display:grid; place-items:center;
-    border:1px solid #273840; box-sizing:border-box;
-    background:linear-gradient(180deg,#0b1114,#080d10);
-    box-shadow:inset 0 1px rgba(125,190,204,.05),inset 0 -1px rgba(0,0,0,.65);
+    position:relative; min-height:0; margin:0; padding:6px 12px; display:grid; place-items:center;
+    border:1px solid #1f2b31; box-sizing:border-box;
+    background:var(--skill-hotbar-bg);
+    box-shadow:inset 0 1px 0 rgba(78,201,240,.04),inset 0 -1px 0 rgba(0,0,0,.65);
 }
 .skills-panel[data-skill-view="manage"] .skills-loadout-section > .skills-section-title {
-    position:absolute; left:8px; top:50%; width:60px; margin:0; transform:translateY(-50%);
-    color:#83bdca; line-height:1.4; text-align:center; letter-spacing:.08em;
+    position:absolute; left:10px; top:50%; width:60px; margin:0; transform:translateY(-50%);
+    color:#5a8a96; line-height:1.4; text-align:center; letter-spacing:.08em;
 }
-.skills-loadout-grid { margin-top:6px; display:grid; grid-template-columns:repeat(12,64px); gap:3px; }
-.skills-panel[data-skill-view="manage"] .skills-loadout-grid { min-height:0; width:max-content; margin:0; }
+.skills-loadout-grid { display:grid; grid-template-columns:repeat(12,64px); gap:3px; padding:6px 10px; background:var(--skill-hotbar-bg); border-top:1px solid #1a2529; }
+.skills-panel[data-skill-view="manage"] .skills-loadout-grid { min-height:0; width:max-content; margin:0; padding:6px 0; border:0; }
+.skills-slot:nth-child(4n) { margin-right:10px; }
+.skills-slot:nth-child(12) { margin-right:0; }
 .skills-slot {
     position:relative; width:64px; min-width:64px; height:64px; box-sizing:border-box;
     border:1px solid #26363d; background:linear-gradient(145deg,#10171b,#0a0f12);
     box-shadow:inset 0 0 0 1px rgba(132,183,194,.025); transition:border-color .1s ease,background-color .1s ease;
 }
 .skills-slot:hover { border-color:#45616b; background:#111b20; }
-.skills-slot.selected { border-color:#62c7de; box-shadow:inset 0 0 0 1px rgba(98,199,222,.22),0 0 7px rgba(67,174,199,.12); }
+.skills-slot.selected { border-color:var(--skill-energy); box-shadow:inset 0 0 0 1px rgba(78,201,240,.3),0 0 10px rgba(78,201,240,.14); }
 .skills-slot.empty { background:#080d10; }
 .skills-slot[data-state-health="unknown"] { border-color:#8d7135; }
 .skills-slot.corrupt { border-color:#833f3a; background:#1b1011; }
@@ -13488,6 +13703,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
     position:absolute; z-index:2; top:3px; left:4px; color:#77c9da;
     font:700 9px/1 Consolas; text-shadow:0 1px 2px #000;
 }
+.skills-slot:nth-child(n+5):nth-child(-n+8) .skills-slot-number { color:#5a9ba8; }
+.skills-slot:nth-child(n+9) .skills-slot-number { color:#466f7a; }
 .skills-slot-key {
     position:absolute; z-index:2; bottom:2px; left:50%; min-width:20px; max-width:48px; padding:1px 3px;
     transform:translateX(-50%);
@@ -13514,11 +13731,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-slot-clear:hover:not(:disabled) { border-color:#d5665d; color:#f1877f; }
 .skills-slot-clear:disabled { opacity:.28; pointer-events:none; cursor:default; }
 .skills-slot.workbench-drop-active { outline:1px solid #75d8ec; outline-offset:-3px; }
-.skills-slot.workbench-drop-rejected { outline-color:#e07a71 !important; }
-.skills-drag-ghost { border-color:#66cadd; background:rgba(10,23,29,.96); color:#e7faff; }
+.skills-slot.workbench-drop-rejected { outline:2px solid #e07a71 !important; outline-offset:-3px; animation:skills-reject-pulse .28s ease-in-out 2; }
+.skills-drag-ghost { border-color:var(--skill-energy); background:rgba(10,23,29,.98); color:#e7faff; box-shadow:0 12px 34px rgba(0,0,0,.55), 0 0 0 1px rgba(78,201,240,.25); }
 .skills-drag-icon { width:28px; height:28px; display:grid; place-items:center; overflow:hidden; border:1px solid #426b75; background:#080c0f; }
 .skills-drag-icon .skills-icon-image { width:90%; height:90%; object-fit:contain; }
 .skills-drag-icon.missing .skills-icon-fallback { display:block; }
+@keyframes skills-reject-pulse { 0%,100% { outline-color:#e07a71; } 50% { outline-color:#ffaaa0; } }
 .skills-density-compact .skills-library-list {
     grid-template-columns:repeat(auto-fill,minmax(calc(var(--workbench-compact-tile-size) - 2px),1fr));
     grid-auto-rows:var(--workbench-compact-tile-size);
@@ -13546,7 +13764,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-trainer-view { gap:7px; overflow:hidden; }
 .skills-trainer-summary {
     flex:0 0 auto; min-width:0; padding:9px; display:grid; grid-template-columns:58px minmax(0,1fr); gap:8px;
-    border:1px solid #293941; background:linear-gradient(135deg,rgba(85,184,208,.08),transparent 52%),#0d1317;
+    border:1px solid #293941; border-top:3px solid var(--skill-energy); border-radius:0;
+    background:linear-gradient(135deg,rgba(78,201,240,.1),transparent 52%),#0c1317;
+    box-shadow:0 2px 10px rgba(0,0,0,.18);
 }
 .skills-trainer-summary-icon {
     grid-row:1 / span 2; width:56px; height:56px; display:grid; place-items:center; overflow:hidden;
@@ -13561,12 +13781,13 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .skills-trainer-summary .skills-corrupt-warning { grid-column:1 / -1; }
 .skills-trainer-actions {
-    flex:1 1 auto; min-height:0; margin-top:0; padding:8px; display:flex; flex-direction:column; overflow:auto;
+    flex:1 1 auto; min-height:0; margin-top:0; padding:8px; display:flex; flex-direction:column; overflow:auto; gap:8px;
     scrollbar-width:thin; scrollbar-color:#386474 #0b1115;
 }
-.skills-trainer-target { flex:0 0 auto; }
+.skills-trainer-target { flex:0 0 auto; padding:8px; border:1px solid #253a42; background:#090f12; }
 .skills-trainer-section-heading { color:#b9dce4; font:700 9px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.12em; }
-.skills-trainer-gate { flex:0 0 auto; margin-top:7px; padding:6px 7px; color:#8ea1a9; background:#0a0f12; font:9px/1.35 "Microsoft YaHei",sans-serif; }
+.skills-trainer-gate { flex:0 0 auto; padding:6px 7px; color:#8ea1a9; background:#0a0f12; border:1px solid #1f2d32; font:9px/1.35 "Microsoft YaHei",sans-serif; }
+.skills-trainer-gate.blocked { color:#e88981; background:#1a0f0f; border-color:#5a3330; }
 .skills-level-stepper { margin:7px 0 5px; display:flex; align-items:center; gap:6px; }
 .skills-level-stepper > span { margin-right:auto; color:#b6c6cc; font:700 10px/1 "Microsoft YaHei",sans-serif; }
 .skills-level-stepper output { min-width:76px; color:#e8f7fa; font:700 12px/1 Consolas,"Microsoft YaHei",sans-serif; text-align:center; }
@@ -13609,11 +13830,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .skills-target-preset:hover:not(:disabled) { color:#e7fbff; border-color:#63c7de; }
 .skills-target-preset:disabled { opacity:.32; cursor:default; }
-.skills-preview-result { margin-top:7px; padding:8px; border-left:3px solid #425158; background:#0a0f12; color:#8b989d; font:10px/1.4 "Microsoft YaHei",sans-serif; }
+.skills-preview-result { margin-top:0; padding:8px; border:1px solid #1f2d32; border-left:3px solid #425158; background:#0a0f12; color:#8b989d; font:10px/1.4 "Microsoft YaHei",sans-serif; }
 .skills-cost-card { flex:0 0 auto; }
 .skills-preview-result.loading { border-left-color:#4daec4; }
-.skills-preview-result.ok { border-left-color:var(--skill-ok); color:#9bd3aa; }
-.skills-preview-result.blocked { border-left-color:var(--skill-warn); color:#e88981; }
+.skills-preview-result.ok { border-left-color:var(--skill-ok); color:#9bd3aa; border-color:#2a3f36; background:#0b120f; }
+.skills-preview-result.blocked { border-left-color:var(--skill-warn); color:#e88981; border-color:#4a2b29; background:#120b0b; }
 .skills-preview-result.stale { border-left-color:#52646b; color:#829198; }
 .skills-preview-result.updating { border-left-color:#4daec4; box-shadow:inset 0 0 0 1px rgba(77,174,196,.08); }
 .skills-preview-result.stale .skills-cost-row strong { color:#9aa9ae; }
@@ -13631,7 +13852,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-preview-update-status.error { color:#e88981; }
 .skills-preview-result .skills-preview-retry { width:auto; margin-top:7px; }
 .skills-trainer-footer { position:sticky; bottom:-8px; margin-top:auto; padding-top:8px; background:linear-gradient(transparent,#0d1317 7px); }
-.skills-trainer-commit { width:100%; min-height:36px; font-size:11px; }
+.skills-trainer-commit { width:100%; min-height:38px; font-size:11px; letter-spacing:.05em; }
 .skills-trainer-expired {
     flex:1 1 auto; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px;
     border:1px solid #603a38; background:radial-gradient(circle at 50% 28%,rgba(223,107,98,.1),transparent 42%),#0d1114; text-align:center;
@@ -13663,6 +13884,10 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .inventory-workbench-panel[data-workbench-view="tuning"] .workbench-flow-rail { color:#46d7f5; }
 .equipment-tuning-view {
     --tuning-dls:#3dd5ff; --tuning-dls-deep:#1e90b3; --tuning-dls-dim:#0f4a5c;
+    --wb-accent:var(--tuning-dls);
+    --item-filter-text:#7e9da6; --item-filter-border:#234750; --item-filter-bg:#081216;
+    --item-filter-hover-text:#d8f8ff; --item-filter-hover-border:#2ca7c4; --item-filter-hover-bg:#0b2028;
+    --item-filter-active-text:#dffaff; --item-filter-active-border:#62e1ff; --item-filter-active-count:#7fe7ff;
     height:100%; min-height:0; display:grid; grid-template-rows:auto auto minmax(0,1fr) auto;
     overflow:hidden; color:#d9eef2;
     background:
@@ -13695,6 +13920,15 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .equipment-tuning-summary-copy small { color:#758087; font:9px/1.3 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-help-btn { min-width:30px; width:30px; padding:0; font:800 14px/1 Consolas,"Microsoft YaHei",sans-serif; }
 .equipment-tuning-help-btn[hidden] { display:none; }
+.equipment-tuning-confirmation-toggle[hidden] { display:none; }
+.equipment-tuning-confirmation-toggle { --tuning-dls:#3dd5ff; margin-right:3px; margin-left:3px; border-color:#244f5a; background:#081216; }
+.equipment-tuning-confirmation-toggle .item-grid-mode-label { color:#5f919e; }
+.equipment-tuning-confirmation-toggle .equipment-tuning-confirmation-option[data-confirmation-mode="safe"][aria-pressed="true"] {
+    color:#06161b; background:var(--tuning-dls); box-shadow:inset 0 0 0 1px rgba(219,250,255,.48),0 0 8px rgba(61,213,255,.18);
+}
+.equipment-tuning-confirmation-toggle .equipment-tuning-confirmation-option[data-confirmation-mode="fast"][aria-pressed="true"] {
+    color:#17120a; background:#e1b75c; box-shadow:inset 0 0 0 1px rgba(255,242,205,.38),0 0 8px rgba(225,183,92,.16);
+}
 .equipment-tuning-installed-state { display:flex; align-items:center; justify-content:flex-end; gap:3px; }
 .equipment-tuning-status-icon {
     position:relative; width:25px; height:25px; padding:1px; display:grid; place-items:center; box-sizing:border-box;
@@ -13844,8 +14078,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .equipment-tuning-section-title { margin:0 0 6px; color:#9ba6ac; font:700 9px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.08em; }
 .equipment-tuning-section-title:not(:first-child) { margin-top:10px; }
 .equipment-tuning-installed { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; }
+.equipment-tuning-installed-entry { position:relative; min-width:0; min-height:42px; }
 .equipment-tuning-installed-card {
-    position:relative; min-width:0; min-height:42px; padding:4px; display:grid; grid-template-columns:34px minmax(0,1fr);
+    position:relative; width:100%; min-width:0; min-height:42px; padding:4px 20px 4px 4px; display:grid; grid-template-columns:34px minmax(0,1fr);
     align-items:center; gap:5px; overflow:hidden; border:1px solid var(--equipment-mod-grade-color,#58636e);
     border-radius:0; background:#101519; color:#d4dadd; text-align:left; cursor:pointer;
 }
@@ -13857,19 +14092,44 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .equipment-tuning-installed-card b,.equipment-tuning-installed-card small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .equipment-tuning-installed-card b { font:700 9px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-installed-card small { color:#77848b; font:8px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-installed-quick-detach {
+    position:absolute; z-index:2; top:2px; right:2px; width:16px; height:16px; padding:0; display:grid; place-items:center;
+    border:1px solid #5d3030; background:#170d0e; color:#d78383; font:700 12px/1 Consolas,sans-serif; cursor:pointer;
+}
+.equipment-tuning-installed-quick-detach:hover:not(:disabled),.equipment-tuning-installed-quick-detach:focus-visible {
+    outline:0; border-color:#d36f6f; background:#351516; color:#ffd0d0;
+}
+.equipment-tuning-installed-quick-detach:disabled { opacity:.38; cursor:default; }
 .equipment-tuning-detach-all,.equipment-tuning-detach-selected,.equipment-tuning-replace-cancel { min-height:42px; }
-.equipment-tuning-mod-filter { margin:0 0 7px; display:grid; gap:4px; }
+.equipment-tuning-mod-filter {
+    position:relative; margin:0 0 7px; padding:4px; display:grid; gap:4px; overflow:hidden;
+    border:1px solid rgba(61,213,255,.18); background:repeating-linear-gradient(135deg,rgba(61,213,255,.018) 0 12px,transparent 12px 24px),#071014;
+    box-shadow:inset 3px 0 0 var(--tuning-dls-dim);
+}
+.equipment-tuning-mod-filter::before {
+    content:"D.L.S. / MOD INDEX"; position:absolute; top:2px; right:5px; color:rgba(89,215,243,.28);
+    font:600 6px/1 Consolas,sans-serif; letter-spacing:.12em; pointer-events:none;
+}
 .equipment-tuning-mod-breadcrumb { min-height:0; overflow:hidden; }
-.equipment-tuning-mod-filter .item-filter-breadcrumbs { min-height:24px; padding:0 4px; border:1px solid #29454d; background:#081014; }
+.equipment-tuning-mod-filter .item-filter-breadcrumbs { min-height:24px; padding:0 4px; border:1px solid #295865; background:linear-gradient(90deg,rgba(61,213,255,.09),transparent 58%),#071014; }
 .equipment-tuning-mod-filter .item-filter-row { gap:3px; }
 .equipment-tuning-mod-filter .item-filter-option { min-height:25px; padding:0 7px; font-size:8px; }
+.equipment-tuning-mod-filter .item-filter-option.active {
+    color:#dffaff; border-color:var(--tuning-dls); background:linear-gradient(180deg,#123844,#0b2831);
+    box-shadow:inset 0 -2px 0 var(--tuning-dls),0 0 7px rgba(61,213,255,.14);
+}
+.equipment-tuning-mod-filter .item-filter-option.active small { color:#7fe7ff; }
 .equipment-tuning-filter-count { margin:0 0 5px; color:#68757b; font:8px/1.2 Consolas,"Microsoft YaHei",sans-serif; text-align:right; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-body { padding:7px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-section-title:not(:first-child) { margin-top:6px; }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-mod-filter { margin-bottom:4px; }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-mod-filter { margin-bottom:3px; padding:3px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-filter-count { margin-bottom:3px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed {
     display:flex; flex-wrap:wrap; gap:var(--workbench-compact-gap,4px);
+}
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-entry {
+    width:var(--workbench-compact-tile-size,48px); height:var(--workbench-compact-tile-size,48px);
+    min-height:var(--workbench-compact-tile-size,48px);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all,
@@ -13879,8 +14139,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
     min-height:var(--workbench-compact-tile-size,48px); padding:3px; box-sizing:border-box;
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card {
-    display:grid; grid-template-columns:1fr; place-items:center; gap:0;
+    display:grid; grid-template-columns:1fr; place-items:center; gap:0; padding:3px;
 }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach { top:1px; right:1px; width:14px; height:14px; font-size:10px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card > .kshop-icon,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card > img {
     width:var(--workbench-compact-icon-size,40px); height:var(--workbench-compact-icon-size,40px);

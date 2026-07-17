@@ -185,25 +185,45 @@ var SkillsPanel = (function() {
         skillFilterDefinitions().forEach(function(definition) {
             var group = document.createElement('div');
             group.className = 'skills-filter-group';
+            if (definition.collapsed) group.classList.add('collapsible', 'collapsed');
             group.setAttribute('data-skill-filter', definition.id);
             group.setAttribute('role', 'group');
             group.setAttribute('aria-label', definition.label + '筛选');
             var label = document.createElement('span');
             label.className = 'skills-filter-label';
             label.textContent = definition.label;
+            if (definition.collapsed) {
+                label.setAttribute('tabindex', '0');
+                label.setAttribute('role', 'button');
+                label.setAttribute('aria-expanded', 'false');
+                label.title = '点击展开“' + definition.label + '”筛选';
+            }
             group.appendChild(label);
+            var value = document.createElement('span');
+            value.className = 'skills-filter-value';
+            value.setAttribute('aria-hidden', 'true');
+            group.appendChild(value);
             var navigator = new ItemFilter.FilterNavigator({
                 tree:ItemFilter.build([], definition.classifier), path:filterPathsForView()[definition.id],
                 presentation:'drilldown', allLabel:'不限', ariaLabel:definition.label + '筛选',
                 visualStyle:'catalog', autoDescendSingle:false,
                 onChange:function(path) {
                     filterPathsForView()[definition.id] = path.slice();
-                    refreshFilterReset(); renderList();
+                    refreshFilterReset(); refreshFilterValue(definition.id); renderList();
                 }
             });
             navigator.root.classList.add('skills-filter-navigator');
             _filterNavigators[definition.id] = navigator;
             group.appendChild(navigator.root);
+            if (definition.collapsed) {
+                label.addEventListener('click', function() { toggleSkillFilterCollapsed(definition.id); });
+                label.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        toggleSkillFilterCollapsed(definition.id);
+                    }
+                });
+            }
             _filterBoard.appendChild(group);
         });
         header.appendChild(_filterBoard);
@@ -351,6 +371,7 @@ var SkillsPanel = (function() {
             if (!navigator) return;
             navigator.setModel(ItemFilter.build(entries, definition.classifier), paths[definition.id]);
             paths[definition.id] = navigator.path.slice();
+            refreshFilterValue(definition.id);
         });
         refreshFilterReset();
     }
@@ -365,7 +386,7 @@ var SkillsPanel = (function() {
         return [
             {id:'form', label:'形态', classifier:skillFormPath},
             {id:'status', label:_view === 'trainer' ? '学习' : '配置', classifier:skillStatusPath},
-            {id:'school', label:'流派', classifier:skillSchoolPath}
+            {id:'school', label:'流派', classifier:skillSchoolPath, collapsed:true}
         ];
     }
     function clearSkillFilters() {
@@ -373,6 +394,7 @@ var SkillsPanel = (function() {
         skillFilterDefinitions().forEach(function(definition) {
             paths[definition.id] = [];
             if (_filterNavigators[definition.id]) _filterNavigators[definition.id].setPath([], true);
+            refreshFilterValue(definition.id);
         });
         refreshFilterReset(); renderList();
     }
@@ -380,6 +402,39 @@ var SkillsPanel = (function() {
         if (!_filterResetButton) return;
         var paths = filterPathsForView();
         _filterResetButton.hidden = !(paths.form.length || paths.status.length || paths.school.length);
+    }
+    function toggleSkillFilterCollapsed(id) {
+        var group = _filterBoard && _filterBoard.querySelector('.skills-filter-group[data-skill-filter="' + id + '"]');
+        if (!group || !group.classList.contains('collapsible')) return;
+        var collapsed = group.classList.toggle('collapsed');
+        var label = group.querySelector('.skills-filter-label');
+        if (label) {
+            label.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+            label.title = (collapsed ? '点击展开' : '点击收起') + '“' + skillFilterLabel(id) + '”筛选';
+        }
+    }
+    function refreshFilterValue(id) {
+        var group = _filterBoard && _filterBoard.querySelector('.skills-filter-group[data-skill-filter="' + id + '"]');
+        if (!group) return;
+        var value = group.querySelector('.skills-filter-value');
+        if (!value) return;
+        var navigator = _filterNavigators[id];
+        var label = '';
+        if (navigator && navigator.path && navigator.path.length) {
+            var node = ItemFilter.nodeAt(navigator.tree, navigator.path);
+            label = node && node.label ? node.label : navigator.path[navigator.path.length - 1];
+        }
+        value.textContent = label;
+        var labelEl = group.querySelector('.skills-filter-label');
+        if (labelEl) {
+            var base = skillFilterLabel(id) + '筛选';
+            labelEl.setAttribute('aria-label', label ? base + '，当前：' + label : base);
+        }
+    }
+    function skillFilterLabel(id) {
+        var definitions = skillFilterDefinitions();
+        for (var i = 0; i < definitions.length; i++) if (definitions[i].id === id) return definitions[i].label;
+        return id;
     }
 
     function facet(id, label, order) { return [{id:id, label:label, order:order}]; }
@@ -586,6 +641,7 @@ var SkillsPanel = (function() {
     function renderTrainerActions(entry) {
         var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
         var section = document.createElement('section'); section.className = 'skills-trainer-actions';
+        var matchingPreview = previewMatches(entry) ? _preview : null;
         var target = document.createElement('div'); target.className = 'skills-trainer-target';
         var targetHeading = document.createElement('div'); targetHeading.className = 'skills-trainer-section-heading';
         targetHeading.textContent = current >= max ? '技能等级' : '目标等级'; target.appendChild(targetHeading);
@@ -654,11 +710,11 @@ var SkillsPanel = (function() {
         section.appendChild(target);
 
         var gate = document.createElement('div'); gate.className = 'skills-trainer-gate';
+        if (matchingPreview && !matchingPreview.canCommit && matchingPreview.blockingError) gate.classList.add('blocked');
         gate.textContent = '解锁 Lv.' + safeNumber(entry.unlockLevel) + ' · 初学 ' + safeNumber(entry.unlockSP)
             + ' 点 · 升级 ' + safeNumber(entry.upgradeSP) + ' 点/级'; section.appendChild(gate);
 
         var result = document.createElement('div'); result.className = 'skills-preview-result skills-cost-card';
-        var matchingPreview = previewMatches(entry) ? _preview : null;
         var previousPreview = _preview && _preview.skillKey === entry.skillKey ? _preview : null;
         if (current >= max) {
             result.classList.add('ok');

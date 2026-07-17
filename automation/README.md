@@ -53,6 +53,7 @@ cd "<项目根目录>\\automation"
 - 启动 Guardian Launcher
 - 走当前默认运行链路
 - 使用内嵌总线与现有宿主架构
+- `automation/start.ps1`、`scripts/gobang_trainer_cycle.ps1` 与 `tools/cfn-cli.sh` 直启 Core 前调用根 bootstrap `--verify-only`，manifest 闭包不完整、含额外文件或二进制混搭时 fail-fast
 - 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
 
 ### 无人值守运行态控制面
@@ -117,6 +118,8 @@ node tools/arena-calibration/run-unattended.js `
 chcp.com 65001 | Out-Null
 powershell -File ..\launcher\build.ps1
 ```
+
+该入口只允许在 [运行时构建基线](../docs/runtime-build-reproducibility.md) 校验通过的发布机执行；新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境可加 `-VerifyOnly` 只做字节复核。普通开发机不要为消除源码 diff 自动重建 runtime。
 
 ### 改 Flash / AS2
 

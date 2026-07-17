@@ -12,8 +12,10 @@
  *   var handle = PanelScale.attach(shellEl, 1024, 576);   // onOpen
  *   handle.detach();                                       // onClose（务必，避免 resize/ResizeObserver 泄漏）
  *
- * 设计取舍：tasks/pet/merc/intelligence 各有自有等价实现（历史先行），本 primitive 供新接入的
+ * 设计取舍：tasks/pet/merc 各有自有等价实现（历史先行），本 primitive 供新接入的
  * B 类面板（stage-select / kshop / jukebox / arena 等）复用，不强迁既有黄金标准面板以免引入耦合回归。
+ * 2026-07-17：intelligence 已迁入本 primitive（JS 层 attach/detach），但壳体几何保留本地
+ * 1404×790 画布（阅读面板非 1024×576 工作台几何），不挂 .panel-scale-shell 类。
  */
 var PanelScale = (function () {
     'use strict';

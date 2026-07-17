@@ -131,6 +131,7 @@ function Get-LatestRunLines {
 }
 
 $ProjectRoot = Split-Path -Parent $ScriptDir
+$BootstrapExe = Join-Path $ProjectRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
 # 2026-05-28 net10 迁移后用户面 exe 是 native bootstrap，启动 Core 后立即退出 ——
 # Start-Process -PassThru 拿到的是 bootstrap PID（毫秒级寿命），后续 $busProc.Kill() 会落空。
 # headless 自动化直接走 Core.exe 才能拿到真正长跑的 PID。
@@ -171,6 +172,15 @@ if (-not $NoBus) {
     if (Test-BusRunning) {
         Write-Host '[bus] Already running'
     } else {
+        if (-not (Test-Path -LiteralPath $BootstrapExe -PathType Leaf)) {
+            Write-Host "[bus] ERROR: Bootstrap integrity probe not found: $BootstrapExe" -ForegroundColor Red
+            exit 1
+        }
+        & $BootstrapExe --verify-only
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host '[bus] ERROR: Runtime bundle integrity verification failed.' -ForegroundColor Red
+            exit 1
+        }
         if (-not (Test-Path $LauncherExe)) {
             Write-Host "[bus] ERROR: Launcher not found: $LauncherExe" -ForegroundColor Red
             exit 1

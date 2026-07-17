@@ -5,6 +5,7 @@
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <RootNamespace>CF7Launcher</RootNamespace>
     <!-- AssemblyName 带 ".Core" 后缀：用户面 entry exe = native C++ bootstrap
          (CRAZYFLASHER7MercenaryEmpire.exe)，bootstrap 检测 .NET 10 runtime + ShellExecute Core.exe.
@@ -29,7 +30,7 @@
     <CopyDebugSymbolFilesFromPackages>false</CopyDebugSymbolFilesFromPackages>
     <!-- 可复现构建：committed runtime/Core.dll 是受版本控制的构建产物，必须「同源同字节」，否则每次构建
          经 build.ps1 的 Copy-IfDifferent 弄脏工作树并被扫进提交（历史上 60acd54 即「零 .cs 改动却改了 DLL」，
-         主因是 global.json 旧 rollForward:latestFeature 让 SDK 跨 feature band 漂移——已收口为 latestPatch）。
+         主因是 global.json 旧 rollForward:latestFeature 让 SDK 跨 feature band 漂移——现已收口为 disable + toolchain lock）。
          Deterministic（SDK 默认即 true，此处显式钉死）消除编译期随机 MVID / PE 时间戳；
          PathMap 把项目目录前缀归一化，使不同 checkout 路径（Steam 安装目录因人而异）产出一致字节。
          刻意不上 ContinuousIntegrationBuild/SourceLink：前者无 SourceRoot 时不归一化路径形同空操作，
@@ -39,6 +40,14 @@
     <PathMap>$(MSBuildProjectDirectory)=/_/</PathMap>
     <EnableSourceLink>false</EnableSourceLink>
     <SuppressImplicitGitSourceLink>true</SuppressImplicitGitSourceLink>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
+  <!-- 正式 runtime 不把 Portable PDB 嵌入 Core.dll：源码 EOL/checkout 路径不再进入受 manifest
+       约束的发布字节。需要调试符号时由独立诊断构建产出，不进入 runtime bundle。 -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

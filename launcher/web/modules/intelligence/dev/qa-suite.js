@@ -527,6 +527,33 @@ var IntelligenceHarnessQA = (function() {
                     });
                 });
             }],
+            ['glossary-to-different-item', 'leaving glossary for another catalog item loads that item snapshot', function() {
+                host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
+                return waitReady(api).then(function() {
+                    document.querySelector('.intel-catalog-tab[data-tab="glossary"]').click();
+                    return api.waitFor(function() {
+                        return document.querySelector('.intel-glossary-item');
+                    }, 1000, 'glossary catalog').then(function(glossaryItem) {
+                        glossaryItem.click();
+                        return api.waitFor(function() {
+                            return document.querySelector('.intel-name').textContent === '三战';
+                        }, 1000, 'glossary snapshot');
+                    }).then(function() {
+                        document.querySelector('.intel-catalog-tab[data-tab="items"]').click();
+                        var longItem = findCatalogButton('幻层残响');
+                        api.assert(!!longItem, 'different catalog item exists');
+                        longItem.click();
+                        return api.waitFor(function() {
+                            var state = IntelligencePanel._debugGetState();
+                            return state.itemName === '幻层残响' && state.pageCount === 30 ? state : null;
+                        }, 1000, 'different item snapshot after glossary').then(function(state) {
+                            api.assertEqual(state.contentMode, 'legacy', 'different item content mode loaded');
+                            api.assert(document.querySelector('.intel-name').textContent.indexOf('幻层残响') >= 0, 'different item title rendered');
+                            return 'glossary item switch ok';
+                        });
+                    });
+                });
+            }],
             ['long-text-scroll', 'long text stays scrollable without panel overflow', function() {
                 host.open({ itemName: '幻层残响', value: 15, decryptLevel: 10 });
                 return waitReady(api).then(function(state) {

@@ -1,0 +1,16 @@
+name: Runtime bundle integrity
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  verify-staged-bundle:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Verify committed runtime bundle and build identity
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-runtime-bundle.ps1 -ProjectRoot $PWD.Path -Staged

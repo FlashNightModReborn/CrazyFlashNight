@@ -608,8 +608,13 @@ var MapPanelHarnessQA = (function() {
                             api.assert(fullscreened.contentFitScale >= 1.02, 'fullscreen layout should restore roomy content fit');
                             api.assert(fullscreened.stageScale > 1.3, 'fullscreen layout should no longer stop at legacy 1.3 cap');
                             api.assert(!!fullscreened.stageScalePolicy, 'fullscreen layout should expose scale policy diagnostics');
+                            api.assertEqual(fullscreened.stageScalePolicy.staticSurfaceCount, 2,
+                                'static canvas budget should include visible bg + backdrop cache');
+                            api.assert(fullscreened.stageScalePolicy.estimatedStaticPixelsPerSurface <=
+                                fullscreened.stageScalePolicy.staticPixelBudgetPerSurface,
+                                'each full-DPR static surface should stay inside its per-surface budget');
                             api.assert(fullscreened.stageScalePolicy.estimatedStaticPixels <= fullscreened.stageScalePolicy.staticPixelBudget,
-                                'fullscreen scale should stay inside static canvas pixel budget');
+                                'fullscreen scale should stay inside total static backing-store pixel budget');
                             host.setViewport('1024x576');
                             return api.waitFor(function() {
                                 var downshifted = currentState();
@@ -2396,8 +2401,10 @@ var MapPanelHarnessQA = (function() {
                     api.assert(highDprAssetBound.contentFitMaxScale === 1,
                         'high-DPR asset-bound stage should not retain extra content-fit budget');
                     api.assertEqual(canvasBound.limiter, 'canvas', 'high-DPR stage should be canvas-budget-bound');
+                    api.assertEqual(canvasBound.staticSurfaceCount, 2,
+                        'canvas policy should account for visible bg + backdrop cache');
                     api.assert(canvasBound.estimatedStaticPixels <= canvasBound.staticPixelBudget + 2,
-                        'canvas-bound estimate should not exceed budget');
+                        'canvas-bound total static estimate should not exceed budget');
                     var schoolCapability = MapFitPresets.resolveCapability('school', 'outside');
                     var defenseCapability = MapFitPresets.resolveCapability('defense', 'all');
                     api.assert(schoolCapability.sourceRatio >= 1.6,

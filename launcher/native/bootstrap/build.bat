@@ -12,24 +12,25 @@ set "OUT_DIR=%SCRIPT_DIR%\..\..\bin\Release"
 
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
-:: Detect vcvars64
-set "VCVARS="
-for %%P in (
-    "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-    "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-    "C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat"
-    "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-    "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-) do (
-    if exist %%P set "VCVARS=%%~P"
-)
-
-if not defined VCVARS (
-    echo [ERROR] vcvars64.bat not found - install VS 2022 Build Tools with VC.Tools.x86.x64
+if not defined CF7_VCVARS64 (
+    echo [ERROR] Pinned MSVC baseline is not loaded. Run launcher\build.ps1.
     exit /b 1
 )
+if not defined CF7_MSVC_TOOLS_VERSION exit /b 1
+if not defined CF7_WINDOWS_SDK_VERSION exit /b 1
+set "VCVARS=%CF7_VCVARS64%"
 
-call "%VCVARS%" >nul
+if exist "%VCVARS%" goto :vcvars_exists
+echo [ERROR] selected vcvars64.bat does not exist: %VCVARS%
+exit /b 1
+
+:vcvars_exists
+
+if defined CF7_VSWHERE_DIR set "PATH=%CF7_VSWHERE_DIR%;%PATH%"
+call "%VCVARS%" %CF7_WINDOWS_SDK_VERSION% -vcvars_ver=%CF7_MSVC_TOOLS_VERSION% >nul
+if errorlevel 1 exit /b 1
+call "%SCRIPT_DIR%\..\assert-pinned-tools.bat"
+if errorlevel 1 exit /b 1
 
 echo [INFO] Compiling bootstrap.rc ^(rc.exe^) -^> bootstrap.res...
 pushd "%OUT_DIR%"

@@ -76,6 +76,7 @@
 
 - `launcher/scripts/` 中的 TypeScript 编译为 V8 运行时代码
 - `launcher/native/sol_parser/` 通过 Rust 生成 `sol_parser.dll`
+- Windows runtime 发布由精确工具链环境锁、源码输入身份和 manifest 原子集合共同约束；跨机器写入规则见 [runtime-build-reproducibility.md](../docs/runtime-build-reproducibility.md)
 - PowerShell 承担 Windows 环境下的启动、编译 smoke、CLI 和诊断自动化
 - 这里的 Node / Rust 都属于**受控边界件**，不是独立应用栈；它们存在的理由是为现有运行时服务
 

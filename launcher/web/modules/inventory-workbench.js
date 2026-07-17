@@ -17,13 +17,15 @@ var InventoryWorkbench = (function() {
     var _openGeneration = 0;
     var _profile = 'battlebox';
     var _viewMode = 'storage', _panelInstanceId = '', _tuningOrigin = false;
-    var _viewSwitchButton = null, _tuningHelpButton = null;
+    var _viewSwitchButton = null, _tuningHelpButton = null, _modConfirmationToggle = null;
+    var _modConfirmationMode = 'safe';
     var _returnTarget = null;
     var _rightContainerId = '战备箱';
     var _rightLimit = 40;
     var _quickMode = null, _quickPending = [], _quickInFlight = null, _quickKeys = {};
     var _quickCompleted = 0, _quickAccepted = 0;
     var QUICK_QUEUE_LIMIT = 24;
+    var MOD_CONFIRMATION_STORAGE_KEY = 'cf7.equipmentTuning.modConfirmationMode';
     var _runtimeConfig = (typeof window !== 'undefined' && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _mux = new KShopRequestMux({
         send: function(message) { Bridge.send(message); },
@@ -85,6 +87,57 @@ var InventoryWorkbench = (function() {
             preferredCraftCount:isNaN(craftCount) ? 1 : Math.max(1, Math.min(99, craftCount))}};
     }
 
+    function readModConfirmationMode() {
+        try {
+            return window.localStorage.getItem(MOD_CONFIRMATION_STORAGE_KEY) === 'fast' ? 'fast' : 'safe';
+        } catch (_) {
+            return 'safe';
+        }
+    }
+
+    function setModConfirmationMode(mode, silent) {
+        _modConfirmationMode = mode === 'fast' ? 'fast' : 'safe';
+        try { window.localStorage.setItem(MOD_CONFIRMATION_STORAGE_KEY, _modConfirmationMode); } catch (_) {}
+        if (_tuningView && _tuningView.setModConfirmationMode) {
+            _tuningView.setModConfirmationMode(_modConfirmationMode);
+        }
+        refreshModConfirmationToggle();
+        if (!silent) toast(_modConfirmationMode === 'fast'
+            ? '配件快速模式：无连带变化时预览后自动提交。'
+            : '配件安全模式：所有操作均停在预览等待确认。');
+        return true;
+    }
+
+    function createModConfirmationToggle() {
+        var root = document.createElement('div');
+        root.className = 'item-grid-mode-switch equipment-tuning-confirmation-toggle';
+        var label = document.createElement('span');
+        label.className = 'item-grid-mode-label';
+        label.textContent = '配件';
+        root.appendChild(label);
+        [['safe','安全'],['fast','快速']].forEach(function(pair) {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'item-grid-mode-option equipment-tuning-confirmation-option';
+            button.textContent = pair[1];
+            button.setAttribute('data-confirmation-mode', pair[0]);
+            button.setAttribute('aria-label', '配件操作' + pair[1] + '模式');
+            button.addEventListener('click', function() { setModConfirmationMode(pair[0], false); });
+            root.appendChild(button);
+        });
+        return root;
+    }
+
+    function refreshModConfirmationToggle() {
+        if (!_modConfirmationToggle) return;
+        _modConfirmationToggle.hidden = _viewMode !== 'tuning';
+        var options = _modConfirmationToggle.querySelectorAll('[data-confirmation-mode]');
+        for (var i = 0; i < options.length; i++) {
+            options[i].setAttribute('aria-pressed', options[i].getAttribute('data-confirmation-mode') === _modConfirmationMode
+                ? 'true' : 'false');
+        }
+    }
+
     function buildProfileDOM(config, initialView) {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required');
         if (!config || (initialView !== 'storage' && initialView !== 'tuning')) throw new Error('Inventory workbench initData rejected');
@@ -101,6 +154,7 @@ var InventoryWorkbench = (function() {
         _rightView = null;
         _viewSwitchButton = null;
         _tuningHelpButton = null;
+        _modConfirmationToggle = null;
         _pager = null;
         _backpackSortControls = null;
         _rightSortControls = null;
@@ -114,6 +168,7 @@ var InventoryWorkbench = (function() {
         _viewMode = initialView;
         _rightContainerId = config.rightContainerId;
         _rightLimit = config.rightLimit;
+        _modConfirmationMode = readModConfirmationMode();
         if (!_coordinator.configureRequests([
             {containerId:'背包', offset:0, limit:50, filterKey:'all'},
             {containerId:_rightContainerId, offset:0, limit:_rightLimit, filterKey:'all'}
@@ -149,6 +204,9 @@ var InventoryWorkbench = (function() {
         _shell.addHeaderAction(_retryButton);
 
         if (_tuningOrigin) {
+            _modConfirmationToggle = createModConfirmationToggle();
+            _shell.addHeaderAction(_modConfirmationToggle);
+
             _viewSwitchButton = document.createElement('button');
             _viewSwitchButton.type = 'button';
             _viewSwitchButton.className = 'workbench-mode-btn equipment-tuning-view-switch';
@@ -201,6 +259,7 @@ var InventoryWorkbench = (function() {
             resolveSlot:function(containerId, physicalSlot) { return findCurrentSlot(containerId, physicalSlot); },
             onStateChange:function() { refreshControls(); },
             densityController:_densityController,
+            modConfirmationMode:_modConfirmationMode,
             loadConversionCandidates:loadTuningConversionCandidates,
             toast:toast
         });
@@ -299,6 +358,7 @@ var InventoryWorkbench = (function() {
             _viewSwitchButton.setAttribute('aria-pressed', _viewMode === 'tuning' ? 'true' : 'false');
         }
         if (_tuningHelpButton) _tuningHelpButton.hidden = _viewMode !== 'tuning';
+        refreshModConfirmationToggle();
     }
 
     function maybeSelectFirstTunable() {
@@ -1025,7 +1085,7 @@ var InventoryWorkbench = (function() {
             kind:'equipment-tuning-help',
             title:'装备调制帮助',
             message:'从左侧装备开始\n• 选择背包内的武器或防具，右侧会显示当前调制状态。\n• “强化度”可直接选择目标等级；顶部强化石核心会显示持有量、消耗与强化后剩余。\n• “交换”只列出同类且强化度不同的装备；选择目标即可预览。',
-            detail:'进阶与配件\n• 进阶和配件候选由当前装备、持有材料及游戏进度共同决定。\n• 配件可按档级、用途、定位和状态逐层筛选。\n• 点击已安装配件可选择新配件直接替换，也可只卸下所选；替换会一次完成新件消耗与旧件返还。\n• 紧凑模式使用物品格同尺寸图标，一屏浏览更多候选；悬停或聚焦可查看完整说明。\n\n确认操作\n• 选择装备、目标等级或候选只会生成预览，不会立刻修改存档。\n• 确认材料和前后结果后，再点击底部主按钮完成操作。\n• 显示为不可用的候选不能选择；交换候选显示在右侧，不改变左侧筛选和面包屑。',
+            detail:'进阶与配件\n• 进阶和配件候选由当前装备、持有材料及游戏进度共同决定。\n• D.L.S. 分类导航可按档级、用途、定位和状态逐层筛选。\n• 点击已安装配件可选择新配件直接替换；配件右上角 × 可直接卸下单件。\n• 紧凑模式使用物品格同尺寸图标，一屏浏览更多候选；悬停或聚焦可查看完整说明。\n\n安全 / 快速\n• 安全模式：选择候选不会立刻修改存档；所有操作都停在权威预览，确认材料和前后结果后再提交。\n• 快速模式：仅单件安装、无连带变化的单件替换或卸下会在权威预览后自动提交。\n• 依赖级联、材料异常、卸下全部、强化、交换与进阶始终停在预览等待确认。\n• 显示为不可用的候选不能选择；交换候选显示在右侧，不改变左侧筛选和面包屑。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         });
     }
@@ -1167,6 +1227,7 @@ var InventoryWorkbench = (function() {
                 battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,
                 returnTarget:_returnTarget ? {panel:_returnTarget.panel, initData:_returnTarget.initData} : null,
                 tuning:_tuningView ? _tuningView.debugState() : null,
+                modConfirmationMode:_modConfirmationMode,
                 page:_pager ? _pager.getState() : null,
                 quickTransfer:{
                     mode:_quickMode,

@@ -76,7 +76,54 @@ class Program
                                   ?? Path.GetDirectoryName(Environment.ProcessPath);
         StartupDiagnostics.Init(earlyProjectRoot);
         StartupDiagnostics.Mark("core.main_enter", "projectRoot=" + earlyProjectRoot);
+        if (!VerifyDeployedRuntimeBundle())
+        {
+            StartupDiagnostics.Exit("runtime_bundle_self_check_failed");
+            return 2;
+        }
         return MainAfterStartupDiagnostics(args, earlyProjectRoot);
+    }
+
+    // Headless scripts normally probe through the native bootstrap first, but the invariant
+    // must also survive manual Core.exe launch and future entrypoints. Reuse the native verifier
+    // instead of maintaining a second manifest parser in managed code.
+    static bool VerifyDeployedRuntimeBundle()
+    {
+        string baseDir = Path.GetFullPath(AppContext.BaseDirectory).TrimEnd(Path.DirectorySeparatorChar);
+        DirectoryInfo runtimeDir = new DirectoryInfo(baseDir);
+        if (!string.Equals(runtimeDir.Name, "runtime", StringComparison.OrdinalIgnoreCase)) return true;
+
+        DirectoryInfo projectRoot = runtimeDir.Parent;
+        if (projectRoot == null) return false;
+        string bootstrap = Path.Combine(projectRoot.FullName, "CRAZYFLASHER7MercenaryEmpire.exe");
+        if (!File.Exists(bootstrap)) return false;
+
+        try
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = bootstrap,
+                Arguments = "--verify-only",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WorkingDirectory = projectRoot.FullName
+            };
+            using (Process probe = Process.Start(psi))
+            {
+                if (probe == null) return false;
+                if (!probe.WaitForExit(60000))
+                {
+                    try { probe.Kill(true); } catch { }
+                    return false;
+                }
+                return probe.ExitCode == 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.Exception("runtime_bundle_self_check_exception", ex);
+            return false;
+        }
     }
 
     // 防止 JIT 内联导致 DpiAwarenessBootstrap.Initialize() 的异常栈折叠进 Main，影响 startup diagnostics 定位。

@@ -1604,6 +1604,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && tuningHelpModal.textContent.indexOf('进阶与配件') >= 0
                 && tuningHelpModal.textContent.indexOf('不会立刻修改存档') >= 0);
         click('.workbench-modal-action[data-action="close"]');
+        var tuningConfirmation = document.querySelector('.equipment-tuning-confirmation-toggle');
+        var tuningFast = tuningConfirmation && tuningConfirmation.querySelector('[data-confirmation-mode="fast"]');
+        var tuningSafe = tuningConfirmation && tuningConfirmation.querySelector('[data-confirmation-mode="safe"]');
+        if (tuningFast) tuningFast.click();
+        var fastPersisted = window.localStorage.getItem('cf7.equipmentTuning.modConfirmationMode');
+        var fastState = InventoryWorkbench.debugState();
+        if (tuningSafe) tuningSafe.click();
+        assert('workbench-tuning-confirmation','调制顶栏提供本地持久化的安全/快速配件模式，默认安全且不改变 AS2 协议',
+            !!tuningConfirmation && !tuningConfirmation.hidden && !!tuningFast && !!tuningSafe
+                && fastPersisted === 'fast' && fastState.modConfirmationMode === 'fast'
+                && fastState.tuning && fastState.tuning.modConfirmationMode === 'fast'
+                && InventoryWorkbench.debugState().modConfirmationMode === 'safe');
         Panels.close();
 
         await Host.openWorkbench(240);

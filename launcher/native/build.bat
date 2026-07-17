@@ -4,24 +4,24 @@ REM Output: launcher\bin\Release\miniaudio.dll
 
 setlocal
 
-REM Auto-detect MSVC environment
-if not defined VCINSTALLDIR (
-    for %%v in (
-        "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-        "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-        "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-        "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-        "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-    ) do (
-        if exist %%v (
-            echo [INFO] Found MSVC: %%v
-            call %%v
-            goto :build
-        )
-    )
-    echo [FAIL] MSVC not found. Install Visual Studio Build Tools 2022.
-    exit /b 1
-)
+if not defined CF7_VCVARS64 goto :missing_baseline
+if not defined CF7_MSVC_TOOLS_VERSION goto :missing_baseline
+if not defined CF7_WINDOWS_SDK_VERSION goto :missing_baseline
+if exist "%CF7_VCVARS64%" goto :pinned_vcvars
+echo [FAIL] CF7_VCVARS64 does not exist: %CF7_VCVARS64%
+exit /b 1
+
+:pinned_vcvars
+if defined CF7_VSWHERE_DIR set "PATH=%CF7_VSWHERE_DIR%;%PATH%"
+call "%CF7_VCVARS64%" %CF7_WINDOWS_SDK_VERSION% -vcvars_ver=%CF7_MSVC_TOOLS_VERSION%
+if errorlevel 1 exit /b 1
+call "%~dp0assert-pinned-tools.bat"
+if errorlevel 1 exit /b 1
+goto :build
+
+:missing_baseline
+echo [FAIL] Pinned MSVC/SDK baseline is not loaded. Run launcher\build.ps1.
+exit /b 1
 
 :build
 echo [INFO] Compiling miniaudio_bridge.c ...
