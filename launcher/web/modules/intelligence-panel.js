@@ -686,6 +686,7 @@ var IntelligencePanel = (function() {
             if (!nextName) return;
             // 名词视图下点击当前情报 = 从名词返回该情报（快照仍在本地，直接重渲染即可）
             var returningFromGlossary = (_currentViewMode === 'glossary');
+            var previousItemName = _currentItemName;
             if (nextName === _currentItemName && !returningFromGlossary) return;
             _currentViewMode = 'intel';
             _currentItemName = nextName;
@@ -697,7 +698,9 @@ var IntelligencePanel = (function() {
             }
             _selectedPage = 0;
             _showPlain = true;
-            if (returningFromGlossary && _snapshot) { renderSnapshot(); return; }
+            // 只有返回进入名词视图前的同一条情报时，现有快照才仍然有效；
+            // 选择其他目录项必须重新取对应快照，避免新标题配上旧正文/页数。
+            if (returningFromGlossary && nextName === previousItemName && _snapshot) { renderSnapshot(); return; }
             if (!_runtimeMode && _bundleByName[_currentItemName]) applyCurrentItemFromBundle();
             else requestSnapshot();
         });
