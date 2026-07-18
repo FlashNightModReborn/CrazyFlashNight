@@ -13240,49 +13240,73 @@ html.perf-low-effects .map-panel-close-btn:hover {
     scrollbar-gutter:stable;
 }
 
-/* KShop compact icon tile */
+/* KShop compact icon tile:
+   Keep the 54px tile efficient, but turn the buy badge into a small,
+   dark "command chip" that only lights up on hover. A subtle shadow
+   keeps it legible over bright icon art without covering the whole tile. */
 .item-grid-compact .kshop-card {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     box-sizing:border-box;
     width:100%;
     height:54px;
     min-height:54px;
     padding:2px;
-    overflow: hidden;
+    overflow:hidden;
+    background:#0b1013;
+    border:1px solid rgba(61,213,255,.12);
+    clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));
+    transition:border-color .12s,background .12s,box-shadow .12s;
+}
+.item-grid-compact .kshop-card:hover {
+    background:linear-gradient(135deg,rgba(61,213,255,.08),transparent 55%),#0c1317;
+    border-color:rgba(61,213,255,.45);
+    box-shadow:inset 0 0 0 1px rgba(61,213,255,.22),0 0 8px rgba(61,213,255,.10);
 }
 .item-grid-compact .kshop-card-icon-frame {
-    grid-row: auto;
+    grid-row:auto;
     width:48px;
     height:48px;
     background:transparent;
     border:0;
 }
-.item-grid-compact .kshop-card-info { display: none; }
+.item-grid-compact .kshop-card-info { display:none; }
 .item-grid-compact .kshop-add-btn {
-    position: absolute;
+    position:absolute;
     right:2px;
     top:2px;
-    width:20px;
-    height:20px;
-    min-width: 0;
-    padding: 0;
-    font-size: 0;
-    line-height:20px;
-    text-align: center;
-    background:rgba(61,213,255,.94);
-    color:#050b0d;
-    border:1px solid rgba(255,255,255,.34);
-    clip-path: none;
-    z-index: 2;
+    width:16px;
+    height:16px;
+    min-width:0;
+    padding:0;
+    font-size:0;
+    line-height:14px;
+    text-align:center;
+    color:var(--dls-crystal);
+    background:rgba(6,11,13,.82);
+    border:1px solid rgba(61,213,255,.40);
+    clip-path:polygon(0 0,calc(100% - 2px) 0,100% 2px,100% 100%,2px 100%,0 calc(100% - 2px));
+    box-shadow:-2px 2px 5px rgba(0,0,0,.55);
+    cursor:pointer;
+    z-index:3;
+    transition:background .10s,border-color .10s,color .10s,transform .10s;
 }
-.item-grid-compact .kshop-add-btn::after { content:'+'; font-size:13px; font-weight:700; }
+.item-grid-compact .kshop-add-btn::after { content:'+'; font-size:11px; font-weight:800; }
+.item-grid-compact .kshop-card:hover .kshop-add-btn,
+.item-grid-compact .kshop-add-btn:hover {
+    color:#030607;
+    background:var(--dls-crystal);
+    border-color:rgba(255,255,255,.55);
+    transform:scale(1.08);
+    box-shadow:0 0 6px rgba(61,213,255,.35),-1px 1px 4px rgba(0,0,0,.45);
+}
+.item-grid-compact .kshop-card:active .kshop-add-btn { transform:scale(0.96); }
 .item-grid-compact .kshop-card-locked .kshop-add-btn,
-.item-grid-compact .kshop-card-nosale .kshop-add-btn { display: none; }
+.item-grid-compact .kshop-card-nosale .kshop-add-btn { display:none; }
 .item-grid-compact .kshop-card-locked,
-.item-grid-compact .kshop-card-nosale { opacity: .5; filter: grayscale(.6); }
+.item-grid-compact .kshop-card-nosale { opacity:.5; filter:grayscale(.6); }
 
 /* NPC shop compact icon tile */
 .item-grid-compact .npcshop-catalog-card {

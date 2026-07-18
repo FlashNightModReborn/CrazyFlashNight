@@ -850,7 +850,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && !!compactCard.querySelector('.kshop-card-icon-frame')
                 && !!compactCard.querySelector('.kshop-add-btn')
                 && parseFloat(getComputedStyle(compactCard).height) >= 54
-                && parseFloat(getComputedStyle(compactCard.querySelector('.kshop-add-btn')).width) >= 20
+                && parseFloat(getComputedStyle(compactCard.querySelector('.kshop-add-btn')).width) >= 16
                 && lockedCompactCard && !lockedCompactCard.querySelector('.kshop-add-btn'));
         fullDensityOption.click();
         assert('kshop-ui2k','切回完整模式恢复目录网格密度',
