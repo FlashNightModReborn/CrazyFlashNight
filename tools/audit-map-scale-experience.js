@@ -90,7 +90,11 @@ function main() {
     const generatedPath = path.resolve(__dirname, '..', 'launcher', 'web', 'modules', 'map-fit-presets.js');
     const expectedGenerated = tuner.buildRuntimeFile(result);
     const actualGenerated = fs.readFileSync(generatedPath, 'utf8');
-    if (actualGenerated !== expectedGenerated) {
+    // Git may materialize tracked text as CRLF on Windows even when its canonical
+    // blob is LF. Staleness is a content check, so compare normalized text instead
+    // of turning core.autocrlf into a false release-policy failure.
+    const normalizeLineEndings = (value) => value.replace(/\r\n?/g, '\n');
+    if (normalizeLineEndings(actualGenerated) !== normalizeLineEndings(expectedGenerated)) {
         errors.push('generated map-fit-presets.js is stale; run node tools/tune-map-filter-fit.js --write');
     }
 
