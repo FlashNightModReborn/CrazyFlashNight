@@ -22,7 +22,8 @@ function Read-Cf7GitHubBuilderConfig {
     if ($config.enabled -isnot [bool] -or -not [bool]$config.enabled) { throw 'GitHub runtime builder is disabled.' }
     if ([string]$config.repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') { throw 'Invalid GitHub runtime builder repository.' }
     if ([string]$config.signerWorkflow -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$') { throw 'Invalid GitHub runtime signer workflow.' }
-    if ([string]$config.sourceRef -notmatch '^refs/heads/[A-Za-z0-9._/-]+$') { throw 'Invalid GitHub runtime source ref.' }
+    if ([string]$config.sourceRef -notmatch '^refs/(?:heads|tags)/[A-Za-z0-9._/-]+$' -or
+            [string]$config.sourceRef -match '(?:^|/)\.\.(?:/|$)|//|/$') { throw 'Invalid GitHub runtime source ref.' }
     foreach ($field in @('faultDomain','runnerClass')) {
         if ([string]$config.$field -notmatch '^[a-z0-9][a-z0-9._-]{1,63}$') { throw "Invalid GitHub runtime builder field: $field" }
     }

@@ -1,6 +1,6 @@
 {
   "schema": "cf7-runtime-toolchain.v1",
-  "baseline": "cf7-win-x64-2026-07-17",
+  "baseline": "cf7-win-x64-2026-07-18",
   "dotnet": {
     "sdkVersion": "10.0.300",
     "rollForward": "disable",
@@ -10,10 +10,10 @@
   },
   "msvc": {
     "toolsVersion": "14.44.35207",
-    "compilerFileVersion": "19.44.35227.0",
-    "linkerFileVersion": "14.44.35227.0",
-    "clSha256": "7A154E5136CC538B42E6944997FC5E3BB49112894E41DD88A70940AAFF9AA831",
-    "linkSha256": "359B5861060B8B8899A1EF87385A37B32D8ECB8A81D092866907E7249AB962BE"
+    "compilerFileVersion": "19.44.35228.0",
+    "linkerFileVersion": "14.44.35228.0",
+    "clSha256": "88C8344236A27A6E727E0A8EDC49AAA2690BDC7A9464B9D18CC7ABE70A9F1C0D",
+    "linkSha256": "CA11E6C45DEBD34BF652DFE984C5360A531A005ED78BF72852330C9C2590CF0D"
   },
   "windowsSdk": {
     "version": "10.0.22621.0",
@@ -33,12 +33,13 @@
     "rustupInitUrl": "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe",
     "rustupInitSha256": "86478E53F769379D7F0EBFA7C9AA97CB76CA92233F79AA2CC0DBEE2EFAAC73C7",
     "visualStudio": {
-      "release": "17.14.32",
-      "installerVersion": "17.14.37301.10",
-      "bootstrapperUrl": "https://download.visualstudio.microsoft.com/download/pr/32cfc04d-a165-47db-a247-618c1efc2c76/7f3cba56c051a0b221d172e965efc560287bd9bce3ca82056a4249b38049d93c/vs_BuildTools.exe",
-      "bootstrapperSha256": "7F3CBA56C051A0B221D172E965EFC560287BD9BCE3CA82056A4249B38049D93C",
-      "preferredInstallPath": "Microsoft Visual Studio\\2022\\BuildTools-CF7-17.14.32",
+      "release": "17.14.36",
+      "installerVersion": "17.14.37502.11",
+      "bootstrapperUrl": "https://download.visualstudio.microsoft.com/download/pr/12aa1305-dd17-4f26-8429-d072cda64c80/5ae95bb02bb3442441a8d891e5bb1d2975445e2e3ee16ada5bc7bd17227f1dd7/vs_BuildTools.exe",
+      "bootstrapperSha256": "5AE95BB02BB3442441A8D891E5BB1D2975445E2E3EE16ADA5BC7BD17227F1DD7",
+      "preferredInstallPath": "Microsoft Visual Studio\\2022\\BuildTools-CF7-17.14.36",
       "components": [
+        "Microsoft.VisualStudio.Component.VC.14.44.17.14.x86.x64",
         "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
         "Microsoft.VisualStudio.Component.Windows11SDK.22621"
       ]

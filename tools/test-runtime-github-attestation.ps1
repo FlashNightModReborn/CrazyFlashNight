@@ -232,16 +232,25 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Test (-not $workflowText.Contains('>> $env:GITHUB_')) 'PowerShell 5.1 workflow files must not write UTF-16 through redirection to GitHub control files'
     Assert-Cf7Test ($workflowText.Contains('run-name: Runtime cloud builder ${{ inputs.source_commit || github.event.client_payload.source_commit }}')) 'cloud workflow run name must expose the immutable full source SHA'
     Assert-Cf7Test ($workflowText.Contains("-cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$'")) 'cloud dispatch must canonicalize source identity by requiring lowercase full SHA'
-    Assert-Cf7Test (([regex]::Matches($workflowText, 'runs-on:\s*windows-2025')).Count -eq 2) 'both cloud jobs must use the pinned windows-2025 image'
-    Assert-Cf7Test (-not $workflowText.Contains('windows-latest') -and -not $workflowText.Contains('self-hosted')) 'cloud builder workflow must not float runner class or use self-hosted runners'
+    Assert-Cf7Test (([regex]::Matches($workflowText, 'runs-on:\s*windows-2022')).Count -eq 2) 'both cloud jobs must use the explicit VS 2022 image family'
+    Assert-Cf7Test (-not [regex]::IsMatch($workflowText, 'runs-on:\s*(?:windows-latest|windows-2025|self-hosted)')) 'cloud builder workflow must not use a mutable major-toolchain alias or self-hosted runners'
+    Assert-Cf7Test ($buildJobText.Contains('CF7_EXPECTED_IMAGE_OS: win22') -and
+        $buildJobText.Contains('$env:RUNNER_ENVIRONMENT -cne ''github-hosted''') -and
+        $buildJobText.Contains('$env:ImageOS -cne $env:CF7_EXPECTED_IMAGE_OS')) `
+        'cloud producer must fail closed when GitHub resolves an unexpected runner family'
     Assert-Cf7Test (-not [regex]::IsMatch($workflowText, '(?m)^\s*uses:\s*[^\s@]+@(?![0-9a-f]{40}(?:\s|$))')) 'every cloud workflow action must use one immutable full commit SHA'
     Assert-Cf7Test ($workflowText.Contains('name: Preserve failed bootstrap diagnostics') -and
-        $workflowText.Contains('${{ env.CF7_CANDIDATE_ROOT }}/logs/bootstrap.log') -and
+        $workflowText.Contains('CF7_BOOTSTRAP_DIAGNOSTICS_DIR: ${{ github.workspace }}\tmp\runtime-bootstrap-diagnostics') -and
+        $workflowText.Contains('path: tmp/runtime-bootstrap-diagnostics') -and
         $workflowText.Contains('if: failure()')) 'failed cloud producer must preserve bounded bootstrap diagnostics'
     Assert-Cf7Test ($workflowText.IndexOf('CF7_CANDIDATE_ROOT=$candidate', [StringComparison]::Ordinal) -lt
         $workflowText.IndexOf('-File .\launcher\build-runtime-candidate.ps1', [StringComparison]::Ordinal)) `
         'cloud candidate path must be exported before the producer can fail'
     Assert-Cf7Test ($buildJobText.Contains('fetch-depth: 1') -and -not $buildJobText.Contains('fetch-depth: 0')) 'cloud producer must fetch only the requested immutable tree, not full repository history'
+    Assert-Cf7Test ($buildJobText.Contains('sparse-checkout-cone-mode: false') -and
+        $buildJobText.Contains('tools/materialize-runtime-build-inputs.ps1') -and
+        $buildJobText.Contains('name: Materialize exact runtime identity domains')) `
+        'cloud producer must expand a partial checkout to the exact four identity domains'
     $integrityWorkflowText = [IO.File]::ReadAllText((Join-Path $ProjectRoot '.github\workflows\runtime-bundle-integrity.yml'), [Text.Encoding]::UTF8)
     Assert-Cf7Test (-not [regex]::IsMatch($integrityWorkflowText, '(?m)^\s*uses:\s*[^\s@]+@(?![0-9a-f]{40}(?:\s|$))')) 'runtime integrity workflow actions must use immutable full commit SHAs'
     Assert-Cf7Test ($integrityWorkflowText.Contains('actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7')) 'runtime integrity workflow must use the reviewed checkout v7 commit'
@@ -261,6 +270,11 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     foreach ($configValue in @($githubConfig.repository,$githubConfig.signerWorkflow,$githubConfig.sourceRef,$githubConfig.faultDomain,$githubConfig.runnerClass)) {
         Assert-Cf7Test ($workflowText.Contains([string]$configValue)) "cloud workflow/config identity drift: $configValue"
     }
+    $bootstrapText = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\bootstrap-runtime-build-env.ps1'), [Text.Encoding]::UTF8)
+    Assert-Cf7Test ($bootstrapText.Contains('modify --installPath') -and -not $bootstrapText.Contains('update --installPath')) `
+        'Visual Studio component provisioning must use modify rather than update'
+    Assert-Cf7Test ($bootstrapText.Contains("-all -prerelease -products '*'") -and $bootstrapText.Contains('Copy-Cf7VisualStudioSetupDiagnostics')) `
+        'Visual Studio bootstrap must inventory all instances and preserve setup diagnostics'
     Assert-Cf7Test ($buildJobText -and -not $buildJobText.Contains('id-token: write') -and -not $buildJobText.Contains('attestations: write')) 'untrusted build job must not receive signing permissions'
     Assert-Cf7Test ($attestJobText.Contains('id-token: write') -and $attestJobText.Contains('attestations: write')) 'attestation job must have only-in-job signing permissions'
     Assert-Cf7Test ($attestJobText.IndexOf('Validate staged cloud identity and archive layout', [StringComparison]::Ordinal) -lt $attestJobText.IndexOf('actions/attest@', [StringComparison]::Ordinal)) 'trusted archive/envelope preflight must run before OIDC signing'

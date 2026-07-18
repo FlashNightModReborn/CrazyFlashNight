@@ -30,7 +30,8 @@ function Read-Cf7CloudBuilderConfig {
     if ([string]$config.signerWorkflow -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$') {
         throw 'Invalid GitHub runtime signer workflow.'
     }
-    if ([string]$config.sourceRef -notmatch '^refs/heads/[A-Za-z0-9._/-]+$') { throw 'Invalid GitHub runtime source ref.' }
+    if ([string]$config.sourceRef -notmatch '^refs/(?:heads|tags)/[A-Za-z0-9._/-]+$' -or
+            [string]$config.sourceRef -match '(?:^|/)\.\.(?:/|$)|//|/$') { throw 'Invalid GitHub runtime source ref.' }
     if ([string]$config.identityProvider -ne 'github-oidc-sigstore' -or
             $config.longLivedPrivateKey -isnot [bool] -or [bool]$config.longLivedPrivateKey) {
         throw 'GitHub runtime builder must use keyless OIDC/Sigstore identity.'
@@ -221,7 +222,7 @@ function Invoke-Cf7ProofVerifier(
 $config = Read-Cf7CloudBuilderConfig
 $script:GitHubCli = Resolve-Cf7GitHubCli
 $workflowFile = [IO.Path]::GetFileName([string]$config.signerWorkflow)
-$sourceBranch = ([string]$config.sourceRef).Substring('refs/heads/'.Length)
+$sourceRefName = ([string]$config.sourceRef) -replace '^refs/(?:heads|tags)/', ''
 $expectedRunTitle = "Runtime cloud builder $SourceCommitOid"
 $artifactName = "runtime-cloud-builder-$SourceCommitOid"
 
@@ -243,10 +244,10 @@ $beforeRuns = @(Get-Cf7CloudRuns -Repository ([string]$config.repository) -Workf
 $beforeIds = New-Object 'System.Collections.Generic.HashSet[long]'
 foreach ($run in $beforeRuns) { [void]$beforeIds.Add([Int64]$run.databaseId) }
 
-Write-Host "[RuntimeGitHubBuild] Dispatch source=$SourceCommitOid workflow=$workflowFile ref=$sourceBranch" -ForegroundColor Cyan
+Write-Host "[RuntimeGitHubBuild] Dispatch source=$SourceCommitOid workflow=$workflowFile ref=$sourceRefName" -ForegroundColor Cyan
 Invoke-Cf7Gh -Arguments @(
     'workflow','run',$workflowFile,'--repo',[string]$config.repository,
-    '--ref',$sourceBranch,'-f',"source_commit=$SourceCommitOid"
+    '--ref',$sourceRefName,'-f',"source_commit=$SourceCommitOid"
 ) -AllowEmpty | Out-Null
 
 $discoveryDeadline = [DateTime]::UtcNow.AddSeconds($DiscoveryTimeoutSeconds)
@@ -254,7 +255,7 @@ $run = $null
 do {
     $candidates = @(Get-Cf7CloudRuns -Repository ([string]$config.repository) -WorkflowFile $workflowFile | Where-Object {
         [string]$_.displayTitle -ceq $expectedRunTitle -and
-        [string]$_.headBranch -ceq $sourceBranch -and
+        [string]$_.headBranch -ceq $sourceRefName -and
         [string]$_.event -eq 'workflow_dispatch' -and
         -not $beforeIds.Contains([Int64]$_.databaseId)
     })
@@ -268,7 +269,7 @@ do {
 if ($null -eq $run) { throw "Timed out locating dispatched GitHub run with title: $expectedRunTitle" }
 
 $runId = [Int64]$run.databaseId
-Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle -ExpectedBranch $sourceBranch
+Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle -ExpectedBranch $sourceRefName
 Write-Host "[RuntimeGitHubBuild] Located run=$runId url=$($run.url)" -ForegroundColor Cyan
 
 $runDeadline = [DateTime]::UtcNow.AddSeconds($RunTimeoutSeconds)
@@ -277,7 +278,7 @@ do {
         'run','view',[string]$runId,'--repo',[string]$config.repository,
         '--json','databaseId,displayTitle,headBranch,headSha,status,conclusion,createdAt,event,url'
     )
-    Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle -ExpectedBranch $sourceBranch
+    Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle -ExpectedBranch $sourceRefName
     if ([string]$run.status -eq 'completed') { break }
     if ([DateTime]::UtcNow -ge $runDeadline) { throw "Timed out waiting for GitHub runtime run: $runId" }
     Start-Sleep -Seconds $PollSeconds

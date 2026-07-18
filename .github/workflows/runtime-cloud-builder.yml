@@ -21,7 +21,9 @@ concurrency:
 jobs:
   build:
     name: build-pinned-runtime
-    runs-on: windows-2025
+    # windows-2025 moved to VS 2026 in June 2026. The locked 17.14/v143
+    # producer belongs on GitHub's explicit VS 2022 image family.
+    runs-on: windows-2022
     timeout-minutes: 360
     env:
       GIT_CONFIG_COUNT: 1
@@ -39,7 +41,7 @@ jobs:
           CF7_WORKFLOW_INPUT: ${{ inputs.source_commit }}
           CF7_REPOSITORY_DISPATCH_INPUT: ${{ github.event.client_payload.source_commit }}
           CF7_EXPECTED_REPOSITORY: FlashNightModReborn/CrazyFlashNight
-          CF7_EXPECTED_REF: refs/heads/main
+          CF7_WORKFLOW_REF: ${{ github.ref }}
         run: |
           $requested = if ($env:CF7_WORKFLOW_INPUT) { $env:CF7_WORKFLOW_INPUT } else { $env:CF7_REPOSITORY_DISPATCH_INPUT }
           if ($requested -cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$') {
@@ -48,8 +50,9 @@ jobs:
           if ('${{ github.repository }}' -cne $env:CF7_EXPECTED_REPOSITORY) {
             throw "Cloud builder is pinned to $($env:CF7_EXPECTED_REPOSITORY)."
           }
-          if ('${{ github.ref }}' -cne $env:CF7_EXPECTED_REF) {
-            throw "Dispatch this workflow from $($env:CF7_EXPECTED_REF)."
+          if ($env:CF7_WORKFLOW_REF -cne 'refs/heads/main' -and
+              $env:CF7_WORKFLOW_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
+            throw "Dispatch this workflow from main or a canonical runtime-build-v2 tag. actual=$env:CF7_WORKFLOW_REF"
           }
           $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
           [IO.File]::AppendAllText(
@@ -61,14 +64,22 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           ref: ${{ steps.request.outputs.source_commit }}
-          # The producer needs exactly one immutable tree, not this 11 GiB repository's history.
+          # Seed a partial clone; the next step expands this to the exact four identity
+          # domains instead of checking out 4.5 GiB of unrelated assets.
           fetch-depth: 1
           persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /config/build/runtime-github-builder.v2.json
+            /config/build/runtime-inputs.v2.json
+            /tools/materialize-runtime-build-inputs.ps1
+            /tools/runtime-build-v2-common.ps1
 
       - name: Verify exact checkout
         shell: powershell
         env:
           CF7_SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+          CF7_WORKFLOW_REF: ${{ github.ref }}
         run: |
           $head = (git rev-parse 'HEAD^{commit}').Trim().ToLowerInvariant()
           if ($LASTEXITCODE -ne 0 -or $head -cne $env:CF7_SOURCE_COMMIT) {
@@ -78,12 +89,52 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Tracked worktree changed immediately after checkout.' }
           git diff --cached --quiet --exit-code
           if ($LASTEXITCODE -ne 0) { throw 'Index changed immediately after checkout.' }
+          $cloudConfig = Get-Content -LiteralPath .\config\build\runtime-github-builder.v2.json -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ([string]$cloudConfig.sourceRef -cne $env:CF7_WORKFLOW_REF) {
+            throw "Requested tree is not bound to this workflow ref: config=$($cloudConfig.sourceRef) actual=$env:CF7_WORKFLOW_REF"
+          }
+
+      - name: Materialize exact runtime identity domains
+        shell: powershell
+        run: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\materialize-runtime-build-inputs.ps1 -ProjectRoot $PWD.Path
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify hosted runner family
+        shell: powershell
+        env:
+          CF7_EXPECTED_IMAGE_OS: win22
+          CF7_EXPECTED_RUNNER_CLASS: github-hosted-windows-2022
+        run: |
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted' -or $env:RUNNER_OS -cne 'Windows' -or
+              $env:ImageOS -cne $env:CF7_EXPECTED_IMAGE_OS) {
+            throw "Unexpected runner family: environment=$env:RUNNER_ENVIRONMENT os=$env:RUNNER_OS imageOS=$env:ImageOS"
+          }
+          Write-Host "Runner class $env:CF7_EXPECTED_RUNNER_CLASS imageVersion=$env:ImageVersion"
 
       - name: Provision byte-pinned build environment
         shell: powershell
+        env:
+          CF7_BOOTSTRAP_DIAGNOSTICS_DIR: ${{ github.workspace }}\tmp\runtime-bootstrap-diagnostics
         run: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\bootstrap-runtime-build-env.ps1 -ProjectRoot $PWD.Path
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Path $env:CF7_BOOTSTRAP_DIAGNOSTICS_DIR -Force | Out-Null
+          $log = Join-Path $env:CF7_BOOTSTRAP_DIAGNOSTICS_DIR 'bootstrap.log'
+          $stdoutLog = Join-Path $env:CF7_BOOTSTRAP_DIAGNOSTICS_DIR 'bootstrap.stdout.log'
+          $stderrLog = Join-Path $env:CF7_BOOTSTRAP_DIAGNOSTICS_DIR 'bootstrap.stderr.log'
+          $bootstrapScript = (Resolve-Path -LiteralPath .\tools\bootstrap-runtime-build-env.ps1).Path.Replace("'", "''")
+          $projectRoot = $PWD.Path.Replace("'", "''")
+          $childCommand = "& '$bootstrapScript' -ProjectRoot '$projectRoot'; exit `$LASTEXITCODE"
+          $encodedCommand = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($childCommand))
+          $process = Start-Process -FilePath powershell.exe -ArgumentList @(
+            '-NoProfile','-ExecutionPolicy','Bypass','-EncodedCommand',$encodedCommand
+          ) -NoNewWindow -Wait -PassThru -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog
+          $bootstrapExit = $process.ExitCode
+          $stdoutLines = @(if (Test-Path -LiteralPath $stdoutLog) { Get-Content -LiteralPath $stdoutLog -Encoding UTF8 })
+          $stderrLines = @(if (Test-Path -LiteralPath $stderrLog) { Get-Content -LiteralPath $stderrLog -Encoding UTF8 })
+          @('[stdout]') + $stdoutLines + @('[stderr]') + $stderrLines | Set-Content -LiteralPath $log -Encoding UTF8
+          foreach ($line in $stdoutLines) { Write-Host $line }
+          foreach ($line in $stderrLines) { Write-Host $line }
+          if ($bootstrapExit -ne 0) { exit $bootstrapExit }
 
       - name: Produce runtime candidate
         shell: powershell
@@ -103,7 +154,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: runtime-cloud-diagnostics-${{ steps.request.outputs.source_commit }}-${{ github.run_attempt }}
-          path: ${{ env.CF7_CANDIDATE_ROOT }}/logs/bootstrap.log
+          path: tmp/runtime-bootstrap-diagnostics
           if-no-files-found: warn
           retention-days: 7
 
@@ -142,7 +193,7 @@ jobs:
   attest:
     name: attest-cloud-envelope
     needs: build
-    runs-on: windows-2025
+    runs-on: windows-2022
     timeout-minutes: 30
     permissions:
       contents: read
@@ -161,9 +212,9 @@ jobs:
           CF7_SOURCE_COMMIT: ${{ needs.build.outputs.source_commit }}
           CF7_EXPECTED_REPOSITORY: FlashNightModReborn/CrazyFlashNight
           CF7_EXPECTED_WORKFLOW: FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml
-          CF7_EXPECTED_REF: refs/heads/main
+          CF7_EXPECTED_REF: ${{ github.ref }}
           CF7_EXPECTED_FAULT_DOMAIN: github-hosted-windows
-          CF7_EXPECTED_RUNNER_CLASS: github-hosted-windows
+          CF7_EXPECTED_RUNNER_CLASS: github-hosted-windows-2022
         run: |
           $envelopePath = Join-Path $PWD.Path 'cloud-output\runtime-build-envelope.v2.json'
           $candidateArchive = Join-Path $PWD.Path 'cloud-output\runtime-candidate.v2.zip'

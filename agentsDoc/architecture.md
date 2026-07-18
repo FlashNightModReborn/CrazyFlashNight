@@ -79,7 +79,7 @@
 - Windows runtime 发布已分成正交控制面：prepare 只派生 tracked 资产；policy 只读审计并签发绑定 Git tree 的 receipt；纯 producer 只消费 artifact source + producer recipe + toolchain lock，在隔离输出中生成 payload/manifest，不让政策变化进入 build identity
 - release train 把最终 Git tree + policy hash 冻结为无自由命令字段的 request/Git bundle；bundle 内构建源码仍会执行，因此共享 queue 是 ACL 收紧的信任边界。本地 worker 清除外部 Git index/worktree/object 上下文，用 lease/heartbeat/mutex 在 MAX_PATH 预算内的短隔离 clone 构建，失败诊断受限归档，candidate 按 build identity + payload closure 进入 CAS。payload closure 排除 manifest，避免元数据变化伪装成二进制失衡
 - v2 生产证明有两个信任根：注册本地机器以 CurrentUser 不可导出 X509 key 签名；GitHub hosted Windows 以固定 repo/workflow/source-ref 的 OIDC/Sigstore keyless provenance 证明。promotion 同时要求不同 signer identity 与不同 faultDomain，推荐 local + GitHub 双域
-- promotion 是正式部署唯一写入口：验证 immutable request、production receipt、候选字节与 quorum 后事务替换 bootstrap/runtime/consensus，失败回滚；CI 对所有分支先验 byte closure，开发分支部署不变时允许 `source-ahead`。保护分支仅有一次 hash-bound `migration-bootstrap` 可在 legacy 部署零变化时先合入 cloud workflow/公钥 registry；permanent marker 进入 base 后只接受完整 v2 promotion，v2 激活后禁止降级 v1。当前正式部署仍处 v1 迁移兼容期
+- promotion 是正式部署唯一写入口：验证 immutable request、production receipt、候选字节与 quorum 后事务替换 bootstrap/runtime/consensus，失败回滚；CI 对所有分支先验 byte closure，开发分支部署不变时允许 `source-ahead`。一次性 hash-bound `migration-bootstrap` 已完成 cloud workflow/公钥 registry 引导，当前正式部署为 v2；保护分支只接受完整 v2 strict 状态并永久禁止降级 v1
 - 身份 schema、队列/CAS、enrollment、cloud proof、promotion 与 CI 状态机见 [runtime-build-reproducibility.md](../docs/runtime-build-reproducibility.md)
 - PowerShell 承担 Windows 环境下的启动、编译 smoke、CLI 和诊断自动化
 - 这里的 Node / Rust 都属于**受控边界件**，不是独立应用栈；它们存在的理由是为现有运行时服务
