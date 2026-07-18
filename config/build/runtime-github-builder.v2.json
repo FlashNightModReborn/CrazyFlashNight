@@ -3,9 +3,9 @@
   "enabled": true,
   "repository": "FlashNightModReborn/CrazyFlashNight",
   "signerWorkflow": "FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml",
-  "sourceRef": "refs/heads/main",
+  "sourceRef": "refs/tags/runtime-build-v2/20260718-first-promotion-r3",
   "faultDomain": "github-hosted-windows",
-  "runnerClass": "github-hosted-windows",
+  "runnerClass": "github-hosted-windows-2022",
   "identityProvider": "github-oidc-sigstore",
   "longLivedPrivateKey": false
 }

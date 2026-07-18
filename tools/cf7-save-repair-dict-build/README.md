@@ -68,3 +68,4 @@ npm run verify   # 通过返回 0；不一致返回 1 + 打印 diff
 - **AS2 常量**而非 `<skill>` XML：技能名/任务链名在 AS2 代码里就是字符串字面量，没有独立 XML。继续在 SaveManager 维护一份显式数组，CI gate 守同源。
 - **U+FFFD 过滤**：解析时主动跳过含 `�` 的字段，防止已坏数据被当成"权威"反向污染 dict。
 - **排序**：所有数组按 `localeCompare(zh)` 稳定排序，便于 PR diff review。
+- **幂等时间戳**：`generated.at` 只在结构内容真实变化时刷新；重复 `npm run build` 保留原字节，避免 release prepare 仅因当前时间制造伪 diff。

@@ -43,11 +43,13 @@ v1 只保留迁移兼容：开发分支可在部署集合未变化时进入 `sou
 
 `launcher/build.ps1` 只是人工兼容编排器：prepare → pure producer → policy。它适合已准备好的本地 tree 做完整候选检查，但不是多机发布协议，也不会替代签名 worker、immutable request 或 quorum。
 
+prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在结构内容变化时刷新 `generated.at`。重复 prepare 因时间戳制造 diff 属于构建门故障，不能要求维护者提交无语义的时间漂移。
+
 ## 精确环境与隔离输出
 
 - 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。
-- `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及固定 bootstrapper 字节；NuGet 图由 `launcher/packages.lock.json` 固定。
-- 当前基线为 .NET SDK `10.0.300`、MSVC toolset `14.44.35207`（cl `19.44.35227.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。
+- `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及 bootstrapper 入口字节；NuGet 图由 `launcher/packages.lock.json` 固定。Visual Studio 安装器只是尽力补齐组件，不能把会移动的在线 channel 伪装成已固定 payload；最终资格始终以 `cl/link/rc` 的版本与 SHA-256 精确门为准。
+- 当前基线为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。
 - producer 清除外部编译/链接/Rust 注入变量；miniaudio 源先规范化为 LF，再用固定 `/pathmap`、`/experimental:deterministic`、`/Brepro`；Rust 每次 clean + locked；managed publish 不带 PDB/SourceLink。
 - candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
 
@@ -96,9 +98,9 @@ worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢�
 
 ## GitHub hosted 独立故障域
 
-`.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：从 `main` 上 dispatch 一个 full source commit，在 `windows-2025` 精确 checkout、配置锁定工具链、运行纯 producer并验证 v2 candidate；producer 失败时另传短期 diagnostics artifact，同时日志尾部进入 Actions log。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
+`.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：从 `main` 上 dispatch 一个 full source commit，在明确的 `windows-2022` / VS 2022 runner family 精确 checkout、配置锁定工具链、运行纯 producer并验证 v2 candidate；运行时还复核 `RUNNER_ENVIRONMENT`、`RUNNER_OS` 与 `ImageOS=win22`。`windows-2025` 自 2026-06 起已被 GitHub 迁到 VS 2026，不能再承载当前 17.14/v143 锁。checkout 先只取 config/materializer seed，再由 `runtime-inputs.v2.json` 展开四域精确文件集合；禁止为约 9 MiB 的 producer 输入铺开约 4.5 GiB 工作树并挤占 hosted runner 的安装/构建空间。producer 失败时上传独立的短期 bootstrap/Visual Studio setup diagnostics，不再依赖尚未创建的 candidate 路径。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
 
-`config/build/runtime-github-builder.v2.json` 固定 repository、signer workflow、`refs/heads/main`、runner class 与 `github-hosted-windows` faultDomain。最短触发、等待、取回与验真命令是：
+`config/build/runtime-github-builder.v2.json` 固定 repository、signer workflow、release source ref、`github-hosted-windows-2022` runner class 与 `github-hosted-windows` faultDomain。日常 release train 使用一次性 `refs/tags/runtime-build-v2/<release-id>`：tag 必须精确指向 source commit，helper 用该 tag dispatch，使 GitHub 实际执行的 workflow 字节与被四域政策 hash 绑定的 workflow 字节来自同一 commit；证明同时绑定 tag、full commit 与 tree。不要删除或移动已经出具证明的 tag。runner 镜像的小版本仍由 GitHub 滚动维护；任何工具字节变化都会被 toolchain lock fail-closed，必须显式轮换基线，不能自动放宽。最短触发、等待、取回与验真命令是：
 
 ```powershell
 $cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>

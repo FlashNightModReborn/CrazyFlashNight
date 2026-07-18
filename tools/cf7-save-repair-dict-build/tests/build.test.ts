@@ -53,6 +53,24 @@ describe("build (integration)", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
+  it("preserves bytes and generated.at when semantic content is unchanged", () => {
+    const root = makeProject("idempotent");
+    const output = join(root, "launcher", "data", "save_repair_dict.json");
+    const first = build({ projectRoot: root });
+    expect(first.written).toBe(true);
+
+    const existing = JSON.parse(readFileSync(output, "utf-8"));
+    existing.generated.at = "2000-01-01T00:00:00.000Z";
+    const canonicalBytes = JSON.stringify(existing, null, 2) + "\n";
+    writeFileSync(output, canonicalBytes, "utf-8");
+
+    const second = build({ projectRoot: root });
+    expect(second.written).toBe(false);
+    expect(second.dict.generated.at).toBe("2000-01-01T00:00:00.000Z");
+    expect(readFileSync(output, "utf-8")).toBe(canonicalBytes);
+    rmSync(root, { recursive: true, force: true });
+  });
+
   it("verify mode passes when dict is up-to-date, fails when stale", () => {
     const root = makeProject("verify");
     build({ projectRoot: root });

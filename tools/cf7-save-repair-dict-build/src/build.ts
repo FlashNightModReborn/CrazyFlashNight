@@ -90,13 +90,27 @@ export function build(opts: BuildOptions): BuildResult {
     };
   }
 
+  // A release prepare must be idempotent.  generated.at documents the last
+  // semantic regeneration; it must not turn an unchanged dictionary into a
+  // different Git tree every time the generator runs.
+  if (existsSync(outputPath)) {
+    try {
+      const existing = JSON.parse(readFileSync(outputPath, "utf-8")) as SaveRepairDict;
+      if (JSON.stringify(stripVolatile(existing)) === JSON.stringify(stripVolatile(dict))) {
+        return { dict: existing, written: false };
+      }
+    } catch {
+      // Invalid existing JSON is replaced by the newly derived canonical file.
+    }
+  }
+
   // Atomic write: tmp + rename
   mkdirSync(dirname(outputPath), { recursive: true });
   const tmp = outputPath + ".tmp";
   const json = JSON.stringify(dict, null, 2) + "\n";
   writeFileSync(tmp, json, { encoding: "utf8" });
   renameSync(tmp, outputPath);
-  return { dict };
+  return { dict, written: true };
 }
 
 function dedupeSorted(arr: string[]): string[] {
@@ -156,7 +170,8 @@ function main(): void {
       process.exit(1);
     }
   }
-  console.log(`[dict-build] wrote ${join(projectRoot, "launcher", "data", "save_repair_dict.json")}`);
+  const action = result.written === false ? "unchanged" : "wrote";
+  console.log(`[dict-build] ${action} ${join(projectRoot, "launcher", "data", "save_repair_dict.json")}`);
   console.log(
     `  items=${result.dict.items.length}`
     + `, mods=${result.dict.mods.length}`

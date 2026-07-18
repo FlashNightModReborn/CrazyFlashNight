@@ -16,6 +16,13 @@ if (-not $lock.provisioning -or -not $lock.provisioning.visualStudio) {
 
 $cacheRoot = Join-Path $env:LOCALAPPDATA ("CF7\toolchain-cache\" + [string]$lock.baseline)
 if (-not $VerifyOnly) { New-Item -ItemType Directory -Force -Path $cacheRoot | Out-Null }
+$diagnosticsRoot = if ($env:CF7_BOOTSTRAP_DIAGNOSTICS_DIR) {
+    [IO.Path]::GetFullPath([string]$env:CF7_BOOTSTRAP_DIAGNOSTICS_DIR)
+} else {
+    Join-Path $ProjectRoot 'tmp\runtime-bootstrap-diagnostics'
+}
+$script:Cf7VisualStudioSetupStartedUtc = $null
+if (-not $VerifyOnly) { New-Item -ItemType Directory -Force -Path $diagnosticsRoot | Out-Null }
 
 function Test-Cf7Hash([string]$Path, [string]$Expected) {
     return (Test-Path -LiteralPath $Path -PathType Leaf) -and
@@ -110,9 +117,66 @@ function Ensure-Cf7Rust {
 function Get-Cf7VsInstances {
     $vswhere = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft Visual Studio\Installer\vswhere.exe'
     if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) { return @() }
-    $json = (& $vswhere -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -format json -utf8) -join "`n"
+    # Enumerate every instance. A clean machine may have VS without the C++ workload,
+    # and VS 2026 exposes the locked v143 compatibility toolset as a versioned component.
+    $json = (& $vswhere -all -prerelease -products '*' -format json -utf8) -join "`n"
     if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($json)) { return @() }
     return @(ConvertFrom-Json $json)
+}
+
+function Write-Cf7VisualStudioInventory {
+    $instances = @(Get-Cf7VsInstances)
+    if ($instances.Count -eq 0) {
+        Write-Host '[RuntimeBootstrap] Visual Studio inventory: no registered instances.' -ForegroundColor Yellow
+    }
+    foreach ($instance in $instances) {
+        $path = [string]$instance.installationPath
+        Write-Host ("[RuntimeBootstrap] Visual Studio instance product={0} version={1} path={2}" -f `
+            [string]$instance.productId, [string]$instance.installationVersion, $path) -ForegroundColor Cyan
+        $msvcRoot = Join-Path $path 'VC\Tools\MSVC'
+        foreach ($tools in @(Get-ChildItem -LiteralPath $msvcRoot -Directory -ErrorAction SilentlyContinue | Sort-Object Name)) {
+            $cl = Join-Path $tools.FullName 'bin\Hostx64\x64\cl.exe'
+            $link = Join-Path $tools.FullName 'bin\Hostx64\x64\link.exe'
+            if ((Test-Path -LiteralPath $cl -PathType Leaf) -and (Test-Path -LiteralPath $link -PathType Leaf)) {
+                $clVersion = [string](Get-Item -LiteralPath $cl).VersionInfo.FileVersion
+                $linkVersion = [string](Get-Item -LiteralPath $link).VersionInfo.FileVersion
+                $clHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $cl).Hash.ToUpperInvariant()
+                $linkHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $link).Hash.ToUpperInvariant()
+                Write-Host "[RuntimeBootstrap]   MSVC tools=$($tools.Name) cl=$clVersion sha256=$clHash"
+                Write-Host "[RuntimeBootstrap]   MSVC tools=$($tools.Name) link=$linkVersion sha256=$linkHash"
+            }
+        }
+    }
+    $sdkBin = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Windows Kits\10\bin'
+    $sdkVersions = @(Get-ChildItem -LiteralPath $sdkBin -Directory -ErrorAction SilentlyContinue | Sort-Object Name)
+    Write-Host "[RuntimeBootstrap] Windows SDK inventory: $([string]::Join(', ', [string[]]@($sdkVersions.Name)))"
+    foreach ($sdk in $sdkVersions) {
+        $rc = Join-Path $sdk.FullName 'x64\rc.exe'
+        if (Test-Path -LiteralPath $rc -PathType Leaf) {
+            Write-Host "[RuntimeBootstrap]   SDK=$($sdk.Name) rcSha256=$((Get-FileHash -Algorithm SHA256 -LiteralPath $rc).Hash.ToUpperInvariant())"
+        }
+    }
+    $systemDrive = Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:SystemRoot).TrimEnd(':\')) -ErrorAction SilentlyContinue
+    if ($systemDrive) { Write-Host "[RuntimeBootstrap] System drive free bytes: $([Int64]$systemDrive.Free)" }
+}
+
+function Copy-Cf7VisualStudioSetupDiagnostics([datetime]$SinceUtc) {
+    if ($VerifyOnly -or -not $env:TEMP -or -not (Test-Path -LiteralPath $env:TEMP -PathType Container)) { return }
+    $destination = Join-Path $diagnosticsRoot 'visual-studio-setup'
+    New-Item -ItemType Directory -Force -Path $destination | Out-Null
+    $total = 0L
+    $copied = 0
+    foreach ($file in @(Get-ChildItem -LiteralPath $env:TEMP -File -Filter 'dd_*' -ErrorAction SilentlyContinue |
+            Where-Object { $_.LastWriteTimeUtc -ge $SinceUtc.AddMinutes(-1) } |
+            Sort-Object LastWriteTimeUtc -Descending)) {
+        if ($file.Length -gt 4MB -or ($total + $file.Length) -gt 16MB) { continue }
+        Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $destination $file.Name) -Force
+        $total += $file.Length
+        $copied++
+    }
+    if ($copied -gt 0) {
+        Write-Host "[RuntimeBootstrap] Preserved $copied Visual Studio setup log(s) in $destination" -ForegroundColor Yellow
+    }
 }
 
 function Find-Cf7MatchingMsvc {
@@ -142,12 +206,21 @@ function Invoke-Cf7VisualStudioInstaller([string]$Bootstrapper, [string]$Argumen
     if (-not $isAdmin -and $NoElevation) {
         throw "Visual Studio provisioning requires elevation. Re-run without -NoElevation or from an elevated shell."
     }
-    Write-Host '[RuntimeBootstrap] Visual Studio setup needs one UAC approval; the remaining install is unattended.' -ForegroundColor Yellow
+    if ($isAdmin) {
+        Write-Host '[RuntimeBootstrap] Starting unattended Visual Studio setup.' -ForegroundColor Yellow
+    } else {
+        Write-Host '[RuntimeBootstrap] Visual Studio setup needs one UAC approval; the remaining install is unattended.' -ForegroundColor Yellow
+    }
+    $script:Cf7VisualStudioSetupStartedUtc = [DateTime]::UtcNow
     $start = @{ FilePath = $Bootstrapper; ArgumentList = $Arguments; Wait = $true; PassThru = $true }
     if (-not $isAdmin) { $start.Verb = 'RunAs' }
     try { $process = Start-Process @start }
-    catch { throw "Visual Studio installer was not elevated or could not start: $($_.Exception.Message)" }
+    catch {
+        Copy-Cf7VisualStudioSetupDiagnostics -SinceUtc $script:Cf7VisualStudioSetupStartedUtc
+        throw "Visual Studio installer was not elevated or could not start: $($_.Exception.Message)"
+    }
     if (@(0, 1641, 3010) -notcontains $process.ExitCode) {
+        Copy-Cf7VisualStudioSetupDiagnostics -SinceUtc $script:Cf7VisualStudioSetupStartedUtc
         throw "Visual Studio installer failed with exit code $($process.ExitCode)."
     }
 }
@@ -159,33 +232,44 @@ function Ensure-Cf7Msvc {
         return
     }
     if ($VerifyOnly) { throw "MSVC/Windows SDK do not match baseline $($lock.baseline)" }
+    Write-Cf7VisualStudioInventory
     $vs = $lock.provisioning.visualStudio
-    $bootstrapper = Get-Cf7PinnedDownload ("vs_BuildTools_" + [string]$vs.release + '.exe') ([string]$vs.bootstrapperUrl) ([string]$vs.bootstrapperSha256)
-    if ([string](Get-Item -LiteralPath $bootstrapper).VersionInfo.FileVersion -ne [string]$vs.installerVersion) {
-        throw 'Visual Studio bootstrapper file version does not match the lock.'
-    }
     $componentArgs = @($vs.components | ForEach-Object { "--add `"$([string]$_)`"" }) -join ' '
-    $instances = Get-Cf7VsInstances
-    $updateTarget = $null
-    foreach ($instance in $instances) {
-        $tools = Join-Path ([string]$instance.installationPath) ("VC\Tools\MSVC\" + [string]$lock.msvc.toolsVersion)
-        if (Test-Path -LiteralPath $tools -PathType Container) {
-            try {
-                if ([version]$instance.installationVersion -le [version]$vs.installerVersion) { $updateTarget = [string]$instance.installationPath; break }
-            } catch {}
-        }
+    $instances = @(Get-Cf7VsInstances)
+    $vs2022Instances = @($instances | Where-Object {
+        [string]$_.catalog.productLineVersion -eq '2022' -or [string]$_.installationVersion -match '^17\.'
+    })
+    $modifyTarget = $null
+    if ($matchingInstance) {
+        # An exact v143 toolset in VS 2026 is acceptable. In that case setup is
+        # used only to add the locked SDK; the final byte gate still rechecks all tools.
+        $modifyTarget = $matchingInstance
+    } elseif ($vs2022Instances.Count -gt 0) {
+        $modifyTarget = [string]($vs2022Instances | Sort-Object { try { [version]$_.installationVersion } catch { [version]'0.0' } } -Descending | Select-Object -First 1).installationPath
     }
-    if ($matchingInstance) { $updateTarget = $matchingInstance }
-    if ($updateTarget) {
-        $arguments = "update --installPath `"$updateTarget`" $componentArgs --quiet --wait --norestart"
-        Write-Host "[RuntimeBootstrap] Updating pinned Build Tools instance: $updateTarget" -ForegroundColor Yellow
+    if ($modifyTarget) {
+        $setup = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft Visual Studio\Installer\setup.exe'
+        if (-not (Test-Path -LiteralPath $setup -PathType Leaf)) { throw 'The installed Visual Studio setup engine is missing.' }
+        # `modify` is the supported operation for adding components. `update`
+        # refreshes an installation but does not establish the missing-component contract.
+        $arguments = "modify --installPath `"$modifyTarget`" $componentArgs --quiet --norestart"
+        Write-Host "[RuntimeBootstrap] Adding locked components to the compatible Visual Studio instance: $modifyTarget" -ForegroundColor Yellow
+        Invoke-Cf7VisualStudioInstaller $setup $arguments
     } else {
+        $bootstrapper = Get-Cf7PinnedDownload ("vs_BuildTools_" + [string]$vs.release + '.exe') ([string]$vs.bootstrapperUrl) ([string]$vs.bootstrapperSha256)
+        if ([string](Get-Item -LiteralPath $bootstrapper).VersionInfo.FileVersion -ne [string]$vs.installerVersion) {
+            throw 'Visual Studio bootstrapper file version does not match the lock.'
+        }
         $installPath = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) ([string]$vs.preferredInstallPath)
         $arguments = "--installPath `"$installPath`" --nickname `"CF7 Runtime $([string]$vs.release)`" $componentArgs --quiet --wait --norestart"
         Write-Host "[RuntimeBootstrap] Installing side-by-side pinned Build Tools: $installPath" -ForegroundColor Yellow
+        Invoke-Cf7VisualStudioInstaller $bootstrapper $arguments
     }
-    Invoke-Cf7VisualStudioInstaller $bootstrapper $arguments
     if (-not (Find-Cf7MatchingMsvc) -or -not (Test-Cf7WindowsSdk)) {
+        Write-Cf7VisualStudioInventory
+        if ($script:Cf7VisualStudioSetupStartedUtc) {
+            Copy-Cf7VisualStudioSetupDiagnostics -SinceUtc $script:Cf7VisualStudioSetupStartedUtc
+        }
         throw 'Visual Studio setup completed but the pinned MSVC/Windows SDK bytes are still unavailable.'
     }
 }

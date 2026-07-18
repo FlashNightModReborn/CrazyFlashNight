@@ -59,6 +59,8 @@ export interface BuildOptions {
 
 export interface BuildResult {
   dict: SaveRepairDict;
+  /** When verify=false, whether the output bytes were replaced. */
+  written?: boolean;
   /** When verify=true, true means existing file matches generated. */
   verified?: boolean;
   /** Diff summary when verify=true and verified=false. */

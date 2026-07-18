@@ -56,7 +56,8 @@ function New-TestFixture(
     [switch]$MaliciousTraversal,
     [string]$Conclusion = 'success',
     [int]$CompleteAfterViews = 2,
-    [string]$HeadBranch = 'main'
+    [string]$HeadBranch = 'main',
+    [string]$SourceRef = 'refs/heads/main'
 ) {
     $caseRoot = Join-Path $script:testRoot ([Guid]::NewGuid().ToString('N'))
     $projectRoot = Join-Path $caseRoot 'repo'
@@ -65,19 +66,13 @@ function New-TestFixture(
     New-Item -ItemType Directory -Path (Join-Path $projectRoot 'tools'),(Join-Path $projectRoot 'config\build'),$artifactRoot -Force | Out-Null
     Copy-Item -LiteralPath $script:helperSource -Destination (Join-Path $projectRoot 'tools\invoke-runtime-github-build.ps1')
 
-    Set-TestFile (Join-Path $projectRoot 'config\build\runtime-github-builder.v2.json') @'
-{
-  "schema": "cf7-runtime-github-builder.v2",
-  "enabled": true,
-  "repository": "ExampleOrg/ExampleRepo",
-  "signerWorkflow": "ExampleOrg/ExampleRepo/.github/workflows/runtime-cloud-builder.yml",
-  "sourceRef": "refs/heads/main",
-  "faultDomain": "github-hosted-windows",
-  "runnerClass": "github-hosted-windows",
-  "identityProvider": "github-oidc-sigstore",
-  "longLivedPrivateKey": false
-}
-'@
+    $cloudConfig = [ordered]@{
+        schema='cf7-runtime-github-builder.v2';enabled=$true;repository='ExampleOrg/ExampleRepo'
+        signerWorkflow='ExampleOrg/ExampleRepo/.github/workflows/runtime-cloud-builder.yml'
+        sourceRef=$SourceRef;faultDomain='github-hosted-windows';runnerClass='github-hosted-windows'
+        identityProvider='github-oidc-sigstore';longLivedPrivateKey=$false
+    }
+    Set-TestFile (Join-Path $projectRoot 'config\build\runtime-github-builder.v2.json') (($cloudConfig | ConvertTo-Json -Depth 5) + "`n")
     Set-TestFile (Join-Path $projectRoot 'tools\verify-runtime-github-attestation.ps1') @'
 param(
     [string]$EnvelopePath, [string]$BundlePath, [string]$CandidateRoot,
@@ -232,7 +227,7 @@ function Run-Test([string]$Name, [scriptblock]$Body) {
 New-Item -ItemType Directory -Path $testRoot -Force | Out-Null
 try {
     Run-Test 'dispatches exact SHA, ignores the preexisting same-SHA run, and produces a verified wrapper' {
-        $fixture = New-TestFixture
+        $fixture = New-TestFixture -HeadBranch 'runtime-build-v2/test-release' -SourceRef 'refs/tags/runtime-build-v2/test-release'
         $result = Invoke-TestHelper $fixture
         Assert-Test ($result.ExitCode -eq 0) $result.Output
         $resultPath = Join-Path $fixture.OutputRoot 'run-4242\runtime-github-build-result.v2.json'
@@ -247,6 +242,8 @@ try {
         $dispatch = @($calls | Where-Object { $_[0] -eq 'workflow' -and $_[1] -eq 'run' })
         Assert-Test ($dispatch.Count -eq 1) 'expected exactly one workflow dispatch'
         Assert-Test (@($dispatch[0] | Where-Object { $_ -eq "source_commit=$($fixture.SourceCommit)" }).Count -eq 1) 'dispatch did not bind the exact source SHA'
+        $refIndex = [Array]::IndexOf([object[]]$dispatch[0], '--ref')
+        Assert-Test ($refIndex -ge 0 -and [string]$dispatch[0][$refIndex + 1] -ceq 'runtime-build-v2/test-release') 'dispatch did not select the configured immutable release tag'
         $download = @($calls | Where-Object { $_[0] -eq 'run' -and $_[1] -eq 'download' })
         Assert-Test ($download.Count -eq 1 -and [string]$download[0][2] -eq '4242') 'signed artifact was not downloaded from the selected run id'
     }
