@@ -42,6 +42,10 @@ CrazyFlashNight/
 
 ## 快速开始
 
+### 普通合作者提交文档 / 美术 / 策划改动
+
+先在现有 Git 客户端中完成本地 commit，再双击根目录的 `一键提交到主线.cmd`。工具会自动建立临时分支、PR 与安全的自动合并，无需学习分支命令；普通内容改动不要求参与 Launcher runtime 双机共识。完整边界见 [普通合作者一键贡献与路径分域](docs/contribution-workflow.md)。
+
 ### 运行游戏
 
 ```powershell
@@ -90,6 +94,7 @@ node tools/validate-doc-governance.js
 | Agent 协作粒度与 harness 实践 | [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md) |
 | 长会话节奏与会话健康 | [agentsDoc/human-care.md](agentsDoc/human-care.md) |
 | 文档治理规则 | [agentsDoc/documentation-governance.md](agentsDoc/documentation-governance.md) |
+| 普通文档 / 美术 / 策划的一键贡献 | [docs/contribution-workflow.md](docs/contribution-workflow.md) |
 | Launcher 深文档 | [launcher/README.md](launcher/README.md) |
 | 技术栈保留 / 收敛决策 | [docs/tech-stack-rationalization.md](docs/tech-stack-rationalization.md) |
 

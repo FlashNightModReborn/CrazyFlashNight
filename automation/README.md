@@ -56,6 +56,19 @@ cd "<项目根目录>\\automation"
 - `automation/start.ps1`、`scripts/gobang_trainer_cycle.ps1` 与 `tools/cfn-cli.sh` 直启 Core 前调用根 bootstrap `--verify-only`，manifest 闭包不完整、含额外文件或二进制混搭时 fail-fast
 - 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
 
+### 普通合作者一键提交到主线
+
+在 Git 客户端完成本地 commit 后，双击仓库根目录的 `一键提交到主线.cmd`。它会把本地 `main` 上尚未发布的 commit 安全转成 `contrib/*` 分支、ready PR 和允许时的 auto-merge；文档/内容车道会保持窗口显示检查进度，合并后 `--ff-only` 清理并回到 `main`，软件车道则显示待审 PR 后返回。不要求使用者手工建立分支或理解 PR。若远端已经前进、工作树未提交或 Git 正处于 merge/rebase/cherry-pick 等操作中间态，工具会停下而不自动 rebase/reset；Git 可从 PATH、Git for Windows 或 GitHub Desktop 自带版本解析。
+
+命令行入口与离线回归：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\submit-contribution.ps1 -Wait
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\test-submit-contribution.ps1
+```
+
+普通内容是否自动合并、哪些路径才触发 runtime 双故障域 promotion，统一看 [普通合作者一键贡献与路径分域](../docs/contribution-workflow.md)。
+
 ### 无人值守运行态控制面
 
 `agent_control` 是 localhost HTTP `/task` 的窄化控制面，不是任意 GUI/DOM 遥控器。通用 `readyForRuntimeAutomation` 只在 Launcher Ready、Flash reveal、socket、安全 snapshot 决议，以及 AS2 对同一 `attemptId/savePath` 的 `SaveManager.loadAll()` ack 全部满足时成立；arena 在此基础上另加 arena status，继续使用 `readyForArenaCalibration`。
@@ -192,6 +205,7 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 | `start_game.ps1` | 兼容旧入口 |
 | `start_server.ps1` | 已废弃的旧入口 |
 | `publish.ps1` | 开发态批量发布辅助脚本 |
+| `../一键提交到主线.cmd` | 普通合作者双击提交入口 |
 
 ## 7. 相关文档
 
@@ -199,3 +213,4 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 - 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md)
 - Flash 编译 smoke：[`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md)
 - 离线导弹调优：[`tools/missile-tuning-sim/README.md`](../tools/missile-tuning-sim/README.md)
+- 普通合作者一键贡献：[`docs/contribution-workflow.md`](../docs/contribution-workflow.md)
