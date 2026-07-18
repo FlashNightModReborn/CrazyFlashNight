@@ -107,6 +107,7 @@ function respond(message){var result=base(message);
       completeWrite:function(refresh,callback){__writes.push({kind:'complete',refresh:refresh});setTimeout(function(){if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})},0);return true},
       refreshInventory:function(callback){__writes.push({kind:'retry-refresh'});setTimeout(function(){__refreshRetryCount++;slots[2].slotLease='lease.2.recovered.'+__refreshRetryCount;callback({success:true,refreshed:true})},0);return true},
       resolveSlot:function(_,slot){return slots[slot]||null}});
+    window.__tuningView=view;
     view.mount(document.getElementById('host'));ok('opens Host-bound tuning session',view.openSession('panel.harness.1'));
     view.handleInventorySelection(slots[2]);await until(function(){return view.debugState().hasPreview});
     ok('mod operations default to safe confirmation mode',view.debugState().modConfirmationMode==='safe');
@@ -159,7 +160,7 @@ function respond(message){var result=base(message);
     var mediumCandidates=[].slice.call(document.querySelectorAll('.equipment-tuning-candidate'));
     ok('mod breadcrumb filters by authoritative grade metadata',mediumCandidates.length>0&&mediumCandidates.length<25&&mediumCandidates.every(function(node){return node.getAttribute('data-grade')==='medium'})&&document.querySelector('.equipment-tuning-mod-breadcrumb').textContent.indexOf('中等')>=0);
     var activeFilter=document.querySelector('.equipment-tuning-mod-filter .item-filter-option.active'),tuningStyle=getComputedStyle(document.querySelector('.equipment-tuning-view'));
-    ok('mod tree filter uses the DLS crystal visual language',!!activeFilter&&getComputedStyle(activeFilter).backgroundImage!=='none'&&tuningStyle.getPropertyValue('--item-filter-active-border').trim()==='#62e1ff');
+    ok('mod tree filter uses the DLS crystal visual language',!!activeFilter&&getComputedStyle(activeFilter).boxShadow!=='none'&&tuningStyle.getPropertyValue('--item-filter-active-border').trim()==='#62e1ff');
     view._modFilterPath=[];view.render();
     var previewsBeforeReplace=__sent.filter(function(x){return x.cmd==='preview'}).length;
     document.querySelector('.equipment-tuning-detach').click();await wait();

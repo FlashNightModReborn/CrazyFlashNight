@@ -133,6 +133,19 @@
    }
    ```
 2. **装备调制**：把 `--tuning-dls` 改为 `--dls-crystal` 的 alias；`--tuning-dls-deep` → `--dls-crystal-deep`；`--tuning-dls-dim` → `--dls-crystal-dim`。
+   新增局部语义 token（仅在 `.equipment-tuning-view` 内生效，避免向全局扩散）：
+   ```css
+   --tuning-active-border: var(--dls-crystal);
+   --tuning-active-bg: rgba(61,213,255,.08);
+   --tuning-active-glow: 0 0 8px rgba(61,213,255,.12);
+   --tuning-active-inset: inset 0 0 0 1px var(--dls-crystal-deep);
+   --tuning-tier-gold: #d6bc43;
+   --tuning-danger: #df8178;
+   --tuning-convert-arrow: #5cd7ee;
+   --tuning-delta: #d4bd85;
+   --tuning-fast: #e1b75c;
+   ```
+   这些 token 用于统一 tab 激活态、level mark 选中态、卡片选中态、卸下危险色、交换箭头、数值差分与快速模式按钮。
 3. **技能面板**：把 `--skill-energy` 改为 `--dls-crystal`，并在 `.skills-panel` 内将 `--theta-kinetic*` 覆写为 `--dls-crystal*` 的 alias，使现有 `var(--theta-kinetic*)` 规则自动渲染为晶体青。
 4. **商城**：把 `--wb-accent` 改为 `--dls-crystal`；价格、余额等商业功能色可保留琥珀 `#ffd367` / `#ffc447` 作为辅助识别。
 5. **语义色**：新增 `--wb-semantic-success` 等，并让 `crafting` 的可合成侧条、`tuning` 的危险卸下、`kshop` 的最终结算统一使用。
@@ -151,5 +164,6 @@
 
 ## 10. 版本
 
+- **v1.2 · 2026-07-18** 装备调制界面新增 `--tuning-active-*` 选中态原子与 `--tuning-tier-gold / --tuning-danger / --tuning-convert-arrow / --tuning-delta / --tuning-fast` 局部语义 token，统一 active/selected 视觉语言。
 - **v1.1 · 2026-07-17** 技能面板收敛到 `dls-crystal #3dd5ff`；新增 `--dls-crystal-bright` / `--dls-crystal-soft` / `--dls-crystal-faint`；`theta-kinetic` 谱系改为仅用于信息/控制平面，不再用于技能。
 - **v1.0 · 2026-07-17** 初始版本：建立 DLS 物质光谱、θ-域表达光谱、商业/档案色谱、语义色与面板映射。

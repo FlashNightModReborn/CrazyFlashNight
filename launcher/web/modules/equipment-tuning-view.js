@@ -354,7 +354,7 @@ var EquipmentTuningView = (function() {
             var isLatestIntent = self._previewIntentKey === intentKey;
             if (isLatestIntent && response && response.success === true) {
                 self._preview = response;
-                self._status = response.noOp ? '该操作不会改变装备' : '预览已由 Flash 核算';
+                self._status = response.noOp ? '该操作不会改变装备' : '';
             } else if (isLatestIntent) {
                 self._preview = null;
                 self._status = errorMessage(response && response.error);
@@ -864,13 +864,15 @@ var EquipmentTuningView = (function() {
         input.disabled = this._busy || (this._readPending && this._previewPendingOperation !== 'enhance') || current >= max;
         minus.disabled = input.disabled || target <= current + 1;
         plus.disabled = input.disabled || target >= max;
-        stepper.appendChild(minus); stepper.appendChild(input); stepper.appendChild(plus); panel.appendChild(stepper);
+        stepper.appendChild(minus); stepper.appendChild(input); stepper.appendChild(plus);
         var slider = element('input', 'equipment-tuning-level-slider');
         slider.type = 'range'; slider.min = String(Math.min(max, current + 1)); slider.max = String(max); slider.step = '1'; slider.value = String(target);
         slider.setAttribute('data-browser-native', '1');
         slider.disabled = input.disabled;
         slider.addEventListener('change', function() { self._chooseEnhancementLevel(slider.value); });
-        panel.appendChild(slider);
+        var controls = element('div', 'equipment-tuning-level-controls');
+        controls.appendChild(stepper); controls.appendChild(slider);
+        panel.appendChild(controls);
         var marks = element('div', 'equipment-tuning-level-marks');
         for (var level = current + 1; level <= max; level++) {
             (function(markLevel) {
@@ -1073,6 +1075,7 @@ var EquipmentTuningView = (function() {
                 detach.type = 'button';
                 detach.textContent = '×';
                 detach.setAttribute('aria-label', '卸下配件：' + String(name));
+                detach.setAttribute('data-title', '卸下：' + String(name));
                 detach.disabled = self._busy || self._readPending || self._needsReconcile || !candidateKey;
                 detach.addEventListener('click', function(event) {
                     event.stopPropagation();
@@ -1094,15 +1097,21 @@ var EquipmentTuningView = (function() {
                     });
                 });
                 detachSelected.classList.add('equipment-tuning-detach-selected');
+                detachSelected.setAttribute('aria-label','仅卸下所选配件');
+                detachSelected.setAttribute('data-title','仅卸下所选配件');
                 detachSelected.disabled = self._busy || self._readPending || self._needsReconcile;
                 installedList.appendChild(detachSelected);
                 var cancelReplacement = actionButton('取消替换', function() { self._clearReplacementCandidate(); });
                 cancelReplacement.classList.add('equipment-tuning-replace-cancel');
+                cancelReplacement.setAttribute('aria-label','取消替换');
+                cancelReplacement.setAttribute('data-title','取消替换');
                 cancelReplacement.disabled = self._busy || self._readPending || self._needsReconcile;
                 installedList.appendChild(cancelReplacement);
             }
             var all = actionButton('卸下全部', function() { self.requestPreview('detach_all_mods'); });
             all.classList.add('danger', 'equipment-tuning-detach-all');
+            all.setAttribute('aria-label','卸下全部配件');
+            all.setAttribute('data-title','卸下全部配件');
             all.disabled = self._busy || self._readPending || self._needsReconcile; installedList.appendChild(all);
             body.appendChild(installedList);
         }
@@ -1145,6 +1154,7 @@ var EquipmentTuningView = (function() {
     TuningView.prototype._renderPreview = function() {
         var section = element('section', 'equipment-tuning-preview');
         if (!this._preview) {
+            section.classList.add('is-empty');
             if (this._operation === 'enhance') section.classList.add('enhance-compact');
             section.appendChild(empty(this._needsReconcile ? '上次提交结果未知，必须完成权威对账。'
                 : (this._operation === 'enhance'
@@ -1476,19 +1486,26 @@ var EquipmentTuningView = (function() {
             var left = before[keys[i]] && before[keys[i]].equipment;
             var right = after[keys[i]] && after[keys[i]].equipment;
             if (!left || !right) continue;
+            var diff = equipmentDiff(left, right);
+            if (!diff) continue;
             var row = element('div', 'equipment-tuning-equipment-delta');
             var name = right.displayName || right.name || left.displayName || left.name || (keys[i] === 'source' ? '主装备' : '目标装备');
-            row.innerHTML = '<b>' + escapeHtml(name) + '</b><span>'
-                + escapeHtml(equipmentState(left)) + ' <i>→</i> ' + escapeHtml(equipmentState(right)) + '</span>';
+            row.innerHTML = '<b>' + escapeHtml(name) + '</b><span>' + escapeHtml(diff) + '</span>';
             list.appendChild(row); count++;
         }
         return count ? list : null;
     }
-    function equipmentState(equipment) {
-        var parts = ['+' + Number(equipment.level || 0)];
-        if (equipment.tier) parts.push(String(equipment.tier));
-        var mods = equipment.mods || [];
-        if (mods.length) parts.push('配件 ' + mods.join('、'));
+    function equipmentDiff(left, right) {
+        var parts = [];
+        var levelBefore = Number(left.level || 0), levelAfter = Number(right.level || 0);
+        if (levelBefore !== levelAfter) parts.push('+' + levelBefore + ' → +' + levelAfter);
+        if (left.tier !== right.tier) parts.push((left.tier || '—') + ' → ' + (right.tier || '—'));
+        var beforeMods = left.mods || [];
+        var afterMods = right.mods || [];
+        var removed = beforeMods.filter(function(m) { return afterMods.indexOf(m) < 0; });
+        var added = afterMods.filter(function(m) { return beforeMods.indexOf(m) < 0; });
+        if (removed.length) parts.push('卸下 ' + removed.join('、'));
+        if (added.length) parts.push('安装 ' + added.join('、'));
         return parts.join(' · ');
     }
 

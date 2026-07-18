@@ -110,15 +110,15 @@ var InventoryWorkbench = (function() {
 
     function createModConfirmationToggle() {
         var root = document.createElement('div');
-        root.className = 'item-grid-mode-switch equipment-tuning-confirmation-toggle';
+        root.className = 'equipment-tuning-mode-switch equipment-tuning-confirmation-toggle';
         var label = document.createElement('span');
-        label.className = 'item-grid-mode-label';
+        label.className = 'equipment-tuning-mode-label';
         label.textContent = '配件';
         root.appendChild(label);
         [['safe','安全'],['fast','快速']].forEach(function(pair) {
             var button = document.createElement('button');
             button.type = 'button';
-            button.className = 'item-grid-mode-option equipment-tuning-confirmation-option';
+            button.className = 'equipment-tuning-mode-option equipment-tuning-confirmation-option';
             button.textContent = pair[1];
             button.setAttribute('data-confirmation-mode', pair[0]);
             button.setAttribute('aria-label', '配件操作' + pair[1] + '模式');
