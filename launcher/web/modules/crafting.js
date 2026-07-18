@@ -238,7 +238,7 @@ var CraftingPanel = (function() {
         var hero = document.createElement('section'); hero.className = 'crafting-output-card';
         var icon = document.createElement('span'); icon.className = 'crafting-output-icon';
         icon.innerHTML = iconHtml(output.icon || output.name, 'kshop-icon'); bindTooltip(icon, output);
-        var copy = document.createElement('div');
+        var copy = document.createElement('div'); copy.className = 'crafting-output-copy';
         var title = document.createElement('h2'); title.textContent = output.displayName || output.name || '产物';
         var value = document.createElement('p');
         value.textContent = output.itemKind === 'equipment'
@@ -274,6 +274,8 @@ var CraftingPanel = (function() {
         _detailBody.appendChild(status);
         _commitButton = document.createElement('button'); _commitButton.type = 'button';
         _commitButton.className = 'crafting-commit-btn'; _commitButton.textContent = _busy ? '提交中…' : '确认合成';
+        _commitButton.setAttribute('aria-label', '确认合成 ' + Number(_preview.craftCount || 1) + ' 份');
+        _commitButton.setAttribute('data-title', '确认合成');
         _commitButton.disabled = _busy || _needsReconcile || !_preview.canCommit || !_preview.craftToken;
         _commitButton.addEventListener('click', commitCraft); _detailBody.appendChild(_commitButton);
     }
@@ -288,6 +290,9 @@ var CraftingPanel = (function() {
         value.value = String(_craftCount); value.textContent = String(_craftCount);
         var plus = quantityButton('+', '增加一份', function() { setCraftCount(_craftCount + 1); });
         var maximum = quantityButton('最大', '使用当前权威可合成上限', function() { if (max > 0) setCraftCount(max); });
+        minus.setAttribute('data-title', '减少一份');
+        plus.setAttribute('data-title', '增加一份');
+        maximum.setAttribute('data-title', '合成上限 ' + max + ' 份');
         minus.disabled = _craftCount <= 1 || _busy || _previewBusy;
         plus.disabled = max <= 0 || _craftCount >= max || _busy || _previewBusy;
         maximum.disabled = max <= 0 || _craftCount === max || _busy || _previewBusy;
