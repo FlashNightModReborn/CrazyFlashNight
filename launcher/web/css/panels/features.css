@@ -5874,7 +5874,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     --arena-radius: 7px;
     --arena-radius-sm: 4px;
     /* 拟物大理石底纹（与任务/战宠/佣兵面板共用 task_icon_bg.png，零新增美术资源） */
-    --arena-marble:     url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    --arena-marble:     url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
     --arena-stone:      linear-gradient(160deg, rgba(42,45,53,0.72), rgba(27,29,35,0.84)), var(--arena-marble), linear-gradient(#30333a, #25272d);
     --arena-stone-soft: linear-gradient(160deg, rgba(36,39,46,0.78), rgba(23,25,30,0.88)), var(--arena-marble), linear-gradient(#2b2e35, #222429);
     --arena-control-bg: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)), rgba(10,12,17,0.78);
@@ -5898,7 +5898,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     background:
         radial-gradient(120% 90% at 50% -8%, rgba(239,148,66,0.06), transparent 60%),
         linear-gradient(180deg, rgba(18,19,24,0.74) 0%, rgba(12,13,17,0.90) 100%),
-        url('../assets/bg/official-garage.jpg') center center / cover no-repeat,
+        url('../../assets/bg/official-garage.jpg') center center / cover no-repeat,
         linear-gradient(180deg, #1a1c22 0%, #101116 100%);
 }
 .arena-panel * { box-sizing: border-box; }
@@ -5958,7 +5958,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     width: 27px; height: 24px;
     flex-shrink: 0;
     background: var(--arena-accent);
-    --arena-faction-svg: url("../assets/logos/a-legion-emblem.svg");
+    --arena-faction-svg: url("../../assets/logos/a-legion-emblem.svg");
     -webkit-mask: var(--arena-faction-svg) center / contain no-repeat;
     mask: var(--arena-faction-svg) center / contain no-repeat;
     filter: drop-shadow(0 0 4px var(--arena-accent-glow));
@@ -8874,4 +8874,3 @@ html.perf-low-effects .map-panel-close-btn:hover {
    arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
    只允许 override 视觉 token（--tt-divider-color / --tt-icon-glow 等），
    不要 override 尺寸/间距类变量。 ── */
-

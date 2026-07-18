@@ -167,7 +167,7 @@
     color:var(--wb-text);
     background:
         linear-gradient(180deg,rgba(10,10,11,.18),rgba(4,4,5,.55)),
-        url('../modules/tasks/assets/task_main_bg.png') center / cover no-repeat,
+        url('../../modules/tasks/assets/task_main_bg.png') center / cover no-repeat,
         #09090a;
     border-color:rgba(255,255,255,.18);
     font-family:var(--wb-serif);
@@ -199,7 +199,7 @@
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-status { color:#c2c2c2; background:rgba(0,0,0,.3); border-color:rgba(255,255,255,.13); }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-status[data-state="ready"]::before { color:#d8d8d8; }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-metric {
-    background:linear-gradient(rgba(12,12,13,.7),rgba(12,12,13,.7)),url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    background:linear-gradient(rgba(12,12,13,.7),rgba(12,12,13,.7)),url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
     border-left-color:#d9d9d9;
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),2px 2px 5px rgba(0,0,0,.32);
 }
@@ -225,7 +225,7 @@
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-slot.active { border-color:rgba(255,255,255,.54); box-shadow:inset 0 0 0 1px rgba(255,255,255,.055),3px 3px 9px rgba(0,0,0,.34); }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-slot-marker {
     color:#bcbcbc;
-    background:linear-gradient(rgba(16,16,17,.82),rgba(16,16,17,.82)),url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    background:linear-gradient(rgba(16,16,17,.82),rgba(16,16,17,.82)),url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
     border-bottom-color:rgba(255,255,255,.17);
 }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-slot-marker b { color:#1b1b1b; background:linear-gradient(#ededed,#b8b8b8); }
@@ -265,14 +265,14 @@
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-sort-commit { color:#f0d98b; border-color:rgba(240,217,139,.45); background:rgba(57,48,22,.64); }
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-page-menu {
     border-color:rgba(238,238,238,.42);
-    background:linear-gradient(rgba(10,10,11,.9),rgba(10,10,11,.9)),url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    background:linear-gradient(rgba(10,10,11,.9),rgba(10,10,11,.9)),url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
     box-shadow:0 8px 20px rgba(0,0,0,.78),inset 0 0 0 1px rgba(255,255,255,.05);
 }
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-page-option { color:#aaa; background:#111; border-color:rgba(235,235,235,.16); }
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-page-option:hover,
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-page-option:focus-visible { color:#fff; border-color:#e7e7e7; background:#2a2a2a; }
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-page-option.current { color:#171717; border-color:#fff; background:linear-gradient(#ededed,#bdbdbd); box-shadow:0 0 7px rgba(255,255,255,.18); }
-.kshop-workbench[data-workbench-skin="inventory"] .workbench-modal { background:linear-gradient(rgba(19,19,20,.93),rgba(19,19,20,.93)),url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat; border-color:rgba(255,255,255,.42); border-top-color:#ededed; box-shadow:0 24px 70px rgba(0,0,0,.68); }
+.kshop-workbench[data-workbench-skin="inventory"] .workbench-modal { background:linear-gradient(rgba(19,19,20,.93),rgba(19,19,20,.93)),url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat; border-color:rgba(255,255,255,.42); border-top-color:#ededed; box-shadow:0 24px 70px rgba(0,0,0,.68); }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-modal-title { font-family:var(--wb-serif); text-shadow:2px 2px 3px #000; }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-modal-action.primary { color:#171717; background:linear-gradient(#ededed,#bdbdbd); border-color:#fff; }
 

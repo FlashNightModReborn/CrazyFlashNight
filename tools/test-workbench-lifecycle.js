@@ -82,13 +82,43 @@ test('activation failure disposes partial session and remains mounted', () => {
     assert.strictEqual(lifecycle.state(), 'mounted');
 });
 
-test('mount failure rolls back the host and state', () => {
+test('mount failure rolls back partial resources, host, and state', () => {
+    let disposed = 0;
     const lifecycle = new Lifecycle.PanelLifecycle({
-        mount() { throw new Error('mount failed'); }
+        mount(host, mountSession) {
+            mountSession.defer(() => { disposed += 1; });
+            throw new Error('mount failed');
+        }
     });
     assert.throws(() => lifecycle.mount({id:'broken'}), /mount failed/);
+    assert.strictEqual(disposed, 1);
     assert.strictEqual(lifecycle.host(), null);
     assert.strictEqual(lifecycle.state(), 'unmounted');
+    assert.throws(() => lifecycle.mount({id:'broken-again'}), /mount failed/);
+    assert.strictEqual(disposed, 2);
+});
+
+test('remount and unmount dispose each mount session exactly once', () => {
+    const calls = [];
+    const lifecycle = new Lifecycle.PanelLifecycle({
+        mount(host, mountSession) {
+            calls.push('mount:' + host.id);
+            mountSession.defer(() => calls.push('mount-dispose:' + host.id));
+        },
+        unmount(host, reason) { calls.push('unmount:' + host.id + ':' + reason); }
+    });
+    lifecycle.mount({id:'one'});
+    lifecycle.mount({id:'two'});
+    lifecycle.unmount('close');
+    lifecycle.destroy('final');
+    assert.deepStrictEqual(calls, [
+        'mount:one',
+        'unmount:one:remount',
+        'mount-dispose:one',
+        'mount:two',
+        'unmount:two:close',
+        'mount-dispose:two'
+    ]);
 });
 
 test('unmount completes teardown even when deactivate fails', () => {

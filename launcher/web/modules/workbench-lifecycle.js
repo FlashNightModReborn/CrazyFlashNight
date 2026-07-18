@@ -99,6 +99,7 @@
         this._host = null;
         this._context = null;
         this._lifetime = new DisposableStack({onError: options.onError});
+        this._mountSession = null;
         this._session = null;
     }
 
@@ -106,13 +107,17 @@
         if (this._state === 'destroyed' || !host) return false;
         if (this._host === host && (this._state === 'mounted' || this._state === 'active')) return true;
         if (this._host) this.unmount('remount');
+        var mountSession = new DisposableStack({onError: this._options.onError});
+        this._mountSession = mountSession;
         this._host = host;
         this._state = 'mounted';
         try {
-            if (typeof this._options.mount === 'function') this._options.mount(host, this._lifetime);
+            if (typeof this._options.mount === 'function') this._options.mount(host, mountSession);
         } catch (error) {
+            this._mountSession = null;
             this._host = null;
             this._state = 'unmounted';
+            mountSession.dispose();
             throw error;
         }
         return true;
@@ -161,6 +166,8 @@
             try { this.deactivate(reason || 'unmount'); } catch (caught) { error = caught; }
         }
         var host = this._host;
+        var mountSession = this._mountSession;
+        this._mountSession = null;
         this._host = null;
         this._state = 'unmounted';
         try {
@@ -168,6 +175,7 @@
         } catch (caughtUnmount) {
             if (!error) error = caughtUnmount;
         }
+        if (mountSession) mountSession.dispose();
         if (error) throw error;
         return true;
     };
