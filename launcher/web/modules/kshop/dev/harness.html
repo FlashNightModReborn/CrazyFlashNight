@@ -114,15 +114,30 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/panels.js"></script>
 <script src="modules/panel-scale.js"></script>
 <script src="modules/uidata.js"></script>
+<script src="modules/panel-runtime.js"></script>
+<script src="modules/workbench-lifecycle.js"></script>
+<script src="modules/workbench-focus.js"></script>
+<script src="modules/workbench-primitives.js"></script>
 <script src="modules/workbench.js"></script>
+<script src="modules/workbench-components.js"></script>
 <script src="modules/item-filter.js"></script>
 <script src="modules/kshop-runtime.js"></script>
 <script src="modules/inventory-runtime.js"></script>
 <script src="modules/inventory-ui.js"></script>
 <script src="modules/equipment-tuning-runtime.js"></script>
+<script src="modules/equipment-tuning-model.js"></script>
+<script src="modules/equipment-tuning-render.js"></script>
 <script src="modules/equipment-tuning-view.js"></script>
 <script src="modules/kshop-views.js"></script>
+<script src="modules/kshop-cart-controller.js"></script>
+<script src="modules/kshop-catalog-presenter.js"></script>
+<script src="modules/kshop-owned-inventory-presenter.js"></script>
+<script src="modules/kshop-tooltip-presenter.js"></script>
 <script src="modules/kshop.js"></script>
+<script src="modules/inventory-workbench-config.js"></script>
+<script src="modules/inventory-workbench-header.js"></script>
+<script src="modules/inventory-workbench-quick-transfer.js"></script>
+<script src="modules/inventory-workbench-owned-view.js"></script>
 <script src="modules/inventory-workbench.js"></script>
 <script>
 (function() {
@@ -720,6 +735,65 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui2','生产格子走动态图标 HTML 入口',
             document.querySelectorAll('[data-icon]').length >= 3,
             document.querySelectorAll('[data-icon]').length + ' icons');
+        var keyboardCatalogCard = document.querySelector('.kshop-card:not(.kshop-card-locked):not(.kshop-card-nosale)');
+        var keyboardCatalogName = keyboardCatalogCard && keyboardCatalogCard.querySelector('.kshop-card-name').textContent;
+        var keyboardCatalogAction = keyboardCatalogCard && keyboardCatalogCard.querySelector('.kshop-add-btn');
+        var lockedCatalogCard = document.querySelector('.kshop-card.kshop-card-locked');
+        if (keyboardCatalogCard) {
+            keyboardCatalogCard.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        }
+        var keyboardCatalogSelected = keyboardCatalogCard
+            && keyboardCatalogCard.getAttribute('aria-selected') === 'true'
+            && keyboardCatalogCard.classList.contains('workbench-source-selected');
+        assert('kshop-a11y1','共享 EntityTile 让商城实体格统一语义、键盘激活与含物品名的动作标签',
+            typeof Workbench.EntityTile === 'function'
+                && keyboardCatalogCard && keyboardCatalogCard.getAttribute('role') === 'option'
+                && keyboardCatalogCard.getAttribute('tabindex') === '0'
+                && keyboardCatalogCard.getAttribute('aria-disabled') === 'false'
+                && keyboardCatalogSelected && keyboardCatalogAction
+                && keyboardCatalogAction.getAttribute('aria-label').indexOf(keyboardCatalogName) >= 0
+                && lockedCatalogCard && lockedCatalogCard.getAttribute('aria-disabled') === 'true'
+                && lockedCatalogCard.getAttribute('tabindex') === '-1');
+        if (keyboardCatalogCard) {
+            keyboardCatalogCard.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        }
+
+        var modalFixture = document.createElement('div');
+        var modalOpener = document.createElement('button');
+        modalOpener.type = 'button'; modalOpener.textContent = '打开测试对话框';
+        var modalShell = new Workbench.DualPaneShell({title:'焦点测试'});
+        modalFixture.appendChild(modalOpener); modalFixture.appendChild(modalShell.getRoot());
+        document.body.appendChild(modalFixture); modalOpener.focus();
+        modalShell.openModal({
+            kind:'a11y-probe', title:'确认测试', message:'第一段说明', detail:'第二段说明',
+            actions:[{id:'cancel',label:'取消'},{id:'confirm',label:'确认',primary:true}]
+        });
+        var modalDialog = modalShell.getRoot().querySelector('.workbench-modal');
+        var modalButtons = modalDialog && modalDialog.querySelectorAll('.workbench-modal-action');
+        var modalUnderlay = modalShell.getRoot().querySelector('.workbench-body');
+        var modalLabelled = modalDialog && modalDialog.getAttribute('aria-labelledby')
+            && document.getElementById(modalDialog.getAttribute('aria-labelledby'));
+        var modalDescribed = modalDialog && modalDialog.getAttribute('aria-describedby')
+            && modalDialog.getAttribute('aria-describedby').split(/\s+/).every(function(id){ return !!document.getElementById(id); });
+        if (modalButtons && modalButtons[0]) modalButtons[0].focus();
+        document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true}));
+        var modalShiftWrapped = document.activeElement === modalButtons[modalButtons.length - 1];
+        document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));
+        var modalForwardWrapped = document.activeElement === modalButtons[0];
+        modalOpener.focus();
+        var modalContainedExternalFocus = modalDialog.contains(document.activeElement);
+        document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+        var modalEscapeRestored = !modalShell.hasModal() && document.activeElement === modalOpener
+            && !modalUnderlay.hasAttribute('inert') && !modalUnderlay.hasAttribute('aria-hidden');
+        modalShell.openModal({title:'背景关闭',actions:[{id:'ok',label:'好',primary:true}]});
+        var modalBackdrop = modalShell.getRoot().querySelector('.workbench-modal-backdrop');
+        if (modalBackdrop) modalBackdrop.click();
+        var modalBackdropRestored = !modalShell.hasModal() && document.activeElement === modalOpener;
+        modalShell.destroy(); modalShell.destroy(); modalFixture.remove();
+        assert('workbench-a11y-modal','共享对话框关联标题/描述并闭环 trap、inert、Esc、backdrop 与 opener restore',
+            modalLabelled && modalDescribed && modalUnderlay.getAttribute('aria-hidden') !== 'true'
+                && modalShiftWrapped && modalForwardWrapped && modalContainedExternalFocus
+                && modalEscapeRestored && modalBackdropRestored);
         var categoryRail = document.querySelector('.kshop-categories');
         var categoryGridWrap = document.querySelector('.kshop-grid-wrap');
         var categoryRailHeight = categoryRail.getBoundingClientRect().height;
@@ -1117,6 +1191,24 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelectorAll('.inventory-category-filter').length === 2
                 && document.querySelectorAll('.inventory-authority-sort').length === 2
                 && InventoryUI.categoryFilterOptions().length === 6);
+        var keyboardOwnedCard = document.querySelector('.inventory-owned-backpack .inventory-slot-card.occupied');
+        var keyboardOwnedName = keyboardOwnedCard && keyboardOwnedCard.querySelector('.inventory-slot-copy b').textContent;
+        var keyboardDiscard = keyboardOwnedCard && keyboardOwnedCard.querySelector('.inventory-discard-btn');
+        if (keyboardOwnedCard) {
+            keyboardOwnedCard.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        }
+        var keyboardOwnedSelected = keyboardOwnedCard
+            && keyboardOwnedCard.getAttribute('aria-selected') === 'true'
+            && keyboardOwnedCard.classList.contains('workbench-source-selected');
+        if (keyboardOwnedCard) {
+            keyboardOwnedCard.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        }
+        assert('inventory-a11y1','owned 实体格在完整布局保留 Enter/Space 选择能力并给危险动作完整命名',
+            keyboardOwnedCard && keyboardOwnedCard.getAttribute('role') === 'option'
+                && keyboardOwnedCard.getAttribute('tabindex') === '0'
+                && keyboardOwnedCard.getAttribute('aria-disabled') === 'false'
+                && keyboardOwnedSelected && keyboardOwnedCard.getAttribute('aria-selected') === 'false'
+                && keyboardDiscard && keyboardDiscard.getAttribute('aria-label').indexOf(keyboardOwnedName) >= 0);
         var inventoryPlayerText = shell.innerText;
         assert('kshop-ui8y','背包战备箱隐藏槽号、空槽字样与重复范围，只保留玩家操作信息',
             shell.querySelector('.workbench-title').textContent === '物品管理'
@@ -1637,6 +1729,20 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await Host.openWorkbench(240);
         var workbenchState = InventoryWorkbench.debugState();
         var workbenchBulkQueries = countCmd('bulkQuery');
+        var standaloneKeyboardCard = document.querySelector('.inventory-workbench-panel .inventory-owned-backpack .inventory-slot-card.occupied');
+        if (standaloneKeyboardCard) {
+            standaloneKeyboardCard.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        }
+        var standaloneKeyboardSelected = standaloneKeyboardCard
+            && standaloneKeyboardCard.getAttribute('aria-selected') === 'true'
+            && standaloneKeyboardCard.classList.contains('workbench-source-selected');
+        if (standaloneKeyboardCard) {
+            standaloneKeyboardCard.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        }
+        assert('workbench-a11y-inventory','独立物品工作台接入同一 EntityTile Enter/Space 与选择状态语义',
+            standaloneKeyboardCard && standaloneKeyboardCard.getAttribute('role') === 'option'
+                && standaloneKeyboardCard.getAttribute('tabindex') === '0'
+                && standaloneKeyboardSelected && standaloneKeyboardCard.getAttribute('aria-selected') === 'false');
         var standaloneBattleboxGrid = document.querySelector('.inventory-owned-battlebox .inventory-owned-grid');
         var standaloneBattleboxCard = document.querySelector('.inventory-owned-battlebox .inventory-slot-card.occupied');
         var standaloneFullCopyVisible = standaloneBattleboxCard
@@ -1930,11 +2036,56 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     && tooltipNode.querySelector('.kshop-tt-header')
                     && tooltipNode.querySelector('.kshop-tt-dim'));
                 await wait(100);
+                var richVisible = PanelTooltip.isVisible();
+                var hasRichLayout = !!(tooltipNode && tooltipNode.querySelector('.flash-tt-rich'));
+                var hasIcon = !!(tooltipNode && tooltipNode.querySelector('.flash-tt-icon img'));
+                realIconSlot.focus();
+                var focusDescription = realIconSlot.getAttribute('aria-describedby') === 'panel-tooltip';
+                realIconSlot.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave',{
+                    bubbles:false,clientX:1120,clientY:220,pointerId:1,pointerType:'mouse',isPrimary:true
+                }));
+                var focusFallbackVisible = PanelTooltip.isVisible();
+                var focusExitTarget = document.querySelector('.workbench-close-btn');
+                if (focusExitTarget) focusExitTarget.focus();
+                var focusExitHidden = !PanelTooltip.isVisible()
+                    && !realIconSlot.hasAttribute('aria-describedby');
+
+                var asyncProbe = document.createElement('button');
+                asyncProbe.type = 'button'; asyncProbe.textContent = 'tooltip race probe';
+                document.body.appendChild(asyncProbe);
+                var lateTooltipCallback = null;
+                var asyncBinding = PanelTooltip.bindAsync(asyncProbe, {
+                    key:'race-probe', item:{name:'竞态探针'}, cache:{},
+                    renderBasic:function(){ return '<b>loading</b>'; },
+                    renderRich:function(){ return '<b>rich</b>'; },
+                    fetch:function(_, callback){ lateTooltipCallback = callback; }
+                });
+                asyncProbe.focus();
+                var asyncFocusVisible = PanelTooltip.isVisible()
+                    && asyncProbe.getAttribute('aria-describedby') === 'panel-tooltip';
+                if (focusExitTarget) focusExitTarget.focus();
+                if (lateTooltipCallback) lateTooltipCallback({success:true});
+                await wait(10);
+                var lateResponseStayedHidden = !PanelTooltip.isVisible();
+                asyncProbe.focus();
+                var destroyFirst = asyncBinding.destroy();
+                var destroySecond = asyncBinding.destroy();
+                asyncProbe.focus();
+                var teardownStayedHidden = !PanelTooltip.isVisible()
+                    && !asyncProbe.hasAttribute('aria-describedby');
+                asyncProbe.remove();
                 window.__visualTooltipState = {
-                    visible:PanelTooltip.isVisible(),
+                    visible:richVisible,
                     basicStyled:basicStyled,
-                    hasRichLayout:!!(tooltipNode && tooltipNode.querySelector('.flash-tt-rich')),
-                    hasIcon:!!(tooltipNode && tooltipNode.querySelector('.flash-tt-icon img'))
+                    hasRichLayout:hasRichLayout,
+                    hasIcon:hasIcon,
+                    focusDescription:focusDescription,
+                    focusFallbackVisible:focusFallbackVisible,
+                    focusExitHidden:focusExitHidden,
+                    asyncFocusVisible:asyncFocusVisible,
+                    lateResponseStayedHidden:lateResponseStayedHidden,
+                    teardownStayedHidden:teardownStayedHidden,
+                    teardownIdempotent:destroyFirst === true && destroySecond === false
                 };
             }
             if (mode === 'battlebox-pages') click('.inventory-page-jump');
@@ -1948,6 +2099,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await wait(120);
         var firstCategory = document.querySelector('.kshop-category-navigator .item-filter-option');
         if (firstCategory) firstCategory.click();
+        if (mode === 'compact') click('.item-grid-mode-option[data-layout-mode="compact"]');
         if (mode === 'knife') {
             click('.kshop-categories [data-filter-path="category"]');
             click('.kshop-categories [data-filter-path="category/weapon"]');

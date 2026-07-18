@@ -1,0 +1,558 @@
+/* ═══════════════════════════════════════════════════════
+   Dual Pane Workbench — Gate A1 shared shell / KShop trial
+   ═══════════════════════════════════════════════════════ */
+.workbench-shell {
+    --workbench-owned-card-height:68px;
+    --workbench-compact-tile-size:48px;
+    --workbench-compact-icon-size:40px;
+    --workbench-compact-gap:4px;
+    --wb-bg:#090a0c;
+    --wb-surface:#101216;
+    --wb-surface-2:#15181d;
+    --wb-line:#34383f;
+    --wb-line-soft:#23272d;
+    --wb-line-strong:color-mix(in srgb,var(--wb-line) 72%,var(--wb-text));
+    --wb-line-faint:color-mix(in srgb,var(--wb-line-soft) 58%,transparent);
+    --wb-text:#eef0f2;
+    --wb-muted:#8a9099;
+    --wb-accent:#f0a43a;
+    --wb-accent-soft:rgba(240,164,58,0.14);
+    --wb-focus:var(--wb-role-focus);
+    --wb-success:var(--wb-semantic-success);
+    --wb-warning:var(--wb-semantic-warning);
+    --wb-danger:var(--wb-semantic-danger);
+    --wb-disabled:var(--wb-semantic-disabled);
+    --wb-header-height:48px;
+    position:relative;
+    display:grid;
+    grid-template-rows:var(--wb-header-height) minmax(0,1fr);
+    width:1024px;
+    height:576px;
+    box-sizing:border-box;
+    overflow:hidden;
+    color:var(--wb-text);
+    background:
+        linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(255,255,255,0.012) 1px,transparent 1px),
+        var(--wb-bg);
+    background-size:32px 32px;
+    border:1px solid var(--wb-line-strong);
+    font:12px/1.4 "Microsoft YaHei","Segoe UI",sans-serif;
+}
+.workbench-shell::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    z-index:40;
+    pointer-events:none;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.025),inset 0 -80px 100px rgba(0,0,0,0.18);
+}
+.workbench-header {
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    min-width:0;
+    padding:9px 14px 9px 18px;
+    box-sizing:border-box;
+    background:linear-gradient(90deg,#17191d 0%,#101216 62%,#0c0e11 100%);
+    border-bottom:1px solid var(--wb-line);
+}
+.workbench-header::before {
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-1px;
+    width:210px;
+    height:2px;
+    background:var(--wb-accent);
+}
+.workbench-identity { flex:1 1 auto; min-width:0; }
+.workbench-eyebrow,
+.workbench-view-kicker,
+.workbench-slot-marker,
+.workbench-modal-kicker {
+    color:var(--wb-muted);
+    font:600 9px/1.2 "Consolas","Microsoft YaHei",monospace;
+    letter-spacing:1.6px;
+}
+.workbench-title {
+    margin-top:2px;
+    color:#fff;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+.workbench-subtitle {
+    overflow:hidden;
+    margin-top:1px;
+    color:#777d86;
+    font-size:9px;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.workbench-status {
+    flex:0 0 auto;
+    min-width:118px;
+    padding:5px 9px;
+    color:#aeb3ba;
+    background:#0d0f12;
+    border:1px solid var(--wb-line-soft);
+    font:10px/1.2 "Consolas","Microsoft YaHei",monospace;
+    text-align:center;
+    letter-spacing:.5px;
+}
+.workbench-status::before { content:'●'; margin-right:6px; color:#69707a; }
+.workbench-status[data-state="ready"]::before { color:var(--wb-success); }
+.workbench-status[data-state="busy"]::before,
+.workbench-status[data-state="loading"]::before { color:var(--wb-accent); animation:kshop-pulse var(--wb-motion-busy) ease-in-out infinite; }
+.workbench-status[data-state="pending"]::before { color:var(--wb-warning); }
+.workbench-status[data-state="warning"],
+.workbench-status[data-state="error"] { color:#f0b8b8; border-color:var(--wb-danger); }
+.workbench-status[data-state="warning"]::before,
+.workbench-status[data-state="error"]::before { color:var(--wb-danger); }
+.workbench-metrics { display:flex; align-items:stretch; gap:6px; }
+.workbench-metric {
+    min-width:96px;
+    padding:4px 10px;
+    box-sizing:border-box;
+    background:#0b0d0f;
+    border-left:2px solid var(--wb-accent);
+}
+.workbench-metric span { display:block; color:var(--wb-muted); font-size:9px; letter-spacing:1px; }
+.workbench-metric b { display:block; color:#fff1c7; font:700 17px/1.15 "Consolas",monospace; }
+.workbench-header-actions { display:flex; align-items:center; }
+
+/* 命中区下限：图标按钮 ≥24×24，主操作 ≥40×44 */
+.workbench-shell button,
+.workbench-shell [role="button"] { min-width:24px; min-height:24px; }
+.workbench-shell button.workbench-modal-action.primary,
+.workbench-shell button.skills-action-btn.primary,
+.workbench-shell button.kshop-checkout-btn,
+.workbench-shell button.crafting-commit-btn,
+.workbench-shell button.npcshop-checkout-btn { min-height:40px; min-width:80px; }
+.inventory-quick-transfer-status {
+    max-width:210px; margin-right:6px; padding:4px 8px; border:1px solid rgba(214,189,105,.28);
+    color:#c9c1a5; background:rgba(16,17,18,.72); font:10px/1.25 "Microsoft YaHei",sans-serif;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.inventory-quick-transfer-btn.active {
+    color:#17120a; border-color:#ffd27a; background:linear-gradient(#f2c56d,#bd8430);
+    box-shadow:0 0 10px rgba(240,164,58,.32);
+}
+.workbench-close-btn,
+.kshop-workbench .kshop-close-btn {
+    width:34px;
+    height:34px;
+    padding:0;
+    color:#b7bbc1;
+    background:#121419;
+    border:1px solid #3a3e45;
+    border-radius:0;
+    clip-path:none;
+    box-shadow:none;
+    font:300 22px/30px "Segoe UI",sans-serif;
+}
+.workbench-close-btn:hover,
+.kshop-workbench .kshop-close-btn:hover { color:#fff; background:#722b32; border-color:#b44a53; box-shadow:none; }
+
+.workbench-body {
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:minmax(0,1.55fr) 34px minmax(330px,.95fr);
+    gap:8px;
+    min-height:0;
+    padding:10px;
+    box-sizing:border-box;
+}
+.workbench-slot {
+    position:relative;
+    display:grid;
+    grid-template-rows:22px minmax(0,1fr);
+    min-width:0;
+    min-height:0;
+    overflow:hidden;
+    background:rgba(12,14,17,.94);
+    border:1px solid var(--wb-line-soft);
+    outline:none;
+}
+.workbench-slot.active { border-color:var(--wb-line-strong); box-shadow:inset 0 0 0 1px rgba(255,255,255,.025); }
+.workbench-slot.active .workbench-slot-marker b { background:var(--wb-accent); }
+.workbench-slot-marker {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 9px;
+    color:#737981;
+    background:#0c0e11;
+    border-bottom:1px solid var(--wb-line-soft);
+}
+.workbench-slot-marker b {
+    display:inline-grid;
+    place-items:center;
+    width:16px;
+    height:16px;
+    color:#15171a;
+    background:#9ba0a8;
+    font-size:9px;
+}
+.workbench-view-host,
+.workbench-view,
+.workbench-grid-container { min-width:0; min-height:0; }
+.workbench-view-host { position:relative; overflow:hidden; }
+.workbench-view { width:100%; height:100%; box-sizing:border-box; }
+.workbench-flow-rail {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    color:color-mix(in srgb,var(--wb-muted) 58%,transparent);
+    background:linear-gradient(180deg,transparent,#111419 18%,#111419 82%,transparent);
+    border-left:1px solid #20242a;
+    border-right:1px solid #20242a;
+}
+.workbench-flow-arrow {
+    display:grid;
+    place-items:center;
+    width:24px;
+    height:24px;
+    color:var(--wb-muted);
+    background:color-mix(in srgb,var(--wb-accent) 18%,var(--wb-surface));
+    border:1px solid color-mix(in srgb,var(--wb-accent) 24%,transparent);
+    font:700 22px/20px "Consolas",monospace;
+    opacity:.72;
+    transition:opacity var(--wb-motion-standard) var(--wb-ease-standard),color var(--wb-motion-standard) var(--wb-ease-standard),background-color var(--wb-motion-standard) var(--wb-ease-standard),border-color var(--wb-motion-standard) var(--wb-ease-standard),transform var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.workbench-flow-rail[data-state="accept"] .workbench-flow-arrow,
+.workbench-flow-rail[data-state="pending"] .workbench-flow-arrow,
+.workbench-flow-rail.workbench-drop-active .workbench-flow-arrow {
+    color:var(--wb-bg);
+    background:var(--wb-accent);
+    border-color:var(--wb-focus);
+    opacity:1;
+    transform:translateY(1px);
+}
+.workbench-flow-rail[data-state="reject"] .workbench-flow-arrow,
+.workbench-flow-rail.workbench-drop-rejected .workbench-flow-arrow {
+    color:#fff;
+    background:var(--wb-danger);
+    border-color:var(--wb-danger);
+    opacity:1;
+}
+.workbench-flow-label {
+    writing-mode:vertical-rl;
+    font:600 9px/1 "Consolas",monospace;
+    letter-spacing:2px;
+}
+
+.workbench-view-chrome {
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    gap:1px 8px;
+    padding:8px 10px 7px;
+    box-sizing:border-box;
+    background:#14171b;
+    border-bottom:1px solid var(--wb-line);
+}
+.workbench-view-heading { min-width:0; overflow:hidden; }
+.workbench-view-title-row { display:flex; align-items:baseline; gap:8px; min-width:0; min-height:24px; }
+.workbench-view-title { flex:0 1 auto; min-width:0; color:#f1f2f4; font-size:15px; font-weight:700; letter-spacing:.5px; white-space:nowrap; }
+.workbench-view-breadcrumb-host { flex:1 1 auto; min-width:0; overflow:hidden; color:#848d96; }
+.workbench-view-breadcrumb-host[hidden] { display:none; }
+.item-filter-breadcrumbs {
+    display:flex; align-items:center; width:100%; min-width:0; overflow:hidden; white-space:nowrap;
+    font:9px/1.2 "Microsoft YaHei",sans-serif;
+}
+.item-filter-breadcrumb-segment { display:inline-flex; flex:0 0 auto; align-items:center; min-width:0; }
+.item-filter-breadcrumb-separator { flex:0 0 auto; margin:0 3px; color:#58616a; }
+.item-filter-breadcrumb {
+    max-width:112px; padding:0; overflow:hidden; color:inherit; border:0; background:none;
+    font:inherit; white-space:nowrap; text-overflow:ellipsis; cursor:pointer;
+}
+.item-filter-breadcrumb:hover,
+.item-filter-breadcrumb:focus-visible { color:var(--wb-accent,#e5a64d); outline:none; text-decoration:underline; }
+.item-filter-breadcrumb[aria-current="page"] { color:#c9d0d6; }
+.item-filter-breadcrumb:disabled { opacity:.45; cursor:not-allowed; text-decoration:none; }
+.item-filter-breadcrumb-ellipsis { display:none; color:#737c85; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-middle { display:none; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-ellipsis { display:inline-flex; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-tail { flex:0 1 auto; }
+.item-filter-breadcrumbs.is-collapsed .item-filter-breadcrumb-tail .item-filter-breadcrumb { max-width:88px; }
+.workbench-view-meta { align-self:center; color:#8d939b; font:10px/1.2 "Consolas","Microsoft YaHei",monospace; }
+.workbench-view-toolbar { grid-column:1 / -1; min-width:0; }
+.workbench-grid-renderer { position:relative; min-width:0; min-height:0; }
+.workbench-grid-empty {
+    display:grid;
+    place-items:center;
+    min-height:84px;
+    padding:12px;
+    box-sizing:border-box;
+    color:#666c74;
+    border:1px dashed var(--wb-line-faint);
+    font-size:10px;
+    text-align:center;
+    letter-spacing:.5px;
+}
+.workbench-grid-container { display:flex; flex-direction:column; overflow:hidden; background:#0e1013; }
+.workbench-source-selected { outline:1px solid var(--wb-role-selected) !important; outline-offset:-2px; background:var(--wb-accent-soft) !important; }
+.workbench-drop-active { border-color:var(--wb-accent) !important; color:#ffe5b8 !important; background:rgba(240,164,58,.2) !important; }
+.workbench-drop-rejected { border-color:var(--wb-role-reject) !important; outline:1px dashed var(--wb-role-reject) !important; outline-offset:-3px; background:color-mix(in srgb,var(--wb-role-reject) 18%,transparent) !important; }
+.workbench-drag-ghost {
+    position:fixed;
+    z-index:10000;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    max-width:230px;
+    padding:8px 10px;
+    box-sizing:border-box;
+    pointer-events:none;
+    color:#fff;
+    background:rgba(17,19,23,.97);
+    border:1px solid var(--wb-accent);
+    box-shadow:0 8px 24px rgba(0,0,0,.5);
+    font-size:11px;
+}
+
+.workbench-modal-layer { position:absolute; inset:0; z-index:60; }
+.workbench-modal-backdrop {
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    box-sizing:border-box;
+    background:rgba(3,4,6,.78);
+    backdrop-filter:blur(2px);
+}
+.workbench-modal {
+    width:430px;
+    max-width:100%;
+    padding:20px 22px;
+    box-sizing:border-box;
+    color:var(--wb-text);
+    background:#14161a;
+    border:1px solid #555a62;
+    border-top:3px solid var(--wb-accent);
+    box-shadow:0 24px 70px rgba(0,0,0,.6);
+}
+.workbench-modal-title { margin:5px 0 9px; color:#fff; font-size:19px; font-weight:700; }
+.workbench-modal-message { color:#c9cdd2; font-size:13px; }
+.workbench-modal-detail { margin-top:8px; color:#858b94; font-size:11px; line-height:1.7; }
+.workbench-modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
+.workbench-modal-action {
+    min-width:98px;
+    padding:7px 12px;
+    color:#b9bec5;
+    background:#1a1d22;
+    border:1px solid #454a52;
+    border-radius:0;
+    font:11px/1.2 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+}
+.workbench-modal-action:hover { color:#fff; border-color:#757c86; background:#24282e; }
+.workbench-modal-action.primary { color:#17191c; background:var(--wb-accent); border-color:#ffd18c; font-weight:700; }
+.workbench-modal-action.danger { color:#efb0b5; border-color:#7a3a40; background:#281519; }
+
+/* KShop trial views consume the shared workbench primitives without changing the wire protocol. */
+.kshop-catalog-view { display:flex; flex-direction:column; overflow:hidden; }
+.kshop-catalog-view .workbench-view-chrome { padding-bottom:5px; }
+.kshop-workbench .kshop-categories {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    height:48px;
+    min-height:48px;
+    max-width:100%;
+    max-height:48px;
+    padding:5px 0 0;
+    box-sizing:border-box;
+    overflow-x:hidden;
+    overflow-y:auto;
+    background:none;
+    border:0;
+}
+.kshop-workbench .kshop-categories > .item-filter-navigator { flex:1 1 100%; width:100%; }
+.kshop-workbench .kshop-categories::-webkit-scrollbar { width:2px; height:2px; }
+.kshop-workbench .kshop-categories::-webkit-scrollbar-thumb { background:var(--wb-scrollbar-thumb); }
+.kshop-workbench .kshop-grid-wrap { min-height:0; background:#0b0d10; }
+.kshop-workbench .kshop-loading { color:var(--wb-accent); background:rgba(9,10,12,.92); text-shadow:none; }
+.kshop-workbench .kshop-grid {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-auto-rows:minmax(88px,auto);
+    gap:6px;
+    padding:8px;
+    align-content:start;
+}
+.kshop-workbench .kshop-card {
+    position:relative;
+    display:grid;
+    grid-template-columns:48px minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) 22px;
+    gap:5px 8px;
+    min-height:88px;
+    padding:8px;
+    box-sizing:border-box;
+    overflow:hidden;
+    color:var(--wb-text);
+    background:#15181c;
+    border:1px solid #2e3339;
+    clip-path:none;
+    cursor:pointer;
+    transition:border-color .12s,background .12s,transform .12s;
+}
+.kshop-workbench .kshop-card::before { display:none; }
+.kshop-workbench .kshop-card:hover { background:#1a1e23; border-color:#5d646e; box-shadow:none; transform:translateY(-1px); }
+.kshop-card-icon-frame {
+    grid-row:1 / 3;
+    display:grid;
+    place-items:center;
+    width:48px;
+    height:48px;
+    align-self:center;
+    background:#0c0e11;
+    border:1px solid #2a2e34;
+}
+.kshop-workbench .kshop-icon,
+.kshop-workbench .kshop-icon.cfn-layered-icon { width:42px; height:42px; filter:none; }
+.kshop-workbench .kshop-card-info { display:block; min-width:0; }
+.kshop-workbench .kshop-card-name { color:#f2f3f4; font-size:11px; line-height:1.35; white-space:normal; max-height:30px; }
+.kshop-card-type { margin-top:3px; color:#757c85; font-size:10px; text-transform:uppercase; }
+.kshop-workbench .kshop-card-price { align-self:end; color:#f2c77e; font:700 11px/1.1 "Consolas",monospace; text-shadow:none; }
+.kshop-workbench .kshop-card-price span { color:#8e949b; font-size:9px; }
+.kshop-workbench .kshop-lock { color:#b8777c; font:10px/1.2 "Consolas","Microsoft YaHei",monospace; text-shadow:none; }
+.kshop-workbench .kshop-add-btn {
+    position:absolute;
+    right:7px;
+    bottom:6px;
+    width:auto;
+    min-width:34px;
+    height:21px;
+    padding:0 7px;
+    color:#17191c;
+    background:#b8bdc4;
+    border:0;
+    clip-path:none;
+    font:700 9px/21px "Microsoft YaHei",sans-serif;
+}
+.kshop-workbench .kshop-add-btn:hover { color:#161719; background:var(--wb-accent); box-shadow:none; }
+.kshop-card-drag-hint { position:absolute; left:7px; bottom:5px; color:#4d535b; font:9px/1 "Consolas",monospace; letter-spacing:1px; }
+.kshop-workbench .kshop-card-nosale,
+.kshop-workbench .kshop-card-locked { opacity:.42; cursor:not-allowed; }
+
+.kshop-order-view {
+    display:grid;
+    grid-template-rows:minmax(0,1.2fr) minmax(138px,.8fr);
+    gap:7px;
+    padding:7px;
+    box-sizing:border-box;
+    overflow:hidden;
+    background:#0b0d10;
+}
+.kshop-order-view .workbench-grid-container { border:1px solid #292d33; }
+.kshop-order-view .workbench-view-chrome { padding:7px 9px 6px; }
+.kshop-order-view .workbench-view-title { font-size:13px; }
+.kshop-cart-drop-target {
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:6px 7px 0;
+    padding:6px 8px;
+    color:#9ca2aa;
+    background:#111419;
+    border:1px dashed #3a4048;
+    border-radius:0;
+    text-align:left;
+    cursor:pointer;
+}
+.kshop-cart-drop-target:hover,
+.kshop-cart-drop-target.has-selection { color:#ffd89e; border-color:#866233; background:rgba(240,164,58,.08); }
+.kshop-cart-drop-target.disabled { opacity:.38; cursor:not-allowed; }
+.kshop-drop-glyph { color:var(--wb-accent); font:300 22px/1 "Segoe UI",sans-serif; }
+.kshop-drop-copy { min-width:0; }
+.kshop-drop-copy b { display:block; color:inherit; font-size:10px; }
+.kshop-drop-copy small { display:block; overflow:hidden; color:#6f757e; font-size:10px; white-space:nowrap; text-overflow:ellipsis; }
+.kshop-workbench .kshop-cart-list,
+.kshop-workbench .kshop-claim-list {
+    flex:1 1 auto;
+    display:block;
+    min-height:0;
+    padding:5px 7px;
+    overflow-y:auto;
+}
+.kshop-workbench .kshop-cart-row,
+.kshop-workbench .kshop-claim-row {
+    display:flex;
+    align-items:center;
+    min-height:38px;
+    padding:5px 4px;
+    box-sizing:border-box;
+    border:0;
+    border-bottom:1px solid #24282e;
+    background:transparent;
+}
+.kshop-workbench .kshop-cart-row:hover,
+.kshop-workbench .kshop-claim-row:hover { background:#171a1f; }
+.kshop-cart-copy,
+.kshop-claim-copy { flex:1 1 auto; min-width:0; }
+.kshop-workbench .kshop-cart-name,
+.kshop-workbench .kshop-claim-name { display:block; color:#e4e6e9; font-size:10px; }
+.kshop-cart-copy small,
+.kshop-claim-copy small { display:block; color:#737982; font-size:10px; }
+.kshop-workbench .kshop-cart-qty { display:flex; align-items:center; gap:3px; color:#a8adb4; }
+.kshop-workbench .kshop-cart-qty b { min-width:16px; text-align:center; font:700 10px/1 "Consolas",monospace; }
+.kshop-workbench .kshop-qty-btn {
+    display:grid;
+    place-items:center;
+    width:18px;
+    height:18px;
+    padding:0;
+    color:#bdc2c8;
+    background:#171a1f;
+    border:1px solid #383d44;
+    line-height:1;
+}
+.kshop-workbench .kshop-qty-btn:hover { color:#17191c; background:var(--wb-accent); border-color:var(--wb-accent); }
+.kshop-workbench .kshop-cart-sub { min-width:36px; margin-left:5px; color:#efc57c; font:700 10px/1 "Consolas",monospace; }
+.kshop-workbench .kshop-remove-btn { color:var(--wb-semantic-danger); background:#27171a; border-color:#5c3035; }
+.kshop-workbench .kshop-claim-btn {
+    margin-left:6px;
+    padding:4px 8px;
+    color:#17191c;
+    background:#b8bdc4;
+    border:0;
+    clip-path:none;
+    font-size:9px;
+}
+.kshop-workbench .kshop-claim-btn:hover:not(:disabled) { color:#17191c; background:var(--wb-accent); box-shadow:none; }
+.kshop-workbench .kshop-cart-footer {
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:7px 8px;
+    background:#171a1f;
+    border-top:1px solid #343941;
+}
+.workbench-commit-summary { color:#9298a0; font-size:9px; }
+.workbench-commit-summary b { color:#f3cd88; font:700 14px/1 "Consolas",monospace; }
+.kshop-workbench .kshop-checkout-btn {
+    padding:6px 10px;
+    color:#17191c;
+    background:var(--wb-accent);
+    border:1px solid #ffcf87;
+    clip-path:none;
+    font:700 10px/1.2 "Microsoft YaHei",sans-serif;
+    letter-spacing:.5px;
+}
+.kshop-workbench .kshop-checkout-btn:hover:not(:disabled) { background:#ffc36a; border-color:#ffe0ae; box-shadow:none; text-shadow:none; }
+.kshop-workbench .kshop-checkout-btn:disabled { opacity:.25; }
+.kshop-workbench.kshop-write-busy .workbench-slot { border-color:#4b4640; }

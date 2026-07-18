@@ -20,7 +20,7 @@
     .matrix-stage .kshop-grid,.matrix-stage .npcshop-catalog-grid,.matrix-stage .inventory-owned-grid{position:relative;display:grid;align-content:start;overflow:visible}
     .matrix-stage .kshop-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto}
     .matrix-stage .npcshop-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .matrix-stage .inventory-owned-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:0}
+    .matrix-stage .inventory-owned-grid{gap:5px;padding:0}
     .matrix-stage .inventory-slot-card{height:72px}
     .matrix-stage .inventory-slot-card.empty{border-style:dashed}
     .matrix-overlay-stage .workbench-shell{width:100%;height:180px;min-height:180px}
@@ -39,6 +39,9 @@
 <body>
   <header class="matrix-header"><div><h1>物品格统一视觉样本矩阵</h1><p>同一语义组件在目录 / owned、完整 / 紧凑、普通 / 选中 / 禁用状态下的正交样本。</p></div><b id="matrix-status">RUNNING</b></header>
   <main id="matrix"></main><pre id="matrix-output"></pre>
+  <script src="/launcher/web/modules/workbench-lifecycle.js"></script>
+  <script src="/launcher/web/modules/workbench-focus.js"></script>
+  <script src="/launcher/web/modules/workbench-primitives.js"></script>
   <script src="/launcher/web/modules/workbench.js"></script>
   <script src="/launcher/web/modules/item-filter.js"></script>
   <script src="/launcher/web/modules/inventory-runtime.js"></script>
@@ -98,10 +101,20 @@
     var compact=document.querySelectorAll('[data-matrix-case$="-compact"]');
     check('eight orthogonal matrix cases',document.querySelectorAll('[data-matrix-case]').length===8);
     check('compact cards keep minimum pointer target',Array.prototype.every.call(compact,function(scope){return Array.prototype.every.call(scope.querySelectorAll('.item-card'),function(card){return card.classList.contains('empty')||card.getBoundingClientRect().height>=44})}));
+    var compactCatalogMetrics=Array.prototype.map.call(document.querySelectorAll('[data-matrix-case="kshop-compact"] .kshop-card,[data-matrix-case="npcshop-compact"] .npcshop-catalog-card'),function(card){return card.getBoundingClientRect().width});
+    var compactCatalogTracks=Array.prototype.map.call(document.querySelectorAll('[data-matrix-case="kshop-compact"] .kshop-grid,[data-matrix-case="npcshop-compact"] .npcshop-catalog-grid'),function(grid){var style=getComputedStyle(grid);return{columns:style.gridTemplateColumns,rows:style.gridAutoRows,gap:style.gap,padding:style.padding,justify:style.justifyContent,inline:grid.getAttribute('style')||''}});
+    check('compact catalog cards stay icon-width instead of stretching across the pane',compactCatalogMetrics.length>0&&compactCatalogMetrics.every(function(width){return width<=54.1}),JSON.stringify({cards:compactCatalogMetrics,tracks:compactCatalogTracks}));
+    var compactShopActions=Array.prototype.filter.call(document.querySelectorAll('[data-matrix-case="kshop-compact"] .kshop-add-btn'),function(button){return getComputedStyle(button).display!=='none'});
+    var compactActionMetrics=compactShopActions.map(function(button){var rect=button.getBoundingClientRect(),glyph=getComputedStyle(button,'::after');return{hit:[rect.width,rect.height],glyph:[parseFloat(glyph.width),parseFloat(glyph.height)],background:getComputedStyle(button).backgroundColor}});
+    check('compact shop action keeps a small glyph inside a large hit target',compactActionMetrics.length>0&&compactActionMetrics.every(function(metric){return metric.hit[0]>=24&&metric.hit[1]>=24&&metric.glyph[0]<=16&&metric.glyph[1]<=16&&metric.background==='rgba(0, 0, 0, 0)'}),JSON.stringify(compactActionMetrics));
     check('compact semantic bodies are hidden',Array.prototype.every.call(compact,function(scope){return Array.prototype.every.call(scope.querySelectorAll('.item-card-body'),function(node){return getComputedStyle(node).display==='none'})}));
     check('compact unselected auxiliaries are hidden',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .item-card:not(.item-card-selected) .item-card-auxiliary'),function(node){return getComputedStyle(node).display==='none'}));
     check('compact selected markers are icon-only',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .item-card-selected .item-card-selection-marker'),function(node){var style=getComputedStyle(node);return style.display==='grid'&&style.fontSize==='0px'}));
     check('full semantic bodies remain visible',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-full"] .item-card-body'),function(node){return getComputedStyle(node).display!=='none'}));
+    check('full owned cards retain readable column width',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case="owned-full"] .inventory-slot-card'),function(node){return node.getBoundingClientRect().width>=128}));
+    var compactOwnedMetrics=Array.prototype.map.call(document.querySelectorAll('[data-matrix-case="owned-compact"] .inventory-slot-card'),function(card){return card.getBoundingClientRect().width});
+    var compactOwnedGrid=document.querySelector('[data-matrix-case="owned-compact"] .inventory-owned-grid'),compactOwnedTops=Array.prototype.map.call(compactOwnedGrid.querySelectorAll('.inventory-slot-card'),function(card){return Math.round(card.getBoundingClientRect().top)});
+    check('compact owned cards stay icon-width instead of stretching across the pane',compactOwnedMetrics.length>0&&compactOwnedMetrics.every(function(width){return width>=47.9&&width<=48.1})&&compactOwnedTops.every(function(top){return top===compactOwnedTops[0]}),JSON.stringify({cards:compactOwnedMetrics,tops:compactOwnedTops,width:compactOwnedGrid.getBoundingClientRect().width,display:getComputedStyle(compactOwnedGrid).display}));
     check('all matrix stages avoid horizontal overflow',Array.prototype.every.call(document.querySelectorAll('.matrix-stage'),function(node){return node.scrollWidth<=node.clientWidth+1}));
     var overlay=document.querySelector('.matrix-overlay-stage .npcshop-help-page'),overlayBody=document.querySelector('.matrix-overlay-stage .workbench-body'),overlayRect=overlay.getBoundingClientRect(),overlayBodyRect=overlayBody.getBoundingClientRect();
     check('secondary overlay exactly covers workbench body',Math.abs(overlayRect.top-overlayBodyRect.top)<1&&Math.abs(overlayRect.bottom-overlayBodyRect.bottom)<1&&getComputedStyle(overlayBody).visibility==='hidden');

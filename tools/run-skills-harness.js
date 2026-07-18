@@ -6,6 +6,7 @@ const http = require('http');
 const path = require('path');
 const url = require('url');
 const vm = require('vm');
+const {readCssBundle} = require('./lib/read-css-bundle.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const WEB = path.join(ROOT, 'launcher', 'web');
@@ -29,6 +30,13 @@ function read(relative) { return fs.readFileSync(path.join(ROOT, relative), 'utf
 
 function staticAudit() {
     const panel = read('launcher/web/modules/skills.js');
+    const library = read('launcher/web/modules/skills-library.js');
+    const trainer = read('launcher/web/modules/skills-trainer.js');
+    const loadout = read('launcher/web/modules/skills-loadout.js');
+    const interactions = read('launcher/web/modules/skills-interactions.js');
+    const renderer = read('launcher/web/modules/skills-render.js');
+    const diagnostics = read('launcher/web/modules/skills-diagnostics.js');
+    const skillsSource = [panel, library, trainer, loadout, interactions, renderer, diagnostics].join('\n');
     const panelService = read('scripts/类定义/org/flashNight/arki/skill/SkillPanelService.as');
     const panelServiceTest = read('scripts/类定义/org/flashNight/arki/skill/SkillPanelServiceTest.as');
     const loadoutService = read('scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as');
@@ -36,21 +44,22 @@ function staticAudit() {
     const bridge = read('launcher/web/modules/bridge.js');
     const runtime = read('launcher/web/modules/skills-runtime.js');
     const workbench = read('launcher/web/modules/workbench.js');
+    const workbenchPrimitives = read('launcher/web/modules/workbench-primitives.js');
     const panels = read('launcher/web/modules/panels.js');
     const registry = read('launcher/web/modules/panels-lazy-registry.js');
-    const css = read('launcher/web/css/panels.css');
+    const css = readCssBundle(path.join(ROOT, 'launcher/web/css/panels.css'), {rootDir:path.join(ROOT, 'launcher/web/css')});
     const build = read('launcher/build.ps1');
     if (!panel.includes("Panels.register('skills'") || !panel.includes('new Workbench.DualPaneShell')) throw new Error('skills production panel registration/shell missing');
     if (!panel.includes("writeCommand('equip'") || !panel.includes("writeCommand('learnCommit'") || !panel.includes('expectedLearnToken')) throw new Error('skill manage/trainer write flow missing');
-    if (!panel.includes('function handleTrainerExpired') || !panel.includes('function renderTrainerExpired')
-        || !panel.includes("_trainerExpired = true") || !panel.includes('返回游戏并重新对话')) throw new Error('trainer capability expiry must remain visible with explicit recovery');
+    if (!panel.includes('function handleTrainerExpired') || !renderer.includes('function renderTrainerExpired')
+        || !panel.includes("_trainerExpired = true") || !renderer.includes('返回游戏并重新对话')) throw new Error('trainer capability expiry must remain visible with explicit recovery');
     if (!panel.includes('function scheduleLearnPreview') || !panel.includes('function hasFreshPreviewToken')
         || panel.includes("button('计算消耗'")) throw new Error('trainer selection must auto-preview and refresh stale learn tokens without a routine calculate button');
-    if (!panel.includes("range.type = 'range'") || !panel.includes('function stageDesiredLevel')
-        || !panel.includes('function targetMarkLevels') || !panel.includes("value.type = 'number'")
-        || panel.includes("button('升 1 级'")) throw new Error('trainer target level must support exact discrete range/number selection without a redundant plus-one preset');
-    if (!panel.includes("result.classList.add('stale')") || !panel.includes('appendPreviewUpdateStatus')
-        || !panel.includes('上次消耗')) throw new Error('target adjustment must retain and clearly mark the previous authority preview');
+    if (!renderer.includes("range.type = 'range'") || !panel.includes('function stageDesiredLevel')
+        || !panel.includes('function targetMarkLevels') || !renderer.includes("value.type = 'number'")
+        || skillsSource.includes("button('升 1 级'")) throw new Error('trainer target level must support exact discrete range/number selection without a redundant plus-one preset');
+    if (!renderer.includes("result.classList.add('stale')") || !renderer.includes('appendPreviewUpdateStatus')
+        || !renderer.includes('上次消耗')) throw new Error('target adjustment must retain and clearly mark the previous authority preview');
     if (!panelService.includes('lastTouchedAt') || !panelService.includes('session.lastTouchedAt = now()')
         || !panelServiceTest.includes('testSuccessfulReadRenewsTrainerLease') || !panelServiceTest.includes('testIdleTrainerLeaseExpires'))
         throw new Error('trainer capability must use a tested renewable idle lease');
@@ -59,11 +68,11 @@ function staticAudit() {
     if (!panel.includes("cmd:'switch_trainer'") || !panel.includes('canReturnTrainer') || !panel.includes('skills-switch-trainer-btn')) throw new Error('scoped manage to trainer return UX/contract missing');
     if (!panel.includes('sent === false') || !panel.includes('function beginSwitchWait') || !panel.includes('switchPending:_switchPending')) throw new Error('skill switch transport/pending watchdog contract missing');
     if (!bridge.includes("typeof window.chrome.webview.postMessage !== 'function'") || !bridge.includes('return true;') || !bridge.includes('return false;')) throw new Error('Bridge.send boolean transport contract missing');
-    if (!panel.includes('PanelTooltip.bindAsyncHover') || !panel.includes('PanelTooltip.buildItemRichHtml') || !panel.includes('normalizeAS2Description')) throw new Error('skills must use the shared sanitized annotation system');
+    if (!panel.includes('PanelTooltip.bindAsyncHover') || !renderer.includes('PanelTooltip.buildItemRichHtml') || !skillsSource.includes('normalizeAS2Description')) throw new Error('skills must use the shared sanitized annotation system');
     if (!panel.includes('new Workbench.GridDensityController') || !panel.includes("compactClass:'skills-density-compact'")) throw new Error('skills full/compact density controller missing');
     if (!panel.includes('new Workbench.PointerDragController') || !panel.includes('new Workbench.InteractionBroker') || !panel.includes('skills-drag-ghost')) throw new Error('shared skills drag interaction missing');
-    if (!panel.includes("writeCommand('moveSlot'") || !runtime.includes('moveSlot: true') || !panel.includes("operationId:'move_quick_slot'")
-        || !panel.includes("subjectKind:'quick_slot'") || !panel.includes("event.key !== 'ArrowLeft'")
+    if (!panel.includes("writeCommand('moveSlot'") || !runtime.includes('moveSlot: true') || !skillsSource.includes("operationId:'move_quick_slot'")
+        || !skillsSource.includes("subjectKind:'quick_slot'") || !panel.includes("event.key !== 'ArrowLeft'")
         || !panelService.includes('skillMoveSlot') || !panelService.includes('executeWrite("moveSlot"')
         || !loadoutService.includes('function moveSlot') || !loadoutServiceTest.includes('testMoveSlotSwapsOccupied'))
         throw new Error('quick-slot atomic move/swap protocol and interaction missing');
@@ -75,19 +84,51 @@ function staticAudit() {
         || !panel.includes('createLoadoutConfirmationToggle') || !panel.includes('skills-confirmation-toggle')
         || panel.includes("id:'confirmation-mode'") || !panel.includes("_loadoutConfirmationMode === 'fast'")
         || !panel.includes("kind:'skills-learn-confirm'")) throw new Error('visible header safe/fast preference or learning confirmation boundary missing');
-    if (!panel.includes('function buildDiagnosticRecord') || !panel.includes('redactDiagnosticValue') || !panel.includes('snapshotDiagnostics') || !panel.includes('skills-header-diagnostic')) throw new Error('exception-only player diagnostic copy/redaction missing');
+    if (!panel.includes('function buildDiagnosticRecord') || !panel.includes('redactDiagnosticValue')
+        || !diagnostics.includes('snapshotDiagnostics') || !panel.includes('skills-header-diagnostic')) throw new Error('exception-only player diagnostic copy/redaction missing');
     if (panel.includes("setMetric('revision'") || panel.includes("setStatus('权威状态已同步'")) throw new Error('routine technical skill chrome must stay hidden from players');
     if (/domain\s*:\s*['"]inventory['"]/.test(panel) || /domain\s*:\s*['"]inventory['"]/.test(runtime)) throw new Error('skills must not call the item-grid domain');
     if (!runtime.includes("state = 'needs_reconcile'") || !runtime.includes('reconcileAfterCallId') || !runtime.includes('lastAppliedWriteEpoch')) throw new Error('explicit Skill reconcile/watermark contract missing');
-    if (!runtime.includes("payload: clonePayload(payload)") || !runtime.includes("panel: 'skills'") || !runtime.includes("domain: 'skills'") || !runtime.includes('panelInstanceId: entry.panelInstanceId')) throw new Error('strict instance-bound nested skills envelope missing');
+    if (!runtime.includes("require('./panel-runtime.js')") || !runtime.includes('new PanelRuntime.PanelRequestMux')
+        || !runtime.includes('payload:clonePayload(context.payload)') || !runtime.includes("panel:'skills'")
+        || !runtime.includes("domain:'skills'") || !runtime.includes('panelInstanceId:context.session.panelInstanceId')) throw new Error('strict shared instance-bound nested skills envelope missing');
     if (!panels.includes('activePanel.onRebind(activePanel._el, initData)')) throw new Error('Panels same-name rebind hook missing');
     if (!panels.includes("pending.id === 'skills'") || !panels.includes('closeMessage.panelInstanceId')) throw new Error('skills lazy-cancel must use the instance-bound exact close envelope');
-    if (!registry.includes("registerLazy('skills'") || !registry.includes("'modules/item-filter.js'") || !registry.includes("'modules/skills-runtime.js'")) throw new Error('skills lazy registry/filter dependency missing');
-    if (!workbench.includes("gesture.target.accepted === false") || !workbench.includes('this.compactClass')
-        || !workbench.includes('this._allowInteractiveSource')) throw new Error('shared drag rejection/custom density hooks missing');
-    if (!panel.includes("operationId:'reorder_skill'") || !panel.includes('adjacentVisibleEntry')
-        || !panel.includes("reorderBlockReason(source, 'source')") || !panel.includes("reorderBlockReason(target, 'target')")
+    const skillsRegistryStart = registry.indexOf("Panels.registerLazy('skills'");
+    const skillsRegistryEnd = registry.indexOf('noop);', skillsRegistryStart);
+    const skillsRegistry = skillsRegistryStart >= 0 && skillsRegistryEnd > skillsRegistryStart
+        ? registry.slice(skillsRegistryStart, skillsRegistryEnd) : '';
+    const requiredSkillsDependencies = [
+        'modules/panel-runtime.js',
+        'modules/workbench-lifecycle.js',
+        'modules/workbench-focus.js',
+        'modules/workbench-primitives.js',
+        'modules/workbench.js',
+        'modules/workbench-components.js',
+        'modules/item-filter.js',
+        'modules/skills-runtime.js',
+        'modules/skills-library.js',
+        'modules/skills-trainer.js',
+        'modules/skills-loadout.js',
+        'modules/skills-interactions.js',
+        'modules/skills-render.js',
+        'modules/skills-diagnostics.js',
+        'modules/skills.js'
+    ];
+    if (!skillsRegistry || requiredSkillsDependencies.some(dependency => !skillsRegistry.includes("'" + dependency + "'"))) {
+        throw new Error('skills lazy registry dependency closure missing');
+    }
+    if (!workbenchPrimitives.includes("gesture.target.accepted === false")
+        || !workbenchPrimitives.includes('this._allowInteractiveSource')
+        || !workbench.includes('this.compactClass')) throw new Error('shared drag rejection/custom density hooks missing');
+    if (!skillsSource.includes("operationId:'reorder_skill'") || !panel.includes('adjacentVisibleEntry')
+        || !interactions.includes("blockReason(source, 'source')") || !interactions.includes("blockReason(target, 'target')")
         || panel.includes("button('上移'") || panel.includes("button('下移'")) throw new Error('skill tile swap/keyboard fallback contract missing');
+    if (!panel.includes('SkillsPanel load order: item-filter.js, skills-library.js, skills-trainer.js, skills-loadout.js, skills-interactions.js, skills-render.js, skills-diagnostics.js, then skills.js.')
+        || !library.includes('function visibleEntries') || !trainer.includes('function hasFreshPreviewToken')
+        || !loadout.includes('function equipPlan') || !interactions.includes('function probeReorder')
+        || !renderer.includes('function renderDetail') || !diagnostics.includes('function buildRecord'))
+        throw new Error('skills feature modules or explicit browser load-order diagnosis missing');
     if (!css.includes('#panel-container[data-panel="skills"] #panel-content') || !css.includes('grid-template-columns:repeat(12,64px)')
         || !css.includes('.skills-density-compact') || !css.includes('--workbench-compact-tile-size:48px')
         || !css.includes('.skills-slot-icon { width:48px; height:48px; box-sizing:border-box') || !css.includes('.skills-slot:focus-within .skills-slot-clear')
@@ -103,7 +144,8 @@ function staticAudit() {
         || !css.includes('font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif')
         || !css.includes('.skills-panel .workbench-slot-marker') || !css.includes('data-modal-kind="skills-help"')) throw new Error('skills band/tile/tooltip/filter/search/diagnostic/help CSS missing');
     if (/\.skills-density-compact\s+\.skills-(?:loadout|slot)/.test(css)) throw new Error('skill-library density must not resize the fixed gameplay hotbar');
-    if (!build.includes('"modules\\skills-runtime.js"') || !build.includes('"modules\\skills.js"')) throw new Error('launcher build required asset list missing skills');
+    const requiredSkillsBuildAssets = requiredSkillsDependencies.map(dependency => '"' + dependency.replace(/\//g, '\\') + '"');
+    if (requiredSkillsBuildAssets.some(asset => !build.includes(asset))) throw new Error('launcher build required asset list missing skills dependency');
 }
 
 function bridgeSendAudit() {

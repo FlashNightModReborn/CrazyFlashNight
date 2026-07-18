@@ -673,7 +673,7 @@
             meta:options.meta || '同步中',
             className:options.className || 'inventory-owned-view',
             gridClassName:options.gridClassName || 'inventory-owned-grid',
-            emptyText:options.emptyText || '正在同步库存…',
+            emptyText:options.emptyText || '正在同步库存；失败后可用顶栏“重新同步”',
             allowedSlots:options.allowedSlots || ['L','R'],
             layoutMode:options.layoutMode || 'full',
             densityController:options.densityController

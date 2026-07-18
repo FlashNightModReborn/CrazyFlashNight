@@ -1,0 +1,79 @@
+/* Shared workbench composition primitives. New primitives enter named layers;
+   legacy feature selectors remain unlayered until their staged migration. */
+@layer workbench.components, workbench.states, workbench.motion;
+
+@layer workbench.components {
+    .workbench-secondary-page {
+        position:absolute;
+        inset:var(--wb-header-height,48px) 0 0;
+        z-index:55;
+        display:grid;
+        grid-template-rows:auto minmax(0,1fr) auto;
+        min-width:0;
+        min-height:0;
+        padding:12px 16px 14px;
+        box-sizing:border-box;
+        overflow:hidden;
+        color:var(--wb-text);
+        background:linear-gradient(145deg,var(--wb-bg),var(--wb-surface));
+        border-top:1px solid var(--wb-line);
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        transform:translateY(6px);
+        transition:opacity var(--wb-motion-structural) var(--wb-ease-standard),transform var(--wb-motion-structural) var(--wb-ease-standard),visibility 0s linear var(--wb-motion-structural);
+    }
+    .workbench-secondary-page.active,
+    .workbench-secondary-page[aria-hidden="false"] {
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+        transform:none;
+        transition-delay:0s;
+    }
+
+    .workbench-choice-group {
+        display:inline-flex;
+        align-items:stretch;
+        gap:2px;
+        min-width:0;
+    }
+    .workbench-choice-option {
+        min-height:28px;
+        padding:0 9px;
+        color:var(--wb-muted);
+        background:var(--wb-surface);
+        border:1px solid var(--wb-line-soft);
+        font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+        transition:color var(--wb-motion-micro) var(--wb-ease-standard),background-color var(--wb-motion-micro) var(--wb-ease-standard),border-color var(--wb-motion-micro) var(--wb-ease-standard);
+    }
+    .workbench-choice-option:hover { color:var(--wb-text); border-color:var(--wb-line); }
+    .workbench-choice-option.active,
+    .workbench-choice-option[aria-pressed="true"] {
+        color:var(--wb-bg);
+        background:var(--wb-accent);
+        border-color:var(--wb-focus);
+    }
+
+    .workbench-commit-bar {
+        display:grid;
+        grid-template-columns:minmax(0,1fr) minmax(128px,auto);
+        align-items:center;
+        gap:12px;
+        min-height:52px;
+        padding:7px 10px;
+        box-sizing:border-box;
+        background:var(--wb-surface);
+        border-top:1px solid var(--wb-line-soft);
+    }
+    .workbench-commit-status { min-width:0; color:var(--wb-muted); font-size:10px; line-height:1.45; }
+    .workbench-commit-primary {
+        min-height:40px;
+        padding:0 16px;
+        color:var(--wb-bg);
+        background:var(--wb-accent);
+        border:1px solid var(--wb-focus);
+        font:700 12px/1.2 "Microsoft YaHei",sans-serif;
+    }
+    .workbench-owned-pane { min-width:0; min-height:0; overflow:hidden; }
+}

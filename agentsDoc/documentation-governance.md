@@ -1,7 +1,7 @@
 # 文档治理规则
 
 **文档角色**：文档治理 canonical doc。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `3343c1ef2244e0c6253fc95f5b6334095f049f57`（2026-07-18）。
 
 ## 1. 文档分层
 
@@ -30,6 +30,7 @@
 - `agentsDoc/architecture.md`
 - `agentsDoc/testing-guide.md`
 - `agentsDoc/as2-web-panel-migration.md`
+- `agentsDoc/workbench-ui-system.md`
 - `agentsDoc/agent-harness.md`
 - `agentsDoc/human-care.md`
 - `agentsDoc/documentation-governance.md`

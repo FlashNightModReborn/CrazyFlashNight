@@ -1,0 +1,38 @@
+@layer workbench.motion {
+    .workbench-commit-bar.busy .workbench-commit-primary {
+        cursor:progress;
+        filter:saturate(.72);
+    }
+    .workbench-secondary-page.active { will-change:opacity,transform; }
+}
+
+/* Root-level motion preference wins over all feature keyframes. Persistent state
+   remains visible through outline, icon and copy rather than a frozen mid-frame. */
+@media (prefers-reduced-motion: reduce) {
+    .workbench-shell,
+    .workbench-shell *,
+    .workbench-shell *::before,
+    .workbench-shell *::after {
+        animation:none !important;
+        scroll-behavior:auto !important;
+        transition:none !important;
+    }
+    .workbench-secondary-page { transform:none; }
+}
+
+/* Compact KShop uses a 24px transparent hit target around a 16px glyph. The
+   stronger skin selector must not paint the complete hit target as a button. */
+.kshop-workbench[data-workbench-skin="shop"] .item-grid-compact .kshop-add-btn,
+.kshop-workbench[data-workbench-skin="shop"] .item-grid-compact .kshop-add-btn:hover,
+.kshop-workbench[data-workbench-skin="shop"] .item-grid-compact .kshop-add-btn:focus-visible {
+    color:var(--dls-crystal);
+    background:transparent;
+    border:0;
+    clip-path:none;
+    box-shadow:none;
+}
+.kshop-workbench[data-workbench-skin="shop"] .item-grid-compact .kshop-add-btn:hover::after,
+.kshop-workbench[data-workbench-skin="shop"] .item-grid-compact .kshop-add-btn:focus-visible::after {
+    color:var(--wb-bg);
+    background:var(--dls-crystal);
+}

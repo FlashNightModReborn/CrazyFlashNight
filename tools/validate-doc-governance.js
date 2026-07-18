@@ -67,6 +67,7 @@ var REQUIRED_FILES = [
     "agentsDoc/architecture.md",
     "agentsDoc/testing-guide.md",
     "agentsDoc/as2-web-panel-migration.md",
+    "agentsDoc/workbench-ui-system.md",
     "agentsDoc/coding-standards.md",
     "agentsDoc/self-optimization.md",
     "agentsDoc/documentation-governance.md",
@@ -113,6 +114,7 @@ var BASELINE_DOCS = [
     "agentsDoc/architecture.md",
     "agentsDoc/testing-guide.md",
     "agentsDoc/as2-web-panel-migration.md",
+    "agentsDoc/workbench-ui-system.md",
     "agentsDoc/coding-standards.md",
     "agentsDoc/documentation-governance.md",
     "agentsDoc/self-optimization.md",
@@ -241,6 +243,11 @@ expectContains("agentsDoc/as2-web-panel-migration.md", /迁移闭环表/, "as2-w
 expectContains("agentsDoc/as2-web-panel-migration.md", /Web cmd.*C# action.*AS2 handler/, "as2-web-panel-migration missing protocol closure columns");
 expectContains("agentsDoc/as2-web-panel-migration.md", /ResolvePanelCloseGameCommand/, "as2-web-panel-migration missing close lifecycle guard");
 expectContains("agentsDoc/as2-web-panel-migration.md", /数据权威/, "as2-web-panel-migration missing data authority guard");
+expectContains("agentsDoc/workbench-ui-system.md", /最后核对代码基线.*commit `[\da-f]{7,40}`/, "workbench-ui-system baseline marker missing");
+expectContains("agentsDoc/workbench-ui-system.md", /Visual atlas 与验证矩阵/, "workbench-ui-system missing visual atlas contract");
+expectContains("agentsDoc/as2-web-panel-migration.md", /workbench-ui-system\.md/, "as2-web-panel-migration missing workbench UI system link");
+expectContains("agentsDoc/testing-guide.md", /workbench-ui-system\.md/, "testing-guide missing workbench UI system link");
+expectContains("launcher/README.md", /workbench-ui-system\.md/, "launcher README missing workbench UI system link");
 
 // ---- Stale narrative guards ----
 

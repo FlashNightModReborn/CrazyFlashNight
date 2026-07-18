@@ -30,7 +30,7 @@
         loading.textContent = '正在加载商品…';
         var renderer = new Workbench.GridRenderer({
             className: 'kshop-grid workbench-catalog-grid',
-            emptyText: '当前分类暂无商品',
+            emptyText: '当前筛选无商品；返回上级分类或切换专柜',
             keyOf: function(item) { return item.idx; },
             renderItem: options.renderItem,
             bindItem: options.bindItem
@@ -77,7 +77,7 @@
             meta: '0 种 / 0 件',
             className: 'kshop-cart-section',
             gridClassName: 'kshop-cart-list',
-            emptyText: '购物车为空'
+            emptyText: '购物车为空；从左侧选择商品，双击也可加购'
         });
         cartGridView.renderer.root.id = 'kshop-cart-list';
 
@@ -115,7 +115,7 @@
             meta: '',
             className: 'kshop-purchased-section',
             gridClassName: 'kshop-claim-list',
-            emptyText: '暂无待领取商品'
+            emptyText: '没有待领取商品；新购买会直接送入背包'
         });
         purchasedGridView.renderer.root.id = 'kshop-claim-list';
 

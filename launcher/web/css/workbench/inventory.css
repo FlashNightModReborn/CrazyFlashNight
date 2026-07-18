@@ -1,0 +1,273 @@
+/* ── Workbench Gate A2: owned backpack ↔ warehouse thin slice ── */
+.workbench-mode-switch { display:flex; align-items:center; gap:5px; }
+.workbench-mode-btn {
+    min-height:27px; padding:0 10px; border:1px solid rgba(168,178,190,.24);
+    background:#12161b; color:#8e98a4; font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif;
+    letter-spacing:.04em; cursor:pointer;
+}
+.workbench-mode-btn:hover,.workbench-mode-btn.active { color:#f2a04b; border-color:rgba(242,160,75,.66); background:#1b1712; }
+.workbench-mode-btn.warning { color:#f3bf72; border-color:rgba(243,191,114,.48); }
+.inventory-owned-view { height:100%; min-height:0; }
+.inventory-owned-grid {
+    min-height:0; overflow:auto; padding:7px;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); align-content:start; gap:5px;
+    scrollbar-width:thin; scrollbar-color:rgba(242,160,75,.35) rgba(255,255,255,.03);
+}
+.inventory-owned-warehouse .inventory-owned-grid { grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); }
+.inventory-slot-card {
+    position:relative; min-width:0; height:var(--workbench-owned-card-height); display:flex; align-items:center; gap:5px;
+    padding:7px 5px 5px; border:1px solid rgba(154,166,180,.17); background:#0d1116;
+    color:#b9c0c8; cursor:pointer; overflow:hidden;
+}
+.inventory-slot-card.occupied:hover,.inventory-slot-card.workbench-source-selected {
+    border-color:rgba(242,160,75,.72); background:#181610;
+}
+.inventory-slot-card.workbench-drop-active { outline:1px solid #f2a04b; outline-offset:-3px; }
+.inventory-slot-card.write-locked { opacity:.55; cursor:not-allowed; }
+.inventory-workbench-panel[data-quick-transfer-mode="deposit"] .inventory-owned-backpack .inventory-slot-card:not(.empty),
+.inventory-workbench-panel[data-quick-transfer-mode="withdraw"] .inventory-owned-warehouse .inventory-slot-card:not(.empty) {
+    cursor:pointer; box-shadow:inset 0 0 0 1px rgba(240,164,58,.55);
+}
+.inventory-slot-card.quick-transfer-pending {
+    opacity:.7; box-shadow:inset 0 0 0 2px rgba(240,164,58,.85) !important;
+}
+.inventory-slot-card.quick-transfer-pending::before {
+    content:'待'; position:absolute; right:3px; top:3px; z-index:7; min-width:15px; height:15px;
+    color:#211507; background:#e7aa4b; border:1px solid #ffdc94; border-radius:2px;
+    font:700 9px/14px "Microsoft YaHei",sans-serif; text-align:center;
+}
+.inventory-slot-card.quick-transfer-inflight::before {
+    content:'转'; animation:kshop-pulse .75s ease-in-out infinite;
+}
+.inventory-slot-card.empty { border-style:dashed; border-color:rgba(255,255,255,.06); background:#0a0d11; color:#46505b; }
+.inventory-slot-index { position:absolute; left:3px; top:2px; color:#59636e; font:9px/1 Consolas,monospace; }
+.inventory-empty-mark { width:100%; text-align:center; font:9px/1 Consolas,monospace; letter-spacing:.12em; }
+.inventory-slot-icon-frame {
+    position:relative; width:34px; height:36px; flex:0 0 34px;
+    display:flex; align-items:center; justify-content:center;
+}
+.inventory-slot-icon {
+    position:relative; width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+    border:1px solid transparent; box-sizing:border-box;
+}
+.inventory-owned-icon { width:30px; height:30px; object-fit:contain; }
+.inventory-slot-card.max-enhancement .inventory-slot-icon {
+    border-color:#e2bd35;
+    box-shadow:0 0 0 1px rgba(255,226,83,.24),0 0 7px rgba(226,189,53,.32),inset 0 0 5px rgba(255,220,58,.12);
+}
+.inventory-slot-value {
+    position:absolute; right:-1px; bottom:-2px; z-index:2; max-width:38px; min-width:11px;
+    padding:1px 2px; box-sizing:border-box; overflow:hidden; white-space:nowrap; text-align:right;
+    background:rgba(3,6,9,.88); border:1px solid rgba(142,154,166,.3); color:#e3e7eb;
+    font:700 9px/1 Consolas,"Microsoft YaHei",sans-serif; font-variant-numeric:tabular-nums;
+    text-shadow:0 1px 2px #000;
+}
+.inventory-slot-value.level { color:#f3d648; border-color:rgba(226,189,53,.4); }
+.inventory-slot-copy { min-width:0; flex:1 1 auto; display:flex; flex-direction:column; gap:5px; }
+.inventory-slot-copy b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 10px/1.1 "Microsoft YaHei",sans-serif; }
+.inventory-owned-backpack .inventory-slot-copy b { padding-right:12px; }
+.inventory-tier-marker {
+    position:absolute; left:0; top:0; z-index:2; width:8px; height:8px; box-sizing:border-box;
+    border:1px solid #45515c; background:#0b0f13; transform:rotate(45deg); pointer-events:none;
+    box-shadow:inset 1px 1px 1px rgba(255,255,255,.06),inset -1px -1px 2px rgba(0,0,0,.9);
+}
+.inventory-tier-marker.used {
+    border-color:#53606b; background:#0b0f13;
+    box-shadow:0 0 3px rgba(190,146,237,.28),inset 1px 1px 1px rgba(255,255,255,.08),inset -1px -1px 2px rgba(0,0,0,.92);
+}
+.inventory-tier-marker.used::after {
+    content:""; position:absolute; inset:2px; background:#e2c9fb;
+    box-shadow:0 0 2px #b17be4,0 0 4px rgba(177,123,228,.7);
+}
+.inventory-tier-marker.empty { border-color:#3c4650; background:#090c10; opacity:.78; }
+.inventory-equip-slots { display:flex; align-items:center; gap:3px; height:13px; pointer-events:none; }
+.inventory-equip-slot {
+    position:relative; width:13px; height:13px; flex:0 0 13px; box-sizing:border-box;
+    display:inline-flex; align-items:center; justify-content:center;
+    overflow:visible; border:1px solid #39444e; border-radius:1px; background-color:#0b0f13;
+    background-image:linear-gradient(145deg,rgba(255,255,255,.035),rgba(0,0,0,.18));
+    box-shadow:inset 1px 1px 1px rgba(255,255,255,.055),inset -1px -1px 2px rgba(0,0,0,.92),0 1px 1px rgba(0,0,0,.65);
+}
+.inventory-equip-slot.empty { border-color:#4a555f; background-color:#0a0e12; opacity:.84; }
+.inventory-equip-slot.used {
+    border-color:#46525d; background-color:#0b0f13;
+    box-shadow:inset 1px 1px 1px rgba(255,255,255,.07),inset -1px -1px 2px rgba(0,0,0,.94),0 1px 1px rgba(0,0,0,.7);
+}
+.inventory-equip-slot.used::before {
+    content:""; position:absolute; left:50%; top:50%; width:7px; height:7px; transform:translate(-50%,-50%);
+    border-radius:50%; background:var(--mod-grade-color,#58636e); opacity:.22; filter:blur(2.5px);
+}
+.inventory-equip-slot.grade-low::before { opacity:.2; }
+.inventory-equip-slot.grade-medium::before { opacity:.24; }
+.inventory-equip-slot.grade-high::before { opacity:.3; }
+.inventory-equip-slot.grade-special::before { opacity:.34; }
+.inventory-equip-slot.unavailable { border-color:#252c33; background-color:#080b0e; background-image:none; box-shadow:inset 0 0 2px #000; opacity:.58; }
+.inventory-mod-glyph {
+    position:relative; z-index:1; display:block; width:7px; height:7px;
+    box-sizing:border-box; background:var(--mod-core-color,#edf3f5);
+    filter:drop-shadow(0 0 1px var(--mod-grade-color,#58636e)) drop-shadow(0 0 2px var(--mod-grade-color,#58636e));
+}
+.inventory-equip-slot.grade-low { --mod-core-color:#71c971; }
+.inventory-equip-slot.grade-medium { --mod-core-color:#d6ad58; }
+.inventory-equip-slot.grade-high { --mod-core-color:#7fc9fb; }
+.inventory-equip-slot.grade-special { --mod-core-color:#fff171; }
+.inventory-mod-glyph.symbol-triangle-solid,
+.inventory-mod-glyph.symbol-triangle-outline { clip-path:polygon(50% 4%,96% 94%,4% 94%); }
+.inventory-mod-glyph.symbol-square-solid { clip-path:polygon(7% 7%,93% 7%,93% 93%,7% 93%); }
+.inventory-mod-glyph.symbol-circle-solid { border-radius:50%; }
+.inventory-mod-glyph.symbol-diamond-solid,
+.inventory-mod-glyph.symbol-diamond-outline { clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); }
+.inventory-mod-glyph.symbol-star-solid,
+.inventory-mod-glyph.symbol-star-outline { clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%); }
+.inventory-mod-glyph.symbol-square-outline,
+.inventory-mod-glyph.symbol-circle-outline {
+    background:transparent; border:1px solid var(--mod-core-color,#edf3f5);
+}
+.inventory-mod-glyph.symbol-square-outline { border-radius:1px; }
+.inventory-mod-glyph.symbol-circle-outline { border-radius:50%; }
+.inventory-mod-glyph.symbol-triangle-outline::after,
+.inventory-mod-glyph.symbol-diamond-outline::after,
+.inventory-mod-glyph.symbol-star-outline::after {
+    content:""; position:absolute; z-index:1; background:#0b0f13;
+}
+.inventory-mod-glyph.symbol-triangle-outline::after {
+    left:2px; top:2px; width:3px; height:4px; clip-path:polygon(50% 5%,96% 94%,4% 94%);
+}
+.inventory-mod-glyph.symbol-diamond-outline::after {
+    inset:2px; clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+.inventory-mod-glyph.symbol-star-outline::after {
+    inset:2px; clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%);
+}
+.inventory-equip-slot.grade-high .inventory-mod-glyph,
+.inventory-equip-slot.grade-special .inventory-mod-glyph {
+    filter:drop-shadow(0 0 1px var(--mod-grade-color,#58636e)) drop-shadow(0 0 3px var(--mod-grade-color,#58636e));
+}
+.inventory-owned-warehouse .inventory-equip-slots { gap:2px; }
+.inventory-owned-warehouse .inventory-equip-slot { width:10px; height:10px; flex-basis:10px; }
+.inventory-owned-warehouse .inventory-mod-glyph { width:6px; height:6px; }
+/* 紧凑瓦片左侧迷你插件导轨：5px 菱形发光点中心与升阶标记中心对齐 */
+.inventory-equip-slots-compact {
+    position:absolute; left:1.5px; top:10px; z-index:3;
+    display:none; flex-direction:column; align-items:center; gap:1px;
+    pointer-events:none;
+}
+.item-grid-compact .inventory-equip-slots-compact { display:flex; }
+.inventory-equip-slot-compact {
+    position:relative; width:5px; height:5px; box-sizing:border-box;
+    transform:rotate(45deg);
+    border:1px solid #39444e; background:#080b0e;
+}
+.inventory-equip-slot-compact.empty { border-color:#252c33; background:#080b0e; opacity:.35; }
+.inventory-equip-slot-compact.empty::after { display:none; }
+.inventory-equip-slot-compact.used::after {
+    content:""; position:absolute; left:50%; top:50%; width:2px; height:2px; transform:translate(-50%,-50%);
+    background:var(--mod-grade-color,#58636e);
+    box-shadow:0 0 2px var(--mod-grade-color,#58636e),0 0 5px var(--mod-grade-color,#58636e);
+}
+.inventory-equip-slot-compact.unavailable { border-color:#1a2025; background:transparent; opacity:.25; }
+.inventory-discard-btn {
+    position:absolute; right:2px; top:2px; width:17px; height:17px; padding:0; border:1px solid rgba(220,95,77,.3);
+    background:#1b1110; color:#bd6d60; font:12px/14px sans-serif; cursor:pointer;
+}
+.inventory-discard-btn:hover { color:#ff8e78; border-color:#d96854; }
+.inventory-workbench-panel .inventory-discard-btn {
+    opacity:0; pointer-events:none; transition:opacity 90ms;
+}
+.inventory-workbench-panel .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
+.inventory-workbench-panel .inventory-slot-card:focus-within .inventory-discard-btn,
+.inventory-workbench-panel .inventory-discard-btn:focus-visible {
+    opacity:1; pointer-events:auto;
+}
+.inventory-drag-ghost { min-width:150px; }
+
+/* ── Workbench Gate A3: authoritative tree filter + explicit authority sort ── */
+.inventory-warehouse-toolbar {
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;
+    grid-template-areas:
+        "pager filter filter filter"
+        "authority authority authority commit";
+    align-items:center;
+    gap:5px;
+    padding-top:5px;
+}
+.inventory-warehouse-toolbar.inventory-no-pager {
+    grid-template-columns:minmax(0,1.5fr) minmax(112px,.7fr) auto;
+    grid-template-areas:"filter authority commit";
+}
+.inventory-sort-controls { display:contents; }
+.inventory-owned-warehouse .workbench-view-chrome { position:relative; z-index:3; }
+.inventory-warehouse-pager { position:relative; grid-area:pager; display:flex; align-items:center; gap:3px; }
+.inventory-toolbar-btn,
+.inventory-toolbar-field select {
+    height:23px;
+    box-sizing:border-box;
+    border:1px solid #3b424a;
+    border-radius:0;
+    background:#0d1115;
+    color:#aab2bb;
+    font:9px/1 Consolas,"Microsoft YaHei",sans-serif;
+}
+.inventory-toolbar-btn { min-width:23px; padding:0 6px; cursor:pointer; }
+.inventory-toolbar-btn:hover:not(:disabled) { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
+.inventory-toolbar-btn:disabled,
+.inventory-toolbar-field select:disabled { opacity:.34; cursor:not-allowed; }
+.inventory-page-label {
+    min-width:56px; padding:0 5px; color:#aeb7c1;
+    font:9px/1 Consolas,"Microsoft YaHei",monospace; text-align:center; white-space:nowrap;
+}
+.inventory-page-label::after { content:"▾"; margin-left:4px; color:#d69a48; font-size:9px; }
+.inventory-page-label[aria-expanded="true"] { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
+.inventory-page-label[aria-expanded="true"]::after { color:#4a3214; }
+.inventory-page-range {
+    min-width:66px; color:#6f7b87; font:9px/1 Consolas,monospace;
+    text-align:left; white-space:nowrap;
+}
+.inventory-page-menu {
+    position:absolute; left:26px; top:27px; z-index:12; width:184px;
+    padding:6px; box-sizing:border-box;
+    border:1px solid #8b6334; background:#0a0e12;
+    box-shadow:0 8px 20px rgba(0,0,0,.78),inset 0 0 0 1px rgba(255,192,109,.06);
+}
+.inventory-page-menu-caption {
+    margin:0 1px 5px; color:#8b96a1; font:10px/1 Consolas,"Microsoft YaHei",sans-serif;
+    letter-spacing:1px; text-transform:uppercase;
+}
+.inventory-page-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:2px; }
+.inventory-page-option {
+    position:relative; height:22px; padding:0; box-sizing:border-box;
+    border:1px solid #29333d; border-radius:0; background:#10161c; color:#8794a0;
+    font:9px/1 Consolas,monospace; cursor:pointer;
+}
+.inventory-page-option:hover,
+.inventory-page-option:focus-visible { z-index:1; outline:none; border-color:#d69a48; color:#ffe0ad; background:#21180f; }
+.inventory-page-option.current {
+    border-color:#ffc06d; background:#d99437; color:#17191c; font-weight:700;
+    box-shadow:0 0 6px rgba(240,164,58,.3);
+}
+.inventory-toolbar-field {
+    display:flex;
+    align-items:center;
+    gap:4px;
+    min-width:0;
+    color:#67717c;
+    font:10px/1 Consolas,"Microsoft YaHei",sans-serif;
+    white-space:nowrap;
+}
+.inventory-toolbar-field.filter { grid-area:filter; }
+.inventory-filter-control.tree { align-items:stretch; overflow:hidden; }
+.inventory-filter-control.tree .inventory-filter-navigator { flex:1 1 auto; min-width:0; }
+.inventory-filter-control.tree .item-filter-row { gap:3px; }
+.inventory-filter-control.tree .item-filter-option {
+    height:23px; padding:0 6px; border:1px solid #343c44; background:#0d1115; color:#89949f;
+    font:10px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
+}
+.inventory-filter-control.tree .item-filter-option small { margin-left:4px; color:#65717c; font:9px/1 Consolas,monospace; }
+.inventory-filter-control.tree .item-filter-option:hover,
+.inventory-filter-control.tree .item-filter-option:focus-visible { color:#f3d3a4; border-color:#9b7040; outline:none; }
+.inventory-filter-control.tree .item-filter-option.active { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
+.inventory-filter-control.tree .item-filter-option.active small { color:#5a3b17; }
+.inventory-toolbar-field select { min-width:0; width:100%; padding:0 3px; }
+.inventory-toolbar-field.authority { grid-area:authority; color:#a17b4f; }
+.inventory-sort-commit { grid-area:commit; color:#f0bd78; border-color:#725532; background:#1b1510; white-space:nowrap; }

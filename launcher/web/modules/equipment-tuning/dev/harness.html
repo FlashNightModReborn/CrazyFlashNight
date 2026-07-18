@@ -13,7 +13,7 @@
 <body>
 <div id="host"></div><pre id="qa-output">running…</pre>
 <script>
-window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;
+window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));var delay=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce?80:0;if(delay)__delayEnhancePreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
@@ -74,9 +74,15 @@ function respond(message){var result=base(message);
   emit(result)
 }
 </script>
+<script src="../../panel-runtime.js"></script>
+<script src="../../workbench-lifecycle.js"></script>
+<script src="../../workbench-focus.js"></script>
+<script src="../../workbench-components.js"></script>
 <script src="../../equipment-tuning-runtime.js"></script>
 <script src="../../inventory-runtime.js"></script>
 <script src="../../item-filter.js"></script>
+<script src="../../equipment-tuning-model.js"></script>
+<script src="../../equipment-tuning-render.js"></script>
 <script src="../../equipment-tuning-view.js"></script>
 <script>
 (async function(){
@@ -87,7 +93,7 @@ function respond(message){var result=base(message);
     var projectionRequests=[],projectionSeq=0;
     var projectionCoordinator=new InventoryRuntime.InventoryCoordinator({
       requests:[{containerId:'背包',offset:0,limit:50,filterKey:'material',filterSpec:{branch:'category',major:'material'}}],
-      request:function(cmd,payload,callback){var request=payload.requests[0],candidateMode=request.filterSpec&&request.filterSpec.use==='手枪';projectionRequests.push(JSON.parse(JSON.stringify(request)));callback({success:true,snapshots:[{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:candidateMode?2:0,filterKey:request.filterKey,filterSpec:request.filterSpec,snapshotSeq:++projectionSeq,offset:0,slots:candidateMode?[slots[2],slots[3]]:[]}]})}
+      request:function(cmd,payload,callback){var request=payload.requests[0],candidateMode=request.filterSpec&&request.filterSpec.use==='手枪';projectionRequests.push(JSON.parse(JSON.stringify(request)));callback({success:true,snapshots:[{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:candidateMode?2:0,filterKey:request.filterKey,filterSpec:request.filterSpec,snapshotSeq:++projectionSeq,offset:0,limit:candidateMode?2:0,slots:candidateMode?[slots[2],slots[3]]:[]}]})}
     });
     var projectionOpen=null,projectionRead=null;
     projectionCoordinator.open(function(result){projectionOpen=result});
@@ -103,8 +109,8 @@ function respond(message){var result=base(message);
       send:function(message){return Bridge.send(message)},toast:function(message){Toast.add(message)},
       densityController:density,
       loadConversionCandidates:function(item,source,callback){conversionEvents.push({use:item&&item.use,slot:source&&source.slot});callback({success:true,candidates:[slots[3],slots[4]],count:2});return true},
-      beginWrite:function(owner){__writes.push({kind:'begin',owner:owner});return true},
-      completeWrite:function(refresh,callback){__writes.push({kind:'complete',refresh:refresh});setTimeout(function(){if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})},0);return true},
+      beginWrite:function(owner){if(__writeHandle)return false;var handle={id:++__writeSeq};__writeHandle=handle;__writes.push({kind:'begin',owner:owner,handle:handle});return handle},
+      completeWrite:function(handle,refresh,callback){if(!handle||handle!==__writeHandle)return false;__writeHandle=null;__writes.push({kind:'complete',refresh:refresh,handle:handle});setTimeout(function(){if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})},0);return true},
       refreshInventory:function(callback){__writes.push({kind:'retry-refresh'});setTimeout(function(){__refreshRetryCount++;slots[2].slotLease='lease.2.recovered.'+__refreshRetryCount;callback({success:true,refreshed:true})},0);return true},
       resolveSlot:function(_,slot){return slots[slot]||null}});
     window.__tuningView=view;
@@ -125,7 +131,7 @@ function respond(message){var result=base(message);
     document.querySelector('.equipment-tuning-commit').click();await until(function(){return !view.debugState().busy&&view.debugState().hasSnapshot});
     var commits=__sent.filter(function(x){return x.cmd==='commit'});
     ok('commit sends token only',commits.length===1&&commits[0].payload.expectedTuningToken.indexOf('token.enhance')===0&&commits[0].payload.operation===undefined&&commits[0].payload.source===undefined);
-    ok('commit holds inventory write gate through refresh',__writes[0].kind==='begin'&&__writes[0].owner==='equipment_tuning.commit'&&__writes[1].kind==='complete'&&__writes[1].refresh===true);
+    ok('commit holds the same inventory write capability through refresh',__writes[0].kind==='begin'&&__writes[0].owner==='equipment_tuning.commit'&&__writes[1].kind==='complete'&&__writes[1].refresh===true&&__writes[1].handle===__writes[0].handle&&!view.debugState().inventoryWritePending);
     ok('success refreshes lease and authoritative level',__sent.filter(function(x){return x.cmd==='snapshot'}).length>=2&&document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('+6')>=0);
     await until(function(){return view.debugState().hasPreview});
     __delayEnhancePreviewOnce=true;view._chooseEnhancementLevel(8);await until(function(){return view.debugState().readPending&&view.debugState().previewPendingOperation==='enhance'});

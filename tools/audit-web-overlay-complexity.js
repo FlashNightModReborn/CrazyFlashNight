@@ -9,11 +9,16 @@
 
 const fs = require('fs');
 const path = require('path');
+const {readCssBundle} = require('./lib/read-css-bundle.js');
 
 const root = path.resolve(__dirname, '..');
 
 function read(rel) {
-  return fs.readFileSync(path.join(root, rel), 'utf8');
+  const absolute = path.join(root, rel);
+  if (rel === 'launcher/web/css/panels.css') {
+    return readCssBundle(absolute, {rootDir:path.join(root, 'launcher', 'web', 'css')});
+  }
+  return fs.readFileSync(absolute, 'utf8');
 }
 
 function count(text, pattern) {

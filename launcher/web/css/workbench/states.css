@@ -1,0 +1,36 @@
+@layer workbench.states {
+    .workbench-choice-group[aria-disabled="true"],
+    .workbench-owned-pane[aria-disabled="true"],
+    .workbench-commit-bar.is-blocked { opacity:.56; }
+
+    .workbench-commit-bar.busy,
+    .workbench-commit-bar.is-busy { border-top-color:var(--wb-role-pending); }
+    .workbench-commit-bar.is-ready { border-top-color:var(--wb-role-accept); }
+    .workbench-commit-bar.is-error { border-top-color:var(--wb-role-reject); }
+    .workbench-commit-status[data-state="error"] { color:var(--wb-role-reject); }
+    .workbench-commit-status[data-state="ready"] { color:var(--wb-role-accept); }
+    .workbench-commit-status[data-state="busy"] { color:var(--wb-role-pending); }
+
+    .workbench-shell :where(button,[role="button"],[tabindex="0"]):focus-visible {
+        outline:2px solid var(--wb-focus);
+        outline-offset:2px;
+        box-shadow:0 0 0 1px var(--wb-bg),0 0 0 3px color-mix(in srgb,var(--wb-focus) 38%,transparent);
+    }
+
+    .workbench-empty-state,
+    .workbench-grid-empty {
+        grid-template-rows:auto auto;
+        align-content:center;
+        gap:5px;
+    }
+    .workbench-empty-state::before,
+    .workbench-grid-empty::before {
+        content:'·';
+        color:var(--wb-muted);
+        font:700 18px/1 Consolas,monospace;
+    }
+    .workbench-empty-state[data-empty-kind="error"]::before,
+    .workbench-grid-empty[data-empty-kind="error"]::before { content:'!'; color:var(--wb-role-reject); }
+    .workbench-empty-state[data-empty-kind="filtered"]::before,
+    .workbench-grid-empty[data-empty-kind="filtered"]::before { content:'⌕'; color:var(--wb-role-pending); }
+}

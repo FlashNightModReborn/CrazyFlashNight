@@ -8,161 +8,96 @@
  */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var shared = typeof module !== 'undefined' && module.exports
+        ? require('./panel-runtime.js') : root && root.PanelRuntime;
+    var api = factory(shared);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.KShopRequestMux = api.KShopRequestMux;
         root.KShopWriteCoordinator = api.KShopWriteCoordinator;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime) {
     'use strict';
-
-    function copyOwn(source) {
-        var out = {};
-        if (!source) return out;
-        for (var key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) out[key] = source[key];
-        }
-        return out;
-    }
-
-    function makeNonce() {
-        var time = Date.now().toString(36);
-        var random = Math.floor(Math.random() * 0x7fffffff).toString(36);
-        return (time + random).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'session';
-    }
+    if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
     function KShopRequestMux(options) {
         options = options || {};
-        this._send = typeof options.send === 'function' ? options.send : function() {};
-        this._setTimer = options.setTimer || function(callback, delay) { return setTimeout(callback, delay); };
-        this._clearTimer = options.clearTimer || function(timer) { clearTimeout(timer); };
-        this._timeoutMs = Math.max(100, Number(options.timeoutMs) || 12000);
-        this._nonce = String(options.sessionNonce || makeNonce()).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'session';
-        this._generation = 0;
-        this._seq = 0;
-        this._active = false;
-        this._pending = {};
-        this._onProtocolError = typeof options.onProtocolError === 'function'
-            ? options.onProtocolError
-            : function(message) { if (typeof console !== 'undefined' && console.warn) console.warn(message); };
+        this._mux = new PanelRuntime.PanelRequestMux({
+            send:options.send,
+            setTimer:options.setTimer,
+            clearTimer:options.clearTimer,
+            timeoutMs:options.timeoutMs,
+            sessionNonce:options.sessionNonce,
+            callPrefix:'wb',
+            router:options.router || PanelRuntime.sharedResponseRouter,
+            onProtocolError:options.onProtocolError,
+            createMessage:function(context) {
+                var message = PanelRuntime.copyOwn(context.payload);
+                message.type = 'panel';
+                message.cmd = context.entry.cmd;
+                message.callId = context.entry.callId;
+                if (context.entry.metadata.channel === 'inventory') message.domain = 'inventory';
+                else if (Object.prototype.hasOwnProperty.call(message, 'domain')) delete message.domain;
+                return message;
+            },
+            validateResponse:function(data, entry) {
+                if (!data || data.type !== 'panel_resp' || data.callId !== entry.callId) return false;
+                if (entry.metadata.channel === 'inventory') {
+                    return data.domain === 'inventory' && data.cmd === entry.cmd;
+                }
+                return !data.domain && (!data.panel || data.panel === 'kshop')
+                    && (!data.cmd || data.cmd === entry.cmd);
+            },
+            createSynthetic:function(context) {
+                return {type:'panel_resp', callId:context.entry.callId, cmd:context.entry.cmd,
+                    success:false, error:context.error, clientSynthetic:true};
+            }
+        });
     }
 
     KShopRequestMux.prototype.openSession = function() {
-        this.closeSession();
-        this._generation += 1;
-        this._active = true;
-        return this._generation;
+        this._mux.openSession({});
+        return this._mux.debugState().generation;
     };
 
     KShopRequestMux.prototype.closeSession = function() {
-        for (var callId in this._pending) {
-            if (!Object.prototype.hasOwnProperty.call(this._pending, callId)) continue;
-            this._clearTimer(this._pending[callId].timer);
-        }
-        this._pending = {};
-        this._active = false;
+        this._mux.closeSession();
     };
 
     KShopRequestMux.prototype.request = function(channel, cmd, payload, callback) {
-        if (!this._active) return null;
         channel = channel || 'shop';
         if (channel !== 'shop' && channel !== 'inventory') throw new Error('unsupported mux channel: ' + channel);
         if (!cmd) throw new Error('mux cmd is required');
-
-        this._seq += 1;
-        var callId = 'wb.' + this._nonce + '.' + this._generation + '.' + this._seq;
-        if (this._pending[callId]) throw new Error('duplicate mux callId: ' + callId);
-
-        var message = copyOwn(payload);
-        message.type = 'panel';
-        message.cmd = cmd;
-        message.callId = callId;
-        if (channel === 'inventory') message.domain = 'inventory';
-        else if (Object.prototype.hasOwnProperty.call(message, 'domain')) delete message.domain;
-
-        var self = this;
-        var entry = {
-            channel: channel,
-            cmd: cmd,
-            generation: this._generation,
-            callback: typeof callback === 'function' ? callback : function() {},
-            timer: null
-        };
-        entry.timer = this._setTimer(function() {
-            if (self._pending[callId] !== entry) return;
-            delete self._pending[callId];
-            entry.callback({
-                type: 'panel_resp',
-                callId: callId,
-                success: false,
-                error: 'client_timeout'
-            });
-        }, this._timeoutMs);
-        this._pending[callId] = entry;
-
-        try {
-            this._send(message);
-        } catch (error) {
-            this._clearTimer(entry.timer);
-            delete this._pending[callId];
-            entry.callback({
-                type: 'panel_resp',
-                callId: callId,
-                success: false,
-                error: 'disconnected',
-                cause: error && error.message ? error.message : String(error)
-            });
-        }
-        return callId;
+        return this._mux.request(cmd, payload, {
+            metadata:{channel:channel},
+            sendError:'disconnected'
+        }, callback);
     };
 
     KShopRequestMux.prototype.handleResponse = function(data) {
-        if (!data || data.type !== 'panel_resp' || !data.callId) return false;
-        var entry = this._pending[data.callId];
-        if (!entry) return false;
-        if (!this._active || entry.generation !== this._generation) return false;
-
-        var shapeOk;
-        if (entry.channel === 'inventory') {
-            shapeOk = data.domain === 'inventory' && data.cmd === entry.cmd;
-        } else {
-            shapeOk = !data.domain
-                && (!data.panel || data.panel === 'kshop')
-                && (!data.cmd || data.cmd === entry.cmd);
-        }
-        if (!shapeOk) {
-            this._onProtocolError('[KShopRequestMux] response shape mismatch for ' + data.callId);
-            return false;
-        }
-
-        this._clearTimer(entry.timer);
-        delete this._pending[data.callId];
-        entry.callback(data);
-        return true;
+        return this._mux.handleResponse(data);
     };
 
     KShopRequestMux.prototype.cancel = function(callId) {
-        var entry = this._pending[callId];
-        if (!entry) return false;
-        this._clearTimer(entry.timer);
-        delete this._pending[callId];
-        return true;
+        return this._mux.cancel(callId);
     };
 
     KShopRequestMux.prototype.pendingCount = function() {
-        return Object.keys(this._pending).length;
+        return this._mux.pendingCount();
     };
 
     KShopRequestMux.prototype.debugState = function() {
+        var state = this._mux.debugState();
         return {
-            sessionNonce: this._nonce,
-            openGeneration: this._generation,
-            sequence: this._seq,
-            active: this._active,
-            pendingCount: this.pendingCount()
+            sessionNonce: state.sessionNonce,
+            openGeneration: state.generation,
+            sequence: state.sequence,
+            active: state.active,
+            pendingCount: state.pendingCount
         };
     };
+
+    KShopRequestMux.prototype.destroy = function() { this._mux.destroy(); };
 
     function cloneCart(cart) {
         var out = [];

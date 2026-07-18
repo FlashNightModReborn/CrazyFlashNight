@@ -79,7 +79,7 @@ var CraftingPanel = (function() {
         toolbar.appendChild(_filterNavigator.root); toolbar.appendChild(_craftableToggle);
         chrome.setToolbar(toolbar);
         _catalogRenderer = new Workbench.GridRenderer({
-            className:'crafting-catalog-grid', emptyText:'该分类暂无可用配方',
+            className:'crafting-catalog-grid', emptyText:'当前筛选无可用配方；返回上级分类或关闭“只看可合成”',
             keyOf:function(item) { return item.recipeIndex; },
             renderItem:renderRecipeCard,
             bindItem:bindRecipeCard
@@ -517,7 +517,6 @@ var CraftingPanel = (function() {
         return messages[error] || '合成操作失败，请重试。';
     }
 
-    Bridge.on('panel_resp', function(data) { _mux.handleResponse(data); });
     return {debugState:function() { return {category:_category, selectedIndex:_selectedIndex, craftCount:_craftCount,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,

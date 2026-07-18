@@ -1,0 +1,56 @@
+/* ── DLS / θ-域 视觉色谱与共享语义 token
+   canonical source: docs/dls-color-system.md
+   禁止在 panels.css 之外新增 DLS/技能/调制的硬编码色值。 */
+:root {
+    /* DLS 物质光谱 */
+    --dls-crystal: #3dd5ff;
+    --dls-crystal-rgb: 61,213,255;
+    --dls-crystal-deep: #1e90b3;
+    --dls-crystal-dim: #0f4a5c;
+    --dls-crystal-bright: #8be0f1;
+    --dls-crystal-soft: rgba(61,213,255,.12);
+    --dls-crystal-faint: rgba(61,213,255,.45);
+    --dls-glow: rgba(61,213,255,.18);
+    --dls-energetic: #f1b83b;
+    --dls-memetic: #9d5cff;
+
+    /* θ-域表达光谱 */
+    --theta-kinetic: #5e8cff;
+    --theta-kinetic-bright: #8bb1ff;
+    --theta-kinetic-soft: rgba(94,140,255,.12);
+    --theta-kinetic-dim: rgba(94,140,255,.45);
+    --theta-kinetic-glow: rgba(94,140,255,.14);
+    --theta-memetic: #9d5cff;
+    --theta-signal: #4a90a4;
+
+    /* 跨面板语义色（皮肤只覆盖暗部 token，不覆盖语义色） */
+    --wb-semantic-success: #78bc73;
+    --wb-semantic-warning: #e5a64d;
+    --wb-semantic-danger: #df665b;
+    --wb-semantic-info: var(--theta-kinetic);
+    --wb-semantic-disabled: #646e75;
+
+    /* 共享组件角色；skin 只覆盖角色值，不重写组件状态结构。 */
+    --wb-role-focus: var(--dls-crystal-bright);
+    --wb-role-selected: var(--dls-crystal);
+    --wb-role-accept: var(--wb-semantic-success);
+    --wb-role-reject: var(--wb-semantic-danger);
+    --wb-role-pending: var(--wb-semantic-warning);
+    --wb-role-disabled: var(--wb-semantic-disabled);
+
+    /* 动效语言：微交互、状态、结构、拒绝、等待、环境核心。 */
+    --wb-motion-micro: 100ms;
+    --wb-motion-standard: 160ms;
+    --wb-motion-structural: 210ms;
+    --wb-motion-reject: 250ms;
+    --wb-motion-busy: 1000ms;
+    --wb-motion-ambient: 1800ms;
+    --wb-ease-standard: cubic-bezier(.2,.8,.25,1);
+    --wb-ease-emphasized: cubic-bezier(.2,.9,.3,1.15);
+
+    /* 共享滚动条 */
+    --wb-scrollbar-track: #0b1115;
+    --wb-scrollbar-thumb: #386474;
+    --wb-scrollbar-thumb-border: #56899a;
+    --wb-scrollbar-thumb-hover: #56899a;
+}

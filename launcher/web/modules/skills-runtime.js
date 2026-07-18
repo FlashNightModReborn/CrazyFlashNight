@@ -7,11 +7,14 @@
  */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var shared = typeof module !== 'undefined' && module.exports
+        ? require('./panel-runtime.js') : root && root.PanelRuntime;
+    var api = factory(shared);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.SkillRuntime = api;
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime) {
     'use strict';
+    if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
     var WRITE_COMMANDS = {
         learnCommit: true,
@@ -62,133 +65,97 @@
 
     function RequestMux(options) {
         options = options || {};
-        this._send = typeof options.send === 'function' ? options.send : function() {};
-        this._timeoutMs = Math.max(100, finiteInt(options.timeoutMs, 12000));
-        this._nonce = String(options.sessionNonce || nonce('skills')).slice(0, 80);
-        this._generation = 0;
-        this._sequence = 0;
-        this._issueOrdinal = 0;
         this._panelInstanceId = '';
-        this._active = false;
-        this._pending = {};
-        this._pendingByKind = {};
+        this._mux = new PanelRuntime.PanelRequestMux({
+            send:options.send,
+            timeoutMs:Math.max(100, finiteInt(options.timeoutMs, 12000)),
+            sessionNonce:String(options.sessionNonce || nonce('skills')).slice(0, 80),
+            callPrefix:'skills',
+            router:options.router || PanelRuntime.sharedResponseRouter,
+            validateSession:function(session) { return !!String(session.panelInstanceId || ''); },
+            createMessage:function(context) {
+                return {type:'panel', panel:'skills', domain:'skills', cmd:context.entry.cmd,
+                    callId:context.entry.callId, panelInstanceId:context.session.panelInstanceId,
+                    payload:clonePayload(context.payload)};
+            },
+            validateResponse:function(data, entry, session) {
+                return data && data.type === 'panel_resp' && data.panel === 'skills'
+                    && data.domain === 'skills' && data.callId === entry.callId
+                    && data.cmd === entry.cmd
+                    && String(data.panelInstanceId || '') === session.panelInstanceId;
+            },
+            transformResponse:function(data, entry, session) {
+                if (finiteInt(data.writeEpoch, -1) >= 0 && typeof data.success === 'boolean') return data;
+                var malformed = synthetic(entry.cmd, entry.callId, 'malformed_response', entry.kind === 'write');
+                malformed.panelInstanceId = session.panelInstanceId;
+                return malformed;
+            },
+            createSynthetic:function(context) {
+                var response = synthetic(context.entry.cmd, context.entry.callId,
+                    context.error === 'not_sent' ? 'disconnect' : context.error,
+                    !!context.entry.write);
+                response.panelInstanceId = context.session.panelInstanceId;
+                return response;
+            }
+        });
     }
 
     RequestMux.prototype.openSession = function(panelInstanceId) {
-        this.closeSession();
-        this._generation += 1;
         this._panelInstanceId = String(panelInstanceId || '');
-        this._active = !!this._panelInstanceId;
-        return this._active;
-    };
-
-    RequestMux.prototype._dropEntry = function(entry, notifyError) {
-        if (!entry) return;
-        clearTimeout(entry.timer);
-        delete this._pending[entry.callId];
-        if (this._pendingByKind[entry.kind] === entry.callId) delete this._pendingByKind[entry.kind];
-        if (notifyError && typeof entry.callback === 'function') {
-            entry.callback(synthetic(entry.cmd, entry.callId, notifyError, false), entry);
-        }
+        return this._mux.openSession({panelInstanceId:this._panelInstanceId});
     };
 
     RequestMux.prototype.closeSession = function() {
-        var entries = [];
-        for (var key in this._pending) entries.push(this._pending[key]);
-        for (var i = 0; i < entries.length; i++) this._dropEntry(entries[i], null);
-        this._pending = {};
-        this._pendingByKind = {};
-        this._active = false;
+        this._mux.closeSession();
         this._panelInstanceId = '';
     };
 
     RequestMux.prototype.cancelKind = function(kind) {
-        var callId = this._pendingByKind[kind];
-        if (!callId) return false;
-        this._dropEntry(this._pending[callId], null);
-        return true;
+        return this._mux.cancelKind(kind);
     };
 
     RequestMux.prototype.hasKind = function(kind) {
-        return !!this._pendingByKind[kind];
+        return this._mux.hasKind(kind);
     };
 
     RequestMux.prototype.request = function(cmd, payload, options, callback) {
         options = options || {};
-        if (!this._active || !cmd) return null;
-        var kind = String(options.kind || cmd);
-        if (options.latestWins) this.cancelKind(kind);
-        else if (this._pendingByKind[kind]) return null;
-
-        var callId = 'skills.' + this._nonce + '.' + this._generation + '.' + (++this._sequence);
-        var entry = {
-            callId: callId,
-            cmd: String(cmd),
-            kind: kind,
-            generation: this._generation,
-            panelInstanceId: this._panelInstanceId,
-            issueOrdinal: ++this._issueOrdinal,
-            callback: typeof callback === 'function' ? callback : function() {},
-            timer: null
+        var issued = options.onIssued;
+        var wrapped = {
+            kind:String(options.kind || cmd),
+            latestWins:options.latestWins === true,
+            singleFlight:options.latestWins !== true,
+            write:options.write === true,
+            sendError:'not_sent',
+            onIssued:function(entry) {
+                entry.panelInstanceId = entry.session.panelInstanceId;
+                if (typeof issued === 'function') issued(entry);
+            }
         };
-        var message = {
-            type: 'panel',
-            panel: 'skills',
-            domain: 'skills',
-            cmd: entry.cmd,
-            callId: callId,
-            panelInstanceId: entry.panelInstanceId,
-            payload: clonePayload(payload)
-        };
-        var self = this;
-        entry.timer = setTimeout(function() {
-            if (self._pending[callId] !== entry) return;
-            self._dropEntry(entry, null);
-            entry.callback(synthetic(entry.cmd, callId, 'client_timeout', !!options.write), entry);
-        }, this._timeoutMs);
-        this._pending[callId] = entry;
-        this._pendingByKind[kind] = callId;
-        if (typeof options.onIssued === 'function') options.onIssued(entry);
-        try {
-            var sent = this._send(message);
-            if (sent === false) throw new Error('send returned false');
-        } catch (error) {
-            this._dropEntry(entry, null);
-            entry.callback(synthetic(entry.cmd, callId, 'disconnect', !!options.write), entry);
-        }
-        return callId;
+        return this._mux.request(cmd, payload, wrapped, function(response, entry) {
+            entry.panelInstanceId = entry.session.panelInstanceId;
+            if (typeof callback === 'function') callback(response, entry);
+        });
     };
 
     RequestMux.prototype.handleResponse = function(data) {
-        if (!data || data.type !== 'panel_resp' || data.panel !== 'skills'
-                || data.domain !== 'skills' || !data.callId) return false;
-        var entry = this._pending[data.callId];
-        if (!entry || !this._active || entry.generation !== this._generation
-                || entry.panelInstanceId !== this._panelInstanceId || data.cmd !== entry.cmd) return false;
-        if (String(data.panelInstanceId || '') !== entry.panelInstanceId) return false;
-        if (finiteInt(data.writeEpoch, -1) < 0 || typeof data.success !== 'boolean') {
-            this._dropEntry(entry, null);
-            var malformed = synthetic(entry.cmd, entry.callId, 'malformed_response', entry.kind === 'write');
-            malformed.panelInstanceId = entry.panelInstanceId;
-            entry.callback(malformed, entry);
-            return true;
-        }
-        this._dropEntry(entry, null);
-        entry.callback(data, entry);
-        return true;
+        return this._mux.handleResponse(data);
     };
 
     RequestMux.prototype.debugState = function() {
+        var state = this._mux.debugState();
         return {
-            generation: this._generation,
-            sequence: this._sequence,
-            issueOrdinal: this._issueOrdinal,
-            active: this._active,
+            generation: state.generation,
+            sequence: state.sequence,
+            issueOrdinal: state.issueOrdinal,
+            active: state.active,
             panelInstanceId: this._panelInstanceId,
-            pendingCount: ownCount(this._pending),
-            pendingKinds: Object.keys(this._pendingByKind)
+            pendingCount: state.pendingCount,
+            pendingKinds: state.pendingKinds
         };
     };
+
+    RequestMux.prototype.destroy = function() { this._mux.destroy(); };
 
     function SkillCoordinator(options) {
         options = options || {};

@@ -3,15 +3,15 @@ var NpcShop = (function() {
     'use strict';
 
     var _shellEl, _shell, _catalogView, _catalogRenderer, _categoryToolbar, _categoryNavigator, _categoryTree;
-    var _rightViews = {}, _viewButtons = {}, _activeRight = 'bag', _activeCollection = 'material';
+    var _rightViews = {}, _ownedPanes = {}, _viewButtons = {}, _viewChoiceGroup, _activeRight = 'bag', _activeCollection = 'material';
     var _state = null, _shopId = '', _busy = false, _needsReconcile = false, _generation = 0;
     var _scaleHandle = null, _retryButton, _checkoutButton, _helpButton, _category = {mode:'auto', path:[]}, _categoryInitialized = false;
-    var _purchaseIntents = {}, _saleIntents = {}, _settlement = null, _settlementPage = null;
+    var _purchaseIntents = {}, _saleIntents = {}, _settlement = null, _settlementPresenter = null;
     var _previewBusy = false, _previewQueued = false, _previewRevision = 0;
     var _tooltipCache = {};
     var _layoutMode = 'full', _densityController = null;
-    var _spacePage = null, _spaceGrids = {}, _spacePager = null, _spaceBusy = false, _spaceMutated = false;
-    var _helpPage = null, _bagFilterControl = null;
+    var _spacePresenter = null, _spaceBusy = false, _spaceMutated = false;
+    var _helpPresenter = null, _bagFilterControl = null;
     var _config = (typeof window !== 'undefined' && window.__NPCSHOP_CONFIG__) || {};
     var _mux = new NpcShopRuntime.RequestMux({
         send:function(message) { Bridge.send(message); },
@@ -55,22 +55,29 @@ var NpcShop = (function() {
 
     function buildDOM() {
         disposeFilterNavigators();
+        disposeSharedComponents();
         while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         if (_shell) _shell.destroy();
-        _rightViews = {}; _viewButtons = {};
+        _rightViews = {}; _ownedPanes = {}; _viewButtons = {};
         _shell = new Workbench.DualPaneShell({title:_shopId, status:'同步中', leftLabel:'商品', rightLabel:'背包'});
         var root = _shell.getRoot();
         root.classList.add('kshop-workbench', 'npcshop-panel');
         root.setAttribute('data-workbench-skin', 'npcshop');
         _shellEl.appendChild(root);
 
-        [['bag','背包'], ['collection','收集品']].forEach(function(pair) {
-            var button = document.createElement('button');
-            button.type = 'button'; button.className = 'workbench-mode-btn npcshop-view-btn'; button.textContent = pair[1];
-            button.setAttribute('data-view-id', pair[0]);
-            button.addEventListener('click', function() { switchRightGroup(pair[0]); });
-            _viewButtons[pair[0]] = button; _shell.addHeaderAction(button);
+        _viewChoiceGroup = new WorkbenchComponents.ChoiceGroup({
+            document:document,
+            ariaLabel:'NPC 商店右栏视图',
+            value:'bag',
+            choices:[
+                {value:'bag', label:'背包', className:'workbench-mode-btn npcshop-view-btn', dataAttribute:'data-view-id'},
+                {value:'collection', label:'收集品', className:'workbench-mode-btn npcshop-view-btn', dataAttribute:'data-view-id'}
+            ],
+            onChange:switchRightGroup
         });
+        _viewButtons.bag = _viewChoiceGroup.getButton('bag');
+        _viewButtons.collection = _viewChoiceGroup.getButton('collection');
+        _shell.addHeaderAction(_viewChoiceGroup.root);
 
         if (_densityController) _densityController.destroy();
         _densityController = new Workbench.GridDensityController({panelId:'npcshop'});
@@ -165,16 +172,24 @@ var NpcShop = (function() {
                     marker.className = 'item-card-auxiliary item-card-selection-marker npcshop-selection-marker';
                     marker.textContent = selected ? '待售 ×' + _saleIntents[identity].quantity : '点击加入待售';
                     node.appendChild(marker);
-                    node.addEventListener('click', function(event) {
-                        if (event.button && event.button !== 0) return;
-                        toggleSale(viewId, slot);
-                    });
                 } else {
                     node.classList.add('read-only');
+                    node.setAttribute('aria-readonly', 'true');
                 }
                 return node;
             },
-            bindItem:function(node, slot) { bindOwnedTooltip(node, viewId, slot); },
+            bindItem:function(node, slot) {
+                if (slot && slot.occupied) bindOwnedTooltip(node, viewId, slot);
+                var item = slot && slot.item || {};
+                var itemName = String(item.displayName || item.name || '未知物品');
+                Workbench.EntityTile.bindActivation(node, {
+                    itemName:itemName,
+                    label:node.getAttribute('aria-label') || itemName,
+                    selected:slot && slot.occupied && canSell && !!_saleIntents[saleIdentity(viewId, slot)],
+                    disabled:!slot || !slot.occupied,
+                    onActivate:canSell && slot && slot.occupied ? function() { toggleSale(viewId, slot); } : null
+                });
+            },
             title:title,
             meta:'同步中',
             emptyText:'暂无' + title,
@@ -185,8 +200,15 @@ var NpcShop = (function() {
             densityController: _densityController
         });
         ownedShell.view.viewId = viewId;
+        var pane = new WorkbenchComponents.OwnedInventoryPane({
+            view:ownedShell.view,
+            shell:ownedShell,
+            getSnapshot:function() { return getView(viewId); },
+            keyOf:function(slot) { return slot ? saleIdentity(viewId, slot) : ''; }
+        });
+        _ownedPanes[viewId] = pane;
         if (viewId === 'bag') installBagToolbar(ownedShell.view); else installCollectionToolbar(ownedShell.view);
-        return ownedShell.view;
+        return pane.view;
     }
 
     function installBagToolbar(view) {
@@ -276,7 +298,10 @@ var NpcShop = (function() {
     function toggleSale(viewId, slot) {
         if (_busy || _needsReconcile || !slot || !slot.occupied || viewId === 'intelligence') return;
         var identity = saleIdentity(viewId, slot);
-        if (_saleIntents[identity]) delete _saleIntents[identity];
+        if (_saleIntents[identity]) {
+            delete _saleIntents[identity];
+            if (_ownedPanes[viewId]) _ownedPanes[viewId].setSelected(slot, false);
+        }
         else {
             var max = Math.max(1, Math.floor(Number(slot.item && slot.item.quantity) || 1));
             _saleIntents[identity] = {
@@ -285,6 +310,7 @@ var NpcShop = (function() {
                     ? {containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)}
                     : {viewId:'material', key:String(slot.collectionKey), expectedLease:String(slot.slotLease)}
             };
+            if (_ownedPanes[viewId]) _ownedPanes[viewId].setSelected(slot, true);
         }
         renderOwnedViews(); refreshControls();
     }
@@ -372,11 +398,12 @@ var NpcShop = (function() {
 
     function renderOwnedViews() {
         for (var key in _rightViews) {
-            var view = _rightViews[key]; if (!view) continue; view.render();
+            var view = _rightViews[key]; if (!view) continue;
             var data = getView(key); var occupied = data && data.slots ? data.slots.filter(function(slot) { return slot.occupied; }).length : 0;
-            if (key === 'bag' && view.inventoryFilterControl) view.inventoryFilterControl.setSnapshot(data);
             var total = data && data.filterItemCount != null ? Number(data.filterItemCount) : occupied;
-            view.chrome.setMeta(_state ? (occupied === total ? occupied : occupied + ' / ' + total) + ' 项' : '同步中');
+            var meta = _state ? (occupied === total ? occupied : occupied + ' / ' + total) + ' 项' : '同步中';
+            if (view.ownedInventoryPane) view.ownedInventoryPane.update(data, {meta:meta});
+            else { view.render(); view.chrome.setMeta(meta); }
         }
     }
 
@@ -397,36 +424,47 @@ var NpcShop = (function() {
 
     function openSettlement() {
         if (!selectionCount() || _busy || _needsReconcile) return;
-        if (!_settlementPage) createSettlementPage();
-        _settlementPage.classList.add('active'); _shell.getRoot().classList.add('npcshop-settling');
+        if (!_settlementPresenter) createSettlementPage();
+        _settlementPresenter.open(); _shell.getRoot().classList.add('npcshop-settling');
         showGuideOnce('settlement', '这里仍是交易清单：调整完成并点击“确认交易”后，买卖才会一次生效。');
         _settlement = null; requestTradePreview();
     }
 
     function closeSettlement() {
-        if (_settlementPage) _settlementPage.classList.remove('active');
+        if (_settlementPresenter) _settlementPresenter.close('return');
         if (_shell) _shell.getRoot().classList.remove('npcshop-settling');
         _settlement = null; _previewQueued = false; renderCatalog(); renderOwnedViews(); refreshControls();
     }
 
     function createSettlementPage() {
-        _settlementPage = document.createElement('section');
-        _settlementPage.className = 'workbench-secondary-page npcshop-settlement-page';
-        _settlementPage.innerHTML = '<header class="npcshop-settlement-header"><button type="button" data-trade-back>← 返回选购</button>'
-            + '<div><h2>交易结算</h2><p data-trade-context>价格与容量由游戏实时核算；确认后整单一次生效。</p></div></header>'
-            + '<div class="npcshop-settlement-columns"><section><h3>待购</h3><div class="npcshop-settlement-list" data-purchase-lines></div></section>'
-            + '<section><h3>待售</h3><div class="npcshop-settlement-list" data-sale-lines></div></section></div>'
-            + '<footer class="npcshop-settlement-summary"><div data-trade-economy></div><span data-trade-error></span>'
-            + '<button type="button" data-space-organize hidden>整理空间</button>'
-            + '<button type="button" data-trade-commit>确认交易</button></footer>';
-        _settlementPage.querySelector('[data-trade-back]').addEventListener('click', closeSettlement);
-        _settlementPage.querySelector('[data-space-organize]').addEventListener('click', openSpaceOrganizer);
-        _settlementPage.querySelector('[data-trade-commit]').addEventListener('click', commitTrade);
-        _shell.getRoot().appendChild(_settlementPage);
+        _settlementPresenter = new NpcShopSecondaryPages.SettlementPresenter({
+            document:document,
+            components:WorkbenchComponents,
+            host:_shell.getRoot(),
+            onClose:closeSettlement,
+            onOrganize:openSpaceOrganizer,
+            onCommit:commitTrade,
+            onAdjust:adjustIntent,
+            onPurchaseMax:setPurchaseMax,
+            onBulkSale:setBulkSale,
+            onRemove:removeIntent,
+            onPurchaseBounds:function(identity, bounds) {
+                var intent = _purchaseIntents[identity];
+                if (!intent) return;
+                intent.purchaseLimit = bounds.purchaseLimit;
+                intent.maxPurchasable = bounds.maxPurchasable;
+            },
+            onGuide:function(topic) {
+                if (topic === 'inventory_full') showGuideOnce(topic,
+                    '背包不足时可点“整理空间”；返回结算后，系统会重新核算数量与空位。');
+            },
+            iconHtml:iconHtml,
+            errorMessage:errorMessage
+        });
     }
 
     function requestTradePreview() {
-        if (!_settlementPage || !_settlementPage.classList.contains('active')) return;
+        if (!_settlementPresenter || !_settlementPresenter.isActive()) return;
         if (!selectionCount()) { closeSettlement(); return; }
         if (_previewBusy) { _previewQueued = true; return; }
         _previewBusy = true; _previewQueued = false; _previewRevision++;
@@ -434,7 +472,7 @@ var NpcShop = (function() {
         var payload = selectionPayload();
         var issued = request('tradePreview', payload, function(response) {
             _previewBusy = false;
-            if (revision !== _previewRevision || !_settlementPage || !_settlementPage.classList.contains('active')) return;
+            if (revision !== _previewRevision || !_settlementPresenter || !_settlementPresenter.isActive()) return;
             if (!response.success) {
                 if (response.error === 'stale_state' || response.error === 'reconcile_required'
                         || response.error === 'timeout' || response.error === 'client_timeout' || response.error === 'disconnected') {
@@ -451,106 +489,24 @@ var NpcShop = (function() {
     }
 
     function renderSettlementLoading() {
-        if (!_settlementPage) return;
-        var commit = _settlementPage.querySelector('[data-trade-commit]'); commit.disabled = true; commit.textContent = '核算中…';
+        if (_settlementPresenter) _settlementPresenter.renderLoading();
     }
 
     function renderSettlementFailure(errorCode) {
-        if (!_settlementPage) return;
-        var error = _settlementPage.querySelector('[data-trade-error]');
-        error.textContent = errorMessage(errorCode); error.classList.add('error');
-        var commit = _settlementPage.querySelector('[data-trade-commit]'); commit.disabled = true; commit.textContent = '无法结算';
+        if (_settlementPresenter) _settlementPresenter.renderFailure(errorCode);
     }
 
     function renderSettlement() {
-        if (!_settlementPage || !_settlement) return;
-        renderSettlementLines('purchase', _settlement.purchaseLines || []);
-        renderSettlementLines('sale', _settlement.saleLines || []);
-        var economy = _settlementPage.querySelector('[data-trade-economy]');
-        economy.innerHTML = '<b>购买 -$' + Number(_settlement.buyTotal || 0).toLocaleString() + '</b>'
-            + '<b>出售 +$' + Number(_settlement.sellTotal || 0).toLocaleString() + '</b>'
-            + '<strong>结余 $' + Number(_settlement.projectedBalance || 0).toLocaleString() + '</strong>'
-            + '<small>需 ' + Number(_settlement.requiredSlots || 0) + ' 格 / 可用 ' + Number(_settlement.availableSlots || 0) + ' 格</small>';
-        var error = _settlementPage.querySelector('[data-trade-error]');
-        error.textContent = _settlement.blockingError ? errorMessage(_settlement.blockingError) : '整单可提交';
-        error.classList.toggle('error', !!_settlement.blockingError);
-        var organize = _settlementPage.querySelector('[data-space-organize]');
-        organize.hidden = _settlement.blockingError !== 'inventory_full';
-        organize.disabled = _busy || _previewBusy || _spaceBusy;
-        var context = _settlementPage.querySelector('[data-trade-context]');
-        if (_settlement.blockingError === 'inventory_full') {
-            context.textContent = '背包空间不足：可先整理背包与战备箱，返回后订单会自动重新核算。';
-            showGuideOnce('inventory_full', '背包不足时可点“整理空间”；返回结算后，系统会重新核算数量与空位。');
-        } else if ((_settlement.saleLines || []).some(function(line) { return line.scope === 'same_name'; })) {
-            context.textContent = '同名全售只出售普通实例，强化、进阶和带插件装备会自动保护。';
-        } else {
-            context.textContent = '待购和待售都只是清单；点击“确认交易”后整单才会一次生效。';
-        }
-        var commit = _settlementPage.querySelector('[data-trade-commit]');
-        commit.disabled = _busy || _previewBusy || !_settlement.canCommit; commit.textContent = '确认交易';
-    }
-
-    function renderSettlementLines(kind, lines) {
-        var list = _settlementPage.querySelector(kind === 'purchase' ? '[data-purchase-lines]' : '[data-sale-lines]');
-        while (list.firstChild) list.removeChild(list.firstChild);
-        if (!lines.length) { var empty = document.createElement('p'); empty.className = 'npcshop-settlement-empty'; empty.textContent = '无'; list.appendChild(empty); return; }
-        lines.forEach(function(line) {
-            var identity = kind === 'purchase' ? String(line.catalogIndex) : String(line.sourceIdentity);
-            var intent = kind === 'purchase' ? _purchaseIntents[identity] : _saleIntents[identity]; if (!intent) return;
-            if (kind === 'purchase') {
-                intent.purchaseLimit = Number(line.purchaseLimit || intent.maxQuantity || 1);
-                intent.maxPurchasable = Math.max(0, Number(line.maxPurchasable || 0));
-            }
-            var row = document.createElement('article'); row.className = 'npcshop-settlement-line';
-            var icon = document.createElement('span'); icon.className = 'npcshop-card-icon'; icon.innerHTML = iconHtml(line.icon || line.itemName, 'kshop-icon');
-            var copy = document.createElement('span'); copy.className = 'npcshop-settlement-copy';
-            var name = document.createElement('b'); name.textContent = line.displayName || line.itemName;
-            var total = document.createElement('small'); total.textContent = (kind === 'purchase' ? '-$' : '+$') + Number(line.total || 0).toLocaleString();
-            copy.appendChild(name); copy.appendChild(total);
-            if (kind === 'purchase') {
-                var bound = document.createElement('em');
-                bound.textContent = '当前最多可购 ' + intent.maxPurchasable + ' / 单笔上限 ' + intent.purchaseLimit;
-                copy.appendChild(bound);
-            } else if (line.scope === 'same_name') {
-                var bulk = document.createElement('em');
-                bulk.textContent = '同名匹配 ' + Number(line.matchedCount || 0) + ' 格，售出 ' + Number(line.eligibleCount || 0)
-                    + ' 格，保护 ' + Number(line.protectedCount || 0) + ' 格';
-                copy.appendChild(bulk);
-            }
-            var stepper = document.createElement('span'); stepper.className = 'npcshop-stepper';
-            var remove = stepButton('×', function() { removeIntent(kind, identity); }); remove.classList.add('remove');
-            if (kind === 'purchase') {
-                var minus = stepButton('−', function() { adjustIntent(kind, identity, -1); });
-                var quantity = document.createElement('b'); quantity.textContent = String(intent.quantity);
-                var plus = stepButton('+', function() { adjustIntent(kind, identity, 1); });
-                var plusFive = stepButton('+5', function() { adjustIntent(kind, identity, 5); }); plusFive.classList.add('wide');
-                var max = stepButton('最大', function() { setPurchaseMax(identity); }); max.classList.add('wide');
-                minus.disabled = intent.quantity <= 1;
-                plus.disabled = intent.quantity >= intent.purchaseLimit;
-                plusFive.disabled = intent.quantity >= intent.purchaseLimit;
-                max.disabled = intent.maxPurchasable < 1 || intent.quantity === intent.maxPurchasable;
-                stepper.appendChild(minus); stepper.appendChild(quantity); stepper.appendChild(plus);
-                stepper.appendChild(plusFive); stepper.appendChild(max); stepper.appendChild(remove);
-            } else if (line.scope === 'same_name') {
-                var single = stepButton('只售此格', function() { setBulkSale(identity, false); }); single.classList.add('wide');
-                stepper.appendChild(single); stepper.appendChild(remove);
-            } else {
-                var saleMinus = stepButton('−', function() { adjustIntent(kind, identity, -1); });
-                var saleQuantity = document.createElement('b'); saleQuantity.textContent = String(intent.quantity);
-                var salePlus = stepButton('+', function() { adjustIntent(kind, identity, 1); });
-                saleMinus.disabled = intent.quantity <= 1; salePlus.disabled = intent.quantity >= intent.maxQuantity;
-                stepper.appendChild(saleMinus); stepper.appendChild(saleQuantity); stepper.appendChild(salePlus);
-                if (line.itemKind === 'equipment') {
-                    var all = stepButton('同名全售', function() { setBulkSale(identity, true); }); all.classList.add('wide');
-                    stepper.appendChild(all);
-                }
-                stepper.appendChild(remove);
-            }
-            row.appendChild(icon); row.appendChild(copy); row.appendChild(stepper); list.appendChild(row);
+        if (!_settlementPresenter || !_settlement) return;
+        _settlementPresenter.render(_settlement, {
+            purchases:_purchaseIntents,
+            sales:_saleIntents
+        }, {
+            busy:_busy,
+            previewBusy:_previewBusy,
+            spaceBusy:_spaceBusy
         });
     }
-
-    function stepButton(label, handler) { var button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.addEventListener('click', handler); return button; }
 
     function adjustIntent(kind, identity, delta) {
         var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; var line = map[identity]; if (!line || _previewBusy) return;
@@ -574,43 +530,26 @@ var NpcShop = (function() {
 
     function openHelpPage() {
         if (_busy || _inventoryState.busyOwner) return;
-        if (!_helpPage) createHelpPage();
-        var back = _helpPage.querySelector('[data-help-back]');
-        back.textContent = _settlementPage && _settlementPage.classList.contains('active') ? '← 返回结算' : '← 返回商店';
-        _helpPage.classList.add('active');
+        if (!_helpPresenter) createHelpPage();
+        _helpPresenter.open(_settlementPresenter && _settlementPresenter.isActive() ? '← 返回结算' : '← 返回商店');
         _shell.getRoot().classList.add('npcshop-helping');
         refreshControls();
-        back.focus();
     }
 
     function closeHelpPage() {
-        if (_helpPage) _helpPage.classList.remove('active');
+        if (_helpPresenter) _helpPresenter.close('return');
         if (_shell) _shell.getRoot().classList.remove('npcshop-helping');
         refreshControls();
         if (_helpButton) _helpButton.focus();
     }
 
     function createHelpPage() {
-        _helpPage = document.createElement('section');
-        _helpPage.className = 'workbench-secondary-page npcshop-help-page';
-        _helpPage.setAttribute('role', 'dialog');
-        _helpPage.setAttribute('aria-label', 'NPC 商店操作帮助');
-        _helpPage.innerHTML = '<header class="npcshop-help-header"><button type="button" data-help-back>← 返回商店</button>'
-            + '<div><h2>商店操作帮助</h2><p>所有选择都可以在确认交易前调整或取消。</p></div></header>'
-            + '<div class="npcshop-help-grid">'
-            + helpCard('01','选择商品','左侧点击商品加入待购；右侧点击背包或材料加入待售。','此时不会扣钱，也不会移除物品。','待购','待售')
-            + helpCard('02','调整并结算','在结算页用 −、+、+5 或“最大”调整数量，再确认整张订单。','“最多可购”由金币、背包容量和商店限制共同决定。','调整数量','确认交易')
-            + helpCard('03','同名全售','装备待售行可切换为“同名全售”，快速清理重复装备。','只出售普通实例；强化、进阶和带插件装备自动保护。','同名匹配','保护特殊装备')
-            + helpCard('04','整理空间','背包不足时进入背包—战备箱整理页，点击物品即可快速转移。','返回后订单自动重算；商品不会直接购买到战备箱。','整理空间','返回重算')
-            + '</div><footer class="npcshop-help-rules"><b>记住三件事</b><span>选择 ≠ 交易</span><span>最大数量会动态变化</span><span>移动后的待售项可能被安全移除</span>'
-            + '<small>关键提示只自动出现一次；本页可随时从标题栏“？”重新打开。</small></footer>';
-        _helpPage.querySelector('[data-help-back]').addEventListener('click', closeHelpPage);
-        _shell.getRoot().appendChild(_helpPage);
-    }
-
-    function helpCard(index, title, body, detail, chipA, chipB) {
-        return '<article class="npcshop-help-card"><span class="npcshop-help-index">' + index + '</span><div><h3>' + title + '</h3><p>' + body
-            + '</p><small>' + detail + '</small><div class="npcshop-help-flow"><i>' + chipA + '</i><b>→</b><i>' + chipB + '</i></div></div></article>';
+        _helpPresenter = new NpcShopSecondaryPages.HelpPresenter({
+            document:document,
+            components:WorkbenchComponents,
+            host:_shell.getRoot(),
+            onClose:closeHelpPage
+        });
     }
 
     function showGuideOnce(topic, message) {
@@ -624,9 +563,9 @@ var NpcShop = (function() {
 
     function openSpaceOrganizer() {
         if (!_settlement || _settlement.blockingError !== 'inventory_full' || _busy || _previewBusy) return;
-        if (!_spacePage) createSpaceOrganizer();
-        _spacePage.classList.add('active');
-        _settlementPage.classList.add('organizing-space');
+        if (!_spacePresenter) createSpaceOrganizer();
+        _spacePresenter.open();
+        _settlementPresenter.setOrganizing(true);
         _spaceBusy = true; _spaceMutated = false; refreshControls();
         if (_inventoryState.opened && _inventoryState.ready && !_inventoryState.refreshRequired) {
             _spaceBusy = false; renderSpaceOrganizer(); refreshControls();
@@ -637,90 +576,39 @@ var NpcShop = (function() {
     }
 
     function createSpaceOrganizer() {
-        _spacePage = document.createElement('section');
-        _spacePage.className = 'npcshop-space-page';
-        _spacePage.innerHTML = '<header class="npcshop-space-header"><button type="button" data-space-back>← 返回结算</button>'
-            + '<div><h2>整理购买空间</h2><p>点击物品即可在背包与战备箱之间快速转移；返回后交易会重新核算。</p></div>'
-            + '<span data-space-status>同步中</span></header>'
-            + '<div class="npcshop-space-columns"><section><h3>背包 <small data-space-meta="背包"></small></h3><div class="npcshop-space-grid" data-space-grid="背包"></div></section>'
-            + '<section><h3>战备箱 <span data-space-pager></span><small data-space-meta="战备箱"></small></h3><div class="npcshop-space-grid battlebox" data-space-grid="战备箱"></div></section></div>';
-        _spacePage.querySelector('[data-space-back]').addEventListener('click', closeSpaceOrganizer);
-        _spaceGrids = {
-            '背包':_spacePage.querySelector('[data-space-grid="背包"]'),
-            '战备箱':_spacePage.querySelector('[data-space-grid="战备箱"]')
-        };
-        if (_densityController) {
-            _densityController.register(_spaceGrids['背包']);
-            _densityController.register(_spaceGrids['战备箱']);
-        }
-        _spacePager = new InventoryUI.InventoryWindowPager({
-            containerId:'战备箱', containerLabel:'战备箱', columns:5,
-            defaultOffset:0, defaultLimit:40, defaultCapacity:0,
-            getSnapshot:function() { return _inventoryCoordinator.getWindow('战备箱'); },
-            getRequest:function() { return _inventoryCoordinator.getRequest('战备箱'); },
-            shortcutEnabled:function() { return !!(_spacePage && _spacePage.classList.contains('active')); },
-            onRequest:function(offset, limit, callback) { return _inventoryCoordinator.setWindow('战备箱', offset, limit, callback); },
-            onResult:function(result) { renderSpaceOrganizer(); if (!result.success) toast('战备箱翻页失败。'); }
+        _spacePresenter = new NpcShopSecondaryPages.SpaceOrganizerPresenter({
+            document:document,
+            components:WorkbenchComponents,
+            inventoryUI:InventoryUI,
+            workbench:Workbench,
+            densityController:_densityController,
+            host:_settlementPresenter.root,
+            getWindow:function(containerId) { return _inventoryCoordinator.getWindow(containerId); },
+            getRequest:function(containerId) { return _inventoryCoordinator.getRequest(containerId); },
+            setWindow:function(containerId, offset, limit, callback) {
+                return _inventoryCoordinator.setWindow(containerId, offset, limit, callback);
+            },
+            autoTransfer:function(source, target, done) {
+                return _inventoryCoordinator.autoTransfer(source, target, done);
+            },
+            onBack:function() { closeSpaceOrganizer(); return false; },
+            onPageResult:function(result) { if (!result.success) toast('战备箱翻页失败。'); },
+            onTransferResult:function(result) {
+                if (result && result.success) _spaceMutated = true;
+                else toast(errorMessage(result && result.error));
+                refreshControls();
+            },
+            iconHtml:iconHtml,
+            toast:toast
         });
-        _spacePage.querySelector('[data-space-pager]').appendChild(_spacePager.root);
-        _spacePager.attach();
-        _settlementPage.appendChild(_spacePage);
     }
 
     function renderSpaceOrganizer() {
-        if (!_spacePage || !_spacePage.classList.contains('active')) return;
-        renderSpaceGrid('背包'); renderSpaceGrid('战备箱');
-        if (_spacePager) { _spacePager.setDisabled(!_inventoryState.ready || !!_inventoryState.busyOwner); _spacePager.refresh(); }
-        var status = _spacePage.querySelector('[data-space-status]');
-        status.textContent = _inventoryState.refreshRequired ? '同步失败' : _inventoryState.busyOwner ? '转移中…' : _inventoryState.ready ? '点击快速转移' : '同步中…';
-    }
-
-    function renderSpaceGrid(containerId) {
-        var grid = _spaceGrids[containerId]; if (!grid) return;
-        while (grid.firstChild) grid.removeChild(grid.firstChild);
-        var snapshot = _inventoryCoordinator.getWindow(containerId);
-        var slots = snapshot && snapshot.slots ? snapshot.slots : [];
-        for (var i = 0; i < slots.length; i++) {
-            var slot = slots[i];
-            var node = InventoryUI.renderOwnedSlot(containerId, slot, {iconHtml:iconHtml, allowDiscard:false});
-            if (slot.occupied) {
-                node.classList.add('npcshop-space-transferable');
-                var currentLabel = node.getAttribute('aria-label') || '';
-                var transferAction = containerId === '背包' ? '移入战备箱' : '移入背包';
-                node.setAttribute('aria-label', currentLabel + '，点击' + transferAction);
-                (function(sourceContainer, sourceSlot) {
-                    node.addEventListener('click', function() { transferSpaceItem(sourceContainer, sourceSlot); });
-                })(containerId, slot);
-            }
-            grid.appendChild(node);
-        }
-        var meta = _spacePage.querySelector('[data-space-meta="' + containerId + '"]');
-        if (!snapshot) meta.textContent = '同步中';
-        else if (containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0) meta.textContent = '未解锁';
-        else meta.textContent = slots.filter(function(slot) { return slot.occupied; }).length + ' 项';
-    }
-
-    function transferSpaceItem(containerId, slot) {
-        if (!_inventoryState.ready || _inventoryState.busyOwner || !slot || !slot.occupied) return;
-        var source = {
-            containerId:containerId,
-            slot:Number(slot.physicalSlot),
-            expectedLease:String(slot.slotLease),
-            occupied:true,
-            item:slot.item || null
-        };
-        var target = containerId === '背包' ? '战备箱' : '背包';
-        if (!_inventoryCoordinator.autoTransfer(source, target, function(result) {
-            if (result && result.success) {
-                _spaceMutated = true;
-            } else toast(errorMessage(result && result.error));
-            renderSpaceOrganizer(); refreshControls();
-        })) toast('库存正在处理另一项操作。');
-        renderSpaceOrganizer(); refreshControls();
+        if (_spacePresenter) _spacePresenter.render(_inventoryState);
     }
 
     function closeSpaceOrganizer() {
-        if (!_spacePage || !_spacePage.classList.contains('active') || _inventoryState.busyOwner) return;
+        if (!_spacePresenter || !_spacePresenter.isActive() || _inventoryState.busyOwner) return;
         _spaceBusy = true; renderSettlementLoading(); refreshControls();
         var inventoryCallId = requestInventory('snapshot', {
             v:1,
@@ -748,8 +636,8 @@ var NpcShop = (function() {
                     bag:fullBag,
                     material:response.views && response.views.material
                 });
-                _spacePage.classList.remove('active');
-                _settlementPage.classList.remove('organizing-space');
+                _spacePresenter.close('return');
+                _settlementPresenter.setOrganizing(false);
                 applyState(response);
                 requestTradePreview();
                 if (_spaceMutated) toast('库存已整理，交易数量与容量已重新核算。');
@@ -829,12 +717,13 @@ var NpcShop = (function() {
                 request('tooltip', {itemName: item.itemName}, callback);
             }
         });
-        if (!item.locked) {
-            node.addEventListener('click', function(event) {
-                if (event.button && event.button !== 0) return;
-                togglePurchase(item);
-            });
-        }
+        Workbench.EntityTile.bindActivation(node, {
+            itemName:item.displayName || item.itemName,
+            label:node.getAttribute('aria-label') || '',
+            selected:!!_purchaseIntents[String(item.catalogIndex)],
+            disabled:!!item.locked,
+            onActivate:function() { togglePurchase(item); }
+        });
     }
     function bindOwnedTooltip(node, viewId, slot) {
         if (!slot || !slot.occupied) return;
@@ -871,16 +760,17 @@ var NpcShop = (function() {
         _shell.moveView('R', _rightViews[viewId]);
         var labels = {bag:'背包',material:'材料',intelligence:'情报'}; var groupId = viewId === 'bag' ? 'bag' : 'collection';
         _shell.setSlotLabel('R', groupId === 'bag' ? '背包' : '收集品 · ' + labels[viewId]);
-        for (var key in _viewButtons) _viewButtons[key].classList.toggle('active', key === groupId);
+        if (_viewChoiceGroup) _viewChoiceGroup.update({value:groupId});
+        else for (var key in _viewButtons) _viewButtons[key].classList.toggle('active', key === groupId);
         var buttons = _shell.getRoot().querySelectorAll('[data-collection-view]');
         for (var i = 0; i < buttons.length; i++) buttons[i].classList.toggle('active', buttons[i].getAttribute('data-collection-view') === _activeCollection);
     }
 
     function onOpen(el, initData) {
+        disposeSharedComponents();
         _generation++; _shopId = initData && typeof initData.shopId === 'string' ? initData.shopId : '';
-        _state = null; _busy = false; _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null;
-        _spacePage = null; _spaceGrids = {}; _spacePager = null; _spaceBusy = false; _spaceMutated = false;
-        _helpPage = null; _helpButton = null;
+        _state = null; _busy = false; _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null;
+        _spaceBusy = false; _spaceMutated = false; _helpButton = null;
         _previewBusy = false; _previewQueued = false; _previewRevision = 0; _category = {mode:'auto', path:[]}; _categoryInitialized = false;
         _activeRight = 'bag'; _activeCollection = 'material'; _tooltipCache = {};
         buildDOM(); if (_scaleHandle) _scaleHandle.detach();
@@ -930,7 +820,7 @@ var NpcShop = (function() {
             _needsReconcile = true; refreshControls(); refreshSnapshot(); return;
         }
         if (error === 'stale_state') { toast('物品状态已经变化，正在重新同步。'); refreshSnapshot(); return; }
-        handleError(response); if (_settlementPage && _settlementPage.classList.contains('active')) requestTradePreview();
+        handleError(response); if (_settlementPresenter && _settlementPresenter.isActive()) requestTradePreview();
     }
     function handleError(response) { toast(errorMessage(response && response.error)); }
     function refreshControls() {
@@ -942,18 +832,20 @@ var NpcShop = (function() {
         if (_checkoutButton) { _checkoutButton.textContent = count ? '结算 (' + count + ')' : '结算'; _checkoutButton.disabled = !count || _busy || _needsReconcile; }
         if (_helpButton) _helpButton.disabled = _busy || !!_inventoryState.busyOwner;
         if (_bagFilterControl) _bagFilterControl.setDisabled(_busy || !_inventoryState.ready || !!_inventoryState.busyOwner);
-        for (var key in _viewButtons) _viewButtons[key].disabled = _busy;
+        if (_viewChoiceGroup) _viewChoiceGroup.update({disabled:_busy});
+        else for (var key in _viewButtons) _viewButtons[key].disabled = _busy;
+        for (var paneKey in _ownedPanes) _ownedPanes[paneKey].setDisabled(_busy || !_inventoryState.ready || !!_inventoryState.busyOwner);
         var buttons = _shell.getRoot().querySelectorAll('[data-collection-view]'); for (var i = 0; i < buttons.length; i++) buttons[i].disabled = _busy;
         if (_settlement) renderSettlement();
     }
 
     function cleanup() {
         _generation++; if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
-        if (_spacePager) { _spacePager.detach(); _spacePager = null; }
         _inventoryCoordinator.close(); _inventoryMux.closeSession();
         if (_shell) _shell.closeModal(); _mux.closeSession();
-        _busy = false; _previewBusy = false; _state = null; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementPage = null;
-        _helpPage = null; _helpButton = null;
+        disposeSharedComponents();
+        _busy = false; _previewBusy = false; _state = null; _purchaseIntents = {}; _saleIntents = {}; _settlement = null;
+        _helpButton = null;
         disposeFilterNavigators();
         if (_densityController) { _densityController.destroy(); _densityController = null; }
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
@@ -965,10 +857,19 @@ var NpcShop = (function() {
         _categoryToolbar = null;
         _bagFilterControl = null;
     }
+    function disposeSharedComponents() {
+        if (_spacePresenter) _spacePresenter.destroy();
+        if (_helpPresenter) _helpPresenter.destroy();
+        if (_settlementPresenter) _settlementPresenter.destroy();
+        if (_viewChoiceGroup) _viewChoiceGroup.destroy();
+        for (var key in _ownedPanes) _ownedPanes[key].destroy();
+        _spacePresenter = null; _helpPresenter = null; _settlementPresenter = null;
+        _viewChoiceGroup = null; _ownedPanes = {};
+    }
     function requestClose() {
-        if (_helpPage && _helpPage.classList.contains('active')) { closeHelpPage(); return; }
-        if (_spacePage && _spacePage.classList.contains('active')) { closeSpaceOrganizer(); return; }
-        if (_settlementPage && _settlementPage.classList.contains('active')) { closeSettlement(); return; }
+        if (_helpPresenter && _helpPresenter.isActive()) { closeHelpPage(); return; }
+        if (_spacePresenter && _spacePresenter.isActive()) { closeSpaceOrganizer(); return; }
+        if (_settlementPresenter && _settlementPresenter.isActive()) { closeSettlement(); return; }
         if (_shell && _shell.hasModal()) { _shell.closeModal(); return; }
         if (_busy) { toast('交易正在确认，请稍候。'); return; }
         Panels.close(); Bridge.send({type:'panel', cmd:'close', panel:'npcshop'});
@@ -998,14 +899,12 @@ var NpcShop = (function() {
         return messages[error] || '操作失败，请重试。';
     }
 
-    Bridge.on('panel_resp', function(data) { _mux.handleResponse(data); _inventoryMux.handleResponse(data); });
-
     return {debugState:function() {
         return {shopId:_shopId, activeRight:_activeRight, busy:_busy, needsReconcile:_needsReconcile,
             purchaseCount:Object.keys(_purchaseIntents).length, saleCount:Object.keys(_saleIntents).length,
-            settling:!!(_settlementPage && _settlementPage.classList.contains('active')),
-            helping:!!(_helpPage && _helpPage.classList.contains('active')),
-            organizingSpace:!!(_spacePage && _spacePage.classList.contains('active')),
+            settling:!!(_settlementPresenter && _settlementPresenter.isActive()),
+            helping:!!(_helpPresenter && _helpPresenter.isActive()),
+            organizingSpace:!!(_spacePresenter && _spacePresenter.isActive()),
             inventory:_inventoryCoordinator.debugState(), mux:_mux.debugState()};
     }};
 })();

@@ -5,11 +5,14 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const url = require('url');
+const {readCssBundle} = require('./lib/read-css-bundle.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const WEB_ROOT = path.join(ROOT, 'launcher', 'web');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
 const WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench.js');
+const WORKBENCH_PRIMITIVES_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench-primitives.js');
+const WORKBENCH_COMPONENTS_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench-components.js');
 const INVENTORY_RUNTIME_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-runtime.js');
 const INVENTORY_UI_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-ui.js');
 const ITEM_FILTER_SOURCE = path.join(WEB_ROOT, 'modules', 'item-filter.js');
@@ -18,6 +21,15 @@ const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
 const NPCSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop.js');
 const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
+const KSHOP_MODULE_SOURCES = [
+    'kshop-cart-controller.js', 'kshop-catalog-presenter.js',
+    'kshop-owned-inventory-presenter.js', 'kshop-tooltip-presenter.js'
+].map(name => path.join(WEB_ROOT, 'modules', name));
+const NPCSHOP_SECONDARY_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-secondary-pages.js');
+const INVENTORY_WORKBENCH_MODULE_SOURCES = [
+    'inventory-workbench-config.js', 'inventory-workbench-header.js',
+    'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js'
+].map(name => path.join(WEB_ROOT, 'modules', name));
 const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
 const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
 const visualArg = process.argv.find(arg => arg.startsWith('--visual='));
@@ -54,20 +66,37 @@ function auditArchitectureBoundaries() {
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
     const npcshopSource = fs.readFileSync(NPCSHOP_SOURCE, 'utf8');
+    const kshopUiSource = [kshopSource].concat(KSHOP_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))).join('\n');
+    const npcshopUiSource = npcshopSource + '\n' + fs.readFileSync(NPCSHOP_SECONDARY_SOURCE, 'utf8');
     const kshopViewsSource = fs.readFileSync(KSHOP_VIEWS_SOURCE, 'utf8');
+    const workbenchComponentsSource = fs.readFileSync(WORKBENCH_COMPONENTS_SOURCE, 'utf8');
+    const inventoryUiSource = fs.readFileSync(INVENTORY_UI_SOURCE, 'utf8');
+    const inventoryWorkbenchSource = fs.readFileSync(INVENTORY_WORKBENCH_SOURCE, 'utf8');
+    const inventoryWorkbenchUiSource = [inventoryWorkbenchSource].concat(
+        INVENTORY_WORKBENCH_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))
+    ).join('\n');
     const panelsSource = fs.readFileSync(PANELS_SOURCE, 'utf8');
-    const panelsCssSource = fs.readFileSync(PANELS_CSS_SOURCE, 'utf8');
+    const panelsCssSource = readCssBundle(PANELS_CSS_SOURCE, {rootDir:path.join(WEB_ROOT, 'css')});
     if (kshopSource.includes('same_container_unsupported')) {
         throw new Error('KShop still rejects generic same-container owned transfer');
     }
-    if (!kshopSource.includes('new KShopViews.SettlementPage(')
+    if (!kshopUiSource.includes('new KShopViews.SettlementPage(')
             || !kshopViewsSource.includes('function SettlementPage(')
             || !kshopViewsSource.includes('function createCatalog(')
             || !kshopViewsSource.includes('function createOrder(')) {
         throw new Error('KShop view/settlement composition boundary is incomplete');
     }
-    const inventoryUiSource = fs.readFileSync(INVENTORY_UI_SOURCE, 'utf8');
-    const inventoryWorkbenchSource = fs.readFileSync(INVENTORY_WORKBENCH_SOURCE, 'utf8');
+    if (!['function SecondaryPage(', 'function ChoiceGroup(', 'function CommitBar(', 'function OwnedInventoryPane(']
+            .every(token => workbenchComponentsSource.includes(token))
+            || !workbenchComponentsSource.includes("require('./workbench-lifecycle.js')")
+            || workbenchComponentsSource.includes('this._disposers')
+            || !kshopUiSource.includes('new WorkbenchComponents.ChoiceGroup(')
+            || !kshopUiSource.includes('new WorkbenchComponents.OwnedInventoryPane(')
+            || !npcshopUiSource.includes('.SecondaryPage(')
+            || !npcshopUiSource.includes('.CommitBar(')
+            || !inventoryWorkbenchUiSource.includes('.OwnedInventoryPane(')) {
+        throw new Error('Shared workbench component composition boundary is incomplete');
+    }
     const extractedUiTokens = ['function warehousePageState(', 'function renderWarehousePageMenu(',
         'function onWarehousePageShortcut(', 'function changeWarehousePage(', 'function jumpWarehouseToPage('];
     const uiLeaks = extractedUiTokens.filter(token => kshopSource.includes(token));
@@ -80,29 +109,31 @@ function auditArchitectureBoundaries() {
             || !inventoryUiSource.includes('function renderOwnedSlot(')) {
         throw new Error('Inventory UI component boundary is incomplete');
     }
-    if ([inventoryUiSource, inventoryWorkbenchSource, kshopSource].some(text =>
+    if ([inventoryUiSource, inventoryWorkbenchUiSource, kshopUiSource].some(text =>
             text.includes('DisplaySortControl') || text.includes('displaySortMethod')
             || text.includes('inventory-display-sort'))) {
         throw new Error('Owned inventory display sort must stay retired in favor of the authority tree');
     }
     if (!inventoryUiSource.includes('item-card item-card-owned inventory-slot-card')
             || !inventoryUiSource.includes('item-card-body inventory-slot-copy')
-            || !npcshopSource.includes('item-card-auxiliary item-card-selection-marker')
+            || !npcshopUiSource.includes('item-card-auxiliary item-card-selection-marker')
             || !panelsCssSource.includes('.item-grid-compact .item-card-auxiliary')) {
         throw new Error('Semantic item-card density contract is incomplete');
     }
-    const ownedCompositions = [kshopSource, npcshopSource, inventoryWorkbenchSource];
-    if (!ownedCompositions.every(text => text.includes('new InventoryUI.OwnedInventoryViewShell('))
+    const ownedCompositions = [kshopUiSource, npcshopUiSource, inventoryWorkbenchUiSource];
+    if (!kshopUiSource.includes('new InventoryUI.OwnedInventoryViewShell(')
+            || !npcshopUiSource.includes('new InventoryUI.OwnedInventoryViewShell(')
+            || !inventoryWorkbenchUiSource.includes('.OwnedInventoryViewShell(')
             || ownedCompositions.some(text => text.includes('new Workbench.ItemGrid('))) {
         throw new Error('Owned inventory composition bypasses OwnedInventoryViewShell');
     }
-    if (inventoryWorkbenchSource.includes("requestShop(")
-            || inventoryWorkbenchSource.includes("'bulkQuery'")
-            || inventoryWorkbenchSource.includes('shopPanelOpen')) {
+    if (inventoryWorkbenchUiSource.includes("requestShop(")
+            || inventoryWorkbenchUiSource.includes("'bulkQuery'")
+            || inventoryWorkbenchUiSource.includes('shopPanelOpen')) {
         throw new Error('Standalone inventory workbench leaked into shop lifecycle');
     }
-    if (!kshopSource.includes('InventoryUI.renderOwnedSlot(')
-            || !inventoryWorkbenchSource.includes('InventoryUI.renderOwnedSlot(')) {
+    if (!kshopUiSource.includes('InventoryUI.renderOwnedSlot(')
+            || !inventoryWorkbenchUiSource.includes('.renderOwnedSlot(')) {
         throw new Error('Owned-slot renderer is not shared by shop and standalone workbench');
     }
     if (!panelsSource.includes('ensureRequiredAssets(')
@@ -120,28 +151,34 @@ function auditArchitectureBoundaries() {
             || !behaviorSource.includes('[data-browser-native]')) {
         throw new Error('Game UI behavior guard is missing a required native-browser boundary');
     }
-    if (!source.includes('function ItemCard(') || !source.includes('function ItemGrid(')
+    const primitivesSource = fs.readFileSync(WORKBENCH_PRIMITIVES_SOURCE, 'utf8');
+    if (!primitivesSource.includes('function EntityTile(') || !primitivesSource.includes('function ItemCard(') || !source.includes('function ItemGrid(')
             || !source.includes('function GridDensityController(')) {
         throw new Error('Workbench item/density primitives missing');
+    }
+    const tooltipSource = fs.readFileSync(path.join(WEB_ROOT, 'modules', 'tooltip.js'), 'utf8');
+    if (!tooltipSource.includes('function bindAsync(')
+            || !tooltipSource.includes('function bindAsyncHover(node, options) { return bindAsync(node, options); }')) {
+        throw new Error('PanelTooltip neutral pointer/focus binding or compatibility alias missing');
     }
     const itemFilterSource = fs.readFileSync(ITEM_FILTER_SOURCE, 'utf8');
     if (!itemFilterSource.includes('function FilterNavigator(')
             || !itemFilterSource.includes('function branchTree(')
-            || !kshopSource.includes('ItemFilter.build(')
-            || !kshopSource.includes("{id:'curated', label:'专柜'")
+            || !kshopUiSource.includes('itemFilter.build(')
+            || !kshopUiSource.includes("{id:'curated', label:'专柜'")
             || !npcshopSource.includes('ItemFilter.build(')) {
         throw new Error('Shared item taxonomy/navigation boundary is incomplete');
     }
-    if (kshopSource.includes('weaponSubtype:false')
+    if (kshopUiSource.includes('weaponSubtype:false')
             || !panelsCssSource.includes('height:48px;')
             || !panelsCssSource.includes('transition:none;')) {
         throw new Error('KShop subtype drilldown or stable category rail contract is incomplete');
     }
-    if (!kshopSource.includes('Workbench.ItemCard.renderCatalog') || !npcshopSource.includes('Workbench.ItemCard.renderCatalog')) {
+    if (!kshopUiSource.includes('Workbench.ItemCard.renderCatalog') || !npcshopUiSource.includes('Workbench.ItemCard.renderCatalog')) {
         throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
     }
-    if (!kshopSource.includes('PanelTooltip.bindAsyncHover') || !npcshopSource.includes('PanelTooltip.bindAsyncHover')
-            || !inventoryWorkbenchSource.includes('PanelTooltip.bindAsyncHover')) {
+    if (!kshopUiSource.includes('PanelTooltip.bindAsyncHover') || !npcshopUiSource.includes('PanelTooltip.bindAsyncHover')
+            || !inventoryWorkbenchUiSource.includes('PanelTooltip.bindAsyncHover')) {
         throw new Error('Panel async tooltip binding is not shared across shop and workbench panels');
     }
     if (!panelsCssSource.includes('.item-grid-compact')) {
@@ -157,6 +194,7 @@ function auditArchitectureBoundaries() {
         unifiedOwnedInventoryShell:true,
         semanticItemCardDensityContract:true,
         kshopViewComposition:true,
+        sharedWorkbenchComponents:true,
         standaloneBattleboxWorkbench:true,
         sharedIconManifestGate:true,
         workbenchFullAnchor:true,
@@ -267,7 +305,11 @@ function createServer() {
         process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');
         const tooltipFailed = visualMode === 'battlebox-real-icons'
             && (!visualState.tooltip || !visualState.tooltip.visible || !visualState.tooltip.basicStyled
-                || !visualState.tooltip.hasRichLayout || !visualState.tooltip.hasIcon);
+                || !visualState.tooltip.hasRichLayout || !visualState.tooltip.hasIcon
+                || !visualState.tooltip.focusDescription || !visualState.tooltip.focusFallbackVisible
+                || !visualState.tooltip.focusExitHidden || !visualState.tooltip.asyncFocusVisible
+                || !visualState.tooltip.lateResponseStayedHidden || !visualState.tooltip.teardownStayedHidden
+                || !visualState.tooltip.teardownIdempotent);
         if (pageErrors.length || failedRequests.length || tooltipFailed) process.exit(1);
         return;
     }
@@ -282,7 +324,11 @@ function createServer() {
     const output = {browser:'edge',executablePath,architectureAudit,qa,realTooltip,pageErrors,failedRequests};
     process.stdout.write(JSON.stringify(output, null, 2) + '\n');
     const tooltipFailed = !realTooltip || !realTooltip.visible || !realTooltip.basicStyled
-        || !realTooltip.hasRichLayout || !realTooltip.hasIcon;
+        || !realTooltip.hasRichLayout || !realTooltip.hasIcon
+        || !realTooltip.focusDescription || !realTooltip.focusFallbackVisible
+        || !realTooltip.focusExitHidden || !realTooltip.asyncFocusVisible
+        || !realTooltip.lateResponseStayedHidden || !realTooltip.teardownStayedHidden
+        || !realTooltip.teardownIdempotent;
     if (qa.failed || tooltipFailed || pageErrors.length || failedRequests.length) process.exit(1);
 })().catch(error => {
     console.error(error && error.stack ? error.stack : String(error));

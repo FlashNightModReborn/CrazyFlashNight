@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CF7 Workbench Visual Atlas</title>
+  <link rel="stylesheet" href="/launcher/web/css/panels.css">
+  <style>
+    :root { color-scheme:dark; }
+    * { box-sizing:border-box; }
+    html,body { width:100%; height:100%; margin:0; overflow:hidden; background:#030507; }
+    #atlas-host { position:relative; width:100vw; height:100vh; overflow:hidden; }
+    .atlas-view { display:flex; flex-direction:column; width:100%; height:100%; min-width:0; min-height:0; overflow:hidden; }
+    .atlas-filter-row { display:flex; gap:4px; height:28px; align-items:center; }
+    .atlas-filter-row button { min-height:24px; padding:0 8px; color:var(--wb-muted); border:1px solid var(--wb-line-soft); background:var(--wb-surface); font:10px/1 "Microsoft YaHei",sans-serif; }
+    .atlas-filter-row button[aria-pressed="true"] { color:var(--wb-bg); border-color:var(--wb-accent); background:var(--wb-accent); }
+    .atlas-catalog-wrap { flex:1 1 auto; min-height:0; padding:7px; overflow:hidden; background:rgba(0,0,0,.18); }
+    .atlas-catalog-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:72px; align-content:start; gap:5px; height:100%; overflow-y:auto; }
+    .atlas-catalog-grid.item-grid-compact { grid-template-columns:repeat(5,48px); grid-auto-rows:48px; gap:4px; }
+    .atlas-icon { display:grid; place-items:center; width:100%; height:100%; color:var(--wb-text); background:linear-gradient(135deg,var(--wb-surface-2),var(--wb-bg)); border:1px solid var(--wb-line-soft); font:700 11px/1 Consolas,monospace; }
+    .atlas-decision-body { display:grid; grid-template-rows:auto auto minmax(0,1fr) auto; gap:8px; min-height:0; padding:10px; }
+    .atlas-selection { display:grid; grid-template-columns:48px minmax(0,1fr); gap:9px; padding:8px; border:1px solid var(--wb-line); background:var(--wb-surface); }
+    .atlas-selection strong { display:block; margin:2px 0 4px; color:var(--wb-text); font-size:12px; }
+    .atlas-selection span,.atlas-authority-note { color:var(--wb-muted); font-size:10px; }
+    .atlas-ledger { display:grid; gap:5px; margin:0; padding:8px; border:1px solid var(--wb-line-soft); background:rgba(0,0,0,.16); }
+    .atlas-ledger div { display:flex; justify-content:space-between; gap:12px; min-height:20px; color:var(--wb-muted); font-size:10px; }
+    .atlas-ledger dt,.atlas-ledger dd { margin:0; }
+    .atlas-ledger dd { color:var(--wb-text); font:700 11px/1.4 Consolas,monospace; }
+    .atlas-authority-note { align-self:end; padding:8px; border-left:2px solid var(--wb-accent); line-height:1.55; }
+    .atlas-commit { width:100%; min-height:40px; color:var(--wb-bg); border:1px solid var(--wb-accent); background:var(--wb-accent); font:700 12px/1 "Microsoft YaHei",sans-serif; }
+    .atlas-secondary-open .workbench-body { visibility:hidden; pointer-events:none; }
+    .atlas-secondary-page { position:absolute; z-index:8; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:10px; padding:12px 16px 14px; color:var(--wb-text); background:linear-gradient(145deg,var(--wb-bg),var(--wb-surface)); border-top:1px solid var(--wb-line); }
+    .atlas-secondary-header { display:flex; align-items:end; justify-content:space-between; gap:16px; padding-bottom:8px; border-bottom:1px solid var(--wb-line); }
+    .atlas-secondary-header h2 { margin:0; font-size:18px; }
+    .atlas-secondary-header p { margin:3px 0 0; color:var(--wb-muted); font-size:10px; }
+    .atlas-secondary-content { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr); gap:10px; min-height:0; }
+    .atlas-secondary-list,.atlas-secondary-summary { padding:12px; border:1px solid var(--wb-line-soft); background:rgba(0,0,0,.18); }
+    .atlas-secondary-row { display:flex; align-items:center; justify-content:space-between; min-height:42px; padding:6px 8px; border-bottom:1px solid var(--wb-line-soft); }
+    .atlas-secondary-row small { display:block; color:var(--wb-muted); font-size:10px; }
+    .atlas-secondary-summary h3 { margin:0 0 10px; font-size:13px; }
+    .atlas-secondary-summary p { color:var(--wb-muted); font-size:10px; line-height:1.6; }
+    .atlas-secondary-actions { display:flex; justify-content:flex-end; gap:8px; }
+    .atlas-secondary-actions button { min-width:96px; min-height:40px; color:var(--wb-text); border:1px solid var(--wb-line); background:var(--wb-surface-2); }
+    .atlas-secondary-actions .primary { color:var(--wb-bg); border-color:var(--wb-accent); background:var(--wb-accent); font-weight:700; }
+    #atlas-badge { position:fixed; left:7px; bottom:6px; z-index:200; padding:3px 7px; pointer-events:none; color:rgba(225,240,244,.78); border:1px solid rgba(225,240,244,.16); background:rgba(2,4,6,.72); font:9px/1.2 Consolas,monospace; }
+    #atlas-output { position:absolute; left:-20000px; top:0; }
+  </style>
+</head>
+<body>
+  <main id="atlas-host" aria-label="双栏工作台 visual atlas"></main>
+  <div id="atlas-badge"></div>
+  <pre id="atlas-output"></pre>
+  <script src="/launcher/web/modules/panel-scale.js"></script>
+  <script src="/launcher/web/modules/workbench-lifecycle.js"></script>
+  <script src="/launcher/web/modules/workbench-focus.js"></script>
+  <script src="/launcher/web/modules/workbench-primitives.js"></script>
+  <script src="/launcher/web/modules/workbench.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    var params = new URLSearchParams(location.search);
+    var density = params.get('density') === 'compact' ? 'compact' : 'full';
+    var focusMode = params.get('focus') === '1';
+    var secondaryMode = params.get('secondary') === '1';
+    var reducedExpected = params.get('reduced') === '1';
+    var errors = [];
+    var warnings = [];
+    var metrics = {};
+
+    function error(name, detail) { errors.push({name:name, detail:detail || ''}); }
+    function warn(name, detail) { warnings.push({name:name, detail:detail || ''}); }
+    function expect(name, value, detail) { if (!value) error(name, detail); }
+    function near(a, b, tolerance) { return Math.abs(a - b) <= tolerance; }
+    function icon(label) { return '<span class="atlas-icon" aria-hidden="true">' + label + '</span>'; }
+
+    var shell = new Workbench.DualPaneShell({
+      title:'工作台视觉合同', subtitle:'catalog-decision profile', status:'正在核算',
+      flowLabel:'PREVIEW', leftLabel:'目录', rightLabel:'权威决策'
+    });
+    var root = shell.getRoot();
+    root.classList.add('kshop-workbench');
+    root.setAttribute('data-workbench-skin', 'shop');
+    root.setAttribute('data-atlas-density', density);
+    root.setAttribute('data-atlas-focus', focusMode ? 'true' : 'false');
+    root.setAttribute('data-atlas-secondary', secondaryMode ? 'true' : 'false');
+    root.setAttribute('data-atlas-reduced', reducedExpected ? 'true' : 'false');
+    shell.setStatus('正在核算', Workbench.WorkbenchState.LOADING);
+    shell.setMetric('balance', 'K', '12,480');
+
+    var densityGroup = document.createElement('div');
+    densityGroup.className = 'item-grid-mode-switch';
+    densityGroup.setAttribute('role', 'group');
+    densityGroup.setAttribute('aria-label', '物品格布局');
+    ['full','compact'].forEach(function (mode) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'item-grid-mode-option' + (mode === density ? ' active' : '');
+      button.setAttribute('aria-pressed', mode === density ? 'true' : 'false');
+      button.setAttribute('aria-label', mode === 'full' ? '完整布局' : '紧凑布局');
+      button.textContent = mode === 'full' ? '完整' : '紧凑';
+      densityGroup.appendChild(button);
+    });
+    shell.addHeaderAction(densityGroup);
+
+    var help = document.createElement('button');
+    help.type = 'button'; help.className = 'workbench-mode-btn'; help.textContent = '?';
+    help.setAttribute('aria-label', '查看工作台帮助'); shell.addHeaderAction(help);
+    var close = document.createElement('button');
+    close.type = 'button'; close.className = 'workbench-close-btn'; close.textContent = '×';
+    close.setAttribute('aria-label', '关闭工作台'); shell.addHeaderAction(close);
+
+    function makeCatalogView() {
+      var view = document.createElement('section');
+      view.className = 'atlas-view kshop-catalog-view';
+      var chrome = new Workbench.ViewChrome({title:'商品目录', meta:'4 项'});
+      var filters = document.createElement('div');
+      filters.className = 'atlas-filter-row'; filters.setAttribute('role', 'group'); filters.setAttribute('aria-label', '商品筛选');
+      ['类别','套装','专柜'].forEach(function (label, index) {
+        var button = document.createElement('button'); button.type = 'button'; button.textContent = label;
+        button.setAttribute('aria-pressed', index === 0 ? 'true' : 'false'); filters.appendChild(button);
+      });
+      chrome.setToolbar(filters); view.appendChild(chrome.root);
+      var wrap = document.createElement('div'); wrap.className = 'atlas-catalog-wrap kshop-grid-wrap';
+      var grid = document.createElement('div');
+      grid.className = 'atlas-catalog-grid kshop-grid' + (density === 'compact' ? ' item-grid-compact' : '');
+      var data = [
+        {id:1,name:'训练步枪',meta:'武器 · 长枪',price:'1,250',glyph:'AR'},
+        {id:2,name:'高级药剂',meta:'消耗品 · 药剂',price:'320',glyph:'HP',selected:true},
+        {id:3,name:'晶能插件',meta:'配件 · 核心',price:'2,800',glyph:'MOD'},
+        {id:4,name:'战术护甲',meta:'防具 · 身体',price:'4,600',glyph:'ARM'}
+      ];
+      data.forEach(function (item) {
+        var card = Workbench.ItemCard.renderCatalog({
+          skin:'kshop', id:item.id, name:item.name, meta:item.meta, priceText:item.price,
+          priceLabel:'K', selected:!!item.selected, iconHtml:icon(item.glyph),
+          ariaLabel:item.name + '，' + item.meta + '，价格 ' + item.price + ' K点',
+          extraHtml:'<button type="button" class="kshop-add-btn" aria-label="加入订单：' + item.name + '">加入</button>'
+        });
+        grid.appendChild(card);
+      });
+      wrap.appendChild(grid); view.appendChild(wrap); return view;
+    }
+
+    function makeDecisionView() {
+      var view = document.createElement('section'); view.className = 'atlas-view atlas-decision-view';
+      var chrome = new Workbench.ViewChrome({title:'权威预览', meta:'待确认'}); view.appendChild(chrome.root);
+      var body = document.createElement('div'); body.className = 'atlas-decision-body';
+      body.innerHTML = '<div class="atlas-selection"><span class="atlas-icon" aria-hidden="true">HP</span><div><strong>高级药剂 × 2</strong><span>选择只构成购买意图，提交前由系统重新核算。</span></div></div>'
+        + '<dl class="atlas-ledger"><div><dt>当前余额</dt><dd>12,480 K</dd></div><div><dt>本次消耗</dt><dd>640 K</dd></div><div><dt>购买后余额</dt><dd>11,840 K</dd></div></dl>'
+        + '<div class="atlas-authority-note">核算状态：预览有效。若提交结果尚未确认，只允许刷新并核对，不会重复购买。</div>';
+      var commit = document.createElement('button'); commit.type = 'button'; commit.className = 'atlas-commit kshop-checkout-btn';
+      commit.textContent = '确认购买 · 640 K'; commit.setAttribute('aria-label', '确认购买两份高级药剂，消耗 640 K点');
+      body.appendChild(commit); view.appendChild(body); return view;
+    }
+
+    var hosts = root.querySelectorAll('.workbench-view-host');
+    hosts[0].appendChild(makeCatalogView()); hosts[1].appendChild(makeDecisionView());
+
+    if (secondaryMode) {
+      root.classList.add('atlas-secondary-open');
+      var secondary = document.createElement('section');
+      secondary.className = 'workbench-secondary-page atlas-secondary-page active';
+      secondary.setAttribute('role', 'region'); secondary.setAttribute('aria-labelledby', 'atlas-secondary-title');
+      secondary.innerHTML = '<header class="atlas-secondary-header"><div><h2 id="atlas-secondary-title">订单结算</h2><p>二级页完整覆盖 workbench body，底层双栏不可交互。</p></div><strong>2 项</strong></header>'
+        + '<div class="atlas-secondary-content"><div class="atlas-secondary-list"><div class="atlas-secondary-row"><span>高级药剂<small>数量 2 · 背包交付</small></span><b>640 K</b></div><div class="atlas-secondary-row"><span>容量校验<small>背包容量已确认</small></span><b>可提交</b></div></div><aside class="atlas-secondary-summary"><h3>订单摘要</h3><p>提交使用本次核算凭证。余额、容量或目录变化都会使预览失效。</p></aside></div>'
+        + '<footer class="atlas-secondary-actions"><button type="button" data-atlas-back>返回</button><button type="button" class="primary" data-atlas-primary>确认购买</button></footer>';
+      root.appendChild(secondary);
+    }
+
+    var scaleShell = document.createElement('div');
+    scaleShell.className = 'panel-scale-shell kshop-scale-shell'; scaleShell.appendChild(root);
+    document.getElementById('atlas-host').appendChild(scaleShell);
+    var scaleHandle = PanelScale.attach(scaleShell, 1024, 576);
+
+    var focusTarget = secondaryMode
+      ? root.querySelector('[data-atlas-primary]')
+      : root.querySelector('.kshop-add-btn');
+    if (focusMode && focusTarget) focusTarget.focus();
+
+    var caseId = [window.innerWidth + 'x' + window.innerHeight, density, focusMode ? 'focus' : 'default', reducedExpected ? 'reduce' : 'motion', secondaryMode ? 'secondary' : 'main'].join('-');
+    document.getElementById('atlas-badge').textContent = caseId;
+    document.title = 'CF7 Workbench Atlas · ' + caseId;
+
+    function finish() {
+      if (scaleHandle && scaleHandle.update) scaleHandle.update();
+      var scale = parseFloat(getComputedStyle(scaleShell).getPropertyValue('--panel-scale')) || 1;
+      var rootRect = root.getBoundingClientRect();
+      var body = root.querySelector('.workbench-body');
+      var bodyRect = body.getBoundingClientRect();
+      var headerRect = root.querySelector('.workbench-header').getBoundingClientRect();
+      metrics = {
+        caseId:caseId, viewport:[window.innerWidth,window.innerHeight], density:density,
+        focus:focusMode, reduced:reducedExpected, secondary:secondaryMode, scale:scale,
+        root:[rootRect.width,rootRect.height], headerHeight:headerRect.height / scale,
+        activeElement:document.activeElement ? document.activeElement.className : ''
+      };
+
+      expect('logical canvas is 1024x576', near(rootRect.width / scale, 1024, .75) && near(rootRect.height / scale, 576, .75), JSON.stringify(metrics.root));
+      expect('scaled canvas fills 16:9 viewport', rootRect.width >= window.innerWidth - 1.5 && rootRect.height >= window.innerHeight - 1.5, JSON.stringify({root:metrics.root,viewport:metrics.viewport}));
+      expect('header keeps 48px logical rhythm', near(headerRect.height / scale, 48, .75), String(headerRect.height / scale));
+      expect('workbench body avoids horizontal overflow', body.scrollWidth <= body.clientWidth + 1, body.scrollWidth + '/' + body.clientWidth);
+      expect('player-facing sample hides protocol vocabulary', !/(?:callId|lease|opaque|token|\bAS2\b|\bwire\b|epoch)/i.test(root.textContent), root.textContent.match(/(?:callId|lease|opaque|token|\bAS2\b|\bwire\b|epoch)/i));
+      var slots = root.querySelectorAll('.workbench-slot');
+      expect('dual slots remain separated', slots.length === 2 && slots[0].getBoundingClientRect().right < slots[1].getBoundingClientRect().left, 'slot geometry');
+
+      var bodies = root.querySelectorAll('.item-card-body');
+      var bodyVisibilityCorrect = Array.prototype.every.call(bodies, function (node) {
+        return density === 'compact' ? getComputedStyle(node).display === 'none' : getComputedStyle(node).display !== 'none';
+      });
+      expect('density controls semantic body visibility', bodyVisibilityCorrect, density);
+
+      var cards = root.querySelectorAll('.item-card');
+      expect('entity tiles keep 44px pointer target', Array.prototype.every.call(cards, function (node) { return node.getBoundingClientRect().height / scale >= 44; }), density);
+      var action = root.querySelector('.kshop-add-btn');
+      var actionRect = action && action.getBoundingClientRect();
+      expect('icon action keeps 24px hit target', !!actionRect && actionRect.width / scale >= 24 && actionRect.height / scale >= 21, actionRect ? actionRect.width / scale + 'x' + actionRect.height / scale : 'missing');
+      var primary = secondaryMode ? root.querySelector('[data-atlas-primary]') : root.querySelector('.atlas-commit');
+      expect('primary action keeps 40px height', primary && primary.getBoundingClientRect().height / scale >= 40, primary ? String(primary.getBoundingClientRect().height / scale) : 'missing');
+
+      if (focusMode) {
+        expect('focus scenario moves focus into active surface', focusTarget === document.activeElement, document.activeElement && document.activeElement.outerHTML);
+        var focusStyle = focusTarget ? getComputedStyle(focusTarget) : null;
+        var focusVisible = focusStyle && ((focusStyle.outlineStyle !== 'none' && parseFloat(focusStyle.outlineWidth) > 0) || focusStyle.boxShadow !== 'none');
+        if (!focusVisible) warn('focus target has no computed visible ring', focusTarget && focusTarget.className);
+      }
+
+      var mediaReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      expect('reduced-motion emulation matches requested scenario', mediaReduced === reducedExpected, String(mediaReduced));
+      if (reducedExpected) {
+        var status = root.querySelector('.workbench-status');
+        var pseudo = getComputedStyle(status, '::before');
+        var animationName = pseudo.animationName;
+        var animationDuration = parseFloat(pseudo.animationDuration) || 0;
+        if (animationName !== 'none' && animationDuration > .01) warn('reduced-motion leaves status animation active', animationName + ' ' + pseudo.animationDuration);
+      }
+
+      if (secondaryMode) {
+        var secondary = root.querySelector('.atlas-secondary-page');
+        var secondaryRect = secondary.getBoundingClientRect();
+        expect('secondary page exactly covers workbench body', near(secondaryRect.top, bodyRect.top, 1) && near(secondaryRect.bottom, bodyRect.bottom, 1) && near(secondaryRect.left, bodyRect.left, 1) && near(secondaryRect.right, bodyRect.right, 1), JSON.stringify({secondary:[secondaryRect.left,secondaryRect.top,secondaryRect.right,secondaryRect.bottom],body:[bodyRect.left,bodyRect.top,bodyRect.right,bodyRect.bottom]}));
+        expect('secondary page disables base body', getComputedStyle(body).visibility === 'hidden' && getComputedStyle(body).pointerEvents === 'none');
+      }
+
+      window.__qaResult = {schemaVersion:1, caseId:caseId, errors:errors, warnings:warnings, metrics:metrics};
+      window.__qaDone = true; window.__visualReady = true;
+      document.getElementById('atlas-output').textContent = JSON.stringify(window.__qaResult, null, 2);
+      root.setAttribute('data-atlas-result', errors.length ? 'error' : warnings.length ? 'warning' : 'pass');
+    }
+
+    requestAnimationFrame(function () { requestAnimationFrame(finish); });
+  })();
+  </script>
+</body>
+</html>

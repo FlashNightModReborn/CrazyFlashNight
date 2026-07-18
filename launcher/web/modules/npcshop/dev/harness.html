@@ -84,7 +84,7 @@ function inventorySnapshot(containerId){
     projected.item.majorType=items[i].majorType||projected.item.majorType;projected.item.weaponType=items[i].weaponType||'';projected.item.actionType=items[i].actionType||'';slots.push(projected);
   }
   var tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)});
-  var snapshot={containerId:containerId,capacity:capacity,accessibleCapacity:capacity,viewCapacity:capacity,offset:0,limit:containerId==='背包'?50:40,filterKey:request.filterKey||'all',snapshotSeq:seq,filterFacets:tree.children,filterItemCount:items.length,slots:slots};
+  var snapshot={containerId:containerId,capacity:capacity,accessibleCapacity:capacity,viewCapacity:slots.length,offset:0,limit:slots.length,filterKey:request.filterKey||'all',snapshotSeq:seq,filterFacets:tree.children,filterItemCount:items.length,slots:slots};
   if(spec)snapshot.filterSpec=JSON.parse(JSON.stringify(spec));return snapshot;
 }
 function state(){return{
@@ -126,11 +126,17 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   emit(result)
 }
 </script>
+<script src="../../panel-runtime.js"></script>
+<script src="../../workbench-lifecycle.js"></script>
+<script src="../../workbench-focus.js"></script>
+<script src="../../workbench-primitives.js"></script>
 <script src="../../workbench.js"></script>
+<script src="../../workbench-components.js"></script>
 <script src="../../item-filter.js"></script>
 <script src="../../inventory-runtime.js"></script>
 <script src="../../inventory-ui.js"></script>
 <script src="../../npcshop-runtime.js"></script>
+<script src="../../npcshop-secondary-pages.js"></script>
 <script src="../../npcshop.js"></script>
 <script>
 (async function(){
@@ -152,7 +158,26 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('shop bag tree sends authority path and exposes title breadcrumb',bagFilterRequest&&document.querySelector('.npcshop-bag-view [data-filter-path="weapon/手枪/手枪"]')&&document.querySelectorAll('.npcshop-bag-view .inventory-slot-card.occupied').length===3&&document.querySelector('.npcshop-bag-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="weapon/手枪"][aria-current="page"]')&&document.querySelector('.npcshop-bag-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path=""]'),JSON.stringify({request:!!bagFilterRequest,occupied:document.querySelectorAll('.npcshop-bag-view .inventory-slot-card.occupied').length,breadcrumbs:bagBreadcrumbPaths}));
   document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]').click();await wait();
   document.querySelector('.npcshop-bag-view [data-filter-path=""]').click();await wait();
-  ok('shared ItemCard/ItemGrid primitives exported',typeof Workbench.ItemCard==='function'&&typeof Workbench.ItemCard.renderCatalog==='function'&&typeof Workbench.ItemGrid==='function');
+  ok('shared EntityTile/ItemCard/ItemGrid primitives exported',typeof Workbench.EntityTile==='function'&&typeof Workbench.ItemCard==='function'&&typeof Workbench.ItemCard.renderCatalog==='function'&&typeof Workbench.ItemGrid==='function');
+  var npcKeyboardCatalog=document.querySelector('.npcshop-catalog-card:not(.locked)');
+  var npcKeyboardCatalogName=npcKeyboardCatalog&&npcKeyboardCatalog.querySelector('.item-card-name').textContent;
+  if(npcKeyboardCatalog)npcKeyboardCatalog.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+  var npcKeyboardCatalogSelected=document.querySelector('.npcshop-catalog-card.selected');
+  var npcCatalogKeyboardWorks=npcKeyboardCatalog&&npcKeyboardCatalog.getAttribute('role')==='option'
+    &&npcKeyboardCatalog.getAttribute('tabindex')==='0'&&npcKeyboardCatalog.getAttribute('aria-disabled')==='false'
+    &&npcKeyboardCatalog.getAttribute('aria-label').indexOf(npcKeyboardCatalogName)>=0
+    &&npcKeyboardCatalogSelected&&npcKeyboardCatalogSelected.getAttribute('aria-selected')==='true';
+  if(npcKeyboardCatalogSelected)npcKeyboardCatalogSelected.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+  var npcKeyboardOwned=document.querySelector('.npcshop-bag-view .npcshop-owned-card');
+  var npcKeyboardOwnedName=npcKeyboardOwned&&npcKeyboardOwned.querySelector('.inventory-slot-copy b').textContent;
+  if(npcKeyboardOwned)npcKeyboardOwned.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+  var npcKeyboardOwnedSelected=document.querySelector('.npcshop-bag-view .npcshop-owned-card.selected');
+  var npcOwnedKeyboardWorks=npcKeyboardOwned&&npcKeyboardOwned.getAttribute('role')==='option'
+    &&npcKeyboardOwned.getAttribute('tabindex')==='0'&&npcKeyboardOwned.getAttribute('aria-disabled')==='false'
+    &&npcKeyboardOwned.getAttribute('aria-label').indexOf(npcKeyboardOwnedName)>=0
+    &&npcKeyboardOwnedSelected&&npcKeyboardOwnedSelected.getAttribute('aria-selected')==='true';
+  if(npcKeyboardOwnedSelected)npcKeyboardOwnedSelected.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+  ok('NPC catalog and owned tiles keep Enter/Space parity with pointer in full mode',npcCatalogKeyboardWorks&&npcOwnedKeyboardWorks&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0);
   var npcDensityToggle=document.querySelector('.item-grid-mode-toggle');
   var npcFullDensityOption=npcDensityToggle&&npcDensityToggle.querySelector('[data-layout-mode="full"]');
   var npcCompactDensityOption=npcDensityToggle&&npcDensityToggle.querySelector('[data-layout-mode="compact"]');
@@ -171,6 +196,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   var compactOwnedAuxiliaries=document.querySelectorAll('.npcshop-owned-grid .item-card-auxiliary');
   var compactOwnedAuxHidden=Array.prototype.every.call(compactOwnedAuxiliaries,function(node){return getComputedStyle(node).display==='none';});
   ok('compact density contract hides owned body and unselected sale helper bars',compactOwnedCard&&compactOwnedCard.classList.contains('item-card-owned')&&compactOwnedBody&&getComputedStyle(compactOwnedBody).display==='none'&&compactOwnedAuxiliaries.length>0&&compactOwnedAuxHidden);
+  ok('compact density preserves the same tile keyboard contract',compactCatalogCard&&compactCatalogCard.getAttribute('role')==='option'&&compactCatalogCard.getAttribute('tabindex')==='0'&&compactCatalogCard.getAttribute('aria-disabled')==='false'&&compactOwnedCard&&compactOwnedCard.getAttribute('role')==='option'&&compactOwnedCard.getAttribute('tabindex')==='0');
   compactCatalogCard.click();
   var compactSelectedCatalogCard=document.querySelector('.npcshop-catalog-card.selected');
   var compactCatalogMarker=compactSelectedCatalogCard&&compactSelectedCatalogCard.querySelector('.npcshop-selection-marker');

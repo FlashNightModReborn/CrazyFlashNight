@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `d6e8a95475`（2026-07-16）+ 当前 Skill 施工工作树；合成工作台 C0-C3 另核对本轮工作树。
+**最后核对代码基线**：commit `3343c1ef2244e0c6253fc95f5b6334095f049f57`（2026-07-18）；Skill、合成与双栏工作台的细分门以对应专题 canonical doc 为准。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
@@ -177,6 +177,8 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 ## 5. Web Panel 接入清单
 
 生产 Web panel 至少满足：
+
+双栏工作台的 layout profile、密度、排版、颜色、状态、动效、命中区、焦点、生命周期、组件边界和 visual atlas 统一见 [workbench-ui-system.md](workbench-ui-system.md)。本文只保留跨 AS2 / Host 的权威与迁移闭环，不复制前端系统全文。
 
 - 正式模块位于 `launcher/web/modules/`，不是只在 `dev/`。
 - `Panels.register(id, ...)` 或懒注册表 `panels-lazy-registry.js` 已接入。

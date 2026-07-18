@@ -2,6 +2,17 @@
 var SkillsPanel = (function() {
     'use strict';
 
+    var Library = typeof SkillsLibrary !== 'undefined' ? SkillsLibrary : null;
+    var Trainer = typeof SkillsTrainer !== 'undefined' ? SkillsTrainer : null;
+    var Loadout = typeof SkillsLoadout !== 'undefined' ? SkillsLoadout : null;
+    var Interactions = typeof SkillsInteractions !== 'undefined' ? SkillsInteractions : null;
+    var Presenter = typeof SkillsRender !== 'undefined' ? SkillsRender : null;
+    var Diagnostics = typeof SkillsDiagnostics !== 'undefined' ? SkillsDiagnostics : null;
+    if (!Library || !Trainer || !Loadout || !Interactions || !Presenter || !Diagnostics) {
+        throw new Error('SkillsPanel load order: item-filter.js, skills-library.js, skills-trainer.js, skills-loadout.js, skills-interactions.js, skills-render.js, skills-diagnostics.js, then skills.js.');
+    }
+
+
     var _scaleEl = null, _scaleHandle = null, _shell = null;
     var _leftRoot = null, _rightRoot = null, _list = null, _search = null;
     var _searchToggle = null, _searchControls = null, _searchClose = null, _searchExpanded = false;
@@ -29,6 +40,31 @@ var SkillsPanel = (function() {
         onSnapshot: onAuthoritativeSnapshot,
         onError: onCoordinatorError,
         validateSnapshot: function(snapshot) { return validateSnapshot(snapshot, _view); }
+    });
+
+    var _renderer = Presenter.create({
+        getState:function() {
+            return {
+                view:_view, snapshot:_snapshot, selectedKey:_selectedKey, desiredLevel:_desiredLevel,
+                preview:_preview, previewLoading:_previewLoading, previewError:_previewError,
+                trainerExpired:_trainerExpired, schemaError:_schemaError, pendingFocusKey:_pendingFocusKey,
+                writeBlocked:_coordinator.isWriteBlocked(), coordinatorState:_coordinator.getState()
+            };
+        },
+        visibleEntries:visibleEntries, focusKeyOf:focusKeyOf, restoreFocusKey:restoreFocusKey,
+        empty:empty, iconNode:iconNode, safeNumber:safeNumber, cooldownText:cooldownText,
+        healthLabel:healthLabel, compactStateLabel:compactStateLabel, skillAriaLabel:skillAriaLabel,
+        normalizeAS2Description:normalizeAS2Description, escapeHtml:escapeHtml, button:button,
+        consumeDragClick:function() { return !!(_drag && _drag.consumeClick()); },
+        selectSkill:selectSkill, reorderTo:reorderTo, adjacentVisibleEntry:adjacentVisibleEntry,
+        focusSibling:focusSibling, bindSkillTooltip:bindSkillTooltip, selectedEntry:selectedEntry,
+        copyDiagnostic:copyDiagnostic, requestClose:requestClose, writesDisabled:writesDisabled,
+        writeCommand:writeCommand, stageDesiredLevel:stageDesiredLevel, setDesiredLevel:setDesiredLevel,
+        setDesiredLevelState:function(level) { _desiredLevel = Number(level); },
+        prepareLearnConfirmation:prepareLearnConfirmation, scheduleLearnPreview:scheduleLearnPreview,
+        errorMessage:errorMessage, clearPendingFocus:function() { _pendingFocusKey = ''; },
+        onSlotClick:onSlotClick, onSlotKeyDown:onSlotKeyDown, proposeUnequip:proposeUnequip,
+        entryByKey:entryByKey
     });
 
     Panels.register('skills', {
@@ -262,75 +298,10 @@ var SkillsPanel = (function() {
         _shell.setMetric('sp', '技能点', safeNumber(player.skillPoints));
     }
 
-    function renderList() {
-        if (!_list) return;
-        var focusKey = focusKeyOf(document.activeElement);
-        while (_list.firstChild) _list.removeChild(_list.firstChild);
-        if (_schemaError) { _list.appendChild(empty('技能数据暂时无法读取，请重试。', 'error')); return; }
-        var entries = visibleEntries();
-        if (!entries.length) {
-            _list.appendChild(empty(_snapshot ? '没有符合条件的技能' : '正在读取技能状态…'));
-            return;
-        }
-        entries.forEach(function(entry) {
-            var row = document.createElement('div'); row.className = 'skills-library-row'; row.tabIndex = 0;
-            row.setAttribute('role', 'option'); row.setAttribute('data-skill-key', entry.skillKey);
-            row.setAttribute('data-focus-key', 'skill:' + entry.skillKey);
-            row.setAttribute('aria-selected', entry.skillKey === _selectedKey ? 'true' : 'false');
-            if (entry.skillKey === _selectedKey) row.classList.add('selected');
-            if (entry.writeBlocked || entry.stateHealth !== 'ok') row.classList.add('corrupt');
-            var icon = iconNode(entry.iconKey, 'skills-row-icon');
-            var copy = document.createElement('span'); copy.className = 'skills-row-copy';
-            var name = document.createElement('b'); name.textContent = entry.skillKey;
-            var meta = document.createElement('span');
-            meta.textContent = entry.currentLevel != null
-                ? '当前 Lv.' + safeNumber(entry.currentLevel) + ' / ' + safeNumber(entry.maxLevel)
-                : 'Lv.' + safeNumber(entry.level) + ' / ' + safeNumber(entry.maxLevel);
-            var type = document.createElement('small'); type.textContent = entry.type || '未知类型';
-            copy.appendChild(name); copy.appendChild(meta); copy.appendChild(type);
-            var badge = document.createElement('span'); badge.className = 'skills-row-badge';
-            badge.textContent = healthLabel(entry);
-            var tileLevel = document.createElement('span'); tileLevel.className = 'skills-tile-level';
-            tileLevel.textContent = 'Lv.' + safeNumber(entry.currentLevel != null ? entry.currentLevel : entry.level);
-            var tileState = document.createElement('span'); tileState.className = 'skills-tile-state';
-            tileState.textContent = compactStateLabel(entry);
-            row.appendChild(icon); row.appendChild(copy); row.appendChild(badge); row.appendChild(tileLevel); row.appendChild(tileState);
-            row.setAttribute('aria-label', skillAriaLabel(entry));
-            bindSkillTooltip(row, entry);
-            row.addEventListener('click', function() {
-                if (_drag && _drag.consumeClick()) return;
-                selectSkill(entry.skillKey);
-            });
-            row.addEventListener('keydown', function(event) {
-                if (_view === 'manage' && event.altKey && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
-                    event.preventDefault();
-                    reorderTo(entry, adjacentVisibleEntry(entry, event.key === 'ArrowDown' ? 1 : -1));
-                } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                    event.preventDefault(); focusSibling(row, event.key === 'ArrowDown' ? 1 : -1);
-                } else if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault(); selectSkill(entry.skillKey);
-                }
-            });
-            _list.appendChild(row);
-        });
-        restoreFocusKey(focusKey);
-    }
-
+    function renderList() { _renderer.renderList(_list); }
     function visibleEntries() {
-        var entries = sourceEntries().slice();
-        var query = _search ? String(_search.value || '').toLowerCase() : '';
-        var filterPaths = filterPathsForView();
-        return entries.filter(function(entry) {
-            if (query && String(entry.skillKey || '').toLowerCase().indexOf(query) < 0
-                    && String(entry.type || '').toLowerCase().indexOf(query) < 0) return false;
-            return matchesSkillFilter(entry, filterPaths);
-        }).sort(function(a, b) {
-            var ai = a.orderIndex != null ? Number(a.orderIndex) : sourceEntries().indexOf(a);
-            var bi = b.orderIndex != null ? Number(b.orderIndex) : sourceEntries().indexOf(b);
-            return ai - bi;
-        });
+        return Library.visibleEntries(_snapshot, _view, _search ? _search.value : '', filterPathsForView());
     }
-
     function setSearchExpanded(expanded) {
         _searchExpanded = !!expanded;
         if (_searchControls) _searchControls.hidden = !_searchExpanded;
@@ -357,13 +328,7 @@ var SkillsPanel = (function() {
         setSearchExpanded(true);
     }
 
-    function sourceEntries() {
-        if (!_snapshot) return [];
-        if (_view === 'trainer') return _snapshot.trainer && Array.isArray(_snapshot.trainer.entries)
-            ? _snapshot.trainer.entries : [];
-        return Array.isArray(_snapshot.learned) ? _snapshot.learned : [];
-    }
-
+    function sourceEntries() { return Library.sourceEntries(_snapshot, _view); }
     function refreshFilterModel() {
         var entries = sourceEntries(), paths = filterPathsForView();
         skillFilterDefinitions().forEach(function(definition) {
@@ -376,19 +341,13 @@ var SkillsPanel = (function() {
         refreshFilterReset();
     }
 
-    function emptyFilterPaths() { return {form:[], status:[], school:[]}; }
+    function emptyFilterPaths() { return Library.emptyFilterPaths(); }
     function filterPathsForView() {
         var paths = _filterPaths[_view];
         if (!paths || Array.isArray(paths)) paths = _filterPaths[_view] = emptyFilterPaths();
         return paths;
     }
-    function skillFilterDefinitions() {
-        return [
-            {id:'form', label:'形态', classifier:skillFormPath},
-            {id:'status', label:_view === 'trainer' ? '学习' : '配置', classifier:skillStatusPath},
-            {id:'school', label:'流派', classifier:skillSchoolPath, collapsed:true}
-        ];
-    }
+    function skillFilterDefinitions() { return Library.filterDefinitions(_view); }
     function clearSkillFilters() {
         var paths = filterPathsForView();
         skillFilterDefinitions().forEach(function(definition) {
@@ -438,198 +397,32 @@ var SkillsPanel = (function() {
     }
 
     function facet(id, label, order) { return [{id:id, label:label, order:order}]; }
-    function skillFormPath(entry) {
-        if (entry.passive && !entry.equippable) return facet('passive', '纯被动', 20);
-        if (entry.passive && entry.equippable) return facet('hybrid', '主动 / 被动', 30);
-        if (entry.equippable) return facet('equippable', '主动可装备', 10);
-        return facet('unsupported', '不可配置', 90);
-    }
-    function skillStatusPath(entry) {
-        if (entry.writeBlocked || entry.stateHealth !== 'ok') return facet('blocked', '异常', 90);
-        if (_view === 'trainer') {
-            var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 0);
-            if (current <= 0) return facet('unlearned', '未学习', 10);
-            if (max > 0 && current >= max) return facet('maxed', '已满级', 30);
-            return facet('learned', '已学习', 20);
-        }
-        if (entry.passive && !entry.equippable)
-            return facet(entry.enabled ? 'passive_on' : 'passive_off', entry.enabled ? '被动启用' : '被动停用', entry.enabled ? 30 : 40);
-        return entry.equippedSlots && entry.equippedSlots.length
-            ? facet('equipped', '已装备', 10) : facet('unequipped', '未装备', 20);
-    }
-    function skillSchoolPath(entry) {
-        var type = String(entry.type || '');
-        var schools = [
-            ['武术','武术',10],['剑术','剑术',20],['枪术','枪术',30],['内功','内功',40],['神功','神功',50],
-            ['科技','科技',60],['超能力','超能力',70],['投技','投技',80],['龙吼','龙吼',90]
-        ];
-        var selected = null, selectedIndex = 9999;
-        for (var i = 0; i < schools.length; i++) {
-            var index = type.indexOf(schools[i][0]);
-            if (index >= 0 && index < selectedIndex) { selected = schools[i]; selectedIndex = index; }
-        }
-        return selected ? facet(selected[0], selected[1], selected[2]) : [];
-    }
-    function matchesSkillFilter(entry, paths) {
-        paths = paths && !Array.isArray(paths) ? paths : emptyFilterPaths();
-        return ItemFilter.matchesPath(entry, paths.form, skillFormPath)
-            && ItemFilter.matchesPath(entry, paths.status, skillStatusPath)
-            && ItemFilter.matchesPath(entry, paths.school, skillSchoolPath);
-    }
-
+    function skillFormPath(entry) { return Library.formPath(entry); }
+    function skillStatusPath(entry) { return Library.statusPath(entry, _view); }
+    function skillSchoolPath(entry) { return Library.schoolPath(entry); }
+    function matchesSkillFilter(entry, paths) { return Library.matches(entry, paths, _view); }
     function selectSkill(skillKey) {
         _selectedKey = String(skillKey || ''); clearPreviewState();
         var entry = selectedEntry();
         if (_view === 'trainer' && entry) {
-            var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
-            _desiredLevel = current <= 0 ? 1 : Math.min(max, current + 1);
+            _desiredLevel = Trainer.initialDesiredLevel(entry);
         }
         renderList();
         if (_view === 'trainer' && entry) scheduleLearnPreview(entry, false);
         else renderDetail();
     }
 
-    function selectedEntry() {
-        var entries = sourceEntries();
-        for (var i = 0; i < entries.length; i++) if (entries[i].skillKey === _selectedKey) return entries[i];
-        return null;
-    }
-
-    function renderDetail() {
-        if (!_rightRoot) return;
-        var focusKey = _pendingFocusKey || focusKeyOf(document.activeElement);
-        while (_rightRoot.firstChild) _rightRoot.removeChild(_rightRoot.firstChild);
-        if (_trainerExpired) {
-            _rightRoot.appendChild(renderTrainerExpired());
-            restoreFocusKey(focusKey);
-            return;
-        }
-        if (_schemaError) { _rightRoot.appendChild(empty('技能数据暂时无法读取，请重试。', 'error')); return; }
-        var entry = selectedEntry();
-        if (_view === 'trainer') {
-            if (!entry) _rightRoot.appendChild(empty(_snapshot ? '从左侧选择研习目标' : '正在读取技能…'));
-            else {
-                _rightRoot.appendChild(renderTrainerSummary(entry));
-                renderTrainerActions(entry);
-            }
-        } else {
-            renderManageActions(entry);
-            if (_snapshot) _rightRoot.appendChild(renderLoadout(false));
-            else _rightRoot.appendChild(empty('正在读取技能…'));
-        }
-        restoreFocusKey(focusKey);
-        if (_pendingFocusKey && _coordinator.getState() === 'idle') _pendingFocusKey = '';
-    }
-
-    function renderTrainerSummary(entry) {
-        var summary = document.createElement('section'); summary.className = 'skills-trainer-summary';
-        var icon = iconNode(entry.iconKey || entry.skillKey, 'skills-trainer-summary-icon');
-        summary.appendChild(icon);
-        var copy = document.createElement('div'); copy.className = 'skills-trainer-summary-copy';
-        var kicker = document.createElement('span'); kicker.className = 'skills-trainer-kicker'; kicker.textContent = '研习目标';
-        var title = document.createElement('h2'); title.textContent = entry.skillKey;
-        var meta = document.createElement('div'); meta.className = 'skills-detail-meta';
-        meta.textContent = (entry.type || '未知类型') + ' · 当前 Lv.' + safeNumber(entry.currentLevel) + '/' + safeNumber(entry.maxLevel)
-            + ' · MP ' + safeNumber(entry.mp) + ' · CD ' + cooldownText(entry.cooldownMs);
-        copy.appendChild(kicker); copy.appendChild(title); copy.appendChild(meta); summary.appendChild(copy);
-        var description = document.createElement('div'); description.className = 'skills-trainer-description';
-        var rawDescription = entry.description || '暂无技能说明。';
-        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.convertAS2Html)
-            description.innerHTML = PanelTooltip.convertAS2Html(normalizeAS2Description(rawDescription));
-        else description.textContent = rawDescription;
-        summary.appendChild(description);
-        if (entry.writeBlocked || entry.stateHealth !== 'ok') {
-            var warning = document.createElement('div'); warning.className = 'skills-corrupt-warning';
-            var warningText = document.createElement('span'); warningText.textContent = '技能数据异常，暂时无法研习。';
-            var diagnostic = button('复制诊断信息', 'skills-inline-diagnostic skills-diagnostic-btn', function() {
-                copyDiagnostic('skill_data_error', entry);
-            });
-            warning.appendChild(warningText); warning.appendChild(diagnostic); summary.appendChild(warning);
-        }
-        bindSkillTooltip(summary, entry);
-        return summary;
-    }
-
-    function renderTrainerExpired() {
-        var state = document.createElement('section'); state.className = 'skills-trainer-expired';
-        var marker = document.createElement('div'); marker.className = 'skills-trainer-expired-mark'; marker.textContent = '!';
-        var title = document.createElement('h2'); title.textContent = '教师连接已失效';
-        var message = document.createElement('p');
-        message.textContent = '本次研习权限已经结束。为避免误操作，页面已停止计算和研习；请返回游戏后重新与教师对话。';
-        var hint = document.createElement('small'); hint.textContent = '已选择的技能和筛选仍保留在当前画面中，未扣除技能点。';
-        var actions = document.createElement('div'); actions.className = 'skills-trainer-expired-actions';
-        var diagnostic = button('复制诊断信息', 'skills-action-btn skills-close-allowed', function() {
-            copyDiagnostic('trainer_session_expired', selectedEntry());
-        });
-        var close = button('返回游戏并重新对话', 'skills-action-btn primary skills-close-allowed', requestClose);
-        close.setAttribute('data-focus-key', 'trainer:expired-close');
-        actions.appendChild(diagnostic); actions.appendChild(close);
-        state.appendChild(marker); state.appendChild(title); state.appendChild(message); state.appendChild(hint); state.appendChild(actions);
-        return state;
-    }
-
-    function renderSelectionContext(entry, label) {
-        var context = document.createElement('div'); context.className = 'skills-selection-context';
-        var kicker = document.createElement('span'); kicker.textContent = label || '当前技能';
-        var title = document.createElement('b'); title.textContent = entry.skillKey;
-        var meta = document.createElement('small'); meta.className = 'skills-detail-meta';
-        var level = entry.currentLevel != null ? entry.currentLevel : entry.level;
-        meta.textContent = (entry.type || '未知类型') + ' · Lv.' + safeNumber(level) + '/' + safeNumber(entry.maxLevel)
-            + ' · MP ' + safeNumber(entry.mp) + ' · CD ' + cooldownText(entry.cooldownMs);
-        context.appendChild(kicker); context.appendChild(title); context.appendChild(meta);
-        if (entry.writeBlocked || entry.stateHealth !== 'ok') {
-            var warning = document.createElement('div'); warning.className = 'skills-corrupt-warning';
-            var warningText = document.createElement('span');
-            warningText.textContent = '技能数据异常，暂时无法修改。';
-            var diagnostic = button('复制诊断信息', 'skills-inline-diagnostic skills-diagnostic-btn', function(event) {
-                event.stopPropagation(); copyDiagnostic('skill_data_error', entry);
-            });
-            warning.appendChild(warningText); warning.appendChild(diagnostic);
-            context.appendChild(warning);
-        }
-        bindSkillTooltip(context, entry);
-        return context;
-    }
-
-    function renderManageActions(entry) {
-        var actions = document.createElement('section'); actions.className = 'skills-detail-actions';
-        if (!entry) {
-            var emptyContext = document.createElement('div'); emptyContext.className = 'skills-action-hint';
-            emptyContext.textContent = '技能格可拖到快捷栏；快捷槽之间可直接拖动调整按键布局。';
-            actions.appendChild(emptyContext); _rightRoot.appendChild(actions); return;
-        }
-        actions.appendChild(renderSelectionContext(entry, '已选择'));
-        if (entry.passive && !entry.equippable) {
-            var passive = button(entry.enabled ? '停用被动' : '启用被动', 'skills-action-btn primary', function() {
-                writeCommand('setPassive', {skillKey:entry.skillKey, enabled:!entry.enabled,
-                    expectedRevision:Number(_snapshot.revision)});
-            });
-            passive.disabled = writesDisabled(entry);
-            passive.setAttribute('data-focus-key', 'action:passive'); actions.appendChild(passive);
-        } else {
-            var hint = document.createElement('div'); hint.className = 'skills-action-hint';
-            hint.textContent = entry.equippable
-                ? '拖到技能格可交换顺序；拖到快捷槽可装备，快捷槽之间可移动或交换。'
-                : '可拖到其他技能格交换顺序；该技能不可装备到快捷栏。';
-            actions.appendChild(hint);
-        }
-        _rightRoot.appendChild(actions);
-    }
-
+    function selectedEntry() { return Library.entryByKey(_snapshot, _view, _selectedKey); }
+    function renderDetail() { _renderer.renderDetail(_rightRoot); }
     function adjacentVisibleEntry(entry, delta) {
-        var entries = visibleEntries();
-        var index = entries.indexOf(entry), target = entries[index + delta];
-        return target || null;
+        return Library.adjacent(visibleEntries(), entry, delta);
     }
-
     function reorderBlockReason(entry, role) {
-        if (writesDisabled(entry)) return 'skill_locked';
-        var easyMode = !!(_snapshot && _snapshot.player && _snapshot.player.easyMode);
-        if (entry && entry.equippedSlots && entry.equippedSlots.length && (role === 'target' || !easyMode))
-            return 'equipped_skill_locked';
-        return '';
+        return Library.reorderBlockReason(entry, role, {
+            writesDisabled:writesDisabled(entry),
+            easyMode:!!(_snapshot && _snapshot.player && _snapshot.player.easyMode)
+        });
     }
-
     function reorderTo(entry, target) {
         if (!target) return;
         var reason = reorderBlockReason(entry, 'source') || reorderBlockReason(target, 'target');
@@ -638,165 +431,11 @@ var SkillsPanel = (function() {
             expectedRevision:Number(_snapshot.revision)});
     }
 
-    function renderTrainerActions(entry) {
-        var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
-        var section = document.createElement('section'); section.className = 'skills-trainer-actions';
-        var matchingPreview = previewMatches(entry) ? _preview : null;
-        var target = document.createElement('div'); target.className = 'skills-trainer-target';
-        var targetHeading = document.createElement('div'); targetHeading.className = 'skills-trainer-section-heading';
-        targetHeading.textContent = current >= max ? '技能等级' : '目标等级'; target.appendChild(targetHeading);
-        var stepper = document.createElement('div'); stepper.className = 'skills-level-stepper';
-        var rangeShell = null;
-        var label = document.createElement('span');
-        label.textContent = current >= max ? 'Lv.' + current + '（已满级）' : 'Lv.' + current + ' →'; stepper.appendChild(label);
-        if (current >= max) {
-            var full = document.createElement('output'); full.textContent = 'Lv.' + max; stepper.appendChild(full);
-        } else if (current <= 0) {
-            var fixed = document.createElement('output'); fixed.textContent = 'Lv.1（初学固定）'; stepper.appendChild(fixed);
-            _desiredLevel = 1;
-        } else {
-            var minus = button('−', 'skills-level-btn', function() { setDesiredLevel(_desiredLevel - 1); });
-            var value = document.createElement('input'); value.type = 'number'; value.className = 'skills-level-value';
-            value.min = String(current + 1); value.max = String(max); value.step = '1'; value.value = String(_desiredLevel);
-            value.inputMode = 'numeric'; value.setAttribute('aria-label', '目标等级');
-            value.setAttribute('data-focus-key', 'trainer:level-value');
-            value.disabled = writesDisabled(entry);
-            var plus = button('+', 'skills-level-btn', function() { setDesiredLevel(_desiredLevel + 1); });
-            minus.setAttribute('data-focus-key', 'trainer:level-minus');
-            plus.setAttribute('data-focus-key', 'trainer:level-plus');
-            minus.disabled = writesDisabled(entry) || _desiredLevel <= current + 1;
-            plus.disabled = writesDisabled(entry) || _desiredLevel >= max;
-            stepper.appendChild(minus); stepper.appendChild(value); stepper.appendChild(plus);
-            rangeShell = document.createElement('div'); rangeShell.className = 'skills-level-range-shell';
-            var range = document.createElement('input'); range.type = 'range'; range.className = 'skills-level-range';
-            range.min = String(current + 1); range.max = String(max); range.step = '1'; range.value = String(_desiredLevel);
-            range.setAttribute('aria-label', '选择目标等级'); range.setAttribute('aria-valuetext', '目标等级 ' + _desiredLevel);
-            range.setAttribute('data-focus-key', 'trainer:level-range');
-            range.disabled = writesDisabled(entry);
-            range.addEventListener('input', function() { stageDesiredLevel(range.value, entry, target); });
-            range.addEventListener('change', function() { setDesiredLevel(range.value, true); });
-            value.addEventListener('input', function() {
-                var typed = Number(value.value);
-                if (isFinite(typed) && Math.floor(typed) === typed && typed >= current + 1 && typed <= max)
-                    stageDesiredLevel(typed, entry, target);
-            });
-            value.addEventListener('change', function() { setDesiredLevel(value.value, true); });
-            value.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') { event.preventDefault(); setDesiredLevel(value.value, true); }
-                else if (event.key === 'Escape') { event.preventDefault(); value.value = String(_desiredLevel); }
-            });
-            rangeShell.appendChild(range);
-            var marks = document.createElement('div'); marks.className = 'skills-level-marks';
-            targetMarkLevels(current + 1, max).forEach(function(level) {
-                var mark = button(String(level), 'skills-level-mark', function() { setDesiredLevel(level, true); });
-                var position = max === current + 1 ? 100 : (level - current - 1) * 100 / (max - current - 1);
-                mark.style.setProperty('--skills-level-mark-position', position + '%');
-                mark.setAttribute('data-level', String(level)); mark.setAttribute('tabindex', '-1');
-                mark.setAttribute('aria-label', '目标等级 ' + level);
-                mark.disabled = writesDisabled(entry);
-                marks.appendChild(mark);
-            });
-            rangeShell.appendChild(marks);
-        }
-        target.appendChild(stepper);
-        if (rangeShell) { target.appendChild(rangeShell); syncTargetSelector(target, entry); }
-        if (current > 0 && current < max) {
-            var presets = document.createElement('div'); presets.className = 'skills-target-presets';
-            var toMax = button('升至满级', 'skills-target-preset', function() { setDesiredLevel(max, true); });
-            toMax.setAttribute('data-focus-key', 'trainer:level-max');
-            toMax.disabled = writesDisabled(entry) || _desiredLevel === max;
-            presets.appendChild(toMax); target.appendChild(presets);
-        }
-        section.appendChild(target);
-
-        var gate = document.createElement('div'); gate.className = 'skills-trainer-gate';
-        if (matchingPreview && !matchingPreview.canCommit && matchingPreview.blockingError) gate.classList.add('blocked');
-        gate.textContent = '解锁 Lv.' + safeNumber(entry.unlockLevel) + ' · 初学 ' + safeNumber(entry.unlockSP)
-            + ' 点 · 升级 ' + safeNumber(entry.upgradeSP) + ' 点/级'; section.appendChild(gate);
-
-        var result = document.createElement('div'); result.className = 'skills-preview-result skills-cost-card';
-        var previousPreview = _preview && _preview.skillKey === entry.skillKey ? _preview : null;
-        if (current >= max) {
-            result.classList.add('ok');
-            appendCostRow(result, '研习状态', '技能已达到最高等级');
-        } else if (matchingPreview) {
-            appendPreviewSummary(result, matchingPreview, entry, false);
-            if (_previewLoading) {
-                result.classList.add('updating');
-                appendPreviewUpdateStatus(result, '正在刷新 Lv.' + _desiredLevel + ' 的权威消耗…', false);
-            } else if (_previewError) {
-                appendPreviewUpdateStatus(result, '消耗刷新失败：' + errorMessage(_previewError), true);
-                appendPreviewRetry(result, entry);
-            }
-        } else if (previousPreview) {
-            result.classList.add('stale'); appendPreviewSummary(result, previousPreview, entry, true);
-            if (_previewLoading) appendPreviewUpdateStatus(result, '正在更新目标 Lv.' + _desiredLevel + ' 的消耗…', false);
-            else if (_previewError) {
-                appendPreviewUpdateStatus(result, 'Lv.' + _desiredLevel + ' 更新失败：' + errorMessage(_previewError), true);
-                appendPreviewRetry(result, entry);
-            }
-        } else if (_previewLoading) {
-            result.classList.add('loading');
-            appendCostRow(result, '本次消耗', '正在计算 Lv.' + _desiredLevel + '…');
-        } else if (_previewError) {
-            result.classList.add('blocked');
-            var error = document.createElement('div'); error.className = 'skills-preview-message';
-            error.textContent = '暂时无法计算研习消耗：' + errorMessage(_previewError); result.appendChild(error);
-            appendPreviewRetry(result, entry);
-        } else {
-            appendCostRow(result, '本次消耗', '准备计算…');
-        }
-        section.appendChild(result);
-
-        var footer = document.createElement('div'); footer.className = 'skills-trainer-footer';
-        var commitText = '正在准备研习…', commitEnabled = false;
-        if (current >= max) commitText = '该技能已满级';
-        else if (_previewLoading) commitText = '正在更新 Lv.' + safeNumber(_desiredLevel) + ' 的消耗…';
-        else if (_previewError) commitText = '暂时无法研习';
-        else if (matchingPreview && matchingPreview.canCommit && matchingPreview.learnToken) {
-            commitText = '研习至 Lv.' + safeNumber(_desiredLevel) + ' · ' + safeNumber(matchingPreview.cost) + ' 点';
-            commitEnabled = !writesDisabled(entry);
-        } else if (matchingPreview) commitText = errorMessage(matchingPreview.blockingError);
-        var commit = button(commitText, 'skills-action-btn primary skills-trainer-commit', function() { prepareLearnConfirmation(entry); });
-        commit.disabled = !commitEnabled; commit.setAttribute('data-focus-key', 'trainer:commit'); footer.appendChild(commit);
-        section.appendChild(footer); _rightRoot.appendChild(section);
-    }
-
-    function targetMarkLevels(min, max) {
-        var levels = [], count = max - min + 1, level;
-        if (count <= 12) {
-            for (level = min; level <= max; level++) levels.push(level);
-            return levels;
-        }
-        levels.push(min);
-        for (level = Math.ceil(min / 5) * 5; level < max; level += 5) if (level !== min) levels.push(level);
-        if (max !== min) levels.push(max);
-        return levels;
-    }
-
+    function targetMarkLevels(min, max) { return Trainer.targetMarkLevels(min, max); }
     function normalizedDesiredLevel(entry, level) {
-        var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1), numeric = Number(level);
-        if (!isFinite(numeric)) numeric = current + 1;
-        numeric = Math.round(numeric);
-        return current <= 0 ? 1 : Math.max(current + 1, Math.min(max, numeric));
+        return Trainer.normalizedDesiredLevel(entry, level);
     }
-
-    function syncTargetSelector(target, entry) {
-        if (!target || !entry) return;
-        var current = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1), min = current + 1;
-        var range = target.querySelector('.skills-level-range'), value = target.querySelector('.skills-level-value');
-        if (value && document.activeElement !== value) value.value = String(_desiredLevel);
-        if (range) {
-            range.value = String(_desiredLevel);
-            var progress = max <= min ? 100 : (_desiredLevel - min) * 100 / (max - min);
-            range.style.setProperty('--skills-level-progress', progress + '%');
-            range.setAttribute('aria-valuenow', String(_desiredLevel));
-            range.setAttribute('aria-valuetext', '目标等级 ' + _desiredLevel);
-        }
-        var marks = target.querySelectorAll('.skills-level-mark');
-        for (var i = 0; i < marks.length; i++) marks[i].classList.toggle('selected', Number(marks[i].getAttribute('data-level')) === _desiredLevel);
-    }
-
+    function syncTargetSelector(target, entry) { _renderer.syncTargetSelector(target, entry); }
     function stageDesiredLevel(level, entry, target) {
         if (!entry || writesDisabled(entry)) return;
         var normalized = normalizedDesiredLevel(entry, level);
@@ -879,25 +518,15 @@ var SkillsPanel = (function() {
         }
     }
 
-    function previewMatches(entry) {
-        return !!(_preview && entry && _preview.skillKey === entry.skillKey && Number(_preview.desiredLevel) === _desiredLevel);
-    }
-
-    function previewDebounceMs() {
-        var configured = Number(_config.previewDebounceMs);
-        return isFinite(configured) && configured >= 0 ? configured : 140;
-    }
-
-    function previewTokenFreshMs() {
-        var configured = Number(_config.previewTokenFreshMs);
-        return isFinite(configured) && configured >= 50 && configured <= 29000 ? configured : 25000;
-    }
-
+    function previewDebounceMs() { return Trainer.previewDebounceMs(_config); }
     function hasFreshPreviewToken(entry) {
-        return previewMatches(entry) && _preview.canCommit && _preview.learnToken && _previewReceivedAt > 0
-            && Date.now() - _previewReceivedAt < previewTokenFreshMs();
+        return Trainer.hasFreshPreviewToken({
+            preview:_preview,
+            desiredLevel:_desiredLevel,
+            receivedAt:_previewReceivedAt,
+            config:_config
+        }, entry, Date.now());
     }
-
     function prepareLearnConfirmation(entry) {
         if (!entry || writesDisabled(entry) || _trainerExpired) return;
         if (hasFreshPreviewToken(entry)) { confirmLearn(entry); return; }
@@ -905,47 +534,6 @@ var SkillsPanel = (function() {
             var current = selectedEntry();
             if (preview && current && hasFreshPreviewToken(current)) confirmLearn(current);
         });
-    }
-
-    function appendCostRow(parent, label, value, strong) {
-        var row = document.createElement('div'); row.className = 'skills-cost-row';
-        var name = document.createElement('span'); name.textContent = label;
-        var amount = document.createElement(strong ? 'strong' : 'b'); amount.textContent = value;
-        row.appendChild(name); row.appendChild(amount); parent.appendChild(row);
-    }
-
-    function appendRequirement(parent, label, passed) {
-        var item = document.createElement('span'); item.className = passed ? 'ok' : 'blocked';
-        item.textContent = (passed ? '✓ ' : '× ') + label; parent.appendChild(item);
-    }
-
-    function appendPreviewSummary(parent, preview, entry, stale) {
-        var skillPoints = Number(_snapshot && _snapshot.player && _snapshot.player.skillPoints || 0);
-        var cost = Number(preview.cost || 0), remaining = skillPoints - cost;
-        parent.classList.add(stale ? 'stale' : (preview.canCommit ? 'ok' : 'blocked'));
-        appendCostRow(parent, stale ? '上次消耗 · Lv.' + safeNumber(preview.desiredLevel) : '本次消耗', safeNumber(cost) + ' 技能点', true);
-        appendCostRow(parent, stale ? '上次研习后余额' : '研习后余额', remaining >= 0
-            ? safeNumber(skillPoints) + ' → ' + safeNumber(remaining) : '还差 ' + safeNumber(-remaining) + ' 技能点');
-        if (stale) return;
-        var requirements = document.createElement('div'); requirements.className = 'skills-trainer-requirements';
-        appendRequirement(requirements, '等级要求 Lv.' + safeNumber(entry.unlockLevel), Number(_snapshot.player.level) >= Number(entry.unlockLevel));
-        appendRequirement(requirements, '教师可教', true);
-        appendRequirement(requirements, '技能点充足', skillPoints >= cost);
-        parent.appendChild(requirements);
-        if (!preview.canCommit) {
-            var blocked = document.createElement('div'); blocked.className = 'skills-preview-message';
-            blocked.textContent = errorMessage(preview.blockingError); parent.appendChild(blocked);
-        }
-    }
-
-    function appendPreviewUpdateStatus(parent, message, failed) {
-        var status = document.createElement('div'); status.className = 'skills-preview-update-status' + (failed ? ' error' : '');
-        status.textContent = message; parent.appendChild(status);
-    }
-
-    function appendPreviewRetry(parent, entry) {
-        var retry = button('重新计算', 'skills-action-btn skills-preview-retry', function() { scheduleLearnPreview(entry, true); });
-        retry.disabled = writesDisabled(entry); retry.setAttribute('data-focus-key', 'trainer:preview-retry'); parent.appendChild(retry);
     }
 
     function confirmLearn(entry) {
@@ -966,48 +554,6 @@ var SkillsPanel = (function() {
                     clearPreviewState(); writeCommand('learnCommit', {expectedLearnToken:token});
                 }}
             ]});
-    }
-
-    function renderLoadout(readOnly) {
-        var section = document.createElement('section'); section.className = 'skills-loadout-section';
-        var heading = document.createElement('div'); heading.className = 'skills-section-title';
-        heading.textContent = readOnly ? '当前快捷栏' : '快捷技能'; section.appendChild(heading);
-        var grid = document.createElement('div'); grid.className = 'skills-loadout-grid';
-        var slots = _snapshot && _snapshot.loadout || [];
-        slots.forEach(function(slot) {
-            var card = document.createElement('div'); card.className = 'skills-slot';
-            card.setAttribute('data-slot', String(slot.slot)); card.setAttribute('data-state-health', slot.stateHealth || 'invalid');
-            if (!slot.skillKey) card.classList.add('empty');
-            if (!readOnly && slot.skillKey && slot.stateHealth === 'ok' && !slot.writeBlocked) card.classList.add('movable');
-            if (slot.skillKey && slot.skillKey === _selectedKey) card.classList.add('selected');
-            if (slot.writeBlocked || slot.stateHealth === 'duplicate') card.classList.add('corrupt');
-            var main = button('', 'skills-slot-main', function() { onSlotClick(slot, readOnly); });
-            main.setAttribute('data-focus-key', 'slot:' + slot.slot);
-            main.title = '槽位 ' + slot.slot + ' · ' + (slot.keyLabel || '无按键') + ' · ' + (slot.skillKey || '空槽')
-                + (!readOnly && slot.skillKey && slot.stateHealth === 'ok' ? ' · 可拖动调整，Alt+←/→ 与相邻槽交换' : '');
-            var number = document.createElement('span'); number.className = 'skills-slot-number'; number.textContent = String(slot.slot);
-            var key = document.createElement('span'); key.className = 'skills-slot-key'; key.textContent = slot.keyLabel || '';
-            var icon = iconNode(slot.iconKey, 'skills-slot-icon');
-            var level = document.createElement('span'); level.className = 'skills-slot-level';
-            level.textContent = slot.skillKey && Number(slot.level) > 0 ? 'Lv.' + String(slot.level) : '';
-            var name = document.createElement('span'); name.className = 'skills-slot-name';
-            name.textContent = slot.skillKey || '空槽';
-            main.appendChild(number); main.appendChild(key); main.appendChild(icon); main.appendChild(level); main.appendChild(name);
-            main.setAttribute('aria-label', '槽位 ' + slot.slot + '，按键 ' + (slot.keyLabel || '未设置') + '，' + (slot.skillKey || '空槽')
-                + (!readOnly && slot.skillKey && slot.stateHealth === 'ok' ? '；可拖动调整，Alt 加左右方向键与相邻槽交换' : ''));
-            main.disabled = !readOnly && (_coordinator.isWriteBlocked() || slot.writeBlocked);
-            if (!readOnly) main.addEventListener('keydown', function(event) { onSlotKeyDown(event, slot); });
-            card.appendChild(main);
-            if (!readOnly && slot.skillKey) {
-                var clear = button('×', 'skills-slot-clear', function(event) { event.stopPropagation(); proposeUnequip(slot); });
-                clear.setAttribute('aria-label', '卸载槽位 ' + slot.slot + ' 的 ' + slot.skillKey);
-                clear.disabled = _coordinator.isWriteBlocked() || slot.writeBlocked;
-                card.appendChild(clear);
-            }
-            if (slot.skillKey) bindSkillTooltip(card, entryByKey(slot.skillKey), slot);
-            grid.appendChild(card);
-        });
-        section.appendChild(grid); return section;
     }
 
     function onSlotClick(slot, readOnly) {
@@ -1031,39 +577,41 @@ var SkillsPanel = (function() {
     }
 
     function moveQuickSlot(source, target, focusKey) {
-        if (!source || !target || Number(source.slot) === Number(target.slot)
-                || !source.skillKey || source.stateHealth !== 'ok' || source.writeBlocked
-                || target.writeBlocked || (target.skillKey && target.stateHealth !== 'ok')
-                || _coordinator.isWriteBlocked()) return;
+        if (Loadout.moveBlockReason(source, target, _coordinator.isWriteBlocked())) return;
         if (focusKey) _pendingFocusKey = focusKey;
         var callId = writeCommand('moveSlot', {sourceSlot:Number(source.slot), targetSlot:Number(target.slot),
             expectedRevision:Number(_snapshot.revision)});
         if (!callId && focusKey) _pendingFocusKey = '';
     }
-
     function proposeEquip(entry, slot) {
-        if (writesDisabled(entry) || slot.writeBlocked) return;
-        var payload = {skillKey:entry.skillKey, slot:Number(slot.slot), expectedRevision:Number(_snapshot.revision)};
-        var replacingSkill = slot.skillKey && slot.skillKey !== entry.skillKey;
-        if (_loadoutConfirmationMode === 'fast' || !replacingSkill) {
-            writeCommand('equip', payload);
+        var plan = Loadout.equipPlan(entry, slot, {
+            writesDisabled:writesDisabled(entry),
+            mode:_loadoutConfirmationMode,
+            revision:_snapshot && _snapshot.revision
+        });
+        if (!plan.allowed) return;
+        if (plan.direct) {
+            writeCommand('equip', plan.payload);
             return;
         }
-        var replacing = slot.skillKey && slot.skillKey !== entry.skillKey ? '将替换「' + slot.skillKey + '」。' : '该槽当前为空。';
+        var replacing = plan.replacingSkill ? '将替换「' + slot.skillKey + '」。' : '该槽当前为空。';
         _shell.openModal({kind:'skills-equip-confirm', kicker:'快捷栏配置', title:'装备到槽位 ' + slot.slot,
             message:'装备「' + entry.skillKey + '」', detail:replacing, actions:[
                 {id:'cancel', label:'取消'},
                 {id:'confirm', label:'确认装备', primary:true, onSelect:function() {
-                    writeCommand('equip', payload);
+                    writeCommand('equip', plan.payload);
                 }}
             ]});
     }
-
     function proposeUnequip(slot) {
-        if (!slot.skillKey || slot.writeBlocked || _coordinator.isWriteBlocked()) return;
-        var payload = {slot:Number(slot.slot), expectedRevision:Number(_snapshot.revision)};
-        if (_loadoutConfirmationMode === 'fast') {
-            writeCommand('unequip', payload);
+        var plan = Loadout.unequipPlan(slot, {
+            writeBlocked:_coordinator.isWriteBlocked(),
+            mode:_loadoutConfirmationMode,
+            revision:_snapshot && _snapshot.revision
+        });
+        if (!plan.allowed) return;
+        if (plan.direct) {
+            writeCommand('unequip', plan.payload);
             return;
         }
         _shell.openModal({kind:'skills-unequip-confirm', kicker:'快捷栏配置', title:'卸载槽位 ' + slot.slot,
@@ -1071,21 +619,20 @@ var SkillsPanel = (function() {
                 ? '该槽中的技能数据已失效，可以直接移除。' : '不会重置或缩短该槽的冷却。', actions:[
                 {id:'cancel', label:'取消'},
                 {id:'confirm', label:'确认卸载', primary:true, onSelect:function() {
-                    writeCommand('unequip', payload);
+                    writeCommand('unequip', plan.payload);
                 }}
             ]});
     }
-
     function readLoadoutConfirmationMode() {
-        try {
-            return window.localStorage.getItem(LOADOUT_CONFIRMATION_KEY) === 'fast' ? 'fast' : 'safe';
-        } catch (error) { return 'safe'; }
+        var storage = null;
+        try { storage = typeof window !== 'undefined' ? window.localStorage : null; } catch (error) {}
+        return Loadout.readConfirmationMode(storage, LOADOUT_CONFIRMATION_KEY);
     }
-
     function setLoadoutConfirmationMode(mode) {
         var previous = _loadoutConfirmationMode;
-        _loadoutConfirmationMode = mode === 'fast' ? 'fast' : 'safe';
-        try { window.localStorage.setItem(LOADOUT_CONFIRMATION_KEY, _loadoutConfirmationMode); } catch (error) {}
+        var storage = null;
+        try { storage = typeof window !== 'undefined' ? window.localStorage : null; } catch (error) {}
+        _loadoutConfirmationMode = Loadout.writeConfirmationMode(storage, LOADOUT_CONFIRMATION_KEY, mode);
         refreshLoadoutConfirmationToggle();
         if (previous !== _loadoutConfirmationMode) {
             toast(_loadoutConfirmationMode === 'fast'
@@ -1094,7 +641,6 @@ var SkillsPanel = (function() {
         }
         return _loadoutConfirmationMode;
     }
-
     function createLoadoutConfirmationToggle() {
         var group = document.createElement('div');
         group.className = 'item-grid-mode-switch skills-confirmation-toggle';
@@ -1129,17 +675,9 @@ var SkillsPanel = (function() {
     }
 
     function manageHelpDetail() {
-        var mode = _loadoutConfirmationMode === 'fast' ? '快速' : '安全';
-        var behavior = _loadoutConfirmationMode === 'fast'
-            ? '装备、替换和卸载直接执行。技能学习仍须确认。'
-            : '空槽直接装备；替换和卸载需要确认。';
-        return '管理技能\n• 装备到已有槽位会替换原技能；是否确认由顶栏“快捷栏”的安全/快速选项决定。\n• 快捷槽可互相拖动：拖到空槽会移动，拖到已有技能会直接交换。\n• 聚焦快捷槽后按 Alt + ← / → 可与相邻槽交换。\n• 纯被动技能可以启用或停用。\n• 聚焦技能后按 Alt + ↑ / ↓ 也可交换相邻顺序。'
-            + '\n\n查找与布局\n• 形态、配置和流派都可直接筛选，也可以组合使用。\n• 按 / 可以展开名称搜索。\n• 完整/紧凑只改变技能库；下方 12 格快捷技能保持固定。'
-            + '\n\n快捷栏操作确认\n• 顶栏始终显示当前模式，可随时在“安全 / 快速”之间切换。\n• 当前：' + mode + '模式。' + behavior
-            + '\n• 快捷槽之间的移动或交换无需确认；技能学习始终需要确认。'
-            + (_initData && _initData.canReturnTrainer === true ? '\n• “返回研习”只在本次教师入口中可用。' : '');
+        return Loadout.helpDetail(_loadoutConfirmationMode,
+            !!(_initData && _initData.canReturnTrainer === true));
     }
-
     function writeCommand(cmd, payload) {
         _preview = null;
         var callId = _coordinator.write(cmd, payload, function(response) {
@@ -1285,51 +823,30 @@ var SkillsPanel = (function() {
         _dragSourceView = {
             instanceKey:'skills:drag-source',
             exportOffer:function(entry) {
-                return entry && !writesDisabled(entry)
-                    ? {subjectKind:'skill', sourceRef:{skillKey:entry.skillKey, equippable:entry.equippable === true}} : null;
+                return Interactions.skillOffer(entry, writesDisabled(entry));
             }
         };
         _dragSlotSourceView = {
             instanceKey:'skills:quick-slot-source',
-            exportOffer:function(slot) {
-                return slot && slot.skillKey && slot.stateHealth === 'ok' && !slot.writeBlocked
-                    ? {subjectKind:'quick_slot', sourceRef:{slot:Number(slot.slot), skillKey:String(slot.skillKey)}} : null;
-            }
+            exportOffer:function(slot) { return Interactions.quickSlotOffer(slot); }
         };
         _dragTargetView = {
             instanceKey:'skills:loadout-target',
             probeAccept:function(offer, hit) {
-                var slot = hit && hit.slot;
-                if (!offer || offer.subjectKind !== 'skill') return {accepted:false, reason:'invalid_skill'};
-                if (!offer.sourceRef || offer.sourceRef.equippable !== true) return {accepted:false, reason:'skill_not_equippable'};
-                if (!slot || slot.writeBlocked || _coordinator.isWriteBlocked()) return {accepted:false, reason:'slot_locked'};
-                return {accepted:true, operationId:'equip_skill', targetRef:{slot:Number(slot.slot)}};
+                return Interactions.probeEquip(offer, hit && hit.slot, _coordinator.isWriteBlocked());
             }
         };
         _dragSlotTargetView = {
             instanceKey:'skills:quick-slot-target',
             probeAccept:function(offer, hit) {
-                var target = hit && hit.slot;
-                var source = offer && offer.sourceRef ? loadoutSlot(Number(offer.sourceRef.slot)) : null;
-                if (!offer || offer.subjectKind !== 'quick_slot' || !source || !source.skillKey)
-                    return {accepted:false, reason:'invalid_skill'};
-                if (!target || source.slot === target.slot || source.writeBlocked || target.writeBlocked
-                        || source.stateHealth !== 'ok' || (target.skillKey && target.stateHealth !== 'ok')
-                        || _coordinator.isWriteBlocked()) return {accepted:false, reason:'slot_locked'};
-                return {accepted:true, operationId:'move_quick_slot',
-                    targetRef:{sourceSlot:Number(source.slot), targetSlot:Number(target.slot)}};
+                return Interactions.probeMove(offer, hit && hit.slot, loadoutSlot,
+                    _coordinator.isWriteBlocked());
             }
         };
         _dragOrderTargetView = {
             instanceKey:'skills:order-target',
             probeAccept:function(offer, hit) {
-                var source = offer && offer.sourceRef ? entryByKey(offer.sourceRef.skillKey) : null;
-                var target = hit && hit.entry;
-                if (!source || !target || source.skillKey === target.skillKey) return {accepted:false, reason:'invalid_skill'};
-                var reason = reorderBlockReason(source, 'source') || reorderBlockReason(target, 'target');
-                if (reason) return {accepted:false, reason:reason};
-                return {accepted:true, operationId:'reorder_skill',
-                    targetRef:{skillKey:target.skillKey, targetIndex:Number(target.orderIndex)}};
+                return Interactions.probeReorder(offer, hit && hit.entry, entryByKey, reorderBlockReason);
             }
         };
         _dragBroker = new Workbench.InteractionBroker({
@@ -1415,25 +932,11 @@ var SkillsPanel = (function() {
         });
     }
 
-    function dragRejectMessage(reason) {
-        if (reason === 'slot_locked') return '该快捷槽当前不可写。';
-        if (reason === 'skill_not_equippable') return '该技能不能装备到快捷栏。';
-        if (reason === 'equipped_skill_locked') return '已装备技能需先卸载，才能交换列表顺序。';
-        return '该技能当前无法调整顺序。';
-    }
-
+    function dragRejectMessage(reason) { return Interactions.rejectMessage(reason); }
     function entryByKey(skillKey) {
-        var entries = sourceEntries();
-        for (var i = 0; i < entries.length; i++) if (entries[i].skillKey === skillKey) return entries[i];
-        return null;
+        return Library.entryByKey(_snapshot, _view, skillKey);
     }
-
-    function loadoutSlot(number) {
-        var slots = _snapshot && _snapshot.loadout || [];
-        for (var i=0;i<slots.length;i++) if (Number(slots[i].slot) === number) return slots[i];
-        return null;
-    }
-
+    function loadoutSlot(number) { return Loadout.slotByNumber(_snapshot, number); }
     function requestManageView() {
         if (_view !== 'trainer' || !_initData || _trainerExpired) return;
         var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData.panelInstanceId || '');
@@ -1575,61 +1078,19 @@ var SkillsPanel = (function() {
         });
     }
 
-    function buildSkillTooltipHtml(entry) {
-        if (!entry) return '';
-        var level = entry.currentLevel != null ? entry.currentLevel : entry.level;
-        var meta = (entry.type || '未知类型') + ' · Lv.' + safeNumber(level) + '/' + safeNumber(entry.maxLevel)
-            + ' · MP ' + safeNumber(entry.mp) + ' · CD ' + cooldownText(entry.cooldownMs);
-        var state = healthLabel(entry);
-        var intro = '<div class="skills-tt-title"><b>' + escapeHtml(entry.skillKey || '未知技能') + '</b></div>'
-            + '<div class="skills-tt-meta">' + escapeHtml(meta) + '</div>'
-            + '<div class="skills-tt-state">' + escapeHtml(state) + '</div>';
-        return PanelTooltip.buildItemRichHtml({
-            iconHtml:PanelTooltip.dynamicIconHtml(entry.iconKey || entry.skillKey, 'skills-tt-icon'),
-            introWebHTML:intro,
-            descHTML:normalizeAS2Description(entry.description || '暂无技能说明。'),
-            rootClass:'skills-tooltip', layoutType:'wide', splitMode:'auto'
-        });
-    }
-
+    function buildSkillTooltipHtml(entry) { return _renderer.buildSkillTooltipHtml(entry); }
     function normalizeAS2Description(value) {
         return String(value == null ? '' : value).replace(/\r\n|\r|\n/g, '<br>');
     }
 
     function buildDiagnosticRecord(reason, entry) {
-        var state = _coordinator.debugState();
-        return {
-            v:1,
-            area:'skills',
-            reason:String(reason || 'unknown'),
-            view:_view,
-            panelInstanceId:String(state.panelInstanceId || ''),
-            revision:_snapshot ? Number(_snapshot.revision) : Number(state.lastAppliedRevision),
-            writeState:String(state.state || ''),
-            writeEpoch:Number(state.lastAppliedWriteEpoch),
-            activeWrite:state.activeWrite || null,
-            activeReconcile:state.activeReconcile || null,
-            pendingCount:state.mux ? Number(state.mux.pendingCount || 0) : 0,
-            selectedSkill:String(entry && entry.skillKey || _selectedKey || ''),
-            entryHealth:entry ? String(entry.stateHealth || '') : '',
-            trainerExpired:_trainerExpired,
-            schemaError:String(_schemaError || ''),
-            lastError:_lastDiagnostic,
-            snapshotDiagnostics:redactDiagnosticValue(_snapshot && Array.isArray(_snapshot.diagnostics) ? _snapshot.diagnostics : [])
-        };
-    }
-
-    function redactDiagnosticValue(value) {
-        if (Array.isArray(value)) return value.map(redactDiagnosticValue);
-        if (!value || typeof value !== 'object') return value;
-        var result = {};
-        Object.keys(value).forEach(function(key) {
-            if (/session|token/i.test(key)) return;
-            result[key] = redactDiagnosticValue(value[key]);
+        return Diagnostics.buildRecord({
+            reason:reason, entry:entry, coordinator:_coordinator.debugState(),
+            snapshot:_snapshot, view:_view, selectedKey:_selectedKey,
+            trainerExpired:_trainerExpired, schemaError:_schemaError, lastError:_lastDiagnostic
         });
-        return result;
     }
-
+    function redactDiagnosticValue(value) { return Diagnostics.redact(value); }
     function copyDiagnostic(reason, entry) {
         var value = JSON.stringify(buildDiagnosticRecord(reason, entry), null, 2);
         copyText(value).then(function() { toast('诊断信息已复制。'); }, function() {
@@ -1638,28 +1099,12 @@ var SkillsPanel = (function() {
     }
 
     function copyText(value) {
-        if (typeof _config.copyText === 'function') {
-            try { return Promise.resolve(_config.copyText(value)); }
-            catch (error) { return Promise.reject(error); }
-        }
-        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-            return navigator.clipboard.writeText(value).catch(function() { return fallbackCopyText(value); });
-        }
-        return fallbackCopyText(value);
-    }
-
-    function fallbackCopyText(value) {
-        return new Promise(function(resolve, reject) {
-            var area = document.createElement('textarea'); area.value = value;
-            area.setAttribute('readonly', 'readonly'); area.style.position = 'fixed'; area.style.left = '-9999px';
-            document.body.appendChild(area); area.select();
-            var copied = false;
-            try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
-            document.body.removeChild(area);
-            if (copied) resolve(); else reject(new Error('copy_failed'));
+        var navigatorRef = typeof navigator !== 'undefined' ? navigator : null;
+        var documentRef = typeof document !== 'undefined' ? document : null;
+        return Diagnostics.copyText(value, {
+            copyText:_config.copyText, navigator:navigatorRef, document:documentRef
         });
     }
-
     function escapeHtml(value) {
         return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;')
             .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -1674,24 +1119,9 @@ var SkillsPanel = (function() {
     }
     function safeNumber(value) { var number = Number(value); return isFinite(number) ? String(number) : '—'; }
     function cooldownText(value) { var ms=Number(value); return isFinite(ms) ? (ms/1000).toFixed(ms%1000?1:0)+'s' : '—'; }
-    function healthLabel(entry) {
-        if (entry.stateHealth === 'duplicate') return '重复';
-        if (entry.stateHealth !== 'ok' || entry.writeBlocked) return '异常';
-        if (_view === 'trainer') return Number(entry.currentLevel||0)>0 ? '已学' : '可学';
-        if (entry.passive && !entry.equippable) return entry.enabled ? '被动 ON' : '被动 OFF';
-        return entry.equippedSlots && entry.equippedSlots.length ? '槽 ' + entry.equippedSlots.join('/') : '可装备';
-    }
-    function compactStateLabel(entry) {
-        if (entry.stateHealth !== 'ok' || entry.writeBlocked) return '!';
-        if (_view === 'trainer') return Number(entry.currentLevel || 0) > 0 ? '已学' : '可学';
-        if (entry.passive && !entry.equippable) return entry.enabled ? 'ON' : 'OFF';
-        return entry.equippedSlots && entry.equippedSlots.length ? entry.equippedSlots.join('/') : '';
-    }
-    function skillAriaLabel(entry) {
-        var level = entry.currentLevel != null ? entry.currentLevel : entry.level;
-        return String(entry.skillKey || '未知技能') + '，等级 ' + safeNumber(level) + '/' + safeNumber(entry.maxLevel)
-            + '，' + healthLabel(entry) + '；悬停查看技能说明';
-    }
+    function healthLabel(entry) { return Library.healthLabel(entry, _view); }
+    function compactStateLabel(entry) { return Library.compactStateLabel(entry, _view); }
+    function skillAriaLabel(entry) { return Library.ariaLabel(entry, _view); }
     function focusSibling(node, delta) {
         var rows = Array.prototype.slice.call(_list.querySelectorAll('.skills-library-row'));
         var index = rows.indexOf(node), next = rows[index+delta]; if (next) next.focus();
@@ -1718,8 +1148,6 @@ var SkillsPanel = (function() {
         return messages[error] || '技能操作失败。';
     }
     function toast(message) { if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message); }
-
-    Bridge.on('panel_resp', function(data) { _coordinator.handleResponse(data); });
 
     return {
         debugState: function() {

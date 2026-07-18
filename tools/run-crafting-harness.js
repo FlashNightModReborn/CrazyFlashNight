@@ -1,22 +1,33 @@
 #!/usr/bin/env node
 'use strict';
 const fs=require('fs'),http=require('http'),path=require('path'),url=require('url');
+const {readCssBundle}=require('./lib/read-css-bundle.js');
 const ROOT=path.resolve(__dirname,'..'),WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
+const INVENTORY_WORKBENCH_MODULES=[
+  'inventory-workbench-config.js','inventory-workbench-header.js',
+  'inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js',
+  'inventory-workbench.js'
+];
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
   const runtime=fs.readFileSync(path.join(WEB,'modules','crafting-runtime.js'),'utf8');
-  const css=fs.readFileSync(path.join(WEB,'css','panels.css'),'utf8');
+  const panelRuntime=fs.readFileSync(path.join(WEB,'modules','panel-runtime.js'),'utf8');
+  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
   const registry=fs.readFileSync(path.join(WEB,'modules','panels-lazy-registry.js'),'utf8');
-  const inventoryWorkbench=fs.readFileSync(path.join(WEB,'modules','inventory-workbench.js'),'utf8');
+  const inventoryWorkbenchPanel=fs.readFileSync(path.join(WEB,'modules','inventory-workbench.js'),'utf8');
+  const inventoryWorkbench=INVENTORY_WORKBENCH_MODULES
+    .map(name=>fs.readFileSync(path.join(WEB,'modules',name),'utf8')).join('\n');
   if(!panel.includes("new Workbench.DualPaneShell")||!panel.includes("leftLabel:'配方目录'")||!panel.includes("rightLabel:'合成详情'"))throw new Error('dual-pane contract missing');
   if(!panel.includes("request('preview'")||!panel.includes("request('commit'")||!panel.includes('expectedCraftToken'))throw new Error('preview/token/commit flow missing');
   if(/price\s*\*|smithLevel\s*\*/.test(panel))throw new Error('Web must not reproduce authoritative crafting formulas');
   if(!panel.includes('requiresReconcile')||!panel.includes('requestPreview();'))throw new Error('ambiguous write reconcile flow missing');
   if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")||!panel.includes('craftCount:requestedCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
   if(!panel.includes('canCraftOne === true')||!panel.includes('craftableOnly:_craftableOnly')||!panel.includes('crafting-craftable-toggle'))throw new Error('snapshot availability or craftable-only contract missing');
-  if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'"))throw new Error('battlebox return contract missing');
-  if(!runtime.includes("domain:'crafting'")||!runtime.includes('entry.generation !== this._generation'))throw new Error('strict crafting mux missing');
+  if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'")
+      ||!inventoryWorkbenchPanel.includes('InventoryWorkbenchConfig.resolveReturnTarget(initData)'))throw new Error('battlebox return contract missing');
+  if(!runtime.includes("require('./panel-runtime.js')")||!runtime.includes('new PanelRuntime.PanelRequestMux')
+      ||!runtime.includes("data.domain === 'crafting'")||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting mux missing');
   if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")||!css.includes('.crafting-commit-btn')||!css.includes('.crafting-catalog-grid::-webkit-scrollbar'))throw new Error('lazy registry or crafting skin missing');
   if(!css.includes('.item-filter-catalog .item-filter-option')||!css.includes('grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr)')||!css.includes('.crafting-recipe-card.craftable'))throw new Error('shared filter, 60:40 layout, or craftable marker skin missing');
   if(!css.includes('#panel-container[data-panel="crafting"] #panel-content')||!css.includes('#panel-container[data-panel="crafting"] #panel-backdrop'))throw new Error('crafting full-screen anchor contract missing');

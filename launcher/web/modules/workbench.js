@@ -6,11 +6,37 @@
  */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var primitives = root && root.WorkbenchPrimitives;
+    var focus = root && (root.WorkbenchFocus || root.CF7 && root.CF7.WorkbenchFocus);
+    if (!primitives && typeof module !== 'undefined' && module.exports) {
+        primitives = require('./workbench-primitives.js');
+    }
+    if (!focus && typeof module !== 'undefined' && module.exports) {
+        focus = require('./workbench-focus.js');
+    }
+    if (!primitives) {
+        throw new Error('workbench.js requires workbench-primitives.js to load first');
+    }
+    if (!focus || typeof focus.FocusScope !== 'function') {
+        throw new Error('workbench.js requires workbench-focus.js to load first');
+    }
+    var api = factory(primitives, focus);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.Workbench = api;
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchPrimitives, WorkbenchFocus) {
     'use strict';
+
+    var primitiveNames = ['EntityTile', 'ItemCard', 'InteractionBroker', 'PointerDragController'];
+    for (var primitiveIndex = 0; primitiveIndex < primitiveNames.length; primitiveIndex++) {
+        if (typeof WorkbenchPrimitives[primitiveNames[primitiveIndex]] !== 'function') {
+            throw new Error('workbench-primitives.js missing ' + primitiveNames[primitiveIndex]);
+        }
+    }
+    var EntityTile = WorkbenchPrimitives.EntityTile;
+    var ItemCard = WorkbenchPrimitives.ItemCard;
+    var InteractionBroker = WorkbenchPrimitives.InteractionBroker;
+    var PointerDragController = WorkbenchPrimitives.PointerDragController;
+    var FocusScope = WorkbenchFocus.FocusScope;
 
     function makeElement(tag, className) {
         var element = document.createElement(tag || 'div');
@@ -19,6 +45,21 @@
     }
 
     function clearElement(element) {
+        if (!element) return;
+        // Re-rendering a grid is also a lifecycle boundary. Explicitly release
+        // shared tile/tooltip bindings before detaching nodes so pending async
+        // callbacks cannot retain an obsolete entity tree until timeout.
+        var descendants = element.querySelectorAll ? element.querySelectorAll('*') : [];
+        for (var i = 0; i < descendants.length; i++) {
+            var node = descendants[i];
+            if (node.__panelTooltipBinding && typeof node.__panelTooltipBinding.destroy === 'function') {
+                node.__panelTooltipBinding.destroy();
+            }
+            if (node.__workbenchEntityTileBinding
+                    && typeof node.__workbenchEntityTileBinding.destroy === 'function') {
+                node.__workbenchEntityTileBinding.destroy();
+            }
+        }
         while (element && element.firstChild) element.removeChild(element.firstChild);
     }
 
@@ -61,6 +102,8 @@
     function isBindingSingleton(view) {
         return !!view && view.instancePolicy === 'singletonByBinding' && !!viewKey(view);
     }
+
+    var _modalIdSequence = 0;
 
     function WorkbenchViewHost(slotId, shell, root) {
         this.slotId = slotId;
@@ -151,6 +194,7 @@
         this._body = makeElement('main', 'workbench-body');
         var left = this._createSlot('L', options.leftLabel || 'SOURCE');
         this._rail = makeElement('div', 'workbench-flow-rail');
+        this._rail.setAttribute('data-state', 'idle');
         this._rail.innerHTML = '<span class="workbench-flow-arrow">›</span>';
         var flowLabel = options.flowLabel == null ? '' : String(options.flowLabel);
         if (flowLabel) {
@@ -175,13 +219,22 @@
         };
         this._slotFrames = { L: left.frame, R: right.frame };
         this._activeModal = null;
-        this._modalReturnFocus = null;
         this._activeSlot = null;
+        this._destroyed = false;
+        this._destroying = false;
+        this._modalGeneration = 0;
+        this._slotListeners = [];
         var self = this;
-        left.frame.addEventListener('pointerdown', function() { self.focusSlot('L'); });
-        right.frame.addEventListener('pointerdown', function() { self.focusSlot('R'); });
-        left.frame.addEventListener('focusin', function() { self.focusSlot('L'); });
-        right.frame.addEventListener('focusin', function() { self.focusSlot('R'); });
+        this._slotListeners = [
+            [left.frame, 'pointerdown', function() { self.focusSlot('L'); }],
+            [right.frame, 'pointerdown', function() { self.focusSlot('R'); }],
+            [left.frame, 'focusin', function() { self.focusSlot('L'); }],
+            [right.frame, 'focusin', function() { self.focusSlot('R'); }]
+        ];
+        for (var listenerIndex = 0; listenerIndex < this._slotListeners.length; listenerIndex++) {
+            var listener = this._slotListeners[listenerIndex];
+            listener[0].addEventListener(listener[1], listener[2]);
+        }
         this.focusSlot('L');
     }
 
@@ -214,7 +267,7 @@
     };
 
     DualPaneShell.prototype.focusSlot = function(slotId) {
-        if (!this._slotFrames[slotId] || this._activeSlot === slotId) return false;
+        if (this._destroyed || !this._slotFrames[slotId] || this._activeSlot === slotId) return false;
         var previousId = this._activeSlot;
         var previousView = previousId && this._hosts[previousId] ? this._hosts[previousId].currentView : null;
         if (previousId) this._slotFrames[previousId].classList.remove('active');
@@ -236,9 +289,19 @@
 
     DualPaneShell.prototype.setStatus = function(text, state) {
         var label = text || '';
+        var normalized = normalizeState(state);
         this._status.textContent = label;
-        this._status.setAttribute('data-state', normalizeState(state));
+        this._status.setAttribute('data-state', normalized);
         this._status.setAttribute('aria-label', label);
+        if (normalized === WorkbenchState.LOADING || normalized === WorkbenchState.PENDING
+                || normalized === WorkbenchState.BUSY) this.setFlowState('pending');
+        else if (this._rail.getAttribute('data-state') === 'pending') this.setFlowState('idle');
+    };
+
+    DualPaneShell.prototype.setFlowState = function(state) {
+        state = state === 'accept' || state === 'reject' || state === 'pending' ? state : 'idle';
+        this._rail.setAttribute('data-state', state);
+        return state;
     };
 
     DualPaneShell.prototype.setMetric = function(key, label, value) {
@@ -324,21 +387,31 @@
     };
 
     DualPaneShell.prototype.openModal = function(spec) {
+        if (this._destroyed || this._destroying) return null;
         spec = spec || {};
-        this.closeModal();
-        this._modalReturnFocus = document.activeElement;
+        var generation = ++this._modalGeneration;
+        var returnFocus = this._activeModal ? this._activeModal.opener : document.activeElement;
+        this._closeModal('replace', false);
+        if (this._destroyed || this._destroying || generation !== this._modalGeneration) {
+            return this._activeModal;
+        }
+        var modalId = 'workbench-modal-' + (++_modalIdSequence);
         var backdrop = makeElement('div', 'workbench-modal-backdrop');
         var dialog = makeElement('section', 'workbench-modal');
         dialog.setAttribute('role', 'dialog');
         dialog.setAttribute('aria-modal', 'true');
         dialog.setAttribute('data-modal-kind', spec.kind || 'notice');
+        dialog.setAttribute('tabindex', '-1');
         var kicker = makeElement('div', 'workbench-modal-kicker');
         kicker.textContent = spec.kicker == null ? '' : String(spec.kicker);
         var title = makeElement('h2', 'workbench-modal-title');
+        title.id = modalId + '-title';
         title.textContent = spec.title || '';
         var message = makeElement('div', 'workbench-modal-message');
+        message.id = modalId + '-message';
         message.textContent = spec.message || '';
         var detail = makeElement('div', 'workbench-modal-detail');
+        detail.id = modalId + '-detail';
         detail.textContent = spec.detail || '';
         var actions = makeElement('div', 'workbench-modal-actions');
         var self = this;
@@ -350,8 +423,9 @@
                 button.textContent = action.label || action.id;
                 button.setAttribute('data-action', action.id || 'action');
                 if (action.audioCue) button.setAttribute('data-audio-cue', action.audioCue);
+                button.disabled = !!action.disabled;
                 button.addEventListener('click', function() {
-                    if (action.close !== false) self.closeModal();
+                    if (action.close !== false) self.closeModal('action:' + (action.id || 'action'));
                     if (typeof action.onSelect === 'function') action.onSelect();
                 });
                 actions.appendChild(button);
@@ -362,22 +436,99 @@
         if (spec.message) dialog.appendChild(message);
         if (spec.detail) dialog.appendChild(detail);
         dialog.appendChild(actions);
+        dialog.setAttribute('aria-labelledby', spec.labelledBy || spec.ariaLabelledBy || title.id);
+        var describedBy = [];
+        if (spec.describedBy || spec.ariaDescribedBy) {
+            describedBy.push(String(spec.describedBy || spec.ariaDescribedBy));
+        }
+        if (spec.message) describedBy.push(message.id);
+        if (spec.detail) describedBy.push(detail.id);
+        if (describedBy.length) dialog.setAttribute('aria-describedby', describedBy.join(' '));
         backdrop.appendChild(dialog);
         this._modalLayer.appendChild(backdrop);
         this._modalLayer.style.display = '';
-        this._activeModal = { backdrop: backdrop, dialog: dialog, spec: spec };
-        var focusTarget = dialog.querySelector('.workbench-modal-action.primary') || dialog.querySelector('.workbench-modal-action');
-        if (focusTarget && focusTarget.focus) focusTarget.focus();
+        var activeModal = {
+            backdrop: backdrop,
+            dialog: dialog,
+            spec: spec,
+            opener: returnFocus,
+            generation: generation,
+            focusScope: null,
+            backdropHandler: null,
+            closed: false
+        };
+        this._activeModal = activeModal;
+        activeModal.backdropHandler = function(event) {
+            if (event.target !== backdrop || spec.closeOnBackdrop === false) return;
+            self.closeModal('backdrop');
+        };
+        backdrop.addEventListener('click', activeModal.backdropHandler);
+
+        var focusTarget = null;
+        if (spec.initialFocus && spec.initialFocus.nodeType === 1) focusTarget = spec.initialFocus;
+        else if (typeof spec.initialFocus === 'string') focusTarget = dialog.querySelector(spec.initialFocus);
+        focusTarget = focusTarget || dialog.querySelector('.workbench-modal-action.primary')
+            || dialog.querySelector('.workbench-modal-action') || dialog;
+        activeModal.focusScope = new FocusScope({
+            root: dialog,
+            document: document,
+            restoreFocus: false,
+            onEscape: function() {
+                if (spec.closeOnEscape === false) return false;
+                self.closeModal('escape');
+                return false;
+            }
+        });
+        try {
+            activeModal.focusScope.activate({
+                opener: returnFocus,
+                initialFocus: focusTarget,
+                underlay: [this._header, this._body]
+            });
+        } catch (error) {
+            if (this._activeModal === activeModal) this._closeModal('open-error', false);
+            throw error;
+        }
         return this._activeModal;
     };
 
-    DualPaneShell.prototype.closeModal = function() {
-        var returnFocus = this._modalReturnFocus;
-        clearElement(this._modalLayer);
-        this._modalLayer.style.display = 'none';
-        this._activeModal = null;
-        this._modalReturnFocus = null;
-        if (returnFocus && document.documentElement.contains(returnFocus) && returnFocus.focus) returnFocus.focus();
+    DualPaneShell.prototype._closeModal = function(reason, restoreFocus) {
+        var activeModal = this._activeModal;
+        if (!activeModal || activeModal.closed) return false;
+        activeModal.closed = true;
+        if (this._activeModal === activeModal) this._activeModal = null;
+        var returnFocus = activeModal.opener;
+        var firstError = null;
+        if (activeModal.backdrop && activeModal.backdropHandler) {
+            activeModal.backdrop.removeEventListener('click', activeModal.backdropHandler);
+        }
+        if (activeModal.focusScope) {
+            try { activeModal.focusScope.deactivate(reason || 'close', {restoreFocus:false}); }
+            catch (focusError) { firstError = focusError; }
+            try { activeModal.focusScope.destroy(); }
+            catch (destroyError) { if (!firstError) firstError = destroyError; }
+        }
+        if (activeModal.backdrop && activeModal.backdrop.parentNode === this._modalLayer) {
+            try {
+                clearElement(activeModal.backdrop);
+                this._modalLayer.removeChild(activeModal.backdrop);
+            } catch (removeError) { if (!firstError) firstError = removeError; }
+        }
+        if (!this._modalLayer.firstChild) this._modalLayer.style.display = 'none';
+        if (restoreFocus !== false && returnFocus && document.documentElement.contains(returnFocus) && returnFocus.focus) {
+            try { returnFocus.focus(); } catch (returnError) { if (!firstError) firstError = returnError; }
+        }
+        try {
+            if (typeof activeModal.spec.onClose === 'function') activeModal.spec.onClose(reason || 'close');
+        } catch (closeError) { if (!firstError) firstError = closeError; }
+        if (firstError) throw firstError;
+        return true;
+    };
+
+    DualPaneShell.prototype.closeModal = function(reason) {
+        if (this._destroyed || this._destroying) return false;
+        this._modalGeneration++;
+        return this._closeModal(reason || 'close', true);
     };
 
     DualPaneShell.prototype.hasModal = function() { return !!this._activeModal; };
@@ -386,10 +537,27 @@
     };
 
     DualPaneShell.prototype.destroy = function() {
-        this.closeModal();
-        this._hosts.L.unmount();
-        this._hosts.R.unmount();
+        if (this._destroyed || this._destroying) return false;
+        this._destroying = true;
+        this._destroyed = true;
+        this._modalGeneration++;
+        var firstError = null;
+        try { this._closeModal('destroy', false); }
+        catch (modalError) { firstError = modalError; }
+        for (var listenerIndex = 0; listenerIndex < this._slotListeners.length; listenerIndex++) {
+            var listener = this._slotListeners[listenerIndex];
+            try { listener[0].removeEventListener(listener[1], listener[2]); }
+            catch (listenerError) { if (!firstError) firstError = listenerError; }
+        }
+        this._slotListeners = [];
+        try { this._hosts.L.unmount(); } catch (leftError) { if (!firstError) firstError = leftError; }
+        try { this._hosts.R.unmount(); } catch (rightError) { if (!firstError) firstError = rightError; }
+        clearElement(this._hosts.L.root);
+        clearElement(this._hosts.R.root);
         this._views = {};
+        this._destroying = false;
+        if (firstError) throw firstError;
+        return true;
     };
 
     function ViewChrome(options) {
@@ -430,6 +598,8 @@
         this.options = options;
         this.root = makeElement('div', 'workbench-grid-renderer' + (options.className ? ' ' + options.className : ''));
         this.root.setAttribute('data-grid-renderer', '1');
+        this.root.setAttribute('role', options.role || 'listbox');
+        if (options.multiselectable) this.root.setAttribute('aria-multiselectable', 'true');
         this._items = [];
         this._selectedKey = null;
     }
@@ -453,7 +623,10 @@
             node.__workbenchIndex = i;
             var key = this.options.keyOf ? String(this.options.keyOf(item, i)) : String(i);
             node.setAttribute('data-workbench-key', key);
-            if (this._selectedKey != null && key === this._selectedKey) node.classList.add('workbench-source-selected');
+            if (this._selectedKey != null && key === this._selectedKey) {
+                node.classList.add('workbench-source-selected');
+                EntityTile.setSelected(node, true);
+            }
             if (typeof this.options.bindItem === 'function') this.options.bindItem(node, item, i);
             fragment.appendChild(node);
         }
@@ -479,7 +652,9 @@
         this._selectedKey = key == null ? null : String(key);
         var nodes = this.root.querySelectorAll('[data-workbench-key]');
         for (var i = 0; i < nodes.length; i++) {
-            nodes[i].classList.toggle('workbench-source-selected', this._selectedKey != null && nodes[i].getAttribute('data-workbench-key') === this._selectedKey);
+            var selected = this._selectedKey != null && nodes[i].getAttribute('data-workbench-key') === this._selectedKey;
+            nodes[i].classList.toggle('workbench-source-selected', selected);
+            EntityTile.setSelected(nodes[i], selected);
         }
     };
 
@@ -546,289 +721,6 @@
     };
     GridContainerView.prototype.exportOffer = function(item, hit) { return this.adapter.exportOffer(item, hit); };
     GridContainerView.prototype.probeAccept = function(offer, hit) { return this.adapter.probeAccept(offer, hit); };
-
-    function InteractionBroker(options) {
-        options = options || {};
-        this._onIntent = options.onIntent || function() {};
-        this._onReject = options.onReject || function() {};
-        this._onSelectionChange = options.onSelectionChange || function() {};
-        this._selected = null;
-    }
-
-    InteractionBroker.prototype.select = function(view, item, node) {
-        if (this._selected && this._selected.node) this._selected.node.classList.remove('workbench-source-selected');
-        this._selected = view && item ? { view: view, item: item, node: node || null } : null;
-        if (this._selected && this._selected.node) this._selected.node.classList.add('workbench-source-selected');
-        this._onSelectionChange(this._selected);
-        return !!this._selected;
-    };
-
-    InteractionBroker.prototype.clearSelection = function() {
-        this.select(null, null, null);
-    };
-
-    InteractionBroker.prototype.dispatch = function(sourceView, sourceItem, targetView, targetHit, origin) {
-        var offer = sourceView && typeof sourceView.exportOffer === 'function'
-            ? sourceView.exportOffer(sourceItem, { origin: origin || 'pointer' })
-            : null;
-        if (!offer) {
-            this._onReject({ reason: 'no_offer', origin: origin });
-            return { accepted: false, reason: 'no_offer' };
-        }
-        var acceptance = targetView && typeof targetView.probeAccept === 'function'
-            ? targetView.probeAccept(offer, targetHit || {})
-            : null;
-        if (!acceptance || !acceptance.accepted || !acceptance.operationId) {
-            var reason = acceptance && acceptance.reason ? acceptance.reason : 'rejected';
-            this._onReject({ reason: reason, offer: offer, acceptance: acceptance, origin: origin });
-            return { accepted: false, reason: reason };
-        }
-        var intent = {
-            operationId: acceptance.operationId,
-            subjectKind: offer.subjectKind,
-            sourceRef: offer.sourceRef || null,
-            targetRef: acceptance.targetRef || null,
-            hint: acceptance.hint || null,
-            origin: origin || 'pointer'
-        };
-        this._onIntent(intent, { offer: offer, acceptance: acceptance, sourceItem: sourceItem });
-        this.clearSelection();
-        return { accepted: true, intent: intent };
-    };
-
-    InteractionBroker.prototype.activateSelected = function(targetView, targetHit, origin) {
-        if (!this._selected) return { accepted: false, reason: 'nothing_selected' };
-        return this.dispatch(this._selected.view, this._selected.item, targetView, targetHit, origin || 'click');
-    };
-
-    InteractionBroker.prototype.debugState = function() {
-        return { selectedInstanceKey: this._selected ? viewKey(this._selected.view) : null };
-    };
-
-    InteractionBroker.prototype.isSelectedNode = function(node) {
-        return !!this._selected && this._selected.node === node;
-    };
-
-    function PointerDragController(options) {
-        options = options || {};
-        this._sourceElement = options.sourceElement;
-        this._getSource = options.getSource;
-        this._resolveTarget = options.resolveTarget;
-        this._renderGhost = options.renderGhost || null;
-        this._onDragStart = options.onDragStart || function() {};
-        this._onDragEnd = options.onDragEnd || function() {};
-        this._broker = options.broker;
-        this._allowInteractiveSource = options.allowInteractiveSource === true;
-        this._threshold = Math.max(2, Number(options.threshold) || 5);
-        this._timeoutMs = Math.max(50, Number(options.timeoutMs) || 1400);
-        this._gesture = null;
-        this._suppressedUntil = 0;
-        this._boundDown = this._onPointerDown.bind(this);
-        this._boundMove = this._onPointerMove.bind(this);
-        this._boundUp = this._onPointerUp.bind(this);
-        this._boundCancel = this.cancel.bind(this);
-        if (this._sourceElement) this._sourceElement.addEventListener('pointerdown', this._boundDown);
-    }
-
-    PointerDragController.prototype._onPointerDown = function(event) {
-        if (!this._sourceElement || !this._broker || event.button !== 0 || event.isPrimary === false) return;
-        if (!this._allowInteractiveSource && event.target && event.target.closest
-                && event.target.closest('button,input,textarea,select')) return;
-        var source = this._getSource ? this._getSource(event.target, event) : null;
-        if (!source || !source.view || !source.item || !source.node) return;
-        this.cancel();
-        var self = this;
-        this._gesture = {
-            pointerId: event.pointerId,
-            startX: event.clientX,
-            startY: event.clientY,
-            source: source,
-            dragging: false,
-            ghost: null,
-            target: null,
-            captureNode: source.node,
-            timer: setTimeout(function() { self.cancel('timeout'); }, this._timeoutMs)
-        };
-        this._broker.select(source.view, source.item, source.node);
-        try { if (source.node.setPointerCapture) source.node.setPointerCapture(event.pointerId); } catch (_) {}
-        document.addEventListener('pointermove', this._boundMove);
-        document.addEventListener('pointerup', this._boundUp);
-        document.addEventListener('pointercancel', this._boundCancel);
-    };
-
-    PointerDragController.prototype._onPointerMove = function(event) {
-        var gesture = this._gesture;
-        if (!gesture || event.pointerId !== gesture.pointerId) return;
-        var dx = event.clientX - gesture.startX;
-        var dy = event.clientY - gesture.startY;
-        if (!gesture.dragging && Math.sqrt(dx * dx + dy * dy) < this._threshold) return;
-        if (!gesture.dragging) {
-            gesture.dragging = true;
-            this._onDragStart(gesture.source);
-            gesture.ghost = this._renderGhost ? this._renderGhost(gesture.source) : makeElement('div', 'workbench-drag-ghost');
-            if (gesture.ghost) document.body.appendChild(gesture.ghost);
-        }
-        if (event.preventDefault) event.preventDefault();
-        if (gesture.ghost) {
-            gesture.ghost.style.left = (event.clientX + 14) + 'px';
-            gesture.ghost.style.top = (event.clientY + 14) + 'px';
-        }
-        var nextTarget = this._resolveTarget ? this._resolveTarget(event.clientX, event.clientY, event) : null;
-        if (gesture.target && gesture.target.node && (!nextTarget || nextTarget.node !== gesture.target.node)) {
-            gesture.target.node.classList.remove('workbench-drop-active');
-            gesture.target.node.classList.remove('workbench-drop-rejected');
-        }
-        gesture.target = nextTarget;
-        if (gesture.target && gesture.target.node) {
-            gesture.target.node.classList.remove(gesture.target.accepted === false
-                ? 'workbench-drop-active' : 'workbench-drop-rejected');
-            gesture.target.node.classList.add(gesture.target.accepted === false
-                ? 'workbench-drop-rejected' : 'workbench-drop-active');
-        }
-    };
-
-    PointerDragController.prototype._onPointerUp = function(event) {
-        var gesture = this._gesture;
-        if (!gesture || event.pointerId !== gesture.pointerId) return;
-        if (gesture.dragging) {
-            if (event.preventDefault) event.preventDefault();
-            this._suppressedUntil = Date.now() + 80;
-            if (gesture.target && gesture.target.view) {
-                this._broker.dispatch(gesture.source.view, gesture.source.item, gesture.target.view, gesture.target.hit || {}, 'drag');
-            }
-        }
-        this.cancel('complete');
-    };
-
-    PointerDragController.prototype.consumeClick = function() {
-        return Date.now() < this._suppressedUntil;
-    };
-
-    PointerDragController.prototype.cancel = function() {
-        var gesture = this._gesture;
-        if (!gesture) return;
-        clearTimeout(gesture.timer);
-        if (gesture.target && gesture.target.node) {
-            gesture.target.node.classList.remove('workbench-drop-active');
-            gesture.target.node.classList.remove('workbench-drop-rejected');
-        }
-        if (gesture.ghost && gesture.ghost.parentNode) gesture.ghost.parentNode.removeChild(gesture.ghost);
-        try {
-            if (gesture.captureNode && gesture.captureNode.releasePointerCapture)
-                gesture.captureNode.releasePointerCapture(gesture.pointerId);
-        } catch (_) {}
-        document.removeEventListener('pointermove', this._boundMove);
-        document.removeEventListener('pointerup', this._boundUp);
-        document.removeEventListener('pointercancel', this._boundCancel);
-        this._gesture = null;
-        if (gesture.dragging) this._onDragEnd(gesture.source);
-    };
-
-    PointerDragController.prototype.destroy = function() {
-        this.cancel();
-        if (this._sourceElement) this._sourceElement.removeEventListener('pointerdown', this._boundDown);
-        this._sourceElement = null;
-    };
-
-    PointerDragController.prototype.debugState = function() {
-        return {
-            active: !!this._gesture,
-            dragging: !!(this._gesture && this._gesture.dragging),
-            hasGhost: !!(this._gesture && this._gesture.ghost),
-            hasTarget: !!(this._gesture && this._gesture.target)
-        };
-    };
-
-    function escapeHtml(s) {
-        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    /**
-     * Shared item card primitive. Every catalog card uses the same semantic
-     * shell (icon/body/name/meta/price/overlays); legacy skin class names stay
-     * attached as compatibility tokens while panel CSS migrates gradually.
-     */
-    function ItemCard() {}
-
-    ItemCard.renderCatalog = function(options) {
-        options = options || {};
-        var skin = options.skin || 'kshop';
-        if (skin !== 'kshop' && skin !== 'npcshop') throw new Error('Unsupported ItemCard skin: ' + skin);
-
-        var locked = !!options.locked;
-        var selected = !!options.selected;
-        var nosale = !!options.nosale;
-        var node = makeElement('article', 'item-card item-card-catalog item-card-' + skin);
-        node.classList.add(skin === 'kshop' ? 'kshop-card' : 'npcshop-catalog-card');
-        node.classList.toggle('item-card-locked', locked);
-        node.classList.toggle('item-card-selected', selected);
-        node.classList.toggle('item-card-disabled', nosale);
-
-        if (skin === 'kshop') {
-            node.classList.toggle('kshop-card-nosale', nosale);
-            node.classList.toggle('kshop-card-locked', locked);
-            node.setAttribute('data-idx', String(options.id));
-            node.setAttribute('tabindex', locked || nosale ? '-1' : '0');
-            node.setAttribute('aria-label', options.ariaLabel || '');
-        } else {
-            node.classList.toggle('locked', locked);
-            node.classList.toggle('selected', selected);
-            node.setAttribute('data-catalog-index', String(options.id));
-            node.setAttribute('aria-pressed', selected ? 'true' : 'false');
-            if (locked && options.lockTitle) node.setAttribute('aria-label', options.lockTitle);
-        }
-
-        var icon = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-icon '
-            + (skin === 'kshop' ? 'kshop-card-icon-frame' : 'npcshop-card-icon'));
-        icon.innerHTML = options.iconHtml || '';
-        node.appendChild(icon);
-
-        var body = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-body '
-            + (skin === 'kshop' ? 'kshop-card-info' : 'npcshop-card-copy'));
-        var name = makeElement(skin === 'kshop' ? 'div' : 'b', 'item-card-name'
-            + (skin === 'kshop' ? ' kshop-card-name' : ''));
-        name.textContent = options.name || '';
-        body.appendChild(name);
-
-        var meta;
-        if (locked && skin === 'kshop') {
-            meta = makeElement('div', 'item-card-meta item-card-lock kshop-lock');
-            meta.textContent = options.lockReason || '';
-            meta.setAttribute('aria-label', options.lockReason || '');
-        } else {
-            meta = makeElement(skin === 'kshop' ? 'div' : 'small', 'item-card-meta'
-                + (skin === 'kshop' ? ' kshop-card-type' : ''));
-            meta.textContent = options.meta || '';
-        }
-        body.appendChild(meta);
-
-        var price = makeElement(skin === 'kshop' ? 'div' : 'strong', 'item-card-price'
-            + (skin === 'kshop' ? ' kshop-card-price' : ''));
-        if (skin === 'kshop' && options.priceLabel) {
-            var priceLabel = makeElement('span', 'item-card-price-label');
-            priceLabel.textContent = options.priceLabel;
-            price.appendChild(priceLabel);
-            price.appendChild(document.createTextNode(' '));
-        }
-        price.appendChild(document.createTextNode(String(options.priceText != null ? options.priceText : options.price || '')));
-        body.appendChild(price);
-        node.appendChild(body);
-
-        var overlays = makeElement('span', 'item-card-overlays');
-        if (skin === 'npcshop') {
-            var marker = makeElement('span', 'item-card-auxiliary item-card-selection-marker npcshop-selection-marker');
-            marker.textContent = options.markerText || '';
-            overlays.appendChild(marker);
-        }
-        if (options.extraHtml) {
-            var extra = makeElement('span', 'item-card-extra');
-            extra.innerHTML = options.extraHtml;
-            while (extra.firstChild) overlays.appendChild(extra.firstChild);
-        }
-        node.appendChild(overlays);
-
-        return node;
-    };
 
     /**
      * Shared item grid primitive. Wraps GridContainerView/ContainerViewAdapter
@@ -1049,6 +941,7 @@
         GridContainerView: GridContainerView,
         InteractionBroker: InteractionBroker,
         PointerDragController: PointerDragController,
+        EntityTile: EntityTile,
         ItemCard: ItemCard,
         ItemGrid: ItemGrid,
         GridDensityController: GridDensityController,
