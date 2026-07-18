@@ -1,7 +1,7 @@
 # 双栏工作台 UI 系统约束
 
 **文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
-**最后核对代码基线**：commit `3343c1ef2244e0c6253fc95f5b6334095f049f57`（2026-07-18）。
+**最后核对代码基线**：commit `711c469036ad6b1226833faf255499abb1ebf2ed`（2026-07-18）+ 当前工作台回归修复工作树。
 
 本文适用于 `kshop`、`npcshop`、`crafting`、独立 `workbench`、嵌入式装备调制和 `skills` 中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
 
@@ -121,7 +121,7 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 
 ## 8. 生命周期与资源所有权
 
-共享视图生命周期为 `mount → activate → deactivate → unmount → destroy`。`destroy` 必须幂等；重复 open/close/rebind 后 listener、timer、RAF、ResizeObserver、tooltip 和 pending callback 数量不得增长。
+共享视图生命周期为 `mount → activate → deactivate → unmount → destroy`。`destroy` 必须幂等；进入 destroy 后必须先封闭 mount/activate/destroy 重入，再释放 session、host 与 lifetime，不能让销毁回调复活半个实例。重复 open/close/rebind 后 listener、timer、RAF、ResizeObserver、tooltip 和 pending callback 数量不得增长。
 
 每个面板实例持有唯一 session/epoch。异步回调在应用前验证 panel instance、session epoch、operation kind 与 intent revision；旧实例回包只能被丢弃。批量 snapshot 必须验证请求容器 exact-set、唯一性和 window 参数后再原子应用。
 
@@ -133,7 +133,9 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 - `workbench-lifecycle.js`：`DisposableStack` 与 `PanelLifecycle`，失败挂载/激活必须回滚；
 - `workbench-focus.js`：栈式 `FocusScope`，统一初始焦点、Tab 环、Esc、opener restore 与祖先 `hidden/inert/aria-hidden` 排除；多层 scope 对底层 suppression 采用引用计数，乱序关闭也必须精确还原；
 - `workbench-primitives.js`：EntityTile、ItemCard、InteractionBroker、PointerDragController 等中性 UI/交互 primitive；
-- `workbench-components.js`：SecondaryPage、ChoiceGroup、CommitBar、OwnedInventoryPane；所有 open/close/destroy 回调都必须容忍重入和异常，并保持 DOM、focus stack 与业务 active 状态一致。
+- `workbench-components.js`：SecondaryPage、ChoiceGroup、CommitBar、OwnedInventoryPane；所有 open/close/destroy 回调都必须容忍重入和异常，并保持 DOM、focus stack 与业务 active 状态一致。并列 SecondaryPage 按打开顺序形成模态栈，只允许顶层页进入可访问树；关闭顶层恢复下层，关闭被覆盖下层不得在后续 unwind 中复活，焦点须沿 opener 链跳过已关闭页。
+
+共享异步 tooltip 同时记录 pointer/focus 活性和 owner 顺序。临时 hover owner 离开或销毁后，应恢复仍聚焦的上一 owner；anchored 内容从占位更新为富内容、字体或图片迟到时，必须以 transform 后的物理尺寸重新测量并夹紧视口。
 
 ## 9. 组件边界
 
@@ -156,7 +158,7 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 
 ## 10. CSS 级联与文件治理
 
-当前 `css/panels.css` 是纯 `@import` facade；历史样式按原顺序保存在 `panels/foundation-top.css`、`panels/foundation-rest.css`、`panels/features.css`，工作台样式物理拆为 `workbench/{tokens,core,inventory,skins,entities,crafting,skills,equipment-tuning,components,states,motion}.css`。`tools/lib/read-css-bundle.js` 以与浏览器相同的顺序递归解析，拒绝循环、越根和丢失的外部 import；静态审计必须扫描聚合结果而不是只扫 facade。
+当前 `css/panels.css` 是纯 `@import` facade；历史样式按原顺序保存在 `panels/foundation-top.css`、`panels/foundation-rest.css`、`panels/features.css`，工作台样式物理拆为 `workbench/{tokens,core,inventory,skins,entities,crafting,skills,equipment-tuning,components,states,motion}.css`。`tools/lib/read-css-bundle.js` 以与浏览器相同的顺序递归解析，拒绝循环、越根和丢失的外部 import；静态审计必须扫描聚合结果而不是只扫 facade。`launcher/build.ps1` 必须调用 `tools/check-workbench-css-bundle.js`，因此 transitive import 与本地 `url()` 闭包也是 candidate build 的 fail-fast 门；checker 与 reader 本身属于 runtime build recipe 身份输入。
 
 新共享规则已使用 `workbench.components → workbench.states → workbench.motion` named layers；历史 feature/skin 仍暂时保持 unlayered，以避免物理拆分同时重排既有级联。下一阶段的目标层序仍为 `tokens → reset/base → shell → components → states → feature → skin → utilities`，但只有在跨面板截图与 computed style 对照稳定后才迁移旧规则。组件 selector 不得依赖面板祖先超过一层；skin 通过 token 或明确 `data-workbench-skin` 覆盖。`!important` 只允许暂存于迁移兼容层，并登记退出条件。
 

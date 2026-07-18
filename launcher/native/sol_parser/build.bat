@@ -24,13 +24,21 @@ if errorlevel 1 exit /b 1
 cd /d "%~dp0"
 echo [INFO] Building sol_parser.dll ...
 
-set "OUTDIR=%~dp0..\..\bin\Release"
+if defined CF7_NATIVE_OUTPUT_DIR (
+    set "OUTDIR=%CF7_NATIVE_OUTPUT_DIR%"
+) else (
+    set "OUTDIR=%~dp0..\..\bin\Release"
+)
 if not exist "!OUTDIR!" mkdir "!OUTDIR!"
 
 set "CARGO_INCREMENTAL=0"
 set "RUSTFLAGS="
 set "RUSTC=%CF7_RUSTC_EXE%"
-set "CARGO_TARGET_DIR=%~dp0target"
+if defined CF7_CARGO_TARGET_DIR (
+    set "CARGO_TARGET_DIR=%CF7_CARGO_TARGET_DIR%"
+) else (
+    set "CARGO_TARGET_DIR=%~dp0target"
+)
 "%CF7_CARGO_EXE%" clean --release --target x86_64-pc-windows-msvc
 if errorlevel 1 exit /b 1
 "%CF7_CARGO_EXE%" build --release --locked --target x86_64-pc-windows-msvc

@@ -136,4 +136,45 @@ test('unmount completes teardown even when deactivate fails', () => {
     assert.strictEqual(lifecycle.state(), 'unmounted');
 });
 
+test('destroy rejects reentrant mount and activate without leaking a mount session', () => {
+    const calls = [];
+    const originalHost = {id:'original'};
+    const reentrantHost = {id:'reentrant'};
+    let lifecycle;
+    lifecycle = new Lifecycle.PanelLifecycle({
+        mount(host, mountSession) {
+            calls.push('mount:' + host.id);
+            mountSession.defer(() => calls.push('mount-dispose:' + host.id));
+        },
+        activate(context, session) {
+            calls.push('activate:' + context.id);
+            session.defer(() => calls.push('session-dispose:' + context.id));
+        },
+        destroy() {
+            calls.push('destroy-callback');
+            calls.push('reentrant-mount:' + lifecycle.mount(reentrantHost));
+            calls.push('reentrant-activate:' + lifecycle.activate({id:'reentrant'}));
+            calls.push('reentrant-destroy:' + lifecycle.destroy('nested'));
+        }
+    });
+    lifecycle.mount(originalHost);
+    lifecycle.activate({id:'original'});
+
+    assert.strictEqual(lifecycle.destroy('final'), true);
+    assert.deepStrictEqual(calls, [
+        'mount:original',
+        'activate:original',
+        'session-dispose:original',
+        'mount-dispose:original',
+        'destroy-callback',
+        'reentrant-mount:false',
+        'reentrant-activate:false',
+        'reentrant-destroy:false'
+    ]);
+    assert.strictEqual(lifecycle.state(), 'destroyed');
+    assert.strictEqual(lifecycle.host(), null);
+    assert.strictEqual(lifecycle._mountSession, null);
+    assert.strictEqual(lifecycle._session, null);
+});
+
 process.stdout.write('Workbench lifecycle ' + passed + '/' + passed + ' passed\n');

@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `0f51b55eaf`（2026-07-15）；Skill S0–S5 代码纵切另核对本轮工作树，S4C 资产发布与 S5 真机 Gate 尚未闭合，S6 未开始。
+**最后核对代码基线**：commit `0f51b55eaf`（2026-07-15）+ 当前 runtime v2 发布列车与 Skill S0–S5 工作树；S4C 资产发布与 S5 真机 Gate 尚未闭合，S6 未开始。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
@@ -76,7 +76,11 @@
 
 - `launcher/scripts/` 中的 TypeScript 编译为 V8 运行时代码
 - `launcher/native/sol_parser/` 通过 Rust 生成 `sol_parser.dll`
-- Windows runtime 发布由精确工具链环境锁、源码输入身份和 manifest 原子集合共同约束；跨机器写入规则见 [runtime-build-reproducibility.md](../docs/runtime-build-reproducibility.md)
+- Windows runtime 发布已分成正交控制面：prepare 只派生 tracked 资产；policy 只读审计并签发绑定 Git tree 的 receipt；纯 producer 只消费 artifact source + producer recipe + toolchain lock，在隔离输出中生成 payload/manifest，不让政策变化进入 build identity
+- release train 把最终 Git tree + policy hash 冻结为无自由命令字段的 request/Git bundle；bundle 内构建源码仍会执行，因此共享 queue 是 ACL 收紧的信任边界。本地 worker 清除外部 Git index/worktree/object 上下文，用 lease/heartbeat/mutex 在 MAX_PATH 预算内的短隔离 clone 构建，失败诊断受限归档，candidate 按 build identity + payload closure 进入 CAS。payload closure 排除 manifest，避免元数据变化伪装成二进制失衡
+- v2 生产证明有两个信任根：注册本地机器以 CurrentUser 不可导出 X509 key 签名；GitHub hosted Windows 以固定 repo/workflow/source-ref 的 OIDC/Sigstore keyless provenance 证明。promotion 同时要求不同 signer identity 与不同 faultDomain，推荐 local + GitHub 双域
+- promotion 是正式部署唯一写入口：验证 immutable request、production receipt、候选字节与 quorum 后事务替换 bootstrap/runtime/consensus，失败回滚；CI 对所有分支先验 byte closure，开发分支部署不变时允许 `source-ahead`。保护分支仅有一次 hash-bound `migration-bootstrap` 可在 legacy 部署零变化时先合入 cloud workflow/公钥 registry；permanent marker 进入 base 后只接受完整 v2 promotion，v2 激活后禁止降级 v1。当前正式部署仍处 v1 迁移兼容期
+- 身份 schema、队列/CAS、enrollment、cloud proof、promotion 与 CI 状态机见 [runtime-build-reproducibility.md](../docs/runtime-build-reproducibility.md)
 - PowerShell 承担 Windows 环境下的启动、编译 smoke、CLI 和诊断自动化
 - 这里的 Node / Rust 都属于**受控边界件**，不是独立应用栈；它们存在的理由是为现有运行时服务
 

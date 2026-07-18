@@ -8,7 +8,11 @@ setlocal
 set "SCRIPT_DIR=%~dp0"
 :: SCRIPT_DIR 末尾带反斜杠，去掉
 if "%SCRIPT_DIR:~-1%"=="\" set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
-set "OUT_DIR=%SCRIPT_DIR%\..\..\bin\Release"
+if defined CF7_NATIVE_OUTPUT_DIR (
+    set "OUT_DIR=%CF7_NATIVE_OUTPUT_DIR%"
+) else (
+    set "OUT_DIR=%SCRIPT_DIR%\..\..\bin\Release"
+)
 
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 

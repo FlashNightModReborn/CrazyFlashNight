@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**最后核对代码基线**：commit `e9aaf0a7a6`（2026-07-16）+ 当前装备调制无人值守入口工作树。
+**最后核对代码基线**：commit `e9aaf0a7a6`（2026-07-16）+ 当前装备调制无人值守入口与 runtime v2 发布列车工作树。
 
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
@@ -116,10 +116,28 @@ node tools/arena-calibration/run-unattended.js `
 
 ```powershell
 chcp.com 65001 | Out-Null
-powershell -File ..\launcher\build.ps1
+powershell -File ..\launcher\tests\run_tests.ps1
+# 需要本地完整 candidate 时：
+powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 ```
 
-该入口只允许在 [运行时构建基线](../docs/runtime-build-reproducibility.md) 校验通过的 builder 执行；新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境可加 `-VerifyOnly` 只做字节复核。`launcher/build.ps1 -BuilderId <id>` 只生成隔离 candidate，至少两台 builder 闭包一致后由 `tools/promote-runtime-bundle.ps1` 更新正式 runtime；普通开发机不要为消除源码 diff 自动重建或手工复制 runtime。
+`launcher/build.ps1` 现在只是 prepare → pure producer → read-only policy 的兼容编排器；它生成隔离 candidate，但不构成本地签名或正式发布。新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境加 `-VerifyOnly`；普通 Web/AS2/数据改动不要求取得 runtime 发布权，也不要为消除 `source-ahead` 自动重建二进制。
+
+正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
+
+当前 `builder-local-a` / `physical-host-a` 的非导出 CurrentUser 私钥已实签验证，registry 仅含其公钥；仍缺 cloud 第二票与正式 v2 promotion。一次性 migration marker 只负责让固定 workflow 先进入 default branch，不能发布二进制；marker 合入后下一提交必须完成 v2 promotion。
+
+```powershell
+$request = ..\tools\new-runtime-build-request.ps1 `
+  -QueueRoot <queue-root> -SourceKind Treeish -Treeish <full-commit>
+..\tools\invoke-runtime-build-worker.ps1 `
+  -QueueRoot <queue-root> -WorkerId <id> -CertificateThumbprint <thumbprint> -Once
+..\tools\get-runtime-build-request-status.ps1 `
+  -QueueRoot <queue-root> -RequestId $request.requestId
+$cloud = ..\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
+```
+
+最后一条命令会触发固定 cloud workflow、等待精确 run、安全解压并产出 `$cloud.candidateRoot` / `$cloud.proofPath`。request、队列/CAS、双故障域 quorum、receipt 与 `promote-runtime-bundle.ps1` 的完整步骤以 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md) 为准。当前正式部署仍是 v1；首次 v2 promotion 前禁止手工换 manifest，任何时候都禁止把单机 candidate 复制进根 runtime。
 
 ### 改 Flash / AS2
 

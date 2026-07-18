@@ -449,7 +449,7 @@ test('closing a parent SecondaryPage keeps descendant page state and FocusScope 
     outer.destroy();
 });
 
-test('stacked sibling SecondaryPages never suppress the active root or corrupt underlay restoration', check => {
+test('stacked sibling SecondaryPages expose only the top dialog and restore the lower page', check => {
     const environment = loadEnvironment();
     const document = environment.document;
     const background = document.createElement('main');
@@ -471,16 +471,19 @@ test('stacked sibling SecondaryPages never suppress the active root or corrupt u
     check.equal(secondRoot.inert, false, 'active sibling root is not inert');
     check.equal(secondRoot.hasAttribute('inert'), false, 'active sibling root has no inert attribute');
     check.equal(secondRoot.getAttribute('aria-hidden'), 'false', 'active sibling root is exposed to accessibility tree');
+    check.equal(firstRoot.inert, true, 'lower active sibling is inert while covered');
+    check.equal(firstRoot.hasAttribute('inert'), true, 'lower active sibling has inert attribute while covered');
+    check.equal(firstRoot.getAttribute('aria-hidden'), 'true', 'lower active sibling is hidden from accessibility tree');
     check.equal(background.inert, true, 'background remains suppressed while siblings are stacked');
 
+    second.close('top-close');
+    check.equal(first.isActive(), true, 'lower sibling remains active after top close');
+    check.equal(firstRoot.inert, false, 'restored lower sibling is non-inert');
+    check.equal(firstRoot.hasAttribute('inert'), false, 'restored lower sibling has no inert attribute');
+    check.equal(firstRoot.getAttribute('aria-hidden'), 'false', 'restored lower sibling returns to accessibility tree');
+    check.equal(background.inert, true, 'background stays suppressed while lower sibling remains active');
+    check.equal(background.getAttribute('aria-hidden'), 'true', 'background stays aria-hidden while lower sibling remains active');
     first.close('lower-close');
-    if (second.isActive()) {
-        check.equal(secondRoot.inert, false, 'remaining top sibling stays non-inert after lower close');
-        check.equal(secondRoot.getAttribute('aria-hidden'), 'false', 'remaining top sibling stays accessible after lower close');
-        check.equal(background.inert, true, 'background stays suppressed while top sibling remains active');
-        check.equal(background.getAttribute('aria-hidden'), 'true', 'background stays aria-hidden while top sibling remains active');
-        second.close('top-close');
-    }
 
     check.equal(first.isActive(), false, 'first sibling is inactive after unwind');
     check.equal(second.isActive(), false, 'second sibling is inactive after unwind');
@@ -488,6 +491,43 @@ test('stacked sibling SecondaryPages never suppress the active root or corrupt u
     check.equal(secondRoot.getAttribute('aria-hidden'), 'true', 'second closed root remains aria-hidden');
     assertRestored(check, background, 'background after sibling unwind');
     assertScopeResources(check, environment, 0, 'after sibling unwind');
+    first.destroy();
+    second.destroy();
+});
+
+test('closing a covered sibling cannot make it visible when the top page later closes', check => {
+    const environment = loadEnvironment();
+    const document = environment.document;
+    const background = document.createElement('main');
+    const backgroundButton = document.createElement('button');
+    const firstRoot = document.createElement('section');
+    const secondRoot = document.createElement('section');
+    firstRoot.appendChild(document.createElement('button'));
+    secondRoot.appendChild(document.createElement('button'));
+    background.appendChild(backgroundButton);
+    document.body.appendChild(background);
+    document.body.appendChild(firstRoot);
+    document.body.appendChild(secondRoot);
+    const first = new environment.Components.SecondaryPage({root:firstRoot, document, role:'dialog'});
+    const second = new environment.Components.SecondaryPage({root:secondRoot, document, role:'dialog'});
+    first.mount(document.body);
+    second.mount(document.body);
+    backgroundButton.focus();
+    first.open();
+    second.open();
+
+    first.close('covered-close');
+    check.equal(first.isActive(), false, 'covered sibling closes its own lifecycle');
+    check.equal(firstRoot.getAttribute('aria-hidden'), 'true', 'covered closed sibling stays hidden');
+    check.equal(firstRoot.inert, true, 'top page still suppresses the covered closed sibling');
+    check.equal(secondRoot.getAttribute('aria-hidden'), 'false', 'top sibling remains exposed');
+
+    second.close('top-close');
+    check.equal(firstRoot.getAttribute('aria-hidden'), 'true', 'closed lower sibling is not resurrected by restoration');
+    check.equal(firstRoot.inert, false, 'closed lower sibling releases temporary inert state');
+    check.equal(document.activeElement, backgroundButton, 'focus skips the closed lower sibling and returns to its opener');
+    assertRestored(check, background, 'background after covered sibling unwind');
+    assertScopeResources(check, environment, 0, 'after covered sibling unwind');
     first.destroy();
     second.destroy();
 });

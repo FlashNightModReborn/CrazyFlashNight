@@ -1,0 +1,155 @@
+{
+  "schema": "cf7-runtime-inputs.v2",
+  "domains": {
+    "artifactSource": {
+      "fixedFiles": [
+        "launcher/CRAZYFLASHER7MercenaryEmpire.csproj",
+        "launcher/Directory.Packages.props",
+        "launcher/packages.lock.json",
+        "launcher/app.ico",
+        "launcher/app.manifest",
+        "launcher/native/sol_parser/Cargo.toml",
+        "launcher/native/sol_parser/Cargo.lock"
+      ],
+      "trees": [
+        {
+          "path": "launcher/src",
+          "includeExtensions": [".cs"],
+          "excludePaths": ["launcher/src/Guardian/HotkeyGuard.cs"],
+          "excludePrefixes": []
+        },
+        {
+          "path": "launcher/native",
+          "includeExtensions": [".c", ".cpp", ".h", ".rc"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "launcher/native/sol_parser",
+          "includeExtensions": [".rs"],
+          "excludePaths": [],
+          "excludePrefixes": [
+            "launcher/native/sol_parser/examples/",
+            "launcher/native/sol_parser/tests/"
+          ]
+        }
+      ]
+    },
+    "producerRecipe": {
+      "fixedFiles": [
+        ".gitattributes",
+        "launcher/build-runtime-candidate.ps1",
+        "launcher/native/assert-pinned-tools.bat",
+        "launcher/native/build.bat",
+        "launcher/native/bootstrap/build.bat",
+        "launcher/native/sol_parser/build.bat",
+        "tools/check-runtime-build-env.ps1",
+        "tools/runtime-build-v2-common.ps1"
+      ],
+      "trees": []
+    },
+    "toolchainLock": {
+      "fixedFiles": [
+        "config/build/runtime-toolchain.lock.json",
+        "global.json",
+        "launcher/native/sol_parser/rust-toolchain.toml"
+      ],
+      "trees": []
+    },
+    "policy": {
+      "fixedFiles": [
+        ".github/workflows/runtime-bundle-integrity.yml",
+        ".github/workflows/runtime-cloud-builder.yml",
+        "config/build/runtime-builders.v2.json",
+        "config/build/runtime-github-builder.v2.json",
+        "config/build/runtime-inputs.v2.json",
+        "config/build/runtime-v2-migration-bootstrap.json",
+        "launcher/build.ps1",
+        "tools/assert-optimized.cs",
+        "tools/audit-map-scale-experience.js",
+        "tools/audit-map-webp-assets.js",
+        "tools/audit-native-cursor-assets.js",
+        "tools/audit-pet-roster-types.ps1",
+        "tools/audit-web-icon-render-entrypoints.js",
+        "tools/audit-web-item-icon-closure.js",
+        "tools/bootstrap-runtime-build-env.ps1",
+        "tools/check-workbench-css-bundle.js",
+        "tools/classify-runtime-release-state.ps1",
+        "tools/get-runtime-build-request-status.ps1",
+        "tools/invoke-runtime-build-worker.ps1",
+        "tools/invoke-runtime-github-build.ps1",
+        "tools/lib/read-css-bundle.js",
+        "tools/new-runtime-build-request.ps1",
+        "tools/new-runtime-github-build-envelope.ps1",
+        "tools/prepare-launcher-release-assets.ps1",
+        "tools/promote-runtime-bundle.ps1",
+        "tools/derive-achievement-catalog.js",
+        "tools/derive-arena-custom-presets.js",
+        "tools/derive-arena-unit-catalog.js",
+        "tools/derive-arena-unit-param-presets.js",
+        "tools/derive-map-catalog.js",
+        "tools/derive-task-catalog.js",
+        "tools/derive-task-npc-registry.js",
+        "tools/export-maphud-data.js",
+        "tools/extract-save-schema.js",
+        "tools/runtime-build-attestation-v2-common.ps1",
+        "tools/runtime-build-common.ps1",
+        "tools/runtime-build-queue-common.ps1",
+        "tools/register-runtime-builder.ps1",
+        "tools/test-runtime-build-consensus.ps1",
+        "tools/test-runtime-build-queue.ps1",
+        "tools/test-runtime-build-v2.ps1",
+        "tools/test-runtime-github-attestation.ps1",
+        "tools/test-invoke-runtime-github-build.ps1",
+        "tools/test-runtime-release-policy.ps1",
+        "tools/test-runtime-release-consensus-v2.ps1",
+        "tools/test-runtime-release-state.ps1",
+        "tools/test-derive-task-conditions.js",
+        "tools/validate-launcher-release-policy.ps1",
+        "tools/validate-equipment-mod-ui.js",
+        "tools/validate-item-sets.js",
+        "tools/validate-npc-shops.js",
+        "tools/verify-runtime-bundle.ps1",
+        "tools/verify-runtime-bundle-v2.ps1",
+        "tools/verify-runtime-consensus.ps1",
+        "tools/verify-runtime-github-attestation.ps1",
+        "data/map/task_npc_registry.json",
+        "data/map/map_catalog.json",
+        "launcher/data/map_hud_data.json",
+        "launcher/data/save_repair_dict.json",
+        "launcher/data/save_schema.json",
+        "launcher/web/modules/tasks/task-catalog.json",
+        "launcher/web/modules/tasks/achievement-catalog.json",
+        "launcher/web/modules/arena-unit-catalog.js",
+        "launcher/web/modules/arena-unit-param-presets.js",
+        "launcher/web/modules/arena-custom-presets.js"
+      ],
+      "trees": [
+        {
+          "path": "launcher/scripts",
+          "includeExtensions": [".ts", ".js", ".json"],
+          "excludePaths": [],
+          "excludePrefixes": ["launcher/scripts/node_modules/"]
+        },
+        {
+          "path": "tools/cf7-save-repair-dict-build",
+          "includeExtensions": [".ts", ".json"],
+          "excludePaths": [],
+          "excludePrefixes": ["tools/cf7-save-repair-dict-build/node_modules/"]
+        }
+      ]
+    }
+  },
+  "payload": {
+    "fixedRoots": ["CRAZYFLASHER7MercenaryEmpire.exe"],
+    "trees": ["runtime"],
+    "excludePaths": [
+      "runtime/cf7-runtime-manifest.tsv",
+      "runtime/runtime-build-attestation.json",
+      "runtime/runtime-release-consensus.json"
+    ],
+    "excludePrefixes": [
+      "runtime/attestations/"
+    ]
+  }
+}

@@ -582,19 +582,19 @@ var KShop = (function() {
         if (!_writeCoordinator.checkout(token, function(resp) {
             if (!isKShopOpen()) return;
             var needsInventoryRefresh = !!resp.success || !!resp.reconciled;
+            if (resp.success) {
+                _kpoints = resp.newBalance;
+                if (_balanceEl) _balanceEl.textContent = _kpoints;
+                _purchased = resp.purchased || [];
+                _purchasedToken = String(resp.purchasedToken || _purchasedToken);
+                _cart = resp.cart || [];
+                _writeCoordinator.acceptAuthoritativeCart();
+                _cartController.closeSettlement();
+                _cartController.render();
+                renderClaimed();
+            }
             if (!_inventoryCoordinator.completeExternalWrite(inventoryWrite, needsInventoryRefresh, function(refreshResult) {
                 if (!isKShopOpen()) return;
-                if (resp.success) {
-                    _kpoints = resp.newBalance;
-                    if (_balanceEl) _balanceEl.textContent = _kpoints;
-                    _purchased = resp.purchased || [];
-                    _purchasedToken = String(resp.purchasedToken || _purchasedToken);
-                    _cart = [];
-                    _writeCoordinator.acceptAuthoritativeCart();
-                    _cartController.closeSettlement();
-                    _cartController.render();
-                    renderClaimed();
-                }
                 _ownedPresenter.render();
                 if (resp.success && refreshResult.success) {
                     toast('购买成功，商品已直接交付！');

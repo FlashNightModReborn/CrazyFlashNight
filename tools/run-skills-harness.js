@@ -12,6 +12,16 @@ const ROOT = path.resolve(__dirname, '..');
 const WEB = path.join(ROOT, 'launcher', 'web');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
 
+function inOrder(source, fragments) {
+    let cursor = 0;
+    return fragments.every(fragment => {
+        const index = source.indexOf(fragment, cursor);
+        if (index < 0) return false;
+        cursor = index + fragment.length;
+        return true;
+    });
+}
+
 function parseArgs(argv) {
     const args = { browser: 'edge', headed: false, viewport: '' };
     for (let i = 0; i < argv.length; i += 1) {
@@ -49,6 +59,7 @@ function staticAudit() {
     const registry = read('launcher/web/modules/panels-lazy-registry.js');
     const css = readCssBundle(path.join(ROOT, 'launcher/web/css/panels.css'), {rootDir:path.join(ROOT, 'launcher/web/css')});
     const build = read('launcher/build.ps1');
+    const releasePolicy = read('tools/validate-launcher-release-policy.ps1');
     if (!panel.includes("Panels.register('skills'") || !panel.includes('new Workbench.DualPaneShell')) throw new Error('skills production panel registration/shell missing');
     if (!panel.includes("writeCommand('equip'") || !panel.includes("writeCommand('learnCommit'") || !panel.includes('expectedLearnToken')) throw new Error('skill manage/trainer write flow missing');
     if (!panel.includes('function handleTrainerExpired') || !renderer.includes('function renderTrainerExpired')
@@ -115,8 +126,9 @@ function staticAudit() {
         'modules/skills-diagnostics.js',
         'modules/skills.js'
     ];
-    if (!skillsRegistry || requiredSkillsDependencies.some(dependency => !skillsRegistry.includes("'" + dependency + "'"))) {
-        throw new Error('skills lazy registry dependency closure missing');
+    const orderedSkillsDependencies = requiredSkillsDependencies.map(dependency => "'" + dependency + "'");
+    if (!skillsRegistry || !inOrder(skillsRegistry, orderedSkillsDependencies)) {
+        throw new Error('skills lazy registry dependency closure/order missing');
     }
     if (!workbenchPrimitives.includes("gesture.target.accepted === false")
         || !workbenchPrimitives.includes('this._allowInteractiveSource')
@@ -144,8 +156,11 @@ function staticAudit() {
         || !css.includes('font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif')
         || !css.includes('.skills-panel .workbench-slot-marker') || !css.includes('data-modal-kind="skills-help"')) throw new Error('skills band/tile/tooltip/filter/search/diagnostic/help CSS missing');
     if (/\.skills-density-compact\s+\.skills-(?:loadout|slot)/.test(css)) throw new Error('skill-library density must not resize the fixed gameplay hotbar');
-    const requiredSkillsBuildAssets = requiredSkillsDependencies.map(dependency => '"' + dependency.replace(/\//g, '\\') + '"');
-    if (requiredSkillsBuildAssets.some(asset => !build.includes(asset))) throw new Error('launcher build required asset list missing skills dependency');
+    const requiredSkillsBuildAssets = requiredSkillsDependencies.map(dependency => dependency.replace(/\//g, '\\'));
+    if (!build.includes('validate-launcher-release-policy.ps1')
+        || requiredSkillsBuildAssets.some(asset => !releasePolicy.includes(asset))) {
+        throw new Error('launcher release policy required asset list missing skills dependency');
+    }
 }
 
 function bridgeSendAudit() {

@@ -1,7 +1,8 @@
 ﻿param(
     [string]$ProjectRoot,
     [string]$DeploymentRoot,
-    [switch]$Staged
+    [switch]$Staged,
+    [switch]$IntegrityOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -107,14 +108,19 @@ foreach ($row in $fileRows) {
     } catch { $errors += "missing/read $($row.Path): $($_.Exception.Message)" }
 }
 
-$actualSource = Get-Cf7RuntimeSourceTreeHash -ProjectRoot $ProjectRoot -Mode $(if ($Staged) { 'Index' } else { 'Worktree' })
-$actualToolchain = Get-Cf7ToolchainLockHash -ProjectRoot $ProjectRoot -Mode $(if ($Staged) { 'Index' } else { 'Worktree' })
-if ($actualSource -ne $metadata.sourceTreeHash) { $errors += "sourceTreeHash expected=$($metadata.sourceTreeHash) actual=$actualSource" }
-if ($actualToolchain -ne $metadata.toolchainLockHash) { $errors += "toolchainLockHash expected=$($metadata.toolchainLockHash) actual=$actualToolchain" }
+$actualSource = $metadata.sourceTreeHash
+$actualToolchain = $metadata.toolchainLockHash
+if (-not $IntegrityOnly) {
+    $actualSource = Get-Cf7RuntimeSourceTreeHash -ProjectRoot $ProjectRoot -Mode $(if ($Staged) { 'Index' } else { 'Worktree' })
+    $actualToolchain = Get-Cf7ToolchainLockHash -ProjectRoot $ProjectRoot -Mode $(if ($Staged) { 'Index' } else { 'Worktree' })
+    if ($actualSource -ne $metadata.sourceTreeHash) { $errors += "sourceTreeHash expected=$($metadata.sourceTreeHash) actual=$actualSource" }
+    if ($actualToolchain -ne $metadata.toolchainLockHash) { $errors += "toolchainLockHash expected=$($metadata.toolchainLockHash) actual=$actualToolchain" }
+}
 
 if ($errors.Count -gt 0) {
     foreach ($message in $errors) { Write-Host "[RuntimeBundle] MISMATCH $message" -ForegroundColor Red }
     Write-Host "[RuntimeBundle] FAIL mode=$(if ($Staged) {'staged'} else {'worktree'})" -ForegroundColor Red
     exit 2
 }
-Write-Host "[RuntimeBundle] OK mode=$(if ($Staged) {'staged'} else {'worktree'}) files=$($fileRows.Count) sourceTreeHash=$actualSource toolchainLockHash=$actualToolchain" -ForegroundColor Green
+$state = if ($IntegrityOnly) { 'integrity-only' } else { 'coherent' }
+Write-Host "[RuntimeBundle] OK state=$state mode=$(if ($Staged) {'staged'} else {'worktree'}) files=$($fileRows.Count) sourceTreeHash=$actualSource toolchainLockHash=$actualToolchain" -ForegroundColor Green

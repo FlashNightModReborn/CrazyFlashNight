@@ -1,0 +1,289 @@
+param([string]$ProjectRoot)
+
+$ErrorActionPreference = 'Stop'
+if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
+$ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+. (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1')
+. (Join-Path $ProjectRoot 'tools\runtime-build-attestation-v2-common.ps1')
+
+$script:checks = 0
+$createdThumbprints = New-Object 'System.Collections.Generic.List[string]'
+$testRoot = Join-Path $ProjectRoot ("tmp\runtime-build-v2-test-" + [Guid]::NewGuid().ToString('N'))
+$tmpRoot = [IO.Path]::GetFullPath((Join-Path $ProjectRoot 'tmp')).TrimEnd('\') + '\'
+$resolvedTestRoot = [IO.Path]::GetFullPath($testRoot).TrimEnd('\')
+if (-not $resolvedTestRoot.StartsWith($tmpRoot, [StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe runtime v2 test path.' }
+$utf8NoBom = New-Object Text.UTF8Encoding($false)
+
+function Write-TestText([string]$Path, [string]$Value) {
+    $parent = Split-Path -Parent $Path
+    if (-not (Test-Path -LiteralPath $parent -PathType Container)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
+    [IO.File]::WriteAllText($Path, $Value, $utf8NoBom)
+}
+
+function Assert-Equal([string]$Label, $Expected, $Actual) {
+    if ([string]$Expected -ne [string]$Actual) { throw "$Label expected=$Expected actual=$Actual" }
+    $script:checks++
+}
+
+function Assert-NotEqual([string]$Label, $Left, $Right) {
+    if ([string]$Left -eq [string]$Right) { throw "$Label unexpectedly remained $Left" }
+    $script:checks++
+}
+
+function Expect-Failure([string]$Label, [scriptblock]$Action) {
+    try { & $Action; throw "Expected failure did not occur: $Label" }
+    catch {
+        if ($_.Exception.Message -eq "Expected failure did not occur: $Label") { throw }
+        $script:checks++
+    }
+}
+
+function New-TestCertificate([string]$Name) {
+    $certificate = New-SelfSignedCertificate `
+        -Type Custom `
+        -Subject "CN=CF7 Runtime V2 Test $Name $([Guid]::NewGuid().ToString('N'))" `
+        -CertStoreLocation 'Cert:\CurrentUser\My' `
+        -KeyAlgorithm RSA `
+        -KeyLength 2048 `
+        -HashAlgorithm SHA256 `
+        -KeyExportPolicy NonExportable `
+        -KeyUsage DigitalSignature `
+        -NotAfter ([DateTime]::UtcNow.AddDays(2)) `
+        -TextExtension @('2.5.29.19={critical}{text}ca=false', '2.5.29.37={text}1.3.6.1.5.5.7.3.3')
+    $script:createdThumbprints.Add($certificate.Thumbprint.Replace(' ', '').ToUpperInvariant())
+    return $certificate
+}
+
+function New-RegistryEntry([System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate, [string]$BuilderId, [string]$FaultDomain) {
+    return [pscustomobject][ordered]@{
+        builderId = $BuilderId
+        keyId = Get-Cf7RuntimeV2BuilderKeyId -Certificate $Certificate
+        certificateThumbprint = $Certificate.Thumbprint.Replace(' ', '').ToUpperInvariant()
+        certificateBase64 = [Convert]::ToBase64String($Certificate.RawData)
+        enabled = $true
+        epoch = 1
+        faultDomain = $FaultDomain
+    }
+}
+
+try {
+    if (-not (Get-Command New-SelfSignedCertificate -ErrorAction SilentlyContinue)) { throw 'New-SelfSignedCertificate is required by runtime v2 tests.' }
+    $repositoryConfig = Read-Cf7RuntimeV2Config -ProjectRoot $ProjectRoot -Mode Worktree
+    $repositoryProducerFiles = @($repositoryConfig.domains.producerRecipe.fixedFiles)
+    $repositoryPolicyFiles = @($repositoryConfig.domains.policy.fixedFiles)
+    Assert-Equal 'line-ending rules belong only to producer recipe' $true `
+        (('.gitattributes' -in $repositoryProducerFiles) -and ('.gitattributes' -notin $repositoryPolicyFiles))
+    Assert-Equal 'identity common belongs only to producer recipe' $true `
+        (('tools/runtime-build-v2-common.ps1' -in $repositoryProducerFiles) -and ('tools/runtime-build-v2-common.ps1' -notin $repositoryPolicyFiles))
+    Assert-Equal 'attestation common belongs only to policy' $true `
+        (('tools/runtime-build-attestation-v2-common.ps1' -in $repositoryPolicyFiles) -and ('tools/runtime-build-attestation-v2-common.ps1' -notin $repositoryProducerFiles))
+    $producerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'))
+    $promotionScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\promote-runtime-bundle.ps1'))
+    $bootstrapSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\native\bootstrap\bootstrap.cpp'))
+    Assert-Equal 'candidate uses isolated runtime verification mode' $true `
+        ($producerScript.Contains("Arguments = '--verify-runtime-only'") -and $bootstrapSource.Contains('L"--verify-runtime-only"'))
+    Assert-Equal 'candidate waits for GUI bootstrap exit code' $true `
+        ($producerScript.Contains('$verifyProcess.WaitForExit(120000)') -and $producerScript.Contains('$verifyProcess.ExitCode') -and
+            $producerScript.Contains('$verifyProcess.Kill()'))
+    Assert-Equal 'candidate does not invoke asynchronous verify-only call operator' $false `
+        ($producerScript -match '(?m)^\s*&\s+\$userFacingExe\s+--verify-only\s*$')
+    Assert-Equal 'promotion waits for deployed GUI bootstrap exit code' $true `
+        ($promotionScript.Contains('$verifyProcess.WaitForExit(120000)') -and $promotionScript.Contains('$verifyProcess.ExitCode') -and
+            $promotionScript.Contains('$verifyProcess.Kill()'))
+    Assert-Equal 'bootstrap keeps runtime-only and full-install preflights separate' $true `
+        ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
+    Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `
+        ($bootstrapSource.Contains('verifyRuntimeOnly && verifyCompleteInstall') -and $bootstrapSource.Contains('return 64;'))
+    $shortCandidateLeaf = New-Cf7RuntimeV2CandidateLeafName `
+        -BuildIdentityHash ('A' * 64) -BuilderId ('builder-' + ('x' * 100)) -RunToken 'test-run-1'
+    Assert-Equal 'candidate directory does not expose unbounded builder label' $false $shortCandidateLeaf.Contains('builder-')
+    Assert-Equal 'candidate directory has a bounded legacy-path-safe leaf' $true ($shortCandidateLeaf.Length -le 64)
+    $projectedCandidateProbe = Join-Path (Join-Path $ProjectRoot ('tmp\runtime-candidates\v2\' + $shortCandidateLeaf)) `
+        'runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json'
+    Assert-Equal 'default candidate layout remains inside bootstrap MAX_PATH' $true ($projectedCandidateProbe.Length -lt 260)
+    New-Item -ItemType Directory -Path $testRoot -Force | Out-Null
+    $configPath = Join-Path $testRoot 'config\runtime-inputs.v2.json'
+    $fixtureConfig = [pscustomobject][ordered]@{
+        schema = 'cf7-runtime-inputs.v2'
+        domains = [pscustomobject][ordered]@{
+            artifactSource = [pscustomobject][ordered]@{
+                fixedFiles = @('src/app.cs','native/lib.rs')
+                trees = @([pscustomobject][ordered]@{
+                    path = 'src'
+                    includeExtensions = @('.cs')
+                    excludePaths = @('src/HotkeyGuard.cs','src/app.cs')
+                    excludePrefixes = @()
+                })
+            }
+            producerRecipe = [pscustomobject][ordered]@{ fixedFiles = @('recipe.ps1'); trees = @() }
+            toolchainLock = [pscustomobject][ordered]@{ fixedFiles = @('toolchain.json'); trees = @() }
+            policy = [pscustomobject][ordered]@{ fixedFiles = @('policy.ps1'); trees = @() }
+        }
+        payload = [pscustomobject][ordered]@{
+            fixedRoots = @('CRAZYFLASHER7MercenaryEmpire.exe')
+            trees = @('runtime')
+            excludePaths = @('runtime/cf7-runtime-manifest.tsv','runtime/runtime-build-attestation.json')
+            excludePrefixes = @('runtime/attestations/')
+        }
+    }
+    Write-TestText $configPath (($fixtureConfig | ConvertTo-Json -Depth 10) + "`n")
+    Write-TestText (Join-Path $testRoot 'src\app.cs') "class App {}`n"
+    Write-TestText (Join-Path $testRoot 'src\HotkeyGuard.cs') "class Ignored {}`n"
+    Write-TestText (Join-Path $testRoot 'native\lib.rs') "pub fn value() -> i32 { 1 }`n"
+    Write-TestText (Join-Path $testRoot 'recipe.ps1') "Write-Output build`n"
+    Write-TestText (Join-Path $testRoot 'toolchain.json') "{`"sdk`":`"1`"}`n"
+    Write-TestText (Join-Path $testRoot 'policy.ps1') "Write-Output verify`n"
+    Write-TestText (Join-Path $testRoot 'CRAZYFLASHER7MercenaryEmpire.exe') 'bootstrap'
+    Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v1'
+    Write-TestText (Join-Path $testRoot 'runtime\cf7-runtime-manifest.tsv') 'manifest-v1'
+    Write-TestText (Join-Path $testRoot 'runtime\runtime-build-attestation.json') 'attestation-v1'
+    Write-TestText (Join-Path $testRoot 'runtime\attestations\old.json') 'old-attestation'
+
+    & git -C $testRoot init --quiet
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize runtime v2 Git fixture.' }
+    & git -C $testRoot add --all
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot stage runtime v2 Git fixture.' }
+
+    $baseWorktree = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    $baseIndex = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+        Assert-Equal "Worktree/Index baseline $field" $baseWorktree.$field $baseIndex.$field
+    }
+
+    Write-TestText (Join-Path $testRoot 'policy.ps1') "Write-Output verify-v2`n"
+    $policyChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-Equal 'policy isolation artifact' $baseWorktree.artifactSourceHash $policyChanged.artifactSourceHash
+    Assert-Equal 'policy isolation producer' $baseWorktree.producerRecipeHash $policyChanged.producerRecipeHash
+    Assert-Equal 'policy isolation toolchain' $baseWorktree.toolchainLockHash $policyChanged.toolchainLockHash
+    Assert-NotEqual 'policy hash changes' $baseWorktree.policyHash $policyChanged.policyHash
+    Assert-Equal 'policy does not change build identity' $baseWorktree.buildIdentityHash $policyChanged.buildIdentityHash
+    $stillStaged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath
+    Assert-Equal 'Index ignores unstaged policy edit' $baseIndex.policyHash $stillStaged.policyHash
+    Write-TestText (Join-Path $testRoot 'policy.ps1') "Write-Output verify`n"
+
+    Write-TestText (Join-Path $testRoot 'src\app.cs') "class App { static int V = 2; }`n"
+    $sourceChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-NotEqual 'artifact source changes' $baseWorktree.artifactSourceHash $sourceChanged.artifactSourceHash
+    Assert-Equal 'artifact change leaves recipe' $baseWorktree.producerRecipeHash $sourceChanged.producerRecipeHash
+    Assert-Equal 'artifact change leaves toolchain' $baseWorktree.toolchainLockHash $sourceChanged.toolchainLockHash
+    Assert-Equal 'artifact change leaves policy' $baseWorktree.policyHash $sourceChanged.policyHash
+    Assert-NotEqual 'artifact change changes build identity' $baseWorktree.buildIdentityHash $sourceChanged.buildIdentityHash
+    Assert-Equal 'Index ignores unstaged source edit' $baseIndex.artifactSourceHash (Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath).artifactSourceHash
+    Write-TestText (Join-Path $testRoot 'src\app.cs') "class App {}`n"
+
+    Write-TestText (Join-Path $testRoot 'recipe.ps1') "Write-Output build-v2`n"
+    $recipeChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-NotEqual 'producer recipe changes' $baseWorktree.producerRecipeHash $recipeChanged.producerRecipeHash
+    Assert-Equal 'recipe change leaves artifact' $baseWorktree.artifactSourceHash $recipeChanged.artifactSourceHash
+    Assert-Equal 'recipe change leaves toolchain' $baseWorktree.toolchainLockHash $recipeChanged.toolchainLockHash
+    Assert-Equal 'recipe change leaves policy' $baseWorktree.policyHash $recipeChanged.policyHash
+    Write-TestText (Join-Path $testRoot 'recipe.ps1') "Write-Output build`n"
+
+    Write-TestText (Join-Path $testRoot 'toolchain.json') "{`"sdk`":`"2`"}`n"
+    $toolchainChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-NotEqual 'toolchain changes' $baseWorktree.toolchainLockHash $toolchainChanged.toolchainLockHash
+    Assert-Equal 'toolchain change leaves artifact' $baseWorktree.artifactSourceHash $toolchainChanged.artifactSourceHash
+    Assert-Equal 'toolchain change leaves recipe' $baseWorktree.producerRecipeHash $toolchainChanged.producerRecipeHash
+    Assert-Equal 'toolchain change leaves policy' $baseWorktree.policyHash $toolchainChanged.policyHash
+    Write-TestText (Join-Path $testRoot 'toolchain.json') "{`"sdk`":`"1`"}`n"
+
+    Write-TestText (Join-Path $testRoot 'src\HotkeyGuard.cs') "class Ignored { static int V = 99; }`n"
+    $ignoredChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-Equal 'excluded HotkeyGuard leaves artifact identity' $baseWorktree.artifactSourceHash $ignoredChanged.artifactSourceHash
+    Write-TestText (Join-Path $testRoot 'src\HotkeyGuard.cs') "class Ignored {}`n"
+
+    $closureBase = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-Equal 'payload closure file count excludes envelope files' 2 @($closureBase.files).Count
+    $closureIndex = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -Mode Index -ConfigPath $configPath
+    Assert-Equal 'payload Worktree/Index closure' $closureBase.payloadClosureHash $closureIndex.payloadClosureHash
+    Write-TestText (Join-Path $testRoot 'runtime\cf7-runtime-manifest.tsv') 'manifest-v2'
+    Write-TestText (Join-Path $testRoot 'runtime\runtime-build-attestation.json') 'attestation-v2'
+    Write-TestText (Join-Path $testRoot 'runtime\attestations\old.json') 'old-attestation-v2'
+    $closureEnvelopeChanged = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-Equal 'manifest and attestations excluded from payload closure' $closureBase.payloadClosureHash $closureEnvelopeChanged.payloadClosureHash
+    Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v2'
+    $closurePayloadChanged = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-NotEqual 'payload bytes change closure' $closureBase.payloadClosureHash $closurePayloadChanged.payloadClosureHash
+    Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v1'
+
+    $certificateA = New-TestCertificate 'A'
+    $certificateB = New-TestCertificate 'B'
+    $certificateC = New-TestCertificate 'C'
+    try {
+        $entryA = New-RegistryEntry $certificateA 'builder-a' 'machine-a'
+        $entryB = New-RegistryEntry $certificateB 'builder-b' 'machine-b'
+        $entryC = New-RegistryEntry $certificateC 'builder-c' 'machine-a'
+        $registryPath = Join-Path $testRoot 'runtime-builders.v2.json'
+        $registry = [pscustomobject][ordered]@{ schema = 'cf7-runtime-builders.v2'; minimumConsensus = 2; builders = @($entryA,$entryB,$entryC) }
+        Write-TestText $registryPath (($registry | ConvertTo-Json -Depth 8) + "`n")
+        $thumbA = $certificateA.Thumbprint
+        $thumbB = $certificateB.Thumbprint
+        $thumbC = $certificateC.Thumbprint
+    } finally {
+        $certificateA.Dispose()
+        $certificateB.Dispose()
+        $certificateC.Dispose()
+    }
+
+    $attestationA = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbA -RegistryPath $registryPath -ConfigPath $configPath
+    $attestationB = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbB -RegistryPath $registryPath -ConfigPath $configPath
+    $attestationC = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbC -RegistryPath $registryPath -ConfigPath $configPath
+    Test-Cf7RuntimeBuildAttestationV2 -Attestation $attestationA -RegistryPath $registryPath | Out-Null
+    $script:checks++
+    $consensus = Test-Cf7RuntimeBuildConsensusV2 -Attestations @($attestationA,$attestationB) -RegistryPath $registryPath
+    Assert-Equal 'valid consensus closure' $attestationA.payload.payloadClosureHash $consensus.payloadClosureHash
+
+    $cloudPayload = [pscustomobject][ordered]@{
+        schema = 'cf7-runtime-github-build-attestation-payload.v2'
+        builderKind = 'github-oidc'
+        builderIdentityHash = ('D' * 64)
+        faultDomain = 'github-hosted-windows'
+        artifactSourceHash = $attestationA.payload.artifactSourceHash
+        producerRecipeHash = $attestationA.payload.producerRecipeHash
+        toolchainLockHash = $attestationA.payload.toolchainLockHash
+        buildIdentityHash = $attestationA.payload.buildIdentityHash
+        payloadClosureHash = $attestationA.payload.payloadClosureHash
+        files = $attestationA.payload.files
+    }
+    $mixedConsensus = Test-Cf7RuntimeVerifiedPayloadConsensusV2 `
+        -Payloads @($attestationA.payload,$cloudPayload) -MinimumConsensus 2
+    Assert-Equal 'local + GitHub mixed consensus closure' $attestationA.payload.payloadClosureHash $mixedConsensus.payloadClosureHash
+    Assert-Equal 'local + GitHub mixed consensus fault domains' 2 @($mixedConsensus.faultDomains).Count
+    $sameDomainCloud = $cloudPayload | ConvertTo-Json -Depth 12 | ConvertFrom-Json
+    $sameDomainCloud.faultDomain = $attestationA.payload.faultDomain
+    Expect-Failure 'mixed consensus duplicate fault domain' {
+        Test-Cf7RuntimeVerifiedPayloadConsensusV2 -Payloads @($attestationA.payload,$sameDomainCloud) | Out-Null
+    }
+
+    $tampered = $attestationA | ConvertTo-Json -Depth 12 | ConvertFrom-Json
+    $tampered.payload.createdAtUtc = [DateTime]::UtcNow.AddMinutes(-10).ToString('o')
+    Expect-Failure 'signed payload tamper' { Test-Cf7RuntimeBuildAttestationV2 -Attestation $tampered -RegistryPath $registryPath | Out-Null }
+    $signatureTampered = $attestationA | ConvertTo-Json -Depth 12 | ConvertFrom-Json
+    $signatureBytes = [Convert]::FromBase64String([string]$signatureTampered.signature.valueBase64)
+    $signatureBytes[0] = $signatureBytes[0] -bxor 1
+    $signatureTampered.signature.valueBase64 = [Convert]::ToBase64String($signatureBytes)
+    Expect-Failure 'signature byte tamper' { Test-Cf7RuntimeBuildAttestationV2 -Attestation $signatureTampered -RegistryPath $registryPath | Out-Null }
+    Expect-Failure 'duplicate key consensus' { Test-Cf7RuntimeBuildConsensusV2 -Attestations @($attestationA,$attestationA) -RegistryPath $registryPath | Out-Null }
+    Expect-Failure 'duplicate fault domain consensus' { Test-Cf7RuntimeBuildConsensusV2 -Attestations @($attestationA,$attestationC) -RegistryPath $registryPath | Out-Null }
+
+    Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-mismatch'
+    $mismatchAttestation = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbB -RegistryPath $registryPath -ConfigPath $configPath
+    Expect-Failure 'different payload closure consensus' { Test-Cf7RuntimeBuildConsensusV2 -Attestations @($attestationA,$mismatchAttestation) -RegistryPath $registryPath | Out-Null }
+    Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v1'
+
+    $registry.builders[0].epoch = 2
+    Write-TestText $registryPath (($registry | ConvertTo-Json -Depth 8) + "`n")
+    Expect-Failure 'registry epoch mismatch' { Test-Cf7RuntimeBuildAttestationV2 -Attestation $attestationA -RegistryPath $registryPath | Out-Null }
+    $registry.builders[0].epoch = 1
+    $registry.builders[0].enabled = $false
+    Write-TestText $registryPath (($registry | ConvertTo-Json -Depth 8) + "`n")
+    Expect-Failure 'disabled registry key' { Test-Cf7RuntimeBuildAttestationV2 -Attestation $attestationA -RegistryPath $registryPath | Out-Null }
+
+    Write-Host "[RuntimeBuildV2Test] OK checks=$script:checks" -ForegroundColor Green
+} finally {
+    foreach ($thumbprint in $createdThumbprints) {
+        $certificatePath = "Cert:\CurrentUser\My\$thumbprint"
+        if (Test-Path -LiteralPath $certificatePath) { Remove-Item -LiteralPath $certificatePath -Force }
+    }
+    if (Test-Path -LiteralPath $testRoot) { Remove-Item -LiteralPath $testRoot -Recurse -Force }
+}

@@ -448,6 +448,7 @@ var NpcShop = (function() {
             onPurchaseMax:setPurchaseMax,
             onBulkSale:setBulkSale,
             onRemove:removeIntent,
+            onHelp:openHelpPage,
             onPurchaseBounds:function(identity, bounds) {
                 var intent = _purchaseIntents[identity];
                 if (!intent) return;
@@ -462,7 +463,6 @@ var NpcShop = (function() {
             errorMessage:errorMessage
         });
     }
-
     function requestTradePreview() {
         if (!_settlementPresenter || !_settlementPresenter.isActive()) return;
         if (!selectionCount()) { closeSettlement(); return; }
@@ -540,7 +540,7 @@ var NpcShop = (function() {
         if (_helpPresenter) _helpPresenter.close('return');
         if (_shell) _shell.getRoot().classList.remove('npcshop-helping');
         refreshControls();
-        if (_helpButton) _helpButton.focus();
+        if (_helpButton && !(_settlementPresenter && _settlementPresenter.isActive())) _helpButton.focus();
     }
 
     function createHelpPage() {

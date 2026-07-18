@@ -309,7 +309,10 @@ function createServer() {
                 || !visualState.tooltip.focusDescription || !visualState.tooltip.focusFallbackVisible
                 || !visualState.tooltip.focusExitHidden || !visualState.tooltip.asyncFocusVisible
                 || !visualState.tooltip.lateResponseStayedHidden || !visualState.tooltip.teardownStayedHidden
-                || !visualState.tooltip.teardownIdempotent);
+                || !visualState.tooltip.teardownIdempotent || !visualState.tooltip.anchoredRichRepositioned
+                || !visualState.tooltip.anchoredRichInsideViewport || !visualState.tooltip.anchoredScaleGapStable
+                || !visualState.tooltip.focusOwnerInitiallyVisible || !visualState.tooltip.hoverOwnerTookControl
+                || !visualState.tooltip.focusedOwnerRestored || !visualState.tooltip.restoredOwnerExitHidden);
         if (pageErrors.length || failedRequests.length || tooltipFailed) process.exit(1);
         return;
     }
@@ -328,7 +331,10 @@ function createServer() {
         || !realTooltip.focusDescription || !realTooltip.focusFallbackVisible
         || !realTooltip.focusExitHidden || !realTooltip.asyncFocusVisible
         || !realTooltip.lateResponseStayedHidden || !realTooltip.teardownStayedHidden
-        || !realTooltip.teardownIdempotent;
+        || !realTooltip.teardownIdempotent || !realTooltip.anchoredRichRepositioned
+        || !realTooltip.anchoredRichInsideViewport || !realTooltip.anchoredScaleGapStable
+        || !realTooltip.focusOwnerInitiallyVisible || !realTooltip.hoverOwnerTookControl
+        || !realTooltip.focusedOwnerRestored || !realTooltip.restoredOwnerExitHidden;
     if (qa.failed || tooltipFailed || pageErrors.length || failedRequests.length) process.exit(1);
 })().catch(error => {
     console.error(error && error.stack ? error.stack : String(error));

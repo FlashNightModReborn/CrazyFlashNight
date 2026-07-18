@@ -1,0 +1,260 @@
+name: Runtime cloud builder
+run-name: Runtime cloud builder ${{ inputs.source_commit || github.event.client_payload.source_commit }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_commit:
+        description: Lowercase full repository commit SHA to build
+        required: true
+        type: string
+  repository_dispatch:
+    types: [runtime-cloud-build-v2]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-cloud-builder-${{ inputs.source_commit || github.event.client_payload.source_commit }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build-pinned-runtime
+    runs-on: windows-2025
+    timeout-minutes: 360
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: core.longpaths
+      GIT_CONFIG_VALUE_0: true
+    permissions:
+      contents: read
+    outputs:
+      source_commit: ${{ steps.request.outputs.source_commit }}
+    steps:
+      - name: Validate immutable build request
+        id: request
+        shell: powershell
+        env:
+          CF7_WORKFLOW_INPUT: ${{ inputs.source_commit }}
+          CF7_REPOSITORY_DISPATCH_INPUT: ${{ github.event.client_payload.source_commit }}
+          CF7_EXPECTED_REPOSITORY: FlashNightModReborn/CrazyFlashNight
+          CF7_EXPECTED_REF: refs/heads/main
+        run: |
+          $requested = if ($env:CF7_WORKFLOW_INPUT) { $env:CF7_WORKFLOW_INPUT } else { $env:CF7_REPOSITORY_DISPATCH_INPUT }
+          if ($requested -cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$') {
+            throw 'source_commit must be one lowercase full Git object ID.'
+          }
+          if ('${{ github.repository }}' -cne $env:CF7_EXPECTED_REPOSITORY) {
+            throw "Cloud builder is pinned to $($env:CF7_EXPECTED_REPOSITORY)."
+          }
+          if ('${{ github.ref }}' -cne $env:CF7_EXPECTED_REF) {
+            throw "Dispatch this workflow from $($env:CF7_EXPECTED_REF)."
+          }
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+          [IO.File]::AppendAllText(
+            $env:GITHUB_OUTPUT,
+            "source_commit=$($requested.ToLowerInvariant())`n",
+            $utf8NoBom)
+
+      - name: Checkout exact requested commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ steps.request.outputs.source_commit }}
+          # The producer needs exactly one immutable tree, not this 11 GiB repository's history.
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify exact checkout
+        shell: powershell
+        env:
+          CF7_SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+        run: |
+          $head = (git rev-parse 'HEAD^{commit}').Trim().ToLowerInvariant()
+          if ($LASTEXITCODE -ne 0 -or $head -cne $env:CF7_SOURCE_COMMIT) {
+            throw "Checkout mismatch: expected=$env:CF7_SOURCE_COMMIT actual=$head"
+          }
+          git diff --quiet --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked worktree changed immediately after checkout.' }
+          git diff --cached --quiet --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Index changed immediately after checkout.' }
+
+      - name: Provision byte-pinned build environment
+        shell: powershell
+        run: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\bootstrap-runtime-build-env.ps1 -ProjectRoot $PWD.Path
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Produce runtime candidate
+        shell: powershell
+        env:
+          CF7_SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+        run: |
+          $candidateLeaf = "gh-$($env:CF7_SOURCE_COMMIT.Substring(0, 12))-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $candidate = Join-Path $PWD.Path "tmp\runtime-candidates\v2\$candidateLeaf"
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+          [IO.File]::AppendAllText($env:GITHUB_ENV, "CF7_CANDIDATE_ROOT=$candidate`n", $utf8NoBom)
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\launcher\build-runtime-candidate.ps1 `
+            -BuilderId github-hosted-windows -CandidateRoot $candidate
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Preserve failed bootstrap diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: runtime-cloud-diagnostics-${{ steps.request.outputs.source_commit }}-${{ github.run_attempt }}
+          path: ${{ env.CF7_CANDIDATE_ROOT }}/logs/bootstrap.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Strictly verify runtime candidate v2
+        shell: powershell
+        run: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-runtime-bundle-v2.ps1 `
+            -ProjectRoot $PWD.Path -DeploymentRoot $env:CF7_CANDIDATE_ROOT
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Create deterministic cloud envelope and candidate archive
+        shell: powershell
+        env:
+          CF7_SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+        run: |
+          $out = Join-Path $PWD.Path 'tmp\runtime-cloud-output'
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          $envelope = Join-Path $out 'runtime-build-envelope.v2.json'
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\new-runtime-github-build-envelope.ps1 `
+            -ProjectRoot $PWD.Path -CandidateRoot $env:CF7_CANDIDATE_ROOT `
+            -SourceCommitOid $env:CF7_SOURCE_COMMIT -OutputPath $envelope
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Compress-Archive -Path (Join-Path $env:CF7_CANDIDATE_ROOT '*') `
+            -DestinationPath (Join-Path $out 'runtime-candidate.v2.zip') -CompressionLevel Optimal
+
+      - name: Stage unsigned cloud result
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: runtime-cloud-unsigned-${{ steps.request.outputs.source_commit }}
+          path: |
+            tmp/runtime-cloud-output/runtime-candidate.v2.zip
+            tmp/runtime-cloud-output/runtime-build-envelope.v2.json
+          if-no-files-found: error
+          retention-days: 7
+
+  attest:
+    name: attest-cloud-envelope
+    needs: build
+    runs-on: windows-2025
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download unsigned cloud result
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: runtime-cloud-unsigned-${{ needs.build.outputs.source_commit }}
+          path: cloud-output
+
+      - name: Validate staged cloud identity and archive layout
+        shell: powershell
+        env:
+          CF7_SOURCE_COMMIT: ${{ needs.build.outputs.source_commit }}
+          CF7_EXPECTED_REPOSITORY: FlashNightModReborn/CrazyFlashNight
+          CF7_EXPECTED_WORKFLOW: FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml
+          CF7_EXPECTED_REF: refs/heads/main
+          CF7_EXPECTED_FAULT_DOMAIN: github-hosted-windows
+          CF7_EXPECTED_RUNNER_CLASS: github-hosted-windows
+        run: |
+          $envelopePath = Join-Path $PWD.Path 'cloud-output\runtime-build-envelope.v2.json'
+          $candidateArchive = Join-Path $PWD.Path 'cloud-output\runtime-candidate.v2.zip'
+          if (-not (Test-Path -LiteralPath $envelopePath -PathType Leaf) -or
+              -not (Test-Path -LiteralPath $candidateArchive -PathType Leaf)) {
+            throw 'Unsigned cloud artifact was not downloaded at the canonical paths.'
+          }
+          $envelope = [IO.File]::ReadAllText($envelopePath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+          $expected = [ordered]@{
+            schema = 'cf7-runtime-github-build-envelope.v2'
+            repository = $env:CF7_EXPECTED_REPOSITORY
+            signerWorkflow = $env:CF7_EXPECTED_WORKFLOW
+            sourceRef = $env:CF7_EXPECTED_REF
+            faultDomain = $env:CF7_EXPECTED_FAULT_DOMAIN
+            runnerClass = $env:CF7_EXPECTED_RUNNER_CLASS
+            sourceCommitOid = $env:CF7_SOURCE_COMMIT
+          }
+          foreach ($field in $expected.Keys) {
+            if ([string]$envelope.$field -cne [string]$expected[$field]) {
+              throw "Staged cloud envelope identity mismatch: $field"
+            }
+          }
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [IO.Compression.ZipFile]::OpenRead($candidateArchive)
+          try {
+            $paths = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+            $expectedFiles = New-Object 'System.Collections.Generic.Dictionary[string,object]' ([StringComparer]::OrdinalIgnoreCase)
+            foreach ($row in @($envelope.files)) {
+              $path = ([string]$row.path).Replace('\', '/')
+              $rowSize = 0L
+              if (-not $path -or $path.StartsWith('/') -or $path -match '^[A-Za-z]:' -or $path -match '(^|/)\.\.(/|$)' -or
+                  [string]$row.sha256 -notmatch '^[0-9A-F]{64}$' -or
+                  -not [Int64]::TryParse([string]$row.size, [ref]$rowSize) -or $rowSize -lt 0 -or
+                  $expectedFiles.ContainsKey($path)) {
+                throw "Invalid or duplicate cloud envelope file row: $path"
+              }
+              $expectedFiles.Add($path, $row)
+            }
+            $matchedFiles = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+            foreach ($entry in $archive.Entries) {
+              $path = $entry.FullName.Replace('\', '/')
+              if (-not $path -or $path.EndsWith('/')) { continue }
+              if ($path.StartsWith('/') -or $path -match '^[A-Za-z]:' -or $path -match '(^|/)\.\.(/|$)' -or -not $paths.Add($path)) {
+                throw "Unsafe or duplicate candidate archive path: $path"
+              }
+              if ($expectedFiles.ContainsKey($path)) {
+                $row = $expectedFiles[$path]
+                if ([Int64]$entry.Length -ne [Int64]$row.size) { throw "Candidate archive size differs from envelope: $path" }
+                $stream = $entry.Open()
+                $sha = [Security.Cryptography.SHA256]::Create()
+                try { $actualHash = ([BitConverter]::ToString($sha.ComputeHash($stream))).Replace('-', '') }
+                finally { $sha.Dispose(); $stream.Dispose() }
+                if ($actualHash -cne [string]$row.sha256) { throw "Candidate archive SHA-256 differs from envelope: $path" }
+                [void]$matchedFiles.Add($path)
+              } elseif ($path -cne 'runtime/cf7-runtime-manifest.tsv' -and $path -cne 'runtime-build-metadata.v2.json') {
+                throw "Candidate archive contains an undeclared file: $path"
+              }
+            }
+            if ($matchedFiles.Count -ne $expectedFiles.Count) { throw 'Candidate archive does not contain every envelope payload file.' }
+            foreach ($required in @('CRAZYFLASHER7MercenaryEmpire.exe','runtime/cf7-runtime-manifest.tsv','runtime-build-metadata.v2.json')) {
+              if (-not $paths.Contains($required)) { throw "Candidate archive root layout is invalid; missing $required" }
+            }
+          } finally {
+            $archive.Dispose()
+          }
+
+      - name: Generate SLSA provenance for deterministic envelope
+        id: provenance
+        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4
+        with:
+          subject-path: cloud-output/runtime-build-envelope.v2.json
+
+      - name: Collect provenance bundle
+        shell: powershell
+        env:
+          CF7_BUNDLE_PATH: ${{ steps.provenance.outputs.bundle-path }}
+        run: |
+          if (-not (Test-Path -LiteralPath $env:CF7_BUNDLE_PATH -PathType Leaf)) {
+            throw 'actions/attest did not produce its offline verification bundle.'
+          }
+          Copy-Item -LiteralPath $env:CF7_BUNDLE_PATH `
+            -Destination .\cloud-output\runtime-build-envelope.v2.sigstore.json -Force
+
+      - name: Upload signed cloud builder result
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: runtime-cloud-builder-${{ needs.build.outputs.source_commit }}
+          path: |
+            cloud-output/runtime-candidate.v2.zip
+            cloud-output/runtime-build-envelope.v2.json
+            cloud-output/runtime-build-envelope.v2.sigstore.json
+          if-no-files-found: error
+          retention-days: 30

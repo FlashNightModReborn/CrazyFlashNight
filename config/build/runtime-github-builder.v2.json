@@ -1,0 +1,11 @@
+{
+  "schema": "cf7-runtime-github-builder.v2",
+  "enabled": true,
+  "repository": "FlashNightModReborn/CrazyFlashNight",
+  "signerWorkflow": "FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml",
+  "sourceRef": "refs/heads/main",
+  "faultDomain": "github-hosted-windows",
+  "runnerClass": "github-hosted-windows",
+  "identityProvider": "github-oidc-sigstore",
+  "longLivedPrivateKey": false
+}

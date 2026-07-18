@@ -263,10 +263,19 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('first settlement visit explains that confirmation is required',__toasts.some(function(message){return message.indexOf('交易清单')>=0&&message.indexOf('确认交易')>=0}));
   ok('settlement uses authoritative totals and slot bounds',document.querySelector('[data-trade-economy]').textContent.indexOf('结余 $9,250')>=0&&document.querySelector('[data-trade-economy]').textContent.indexOf('可用 2 格')>=0);
   sentBeforeHelp=__sent.length;
-  document.querySelector('.npcshop-help-btn').click();
-  ok('help can overlay settlement without closing it',NpcShop.debugState().helping&&NpcShop.debugState().settling);
+  var settlementHelp=document.querySelector('[data-trade-help]');
+  settlementHelp.focus();
+  ok('settlement header help stays keyboard-reachable inside the active dialog',document.activeElement===settlementHelp&&!settlementHelp.closest('[inert]'));
+  settlementHelp.click();
+  ok('help can overlay settlement without closing it',NpcShop.debugState().helping&&NpcShop.debugState().settling
+    &&document.querySelector('.npcshop-settlement-page').inert
+    &&document.querySelector('.npcshop-settlement-page').getAttribute('aria-hidden')==='true'
+    &&document.querySelector('.npcshop-help-page').getAttribute('aria-hidden')==='false');
   document.querySelector('[data-help-back]').click();
-  ok('returning from help restores the existing settlement',!NpcShop.debugState().helping&&NpcShop.debugState().settling&&__sent.length===sentBeforeHelp);
+  ok('returning from help restores the existing settlement',!NpcShop.debugState().helping&&NpcShop.debugState().settling&&__sent.length===sentBeforeHelp
+    &&!document.querySelector('.npcshop-settlement-page').inert
+    &&document.querySelector('.npcshop-settlement-page').getAttribute('aria-hidden')==='false'
+    &&document.activeElement===settlementHelp);
   Array.from(document.querySelectorAll('[data-sale-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='同名全售'})[0].click();await wait();
   var previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('same-name bulk sale sends only seed lease and plain-only policy',previews[previews.length-1].payload.sales[0].scope==='same_name'&&previews[previews.length-1].payload.sales[0].policy==='plain_only'&&previews[previews.length-1].payload.sales[0].quantity===undefined);

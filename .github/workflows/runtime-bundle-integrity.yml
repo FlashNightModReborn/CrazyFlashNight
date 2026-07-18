@@ -3,25 +3,57 @@ name: Runtime bundle integrity
 on:
   pull_request:
   push:
+  merge_group:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-bundle-integrity-${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_sha || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify-staged-bundle:
+    name: verify-staged-bundle
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
-          fetch-depth: 2
-      - name: Verify committed runtime bundle and build identity
+          fetch-depth: 0
+      - name: Classify runtime release state
         shell: powershell
-        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-runtime-bundle.ps1 -ProjectRoot $PWD.Path -Staged
-      - name: Verify cross-builder runtime consensus
-        shell: powershell
+        env:
+          CF7_EVENT_NAME: ${{ github.event_name }}
+          CF7_EVENT_BEFORE: ${{ github.event.before }}
+          CF7_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CF7_PR_BASE_REF: ${{ github.base_ref }}
+          CF7_MERGE_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+          CF7_MERGE_BASE_REF: ${{ github.event.merge_group.base_ref }}
+          CF7_CURRENT_REF: ${{ github.ref }}
+          CF7_HEAD_SHA: ${{ github.sha }}
         run: |
-          if (Test-Path -LiteralPath .\config\build\runtime-release-consensus.json) {
-            powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-runtime-consensus.ps1 -ProjectRoot $PWD.Path -Staged
-            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          } else {
-            git cat-file -e 'HEAD^:config/build/runtime-release-consensus.json' 2>$null
-            if ($LASTEXITCODE -eq 0) { throw 'runtime-release-consensus.json cannot be removed after consensus activation.' }
-            Write-Host '[RuntimeConsensus] bootstrap pending: first two-builder promotion has not been recorded yet.'
+          function Test-ProtectedRef([string]$Ref) {
+            $name = ([string]$Ref) -replace '^refs/heads/', ''
+            return $name -in @('main', 'master') -or $name.StartsWith('release/', [StringComparison]::OrdinalIgnoreCase)
           }
+
+          if ($env:CF7_EVENT_NAME -eq 'pull_request') {
+            $baseRevision = $env:CF7_PR_BASE_SHA
+            $policyRef = $env:CF7_PR_BASE_REF
+          } elseif ($env:CF7_EVENT_NAME -eq 'merge_group') {
+            $baseRevision = $env:CF7_MERGE_BASE_SHA
+            $policyRef = $env:CF7_MERGE_BASE_REF
+          } else {
+            $baseRevision = $env:CF7_EVENT_BEFORE
+            $policyRef = $env:CF7_CURRENT_REF
+          }
+          $mode = if (Test-ProtectedRef $policyRef) { 'Protected' } else { 'Development' }
+          $classifierArguments = @(
+            '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\classify-runtime-release-state.ps1',
+            '-ProjectRoot', $PWD.Path, '-Mode', $mode, '-HeadRevision', $env:CF7_HEAD_SHA
+          )
+          if (-not [string]::IsNullOrWhiteSpace($baseRevision)) {
+            $classifierArguments += @('-BaseRevision', $baseRevision)
+          }
+          & powershell.exe @classifierArguments
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

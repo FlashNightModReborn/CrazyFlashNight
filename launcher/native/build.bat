@@ -39,8 +39,13 @@ if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio.h" (
     exit /b 1
 )
 
-REM Output to launcher\bin\Release (relative to this script's directory)
-set "OUTDIR=%~dp0..\bin\Release"
+REM Formal workers provide a per-job output directory so a proof build never
+REM deletes or overwrites another checkout's launcher\bin\Release.
+if defined CF7_NATIVE_OUTPUT_DIR (
+    set "OUTDIR=%CF7_NATIVE_OUTPUT_DIR%"
+) else (
+    set "OUTDIR=%~dp0..\bin\Release"
+)
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
 REM build.ps1 先把 C/H 规范化为 LF；/experimental:deterministic 使 /pathmap 生效，

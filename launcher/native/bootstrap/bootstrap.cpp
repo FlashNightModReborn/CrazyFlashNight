@@ -714,6 +714,22 @@ static bool VerifyRuntimeClosureRecursive(const wchar_t* dir, const wchar_t* rel
     return ok;
 }
 
+static bool IsManifestSha256Value(const char* line, const char* prefix)
+{
+    size_t prefixLength = strlen(prefix);
+    if (strncmp(line, prefix, prefixLength) != 0) return false;
+    const char* value = line + prefixLength;
+    if (strlen(value) != 64) return false;
+    for (int i = 0; i < 64; i++) {
+        char c = value[i];
+        bool digit = c >= '0' && c <= '9';
+        bool lower = c >= 'a' && c <= 'f';
+        bool upper = c >= 'A' && c <= 'F';
+        if (!digit && !lower && !upper) return false;
+    }
+    return true;
+}
+
 static bool VerifyRuntimeManifest(const wchar_t* exeDir)
 {
     wchar_t manifestPath[MAX_PATH];
@@ -722,7 +738,9 @@ static bool VerifyRuntimeManifest(const wchar_t* exeDir)
     if (fp == NULL) { Logf("ERROR", L"[manifest] missing runtime manifest path=%s", manifestPath); return false; }
 
     bool ok = true;
+    bool manifestV2 = false;
     bool headerSeen = false, publishModeSeen = false, sourceSeen = false, toolchainSeen = false, baselineSeen = false;
+    bool artifactSourceSeen = false, producerRecipeSeen = false, buildIdentitySeen = false, payloadClosureSeen = false;
     int fileCount = 0;
     wchar_t manifestPaths[128][MAX_PATH] = {};
     char line[4096];
@@ -730,15 +748,38 @@ static bool VerifyRuntimeManifest(const wchar_t* exeDir)
         TrimLineEnd(line);
         if (!headerSeen) {
             headerSeen = true;
-            if (strcmp(line, "cf7-runtime-manifest-v1") != 0) { Log("ERROR", L"[manifest] invalid schema header"); ok = false; }
+            if (strcmp(line, "cf7-runtime-manifest-v2") == 0) manifestV2 = true;
+            else if (strcmp(line, "cf7-runtime-manifest-v1") != 0) { Log("ERROR", L"[manifest] invalid schema header"); ok = false; }
             continue;
         }
         if (strncmp(line, "publishMode\t", 12) == 0) {
             if (publishModeSeen || strcmp(line, "publishMode\tframework-dependent") != 0) ok = false;
             publishModeSeen = true; continue;
         }
-        if (strncmp(line, "sourceTreeHash\t", 15) == 0) { if (sourceSeen) ok = false; sourceSeen = true; continue; }
-        if (strncmp(line, "toolchainLockHash\t", 18) == 0) { if (toolchainSeen) ok = false; toolchainSeen = true; continue; }
+        if (strncmp(line, "sourceTreeHash\t", 15) == 0) {
+            if (manifestV2 || sourceSeen || !IsManifestSha256Value(line, "sourceTreeHash\t")) ok = false;
+            sourceSeen = true; continue;
+        }
+        if (strncmp(line, "artifactSourceHash\t", 19) == 0) {
+            if (!manifestV2 || artifactSourceSeen || !IsManifestSha256Value(line, "artifactSourceHash\t")) ok = false;
+            artifactSourceSeen = true; continue;
+        }
+        if (strncmp(line, "producerRecipeHash\t", 19) == 0) {
+            if (!manifestV2 || producerRecipeSeen || !IsManifestSha256Value(line, "producerRecipeHash\t")) ok = false;
+            producerRecipeSeen = true; continue;
+        }
+        if (strncmp(line, "buildIdentityHash\t", 18) == 0) {
+            if (!manifestV2 || buildIdentitySeen || !IsManifestSha256Value(line, "buildIdentityHash\t")) ok = false;
+            buildIdentitySeen = true; continue;
+        }
+        if (strncmp(line, "payloadClosureHash\t", 19) == 0) {
+            if (!manifestV2 || payloadClosureSeen || !IsManifestSha256Value(line, "payloadClosureHash\t")) ok = false;
+            payloadClosureSeen = true; continue;
+        }
+        if (strncmp(line, "toolchainLockHash\t", 18) == 0) {
+            if (toolchainSeen || !IsManifestSha256Value(line, "toolchainLockHash\t")) ok = false;
+            toolchainSeen = true; continue;
+        }
         if (strncmp(line, "toolchainBaseline\t", 18) == 0) { if (baselineSeen) ok = false; baselineSeen = true; continue; }
         if (strncmp(line, "file\t", 5) != 0) { Logf("ERROR", L"[manifest] unknown row=%S", line); ok = false; continue; }
 
@@ -779,7 +820,10 @@ static bool VerifyRuntimeManifest(const wchar_t* exeDir)
     }
     fclose(fp);
 
-    if (!headerSeen || !publishModeSeen || !sourceSeen || !toolchainSeen || !baselineSeen || fileCount == 0) ok = false;
+    bool identitySeen = manifestV2
+        ? (artifactSourceSeen && producerRecipeSeen && buildIdentitySeen && payloadClosureSeen)
+        : sourceSeen;
+    if (!headerSeen || !publishModeSeen || !identitySeen || !toolchainSeen || !baselineSeen || fileCount == 0) ok = false;
     if (!ManifestContainsPath(manifestPaths, fileCount, L"CRAZYFLASHER7MercenaryEmpire.exe")) ok = false;
     wchar_t runtimeDir[MAX_PATH];
     int actualCount = 1; // root bootstrap
@@ -857,7 +901,11 @@ static void LogRuntimeInventory(const wchar_t* exeDir)
     Logf("INFO", L"[preflight] runtime inventory complete count=%d", count);
 }
 
-static bool PreflightCriticalFiles(const wchar_t* exeDir)
+// Verify only the atomically promoted launcher/runtime payload.  Candidate build
+// directories deliberately do not contain the game SWF, Flash Player or web assets,
+// so build automation must be able to exercise the same manifest verifier without
+// pretending that the candidate is already a complete installation.
+static bool PreflightRuntimeFiles(const wchar_t* exeDir)
 {
     bool ok = true;
 
@@ -871,6 +919,16 @@ static bool PreflightCriticalFiles(const wchar_t* exeDir)
     ok = LogRelativePathProbe(exeDir, L"ClearScript V8 native", L"\\runtime\\ClearScriptV8.win-x64.dll", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"miniaudio sidecar", L"\\runtime\\miniaudio.dll", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"sol_parser sidecar", L"\\runtime\\sol_parser.dll", true) && ok;
+    LogRuntimeInventory(exeDir);
+    ok = VerifyRuntimeManifest(exeDir) && ok;
+    Logf(ok ? "INFO" : "ERROR", L"[preflight] runtime payload check %s", ok ? L"OK" : L"FAILED");
+    return ok;
+}
+
+static bool PreflightCriticalFiles(const wchar_t* exeDir)
+{
+    bool ok = PreflightRuntimeFiles(exeDir);
+
     ok = LogRelativePathProbe(exeDir, L"Flash Player", L"\\Adobe Flash Player 20.exe", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"Game SWF", L"\\CRAZYFLASHER7MercenaryEmpire.swf", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"bootstrap HTML", L"\\launcher\\web\\bootstrap.html", true) && ok;
@@ -878,8 +936,6 @@ static bool PreflightCriticalFiles(const wchar_t* exeDir)
 
     LogRelativePathProbe(exeDir, L"config.toml", L"\\config.toml", false);
     LogRelativePathProbe(exeDir, L"hotkey guard", L"\\hotkey_guard.exe", false);
-    LogRuntimeInventory(exeDir);
-    ok = VerifyRuntimeManifest(exeDir) && ok;
     Logf(ok ? "INFO" : "ERROR", L"[preflight] critical file check %s", ok ? L"OK" : L"FAILED");
     return ok;
 }
@@ -1166,9 +1222,26 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     Logf("INFO", L"cmdLine = %s", (cmdLine && cmdLine[0]) ? cmdLine : L"(empty)");
     Logf("INFO", L"bootstrap pid=%lu", GetCurrentProcessId());
 
-    // Build/automation integrity probe: verify the complete atomic runtime set without
-    // requiring .NET, showing UI, or launching Core.
-    if (HasExactCommandLineArg(L"--verify-only")) {
+    const bool verifyRuntimeOnly = HasExactCommandLineArg(L"--verify-runtime-only");
+    const bool verifyCompleteInstall = HasExactCommandLineArg(L"--verify-only");
+    if (verifyRuntimeOnly && verifyCompleteInstall) {
+        Log("ERROR", L"--verify-runtime-only and --verify-only are mutually exclusive");
+        LogClose();
+        return 64;
+    }
+
+    // Candidate producer integrity probe: verify the isolated atomic runtime payload
+    // without requiring unrelated files from a complete game installation.
+    if (verifyRuntimeOnly) {
+        bool ok = PreflightRuntimeFiles(exeDir);
+        Log(ok ? "INFO" : "ERROR", ok ? L"verify-runtime-only succeeded" : L"verify-runtime-only failed");
+        LogClose();
+        return ok ? 0 : 2;
+    }
+
+    // Deployed-install integrity probe: verify both runtime and project-level assets
+    // without requiring .NET, showing UI, or launching Core.
+    if (verifyCompleteInstall) {
         bool ok = PreflightCriticalFiles(exeDir);
         Log(ok ? "INFO" : "ERROR", ok ? L"verify-only succeeded" : L"verify-only failed");
         LogClose();

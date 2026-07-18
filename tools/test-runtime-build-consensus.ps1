@@ -58,6 +58,17 @@ try {
     [IO.File]::WriteAllText($recordPath, ($record | ConvertTo-Json -Depth 5) + "`n", $utf8NoBom)
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') -ProjectRoot $ProjectRoot -DeploymentRoot $testBase -RecordPath $recordPath
     if ($LASTEXITCODE -ne 0) { throw 'Runtime release consensus verification failed.' }
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') `
+        -ProjectRoot $ProjectRoot -DeploymentRoot $testBase -RecordPath $recordPath -IntegrityOnly
+    if ($LASTEXITCODE -ne 0) { throw 'Legacy runtime release consensus integrity verification failed.' }
+
+    $wrongIdentity = $record | ConvertTo-Json -Depth 5 | ConvertFrom-Json
+    $wrongIdentity.sourceTreeHash = '0' * 64
+    [IO.File]::WriteAllText($recordPath, ($wrongIdentity | ConvertTo-Json -Depth 5) + "`n", $utf8NoBom)
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') `
+        -ProjectRoot $ProjectRoot -DeploymentRoot $testBase -RecordPath $recordPath -IntegrityOnly
+    if ($LASTEXITCODE -eq 0) { throw 'Legacy consensus integrity accepted a record that disagrees with the manifest.' }
+    [IO.File]::WriteAllText($recordPath, ($record | ConvertTo-Json -Depth 5) + "`n", $utf8NoBom)
 
     Expect-Failure 'duplicate builder' { Test-Cf7RuntimeBuildAttestationConsensus -Attestations @($builderA, $builderA) | Out-Null }
     $mismatch = $builderB | ConvertTo-Json -Depth 8 | ConvertFrom-Json
@@ -65,7 +76,7 @@ try {
     Expect-Failure 'closure mismatch' { Test-Cf7RuntimeBuildAttestationConsensus -Attestations @($builderA, $mismatch) | Out-Null }
     Expect-Failure 'single attestation' { Test-Cf7RuntimeBuildAttestationConsensus -Attestations @($builderA) | Out-Null }
 
-    Write-Host '[RuntimeConsensusTest] OK checks=6' -ForegroundColor Green
+    Write-Host '[RuntimeConsensusTest] OK checks=8' -ForegroundColor Green
 } finally {
     if (Test-Path -LiteralPath $testBase) { Remove-Item -LiteralPath $testBase -Recurse -Force }
 }

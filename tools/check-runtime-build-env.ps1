@@ -24,7 +24,12 @@ foreach ($name in @(
     [Environment]::SetEnvironmentVariable($name, $null, 'Process')
 }
 $buildTempParent = if ($env:LOCALAPPDATA) { $env:LOCALAPPDATA } else { [IO.Path]::GetTempPath() }
-$buildTempRoot = Join-Path $buildTempParent 'CF7\runtime-build-temp'
+$defaultBuildTempRoot = Join-Path $buildTempParent 'CF7\runtime-build-temp'
+$buildTempRoot = if ($env:CF7_RUNTIME_JOB_TEMP) {
+    [IO.Path]::GetFullPath($env:CF7_RUNTIME_JOB_TEMP)
+} else {
+    $defaultBuildTempRoot
+}
 if (-not (Test-Path -LiteralPath $buildTempRoot -PathType Container)) {
     New-Item -ItemType Directory -Path $buildTempRoot -Force | Out-Null
 }

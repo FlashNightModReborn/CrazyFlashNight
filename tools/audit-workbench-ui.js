@@ -311,16 +311,34 @@ if (exists(registryRel)) {
         'modules/npcshop-secondary-pages.js',
         'modules/npcshop.js'
     ], 'WB024', 'NPC secondary-page presenters must load before the facade', registryRel);
+    expectOrdered(lazyBlock('skills'), [
+        'modules/item-filter.js',
+        'modules/skills-runtime.js',
+        'modules/skills-library.js',
+        'modules/skills-trainer.js',
+        'modules/skills-loadout.js',
+        'modules/skills-interactions.js',
+        'modules/skills-render.js',
+        'modules/skills-diagnostics.js',
+        'modules/skills.js'
+    ], 'WB027', 'Skills feature modules must preserve dependency order before the facade', registryRel);
 }
 
 var buildRel = 'launcher/build.ps1';
-if (exists(buildRel)) {
+var releasePolicyRel = 'tools/validate-launcher-release-policy.ps1';
+if (exists(buildRel) && exists(releasePolicyRel)) {
     var buildSource = read(buildRel).replace(/\\/g, '/');
+    var releasePolicySource = read(releasePolicyRel).replace(/\\/g, '/');
+    expect(buildSource.indexOf('tools/validate-launcher-release-policy.ps1') !== -1,
+        'WB025', 'Launcher build no longer delegates required-assets checks to release policy', buildRel);
     REQUIRED_FILES.filter(function (rel) { return rel.indexOf('launcher/web/modules/') === 0; })
         .forEach(function (rel) {
             var asset = rel.slice('launcher/web/'.length);
-            expect(buildSource.indexOf(asset) !== -1, 'WB025', 'Launcher required-assets gate is missing a workbench runtime module', buildRel, null, asset);
+            expect(releasePolicySource.indexOf(asset) !== -1, 'WB025', 'Launcher release-policy required-assets gate is missing a workbench runtime module', releasePolicyRel, null, asset);
         });
+    expect(releasePolicySource.indexOf('tools/check-workbench-css-bundle.js') !== -1
+            && releasePolicySource.indexOf("'workbench-css-closure'") !== -1,
+        'WB028', 'Launcher release policy must execute the workbench CSS import/asset closure gate', releasePolicyRel);
 }
 
 [

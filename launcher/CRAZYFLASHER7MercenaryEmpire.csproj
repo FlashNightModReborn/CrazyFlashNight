@@ -19,7 +19,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- SDK-style 默认从项目目录递归收 **/*.cs；
          需排除 tests/native/packages/scripts 子树 + 独立子进程源码 HotkeyGuard.cs（csc 单独编译为 hotkey_guard.exe） -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);tests/**;native/**;packages/**;scripts/**;src/Guardian/HotkeyGuard.cs</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**;tests/**;native/**;packages/**;scripts/**;src/Guardian/HotkeyGuard.cs</DefaultItemExcludes>
     <!-- CA1416: 项目 TFM=net10.0-windows 已显式 Windows-only，不再 emit 平台兼容警告 -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
     <!-- LatestMajor: runtime/Core.runtimeconfig.json 容忍未来 .NET 11.x；

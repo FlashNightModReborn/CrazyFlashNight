@@ -609,6 +609,7 @@
     color:#e9b96d; border:1px solid #68502e; background:#1c1710; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .npcshop-settlement-header button { min-height:28px; padding:3px 10px; }
+.npcshop-settlement-header [data-trade-help] { margin-left:auto; min-width:28px; padding-right:7px; padding-left:7px; }
 .npcshop-settlement-header h2 { margin:0; font-size:18px; }
 .npcshop-settlement-header p { margin:2px 0 0; color:#818892; font-size:9px; }
 .npcshop-settlement-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding:9px 0; }

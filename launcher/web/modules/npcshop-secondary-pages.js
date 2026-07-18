@@ -52,6 +52,7 @@
             onBulkSale:requirePort(options, 'onBulkSale'),
             onRemove:requirePort(options, 'onRemove'),
             onPurchaseBounds:requirePort(options, 'onPurchaseBounds'),
+            onHelp:requirePort(options, 'onHelp'),
             onGuide:typeof options.onGuide === 'function' ? options.onGuide : noop,
             iconHtml:requirePort(options, 'iconHtml'),
             errorMessage:requirePort(options, 'errorMessage')
@@ -59,7 +60,8 @@
         this.root = this._document.createElement('section');
         this.root.className = 'workbench-secondary-page npcshop-settlement-page';
         this.root.innerHTML = '<header class="npcshop-settlement-header"><button type="button" data-trade-back>← 返回选购</button>'
-            + '<div><h2>交易结算</h2><p data-trade-context>价格与容量由游戏实时核算；确认后整单一次生效。</p></div></header>'
+            + '<div><h2>交易结算</h2><p data-trade-context>价格与容量由游戏实时核算；确认后整单一次生效。</p></div>'
+            + '<button type="button" data-trade-help aria-label="商店操作帮助">？</button></header>'
             + '<div class="npcshop-settlement-columns"><section><h3>待购</h3><div class="npcshop-settlement-list" data-purchase-lines></div></section>'
             + '<section><h3>待售</h3><div class="npcshop-settlement-list" data-sale-lines></div></section></div>'
             + '<footer class="npcshop-settlement-summary"><div data-trade-economy></div><span data-trade-error></span>'
@@ -69,6 +71,9 @@
             root:this.root, role:'dialog', ariaLabel:'NPC 商店交易结算'
         });
         this.secondary.bindClose(this.root.querySelector('[data-trade-back]'), this._ports.onClose);
+        this._helpButton = this.root.querySelector('[data-trade-help]');
+        this._helpHandler = this._ports.onHelp;
+        this._helpButton.addEventListener('click', this._helpHandler);
         this._organizeButton = this.root.querySelector('[data-space-organize]');
         this._organizeHandler = this._ports.onOrganize;
         this._organizeButton.addEventListener('click', this._organizeHandler);
@@ -186,6 +191,7 @@
         button.type = 'button'; button.textContent = label; button.addEventListener('click', handler); return button;
     };
     SettlementPresenter.prototype.destroy = function() {
+        this._helpButton.removeEventListener('click', this._helpHandler);
         this._organizeButton.removeEventListener('click', this._organizeHandler);
         this.commitBar.destroy();
         this.secondary.destroy();

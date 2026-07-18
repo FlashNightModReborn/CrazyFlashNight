@@ -47,6 +47,7 @@
         throw new Error('workbench-components.js requires workbench-focus.js');
     }
     var FocusScope = WorkbenchFocus.FocusScope;
+    var secondaryOpenSequence = 0;
 
     function resolveDocument(options, node) {
         return options.document || (node && node.ownerDocument)
@@ -82,6 +83,25 @@
         }
     }
 
+    function secondaryOwner(node) {
+        return node && node.__cf7WorkbenchSecondaryPage || null;
+    }
+
+    function syncSecondaryAccessibility(host) {
+        if (!host || !host.children) return;
+        var top = null;
+        for (var i = 0; i < host.children.length; i++) {
+            var owner = secondaryOwner(host.children[i]);
+            if (!owner || owner._host !== host || !owner._active) continue;
+            if (!top || owner._stackOrder > top._stackOrder) top = owner;
+        }
+        for (var j = 0; j < host.children.length; j++) {
+            var page = secondaryOwner(host.children[j]);
+            if (!page || page._host !== host) continue;
+            page.root.setAttribute('aria-hidden', page === top ? 'false' : 'true');
+        }
+    }
+
     function secondaryUnderlay(page) {
         var host = page._host || page.root.parentNode;
         if (!host || !host.children) return [];
@@ -89,10 +109,28 @@
         for (var i = 0; i < host.children.length; i++) {
             var child = host.children[i];
             if (child === page.root) continue;
-            if (child.classList && child.classList.contains('workbench-secondary-page')) continue;
+            if (child.classList && child.classList.contains('workbench-secondary-page')) {
+                var owner = secondaryOwner(child);
+                var active = owner ? owner._active : child.getAttribute && child.getAttribute('aria-hidden') === 'false';
+                if (active) result.push(child);
+                continue;
+            }
             result.push(child);
         }
         return result;
+    }
+
+    function secondaryRestoreTarget(page) {
+        var target = page._focusScope && page._focusScope._opener;
+        var visited = [];
+        while (target && target.closest) {
+            var root = target.closest('.workbench-secondary-page');
+            var owner = secondaryOwner(root);
+            if (!owner || owner._active || visited.indexOf(owner) >= 0) break;
+            visited.push(owner);
+            target = owner._returnFocus;
+        }
+        return target || null;
     }
 
     function SecondaryPage(options) {
@@ -108,6 +146,8 @@
         this._destroying = false;
         this._closing = false;
         this._generation = 0;
+        this._stackOrder = 0;
+        this._returnFocus = null;
         this._lifetime = new DisposableStack();
         this._activeClass = options.activeClass || 'active';
         this._backCallback = null;
@@ -123,6 +163,7 @@
         if (options.role === 'dialog') this.root.setAttribute('aria-modal', 'true');
         if (options.ariaLabel) this.root.setAttribute('aria-label', options.ariaLabel);
         this.root.setAttribute('aria-hidden', 'true');
+        this.root.__cf7WorkbenchSecondaryPage = this;
         var self = this;
         this._focusScope = new FocusScope({
             root:this.root,
@@ -178,6 +219,8 @@
         if (this._active) return true;
         context = context || {};
         var generation = ++this._generation;
+        this._stackOrder = ++secondaryOpenSequence;
+        this._returnFocus = context.opener || this._document && this._document.activeElement || null;
         this._active = true;
         setClass(this.root, this._activeClass, true);
         this.root.setAttribute('aria-hidden', 'false');
@@ -190,6 +233,7 @@
                 underlay:context.underlay != null ? context.underlay
                     : this._options.underlay != null ? this._options.underlay : secondaryUnderlay(this)
             });
+            syncSecondaryAccessibility(this._host || this.root.parentNode);
         } catch (error) {
             if (generation === this._generation) {
                 this._generation++;
@@ -197,6 +241,7 @@
                 setClass(this.root, this._activeClass, false);
                 this.root.setAttribute('aria-hidden', 'true');
                 try { this._focusScope.deactivate('open-error', {restoreFocus:false}); } catch (_) {}
+                syncSecondaryAccessibility(this._host || this.root.parentNode);
             }
             throw error;
         }
@@ -212,8 +257,11 @@
         setClass(this.root, this._activeClass, false);
         this.root.setAttribute('aria-hidden', 'true');
         var firstError = null;
-        try { this._focusScope.deactivate(reason || 'close', context); }
+        var focusContext = {restoreFocus:context.restoreFocus};
+        focusContext.restoreFocusTarget = secondaryRestoreTarget(this);
+        try { this._focusScope.deactivate(reason || 'close', focusContext); }
         catch (focusError) { firstError = focusError; }
+        syncSecondaryAccessibility(this._host || this.root.parentNode);
         try {
             if (typeof this._options.onClose === 'function') this._options.onClose(reason || 'close', this.root);
         } catch (closeError) { if (!firstError) firstError = closeError; }
@@ -245,7 +293,14 @@
         try { this._lifetime.dispose(); } catch (lifetimeError) { if (!firstError) firstError = lifetimeError; }
         try { if (this._ownsRoot || this._options.removeOnDestroy) removeNode(this.root); }
         catch (removeError) { if (!firstError) firstError = removeError; }
+        var host = this._host;
+        if (this.root.__cf7WorkbenchSecondaryPage === this) {
+            try { delete this.root.__cf7WorkbenchSecondaryPage; }
+            catch (_) { this.root.__cf7WorkbenchSecondaryPage = null; }
+        }
         this._host = null;
+        this._returnFocus = null;
+        syncSecondaryAccessibility(host);
         this._destroying = false;
         if (firstError) throw firstError;
         return true;

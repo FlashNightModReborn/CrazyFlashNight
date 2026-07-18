@@ -239,7 +239,8 @@
         var session = this._session;
         this._session = null;
         if (session) session.dispose();
-        var opener = this._opener;
+        var opener = Object.prototype.hasOwnProperty.call(context, 'restoreFocusTarget')
+            ? context.restoreFocusTarget : this._opener;
         this._opener = null;
         if (context.restoreFocus !== false && this._options.restoreFocus !== false
                 && opener && opener !== this.root) focusNode(opener);

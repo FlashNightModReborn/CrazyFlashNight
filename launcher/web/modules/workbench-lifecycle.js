@@ -101,10 +101,11 @@
         this._lifetime = new DisposableStack({onError: options.onError});
         this._mountSession = null;
         this._session = null;
+        this._destroying = false;
     }
 
     PanelLifecycle.prototype.mount = function(host) {
-        if (this._state === 'destroyed' || !host) return false;
+        if (this._state === 'destroyed' || this._destroying || !host) return false;
         if (this._host === host && (this._state === 'mounted' || this._state === 'active')) return true;
         if (this._host) this.unmount('remount');
         var mountSession = new DisposableStack({onError: this._options.onError});
@@ -124,7 +125,7 @@
     };
 
     PanelLifecycle.prototype.activate = function(context) {
-        if (this._state === 'destroyed' || !this._host) return false;
+        if (this._state === 'destroyed' || this._destroying || !this._host) return false;
         if (this._state === 'active') this.deactivate('reactivate');
         this._session = new DisposableStack({onError: this._options.onError});
         this._context = context || {};
@@ -181,7 +182,8 @@
     };
 
     PanelLifecycle.prototype.destroy = function(reason) {
-        if (this._state === 'destroyed') return false;
+        if (this._state === 'destroyed' || this._destroying) return false;
+        this._destroying = true;
         var error = null;
         try { this.unmount(reason || 'destroy'); } catch (caught) { error = caught; }
         try {
@@ -191,6 +193,11 @@
         }
         this._lifetime.dispose();
         this._state = 'destroyed';
+        this._host = null;
+        this._context = null;
+        this._mountSession = null;
+        this._session = null;
+        this._destroying = false;
         if (error) throw error;
         return true;
     };

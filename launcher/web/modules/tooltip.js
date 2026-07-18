@@ -21,9 +21,11 @@ var PanelTooltip = (function() {
     var _outsideListener = null;
     var _autoTimer = null;
 
-    // 最近一次 hover mouse 位置缓存：用于 updateContent 异步数据到达后重新定位。
-    // 不直接存原 event 引用——浏览器复用 event 对象、跨帧不安全。
+    // 最近一次定位上下文：用于 updateContent 异步数据到达后重新测量。
+    // pointer 不直接存原 event 引用——浏览器复用 event 对象、跨帧不安全；anchored
+    // 则保留稳定的 DOM anchor，内容/字体/图片尺寸变化后仍可重新夹紧到视口。
     var _lastEvt = null;
+    var _lastAnchor = null;
 
     // ── show generation counter ──
     // 每次 show* / hide 单调自增。scheduleReposition 注册的延迟回调（fonts.ready /
@@ -74,6 +76,7 @@ var PanelTooltip = (function() {
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
+        _lastAnchor = null;
         // 双面板模式：给 desc 写 inline width（port AS2 estimateMainWidth）。
         // 内容只在 setText 时变，鼠标移动不需要重算 → 放 showAtMouse 阶段。
         applyDescWidth();
@@ -81,7 +84,8 @@ var PanelTooltip = (function() {
             _lastEvt = { clientX: e.clientX, clientY: e.clientY };
             positionAtMouse(_lastEvt);
             // Safety net：覆盖 async 加载源（字体 swap / icon 图加载 / 外部资源）
-            scheduleReposition(_lastEvt, _showGen);
+            var pointerPosition = _lastEvt;
+            scheduleReposition(function() { positionAtMouse(pointerPosition); }, _showGen);
         }
     }
 
@@ -96,39 +100,34 @@ var PanelTooltip = (function() {
     // _visible 单独不够——hide()+showAtMouse() 之间，旧回调会把新 tooltip 错位到旧坐标。
     // img.onload 即使 img 已被 innerHTML 替换、脱离 DOM，仍可能触发，所以 gen 守卫是
     // 唯一可靠的"哪个 show 注册的"标识。
-    function scheduleReposition(e, gen) {
+    function scheduleReposition(reposition, gen) {
         function alive() { return _visible && _showGen === gen; }
+        function run() {
+            if (alive()) reposition();
+        }
         // Tier 0: 字体 ready
         if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
-            document.fonts.ready.then(function() {
-                if (alive()) positionAtMouse(e);
-            });
+            document.fonts.ready.then(run);
         }
         // Tier 1: 双 raf
         requestAnimationFrame(function() {
             if (!alive()) return;
-            requestAnimationFrame(function() {
-                if (alive()) positionAtMouse(e);
-            });
+            requestAnimationFrame(run);
         });
         // Tier 2: img.onload —— icon 异步加载
         var imgs = _el.querySelectorAll('img');
         for (var i = 0; i < imgs.length; i++) {
             var img = imgs[i];
             if (img.complete) continue;
-            img.addEventListener('load', function() {
-                if (alive()) positionAtMouse(e);
-            }, { once: true });
-            img.addEventListener('error', function() {
-                if (alive()) positionAtMouse(e);
-            }, { once: true });
+            img.addEventListener('load', run, { once: true });
+            img.addEventListener('error', run, { once: true });
         }
         // Tier 3: 80ms 兜底
         // updateContent 时会再次调用，覆盖前一次的 timer 避免叠加。hide() 也会清掉。
         if (_repositionTimer) clearTimeout(_repositionTimer);
         _repositionTimer = setTimeout(function() {
             _repositionTimer = null;
-            if (alive()) positionAtMouse(e);
+            run();
         }, 80);
     }
 
@@ -366,11 +365,47 @@ var PanelTooltip = (function() {
             if (y < 0) y = 0;
             if (y + th > vh) y = vh - th;
         } else {
-            var fw = _el.offsetWidth, fh = _el.offsetHeight;
+            // 普通 tooltip 同样受 overlay transform 影响；只把可视尺寸用于 viewport
+            // 碰撞检测，正常的 +14 pointer gap 保持不变。
+            var fallbackRect = _el.getBoundingClientRect();
+            var fw = fallbackRect.width, fh = fallbackRect.height;
             x = e.clientX + 14; y = e.clientY + 14;
             if (x + fw > vw - 8) x = e.clientX - fw - 8;
             if (y + fh > vh - 8) y = vh - fh - 8;
         }
+
+        _el.style.left = x + 'px';
+        _el.style.top = y + 'px';
+    }
+
+    var ANCHOR_GAP = 8;
+    var VIEWPORT_INSET = 8;
+
+    // anchor rect 和 getBoundingClientRect() 都在 transform 后的 viewport CSS px 域。
+    // tooltip 的 offsetWidth/offsetHeight 则是 transform 前尺寸，不能与前者混算。
+    function positionAnchored(anchorEl) {
+        if (!_el || !anchorEl || typeof anchorEl.getBoundingClientRect !== 'function') return;
+        var anchorRect = anchorEl.getBoundingClientRect();
+        var tooltipRect = _el.getBoundingClientRect();
+        var scale = getOverlayScale();
+        var tw = tooltipRect.width || (_el.offsetWidth || 300) * scale;
+        var th = tooltipRect.height || (_el.offsetHeight || 200) * scale;
+        var vw = window.innerWidth, vh = window.innerHeight;
+
+        // 优先左侧；左侧放不下时选右侧。两侧都不足则选择空间更大的一侧，
+        // 最后统一夹紧，避免异步富内容把 tooltip 推出 viewport。
+        var leftSpace = anchorRect.left - VIEWPORT_INSET;
+        var rightSpace = vw - VIEWPORT_INSET - anchorRect.right;
+        var x = anchorRect.left - tw - ANCHOR_GAP;
+        if (leftSpace < tw + ANCHOR_GAP && rightSpace > leftSpace) {
+            x = anchorRect.right + ANCHOR_GAP;
+        }
+        var maxX = Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET);
+        x = Math.max(VIEWPORT_INSET, Math.min(x, maxX));
+
+        var y = anchorRect.top;
+        var maxY = Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET);
+        y = Math.max(VIEWPORT_INSET, Math.min(y, maxY));
 
         _el.style.left = x + 'px';
         _el.style.top = y + 'px';
@@ -400,26 +435,19 @@ var PanelTooltip = (function() {
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
-        _lastEvt = null;   // anchored 不依赖鼠标位置，清掉避免被 updateContent 误用
+        _lastEvt = null;
+        _lastAnchor = anchorEl || null;
         // contract 跟 showAtMouse 对齐：split-mode rich tooltip 也写 inline width，避免
         // anchored 调用方传 rich html 时 desc 退回 CSS max-width:650 横铺。
         // 注意：anchored 不跑 positionAtMouse 的 desc marginTop/height 公式（依赖 mouseY），
         // desc 高度由内容自然撑开。
         applyDescWidth();
 
-        // 定位：优先放在锚定元素左侧，放不下则右侧
-        if (anchorEl) {
-            var rect = anchorEl.getBoundingClientRect();
-            var tw = _el.offsetWidth || 300;
-            var th = _el.offsetHeight || 200;
-            var vw = window.innerWidth, vh = window.innerHeight;
-            var x = rect.left - tw - 8;
-            if (x < 8) x = rect.right + 8;
-            var y = rect.top;
-            if (y + th > vh - 8) y = vh - th - 8;
-            if (y < 8) y = 8;
-            _el.style.left = x + 'px';
-            _el.style.top = y + 'px';
+        // 定位：使用 transform 后的物理尺寸，并覆盖字体/图片迟到导致的尺寸变化。
+        if (_lastAnchor) {
+            var anchoredElement = _lastAnchor;
+            positionAnchored(anchoredElement);
+            scheduleReposition(function() { positionAnchored(anchoredElement); }, _showGen);
         }
 
         // outside-click 关闭
@@ -447,8 +475,8 @@ var PanelTooltip = (function() {
      * 退回 CSS max-width: 650 兜底，desc 横向被撑宽到 ~680px，desc 高度变矮，
      * 排版会错位（K商城首次悬浮表现：先 placeholder，async 数据回来后 desc 宽错）。
      *
-     * hover 模式下用 _lastEvt 复定位；anchored 模式 _lastEvt=null，跳过定位环节
-     * （anchored 现在 caller 不用 updateContent，但保留 fallback 健壮）。
+     * hover 模式下用 _lastEvt 复定位；anchored 模式保留 anchor，并在 basic→rich
+     * 更新后重新测量物理尺寸、夹紧视口。
      */
     function updateContent(html, owner) {
         if (!_el || !_visible || (owner != null && _owner !== owner)) return false;
@@ -458,8 +486,13 @@ var PanelTooltip = (function() {
             // 沿用当前 _showGen——updateContent 是同一次 show 的内容刷新，不是新 show。
             // 旧 scheduleReposition 注册的延迟回调依然 alive，新 schedule 添加针对新
             // DOM 的额外回调；都用同一个 _lastEvt 跑 positionAtMouse，幂等。
-            positionAtMouse(_lastEvt);
-            scheduleReposition(_lastEvt, _showGen);
+            var pointerPosition = _lastEvt;
+            positionAtMouse(pointerPosition);
+            scheduleReposition(function() { positionAtMouse(pointerPosition); }, _showGen);
+        } else if (_lastAnchor) {
+            var anchoredElement = _lastAnchor;
+            positionAnchored(anchoredElement);
+            scheduleReposition(function() { positionAnchored(anchoredElement); }, _showGen);
         }
         return true;
     }
@@ -472,6 +505,7 @@ var PanelTooltip = (function() {
         _owner = null;
         _showGen++;                  // 让所有未 fire 的 reposition 回调失效
         _lastEvt = null;
+        _lastAnchor = null;
         if (_repositionTimer) {
             clearTimeout(_repositionTimer);
             _repositionTimer = null;
@@ -716,6 +750,32 @@ var PanelTooltip = (function() {
         }
     }
 
+    // 当前仍有 pointer/focus 活性的异步绑定，按最近激活顺序排列。全局 tooltip 被
+    // 临时 hover owner 覆盖后，该 owner 离开时从栈顶恢复仍聚焦的 binding。
+    var _activeAsyncBindings = [];
+
+    function removeActiveBinding(binding) {
+        var index = _activeAsyncBindings.indexOf(binding);
+        if (index >= 0) _activeAsyncBindings.splice(index, 1);
+    }
+
+    function markActiveBinding(binding) {
+        removeActiveBinding(binding);
+        _activeAsyncBindings.push(binding);
+    }
+
+    function restoreActiveBinding(excluded) {
+        for (var i = _activeAsyncBindings.length - 1; i >= 0; i--) {
+            var candidate = _activeAsyncBindings[i];
+            if (!candidate || candidate === excluded || !candidate.canRestore()) {
+                if (!candidate || !candidate.canRestore()) _activeAsyncBindings.splice(i, 1);
+                continue;
+            }
+            if (candidate.restore()) return true;
+        }
+        return false;
+    }
+
     /**
      * 异步 entity tooltip 通用绑定。
      *
@@ -838,10 +898,10 @@ var PanelTooltip = (function() {
         }
 
         function showCurrent(event) {
-            if (disposed || !isActive()) return;
+            if (disposed || !isActive()) return false;
             if (suppressed(event)) {
                 hide(owner);
-                return;
+                return false;
             }
             var key = resolveKey(event);
             var item = resolveItem(event);
@@ -853,14 +913,16 @@ var PanelTooltip = (function() {
             if (hasActivePointer() && lastPointerEvent) showAtMouse(html, lastPointerEvent, owner);
             else showAnchored(html, node, { autoClose: 0, outsideClick: false, owner: owner });
             requestRich(key, item);
+            return true;
         }
 
         function clearIfInactive() {
             if (isActive()) return;
+            removeActiveBinding(binding);
             activeKey = null;
             activeItem = null;
             lastPointerEvent = null;
-            hide(owner);
+            if (hide(owner)) restoreActiveBinding(binding);
         }
 
         function onEnter(e) {
@@ -868,6 +930,7 @@ var PanelTooltip = (function() {
             var pointerId = pointerIdOf(e);
             if (activePointers[pointerId]) return;
             activePointers[pointerId] = true;
+            markActiveBinding(binding);
             lastPointerEvent = pointerSnapshot(e);
             showCurrent(e);
         }
@@ -896,6 +959,7 @@ var PanelTooltip = (function() {
         function onFocusIn(e) {
             if (disposed || (e.relatedTarget && node.contains(e.relatedTarget))) return;
             focusWithin = true;
+            markActiveBinding(binding);
             addTooltipDescription();
             if (!hasActivePointer()) showCurrent(e);
         }
@@ -920,6 +984,14 @@ var PanelTooltip = (function() {
         node.addEventListener('focusout', onFocusOut);
 
         var binding = {
+            canRestore: function() {
+                return !disposed && isActive();
+            },
+            restore: function() {
+                return !disposed && isActive()
+                    ? showCurrent(lastPointerEvent || { target: node, currentTarget: node })
+                    : false;
+            },
             destroy: function() {
                 if (disposed) return false;
                 disposed = true;
@@ -932,10 +1004,11 @@ var PanelTooltip = (function() {
                 node.removeEventListener('focusout', onFocusOut);
                 focusWithin = false;
                 activePointers = {};
+                removeActiveBinding(binding);
                 activeKey = null;
                 activeItem = null;
                 removeTooltipDescription();
-                hide(owner);
+                if (hide(owner)) restoreActiveBinding(binding);
                 if (node.__panelTooltipBinding === binding) node.__panelTooltipBinding = null;
                 return true;
             },

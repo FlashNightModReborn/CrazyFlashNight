@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对代码基线**：commit `3343c1ef2244e0c6253fc95f5b6334095f049f57`（2026-07-18）+ 装备调制迁移检查点 `b9cbac4ddf`。当前同时纳入 Runtime 可复现构建、地图 WebP / Canvas 预算和 `equipment_tuning` Web workbench；高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准，不在页首复制施工日志。
+> **最后核对代码基线**：commit `711c469036ad6b1226833faf255499abb1ebf2ed`（2026-07-18）+ 当前工作台回归与 runtime v2 发布列车工作树。当前同时纳入 Runtime 可复现构建、地图 WebP / Canvas 预算和 `equipment_tuning` Web workbench；高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准，不在页首复制施工日志。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移-protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 > **路径约定**：正文与代码块中以裸 `tools/` 开头的脚本路径，除 `launcher/tools/` 下三个小游戏工具（`lockbox-bake.js` / `run-minigame-qa.js` / `validate-minigame-final-state.js`）外，**默认相对仓库根**（`launcher/` 的上一级，从仓库根执行）；跨出 launcher 的 markdown 链接统一用 `../`。
 
@@ -16,7 +16,7 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 | SDK pin | [`global.json`](../global.json) at repo root, `version: 10.0.300` + `rollForward: disable`；runtime 发布另受 toolchain lock 约束 |
 | UI | WinForms (`UseWindowsForms=true`, WinExe) 单窗体（GuardianForm）+ WebView2（BootstrapPanel 引导页 + WebOverlayForm 运行态 overlay） |
 | Native HUD 图像 | **SkiaSharp 3.119.4**（MIT；共享地图 WebP 按最长边 512px 解码）→ `System.Drawing.Bitmap`；decoded/tinted 分别使用 24/12 MiB 字节预算 LRU |
-| 构建 | **`dotnet publish --self-contained false`**（FDD；`build.ps1` 统一剔除 NuGet native PDB）+ MSVC `cl.exe`（miniaudio + bootstrap）+ Rust/Cargo (sol_parser cdylib) + Node.js/npm (TypeScript 编译 V8 脚本) |
+| 构建 | 纯 producer `build-runtime-candidate.ps1`：**`dotnet publish --self-contained false`**（FDD、无 PDB）+ MSVC `cl.exe`（miniaudio + bootstrap）+ Rust/Cargo（sol_parser）；TypeScript/派生资产准备与产品审计已从 producer 分离 |
 | 包管理 | **PackageReference + [`Directory.Packages.props`](Directory.Packages.props)** 中心化版本锁定（`ManagePackageVersionsCentrally=true`） |
 | GPU 检测 | **`Vortice.DXGI` 3.6.2**（SharpDX 团队接力的社区项目，1:1 替代 SharpDX.DXGI） |
 | 音频 | miniaudio (Unlicense, 单头文件 C 库 → native DLL, WASAPI) |
@@ -37,7 +37,7 @@ projectRoot/
 │   ├── *.dll (16个 transitive deps，含 SkiaSharp managed/native WebP decoder)
 │   ├── miniaudio.dll                            P/Invoke side-car
 │   ├── sol_parser.dll                           P/Invoke side-car
-│   └── cf7-runtime-manifest.tsv                 build.ps1 生成的文件清单 + SHA256
+│   └── cf7-runtime-manifest.tsv                 producer 生成的 v1/v2 文件清单 + SHA256
 ├── tools/dotnet-runtime/
 │   └── windowsdesktop-runtime-10.0.8-win-x64.exe   58MB MS 官方 installer，bootstrap 用
 ├── hotkey_guard.exe / Adobe Flash Player 20.exe / CRAZYFLASHER7MercenaryEmpire.swf / ...
@@ -78,8 +78,8 @@ Guardian Launcher 主逻辑 (WinForms / V8 / WebView2 / Vortice / ...)
 ### 关键路径与 hardcoded 名
 
 - 用户面 entry：`CRAZYFLASHER7MercenaryEmpire.exe`（bootstrap，在 projectRoot 根）— **不要重命名**（19+ 处脚本 / 文档 / 自动化引用此名）
-- FDD apphost：`runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe`（csproj `<AssemblyName>` 控制名；build.ps1 Step 6 先写 candidate，promotion 后进入正式 runtime）
-- Runtime manifest：`runtime\cf7-runtime-manifest.tsv`（build.ps1 Step 6 在 candidate 生成，bootstrap preflight 校验入口 exe 与 runtime 文件的大小 / SHA256，双 builder 一致后随 promotion 原子落盘）
+- FDD apphost：`runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe`（csproj `<AssemblyName>` 控制名；纯 producer 先写隔离 candidate，promotion 后才进入正式 runtime）
+- Runtime manifest：`runtime\cf7-runtime-manifest.tsv`（v2 记录三域构建身份、payload closure 与逐文件摘要；bootstrap preflight 校验入口 exe/runtime 字节，双故障域共识后随 promotion 原子落盘）
 - Core projectRoot 解析：优先 `--project-root <abs>` CLI arg（bootstrap 注入）；次选 walk-up 哨兵文件 `crossdomain.xml`（覆盖 dev 直跑场景）；fallback `Environment.ProcessPath` 父目录
 - 长跑进程：Core.exe（bootstrap 启动 Core 后立即退出）— `cfn-cli.sh` / `taskkill` / GPU pref 都针对 `runtime\Core.exe`
 - Bundled runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe`（~58MB，季度更新一次）
@@ -297,7 +297,8 @@ Program.Run(args)
 launcher/
 ├── CRAZYFLASHER7MercenaryEmpire.csproj   C# 项目文件（SDK-style, net10.0-windows, AssemblyName=...Core）
 ├── Directory.Packages.props               中心化 PackageVersion 锁定（ClearScript / WebView2 / Vortice.DXGI / Newtonsoft / xunit / Test.Sdk）
-├── build.ps1                              总构建脚本（TS/native miniaudio/Rust sol_parser/native bootstrap/FDD publish/资产 gate，见下文）
+├── build.ps1                              兼容编排器（prepare → pure producer → policy，见下文）
+├── build-runtime-candidate.ps1            纯二进制 producer（native/Rust/bootstrap/FDD publish）
 ├── setup-check.ps1                        构建/运行前依赖自检（.NET 10 SDK + WebView2 + VC + Rust + Node）
 ├── app.manifest                           DPI awareness / Windows 兼容声明
 ├── app.ico                                应用图标
@@ -305,7 +306,7 @@ launcher/
 ├── data/
 │   ├── save_schema.json                   存档编辑器 diff/默认值基线
 │   ├── save_repair_dict.json              存档自动修复字典
-│   └── map_hud_data.json                  Native HUD 小地图 catalog（build.ps1 会 fail-fast 校验）
+│   └── map_hud_data.json                  Native HUD 小地图 catalog（prepare 派生、policy fail-fast 校验）
 │
 ├── src/
 │   ├── Program.cs                         入口：正常模式先做 WebView2 预检，再尽早构造 GuardianForm；随后初始化 Steam/Trust/总线并接 GameLaunchFlow
@@ -639,56 +640,57 @@ launcher/
 - **Windows 10 22H2+ / Windows 11，x64**
 - **正式 runtime 发布工具链**：从仓库根运行 `powershell -ExecutionPolicy Bypass -File tools\bootstrap-runtime-build-env.ps1`。脚本按 [`runtime-toolchain.lock.json`](../config/build/runtime-toolchain.lock.json) 补齐 .NET `10.0.300`、Rust `1.96.0`、VS Build Tools `17.14.32` / MSVC `19.44.35227` 与 Windows SDK `22621`，并校验固定安装器和最终 executable 的 SHA-256；只有 VS 阶段需要一次 UAC。已有环境用 `-VerifyOnly`，不会下载或安装。
   - .NET 与 Rust 使用 user scope，不要求改系统 PATH；VS 可以与机器已有更高版本实例并存，检测器遍历所有实例选择精确匹配字节。
-  - `build.ps1` 会再次运行正式门禁，不能用 bootstrap 的退出码代替构建验证；详细多机规则见 [运行时构建基线](../docs/runtime-build-reproducibility.md)。
+  - 纯 producer 会再次运行正式门禁；bootstrap 的退出码不能代替构建验证。完整身份、队列、证明与换机规则见 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md)。
   - 普通 Web / AS2 / 数据开发不要求取得 runtime 发布权，但不得用不匹配环境重建并提交二进制。
   - Rust 首次构建 cargo 需联网拉 flash-lso（git pin）及其传递依赖。Cargo.lock 只锁版本集，**不等价于离线可复现**——能否在新机器离线构建取决于本机 `~/.cargo/registry/cache` 和 `~/.cargo/git/checkouts/` 是否已有对应依赖（或是否做过 `cargo vendor`）
-  - 首次构建 cargo 需联网拉 flash-lso（git pin）及其传递依赖。Cargo.lock 只锁版本集，**不等价于离线可复现**——能否在新机器离线构建取决于本机 `~/.cargo/registry/cache` 和 `~/.cargo/git/checkouts/` 是否已有对应依赖（或是否做过 `cargo vendor`）
 - **Node.js + npm**（用于编 V8 的 TypeScript 脚本 + cf7-packer + cf7-save-repair-dict-build）：Node 18+（LTS 均可）
   - 安装：`winget install OpenJS.NodeJS.LTS`
-  - build.ps1 会在 `launcher/scripts/` 下跑 `npm install` + `npx tsc`
+  - `prepare-launcher-release-assets.ps1` 负责 locked restore、TypeScript 编译与派生资产；producer 不调用 Node
 - **WebView2 Runtime** Evergreen Bootstrapper（运行期硬依赖）
   - 检测：`setup-check.ps1` 读注册表 `HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}`
 - **终端**：PowerShell 或 Git Bash 都行
 - **推荐先跑环境自检**：`powershell -File setup-check.ps1`
   - 当前脚本检查 5 项：`.NET 10 SDK + WindowsDesktop runtime`、`WebView2 Runtime`、`MSVC Build Tools`、`Rust cargo`、`Node + npm`
 
-### 一键构建
+### 本地完整候选检查（兼容入口）
 
 ```powershell
-cd launcher
-powershell -File setup-check.ps1
-powershell -File build.ps1 -BuilderId builder-a
+chcp.com 65001 | Out-Null
+powershell -File launcher\setup-check.ps1
+powershell -File launcher\build.ps1 -BuilderId local-dev
 ```
 
-### build.ps1 实际执行链
+`build.ps1` 是兼容编排器：先 prepare tracked 资产，再调用纯 producer，最后运行只读 policy validator。若 prepare 产生 diff，先审阅并提交，再对新 tree 重跑；不要让构建过程临时生成一套未冻结资产。`-SkipPrepare` / `-SkipPolicy` 只用于定位职责边界，不能用于正式发布。
 
-脚本首先执行精确环境闸门，基线与换机步骤以 [Launcher 运行时构建基线](../docs/runtime-build-reproducibility.md) 为准；随后 echo `dotnet --version` + `global.json file:` 路径作为日志证据。Step 5 `dotnet publish` 调用前 `Push-Location $projectRoot` 切到 repo root。**实际执行动作**：
+### v2 职责与身份
 
-| 阶段 | 动作 |
-|------|------|
-| 1a   | 战宠 roster 分类审计 — `powershell tools/audit-pet-roster-types.ps1`（以 `data/merc/pets.xml` 的 RosterType 为权威核对分类差异；**实际在 Step 1 之前最先执行**，缺脚本或审计失败 exit 1） |
-| 1    | TypeScript 编译 — `cd scripts`，若 `node_modules/` 缺失则 `npm install --ignore-scripts`，再 `npx tsc --project tsconfig.json` → `scripts/dist/*.js` 供 V8Runtime 加载 |
-| 1b   | 生成 `data/map/task_npc_registry.json` — `node tools/derive-task-npc-registry.js`（任务 NPC placement 注册表派生；允许同名 NPC 多 hotspot，生成失败 exit 1） |
-| 1c   | 生成 `data/map/map_catalog.json` — `node tools/derive-map-catalog.js`（地图 hotspot 拓扑 groups/hotspots，导航权威；派生失败 exit 1） |
-| 1d   | 生成 `launcher/data/map_hud_data.json` — `node tools/export-maphud-data.js`（NativeHud 小地图 context outline+meta，与 1b/1c 同源每次重生成；派生失败 exit 1） |
-| 1e   | 生成 `web/modules/tasks/task-catalog.json` 后运行 `node tools/test-derive-task-conditions.js`（23 个合成夹具覆盖 conditions 单调 AND-OR 不动点；任务奖励/需求 `icon` 从 `data/items/*.xml` 派生；多 placement 地图 NPC 必须显式写 `get_npc_hotspot` / `finish_npc_hotspot`；失败 exit 1） |
-| 1f   | 生成 `web/modules/tasks/achievement-catalog.json` — `node tools/derive-achievement-catalog.js`（成就 tab web 直读目录，含 objective 枚举 / 跨域闭包 / 脱敏校验；奖励 `icon` 从 `data/items/*.xml` 派生；派生失败 exit 1） |
-| 1g   | 审计 Web 可见物品图标闭包 — `node tools/audit-web-item-icon-closure.js`（任务/成就奖励与情报物品最终 `icon` 必须命中 `launcher/web/icons/manifest.json`；失败 exit 1） |
-| 1h   | 审计 Web 图标渲染入口 — `node tools/audit-web-icon-render-entrypoints.js`（rich tooltip 必须传 `iconHtml` 接入 `Icons.html` 动态/分层播放链，`Icons.resolve` 只留受控 fallback；失败 exit 1） |
-| 2    | `native/build.bat` — `build.ps1` 先把 `miniaudio_bridge.c/miniaudio.h` 原始字节规范化为 LF，再用环境闸门指定的精确 vcvars、UTF-8、`/experimental:deterministic`、固定虚拟根 `/pathmap` 与 linker `/Brepro` 编译 → `bin/Release/miniaudio.dll`；因此不受 Git checkout 的 CRLF/LF、用户名或仓库绝对路径影响 |
-| 3    | `native/sol_parser/build.bat` — 固定 Rust toolchain、每次 clean、`--locked`，并以 `CARGO_ENCODED_RUSTFLAGS` 同时传入路径 remap 与 `/Brepro` 后生成 `sol_parser.dll` |
-| 4    | `native/bootstrap/build.bat` — 用同一精确 MSVC/Windows SDK 编 `bootstrap.cpp` → `bin/Release/bootstrap.exe` |
-| 5    | `dotnet publish ... -c Release -r win-x64 --self-contained false -p:DebugType=None -p:DebugSymbols=false` — 生成不携带 PDB 的 FDD Core 与依赖集合 |
-| 6    | 拷贝产物到 `tmp/runtime-candidates/<source-toolchain>/<builder>/`：(a) `publishDir/*` 除 `*.xml`（含 `CRAZYFLASHER7MercenaryEmpire.Core.*` 全套） (b) `bootstrap.exe` 改名为 candidate 根 `CRAZYFLASHER7MercenaryEmpire.exe` (c) `sol_parser.dll` + `miniaudio.dll`；生成 manifest 与 `runtime-build-attestation.json`，正式 projectRoot/runtime 不被触碰。至少两台 builder 的 source/toolchain/recipe/closure 全等后，`tools/promote-runtime-bundle.ps1` 才以可回滚事务更新项目根；bundled runtime installer 缺失继续 fail-fast。 |
-| 6f   | managed 产物护栏 — `dotnet run tools/assert-optimized.cs -- runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll` 用 PEReader 断言发布程序集是 optimized（非 Debug）build；正式产物关闭 PDB，项目同时禁用 SourceLink，避免 checkout 路径、源码换行 checksum 或 HEAD SHA 进入受版本控制 DLL |
-| 7    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*`（含 `map-canvas-stage-renderer.js` / `intelligence-components.js` / `intelligence-panel.js`）与 minigame 入口文件 |
-| 7a   | 运行 `node tools/audit-native-cursor-assets.js` 校验各 cursor PNG 尺寸与 manifest 声明的 canvas 一致、且 manifest 指定的 hotspot 像素具备 alpha（当前 manifest 数据值为 `64x64` / `(16,16)`，非工具硬编码契约），缺失或不合规直接 exit 1 |
-| 7b   | fail-fast 校验 `launcher/data/map_hud_data.json` + `save_repair_dict.json` + `save_schema.json` 三件运行时数据；缺失时分别提示对应生成命令 |
-| 7c   | `npm --prefix tools/cf7-save-repair-dict-build run verify` — 校验 `save_repair_dict.json` 与源头 `data/**/*.xml` + `SaveManager.as` 一致，不一致 exit 1 |
+| 层 | 入口 | 职责 |
+|----|------|------|
+| Prepare | `tools/prepare-launcher-release-assets.ps1` | locked restore、V8 TypeScript 与 task/map/achievement/arena/save-repair 等 tracked 派生资产；默认不重建含私有输入/时间戳的 save schema |
+| Producer | `launcher/build-runtime-candidate.ps1` | 精确环境门 → deterministic miniaudio → clean/locked Rust parser → native bootstrap → 无 PDB FDD publish → immutable candidate/manifest v2 → 120 秒内同步等待 `--verify-runtime-only` 的真实 exit code；失败保留诊断，成功清除 candidate `logs/` |
+| Policy | `tools/validate-launcher-release-policy.ps1` | Web/data/native cursor/优化程序集等只读产品审计，验证 tree 前后不变并签发绑定 tree/identity 的 production receipt |
 
-> build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
+输入由 [`runtime-inputs.v2.json`](../config/build/runtime-inputs.v2.json) 分为 `artifactSourceHash`、`producerRecipeHash`、`toolchainLockHash`、`policyHash` 四个互斥域；build identity 只含前三域。payload closure 排除 manifest，所以政策/manifest 变化不会冒充二进制漂移。candidate 位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整身份保留在 metadata/证明；短目录与构建前后的 MAX_PATH 门兼容 native bootstrap 的 legacy 缓冲。producer 使用独立 native/Cargo/MSBuild/temp 输出，不写正式 runtime、不签名、不跑政策门。
 
-> **运行时产物必须按双机构建共识后的原子集合处理**：`launcher/build.ps1 -BuilderId <id>` 只生成隔离 candidate；两个不同 builder 的 `sourceTreeHash/toolchainLockHash/buildRecipeHash/artifactClosureHash` 全等后，`tools/promote-runtime-bundle.ps1` 才更新根 bootstrap、`runtime/` Core/全部依赖/native DLL、manifest 与 `config/build/runtime-release-consensus.json`。提交前同时用 `tools/verify-runtime-bundle.ps1 -Staged`、`tools/verify-runtime-consensus.ps1 -Staged` 校验纯 Git index。不得单独恢复、复制或冲突取舍其中某个二进制。所有 headless 直启 Core 入口必须先调用 bootstrap `--verify-only`，部署态 Core 自身也会在最早入口反向调用同一 probe。
+### 正式发布列车
+
+正式发布不以 `build.ps1` 的单机 exit 0 为准：最终 tree 先经 `new-runtime-build-request.ps1` 冻结为 Git bundle；注册本地 worker 在隔离 clone 中运行纯 producer，并用 CurrentUser 不可导出 X509 key 签名。共享 queue 必须限制为受信维护者可写，因为 bundle 内构建源码会在 builder 账户执行；worker 会清除调用者 Git index/worktree/object 上下文，失败日志在 checkout 删除前受限归档。推荐第二故障域由 `.github/workflows/runtime-cloud-builder.yml` 在 `windows-2025` 构建相同 full commit，再用 GitHub OIDC/Sigstore keyless provenance 证明。promotion 至少要求两个不同 signer identity 和两个不同 `faultDomain`，且 artifact/recipe/toolchain/build identity/payload closure 全等。
+
+当前 `builder-local-a` / `physical-host-a` 已 enrollment 并完成本机实签/验签，tracked registry 只含公钥；仍缺 GitHub cloud 票与正式 v2 promotion。一次性 permanent migration fuse 只允许在 legacy 部署字节零变化时先合入 cloud workflow/发布工具，marker 进入 base 后下一提交必须完成 v2 promotion。
+
+```powershell
+$request = .\tools\new-runtime-build-request.ps1 `
+  -QueueRoot <queue-root> -SourceKind Treeish -Treeish <full-commit>
+.\tools\invoke-runtime-build-worker.ps1 `
+  -QueueRoot <queue-root> -WorkerId <id> -CertificateThumbprint <thumbprint> -Once
+.\tools\get-runtime-build-request-status.ps1 `
+  -QueueRoot <queue-root> -RequestId $request.requestId
+$cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
+```
+
+cloud helper 会等待精确 run、安全解压并返回 `$cloud.candidateRoot` / `$cloud.proofPath`；云端 producer 失败会另存短期 bootstrap diagnostics。取得 production policy receipt 和第二故障域证明后，唯一部署入口是 `tools/promote-runtime-bundle.ps1 -RequestId ... -PolicyReceiptPath ...`。它验证 request、candidate、receipt、证明和 fault domains 后事务替换 bootstrap/runtime/consensus，随后在 120 秒内同步等待 full-install `--verify-only` 的真实 exit code，失败或超时自动回滚。完整 enrollment、cloud artifact 验证、promotion 命令与 CI `source-ahead` 规则见 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md)。当前受控部署仍是 v1；首次合法 v2 promotion 前不得手工切换 manifest，首次切换后 CI 禁止降级。
+
+> producer / `build.ps1` **都不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`。不得单独恢复、复制或冲突取舍 runtime 二进制。所有 headless 直启 Core 入口必须先调用 bootstrap `--verify-only`，部署态 Core 自身也会在最早入口反向调用同一 probe。
 
 ### 产物（部署到项目根目录）
 
@@ -748,9 +750,9 @@ Launcher 启动时 `Program.cs` 尝试 `Process.Start("hotkey_guard.exe")`；若
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build Guardian",
+      "label": "Build Guardian candidate",
       "type": "shell",
-      "command": "powershell -File launcher/build.ps1 -BuilderId builder-a",
+      "command": "powershell -File launcher/build.ps1 -BuilderId local-dev",
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": "$msCompile"
     }
@@ -782,7 +784,7 @@ powershell -File launcher/tests/run_tests.ps1
 
 当前 `Launcher.Tests.csproj` 采用 SDK glob 自动纳入测试源码；2026-07-18 全量执行为 **946/946** 通过，其中 `ShopTaskTests` 覆盖 KShop `checkoutPreview/checkoutCommit` 映射、只读预览成功载荷校验、commit 写 gate、对账与防重放，并继续守 legacy checkout/claim；`InventoryTaskTests` 覆盖 lease-bound `tooltip`、三容器 source/target、legacy `filterKey` 严格枚举、结构化类别 `filterSpec {branch:"category",major,use,subtype}` 与套装 `filterSpec {branch:"set",setId}` 白名单重建、非法路径拒绝、`collection → other` 映射与 `filterKey/filterSpec` 矛盾拒绝、三容器 `sortAndMerge` 与 `autoTransfer` 来源/策略/窗口白名单透传，`NpcShopTaskTests` 覆盖 8 条命令映射、背包/材料出售白名单、callId 回写、tradePreview 严格归一化与去重、NPC 成功状态不再要求重复 `views.bag`、畸形成功写回包强制对账、旧 snapshot 不得解除在途写门，以及权威成功回包恢复写门；`CraftingTaskTests` 覆盖 snapshot/preview/tooltip/commit 映射、分类/token 白名单、`craftCount=1..99` 严格归一化、`batchEligible/maxCraftCount` 权威成功形状、畸形/超时 commit 进入 `needs_reconcile` 及成功 preview 解除写门；`SkillTaskTests` 48/48 覆盖七键 envelope、`moveSlot` 物理槽范围与严格 payload、active/candidate/return `panelInstanceId`、preview latest-wins、write epoch + reconcile watermark、迟到 snapshot、跨实例关闭和不同 scoped cleanup 向 global cleanup 收敛；Router/WebOverlay 另守 `switch_manage/switch_trainer` 的 exact nested envelope、当前相应 view 实例和 focus 展示提示，trainer session 在往返期间只存 Host，关闭/断线清理暂存能力；`LauncherCommandRouterTests` 继续覆盖 `WAREHOUSE → workbench profile=battlebox`、宿舍 `panel_request → profile=warehouse`、合成分类重建、Skill 刘海入口、未知 profile/category 拒绝与 Flash 回退开关。`SaveMigratorTests` 继续使用代码内 helper 数据；外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
 
-装备调制接入增加 `EquipmentTuningTaskTests`、AgentControl 安全门和 Router/WebOverlay 实例路由回归。它固定七键 envelope `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，覆盖 snapshot/preview/commit/tooltip/detach、七类 operation 白名单（新增 `replace_mod` 同时携带新旧 opaque candidate key）、一次性 token、write epoch、发送失败、timeout/迟到成功、断连与切离的 session 撤销、强制关闭后新实例的精确 reconcile hint，以及 battlebox 正常入口、legacy redirect 的 `migration_paused` 拒绝、agent source 和 warehouse profile 隔离。协议不再下发 `tuningAvailable`，也没有独立 feature flag。2026-07-17 反馈迭代后，顶层保持“强化度 / 交换 / 进阶 / 配件”四栏，目标等级采用滑杆/刻度/步进并自动 debounce preview，旧回包在途时仍允许继续调整且只采纳最后目标；材料持有量消费 snapshot 的 `{itemName,count}[]`，动态上限与永久 `+13` 分离，封顶态不再生成不可执行的 `+14`；交换态通过 `InventoryCoordinator.readProjection()` 按 source 精确 `majorType+use` 读取独立背包权威候选，右栏选择目标，左栏可见 request/window、筛选、面包屑和排序均不改变；配件候选复用 `ItemFilter` 的档级/用途/定位/状态树和面包屑，并由 tuning host 变量定制为 DLS 晶体索引视觉而不分叉共享筛选逻辑，点击已安装件进入替换选择，AS2 在同一次 preview/commit 原子返还旧件并扣除新件，仍可通过每个已安装件的专用按钮单拆、显式仅卸所选或卸下全部。顶栏“配件｜安全/快速”偏好只存 Web 本地；安全默认停在预览，快速仍先取得 AS2 preview/token，并且只在单件安装、无连带变化的单件替换/卸下且材料 delta 精确匹配时自动提交，级联、异常 delta、全拆和其他三类调制永远停在预览。候选注释保持 AS2 `introHTML/descHTML/itemType/itemUse` 分段到共享富注释，长材料恢复自动双栏；玩家态 workbench 不输出浏览器原生 `title`。紧凑候选与物品格共用 `48px` 格、`40px` 图标、`4px` 间距和持有数量角标，交换目标另显示强化度角标，1024×576 下 25 项无需滚动；全工作台使用 DLS 青/深蓝/黑铁基调，插件档级与危险动作保留语义色，强化石核心在紧凑/reduced-motion 使用静态首帧；当前升阶与已安装插件使用真实物品图标；工作台顶栏 `?` 通过共享 modal 解释四类流程、直接替换、安全/快速边界和预览后提交，开闭零业务消息。全量 xUnit 为 **946/946**；Web tuning runtime **25/25**、三视口 harness **56/56**、共享 KShop/工作台回归 **80/80**；fresh Flash 为 `EquipmentTuningServiceTest 38/38`、`InventoryPanelServiceTest 92/92`，`asLoader.swf` 已刷新且 Compiler Errors 为 `0/0`。
+装备调制接入增加 `EquipmentTuningTaskTests`、AgentControl 安全门和 Router/WebOverlay 实例路由回归。它固定七键 envelope `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，覆盖 snapshot/preview/commit/tooltip/detach、七类 operation 白名单（新增 `replace_mod` 同时携带新旧 opaque candidate key）、一次性 token、write epoch、发送失败、timeout/迟到成功、断连与切离的 session 撤销、强制关闭后新实例的精确 reconcile hint，以及 battlebox 正常入口、legacy redirect 的 `migration_paused` 拒绝、agent source 和 warehouse profile 隔离。协议不再下发 `tuningAvailable`，也没有独立 feature flag。2026-07-17 反馈迭代后，顶层保持“强化度 / 交换 / 进阶 / 配件”四栏，目标等级采用滑杆/刻度/步进并自动 debounce preview，旧回包在途时仍允许继续调整且只采纳最后目标；材料持有量消费 snapshot 的 `{itemName,count}[]`，动态上限与永久 `+13` 分离，封顶态不再生成不可执行的 `+14`；交换态通过 `InventoryCoordinator.readProjection()` 按 source 精确 `majorType+use` 读取独立背包权威候选，右栏选择目标，左栏可见 request/window、筛选、面包屑和排序均不改变；配件候选复用 `ItemFilter` 的档级/用途/定位/状态树和面包屑，并由 tuning host 变量定制为 DLS 晶体索引视觉而不分叉共享筛选逻辑，点击已安装件进入替换选择，AS2 在同一次 preview/commit 原子返还旧件并扣除新件，仍可通过每个已安装件的专用按钮单拆、显式仅卸所选或卸下全部。顶栏“配件｜安全/快速”偏好只存 Web 本地；安全默认停在预览，快速仍先取得 AS2 preview/token，并且只在单件安装、无连带变化的单件替换/卸下且材料 delta 精确匹配时自动提交，级联、异常 delta、全拆和其他三类调制永远停在预览。候选注释保持 AS2 `introHTML/descHTML/itemType/itemUse` 分段到共享富注释，长材料恢复自动双栏；玩家态 workbench 不输出浏览器原生 `title`。紧凑候选与物品格共用 `48px` 格、`40px` 图标、`4px` 间距和持有数量角标，交换目标另显示强化度角标，1024×576 下 25 项无需滚动；全工作台使用 DLS 青/深蓝/黑铁基调，插件档级与危险动作保留语义色，强化石核心在紧凑/reduced-motion 使用静态首帧；当前升阶与已安装插件使用真实物品图标；工作台顶栏 `?` 通过共享 modal 解释四类流程、直接替换、安全/快速边界和预览后提交，开闭零业务消息。全量 xUnit 为 **946/946**；Web tuning runtime **25/25**、三视口 harness **56/56**、共享 KShop/工作台回归 **81/81**；fresh Flash 为 `EquipmentTuningServiceTest 38/38`、`InventoryPanelServiceTest 92/92`，`asLoader.swf` 已刷新且 Compiler Errors 为 `0/0`。
 
 合成工作台生产接入为独立 `crafting` domain：`snapshot → craftingSnapshot`、`preview → craftingPreview`、`tooltip → craftingTooltip`、`commit → craftingCommit`，Flash 统一回 `crafting_response`。`LauncherCommandRouter` 只接受 12 个已知分类并重建 `{mode:"runtime",category,source,debug:false}`；`CraftingTask` 只接受分类、recipeIndex、严格整数 `craftCount=1..99`、itemName 或 opaque `expectedCraftToken`，不透传 Web 价格/材料/产物。snapshot 为每条配方执行一次 `craftCount=1` 权威计划，返回严格配对的 `canCraftOne/availability`，不运行 `maxCraftCount` 二分；Web 用它显示卡片状态、可合成计数和本地“只看可合成”，但提交仍只信 preview/token。Flash 只对堆叠产物且无装备素材的配方开放批量，返回 `batchEligible/maxCraftCount`，并把份数、总材料、总产出和双货币总价绑定进一次性 token；装备产物/装备素材仍固定单份。commit 超时、断线、发送失败或畸形成功回包进入 `needs_reconcile`，此后写入返回 `reconcile_required`；只有同配方结构完整的成功 preview 能解除写门，snapshot 不能。Web 入口为 `modules/crafting.js`，复用 `Workbench.DualPaneShell` 与共享 `ItemFilter catalog` 类别/套装视觉契约，生产 `#panel-content` 使用全 anchor、1024×576 scale-shell 等比铺满，内部以约 60:40 双栏和窄轨原生滚动呈现；材料不足时先 snapshot 撤销 token，再本地切入 `workbench profile=battlebox`，返回仅保留 category/recipeIndex/craftCount 及展示筛选意图并强制重新核算。无头验证入口为 `node tools/run-crafting-harness.js`，当前 29/29，并覆盖重复重建与跨面板路由后 `ResizeObserver` 全量断连。
 
@@ -796,7 +798,7 @@ powershell -File launcher/tests/run_tests.ps1
 
 ### Web QA 与开发 harness
 
-本节最后核对代码基线：commit `3343c1ef2244e0c6253fc95f5b6334095f049f57`。
+本节最后核对代码基线：commit `711c469036ad6b1226833faf255499abb1ebf2ed` + 当前工作台回归修复。
 
 小游戏测试不走 `launcher/tests/`，地图 panel 的 DOM / 布局 / 交互回归也不走 C# 单测；统一按各模块自带的 QA 入口执行：
 
@@ -1613,7 +1615,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 
 ### 面板系统（Panel System）
 
-本节最后核对代码基线：commit `07a0a09d9f`。
+本节最后核对代码基线：commit `711c469036ad6b1226833faf255499abb1ebf2ed` + 当前 Panel lifecycle/focus/tooltip 修复。
 
 全屏遮罩面板框架，用于承载需要独占交互的复杂 UI（商城、帮助、调试小游戏等），取代 Flash MovieClip 弹窗。
 
@@ -1638,11 +1640,11 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 > **Web transport 返回值边界**：`Bridge.send(message)` 在 WebView2 `postMessage` 可同步调用时返回 `true`，transport 缺失或调用抛错时返回 `false`；这个布尔值只描述本地投递，不是 Host 业务受理回执。需要业务定局的面板必须继续等待自身 response/rebind。Skill 的 trainer↔manage 控制在成功投递后进入等待态，新 `panelInstanceId` rebind 才算切换完成；3 秒无 rebind 会恢复原页面按钮，教师 capability 的有效性仍由 Host/AS2 校验。
 
-- **kshop**（K 点商城 + 战备箱库存态）: 唯一支持入口为 Launcher `SHOP` → Web Panel；旧 Flash `shopMainMC` 已退役。采购态继续使用 catalog/cart 恢复影子与可靠写 gate；`kshop-views.js` 承载视图 DOM；`kshop-cart-controller.js` 与 catalog/owned/tooltip presenter 把本地意图、投影和注释从 facade 拆开，`kshop.js` 只保留领域编排。新结算先发只读 `checkoutPreview`，由 AS2 重算目录、等级、K 点与 `ItemUtil.require` 容量并铸造单次 `checkoutToken`；`checkoutCommit` 复核后以 `ItemUtil.acquire` 整单直接交付到背包/材料/情报/药剂栏等实际落点，再扣 K 点、清空购物车并强制存盘。余额或容量不足整单不扣款，恰好等额允许购买。新购买不再进入 `_root.商城已购买物品`；旧存档队列继续以 purchased token + claim 单飞自然清空。commit 未知结果只做 `bulkQuery + inventory snapshot` 对账。套装数据以 `data/items/item_sets.xml` 的 `id/name/order` 为元数据单一权威，物品 XML 只声明 `setId`；`ItemUtil` 在启动加载期补齐既有 `setName/setOrder` 投影，故 AS2 → Host → Web 协议不变。`item-filter.js` 为 KShop/NPC/库存共用分类模型：商品目录显示“类别 / 套装 / 专柜”三个一级入口；类别沿 `majorType → use → actionType/weaponType` 下钻，套装沿注入后的 `setId/setName/setOrder` 聚合并按中心 `order` 排序，专柜沿 KShop JSON `type` 展示 13 个策划来源分组，三条维度互不覆盖。背包使用 AS2 权威 `setFacets` 显示“类别 / 套装”，其中 `{branch:"set",setId}` 始终扫描完整容器而非当前物理页；native select 仅作旧 AS2 无 facets 时的兼容回退。分类轨道固定占位并取消按钮过渡动画，切层不再推动下方物品格。owned 库存的纯 Web 展示排序已退役，只保留会明确修改存档的权威整理。公共视觉门固定 **8 个正交样本 / 14 项 conformance**。自动门：Edge harness 80/80、NPC harness 61/61、item-filter model 22/22、视觉矩阵 14/14、Launcher xUnit 946/946；fresh Output Panel 为 `InventoryPanelServiceTest` 92/92、`NpcShopPanelServiceTest` 40/40、`KShopCheckoutServiceTest` 11/11；真机门见验证矩阵。
-- **workbench**（独立物品工作台）: `web/modules/inventory-workbench.js` 作为 facade，依赖 config/header/quick-transfer/owned-view 四个显式 feature module，并按 Host 固化的严格 profile 重新配置同一 `InventoryCoordinator`：`battlebox`=背包 50 + 战备箱 40（Native HUD `WAREHOUSE` 默认；`CF7_WEB_INVENTORY_WORKBENCH=0` 可回退旧 Flash），`warehouse`=背包 50 + 真实仓库 50（宿舍 `openInventoryWorkbench` → `panel_request` 专用，24 页）。两种 profile 均不请求商城目录、不触发 `shopPanelOpen/Close`；图标 required-assets 门、全屏 anchor、tooltip、类别/套装权威筛选、权威整理、lease 与事务实现完全共享。背包无分页工具栏收敛为单行“树筛选 + 整理方式 + 整理”，仓库/战备箱保留分页所需的两行自适应布局。`warehouse` 首批开放 Ctrl+单击单件快速转移与“快速存入/快速取出”常驻模式：Web 最多缓存 24 个点击并顺序提交，AS2 `inventoryAutoTransfer` 在完整目标可访问范围执行 merge-first→首空位，不接受 Web 目标槽、不自动交换、目标满仓零写入；回包按当前 `windows` 重铸 lease 而不强制跳页，未发送项可再次点击取消，Esc 先退模式。`ArrayInventory` 以容器实例引用 + 单调 `mutationRevision` 同时维护类别/set facet 缓存与稳定 OCC lease：重复纯读不换 token，真实写入使旧 token 失效。未知 profile 在 C# 路由拒绝，XFL 不能传任意 containerId。当前全量门为 Edge harness 80/80、Launcher xUnit 946/946、Flash `InventoryPanelServiceTest` 92/92 fresh Output Panel；宿舍场景合集独立 XFL 发布也须确认目标 SWF 刷新。真游戏仍需复核宿舍 Ctrl/常驻连续点击、满仓停队、类别/套装筛选、不同剧情战备箱页数、真实物品转移及重启回读。
-- **npcshop**（NPC 金币物品商店）: `web/modules/npcshop-runtime.js` + `web/modules/npcshop-secondary-pages.js` + `web/modules/npcshop.js`；入口与交易权威边界保持不变。三视图只在 Web 组合：背包唯一来自 `domain=inventory` 的 `InventoryCoordinator`，NPC snapshot 只拥有材料/情报，Host 不再要求重复 `views.bag`。inventory slot lease 与 collection lease 在资源未变化时跨纯读稳定，容器写版本/集合数量变化后才返回 `stale_state`；一次性 `tradeToken` 仍在提交尝试后消费。公共 `ItemFilter` 从 `majorType/use/actionType/weaponType` 建立类别树，并从运行时补齐的 `setId/setName/setOrder` 建立并列套装树；配置了人工 sections 时再保留“专柜”入口。目录与背包统一为行内单层 drilldown，材料/情报保持 NPC 商店领域投影。整理空间返回结算前另取一次不改变当前筛选 UI 的完整 `filterKey=all` 背包快照，用于重绑跨筛选累计的待售项。自动门：套装数据 66 套/327 件、NPC 数据 35 NPC/834 商品、browser harness 61/61、视觉矩阵 14/14、Launcher xUnit 946/946、Flash `NpcShopPanelServiceTest` 40/40 与 `InventoryPanelServiceTest` 92/92 fresh Output Panel。
+- **kshop**（K 点商城 + 战备箱库存态）: 唯一支持入口为 Launcher `SHOP` → Web Panel；旧 Flash `shopMainMC` 已退役。采购态继续使用 catalog/cart 恢复影子与可靠写 gate；`kshop-views.js` 承载视图 DOM；`kshop-cart-controller.js` 与 catalog/owned/tooltip presenter 把本地意图、投影和注释从 facade 拆开，`kshop.js` 只保留领域编排。新结算先发只读 `checkoutPreview`，由 AS2 重算目录、等级、K 点与 `ItemUtil.require` 容量并铸造单次 `checkoutToken`；`checkoutCommit` 复核后以 `ItemUtil.acquire` 整单直接交付到背包/材料/情报/药剂栏等实际落点，再扣 K 点、清空购物车并强制存盘。余额或容量不足整单不扣款，恰好等额允许购买。新购买不再进入 `_root.商城已购买物品`；旧存档队列继续以 purchased token + claim 单飞自然清空。commit 未知结果只做 `bulkQuery + inventory snapshot` 对账。套装数据以 `data/items/item_sets.xml` 的 `id/name/order` 为元数据单一权威，物品 XML 只声明 `setId`；`ItemUtil` 在启动加载期补齐既有 `setName/setOrder` 投影，故 AS2 → Host → Web 协议不变。`item-filter.js` 为 KShop/NPC/库存共用分类模型：商品目录显示“类别 / 套装 / 专柜”三个一级入口；类别沿 `majorType → use → actionType/weaponType` 下钻，套装沿注入后的 `setId/setName/setOrder` 聚合并按中心 `order` 排序，专柜沿 KShop JSON `type` 展示 13 个策划来源分组，三条维度互不覆盖。背包使用 AS2 权威 `setFacets` 显示“类别 / 套装”，其中 `{branch:"set",setId}` 始终扫描完整容器而非当前物理页；native select 仅作旧 AS2 无 facets 时的兼容回退。分类轨道固定占位并取消按钮过渡动画，切层不再推动下方物品格。owned 库存的纯 Web 展示排序已退役，只保留会明确修改存档的权威整理。公共视觉门固定 **8 个正交样本 / 14 项 conformance**。自动门：Edge harness 81/81、NPC harness 62/62、item-filter model 22/22、视觉矩阵 14/14、Launcher xUnit 946/946；fresh Output Panel 为 `InventoryPanelServiceTest` 92/92、`NpcShopPanelServiceTest` 40/40、`KShopCheckoutServiceTest` 11/11；真机门见验证矩阵。
+- **workbench**（独立物品工作台）: `web/modules/inventory-workbench.js` 作为 facade，依赖 config/header/quick-transfer/owned-view 四个显式 feature module，并按 Host 固化的严格 profile 重新配置同一 `InventoryCoordinator`：`battlebox`=背包 50 + 战备箱 40（Native HUD `WAREHOUSE` 默认；`CF7_WEB_INVENTORY_WORKBENCH=0` 可回退旧 Flash），`warehouse`=背包 50 + 真实仓库 50（宿舍 `openInventoryWorkbench` → `panel_request` 专用，24 页）。两种 profile 均不请求商城目录、不触发 `shopPanelOpen/Close`；图标 required-assets 门、全屏 anchor、tooltip、类别/套装权威筛选、权威整理、lease 与事务实现完全共享。背包无分页工具栏收敛为单行“树筛选 + 整理方式 + 整理”，仓库/战备箱保留分页所需的两行自适应布局。`warehouse` 首批开放 Ctrl+单击单件快速转移与“快速存入/快速取出”常驻模式：Web 最多缓存 24 个点击并顺序提交，AS2 `inventoryAutoTransfer` 在完整目标可访问范围执行 merge-first→首空位，不接受 Web 目标槽、不自动交换、目标满仓零写入；回包按当前 `windows` 重铸 lease 而不强制跳页，未发送项可再次点击取消，Esc 先退模式。`ArrayInventory` 以容器实例引用 + 单调 `mutationRevision` 同时维护类别/set facet 缓存与稳定 OCC lease：重复纯读不换 token，真实写入使旧 token 失效。未知 profile 在 C# 路由拒绝，XFL 不能传任意 containerId。当前全量门为 Edge harness 81/81、Launcher xUnit 946/946、Flash `InventoryPanelServiceTest` 92/92 fresh Output Panel；宿舍场景合集独立 XFL 发布也须确认目标 SWF 刷新。真游戏仍需复核宿舍 Ctrl/常驻连续点击、满仓停队、类别/套装筛选、不同剧情战备箱页数、真实物品转移及重启回读。
+- **npcshop**（NPC 金币物品商店）: `web/modules/npcshop-runtime.js` + `web/modules/npcshop-secondary-pages.js` + `web/modules/npcshop.js`；入口与交易权威边界保持不变。三视图只在 Web 组合：背包唯一来自 `domain=inventory` 的 `InventoryCoordinator`，NPC snapshot 只拥有材料/情报，Host 不再要求重复 `views.bag`。inventory slot lease 与 collection lease 在资源未变化时跨纯读稳定，容器写版本/集合数量变化后才返回 `stale_state`；一次性 `tradeToken` 仍在提交尝试后消费。公共 `ItemFilter` 从 `majorType/use/actionType/weaponType` 建立类别树，并从运行时补齐的 `setId/setName/setOrder` 建立并列套装树；配置了人工 sections 时再保留“专柜”入口。目录与背包统一为行内单层 drilldown，材料/情报保持 NPC 商店领域投影。整理空间返回结算前另取一次不改变当前筛选 UI 的完整 `filterKey=all` 背包快照，用于重绑跨筛选累计的待售项。自动门：套装数据 66 套/327 件、NPC 数据 35 NPC/834 商品、browser harness 62/62、视觉矩阵 14/14、Launcher xUnit 946/946、Flash `NpcShopPanelServiceTest` 40/40 与 `InventoryPanelServiceTest` 92/92 fresh Output Panel。
 - **crafting**（合成工作台）: `web/modules/crafting-runtime.js` + `web/modules/crafting.js`；12 个旧分类入口由 Host 严格重建 category 后进入独立 domain。snapshot 目录投影带 `batchEligible`、`canCraftOne/availability`、`majorType/use/actionType/weaponType` 与 `setId/setName/setOrder`；Flash 每配方只做一次单份计划且不探测最大份数，Web 复用公共 `ItemFilter catalog` 视觉契约做本地类别/套装树筛选、“只看可合成”、卡片状态和计数，但保留稳定 recipeIndex 且不把目录提示当提交权威。生产挂载与商城/工作台一致使用全 anchor + 1024×576 scale-shell，内部双栏为同向约 60:40；preview 的 `craftCount=1..99` 只对堆叠产物且无装备素材的配方生效，Flash 返回 `maxCraftCount`、总材料/产物/双货币价格并把份数绑定一次性 token，双货币先按每份 `Math.floor(basePrice × 铁匠倍率)` 再乘份数，commit 原子复核。材料不足时“背包 / 战备箱”先 snapshot 撤销当前 token，再在同一 Overlay 本地打开 `workbench profile=battlebox`；“返回合成”只恢复 category/recipeIndex/craftCount 与展示筛选意图并强制重新 snapshot/preview，不共享 lease 或写 token。目录/详情保留浏览器原生滚动语义，以 CSS 窄轨统一外观；数量控件使用自绘按钮而非原生 number spinner。自动门：browser harness 29/29（含过滤器 `ResizeObserver` 生命周期回归）、Launcher xUnit 946/946、Flash `CraftingPanelServiceTest` 25/25 fresh Output Panel。
-- **skills**（独立技能管理）: `web/modules/skills-runtime.js` + `web/modules/skills.js`；刘海屏与教师入口都进入同一独立 domain，Web 业务命令只允许 `snapshot/learnPreview/learnCommit/equip/unequip/moveSlot/setPassive/reorder`。Host 严格接受七键顶层 envelope `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，业务字段只允许放在 `payload`，并以 active/candidate/return 实例租约阻止迟到旧面板写入。`switch_manage/switch_trainer` 是独立 panel-control：只接受当前相应 view 实例与 exact `{v:1,focusSkillKey}` 嵌套 payload；trainer session 在往返期间只存 Host，教师来源 manage 仅获 `canReturnTrainer` 投影，learnToken 不跨 view，关闭/断线清理暂存能力。NativeHud manage 不获得返回教师入口。AS2 `SkillPanelService` 重建完整 TrainerEntry、检查重复物理技能行并 fail-closed、按 expectedRevision 裁决写入；教师能力只由 NPC 入口签发并继续强绑定 NPC/场景/目录签名，寿命语义为连续 120 秒无成功教师域请求，合法 snapshot/preview/commit 刷新 `lastTouchedAt`，close/rebind/断线仍立即撤销；未学技能仅允许学到 1 级，纯被动不进入快捷槽。展示层复用 `GridDensityController` 的完整/紧凑偏好、`FilterNavigator` 的按钮/计数/键盘 primitive、`PointerDragController + InteractionBroker` 的 ghost/有效或拒绝落点，以及 `PanelTooltip.convertAS2Html` 的安全注释链；manage 不再常驻详情栏，改为全宽技能库 + 1—12 连续单排技能带。完整/紧凑明确只作用于技能库：紧凑技能格与 owned item grid 共用 `48px` 格、`40px` 图标和 `4px` 间距，完整卡共用 `68px` 高度节奏；Hotbar 固定为居中的 `12×64px` 方槽、`48px` 图标和 `3px` 间距，使用连续低对比底板，键位/槽号/等级分层，正常态始终显示等级，卸载控件仅在悬停/聚焦时替代等级角标；技能仍保留青色状态语义。拖到快捷槽与点击装备共用本机安全/快速策略：安全模式空槽直装、替换需确认，快速模式直装/直换；卸载同样由该偏好裁决，技能点学习确认始终保留。快捷槽互拖走单条 `moveSlot(sourceSlot,targetSlot,expectedRevision)`：空目标移动、占用目标交换，不拼接 equip/unequip，也不弹确认；拖到另一个技能格走既有 reorder 交换；已装备目标、普通模式已装备源和异常行排序落点拒绝，EasyMode 只放宽已装备源。常驻上移/下移退役，`Alt+↑/↓` 保留键盘兜底。Skill 不使用物品目录 branchTree：形态、manage 配置或 trainer 学习、流派三组 direct facet 永久并列，任一选项首击即筛选，跨组可组合并可一键清除；武术、剑术、枪术、内功、神功、科技、超能力、投技、龙吼按真实 `Type` 存在性显示，无流派条目留在“不限”。名称搜索默认收起并支持 `/` 展开、Esc 清除；manage 不显示 metric，trainer 只保留等级/技能点，稳定同步、revision、常驻刷新和协议术语退出常态玩家界面。异常时才显示重试/确认结果与诊断复制，复制记录保留实例/revision/callId/reconcile 且排除 trainer session/learnToken。通用 L/R slot marker 在 Skill 中只做视觉隐藏，slot/ARIA/焦点语义继续存在；manage 顶栏在“技能库 完整/紧凑”旁以独立二选一分组常显只存于 `localStorage` 的“快捷栏｜安全/快速”，切换零业务传输并以 toast 明示后果；trainer 不显示该快捷栏专属控件。顶栏 `?` 纯按 manage/trainer 说明点击、三类拖拽、快捷槽 `Alt+←/→`、技能格 `Alt+↑/↓`、卸载、被动、筛选/搜索、两种确认规则、初学等级、自动消耗预览和页面切换，不再承载设置入口，开闭零传输并恢复入口焦点。trainer 选技能或调目标等级即以 debounce + latest-wins 自动预览，常态“计算消耗”按钮退役。已学技能目标改用 step=1 的离散横向 range，可直接点中间刻度、拖动、精确输入或用方向键/Home/End；`− / +` 仅微调，“升 1 级”退役，“升至满级”保留。拖动/输入期间只本地更新目标，保留并灰显上一份权威消耗，松开或确认后只请求最终等级；右侧决策栏常驻技能说明、目标等级、权威消耗、研习后余额与门槛原因，主动作固定显示目标与点数。30 秒 learnToken 在确认前按 25 秒新鲜度门静默重取，学习确认仍不可绕过；`trainer_session_expired` 保留当前目录和最后快照，显示重新对话的可解释终态，不自动关闭面板。物品 taxonomy、AS2 facets、lease 或 authority 仍不复用。未知写结果进入 `needs_reconcile`，只有进入该状态后新发起且越过 watermark 的完整 snapshot 才能解除；关闭时由 Host 经 `skillPanelClose` 下发 cleanup，不属于 Web 业务 cmd，不同实例/作用域的 cleanup 会收敛成 global cleanup，视觉关闭后仍在后台重试对账。自动门：browser harness 126/126（1024×576、1366×768、1920×1080）、ItemFilter 22/22、物品格视觉 14/14、KShop 80/80、Launcher xUnit 946/946、fresh Output Panel `SkillLoadoutServiceTest` 50/50 + `SkillPanelServiceTest` 45/45；main、物品技能 UI、玩家信息 UI、things 均已独立发布且 FFDec bridge 标志齐全。NativeHud `SKILLS` 已由真实 Win32 中心点击在常规、生产最小、4:3 letterbox 与 1920×1080 物理面板重复打开旧版 manage，权威 snapshot/ESC cleanup 成功且稳定态专用存档哈希不变。正式地下室场景中，人类真实点击 `The Girl → 学习技能` 打开旧版 `技能研习`，目视目录为 `兴奋剂 / 能量盾`；此前 trainer→manage same-panel rebind 也已完成。新布局与 manage→trainer 返回目前只有自动 DOM/几何证据，尚未新增真机目视结论。旧技能页 slot0/slot1 的 live 互斥 depth 指纹又确认实际命中 main `DefineSprite 53`，不是 things id2706。生产 Gate 现仍缺 legacy fallback 事务等价/重启回读、legacy Notch/fallback、pending-write/断线真机记录；闭合后才开始 S6 的 7 天、100 次管理入口与 30 次教师入口观察样本。
+- **skills**（独立技能管理）: `web/modules/skills-runtime.js` + `web/modules/skills.js`；刘海屏与教师入口都进入同一独立 domain，Web 业务命令只允许 `snapshot/learnPreview/learnCommit/equip/unequip/moveSlot/setPassive/reorder`。Host 严格接受七键顶层 envelope `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，业务字段只允许放在 `payload`，并以 active/candidate/return 实例租约阻止迟到旧面板写入。`switch_manage/switch_trainer` 是独立 panel-control：只接受当前相应 view 实例与 exact `{v:1,focusSkillKey}` 嵌套 payload；trainer session 在往返期间只存 Host，教师来源 manage 仅获 `canReturnTrainer` 投影，learnToken 不跨 view，关闭/断线清理暂存能力。NativeHud manage 不获得返回教师入口。AS2 `SkillPanelService` 重建完整 TrainerEntry、检查重复物理技能行并 fail-closed、按 expectedRevision 裁决写入；教师能力只由 NPC 入口签发并继续强绑定 NPC/场景/目录签名，寿命语义为连续 120 秒无成功教师域请求，合法 snapshot/preview/commit 刷新 `lastTouchedAt`，close/rebind/断线仍立即撤销；未学技能仅允许学到 1 级，纯被动不进入快捷槽。展示层复用 `GridDensityController` 的完整/紧凑偏好、`FilterNavigator` 的按钮/计数/键盘 primitive、`PointerDragController + InteractionBroker` 的 ghost/有效或拒绝落点，以及 `PanelTooltip.convertAS2Html` 的安全注释链；manage 不再常驻详情栏，改为全宽技能库 + 1—12 连续单排技能带。完整/紧凑明确只作用于技能库：紧凑技能格与 owned item grid 共用 `48px` 格、`40px` 图标和 `4px` 间距，完整卡共用 `68px` 高度节奏；Hotbar 固定为居中的 `12×64px` 方槽、`48px` 图标和 `3px` 间距，使用连续低对比底板，键位/槽号/等级分层，正常态始终显示等级，卸载控件仅在悬停/聚焦时替代等级角标；技能仍保留青色状态语义。拖到快捷槽与点击装备共用本机安全/快速策略：安全模式空槽直装、替换需确认，快速模式直装/直换；卸载同样由该偏好裁决，技能点学习确认始终保留。快捷槽互拖走单条 `moveSlot(sourceSlot,targetSlot,expectedRevision)`：空目标移动、占用目标交换，不拼接 equip/unequip，也不弹确认；拖到另一个技能格走既有 reorder 交换；已装备目标、普通模式已装备源和异常行排序落点拒绝，EasyMode 只放宽已装备源。常驻上移/下移退役，`Alt+↑/↓` 保留键盘兜底。Skill 不使用物品目录 branchTree：形态、manage 配置或 trainer 学习、流派三组 direct facet 永久并列，任一选项首击即筛选，跨组可组合并可一键清除；武术、剑术、枪术、内功、神功、科技、超能力、投技、龙吼按真实 `Type` 存在性显示，无流派条目留在“不限”。名称搜索默认收起并支持 `/` 展开、Esc 清除；manage 不显示 metric，trainer 只保留等级/技能点，稳定同步、revision、常驻刷新和协议术语退出常态玩家界面。异常时才显示重试/确认结果与诊断复制，复制记录保留实例/revision/callId/reconcile 且排除 trainer session/learnToken。通用 L/R slot marker 在 Skill 中只做视觉隐藏，slot/ARIA/焦点语义继续存在；manage 顶栏在“技能库 完整/紧凑”旁以独立二选一分组常显只存于 `localStorage` 的“快捷栏｜安全/快速”，切换零业务传输并以 toast 明示后果；trainer 不显示该快捷栏专属控件。顶栏 `?` 纯按 manage/trainer 说明点击、三类拖拽、快捷槽 `Alt+←/→`、技能格 `Alt+↑/↓`、卸载、被动、筛选/搜索、两种确认规则、初学等级、自动消耗预览和页面切换，不再承载设置入口，开闭零传输并恢复入口焦点。trainer 选技能或调目标等级即以 debounce + latest-wins 自动预览，常态“计算消耗”按钮退役。已学技能目标改用 step=1 的离散横向 range，可直接点中间刻度、拖动、精确输入或用方向键/Home/End；`− / +` 仅微调，“升 1 级”退役，“升至满级”保留。拖动/输入期间只本地更新目标，保留并灰显上一份权威消耗，松开或确认后只请求最终等级；右侧决策栏常驻技能说明、目标等级、权威消耗、研习后余额与门槛原因，主动作固定显示目标与点数。30 秒 learnToken 在确认前按 25 秒新鲜度门静默重取，学习确认仍不可绕过；`trainer_session_expired` 保留当前目录和最后快照，显示重新对话的可解释终态，不自动关闭面板。物品 taxonomy、AS2 facets、lease 或 authority 仍不复用。未知写结果进入 `needs_reconcile`，只有进入该状态后新发起且越过 watermark 的完整 snapshot 才能解除；关闭时由 Host 经 `skillPanelClose` 下发 cleanup，不属于 Web 业务 cmd，不同实例/作用域的 cleanup 会收敛成 global cleanup，视觉关闭后仍在后台重试对账。自动门：browser harness 126/126（1024×576、1366×768、1920×1080）、ItemFilter 22/22、物品格视觉 14/14、KShop 81/81、Launcher xUnit 946/946、fresh Output Panel `SkillLoadoutServiceTest` 50/50 + `SkillPanelServiceTest` 45/45；main、物品技能 UI、玩家信息 UI、things 均已独立发布且 FFDec bridge 标志齐全。NativeHud `SKILLS` 已由真实 Win32 中心点击在常规、生产最小、4:3 letterbox 与 1920×1080 物理面板重复打开旧版 manage，权威 snapshot/ESC cleanup 成功且稳定态专用存档哈希不变。正式地下室场景中，人类真实点击 `The Girl → 学习技能` 打开旧版 `技能研习`，目视目录为 `兴奋剂 / 能量盾`；此前 trainer→manage same-panel rebind 也已完成。新布局与 manage→trainer 返回目前只有自动 DOM/几何证据，尚未新增真机目视结论。旧技能页 slot0/slot1 的 live 互斥 depth 指纹又确认实际命中 main `DefineSprite 53`，不是 things id2706。生产 Gate 现仍缺 legacy fallback 事务等价/重启回读、legacy Notch/fallback、pending-write/断线真机记录；闭合后才开始 S6 的 7 天、100 次管理入口与 30 次教师入口观察样本。
   - 2026-07-16 观察期原生快捷技能 HUD 同步修复：`SkillLoadoutService.projectQuickSlotRenderer` 在替换时强制“空 → 默认图标”重建 attachMovie 图标壳，卸载时清空名称/数量/行号/CD/MP/图标并停在空帧，解决“等级归零但旧图标残留”。该 renderer 只是可选显示投影，不反写 root 槽位/技能行，不重置手动冷却；本轮只需重发 `scripts/asLoader.swf`，未修改玩家信息 XFL。
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，无面板专属 AS2 清理命令；仍走统一 Web Panel 生命周期，打开时发 `webPanelPause`、关闭时发 `webPanelUnpause`
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-scale-policy.js` + `web/modules/map-canvas-stage-renderer.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `open_stage_select` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面的舞台视觉由 Canvas 2D renderer 绘制（DOM 仅保留透明热点、hover 标签、右侧 rail 与操作按钮），右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；`map-panel.js` 会懒加载 `stage-select-data.js`，用 `RootFadeTransitionFrame` 为已解锁且有选关页签的热点提供二级“选关”动作，成功后交给 PanelHost 关闭 map 并打开 `stage-select`，主热点点击仍发送 `navigate`；舞台保持 1031×608 逻辑坐标，但不再固定卡在 1.3，而由 `MapScalePolicy` 联合 viewport、生成态 source-ratio capability、DPR 与两个全 DPR 静态 backing store（可见背景 + backdrop cache）的总像素预算动态收敛（产品异常上限 1.75）；位图清晰度按 `stageScale × contentFitScale × DPR / sourceRatio` 的物理像素倍率裁切，再按 page/filter preset 做二次 content-fit；地图 page/composite/avatar/roommate 运行时资产统一为经 RIFF chunk 解析确认 `VP8L` 的无损 WebP，WebView2 直接消费。Native HUD 由 `MapHudImageDecoder` 通过 SkiaSharp 把当前 hotspot 工作集直接按最长边 512px 解码进 premultiplied BGRA `System.Drawing.Bitmap`，不依赖系统可选 WebP codec，也不创建中间全尺寸 `SKBitmap` / `byte[]`；decoded/tinted 缓存分别使用 24/12 MiB 的按像素字节 LRU，淘汰时释放 GDI 对象。FFDec composite 重导仍以 PNG 为中间帧并由 `tools/convert-map-assets-webp.py` 自动转换；真源 composite 可用 `tools/export-map-composite-assets.ps1 -Page <page|all> -Zoom <1..8> -Asset <name,...>` 选择性重导，随后必须 `node tools/tune-map-filter-fit.js --write` 更新 capability。2026-07-16 已按审计将 7 张瓶颈图重导为 4×、`union-university` 重导为 5.5×；不对缺冻结真源的 `fallen-entrance` / `subway` 插值。开发链同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel

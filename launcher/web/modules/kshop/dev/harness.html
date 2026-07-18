@@ -1044,6 +1044,36 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             'purchased=' + Host.state.purchased.length + ' cart=' + KShop.debugState().cartCount);
 
         await Host.open();
+        addEquipment();
+        await waitFor(function(){ return countCmd('saveCart') === 1 && Host.state.cart.length === 1; }, 500);
+        Host.delays.checkoutCommit = 40;
+        Host.delays.snapshot = 180;
+        var snapshotsBeforeCheckoutRace = countInventoryCmd('snapshot');
+        await confirmCheckout();
+        window.__emitBridge('panel_esc',{});
+        await waitFor(function(){
+            return countInventoryCmd('snapshot') === snapshotsBeforeCheckoutRace + 1
+                && KShop.debugState().cartCount === 0
+                && !!KShop.debugState().inventory.busyOwner;
+        }, 500);
+        var checkoutAuthorityAdoptedBeforeRefresh = KShop.debugState().cartCount === 0
+            && !KShop.debugState().settling && Host.state.cart.length === 0;
+        addStackable(2);
+        await waitFor(function(){ return countCmd('saveCart') === 2 && Host.state.cart.length === 1; }, 500);
+        var cartDuringDelayedRefresh = clone(Host.state.cart);
+        await waitFor(function(){ return !KShop.debugState().inventory.busyOwner; }, 700);
+        assert('kshop-ui6c','checkout 成功立即采纳空购物车，ESC 与延迟库存刷新期间的新加购不会复活已交付条目',
+            checkoutAuthorityAdoptedBeforeRefresh
+                && cartDuringDelayedRefresh.length === 1 && cartDuringDelayedRefresh[0].idx === 1
+                && cartDuringDelayedRefresh[0].qty === 2
+                && Host.state.cart.length === 1 && Host.state.cart[0].idx === 1
+                && KShop.debugState().cartCount === 1,
+            'adopted=' + checkoutAuthorityAdoptedBeforeRefresh
+                + ' during=' + JSON.stringify(cartDuringDelayedRefresh)
+                + ' after=' + JSON.stringify(Host.state.cart)
+                + ' state=' + JSON.stringify(KShop.debugState()));
+
+        await Host.open();
         Host.delays.claim = 160;
         Host.delays.snapshot = 120;
         var snapshotsBeforeClaim = countInventoryCmd('snapshot');
@@ -2074,6 +2104,95 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 var teardownStayedHidden = !PanelTooltip.isVisible()
                     && !asyncProbe.hasAttribute('aria-describedby');
                 asyncProbe.remove();
+
+                var rectOf = function(node) {
+                    var rect = node.getBoundingClientRect();
+                    return {left:rect.left,top:rect.top,right:rect.right,bottom:rect.bottom,width:rect.width,height:rect.height};
+                };
+                var rootStyle = document.documentElement.style;
+                var previousOverlayScale = rootStyle.getPropertyValue('--cf7-overlay-scale');
+                rootStyle.setProperty('--cf7-overlay-scale', '1');
+
+                var geometryProbe = document.createElement('button');
+                geometryProbe.type = 'button'; geometryProbe.textContent = 'tooltip geometry probe';
+                geometryProbe.style.cssText = 'position:fixed;right:12px;bottom:12px;width:32px;height:32px;z-index:9999';
+                document.body.appendChild(geometryProbe);
+                var geometryCallback = null;
+                var geometryBinding = PanelTooltip.bindAsync(geometryProbe, {
+                    key:'geometry-probe', item:{name:'几何探针'}, cache:{},
+                    renderBasic:function(){ return '<span style="display:block;width:80px;height:24px">loading</span>'; },
+                    renderRich:function(){ return '<div class="flash-tt-rich flash-tt-rich--merge" style="display:block;width:580px;height:240px">rich geometry</div>'; },
+                    fetch:function(_, callback){ geometryCallback = callback; }
+                });
+                geometryProbe.focus();
+                var basicAnchorRect = rectOf(tooltipNode);
+                if (geometryCallback) geometryCallback({success:true});
+                await wait(20);
+                var richAnchorRect = rectOf(tooltipNode);
+                var anchoredRichRepositioned = Math.abs(richAnchorRect.left - basicAnchorRect.left) > 100
+                    && Math.abs(richAnchorRect.top - basicAnchorRect.top) > 100;
+                var anchoredRichInsideViewport = richAnchorRect.left >= 7 && richAnchorRect.top >= 7
+                    && richAnchorRect.right <= innerWidth - 7 && richAnchorRect.bottom <= innerHeight - 7;
+                if (focusExitTarget) focusExitTarget.focus();
+                geometryBinding.destroy();
+                geometryProbe.remove();
+
+                var scaleProbe = document.createElement('button');
+                scaleProbe.type = 'button'; scaleProbe.textContent = 'tooltip scale probe';
+                scaleProbe.style.cssText = 'position:fixed;left:75%;top:25%;width:32px;height:32px;z-index:9999';
+                document.body.appendChild(scaleProbe);
+                function measureAnchoredScale(scale) {
+                    rootStyle.setProperty('--cf7-overlay-scale', String(scale));
+                    PanelTooltip.showAnchored('<div class="flash-tt-rich flash-tt-rich--merge" style="display:block;width:240px;height:80px">scale</div>', scaleProbe, {autoClose:0,outsideClick:false});
+                    var anchorRect = rectOf(scaleProbe);
+                    var tipRect = rectOf(tooltipNode);
+                    return {
+                        gap:anchorRect.left - tipRect.right,
+                        width:tipRect.width,
+                        inside:tipRect.left >= 7 && tipRect.top >= 7
+                            && tipRect.right <= innerWidth - 7 && tipRect.bottom <= innerHeight - 7
+                    };
+                }
+                var smallScaleAnchor = measureAnchoredScale(0.667);
+                var largeScaleAnchor = measureAnchoredScale(1.25);
+                var anchoredScaleGapStable = Math.abs(smallScaleAnchor.gap - 8) < 1.5
+                    && Math.abs(largeScaleAnchor.gap - 8) < 1.5
+                    && Math.abs(smallScaleAnchor.width - 240 * 0.667) < 1.5
+                    && Math.abs(largeScaleAnchor.width - 240 * 1.25) < 1.5
+                    && smallScaleAnchor.inside && largeScaleAnchor.inside;
+                PanelTooltip.hide();
+                scaleProbe.remove();
+                if (previousOverlayScale) rootStyle.setProperty('--cf7-overlay-scale', previousOverlayScale);
+                else rootStyle.removeProperty('--cf7-overlay-scale');
+
+                var focusOwnerProbe = document.createElement('button');
+                var hoverOwnerProbe = document.createElement('button');
+                focusOwnerProbe.type = hoverOwnerProbe.type = 'button';
+                focusOwnerProbe.textContent = 'focus owner'; hoverOwnerProbe.textContent = 'hover owner';
+                document.body.appendChild(focusOwnerProbe); document.body.appendChild(hoverOwnerProbe);
+                var focusOwnerBinding = PanelTooltip.bindAsync(focusOwnerProbe, {
+                    key:'focus-owner', item:{}, cache:{}, renderBasic:function(){ return '<b>focus-owner-a</b>'; }
+                });
+                var hoverOwnerBinding = PanelTooltip.bindAsync(hoverOwnerProbe, {
+                    key:'hover-owner', item:{}, cache:{}, renderBasic:function(){ return '<b>hover-owner-b</b>'; }
+                });
+                focusOwnerProbe.focus();
+                var focusOwnerInitiallyVisible = tooltipNode.textContent.indexOf('focus-owner-a') >= 0;
+                hoverOwnerProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter', {
+                    bubbles:false,clientX:500,clientY:300,pointerId:22,pointerType:'mouse',isPrimary:true
+                }));
+                var hoverOwnerTookControl = tooltipNode.textContent.indexOf('hover-owner-b') >= 0;
+                hoverOwnerProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
+                    bubbles:false,clientX:500,clientY:300,pointerId:22,pointerType:'mouse',isPrimary:true
+                }));
+                var focusedOwnerRestored = PanelTooltip.isVisible()
+                    && tooltipNode.textContent.indexOf('focus-owner-a') >= 0
+                    && focusOwnerProbe.getAttribute('aria-describedby') === 'panel-tooltip';
+                if (focusExitTarget) focusExitTarget.focus();
+                var restoredOwnerExitHidden = !PanelTooltip.isVisible()
+                    && !focusOwnerProbe.hasAttribute('aria-describedby');
+                focusOwnerBinding.destroy(); hoverOwnerBinding.destroy();
+                focusOwnerProbe.remove(); hoverOwnerProbe.remove();
                 window.__visualTooltipState = {
                     visible:richVisible,
                     basicStyled:basicStyled,
@@ -2085,7 +2204,16 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     asyncFocusVisible:asyncFocusVisible,
                     lateResponseStayedHidden:lateResponseStayedHidden,
                     teardownStayedHidden:teardownStayedHidden,
-                    teardownIdempotent:destroyFirst === true && destroySecond === false
+                    teardownIdempotent:destroyFirst === true && destroySecond === false,
+                    anchoredRichRepositioned:anchoredRichRepositioned,
+                    anchoredRichInsideViewport:anchoredRichInsideViewport,
+                    anchoredScaleGapStable:anchoredScaleGapStable,
+                    smallScaleAnchor:smallScaleAnchor,
+                    largeScaleAnchor:largeScaleAnchor,
+                    focusOwnerInitiallyVisible:focusOwnerInitiallyVisible,
+                    hoverOwnerTookControl:hoverOwnerTookControl,
+                    focusedOwnerRestored:focusedOwnerRestored,
+                    restoredOwnerExitHidden:restoredOwnerExitHidden
                 };
             }
             if (mode === 'battlebox-pages') click('.inventory-page-jump');
