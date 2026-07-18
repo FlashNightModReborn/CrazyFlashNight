@@ -455,7 +455,9 @@ window.Icons={
     await until(function(){return sent('learnPreview').length>previewCountBeforeSelection&&document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled},300);
     var preview=sent('learnPreview').slice(-1)[0];
     ok('selection automatically previews with trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
-    ok('valid preview fills cost, balance and requirements before enabling the sticky action',document.querySelector('.skills-preview-result.ok').textContent.indexOf('240 → 235')>=0
+    var validPreviewNode=document.querySelector('.skills-preview-result.ok');
+    ok('valid preview fills cost, balance and requirements before enabling the sticky action',validPreviewNode.textContent.indexOf('240 → 235')>=0
+      &&getComputedStyle(validPreviewNode).backgroundImage!=='none'
       &&document.querySelectorAll('.skills-trainer-requirements .ok').length===3&&!document.querySelector('.skills-trainer-commit').disabled);
     var previewCountBeforeFreshen=sent('learnPreview').length;await wait(170);document.querySelector('.skills-trainer-commit').click();
     await until(function(){return sent('learnPreview').length>previewCountBeforeFreshen&&document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')},300);
@@ -479,8 +481,9 @@ window.Icons={
       &&sent('learnPreview').slice(-1)[0].payload.desiredLevel===5&&SkillsPanel.debugState().desiredLevel===5);
     var previewCountBeforeDrag=sent('learnPreview').length;targetRange=document.querySelector('.skills-level-range');targetRange.value='9';
     targetRange.dispatchEvent(new Event('input',{bubbles:true}));
+    var updatingPreviewNode=document.querySelector('.skills-cost-card.stale.updating');
     ok('range scrubbing updates the target locally while preserving the last authority cost',sent('learnPreview').length===previewCountBeforeDrag
-      &&SkillsPanel.debugState().desiredLevel===9&&document.querySelector('.skills-cost-card.stale.updating')
+      &&SkillsPanel.debugState().desiredLevel===9&&updatingPreviewNode&&getComputedStyle(updatingPreviewNode).boxShadow!=='none'
       &&document.querySelector('.skills-cost-card').textContent.indexOf('技能点')>=0&&document.querySelector('.skills-trainer-commit').disabled);
     targetRange.dispatchEvent(new Event('change',{bubbles:true}));
     var releasedShowsPrevious=document.querySelector('.skills-cost-card').textContent.indexOf('上次消耗')>=0;
@@ -500,7 +503,9 @@ window.Icons={
     ok('rapid fine adjustments stay interactive and debounce to the latest preview',sent('learnPreview').length===previewCountBeforeRapidTarget+1
       &&rapidTargetPreview.payload.desiredLevel===9&&SkillsPanel.debugState().desiredLevel===9);
     __host.previewBlocked=true;row('闪现').click();await until(function(){return document.querySelector('.skills-preview-result.blocked')},300);
-    ok('deterministic automatic preview rejection keeps a disabled reason-specific action',document.querySelector('.skills-preview-result.blocked')
+    var blockedPreviewNode=document.querySelector('.skills-preview-result.blocked');
+    ok('deterministic automatic preview rejection keeps a disabled reason-specific action',blockedPreviewNode
+      &&getComputedStyle(blockedPreviewNode).backgroundImage!=='none'
       &&document.querySelector('.skills-trainer-commit').disabled,document.querySelector('.skills-preview-result')&&document.querySelector('.skills-preview-result').textContent);
     __host.previewBlocked=false;__host.invalidTrainer=true;setHost({instance:'inst-trainer-bad',view:'trainer',trainerSession:'trainer-B'});await wait(45);
     ok('pure skillKey trainer catalog is rejected',SkillsPanel.debugState().schemaError.indexOf('纯 skillKey')>=0);

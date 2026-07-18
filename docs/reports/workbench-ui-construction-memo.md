@@ -51,9 +51,10 @@
 ### 2.3 P2（部分完成）
 - ✅ **统一状态机枚举**：`workbench.js` 新增 `WorkbenchState`（idle/loading/ready/pending/warning/error/disconnected，busy 为遗留同义词），`setStatus` 增加 `normalizeState` 校验并导出枚举。
 - ✅ **彻底移除战备箱卡片级调制按钮**：经反馈，compact 态下 hover 显示仍造成干扰，现完全移除卡片上的“调制”入口，仅保留顶栏“装备调制”开关。相关 CSS、JS、harness 已同步清理。
-- ✅ **丢弃按钮仅在选中/聚焦时显示**：`.inventory-discard-btn` 不再随 hover 出现，仅在卡片被选中（`.workbench-source-selected`）、卡片处于 focus-within 或按钮自身获得焦点时显示；同时隐藏态增加 `visibility:hidden`，避免不可见的按钮 still 抢占 pointer 事件导致无法选中卡片。
-- ✅ **修复点击已选中卡片会丢失选中的问题**：`InteractionBroker` 新增 `isSelectedNode(node)`，`inventory-workbench.js` 的卡片点击处理器在“已选中且点击的是当前选中节点”时跳过 `activateSelected`，避免 same_slot 拒绝导致选择被清空。
-- ✅ **紧凑模式丢弃按钮保留角标尺寸**：compact 态下 `.inventory-discard-btn` 保持 12px 角标尺寸，避免覆盖图标。
+- ✅ **丢弃按钮仅在选中/聚焦时显示且键盘可达**：`.inventory-discard-btn` 不再随 hover 出现，仅在卡片被选中（`.workbench-source-selected`）、卡片处于 focus-within 或按钮自身获得焦点时显示；隐藏态只使用 `opacity:0 + pointer-events:none`，避免拦截鼠标，同时保留 Tab 焦点入口。
+- ✅ **再次点击来源格可取消选择**：`InteractionBroker.isSelectedNode(node)` 用于识别当前来源；`inventory-workbench.js` 再次点击同一格时显式 `clearSelection()`，不会误走 same-slot 操作，也不会产生库存写入。
+- ✅ **紧凑商城分离视觉尺寸与命中尺寸**：加购按钮保留 24×24 的透明点击/键盘焦点区，16×16 晶体青角标由伪元素绘制；物品图仍是视觉主体，hover/pressed 反馈作用于小角标，键盘 focus 额外显示命中区轮廓。
+- ✅ **技能预览状态样式完成合并**：`ok` / `blocked` 保留轻量渐变，`updating` 保留 DLS inset/glow；移除同 specificity 重复声明，避免后写规则覆盖新视觉。
 - ✅ **合成目录固定卡片高度**：`.crafting-recipe-card` 固定 `height:78px`；`.crafting-catalog-view` 加 `overflow:hidden`、grid 加 `flex:1 1 auto`，确保条目多时出现滚动而不是挤压卡片。
 - ✅ **可访问性名称与说明分离**：`skills.js` 中关键控件保留稳定的 `aria-label` 作为可访问名称，说明文本改回 `title`（鼠标悬停提示）/ `aria-describedby`，避免覆盖名称；`crafting.js`、`kshop.js`、`kshop-views.js`、`npcshop.js` 中原本只有 `title` 的无名元素仍迁移为 `aria-label`。
 - ✅ **全局 hitbox 下限**：`panels.css` base 层新增规则，工作台内所有 `button`/`[role="button"]` 最小 24×24；主操作按钮（primary CTA）最小高 40px。

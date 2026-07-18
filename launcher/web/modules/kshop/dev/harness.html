@@ -844,13 +844,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var compactCard = document.querySelector('.kshop-card[data-idx="0"]');
         var lockedCompactCard = document.querySelector('.kshop-card[data-idx="2"]');
         var compactInfo = compactCard && compactCard.querySelector('.kshop-card-info');
+        var compactAddButton = compactCard && compactCard.querySelector('.kshop-add-btn');
+        var compactAddVisual = compactAddButton && getComputedStyle(compactAddButton, '::after');
         var compactInfoHidden = !compactInfo || getComputedStyle(compactInfo).display === 'none';
-        assert('kshop-ui2j2','紧凑目录卡片保持可读图标瓦片：隐藏名称/价格，保留图标与加购按钮',
+        assert('kshop-ui2j2','紧凑目录隐藏名称/价格，加购角标保持 16px 视觉尺寸与 24px 命中区',
             compactInfoHidden
                 && !!compactCard.querySelector('.kshop-card-icon-frame')
-                && !!compactCard.querySelector('.kshop-add-btn')
+                && !!compactAddButton
                 && parseFloat(getComputedStyle(compactCard).height) >= 54
-                && parseFloat(getComputedStyle(compactCard.querySelector('.kshop-add-btn')).width) >= 16
+                && parseFloat(getComputedStyle(compactAddButton).width) >= 24
+                && parseFloat(getComputedStyle(compactAddButton).height) >= 24
+                && parseFloat(compactAddVisual.width) === 16
+                && parseFloat(compactAddVisual.height) === 16
                 && lockedCompactCard && !lockedCompactCard.querySelector('.kshop-add-btn'));
         fullDensityOption.click();
         assert('kshop-ui2k','切回完整模式恢复目录网格密度',
@@ -1431,16 +1436,31 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
-        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
-        click('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"] .inventory-discard-btn');
+        var discardSourceNode = document.querySelector('.inventory-owned-backpack .inventory-slot-card[data-physical-slot="0"]');
+        var discardButtonNode = discardSourceNode && discardSourceNode.querySelector('.inventory-discard-btn');
+        discardButtonNode.focus();
+        var discardKeyboardReachable = document.activeElement === discardButtonNode
+            && getComputedStyle(discardButtonNode).visibility !== 'hidden';
+        discardButtonNode.blur();
+        var transferWritesBeforeCancel = countInventoryCmd('move') + countInventoryCmd('merge') + countInventoryCmd('swap');
+        discardSourceNode.click();
+        var sourceSelectedBeforeCancel = discardSourceNode.classList.contains('workbench-source-selected');
+        discardSourceNode.click();
+        var sourceCancelled = !discardSourceNode.classList.contains('workbench-source-selected')
+            && !document.querySelector('.inventory-workbench-panel .workbench-source-selected');
+        var noTransferOnCancel = transferWritesBeforeCancel
+            === countInventoryCmd('move') + countInventoryCmd('merge') + countInventoryCmd('swap');
+        discardSourceNode.click();
+        discardButtonNode.click();
         var discardModalNode = document.querySelector('.workbench-modal[data-modal-kind="discard"]');
         var discardModal = !!discardModalNode
             && !/(slot|lease|AS2|权威)/i.test(discardModalNode.innerText)
             && discardModalNode.innerText.indexOf('丢弃后无法找回') >= 0;
         click('.workbench-modal-action[data-action="discard"]');
         await waitFor(function(){ return countInventoryCmd('discard') === 1 && !KShop.debugState().inventory.busyOwner; }, 500);
-        assert('kshop-ui8l','discard 经显式确认、source lease 与同回包背包刷新',
-            discardModal && countInventoryCmd('discard') === 1 && !Host.state.inventory.背包[0]);
+        assert('kshop-ui8l','来源格同卡点击可取消，discard 键盘可达并经显式确认刷新背包',
+            discardKeyboardReachable && sourceSelectedBeforeCancel && sourceCancelled && noTransferOnCancel
+                && discardModal && countInventoryCmd('discard') === 1 && !Host.state.inventory.背包[0]);
 
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');

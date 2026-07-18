@@ -12370,12 +12370,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .inventory-discard-btn:hover { color:#ff8e78; border-color:#d96854; }
 .inventory-workbench-panel .inventory-discard-btn {
-    opacity:0; pointer-events:none; visibility:hidden; transition:opacity 90ms, visibility 90ms;
+    opacity:0; pointer-events:none; transition:opacity 90ms;
 }
 .inventory-workbench-panel .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .inventory-workbench-panel .inventory-slot-card:focus-within .inventory-discard-btn,
 .inventory-workbench-panel .inventory-discard-btn:focus-visible {
-    opacity:1; pointer-events:auto; visibility:visible;
+    opacity:1; pointer-events:auto;
 }
 .inventory-drag-ghost { min-width:150px; }
 
@@ -12825,15 +12825,13 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .kshop-workbench .inventory-discard-btn {
     opacity:0;
     pointer-events:none;
-    visibility:hidden;
-    transition:opacity .1s, visibility .1s;
+    transition:opacity .1s;
 }
 .kshop-workbench .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .kshop-workbench .inventory-slot-card:focus-within .inventory-discard-btn,
 .kshop-workbench .inventory-discard-btn:focus-visible {
     opacity:1;
     pointer-events:auto;
-    visibility:visible;
 }
 .kshop-workbench .inventory-owned-backpack .inventory-slot-copy b { padding-right:0; }
 .kshop-workbench .inventory-owned-backpack .inventory-slot-card:hover .inventory-slot-copy b,
@@ -13217,12 +13215,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size:9px;
     line-height:10px;
     z-index:8;
-    opacity:0; pointer-events:none; visibility:hidden; transition:opacity 90ms, visibility 90ms;
+    opacity:0; pointer-events:none; transition:opacity 90ms;
 }
 .item-grid-compact .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .item-grid-compact .inventory-slot-card:focus-within .inventory-discard-btn,
 .item-grid-compact .inventory-discard-btn:focus-visible {
-    opacity:1; pointer-events:auto; visibility:visible;
+    opacity:1; pointer-events:auto;
 }
 
 /* Catalog cards (KShop / NPC shop) in compact mode:
@@ -13275,34 +13273,55 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .item-grid-compact .kshop-card-info { display:none; }
 .item-grid-compact .kshop-add-btn {
     position:absolute;
+    right:0;
+    top:0;
+    width:24px;
+    height:24px;
+    min-width:24px;
+    min-height:24px;
+    padding:0;
+    font-size:0;
+    line-height:1;
+    color:var(--dls-crystal);
+    background:transparent;
+    border:0;
+    clip-path:none;
+    box-shadow:none;
+    cursor:pointer;
+    z-index:3;
+}
+.item-grid-compact .kshop-add-btn::after {
+    content:'+';
+    position:absolute;
     right:2px;
     top:2px;
     width:16px;
     height:16px;
-    min-width:0;
-    padding:0;
-    font-size:0;
-    line-height:14px;
-    text-align:center;
-    color:var(--dls-crystal);
+    display:grid;
+    place-items:center;
+    box-sizing:border-box;
+    color:inherit;
     background:rgba(6,11,13,.82);
     border:1px solid rgba(61,213,255,.40);
     clip-path:polygon(0 0,calc(100% - 2px) 0,100% 2px,100% 100%,2px 100%,0 calc(100% - 2px));
     box-shadow:-2px 2px 5px rgba(0,0,0,.55);
-    cursor:pointer;
-    z-index:3;
-    transition:background .10s,border-color .10s,color .10s,transform .10s;
+    font-size:11px;
+    font-weight:800;
+    line-height:1;
+    pointer-events:none;
+    transition:background .10s,border-color .10s,color .10s,transform .10s,box-shadow .10s;
 }
-.item-grid-compact .kshop-add-btn::after { content:'+'; font-size:11px; font-weight:800; }
-.item-grid-compact .kshop-card:hover .kshop-add-btn,
-.item-grid-compact .kshop-add-btn:hover {
+.item-grid-compact .kshop-card:hover .kshop-add-btn::after,
+.item-grid-compact .kshop-add-btn:hover::after,
+.item-grid-compact .kshop-add-btn:focus-visible::after {
     color:#030607;
     background:var(--dls-crystal);
     border-color:rgba(255,255,255,.55);
     transform:scale(1.08);
     box-shadow:0 0 6px rgba(61,213,255,.35),-1px 1px 4px rgba(0,0,0,.45);
 }
-.item-grid-compact .kshop-card:active .kshop-add-btn { transform:scale(0.96); }
+.item-grid-compact .kshop-add-btn:focus-visible { outline:1px solid #fff; outline-offset:-1px; }
+.item-grid-compact .kshop-add-btn:active::after { transform:scale(0.96); }
 .item-grid-compact .kshop-card-locked .kshop-add-btn,
 .item-grid-compact .kshop-card-nosale .kshop-add-btn { display:none; }
 .item-grid-compact .kshop-card-locked,
@@ -14037,15 +14056,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .skills-target-preset:hover:not(:disabled) { color:#e7fbff; border-color:var(--theta-kinetic-bright); }
 .skills-target-preset:disabled { opacity:.32; cursor:default; }
 .skills-preview-result { margin-top:0; padding:8px; border:1px solid #28515b; border-left:3px solid #425158; background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 30%),#0a0f12; color:#8b989d; font:10px/1.4 "Microsoft YaHei",sans-serif; }
-.skills-preview-result.ok { border-color:#2a3f36; background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 30%),#0b120f; }
-.skills-preview-result.blocked { border-color:#4a2b29; background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 30%),#120b0b; }
-.skills-preview-result.updating { border-color:var(--skill-active-border); box-shadow:var(--skill-active-inset),var(--skill-active-glow); }
 .skills-cost-card { flex:0 0 auto; }
 .skills-preview-result.loading { border-left-color:var(--theta-kinetic-bright); }
-.skills-preview-result.ok { border-left-color:var(--skill-ok); color:#9bd3aa; border-color:#2a3f36; background:#0b120f; }
-.skills-preview-result.blocked { border-left-color:var(--skill-warn); color:#e88981; border-color:#4a2b29; background:#120b0b; }
+.skills-preview-result.ok { border-left-color:var(--skill-ok); color:#9bd3aa; border-color:#2a3f36; background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 30%),#0b120f; }
+.skills-preview-result.blocked { border-left-color:var(--skill-warn); color:#e88981; border-color:#4a2b29; background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 30%),#120b0b; }
 .skills-preview-result.stale { border-left-color:#52646b; color:#829198; }
-.skills-preview-result.updating { border-left-color:var(--theta-kinetic-bright); box-shadow:inset 0 0 0 1px var(--dls-crystal-soft); }
+.skills-preview-result.updating { border-color:var(--skill-active-border); border-left-color:var(--theta-kinetic-bright); box-shadow:var(--skill-active-inset),var(--skill-active-glow); }
 .skills-preview-result.stale .skills-cost-row strong { color:#9aa9ae; }
 .skills-cost-row { min-width:0; display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
 .skills-cost-row + .skills-cost-row { margin-top:5px; }

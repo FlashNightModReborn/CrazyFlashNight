@@ -551,7 +551,8 @@ var InventoryWorkbench = (function() {
             if (handleQuickTransferClick(event, containerId, slot)) return;
             if (_state.busyOwner || _state.refreshRequired) return;
             var view = containerId === '背包' ? _backpackView : _rightView;
-            if (_broker.debugState().selectedInstanceKey && !_broker.isSelectedNode(node)) _broker.activateSelected(view, {item:slot, node:node}, 'click');
+            if (_broker.isSelectedNode(node)) clearSelection();
+            else if (_broker.debugState().selectedInstanceKey) _broker.activateSelected(view, {item:slot, node:node}, 'click');
             else if (slot.occupied) _broker.select(view, slot, node);
         });
         var discardButton = node.querySelector('.inventory-discard-btn');
