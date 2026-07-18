@@ -51,7 +51,7 @@ function Set-TestFile {
 function Invoke-TestNative {
     param(
         [Parameter(Mandatory = $true)][string]$FilePath,
-        [Parameter(Mandatory = $true)][string[]]$Arguments,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$Arguments,
         [Parameter(Mandatory = $true)][string]$WorkingDirectory,
         [switch]$AllowFailure
     )
@@ -306,6 +306,45 @@ try {
         }
         $launcherText = [IO.File]::ReadAllText($script:launcherScript)
         Assert-Test ($launcherText -match '(?i)-Wait(?:\s|%)') '根双击入口没有默认启用快速通道等待与收尾'
+    }
+
+    Invoke-TestCase '根双击入口在带空格路径中完整传递 ProjectRoot 与 Wait' {
+        $launcherFixtureRoot = Join-Path $script:testRoot 'cmd root with spaces'
+        $launcherFixture = Join-Path $launcherFixtureRoot '一键提交到主线.cmd'
+        $probeScript = Join-Path $launcherFixtureRoot 'tools\submit-contribution.ps1'
+        [void](New-Item -ItemType Directory -Path $launcherFixtureRoot -Force)
+        Copy-Item -LiteralPath $script:launcherScript -Destination $launcherFixture
+        Set-TestFile -Path $probeScript -Content @'
+param(
+    [string]$ProjectRoot,
+    [switch]$Wait
+)
+
+$expectedRoot = [IO.Path]::GetFullPath((Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path))).TrimEnd([char[]]@('\', '/'))
+$actualRoot = [IO.Path]::GetFullPath($ProjectRoot).TrimEnd([char[]]@('\', '/'))
+if (-not [string]::Equals($expectedRoot, $actualRoot, [StringComparison]::OrdinalIgnoreCase)) {
+    Write-Error "ProjectRoot mismatch: <$ProjectRoot>"
+    exit 23
+}
+if (-not $Wait) {
+    Write-Error 'Wait missing'
+    exit 24
+}
+Write-Host "PROBE_ROOT=$actualRoot"
+'@
+
+        $oldNoPause = $env:CF7_NO_PAUSE
+        try {
+            $env:CF7_NO_PAUSE = '1'
+            $result = Invoke-TestNative -FilePath $launcherFixture -Arguments @() -WorkingDirectory $launcherFixtureRoot
+        }
+        finally {
+            $env:CF7_NO_PAUSE = $oldNoPause
+        }
+
+        $normalizedFixtureRoot = [IO.Path]::GetFullPath($launcherFixtureRoot).TrimEnd([char[]]@('\', '/'))
+        Assert-Test ($result.ExitCode -eq 0) "根双击入口探针失败：$($result.Text)"
+        Assert-Test ($result.Text -match ('(?m)^PROBE_ROOT=' + [regex]::Escape($normalizedFixtureRoot) + '$')) "根双击入口没有原样传递项目根路径：$($result.Text)"
     }
 
     Invoke-TestCase 'Git 可执行文件支持显式路径与 GitHub Desktop 自动发现' {
