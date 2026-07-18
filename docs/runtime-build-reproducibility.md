@@ -1,11 +1,11 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：source commit `d975505baa535cb768eb0d9cb156816ed9f1cdb3`（2026-07-18）+ 首次正式 runtime v2 promotion 产物。
+**最后核对代码基线**：source commit `8db0b2a3c417fe79d84962f7b60804a11321eca1`（2026-07-18）+ contribution admission runtime v2 promotion 产物。
 
 ## 当前迁移状态
 
-runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成首次正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29641674146` 的 `github-hosted-windows` OIDC/Sigstore 票对 source tag `runtime-build-v2/20260718-first-promotion-r3` 达成双 signer、双 faultDomain 共识；两端 build identity 与 payload closure 全等，tracked registry 仍只保存公钥证书。
+runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。request `E912C55B4EE3F746F53005BB99AF53C05DC34D5350917A831B98005EDF548C40` 使用 source tag `runtime-build-v2/20260718-contribution-admission-v2`：`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29646786817` 的 `github-hosted-windows` OIDC/Sigstore 票达成双 signer、双 faultDomain 共识；build identity `F6BE274BCCAF5EA2EBA1FF075DEADCA2B42A64589F3441132EF749E185D9A209` 与 payload closure `04073C5F42D4A2EC9A0511287A9C982052D673B599795888C7903619B6AF25E0` 全等，tracked registry 仍只保存公钥证书。前一条 `contribution-admission-v1` train 因 map-fit 审计把 Windows CRLF 误判为陈旧而在 promotion 前停止；其 tag 保留不移动，请求已 supersede，审计现按规范化文本比较。
 
 v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入。该 marker 曾精确绑定 base `711c469036ad6b1226833faf255499abb1ebf2ed`、旧 artifact closure 与目标 builder registry 字节哈希，并在 legacy deployment 零变化时解决“cloud workflow 必须先进入 default branch”的 bootstrap 悖论；marker 后的首个部署提交已经完成完整 v2 promotion。CI 从此只接受 v2 strict 状态，并永久拒绝 v2 → v1 降级。
 
@@ -15,7 +15,7 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 - producer 只生产二进制 payload，不运行生成器或产品政策审计；政策变化不能污染 payload 身份。
 - request JSON 没有自由命令字段，只冻结 Git tree 与政策身份；但 Git bundle 本身含 producer/MSBuild/Cargo 源码，worker 会在 builder 账户下执行该已审阅 commit 的构建代码。因此共享 queue 是受控写入信任边界，必须限制写权限；四域复算与 promotion 能阻止错误产物晋级，不能把恶意 queue writer 沙箱成无 RCE 能力。
 - candidate、CAS 与 attestation 都不能直接覆盖正式部署；只有 promotion 能事务写入根 bootstrap、`runtime/`、manifest 与 release consensus。
-- 所有状态都先验证逐文件字节闭包；`source-ahead` 不是跳过完整性校验。
+- strict/promotion 状态逐文件验证字节闭包；纯内容快速通道只在受保护 Git 对象相对已验证 base 零变化时继承该 base 共识，不读取 payload blob，也不声称验证了内容语义。
 - 工具链不匹配、证明不足、相同故障域、分叉 payload、脏部署或无效政策 receipt 都 fail-closed；禁止伪造第二 builder、手改 hash/receipt/attestation 或复制单机 candidate 到正式 runtime。
 
 ## v2 四域身份
@@ -25,7 +25,7 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 | 身份 | 内容 | 变化后的动作 |
 |------|------|--------------|
 | `artifactSourceHash` | C#、C/C++、Rust 与项目/包输入等真正影响 payload 的源码 | 必须重新构建 |
-| `producerRecipeHash` | 纯 producer、native build、环境门与确定性参数 | 必须重新构建 |
+| `producerRecipeHash` | 纯 producer、native build、环境门与确定性参数（含 `sol_parser/.cargo/config.toml` 的 `/Brepro` 链接参数） | 必须重新构建 |
 | `toolchainLockHash` | runtime toolchain lock、`global.json`、Rust toolchain | 必须重新构建并重新取得环境资格 |
 | `policyHash` | 生成器、审计器、队列/证明/promotion/CI 规则及已派生发布资产 | 新 request + 新政策 receipt；前三域未变时可复用同一 build identity/CAS payload |
 
@@ -136,16 +136,15 @@ promotion 重新验证 request/worktree/receipt/candidate/所有证明，要求�
 
 ## CI release-state 状态机
 
-`.github/workflows/runtime-bundle-integrity.yml` 对 push、pull_request、merge_group 都以 full history checkout 运行 `tools/classify-runtime-release-state.ps1`，保留 required check 名 `Runtime bundle integrity / verify-staged-bundle`：
+`.github/workflows/runtime-bundle-integrity.yml` 只对目标为已配置同等保护的 `main` 的 push、pull_request、merge_group 产生 required context；checkout 保留 full history，但用 `blob:none` + sparse worktree 避免纯内容提交先下载 runtime blob。`tools/classify-runtime-release-state.ps1` 保留 required check 名 `Runtime bundle integrity / verify-staged-bundle`；未来若保护 `release/**`，必须先配置同等 branch ruleset，再扩 workflow 触发器：
 
 | 模式 | 条件 | 允许状态 |
 |------|------|----------|
-| Development | 与 base 相比根 exe、`runtime/**`、consensus、builder registry 均未变化 | byte integrity 必过；strict identity 通过为 `coherent`，只有 verifier 明确返回 identity mismatch（exit 2）才为 `source-ahead`；脚本/依赖故障仍失败 |
-| Development | 上述部署路径有变化 | 只接受 manifest v2，且 strict v2 bundle + signed consensus 全通过，状态为 `promoted` |
-| Protected，一次性 bootstrap | base 无 marker、head 只新增合法 permanent fuse，并只新增/修改其 SHA-256 绑定且经 v2 parser 验证的 builder registry；根 EXE、`runtime/**`、legacy consensus 零 diff | v1 manifest byte integrity + v1 consensus integrity 必过，状态唯一为 `migration-bootstrap` |
-| Protected，常规 | push/PR/merge queue 的目标为 `main`、`master`、`release/**` | 无 bootstrap 时 strict；base 已有 marker 后只接受完整 v2 strict bundle + signed consensus，marker 不得删除或修改 |
+| Protected，内容快速通道 | explicit、非零 base 是 head 祖先；base 的 descriptor/车道/manifest/consensus/registry/marker/bootstrap sentinel 齐全；head 只改 regular-file 内容正向根且与动态保护集合零交集 | 不读取/重哈希 payload blob；输出 `protected-content-fastpath`，继承 base consensus，并记录 changed paths/entries、保护集合及 base sentinel 哈希 |
+| Protected，常规 | 不满足内容快速通道，或触及 payload、manifest/consensus、source/recipe/toolchain/policy | 完整 v2 bundle strict + signed consensus；marker 不得删除或修改，部署或身份变化必须先完成 promotion |
+| Protected，初始/事件缺 base | event base 为空或全零；只允许回退 head parent 做严格比较，不得走内容继承 | 完整 strict 链；真正初始提交同样 fail closed |
 
-所有模式先按 manifest header 调 v1/v2 verifier 的 `-Staged -IntegrityOnly`。空/全零 event base 会回退 HEAD parent；真正初始提交仍走严格链；index 与 head tree 不同直接失败。部署 v2 后任何 v1 降级都失败。`main` 已将 GitHub Actions app（`app_id=15368`）的 `verify-staged-bundle` 配为 strict required status，并启用 `enforce_admins`、禁用 force-push 与 deletion；管理员若主动修改仓库保护规则，仍属于 GitHub 设置层的独立治理事件，不能由 workflow 自身阻止。
+classifier 禁止 Development mode 生成 required context，非受保护分支也不会触发该 workflow；这消除了普通分支上同名绿色状态被直接推送复用的空间。快速通道从 trusted base 的 `runtime-inputs.v2.json` 动态展开四域与 payload 保护集合，并从同一 base 读取 `contribution-lanes.v1.json`；新增/修改路径必须是规范 UTF-8 regular file，历史不安全路径只可在 mode/blob 完全相同时原样继承。其余状态才按 manifest header 调 v1/v2 verifier；空/全零 event base 不得快速继承，index 与 head tree 不同直接失败，v2 → v1 永久失败。`main` 已将 GitHub Actions app（`app_id=15368`）的 `verify-staged-bundle` 配为 strict required status，并启用 `enforce_admins`、Require PR（普通路径 0 审批）、关键路径 CODEOWNER 审阅、禁用 force-push 与 deletion；仓库同时启用 auto-merge 和合并后删除远端贡献分支。Require PR 只是让新 commit 先取得预合并状态，不代表文档/资产作者必须重新建立 runtime 共识；只有保护域变化才进入完整 promotion。管理员若主动修改仓库保护规则，仍属于 GitHub 设置层的独立治理事件，不能由 workflow 自身阻止。
 
 ## 验证矩阵与诊断
 

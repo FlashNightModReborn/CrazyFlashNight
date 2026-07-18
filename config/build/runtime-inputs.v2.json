@@ -42,6 +42,7 @@
         "launcher/native/assert-pinned-tools.bat",
         "launcher/native/build.bat",
         "launcher/native/bootstrap/build.bat",
+        "launcher/native/sol_parser/.cargo/config.toml",
         "launcher/native/sol_parser/build.bat",
         "tools/check-runtime-build-env.ps1",
         "tools/runtime-build-v2-common.ps1"
@@ -58,8 +59,10 @@
     },
     "policy": {
       "fixedFiles": [
+        ".github/CODEOWNERS",
         ".github/workflows/runtime-bundle-integrity.yml",
         ".github/workflows/runtime-cloud-builder.yml",
+        "config/build/contribution-lanes.v1.json",
         "config/build/runtime-builders.v2.json",
         "config/build/runtime-github-builder.v2.json",
         "config/build/runtime-inputs.v2.json",

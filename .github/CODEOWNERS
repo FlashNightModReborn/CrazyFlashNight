@@ -1,0 +1,28 @@
+# Fail closed：新增或未分类路径默认属于维护者，避免软件入口因漏列而绕过审阅。
+* @Crazyfs @lyyloo @XDD3102
+
+# 纯文档 / 内容正向根不指定 owner；required check 仍然必须通过。
+/docs/
+/flashswf/arts/
+/flashswf/backgrounds/
+/flashswf/images/
+/flashswf/levels/
+/flashswf/miniGames/
+/flashswf/movies/
+/flashswf/portraits/
+/flashswf/skybox/
+/flashswf/UI/
+/music/
+/sounds/
+/闪7重置版字体/
+/data/
+/xml/
+/config/
+
+# 快速根中的治理 / 派生入口重新收回维护者所有权；规则靠后以取得优先级。
+/config/build/ @Crazyfs @lyyloo @XDD3102
+/data/map/map_catalog.json @Crazyfs @lyyloo @XDD3102
+/data/map/task_npc_registry.json @Crazyfs @lyyloo @XDD3102
+
+# CODEOWNERS 自身和工作流必须始终由维护者拥有。
+/.github/ @Crazyfs @lyyloo @XDD3102

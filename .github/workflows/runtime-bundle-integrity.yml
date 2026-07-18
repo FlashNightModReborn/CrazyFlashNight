@@ -2,8 +2,14 @@ name: Runtime bundle integrity
 
 on:
   pull_request:
+    branches:
+      - main
   push:
+    branches:
+      - main
   merge_group:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -20,6 +26,20 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/runtime-bundle-integrity.yml
+            config/build/
+            tools/classify-runtime-release-state.ps1
+            tools/runtime-build-attestation-v2-common.ps1
+            tools/runtime-build-common.ps1
+            tools/runtime-build-queue-common.ps1
+            tools/runtime-build-v2-common.ps1
+            tools/verify-runtime-bundle.ps1
+            tools/verify-runtime-bundle-v2.ps1
+            tools/verify-runtime-consensus.ps1
+            tools/verify-runtime-github-attestation.ps1
       - name: Classify runtime release state
         shell: powershell
         env:
@@ -34,7 +54,7 @@ jobs:
         run: |
           function Test-ProtectedRef([string]$Ref) {
             $name = ([string]$Ref) -replace '^refs/heads/', ''
-            return $name -in @('main', 'master') -or $name.StartsWith('release/', [StringComparison]::OrdinalIgnoreCase)
+            return $name -ceq 'main'
           }
 
           if ($env:CF7_EVENT_NAME -eq 'pull_request') {
@@ -47,10 +67,12 @@ jobs:
             $baseRevision = $env:CF7_EVENT_BEFORE
             $policyRef = $env:CF7_CURRENT_REF
           }
-          $mode = if (Test-ProtectedRef $policyRef) { 'Protected' } else { 'Development' }
+          if (-not (Test-ProtectedRef $policyRef)) {
+            throw "Runtime integrity required context may run only for a protected target ref: $policyRef"
+          }
           $classifierArguments = @(
             '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\classify-runtime-release-state.ps1',
-            '-ProjectRoot', $PWD.Path, '-Mode', $mode, '-HeadRevision', $env:CF7_HEAD_SHA
+            '-ProjectRoot', $PWD.Path, '-Mode', 'Protected', '-HeadRevision', $env:CF7_HEAD_SHA
           )
           if (-not [string]::IsNullOrWhiteSpace($baseRevision)) {
             $classifierArguments += @('-BaseRevision', $baseRevision)

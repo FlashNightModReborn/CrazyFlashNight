@@ -42,7 +42,8 @@ try {
         'launcher/app.ico', 'launcher/app.manifest', 'launcher/build-runtime-candidate.ps1',
         'launcher/native/assert-pinned-tools.bat', 'launcher/native/build.bat',
         'launcher/native/bootstrap/build.bat', 'launcher/native/bootstrap/bootstrap.cpp',
-        'launcher/native/bootstrap/bootstrap.rc', 'launcher/native/sol_parser/build.bat',
+        'launcher/native/bootstrap/bootstrap.rc', 'launcher/native/sol_parser/.cargo/config.toml',
+        'launcher/native/sol_parser/build.bat',
         'launcher/native/sol_parser/Cargo.toml', 'launcher/native/sol_parser/Cargo.lock',
         'launcher/native/sol_parser/rust-toolchain.toml', 'tools/check-runtime-build-env.ps1',
         'tools/runtime-build-v2-common.ps1'
@@ -95,6 +96,10 @@ try {
     [IO.File]::WriteAllText((Join-Path $fixtureRepo 'config\build\runtime-inputs.v2.json'), $fixtureConfig + "`n", $encoding)
     [IO.File]::WriteAllText((Join-Path $fixtureRepo 'config\build\toolchain.txt'), 'queue-toolchain' + "`n", $encoding)
     [IO.File]::WriteAllText($fixturePath, 'internal static class QueueFreezeFixture { internal const string Value = "base"; }' + "`n", $encoding)
+    # Model the real repository's text normalization explicitly. Without this file, copying a
+    # CRLF PowerShell helper into a core.autocrlf=false fixture stores a CRLF blob, while the
+    # worker's independent clone may clean it as LF under machine-level Git configuration.
+    [IO.File]::WriteAllText((Join-Path $fixtureRepo '.gitattributes'), "* text=auto`n", $encoding)
     & git -C $fixtureRepo init -q
     & git -C $fixtureRepo config user.name 'CF7 Queue Test'
     & git -C $fixtureRepo config user.email 'queue-test@invalid.local'
