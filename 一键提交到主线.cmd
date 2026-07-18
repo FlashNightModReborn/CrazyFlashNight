@@ -1,8 +1,8 @@
 @echo off
 setlocal
 
-set "CF7_PROJECT_ROOT=%~dp0"
-set "CF7_SUBMIT_SCRIPT=%~dp0tools\submit-contribution.ps1"
+for %%I in ("%~dp0.") do set "CF7_PROJECT_ROOT=%%~fI"
+set "CF7_SUBMIT_SCRIPT=%CF7_PROJECT_ROOT%\tools\submit-contribution.ps1"
 chcp 65001 >nul
 
 if not exist "%CF7_SUBMIT_SCRIPT%" (
