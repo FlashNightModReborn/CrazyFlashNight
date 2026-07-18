@@ -145,7 +145,7 @@ promotion 重新验证 request/worktree/receipt/candidate/所有证明，要求�
 | Protected，一次性 bootstrap | base 无 marker、head 只新增合法 permanent fuse，并只新增/修改其 SHA-256 绑定且经 v2 parser 验证的 builder registry；根 EXE、`runtime/**`、legacy consensus 零 diff | v1 manifest byte integrity + v1 consensus integrity 必过，状态唯一为 `migration-bootstrap` |
 | Protected，常规 | push/PR/merge queue 的目标为 `main`、`master`、`release/**` | 无 bootstrap 时 strict；base 已有 marker 后只接受完整 v2 strict bundle + signed consensus，marker 不得删除或修改 |
 
-所有模式先按 manifest header 调 v1/v2 verifier 的 `-Staged -IntegrityOnly`。空/全零 event base 会回退 HEAD parent；真正初始提交仍走严格链；index 与 head tree 不同直接失败。部署 v2 后任何 v1 降级都失败。仓库管理员仍须把该 check 配为 protected branch required status；workflow 自己不能阻止管理员绕过。
+所有模式先按 manifest header 调 v1/v2 verifier 的 `-Staged -IntegrityOnly`。空/全零 event base 会回退 HEAD parent；真正初始提交仍走严格链；index 与 head tree 不同直接失败。部署 v2 后任何 v1 降级都失败。`main` 已将 GitHub Actions app（`app_id=15368`）的 `verify-staged-bundle` 配为 strict required status，并启用 `enforce_admins`、禁用 force-push 与 deletion；管理员若主动修改仓库保护规则，仍属于 GitHub 设置层的独立治理事件，不能由 workflow 自身阻止。
 
 ## 验证矩阵与诊断
 
