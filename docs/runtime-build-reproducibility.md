@@ -1,11 +1,11 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：source commit `f8064231836e8de743566d61d45cb99d8360b707`（2026-07-19）+ 当前最小主线准入、事后 runtime 审计与云端发布授权工作树。
+**最后核对代码基线**：source commit `278c4b9b76569852d896edbfa2176d9c2f16e63e`（2026-07-19）+ request `0BDD79AD750523658D46ABDDB87F1951A7A41AB7BF6E67FF86C623CA99601BA0` 的正式 promotion。
 
 ## 当前迁移状态
 
-runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。request `C96D57421BA8ACDEDF307EADC384A0B51341D5FCD7FCAD62D25B5CCC97B6CC9D` 使用 source tag `runtime-build-v2/20260719-native-identity-gate-v2`：`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29671016222` 的 `github-hosted-windows` OIDC/Sigstore 票达成双 signer、双 faultDomain 共识；build identity `F6BE274BCCAF5EA2EBA1FF075DEADCA2B42A64589F3441132EF749E185D9A209` 与 payload closure `04073C5F42D4A2EC9A0511287A9C982052D673B599795888C7903619B6AF25E0` 全等。该列车只轮换 admission / policy 证明，artifact source、producer recipe、toolchain 与实际 payload 均未漂移，因此 promotion 只更新 signed consensus；tracked registry 仍只保存公钥证书。前一条 `native-identity-gate-v1` train 在 PR required check 暴露了 Windows PowerShell 5.1 单结果数组折叠，已由 v2 source commit 修复并重新取得完整双票；旧 tag 保留不移动。更早的 `contribution-admission-v1` train 因 map-fit 审计把 Windows CRLF 误判为陈旧而在 promotion 前停止；其 tag 同样保留不移动，请求已 supersede，审计现按规范化文本比较。
+runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。request `0BDD79AD750523658D46ABDDB87F1951A7A41AB7BF6E67FF86C623CA99601BA0` 使用 immutable source tag `runtime-build-v2/20260719-minimal-release-gate-v1`：`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29674597319` 的 `github-hosted-windows` OIDC/Sigstore 票达成双 signer、双 faultDomain 共识；build identity `F6BE274BCCAF5EA2EBA1FF075DEADCA2B42A64589F3441132EF749E185D9A209` 与 payload closure `04073C5F42D4A2EC9A0511287A9C982052D673B599795888C7903619B6AF25E0` 全等，production policy `54E94AB3A08A06527305F6D4133D7C7AD1657DDB7E21AA6B793D51E08412C4FC` 的 20 项检查全部通过。该列车把主线准入收敛为三条零 runner ref 防护，并将 Actions 定位为正式发布时的独立 producer；artifact source、producer recipe、toolchain 与实际 payload 均未漂移，因此 promotion 只更新 signed consensus，tracked registry 仍只保存公钥证书。此前的 `native-identity-gate-v1/v2` 与 `contribution-admission-v1` tag 均作为不可移动的历史审计输入保留。
 
 v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入。该 marker 曾精确绑定 base `711c469036ad6b1226833faf255499abb1ebf2ed`、旧 artifact closure 与目标 builder registry 字节哈希，并在 legacy deployment 零变化时解决“cloud workflow 必须先进入 default branch”的 bootstrap 悖论；marker 后的首个部署提交已经完成完整 v2 promotion。CI 从此只接受 v2 strict 状态，并永久拒绝 v2 → v1 降级。
 
