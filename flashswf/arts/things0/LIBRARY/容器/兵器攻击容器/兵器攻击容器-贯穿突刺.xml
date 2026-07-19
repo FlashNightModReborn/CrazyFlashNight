@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" itemID="695a42b9-0000153e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-贯穿突刺" lastModified="1777727135" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" itemID="695a42b9-0000153e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-贯穿突刺" lastModified="1784476633" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-贯穿突刺" currentFrame="11">
+    <DOMTimeline name="兵器攻击容器-贯穿突刺">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <Actionscript>
@@ -987,11 +987,11 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="副手刀" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="副手刀" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-49" centerPoint3DY="38.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-49" centerPoint3DY="38.3">
                   <matrix>
                     <Matrix a="-0.0974273681640625" b="-0.994522094726563" c="-0.993255615234375" d="0.097320556640625" tx="167.55" ty="19.8"/>
                   </matrix>
