@@ -30,8 +30,9 @@ function Read-Cf7CloudBuilderConfig {
     if ([string]$config.signerWorkflow -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$') {
         throw 'Invalid GitHub runtime signer workflow.'
     }
-    if ([string]$config.sourceRef -notmatch '^refs/(?:heads|tags)/[A-Za-z0-9._/-]+$' -or
-            [string]$config.sourceRef -match '(?:^|/)\.\.(?:/|$)|//|/$') { throw 'Invalid GitHub runtime source ref.' }
+    if ([string]$config.sourceRef -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
+        throw 'GitHub runtime sourceRef must be one canonical protected runtime-build-v2 tag.'
+    }
     if ([string]$config.identityProvider -ne 'github-oidc-sigstore' -or
             $config.longLivedPrivateKey -isnot [bool] -or [bool]$config.longLivedPrivateKey) {
         throw 'GitHub runtime builder must use keyless OIDC/Sigstore identity.'
@@ -92,10 +93,6 @@ function Invoke-Cf7GhJson([string[]]$Arguments) {
 
 function Resolve-Cf7ConfiguredSourceTagCommit($Config) {
     $sourceRef = [string]$Config.sourceRef
-    if (-not $sourceRef.StartsWith('refs/tags/', [StringComparison]::Ordinal)) {
-        throw "GitHub runtime sourceRef must be an immutable tag: $sourceRef"
-    }
-
     $relativeRef = $sourceRef.Substring('refs/'.Length)
     $repository = [string]$Config.repository
     $refResponse = Invoke-Cf7GhJson -Arguments @(

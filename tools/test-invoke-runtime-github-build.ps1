@@ -317,6 +317,16 @@ try {
         Assert-Test (@($calls | Where-Object { $_[0] -eq 'workflow' -and $_[1] -eq 'run' }).Count -eq 0) 'wrong tag target must fail before workflow dispatch'
     }
 
+    Run-Test 'rejects source refs outside the protected single-segment runtime tag namespace' {
+        foreach ($sourceRef in @('refs/tags/unprotected-release','refs/tags/runtime-build-v2/nested/release')) {
+            $fixture = New-TestFixture -SourceRef $sourceRef
+            $result = Invoke-TestHelper $fixture
+            Assert-Test ($result.ExitCode -ne 0) "unsafe source ref unexpectedly passed: $sourceRef"
+            Assert-Test ($result.Output -match 'canonical protected runtime-build-v2 tag') $result.Output
+            Assert-Test ((Get-TestCalls $fixture).Count -eq 0) "unsafe source ref must fail before every GitHub API call: $sourceRef"
+        }
+    }
+
     Run-Test 'rejects a discovered run whose head SHA differs from the requested source commit' {
         $fixture = New-TestFixture -WrongListHeadSha -CompleteAfterViews 1
         $result = Invoke-TestHelper $fixture

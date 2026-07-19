@@ -58,7 +58,7 @@ try {
         enabled=$true
         repository='FlashNightModReborn/CrazyFlashNight'
         signerWorkflow='FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml'
-        sourceRef='refs/heads/main'
+        sourceRef='refs/tags/runtime-build-v2/test-release'
         faultDomain='github-hosted-windows'
         runnerClass='github-hosted-windows'
         identityProvider='github-oidc-sigstore'
@@ -145,7 +145,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Test ([Convert]::FromBase64String([string]$wrapper.envelopeBase64).Length -eq $envelopeBytesA.Length) 'wrapper embeds envelope bytes'
     Assert-Cf7Test ([Convert]::FromBase64String([string]$wrapper.bundleBase64).Length -eq [IO.File]::ReadAllBytes($bundlePath).Length) 'wrapper embeds bundle bytes'
     $ghArgs = [IO.File]::ReadAllText($argsPath, [Text.Encoding]::Default)
-    foreach ($required in @('attestation verify','--repo FlashNightModReborn/CrazyFlashNight','--signer-workflow FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml','--source-ref refs/heads/main','--deny-self-hosted-runners','--bundle','--predicate-type https://slsa.dev/provenance/v1','--format json')) {
+    foreach ($required in @('attestation verify','--repo FlashNightModReborn/CrazyFlashNight','--signer-workflow FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml','--source-ref refs/tags/runtime-build-v2/test-release','--deny-self-hosted-runners','--bundle','--predicate-type https://slsa.dev/provenance/v1','--format json')) {
         Assert-Cf7Test ($ghArgs.Contains($required)) "gh argument missing: $required"
     }
     Assert-Cf7Test ($ghArgs.Contains($envelopeA)) 'gh must verify the exact envelope path'
@@ -191,7 +191,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $identityTamperCases = @(
         @('repository','"repository":"FlashNightModReborn/CrazyFlashNight"','"repository":"WrongOwner/WrongRepo"'),
         @('signerWorkflow','"signerWorkflow":"FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml"','"signerWorkflow":"FlashNightModReborn/CrazyFlashNight/.github/workflows/wrong.yml"'),
-        @('sourceRef','"sourceRef":"refs/heads/main"','"sourceRef":"refs/heads/untrusted"'),
+        @('sourceRef','"sourceRef":"refs/tags/runtime-build-v2/test-release"','"sourceRef":"refs/tags/runtime-build-v2/tampered"'),
         @('faultDomain','"faultDomain":"github-hosted-windows"','"faultDomain":"untrusted-cloud"'),
         @('runnerClass','"runnerClass":"github-hosted-windows"','"runnerClass":"tampered-runner"')
     )
@@ -214,6 +214,18 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Write-Cf7TestText $keyedConfigPath (($keyedConfig | ConvertTo-Json -Depth 5) + "`n")
     Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $keyedConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } 'GitHub builder config must reject long-lived private keys'
 
+    foreach ($unsafeSourceRef in @('refs/tags/unprotected-release','refs/tags/runtime-build-v2/nested/release')) {
+        $unsafeConfigPath = Join-Path $testRoot ('github-config-unsafe-ref-' + [Guid]::NewGuid().ToString('N') + '.json')
+        $unsafeConfig = [ordered]@{}
+        foreach ($property in $githubConfig.Keys) { $unsafeConfig[$property] = $githubConfig[$property] }
+        $unsafeConfig.sourceRef = $unsafeSourceRef
+        Write-Cf7TestText $unsafeConfigPath (($unsafeConfig | ConvertTo-Json -Depth 5) + "`n")
+        Assert-Cf7Throws { & $generator -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -SourceCommitOid $sourceCommit -ConfigPath $unsafeConfigPath -OutputPath (Join-Path $testRoot 'unsafe-envelope.json') } `
+            "envelope generator must reject a source ref outside the protected single-segment tag namespace: $unsafeSourceRef"
+        Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $unsafeConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } `
+            "attestation verifier must reject a source ref outside the protected single-segment tag namespace: $unsafeSourceRef"
+    }
+
     $originalApp = [IO.File]::ReadAllBytes((Join-Path $candidateRoot 'app.exe'))
     [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'app.exe'), [byte[]](1,2,3,4,0))
     Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } 'tampered candidate bytes must fail'
@@ -230,14 +242,31 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $buildJobText = [regex]::Match($workflowText, '(?ms)^  build:\s.*?(?=^  attest:)').Value
     $attestJobText = [regex]::Match($workflowText, '(?ms)^  attest:\s.*$').Value
     Assert-Cf7Test (-not $workflowText.Contains('>> $env:GITHUB_')) 'PowerShell 5.1 workflow files must not write UTF-16 through redirection to GitHub control files'
-    Assert-Cf7Test ($workflowText.Contains('run-name: Runtime cloud builder ${{ inputs.source_commit || github.event.client_payload.source_commit }}')) 'cloud workflow run name must expose the immutable full source SHA'
+    Assert-Cf7Test ($workflowText.Contains('run-name: Runtime cloud builder ${{ inputs.source_commit }}')) 'cloud workflow run name must expose the immutable full source SHA'
+    Assert-Cf7Test ($workflowText -match '(?m)^\s{2}workflow_dispatch:\s*$' -and
+        $workflowText -notmatch '(?m)^\s{2}(?:repository_dispatch|push|pull_request|schedule):\s*$' -and
+        -not $workflowText.Contains('github.event.client_payload')) `
+        'cloud builder must be reachable only through an explicit workflow_dispatch input'
     Assert-Cf7Test ($workflowText.Contains("-cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$'")) 'cloud dispatch must canonicalize source identity by requiring lowercase full SHA'
     Assert-Cf7Test ($workflowText.Contains('if ([string]$env:GITHUB_SHA -cne $normalizedRequested)')) `
         'cloud workflow must reject a workflow ref whose resolved SHA differs from the requested source commit'
     Assert-Cf7Test ($workflowText.Contains('if ([string]$cloudConfig.sourceRef -cne $env:GITHUB_REF)')) `
         'checked-out cloud config must bind its exact sourceRef to the workflow GITHUB_REF'
+    Assert-Cf7Test ($workflowText.Contains("GITHUB_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$'") -and
+        -not $workflowText.Contains("GITHUB_REF -cne 'refs/heads/main'")) `
+        'cloud workflow must allocate formal builds only from the protected single-segment runtime tag namespace'
     Assert-Cf7Test (([regex]::Matches($workflowText, 'runs-on:\s*windows-2022')).Count -eq 2) 'both cloud jobs must use the explicit VS 2022 image family'
     Assert-Cf7Test (-not [regex]::IsMatch($workflowText, 'runs-on:\s*(?:windows-latest|windows-2025|self-hosted)')) 'cloud builder workflow must not use a mutable major-toolchain alias or self-hosted runners'
+    foreach ($jobContract in @($buildJobText,$attestJobText)) {
+        Assert-Cf7Test ($jobContract.Contains("github.event_name == 'workflow_dispatch'") -and
+            $jobContract.Contains('github.run_attempt == 1') -and
+            $jobContract.Contains("github.actor_id == '91271520'") -and
+            $jobContract.Contains("github.actor_id == '138298913'")) `
+            'each cloud job must reject non-dispatch, rerun, and non-maintainer identities before allocation'
+        Assert-Cf7Test ($jobContract.IndexOf('if: >-', [StringComparison]::Ordinal) -lt
+            $jobContract.IndexOf('runs-on: windows-2022', [StringComparison]::Ordinal)) `
+            'cloud authorization must be a job-level condition evaluated before runner allocation'
+    }
     Assert-Cf7Test ($buildJobText.Contains('CF7_EXPECTED_IMAGE_OS: win22') -and
         $buildJobText.Contains('$env:RUNNER_ENVIRONMENT -cne ''github-hosted''') -and
         $buildJobText.Contains('$env:ImageOS -cne $env:CF7_EXPECTED_IMAGE_OS')) `
@@ -247,6 +276,11 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
         $workflowText.Contains('CF7_BOOTSTRAP_DIAGNOSTICS_DIR: ${{ github.workspace }}\tmp\runtime-bootstrap-diagnostics') -and
         $workflowText.Contains('path: tmp/runtime-bootstrap-diagnostics') -and
         $workflowText.Contains('if: failure()')) 'failed cloud producer must preserve bounded bootstrap diagnostics'
+    $diagnosticsArtifact = [regex]::Match($workflowText, '(?ms)- name: Preserve failed bootstrap diagnostics.*?retention-days:\s*(\d+)').Groups[1].Value
+    $unsignedArtifact = [regex]::Match($workflowText, '(?ms)- name: Stage unsigned cloud result.*?retention-days:\s*(\d+)').Groups[1].Value
+    $signedArtifact = [regex]::Match($workflowText, '(?ms)- name: Upload signed cloud builder result.*?retention-days:\s*(\d+)').Groups[1].Value
+    Assert-Cf7Test ($diagnosticsArtifact -ceq '7' -and $unsignedArtifact -ceq '1' -and $signedArtifact -ceq '7') `
+        'cloud artifact retention must be diagnostics=7d, unsigned=1d, signed=7d'
     Assert-Cf7Test ($workflowText.IndexOf('CF7_CANDIDATE_ROOT=$candidate', [StringComparison]::Ordinal) -lt
         $workflowText.IndexOf('-File .\launcher\build-runtime-candidate.ps1', [StringComparison]::Ordinal)) `
         'cloud candidate path must be exported before the producer can fail'
@@ -271,7 +305,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     )) {
         Assert-Cf7Test ($workflowText.Contains($workflowNeedle)) "cloud workflow contract missing: $workflowNeedle"
     }
-    foreach ($configValue in @($githubConfig.repository,$githubConfig.signerWorkflow,$githubConfig.sourceRef,$githubConfig.faultDomain,$githubConfig.runnerClass)) {
+    foreach ($configValue in @($githubConfig.repository,$githubConfig.signerWorkflow,$githubConfig.faultDomain,$githubConfig.runnerClass)) {
         Assert-Cf7Test ($workflowText.Contains([string]$configValue)) "cloud workflow/config identity drift: $configValue"
     }
     $bootstrapText = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\bootstrap-runtime-build-env.ps1'), [Text.Encoding]::UTF8)

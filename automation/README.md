@@ -56,21 +56,21 @@ cd "<项目根目录>\\automation"
 - `automation/start.ps1`、`scripts/gobang_trainer_cycle.ps1` 与 `tools/cfn-cli.sh` 直启 Core 前调用根 bootstrap `--verify-only`，manifest 闭包不完整、含额外文件或二进制混搭时 fail-fast
 - 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
 
-### 普通直推与受限账号 PR 入口
+### 全员直推与 native 事后审计
 
-普通文档、美术、策划、AS2 与 Web 合作者继续在现有 Git 客户端中 `Pull → Commit → Push`，无需额外入口。`Crazyfs`、`Flash-Night` 以及未知新 collaborator 属受限账号：直接推 `main` 会被身份 ruleset 拒绝，可双击仓库根目录的 `一键提交到主线.cmd`，把本地 `main` 尚未发布的 commit 安全转成 `contrib/*` 分支、ready PR 和允许时的 auto-merge。文档/内容车道会等待检查、合并后 `--ff-only` 回到 `main`；软件车道显示待审 PR 后返回。若远端已前进、工作树未提交或 Git 正处于 merge/rebase/cherry-pick 等中间态，工具会停止且不自动 rebase/reset。
+所有 write collaborator，包括 `Crazyfs`、`Flash-Night`，都继续在现有 Git 客户端中 `Pull → Commit → Push main`；没有身份 PR 门、CODEOWNER 前置审批或 required Actions check。PR 与根目录 `一键提交到主线.cmd` 只作为自愿讨论辅助，不是准入入口。
 
-命令行入口与离线回归：
+普通 docs/data/Flash/XFL/Web-only 提交不触发 runtime workflow。native 源码 push 后 `audit-native-runtime` 可以成功报告 `source-ahead`，表示源码领先于正式部署，不要求每次立即 promotion；只有根 EXE、`runtime/**`、manifest/consensus 等部署闭包变化而缺少完整 v2 promotion 时才失败报警。报警发生在 push 之后，不能撤销已进入 `main` 的提交。
+
+离线回归与远端规则复核：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\submit-contribution.ps1 -Wait
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\test-submit-contribution.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\test-resolve-runtime-trusted-base.ps1
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\test-main-branch-admission.ps1
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\audit-main-branch-admission.ps1 -ExpectedState ConfigOnly
 ```
 
-账号 bypass、native 黑名单、残余风险及哪些路径触发 runtime 双故障域 promotion，统一看 [协作者直推与 native 账号隔离](../docs/contribution-workflow.md)。远端规则漂移只读复核：`powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\audit-main-branch-admission.ps1`。
+native 审计边界、正式 release 双生产者共识、三条零 Actions ruleset 与 GitHub Free 无服务端 path restriction 的残余风险，统一看 [协作者直推与 native/runtime 发布边界](../docs/contribution-workflow.md)。远端规则漂移只读复核：`powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\audit-main-branch-admission.ps1`。
 
 ### 无人值守运行态控制面
 
@@ -141,7 +141,7 @@ powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 
 正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
 
-当前 `builder-local-a` / `physical-host-a` 的非导出 CurrentUser 私钥与 GitHub hosted OIDC/Sigstore 第二故障域已完成正式 v2 promotion；registry 仍只含本地 builder 公钥，GitHub 证明通过 keyless provenance 验真。一次性 migration marker 仅保留为历史审计输入，后续 v2 部署变化必须完整重走发布列车。
+当前 `builder-local-a` / `physical-host-a` 的非导出 CurrentUser 私钥与 GitHub hosted OIDC/Sigstore 第二故障域已完成正式 v2 promotion；registry 仍只含本地 builder 公钥，GitHub 证明通过 keyless provenance 验真。cloud workflow 只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 手工首次 dispatch，但不要求两人共同在线或互相审批；任一获授权发布者都可以把本地票与云端自动票组合成 quorum。一次性 migration marker 仅保留为历史审计输入，后续 v2 部署变化必须完整重走发布列车。
 
 ```powershell
 $request = ..\tools\new-runtime-build-request.ps1 `
@@ -153,7 +153,7 @@ $request = ..\tools\new-runtime-build-request.ps1 `
 $cloud = ..\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
 ```
 
-最后一条命令会触发固定 cloud workflow、等待精确 run、安全解压并产出 `$cloud.candidateRoot` / `$cloud.proofPath`。request、队列/CAS、双故障域 quorum、receipt 与 `promote-runtime-bundle.ps1` 的完整步骤以 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md) 为准。当前正式部署已是 v2；任何时候都禁止手工换 manifest、伪造证明，或把单机 candidate 复制进根 runtime。
+最后一条命令会触发固定 cloud workflow、等待精确 run、安全解压并产出 `$cloud.candidateRoot` / `$cloud.proofPath`。unsigned job 交接 artifact 保留 1 天，失败诊断与 signed 结果保留 7 天；超期未 promotion 就重新 dispatch，不把 Actions artifact 当长期档案。request、队列/CAS、双故障域 quorum、receipt 与 `promote-runtime-bundle.ps1` 的完整步骤以 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md) 为准。当前正式部署已是 v2；任何时候都禁止手工换 manifest、伪造证明，或把单机 candidate 复制进根 runtime。
 
 ### 改 Flash / AS2
 
@@ -208,7 +208,7 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 | `start_game.ps1` | 兼容旧入口 |
 | `start_server.ps1` | 已废弃的旧入口 |
 | `publish.ps1` | 开发态批量发布辅助脚本 |
-| `../一键提交到主线.cmd` | 受限账号或自愿走 PR 的安全提交入口 |
+| `../一键提交到主线.cmd` | 自愿走 PR 讨论时的辅助入口；不参与主线准入 |
 
 ## 7. 相关文档
 
@@ -216,4 +216,4 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 - 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md)
 - Flash 编译 smoke：[`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md)
 - 离线导弹调优：[`tools/missile-tuning-sim/README.md`](../tools/missile-tuning-sim/README.md)
-- 协作者直推与 native 账号隔离：[`docs/contribution-workflow.md`](../docs/contribution-workflow.md)
+- 协作者直推与 native/runtime 发布边界：[`docs/contribution-workflow.md`](../docs/contribution-workflow.md)

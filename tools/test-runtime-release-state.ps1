@@ -6,7 +6,7 @@ $classifierSource = Join-Path $repoRoot 'tools\classify-runtime-release-state.ps
 $workflowSource = Join-Path $repoRoot '.github\workflows\runtime-bundle-integrity.yml'
 $nativeGateSource = Join-Path $repoRoot 'config\build\native-change-gate.v1.json'
 $nativeGateBytes = [IO.File]::ReadAllBytes($nativeGateSource)
-$admissionConfigSource = Join-Path $repoRoot 'config\build\main-branch-admission.v1.json'
+$admissionConfigSource = Join-Path $repoRoot 'config\build\main-branch-admission.v2.json'
 $admissionConfigBytes = [IO.File]::ReadAllBytes($admissionConfigSource)
 $runtimeV2CommonSource = Join-Path $repoRoot 'tools\runtime-build-v2-common.ps1'
 $runtimeAttestationCommonSource = Join-Path $repoRoot 'tools\runtime-build-attestation-v2-common.ps1'
@@ -47,7 +47,7 @@ function Get-TestBaseSentinelsSha256($Fixture) {
     $lines = New-Object 'Collections.Generic.List[string]'
     foreach ($relativePath in @(
         'config/build/runtime-inputs.v2.json',
-        'config/build/main-branch-admission.v1.json',
+        'config/build/main-branch-admission.v2.json',
         'config/build/native-change-gate.v1.json',
         'runtime/cf7-runtime-manifest.tsv',
         'config/build/runtime-release-consensus.json',
@@ -160,7 +160,7 @@ exit $code
             policy = [ordered]@{
                 fixedFiles=@(
                     'config/build/runtime-inputs.v2.json',
-                    'config/build/main-branch-admission.v1.json',
+                    'config/build/main-branch-admission.v2.json',
                     'config/build/native-change-gate.v1.json',
                     'data/map/map_catalog.json',
                     'tools/derive-map-catalog.js',
@@ -204,7 +204,7 @@ exit $code
     Set-TestFile (Join-Path $root 'tools\derive-map-catalog.js') 'export const derive = true;'
     Set-TestFile (Join-Path $root 'launcher\scripts\catalog.ts') 'export const catalog = true;'
     Set-TestBytes (Join-Path $root 'config\build\native-change-gate.v1.json') $script:nativeGateBytes
-    Set-TestBytes (Join-Path $root 'config\build\main-branch-admission.v1.json') $script:admissionConfigBytes
+    Set-TestBytes (Join-Path $root 'config\build\main-branch-admission.v2.json') $script:admissionConfigBytes
     Set-TestFile (Join-Path $root '.gitignore') ".cf7-test-control.json`n.cf7-calls.log`n"
 
     [void](Invoke-TestGit $root @('init'))
@@ -288,7 +288,7 @@ function Add-TestMigrationCommit(
     return ([string]$headLines[0]).Trim()
 }
 
-function Invoke-Classifier($Fixture, [string]$Mode, [AllowNull()][string]$BaseRevision, [AllowNull()][string]$TrustedBaseRevision, [switch]$DisableFastPath, [switch]$OmitTrustedBase) {
+function Invoke-Classifier($Fixture, [string]$Mode, [AllowNull()][string]$BaseRevision, [AllowNull()][string]$TrustedBaseRevision, [switch]$DisableFastPath, [switch]$OmitTrustedBase, [string[]]$ExtraArguments = @()) {
     $headLines = @(Invoke-TestGit $Fixture.Root @('rev-parse','HEAD'))
     $head = ([string]$headLines[0]).Trim()
     $arguments = @(
@@ -296,12 +296,13 @@ function Invoke-Classifier($Fixture, [string]$Mode, [AllowNull()][string]$BaseRe
         '-ProjectRoot',$Fixture.Root,'-Mode',$Mode,'-HeadRevision',$head
     )
     if (-not [string]::IsNullOrEmpty($BaseRevision)) { $arguments += @('-BaseRevision',$BaseRevision) }
-    if ([string]::IsNullOrEmpty($TrustedBaseRevision) -and -not $DisableFastPath -and -not $OmitTrustedBase -and
+    if ($Mode -eq 'Protected' -and [string]::IsNullOrEmpty($TrustedBaseRevision) -and -not $DisableFastPath -and -not $OmitTrustedBase -and
             -not [string]::IsNullOrEmpty($BaseRevision) -and $BaseRevision -notmatch '^0+$') {
         $TrustedBaseRevision = $BaseRevision
     }
     if (-not [string]::IsNullOrEmpty($TrustedBaseRevision)) { $arguments += @('-TrustedBaseRevision',$TrustedBaseRevision) }
     if ($DisableFastPath) { $arguments += '-DisableFastPath' }
+    $arguments += $ExtraArguments
     $previousErrorAction = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
@@ -337,14 +338,63 @@ function Run-Test([string]$Name, [scriptblock]$Body) {
 
 [void](New-Item -ItemType Directory -Path $testRoot -Force)
 try {
-    Run-Test 'Development mode cannot emit the protected required context' {
-        $f = New-TestFixture v1
-        [void](Add-TestCommit $f 'source.txt' 'source-v2')
+    Run-Test 'Audit source-only native change reports source-ahead without reading runtime payload' {
+        $f = New-TestFixture v2
+        [void](Add-TestCommit $f 'launcher/src/App.cs' 'source-v2')
+        [void](Invoke-TestGit $f.Root @('sparse-checkout','set','--no-cone','/config/build/','/launcher/src/','/tools/','/.gitignore'))
+        foreach ($payloadPath in @('CRAZYFLASHER7MercenaryEmpire.exe','runtime/cf7-runtime-manifest.tsv','runtime/core.bin')) {
+            Remove-TestLooseBlob $f 'HEAD' $payloadPath
+        }
+        Set-TestControl $f -Integrity 1 -Strict 1 -Consensus 1
+        $result = Invoke-Classifier $f Audit $f.Base
+        Assert-Test ($result.ExitCode -eq 0) $result.Output
+        Assert-Test ($result.Output -match 'state=source-ahead') $result.Output
+        Assert-Test ($result.Output -match 'mode=Audit') $result.Output
+        Assert-Test ($result.Output -match 'manifest=unread') $result.Output
+        Assert-Test ($result.Output -match 'deploymentChanged=false') $result.Output
+        Assert-Test ($result.Output -match 'verifierCount=0') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'source-only audit must invoke zero payload or consensus verifiers'
+    }
+
+    Run-Test 'Audit deployment mutation enters byte and strict verification' {
+        $f = New-TestFixture v2
+        [void](Add-TestCommit $f 'runtime/core.bin' 'runtime-v2')
         Set-TestControl $f -Strict 2
-        $result = Invoke-Classifier $f Development $f.Base
-        Assert-Test ($result.ExitCode -ne 0) 'Development mode unexpectedly passed'
-        Assert-Test ($result.Output -match 'Development mode is forbidden') $result.Output
-        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'Development mode must fail before every verifier'
+        $result = Invoke-Classifier $f Audit $f.Base
+        Assert-Test ($result.ExitCode -ne 0) 'unpromoted runtime mutation unexpectedly passed audit'
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict') `
+            'deployment audit must run byte integrity before strict identity and stop before consensus on failure'
+    }
+
+    Run-Test 'Audit promoted deployment requires strict consensus' {
+        $passing = New-TestFixture v2
+        [void](Add-TestCommit $passing 'runtime/core.bin' 'runtime-promoted')
+        Set-TestControl $passing
+        $passedResult = Invoke-Classifier $passing Audit $passing.Base
+        Assert-Test ($passedResult.ExitCode -eq 0 -and $passedResult.Output -match 'state=promoted') $passedResult.Output
+        Assert-Test ((Get-TestCalls $passing) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') `
+            'promoted deployment audit must complete byte, identity, and consensus verification'
+
+        $failing = New-TestFixture v2
+        [void](Add-TestCommit $failing 'runtime/core.bin' 'runtime-unconfirmed')
+        Set-TestControl $failing -Consensus 2
+        $failedResult = Invoke-Classifier $failing Audit $failing.Base
+        Assert-Test ($failedResult.ExitCode -ne 0) 'deployment without strict consensus unexpectedly passed audit'
+        Assert-Test ((Get-TestCalls $failing) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') `
+            'failed deployment audit must reach and enforce strict consensus'
+    }
+
+    Run-Test 'Manual Audit release-readiness forces the complete verifier chain' {
+        $f = New-TestFixture v2
+        [void](Add-TestCommit $f 'docs/manual-audit.md' 'request full verification')
+        Set-TestControl $f
+        $result = Invoke-Classifier $f Audit $f.Base -ExtraArguments @('-ForceDeploymentVerification')
+        Assert-Test ($result.ExitCode -eq 0) $result.Output
+        Assert-Test ($result.Output -match 'state=release-ready' -and
+            $result.Output -match 'deploymentChanged=false' -and
+            $result.Output -match 'forcedDeploymentVerification=true') $result.Output
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') `
+            'manual release-readiness audit must run byte, source-identity, and consensus verification'
     }
 
     Run-Test 'Protected docs-only change inherits consensus without invoking a verifier' {
@@ -769,13 +819,13 @@ try {
         Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v1:integrity') 'unbound registry change must fail before strict/consensus checks'
     }
 
-    Run-Test 'A v2-to-v1 manifest downgrade is forbidden after integrity verification' {
+    Run-Test 'A v2-to-v1 manifest downgrade is rejected before payload verification' {
         $f = New-TestFixture v2
         [void](Add-TestCommit $f 'runtime/cf7-runtime-manifest.tsv' "cf7-runtime-manifest-v1`npayload`n")
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -ne 0) 'manifest downgrade unexpectedly passed'
         Assert-Test ($result.Output -match 'downgrade from v2 to v1') $result.Output
-        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v1:integrity') 'integrity must run before downgrade rejection'
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'manifest downgrade should fail before allocating payload verification'
     }
 
     Run-Test 'All-zero event base without an external anchor cannot emit green' {
@@ -820,13 +870,13 @@ try {
         Assert-Test ($result.Output -match 'state=migration-bootstrap') $result.Output
     }
 
-    Run-Test 'Development never receives the migration-bootstrap exemption' {
+    Run-Test 'Audit never receives the migration-bootstrap exemption' {
         $f = New-TestFixture v1
         [void](Add-TestMigrationCommit $f)
-        $result = Invoke-Classifier $f Development $f.Base
-        Assert-Test ($result.ExitCode -ne 0) 'development migration marker unexpectedly passed'
-        Assert-Test ($result.Output -match 'Development mode is forbidden') $result.Output
-        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'development rejection must occur before all verifiers'
+        $result = Invoke-Classifier $f Audit $f.Base
+        Assert-Test ($result.ExitCode -ne 0) 'audit migration marker unexpectedly passed'
+        Assert-Test ($result.Output -match 'allowed only against a protected ref') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'audit migration rejection must occur before all verifiers'
     }
 
     Run-Test 'Migration marker must bind the exact classified base commit' {
@@ -921,7 +971,7 @@ try {
         $result = Invoke-Classifier $f Protected $migrationHead
         Assert-Test ($result.ExitCode -ne 0) 'post-bootstrap v1 commit unexpectedly passed'
         Assert-Test ($result.Output -match 'already been consumed') $result.Output
-        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v1:integrity') 'consumed fuse must reject before strict identity checks'
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'consumed fuse should fail before allocating payload verification'
     }
 
     Run-Test 'The permanent migration fuse cannot be removed after bootstrap' {
@@ -958,36 +1008,87 @@ try {
         Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') 'v2 transition must use the normal strict path'
     }
 
-    Run-Test 'Workflow keeps one main-only required context without path filters' {
+    Run-Test 'Workflow is a path-scoped native audit rather than a reusable required context' {
         $workflow = [IO.File]::ReadAllText($script:workflowSource, [Text.Encoding]::UTF8)
-        Assert-Test ($workflow -match '(?m)^\s{2}verify-staged-bundle:\s*$') 'required job key changed'
-        Assert-Test ($workflow -match '(?m)^\s{4}name:\s*verify-staged-bundle\s*$') 'required job name changed'
-        Assert-Test ($workflow -notmatch '(?m)^\s+paths(?:-ignore)?:\s*') 'workflow must not use paths or paths-ignore filters'
+        Assert-Test ($workflow -match '(?m)^name:\s*Runtime native audit\s*$') 'workflow must identify itself as a post-push audit'
+        Assert-Test ($workflow -match '(?m)^\s{2}audit-native-runtime:\s*$') 'native audit job key changed'
+        Assert-Test ($workflow -match '(?m)^\s{4}name:\s*audit-native-runtime\s*$') 'native audit job name changed'
+        Assert-Test ($workflow -notmatch 'verify-staged-bundle|required context|CF7_TRUST_|TrustedBaseRevision|DisableFastPath') `
+            'audit workflow must not emit or resolve the retired reusable required context'
+        Assert-Test ($workflow -match '(?m)^\s{2}workflow_dispatch:\s*$') 'native maintainers need an explicit manual audit entrypoint'
+        Assert-Test ($workflow -match '(?m)^\s{2}pull_request:\s*$' -and $workflow -match '(?m)^\s{2}push:\s*$') `
+            'native audit must observe filtered main pull requests and pushes'
+        Assert-Test ($workflow -notmatch '(?m)^\s{2}merge_group:\s*$') 'non-required audit must not allocate merge-queue runners'
+        Assert-Test (($workflow | Select-String -Pattern '(?m)^\s+- main\s*$' -AllMatches).Matches.Count -eq 2) `
+            'only filtered push and pull_request events should target main'
+
+        $pathsMatch = [regex]::Match($workflow, '(?ms)^\s{4}paths:\s*&native_runtime_paths\s*\r?\n(?<paths>(?:\s{6}- [^\r\n]+\r?\n)+)')
+        Assert-Test $pathsMatch.Success 'cannot parse canonical native/runtime trigger paths'
+        $actualPathSet = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+        foreach ($line in @([string]$pathsMatch.Groups['paths'].Value -split "`r?`n")) {
+            $match = [regex]::Match($line, '^\s*-\s+(.+?)\s*$')
+            if (-not $match.Success) { continue }
+            $value = [string]$match.Groups[1].Value
+            if (($value.StartsWith("'") -and $value.EndsWith("'")) -or
+                    ($value.StartsWith('"') -and $value.EndsWith('"'))) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
+            Assert-Test ($actualPathSet.Add($value)) "workflow trigger contains a duplicate path pattern: $value"
+        }
+
+        $expectedPathSet = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+        $gate = [Text.Encoding]::UTF8.GetString($script:nativeGateBytes).TrimStart([char]0xFEFF) | ConvertFrom-Json
+        $inputs = [IO.File]::ReadAllText((Join-Path $repoRoot 'config\build\runtime-inputs.v2.json'), [Text.Encoding]::UTF8) | ConvertFrom-Json
+        foreach ($extension in @($gate.protectedExtensions)) { [void]$expectedPathSet.Add("**/*$extension") }
+        foreach ($basename in @($gate.protectedBasenames)) { [void]$expectedPathSet.Add("**/$basename") }
+        foreach ($path in @($gate.protectedFiles)) { [void]$expectedPathSet.Add([string]$path) }
+        foreach ($prefix in @($gate.protectedPrefixes)) { [void]$expectedPathSet.Add(([string]$prefix) + '**') }
+        foreach ($domainName in @('artifactSource','producerRecipe','toolchainLock')) {
+            $domain = $inputs.domains.$domainName
+            foreach ($path in @($domain.fixedFiles)) { [void]$expectedPathSet.Add([string]$path) }
+            foreach ($tree in @($domain.trees)) { [void]$expectedPathSet.Add(([string]$tree.path).TrimEnd('/') + '/**') }
+        }
+        foreach ($path in @($inputs.payload.fixedRoots)) { [void]$expectedPathSet.Add([string]$path) }
+        foreach ($tree in @($inputs.payload.trees)) { [void]$expectedPathSet.Add(([string]$tree).TrimEnd('/') + '/**') }
+        $missingPaths = @($expectedPathSet | Where-Object { -not $actualPathSet.Contains([string]$_) } | Sort-Object)
+        $unexpectedPaths = @($actualPathSet | Where-Object { -not $expectedPathSet.Contains([string]$_) } | Sort-Object)
+        Assert-Test ($missingPaths.Count -eq 0) "workflow trigger omits native/runtime admission paths: $($missingPaths -join ',')"
+        Assert-Test ($unexpectedPaths.Count -eq 0) "workflow trigger contains paths outside the native/runtime admission contract: $($unexpectedPaths -join ',')"
+        Assert-Test ($actualPathSet.Contains('**') -eq $false -and
+            -not $actualPathSet.Contains('docs/**') -and
+            -not $actualPathSet.Contains('data/**') -and
+            -not $actualPathSet.Contains('flashswf/**') -and
+            -not $actualPathSet.Contains('sounds/**')) 'ordinary content roots must not allocate the Windows audit runner'
+        Assert-Test ($workflow -match '(?m)^\s{4}paths:\s*\*native_runtime_paths\s*$') `
+            'push and pull_request must share one immutable native/runtime path set'
+
         Assert-Test ($workflow -match '(?m)^\s+filter:\s*blob:none\s*$') 'checkout must use blob:none filtering'
         Assert-Test ($workflow -match '(?m)^\s+fetch-depth:\s*0\s*$') 'checkout must retain complete topology'
         Assert-Test ($workflow -match '(?m)^\s+sparse-checkout:\s*\|\s*$') 'checkout must declare sparse materialization'
         $sparseMatch = [regex]::Match($workflow, '(?ms)^\s{10}sparse-checkout:\s*\|\s*\r?\n(?<paths>(?:\s{12}\S[^\r\n]*\r?\n)+)')
         Assert-Test $sparseMatch.Success 'cannot parse checkout sparse materialization paths'
         $sparsePaths = [string]$sparseMatch.Groups['paths'].Value
-        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}CRAZYFLASHER7MercenaryEmpire\.exe\s*$') 'non-native fast path must not materialize the root bootstrap'
-        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}runtime(?:/|\s*$)') 'non-native fast path must not materialize the runtime payload tree'
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}CRAZYFLASHER7MercenaryEmpire\.exe\s*$') 'source-ahead audit must not materialize the root bootstrap'
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}runtime(?:/|\s*$)') 'source-ahead audit must not materialize the runtime payload tree'
         Assert-Test ($sparsePaths -match '(?m)^\s{12}config/build/\s*$') 'sparse checkout must retain build-control metadata'
         Assert-Test ($sparsePaths -match '(?m)^\s{12}tools/classify-runtime-release-state\.ps1\s*$') 'sparse checkout must retain the classifier'
-        Assert-Test ($sparsePaths -match '(?m)^\s{12}tools/resolve-runtime-trusted-base\.ps1\s*$') 'sparse checkout must retain the external trusted-base resolver'
-        Assert-Test (($workflow | Select-String -Pattern '(?m)^\s+- main\s*$' -AllMatches).Matches.Count -eq 3) 'all three events must target main'
-        Assert-Test ($workflow -notmatch '(?m)^\s+- (?:master|''release/\*\*'')\s*$') 'unprotected refs must not emit the required context'
-        Assert-Test ($workflow -match '(?m)^\s{2}actions:\s*read\s*$' -and $workflow -match '(?m)^\s{2}checks:\s*read\s*$') 'trusted-base resolution requires explicit read-only Actions and Checks permissions'
-        Assert-Test ($workflow -match '(?m)^\s{2}group:\s*runtime-bundle-integrity-v1-') 'concurrency group must use an immutable prefix'
-        Assert-Test ($workflow -match "CF7_TRUST_WORKFLOW_ID:\s*'314853607'") 'workflow database identity is not frozen'
-        Assert-Test ($workflow -match "CF7_TRUST_CHECK_APP_ID:\s*'15368'") 'GitHub Actions check app identity is not frozen'
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}tools/resolve-runtime-trusted-base\.ps1\s*$') `
+            'audit checkout must not materialize the retired external trusted-base resolver'
+        Assert-Test ($workflow -notmatch '(?m)^\s{2}(?:actions|checks):\s*read\s*$') 'audit must not request retired trusted-anchor API permissions'
+        Assert-Test ($workflow -match '(?m)^\s{2}group:\s*runtime-native-audit-v2-\$\{\{ github\.sha \}\}\s*$' -and
+            $workflow -match '(?m)^\s{2}cancel-in-progress:\s*false\s*$') 'each native head needs an uncancelled audit identity'
         Assert-Test ($workflow -match [regex]::Escape("@('-BaseRevision', `$baseRevision)")) 'workflow must preserve the event base for strict state semantics'
-        Assert-Test ($workflow -match [regex]::Escape("'-TrustedBaseRevision', `$trustedBaseRevision")) 'workflow must pass the external green anchor separately'
-        Assert-Test ($workflow -match [regex]::Escape('([string](@($anchorLines)[0])).Substring')) 'workflow must survive PowerShell 5.1 single-result array unrolling'
-        Assert-Test ($workflow -match "'-DisableFastPath'") 'API failure must disable fastpath instead of trusting the event base'
-        Assert-Test ($workflow -match '\$disableFastPath = \$eventBaseWasAbsent -or') 'empty or all-zero event base must disable fastpath even when an older green anchor exists'
-        Assert-Test ($workflow -match 'refusing a reusable success until the resolver/API recovers') 'workflow outage diagnostic must match the classifier hard-fail contract'
-        Assert-Test ($workflow -notmatch 'running complete strict verification') 'workflow must not claim an anchorless strict run can emit green'
-        Assert-Test ($workflow -match "'-Mode', 'Protected'") 'workflow must pass Protected mode literally'
+        Assert-Test ($workflow -match "'-Mode', 'Audit'") 'workflow must pass Audit mode literally'
+        Assert-Test ($workflow -match "github\.actor_id == '91271520'" -and $workflow -match "github\.actor_id == '138298913'") `
+            'manual audit allocation must use the immutable native maintainer IDs'
+        $auditJob = [regex]::Match($workflow, '(?ms)^  audit-native-runtime:\s.*$').Value
+        Assert-Test ($auditJob.Contains('github.run_attempt == 1') -and
+            $auditJob.IndexOf('if: >-', [StringComparison]::Ordinal) -lt
+            $auditJob.IndexOf('runs-on: windows-latest', [StringComparison]::Ordinal)) `
+            'native audit reruns must be rejected by a job-level guard before runner allocation'
+        Assert-Test ($workflow -match "CF7_EVENT_NAME -eq 'workflow_dispatch'" -and
+            $workflow -match "classifierArguments \+= '-ForceDeploymentVerification'") `
+            'manual audit must force full release-readiness verification instead of comparing only the last diff'
     }
 } finally {
     $resolvedTestRoot = [IO.Path]::GetFullPath($testRoot).TrimEnd('\')

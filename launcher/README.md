@@ -674,7 +674,7 @@ powershell -File launcher\build.ps1 -BuilderId local-dev
 
 ### 正式发布列车
 
-正式发布不以 `build.ps1` 的单机 exit 0 为准：最终 tree 先经 `new-runtime-build-request.ps1` 冻结为 Git bundle；注册本地 worker 在隔离 clone 中运行纯 producer，并用 CurrentUser 不可导出 X509 key 签名。共享 queue 必须限制为受信维护者可写，因为 bundle 内构建源码会在 builder 账户执行；worker 会清除调用者 Git index/worktree/object 上下文，失败日志在 checkout 删除前受限归档。推荐第二故障域由 `.github/workflows/runtime-cloud-builder.yml` 在明确的 `windows-2022` / VS 2022 runner family 构建相同 full commit，再用 GitHub OIDC/Sigstore keyless provenance 证明。promotion 至少要求两个不同 signer identity 和两个不同 `faultDomain`，且 artifact/recipe/toolchain/build identity/payload closure 全等。
+正式发布不以 `build.ps1` 的单机 exit 0 为准：最终 tree 先经 `new-runtime-build-request.ps1` 冻结为 Git bundle；注册本地 worker 在隔离 clone 中运行纯 producer，并用 CurrentUser 不可导出 X509 key 签名。共享 queue 必须限制为受信维护者可写，因为 bundle 内构建源码会在 builder 账户执行；worker 会清除调用者 Git index/worktree/object 上下文，失败日志在 checkout 删除前受限归档。推荐第二故障域由 `.github/workflows/runtime-cloud-builder.yml` 在明确的 `windows-2022` / VS 2022 runner family 构建相同 full commit，再用 GitHub OIDC/Sigstore keyless provenance 证明。cloud 只接受 `Crazyfs` / `Flash-Night` 固定 actor ID 的首次 `workflow_dispatch`，但不要求两人共同在线或互相审批；任一授权发布者都可组合本地票与自动云端票。promotion 至少要求两个不同 signer identity 和两个不同 `faultDomain`，且 artifact/recipe/toolchain/build identity/payload closure 全等。
 
 `builder-local-a` / `physical-host-a` 的不可导出 X509 票与 GitHub hosted OIDC/Sigstore 票已经完成首次双故障域共识，tracked registry 仍只含公钥；正式 bootstrap/runtime/manifest/consensus 已由唯一 promotion 入口切换为 v2。一次性 permanent migration fuse 已完成历史使命，后续发布不得复用该例外或降级 v1。
 
@@ -688,7 +688,7 @@ $request = .\tools\new-runtime-build-request.ps1 `
 $cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
 ```
 
-cloud helper 会等待精确 run、安全解压并返回 `$cloud.candidateRoot` / `$cloud.proofPath`；云端 producer 失败会另存短期 bootstrap diagnostics。取得 production policy receipt 和第二故障域证明后，唯一部署入口是 `tools/promote-runtime-bundle.ps1 -RequestId ... -PolicyReceiptPath ...`。它验证 request、candidate、receipt、证明和 fault domains 后事务替换 bootstrap/runtime/consensus，随后在 120 秒内同步等待 full-install `--verify-only` 的真实 exit code，失败或超时自动回滚。完整 enrollment、cloud artifact 验证、promotion 命令与 CI `source-ahead` 规则见 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md)。当前受控部署已是 v2；任何后续部署变更都必须带新的合法 v2 consensus，CI 永久禁止降级。
+cloud helper 会等待精确 run、安全解压并返回 `$cloud.candidateRoot` / `$cloud.proofPath`；unsigned candidate/envelope 只保留 1 天，失败 diagnostics 与 signed 结果保留 7 天，超期未 promotion 时重新 dispatch。取得 production policy receipt 和第二故障域证明后，唯一部署入口是 `tools/promote-runtime-bundle.ps1 -RequestId ... -PolicyReceiptPath ...`。它验证 request、candidate、receipt、证明和 fault domains 后事务替换 bootstrap/runtime/consensus，随后在 120 秒内同步等待 full-install `--verify-only` 的真实 exit code，失败或超时自动回滚。完整 enrollment、cloud artifact 验证、promotion 命令与 CI `source-ahead` 规则见 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md)。当前受控部署已是 v2；任何后续部署变更都必须带新的合法 v2 consensus，CI 永久禁止降级。
 
 > producer / `build.ps1` **都不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`。不得单独恢复、复制或冲突取舍 runtime 二进制。所有 headless 直启 Core 入口必须先调用 bootstrap `--verify-only`，部署态 Core 自身也会在最早入口反向调用同一 probe。
 

@@ -1,7 +1,7 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：source commit `f8064231836e8de743566d61d45cb99d8360b707`（2026-07-19）+ native identity admission runtime v2 promotion 产物。
+**最后核对代码基线**：source commit `f8064231836e8de743566d61d45cb99d8360b707`（2026-07-19）+ 当前最小主线准入、事后 runtime 审计与云端发布授权工作树。
 
 ## 当前迁移状态
 
@@ -13,9 +13,9 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 
 - 单个进程、机器名或自由填写的 `BuilderId` 都不构成独立 builder；正式 quorum 至少需要两个不同签名身份和两个不同 `faultDomain`。
 - producer 只生产二进制 payload，不运行生成器或产品政策审计；政策变化不能污染 payload 身份。
-- request JSON 没有自由命令字段，只冻结 Git tree 与政策身份；但 Git bundle 本身含 producer/MSBuild/Cargo 源码，worker 会在 builder 账户下执行该已审阅 commit 的构建代码。因此共享 queue 是受控写入信任边界，必须限制写权限；四域复算与 promotion 能阻止错误产物晋级，不能把恶意 queue writer 沙箱成无 RCE 能力。
+- request JSON 没有自由命令字段，只冻结 Git tree 与政策身份；但 Git bundle 本身含 producer/MSBuild/Cargo 源码，worker 会在 builder 账户下执行该冻结 commit 的构建代码。因此共享 queue 是受控写入信任边界，必须限制写权限；四域复算与 promotion 能阻止错误产物晋级，不能判断源码业务意图，也不能把恶意 queue writer 沙箱成无 RCE 能力。
 - candidate、CAS 与 attestation 都不能直接覆盖正式部署；只有 promotion 能事务写入根 bootstrap、`runtime/`、manifest 与 release consensus。
-- strict/promotion 状态逐文件验证字节闭包；non-native 快速通道只在 native/runtime 受保护 Git 对象相对已验证 base 零变化时继承该 base 共识，不读取 payload blob，也不声称验证了内容语义。
+- strict/promotion 状态逐文件验证字节闭包；日常 native 源码可以处于 `source-ahead` 而不立刻 promotion。事后 Audit 在部署字节未变时不读取 payload blob，也不声称验证源码内容语义；只有正式部署闭包变化才必须携带完整新共识。
 - 工具链不匹配、证明不足、相同故障域、分叉 payload、脏部署或无效政策 receipt 都 fail-closed；禁止伪造第二 builder、手改 hash/receipt/attestation 或复制单机 candidate 到正式 runtime。
 
 ## v2 四域身份
@@ -31,7 +31,7 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 
 `buildIdentityHash = SHA256(artifactSourceHash + producerRecipeHash + toolchainLockHash)`，故意不含 `policyHash`。`releaseTreeOid` 冻结完整 Git tree，`requestId = SHA256(releaseTreeOid + policyHash)`；两者分别回答“发布哪棵树”和“用哪套政策批准”。
 
-`policyHash` 与日常准入不是同一个集合。`config/build/native-change-gate.v1.json` 只回答“本次 Git diff 是否触及 native/runtime，需要进入 strict”；它联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，但不把广义内容 policy 当成 native。生成器、审计器和派生发布资产仍留在 `policyHash`，普通内容 push 可暂时继承既有 runtime 共识，下一次 native release 再用当时完整 release tree 建 request 与 receipt。
+`policyHash` 与日常审计触发集合不是同一个集合。`config/build/native-change-gate.v1.json` 联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，回答“这次 push/PR 是否值得启动 native/runtime 事后审计”；广义内容 policy 不因此变成 native。命中源码边界但未改部署字节时，Audit 成功报告 `source-ahead`，不要求即时 promotion。生成器、审计器和派生发布资产仍留在 `policyHash`，下一次正式 release 再用当时完整 release tree 建 request 与 receipt。
 
 `payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
 
@@ -100,9 +100,9 @@ worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢�
 
 ## GitHub hosted 独立故障域
 
-`.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：从 `main` 上 dispatch 一个 full source commit，在明确的 `windows-2022` / VS 2022 runner family 精确 checkout、配置锁定工具链、运行纯 producer并验证 v2 candidate；运行时还复核 `RUNNER_ENVIRONMENT`、`RUNNER_OS` 与 `ImageOS=win22`。`windows-2025` 自 2026-06 起已被 GitHub 迁到 VS 2026，不能再承载当前 17.14/v143 锁。checkout 先只取 config/materializer seed，再由 `runtime-inputs.v2.json` 展开四域精确文件集合；禁止为约 9 MiB 的 producer 输入铺开约 4.5 GiB 工作树并挤占 hosted runner 的安装/构建空间。producer 失败时上传独立的短期 bootstrap/Visual Studio setup diagnostics，不再依赖尚未创建的 candidate 路径。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
+`.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：只接受人工 `workflow_dispatch`，并在分配 hosted runner 前要求 `github.run_attempt == 1`，且 `github.actor_id` 必须是 `Crazyfs` 的 `91271520` 或 `Flash-Night` 的 `138298913`；失败后重新 dispatch，不能用 rerun 按钮绕过首次运行约束。授权只限制正式发布能力和 Actions 消耗，不构成第二人审批：两名授权发布者中的任一人都可以独立触发。从一次性 source tag dispatch full source commit 后，workflow 在明确的 `windows-2022` / VS 2022 runner family 精确 checkout、配置锁定工具链、运行纯 producer 并验证 v2 candidate；运行时还复核 `RUNNER_ENVIRONMENT`、`RUNNER_OS` 与 `ImageOS=win22`。`windows-2025` 自 2026-06 起已被 GitHub 迁到 VS 2026，不能再承载当前 17.14/v143 锁。checkout 先只取 config/materializer seed，再由 `runtime-inputs.v2.json` 展开四域精确文件集合；禁止为约 9 MiB 的 producer 输入铺开约 4.5 GiB 工作树并挤占 hosted runner 的安装/构建空间。producer 失败时上传独立 bootstrap/Visual Studio setup diagnostics。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
 
-`config/build/runtime-github-builder.v2.json` 固定 repository、signer workflow、release source ref、`github-hosted-windows-2022` runner class 与 `github-hosted-windows` faultDomain。日常 release train 使用一次性 `refs/tags/runtime-build-v2/<release-id>`：tag 必须精确指向 source commit，helper 在 dispatch 前经 GitHub API 解析并 peel annotated tag、拒绝目标不等；workflow 再断言 `GITHUB_REF` 与 `GITHUB_SHA` 分别等于该 tag 和 requested full commit，helper 定位/等待 run 时也要求 `headSha` 相等。由此 GitHub 实际执行的 workflow 字节与被四域政策 hash 绑定的 workflow 字节来自同一 commit，证明同时绑定 tag、full commit 与 tree。远端以独立 creation ruleset 只允许受限 native 账号创建新 tag，再以无 bypass 的 update/deletion ruleset冻结已创建 tag；不要删除或移动已经出具证明的 tag。runner 镜像的小版本仍由 GitHub 滚动维护；任何工具字节变化都会被 toolchain lock fail-closed，必须显式轮换基线，不能自动放宽。最短触发、等待、取回与验真命令是：
+`config/build/runtime-github-builder.v2.json` 固定 repository、signer workflow、release source ref、`github-hosted-windows-2022` runner class 与 `github-hosted-windows` faultDomain。日常 release train 使用一次性、单路径段的 `refs/tags/runtime-build-v2/<release-id>`：cloud config、dispatch helper、envelope/attestation verifier 与 admission audit 都拒绝其他命名空间及嵌套 tag，保证 `sourceRef` 必定受 creation + immutability ruleset 保护。tag 必须精确指向 source commit，helper 在 dispatch 前经 GitHub API 解析并 peel annotated tag、拒绝目标不等；workflow 再断言 `GITHUB_REF` 与 `GITHUB_SHA` 分别等于该 tag 和 requested full commit，helper 定位/等待 run 时也要求 `headSha` 相等。由此 GitHub 实际执行的 workflow 字节与被四域政策 hash 绑定的 workflow 字节来自同一 commit，证明同时绑定 tag、full commit 与 tree。远端 creation ruleset 只允许两个授权发布账号创建新 tag，再由无 bypass 的 update/deletion ruleset 冻结已创建 tag；不要删除或移动已经出具证明的 tag。runner 镜像的小版本仍由 GitHub 滚动维护；任何工具字节变化都会被 toolchain lock fail-closed，必须显式轮换基线，不能自动放宽。最短触发、等待、取回与验真命令是：
 
 ```powershell
 $cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
@@ -110,6 +110,8 @@ $cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
 ```
 
 helper 只触发固定 workflow，用精确 `run-name`、`headSha` 与 dispatch 前 run ID 集定位本次同 commit run，等待成功后下载指定 signed artifact，按路径/大小/链接白名单安全解压，再调用 `verify-runtime-github-attestation.ps1`。验证器通过 `gh attestation verify` 同时钉住 repository、workflow、source-ref、commit/tree、envelope/candidate inventory 与全部身份字段，并输出可直接交给 promotion 的 normalized proof。下载 artifact 本身不可信；只有该验证通过后才算 GitHub producer。推荐 quorum 是“一个注册本地 X509 builder + GitHub OIDC builder”；两个注册本地 builder 也可，但必须拥有不同 key 和真实不同 faultDomain。
+
+Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1 天；失败 bootstrap diagnostics 保留 7 天；signed candidate/envelope/Sigstore bundle 保留 7 天。超过 signed 窗口仍未 promotion 时重新 dispatch，不能把 artifact retention 当长期证据仓。promotion 后 tracked v2 consensus 内嵌的验证材料才是仓库审计记录。
 
 ## 政策 receipt 与 promotion
 
@@ -136,19 +138,25 @@ promotion 自动读取 queue 中匹配 build identity 的本地签名结果，�
 
 promotion 重新验证 request/worktree/receipt/candidate/所有证明，要求至少两个不同 signer identity + faultDomain 且五项共同产物字段（前三域、build identity、payload closure）全等；随后在 `tmp/runtime-promotions/` 组装 next/previous，事务替换正式 runtime、bootstrap 与 `config/build/runtime-release-consensus.json`。v2 consensus 内嵌 policy receipt 与全部签名/Provenance proof；正式安装完成后同步、有界等待 full-install bootstrap `--verify-only` 并检查真实 exit code，两个 verify 模式同时出现会按 CLI 误用拒绝。任何失败或 120 秒超时都进入自动回滚，previous 保留供人工恢复。
 
-## CI release-state 状态机
+## CI 事后 Audit 状态机
 
-`.github/workflows/runtime-bundle-integrity.yml` 只对目标为已配置同等保护的 `main` 的 push、pull_request、merge_group 产生 required context；checkout 保留 full history，但用 `blob:none` + sparse worktree 避免纯内容提交先下载 runtime blob。`tools/resolve-runtime-trusted-base.ps1` 从事件 base 枚举完整第一父链，并对固定 workflow 的成功 `push/main` runs 与同名 check-runs 分页后按最近祖先排名选择锚；check name、GitHub Actions App ID、workflow database ID/path、job/check suite、head SHA 与 repository/head repository 必须全部绑定。PR/second-parent 上的同名绿灯、分页不完整/漂移/歧义都不能充当锚；GitHub 若只暴露前 1,000 个筛选结果，只有窗口内实际完成全部绑定的 run 可用，窗口内没有可证锚就保守失败。`tools/classify-runtime-release-state.ps1` 保留 required check 名 `Runtime bundle integrity / verify-staged-bundle`；未来若保护 `release/**`，必须先配置同等 branch ruleset，再扩 workflow 触发器：
+`.github/workflows/runtime-bundle-integrity.yml` 是事后审计器，不是 required status context。它监听 `main` push、目标为 `main` 的可选 PR，以及获授权发布者的 `workflow_dispatch`；不再监听 `merge_group`，也不申请 Actions/Checks API 权限。静态 `paths` 只覆盖 native gate 的扩展名、基名、固定路径和前缀，再联合 artifact source、producer recipe、toolchain lock 与 payload roots/trees。纯 docs/data/Flash/XFL/Web-only 变化不启动 Windows runner。修改 native gate 或 runtime input descriptor 时必须同步 workflow paths 与回归，避免“配置认为需要审计、GitHub 却未触发”的裂缝。
 
-| 模式 | 条件 | 允许状态 |
-|------|------|----------|
-| Protected，non-native 快速通道 | explicit、非零 event base 是 head 祖先；外部成功检查确认的 trusted base 是 event base 祖先；trusted base 的 descriptor/native gate/账号配置/manifest/consensus/registry/marker/bootstrap sentinel 齐全；trusted base → head 的累计 diff 仅含规范 regular file，且与前三域、payload、native gate 零交集 | 不读取/重哈希 payload blob；输出 `protected-nonnative-fastpath`，继承 trusted-base consensus，并记录累计 changed paths/entries、保护集合及 sentinel 哈希；先前 native 红提交不能被后续文档提交洗绿 |
-| Protected，常规 | 不满足 non-native 快速通道，或触及 payload、manifest/consensus、source/recipe/toolchain、native 扩展/路径或 release 信任链 | 完整 v2 bundle strict + signed consensus；marker 不得删除或修改，部署或身份变化必须先完成 promotion；仅广义 policy 变化仍由下一次 release request/receipt 重新绑定 |
-| Protected，初始/API/锚异常 | event base 为空或全零，或 Checks/Actions API 不可用、限流、分页不完整/计数漂移/返回歧义、完整第一父链中无可由当前 API 证明的合格绿灯 | 显式 `-DisableFastPath` 并保持 required check 失败；待 API/锚恢复后重跑。不得用 immediate event base 或一次本地 strict 成功建立可继承绿灯 |
+该 `paths` 过滤只用于常规成本控制。GitHub.com 对 path filter 的生成 diff 只检查前 3,000 个文件；匹配文件落在窗口之外时 workflow 可能不启动，而超过 1,000 个 commit 或 diff 生成超时会让 workflow 总是启动。故超大提交下既可能漏审，也可能让纯内容提交占用 runner；这不会改变正式 release 的 immutable tag / quorum / receipt / promotion 安全边界。官方行为见 [Git diff comparisons](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#git-diff-comparisons)。
 
-classifier 禁止 Development mode 生成 required context，非受保护分支也不会触发该 workflow；这消除了普通分支上同名绿色状态被直接推送复用的空间。`BaseRevision` 保留原始 event base，专供 deploymentChanged、migration 与严格状态机；`TrustedBaseRevision` 只供累计 fastpath，必须同时是 event base 与 head 的祖先。快速通道从 trusted base 的 `runtime-inputs.v2.json` 只展开 artifact source、producer recipe、toolchain lock 与 payload，再联合 `native-change-gate.v1.json`；`policy` 域仍必须存在且保持完整 schema，但不参与 native admission。native-gated 新增/修改必须同时落入当前 index 的四域输入、payload 或 canonical release 输出/迁移控制闭包，否则在 verifier 前失败；删除未绑定历史 native 路径允许进入 strict。所有 diff 必须是规范 UTF-8 regular-file 记录，历史不安全路径只可在 mode/blob 完全相同时原样继承。其余状态才按 manifest header 调 v1/v2 verifier；无外部绿色锚、空/全零 event base、index 与 head tree 不同都直接失败，v2 → v1 永久失败。
+job 名为 `audit-native-runtime`。所有事件都以 job-level `github.run_attempt == 1` 在 runner 分配前拒绝 rerun；`workflow_dispatch` 再限制为 `Crazyfs` / `Flash-Night` 的固定 actor ID，并传入 `-ForceDeploymentVerification`，强制当前 HEAD 走 integrity、source identity 与 strict consensus 全链，作为明确的 release-readiness 检查。push/PR 则用于对真实 diff 做低成本被动审计。它不解析外部成功绿灯锚，也不把某次 Actions success 变成服务端准入权。
 
-`main` 与 runtime source tag 的远端保护由 `config/build/main-branch-admission.v1.json` 描述：`main-native-identity-gate-v1` 只给普通协作者 `User + always` bypass，`Crazyfs` / `Flash-Night` 和未知新账号必须 PR + strict `verify-staged-bundle`，普通审批数为 0、只允许 merge commit；命中 `.github/CODEOWNERS` 所列 trust-root/native 文件时必须由另一 native owner 审批，纯文档/内容因空 catch-all 不产生 owner 审批。v2 GitHub proof 的 source commit 必须继续是最终 main HEAD 的祖先，不能用 squash/rebase 改写。独立 `main-global-ref-integrity-v1` 对所有账号禁止 deletion 和 non-fast-forward，且无 bypass。`runtime-source-tag-creation-v1` 只允许两个受限 native 账号创建 `runtime-build-v2/*`，`runtime-source-tag-immutability-v1` 则无 bypass 地禁止既有 tag update/deletion；creation 与 immutability 不能合并，否则创建权限也会变成移动旧 tag 的权限。普通 bypass 账号的 native 误改只能由 push 后 CI 报警，当前 Free/public 账号隔离不是服务端 path restriction；完整边界见 [contribution-workflow.md](contribution-workflow.md)。管理员主动修改仓库保护规则仍属于 GitHub 设置层的独立治理事件，不能由 workflow 自身阻止。
+`tools/classify-runtime-release-state.ps1 -Mode Audit` 先完成 Git path safety 与 native binding 检查，再计算 `deploymentChanged`：
+
+| 状态 | 条件 | 行为 |
+|------|------|------|
+| `source-ahead` | native/release 输入发生变化，但根 EXE、`runtime/**`、runtime release consensus 与 builder registry 等部署闭包未变 | exit 0；输出 `state=source-ahead mode=Audit deploymentChanged=false`；不运行 verifier，不下载或重哈希 payload。这是正常开发态，不要求即时 promotion |
+| deployment unchanged 但路径/绑定非法 | 危险 Git path、symlink/gitlink/mode/case collision，或新增/修改 native 对象未被 descriptor/payload/canonical release control 绑定 | 失败报警；修复边界，不用 descriptor 漏列绕过审计 |
+| deployment changed | 根 bootstrap、`runtime/**`、manifest/consensus、builder registry 等正式部署闭包变化 | 运行逐文件 v2 integrity + strict signed consensus；缺少匹配 promotion、证明不足、闭包分叉或 v2 → v1 时失败 |
+
+push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能回滚。PR 事件可以提供提前反馈，但仓库不要求 PR，也不会把该检查设为 merge gate。正式 release 的可靠边界仍是 immutable source tag、local X509 + GitHub OIDC 双生产者、production receipt 与 promotion，而不是一次普通 CI success。
+
+`config/build/main-branch-admission.v2.json` 描述远端仅有的三条不依赖 Actions 的 ruleset：`main-global-ref-integrity-v1` 无 bypass 地禁止删除与 non-fast-forward；`runtime-source-tag-creation-v1` 只允许两个授权发布账号创建 `runtime-build-v2/*`；`runtime-source-tag-immutability-v1` 无 bypass 地禁止已有 source tag update/deletion。没有身份 gate、Require PR、CODEOWNER 或 required status check。所有 write collaborator 都能 fast-forward 直推，包括 native 路径；GitHub Free 公开仓库没有本方案可用的服务端 path push restriction，完整残余风险见 [contribution-workflow.md](contribution-workflow.md)。
 
 ## 验证矩阵与诊断
 
@@ -158,7 +166,6 @@ classifier 禁止 Development mode 生成 required context，非受保护分支�
 .\tools\test-runtime-build-queue.ps1
 .\tools\test-runtime-github-attestation.ps1
 .\tools\test-invoke-runtime-github-build.ps1
-.\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-main-branch-admission.ps1
 .\tools\test-runtime-release-state.ps1
 .\tools\test-runtime-build-consensus.ps1   # v1 migration guard
@@ -171,6 +178,7 @@ classifier 禁止 Development mode 生成 required context，非受保护分支�
 - `artifactSourceHash` / `producerRecipeHash` / `toolchainLockHash` 不等：构建身份不同，不比较闭包。
 - build identity 相同而 `payloadClosureHash` 不同：真实可复现性失败或 signer equivocation，停止 promotion 并逐文件定位，不任选其一。
 - `policyHash` 不同但 build identity/closure 相同：建立新 request、重新跑政策 receipt；允许复用已验证 CAS，不重编 payload。
-- current v1 + 普通源码变化：开发分支应显示 `source-ahead`；不要为了消红在忙碌机器上抢锁或把旧 manifest 改 hash。
+- native 源码变化且部署闭包未变：Audit 应以 `source-ahead` 成功；不要为了“追平源码”在每次 push 后抢构建锁、改 manifest 或立即 promotion。
+- 部署闭包变化但无匹配 v2 consensus：事后 Audit 必须失败；不要靠重跑 Actions、手改 hash 或补文档把红灯洗绿。
 
 升级 SDK/编译器是显式维护事件：人工核对官方来源，更新 lock 与 bootstrapper hash，在不同故障域重建并取得新 quorum，同轮更新本文与 Launcher 文档。不得关闭 hash 校验来迁就某台机器的自动 servicing。

@@ -1,0 +1,48 @@
+{
+  "schema": "cf7-main-branch-admission.v2",
+  "repository": "FlashNightModReborn/CrazyFlashNight",
+  "mainAdmission": {
+    "directPush": "allCollaboratorsWithPushPermission",
+    "unlistedCollaborators": "allowed",
+    "requirePullRequest": false,
+    "requiredStatusChecks": [],
+    "requireCodeOwnerReview": false
+  },
+  "target": {
+    "type": "branch",
+    "include": ["refs/heads/main"],
+    "exclude": []
+  },
+  "runtimeSourceTag": {
+    "type": "tag",
+    "include": ["refs/tags/runtime-build-v2/*"],
+    "exclude": []
+  },
+  "codeOwners": {
+    "path": ".github/CODEOWNERS",
+    "mode": "advisory"
+  },
+  "runtimeTagCreators": [
+    { "databaseId": 91271520, "login": "Crazyfs" },
+    { "databaseId": 138298913, "login": "Flash-Night" }
+  ],
+  "rulesets": {
+    "globalRefIntegrity": {
+      "name": "main-global-ref-integrity-v1",
+      "bypassActors": [],
+      "rules": ["deletion", "non_fast_forward"]
+    },
+    "runtimeTagCreation": {
+      "name": "runtime-source-tag-creation-v1",
+      "bypassSource": "runtimeTagCreators",
+      "bypassMode": "always",
+      "rules": ["creation"]
+    },
+    "runtimeTagImmutability": {
+      "name": "runtime-source-tag-immutability-v1",
+      "bypassActors": [],
+      "updateAllowsFetchAndMerge": false,
+      "rules": ["deletion", "update"]
+    }
+  }
+}
