@@ -1,11 +1,11 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：source commit `8db0b2a3c417fe79d84962f7b60804a11321eca1`（2026-07-18）+ contribution admission runtime v2 promotion 产物。
+**最后核对代码基线**：source commit `473e6453e945f37c66574bb9ec466a395d3d564b`（2026-07-19）+ native identity admission runtime v2 promotion 产物。
 
 ## 当前迁移状态
 
-runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。request `E912C55B4EE3F746F53005BB99AF53C05DC34D5350917A831B98005EDF548C40` 使用 source tag `runtime-build-v2/20260718-contribution-admission-v2`：`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29646786817` 的 `github-hosted-windows` OIDC/Sigstore 票达成双 signer、双 faultDomain 共识；build identity `F6BE274BCCAF5EA2EBA1FF075DEADCA2B42A64589F3441132EF749E185D9A209` 与 payload closure `04073C5F42D4A2EC9A0511287A9C982052D673B599795888C7903619B6AF25E0` 全等，tracked registry 仍只保存公钥证书。前一条 `contribution-admission-v1` train 因 map-fit 审计把 Windows CRLF 误判为陈旧而在 promotion 前停止；其 tag 保留不移动，请求已 supersede，审计现按规范化文本比较。
+runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。request `C9359956259906070BA37987D8004445DAAC0B0FD5174139C9847A5C42EBF9B7` 使用 source tag `runtime-build-v2/20260719-native-identity-gate-v1`：`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29670090290` 的 `github-hosted-windows` OIDC/Sigstore 票达成双 signer、双 faultDomain 共识；build identity `F6BE274BCCAF5EA2EBA1FF075DEADCA2B42A64589F3441132EF749E185D9A209` 与 payload closure `04073C5F42D4A2EC9A0511287A9C982052D673B599795888C7903619B6AF25E0` 全等。该列车只轮换 admission / policy 证明，artifact source、producer recipe、toolchain 与实际 payload 均未漂移，因此 promotion 只更新 signed consensus；tracked registry 仍只保存公钥证书。更早的 `contribution-admission-v1` train 因 map-fit 审计把 Windows CRLF 误判为陈旧而在 promotion 前停止；其 tag 保留不移动，请求已 supersede，审计现按规范化文本比较。
 
 v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入。该 marker 曾精确绑定 base `711c469036ad6b1226833faf255499abb1ebf2ed`、旧 artifact closure 与目标 builder registry 字节哈希，并在 legacy deployment 零变化时解决“cloud workflow 必须先进入 default branch”的 bootstrap 悖论；marker 后的首个部署提交已经完成完整 v2 promotion。CI 从此只接受 v2 strict 状态，并永久拒绝 v2 → v1 降级。
 
