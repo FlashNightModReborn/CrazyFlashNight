@@ -110,6 +110,12 @@ function New-TagImmutabilityRuleset {
     [object[]]$bypass = @(if ($mode -eq 'tag-immutability-bypass') {
         [ordered]@{ actor_id=91271520; actor_type='User'; bypass_mode='always' }
     })
+    $updateRule = if ($mode -eq 'tag-weak-update') {
+        [ordered]@{ type='update'; parameters=[ordered]@{ update_allows_fetch_and_merge=$true } }
+    } else {
+        # Real GitHub responses omit parameters when the false exception was persisted.
+        [ordered]@{ type='update' }
+    }
     return [ordered]@{
         id=203
         name=[string]$config.rulesets.runtimeTagImmutability.name
@@ -121,10 +127,7 @@ function New-TagImmutabilityRuleset {
         bypass_actors=$bypass
         rules=@(
             [ordered]@{ type='deletion' },
-            [ordered]@{
-                type='update'
-                parameters=[ordered]@{ update_allows_fetch_and_merge=($mode -eq 'tag-weak-update') }
-            }
+            $updateRule
         )
     }
 }

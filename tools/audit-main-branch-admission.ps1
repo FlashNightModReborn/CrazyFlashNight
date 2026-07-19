@@ -286,10 +286,22 @@ try {
                 Add-Cf7AdmissionIssue 'Runtime source-tag immutability ruleset target or enforcement differs from expected state.'
             }
             [object[]]$tagUpdateRules = @($tagImmutability.rules | Where-Object { [string]$_.type -eq 'update' })
+            $tagUpdateRuleRejectsAll = $false
+            if ($tagUpdateRules.Count -eq 1) {
+                $parametersProperty = $tagUpdateRules[0].PSObject.Properties['parameters']
+                if ($null -eq $parametersProperty) {
+                    # GitHub normalizes an explicit false update exception by omitting the
+                    # parameters object.  A bare update rule therefore rejects every update.
+                    $tagUpdateRuleRejectsAll = $true
+                } elseif ($null -ne $parametersProperty.Value -and
+                        (Test-Cf7ExactFields $parametersProperty.Value @('update_allows_fetch_and_merge')) -and
+                        $parametersProperty.Value.update_allows_fetch_and_merge -eq $false) {
+                    $tagUpdateRuleRejectsAll = $true
+                }
+            }
             if ($null -eq $tagImmutability.PSObject.Properties['bypass_actors'] -or @($tagImmutability.bypass_actors).Count -ne 0 -or
                     (Get-Cf7SortedKey @($tagImmutability.rules | ForEach-Object type)) -cne 'deletion,update' -or
-                    $tagUpdateRules.Count -ne 1 -or
-                    $tagUpdateRules[0].parameters.update_allows_fetch_and_merge -ne $false) {
+                    -not $tagUpdateRuleRejectsAll) {
                 Add-Cf7AdmissionIssue 'Runtime source-tag immutability ruleset must reject every update/deletion without bypass.'
             }
         }
