@@ -401,13 +401,22 @@ var SkillsPanel = (function() {
     function skillStatusPath(entry) { return Library.statusPath(entry, _view); }
     function skillSchoolPath(entry) { return Library.schoolPath(entry); }
     function matchesSkillFilter(entry, paths) { return Library.matches(entry, paths, _view); }
+    function syncSelectedSkillRows() {
+        if (!_list) return;
+        var rows = _list.querySelectorAll('.skills-library-row[data-skill-key]');
+        for (var i = 0; i < rows.length; i++) {
+            var selected = rows[i].getAttribute('data-skill-key') === _selectedKey;
+            rows[i].classList.toggle('selected', selected);
+            rows[i].setAttribute('aria-selected', selected ? 'true' : 'false');
+        }
+    }
     function selectSkill(skillKey) {
         _selectedKey = String(skillKey || ''); clearPreviewState();
         var entry = selectedEntry();
         if (_view === 'trainer' && entry) {
             _desiredLevel = Trainer.initialDesiredLevel(entry);
         }
-        renderList();
+        syncSelectedSkillRows();
         if (_view === 'trainer' && entry) scheduleLearnPreview(entry, false);
         else renderDetail();
     }

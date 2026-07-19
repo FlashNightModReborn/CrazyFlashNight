@@ -373,21 +373,24 @@ var CraftingPanel = (function() {
     function refreshSnapshot(preferredIndex, preferredCount) {
         if (!_category) return false;
         _shell.setStatus('同步中', 'loading');
-        var generation = _generation;
+        var generation = _generation, previousIndex = _selectedIndex;
         return !!request('snapshot', {category:_category}, function(response) {
             if (generation !== _generation) return;
             if (!response.success) {
                 _needsReconcile = true; toast(errorMessage(response.error)); refreshControls(); return;
             }
-            _snapshot = response; applyBalance(response.balance); rebuildFilterTree(); renderCatalog();
+            _snapshot = response; applyBalance(response.balance); rebuildFilterTree();
             var recipes = response.recipes || [], visible = filteredRecipes(recipes);
             var next = Number(preferredIndex);
             if (isNaN(next) || next < 0 || !visible.some(function(recipe) { return Number(recipe.recipeIndex) === next; })) {
                 next = visible.length ? Number(visible[0].recipeIndex) : -1;
             }
+            var selectionChanged = next !== previousIndex;
             _selectedIndex = next;
             _craftCount = Math.max(1, Math.min(99, Math.floor(Number(preferredCount) || 1)));
-            _preview = null; renderCatalog(); renderDetail();
+            _preview = null;
+            renderCatalog({preserveScroll:!selectionChanged});
+            renderDetail({preserveScroll:!selectionChanged});
             if (next >= 0) requestPreview(); else refreshControls();
         });
     }

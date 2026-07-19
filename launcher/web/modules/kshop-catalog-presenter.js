@@ -164,7 +164,7 @@
             var self = this;
             Icons.load(function() {
                 self._iconsLoaded = true;
-                self.render();
+                self.render({forceItemRender:true});
                 if (self._intent.iconsReady) self._intent.iconsReady();
             });
         }

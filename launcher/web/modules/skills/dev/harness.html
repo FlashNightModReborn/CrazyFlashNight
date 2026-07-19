@@ -206,7 +206,7 @@ window.Icons={
     skillScrollProbe.style.cssText+=';height:48px!important;min-height:48px!important;max-height:48px!important;flex:0 0 48px!important;overflow:auto!important';skillScrollProbe.scrollTop=skillScrollProbe.scrollHeight;
     var skillScrollTarget=row('重复技');skillScrollTarget.focus({preventScroll:true});var skillScrollBefore=skillScrollProbe.scrollTop;skillScrollTarget.click();
     var skillScrollAfter=skillScrollProbe.scrollTop,skillScrollSelection=row('重复技');
-    ok('skill selection refresh preserves overflowing library scroll and entity focus',skillScrollBefore>0&&Math.abs(skillScrollAfter-skillScrollBefore)<=1&&document.activeElement===skillScrollSelection,
+    ok('skill selection patches the row in place while preserving overflowing library scroll and entity focus',skillScrollBefore>0&&Math.abs(skillScrollAfter-skillScrollBefore)<=1&&document.activeElement===skillScrollSelection&&skillScrollSelection===skillScrollTarget,
       JSON.stringify({before:skillScrollBefore,after:skillScrollAfter,focus:document.activeElement&&document.activeElement.getAttribute('data-skill-key')}));
     skillScrollProbe.style.cssText=skillScrollStyle;skillScrollProbe.scrollTop=0;row('闪现').click();
     var beforeHelp=__sent.length,manageHelpButton=document.querySelector('.skills-help-btn');manageHelpButton.focus();manageHelpButton.click();
@@ -341,12 +341,16 @@ window.Icons={
     ok('pure passive uses setPassive rather than a slot',sent('setPassive').slice(-1)[0].payload.enabled===false);
     ok('persistent up/down reorder buttons are removed from the action strip',!document.querySelector('.skills-order-actions')
       &&document.querySelector('.skills-panel').textContent.indexOf('上移')<0&&document.querySelector('.skills-panel').textContent.indexOf('下移')<0);
+    var keyboardOrderList=document.querySelector('.skills-library-list'),keyboardOrderListStyle=keyboardOrderList.style.cssText;
+    keyboardOrderList.style.cssText+=';height:76px!important;min-height:76px!important;max-height:76px!important;flex:0 0 76px!important;overflow:auto!important';
     var keyboardOrderSource=row('缺图技能'),keyboardTargetIndex=learnedRows.find(function(x){return x.skillKey==='铁壁'}).orderIndex;
     keyboardOrderSource.focus();keyboardOrderSource.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',altKey:true,bubbles:true}));
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
-    var keyboardReorder=sent('reorder').slice(-1)[0];
+    var keyboardReorder=sent('reorder').slice(-1)[0],keyboardOrderFocused=row('缺图技能'),keyboardOrderListRect=keyboardOrderList.getBoundingClientRect(),keyboardOrderFocusedRect=keyboardOrderFocused.getBoundingClientRect();
     ok('Alt plus arrow keeps a nonvisual reorder fallback',keyboardReorder.payload.skillKey==='缺图技能'
-      &&keyboardReorder.payload.targetIndex===keyboardTargetIndex&&document.activeElement===row('缺图技能'));
+      &&keyboardReorder.payload.targetIndex===keyboardTargetIndex&&document.activeElement===keyboardOrderFocused
+      &&keyboardOrderFocusedRect.top>=keyboardOrderListRect.top-1&&keyboardOrderFocusedRect.bottom<=keyboardOrderListRect.bottom+1);
+    keyboardOrderList.style.cssText=keyboardOrderListStyle;keyboardOrderList.scrollTop=0;
     var unknownClear=document.querySelector('[data-slot="12"] .skills-slot-clear');unknownClear.click();clickModalConfirm();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
     ok('unknown legacy slot remains safely unequippable',sent('unequip').some(function(x){return x.payload.slot===12})&&loadout[11].skillKey===null);
     row('重复技').click();

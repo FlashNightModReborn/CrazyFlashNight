@@ -282,12 +282,69 @@ var NpcShop = (function() {
         });
     }
 
+    function syncCatalogIntentCard(item, targetNode) {
+        if (!_catalogRenderer || !item) return;
+        var key = String(item.catalogIndex);
+        var nodes = targetNode ? [targetNode] : _catalogRenderer.root.querySelectorAll('[data-workbench-key]');
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].getAttribute('data-workbench-key') !== key) continue;
+            var selected = !!_purchaseIntents[key];
+            nodes[i].classList.toggle('selected', selected);
+            nodes[i].classList.toggle('item-card-selected', selected);
+            nodes[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
+            Workbench.EntityTile.setSelected(nodes[i], selected);
+            var marker = nodes[i].querySelector('.npcshop-selection-marker');
+            if (marker) marker.textContent = item.locked ? '未解锁'
+                : (selected ? '待购 ×' + _purchaseIntents[key].quantity : '点击加入待购');
+            return;
+        }
+    }
+
+    function syncOwnedIntentCard(viewId, slot, targetNode) {
+        if (viewId === 'intelligence') return;
+        var view = _rightViews[viewId];
+        var renderer = view && view.ownedInventoryShell && view.ownedInventoryShell.view.renderer;
+        if (!renderer || !slot) return;
+        var key = String(viewId === 'bag' ? slot.physicalSlot : slot.collectionKey);
+        var nodes = targetNode ? [targetNode] : renderer.root.querySelectorAll('[data-workbench-key]');
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].getAttribute('data-workbench-key') !== key) continue;
+            var identity = saleIdentity(viewId, slot);
+            var selected = !!_saleIntents[identity];
+            if (_ownedPanes[viewId]) _ownedPanes[viewId].setSelected(slot, selected);
+            nodes[i].classList.toggle('selected', selected);
+            nodes[i].classList.toggle('item-card-selected', selected);
+            nodes[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
+            Workbench.EntityTile.setSelected(nodes[i], selected);
+            var marker = nodes[i].querySelector('.npcshop-selection-marker');
+            if (marker) marker.textContent = selected ? '待售 ×' + _saleIntents[identity].quantity : '点击加入待售';
+            return;
+        }
+    }
+
+    function syncAllIntentCards() {
+        var catalogNodes = _catalogRenderer
+            ? _catalogRenderer.root.querySelectorAll('[data-workbench-key]') : [];
+        for (var catalogIndex = 0; catalogIndex < catalogNodes.length; catalogIndex++) {
+            syncCatalogIntentCard(catalogNodes[catalogIndex].__workbenchItem, catalogNodes[catalogIndex]);
+        }
+        for (var viewId in _rightViews) {
+            var view = _rightViews[viewId];
+            var renderer = view && view.ownedInventoryShell && view.ownedInventoryShell.view.renderer;
+            var slotNodes = renderer ? renderer.root.querySelectorAll('[data-workbench-key]') : [];
+            for (var slotIndex = 0; slotIndex < slotNodes.length; slotIndex++) {
+                var slot = slotNodes[slotIndex].__workbenchItem;
+                if (slot && slot.occupied) syncOwnedIntentCard(viewId, slot, slotNodes[slotIndex]);
+            }
+        }
+    }
+
     function togglePurchase(item) {
         if (_busy || _needsReconcile || !item || item.locked) return;
         var key = String(item.catalogIndex);
         if (_purchaseIntents[key]) delete _purchaseIntents[key];
         else _purchaseIntents[key] = {catalogIndex:Number(item.catalogIndex), quantity:1, maxQuantity:Number(item.maxQuantity) || 1, item:item};
-        renderCatalog(); refreshControls();
+        syncCatalogIntentCard(item); refreshControls();
     }
 
     function saleIdentity(viewId, slot) {
@@ -311,7 +368,7 @@ var NpcShop = (function() {
             };
             if (_ownedPanes[viewId]) _ownedPanes[viewId].setSelected(slot, true);
         }
-        renderOwnedViews(); refreshControls();
+        syncOwnedIntentCard(viewId, slot); refreshControls();
     }
 
     function renderCategoryToolbar() {
@@ -432,7 +489,7 @@ var NpcShop = (function() {
     function closeSettlement() {
         if (_settlementPresenter) _settlementPresenter.close('return');
         if (_shell) _shell.getRoot().classList.remove('npcshop-settling');
-        _settlement = null; _previewQueued = false; renderCatalog(); renderOwnedViews(); refreshControls();
+        _settlement = null; _previewQueued = false; syncAllIntentCards(); refreshControls();
     }
 
     function createSettlementPage() {
@@ -510,13 +567,16 @@ var NpcShop = (function() {
     function adjustIntent(kind, identity, delta) {
         var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; var line = map[identity]; if (!line || _previewBusy) return;
         var limit = kind === 'purchase' ? Number(line.purchaseLimit || line.maxQuantity) : line.maxQuantity;
-        line.quantity = Math.max(1, Math.min(limit, line.quantity + delta)); requestTradePreview();
+        line.quantity = Math.max(1, Math.min(limit, line.quantity + delta));
+        if (kind === 'purchase') syncCatalogIntentCard(line.item);
+        else syncAllIntentCards();
+        requestTradePreview();
     }
 
     function setPurchaseMax(identity) {
         var line = _purchaseIntents[identity];
         if (!line || _previewBusy || Number(line.maxPurchasable) < 1) return;
-        line.quantity = Number(line.maxPurchasable); requestTradePreview();
+        line.quantity = Number(line.maxPurchasable); syncCatalogIntentCard(line.item); requestTradePreview();
     }
 
     function setBulkSale(identity, enabled) {
@@ -524,7 +584,7 @@ var NpcShop = (function() {
         if (!line || _previewBusy || !line.source || line.source.containerId !== '背包') return;
         line.scope = enabled ? 'same_name' : 'slot';
         if (enabled) showGuideOnce('bulk_sale', '同名全售会扫描整个背包，并自动保护强化、进阶和带插件的装备。');
-        requestTradePreview();
+        syncAllIntentCards(); requestTradePreview();
     }
 
     function openHelpPage() {
@@ -692,6 +752,7 @@ var NpcShop = (function() {
     function removeIntent(kind, identity) {
         if (_previewBusy) return;
         var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; delete map[identity];
+        syncAllIntentCards();
         if (!selectionCount()) closeSettlement(); else requestTradePreview();
     }
 

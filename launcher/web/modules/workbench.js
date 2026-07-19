@@ -37,6 +37,7 @@
     var InteractionBroker = WorkbenchPrimitives.InteractionBroker;
     var PointerDragController = WorkbenchPrimitives.PointerDragController;
     var FocusScope = WorkbenchFocus.FocusScope;
+    var ENTITY_FOCUS_SELECTOR = 'button,a[href],input,select,textarea,[tabindex],[contenteditable="true"]';
 
     function makeElement(tag, className) {
         var element = document.createElement(tag || 'div');
@@ -44,22 +45,24 @@
         return element;
     }
 
+    function releaseElementBindings(element) {
+        if (!element) return;
+        var nodes = [element].concat(element.querySelectorAll
+            ? Array.prototype.slice.call(element.querySelectorAll('*')) : []);
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            if (node.__panelTooltipBinding && typeof node.__panelTooltipBinding.destroy === 'function') node.__panelTooltipBinding.destroy();
+            if (node.__workbenchEntityTileBinding
+                    && typeof node.__workbenchEntityTileBinding.destroy === 'function') node.__workbenchEntityTileBinding.destroy();
+        }
+    }
+
     function clearElement(element) {
         if (!element) return;
         // Re-rendering a grid is also a lifecycle boundary. Explicitly release
         // shared tile/tooltip bindings before detaching nodes so pending async
         // callbacks cannot retain an obsolete entity tree until timeout.
-        var descendants = element.querySelectorAll ? element.querySelectorAll('*') : [];
-        for (var i = 0; i < descendants.length; i++) {
-            var node = descendants[i];
-            if (node.__panelTooltipBinding && typeof node.__panelTooltipBinding.destroy === 'function') {
-                node.__panelTooltipBinding.destroy();
-            }
-            if (node.__workbenchEntityTileBinding
-                    && typeof node.__workbenchEntityTileBinding.destroy === 'function') {
-                node.__workbenchEntityTileBinding.destroy();
-            }
-        }
+        releaseElementBindings(element);
         while (element && element.firstChild) element.removeChild(element.firstChild);
     }
 
@@ -606,54 +609,77 @@
 
     GridRenderer.prototype.render = function(items, renderOptions) {
         renderOptions = renderOptions || {};
-        var preserveScroll = renderOptions.preserveScroll !== false;
-        var previousScrollTop = preserveScroll ? this.root.scrollTop : 0;
-        var previousScrollLeft = preserveScroll ? this.root.scrollLeft : 0;
+        var preserveScroll = renderOptions.preserveScroll !== false,
+            previousScrollTop = preserveScroll ? this.root.scrollTop : 0,
+            previousScrollLeft = preserveScroll ? this.root.scrollLeft : 0;
         var activeItem = null;
         if (preserveScroll && typeof document !== 'undefined' && document.activeElement
-                && this.root.contains(document.activeElement)) {
-            activeItem = this.findItemNode(document.activeElement);
+                && this.root.contains(document.activeElement)) activeItem = this.findItemNode(document.activeElement);
+        var activeKey = activeItem ? activeItem.getAttribute('data-workbench-key') : null, activeFocusIndex = -1;
+        if (activeItem && document.activeElement) {
+            var activeFocusables = [activeItem].concat(Array.prototype.slice.call(activeItem.querySelectorAll(ENTITY_FOCUS_SELECTOR)));
+            activeFocusIndex = activeFocusables.indexOf(document.activeElement);
         }
-        var activeKey = activeItem ? activeItem.getAttribute('data-workbench-key') : null;
         this._items = (items || []).slice();
-        clearElement(this.root);
         if (!this._items.length) {
+            clearElement(this.root);
             var empty = makeElement('div', 'workbench-grid-empty');
             empty.textContent = this.options.emptyText || '暂无项目';
             this.root.appendChild(empty);
         } else {
-            var fragment = document.createDocumentFragment();
+            var existingByKey = Object.create(null);
+            var existingChildren = Array.prototype.slice.call(this.root.children);
+            for (var existingIndex = 0; existingIndex < existingChildren.length; existingIndex++) {
+                var existingKey = existingChildren[existingIndex].getAttribute('data-workbench-key');
+                if (existingKey != null && !Object.prototype.hasOwnProperty.call(existingByKey, existingKey))
+                    existingByKey[existingKey] = existingChildren[existingIndex];
+            }
+            var desiredNodes = [];
             for (var i = 0; i < this._items.length; i++) {
                 var item = this._items[i];
-                var node = this.options.renderItem ? this.options.renderItem(item, i) : makeElement('div');
-                if (!node || node.nodeType !== 1) throw new Error('GridRenderer.renderItem must return an Element');
+                var key = this.options.keyOf ? String(this.options.keyOf(item, i)) : String(i);
+                var node = existingByKey[key];
+                var reuse = !!node && renderOptions.forceItemRender !== true && node.__workbenchItem === item;
+                if (!reuse) {
+                    node = this.options.renderItem ? this.options.renderItem(item, i) : makeElement('div');
+                    if (!node || node.nodeType !== 1) throw new Error('GridRenderer.renderItem must return an Element');
+                }
                 node.setAttribute('data-workbench-item', String(i));
                 node.__workbenchItem = item;
                 node.__workbenchIndex = i;
-                var key = this.options.keyOf ? String(this.options.keyOf(item, i)) : String(i);
                 node.setAttribute('data-workbench-key', key);
                 if (this._selectedKey != null && key === this._selectedKey) {
                     node.classList.add('workbench-source-selected');
                     EntityTile.setSelected(node, true);
                 }
-                if (typeof this.options.bindItem === 'function') this.options.bindItem(node, item, i);
-                fragment.appendChild(node);
+                if (!reuse && typeof this.options.bindItem === 'function') this.options.bindItem(node, item, i);
+                desiredNodes.push(node);
+                delete existingByKey[key];
             }
-            this.root.appendChild(fragment);
-        }
-        if (activeKey != null) {
-            var renderedNodes = this.root.querySelectorAll('[data-workbench-key]');
-            for (var renderedIndex = 0; renderedIndex < renderedNodes.length; renderedIndex++) {
-                if (renderedNodes[renderedIndex].getAttribute('data-workbench-key') !== activeKey) continue;
-                if (typeof renderedNodes[renderedIndex].focus === 'function') {
-                    try { renderedNodes[renderedIndex].focus({preventScroll:true}); }
-                    catch (focusError) { renderedNodes[renderedIndex].focus(); }
-                }
-                break;
+            for (var desiredIndex = 0; desiredIndex < desiredNodes.length; desiredIndex++) {
+                var currentNode = this.root.children[desiredIndex] || null;
+                if (currentNode !== desiredNodes[desiredIndex]) this.root.insertBefore(desiredNodes[desiredIndex], currentNode);
+            }
+            while (this.root.children.length > desiredNodes.length) {
+                var staleNode = this.root.lastChild;
+                releaseElementBindings(staleNode); this.root.removeChild(staleNode);
             }
         }
         this.root.scrollTop = previousScrollTop;
         this.root.scrollLeft = previousScrollLeft;
+        if (activeKey != null) {
+            var renderedNodes = this.root.querySelectorAll('[data-workbench-key]');
+            for (var renderedIndex = 0; renderedIndex < renderedNodes.length; renderedIndex++) {
+                if (renderedNodes[renderedIndex].getAttribute('data-workbench-key') !== activeKey) continue;
+                var focusTarget = renderedNodes[renderedIndex];
+                if (activeFocusIndex > 0) {
+                    var nextFocusables = [focusTarget].concat(Array.prototype.slice.call(focusTarget.querySelectorAll(ENTITY_FOCUS_SELECTOR)));
+                    if (nextFocusables[activeFocusIndex]) focusTarget = nextFocusables[activeFocusIndex];
+                }
+                if (typeof focusTarget.focus === 'function') focusTarget.focus();
+                break;
+            }
+        }
     };
 
     GridRenderer.prototype.findItemNode = function(target) {

@@ -37,7 +37,7 @@ PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得�
 ### 2.3 溢出与空态
 
 - 横向滚动只允许领域明确需要的连续轨道；目录、卡片网格、面包屑和顶栏 action group 不得产生嵌套横向滚动。
-- 可滚区域必须有明确的“窗口身份”：容器/目录、筛选路径、分页 offset/limit 与面板 session 相同，才属于同一窗口。只改变选择态、数量、权威 preview、写后 snapshot/reconcile 或图标就绪状态时，即使实现采用清空后重建 DOM，也必须恢复 `scrollTop/scrollLeft`；共享实体格在原焦点 key 仍存在时还须恢复实体焦点。
+- 可滚区域必须有明确的“窗口身份”：容器/目录、筛选路径、分页 offset/limit 与面板 session 相同，才属于同一窗口。纯选择变化必须按稳定 key 原位更新，不得清空并重建列表；数量、权威 preview、写后 snapshot/reconcile 或图标就绪状态须复用引用未变化的 key、仅重建新权威对象，并恢复 `scrollTop/scrollLeft`。原焦点 key 仍存在时须恢复到同一实体/子控件；排序或重排改变实体位置时，焦点实体必须保持在可视窗口内。筛选、分页、会话或自动回退到另一实体属于窗口语义变化，必须显式归顶或滚到新实体。
 - 分类/筛选路径、分页窗口、工作台 operation、绑定实体或面板 session 改变时属于新窗口，必须显式从顶部开始。不得把“所有 render 都保留”或“所有 render 都归零”作为默认策略；owned 权威视图至少用 container + offset + limit + filterKey/filterSpec 判定窗口身份，领域自绘结算/详情列表遵循同一规则。
 - full 模式必须能读到主名称和关键状态；空间不足时减少列数，不得把 full 退化成“略大的 compact”。
 - 空态分为 `empty`、`filtered-empty`、`unavailable`、`error`；每种都提供下一步动作或原因，不用装饰填满空白。

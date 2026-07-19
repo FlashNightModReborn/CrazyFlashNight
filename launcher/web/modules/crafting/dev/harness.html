@@ -116,6 +116,16 @@ try{
   ok('success refreshes snapshot and preview',__sent.filter(function(x){return x.cmd==='snapshot'}).length>=2&&__sent.filter(function(x){return x.cmd==='preview'}).length>=2);
   ok('success applies new balance',document.querySelector('[data-metric="money"] b').textContent.replace(/,/g,'')==='910');
   ok('snapshot refreshes craftable state after mutation',document.querySelectorAll('.crafting-recipe-card.craftable').length===0&&document.querySelectorAll('.crafting-recipe-card.blocked').length===2&&document.querySelector('.crafting-catalog-view .workbench-view-meta').textContent.indexOf('可合成 0 / 2')>=0);
+  materials=3;Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
+  var fallbackCatalog=document.querySelector('.crafting-catalog-grid'),fallbackDetail=document.querySelector('.crafting-detail-body');
+  var fallbackCatalogStyle=fallbackCatalog.style.cssText,fallbackDetailStyle=fallbackDetail.style.cssText;
+  fallbackCatalog.style.cssText+=';height:36px!important;min-height:36px!important;max-height:36px!important;flex:0 0 36px!important;overflow:auto!important';
+  fallbackDetail.style.cssText+=';height:72px!important;min-height:72px!important;max-height:72px!important;overflow:auto!important';
+  document.querySelector('.crafting-craftable-toggle').click();fallbackCatalog.scrollTop=fallbackCatalog.scrollHeight;fallbackDetail.scrollTop=fallbackDetail.scrollHeight;
+  document.querySelector('.crafting-commit-btn').click();await waitFor(function(){return CraftingPanel.debugState().selectedIndex===1&&document.querySelector('.crafting-output-card')&&document.querySelector('.crafting-output-card').textContent.indexOf('测试药剂')>=0});
+  ok('post-craft fallback to another recipe resets catalog and detail windows',fallbackCatalog.scrollTop===0&&fallbackDetail.scrollTop===0,
+    JSON.stringify({catalog:fallbackCatalog.scrollTop,detail:fallbackDetail.scrollTop,selected:CraftingPanel.debugState().selectedIndex}));
+  document.querySelector('.crafting-craftable-toggle').click();fallbackCatalog.style.cssText=fallbackCatalogStyle;fallbackDetail.style.cssText=fallbackDetailStyle;
   materials=5;Panels.open('crafting',{category:'武器合成'});await wait();
   window.__ambiguous=true;document.querySelector('.crafting-commit-btn').click();await wait();await wait();
   ok('ambiguous commit triggers preview reconcile',__toasts.some(function(x){return x.indexOf('对账')>=0})&&__sent.filter(function(x){return x.cmd==='preview'}).length>=3);

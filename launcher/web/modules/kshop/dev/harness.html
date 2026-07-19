@@ -1213,9 +1213,33 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var renderStart = performance.now();
         renderProbe.render(renderItems);
         var renderElapsed = performance.now() - renderStart;
-        assert('kshop-ui8f','GridRenderer 1200 项离屏基线不发生数量截断或灾难性退化',
-            renderProbe.root.children.length === 1200 && renderElapsed < 1000,
-            renderElapsed.toFixed(1) + 'ms');
+        var stableRenderNode = renderProbe.root.children[321];
+        renderProbe.render(renderItems);
+        var focusReleaseCount = 0;
+        var focusProbe = new Workbench.GridRenderer({
+            keyOf:function(item){ return item.key; },
+            renderItem:function(item){
+                var node=document.createElement('div'), button=document.createElement('button');
+                button.textContent=item.label; node.appendChild(button); return node;
+            }
+        });
+        focusProbe.root.style.cssText = 'position:fixed;left:-9999px;top:0';
+        document.body.appendChild(focusProbe.root);
+        var focusItems = [{key:'focus-a',label:'A'},{key:'focus-b',label:'B'}];
+        focusProbe.render(focusItems);
+        var replacedFocusNode = focusProbe.root.children[0];
+        replacedFocusNode.__workbenchEntityTileBinding = {destroy:function(){ focusReleaseCount++; }};
+        replacedFocusNode.querySelector('button').focus();
+        focusProbe.render([{key:'focus-a',label:'A2'}, focusItems[1]]);
+        var childFocusRestored = document.activeElement === focusProbe.root.children[0].querySelector('button');
+        assert('kshop-ui8f','GridRenderer 1200 项离屏基线不发生数量截断或灾难性退化，并复用未变化 key 的节点',
+            renderProbe.root.children.length === 1200 && renderElapsed < 1000
+                && renderProbe.root.children[321] === stableRenderNode
+                && childFocusRestored && focusReleaseCount === 1,
+            renderElapsed.toFixed(1) + 'ms stable=' + (renderProbe.root.children[321] === stableRenderNode)
+                + ' childFocus=' + childFocusRestored + ' released=' + focusReleaseCount);
+        if (focusProbe.root.parentNode) focusProbe.root.parentNode.removeChild(focusProbe.root);
+        focusProbe.destroy();
         renderProbe.destroy();
 
         await Host.open();

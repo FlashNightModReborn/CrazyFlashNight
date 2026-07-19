@@ -164,7 +164,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   var catalogScrollTarget=Array.prototype.slice.call(catalogScrollProbe.querySelectorAll('.npcshop-catalog-card:not(.locked)')).pop();
   catalogScrollTarget.focus({preventScroll:true});var catalogScrollBefore=catalogScrollProbe.scrollTop,catalogScrollKey=catalogScrollTarget.getAttribute('data-workbench-key');catalogScrollTarget.click();
   var catalogScrollSelected=Array.prototype.find.call(catalogScrollProbe.querySelectorAll('[data-workbench-key]'),function(node){return node.getAttribute('data-workbench-key')===catalogScrollKey});
-  var catalogScrollAfter=catalogScrollProbe.scrollTop,catalogScrollPreserved=catalogScrollBefore>0&&Math.abs(catalogScrollAfter-catalogScrollBefore)<=1&&document.activeElement===catalogScrollSelected;
+  var catalogScrollAfter=catalogScrollProbe.scrollTop,catalogScrollPreserved=catalogScrollBefore>0&&Math.abs(catalogScrollAfter-catalogScrollBefore)<=1&&document.activeElement===catalogScrollSelected&&catalogScrollSelected===catalogScrollTarget;
   catalogScrollSelected.click();catalogScrollProbe.scrollTop=catalogScrollProbe.scrollHeight;var catalogNavigationBefore=catalogScrollProbe.scrollTop;
   document.querySelector('.npcshop-category-tabs [data-filter-path="weapon"]').click();var catalogNavigationReset=catalogNavigationBefore>0&&catalogScrollProbe.scrollTop===0;
   document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();catalogScrollProbe.style.cssText=catalogScrollStyle;catalogScrollProbe.scrollTop=0;
@@ -174,12 +174,12 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   var ownedScrollTarget=Array.prototype.slice.call(ownedScrollProbe.querySelectorAll('.npcshop-owned-card')).pop();
   ownedScrollTarget.focus({preventScroll:true});var ownedScrollBefore=ownedScrollProbe.scrollTop,ownedScrollKey=ownedScrollTarget.getAttribute('data-workbench-key');ownedScrollTarget.click();
   var ownedScrollSelected=Array.prototype.find.call(ownedScrollProbe.querySelectorAll('[data-workbench-key]'),function(node){return node.getAttribute('data-workbench-key')===ownedScrollKey});
-  var ownedScrollAfter=ownedScrollProbe.scrollTop,ownedScrollPreserved=ownedScrollBefore>0&&Math.abs(ownedScrollAfter-ownedScrollBefore)<=1&&document.activeElement===ownedScrollSelected;
+  var ownedScrollAfter=ownedScrollProbe.scrollTop,ownedScrollPreserved=ownedScrollBefore>0&&Math.abs(ownedScrollAfter-ownedScrollBefore)<=1&&document.activeElement===ownedScrollSelected&&ownedScrollSelected===ownedScrollTarget;
   ownedScrollSelected.click();ownedScrollProbe.scrollTop=ownedScrollProbe.scrollHeight;var ownedNavigationBefore=ownedScrollProbe.scrollTop;
   bagFilter.querySelector('[data-filter-path="weapon"]').click();await wait();ownedScrollProbe=document.querySelector('.npcshop-owned-grid');var ownedNavigationReset=ownedNavigationBefore>0&&ownedScrollProbe.scrollTop===0;
   document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]').click();await wait();document.querySelector('.npcshop-bag-view [data-filter-path=""]').click();await wait();
   ownedScrollProbe=document.querySelector('.npcshop-owned-grid');ownedScrollProbe.style.cssText=ownedScrollStyle;ownedScrollProbe.scrollTop=0;
-  ok('selection refresh preserves catalog and owned overflow scroll plus entity focus',catalogScrollPreserved&&ownedScrollPreserved&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0,
+  ok('selection patches catalog and owned cards in place while preserving overflow scroll and entity focus',catalogScrollPreserved&&ownedScrollPreserved&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0,
     JSON.stringify({catalog:[catalogScrollBefore,catalogScrollAfter],owned:[ownedScrollBefore,ownedScrollAfter]}));
   ok('catalog and authority-owned filter navigation reset their scroll windows',catalogNavigationReset&&ownedNavigationReset,
     JSON.stringify({catalogBefore:catalogNavigationBefore,catalogReset:catalogNavigationReset,ownedBefore:ownedNavigationBefore,ownedReset:ownedNavigationReset}));

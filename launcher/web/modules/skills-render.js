@@ -26,9 +26,9 @@
             var current = state();
             var focusKey = ports.focusKeyOf(document.activeElement);
             function finishListRender() {
-                ports.restoreFocusKey(focusKey);
                 list.scrollTop = previousScrollTop;
                 list.scrollLeft = previousScrollLeft;
+                ports.restoreFocusKey(focusKey);
             }
             while (list.firstChild) list.removeChild(list.firstChild);
             if (current.schemaError) {
