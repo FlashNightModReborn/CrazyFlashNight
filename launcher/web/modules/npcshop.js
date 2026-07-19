@@ -126,8 +126,7 @@ var NpcShop = (function() {
                 var mode = _categoryToolbar && _categoryToolbar.getAttribute('data-filter-mode');
                 _category = {mode:mode || 'auto', path:path};
                 decorateCategoryButtons(mode || 'auto');
-                if (_catalogRenderer && _catalogRenderer.root) _catalogRenderer.root.scrollTop = 0;
-                renderCatalog();
+                renderCatalog({preserveScroll:false});
             }
         });
         _categoryToolbar = _categoryNavigator.root;
@@ -364,10 +363,10 @@ var NpcShop = (function() {
         }
     }
 
-    function renderCatalog() {
+    function renderCatalog(renderOptions) {
         if (!_catalogRenderer) return;
         var catalog = _state && _state.catalog ? _state.catalog : [];
-        var filtered = catalog.filter(matchesCategory); _catalogRenderer.render(filtered);
+        var filtered = catalog.filter(matchesCategory); _catalogRenderer.render(filtered, renderOptions);
         if (_catalogView) _catalogView.chrome.setMeta(_state ? filtered.length + ' / ' + catalog.length + ' 件商品' : '同步中');
     }
 

@@ -208,7 +208,7 @@ var SkillsPanel = (function() {
         _search = document.createElement('input'); _search.type = 'search';
         _search.placeholder = '搜索技能'; _search.setAttribute('aria-label', '搜索技能');
         _search.setAttribute('data-browser-native', '1');
-        _search.addEventListener('input', renderList);
+        _search.addEventListener('input', function() { renderList({preserveScroll:false}); });
         _search.addEventListener('keydown', function(event) {
             if (event.key !== 'Escape') return;
             event.preventDefault(); event.stopPropagation(); setSearchExpanded(false);
@@ -245,7 +245,7 @@ var SkillsPanel = (function() {
                 visualStyle:'catalog', autoDescendSingle:false,
                 onChange:function(path) {
                     filterPathsForView()[definition.id] = path.slice();
-                    refreshFilterReset(); refreshFilterValue(definition.id); renderList();
+                    refreshFilterReset(); refreshFilterValue(definition.id); renderList({preserveScroll:false});
                 }
             });
             navigator.root.classList.add('skills-filter-navigator');
@@ -298,7 +298,7 @@ var SkillsPanel = (function() {
         _shell.setMetric('sp', '技能点', safeNumber(player.skillPoints));
     }
 
-    function renderList() { _renderer.renderList(_list); }
+    function renderList(renderOptions) { _renderer.renderList(_list, renderOptions); }
     function visibleEntries() {
         return Library.visibleEntries(_snapshot, _view, _search ? _search.value : '', filterPathsForView());
     }
@@ -315,7 +315,7 @@ var SkillsPanel = (function() {
         }
         if (_search && _search.value) {
             _search.value = '';
-            renderList();
+            renderList({preserveScroll:false});
         }
     }
 
@@ -355,7 +355,7 @@ var SkillsPanel = (function() {
             if (_filterNavigators[definition.id]) _filterNavigators[definition.id].setPath([], true);
             refreshFilterValue(definition.id);
         });
-        refreshFilterReset(); renderList();
+        refreshFilterReset(); renderList({preserveScroll:false});
     }
     function refreshFilterReset() {
         if (!_filterResetButton) return;

@@ -17,18 +17,29 @@
 
         function state() { return ports.getState(); }
 
-        function renderList(list) {
+        function renderList(list, renderOptions) {
             if (!list) return;
+            renderOptions = renderOptions || {};
+            var preserveScroll = renderOptions.preserveScroll !== false;
+            var previousScrollTop = preserveScroll ? list.scrollTop : 0;
+            var previousScrollLeft = preserveScroll ? list.scrollLeft : 0;
             var current = state();
             var focusKey = ports.focusKeyOf(document.activeElement);
+            function finishListRender() {
+                ports.restoreFocusKey(focusKey);
+                list.scrollTop = previousScrollTop;
+                list.scrollLeft = previousScrollLeft;
+            }
             while (list.firstChild) list.removeChild(list.firstChild);
             if (current.schemaError) {
                 list.appendChild(ports.empty('技能数据暂时无法读取，请重试。', 'error'));
+                finishListRender();
                 return;
             }
             var entries = ports.visibleEntries();
             if (!entries.length) {
                 list.appendChild(ports.empty(current.snapshot ? '没有符合条件的技能' : '正在读取技能状态…'));
+                finishListRender();
                 return;
             }
             entries.forEach(function(entry) {
@@ -72,7 +83,7 @@
                 });
                 list.appendChild(row);
             });
-            ports.restoreFocusKey(focusKey);
+            finishListRender();
         }
 
         function renderDetail(root) {

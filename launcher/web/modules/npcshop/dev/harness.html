@@ -158,6 +158,31 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('shop bag tree sends authority path and exposes title breadcrumb',bagFilterRequest&&document.querySelector('.npcshop-bag-view [data-filter-path="weapon/手枪/手枪"]')&&document.querySelectorAll('.npcshop-bag-view .inventory-slot-card.occupied').length===3&&document.querySelector('.npcshop-bag-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="weapon/手枪"][aria-current="page"]')&&document.querySelector('.npcshop-bag-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path=""]'),JSON.stringify({request:!!bagFilterRequest,occupied:document.querySelectorAll('.npcshop-bag-view .inventory-slot-card.occupied').length,breadcrumbs:bagBreadcrumbPaths}));
   document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]').click();await wait();
   document.querySelector('.npcshop-bag-view [data-filter-path=""]').click();await wait();
+  var catalogScrollProbe=document.querySelector('.npcshop-catalog-grid'),catalogScrollStyle=catalogScrollProbe.style.cssText;
+  catalogScrollProbe.style.cssText+=';height:112px!important;min-height:112px!important;max-height:112px!important;flex:0 0 112px!important;overflow:auto!important';
+  catalogScrollProbe.scrollTop=catalogScrollProbe.scrollHeight;
+  var catalogScrollTarget=Array.prototype.slice.call(catalogScrollProbe.querySelectorAll('.npcshop-catalog-card:not(.locked)')).pop();
+  catalogScrollTarget.focus({preventScroll:true});var catalogScrollBefore=catalogScrollProbe.scrollTop,catalogScrollKey=catalogScrollTarget.getAttribute('data-workbench-key');catalogScrollTarget.click();
+  var catalogScrollSelected=Array.prototype.find.call(catalogScrollProbe.querySelectorAll('[data-workbench-key]'),function(node){return node.getAttribute('data-workbench-key')===catalogScrollKey});
+  var catalogScrollAfter=catalogScrollProbe.scrollTop,catalogScrollPreserved=catalogScrollBefore>0&&Math.abs(catalogScrollAfter-catalogScrollBefore)<=1&&document.activeElement===catalogScrollSelected;
+  catalogScrollSelected.click();catalogScrollProbe.scrollTop=catalogScrollProbe.scrollHeight;var catalogNavigationBefore=catalogScrollProbe.scrollTop;
+  document.querySelector('.npcshop-category-tabs [data-filter-path="weapon"]').click();var catalogNavigationReset=catalogNavigationBefore>0&&catalogScrollProbe.scrollTop===0;
+  document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();catalogScrollProbe.style.cssText=catalogScrollStyle;catalogScrollProbe.scrollTop=0;
+  var ownedScrollProbe=document.querySelector('.npcshop-owned-grid'),ownedScrollStyle=ownedScrollProbe.style.cssText;
+  ownedScrollProbe.style.cssText+=';height:88px!important;min-height:88px!important;max-height:88px!important;flex:0 0 88px!important;overflow:auto!important';
+  ownedScrollProbe.scrollTop=ownedScrollProbe.scrollHeight;
+  var ownedScrollTarget=Array.prototype.slice.call(ownedScrollProbe.querySelectorAll('.npcshop-owned-card')).pop();
+  ownedScrollTarget.focus({preventScroll:true});var ownedScrollBefore=ownedScrollProbe.scrollTop,ownedScrollKey=ownedScrollTarget.getAttribute('data-workbench-key');ownedScrollTarget.click();
+  var ownedScrollSelected=Array.prototype.find.call(ownedScrollProbe.querySelectorAll('[data-workbench-key]'),function(node){return node.getAttribute('data-workbench-key')===ownedScrollKey});
+  var ownedScrollAfter=ownedScrollProbe.scrollTop,ownedScrollPreserved=ownedScrollBefore>0&&Math.abs(ownedScrollAfter-ownedScrollBefore)<=1&&document.activeElement===ownedScrollSelected;
+  ownedScrollSelected.click();ownedScrollProbe.scrollTop=ownedScrollProbe.scrollHeight;var ownedNavigationBefore=ownedScrollProbe.scrollTop;
+  bagFilter.querySelector('[data-filter-path="weapon"]').click();await wait();ownedScrollProbe=document.querySelector('.npcshop-owned-grid');var ownedNavigationReset=ownedNavigationBefore>0&&ownedScrollProbe.scrollTop===0;
+  document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]').click();await wait();document.querySelector('.npcshop-bag-view [data-filter-path=""]').click();await wait();
+  ownedScrollProbe=document.querySelector('.npcshop-owned-grid');ownedScrollProbe.style.cssText=ownedScrollStyle;ownedScrollProbe.scrollTop=0;
+  ok('selection refresh preserves catalog and owned overflow scroll plus entity focus',catalogScrollPreserved&&ownedScrollPreserved&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0,
+    JSON.stringify({catalog:[catalogScrollBefore,catalogScrollAfter],owned:[ownedScrollBefore,ownedScrollAfter]}));
+  ok('catalog and authority-owned filter navigation reset their scroll windows',catalogNavigationReset&&ownedNavigationReset,
+    JSON.stringify({catalogBefore:catalogNavigationBefore,catalogReset:catalogNavigationReset,ownedBefore:ownedNavigationBefore,ownedReset:ownedNavigationReset}));
   ok('shared EntityTile/ItemCard/ItemGrid primitives exported',typeof Workbench.EntityTile==='function'&&typeof Workbench.ItemCard==='function'&&typeof Workbench.ItemCard.renderCatalog==='function'&&typeof Workbench.ItemGrid==='function');
   var npcKeyboardCatalog=document.querySelector('.npcshop-catalog-card:not(.locked)');
   var npcKeyboardCatalogName=npcKeyboardCatalog&&npcKeyboardCatalog.querySelector('.item-card-name').textContent;
@@ -262,6 +287,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('secondary settlement page opens',document.querySelector('.npcshop-settlement-page.active')&&NpcShop.debugState().settling);
   ok('first settlement visit explains that confirmation is required',__toasts.some(function(message){return message.indexOf('交易清单')>=0&&message.indexOf('确认交易')>=0}));
   ok('settlement uses authoritative totals and slot bounds',document.querySelector('[data-trade-economy]').textContent.indexOf('结余 $9,250')>=0&&document.querySelector('[data-trade-economy]').textContent.indexOf('可用 2 格')>=0);
+  var settlementScrollProbe=document.querySelector('[data-purchase-lines]'),settlementScrollStyle=settlementScrollProbe.style.cssText;
+  settlementScrollProbe.style.cssText+=';height:24px!important;min-height:24px!important;max-height:24px!important;overflow:auto!important';settlementScrollProbe.scrollTop=settlementScrollProbe.scrollHeight;
+  var settlementScrollBefore=settlementScrollProbe.scrollTop;
+  Array.from(settlementScrollProbe.querySelectorAll('.npcshop-stepper button')).filter(function(b){return b.textContent==='+'})[0].click();await wait();
+  settlementScrollProbe=document.querySelector('[data-purchase-lines]');var settlementScrollAfter=settlementScrollProbe.scrollTop,settlementScrollPreserved=settlementScrollBefore>0&&Math.abs(settlementScrollAfter-settlementScrollBefore)<=1;
+  Array.from(settlementScrollProbe.querySelectorAll('.npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0].click();await wait();
+  settlementScrollProbe=document.querySelector('[data-purchase-lines]');settlementScrollProbe.style.cssText=settlementScrollStyle;settlementScrollProbe.scrollTop=0;
+  ok('settlement quantity re-preview preserves its overflowing list position',settlementScrollPreserved,JSON.stringify({before:settlementScrollBefore,after:settlementScrollAfter}));
   sentBeforeHelp=__sent.length;
   var settlementHelp=document.querySelector('[data-trade-help]');
   settlementHelp.focus();

@@ -604,33 +604,56 @@
         this._selectedKey = null;
     }
 
-    GridRenderer.prototype.render = function(items) {
+    GridRenderer.prototype.render = function(items, renderOptions) {
+        renderOptions = renderOptions || {};
+        var preserveScroll = renderOptions.preserveScroll !== false;
+        var previousScrollTop = preserveScroll ? this.root.scrollTop : 0;
+        var previousScrollLeft = preserveScroll ? this.root.scrollLeft : 0;
+        var activeItem = null;
+        if (preserveScroll && typeof document !== 'undefined' && document.activeElement
+                && this.root.contains(document.activeElement)) {
+            activeItem = this.findItemNode(document.activeElement);
+        }
+        var activeKey = activeItem ? activeItem.getAttribute('data-workbench-key') : null;
         this._items = (items || []).slice();
         clearElement(this.root);
         if (!this._items.length) {
             var empty = makeElement('div', 'workbench-grid-empty');
             empty.textContent = this.options.emptyText || '暂无项目';
             this.root.appendChild(empty);
-            return;
-        }
-        var fragment = document.createDocumentFragment();
-        for (var i = 0; i < this._items.length; i++) {
-            var item = this._items[i];
-            var node = this.options.renderItem ? this.options.renderItem(item, i) : makeElement('div');
-            if (!node || node.nodeType !== 1) throw new Error('GridRenderer.renderItem must return an Element');
-            node.setAttribute('data-workbench-item', String(i));
-            node.__workbenchItem = item;
-            node.__workbenchIndex = i;
-            var key = this.options.keyOf ? String(this.options.keyOf(item, i)) : String(i);
-            node.setAttribute('data-workbench-key', key);
-            if (this._selectedKey != null && key === this._selectedKey) {
-                node.classList.add('workbench-source-selected');
-                EntityTile.setSelected(node, true);
+        } else {
+            var fragment = document.createDocumentFragment();
+            for (var i = 0; i < this._items.length; i++) {
+                var item = this._items[i];
+                var node = this.options.renderItem ? this.options.renderItem(item, i) : makeElement('div');
+                if (!node || node.nodeType !== 1) throw new Error('GridRenderer.renderItem must return an Element');
+                node.setAttribute('data-workbench-item', String(i));
+                node.__workbenchItem = item;
+                node.__workbenchIndex = i;
+                var key = this.options.keyOf ? String(this.options.keyOf(item, i)) : String(i);
+                node.setAttribute('data-workbench-key', key);
+                if (this._selectedKey != null && key === this._selectedKey) {
+                    node.classList.add('workbench-source-selected');
+                    EntityTile.setSelected(node, true);
+                }
+                if (typeof this.options.bindItem === 'function') this.options.bindItem(node, item, i);
+                fragment.appendChild(node);
             }
-            if (typeof this.options.bindItem === 'function') this.options.bindItem(node, item, i);
-            fragment.appendChild(node);
+            this.root.appendChild(fragment);
         }
-        this.root.appendChild(fragment);
+        if (activeKey != null) {
+            var renderedNodes = this.root.querySelectorAll('[data-workbench-key]');
+            for (var renderedIndex = 0; renderedIndex < renderedNodes.length; renderedIndex++) {
+                if (renderedNodes[renderedIndex].getAttribute('data-workbench-key') !== activeKey) continue;
+                if (typeof renderedNodes[renderedIndex].focus === 'function') {
+                    try { renderedNodes[renderedIndex].focus({preventScroll:true}); }
+                    catch (focusError) { renderedNodes[renderedIndex].focus(); }
+                }
+                break;
+            }
+        }
+        this.root.scrollTop = previousScrollTop;
+        this.root.scrollLeft = previousScrollLeft;
     };
 
     GridRenderer.prototype.findItemNode = function(target) {

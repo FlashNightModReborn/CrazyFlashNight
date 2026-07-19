@@ -109,8 +109,7 @@
             onChange:function(path) {
                 self._path = path;
                 if (self._intent.clearSelection) self._intent.clearSelection();
-                composition.grid.scrollTop = 0;
-                self.render();
+                self.render({preserveScroll:false});
                 self._decorateButtons();
             }
         });
@@ -150,7 +149,7 @@
         }
     };
 
-    CatalogPresenter.prototype.render = function() {
+    CatalogPresenter.prototype.render = function(renderOptions) {
         if (!this._composition) return;
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip.hide) PanelTooltip.hide();
         var catalog = this._catalog();
@@ -158,7 +157,7 @@
         for (var i = 0; i < catalog.length; i++) {
             if (matchesCategory(catalog[i], this._path, ItemFilter)) visible.push(catalog[i]);
         }
-        this._composition.renderer.render(visible);
+        this._composition.renderer.render(visible, renderOptions);
         this.setSelected(this._state.getSelectedIdx ? this._state.getSelectedIdx() : null);
         this._composition.chrome.setMeta(visible.length + ' 件');
         if (!this._iconsLoaded && typeof Icons !== 'undefined') {

@@ -683,6 +683,7 @@
         this.view.ownedInventoryShell = this;
         this.controls = null;
         this.pager = null;
+        this._windowSignature = null;
     }
 
     OwnedInventoryViewShell.prototype.setToolbar = function(toolbar, controls, pager) {
@@ -698,8 +699,13 @@
         options = options || {};
         if (this.controls && typeof this.controls.setSnapshot === 'function') this.controls.setSnapshot(snapshot);
         var slots = snapshot && snapshot.slots ? snapshot.slots : [];
+        var windowSignature = snapshot ? [String(snapshot.containerId || this.containerId),
+            Number(snapshot.offset || 0), Number(snapshot.limit || 0), String(snapshot.filterKey || 'all'),
+            JSON.stringify(snapshot.filterSpec || null)].join('|') : 'snapshot:none';
+        var preserveScroll = options.preserveScroll !== false && this._windowSignature === windowSignature;
+        this._windowSignature = windowSignature;
         if (options.emptyText != null) this.view.renderer.options.emptyText = String(options.emptyText);
-        this.view.renderer.render(slots);
+        this.view.renderer.render(slots, {preserveScroll:preserveScroll});
         if (options.meta != null) this.view.chrome.setMeta(String(options.meta));
         if (this.pager) this.pager.refresh();
     };

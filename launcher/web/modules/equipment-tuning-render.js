@@ -26,8 +26,14 @@ var EquipmentTuningRender = (function() {
         var equipmentDiff = Model.equipmentDiff;
         var errorMessage = Model.errorMessage;
 
-    TuningView.prototype.render = function() {
+    TuningView.prototype.render = function(renderOptions) {
         if (!this._root) return;
+        renderOptions = renderOptions || {};
+        var preserveScroll = renderOptions.preserveScroll !== false;
+        var previousBody = this._root.querySelector('.equipment-tuning-body');
+        var previousPreview = this._root.querySelector('.equipment-tuning-preview');
+        var bodyScroll = preserveScroll && previousBody ? {top:previousBody.scrollTop,left:previousBody.scrollLeft} : null;
+        var previewScroll = preserveScroll && previousPreview ? {top:previousPreview.scrollTop,left:previousPreview.scrollLeft} : null;
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
         clear(this._root);
         var root = element('div', 'equipment-tuning-view');
@@ -38,6 +44,10 @@ var EquipmentTuningRender = (function() {
         root.appendChild(this._renderBody());
         root.appendChild(this._renderPreview());
         this._root.appendChild(root);
+        var nextBody = root.querySelector('.equipment-tuning-body');
+        var nextPreview = root.querySelector('.equipment-tuning-preview');
+        if (bodyScroll && nextBody) { nextBody.scrollTop = bodyScroll.top; nextBody.scrollLeft = bodyScroll.left; }
+        if (previewScroll && nextPreview) { nextPreview.scrollTop = previewScroll.top; nextPreview.scrollLeft = previewScroll.left; }
     };
 
     TuningView.prototype._renderHeader = function() {
@@ -492,7 +502,7 @@ var EquipmentTuningRender = (function() {
                 tree:buildModFilterTree(availableCandidates), path:this._modFilterPath,
                 presentation:'drilldown', allLabel:'全部配件', ariaLabel:'配件分类筛选',
                 visualStyle:'catalog', autoDescendSingle:false, breadcrumbHost:breadcrumb,
-                onChange:function(path) { self._modFilterPath = path.slice(); self.render(); }
+                onChange:function(path) { self._modFilterPath = path.slice(); self.render({preserveScroll:false}); }
             });
             this._modNavigator.root.classList.add('equipment-tuning-mod-navigator');
             filter.appendChild(this._modNavigator.root); body.appendChild(filter);

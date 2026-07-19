@@ -110,7 +110,7 @@ var EquipmentTuningView = (function() {
         panelInstanceId = EquipmentTuningRuntime.safeToken(panelInstanceId);
         if (!panelInstanceId) {
             this._status = 'Host 面板实例无效';
-            this.render();
+            this.render({preserveScroll:false});
             return false;
         }
         this._panelInstanceId = panelInstanceId;
@@ -119,7 +119,7 @@ var EquipmentTuningView = (function() {
         var opened = this._mux.openSession(this._panelInstanceId, this._viewSessionId);
         this._status = opened ? '请选择左侧背包装备' : '无法建立调制会话';
         this._emit();
-        this.render();
+        this.render({preserveScroll:false});
         return opened;
     };
 
@@ -161,7 +161,7 @@ var EquipmentTuningView = (function() {
         this._quickCommitIntent = null;
         this._status = '调制会话已关闭';
         this._emit();
-        this.render();
+        this.render({preserveScroll:false});
     };
 
     TuningView.prototype.destroy = function() {
@@ -235,7 +235,7 @@ var EquipmentTuningView = (function() {
         this._quickCommitIntent = null;
         this._needsReconcile = !!recoveryCallId;
         this._status = recoveryCallId ? '正在用新位置完成未知提交对账' : '正在读取权威调制状态';
-        this.render();
+        this.render({preserveScroll:false});
         this.requestSnapshot(recoveryCallId);
         return true;
     };
@@ -587,7 +587,7 @@ var EquipmentTuningView = (function() {
         }
         if (operation !== 'convert') { this._target = null; this._targetItem = null; }
         if (wasConvert !== (operation === 'convert')) this._setConversionProjection(operation === 'convert');
-        this.render();
+        this.render({preserveScroll:false});
         if (operation === 'enhance' && this._snapshot) this.scheduleEnhancementPreview(this._targetLevel, 80);
         return true;
     };

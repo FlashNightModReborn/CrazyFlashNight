@@ -184,6 +184,8 @@
         this._errorMessage = '';
         this._preview = null;
         this._loading = true;
+        this._list.scrollTop = 0;
+        this._list.scrollLeft = 0;
         this.root.classList.add('active');
         this._options.panelRoot.classList.add('kshop-settling');
         this.render();
@@ -219,6 +221,8 @@
         var options = this._options;
         var cart = options.getCart();
         if (!cart.length) { this.hide(); return; }
+        var previousScrollTop = this._list.scrollTop;
+        var previousScrollLeft = this._list.scrollLeft;
         while (this._list.firstChild) this._list.removeChild(this._list.firstChild);
         var preview = this._preview;
         var previewByIndex = {};
@@ -255,6 +259,8 @@
         this._status.textContent = status;
         this._status.classList.toggle('error', !!this._errorMessage || !!invalid || !!(preview && preview.blockingError));
         this._commit.disabled = invalid > 0 || this._loading || !preview || !preview.canCommit || !options.canCheckout();
+        this._list.scrollTop = previousScrollTop;
+        this._list.scrollLeft = previousScrollLeft;
     };
     SettlementPage.prototype._renderLine = function(cartItem, item, quantity, authorityLine) {
         var options = this._options;

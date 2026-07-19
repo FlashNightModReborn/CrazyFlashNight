@@ -1102,6 +1102,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         await Host.open();
         addEquipment();
+        addStackable(2);
         await wait(100);
         var checkoutBeforeModal = countCmd('checkoutCommit');
         click('#kshop-checkout');
@@ -1110,6 +1111,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var settlementVisible = !!settlementNode;
         var settlementPlayerCopy = settlementNode && !/(BATCH|COMMIT|AS2|写请求)/.test(settlementNode.innerText)
             && settlementNode.querySelector('h2').textContent === '结算核对';
+        var kshopSettlementList=settlementNode.querySelector('.kshop-settlement-list'),kshopSettlementStyle=kshopSettlementList.style.cssText;
+        kshopSettlementList.style.cssText+=';height:28px!important;min-height:28px!important;max-height:28px!important;overflow:auto!important';kshopSettlementList.scrollTop=kshopSettlementList.scrollHeight;
+        var kshopSettlementBefore=kshopSettlementList.scrollTop;
+        var kshopStackLine=Array.prototype.find.call(kshopSettlementList.querySelectorAll('.kshop-settlement-line'),function(line){return line.textContent.indexOf('测试药剂')>=0});
+        Array.prototype.find.call(kshopStackLine.querySelectorAll('button'),function(button){return button.textContent==='+'}).click();
+        await waitFor(function(){return Array.prototype.some.call(kshopSettlementList.querySelectorAll('.kshop-settlement-line b'),function(node){return node.textContent==='3'});},400);
+        var kshopSettlementAfter=kshopSettlementList.scrollTop;
+        assert('kshop-ui8scroll','结算数量重算保留溢出列表位置',kshopSettlementBefore>0&&Math.abs(kshopSettlementAfter-kshopSettlementBefore)<=1,
+            'before='+kshopSettlementBefore+' after='+kshopSettlementAfter);
+        kshopStackLine=Array.prototype.find.call(kshopSettlementList.querySelectorAll('.kshop-settlement-line'),function(line){return line.textContent.indexOf('测试药剂')>=0});
+        kshopStackLine.querySelector('.remove').click();await waitFor(function(){return document.querySelectorAll('.kshop-cart-row').length===1;},400);
+        kshopSettlementList.style.cssText=kshopSettlementStyle;kshopSettlementList.scrollTop=0;
         var checkoutBeforeConfirm = countCmd('checkoutCommit');
         window.__emitBridge('panel_esc',{});
         assert('kshop-ui8a','二级结算在确认前不下发 commit，ESC 先返回商城且保持购物车',

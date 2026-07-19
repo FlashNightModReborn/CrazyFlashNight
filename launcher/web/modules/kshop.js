@@ -501,6 +501,18 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     //  Open / Data load
     // ══════════════════════════════════════════
+    function resetSessionScrollPositions() {
+        var roots = [];
+        var catalogGrid = _catalogPresenter && _catalogPresenter.getGrid();
+        var order = _cartController && _cartController.getComposition();
+        if (catalogGrid) roots.push(catalogGrid);
+        if (order && order.cartList) roots.push(order.cartList);
+        if (order && order.claimList) roots.push(order.claimList);
+        var ownedViews = _ownedPresenter ? _ownedPresenter.getViews() : [];
+        for (var i = 0; i < ownedViews.length; i++) if (ownedViews[i].renderer) roots.push(ownedViews[i].renderer.root);
+        for (var j = 0; j < roots.length; j++) { roots[j].scrollTop = 0; roots[j].scrollLeft = 0; }
+    }
+
     function onOpen(el) {
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
@@ -512,6 +524,7 @@ var KShop = (function() {
         _purchased = [];
         _purchasedToken = '';
         _catalogPresenter.reset();
+        resetSessionScrollPositions();
         _tooltipPresenter.reset();
         _ownedTooltipSelectionSuppressed = false;
         _ownedPresenter.resetSession();

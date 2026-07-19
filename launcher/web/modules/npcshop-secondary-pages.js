@@ -85,7 +85,11 @@
         });
         this.secondary.mount(options.host);
     }
-    SettlementPresenter.prototype.open = function() { return this.secondary.open(); };
+    SettlementPresenter.prototype.open = function() {
+        var lists = this.root.querySelectorAll('.npcshop-settlement-list');
+        for (var i = 0; i < lists.length; i++) { lists[i].scrollTop = 0; lists[i].scrollLeft = 0; }
+        return this.secondary.open();
+    };
     SettlementPresenter.prototype.close = function(reason) { return this.secondary.close(reason || 'return'); };
     SettlementPresenter.prototype.isActive = function() { return this.secondary.isActive(); };
     SettlementPresenter.prototype.setOrganizing = function(active) { this.root.classList.toggle('organizing-space', !!active); };
@@ -121,10 +125,13 @@
     SettlementPresenter.prototype._renderLines = function(kind, lines, intents) {
         var self = this;
         var list = this.root.querySelector(kind === 'purchase' ? '[data-purchase-lines]' : '[data-sale-lines]');
+        var previousScrollTop = list.scrollTop;
+        var previousScrollLeft = list.scrollLeft;
         while (list.firstChild) list.removeChild(list.firstChild);
         if (!lines.length) {
             var empty = this._document.createElement('p');
-            empty.className = 'npcshop-settlement-empty'; empty.textContent = '无'; list.appendChild(empty); return;
+            empty.className = 'npcshop-settlement-empty'; empty.textContent = '无'; list.appendChild(empty);
+            list.scrollTop = previousScrollTop; list.scrollLeft = previousScrollLeft; return;
         }
         lines.forEach(function(line) {
             var identity = kind === 'purchase' ? String(line.catalogIndex) : String(line.sourceIdentity);
@@ -185,6 +192,8 @@
             }
             row.appendChild(icon); row.appendChild(copy); row.appendChild(stepper); list.appendChild(row);
         });
+        list.scrollTop = previousScrollTop;
+        list.scrollLeft = previousScrollLeft;
     };
     SettlementPresenter.prototype._stepButton = function(label, handler) {
         var button = this._document.createElement('button');

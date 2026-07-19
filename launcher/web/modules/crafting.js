@@ -7,6 +7,7 @@ var CraftingPanel = (function() {
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _commitButton = null, _craftableToggle = null, _tooltipCache = {};
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
+    var _detailScrollTop = 0, _detailScrollLeft = 0;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var _mux = new CraftingRuntime.RequestMux({
         send:function(message) { Bridge.send(message); },
@@ -96,6 +97,7 @@ var CraftingPanel = (function() {
         var root = document.createElement('div'); root.className = 'workbench-view crafting-detail-view';
         var chrome = new Workbench.ViewChrome({title:'合成详情', kicker:'权威核算', meta:'请选择配方'});
         _detailBody = document.createElement('div'); _detailBody.className = 'crafting-detail-body';
+        _detailScrollTop = 0; _detailScrollLeft = 0;
         root.appendChild(chrome.root); root.appendChild(_detailBody);
         return {instanceKey:'crafting:detail', instancePolicy:'singletonByBinding', allowedSlots:['R'],
             viewKind:'detail', root:root, chrome:chrome,
@@ -131,7 +133,7 @@ var CraftingPanel = (function() {
         bindTooltip(node, recipe.output || {});
     }
 
-    function renderCatalog() {
+    function renderCatalog(renderOptions) {
         var recipes = _snapshot && _snapshot.recipes ? _snapshot.recipes : [];
         var visible = filteredRecipes(recipes);
         var craftableCount = recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length;
@@ -145,7 +147,7 @@ var CraftingPanel = (function() {
         }
         if (_catalogRenderer) {
             _catalogRenderer.setSelectedKey(_selectedIndex >= 0 ? String(_selectedIndex) : null);
-            _catalogRenderer.render(visible);
+            _catalogRenderer.render(visible, renderOptions);
         }
     }
 
@@ -191,18 +193,18 @@ var CraftingPanel = (function() {
         if (!visible.some(function(recipe) { return Number(recipe.recipeIndex) === _selectedIndex; })) {
             _selectedIndex = visible.length ? Number(visible[0].recipeIndex) : -1;
             _craftCount = 1; _preview = null;
-            renderCatalog(); renderDetail();
+            renderCatalog({preserveScroll:false}); renderDetail({preserveScroll:false});
             if (_selectedIndex >= 0) requestPreview(); else refreshControls();
             return;
         }
-        renderCatalog();
+        renderCatalog({preserveScroll:false});
     }
 
     function selectRecipe(recipeIndex) {
         if (_busy || recipeIndex < 0) return;
         _selectedIndex = recipeIndex; _craftCount = 1; _preview = null;
         if (_catalogRenderer) _catalogRenderer.setSelectedKey(String(recipeIndex));
-        renderDetail(); requestPreview();
+        renderDetail({preserveScroll:false}); requestPreview();
     }
 
     function requestPreview(callback) {
@@ -226,11 +228,23 @@ var CraftingPanel = (function() {
         });
     }
 
-    function renderDetail() {
+    function renderDetail(renderOptions) {
         if (!_detailBody) return;
+        renderOptions = renderOptions || {};
+        var preserveScroll = renderOptions.preserveScroll !== false;
+        if (!preserveScroll) { _detailScrollTop = 0; _detailScrollLeft = 0; }
+        else if (_detailBody.querySelector('.crafting-output-card')) {
+            _detailScrollTop = _detailBody.scrollTop; _detailScrollLeft = _detailBody.scrollLeft;
+        }
+        var previousScrollTop = _detailScrollTop;
+        var previousScrollLeft = _detailScrollLeft;
+        function restoreScroll() {
+            _detailBody.scrollTop = previousScrollTop;
+            _detailBody.scrollLeft = previousScrollLeft;
+        }
         while (_detailBody.firstChild) _detailBody.removeChild(_detailBody.firstChild);
-        if (_selectedIndex < 0) { appendEmpty('从左侧选择一项配方'); return; }
-        if (_previewBusy || !_preview) { appendEmpty(_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览'); return; }
+        if (_selectedIndex < 0) { appendEmpty('从左侧选择一项配方'); restoreScroll(); return; }
+        if (_previewBusy || !_preview) { appendEmpty(_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览'); restoreScroll(); return; }
         var output = _preview.output || {};
         _detailView.chrome.setTitle(output.displayName || output.name || '合成详情', '权威核算');
         _detailView.chrome.setMeta(_snapshot && _snapshot.note ? _snapshot.note : '提交前会再次校验');
@@ -278,6 +292,7 @@ var CraftingPanel = (function() {
         _commitButton.setAttribute('data-title', '确认合成');
         _commitButton.disabled = _busy || _needsReconcile || !_preview.canCommit || !_preview.craftToken;
         _commitButton.addEventListener('click', commitCraft); _detailBody.appendChild(_commitButton);
+        restoreScroll();
     }
 
     function renderQuantityControl() {

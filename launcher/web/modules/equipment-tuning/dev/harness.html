@@ -7,6 +7,7 @@
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607;color:#eee}
     #host{position:absolute;inset:12px;width:min(460px,calc(100% - 24px));border:1px solid #333}
+    #host.scroll-retention-probe .equipment-tuning-body{height:96px!important;min-height:96px!important;max-height:96px!important;overflow:auto!important}
     #qa-output{position:fixed;z-index:1000;right:8px;bottom:8px;max-width:480px;max-height:42vh;overflow:auto;padding:8px;background:#111;border:1px solid #555;font:11px Consolas;white-space:pre-wrap}
   </style>
 </head>
@@ -162,7 +163,13 @@ function respond(message){var result=base(message);
     ok('compact candidates keep shared quantity badges',document.querySelectorAll('.equipment-tuning-candidate .equipment-tuning-owned-count').length===25&&[].slice.call(document.querySelectorAll('.equipment-tuning-owned-count')).every(function(node){return getComputedStyle(node).display!=='none'}));
     ok('tuning view never exposes browser-native title tooltips',document.querySelectorAll('#host [title]').length===0);
     ok('25 compact mod candidates remain reachable without scrolling',compactBody.scrollHeight<=compactBody.clientHeight+1&&compactGrid.getBoundingClientRect().bottom<=compactBody.getBoundingClientRect().bottom+1,JSON.stringify({body:[compactBody.clientHeight,compactBody.scrollHeight],gridBottom:compactGrid.getBoundingClientRect().bottom,bodyBottom:compactBody.getBoundingClientRect().bottom}));
-    document.querySelector('[data-filter-path="grade"]').click();await wait();document.querySelector('[data-filter-path="grade/medium"]').click();await wait();
+    var tuningHost=document.getElementById('host');tuningHost.classList.add('scroll-retention-probe');compactBody=document.querySelector('.equipment-tuning-body');compactBody.scrollTop=compactBody.scrollHeight;
+    var tuningScrollBefore=compactBody.scrollTop;document.querySelectorAll('.equipment-tuning-candidate.available')[1].click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='install_mod'});
+    compactBody=document.querySelector('.equipment-tuning-body');var tuningScrollAfter=compactBody.scrollTop;
+    ok('mod preview refresh preserves an overflowing tuning-body position',tuningScrollBefore>0&&Math.abs(tuningScrollAfter-tuningScrollBefore)<=1,JSON.stringify({before:tuningScrollBefore,after:tuningScrollAfter}));
+    compactBody.scrollTop=compactBody.scrollHeight;var tuningFilterScrollBefore=compactBody.scrollTop;document.querySelector('[data-filter-path="grade"]').click();await wait();compactBody=document.querySelector('.equipment-tuning-body');
+    ok('mod filter navigation explicitly resets tuning-body scroll',tuningFilterScrollBefore>0&&compactBody.scrollTop===0,JSON.stringify({before:tuningFilterScrollBefore,after:compactBody.scrollTop}));
+    tuningHost.classList.remove('scroll-retention-probe');document.querySelector('[data-filter-path="grade/medium"]').click();await wait();
     var mediumCandidates=[].slice.call(document.querySelectorAll('.equipment-tuning-candidate'));
     ok('mod breadcrumb filters by authoritative grade metadata',mediumCandidates.length>0&&mediumCandidates.length<25&&mediumCandidates.every(function(node){return node.getAttribute('data-grade')==='medium'})&&document.querySelector('.equipment-tuning-mod-breadcrumb').textContent.indexOf('中等')>=0);
     var activeFilter=document.querySelector('.equipment-tuning-mod-filter .item-filter-option.active'),tuningStyle=getComputedStyle(document.querySelector('.equipment-tuning-view'));

@@ -202,6 +202,13 @@ window.Icons={
     ok('all four header mode options share one computed typography contract',headerModeTypography.length===4
       &&headerModeTypography.every(function(value){return value===headerModeTypography[0]})
       &&headerModeTypography[0].indexOf('11px|600|')===0,JSON.stringify(headerModeTypography));
+    var skillScrollProbe=document.querySelector('.skills-library-list'),skillScrollStyle=skillScrollProbe.style.cssText;
+    skillScrollProbe.style.cssText+=';height:48px!important;min-height:48px!important;max-height:48px!important;flex:0 0 48px!important;overflow:auto!important';skillScrollProbe.scrollTop=skillScrollProbe.scrollHeight;
+    var skillScrollTarget=row('重复技');skillScrollTarget.focus({preventScroll:true});var skillScrollBefore=skillScrollProbe.scrollTop;skillScrollTarget.click();
+    var skillScrollAfter=skillScrollProbe.scrollTop,skillScrollSelection=row('重复技');
+    ok('skill selection refresh preserves overflowing library scroll and entity focus',skillScrollBefore>0&&Math.abs(skillScrollAfter-skillScrollBefore)<=1&&document.activeElement===skillScrollSelection,
+      JSON.stringify({before:skillScrollBefore,after:skillScrollAfter,focus:document.activeElement&&document.activeElement.getAttribute('data-skill-key')}));
+    skillScrollProbe.style.cssText=skillScrollStyle;skillScrollProbe.scrollTop=0;row('闪现').click();
     var beforeHelp=__sent.length,manageHelpButton=document.querySelector('.skills-help-btn');manageHelpButton.focus();manageHelpButton.click();
     ok('manage help explains equip reorder keyboard fallback filters and search without transport',document.querySelector('.workbench-modal[data-modal-kind="skills-help"]')
       &&document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能管理帮助'

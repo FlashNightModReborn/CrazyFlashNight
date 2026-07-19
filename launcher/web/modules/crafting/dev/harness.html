@@ -105,7 +105,13 @@ try{
   ok('renders Flash adjusted cost',document.querySelector('.crafting-cost-summary').textContent.indexOf('90')>=0);
   var firstMaterial=document.querySelector('.crafting-material-row');firstMaterial.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
   ok('tooltip uses crafting domain',__sent.some(function(x){return x.cmd==='tooltip'&&x.payload.itemName==='测试图纸'}));
+  var craftingScrollProbe=document.querySelector('.crafting-catalog-grid'),craftingScrollStyle=craftingScrollProbe.style.cssText;
+  craftingScrollProbe.style.cssText+=';height:72px!important;min-height:72px!important;max-height:72px!important;flex:0 0 72px!important;overflow:auto!important';craftingScrollProbe.scrollTop=craftingScrollProbe.scrollHeight;
+  var craftingScrollBefore=craftingScrollProbe.scrollTop;
   var commit=document.querySelector('.crafting-commit-btn');ok('eligible preview enables commit',commit&&!commit.disabled);commit.click();await wait();await wait();
+  var craftingScrollAfter=craftingScrollProbe.scrollTop;
+  ok('post-craft snapshot refresh preserves overflowing catalog position',craftingScrollBefore>0&&Math.abs(craftingScrollAfter-craftingScrollBefore)<=1,JSON.stringify({before:craftingScrollBefore,after:craftingScrollAfter}));
+  craftingScrollProbe.style.cssText=craftingScrollStyle;craftingScrollProbe.scrollTop=0;
   ok('commit sends one-use token',__sent.some(function(x){return x.cmd==='commit'&&/^craft\.harness\./.test(x.payload.expectedCraftToken)}));
   ok('success refreshes snapshot and preview',__sent.filter(function(x){return x.cmd==='snapshot'}).length>=2&&__sent.filter(function(x){return x.cmd==='preview'}).length>=2);
   ok('success applies new balance',document.querySelector('[data-metric="money"] b').textContent.replace(/,/g,'')==='910');
@@ -117,7 +123,11 @@ try{
   window.__previewDelay=60;var cards=document.querySelectorAll('.crafting-recipe-card');cards[1].click();cards[0].click();await new Promise(function(r){setTimeout(r,160)});window.__previewDelay=0;
   ok('rapid switch releases preview gate',!CraftingPanel.debugState().previewBusy&&document.querySelector('.crafting-output-card').textContent.indexOf('新测试枪')>=0);
   document.querySelectorAll('.crafting-recipe-card')[1].click();await wait();
+  var detailScrollProbe=document.querySelector('.crafting-detail-body'),detailScrollStyle=detailScrollProbe.style.cssText;
+  detailScrollProbe.style.cssText+=';height:72px!important;min-height:72px!important;max-height:72px!important;overflow:auto!important';detailScrollProbe.scrollTop=detailScrollProbe.scrollHeight;var detailScrollBefore=detailScrollProbe.scrollTop;
   var plus=document.querySelector('.crafting-quantity-btn[aria-label="增加一份"]');ok('stack recipe exposes styled batch stepper',plus&&!plus.disabled);plus.click();await wait();
+  var detailScrollAfter=detailScrollProbe.scrollTop;ok('quantity preview refresh preserves overflowing detail position',detailScrollBefore>0&&Math.abs(detailScrollAfter-detailScrollBefore)<=1,JSON.stringify({before:detailScrollBefore,after:detailScrollAfter}));
+  detailScrollProbe.style.cssText=detailScrollStyle;detailScrollProbe.scrollTop=0;
   ok('batch preview binds count and total output',__sent.some(function(x){return x.cmd==='preview'&&x.payload.recipeIndex===1&&x.payload.craftCount===2})&&document.querySelector('.crafting-output-card').textContent.indexOf('×6')>=0);
   document.querySelector('[data-filter-path="category"]').click();
   var consumableFilter=document.querySelector('[data-filter-path="category/consumable"]');consumableFilter.click();await wait();
