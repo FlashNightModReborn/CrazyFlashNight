@@ -2,9 +2,10 @@
 
 **文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻只读 HUD + AS2 服务持有状态权威」的**纲领设计 / ADR**。阶段0 已完成行为基线盘点与停止线对抗审计；截至 2026-07-15，战技/快捷技能/药剂输入、17 路手动冷却与 Skill 装备管理已脱离 HUD 时间轴，后续路线见 §5。
 
-**最后核对代码基线**：commit `0f51b55eaf`（2026-07-15）及本轮 Skill S0–S5 代码工作树；Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
+**最后核对代码基线**：commit `f06021a911`（2026-07-19）及当前工作树；Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
 
 **前置必读 / 关键定位修正**：
+- 本文的 `玩家信息界面` 专指战斗中常驻的 HP/MP/技能/药剂 HUD，不是旧 `新版物品栏界面` 内的「个人信息」详情页。后者已归入 [物品系统双栏工作台](物品系统-双栏工作台-架构设计-2026-06-15.md) §8.1 的 5b-2B 角色构筑路线，与装备槽和纸娃娃联合迁移。
 - 本迁移**不走 Web Panel snapshot+command 范式**（merc/pet/arena/kshop 那条），而走 **`FrameBroadcaster.pushUiState` 快车道 + GDI+ `INativeHudWidget` 只读镜像**。详见 §4。
 - [agentsDoc/as2-web-panel-migration.md](../agentsDoc/as2-web-panel-migration.md) 只在**总线协议字段闭环、验证门槛、文档同步**这几节适用；其 panel 生命周期 / WebView2 / open-close 部分**不适用**于本 native HUD 迁移，勿误用。
 - 跨栈稳定性硬约束（AS2 `.as` BOM、Flash CS6 编译表述边界、终端编码）一律以 [AGENTS.md](../AGENTS.md) 为准，本文不复制。
