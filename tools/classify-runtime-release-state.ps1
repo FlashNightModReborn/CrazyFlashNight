@@ -214,7 +214,7 @@ function Test-Cf7InputTreeRule([string]$Path, $Rule) {
     return $true
 }
 
-function Get-Cf7NativeChangeGate([string]$BaseCommit) {
+function Get-Cf7NativeChangeGate([string]$BaseCommit, [switch]$AllowLegacyAdmissionConfig) {
     $relativePath = 'config/build/native-change-gate.v1.json'
     $blobOid = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $relativePath -Optional
     if (-not $blobOid) { return $null }
@@ -279,7 +279,6 @@ function Get-Cf7NativeChangeGate([string]$BaseCommit) {
     }
     foreach ($required in @(
         '.github/workflows/runtime-bundle-integrity.yml',
-        'config/build/main-branch-admission.v2.json',
         'config/build/native-change-gate.v1.json',
         'config/build/runtime-inputs.v2.json',
         'tools/audit-main-branch-admission.ps1',
@@ -287,6 +286,22 @@ function Get-Cf7NativeChangeGate([string]$BaseCommit) {
         'tools/resolve-runtime-trusted-base.ps1'
     )) {
         if (-not $files.ContainsKey($required)) { throw "Native change gate is missing mandatory fixed file: $required" }
+    }
+    $currentAdmissionPath = 'config/build/main-branch-admission.v2.json'
+    $legacyAdmissionPath = 'config/build/main-branch-admission.v1.json'
+    $admissionPath = $currentAdmissionPath
+    if (-not $files.ContainsKey($currentAdmissionPath)) {
+        if (-not $AllowLegacyAdmissionConfig) {
+            throw "Native change gate is missing mandatory fixed file: $currentAdmissionPath"
+        }
+        $legacyBlob = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $legacyAdmissionPath -Optional
+        $currentBlob = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $currentAdmissionPath -Optional
+        if (-not $files.ContainsKey($legacyAdmissionPath) -or -not $legacyBlob -or $currentBlob) {
+            throw 'Legacy admission compatibility requires a base commit that exclusively contains and protects config/build/main-branch-admission.v1.json.'
+        }
+        $admissionPath = $legacyAdmissionPath
+    } elseif (-not (Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $currentAdmissionPath -Optional)) {
+        throw "Native change gate protects a missing mandatory fixed file: $currentAdmissionPath"
     }
     foreach ($required in @(
         '.github/actions/', '.github/workflows/', 'config/build/', 'launcher/build',
@@ -302,10 +317,11 @@ function Get-Cf7NativeChangeGate([string]$BaseCommit) {
         Basenames = $basenames
         Files = $files
         Prefixes = $prefixes.ToArray()
+        AdmissionConfigPath = $admissionPath
     }
 }
 
-function Get-Cf7FastPathProtection([string]$BaseCommit) {
+function Get-Cf7FastPathProtection([string]$BaseCommit, [switch]$AllowLegacyAdmissionConfig) {
     $descriptorPath = 'config/build/runtime-inputs.v2.json'
     $descriptorOid = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $descriptorPath -Optional
     if (-not $descriptorOid) { return $null }
@@ -325,7 +341,7 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
             throw "Base runtime input descriptor lacks a well-formed domain: $requiredDomain"
         }
     }
-    $nativeGate = Get-Cf7NativeChangeGate -BaseCommit $BaseCommit
+    $nativeGate = Get-Cf7NativeChangeGate -BaseCommit $BaseCommit -AllowLegacyAdmissionConfig:$AllowLegacyAdmissionConfig
     if ($null -eq $nativeGate) { return $null }
 
     $fixed = New-Object 'Collections.Generic.Dictionary[string,string]' ([StringComparer]::OrdinalIgnoreCase)
@@ -415,6 +431,7 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
         ProtectedBasenames = $nativeGate.Basenames
         GateFiles = $nativeGate.Files
         GatePrefixes = $nativeGate.Prefixes
+        AdmissionConfigPath = $nativeGate.AdmissionConfigPath
         DescriptorOid = $descriptorOid
         GateBlobOid = $nativeGate.BlobOid
     }
@@ -622,7 +639,30 @@ function Assert-Cf7NativeChangesReleaseBound([object[]]$Entries, $BaseProtection
     })
     if ($gatedWrites.Count -eq 0) { return }
     $bound = Get-Cf7IndexedReleaseBoundPaths
-    $unbound = @($gatedWrites | Where-Object { -not $bound.Contains([string]$_.Path) } | ForEach-Object { [string]$_.Path } | Sort-Object -Unique)
+    $allowedRetirements = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    $entriesByPath = @{}
+    foreach ($entry in $Entries) { $entriesByPath[[string]$entry.Path] = $entry }
+    $isAdmissionV1ToV2Promotion =
+        $null -ne $BaseProtection -and
+        [string]$BaseProtection.AdmissionConfigPath -ceq 'config/build/main-branch-admission.v1.json' -and
+        [string]$HeadProtection.AdmissionConfigPath -ceq 'config/build/main-branch-admission.v2.json' -and
+        [string]$entriesByPath['config/build/main-branch-admission.v1.json'].Status -ceq 'D' -and
+        [string]$entriesByPath['config/build/main-branch-admission.v2.json'].Status -ceq 'A' -and
+        [string]$entriesByPath['config/build/native-change-gate.v1.json'].Status -ceq 'M' -and
+        [string]$entriesByPath['config/build/runtime-inputs.v2.json'].Status -ceq 'M' -and
+        [string]$entriesByPath['config/build/runtime-release-consensus.json'].Status -ceq 'M' -and
+        [string]$entriesByPath['.github/CODEOWNERS'].Status -ceq 'M' -and
+        $BaseProtection.GateFiles.ContainsKey('.github/CODEOWNERS') -and
+        -not $HeadProtection.GateFiles.ContainsKey('.github/CODEOWNERS')
+    if ($isAdmissionV1ToV2Promotion) {
+        # CODEOWNERS was part of the legacy native gate and becomes advisory in v2.
+        # Allow only that exact retirement, and only alongside a changed signed consensus,
+        # which forces the complete deployment verifier chain later in this classifier.
+        [void]$allowedRetirements.Add('.github/CODEOWNERS')
+    }
+    $unbound = @($gatedWrites | Where-Object {
+        -not $bound.Contains([string]$_.Path) -and -not $allowedRetirements.Contains([string]$_.Path)
+    } | ForEach-Object { [string]$_.Path } | Sort-Object -Unique)
     if ($unbound.Count -gt 0) {
         throw "Native/runtime changes are not bound by the indexed release descriptor and cannot become green: $($unbound -join ',')"
     }
@@ -831,7 +871,7 @@ try {
         Get-Cf7RawChangedEntries -BaseCommit $admissionBaseCommit -HeadCommit $headCommit
     })
     $admissionBaseProtection = if ($admissionBaseCommit) {
-        Get-Cf7FastPathProtection -BaseCommit $admissionBaseCommit
+        Get-Cf7FastPathProtection -BaseCommit $admissionBaseCommit -AllowLegacyAdmissionConfig
     } else { $null }
     $headProtection = Get-Cf7FastPathProtection -BaseCommit $headCommit
     Assert-Cf7NativeChangesReleaseBound -Entries $admissionChangedEntries `

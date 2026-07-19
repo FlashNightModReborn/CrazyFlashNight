@@ -631,6 +631,154 @@ try {
         Assert-Test ((Get-TestCalls $f).Count -eq 0) 'malformed descriptor must fail before verifiers'
     }
 
+    Run-Test 'Admission v1 to v2 transition is accepted only on the event base side' {
+        $retiredControlPath = '.github/legacy-native-control.json'
+        $setLegacyAdmission = {
+            param($Fixture, [switch]$KeepCurrentFile, [switch]$IncludeExtraRetiredControl)
+            $gatePath = Join-Path $Fixture.Root 'config\build\native-change-gate.v1.json'
+            $gate = [IO.File]::ReadAllText($gatePath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+            $legacyProtectedFiles = @($gate.protectedFiles | ForEach-Object {
+                if ([string]$_ -ceq 'config/build/main-branch-admission.v2.json') {
+                    'config/build/main-branch-admission.v1.json'
+                } else { [string]$_ }
+            })
+            $legacyProtectedFiles += '.github/CODEOWNERS'
+            if ($IncludeExtraRetiredControl) { $legacyProtectedFiles += $retiredControlPath }
+            $gate.protectedFiles = $legacyProtectedFiles
+            Set-TestFile $gatePath (($gate | ConvertTo-Json -Depth 10) + "`n")
+
+            $descriptorPath = Join-Path $Fixture.Root 'config\build\runtime-inputs.v2.json'
+            $descriptor = [IO.File]::ReadAllText($descriptorPath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+            $legacyPolicyFiles = @($descriptor.domains.policy.fixedFiles | ForEach-Object {
+                if ([string]$_ -ceq 'config/build/main-branch-admission.v2.json') {
+                    'config/build/main-branch-admission.v1.json'
+                } else { [string]$_ }
+            })
+            $legacyPolicyFiles += '.github/CODEOWNERS'
+            if ($IncludeExtraRetiredControl) { $legacyPolicyFiles += $retiredControlPath }
+            $descriptor.domains.policy.fixedFiles = $legacyPolicyFiles
+            Set-TestFile $descriptorPath (($descriptor | ConvertTo-Json -Depth 12) + "`n")
+
+            Copy-Item -LiteralPath (Join-Path $Fixture.Root 'config\build\main-branch-admission.v2.json') `
+                -Destination (Join-Path $Fixture.Root 'config\build\main-branch-admission.v1.json')
+            if (-not $KeepCurrentFile) {
+                Remove-Item -LiteralPath (Join-Path $Fixture.Root 'config\build\main-branch-admission.v2.json') -Force
+            }
+            Set-TestFile (Join-Path $Fixture.Root '.github\CODEOWNERS') '* @legacy-owner'
+            if ($IncludeExtraRetiredControl) {
+                Set-TestFile (Join-Path $Fixture.Root ($retiredControlPath -replace '/','\')) '{"legacy":true}'
+            }
+        }
+        $setCurrentAdmission = {
+            param($Fixture, [switch]$ChangeConsensus)
+            $legacyAdmissionPath = Join-Path $Fixture.Root 'config\build\main-branch-admission.v1.json'
+            if (Test-Path -LiteralPath $legacyAdmissionPath) { Remove-Item -LiteralPath $legacyAdmissionPath -Force }
+            Set-TestBytes (Join-Path $Fixture.Root 'config\build\main-branch-admission.v2.json') $script:admissionConfigBytes
+            Set-TestBytes (Join-Path $Fixture.Root 'config\build\native-change-gate.v1.json') $script:nativeGateBytes
+            $descriptorPath = Join-Path $Fixture.Root 'config\build\runtime-inputs.v2.json'
+            $descriptor = [IO.File]::ReadAllText($descriptorPath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+            $descriptor.domains.policy.fixedFiles = @($descriptor.domains.policy.fixedFiles | Where-Object {
+                [string]$_ -cnotin @(
+                    'config/build/main-branch-admission.v1.json',
+                    'config/build/main-branch-admission.v2.json',
+                    '.github/CODEOWNERS',
+                    $retiredControlPath
+                )
+            }) + 'config/build/main-branch-admission.v2.json'
+            Set-TestFile $descriptorPath (($descriptor | ConvertTo-Json -Depth 12) + "`n")
+            Set-TestFile (Join-Path $Fixture.Root '.github\CODEOWNERS') '# advisory only'
+            $retiredControl = Join-Path $Fixture.Root ($retiredControlPath -replace '/','\')
+            if (Test-Path -LiteralPath $retiredControl) { Set-TestFile $retiredControl '{"legacy":false}' }
+            if ($ChangeConsensus) {
+                $consensusPath = Join-Path $Fixture.Root 'config\build\runtime-release-consensus.json'
+                $consensus = [IO.File]::ReadAllText($consensusPath, [Text.Encoding]::UTF8).TrimEnd()
+                Set-TestFile $consensusPath ($consensus + "`n `n")
+            }
+        }
+
+        $passing = New-TestFixture v2
+        & $setLegacyAdmission $passing
+        [void](Invoke-TestGit $passing.Root @('add','-A'))
+        [void](Invoke-TestGit $passing.Root @('commit','-m','legacy admission baseline'))
+        $legacyBaseLines = @(Invoke-TestGit $passing.Root @('rev-parse','HEAD'))
+        $passing.Base = ([string]$legacyBaseLines[0]).Trim()
+
+        & $setCurrentAdmission $passing -ChangeConsensus
+        [void](Invoke-TestGit $passing.Root @('add','-A'))
+        [void](Invoke-TestGit $passing.Root @('commit','-m','migrate admission contract to v2'))
+        $passingResult = Invoke-Classifier $passing Audit $passing.Base
+        Assert-Test ($passingResult.ExitCode -eq 0 -and $passingResult.Output -match 'state=promoted') $passingResult.Output
+        Assert-Test ((Get-TestCalls $passing) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') `
+            'promoted admission transition must run the complete verifier chain'
+
+        $missingConsensus = New-TestFixture v2
+        & $setLegacyAdmission $missingConsensus
+        [void](Invoke-TestGit $missingConsensus.Root @('add','-A'))
+        [void](Invoke-TestGit $missingConsensus.Root @('commit','-m','legacy admission baseline'))
+        $missingConsensusBase = @(Invoke-TestGit $missingConsensus.Root @('rev-parse','HEAD'))
+        $missingConsensus.Base = ([string]$missingConsensusBase[0]).Trim()
+        & $setCurrentAdmission $missingConsensus
+        [void](Invoke-TestGit $missingConsensus.Root @('add','-A'))
+        [void](Invoke-TestGit $missingConsensus.Root @('commit','-m','unpromoted admission transition'))
+        $missingConsensusResult = Invoke-Classifier $missingConsensus Audit $missingConsensus.Base
+        Assert-Test ($missingConsensusResult.ExitCode -ne 0 -and
+            $missingConsensusResult.Output -match 'not bound.*\.github/CODEOWNERS') `
+            'CODEOWNERS retirement passed without a changed signed consensus'
+
+        $extraRetirement = New-TestFixture v2
+        & $setLegacyAdmission $extraRetirement -IncludeExtraRetiredControl
+        [void](Invoke-TestGit $extraRetirement.Root @('add','-A'))
+        [void](Invoke-TestGit $extraRetirement.Root @('commit','-m','legacy admission with extra control'))
+        $extraRetirementBase = @(Invoke-TestGit $extraRetirement.Root @('rev-parse','HEAD'))
+        $extraRetirement.Base = ([string]$extraRetirementBase[0]).Trim()
+        & $setCurrentAdmission $extraRetirement -ChangeConsensus
+        [void](Invoke-TestGit $extraRetirement.Root @('add','-A'))
+        [void](Invoke-TestGit $extraRetirement.Root @('commit','-m','attempt broad control retirement'))
+        $extraRetirementResult = Invoke-Classifier $extraRetirement Audit $extraRetirement.Base
+        Assert-Test ($extraRetirementResult.ExitCode -ne 0 -and
+            $extraRetirementResult.Output -match 'not bound.*\.github/legacy-native-control.json') `
+            'admission migration retired an arbitrary base-only native control'
+
+        $inconsistentHead = New-TestFixture v2
+        & $setLegacyAdmission $inconsistentHead
+        [void](Invoke-TestGit $inconsistentHead.Root @('add','-A'))
+        [void](Invoke-TestGit $inconsistentHead.Root @('commit','-m','legacy CODEOWNERS gate baseline'))
+        $inconsistentHeadBase = @(Invoke-TestGit $inconsistentHead.Root @('rev-parse','HEAD'))
+        $inconsistentHead.Base = ([string]$inconsistentHeadBase[0]).Trim()
+        & $setCurrentAdmission $inconsistentHead -ChangeConsensus
+        $headGatePath = Join-Path $inconsistentHead.Root 'config\build\native-change-gate.v1.json'
+        $headGate = [IO.File]::ReadAllText($headGatePath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+        $headGate.protectedFiles = @($headGate.protectedFiles) + '.github/CODEOWNERS'
+        Set-TestFile $headGatePath (($headGate | ConvertTo-Json -Depth 10) + "`n")
+        [void](Invoke-TestGit $inconsistentHead.Root @('add','-A'))
+        [void](Invoke-TestGit $inconsistentHead.Root @('commit','-m','retain CODEOWNERS only in head gate'))
+        $inconsistentHeadResult = Invoke-Classifier $inconsistentHead Audit $inconsistentHead.Base
+        Assert-Test ($inconsistentHeadResult.ExitCode -ne 0 -and
+            $inconsistentHeadResult.Output -match 'not bound.*\.github/CODEOWNERS') `
+            'CODEOWNERS retirement passed while the head gate still protected it'
+
+        $downgradedHead = New-TestFixture v2
+        & $setLegacyAdmission $downgradedHead
+        [void](Invoke-TestGit $downgradedHead.Root @('add','-A'))
+        [void](Invoke-TestGit $downgradedHead.Root @('commit','-m','attempt admission downgrade'))
+        $downgradeResult = Invoke-Classifier $downgradedHead Audit $downgradedHead.Base
+        Assert-Test ($downgradeResult.ExitCode -ne 0 -and
+            $downgradeResult.Output -match 'missing mandatory fixed file: config/build/main-branch-admission.v2.json') `
+            'head-side admission downgrade unexpectedly passed'
+
+        $ambiguousBase = New-TestFixture v2
+        & $setLegacyAdmission $ambiguousBase -KeepCurrentFile
+        [void](Invoke-TestGit $ambiguousBase.Root @('add','-A'))
+        [void](Invoke-TestGit $ambiguousBase.Root @('commit','-m','ambiguous legacy admission baseline'))
+        $ambiguousBaseLines = @(Invoke-TestGit $ambiguousBase.Root @('rev-parse','HEAD'))
+        $ambiguousBase.Base = ([string]$ambiguousBaseLines[0]).Trim()
+        [void](Add-TestCommit $ambiguousBase 'docs/head.md' 'content')
+        $ambiguousResult = Invoke-Classifier $ambiguousBase Audit $ambiguousBase.Base
+        Assert-Test ($ambiguousResult.ExitCode -ne 0 -and
+            $ambiguousResult.Output -match 'Legacy admission compatibility requires') `
+            'legacy base compatibility accepted a commit that already contained v2'
+    }
+
     Run-Test 'Bound native changes use strict verification while unbound native writes fail before verifiers' {
         $cases = @(
             [pscustomobject]@{ Name='runtime'; Path='runtime/core.bin'; Content='runtime-v2'; Bound=$true },
