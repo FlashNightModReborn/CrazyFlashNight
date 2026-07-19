@@ -232,6 +232,10 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Test (-not $workflowText.Contains('>> $env:GITHUB_')) 'PowerShell 5.1 workflow files must not write UTF-16 through redirection to GitHub control files'
     Assert-Cf7Test ($workflowText.Contains('run-name: Runtime cloud builder ${{ inputs.source_commit || github.event.client_payload.source_commit }}')) 'cloud workflow run name must expose the immutable full source SHA'
     Assert-Cf7Test ($workflowText.Contains("-cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$'")) 'cloud dispatch must canonicalize source identity by requiring lowercase full SHA'
+    Assert-Cf7Test ($workflowText.Contains('if ([string]$env:GITHUB_SHA -cne $normalizedRequested)')) `
+        'cloud workflow must reject a workflow ref whose resolved SHA differs from the requested source commit'
+    Assert-Cf7Test ($workflowText.Contains('if ([string]$cloudConfig.sourceRef -cne $env:GITHUB_REF)')) `
+        'checked-out cloud config must bind its exact sourceRef to the workflow GITHUB_REF'
     Assert-Cf7Test (([regex]::Matches($workflowText, 'runs-on:\s*windows-2022')).Count -eq 2) 'both cloud jobs must use the explicit VS 2022 image family'
     Assert-Cf7Test (-not [regex]::IsMatch($workflowText, 'runs-on:\s*(?:windows-latest|windows-2025|self-hosted)')) 'cloud builder workflow must not use a mutable major-toolchain alias or self-hosted runners'
     Assert-Cf7Test ($buildJobText.Contains('CF7_EXPECTED_IMAGE_OS: win22') -and

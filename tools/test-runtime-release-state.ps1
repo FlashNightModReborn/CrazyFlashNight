@@ -4,8 +4,10 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $classifierSource = Join-Path $repoRoot 'tools\classify-runtime-release-state.ps1'
 $workflowSource = Join-Path $repoRoot '.github\workflows\runtime-bundle-integrity.yml'
-$lanesConfigSource = Join-Path $repoRoot 'config\build\contribution-lanes.v1.json'
-$lanesConfigBytes = [IO.File]::ReadAllBytes($lanesConfigSource)
+$nativeGateSource = Join-Path $repoRoot 'config\build\native-change-gate.v1.json'
+$nativeGateBytes = [IO.File]::ReadAllBytes($nativeGateSource)
+$admissionConfigSource = Join-Path $repoRoot 'config\build\main-branch-admission.v1.json'
+$admissionConfigBytes = [IO.File]::ReadAllBytes($admissionConfigSource)
 $runtimeV2CommonSource = Join-Path $repoRoot 'tools\runtime-build-v2-common.ps1'
 $runtimeAttestationCommonSource = Join-Path $repoRoot 'tools\runtime-build-attestation-v2-common.ps1'
 $targetRegistrySource = Join-Path $repoRoot 'config\build\runtime-builders.v2.json'
@@ -45,7 +47,8 @@ function Get-TestBaseSentinelsSha256($Fixture) {
     $lines = New-Object 'Collections.Generic.List[string]'
     foreach ($relativePath in @(
         'config/build/runtime-inputs.v2.json',
-        'config/build/contribution-lanes.v1.json',
+        'config/build/main-branch-admission.v1.json',
+        'config/build/native-change-gate.v1.json',
         'runtime/cf7-runtime-manifest.tsv',
         'config/build/runtime-release-consensus.json',
         'config/build/runtime-builders.v2.json',
@@ -143,24 +146,65 @@ exit $code
     $runtimeInputs = [ordered]@{
         schema = 'cf7-runtime-inputs.v2'
         domains = [ordered]@{
-            artifactSource = [ordered]@{ fixedFiles=@(); trees=@() }
+            artifactSource = [ordered]@{
+                fixedFiles=@()
+                trees=@([ordered]@{
+                    path='launcher/src'
+                    includeExtensions=@('.cs')
+                    excludePaths=@()
+                    excludePrefixes=@()
+                })
+            }
             producerRecipe = [ordered]@{ fixedFiles=@(); trees=@() }
             toolchainLock = [ordered]@{ fixedFiles=@(); trees=@() }
             policy = [ordered]@{
                 fixedFiles=@(
                     'config/build/runtime-inputs.v2.json',
+                    'config/build/main-branch-admission.v1.json',
+                    'config/build/native-change-gate.v1.json',
+                    'data/map/map_catalog.json',
+                    'tools/derive-map-catalog.js',
                     'tools/classify-runtime-release-state.ps1',
                     'tools/verify-runtime-bundle.ps1',
                     'tools/verify-runtime-bundle-v2.ps1',
                     'tools/verify-runtime-consensus.ps1'
                 )
-                trees=@()
+                trees=@(
+                    [ordered]@{
+                        path='amf0-help/sol_parser'
+                        includeExtensions=@('.rs','.toml','.lock','.sol')
+                        excludePaths=@()
+                        excludePrefixes=@('amf0-help/sol_parser/target/')
+                    },
+                    [ordered]@{
+                        path='launcher/native/sol_parser/tests'
+                        includeExtensions=@('.rs','.sol')
+                        excludePaths=@()
+                        excludePrefixes=@()
+                    },
+                    [ordered]@{
+                        path='launcher/tests'
+                        includeExtensions=@('.cs','.csproj','.json','.ps1')
+                        excludePaths=@()
+                        excludePrefixes=@('launcher/tests/bin/','launcher/tests/obj/')
+                    },
+                    [ordered]@{
+                        path='launcher/scripts'
+                        includeExtensions=@('.ts')
+                        excludePaths=@()
+                        excludePrefixes=@()
+                    }
+                )
             }
         }
         payload = [ordered]@{ fixedRoots=@('CRAZYFLASHER7MercenaryEmpire.exe'); trees=@('runtime') }
     }
     Set-TestFile (Join-Path $root 'config\build\runtime-inputs.v2.json') (($runtimeInputs | ConvertTo-Json -Depth 10) + "`n")
-    Set-TestBytes (Join-Path $root 'config\build\contribution-lanes.v1.json') $script:lanesConfigBytes
+    Set-TestFile (Join-Path $root 'data\map\map_catalog.json') '{"schema":"fixture-content-policy"}'
+    Set-TestFile (Join-Path $root 'tools\derive-map-catalog.js') 'export const derive = true;'
+    Set-TestFile (Join-Path $root 'launcher\scripts\catalog.ts') 'export const catalog = true;'
+    Set-TestBytes (Join-Path $root 'config\build\native-change-gate.v1.json') $script:nativeGateBytes
+    Set-TestBytes (Join-Path $root 'config\build\main-branch-admission.v1.json') $script:admissionConfigBytes
     Set-TestFile (Join-Path $root '.gitignore') ".cf7-test-control.json`n.cf7-calls.log`n"
 
     [void](Invoke-TestGit $root @('init'))
@@ -244,7 +288,7 @@ function Add-TestMigrationCommit(
     return ([string]$headLines[0]).Trim()
 }
 
-function Invoke-Classifier($Fixture, [string]$Mode, [AllowNull()][string]$BaseRevision) {
+function Invoke-Classifier($Fixture, [string]$Mode, [AllowNull()][string]$BaseRevision, [AllowNull()][string]$TrustedBaseRevision, [switch]$DisableFastPath, [switch]$OmitTrustedBase) {
     $headLines = @(Invoke-TestGit $Fixture.Root @('rev-parse','HEAD'))
     $head = ([string]$headLines[0]).Trim()
     $arguments = @(
@@ -252,6 +296,12 @@ function Invoke-Classifier($Fixture, [string]$Mode, [AllowNull()][string]$BaseRe
         '-ProjectRoot',$Fixture.Root,'-Mode',$Mode,'-HeadRevision',$head
     )
     if (-not [string]::IsNullOrEmpty($BaseRevision)) { $arguments += @('-BaseRevision',$BaseRevision) }
+    if ([string]::IsNullOrEmpty($TrustedBaseRevision) -and -not $DisableFastPath -and -not $OmitTrustedBase -and
+            -not [string]::IsNullOrEmpty($BaseRevision) -and $BaseRevision -notmatch '^0+$') {
+        $TrustedBaseRevision = $BaseRevision
+    }
+    if (-not [string]::IsNullOrEmpty($TrustedBaseRevision)) { $arguments += @('-TrustedBaseRevision',$TrustedBaseRevision) }
+    if ($DisableFastPath) { $arguments += '-DisableFastPath' }
     $previousErrorAction = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
@@ -302,13 +352,50 @@ try {
         [void](Add-TestCommit $f 'docs/artist-note.md' 'content-only')
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -eq 0) $result.Output
-        Assert-Test ($result.Output -match 'state=protected-content-fastpath') $result.Output
-        Assert-Test ($result.Output -match 'consensus=inherited-from-base') $result.Output
+        Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
+        Assert-Test ($result.Output -match 'consensus=inherited-from-trusted-base') $result.Output
         Assert-Test ($result.Output -match 'changedCount=1') $result.Output
         Assert-Test ($result.Output -match 'changedPathsSha256=[0-9A-F]{64}') $result.Output
-        Assert-Test ((Get-TestOutputField $result.Output 'baseSentinelCount') -eq '7') $result.Output
+        Assert-Test ((Get-TestOutputField $result.Output 'baseSentinelCount') -eq '8') $result.Output
         Assert-Test ((Get-TestOutputField $result.Output 'baseSentinelsSha256') -ceq (Get-TestBaseSentinelsSha256 $f)) $result.Output
         Assert-Test ((Get-TestCalls $f).Count -eq 0) 'docs fast path must invoke zero verifiers'
+    }
+
+    Run-Test 'Trusted green anchor keeps earlier native drift sticky across a later docs commit' {
+        $f = New-TestFixture v2
+        $trustedGreen = $f.Base
+        $eventBase = Add-TestCommit $f 'launcher/src/UnverifiedDrift.cs' 'native drift'
+        [void](Add-TestCommit $f 'docs/after-native-drift.md' 'ordinary content')
+        Set-TestControl $f -Strict 2
+        $result = Invoke-Classifier $f Protected $eventBase $trustedGreen
+        Assert-Test ($result.ExitCode -ne 0) 'later docs commit washed an unverified native drift green'
+        Assert-Test ($result.Output -notmatch 'state=protected-nonnative-fastpath') $result.Output
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict') 'sticky native drift did not enter strict verification'
+    }
+
+    Run-Test 'Missing external anchor cannot emit a reusable required-check success' {
+        foreach ($variant in @('explicit-disable','omitted-anchor')) {
+            $f = New-TestFixture v2
+            [void](Add-TestCommit $f 'docs/api-outage.md' 'ordinary content')
+            $result = if ($variant -eq 'explicit-disable') {
+                Invoke-Classifier $f Protected $f.Base $null -DisableFastPath
+            } else {
+                Invoke-Classifier $f Protected $f.Base $null -OmitTrustedBase
+            }
+            Assert-Test ($result.ExitCode -ne 0) "$variant unexpectedly emitted a green result"
+            Assert-Test ($result.Output -match 'No externally verified green main anchor') "$variant`: $($result.Output)"
+            Assert-Test ((Get-TestCalls $f).Count -eq 0) "$variant must fail before local verifiers can create a reusable green result"
+        }
+    }
+
+    Run-Test 'Resolver outage cannot wash an earlier unbound native drift green' {
+        $f = New-TestFixture v2
+        $eventBase = Add-TestCommit $f 'foreign/Unbound.dll' 'unbound drift'
+        [void](Add-TestCommit $f 'docs/after-api-outage.md' 'ordinary content')
+        $result = Invoke-Classifier $f Protected $eventBase $null -DisableFastPath
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'No externally verified green main anchor') $result.Output
+        Assert-Test ($result.Output -notmatch 'state=protected-(?:nonnative-fastpath|coherent)') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'resolver outage must not create a reusable green result from local verifiers'
     }
 
     Run-Test 'Sparse fast path neither materializes nor reads runtime payload blobs' {
@@ -323,7 +410,7 @@ try {
         }
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -eq 0) $result.Output
-        Assert-Test ($result.Output -match 'state=protected-content-fastpath') $result.Output
+        Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
         Assert-Test ((Get-TestCalls $f).Count -eq 0) 'sparse fast path must invoke zero verifiers'
         Assert-Test (-not (Test-Path -LiteralPath (Join-Path $f.Root 'CRAZYFLASHER7MercenaryEmpire.exe'))) 'classifier materialized the root bootstrap'
         Assert-Test (-not (Test-Path -LiteralPath (Join-Path $f.Root 'runtime'))) 'classifier materialized the runtime tree'
@@ -331,8 +418,8 @@ try {
 
     Run-Test 'Sparse strict path reads indexed runtime blobs without worktree materialization' {
         $f = New-TestFixture v2
-        [void](Add-TestCommit $f 'source.txt' 'protected source change')
-        [void](Invoke-TestGit $f.Root @('sparse-checkout','set','--no-cone','/docs/','/config/build/','/tools/','/.gitignore','/source.txt'))
+        [void](Add-TestCommit $f 'launcher/src/App.cs' 'protected source change')
+        [void](Invoke-TestGit $f.Root @('sparse-checkout','set','--no-cone','/docs/','/config/build/','/tools/','/launcher/src/','/.gitignore'))
         Assert-Test (-not (Test-Path -LiteralPath (Join-Path $f.Root 'CRAZYFLASHER7MercenaryEmpire.exe'))) 'sparse checkout materialized the root bootstrap'
         Assert-Test (-not (Test-Path -LiteralPath (Join-Path $f.Root 'runtime'))) 'sparse checkout materialized the runtime tree'
         $result = Invoke-Classifier $f Protected $f.Base
@@ -343,22 +430,37 @@ try {
         Assert-Test (-not (Test-Path -LiteralPath (Join-Path $f.Root 'runtime'))) 'strict classifier materialized the runtime tree'
     }
 
-    Run-Test 'Protected content roots share the same zero-verifier fast path' {
+    Run-Test 'AS2 Flash Web data config and docs share the non-native zero-verifier fast path' {
         $f = New-TestFixture v2
-        $laneConfig = [Text.Encoding]::UTF8.GetString($script:lanesConfigBytes).TrimStart([char]0xFEFF) | ConvertFrom-Json
-        $fontPrefix = [string]@($laneConfig.contentPrefixes | Where-Object { $_ -notmatch '^[\x00-\x7F]+$' })[0]
         $files = [ordered]@{
-            'flashswf/arts/new/item.txt' = 'asset'
+            'scripts/logic/Test.as' = 'trace("test");'
+            'CRAZYFLASHER7MercenaryEmpire.xfl' = '<DOMDocument />'
+            'CRAZYFLASHER7MercenaryEmpire.swf' = 'flash-binary-fixture'
+            'launcher/web/modules/map/panel.js' = 'export const value = 1;'
+            'flashswf/UI/test/asset.swf' = 'asset'
             'data/items/new.xml' = '<item />'
             'config/gameplay/new.xml' = '<config />'
+            'docs/artist-note.md' = 'docs'
         }
-        $files[$fontPrefix + 'font-note.txt'] = 'font'
-        [void](Add-TestFilesCommit $f $files 'content roots')
+        [void](Add-TestFilesCommit $f $files 'non-native roots')
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -eq 0) $result.Output
-        Assert-Test ($result.Output -match 'state=protected-content-fastpath') $result.Output
-        Assert-Test ($result.Output -match 'changedCount=4') $result.Output
-        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'content fast path must invoke zero verifiers'
+        Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
+        Assert-Test ($result.Output -match 'changedCount=8') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'non-native fast path must invoke zero verifiers'
+    }
+
+    Run-Test 'Formal content-policy inputs remain receipt-bound without becoming native admission paths' {
+        $f = New-TestFixture v2
+        [void](Add-TestFilesCommit $f ([ordered]@{
+            'data/map/map_catalog.json' = '{"schema":"updated-content-policy"}'
+            'tools/derive-map-catalog.js' = 'export const derive = false;'
+            'launcher/scripts/catalog.ts' = 'export const catalog = false;'
+        }) 'change broad content policy')
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -eq 0) $result.Output
+        Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'content-policy input unexpectedly invoked native strict verification'
     }
 
     Run-Test 'Protected-set audit hash canonicalizes every tree-rule field' {
@@ -373,7 +475,7 @@ try {
             [void](Add-TestCommit $f 'docs/tree-rule-audit.md' 'content')
             $result = Invoke-Classifier $f Protected $f.Base
             Assert-Test ($result.ExitCode -eq 0) $result.Output
-            Assert-Test ($result.Output -match 'state=protected-content-fastpath') $result.Output
+            Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
             return Get-TestOutputField $result.Output 'protectedSetSha256'
         }
 
@@ -409,29 +511,91 @@ try {
         Assert-Test ($distinctHashes.Count -eq 4) 'one or more tree-rule fields are missing from protectedSetSha256'
     }
 
-    Run-Test 'Trusted-base lane config rejects scalar and overlapping prefix contracts' {
+    Run-Test 'Native gate extensions basenames files and prefixes are all audit-hash bound' {
+        $captureHash = {
+            param([string]$Mutation)
+            $f = New-TestFixture v2
+            $gatePath = Join-Path $f.Root 'config\build\native-change-gate.v1.json'
+            $gate = [IO.File]::ReadAllText($gatePath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+            switch ($Mutation) {
+                'reorder' {
+                    $gate.protectedExtensions = @($gate.protectedExtensions | Sort-Object -Descending)
+                    $gate.protectedBasenames = @($gate.protectedBasenames | Sort-Object -Descending)
+                    $gate.protectedFiles = @($gate.protectedFiles | Sort-Object -Descending)
+                    $gate.protectedPrefixes = @($gate.protectedPrefixes | Sort-Object -Descending)
+                }
+                'extension' { $gate.protectedExtensions = @($gate.protectedExtensions) + '.xyz' }
+                'basename' { $gate.protectedBasenames = @($gate.protectedBasenames) + 'native.fixture' }
+                'file' { $gate.protectedFiles = @($gate.protectedFiles) + 'security/native-fixture.json' }
+                'prefix' { $gate.protectedPrefixes = @($gate.protectedPrefixes) + 'security/native-' }
+            }
+            $newBase = Add-TestCommit $f 'config/build/native-change-gate.v1.json' (($gate | ConvertTo-Json -Depth 10) + "`n")
+            $f.Base = $newBase
+            [void](Add-TestCommit $f 'docs/native-gate-audit.md' 'content')
+            $result = Invoke-Classifier $f Protected $f.Base
+            Assert-Test ($result.ExitCode -eq 0) $result.Output
+            Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
+            return Get-TestOutputField $result.Output 'protectedSetSha256'
+        }
+
+        $baseline = & $captureHash 'none'
+        $reordered = & $captureHash 'reorder'
+        Assert-Test ($baseline -ceq $reordered) 'native gate array order changed the canonical audit hash'
+        $changed = @('extension','basename','file','prefix' | ForEach-Object { & $captureHash $_ })
+        Assert-Test (@(@($baseline) + $changed | Sort-Object -Unique).Count -eq 5) 'one or more native gate fields are missing from protectedSetSha256'
+    }
+
+    Run-Test 'Trusted-base native gate rejects scalar uppercase and unsafe contracts' {
         $invalidConfigs = @(
-            '{"schema":"cf7-contribution-lanes.v1","docsPrefixes":"docs/","contentPrefixes":["data/"]}',
-            '{"schema":"cf7-contribution-lanes.v1","docsPrefixes":["docs/"],"contentPrefixes":["docs/sub/"]}'
+            '{"schema":"cf7-native-change-gate.v1","protectedExtensions":".cs","protectedBasenames":["Cargo.toml"],"protectedFiles":["gate.json"],"protectedPrefixes":["runtime/"]}',
+            '{"schema":"cf7-native-change-gate.v1","protectedExtensions":[".CS"],"protectedBasenames":["Cargo.toml"],"protectedFiles":["gate.json"],"protectedPrefixes":["runtime/"]}',
+            '{"schema":"cf7-native-change-gate.v1","protectedExtensions":[".cs"],"protectedBasenames":["Cargo.toml"],"protectedFiles":["gate.json"],"protectedPrefixes":["config/build/../"]}',
+            '{"schema":"cf7-native-change-gate.v1","protectedExtensions":[".cs"],"protectedBasenames":["Cargo.toml"],"protectedFiles":["docs/unsafe?.md"],"protectedPrefixes":["runtime/"]}',
+            ('{"schema":"cf7-native-change-gate.v1","protectedExtensions":[".cs"],"protectedBasenames":["Cargo.toml"],"protectedFiles":["docs/' + ('a' * 256) + '.md"],"protectedPrefixes":["runtime/"]}'),
+            '{"schema":"cf7-native-change-gate.v1","protectedExtensions":[],"protectedBasenames":["Cargo.toml"],"protectedFiles":["gate.json"],"protectedPrefixes":["runtime/"]}',
+            '{"schema":"cf7-native-change-gate.v1","protectedExtensions":[".cs",".cs"],"protectedBasenames":["Cargo.toml"],"protectedFiles":["gate.json"],"protectedPrefixes":["runtime/"]}'
         )
         foreach ($invalidConfig in $invalidConfigs) {
             $f = New-TestFixture v2
-            $invalidBase = Add-TestCommit $f 'config/build/contribution-lanes.v1.json' ($invalidConfig + "`n")
+            $invalidBase = Add-TestCommit $f 'config/build/native-change-gate.v1.json' ($invalidConfig + "`n")
             $f.Base = $invalidBase
             [void](Add-TestCommit $f 'docs/head.md' 'content')
             $result = Invoke-Classifier $f Protected $f.Base
-            Assert-Test ($result.ExitCode -ne 0) 'invalid trusted-base lane contract unexpectedly passed'
-            Assert-Test ($result.Output -match 'must be a JSON array|prefixes overlap') $result.Output
-            Assert-Test ((Get-TestCalls $f).Count -eq 0) 'invalid lane contract must fail before verifiers'
+            Assert-Test ($result.ExitCode -ne 0) 'invalid trusted-base native gate unexpectedly passed'
+            Assert-Test ($result.Output -match 'must be a JSON array|invalid lowercase extension|unsafe path segment|safe repository-relative path|longer than 255 UTF-16 code units|at least one extension|duplicate extension') $result.Output
+            Assert-Test ((Get-TestCalls $f).Count -eq 0) 'invalid native gate must fail before verifiers'
         }
     }
 
-    Run-Test 'Content mixed with runtime manifest policy or descriptor uses full verification' {
+    Run-Test 'Trusted-base runtime descriptor must retain the broad policy domain schema' {
+        $f = New-TestFixture v2
+        $descriptorPath = Join-Path $f.Root 'config\build\runtime-inputs.v2.json'
+        $descriptor = [IO.File]::ReadAllText($descriptorPath, [Text.Encoding]::UTF8) | ConvertFrom-Json
+        $descriptor.domains.PSObject.Properties.Remove('policy')
+        $invalidBase = Add-TestCommit $f 'config/build/runtime-inputs.v2.json' (($descriptor | ConvertTo-Json -Depth 12) + "`n")
+        $f.Base = $invalidBase
+        [void](Add-TestCommit $f 'docs/head.md' 'content')
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -ne 0) 'descriptor without policy domain unexpectedly passed'
+        Assert-Test ($result.Output -match 'well-formed domain: policy') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'malformed descriptor must fail before verifiers'
+    }
+
+    Run-Test 'Bound native changes use strict verification while unbound native writes fail before verifiers' {
         $cases = @(
-            [pscustomobject]@{ Name='runtime'; Path='runtime/core.bin'; Content='runtime-v2' },
-            [pscustomobject]@{ Name='manifest'; Path='runtime/cf7-runtime-manifest.tsv'; Content="cf7-runtime-manifest-v2`npayload-v2`n" },
-            [pscustomobject]@{ Name='policy'; Path='tools/verify-runtime-consensus.ps1'; Content=$null },
-            [pscustomobject]@{ Name='descriptor'; Path='config/build/runtime-inputs.v2.json'; Content=$null }
+            [pscustomobject]@{ Name='runtime'; Path='runtime/core.bin'; Content='runtime-v2'; Bound=$true },
+            [pscustomobject]@{ Name='manifest'; Path='runtime/cf7-runtime-manifest.tsv'; Content="cf7-runtime-manifest-v2`npayload-v2`n"; Bound=$true },
+            [pscustomobject]@{ Name='policy'; Path='tools/verify-runtime-consensus.ps1'; Content=$null; Bound=$true },
+            [pscustomobject]@{ Name='descriptor'; Path='config/build/runtime-inputs.v2.json'; Content=$null; Bound=$true },
+            [pscustomobject]@{ Name='artifact-tree'; Path='launcher/src/Bound.cs'; Content='native source'; Bound=$true },
+            [pscustomobject]@{ Name='launcher-test-tree'; Path='launcher/tests/BoundTest.cs'; Content='native test'; Bound=$true },
+            [pscustomobject]@{ Name='sol-test-tree'; Path='launcher/native/sol_parser/tests/bound.rs'; Content='native test'; Bound=$true },
+            [pscustomobject]@{ Name='amf0-lock-tree'; Path='amf0-help/sol_parser/Cargo.lock'; Content='native lock'; Bound=$true },
+            [pscustomobject]@{ Name='global-extension'; Path='foreign/native/new.dll'; Content='dll'; Bound=$false },
+            [pscustomobject]@{ Name='global-basename'; Path='foreign/native/Cargo.toml'; Content='[package]'; Bound=$false },
+            [pscustomobject]@{ Name='host-prefix'; Path='launcher/src/native-metadata.json'; Content='{}'; Bound=$false },
+            [pscustomobject]@{ Name='workflow-prefix'; Path='.github/workflows/content.yml'; Content='name: content'; Bound=$false },
+            [pscustomobject]@{ Name='build-config-prefix'; Path='config/build/future-control.json'; Content='{}'; Bound=$false }
         )
         foreach ($case in $cases) {
             $f = New-TestFixture v2
@@ -444,20 +608,84 @@ try {
             $files = [ordered]@{ 'docs/mixed.md'='content'; ([string]$case.Path)=$caseContent }
             [void](Add-TestFilesCommit $f $files ("mixed " + $case.Name))
             $result = Invoke-Classifier $f Protected $f.Base
-            Assert-Test ($result.ExitCode -eq 0) "$($case.Name): $($result.Output)"
-            Assert-Test ($result.Output -match 'state=protected-coherent') "$($case.Name): $($result.Output)"
-            Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') "$($case.Name) did not use full verification"
+            if ([bool]$case.Bound) {
+                Assert-Test ($result.ExitCode -eq 0) "$($case.Name): $($result.Output)"
+                Assert-Test ($result.Output -match 'state=protected-coherent') "$($case.Name): $($result.Output)"
+                Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') "$($case.Name) did not use full verification"
+            } else {
+                Assert-Test ($result.ExitCode -ne 0) "$($case.Name) unbound write unexpectedly passed"
+                Assert-Test ($result.Output -match 'not bound by the indexed release descriptor') "$($case.Name): $($result.Output)"
+                Assert-Test ((Get-TestCalls $f).Count -eq 0) "$($case.Name) must fail before verifiers"
+            }
         }
     }
 
-    Run-Test 'Unknown and case-spoofed roots never enter the content fast path' {
-        foreach ($path in @('source.txt','Docs/spoof.md')) {
+    Run-Test 'Native add modify delete rename gate edit and missing-gate base obey release binding' {
+        $f = New-TestFixture v2
+        [void](Add-TestCommit $f 'foreign/NATIVE.DLL' 'dll')
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'not bound by the indexed release descriptor') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'unbound uppercase native extension must fail before verifiers'
+
+        $f = New-TestFixture v2
+        $legacyBase = Add-TestCommit $f 'foreign/Legacy.dll' 'grandfathered bytes'
+        $f.Base = $legacyBase
+        [void](Add-TestCommit $f 'foreign/Legacy.dll' 'modified bytes')
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'not bound by the indexed release descriptor') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'modifying an unbound native path must fail before verifiers'
+
+        $f = New-TestFixture v2
+        [void](Add-TestCommit $f 'launcher/src/Bound.cs' 'native source')
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -eq 0 -and $result.Output -match 'state=protected-coherent') $result.Output
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') 'descriptor-bound native source did not use strict verification'
+
+        $f = New-TestFixture v2
+        $nativeBase = Add-TestCommit $f 'launcher/src/DeleteMe.cs' 'native source'
+        $f.Base = $nativeBase
+        [void](Invoke-TestGit $f.Root @('rm','launcher/src/DeleteMe.cs'))
+        [void](Invoke-TestGit $f.Root @('commit','-m','delete native source'))
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -eq 0 -and $result.Output -match 'state=protected-coherent') $result.Output
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') 'native deletion did not use strict verification'
+
+        $f = New-TestFixture v2
+        $nativeBase = Add-TestCommit $f 'launcher/src/RenameMe.cs' 'native source'
+        $f.Base = $nativeBase
+        [void](Invoke-TestGit $f.Root @('mv','launcher/src/RenameMe.cs','launcher/src/RenameMe.md'))
+        [void](Invoke-TestGit $f.Root @('commit','-m','rename native source'))
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'not bound by the indexed release descriptor') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'rename target inside a native prefix must be release-bound'
+
+        $f = New-TestFixture v2
+        $gatePath = Join-Path $f.Root 'config\build\native-change-gate.v1.json'
+        $gateText = [IO.File]::ReadAllText($gatePath, [Text.Encoding]::UTF8)
+        [void](Add-TestCommit $f 'config/build/native-change-gate.v1.json' ($gateText.TrimEnd() + "`n "))
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -eq 0 -and $result.Output -match 'state=protected-coherent') $result.Output
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') 'native gate edit did not use strict verification'
+
+        $f = New-TestFixture v2
+        [void](Invoke-TestGit $f.Root @('rm','config/build/native-change-gate.v1.json'))
+        [void](Invoke-TestGit $f.Root @('commit','-m','remove native gate from trusted base'))
+        $missingGateBaseLines = @(Invoke-TestGit $f.Root @('rev-parse','HEAD'))
+        $f.Base = ([string]$missingGateBaseLines[0]).Trim()
+        [void](Add-TestCommit $f 'docs/after-missing-gate.md' 'content')
+        $result = Invoke-Classifier $f Protected $f.Base
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'retain a valid native change gate') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'missing head gate must fail before verifiers'
+    }
+
+    Run-Test 'Unknown regular non-native roots inherit consensus by blacklist default' {
+        foreach ($path in @('source.txt','misc/unknown.md','tools/ordinary-helper.js','launcher/web/modules/new-panel.js')) {
             $f = New-TestFixture v2
             [void](Add-TestCommit $f $path 'unknown')
             $result = Invoke-Classifier $f Protected $f.Base
             Assert-Test ($result.ExitCode -eq 0) "$path`: $($result.Output)"
-            Assert-Test ($result.Output -match 'state=protected-coherent') "$path`: $($result.Output)"
-            Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') "$path unexpectedly used fast path"
+            Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') "$path`: $($result.Output)"
+            Assert-Test ((Get-TestCalls $f).Count -eq 0) "$path unexpectedly invoked strict verification"
         }
     }
 
@@ -501,7 +729,7 @@ try {
         [void](Add-TestCommit $f 'docs/safe-after-legacy.md' 'safe')
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -eq 0) $result.Output
-        Assert-Test ($result.Output -match 'state=protected-content-fastpath') $result.Output
+        Assert-Test ($result.Output -match 'state=protected-nonnative-fastpath') $result.Output
         Assert-Test ((Get-TestCalls $f).Count -eq 0) 'unchanged legacy path should not invoke verifiers'
 
         $f = New-TestFixture v2
@@ -516,7 +744,7 @@ try {
 
     Run-Test 'Protected accepts legacy v1 only after strict and consensus checks' {
         $f = New-TestFixture v1
-        [void](Add-TestCommit $f 'source.txt' 'source-v2')
+        [void](Add-TestCommit $f 'launcher/src/App.cs' 'source-v2')
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -eq 0) $result.Output
         Assert-Test ($result.Output -match 'state=protected-coherent') $result.Output
@@ -525,7 +753,7 @@ try {
 
     Run-Test 'Protected fails closed when consensus fails' {
         $f = New-TestFixture v2
-        [void](Add-TestCommit $f 'source.txt' 'source-v2')
+        [void](Add-TestCommit $f 'launcher/src/App.cs' 'source-v2')
         Set-TestControl $f -Consensus 2
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -ne 0) 'consensus failure unexpectedly passed'
@@ -550,26 +778,24 @@ try {
         Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v1:integrity') 'integrity must run before downgrade rejection'
     }
 
-    Run-Test 'All-zero event base cannot use the content fast path' {
+    Run-Test 'All-zero event base without an external anchor cannot emit green' {
         $f = New-TestFixture v1
         [void](Add-TestCommit $f 'docs/zero-base.md' 'content')
         $result = Invoke-Classifier $f Protected ('0' * 40)
-        Assert-Test ($result.ExitCode -eq 0) $result.Output
-        Assert-Test ($result.Output -match 'state=protected-coherent') $result.Output
-        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v1:integrity,v1:strict,consensus:strict') 'zero base must use the complete verifier chain'
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'No externally verified green main anchor') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'zero base without an anchor must fail before verifiers'
     }
 
-    Run-Test 'Initial protected commit is handled without a base' {
+    Run-Test 'Initial protected commit without an external anchor cannot emit green' {
         $f = New-TestFixture v1
         $result = Invoke-Classifier $f Protected $null
-        Assert-Test ($result.ExitCode -eq 0) $result.Output
-        Assert-Test ($result.Output -match 'base=none') $result.Output
-        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v1:integrity,v1:strict,consensus:strict') 'initial protected commit must fail closed through strict checks'
+        Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'No externally verified green main anchor') $result.Output
+        Assert-Test ((Get-TestCalls $f).Count -eq 0) 'initial protected commit must fail closed before verifiers'
     }
 
     Run-Test 'Unexpected verifier errors cannot masquerade as source-ahead' {
         $f = New-TestFixture v1
-        [void](Add-TestCommit $f 'source.txt' 'source-v2')
+        [void](Add-TestCommit $f 'launcher/src/App.cs' 'source-v2')
         Set-TestControl $f -Strict 1
         $result = Invoke-Classifier $f Protected $f.Base
         Assert-Test ($result.ExitCode -ne 0) 'verifier infrastructure failure unexpectedly passed'
@@ -690,7 +916,7 @@ try {
     Run-Test 'Once the marker exists in base, a later v1 commit must perform a v2 promotion' {
         $f = New-TestFixture v1
         $migrationHead = Add-TestMigrationCommit $f
-        [void](Add-TestCommit $f 'source.txt' 'post-bootstrap-v1-change')
+        [void](Add-TestCommit $f 'launcher/src/App.cs' 'post-bootstrap-v1-change')
         Set-TestControl $f
         $result = Invoke-Classifier $f Protected $migrationHead
         Assert-Test ($result.ExitCode -ne 0) 'post-bootstrap v1 commit unexpectedly passed'
@@ -743,12 +969,23 @@ try {
         $sparseMatch = [regex]::Match($workflow, '(?ms)^\s{10}sparse-checkout:\s*\|\s*\r?\n(?<paths>(?:\s{12}\S[^\r\n]*\r?\n)+)')
         Assert-Test $sparseMatch.Success 'cannot parse checkout sparse materialization paths'
         $sparsePaths = [string]$sparseMatch.Groups['paths'].Value
-        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}CRAZYFLASHER7MercenaryEmpire\.exe\s*$') 'content fast path must not materialize the root bootstrap'
-        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}runtime(?:/|\s*$)') 'content fast path must not materialize the runtime payload tree'
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}CRAZYFLASHER7MercenaryEmpire\.exe\s*$') 'non-native fast path must not materialize the root bootstrap'
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}runtime(?:/|\s*$)') 'non-native fast path must not materialize the runtime payload tree'
         Assert-Test ($sparsePaths -match '(?m)^\s{12}config/build/\s*$') 'sparse checkout must retain build-control metadata'
         Assert-Test ($sparsePaths -match '(?m)^\s{12}tools/classify-runtime-release-state\.ps1\s*$') 'sparse checkout must retain the classifier'
+        Assert-Test ($sparsePaths -match '(?m)^\s{12}tools/resolve-runtime-trusted-base\.ps1\s*$') 'sparse checkout must retain the external trusted-base resolver'
         Assert-Test (($workflow | Select-String -Pattern '(?m)^\s+- main\s*$' -AllMatches).Matches.Count -eq 3) 'all three events must target main'
         Assert-Test ($workflow -notmatch '(?m)^\s+- (?:master|''release/\*\*'')\s*$') 'unprotected refs must not emit the required context'
+        Assert-Test ($workflow -match '(?m)^\s{2}actions:\s*read\s*$' -and $workflow -match '(?m)^\s{2}checks:\s*read\s*$') 'trusted-base resolution requires explicit read-only Actions and Checks permissions'
+        Assert-Test ($workflow -match '(?m)^\s{2}group:\s*runtime-bundle-integrity-v1-') 'concurrency group must use an immutable prefix'
+        Assert-Test ($workflow -match "CF7_TRUST_WORKFLOW_ID:\s*'314853607'") 'workflow database identity is not frozen'
+        Assert-Test ($workflow -match "CF7_TRUST_CHECK_APP_ID:\s*'15368'") 'GitHub Actions check app identity is not frozen'
+        Assert-Test ($workflow -match [regex]::Escape("@('-BaseRevision', `$baseRevision)")) 'workflow must preserve the event base for strict state semantics'
+        Assert-Test ($workflow -match [regex]::Escape("'-TrustedBaseRevision', `$trustedBaseRevision")) 'workflow must pass the external green anchor separately'
+        Assert-Test ($workflow -match "'-DisableFastPath'") 'API failure must disable fastpath instead of trusting the event base'
+        Assert-Test ($workflow -match '\$disableFastPath = \$eventBaseWasAbsent -or') 'empty or all-zero event base must disable fastpath even when an older green anchor exists'
+        Assert-Test ($workflow -match 'refusing a reusable success until the resolver/API recovers') 'workflow outage diagnostic must match the classifier hard-fail contract'
+        Assert-Test ($workflow -notmatch 'running complete strict verification') 'workflow must not claim an anchorless strict run can emit green'
         Assert-Test ($workflow -match "'-Mode', 'Protected'") 'workflow must pass Protected mode literally'
     }
 } finally {

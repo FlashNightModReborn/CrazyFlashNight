@@ -12,10 +12,12 @@ on:
       - main
 
 permissions:
+  actions: read
+  checks: read
   contents: read
 
 concurrency:
-  group: runtime-bundle-integrity-${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_sha || github.ref }}
+  group: runtime-bundle-integrity-v1-${{ github.event.pull_request.number || github.event.merge_group.head_sha || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -32,6 +34,7 @@ jobs:
             .github/workflows/runtime-bundle-integrity.yml
             config/build/
             tools/classify-runtime-release-state.ps1
+            tools/resolve-runtime-trusted-base.ps1
             tools/runtime-build-attestation-v2-common.ps1
             tools/runtime-build-common.ps1
             tools/runtime-build-queue-common.ps1
@@ -51,6 +54,12 @@ jobs:
           CF7_MERGE_BASE_REF: ${{ github.event.merge_group.base_ref }}
           CF7_CURRENT_REF: ${{ github.ref }}
           CF7_HEAD_SHA: ${{ github.sha }}
+          CF7_REPOSITORY: ${{ github.repository }}
+          CF7_TRUST_WORKFLOW_ID: '314853607'
+          CF7_TRUST_WORKFLOW_PATH: '.github/workflows/runtime-bundle-integrity.yml'
+          CF7_TRUST_CHECK_NAME: 'verify-staged-bundle'
+          CF7_TRUST_CHECK_APP_ID: '15368'
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           function Test-ProtectedRef([string]$Ref) {
             $name = ([string]$Ref) -replace '^refs/heads/', ''
@@ -70,12 +79,43 @@ jobs:
           if (-not (Test-ProtectedRef $policyRef)) {
             throw "Runtime integrity required context may run only for a protected target ref: $policyRef"
           }
+          $eventBaseWasAbsent = [string]::IsNullOrWhiteSpace($baseRevision) -or $baseRevision -match '^0+$'
+          $resolverStartRevision = if ($eventBaseWasAbsent) { "$($env:CF7_HEAD_SHA)^" } else { $baseRevision }
+
+          $resolverArguments = @(
+            '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\resolve-runtime-trusted-base.ps1',
+            '-ProjectRoot', $PWD.Path,
+            '-Repository', $env:CF7_REPOSITORY,
+            '-StartRevision', $resolverStartRevision,
+            '-HeadRevision', $env:CF7_HEAD_SHA,
+            '-WorkflowId', $env:CF7_TRUST_WORKFLOW_ID,
+            '-WorkflowPath', $env:CF7_TRUST_WORKFLOW_PATH,
+            '-CheckName', $env:CF7_TRUST_CHECK_NAME,
+            '-CheckAppId', $env:CF7_TRUST_CHECK_APP_ID
+          )
+          $resolverOutput = @(& powershell.exe @resolverArguments 2>&1 | ForEach-Object { [string]$_ })
+          $resolverExitCode = $LASTEXITCODE
+          foreach ($line in $resolverOutput) { Write-Host $line }
+          $anchorLines = if ($resolverExitCode -eq 0) {
+            @($resolverOutput | Where-Object { $_ -match '^CF7_TRUSTED_BASE=[0-9a-f]{40,64}$' })
+          } else { @() }
+          $disableFastPath = $eventBaseWasAbsent -or $resolverExitCode -ne 0 -or $anchorLines.Count -ne 1
+          $trustedBaseRevision = if ($disableFastPath) {
+            Write-Warning 'No externally trusted green anchor is available; refusing a reusable success until the resolver/API recovers and the job is rerun.'
+            $null
+          } else {
+            ([string]$anchorLines[0]).Substring('CF7_TRUSTED_BASE='.Length)
+          }
+
           $classifierArguments = @(
             '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\classify-runtime-release-state.ps1',
-            '-ProjectRoot', $PWD.Path, '-Mode', 'Protected', '-HeadRevision', $env:CF7_HEAD_SHA
+            '-ProjectRoot', $PWD.Path, '-Mode', 'Protected',
+            '-HeadRevision', $env:CF7_HEAD_SHA
           )
           if (-not [string]::IsNullOrWhiteSpace($baseRevision)) {
             $classifierArguments += @('-BaseRevision', $baseRevision)
           }
+          if ($disableFastPath) { $classifierArguments += '-DisableFastPath' }
+          else { $classifierArguments += @('-TrustedBaseRevision', $trustedBaseRevision) }
           & powershell.exe @classifierArguments
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

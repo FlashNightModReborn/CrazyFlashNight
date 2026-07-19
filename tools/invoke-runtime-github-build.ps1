@@ -90,6 +90,50 @@ function Invoke-Cf7GhJson([string[]]$Arguments) {
     catch { throw "GitHub CLI returned invalid JSON: $($_.Exception.Message)" }
 }
 
+function Resolve-Cf7ConfiguredSourceTagCommit($Config) {
+    $sourceRef = [string]$Config.sourceRef
+    if (-not $sourceRef.StartsWith('refs/tags/', [StringComparison]::Ordinal)) {
+        throw "GitHub runtime sourceRef must be an immutable tag: $sourceRef"
+    }
+
+    $relativeRef = $sourceRef.Substring('refs/'.Length)
+    $repository = [string]$Config.repository
+    $refResponse = Invoke-Cf7GhJson -Arguments @(
+        'api','--method','GET','-H','X-GitHub-Api-Version: 2026-03-10',
+        "repos/$repository/git/ref/$relativeRef"
+    )
+    if ($null -eq $refResponse -or [string]$refResponse.ref -cne $sourceRef -or
+            $null -eq $refResponse.PSObject.Properties['object']) {
+        throw "GitHub source tag response does not bind the configured ref: expected=$sourceRef actual=$($refResponse.ref)"
+    }
+
+    $objectType = [string]$refResponse.object.type
+    $objectSha = ([string]$refResponse.object.sha).ToLowerInvariant()
+    $seenTagObjects = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    for ($depth = 0; $depth -lt 8; $depth++) {
+        if ($objectSha -notmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$') {
+            throw "GitHub source tag contains an invalid object ID: $objectSha"
+        }
+        if ($objectType -ceq 'commit') { return $objectSha }
+        if ($objectType -cne 'tag') {
+            throw "GitHub source tag must peel to a commit, not $objectType."
+        }
+        if (-not $seenTagObjects.Add($objectSha)) { throw 'GitHub source tag peel contains a cycle.' }
+
+        $tagResponse = Invoke-Cf7GhJson -Arguments @(
+            'api','--method','GET','-H','X-GitHub-Api-Version: 2026-03-10',
+            "repos/$repository/git/tags/$objectSha"
+        )
+        if ($null -eq $tagResponse -or ([string]$tagResponse.sha).ToLowerInvariant() -cne $objectSha -or
+                $null -eq $tagResponse.PSObject.Properties['object']) {
+            throw "GitHub annotated tag response does not bind tag object $objectSha."
+        }
+        $objectType = [string]$tagResponse.object.type
+        $objectSha = ([string]$tagResponse.object.sha).ToLowerInvariant()
+    }
+    throw 'GitHub source tag exceeds the maximum annotated-tag peel depth.'
+}
+
 function Get-Cf7CloudRuns([string]$Repository, [string]$WorkflowFile) {
     $runs = Invoke-Cf7GhJson -Arguments @(
         'run','list','--repo',$Repository,'--workflow',$WorkflowFile,'--event','workflow_dispatch',
@@ -98,10 +142,17 @@ function Get-Cf7CloudRuns([string]$Repository, [string]$WorkflowFile) {
     return @($runs)
 }
 
-function Assert-Cf7RunIdentity($Run, [Int64]$ExpectedId, [string]$ExpectedTitle, [string]$ExpectedBranch) {
+function Assert-Cf7RunIdentity(
+    $Run,
+    [Int64]$ExpectedId,
+    [string]$ExpectedTitle,
+    [string]$ExpectedBranch,
+    [string]$ExpectedHeadSha
+) {
     if ([Int64]$Run.databaseId -ne $ExpectedId) { throw 'GitHub run databaseId changed while waiting.' }
     if ([string]$Run.displayTitle -cne $ExpectedTitle) { throw 'GitHub run title no longer identifies the requested source commit.' }
     if ([string]$Run.headBranch -cne $ExpectedBranch) { throw 'GitHub runtime run came from an unexpected workflow source branch.' }
+    if ([string]$Run.headSha -cne $ExpectedHeadSha) { throw 'GitHub runtime run head SHA does not match the requested source commit.' }
     if ([string]$Run.event -ne 'workflow_dispatch') { throw 'GitHub runtime run has an unexpected event kind.' }
 }
 
@@ -232,6 +283,10 @@ if ($head.ToLowerInvariant() -cne $SourceCommitOid) {
 }
 Invoke-Cf7GitText @('diff','--quiet','--exit-code') | Out-Null
 Invoke-Cf7GitText @('diff','--cached','--quiet','--exit-code') | Out-Null
+$sourceTagCommit = Resolve-Cf7ConfiguredSourceTagCommit -Config $config
+if ($sourceTagCommit -cne $SourceCommitOid) {
+    throw "Configured GitHub source tag does not resolve to SourceCommitOid: ref=$($config.sourceRef) expected=$SourceCommitOid actual=$sourceTagCommit"
+}
 
 if (-not $OutputRoot) { $OutputRoot = Join-Path $ProjectRoot ("tmp\runtime-cloud-results\$SourceCommitOid") }
 $OutputRoot = [IO.Path]::GetFullPath($OutputRoot).TrimEnd('\')
@@ -256,6 +311,7 @@ do {
     $candidates = @(Get-Cf7CloudRuns -Repository ([string]$config.repository) -WorkflowFile $workflowFile | Where-Object {
         [string]$_.displayTitle -ceq $expectedRunTitle -and
         [string]$_.headBranch -ceq $sourceRefName -and
+        [string]$_.headSha -ceq $SourceCommitOid -and
         [string]$_.event -eq 'workflow_dispatch' -and
         -not $beforeIds.Contains([Int64]$_.databaseId)
     })
@@ -269,7 +325,8 @@ do {
 if ($null -eq $run) { throw "Timed out locating dispatched GitHub run with title: $expectedRunTitle" }
 
 $runId = [Int64]$run.databaseId
-Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle -ExpectedBranch $sourceRefName
+Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle `
+    -ExpectedBranch $sourceRefName -ExpectedHeadSha $SourceCommitOid
 Write-Host "[RuntimeGitHubBuild] Located run=$runId url=$($run.url)" -ForegroundColor Cyan
 
 $runDeadline = [DateTime]::UtcNow.AddSeconds($RunTimeoutSeconds)
@@ -278,7 +335,8 @@ do {
         'run','view',[string]$runId,'--repo',[string]$config.repository,
         '--json','databaseId,displayTitle,headBranch,headSha,status,conclusion,createdAt,event,url'
     )
-    Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle -ExpectedBranch $sourceRefName
+    Assert-Cf7RunIdentity -Run $run -ExpectedId $runId -ExpectedTitle $expectedRunTitle `
+        -ExpectedBranch $sourceRefName -ExpectedHeadSha $SourceCommitOid
     if ([string]$run.status -eq 'completed') { break }
     if ([DateTime]::UtcNow -ge $runDeadline) { throw "Timed out waiting for GitHub runtime run: $runId" }
     Start-Sleep -Seconds $PollSeconds
