@@ -200,7 +200,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $githubConfig = [ordered]@{
         schema='cf7-runtime-github-builder.v2';enabled=$true;repository='FlashNightModReborn/CrazyFlashNight'
         signerWorkflow='FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml'
-        sourceRef='refs/heads/main';faultDomain='github-hosted-windows';runnerClass='github-hosted-windows'
+        sourceRef='refs/tags/runtime-build-v2/test-consensus';faultDomain='github-hosted-windows';runnerClass='github-hosted-windows'
         identityProvider='github-oidc-sigstore';longLivedPrivateKey=$false
     }
     Write-Cf7FixtureJson -Path (Join-Path $fixtureRoot 'config\build\runtime-github-builder.v2.json') -Value $githubConfig

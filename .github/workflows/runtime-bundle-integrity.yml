@@ -1,28 +1,141 @@
-name: Runtime bundle integrity
+name: Runtime native audit
 
 on:
   pull_request:
     branches:
       - main
+    paths: &native_runtime_paths
+      - '**/*.a'
+      - '**/*.c'
+      - '**/*.cc'
+      - '**/*.cpp'
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '**/*.cxx'
+      - '**/*.def'
+      - '**/*.dll'
+      - '**/*.dylib'
+      - '**/*.exe'
+      - '**/*.exp'
+      - '**/*.filters'
+      - '**/*.fsproj'
+      - '**/*.h'
+      - '**/*.hh'
+      - '**/*.hpp'
+      - '**/*.hxx'
+      - '**/*.inl'
+      - '**/*.lib'
+      - '**/*.manifest'
+      - '**/*.node'
+      - '**/*.o'
+      - '**/*.obj'
+      - '**/*.pdb'
+      - '**/*.props'
+      - '**/*.rc'
+      - '**/*.res'
+      - '**/*.resx'
+      - '**/*.rs'
+      - '**/*.sln'
+      - '**/*.slnx'
+      - '**/*.so'
+      - '**/*.targets'
+      - '**/*.vcxproj'
+      - '**/*.wasm'
+      - '**/*.xaml'
+      - '**/Cargo.lock'
+      - '**/Cargo.toml'
+      - '**/CMakeLists.txt'
+      - '**/Directory.Build.props'
+      - '**/Directory.Build.targets'
+      - '**/Directory.Packages.props'
+      - '**/global.json'
+      - '**/Makefile'
+      - '**/meson.build'
+      - '**/NuGet.Config'
+      - '**/packages.lock.json'
+      - '**/rust-toolchain.toml'
+      - '**/vcpkg-configuration.json'
+      - '**/vcpkg.json'
+      - .gitattributes
+      - .github/actions/**
+      - .github/workflows/**
+      - .github/workflows/runtime-bundle-integrity.yml
+      - .github/workflows/runtime-cloud-builder.yml
+      - config/build/**
+      - config/build/main-branch-admission.v2.json
+      - config/build/native-change-gate.v1.json
+      - config/build/runtime-inputs.v2.json
+      - config/build/runtime-toolchain.lock.json
+      - CRAZYFLASHER7MercenaryEmpire.exe
+      - global.json
+      - launcher/app.ico
+      - launcher/app.manifest
+      - launcher/build**
+      - launcher/build.ps1
+      - launcher/build-runtime-candidate.ps1
+      - launcher/CRAZYFLASHER7MercenaryEmpire.csproj
+      - launcher/Directory.Packages.props
+      - launcher/native/**
+      - launcher/native/assert-pinned-tools.bat
+      - launcher/native/bootstrap/build.bat
+      - launcher/native/build.bat
+      - launcher/native/sol_parser/**
+      - launcher/native/sol_parser/.cargo/config.toml
+      - launcher/native/sol_parser/build.bat
+      - launcher/native/sol_parser/Cargo.lock
+      - launcher/native/sol_parser/Cargo.toml
+      - launcher/native/sol_parser/rust-toolchain.toml
+      - launcher/packages.lock.json
+      - launcher/src/**
+      - runtime/**
+      - tools/audit-main-branch-admission.ps1
+      - tools/audit-native-cursor-assets.js
+      - tools/bootstrap-runtime-**
+      - tools/check-runtime-**
+      - tools/check-runtime-build-env.ps1
+      - tools/classify-runtime-**
+      - tools/classify-runtime-release-state.ps1
+      - tools/get-runtime-**
+      - tools/invoke-runtime-**
+      - tools/materialize-runtime-**
+      - tools/new-runtime-**
+      - tools/prepare-launcher-release-**
+      - tools/prepare-launcher-release-assets.ps1
+      - tools/promote-runtime-**
+      - tools/register-runtime-**
+      - tools/resolve-runtime-**
+      - tools/resolve-runtime-trusted-base.ps1
+      - tools/runtime-**
+      - tools/runtime-build-v2-common.ps1
+      - tools/test-invoke-runtime-**
+      - tools/test-main-branch-**
+      - tools/test-main-branch-admission.ps1
+      - tools/test-resolve-runtime-**
+      - tools/test-resolve-runtime-trusted-base.ps1
+      - tools/test-runtime-**
+      - tools/validate-launcher-release-**
+      - tools/validate-launcher-release-policy.ps1
+      - tools/verify-runtime-**
   push:
     branches:
       - main
-  merge_group:
-    branches:
-      - main
+    paths: *native_runtime_paths
+  workflow_dispatch:
 
 permissions:
-  actions: read
-  checks: read
   contents: read
 
 concurrency:
-  group: runtime-bundle-integrity-v1-${{ github.event.pull_request.number || github.event.merge_group.head_sha || github.ref }}
-  cancel-in-progress: true
+  group: runtime-native-audit-v2-${{ github.sha }}
+  cancel-in-progress: false
 
 jobs:
-  verify-staged-bundle:
-    name: verify-staged-bundle
+  audit-native-runtime:
+    name: audit-native-runtime
+    if: >-
+      github.run_attempt == 1 &&
+      (github.event_name != 'workflow_dispatch' ||
+      github.actor_id == '91271520' || github.actor_id == '138298913')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -34,7 +147,6 @@ jobs:
             .github/workflows/runtime-bundle-integrity.yml
             config/build/
             tools/classify-runtime-release-state.ps1
-            tools/resolve-runtime-trusted-base.ps1
             tools/runtime-build-attestation-v2-common.ps1
             tools/runtime-build-common.ps1
             tools/runtime-build-queue-common.ps1
@@ -43,79 +155,32 @@ jobs:
             tools/verify-runtime-bundle-v2.ps1
             tools/verify-runtime-consensus.ps1
             tools/verify-runtime-github-attestation.ps1
-      - name: Classify runtime release state
+      - name: Audit native/runtime release state
         shell: powershell
         env:
           CF7_EVENT_NAME: ${{ github.event_name }}
           CF7_EVENT_BEFORE: ${{ github.event.before }}
           CF7_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          CF7_PR_BASE_REF: ${{ github.base_ref }}
-          CF7_MERGE_BASE_SHA: ${{ github.event.merge_group.base_sha }}
-          CF7_MERGE_BASE_REF: ${{ github.event.merge_group.base_ref }}
-          CF7_CURRENT_REF: ${{ github.ref }}
           CF7_HEAD_SHA: ${{ github.sha }}
-          CF7_REPOSITORY: ${{ github.repository }}
-          CF7_TRUST_WORKFLOW_ID: '314853607'
-          CF7_TRUST_WORKFLOW_PATH: '.github/workflows/runtime-bundle-integrity.yml'
-          CF7_TRUST_CHECK_NAME: 'verify-staged-bundle'
-          CF7_TRUST_CHECK_APP_ID: '15368'
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          function Test-ProtectedRef([string]$Ref) {
-            $name = ([string]$Ref) -replace '^refs/heads/', ''
-            return $name -ceq 'main'
-          }
-
-          if ($env:CF7_EVENT_NAME -eq 'pull_request') {
-            $baseRevision = $env:CF7_PR_BASE_SHA
-            $policyRef = $env:CF7_PR_BASE_REF
-          } elseif ($env:CF7_EVENT_NAME -eq 'merge_group') {
-            $baseRevision = $env:CF7_MERGE_BASE_SHA
-            $policyRef = $env:CF7_MERGE_BASE_REF
+          $baseRevision = if ($env:CF7_EVENT_NAME -eq 'pull_request') {
+            $env:CF7_PR_BASE_SHA
+          } elseif ($env:CF7_EVENT_NAME -eq 'push') {
+            $env:CF7_EVENT_BEFORE
           } else {
-            $baseRevision = $env:CF7_EVENT_BEFORE
-            $policyRef = $env:CF7_CURRENT_REF
-          }
-          if (-not (Test-ProtectedRef $policyRef)) {
-            throw "Runtime integrity required context may run only for a protected target ref: $policyRef"
-          }
-          $eventBaseWasAbsent = [string]::IsNullOrWhiteSpace($baseRevision) -or $baseRevision -match '^0+$'
-          $resolverStartRevision = if ($eventBaseWasAbsent) { "$($env:CF7_HEAD_SHA)^" } else { $baseRevision }
-
-          $resolverArguments = @(
-            '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\resolve-runtime-trusted-base.ps1',
-            '-ProjectRoot', $PWD.Path,
-            '-Repository', $env:CF7_REPOSITORY,
-            '-StartRevision', $resolverStartRevision,
-            '-HeadRevision', $env:CF7_HEAD_SHA,
-            '-WorkflowId', $env:CF7_TRUST_WORKFLOW_ID,
-            '-WorkflowPath', $env:CF7_TRUST_WORKFLOW_PATH,
-            '-CheckName', $env:CF7_TRUST_CHECK_NAME,
-            '-CheckAppId', $env:CF7_TRUST_CHECK_APP_ID
-          )
-          $resolverOutput = @(& powershell.exe @resolverArguments 2>&1 | ForEach-Object { [string]$_ })
-          $resolverExitCode = $LASTEXITCODE
-          foreach ($line in $resolverOutput) { Write-Host $line }
-          $anchorLines = if ($resolverExitCode -eq 0) {
-            @($resolverOutput | Where-Object { $_ -match '^CF7_TRUSTED_BASE=[0-9a-f]{40,64}$' })
-          } else { @() }
-          $disableFastPath = $eventBaseWasAbsent -or $resolverExitCode -ne 0 -or $anchorLines.Count -ne 1
-          $trustedBaseRevision = if ($disableFastPath) {
-            Write-Warning 'No externally trusted green anchor is available; refusing a reusable success until the resolver/API recovers and the job is rerun.'
             $null
-          } else {
-            ([string](@($anchorLines)[0])).Substring('CF7_TRUSTED_BASE='.Length)
           }
 
           $classifierArguments = @(
             '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\classify-runtime-release-state.ps1',
-            '-ProjectRoot', $PWD.Path, '-Mode', 'Protected',
+            '-ProjectRoot', $PWD.Path, '-Mode', 'Audit',
             '-HeadRevision', $env:CF7_HEAD_SHA
           )
-          if (-not [string]::IsNullOrWhiteSpace($baseRevision)) {
+          if (-not [string]::IsNullOrWhiteSpace($baseRevision) -and $baseRevision -notmatch '^0+$') {
             $classifierArguments += @('-BaseRevision', $baseRevision)
           }
-          if ($disableFastPath) { $classifierArguments += '-DisableFastPath' }
-          else { $classifierArguments += @('-TrustedBaseRevision', $trustedBaseRevision) }
+          if ($env:CF7_EVENT_NAME -eq 'workflow_dispatch') {
+            $classifierArguments += '-ForceDeploymentVerification'
+          }
           & powershell.exe @classifierArguments
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

@@ -1,5 +1,5 @@
 name: Runtime cloud builder
-run-name: Runtime cloud builder ${{ inputs.source_commit || github.event.client_payload.source_commit }}
+run-name: Runtime cloud builder ${{ inputs.source_commit }}
 
 on:
   workflow_dispatch:
@@ -8,19 +8,21 @@ on:
         description: Lowercase full repository commit SHA to build
         required: true
         type: string
-  repository_dispatch:
-    types: [runtime-cloud-build-v2]
 
 permissions:
   contents: read
 
 concurrency:
-  group: runtime-cloud-builder-${{ inputs.source_commit || github.event.client_payload.source_commit }}
+  group: runtime-cloud-builder-${{ inputs.source_commit }}
   cancel-in-progress: false
 
 jobs:
   build:
     name: build-pinned-runtime
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.run_attempt == 1 &&
+      (github.actor_id == '91271520' || github.actor_id == '138298913')
     # windows-2025 moved to VS 2026 in June 2026. The locked 17.14/v143
     # producer belongs on GitHub's explicit VS 2022 image family.
     runs-on: windows-2022
@@ -39,10 +41,9 @@ jobs:
         shell: powershell
         env:
           CF7_WORKFLOW_INPUT: ${{ inputs.source_commit }}
-          CF7_REPOSITORY_DISPATCH_INPUT: ${{ github.event.client_payload.source_commit }}
           CF7_EXPECTED_REPOSITORY: FlashNightModReborn/CrazyFlashNight
         run: |
-          $requested = if ($env:CF7_WORKFLOW_INPUT) { $env:CF7_WORKFLOW_INPUT } else { $env:CF7_REPOSITORY_DISPATCH_INPUT }
+          $requested = $env:CF7_WORKFLOW_INPUT
           if ($requested -cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$') {
             throw 'source_commit must be one lowercase full Git object ID.'
           }
@@ -50,9 +51,8 @@ jobs:
           if ('${{ github.repository }}' -cne $env:CF7_EXPECTED_REPOSITORY) {
             throw "Cloud builder is pinned to $($env:CF7_EXPECTED_REPOSITORY)."
           }
-          if ($env:GITHUB_REF -cne 'refs/heads/main' -and
-              $env:GITHUB_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
-            throw "Dispatch this workflow from main or a canonical runtime-build-v2 tag. actual=$env:GITHUB_REF"
+          if ($env:GITHUB_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
+            throw "Dispatch this workflow from one canonical protected runtime-build-v2 tag. actual=$env:GITHUB_REF"
           }
           if ([string]$env:GITHUB_SHA -cne $normalizedRequested) {
             throw "Workflow source ref does not resolve to source_commit: ref=$($env:GITHUB_REF) workflowSha=$($env:GITHUB_SHA) requested=$normalizedRequested"
@@ -190,11 +190,16 @@ jobs:
             tmp/runtime-cloud-output/runtime-candidate.v2.zip
             tmp/runtime-cloud-output/runtime-build-envelope.v2.json
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
 
   attest:
     name: attest-cloud-envelope
     needs: build
+    if: >-
+      needs.build.result == 'success' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.run_attempt == 1 &&
+      (github.actor_id == '91271520' || github.actor_id == '138298913')
     runs-on: windows-2022
     timeout-minutes: 30
     permissions:
@@ -310,4 +315,4 @@ jobs:
             cloud-output/runtime-build-envelope.v2.json
             cloud-output/runtime-build-envelope.v2.sigstore.json
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7

@@ -1,10 +1,11 @@
 param(
     [string]$ProjectRoot,
-    [ValidateSet('Development', 'Protected')]
+    [ValidateSet('Audit', 'Development', 'Protected')]
     [string]$Mode = 'Development',
     [string]$BaseRevision,
     [string]$TrustedBaseRevision,
     [switch]$DisableFastPath,
+    [switch]$ForceDeploymentVerification,
     [string]$HeadRevision = 'HEAD'
 )
 
@@ -277,9 +278,8 @@ function Get-Cf7NativeChangeGate([string]$BaseCommit) {
         if (-not $basenames.Contains($required)) { throw "Native change gate is missing mandatory basename: $required" }
     }
     foreach ($required in @(
-        '.github/CODEOWNERS',
         '.github/workflows/runtime-bundle-integrity.yml',
-        'config/build/main-branch-admission.v1.json',
+        'config/build/main-branch-admission.v2.json',
         'config/build/native-change-gate.v1.json',
         'config/build/runtime-inputs.v2.json',
         'tools/audit-main-branch-admission.ps1',
@@ -388,7 +388,7 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
 
     foreach ($sentinel in @(
         'CRAZYFLASHER7MercenaryEmpire.exe',
-        'config/build/main-branch-admission.v1.json',
+        'config/build/main-branch-admission.v2.json',
         'config/build/native-change-gate.v1.json',
         'config/build/runtime-release-consensus.json',
         'config/build/runtime-builders.v2.json',
@@ -424,7 +424,7 @@ function Get-Cf7RequiredBaseSentinels([string]$BaseCommit) {
     $result = [ordered]@{}
     foreach ($relativePath in @(
         'config/build/runtime-inputs.v2.json',
-        'config/build/main-branch-admission.v1.json',
+        'config/build/main-branch-admission.v2.json',
         'config/build/native-change-gate.v1.json',
         'runtime/cf7-runtime-manifest.tsv',
         'config/build/runtime-release-consensus.json',
@@ -776,8 +776,9 @@ try {
     $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\\')
     & git -C $ProjectRoot rev-parse --is-inside-work-tree *> $null
     if ($LASTEXITCODE -ne 0) { throw "ProjectRoot is not a Git worktree: $ProjectRoot" }
-    if ($Mode -ne 'Protected') {
-        throw 'Runtime integrity required context is reserved for Protected target refs; Development mode is forbidden.'
+    $isAuditMode = $Mode -eq 'Audit' -or $Mode -eq 'Development'
+    if ($ForceDeploymentVerification -and -not $isAuditMode) {
+        throw '-ForceDeploymentVerification is available only in Audit/Development mode.'
     }
 
     $headCommit = Resolve-Cf7Commit -Revision $HeadRevision
@@ -795,6 +796,9 @@ try {
     if ($DisableFastPath -and -not [string]::IsNullOrWhiteSpace($TrustedBaseRevision)) {
         throw '-DisableFastPath and -TrustedBaseRevision are mutually exclusive.'
     }
+    if ($isAuditMode -and ($DisableFastPath -or -not [string]::IsNullOrWhiteSpace($TrustedBaseRevision))) {
+        throw 'Audit/Development mode does not accept protected fast-path trust arguments.'
+    }
     $trustedBaseCommit = if ([string]::IsNullOrWhiteSpace($TrustedBaseRevision)) {
         $null
     } else { Resolve-Cf7Commit -Revision $TrustedBaseRevision }
@@ -806,7 +810,7 @@ try {
             if ($LASTEXITCODE -ne 0) { throw 'Trusted fast-path base must be an ancestor of the explicit event base.' }
         }
     }
-    if ($DisableFastPath -or -not $trustedBaseCommit) {
+    if ($Mode -eq 'Protected' -and ($DisableFastPath -or -not $trustedBaseCommit)) {
         throw 'No externally verified green main anchor is available; refusing to emit a reusable required-check success.'
     }
 
@@ -839,7 +843,7 @@ try {
     # it is rebound by the next native promotion, not used as a direct-push admission list.
     # With an external anchor present, an older/missing trusted descriptor falls through to
     # the complete strict chain. Missing anchors and ambiguous/unsafe Git records fail closed.
-    if (-not $DisableFastPath -and -not $baseWasAbsent -and $baseCommit -and $trustedBaseCommit) {
+    if ($Mode -eq 'Protected' -and -not $DisableFastPath -and -not $baseWasAbsent -and $baseCommit -and $trustedBaseCommit) {
         $protection = $admissionBaseProtection
         $baseSentinels = Get-Cf7RequiredBaseSentinels -BaseCommit $trustedBaseCommit
         if ($null -ne $protection -and $null -ne $baseSentinels) {
@@ -896,25 +900,36 @@ try {
     $migrationMarkerPath = 'config/build/runtime-v2-migration-bootstrap.json'
     $builderRegistryPath = 'config/build/runtime-builders.v2.json'
     $consensusRecordPath = 'config/build/runtime-release-consensus.json'
+
+    $deploymentChanged = $true
+    $changedDeploymentPaths = @()
+    if ($baseCommit) {
+        $pathspecs = @(
+            'CRAZYFLASHER7MercenaryEmpire.exe',
+            'runtime',
+            $consensusRecordPath,
+            $builderRegistryPath,
+            $migrationMarkerPath
+        )
+        $changedDeploymentPaths = @(& git -C $ProjectRoot diff --name-only --no-renames $baseCommit $headCommit -- @pathspecs)
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot compare runtime deployment paths between base and head.' }
+        $changedDeploymentPaths = @($changedDeploymentPaths | Where-Object { $_ -ne '' } | Sort-Object -Unique)
+        $deploymentChanged = $changedDeploymentPaths.Count -gt 0
+    }
+
+    if ($isAuditMode -and -not $deploymentChanged -and -not $ForceDeploymentVerification) {
+        # Do not read the manifest or any payload blob on the normal source-ahead path.
+        # With a comparable base, every deployment sentinel/control is already proven
+        # byte-identical by the tree diff above.
+        Write-Host "[RuntimeReleaseState] OK state=source-ahead mode=$Mode manifest=unread deploymentChanged=false base=$baseCommit head=$headCommit verifierCount=0" -ForegroundColor Yellow
+        exit 0
+    }
+
     $headHeader = Get-Cf7ManifestHeader (Get-Cf7IndexedText $manifestPath)
     $baseHeader = $null
     if ($baseCommit) {
         $baseHeader = Get-Cf7ManifestHeader (Get-Cf7RevisionText -Revision $baseCommit -RelativePath $manifestPath -Optional) -Optional
     }
-
-    $script:PowerShellExecutable = Get-Cf7PowerShellExecutable
-    $toolsRoot = Join-Path $ProjectRoot 'tools'
-    $bundleVerifier = if ($headHeader -eq 'cf7-runtime-manifest-v2') {
-        Join-Path $toolsRoot 'verify-runtime-bundle-v2.ps1'
-    } else {
-        Join-Path $toolsRoot 'verify-runtime-bundle.ps1'
-    }
-    $commonArguments = @('-ProjectRoot', $ProjectRoot, '-Staged')
-
-    # Byte closure is non-negotiable in every state, including source-ahead.
-    $integrity = Invoke-Cf7Verifier -Label 'runtime byte-integrity verification' -Path $bundleVerifier `
-        -Arguments ($commonArguments + @('-IntegrityOnly'))
-    Assert-Cf7Passed $integrity
 
     if ($baseHeader -eq 'cf7-runtime-manifest-v2' -and $headHeader -eq 'cf7-runtime-manifest-v1') {
         throw 'Runtime manifest downgrade from v2 to v1 is forbidden.'
@@ -931,20 +946,23 @@ try {
     }
     $isMigrationBootstrap = -not $baseMarkerBlob -and [bool]$headMarkerBlob
 
-    $deploymentChanged = $true
-    $changedDeploymentPaths = @()
-    if ($baseCommit) {
-        $pathspecs = @(
-            'CRAZYFLASHER7MercenaryEmpire.exe',
-            'runtime',
-            $consensusRecordPath,
-            $builderRegistryPath
-        )
-        $changedDeploymentPaths = @(& git -C $ProjectRoot diff --name-only --no-renames $baseCommit $headCommit -- @pathspecs)
-        if ($LASTEXITCODE -ne 0) { throw 'Cannot compare runtime deployment paths between base and head.' }
-        $changedDeploymentPaths = @($changedDeploymentPaths | Where-Object { $_ -ne '' } | Sort-Object -Unique)
-        $deploymentChanged = $changedDeploymentPaths.Count -gt 0
+    if ($isAuditMode -and $isMigrationBootstrap) {
+        throw 'The one-time runtime v2 migration bootstrap is allowed only against a protected ref.'
     }
+
+    $script:PowerShellExecutable = Get-Cf7PowerShellExecutable
+    $toolsRoot = Join-Path $ProjectRoot 'tools'
+    $bundleVerifier = if ($headHeader -eq 'cf7-runtime-manifest-v2') {
+        Join-Path $toolsRoot 'verify-runtime-bundle-v2.ps1'
+    } else {
+        Join-Path $toolsRoot 'verify-runtime-bundle.ps1'
+    }
+    $commonArguments = @('-ProjectRoot', $ProjectRoot, '-Staged')
+
+    # Deployment mutations must prove both the byte closure and strict release identity.
+    $integrity = Invoke-Cf7Verifier -Label 'runtime byte-integrity verification' -Path $bundleVerifier `
+        -Arguments ($commonArguments + @('-IntegrityOnly'))
+    Assert-Cf7Passed $integrity
 
     $consensusVerifier = Join-Path $toolsRoot 'verify-runtime-consensus.ps1'
     if ($isMigrationBootstrap) {
@@ -998,26 +1016,9 @@ try {
         throw "Protected v1 deployment changes require the exact one-time migration bootstrap or a complete v2 promotion: $($changedDeploymentPaths -join ',')"
     }
 
-    if ($Mode -eq 'Development' -and -not $deploymentChanged) {
-        # Exit 2 is the verifier's explicit identity-mismatch result. Infrastructure failures remain fatal.
-        $strict = Invoke-Cf7Verifier -Label 'runtime strict identity verification' -Path $bundleVerifier `
-            -Arguments $commonArguments -EchoOutput $false
-        if ($strict.ExitCode -eq 0) {
-            foreach ($line in $strict.Output) { Write-Host $line }
-            Write-Host "[RuntimeReleaseState] OK state=coherent mode=$Mode manifest=$headHeader deploymentChanged=false base=$baseCommit head=$headCommit" -ForegroundColor Green
-            exit 0
-        }
-        if ($strict.ExitCode -ne 2) {
-            foreach ($line in $strict.Output) { Write-Host $line }
-            throw "Runtime strict identity verifier failed unexpectedly with exit code $($strict.ExitCode)."
-        }
-        Write-Host "[RuntimeReleaseState] OK state=source-ahead mode=$Mode manifest=$headHeader deploymentChanged=false base=$baseCommit head=$headCommit" -ForegroundColor Yellow
-        exit 0
-    }
-
-    if ($Mode -eq 'Development' -and $deploymentChanged -and $headHeader -ne 'cf7-runtime-manifest-v2') {
+    if ($isAuditMode -and $deploymentChanged -and $headHeader -ne 'cf7-runtime-manifest-v2') {
         $detail = if ($baseCommit) { $changedDeploymentPaths -join ',' } else { "no comparable base ($baseOrigin)" }
-        throw "Development deployment changes require a complete v2 promotion; manifest=$headHeader changes=$detail"
+        throw "Audit/Development deployment changes require a complete v2 promotion; manifest=$headHeader changes=$detail"
     }
 
     $strict = Invoke-Cf7Verifier -Label 'runtime strict identity verification' -Path $bundleVerifier -Arguments $commonArguments
@@ -1025,8 +1026,12 @@ try {
     $consensus = Invoke-Cf7Verifier -Label 'runtime release consensus verification' -Path $consensusVerifier -Arguments $commonArguments
     Assert-Cf7Passed $consensus
 
-    $state = if ($Mode -eq 'Protected') { 'protected-coherent' } else { 'promoted' }
-    Write-Host "[RuntimeReleaseState] OK state=$state mode=$Mode manifest=$headHeader deploymentChanged=$($deploymentChanged.ToString().ToLowerInvariant()) base=$(if ($baseCommit) {$baseCommit} else {'none'}) head=$headCommit" -ForegroundColor Green
+    $state = if ($Mode -eq 'Protected') {
+        'protected-coherent'
+    } elseif ($ForceDeploymentVerification -and -not $deploymentChanged) {
+        'release-ready'
+    } else { 'promoted' }
+    Write-Host "[RuntimeReleaseState] OK state=$state mode=$Mode manifest=$headHeader deploymentChanged=$($deploymentChanged.ToString().ToLowerInvariant()) forcedDeploymentVerification=$($ForceDeploymentVerification.ToString().ToLowerInvariant()) base=$(if ($baseCommit) {$baseCommit} else {'none'}) head=$headCommit" -ForegroundColor Green
     exit 0
 } catch {
     Write-Cf7Failure $_.Exception.Message

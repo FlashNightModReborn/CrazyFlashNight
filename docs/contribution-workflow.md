@@ -1,107 +1,113 @@
-# 协作者直推与 native 账号隔离
+# 协作者直推与 native/runtime 发布边界
 
-**文档角色**：`main` 的账号准入、普通合作者提交体验与 native/runtime 变更分域；二进制发布证据仍以 [runtime-build-reproducibility.md](runtime-build-reproducibility.md) 为准。
+**文档角色**：`main` 的协作者提交体验、native/runtime 事后审计与正式发布授权边界；二进制发布证据仍以 [runtime-build-reproducibility.md](runtime-build-reproducibility.md) 为准。
 
 ## 当前结论
 
-仓库继续保留 AS2、XML、XFL、Web 与 Launcher 的同提交原子性，不拆软件仓库和资产仓库。GitHub Free 公开仓库当前采用“账号隔离 + native 黑名单分类”组合：
+仓库继续保留 AS2、XML、XFL、Web 与 Launcher 的同提交原子性，不拆软件仓库和资产仓库。GitHub Free 公开仓库采用“全员直推 + 事后审计 + 正式发布双生产者共识”：
 
-- 普通文档、美术、策划、AS2 与 Web 合作者保留原来的 `Pull → Commit → Push`，可以从现有 Git 客户端直接推 `main`，不要求学习分支或 PR。
-- `Crazyfs`、`Flash-Night` 作为 native 受限账号，不获得身份门 bypass；无论本次改什么路径，都必须先进入 PR，并通过 `verify-staged-bundle`。
-- 新增 collaborator 默认受限。只有确认其不承担 C# / Rust / C / C++ / DLL / EXE / runtime 信任链开发后，才把账号显式加入版本化 bypass 清单并同步远端 ruleset。
-- 开发机身份可以切换，但准入跟 GitHub 账号而不是机器绑定；承担 native 开发时应使用受限账号。
+- 所有已有 write 权限的协作者，包括 `Crazyfs`、`Flash-Night`，都继续使用现有客户端 `Pull → Commit → Push main`；服务端不要求 PR、CODEOWNER 或另一人在线。
+- 普通文档、美术、策划、AS2、Web 与数据提交不触发 runtime integrity workflow，各自继续遵守原有专项验证。
+- C# / Rust / C / C++、项目/锁文件与其他 native 源码直推属于正常开发态。push 后审计可以成功报告 `source-ahead`，表示源码领先于当前已部署 runtime；它不是发布失败，也不要求每次提交立即重建二进制。
+- 根 EXE、`runtime/**`、manifest、signed consensus 等部署字节若发生变化，却没有完整 v2 promotion 证据，push 后 workflow 必须失败报警。报警是事后信号，不能撤销已经进入 `main` 的提交。
+- 正式 release 才要求注册本地 X509 producer 与 GitHub Hosted OIDC/Sigstore producer 对同一 immutable source 达成双 signer、双 `faultDomain` 共识。构建共识不要求 Flash-Night 人工审批；任一获授权发布者可独立完成整条列车。
 
-账号期望状态的唯一版本化记录是 `config/build/main-branch-admission.v1.json`。远端只读复核入口：
+PR 仍可用于自愿讨论或代码审阅，但不是任何账号的主线前置条件。一键 PR 工具只保留为可选辅助，不再是准入入口或权限来源。
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/audit-main-branch-admission.ps1
-```
-
-## 普通合作者：维持原操作
-
-普通 bypass 账号继续使用 GitHub Desktop 或现有客户端：
+## 所有协作者：维持原操作
 
 1. 拉取 `main`。
 2. 编辑并 commit。
 3. 点击 Push。
 
-无需运行额外脚本，也不会因为尚不存在的 GitHub check 被服务器预先拒绝。`verify-staged-bundle` 仍会在 `main` push 后运行，用于事后确认这次提交没有让 Launcher runtime 状态漂移；普通内容不触发重新建立二进制共识。检查不会只相信上一次 push 的 event base，而是沿 `main` 第一父链回到最近一次由固定 workflow、GitHub Actions App 和 `push/main` 成功检查共同确认的绿色提交，再累计比较到当前 head。因此“误推 native → 再推文档”不会把漂移洗绿；连续 push 导致前一次 run 被取消也不影响该性质。
+`main-global-ref-integrity-v1` 禁止删除与 non-fast-forward / force-push，因此正常直推必须基于当前远端形成可追溯的 fast-forward 历史。远端已经前进时，先按现有客户端的正常同步流程处理；不要 force-push 覆盖他人工作。
 
-纯素材、策划数据、AS2、主 XFL/SWF、独立 Flash 资产、文档与 `launcher/web/**` 仍各自遵守原有编译、格式与专项测试约束。native fastpath 只证明“没有触及 native/runtime 受限域”，不证明素材语义、数值或 Flash 发布结果正确。
+普通内容路径不会为了证明“没有 native 变化”而启动 Windows Actions。素材、策划数据、AS2、主 XFL/SWF、独立 Flash 资产、文档与 `launcher/web/**` 的正确性仍由各自格式、编译、harness 与人工验收负责；runtime workflow 不为这些内容提供语义背书。
 
-## 受限账号：PR 入口
+## native 事后审计状态
 
-`Crazyfs`、`Flash-Night` 直接推 `main` 会被 GitHub 身份门拒绝。可以自行使用正常 PR，也可以在本地 `main` 已 commit、工作树干净且不落后远端时双击根目录 `一键提交到主线.cmd`。工具会创建唯一 `contrib/*` 分支和 ready PR；文档/内容车道可登记 auto-merge，软件车道等待手工合并。它不会 force push、reset、rebase 或强删分支。合并方式固定为 merge commit；v2 GitHub producer proof 把 source commit 绑定为最终 `main` 的祖先，squash/rebase 会改写该祖先关系，因而不能用于受限账号的 native promotion。
+`config/build/native-change-gate.v1.json` 与 `config/build/runtime-inputs.v2.json` 共同描述 native/runtime 边界：
 
-命令行入口：
-
-```powershell
-gh auth login
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/submit-contribution.ps1 -Wait
-```
-
-`config/build/contribution-lanes.v1.json` 只决定这个一键 PR 工具的显示、等待与 auto-merge 行为，不再是直推权限源，也不参与 CI 的 native/non-native 判定。
-
-## native 黑名单如何判定
-
-`config/build/native-change-gate.v1.json` 是准入分类的 canonical 配置。分类器从外部成功检查确认的 trusted base 读取该文件，并联合 `runtime-inputs.v2.json` 的 artifact source、producer recipe、toolchain lock 与完整 payload；命中任一项就走完整 strict 链：
-
-- C# / Rust / C / C++ 源码、项目文件、全局 native 编译扩展名与 Cargo/.NET/CMake 等锁和入口文件名；
+- C# / Rust / C / C++ 源码、项目文件、Cargo/.NET/CMake 等锁与入口；
 - `launcher/src/**`、`launcher/native/**`、根 bootstrap、`runtime/**`；
 - `.github/workflows/**`、`.github/actions/**`、`config/build/**`；
 - runtime request、worker、GitHub attestation、policy receipt、promotion、consensus、verifier 与对应回归工具。
 
-命中 native gate 的新增或修改还必须被当前 index 的 runtime descriptor 输入闭包、payload，或明确的 canonical release 输出/迁移控制路径绑定；任意新出现或被改写的未绑定 DLL、EXE、源码、项目文件和 future build-control 路径都在调用 verifier 前失败，不能靠“strict 只验证已知输入”洗绿。删除未绑定的历史 native 文件允许进入 strict，以便安全清理；未改动的历史文件不会因为一次普通内容 push 被重新纳入发布身份。
+`Runtime native audit / audit-native-runtime` 监听 `main` push、目标为 `main` 的可选 PR 和获授权发布者的手工 dispatch；所有事件只接受首次 run，旧 run 的 rerun 在 runner 分配前跳过。静态 paths 只覆盖上述 native/runtime 集合，普通内容不会启动 runner。PR 检查只是自愿的提前反馈，未被任何 ruleset 设为 required。自动 push/PR 使用低成本 diff 语义；手工 dispatch 则强制当前 HEAD 完成 integrity、source identity 与 strict consensus 全链，作为 release-readiness 检查，源码仍为 `source-ahead` 时按尚未可发布失败，不能把它理解成只重审最后一个 commit。
 
-Launcher 单测、两个 `sol_parser` 的 tests/examples 与根 solution 已作为 policy 输入显式绑定，可正常随 native release train 演进。历史 vendor/tool 二进制、`launcher/bin/**` 以及尚未纳入纯 producer 的 `HotkeyGuard.cs` / `hotkey_guard.exe` 则保持冻结：可以在明确清理时删除，不能直接替换或修改；若要继续开发 HotkeyGuard，必须先把源码、确定性 producer 与根 EXE 一起迁入 payload 闭包，不能只把源码列成 policy 来假装获得双构建共识。
+push 后状态分三类理解：
 
-未命中黑名单且 trusted base 到当前 head 的累计 Git diff 仅含规范 regular-file 新增、修改或删除时，输出 `state=protected-nonnative-fastpath`，直接继承该绿色祖先的 signed consensus，不读取或散列 payload blob。event base 仍单独用于 deployment/migration 状态比较，绝不被 trusted base 替代。GitHub API 不可用、找不到无歧义绿色锚、空/全零 event base 时，required check 明确保持失败，待 API/锚恢复后重跑；它不会把 immediate event base 或单次本地 strict 结果变成可继承绿灯。symlink、gitlink、可执行 mode、危险/非规范路径、大小写碰撞、缺失/畸形 gate 与非祖先 base 同样失败关闭。
+| 状态 | 含义 | 后续动作 |
+|------|------|----------|
+| 普通内容 | 不触发 runtime workflow | 按受影响子栈完成验证 |
+| `source-ahead` | native/release 输入源码领先，但正式部署字节和既有 consensus 未被混改 | 审计成功；继续开发，准备正式 release 时再冻结最终 commit |
+| 部署漂移 / 无效 consensus | 根 EXE、runtime、manifest、consensus 或发布控制闭包与合法 promotion 不一致 | workflow 失败报警；停止把该 HEAD 当成可发布部署，修复或完成正式 promotion |
 
-正式 release 的 `policyHash` 仍保持广义证据闭包：内容生成器、审计器、派生目录与发布资产继续由下一次 production policy receipt 绑定。它们不再因为日常内容提交而被误判成 native，但也没有从 release 证据中删除。
+未绑定的新 DLL、EXE、源码或 future build-control 路径仍应由审计显式报警，不能利用 descriptor 漏列假装进入合法发布闭包。历史冻结对象可在明确清理时删除；若要继续开发，先把源码、确定性 producer 与产物一起迁入发布身份。
 
-## GitHub 主线与 runtime source tag ruleset
+`policyHash` 继续覆盖生成器、审计器、派生资产与发布政策，但它不意味着每次 policy/native 源码直推都要即时 promotion。正式 release request 会冻结当时完整 Git tree，并用 production policy receipt 重新绑定。
 
-远端必须拆成四个职责单一的 ruleset，不能合并：
+## 正式 release：无需第二人在线
+
+正式发布者从已提交的最终 source commit 建立一次性、单路径段的 `runtime-build-v2/<release-id>` tag 和 immutable request，然后取得。cloud config、dispatch helper、envelope/attestation verifier 与主线准入审计都会拒绝任意其他 tag 命名空间或 `runtime-build-v2/a/b` 这类嵌套 tag，确保被证明的 `sourceRef` 必定落在 creation + immutability 两条远端规则覆盖内：
+
+1. 注册本地 X509 worker 的签名票；
+2. GitHub Hosted Windows 的 OIDC/Sigstore 签名票；
+3. production policy receipt；
+4. v2 strict verifier 通过结果。
+
+两张票必须拥有不同 signer identity 和真实不同 `faultDomain`，且 build identity / payload closure 全等。GitHub Hosted 是自动第二生产者，不是第二名 human reviewer；它证明构建来源与字节共识，不判断源码业务意图。只要发布者拥有已登记本地证书、source-tag 创建权和 cloud dispatch 权，就不需要等待另一账号批准。
+
+cloud workflow 只接受 `Crazyfs`（GitHub actor ID `91271520`）或 `Flash-Night`（`138298913`）发起的 `workflow_dispatch`，并只接受 `run_attempt == 1`；失败后应重新 dispatch，不使用 Actions 的 rerun 按钮。该授权用于限制发布能力与 hosted runner 消耗，不影响任何协作者直推源码。
+
+cloud artifact 保留期是有意缩短的临时传递窗口：
+
+- unsigned candidate + envelope：1 天，仅供 build → attest job 交接；
+- 失败 bootstrap diagnostics：7 天；
+- signed candidate + envelope + Sigstore bundle：7 天，供 helper 下载、验真和 promotion。
+
+超过 7 天仍未 promotion 时重新 dispatch；不要把 Actions artifact 当永久发布档案。promotion 后的 tracked manifest/consensus 与其内嵌证明才是仓库长期审计记录。
+
+## GitHub 远端只保留三条零 Actions ruleset
+
+`config/build/main-branch-admission.v2.json` 是全员直推、advisory CODEOWNERS、source-tag 创建者和以下三条规则的版本化 source of truth。远端不设置身份 gate、Require PR、CODEOWNER review 或 required Actions check，只保留三条不依赖 Actions 结果的引用完整性规则：
 
 | Ruleset | bypass | 规则 |
 |---------|--------|------|
-| `main-native-identity-gate-v1` | 仅版本化清单中的普通账号，`User + always` | Require PR；只允许 merge commit；strict `verify-staged-bundle`（GitHub Actions App `15368`）；普通审批数为 0；命中 trust-root/native CODEOWNERS 时必须由另一 native owner 审批 |
-| `main-global-ref-integrity-v1` | 无 | 禁止删除 `main`；禁止 non-fast-forward / force-push |
-| `runtime-source-tag-creation-v1` | 仅 `Crazyfs`、`Flash-Night`，`User + always` | 只有受限 native 账号可创建 `refs/tags/runtime-build-v2/*` |
+| `main-global-ref-integrity-v1` | 无 | 禁止删除 `main`；禁止 non-fast-forward / force-push，正常 fast-forward 直推不受阻 |
+| `runtime-source-tag-creation-v1` | 仅获授权发布账号，`User + always` | 只有 `Crazyfs`、`Flash-Night` 可创建 `refs/tags/runtime-build-v2/*` |
 | `runtime-source-tag-immutability-v1` | 无 | 已创建的 runtime source tag 禁止任何 update 与 deletion |
 
-原因是 `always` 会绕过同一 ruleset 内全部规则；如果把删除/force-push 规则放进身份门，普通账号也会绕过它们。tag creation 与 tag immutability 也必须分开，否则允许 release maintainer 创建新 tag 的 bypass 会同时允许其移动或删除旧 tag。
+tag creation 与 immutability 必须分开：创建新 tag 的 bypass 不能同时获得移动或删除旧 tag 的能力。`.github/CODEOWNERS` 可以保留为审阅提示，但没有服务端 required-review 效力，不构成准入或发布证明。
 
-`.github/CODEOWNERS` 的空 catch-all 使纯文档/内容 PR 没有 owner，因此受限账号的普通内容提交仍可在 required check 绿色后零人工审批合并；但 `.github/**`、`config/build/**`、`tools/**`、`runtime/**`、Launcher native 源码/工程/构建入口以及全局 native 扩展名均由 `@Crazyfs @Flash-Night` 所有。受限作者修改这些 trust-root/native 文件时不能批准自己的 PR，必须由另一 native owner 审批。这一门槛阻止作者把 required workflow、分类器或证明链改成无条件成功后自行合入；普通 bypass 账号的直推体验不受 CODEOWNER 规则影响。
+首次部署固定按四态迁移，避免切换时丢失引用保护：
 
-规则迁移固定分三态执行，避免切换窗口把所有人锁死或同时撤掉保护：
+1. `ConfigOnly`：只校验本地 schema、actor ID 与三条规则契约。
+2. `Prepared`：三条 ruleset 已创建但为 `disabled`；minimal classic 仍启用，且只以 `enforce_admins=true`、`allow_force_pushes=false`、`allow_deletions=false` 禁止所有人（含管理员）force/delete，不含 required check、PR review、push restriction、signature、linear-history 或其他准入门槛。
+3. `Layered`：三条 ruleset 激活，minimal classic 暂时保留；先验证 main/tag 有效规则与直推语义。
+4. `Active`：最后删除 classic，远端只剩三条 active ruleset。回滚时必须先恢复 minimal classic，再禁用 ruleset。
 
-首次引导 PR 还有一个历史 CODEOWNERS 交叉点：旧 `main` 只列 `@Crazyfs @lyyloo @XDD3102`，所以新加入的 `@Flash-Night` 不能审批这一次 PR。首选由旧 owner 正常审批；若明确不可用，才允许在该 PR required check 已绿色、classic 配置已完整快照后执行一次受控 bootstrap：只临时关闭 `require_code_owner_reviews`，继续保留 enforce-admins、Require PR、strict `verify-staged-bundle`、禁止 force-push/deletion，合并后立即把 classic CODEOWNER 要求恢复为 true；任何一步失败都先恢复 classic，再停止迁移。这个例外只解决旧 owner 集到新 owner 集的交接，不能留作日常绕过。
+远端规则只读复核入口：
 
-1. `Prepared`：四个 ruleset 已按版本化配置创建但仍为 `disabled`，classic branch protection 保持原样；运行 `tools/audit-main-branch-admission.ps1 -ExpectedState Prepared`。
-2. `Layered`：先激活四个 ruleset，classic protection 仍保留；运行 `-ExpectedState Layered`，确认主线四类有效规则、source-tag 创建/不可变规则与 workflow 活性都存在。
-3. `Active`：最后删除 classic protection，再运行 `-ExpectedState Active`；此时 classic endpoint 必须为 404，四个 ruleset 必须 active。
-
-本地只审 schema 用 `-ExpectedState ConfigOnly`。审计还会让 CODEOWNERS 扩展名/入口名与 native gate 同源，校验规范化 LF 摘要、远端 `main` blob 与 GitHub CODEOWNERS errors；同时绑定 required workflow 的 database ID、仓库内路径与 `state=active`，并在 Layered/Active 状态确认当前 `main` HEAD 已由该 workflow 的成功 `push/main` check 精确覆盖，防止 ruleset 指向已禁用、已删除或只在旧提交上成功的同名检查。若迁移后需要回滚，必须先恢复 classic protection，再禁用 ruleset；不要先拆掉现行保护。
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/audit-main-branch-admission.ps1
+```
 
 ## 明确的残余风险
 
-GitHub Free 公开仓库的这个方案按账号隔离，不是按路径做服务端 push restriction。获得 `always` bypass 的普通账号若误改 native 文件，服务器仍会接受 push；push 后 CI 可以报警，但不能撤销已经进入 `main` 的提交。
+GitHub Free 公开仓库没有本方案可用的服务端 path push restriction。只要账号有 write 权限，服务器就会接受其 fast-forward native push，包括源码、workflow，甚至部署文件；push 后 Actions 最多报警，不能回滚或阻止该提交进入 `main`。
 
-历史回放中，排除 `Crazyfs`、`Flash-Night` 后的 1,825 个真实 file-changing non-merge 提交仅 3 个命中 native 黑名单（0.164%）：一个 C# 修改、两个 EXE。概率低但不是零，因此：
+`paths` 也只是降低 Windows runner 消耗的 best-effort 调度器，不是完整安全边界。GitHub.com 当前只用生成 diff 的前 3,000 个文件匹配过滤器；超大素材提交若把 native/runtime 文件排在该窗口之外，审计可能不启动。反过来，单次 push 超过 1,000 个 commit 或 diff 生成超时会无视过滤器而启动 workflow。因此“普通内容零 runner”是常规提交目标，不是超大 push 的绝对保证；官方限制见 [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#git-diff-comparisons)。
 
-- bypass 只授予已确认不承担 native 开发的账号；新 collaborator 默认 restricted；
-- 任意 DLL/EXE 都保持受限，不给素材树开二进制例外；
-- push 后 `verify-staged-bundle` 红灯必须由 native 维护者处置，不能当作素材构建噪声忽略；
-- 若未来需要“普通账号即使误碰 native 也无法推入”，应升级到支持 path push ruleset 的仓库方案，或把 native/runtime 信任链拆到独立仓库；本方案不虚构该能力。
+因此必须接受并管理以下边界：
 
-多数 collaborator 当前仍有较高仓库权限，管理员能够修改 repository settings/ruleset，这是独立的设置层风险。本轮不静默降权；后续可在确认职责后把无需管理设置的账号收敛到 `write` / `maintain`。
-
-绿色锚由仓库自己的 workflow 复核，足以防真实协作者的误操作和连续 push 漂移，但不是对恶意 bypass actor 的仓库外证明：拥有直推权的人仍可能主动篡改 workflow 后推入 `main`。服务端 path rule 或 native 独立仓库才是抵御该类主动攻击的边界。
-
-## 一键工具安全边界
-
-一键工具只接受：工作树完全干净、当前不处于 merge/rebase/cherry-pick/revert/bisect/sequencer 中间态、提交相对远端 `main` 只 ahead 不 behind。远端已前进时会停止，不自行改写历史。合并后也只有在贡献 commit 已成为远端 `main` 祖先时，才 `--ff-only` 回到 `main` 并用普通 `branch -d` 清理。
+- `source-ahead` 只表示开发源码领先，不表示已发布，也不表示代码安全或经过第二人审阅；
+- 部署漂移红灯出现后，`main` 已经包含问题提交；维护者必须及时处置，不能把红灯当作无害构建噪声；
+- path-filter 可能因上述 GitHub diff 窗口漏掉超大提交中的 native/runtime 文件，所以事后 Audit 只提供快速反馈；正式安全边界始终是受保护 immutable tag、双生产者共识、production receipt 与 promotion；
+- GitHub Hosted attestation 证明“哪份源码由哪个 workflow 构建出哪些字节”，不证明源码意图安全；取消 human reviewer 后，业务正确性与恶意改动风险由提交者、测试和事后审计共同承担；
+- source tag 权限与不可变规则能保护正式 release 输入，但不能阻止普通账号先把 native 源码推到 `main`；发布者必须在冻结 release 前审阅目标 tree 与告警状态；
+- 管理员仍可修改 repository settings/ruleset，这是 GitHub 设置层的独立风险；三条 ruleset 不能约束管理员主动拆除规则；
+- 若未来必须做到“误碰 native 也绝不进入 main”，需要升级到具备服务端 path restriction 的托管方案，或把 native/runtime 信任链迁到独立仓库。本方案不虚构该能力。
 
 ## 何时再考虑拆分资产仓库
 

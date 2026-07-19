@@ -56,10 +56,9 @@
     "vcpkg.json"
   ],
   "protectedFiles": [
-    ".github/CODEOWNERS",
     ".github/workflows/runtime-bundle-integrity.yml",
     ".github/workflows/runtime-cloud-builder.yml",
-    "config/build/main-branch-admission.v1.json",
+    "config/build/main-branch-admission.v2.json",
     "config/build/native-change-gate.v1.json",
     "config/build/runtime-inputs.v2.json",
     "launcher/build.ps1",

@@ -1,73 +1,36 @@
-# Ordinary collaborators bypass the identity gate and keep their direct-push workflow.
-# Restricted accounts need the other native owner to approve trust-root/native changes;
-# the empty catch-all deliberately leaves ordinary docs/content PRs without an owner.
-*
+# Advisory reviewer hints only. main does not require pull requests, status checks,
+# approvals, or CODEOWNER review; every collaborator keeps the normal direct-push path.
+# These entries help voluntary PRs find the two runtime/native maintainers.
 
-# Native/runtime review hints. The executable gate remains the wider source of truth.
-*.a @Crazyfs @Flash-Night
 *.c @Crazyfs @Flash-Night
 *.cc @Crazyfs @Flash-Night
 *.cpp @Crazyfs @Flash-Night
 *.cs @Crazyfs @Flash-Night
 *.csproj @Crazyfs @Flash-Night
 *.cxx @Crazyfs @Flash-Night
-*.def @Crazyfs @Flash-Night
 *.dll @Crazyfs @Flash-Night
 *.dylib @Crazyfs @Flash-Night
 *.exe @Crazyfs @Flash-Night
-*.exp @Crazyfs @Flash-Night
-*.filters @Crazyfs @Flash-Night
-*.fsproj @Crazyfs @Flash-Night
 *.h @Crazyfs @Flash-Night
 *.hh @Crazyfs @Flash-Night
 *.hpp @Crazyfs @Flash-Night
 *.hxx @Crazyfs @Flash-Night
 *.inl @Crazyfs @Flash-Night
 *.lib @Crazyfs @Flash-Night
-*.manifest @Crazyfs @Flash-Night
 *.node @Crazyfs @Flash-Night
-*.o @Crazyfs @Flash-Night
-*.obj @Crazyfs @Flash-Night
 *.pdb @Crazyfs @Flash-Night
-*.props @Crazyfs @Flash-Night
-*.rc @Crazyfs @Flash-Night
-*.res @Crazyfs @Flash-Night
-*.resx @Crazyfs @Flash-Night
 *.rs @Crazyfs @Flash-Night
 *.sln @Crazyfs @Flash-Night
-*.slnx @Crazyfs @Flash-Night
 *.so @Crazyfs @Flash-Night
-*.targets @Crazyfs @Flash-Night
 *.vcxproj @Crazyfs @Flash-Night
 *.wasm @Crazyfs @Flash-Night
-*.xaml @Crazyfs @Flash-Night
-Cargo.lock @Crazyfs @Flash-Night
-Cargo.toml @Crazyfs @Flash-Night
-CMakeLists.txt @Crazyfs @Flash-Night
-Directory.Build.props @Crazyfs @Flash-Night
-Directory.Build.targets @Crazyfs @Flash-Night
-Directory.Packages.props @Crazyfs @Flash-Night
-Makefile @Crazyfs @Flash-Night
-NuGet.Config @Crazyfs @Flash-Night
-global.json @Crazyfs @Flash-Night
-meson.build @Crazyfs @Flash-Night
-packages.lock.json @Crazyfs @Flash-Night
-rust-toolchain.toml @Crazyfs @Flash-Night
-vcpkg-configuration.json @Crazyfs @Flash-Night
-vcpkg.json @Crazyfs @Flash-Night
 
 /.github/ @Crazyfs @Flash-Night
 /.gitattributes @Crazyfs @Flash-Night
 /config/build/ @Crazyfs @Flash-Night
 /global.json @Crazyfs @Flash-Night
-/launcher/CRAZYFLASHER7MercenaryEmpire.csproj @Crazyfs @Flash-Night
-/launcher/Directory.Packages.props @Crazyfs @Flash-Night
-/launcher/packages.lock.json @Crazyfs @Flash-Night
-/launcher/app.ico @Crazyfs @Flash-Night
-/launcher/app.manifest @Crazyfs @Flash-Night
 /launcher/build*.ps1 @Crazyfs @Flash-Night
 /launcher/native/ @Crazyfs @Flash-Night
-/launcher/scripts/ @Crazyfs @Flash-Night
 /launcher/src/ @Crazyfs @Flash-Night
 /runtime/ @Crazyfs @Flash-Night
 /tools/ @Crazyfs @Flash-Night
