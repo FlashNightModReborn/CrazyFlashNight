@@ -982,6 +982,7 @@ try {
         Assert-Test ($workflow -match "CF7_TRUST_CHECK_APP_ID:\s*'15368'") 'GitHub Actions check app identity is not frozen'
         Assert-Test ($workflow -match [regex]::Escape("@('-BaseRevision', `$baseRevision)")) 'workflow must preserve the event base for strict state semantics'
         Assert-Test ($workflow -match [regex]::Escape("'-TrustedBaseRevision', `$trustedBaseRevision")) 'workflow must pass the external green anchor separately'
+        Assert-Test ($workflow -match [regex]::Escape('([string](@($anchorLines)[0])).Substring')) 'workflow must survive PowerShell 5.1 single-result array unrolling'
         Assert-Test ($workflow -match "'-DisableFastPath'") 'API failure must disable fastpath instead of trusting the event base'
         Assert-Test ($workflow -match '\$disableFastPath = \$eventBaseWasAbsent -or') 'empty or all-zero event base must disable fastpath even when an older green anchor exists'
         Assert-Test ($workflow -match 'refusing a reusable success until the resolver/API recovers') 'workflow outage diagnostic must match the classifier hard-fail contract'

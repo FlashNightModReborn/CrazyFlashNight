@@ -104,7 +104,7 @@ jobs:
             Write-Warning 'No externally trusted green anchor is available; refusing a reusable success until the resolver/API recovers and the job is rerun.'
             $null
           } else {
-            ([string]$anchorLines[0]).Substring('CF7_TRUSTED_BASE='.Length)
+            ([string](@($anchorLines)[0])).Substring('CF7_TRUSTED_BASE='.Length)
           }
 
           $classifierArguments = @(
