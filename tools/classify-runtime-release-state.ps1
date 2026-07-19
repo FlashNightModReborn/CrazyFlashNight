@@ -3,6 +3,8 @@ param(
     [ValidateSet('Development', 'Protected')]
     [string]$Mode = 'Development',
     [string]$BaseRevision,
+    [string]$TrustedBaseRevision,
+    [switch]$DisableFastPath,
     [string]$HeadRevision = 'HEAD'
 )
 
@@ -93,7 +95,7 @@ function Invoke-Cf7GitBinary([string[]]$Arguments) {
         }
         # All dynamic repository paths are normalized to forward slashes and cannot end in a
         # backslash, so ordinary Windows command-line quoting is unambiguous here.
-        $quoted.Add('"' + $argument + '"')
+        [void]$quoted.Add('"' + $argument + '"')
     }
     $psi = New-Object Diagnostics.ProcessStartInfo
     $psi.FileName = $gitCommand.Source
@@ -134,7 +136,7 @@ function ConvertTo-Cf7SafeRepoPath([AllowNull()][string]$Value, [string]$Label, 
     if ([string]::IsNullOrWhiteSpace($Value)) { throw "$Label is empty." }
     $path = [string]$Value
     if ($path.Contains('\') -or $path.Contains(':') -or $path.StartsWith('/') -or $path.Contains('//') -or
-            $path.IndexOfAny([char[]]@([char]0, [char]10, [char]13, [char]34, [char]127)) -ge 0) {
+            $path.IndexOfAny([char[]]@([char]0, [char]10, [char]13, [char]34, [char]42, [char]60, [char]62, [char]63, [char]124, [char]127)) -ge 0) {
         throw "$Label is not a safe repository-relative path: $path"
     }
     foreach ($character in $path.ToCharArray()) {
@@ -146,6 +148,9 @@ function ConvertTo-Cf7SafeRepoPath([AllowNull()][string]$Value, [string]$Label, 
         throw "$Label contains an unsafe path segment: $path"
     }
     foreach ($segment in $segments) {
+        if ($segment.Length -gt 255) {
+            throw "$Label contains a path segment longer than 255 UTF-16 code units: $path"
+        }
         if ($segment.EndsWith('.') -or $segment.EndsWith(' ')) {
             throw "$Label contains a Windows-ambiguous trailing character: $path"
         }
@@ -187,7 +192,7 @@ function New-Cf7InputTreeRule($Tree, [string]$Domain) {
     $excludePrefixes = New-Object 'Collections.Generic.List[string]'
     foreach ($prefixValue in @($Tree.excludePrefixes)) {
         $prefix = ConvertTo-Cf7SafeRepoPath -Value ([string]$prefixValue) -Label "$Domain excluded prefix" -AllowTrailingSlash
-        $excludePrefixes.Add($prefix)
+        [void]$excludePrefixes.Add($prefix)
     }
     return [pscustomobject]@{
         Domain = $Domain
@@ -208,6 +213,98 @@ function Test-Cf7InputTreeRule([string]$Path, $Rule) {
     return $true
 }
 
+function Get-Cf7NativeChangeGate([string]$BaseCommit) {
+    $relativePath = 'config/build/native-change-gate.v1.json'
+    $blobOid = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $relativePath -Optional
+    if (-not $blobOid) { return $null }
+    $bytes = Get-Cf7GitBlobBytes -ObjectSpec "${BaseCommit}:$relativePath"
+    $utf8 = New-Object Text.UTF8Encoding($false, $true)
+    try { $text = $utf8.GetString($bytes).TrimStart([char]0xFEFF) }
+    catch { throw 'Base native change gate is not strict UTF-8.' }
+    try { $config = $text | ConvertFrom-Json }
+    catch { throw "Base native change gate is invalid JSON: $($_.Exception.Message)" }
+
+    $expectedFields = @('schema','protectedExtensions','protectedBasenames','protectedFiles','protectedPrefixes')
+    $actualFields = @($config.PSObject.Properties.Name)
+    if ($null -eq $config -or $actualFields.Count -ne $expectedFields.Count -or
+            @($actualFields | Where-Object { $expectedFields -notcontains $_ }).Count -gt 0 -or
+            [string]$config.schema -cne 'cf7-native-change-gate.v1') {
+        throw 'Base native change gate does not have the exact cf7-native-change-gate.v1 shape.'
+    }
+    foreach ($arrayField in @('protectedExtensions','protectedBasenames','protectedFiles','protectedPrefixes')) {
+        if ($config.$arrayField -isnot [Array]) { throw "Base native change gate $arrayField must be a JSON array." }
+    }
+
+    $extensions = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($value in @($config.protectedExtensions)) {
+        if ($value -isnot [string] -or [string]$value -cnotmatch '^\.[a-z0-9]+$') {
+            throw "Native change gate has an invalid lowercase extension: $value"
+        }
+        if (-not $extensions.Add([string]$value)) { throw "Native change gate has a duplicate extension: $value" }
+    }
+    if ($extensions.Count -eq 0) { throw 'Native change gate must protect at least one extension.' }
+
+    $basenames = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($value in @($config.protectedBasenames)) {
+        if ($value -isnot [string]) { throw 'Native change gate basenames must be strings.' }
+        $basename = ConvertTo-Cf7SafeRepoPath -Value ([string]$value) -Label 'native protected basename'
+        if ($basename.Contains('/')) { throw "Native protected basename cannot contain '/': $basename" }
+        if (-not $basenames.Add($basename)) { throw "Native change gate has a duplicate basename: $basename" }
+    }
+    if ($basenames.Count -eq 0) { throw 'Native change gate must protect at least one basename.' }
+
+    $files = New-Object 'Collections.Generic.Dictionary[string,string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($value in @($config.protectedFiles)) {
+        if ($value -isnot [string]) { throw 'Native change gate files must be strings.' }
+        Add-Cf7ProtectedPath -Dictionary $files -Path ([string]$value) -Origin 'native protected file'
+    }
+    if ($files.Count -eq 0) { throw 'Native change gate must protect at least one fixed file.' }
+
+    $prefixes = New-Object 'Collections.Generic.List[string]'
+    $seenPrefixes = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($value in @($config.protectedPrefixes)) {
+        if ($value -isnot [string]) { throw 'Native change gate prefixes must be strings.' }
+        $prefix = ConvertTo-Cf7SafeRepoPath -Value ([string]$value) -Label 'native protected prefix' -AllowTrailingSlash
+        if (-not $seenPrefixes.Add($prefix)) { throw "Native change gate has a duplicate prefix: $prefix" }
+        [void]$prefixes.Add($prefix)
+    }
+    if ($prefixes.Count -eq 0) { throw 'Native change gate must protect at least one prefix.' }
+
+    foreach ($required in @('.c','.cpp','.cs','.csproj','.dll','.exe','.h','.hpp','.rs','.sln','.so','.dylib','.vcxproj','.wasm')) {
+        if (-not $extensions.Contains($required)) { throw "Native change gate is missing mandatory extension: $required" }
+    }
+    foreach ($required in @('Cargo.lock','Cargo.toml','CMakeLists.txt','Directory.Build.props','Directory.Build.targets','global.json','packages.lock.json','rust-toolchain.toml')) {
+        if (-not $basenames.Contains($required)) { throw "Native change gate is missing mandatory basename: $required" }
+    }
+    foreach ($required in @(
+        '.github/CODEOWNERS',
+        '.github/workflows/runtime-bundle-integrity.yml',
+        'config/build/main-branch-admission.v1.json',
+        'config/build/native-change-gate.v1.json',
+        'config/build/runtime-inputs.v2.json',
+        'tools/audit-main-branch-admission.ps1',
+        'tools/classify-runtime-release-state.ps1',
+        'tools/resolve-runtime-trusted-base.ps1'
+    )) {
+        if (-not $files.ContainsKey($required)) { throw "Native change gate is missing mandatory fixed file: $required" }
+    }
+    foreach ($required in @(
+        '.github/actions/', '.github/workflows/', 'config/build/', 'launcher/build',
+        'launcher/native/', 'launcher/src/', 'runtime/', 'tools/promote-runtime-',
+        'tools/resolve-runtime-', 'tools/runtime-', 'tools/verify-runtime-'
+    )) {
+        if (-not $seenPrefixes.Contains($required)) { throw "Native change gate is missing mandatory prefix: $required" }
+    }
+
+    return [pscustomobject]@{
+        BlobOid = $blobOid
+        Extensions = $extensions
+        Basenames = $basenames
+        Files = $files
+        Prefixes = $prefixes.ToArray()
+    }
+}
+
 function Get-Cf7FastPathProtection([string]$BaseCommit) {
     $descriptorPath = 'config/build/runtime-inputs.v2.json'
     $descriptorOid = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $descriptorPath -Optional
@@ -221,11 +318,23 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
     if ($null -eq $descriptor -or [string]$descriptor.schema -cne 'cf7-runtime-inputs.v2') {
         throw 'Base runtime input descriptor has an unsupported schema.'
     }
+    foreach ($requiredDomain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+        $requiredProperty = $descriptor.domains.PSObject.Properties[$requiredDomain]
+        if ($null -eq $requiredProperty -or $requiredProperty.Value.fixedFiles -isnot [Array] -or
+                $requiredProperty.Value.trees -isnot [Array]) {
+            throw "Base runtime input descriptor lacks a well-formed domain: $requiredDomain"
+        }
+    }
+    $nativeGate = Get-Cf7NativeChangeGate -BaseCommit $BaseCommit
+    if ($null -eq $nativeGate) { return $null }
 
     $fixed = New-Object 'Collections.Generic.Dictionary[string,string]' ([StringComparer]::OrdinalIgnoreCase)
     $treeRules = New-Object 'Collections.Generic.List[object]'
     $fullPrefixes = New-Object 'Collections.Generic.List[string]'
-    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+    # The formal release policy remains deliberately broad, but direct-push admission is
+    # native-only. Content generators and derived catalogs stay bound to the next policy
+    # receipt without forcing an unrelated content push to republish the runtime bundle.
+    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock')) {
         $domainProperty = $descriptor.domains.PSObject.Properties[$domain]
         if ($null -eq $domainProperty) { throw "Base runtime input descriptor lacks domain: $domain" }
         $domainConfig = $domainProperty.Value
@@ -234,7 +343,7 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
         }
         foreach ($tree in @($domainConfig.trees)) {
             $rule = New-Cf7InputTreeRule -Tree $tree -Domain $domain
-            $treeRules.Add($rule)
+            [void]$treeRules.Add($rule)
             $treeBytes = Invoke-Cf7GitBinary @('ls-tree','-r','-z','--full-tree',$BaseCommit,'--',[string]$rule.Base)
             $treeRows = @(ConvertFrom-Cf7NulDelimitedUtf8 -Bytes $treeBytes -Label "$domain base tree listing")
             foreach ($row in $treeRows) {
@@ -258,7 +367,7 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
     }
     foreach ($payloadTreeValue in @($descriptor.payload.trees)) {
         $payloadTree = ConvertTo-Cf7SafeRepoPath -Value ([string]$payloadTreeValue) -Label 'payload tree'
-        $fullPrefixes.Add($payloadTree + '/')
+        [void]$fullPrefixes.Add($payloadTree + '/')
         $payloadBytes = Invoke-Cf7GitBinary @('ls-tree','-r','-z','--full-tree',$BaseCommit,'--',$payloadTree)
         foreach ($row in @(ConvertFrom-Cf7NulDelimitedUtf8 -Bytes $payloadBytes -Label 'payload base tree listing')) {
             if ([string]$row -notmatch '^([0-7]{6}) (blob|commit) ([0-9a-fA-F]{40,64})\t(.+)$') {
@@ -271,17 +380,20 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
             Add-Cf7ProtectedPath -Dictionary $fixed -Path $candidate -Origin 'expanded payload tree entry'
         }
     }
-    # This prefix is excluded from the ordinary config/** lane even when a newly introduced
-    # build-control file was not present in the trusted base descriptor.
-    $fullPrefixes.Add('config/build/')
+
+    foreach ($nativeFile in @($nativeGate.Files.Keys)) {
+        Add-Cf7ProtectedPath -Dictionary $fixed -Path ([string]$nativeFile) -Origin 'native gate fixed file'
+    }
+    foreach ($nativePrefix in @($nativeGate.Prefixes)) { [void]$fullPrefixes.Add([string]$nativePrefix) }
 
     foreach ($sentinel in @(
         'CRAZYFLASHER7MercenaryEmpire.exe',
+        'config/build/main-branch-admission.v1.json',
+        'config/build/native-change-gate.v1.json',
         'config/build/runtime-release-consensus.json',
         'config/build/runtime-builders.v2.json',
         'config/build/runtime-v2-migration-bootstrap.json',
         'config/build/runtime-inputs.v2.json',
-        'config/build/contribution-lanes.v1.json',
         '.github/workflows/runtime-bundle-integrity.yml',
         'tools/classify-runtime-release-state.ps1',
         'tools/runtime-build-common.ps1',
@@ -295,57 +407,25 @@ function Get-Cf7FastPathProtection([string]$BaseCommit) {
     )) {
         Add-Cf7ProtectedPath -Dictionary $fixed -Path $sentinel -Origin 'hard-coded runtime integrity sentinel'
     }
-    return [pscustomobject]@{ Fixed = $fixed; TreeRules = $treeRules.ToArray(); FullPrefixes = $fullPrefixes.ToArray(); DescriptorOid = $descriptorOid }
-}
-
-function Get-Cf7BaseContributionLanes([string]$BaseCommit) {
-    $relativePath = 'config/build/contribution-lanes.v1.json'
-    $blobOid = Get-Cf7RevisionBlobOid -Revision $BaseCommit -RelativePath $relativePath -Optional
-    if (-not $blobOid) { return $null }
-    $bytes = Get-Cf7GitBlobBytes -ObjectSpec "${BaseCommit}:$relativePath"
-    $utf8 = New-Object Text.UTF8Encoding($false, $true)
-    try { $text = $utf8.GetString($bytes).TrimStart([char]0xFEFF) }
-    catch { throw 'Base contribution lane config is not strict UTF-8.' }
-    try { $config = $text | ConvertFrom-Json }
-    catch { throw "Base contribution lane config is invalid JSON: $($_.Exception.Message)" }
-    $expectedFields = @('schema','docsPrefixes','contentPrefixes')
-    $actualFields = @($config.PSObject.Properties.Name)
-    if ($null -eq $config -or $actualFields.Count -ne $expectedFields.Count -or
-            @($actualFields | Where-Object { $expectedFields -notcontains $_ }).Count -gt 0 -or
-            [string]$config.schema -cne 'cf7-contribution-lanes.v1') {
-        throw 'Base contribution lane config does not have the exact cf7-contribution-lanes.v1 shape.'
+    return [pscustomobject]@{
+        Fixed = $fixed
+        TreeRules = $treeRules.ToArray()
+        FullPrefixes = $fullPrefixes.ToArray()
+        GlobalExtensions = $nativeGate.Extensions
+        ProtectedBasenames = $nativeGate.Basenames
+        GateFiles = $nativeGate.Files
+        GatePrefixes = $nativeGate.Prefixes
+        DescriptorOid = $descriptorOid
+        GateBlobOid = $nativeGate.BlobOid
     }
-    $prefixes = New-Object 'Collections.Generic.List[string]'
-    $seen = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
-    foreach ($propertyName in @('docsPrefixes','contentPrefixes')) {
-        if ($config.$propertyName -isnot [Array]) { throw "Base contribution lane config $propertyName must be a JSON array." }
-        $values = @($config.$propertyName)
-        if ($values.Count -eq 0) { throw "Base contribution lane config has an empty $propertyName array." }
-        foreach ($value in $values) {
-            if ($value -isnot [string]) { throw "Base contribution lane config $propertyName entries must be strings." }
-            $prefix = ConvertTo-Cf7SafeRepoPath -Value ([string]$value) -Label "contribution lane $propertyName" -AllowTrailingSlash
-            if (-not $prefix.EndsWith('/')) { throw "Contribution lane prefix must end with '/': $prefix" }
-            if (-not $seen.Add($prefix)) { throw "Duplicate contribution lane prefix: $prefix" }
-            $prefixes.Add($prefix)
-        }
-    }
-    $prefixArray = [string[]]$prefixes.ToArray()
-    for ($left = 0; $left -lt $prefixArray.Count; $left++) {
-        for ($right = $left + 1; $right -lt $prefixArray.Count; $right++) {
-            if ($prefixArray[$left].StartsWith($prefixArray[$right], [StringComparison]::Ordinal) -or
-                    $prefixArray[$right].StartsWith($prefixArray[$left], [StringComparison]::Ordinal)) {
-                throw "Contribution lane prefixes overlap: $($prefixArray[$left]) and $($prefixArray[$right])"
-            }
-        }
-    }
-    return [pscustomobject]@{ BlobOid=$blobOid; Prefixes=$prefixArray }
 }
 
 function Get-Cf7RequiredBaseSentinels([string]$BaseCommit) {
     $result = [ordered]@{}
     foreach ($relativePath in @(
         'config/build/runtime-inputs.v2.json',
-        'config/build/contribution-lanes.v1.json',
+        'config/build/main-branch-admission.v1.json',
+        'config/build/native-change-gate.v1.json',
         'runtime/cf7-runtime-manifest.tsv',
         'config/build/runtime-release-consensus.json',
         'config/build/runtime-builders.v2.json',
@@ -464,6 +544,8 @@ function Get-Cf7RawChangedEntries([string]$BaseCommit, [string]$HeadCommit) {
 
 function Test-Cf7ProtectedFastPath([string]$Path, $Protection) {
     if ($Protection.Fixed.ContainsKey($Path)) { return $true }
+    if ($Protection.GlobalExtensions.Contains([IO.Path]::GetExtension($Path))) { return $true }
+    if ($Protection.ProtectedBasenames.Contains([IO.Path]::GetFileName($Path))) { return $true }
     foreach ($prefix in @($Protection.FullPrefixes)) {
         if ($Path.StartsWith([string]$prefix, [StringComparison]::OrdinalIgnoreCase)) { return $true }
     }
@@ -473,12 +555,77 @@ function Test-Cf7ProtectedFastPath([string]$Path, $Protection) {
     return $false
 }
 
-function Test-Cf7PositiveContentPath([string]$Path, $Lanes) {
-    if ($Path.StartsWith('config/build/', [StringComparison]::OrdinalIgnoreCase)) { return $false }
-    foreach ($prefix in @($Lanes.Prefixes)) {
-        if ($Path.StartsWith([string]$prefix, [StringComparison]::Ordinal)) { return $true }
+function Test-Cf7NativeGatePath([string]$Path, $Protection) {
+    if ($null -eq $Protection) { return $false }
+    if ($Protection.GateFiles.ContainsKey($Path)) { return $true }
+    if ($Protection.GlobalExtensions.Contains([IO.Path]::GetExtension($Path))) { return $true }
+    if ($Protection.ProtectedBasenames.Contains([IO.Path]::GetFileName($Path))) { return $true }
+    foreach ($prefix in @($Protection.GatePrefixes)) {
+        if ($Path.StartsWith([string]$prefix, [StringComparison]::OrdinalIgnoreCase)) { return $true }
     }
     return $false
+}
+
+function Get-Cf7IndexedReleaseBoundPaths {
+    $commonPath = Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1'
+    if (-not (Test-Path -LiteralPath $commonPath -PathType Leaf)) { throw 'Runtime v2 binding helper is missing.' }
+    . $commonPath
+
+    $bound = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+        foreach ($value in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Index) {
+            $path = ConvertTo-Cf7SafeRepoPath -Value ([string]$value) -Label "$domain indexed release binding"
+            [void]$bound.Add($path)
+        }
+    }
+    $descriptor = Read-Cf7RuntimeV2Config -ProjectRoot $ProjectRoot -Mode Index
+    if ($null -eq $descriptor.payload -or $descriptor.payload.fixedRoots -isnot [Array] -or
+            $descriptor.payload.trees -isnot [Array]) {
+        throw 'Indexed runtime descriptor lacks well-formed payload binding.'
+    }
+    foreach ($fixedValue in @($descriptor.payload.fixedRoots)) {
+        $fixed = ConvertTo-Cf7SafeRepoPath -Value ([string]$fixedValue) -Label 'indexed payload fixed root'
+        $oid = Get-Cf7RevisionBlobOid -Revision ':' -RelativePath $fixed -Optional
+        if (-not $oid) { throw "Indexed payload fixed root is absent: $fixed" }
+        [void]$bound.Add($fixed)
+    }
+    foreach ($treeValue in @($descriptor.payload.trees)) {
+        $tree = ConvertTo-Cf7SafeRepoPath -Value ([string]$treeValue) -Label 'indexed payload tree'
+        $bytes = Invoke-Cf7GitBinary @('ls-files','-z','--',$tree)
+        foreach ($value in @(ConvertFrom-Cf7NulDelimitedUtf8 -Bytes $bytes -Label "indexed payload tree $tree")) {
+            $path = ConvertTo-Cf7SafeRepoPath -Value ([string]$value) -Label 'indexed payload entry'
+            if ($path.StartsWith(($tree + '/'), [StringComparison]::Ordinal) -or $path -ceq $tree) {
+                [void]$bound.Add($path)
+            }
+        }
+    }
+    # These are canonical release outputs/bootstrap controls. The consensus record cannot
+    # be an input to its own build identity, while the registry and fuse must remain
+    # available to the separately validated one-time v1 -> v2 migration path.
+    foreach ($releaseControlPath in @(
+        'config/build/runtime-release-consensus.json',
+        'config/build/runtime-builders.v2.json',
+        'config/build/runtime-v2-migration-bootstrap.json'
+    )) {
+        [void]$bound.Add($releaseControlPath)
+    }
+    return ,$bound
+}
+
+function Assert-Cf7NativeChangesReleaseBound([object[]]$Entries, $BaseProtection, $HeadProtection) {
+    if ($null -eq $HeadProtection) { throw 'Protected head must retain a valid native change gate and runtime input descriptor.' }
+    $gatedWrites = @($Entries | Where-Object {
+        [string]$_.Status -ne 'D' -and (
+            (Test-Cf7NativeGatePath -Path ([string]$_.Path) -Protection $BaseProtection) -or
+            (Test-Cf7NativeGatePath -Path ([string]$_.Path) -Protection $HeadProtection)
+        )
+    })
+    if ($gatedWrites.Count -eq 0) { return }
+    $bound = Get-Cf7IndexedReleaseBoundPaths
+    $unbound = @($gatedWrites | Where-Object { -not $bound.Contains([string]$_.Path) } | ForEach-Object { [string]$_.Path } | Sort-Object -Unique)
+    if ($unbound.Count -gt 0) {
+        throw "Native/runtime changes are not bound by the indexed release descriptor and cannot become green: $($unbound -join ',')"
+    }
 }
 
 function Get-Cf7RevisionBlobOid([string]$Revision, [string]$RelativePath, [switch]$Optional) {
@@ -645,6 +792,23 @@ try {
         & git -C $ProjectRoot merge-base --is-ancestor $baseCommit $headCommit *> $null
         if ($LASTEXITCODE -ne 0) { throw 'Explicit protected base must be an ancestor of the classified head.' }
     }
+    if ($DisableFastPath -and -not [string]::IsNullOrWhiteSpace($TrustedBaseRevision)) {
+        throw '-DisableFastPath and -TrustedBaseRevision are mutually exclusive.'
+    }
+    $trustedBaseCommit = if ([string]::IsNullOrWhiteSpace($TrustedBaseRevision)) {
+        $null
+    } else { Resolve-Cf7Commit -Revision $TrustedBaseRevision }
+    if ($trustedBaseCommit) {
+        & git -C $ProjectRoot merge-base --is-ancestor $trustedBaseCommit $headCommit *> $null
+        if ($LASTEXITCODE -ne 0) { throw 'Trusted fast-path base must be an ancestor of the classified head.' }
+        if ($baseCommit) {
+            & git -C $ProjectRoot merge-base --is-ancestor $trustedBaseCommit $baseCommit *> $null
+            if ($LASTEXITCODE -ne 0) { throw 'Trusted fast-path base must be an ancestor of the explicit event base.' }
+        }
+    }
+    if ($DisableFastPath -or -not $trustedBaseCommit) {
+        throw 'No externally verified green main anchor is available; refusing to emit a reusable required-check success.'
+    }
 
     # -Staged verifiers read the Git index. Refuse an ambiguous head/index pairing.
     $indexTree = (@(& git -C $ProjectRoot write-tree 2>$null) -join '').Trim()
@@ -652,25 +816,38 @@ try {
     if ($LASTEXITCODE -ne 0 -or -not $indexTree -or $indexTree -ne $headTree) {
         throw "Git index does not match HeadRevision $headCommit; staged verification would classify different content."
     }
+    if ($baseCommit) { Assert-Cf7HeadTreePathSafety -BaseCommit $baseCommit -HeadCommit $headCommit }
+    $admissionBaseCommit = if ($trustedBaseCommit) { $trustedBaseCommit } else { $baseCommit }
+    if ($admissionBaseCommit -and $admissionBaseCommit -cne $baseCommit) {
+        Assert-Cf7HeadTreePathSafety -BaseCommit $admissionBaseCommit -HeadCommit $headCommit
+    }
+    # Wrap the complete if expression: Windows PowerShell 5.1 unwraps a one-element array
+    # emitted inside an if branch, which would make PSCustomObject.Count null.
+    [object[]]$admissionChangedEntries = @(if ($admissionBaseCommit) {
+        Get-Cf7RawChangedEntries -BaseCommit $admissionBaseCommit -HeadCommit $headCommit
+    })
+    $admissionBaseProtection = if ($admissionBaseCommit) {
+        Get-Cf7FastPathProtection -BaseCommit $admissionBaseCommit
+    } else { $null }
+    $headProtection = Get-Cf7FastPathProtection -BaseCommit $headCommit
+    Assert-Cf7NativeChangesReleaseBound -Entries $admissionChangedEntries `
+        -BaseProtection $admissionBaseProtection -HeadProtection $headProtection
 
-    # A protected content-only change inherits the already verified deployment consensus from
-    # its explicit ancestor. This decision is deliberately made before reading or hashing any
-    # runtime payload byte. Missing bases/descriptors and every ambiguous path fall through to
-    # the complete strict verifier chain (or fail closed when the Git record itself is unsafe).
-    if (-not $baseWasAbsent -and $baseCommit) {
-        $protection = Get-Cf7FastPathProtection -BaseCommit $baseCommit
-        $lanes = Get-Cf7BaseContributionLanes -BaseCommit $baseCommit
-        $baseSentinels = Get-Cf7RequiredBaseSentinels -BaseCommit $baseCommit
-        if ($null -ne $protection -and $null -ne $lanes -and $null -ne $baseSentinels) {
-            Assert-Cf7HeadTreePathSafety -BaseCommit $baseCommit -HeadCommit $headCommit
-            $changedEntries = @(Get-Cf7RawChangedEntries -BaseCommit $baseCommit -HeadCommit $headCommit)
+    # A protected non-native change inherits deployment consensus only from the external
+    # green-check anchor. Event base remains separate for strict deployment/migration semantics.
+    # The formal policy domain can accumulate content/tooling changes;
+    # it is rebound by the next native promotion, not used as a direct-push admission list.
+    # With an external anchor present, an older/missing trusted descriptor falls through to
+    # the complete strict chain. Missing anchors and ambiguous/unsafe Git records fail closed.
+    if (-not $DisableFastPath -and -not $baseWasAbsent -and $baseCommit -and $trustedBaseCommit) {
+        $protection = $admissionBaseProtection
+        $baseSentinels = Get-Cf7RequiredBaseSentinels -BaseCommit $trustedBaseCommit
+        if ($null -ne $protection -and $null -ne $baseSentinels) {
+            $changedEntries = $admissionChangedEntries
             $protectedIntersection = @($changedEntries | Where-Object {
                 Test-Cf7ProtectedFastPath -Path ([string]$_.Path) -Protection $protection
             })
-            $outsidePositiveRoots = @($changedEntries | Where-Object {
-                -not (Test-Cf7PositiveContentPath -Path ([string]$_.Path) -Lanes $lanes)
-            })
-            if ($changedEntries.Count -gt 0 -and $protectedIntersection.Count -eq 0 -and $outsidePositiveRoots.Count -eq 0) {
+            if ($changedEntries.Count -gt 0 -and $protectedIntersection.Count -eq 0) {
                 $changedPaths = [string[]]@($changedEntries | ForEach-Object { [string]$_.Path })
                 [Array]::Sort($changedPaths, [StringComparer]::Ordinal)
                 $changedPathBytes = [Text.Encoding]::UTF8.GetBytes(([string]::Join("`n", $changedPaths) + "`n"))
@@ -683,9 +860,11 @@ try {
                 $protectedLines = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
                 foreach ($fixedPath in @($protection.Fixed.Keys)) { [void]$protectedLines.Add("fixed`t$fixedPath") }
                 foreach ($prefix in @($protection.FullPrefixes)) { [void]$protectedLines.Add("prefix`t$prefix") }
+                foreach ($extension in @($protection.GlobalExtensions)) { [void]$protectedLines.Add("global-extension`t$(([string]$extension).ToLowerInvariant())") }
+                foreach ($basename in @($protection.ProtectedBasenames)) { [void]$protectedLines.Add("basename`t$basename") }
                 foreach ($rule in @($protection.TreeRules)) {
                     $extensions = New-Object 'Collections.Generic.List[string]'
-                    foreach ($extension in $rule.Extensions) { $extensions.Add(([string]$extension).ToLowerInvariant()) }
+                    foreach ($extension in $rule.Extensions) { [void]$extensions.Add(([string]$extension).ToLowerInvariant()) }
                     $extensionArray = [string[]]$extensions.ToArray()
                     [Array]::Sort($extensionArray, [StringComparer]::Ordinal)
 
@@ -707,7 +886,7 @@ try {
                 $sentinelLines = [string[]]@($baseSentinels.Keys | ForEach-Object { "$_`t$($baseSentinels[$_])" })
                 [Array]::Sort($sentinelLines, [StringComparer]::Ordinal)
                 $baseSentinelsSha256 = Get-Cf7BytesSha256 -Bytes ([Text.Encoding]::UTF8.GetBytes(([string]::Join("`n", $sentinelLines) + "`n")))
-                Write-Host "[RuntimeReleaseState] OK state=protected-content-fastpath mode=Protected consensus=inherited-from-base changedCount=$($changedPaths.Count) changedPathsSha256=$changedPathsSha256 changedEntriesSha256=$changedEntriesSha256 protectedSetCount=$($protectedArray.Count) protectedSetSha256=$protectedSetSha256 descriptorBlobOid=$($protection.DescriptorOid) lanesBlobOid=$($lanes.BlobOid) baseSentinelCount=$($sentinelLines.Count) baseSentinelsSha256=$baseSentinelsSha256 baseManifestBlobOid=$($baseSentinels['runtime/cf7-runtime-manifest.tsv']) baseConsensusBlobOid=$($baseSentinels['config/build/runtime-release-consensus.json']) base=$baseCommit head=$headCommit" -ForegroundColor Green
+                Write-Host "[RuntimeReleaseState] OK state=protected-nonnative-fastpath mode=Protected consensus=inherited-from-trusted-base changedCount=$($changedPaths.Count) changedPathsSha256=$changedPathsSha256 changedEntriesSha256=$changedEntriesSha256 protectedSetCount=$($protectedArray.Count) protectedSetSha256=$protectedSetSha256 descriptorBlobOid=$($protection.DescriptorOid) nativeGateBlobOid=$($protection.GateBlobOid) baseSentinelCount=$($sentinelLines.Count) baseSentinelsSha256=$baseSentinelsSha256 baseManifestBlobOid=$($baseSentinels['runtime/cf7-runtime-manifest.tsv']) baseConsensusBlobOid=$($baseSentinels['config/build/runtime-release-consensus.json']) eventBase=$baseCommit trustedBase=$trustedBaseCommit head=$headCommit" -ForegroundColor Green
                 exit 0
             }
         }

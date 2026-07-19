@@ -56,8 +56,12 @@ function New-TestFixture(
     [switch]$MaliciousTraversal,
     [string]$Conclusion = 'success',
     [int]$CompleteAfterViews = 2,
-    [string]$HeadBranch = 'main',
-    [string]$SourceRef = 'refs/heads/main'
+    [string]$HeadBranch = 'runtime-build-v2/test-release',
+    [string]$SourceRef = 'refs/tags/runtime-build-v2/test-release',
+    [switch]$AnnotatedTag,
+    [switch]$WrongTagTarget,
+    [switch]$WrongListHeadSha,
+    [switch]$WrongViewHeadSha
 ) {
     $caseRoot = Join-Path $script:testRoot ([Guid]::NewGuid().ToString('N'))
     $projectRoot = Join-Path $caseRoot 'repo'
@@ -111,12 +115,35 @@ $statePath = $env:CF7_FAKE_GH_STATE
 $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
 [IO.File]::AppendAllText([string]$state.logPath, (($CliArgs | ConvertTo-Json -Compress) + "`n"), (New-Object Text.UTF8Encoding($false)))
 function Save-State { [IO.File]::WriteAllText($statePath, (($state | ConvertTo-Json -Depth 8) + "`n"), (New-Object Text.UTF8Encoding($false))) }
-function New-Run([Int64]$Id, [string]$Status, [AllowNull()][string]$RunConclusion, [string]$CreatedAt) {
+function New-Run([Int64]$Id, [string]$Status, [AllowNull()][string]$RunConclusion, [string]$CreatedAt, [string]$HeadSha) {
     return [pscustomobject][ordered]@{
         databaseId=$Id; displayTitle=('Runtime cloud builder ' + [string]$state.sourceCommitOid)
-        headBranch=[string]$state.headBranch; headSha=[string]$state.sourceCommitOid; status=$Status; conclusion=$RunConclusion
+        headBranch=[string]$state.headBranch; headSha=$HeadSha; status=$Status; conclusion=$RunConclusion
         createdAt=$CreatedAt; event='workflow_dispatch'; url=('https://example.invalid/runs/' + $Id)
     }
+}
+if ($CliArgs.Count -ge 2 -and $CliArgs[0] -eq 'api') {
+    $endpoint = [string]$CliArgs[$CliArgs.Count - 1]
+    $relativeRef = ([string]$state.sourceRef).Substring('refs/'.Length)
+    $refEndpoint = 'repos/ExampleOrg/ExampleRepo/git/ref/' + $relativeRef
+    if ($endpoint -ceq $refEndpoint) {
+        $objectType = if ([bool]$state.annotatedTag) { 'tag' } else { 'commit' }
+        $objectSha = if ([bool]$state.annotatedTag) { [string]$state.tagObjectSha } else { [string]$state.tagTargetCommit }
+        Write-Output ([ordered]@{
+            ref=[string]$state.sourceRef
+            object=[ordered]@{ type=$objectType; sha=$objectSha }
+        } | ConvertTo-Json -Depth 5 -Compress)
+        exit 0
+    }
+    $tagEndpoint = 'repos/ExampleOrg/ExampleRepo/git/tags/' + [string]$state.tagObjectSha
+    if ([bool]$state.annotatedTag -and $endpoint -ceq $tagEndpoint) {
+        Write-Output ([ordered]@{
+            sha=[string]$state.tagObjectSha
+            object=[ordered]@{ type='commit'; sha=[string]$state.tagTargetCommit }
+        } | ConvertTo-Json -Depth 5 -Compress)
+        exit 0
+    }
+    exit 46
 }
 if ($CliArgs.Count -ge 2 -and $CliArgs[0] -eq 'workflow' -and $CliArgs[1] -eq 'run') {
     $sourceArgument = @($CliArgs | Where-Object { $_ -like 'source_commit=*' })
@@ -127,8 +154,8 @@ if ($CliArgs.Count -ge 2 -and $CliArgs[0] -eq 'workflow' -and $CliArgs[1] -eq 'r
 }
 if ($CliArgs.Count -ge 2 -and $CliArgs[0] -eq 'run' -and $CliArgs[1] -eq 'list') {
     $runs = @()
-    if ([bool]$state.includePreexisting) { $runs += New-Run 4000 'completed' 'success' '2026-01-01T00:00:00Z' }
-    if ([bool]$state.dispatched) { $runs += New-Run ([Int64]$state.runId) 'queued' $null ([string]$state.createdAt) }
+    if ([bool]$state.includePreexisting) { $runs += New-Run 4000 'completed' 'success' '2026-01-01T00:00:00Z' ([string]$state.sourceCommitOid) }
+    if ([bool]$state.dispatched) { $runs += New-Run ([Int64]$state.runId) 'queued' $null ([string]$state.createdAt) ([string]$state.listHeadSha) }
     Write-Output (ConvertTo-Json -InputObject @($runs) -Depth 6 -Compress)
     exit 0
 }
@@ -136,7 +163,7 @@ if ($CliArgs.Count -ge 3 -and $CliArgs[0] -eq 'run' -and $CliArgs[1] -eq 'view')
     if ([Int64]$CliArgs[2] -ne [Int64]$state.runId) { exit 42 }
     $state.viewCount = [int]$state.viewCount + 1
     $complete = [int]$state.viewCount -ge [int]$state.completeAfterViews
-    $run = New-Run ([Int64]$state.runId) $(if($complete){'completed'}else{'in_progress'}) $(if($complete){[string]$state.conclusion}else{$null}) ([string]$state.createdAt)
+    $run = New-Run ([Int64]$state.runId) $(if($complete){'completed'}else{'in_progress'}) $(if($complete){[string]$state.conclusion}else{$null}) ([string]$state.createdAt) ([string]$state.viewHeadSha)
     Save-State
     Write-Output ($run | ConvertTo-Json -Depth 6 -Compress)
     exit 0
@@ -177,7 +204,11 @@ exit /b %ERRORLEVEL%
     $markerPath = Join-Path $controlRoot 'verifier.marker'
     $state = [ordered]@{
         sourceCommitOid=$sourceCommit; runId=4242; dispatched=$false; includePreexisting=$true
+        sourceRef=$SourceRef; annotatedTag=[bool]$AnnotatedTag; tagObjectSha=('e' * 40)
+        tagTargetCommit=$(if($WrongTagTarget){'f' * 40}else{$sourceCommit})
         headBranch=$HeadBranch
+        listHeadSha=$(if($WrongListHeadSha){'d' * 40}else{$sourceCommit})
+        viewHeadSha=$(if($WrongViewHeadSha){'c' * 40}else{$sourceCommit})
         viewCount=0; completeAfterViews=$CompleteAfterViews; conclusion=$Conclusion
         createdAt=[DateTime]::UtcNow.ToString('o'); artifactRoot=$artifactRoot; logPath=$logPath
     }
@@ -226,8 +257,8 @@ function Run-Test([string]$Name, [scriptblock]$Body) {
 
 New-Item -ItemType Directory -Path $testRoot -Force | Out-Null
 try {
-    Run-Test 'dispatches exact SHA, ignores the preexisting same-SHA run, and produces a verified wrapper' {
-        $fixture = New-TestFixture -HeadBranch 'runtime-build-v2/test-release' -SourceRef 'refs/tags/runtime-build-v2/test-release'
+    Run-Test 'peels the configured annotated tag, dispatches exact SHA, and produces a verified wrapper' {
+        $fixture = New-TestFixture -AnnotatedTag
         $result = Invoke-TestHelper $fixture
         Assert-Test ($result.ExitCode -eq 0) $result.Output
         $resultPath = Join-Path $fixture.OutputRoot 'run-4242\runtime-github-build-result.v2.json'
@@ -244,6 +275,8 @@ try {
         Assert-Test (@($dispatch[0] | Where-Object { $_ -eq "source_commit=$($fixture.SourceCommit)" }).Count -eq 1) 'dispatch did not bind the exact source SHA'
         $refIndex = [Array]::IndexOf([object[]]$dispatch[0], '--ref')
         Assert-Test ($refIndex -ge 0 -and [string]$dispatch[0][$refIndex + 1] -ceq 'runtime-build-v2/test-release') 'dispatch did not select the configured immutable release tag'
+        $apiCalls = @($calls | Where-Object { $_[0] -eq 'api' })
+        Assert-Test ($apiCalls.Count -eq 2) 'annotated source tag was not resolved and peeled through both GitHub API objects'
         $download = @($calls | Where-Object { $_[0] -eq 'run' -and $_[1] -eq 'download' })
         Assert-Test ($download.Count -eq 1 -and [string]$download[0][2] -eq '4242') 'signed artifact was not downloaded from the selected run id'
     }
@@ -273,6 +306,33 @@ try {
         Assert-Test ($result.Output -match 'Timed out locating dispatched GitHub run') $result.Output
         $calls = @(Get-TestCalls $fixture)
         Assert-Test (@($calls | Where-Object { $_[0] -eq 'run' -and $_[1] -eq 'download' }).Count -eq 0) 'wrong-branch run must not download artifacts'
+    }
+
+    Run-Test 'rejects a configured tag that peels to the wrong source commit before dispatch' {
+        $fixture = New-TestFixture -AnnotatedTag -WrongTagTarget
+        $result = Invoke-TestHelper $fixture
+        Assert-Test ($result.ExitCode -ne 0) 'wrong tag target unexpectedly passed'
+        Assert-Test ($result.Output -match 'source tag does not resolve to SourceCommitOid') $result.Output
+        $calls = @(Get-TestCalls $fixture)
+        Assert-Test (@($calls | Where-Object { $_[0] -eq 'workflow' -and $_[1] -eq 'run' }).Count -eq 0) 'wrong tag target must fail before workflow dispatch'
+    }
+
+    Run-Test 'rejects a discovered run whose head SHA differs from the requested source commit' {
+        $fixture = New-TestFixture -WrongListHeadSha -CompleteAfterViews 1
+        $result = Invoke-TestHelper $fixture
+        Assert-Test ($result.ExitCode -ne 0) 'wrong discovery head SHA unexpectedly passed'
+        Assert-Test ($result.Output -match 'Timed out locating dispatched GitHub run') $result.Output
+        $calls = @(Get-TestCalls $fixture)
+        Assert-Test (@($calls | Where-Object { $_[0] -eq 'run' -and $_[1] -eq 'download' }).Count -eq 0) 'wrong discovery head SHA must not download artifacts'
+    }
+
+    Run-Test 'rejects a selected run whose head SHA changes while waiting' {
+        $fixture = New-TestFixture -WrongViewHeadSha -CompleteAfterViews 1
+        $result = Invoke-TestHelper $fixture
+        Assert-Test ($result.ExitCode -ne 0) 'wrong wait head SHA unexpectedly passed'
+        Assert-Test ($result.Output -match 'head SHA does not match the requested source commit') $result.Output
+        $calls = @(Get-TestCalls $fixture)
+        Assert-Test (@($calls | Where-Object { $_[0] -eq 'run' -and $_[1] -eq 'download' }).Count -eq 0) 'changed wait head SHA must not download artifacts'
     }
 } finally {
     $resolvedTestRoot = [IO.Path]::GetFullPath($testRoot).TrimEnd('\')

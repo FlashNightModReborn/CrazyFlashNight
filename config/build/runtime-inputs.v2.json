@@ -63,14 +63,18 @@
         ".github/workflows/runtime-bundle-integrity.yml",
         ".github/workflows/runtime-cloud-builder.yml",
         "config/build/contribution-lanes.v1.json",
+        "config/build/main-branch-admission.v1.json",
+        "config/build/native-change-gate.v1.json",
         "config/build/runtime-builders.v2.json",
         "config/build/runtime-github-builder.v2.json",
         "config/build/runtime-inputs.v2.json",
         "config/build/runtime-v2-migration-bootstrap.json",
+        "CrazyFlashNight.sln",
         "launcher/build.ps1",
         "tools/assert-optimized.cs",
         "tools/audit-map-scale-experience.js",
         "tools/audit-map-webp-assets.js",
+        "tools/audit-main-branch-admission.ps1",
         "tools/audit-native-cursor-assets.js",
         "tools/audit-pet-roster-types.ps1",
         "tools/audit-web-icon-render-entrypoints.js",
@@ -78,6 +82,7 @@
         "tools/bootstrap-runtime-build-env.ps1",
         "tools/check-workbench-css-bundle.js",
         "tools/classify-runtime-release-state.ps1",
+        "tools/cf7-packer/assets/patch-assembly.cs",
         "tools/get-runtime-build-request-status.ps1",
         "tools/invoke-runtime-build-worker.ps1",
         "tools/invoke-runtime-github-build.ps1",
@@ -87,6 +92,7 @@
         "tools/new-runtime-github-build-envelope.ps1",
         "tools/prepare-launcher-release-assets.ps1",
         "tools/promote-runtime-bundle.ps1",
+        "tools/resolve-runtime-trusted-base.ps1",
         "tools/derive-achievement-catalog.js",
         "tools/derive-arena-custom-presets.js",
         "tools/derive-arena-unit-catalog.js",
@@ -105,9 +111,11 @@
         "tools/test-runtime-build-v2.ps1",
         "tools/test-runtime-github-attestation.ps1",
         "tools/test-invoke-runtime-github-build.ps1",
+        "tools/test-main-branch-admission.ps1",
         "tools/test-runtime-release-policy.ps1",
         "tools/test-runtime-release-consensus-v2.ps1",
         "tools/test-runtime-release-state.ps1",
+        "tools/test-resolve-runtime-trusted-base.ps1",
         "tools/test-derive-task-conditions.js",
         "tools/validate-launcher-release-policy.ps1",
         "tools/validate-equipment-mod-ui.js",
@@ -129,6 +137,30 @@
         "launcher/web/modules/arena-custom-presets.js"
       ],
       "trees": [
+        {
+          "path": "amf0-help/sol_parser",
+          "includeExtensions": [".rs", ".toml", ".lock", ".sol"],
+          "excludePaths": [],
+          "excludePrefixes": ["amf0-help/sol_parser/target/"]
+        },
+        {
+          "path": "launcher/native/sol_parser/examples",
+          "includeExtensions": [".rs"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "launcher/native/sol_parser/tests",
+          "includeExtensions": [".rs", ".sol"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "launcher/tests",
+          "includeExtensions": [".cs", ".csproj", ".json", ".ps1"],
+          "excludePaths": [],
+          "excludePrefixes": ["launcher/tests/bin/", "launcher/tests/obj/"]
+        },
         {
           "path": "launcher/scripts",
           "includeExtensions": [".ts", ".js", ".json"],

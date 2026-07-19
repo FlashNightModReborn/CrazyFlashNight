@@ -1,0 +1,78 @@
+{
+  "schema": "cf7-main-branch-admission.v1",
+  "repository": "FlashNightModReborn/CrazyFlashNight",
+  "unknownCollaboratorPolicy": "restricted",
+  "target": {
+    "type": "branch",
+    "include": ["refs/heads/main"],
+    "exclude": []
+  },
+  "runtimeSourceTag": {
+    "type": "tag",
+    "include": ["refs/tags/runtime-build-v2/*"],
+    "exclude": []
+  },
+  "codeOwners": {
+    "path": ".github/CODEOWNERS",
+    "normalizedLfSha256": "78f16cb5fb895f90c951e9c4ecacfdcdbddd075b335f623ae8fd7c1f32a9cac3",
+    "requiredOwners": ["Crazyfs", "Flash-Night"]
+  },
+  "requiredStatusCheck": {
+    "context": "verify-staged-bundle",
+    "integrationId": 15368,
+    "workflowId": 314853607,
+    "workflowPath": ".github/workflows/runtime-bundle-integrity.yml",
+    "strict": true
+  },
+  "actors": [
+    { "databaseId": 63281885, "login": "lyyloo", "admission": "directPushBypass" },
+    { "databaseId": 91271520, "login": "Crazyfs", "admission": "restricted" },
+    { "databaseId": 105143350, "login": "XDD3102", "admission": "directPushBypass" },
+    { "databaseId": 109004505, "login": "MakoTerry", "admission": "directPushBypass" },
+    { "databaseId": 132359877, "login": "Kurotuki-Kirito", "admission": "directPushBypass" },
+    { "databaseId": 136298836, "login": "Dustyfish810", "admission": "directPushBypass" },
+    { "databaseId": 138298913, "login": "Flash-Night", "admission": "restricted" },
+    { "databaseId": 165617658, "login": "awfahslerigu", "admission": "directPushBypass" },
+    { "databaseId": 182910106, "login": "nonamevalley", "admission": "directPushBypass" },
+    { "databaseId": 182913479, "login": "aka-flashNight", "admission": "directPushBypass" },
+    { "databaseId": 183037286, "login": "sdds15465", "admission": "directPushBypass" },
+    { "databaseId": 183109879, "login": "3xd123456", "admission": "directPushBypass" },
+    { "databaseId": 188081474, "login": "PD258", "admission": "directPushBypass" },
+    { "databaseId": 191000304, "login": "SquoicalLaf", "admission": "directPushBypass" },
+    { "databaseId": 195915604, "login": "Au1998", "admission": "directPushBypass" },
+    { "databaseId": 244970825, "login": "KitsunaMiko", "admission": "directPushBypass" },
+    { "databaseId": 255637925, "login": "A11022", "admission": "directPushBypass" }
+  ],
+  "rulesets": {
+    "identityGate": {
+      "name": "main-native-identity-gate-v1",
+      "bypassAdmission": "directPushBypass",
+      "bypassMode": "always",
+      "requirePullRequest": true,
+      "allowedMergeMethods": ["merge"],
+      "requiredReviewers": [],
+      "requiredApprovingReviewCount": 0,
+      "requireCodeOwnerReview": true,
+      "dismissStaleReviewsOnPush": true,
+      "requireLastPushApproval": false,
+      "requiredReviewThreadResolution": false
+    },
+    "globalRefIntegrity": {
+      "name": "main-global-ref-integrity-v1",
+      "bypassActors": [],
+      "rules": ["deletion", "non_fast_forward"]
+    },
+    "runtimeTagCreation": {
+      "name": "runtime-source-tag-creation-v1",
+      "bypassAdmission": "restricted",
+      "bypassMode": "always",
+      "rules": ["creation"]
+    },
+    "runtimeTagImmutability": {
+      "name": "runtime-source-tag-immutability-v1",
+      "bypassActors": [],
+      "updateAllowsFetchAndMerge": false,
+      "rules": ["deletion", "update"]
+    }
+  }
+}

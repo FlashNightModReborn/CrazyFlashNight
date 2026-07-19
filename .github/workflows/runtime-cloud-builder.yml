@@ -41,23 +41,26 @@ jobs:
           CF7_WORKFLOW_INPUT: ${{ inputs.source_commit }}
           CF7_REPOSITORY_DISPATCH_INPUT: ${{ github.event.client_payload.source_commit }}
           CF7_EXPECTED_REPOSITORY: FlashNightModReborn/CrazyFlashNight
-          CF7_WORKFLOW_REF: ${{ github.ref }}
         run: |
           $requested = if ($env:CF7_WORKFLOW_INPUT) { $env:CF7_WORKFLOW_INPUT } else { $env:CF7_REPOSITORY_DISPATCH_INPUT }
           if ($requested -cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$') {
             throw 'source_commit must be one lowercase full Git object ID.'
           }
+          $normalizedRequested = $requested.ToLowerInvariant()
           if ('${{ github.repository }}' -cne $env:CF7_EXPECTED_REPOSITORY) {
             throw "Cloud builder is pinned to $($env:CF7_EXPECTED_REPOSITORY)."
           }
-          if ($env:CF7_WORKFLOW_REF -cne 'refs/heads/main' -and
-              $env:CF7_WORKFLOW_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
-            throw "Dispatch this workflow from main or a canonical runtime-build-v2 tag. actual=$env:CF7_WORKFLOW_REF"
+          if ($env:GITHUB_REF -cne 'refs/heads/main' -and
+              $env:GITHUB_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
+            throw "Dispatch this workflow from main or a canonical runtime-build-v2 tag. actual=$env:GITHUB_REF"
+          }
+          if ([string]$env:GITHUB_SHA -cne $normalizedRequested) {
+            throw "Workflow source ref does not resolve to source_commit: ref=$($env:GITHUB_REF) workflowSha=$($env:GITHUB_SHA) requested=$normalizedRequested"
           }
           $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
           [IO.File]::AppendAllText(
             $env:GITHUB_OUTPUT,
-            "source_commit=$($requested.ToLowerInvariant())`n",
+            "source_commit=$normalizedRequested`n",
             $utf8NoBom)
 
       - name: Checkout exact requested commit
@@ -79,7 +82,6 @@ jobs:
         shell: powershell
         env:
           CF7_SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
-          CF7_WORKFLOW_REF: ${{ github.ref }}
         run: |
           $head = (git rev-parse 'HEAD^{commit}').Trim().ToLowerInvariant()
           if ($LASTEXITCODE -ne 0 -or $head -cne $env:CF7_SOURCE_COMMIT) {
@@ -90,8 +92,8 @@ jobs:
           git diff --cached --quiet --exit-code
           if ($LASTEXITCODE -ne 0) { throw 'Index changed immediately after checkout.' }
           $cloudConfig = Get-Content -LiteralPath .\config\build\runtime-github-builder.v2.json -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ([string]$cloudConfig.sourceRef -cne $env:CF7_WORKFLOW_REF) {
-            throw "Requested tree is not bound to this workflow ref: config=$($cloudConfig.sourceRef) actual=$env:CF7_WORKFLOW_REF"
+          if ([string]$cloudConfig.sourceRef -cne $env:GITHUB_REF) {
+            throw "Requested tree is not bound to this workflow ref: config=$($cloudConfig.sourceRef) actual=$env:GITHUB_REF"
           }
 
       - name: Materialize exact runtime identity domains
