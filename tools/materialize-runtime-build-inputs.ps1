@@ -20,8 +20,17 @@ foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy'
 $ordered = [string[]]$paths
 [Array]::Sort($ordered, [StringComparer]::Ordinal)
 $sparsePatterns = @($ordered | ForEach-Object { '/' + $_ })
-$sparsePatterns | & git -C $ProjectRoot sparse-checkout set --no-cone --stdin
-if ($LASTEXITCODE -ne 0) { throw 'Failed to materialize the runtime identity sparse checkout.' }
+$previousOutputEncoding = $OutputEncoding
+try {
+    # Windows PowerShell 5.1 otherwise encodes native-pipeline stdin as ASCII. That
+    # silently turns a tracked path such as 本地开发启动.cmd into question marks on a
+    # pristine hosted runner, even though the JSON and Git index both contain it.
+    $OutputEncoding = New-Object Text.UTF8Encoding($false)
+    $sparsePatterns | & git -C $ProjectRoot sparse-checkout set --no-cone --stdin
+    if ($LASTEXITCODE -ne 0) { throw 'Failed to materialize the runtime identity sparse checkout.' }
+} finally {
+    $OutputEncoding = $previousOutputEncoding
+}
 # Git for Windows can defer root-file vivification while non-cone patterns are
 # replaced through stdin. Reapply makes the index/worktree transition explicit
 # before any producer or identity reader touches those files.

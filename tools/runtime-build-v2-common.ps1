@@ -141,9 +141,12 @@ function Get-Cf7RuntimeV2DomainFiles {
         $fixed = ([string]$fixedValue).Replace('\', '/')
         if ($fixed -match '(^|/)\.\.(/|$)' -or [IO.Path]::IsPathRooted($fixed)) { throw "Unsafe runtime input path: $fixed" }
         if ($Mode -eq 'Index') {
-            $found = @(& git -C $root ls-files -- $fixed)
-            if ($LASTEXITCODE -ne 0) { throw "Cannot query Git index for runtime input: $fixed" }
-            if (-not ($found -contains $fixed)) { throw "Required $Domain input is absent from Git index: $fixed" }
+            # Do not compare `git ls-files` display text with the logical path. On a clean
+            # hosted runner core.quotepath defaults to true, so non-ASCII names are emitted
+            # as quoted octal escapes even though the index entry exists. cat-file checks
+            # the exact stage-0 index object without depending on terminal/output encoding.
+            & git -C $root cat-file -e (':' + $fixed) 2>$null
+            if ($LASTEXITCODE -ne 0) { throw "Required $Domain input is absent from Git index: $fixed" }
         } else {
             $full = Join-Path $root ($fixed -replace '/', '\')
             if (-not (Test-Path -LiteralPath $full -PathType Leaf)) { throw "Required $Domain input missing: $fixed" }
@@ -156,7 +159,7 @@ function Get-Cf7RuntimeV2DomainFiles {
         if (-not $base -or $base -match '(^|/)\.\.(/|$)' -or [IO.Path]::IsPathRooted($base)) { throw "Unsafe runtime input tree: $base" }
         $extensions = @($tree.includeExtensions | ForEach-Object { ([string]$_).ToLowerInvariant() })
         if ($Mode -eq 'Index') {
-            $candidates = @(& git -C $root ls-files -- $base)
+            $candidates = @(& git -c core.quotepath=false -C $root ls-files -- $base)
             if ($LASTEXITCODE -ne 0) { throw "Cannot enumerate runtime input tree from Git index: $base" }
         } else {
             $baseFull = Join-Path $root ($base -replace '/', '\')
@@ -341,13 +344,13 @@ function Get-Cf7RuntimePayloadClosureV2 {
     if ($Mode -eq 'Index') {
         foreach ($fixedValue in @($payloadConfig.fixedRoots)) {
             $fixed = ([string]$fixedValue).Replace('\', '/')
-            $found = @(& git -C $project ls-files -- $fixed)
-            if ($LASTEXITCODE -ne 0 -or -not ($found -contains $fixed)) { throw "Required payload is absent from Git index: $fixed" }
+            & git -C $project cat-file -e (':' + $fixed) 2>$null
+            if ($LASTEXITCODE -ne 0) { throw "Required payload is absent from Git index: $fixed" }
             $paths.Add($fixed)
         }
         foreach ($treeValue in @($payloadConfig.trees)) {
             $tree = ([string]$treeValue).Replace('\', '/').TrimEnd('/')
-            $found = @(& git -C $project ls-files -- $tree)
+            $found = @(& git -c core.quotepath=false -C $project ls-files -- $tree)
             if ($LASTEXITCODE -ne 0) { throw "Cannot enumerate payload tree from Git index: $tree" }
             foreach ($pathValue in $found) { $paths.Add(([string]$pathValue).Replace('\', '/')) }
         }

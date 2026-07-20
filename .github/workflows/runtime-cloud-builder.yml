@@ -99,6 +99,7 @@ jobs:
       - name: Materialize exact runtime identity domains
         shell: powershell
         run: |
+          chcp.com 65001 | Out-Null
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\materialize-runtime-build-inputs.ps1 -ProjectRoot $PWD.Path
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 

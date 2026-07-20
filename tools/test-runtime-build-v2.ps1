@@ -71,6 +71,11 @@ try {
     $repositoryConfig = Read-Cf7RuntimeV2Config -ProjectRoot $ProjectRoot -Mode Worktree
     $repositoryProducerFiles = @($repositoryConfig.domains.producerRecipe.fixedFiles)
     $repositoryPolicyFiles = @($repositoryConfig.domains.policy.fixedFiles)
+    $unicodePolicyFile = [string](@($repositoryPolicyFiles | Where-Object {
+        [string]$_ -notmatch '^[\x00-\x7F]+$'
+    }) | Select-Object -First 1)
+    Assert-Equal 'repository policy retains one non-ASCII fixed-file fixture' $true `
+        (-not [string]::IsNullOrWhiteSpace($unicodePolicyFile))
     Assert-Equal 'line-ending rules belong only to producer recipe' $true `
         (('.gitattributes' -in $repositoryProducerFiles) -and ('.gitattributes' -notin $repositoryPolicyFiles))
     Assert-Equal 'identity common belongs only to producer recipe' $true `
@@ -81,6 +86,8 @@ try {
     $producerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'))
     $startScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'automation\start.ps1'))
     $promotionScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\promote-runtime-bundle.ps1'))
+    $identityCommonScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1'))
+    $materializerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\materialize-runtime-build-inputs.ps1'))
     $bootstrapSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\native\bootstrap\bootstrap.cpp'))
     $programSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\src\Program.cs'))
     Assert-Equal 'candidate uses isolated runtime verification mode' $true `
@@ -129,6 +136,10 @@ try {
         ($programSource.Contains('"--verify-only"') -and $programSource.Contains('"--verify-runtime-only"'))
     Assert-Equal 'promotion does not deploy candidate metadata marker' $false `
         $promotionScript.Contains('runtime-build-metadata.v2.json')
+    Assert-Equal 'index fixed-file lookup is independent of core.quotepath display escaping' $true `
+        ($identityCommonScript.Contains("cat-file -e (':' + `$fixed)"))
+    Assert-Equal 'sparse materializer sends non-ASCII paths to Git as UTF-8' $true `
+        ($materializerScript.Contains('$OutputEncoding = New-Object Text.UTF8Encoding($false)'))
     $shortCandidateLeaf = New-Cf7RuntimeV2CandidateLeafName `
         -BuildIdentityHash ('A' * 64) -BuilderId ('builder-' + ('x' * 100)) -RunToken 'test-run-1'
     Assert-Equal 'candidate directory does not expose unbounded builder label' $false $shortCandidateLeaf.Contains('builder-')
@@ -152,7 +163,7 @@ try {
             }
             producerRecipe = [pscustomobject][ordered]@{ fixedFiles = @('recipe.ps1'); trees = @() }
             toolchainLock = [pscustomobject][ordered]@{ fixedFiles = @('toolchain.json'); trees = @() }
-            policy = [pscustomobject][ordered]@{ fixedFiles = @('policy.ps1'); trees = @() }
+            policy = [pscustomobject][ordered]@{ fixedFiles = @('policy.ps1',$unicodePolicyFile); trees = @() }
         }
         payload = [pscustomobject][ordered]@{
             fixedRoots = @('CRAZYFLASHER7MercenaryEmpire.exe')
@@ -168,6 +179,7 @@ try {
     Write-TestText (Join-Path $testRoot 'recipe.ps1') "Write-Output build`n"
     Write-TestText (Join-Path $testRoot 'toolchain.json') "{`"sdk`":`"1`"}`n"
     Write-TestText (Join-Path $testRoot 'policy.ps1') "Write-Output verify`n"
+    Write-TestText (Join-Path $testRoot $unicodePolicyFile) "@echo off`r`n"
     Write-TestText (Join-Path $testRoot 'CRAZYFLASHER7MercenaryEmpire.exe') 'bootstrap'
     Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v1'
     Write-TestText (Join-Path $testRoot 'runtime\cf7-runtime-manifest.tsv') 'manifest-v1'
@@ -176,6 +188,8 @@ try {
 
     & git -C $testRoot init --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize runtime v2 Git fixture.' }
+    & git -C $testRoot config core.quotepath true
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot enable quoted-path output in runtime v2 Git fixture.' }
     & git -C $testRoot add --all
     if ($LASTEXITCODE -ne 0) { throw 'Cannot stage runtime v2 Git fixture.' }
 
@@ -240,6 +254,69 @@ try {
     $closurePayloadChanged = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -Mode Worktree -ConfigPath $configPath
     Assert-NotEqual 'payload bytes change closure' $closureBase.payloadClosureHash $closurePayloadChanged.payloadClosureHash
     Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v1'
+
+    # Reproduce the pristine hosted-runner case: quoted Git paths are enabled, the
+    # checkout initially contains only ASCII seed files, and the materializer must
+    # transmit a non-ASCII root path through Windows PowerShell's native stdin.
+    $sparseFixture = Join-Path $testRoot 'sparse-fixture'
+    $sparseConfigPath = Join-Path $sparseFixture 'config\build\runtime-inputs.v2.json'
+    $sparseConfig = [pscustomobject][ordered]@{
+        schema = 'cf7-runtime-inputs.v2'
+        domains = [pscustomobject][ordered]@{
+            artifactSource = [pscustomobject][ordered]@{ fixedFiles = @('src/app.cs'); trees = @() }
+            producerRecipe = [pscustomobject][ordered]@{
+                fixedFiles = @('tools/runtime-build-v2-common.ps1','tools/materialize-runtime-build-inputs.ps1')
+                trees = @()
+            }
+            toolchainLock = [pscustomobject][ordered]@{ fixedFiles = @('toolchain.json'); trees = @() }
+            policy = [pscustomobject][ordered]@{ fixedFiles = @($unicodePolicyFile); trees = @() }
+        }
+        payload = [pscustomobject][ordered]@{
+            fixedRoots = @()
+            trees = @()
+            excludePaths = @()
+            excludePrefixes = @()
+        }
+    }
+    Write-TestText $sparseConfigPath (($sparseConfig | ConvertTo-Json -Depth 10) + "`n")
+    Write-TestText (Join-Path $sparseFixture 'src\app.cs') "class SparseApp {}`n"
+    Write-TestText (Join-Path $sparseFixture 'toolchain.json') "{}`n"
+    Write-TestText (Join-Path $sparseFixture $unicodePolicyFile) "@echo off`r`n"
+    New-Item -ItemType Directory -Path (Join-Path $sparseFixture 'tools') -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1') `
+        -Destination (Join-Path $sparseFixture 'tools\runtime-build-v2-common.ps1')
+    Copy-Item -LiteralPath (Join-Path $ProjectRoot 'tools\materialize-runtime-build-inputs.ps1') `
+        -Destination (Join-Path $sparseFixture 'tools\materialize-runtime-build-inputs.ps1')
+    & git -C $sparseFixture init --quiet
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize sparse materializer fixture.' }
+    & git -C $sparseFixture config user.name 'CF7 Runtime Test'
+    & git -C $sparseFixture config user.email 'runtime-test@example.invalid'
+    & git -C $sparseFixture config core.quotepath true
+    & git -C $sparseFixture add --all
+    & git -C $sparseFixture commit --quiet -m fixture
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot commit sparse materializer fixture.' }
+    & git -C $sparseFixture sparse-checkout init --no-cone
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize sparse materializer fixture checkout.' }
+    $seedPatterns = @(
+        '/config/build/runtime-inputs.v2.json',
+        '/tools/materialize-runtime-build-inputs.ps1',
+        '/tools/runtime-build-v2-common.ps1'
+    )
+    $previousFixtureOutputEncoding = $OutputEncoding
+    try {
+        $OutputEncoding = New-Object Text.UTF8Encoding($false)
+        $seedPatterns | & git -C $sparseFixture sparse-checkout set --no-cone --stdin
+    } finally {
+        $OutputEncoding = $previousFixtureOutputEncoding
+    }
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot seed sparse materializer fixture checkout.' }
+    Assert-Equal 'sparse fixture starts without the non-ASCII policy file' $false `
+        (Test-Path -LiteralPath (Join-Path $sparseFixture $unicodePolicyFile) -PathType Leaf)
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File `
+        (Join-Path $sparseFixture 'tools\materialize-runtime-build-inputs.ps1') -ProjectRoot $sparseFixture | Out-Host
+    if ($LASTEXITCODE -ne 0) { throw 'Sparse materializer rejected the non-ASCII fixed file.' }
+    Assert-Equal 'sparse materializer restores the non-ASCII policy file' $true `
+        (Test-Path -LiteralPath (Join-Path $sparseFixture $unicodePolicyFile) -PathType Leaf)
 
     $certificateA = New-TestCertificate 'A'
     $certificateB = New-TestCertificate 'B'
