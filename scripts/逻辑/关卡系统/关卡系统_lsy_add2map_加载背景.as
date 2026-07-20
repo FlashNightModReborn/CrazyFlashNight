@@ -40,6 +40,7 @@ _root.绘制地图碰撞箱 = function () {
 _root.通过数组绘制地图碰撞箱 = function(arr:Array) {
 	// 调用统一渲染器绘制多边形碰撞箱
 	CollisionLayerRenderer.drawPolygons(_root.collisionLayer, arr);
+	org.flashNight.arki.scene.SceneCollisionManager.instance.addCollisions(arr);
 }
 
 _root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
@@ -47,6 +48,7 @@ _root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
 	var rect:Object = mc.area.getRect(_root.gameworld);
 	// 调用统一渲染器绘制矩形碰撞箱
 	CollisionLayerRenderer.drawRect(_root.collisionLayer, rect);
+	org.flashNight.arki.scene.SceneCollisionManager.instance.addMovieClipCollision(mc, rect);
 }
 
 _root.贴背景图 = function(){
@@ -79,8 +81,6 @@ _root.贴背景图 = function(){
 	游戏世界.已更新天气 = false;
 	_global.ASSetPropFlags(游戏世界, ["已更新天气"], 1, false);
 
-	//
-	_root.绘制地图碰撞箱();
 
 	if (背景层._width <= 1300) return;
 
@@ -142,8 +142,11 @@ _root.配置场景环境信息 = function(){
 		WeatherSystem.getInstance().configureEnvironment(环境信息);
 		_root.加载后景(环境信息);
 		// 配置碰撞箱
-		var collision = 环境信息.Collision || 环境信息.地图碰撞箱 || null
+		var collision = 环境信息.Collision || 环境信息.地图碰撞箱 || null;
+
+		_root.绘制地图碰撞箱();
 		if(collision) _root.通过数组绘制地图碰撞箱(collision);
+
 		//加载随机佣兵
 		游戏世界.面积系数 = isNaN(环境信息.佣兵刷新数据.AreaMultiplier) ? 1 : 环境信息.佣兵刷新数据.AreaMultiplier;
 		if(!isNaN(环境信息.佣兵刷新数据.Initial)){

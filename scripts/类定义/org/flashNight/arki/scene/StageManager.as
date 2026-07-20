@@ -154,6 +154,7 @@ class org.flashNight.arki.scene.StageManager {
         sceneManager.addBodyLayers(gameworld.背景长, gameworld.背景高);
 
         // 绘制碰撞箱
+        _root.绘制地图碰撞箱();
         _root.通过数组绘制地图碰撞箱(environment.地图碰撞箱);
         
         

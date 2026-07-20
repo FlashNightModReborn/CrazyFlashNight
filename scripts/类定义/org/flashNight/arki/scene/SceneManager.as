@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.geom.Point;
 
 import org.flashNight.arki.scene.SceneInteractionManager;
+import org.flashNight.arki.scene.SceneCollisionManager;
 
 /**
 SceneManager.as
@@ -14,6 +15,7 @@ class org.flashNight.arki.scene.SceneManager {
     public static var instance:SceneManager; // 单例引用
 
     public var gameworld:MovieClip; // 当前gameworld
+    private var active:Boolean; // 控制更新函数是否执行
     
     /**
      * 单例获取：返回全局唯一实例
@@ -78,8 +80,12 @@ class org.flashNight.arki.scene.SceneManager {
         //  ── 初始化 SceneInteractionManager ──
         SceneInteractionManager.getInstance().init();
 
+        //  ── 初始化 SceneCollisionManager ──
+        SceneCollisionManager.getInstance().init();
+
         // 发布场景切换事件
         _root.帧计时器.eventBus.publish("SceneChanged");
+        this.active = true;
     }
 
     /**
@@ -140,6 +146,19 @@ class org.flashNight.arki.scene.SceneManager {
         }
     }
 
+
+    /*
+     * 每帧执行的更新函数
+     */
+    public function update():Void{
+        if(!this.active) return;
+        
+        SceneCollisionManager.instance.update();
+    }
+
+
+
+
     /*
      * 移除gameworld及其组件
      */
@@ -148,6 +167,8 @@ class org.flashNight.arki.scene.SceneManager {
         if (gameworld == null) {
             return;
         }
+
+        this.active = false;
 
         // 安全网：清除刘海屏波次计时器（正常路径由 clearStage/failStage 触发，
         // 但手动退出关卡可能跳过它们，导致计时器残留）
