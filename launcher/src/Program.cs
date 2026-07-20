@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Bus;
@@ -71,24 +72,28 @@ class Program
     [STAThread]
     static int Main(string[] args)
     {
-        string earlyProjectRoot = TryGetProjectRootFromArgs(args)
+        // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
+        string explicitProjectRoot = TryGetProjectRootFromArgs(args);
+        string earlyProjectRoot = explicitProjectRoot
                                   ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                                   ?? Path.GetDirectoryName(Environment.ProcessPath);
         StartupDiagnostics.Init(earlyProjectRoot);
         StartupDiagnostics.Mark("core.main_enter", "projectRoot=" + earlyProjectRoot);
-        if (!VerifyDeployedRuntimeBundle())
+        bool isolatedRuntimeCandidate;
+        if (!VerifyDeployedRuntimeBundle(explicitProjectRoot, out isolatedRuntimeCandidate))
         {
             StartupDiagnostics.Exit("runtime_bundle_self_check_failed");
             return 2;
         }
-        return MainAfterStartupDiagnostics(args, earlyProjectRoot);
+        return MainAfterStartupDiagnostics(args, earlyProjectRoot, isolatedRuntimeCandidate);
     }
 
     // Headless scripts normally probe through the native bootstrap first, but the invariant
     // must also survive manual Core.exe launch and future entrypoints. Reuse the native verifier
     // instead of maintaining a second manifest parser in managed code.
-    static bool VerifyDeployedRuntimeBundle()
+    static bool VerifyDeployedRuntimeBundle(string explicitProjectRoot, out bool isolatedRuntimeCandidate)
     {
+        isolatedRuntimeCandidate = false;
         string baseDir = Path.GetFullPath(AppContext.BaseDirectory).TrimEnd(Path.DirectorySeparatorChar);
         DirectoryInfo runtimeDir = new DirectoryInfo(baseDir);
         if (!string.Equals(runtimeDir.Name, "runtime", StringComparison.OrdinalIgnoreCase)) return true;
@@ -100,10 +105,14 @@ class Program
 
         try
         {
+            string verificationArgument = SelectRuntimeVerificationArgument(runtimeDir.FullName, explicitProjectRoot);
+            isolatedRuntimeCandidate = verificationArgument == "--verify-runtime-only";
+            StartupDiagnostics.Mark("runtime_bundle_self_check_start",
+                "mode=" + (isolatedRuntimeCandidate ? "isolated_candidate" : "formal_runtime"));
             ProcessStartInfo psi = new ProcessStartInfo
             {
                 FileName = bootstrap,
-                Arguments = "--verify-only",
+                Arguments = verificationArgument,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 WorkingDirectory = projectRoot.FullName
@@ -126,9 +135,150 @@ class Program
         }
     }
 
+    // 未提交工作树的人类验收使用 producer 生成的隔离 candidate Core，并通过显式
+    // --project-root 加载当前工作树。只有“显式项目根与 candidate 根不同”、candidate 位于
+    // 该根的固定 producer 输出树、路径不含 reparse 别名、完整安装哨兵存在，且 metadata 与 runtime manifest 身份
+    // 完全匹配时才允许 runtime-only；正式部署、坏 marker、身份漂移一律保持完整安装校验。
+    internal static string SelectRuntimeVerificationArgument(string runtimeDirectory, string explicitProjectRoot)
+    {
+        return IsIsolatedRuntimeCandidate(runtimeDirectory, explicitProjectRoot)
+            ? "--verify-runtime-only"
+            : "--verify-only";
+    }
+
+    internal static bool IsIsolatedRuntimeCandidate(string runtimeDirectory, string explicitProjectRoot)
+    {
+        if (string.IsNullOrEmpty(runtimeDirectory) || string.IsNullOrEmpty(explicitProjectRoot)) return false;
+
+        try
+        {
+            string runtimePath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(runtimeDirectory));
+            DirectoryInfo runtimeDir = new DirectoryInfo(runtimePath);
+            if (!string.Equals(runtimeDir.Name, "runtime", StringComparison.OrdinalIgnoreCase)) return false;
+
+            DirectoryInfo candidateRoot = runtimeDir.Parent;
+            if (candidateRoot == null) return false;
+            string selectedRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(explicitProjectRoot));
+            if (string.Equals(candidateRoot.FullName, selectedRoot, StringComparison.OrdinalIgnoreCase)) return false;
+            if (!Directory.Exists(selectedRoot)) return false;
+            if (!File.Exists(Path.Combine(selectedRoot, "crossdomain.xml"))) return false;
+            if (!File.Exists(Path.Combine(selectedRoot, "launcher", "web", "bootstrap.html"))) return false;
+
+            string candidateBase = Path.Combine(selectedRoot, "tmp", "runtime-candidates", "v2");
+            string candidateBasePath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(candidateBase));
+            string candidateRootPath = Path.TrimEndingDirectorySeparator(candidateRoot.FullName);
+            if (!candidateRootPath.StartsWith(candidateBasePath + Path.DirectorySeparatorChar,
+                    StringComparison.OrdinalIgnoreCase))
+                return false;
+            if (HasReparsePointBelowRoot(runtimeDir, selectedRoot)) return false;
+
+            string metadataPath = Path.Combine(candidateRoot.FullName, "runtime-build-metadata.v2.json");
+            string manifestPath = Path.Combine(runtimePath, "cf7-runtime-manifest.tsv");
+            if (!TryReadCandidateIdentity(metadataPath, out string metadataBuildIdentity, out string metadataPayloadClosure))
+                return false;
+            if (!TryReadManifestIdentity(manifestPath, out string manifestBuildIdentity, out string manifestPayloadClosure))
+                return false;
+
+            return string.Equals(metadataBuildIdentity, manifestBuildIdentity, StringComparison.OrdinalIgnoreCase)
+                   && string.Equals(metadataPayloadClosure, manifestPayloadClosure, StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    static bool TryReadCandidateIdentity(string metadataPath, out string buildIdentity, out string payloadClosure)
+    {
+        buildIdentity = null;
+        payloadClosure = null;
+        if (!File.Exists(metadataPath)) return false;
+        long length = new FileInfo(metadataPath).Length;
+        if (length <= 0 || length > 64 * 1024) return false;
+
+        using (JsonDocument document = JsonDocument.Parse(File.ReadAllText(metadataPath)))
+        {
+            JsonElement root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object) return false;
+            int schemaCount = 0;
+            int buildCount = 0;
+            int payloadCount = 0;
+            foreach (JsonProperty property in root.EnumerateObject())
+            {
+                if (property.NameEquals("schema")) schemaCount++;
+                else if (property.NameEquals("buildIdentityHash")) buildCount++;
+                else if (property.NameEquals("payloadClosureHash")) payloadCount++;
+            }
+            if (schemaCount != 1 || buildCount != 1 || payloadCount != 1) return false;
+            if (!root.TryGetProperty("schema", out JsonElement schema)
+                || !string.Equals(schema.GetString(), "cf7-runtime-candidate-metadata.v2", StringComparison.Ordinal))
+                return false;
+            if (!root.TryGetProperty("buildIdentityHash", out JsonElement build)
+                || !root.TryGetProperty("payloadClosureHash", out JsonElement payload))
+                return false;
+
+            buildIdentity = build.GetString();
+            payloadClosure = payload.GetString();
+            return IsSha256Hex(buildIdentity) && IsSha256Hex(payloadClosure);
+        }
+    }
+
+    static bool TryReadManifestIdentity(string manifestPath, out string buildIdentity, out string payloadClosure)
+    {
+        buildIdentity = null;
+        payloadClosure = null;
+        if (!File.Exists(manifestPath)) return false;
+        long length = new FileInfo(manifestPath).Length;
+        if (length <= 0 || length > 1024 * 1024) return false;
+
+        string[] lines = File.ReadAllLines(manifestPath);
+        if (lines.Length == 0 || !string.Equals(lines[0], "cf7-runtime-manifest-v2", StringComparison.Ordinal))
+            return false;
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string[] fields = lines[i].Split('\t');
+            if (fields.Length != 2) continue;
+            if (string.Equals(fields[0], "buildIdentityHash", StringComparison.Ordinal))
+            {
+                if (buildIdentity != null) return false;
+                buildIdentity = fields[1];
+            }
+            else if (string.Equals(fields[0], "payloadClosureHash", StringComparison.Ordinal))
+            {
+                if (payloadClosure != null) return false;
+                payloadClosure = fields[1];
+            }
+        }
+        return IsSha256Hex(buildIdentity) && IsSha256Hex(payloadClosure);
+    }
+
+    static bool HasReparsePointBelowRoot(DirectoryInfo leaf, string rootPath)
+    {
+        string normalizedRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(rootPath));
+        DirectoryInfo current = leaf;
+        while (current != null
+               && !string.Equals(Path.TrimEndingDirectorySeparator(current.FullName), normalizedRoot,
+                   StringComparison.OrdinalIgnoreCase))
+        {
+            if ((current.Attributes & FileAttributes.ReparsePoint) != 0) return true;
+            current = current.Parent;
+        }
+        return current == null;
+    }
+
+    static bool IsSha256Hex(string value)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length != 64) return false;
+        for (int i = 0; i < value.Length; i++)
+        {
+            if (!Uri.IsHexDigit(value[i])) return false;
+        }
+        return true;
+    }
+
     // 防止 JIT 内联导致 DpiAwarenessBootstrap.Initialize() 的异常栈折叠进 Main，影响 startup diagnostics 定位。
     [MethodImpl(MethodImplOptions.NoInlining)]
-    static int MainAfterStartupDiagnostics(string[] args, string earlyProjectRoot)
+    static int MainAfterStartupDiagnostics(string[] args, string earlyProjectRoot, bool isolatedRuntimeCandidate)
     {
         long processStart = Stopwatch.GetTimestamp();
         PerfTrace.SetProcessStart(processStart);
@@ -164,7 +314,7 @@ class Program
 
         try
         {
-            return Run(args);
+            return Run(args, isolatedRuntimeCandidate);
         }
         catch (Exception ex)
         {
@@ -283,7 +433,7 @@ class Program
         return core ?? bootstrap;
     }
 
-    static int Run(string[] args)
+    static int Run(string[] args, bool isolatedRuntimeCandidate)
     {
         // 定位项目根目录:
         // 1. 优先 bootstrap 传 --project-root <abs>（FDD 产物在 projectRoot/runtime/ 子目录,
@@ -372,7 +522,8 @@ class Program
         GuardianForm form = new GuardianForm(
             bootstrapWebDir,
             config.WebView2DisableGpu,
-            config.WebView2AdditionalArgs);
+            config.WebView2AdditionalArgs,
+            isolatedRuntimeCandidate);
         _guardianForm = form;
         PerfTrace.Duration("guardian.form_construct", formStart);
         PerfTrace.Mark("guardian.form_constructed");
@@ -1194,7 +1345,9 @@ class Program
             // Flash Player 由外部（如 Flash CS6 testMovie）自行启动并连接
             LogManager.Log("[Guardian] Bus-only mode active. Waiting for external Flash connection...");
             StartupDiagnostics.Mark("bus_only.ready");
-            form.Text = "CF7:ME Bus (test mode)";
+            form.Text = isolatedRuntimeCandidate
+                ? "CF7:ME Bus (test mode) — 隔离候选 / 未部署"
+                : "CF7:ME Bus (test mode)";
 
             // 消息循环（保持进程存活）
             Application.Run(form);

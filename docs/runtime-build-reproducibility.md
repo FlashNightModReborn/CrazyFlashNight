@@ -18,6 +18,19 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 - strict/promotion 状态逐文件验证字节闭包；日常 native 源码可以处于 `source-ahead` 而不立刻 promotion。事后 Audit 在部署字节未变时不读取 payload blob，也不声称验证源码内容语义；只有正式部署闭包变化才必须携带完整新共识。
 - 工具链不匹配、证明不足、相同故障域、分叉 payload、脏部署或无效政策 receipt 都 fail-closed；禁止伪造第二 builder、手改 hash/receipt/attestation 或复制单机 candidate 到正式 runtime。
 
+## 开发到正式验收状态机
+
+| 状态 | 最小证据 | 明确不代表 |
+|------|----------|------------|
+| `compiled` | 编译命令成功，输出仍可位于 `bin/obj` 或其他临时目录 | candidate 已生成、运行时已加载新字节 |
+| `candidate_built` | producer 返回唯一 immutable `candidateRoot`，metadata/manifest 的 build identity 与 payload closure 自洽 | 已执行、已部署 |
+| `candidate_executed` | 推荐由 `automation/dev.ps1` 按当前 Worktree build identity 精确选择后启动；低层诊断也可用 `automation/start.ps1 -CandidateRoot <absolute candidateRoot>`。两者都须确认 `runtimeMode=isolated_candidate`，且实际 process path、Core SHA-256、build identity、payload closure 全部匹配 | 领域 E2E 已通过、正式入口已更新 |
+| `e2e_verified` | 在上述已绑定 candidate 进程中完成受影响领域的真实 Web→Host→AS2→回包 / 写后回读门 | promotion 或正式验收 |
+| `promoted` | 唯一 promotion 入口完成事务替换、v2 consensus 与 full-install `--verify-only` | 标准玩家入口已实际加载该身份 |
+| `standard_entry_verified` | promotion 后无参数运行 `automation/start.ps1` / 根 bootstrap，确认 `runtimeMode=formal_runtime`、正式 Core 路径/SHA-256/build identity/payload closure 与被提升身份一致，并完成受影响领域 smoke | — |
+
+状态只能按 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified` 报告；允许因任务范围停在中间，但不得跨级命名。只有同一身份已达到 `promoted` 且随后达到 `standard_entry_verified`，才可称“已部署 / 正式验收”。日常开发显式走 `automation/dev.ps1`：它按当前 Worktree 身份精确复用/生成隔离 candidate，但始终为 `NOT_DEPLOYED`。`automation/start.ps1` 无参数只消费正式根部署，不得猜测或自动选择 `launcher/bin`、`tmp/runtime-candidates/` 中的“最新”输出；`start.ps1 -CandidateRoot` 仅保留为指定精确候选的低层诊断兼容入口，不再推荐手工直启 Core。
+
 ## v2 四域身份
 
 `config/build/runtime-inputs.v2.json` 是输入域清单。四域互斥，发现同一路径同时属于两个域会失败。
@@ -43,13 +56,17 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 2. `launcher/build-runtime-candidate.ps1` 是纯 payload producer：先执行精确环境门，再在 job 独占的 native/Cargo/MSBuild/temp 目录构建 miniaudio、Rust parser、bootstrap 与 FDD Core，生成不可覆盖的 v2 candidate。candidate 尚无正式 consensus，因此这里只同步、有界等待 bootstrap `--verify-runtime-only` 并检查真实 exit code；失败会保留/输出受限日志，成功必须删除 `logs/`。它不跑 Web/数据产品审计，也不签名。
 3. `tools/validate-launcher-release-policy.ps1` 是只读政策门：绑定 `releaseTreeOid` 与四域身份，验证 tracked tree 在审计前后未变化，按需严格验证 candidate，并把每项结果写成 `cf7-runtime-policy-validation.v2` production receipt。它既支持 clean commit 的 `Worktree` 身份，也支持工作树逐字节 materialize 同一 staged tree 的 `Index` 身份；candidate 始终按磁盘 payload 复核。候选优化检查会丢弃调用者注入的 `CF7_DOTNET_EXE`，重新运行锁定工具链门禁并只接受其选出的 host；门禁不产出精确 host 就禁止签发。子审计 stdout/stderr 只进入人类/CI 日志，不能混入结构化 `checks[]`。receipt 只能写未跟踪路径。
 
-`launcher/build.ps1` 只是人工兼容编排器：prepare → pure producer → policy。它适合已准备好的本地 tree 做完整候选检查，但不是多机发布协议，也不会替代签名 worker、immutable request 或 quorum。
+`launcher/build.ps1` 只是人工兼容编排器：prepare → pure producer → policy。它只写隔离 candidate，最多把状态推进到 `candidate_built`，不写根 bootstrap 或正式 `runtime/`；它适合已准备好的本地 tree 做完整候选检查，但不是多机发布协议，也不会替代签名 worker、immutable request 或 quorum。
+
+未提交工作树的可见功能检查统一走 `automation/dev.ps1`（或根 `本地开发启动.cmd`）。它重算当前 Worktree build identity，只复用同身份且闭包唯一的 candidate；无命中时以 `-SkipPrepare -SkipPolicy -BuilderId local-dev` 新建隔离 candidate。`-Status` 只读报告匹配/过期/同身份闭包分叉，`-ReuseOnly` 禁止构建，`-ForceBuild` 强制新建但仍拒绝分叉闭包，`-BuildOnly` 只选择/构建并验证而不启动。忽略的 `tmp/runtime-dev/active.v1.json` 只是 repository-relative 选择索引，不授予信任，每次执行前仍重验字节身份。
+
+`dev.ps1` 最终把精确 candidate 交给 `automation/start.ps1 -CandidateRoot`。该低层入口只接受当前仓库 `tmp/runtime-candidates/v2/` 下的 canonical 非 reparse producer 输出，严格核对完整安装哨兵、candidate metadata、runtime manifest、`buildIdentityHash`、`payloadClosureHash` 与 Core SHA-256，再调用 candidate 自身 bootstrap `--verify-runtime-only`；Core 启动后仍按同一身份反向自检，并显式使用当前完整安装根加载工作树 Web。只有报告/日志中的 `runtimeMode=isolated_candidate`、`processPath`、`coreSha256`、`buildIdentity`、`payloadClosure` 全部与预选 candidate 一致，才能报告 `candidate_executed`。目录 walk-up、候选树外搬运、reparse 别名或 marker/身份漂移一律 fail-closed；该模式始终 `NOT_DEPLOYED`，不产生签名、receipt 或 promotion 权限，也不得把 candidate 手工复制进正式 `runtime/`。
 
 prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在结构内容变化时刷新 `generated.at`。重复 prepare 因时间戳制造 diff 属于构建门故障，不能要求维护者提交无语义的时间漂移。
 
 ## 精确环境与隔离输出
 
-- 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。
+- 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。断网复用已有精确匹配 candidate 不需要云端；断网重建则必须预先安装通过锁定门的工具链，并已缓存 NuGet/Cargo 依赖。
 - `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及 bootstrapper 入口字节；NuGet 图由 `launcher/packages.lock.json` 固定。Visual Studio 安装器只是尽力补齐组件，不能把会移动的在线 channel 伪装成已固定 payload；最终资格始终以 `cl/link/rc` 的版本与 SHA-256 精确门为准。
 - 当前基线为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。
 - producer 清除外部编译/链接/Rust 注入变量；miniaudio 源先规范化为 LF，再用固定 `/pathmap`、`/experimental:deterministic`、`/Brepro`；Rust 每次 clean + locked；managed publish 不带 PDB/SourceLink。
@@ -161,6 +178,8 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 ## 验证矩阵与诊断
 
 ```powershell
+.\tools\test-runtime-dev-entry.ps1
+.\tools\test-runtime-entry-guardrails.ps1
 .\tools\test-runtime-build-v2.ps1
 .\tools\test-runtime-release-policy.ps1
 .\tools\test-runtime-build-queue.ps1

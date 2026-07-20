@@ -60,8 +60,13 @@ var EquipmentTuningRender = (function() {
             return header;
         }
         var item = this._sourceItem;
-        var icon = element('span', 'equipment-tuning-main-icon');
+        var self = this;
+        var icon = element('button', 'equipment-tuning-main-icon equipment-tuning-inspect-trigger');
+        icon.type = 'button';
+        icon.disabled = !this._canInspect(item);
+        icon.setAttribute('aria-label', '检视当前装备：' + String(item.displayName || item.name || '装备'));
         icon.innerHTML = iconHtml(item.icon || item.name, 'kshop-icon');
+        icon.addEventListener('click', function() { self.inspectCurrentEquipment(); });
         var copy = element('div', 'equipment-tuning-main-copy equipment-tuning-summary-copy');
         var equipment = this._snapshot && this._snapshot.equipment;
         var level = equipment ? Number(equipment.level || 0) : Number(item.enhancementLevel || 0);
@@ -268,11 +273,18 @@ var EquipmentTuningRender = (function() {
     };
 
     TuningView.prototype._renderConvert = function(body) {
+        var self = this;
         var pair = element('div', 'equipment-tuning-convert-pair');
         pair.appendChild(conversionEquipmentCard(this._sourceItem, '当前装备'));
         var arrow = element('div', 'equipment-tuning-convert-arrow');
         arrow.textContent = '↔'; arrow.setAttribute('aria-hidden', 'true'); pair.appendChild(arrow);
-        pair.appendChild(conversionEquipmentCard(this._targetItem, this._targetItem ? '交换目标' : '等待选择', true));
+        pair.appendChild(conversionEquipmentCard(
+            this._targetItem,
+            this._targetItem ? '交换目标' : '等待选择',
+            true,
+            this._targetItem ? function() { self.inspectConversionTarget(); } : null,
+            !this._canInspect(this._targetItem)
+        ));
         body.appendChild(pair);
 
         var heading = element('div', 'equipment-tuning-conversion-heading');
@@ -289,7 +301,6 @@ var EquipmentTuningRender = (function() {
         } else if (!this._conversionCandidates.length) {
             body.appendChild(empty('背包中没有强化度不同的其他同类装备。'));
         } else {
-            var self = this;
             var grid = element('div', 'equipment-tuning-conversion-candidates');
             this._conversionCandidates.forEach(function(slot) {
                 var item = slot.item || {};
@@ -565,7 +576,7 @@ var EquipmentTuningRender = (function() {
     };
 
 
-    function conversionEquipmentCard(item, label, emptyTarget) {
+    function conversionEquipmentCard(item, label, emptyTarget, onInspect, inspectDisabled) {
         var card = element('div', 'equipment-tuning-convert-item' + (!item ? ' empty' : ''));
         if (!item) {
             card.innerHTML = '<div class="equipment-tuning-empty-mark">?</div><span><small>'
@@ -577,6 +588,20 @@ var EquipmentTuningRender = (function() {
             + '<span><small>' + escapeHtml(label || '装备') + '</small><b>'
             + escapeHtml(item.displayName || item.name || '未知装备') + '</b><em>强化 +'
             + Number(item.enhancementLevel || 0) + '</em></span>';
+        if (typeof onInspect === 'function') {
+            card.classList.add('inspectable');
+            var inspect = element('button', 'equipment-tuning-convert-inspect');
+            inspect.type = 'button';
+            inspect.textContent = '⌕';
+            inspect.disabled = !!inspectDisabled;
+            inspect.setAttribute('aria-label', '检视交换目标：' + String(item.displayName || item.name || '装备'));
+            inspect.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                onInspect();
+            });
+            card.appendChild(inspect);
+        }
         return card;
     }
 

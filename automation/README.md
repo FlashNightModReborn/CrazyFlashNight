@@ -43,18 +43,45 @@ cd "<项目根目录>\\automation"
 
 ## 3. 日常启动
 
+本地日常开发推荐显式走 `dev.ps1`，或双击项目根的 `本地开发启动.cmd`。该入口计算当前 Worktree build identity，只精确复用同身份 candidate；无命中时在本机生成隔离 candidate，但始终报告 `NOT_DEPLOYED`，不会写根 bootstrap 或正式 `runtime/`。
+
 ```powershell
-cd "<项目根目录>\\automation"
-.\start.ps1
+cd "<项目根目录>"
+.\automation\dev.ps1
+# 等价的双击入口：.\本地开发启动.cmd
+
+# 开发 candidate 状态 / 只复用 / 强制重建 / 只构建不启动
+.\automation\dev.ps1 -Status
+.\automation\dev.ps1 -ReuseOnly
+.\automation\dev.ps1 -ForceBuild
+.\automation\dev.ps1 -BuildOnly
 ```
 
-脚本负责：
+`-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
+
+断网可以完成已有 candidate 的精确复用；若需重建，本机必须已安装并通过锁定的 .NET / MSVC / Windows SDK / Rust 工具链，且 NuGet / Cargo 依赖已在本地缓存。首次开发机供给仍可能需要联网，这与正式云端双生产者验证是两个独立问题。
+
+正式已部署入口与低层诊断入口则明确区分：
+
+```powershell
+# 无 CandidateRoot：只启动项目根已 promotion 的正式 runtime
+.\automation\start.ps1
+# 低层诊断兼容入口：只接受已知的绝对 candidateRoot
+.\automation\start.ps1 -CandidateRoot "<absolute candidateRoot>"
+```
+
+`automation/start.ps1` 无参数时不会扫描或猜选 `launcher/bin`、`tmp/runtime-candidates/` 中的开发输出。源码领先于正式二进制时，它仍运行上一次已 promotion 的身份。日常开发不再要求人工复制 candidateRoot；`start.ps1 -CandidateRoot` 仅保留给调试指定产物等低层场景。
+
+启动链负责：
 
 - 启动 Guardian Launcher
 - 走当前默认运行链路
 - 使用内嵌总线与现有宿主架构
-- `automation/start.ps1`、`scripts/gobang_trainer_cycle.ps1` 与 `tools/cfn-cli.sh` 直启 Core 前调用根 bootstrap `--verify-only`，manifest 闭包不完整、含额外文件或二进制混搭时 fail-fast
+- `automation/start.ps1`、`scripts/gobang_trainer_cycle.ps1` 与 `tools/cfn-cli.sh` 的默认入口都绑定正式根部署；直启正式 Core 前调用根 bootstrap `--verify-only`，manifest 闭包不完整、含额外文件或二进制混搭时 fail-fast
+- `dev.ps1` 把选中的精确 candidate 交给 `start.ps1 -CandidateRoot`；后者只接受本仓 v2 candidate 的绝对 canonical 路径，使用候选自身 bootstrap `--verify-runtime-only`，拒绝 reparse / metadata / manifest / Core 字节身份漂移
 - 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
+
+两种运行模式启动前后都打印并硬核验 `runtimeMode`（`formal_runtime|isolated_candidate`）、`processPath`、`coreSha256`、`buildIdentity`、`payloadClosure`；详见 [`launcher/README.md`](../launcher/README.md#离线开发入口与身份绑定候选)。统一状态为 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`；只有 promotion 后再由无参数标准入口验证同一身份，才可称“已部署 / 正式验收”。
 
 ### 全员直推与 native 事后审计
 
@@ -89,9 +116,15 @@ chcp.com 65001 | Out-Null
 node tools/equipment-tuning/run-unattended.js `
   --seed-slot crazyflasher7_saves2 `
   --shutdown
+
+# 验证新 Host candidate 时：
+node tools/equipment-tuning/run-unattended.js `
+  --seed-slot crazyflasher7_saves2 `
+  --candidate-root "<absolute candidateRoot>" `
+  --shutdown
 ```
 
-目标槽固定默认为 `cf7_agent_equipment_tuning`，必须与显式 seed 不同。runner 永久拒绝 live target 和 `--fresh`；若已有 Launcher，则在改写任何 shadow/SOL 前读取 `agent_control`，只要 Launcher 或 Flash 当前指向目标 agent 槽就 fail-fast。SOL 只按“SharedObject 随机根之后的 `localhost/<完整本地游戏路径>/CRAZYFLASHER7MercenaryEmpire.swf/<slot>.sol`”精确归属，不得用 `resources` basename 或 SWF 名模糊扫描其他安装。通过安全门后才备份目标 shadow/SOL 并重建专用克隆槽；随后等待 fresh handoff、同 attempt runtime load ack，调用固定 `openEquipmentTuning`，并以同一 `panelInstanceId` 的 `equipment_tuning_panel_bound` + `equipment_tuning_snapshot_confirmed` 为通过门。它在首个权威 snapshot 后停止，不点击业务控件、不发送 preview/commit。离线安全与契约回归入口为 `node tools/equipment-tuning/run-checks.js`。
+目标槽固定默认为 `cf7_agent_equipment_tuning`，必须与显式 seed 不同。runner 永久拒绝 live target 和 `--fresh`；不传 `--candidate-root` 时绑定 `formal_runtime`，传入时绑定唯一 `isolated_candidate`，并在报告中硬核验 `runtimeMode/processPath/coreSha256/buildIdentity/payloadClosure` 与启动前期望完全一致。若已有 Launcher，则在改写任何 shadow/SOL 前读取 `agent_control`，只要 Launcher / Flash 当前指向目标 agent 槽或现有进程身份不能满足本轮选择就 fail-fast。SOL 只按“SharedObject 随机根之后的 `localhost/<完整本地游戏路径>/CRAZYFLASHER7MercenaryEmpire.swf/<slot>.sol`”精确归属，不得用 `resources` basename 或 SWF 名模糊扫描其他安装。通过安全门后才备份目标 shadow/SOL 并重建专用克隆槽；随后等待 fresh handoff、同 attempt runtime load ack，调用固定 `openEquipmentTuning`，并以同一 `panelInstanceId` 的 `equipment_tuning_panel_bound` + `equipment_tuning_snapshot_confirmed` 为通过门。它在首个权威 snapshot 后停止，不点击业务控件、不发送 preview/commit。离线安全与契约回归入口为 `node tools/equipment-tuning/run-checks.js`。
 
 ### 无人值守斗兽标定
 
@@ -109,17 +142,20 @@ node tools/arena-calibration/run-unattended.js `
 
 该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；必须等 `bootstrap_reveal_ready` 已完成并观察到本轮新鲜 handoff 后，才通过 AS2 agent 入口复用主时间轴 `读盘` 帧的原“进入游戏”流程，避免在 asLoader 临时 `_root` 上提前消费 snapshot、交接后卡在主菜单。随后等待 `readyForArenaCalibration`；该 ready 必须同时满足 Launcher 存档决议为安全 snapshot、AS2 已完成 `SaveManager.loadAll()` 并回报 `agent_runtime_status`、socket/reveal/arena status 均就绪，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
 
-默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。如本轮确实需要重编译或验证指定栈，可显式传：
+默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。验证新 Host candidate 时必须先独立构建，再把脚本返回的精确路径交给 runner；可在 runner 内追加不产二进制的 `launcher-tests`：
 
 ```powershell
+$repo = (Resolve-Path .).Path
+$candidate = .\launcher\build.ps1 -ProjectRoot $repo -BuilderId local-dev -SkipPolicy | Select-Object -Last 1
 node tools/arena-calibration/run-unattended.js `
   --slot cf7_agent_arena_calibration `
   --seed-slot crazyflasher7_saves2 `
   --manifest tmp/arena-calibration/batches/<batchId>/case_manifest.json `
-  --build-gate launcher
+  --candidate-root $candidate.candidateRoot `
+  --build-gate launcher-tests
 ```
 
-可选 gate：`none`、`arena-tools`、`launcher-build`、`launcher-tests`、`launcher`、`as2-publish`、`as2-test`。除 `arena-tools` 外，runner 会先尝试关闭已有 Launcher，再执行 gate；失败会写入 run-report 并停止，不继续进游戏。自动恢复只消费 runner 自己生成的 rerun manifest，不会在失败后自行修改业务代码或反复编译。
+可执行 gate：`none`、`arena-tools`、`launcher-tests`、`as2-publish`、`as2-test`。`launcher-build` 及会展开到它的 `launcher` 仅保留参数识别并立即 fail-fast，因为嵌入构建只能产生一个未选择的 candidate；必须按上例先构建再传 `--candidate-root`。runner 在启动 / 重启 / 恢复各阶段都要求实际 `runtimeMode/processPath/coreSha256/buildIdentity/payloadClosure` 与预选身份一致，字段写入 `run-report.*`；门禁失败或身份漂移会停止，不继续进游戏。自动恢复只消费 runner 自己生成的 rerun manifest，不会在失败后自行修改业务代码或反复编译。
 
 ### 兼容旧入口
 
@@ -133,11 +169,11 @@ node tools/arena-calibration/run-unattended.js `
 ```powershell
 chcp.com 65001 | Out-Null
 powershell -File ..\launcher\tests\run_tests.ps1
-# 需要本地完整 candidate 时：
+# 需要隔离的本地完整 candidate 时（不会部署正式 runtime）：
 powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 ```
 
-`launcher/build.ps1` 现在只是 prepare → pure producer → read-only policy 的兼容编排器；它生成隔离 candidate，但不构成本地签名或正式发布。新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境加 `-VerifyOnly`；普通 Web/AS2/数据改动不要求取得 runtime 发布权，也不要为消除 `source-ahead` 自动重建二进制。
+`launcher/build.ps1` 现在只是 prepare → pure producer → read-only policy 的 candidate-only 兼容编排器；它生成隔离 candidate，不覆盖根 bootstrap / 正式 `runtime/`，也不构成本地签名或正式发布。只有在脚本返回的精确 candidate 上继续执行并保留身份证据，状态才会从 `candidate_built` 前进到 `candidate_executed` / `e2e_verified`。新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境加 `-VerifyOnly`；普通 Web/AS2/数据改动不要求取得 runtime 发布权，也不要为消除 `source-ahead` 自动重建二进制。
 
 正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
 
@@ -204,7 +240,9 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 |------|------|
 | `config.toml` | 运行时配置 |
 | `configure_server.ps1` | 首次环境准备 |
-| `start.ps1` | 当前总入口 |
+| `dev.ps1` | 推荐的显式本地开发入口；精确复用/生成 Worktree candidate，始终 `NOT_DEPLOYED` |
+| `start.ps1` | 正式根部署的当前标准入口；不自动选择 candidate |
+| `../本地开发启动.cmd` | `dev.ps1` 的根目录双击封装；失败默认暂停便于阅读错误 |
 | `start_game.ps1` | 兼容旧入口 |
 | `start_server.ps1` | 已废弃的旧入口 |
 | `publish.ps1` | 开发态批量发布辅助脚本 |

@@ -4,6 +4,7 @@
 const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const { checkRuntimeIdentityContract } = require("../lib/runtime-process-identity");
 const {
   analyzeRows,
   createPilotManifest,
@@ -233,13 +234,14 @@ function checkSpawnDistanceContract() {
 }
 
 try {
+  checkRuntimeIdentityContract();
   checkSchemas();
   checkBatchIdContract();
   checkPositiveIntegerContract();
   checkTimeoutClassification();
   checkSpawnDistanceContract();
   scripts.forEach(run);
-  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 4 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 5 }, null, 2));
 } catch (error) {
   console.error(error.message);
   process.exit(1);

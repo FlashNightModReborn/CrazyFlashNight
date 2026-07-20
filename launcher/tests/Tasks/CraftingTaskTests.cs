@@ -50,6 +50,7 @@ namespace Launcher.Tests.Tasks
                     task.HandleFlashResponse(SnapshotResponse((int)command["callId"]), null);
                     JObject response = JObject.Parse(web);
                     Assert.True((bool)response["success"]);
+                    Assert.Equal("男", (string)response["gender"]);
                     Assert.True((bool)response["recipes"][0]["canCraftOne"]);
                     Assert.Equal("ready", (string)response["recipes"][0]["availability"]);
 
@@ -60,6 +61,37 @@ namespace Launcher.Tests.Tasks
                     task.HandleFlashResponse(inconsistent, null);
                     Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
                 }
+            }
+        }
+
+        [Fact]
+        public void SnapshotResponse_RequiresStrictGender()
+        {
+            string sent = null;
+            string web = null;
+            using (var task = new CraftingTask(() => true, value => { sent = value; return true; }))
+            {
+                task.SetPostToWeb(value => web = value);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.gender.missing"));
+                JObject missing = SnapshotResponse((int)JObject.Parse(sent.TrimEnd('\0'))["callId"]);
+                missing.Remove("gender");
+                task.HandleFlashResponse(missing, null);
+                Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.gender.invalid"));
+                JObject invalid = SnapshotResponse((int)JObject.Parse(sent.TrimEnd('\0'))["callId"]);
+                invalid["gender"] = "female";
+                task.HandleFlashResponse(invalid, null);
+                Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.gender.female"));
+                JObject female = SnapshotResponse((int)JObject.Parse(sent.TrimEnd('\0'))["callId"]);
+                female["gender"] = "女";
+                task.HandleFlashResponse(female, null);
+                JObject response = JObject.Parse(web);
+                Assert.True((bool)response["success"]);
+                Assert.Equal("女", (string)response["gender"]);
             }
         }
 
@@ -208,7 +240,7 @@ namespace Launcher.Tests.Tasks
             return new JObject
             {
                 ["task"] = "crafting_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
-                ["category"] = "武器合成",
+                ["category"] = "武器合成", ["gender"] = "男",
                 ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 },
                 ["skills"] = new JObject { ["reverseLevel"] = 0, ["smithEnabled"] = false, ["smithLevel"] = 0 },
                 ["recipes"] = new JArray

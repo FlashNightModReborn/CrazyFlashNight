@@ -21,6 +21,7 @@ function audit(){
   const view=readModule('equipment-tuning-view.js');
   const model=readModule('equipment-tuning-model.js');
   const render=readModule('equipment-tuning-render.js');
+  const inspector=readModule('equipment-inspector.js');
   const tuningSource=[model,render,view].join('\n');
   const config=readModule('inventory-workbench-config.js');
   const header=readModule('inventory-workbench-header.js');
@@ -61,12 +62,16 @@ function audit(){
       ||!hasAll(workbench,['new InventoryWorkbenchConfig.ConfirmationPreference','InventoryWorkbenchOwnedView.createView','InventoryWorkbenchOwnedView.createToolbar','new InventoryWorkbenchQuickTransfer.QuickTransferController','_quickTransfer.acceptClick']))throw new Error('inventory workbench split-module composition missing');
   if(!inventoryRuntime.includes('readProjection')||!hasAll(workbench,['_coordinator.readProjection','loadTuningConversionCandidates','loadConversionCandidates:loadTuningConversionCandidates'])
       ||!view.includes('selectConversionTarget')||!render.includes('equipment-tuning-conversion-candidates'))throw new Error('isolated right-pane conversion projection missing');
+  if(!hasAll(inspector,['var EquipmentInspector','resolveItemSource: resolveProductSource','DEFAULT_ZOOM = 1.85'])
+      ||!hasAll(view,['_openInspector','_closeInspector','inspectCurrentEquipment','inspectConversionTarget','this._snapshot.gender'])
+      ||!hasAll(render,['equipment-tuning-inspect-trigger','equipment-tuning-convert-inspect'])
+      ||!hasAll(workbench,['EquipmentInspector.open','openInspector:openEquipmentInspector','closeInspector:closeEquipmentInspector',"gender !== '男' && gender !== '女'"]))throw new Error('shared tuning equipment inspector adapter missing');
   if(inventorySource.includes('syncTuningConversionFilter')||inventorySource.includes('_conversionFilterRestore')
       ||tuningSource.includes('syncConversionFilter')||tuningSource.includes('_conversionFilterActive'))throw new Error('legacy conversion mutation of visible bag filter remains');
   if(!hasAll(view,['EquipmentTuningView load order: item-filter.js, equipment-tuning-model.js, equipment-tuning-render.js, then equipment-tuning-view.js.','Renderer.install(TuningView, Model)'])
       ||!render.includes('function install(TuningView, Model)'))throw new Error('tuning model/render split or explicit browser load-order diagnosis missing');
-  if(!inOrder(registryWorkbench,["'modules/item-filter.js'","'modules/inventory-runtime.js'","'modules/inventory-ui.js'","'modules/equipment-tuning-runtime.js'","'modules/equipment-tuning-model.js'","'modules/equipment-tuning-render.js'","'modules/equipment-tuning-view.js'","'modules/inventory-workbench-config.js'","'modules/inventory-workbench-header.js'","'modules/inventory-workbench-quick-transfer.js'","'modules/inventory-workbench-owned-view.js'","'modules/inventory-workbench.js'"])
-      ||!css.includes('.equipment-tuning-commit'))throw new Error('lazy split assets, load order, or tuning skin missing');
+  if(!inOrder(registryWorkbench,["'modules/item-filter.js'","'modules/asset-timeline.js'","'modules/dressup-doll-renderer.js'","'modules/equipment-inspector.js'","'modules/inventory-runtime.js'","'modules/inventory-ui.js'","'modules/equipment-tuning-runtime.js'","'modules/equipment-tuning-model.js'","'modules/equipment-tuning-render.js'","'modules/equipment-tuning-view.js'","'modules/inventory-workbench-config.js'","'modules/inventory-workbench-header.js'","'modules/inventory-workbench-quick-transfer.js'","'modules/inventory-workbench-owned-view.js'","'modules/inventory-workbench.js'"])
+      ||!hasAll(css,['.equipment-tuning-commit','.equipment-tuning-main-icon','.equipment-tuning-convert-inspect','.workbench-modal[data-modal-kind="equipment-inspector"]']))throw new Error('lazy split assets, load order, or tuning inspector skin missing');
 }
 function edge(){return[
   path.join(process.env['ProgramFiles(x86)']||'C:\\Program Files (x86)','Microsoft','Edge','Application','msedge.exe'),

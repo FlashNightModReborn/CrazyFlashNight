@@ -17,6 +17,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         _passed = 0;
         _failed = 0;
         trace("=== EquipmentTuningServiceTest start ===");
+        testSnapshotGenderNormalization();
         testWireShapeAndReconcileBarrier();
         testInstallAndEnhanceCommit();
         testSnapshotAndDetachInvalidateTokens();
@@ -75,6 +76,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             战备箱:new ArrayInventory(null, 10)
         };
         _root.收集品栏 = {材料:new DictCollection(null)};
+        _root.性别 = "男";
         _root.主线任务进度 = 0;
         _root.主角被动技能 = {铁匠:{启用:false,等级:0}};
         _root.存档系统 = {dirtyMark:false};
@@ -85,6 +87,22 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         EquipmentTuningService.install();
         InventoryPanelService.testOnlyReset();
         EquipmentTuningService.testOnlyReset();
+    }
+
+    private static function testSnapshotGenderNormalization():Void {
+        resetFixture();
+        _root.物品栏.背包.add(0, equipment("测试手枪A", 1, []));
+        var snapshotParams:Object = params("gender");
+        snapshotParams.source = sourceRef(inventorySnapshot(), 0);
+
+        _root.性别 = "女";
+        var female:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
+        _root.性别 = "female";
+        var normalized:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
+
+        assertTrue(female.success && female.snapshot.gender == "女"
+                && normalized.success && normalized.snapshot.gender == "男",
+            "snapshot 顶层性别只投影规范化的男/女值");
     }
 
     private static function equipment(name:String, level:Number, mods:Array):BaseItem {

@@ -40,9 +40,19 @@
     background:linear-gradient(110deg,rgba(var(--dls-crystal-rgb),.12),transparent 58%),#0d171c;
 }
 .equipment-tuning-main-icon {
-    width:50px; height:50px; display:grid; place-items:center; overflow:hidden;
+    position:relative; width:50px; height:50px; padding:0; display:grid; place-items:center; overflow:hidden;
     border:1px solid #27687a; background:#071015; box-shadow:inset 0 0 12px rgba(var(--dls-crystal-rgb),.06);
+    color:inherit; appearance:none; cursor:zoom-in;
 }
+.equipment-tuning-main-icon::after {
+    content:"⌕"; position:absolute; right:1px; bottom:1px; width:16px; height:16px;
+    display:grid; place-items:center; border:1px solid var(--dls-crystal-dim); background:var(--wb-panel);
+    color:var(--dls-crystal-bright); font:700 11px/1 Consolas,sans-serif; pointer-events:none;
+}
+.equipment-tuning-main-icon:hover:not(:disabled),.equipment-tuning-main-icon:focus-visible {
+    outline:0; border-color:var(--dls-crystal); box-shadow:0 0 9px rgba(var(--dls-crystal-rgb),.28);
+}
+.equipment-tuning-main-icon:disabled { cursor:default; opacity:.58; }
 .equipment-tuning-main-icon img,.equipment-tuning-candidate img,.equipment-tuning-convert-item img,.equipment-tuning-conversion-card img {
     max-width:90%; max-height:90%; object-fit:contain;
 }
@@ -178,7 +188,7 @@
 }
 .equipment-tuning-convert-arrow { display:grid; place-items:center; color:var(--tuning-convert-arrow); font:700 19px/1 Consolas,sans-serif; }
 .equipment-tuning-convert-item {
-    min-width:0; min-height:58px; padding:6px; display:grid; grid-template-columns:42px minmax(0,1fr); align-items:center; gap:6px;
+    position:relative; min-width:0; min-height:58px; padding:6px; display:grid; grid-template-columns:42px minmax(0,1fr); align-items:center; gap:6px;
     box-sizing:border-box; border:1px solid #294851; background:#0d171b;
 }
 .equipment-tuning-convert-item.empty { border-style:dashed; }
@@ -189,6 +199,16 @@
 .equipment-tuning-convert-item b { color:#e1e5e7; font:700 9px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-convert-item small { color:#758087; font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-convert-item em { color:#83d8e8; font:normal 9px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
+.equipment-tuning-convert-item.inspectable { padding-right:30px; }
+.equipment-tuning-convert-inspect {
+    position:absolute; right:5px; top:5px; width:21px; height:21px; padding:0; display:grid; place-items:center;
+    border:1px solid var(--dls-crystal-dim); background:var(--wb-panel); color:var(--dls-crystal-bright);
+    font:700 12px/1 Consolas,sans-serif; cursor:zoom-in;
+}
+.equipment-tuning-convert-inspect:hover:not(:disabled),.equipment-tuning-convert-inspect:focus-visible {
+    outline:0; border-color:var(--dls-crystal); box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.25);
+}
+.equipment-tuning-convert-inspect:disabled { opacity:.42; cursor:default; }
 .equipment-tuning-conversion-heading { margin:9px 0 5px; display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
 .equipment-tuning-conversion-heading b { color:#9ba6ac; font:700 9px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.08em; }
 .equipment-tuning-conversion-heading span { color:#68757b; font:10px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
@@ -368,6 +388,8 @@
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidate > span:not(.kshop-icon):not(.equipment-tuning-owned-count) { display:none; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-convert-pair { grid-template-columns:var(--workbench-compact-tile-size,48px) 24px var(--workbench-compact-tile-size,48px); gap:4px; align-items:center; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-convert-item { min-height:0; min-width:0; padding:3px; display:grid; grid-template-columns:1fr; place-items:center; gap:0; }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-convert-item.inspectable { padding:3px; }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-convert-inspect { right:1px; top:1px; width:18px; height:18px; font-size:10px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-convert-item > img,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-convert-item > .kshop-icon,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-convert-item > .kshop-icon-placeholder { width:var(--workbench-compact-icon-size,40px); height:var(--workbench-compact-icon-size,40px); }

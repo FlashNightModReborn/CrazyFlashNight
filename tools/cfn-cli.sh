@@ -54,12 +54,12 @@ case "${1:-status}" in
         # 启动 launcher --bus-only 后台进程
         # 跳过 bootstrap（headless 自动化不要 MessageBox prompt），直接走 Core.exe；
         # Core 是 FDD apphost，要求机器上已装 .NET 10 Desktop Runtime
-        # Core 部署在 projectRoot\runtime\ 子目录（build.ps1 Step 6）
+        # 该命令固定使用 promotion 后的 projectRoot\runtime\ 正式 Core；不扫描 bin/candidate
         EXE="$PROJECT_ROOT/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe"
         BOOTSTRAP="$PROJECT_ROOT/CRAZYFLASHER7MercenaryEmpire.exe"
         if [ ! -f "$EXE" ]; then
             echo "Error: Launcher Core EXE not found: $EXE" >&2
-            echo "  Tip: pre-built FDD artifacts at projectRoot\\runtime\\；如缺失先跑 launcher/build.ps1" >&2
+            echo "  Tip: 正式 runtime 缺失；launcher/build.ps1 只生成隔离 candidate，不能修复部署。请恢复可信正式包或完成 v2 promotion" >&2
             exit 1
         fi
         if [ ! -f "$BOOTSTRAP" ]; then

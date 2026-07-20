@@ -77,9 +77,12 @@ try {
         (('tools/runtime-build-v2-common.ps1' -in $repositoryProducerFiles) -and ('tools/runtime-build-v2-common.ps1' -notin $repositoryPolicyFiles))
     Assert-Equal 'attestation common belongs only to policy' $true `
         (('tools/runtime-build-attestation-v2-common.ps1' -in $repositoryPolicyFiles) -and ('tools/runtime-build-attestation-v2-common.ps1' -notin $repositoryProducerFiles))
+    $buildScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build.ps1'))
     $producerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'))
+    $startScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'automation\start.ps1'))
     $promotionScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\promote-runtime-bundle.ps1'))
     $bootstrapSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\native\bootstrap\bootstrap.cpp'))
+    $programSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\src\Program.cs'))
     Assert-Equal 'candidate uses isolated runtime verification mode' $true `
         ($producerScript.Contains("Arguments = '--verify-runtime-only'") -and $bootstrapSource.Contains('L"--verify-runtime-only"'))
     Assert-Equal 'candidate waits for GUI bootstrap exit code' $true `
@@ -87,6 +90,28 @@ try {
             $producerScript.Contains('$verifyProcess.Kill()'))
     Assert-Equal 'candidate does not invoke asynchronous verify-only call operator' $false `
         ($producerScript -match '(?m)^\s*&\s+\$userFacingExe\s+--verify-only\s*$')
+    Assert-Equal 'build result is explicit that a candidate is not deployed' $true `
+        ($buildScript.Contains("deploymentStatus = 'NOT_DEPLOYED'") -and
+            $buildScript.Contains('formalDeploymentModified = $false') -and
+            $buildScript.Contains("runtimeMode = 'isolated_candidate'"))
+    Assert-Equal 'candidate producer snapshots the complete formal deployment closure' $true `
+        ($producerScript.Contains('Get-Cf7FormalDeploymentSnapshot') -and
+            $producerScript.Contains("'CRAZYFLASHER7MercenaryEmpire.exe'") -and
+            $producerScript.Contains("'runtime'") -and
+            $producerScript.Contains("'config\build\runtime-release-consensus.json'") -and
+            $producerScript.Contains('changed the formal deployment closure'))
+    Assert-Equal 'candidate build output cannot be mistaken for deployment' $true `
+        ($buildScript.Contains('CANDIDATE BUILD ONLY - NOT DEPLOYED') -and
+            $producerScript.Contains('CANDIDATE ONLY - NOT DEPLOYED') -and
+            $producerScript.Contains('FORMAL RUNTIME UNCHANGED'))
+    Assert-Equal 'start defaults formal and requires an explicit repository-bound candidate root' $true `
+        ($startScript.Contains('[string]$CandidateRoot') -and
+            $startScript.Contains("`$runtimeMode = 'formal_runtime'") -and
+            $startScript.Contains("`$runtimeMode = 'isolated_candidate'") -and
+            $startScript.Contains('[IO.Path]::IsPathRooted($CandidateRoot)') -and
+            $startScript.Contains('tmp\runtime-candidates\v2') -and
+            $startScript.Contains('runtime-build-metadata.v2.json') -and
+            $startScript.Contains('verify-runtime-bundle-v2.ps1'))
     Assert-Equal 'promotion waits for deployed GUI bootstrap exit code' $true `
         ($promotionScript.Contains('$verifyProcess.WaitForExit(120000)') -and $promotionScript.Contains('$verifyProcess.ExitCode') -and
             $promotionScript.Contains('$verifyProcess.Kill()'))
@@ -94,6 +119,16 @@ try {
         ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
     Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `
         ($bootstrapSource.Contains('verifyRuntimeOnly && verifyCompleteInstall') -and $bootstrapSource.Contains('return 64;'))
+    Assert-Equal 'Core candidate mode requires explicit project root and identity-bound v2 marker' $true `
+        ($programSource.Contains('explicitProjectRoot = TryGetProjectRootFromArgs(args)') -and
+            $programSource.Contains('cf7-runtime-candidate-metadata.v2') -and
+            $programSource.Contains('tmp", "runtime-candidates", "v2') -and
+            $programSource.Contains('metadataBuildIdentity, manifestBuildIdentity') -and
+            $programSource.Contains('metadataPayloadClosure, manifestPayloadClosure'))
+    Assert-Equal 'Core preserves full and runtime-only self-check modes' $true `
+        ($programSource.Contains('"--verify-only"') -and $programSource.Contains('"--verify-runtime-only"'))
+    Assert-Equal 'promotion does not deploy candidate metadata marker' $false `
+        $promotionScript.Contains('runtime-build-metadata.v2.json')
     $shortCandidateLeaf = New-Cf7RuntimeV2CandidateLeafName `
         -BuildIdentityHash ('A' * 64) -BuilderId ('builder-' + ('x' * 100)) -RunToken 'test-run-1'
     Assert-Equal 'candidate directory does not expose unbounded builder label' $false $shortCandidateLeaf.Contains('builder-')

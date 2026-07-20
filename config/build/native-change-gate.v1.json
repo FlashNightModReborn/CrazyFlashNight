@@ -58,10 +58,13 @@
   "protectedFiles": [
     ".github/workflows/runtime-bundle-integrity.yml",
     ".github/workflows/runtime-cloud-builder.yml",
+    "automation/dev.ps1",
+    "automation/start.ps1",
     "config/build/main-branch-admission.v2.json",
     "config/build/native-change-gate.v1.json",
     "config/build/runtime-inputs.v2.json",
     "launcher/build.ps1",
+    "tools/lib/runtime-process-identity.js",
     "tools/audit-native-cursor-assets.js",
     "tools/audit-main-branch-admission.ps1",
     "tools/classify-runtime-release-state.ps1",
@@ -69,7 +72,8 @@
     "tools/test-main-branch-admission.ps1",
     "tools/test-resolve-runtime-trusted-base.ps1",
     "tools/prepare-launcher-release-assets.ps1",
-    "tools/validate-launcher-release-policy.ps1"
+    "tools/validate-launcher-release-policy.ps1",
+    "本地开发启动.cmd"
   ],
   "protectedPrefixes": [
     ".github/actions/",
@@ -79,10 +83,12 @@
     "launcher/native/",
     "launcher/src/",
     "runtime/",
+    "tools/arena-calibration/",
     "tools/bootstrap-runtime-",
     "tools/check-runtime-",
     "tools/classify-runtime-",
     "tools/get-runtime-",
+    "tools/equipment-tuning/",
     "tools/invoke-runtime-",
     "tools/materialize-runtime-",
     "tools/new-runtime-",

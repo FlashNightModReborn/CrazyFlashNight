@@ -23,14 +23,27 @@
   TrackedResizeObserver.prototype.disconnect=function(){if(this.active){this.active=false;stats.disconnected++;stats.active--}return this.nativeObserver.disconnect()};
   window.ResizeObserver=TrackedResizeObserver;
 })(window.ResizeObserver);
-window.__CRAFTING_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness'};
+(function(nativeRequest,nativeCancel){
+  var active={};
+  var stats=window.__rafStats={requested:0,cancelled:0,completed:0,active:0};
+  window.requestAnimationFrame=function(callback){
+    var id=nativeRequest(function(now){if(active[id]){delete active[id];stats.active--;stats.completed++}callback(now)});
+    active[id]=true;stats.requested++;stats.active++;return id
+  };
+  window.cancelAnimationFrame=function(id){if(active[id]){delete active[id];stats.active--;stats.cancelled++}return nativeCancel(id)};
+})(window.requestAnimationFrame.bind(window),window.cancelAnimationFrame.bind(window));
+window.__CRAFTING_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness',inspectorManifestUrl:'../../../assets/dressup/manifest.json'};
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd!=='close')setTimeout(function(){respond(message)},message.cmd==='preview'?__previewDelay:0)}
 };
 window.Toast={add:function(message){__toasts.push(message)}};
-window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+window.__iconStats={html:0,static:0};window.Icons={
+  html:function(name,cls){__iconStats.html++;return name==='灰蛊裂隙弹'?'':'<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'},
+  enhance:function(){},isAnimated:function(name){return name==='测试药剂'},
+  resolveStatic:function(name){__iconStats.static++;return name==='灰蛊裂隙弹'?null:'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='}
+};
 window.PanelTooltip={
   _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},
   isVisible:function(){return this._visible},updateContent:function(){},dynamicIconHtml:function(){return ''},
@@ -44,20 +57,25 @@ window.Panels=(function(){var specs={},active=null,lastOpen=null;return{
   close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},getActive:function(){return active},lastOpen:function(){return lastOpen},_specs:specs
 }})();
 Panels.register('workbench',{create:function(){var node=document.createElement('div');node.className='workbench-route-stub';return node},onOpen:function(){},onClose:function(){}});
-var money=1000,materials=2,commitCount=0;
+  var money=1000,materials=2,commitCount=0;window.__specialWeaponMode='';
 function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
 function availability(index){
   if(index===0){if(materials<2)return'material_missing';if(money<90)return'insufficient_money';return'ready'}
   return materials>=1?'ready':'material_missing'
 }
-function recipe(index,value){value.canCraftOne=availability(index)==='ready';value.availability=availability(index);return value}
-function snapshot(){return{success:true,v:1,category:'武器合成',note:'铁匠效果：减少货币消耗',
-  balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
-    recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:{name:'新测试枪',displayName:'新测试枪',icon:'新测试枪',itemKind:'equipment',enhancementLevel:1,majorType:'武器',use:'手枪',weaponType:'手枪',setId:'test_sidearm',setName:'测试侧武器套装'},baseCost:{money:100,kpoints:0},materialCount:2}),
+  function recipe(index,value){value.canCraftOne=availability(index)==='ready';value.availability=availability(index);return value}
+  function weaponOutput(preview){
+    if(__specialWeaponMode==='dual')return{name:'炎寒对剑',displayName:'炎寒对剑',icon:'炎寒对剑',itemKind:'equipment',enhancementLevel:preview?5:1,requiredLevel:12,majorType:'武器',use:'刀',weaponType:'刀',actionType:'双刀'};
+    if(__specialWeaponMode==='sheath')return{name:'血刀配鞘版',displayName:'血刀-入鞘',icon:'血刀-入鞘',itemKind:'equipment',enhancementLevel:preview?5:1,requiredLevel:24,majorType:'武器',use:'刀',weaponType:'刀',actionType:'疾影'};
+    return{name:'异形女王毒刺',displayName:'新测试枪',icon:'异形女王毒刺',itemKind:'equipment',enhancementLevel:preview?5:1,requiredLevel:preview?12:undefined,majorType:'武器',use:'刀',weaponType:'刀',setId:'test_sidearm',setName:'测试侧武器套装'}
+  }
+  function snapshot(){return{success:true,v:1,category:'武器合成',gender:'女',note:'铁匠效果：减少货币消耗',
+    balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
+    recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:weaponOutput(false),baseCost:{money:100,kpoints:0},materialCount:2}),
     recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3,majorType:'消耗品',use:'药剂'},baseCost:{money:0,kpoints:0},materialCount:1})
   ]}}
 function preview(index,count){count=Number(count)||1;var batch=index===1,max=batch?Math.min(99,materials):1,enough=index===0?(materials>=2&&money>=90):materials>=count;return{success:true,v:1,category:'武器合成',recipeIndex:index,craftCount:count,batchEligible:batch,maxCraftCount:max,
-  output:index===0?{name:'新测试枪',displayName:'新测试枪',icon:'新测试枪',itemKind:'equipment',enhancementLevel:5,requiredLevel:12,majorType:'武器',use:'手枪',weaponType:'手枪'}:{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3*count,requiredLevel:1,majorType:'消耗品',use:'药剂'},
+  output:index===0?weaponOutput(true):{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3*count,requiredLevel:1,majorType:'消耗品',use:'药剂'},
   materials:index===0?[{name:'测试图纸',displayName:'测试图纸',icon:'测试图纸',itemKind:'stack',required:1,owned:1,consumed:false,enough:true},{name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',itemKind:'stack',required:2,owned:materials,consumed:true,enough:materials>=2}]:[{name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',itemKind:'stack',required:count,owned:materials,consumed:true,enough:enough}],
   cost:{money:index===0?90:0,kpoints:0},balance:{money:money,kpoints:100},enoughSpace:true,canCommit:enough,
   blockingError:enough?'':(index===0&&materials>=2?'insufficient_money':'material_missing'),craftToken:enough?'craft.harness.'+index+'.'+commitCount:undefined}}
@@ -80,6 +98,10 @@ function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:me
 <script src="../../workbench-components.js"></script>
 <script src="../../item-filter.js"></script>
 <script src="../../panel-scale.js"></script>
+<script src="../../asset-timeline.js"></script>
+<script src="../../dressup-doll-renderer.js"></script>
+<script src="../../equipment-inspector.js"></script>
+<script src="../../crafting-inspector.js"></script>
 <script src="../../crafting-runtime.js"></script>
 <script src="../../crafting.js"></script>
 <script>
@@ -101,6 +123,96 @@ try{
   setBreadcrumb.click();document.querySelector('[data-filter-path=""]').click();await wait();
   ok('auto previews first recipe',__sent.some(function(x){return x.domain==='crafting'&&x.cmd==='preview'&&x.payload.recipeIndex===0}));
   ok('renders inherited output',document.querySelector('.crafting-output-card').textContent.indexOf('强化 +5')>=0);
+  ok('snapshot gender reaches production panel state',CraftingPanel.debugState().gender==='女');
+  var dressupManifest=await CraftingInspector.loadManifest('../../../assets/dressup/manifest.json');
+  var weaponSource=CraftingInspector.resolveProductSource({name:'Kel-Tec-P50',icon:'Kel-Tec-P50',majorType:'武器',use:'手枪'},'女',dressupManifest);
+  var armorMale=CraftingInspector.resolveProductSource({name:'黄金骑士牙狼头盔',icon:'牙狼铠头盔',majorType:'防具',use:'头部装备'},'男',dressupManifest);
+  var armorFemale=CraftingInspector.resolveProductSource({name:'黄金骑士牙狼头盔',icon:'牙狼铠头盔',majorType:'防具',use:'头部装备'},'女',dressupManifest);
+  var neckFallback=CraftingInspector.resolveProductSource({name:'A兵团精致项链',icon:'A兵团精致项链',majorType:'防具',use:'颈部装备'},'女',dressupManifest);
+  var otherFallback=CraftingInspector.resolveProductSource({name:'测试药剂',icon:'测试药剂',majorType:'消耗品',use:'药剂'},'女',dressupManifest);
+  var dualSource=CraftingInspector.resolveProductSource({name:'炎寒对剑',icon:'炎寒对剑',majorType:'武器',use:'刀',actionType:'双刀'},'女',dressupManifest);
+  var sheathSource=CraftingInspector.resolveProductSource({name:'血刀配鞘版',icon:'血刀-入鞘',majorType:'武器',use:'刀',actionType:'疾影'},'女',dressupManifest);
+  var longHandleSource=CraftingInspector.resolveProductSource({name:'烬灭裁决',icon:'烬灭裁决长柄',majorType:'武器',use:'刀',actionType:'长柄'},'女',dressupManifest);
+  var missingFemaleItem=JSON.parse(JSON.stringify(dressupManifest.items['黄金骑士牙狼头盔']));delete missingFemaleItem.fieldsByGender['女'];
+  var missingFemaleManifest={items:{'黄金骑士牙狼头盔':missingFemaleItem},skinKeys:dressupManifest.skinKeys};
+  var strictGenderFallback=CraftingInspector.resolveProductSource({name:'黄金骑士牙狼头盔',icon:'牙狼铠头盔',majorType:'防具',use:'头部装备'},'女',missingFemaleManifest);
+  ok('inspector resolves complete weapon product source',weaponSource.kind==='weapon'&&weaponSource.skinKey&&weaponSource.gender==='女',JSON.stringify(weaponSource));
+  ok('dual blade and blade-sheath contracts preserve both real slots',dualSource.kind==='weapon'&&dualSource.composition==='dual-blade'&&dualSource.components.length===2&&dualSource.components[1].field==='刀2_装扮'&&sheathSource.kind==='weapon'&&sheathSource.composition==='blade-sheath'&&sheathSource.components.length===2&&sheathSource.components[1].field==='刀3_装扮',JSON.stringify({dual:dualSource,sheath:sheathSource}));
+  ok('long-handle morph preload does not masquerade as dual blades',longHandleSource.kind==='weapon'&&longHandleSource.composition==='single'&&longHandleSource.field==='刀_装扮',JSON.stringify(longHandleSource));
+  ok('inspector resolves armor by authoritative save gender',armorMale.kind==='armor'&&armorMale.gender==='男'&&armorFemale.kind==='armor'&&armorFemale.gender==='女');
+  ok('armor never borrows opposite gender branch',strictGenderFallback.kind==='icon'&&strictGenderFallback.reason==='gender_branch_missing');
+  ok('unmapped neck armor and non-equipment fall back to current icon',neckFallback.kind==='icon'&&otherFallback.kind==='icon',JSON.stringify({neck:neckFallback,other:otherFallback}));
+  await wait();var inspectorRafBaseline=__rafStats.active;
+  document.querySelector('.crafting-output-inspect-trigger').click();
+  await waitFor(function(){return document.querySelector('.crafting-inspector[data-source="weapon"] canvas')},3000);
+  var inspector=document.querySelector('.crafting-inspector'),inspectorViewport=document.querySelector('.crafting-inspector-viewport'),inspectorModal=document.querySelector('.workbench-modal[data-modal-kind="crafting-inspector"]');
+  var inspectorCanvas=document.querySelector('.crafting-inspector-canvas');
+  await waitFor(function(){var context=inspectorCanvas.getContext('2d'),pixels=context.getImageData(0,0,inspectorCanvas.width,inspectorCanvas.height).data;for(var p=3;p<pixels.length;p+=4){if(pixels[p])return true}return false},3000);
+  var inspectorRect=inspectorViewport.getBoundingClientRect(),modalRect=inspectorModal.getBoundingClientRect();
+  ok('output icon opens live weapon inspector',inspector&&inspector.getAttribute('data-source')==='weapon'&&CraftingPanel.debugState().inspector.source==='weapon');
+  ok('inspector starts at high zoom and fits 1024x576 design canvas',CraftingPanel.debugState().inspector.zoom===1.85&&inspectorRect.height>=300&&modalRect.width>=650&&modalRect.bottom<=panelRect.bottom+1,JSON.stringify({viewport:[inspectorRect.width,inspectorRect.height],modal:[modalRect.width,modalRect.height],zoom:CraftingPanel.debugState().inspector.zoom}));
+  var backingRatio=inspectorCanvas.width/Math.max(1,inspectorCanvas.clientWidth),panelScaleRatio=inspectorRect.width/Math.max(1,inspectorViewport.clientWidth),expectedBacking=Math.max(2,Math.min(4,devicePixelRatio*panelScaleRatio*1.85));
+  ok('canvas backing store covers default high zoom at current PanelScale',Math.abs(backingRatio-expectedBacking)<0.05,JSON.stringify({width:inspectorCanvas.width,clientWidth:inspectorCanvas.clientWidth,ratio:backingRatio,expected:expectedBacking,panelScale:panelScaleRatio}));
+  ok('live weapon renderer paints non-transparent pixels',inspectorCanvas.getContext('2d').getImageData(0,0,inspectorCanvas.width,inspectorCanvas.height).data.some(function(value,index){return index%4===3&&value>0}));
+  var centerX=inspectorRect.left+inspectorRect.width/2,centerY=inspectorRect.top+inspectorRect.height/2;
+  inspectorViewport.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:-100,clientX:centerX,clientY:centerY}));await wait();
+  var wheelZoom=CraftingPanel.debugState().inspector.zoom;
+  inspectorViewport.dispatchEvent(new KeyboardEvent('keydown',{bubbles:true,cancelable:true,key:'ArrowLeft'}));
+  var keyPan=CraftingPanel.debugState().inspector.panX;
+  inspectorViewport.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,cancelable:true,pointerId:71,button:0,clientX:centerX,clientY:centerY}));
+  inspectorViewport.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,cancelable:true,pointerId:71,buttons:1,clientX:centerX+24,clientY:centerY+18}));
+  inspectorViewport.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,cancelable:true,pointerId:71,button:0,clientX:centerX+24,clientY:centerY+18}));
+  var dragState=CraftingPanel.debugState().inspector;
+  ok('wheel, keyboard and pointer drag manipulate inspector view',wheelZoom>1.85&&keyPan<0&&dragState.panX>keyPan&&dragState.panY>0,JSON.stringify(dragState));
+  var inspectorButtons=Array.from(document.querySelectorAll('.crafting-inspector-control'));
+  inspectorButtons.find(function(x){return x.textContent==='全貌'}).click();
+  ok('fit control returns deterministic overview',CraftingPanel.debugState().inspector.zoom===1&&CraftingPanel.debugState().inspector.panX===0&&CraftingPanel.debugState().inspector.panY===0);
+  inspectorButtons.find(function(x){return x.textContent==='重置特写'}).click();
+  ok('reset control restores deterministic high zoom',CraftingPanel.debugState().inspector.zoom===1.85);
+  var animationToggle=inspectorButtons.find(function(x){return x.textContent==='暂停动效'});
+  ok('animated weapon exposes explicit pause control',animationToggle&&!animationToggle.disabled);
+  if(animationToggle&&!animationToggle.disabled)animationToggle.click();
+  await wait();
+  ok('animation can be paused without closing inspector',CraftingPanel.debugState().inspector.animationEnabled===false&&__rafStats.active===inspectorRafBaseline,JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
+  var resumeToggle=inspectorButtons.find(function(x){return x.textContent==='播放动效'});if(resumeToggle)resumeToggle.click();await wait();
+  ok('animation resumes on the same live canvas',CraftingPanel.debugState().inspector.animationEnabled===true&&__rafStats.active>inspectorRafBaseline,JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();await wait();
+  ok('closing inspector destroys its live controller and animation frame',!document.querySelector('.crafting-inspector')&&CraftingPanel.debugState().inspector===null&&__rafStats.active===inspectorRafBaseline,JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
+  __specialWeaponMode='dual';Panels.open('crafting',{category:'武器合成'});await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('炎寒对剑')>=0});document.querySelector('.crafting-output-inspect-trigger').click();
+  await waitFor(function(){var state=CraftingPanel.debugState().inspector;return state&&state.composition==='dual-blade'&&state.render&&state.render.pendingImages===0},3000);
+  var dualInspectorState=CraftingPanel.debugState().inspector;
+  ok('live dual-blade inspector paints both real holders as one product',dualInspectorState.source==='weapon'&&dualInspectorState.render.holders===2&&dualInspectorState.render.missing===0&&dualInspectorState.render.failedImages===0&&document.querySelector('.crafting-inspector-source').textContent==='完整双刀商品图',JSON.stringify(dualInspectorState));
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();await wait();
+  var dualRigState=dressupManifest.rigs.battle.genders['女'].states['兵器站立'],originalDualHolders=dualRigState.holders;dualRigState.holders=originalDualHolders.filter(function(holder){return holder.field!=='刀2_装扮'});
+  document.querySelector('.crafting-output-inspect-trigger').click();await waitFor(function(){var state=CraftingPanel.debugState().inspector;return state&&state.source==='icon'},3000);
+  ok('composite rig drift fails closed to the current icon',CraftingPanel.debugState().inspector.source==='icon'&&document.querySelector('.crafting-inspector[data-composition="icon"]')&&!document.querySelector('.crafting-inspector-canvas'));
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();dualRigState.holders=originalDualHolders;await wait();
+  __specialWeaponMode='sheath';Panels.open('crafting',{category:'武器合成'});await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('血刀-入鞘')>=0});document.querySelector('.crafting-output-inspect-trigger').click();
+  await waitFor(function(){var state=CraftingPanel.debugState().inspector;return state&&state.composition==='blade-sheath'&&state.render&&state.render.pendingImages===0},3000);
+  var sheathInspectorState=CraftingPanel.debugState().inspector;
+  ok('live blade-sheath inspector distinguishes blade and sheath holders',sheathInspectorState.source==='weapon'&&sheathInspectorState.render.holders===2&&sheathInspectorState.render.missing===0&&sheathInspectorState.render.failedImages===0&&document.querySelector('.crafting-inspector-source').textContent==='刀身与刀鞘商品图',JSON.stringify(sheathInspectorState));
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();await wait();__specialWeaponMode='';Panels.open('crafting',{category:'武器合成'});await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('强化 +5')>=0});
+  var liveWeaponSource=CraftingInspector.resolveProductSource({name:'异形女王毒刺',icon:'异形女王毒刺',majorType:'武器',use:'刀'},'女',dressupManifest);
+  var originalWeaponEntry=dressupManifest.skinKeys[liveWeaponSource.skinKey],brokenWeaponEntry=JSON.parse(JSON.stringify(originalWeaponEntry)),brokenUri='skins/__crafting_inspector_missing__.png';
+  brokenWeaponEntry.export.uri=brokenUri;(brokenWeaponEntry.frames||[]).forEach(function(frame){frame.uri=brokenUri});(brokenWeaponEntry.timelineFrames||[]).forEach(function(frame){frame.uri=brokenUri});dressupManifest.skinKeys[liveWeaponSource.skinKey]=brokenWeaponEntry;
+  document.querySelector('.crafting-output-inspect-trigger').click();await waitFor(function(){return document.querySelector('.crafting-inspector[data-source="icon"]')},3000);
+  ok('failed dressup image load falls back to the current icon',CraftingPanel.debugState().inspector.source==='icon'&&document.querySelector('.crafting-inspector-current-icon[data-icon="异形女王毒刺"]'));
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();dressupManifest.skinKeys[liveWeaponSource.skinKey]=originalWeaponEntry;await wait();
+  var recipeCardsAfterInspector=document.querySelectorAll('.crafting-recipe-card');recipeCardsAfterInspector[1].click();await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('测试药剂')>=0});
+  PanelTooltip._visible=true;document.querySelector('.crafting-output-inspect-trigger').click();await waitFor(function(){return document.querySelector('.crafting-inspector[data-source="icon"]')});
+  var iconAnimationControl=Array.from(document.querySelectorAll('.crafting-inspector-control')).find(function(x){return x.textContent==='暂停动效'});
+  if(iconAnimationControl)iconAnimationControl.click();await wait();
+  ok('animated icon fallback pauses to a real static first frame',iconAnimationControl&&!iconAnimationControl.disabled&&iconAnimationControl.textContent==='播放动效'&&document.querySelector('.crafting-inspector-current-icon[src^="data:image/gif"]')&&__iconStats.static>0);
+  iconAnimationControl.click();await wait();
+  ok('animated icon fallback resumes through Icons timeline markup',iconAnimationControl.textContent==='暂停动效'&&document.querySelector('.crafting-inspector-current-icon[data-icon="测试药剂"]')&&__iconStats.html>0);
+  ok('opening inspector clears the output tooltip',PanelTooltip._visible===false);
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();
+  var liveIconHtml=Icons.html;
+  Icons.html=function(name,cls){return name==='测试药剂'?'':liveIconHtml(name,cls)};
+  document.querySelector('.crafting-output-inspect-trigger').click();await waitFor(function(){return document.querySelector('.crafting-inspector[data-source="missing"]')});
+  var missingAnimationControl=Array.from(document.querySelectorAll('.crafting-inspector-control')).find(function(x){return x.textContent==='无动效'});
+  ok('missing current icon degrades to an explicit non-animated state',document.querySelector('.crafting-inspector-missing')&&document.querySelector('.crafting-inspector-missing').textContent==='检视素材缺失'&&missingAnimationControl&&missingAnimationControl.disabled);
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();Icons.html=liveIconHtml;recipeCardsAfterInspector[0].click();await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('强化 +5')>=0});
   ok('marks retained blueprint',document.querySelector('.crafting-material-list').textContent.indexOf('图纸保留')>=0);
   ok('renders Flash adjusted cost',document.querySelector('.crafting-cost-summary').textContent.indexOf('90')>=0);
   var firstMaterial=document.querySelector('.crafting-material-row');firstMaterial.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();

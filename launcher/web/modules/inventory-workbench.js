@@ -10,7 +10,7 @@ var InventoryWorkbench = (function() {
     var _el, _shellEl, _shell, _backpackView, _rightView, _ownedPanes = {}, _tuningView, _pager, _retryButton;
     var _backpackSortControls, _rightSortControls;
     var _quickDepositButton, _quickWithdrawButton, _quickStatusNode;
-    var _broker, _dragControllers = [], _scaleHandle = null;
+    var _broker, _dragControllers = [], _scaleHandle = null, _equipmentInspector = null;
     var _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
     var _tooltipCache = {}, _tooltipSuppressed = false;
     var _layoutMode = 'full', _densityController = null;
@@ -130,6 +130,7 @@ var InventoryWorkbench = (function() {
         if (_broker) _broker.clearSelection();
         disposeInventoryControls();
         disposeOwnedPanes();
+        closeEquipmentInspector();
         if (_tuningView) { _tuningView.destroy(); _tuningView = null; }
         if (_tuningHeader) { _tuningHeader.destroy(); _tuningHeader = null; }
         if (_shell) _shell.destroy();
@@ -238,6 +239,8 @@ var InventoryWorkbench = (function() {
             densityController:_densityController,
             modConfirmationMode:_modConfirmationMode,
             loadConversionCandidates:loadTuningConversionCandidates,
+            openInspector:openEquipmentInspector,
+            closeInspector:closeEquipmentInspector,
             toast:toast
         });
 
@@ -373,6 +376,50 @@ var InventoryWorkbench = (function() {
             }
             callback({success:true, candidates:candidates, count:candidates.length});
         });
+    }
+    function inspectorItemProjection(item) {
+        var projection = {};
+        item = item || {};
+        for (var key in item) {
+            if (!Object.prototype.hasOwnProperty.call(item, key)) continue;
+            var value = item[key];
+            if (value == null || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                projection[key] = value;
+            }
+        }
+        return projection;
+    }
+    function openEquipmentInspector(item, gender, role) {
+        if (!_shell || _viewMode !== 'tuning' || !item || (gender !== '男' && gender !== '女')
+                || typeof EquipmentInspector === 'undefined' || !EquipmentInspector.open) return false;
+        closeEquipmentInspector();
+        hideTooltip();
+        var controller = null;
+        controller = EquipmentInspector.open({
+            shell:_shell,
+            item:inspectorItemProjection(item),
+            gender:gender,
+            kind:'equipment-inspector',
+            kicker:role === 'conversion-target' ? '交换目标检视' : '当前装备检视',
+            closeLabel:'返回调制',
+            context:'equipment-tuning',
+            onClose:function() {
+                if (_equipmentInspector === controller) _equipmentInspector = null;
+                refreshControls();
+            }
+        });
+        _equipmentInspector = controller;
+        refreshControls();
+        return !!controller;
+    }
+
+    function closeEquipmentInspector() {
+        if (!_equipmentInspector) return false;
+        var controller = _equipmentInspector;
+        _equipmentInspector = null;
+        if (controller.close) controller.close();
+        else if (controller.destroy) controller.destroy();
+        return true;
     }
 
     function installQuickTransferActions() {
@@ -818,6 +865,7 @@ var InventoryWorkbench = (function() {
         for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].cancel();
         clearSelection();
         hideTooltip();
+        closeEquipmentInspector();
         if (_shell) _shell.closeModal();
         _quickTransfer.reset();
         _coordinator.close();
@@ -939,6 +987,8 @@ var InventoryWorkbench = (function() {
                 battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,
                 returnTarget:_returnTarget ? {panel:_returnTarget.panel, initData:_returnTarget.initData} : null,
                 tuning:_tuningView ? _tuningView.debugState() : null,
+                equipmentInspector:_equipmentInspector && _equipmentInspector.debugState
+                    ? _equipmentInspector.debugState() : null,
                 modConfirmationMode:_modConfirmationMode,
                 page:_pager ? _pager.getState() : null,
                 quickTransfer:_quickTransfer.debugState()

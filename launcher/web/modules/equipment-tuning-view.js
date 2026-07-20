@@ -46,6 +46,10 @@ var EquipmentTuningView = (function() {
             if (callback) callback({success:false, error:'inventory_projection_unavailable'});
             return false;
         };
+        this._openInspector = typeof options.openInspector === 'function'
+            ? options.openInspector : function() { return false; };
+        this._closeInspector = typeof options.closeInspector === 'function'
+            ? options.closeInspector : function() { return false; };
         this._root = null;
         this._panelInstanceId = '';
         this._viewSessionId = '';
@@ -124,6 +128,7 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.closeSession = function() {
+        this._closeInspector();
         this._setConversionProjection(false);
         if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
         this._enhancePreviewTimer = 0;
@@ -222,6 +227,7 @@ var EquipmentTuningView = (function() {
                 || this._refreshRetryRequired || this._refreshRetryPending
                 || (this._needsReconcile && !recoveryCallId)
                 || this._mux.debugState().pendingCount > 0) return false;
+        this._closeInspector();
         var ref = wireRef(slot);
         this._setConversionProjection(false);
         this._source = ref;
@@ -252,11 +258,32 @@ var EquipmentTuningView = (function() {
         var sourceLevel = Number(this._sourceItem && this._sourceItem.enhancementLevel);
         var targetLevel = Number(slot.item.enhancementLevel);
         if (isFinite(sourceLevel) && isFinite(targetLevel) && sourceLevel === targetLevel) return false;
+        this._closeInspector();
         this._target = ref;
         this._targetItem = slot.item;
         this._preview = null;
         this.render();
         return this.requestPreview('convert', {target:ref});
+    };
+
+    TuningView.prototype._canInspect = function(item) {
+        var gender = this._snapshot && String(this._snapshot.gender || '');
+        return !!item && (gender === '男' || gender === '女')
+            && !this._busy && !this._readPending && !this._detaching && !this._needsReconcile
+            && !this._refreshRetryRequired && !this._refreshRetryPending
+            && !this._inventoryWriteHandle && !this._conversionLoading && !this._enhancePreviewTimer
+            && this._queuedEnhanceLevel == null
+            && this._mux.debugState().pendingCount === 0;
+    };
+
+    TuningView.prototype.inspectCurrentEquipment = function() {
+        if (!this._canInspect(this._sourceItem)) return false;
+        return this._openInspector(this._sourceItem, String(this._snapshot.gender), 'source') !== false;
+    };
+
+    TuningView.prototype.inspectConversionTarget = function() {
+        if (this._operation !== 'convert' || !this._target || !this._canInspect(this._targetItem)) return false;
+        return this._openInspector(this._targetItem, String(this._snapshot.gender), 'conversion-target') !== false;
     };
 
     TuningView.prototype.requestSnapshot = function(reconcileAfterCallId) {
@@ -306,14 +333,13 @@ var EquipmentTuningView = (function() {
                 self._status = reconcileAfterCallId && response && response.success === true
                     ? '权威快照尚未越过未知提交' : errorMessage(response && response.error);
             }
-            self._emit();
-            self.render();
             if (self._snapshot && self._operation === 'enhance'
                     && Number(self._snapshot.enhance.currentLevel) < enhancementAvailableMax(self._snapshot)) {
                 self.scheduleEnhancementPreview(self._targetLevel, 120);
-            } else if (self._snapshot && self._operation === 'convert') {
-                self._setConversionProjection(true);
             }
+            self._emit();
+            self.render();
+            if (self._snapshot && self._operation === 'convert') self._setConversionProjection(true);
         });
         if (!callId && this._readPending) { this._readPending = false; this.render(); }
         return !!callId;
@@ -576,6 +602,12 @@ var EquipmentTuningView = (function() {
     TuningView.prototype.setOperation = function(operation) {
         if (!isOperationGroup(operation) || this._busy || this._readPending || this._detaching
                 || this._refreshRetryRequired || this._refreshRetryPending) return false;
+        this._closeInspector();
+        if (operation !== 'enhance') {
+            if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
+            this._enhancePreviewTimer = 0;
+            this._queuedEnhanceLevel = null;
+        }
         var wasConvert = this._operation === 'convert';
         this._operation = operation;
         this._preview = null;
@@ -698,6 +730,7 @@ var EquipmentTuningView = (function() {
             detaching:this._detaching, refreshRetryRequired:this._refreshRetryRequired,
             refreshRetryPending:this._refreshRetryPending, refreshReconcileCallId:this._refreshReconcileCallId,
             needsReconcile:this._needsReconcile, hasSnapshot:!!this._snapshot, hasPreview:!!this._preview,
+            gender:this._snapshot ? String(this._snapshot.gender || '') : '',
             targetLevel:this._targetLevel, queuedEnhanceLevel:this._queuedEnhanceLevel,
             previewPendingOperation:this._previewPendingOperation, previewIntentKey:this._previewIntentKey,
             conversionLoading:this._conversionLoading, conversionCandidateCount:this._conversionCandidates.length,

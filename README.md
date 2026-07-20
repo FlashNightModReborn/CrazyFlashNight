@@ -64,9 +64,12 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1
 
 ```powershell
 chcp.com 65001 | Out-Null
-powershell -File launcher/build.ps1
 powershell -File launcher/tests/run_tests.ps1
+# 需要隔离的完整候选时再运行；不会改写正式 runtime
+powershell -File launcher/build.ps1 -BuilderId local-dev
 ```
+
+Launcher 状态统一为 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`。`build.ps1` 只生成 candidate；只有 promotion 后再从 `automation/start.ps1` / 根 bootstrap 验证同一正式身份，才可称“已部署 / 正式验收”。候选启动与身份记录见 [Launcher 深文档](launcher/README.md)，正式发布见 [runtime v2 发布列车](docs/runtime-build-reproducibility.md)。
 
 ### 修改 Web / Minigame 后验证
 

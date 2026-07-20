@@ -40,6 +40,36 @@ namespace Launcher.Tests.Tasks
                 Assert.Equal("tune.snapshot.1", (string)response["callId"]);
                 Assert.Equal("workbench.instance.1", (string)response["panelInstanceId"]);
                 Assert.Equal("tuning.session.1", (string)response["viewSessionId"]);
+                Assert.Equal("男", (string)response["snapshot"]["gender"]);
+            }
+        }
+
+        [Fact]
+        public void SuccessfulSnapshot_RequiresCanonicalGender()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.gender.missing"));
+                JObject missing = SnapshotResponse(sent[0]);
+                ((JObject)missing["snapshot"]).Remove("gender");
+                task.HandleFlashResponse(missing, null);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.gender.invalid"));
+                JObject invalid = SnapshotResponse(sent[1]);
+                invalid["snapshot"]["gender"] = "female";
+                task.HandleFlashResponse(invalid, null);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.gender.female"));
+                JObject female = SnapshotResponse(sent[2]);
+                female["snapshot"]["gender"] = "女";
+                task.HandleFlashResponse(female, null);
+
+                Assert.Equal("malformed_response", (string)web[0]["error"]);
+                Assert.Equal("malformed_response", (string)web[1]["error"]);
+                Assert.True((bool)web[2]["success"]);
+                Assert.Equal("女", (string)web[2]["snapshot"]["gender"]);
             }
         }
 
@@ -634,6 +664,7 @@ namespace Launcher.Tests.Tasks
         {
             return new JObject
             {
+                ["gender"] = "男",
                 ["source"] = Source(7, "lease.source.7"),
                 ["equipment"] = new JObject { ["itemKind"] = "equipment", ["level"] = 7 },
                 ["enhance"] = new JObject { ["currentLevel"] = 7, ["maxLevel"] = 13 },

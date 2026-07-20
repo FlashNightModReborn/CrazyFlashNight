@@ -1,0 +1,126 @@
+:root {
+    color-scheme: dark;
+    --bg:#0d1117;
+    --panel:#151b23;
+    --panel-2:#1b2430;
+    --border:#344153;
+    --text:#edf2f7;
+    --muted:#9cabbc;
+    --accent:#33c7e8;
+    --ok:#4fd47d;
+    --warn:#efba43;
+    --bad:#ef6b74;
+    --wb-panel:#101820;
+    --wb-text:#edf2f7;
+    --wb-muted:#9cabbc;
+    --wb-accent:#efba43;
+    --wb-semantic-danger:#ef6b74;
+    --wb-semantic-disabled:#66717e;
+    --dls-crystal-rgb:51,199,232;
+    --dls-crystal:#33c7e8;
+    --dls-crystal-bright:#8eeaff;
+    --dls-crystal-dim:#2b7180;
+    --dls-crystal-deep:#16434d;
+    --dls-crystal-soft:rgba(51,199,232,.12);
+    --wb-motion-micro:100ms;
+    --wb-ease-standard:ease-out;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:13px/1.45 "Microsoft YaHei",Arial,sans-serif; }
+button,input,select,textarea { font:inherit; }
+button,select,input {
+    min-height:32px; border:1px solid var(--border); border-radius:4px;
+    background:var(--panel-2); color:var(--text);
+}
+button { padding:0 12px; cursor:pointer; }
+button:disabled { cursor:not-allowed; opacity:.46; }
+button.primary { border-color:var(--accent); background:#123c48; }
+button:hover:not(:disabled) { border-color:var(--accent); }
+.review-toolbar {
+    position:sticky; top:0; z-index:10; display:grid;
+    grid-template-columns:minmax(260px,1fr) minmax(460px,2fr); gap:10px 20px;
+    padding:12px 16px; border-bottom:1px solid var(--border);
+    background:rgba(13,17,23,.97); backdrop-filter:blur(10px);
+}
+.review-heading h1 { margin:0; font-size:18px; }
+.review-heading p { margin:3px 0 0; color:var(--muted); }
+.review-controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; align-items:end; }
+.review-controls label { display:grid; gap:3px; color:var(--muted); font-size:11px; }
+.review-controls input,.review-controls select { min-width:132px; padding:0 8px; }
+.review-progress { grid-column:1/-1; display:flex; align-items:center; gap:10px; color:var(--muted); }
+.review-progress span { min-width:190px; white-space:nowrap; }
+.review-progress progress { width:100%; height:7px; accent-color:var(--accent); }
+#review-list { display:grid; gap:10px; padding:14px; }
+.review-row {
+    content-visibility:auto; contain-intrinsic-size:300px; display:grid;
+    grid-template-columns:238px minmax(0,1fr); gap:12px; padding:12px;
+    border:1px solid var(--border); border-radius:6px; background:var(--panel);
+}
+.review-row[data-reviewed="true"] { border-left:3px solid var(--ok); }
+.review-row[data-warning="true"] { box-shadow:inset 0 0 0 1px rgba(239,186,67,.25); }
+.item-meta h2 { margin:0 0 4px; font-size:16px; overflow-wrap:anywhere; }
+.item-meta p { margin:3px 0; color:var(--muted); overflow-wrap:anywhere; }
+.source-ref { font:11px/1.4 Consolas,"Microsoft YaHei",monospace; color:#7fd5e8 !important; }
+.baseline-reference {
+    display:flex; align-items:center; gap:8px; margin-top:8px; padding:6px;
+    border:1px dashed var(--border); border-radius:4px; color:var(--muted); font-size:11px;
+}
+.baseline-reference img {
+    width:52px; height:52px; flex:0 0 52px; object-fit:contain;
+    background:repeating-conic-gradient(#161d26 0 25%,#202a36 0 50%) 50%/12px 12px;
+}
+.item-tags,.branch-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+.tag { padding:2px 6px; border-radius:3px; background:var(--panel-2); color:var(--muted); }
+.tag.warning { color:var(--warn); }
+.tag.bad { color:var(--bad); }
+.tag.live { color:#d9a7ff; }
+.row-pass { width:100%; margin-top:10px; }
+.branch-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr)); gap:9px; }
+.review-branch {
+    display:grid; grid-template-columns:138px minmax(0,1fr); gap:9px; padding:8px;
+    border:1px solid var(--border); border-radius:5px; background:var(--panel-2);
+}
+.review-branch[data-reviewed="true"] { border-color:rgba(79,212,125,.75); }
+.review-branch[data-blocked="true"] { border-style:dashed; border-color:rgba(239,186,67,.72); }
+.branch-image-button {
+    display:grid; place-items:center; width:138px; height:138px; padding:0; border:0;
+    background:repeating-conic-gradient(#161d26 0 25%,#202a36 0 50%) 50%/16px 16px;
+}
+.branch-image-button img { width:128px; height:128px; object-fit:contain; }
+.branch-body { min-width:0; }
+.branch-body h3 { margin:0 0 4px; font-size:14px; }
+.branch-body p { margin:3px 0; color:var(--muted); font-size:11px; }
+.branch-status { display:grid; gap:3px; margin-top:8px; color:var(--muted); font-size:11px; }
+.branch-status select { width:100%; padding:0 6px; }
+.branch-note {
+    width:100%; min-height:44px; margin-top:6px; resize:vertical;
+    border:1px solid var(--border); border-radius:4px; padding:6px;
+    background:var(--bg); color:var(--text);
+}
+.live-preview { width:100%; margin-top:6px; color:var(--accent); }
+.empty { padding:40px; text-align:center; color:var(--muted); }
+dialog#preview-dialog {
+    width:min(620px,calc(100vw - 40px)); border:1px solid var(--border); border-radius:8px;
+    background:var(--panel); color:var(--text);
+}
+dialog::backdrop { background:rgba(0,0,0,.78); }
+.dialog-close { float:right; width:34px; padding:0; font-size:22px; }
+#dialog-title { margin:4px 42px 12px 0; }
+#dialog-image {
+    display:block; width:420px; height:420px; max-width:100%; margin:0 auto; object-fit:contain;
+    background:repeating-conic-gradient(#161d26 0 25%,#202a36 0 50%) 50%/20px 20px;
+}
+#dialog-caption { color:var(--muted); text-align:center; }
+.review-live-layer.workbench-shell {
+    position:fixed; inset:0; z-index:100; display:grid; place-items:center;
+    background:rgba(0,0,0,.82); color:var(--wb-text);
+}
+.review-live-layer .workbench-modal { position:relative; inset:auto; background:#111820; }
+@media (max-width:860px) {
+    .review-toolbar { position:static; grid-template-columns:1fr; }
+    .review-controls { justify-content:flex-start; }
+    .review-row { grid-template-columns:1fr; }
+    .review-branch { grid-template-columns:118px minmax(0,1fr); }
+    .branch-image-button { width:118px; height:118px; }
+    .branch-image-button img { width:108px; height:108px; }
+}

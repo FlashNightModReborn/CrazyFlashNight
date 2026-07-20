@@ -25,6 +25,8 @@ html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#0507
 <div id="qa-status">running</div>
 
 <script src="modules/asset-timeline.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/equipment-inspector.js"></script>
 <script src="modules/icons.js"></script>
 <script src="modules/tooltip.js"></script>
 <script>
@@ -432,6 +434,38 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.sent.push(clone(message));
             if (message.cmd === 'close') { this.closeCount += 1; return; }
             var delay = Number(this.delays[message.cmd]) || 0;
+            if (message.domain === 'equipment_tuning') {
+                var tuningPayload = message.payload || {};
+                var tuningCommon = {
+                    success:true,v:1,panel:'workbench',panelInstanceId:message.panelInstanceId,
+                    viewSessionId:tuningPayload.viewSessionId,writeEpoch:1
+                };
+                if (message.cmd === 'snapshot') {
+                    var tuningSource = tuningPayload.source || {};
+                    var tuningLease = this.leases[tuningSource.containerId + ':' + tuningSource.slot];
+                    var tuningItem = tuningLease && tuningLease.item;
+                    if (!tuningItem || tuningLease.token !== tuningSource.expectedLease) {
+                        tuningCommon.success = false;
+                        tuningCommon.error = 'stale_state';
+                    } else {
+                        tuningCommon.snapshot = {
+                            gender:'女',source:clone(tuningSource),
+                            equipment:{name:tuningItem.name,displayName:tuningItem.displayName,icon:tuningItem.icon,
+                                level:Number(tuningItem.enhancementLevel || 0),tier:'',mods:[],lastUpdate:1,
+                                maxLevel:Number(tuningItem.maxEnhancementLevel || 13),hardMaxLevel:13},
+                            enhance:{currentLevel:Number(tuningItem.enhancementLevel || 0),maxLevel:13,availableMaxLevel:13,hardMaxLevel:13},
+                            tierCandidates:[],modCandidates:[],materials:[]
+                        };
+                    }
+                } else if (message.cmd === 'detach') {
+                    tuningCommon.detached = true;
+                } else {
+                    tuningCommon.success = false;
+                    tuningCommon.error = 'unsupported_harness_tuning_cmd';
+                }
+                this.respond(message, tuningCommon, delay);
+                return;
+            }
             if (message.domain === 'inventory') {
                 var payload = message.payload || {};
                 if (message.cmd === 'snapshot') {
@@ -1769,6 +1803,37 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && tuningEntryRequest && tuningEntryRequest.panelInstanceId === 'panel.harness.tuning-entry'
                 && tuningEntryRequest.payload.source.containerId === '背包',
             JSON.stringify({state:InventoryWorkbench.debugState(),request:tuningEntryRequest}));
+        await waitFor(function(){
+            var trigger = document.querySelector('.equipment-tuning-inspect-trigger');
+            return trigger && !trigger.disabled && InventoryWorkbench.debugState().tuning.hasSnapshot;
+        }, 500);
+        var liveInspectorOpener = document.querySelector('.equipment-tuning-inspect-trigger');
+        var liveInspectorTraffic = Host.sent.length;
+        if (liveInspectorOpener) { liveInspectorOpener.focus(); liveInspectorOpener.click(); }
+        await waitFor(function(){
+            var state = InventoryWorkbench.debugState().equipmentInspector;
+            return state && state.source !== 'loading' && (!state.render || state.render.pendingImages === 0);
+        }, 1500);
+        var liveInspectorModal = document.querySelector('.workbench-modal[data-modal-kind="equipment-inspector"]');
+        var liveInspectorState = InventoryWorkbench.debugState().equipmentInspector;
+        var liveInspectorPanelRect = document.querySelector('.inventory-workbench-panel').getBoundingClientRect();
+        var liveInspectorRect = liveInspectorModal && liveInspectorModal.getBoundingClientRect();
+        assert('workbench-tuning-live-inspector','调制当前装备从真实工作台打开共享 185% 商品图，且不产生业务消息或越过设计画布',
+            !!liveInspectorOpener && !!liveInspectorModal && !!liveInspectorState
+                && liveInspectorState.source === 'weapon' && liveInspectorState.gender === '女'
+                && Math.abs(liveInspectorState.zoom - 1.85) < 0.001
+                && liveInspectorModal.textContent.indexOf('当前装备检视') >= 0
+                && liveInspectorModal.textContent.indexOf('返回调制') >= 0
+                && liveInspectorModal.querySelector('[data-inspector-context="equipment-tuning"]')
+                && Host.sent.length === liveInspectorTraffic
+                && liveInspectorRect.left >= liveInspectorPanelRect.left - 1
+                && liveInspectorRect.right <= liveInspectorPanelRect.right + 1
+                && liveInspectorRect.top >= liveInspectorPanelRect.top - 1
+                && liveInspectorRect.bottom <= liveInspectorPanelRect.bottom + 1,
+            JSON.stringify({state:liveInspectorState,panel:[liveInspectorPanelRect.width,liveInspectorPanelRect.height],modal:liveInspectorRect&&[liveInspectorRect.width,liveInspectorRect.height]}));
+        if (liveInspectorModal) click('.workbench-modal[data-modal-kind="equipment-inspector"] .workbench-modal-action[data-action="close"]');
+        assert('workbench-tuning-live-inspector-close','关闭真实调制检视器销毁 controller 并把焦点还给入口',
+            !InventoryWorkbench.debugState().equipmentInspector && document.activeElement === liveInspectorOpener);
         var tuningHelpButton = document.querySelector('.workbench-header-actions .equipment-tuning-help-btn');
         if (tuningHelpButton) tuningHelpButton.click();
         var tuningHelpModal = document.querySelector('.workbench-modal[data-modal-kind="equipment-tuning-help"]');

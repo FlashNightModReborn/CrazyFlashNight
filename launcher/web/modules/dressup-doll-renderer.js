@@ -36,6 +36,7 @@ var DressupDollRenderer = (function() {
 
     var PLACEHOLDER_W = 64;
     var PLACEHOLDER_H = 42;
+    var DIRECT_SKIN_FIELD = '__direct_skin__';
     if (typeof AssetTimeline === 'undefined' || !AssetTimeline) {
         throw new Error('AssetTimeline must be loaded before dressup-doll-renderer.js');
     }
@@ -99,7 +100,14 @@ var DressupDollRenderer = (function() {
         if (options.rig) state.rig = options.rig;
         if (options.stateLabel) state.stateLabel = options.stateLabel;
         if (options.attackMode) state.attackMode = options.attackMode;
+        if (options.strictFields === true) state.strictFields = true;
         if (options['攻击模式']) state['攻击模式'] = options['攻击模式'];
+        if (options.directSkinKey) {
+            state.directSkinKey = String(options.directSkinKey);
+            state.keyMap[DIRECT_SKIN_FIELD] = state.directSkinKey;
+            state.fitFields = [DIRECT_SKIN_FIELD];
+            state.drawFields = [DIRECT_SKIN_FIELD];
+        }
         return state;
     }
 
@@ -332,7 +340,7 @@ var DressupDollRenderer = (function() {
         return bounds;
     }
 
-    function holdersForFit(holders, fitFields) {
+    function holdersForFit(holders, fitFields, strictFields) {
         if (!fitFields || !fitFields.length) return holders;
         var selected = {};
         fitFields.forEach(function(field) {
@@ -341,10 +349,10 @@ var DressupDollRenderer = (function() {
         var result = holders.filter(function(holder) {
             return holder && selected[holder.field];
         });
-        return result.length ? result : holders;
+        return result.length || strictFields ? result : holders;
     }
 
-    function holdersForDraw(holders, drawFields) {
+    function holdersForDraw(holders, drawFields, strictFields) {
         if (!drawFields || !drawFields.length) return holders;
         var selected = {};
         drawFields.forEach(function(field) {
@@ -353,12 +361,24 @@ var DressupDollRenderer = (function() {
         var result = holders.filter(function(holder) {
             return holder && selected[holder.field];
         });
-        return result.length ? result : holders;
+        return result.length || strictFields ? result : holders;
     }
 
     function resolveRigState(manifest, gender, state, options) {
         state = state || {};
         options = options || {};
+        if (state.directSkinKey && manifest.skinKeys && manifest.skinKeys[state.directSkinKey]) {
+            return {
+                rig: 'product-direct',
+                stateLabel: 'product-direct',
+                holders: [{
+                    field: DIRECT_SKIN_FIELD,
+                    matrix: {a:1, b:0, c:0, d:1, tx:0, ty:0},
+                    fallbackBasic: false,
+                    basic: null
+                }]
+            };
+        }
         var rigName = state.rig || options.rig || 'dialogue';
         if (rigName !== 'dialogue') {
             var namedRig = manifest.rigs && manifest.rigs[rigName];
@@ -490,23 +510,45 @@ var DressupDollRenderer = (function() {
         var lastState = null;
         var animationRequest = null;
         var destroyed = false;
+        var animationEnabled = options.animate !== false;
         var fallbackFps = numberOr(options.fps, 24);
+        var animationFrameInterval = 1000 / Math.max(1, fallbackFps);
+        var lastAnimationRenderAt = null;
+        var configuredPixelRatio = Number(options.pixelRatio);
         var debugPlaceholders = options.debugPlaceholders === true;
 
         function scheduleAnimation() {
-            if (destroyed) return;
-            if (animationRequest) return;
-            animationRequest = window.requestAnimationFrame(function() {
+            if (destroyed || !animationEnabled) return;
+            if (animationRequest !== null) return;
+            animationRequest = window.requestAnimationFrame(function(timestamp) {
                 animationRequest = null;
-                if (!destroyed && lastState) render(lastState);
+                if (destroyed || !animationEnabled || !lastState) return;
+                var nowMs = Number(timestamp);
+                if (!isFinite(nowMs)) {
+                    nowMs = window.performance && window.performance.now
+                        ? window.performance.now() : Date.now();
+                }
+                var elapsed = lastAnimationRenderAt === null
+                    ? animationFrameInterval : nowMs - lastAnimationRenderAt;
+                if (elapsed + 0.5 >= animationFrameInterval) {
+                    lastAnimationRenderAt = lastAnimationRenderAt === null
+                        ? nowMs : nowMs - (elapsed % animationFrameInterval);
+                    render(lastState);
+                } else {
+                    scheduleAnimation();
+                }
             });
         }
 
         function setupCanvas() {
-            var dpr = window.devicePixelRatio || 1;
+            var dpr = configuredPixelRatio > 0 ? configuredPixelRatio : (window.devicePixelRatio || 1);
             var rect = canvas.getBoundingClientRect();
-            var cssW = Math.max(1, Math.round(rect.width || options.width || 360));
-            var cssH = Math.max(1, Math.round(rect.height || options.height || 520));
+            // 普通纸娃娃继续按物理 rect（包含 PanelScale）建 backing，保留既有高 DPI 清晰度。
+            // 交互检视器显式忽略自身 CSS zoom，避免 backing 随每次缩放反复改尺寸。
+            var layoutWidth = options.ignoreCssTransforms === true ? canvas.clientWidth : rect.width;
+            var layoutHeight = options.ignoreCssTransforms === true ? canvas.clientHeight : rect.height;
+            var cssW = Math.max(1, Math.round(layoutWidth || canvas.clientWidth || rect.width || options.width || 360));
+            var cssH = Math.max(1, Math.round(layoutHeight || canvas.clientHeight || rect.height || options.height || 520));
             if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(cssH * dpr)) {
                 canvas.width = Math.round(cssW * dpr);
                 canvas.height = Math.round(cssH * dpr);
@@ -530,8 +572,9 @@ var DressupDollRenderer = (function() {
             stateContext.rig = rigState.rig;
             stateContext.stateLabel = rigState.stateLabel;
             var holders = rigState.holders;
-            var fitHolders = holdersForFit(holders, lastState.fitFields || options.fitFields);
-            var drawHolders = holdersForDraw(holders, lastState.drawFields || options.drawFields);
+            var strictFields = lastState.strictFields === true || options.strictFields === true;
+            var fitHolders = holdersForFit(holders, lastState.fitFields || options.fitFields, strictFields);
+            var drawHolders = holdersForDraw(holders, lastState.drawFields || options.drawFields, strictFields);
             var bounds = computeBounds(
                 fitHolders,
                 manifest,
@@ -638,13 +681,14 @@ var DressupDollRenderer = (function() {
                 ctx.restore();
             });
             ctx.restore();
-            if (needsAnimation) scheduleAnimation();
-            return {
+            if (needsAnimation && animationEnabled) scheduleAnimation();
+            var result = {
                 gender: gender,
                 rig: rigState.rig,
                 stateLabel: rigState.stateLabel,
                 holders: drawHolders.length,
                 totalHolders: holders.length,
+                strictFields: strictFields,
                 bounds: bounds,
                 scale: scale,
                 animated: needsAnimation,
@@ -652,16 +696,35 @@ var DressupDollRenderer = (function() {
                 pendingImages: pendingImages,
                 failedImages: failedImages
             };
+            if (typeof options.onRender === 'function') options.onRender(result);
+            return result;
         }
 
         return {
             render: render,
             setManifest: function(nextManifest) { manifest = nextManifest; },
             getManifest: function() { return manifest; },
+            setAnimationEnabled: function(enabled) {
+                animationEnabled = enabled !== false;
+                lastAnimationRenderAt = null;
+                if (!animationEnabled && animationRequest !== null) {
+                    window.cancelAnimationFrame(animationRequest);
+                    animationRequest = null;
+                } else if (animationEnabled && lastState) {
+                    render(lastState);
+                }
+                return animationEnabled;
+            },
+            isAnimationEnabled: function() { return animationEnabled; },
+            setPixelRatio: function(nextPixelRatio) {
+                var next = Number(nextPixelRatio);
+                if (next > 0 && isFinite(next)) configuredPixelRatio = next;
+                return lastState ? render(lastState) : null;
+            },
             destroy: function() {
                 destroyed = true;
                 lastState = null;
-                if (animationRequest) {
+                if (animationRequest !== null) {
                     window.cancelAnimationFrame(animationRequest);
                     animationRequest = null;
                 }

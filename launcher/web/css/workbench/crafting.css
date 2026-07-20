@@ -102,6 +102,20 @@
 .crafting-card-icon img,
 .crafting-output-icon img,
 .crafting-material-icon img { max-width:90%; max-height:90%; object-fit:contain; }
+.crafting-output-inspect-trigger {
+    position:relative; padding:0; color:inherit; cursor:zoom-in;
+    appearance:none; font:inherit;
+}
+.crafting-output-inspect-trigger::after {
+    content:"⌕"; position:absolute; right:2px; bottom:2px; width:18px; height:18px;
+    display:grid; place-items:center; color:var(--dls-crystal-bright);
+    border:1px solid var(--dls-crystal-deep); background:var(--wb-panel);
+    font:700 13px/1 Consolas,sans-serif; pointer-events:none;
+}
+.crafting-output-inspect-trigger:hover,
+.crafting-output-inspect-trigger:focus-visible {
+    border-color:var(--dls-crystal); box-shadow:0 0 10px var(--dls-glow); outline:none;
+}
 .crafting-card-copy { min-width:0; flex:1 1 auto; display:flex; flex-direction:column; gap:3px; }
 .crafting-card-copy b,
 .crafting-card-copy span,

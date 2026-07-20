@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>合成物品商品图视觉验收</title>
+<link rel="stylesheet" href="review.css">
+</head>
+<body>
+<header class="review-toolbar">
+    <div class="review-heading">
+        <h1>合成物品商品图视觉验收</h1>
+        <p id="summary">正在加载评审数据……</p>
+    </div>
+    <div class="review-controls">
+        <label>类型
+            <select id="kind-filter">
+                <option value="all">全部</option>
+                <option value="weapon">武器</option>
+                <option value="armor">防具</option>
+                <option value="fallback">其他/回退</option>
+            </select>
+        </label>
+        <label>状态
+            <select id="status-filter">
+                <option value="all">全部</option>
+                <option value="unreviewed">未验收</option>
+                <option value="reviewed">已选择</option>
+                <option value="warning">自动告警</option>
+                <option value="needs_adjustment">需要调构图</option>
+                <option value="needs_source">缺少素材</option>
+            </select>
+        </label>
+        <label>搜索
+            <input id="search" type="search" placeholder="物品名或分类">
+        </label>
+        <button id="import-button" type="button">导入验收</button>
+        <button id="export-button" type="button" class="primary">导出验收</button>
+        <input id="import-file" type="file" accept="application/json" hidden>
+    </div>
+    <div class="review-progress"><span id="progress-label">0 / 0</span><progress id="progress" value="0" max="1"></progress></div>
+</header>
+
+<main id="review-list" aria-live="polite"></main>
+
+<dialog id="preview-dialog">
+    <form method="dialog"><button class="dialog-close" aria-label="关闭">×</button></form>
+    <h2 id="dialog-title"></h2>
+    <div id="dialog-candidates"></div>
+</dialog>
+
+<script src="review.js"></script>
+</body>
+</html>

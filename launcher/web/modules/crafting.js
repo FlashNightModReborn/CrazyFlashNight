@@ -5,6 +5,7 @@ var CraftingPanel = (function() {
     var _category = '', _snapshot = null, _preview = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _generation = 0;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _commitButton = null, _craftableToggle = null, _tooltipCache = {};
+    var _inspector = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
     var _detailScrollTop = 0, _detailScrollLeft = 0;
@@ -250,8 +251,13 @@ var CraftingPanel = (function() {
         _detailView.chrome.setMeta(_snapshot && _snapshot.note ? _snapshot.note : '提交前会再次校验');
 
         var hero = document.createElement('section'); hero.className = 'crafting-output-card';
-        var icon = document.createElement('span'); icon.className = 'crafting-output-icon';
-        icon.innerHTML = iconHtml(output.icon || output.name, 'kshop-icon'); bindTooltip(icon, output);
+        var icon = document.createElement('button'); icon.type = 'button';
+        icon.className = 'crafting-output-icon crafting-output-inspect-trigger';
+        icon.setAttribute('aria-label', '检视 ' + String(output.displayName || output.name || '合成产物'));
+        icon.setAttribute('data-title', '打开装备检视器');
+        icon.innerHTML = iconHtml(output.icon || output.name, 'kshop-icon');
+        icon.addEventListener('click', function() { openInspector(output); });
+        bindTooltip(icon, output);
         var copy = document.createElement('div'); copy.className = 'crafting-output-copy';
         var title = document.createElement('h2'); title.textContent = output.displayName || output.name || '产物';
         var value = document.createElement('p');
@@ -293,6 +299,19 @@ var CraftingPanel = (function() {
         _commitButton.disabled = _busy || _needsReconcile || !_preview.canCommit || !_preview.craftToken;
         _commitButton.addEventListener('click', commitCraft); _detailBody.appendChild(_commitButton);
         restoreScroll();
+    }
+
+    function openInspector(output) {
+        if (!_shell || typeof CraftingInspector === 'undefined' || !CraftingInspector.open) return false;
+        if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
+        _inspector = CraftingInspector.open({
+            shell: _shell,
+            output: output,
+            gender: _snapshot && _snapshot.gender,
+            manifestUrl: _config.inspectorManifestUrl,
+            onClose: function() { _inspector = null; }
+        });
+        return !!_inspector;
     }
 
     function renderQuantityControl() {
@@ -463,6 +482,7 @@ var CraftingPanel = (function() {
         _generation++; _mux.closeSession();
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_shell) _shell.closeModal();
+        _inspector = null;
         _busy = false; _previewBusy = false; _organizerBusy = false; _snapshot = null; _preview = null;
         disposeFilterNavigator(); _craftableToggle = null;
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
@@ -539,5 +559,7 @@ var CraftingPanel = (function() {
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
-        needsReconcile:_needsReconcile, mux:_mux.debugState()}; }};
+        needsReconcile:_needsReconcile, gender:_snapshot && _snapshot.gender,
+        inspector:_inspector && _inspector.debugState ? _inspector.debugState() : null,
+        mux:_mux.debugState()}; }};
 })();

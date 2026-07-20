@@ -231,7 +231,9 @@ namespace CF7Launcher.Tasks
         private static bool IsAuthoritativeSnapshot(JObject msg)
         {
             var recipes = msg["recipes"] as JArray;
-            if (!CommonState(msg) || recipes == null || !(msg["skills"] is JObject)) return false;
+            string gender = msg.Value<string>("gender");
+            if (!CommonState(msg) || recipes == null || !(msg["skills"] is JObject)
+                || (gender != "男" && gender != "女")) return false;
             var seenIndexes = new HashSet<int>();
             foreach (JToken token in recipes)
             {

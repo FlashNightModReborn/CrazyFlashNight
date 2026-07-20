@@ -6,6 +6,15 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 const {
+  buildLauncherStartArguments,
+  checkRuntimeIdentityContract,
+  createRuntimeIdentityReport,
+  recordObservedRuntimeIdentity,
+  recordVerifiedRuntimeIdentity,
+  resolveExpectedRuntimeIdentity,
+  verifyRuntimeIdentity,
+} = require("../lib/runtime-process-identity");
+const {
   analyzeRows,
   createPilotManifest,
   fail,
@@ -47,6 +56,7 @@ function parseArgs(argv) {
     allowLiveSlot: false,
     allowFresh: false,
     seedSlot: null,
+    candidateRoot: null,
     check: false,
   };
 
@@ -76,6 +86,11 @@ function parseArgs(argv) {
     else if (token === "--allow-live-slot") args.allowLiveSlot = true;
     else if (token === "--allow-fresh") args.allowFresh = true;
     else if (token === "--seed-slot") args.seedSlot = argv[++index];
+    else if (token === "--candidate-root") {
+      const value = argv[++index];
+      if (!value || String(value).startsWith("--")) fail("--candidate-root requires a value");
+      args.candidateRoot = value;
+    }
     else if (token === "--check") args.check = true;
     else if (token === "--help" || token === "-h") args.help = true;
     else fail(`unknown argument: ${token}`);
@@ -95,6 +110,7 @@ Options:
   --timeout-frames <n>       Pilot timeout frames. Default: 5400.
   --fresh                    Use fresh-start/rebuild semantics for the selected slot.
   --no-start-launcher        Require an already running launcher.
+  --candidate-root <dir>     Run and bind to one immutable local runtime candidate.
   --ready-timeout-ms <n>     Cold-start/game-ready timeout. Default: 180000.
   --batch-timeout-ms <n>     Abort the batch after this wall-clock timeout. Default: disabled.
   --poll-ms <n>              Status polling interval. Default: 1000.
@@ -104,8 +120,9 @@ Options:
   --report-md <file>         Unattended run report markdown output path.
   --rerun-manifest <file>    Output path for missing/abnormal rerun manifest.
   --build-gate <list>        Comma-separated gates before launch. Default: arena-tools.
-                             Values: none, arena-tools, launcher-build, launcher-tests,
-                             launcher, as2-publish, as2-test.
+                             Values: none, arena-tools, launcher-tests, as2-publish, as2-test.
+                             Runtime builds are not an inline gate: build separately, then
+                             select the exact producer output with --candidate-root.
   --add-build-gate <list>    Append gates to the current gate list.
   --keep-launcher-during-gate
                              Do not auto-shutdown an existing launcher before build gates.
@@ -116,6 +133,8 @@ Options:
   --allow-fresh              Allow --fresh. Unsafe for seeded unattended calibration; off by default.
   --shutdown                 Ask launcher to shut down after terminal batch state.
   --check                    Self-check without launching the game.
+
+Without --candidate-root, runtimeMode=formal_runtime; with it, isolated_candidate.
 `);
 }
 
@@ -402,11 +421,12 @@ async function discoverPort(root) {
   return null;
 }
 
-function startLauncher(root) {
+function startLauncher(root, expectedIdentity) {
   const script = path.join(root, "automation", "start.ps1");
+  const launchArgs = buildLauncherStartArguments(script, expectedIdentity);
   const result = childProcess.spawnSync(
     "powershell.exe",
-    ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script],
+    launchArgs,
     { cwd: root, encoding: "utf8" }
   );
   if (result.status !== 0) {
@@ -554,17 +574,23 @@ async function shutdownLauncher(root) {
   return { port, response };
 }
 
-async function ensureLauncherReady(root, args) {
+async function ensureLauncherReady(root, args, expectedIdentity, onIdentityObserved) {
   let port = await discoverPort(root);
   if (!port && args.startLauncher) {
-    startLauncher(root);
+    startLauncher(root, expectedIdentity);
     port = await waitForPort(root, args.readyTimeoutMs);
   }
   if (!port) {
     throw new Error("launcher is not running; remove --no-start-launcher or start it first");
   }
+  const runtimeIdentity = verifyRuntimeIdentity(
+    root,
+    port,
+    expectedIdentity,
+    onIdentityObserved
+  );
   const status = await ensureGameReady(port, args);
-  return { port, status };
+  return { port, status, runtimeIdentity };
 }
 
 function requiresLauncherShutdown(gates) {
@@ -588,6 +614,15 @@ function expandBuildGates(gates) {
     }
   });
   return expanded;
+}
+
+function assertRuntimeBuildGateSeparated(gates) {
+  if ((gates || []).includes("launcher-build")) {
+    fail(
+      "launcher-build only produces an unselected runtime candidate; build it separately, "
+        + "then pass its exact path with --candidate-root"
+    );
+  }
 }
 
 function commandForGate(root, gate) {
@@ -979,6 +1014,15 @@ function formatReportMarkdown(report) {
     `- startedAt: ${report.startedAt}`,
     `- completedAt: ${report.completedAt || ""}`,
     "",
+    "## Runtime Binary Identity",
+    "",
+    `- verified: ${Boolean(report.runtimeIdentity && report.runtimeIdentity.verified)}`,
+    `- runtimeMode: \`${report.runtimeIdentity && report.runtimeIdentity.runtimeMode || "not observed"}\``,
+    `- processPath: \`${report.runtimeIdentity && report.runtimeIdentity.processPath || "not observed"}\``,
+    `- coreSha256: \`${report.runtimeIdentity && report.runtimeIdentity.coreSha256 || "not observed"}\``,
+    `- buildIdentity: \`${report.runtimeIdentity && report.runtimeIdentity.buildIdentity || "not observed"}\``,
+    `- payloadClosure: \`${report.runtimeIdentity && report.runtimeIdentity.payloadClosure || "not observed"}\``,
+    "",
     "## Attempts",
     "",
     "| # | status | batchId | rows | resultPath | rerun |",
@@ -1028,6 +1072,11 @@ function defaultOutputPaths(root, batchId, args) {
 }
 
 function runCheck() {
+  const candidateArgs = parseArgs(["--candidate-root", "tmp/runtime-candidates/v2/check"]);
+  if (candidateArgs.candidateRoot !== "tmp/runtime-candidates/v2/check") {
+    throw new Error("--candidate-root parsing failed");
+  }
+  checkRuntimeIdentityContract();
   const manifest = createPilotManifest({ batchId: "unattended-check", repeat: 1, timeoutFrames: 1 });
   const rerunSource = createPilotManifest({ batchId: "unattended-rerun-check", repeat: 2, timeoutFrames: 1 });
   const rerunCase = rerunSource.cases[0];
@@ -1054,6 +1103,13 @@ function runCheck() {
   if (expandBuildGates(["none", "launcher", "arena-tools"]).join(",") !== "launcher-build,launcher-tests,arena-tools") {
     throw new Error("build gate expansion check failed");
   }
+  let buildGateRejected = false;
+  try {
+    assertRuntimeBuildGateSeparated(["launcher-build"]);
+  } catch (_error) {
+    buildGateRejected = true;
+  }
+  if (!buildGateRejected) throw new Error("embedded launcher-build gate was not rejected");
   const beforeReveal = {
     launchState: "Ready",
     revealPerformed: false,
@@ -1101,9 +1157,21 @@ function runCheck() {
     maxRecoveryAttempts: 1,
     suggestions: ["check mode does not launch the game"],
   };
+  const checkIdentity = {
+    runtimeMode: "isolated_candidate",
+    processPath: path.join("C:\\", "check", "runtime", "CRAZYFLASHER7MercenaryEmpire.Core.exe"),
+    coreSha256: "C".repeat(64),
+    buildIdentity: "A".repeat(64),
+    payloadClosure: "B".repeat(64),
+    pid: 123,
+    httpPort: 1192,
+  };
+  report.runtimeIdentity = createRuntimeIdentityReport(checkIdentity);
+  recordVerifiedRuntimeIdentity(report.runtimeIdentity, checkIdentity);
   report.failures = buildFailureList(report);
   const markdown = formatReportMarkdown(report);
-  if (!markdown.includes("attempt_error") || !markdown.includes("(auto)")) {
+  if (!markdown.includes("attempt_error") || !markdown.includes("(auto)")
+      || !markdown.includes("isolated_candidate") || !markdown.includes("C".repeat(64))) {
     throw new Error("report markdown check failed");
   }
   console.log(JSON.stringify({ ok: true, batchId: manifest.batchId }, null, 2));
@@ -1146,6 +1214,7 @@ async function main(argv) {
     buildGates: [],
     preGateShutdown: null,
     postRunShutdown: null,
+    runtimeIdentity: createRuntimeIdentityReport(null),
     savePreflight: null,
     finalAgentStatus: null,
     finalArenaStatus: null,
@@ -1160,8 +1229,12 @@ async function main(argv) {
     suggestions: [],
   };
 
+  let expectedIdentity = null;
   try {
+    expectedIdentity = resolveExpectedRuntimeIdentity(root, args.candidateRoot);
+    report.runtimeIdentity = createRuntimeIdentityReport(expectedIdentity);
     const gates = expandBuildGates(args.buildGates);
+    assertRuntimeBuildGateSeparated(gates);
     if (!args.keepLauncherDuringGate) {
       report.preGateShutdown = await shutdownExistingLauncherForGate(root, gates);
     }
@@ -1182,6 +1255,19 @@ async function main(argv) {
       throw new Error(report.error.message);
     }
 
+    const existingPort = await discoverPort(root);
+    if (existingPort) {
+      const actualIdentity = verifyRuntimeIdentity(
+        root,
+        existingPort,
+        expectedIdentity,
+        (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
+      );
+      recordVerifiedRuntimeIdentity(report.runtimeIdentity, actualIdentity);
+    } else if (!args.startLauncher) {
+      fail("launcher is not running; remove --no-start-launcher or start it first");
+    }
+
     report.savePreflight = prepareCalibrationSave(root, args, outputs.runDir);
     writeReport(report, outputs.report, outputs.reportMd);
 
@@ -1200,6 +1286,7 @@ async function main(argv) {
         completedAt: null,
         status: "running",
         httpPort: null,
+        runtimeIdentity: null,
         agentStatus: null,
         batchStart: null,
         finalArenaStatus: null,
@@ -1217,18 +1304,41 @@ async function main(argv) {
 
       let resultPathRel = null;
       try {
-        const ready = await ensureLauncherReady(root, args);
+        attempt.runtimeIdentity = createRuntimeIdentityReport(expectedIdentity);
+        const ready = await ensureLauncherReady(
+          root,
+          args,
+          expectedIdentity,
+          (observed) => {
+            recordObservedRuntimeIdentity(attempt.runtimeIdentity, observed);
+            recordObservedRuntimeIdentity(report.runtimeIdentity, observed);
+          }
+        );
         attempt.httpPort = ready.port;
+        recordVerifiedRuntimeIdentity(attempt.runtimeIdentity, ready.runtimeIdentity);
+        recordVerifiedRuntimeIdentity(report.runtimeIdentity, ready.runtimeIdentity);
         attempt.agentStatus = ready.status;
         report.httpPort = ready.port;
         report.finalAgentStatus = ready.status;
 
         const batch = await runBatch(ready.port, current.manifestPathRel, args);
+        const finalRuntimeIdentity = verifyRuntimeIdentity(
+          root,
+          ready.port,
+          expectedIdentity,
+          (observed) => {
+            recordObservedRuntimeIdentity(attempt.runtimeIdentity, observed);
+            recordObservedRuntimeIdentity(report.runtimeIdentity, observed);
+          }
+        );
+        recordVerifiedRuntimeIdentity(attempt.runtimeIdentity, finalRuntimeIdentity);
+        recordVerifiedRuntimeIdentity(report.runtimeIdentity, finalRuntimeIdentity);
         attempt.batchStart = batch.start;
         attempt.finalArenaStatus = batch.status;
         attempt.status = batch.status && batch.status.state ? batch.status.state : "unknown";
         resultPathRel = resultPathFromBatchOutcome(current.manifest, batch, null);
       } catch (error) {
+        if (error && error.phase === "runtime_identity") throw error;
         const terminalStatus = error.lastStatus && TERMINAL_STATES.has(error.lastStatus.state)
           ? error.lastStatus.state
           : null;
@@ -1341,6 +1451,11 @@ async function main(argv) {
           report: toProjectRelative(root, outputs.report),
           rerunManifest: report.rerunManifestPath,
           recoveryAttemptsUsed: report.recoveryAttemptsUsed,
+          runtimeMode: report.runtimeIdentity.runtimeMode,
+          processPath: report.runtimeIdentity.processPath,
+          coreSha256: report.runtimeIdentity.coreSha256,
+          buildIdentity: report.runtimeIdentity.buildIdentity,
+          payloadClosure: report.runtimeIdentity.payloadClosure,
         },
         null,
         2
@@ -1353,7 +1468,12 @@ async function main(argv) {
     }
     report.completedAt = new Date().toISOString();
     if (!report.error) {
-      report.error = { message: error.message };
+      report.error = {
+        code: error.code || null,
+        phase: error.phase || null,
+        message: error.message,
+        details: error.details || null,
+      };
     }
     report.failures = buildFailureList(report);
     report.suggestions.push("Rerun with the same manifest after checking launcher.log and the run report.");

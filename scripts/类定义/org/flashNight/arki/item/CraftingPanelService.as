@@ -93,7 +93,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             var projected:Object = projectRecipe(category, recipes[i], i);
             if (projected != null) catalog.push(projected);
         }
-        return {success:true, v:1, category:category, recipes:catalog,
+        return {success:true, v:1, category:category, gender:buildGender(), recipes:catalog,
             balance:buildBalance(), skills:buildSkills(), note:categoryNote(category)};
     }
 
@@ -425,6 +425,10 @@ class org.flashNight.arki.item.CraftingPanelService {
     private static function buildSkills():Object {
         var smith:Object = smithState();
         return {reverseLevel:reverseSkillLevel(), smithEnabled:smith.enabled, smithLevel:smith.level};
+    }
+
+    private static function buildGender():String {
+        return String(_root.性别) == "女" ? "女" : "男";
     }
 
     private static function buildBalance():Object {

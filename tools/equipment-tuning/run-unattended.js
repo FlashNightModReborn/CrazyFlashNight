@@ -6,6 +6,15 @@ const crypto = require("crypto");
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
+const {
+  buildLauncherStartArguments,
+  checkRuntimeIdentityContract,
+  createRuntimeIdentityReport,
+  recordObservedRuntimeIdentity,
+  recordVerifiedRuntimeIdentity,
+  resolveExpectedRuntimeIdentity,
+  verifyRuntimeIdentity,
+} = require("../lib/runtime-process-identity");
 
 const PORT_CANDIDATES = [
   1192, 1924, 9243, 2433, 4339, 3399, 3993,
@@ -46,6 +55,7 @@ function parseArgs(argv) {
     pollMs: 500,
     report: null,
     reportMd: null,
+    candidateRoot: null,
     check: false,
     help: false,
   };
@@ -69,6 +79,7 @@ function parseArgs(argv) {
     else if (token === "--poll-ms") args.pollMs = Number(valueAfter(index++, token));
     else if (token === "--report") args.report = valueAfter(index++, token);
     else if (token === "--report-md") args.reportMd = valueAfter(index++, token);
+    else if (token === "--candidate-root") args.candidateRoot = valueAfter(index++, token);
     else if (token === "--check") args.check = true;
     else if (token === "--help" || token === "-h") args.help = true;
     else fail("unknown_argument", "arguments", "unknown argument: " + token);
@@ -93,6 +104,7 @@ function printHelp() {
     "  --poll-ms <n>              Status/log polling interval. Default: 500.",
     "  --report <file>            JSON report path.",
     "  --report-md <file>         Markdown report path.",
+    "  --candidate-root <dir>     Run and bind to one immutable local runtime candidate.",
     "  --shutdown                 Ask launcher to shut down after reporting.",
     "  --fresh                    Always rejected; fresh save automation is forbidden.",
     "  --check                    Offline self-check; does not launch or touch saves.",
@@ -100,6 +112,7 @@ function printHelp() {
     "Safety:",
     "  The target must match cf7_agent_* and can never be crazyflasher7_saves*.",
     "  --seed-slot may name a live shadow because it is only read and cloned.",
+    "  Without --candidate-root, runtimeMode=formal_runtime; with it, isolated_candidate.",
   ].join("\n"));
 }
 
@@ -419,11 +432,12 @@ async function discoverPort(root) {
   return null;
 }
 
-function startLauncher(root) {
+function startLauncher(root, expectedIdentity) {
   const script = path.join(root, "automation", "start.ps1");
+  const launchArgs = buildLauncherStartArguments(script, expectedIdentity);
   const result = childProcess.spawnSync(
     "powershell.exe",
-    ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script],
+    launchArgs,
     { cwd: root, encoding: "utf8" }
   );
   if (result.status !== 0) {
@@ -459,10 +473,10 @@ async function waitForPort(root, timeoutMs, pollMs) {
   );
 }
 
-async function ensureLauncherPort(root, args) {
+async function ensureLauncherPort(root, args, expectedIdentity) {
   let port = await discoverPort(root);
   if (!port && args.startLauncher) {
-    startLauncher(root);
+    startLauncher(root, expectedIdentity);
     port = await waitForPort(root, args.readyTimeoutMs, args.pollMs);
   }
   if (!port) {
@@ -724,16 +738,14 @@ function assertRuntimeReadyStatus(status, expectedSlot, expectedAttemptId) {
   }
 }
 
-async function waitForRuntimeReady(port, args, startWatermark, priorStatus, startResponse, timeline) {
+async function waitForRuntimeReady(port, args, startWatermark, startResponse, timeline) {
   const deadline = Date.now() + args.readyTimeoutMs;
-  const priorAttemptId = priorStatus && priorStatus.save
-    ? priorStatus.save.attemptId || null
-    : null;
   let status = startResponse;
+  // A launcher created by this run can prewarm the requested slot before the explicit
+  // Start action is consumed, so Start legitimately reuses that same attempt id. A truly
+  // pre-existing target attempt was already rejected by assertTargetSlotNotInUse; freshness
+  // here comes from the post-watermark SWF handoff before the one-shot agent enter request.
   let expectedAttemptId = statusAttemptForSlot(status, args.slot);
-  if (expectedAttemptId && priorAttemptId && expectedAttemptId === priorAttemptId) {
-    expectedAttemptId = null;
-  }
   const state = {
     expectedSlot: args.slot,
     expectedAttemptId,
@@ -749,7 +761,7 @@ async function waitForRuntimeReady(port, args, startWatermark, priorStatus, star
     assertResponseSucceeded(status, "runtime_ready", "agent_control status");
 
     const candidateAttempt = statusAttemptForSlot(status, args.slot);
-    if (candidateAttempt && (!priorAttemptId || candidateAttempt !== priorAttemptId)) {
+    if (candidateAttempt) {
       if (state.expectedAttemptId && state.expectedAttemptId !== candidateAttempt) {
         fail(
           "attempt_changed",
@@ -951,6 +963,17 @@ function formatReportMarkdown(report) {
     "- Business writes attempted: " + String(report.scope.businessWritesAttempted),
     "",
   ];
+  if (report.runtimeIdentity) {
+    const identity = report.runtimeIdentity;
+    lines.push("## Runtime binary identity", "");
+    lines.push("- Verified: " + String(identity.verified));
+    lines.push("- Runtime mode: " + String(identity.runtimeMode || "not observed"));
+    lines.push("- Process path: " + String(identity.processPath || "not observed"));
+    lines.push("- Core SHA-256: " + String(identity.coreSha256 || "not observed"));
+    lines.push("- Build identity: " + String(identity.buildIdentity || "not observed"));
+    lines.push("- Payload closure: " + String(identity.payloadClosure || "not observed"));
+    lines.push("");
+  }
   if (report.runtime && report.runtime.expectedAttemptId) {
     lines.push("## Runtime watermark", "");
     lines.push("- Attempt: " + report.runtime.expectedAttemptId);
@@ -1020,6 +1043,14 @@ function runCheck() {
   if (parsed.slot !== DEFAULT_AGENT_SLOT) {
     throw new Error("default dedicated equipment-tuning slot changed");
   }
+  const candidateParsed = parseArgs([
+    "--seed-slot", "crazyflasher7_saves2",
+    "--candidate-root", "tmp/runtime-candidates/v2/check",
+  ]);
+  if (candidateParsed.candidateRoot !== "tmp/runtime-candidates/v2/check") {
+    throw new Error("--candidate-root parsing failed");
+  }
+  const identityContract = checkRuntimeIdentityContract();
 
   expectRejected(
     "live target",
@@ -1168,6 +1199,17 @@ function runCheck() {
     "runtime_save_watermark_mismatch"
   );
 
+  const checkIdentity = {
+    runtimeMode: "isolated_candidate",
+    processPath: path.join("C:\\", "check", "runtime", "CRAZYFLASHER7MercenaryEmpire.Core.exe"),
+    coreSha256: "C".repeat(64),
+    buildIdentity: "A".repeat(64),
+    payloadClosure: "B".repeat(64),
+    pid: 123,
+    httpPort: 1192,
+  };
+  const identityReport = createRuntimeIdentityReport(checkIdentity);
+  recordVerifiedRuntimeIdentity(identityReport, checkIdentity);
   const markdown = formatReportMarkdown({
     status: "snapshot_gate_reached",
     slot: DEFAULT_AGENT_SLOT,
@@ -1184,18 +1226,21 @@ function runCheck() {
       handoffEvidence: handoff,
       enterRequestCount: 1,
     },
+    runtimeIdentity: identityReport,
     snapshotGate: { evidence: gate },
     error: null,
   });
   if (!markdown.includes("does not click operation controls")
-      || !markdown.includes("panel.workbench.7")) {
+      || !markdown.includes("panel.workbench.7")
+      || !markdown.includes("isolated_candidate")
+      || !markdown.includes("C".repeat(64))) {
     throw new Error("report boundary/evidence check failed");
   }
 
   console.log(JSON.stringify({
     ok: true,
     slot: DEFAULT_AGENT_SLOT,
-    checks: 16,
+    checks: 17 + identityContract.checks,
     scope: "open_snapshot_gate_only",
   }, null, 2));
 }
@@ -1227,6 +1272,7 @@ async function runUnattended(args) {
     savePreparation: null,
     preparationGuard: null,
     httpPort: null,
+    runtimeIdentity: createRuntimeIdentityReport(null),
     startLogWatermark: null,
     startResponse: null,
     runtime: null,
@@ -1240,9 +1286,36 @@ async function runUnattended(args) {
   let port = null;
   let caught = null;
   try {
+    const expectedIdentity = resolveExpectedRuntimeIdentity(root, args.candidateRoot);
+    report.runtimeIdentity = createRuntimeIdentityReport(expectedIdentity);
+    report.timeline.push({
+      phase: "runtime_identity_expected",
+      at: new Date().toISOString(),
+      runtimeMode: expectedIdentity.runtimeMode,
+      processPath: expectedIdentity.processPath,
+      coreSha256: expectedIdentity.coreSha256,
+      buildIdentity: expectedIdentity.buildIdentity,
+      payloadClosure: expectedIdentity.payloadClosure,
+    });
+
     let priorStatus = null;
     port = await discoverPort(root);
     if (port) {
+      const actualIdentity = verifyRuntimeIdentity(
+        root,
+        port,
+        expectedIdentity,
+        (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
+      );
+      recordVerifiedRuntimeIdentity(report.runtimeIdentity, actualIdentity);
+      report.httpPort = port;
+      report.timeline.push({
+        phase: "existing_launcher_runtime_identity_verified",
+        at: new Date().toISOString(),
+        runtimeMode: actualIdentity.runtimeMode,
+        pid: actualIdentity.pid,
+        coreSha256: actualIdentity.coreSha256,
+      });
       priorStatus = await waitForAgentControl(
         port,
         args.readyTimeoutMs,
@@ -1256,6 +1329,13 @@ async function runUnattended(args) {
         runtimeSlot: report.preparationGuard.runtimeSlot,
       });
     } else {
+      if (!args.startLauncher) {
+        fail(
+          "launcher_not_running",
+          "launcher",
+          "launcher is not running; remove --no-start-launcher or start it first"
+        );
+      }
       report.preparationGuard = { launcherSlot: "", runtimeSlot: "" };
       report.timeline.push({
         phase: "no_existing_launcher_before_save_seed",
@@ -1271,7 +1351,23 @@ async function runUnattended(args) {
       seedSlot: args.seedSlot,
     });
 
-    if (!port) port = await ensureLauncherPort(root, args);
+    if (!port) {
+      port = await ensureLauncherPort(root, args, expectedIdentity);
+      const actualIdentity = verifyRuntimeIdentity(
+        root,
+        port,
+        expectedIdentity,
+        (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
+      );
+      recordVerifiedRuntimeIdentity(report.runtimeIdentity, actualIdentity);
+      report.timeline.push({
+        phase: "started_launcher_runtime_identity_verified",
+        at: new Date().toISOString(),
+        runtimeMode: actualIdentity.runtimeMode,
+        pid: actualIdentity.pid,
+        coreSha256: actualIdentity.coreSha256,
+      });
+    }
     report.httpPort = port;
     if (!priorStatus) {
       priorStatus = await waitForAgentControl(
@@ -1308,7 +1404,6 @@ async function runUnattended(args) {
       port,
       args,
       report.startLogWatermark,
-      priorStatus,
       report.startResponse,
       report.timeline
     );
@@ -1353,13 +1448,27 @@ async function runUnattended(args) {
       panelInstanceId: report.snapshotGate.evidence.activeWorkbench.panelInstanceId,
       viewSessionId: report.snapshotGate.evidence.tuningSnapshot.viewSessionId,
     });
+    const finalIdentity = verifyRuntimeIdentity(
+      root,
+      port,
+      expectedIdentity,
+      (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
+    );
+    recordVerifiedRuntimeIdentity(report.runtimeIdentity, finalIdentity);
+    report.timeline.push({
+      phase: "runtime_identity_reverified_after_snapshot",
+      at: new Date().toISOString(),
+      pid: finalIdentity.pid,
+      coreSha256: finalIdentity.coreSha256,
+    });
     report.status = "snapshot_gate_reached";
   } catch (error) {
     caught = error;
     report.status = "failed";
     report.error = serializeError(error);
   } finally {
-    if (args.shutdown && port) {
+    if (args.shutdown && port && report.runtimeIdentity.verified
+        && (!caught || caught.phase !== "runtime_identity")) {
       report.shutdownResponse = await shutdownLauncher(port);
     }
     report.finishedAt = new Date().toISOString();
@@ -1374,6 +1483,11 @@ async function runUnattended(args) {
     attemptId: report.runtime.expectedAttemptId,
     panelInstanceId: report.snapshotGate.evidence.activeWorkbench.panelInstanceId,
     viewSessionId: report.snapshotGate.evidence.tuningSnapshot.viewSessionId,
+    runtimeMode: report.runtimeIdentity.runtimeMode,
+    processPath: report.runtimeIdentity.processPath,
+    coreSha256: report.runtimeIdentity.coreSha256,
+    buildIdentity: report.runtimeIdentity.buildIdentity,
+    payloadClosure: report.runtimeIdentity.payloadClosure,
     scope: "open_snapshot_gate_only",
     report: report.reportPath,
   }, null, 2));
@@ -1410,6 +1524,7 @@ module.exports = {
   parseArgs,
   parsePanelBoundEvidence,
   parseSnapshotEvidence,
+  resolveExpectedRuntimeIdentity,
   runCheck,
   selectWorkbenchSnapshotGate,
   shouldRequestAgentEnter,

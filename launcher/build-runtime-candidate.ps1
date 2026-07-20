@@ -12,6 +12,73 @@ if (-not (Test-Path -LiteralPath $v2Common -PathType Leaf)) {
     throw "Runtime v2 common helper is missing: $v2Common"
 }
 
+function Get-Cf7FileDigestState {
+    param([Parameter(Mandatory=$true)][string]$Path)
+    $fullPath = [IO.Path]::GetFullPath($Path)
+    $exists = Test-Path -LiteralPath $fullPath -PathType Leaf
+    [pscustomobject][ordered]@{
+        path = $fullPath
+        exists = $exists
+        sha256 = if ($exists) { (Get-FileHash -LiteralPath $fullPath -Algorithm SHA256).Hash.ToUpperInvariant() } else { $null }
+    }
+}
+
+function Get-Cf7FormalDeploymentSnapshot {
+    param([Parameter(Mandatory=$true)][string]$Root)
+    $paths = @()
+    $bootstrapPath = Join-Path $Root 'CRAZYFLASHER7MercenaryEmpire.exe'
+    if (Test-Path -LiteralPath $bootstrapPath -PathType Leaf) { $paths += Get-Item -LiteralPath $bootstrapPath -Force }
+    $runtimePath = Join-Path $Root 'runtime'
+    if (Test-Path -LiteralPath $runtimePath -PathType Container) {
+        $runtimeItem = Get-Item -LiteralPath $runtimePath -Force
+        if (($runtimeItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+            throw "Formal runtime directory must not be a reparse point: $runtimePath"
+        }
+        $runtimeEntries = @(Get-ChildItem -LiteralPath $runtimePath -Recurse -Force)
+        $runtimeReparse = @($runtimeEntries | Where-Object { ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 })
+        if ($runtimeReparse.Count -gt 0) {
+            throw "Formal runtime closure contains a reparse point: $($runtimeReparse[0].FullName)"
+        }
+        $paths += @($runtimeEntries | Where-Object { -not $_.PSIsContainer })
+    }
+    $consensusPath = Join-Path $Root 'config\build\runtime-release-consensus.json'
+    if (Test-Path -LiteralPath $consensusPath -PathType Leaf) { $paths += Get-Item -LiteralPath $consensusPath -Force }
+
+    $records = @($paths | ForEach-Object {
+        if (($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+            throw "Formal deployment file must not be a reparse point: $($_.FullName)"
+        }
+        [pscustomobject][ordered]@{
+            path = $_.FullName.Substring($Root.Length + 1).Replace('\','/')
+            sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToUpperInvariant()
+        }
+    } | Sort-Object path)
+    $canonical = (($records | ForEach-Object { "$($_.path)`t$($_.sha256)" }) -join "`n") + "`n"
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    try {
+        $fingerprint = ([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($canonical)))).Replace('-','')
+    } finally {
+        $hasher.Dispose()
+    }
+    return [pscustomobject][ordered]@{
+        fingerprintSha256 = $fingerprint
+        files = $records
+        fileCount = $records.Count
+    }
+}
+
+function Test-Cf7SameFormalDeploymentSnapshot {
+    param(
+        [Parameter(Mandatory=$true)]$Before,
+        [Parameter(Mandatory=$true)]$After
+    )
+    return $Before.fileCount -eq $After.fileCount -and
+        [string]$Before.fingerprintSha256 -ceq [string]$After.fingerprintSha256
+}
+
+$liveCorePath = Join-Path $projectRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll'
+$formalDeploymentBefore = Get-Cf7FormalDeploymentSnapshot -Root $projectRoot
+
 # The environment gate selects byte-pinned tools and normalizes process state.
 . (Join-Path $projectRoot 'tools\check-runtime-build-env.ps1') -ProjectRoot $projectRoot -Mode RuntimePublish
 . $v2Common
@@ -42,14 +109,39 @@ $buildIdentityHash = Get-Cf7RuntimeV2BuildIdentityHash `
     -ToolchainLockHash $toolchainLockHash
 
 $candidateBase = [IO.Path]::GetFullPath((Join-Path $projectRoot 'tmp\runtime-candidates\v2')).TrimEnd('\')
+foreach ($candidatePathSegment in @(
+    (Join-Path $projectRoot 'tmp'),
+    (Join-Path $projectRoot 'tmp\runtime-candidates'),
+    $candidateBase
+)) {
+    if (Test-Path -LiteralPath $candidatePathSegment) {
+        $candidatePathItem = Get-Item -LiteralPath $candidatePathSegment -Force
+        if (($candidatePathItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+            throw "Candidate path must not traverse a reparse point: $candidatePathSegment"
+        }
+    }
+}
 if (-not $CandidateRoot) {
     $candidateLeaf = New-Cf7RuntimeV2CandidateLeafName `
         -BuildIdentityHash $buildIdentityHash -BuilderId $BuilderId
     $CandidateRoot = Join-Path $candidateBase $candidateLeaf
+} elseif (-not [IO.Path]::IsPathRooted($CandidateRoot)) {
+    throw 'CandidateRoot must be an absolute path.'
 }
 $deploymentRoot = [IO.Path]::GetFullPath($CandidateRoot).TrimEnd('\')
-if (-not $deploymentRoot.StartsWith($candidateBase + '\', [StringComparison]::OrdinalIgnoreCase)) {
+if ($deploymentRoot.Equals($candidateBase, [StringComparison]::OrdinalIgnoreCase) -or
+        -not $deploymentRoot.StartsWith($candidateBase + '\', [StringComparison]::OrdinalIgnoreCase)) {
     throw "CandidateRoot must remain under $candidateBase"
+}
+$relativeCandidateRoot = $deploymentRoot.Substring($candidateBase.Length + 1)
+$candidatePathProbe = $candidateBase
+foreach ($candidatePathPart in $relativeCandidateRoot.Split('\')) {
+    $candidatePathProbe = Join-Path $candidatePathProbe $candidatePathPart
+    if (-not (Test-Path -LiteralPath $candidatePathProbe)) { break }
+    $candidatePathItem = Get-Item -LiteralPath $candidatePathProbe -Force
+    if (($candidatePathItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+        throw "CandidateRoot must not traverse a reparse point: $candidatePathProbe"
+    }
 }
 $longestBootstrapProbe = Join-Path $deploymentRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json'
 if ($longestBootstrapProbe.Length -ge 260) {
@@ -135,6 +227,7 @@ function Write-Cf7CandidateBootstrapLogTail {
 }
 
 Write-Host '=== CF7 Runtime Producer v2 ===' -ForegroundColor Cyan
+Write-Host '  CANDIDATE ONLY - NOT DEPLOYED; FORMAL RUNTIME WILL NOT BE UPDATED.' -ForegroundColor Yellow
 Write-Host "  Artifact source : $artifactSourceHash"
 Write-Host "  Producer recipe : $producerRecipeHash"
 Write-Host "  Toolchain lock  : $toolchainLockHash"
@@ -310,9 +403,21 @@ try {
         (($metadata | ConvertTo-Json -Depth 5) + "`n"),
         $utf8NoBom)
 
-    Write-Host '=== Runtime Candidate Complete ===' -ForegroundColor Green
+    $candidateCorePath = Join-Path $deploymentRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll'
+    $candidateCore = Get-Cf7FileDigestState -Path $candidateCorePath
+    $liveCoreAfter = Get-Cf7FileDigestState -Path $liveCorePath
+    $formalDeploymentAfter = Get-Cf7FormalDeploymentSnapshot -Root $projectRoot
+    Write-Host '=== Runtime Candidate Complete - NOT DEPLOYED ===' -ForegroundColor Yellow
+    Write-Host "  Deployment      : NOT_DEPLOYED"
     Write-Host "  Candidate       : $deploymentRoot"
+    Write-Host "  Candidate Core  : $($candidateCore.path)"
+    Write-Host "  Candidate SHA   : $($candidateCore.sha256)"
+    Write-Host "  Live Core       : $($liveCoreAfter.path)"
+    Write-Host "  Live SHA        : $(if ($liveCoreAfter.exists) { $liveCoreAfter.sha256 } else { '<missing>' })"
+    Write-Host "  Formal closure  : $($formalDeploymentAfter.fingerprintSha256) ($($formalDeploymentAfter.fileCount) files)"
+    Write-Host "  Build identity  : $buildIdentityHash"
     Write-Host "  Payload closure : $($payload.payloadClosureHash)"
+    Write-Host '  FORMAL RUNTIME UNCHANGED; acceptance must explicitly select this candidate.' -ForegroundColor Yellow
 } finally {
     Remove-Item Env:CF7_MINIAUDIO_REPRO_SOURCE_DIR -ErrorAction SilentlyContinue
     Remove-Item Env:CF7_NATIVE_OUTPUT_DIR -ErrorAction SilentlyContinue
@@ -320,8 +425,12 @@ try {
     Remove-Item Env:CF7_RUNTIME_JOB_TEMP -ErrorAction SilentlyContinue
     if (Test-Path -LiteralPath $jobRoot -PathType Container) {
         $resolvedJobRoot = [IO.Path]::GetFullPath($jobRoot)
-        if ($resolvedJobRoot.StartsWith($workBase + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        if ($resolvedJobRoot.StartsWith($workBase + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
             Remove-Item -LiteralPath $resolvedJobRoot -Recurse -Force
         }
+    }
+    $formalDeploymentAfterCleanup = Get-Cf7FormalDeploymentSnapshot -Root $projectRoot
+    if (-not (Test-Cf7SameFormalDeploymentSnapshot -Before $formalDeploymentBefore -After $formalDeploymentAfterCleanup)) {
+        throw "Runtime candidate producer changed the formal deployment closure. Producer-only builds must never deploy. before=$($formalDeploymentBefore.fingerprintSha256) after=$($formalDeploymentAfterCleanup.fingerprintSha256)"
     }
 }

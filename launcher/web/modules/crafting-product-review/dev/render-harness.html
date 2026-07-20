@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Crafting Product Preview Render Harness</title>
+<style>
+html, body { margin: 0; background: #11151b; color: #e7edf4; font: 13px "Microsoft YaHei", Arial, sans-serif; }
+#stage { display: grid; place-items: center; min-height: 100vh; }
+#candidate { width: 256px; height: 256px; display: block; background: transparent; }
+#dressup-hires { position: fixed; left: -10000px; top: 0; width: 256px; height: 256px; pointer-events: none; }
+#status { position: fixed; left: 8px; bottom: 8px; max-width: calc(100vw - 16px); white-space: pre-wrap; color: #9aa7b7; }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="candidate" width="256" height="256"></canvas></div>
+<canvas id="dressup-hires" width="512" height="512" aria-hidden="true"></canvas>
+<pre id="status">loading</pre>
+<script src="../../asset-timeline.js"></script>
+<script src="../../dressup-doll-renderer.js"></script>
+<script src="../../equipment-inspector.js"></script>
+<script src="../../crafting-inspector.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var manifestUrl = '../../../assets/dressup/manifest.json';
+    var canvas = document.getElementById('candidate');
+    var hiResCanvas = document.getElementById('dressup-hires');
+    var statusEl = document.getElementById('status');
+    var manifest = null;
+    var renderer = null;
+    var hiResRenderer = null;
+
+    var WEAPON_FIELD = {
+        '刀': '刀_装扮',
+        '长枪': '长枪_装扮',
+        '手枪': '手枪_装扮'
+    };
+    var WEAPON_STATE = {
+        '刀': '兵器站立',
+        '长枪': '长枪站立',
+        '手枪': '手枪站立'
+    };
+    var ARMOR_CONTEXT = {
+        '头部装备': ['脸型', '发型', '面具', '身体', '上臂'],
+        '上装装备': ['脸型', '身体', '上臂', '左下臂', '右下臂', '左手', '右手'],
+        '下装装备': ['身体', '屁股', '左大腿', '右大腿', '小腿', '脚'],
+        '手部装备': ['身体', '上臂', '左下臂', '右下臂', '左手', '右手'],
+        '脚部装备': ['屁股', '左大腿', '右大腿', '小腿', '脚']
+    };
+    // 聚焦商品图默认只画装备自身；头盔保留脸型作为唯一承托，避免脱离头型后误判轮廓。
+    // fit 始终只看装备 fields，基础人台只留在单独的全人台参考候选中。
+    var ARMOR_FOCUS_CONTEXT = {
+        '头部装备': ['脸型'],
+        '上装装备': [],
+        '下装装备': [],
+        '手部装备': [],
+        '脚部装备': [],
+        '颈部装备': []
+    };
+
+    function delay(ms) {
+        return new Promise(function(resolve) { setTimeout(resolve, ms); });
+    }
+
+    function loadImage(uri) {
+        return new Promise(function(resolve, reject) {
+            var image = new Image();
+            image.onload = function() { resolve(image); };
+            image.onerror = function() { reject(new Error('image load failed: ' + uri)); };
+            image.src = uri;
+        });
+    }
+
+    function alphaMetrics(target) {
+        var ctx = target.getContext('2d');
+        var width = target.width;
+        var height = target.height;
+        var pixels = ctx.getImageData(0, 0, width, height).data;
+        var minX = width;
+        var minY = height;
+        var maxX = -1;
+        var maxY = -1;
+        var alphaPixels = 0;
+        for (var y = 0; y < height; y += 1) {
+            for (var x = 0; x < width; x += 1) {
+                var alpha = pixels[(y * width + x) * 4 + 3];
+                if (alpha <= 8) continue;
+                alphaPixels += 1;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+        }
+        var hasContent = maxX >= minX && maxY >= minY;
+        var bbox = hasContent ? {
+            x: minX,
+            y: minY,
+            width: maxX - minX + 1,
+            height: maxY - minY + 1
+        } : { x: 0, y: 0, width: 0, height: 0 };
+        var edge = 2;
+        return {
+            width: width,
+            height: height,
+            alphaPixels: alphaPixels,
+            alphaRatio: alphaPixels / Math.max(1, width * height),
+            bbox: bbox,
+            bboxRatio: bbox.width * bbox.height / Math.max(1, width * height),
+            touchesEdge: hasContent && (minX <= edge || minY <= edge || maxX >= width - 1 - edge || maxY >= height - 1 - edge)
+        };
+    }
+
+    function itemFields(item, gender) {
+        var fields = item && item.fieldsByGender && (item.fieldsByGender[gender] || item.fieldsByGender['男']);
+        return fields ? Object.keys(fields) : [];
+    }
+
+    function unique(values) {
+        var seen = {};
+        return values.filter(function(value) {
+            if (!value || seen[value]) return false;
+            seen[value] = true;
+            return true;
+        });
+    }
+
+    function distinctFrameUris(frames) {
+        var seen = {};
+        return (frames || []).filter(function(frame) {
+            var uri = frame && frame.uri;
+            if (!uri || seen[uri]) return false;
+            seen[uri] = true;
+            return true;
+        }).length;
+    }
+
+    function entryHasMotion(entry) {
+        if (!entry) return false;
+        var playback = String(entry.playback || '');
+        if (playback.indexOf('animation') >= 0 || entry.loop === true) return true;
+        if (playback !== 'static' && playback !== 'static-first-frame' &&
+            distinctFrameUris(entry.timelineFrames || entry.frames) > 1) return true;
+        var layers = entry.nestedAnimation && entry.nestedAnimation.layers || [];
+        return layers.some(function(layer) {
+            return distinctFrameUris(layer.timelineFrames || layer.frames) > 1;
+        });
+    }
+
+    function appearanceForGender(gender) {
+        return {
+            '脸型': gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型'
+        };
+    }
+
+    function weaponSourceFor(options) {
+        var item = manifest.items[options.itemName];
+        return CraftingInspector.resolveProductSource({
+            name: options.itemName,
+            icon: options.iconName || options.itemName,
+            majorType: '武器',
+            use: item && item.use || options.use || '',
+            actionType: options.actionType || ''
+        }, options.gender || '男', manifest);
+    }
+
+    function stateFor(options) {
+        var item = manifest.items[options.itemName];
+        if (!item) throw new Error('dressup item missing: ' + options.itemName);
+        var gender = options.gender || '男';
+        var use = item.use || options.use || '';
+        var fields = itemFields(item, gender);
+        var fitFields = fields.slice(0);
+        var drawFields = fields.slice(0);
+        var stateLabel = '空手站立';
+        var zoom = 0.92;
+        var margin = 20;
+
+        if (options.kind === 'weapon') {
+            var weaponSource = weaponSourceFor(options);
+            if (weaponSource.kind !== 'weapon') {
+                throw new Error('weapon specialization unavailable: ' + options.itemName + ' ' + weaponSource.reason);
+            }
+            if (weaponSource.composition === 'dual-blade' || weaponSource.composition === 'blade-sheath') {
+                var compositeState = CraftingInspector.buildStateForSource(weaponSource, manifest);
+                compositeState.composition = weaponSource.composition;
+                compositeState.components = weaponSource.components.slice(0);
+                return compositeState;
+            }
+            var weaponField = WEAPON_FIELD[use];
+            if (weaponField && fields.indexOf(weaponField) >= 0) {
+                fitFields = [weaponField];
+                drawFields = [weaponField];
+            }
+            stateLabel = WEAPON_STATE[use] || '空手站立';
+            zoom = use === '长枪' ? 0.96 : 0.92;
+            margin = use === '长枪' ? 14 : 18;
+        } else if (options.composition === 'focus') {
+            drawFields = unique(fields.concat(ARMOR_FOCUS_CONTEXT[use] || []));
+            fitFields = fields.slice(0);
+            zoom = 0.88;
+            margin = 24;
+        } else {
+            drawFields = unique((ARMOR_CONTEXT[use] || fields).concat(fields));
+            fitFields = drawFields.slice(0);
+        }
+
+        return DressupDollRenderer.buildStateFromEquipment(manifest, {
+            gender: gender,
+            equipment: { preview: options.itemName },
+            appearance: appearanceForGender(gender),
+            fitFields: fitFields,
+            drawFields: drawFields,
+            rig: 'battle',
+            stateLabel: stateLabel,
+            attackMode: use,
+            zoom: zoom,
+            margin: margin
+        });
+    }
+
+    async function renderDressup(options) {
+        if (options.kind === 'weapon') {
+            var weaponSource = weaponSourceFor(options);
+            if (weaponSource.kind !== 'weapon') {
+                throw new Error('weapon specialization unavailable: ' + options.itemName + ' ' + weaponSource.reason);
+            }
+            var item = manifest.items[options.itemName];
+            var gender = options.gender || '男';
+            var fields = item && item.fieldsByGender && (item.fieldsByGender[gender] || item.fieldsByGender['男']);
+            var field = WEAPON_FIELD[item && item.use || options.use || ''];
+            var skinKey = fields && (fields[field] || fields[Object.keys(fields)[0]]);
+            var entry = skinKey && manifest.skinKeys[skinKey];
+            var frames = entry && (entry.timelineFrames || entry.frames) || [];
+            var frame = frames[0] || (entry && entry.export ? entry.export : null);
+            if (weaponSource.composition === 'single' && frame && frame.uri) {
+                var direct = await renderIcon({
+                    uri: new URL(frame.uri, manifest.__baseUrl).href,
+                    fitAlpha: true,
+                    margin: 14
+                });
+                if (direct.metrics.alphaPixels > 120) {
+                    direct.render = {
+                        gender: gender,
+                        rig: 'product-direct',
+                        stateLabel: 'static-first-frame',
+                        holders: 1,
+                        totalHolders: 1,
+                        animated: entryHasMotion(entry),
+                        missing: 0,
+                        pendingImages: 0,
+                        failedImages: 0,
+                        skinKey: skinKey
+                    };
+                    direct.state = {
+                        gender: gender,
+                        fitFields: [field],
+                        drawFields: [field],
+                        rig: 'product-direct',
+                        stateLabel: 'static-first-frame',
+                        composition: 'single',
+                        components: [{role:'primary', field:field, skinKey:skinKey}]
+                    };
+                    return direct;
+                }
+            }
+        }
+        var state = stateFor(options);
+        var isArmorFocus = options.kind === 'armor' && options.composition === 'focus';
+        var renderCanvas = isArmorFocus ? hiResCanvas : canvas;
+        var activeRenderer = isArmorFocus ? hiResRenderer : renderer;
+        var meta = null;
+        for (var attempt = 0; attempt < 80; attempt += 1) {
+            meta = activeRenderer.render(state);
+            var sourceMetrics = alphaMetrics(renderCanvas);
+            if (meta && meta.pendingImages === 0 && sourceMetrics.alphaPixels > 120) {
+                if (isArmorFocus) {
+                    var composite = document.createElement('canvas');
+                    composite.width = renderCanvas.width;
+                    composite.height = renderCanvas.height;
+                    composite.getContext('2d').drawImage(renderCanvas, 0, 0);
+
+                    var equipmentState = {};
+                    Object.keys(state).forEach(function(key) { equipmentState[key] = state[key]; });
+                    equipmentState.drawFields = (state.fitFields || []).slice(0);
+                    var equipmentMeta = activeRenderer.render(equipmentState);
+                    var equipmentMetrics = alphaMetrics(renderCanvas);
+                    if (!equipmentMeta || equipmentMeta.pendingImages !== 0 || equipmentMetrics.alphaPixels <= 120) {
+                        await delay(40);
+                        continue;
+                    }
+
+                    var pixelRatio = renderCanvas.width / 256;
+                    var padding = 18 * pixelRatio;
+                    var equipmentBox = equipmentMetrics.bbox;
+                    var cropX = Math.max(0, Math.floor(equipmentBox.x - padding));
+                    var cropY = Math.max(0, Math.floor(equipmentBox.y - padding));
+                    var cropRight = Math.min(renderCanvas.width, Math.ceil(equipmentBox.x + equipmentBox.width + padding));
+                    var cropBottom = Math.min(renderCanvas.height, Math.ceil(equipmentBox.y + equipmentBox.height + padding));
+                    var cropWidth = Math.max(1, cropRight - cropX);
+                    var cropHeight = Math.max(1, cropBottom - cropY);
+                    var outputScale = Math.min(256 / cropWidth, 256 / cropHeight);
+                    var outputWidth = Math.max(1, Math.round(cropWidth * outputScale));
+                    var outputHeight = Math.max(1, Math.round(cropHeight * outputScale));
+                    canvas.width = 256;
+                    canvas.height = 256;
+                    var outputCtx = canvas.getContext('2d');
+                    outputCtx.setTransform(1, 0, 0, 1, 0, 0);
+                    outputCtx.clearRect(0, 0, 256, 256);
+                    outputCtx.imageSmoothingEnabled = true;
+                    outputCtx.imageSmoothingQuality = 'high';
+                    outputCtx.drawImage(composite, cropX, cropY, cropWidth, cropHeight,
+                        Math.round((256 - outputWidth) / 2), Math.round((256 - outputHeight) / 2), outputWidth, outputHeight);
+                    return {
+                        dataUrl: canvas.toDataURL('image/png'),
+                        metrics: alphaMetrics(canvas),
+                        sourceMetrics: sourceMetrics,
+                        fitMetrics: equipmentMetrics,
+                        render: meta,
+                        pipeline: {
+                            composition: 'armor-focus',
+                            sourceWidth: renderCanvas.width,
+                            sourceHeight: renderCanvas.height,
+                            outputWidth: 256,
+                            outputHeight: 256,
+                            resampleCount: 1,
+                            crop: { x: cropX, y: cropY, width: cropWidth, height: cropHeight }
+                        },
+                        state: {
+                            gender: state.gender,
+                            fitFields: state.fitFields || [],
+                            drawFields: state.drawFields || [],
+                            rig: state.rig,
+                            stateLabel: state.stateLabel,
+                            composition: state.composition || '',
+                            components: state.components || []
+                        }
+                    };
+                }
+                var source = document.createElement('canvas');
+                source.width = canvas.width;
+                source.height = canvas.height;
+                source.getContext('2d').drawImage(canvas, 0, 0);
+                var bbox = sourceMetrics.bbox;
+                var margin = options.kind === 'weapon' ? 14 : 18;
+                var scale = Math.min((canvas.width - margin * 2) / bbox.width, (canvas.height - margin * 2) / bbox.height);
+                var dw = Math.max(1, Math.round(bbox.width * scale));
+                var dh = Math.max(1, Math.round(bbox.height * scale));
+                var ctx = canvas.getContext('2d');
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(source, bbox.x, bbox.y, bbox.width, bbox.height,
+                    Math.round((canvas.width - dw) / 2), Math.round((canvas.height - dh) / 2), dw, dh);
+                return {
+                    dataUrl: canvas.toDataURL('image/png'),
+                    metrics: alphaMetrics(canvas),
+                    sourceMetrics: sourceMetrics,
+                    render: meta,
+                    state: {
+                        gender: state.gender,
+                        fitFields: state.fitFields || [],
+                        drawFields: state.drawFields || [],
+                        rig: state.rig,
+                        stateLabel: state.stateLabel,
+                        composition: state.composition || '',
+                        components: state.components || []
+                    },
+                    pipeline: options.kind === 'weapon' ? {
+                        composition: state.composition || 'weapon-rig',
+                        componentCount: state.components ? state.components.length : 1,
+                        resampleCount: 1
+                    } : null
+                };
+            }
+            await delay(40);
+        }
+        return {
+            dataUrl: canvas.toDataURL('image/png'),
+            metrics: alphaMetrics(canvas),
+            render: meta,
+            error: 'render timeout'
+        };
+    }
+
+    async function renderIcon(options) {
+        var image = await loadImage(options.uri);
+        var source = document.createElement('canvas');
+        source.width = image.naturalWidth;
+        source.height = image.naturalHeight;
+        var sourceCtx = source.getContext('2d');
+        sourceCtx.drawImage(image, 0, 0);
+        var sourceMetrics = alphaMetrics(source);
+        var bbox = sourceMetrics.bbox;
+        var ctx = canvas.getContext('2d');
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        var sx = options.fitAlpha ? bbox.x : 0;
+        var sy = options.fitAlpha ? bbox.y : 0;
+        var sw = options.fitAlpha ? bbox.width : image.naturalWidth;
+        var sh = options.fitAlpha ? bbox.height : image.naturalHeight;
+        var margin = options.margin === undefined ? 18 : Number(options.margin);
+        if (sw > 0 && sh > 0) {
+            var scale = Math.min((canvas.width - margin * 2) / sw, (canvas.height - margin * 2) / sh);
+            var dw = Math.max(1, Math.round(sw * scale));
+            var dh = Math.max(1, Math.round(sh * scale));
+            var dx = Math.round((canvas.width - dw) / 2);
+            var dy = Math.round((canvas.height - dh) / 2);
+            ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+        }
+        return {
+            dataUrl: options.returnImage === false ? '' : canvas.toDataURL('image/png'),
+            metrics: alphaMetrics(canvas),
+            source: {
+                width: image.naturalWidth,
+                height: image.naturalHeight,
+                metrics: sourceMetrics
+            }
+        };
+    }
+
+    function render(options) {
+        statusEl.textContent = options.mode + ': ' + (options.itemName || options.uri || '');
+        if (options.mode === 'dressup') return renderDressup(options);
+        if (options.mode === 'icon') return renderIcon(options);
+        return Promise.reject(new Error('unknown render mode: ' + options.mode));
+    }
+
+    var ready = DressupDollRenderer.loadManifest(manifestUrl).then(function(data) {
+        manifest = data;
+        renderer = DressupDollRenderer.create(canvas, {
+            manifest: manifest,
+            width: 256,
+            height: 256,
+            fps: 24,
+            animate: false
+        });
+        hiResRenderer = DressupDollRenderer.create(hiResCanvas, {
+            manifest: manifest,
+            width: 256,
+            height: 256,
+            pixelRatio: 2,
+            fps: 24,
+            animate: false
+        });
+        statusEl.textContent = 'ready';
+        return true;
+    }).catch(function(error) {
+        statusEl.textContent = String(error && error.stack || error);
+        throw error;
+    });
+
+    window.CraftingProductRenderHarness = {
+        ready: ready,
+        render: render
+    };
+})();
+</script>
+</body>
+</html>

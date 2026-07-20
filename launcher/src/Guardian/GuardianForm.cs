@@ -111,16 +111,23 @@ namespace CF7Launcher.Guardian
         /// - bootstrapWebDir != null：正常模式。创建 BootstrapPanel 启动期可见，FlashHostPanel 隐藏.
         /// - bootstrapWebDir == null：bus-only 模式。无 BootstrapPanel，FlashHostPanel 直接可见.
         /// </summary>
-        public GuardianForm() : this(null, false, "") { }
+        public GuardianForm() : this(null, false, "", false) { }
 
         public GuardianForm(string bootstrapWebDir)
-            : this(bootstrapWebDir, false, "")
+            : this(bootstrapWebDir, false, "", false)
         {
         }
 
         public GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs)
+            : this(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs, false)
         {
-            InitializeComponent(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs);
+        }
+
+        public GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu,
+            string bootstrapWebView2AdditionalArgs, bool isolatedRuntimeCandidate)
+        {
+            InitializeComponent(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs,
+                isolatedRuntimeCandidate);
             SetupTrayIcon();
             SetupHotkeys();
             SetupForegroundWatchdog();
@@ -196,9 +203,17 @@ namespace CF7Launcher.Guardian
         //  布局
         // ============================================================
 
-        private void InitializeComponent(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs)
+        internal static string SelectWindowTitle(bool isolatedRuntimeCandidate)
         {
-            this.Text = "CF7:FlashNight";
+            return isolatedRuntimeCandidate
+                ? "CF7:FlashNight — 隔离候选 / 未部署"
+                : "CF7:FlashNight";
+        }
+
+        private void InitializeComponent(string bootstrapWebDir, bool bootstrapWebView2DisableGpu,
+            string bootstrapWebView2AdditionalArgs, bool isolatedRuntimeCandidate)
+        {
+            this.Text = SelectWindowTitle(isolatedRuntimeCandidate);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.AutoScaleMode = AutoScaleMode.None;

@@ -639,6 +639,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var cap:Number = getEnhancementCap();
         var hardCap:Number = EquipmentUtil.getMaxLevel();
         return {
+            gender:buildGender(),
             source:sourceRef,
             equipment:buildEquipmentProjection(item, item.value, item.lastUpdate),
             enhance:{currentLevel:level, maxLevel:cap, availableMaxLevel:cap, hardMaxLevel:hardCap},
@@ -647,6 +648,10 @@ class org.flashNight.arki.item.EquipmentTuningService {
             materialRevision:materials.getMutationRevision(),
             inventoryRevision:source.inventory.getMutationRevision()
         };
+    }
+
+    private static function buildGender():String {
+        return String(_root.性别) == "女" ? "女" : "男";
     }
 
     private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number):Object {

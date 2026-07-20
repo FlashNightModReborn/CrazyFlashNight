@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>装备检视器全量视觉验收</title>
+<link rel="stylesheet" href="../../../css/workbench/core.css">
+<link rel="stylesheet" href="../../../css/workbench/equipment-inspector.css">
+<link rel="stylesheet" href="review.css">
+</head>
+<body>
+<header class="review-toolbar">
+    <div class="review-heading">
+        <h1>装备检视器全量视觉验收</h1>
+        <p id="summary">正在加载原始装备定义……</p>
+    </div>
+    <div class="review-controls">
+        <label>类型
+            <select id="kind-filter">
+                <option value="all">全部</option>
+                <option value="weapon">武器</option>
+                <option value="armor">防具</option>
+            </select>
+        </label>
+        <label>状态
+            <select id="status-filter">
+                <option value="all">全部</option>
+                <option value="pending">存在未验收分支</option>
+                <option value="reviewed">全部分支已处置</option>
+                <option value="warning">自动告警</option>
+                <option value="live">需 live 动效验收</option>
+                <option value="duplicate">重名定义</option>
+            </select>
+        </label>
+        <label>搜索
+            <input id="search" type="search" placeholder="名称 / 文件 / actiontype">
+        </label>
+        <button id="import-button" type="button">导入验收</button>
+        <button id="export-button" type="button" class="primary">导出 JSON</button>
+        <input id="import-file" type="file" accept="application/json" hidden>
+    </div>
+    <div class="review-progress">
+        <span id="progress-label">0 / 0 required 分支</span>
+        <progress id="progress" value="0" max="1"></progress>
+    </div>
+</header>
+
+<main id="review-list" aria-live="polite"></main>
+
+<dialog id="preview-dialog">
+    <form method="dialog"><button class="dialog-close" aria-label="关闭静态预览">×</button></form>
+    <h2 id="dialog-title"></h2>
+    <img id="dialog-image" alt="">
+    <p id="dialog-caption"></p>
+</dialog>
+
+<script>window.CF7_ICON_ROOT = '/launcher/web/icons/';</script>
+<script src="../../asset-timeline.js"></script>
+<script src="../../icons.js"></script>
+<script src="../../dressup-doll-renderer.js"></script>
+<script src="../../equipment-inspector.js"></script>
+<script src="review.js"></script>
+</body>
+</html>

@@ -61,6 +61,8 @@
       "fixedFiles": [
         ".github/workflows/runtime-bundle-integrity.yml",
         ".github/workflows/runtime-cloud-builder.yml",
+        "automation/dev.ps1",
+        "automation/start.ps1",
         "config/build/contribution-lanes.v1.json",
         "config/build/main-branch-admission.v2.json",
         "config/build/native-change-gate.v1.json",
@@ -69,6 +71,7 @@
         "config/build/runtime-inputs.v2.json",
         "config/build/runtime-v2-migration-bootstrap.json",
         "CrazyFlashNight.sln",
+        "本地开发启动.cmd",
         "launcher/build.ps1",
         "tools/assert-optimized.cs",
         "tools/audit-map-scale-experience.js",
@@ -86,6 +89,7 @@
         "tools/invoke-runtime-build-worker.ps1",
         "tools/invoke-runtime-github-build.ps1",
         "tools/lib/read-css-bundle.js",
+        "tools/lib/runtime-process-identity.js",
         "tools/materialize-runtime-build-inputs.ps1",
         "tools/new-runtime-build-request.ps1",
         "tools/new-runtime-github-build-envelope.ps1",
@@ -108,6 +112,8 @@
         "tools/test-runtime-build-consensus.ps1",
         "tools/test-runtime-build-queue.ps1",
         "tools/test-runtime-build-v2.ps1",
+        "tools/test-runtime-dev-entry.ps1",
+        "tools/test-runtime-entry-guardrails.ps1",
         "tools/test-runtime-github-attestation.ps1",
         "tools/test-invoke-runtime-github-build.ps1",
         "tools/test-main-branch-admission.ps1",
@@ -136,6 +142,18 @@
         "launcher/web/modules/arena-custom-presets.js"
       ],
       "trees": [
+        {
+          "path": "tools/arena-calibration",
+          "includeExtensions": [".js", ".json"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "tools/equipment-tuning",
+          "includeExtensions": [".js"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
         {
           "path": "amf0-help/sol_parser",
           "includeExtensions": [".rs", ".toml", ".lock", ".sol"],

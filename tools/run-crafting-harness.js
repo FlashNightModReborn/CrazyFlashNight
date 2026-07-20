@@ -11,6 +11,9 @@ const INVENTORY_WORKBENCH_MODULES=[
 ];
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
+  const equipmentInspector=fs.readFileSync(path.join(WEB,'modules','equipment-inspector.js'),'utf8');
+  const craftingInspector=fs.readFileSync(path.join(WEB,'modules','crafting-inspector.js'),'utf8');
+  const dressupRenderer=fs.readFileSync(path.join(WEB,'modules','dressup-doll-renderer.js'),'utf8');
   const runtime=fs.readFileSync(path.join(WEB,'modules','crafting-runtime.js'),'utf8');
   const panelRuntime=fs.readFileSync(path.join(WEB,'modules','panel-runtime.js'),'utf8');
   const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
@@ -31,10 +34,62 @@ function audit(){
   if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")||!css.includes('.crafting-commit-btn')||!css.includes('.crafting-catalog-grid::-webkit-scrollbar'))throw new Error('lazy registry or crafting skin missing');
   if(!css.includes('.item-filter-catalog .item-filter-option')||!css.includes('grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr)')||!css.includes('.crafting-recipe-card.craftable'))throw new Error('shared filter, 60:40 layout, or craftable marker skin missing');
   if(!css.includes('#panel-container[data-panel="crafting"] #panel-content')||!css.includes('#panel-container[data-panel="crafting"] #panel-backdrop'))throw new Error('crafting full-screen anchor contract missing');
+  if(!panel.includes('CraftingInspector.open')||!panel.includes('gender: _snapshot && _snapshot.gender')||!panel.includes('PanelTooltip.hide()'))throw new Error('crafting inspector entry or gender contract missing');
+  const craftingRegistry=registry.slice(registry.indexOf("registerLazy('crafting'"),registry.indexOf("registerLazy('skills'"));
+  const orderedInspectorDeps=['modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/equipment-inspector.js','modules/crafting-inspector.js'];
+  let previousDependencyIndex=-1;
+  orderedInspectorDeps.forEach(dependency=>{
+    const dependencyIndex=craftingRegistry.indexOf("'"+dependency+"'");
+    if(dependencyIndex<=previousDependencyIndex)throw new Error('crafting inspector lazy dependency order missing: '+dependency);
+    previousDependencyIndex=dependencyIndex;
+  });
+  if(!craftingInspector.includes('EquipmentInspector.open(copyOptions(options))')||
+      !craftingInspector.includes('EquipmentInspector.resolveItemSource(output, gender, manifest)')||
+      !craftingInspector.includes("result.kind = 'crafting-inspector'")||
+      !craftingInspector.includes("result.context = 'crafting'"))throw new Error('CraftingInspector compatibility adapter contract missing');
+  if(!equipmentInspector.includes("majorType === '武器'")||!equipmentInspector.includes("majorType === '防具'")||!equipmentInspector.includes('attackMode: source.use')||!equipmentInspector.includes('Icons.resolveStatic(iconState.name)'))throw new Error('equipment inspector route, variant, or icon animation contract missing');
+  if(!dressupRenderer.includes('state.directSkinKey')||!dressupRenderer.includes("rig: 'product-direct'")
+      ||!dressupRenderer.includes('strictFields')||!equipmentInspector.includes("'刀2_装扮'")||!equipmentInspector.includes("'刀3_装扮'")
+      ||!equipmentInspector.includes('ignoreCssTransforms: true')||!dressupRenderer.includes('animationFrameInterval')
+      ||!dressupRenderer.includes('setPixelRatio: function')||!equipmentInspector.includes('renderer.setPixelRatio(currentPixelRatio())')
+      ||!equipmentInspector.includes("'holder_contract_failed'")||!equipmentInspector.includes("'asset_load_failed'"))throw new Error('strict composite paper-doll renderer, 24fps throttle, responsive backing, or fail-safe fallback contract missing');
 }
 function edge(){return[
   path.join(process.env['ProgramFiles(x86)']||'C:\\Program Files (x86)','Microsoft','Edge','Application','msedge.exe'),
   path.join(process.env.ProgramFiles||'C:\\Program Files','Microsoft','Edge','Application','msedge.exe')
 ].find(fs.existsSync)}
 function server(){return new Promise(resolve=>{const s=http.createServer((req,res)=>{const pathname=decodeURIComponent(url.parse(req.url).pathname);const file=path.normalize(path.join(WEB,pathname));const rel=path.relative(WEB,file);if(rel.startsWith('..')||path.isAbsolute(rel)){res.writeHead(403);res.end();return}fs.readFile(file,(err,data)=>{if(err){res.writeHead(404);res.end();return}const ext=path.extname(file);res.writeHead(200,{'Content-Type':ext==='.html'?'text/html; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':'application/octet-stream'});res.end(data)})});s.listen(0,'127.0.0.1',()=>resolve(s))})}
-(async()=>{audit();if(!fs.existsSync(PLAYWRIGHT))throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');const executablePath=edge();if(!executablePath)throw new Error('Microsoft Edge not found');const {chromium}=require(PLAYWRIGHT),s=await server(),browser=await chromium.launch({executablePath,headless:true});try{const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[],failed=[];page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));await page.goto('http://127.0.0.1:'+s.address().port+'/modules/crafting/dev/harness.html',{waitUntil:'load'});await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000});const result=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));if(result.error)throw new Error(result.error);if(errors.length)throw new Error('page errors: '+errors.join(' | '));if(failed.length)throw new Error('failed requests: '+failed.join(' | '));if(!result.result||result.result.passed!==result.result.total){const bad=result.result?result.result.checks.filter(c=>!c.ok):[];throw new Error('harness failed: '+JSON.stringify(bad))}console.log('Crafting harness '+result.result.passed+'/'+result.result.total+' passed')}finally{await browser.close();await new Promise(r=>s.close(r))}})().catch(error=>{console.error(error.stack||error);process.exit(1)});
+async function runViewport(browser,serverInstance,viewport){
+  const page=await browser.newPage({viewport}),errors=[],failed=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  page.on('requestfailed',request=>failed.push(request.url()));
+  try{
+    await page.goto('http://127.0.0.1:'+serverInstance.address().port+'/modules/crafting/dev/harness.html',{waitUntil:'load'});
+    await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:25000});
+    const result=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));
+    if(result.error)throw new Error(viewport.width+'x'+viewport.height+': '+result.error);
+    if(errors.length)throw new Error(viewport.width+'x'+viewport.height+' page errors: '+errors.join(' | '));
+    if(failed.length)throw new Error(viewport.width+'x'+viewport.height+' failed requests: '+failed.join(' | '));
+    if(!result.result||result.result.passed!==result.result.total){
+      const bad=result.result?result.result.checks.filter(check=>!check.ok):[];
+      throw new Error(viewport.width+'x'+viewport.height+' harness failed: '+JSON.stringify(bad));
+    }
+    return result.result;
+  }finally{await page.close()}
+}
+(async()=>{
+  audit();
+  if(!fs.existsSync(PLAYWRIGHT))throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');
+  const executablePath=edge();if(!executablePath)throw new Error('Microsoft Edge not found');
+  const {chromium}=require(PLAYWRIGHT),serverInstance=await server(),browser=await chromium.launch({executablePath,headless:true});
+  const viewports=[{width:1024,height:576},{width:1366,height:768},{width:1920,height:1080}];
+  try{
+    let first=null;
+    for(const viewport of viewports){
+      const result=await runViewport(browser,serverInstance,viewport);
+      if(!first)first=result;
+      else if(result.total!==first.total)throw new Error('harness check count changed across viewports');
+    }
+    console.log('Crafting harness '+first.passed+'/'+first.total+' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', '));
+  }finally{await browser.close();await new Promise(resolve=>serverInstance.close(resolve))}
+})().catch(error=>{console.error(error.stack||error);process.exit(1)});

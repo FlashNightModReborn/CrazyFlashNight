@@ -14,7 +14,7 @@
 <body>
 <div id="host"></div><pre id="qa-output">running…</pre>
 <script>
-window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;
+window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;window.__inspectorCalls=[];window.__inspectorOpen=false;window.__inspectorCloseCount=0;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));var delay=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce?80:0;if(delay)__delayEnhancePreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
@@ -33,9 +33,9 @@ window.PanelTooltip={
 function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
 var writeEpoch=4,transaction=0,materialCount=208589;
 var slots={
-  2:{physicalSlot:2,slotLease:'lease.2.1',occupied:true,item:{name:'测试枪',displayName:'测试枪',icon:'测试枪',itemKind:'equipment',majorType:'weapon',enhancementLevel:5,use:'手枪'}},
-  3:{physicalSlot:3,slotLease:'lease.3.1',occupied:true,item:{name:'转换枪',displayName:'转换枪',icon:'转换枪',itemKind:'equipment',majorType:'weapon',enhancementLevel:8,use:'手枪'}},
-  4:{physicalSlot:4,slotLease:'lease.4.1',occupied:true,item:{name:'同级枪',displayName:'同级枪',icon:'同级枪',itemKind:'equipment',majorType:'weapon',enhancementLevel:6,use:'手枪'}}
+  2:{physicalSlot:2,slotLease:'lease.2.1',occupied:true,item:{name:'炎寒对剑',displayName:'炎寒对剑',icon:'炎寒对剑',itemKind:'equipment',majorType:'武器',enhancementLevel:5,use:'刀',actionType:'双刀'}},
+  3:{physicalSlot:3,slotLease:'lease.3.1',occupied:true,item:{name:'血刀配鞘版',displayName:'血刀-入鞘',icon:'血刀配鞘版',itemKind:'equipment',majorType:'武器',enhancementLevel:8,use:'刀',actionType:'疾影'}},
+  4:{physicalSlot:4,slotLease:'lease.4.1',occupied:true,item:{name:'同级刀',displayName:'同级刀',icon:'同级刀',itemKind:'equipment',majorType:'武器',enhancementLevel:6,use:'刀',actionType:'双刀'}}
 };
 function modCandidates(){
   var grades=[['low','低级','#006600'],['medium','中等','#996600'],['high','高等','#0099FF'],['special','特殊','#FFFF00']];
@@ -45,7 +45,7 @@ function modCandidates(){
   return list;
 }
 function modName(candidateKey){var candidates=modCandidates();for(var i=0;i<candidates.length;i++){if(candidates[i].candidateKey===candidateKey)return candidates[i].itemName}return''}
-function snapshot(message){var source=message.payload.source,item=slots[source.slot].item;return{source:source,equipment:{name:item.name,level:item.enhancementLevel,tier:'二阶',mods:['基础导轨'],lastUpdate:10,maxLevel:9,hardMaxLevel:13},enhance:{currentLevel:item.enhancementLevel,maxLevel:9,availableMaxLevel:9,hardMaxLevel:13},tierCandidates:[{candidateKey:'tier|二阶复合防御组件',itemName:'二阶复合防御组件',tierName:'二阶',owned:1,available:true}],modCandidates:modCandidates(),materials:[{itemName:'强化石',count:materialCount}]}}
+function snapshot(message){var source=message.payload.source,item=slots[source.slot].item;return{gender:'女',source:source,equipment:{name:item.name,level:item.enhancementLevel,tier:'二阶',mods:['基础导轨'],lastUpdate:10,maxLevel:9,hardMaxLevel:13},enhance:{currentLevel:item.enhancementLevel,maxLevel:9,availableMaxLevel:9,hardMaxLevel:13},tierCandidates:[{candidateKey:'tier|二阶复合防御组件',itemName:'二阶复合防御组件',tierName:'二阶',owned:1,available:true}],modCandidates:modCandidates(),materials:[{itemName:'强化石',count:materialCount}]}}
 function projection(slot,level,mods){var item=slots[slot].item;return{source:{containerId:'背包',slot:slot,expectedLease:slots[slot].slotLease},equipment:{name:item.name,displayName:item.displayName,icon:item.icon,type:'武器',use:item.use,level:level,tier:'二阶',mods:mods||['基础导轨'],lastUpdate:10,maxLevel:9,hardMaxLevel:13}}}
 function base(message){return{type:'panel_resp',panel:'workbench',domain:'equipment_tuning',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,viewSessionId:message.payload.viewSessionId,v:1,writeEpoch:writeEpoch}}
 function respond(message){var result=base(message);
@@ -94,13 +94,13 @@ function respond(message){var result=base(message);
     var projectionRequests=[],projectionSeq=0;
     var projectionCoordinator=new InventoryRuntime.InventoryCoordinator({
       requests:[{containerId:'背包',offset:0,limit:50,filterKey:'material',filterSpec:{branch:'category',major:'material'}}],
-      request:function(cmd,payload,callback){var request=payload.requests[0],candidateMode=request.filterSpec&&request.filterSpec.use==='手枪';projectionRequests.push(JSON.parse(JSON.stringify(request)));callback({success:true,snapshots:[{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:candidateMode?2:0,filterKey:request.filterKey,filterSpec:request.filterSpec,snapshotSeq:++projectionSeq,offset:0,limit:candidateMode?2:0,slots:candidateMode?[slots[2],slots[3]]:[]}]})}
+      request:function(cmd,payload,callback){var request=payload.requests[0],candidateMode=request.filterSpec&&request.filterSpec.use==='刀';projectionRequests.push(JSON.parse(JSON.stringify(request)));callback({success:true,snapshots:[{containerId:'背包',capacity:50,accessibleCapacity:50,viewCapacity:candidateMode?2:0,filterKey:request.filterKey,filterSpec:request.filterSpec,snapshotSeq:++projectionSeq,offset:0,limit:candidateMode?2:0,slots:candidateMode?[slots[2],slots[3]]:[]}]})}
     });
     var projectionOpen=null,projectionRead=null;
     projectionCoordinator.open(function(result){projectionOpen=result});
     var visibleRequestBefore=JSON.stringify(projectionCoordinator.getRequest('背包'));
     var visibleWindowBefore=JSON.stringify(projectionCoordinator.getWindow('背包').filterSpec);
-    projectionCoordinator.readProjection({containerId:'背包',offset:0,limit:50,filterKey:'weapon',filterSpec:{branch:'category',major:'weapon',use:'手枪'}},function(result){projectionRead=result});
+    projectionCoordinator.readProjection({containerId:'背包',offset:0,limit:50,filterKey:'weapon',filterSpec:{branch:'category',major:'weapon',use:'刀'}},function(result){projectionRead=result});
     ok('isolated candidate projection preserves visible bag request and window',projectionOpen&&projectionOpen.success&&projectionRead&&projectionRead.success&&projectionRead.snapshot.slots.length===2&&JSON.stringify(projectionCoordinator.getRequest('背包'))===visibleRequestBefore&&JSON.stringify(projectionCoordinator.getWindow('背包').filterSpec)===visibleWindowBefore&&projectionRequests.length===2);
     projectionCoordinator.close();
 
@@ -110,16 +110,25 @@ function respond(message){var result=base(message);
       send:function(message){return Bridge.send(message)},toast:function(message){Toast.add(message)},
       densityController:density,
       loadConversionCandidates:function(item,source,callback){conversionEvents.push({use:item&&item.use,slot:source&&source.slot});callback({success:true,candidates:[slots[3],slots[4]],count:2});return true},
+      openInspector:function(item,gender,role){__inspectorCalls.push({item:JSON.parse(JSON.stringify(item)),gender:gender,role:role});__inspectorOpen=true;return true},
+      closeInspector:function(){if(!__inspectorOpen)return false;__inspectorOpen=false;__inspectorCloseCount++;return true},
       beginWrite:function(owner){if(__writeHandle)return false;var handle={id:++__writeSeq};__writeHandle=handle;__writes.push({kind:'begin',owner:owner,handle:handle});return handle},
       completeWrite:function(handle,refresh,callback){if(!handle||handle!==__writeHandle)return false;__writeHandle=null;__writes.push({kind:'complete',refresh:refresh,handle:handle});setTimeout(function(){if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})},0);return true},
       refreshInventory:function(callback){__writes.push({kind:'retry-refresh'});setTimeout(function(){__refreshRetryCount++;slots[2].slotLease='lease.2.recovered.'+__refreshRetryCount;callback({success:true,refreshed:true})},0);return true},
       resolveSlot:function(_,slot){return slots[slot]||null}});
     window.__tuningView=view;
     view.mount(document.getElementById('host'));ok('opens Host-bound tuning session',view.openSession('panel.harness.1'));
-    view.handleInventorySelection(slots[2]);await until(function(){return view.debugState().hasPreview});
+    view.handleInventorySelection(slots[2]);ok('inspect entry stays disabled until authoritative snapshot arrives',document.querySelector('.equipment-tuning-inspect-trigger').disabled);
+    await until(function(){return view.debugState().hasSnapshot&&!view.debugState().readPending&&!view.debugState().hasPreview});
+    ok('queued automatic preview keeps inspect disabled so modal focus owner cannot be replaced',document.querySelector('.equipment-tuning-inspect-trigger').disabled&&!view.inspectCurrentEquipment());
+    await until(function(){return view.debugState().hasPreview});
     ok('mod operations default to safe confirmation mode',view.debugState().modConfirmationMode==='safe');
     ok('snapshot uses strict domain envelope',__sent[0].domain==='equipment_tuning'&&__sent[0].panel==='workbench'&&__sent[0].panelInstanceId==='panel.harness.1'&&__sent[0].payload.viewSessionId);
-    ok('renders authoritative equipment summary',document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('测试枪')>=0&&document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('+5')>=0);
+    ok('renders authoritative equipment summary',document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('炎寒对剑')>=0&&document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('+5')>=0);
+    var sourceInspect=document.querySelector('.equipment-tuning-inspect-trigger'),sentBeforeSourceInspect=__sent.length;
+    sourceInspect.click();
+    ok('current equipment icon is an accessible inspect button',sourceInspect.tagName==='BUTTON'&&sourceInspect.type==='button'&&!sourceInspect.disabled&&sourceInspect.getAttribute('aria-label').indexOf('炎寒对剑')>=0);
+    ok('current inspect forwards exact item route and authoritative gender without business traffic',__inspectorCalls.length===1&&__inspectorCalls[0].item.name==='炎寒对剑'&&__inspectorCalls[0].item.actionType==='双刀'&&__inspectorCalls[0].gender==='女'&&__inspectorCalls[0].role==='source'&&__sent.length===sentBeforeSourceInspect);
     ok('equipment summary renders installed tier and mod with real item icons',document.querySelectorAll('.equipment-tuning-installed-state .equipment-tuning-status-icon').length===2&&document.querySelector('.equipment-tuning-status-icon.tier [data-icon="二阶复合防御组件"]')&&document.querySelector('.equipment-tuning-status-icon.mod [data-icon="基础导轨"]'));
     __resumeRequired=true;view.requestSnapshot();await until(function(){return __sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId==='tune.host.resume.1'})});await until(function(){return !view.debugState().needsReconcile&&view.debugState().hasPreview});
     ok('Host-stamped recovery hint resumes exact barrier after Web state loss',__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId==='tune.host.resume.1'})&&view.canClose());
@@ -142,13 +151,19 @@ function respond(message){var result=base(message);
     var enhancePreviews=__sent.filter(function(x){return x.cmd==='preview'&&x.payload.operation==='enhance'});
     ok('enhance preview is latest-wins under rapid target changes',enhancePreviews.slice(-2).map(function(x){return x.payload.targetLevel}).join(',')==='8,9'&&document.querySelector('.equipment-tuning-commit').textContent.indexOf('强化至 +9')>=0);
     var tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[1].click();await wait();
-    ok('convert mode excludes same-level equipment while retaining different-level exact-use candidates',conversionEvents.length===1&&conversionEvents[0].use==='手枪'&&view.debugState().source.slot===2&&view.debugState().conversionCandidateCount===1&&document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="3"]')&&!document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="4"]')&&!view.selectConversionTarget(slots[4]));
+    ok('entering convert closes an active inspector exactly once',__inspectorCloseCount===1&&!__inspectorOpen);
+    ok('convert mode excludes same-level equipment while retaining different-level exact-use candidates',conversionEvents.length===1&&conversionEvents[0].use==='刀'&&view.debugState().source.slot===2&&view.debugState().conversionCandidateCount===1&&document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="3"]')&&!document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="4"]')&&!view.selectConversionTarget(slots[4]));
     var conversionCard=document.querySelector('.equipment-tuning-conversion-card'),conversionRect=conversionCard.getBoundingClientRect(),conversionIconRect=conversionCard.querySelector('.kshop-icon').getBoundingClientRect();
     ok('compact conversion candidates reuse 48px item-grid density with level badge',Math.abs(conversionRect.width-48)<0.1&&Math.abs(conversionRect.height-48)<0.1&&Math.abs(conversionIconRect.width-40)<0.1&&Math.abs(conversionIconRect.height-40)<0.1&&getComputedStyle(conversionCard.querySelector('.equipment-tuning-conversion-level')).display!=='none');
     document.querySelector('.equipment-tuning-conversion-card[data-physical-slot="3"]').click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='convert'});
     ok('right-pane convert target click previews immediately',view.debugState().source.slot===2&&view.debugState().target.slot===3&&document.querySelector('.equipment-tuning-conversion-card.selected')&&__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='convert'&&x.payload.target.slot===3}));
+    var targetInspect=document.querySelector('.equipment-tuning-convert-inspect'),sentBeforeTargetInspect=__sent.length,targetBeforeInspect=JSON.stringify(view.debugState().target);
+    targetInspect.click();
+    ok('selected conversion target gets one independent non-nested inspect action',document.querySelectorAll('.equipment-tuning-convert-inspect').length===1&&!document.querySelector('button button')&&targetInspect.getAttribute('aria-label').indexOf('血刀-入鞘')>=0);
+    ok('target inspect preserves dual-holder action metadata and tuning state',__inspectorCalls.length===2&&__inspectorCalls[1].item.name==='血刀配鞘版'&&__inspectorCalls[1].item.actionType==='疾影'&&__inspectorCalls[1].gender==='女'&&__inspectorCalls[1].role==='conversion-target'&&__sent.length===sentBeforeTargetInspect&&JSON.stringify(view.debugState().target)===targetBeforeInspect);
+    ok('materials, tier, mod and conversion candidates do not gain inspect controls',!document.querySelector('.equipment-tuning-conversion-card .equipment-tuning-convert-inspect')&&document.querySelectorAll('.equipment-tuning-inspect-trigger').length===1);
     tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[2].click();await wait();
-    ok('leaving convert only clears the side projection',conversionEvents.length===1&&view.debugState().source.slot===2&&view.debugState().conversionCandidateCount===0&&!document.querySelector('.equipment-tuning-conversion-card'));
+    ok('leaving convert clears the target inspector and only clears the side projection',__inspectorCloseCount===2&&!__inspectorOpen&&conversionEvents.length===1&&view.debugState().source.slot===2&&view.debugState().conversionCandidateCount===0&&!document.querySelector('.equipment-tuning-conversion-card'));
     ok('tier view renders server candidates',document.querySelectorAll('.equipment-tuning-candidate').length===1);
     document.querySelector('.equipment-tuning-candidate').dispatchEvent(new Event('pointerenter'));await until(function(){return PanelTooltip.lastHtml});
     ok('candidate tooltip preserves authoritative intro/desc segments for material auto-split',__sent.some(function(x){return x.cmd==='tooltip'&&x.payload.candidateKey==='tier|二阶复合防御组件'})&&PanelTooltip.lastRichOptions&&PanelTooltip.lastRichOptions.introHTML.indexOf('权威候选说明')>=0&&PanelTooltip.lastRichOptions.descHTML.indexOf('高等材料')>=0&&String(PanelTooltip.lastHtml||'').indexOf('flash-tt-desc')>=0);
@@ -227,11 +242,12 @@ function respond(message){var result=base(message);
     slots[2].item.enhancementLevel=13;view.requestSnapshot();await until(function(){return view.debugState().hasSnapshot&&!view.debugState().readPending&&!view.debugState().hasPreview});
     ok('hard cap renders a terminal +13 state without phantom +14 controls',document.querySelector('.equipment-tuning-level-panel.capped')&&document.querySelector('.equipment-tuning-level-panel.capped').textContent.indexOf('已封顶')>=0&&document.querySelector('.equipment-tuning-view').textContent.indexOf('+14')<0&&!document.querySelector('.equipment-tuning-level-slider'));
     slots[2].item.enhancementLevel=6;view.requestSnapshot();await until(function(){return view.debugState().hasPreview});
+    var closeBeforeDetach=__inspectorCloseCount;ok('current equipment can be reopened before detach',view.inspectCurrentEquipment()&&__inspectorOpen);
     var oldSession=view.debugState().mux.viewSessionId,detachResult=null;ok('trusted detach starts from a closeable view',view.detachSession(function(success){detachResult=success}));
     ok('pending detach blocks local close/rebind',!view.canClose());await until(function(){return detachResult!==null});
     var detachEnvelope=__sent.filter(function(x){return x.cmd==='detach'})[0];
     ok('detach uses strict bound view envelope',!!detachEnvelope&&detachEnvelope.payload.viewSessionId===oldSession&&Object.keys(detachEnvelope.payload).sort().join(',')==='v,viewSessionId');
-    ok('detach acknowledgement clears pending token/session',detachResult===true&&!view.debugState().mux.active&&!view.debugState().source&&!view.debugState().hasPreview&&!view.commit());
+    ok('detach acknowledgement clears pending token/session and live inspector',detachResult===true&&!view.debugState().mux.active&&!view.debugState().source&&!view.debugState().hasPreview&&!view.commit()&&!__inspectorOpen&&__inspectorCloseCount===closeBeforeDetach+1);
     ok('layout stays inside host',document.querySelector('#host').scrollWidth<=document.querySelector('#host').clientWidth+1&&document.querySelector('#host').scrollHeight<=document.querySelector('#host').clientHeight+1,JSON.stringify({w:document.querySelector('#host').scrollWidth,h:document.querySelector('#host').scrollHeight}));
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
     window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)

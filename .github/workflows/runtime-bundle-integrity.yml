@@ -61,6 +61,8 @@ on:
       - .github/workflows/**
       - .github/workflows/runtime-bundle-integrity.yml
       - .github/workflows/runtime-cloud-builder.yml
+      - automation/dev.ps1
+      - automation/start.ps1
       - config/build/**
       - config/build/main-branch-admission.v2.json
       - config/build/native-change-gate.v1.json
@@ -88,6 +90,7 @@ on:
       - launcher/packages.lock.json
       - launcher/src/**
       - runtime/**
+      - tools/arena-calibration/**
       - tools/audit-main-branch-admission.ps1
       - tools/audit-native-cursor-assets.js
       - tools/bootstrap-runtime-**
@@ -96,7 +99,9 @@ on:
       - tools/classify-runtime-**
       - tools/classify-runtime-release-state.ps1
       - tools/get-runtime-**
+      - tools/equipment-tuning/**
       - tools/invoke-runtime-**
+      - tools/lib/runtime-process-identity.js
       - tools/materialize-runtime-**
       - tools/new-runtime-**
       - tools/prepare-launcher-release-**
@@ -116,6 +121,7 @@ on:
       - tools/validate-launcher-release-**
       - tools/validate-launcher-release-policy.ps1
       - tools/verify-runtime-**
+      - 本地开发启动.cmd
   push:
     branches:
       - main

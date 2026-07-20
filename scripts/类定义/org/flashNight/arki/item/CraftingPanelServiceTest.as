@@ -14,6 +14,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         setup();
         testOpenRequestWire();
         testSnapshotProjection();
+        testSnapshotGenderNormalization();
         testSnapshotAvailabilityRefresh();
         testPreviewAuthority();
         testBatchAuthority();
@@ -31,6 +32,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         data["测试图纸"] = itemData("测试图纸", "收集品", "情报", 0);
         data["旧测试枪"] = itemData("旧测试枪", "武器", "手枪", 1);
         data["新测试枪"] = itemData("新测试枪", "武器", "手枪", 12);
+        data["新测试枪"].actiontype = "双刀";
         data["新测试枪"].setId = "test_sidearm";
         data["新测试枪"].setName = "测试侧武器套装";
         data["测试药剂"] = itemData("测试药剂", "消耗品", "药剂", 1);
@@ -71,6 +73,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         _root.金钱 = 1000;
         _root.虚拟币 = 100;
         _root.等级 = 10;
+        _root.性别 = "男";
         _root.主角被动技能 = {
             逆向:{启用:true, 等级:2},
             铁匠:{启用:true, 等级:2}
@@ -101,7 +104,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static function testSnapshotProjection():Void {
         resetOwned();
         var result:Object = CraftingPanelService.execute("snapshot", {category:"武器合成"});
-        check(result.success && result.v == 1 && result.recipes.length == 2,
+        check(result.success && result.v == 1 && result.gender == "男" && result.recipes.length == 2,
             "snapshot projects category catalog");
         check(result.recipes[0].output.name == "新测试枪" && result.recipes[0].materialCount == 3
             && result.recipes[0].canCraftOne && result.recipes[0].availability == "ready"
@@ -109,11 +112,22 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "snapshot exposes static output and authoritative one-craft availability");
         check(!result.recipes[0].batchEligible && result.recipes[1].batchEligible
             && result.recipes[0].output.weaponType == "手枪"
+            && result.recipes[0].output.actionType == "双刀"
             && result.recipes[0].output.setId == "test_sidearm"
             && result.recipes[0].output.setName == "测试侧武器套装",
-            "snapshot exposes batch eligibility and shared category/set taxonomy");
+            "snapshot exposes action type, batch eligibility and shared category/set taxonomy");
         check(result.balance.money == 1000 && result.skills.smithLevel == 2,
             "snapshot exposes authoritative balances and skills");
+    }
+
+    private static function testSnapshotGenderNormalization():Void {
+        resetOwned();
+        _root.性别 = "女";
+        var female:Object = CraftingPanelService.execute("snapshot", {category:"武器合成"});
+        _root.性别 = "未知";
+        var fallback:Object = CraftingPanelService.execute("snapshot", {category:"武器合成"});
+        check(female.gender == "女", "snapshot projects restored female save gender");
+        check(fallback.gender == "男", "snapshot normalizes invalid save gender to male");
     }
 
     private static function testSnapshotAvailabilityRefresh():Void {
@@ -242,7 +256,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         _root.gameCommands["craftingSnapshot"]({category:"武器合成", callId:17});
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(response.task == "crafting_response" && response.callId == 17
-            && response.success && response.recipes.length == 2,
+            && response.success && response.gender == "男" && response.recipes.length == 2,
             "snapshot handler emits parseable domain response wire");
     }
 

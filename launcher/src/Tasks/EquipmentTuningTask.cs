@@ -753,11 +753,12 @@ namespace CF7Launcher.Tasks
         private static bool IsSnapshotResponse(JObject msg)
         {
             JObject snapshot = msg["snapshot"] as JObject;
+            string gender = snapshot != null ? ReadString(snapshot["gender"]) : null;
             if (snapshot == null || !(snapshot["source"] is JObject)
                 || !(snapshot["equipment"] is JObject) || !(snapshot["enhance"] is JObject)
                 || !(snapshot["tierCandidates"] is JArray) || !(snapshot["modCandidates"] is JArray))
                 return false;
-            return IsContainer(snapshot["materials"]);
+            return (gender == "男" || gender == "女") && IsContainer(snapshot["materials"]);
         }
 
         private static bool IsPreviewResponse(JObject msg, string expectedOperation)
