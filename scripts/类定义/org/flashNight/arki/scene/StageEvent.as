@@ -14,14 +14,14 @@ class org.flashNight.arki.scene.StageEvent {
     public var animation:Object; // 播放动画
     public var bgm:Object; // BGM控制
     public var callback:Object; // 回调函数
-    public var camera:Object; // 摄像机控制
+    public var camera:Object; // 摄像机控制 （未实装）
     public var dialogue:Array; // 播放对话
     public var enemy:Array; // 生成单位
     public var followingEvent:Object; // 下个事件
     public var guidance:String; // 引导界面
     public var message:String; // 发布消息
     public var stageprogress:Object; // 关卡状态
-    public var performance:Array; // 关卡演出
+    public var performance:Array; // 关卡演出 （未实装）
     public var sound:Array; // 播放声音
     public var performance_control:Object; // 性能调控
 
@@ -77,6 +77,9 @@ class org.flashNight.arki.scene.StageEvent {
 
         // 发布消息
         if(typeof this.message === "string" && this.message.length > 0) _root.最上层发布文字提示(this.message);
+
+        // 播放音效
+        if(typeof this.sound === "string" && this.sound.length > 0) _root.播放音效(this.sound);
 
         // 关卡状态
         if(stageprogress === "Finish"){

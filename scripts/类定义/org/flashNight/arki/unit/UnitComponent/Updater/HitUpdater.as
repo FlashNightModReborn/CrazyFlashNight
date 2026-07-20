@@ -108,8 +108,10 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         var hp:Number = hitTarget.hp;
         var hpMax:Number = hitTarget.hp满血值;
         var currentFrame:Number = _root.帧计时器.当前帧数;
+        var hpEmergency = isNaN(hitTarget.hpEmergency) ? 0.3 : hitTarget.hpEmergency;
 
-        if (hp < hpMax * 0.3 && (currentFrame - hitTarget.lastEmergencyFrame) > 2 * 30) {
+        // 满足血量大于0且小于危急阈值时发布事件，发布间隔不小于2秒
+        if (hp > 0 && hp < hpMax * hpEmergency && (currentFrame - hitTarget.lastEmergencyFrame) > 2 * 30) {
             _root.gameworld.dispatcher.publish("UnitEmergency", hitTarget._name);
             hitTarget.lastEmergencyFrame = currentFrame;
         }
