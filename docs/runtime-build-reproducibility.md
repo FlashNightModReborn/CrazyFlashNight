@@ -115,6 +115,8 @@ request 内含完整 frozen `releaseTreeOid`、四域 hash、build identity、so
 
 worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢到 lease 后从 Git bundle 隔离 clone、复核 frozen tree/identity、调用纯 producer、签名并发布结果。失败时会在删除短 checkout 前把非 reparse、单文件 ≤1 MiB、总计 ≤2 MiB 的 bootstrap diagnostics 写到该 request 的 `_failures` 记录。CAS 地址是 `buildIdentityHash/payloadClosureHash`；发布前后都严格复核 candidate，key 对同一 build identity 出现分叉 closure 会作为 equivocation 拒绝。状态退出码固定为 `0=active 全 ready`、`10=pending/empty`、`20=failed/invalid`、`30=只有 superseded`。status 只统计 queue 内本地 X509 result；采用 local + GitHub 时显示 `1/2` 是正常的，最终 combined quorum 由 promotion 把该本地 proof 与外部 verified GitHub proof 一起计算。
 
+推荐把便宜、可离线完成的失败门前移：先取得本地 X509 candidate/proof，再对**该本地 candidate** 跑一次 production policy preflight；这份 preflight receipt 只用于提前暴露 source、CSS、inventory 等政策问题，因为 receipt 绑定具体 `candidateRoot`，不能拿去批准稍后选中的 cloud candidate。preflight 通过后再消耗 GitHub hosted build；cloud proof 到手并选定最终 cloud candidate 后，仍须针对该 cloud candidate 重新签正式 production policy receipt，promotion 只接受后者。这样不削弱双故障域和最终 receipt 约束，同时避免本地即可发现的政策失败拖到云构建之后。
+
 ## GitHub hosted 独立故障域
 
 `.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：只接受人工 `workflow_dispatch`，并在分配 hosted runner 前要求 `github.run_attempt == 1`，且 `github.actor_id` 必须是 `Crazyfs` 的 `91271520` 或 `Flash-Night` 的 `138298913`；失败后重新 dispatch，不能用 rerun 按钮绕过首次运行约束。授权只限制正式发布能力和 Actions 消耗，不构成第二人审批：两名授权发布者中的任一人都可以独立触发。从一次性 source tag dispatch full source commit 后，workflow 在明确的 `windows-2022` / VS 2022 runner family 精确 checkout、配置锁定工具链、运行纯 producer 并验证 v2 candidate；运行时还复核 `RUNNER_ENVIRONMENT`、`RUNNER_OS` 与 `ImageOS=win22`。`windows-2025` 自 2026-06 起已被 GitHub 迁到 VS 2026，不能再承载当前 17.14/v143 锁。checkout 先只取 config/materializer seed，再由 `runtime-inputs.v2.json` 展开四域精确文件集合；禁止为约 9 MiB 的 producer 输入铺开约 4.5 GiB 工作树并挤占 hosted runner 的安装/构建空间。Index 固定文件的存在性必须用 Git object 查询，不能比较受 `core.quotepath` 影响的展示文本；sparse-checkout 的标准输入固定为 UTF-8，因此根目录中文入口在无用户级 Git/终端配置的干净 hosted runner 上也必须可复现 materialize。producer 失败时上传独立 bootstrap/Visual Studio setup diagnostics。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
@@ -124,9 +126,22 @@ worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢�
 ```powershell
 $cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
 # promotion 使用：-CandidateRoot $cloud.candidateRoot -ExternalAttestationPath $cloud.proofPath
+
+# 进程或网络中断后，复用同一已完成 run；helper 会重验 run / artifact metadata 后续传 .partial：
+$cloud = .\tools\invoke-runtime-github-build.ps1 `
+  -SourceCommitOid <full-commit> -ResumeRunId <run-id>
+
+# 只用于受控恢复/离线 transport fixture；不会绕过 metadata、双层解压或 Sigstore 验真：
+$cloud = .\tools\invoke-runtime-github-build.ps1 `
+  -SourceCommitOid <full-commit> -ResumeRunId <run-id> `
+  -PreDownloadedArtifactArchive <outer-artifact.zip>
 ```
 
-helper 只触发固定 workflow，用精确 `run-name`、`headSha` 与 dispatch 前 run ID 集定位本次同 commit run，等待成功后下载指定 signed artifact，按路径/大小/链接白名单安全解压，再调用 `verify-runtime-github-attestation.ps1`。验证器通过 `gh attestation verify` 同时钉住 repository、workflow、source-ref、commit/tree、envelope/candidate inventory 与全部身份字段，并输出可直接交给 promotion 的 normalized proof。下载 artifact 本身不可信；只有该验证通过后才算 GitHub producer。推荐 quorum 是“一个注册本地 X509 builder + GitHub OIDC builder”；两个注册本地 builder 也可，但必须拥有不同 key 和真实不同 faultDomain。
+helper 只触发固定 workflow，用精确 `run-name`、`headSha` 与 dispatch 前 run ID 集定位本次同 commit run；`-ResumeRunId` 不重新 dispatch，但仍以同一套 identity 门重验指定 run。run 成功后，helper 查询该 run 的官方 Actions artifact metadata，要求唯一精确名称、artifact/run ID、`workflow_run.head_sha`、大小、未过期状态与 `sha256:<64hex>` digest 全部成立；随后用 GitHub CLI token 只向官方 API 换取短期 HTTPS redirect，不记录 token 或 signed URL。外层 ZIP 默认经 HTTPS 流式传输，奇数次直连、偶数次系统代理，失败只保留 `artifact-download/artifact-<id>.zip.partial`；重试发送 `Range`，严格要求 `206`、起止字节、总长和 `Content-Length` 与 metadata 一致，每约 5 MiB 只报告 received/expected 字节数。完整大小和 SHA-256 都通过后才把 partial 改名。
+
+外层 Actions ZIP 必须恰好包含根目录三文件 `runtime-candidate.v2.zip`、`runtime-build-envelope.v2.json`、`runtime-build-envelope.v2.sigstore.json`，并通过 entry count、路径、大小、link/reparse 与 case-collision 门；之后内层 candidate 再走原有 safe extractor，最后调用 `verify-runtime-github-attestation.ps1`。`-PreDownloadedArtifactArchive` 只是 transport 测试/恢复 seam：仍查询所选 run 的 exact metadata、校验外层大小/digest，并走相同的外层/内层解压和 Sigstore verifier，不能成为离线信任旁路。验证器通过 `gh attestation verify` 同时钉住 repository、workflow、source-ref、commit/tree、envelope/candidate inventory 与全部身份字段，并输出可直接交给 promotion 的 normalized proof。下载 artifact 本身不可信；只有该验证通过后才算 GitHub producer。推荐 quorum 是“一个注册本地 X509 builder + GitHub OIDC builder”；两个注册本地 builder 也可，但必须拥有不同 key 和真实不同 faultDomain。
+
+`test-invoke-runtime-github-build.ps1` 的确定性默认套件通过预下载 seam 覆盖 exact metadata、outer/inner 恶意 ZIP、digest/run/head 负例、恢复选 run 与最终 verifier，并静态钉住 Range/长度/文件模式/进度契约；它不伪造 TLS 或把本地 HTTP 冒充 GitHub/Azure 网络行为。修改下载器后，除离线套件外还要用一个未过期的真实 Actions artifact 执行默认 helper，或受控构造 partial 后跑真实 HTTPS `206` 续传，确认最终 outer SHA-256 与 GitHub metadata 相等。
 
 Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1 天；失败 bootstrap diagnostics 保留 7 天；signed candidate/envelope/Sigstore bundle 保留 7 天。超过 signed 窗口仍未 promotion 时重新 dispatch，不能把 artifact retention 当长期证据仓。promotion 后 tracked v2 consensus 内嵌的验证材料才是仓库审计记录。
 

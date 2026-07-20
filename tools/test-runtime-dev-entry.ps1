@@ -75,6 +75,8 @@ Assert-Cf7DevContains $devSource "lifecycleState = 'candidate_executed'" `
     'successful default execution must report candidate_executed'
 Assert-Cf7DevContains $devSource "'equivocation'" `
     'status must expose same-identity payload closure divergence'
+Assert-Cf7DevContains $devSource '[AllowEmptyCollection()][object[]]$Matches = @()' `
+    'status and reuse selection must accept a fresh worktree with zero cached candidates'
 Assert-Cf7DevContains $devSource 'Fresh local candidate diverged from an existing payload closure' `
     '-ForceBuild must reject a fresh candidate that diverges from an existing closure'
 Assert-Cf7DevEntry -Condition ($devSource.IndexOf('Copy-Item', [StringComparison]::OrdinalIgnoreCase) -lt 0) `

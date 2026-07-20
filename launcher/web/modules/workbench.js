@@ -25,7 +25,6 @@
     if (root) root.Workbench = api;
 })(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchPrimitives, WorkbenchFocus) {
     'use strict';
-
     var primitiveNames = ['EntityTile', 'ItemCard', 'InteractionBroker', 'PointerDragController'];
     for (var primitiveIndex = 0; primitiveIndex < primitiveNames.length; primitiveIndex++) {
         if (typeof WorkbenchPrimitives[primitiveNames[primitiveIndex]] !== 'function') {

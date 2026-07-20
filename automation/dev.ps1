@@ -201,7 +201,7 @@ function Select-Cf7DevReusableCandidate {
     param(
         [Parameter(Mandatory=$true)]$ExpectedIdentity,
         [Parameter(Mandatory=$true)]$PointerProbe,
-        [Parameter(Mandatory=$true)][object[]]$Matches
+        [AllowEmptyCollection()][object[]]$Matches = @()
     )
 
     $closures = @($Matches | ForEach-Object { $_.payloadClosureHash } | Sort-Object -Unique)
@@ -279,7 +279,7 @@ function Write-Cf7DevStatus {
     param(
         [Parameter(Mandatory=$true)]$Identity,
         [Parameter(Mandatory=$true)]$PointerProbe,
-        [Parameter(Mandatory=$true)][object[]]$Matches
+        [AllowEmptyCollection()][object[]]$Matches = @()
     )
     $closures = @($Matches | ForEach-Object { $_.payloadClosureHash } | Sort-Object -Unique)
     $selectionState = if ($closures.Count -gt 1) {
