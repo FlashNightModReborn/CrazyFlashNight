@@ -17,7 +17,7 @@ param(
     #   省略             → 用 Flash 当前活动文档（向后兼容旧行为）
     [string]$Target = '',
     # 对任意 -Target 强制 publish-only（doc.publish() 而非 testMovie）：编译产出 SWF + Compiler Errors，
-    # 不启动测试播放器。main 目标已隐含 publish；资源 FLA（如 things0）想避免弹播放器时显式加此开关。
+    # 不启动测试播放器。publish/asloader 与 main 目标已隐含 publish；资源 FLA（如 things0）想避免弹播放器时显式加此开关。
     [switch]$PublishOnly
 )
 
@@ -156,7 +156,14 @@ if (-not (Test-Path $loaderPath)) {
 try {
     $task = Get-ScheduledTask -TaskName 'CompileTriggerTask' -ErrorAction Stop
 } catch {
-    Write-Host '[ERROR] CompileTriggerTask 未找到，请先运行 scripts/setup_compile_env.bat'
+    if ($_.CategoryInfo.Category -eq 'PermissionDenied' -or
+        $_.FullyQualifiedErrorId -match '0x80041003') {
+        Write-Host '[ERROR] 当前进程无权读取 CompileTriggerTask（Task Scheduler 返回 Access Denied）'
+        Write-Host '        这通常表示命令运行在受限 Windows 沙箱中，不代表计划任务缺失。'
+        Write-Host '        请批准该编译命令在沙箱外运行；仅在沙箱外仍报告任务缺失时才重跑 setup_compile_env.bat。'
+    } else {
+        Write-Host '[ERROR] CompileTriggerTask 未找到，请先运行 scripts/setup_compile_env.bat'
+    }
     exit 1
 }
 
@@ -186,7 +193,10 @@ $compileMode = 'test'
 if ($Target) {
     switch -Regex ($Target.ToLower()) {
         '^(test|testloader)$'  { $targetPath = Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl' }
-        '^(publish|asloader)$' { $targetPath = Join-Path $ProjectDir 'scripts\asLoader\asLoader.xfl' }
+        '^(publish|asloader)$' {
+            $targetPath = Join-Path $ProjectDir 'scripts\asLoader\asLoader.xfl'
+            $compileMode = 'publish'   # asLoader 发布别名必须走 doc.publish()，不得误启 testMovie
+        }
         '^(main|mainfile|empire)$' {
             $targetPath = Join-Path $ProjectDir 'CRAZYFLASHER7MercenaryEmpire\CRAZYFLASHER7MercenaryEmpire.xfl'
             $compileMode = 'publish'   # 主文件：publish-only，避免 testMovie 启动整套游戏
@@ -238,6 +248,8 @@ if (Test-Path $BomChecker) {
         $MercClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\merc'
         $SkillClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\skill'
         $StageSelectClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\stageSelect'
+        $SceneClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\scene'
+        $ObstacleRendererFile = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\ElementComponent\ObstacleRenderer.as'
         $BomArgs = @()
         if (Test-Path $BootClassDir) { $BomArgs += @('--dir', $BootClassDir) }
         if (Test-Path $ServerClassDir) { $BomArgs += @('--dir', $ServerClassDir) }
@@ -247,8 +259,10 @@ if (Test-Path $BomChecker) {
         if (Test-Path $MercClassDir) { $BomArgs += @('--dir', $MercClassDir) }
         if (Test-Path $SkillClassDir) { $BomArgs += @('--dir', $SkillClassDir) }
         if (Test-Path $StageSelectClassDir) { $BomArgs += @('--dir', $StageSelectClassDir) }
+        if (Test-Path $SceneClassDir) { $BomArgs += @('--dir', $SceneClassDir) }
+        if (Test-Path $ObstacleRendererFile) { $BomArgs += @('--file', $ObstacleRendererFile) }
         if (Test-Path $TestLoaderEntry) { $BomArgs += @('--file', $TestLoaderEntry) }
-        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --file scripts/TestLoader.as'
+        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as'
         & node $BomChecker @BomArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'
@@ -264,7 +278,12 @@ Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 
 $flashLogBeforeItem = if (Test-Path $FlashLog) { Get-Item $FlashLog } else { $null }
 $flashLogBefore = if ($flashLogBeforeItem) { $flashLogBeforeItem.LastWriteTimeUtc } else { $null }
-$flashLogBeforeSize = if ($flashLogBeforeItem) { $flashLogBeforeItem.Length } else { 0 }
+$flashLogBeforeBytes = if ($flashLogBeforeItem) {
+    [System.IO.File]::ReadAllBytes($FlashLog)
+} else {
+    [byte[]]@()
+}
+$flashLogBeforeSize = $flashLogBeforeBytes.Length
 $compileOutputBefore = if (Test-Path $CompileOutput) { (Get-Item $CompileOutput).LastWriteTimeUtc } else { $null }
 
 # SWF 刷新门：触发前记录目标 SWF 的 mtime/size 基线（仅当 -VerifySwf 指定）
@@ -304,8 +323,22 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             } else {
                 $flashLogBytes = [System.IO.File]::ReadAllBytes($FlashLog)
                 $flashTraceOffset = 0
-                if ($flashLogBefore -and $flashLogBytes.Length -gt $flashLogBeforeSize) {
-                    $flashTraceOffset = $flashLogBeforeSize
+                if ($flashLogBefore -and $flashLogBeforeSize -gt 0 -and
+                    $flashLogBytes.Length -ge $flashLogBeforeSize) {
+                    # Flash Player may either append to the existing log or truncate/rewrite it.
+                    # Size growth alone cannot distinguish the two: a slightly larger rewritten
+                    # run previously caused us to discard almost the entire fresh trace. Offset
+                    # only when the complete old byte sequence is an exact prefix of the new file.
+                    $isAppend = $true
+                    for ($byteIndex = 0; $byteIndex -lt $flashLogBeforeSize; $byteIndex++) {
+                        if ($flashLogBytes[$byteIndex] -ne $flashLogBeforeBytes[$byteIndex]) {
+                            $isAppend = $false
+                            break
+                        }
+                    }
+                    if ($isAppend) {
+                        $flashTraceOffset = $flashLogBeforeSize
+                    }
                 }
                 $freshBytes = New-Object byte[] ($flashLogBytes.Length - $flashTraceOffset)
                 if ($freshBytes.Length -gt 0) {

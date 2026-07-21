@@ -163,12 +163,15 @@ class org.flashNight.arki.scene.SceneManager {
      * 移除gameworld及其组件
      */
     public function removeGameWorld():Void{
+        this.active = false;
+        if (SceneCollisionManager.instance != null) {
+            SceneCollisionManager.instance.dispose();
+        }
+
         // 幂等检查
         if (gameworld == null) {
             return;
         }
-
-        this.active = false;
 
         // 安全网：清除刘海屏波次计时器（正常路径由 clearStage/failStage 触发，
         // 但手动退出关卡可能跳过它们，导致计时器残留）

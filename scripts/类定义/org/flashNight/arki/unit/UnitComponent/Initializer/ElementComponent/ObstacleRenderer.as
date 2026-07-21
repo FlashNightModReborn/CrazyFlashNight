@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
 import org.flashNight.arki.collision.CollisionLayerRenderer;
+import org.flashNight.arki.scene.SceneCollisionManager;
 
 /**
  * 障碍物渲染组件 - 负责将地图元件的碰撞区域渲染到地图上
@@ -21,6 +22,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Obstac
 
         if (collisionLayer) {
             CollisionLayerRenderer.drawObstacle(collisionLayer, rect, true);
+
+            // AVM1 的 for..in 不保证枚举时间轴 / createEmptyMovieClip 子实例。
+            // 初绘成功时直接登记同一 MC 与矩形，后续 clear/redraw 才有完整权威来源。
+            var sceneCollisionManager:SceneCollisionManager = SceneCollisionManager.instance;
+            if (sceneCollisionManager != null &&
+                sceneCollisionManager.collisionLayer === collisionLayer) {
+                sceneCollisionManager.addMovieClipCollision(target, rect);
+            }
         }
     }
 

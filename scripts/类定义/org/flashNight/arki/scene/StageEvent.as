@@ -79,7 +79,7 @@ class org.flashNight.arki.scene.StageEvent {
         if(typeof this.message === "string" && this.message.length > 0) _root.最上层发布文字提示(this.message);
 
         // 播放音效
-        if(typeof this.sound === "string" && this.sound.length > 0) _root.播放音效(this.sound);
+        executeSound();
 
         // 关卡状态
         if(stageprogress === "Finish"){
@@ -103,6 +103,22 @@ class org.flashNight.arki.scene.StageEvent {
         }
         
         this.clear();
+    }
+
+    /**
+     * 按 XML 声明顺序播放 0..N 个关卡音效。
+     * 构造器已通过 ObjectUtil.toArray 将单值与多值统一为数组；
+     * 非字符串和空字符串保持 fail-safe，避免被隐式转成无效资源名。
+     */
+    private function executeSound():Void {
+        if (this.sound == null) return;
+
+        for (var i:Number = 0; i < this.sound.length; i++) {
+            var soundName = this.sound[i];
+            if (typeof soundName === "string" && soundName.length > 0) {
+                _root.播放音效(soundName);
+            }
+        }
     }
 
     private function executeDialogue(){

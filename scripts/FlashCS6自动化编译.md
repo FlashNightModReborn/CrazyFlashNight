@@ -1,7 +1,7 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `22fb317ba5`（2026-07-06）。
+**最后核对代码基线**：commit `2d19cd6681a0219749a58501271b6f1bd23cc28f`（2026-07-21 断电恢复后复核）+ 当前 `publish/asloader` 别名隐式 publish-only 修复工作树。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
@@ -9,7 +9,7 @@
 
 ## 1. 当前定位
 
-- Agent 可从终端触发 Flash CS6 `testMovie()` 并读取 trace / 编译器输出
+- Agent 可从终端触发 Flash CS6 `testMovie()` 或 `publish()`，并读取对应的 trace / 编译器输出
 - 这条链路当前仍属于 **smoke 级验证**
 - 没有新鲜 trace、`compiler_errors.txt`、Output Panel 副本或 IDE 复核时，不要直接声称“已编译通过”
 
@@ -28,7 +28,7 @@
 
 | 层级 | 职责 | 典型改动 | 推荐目标 |
 |------|------|----------|----------|
-| asLoader 逻辑注入层 | 运行时 AS2 class / boot include / `_root` 方法与 WebView bridge 注入 | 多数 `scripts/类定义/`、`scripts/逻辑/`、`scripts/逻辑系统分区/*_WebView.as`、`*PanelService.as` | `-Target publish` |
+| asLoader 逻辑注入层 | 运行时 AS2 class / boot include / `_root` 方法与 WebView bridge 注入 | 多数 `scripts/类定义/`、`scripts/逻辑/`、`scripts/逻辑系统分区/*_WebView.as`、`*PanelService.as` | `-Target publish`（别名已隐含 publish-only） |
 | TestLoader 测试层 | 测试入口、mock、专项断言、trace 验证 | `scripts/TestLoader.as`、测试 class、测试 fixture | `-Target test` |
 | 主文件运行壳 | 运行入口、主 FLA 时间轴、主文件库元件、主文件 linkage | `CRAZYFLASHER7MercenaryEmpire/LIBRARY/*`、主 XFL/FLA、主时间轴帧脚本、主文件 linkage 变更 | `-Target main` |
 | 独立资源 XFL / 子 SWF | UI、关卡、素材库等由主文件加载或引用的独立 SWF | `flashswf/UI/*/LIBRARY/*.xml`、`flashswf/levels/*/LIBRARY/*.xml`、`flashswf/arts/*/LIBRARY/*.xml` | `-Target <xfl> -PublishOnly -VerifySwf <对应.swf>` |
@@ -56,7 +56,7 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSecond
 # 测试构建（带 trace）：跑本机被 gitignore 的 TestLoader scratch 入口；仓库不保证固定 suite，专项施工须显式装入并记录 aggregate/template、suite 名与断言数
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -TimeoutSeconds 180
 
-# 发布构建：编 asLoader（自动启用 -VerifySwf scripts/asLoader.swf 刷新门）
+# 发布构建：编 asLoader（别名自动走 doc.publish()，并启用 -VerifySwf scripts/asLoader.swf；无需再写 -PublishOnly）
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180
 
 # 主文件构建：只用于主 FLA / 资产 / linkage / 主时间轴相关改动
@@ -71,7 +71,7 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target script
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flashswf/UI/玩家信息界面/玩家信息界面.xfl' -PublishOnly -VerifySwf 'flashswf/UI/玩家信息界面.swf'
 ```
 
-`test`|`testloader` → `scripts/TestLoader`；`publish`|`asloader` → `scripts/asLoader`（自动 `-VerifySwf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（**publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。多个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
+`test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。多个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
 
 显式目标若已经在 CS6 打开，`compile_action.jsfl` 会先以“不保存”关闭再从磁盘重开，确保外部编辑的 XFL XML 是 source of truth。比较时必须把 cfg URI 与 `doc.pathURI` 归一为平台路径：中文路径在两处可能分别表现为直写 Unicode 与 percent-encoded URI；不归一会漏关带 `*` 的旧文档，使 `doc.publish()` 复用旧 symbol 缓存。部分独立 XFL 在重开时会弹缺失字体确认框，计划任务会一直等不到 marker；编译时间异常拉长时先截图/检查 CS6 前台并人工确认，不要重复触发多个编译任务。`-VerifySwf` 只能证明文件被重写，关键 XML 帧脚本还应以 FFDec 导出 script 检查新增标志串是否进入 SWF。
 
@@ -79,7 +79,7 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 
 独立资源 XFL 的输出位置通常不在该 XFL 子目录的 `bin/` 下；`bin/` 多为 XFL cache。以 `flashswf/UI/玩家信息界面` 为例，源入口是 `flashswf/UI/玩家信息界面/玩家信息界面.xfl`，发布产物由 `PublishSettings.xml` 指向 `flashswf/UI/玩家信息界面.swf`。改 `LIBRARY/*.xml` 后，主文件 `-Target main` 刷新不代表这个 SWF 已刷新。
 
-**main 与 test/publish 的差别**：`main` 走 `doc.publish()` 而非 `doc.testMovie()`——主文件 testMovie 会启动整套游戏（连不上 launcher socket 卡住 / 撞反盗版层 / 留僵尸窗口），publish 只编译产出 SWF + 填充 Compiler Errors。模式由 `compile_test.ps1` 写 `scripts/compile_mode.cfg`（`publish`/缺省 `test`），`compile_action.jsfl` 读取后选 `publish()` vs `testMovie()`，一次性指令读到即删。`main` 不产 trace（发布设置 `OmitTraceActions=1`），`flashlog.txt 未刷新` 属正常，看 `compiler_errors.txt`。预编译 BOM 门已扩展覆盖主文件 classpath 高频迁移类子树 `arki\task`/`arki\merc`/`arki\stageSelect`。
+**test 与 publish-only 的差别**：`test/testloader` 走 `doc.testMovie()`；`publish/asloader` 与 `main/mainfile/empire` 别名都隐式走 `doc.publish()`，任意显式路径则只有加 `-PublishOnly` 才切到该模式。此前 `publish/asloader` 别名只自动设置 `VerifySwf`、却误走 testMovie，现已修复为在解析别名时同时写入 publish mode。publish 只编译产出 SWF + 填充 Compiler Errors，不启动测试播放器；主文件 testMovie 会启动整套游戏并可能因 launcher socket / 反盗版层留下僵尸窗口。模式由 `compile_test.ps1` 写 `scripts/compile_mode.cfg`（`publish`/缺省 `test`），`compile_action.jsfl` 读取后选 `publish()` vs `testMovie()`，一次性指令读到即删。publish-only 不产新鲜行为 trace，`flashlog.txt 未刷新` 属正常；判据是本轮 `compiler_errors.txt` 与 `-VerifySwf` 刷新门。预编译 BOM 门已扩展覆盖主文件 classpath 高频迁移类子树 `arki\task`/`arki\merc`/`arki\stageSelect`。
 
 ### Bash
 
@@ -103,7 +103,7 @@ compile_test.ps1 / compile_test.sh
     → cf7_compile_loader.jsfl
       → compile_action.jsfl
         → 清空独立 Compiler Errors 面板并删除旧导出
-        → doc.testMovie()
+        → 按 compile_mode.cfg 选择 doc.testMovie() 或 doc.publish()
         → fl.compilerErrors.save()（只保存本轮诊断）
         → 仅遇到冷 ASO「32K 分支超限」时清面板并同目标重试一次
           → publish_done.marker / flashlog / compiler_errors
@@ -117,6 +117,8 @@ compile_test.ps1 / compile_test.sh
 | `scripts/compile_output.txt` | Output Panel 副本 | 辅助看 JSFL / 输出面板文本 |
 | `scripts/compiler_errors.txt` | 本轮 Compiler Errors 面板副本 | JSFL 会在每个目标编译前清独立面板并删除旧导出；有错误时应直接视为失败 |
 | `scripts/publish_done.marker` | JSFL 触发完成标记 | 不能单独代表编译并运行成功 |
+
+2026-07-21 17:12:59 +08 的最终资源箱回归使用 `-Target publish`（未额外传 `-PublishOnly`）实际走 `doc.publish()`：生成 `scripts/asLoader.swf` **1,041,903 bytes**，SHA-256 `AD799970A8A2AFD0F9A402C704934F08985A3144FA608A7564E17BC4899C815E`，Git blob `3dd59f73f9fc71128da99c2eb03796290df1e010`；本轮 Compiler Errors 为 **0/0**。该 publish-only 证据只证明目标 SWF 刷新与编译器零错误，AS2 行为结论由随后独立 fresh TestLoader 的 **166/166** trace 支撑。
 
 ### 正确表述
 
@@ -166,6 +168,12 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 - `CompileTriggerTask` 不存在或失效
 - Loader / `flash_project_path.cfg` 未部署
 - 慢 CPU / 低压设备尚未完成；排除前述环境问题后，用 `-TimeoutSeconds` 调大重试
+
+### `CompileTriggerTask` 返回 Access Denied
+
+- Windows 沙箱可能允许读写仓库，却拒绝读取 Task Scheduler；这不等于计划任务不存在，也不代表 CS6 编译链损坏
+- `compile_test.ps1` 会把该情况明确报告为“无权读取”，应先批准同一条编译命令在沙箱外运行
+- 只有沙箱外运行仍明确报告任务缺失时，才以管理员身份重跑 `scripts/setup_compile_env.bat`
 
 ### marker 已生成但 `flashlog.txt` 为空
 
