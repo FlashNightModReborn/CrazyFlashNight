@@ -70,6 +70,24 @@
          'modules/inventory-workbench.js'],
         noop);
 
+    // ── 地图资源箱战利品（独立 loot domain；背包 ← 战利品单向 transfer-pair）──
+    // 顺序固定为共享 runtime/lifecycle/focus/primitives/components，再到 feature 与 facade。
+    Panels.registerLazy('loot',
+        ['modules/panel-runtime.js',
+         'modules/workbench-lifecycle.js',
+         'modules/workbench-focus.js',
+         'modules/workbench-primitives.js',
+         'modules/workbench.js',
+         'modules/workbench-components.js',
+         'modules/inventory-ui.js',
+         'modules/inventory-runtime.js',
+         'modules/loot/loot-runtime.js',
+         'modules/loot/loot-state.js',
+         'modules/loot/loot-view.js',
+         'modules/loot/loot-organizer.js',
+         'modules/loot/loot-panel.js'],
+        noop);
+
     // ── NPC 金币商店（商品目录 + 背包/材料/情报同级 View）──
     Panels.registerLazy('npcshop',
         ['modules/panel-runtime.js',

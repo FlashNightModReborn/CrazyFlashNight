@@ -46,6 +46,16 @@ namespace CF7Launcher.Guardian
 
         public enum PanelCommandKind { Open, Close }
 
+        public enum TrackedOpenOutcome
+        {
+            OpenPosted,
+            PreExecutionRejected,
+            PanelBusy,
+            PostNotDelivered,
+            PostAcceptedThenFailed,
+            Failed
+        }
+
         public struct PanelCommand
         {
             public PanelCommandKind Kind;
@@ -53,6 +63,12 @@ namespace CF7Launcher.Guardian
             public string InitDataJson;          // 可空；OpenPanel 序列化进 panel_cmd
             public string ReturnToName;          // 可空；非空 = 关闭本 panel 时自动 reopen 之
             public string ReturnInitDataJson;    // 可空；reopen returnTo 时用作 initData
+            public bool IsTrackedOpen;
+            public bool IsTrackedClose;
+            public string ReservedPanelInstanceId;
+            public Func<bool> TrackedExecutionGate;
+            public Action<TrackedOpenOutcome> TrackedOpenCompleted;
+            public Action<bool> TrackedCloseCompleted;
             public PanelCommand(PanelCommandKind kind, string name, string initDataJson)
                 : this(kind, name, initDataJson, null, null)
             {
@@ -65,6 +81,12 @@ namespace CF7Launcher.Guardian
                 InitDataJson = initDataJson;
                 ReturnToName = returnToName;
                 ReturnInitDataJson = returnInitDataJson;
+                IsTrackedOpen = false;
+                IsTrackedClose = false;
+                ReservedPanelInstanceId = null;
+                TrackedExecutionGate = null;
+                TrackedOpenCompleted = null;
+                TrackedCloseCompleted = null;
             }
         }
 
@@ -104,18 +126,26 @@ namespace CF7Launcher.Guardian
         private readonly Queue<PanelCommand> _queue = new Queue<PanelCommand>();
         private readonly object _queueLock = new object();
         private Func<string, bool> _rebindGate;
+        private Func<string, bool> _panelOpenGate;
         private Func<string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
+        public event Action<string, string> PanelClosed;
+        public event Action OrchestrationSettled;
         private PanelCommand? _deferredRebind;
         private bool _processing;
         private bool _delayedKickRegistered;
 
-        private string _activePanel; // null = closed
-        private string _activePanelInstanceId;
+        private volatile string _activePanel; // null = closed
+        private volatile string _activePanelInstanceId;
+        private bool _trackedOpenReserved;
+        private volatile string _trackedLeasePanelName;
+        private volatile string _trackedLeaseInstanceId;
+        private string _idleFenceToken;
         private static long _panelInstanceSequence;
         public bool IsPanelOpen { get { return _activePanel != null; } }
         public string ActivePanelName { get { return _activePanel; } }
         public string ActivePanelInstanceId { get { return _activePanelInstanceId; } }
+        public bool HasTrackedPanelLease { get { return _trackedLeaseInstanceId != null; } }
 
         private int _consecutiveFailures;
         private const int FAILURE_CIRCUIT_BREAKER = 5;
@@ -200,17 +230,101 @@ namespace CF7Launcher.Guardian
         public bool TryOpenPanel(string name, string initDataJson, string returnToName, string returnInitDataJson)
         {
             if (_disposed || string.IsNullOrEmpty(name)) return false;
+            Func<string, bool> openGate = _panelOpenGate;
+            if (openGate != null && !openGate(name)) return false;
             return EnqueueAndPump(new PanelCommand(
                 PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
+        }
+
+        /// <summary>
+        /// Reserves a caller-supplied panel instance before enqueue, then rechecks the caller's
+        /// authority on the UI thread immediately before any DOM/open side effect.  Tracked opens
+        /// never rebind or evict another panel.
+        /// </summary>
+        public bool TryOpenTrackedPanel(string name, string initDataJson,
+            string reservedPanelInstanceId, Func<bool> executionGate,
+            Action<TrackedOpenOutcome> completed)
+        {
+            if (_disposed || string.IsNullOrEmpty(name)
+                || string.IsNullOrEmpty(reservedPanelInstanceId)
+                || executionGate == null) return false;
+            PanelCommand command = new PanelCommand(PanelCommandKind.Open, name, initDataJson);
+            command.IsTrackedOpen = true;
+            command.ReservedPanelInstanceId = reservedPanelInstanceId;
+            command.TrackedExecutionGate = executionGate;
+            command.TrackedOpenCompleted = completed;
+            return EnqueueAndPump(command);
+        }
+
+        /// <summary>Closes only the exact tracked instance; a stale instance can never close a replacement.</summary>
+        public bool TryCloseTrackedPanelExact(string panelName, string panelInstanceId,
+            Action<bool> completed)
+        {
+            if (_disposed || string.IsNullOrEmpty(panelName) || string.IsNullOrEmpty(panelInstanceId))
+                return false;
+            PanelCommand command = new PanelCommand(PanelCommandKind.Close, panelName, null);
+            command.IsTrackedClose = true;
+            command.ReservedPanelInstanceId = panelInstanceId;
+            command.TrackedCloseCompleted = completed;
+            return EnqueueAndPump(command);
+        }
+
+        public bool IsIdleForTrackedOpen
+        {
+            get
+            {
+                lock (_queueLock)
+                    return !_disposed && _activePanel == null && _queue.Count == 0
+                        && !_processing && !_trackedOpenReserved && _trackedLeaseInstanceId == null
+                        && _idleFenceToken == null;
+            }
+        }
+
+        /// <summary>
+        /// Reserves a proven-idle orchestration fence without invoking external code under the
+        /// queue lock. While held, every generic/tracked enqueue fails closed. This is used around
+        /// an unscoped pause release so no fresh panel can acquire the lease between idle proof and
+        /// the socket write.
+        /// </summary>
+        public bool TryAcquireIdleFence(string token)
+        {
+            if (string.IsNullOrEmpty(token)) return false;
+            lock (_queueLock)
+            {
+                if (_disposed || _idleFenceToken != null || _activePanel != null
+                    || _queue.Count != 0 || _processing || _trackedOpenReserved
+                    || _trackedLeaseInstanceId != null) return false;
+                _idleFenceToken = token;
+                return true;
+            }
+        }
+
+        public bool ReleaseIdleFenceExact(string token)
+        {
+            if (string.IsNullOrEmpty(token)) return false;
+            bool released = false;
+            lock (_queueLock)
+            {
+                if (!string.Equals(_idleFenceToken, token, StringComparison.Ordinal)) return false;
+                _idleFenceToken = null;
+                released = true;
+            }
+            // The fence itself made the host non-idle.  Re-emit the settled edge after releasing
+            // it so an S0 arm (or another orchestration waiter) rejected during the fenced socket
+            // write is not stranded until some unrelated panel event occurs.
+            if (released) NotifyOrchestrationSettledIfIdle();
+            return released;
         }
 
         public void ClosePanel()
         {
             if (_disposed) return;
             lock (_queueLock) { _deferredRebind = null; }
-            EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null));
+            if (!EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null)))
+                LogManager.Log("[PanelHost] generic close rejected while tracked open/lease is active");
         }
 
+        public void SetPanelOpenGate(Func<string, bool> gate) { _panelOpenGate = gate; }
         public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
         public void SetInitDataEnricher(Func<string, string, string> enricher) { _initDataEnricher = enricher; }
         public void SetPanelCloseObserver(Action<string, string> observer) { _panelCloseObserver = observer; }
@@ -252,6 +366,26 @@ namespace CF7Launcher.Guardian
             lock (_queueLock)
             {
                 if (_disposed) return false;
+                if (_idleFenceToken != null) return false;
+                if (cmd.IsTrackedOpen)
+                {
+                    if (_trackedOpenReserved || _trackedLeaseInstanceId != null
+                        || _activePanel != null || _queue.Count != 0 || _processing)
+                        return false;
+                    _trackedOpenReserved = true;
+                }
+                else if (cmd.IsTrackedClose)
+                {
+                    if (_trackedLeaseInstanceId == null
+                        || !string.Equals(_trackedLeasePanelName, cmd.Name, StringComparison.Ordinal)
+                        || !string.Equals(_trackedLeaseInstanceId, cmd.ReservedPanelInstanceId,
+                            StringComparison.Ordinal))
+                        return false;
+                }
+                else if (_trackedOpenReserved || _trackedLeaseInstanceId != null)
+                {
+                    return false;
+                }
                 _queue.Enqueue(cmd);
                 if (_processing) return true;
                 _processing = true;
@@ -275,7 +409,8 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[PanelHost] BeginInvoke pump failed: " + ex.Message);
                 // 释放 _processing 让下次入队能重试
-                lock (_queueLock) { _processing = false; }
+                FailPendingPumpDispatch(true);
+                return false;
             }
             return true;
         }
@@ -289,8 +424,35 @@ namespace CF7Launcher.Guardian
             catch (Exception ex)
             {
                 LogManager.Log("[PanelHost] delayed pump kick failed: " + ex.Message);
-                lock (_queueLock) { _processing = false; }
+                FailPendingPumpDispatch(false);
             }
+        }
+
+        private void FailPendingPumpDispatch(bool skipFirstCallback)
+        {
+            List<PanelCommand> failed = new List<PanelCommand>();
+            lock (_queueLock)
+            {
+                while (_queue.Count != 0) failed.Add(_queue.Dequeue());
+                _processing = false;
+                _trackedOpenReserved = false;
+            }
+            for (int i = 0; i < failed.Count; i++)
+            {
+                if (skipFirstCallback && i == 0) continue;
+                PanelCommand command = failed[i];
+                if (command.IsTrackedOpen && command.TrackedOpenCompleted != null)
+                {
+                    try { command.TrackedOpenCompleted(TrackedOpenOutcome.PreExecutionRejected); }
+                    catch { }
+                }
+                if (command.IsTrackedClose && command.TrackedCloseCompleted != null)
+                {
+                    try { command.TrackedCloseCompleted(false); }
+                    catch { }
+                }
+            }
+            NotifyOrchestrationSettledIfIdle();
         }
 
         private void PumpQueue()
@@ -306,11 +468,24 @@ namespace CF7Launcher.Guardian
             }
             while (true)
             {
-                PanelCommand cmd;
+                PanelCommand cmd = default(PanelCommand);
+                bool queueDrained;
                 lock (_queueLock)
                 {
-                    if (_queue.Count == 0) { _processing = false; return; }
-                    cmd = _queue.Dequeue();
+                    queueDrained = _queue.Count == 0;
+                    if (queueDrained)
+                    {
+                        _processing = false;
+                    }
+                    else
+                    {
+                        cmd = _queue.Dequeue();
+                    }
+                }
+                if (queueDrained)
+                {
+                    NotifyOrchestrationSettledIfIdle();
+                    return;
                 }
                 try
                 {
@@ -325,10 +500,45 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void NotifyOrchestrationSettledIfIdle()
+        {
+            Action settled = null;
+            lock (_queueLock)
+            {
+                if (!_disposed && !_processing && _queue.Count == 0 && _activePanel == null
+                    && !_trackedOpenReserved && _trackedLeaseInstanceId == null
+                    && _idleFenceToken == null)
+                    settled = OrchestrationSettled;
+            }
+            if (settled == null) return;
+            try { settled(); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] orchestration-settled event failed: " + ex.Message);
+            }
+        }
+
         private void ExecuteCommand(PanelCommand cmd)
         {
+            if (cmd.IsTrackedOpen)
+            {
+                ExecuteTrackedOpen(cmd);
+                return;
+            }
+            if (cmd.IsTrackedClose)
+            {
+                ExecuteTrackedClose(cmd);
+                return;
+            }
             if (cmd.Kind == PanelCommandKind.Open)
             {
+                Func<string, bool> openGate = _panelOpenGate;
+                if (openGate != null && !openGate(cmd.Name))
+                {
+                    LogManager.Log("[PanelHost] panel open rejected by global gate: " + cmd.Name);
+                    _consecutiveFailures = 0;
+                    return;
+                }
                 if (_activePanel == cmd.Name)
                 {
                     Func<string, bool> gate = _rebindGate;
@@ -370,6 +580,102 @@ namespace CF7Launcher.Guardian
                 }
             }
             _consecutiveFailures = 0;
+        }
+
+        private void ExecuteTrackedOpen(PanelCommand cmd)
+        {
+            TrackedOpenOutcome outcome = TrackedOpenOutcome.Failed;
+            bool executionStarted = false;
+            bool webPostAccepted = false;
+            try
+            {
+                if (_activePanel != null || _trackedLeaseInstanceId != null)
+                {
+                    outcome = TrackedOpenOutcome.PanelBusy;
+                    return;
+                }
+                if (cmd.TrackedExecutionGate == null || !cmd.TrackedExecutionGate())
+                {
+                    outcome = TrackedOpenOutcome.PreExecutionRejected;
+                    return;
+                }
+                executionStarted = true;
+                if (!DoOpen(cmd.Name, cmd.InitDataJson, cmd.ReservedPanelInstanceId, true,
+                    delegate { webPostAccepted = true; }))
+                {
+                    outcome = TrackedOpenOutcome.PostNotDelivered;
+                    return;
+                }
+                _trackedLeasePanelName = cmd.Name;
+                _trackedLeaseInstanceId = cmd.ReservedPanelInstanceId;
+                outcome = TrackedOpenOutcome.OpenPosted;
+                _consecutiveFailures = 0;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] tracked open failed: " + ex.Message);
+                if (executionStarted)
+                {
+                    try { ResetToClosedState(); }
+                    catch (Exception resetEx)
+                    {
+                        LogManager.Log("[PanelHost] tracked open reset failed: " + resetEx.Message);
+                    }
+                    outcome = webPostAccepted
+                        ? TrackedOpenOutcome.PostAcceptedThenFailed
+                        : TrackedOpenOutcome.PostNotDelivered;
+                }
+                else
+                {
+                    outcome = TrackedOpenOutcome.PreExecutionRejected;
+                }
+            }
+            finally
+            {
+                lock (_queueLock) { _trackedOpenReserved = false; }
+                Action<TrackedOpenOutcome> completed = cmd.TrackedOpenCompleted;
+                if (completed != null)
+                {
+                    try { completed(outcome); }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log("[PanelHost] tracked open completion failed: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void ExecuteTrackedClose(PanelCommand cmd)
+        {
+            bool closed = false;
+            try
+            {
+                if (!string.Equals(_trackedLeasePanelName, cmd.Name, StringComparison.Ordinal)
+                    || !string.Equals(_trackedLeaseInstanceId, cmd.ReservedPanelInstanceId,
+                        StringComparison.Ordinal)
+                    || !string.Equals(_activePanel, cmd.Name, StringComparison.Ordinal)
+                    || !string.Equals(_activePanelInstanceId, cmd.ReservedPanelInstanceId,
+                        StringComparison.Ordinal))
+                    return;
+                _returnStack.Clear();
+                DoClose();
+                _trackedLeasePanelName = null;
+                _trackedLeaseInstanceId = null;
+                closed = true;
+                _consecutiveFailures = 0;
+            }
+            finally
+            {
+                Action<bool> completed = cmd.TrackedCloseCompleted;
+                if (completed != null)
+                {
+                    try { completed(closed); }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log("[PanelHost] tracked close completion failed: " + ex.Message);
+                    }
+                }
+            }
         }
 
         #endregion
@@ -457,6 +763,29 @@ namespace CF7Launcher.Guardian
 
         private void DoOpen(string name, string initDataJson)
         {
+            DoOpen(name, initDataJson, null, false, null);
+        }
+
+        private bool DoOpen(string name, string initDataJson, string reservedPanelInstanceId,
+            bool requireTrackedDelivery, Action trackedWebPostAccepted)
+        {
+            // S0 tracked open promises that the game is already under the global webpanel lease
+            // before any native/Web visual side effect.  A socket write failure is therefore a
+            // known pre-open failure, never an OpenPosted outcome.
+            if (requireTrackedDelivery)
+            {
+                bool pauseDelivered = false;
+                try { pauseDelivered = _web.AssertWebPanelPause(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[PanelHost] tracked AssertWebPanelPause failed: " + ex.Message);
+                }
+                if (!pauseDelivered)
+                {
+                    LogManager.Log("[PanelHost] tracked open rejected before visual side effects: pause not delivered");
+                    return false;
+                }
+            }
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             PerfTrace.Mark("panel.open_start", name);
             Rectangle anchor = ComputeAnchorScreenRect();
@@ -478,12 +807,32 @@ namespace CF7Launcher.Guardian
                 _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
             EnsurePanelZOrder();
             // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
-            string instanceId = NextPanelInstanceId();
+            string instanceId = string.IsNullOrEmpty(reservedPanelInstanceId)
+                ? NextPanelInstanceId() : reservedPanelInstanceId;
             Func<string, string, string> enricher = _initDataEnricher;
             if (enricher != null) initDataJson = enricher(name, initDataJson);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
-            try { _web.PostToWeb(payload); }
-            catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb open failed: " + ex.Message); }
+            bool delivered = true;
+            try
+            {
+                if (requireTrackedDelivery)
+                    delivered = _web.TryPostToWeb(payload);
+                else
+                    _web.PostToWeb(payload);
+            }
+            catch (Exception ex)
+            {
+                delivered = false;
+                LogManager.Log("[PanelHost] PostToWeb open failed: " + ex.Message);
+            }
+            if (requireTrackedDelivery && !delivered)
+            {
+                LogManager.Log("[PanelHost] tracked open PostToWeb not delivered: " + name);
+                ResetToClosedState();
+                return false;
+            }
+            if (requireTrackedDelivery && trackedWebPostAccepted != null)
+                trackedWebPostAccepted();
             // Step 8: 把 HitNumber/Cursor 重新顶置（Backdrop/WebOverlay 的 SetWindowPos HWND_TOP 把它们压下去了）
             ReTopOverlay(_hitNumber);
             // INativeCursor 抽象后 cursor 实现仍是 Form（CursorOverlayForm / DesktopCursorOverlay 都是）。
@@ -501,8 +850,11 @@ namespace CF7Launcher.Guardian
             // 任意真实打开 → 暂停游戏。覆盖 returnTo 自动重开（ExecuteCommand 从 _returnStack
             // enqueue 的 Open 不经 LauncherCommandRouter.OpenPanel，否则重开面板背后游戏已恢复运行）。
             // AS2 webPanelPause 幂等，首次打开与 router 路径重复发也安全。
-            try { _web.AssertWebPanelPause(); }
-            catch (Exception ex) { LogManager.Log("[PanelHost] AssertWebPanelPause failed: " + ex.Message); }
+            if (!requireTrackedDelivery)
+            {
+                try { _web.AssertWebPanelPause(); }
+                catch (Exception ex) { LogManager.Log("[PanelHost] AssertWebPanelPause failed: " + ex.Message); }
+            }
             LogManager.Log("[PanelHost] opened: " + name + " rect=" + panelRect.Width + "x" + panelRect.Height);
             PerfTrace.Duration("panel.open", perfStart,
                 name + " rect=" + panelRect.Width + "x" + panelRect.Height);
@@ -510,6 +862,7 @@ namespace CF7Launcher.Guardian
             // B0 诊断: panel-open 后立即 dump layered HWND 结构, 捕获 visible_layered 峰值时刻
             if (DiagnosticsBootstrap.LayerAuditEnabled)
                 LayerAuditDump.DumpToLog("panel-open:" + name);
+            return true;
         }
 
         /// <summary>同名 panel 的上下文切换不拆 backdrop/HUD，只换实例水位并让 Web 重建 session。</summary>
@@ -568,7 +921,9 @@ namespace CF7Launcher.Guardian
             _lastOwnerAnchorRect = Rectangle.Empty;
             _lastOwnerPanelRect = Rectangle.Empty;
             if (_ownerLayoutSettleTimer != null)
-                _ownerLayoutSettleTimer.Stop();
+            {
+                try { _ownerLayoutSettleTimer.Stop(); } catch { }
+            }
         }
 
         private void OnOwnerLayoutChanged(object sender, EventArgs e)
@@ -711,6 +1066,7 @@ namespace CF7Launcher.Guardian
 
             _activePanel = null;
             _activePanelInstanceId = null;
+            PostPanelClosed(closingName, closingInstance);
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
             PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));
@@ -730,6 +1086,10 @@ namespace CF7Launcher.Guardian
                 _processing = false;
                 _returnStack.Clear();
                 _deferredRebind = null;
+                _trackedOpenReserved = false;
+                _trackedLeasePanelName = null;
+                _trackedLeaseInstanceId = null;
+                _idleFenceToken = null;
             }
             try { UnsubscribeOwnerLayout(); } catch { }
             if (_ownerLayoutSettleTimer != null)
@@ -739,6 +1099,26 @@ namespace CF7Launcher.Guardian
                 _ownerLayoutSettleTimer = null;
             }
             try { _backdrop.BackdropClickedOutsidePanel -= OnBackdropClickOutsidePanel; } catch { }
+        }
+
+        private void PostPanelClosed(string panelName, string panelInstanceId)
+        {
+            Action<string, string> closed = PanelClosed;
+            if (closed == null) return;
+            Action fire = delegate
+            {
+                try { closed(panelName, panelInstanceId); }
+                catch (Exception ex) { LogManager.Log("[PanelHost] closed event failed: " + ex.Message); }
+            };
+            try
+            {
+                if (_ownerForm.IsHandleCreated) _ownerForm.BeginInvoke(fire);
+                else fire();
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] closed event dispatch failed: " + ex.Message);
+            }
         }
 
         private void ReTopOverlay(Form f)
@@ -801,8 +1181,18 @@ namespace CF7Launcher.Guardian
             if (_toastOverlay != null) { try { _toastOverlay.SetReady(); } catch { } }
             if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }
             if (_escSource != null) { try { _escSource.SetPanelEscapeEnabled(false); } catch { } }
+            string resetClosingName = _activePanel;
+            string resetClosingInstance = _activePanelInstanceId;
             _activePanel = null;
             _activePanelInstanceId = null;
+            _trackedLeasePanelName = null;
+            _trackedLeaseInstanceId = null;
+            Action<string, string> resetClosed = PanelClosed;
+            if (resetClosed != null && resetClosingName != null)
+            {
+                try { resetClosed(resetClosingName, resetClosingInstance); }
+                catch (Exception ex) { LogManager.Log("[PanelHost] reset closed event failed: " + ex.Message); }
+            }
 
             // 异常路径不应触发 returnTo reopen：清栈避免在已经混乱的状态上叠加新 panel 命令。
             _returnStack.Clear();

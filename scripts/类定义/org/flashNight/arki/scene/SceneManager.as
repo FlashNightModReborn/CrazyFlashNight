@@ -6,6 +6,10 @@ import flash.geom.Point;
 
 import org.flashNight.arki.scene.SceneInteractionManager;
 import org.flashNight.arki.scene.SceneCollisionManager;
+import org.flashNight.arki.scene.ChestSessionService;
+import org.flashNight.arki.scene.ChestS0SocketBridge;
+import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter;
+import org.flashNight.arki.item.LootContainerService;
 
 /**
 SceneManager.as
@@ -162,16 +166,30 @@ class org.flashNight.arki.scene.SceneManager {
     /*
      * 移除gameworld及其组件
      */
-    public function removeGameWorld():Void{
+    public function removeGameWorld():Boolean{
+        // transient loot 必须先于 target/dispatcher 销毁进入 EXPIRED，并释放 recovery 强引用。
+        // pending journal / mandatory effect / transport handoff 尚未收敛时必须保持整个
+        // gameworld 存活，让 socket/query 与下一帧重试仍有机会完成权威事务。
+        var lootExpiry:Object = LootContainerService.expireScene("scene_cleanup");
+        if (lootExpiry == null || lootExpiry.success !== true) {
+            return false;
+        }
+
+        // 先停止帧更新，再在 gameworld/area 仍存活时清理碰撞层与 MC 引用。
+        // 即使 gameworld 已为 null，也要收敛可能遗留的管理器状态。
         this.active = false;
-        if (SceneCollisionManager.instance != null) {
+        if (SceneCollisionManager.instance) {
             SceneCollisionManager.instance.dispose();
         }
 
         // 幂等检查
         if (gameworld == null) {
-            return;
+            return true;
         }
+
+        // S0 箱会话必须先于 dispatcher/gameworld 销毁进入可解释终态。
+        ChestS0SocketBridge.handleSceneUnload();
+        BoxInteractionArbiter.cleanup(gameworld);
 
         // 安全网：清除刘海屏波次计时器（正常路径由 clearStage/failStage 触发，
         // 但手动退出关卡可能跳过它们，导致计时器残留）
@@ -213,21 +231,22 @@ class org.flashNight.arki.scene.SceneManager {
         gameworld.removeMovieClip();
         DepthManager.instance = null;
         gameworld = null;
+        return true;
     }
 
     /**
      * 完整清理方法（幂等）
      * 用于游戏重启时的彻底清理
      */
-    public function dispose():Void {
-        removeGameWorld();
+    public function dispose():Boolean {
+        return removeGameWorld();
     }
 
     /**
      * 重置单例状态（用于游戏重启后重新初始化）
      */
-    public function reset():Void {
-        dispose();
+    public function reset():Boolean {
+        return dispose();
     }
 
 
@@ -362,6 +381,9 @@ class org.flashNight.arki.scene.SceneManager {
             inst.swapDepths(info.Depth);
         }
         if (info.Parameters) ObjectUtil.cloneParameters(inst, info.Parameters);
+        // attachMovie 会先触发元件初始化；XML Parameters 到这里才完整注入。
+        // 立即补观察双 marker，互动提交处还会再次重读作为最终逐目标门。
+        ChestS0SocketBridge.observeLocalFixture(inst);
         return inst;
     }
 

@@ -38,6 +38,7 @@ namespace CF7Launcher.Guardian
         private static long _fallbackPanelInstanceSequence;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
+        private LootPanelCoordinator _lootPanelCoordinator;
         private Func<string, bool> _gameCommandSenderOverride;
         private readonly object _skillOpenLock = new object();
         private System.Threading.Timer _skillOpenTimer;
@@ -72,6 +73,10 @@ namespace CF7Launcher.Guardian
         public void SetPanelHost(PanelHostController host) { _panelHost = host; }
         public void SetSkillTask(SkillTask task) { _skillTask = task; }
         public void SetEquipmentTuningTask(EquipmentTuningTask task) { _equipmentTuningTask = task; }
+        public void SetLootPanelCoordinator(LootPanelCoordinator coordinator)
+        {
+            _lootPanelCoordinator = coordinator;
+        }
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
         internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
         internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
@@ -316,6 +321,29 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "stage-select", StringComparison.OrdinalIgnoreCase))
             {
                 OpenStageSelectPanel(safeSource, frameLabel, returnFrameLabel);
+                return;
+            }
+            if (string.Equals(panelName, "loot", StringComparison.OrdinalIgnoreCase))
+            {
+                if (_lootPanelCoordinator == null)
+                {
+                    LogManager.Log("event=loot_panel_open_rejected reason=coordinator_unavailable");
+                    return;
+                }
+                JObject init;
+                try { init = JObject.Parse(initDataExtrasJson ?? "{}"); }
+                catch
+                {
+                    LogManager.Log("event=loot_panel_open_rejected reason=invalid_init_data");
+                    return;
+                }
+                JObject request = new JObject
+                {
+                    ["panel"] = "loot",
+                    ["source"] = safeSource,
+                    ["initData"] = init
+                };
+                _lootPanelCoordinator.HandlePanelRequest(request);
                 return;
             }
             if (string.Equals(panelName, "workbench", StringComparison.OrdinalIgnoreCase))

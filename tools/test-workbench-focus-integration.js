@@ -332,6 +332,48 @@ function assertRestored(check, node, label) {
     check.equal(node.hasAttribute('aria-hidden'), false, label + ' aria-hidden restored');
 }
 
+test('shell modal portal remains interactive above an active SecondaryPage', check => {
+    const environment = loadEnvironment();
+    const {shell} = makeShell(environment);
+    const document = environment.document;
+    const pageRoot = document.createElement('section');
+    const pageButton = document.createElement('button');
+    pageRoot.appendChild(pageButton);
+    const page = new environment.Components.SecondaryPage({
+        root:pageRoot,
+        document,
+        role:'dialog'
+    });
+    page.mount(shell.getRoot());
+    page.open({initialFocus:pageButton});
+
+    check.equal(shell._modalLayer.inert, false, 'secondary page does not inert the shared modal portal');
+    check.equal(shell._modalLayer.hasAttribute('inert'), false, 'modal portal has no inert attribute');
+    shell.openModal(modalSpec('secondary-confirm'));
+    const confirm = shell._modalLayer.querySelector('.workbench-modal-action.primary');
+
+    check.ok(confirm, 'modal confirm action is mounted');
+    check.equal(shell._modalLayer.inert, false, 'open modal portal remains pointer interactive');
+    check.equal(shell._modalLayer.hasAttribute('inert'), false, 'open modal portal remains outside inert ancestry');
+    check.equal(pageRoot.inert, true, 'modal suppresses the active secondary page');
+    check.equal(pageRoot.getAttribute('aria-hidden'), 'true', 'modal hides the active secondary page from accessibility');
+    check.equal(document.activeElement, confirm, 'modal owns initial focus above the secondary page');
+    check.ok(environment.Focus.focusables(shell._modalLayer).indexOf(confirm) >= 0,
+        'modal confirm remains in the shared focusable set');
+    assertScopeResources(check, environment, 2, 'secondary page plus modal');
+
+    shell.closeModal('confirmed');
+    check.equal(pageRoot.inert, false, 'closing modal restores secondary page interactivity');
+    check.equal(pageRoot.hasAttribute('inert'), false, 'closing modal removes secondary page inert attribute');
+    check.equal(pageRoot.getAttribute('aria-hidden'), 'false', 'closing modal restores secondary page accessibility');
+    check.equal(document.activeElement, pageButton, 'closing modal restores focus to its secondary-page opener');
+    assertScopeResources(check, environment, 1, 'after modal close over secondary page');
+
+    page.destroy();
+    shell.destroy();
+    assertScopeResources(check, environment, 0, 'after secondary modal test cleanup');
+});
+
 test('modal replacement tolerates an onClose reentrant open without orphaning a scope', check => {
     const environment = loadEnvironment();
     const {shell} = makeShell(environment);

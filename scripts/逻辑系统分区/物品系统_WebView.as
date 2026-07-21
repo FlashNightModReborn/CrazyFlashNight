@@ -3,3 +3,4 @@
 // 详细实现见 org.flashNight.arki.item.InventoryPanelService。
 InventoryPanelService.install();
 EquipmentTuningService.install();
+LootContainerService.install();

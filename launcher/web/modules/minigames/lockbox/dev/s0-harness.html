@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Lockbox Chest S0 Browser Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../../../../">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="modules/minigames/shared/minigame-shell.css">
+<link rel="stylesheet" href="modules/minigames/shared/dev/harness-base.css">
+<link rel="stylesheet" href="modules/minigames/lockbox/lockbox.css">
+<style>
+/* The standalone Browser harness has no cfn-fonts.local virtual host. */
+:root {
+    --intel-font-body: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-title: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-note: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-outburst: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-emotional: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-archive: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-character-neat: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-character-rough: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-character-plain: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-character-weary: Arial, "Microsoft YaHei", sans-serif;
+    --intel-font-mono: Consolas, monospace;
+}
+*, *::before, *::after { font-family: Arial, "Microsoft YaHei", sans-serif !important; }
+pre, code, input, select { font-family: Consolas, monospace !important; }
+</style>
+</head>
+<body>
+<div id="panel-container" data-panel="lockbox">
+    <div id="panel-backdrop"></div>
+    <div id="panel-content"></div>
+</div>
+
+<script>
+window.__minigameOverlayRoot = "";
+(function installBrowserWebViewTransport() {
+    "use strict";
+    if (window.chrome && window.chrome.webview) {
+        throw new Error("S0 Browser harness refuses to replace a real WebView2 transport");
+    }
+    var listeners = [];
+    var queuedPosts = [];
+    var hostReceiver = null;
+    var webview = {
+        addEventListener: function(type, handler) {
+            if (type === "message" && typeof handler === "function") listeners.push(handler);
+        },
+        removeEventListener: function(type, handler) {
+            if (type !== "message") return;
+            for (var i = listeners.length - 1; i >= 0; i -= 1) {
+                if (listeners[i] === handler) listeners.splice(i, 1);
+            }
+        },
+        postMessage: function(message) {
+            var copy = JSON.parse(JSON.stringify(message));
+            if (hostReceiver) hostReceiver(copy);
+            else queuedPosts.push(copy);
+        }
+    };
+    window.chrome = window.chrome || {};
+    window.chrome.webview = webview;
+    window.__lockboxS0BrowserTransport = {
+        kind: "browser-host-shim",
+        installHost: function(receiver) {
+            if (typeof receiver !== "function") throw new Error("browser host receiver is required");
+            if (hostReceiver) throw new Error("browser host receiver already installed");
+            hostReceiver = receiver;
+            var queued = queuedPosts.slice();
+            queuedPosts = [];
+            for (var i = 0; i < queued.length; i += 1) hostReceiver(queued[i]);
+        },
+        dispatchToWeb: function(message) {
+            var event = { data: JSON.parse(JSON.stringify(message)) };
+            var snapshot = listeners.slice();
+            for (var i = 0; i < snapshot.length; i += 1) snapshot[i](event);
+        }
+    };
+})();
+</script>
+<script src="modules/bridge.js"></script>
+<script src="modules/lazy-loader.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/icons.js"></script>
+<script src="modules/panels-lazy-registry.js"></script>
+<script src="modules/minigames/shared/dev/harness-base.js"></script>
+<!-- Dev-only S0 load. Production HTML/bootstrap/lazy registry must never include this script. -->
+<script src="modules/minigames/lockbox/chest-s0-adapter.js"></script>
+<script src="modules/minigames/lockbox/dev/s0-harness.js"></script>
+</body>
+</html>

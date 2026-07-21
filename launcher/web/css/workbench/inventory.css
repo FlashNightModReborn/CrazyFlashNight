@@ -171,6 +171,70 @@
     background:#1b1110; color:#bd6d60; font:12px/14px sans-serif; cursor:pointer;
 }
 .inventory-discard-btn:hover { color:#ff8e78; border-color:#d96854; }
+
+/* ── Map chest loot transfer-pair ──
+   Domain-specific geometry stays in the existing inventory fragment so the locked
+   workbench bundle order remains unchanged and every state still uses shared tokens. */
+#panel-container[data-panel="loot"] #panel-content { inset:0; }
+#panel-container[data-panel="loot"] #panel-backdrop { background:#080b0d; }
+.loot-scale-shell { overflow:hidden; }
+.loot-workbench {
+    --wb-accent:#d9a441;
+    --wb-accent-soft:rgba(217,164,65,.14);
+    grid-template-rows:var(--wb-header-height) minmax(0,1fr) 54px;
+    background:
+        radial-gradient(circle at 82% 42%,rgba(188,140,50,.08),transparent 34%),
+        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(255,255,255,.012) 1px,transparent 1px),var(--wb-bg);
+    background-size:auto,32px 32px,32px 32px,auto;
+}
+.loot-workbench .workbench-body { grid-template-columns:minmax(0,1.25fr) 34px minmax(430px,1fr); }
+.loot-workbench .workbench-flow-arrow { transform:rotate(180deg); }
+.loot-workbench .workbench-flow-rail[data-state="accept"] .workbench-flow-arrow,
+.loot-workbench .workbench-flow-rail[data-state="pending"] .workbench-flow-arrow {
+    transform:rotate(180deg) translateY(-1px);
+}
+.loot-workbench .workbench-view { height:100%; min-height:0; }
+.loot-backpack-grid,.loot-source-grid { overflow:auto; align-content:start; scrollbar-width:thin; }
+.loot-backpack-grid { grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); }
+.loot-source-grid {
+    grid-template-columns:repeat(var(--loot-columns,4),minmax(44px,1fr));
+    gap:7px; padding:10px;
+}
+.loot-source-slot {
+    min-width:0; height:72px; border-color:rgba(217,164,65,.24);
+    background:linear-gradient(145deg,#14130f,#0d1013 68%);
+}
+.loot-source-slot.occupied::after {
+    content:'领取'; position:absolute; right:3px; top:3px; padding:1px 3px;
+    color:#d7bb83; border:1px solid rgba(217,164,65,.24); background:rgba(8,10,12,.82);
+    font:9px/1.2 "Microsoft YaHei",sans-serif; pointer-events:none;
+}
+.loot-source-slot[data-target-domain="collection"]::after,
+.loot-source-slot[data-target-domain="special"]::after {
+    content:'入账'; color:#9fd5cf; border-color:rgba(93,183,170,.34);
+}
+.loot-source-slot[aria-disabled="true"],.loot-backpack-slot[aria-disabled="true"] { opacity:.54; cursor:not-allowed; }
+.loot-source-slot:focus-visible,.loot-backpack-slot:focus-visible,
+.loot-reconcile-btn:focus-visible,.loot-abandon-btn:focus-visible,.loot-close-btn:focus-visible,
+.loot-commit-bar .workbench-commit-primary:focus-visible { outline:2px solid var(--wb-focus); outline-offset:1px; }
+.loot-reconcile-btn { margin-right:5px; color:#f1c977; border-color:rgba(217,164,65,.52); }
+.loot-abandon-btn {
+    margin-right:5px; color:#e59a8e; border-color:rgba(196,79,63,.58);
+    background:#1a0e0d;
+}
+.loot-abandon-btn:hover:not(:disabled) { color:#ffc1b5; border-color:#c84f3f; }
+.loot-reconcile-btn[hidden],.loot-abandon-btn[hidden] { display:none; }
+.loot-commit-bar { position:relative; z-index:3; }
+.loot-commit-bar.is-blocked { border-top-color:var(--wb-danger); }
+.loot-commit-bar .workbench-commit-status { padding-left:4px; font-size:11px; }
+.loot-commit-bar .workbench-commit-primary { min-width:144px; min-height:40px; }
+.loot-drag-ghost .inventory-owned-icon { width:32px; height:32px; object-fit:contain; }
+@media (prefers-reduced-motion:reduce) {
+    .loot-workbench .workbench-flow-arrow,.loot-source-slot,.loot-commit-bar * {
+        animation:none!important; transition:none!important;
+    }
+}
 .inventory-workbench-panel .inventory-discard-btn {
     opacity:0; pointer-events:none; transition:opacity 90ms;
 }

@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Loot transfer-pair harness</title>
+  <link rel="stylesheet" href="../../../css/panels.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050708;color:#eee}
+    #panel-container,#panel-content{position:absolute;inset:0}#panel-backdrop{position:absolute;inset:0}
+    #qa-output{position:fixed;z-index:1000;right:6px;bottom:6px;max-width:460px;max-height:46vh;overflow:auto;padding:7px;background:#101214;border:1px solid #555;font:10px/1.35 Consolas;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+<div id="panel-container"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<pre id="qa-output">running…</pre>
+<script>
+(function(NativeResizeObserver){
+  var stats=window.__resizeObserverStats={created:0,disconnected:0,active:0};
+  if(!NativeResizeObserver)return;
+  function Tracked(callback){this.native=new NativeResizeObserver(callback);this.active=false;stats.created++}
+  Tracked.prototype.observe=function(target){if(!this.active){this.active=true;stats.active++}return this.native.observe(target)};
+  Tracked.prototype.unobserve=function(target){return this.native.unobserve(target)};
+  Tracked.prototype.disconnect=function(){if(this.active){this.active=false;stats.active--;stats.disconnected++}return this.native.disconnect()};
+  window.ResizeObserver=Tracked;
+})(window.ResizeObserver);
+  window.__LOOT_PANEL_CONFIG__={requestTimeoutMs:120,sessionNonce:'loot-harness',dragTimeoutMs:300};
+  window.__sent=[];window.__toasts=[];window.__handlers={};window.__events=[];window.__mode='full';
+  window.__failNextLootSnapshot=false;window.__dropNextInventoryWrite=false;
+  window.__failInventoryRefresh=false;window.__delayInventoryWrite=false;
+window.Toast={add:function(value){__toasts.push(String(value))}};
+window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+window.PanelTooltip={
+  hide:function(){},dynamicIconHtml:function(){return''},staticIconUrl:function(){return''},inferLayoutType:function(){return'narrow'},
+  buildItemRichHtml:function(){return'<div>权威说明</div>'},
+  bindAsyncHover:function(node){node.__panelTooltipBinding={destroy:function(){node.__panelTooltipBinding=null}}}
+};
+window.Bridge={
+  on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
+  off:function(type,fn){var list=__handlers[type]||[],i=list.indexOf(fn);if(i>=0)list.splice(i,1)},
+  send:function(message){
+    __sent.push(JSON.parse(JSON.stringify(message)));
+    __events.push('send:'+String(message.cmd||message.type||''));
+    if(message.type==='task'&&message.task==='loot_request')setTimeout(function(){respond(message)},
+      __mode==='delayed_claim'&&message.cmd==='claim'?90:0);
+    if(message.type==='panel'&&message.domain==='inventory')setTimeout(function(){respondInventory(message)},
+      __delayInventoryWrite&&message.cmd!=='snapshot'?90:0);
+    return true;
+  }
+};
+window.Panels=(function(){var specs={},active=null;return{
+  register:function(id,spec){specs[id]=spec},
+  open:function(id,init){
+    var spec=specs[id],host=document.getElementById('panel-content');
+    if(active===id&&spec.onRebind){spec.onRebind(spec._el,init);return}
+    if(active)this.close();active=id;document.getElementById('panel-container').setAttribute('data-panel',id);
+    if(!spec._el){spec._el=spec.create(host);host.appendChild(spec._el)}spec._el.style.display='';if(spec.onOpen)spec.onOpen(spec._el,init)
+  },
+  close:function(){if(!active)return;__events.push('visual_close');var spec=specs[active];if(spec.onClose)spec.onClose();if(spec._el)spec._el.style.display='none';active=null;document.getElementById('panel-container').removeAttribute('data-panel')},
+  requestClose:function(){if(!active)return;var spec=specs[active];if(spec.onRequestClose)spec.onRequestClose();else this.close()},
+  forceClose:function(){if(!active)return;var spec=specs[active];this.close();if(spec.onForceClose)spec.onForceClose()},
+  getActive:function(){return active},isOpen:function(){return!!active},_specs:specs
+}})();
+document.getElementById('panel-backdrop').addEventListener('click',function(){Panels.requestClose()});
+
+var authority;
+function item(name){return{name:name,displayName:name,icon:name,itemKind:'stack',quantity:1,majorType:'材料',use:'材料'}}
+function occupied(index,name,lease){return{physicalSlot:index,occupied:true,slotLease:lease,item:item(name)}}
+function empty(index){return{physicalSlot:index,occupied:false,slotLease:'lease.empty.'+index}}
+  function addInventoryAuthority(){authority.battlebox=[empty(0),empty(1),empty(2),empty(3)];authority.inventoryRevision=1}
+  function resetAuthority(full){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'强化石','lease.0'),empty(1)],backpack:full?[occupied(0,'背包物品A','bag.0'),occupied(1,'背包物品B','bag.1')]:[occupied(0,'背包物品A','bag.0'),empty(1)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
+  function resetClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'物资A','lease.all.0'),occupied(1,'物资B','lease.all.1'),occupied(2,'物资C','lease.all.2')],backpack:[occupied(0,'背包物品A','bag.0'),empty(1),empty(2),empty(3)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
+  function resetMixedClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'黑暗吉他','lease.mixed.guitar.1'),occupied(1,'抗生素','lease.mixed.antibiotic.1')],backpack:[occupied(0,'抗生素','bag.antibiotic'),occupied(1,'背包物品B','bag.1')],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
+function resetGridAuthority(capacity){resetAuthority(false);authority.loot=[];for(var i=0;i<capacity;i++)authority.loot.push(i===0?occupied(i,'保险柜物资','lease.grid.0'):empty(i))}
+function snapshot(containerId,slots){return{containerId:containerId,capacity:slots.length,accessibleCapacity:slots.length,viewCapacity:slots.length,filterKey:'all',pageSizeHint:slots.length,locked:false,snapshotSeq:authority.revision,containerEpoch:containerId.indexOf('loot.')===0?7:1,containerVersion:authority.version,offset:0,limit:slots.length,slots:slots,filterFacets:[],filterItemCount:slots.filter(function(x){return x.occupied}).length,setFacets:[],setFilterItemCount:0}}
+function remaining(){return authority.loot.filter(function(x){return x.occupied}).length}
+function common(message){var inactive=authority.terminal||authority.suspended;return{type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,chestSessionId:message.chestSessionId,lootContainerId:message.lootContainerId,containerEpoch:message.containerEpoch,success:true,error:'',authorityRevision:authority.revision,lastAppliedOperationId:authority.lastOperation,state:authority.terminal?authority.terminal.kind:authority.suspended?'LOOT_SUSPENDED':'LOOT_ACTIVE',remainingCount:authority.terminal?authority.terminal.remainingCount:remaining(),closeLease:inactive?'':authority.closeLease,snapshots:[],tooltip:null,terminal:authority.terminal}}
+  function emit(value){if(value&&value.terminal)__events.push('terminal_response');else if(value&&value.state==='LOOT_SUSPENDED')__events.push('suspended_response');(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(value)})}
+function activeResponse(message){var response=common(message);response.snapshots=[snapshot(message.lootContainerId,authority.loot),snapshot('背包',authority.backpack)];return response}
+function respond(message){
+    if(message.cmd==='snapshot'){
+      if(__failNextLootSnapshot){__failNextLootSnapshot=false;var failed=common(message);failed.success=false;failed.error='snapshot_failed';emit(failed);return}
+      emit(activeResponse(message));return
+    }
+  if(message.cmd==='tooltip'){var tip=common(message);tip.tooltip={iconName:'强化石',itemType:'材料',introHTML:'地图资源箱',descHTML:'权威物品说明'};emit(tip);return}
+  if(message.cmd==='claim'){
+    if((__mode==='full'||__mode==='inventory_full')&&authority.backpack.every(function(slot){return slot.occupied})||__mode==='full_malformed'||__mode==='stale'||__mode==='stale_then_suspended'||__mode==='stale_then_terminal'){var fail=common(message);fail.success=false;fail.error=__mode==='inventory_full'?'inventory_full':__mode.indexOf('stale')===0?'stale_lease':'target_full';fail.closeLease='';if(__mode==='full_malformed')fail.snapshots=[{}];emit(fail);return}
+    if((__mode==='mixed_full'||__mode==='mixed_full_unproven'||__mode==='mixed_full_then_stale')&&Number(message.source.slot)===0){var blocked=common(message);blocked.success=false;blocked.error='target_full';blocked.closeLease='';if(__mode==='mixed_full_unproven')blocked.authorityRevision++;emit(blocked);return}
+    if(__mode==='mixed_full_then_stale'&&Number(message.source.slot)===1){var stale=common(message);stale.success=false;stale.error='stale_lease';stale.closeLease='';emit(stale);return}
+    if(__mode==='mixed_constructor'&&Number(message.source.slot)===0){var unknown=common(message);unknown.success=false;unknown.error='constructor';unknown.closeLease='';emit(unknown);return}
+    if(__mode==='no_progress'){authority.lastOperation=message.operationId;emit(activeResponse(message));return}
+    if(__mode==='manual_wrong_revision'){var unchangedRevisionIndex=Number(message.source.slot);authority.loot[unchangedRevisionIndex]=empty(unchangedRevisionIndex);authority.version++;authority.lastOperation=message.operationId;emit(activeResponse(message));return}
+    if(__mode==='wrong_slot_progress'){authority.loot[0]=occupied(0,'黑暗吉他','lease.wrong.'+(authority.revision+1));authority.loot[1]=empty(1);authority.revision++;authority.version++;authority.lastOperation=message.operationId;authority.closeLease='close.'+authority.revision;emit(activeResponse(message));return}
+    var index=Number(message.source.slot);authority.loot[index]=empty(index);authority.revision++;authority.version++;authority.lastOperation=message.operationId;authority.closeLease='close.'+authority.revision;
+    if(__mode==='mixed_full'&&authority.loot[0].occupied)authority.loot[0]=occupied(0,'黑暗吉他','lease.mixed.guitar.'+authority.revision);
+    if(__mode==='ack_lost'){__mode='normal';return}
+    emit(activeResponse(message));return
+  }
+  if(message.cmd==='query'){
+    if(__mode==='stale_then_suspended'){var suspendedRefresh=common(message);suspendedRefresh.state='LOOT_SUSPENDED';suspendedRefresh.closeLease='';emit(suspendedRefresh);return}
+    if(__mode==='stale_then_terminal'){var terminalRefresh=common(message);terminalRefresh.state='EXPIRED';terminalRefresh.closeLease='';terminalRefresh.terminal={kind:'EXPIRED',reason:'expired',remainingCount:remaining()};emit(terminalRefresh);return}
+    emit(authority.terminal||authority.suspended?common(message):activeResponse(message));return
+  }
+  if(message.cmd==='close'){
+    if(__mode==='close_capacity_failure'){var closeFail=common(message);closeFail.success=false;closeFail.error='target_full';closeFail.closeLease='';emit(closeFail);return}
+    authority.revision++;authority.lastOperation=message.operationId;
+    if(message.abandon){authority.terminal={kind:'ABANDONED',reason:'player_abandon',remainingCount:remaining()}}
+    else if(remaining()>0){authority.suspended=true;authority.closeLease=''}
+    else authority.terminal={kind:'CONSUMED',reason:'empty',remainingCount:0};
+    if(__mode==='close_ack_lost'){__mode='normal';return}
+    emit(common(message));return
+  }
+  }
+
+  function inventorySlots(containerId){return containerId==='背包'?authority.backpack:containerId==='战备箱'?authority.battlebox:null}
+  function inventorySnapshot(request){
+    var all=inventorySlots(request.containerId)||[],requestedOffset=Number(request.offset)||0,requestedLimit=Number(request.limit)||1;
+    var offset=all.length<=0?0:requestedOffset>=all.length?Math.floor((all.length-1)/requestedLimit)*requestedLimit:requestedOffset;
+    var slots=all.slice(offset,offset+requestedLimit);
+    return{containerId:request.containerId,capacity:all.length,accessibleCapacity:all.length,viewCapacity:all.length,
+      filterKey:String(request.filterKey||'all'),snapshotSeq:authority.inventoryRevision,containerVersion:authority.inventoryRevision,
+      offset:offset,limit:slots.length,slots:slots,filterFacets:[],filterItemCount:all.filter(function(x){return x.occupied}).length,
+      setFacets:[],setFilterItemCount:0}
+  }
+  function inventoryResponse(message,success,error,snapshots){return{type:'panel_resp',domain:'inventory',panel:'loot',
+    panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,success:success,error:error||'',snapshots:snapshots||[]}}
+  function inventorySnapshots(requests){return(requests||[]).map(inventorySnapshot)}
+  function findEmpty(slots){for(var i=0;i<slots.length;i++)if(!slots[i].occupied)return i;return-1}
+  function respondInventory(message){
+    var payload=message.payload||{};
+    if(message.cmd==='snapshot'){
+      if(__failInventoryRefresh){emit(inventoryResponse(message,false,'snapshot_failed',[]));return}
+      emit(inventoryResponse(message,true,'',inventorySnapshots(payload.requests)));return
+    }
+    var source=payload.source||{},sourceSlots=inventorySlots(source.containerId),sourceIndex=Number(source.slot);
+    if(!sourceSlots||!sourceSlots[sourceIndex]||!sourceSlots[sourceIndex].occupied||sourceSlots[sourceIndex].slotLease!==source.expectedLease){emit(inventoryResponse(message,false,'stale_lease',[]));return}
+    if(message.cmd==='discard'){
+      sourceSlots[sourceIndex]=empty(sourceIndex);authority.inventoryRevision++;authority.version++;
+      if(__dropNextInventoryWrite){__dropNextInventoryWrite=false;return}
+      emit(inventoryResponse(message,true,'',inventorySnapshots([{containerId:'背包',offset:0,limit:50,filterKey:'all'}])));return
+    }
+    if(message.cmd==='autoTransfer'){
+      var targetSlots=inventorySlots(payload.targetContainerId),targetIndex=findEmpty(targetSlots||[]);
+      if(targetIndex<0){emit(inventoryResponse(message,false,'target_full',[]));return}
+      var moved=sourceSlots[sourceIndex];sourceSlots[sourceIndex]=empty(sourceIndex);
+      targetSlots[targetIndex]=occupied(targetIndex,moved.item.displayName,'inv.'+(authority.inventoryRevision+1)+'.'+targetIndex);
+      authority.inventoryRevision++;authority.version++;
+      emit(inventoryResponse(message,true,'',inventorySnapshots(payload.windows)));return
+    }
+    emit(inventoryResponse(message,false,'unsupported_command',[]))
+  }
+  function init(id){return{v:1,panelInstanceId:'panel.'+id,chestSessionId:'chest.'+id,lootContainerId:'loot.test.'+id,containerEpoch:7,displayName:'装备箱',capacity:2,columns:2}}
+</script>
+<script src="../../panel-runtime.js"></script>
+<script src="../../workbench-lifecycle.js"></script>
+<script src="../../workbench-focus.js"></script>
+<script src="../../workbench-primitives.js"></script>
+<script src="../../workbench.js"></script>
+  <script src="../../workbench-components.js"></script>
+  <script src="../../inventory-ui.js"></script>
+  <script src="../../inventory-runtime.js"></script>
+<script src="../../panel-scale.js"></script>
+<script src="../../tooltip.js"></script>
+<script src="../loot-runtime.js"></script>
+<script src="../loot-state.js"></script>
+  <script src="../loot-view.js"></script>
+  <script src="../loot-organizer.js"></script>
+<script src="../loot-panel.js"></script>
+<script>
+(async function(){
+  var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}
+  function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms||25)})}
+  async function waitFor(test,timeout){var end=Date.now()+(timeout||1200);while(Date.now()<end){if(test())return true;await delay(15)}return false}
+  function tasks(cmd){return __sent.filter(function(x){return x.type==='task'&&(!cmd||x.cmd===cmd)})}
+  function inventoryTasks(cmd){return __sent.filter(function(x){return x.type==='panel'&&x.domain==='inventory'&&(!cmd||x.cmd===cmd)})}
+  try{
+    var baselineHandlers=PanelRuntime.sharedResponseRouter.debugState().handlerCount;
+    ok('initData accepts only the Host rebuilt eight-key shape',!!LootPanel.exactInitData(init('shape'))&&!LootPanel.exactInitData(Object.assign(init('shape-extra'),{source:'map_chest'}))&&!LootPanel.exactInitData(Object.assign(init('shape-string'),{capacity:'2'})));
+    ok('initData rejects negative, zero, and numeric-string epochs',[-1,0,'1'].every(function(value){return !LootPanel.exactInitData(Object.assign(init('epoch-'+value),{containerEpoch:value}))}));
+    ok('prototype property names never match view error allowlists',LootView.blockMessage('constructor')===''&&LootView.errorMessage('constructor')==='操作未被游戏确认，请重试或重新核对。');
+    var inventoryFullPresentation=LootView.commitPresentation(
+      {phase:'active',remainingCount:1,blockReason:'inventory_full'},false);
+    ok('organize CTA allowlist covers only inventory-backed full errors',
+      LootView.isInventoryCapacityBlock('target_full')
+      &&LootView.isInventoryCapacityBlock('inventory_full')
+      &&!LootView.isInventoryCapacityBlock('capacity_reached')
+      &&!LootView.isInventoryCapacityBlock('cap_reached')
+      &&!LootView.isInventoryCapacityBlock('constructor')
+      &&inventoryFullPresentation.label==='整理背包');
+    resetAuthority(true);__mode='full';Panels.open('loot',init('full'));
+    await waitFor(function(){return document.querySelectorAll('.loot-source-slot').length===2});
+    ok('mounts transfer-pair shared shell',document.querySelector('.loot-workbench[data-profile="transfer-pair"]')&&document.querySelectorAll('.workbench-slot').length===2);
+    ok('marks a single Web loot authority surface',document.querySelector('[data-authority-exclusive="loot"]')&&document.querySelectorAll('[data-authority-exclusive]').length===1);
+    ok('uses exact Host-injected identity',tasks('snapshot')[0].panelInstanceId==='panel.full'&&!Object.prototype.hasOwnProperty.call(tasks('snapshot')[0],'source'));
+    var lootNode=document.querySelector('.loot-source-slot.occupied');lootNode.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    ok('full backpack preserves loot and presents the in-panel organizer CTA',
+      document.querySelectorAll('.loot-source-slot.occupied').length===1
+      &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
+      &&document.querySelector('.workbench-commit-status').textContent.indexOf('当前页面')>=0);
+    var organizeClaimsBefore=tasks('claim').length,organizeClosesBefore=tasks('close').length;
+    var organizeLootSnapshotsBefore=tasks('snapshot').length;
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&state.inventory.ready});
+    var organizerInventoryOpen=inventoryTasks('snapshot').slice(-1)[0];
+    ok('organize CTA keeps the exact tracked loot instance and opens an in-place secondary page',
+      Panels.getActive()==='loot'&&!authority.suspended&&authority.terminal===null
+      &&tasks('claim').length===organizeClaimsBefore&&tasks('close').length===organizeClosesBefore
+      &&document.querySelector('.loot-organizer-page.active[aria-hidden="false"]')
+      &&organizerInventoryOpen&&organizerInventoryOpen.panel==='loot'
+      &&organizerInventoryOpen.panelInstanceId==='panel.full'
+      &&Object.keys(organizerInventoryOpen).sort().join(',')==='callId,cmd,domain,panel,panelInstanceId,payload,type');
+    ok('organizer exposes discard only for backpack slots',
+      document.querySelectorAll('[data-space-grid="背包"] .inventory-discard-btn').length===2
+      &&document.querySelectorAll('[data-space-grid="战备箱"] .inventory-discard-btn').length===0);
+    document.querySelector('[data-space-grid="背包"] .occupied').click();
+    await waitFor(function(){var state=LootPanel.debugState();return inventoryTasks('autoTransfer').length===1&&!state.inventory.busyOwner});
+    var organizerClosesBeforeReturn=tasks('close').length;
+    document.querySelector('.loot-organizer-close-btn').click();
+    await waitFor(function(){return !LootPanel.debugState().organizerActive});
+    ok('top organizer X waits for a fresh loot snapshot and returns without suspension or claim replay',
+      Panels.getActive()==='loot'&&!authority.suspended&&tasks('snapshot').length===organizeLootSnapshotsBefore+1
+      &&tasks('claim').length===organizeClaimsBefore&&tasks('close').length===organizerClosesBeforeReturn
+      &&LootPanel.debugState().blockReason===''&&!LootPanel.debugState().organizerActive);
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
+    ok('claiming resumes only after organizer return and does not replay the rejected claim',
+      tasks('claim').length===organizeClaimsBefore+1&&authority.terminal.remainingCount===0);
+
+    resetAuthority(true);__mode='full';Panels.open('loot',init('discard-confirm'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.ready});
+    var discardsBefore=inventoryTasks('discard').length;
+    document.querySelector('[data-space-grid="背包"] .inventory-discard-btn').click();await delay();
+    var discardModal=document.querySelector('[data-modal-kind="discard"]');
+    var discardConfirm=discardModal&&discardModal.querySelector('[data-action="discard"]');
+    ok('discard opens an irreversible confirmation with zero writes before consent',
+      discardModal&&inventoryTasks('discard').length===discardsBefore);
+    ok('discard confirmation remains interactive above the organizer and owns focus',
+      discardConfirm&&!discardConfirm.closest('[inert]')
+      &&discardModal.contains(document.activeElement)
+      &&document.querySelector('.loot-organizer-page').inert===true);
+    document.querySelector('[data-modal-kind="discard"] [data-action="cancel"]').click();await delay();
+    ok('discard cancellation is a zero-write action',
+      !document.querySelector('[data-modal-kind="discard"]')&&inventoryTasks('discard').length===discardsBefore);
+    document.querySelector('[data-space-grid="背包"] .inventory-discard-btn').click();
+    document.querySelector('[data-modal-kind="discard"] [data-action="discard"]').click();
+    await waitFor(function(){return inventoryTasks('discard').length===discardsBefore+1&&!LootPanel.debugState().inventory.busyOwner});
+    ok('confirmed discard submits exactly one lease-bound backpack write',
+      inventoryTasks('discard').length===discardsBefore+1
+      &&inventoryTasks('discard').slice(-1)[0].payload.source.containerId==='背包'
+      &&inventoryTasks('discard').slice(-1)[0].payload.source.expectedLease==='bag.0'
+      &&document.querySelectorAll('[data-space-grid="战备箱"] .inventory-discard-btn').length===0);
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='full';Panels.open('loot',init('discard-timeout'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.ready});
+    var timeoutLootSnapshots=tasks('snapshot').length,timeoutCloses=tasks('close').length;
+    document.querySelector('[data-space-grid="背包"] .inventory-discard-btn').click();
+    __dropNextInventoryWrite=true;__failInventoryRefresh=true;
+    document.querySelector('[data-modal-kind="discard"] [data-action="discard"]').click();
+    document.getElementById('panel-backdrop').click();await delay();
+    ok('backdrop cannot leave the organizer while a discard result is pending',
+      Panels.getActive()==='loot'&&LootPanel.debugState().organizerActive
+      &&LootPanel.debugState().inventory.busyOwner==='inventory.discard'
+      &&tasks('snapshot').length===timeoutLootSnapshots&&tasks('close').length===timeoutCloses);
+    await waitFor(function(){return LootPanel.debugState().inventory.refreshRequired},900);
+    document.querySelector('.loot-organizer-close-btn').click();await delay();
+    ok('failed timeout reconciliation blocks return and exposes retry without loot replay',
+      LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.refreshRequired
+      &&document.querySelector('[data-loot-organizer-retry]:not([hidden])')
+      &&tasks('snapshot').length===timeoutLootSnapshots&&tasks('close').length===timeoutCloses);
+    __failInventoryRefresh=false;document.querySelector('[data-loot-organizer-retry]').click();
+    await waitFor(function(){var state=LootPanel.debugState().inventory;return state.ready&&!state.refreshRequired&&!state.busyOwner});
+    __failNextLootSnapshot=true;document.querySelector('.loot-organizer-close-btn').click();
+    await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&!state.organizerReturning&&state.blockReason==='snapshot_failed'});
+    ok('fresh loot snapshot failure keeps the organizer open and never replays a claim',
+      LootPanel.debugState().organizerActive&&tasks('snapshot').length===timeoutLootSnapshots+1
+      &&tasks('close').length===timeoutCloses&&Panels.getActive()==='loot');
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+    await waitFor(function(){return !LootPanel.debugState().organizerActive});
+    ok('Escape returns to loot only after inventory and a fresh loot snapshot both settle',
+      Panels.getActive()==='loot'&&!authority.suspended&&tasks('snapshot').length===timeoutLootSnapshots+2
+      &&tasks('close').length===timeoutCloses);
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='inventory_full';Panels.open('loot',init('inventory-full'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().blockReason==='inventory_full'});
+    ok('inventory-full alias needs the same exact zero-write proof before showing organize CTA',
+      LootPanel.debugState().phase==='active'
+      &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
+      &&document.querySelectorAll('.loot-source-slot.occupied').length===1);
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='full_malformed';var malformedCapacityCloses=tasks('close').length,malformedCapacityToasts=__toasts.length;
+    Panels.open('loot',init('full-malformed'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    var malformedCapacityState=LootPanel.debugState();
+    ok('malformed capacity extras fail closed without organize CTA or another close write',
+      malformedCapacityState.unknown&&malformedCapacityState.unknown.error==='target_full'
+      &&malformedCapacityState.unknown.refreshOnly===true
+      &&document.querySelector('[data-commit-primary]').textContent!=='整理背包'
+      &&document.querySelector('.loot-reconcile-btn:not([hidden])')
+      &&__toasts.slice(malformedCapacityToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0})
+      &&!__toasts.slice(malformedCapacityToasts).some(function(value){return value.indexOf('保持不变')>=0}));
+    document.querySelector('.loot-close-btn').click();await delay();
+    ok('reconcile-required capacity failure blocks X from submitting close',
+      tasks('close').length===malformedCapacityCloses&&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='stale';Panels.open('loot',init('stale-close'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    lootNode=document.querySelector('.loot-source-slot.occupied');lootNode.dispatchEvent(new MouseEvent('click',{bubbles:true,detail:2}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    var staleState=LootPanel.debugState(),staleClosesBefore=tasks('close').length;
+    ok('stale lease always requires authority reconciliation and retains the source without CTA',
+      staleState.unknown&&staleState.unknown.error==='stale_lease'&&staleState.unknown.refreshOnly===true
+      &&document.querySelectorAll('.loot-source-slot.occupied').length===1
+      &&document.querySelector('[data-commit-primary]').textContent!=='整理背包');
+    document.querySelector('.loot-close-btn').click();await delay();
+    ok('stale reconciliation gate blocks X from submitting close',
+      tasks('close').length===staleClosesBefore&&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='stale_then_suspended';var suspendedRefreshClaims=tasks('claim').length,suspendedRefreshCloses=tasks('close').length,suspendedRefreshPanelCloses=__sent.filter(function(x){return x.type==='panel'&&x.cmd==='close'}).length;
+    Panels.open('loot',init('stale-refresh-suspended'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    __events.length=0;document.querySelector('.loot-reconcile-btn').click();await delay(80);
+    ok('refresh-only suspended query stays reconciling and never closes the visual/native pair',
+      LootPanel.debugState().phase==='reconcile_required'&&Panels.getActive()==='loot'
+      &&tasks('claim').length===suspendedRefreshClaims+1&&tasks('close').length===suspendedRefreshCloses
+      &&__events.indexOf('visual_close')<0
+      &&__sent.filter(function(x){return x.type==='panel'&&x.cmd==='close'}).length===suspendedRefreshPanelCloses);
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='stale_then_terminal';var terminalRefreshClaims=tasks('claim').length,terminalRefreshCloses=tasks('close').length;
+    Panels.open('loot',init('stale-refresh-terminal'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    __events.length=0;document.querySelector('.loot-reconcile-btn').click();
+    await waitFor(function(){return Panels.getActive()===null});
+    ok('refresh-only strict terminal query closes without replaying the failed write',
+      tasks('claim').length===terminalRefreshClaims+1&&tasks('close').length===terminalRefreshCloses
+      &&__events.indexOf('terminal_response')>=0&&__events.indexOf('visual_close')>__events.indexOf('terminal_response')
+      &&__sent.some(function(x){return x.type==='panel'&&x.cmd==='close'&&x.panel==='loot'&&x.reason==='terminal'}));
+
+    resetAuthority(false);__mode='manual_wrong_revision';var manualRevisionClaims=tasks('claim').length,manualRevisionCloses=tasks('close').length,manualRevisionToasts=__toasts.length;
+    Panels.open('loot',init('manual-wrong-revision'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    ok('manual claim rejects a success projection without exact revision advance',
+      tasks('claim').length===manualRevisionClaims+1&&tasks('close').length===manualRevisionCloses
+      &&LootPanel.debugState().remainingCount===1
+      &&document.querySelectorAll('.loot-source-slot.occupied').length===1
+      &&__toasts.slice(manualRevisionToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0}));
+    var manualRevisionQueries=tasks('query').length;
+    document.querySelector('.loot-reconcile-btn').click();await delay(80);
+    ok('query cannot launder the same malformed manual-claim projection into active state',
+      LootPanel.debugState().phase==='reconcile_required'&&Panels.getActive()==='loot'
+      &&tasks('query').length===manualRevisionQueries+1
+      &&tasks('claim').length===manualRevisionClaims+1&&tasks('close').length===manualRevisionCloses);
+    Panels.forceClose();await delay();
+
+    resetMixedClaimAllAuthority();__mode='wrong_slot_progress';var manualWrongSlotClaims=tasks('claim').length,manualWrongSlotCloses=tasks('close').length,manualWrongSlotToasts=__toasts.length;
+    Panels.open('loot',init('manual-wrong-slot'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    ok('manual claim rejects progress that empties a different physical slot',
+      tasks('claim').length===manualWrongSlotClaims+1&&tasks('close').length===manualWrongSlotCloses
+      &&LootPanel.debugState().remainingCount===2
+      &&document.querySelectorAll('.loot-source-slot.occupied').length===2
+      &&__toasts.slice(manualWrongSlotToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0}));
+    Panels.forceClose();await delay();
+
+    resetAuthority(true);__mode='normal';Panels.open('loot',init('ordinary-close'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    var suspendClosesBefore=tasks('close').length;__events.length=0;
+    document.querySelector('.loot-close-btn').click();await waitFor(function(){return Panels.getActive()===null&&authority.suspended});
+    var suspendClose=tasks('close').slice(-1)[0],suspendEvent=__events.indexOf('suspended_response'),suspendVisual=__events.indexOf('visual_close');
+    ok('X on nonempty chest suspends before visual close without abandon modal',
+      tasks('close').length===suspendClosesBefore+1&&suspendClose&&suspendClose.abandon===false
+      &&authority.suspended&&authority.terminal===null&&!document.querySelector('[data-modal-kind="loot-abandon"]')
+      &&suspendEvent>=0&&suspendVisual>suspendEvent
+      &&__sent.some(function(x){return x.type==='panel'&&x.cmd==='close'&&x.reason==='suspended'}));
+
+    resetAuthority(true);__mode='close_capacity_failure';var rejectedCloseWrites=tasks('close').length,rejectedCloseToasts=__toasts.length;
+    Panels.open('loot',init('close-capacity-failure'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-close-btn').click();
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'});
+    var rejectedCloseState=LootPanel.debugState();
+    ok('failed close capacity code cannot claim zero-write UX without a source proof',
+      Panels.getActive()==='loot'&&tasks('close').length===rejectedCloseWrites+1
+      &&rejectedCloseState.unknown&&rejectedCloseState.unknown.error==='target_full'
+      &&__toasts.slice(rejectedCloseToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0})
+      &&!__toasts.slice(rejectedCloseToasts).some(function(value){return value.indexOf('保持不变')>=0}));
+    document.querySelector('.loot-close-btn').click();await delay();
+    ok('reconcile-required close failure blocks a second close write',
+      tasks('close').length===rejectedCloseWrites+1&&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetAuthority(false);__mode='ack_lost';var ackLostQueriesBefore=tasks('query').length;Panels.open('loot',init('ack-lost'));await waitFor(function(){return document.querySelector('.loot-source-slot.occupied')});
+    lootNode=document.querySelector('.loot-source-slot.occupied');lootNode.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'},900);
+    var claimCount=tasks('claim').length;
+    ok('ack loss enters reconcile without local success',LootPanel.debugState().phase==='reconcile_required'&&document.querySelector('.loot-reconcile-btn:not([hidden])'));
+    document.querySelector('.loot-reconcile-btn').click();await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    ok('query recovers authority and never replays claim',LootPanel.debugState().remainingCount===0&&tasks('claim').length===claimCount&&tasks('query').length===ackLostQueriesBefore+1);
+    document.querySelector('.loot-close-btn').click();await waitFor(function(){return Panels.getActive()===null});
+    var consume=tasks('close').slice(-1)[0];
+    ok('empty close submits consume before visual detach',consume&&consume.abandon===false&&__sent.some(function(x){return x.type==='panel'&&x.cmd==='close'&&x.panel==='loot'}));
+
+    resetAuthority(false);__mode='delayed_claim';var pendingClaimsBefore=tasks('claim').length,pendingClosesBefore=tasks('close').length,pendingToastsBefore=__toasts.length;
+    Panels.open('loot',init('pending-close-feedback'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    lootNode=document.querySelector('.loot-source-slot.occupied');lootNode.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().phase==='write_pending'});
+    var pendingCloseButton=document.querySelector('.loot-close-btn');pendingCloseButton.focus();pendingCloseButton.click();
+    ok('write-pending X stays focusable and reports busy without another close write',
+      pendingCloseButton.tagName==='BUTTON'&&pendingCloseButton.type==='button'
+      &&pendingCloseButton.disabled===false&&pendingCloseButton.tabIndex>=0
+      &&pendingCloseButton.getAttribute('aria-disabled')==='true'
+      &&pendingCloseButton.getAttribute('aria-busy')==='true'
+      &&document.activeElement===pendingCloseButton
+      &&tasks('claim').length===pendingClaimsBefore+1&&tasks('close').length===pendingClosesBefore
+      &&__toasts.slice(pendingToastsBefore).some(function(value){return value.indexOf('正在由游戏确认')>=0}));
+    await waitFor(function(){var state=LootPanel.debugState();return state.phase==='active'&&state.remainingCount===0});
+    ok('settled close button restores ordinary native button semantics',
+      pendingCloseButton.disabled===false&&pendingCloseButton.getAttribute('aria-disabled')==='false'
+      &&pendingCloseButton.getAttribute('aria-busy')==='false');
+    pendingCloseButton.focus();pendingCloseButton.click();
+    await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
+    ok('ordinary focused X still submits one non-abandon close after the write settles',
+      tasks('close').length===pendingClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
+
+    resetAuthority(false);__mode='normal';Panels.open('loot',init('abandon'));await waitFor(function(){return document.querySelector('.loot-source-slot.occupied')});
+    var dangerClosesBefore=tasks('close').length;
+    document.querySelector('.loot-abandon-btn').click();await delay();
+    ok('separate danger action opens a focused irreversible confirmation',
+      document.querySelector('[data-modal-kind="loot-abandon"]')
+      &&document.activeElement&&document.querySelector('[data-modal-kind="loot-abandon"]').contains(document.activeElement)
+      &&tasks('close').length===dangerClosesBefore);
+    document.querySelector('[data-modal-kind="loot-abandon"] [data-action="cancel"]').click();await delay();
+    ok('cancel danger confirmation keeps the exact authority binding active',
+      Panels.getActive()==='loot'&&!document.querySelector('[data-modal-kind="loot-abandon"]')
+      &&tasks('close').length===dangerClosesBefore);
+    document.querySelector('.loot-abandon-btn').click();await delay();document.querySelector('[data-action="abandon"]').click();await waitFor(function(){return Panels.getActive()===null});
+    ok('confirmed danger action returns ABANDONED before visual close',
+      tasks('close').slice(-1)[0].abandon===true&&authority.terminal.kind==='ABANDONED');
+
+    resetAuthority(false);__mode='close_ack_lost';var unknownClosesBefore=tasks('close').length,unknownQueriesBefore=tasks('query').length;
+    Panels.open('loot',init('close-ack-lost'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-close-btn').click();await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'},900);
+    ok('unknown suspend write keeps the workbench open and never replays close',
+      Panels.getActive()==='loot'&&authority.suspended&&tasks('close').length===unknownClosesBefore+1);
+    document.querySelector('.loot-reconcile-btn').click();await waitFor(function(){return Panels.getActive()===null});
+    ok('query proves the original suspended close operation without replay',
+      tasks('close').length===unknownClosesBefore+1&&tasks('query').length===unknownQueriesBefore+1
+      &&__sent.some(function(x){return x.type==='panel'&&x.cmd==='close'&&x.reason==='suspended'}));
+
+    resetAuthority(false);__mode='normal';var escapeClosesBefore=tasks('close').length;
+    Panels.open('loot',init('escape'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+    await waitFor(function(){return Panels.getActive()===null&&authority.suspended});
+    ok('Escape uses the same non-abandon suspend path',
+      tasks('close').length===escapeClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
+
+    resetAuthority(false);__mode='normal';var backdropClosesBefore=tasks('close').length;
+    Panels.open('loot',init('backdrop'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.getElementById('panel-backdrop').dispatchEvent(new MouseEvent('click',{bubbles:true}));
+    await waitFor(function(){return Panels.getActive()===null&&authority.suspended});
+    ok('backdrop uses the same non-abandon suspend path',
+      tasks('close').length===backdropClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
+
+    resetClaimAllAuthority();__mode='normal';__events.length=0;var claimAllClaimsBefore=tasks('claim').length,claimAllClosesBefore=tasks('close').length;
+    Panels.open('loot',Object.assign(init('claim-all'),{capacity:3,columns:3}));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
+    var claimAllClose=tasks('close').slice(-1)[0],claimAllClaims=tasks('claim').slice(claimAllClaimsBefore);
+    var terminalEvent=__events.indexOf('terminal_response'),visualCloseEvent=__events.indexOf('visual_close');
+    ok('claim-all drains serially then commits CONSUMED before visual close',
+      claimAllClaims.length===3&&claimAllClaims.map(function(x){return x.expectedAuthorityRevision}).join(',')==='1,2,3'
+      &&tasks('close').length===claimAllClosesBefore+1&&claimAllClose&&claimAllClose.abandon===false
+      &&claimAllClose.expectedAuthorityRevision===4&&authority.terminal.remainingCount===0
+      &&terminalEvent>=0&&visualCloseEvent>terminalEvent
+      &&__sent.some(function(x){return x.type==='panel'&&x.cmd==='close'&&x.panel==='loot'&&x.reason==='terminal'}));
+
+    resetAuthority(false);__mode='no_progress';var stalledClaimsBefore=tasks('claim').length,stalledClosesBefore=tasks('close').length;
+    Panels.open('loot',init('claim-all-no-progress'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return tasks('claim').length===stalledClaimsBefore+1&&LootPanel.debugState().claimAll===false});
+    await delay(180);
+    ok('claim-all stops on strict success without authority or source-slot progress',
+      Panels.getActive()==='loot'&&authority.revision===1&&remaining()===1
+      &&authority.loot[0].occupied&&authority.loot[0].slotLease==='lease.0'
+      &&tasks('claim').length===stalledClaimsBefore+1&&tasks('close').length===stalledClosesBefore);
+    Panels.forceClose();await delay();
+
+    resetClaimAllAuthority();__mode='delayed_claim';var detachedClaimsBefore=tasks('claim').length,detachedClosesBefore=tasks('close').length;
+    Panels.open('loot',Object.assign(init('claim-all-force-detach'),{capacity:3,columns:3}));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return tasks('claim').length===detachedClaimsBefore+1&&LootPanel.debugState().phase==='write_pending'});
+    var claimAllBusyClose=document.querySelector('.loot-close-btn'),claimAllBusyToasts=__toasts.length;
+    claimAllBusyClose.focus();claimAllBusyClose.click();
+    ok('claim-all busy X reports progress and never submits close',
+      LootPanel.debugState().claimAll===true&&claimAllBusyClose.disabled===false
+      &&claimAllBusyClose.getAttribute('aria-disabled')==='true'
+      &&claimAllBusyClose.getAttribute('aria-busy')==='true'
+      &&document.activeElement===claimAllBusyClose
+      &&tasks('close').length===detachedClosesBefore
+      &&__toasts.slice(claimAllBusyToasts).some(function(value){return value.indexOf('正在由游戏确认')>=0}));
+    Panels.forceClose();await delay(180);
+    ok('force detach during claim-all clears the queue and ignores the late write response',
+      Panels.getActive()===null&&LootPanel.debugState().phase==='closed'
+      &&LootPanel.debugState().claimAll===false&&LootPanel.debugState().claimAllQueueLength===0
+      &&tasks('claim').length===detachedClaimsBefore+1&&tasks('close').length===detachedClosesBefore);
+
+    resetAuthority(true);__mode='full';var failedClaimAllClosesBefore=tasks('close').length;
+    Panels.open('loot',init('claim-all-full'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    ok('failed claim-all keeps the authority binding open and never submits close',
+      Panels.getActive()==='loot'&&LootPanel.debugState().claimAll===false
+      &&LootPanel.debugState().remainingCount===1&&tasks('close').length===failedClaimAllClosesBefore);
+    Panels.forceClose();await delay();
+
+    resetMixedClaimAllAuthority();__mode='mixed_full';var mixedClaimsBefore=tasks('claim').length,mixedClosesBefore=tasks('close').length;
+    Panels.open('loot',init('claim-all-mixed-full'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===mixedClaimsBefore+2});
+    var mixedClaims=tasks('claim').slice(mixedClaimsBefore),mixedState=LootPanel.debugState();
+    ok('claim-all skips a proven capacity block and still claims a later mergeable slot',
+      mixedClaims.length===2&&mixedClaims.map(function(x){return x.source.slot}).join(',')==='0,1'
+      &&mixedClaims.map(function(x){return x.expectedAuthorityRevision}).join(',')==='1,1'
+      &&authority.revision===2&&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
+      &&authority.loot[0].slotLease==='lease.mixed.guitar.2'
+      &&Panels.getActive()==='loot'&&mixedState.claimAllBlockedReason==='target_full'
+      &&mixedState.claimAllBlockedSlots.join(',')==='0'&&mixedState.claimAllQueueLength===0
+      &&tasks('close').length===mixedClosesBefore
+      &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
+      &&document.querySelector('.workbench-commit-status').textContent.indexOf('当前页面')>=0);
+    var mixedClaimsAfterBlock=tasks('claim').length;
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.ready});
+    ok('mixed claim-all organizer preserves the blocked item without close or claim replay',
+      tasks('claim').length===mixedClaimsAfterBlock&&tasks('close').length===mixedClosesBefore
+      &&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
+      &&authority.terminal===null&&!authority.suspended&&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetMixedClaimAllAuthority();__mode='mixed_full_unproven';var unprovenClaimsBefore=tasks('claim').length,unprovenClosesBefore=tasks('close').length,unprovenToastsBefore=__toasts.length;
+    Panels.open('loot',init('claim-all-unproven-capacity'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===unprovenClaimsBefore+1});
+    await delay(80);
+    ok('claim-all fail-closes when a capacity response lacks an exact zero-write proof',
+      tasks('claim').length===unprovenClaimsBefore+1&&tasks('close').length===unprovenClosesBefore
+      &&remaining()===2&&Panels.getActive()==='loot'&&LootPanel.debugState().phase==='reconcile_required'
+      &&document.querySelector('[data-commit-primary]').textContent!=='整理背包'
+      &&__toasts.slice(unprovenToastsBefore).some(function(value){return value.indexOf('未满足零写证明')>=0}));
+    Panels.forceClose();await delay();
+
+    resetMixedClaimAllAuthority();__mode='mixed_full_then_stale';var lateFailureClaimsBefore=tasks('claim').length,lateFailureClosesBefore=tasks('close').length;
+    Panels.open('loot',init('claim-all-capacity-then-stale'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===lateFailureClaimsBefore+2});
+    var lateFailureState=LootPanel.debugState();
+    ok('a later claim-all error replaces an earlier retained capacity outcome',
+      tasks('claim').length===lateFailureClaimsBefore+2&&tasks('close').length===lateFailureClosesBefore
+      &&lateFailureState.phase==='reconcile_required'&&lateFailureState.unknown
+      &&lateFailureState.unknown.error==='stale_lease'&&lateFailureState.unknown.refreshOnly===true
+      &&lateFailureState.claimAllBlockedReason===''&&lateFailureState.claimAllBlockedSlots.length===0
+      &&remaining()===2&&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetMixedClaimAllAuthority();__mode='mixed_constructor';var prototypeClaimsBefore=tasks('claim').length,prototypeClosesBefore=tasks('close').length;
+    Panels.open('loot',init('claim-all-prototype-error'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'&&LootPanel.debugState().claimAll===false});
+    var prototypeState=LootPanel.debugState();
+    ok('prototype-named errors fail closed instead of matching capacity allowlists',
+      tasks('claim').length===prototypeClaimsBefore+1&&tasks('close').length===prototypeClosesBefore
+      &&prototypeState.unknown&&prototypeState.unknown.error==='constructor'
+      &&prototypeState.claimAllBlockedReason===''&&remaining()===2&&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetMixedClaimAllAuthority();__mode='wrong_slot_progress';var wrongSlotClaimsBefore=tasks('claim').length,wrongSlotClosesBefore=tasks('close').length,wrongSlotToastsBefore=__toasts.length;
+    Panels.open('loot',init('claim-all-wrong-slot-progress'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===wrongSlotClaimsBefore+1});
+    ok('claim-all rejects authority progress that does not empty the exact requested slot',
+      tasks('claim').length===wrongSlotClaimsBefore+1&&tasks('close').length===wrongSlotClosesBefore
+      &&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
+      &&LootPanel.debugState().phase==='reconcile_required'
+      &&__toasts.slice(wrongSlotToastsBefore).some(function(value){return value.indexOf('尚未由权威状态证明')>=0})
+      &&Panels.getActive()==='loot');
+    Panels.forceClose();await delay();
+
+    resetGridAuthority(32);Panels.open('loot',Object.assign(init('grid8'),{capacity:32,columns:8}));
+    await waitFor(function(){return document.querySelectorAll('.loot-source-slot').length===32&&LootPanel.debugState().phase==='active'});
+    var grid=document.querySelector('.loot-source-grid'),widths=Array.from(document.querySelectorAll('.loot-source-slot')).map(function(node){return node.getBoundingClientRect().width});
+    ok('eight-column chest keeps 44px targets without horizontal overflow',Math.min.apply(Math,widths)>=43.9&&grid.scrollWidth<=grid.clientWidth+1,JSON.stringify({minimum:Math.min.apply(Math,widths),client:grid.clientWidth,scroll:grid.scrollWidth}));
+    Panels.forceClose();await delay();
+
+    resetAuthority(false);authority.loot[1]=occupied(1,'重绑后物资','lease.rebind.1');var rebindInit=init('rebind');
+    Panels.open('loot',rebindInit);await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().remainingCount===1});var firstRebindOperation=tasks('claim').slice(-1)[0].operationId;
+    Panels.open('loot',rebindInit);await waitFor(function(){return LootPanel.debugState().phase==='active'&&document.querySelectorAll('.loot-source-slot.occupied').length===1});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().remainingCount===0});var secondRebindOperation=tasks('claim').slice(-1)[0].operationId;
+    ok('same-session rebind keeps exactly one loot plus one organizer mux and fresh write identity',firstRebindOperation!==secondRebindOperation&&PanelRuntime.sharedResponseRouter.debugState().handlerCount===baselineHandlers+2,JSON.stringify({first:firstRebindOperation,second:secondRebindOperation,router:PanelRuntime.sharedResponseRouter.debugState()}));
+    Panels.forceClose();await delay();
+
+    resetAuthority(false);Panels.open('loot',init('force'));await waitFor(function(){return LootPanel.debugState().phase==='active'});var closesBefore=tasks('close').length;Panels.forceClose();await delay();
+    ok('force detach is visual-only',Panels.getActive()===null&&tasks('close').length===closesBefore&&LootPanel.debugState().phase==='closed');
+    for(var reopen=0;reopen<3;reopen++){resetAuthority(false);Panels.open('loot',init('repeat'+reopen));await waitFor(function(){return LootPanel.debugState().phase==='active'});Panels.forceClose();await delay()}
+    ok('cleanup restores flat mux and observer ownership',PanelRuntime.sharedResponseRouter.debugState().handlerCount===baselineHandlers&&__resizeObserverStats.active===0,JSON.stringify({router:PanelRuntime.sharedResponseRouter.debugState(),resize:__resizeObserverStats}));
+    ok('Web emits no AS2 legacy double-open signal',!__sent.some(function(x){return /legacy|资源箱界面|as2_ui/i.test(JSON.stringify(x))}));
+    var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
+  }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
+})();
+</script>
+</body>
+</html>

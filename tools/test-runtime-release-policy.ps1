@@ -61,6 +61,31 @@ Assert-Cf7Test ($validatorSource.Contains(". `$buildEnvGate -ProjectRoot `$Proje
     'production candidate checks must initialize the project-pinned runtime toolchain'
 Assert-Cf7Test ($validatorSource.Contains('candidate policy validation is forbidden')) `
     'production candidate checks must fail closed when the pinned dotnet host is unavailable'
+$s0RequiredWebPaths = @(
+    'modules\minigames\lockbox\chest-s0-dev-bootstrap.js',
+    'modules\minigames\lockbox\chest-s0-adapter.js',
+    'modules\minigames\lockbox\chest-s0-actual-wire.js'
+)
+$lootRequiredWebPaths = @(
+    'modules\loot\loot-runtime.js',
+    'modules\loot\loot-state.js',
+    'modules\loot\loot-view.js',
+    'modules\loot\loot-organizer.js',
+    'modules\loot\loot-panel.js'
+)
+$requiredWebPathsMatch = [regex]::Match(
+    $validatorSource,
+    '(?s)\$requiredWebPaths\s*=\s*@\((?<body>.*?)\)\s*\r?\n\s*\$checks\s*\+=\s*New-Cf7RequiredPathsCheck\s+-Name\s+''required-web-runtime-assets''')
+Assert-Cf7Test $requiredWebPathsMatch.Success `
+    'production required-Web-assets declaration must remain statically discoverable'
+foreach ($relativePath in $s0RequiredWebPaths) {
+    Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
+        "production required-Web-assets must include the S0 overlay chain asset: $relativePath"
+}
+foreach ($relativePath in $lootRequiredWebPaths) {
+    Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
+        "production required-Web-assets must include the loot panel asset: $relativePath"
+}
 
 New-Item -ItemType Directory -Path $fixtureRoot -Force | Out-Null
 try {
@@ -112,6 +137,9 @@ exit 0
     & git -C $fixtureRoot config user.email 'runtime-policy-test@example.invalid'
     & git -C $fixtureRoot config user.name 'Runtime Policy Test'
     & git -C $fixtureRoot config core.autocrlf false
+    $fixtureExcludes = Join-Path $fixtureRoot 'tmp\empty-global-ignore'
+    Write-Cf7Utf8NoBom -Path $fixtureExcludes -Text ''
+    & git -C $fixtureRoot config core.excludesFile $fixtureExcludes
     & git -C $fixtureRoot add -- product.txt assets tools
     & git -C $fixtureRoot commit -q -m fixture
     if ($LASTEXITCODE -ne 0) { throw 'fixture commit failed' }
@@ -175,6 +203,85 @@ exit 0
     $missingJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $missingReceipt | ConvertFrom-Json
     Assert-Cf7Test ($missingRun.ExitCode -eq 1 -and $missingJson.passed -eq $false) 'missing resource must fail validation'
     Assert-Cf7Test (@($missingJson.checks | Where-Object { $_.name -eq 'required-missing' -and -not $_.passed }).Count -eq 1) 'missing resource failure must be recorded'
+
+    # 2b. Every production S0 overlay chain asset is independently required.  Keep
+    # these fixture files untracked so removing one exercises requiredPaths itself,
+    # rather than the tracked-tree materialization invariant.
+    $s0WebRoot = Join-Path $fixtureRoot 'web'
+    foreach ($relativePath in $s0RequiredWebPaths) {
+        Write-Cf7Utf8NoBom -Path (Join-Path $s0WebRoot $relativePath) -Text "fixture`n"
+    }
+    $s0Manifest = Join-Path $fixtureRoot 'tmp\s0-web-assets-manifest.json'
+    Write-Cf7TestManifest -Path $s0Manifest -Entries @(
+        [ordered]@{
+            name = 'required-s0-overlay-chain'
+            kind = 'requiredPaths'
+            root = '${PROJECT_ROOT}\web'
+            paths = $s0RequiredWebPaths
+        }
+    )
+    foreach ($missingPath in $s0RequiredWebPaths) {
+        $missingFullPath = Join-Path $s0WebRoot $missingPath
+        Remove-Item -LiteralPath $missingFullPath -Force
+        try {
+            $leaf = [IO.Path]::GetFileNameWithoutExtension($missingPath)
+            $receiptPath = Join-Path $fixtureRoot "tmp\s0-web-assets-missing-$leaf-receipt.json"
+            $s0MissingRun = Invoke-Cf7Validator -ManifestPath $s0Manifest -ReceiptPath $receiptPath
+            $s0MissingJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $receiptPath | ConvertFrom-Json
+            $failedCheck = @($s0MissingJson.checks | Where-Object {
+                $_.name -eq 'required-s0-overlay-chain' -and -not $_.passed
+            })
+            Assert-Cf7Test ($s0MissingRun.ExitCode -eq 1 -and $s0MissingJson.passed -eq $false) `
+                "missing S0 overlay asset must fail validation: $missingPath"
+            Assert-Cf7Test ($failedCheck.Count -eq 1 -and [string]$failedCheck[0].detail -match [regex]::Escape($missingPath)) `
+                "missing S0 overlay asset must be named in the failed policy check: $missingPath"
+        } finally {
+            Write-Cf7Utf8NoBom -Path $missingFullPath -Text "fixture`n"
+        }
+    }
+
+    # 2c. The production loot panel is a four-module closure: the complete set passes,
+    # while removing any single module fails closed and names that path in the receipt.
+    $lootWebRoot = Join-Path $fixtureRoot 'web'
+    foreach ($relativePath in $lootRequiredWebPaths) {
+        Write-Cf7Utf8NoBom -Path (Join-Path $lootWebRoot $relativePath) -Text "fixture`n"
+    }
+    $lootManifest = Join-Path $fixtureRoot 'tmp\loot-web-assets-manifest.json'
+    Write-Cf7TestManifest -Path $lootManifest -Entries @(
+        [ordered]@{
+            name = 'required-loot-panel-chain'
+            kind = 'requiredPaths'
+            root = '${PROJECT_ROOT}\web'
+            paths = $lootRequiredWebPaths
+        }
+    )
+    $lootPassReceipt = Join-Path $fixtureRoot 'tmp\loot-web-assets-pass-receipt.json'
+    $lootPassRun = Invoke-Cf7Validator -ManifestPath $lootManifest -ReceiptPath $lootPassReceipt
+    $lootPassJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $lootPassReceipt | ConvertFrom-Json
+    Assert-Cf7Test ($lootPassRun.ExitCode -eq 0 -and $lootPassJson.passed -eq $true) `
+        "complete loot panel asset closure must pass; output=$($lootPassRun.Output)"
+    Assert-Cf7Test (@($lootPassJson.checks | Where-Object {
+        $_.name -eq 'required-loot-panel-chain' -and $_.passed
+    }).Count -eq 1) 'complete loot panel asset closure must be recorded as passed'
+    foreach ($missingPath in $lootRequiredWebPaths) {
+        $missingFullPath = Join-Path $lootWebRoot $missingPath
+        Remove-Item -LiteralPath $missingFullPath -Force
+        try {
+            $leaf = [IO.Path]::GetFileNameWithoutExtension($missingPath)
+            $receiptPath = Join-Path $fixtureRoot "tmp\loot-web-assets-missing-$leaf-receipt.json"
+            $lootMissingRun = Invoke-Cf7Validator -ManifestPath $lootManifest -ReceiptPath $receiptPath
+            $lootMissingJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $receiptPath | ConvertFrom-Json
+            $failedCheck = @($lootMissingJson.checks | Where-Object {
+                $_.name -eq 'required-loot-panel-chain' -and -not $_.passed
+            })
+            Assert-Cf7Test ($lootMissingRun.ExitCode -eq 1 -and $lootMissingJson.passed -eq $false) `
+                "missing loot panel asset must fail validation: $missingPath"
+            Assert-Cf7Test ($failedCheck.Count -eq 1 -and [string]$failedCheck[0].detail -match [regex]::Escape($missingPath)) `
+                "missing loot panel asset must be named in the failed policy check: $missingPath"
+        } finally {
+            Write-Cf7Utf8NoBom -Path $missingFullPath -Text "fixture`n"
+        }
+    }
 
     # 3. A child gate's nonzero code reaches its check record and the top-level result;
     # remaining checks still run so a single receipt contains the full diagnosis.

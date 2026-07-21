@@ -199,10 +199,11 @@ test('exports four primitives and workbench preserves constructor identity', () 
     });
 });
 
-test('physical split stays below the audit limit and fails clearly without its dependency', () => {
+test('physical split stays within the audit limit and fails clearly without its dependency', () => {
     const workbenchSource = fs.readFileSync(workbenchPath, 'utf8');
     const primitivesSource = fs.readFileSync(primitivesPath, 'utf8');
-    assert(workbenchSource.split(/\r?\n/).length < 1000);
+    const workbenchLines = workbenchSource.split(/\r?\n/).length;
+    assert(workbenchLines <= 1000, 'workbench.js exceeds the 1000-line split threshold: ' + workbenchLines);
     ['EntityTile', 'ItemCard', 'InteractionBroker', 'PointerDragController'].forEach(name => {
         assert(!new RegExp('function\\s+' + name + '\\s*\\(').test(workbenchSource), name + ' leaked into workbench.js');
         assert(new RegExp('function\\s+' + name + '\\s*\\(').test(primitivesSource), name + ' missing from primitives');

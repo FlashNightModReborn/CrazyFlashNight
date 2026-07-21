@@ -37,12 +37,20 @@ _root.删除存盘 = function() { SaveManager.getInstance().deleteSlot(); };
 // 必须跳到主时间轴“读盘”帧，让原流程统一负责 loadAll、任务恢复、出生点和地图跳转；
 // 不可在这里提前 loadAll，否则会消费 launcher snapshot 后停留在主菜单。
 _root.agentEnterResolvedSave = function() {
+    // 与标题画面“进入游戏”同构：先推送 s:1 唤醒 NativeHud，再进入读盘帧。
+    // 本入口在 asLoader frame3 定义，而 notifyGameEntered 到 frame41 才注入；
+    // 过早调用必须 fail-closed，不能继续消费 launcher snapshot。
+    if (typeof _root.notifyGameEntered != "function") {
+        _root.debugLastResult = "agentEnterResolvedSave blocked: notifyGameEntered unavailable";
+        return false;
+    }
+    _root.notifyGameEntered();
     if (_root._saveRuntimeLoaded == true) {
         _root.debugLastResult = "agentEnterResolvedSave already loaded role=" + _root.角色名 + " level=" + _root.等级;
         return true;
     }
     _root.debugLastResult = "agentEnterResolvedSave goto read frame";
-    _root.gotoAndPlay("读盘");
+    _root.gotoAndStop("读盘");
     return true;
 };
 

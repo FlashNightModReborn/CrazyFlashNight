@@ -15,6 +15,19 @@ const {
   verifyRuntimeIdentity,
 } = require("../lib/runtime-process-identity");
 const {
+  AGENT_ENTER_COMMAND,
+  assertRuntimeReadyStatus,
+  findFreshHandoff,
+  findFreshRevealWatchdog,
+  findFreshTitleFrame,
+  freshLogRecords,
+  logWatermark,
+  readLogSnapshot,
+  shouldRequestAgentEnter,
+  statusAttemptForSlot,
+} = require("../equipment-tuning/run-unattended");
+const { checkAgentEntryContract } = require("../test-agent-entry-contract");
+const {
   analyzeRows,
   createPilotManifest,
   fail,
@@ -481,19 +494,6 @@ async function consoleCommand(port, command, timeoutMs = 10000) {
   return parseJsonResponse(resp, `/console ${command}`);
 }
 
-function hasReadyBlocker(status, blocker) {
-  const list = status && Array.isArray(status.readyBlockedBy) ? status.readyBlockedBy : [];
-  return list.includes(blocker);
-}
-
-function shouldRequestAgentEnter(status, enterRequested) {
-  return !enterRequested
-    && status
-    && status.launchState === "Ready"
-    && status.revealPerformed === true
-    && hasReadyBlocker(status, "runtime_save_not_loaded");
-}
-
 async function waitForAgentControl(port, timeoutMs, pollMs) {
   const deadline = Date.now() + timeoutMs;
   let last = null;
@@ -507,9 +507,28 @@ async function waitForAgentControl(port, timeoutMs, pollMs) {
   fail(`agent_control was not available within ${timeoutMs}ms; last=${JSON.stringify(last)}`);
 }
 
-async function ensureGameReady(port, args) {
+function canReuseEntryProof(status, slot, proof) {
+  if (!status || status.readyForArenaCalibration !== true || !proof) return false;
+  const attemptId = statusAttemptForSlot(status, slot);
+  return proof.slot === slot
+    && proof.attemptId === attemptId
+    && proof.enterRequestCount === 1
+    && proof.gameEnteredObserved === true
+    && proof.gameEnteredAttemptId === attemptId
+    && Number.isInteger(proof.titleFrameLine);
+}
+
+async function ensureGameReady(port, args, priorEntryProof) {
   let status = await waitForAgentControl(port, args.readyTimeoutMs, args.pollMs);
-  if (status.readyForArenaCalibration) return status;
+  if (status.readyForArenaCalibration) {
+    if (!canReuseEntryProof(status, args.slot, priorEntryProof)) {
+      fail("refusing to reuse a pre-existing ready game without this run's fresh handoff/attempt proof");
+    }
+    assertRuntimeReadyStatus(status, args.slot, priorEntryProof.attemptId);
+    return { status, entryProof: priorEntryProof };
+  }
+
+  const startLogWatermark = logWatermark(await readLogSnapshot(port));
 
   const start = await agent(port, "start", {
     slot: args.slot,
@@ -521,17 +540,67 @@ async function ensureGameReady(port, args) {
   }
 
   const deadline = Date.now() + args.readyTimeoutMs;
-  let enterRequested = false;
+  const state = {
+    expectedSlot: args.slot,
+    expectedAttemptId: statusAttemptForSlot(start, args.slot),
+    handoffEvidence: null,
+    titleFrameEvidence: null,
+    revealWatchdogEvidence: null,
+    enterRequested: false,
+    enterRequestCount: 0,
+  };
+  let lastLogSnapshot = null;
   while (Date.now() <= deadline) {
     status = await agent(port, "status");
-    if (status.readyForArenaCalibration) return status;
-    // 必须等 bootstrap_reveal_ready / 主 SWF handoff 完成后再消费 launcher snapshot。
-    // 若在 asLoader 仍持有 _root 时提前 loadAll，snapshot 会在临时 root 上被消费；主菜单
-    // 接管后只能看到 runtime loaded 回报，却没有已初始化的物品栏，纯 json_shadow 的
-    // agent 槽会永久卡在主菜单。
-    if (shouldRequestAgentEnter(status, enterRequested)) {
-      enterRequested = true;
-      const entered = await consoleCommand(port, "#func:_root.agentEnterResolvedSave()");
+    const candidateAttempt = statusAttemptForSlot(status, args.slot);
+    if (candidateAttempt) {
+      if (state.expectedAttemptId && state.expectedAttemptId !== candidateAttempt) {
+        fail(`launcher attempt changed while waiting for arena readiness: expected=${state.expectedAttemptId} actual=${candidateAttempt}`);
+      }
+      state.expectedAttemptId = candidateAttempt;
+    }
+
+    lastLogSnapshot = await readLogSnapshot(port);
+    const freshRecords = freshLogRecords(startLogWatermark, lastLogSnapshot);
+    if (!state.handoffEvidence && state.expectedAttemptId) {
+      state.handoffEvidence = findFreshHandoff(freshRecords);
+    }
+    if (!state.titleFrameEvidence && state.expectedAttemptId) {
+      state.titleFrameEvidence = findFreshTitleFrame(freshRecords);
+    }
+    if (!state.revealWatchdogEvidence) {
+      state.revealWatchdogEvidence = findFreshRevealWatchdog(freshRecords);
+    }
+    if (state.revealWatchdogEvidence && !state.titleFrameEvidence) {
+      fail("title_frame_not_observed: Flash reveal watchdog fired before the real title-frame receipt");
+    }
+
+    if (status.readyForArenaCalibration) {
+      if (!state.handoffEvidence || !state.titleFrameEvidence
+          || state.enterRequestCount !== 1 || !state.expectedAttemptId) {
+        fail("arena became ready without a fresh handoff, real title-frame receipt, exact attempt, and exactly one agent entry request");
+      }
+      assertRuntimeReadyStatus(status, args.slot, state.expectedAttemptId);
+      return {
+        status,
+        entryProof: {
+          slot: args.slot,
+          attemptId: state.expectedAttemptId,
+          handoffLine: state.handoffEvidence.lineNumber,
+          titleFrameLine: state.titleFrameEvidence.lineNumber,
+          enterRequestCount: state.enterRequestCount,
+          gameEnteredObserved: status.gameEnteredObserved === true,
+          gameEnteredAttemptId: status.gameEnteredAttemptId,
+        },
+      };
+    }
+
+    // 只有 fresh 主 SWF handoff、精确 dedicated slot/attempt、安全 snapshot、socket
+    // 都已实收后，才允许唯一一次 helper 调用。
+    if (shouldRequestAgentEnter(status, state)) {
+      state.enterRequested = true;
+      state.enterRequestCount += 1;
+      const entered = await consoleCommand(port, AGENT_ENTER_COMMAND);
       if (entered && entered.success === false) {
         fail(`agent enter save command failed: ${JSON.stringify(entered)}`);
       }
@@ -541,7 +610,10 @@ async function ensureGameReady(port, args) {
     }
     await sleep(args.pollMs);
   }
-  fail(`game did not become ready for arena calibration within ${args.readyTimeoutMs}ms; last=${JSON.stringify(status)}`);
+  if (!state.titleFrameEvidence) {
+    fail(`title_frame_not_observed: real bootstrap_reveal_ready receipt missing; last=${JSON.stringify({ state, logTotal: lastLogSnapshot && lastLogSnapshot.total })}`);
+  }
+  fail(`game did not become ready for arena calibration within ${args.readyTimeoutMs}ms; last=${JSON.stringify({ status, state, logTotal: lastLogSnapshot && lastLogSnapshot.total })}`);
 }
 
 async function shutdownExistingLauncherForGate(root, gates) {
@@ -574,7 +646,7 @@ async function shutdownLauncher(root) {
   return { port, response };
 }
 
-async function ensureLauncherReady(root, args, expectedIdentity, onIdentityObserved) {
+async function ensureLauncherReady(root, args, expectedIdentity, onIdentityObserved, priorEntryProof) {
   let port = await discoverPort(root);
   if (!port && args.startLauncher) {
     startLauncher(root, expectedIdentity);
@@ -589,8 +661,13 @@ async function ensureLauncherReady(root, args, expectedIdentity, onIdentityObser
     expectedIdentity,
     onIdentityObserved
   );
-  const status = await ensureGameReady(port, args);
-  return { port, status, runtimeIdentity };
+  const gameReady = await ensureGameReady(port, args, priorEntryProof);
+  return {
+    port,
+    status: gameReady.status,
+    entryProof: gameReady.entryProof,
+    runtimeIdentity,
+  };
 }
 
 function requiresLauncherShutdown(gates) {
@@ -1072,6 +1149,7 @@ function defaultOutputPaths(root, batchId, args) {
 }
 
 function runCheck() {
+  const agentEntryContract = checkAgentEntryContract();
   const candidateArgs = parseArgs(["--candidate-root", "tmp/runtime-candidates/v2/check"]);
   if (candidateArgs.candidateRoot !== "tmp/runtime-candidates/v2/check") {
     throw new Error("--candidate-root parsing failed");
@@ -1113,21 +1191,67 @@ function runCheck() {
   const beforeReveal = {
     launchState: "Ready",
     revealPerformed: false,
-    readyBlockedBy: ["flash_not_revealed", "runtime_save_not_loaded"],
+    socketConnected: true,
+    runtimeReadyBlockedBy: ["flash_not_revealed", "runtime_save_not_loaded", "game_enter_not_observed"],
+    save: {
+      decision: "snapshot",
+      kind: "Snapshot",
+      slot: DEFAULT_AGENT_SLOT,
+      attemptId: "attempt-check",
+    },
   };
   const afterReveal = {
     launchState: "Ready",
     revealPerformed: true,
-    readyBlockedBy: ["runtime_save_not_loaded"],
+    socketConnected: true,
+    runtimeReadyBlockedBy: ["runtime_save_not_loaded", "game_enter_not_observed"],
+    save: beforeReveal.save,
   };
-  if (shouldRequestAgentEnter(beforeReveal, false)) {
+  const enterState = {
+    expectedSlot: DEFAULT_AGENT_SLOT,
+    expectedAttemptId: "attempt-check",
+    handoffEvidence: null,
+    titleFrameEvidence: null,
+    enterRequested: false,
+  };
+  if (shouldRequestAgentEnter(beforeReveal, enterState)) {
     throw new Error("agent enter must not consume save before Flash reveal");
   }
-  if (!shouldRequestAgentEnter(afterReveal, false)) {
-    throw new Error("agent enter must run after reveal when runtime save is pending");
+  if (shouldRequestAgentEnter(afterReveal, enterState)) {
+    throw new Error("agent enter must not run before a fresh handoff");
   }
-  if (shouldRequestAgentEnter(afterReveal, true)) {
+  enterState.handoffEvidence = { lineNumber: 7, line: "[BootstrapAS] event=handoff" };
+  if (shouldRequestAgentEnter(afterReveal, enterState)) {
+    throw new Error("agent enter must not run before the real title-frame receipt");
+  }
+  enterState.titleFrameEvidence = {
+    lineNumber: 8,
+    line: "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared",
+  };
+  if (!shouldRequestAgentEnter(afterReveal, enterState)) {
+    throw new Error("agent enter must run after all fresh handoff/attempt gates pass");
+  }
+  enterState.enterRequested = true;
+  if (shouldRequestAgentEnter(afterReveal, enterState)) {
     throw new Error("agent enter must remain single-shot after request");
+  }
+  const reusableStatus = {
+    readyForArenaCalibration: true,
+    save: { slot: DEFAULT_AGENT_SLOT, attemptId: "attempt-check" },
+  };
+  const reusableProof = {
+    slot: DEFAULT_AGENT_SLOT,
+    attemptId: "attempt-check",
+    enterRequestCount: 1,
+    gameEnteredObserved: true,
+    gameEnteredAttemptId: "attempt-check",
+    titleFrameLine: 8,
+  };
+  if (!canReuseEntryProof(reusableStatus, DEFAULT_AGENT_SLOT, reusableProof)
+      || canReuseEntryProof(reusableStatus, DEFAULT_AGENT_SLOT, Object.assign({}, reusableProof, {
+        attemptId: "attempt-stale",
+      }))) {
+    throw new Error("same-run arena entry proof reuse contract failed");
   }
   const report = {
     schema: "arena-calibration.unattended-run.v1",
@@ -1174,7 +1298,11 @@ function runCheck() {
       || !markdown.includes("isolated_candidate") || !markdown.includes("C".repeat(64))) {
     throw new Error("report markdown check failed");
   }
-  console.log(JSON.stringify({ ok: true, batchId: manifest.batchId }, null, 2));
+  console.log(JSON.stringify({
+    ok: true,
+    batchId: manifest.batchId,
+    agentEntryContract: agentEntryContract.uiState,
+  }, null, 2));
 }
 
 async function main(argv) {
@@ -1272,6 +1400,7 @@ async function main(argv) {
     writeReport(report, outputs.report, outputs.reportMd);
 
     let current = prepared;
+    let entryProof = null;
     let finalAttempt = null;
     let finalAnalyzed = null;
     while (true) {
@@ -1288,6 +1417,7 @@ async function main(argv) {
         httpPort: null,
         runtimeIdentity: null,
         agentStatus: null,
+        agentEntryProof: null,
         batchStart: null,
         finalArenaStatus: null,
         resultPath: null,
@@ -1312,12 +1442,15 @@ async function main(argv) {
           (observed) => {
             recordObservedRuntimeIdentity(attempt.runtimeIdentity, observed);
             recordObservedRuntimeIdentity(report.runtimeIdentity, observed);
-          }
+          },
+          entryProof
         );
         attempt.httpPort = ready.port;
         recordVerifiedRuntimeIdentity(attempt.runtimeIdentity, ready.runtimeIdentity);
         recordVerifiedRuntimeIdentity(report.runtimeIdentity, ready.runtimeIdentity);
         attempt.agentStatus = ready.status;
+        attempt.agentEntryProof = ready.entryProof;
+        entryProof = ready.entryProof;
         report.httpPort = ready.port;
         report.finalAgentStatus = ready.status;
 

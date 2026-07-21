@@ -19,6 +19,8 @@ namespace CF7Launcher.Tasks
         {
             public string WebCallId;
             public string WebCmd;
+            public string WebPanel;
+            public string WebPanelInstanceId;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -76,46 +78,56 @@ namespace CF7Launcher.Tasks
         public void HandleWebRequest(string cmd, JObject parsed)
         {
             string webCallId = parsed != null ? parsed.Value<string>("callId") : null;
+            string webPanel = parsed != null ? parsed.Value<string>("panel") : null;
+            string webPanelInstanceId = parsed != null
+                ? parsed.Value<string>("panelInstanceId") : null;
             if (string.IsNullOrEmpty(webCallId)) return;
             if (!ValidCallId.IsMatch(webCallId))
             {
-                RespondError(webCallId, cmd, "invalid_call_id");
+                RespondError(webCallId, cmd, "invalid_call_id", webPanel, webPanelInstanceId);
                 return;
             }
             if (!string.Equals(parsed.Value<string>("domain"), "inventory", StringComparison.Ordinal))
             {
-                RejectAndRemember(webCallId, cmd, "unsupported_domain");
+                RejectAndRemember(webCallId, cmd, "unsupported_domain",
+                    webPanel, webPanelInstanceId);
                 return;
             }
 
             string action;
             if (!TryResolveCommand(cmd, out action))
             {
-                RejectAndRemember(webCallId, cmd, "unsupported_cmd");
+                RejectAndRemember(webCallId, cmd, "unsupported_cmd",
+                    webPanel, webPanelInstanceId);
                 return;
             }
 
             JObject payload = parsed["payload"] as JObject;
-            if (payload == null || payload["v"] == null || payload["v"].Type != JTokenType.Integer)
+            int payloadVersion;
+            if (payload == null || !TryReadNonNegativeInteger(payload["v"], out payloadVersion))
             {
-                RejectAndRemember(webCallId, cmd, "invalid_payload");
+                RejectAndRemember(webCallId, cmd, "invalid_payload",
+                    webPanel, webPanelInstanceId);
                 return;
             }
-            if (payload.Value<int>("v") != 1)
+            if (payloadVersion != 1)
             {
-                RejectAndRemember(webCallId, cmd, "unsupported_version");
+                RejectAndRemember(webCallId, cmd, "unsupported_version",
+                    webPanel, webPanelInstanceId);
                 return;
             }
 
             JObject normalized;
             if (!TryNormalizePayload(cmd, payload, out normalized))
             {
-                RejectAndRemember(webCallId, cmd, "invalid_payload");
+                RejectAndRemember(webCallId, cmd, "invalid_payload",
+                    webPanel, webPanelInstanceId);
                 return;
             }
             if (!_isClientReady())
             {
-                RejectAndRemember(webCallId, cmd, "disconnected");
+                RejectAndRemember(webCallId, cmd, "disconnected",
+                    webPanel, webPanelInstanceId);
                 return;
             }
 
@@ -128,7 +140,13 @@ namespace CF7Launcher.Tasks
                     return;
                 }
                 fid = ++_seq;
-                _pending[fid] = new PendingRequest { WebCallId = webCallId, WebCmd = cmd };
+                _pending[fid] = new PendingRequest
+                {
+                    WebCallId = webCallId,
+                    WebCmd = cmd,
+                    WebPanel = webPanel,
+                    WebPanelInstanceId = webPanelInstanceId
+                };
                 _activeWebCallIds.Add(webCallId);
             }
 
@@ -161,10 +179,17 @@ namespace CF7Launcher.Tasks
 
             JObject webMessage = msg != null ? (JObject)msg.DeepClone() : new JObject();
             webMessage.Remove("task");
+            // AS2 is not allowed to manufacture or retain a Web panel capability.  Restore these
+            // fields solely from the Host-validated pending request (or omit them for legacy calls).
+            webMessage.Remove("panel");
+            webMessage.Remove("panelInstanceId");
             webMessage["type"] = "panel_resp";
             webMessage["domain"] = "inventory";
             webMessage["cmd"] = entry.WebCmd;
             webMessage["callId"] = entry.WebCallId;
+            if (!string.IsNullOrEmpty(entry.WebPanel)) webMessage["panel"] = entry.WebPanel;
+            if (!string.IsNullOrEmpty(entry.WebPanelInstanceId))
+                webMessage["panelInstanceId"] = entry.WebPanelInstanceId;
             PostToWeb(webMessage.ToString(Formatting.None));
             if (respond != null) respond(null);
         }
@@ -422,7 +447,9 @@ namespace CF7Launcher.Tasks
         {
             value = 0;
             if (token == null || token.Type != JTokenType.Integer) return false;
-            long candidate = token.Value<long>();
+            long candidate;
+            try { candidate = token.ToObject<long>(); }
+            catch { return false; }
             if (candidate < 0 || candidate > int.MaxValue) return false;
             value = (int)candidate;
             return true;
@@ -443,7 +470,8 @@ namespace CF7Launcher.Tasks
                 if (!_pending.TryGetValue(fid, out entry)) return;
                 CompletePendingLocked(fid, entry);
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "timeout");
+            RespondError(entry.WebCallId, entry.WebCmd, "timeout",
+                entry.WebPanel, entry.WebPanelInstanceId);
         }
 
         private void HandleSendFailure(int fid)
@@ -454,7 +482,8 @@ namespace CF7Launcher.Tasks
                 if (!_pending.TryGetValue(fid, out entry)) return;
                 CompletePendingLocked(fid, entry);
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "disconnected");
+            RespondError(entry.WebCallId, entry.WebCmd, "disconnected",
+                entry.WebPanel, entry.WebPanelInstanceId);
         }
 
         private void CompletePendingLocked(int fid, PendingRequest entry)
@@ -470,14 +499,15 @@ namespace CF7Launcher.Tasks
             RememberRecentLocked(entry.WebCallId);
         }
 
-        private void RejectAndRemember(string webCallId, string cmd, string error)
+        private void RejectAndRemember(string webCallId, string cmd, string error,
+            string webPanel, string webPanelInstanceId)
         {
             lock (_lock)
             {
                 if (_activeWebCallIds.Contains(webCallId) || _recentWebCallIds.Contains(webCallId)) return;
                 RememberRecentLocked(webCallId);
             }
-            RespondError(webCallId, cmd, error);
+            RespondError(webCallId, cmd, error, webPanel, webPanelInstanceId);
         }
 
         private void RememberRecentLocked(string webCallId)
@@ -491,7 +521,8 @@ namespace CF7Launcher.Tasks
             }
         }
 
-        private void RespondError(string webCallId, string cmd, string error)
+        private void RespondError(string webCallId, string cmd, string error,
+            string webPanel, string webPanelInstanceId)
         {
             var response = new JObject
             {
@@ -502,6 +533,9 @@ namespace CF7Launcher.Tasks
                 ["success"] = false,
                 ["error"] = error
             };
+            if (!string.IsNullOrEmpty(webPanel)) response["panel"] = webPanel;
+            if (!string.IsNullOrEmpty(webPanelInstanceId))
+                response["panelInstanceId"] = webPanelInstanceId;
             PostToWeb(response.ToString(Formatting.None));
         }
 

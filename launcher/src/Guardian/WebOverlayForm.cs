@@ -99,6 +99,13 @@ namespace CF7Launcher.Guardian
             return foregroundInOwnerTree;
         }
 
+        internal static bool IsPanelFocusTargetForeground(IntPtr foregroundHwnd,
+            IntPtr overlayHwnd, bool foregroundInOverlayTree)
+        {
+            return overlayHwnd != IntPtr.Zero
+                && (foregroundHwnd == overlayHwnd || foregroundInOverlayTree);
+        }
+
         internal static string ResolvePanelCloseGameCommand(string panel)
         {
             if (panel == "kshop") return "shopPanelClose";
@@ -117,6 +124,15 @@ namespace CF7Launcher.Guardian
         {
             if (panel != "arena" || parsed == null) return false;
             return parsed.Value<bool?>("returnBase") ?? false;
+        }
+
+        internal static bool ShouldRejectForeignCloseWhileLootActive(
+            JObject parsed, string activePanel)
+        {
+            return string.Equals(activePanel, "loot", StringComparison.Ordinal)
+                && parsed != null
+                && HasExactStringValue(parsed["cmd"], "close")
+                && !HasExactStringValue(parsed["panel"], "loot");
         }
 
         internal enum PanelDomainRoute
@@ -142,6 +158,48 @@ namespace CF7Launcher.Guardian
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "skills") return PanelDomainRoute.Skills;
             return PanelDomainRoute.Unsupported;
+        }
+
+        /// <summary>
+        /// Never serialize the generic minigame envelope at the routing boundary.  S0 applies a
+        /// stricter allow-list later, and logging the raw JSON here would leak the payload before
+        /// that sanitizer gets a chance to run.
+        /// </summary>
+        internal static string FormatPanelEnvelopeLog(string cmd, string json)
+        {
+            return cmd == "minigame_session"
+                ? "[Panel] HandlePanelMessage: cmd=minigame_session payload=redacted"
+                : "[Panel] HandlePanelMessage: " + json;
+        }
+
+        /// <summary>
+        /// Consumes every minigame_session while S0 owns the global pause, and every Lockbox
+        /// session even after release.  This closes the late-message window in which a settled S0
+        /// DOM could otherwise reach generic raw logging.  Only the exact four-field normalized
+        /// observation may cross the boundary; malformed payloads use a fixed rejection code.
+        /// </summary>
+        internal static bool TryLogS0MinigameSession(JToken payload, bool holdsGlobalPause,
+            Action<string> log)
+        {
+            JObject safeTelemetry;
+            string line;
+            if (DevLockboxS0Runtime.TryNormalizeMinigameTelemetry(payload, out safeTelemetry))
+            {
+                line = "[LockboxS0] "
+                    + safeTelemetry.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            else
+            {
+                JObject payloadObject = payload as JObject;
+                string game = payloadObject != null ? payloadObject.Value<string>("game") : null;
+                if (!holdsGlobalPause
+                    && !string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase))
+                    return false;
+                line = "[DevLockboxS0] event=telemetry_dropped"
+                    + " code=non_allowlisted_minigame_session";
+            }
+            if (log != null) log(line);
+            return true;
         }
 
         internal static bool IsValidSkillCloseEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
@@ -171,6 +229,63 @@ namespace CF7Launcher.Guardian
                 && parsed.Value<string>("panelInstanceId") == activePanelInstanceId;
         }
 
+        internal static bool IsValidLootVisualCloseEnvelope(JObject parsed,
+            string activePanel, string activePanelInstanceId, out string reason)
+        {
+            string panelInstanceId;
+            if (!TryNormalizeLootVisualCloseEnvelope(parsed, out reason,
+                    out panelInstanceId)
+                || activePanel != "loot"
+                || string.IsNullOrEmpty(activePanelInstanceId)) return false;
+            return panelInstanceId == activePanelInstanceId;
+        }
+
+        internal static bool TryNormalizeLootVisualCloseEnvelope(JObject parsed,
+            out string reason, out string panelInstanceId)
+        {
+            reason = null;
+            panelInstanceId = null;
+            if (parsed == null || parsed.Count != 5) return false;
+            foreach (JProperty property in parsed.Properties())
+                if (property.Name != "type" && property.Name != "panel"
+                    && property.Name != "cmd" && property.Name != "reason"
+                    && property.Name != "panelInstanceId") return false;
+            reason = parsed.Value<string>("reason");
+            panelInstanceId = parsed.Value<string>("panelInstanceId");
+            bool reasonAllowed = reason == "terminal" || reason == "suspended"
+                || reason == "invalid_init"
+                || reason == "mount_failed" || reason == "lazy_load_failed"
+                || reason == "lazy_register_failed"
+                || reason == "lazy_register_missing";
+            return reasonAllowed
+                && LootPanelCoordinator.IsOpaque(panelInstanceId)
+                && parsed.Value<string>("type") == "panel"
+                && parsed.Value<string>("panel") == "loot"
+                && parsed.Value<string>("cmd") == "close";
+        }
+
+        internal static string BuildLootPanelRecoveryCommand(
+            LootPanelCoordinator.Binding binding, string reason, string recoveryNonce)
+        {
+            if (binding == null || !LootPanelCoordinator.IsOpaque(binding.ChestSessionId)
+                || !LootPanelCoordinator.IsOpaque(binding.LootContainerId)
+                || binding.ContainerEpoch < 1
+                || binding.OpenAttemptSeq < 1
+                || !LootPanelCoordinator.IsOpaque(recoveryNonce)
+                || (reason != "web_mount_failed" && reason != "web_open_failed")) return null;
+            return new JObject
+            {
+                ["task"] = "cmd",
+                ["action"] = "lootPanelRecovery",
+                ["chestSessionId"] = binding.ChestSessionId,
+                ["lootContainerId"] = binding.LootContainerId,
+                ["containerEpoch"] = binding.ContainerEpoch,
+                ["openAttemptSeq"] = binding.OpenAttemptSeq,
+                ["recoveryNonce"] = recoveryNonce,
+                ["reason"] = reason
+            }.ToString(Newtonsoft.Json.Formatting.None);
+        }
+
         internal static bool IsActiveSkillPanel(string activePanel, string activePanelInstanceId)
         {
             return activePanel == "skills" && !string.IsNullOrEmpty(activePanelInstanceId);
@@ -184,6 +299,129 @@ namespace CF7Launcher.Guardian
                 && request != null
                 && request.Value<string>("panel") == "workbench"
                 && request.Value<string>("panelInstanceId") == activePanelInstanceId;
+        }
+
+        /// <summary>
+        /// Inventory operations issued from the embedded loot organizer remain inside the exact
+        /// tracked loot lease. While loot owns PanelHost, a generic inventory envelope must not
+        /// survive replacement of the document or panel instance that created it.
+        /// </summary>
+        internal static bool IsValidLootInventoryEnvelope(JObject parsed,
+            string activePanel, string activePanelInstanceId)
+        {
+            if (parsed == null || parsed.Count != 7 || activePanel != "loot"
+                || !LootPanelCoordinator.IsOpaque(activePanelInstanceId)) return false;
+            foreach (JProperty property in parsed.Properties())
+                if (property.Name != "type" && property.Name != "domain"
+                    && property.Name != "panel" && property.Name != "cmd"
+                    && property.Name != "callId" && property.Name != "panelInstanceId"
+                    && property.Name != "payload") return false;
+            return HasExactStringValue(parsed["type"], "panel")
+                && HasExactStringValue(parsed["domain"], "inventory")
+                && HasExactStringValue(parsed["panel"], "loot")
+                && IsNonEmptyString(parsed["cmd"])
+                && IsNonEmptyString(parsed["callId"])
+                && HasExactStringValue(parsed["panelInstanceId"], activePanelInstanceId)
+                && IsAllowedLootOrganizerInventoryPayload(
+                    parsed.Value<string>("cmd"), parsed["payload"] as JObject);
+        }
+
+        private static bool IsAllowedLootOrganizerInventoryPayload(string cmd, JObject payload)
+        {
+            if (payload == null || !IsBoundedInteger(payload["v"], 1, 1))
+                return false;
+            if (cmd == "snapshot")
+                return HasOnlyObjectKeys(payload, "v", "requests")
+                    && IsExactLootOrganizerWindowSet(payload["requests"] as JArray);
+            JObject source = payload["source"] as JObject;
+            string sourceContainer;
+            if (!TryReadLootOrganizerSource(source, out sourceContainer)) return false;
+            if (cmd == "discard")
+                return sourceContainer == "背包"
+                    && HasOnlyObjectKeys(payload, "v", "source");
+            if (cmd != "autoTransfer"
+                || !HasOnlyObjectKeys(payload, "v", "source", "targetContainerId",
+                    "policy", "windows")
+                || !HasExactStringValue(payload["policy"], "mergeThenEmpty")
+                || payload["targetContainerId"] == null
+                || payload["targetContainerId"].Type != JTokenType.String) return false;
+            string targetContainer = payload.Value<string>("targetContainerId");
+            return ((sourceContainer == "背包" && targetContainer == "战备箱")
+                    || (sourceContainer == "战备箱" && targetContainer == "背包"))
+                && IsExactLootOrganizerWindowSet(payload["windows"] as JArray);
+        }
+
+        private static bool IsExactLootOrganizerWindowSet(JArray windows)
+        {
+            if (windows == null || windows.Count != 2) return false;
+            bool hasBackpack = false;
+            bool hasBattlebox = false;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                JObject window = windows[i] as JObject;
+                if (window == null || !HasOnlyObjectKeys(window,
+                        "containerId", "offset", "limit", "filterKey")
+                    || !HasExactStringValue(window["filterKey"], "all")
+                    || window["containerId"] == null
+                    || window["containerId"].Type != JTokenType.String
+                    || !IsBoundedInteger(window["offset"], 0, int.MaxValue)
+                    || !IsBoundedInteger(window["limit"], 1, 100)) return false;
+                string containerId = window.Value<string>("containerId");
+                if (containerId == "背包" && !hasBackpack) hasBackpack = true;
+                else if (containerId == "战备箱" && !hasBattlebox) hasBattlebox = true;
+                else return false;
+            }
+            return hasBackpack && hasBattlebox;
+        }
+
+        private static bool TryReadLootOrganizerSource(JObject source, out string containerId)
+        {
+            containerId = null;
+            if (source == null || !HasOnlyObjectKeys(source,
+                    "containerId", "slot", "expectedLease")
+                || source["containerId"] == null
+                || source["containerId"].Type != JTokenType.String
+                || !IsBoundedInteger(source["slot"], 0, int.MaxValue)
+                || source["expectedLease"] == null
+                || source["expectedLease"].Type != JTokenType.String
+                || !LootPanelCoordinator.IsOpaque(source.Value<string>("expectedLease")))
+                return false;
+            containerId = source.Value<string>("containerId");
+            return containerId == "背包" || containerId == "战备箱";
+        }
+
+        private static bool HasOnlyObjectKeys(JObject value, params string[] expected)
+        {
+            if (value == null || value.Count != expected.Length) return false;
+            foreach (JProperty property in value.Properties())
+            {
+                bool found = false;
+                for (int i = 0; i < expected.Length; i++)
+                    if (property.Name == expected[i]) { found = true; break; }
+                if (!found) return false;
+            }
+            return true;
+        }
+
+        private static bool IsNonEmptyString(JToken value)
+        {
+            return value != null && value.Type == JTokenType.String
+                && !string.IsNullOrEmpty(value.Value<string>());
+        }
+
+        private static bool HasExactStringValue(JToken value, string expected)
+        {
+            return value != null && value.Type == JTokenType.String
+                && string.Equals(value.Value<string>(), expected, StringComparison.Ordinal);
+        }
+
+        private static bool IsBoundedInteger(JToken value, int minimum, int maximum)
+        {
+            if (value == null || value.Type != JTokenType.Integer) return false;
+            long candidate;
+            try { candidate = value.ToObject<long>(); }
+            catch { return false; }
+            return candidate >= minimum && candidate <= maximum;
         }
 
         internal static bool IsValidSkillManageSwitchEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
@@ -281,7 +519,10 @@ namespace CF7Launcher.Guardian
         private static readonly System.Reflection.FieldInfo WebViewControllerField =
             typeof(WebView2).GetField("_coreWebView2Controller",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        private bool _webReady;
+        private volatile bool _webReady;
+        private bool _webReadyBeforeNavigation;
+        private bool _webNavigationLoadedNewDocument;
+        private ulong _webNavigationId;
         private bool _shown;
         private bool _disposed;
         private bool _devMode;
@@ -320,10 +561,14 @@ namespace CF7Launcher.Guardian
         private bool _nativeHudIdleSuspendPending;
         private bool _webViewControllerReflectionWarned;
         private int _panelViewportRepairAttempts;
+        private readonly PanelFocusRestoreGate _panelFocusRestoreGate =
+            new PanelFocusRestoreGate();
 
         // 面板系统
         private ShopTask _shopTask;
         private InventoryTask _inventoryTask;
+        private LootTask _lootTask;
+        private LootPanelCoordinator _lootPanelCoordinator;
         private NpcShopTask _npcShopTask;
         private CraftingTask _craftingTask;
         private EquipmentTuningTask _equipmentTuningTask;
@@ -339,6 +584,7 @@ namespace CF7Launcher.Guardian
         private Action<bool> _onPanelStateChanged;
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
+        private int _lastSocketDisconnectGeneration;
 
         // 光照等级（静态 24h 数组，初始化后一次性推送给 JS）
         private int[] _lightLevels;
@@ -616,14 +862,37 @@ namespace CF7Launcher.Guardian
             get
             {
                 CreateParams cp = base.CreateParams;
-                // WS_EX_TOOLWINDOW: 不出现在任务栏和 Alt-Tab 列表
-                // WS_EX_NOACTIVATE: 顶层窗口点击时不变前台
-                // WS_EX_TRANSPARENT: 永久点击穿透，所有鼠标事件直达 Flash
-                //   Phase 0: overlay 纯视觉层，交互走键盘快捷键
-                //   Phase 1: 可探索 cursor polling 或 InputHost 方案恢复 notch 鼠标交互
-                cp.ExStyle |= WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT;
+                // TransparencyKey 变化会让 WinForms 重新应用 CreateParams，甚至重建 HWND。
+                // 因此不能在这里无条件挂回 idle 样式：panel 打开后设置 Color.Empty 时，
+                // 无条件 WS_EX_TRANSPARENT/NOACTIVATE 会把刚刚建立的 direct-hit 窗口重新变成穿透层。
+                cp.ExStyle = NormalizeOverlayExStyle(cp.ExStyle, _panelMode, _panelTakeForeground);
                 return cp;
             }
+        }
+
+        /// <summary>
+        /// WebOverlay 顶层 HWND 的样式状态机。保留调用方携带的无关位，只归一化本类拥有的
+        /// TOOLWINDOW/LAYERED/TRANSPARENT/NOACTIVATE 四个位。作为纯函数供回归测试锁定：
+        /// WinForms 在 TransparencyKey/handle 生命周期中重新取 CreateParams 时，也必须遵守
+        /// 当前 panel/idle 状态，不能把 panel 窗口悄悄拨回点击穿透。
+        /// </summary>
+        internal static int NormalizeOverlayExStyle(int exStyle, bool panelMode,
+            bool panelTakeForeground)
+        {
+            exStyle |= WS_EX_TOOLWINDOW;
+            if (panelMode)
+            {
+                exStyle &= ~(WS_EX_LAYERED | WS_EX_TRANSPARENT);
+                if (panelTakeForeground)
+                    exStyle &= ~WS_EX_NOACTIVATE;
+                else
+                    exStyle |= WS_EX_NOACTIVATE;
+            }
+            else
+            {
+                exStyle |= WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE;
+            }
+            return exStyle;
         }
 
         protected override bool ShowWithoutActivation
@@ -676,6 +945,49 @@ namespace CF7Launcher.Guardian
 
                 // JS→C# 消息
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                _webView.CoreWebView2.NavigationStarting += delegate(object sender,
+                    CoreWebView2NavigationStartingEventArgs args)
+                {
+                    if (_webNavigationId == 0) _webReadyBeforeNavigation = _webReady;
+                    _webReady = false;
+                    _webNavigationId = args.NavigationId;
+                    _webNavigationLoadedNewDocument = false;
+                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+                    if (runtime != null) runtime.OnWebDocumentNavigationStarting(args.NavigationId);
+                    LootPanelCoordinator lootCoordinator = _lootPanelCoordinator;
+                    if (lootCoordinator != null && lootCoordinator.State != LootPanelCoordinator.BindingState.Idle)
+                    {
+                        lootCoordinator.ForceDetach("web_navigation");
+                    }
+                };
+                _webView.CoreWebView2.ContentLoading += delegate(object sender,
+                    CoreWebView2ContentLoadingEventArgs args)
+                {
+                    if (_webNavigationId == args.NavigationId)
+                        _webNavigationLoadedNewDocument = true;
+                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+                    if (runtime != null) runtime.OnWebDocumentContentLoading(args.NavigationId);
+                };
+                _webView.CoreWebView2.NavigationCompleted += delegate(object sender,
+                    CoreWebView2NavigationCompletedEventArgs args)
+                {
+                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+                    if (runtime != null)
+                        runtime.OnWebDocumentNavigationCompleted(args.NavigationId, args.IsSuccess);
+                    if (_webNavigationId == args.NavigationId)
+                    {
+                        bool restoreOldReady = (!args.IsSuccess || !_webNavigationLoadedNewDocument)
+                            && _webReadyBeforeNavigation;
+                        _webNavigationId = 0;
+                        _webNavigationLoadedNewDocument = false;
+                        _webReadyBeforeNavigation = false;
+                        if (restoreOldReady)
+                        {
+                            _webReady = true;
+                            if (runtime != null) runtime.OnWebReady();
+                        }
+                    }
+                };
                 await _webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
                     "window.CF7_FRAME_RATE_LIMIT=" + _frameRateLimit.ToString(CultureInfo.InvariantCulture) + ";");
 
@@ -772,6 +1084,12 @@ namespace CF7Launcher.Guardian
                     this.BeginInvoke(new Action(() =>
                     {
                         if (_disposed || _webView == null || _webView.CoreWebView2 == null) return;
+                        DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+                        if (runtime != null && !runtime.CanRebuildWebDocument)
+                        {
+                            LogManager.Log("[DevLockboxS0] event=gate_rejected code=hot_reload_blocked origin=web_control");
+                            return;
+                        }
 
                         // 重置就绪状态，使消息进入缓冲/fallback 通道
                         _webReady = false;
@@ -1294,7 +1612,14 @@ namespace CF7Launcher.Guardian
                 }
                 catch { }
 
-                if (type == "viewportMetrics")
+                if (type == DevLockboxS0Runtime.WebControlType
+                    || type == DevLockboxS0Runtime.WebBusinessType)
+                {
+                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+                    if (runtime != null) runtime.TryHandleWebMessage(parsed);
+                    else LogManager.Log("[DevLockboxS0] event=gate_rejected code=runtime_unavailable origin=web_control");
+                }
+                else if (type == "viewportMetrics")
                 {
                     HandleViewportMetrics(parsed);
                 }
@@ -1351,6 +1676,8 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
                     _webFailed = false; // 热重载恢复时清除降级标记
+                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+                    if (runtime != null) runtime.OnWebReady();
                     ApplyWebPerfMode("ready");
 
                     // 取消热重载超时 Timer
@@ -1746,24 +2073,38 @@ namespace CF7Launcher.Guardian
         /// <summary>向 JS 发送结构化消息。</summary>
         public void PostToWeb(string json)
         {
-            if (_disposed) return;
-            if (this.IsHandleCreated && this.InvokeRequired)
-            {
-                try { this.BeginInvoke(new Action<string>(PostToWebCore), json); }
-                catch { }
-                return;
-            }
-            PostToWebCore(json);
+            TryPostToWeb(json);
         }
 
-        private void PostToWebCore(string json)
+        /// <summary>
+        /// Returns false when no live WebView2 document can accept the message.  A true result on
+        /// a non-UI thread means the UI-thread post was queued; protocols that need end-to-end
+        /// certainty must still require an explicit Web acknowledgement.
+        /// </summary>
+        public bool TryPostToWeb(string json)
         {
-            if (!_webReady || _disposed || _webView == null || _webView.CoreWebView2 == null) return;
+            if (_disposed || !_webReady || string.IsNullOrEmpty(json)) return false;
+            if (this.IsHandleCreated && this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(delegate { PostToWebCore(json); }));
+                    return true;
+                }
+                catch { return false; }
+            }
+            return PostToWebCore(json);
+        }
+
+        private bool PostToWebCore(string json)
+        {
+            if (!_webReady || _disposed || _webView == null || _webView.CoreWebView2 == null) return false;
             try
             {
                 _webView.CoreWebView2.PostWebMessageAsJson(json);
+                return true;
             }
-            catch { }
+            catch { return false; }
         }
 
         /// <summary>执行 JS 代码。</summary>
@@ -2894,6 +3235,27 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetLootTask(LootTask task)
+        {
+            _lootTask = task;
+            if (task != null)
+            {
+                task.SetPostToWeb(PostToWeb);
+                task.SetInvoker(delegate(Action action) { try { this.BeginInvoke(action); } catch {} });
+                task.SetDetachedReconcileSettled(delegate
+                {
+                    LootPanelCoordinator coordinator = _lootPanelCoordinator;
+                    if (!task.RequiresDetachedReconcile && coordinator != null)
+                        coordinator.OnDetachedReconcileSettled();
+                });
+            }
+        }
+
+        public void SetLootPanelCoordinator(LootPanelCoordinator coordinator)
+        {
+            _lootPanelCoordinator = coordinator;
+        }
+
         public void SetNpcShopTask(NpcShopTask task)
         {
             _npcShopTask = task;
@@ -2999,15 +3361,31 @@ namespace CF7Launcher.Guardian
         // _frozenForIdle 负责拦截 UIData JS dispatch、timer 与位置同步，ResumeForPanel 再解冻。
 
         private PanelHostController _panelHost;
+        private DevLockboxS0Runtime _devLockboxS0Runtime;
         private volatile bool _panelMode;
         private volatile bool _frozenForIdle;
 
         public bool IsPanelMode { get { return _panelMode; } }
 
+        /// <summary>
+        /// GuardianForm's process-level WM_ACTIVATEAPP(true) handoff.  The request is intentionally
+        /// queued onto the overlay message loop: foreground ownership and panel generation are
+        /// revalidated after Windows finishes the activation transition.
+        /// </summary>
+        public void RequestPanelFocusRestoreAfterAppActivation()
+        {
+            QueuePanelFocusRestore("app_reactivated");
+        }
+
         /// <summary>二阶段注入：Program.cs 先 new WebOverlayForm，再 new PanelHostController(this,...)，最后调本方法回注。</summary>
         public void SetPanelHost(PanelHostController host)
         {
             _panelHost = host;
+        }
+
+        public void SetDevLockboxS0Runtime(DevLockboxS0Runtime runtime)
+        {
+            _devLockboxS0Runtime = runtime;
         }
 
         /// <summary>
@@ -3022,6 +3400,7 @@ namespace CF7Launcher.Guardian
             PerfTrace.Mark("webOverlay.panel_resume",
                 panelRectScreen.Width + "x" + panelRectScreen.Height);
             _panelMode = true;
+            _panelFocusRestoreGate.BeginPanel();
             _frozenForIdle = false;
             _nativeHudIdleSuspendPending = false;
             _panelViewportRepairAttempts = 0;
@@ -3037,23 +3416,24 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex) { LogManager.Log("[Panel] CoreWebView2.Resume failed: " + ex.Message); }
 
+            // TransparencyKey 会触发 WinForms 重新应用 CreateParams，所以先切为 opaque，再对
+            // 当前（可能已重建）的 HWND 归一化 EX_STYLE。CreateParams 本身也读取 _panelMode，
+            // 双重保证后续 handle lifecycle 不会加回 TRANSPARENT/NOACTIVATE。
+            try { this.TransparencyKey = Color.Empty; } catch { }
+
             // EX_STYLE：去 WS_EX_LAYERED 与 WS_EX_TRANSPARENT；DWM 不再做 α traversal。
             // _panelTakeForeground=true 时还剥 WS_EX_NOACTIVATE，让 panel 真正可激活成前台（修首次点击失效）。
             // false 时保留 NOACTIVATE 等价旧行为，作为 CF7_PANEL_TAKE_FG=0 回滚路径。
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int mask = WS_EX_TRANSPARENT | WS_EX_LAYERED;
-                if (_panelTakeForeground) mask |= WS_EX_NOACTIVATE;
-                int newEx = ex & ~mask;
+                int newEx = NormalizeOverlayExStyle(ex, true, _panelTakeForeground);
                 SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
                 LogManager.Log("[Panel] EX_STYLE panel-on old=0x" + ex.ToString("X")
                     + " new=0x" + newEx.ToString("X") + " take_fg=" + _panelTakeForeground);
             }
             catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel SetWindowLong failed: " + ex.Message); }
 
-            // TransparencyKey 复位（设为 Empty 同时也会让 WinForms 移除 LAYERED——已经手动移除，幂等）
-            try { this.TransparencyKey = Color.Empty; } catch { }
             try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Black; } catch { }
 
             // Panel 是普通 Web app 视口，不应沿用 Flash HUD 的 576 设计缩放。
@@ -3121,38 +3501,141 @@ namespace CF7Launcher.Guardian
             // idle 期间累积的 UiData 一次性补回（FlushUiDataBuffer 已合并 snapshot + buffer）
             try { FlushUiDataBuffer(); } catch (Exception ex) { LogManager.Log("[Panel] FlushUiDataBuffer failed: " + ex.Message); }
 
-            // panel 态接管前台 + WebView 持焦点（修首次点击失效）。
-            // BeginInvoke 排队到下个消息泵循环：等 ResumeForPanel 同步走完（含 FlushUiDataBuffer）、
-            // Chromium 收到 viewport 信号、SetWindowPos 处理完毕之后再激活，避开同帧前台锁定。
-            if (_panelTakeForeground)
+            // panel 态接管前台 + WebView 持焦点（修首次点击失效）。首次打开与应用从外部
+            // 重新激活共用同一条 generation/foreground/debounce guarded 路径，避免
+            // SetForegroundWindow 产生的 WM_ACTIVATEAPP 回声再次抢焦。
+            QueuePanelFocusRestore("panel_resume");
+        }
+
+        private void QueuePanelFocusRestore(string reason)
+        {
+            int generation;
+            if (!_panelFocusRestoreGate.TryQueue(_panelTakeForeground, _panelMode, _disposed,
+                    Environment.TickCount64, out generation))
+                return;
+
+            try
             {
-                try
+                BeginInvoke(new Action(delegate
                 {
-                    this.BeginInvoke(new Action(delegate()
-                    {
-                        if (_disposed || !_panelMode) return;
-                        bool fg = false;
-                        try { fg = SetForegroundWindow(this.Handle); }
-                        catch (Exception fgEx) { LogManager.Log("[Panel] SetForegroundWindow throw: " + fgEx.Message); }
+                    ApplyPanelFocusRestore(generation, reason);
+                }));
+            }
+            catch (Exception ex)
+            {
+                _panelFocusRestoreGate.Complete(generation);
+                LogManager.Log("[PanelFocus] schedule failed reason=" + reason
+                    + " generation=" + generation + " error=" + ex.Message);
+            }
+        }
 
-                        string ctrlState = "skip";
-                        try
-                        {
-                            CoreWebView2Controller c = TryGetWebViewController();
-                            if (c != null)
-                            {
-                                c.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
-                                ctrlState = "true";
-                            }
-                            else { ctrlState = "null"; }
-                        }
-                        catch (Exception mfEx) { LogManager.Log("[Panel] MoveFocus throw: " + mfEx.Message); ctrlState = "throw"; }
+        private void ApplyPanelFocusRestore(int generation, string reason)
+        {
+            IntPtr foregroundHwnd = IntPtr.Zero;
+            bool foregroundEligible = false;
+            string foregroundState = "query_failed";
+            try
+            {
+                foregroundHwnd = GetForegroundWindow();
+                uint foregroundPid = 0;
+                if (foregroundHwnd != IntPtr.Zero)
+                    GetWindowThreadProcessId(foregroundHwnd, out foregroundPid);
+                bool foregroundInOwnerTree = _owner != null && _owner.IsHandleCreated
+                    && (foregroundHwnd == _owner.Handle
+                        || IsChild(_owner.Handle, foregroundHwnd));
+                foregroundEligible = IsDesktopCursorForegroundAccepted(
+                    foregroundPid, _ourPid, foregroundInOwnerTree);
+                foregroundState = foregroundEligible ? "session" : "external";
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelFocus] foreground query failed reason=" + reason
+                    + " generation=" + generation + " error=" + ex.Message);
+            }
 
-                        LogManager.Log("[Panel] take-foreground fg=" + fg
-                            + " ctrl=" + ctrlState + " hwnd=" + this.Handle);
-                    }));
+            if (!_panelFocusRestoreGate.TryBeginExecution(generation,
+                    _panelTakeForeground, _panelMode, _disposed, foregroundEligible,
+                    Environment.TickCount64))
+            {
+                _panelFocusRestoreGate.Complete(generation);
+                if (!foregroundEligible)
+                {
+                    LogManager.Log("[PanelFocus] skipped reason=" + reason
+                        + " generation=" + generation + " foreground=" + foregroundState);
                 }
-                catch (Exception ex) { LogManager.Log("[Panel] take-foreground BeginInvoke failed: " + ex.Message); }
+                return;
+            }
+
+            bool setForegroundAttempted = false;
+            bool setForegroundResult = true;
+            string controllerState = "skip";
+            IntPtr overlayHwnd = IntPtr.Zero;
+            try
+            {
+                if (!IsHandleCreated)
+                {
+                    controllerState = "no_handle";
+                    return;
+                }
+                overlayHwnd = Handle;
+                setForegroundAttempted = foregroundHwnd != overlayHwnd;
+                if (setForegroundAttempted)
+                    setForegroundResult = SetForegroundWindow(overlayHwnd);
+
+                // SetForegroundWindow can race with another application taking focus.  Recheck
+                // immediately before MoveFocus so a delayed callback never steals from it.
+                IntPtr finalForeground = GetForegroundWindow();
+                bool finalForegroundInOverlayTree = finalForeground != IntPtr.Zero
+                    && IsChild(overlayHwnd, finalForeground);
+                if (!IsPanelFocusTargetForeground(finalForeground, overlayHwnd,
+                        finalForegroundInOverlayTree))
+                {
+                    LogManager.Log("[PanelFocus] aborted reason=" + reason
+                        + " generation=" + generation + " foreground=not_overlay_after_set"
+                        + " set_fg=" + setForegroundResult);
+                    return;
+                }
+
+                CoreWebView2Controller controller = TryGetWebViewController();
+                if (controller != null)
+                {
+                    // SetForegroundWindow dispatches activation messages synchronously.  Recheck
+                    // generation after that re-entrant turn, but commit the debounce only after
+                    // MoveFocus succeeds.  Foreground/MoveFocus failures stay immediately
+                    // retryable on the next WM_ACTIVATEAPP(true).
+                    if (!_panelFocusRestoreGate.IsCurrentExecution(generation,
+                            _panelTakeForeground, _panelMode, _disposed))
+                    {
+                        controllerState = "stale";
+                        return;
+                    }
+                    controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+                    controllerState = "true";
+                    if (!_panelFocusRestoreGate.TryCommitExecution(generation,
+                            _panelTakeForeground, _panelMode, _disposed,
+                            Environment.TickCount64))
+                        controllerState = "true_stale";
+                }
+                else
+                {
+                    controllerState = "null";
+                }
+            }
+            catch (Exception ex)
+            {
+                controllerState = "throw";
+                LogManager.Log("[PanelFocus] apply failed reason=" + reason
+                    + " generation=" + generation + " error=" + ex.Message);
+            }
+            finally
+            {
+                _panelFocusRestoreGate.Complete(generation);
+                LogManager.Log("[PanelFocus] applied reason=" + reason
+                    + " generation=" + generation
+                    + " set_fg_attempted=" + setForegroundAttempted
+                    + " set_fg=" + setForegroundResult
+                    + " ctrl=" + controllerState
+                    + " hwnd=" + overlayHwnd);
             }
         }
 
@@ -3260,6 +3743,7 @@ namespace CF7Launcher.Guardian
             long idleStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("webOverlay.idle_sequence", mode + " panel=" + panelTag);
             _panelMode = false;
+            _panelFocusRestoreGate.EndPanel();
 
             // Phase 4 收尾：useNativeHud=true 时所有常驻 HUD 已迁到 C# widget
             // (Notch/Toast/Currency/Combo/QuestNotice/SafeExitPanel/TopRightTools/JukeboxTitlebar/MapHud)，
@@ -3337,14 +3821,14 @@ namespace CF7Launcher.Guardian
             LogIdleStepDuration("full.sw_hide", panelTag, stepStart, 25.0);
 
             // 4) 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
-            // NOACTIVATE 必需补回——ResumeForPanel 当 _panelTakeForeground=true 时已剥；CreateParams 永挂
-            // NOACTIVATE 的事实让开关 false 路径下这行变成幂等 no-op，开关 true 路径下必需。
+            // NOACTIVATE 必需补回——ResumeForPanel 当 _panelTakeForeground=true 时已剥；
+            // NormalizeOverlayExStyle/CreateParams 的 idle 分支共同维持该不变量。
             stepStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("webOverlay.idle.full.ex_style.start", panelTag);
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_NOACTIVATE;
+                int newEx = NormalizeOverlayExStyle(ex, false, _panelTakeForeground);
                 SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
                 LogManager.Log("[Panel] EX_STYLE idle-full new=0x" + newEx.ToString("X"));
             }
@@ -3402,7 +3886,7 @@ namespace CF7Launcher.Guardian
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_NOACTIVATE;
+                int newEx = NormalizeOverlayExStyle(ex, false, _panelTakeForeground);
                 SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
                 LogManager.Log("[Panel] EX_STYLE idle-soft new=0x" + newEx.ToString("X"));
             }
@@ -3475,16 +3959,24 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void HandleWebTaskMessage(JObject parsed, string json)
         {
-            if (_taskRouter == null)
-            {
-                LogManager.Log("[WebTask] no router injected, dropping: " + json);
-                return;
-            }
             JToken callIdToken = parsed != null ? parsed["callId"] : null;
             string taskName = parsed != null ? parsed.Value<string>("task") : null;
             if (string.IsNullOrEmpty(taskName))
             {
                 LogManager.Log("[WebTask] missing task field");
+                return;
+            }
+            if (string.Equals(taskName, "loot_request", StringComparison.Ordinal))
+            {
+                // Dedicated Web-origin boundary. Registering loot_request in MessageRouter would
+                // also expose it to Flash/socket and HTTP paths, erasing the source distinction.
+                if (_lootTask != null) _lootTask.HandleWebRequest(parsed);
+                else LogManager.Log("event=loot_request_dropped reason=task_unavailable");
+                return;
+            }
+            if (_taskRouter == null)
+            {
+                LogManager.Log("[WebTask] no router injected, dropping: " + json);
                 return;
             }
             try
@@ -3528,13 +4020,65 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void HandleLootVisualClose(JObject parsed)
+        {
+            string activePanel = _panelHost != null ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : null;
+            string reason;
+            string envelopeInstance;
+            if (!TryNormalizeLootVisualCloseEnvelope(parsed, out reason,
+                    out envelopeInstance) || _lootPanelCoordinator == null)
+            {
+                LogManager.Log("event=loot_visual_close_rejected reason=invalid_envelope");
+                return;
+            }
+            if (reason == "terminal" || reason == "suspended")
+            {
+                if (!_lootPanelCoordinator.IsAuthorityVisualCloseKnownExact(
+                        envelopeInstance, reason))
+                {
+                    LogManager.Log("event=loot_visual_close_rejected reason="
+                        + reason + "_unproven");
+                    return;
+                }
+                bool stillActive = _lootPanelCoordinator.IsAuthorityVisualCloseActiveExact(
+                    envelopeInstance, reason);
+                if (stillActive)
+                    _lootPanelCoordinator.RetryAuthorityVisualCloseExact(
+                        envelopeInstance, reason);
+                LogManager.Log("event=loot_visual_close_consumed reason="
+                    + (stillActive ? reason : reason + "_already_closed"));
+                return;
+            }
+            if (activePanel != "loot" || activeInstance != envelopeInstance
+                || !_lootPanelCoordinator.IsActiveVisualExact(envelopeInstance, false))
+            {
+                LogManager.Log("event=loot_visual_close_rejected reason=stale_instance");
+                return;
+            }
+            _lootPanelCoordinator.ForceDetach("web_mount_failed");
+            LogManager.Log("event=loot_visual_close_consumed reason=force_detach");
+        }
+
         private void HandlePanelMessage(string json)
         {
-            LogManager.Log("[Panel] HandlePanelMessage: " + json);
             JObject parsed;
             try { parsed = JObject.Parse(json); } catch { LogManager.Log("[Panel] JSON parse failed"); return; }
             string cmd = parsed.Value<string>("cmd");
             if (cmd == null) { LogManager.Log("[Panel] cmd is null"); return; }
+            if (cmd == "close" && parsed.Value<string>("panel") == "loot")
+            {
+                HandleLootVisualClose(parsed);
+                return;
+            }
+            string hostActivePanel = _panelHost != null ? _panelHost.ActivePanelName : null;
+            if (ShouldRejectForeignCloseWhileLootActive(parsed, hostActivePanel))
+            {
+                LogManager.Log("event=loot_foreign_close_rejected panel="
+                    + (parsed.Value<string>("panel") ?? "<missing>"));
+                return;
+            }
+            LogManager.Log(FormatPanelEnvelopeLog(cmd, json));
             if (cmd == "switch_manage" || cmd == "switch_trainer")
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -3559,6 +4103,23 @@ namespace CF7Launcher.Guardian
             PanelDomainRoute domainRoute = ResolvePanelDomainRoute(cmd, domain);
             if (domainRoute == PanelDomainRoute.Inventory)
             {
+                string activeName = _panelHost != null ? _panelHost.ActivePanelName
+                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
+                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                if (activeName == "loot" || parsed.Value<string>("panel") == "loot")
+                {
+                    bool exactLootInventory = IsValidLootInventoryEnvelope(
+                            parsed, activeName, activeInstance)
+                        && _lootPanelCoordinator != null
+                        && _lootPanelCoordinator.IsBoundVisualExact(activeInstance);
+                    if (!exactLootInventory)
+                    {
+                        LogManager.Log("[InventoryTask] rejected stale/malformed loot organizer envelope");
+                        RespondPanelDomainError(parsed, "panel_instance_expired");
+                        return;
+                    }
+                }
                 LogManager.Log("[Panel] Routing domain=inventory cmd=" + cmd
                     + " to InventoryTask, _inventoryTask=" + (_inventoryTask != null ? "ok" : "NULL"));
                 if (_inventoryTask != null) _inventoryTask.HandleWebRequest(cmd, parsed);
@@ -3702,7 +4263,7 @@ namespace CF7Launcher.Guardian
                             TrySendGameCommand("arenaReturnBase");
                         }
                         // 任意面板关闭 → 取消暂停（与 OpenPanel 的 webPanelPause 配对；AS2 幂等释放）
-                        TrySendGameCommand("webPanelUnpause");
+                        TryReleaseGenericWebPanelPause();
                         // help 等纯 web 面板无需通知 Flash
                         _activePanel = null;
                         if (_commandRouter != null) _commandRouter.ClearFallbackPanelInstance();
@@ -3853,6 +4414,13 @@ namespace CF7Launcher.Guardian
                         JToken payload = parsed["payload"];
                         if (payload == null) break;
 
+                        DevLockboxS0Runtime s0Runtime = _devLockboxS0Runtime;
+                        // The global pause is owned exclusively by this S0 flow.  While it is
+                        // held, no generic minigame_session payload may reach raw logging under a
+                        // forged/missing game name; only the exact four-field allow-list survives.
+                        if (TryLogS0MinigameSession(payload,
+                            s0Runtime != null && s0Runtime.HoldsGlobalPause, LogManager.Log)) break;
+
                         string game = (string)payload["game"];
 
                         string prefix;
@@ -3995,19 +4563,92 @@ namespace CF7Launcher.Guardian
             return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
         }
 
+        private bool TryReleaseGenericWebPanelPause()
+        {
+            DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
+            if (runtime != null) return runtime.TryReleaseGenericPause();
+            return TrySendGameCommand("webPanelUnpause");
+        }
+
+        public bool ReleaseLootPanelPause()
+        {
+            LootTask lootTask = _lootTask;
+            if (!IsLootPauseReleaseAllowed(lootTask)) return false;
+            return TryReleaseGenericWebPanelPause();
+        }
+
+        internal static bool IsLootPauseReleaseAllowed(LootTask lootTask)
+        {
+            return lootTask == null || !lootTask.RequiresDetachedReconcile;
+        }
+
+        public bool TryRequestLootPanelRecovery(LootPanelCoordinator.Binding binding,
+            string reason)
+        {
+            string recoveryNonce = Guid.NewGuid().ToString("N");
+            string command = BuildLootPanelRecoveryCommand(binding, reason, recoveryNonce);
+            if (command == null) return false;
+            LootTask lootTask = _lootTask;
+            if (lootTask != null
+                && !lootTask.PrepareConnectedTransportDetach(binding, recoveryNonce))
+            {
+                if (lootTask.IsAuthorityVisualCloseProvenExact(binding)) return true;
+                int conflictingGeneration;
+                if (_socketServer != null
+                    && _socketServer.TryGetReadyGeneration(out conflictingGeneration))
+                    _socketServer.ForceCloseCurrentClientIfGen(conflictingGeneration);
+                LogManager.Log("event=loot_panel_recovery_fence_conflict");
+                return false;
+            }
+            if (lootTask != null && lootTask.IsAuthorityVisualCloseProvenExact(binding))
+                return true;
+            int generation;
+            if (_socketServer == null
+                || !_socketServer.TryGetReadyGeneration(out generation))
+                return false;
+            if (lootTask != null && lootTask.IsAuthorityVisualCloseProvenExact(binding))
+                return true;
+            bool sent = _socketServer.TrySendIfGen(command + "\0", generation);
+            if (sent)
+            {
+                if (lootTask != null)
+                    lootTask.OnConnectedTransportRecoverySent(binding, generation,
+                        recoveryNonce);
+                return true;
+            }
+
+            // A local write failure does not itself make TcpClient.Connected false.  Close only
+            // the generation whose recovery send failed so AS2 deterministically takes its
+            // transport-disconnect legacy fallback, without ever disconnecting a replacement.
+            LogManager.Log("event=loot_panel_recovery_transport_failed generation=" + generation);
+            _socketServer.ForceCloseCurrentClientIfGen(generation);
+            return false;
+        }
+
         /// <summary>
         /// 断言"打开 web 面板=暂停游戏"。由 PanelHostController.DoOpen 在每次真实打开时调用，
         /// 覆盖 returnTo 自动重开这条不经 LauncherCommandRouter.OpenPanel 的开面板路——否则
         /// 重开的面板背后游戏会以已恢复状态继续跑。AS2 webPanelPause 幂等（lease 已持则 no-op）。
         /// </summary>
-        public void AssertWebPanelPause()
+        public bool AssertWebPanelPause()
         {
-            TrySendGameCommand("webPanelPause");
+            return TrySendGameCommand("webPanelPause");
         }
 
-        public void OnSocketDisconnected()
+        public void OnSocketDisconnected(int closedGeneration)
         {
-            if (this.InvokeRequired) { try { this.BeginInvoke(new Action(OnSocketDisconnected)); } catch {} return; }
+            if (closedGeneration <= 0) return;
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action<int>(OnSocketDisconnected), closedGeneration);
+                }
+                catch { }
+                return;
+            }
+            if (closedGeneration <= _lastSocketDisconnectGeneration) return;
+            _lastSocketDisconnectGeneration = closedGeneration;
 
             // 旧路径（_activePanel != null）仅追踪 web fallback 模式打开的 panel。
             // PanelHostController 接管的 panel 状态在 PanelHost 内（_panelHost.IsPanelOpen），
@@ -4027,7 +4668,16 @@ namespace CF7Launcher.Guardian
                 if (_onPanelStateChanged != null) _onPanelStateChanged(false);
             }
             // PanelHost 接管路径：联动关闭，确保 backdrop/HUD/Shield 都拨回 idle
-            if (_panelHost != null && _panelHost.IsPanelOpen)
+            bool trackedLootDetach = _panelHost != null && _panelHost.IsPanelOpen
+                && _panelHost.ActivePanelName == "loot" && _lootPanelCoordinator != null;
+            if (trackedLootDetach)
+            {
+                PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
+                if (_lootTask != null)
+                    _lootTask.OnSocketTransportDetached(closedGeneration);
+                _lootPanelCoordinator.ForceDetach("socket_disconnected");
+            }
+            else if (_panelHost != null && _panelHost.IsPanelOpen)
             {
                 if (_panelHost.ActivePanelName == "skills" && _skillTask != null)
                 {
@@ -4044,6 +4694,8 @@ namespace CF7Launcher.Guardian
             if (_commandRouter != null) _commandRouter.ClearFallbackPanelInstance();
             if (_shopTask != null) _shopTask.ClearPending();
             if (_inventoryTask != null) _inventoryTask.ClearPending();
+            if (_lootTask != null && !trackedLootDetach)
+                _lootTask.OnSocketTransportDetached(closedGeneration);
             if (_npcShopTask != null) _npcShopTask.ClearPending();
             if (_craftingTask != null) _craftingTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
@@ -4066,11 +4718,13 @@ namespace CF7Launcher.Guardian
                 if (TrySendGameCommand("shopPanelClose"))
                     _pauseNeedsRestore = false;
             }
-            // webpanel 暂停 lease 断线恢复：断线时 OnSocketDisconnected 走 force_close，不经
-            // HandlePanelMessage case "close" 的 webPanelUnpause（且断线下也投递不出去），AS2 的
-            // "webpanel" lease 会残留 → 游戏永久卡在暂停。断线时所有面板已 force-close，重连后必无
-            // web 面板在开，故无条件补发 webPanelUnpause 释放残留 lease（AS2 幂等，无 lease 则 no-op）。
-            TrySendGameCommand("webPanelUnpause");
+            // Generic panels can release their stale pause lease immediately. Loot is stricter:
+            // AS2 must first reconcile the exact detached authority and prove same-object legacy
+            // handoff. The completion callback above performs the idempotent unpause afterwards.
+            bool lootReconcilePending = _lootTask != null
+                && _lootTask.RequiresDetachedReconcile;
+            if (lootReconcilePending) _lootTask.OnSocketReconnected();
+            else TryReleaseGenericWebPanelPause();
             if (_skillTask != null) _skillTask.OnSocketReconnected();
         }
 

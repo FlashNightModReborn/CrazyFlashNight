@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Loot pending lazy cancel harness</title>
+</head>
+<body>
+<div id="panel-container"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<pre id="qa-output">running…</pre>
+<script>
+window.__sent=[];
+window.__handlers={};
+window.__logs=[];
+var __originalLog=console.log.bind(console);
+console.log=function(){var args=Array.prototype.slice.call(arguments);__logs.push(args);__originalLog.apply(console,args)};
+window.Bridge={
+  on:function(type,handler){(__handlers[type]||(__handlers[type]=[])).push(handler)},
+  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));return true}
+};
+window.Icons={load:function(done){window.__assetDone=done}};
+window.LazyLoader={load:function(){return new Promise(function(resolve){window.__resolveLootLazy=resolve})}};
+window.Notch={reportRect:function(){}};
+</script>
+<script src="../../panels.js"></script>
+<script>
+(async function(){
+  try{
+    var checks=[];
+    function ok(name,passed,detail){checks.push({name:name,ok:!!passed,detail:detail||''})}
+    var hostVisualCloseReasons={
+      terminal:true,invalid_init:true,mount_failed:true,
+      lazy_load_failed:true,lazy_register_failed:true,lazy_register_missing:true
+    };
+    function init(suffix){return{
+      v:1,panelInstanceId:'panel.loot.'+suffix,chestSessionId:'chest.'+suffix,
+      lootContainerId:'loot.'+suffix,containerEpoch:1,displayName:'延迟箱',capacity:2,columns:2
+    }}
+    function exactClose(message,reason,instance){
+      var keys=Object.keys(message||{}).sort(),expected=['cmd','panel','panelInstanceId','reason','type'].sort();
+      return JSON.stringify(keys)===JSON.stringify(expected)
+        &&message.type==='panel'&&message.cmd==='close'&&message.panel==='loot'
+        &&message.reason===reason&&hostVisualCloseReasons[message.reason]===true
+        &&message.panelInstanceId===instance
+    }
+
+    var missingInit=init('registry-missing');
+    (__handlers.panel_cmd||[]).forEach(function(handler){handler({cmd:'open',panel:'loot',initData:missingInit})});
+    var commandLog=__logs.filter(function(args){return args[0]==='[Panels] panel_cmd received:'})[0];
+    var logged=commandLog?JSON.parse(commandLog[1]):null,serialized=JSON.stringify(logged||{});
+    ok('loot panel_cmd log redacts the complete initData',logged&&logged.initData==='[redacted]'
+      &&serialized.indexOf(missingInit.panelInstanceId)<0
+      &&serialized.indexOf(missingInit.chestSessionId)<0
+      &&serialized.indexOf(missingInit.lootContainerId)<0,serialized);
+    ok('initial missing registry sends Host-compatible exact tracked close',exactClose(__sent.shift(),
+      'mount_failed',missingInit.panelInstanceId));
+
+    Panels.register('loot',{create:function(){return document.createElement('div')}});
+    Panels.init();
+    var assetInit=init('asset-panel-missing');
+    Panels.open('loot',assetInit);
+    Panels.register('loot',null);
+    __assetDone();
+    ok('panel missing after required-assets gate sends Host-compatible exact tracked close',exactClose(__sent.shift(),
+      'mount_failed',assetInit.panelInstanceId));
+
+    var mountedCloseRequests=0;
+    Panels.registerLazy('loot',['resolve-on-demand.js'],function(){
+      Panels.register('loot',{
+        create:function(){return document.createElement('div')},
+        onRequestClose:function(){mountedCloseRequests++}
+      })
+    });
+    var cancelInit=init('lazy-cancel');
+    Panels.open('loot',cancelInit);
+    (__handlers.panel_esc||[]).forEach(function(handler){handler({type:'panel_esc'})});
+    document.getElementById('panel-backdrop').dispatchEvent(new MouseEvent('click',{bubbles:true}));
+    ok('pending loot ESC/backdrop never emits a failure detach envelope',__sent.length===0);
+    __resolveLootLazy();
+    await new Promise(function(resolve){setTimeout(resolve,0)});
+    ok('pending loot close intent is disabled until authority UI mounts',
+      Panels.getActive()==='loot'&&mountedCloseRequests===0);
+    (__handlers.panel_esc||[]).forEach(function(handler){handler({type:'panel_esc'})});
+    ok('after mount ESC routes to the normal loot close intent',mountedCloseRequests===1&&__sent.length===0);
+    window.__qaResult={passed:checks.filter(function(check){return check.ok}).length,total:checks.length,checks:checks};
+  }catch(error){window.__qaError=error.stack||String(error)}
+  window.__qaDone=true;
+  document.getElementById('qa-output').textContent=window.__qaError||JSON.stringify(window.__qaResult,null,2);
+})();
+</script>
+</body>
+</html>

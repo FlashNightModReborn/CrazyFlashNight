@@ -53,12 +53,23 @@ class org.flashNight.arki.item.DropLuckRoller {
      * @return              本次是否命中
      */
     public static function rollDrop(prdKeyPrefix:String, item:Object):Boolean {
+        return rollDropWithContext(
+            prdKeyPrefix, item, getLuckBonus(), _root.dropPRDEngine);
+    }
+
+    /**
+     * 事务型物化调用方使用的冻结上下文入口。luckBonus 与 PRD engine 必须在计划建立前
+     * 捕获，retry 不再读取可能已变化的角色技能或被替换的全局引擎。
+     */
+    public static function rollDropWithContext(prdKeyPrefix:String, item:Object,
+                                               luckBonus:Number,
+                                               prdEngine:Object):Boolean {
         var nominalPercent:Number = Number(item.概率);
         // NaN/undefined → 视为 100% 必中，不走 PRD（与原 isNaN 短路语义等价）
         if (isNaN(nominalPercent)) return true;
 
-        var effectiveP:Number = nominalPercent * 0.01 * (1 + getLuckBonus());
+        var effectiveP:Number = nominalPercent * 0.01 * (1 + luckBonus);
         var prdKey:String = prdKeyPrefix + "|" + item.名字;
-        return _root.dropPRDEngine.roll(prdKey, effectiveP);
+        return prdEngine.roll(prdKey, effectiveP);
     }
 }

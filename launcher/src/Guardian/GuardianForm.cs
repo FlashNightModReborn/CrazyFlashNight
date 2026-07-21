@@ -554,6 +554,8 @@ namespace CF7Launcher.Guardian
                     _lastDeactivateLogTick = nowTick;
                 }
                 _activationState.OnActivateApp(active);
+                if (active && _webOverlay != null)
+                    _webOverlay.RequestPanelFocusRestoreAfterAppActivation();
             }
             else if (m.Msg == WM_SIZE)
             {

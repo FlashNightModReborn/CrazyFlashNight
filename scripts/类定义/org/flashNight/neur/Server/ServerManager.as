@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.Event.Delegate;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.path.PathManager;
+import org.flashNight.arki.scene.ChestS0SocketBridge;
 import FastJSON;
 
 /**
@@ -516,6 +517,12 @@ class org.flashNight.neur.Server.ServerManager {
 
         // 处理 C#→AS2 游戏命令
         if (response.task == "cmd") {
+            // Chest S0 只允许独立 socket dispatcher；专用 action 即使 schema 非法
+            // 也必须在这里 fail-closed，不能落入普通 _root.gameCommands。
+            if (ChestS0SocketBridge.isDedicatedHostAction(response.action)) {
+                ChestS0SocketBridge.handleHostCommand(response);
+                return;
+            }
             handleGameCommand(response.action, response);
             return;
         }
@@ -629,6 +636,22 @@ class org.flashNight.neur.Server.ServerManager {
     public function onSocketClose():Void {
         trace("XMLSocket connection closed");
         isSocketConnected = false;
+
+        // capability 绑定当前 socket generation；断线必须先让本地权威失效。
+        ChestS0SocketBridge.handleSocketClosed();
+
+        // loot 奖励只存在本地内存；Host 断线时启动持久 same-object handoff。服务只有在
+        // journal/effects、旧 UI renderer 与本地 pause lease 全部得到证明后才返回 true；
+        // 任一阶段失败由重连后的 causal lootQuery 原地续跑。
+        var lootRecovered:Boolean = false;
+        if (_root.地图元件 != undefined
+                && typeof _root.地图元件.断线回退Web战利品到旧界面 == "function") {
+            try { lootRecovered = _root.地图元件.断线回退Web战利品到旧界面(null) === true; }
+            catch (lootRecoveryError) { lootRecovered = false; }
+        }
+        if (lootRecovered && _root._webPanelPauseLease != undefined) {
+            trace("[LootContainerService] detach proof returned with pause lease; fail closed");
+        }
 
         // 清理所有 pending callback（断线后不会再收到响应）
         for (var k:String in _pendingCallbacks) {

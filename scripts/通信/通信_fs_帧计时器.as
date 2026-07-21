@@ -1028,8 +1028,17 @@ _root.帧计时器.提升性能等级 = function(提升档数:Number, 保持秒�
  *   7. EventBus
  *   8. 音效、keyPollMC、_global 变量等
  */
-_root.cleanupForRestart = function():Void {
+_root.cleanupForRestart = function():Boolean {
     _root.发布消息("[cleanupForRestart] 开始清理持久状态...");
+
+    // 任何 manager 开始 dispose 前先完成 transient loot 权威收敛；失败时保持
+    // 整个运行时原样，禁止形成“前半已清、SceneManager 被 pending 挡住”的半清理。
+    var lootExpiry:Object = org.flashNight.arki.item.LootContainerService.expireScene(
+        "scene_cleanup");
+    if (lootExpiry == null || lootExpiry.success !== true) {
+        _root.发布消息("[cleanupForRestart] 战利品权威尚未收敛，重启清理已阻塞");
+        return false;
+    }
 
     // -------------------------
     // 1. 清理 StageManager (关卡管理器)
@@ -1059,7 +1068,10 @@ _root.cleanupForRestart = function():Void {
     // 4. 清理 SceneManager (场景管理器)
     // -------------------------
     if (SceneManager.instance != null) {
-        SceneManager.instance.dispose();
+        if (!SceneManager.instance.dispose()) {
+            _root.发布消息("[cleanupForRestart] 战利品权威尚未收敛，重启清理已阻塞");
+            return false;
+        }
         _root.发布消息("[cleanupForRestart] SceneManager disposed");
     }
 
@@ -1149,4 +1161,5 @@ _root.cleanupForRestart = function():Void {
     }
 
     _root.发布消息("[cleanupForRestart] 清理完成，可以安全重载");
+    return true;
 };

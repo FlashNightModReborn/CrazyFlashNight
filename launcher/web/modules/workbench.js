@@ -485,7 +485,8 @@
             activeModal.focusScope.activate({
                 opener: returnFocus,
                 initialFocus: focusTarget,
-                underlay: [this._header, this._body]
+                underlay:Array.prototype.filter.call(this._root.children,
+                    function(node) { return node !== self._modalLayer; })
             });
         } catch (error) {
             if (this._activeModal === activeModal) this._closeModal('open-error', false);

@@ -44,5 +44,23 @@ namespace CF7Launcher.Tests.Guardian
                 JObject.Parse("{\"returnBase\":true}")));
             Assert.False(WebOverlayForm.ShouldReturnBaseOnPanelClose("arena", null));
         }
+
+        [Fact]
+        public void ForeignCloseCannotTearDownActiveTrackedLootPanel()
+        {
+            JObject foreign = JObject.Parse(
+                "{\"type\":\"panel\",\"panel\":\"kshop\",\"cmd\":\"close\"}");
+            JObject exactLoot = JObject.Parse(
+                "{\"type\":\"panel\",\"panel\":\"loot\",\"cmd\":\"close\"}");
+
+            Assert.True(WebOverlayForm.ShouldRejectForeignCloseWhileLootActive(
+                foreign, "loot"));
+            Assert.False(WebOverlayForm.ShouldRejectForeignCloseWhileLootActive(
+                exactLoot, "loot"));
+            Assert.False(WebOverlayForm.ShouldRejectForeignCloseWhileLootActive(
+                foreign, "kshop"));
+            Assert.False(WebOverlayForm.ShouldRejectForeignCloseWhileLootActive(
+                foreign, null));
+        }
     }
 }

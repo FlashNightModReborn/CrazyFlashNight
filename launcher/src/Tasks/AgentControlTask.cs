@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Tasks
 {
@@ -34,6 +35,8 @@ namespace CF7Launcher.Tasks
         private Func<bool> _openEquipmentTuning;
         private Func<JObject> _getActivePanelStatus;
         private JObject _runtimeSaveStatus;
+        private bool _gameEnteredObserved;
+        private string _gameEnteredAttemptId;
 
         public AgentControlTask(
             Func<bool> isSocketReady,
@@ -170,6 +173,42 @@ namespace CF7Launcher.Tasks
             return result.ToString(Newtonsoft.Json.Formatting.None);
         }
 
+        /// <summary>
+        /// Observes the already parsed AS2 UI-state packet shared by the Host tee.
+        /// The last s field in one packet wins, matching the ordered snapshot update
+        /// semantics used by the HUD consumers.
+        /// </summary>
+        public void ObserveUiData(UiDataPacket packet)
+        {
+            if (packet == null || packet.IsLegacy || packet.Pairs == null) return;
+
+            bool? observed = null;
+            string observedAttemptId = null;
+            string[] pairs = packet.Pairs;
+            for (int i = 0; i < pairs.Length; i++)
+            {
+                string pair = pairs[i];
+                if (pair == null) continue;
+                if (pair.StartsWith("s:", StringComparison.Ordinal))
+                {
+                    string value = pair.Substring(2);
+                    if (string.Equals(value, "1", StringComparison.Ordinal)) observed = true;
+                    else if (string.Equals(value, "0", StringComparison.Ordinal)) observed = false;
+                }
+                else if (pair.StartsWith("ga:", StringComparison.Ordinal))
+                {
+                    observedAttemptId = pair.Substring(3);
+                }
+            }
+
+            if (!observed.HasValue) return;
+            lock (_gate)
+            {
+                _gameEnteredObserved = observed.Value && !string.IsNullOrEmpty(observedAttemptId);
+                _gameEnteredAttemptId = _gameEnteredObserved ? observedAttemptId : null;
+            }
+        }
+
         private JObject Start(JObject msg)
         {
             string slot = msg.Value<string>("slot");
@@ -189,6 +228,13 @@ namespace CF7Launcher.Tasks
             if (rememberSlot && _rememberSlot != null)
                 _rememberSlot(slot);
 
+            // A new launch attempt must prove its own s:1 receipt. Never inherit a
+            // game-enter observation from the previous Flash/runtime session.
+            lock (_gate)
+            {
+                _gameEnteredObserved = false;
+                _gameEnteredAttemptId = null;
+            }
             startGame(slot, fresh, deferJsReveal, requireFlashReveal);
             return BuildStatus(true, fresh ? "fresh_start_requested" : "start_requested");
         }
@@ -332,13 +378,22 @@ namespace CF7Launcher.Tasks
             JObject save = null;
             Func<JObject> getLaunchSaveStatus;
             JObject runtimeSave;
+            bool gameEnteredObserved;
+            string gameEnteredAttemptId;
             lock (_gate)
             {
                 getLaunchSaveStatus = _getLaunchSaveStatus;
                 runtimeSave = _runtimeSaveStatus != null ? (JObject)_runtimeSaveStatus.DeepClone() : null;
+                gameEnteredObserved = _gameEnteredObserved;
+                gameEnteredAttemptId = _gameEnteredAttemptId;
             }
             try { save = getLaunchSaveStatus != null ? getLaunchSaveStatus() : null; }
             catch (Exception ex) { save = BuildError("save_status_exception", ex.Message); }
+
+            string currentAttemptId = save != null ? save.Value<string>("attemptId") : null;
+            gameEnteredObserved = gameEnteredObserved
+                && !string.IsNullOrEmpty(currentAttemptId)
+                && string.Equals(gameEnteredAttemptId, currentAttemptId, StringComparison.Ordinal);
 
             bool saveDecisionSafe = IsSaveDecisionSafe(save);
             bool runtimeSaveLoaded = IsRuntimeSaveLoaded(save, runtimeSave);
@@ -347,14 +402,16 @@ namespace CF7Launcher.Tasks
                 revealPerformed,
                 launchState,
                 saveDecisionSafe,
-                runtimeSaveLoaded);
+                runtimeSaveLoaded,
+                gameEnteredObserved);
             JArray readyBlockedBy = BuildReadyBlockers(
                 socketReady,
                 revealPerformed,
                 launchState,
                 arenaStatusReadable,
                 saveDecisionSafe,
-                runtimeSaveLoaded);
+                runtimeSaveLoaded,
+                gameEnteredObserved);
 
             JObject status = new JObject();
             status["success"] = success;
@@ -364,6 +421,10 @@ namespace CF7Launcher.Tasks
             status["launchState"] = launchState;
             status["revealPerformed"] = revealPerformed;
             status["socketConnected"] = socketReady;
+            status["gameEnteredObserved"] = gameEnteredObserved;
+            status["gameEnteredAttemptId"] = gameEnteredAttemptId != null
+                ? (JToken)gameEnteredAttemptId
+                : JValue.CreateNull();
             status["readyForRuntimeAutomation"] = runtimeReadyBlockedBy.Count == 0;
             status["runtimeReadyBlockedBy"] = runtimeReadyBlockedBy;
             status["readyForArenaCalibration"] = readyBlockedBy.Count == 0;
@@ -448,7 +509,8 @@ namespace CF7Launcher.Tasks
             string launchState,
             bool arenaStatusReadable,
             bool saveDecisionSafe,
-            bool runtimeSaveLoaded)
+            bool runtimeSaveLoaded,
+            bool gameEnteredObserved)
         {
             JArray blockers = new JArray();
             if (!socketReady) blockers.Add("socket_not_connected");
@@ -457,6 +519,7 @@ namespace CF7Launcher.Tasks
             if (!arenaStatusReadable) blockers.Add("arena_status_unreadable");
             if (!saveDecisionSafe) blockers.Add("save_decision_unsafe");
             if (!runtimeSaveLoaded) blockers.Add("runtime_save_not_loaded");
+            if (!gameEnteredObserved) blockers.Add("game_enter_not_observed");
             return blockers;
         }
 
@@ -465,7 +528,8 @@ namespace CF7Launcher.Tasks
             bool revealPerformed,
             string launchState,
             bool saveDecisionSafe,
-            bool runtimeSaveLoaded)
+            bool runtimeSaveLoaded,
+            bool gameEnteredObserved)
         {
             JArray blockers = new JArray();
             if (!socketReady) blockers.Add("socket_not_connected");
@@ -473,6 +537,7 @@ namespace CF7Launcher.Tasks
             if (!string.Equals(launchState, "Ready", StringComparison.Ordinal)) blockers.Add("launcher_not_ready");
             if (!saveDecisionSafe) blockers.Add("save_decision_unsafe");
             if (!runtimeSaveLoaded) blockers.Add("runtime_save_not_loaded");
+            if (!gameEnteredObserved) blockers.Add("game_enter_not_observed");
             return blockers;
         }
     }

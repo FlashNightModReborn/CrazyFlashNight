@@ -1,0 +1,8 @@
+﻿import org.flashNight.arki.item.LootContainerServiceTest;
+
+import org.flashNight.arki.item.LootMaterializationPlannerTest;
+
+trace("MapLootTestRunId Start: __MAP_LOOT_RUN_ID__");
+LootContainerServiceTest.runAllTests();
+LootMaterializationPlannerTest.runAllTests();
+trace("MapLootTestRunId Complete: __MAP_LOOT_RUN_ID__");

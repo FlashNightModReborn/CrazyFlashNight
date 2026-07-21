@@ -865,7 +865,11 @@ class org.flashNight.arki.item.InventoryPanelService {
         return node;
     }
 
-    private static function buildItemProjection(item:Object):Object {
+    /**
+     * 供独立领域服务复用 inventory-domain 的只读物品投影。
+     * 调用方不得把该投影当成写入 descriptor；真实 BaseItem 仍只由 AS2 权威持有。
+     */
+    public static function buildItemProjection(item:Object):Object {
         var data:Object = item != null && typeof item.getData == "function" ? item.getData() : null;
         var isEquipment:Boolean = typeof item.value == "object";
         var quantity:Number = !isEquipment ? Number(item.value) : 1;

@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using CF7Launcher.Guardian;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Bus
 {
@@ -21,6 +22,14 @@ namespace CF7Launcher.Bus
     /// </summary>
     public class XmlSocketServer : IDisposable
     {
+        /// <summary>
+        /// Narrow, socket-only JSON interception point.  Returning true means the message was
+        /// consumed and must never reach MessageRouter (and therefore can never be exposed by
+        /// the HTTP or Web task bridges).  response may be null for one-way messages.
+        /// </summary>
+        public delegate bool DedicatedJsonHandler(string message, int connectionGeneration,
+            out string response);
+
         private TcpListener _listener;    // IPv4 loopback (127.0.0.1)
         private TcpListener _listener6;   // IPv6 loopback (::1)，IPv6 不可用时为 null
         private TcpClient _client;
@@ -30,6 +39,10 @@ namespace CF7Launcher.Bus
         private volatile bool _running;
         private readonly MessageRouter _router;
         private readonly object _clientLock = new object();
+        // Total-order barrier for externally observable connection transitions.  Always acquire
+        // this before _clientLock.  Ready/disconnect callbacks run without _clientLock but while
+        // this barrier is held, so consumers can never observe old disconnect after new ready.
+        private readonly object _acceptTransitionLock = new object();
 
         // 快车道处理器（由 Program.cs 在构造后注入）
         private CF7Launcher.Tasks.FrameTask _frameTask;
@@ -37,8 +50,9 @@ namespace CF7Launcher.Bus
         private Action<string> _uiDataHandler; // U 前缀：UI 数据透传
 
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换。
-        // volatile：HandleMessage 在锁外读它做代际守卫，需保证可见性。
         private volatile int _generation;
+        private int _lastDisconnectedGeneration;
+        private DedicatedJsonHandler _dedicatedJsonHandler;
 
         // 业务就绪标记：policy 握手完成后的首条业务消息时触发
         private volatile bool _clientReady;
@@ -49,9 +63,20 @@ namespace CF7Launcher.Bus
 
         /// <summary>业务就绪事件：Flash policy 握手完成后、首条业务消息到达时触发。</summary>
         public event Action OnClientReady;
+        public event Action<int> OnClientReadyForGeneration;
 
-        /// <summary>客户端断连事件：仅当前 generation 的 ReadLoop 退出时触发。</summary>
+        /// <summary>客户端断连事件：每个 generation 至多一次，并先于下一代 ready。</summary>
         public event Action OnClientDisconnected;
+        public event Action<int> OnClientDisconnectedForGeneration;
+
+        // Deterministic race hook used only by Launcher.Tests. It runs after a complete frame is
+        // decoded but before that frame enters the connection-transition barrier.
+        internal Action<int> BeforeMessageTransitionForTests;
+        // Deterministic replacement-order hooks used only by Launcher.Tests.  The first runs
+        // immediately before accept enters the transition barrier; the second runs inside that
+        // barrier after generation ownership advances but before disconnect publication.
+        internal Action BeforeAcceptTransitionForTests;
+        internal Action<int, int> AfterReplacementGenerationReservedForTests;
 
         public int Port { get; private set; }
         public bool HasClient { get { return _client != null && _client.Connected; } }
@@ -60,6 +85,42 @@ namespace CF7Launcher.Bus
         public XmlSocketServer(MessageRouter router)
         {
             _router = router;
+        }
+
+        /// <summary>
+        /// Installs the single dedicated socket-only handler.  It is intentionally not a task
+        /// registration API: callers cannot reach it through MessageRouter, HTTP, or WebView2.
+        /// </summary>
+        public void SetDedicatedJsonHandler(DedicatedJsonHandler handler)
+        {
+            _dedicatedJsonHandler = handler;
+        }
+
+        public int CurrentGeneration { get { return _generation; } }
+
+        /// <summary>
+        /// Executes a short connection-sensitive state transition under the same total-order
+        /// barrier used by accept, EOF, force-close, ready publication, and message dispatch.
+        /// Callers must acquire their own state lock only inside <paramref name="action"/>; the
+        /// global lock order is connection-transition -> caller state -> client lock.
+        /// </summary>
+        internal bool RunWithConnectionTransitionFence(Func<bool> action)
+        {
+            if (action == null) return false;
+            lock (_acceptTransitionLock) return action();
+        }
+
+        /// <summary>
+        /// Atomically captures the generation of the current business-ready client.  Pair the
+        /// result with TrySendIfGen/ForceCloseCurrentClientIfGen to avoid crossing reconnects.
+        /// </summary>
+        public bool TryGetReadyGeneration(out int generation)
+        {
+            lock (_clientLock)
+            {
+                generation = _generation;
+                return _clientReady && _client != null && _client.Connected;
+            }
         }
 
         /// <summary>
@@ -156,36 +217,102 @@ namespace CF7Launcher.Bus
         // 都经此入口；_clientLock 内 CloseClientLocked 保证新连接替换旧连接。
         private void HandleAcceptedClient(TcpClient client)
         {
-            client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
-            LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
-            PerfTrace.Mark("socket.client_connected");
-
-            // 捕获本地引用，ReadLoop 只操作自己的 client/stream。
-            // 注意：localStream 必须在锁内随 _stream 一起取，不能锁外读 _stream——
-            // 双 loopback accept 后 IPv4/IPv6 两线程可能并发进入本方法，锁外读 _stream
-            // 会拿到另一线程刚写入的 stream，导致 client 与 stream 错配、两个 ReadLoop 读同一连接。
-            int gen;
-            TcpClient localClient = client;
-            NetworkStream localStream;
-            lock (_clientLock)
+            Action beforeAcceptTransition = BeforeAcceptTransitionForTests;
+            if (beforeAcceptTransition != null)
             {
-                // 关闭旧连接
-                CloseClientLocked();
-
-                _generation++;
-                gen = _generation;
-                _clientReady = false;
-                _client = client;
-                _stream = client.GetStream();
-                localStream = _stream;
+                try { beforeAcceptTransition(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] accept transition test hook error: "
+                        + ex.GetType().Name);
+                }
             }
 
-            Thread readThread = new Thread(delegate()
+            // IPv4/IPv6 accept loops may enter concurrently. Serialize the complete replacement
+            // transition while still firing callbacks outside _clientLock: old generation detach
+            // must be claimed exactly once and observed before the replacement can become ready.
+            lock (_acceptTransitionLock)
             {
-                ReadLoop(localClient, localStream, gen);
-            });
-            readThread.IsBackground = true;
-            readThread.Start();
+                if (!_running)
+                {
+                    try { client.Close(); } catch { }
+                    return;
+                }
+                client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
+                LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
+                PerfTrace.Mark("socket.client_connected");
+
+                int gen;
+                int oldGeneration = 0;
+                Action oldDisconnected = null;
+                Action<int> oldGenerationDisconnected = null;
+                lock (_clientLock)
+                {
+                    bool hadOldClient = _client != null || _stream != null;
+                    if (hadOldClient)
+                    {
+                        oldGeneration = _generation;
+                        TryClaimDisconnectLocked(oldGeneration, out oldDisconnected,
+                            out oldGenerationDisconnected);
+                    }
+                    // Advance ownership before the old ReadLoop can wake from Close and claim the
+                    // same disconnect. No replacement is installed until callbacks finish.
+                    CloseClientLocked();
+                    _generation++;
+                    gen = _generation;
+                    _clientReady = false;
+                }
+
+                if (oldGeneration > 0)
+                {
+                    Action<int, int> afterReserved = AfterReplacementGenerationReservedForTests;
+                    if (afterReserved != null)
+                    {
+                        try { afterReserved(oldGeneration, gen); }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log("[XmlSocket] generation reservation test hook error: "
+                                + ex.GetType().Name);
+                        }
+                    }
+                }
+
+                FireDisconnected(oldDisconnected, oldGenerationDisconnected, oldGeneration,
+                    "replacement");
+
+                NetworkStream localStream = null;
+                bool installed = false;
+                try { localStream = client.GetStream(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] replacement stream failed: "
+                        + ex.GetType().Name);
+                }
+                lock (_clientLock)
+                {
+                    if (_running && localStream != null && _generation == gen
+                        && _client == null && _stream == null)
+                    {
+                        _client = client;
+                        _stream = localStream;
+                        installed = true;
+                    }
+                }
+                if (!installed)
+                {
+                    try { if (localStream != null) localStream.Close(); } catch { }
+                    try { client.Close(); } catch { }
+                    return;
+                }
+
+                TcpClient localClient = client;
+                Thread readThread = new Thread(delegate()
+                {
+                    ReadLoop(localClient, localStream, gen);
+                });
+                readThread.IsBackground = true;
+                readThread.Start();
+            }
         }
 
         private void ReadLoop(TcpClient localClient, NetworkStream localStream, int gen)
@@ -226,7 +353,19 @@ namespace CF7Launcher.Bus
                                 byteBuffer.GetBuffer(), 0, (int)byteBuffer.Length);
                             byteBuffer.SetLength(0);
                             if (message.Length > 0)
-                                HandleMessage(message, gen);
+                            {
+                                Action<int> beforeTransition = BeforeMessageTransitionForTests;
+                                if (beforeTransition != null)
+                                {
+                                    try { beforeTransition(gen); }
+                                    catch (Exception ex)
+                                    {
+                                        LogManager.Log("[XmlSocket] message transition test hook error: "
+                                            + ex.GetType().Name);
+                                    }
+                                }
+                                HandleMessage(message, gen, localClient, localStream);
+                            }
                         }
                         start = i + 1;
                     }
@@ -247,24 +386,23 @@ namespace CF7Launcher.Bus
 
             LogManager.Log("[XmlSocket] Client disconnected");
 
-            // Phase 1e (5a)：回调必须在锁外触发，防止订阅者 handler 内调用 Send/Close
-            // 等同锁 API 造成重入/死锁（见 plan Phase 1e 锁语义约束 1）
-            Action dcHandler = null;
-            lock (_clientLock)
+            // 回调必须在 _clientLock 外触发，防止订阅者 handler 内调用 Send/Close
+            // 重入该锁；_acceptTransitionLock 仍覆盖 claim + publish，保证跨代事件总序。
+            lock (_acceptTransitionLock)
             {
-                if (_generation == gen)
+                Action dcHandler = null;
+                Action<int> dcGenerationHandler = null;
+                lock (_clientLock)
                 {
-                    CloseClientLocked();
-                    dcHandler = OnClientDisconnected;  // 快照，锁外 Fire
+                    if (_generation == gen && ReferenceEquals(_client, localClient)
+                        && ReferenceEquals(_stream, localStream))
+                    {
+                        CloseClientLocked();
+                        TryClaimDisconnectLocked(gen, out dcHandler,
+                            out dcGenerationHandler);
+                    }
                 }
-            }
-            if (dcHandler != null)
-            {
-                try { dcHandler(); }
-                catch (Exception dcEx)
-                {
-                    LogManager.Log("[XmlSocket] OnClientDisconnected error: " + dcEx.Message);
-                }
+                FireDisconnected(dcHandler, dcGenerationHandler, gen, "read_loop");
             }
 
             // 始终关闭自己的本地引用
@@ -276,29 +414,41 @@ namespace CF7Launcher.Bus
         // gen-bound send (TrySendIfGen). 原连接已被 AcceptLoop 替换后, 响应自动 drop,
         // 不会串到新连接. Prewarm 的 held handshake 依赖此协议保证 socket 断线/重连
         // 时 held callback 不会把 prewarm error 发到下一条连接.
-        private void HandleMessage(string message, int connectionGen)
+        private void HandleMessage(string message, int connectionGen,
+            TcpClient connectionClient, NetworkStream connectionStream)
         {
-            // === 连接代际守卫 ===
-            // 双 loopback accept 下，被新连接替换掉的旧 ReadLoop 可能仍带着已读到的
-            // 残余消息走到这里。仅当本消息所属 connection 仍是当前活动 generation 时才处理，
-            // 否则丢弃——既防止旧连接错误触发 OnClientReady，也防止把陈旧输入灌进业务层。
-            if (connectionGen != _generation)
-                return;
-
-            // === 业务就绪信号 ===
-            // policy request 不走快车道（它是 XML 文本），所以首条快车道或 JSON 消息
-            // 意味着 policy 握手已完成、Flash 业务层已就绪。
-            // 放在最前面确保无论走快车道还是 JSON 路由都能触发。
-            if (!_clientReady && message.Length > 0 && !FlashPolicyHandler.IsPolicyRequest(message))
+            // A frame and every event it can claim are ordered against accept, EOF, force-close,
+            // and dispose.  Holding the transition barrier through dispatch also prevents an old
+            // frame that passed a generation check from mutating business state after replacement.
+            lock (_acceptTransitionLock)
             {
-                _clientReady = true;
-                PerfTrace.Mark("socket.client_ready");
-                if (OnClientReady != null)
+                Action readyHandler = null;
+                Action<int> readyGenerationHandler = null;
+                lock (_clientLock)
                 {
-                    try { OnClientReady(); }
-                    catch (Exception ex) { LogManager.Log("[XmlSocket] OnClientReady error: " + ex.Message); }
+                    if (connectionGen != _generation
+                        || !ReferenceEquals(_client, connectionClient)
+                        || !ReferenceEquals(_stream, connectionStream)) return;
+                    // policy request 不代表业务就绪；首条真实业务消息原子 claim 此 generation。
+                    if (!_clientReady && message.Length > 0
+                        && !FlashPolicyHandler.IsPolicyRequest(message))
+                    {
+                        _clientReady = true;
+                        readyHandler = OnClientReady;
+                        readyGenerationHandler = OnClientReadyForGeneration;
+                    }
                 }
+                if (readyHandler != null || readyGenerationHandler != null)
+                {
+                    PerfTrace.Mark("socket.client_ready");
+                    FireReady(readyHandler, readyGenerationHandler, connectionGen);
+                }
+                HandleCurrentMessage(message, connectionGen);
             }
+        }
+
+        private void HandleCurrentMessage(string message, int connectionGen)
+        {
 
             // === 快车道：前缀协议，绕过 JSON 解析 ===
             if (message.Length > 0)
@@ -514,12 +664,6 @@ namespace CF7Launcher.Bus
             }
 
             // === 通用路由：JSON 消息 ===
-            PerfTrace.Counter("socket.json");
-            if (message.Length < 500)
-                LogManager.Log("[XmlSocket:JSON] " + message);
-            else
-                LogManager.Log("[XmlSocket:JSON] (len=" + message.Length + ") " + message.Substring(0, 120) + "...");
-
             // Flash 策略请求
             if (FlashPolicyHandler.IsPolicyRequest(message))
             {
@@ -527,9 +671,42 @@ namespace CF7Launcher.Bus
                 return;
             }
 
+            // Dedicated socket-only routes are intercepted before MessageRouter.  The same task
+            // name is consequently unreachable through HttpApiServer and WebOverlayForm's generic
+            // task bridge, even when a caller forges an otherwise valid JSON envelope.
+            DedicatedJsonHandler dedicatedHandler = _dedicatedJsonHandler;
+            if (dedicatedHandler != null)
+            {
+                string dedicatedResponse;
+                bool consumed = false;
+                try
+                {
+                    consumed = dedicatedHandler(message, connectionGen, out dedicatedResponse);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket:Dedicated] handler failed: " + ex.GetType().Name);
+                    dedicatedResponse = "{\"success\":false,\"error\":\"dedicated_handler_failed\"}";
+                    consumed = true;
+                }
+                if (consumed)
+                {
+                    PerfTrace.Counter("socket.json.dedicated");
+                    if (dedicatedResponse != null)
+                        TrySendIfGen(dedicatedResponse + "\0", connectionGen);
+                    return;
+                }
+            }
+
             // 路由到 MessageRouter
             // Phase D Step D2: 响应走 gen-bound TrySendIfGen, 原连接已被替换时自动 drop.
             // 捕获 ReadLoop 形参 connectionGen 进闭包, 保持 "本消息的响应只发回发起它的 connection" 语义.
+            // Dedicated routes and the loot authority route can carry one-time capabilities,
+            // full container identities, and reward projections.  Keep those payloads out of
+            // logs even though loot_response still travels through the generic task router.
+            PerfTrace.Counter("socket.json");
+            LogManager.Log(FormatJsonMessageLog(message));
+
             int respGen = connectionGen;
             string response = _router.ProcessMessage(message, delegate(string asyncResp)
             {
@@ -551,6 +728,110 @@ namespace CF7Launcher.Bus
                 _frameUiLastLogTick = now;
                 LogManager.Log("[Frame:UI] sample count=" + count + " " + uiState);
             }
+        }
+
+        internal static string FormatJsonMessageLog(string message)
+        {
+            try
+            {
+                JObject envelope = JObject.Parse(message);
+                string task = envelope.Value<string>("task");
+                if (string.Equals(task, "loot_response", StringComparison.Ordinal))
+                {
+                    return "[XmlSocket:JSON] task=loot_response payload=redacted len="
+                        + message.Length;
+                }
+
+                JObject callbackPayload = envelope["payload"] as JObject;
+                string panel = callbackPayload != null
+                    ? callbackPayload.Value<string>("panel")
+                    : null;
+                if (string.IsNullOrEmpty(panel))
+                    panel = envelope.Value<string>("panel");
+                if (string.Equals(task, "panel_request", StringComparison.Ordinal)
+                    && string.Equals(panel, "loot", StringComparison.Ordinal))
+                {
+                    return "[XmlSocket:JSON] task=panel_request panel=loot payload=redacted len="
+                        + message.Length;
+                }
+            }
+            catch
+            {
+                // A truncated loot envelope can still contain one-time leases, full authority
+                // identity, and reward projections.  JObject.Parse cannot classify it, so use a
+                // deliberately narrow lexical fallback before the legacy raw diagnostic below.
+                // MessageRouter still owns parsing and the protocol error returned to the peer.
+                string sensitiveLog = FormatMalformedSensitiveLootLog(message);
+                if (sensitiveLog != null) return sensitiveLog;
+            }
+
+            if (message.Length < 500)
+                return "[XmlSocket:JSON] " + message;
+
+            return "[XmlSocket:JSON] (len=" + message.Length + ") "
+                + message.Substring(0, 120) + "...";
+        }
+
+        private static string FormatMalformedSensitiveLootLog(string message)
+        {
+            if (HasJsonStringFieldValue(message, "task", "loot_response"))
+            {
+                return "[XmlSocket:JSON] task=loot_response payload=redacted len="
+                    + message.Length;
+            }
+            if (HasJsonStringFieldValue(message, "task", "panel_request")
+                && HasJsonStringFieldValue(message, "panel", "loot"))
+            {
+                return "[XmlSocket:JSON] task=panel_request panel=loot payload=redacted len="
+                    + message.Length;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Minimal fail-closed probe used only after JSON parsing failed.  It recognizes the
+        /// protocol's fixed string fields with optional JSON whitespace and also accepts a value
+        /// whose closing quote was the truncation point.  It does not attempt to repair or route
+        /// malformed JSON.
+        /// </summary>
+        private static bool HasJsonStringFieldValue(string message, string fieldName,
+            string expectedValue)
+        {
+            if (string.IsNullOrEmpty(message)) return false;
+            string fieldToken = "\"" + fieldName + "\"";
+            int searchFrom = 0;
+            while (searchFrom < message.Length)
+            {
+                int fieldIndex = message.IndexOf(fieldToken, searchFrom,
+                    StringComparison.Ordinal);
+                if (fieldIndex < 0) return false;
+                int cursor = fieldIndex + fieldToken.Length;
+                while (cursor < message.Length && char.IsWhiteSpace(message[cursor])) cursor++;
+                if (cursor >= message.Length || message[cursor] != ':')
+                {
+                    searchFrom = fieldIndex + fieldToken.Length;
+                    continue;
+                }
+                cursor++;
+                while (cursor < message.Length && char.IsWhiteSpace(message[cursor])) cursor++;
+                if (cursor >= message.Length || message[cursor] != '"')
+                {
+                    searchFrom = fieldIndex + fieldToken.Length;
+                    continue;
+                }
+                cursor++;
+                if (cursor + expectedValue.Length > message.Length
+                    || string.CompareOrdinal(message, cursor, expectedValue, 0,
+                        expectedValue.Length) != 0)
+                {
+                    searchFrom = fieldIndex + fieldToken.Length;
+                    continue;
+                }
+                int suffix = cursor + expectedValue.Length;
+                if (suffix == message.Length || message[suffix] == '"') return true;
+                searchFrom = fieldIndex + fieldToken.Length;
+            }
+            return false;
         }
 
         /// <summary>
@@ -636,28 +917,56 @@ namespace CF7Launcher.Bus
 
         /// <summary>
         /// 强制关闭当前客户端：触发 ReadLoop 退出 + OnClientDisconnected。
-        /// 锁语义约束 3：关流/关 client 在锁内，Fire 回调在锁外。
+        /// 关流/关 client 在 _clientLock 内，Fire 回调在该锁外、代际屏障内。
         /// 调用方（GameLaunchFlow.Reset）若已订阅 OnClientDisconnected + 在等待 dcGate，
         /// 强关后 ReadLoop 退出时 handler 会被 Fire，即便当前没有处于 ReadLoop 阻塞中
         /// 也可由本方法直接 Fire 一次（两种路径对订阅者语义一致：至少通知一次）。
         /// </summary>
         public void ForceCloseCurrentClient()
         {
-            Action dcHandler = null;
-            lock (_clientLock)
+            lock (_acceptTransitionLock)
             {
-                if (_client == null && _stream == null) return;
-                CloseClientLocked();
-                dcHandler = OnClientDisconnected;  // 快照，锁外 Fire
-            }
-            LogManager.Log("[XmlSocket] ForceCloseCurrentClient");
-            if (dcHandler != null)
-            {
-                try { dcHandler(); }
-                catch (Exception ex)
+                Action dcHandler = null;
+                Action<int> dcGenerationHandler = null;
+                int closedGeneration = 0;
+                lock (_clientLock)
                 {
-                    LogManager.Log("[XmlSocket] ForceCloseCurrentClient handler error: " + ex.Message);
+                    if (_client == null && _stream == null) return;
+                    closedGeneration = _generation;
+                    CloseClientLocked();
+                    TryClaimDisconnectLocked(closedGeneration, out dcHandler,
+                        out dcGenerationHandler);
                 }
+                LogManager.Log("[XmlSocket] ForceCloseCurrentClient");
+                FireDisconnected(dcHandler, dcGenerationHandler, closedGeneration,
+                    "force_close");
+            }
+        }
+
+        /// <summary>
+        /// Closes the current client only when it is still the captured connection generation.
+        /// A caller recovering from a failed generation-bound send must use this overload so a
+        /// replacement client accepted between send failure and cleanup is never disconnected.
+        /// </summary>
+        public bool ForceCloseCurrentClientIfGen(int expectedGeneration)
+        {
+            lock (_acceptTransitionLock)
+            {
+                Action dcHandler = null;
+                Action<int> dcGenerationHandler = null;
+                lock (_clientLock)
+                {
+                    if (_generation != expectedGeneration
+                        || (_client == null && _stream == null)) return false;
+                    CloseClientLocked();
+                    TryClaimDisconnectLocked(expectedGeneration, out dcHandler,
+                        out dcGenerationHandler);
+                }
+                LogManager.Log("[XmlSocket] ForceCloseCurrentClientIfGen generation="
+                    + expectedGeneration);
+                FireDisconnected(dcHandler, dcGenerationHandler, expectedGeneration,
+                    "force_close_generation");
+                return true;
             }
         }
 
@@ -673,6 +982,65 @@ namespace CF7Launcher.Bus
                 if (_client == null || !_client.Connected) return false;
                 OnClientDisconnected += handler;
                 return true;
+            }
+        }
+
+        /// <summary>Must be called under _clientLock. Claims one disconnect per generation.</summary>
+        private bool TryClaimDisconnectLocked(int generation, out Action handler,
+            out Action<int> generationHandler)
+        {
+            handler = null;
+            generationHandler = null;
+            if (generation <= 0 || generation <= _lastDisconnectedGeneration) return false;
+            _lastDisconnectedGeneration = generation;
+            handler = OnClientDisconnected;
+            generationHandler = OnClientDisconnectedForGeneration;
+            return true;
+        }
+
+        private static void FireDisconnected(Action handler, Action<int> generationHandler,
+            int generation, string origin)
+        {
+            if (handler != null)
+            {
+                try { handler(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] disconnect handler error origin=" + origin
+                        + " type=" + ex.GetType().Name);
+                }
+            }
+            if (generationHandler != null)
+            {
+                try { generationHandler(generation); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] generation disconnect handler error origin="
+                        + origin + " type=" + ex.GetType().Name);
+                }
+            }
+        }
+
+        private static void FireReady(Action handler, Action<int> generationHandler,
+            int generation)
+        {
+            if (handler != null)
+            {
+                try { handler(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] ready handler error type="
+                        + ex.GetType().Name);
+                }
+            }
+            if (generationHandler != null)
+            {
+                try { generationHandler(generation); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] generation ready handler error type="
+                        + ex.GetType().Name);
+                }
             }
         }
 
@@ -695,22 +1063,35 @@ namespace CF7Launcher.Bus
 
         public void Dispose()
         {
-            _running = false;
-            if (_listener != null)
+            lock (_acceptTransitionLock)
             {
-                try { _listener.Stop(); } catch { }
-                _listener = null;
+                _running = false;
+                if (_listener != null)
+                {
+                    try { _listener.Stop(); } catch { }
+                    _listener = null;
+                }
+                if (_listener6 != null)
+                {
+                    try { _listener6.Stop(); } catch { }
+                    _listener6 = null;
+                }
+                Action dcHandler = null;
+                Action<int> dcGenerationHandler = null;
+                int closedGeneration = 0;
+                lock (_clientLock)
+                {
+                    if (_client != null || _stream != null)
+                    {
+                        closedGeneration = _generation;
+                        CloseClientLocked();
+                        TryClaimDisconnectLocked(closedGeneration, out dcHandler,
+                            out dcGenerationHandler);
+                    }
+                }
+                FireDisconnected(dcHandler, dcGenerationHandler, closedGeneration, "dispose");
+                LogManager.Log("[XmlSocket] Stopped");
             }
-            if (_listener6 != null)
-            {
-                try { _listener6.Stop(); } catch { }
-                _listener6 = null;
-            }
-            lock (_clientLock)
-            {
-                CloseClientLocked();
-            }
-            LogManager.Log("[XmlSocket] Stopped");
         }
     }
 }

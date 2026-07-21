@@ -109,6 +109,11 @@
         for (var i = 0; i < host.children.length; i++) {
             var child = host.children[i];
             if (child === page.root) continue;
+            // The shell-level modal portal must stay interactive while a secondary
+            // page is active.  Modal focus ownership suppresses the page itself
+            // when a dialog opens; suppressing the portal here would render the
+            // dialog but leave every real pointer/keyboard action inert.
+            if (child.classList && child.classList.contains('workbench-modal-layer')) continue;
             if (child.classList && child.classList.contains('workbench-secondary-page')) {
                 var owner = secondaryOwner(child);
                 var active = owner ? owner._active : child.getAttribute && child.getAttribute('aria-hidden') === 'false';

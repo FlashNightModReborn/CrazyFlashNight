@@ -465,7 +465,9 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
             task.SetPostToWeb(json => posted = json);
-            task.HandleWebRequest("move", Request("move", "wb.inventory.4.9"));
+            JObject request = Request("move", "wb.inventory.4.9");
+            request["panelInstanceId"] = "panel.kshop.inventory.4.9";
+            task.HandleWebRequest("move", request);
             JObject flashRequest = ParseSent(sent);
 
             task.HandleFlashResponse(new JObject
@@ -480,8 +482,56 @@ namespace CF7Launcher.Tests.Tasks
             JObject response = JObject.Parse(posted);
             Assert.Null(response["task"]);
             Assert.Equal("inventory", (string)response["domain"]);
+            Assert.Equal("kshop", (string)response["panel"]);
+            Assert.Equal("panel.kshop.inventory.4.9", (string)response["panelInstanceId"]);
             Assert.Equal("move", (string)response["cmd"]);
             Assert.Equal("wb.inventory.4.9", (string)response["callId"]);
+        }
+
+        [Fact]
+        public void FlashCannotInjectPanelCapabilityWhenRequestHadNoBinding()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "wb.inventory.unbound.1");
+            request.Remove("panel");
+            task.HandleWebRequest("snapshot", request);
+            JObject flashRequest = ParseSent(sent);
+
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "inventory_response",
+                ["callId"] = (int)flashRequest["callId"],
+                ["success"] = true,
+                ["panel"] = "loot",
+                ["panelInstanceId"] = "panel.loot.injected",
+                ["snapshots"] = new JArray()
+            }, _ => { });
+
+            JObject response = JObject.Parse(posted);
+            Assert.Null(response["panel"]);
+            Assert.Null(response["panelInstanceId"]);
+        }
+
+        [Fact]
+        public void LocalErrorEchoesPanelBindingForExactMuxRejection()
+        {
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => true);
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "loot.inventory.invalid.1");
+            request["panel"] = "loot";
+            request["panelInstanceId"] = "panel.loot.exact.1";
+            request["payload"]["v"] = 2;
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject response = JObject.Parse(posted);
+            Assert.Equal("unsupported_version", (string)response["error"]);
+            Assert.Equal("loot", (string)response["panel"]);
+            Assert.Equal("panel.loot.exact.1", (string)response["panelInstanceId"]);
         }
 
         [Fact]
@@ -493,6 +543,8 @@ namespace CF7Launcher.Tests.Tasks
             var task = new InventoryTask(() => true, _ => { sends++; return true; }, 20);
             task.SetPostToWeb(json => { posted = json; signaled.Set(); });
             JObject request = Request("discard", "wb.inventory.timeout.1");
+            request["panel"] = "loot";
+            request["panelInstanceId"] = "panel.loot.timeout.1";
 
             task.HandleWebRequest("discard", request);
             Assert.True(signaled.Wait(TimeSpan.FromSeconds(2)));
@@ -501,7 +553,27 @@ namespace CF7Launcher.Tests.Tasks
             JObject response = JObject.Parse(posted);
             Assert.Equal("timeout", (string)response["error"]);
             Assert.Equal("discard", (string)response["cmd"]);
+            Assert.Equal("loot", (string)response["panel"]);
+            Assert.Equal("panel.loot.timeout.1", (string)response["panelInstanceId"]);
             Assert.Equal(1, sends);
+        }
+
+        [Fact]
+        public void SendFailureEchoesExactPanelBinding()
+        {
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => false);
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "loot.inventory.send-failure.1");
+            request["panel"] = "loot";
+            request["panelInstanceId"] = "panel.loot.send-failure.1";
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject response = JObject.Parse(posted);
+            Assert.Equal("disconnected", (string)response["error"]);
+            Assert.Equal("loot", (string)response["panel"]);
+            Assert.Equal("panel.loot.send-failure.1", (string)response["panelInstanceId"]);
         }
 
         [Fact]
@@ -539,6 +611,111 @@ namespace CF7Launcher.Tests.Tasks
                 WebOverlayForm.ResolvePanelDomainRoute("claim", "unknown"));
             Assert.Equal(WebOverlayForm.PanelDomainRoute.Legacy,
                 WebOverlayForm.ResolvePanelDomainRoute("snapshot", null));
+        }
+
+        [Fact]
+        public void LootOrganizerInventoryEnvelopeRequiresExactTrackedPanelInstance()
+        {
+            var windows = new JArray
+            {
+                new JObject
+                {
+                    ["containerId"] = "背包", ["offset"] = 0,
+                    ["limit"] = 50, ["filterKey"] = "all"
+                },
+                new JObject
+                {
+                    ["containerId"] = "战备箱", ["offset"] = 0,
+                    ["limit"] = 40, ["filterKey"] = "all"
+                }
+            };
+            var request = new JObject
+            {
+                ["type"] = "panel",
+                ["domain"] = "inventory",
+                ["panel"] = "loot",
+                ["cmd"] = "snapshot",
+                ["callId"] = "loot.inventory.snapshot.1",
+                ["panelInstanceId"] = "panel.loot.exact.1",
+                ["payload"] = new JObject
+                {
+                    ["v"] = 1,
+                    ["requests"] = windows.DeepClone()
+                }
+            };
+
+            Assert.True(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.replaced.2"));
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "workbench", "panel.loot.exact.1"));
+
+            request["panel"] = "workbench";
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["panel"] = "loot";
+            request["extra"] = true;
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request.Remove("extra");
+
+            request["callId"] = 7;
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["callId"] = "loot.inventory.snapshot.1";
+            request["payload"]["v"] = JToken.Parse("999999999999999999999999999999");
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["payload"]["v"] = 1;
+
+            request["cmd"] = "autoTransfer";
+            request["payload"] = new JObject
+            {
+                ["v"] = 1,
+                ["source"] = new JObject
+                {
+                    ["containerId"] = "背包", ["slot"] = 7,
+                    ["expectedLease"] = "inventory.lease.7"
+                },
+                ["targetContainerId"] = "战备箱",
+                ["policy"] = "mergeThenEmpty",
+                ["windows"] = windows.DeepClone()
+            };
+            Assert.True(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["payload"]["source"]["expectedLease"] = 7;
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["payload"]["source"]["expectedLease"] = "inventory.lease.7";
+            request["payload"]["source"]["slot"] = JToken.Parse(
+                "999999999999999999999999999999");
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["payload"]["source"]["slot"] = 7;
+            request["payload"]["policy"] = true;
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["payload"]["policy"] = "mergeThenEmpty";
+            request["payload"]["targetContainerId"] = "仓库";
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+
+            request["cmd"] = "discard";
+            request["payload"] = new JObject
+            {
+                ["v"] = 1,
+                ["source"] = new JObject
+                {
+                    ["containerId"] = "背包", ["slot"] = 7,
+                    ["expectedLease"] = "inventory.lease.7"
+                }
+            };
+            Assert.True(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
+            request["payload"]["source"]["containerId"] = "战备箱";
+            Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
+                request, "loot", "panel.loot.exact.1"));
         }
     }
 }

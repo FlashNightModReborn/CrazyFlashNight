@@ -881,6 +881,10 @@ class Program
 
         // Notch 依赖 + InputShieldForm
         InputShieldForm inputShield = null;
+        // UiData handlers are wired before TaskRegistry construction. Capture this holder so
+        // both native and fallback paths can feed the eventual AgentControlTask without a
+        // second raw payload split.
+        AgentControlTask agentControlTask = null;
         {
             webOverlay.SetNotchDependencies(frameTask.FpsBuffer,
                 new Action(form.ToggleFullscreen),
@@ -907,11 +911,21 @@ class Program
             // 音乐目录注入
             webOverlay.SetMusicCatalog(musicCatalog);
 
-            // U 前缀快车道：UI 数据透传到 WebView2
-            socketServer.SetUiDataHandler(new Action<string>(webOverlay.HandleUiData));
+            // U 前缀快车道：UI 数据透传到 WebView2，并把同一解析包交给 agent 实收门。
+            Action<string> fallbackUiDataTee = delegate(string raw)
+            {
+                if (string.IsNullOrEmpty(raw)) return;
+                CF7Launcher.Guardian.Hud.UiDataPacket pkt =
+                    new CF7Launcher.Guardian.Hud.UiDataPacket(raw);
+                try { webOverlay.HandleUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
+                try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
+            };
+            socketServer.SetUiDataHandler(fallbackUiDataTee);
 
             // combo hints → WebView2 (FrameTask 每帧推送)
-            frameTask.SetUiDataHandler(new Action<string>(webOverlay.HandleUiData));
+            frameTask.SetUiDataHandler(fallbackUiDataTee);
 
             // 幽灵输入层：GDI+ 命中测试 + CDP 注入
             inputShield = new InputShieldForm(form, form.FlashHostPanel);
@@ -1047,6 +1061,8 @@ class Program
                 catch (Exception ex) { LogManager.Log("[Tee] notch UiData throw: " + ex.Message); }
                 try { capturedHud2.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
+                try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
@@ -1116,6 +1132,20 @@ class Program
         }
         ShopTask shopTask = new ShopTask(socketServer);
         InventoryTask inventoryTask = new InventoryTask(socketServer);
+        LootPanelCoordinator lootPanelCoordinator = new LootPanelCoordinator(
+            new LootPanelHostPort(panelHost),
+            delegate { return webOverlay.ReleaseLootPanelPause(); },
+            null,
+            delegate(LootPanelCoordinator.Binding binding, string reason)
+            {
+                return webOverlay.TryRequestLootPanelRecovery(binding, reason);
+            });
+        LootTask lootTask = new LootTask(socketServer, lootPanelCoordinator);
+        lootPanelCoordinator.SetAdmissionLeaseFactory(
+            lootTask.TryAcquirePanelAdmissionLease);
+        commandRouter.SetLootPanelCoordinator(lootPanelCoordinator);
+        if (panelHost != null)
+            panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
         CraftingTask craftingTask = new CraftingTask(socketServer);
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
@@ -1156,7 +1186,7 @@ class Program
         ArenaTask arenaTask = new ArenaTask(socketServer);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
-        AgentControlTask agentControlTask = new AgentControlTask(
+        agentControlTask = new AgentControlTask(
             delegate { return socketServer.HasClient; },
             delegate
             {
@@ -1251,7 +1281,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, npcShopTask, craftingTask, equipmentTuningTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, equipmentTuningTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -1261,6 +1291,8 @@ class Program
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
         webOverlay.SetInventoryTask(inventoryTask);
+        webOverlay.SetLootTask(lootTask);
+        webOverlay.SetLootPanelCoordinator(lootPanelCoordinator);
         webOverlay.SetNpcShopTask(npcShopTask);
         webOverlay.SetCraftingTask(craftingTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
@@ -1275,7 +1307,7 @@ class Program
         webOverlay.SetIntelligenceTask(intelligenceTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
-        socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
+        socketServer.OnClientDisconnectedForGeneration += webOverlay.OnSocketDisconnected;
         socketServer.OnClientReady += webOverlay.OnSocketReconnected;
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
@@ -1295,6 +1327,8 @@ class Program
             //    后面的 _webView.Dispose() 才不会卡住 200-800ms 销毁 Chromium。
             try { if (inputShield != null) inputShield.ExitTelemetryMode(); } catch (Exception ex) { LogManager.Log("[Guardian] ExitTelemetryMode early failed: " + ex.Message); }
             try { if (webOverlay != null) webOverlay.SuspendAfterPanel("shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] SuspendAfterPanel early failed: " + ex.Message); }
+            try { lootTask.OnTransportDetached(); lootPanelCoordinator.ForceDetach("host_shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] loot detach early failed: " + ex.GetType().Name); }
+            try { lootPanelCoordinator.Dispose(); } catch { }
 
             // 所有 overlay form 立即 Hide: 退出过程中后续的 KillFlash WaitForExit / Dispose 阶段,
             // WebView2 子窗口、α-shield、HUD widget 任何一帧背景闪现都不再可见。
@@ -1311,6 +1345,7 @@ class Program
             musicCatalog.Dispose();
             frameTask.Stop();
             shopTask.Dispose();
+            lootTask.Dispose();
             equipmentTuningTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
@@ -1361,6 +1396,8 @@ class Program
             try { socketServer.SetNotchHandler(null); } catch { }
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
+            try { lootTask.Dispose(); } catch { }
+            try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
@@ -1416,6 +1453,51 @@ class Program
         // 守护进程核心（windowManager 已在 WebOverlay 构造前 early-declared，flashFocusRestorer 依赖它）
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
+
+        // Dev-only lockbox S0 actual wire.  The only AS2 ingress is XmlSocketServer's dedicated
+        // handler; no TaskRegistry/MessageRouter/HTTP/Web task registration exists for this task.
+        DevLockboxS0Runtime devLockboxS0 = new DevLockboxS0Runtime(
+            new DevLockboxS0PanelHostPort(panelHost),
+            delegate { return SteamOwnershipCheck.IsDevRepository(projectRoot); },
+            delegate { return Environment.GetEnvironmentVariable("CF7_DEV_LOCKBOX_S0"); },
+            delegate
+            {
+                Process flash = processManager.FlashProcess;
+                if (flash == null) return (DevLockboxS0Runtime.GameProcessIdentity?)null;
+                try
+                {
+                    if (flash.HasExited) return (DevLockboxS0Runtime.GameProcessIdentity?)null;
+                    return new DevLockboxS0Runtime.GameProcessIdentity(
+                        flash.Id, flash.StartTime.ToUniversalTime().Ticks);
+                }
+                catch { return (DevLockboxS0Runtime.GameProcessIdentity?)null; }
+            },
+            delegate(string json, int generation)
+            {
+                return socketServer.TrySendIfGen(json + "\0", generation);
+            },
+            webOverlay.TryPostToWeb,
+            delegate(int expectedGeneration)
+            {
+                return socketServer.TrySendIfGen(
+                    "{\"task\":\"cmd\",\"action\":\"webPanelPause\"}\0", expectedGeneration);
+            },
+            delegate(int expectedGeneration)
+            {
+                return socketServer.TrySendIfGen(
+                    "{\"task\":\"cmd\",\"action\":\"webPanelUnpause\"}\0",
+                    expectedGeneration);
+            });
+        socketServer.SetDedicatedJsonHandler(devLockboxS0.TryHandleSocketJson);
+        socketServer.OnClientReadyForGeneration += devLockboxS0.OnSocketReady;
+        socketServer.OnClientDisconnectedForGeneration += devLockboxS0.OnSocketDisconnected;
+        webOverlay.SetDevLockboxS0Runtime(devLockboxS0);
+        if (panelHost != null)
+        {
+            panelHost.SetPanelOpenGate(devLockboxS0.AllowRegularPanelOpen);
+            panelHost.PanelClosed += devLockboxS0.OnPanelHostClosed;
+            panelHost.OrchestrationSettled += devLockboxS0.OnPanelHostOrchestrationSettled;
+        }
 
         form.BindWindowManager(windowManager);
 
@@ -1576,10 +1658,13 @@ class Program
         try { processManager.Dispose(); } catch { }
         try { gomokuTask.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
+        try { lootTask.Dispose(); } catch { }
+        try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }
+        try { devLockboxS0.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (panelHost != null) panelHost.Dispose(); } catch { }

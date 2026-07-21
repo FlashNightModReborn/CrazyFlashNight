@@ -730,9 +730,35 @@ _root.场景转换函数.场景切换时补充玩家弹药 = function(){
 
 
 // 转换场景画面完全淡出时移除组件
-_root.清除游戏世界组件 = function(){
+_root.__安排游戏世界清理重试 = function():Void {
+	if (_root.__游戏世界清理重试已排队 === true) return;
+	if (_root.帧计时器 == undefined
+			|| typeof _root.帧计时器.添加单次任务 != "function") {
+		_root.发布消息("[SceneManager] 战利品权威尚未收敛，缺少帧计时器；场景切换保持阻塞");
+		return;
+	}
+	_root.__游戏世界清理重试已排队 = true;
+	_root.帧计时器.添加单次任务(function():Void {
+		_root.__游戏世界清理重试已排队 = false;
+		if (_root.清除游戏世界组件()) {
+			if (_root.淡出动画 != undefined && typeof _root.淡出动画.play == "function") {
+				_root.淡出动画.play();
+			}
+		}
+	}, 1);
+}
+
+_root.清除游戏世界组件 = function():Boolean{
 	// 彻底移除gameworld
-	SceneManager.instance.removeGameWorld();
+	if (!SceneManager.instance.removeGameWorld()) {
+		// 淡出动画 frame 5 之后会在 frame 12 无条件跳图；先钉停当前时间线，
+		// 仅在权威 journal/effects/transport 全部收敛并完成 teardown 后续播。
+		if (_root.淡出动画 != undefined && typeof _root.淡出动画.stop == "function") {
+			_root.淡出动画.stop();
+		}
+		_root.__安排游戏世界清理重试();
+		return false;
+	}
 	
 	// 清除游戏世界相关组件
 	CollisionLayerRenderer.clearAll();
@@ -769,4 +795,5 @@ _root.清除游戏世界组件 = function(){
 	_root.鼠标.gotoAndStop(1); // 恢复鼠标默认状态
 
     _root.注释结束();
+	return true;
 }

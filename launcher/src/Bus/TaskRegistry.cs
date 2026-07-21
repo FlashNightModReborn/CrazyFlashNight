@@ -62,6 +62,8 @@ namespace CF7Launcher.Bus
             IconBakeTask iconBake,
             ShopTask shopTask,
             InventoryTask inventoryTask,
+            LootTask lootTask,
+            LootPanelCoordinator lootPanelCoordinator,
             NpcShopTask npcShopTask,
             CraftingTask craftingTask,
             EquipmentTuningTask equipmentTuningTask,
@@ -100,6 +102,11 @@ namespace CF7Launcher.Bus
             // 双栏工作台共享 inventory-domain 回包路由
             if (inventoryTask != null)
                 router.RegisterAsync("inventory_response", inventoryTask.HandleFlashResponse);
+
+            // 地图战利品箱专用 authority 回包；Web ingress 由 WebOverlayForm 直接交给
+            // LootTask，以保留“仅 Web origin”边界，不能注册成通用 socket/http request task。
+            if (lootTask != null)
+                router.RegisterAsync("loot_response", lootTask.HandleFlashResponse);
 
             // NPC 金币商店 domain 回包路由
             if (npcShopTask != null)
@@ -170,6 +177,24 @@ namespace CF7Launcher.Bus
                     JObject request = callbackPayload ?? msg;
                     string panel = request.Value<string>("panel") ?? "";
                     string source = request.Value<string>("source") ?? "as2_request";
+
+                    // 生产 loot panel 使用 tracked PanelHost 与 exact identity。专用协调器先对
+                    // 顶层 source 和 initData 分别做 exact-shape 校验；queue accepted 明确不是 bound。
+                    if (panel == "loot")
+                    {
+                        if (lootPanelCoordinator == null)
+                        {
+                            return new JObject
+                            {
+                                ["success"] = false,
+                                ["accepted"] = false,
+                                ["bound"] = false,
+                                ["panel"] = "loot",
+                                ["error"] = "panel_unavailable"
+                            }.ToString(Newtonsoft.Json.Formatting.None);
+                        }
+                        return lootPanelCoordinator.HandlePanelRequest(request);
+                    }
                     string pageId = request.Value<string>("pageId") ?? "";
                     string frameLabel = request.Value<string>("frameLabel") ?? "";
                     string returnFrameLabel = request.Value<string>("returnFrameLabel") ?? "";
@@ -302,6 +327,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "inventory_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "loot_response",     "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "npcshop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);

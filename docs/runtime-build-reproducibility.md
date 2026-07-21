@@ -1,13 +1,21 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：source commit `278c4b9b76569852d896edbfa2176d9c2f16e63e`（2026-07-19）+ request `0BDD79AD750523658D46ABDDB87F1951A7A41AB7BF6E67FF86C623CA99601BA0` 的正式 promotion。
+**最后核对代码基线**：当前源码 HEAD / `origin/main` 为 `2d19cd6681a0219749a58501271b6f1bd23cc28f`（2026-07-21 断电恢复后复核）；正式 v2 部署绑定 request `184428C21AF75D0BE8C24D33237AB265B20C0240ECC80AC32850CF17829E4420`、source commit `9f4669e03e59016f820df2424cc5b4851a1c566a` 与 release tree `168c49f782ab8add162ba2b9b3b1f5e1df378fba`。当前 dirty loot source-tree 功能门和 2026-07-21 13:46:54 +08 刷新的 Flash publish-only 产物都是独立证据层，不能替代正式 Core proof / quorum / promotion。
 
 ## 当前迁移状态
 
-runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。request `0BDD79AD750523658D46ABDDB87F1951A7A41AB7BF6E67FF86C623CA99601BA0` 使用 immutable source tag `runtime-build-v2/20260719-minimal-release-gate-v1`：`builder-local-a` / `physical-host-a` 的 CurrentUser 不可导出 X509 票与 GitHub Actions run `29674597319` 的 `github-hosted-windows` OIDC/Sigstore 票达成双 signer、双 faultDomain 共识；build identity `F6BE274BCCAF5EA2EBA1FF075DEADCA2B42A64589F3441132EF749E185D9A209` 与 payload closure `04073C5F42D4A2EC9A0511287A9C982052D673B599795888C7903619B6AF25E0` 全等，production policy `54E94AB3A08A06527305F6D4133D7C7AD1657DDB7E21AA6B793D51E08412C4FC` 的 20 项检查全部通过。该列车把主线准入收敛为三条零 runner ref 防护，并将 Actions 定位为正式发布时的独立 producer；artifact source、producer recipe、toolchain 与实际 payload 均未漂移，因此 promotion 只更新 signed consensus，tracked registry 仍只保存公钥证书。此前的 `native-identity-gate-v1/v2` 与 `contribution-admission-v1` tag 均作为不可移动的历史审计输入保留。
+runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。当前 consensus 的 immutable source tag 为 `runtime-build-v2/20260720-equipment-inspector-v3`，request 为 `184428C21AF75D0BE8C24D33237AB265B20C0240ECC80AC32850CF17829E4420`，source commit / release tree 分别为 `9f4669e03e59016f820df2424cc5b4851a1c566a` / `168c49f782ab8add162ba2b9b3b1f5e1df378fba`；artifact source `36A6D7BC518C67017E2C4B268EFCE3B926AB7E0DC76F0E85E6475DC42C64E677`、producer recipe `3E72FF0AA6E751ADC5D670F970293B811AC2BF8E562B19CEDAEA37EFC1CA6515` 与 toolchain lock `368FAEA2A28547499A6218B508F2F05F470C8DDD9693825B8DA901A015ADEE3C` 形成 build identity `B643463C39ACA1F9ED2BC5CA4F36F4C4A4E3A8F9D020A04CB379F9F83B2F6CB1`，payload closure 为 `FA1EC72FEA78623653EA3D4E4794334A215E535FECE0597B003FA5BED09BD000`，manifest SHA-256 为 `E272CE9634E103E65AA7A69AE4FE61C5FFF1629146B0C2F4004F6F8F81BF6CA0`。production policy `A85935957F79444B6591BFDC6644E05302F6B8972D869C902DF2F8D6A2B7EA0A` 的 receipt SHA-256 为 `2F13E35979205D59FBD6E52CB122B50DB05B391EDCD93EC15F464225C1482634`；双 signer / 双 faultDomain、receipt 与 v2 strict verifier 全部满足后，于 `2026-07-20T11:01:09.5848098Z` 完成 promotion。
 
 v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入。该 marker 曾精确绑定 base `711c469036ad6b1226833faf255499abb1ebf2ed`、旧 artifact closure 与目标 builder registry 字节哈希，并在 legacy deployment 零变化时解决“cloud workflow 必须先进入 default branch”的 bootstrap 悖论；marker 后的首个部署提交已经完成完整 v2 promotion。CI 从此只接受 v2 strict 状态，并永久拒绝 v2 → v1 降级。
+
+当前源码 HEAD 已推进到 `2d19cd6681a0219749a58501271b6f1bd23cc28f`；正式部署对应 source commit `9f4669e03e59016f820df2424cc5b4851a1c566a`、build identity `B643463C39ACA1F9ED2BC5CA4F36F4C4A4E3A8F9D020A04CB379F9F83B2F6CB1` 与 payload closure `FA1EC72FEA78623653EA3D4E4794334A215E535FECE0597B003FA5BED09BD000`。该正式 B643/FA1 Core 已包含上游装备检视器版本，但不包含当前 dirty loot Host；2026-07-20 20:30:38 的真机日志先收到合法 nested loot open，随后 Router 返回 `unsupported`，据此定因为进程加载 formal 旧 Core 而非 candidate，不是 loot 实现失败，也不构成验收。因此“native 源码可先以 `source-ahead` 进入 main”“从隔离目录启动 diagnostic Core”和“正式游戏加载已 promotion 的 Core”仍是三件不同的事。root EXE、`runtime/**`、manifest、builder registry 或 consensus 若随 source-only 提交变化，事后 Audit 必须转入 strict 并在无匹配 promotion 时失败。
+
+`chest-s0-a8a-local-r3/r4` 是 2026-07-18 基于 `a8a760a3cc` 的合并前同机、未注册身份诊断，不代表当前工作树或 release evidence。两次历史运行的 artifactSource `2A38A925F6E3AAA651983D0CC26F146691D616EB8078110D263F34A5633DD147`、producerRecipe `C02B7809FFDA2F8121928266192E9319EFE77AA5D78AB5AEDF4D9B866927A5E6`、toolchain `E1467B0FD239A08BECCE7FD9B08C8F456F31173201DC617086E3B81CEB167C85`、buildIdentity `EE335828E0FF0F25321C9C6E37FA6EFA73A17F4B6FA51CFA2D3D9FD332BFB5` 与 payloadClosure `B74B2A622823F890FD52285DDDC146BE1EFDDAB26FFA22E7B383387A3DECF15E` 当时全等；独立 verifier coherent（23 payload files），含 manifest 的 24 文件逐字节 delta 0，bootstrap verify exit 0。但它们没有 immutable request、production receipt、签名、不同 signer + `faultDomain` quorum 或 promotion，也没有启动 actual cross-stack，只能保留为历史 diagnostic。
+
+2026-07-19 本机构建阻塞已经解除：锁定 bootstrapper FileVersion `17.14.37502.11` 已把 side-by-side Build Tools 安装到 `C:\Program Files (x86)\CF7VS\BT1736`，cl `19.44.35228.0`、link `14.44.35228.0` 与 Windows SDK `rc` 均通过 lock 中的精确版本和 SHA-256 门；`bootstrap-runtime-build-env.ps1 -VerifyOnly` 与 `check-runtime-build-env.ps1` 均 exit `0`。安装后还修复了 Windows PowerShell 5.1 对 `vswhere` 顶层 JSON 数组的函数返回包装：现在逐实例输出，旧 VS 与 BT1736 不会被拼成一个虚假 `installationPath`，同一进程即可重新发现 side-by-side 实例。
+
+2026-07-19 的 `AE1FC1EF… / 172A85C6…` 23-file diagnostic candidate 曾在临时开发目录完成基础启动、map/tasks/NPC 与早期 loot claim/close/unpause/存盘诊断，并暴露 `TransparencyKey` 点击穿透、claim-all 收束与 terminal late-ack 问题；它不含后续修复，也不代表当前 `2d19cd66 + loot` 合并树。该 candidate 及其后的 FCA19/B2AF/231388 等合并前 loot diagnostic candidate 均已退役。当前最终开发树的隔离 candidate 位于 `tmp/runtime-candidates/v2/c-2a0cddb077b7-08846e81b3-20260721t100014612z-f32a40a3`，绑定 build identity `2A0CDDB077B760328B3141EFFFEEE3996841FA1CE49AD09E5D7339417F60A107`、payload closure `3B837DCDBC69AA47074E635DACACAE3B80263023E6032AC1FDF209768B1C150C` 与 Core SHA-256 `0F58BF864B8DE9C7FCEA098D7E1EEA1996BDE38D85D87E844B047B53F5247232`；corrected Agent entry、正常 NativeHud、同实例 organizer、普通 suspend/same-anchor 内容不变 reopen/final claim 已在该候选完成，因此单 canary 资源箱切片达到 `e2e_verified / NOT_DEPLOYED`。其 25-file native payload 不含 `launcher/web`，外部 Web 字节另由源码哈希与 WebView2 实机日志绑定，不能由 native identity/closure 代证。候选已优雅退出，且仍无 immutable request、production receipt、签名 quorum、promotion 或 standard-entry；这些开发证据不能直接作为 release evidence。
 
 ## 不变量
 
@@ -54,7 +62,7 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 
 1. `tools/prepare-launcher-release-assets.ps1` 只恢复锁定的 TypeScript/字典依赖并派生受跟踪发布资产。`save_schema.json` 默认保留；只有显式 `-SaveSchemaSource` 才从指定 canonical save 重建，避免私有存档和时间戳偷偷进入发布。
 2. `launcher/build-runtime-candidate.ps1` 是纯 payload producer：先执行精确环境门，再在 job 独占的 native/Cargo/MSBuild/temp 目录构建 miniaudio、Rust parser、bootstrap 与 FDD Core，生成不可覆盖的 v2 candidate。candidate 尚无正式 consensus，因此这里只同步、有界等待 bootstrap `--verify-runtime-only` 并检查真实 exit code；失败会保留/输出受限日志，成功必须删除 `logs/`。它不跑 Web/数据产品审计，也不签名。
-3. `tools/validate-launcher-release-policy.ps1` 是只读政策门：绑定 `releaseTreeOid` 与四域身份，验证 tracked tree 在审计前后未变化，按需严格验证 candidate，并把每项结果写成 `cf7-runtime-policy-validation.v2` production receipt。它既支持 clean commit 的 `Worktree` 身份，也支持工作树逐字节 materialize 同一 staged tree 的 `Index` 身份；candidate 始终按磁盘 payload 复核。候选优化检查会丢弃调用者注入的 `CF7_DOTNET_EXE`，重新运行锁定工具链门禁并只接受其选出的 host；门禁不产出精确 host 就禁止签发。子审计 stdout/stderr 只进入人类/CI 日志，不能混入结构化 `checks[]`。receipt 只能写未跟踪路径。
+3. `tools/validate-launcher-release-policy.ps1` 是只读政策门：绑定 `releaseTreeOid` 与四域身份，验证 tracked tree 在审计前后未变化，按需严格验证 candidate，并把每项结果写成 `cf7-runtime-policy-validation.v2` production receipt。它既支持 clean commit 的 `Worktree` 身份，也支持工作树逐字节 materialize 同一 staged tree 的 `Index` 身份；candidate 始终按磁盘 payload 复核。候选优化检查会丢弃调用者注入的 `CF7_DOTNET_EXE`，重新运行锁定工具链门禁并只接受其选出的 host；门禁不产出精确 host 就禁止签发。`required-web-runtime-assets` 必须覆盖生产懒加载闭包；地图资源箱除 S0 三文件外，还必须逐项包含 `modules/loot/loot-runtime.js`、`loot-state.js`、`loot-view.js`、`loot-organizer.js` 与 `loot-panel.js`，任一缺失都 fail-closed 并在 receipt 点名。子审计 stdout/stderr 只进入人类/CI 日志，不能混入结构化 `checks[]`。receipt 只能写未跟踪路径。
 
 `launcher/build.ps1` 只是人工兼容编排器：prepare → pure producer → policy。它只写隔离 candidate，最多把状态推进到 `candidate_built`，不写根 bootstrap 或正式 `runtime/`；它适合已准备好的本地 tree 做完整候选检查，但不是多机发布协议，也不会替代签名 worker、immutable request 或 quorum。
 
@@ -66,11 +74,11 @@ prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在
 
 ## 精确环境与隔离输出
 
-- 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。断网复用已有精确匹配 candidate 不需要云端；断网重建则必须预先安装通过锁定门的工具链，并已缓存 NuGet/Cargo 依赖。
+- 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。若已有实例的精确 MSVC 字节不匹配，bootstrap 不会用旧实例的同名 component ID 冒充锁定 payload，而会走锁定 bootstrapper 的专用 side-by-side 目录；只有工具字节已匹配、仅缺 SDK 时才对该实例执行 `modify`。Windows PowerShell 5.1 下必须逐个输出 `vswhere` 解析到的实例，禁止把顶层 JSON 数组作为单个 `Object[]` 返回后拼接安装路径。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。断网复用已有精确匹配 candidate 不需要云端；断网重建则必须预先安装通过锁定门的工具链，并已缓存 NuGet/Cargo 依赖。
 - `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及 bootstrapper 入口字节；NuGet 图由 `launcher/packages.lock.json` 固定。Visual Studio 安装器只是尽力补齐组件，不能把会移动的在线 channel 伪装成已固定 payload；最终资格始终以 `cl/link/rc` 的版本与 SHA-256 精确门为准。
-- 当前基线为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。
+- 当前基线为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / installer `17.14.37502.11` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`、link `14.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。2026-07-19 本机 BT1736 的 bootstrap `-VerifyOnly` 与独立环境门均为 exit `0`。
 - producer 清除外部编译/链接/Rust 注入变量；miniaudio 源先规范化为 LF，再用固定 `/pathmap`、`/experimental:deterministic`、`/Brepro`；Rust 每次 clean + locked；managed publish 不带 PDB/SourceLink。
-- candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
+- candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。native / Cargo / MSBuild / `TMP` / `TEMP` 的 job 工作根默认位于环境门规范化后的 machine-local `[IO.Path]::GetTempPath()/cf7-runtime-build-work/job-<token>/`，避免仓库位于 `Program Files (x86)` 等含括号路径时把 CMD 元字符传给 VsDevCmd；`CF7_RUNTIME_WORK_ROOT` 只能覆盖为短的本机绝对目录，卷根、UNC/映射网络盘、reparse point、仓库内/祖先、CMD 元字符或 projected MAX_PATH 超限均 fail-closed。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
 
 ## 本地 builder enrollment 与证明
 
@@ -84,13 +92,15 @@ $entry = .\tools\register-runtime-builder.ps1 `
 
 脚本在 `Cert:\CurrentUser\My` 创建 3072-bit、不可导出的 RSA 私钥，只把 public certificate/`keyId`/epoch/faultDomain 写到 `tmp/runtime-builder-enrollment/`，**不会自动改 registry**。维护者核对机器与故障域后，才把 entry 合入 `config/build/runtime-builders.v2.json`。私钥不得导出或跨机复制；轮换/撤销通过新 epoch/key 或 `enabled=false` 完成。两台 VM 若共享同一宿主、磁盘或管理员边界，不得宣称两个 faultDomain。
 
-当前 registry 已登记 `builder-local-a` / `physical-host-a`；这只是一张本地票的身份前置条件，不等于已有 quorum，也不授权单机 promotion。
+正式已部署 consensus 仍记录历史 `builder-local-a` / `physical-host-a` 票。2026-07-21 换机验证在另一台真实物理机上 enrollment `builder-local-b` / `physical-host-b`，当前待发布 tree 的 registry 已同时登记两张公钥；任一单独本地票都只是一张身份前置，不等于已有 quorum，也不授权单机 promotion。
+
+当前换机账户仍不持有 `builder-local-a` 的历史不可导出私钥，也没有复制该密钥。维护者确认本机不是 `physical-host-a` 后，已按 enrollment 流程创建 `builder-local-b` / `physical-host-b` 的新 3072-bit CurrentUser 不可导出 RSA key：keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`、thumbprint `141A0B12F18A1C25C2BF4A32B3C279F81C44D007`、epoch `1`；公钥 entry 已进入待发布 registry，私钥只留在本机证书库。该票只有在 registry、完整资源箱改动与发布 policy 同处一个已提交 immutable tree 时才可用于正式 local proof；dirty staged/unstaged/untracked 工作树仍不能冒充 source commit，第二票仍须来自不同故障域的 GitHub hosted OIDC/Sigstore。
 
 worker 使用该 CurrentUser certificate 对 canonical payload inventory 做 RS256 签名。验证端只信 tracked registry 中启用且 epoch/faultDomain/certificate 全匹配的 key；旧式自由文本 builder ID 不再计入 v2 quorum。
 
 ## immutable request、队列与 CAS
 
-需要跨机器时，所有 worker 指向同一具备原子目录 rename 语义且仅受信维护者可写的 `-QueueRoot`（例如 ACL 收紧的 SMB 共享）；默认 `tmp/runtime-build-queue` 只适合单仓本地演练。目录包含 `requests/`、`leases/`、`results/` 与 `cas/candidates/`，不进 Git。队列可以共享，但 worker 的隔离 checkout 默认放在本机短路径 `%LOCALAPPDATA%\CF7\runtime-build-checkouts`；worker 会清除外部 `GIT_INDEX_FILE/GIT_DIR/GIT_WORK_TREE/object/config-count` 上下文，checkout/candidate 目录只使用 request、worker 的短哈希并预检 MAX_PATH。只用 `-CheckoutRoot` 或 `CF7_RUNTIME_CHECKOUT_ROOT` 覆盖，不要把 checkout 放进共享队列、网络盘或层级很深的项目目录。
+需要跨机器时，所有 worker 指向同一具备原子目录 rename 语义且仅受信维护者可写的 `-QueueRoot`（例如 ACL 收紧的 SMB 共享）；默认 `tmp/runtime-build-queue` 只适合单仓本地演练。目录包含 `requests/`、`leases/`、`results/` 与 `cas/candidates/`，不进 Git。队列可以共享，但 worker 的隔离 checkout 默认放在本机短路径 `%LOCALAPPDATA%\CF7\runtime-build-checkouts`；worker 会清除外部 `GIT_INDEX_FILE/GIT_DIR/GIT_WORK_TREE/object/config-count` 上下文，并在 materialize 前固定 local Git `core.autocrlf=false`、`core.longpaths=true`，避免 worker 账户的全局换行策略改变 Worktree identity。checkout/candidate 目录只使用 request、worker 的短哈希并预检 MAX_PATH；包含 legacy 深路径的本机 checkout 通过扩展路径形式安全清理。只用 `-CheckoutRoot` 或 `CF7_RUNTIME_CHECKOUT_ROOT` 覆盖，不要把 checkout 放进共享队列、网络盘或层级很深的项目目录。
 
 最终 tree 已提交时使用 `Treeish`；只有纯本地双 builder 才可用 `Index` snapshot。需要 GitHub cloud builder 时必须先提交，并让 request 与 cloud workflow 使用同一 full commit：
 
@@ -113,7 +123,7 @@ request 内含完整 frozen `releaseTreeOid`、四域 hash、build identity、so
   -QueueRoot <queue-root> -RequestId $requestId
 ```
 
-worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢到 lease 后从 Git bundle 隔离 clone、复核 frozen tree/identity、调用纯 producer、签名并发布结果。失败时会在删除短 checkout 前把非 reparse、单文件 ≤1 MiB、总计 ≤2 MiB 的 bootstrap diagnostics 写到该 request 的 `_failures` 记录。CAS 地址是 `buildIdentityHash/payloadClosureHash`；发布前后都严格复核 candidate，key 对同一 build identity 出现分叉 closure 会作为 equivocation 拒绝。状态退出码固定为 `0=active 全 ready`、`10=pending/empty`、`20=failed/invalid`、`30=只有 superseded`。status 只统计 queue 内本地 X509 result；采用 local + GitHub 时显示 `1/2` 是正常的，最终 combined quorum 由 promotion 把该本地 proof 与外部 verified GitHub proof 一起计算。
+worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢到 lease 后从 Git bundle 隔离 clone、复核 frozen tree/identity、调用纯 producer、签名并发布结果。失败时会在删除短 checkout 前把非 reparse、单文件 ≤1 MiB、总计 ≤2 MiB 的 bootstrap diagnostics 写到该 request 的 `_failures` 记录；若 queue I/O 已不可用、失败记录本身无法落盘，worker 只追加固定告警并保留原始构建错误，不能让二次诊断写失败覆盖首因或转成成功。CAS 地址是 `buildIdentityHash/payloadClosureHash`；发布前后都严格复核 candidate，key 对同一 build identity 出现分叉 closure 会作为 equivocation 拒绝。状态退出码固定为 `0=active 全 ready`、`10=pending/empty`、`20=failed/invalid`、`30=只有 superseded`。status 只统计 queue 内本地 X509 result；采用 local + GitHub 时显示 `1/2` 是正常的，最终 combined quorum 由 promotion 把该本地 proof 与外部 verified GitHub proof 一起计算。
 
 推荐把便宜、可离线完成的失败门前移：先取得本地 X509 candidate/proof，再对**该本地 candidate** 跑一次 production policy preflight；这份 preflight receipt 只用于提前暴露 source、CSS、inventory 等政策问题，因为 receipt 绑定具体 `candidateRoot`，不能拿去批准稍后选中的 cloud candidate。preflight 通过后再消耗 GitHub hosted build；cloud proof 到手并选定最终 cloud candidate 后，仍须针对该 cloud candidate 重新签正式 production policy receipt，promotion 只接受后者。这样不削弱双故障域和最终 receipt 约束，同时避免本地即可发现的政策失败拖到云构建之后。
 
@@ -201,11 +211,15 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 .\tools\test-runtime-github-attestation.ps1
 .\tools\test-invoke-runtime-github-build.ps1
 .\tools\test-main-branch-admission.ps1
+.\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-runtime-release-state.ps1
 .\tools\test-runtime-build-consensus.ps1   # v1 migration guard
 .\tools\test-runtime-release-consensus-v2.ps1
+.\tools\test-submit-contribution.ps1
 .\launcher\tests\run_tests.ps1
 ```
+
+当前 Runtime Lane C 已 **420/420**，bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这只证明当前 tree 的 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
 
 - candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
 - 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。

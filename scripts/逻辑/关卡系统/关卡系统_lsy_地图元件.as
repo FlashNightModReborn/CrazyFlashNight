@@ -44,6 +44,71 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip, presetName
     StaticInitializer.initializeMapElement(target, presetName);
 }
 
+// 任一 rollout marker 出现就属于 Web 战利品 fail-closed 边界；不完整 marker 不能偷跑旧滚奖。
+_root.地图元件.具有Web战利品标记 = function(target:Object):Boolean {
+    if (target == null || typeof target.hasOwnProperty != "function") return false;
+    return target.hasOwnProperty("chestRolloutId")
+        || target.hasOwnProperty("lootFlowProfile")
+        || target.hasOwnProperty("unlockPolicy");
+}
+
+/** 在 kill 前委托可重入 journal：失败重试沿用已记录 roll/item/inventory，不重滚。 */
+_root.地图元件.物化Web战利品物品栏 = function(target:MovieClip):Object {
+    return org.flashNight.arki.item.LootMaterializationPlanner.materialize(target);
+}
+
+// legacy recovery 始终以服务返回的同一 inventory + 同一布局参数渲染，不重新读取 target.掉落物。
+_root.地图元件.显示Web战利品旧界面 = function(projection:Object):Boolean {
+    if (projection == null || projection.success !== true || projection.inventory == null
+            || _root.物品UI函数 == undefined
+            || typeof _root.物品UI函数.创建资源箱图标 != "function") return false;
+    // 旧外观只负责投影；第五参把所有点击/拖拽写路径钉到 service-backed 单向 claim。
+    return _root.物品UI函数.创建资源箱图标(
+        projection.inventory, projection.presetName, projection.row, projection.col, true) === true;
+}
+
+_root.地图元件.回退Web战利品到旧界面 = function(target:Object):Boolean {
+    var projection:Object = org.flashNight.arki.item.LootContainerService.consumeLegacyFallback(target);
+    if (projection == null || projection.success !== true) return false;
+    // transport/query 已完成 renderer proof 时，Host 的幂等 unpause 不得再创建第二个旧 UI。
+    if (projection.rendererConfirmed === true) return true;
+    var rendered:Boolean = _root.地图元件.显示Web战利品旧界面(projection);
+    if (rendered) {
+        var confirmed:Boolean = org.flashNight.arki.item.LootContainerService.confirmLegacyRenderer(
+            projection.target);
+        if (!confirmed) {
+            var failedPanel:MovieClip = _root.通用UI层.资源箱界面;
+            if (failedPanel != null) failedPanel._visible = false;
+            return false;
+        }
+        // 初次 open fallback 可能物化出空箱；renderer proof 落地后再终止，避免把
+        // claim 的同步 ItemRemoved 回调误用作 terminal 提交点。
+        var completion:Object = org.flashNight.arki.item.LootContainerService.completeLegacyRecoveryIfEmpty();
+        if (completion != null && completion.released === true) {
+            var emptyPanel:MovieClip = _root.通用UI层.资源箱界面;
+            if (emptyPanel != null) {
+                emptyPanel.__lootClaimOnly = true;
+                emptyPanel._visible = false;
+                if (typeof emptyPanel.关闭 == "function") emptyPanel.关闭();
+            }
+        }
+    }
+    return rendered;
+}
+
+// 仅 socket lifecycle 可推进持久 detach handoff；成功已同时证明 journal/effects、旧 UI 与 pause。
+_root.地图元件.断线回退Web战利品到旧界面 = function(target:Object):Boolean {
+    var reconciled:Object = org.flashNight.arki.item.LootContainerService.reconcileSocketDetach(target);
+    if (reconciled == null || reconciled.success !== true) return false;
+    if (reconciled.suspendedNoRenderer === true) {
+        // pending suspend close 要求本次 loot lease 已空；稳定 suspend 则是 no-op，
+        // 不得释放后来其他 panel 可能持有的共享 lease。
+        return reconciled.pauseReleaseRequired !== true
+            || _root._webPanelPauseLease == undefined;
+    }
+    return reconciled.readyForLegacy === true;
+}
+
 _root.地图元件.掉落物转换为物品栏 = function(target:MovieClip) {
     if (!target.掉落物)
         return;
@@ -166,34 +231,7 @@ _root.地图元件.初始化投影召唤器 = function(target:MovieClip) {
     };
 }
 
-_root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
-    target._visible = true;
-
-    // 如果有物品栏则弹出，否则爆出物品
-    if (target.row > 0 && target.col > 0) {
-        _root.地图元件.掉落物转换为物品栏(target);
-    } else {
-        target.掉落物判定 = _root.敌人函数.掉落物判定;
-        target.掉落物品 = _root.敌人函数.掉落物品;
-        target.掉落物判定();
-    }
-}
-
-_root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
-    target._visible = true;
-
-    // var source:MovieClip = _root.gameworld[target.产生源];
-    // if (target.是否为敌人 && source) {
-    //     _root.敌人死亡计数 += 1;
-    //     source.僵尸型敌人场上实际人数--;
-    //     source.僵尸型敌人总个数--;
-    // }
-
-    // 不尝试弹出物品栏直接爆出物品
-    target.掉落物判定 = _root.敌人函数.掉落物判定;
-    target.掉落物品 = _root.敌人函数.掉落物品;
-    target.掉落物判定();
-}
+#include "../逻辑/关卡系统/关卡系统_lsy_资源箱回调.as"
 
 
 _root.地图元件.资源箱贴背景图 = function(target:MovieClip) {

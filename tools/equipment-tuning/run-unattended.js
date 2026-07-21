@@ -15,6 +15,7 @@ const {
   resolveExpectedRuntimeIdentity,
   verifyRuntimeIdentity,
 } = require("../lib/runtime-process-identity");
+const { checkAgentEntryContract } = require("../test-agent-entry-contract");
 
 const PORT_CANDIDATES = [
   1192, 1924, 9243, 2433, 4339, 3399, 3993,
@@ -25,6 +26,8 @@ const AGENT_SLOT_RE = /^cf7_agent_[A-Za-z0-9_-]+$/;
 const SAFE_SLOT_RE = /^[A-Za-z0-9_-]+$/;
 const LIVE_SLOT_RE = /^crazyflasher7_saves\d*$/;
 const HANDOFF_MARKER = "[BootstrapAS] event=handoff";
+const TITLE_FRAME_MARKER = "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared";
+const REVEAL_WATCHDOG_MARKER = "[LaunchFlow] Flash reveal watchdog fired";
 const AGENT_ENTER_COMMAND = "#func:_root.agentEnterResolvedSave()";
 const LOG_TAIL_LIMIT = 2000;
 
@@ -618,6 +621,14 @@ function findFreshHandoff(records) {
   return records.find((record) => record.line.includes(HANDOFF_MARKER)) || null;
 }
 
+function findFreshTitleFrame(records) {
+  return records.find((record) => record.line.includes(TITLE_FRAME_MARKER)) || null;
+}
+
+function findFreshRevealWatchdog(records) {
+  return records.find((record) => record.line.includes(REVEAL_WATCHDOG_MARKER)) || null;
+}
+
 function extractLogField(line, name) {
   const escaped = name.replace(/[.*+?^{}$()|[\]\\]/g, "\\$&");
   const match = String(line).match(new RegExp("(?:^|\\s)" + escaped + "=([^\\s]+)"));
@@ -693,7 +704,7 @@ function statusAttemptForSlot(status, slot) {
 
 function shouldRequestAgentEnter(status, state) {
   if (!status || !state || state.enterRequested) return false;
-  if (!state.handoffEvidence || !state.expectedAttemptId) return false;
+  if (!state.handoffEvidence || !state.titleFrameEvidence || !state.expectedAttemptId) return false;
   if (status.launchState !== "Ready"
       || status.revealPerformed !== true
       || status.socketConnected !== true) return false;
@@ -711,6 +722,25 @@ function assertRuntimeReadyStatus(status, expectedSlot, expectedAttemptId) {
       "runtime_ready",
       "readyForRuntimeAutomation was not satisfied",
       status
+    );
+  }
+  if (status.gameEnteredObserved !== true) {
+    fail(
+      "game_enter_not_observed",
+      "runtime_ready",
+      "Host did not observe the AS2 s:1 game-enter UI state",
+      status
+    );
+  }
+  if (status.gameEnteredAttemptId !== expectedAttemptId) {
+    fail(
+      "game_enter_attempt_mismatch",
+      "runtime_ready",
+      "Host game-enter receipt does not match the current launch attempt",
+      {
+        expectedAttemptId,
+        gameEnteredAttemptId: status.gameEnteredAttemptId,
+      }
     );
   }
   if (!isSafeSnapshotStatus(status.save)
@@ -750,6 +780,8 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
     expectedSlot: args.slot,
     expectedAttemptId,
     handoffEvidence: null,
+    titleFrameEvidence: null,
+    revealWatchdogEvidence: null,
     enterRequested: false,
     enterRequestCount: 0,
     enterResponse: null,
@@ -785,6 +817,27 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
         });
       }
     }
+    if (!state.titleFrameEvidence && state.expectedAttemptId) {
+      state.titleFrameEvidence = findFreshTitleFrame(freshRecords);
+      if (state.titleFrameEvidence) {
+        timeline.push({
+          phase: "title_frame_observed",
+          at: new Date().toISOString(),
+          lineNumber: state.titleFrameEvidence.lineNumber,
+        });
+      }
+    }
+    if (!state.revealWatchdogEvidence) {
+      state.revealWatchdogEvidence = findFreshRevealWatchdog(freshRecords);
+    }
+    if (state.revealWatchdogEvidence && !state.titleFrameEvidence) {
+      fail(
+        "title_frame_not_observed",
+        "agent_enter",
+        "Flash reveal watchdog fired before the real title-frame receipt; refusing to skip root frames 52..81",
+        { watchdog: state.revealWatchdogEvidence }
+      );
+    }
 
     if (status.launchState === "Error") {
       fail(
@@ -808,7 +861,7 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
     }
 
     if (status.readyForRuntimeAutomation === true) {
-      if (!state.handoffEvidence) {
+      if (!state.handoffEvidence || !state.titleFrameEvidence) {
         await sleep(args.pollMs);
         continue;
       }
@@ -832,8 +885,11 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
         status,
         expectedAttemptId: state.expectedAttemptId,
         handoffEvidence: state.handoffEvidence,
+        titleFrameEvidence: state.titleFrameEvidence,
         enterRequestCount: state.enterRequestCount,
         enterResponse: state.enterResponse,
+        gameEnteredObserved: status.gameEnteredObserved,
+        gameEnteredAttemptId: status.gameEnteredAttemptId,
         lastLogTotal: lastLogSnapshot.total,
       };
     }
@@ -857,6 +913,18 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
     await sleep(args.pollMs);
   }
 
+  if (!state.titleFrameEvidence) {
+    fail(
+      "title_frame_not_observed",
+      "agent_enter",
+      "the real bootstrap_reveal_ready title-frame receipt was not observed before timeout",
+      {
+        handoffEvidence: state.handoffEvidence,
+        revealWatchdogEvidence: state.revealWatchdogEvidence,
+      }
+    );
+  }
+
   fail(
     "runtime_ready_timeout",
     "runtime_ready",
@@ -866,6 +934,8 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
       status,
       expectedAttemptId: state.expectedAttemptId,
       handoffEvidence: state.handoffEvidence,
+      titleFrameEvidence: state.titleFrameEvidence,
+      revealWatchdogEvidence: state.revealWatchdogEvidence,
       enterRequestCount: state.enterRequestCount,
       logTotal: lastLogSnapshot ? lastLogSnapshot.total : null,
     }
@@ -981,8 +1051,16 @@ function formatReportMarkdown(report) {
       + String(report.runtime.handoffEvidence
         ? report.runtime.handoffEvidence.lineNumber
         : "not observed"));
+    lines.push("- Real title-frame receipt line: "
+      + String(report.runtime.titleFrameEvidence
+        ? report.runtime.titleFrameEvidence.lineNumber
+        : "not observed"));
     lines.push("- agentEnterResolvedSave calls: "
       + String(report.runtime.enterRequestCount));
+    lines.push("- Host observed AS2 s:1: "
+      + String(report.runtime.gameEnteredObserved === true));
+    lines.push("- Host s:1 attempt: "
+      + String(report.runtime.gameEnteredAttemptId || "not observed"));
     lines.push("");
   }
   if (report.snapshotGate && report.snapshotGate.evidence) {
@@ -1038,6 +1116,7 @@ function expectRejected(label, callback, expectedCode) {
 }
 
 function runCheck() {
+  const agentEntryContract = checkAgentEntryContract();
   const parsed = parseArgs(["--seed-slot", "crazyflasher7_saves2"]);
   assertSafeArgs(parsed);
   if (parsed.slot !== DEFAULT_AGENT_SLOT) {
@@ -1113,11 +1192,12 @@ function runCheck() {
 
   const watermark = { total: 2, capturedAt: "2026-07-16T00:00:00.000Z" };
   const snapshot = {
-    total: 5,
+    total: 6,
     lines: [
       "old-1",
       "old-2",
       "[BootstrapAS] event=handoff",
+      "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared",
       "event=equipment_tuning_panel_bound panelInstanceId=panel.workbench.7",
       "event=equipment_tuning_snapshot_confirmed callId=tune.check.1 "
         + "panelInstanceId=panel.workbench.7 viewSessionId=view.check.1 writeEpoch=3",
@@ -1127,6 +1207,13 @@ function runCheck() {
   const handoff = findFreshHandoff(records);
   if (!handoff || handoff.lineNumber !== 3) {
     throw new Error("fresh handoff watermark check failed");
+  }
+  const titleFrame = findFreshTitleFrame(records);
+  if (!titleFrame || titleFrame.lineNumber !== 4) {
+    throw new Error("fresh title-frame watermark check failed");
+  }
+  if (findFreshRevealWatchdog(records)) {
+    throw new Error("clean title-frame evidence unexpectedly contained a reveal watchdog");
   }
   const gate = selectWorkbenchSnapshotGate(records);
   if (!gate
@@ -1164,12 +1251,17 @@ function runCheck() {
     expectedSlot: DEFAULT_AGENT_SLOT,
     expectedAttemptId: "attempt-check",
     handoffEvidence: null,
+    titleFrameEvidence: null,
     enterRequested: false,
   };
   if (shouldRequestAgentEnter(beforeHandoff, enterState)) {
     throw new Error("agent enter was allowed before fresh handoff");
   }
   enterState.handoffEvidence = handoff;
+  if (shouldRequestAgentEnter(beforeHandoff, enterState)) {
+    throw new Error("agent enter was allowed before the real title-frame receipt");
+  }
+  enterState.titleFrameEvidence = titleFrame;
   if (!shouldRequestAgentEnter(beforeHandoff, enterState)) {
     throw new Error("agent enter was not allowed after all narrow gates");
   }
@@ -1181,6 +1273,8 @@ function runCheck() {
   const ready = JSON.parse(JSON.stringify(beforeHandoff));
   ready.runtimeReadyBlockedBy = [];
   ready.readyForRuntimeAutomation = true;
+  ready.gameEnteredObserved = true;
+  ready.gameEnteredAttemptId = "attempt-check";
   ready.saveRuntime = {
     loaded: true,
     savePath: DEFAULT_AGENT_SLOT,
@@ -1189,6 +1283,15 @@ function runCheck() {
     level: 10,
   };
   assertRuntimeReadyStatus(ready, DEFAULT_AGENT_SLOT, "attempt-check");
+  expectRejected(
+    "missing game-enter receipt",
+    () => {
+      const missingGameEnter = JSON.parse(JSON.stringify(ready));
+      missingGameEnter.gameEnteredObserved = false;
+      assertRuntimeReadyStatus(missingGameEnter, DEFAULT_AGENT_SLOT, "attempt-check");
+    },
+    "game_enter_not_observed"
+  );
   expectRejected(
     "stale runtime attempt",
     () => {
@@ -1224,7 +1327,10 @@ function runCheck() {
     runtime: {
       expectedAttemptId: "attempt-check",
       handoffEvidence: handoff,
+      titleFrameEvidence: titleFrame,
       enterRequestCount: 1,
+      gameEnteredObserved: true,
+      gameEnteredAttemptId: "attempt-check",
     },
     runtimeIdentity: identityReport,
     snapshotGate: { evidence: gate },
@@ -1232,6 +1338,9 @@ function runCheck() {
   });
   if (!markdown.includes("does not click operation controls")
       || !markdown.includes("panel.workbench.7")
+      || !markdown.includes("Real title-frame receipt line: 4")
+      || !markdown.includes("Host observed AS2 s:1: true")
+      || !markdown.includes("Host s:1 attempt: attempt-check")
       || !markdown.includes("isolated_candidate")
       || !markdown.includes("C".repeat(64))) {
     throw new Error("report boundary/evidence check failed");
@@ -1240,7 +1349,8 @@ function runCheck() {
   console.log(JSON.stringify({
     ok: true,
     slot: DEFAULT_AGENT_SLOT,
-    checks: 17 + identityContract.checks,
+    checks: 22 + identityContract.checks,
+    agentEntryContract: agentEntryContract.uiState,
     scope: "open_snapshot_gate_only",
   }, null, 2));
 }
@@ -1481,6 +1591,7 @@ async function runUnattended(args) {
     status: report.status,
     slot: report.slot,
     attemptId: report.runtime.expectedAttemptId,
+    gameEnteredObserved: report.runtime.gameEnteredObserved === true,
     panelInstanceId: report.snapshotGate.evidence.activeWorkbench.panelInstanceId,
     viewSessionId: report.snapshotGate.evidence.tuningSnapshot.viewSessionId,
     runtimeMode: report.runtimeIdentity.runtimeMode,
@@ -1511,11 +1622,15 @@ module.exports = {
   AGENT_ENTER_COMMAND,
   DEFAULT_AGENT_SLOT,
   HANDOFF_MARKER,
+  REVEAL_WATCHDOG_MARKER,
+  TITLE_FRAME_MARKER,
   assertRuntimeReadyStatus,
   assertSafeArgs,
   assertTargetSlotNotInUse,
   extractLogField,
   findFreshHandoff,
+  findFreshRevealWatchdog,
+  findFreshTitleFrame,
   formatReportMarkdown,
   freshLogRecords,
   isValidSaveData,
@@ -1524,11 +1639,13 @@ module.exports = {
   parseArgs,
   parsePanelBoundEvidence,
   parseSnapshotEvidence,
+  readLogSnapshot,
   resolveExpectedRuntimeIdentity,
   runCheck,
   selectWorkbenchSnapshotGate,
   shouldRequestAgentEnter,
   solOwnershipSuffix,
+  statusAttemptForSlot,
 };
 
 if (require.main === module) {

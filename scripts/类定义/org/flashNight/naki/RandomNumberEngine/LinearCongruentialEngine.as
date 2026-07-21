@@ -47,6 +47,21 @@ class org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine extends Ba
         return instance;
     }
 
+    /**
+     * 事务型调用方只在尚未持久化随机结果的极短窗口使用这组快照 API。
+     * BaseRandomNumberEngine 也声明了 seed，但本叶类为热路径私有化了真实 seed，
+     * 因此不能依赖基类 getSeed/setSeed 来回滚本实例。
+     */
+    public function captureState():Number {
+        return seed;
+    }
+
+    public function restoreState(snapshot:Number):Boolean {
+        if (isNaN(snapshot) || (snapshot - snapshot) != 0) return false;
+        seed = snapshot;
+        return true;
+    }
+
     // 重写 next() 方法生成下一个随机数
     // 使用线性同余生成器算法：Xn+1 = (a * Xn + c) % m
     // @return 下一个随机数

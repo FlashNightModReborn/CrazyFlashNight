@@ -77,7 +77,7 @@ namespace CF7Launcher.Guardian
         // 三层防护 (Timer.Dispose 不保证已入队回调不执行, 必须在回调内自校验):
         //   1. _zombieGen: arm 时 ++, callback 快照; gen 错位 = 已被替换/取消, drop
         //   2. attempt 快照: retry 后 _currentAttemptId 变, drop
-        //   3. socket HasClient 实时查: 重连成功后 socket 已重建, drop
+        //   3. socket business-ready 实时查: 新 generation 已收到首条业务消息后 drop
         private System.Threading.Timer _zombieTimer;
         private int _zombieGen;
 
@@ -98,6 +98,10 @@ namespace CF7Launcher.Guardian
         // respond 本身 gen-bound (XmlSocketServer asyncRespond 闭包走 TrySendIfGen), 无需 GameLaunchFlow 管 gen.
         private Action<string> _heldHandshakeCallback;
         private int _heldHandshakeReceivedMs;
+        private int _heldHandshakeGeneration;
+        // Deterministic transition-order hooks used only by Launcher.Tests.
+        internal Action BeforeHeldTransitionFenceForTests;
+        internal Action BeforeHeldCallbackSendForTests;
 
         // Prewarm deadline (45s 无 slot → 主动 Reset 让用户走 legacy 路径).
         // Timer guard token = _currentAttemptId snapshot (避免 _timerGen 被 SetState 误递增).
@@ -237,8 +241,8 @@ namespace CF7Launcher.Guardian
 
             _windowManager.OnEmbedResult += OnEmbedResult;
             _processManager.OnFlashExited += OnFlashExitedExternal;
-            _socketServer.OnClientReady += OnSocketClientReady;
-            _socketServer.OnClientDisconnected += OnSocketClientDisconnected;
+            _socketServer.OnClientReadyForGeneration += OnSocketClientReady;
+            _socketServer.OnClientDisconnectedForGeneration += OnSocketClientDisconnected;
         }
 
         /// <summary>玩家选择 slot 后启动游戏。锁内快照 slot，后续使用局部变量。
@@ -311,6 +315,7 @@ namespace CF7Launcher.Guardian
             // C2-β: prewarm consume 路径下若 saveDecision="repairable", 锁外通知 JS 打开修复卡片.
             JObject repairNotifyForJs = null;
             string repairNotifySlotPrewarm = null;
+            bool requireHeldTransitionFence = false;
 
             lock (_stateLock)
             {
@@ -327,68 +332,136 @@ namespace CF7Launcher.Guardian
                     return;
                 }
 
-                // Phase 2b-ext: defer reveal flags 在 attempt 入口 set (三条成功分支共用).
-                // 幂等: 同一 attempt 重复 set 只在 _pendingSlot==null 入口时发生, 后续 PrewarmHandshakeHeld
-                // 消费路径里 _pendingSlot 已非空, 此次 StartGame 会 duplicate-ignore (上面已拦).
-                _revealWaitingJs = deferJsReveal;
-                _revealWaitingFlash = requireFlashReveal;
-                _revealPerformed = false;
-
-                if (_state == State.Idle)
+                if (_state == State.PrewarmHandshakeHeld)
                 {
-                    _pendingSlot = slot;
-                    _currentAttemptId = Guid.NewGuid().ToString("N");
-                    _resolvedSave = resolved;
-                    _cachedReady.Clear();
-                    CancelWaitTimerLocked();
-                    CancelZombieTimerLocked();
-                    configureAudioGate = true;
-                    armAudioGate = deferJsReveal;
-                    TransitionToSpawning();
-                }
-                else if (_state == State.WaitingConnect || _state == State.WaitingHandshake)
-                {
-                    // prewarm 进行中, 握手尚未到达: 只存 slot/resolved, 不改 state, 不 bump attemptId,
-                    // 待 handshake 到达时 HandleBootstrapHandshakeAsync 走 _pendingSlot != null 快路径.
-                    _pendingSlot = slot;
-                    _resolvedSave = resolved;
-                    CancelPrewarmDeadlineLocked();
-                    configureAudioGate = true;
-                    armAudioGate = deferJsReveal;
-                    LogManager.Log("[LaunchFlow] StartGame consumed into prewarm (pre-handshake) state=" + _state);
-                }
-                else if (_state == State.PrewarmHandshakeHeld)
-                {
-                    // prewarm held callback 已等着: flush now.
-                    _pendingSlot = slot;
-                    _resolvedSave = resolved;
-                    CancelPrewarmDeadlineLocked();
-                    heldCbToInvoke = _heldHandshakeCallback;
-                    _heldHandshakeCallback = null;  // 单一 owner: 先 null 再发
-                    heldJsonToSend = BuildHandshakeResponseJsonLocked();
-                    if (_resolvedSave != null
-                        && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable
-                        && _resolvedSave.CorruptionReport != null)
-                    {
-                        repairNotifyForJs = (JObject)_resolvedSave.CorruptionReport.DeepClone();
-                        repairNotifySlotPrewarm = _pendingSlot;
-                    }
-                    int heldMs = Environment.TickCount - _heldHandshakeReceivedMs;
-                    configureAudioGate = true;
-                    armAudioGate = deferJsReveal;
-                    LogManager.Log("[Prewarm] normal_flush held_ms=" + heldMs);
-                    TransitionToEmbedding();  // 锁内: cancel WAIT_HANDSHAKE + state→Embedding 原子发生
+                    // Do not acquire the socket transition barrier while holding _stateLock.
+                    // The fenced phase below rechecks every gate with transition -> state order.
+                    requireHeldTransitionFence = true;
                 }
                 else
                 {
-                    LogManager.Log("[LaunchFlow] StartGame ignored: state=" + _state);
-                    return;
+                    // Phase 2b-ext: defer reveal flags 在 attempt 入口 set (三条成功分支共用).
+                    _revealWaitingJs = deferJsReveal;
+                    _revealWaitingFlash = requireFlashReveal;
+                    _revealPerformed = false;
+
+                    if (_state == State.Idle)
+                    {
+                        _pendingSlot = slot;
+                        _currentAttemptId = Guid.NewGuid().ToString("N");
+                        _resolvedSave = resolved;
+                        _cachedReady.Clear();
+                        CancelWaitTimerLocked();
+                        CancelZombieTimerLocked();
+                        configureAudioGate = true;
+                        armAudioGate = deferJsReveal;
+                        TransitionToSpawning();
+                    }
+                    else if (_state == State.WaitingConnect || _state == State.WaitingHandshake)
+                    {
+                        // prewarm 进行中, 握手尚未到达: 只存 slot/resolved, 不改 state, 不 bump attemptId,
+                        // 待 handshake 到达时 HandleBootstrapHandshakeAsync 走 _pendingSlot != null 快路径.
+                        _pendingSlot = slot;
+                        _resolvedSave = resolved;
+                        CancelPrewarmDeadlineLocked();
+                        configureAudioGate = true;
+                        armAudioGate = deferJsReveal;
+                        LogManager.Log("[LaunchFlow] StartGame consumed into prewarm (pre-handshake) state=" + _state);
+                    }
+                    else
+                    {
+                        LogManager.Log("[LaunchFlow] StartGame ignored: state=" + _state);
+                        return;
+                    }
                 }
             }
 
-            // 锁外 send: held consume 路径的 gen-bound respond() 网络写.
-            // TransitionToEmbedding 已在 send 前发生 → WAIT_HANDSHAKE 无 stale fire 窗口.
-            SendHeldCallback(heldCbToInvoke, heldJsonToSend, "normal_flush");
+            if (requireHeldTransitionFence)
+            {
+                Action beforeHeldFence = BeforeHeldTransitionFenceForTests;
+                if (beforeHeldFence != null) beforeHeldFence();
+
+                bool accepted = _socketServer != null
+                    && _socketServer.RunWithConnectionTransitionFence(delegate
+                    {
+                        bool sendHeld = false;
+                        lock (_stateLock)
+                        {
+                            // Recheck all admission gates after taking transition -> state.  A
+                            // replacement disconnect may have changed Held to WaitingConnect while
+                            // StartGame moved from its optimistic first phase into this fence.
+                            if (_prewarmAborting || _pendingSlot != null) return false;
+                            if (_state != State.PrewarmHandshakeHeld
+                                && _state != State.WaitingConnect
+                                && _state != State.WaitingHandshake) return false;
+
+                            _revealWaitingJs = deferJsReveal;
+                            _revealWaitingFlash = requireFlashReveal;
+                            _revealPerformed = false;
+                            _pendingSlot = slot;
+                            _resolvedSave = resolved;
+                            CancelPrewarmDeadlineLocked();
+                            configureAudioGate = true;
+                            armAudioGate = deferJsReveal;
+
+                            if (_state == State.WaitingConnect
+                                || _state == State.WaitingHandshake)
+                            {
+                                LogManager.Log("[Prewarm] StartGame retained for replacement handshake state="
+                                    + _state);
+                                return true;
+                            }
+
+                            if (!IsHeldHandshakeGenerationCurrentLocked())
+                            {
+                                int staleGeneration = _heldHandshakeGeneration;
+                                _heldHandshakeCallback = null;
+                                _heldHandshakeGeneration = 0;
+                                _heldHandshakeReceivedMs = 0;
+                                CancelWaitTimerLocked();
+                                SetState(State.WaitingConnect, "");
+                                ArmWaitTimeoutLocked(WAIT_CONNECT_MS,
+                                    "socket_replacement_ready_timeout");
+                                LogManager.Log("[Prewarm] StartGame deferred stale held handshake generation="
+                                    + staleGeneration + " current=" + _socketServer.CurrentGeneration);
+                                return true;
+                            }
+
+                            heldCbToInvoke = _heldHandshakeCallback;
+                            _heldHandshakeCallback = null;
+                            _heldHandshakeGeneration = 0;
+                            heldJsonToSend = BuildHandshakeResponseJsonLocked();
+                            if (_resolvedSave != null
+                                && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable
+                                && _resolvedSave.CorruptionReport != null)
+                            {
+                                repairNotifyForJs = (JObject)_resolvedSave.CorruptionReport.DeepClone();
+                                repairNotifySlotPrewarm = _pendingSlot;
+                            }
+                            int heldMs = Environment.TickCount - _heldHandshakeReceivedMs;
+                            _heldHandshakeReceivedMs = 0;
+                            LogManager.Log("[Prewarm] normal_flush held_ms=" + heldMs);
+                            TransitionToEmbedding();
+                            sendHeld = true;
+                        }
+
+                        // Still inside _acceptTransitionLock, but outside _stateLock: the bound
+                        // response either completes before replacement or replacement wins first
+                        // and the state recheck above retains the slot for its new handshake.
+                        if (sendHeld)
+                        {
+                            Action beforeHeldSend = BeforeHeldCallbackSendForTests;
+                            if (beforeHeldSend != null) beforeHeldSend();
+                            SendHeldCallback(heldCbToInvoke, heldJsonToSend, "normal_flush");
+                        }
+                        return true;
+                    });
+                if (!accepted)
+                {
+                    LogManager.Log("[LaunchFlow] StartGame held flush rejected after transition recheck");
+                    return;
+                }
+            }
             if (configureAudioGate)
             {
                 if (armAudioGate) CF7Launcher.Tasks.AudioTask.ArmBootstrapBgmGate();
@@ -505,6 +578,8 @@ namespace CF7Launcher.Guardian
             _prewarmAborting = true;
             Action<string> cb = _heldHandshakeCallback;
             _heldHandshakeCallback = null;
+            _heldHandshakeGeneration = 0;
+            _heldHandshakeReceivedMs = 0;
             CancelWaitTimerLocked();
             CancelZombieTimerLocked();
             CancelPrewarmDeadlineLocked();
@@ -534,6 +609,24 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[Prewarm] handshake_send path=" + path);
             try { cb(json); }
             catch (Exception ex) { LogManager.Log("[Prewarm] held cb invoke error path=" + path + ": " + ex.Message); }
+        }
+
+        /// <summary>
+        /// Must be called with _stateLock held and, for a flush decision, with XmlSocket's
+        /// connection-transition fence held outside it. TryGetReadyGeneration atomically proves
+        /// both current connection identity and first-business-message readiness.
+        /// </summary>
+        private bool IsHeldHandshakeGenerationCurrentLocked()
+        {
+            if (_heldHandshakeCallback == null || _heldHandshakeGeneration <= 0
+                || _socketServer == null) return false;
+            int readyGeneration;
+            try
+            {
+                return _socketServer.TryGetReadyGeneration(out readyGeneration)
+                    && readyGeneration == _heldHandshakeGeneration;
+            }
+            catch { return false; }
         }
 
         /// <summary>
@@ -621,6 +714,8 @@ namespace CF7Launcher.Guardian
                         _prewarmAborting = true;
                         heldCbForReset = _heldHandshakeCallback;
                         _heldHandshakeCallback = null;
+                        _heldHandshakeGeneration = 0;
+                        _heldHandshakeReceivedMs = 0;
                     }
 
                     // 第一个入场者: 拿 ownership
@@ -807,8 +902,11 @@ namespace CF7Launcher.Guardian
         ///   WaitingConnect → WaitingHandshake (首次连上);
         ///   Ready 态重连 (socket 短暂抖动后恢复) → 清 zombie timer 防延迟自杀.
         /// </summary>
-        private void OnSocketClientReady()
+        private void OnSocketClientReady(int readyGeneration)
         {
+            // XmlSocket publishes this under its connection-transition barrier.  The guard is
+            // still explicit so a future queued/forwarded callback cannot revive a superseded gen.
+            if (readyGeneration <= 0 || _socketServer.CurrentGeneration != readyGeneration) return;
             lock (_stateLock)
             {
                 if (_state == State.WaitingConnect)
@@ -1147,6 +1245,10 @@ namespace CF7Launcher.Guardian
                     // 显式 cancel WAIT_HANDSHAKE (held 期间可能跑超时, 一直到 Prewarm deadline 接管).
                     _heldHandshakeCallback = respond;
                     _heldHandshakeReceivedMs = Environment.TickCount;
+                    int heldGeneration;
+                    _heldHandshakeGeneration = _socketServer != null
+                        && _socketServer.TryGetReadyGeneration(out heldGeneration)
+                            ? heldGeneration : 0;
                     CancelWaitTimerLocked();
                     SetState(State.PrewarmHandshakeHeld, "");
                     LogManager.Log("[Prewarm] handshake held, awaiting slot attemptId=" + _currentAttemptId);
@@ -1400,31 +1502,58 @@ namespace CF7Launcher.Guardian
         ///   - 其他: 忽略
         /// 按 _currentAttemptId 快照隔离: retry 后快照失配即放弃判定, 防误杀新 attempt.
         /// </summary>
-        private void OnSocketClientDisconnected()
+        private void OnSocketClientDisconnected(int closedGeneration)
         {
             string attemptSnapshot = null;
             int genSnapshot = 0;
             bool armedZombie = false;
+            int currentGeneration = _socketServer.CurrentGeneration;
             lock (_stateLock)
             {
-                // Phase D Step D8: 守卫 prewarm 已在降级中 / Reset 中 / 空闲. Reset 关 socket 会进这里,
-                // 需要显式挡住, 防止再触 DegradePrewarmFailureLocked 互踩.
-                if (_prewarmAborting) return;
-                if (_state == State.Resetting || _state == State.Idle) return;
+                SocketDisconnectDisposition disposition = ClassifySocketDisconnect(
+                    closedGeneration, currentGeneration, _state, _pendingSlot == null,
+                    _prewarmAborting);
+                if (disposition == SocketDisconnectDisposition.Ignore)
+                {
+                    if (closedGeneration > 0 && currentGeneration > closedGeneration)
+                    {
+                        LogManager.Log("[LaunchFlow] superseded socket disconnect ignored closedGen="
+                            + closedGeneration + " currentGen=" + currentGeneration
+                            + " state=" + _state);
+                    }
+                    return;
+                }
 
-                // 真正外部断线 + prewarm 活跃态 → silent degrade (invokeCallback=false)
-                if (_pendingSlot == null
-                    && (_state == State.Spawning
-                        || _state == State.WaitingConnect
-                        || _state == State.WaitingHandshake
-                        || _state == State.PrewarmHandshakeHeld))
+                // Held callback is bound to the disconnected generation.  Keeping it would make
+                // the replacement handshake hit invalid_state, then make StartGame send its
+                // success response into the dead socket.  Preserve the prewarm attempt/deadline,
+                // but return to the state in which the replacement generation can claim ready and
+                // install a fresh gen-bound callback.
+                if (disposition == SocketDisconnectDisposition.RestartPrewarmHandshake)
+                {
+                    _heldHandshakeCallback = null;
+                    _heldHandshakeReceivedMs = 0;
+                    _heldHandshakeGeneration = 0;
+                    CancelWaitTimerLocked();
+                    SetState(State.WaitingConnect, "");
+                    ArmWaitTimeoutLocked(WAIT_CONNECT_MS, "socket_replacement_ready_timeout");
+                    LogManager.Log("[Prewarm] replacement invalidated held handshake; awaiting new generation"
+                        + " closedGen=" + closedGeneration + " currentGen=" + currentGeneration);
+                    return;
+                }
+
+                // 真正外部断线 + prewarm 活跃态 → silent degrade (invokeCallback=false).
+                // A replacement disconnect is classified Ignore because XmlSocket reserves the
+                // next generation before publishing the old generation's disconnect.
+                if (disposition == SocketDisconnectDisposition.DegradePrewarm)
                 {
                     DegradePrewarmFailureLocked("socket_disconnected", false);
                     return;
                 }
 
-                // Ready 态: 保留既有 10s zombie timer 兜底
-                if (_state != State.Ready) return;
+                // Ready EOF or replacement: arm until a current generation becomes business-ready.
+                // Replacement accept alone is not health: GetStream/install can fail, or a socket
+                // can stay connected forever without delivering its first business message.
                 attemptSnapshot = _currentAttemptId;
                 CancelZombieTimerLocked();  // 防多次断连累积 + 让前一轮 callback 的 gen 校验失配
                 _zombieGen++;
@@ -1438,6 +1567,44 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[LaunchFlow] socket disconnected in Ready, armed zombie timer attempt="
                     + attemptSnapshot + " gen=" + genSnapshot);
             }
+        }
+
+        internal enum SocketDisconnectDisposition
+        {
+            Ignore,
+            RestartPrewarmHandshake,
+            DegradePrewarm,
+            ArmReadyZombie
+        }
+
+        internal static SocketDisconnectDisposition ClassifySocketDisconnect(
+            int closedGeneration, int currentGeneration, State state,
+            bool pendingSlotIsNull, bool prewarmAborting)
+        {
+            if (closedGeneration <= 0 || currentGeneration < closedGeneration)
+                return SocketDisconnectDisposition.Ignore;
+            if (prewarmAborting || state == State.Resetting || state == State.Idle)
+                return SocketDisconnectDisposition.Ignore;
+
+            // XmlSocket reserves the replacement generation before publishing the old
+            // disconnect.  The callback is totally ordered before replacement ready.
+            if (currentGeneration > closedGeneration)
+            {
+                if (pendingSlotIsNull && state == State.PrewarmHandshakeHeld)
+                    return SocketDisconnectDisposition.RestartPrewarmHandshake;
+                if (state == State.Ready)
+                    return SocketDisconnectDisposition.ArmReadyZombie;
+                return SocketDisconnectDisposition.Ignore;
+            }
+
+            if (pendingSlotIsNull
+                && (state == State.Spawning || state == State.WaitingConnect
+                    || state == State.WaitingHandshake
+                    || state == State.PrewarmHandshakeHeld))
+                return SocketDisconnectDisposition.DegradePrewarm;
+            return state == State.Ready
+                ? SocketDisconnectDisposition.ArmReadyZombie
+                : SocketDisconnectDisposition.Ignore;
         }
 
         private class ZombiePayload
@@ -1470,10 +1637,14 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[LaunchFlow] zombie timer state changed to " + _state + ", drop");
                     return;
                 }
-                // socket 已重连 → 非 zombie, 健康会话. 顺手清掉本轮 timer 引用.
-                if (_socketServer != null && _socketServer.HasClient)
+                // A TCP accept is insufficient: a replacement may be installed but never send a
+                // business frame.  Only the socket server's atomic current-generation ready claim
+                // proves that GameLaunchFlow communication recovered.
+                int readyGeneration;
+                if (_socketServer != null && _socketServer.TryGetReadyGeneration(out readyGeneration))
                 {
-                    LogManager.Log("[LaunchFlow] zombie timer fired but socket reconnected, drop");
+                    LogManager.Log("[LaunchFlow] zombie timer fired but socket business-ready gen="
+                        + readyGeneration + ", drop");
                     if (_zombieTimer != null)
                     {
                         try { _zombieTimer.Dispose(); } catch { }

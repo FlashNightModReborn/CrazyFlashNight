@@ -9,6 +9,7 @@ const runner = require("./run-unattended");
 const root = path.resolve(__dirname, "../..");
 const runnerPath = path.join(__dirname, "run-unattended.js");
 const checksPath = path.join(__dirname, "run-checks.js");
+const agentEntryContractPath = path.join(root, "tools", "test-agent-entry-contract.js");
 
 function runNode(args, label) {
   const result = childProcess.spawnSync(process.execPath, args, {
@@ -39,6 +40,14 @@ function expectRejected(label, callback, expectedCode) {
 function checkSyntaxAndSelfCheck() {
   runNode(["--check", runnerPath], "run-unattended.js syntax");
   runNode(["--check", checksPath], "run-checks.js syntax");
+  runNode(["--check", agentEntryContractPath], "test-agent-entry-contract.js syntax");
+  const contract = JSON.parse(runNode(
+    [agentEntryContractPath],
+    "test-agent-entry-contract.js"
+  ));
+  if (contract.ok !== true || contract.uiState !== "s:1") {
+    throw new Error("agent entry static contract returned an unexpected result");
+  }
   const output = runNode([runnerPath, "--check"], "run-unattended.js --check");
   const parsed = JSON.parse(output);
   if (parsed.ok !== true
@@ -170,6 +179,7 @@ function checkRuntimeWatermarks() {
     launchState: "Ready",
     revealPerformed: true,
     socketConnected: true,
+    gameEnteredObserved: true,
     readyForRuntimeAutomation: true,
     runtimeReadyBlockedBy: [],
     save: {
@@ -190,6 +200,18 @@ function checkRuntimeWatermarks() {
     status,
     runner.DEFAULT_AGENT_SLOT,
     "attempt-contract"
+  );
+
+  const missingGameEnter = JSON.parse(JSON.stringify(status));
+  missingGameEnter.gameEnteredObserved = false;
+  expectRejected(
+    "missing game-enter receipt",
+    () => runner.assertRuntimeReadyStatus(
+      missingGameEnter,
+      runner.DEFAULT_AGENT_SLOT,
+      "attempt-contract"
+    ),
+    "game_enter_not_observed"
   );
 
   const stale = JSON.parse(JSON.stringify(status));

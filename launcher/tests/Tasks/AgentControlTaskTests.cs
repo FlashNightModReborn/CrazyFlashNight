@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Tests.Tasks
@@ -42,6 +43,7 @@ namespace CF7Launcher.Tests.Tasks
                     ["level"] = 10
                 }
             });
+            ObserveGameEntered(task);
 
             JObject resp = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
 
@@ -49,6 +51,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("Ready", (string)resp["launchState"]);
             Assert.True((bool)resp["revealPerformed"]);
             Assert.True((bool)resp["socketConnected"]);
+            Assert.True((bool)resp["gameEnteredObserved"]);
             Assert.True((bool)resp["readyForRuntimeAutomation"]);
             Assert.Empty(resp.Value<JArray>("runtimeReadyBlockedBy"));
             Assert.True((bool)resp["readyForArenaCalibration"]);
@@ -161,6 +164,7 @@ namespace CF7Launcher.Tests.Tasks
                     ["level"] = 10
                 }
             });
+            ObserveGameEntered(task);
 
             JObject resp = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
 
@@ -206,6 +210,7 @@ namespace CF7Launcher.Tests.Tasks
                     ["level"] = 10
                 }
             });
+            ObserveGameEntered(task);
 
             JObject resp = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
 
@@ -239,6 +244,7 @@ namespace CF7Launcher.Tests.Tasks
                         ["source"] = "json_shadow"
                     };
                 });
+            ObserveGameEntered(task);
 
             JObject resp = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
 
@@ -246,6 +252,131 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Contains("runtime_save_not_loaded", resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
             Assert.False((bool)resp["readyForArenaCalibration"]);
             Assert.Contains("runtime_save_not_loaded", resp.Value<JArray>("readyBlockedBy").Values<string>());
+        }
+
+        [Fact]
+        public void Status_BlocksLoadedRuntimeUntilGameEnteredUiStateIsObserved()
+        {
+            AgentControlTask task = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_equipment_tuning",
+                "attempt-tuning",
+                true);
+
+            JObject resp = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+
+            Assert.False((bool)resp["gameEnteredObserved"]);
+            Assert.False((bool)resp["readyForRuntimeAutomation"]);
+            Assert.Contains("game_enter_not_observed", resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+            Assert.DoesNotContain("runtime_save_not_loaded", resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+        }
+
+        [Fact]
+        public void ObserveUiData_S1ClearsGateAndLaterS0Reblocks()
+        {
+            AgentControlTask task = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_equipment_tuning",
+                "attempt-tuning",
+                true);
+
+            task.ObserveUiData(new UiDataPacket("g:1|s:1|ga:attempt-tuning|k:2"));
+            JObject entered = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.True((bool)entered["gameEnteredObserved"]);
+            Assert.Equal("attempt-tuning", (string)entered["gameEnteredAttemptId"]);
+            Assert.True((bool)entered["readyForRuntimeAutomation"]);
+
+            task.ObserveUiData(new UiDataPacket("s:1|ga:attempt-tuning|s:0"));
+            JObject exited = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.False((bool)exited["gameEnteredObserved"]);
+            Assert.Equal(JTokenType.Null, exited["gameEnteredAttemptId"].Type);
+            Assert.False((bool)exited["readyForRuntimeAutomation"]);
+            Assert.Contains("game_enter_not_observed", exited.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+
+            task.ObserveUiData(new UiDataPacket("s:0|s:1|ga:attempt-tuning"));
+            JObject reentered = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.True((bool)reentered["gameEnteredObserved"]);
+        }
+
+        [Fact]
+        public void ObserveUiData_RejectsLegacyMissingAndStaleAttemptReceipts()
+        {
+            AgentControlTask task = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_equipment_tuning",
+                "attempt-tuning",
+                true);
+
+            task.ObserveUiData(new UiDataPacket("legacy|s:1|ga:attempt-tuning"));
+            JObject legacy = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.False((bool)legacy["gameEnteredObserved"]);
+            Assert.Equal(JTokenType.Null, legacy["gameEnteredAttemptId"].Type);
+
+            task.ObserveUiData(new UiDataPacket("s:1"));
+            JObject missing = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.False((bool)missing["gameEnteredObserved"]);
+            Assert.Equal(JTokenType.Null, missing["gameEnteredAttemptId"].Type);
+
+            task.ObserveUiData(new UiDataPacket("s:1|ga:attempt-stale"));
+            JObject stale = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.False((bool)stale["gameEnteredObserved"]);
+            Assert.Equal("attempt-stale", (string)stale["gameEnteredAttemptId"]);
+            Assert.Contains("game_enter_not_observed", stale.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+
+            task.ObserveUiData(new UiDataPacket("s:1|ga:attempt-tuning"));
+            JObject current = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.True((bool)current["gameEnteredObserved"]);
+            Assert.Equal("attempt-tuning", (string)current["gameEnteredAttemptId"]);
+        }
+
+        [Fact]
+        public void Start_ClearsPreviouslyObservedGameEnteredState()
+        {
+            int startCount = 0;
+            var task = new AgentControlTask(
+                delegate { return "Idle"; },
+                delegate { return false; },
+                delegate { return false; },
+                delegate(string slot, bool fresh, bool deferJsReveal, bool requireFlashReveal)
+                {
+                    startCount++;
+                },
+                null,
+                null,
+                delegate { return new JObject { ["success"] = true, ["state"] = "idle" }; },
+                null,
+                null,
+                delegate
+                {
+                    return new JObject
+                    {
+                        ["attemptId"] = "attempt-old",
+                        ["slot"] = "cf7_agent_equipment_tuning",
+                        ["decision"] = "snapshot",
+                        ["kind"] = "Snapshot"
+                    };
+                });
+            ObserveGameEntered(task);
+
+            JObject before = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            Assert.True((bool)before["gameEnteredObserved"]);
+
+            JObject resp = JObject.Parse(task.Handle(new JObject
+            {
+                ["action"] = "start",
+                ["slot"] = "cf7_agent_equipment_tuning"
+            }));
+
+            Assert.True((bool)resp["success"]);
+            Assert.False((bool)resp["gameEnteredObserved"]);
+            Assert.Contains("game_enter_not_observed", resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+            Assert.Equal(1, startCount);
         }
 
         [Fact]
@@ -322,6 +453,7 @@ namespace CF7Launcher.Tests.Tasks
                 "cf7_agent_equipment_tuning",
                 "attempt-tuning",
                 false);
+            ObserveGameEntered(task);
             task.SetEquipmentTuningOpenAction(delegate { sendCount++; return true; });
 
             JObject resp = JObject.Parse(task.Handle(OpenEquipmentTuningRequest(
@@ -331,6 +463,29 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False((bool)resp["success"]);
             Assert.Equal("runtime_not_ready", (string)resp["error"]);
             Assert.Contains("runtime_save_not_loaded", resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+            Assert.Equal(0, sendCount);
+        }
+
+        [Fact]
+        public void OpenEquipmentTuning_RejectsLoadedRuntimeWithoutGameEnteredReceipt()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_equipment_tuning",
+                "attempt-tuning",
+                true);
+            task.SetEquipmentTuningOpenAction(delegate { sendCount++; return true; });
+
+            JObject resp = JObject.Parse(task.Handle(OpenEquipmentTuningRequest(
+                "cf7_agent_equipment_tuning",
+                "attempt-tuning")));
+
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("runtime_not_ready", (string)resp["error"]);
+            Assert.Contains("game_enter_not_observed", resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
             Assert.Equal(0, sendCount);
         }
 
@@ -505,7 +660,7 @@ namespace CF7Launcher.Tests.Tasks
             string attempt,
             System.Func<JObject> arenaStatus = null)
         {
-            return CreateTask(
+            AgentControlTask task = CreateTask(
                 "Ready",
                 true,
                 true,
@@ -513,6 +668,18 @@ namespace CF7Launcher.Tests.Tasks
                 attempt,
                 true,
                 arenaStatus);
+            ObserveGameEntered(task);
+            return task;
+        }
+
+        private static void ObserveGameEntered(AgentControlTask task)
+        {
+            JObject status = JObject.Parse(task.Handle(new JObject { ["action"] = "status" }));
+            string attempt = status.Value<JObject>("save") != null
+                ? status.Value<JObject>("save").Value<string>("attemptId")
+                : null;
+            Assert.False(string.IsNullOrEmpty(attempt));
+            task.ObserveUiData(new UiDataPacket("s:1|ga:" + attempt));
         }
 
         private static AgentControlTask CreateTask(
