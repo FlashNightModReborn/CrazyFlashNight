@@ -311,8 +311,39 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $bootstrapText = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\bootstrap-runtime-build-env.ps1'), [Text.Encoding]::UTF8)
     Assert-Cf7Test ($bootstrapText.Contains('modify --installPath') -and -not $bootstrapText.Contains('update --installPath')) `
         'Visual Studio component provisioning must use modify rather than update'
+    Assert-Cf7Test ($bootstrapText.Contains('Do not `modify` an arbitrary older VS 2022 instance') -and
+        -not $bootstrapText.Contains('$vs2022Instances.Count -gt 0')) `
+        'an older VS instance must not make the pinned side-by-side bootstrap path unreachable'
+    Assert-Cf7Test ($bootstrapText.Contains('$maxInstallRootLength = 64') -and
+        $bootstrapText.Contains('fails before UAC')) `
+        'an overlong pinned Visual Studio product root must fail before requesting elevation'
+    Assert-Cf7Test (-not $bootstrapText.Contains('--nickname')) `
+        'pinned Visual Studio provisioning must not depend on an optional setup nickname'
     Assert-Cf7Test ($bootstrapText.Contains("-all -prerelease -products '*'") -and $bootstrapText.Contains('Copy-Cf7VisualStudioSetupDiagnostics')) `
         'Visual Studio bootstrap must inventory all instances and preserve setup diagnostics'
+    Assert-Cf7Test ($bootstrapText.Contains('$parsedInstances = ConvertFrom-Json $json') -and
+        $bootstrapText.Contains('foreach ($parsedInstance in $parsedInstances)') -and
+        -not $bootstrapText.Contains('return @(ConvertFrom-Json $json)')) `
+        'Visual Studio bootstrap must enumerate side-by-side vswhere instances individually on Windows PowerShell 5.1'
+    $emitVswhereInstances = {
+        param([string]$Json)
+        $parsedInstances = ConvertFrom-Json $Json
+        foreach ($parsedInstance in $parsedInstances) {
+            Write-Output $parsedInstance
+        }
+    }
+    $twoVswhereInstances = @(& $emitVswhereInstances '[{"installationPath":"C:\\VS-A"},{"installationPath":"C:\\VS-B"}]')
+    Assert-Cf7Test ($twoVswhereInstances.Count -eq 2 -and
+        [string]$twoVswhereInstances[0].installationPath -eq 'C:\VS-A' -and
+        [string]$twoVswhereInstances[1].installationPath -eq 'C:\VS-B') `
+        'PowerShell 5.1 must preserve two independent vswhere instance paths'
+    $oneVswhereInstance = @(& $emitVswhereInstances '[{"installationPath":"C:\\VS-A"}]')
+    Assert-Cf7Test ($oneVswhereInstance.Count -eq 1 -and
+        [string]$oneVswhereInstance[0].installationPath -eq 'C:\VS-A') `
+        'PowerShell 5.1 must preserve a single vswhere instance'
+    $noVswhereInstances = @(& $emitVswhereInstances '[]')
+    Assert-Cf7Test ($noVswhereInstances.Count -eq 0) `
+        'PowerShell 5.1 must preserve an empty vswhere inventory'
     Assert-Cf7Test ($buildJobText -and -not $buildJobText.Contains('id-token: write') -and -not $buildJobText.Contains('attestations: write')) 'untrusted build job must not receive signing permissions'
     Assert-Cf7Test ($attestJobText.Contains('id-token: write') -and $attestJobText.Contains('attestations: write')) 'attestation job must have only-in-job signing permissions'
     Assert-Cf7Test ($attestJobText.IndexOf('Validate staged cloud identity and archive layout', [StringComparison]::Ordinal) -lt $attestJobText.IndexOf('actions/attest@', [StringComparison]::Ordinal)) 'trusted archive/envelope preflight must run before OIDC signing'

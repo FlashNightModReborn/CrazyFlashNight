@@ -13,6 +13,30 @@ function Get-Cf7RuntimeQueueRoot {
     return [IO.Path]::GetFullPath($QueueRoot).TrimEnd('\')
 }
 
+function Remove-Cf7LocalDirectoryTree {
+    param(
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$AllowedRoot
+    )
+    $resolvedPath = [IO.Path]::GetFullPath($Path).TrimEnd('\')
+    $resolvedRoot = [IO.Path]::GetFullPath($AllowedRoot).TrimEnd('\')
+    $filesystemRoot = [IO.Path]::GetPathRoot($resolvedRoot)
+    if ($resolvedRoot.StartsWith('\\', [StringComparison]::Ordinal) -or
+            $filesystemRoot -notmatch '^[A-Za-z]:\\$') {
+        throw 'Long-path directory cleanup is restricted to a machine-local drive.'
+    }
+    if ($resolvedPath.Equals($resolvedRoot, [StringComparison]::OrdinalIgnoreCase) -or
+            -not $resolvedPath.StartsWith($resolvedRoot + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to clean a directory outside its allowed local root: $resolvedPath"
+    }
+    if (-not (Test-Path -LiteralPath $resolvedPath -PathType Container)) { return }
+
+    # Windows PowerShell 5.1 cannot recurse through a checkout containing paths beyond
+    # MAX_PATH unless the provider receives the extended local-path form. The checkout
+    # root itself remains short and is validated above before adding the prefix.
+    Remove-Item -LiteralPath ('\\?\' + $resolvedPath) -Recurse -Force
+}
+
 function Initialize-Cf7RuntimeQueue {
     param([Parameter(Mandatory=$true)][string]$QueueRoot)
     foreach ($name in @('requests','leases','results','cas')) {

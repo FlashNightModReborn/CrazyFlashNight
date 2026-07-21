@@ -1084,7 +1084,9 @@ try {
     Run-Test 'Migration builder registry requires at least one enabled public-key identity' {
         $f = New-TestFixture v1
         $registry = [Text.Encoding]::UTF8.GetString($script:targetRegistryBytes) | ConvertFrom-Json
-        $registry.builders[0].enabled = $false
+        foreach ($builder in @($registry.builders)) {
+            $builder.enabled = $false
+        }
         $disabledBytes = [Text.Encoding]::UTF8.GetBytes(($registry | ConvertTo-Json -Depth 12) + "`n")
         [void](Add-TestMigrationCommit $f -RegistryBytes $disabledBytes)
         $result = Invoke-Classifier $f Protected $f.Base

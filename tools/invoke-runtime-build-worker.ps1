@@ -239,6 +239,10 @@ function Invoke-Cf7OneWorkerTurnCore {
         Invoke-Cf7WorkerProcess -FileName 'git.exe' `
             -Arguments @('-c','core.longpaths=true','clone','--no-checkout','--',$bundle,$checkout) `
             -WorkingDirectory $checkoutJobRoot -Lease $lease
+        # Freeze checkout bytes independently of the worker account's system/global Git
+        # settings. Otherwise core.autocrlf=true can make Worktree identity disagree with
+        # the immutable request even though every bundled Git blob is correct.
+        Invoke-Cf7WorkerGit -Arguments @('-C',$checkout,'config','core.autocrlf','false') | Out-Null
         Invoke-Cf7WorkerGit -Arguments @('-C',$checkout,'config','core.longpaths','true') | Out-Null
         Invoke-Cf7WorkerGit -Arguments @('-c','core.longpaths=true','-C',$checkout,'checkout','--detach',([string]$request.requestCommitOid)) | Out-Null
         $treeOid = ([string](Invoke-Cf7WorkerGit -Arguments @('-C',$checkout,'rev-parse','HEAD^{tree}') | Select-Object -First 1)).Trim().ToLowerInvariant()
@@ -285,11 +289,18 @@ function Invoke-Cf7OneWorkerTurnCore {
         Write-Host "[RuntimeQueueWorker] OK request=$($request.requestId) signer=$($result.builderKeyId) closure=$($result.payloadClosureHash)" -ForegroundColor Green
         return $true
     } catch {
+        $failureMessage = [string]$_.Exception.Message
         $diagnosticRoot = if ($candidate) { Join-Path $candidate 'logs' } else { $null }
-        Write-Cf7RuntimeBuildFailure -QueueRoot $QueueRoot -Request $request -WorkerId $WorkerId `
-            -Message $_.Exception.Message -DiagnosticRoot $diagnosticRoot
+        try {
+            Write-Cf7RuntimeBuildFailure -QueueRoot $QueueRoot -Request $request -WorkerId $WorkerId `
+                -Message $failureMessage -DiagnosticRoot $diagnosticRoot
+        } catch {
+            # Failure persistence is diagnostic, not authority. A long/unavailable queue
+            # path must never replace the original build error with a secondary write error.
+            Write-Warning "Could not persist runtime build failure for request $($request.requestId): $($_.Exception.Message)"
+        }
         $script:workerHadFailure = $true
-        Write-Warning "Runtime build request failed: $($_.Exception.Message)"
+        Write-Warning "Runtime build request failed: $failureMessage"
         return $false
     } finally {
         Exit-Cf7RuntimeRequestLease -Lease $lease
@@ -297,7 +308,7 @@ function Invoke-Cf7OneWorkerTurnCore {
             $resolvedCheckout = [IO.Path]::GetFullPath($checkoutJobRoot)
             if ($resolvedCheckout.StartsWith($CheckoutRoot + '\', [StringComparison]::OrdinalIgnoreCase) -and
                     (Test-Path -LiteralPath $resolvedCheckout -PathType Container)) {
-                try { Remove-Item -LiteralPath $resolvedCheckout -Recurse -Force }
+                try { Remove-Cf7LocalDirectoryTree -Path $resolvedCheckout -AllowedRoot $CheckoutRoot }
                 catch { Write-Warning "Could not clean runtime checkout $resolvedCheckout`: $($_.Exception.Message)" }
             }
         }

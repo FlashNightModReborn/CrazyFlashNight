@@ -7,6 +7,100 @@ param(
 $ErrorActionPreference = 'Stop'
 $launcherDir = $PSScriptRoot
 $projectRoot = Split-Path -Parent $launcherDir
+
+function Resolve-Cf7RuntimeWorkBase {
+    param(
+        [string]$OverrideRoot,
+        [string]$SystemTempRoot = [IO.Path]::GetTempPath(),
+        [string]$SourceProjectRoot
+    )
+    $requestedRoot = if ([string]::IsNullOrWhiteSpace($OverrideRoot)) {
+        if ([string]::IsNullOrWhiteSpace($SystemTempRoot)) {
+            throw 'The machine-local system temp path is unavailable. Set CF7_RUNTIME_WORK_ROOT to a safe local directory.'
+        }
+        Join-Path $SystemTempRoot 'cf7-runtime-build-work'
+    } else {
+        $OverrideRoot
+    }
+    if ($requestedRoot -notmatch '^[A-Za-z]:[\\/]') {
+        throw "Runtime build work root must be an explicit machine-local absolute path: $requestedRoot"
+    }
+    $resolved = [IO.Path]::GetFullPath($requestedRoot).TrimEnd('\')
+    $filesystemRoot = [IO.Path]::GetPathRoot($resolved)
+    if ([string]::IsNullOrWhiteSpace($filesystemRoot) -or
+            $resolved -notmatch '^[A-Za-z]:\\' -or
+            $resolved.StartsWith('\\', [StringComparison]::Ordinal) -or
+            $resolved.Equals($filesystemRoot.TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Runtime build work root must be a dedicated machine-local directory, not UNC, relative, or a filesystem root: $requestedRoot"
+    }
+    # VsDevCmd and its nested batch helpers are not safe when TMP/TEMP contains CMD
+    # metacharacters (the repository itself may legitimately contain parentheses).
+    if ($resolved -match '[&()<>|^!%]') {
+        throw "Runtime build work root contains CMD metacharacters. Choose a short plain local path with CF7_RUNTIME_WORK_ROOT: $resolved"
+    }
+    if (-not [string]::IsNullOrWhiteSpace($SourceProjectRoot)) {
+        $sourceRoot = [IO.Path]::GetFullPath($SourceProjectRoot).TrimEnd('\')
+        if ($resolved.Equals($sourceRoot, [StringComparison]::OrdinalIgnoreCase) -or
+                $resolved.StartsWith($sourceRoot + '\', [StringComparison]::OrdinalIgnoreCase) -or
+                $sourceRoot.StartsWith($resolved + '\', [StringComparison]::OrdinalIgnoreCase)) {
+            throw "Runtime build work root must remain outside and must not contain the source repository: $resolved"
+        }
+    }
+    try {
+        $drive = New-Object IO.DriveInfo($filesystemRoot)
+        if ($drive.DriveType -eq [IO.DriveType]::Network) {
+            throw "Runtime build work root must be machine-local; mapped network drives are not allowed: $resolved"
+        }
+    } catch [IO.IOException] {
+        throw "Cannot inspect runtime build work drive: $($_.Exception.Message)"
+    }
+    return $resolved
+}
+
+function New-Cf7RuntimeWorkJobLayout {
+    param(
+        [Parameter(Mandatory=$true)][string]$WorkBase,
+        [string]$RunToken = [Guid]::NewGuid().ToString('N')
+    )
+    if ($RunToken -notmatch '^[0-9a-fA-F]{32}$') { throw 'Runtime build work token must be 32 hexadecimal characters.' }
+    $base = [IO.Path]::GetFullPath($WorkBase).TrimEnd('\')
+    $jobRoot = [IO.Path]::GetFullPath((Join-Path $base ('job-' + $RunToken.ToLowerInvariant()))).TrimEnd('\')
+    $jobParent = [IO.Path]::GetFullPath((Split-Path -Parent $jobRoot)).TrimEnd('\')
+    if (-not $jobParent.Equals($base, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Unsafe runtime build work path: $jobRoot"
+    }
+    $pathProbes = @(
+        (Join-Path $jobRoot 'temp\miniaudio-source\miniaudio_bridge.c'),
+        (Join-Path $jobRoot 'managed-obj\Release\net10.0-windows\win-x64\CRAZYFLASHER7MercenaryEmpire.Core.GeneratedMSBuildEditorConfig.editorconfig'),
+        (Join-Path $jobRoot ('cargo-target\release\build\sol_parser-' + ('a' * 32) + '\out\generated\runtime-build-path-budget.probe'))
+    )
+    $longestProbe = @($pathProbes | Sort-Object Length -Descending)[0]
+    if ($longestProbe.Length -ge 260) {
+        throw "Runtime build work root exceeds the native/MSBuild MAX_PATH budget (projected=$($longestProbe.Length), maximum=259): $base"
+    }
+    return [pscustomobject][ordered]@{
+        workBase = $base
+        jobRoot = $jobRoot
+        longestProbe = $longestProbe
+    }
+}
+
+function Assert-Cf7RuntimeWorkCleanupTarget {
+    param(
+        [Parameter(Mandatory=$true)][string]$WorkBase,
+        [Parameter(Mandatory=$true)][string]$JobRoot
+    )
+    $base = [IO.Path]::GetFullPath($WorkBase).TrimEnd('\')
+    $target = [IO.Path]::GetFullPath($JobRoot).TrimEnd('\')
+    $parent = [IO.Path]::GetFullPath((Split-Path -Parent $target)).TrimEnd('\')
+    $leaf = Split-Path -Leaf $target
+    if (-not $parent.Equals($base, [StringComparison]::OrdinalIgnoreCase) -or
+            $leaf -notmatch '^job-[0-9a-f]{32}$') {
+        throw "Refusing to clean a runtime build path outside the exact job boundary: $target"
+    }
+    return $target
+}
+
 $v2Common = Join-Path $projectRoot 'tools\runtime-build-v2-common.ps1'
 if (-not (Test-Path -LiteralPath $v2Common -PathType Leaf)) {
     throw "Runtime v2 common helper is missing: $v2Common"
@@ -153,19 +247,20 @@ if (Test-Path -LiteralPath $deploymentRoot) {
 }
 New-Item -ItemType Directory -Path $deploymentRoot -Force | Out-Null
 
-$workBase = if ($env:CF7_RUNTIME_WORK_ROOT) {
-    [IO.Path]::GetFullPath($env:CF7_RUNTIME_WORK_ROOT).TrimEnd('\')
-} else {
-    [IO.Path]::GetFullPath((Join-Path $projectRoot 'tmp\runtime-build-work')).TrimEnd('\')
-}
+$workBase = Resolve-Cf7RuntimeWorkBase `
+    -OverrideRoot $env:CF7_RUNTIME_WORK_ROOT `
+    -SystemTempRoot ([IO.Path]::GetTempPath()) `
+    -SourceProjectRoot $projectRoot
 if (-not (Test-Path -LiteralPath $workBase -PathType Container)) {
     New-Item -ItemType Directory -Path $workBase -Force | Out-Null
 }
-$jobRoot = Join-Path $workBase ([Guid]::NewGuid().ToString('N'))
-$jobRoot = [IO.Path]::GetFullPath($jobRoot)
-if (-not $jobRoot.StartsWith($workBase + '\', [StringComparison]::OrdinalIgnoreCase)) {
-    throw "Unsafe runtime build work path: $jobRoot"
+$workBaseItem = Get-Item -LiteralPath $workBase -Force
+if (($workBaseItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+    throw "Runtime build work root must not be a reparse point: $workBase"
 }
+$workBase = [IO.Path]::GetFullPath($workBaseItem.FullName).TrimEnd('\')
+$workLayout = New-Cf7RuntimeWorkJobLayout -WorkBase $workBase
+$jobRoot = $workLayout.jobRoot
 $nativeOut = Join-Path $jobRoot 'native-output'
 $cargoTarget = Join-Path $jobRoot 'cargo-target'
 $publishDir = Join-Path $jobRoot 'managed-publish'
@@ -233,6 +328,7 @@ Write-Host "  Producer recipe : $producerRecipeHash"
 Write-Host "  Toolchain lock  : $toolchainLockHash"
 Write-Host "  Build identity  : $buildIdentityHash"
 Write-Host "  Candidate       : $deploymentRoot"
+Write-Host "  Work root       : $jobRoot"
 
 try {
     Write-Host '[1/5] Build deterministic miniaudio.dll...' -ForegroundColor Yellow
@@ -424,10 +520,14 @@ try {
     Remove-Item Env:CF7_CARGO_TARGET_DIR -ErrorAction SilentlyContinue
     Remove-Item Env:CF7_RUNTIME_JOB_TEMP -ErrorAction SilentlyContinue
     if (Test-Path -LiteralPath $jobRoot -PathType Container) {
-        $resolvedJobRoot = [IO.Path]::GetFullPath($jobRoot)
-        if ($resolvedJobRoot.StartsWith($workBase + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
-            Remove-Item -LiteralPath $resolvedJobRoot -Recurse -Force
+        $resolvedJobRoot = Assert-Cf7RuntimeWorkCleanupTarget -WorkBase $workBase -JobRoot $jobRoot
+        $cleanupBaseItem = Get-Item -LiteralPath $workBase -Force
+        $cleanupJobItem = Get-Item -LiteralPath $resolvedJobRoot -Force
+        if (($cleanupBaseItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or
+                ($cleanupJobItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+            throw "Refusing to clean a runtime build work tree through a reparse point: $resolvedJobRoot"
         }
+        Remove-Item -LiteralPath $resolvedJobRoot -Recurse -Force
     }
     $formalDeploymentAfterCleanup = Get-Cf7FormalDeploymentSnapshot -Root $projectRoot
     if (-not (Test-Cf7SameFormalDeploymentSnapshot -Before $formalDeploymentBefore -After $formalDeploymentAfterCleanup)) {

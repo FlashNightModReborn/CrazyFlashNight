@@ -121,7 +121,15 @@ function Get-Cf7VsInstances {
     # and VS 2026 exposes the locked v143 compatibility toolset as a versioned component.
     $json = (& $vswhere -all -prerelease -products '*' -format json -utf8) -join "`n"
     if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($json)) { return @() }
-    return @(ConvertFrom-Json $json)
+    # Windows PowerShell 5.1 preserves a top-level JSON array as one Object[]
+    # when it is returned directly from a function. Callers would then see one
+    # synthetic instance whose installationPath is both paths joined by a space.
+    # Emit each registered instance explicitly so side-by-side installs remain
+    # independently discoverable in the same process that completed setup.
+    $parsedInstances = ConvertFrom-Json $json
+    foreach ($parsedInstance in $parsedInstances) {
+        Write-Output $parsedInstance
+    }
 }
 
 function Write-Cf7VisualStudioInventory {
@@ -235,17 +243,11 @@ function Ensure-Cf7Msvc {
     Write-Cf7VisualStudioInventory
     $vs = $lock.provisioning.visualStudio
     $componentArgs = @($vs.components | ForEach-Object { "--add `"$([string]$_)`"" }) -join ' '
-    $instances = @(Get-Cf7VsInstances)
-    $vs2022Instances = @($instances | Where-Object {
-        [string]$_.catalog.productLineVersion -eq '2022' -or [string]$_.installationVersion -match '^17\.'
-    })
     $modifyTarget = $null
     if ($matchingInstance) {
         # An exact v143 toolset in VS 2026 is acceptable. In that case setup is
         # used only to add the locked SDK; the final byte gate still rechecks all tools.
         $modifyTarget = $matchingInstance
-    } elseif ($vs2022Instances.Count -gt 0) {
-        $modifyTarget = [string]($vs2022Instances | Sort-Object { try { [version]$_.installationVersion } catch { [version]'0.0' } } -Descending | Select-Object -First 1).installationPath
     }
     if ($modifyTarget) {
         $setup = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft Visual Studio\Installer\setup.exe'
@@ -256,12 +258,26 @@ function Ensure-Cf7Msvc {
         Write-Host "[RuntimeBootstrap] Adding locked components to the compatible Visual Studio instance: $modifyTarget" -ForegroundColor Yellow
         Invoke-Cf7VisualStudioInstaller $setup $arguments
     } else {
+        # Do not `modify` an arbitrary older VS 2022 instance. Its installed channel
+        # may keep serving an older component payload (for example 17.14.33 / cl
+        # 19.44.35227) even when the requested component ID is identical. That makes
+        # the locked 17.14.36 / cl 19.44.35228 byte gate impossible to satisfy.
+        # Use the pinned bootstrapper and dedicated install path so provisioning and
+        # the final executable hashes refer to the same immutable baseline.
         $bootstrapper = Get-Cf7PinnedDownload ("vs_BuildTools_" + [string]$vs.release + '.exe') ([string]$vs.bootstrapperUrl) ([string]$vs.bootstrapperSha256)
         if ([string](Get-Item -LiteralPath $bootstrapper).VersionInfo.FileVersion -ne [string]$vs.installerVersion) {
             throw 'Visual Studio bootstrapper file version does not match the lock.'
         }
         $installPath = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) ([string]$vs.preferredInstallPath)
-        $arguments = "--installPath `"$installPath`" --nickname `"CF7 Runtime $([string]$vs.release)`" $componentArgs --quiet --wait --norestart"
+        # VS Setup rejects overly long product roots before installing any payload.
+        # Keep a conservative project-owned bound so a bad lock fails before UAC.
+        $maxInstallRootLength = 64
+        if ($installPath.Length -gt $maxInstallRootLength) {
+            throw "The pinned Visual Studio install root is too long ($($installPath.Length) > $maxInstallRootLength): $installPath"
+        }
+        # Nickname is cosmetic and some VS Setup builds reject otherwise harmless
+        # punctuation/localized values. Keep provisioning identity solely in the lock.
+        $arguments = "--installPath `"$installPath`" $componentArgs --quiet --wait --norestart"
         Write-Host "[RuntimeBootstrap] Installing side-by-side pinned Build Tools: $installPath" -ForegroundColor Yellow
         Invoke-Cf7VisualStudioInstaller $bootstrapper $arguments
     }

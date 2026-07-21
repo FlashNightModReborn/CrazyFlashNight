@@ -1,4 +1,7 @@
-param([string]$ProjectRoot)
+param(
+    [string]$ProjectRoot,
+    [string]$TestTempRoot = $env:CF7_RUNTIME_TEST_TEMP_ROOT
+)
 
 $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
@@ -11,9 +14,35 @@ function Assert-QueueTest([bool]$Condition, [string]$Message) {
     if (-not $Condition) { throw "Runtime queue test failed: $Message" }
 }
 
-$testRoot = [IO.Path]::GetFullPath((Join-Path $ProjectRoot ('tmp\rq-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)))).TrimEnd('\')
-$allowedPrefix = [IO.Path]::GetFullPath((Join-Path $ProjectRoot 'tmp')).TrimEnd('\') + '\'
-if (-not $testRoot.StartsWith($allowedPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe runtime queue test path.' }
+if ([string]::IsNullOrWhiteSpace($TestTempRoot)) {
+    $systemTempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
+    $systemTestRootProbe = Join-Path $systemTempRoot 'rq-12345678'
+    $systemCasProbe = Join-Path $systemTestRootProbe ('queue\cas\candidates\' + ('A' * 64) + '\.' + ('B' * 64) + '.' + ('C' * 32) + '.tmp\CRAZYFLASHER7MercenaryEmpire.exe')
+    if ($systemCasProbe.Length -lt 260) {
+        $TestTempRoot = $systemTempRoot
+    } else {
+        $TestTempRoot = Join-Path ([IO.Path]::GetPathRoot($ProjectRoot)) 'tmp'
+        Write-Host "[RuntimeBuildQueueTest] System temp exceeds MAX_PATH budget; using short root $TestTempRoot" -ForegroundColor Yellow
+    }
+}
+$TestTempRoot = [IO.Path]::GetFullPath($TestTempRoot).TrimEnd('\')
+$testFilesystemRoot = [IO.Path]::GetPathRoot($TestTempRoot)
+if ($TestTempRoot.StartsWith('\\', [StringComparison]::Ordinal) -or
+        $TestTempRoot.Equals($testFilesystemRoot.TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)) {
+    throw 'Runtime queue tests require a dedicated machine-local temp directory, not UNC or a filesystem root.'
+}
+New-Item -ItemType Directory -Path $TestTempRoot -Force | Out-Null
+$testRoot = [IO.Path]::GetFullPath((Join-Path $TestTempRoot ('rq-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)))).TrimEnd('\')
+if (-not $testRoot.StartsWith($TestTempRoot + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe runtime queue test path.' }
+$pathBudgetProbes = @(
+    (Join-Path $testRoot ('legacy-queue\results\_failures\' + ('A' * 64) + '\' + ('B' * 32) + '\.failure.json.' + ('C' * 32) + '.tmp')),
+    (Join-Path $testRoot ('queue\cas\candidates\' + ('A' * 64) + '\.' + ('B' * 64) + '.' + ('C' * 32) + '.tmp\CRAZYFLASHER7MercenaryEmpire.exe')),
+    (Join-Path $testRoot ('queue\results\' + ('A' * 64) + '\' + ('B' * 64) + '\.' + ('C' * 32) + '.tmp\attestation.json'))
+)
+$longestPathProbe = @($pathBudgetProbes | Sort-Object Length -Descending)[0]
+if ($longestPathProbe.Length -ge 260) {
+    throw "Runtime queue test temp root exceeds the MAX_PATH budget (projected=$($longestPathProbe.Length), maximum=259). Use -TestTempRoot C:\tmp."
+}
 $fixtureName = 'QueueFreezeFixture.cs'
 $fixtureRepo = Join-Path $testRoot 'repo'
 $fixturePath = Join-Path $fixtureRepo ('launcher\src\' + $fixtureName)
@@ -22,7 +51,7 @@ $originalGitIndexFile = $env:GIT_INDEX_FILE
 $customIndex = $null
 $externalCheckoutRoots = New-Object 'System.Collections.Generic.List[string]'
 
-if (Test-Path -LiteralPath $testRoot) { Remove-Item -LiteralPath $testRoot -Recurse -Force }
+if (Test-Path -LiteralPath $testRoot) { Remove-Cf7LocalDirectoryTree -Path $testRoot -AllowedRoot $TestTempRoot }
 New-Item -ItemType Directory -Path $testRoot -Force | Out-Null
 try {
     # Keep the sparse bundle declaration aligned with every repository input that the real
@@ -240,7 +269,7 @@ try {
     $legacyRead = Read-Cf7RuntimeBuildRequest -QueueRoot $legacyQueue -RequestId ([string]$legacyRequest.requestId)
     Assert-QueueTest ([string]$legacyRead.schema -eq 'cf7-runtime-build-request.v1') 'legacy full-tree request schema was not accepted'
     $workerScript = Join-Path $ProjectRoot 'tools\invoke-runtime-build-worker.ps1'
-    $legacyCheckoutRoot = Join-Path ([IO.Path]::GetTempPath()) ('qL-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
+    $legacyCheckoutRoot = Join-Path $TestTempRoot ('qL-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
     $externalCheckoutRoots.Add($legacyCheckoutRoot)
     $previousPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
@@ -269,7 +298,7 @@ try {
         requiredQuorum=2; createdAtUtc=$createdAt
     }
     Write-Cf7QueueUtf8File -Path (Join-Path $undeclaredDirectory 'request.json') -Text (($undeclaredRequest | ConvertTo-Json -Depth 8) + "`n")
-    $undeclaredCheckoutRoot = Join-Path ([IO.Path]::GetTempPath()) ('qR-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
+    $undeclaredCheckoutRoot = Join-Path $TestTempRoot ('qR-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
     $externalCheckoutRoots.Add($undeclaredCheckoutRoot)
     $ErrorActionPreference = 'Continue'
     $undeclaredOutput = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $workerScript `
@@ -284,6 +313,36 @@ try {
         'rejected v2 worker did not clean its short-path checkout'
     $checks++
 
+    # A secondary queue-write failure must not replace the original worker diagnosis. A regular
+    # file at the request's failure-directory path deterministically blocks diagnostic persistence
+    # on PowerShell 5/7 and regardless of the host's LongPathsEnabled setting.
+    $failureMaskQueue = Join-Path $testRoot 'failure-mask-queue'
+    Initialize-Cf7RuntimeQueue -QueueRoot $failureMaskQueue
+    $failureMaskDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $failureMaskQueue -RequestId ([string]$treeRequest.requestId)
+    New-Item -ItemType Directory -Path $failureMaskDirectory -Force | Out-Null
+    Copy-Item -LiteralPath $fullBundle -Destination (Join-Path $failureMaskDirectory 'source.bundle')
+    Write-Cf7QueueUtf8File -Path (Join-Path $failureMaskDirectory 'request.json') `
+        -Text (($undeclaredRequest | ConvertTo-Json -Depth 8) + "`n")
+    $failureMaskBlocker = Join-Path (Join-Path $failureMaskQueue 'results\_failures') ([string]$treeRequest.requestId)
+    [IO.File]::WriteAllText($failureMaskBlocker, 'block failure persistence', $encoding)
+    $failureMaskCheckoutRoot = Join-Path $TestTempRoot ('qF-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
+    $externalCheckoutRoots.Add($failureMaskCheckoutRoot)
+    $ErrorActionPreference = 'Continue'
+    $failureMaskOutput = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $workerScript `
+        -ProjectRoot $fixtureRepo -QueueRoot $failureMaskQueue -CheckoutRoot $failureMaskCheckoutRoot `
+        -WorkerId 'failure-mask-worker' -Once -DryRun -LeaseTtlSeconds 30 -HeartbeatSeconds 2 2>&1)
+    $failureMaskExit = $LASTEXITCODE
+    $ErrorActionPreference = $previousPreference
+    $failureMaskText = $failureMaskOutput -join "`n"
+    Assert-QueueTest ($failureMaskExit -ne 0) 'worker accepted the deliberately undeclared failure-persistence bundle'
+    Assert-QueueTest ($failureMaskText -match 'Runtime build request failed: Synthetic runtime bundle (?:contains undeclared or missing paths|path closure mismatch)') `
+        "failure persistence replaced the original worker diagnosis: $failureMaskText"
+    Assert-QueueTest ($failureMaskText -match 'Could not persist runtime build failure') `
+        'worker did not report the secondary failure-persistence error'
+    Assert-QueueTest (@(Get-ChildItem -LiteralPath $failureMaskCheckoutRoot -Force -ErrorAction SilentlyContinue).Count -eq 0) `
+        'failure-persistence worker did not clean its isolated checkout'
+    $checks++
+
     $statusScript = Join-Path $ProjectRoot 'tools\get-runtime-build-request-status.ps1'
     $statusOutput = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $statusScript -ProjectRoot $fixtureRepo -QueueRoot $queueRoot -RequestId ([string]$requestA.requestId) -Json)
     $statusExit = $LASTEXITCODE
@@ -293,7 +352,7 @@ try {
 
     # Worker dry-run still clones the bundle and recomputes all v2 identity domains, but never
     # invokes the producer or needs a signing certificate.
-    $workerCheckoutRoot = Join-Path ([IO.Path]::GetTempPath()) ('qM-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
+    $workerCheckoutRoot = Join-Path $TestTempRoot ('qM-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
     $externalCheckoutRoots.Add($workerCheckoutRoot)
     $maximumLengthWorkerId = 'w' + ('x' * 63)
     & (Join-Path $ProjectRoot 'tools\invoke-runtime-build-worker.ps1') -ProjectRoot $fixtureRepo -QueueRoot $queueRoot `
@@ -387,7 +446,7 @@ try {
     $env:GIT_INDEX_FILE = $originalGitIndexFile
     if ($customIndex -and (Test-Path -LiteralPath $customIndex)) { Remove-Item -LiteralPath $customIndex -Force }
     foreach ($checkoutRoot in $externalCheckoutRoots) {
-        if (Test-Path -LiteralPath $checkoutRoot) { Remove-Item -LiteralPath $checkoutRoot -Recurse -Force }
+        if (Test-Path -LiteralPath $checkoutRoot) { Remove-Cf7LocalDirectoryTree -Path $checkoutRoot -AllowedRoot $TestTempRoot }
     }
-    if (Test-Path -LiteralPath $testRoot) { Remove-Item -LiteralPath $testRoot -Recurse -Force }
+    if (Test-Path -LiteralPath $testRoot) { Remove-Cf7LocalDirectoryTree -Path $testRoot -AllowedRoot $TestTempRoot }
 }

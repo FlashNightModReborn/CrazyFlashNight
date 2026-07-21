@@ -90,6 +90,77 @@ try {
     $materializerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\materialize-runtime-build-inputs.ps1'))
     $bootstrapSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\native\bootstrap\bootstrap.cpp'))
     $programSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\src\Program.cs'))
+    $producerTokens = $null
+    $producerParseErrors = $null
+    $producerAst = [Management.Automation.Language.Parser]::ParseInput(
+        $producerScript, [ref]$producerTokens, [ref]$producerParseErrors)
+    Assert-Equal 'producer script parses for isolated work-root contract tests' 0 @($producerParseErrors).Count
+    $producerFunctions = @($producerAst.FindAll({
+        param($node)
+        $node -is [Management.Automation.Language.FunctionDefinitionAst]
+    }, $true))
+    foreach ($functionName in @(
+        'Resolve-Cf7RuntimeWorkBase',
+        'New-Cf7RuntimeWorkJobLayout',
+        'Assert-Cf7RuntimeWorkCleanupTarget'
+    )) {
+        $functionAst = @($producerFunctions | Where-Object { $_.Name -eq $functionName })
+        Assert-Equal "producer exports one $functionName helper" 1 $functionAst.Count
+        Invoke-Expression $functionAst[0].Extent.Text
+    }
+    $machineTemp = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
+    $defaultWorkBase = Resolve-Cf7RuntimeWorkBase `
+        -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot
+    $expectedWorkBase = [IO.Path]::GetFullPath((Join-Path $machineTemp 'cf7-runtime-build-work')).TrimEnd('\')
+    Assert-Equal 'producer defaults work root to machine-local system temp' $expectedWorkBase $defaultWorkBase
+    Assert-Equal 'producer default work root is independent of parenthesized repository path' $false `
+        ($defaultWorkBase.Equals($ProjectRoot, [StringComparison]::OrdinalIgnoreCase) -or
+            $defaultWorkBase.StartsWith($ProjectRoot + '\', [StringComparison]::OrdinalIgnoreCase))
+    $overrideWorkBase = Join-Path $machineTemp 'cf7-runtime-work-override'
+    Assert-Equal 'producer preserves safe CF7_RUNTIME_WORK_ROOT override' `
+        ([IO.Path]::GetFullPath($overrideWorkBase).TrimEnd('\')) `
+        (Resolve-Cf7RuntimeWorkBase -OverrideRoot $overrideWorkBase -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot)
+    Expect-Failure 'producer rejects filesystem-root work path' {
+        Resolve-Cf7RuntimeWorkBase -OverrideRoot ([IO.Path]::GetPathRoot($machineTemp)) `
+            -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot | Out-Null
+    }
+    Expect-Failure 'producer rejects relative work path before normalization' {
+        Resolve-Cf7RuntimeWorkBase -OverrideRoot 'relative\cf7-work' `
+            -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot | Out-Null
+    }
+    Expect-Failure 'producer rejects UNC work path' {
+        Resolve-Cf7RuntimeWorkBase -OverrideRoot '\\server\share\cf7-work' `
+            -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot | Out-Null
+    }
+    Expect-Failure 'producer rejects CMD metacharacters in work path' {
+        Resolve-Cf7RuntimeWorkBase -OverrideRoot (Join-Path $machineTemp 'cf7-(unsafe)-work') `
+            -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot | Out-Null
+    }
+    Expect-Failure 'producer rejects repository-contained work path' {
+        Resolve-Cf7RuntimeWorkBase -OverrideRoot (Join-Path $ProjectRoot 'tmp\runtime-build-work') `
+            -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot | Out-Null
+    }
+    $workLayout = New-Cf7RuntimeWorkJobLayout -WorkBase $defaultWorkBase -RunToken ('a' * 32)
+    Assert-Equal 'producer job is an exact direct child of the work root' $defaultWorkBase `
+        ([IO.Path]::GetFullPath((Split-Path -Parent $workLayout.jobRoot)).TrimEnd('\'))
+    Assert-Equal 'producer projected work path remains inside MAX_PATH' $true ($workLayout.longestProbe.Length -lt 260)
+    Assert-Equal 'producer cleanup accepts only its exact job leaf' $workLayout.jobRoot `
+        (Assert-Cf7RuntimeWorkCleanupTarget -WorkBase $defaultWorkBase -JobRoot $workLayout.jobRoot)
+    Expect-Failure 'producer cleanup rejects work root itself' {
+        Assert-Cf7RuntimeWorkCleanupTarget -WorkBase $defaultWorkBase -JobRoot $defaultWorkBase | Out-Null
+    }
+    Expect-Failure 'producer cleanup rejects nested descendants' {
+        Assert-Cf7RuntimeWorkCleanupTarget -WorkBase $defaultWorkBase `
+            -JobRoot (Join-Path $workLayout.jobRoot 'nested') | Out-Null
+    }
+    Expect-Failure 'producer cleanup rejects malformed sibling leaf' {
+        Assert-Cf7RuntimeWorkCleanupTarget -WorkBase $defaultWorkBase `
+            -JobRoot (Join-Path $defaultWorkBase ('other-' + ('b' * 32))) | Out-Null
+    }
+    $tooLongWorkBase = Join-Path ([IO.Path]::GetPathRoot($machineTemp)) ('w' * 210)
+    Expect-Failure 'producer rejects projected work path outside MAX_PATH' {
+        New-Cf7RuntimeWorkJobLayout -WorkBase $tooLongWorkBase -RunToken ('c' * 32) | Out-Null
+    }
     Assert-Equal 'candidate uses isolated runtime verification mode' $true `
         ($producerScript.Contains("Arguments = '--verify-runtime-only'") -and $bootstrapSource.Contains('L"--verify-runtime-only"'))
     Assert-Equal 'candidate waits for GUI bootstrap exit code' $true `
