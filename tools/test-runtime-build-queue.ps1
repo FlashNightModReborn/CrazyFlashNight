@@ -113,7 +113,7 @@ try {
   "domains": {
     "artifactSource": { "fixedFiles": ["launcher/src/QueueFreezeFixture.cs"], "trees": [] },
     "producerRecipe": { "fixedFiles": ["tools/runtime-build-v2-common.ps1"], "trees": [] },
-    "toolchainLock": { "fixedFiles": ["config/build/toolchain.txt"], "trees": [] },
+    "toolchainLock": { "fixedFiles": ["config/build/toolchain.txt", "config/build/冻结输入.txt"], "trees": [] },
     "policy": { "fixedFiles": ["config/build/runtime-inputs.v2.json", "tools/runtime-build-queue-common.ps1"], "trees": [] }
   },
   "payload": {
@@ -124,6 +124,7 @@ try {
 '@
     [IO.File]::WriteAllText((Join-Path $fixtureRepo 'config\build\runtime-inputs.v2.json'), $fixtureConfig + "`n", $encoding)
     [IO.File]::WriteAllText((Join-Path $fixtureRepo 'config\build\toolchain.txt'), 'queue-toolchain' + "`n", $encoding)
+    [IO.File]::WriteAllText((Join-Path $fixtureRepo 'config\build\冻结输入.txt'), 'unicode-path-fixture' + "`n", $encoding)
     [IO.File]::WriteAllText($fixturePath, 'internal static class QueueFreezeFixture { internal const string Value = "base"; }' + "`n", $encoding)
     # Model the real repository's text normalization explicitly. Without this file, copying a
     # CRLF PowerShell helper into a core.autocrlf=false fixture stores a CRLF blob, while the
@@ -134,6 +135,10 @@ try {
     & git -C $fixtureRepo config user.email 'queue-test@invalid.local'
     & git -C $fixtureRepo config core.autocrlf false
     & git -C $fixtureRepo config core.longpaths true
+    # Reproduce the Git default that exposed the real failure, regardless of a
+    # maintainer or CI image overriding core.quotepath globally.
+    & git -C $fixtureRepo config core.quotepath true
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot pin core.quotepath for the Unicode queue fixture.' }
     & git -C $fixtureRepo add -A
     # Store one path that exceeds MAX_PATH once the fixture is cloned below the queue.  It is
     # deliberately outside every runtime identity domain: the assertion is that a worker can
@@ -188,6 +193,8 @@ try {
         $frozenBundlePaths = @(& git -c core.quotepath=false -C $clone ls-tree -r --name-only 'HEAD^{tree}')
         Assert-QueueTest ($frozenBundlePaths -contains ('launcher/src/' + $fixtureName)) `
             "synthetic bundle omitted the staged artifactSource fixture; paths=$($frozenBundlePaths -join ',')"
+        Assert-QueueTest ($frozenBundlePaths -ccontains 'config/build/冻结输入.txt') `
+            "synthetic bundle did not preserve a literal non-ASCII domain path; paths=$($frozenBundlePaths -join ',')"
         $frozenText = [IO.File]::ReadAllText((Join-Path $clone ('launcher\src\' + $fixtureName)))
         Assert-QueueTest ($frozenText.Contains('staged-v1') -and -not $frozenText.Contains('worktree-v2')) 'request did not freeze Git index bytes'
         $clonedBundleTree = ([string](& git -C $clone rev-parse 'HEAD^{tree}')).Trim()

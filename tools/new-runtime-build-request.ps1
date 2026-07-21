@@ -54,7 +54,11 @@ function Get-Cf7RequestBundleEntries {
     [Array]::Sort($sorted, [StringComparer]::Ordinal)
     $entries = New-Object 'System.Collections.Generic.List[object]'
     foreach ($path in $sorted) {
-        $rows = @(Invoke-Cf7RequestGit -Arguments @('ls-files','-s','--',$path))
+        # Keep the path field literal even when a runtime identity domain contains
+        # non-ASCII names.  The machine/global default core.quotepath=true would
+        # otherwise return a C-style escaped path that cannot equal the canonical
+        # UTF-8 path emitted by Get-Cf7RuntimeV2DomainFiles.
+        $rows = @(Invoke-Cf7RequestGit -Arguments @('-c','core.quotepath=false','ls-files','-s','--',$path))
         $stageZero = @($rows | Where-Object { $_ -match '^[0-9]+\s+[0-9a-fA-F]+\s+0\t' })
         if ($stageZero.Count -ne 1 -or [string]$stageZero[0] -notmatch '^([0-9]+)\s+([0-9a-fA-F]+)\s+0\t(.+)$') {
             throw "Runtime request bundle input has no unique stage-0 entry: $path"
