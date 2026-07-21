@@ -45,7 +45,9 @@ function checkSyntaxAndSelfCheck() {
     [agentEntryContractPath],
     "test-agent-entry-contract.js"
   ));
-  if (contract.ok !== true || contract.uiState !== "s:1") {
+  if (contract.ok !== true
+      || contract.uiState !== "s:1|ga:<attemptId>"
+      || contract.titleFrameGate !== "bootstrap_reveal_ready") {
     throw new Error("agent entry static contract returned an unexpected result");
   }
   const output = runNode([runnerPath, "--check"], "run-unattended.js --check");
@@ -180,6 +182,7 @@ function checkRuntimeWatermarks() {
     revealPerformed: true,
     socketConnected: true,
     gameEnteredObserved: true,
+    gameEnteredAttemptId: "attempt-contract",
     readyForRuntimeAutomation: true,
     runtimeReadyBlockedBy: [],
     save: {
@@ -214,6 +217,18 @@ function checkRuntimeWatermarks() {
     "game_enter_not_observed"
   );
 
+  const staleGameEnter = JSON.parse(JSON.stringify(status));
+  staleGameEnter.gameEnteredAttemptId = "attempt-stale";
+  expectRejected(
+    "stale game-enter receipt",
+    () => runner.assertRuntimeReadyStatus(
+      staleGameEnter,
+      runner.DEFAULT_AGENT_SLOT,
+      "attempt-contract"
+    ),
+    "game_enter_attempt_mismatch"
+  );
+
   const stale = JSON.parse(JSON.stringify(status));
   stale.saveRuntime.attemptId = "attempt-stale";
   expectRejected(
@@ -233,6 +248,7 @@ function checkRuntimeWatermarks() {
     expectedSlot: runner.DEFAULT_AGENT_SLOT,
     expectedAttemptId: "attempt-contract",
     handoffEvidence: null,
+    titleFrameEvidence: null,
     enterRequested: false,
   };
   if (runner.shouldRequestAgentEnter(pending, state)) {
@@ -241,6 +257,13 @@ function checkRuntimeWatermarks() {
   state.handoffEvidence = {
     lineNumber: 10,
     line: runner.HANDOFF_MARKER,
+  };
+  if (runner.shouldRequestAgentEnter(pending, state)) {
+    throw new Error("agent enter was allowed without a real title-frame receipt");
+  }
+  state.titleFrameEvidence = {
+    lineNumber: 11,
+    line: runner.TITLE_FRAME_MARKER,
   };
   if (!runner.shouldRequestAgentEnter(pending, state)) {
     throw new Error("agent enter was blocked after all narrow gates passed");
