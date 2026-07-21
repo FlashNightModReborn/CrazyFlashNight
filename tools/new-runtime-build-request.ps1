@@ -131,6 +131,7 @@ function Assert-Cf7ExistingRequestMatchesSnapshot {
 }
 
 $QueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
+Assert-Cf7RuntimeQueuePathBudget -QueueRoot $QueueRoot
 Initialize-Cf7RuntimeQueue -QueueRoot $QueueRoot
 $requestsRoot = Join-Path $QueueRoot 'requests'
 $temporaryRef = 'refs/heads/cf7-runtime-request-' + [Guid]::NewGuid().ToString('N')

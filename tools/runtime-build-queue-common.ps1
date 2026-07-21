@@ -13,6 +13,46 @@ function Get-Cf7RuntimeQueueRoot {
     return [IO.Path]::GetFullPath($QueueRoot).TrimEnd('\')
 }
 
+function Assert-Cf7RuntimeQueuePathBudget {
+    param(
+        [Parameter(Mandatory=$true)][string]$QueueRoot,
+        [string[]]$PayloadRelativePath = @(
+            'CRAZYFLASHER7MercenaryEmpire.exe',
+            'runtime/CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json',
+            'runtime/cf7-runtime-manifest.tsv'
+        )
+    )
+    $root = [IO.Path]::GetFullPath($QueueRoot).TrimEnd('\')
+    $hash = 'A' * 64
+    $guid = 'B' * 32
+    $diagnosticName = ('D' * 124) + '.log'
+    $probes = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($relativePath in $PayloadRelativePath) {
+        $relative = ([string]$relativePath).Replace('\','/')
+        if ([string]::IsNullOrWhiteSpace($relative) -or [IO.Path]::IsPathRooted($relative) -or
+                $relative -match '(^|/)\.\.(/|$)') {
+            throw "Unsafe payload path in runtime queue budget: $relative"
+        }
+        $nativeRelative = $relative.Replace('/','\')
+        [void]$probes.Add((Join-Path $root ("cas\candidates\$hash\$hash\$nativeRelative")))
+        [void]$probes.Add((Join-Path $root ("cas\candidates\$hash\.tmp.$guid\$nativeRelative")))
+    }
+    [void]$probes.Add((Join-Path $root ("results\$hash\.$hash.$guid.tmp\attestation.json")))
+    [void]$probes.Add((Join-Path $root ("requests\.request.$hash.$guid.tmp\source.bundle")))
+    [void]$probes.Add((Join-Path $root ("results\_failures\$hash\$guid\.failure.json.$guid.tmp")))
+    [void]$probes.Add((Join-Path $root ("results\_failures\$hash\$guid\d\$diagnosticName")))
+    [void]$probes.Add((Join-Path $root ("leases\.$hash.$guid.tmp\lease.json")))
+    $longest = @($probes | Sort-Object Length -Descending | Select-Object -First 1)[0]
+    if ($longest.Length -ge 260) {
+        throw "QueueRoot exceeds the runtime build MAX_PATH budget (projected=$($longest.Length), maximum=259): $root. Use a shorter queue root such as C:\cf7q."
+    }
+    $longestParent = @($probes | ForEach-Object { Split-Path -Parent $_ } |
+        Sort-Object Length -Descending | Select-Object -First 1)[0]
+    if ($longestParent.Length -ge 248) {
+        throw "QueueRoot exceeds the runtime build directory MAX_PATH budget (projected=$($longestParent.Length), maximum=247): $root. Use a shorter queue root such as C:\cf7q."
+    }
+}
+
 function Remove-Cf7LocalDirectoryTree {
     param(
         [Parameter(Mandatory=$true)][string]$Path,
@@ -335,6 +375,8 @@ function Copy-Cf7CandidateIntoCas {
     )
     Assert-Cf7QueueHash -Name buildIdentityHash -Value $BuildIdentityHash
     Assert-Cf7QueueHash -Name payloadClosureHash -Value $PayloadClosureHash
+    $payloadBudgetPaths = @($PayloadFiles | ForEach-Object { [string]$_.path }) + @('runtime/cf7-runtime-manifest.tsv')
+    Assert-Cf7RuntimeQueuePathBudget -QueueRoot $QueueRoot -PayloadRelativePath $payloadBudgetPaths
     $casRoot = Join-Path $QueueRoot 'cas\candidates'
     $identityCasRoot = Join-Path $casRoot $BuildIdentityHash.ToUpperInvariant()
     New-Item -ItemType Directory -Path $identityCasRoot -Force | Out-Null
@@ -348,7 +390,7 @@ function Copy-Cf7CandidateIntoCas {
         if ($LASTEXITCODE -ne 0) { throw 'Existing CAS candidate failed runtime v2 integrity verification.' }
         return $destination
     }
-    $temporary = Join-Path $identityCasRoot ('.' + $PayloadClosureHash + '.' + [Guid]::NewGuid().ToString('N') + '.tmp')
+    $temporary = Join-Path $identityCasRoot ('.tmp.' + [Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $temporary -Force | Out-Null
     try {
         foreach ($row in $PayloadFiles) {
@@ -496,7 +538,7 @@ function Write-Cf7RuntimeBuildFailure {
     if (-not [string]::IsNullOrWhiteSpace($DiagnosticRoot)) {
         try {
             $diagnosticFiles = @(Copy-Cf7RuntimeFailureDiagnostics -SourceRoot $DiagnosticRoot `
-                -DestinationRoot (Join-Path $directory 'diagnostics'))
+                -DestinationRoot (Join-Path $directory 'd'))
         } catch {
             # Diagnostic capture must never mask the original producer failure.
             $diagnosticCaptureError = $_.Exception.Message

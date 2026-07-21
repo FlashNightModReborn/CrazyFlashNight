@@ -15,15 +15,7 @@ function Assert-QueueTest([bool]$Condition, [string]$Message) {
 }
 
 if ([string]::IsNullOrWhiteSpace($TestTempRoot)) {
-    $systemTempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
-    $systemTestRootProbe = Join-Path $systemTempRoot 'rq-12345678'
-    $systemCasProbe = Join-Path $systemTestRootProbe ('queue\cas\candidates\' + ('A' * 64) + '\.' + ('B' * 64) + '.' + ('C' * 32) + '.tmp\CRAZYFLASHER7MercenaryEmpire.exe')
-    if ($systemCasProbe.Length -lt 260) {
-        $TestTempRoot = $systemTempRoot
-    } else {
-        $TestTempRoot = Join-Path ([IO.Path]::GetPathRoot($ProjectRoot)) 'tmp'
-        Write-Host "[RuntimeBuildQueueTest] System temp exceeds MAX_PATH budget; using short root $TestTempRoot" -ForegroundColor Yellow
-    }
+    $TestTempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
 }
 $TestTempRoot = [IO.Path]::GetFullPath($TestTempRoot).TrimEnd('\')
 $testFilesystemRoot = [IO.Path]::GetPathRoot($TestTempRoot)
@@ -34,15 +26,6 @@ if ($TestTempRoot.StartsWith('\\', [StringComparison]::Ordinal) -or
 New-Item -ItemType Directory -Path $TestTempRoot -Force | Out-Null
 $testRoot = [IO.Path]::GetFullPath((Join-Path $TestTempRoot ('rq-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)))).TrimEnd('\')
 if (-not $testRoot.StartsWith($TestTempRoot + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe runtime queue test path.' }
-$pathBudgetProbes = @(
-    (Join-Path $testRoot ('legacy-queue\results\_failures\' + ('A' * 64) + '\' + ('B' * 32) + '\.failure.json.' + ('C' * 32) + '.tmp')),
-    (Join-Path $testRoot ('queue\cas\candidates\' + ('A' * 64) + '\.' + ('B' * 64) + '.' + ('C' * 32) + '.tmp\CRAZYFLASHER7MercenaryEmpire.exe')),
-    (Join-Path $testRoot ('queue\results\' + ('A' * 64) + '\' + ('B' * 64) + '\.' + ('C' * 32) + '.tmp\attestation.json'))
-)
-$longestPathProbe = @($pathBudgetProbes | Sort-Object Length -Descending)[0]
-if ($longestPathProbe.Length -ge 260) {
-    throw "Runtime queue test temp root exceeds the MAX_PATH budget (projected=$($longestPathProbe.Length), maximum=259). Use -TestTempRoot C:\tmp."
-}
 $fixtureName = 'QueueFreezeFixture.cs'
 $fixtureRepo = Join-Path $testRoot 'repo'
 $fixturePath = Join-Path $fixtureRepo ('launcher\src\' + $fixtureName)
@@ -50,6 +33,46 @@ $checks = 0
 $originalGitIndexFile = $env:GIT_INDEX_FILE
 $customIndex = $null
 $externalCheckoutRoots = New-Object 'System.Collections.Generic.List[string]'
+$externalQueueRoots = New-Object 'System.Collections.Generic.List[string]'
+$shortQueueParent = Join-Path $testFilesystemRoot 'tmp'
+New-Item -ItemType Directory -Path $shortQueueParent -Force | Out-Null
+
+function New-ShortQueueTestRoot([string]$Prefix) {
+    if ($Prefix -notmatch '^[a-z]$') { throw 'Short queue test prefix must be one lowercase letter.' }
+    while ($true) {
+        $candidate = Join-Path $shortQueueParent ($Prefix + [Guid]::NewGuid().ToString('N').Substring(0, 4))
+        try {
+            New-Item -ItemType Directory -Path $candidate -ErrorAction Stop | Out-Null
+            break
+        } catch {
+            if (Test-Path -LiteralPath $candidate) { continue }
+            throw
+        }
+    }
+    $externalQueueRoots.Add($candidate)
+    Assert-Cf7RuntimeQueuePathBudget -QueueRoot $candidate
+    return $candidate
+}
+
+$fileBoundaryRoot = Join-Path $shortQueueParent 'q1234'
+Assert-Cf7RuntimeQueuePathBudget -QueueRoot $fileBoundaryRoot
+$fileBoundaryRejected = $false
+try { Assert-Cf7RuntimeQueuePathBudget -QueueRoot (Join-Path $shortQueueParent 'q12345') }
+catch { $fileBoundaryRejected = $_.Exception.Message.Contains('runtime build MAX_PATH budget') }
+Assert-QueueTest $fileBoundaryRejected 'QueueRoot file boundary did not accept 259 and reject 260 characters'
+
+$hash = 'A' * 64
+$casPayloadPrefix = Join-Path $fileBoundaryRoot ("cas\candidates\$hash\$hash")
+$acceptedParentSegmentLength = 247 - $casPayloadPrefix.Length - 1
+if ($acceptedParentSegmentLength -lt 1) { throw 'Cannot construct the runtime queue parent-path boundary fixture.' }
+Assert-Cf7RuntimeQueuePathBudget -QueueRoot $fileBoundaryRoot `
+    -PayloadRelativePath ((('p' * $acceptedParentSegmentLength) + '/x'))
+$parentBoundaryRejected = $false
+try {
+    Assert-Cf7RuntimeQueuePathBudget -QueueRoot $fileBoundaryRoot `
+        -PayloadRelativePath ((('p' * ($acceptedParentSegmentLength + 1)) + '/x'))
+} catch { $parentBoundaryRejected = $_.Exception.Message.Contains('directory MAX_PATH budget') }
+Assert-QueueTest $parentBoundaryRejected 'QueueRoot parent boundary did not accept 247 and reject 248 characters'
 
 if (Test-Path -LiteralPath $testRoot) { Remove-Cf7LocalDirectoryTree -Path $testRoot -AllowedRoot $TestTempRoot }
 New-Item -ItemType Directory -Path $testRoot -Force | Out-Null
@@ -162,8 +185,31 @@ try {
     Copy-Item -LiteralPath (Join-Path $gitDirectory 'index') -Destination $customIndex
     $env:GIT_INDEX_FILE = $customIndex
 
-    $queueRoot = Join-Path $testRoot 'queue'
+    $queueRoot = New-ShortQueueTestRoot -Prefix 'q'
     $newRequestScript = Join-Path $ProjectRoot 'tools\new-runtime-build-request.ps1'
+    $longQueueRoot = Join-Path $testRoot ('queue-' + ('x' * 96))
+    $longQueueRequestFailed = $false
+    try { & $newRequestScript -ProjectRoot $fixtureRepo -QueueRoot $longQueueRoot -SourceKind Index | Out-Null }
+    catch {
+        $longQueueRequestFailed = $_.Exception.Message.Contains('QueueRoot exceeds the runtime build MAX_PATH budget')
+    }
+    Assert-QueueTest $longQueueRequestFailed 'request creation did not reject an over-budget QueueRoot before materialization'
+    Assert-QueueTest (-not (Test-Path -LiteralPath $longQueueRoot)) 'over-budget request created queue state before failing'
+
+    $workerScript = Join-Path $ProjectRoot 'tools\invoke-runtime-build-worker.ps1'
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $workerOutput = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $workerScript `
+            -ProjectRoot $ProjectRoot -QueueRoot $longQueueRoot -WorkerId 'queue-path-budget-test' `
+            -CertificateThumbprint ('0' * 40) -Once -DryRun 2>&1)
+        $workerExitCode = $LASTEXITCODE
+    } finally { $ErrorActionPreference = $previousPreference }
+    Assert-QueueTest ($workerExitCode -ne 0) 'worker accepted an over-budget QueueRoot'
+    Assert-QueueTest (($workerOutput -join "`n").Contains('QueueRoot exceeds the runtime build MAX_PATH budget')) `
+        'worker did not fail at the QueueRoot path-budget gate'
+    Assert-QueueTest (-not (Test-Path -LiteralPath $longQueueRoot)) 'over-budget worker created queue state before failing'
+
     $requestA = & $newRequestScript -ProjectRoot $fixtureRepo -QueueRoot $queueRoot -SourceKind Index
     $requestB = & $newRequestScript -ProjectRoot $fixtureRepo -QueueRoot $queueRoot -SourceKind Index
     Assert-QueueTest ([string]$requestA.schema -eq 'cf7-runtime-build-request.v2') 'sparse request did not use the v2 schema'
@@ -258,7 +304,7 @@ try {
         & git -C $fixtureRepo update-ref -d $fullBundleRef 2>$null
     }
     $createdAt = [DateTime]::UtcNow.ToString('o')
-    $legacyQueue = Join-Path $testRoot 'legacy-queue'
+    $legacyQueue = New-ShortQueueTestRoot -Prefix 'l'
     Initialize-Cf7RuntimeQueue -QueueRoot $legacyQueue
     $legacyDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $legacyQueue -RequestId ([string]$treeRequest.requestId)
     New-Item -ItemType Directory -Path $legacyDirectory -Force | Out-Null
@@ -290,7 +336,7 @@ try {
         'legacy worker did not clean its short-path checkout'
     $checks++
 
-    $undeclaredQueue = Join-Path $testRoot 'undeclared-v2-queue'
+    $undeclaredQueue = New-ShortQueueTestRoot -Prefix 'u'
     Initialize-Cf7RuntimeQueue -QueueRoot $undeclaredQueue
     $undeclaredDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $undeclaredQueue -RequestId ([string]$treeRequest.requestId)
     New-Item -ItemType Directory -Path $undeclaredDirectory -Force | Out-Null
@@ -323,7 +369,7 @@ try {
     # A secondary queue-write failure must not replace the original worker diagnosis. A regular
     # file at the request's failure-directory path deterministically blocks diagnostic persistence
     # on PowerShell 5/7 and regardless of the host's LongPathsEnabled setting.
-    $failureMaskQueue = Join-Path $testRoot 'failure-mask-queue'
+    $failureMaskQueue = New-ShortQueueTestRoot -Prefix 'f'
     Initialize-Cf7RuntimeQueue -QueueRoot $failureMaskQueue
     $failureMaskDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $failureMaskQueue -RequestId ([string]$treeRequest.requestId)
     New-Item -ItemType Directory -Path $failureMaskDirectory -Force | Out-Null
@@ -384,12 +430,21 @@ try {
     $failureDiagnosticRoot = Join-Path $testRoot 'failure-diagnostics'
     New-Item -ItemType Directory -Path $failureDiagnosticRoot -Force | Out-Null
     [IO.File]::WriteAllText((Join-Path $failureDiagnosticRoot 'bootstrap.log'), 'bounded bootstrap diagnostic', $encoding)
+    $longDiagnosticName = ('d' * 124) + '.log'
+    [IO.File]::WriteAllText((Join-Path $failureDiagnosticRoot $longDiagnosticName), 'maximum-name diagnostic', $encoding)
     Write-Cf7RuntimeBuildFailure -QueueRoot $queueRoot -Request $requestA -WorkerId 'lease-worker-b' `
         -Message 'intentional queue test failure' -DiagnosticRoot $failureDiagnosticRoot
-    $capturedDiagnostics = @(Get-ChildItem -LiteralPath (Join-Path $queueRoot 'results\_failures') `
-        -Filter 'bootstrap.log' -File -Recurse)
-    Assert-QueueTest ($capturedDiagnostics.Count -eq 1 -and
-        [IO.File]::ReadAllText($capturedDiagnostics[0].FullName) -eq 'bounded bootstrap diagnostic') `
+    $capturedDiagnostics = @(Get-ChildItem -LiteralPath (Join-Path $queueRoot 'results\_failures') -File -Recurse |
+        Where-Object { $_.Name -eq 'bootstrap.log' -or $_.Name -eq $longDiagnosticName })
+    $bootstrapDiagnostic = @($capturedDiagnostics | Where-Object Name -eq 'bootstrap.log')
+    $maximumNameDiagnostic = @($capturedDiagnostics | Where-Object Name -eq $longDiagnosticName)
+    $failureRecord = Read-Cf7QueueJson -Path (@(Get-ChildItem -LiteralPath (Join-Path $queueRoot 'results\_failures') `
+        -Filter 'failure.json' -File -Recurse)[0].FullName)
+    Assert-QueueTest ($capturedDiagnostics.Count -eq 2 -and $bootstrapDiagnostic.Count -eq 1 -and
+        $maximumNameDiagnostic.Count -eq 1 -and
+        [IO.File]::ReadAllText($bootstrapDiagnostic[0].FullName) -eq 'bounded bootstrap diagnostic' -and
+        [IO.File]::ReadAllText($maximumNameDiagnostic[0].FullName) -eq 'maximum-name diagnostic' -and
+        [string]::IsNullOrWhiteSpace([string]$failureRecord.diagnosticCaptureError)) `
         'worker failure diagnostics were not boundedly persisted before checkout cleanup'
     $failed = Get-Cf7RuntimeBuildRequestState -QueueRoot $queueRoot -Request $requestA -RegistryPath (Join-Path $fixtureRepo 'missing-registry.json') -AttestationValidator { param($a,$r) }
     Assert-QueueTest ($failed.status -eq 'failed') 'failed request state was not surfaced'
@@ -399,6 +454,7 @@ try {
     New-Item -ItemType Directory -Path (Join-Path $candidate 'runtime') -Force | Out-Null
     [IO.File]::WriteAllText((Join-Path $candidate 'CRAZYFLASHER7MercenaryEmpire.exe'), 'queue-bootstrap', $encoding)
     [IO.File]::WriteAllText((Join-Path $candidate 'runtime\queue-fixture.dll'), 'queue-payload', $encoding)
+    [IO.File]::WriteAllText((Join-Path $candidate 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json'), '{}'+"`n", $encoding)
     $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $fixtureRepo -DeploymentRoot $candidate
     $manifestLines = New-Object 'System.Collections.Generic.List[string]'
     foreach ($line in @(
@@ -454,6 +510,9 @@ try {
     if ($customIndex -and (Test-Path -LiteralPath $customIndex)) { Remove-Item -LiteralPath $customIndex -Force }
     foreach ($checkoutRoot in $externalCheckoutRoots) {
         if (Test-Path -LiteralPath $checkoutRoot) { Remove-Cf7LocalDirectoryTree -Path $checkoutRoot -AllowedRoot $TestTempRoot }
+    }
+    foreach ($queueTestRoot in $externalQueueRoots) {
+        if (Test-Path -LiteralPath $queueTestRoot) { Remove-Cf7LocalDirectoryTree -Path $queueTestRoot -AllowedRoot $shortQueueParent }
     }
     if (Test-Path -LiteralPath $testRoot) { Remove-Cf7LocalDirectoryTree -Path $testRoot -AllowedRoot $TestTempRoot }
 }

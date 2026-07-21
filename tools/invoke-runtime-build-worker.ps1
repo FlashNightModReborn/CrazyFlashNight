@@ -36,6 +36,7 @@ if ($PollSeconds -lt 1) { throw 'PollSeconds must be positive.' }
 if (-not $RegistryPath) { $RegistryPath = Join-Path $ProjectRoot 'config\build\runtime-builders.v2.json' }
 if ($BuildCommand) { $BuildCommand = (Resolve-Path -LiteralPath $BuildCommand).Path }
 $QueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
+Assert-Cf7RuntimeQueuePathBudget -QueueRoot $QueueRoot
 Initialize-Cf7RuntimeQueue -QueueRoot $QueueRoot
 if ([string]::IsNullOrWhiteSpace($CheckoutRoot)) {
     $localRoot = if (-not [string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
