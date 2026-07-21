@@ -413,9 +413,13 @@ var EquipmentTuningView = (function() {
         var completed = this._completeWrite(operation, !!needsRefresh, function(result) {
             if (self._inventoryWriteHandle !== operation) return;
             self._inventoryWriteHandle = null;
+            self._busy = false;
             if (typeof callback === 'function') callback(result);
         });
-        if (!completed && this._inventoryWriteHandle === operation) this._inventoryWriteHandle = null;
+        if (!completed && this._inventoryWriteHandle === operation) {
+            this._inventoryWriteHandle = null;
+            this._busy = false;
+        }
         return !!completed;
     };
 
@@ -435,9 +439,10 @@ var EquipmentTuningView = (function() {
         this._busy = true;
         this._status = '正在提交，期间不会重放';
         this.render();
+        var commitResponseSettled = false;
         var callId = this._mux.request('commit', {expectedTuningToken:String(this._preview.tuningToken)}, function(response) {
+            commitResponseSettled = true;
             if (self._inventoryWriteHandle !== inventoryWrite) return;
-            self._busy = false;
             var ambiguous = EquipmentTuningRuntime.isAmbiguous(response);
             var noOp = !!(response && response.success === true && response.noOp);
             if (response && response.success === true) {
@@ -478,14 +483,13 @@ var EquipmentTuningView = (function() {
             self.render();
         });
         if (!callId && this._inventoryWriteHandle === inventoryWrite) {
-            this._busy = false;
             this._needsReconcile = false;
             this._lastCommitCallId = '';
             this._status = errorMessage('not_sent');
             this._finishInventoryWrite(inventoryWrite, false, function() { self.requestSnapshot(); });
             this._emit();
             this.render();
-        } else if (this._busy) {
+        } else if (!commitResponseSettled) {
             // RequestMux can settle a definitive local send failure synchronously. Keep
             // the generated watermark while the request is still pending. A synchronously
             // settled ambiguous response may already have replaced it with a Host hint.

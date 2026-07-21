@@ -14,10 +14,10 @@
 <body>
 <div id="host"></div><pre id="qa-output">running…</pre>
 <script>
-window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;window.__inspectorCalls=[];window.__inspectorOpen=false;window.__inspectorCloseCount=0;
+window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;window.__inspectorCalls=[];window.__inspectorOpen=false;window.__inspectorCloseCount=0;window.__holdInventoryRefreshOnce=false;window.__heldInventoryRefresh=null;window.__syncCommitResponseOnce=false;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
-  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));var delay=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce?80:0;if(delay)__delayEnhancePreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
+  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='commit'&&__syncCommitResponseOnce){__syncCommitResponseOnce=false;respond(message);return true}var delay=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce?80:0;if(delay)__delayEnhancePreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
 };
 window.Toast={add:function(message){__toasts.push(message)}};
 window.Icons={
@@ -113,7 +113,7 @@ function respond(message){var result=base(message);
       openInspector:function(item,gender,role){__inspectorCalls.push({item:JSON.parse(JSON.stringify(item)),gender:gender,role:role});__inspectorOpen=true;return true},
       closeInspector:function(){if(!__inspectorOpen)return false;__inspectorOpen=false;__inspectorCloseCount++;return true},
       beginWrite:function(owner){if(__writeHandle)return false;var handle={id:++__writeSeq};__writeHandle=handle;__writes.push({kind:'begin',owner:owner,handle:handle});return handle},
-      completeWrite:function(handle,refresh,callback){if(!handle||handle!==__writeHandle)return false;__writeHandle=null;__writes.push({kind:'complete',refresh:refresh,handle:handle});setTimeout(function(){if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})},0);return true},
+      completeWrite:function(handle,refresh,callback){if(!handle||handle!==__writeHandle)return false;__writes.push({kind:'complete',refresh:refresh,handle:handle});var finish=function(){if(handle!==__writeHandle)return;__writeHandle=null;if(refresh&&__failRefreshOnce){__failRefreshOnce=false;callback({success:false,error:'inventory_refresh_failed'});return}if(__rotateLeaseOnRefresh){__rotateLeaseOnRefresh=false;slots[2].slotLease='lease.2.external'}callback({success:true})};if(refresh&&__holdInventoryRefreshOnce){__holdInventoryRefreshOnce=false;__heldInventoryRefresh=finish}else setTimeout(finish,0);return true},
       refreshInventory:function(callback){__writes.push({kind:'retry-refresh'});setTimeout(function(){__refreshRetryCount++;slots[2].slotLease='lease.2.recovered.'+__refreshRetryCount;callback({success:true,refreshed:true})},0);return true},
       resolveSlot:function(_,slot){return slots[slot]||null}});
     window.__tuningView=view;
@@ -138,7 +138,12 @@ function respond(message){var result=base(message);
     ok('enhance preview sends intent without formula',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='enhance'&&x.payload.targetLevel===6&&!x.payload.materials}));
     ok('enhance material delta is merged into the DLS reactor without a duplicate footer row',document.querySelector('.equipment-tuning-reactor-spend').textContent.indexOf('消耗 3')>=0&&document.querySelector('.equipment-tuning-reactor-spend').textContent.indexOf('强化后剩余 208,586')>=0&&!document.querySelector('.equipment-tuning-material-deltas')&&document.querySelector('.equipment-tuning-preview.enhance-compact'));
     ok('enhance result stays in the reactor readout while the footer collapses to commit only',document.querySelector('.equipment-tuning-reactor-readout').textContent.indexOf('+5→+6')>=0&&document.querySelectorAll('.equipment-tuning-preview.enhance-compact > *').length===1&&document.querySelector('.equipment-tuning-preview.enhance-compact > .equipment-tuning-commit'));
-    document.querySelector('.equipment-tuning-commit').click();await until(function(){return !view.debugState().busy&&view.debugState().hasSnapshot});
+    __holdInventoryRefreshOnce=true;__syncCommitResponseOnce=true;var snapshotsBeforeCommit=__sent.filter(function(x){return x.cmd==='snapshot'}).length;
+    document.querySelector('.equipment-tuning-commit').click();await until(function(){return typeof __heldInventoryRefresh==='function'});
+    var pendingSource=view.debugState().source,pendingSelectionAccepted=view.handleInventorySelection(slots[3]);
+    ok('commit remains product-busy until inventory refresh settles',view.debugState().busy&&view.debugState().inventoryWritePending&&view.debugState().lastCommitCallId===''&&!pendingSelectionAccepted&&view.debugState().source===pendingSource&&__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeCommit);
+    var finishHeldInventoryRefresh=__heldInventoryRefresh;__heldInventoryRefresh=null;finishHeldInventoryRefresh();
+    await until(function(){var state=view.debugState();return !state.busy&&!state.inventoryWritePending&&!state.readPending&&state.hasSnapshot&&state.source.expectedLease==='lease.2.2'});
     var commits=__sent.filter(function(x){return x.cmd==='commit'});
     ok('commit sends token only',commits.length===1&&commits[0].payload.expectedTuningToken.indexOf('token.enhance')===0&&commits[0].payload.operation===undefined&&commits[0].payload.source===undefined);
     ok('commit holds the same inventory write capability through refresh',__writes[0].kind==='begin'&&__writes[0].owner==='equipment_tuning.commit'&&__writes[1].kind==='complete'&&__writes[1].refresh===true&&__writes[1].handle===__writes[0].handle&&!view.debugState().inventoryWritePending);
@@ -200,11 +205,11 @@ function respond(message){var result=base(message);
     ok('installed mod exposes a dedicated single-detach control',!!document.querySelector('.equipment-tuning-installed-quick-detach'));
     view.setModConfirmationMode('fast');var quickReplaceBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
     document.querySelector('.equipment-tuning-candidate.available').click();
-    await until(function(){return __sent.filter(function(x){return x.cmd==='commit'}).length===quickReplaceBefore+1&&!view.debugState().busy&&view.debugState().hasSnapshot});
+    await until(function(){var state=view.debugState();return __sent.filter(function(x){return x.cmd==='commit'}).length===quickReplaceBefore+1&&!state.busy&&!state.inventoryWritePending&&!state.readPending&&state.hasSnapshot});
     var quickReplaceCommit=__sent.filter(function(x){return x.cmd==='commit'})[quickReplaceBefore];
     ok('fast replacement still previews then commits a token-only request',view.debugState().modConfirmationMode==='fast'&&!!quickReplaceCommit&&quickReplaceCommit.payload.expectedTuningToken.indexOf('token.replace_mod')===0&&Object.keys(quickReplaceCommit.payload).sort().join(',')==='expectedTuningToken,v,viewSessionId');
     var quickDetachBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;document.querySelector('.equipment-tuning-installed-quick-detach').click();
-    await until(function(){return __sent.filter(function(x){return x.cmd==='commit'}).length===quickDetachBefore+1&&!view.debugState().busy&&view.debugState().hasSnapshot});
+    await until(function(){var state=view.debugState();return __sent.filter(function(x){return x.cmd==='commit'}).length===quickDetachBefore+1&&!state.busy&&!state.inventoryWritePending&&!state.readPending&&state.hasSnapshot});
     ok('fast single detach completes from its dedicated control',__sent.filter(function(x){return x.cmd==='commit'})[quickDetachBefore].payload.expectedTuningToken.indexOf('token.detach_mod')===0);
     document.querySelector('.equipment-tuning-detach').click();await wait();__collateralPreview=true;
     var collateralCommitBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;document.querySelector('.equipment-tuning-candidate.available').click();
@@ -219,7 +224,7 @@ function respond(message){var result=base(message);
     ok('definitive stale lease refreshes inventory before rebinding snapshot',__writes[__writes.length-1].refresh===true&&view.debugState().source.expectedLease==='lease.2.external');
     await until(function(){return view.debugState().hasPreview});
     __disconnectedCommit=true;var disconnectedBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;document.querySelector('.equipment-tuning-commit').click();
-    await until(function(){return !view.debugState().busy&&view.debugState().hasSnapshot&&!view.debugState().readPending});
+    await until(function(){var state=view.debugState();return !state.busy&&!state.inventoryWritePending&&state.hasSnapshot&&!state.readPending});
     var disconnectedCommit=__sent.filter(function(x){return x.cmd==='commit'})[disconnectedBefore];
     ok('definitive disconnected preflight never creates an undispatched barrier',!!disconnectedCommit&&!view.debugState().needsReconcile&&view.debugState().lastCommitCallId===''&&!__sent.some(function(x){return x.cmd==='snapshot'&&x.payload.reconcileAfterCallId===disconnectedCommit.callId}));
     await until(function(){return view.debugState().hasPreview});
