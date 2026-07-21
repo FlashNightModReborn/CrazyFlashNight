@@ -1,7 +1,7 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：当前源码 HEAD / `origin/main` 为 `2d19cd6681a0219749a58501271b6f1bd23cc28f`（2026-07-21 断电恢复后复核）；正式 v2 部署绑定 request `184428C21AF75D0BE8C24D33237AB265B20C0240ECC80AC32850CF17829E4420`、source commit `9f4669e03e59016f820df2424cc5b4851a1c566a` 与 release tree `168c49f782ab8add162ba2b9b3b1f5e1df378fba`。当前 dirty loot source-tree 功能门和 2026-07-21 13:46:54 +08 刷新的 Flash publish-only 产物都是独立证据层，不能替代正式 Core proof / quorum / promotion。
+**最后核对代码基线**：当前上游 `origin/main` 为 `b072f97841ccb30e167c14495241ae64d9054e22`（2026-07-21 发布前复核），`release/map-loot-20260721-final` 发布候选树位于其上且尚未 promotion；正式 v2 部署绑定 request `184428C21AF75D0BE8C24D33237AB265B20C0240ECC80AC32850CF17829E4420`、source commit `9f4669e03e59016f820df2424cc5b4851a1c566a` 与 release tree `168c49f782ab8add162ba2b9b3b1f5e1df378fba`。当前未 promotion 的 loot 发布候选 source-tree 功能门和 2026-07-21 13:46:54 +08 刷新的 Flash publish-only 产物都是独立证据层，不能替代正式 Core proof / quorum / promotion。
 
 ## 当前迁移状态
 
@@ -9,13 +9,13 @@ runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigsto
 
 v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入。该 marker 曾精确绑定 base `711c469036ad6b1226833faf255499abb1ebf2ed`、旧 artifact closure 与目标 builder registry 字节哈希，并在 legacy deployment 零变化时解决“cloud workflow 必须先进入 default branch”的 bootstrap 悖论；marker 后的首个部署提交已经完成完整 v2 promotion。CI 从此只接受 v2 strict 状态，并永久拒绝 v2 → v1 降级。
 
-当前源码 HEAD 已推进到 `2d19cd6681a0219749a58501271b6f1bd23cc28f`；正式部署对应 source commit `9f4669e03e59016f820df2424cc5b4851a1c566a`、build identity `B643463C39ACA1F9ED2BC5CA4F36F4C4A4E3A8F9D020A04CB379F9F83B2F6CB1` 与 payload closure `FA1EC72FEA78623653EA3D4E4794334A215E535FECE0597B003FA5BED09BD000`。该正式 B643/FA1 Core 已包含上游装备检视器版本，但不包含当前 dirty loot Host；2026-07-20 20:30:38 的真机日志先收到合法 nested loot open，随后 Router 返回 `unsupported`，据此定因为进程加载 formal 旧 Core 而非 candidate，不是 loot 实现失败，也不构成验收。因此“native 源码可先以 `source-ahead` 进入 main”“从隔离目录启动 diagnostic Core”和“正式游戏加载已 promotion 的 Core”仍是三件不同的事。root EXE、`runtime/**`、manifest、builder registry 或 consensus 若随 source-only 提交变化，事后 Audit 必须转入 strict 并在无匹配 promotion 时失败。
+当前上游基线 `origin/main` 已推进到 `b072f97841ccb30e167c14495241ae64d9054e22`，发布候选树位于其上；正式部署对应 source commit `9f4669e03e59016f820df2424cc5b4851a1c566a`、build identity `B643463C39ACA1F9ED2BC5CA4F36F4C4A4E3A8F9D020A04CB379F9F83B2F6CB1` 与 payload closure `FA1EC72FEA78623653EA3D4E4794334A215E535FECE0597B003FA5BED09BD000`。该正式 B643/FA1 Core 已包含上游装备检视器版本，但不包含当前发布候选的 loot Host；2026-07-20 20:30:38 的真机日志先收到合法 nested loot open，随后 Router 返回 `unsupported`，据此定因为进程加载 formal 旧 Core 而非 candidate，不是 loot 实现失败，也不构成验收。因此“native 源码可先以 `source-ahead` 进入 main”“从隔离目录启动 diagnostic Core”和“正式游戏加载已 promotion 的 Core”仍是三件不同的事。root EXE、`runtime/**`、manifest、builder registry 或 consensus 若随 source-only 提交变化，事后 Audit 必须转入 strict 并在无匹配 promotion 时失败。
 
 `chest-s0-a8a-local-r3/r4` 是 2026-07-18 基于 `a8a760a3cc` 的合并前同机、未注册身份诊断，不代表当前工作树或 release evidence。两次历史运行的 artifactSource `2A38A925F6E3AAA651983D0CC26F146691D616EB8078110D263F34A5633DD147`、producerRecipe `C02B7809FFDA2F8121928266192E9319EFE77AA5D78AB5AEDF4D9B866927A5E6`、toolchain `E1467B0FD239A08BECCE7FD9B08C8F456F31173201DC617086E3B81CEB167C85`、buildIdentity `EE335828E0FF0F25321C9C6E37FA6EFA73A17F4B6FA51CFA2D3D9FD332BFB5` 与 payloadClosure `B74B2A622823F890FD52285DDDC146BE1EFDDAB26FFA22E7B383387A3DECF15E` 当时全等；独立 verifier coherent（23 payload files），含 manifest 的 24 文件逐字节 delta 0，bootstrap verify exit 0。但它们没有 immutable request、production receipt、签名、不同 signer + `faultDomain` quorum 或 promotion，也没有启动 actual cross-stack，只能保留为历史 diagnostic。
 
 2026-07-19 本机构建阻塞已经解除：锁定 bootstrapper FileVersion `17.14.37502.11` 已把 side-by-side Build Tools 安装到 `C:\Program Files (x86)\CF7VS\BT1736`，cl `19.44.35228.0`、link `14.44.35228.0` 与 Windows SDK `rc` 均通过 lock 中的精确版本和 SHA-256 门；`bootstrap-runtime-build-env.ps1 -VerifyOnly` 与 `check-runtime-build-env.ps1` 均 exit `0`。安装后还修复了 Windows PowerShell 5.1 对 `vswhere` 顶层 JSON 数组的函数返回包装：现在逐实例输出，旧 VS 与 BT1736 不会被拼成一个虚假 `installationPath`，同一进程即可重新发现 side-by-side 实例。
 
-2026-07-19 的 `AE1FC1EF… / 172A85C6…` 23-file diagnostic candidate 曾在临时开发目录完成基础启动、map/tasks/NPC 与早期 loot claim/close/unpause/存盘诊断，并暴露 `TransparencyKey` 点击穿透、claim-all 收束与 terminal late-ack 问题；它不含后续修复，也不代表当前 `2d19cd66 + loot` 合并树。该 candidate 及其后的 FCA19/B2AF/231388 等合并前 loot diagnostic candidate 均已退役。当前最终开发树的隔离 candidate 位于 `tmp/runtime-candidates/v2/c-2a0cddb077b7-08846e81b3-20260721t100014612z-f32a40a3`，绑定 build identity `2A0CDDB077B760328B3141EFFFEEE3996841FA1CE49AD09E5D7339417F60A107`、payload closure `3B837DCDBC69AA47074E635DACACAE3B80263023E6032AC1FDF209768B1C150C` 与 Core SHA-256 `0F58BF864B8DE9C7FCEA098D7E1EEA1996BDE38D85D87E844B047B53F5247232`；corrected Agent entry、正常 NativeHud、同实例 organizer、普通 suspend/same-anchor 内容不变 reopen/final claim 已在该候选完成，因此单 canary 资源箱切片达到 `e2e_verified / NOT_DEPLOYED`。其 25-file native payload 不含 `launcher/web`，外部 Web 字节另由源码哈希与 WebView2 实机日志绑定，不能由 native identity/closure 代证。候选已优雅退出，且仍无 immutable request、production receipt、签名 quorum、promotion 或 standard-entry；这些开发证据不能直接作为 release evidence。
+2026-07-19 的 `AE1FC1EF… / 172A85C6…` 23-file diagnostic candidate 曾在临时开发目录完成基础启动、map/tasks/NPC 与早期 loot claim/close/unpause/存盘诊断，并暴露 `TransparencyKey` 点击穿透、claim-all 收束与 terminal late-ack 问题；它不含后续修复，也不代表以 `b072f97841ccb30e167c14495241ae64d9054e22` 为上游基线的当前 loot 发布候选树。该 candidate 及其后的 FCA19/B2AF/231388 等合并前 loot diagnostic candidate 均已退役。本轮人类 E2E 所用的隔离 candidate 位于 `tmp/runtime-candidates/v2/c-2a0cddb077b7-08846e81b3-20260721t100014612z-f32a40a3`，绑定 build identity `2A0CDDB077B760328B3141EFFFEEE3996841FA1CE49AD09E5D7339417F60A107`、payload closure `3B837DCDBC69AA47074E635DACACAE3B80263023E6032AC1FDF209768B1C150C` 与 Core SHA-256 `0F58BF864B8DE9C7FCEA098D7E1EEA1996BDE38D85D87E844B047B53F5247232`；corrected Agent entry、正常 NativeHud、同实例 organizer、普通 suspend/same-anchor 内容不变 reopen/final claim 已在该候选完成，因此单 canary 资源箱切片达到 `e2e_verified / NOT_DEPLOYED`。其 25-file native payload 不含 `launcher/web`，外部 Web 字节另由源码哈希与 WebView2 实机日志绑定，不能由 native identity/closure 代证。候选已优雅退出，且仍无 immutable request、production receipt、签名 quorum、promotion 或 standard-entry；这些开发证据不能直接作为 release evidence。
 
 ## 不变量
 
@@ -211,15 +211,17 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 .\tools\test-runtime-github-attestation.ps1
 .\tools\test-invoke-runtime-github-build.ps1
 .\tools\test-main-branch-admission.ps1
-.\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-runtime-release-state.ps1
 .\tools\test-runtime-build-consensus.ps1   # v1 migration guard
 .\tools\test-runtime-release-consensus-v2.ps1
+
+# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 408
+.\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-submit-contribution.ps1
 .\launcher\tests\run_tests.ps1
 ```
 
-最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **408** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
+最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **408** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当前 **9/9**，不计入 11 个入口或 408。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
 
 - candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
 - 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。

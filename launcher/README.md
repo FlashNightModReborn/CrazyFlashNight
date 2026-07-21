@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对代码基线**：commit `2d19cd6681a0219749a58501271b6f1bd23cc28f`（2026-07-21 断电恢复后复核）+ 当前地图资源箱发布候选树及 runtime v2 换机发布列车。当前纳入 Runtime 可复现构建、地图资源箱、attempt-bound Agent 入口与同面板 Loot organizer；既有 `equipment_tuning` 条目保留为上游基线，本列车不包含其 Web/harness 工作树改动。高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准，未重跑计数必须标为上游基线或待复验。
+> **最后核对代码基线**：上游 `origin/main` `b072f97841ccb30e167c14495241ae64d9054e22`（2026-07-21 发布前复核）+ 当前 `release/map-loot-20260721-final` 发布候选树及 runtime v2 换机发布列车。当前纳入 Runtime 可复现构建、地图资源箱、attempt-bound Agent 入口、同面板 Loot organizer，以及最小 `equipment_tuning` commit→inventory refresh capability 竞态修复与确定性 harness；其余装备调制条目保留为上游基线。高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准，未重跑计数必须标为上游基线或待复验。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 > **路径约定**：正文与代码块中以裸 `tools/` 开头的脚本路径，除 `launcher/tools/` 下三个小游戏工具（`lockbox-bake.js` / `run-minigame-qa.js` / `validate-minigame-final-state.js`）外，**默认相对仓库根**（`launcher/` 的上一级，从仓库根执行）；跨出 launcher 的 markdown 链接统一用 `../`。
 
@@ -826,7 +826,7 @@ powershell -File launcher/tests/run_tests.ps1
 
 ### Web QA 与开发 harness
 
-本节最后核对代码基线：commit `2d19cd6681a0219749a58501271b6f1bd23cc28f` + 当前工作台合并回归；未重跑计数按上游基线或待复验标注。
+本节最后核对上游基线：`origin/main` `b072f97841ccb30e167c14495241ae64d9054e22` + 当前发布候选工作台合并回归；未重跑计数按上游基线或待复验标注。
 
 小游戏测试不走 `launcher/tests/`，地图 panel 的 DOM / 布局 / 交互回归也不走 C# 单测；统一按各模块自带的 QA 入口执行：
 
@@ -1646,7 +1646,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 
 ### 面板系统（Panel System）
 
-本节最后核对代码基线：commit `2d19cd6681a0219749a58501271b6f1bd23cc28f` + 当前 Panel lifecycle/focus/tooltip、资源箱与 Agent attempt-bound 收紧工作树；Launcher source-tree 当前全量为 **1220/1220**，其中 AgentControl 定向 **29/29**。各功能条目残留的 **1210/1210** 仅表示该功能当轮快照，其余未重跑计数按上游基线或待复验标注。
+本节最后核对上游基线：`origin/main` `b072f97841ccb30e167c14495241ae64d9054e22` + 当前 Panel lifecycle/focus/tooltip、资源箱与 Agent attempt-bound 发布候选树；Launcher source-tree 当前全量为 **1220/1220**，其中 AgentControl 定向 **29/29**。各功能条目残留的 **1210/1210** 仅表示该功能当轮快照，其余未重跑计数按上游基线或待复验标注。
 
 全屏遮罩面板框架，用于承载需要独占交互的复杂 UI（商城、帮助、调试小游戏等），取代 Flash MovieClip 弹窗。
 

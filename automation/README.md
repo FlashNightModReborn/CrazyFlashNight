@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**最后核对代码基线**：HEAD / `origin/main` `2d19cd6681a0219749a58501271b6f1bd23cc28f`（2026-07-21 断电恢复后复核）+ 当前装备调制、资源箱 S0/S1/S2 与 runtime v2 合并工作树；source-tree、candidate 与 runtime 门按下文分层记录。
+**最后核对代码基线**：上游 `origin/main` `b072f97841ccb30e167c14495241ae64d9054e22`（2026-07-21 发布前复核）+ 当前 `release/map-loot-20260721-final` 未 promotion 发布候选树；source-tree、candidate 与 runtime 门按下文分层记录。
 
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
@@ -179,7 +179,7 @@ powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 
 正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
 
-正式 v2 consensus 当前绑定 request `184428C21AF75D0BE8C24D33237AB265B20C0240ECC80AC32850CF17829E4420`、source commit `9f4669e03e59016f820df2424cc5b4851a1c566a`、build identity `B643463C39ACA1F9ED2BC5CA4F36F4C4A4E3A8F9D020A04CB379F9F83B2F6CB1` 与 payload closure `FA1EC72FEA78623653EA3D4E4794334A215E535FECE0597B003FA5BED09BD000`；当前 HEAD / `origin/main` 为 `2d19cd6681a0219749a58501271b6f1bd23cc28f`，因此正式部署与当前源码仍须分层陈述。registry 只保存本地 builder 公钥，GitHub 证明通过 keyless provenance 验真。换机账户没有复制 `builder-local-a` 的历史私钥；维护者确认这是新的真实物理机后，已 enrollment `builder-local-b` / `physical-host-b`，CurrentUser 不可导出 key 的 keyId 为 `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`、thumbprint 为 `141A0B12F18A1C25C2BF4A32B3C279F81C44D007`，其公钥 entry 已加入待发布 registry。只有该 registry 与完整 source/policy 一起进入 immutable commit 后，本机才能签正式 local proof；cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch，并以 GitHub hosted OIDC/Sigstore 提供不同故障域的第二票。
+正式 v2 consensus 当前绑定 request `184428C21AF75D0BE8C24D33237AB265B20C0240ECC80AC32850CF17829E4420`、source commit `9f4669e03e59016f820df2424cc5b4851a1c566a`、build identity `B643463C39ACA1F9ED2BC5CA4F36F4C4A4E3A8F9D020A04CB379F9F83B2F6CB1` 与 payload closure `FA1EC72FEA78623653EA3D4E4794334A215E535FECE0597B003FA5BED09BD000`；当前上游基线 `origin/main` 为 `b072f97841ccb30e167c14495241ae64d9054e22`，发布候选树位于其上，因此正式部署与当前源码仍须分层陈述。registry 只保存本地 builder 公钥，GitHub 证明通过 keyless provenance 验真。换机账户没有复制 `builder-local-a` 的历史私钥；维护者确认这是新的真实物理机后，已 enrollment `builder-local-b` / `physical-host-b`，CurrentUser 不可导出 key 的 keyId 为 `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`、thumbprint 为 `141A0B12F18A1C25C2BF4A32B3C279F81C44D007`，其公钥 entry 已加入待发布 registry。只有该 registry 与完整 source/policy 一起进入 immutable commit 后，本机才能签正式 local proof；cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch，并以 GitHub hosted OIDC/Sigstore 提供不同故障域的第二票。
 
 ```powershell
 $queueRoot = 'C:\cf7q' # 本列车专用短根；不得与未 ready/superseded 的旧 request 混跑

@@ -1,7 +1,7 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `2d19cd6681a0219749a58501271b6f1bd23cc28f`（2026-07-21 断电恢复后复核）+ 当前 `publish/asloader` 别名隐式 publish-only 修复工作树。
+**最后核对代码基线**：上游基线 commit `b072f97841ccb30e167c14495241ae64d9054e22`（`origin/main`，2026-07-21 发布前复核）+ 当前发布候选树中的 `publish/asloader` 别名隐式 publish-only 修复。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
