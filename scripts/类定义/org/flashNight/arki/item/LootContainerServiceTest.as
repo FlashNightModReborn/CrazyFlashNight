@@ -4,6 +4,7 @@ import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootContainerService;
+import org.flashNight.arki.item.LootContainerValidation;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.InformationCollection;
@@ -30,6 +31,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         installMetadata();
 
         testReservationKillGateAndOverwrite();
+        testBreakGuardIsTargetScopedAcrossSuspendedAndPending();
         testMaterializedInventoryValidationFence();
         testReservationKillUnavailableRecovery();
         testReservationActivationGateRecovery();
@@ -76,6 +78,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testSuspendAnchorFailureIsZeroAuthority();
         testSuspendedAnchorUnloadExpires();
         testReliablePanelOpenCallbacks();
+        testPanelOpenAckDispositionAndUncertainRecovery();
         testRecoveryProofStrictShapeAndNonce();
         testInitialRecoveryBeforeAckProof();
         testConnectedPanelRecoverySignal();
@@ -467,6 +470,82 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && activeBreak.handled && activeBreak.reason == "loot_authority_active",
             "kill proof 后重复 death/open-frame 均幂等且不推进 revision");
         LootContainerService.expireScene("scene_cleanup");
+    }
+
+    private static function testBreakGuardIsTargetScopedAcrossSuspendedAndPending():Void {
+        var previousServer:Object = _root.server;
+        try {
+            resetWorld();
+            var suspendedFlow:Object = activate(
+                [stack(STACK, 1, 83)], "s1.break-guard-suspended");
+            var suspendedAuthority:Object = snapshot(suspendedFlow);
+            var suspended:Object = LootContainerService.execute("close", closeParams(
+                suspendedAuthority, "close.break-guard-suspended",
+                suspendedAuthority.closeLease, false));
+            LootContainerService.releaseSuspendedPauseForClose();
+            var sameSuspended:Object = LootContainerService.guardBreakGrid(
+                suspendedFlow.target);
+            var otherSuspended:Object = LootContainerService.guardBreakGrid(
+                makeTarget("s1.break-other-suspended"));
+            var malformedSuspendedTarget:Object = makeTarget(
+                "s1.break-malformed-suspended");
+            malformedSuspendedTarget.row = 0;
+            malformedSuspendedTarget.col = 1;
+            var malformedSuspended:Object = LootContainerService.guardBreakGrid(
+                malformedSuspendedTarget);
+            check(suspended.success && suspended.state == "LOOT_SUSPENDED"
+                    && sameSuspended.handled
+                    && sameSuspended.reason == "loot_suspended"
+                    && !otherSuspended.handled
+                    && otherSuspended.reason == "break_direct_drop"
+                    && malformedSuspended.handled
+                    && malformedSuspended.reason == "unsupported_grid_shape",
+                "suspended A 只拦同箱与 malformed；合法正网格 B 破碎继续 direct drop");
+            LootContainerService.expireScene("scene_cleanup");
+
+            resetWorld();
+            var sent:Array = [];
+            var callbacks:Array = [];
+            installPanelTransport(sent, callbacks);
+            var pendingFlow:Object = activate(
+                [stack(STACK, 1, 84)], "s1.break-guard-pending");
+            LootContainerService.requestOpenPanel();
+            var openAttemptSeq:Number = Number(
+                sent[0].payload.initData.openAttemptSeq);
+            var pendingAuthority:Object = snapshot(pendingFlow);
+            LootContainerService.testOnlyFailNextPostCommit("dirty");
+            var pending:Object = LootContainerService.execute("claim", claimParams(
+                pendingAuthority, 0, "claim.break-guard-pending"));
+            var samePending:Object = LootContainerService.guardBreakGrid(
+                pendingFlow.target);
+            var otherPending:Object = LootContainerService.guardBreakGrid(
+                makeTarget("s1.break-other-pending"));
+            var malformedPendingTarget:Object = makeTarget(
+                "s1.break-malformed-pending");
+            malformedPendingTarget.row = 0;
+            malformedPendingTarget.col = 1;
+            var malformedPending:Object = LootContainerService.guardBreakGrid(
+                malformedPendingTarget);
+            callbacks[0]({success:false, error:"callback timeout"});
+            var terminal:Object = LootContainerService.execute("query",
+                proofQueryParams(pendingAuthority, openAttemptSeq,
+                    "pending-timeout-socket-proof"));
+            check(!pending.success && pending.error == "commit_pending"
+                    && pending.state == "LOOT_COMMIT_PENDING"
+                    && samePending.handled
+                    && samePending.reason == "claim_commit_pending"
+                    && !otherPending.handled
+                    && otherPending.reason == "break_direct_drop"
+                    && malformedPending.handled
+                    && malformedPending.reason == "unsupported_grid_shape"
+                    && _root.server.forcedReasons.length == 1
+                    && terminal.success && terminal.state == "CONSUMED"
+                    && pendingFlow.inventory.getItem("0") == null
+                    && _root.物品栏.背包.getItem("0") != null,
+                "pending A 的 B 破碎不丢奖励；未知 ACK 断 generation 后结清 journal 与 exact proof");
+        } finally {
+            _root.server = previousServer;
+        }
     }
 
     private static function testMaterializedInventoryValidationFence():Void {
@@ -1000,7 +1079,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var item:BaseItem = equipment(3951);
             var flow:Object = activate([item], "s1.detach-unpause-last-item");
             LootContainerService.requestOpenPanel();
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             var openAttemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
             var sourceEvents:Number = 0;
             var destinationEvents:Number = 0;
@@ -1061,7 +1140,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var item:BaseItem = equipment(3952);
             var flow:Object = activate([item], "s1.detach-conflict");
             LootContainerService.requestOpenPanel();
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             var openAttemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
             var authority:Object = snapshot(flow);
 
@@ -1344,7 +1423,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var resumed:Object = LootContainerService.resumeSuspended(flow.target);
             var staleClose:Object = LootContainerService.execute("close", suspendRequest);
             var after:Object = LootContainerService.execute("query", queryParams(before));
-            if (callbacks.length > 0) callbacks[0]({success:true, accepted:true});
+            if (callbacks.length > 0) callbacks[0](panelOpenAcceptedAck());
             check(resumed.success && resumed.reopened && resumed.state == "LOOT_ACTIVE"
                     && resumed.chestSessionId == before.chestSessionId
                     && resumed.lootContainerId == before.lootContainerId
@@ -1407,7 +1486,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && resumed.chestSessionId == before.chestSessionId
                     && sent.length == 1 && flow.target.stopCount == 1,
                 "同步 no-send 保持 SUSPENDED anchor；transport 恢复后仍以原对象重开");
-            if (callbacks.length > 0) callbacks[0]({success:true, accepted:true});
+            if (callbacks.length > 0) callbacks[0](panelOpenAcceptedAck());
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
@@ -1464,7 +1543,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.releaseSuspendedPauseForClose();
 
             var first:Object = LootContainerService.resumeSuspended(flow.target);
-            callbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[0](panelOpenRejectedAck("panel_busy"));
             var suspended:Object = LootContainerService.execute("query", queryParams(before));
             var guarded:Object = LootContainerService.beginMapChestOpen(flow.target);
 
@@ -1472,7 +1551,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var second:Object = LootContainerService.resumeSuspended(flow.target);
             callbacks[0]({success:false, error:"callback timeout"});
             var active:Object = LootContainerService.execute("query", queryParams(before));
-            if (callbacks.length > 1) callbacks[1]({success:true, accepted:true});
+            if (callbacks.length > 1) callbacks[1](panelOpenAcceptedAck());
             check(first.success && first.reopened && callbacks.length == 2
                     && suspended.success && suspended.state == "LOOT_SUSPENDED"
                     && guarded.handled && guarded.reopen
@@ -1503,17 +1582,17 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[0]({success:false, error:"callback timeout"});
             var authority:Object = LootContainerService.execute("query", queryParams(before));
             var guard:Object = LootContainerService.beginMapChestOpen(flow.target);
-            var blockedBeforeProof:Boolean =
-                !LootContainerService.canReopenSuspendedTarget(flow.target);
-            var released:Object = LootContainerService.releaseSuspendedPauseForClose();
+            var reopenReadyAfterDetach:Boolean =
+                LootContainerService.canReopenSuspendedTarget(flow.target);
+            var duplicateRelease:Object = LootContainerService.releaseSuspendedPauseForClose();
             check(dispatched.success && dispatched.reopened && sent.length == 1
                     && authority.success && authority.state == "LOOT_SUSPENDED"
                     && authority.remainingCount == 1 && authority.closeLease == ""
                     && guard.handled && guard.reopen
-                    && blockedBeforeProof && released.handled && released.success
-                    && LootContainerService.canReopenSuspendedTarget(flow.target)
+                    && reopenReadyAfterDetach && !duplicateRelease.handled
+                    && _root.server.forcedReasons.length == 1
                     && flow.target.stopped,
-                "async timeout 收回原 suspend，但必须等 exact unpause/detach proof 后才重新开放 anchor");
+                "async timeout 主动切断 generation，以 exact socket proof 收回当前 attempt 后开放 anchor");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
@@ -1554,7 +1633,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     "recovery.current.second", "web_mount_failed"));
             var preAckProof:Object = LootContainerService.execute("query",
                 proofQueryParams(before, secondAttempt, "recovery.current.second"));
-            callbacks[1]({success:true, accepted:true});
+            callbacks[1](panelOpenAcceptedAck());
             var recoveredSuspended:Object = LootContainerService.execute(
                 "query", proofQueryParams(before, secondAttempt,
                     "recovery.current.second"));
@@ -1565,10 +1644,10 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var oldProofDuringThird:Object = LootContainerService.execute("query",
                 proofQueryParams(before, secondAttempt, "recovery.current.second"));
             // second attempt 的重复 callback 迟到；第三次 attempt 必须保持 ACTIVE。
-            callbacks[1]({success:true, accepted:true});
+            callbacks[1](panelOpenAcceptedAck());
             var afterSecondLate:Object = LootContainerService.execute(
                 "query", queryParams(before));
-            if (callbacks.length > 2) callbacks[2]({success:true, accepted:true});
+            if (callbacks.length > 2) callbacks[2](panelOpenAcceptedAck());
 
             check(first.success && first.reopened
                     && detached.success && detached.suspendedWithoutPanel
@@ -1613,7 +1692,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             // callback 前 target 已失去 scene anchor；恢复不得停留 ACTIVE，也不得
             // 把同一 inventory 交给第二套展示生命周期。
             flow.target.area = null;
-            callbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[0](panelOpenRejectedAck("panel_busy"));
             var expired:Object = LootContainerService.execute("query", queryParams(before));
             var nextTarget:Object = makeTarget("s1.after-reopen-anchor-loss");
             var next:Object = LootContainerService.beginMapChestOpen(nextTarget);
@@ -1749,7 +1828,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             // 明确 callback rejection 已经恢复 non-empty SUSPENDED；真实 lease 仍在时
             // 必须冻结 reopen 资格，exact webPanelUnpause 失败后可原地重试。
             _root._webPanelPauseLease = "test-direct-reopen-unpause-lease";
-            callbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[0](panelOpenRejectedAck("panel_busy"));
             var suspendedBefore:Object = LootContainerService.execute(
                 "query", queryParams(before));
             var blockedBefore:Boolean = !LootContainerService.canReopenSuspendedTarget(
@@ -1808,7 +1887,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             emptyFlow.inventory.remove(0);
             _root._webPanelPauseLease = "test-terminal-empty-unpause-lease";
             LootContainerService.testOnlyFailNextTransportHandoff("unpause");
-            emptyCallbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            emptyCallbacks[0](panelOpenRejectedAck("panel_busy"));
             var emptyFenceHeld:Boolean = LootContainerService.hasPendingTransportDetach();
             var emptyPending:Object = LootContainerService.execute("query",
                 proofQueryParams(emptyBefore, emptyAttemptSeq, "unapplied.empty.retry"));
@@ -1849,7 +1928,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             anchorFlow.target.area = null;
             _root._webPanelPauseLease = "test-terminal-anchor-unpause-lease";
             LootContainerService.testOnlyFailNextTransportHandoff("unpause");
-            anchorCallbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            anchorCallbacks[0](panelOpenRejectedAck("panel_busy"));
             var anchorFenceHeld:Boolean = LootContainerService.hasPendingTransportDetach();
             var anchorPending:Object = LootContainerService.execute("query",
                 proofQueryParams(anchorBefore, anchorAttemptSeq, "unapplied.anchor.retry"));
@@ -1910,7 +1989,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.releaseSuspendedPauseForClose();
             var dispatched:Object = LootContainerService.resumeSuspended(flow.target);
             var attemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
 
             var recovered:Object = LootContainerService.handlePanelRecovery({
                 task:"cmd", action:"lootPanelRecovery",
@@ -1952,7 +2031,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 "s1.close-attempt-proof");
             LootContainerService.requestOpenPanel();
             var attemptA:Number = Number(sent[0].payload.initData.openAttemptSeq);
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             var before:Object = snapshot(flow);
             var closed:Object = LootContainerService.execute("close", closeParams(before,
                 "close.attempt-proof", before.closeLease, false));
@@ -1960,7 +2039,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 proofQueryParams(before, attemptA, "unknown.close.a"));
             var lateRecovery:Object = LootContainerService.handlePanelRecovery(
                 recoveryEnvelope(before, attemptA, "late.close.a", "web_mount_failed"));
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             LootContainerService.releaseSuspendedPauseForClose();
 
             var reopenedB:Object = LootContainerService.resumeSuspended(flow.target);
@@ -1969,7 +2048,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 proofQueryParams(before, attemptA, "unknown.close.a"));
             var staleRecoveryA:Object = LootContainerService.handlePanelRecovery(
                 recoveryEnvelope(before, attemptA, "late.close.a", "web_mount_failed"));
-            callbacks[1]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[1](panelOpenRejectedAck("panel_busy"));
             var proofAAfterBReject:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptA, "unknown.close.a"));
 
@@ -1981,7 +2060,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var proofAAfterNoSend:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptA, "unknown.close.a"));
             var reopenedC:Object = LootContainerService.resumeSuspended(flow.target);
-            callbacks[2]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[2](panelOpenRejectedAck("panel_busy"));
             var proofAAfterCReject:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptA, "unknown.close.a"));
 
@@ -2018,7 +2097,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 "s1.proof-ledger-capacity");
             LootContainerService.requestOpenPanel();
             var attemptA:Number = Number(sent[0].payload.initData.openAttemptSeq);
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             var before:Object = snapshot(flow);
             LootContainerService.execute("close", closeParams(before,
                 "close.proof-ledger-capacity", before.closeLease, false));
@@ -2093,7 +2172,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             // 白盒模拟已投递 reopen 的未知窗口内 inventory 恰好被取空；failure
             // recovery 必须落 CONSUMED，而不是制造 remaining=0 的 SUSPENDED。
             flow.inventory.remove(0);
-            callbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[0](panelOpenRejectedAck("panel_busy"));
             var terminal:Object = LootContainerService.execute("query", queryParams(before));
             var nextTarget:Object = makeTarget("s1.after-reopen-empty");
             var next:Object = LootContainerService.beginMapChestOpen(nextTarget);
@@ -2205,7 +2284,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && body.initData.lootContainerId == rejectedFlow.active.lootContainerId
                     && Number(body.initData.openAttemptSeq) > 0,
                 "panel open 使用 callback envelope，authored payload/initData 保持 exact 3/8 键并携 attempt token");
-            callbacks[0]({success:false, accepted:false, error:"panel_busy"});
+            callbacks[0](panelOpenRejectedAck("panel_busy"));
             var rejectedQuery:Object = LootContainerService.execute(
                 "query", queryParams(rejectedFlow.active));
             var rejectedGuard:Object = LootContainerService.guardOpenGrid(
@@ -2214,7 +2293,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && rejectedQuery.remainingCount == 1
                     && rejectedGuard.handled && rejectedGuard.reason == "loot_flow_busy"
                     && rejectedFlow.inventory.getItem("0") != null,
-                "无 callId 的 Host rejection 收回 same inventory 到 Web-only suspend");
+                "exact Host rejection 收回 same inventory 到 Web-only suspend");
 
             sent = []; callbacks = [];
             installPanelTransport(sent, callbacks);
@@ -2255,13 +2334,110 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             installPanelTransport(sent, callbacks);
             resetWorld();
             var freshFlow:Object = activate([stack(STACK, 1, 715)], "s1.panel-fresh-authority");
-            oldCallback({success:false, accepted:false, error:"open_not_queued"});
+            oldCallback(panelOpenRejectedAck("open_not_queued"));
             var freshQuery:Object = LootContainerService.execute("query", queryParams(freshFlow.active));
             var freshGuard:Object = LootContainerService.guardOpenGrid(
                 makeTarget("s1.after-stale-callback"));
             check(freshQuery.success && freshQuery.state == "LOOT_ACTIVE"
                     && !freshGuard.handled,
                 "迟到旧 open callback 复核 session/container/epoch，不污染 fresh authority");
+            LootContainerService.expireScene("scene_cleanup");
+        } finally {
+            _root.server = previousServer;
+        }
+    }
+
+    private static function testPanelOpenAckDispositionAndUncertainRecovery():Void {
+        var previousServer:Object = _root.server;
+        try {
+            check(LootContainerValidation.classifyPanelOpenResponse(
+                        panelOpenAcceptedAck()) == "queued"
+                    && LootContainerValidation.classifyPanelOpenResponse(
+                        panelOpenRejectedAck("panel_busy")) == "definite_rejection"
+                    && LootContainerValidation.classifyPanelOpenResponse(
+                        {success:false, error:"socket not connected"}) == "definite_no_send"
+                    && LootContainerValidation.classifyPanelOpenResponse(
+                        {success:false, error:"callback timeout"}) == "delivery_uncertain"
+                    && LootContainerValidation.classifyPanelOpenResponse(
+                        {success:true, accepted:true, bound:false,
+                            panel:"loot"}) == "delivery_uncertain"
+                    && LootContainerValidation.classifyPanelOpenResponse(
+                        {success:false, accepted:false, error:"panel_busy"}) == "delivery_uncertain"
+                    && LootContainerValidation.classifyPanelOpenResponse({
+                        success:false, accepted:false, bound:false, panel:"map",
+                        error:"panel_busy", callId:0}) == "delivery_uncertain"
+                    && LootContainerValidation.classifyPanelOpenResponse({
+                        success:false, accepted:false, bound:false, panel:"loot",
+                        error:"unknown_rejection", callId:0}) == "delivery_uncertain",
+                "panel open ACK 严格区分 queued / definite rejection / no-send / uncertain");
+
+            resetWorld();
+            var sent:Array = [];
+            var callbacks:Array = [];
+            installPanelTransport(sent, callbacks);
+            var flow:Object = activate([stack(STACK, 1, 719)],
+                "s1.panel-ack-disposition");
+            LootContainerService.requestOpenPanel();
+            var attemptA:Number = Number(sent[0].payload.initData.openAttemptSeq);
+            callbacks[0](panelOpenAcceptedAck());
+            var before:Object = snapshot(flow);
+            LootContainerService.execute("close", closeParams(before,
+                "close.panel-ack-disposition", before.closeLease, false));
+            LootContainerService.releaseSuspendedPauseForClose();
+
+            var reopened:Object = LootContainerService.resumeSuspended(flow.target);
+            var attemptB:Number = Number(sent[1].payload.initData.openAttemptSeq);
+            callbacks[1]({success:false, accepted:false, error:"panel_busy"});
+            var proofB:Object = LootContainerService.execute("query",
+                proofQueryParams(before, attemptB, "uncertain.reopen.b"));
+            var proofAAfterB:Object = LootContainerService.execute("query",
+                proofQueryParams(before, attemptA, "old.reopen.a"));
+            var authority:Object = LootContainerService.execute("query", queryParams(before));
+
+            check(reopened.success && reopened.reopened && attemptB == attemptA + 1
+                    && _root.server.forcedReasons.length == 1
+                    && _root.server.forcedReasons[0] == "loot_panel_open_uncertain"
+                    && proofB.success && proofB.state == "LOOT_SUSPENDED"
+                    && !proofAAfterB.success
+                    && proofAAfterB.error == "stale_recovery_proof"
+                    && authority.success && authority.state == "LOOT_SUSPENDED"
+                    && LootContainerService.canReopenSuspendedTarget(flow.target),
+                "reopen B 畸形 ACK 主动断 socket，并让 exact B proof 收敛而不是错误回挂 A");
+            LootContainerService.expireScene("scene_cleanup");
+
+            resetWorld();
+            var blockedSent:Array = [];
+            var blockedCallbacks:Array = [];
+            installPanelTransport(blockedSent, blockedCallbacks, false);
+            var blockedFlow:Object = activate([stack(STACK, 1, 720)],
+                "s1.panel-uncertain-close-failed");
+            LootContainerService.requestOpenPanel();
+            var blockedAuthority:Object = snapshot(blockedFlow);
+            var blockedAttempt:Number = Number(
+                blockedSent[0].payload.initData.openAttemptSeq);
+            blockedCallbacks[0]({success:false, error:"callback timeout"});
+            var ordinaryBlocked:Object = LootContainerService.execute(
+                "query", queryParams(blockedAuthority));
+            var exactBlocked:Object = LootContainerService.execute("query",
+                proofQueryParams(blockedAuthority, blockedAttempt,
+                    "close-failed-no-proof"));
+            var detached:Object = LootContainerService.reconcileSocketDetach(null);
+            var exactRecovered:Object = LootContainerService.execute("query",
+                proofQueryParams(blockedAuthority, blockedAttempt,
+                    "close-failed-socket-proof"));
+            check(_root.server.forcedReasons.length == 1
+                    && !ordinaryBlocked.success
+                    && ordinaryBlocked.error == "commit_pending"
+                    && ordinaryBlocked.state == "LOOT_COMMIT_PENDING"
+                    && !exactBlocked.success
+                    && exactBlocked.error == "commit_pending"
+                    && !LootContainerService.hasPendingTransportDetach()
+                    && detached.success
+                    && exactRecovered.success
+                    && exactRecovered.state == "LOOT_SUSPENDED"
+                    && LootContainerService.canReopenSuspendedTarget(
+                        blockedFlow.target),
+                "force-close 未证明时 ordinary/exact query 都保持 PENDING；真实 detach 后才恢复");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
@@ -2392,7 +2568,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 proofQueryParams(flow.active, attemptSeq, "recovery.initial.pre.ack"));
             var ordinaryBeforeAck:Object = LootContainerService.execute(
                 "query", queryParams(flow.active));
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             var proofAfterAck:Object = LootContainerService.execute("query",
                 proofQueryParams(flow.active, attemptSeq, "recovery.initial.pre.ack"));
             var duplicateSignal:Object = LootContainerService.handlePanelRecovery(envelope);
@@ -2427,7 +2603,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             resetWorld();
             var flow:Object = activate([stack(STACK, 1, 716)], "s1.connected-recovery");
             LootContainerService.requestOpenPanel();
-            callbacks[0]({success:true, accepted:true});
+            callbacks[0](panelOpenAcceptedAck());
             var openAttemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
             var envelope:Object = {
                 task:"cmd", action:"lootPanelRecovery",
@@ -2475,13 +2651,32 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         }
     }
 
-    private static function installPanelTransport(sent:Array, callbacks:Array):Void {
+    private static function panelOpenAcceptedAck():Object {
+        return {success:true, accepted:true, bound:false, panel:"loot", callId:0};
+    }
+
+    private static function panelOpenRejectedAck(errorCode:String):Object {
+        return {success:false, accepted:false, bound:false,
+            panel:"loot", error:errorCode, callId:0};
+    }
+
+    private static function installPanelTransport(sent:Array, callbacks:Array,
+                                                   forceRecoveryResult:Boolean):Void {
+        var forcedReasons:Array = [];
+        var shouldRecover:Boolean = forceRecoveryResult !== false;
         _root.server = {
+            forcedReasons:forcedReasons,
             sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
                                           callback:Function, timeoutFrames:Number):Void {
                 sent.push({task:task, payload:payload, extra:extra,
                     timeoutFrames:timeoutFrames});
                 callbacks.push(callback);
+            },
+            forceSocketRecovery:function(reason:String):Boolean {
+                forcedReasons.push(reason);
+                if (!shouldRecover) return false;
+                LootContainerService.reconcileSocketDetach(null);
+                return true;
             }
         };
     }

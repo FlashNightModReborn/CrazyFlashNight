@@ -161,6 +161,7 @@ snapshot 请求的 `filterKey=all|weapon|armor|consumable|material|other` 由 C#
 ### 2.2 地图 loot 单一权威护栏
 
 - AS2 `LootContainerService` 是奖励、inventory、journal、revision、lease 与终态的唯一权威；Host 只做严格信封、exact binding、串行和 panel 生命周期，Web 只发意图。
+- 地图箱 `panel_request` callback 按 `queued / definite_rejection / definite_no_send / delivery_uncertain` 四类裁决。只有 exact queued ACK 升格 accepted；明确拒绝或明确未发送可以直接恢复，timeout、send exception、socket closed、畸形或未知 ACK 必须先冻结 authority、退役当前 XMLSocket source，再复用既有 socket-detach causal proof 收束当前 `openAttemptSeq`。retired source 的迟到 `onData/onClose` 按对象身份隔离；这不是第二套恢复状态机，完整 wire 只在 S1/S2 ADR 维护。
 - 正网格的初次、重开、mount、navigation 与 socket 故障统一保留同一 inventory/anchor 并收束到 `LOOT_SUSPENDED`，空箱为 `CONSUMED`，anchor 失效为 `EXPIRED`；未完成 journal/effects/proof 时保持 `LOOT_COMMIT_PENDING`。
 - claim/close 的未知结果只允许 causal query，不得重放写；普通满包只在同一 loot panel、同一 instance 内进入 organizer，返回前必须取得 fresh `LOOT_ACTIVE` snapshot。
 - Flash 网格 renderer、claim-only adapter、observer recovery、按地图 rollout 与失败后地面掉落均不是恢复路径。发布事务回滚只处理 runtime 字节原子性，不得恢复上述实现。
@@ -170,7 +171,7 @@ snapshot 请求的 `filterKey=all|weapon|armor|consumable|material|other` 由 C#
 
 维护者已批准 `APPROVED_S1_S2_ALL_POSITIVE_GRID_WEB_ONLY`：旧语义中所有正整数 `row/col` 都是 Web intent，由 `InteractionHandler → LootContainerService.beginMapChestOpen` 在 kill 前统一 reservation。这里的“所有”以 `BoxInteractionArbiter` 已通过六个资源箱 preset 完成**箱体领域准入**为前提；该白名单只防止投影召唤器等非箱元件因带有 `row/col` 被劫持，不是 Web rollout/shape 白名单，也不得扩大。进入箱体领域后，`1×1` 有效，当前能力上限为 `col<=8 && row*col<=64`；超界或畸形尺寸 fail-closed，不 kill、不滚奖、不显示 Flash UI。只有精确 `0×0` 的 direct 箱继续地面掉落；负数、单边零、混合或缺字段全部拒绝。箱型名与当前恰有的 `2×4 / 4×4 / 4×8` 不参与准入后的 Web 选择；生产 XML 和运行时都不再使用 rollout marker。
 
-中央路由替换“正常交互 → 箱体结束时间轴 → Flash 网格 UI”。实际发布的地图元件 XFL Include closure 中，六个 canonical 箱体 symbol 都只调用统一根开启回调；所有可攻击且具有“破碎”标签的箱都必须在该标签帧调用统一破碎回调；本轮已补齐装备箱和生存箱原先缺失的 callback。破碎路径没有 opening reservation，所以继续直接地面爆落且不得请求 Web，已有 reservation/materialized/active/suspended authority 时由 break guard 先截住重复奖励。Host/Web wire、panel ID 与 inventory mux 不变；恢复契约改为 Web-only：初次、重开与断线故障保留同一 inventory/anchor 并进入 `LOOT_SUSPENDED`，空→`CONSUMED`，anchor 失效→`EXPIRED`，未收束 journal/effects 保持 `LOOT_COMMIT_PENDING`，绝不调用 Flash renderer。
+中央路由替换“正常交互 → 箱体结束时间轴 → Flash 网格 UI”。实际发布的地图元件 XFL Include closure 中，六个 canonical 箱体 symbol 都只调用统一根开启回调；所有可攻击且具有“破碎”标签的箱都必须在该标签帧调用统一破碎回调；本轮已补齐装备箱和生存箱原先缺失的 callback。破碎路径没有自身 opening reservation，所以继续直接地面爆落且不得请求 Web；break guard 只在正在破碎的 exact target 已有 reservation/materialized/active/suspended/pending authority 时截住重复奖励，另一 target 的合法 authored break 继续 direct drop，unsupported shape 始终 fail-closed。Host/Web wire、panel ID 与 inventory mux 不变；恢复契约改为 Web-only：初次、重开与断线故障保留同一 inventory/anchor 并进入 `LOOT_SUSPENDED`，空→`CONSUMED`，anchor 失效→`EXPIRED`，未收束 journal/effects 保持 `LOOT_COMMIT_PENDING`，绝不调用 Flash renderer。
 
 静态门全量审计所有真实箱体声明、item catalog 闭包、难度 `CaseSwitch`、概率/总数和容量边界，并解析地图元件 `DOMDocument.xml` 的真实 Include closure：六个 canonical 箱体 linkage 必须唯一、统一初始化与开启回调、破碎拓扑符合资产语义，且旧 renderer/旁路不得进入发布闭包；不再把易漂移的时间轴帧号当准入条件。`最小数量/最大数量` 只有同时缺省才按明确默认 `1/1`；单边缺省或显式坏值在 Web、精确 `0×0` 直投与攻击破碎三条路径上都 fail-closed。准确计数、产物哈希、candidate identity、promotion 与当前剩余门统一维护在专题实施与验收基线，不在本 canonical 迁移规范复制动态快照。
 

@@ -149,8 +149,12 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(8, ((JObject)request["initData"]).Count);
             JObject ack = JObject.Parse(coordinator.HandlePanelRequest(request));
 
+            Assert.Equal(4, ack.Count);
+            Assert.True((bool)ack["success"]);
             Assert.True((bool)ack["accepted"]);
             Assert.False((bool)ack["bound"]);
+            Assert.Equal("loot", (string)ack["panel"]);
+            Assert.Null(ack["error"]);
             Assert.Equal(LootPanelCoordinator.BindingState.OpenQueued, coordinator.State);
             Assert.Equal(1, panel.OpenCalls);
             JObject init = JObject.Parse(panel.InitDataJson);
@@ -179,7 +183,11 @@ namespace CF7Launcher.Tests.Guardian
 
             JObject ack = JObject.Parse(coordinator.HandlePanelRequest(request));
 
+            Assert.Equal(5, ack.Count);
+            Assert.False((bool)ack["success"]);
             Assert.False((bool)ack["accepted"]);
+            Assert.False((bool)ack["bound"]);
+            Assert.Equal("loot", (string)ack["panel"]);
             Assert.Equal("invalid_request", (string)ack["error"]);
             Assert.Equal(0, panel.OpenCalls);
         }

@@ -92,12 +92,60 @@ class org.flashNight.arki.item.LootContainerValidation {
         };
     }
 
+    /**
+     * panel_request callback disposition。Host 的 accepted 只表示 tracked open 已入队，
+     * bound 在此阶段固定为 false；任何 shape 漂移都属于投递结果不确定，不能冒充明确拒绝。
+     */
+    public static function classifyPanelOpenResponse(response:Object):String {
+        if (isDefinitePanelOpenNoSend(response)) return "definite_no_send";
+        if (!isExactPanelOpenAck(response)) return "delivery_uncertain";
+        return response.accepted === true ? "queued" : "definite_rejection";
+    }
+
     public static function panelOpenFailureReason(response:Object):String {
         var errorCode:String = response == null ? "" : String(response.error);
         if (errorCode == "callback timeout") return "panel_open_timeout";
         if (errorCode == "socket not connected" || errorCode == "socket closed"
                 || errorCode == "stringify failed") return "panel_open_unavailable";
+        if (classifyPanelOpenResponse(response) == "delivery_uncertain") {
+            return "panel_open_protocol_uncertain";
+        }
         return "panel_open_rejected";
+    }
+
+    private static function isDefinitePanelOpenNoSend(response:Object):Boolean {
+        if (!hasOnlyKeys(response, ["success", "error"])
+                || !hasOwnField(response, "success") || !hasOwnField(response, "error")
+                || response.success !== false || typeof response.error != "string") return false;
+        return response.error === "stringify failed"
+            || response.error === "socket not connected";
+    }
+
+    private static function isExactPanelOpenAck(response:Object):Boolean {
+        var allowed:Array = ["success", "accepted", "bound", "panel", "error", "callId"];
+        if (!hasOnlyKeys(response, allowed)
+                || !hasOwnField(response, "success")
+                || !hasOwnField(response, "accepted")
+                || !hasOwnField(response, "bound")
+                || !hasOwnField(response, "panel")
+                || !hasOwnField(response, "callId")
+                || typeof response.success != "boolean"
+                || typeof response.accepted != "boolean"
+                || response.bound !== false || response.panel !== "loot") return false;
+        if (!isWhole(response.callId) || Number(response.callId) < 0
+                || Number(response.callId) > 2147483647) return false;
+        if (response.accepted === true) {
+            return response.success === true && !hasOwnField(response, "error");
+        }
+        return response.success === false && typeof response.error == "string"
+            && isDefinitePanelOpenRejection(String(response.error));
+    }
+
+    private static function isDefinitePanelOpenRejection(errorCode:String):Boolean {
+        return errorCode == "invalid_request" || errorCode == "coordinator_disposed"
+            || errorCode == "panel_unavailable" || errorCode == "panel_busy"
+            || errorCode == "identity_unavailable" || errorCode == "flow_busy"
+            || errorCode == "open_not_queued";
     }
 
     /** Host accepted 后的 Web mount/open watchdog 走扁平 cmd envelope 回告 AS2。 */

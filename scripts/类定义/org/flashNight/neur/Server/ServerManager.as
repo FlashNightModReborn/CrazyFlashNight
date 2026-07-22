@@ -435,14 +435,18 @@ class org.flashNight.neur.Server.ServerManager {
 
     public function initXMLSocket():Void {
         var self = this;
-        xmlSocket = new XMLSocket();
-        xmlSocket.onConnect = function(success:Boolean):Void {
+        var socket:XMLSocket = new XMLSocket();
+        xmlSocket = socket;
+        socket.onConnect = function(success:Boolean):Void {
+            if (self.xmlSocket !== socket) return;
             self.onSocketConnect(success);
         };
-        xmlSocket.onData = function(data:String):Void {
+        socket.onData = function(data:String):Void {
+            if (self.xmlSocket !== socket || !self.isSocketConnected) return;
             self.onSocketData(data);
         };
-        xmlSocket.onClose = function():Void {
+        socket.onClose = function():Void {
+            if (self.xmlSocket !== socket) return;
             self.onSocketClose();
         };
 
@@ -452,7 +456,7 @@ class org.flashNight.neur.Server.ServerManager {
             transitionTo(S_DISCONNECTED);
             return;
         }
-        xmlSocket.connect(socketHost, socketPort);
+        socket.connect(socketHost, socketPort);
     }
 
     private function onSocketConnect(success:Boolean):Void {
@@ -628,8 +632,14 @@ class org.flashNight.neur.Server.ServerManager {
     }
 
     public function onSocketClose():Void {
+        // 主动 uncertainty recovery 会本地执行一次 onSocketClose；若服务器关闭事件
+        // 已经排队，后到的重复通知必须保持幂等，不能再次推进 loot proof/FSM。
+        if (xmlSocket == null && !isSocketConnected && _state != S_CONNECTED) return;
         trace("XMLSocket connection closed");
         isSocketConnected = false;
+        // 先 retire 当前 source；旧 XMLSocket 排队的 onData/onClose 即使在新连接建立后
+        // 才抵达，也会被 initXMLSocket closure 的对象身份门拒绝。
+        xmlSocket = null;
 
         // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，
         // 并把同一 authority 收敛到 Web-only SUSPENDED 或终态。不存在 Flash UI 回退。
@@ -667,6 +677,26 @@ class org.flashNight.neur.Server.ServerManager {
         // 不是死守旧端口，也不用 setTimeout
         _retryCount = 0;
         transitionTo(S_FETCHING_PORT);
+    }
+
+    /**
+     * panel_request 回包结果不确定时，主动切断本 socket generation。XMLSocket.onClose
+     * 只保证服务器侧关闭通知，因此本地 close 后显式执行统一 onSocketClose 收敛路径；
+     * Host 会从对端断开观察同一 generation，并在重连后发 exact causal proof query。
+     */
+    public function forceSocketRecovery(reason:String):Boolean {
+        if (_state != S_CONNECTED || !isSocketConnected || xmlSocket == null) return false;
+        trace("[ServerManager] force socket recovery: " + reason);
+        var retiringSocket:XMLSocket = xmlSocket;
+        try {
+            retiringSocket.close();
+        } catch (closeError) {
+            trace("[ServerManager] force socket recovery failed: " + closeError);
+            return false;
+        }
+        if (xmlSocket === retiringSocket) xmlSocket = null;
+        onSocketClose();
+        return true;
     }
 
     // ==================== 消息发送 ====================

@@ -416,6 +416,7 @@ class org.flashNight.arki.item.LootContainerService {
         var callbackObserved:Boolean = false;
         var callbackAccepted:Boolean = false;
         var callbackError:String = "";
+        var callbackDisposition:String = "";
         var transport:Object = _root.server;
         if (transport == undefined || typeof transport.sendTaskWithCallback != "function") {
             return {queued:false, attemptStarted:true, callbackObserved:false,
@@ -428,24 +429,29 @@ class org.flashNight.arki.item.LootContainerService {
                 null,
                 function(response:Object):Void {
                     callbackObserved = true;
-                    callbackAccepted = response != null
-                        && response.success === true && response.accepted === true;
+                    callbackDisposition = LootContainerValidation.classifyPanelOpenResponse(response);
+                    callbackAccepted = callbackDisposition == "queued";
                     if (!callbackAccepted) {
                         callbackError = LootContainerValidation.panelOpenFailureReason(response);
                     }
                     org.flashNight.arki.item.LootContainerService.handlePanelOpenResponse(
-                        identity, response);
+                        identity, response, callbackDisposition);
                 },
                 600
             );
         } catch (sendError) {
+            var uncertainReason:String = callbackError == ""
+                ? "panel_open_protocol_uncertain" : callbackError;
+            var recoveryPending:Boolean = beginPanelOpenUncertainRecovery(
+                record, uncertainReason, Number(record.openAttemptSeq));
             return {queued:false, attemptStarted:true,
                 callbackObserved:callbackObserved, callbackAccepted:callbackAccepted,
-                error:callbackError == "" ? "panel_open_unavailable" : callbackError};
+                recoveryPending:recoveryPending, error:uncertainReason};
         }
         if (callbackObserved && !callbackAccepted) {
             return {queued:false, attemptStarted:true, callbackObserved:true,
                 callbackAccepted:false,
+                recoveryPending:callbackDisposition == "delivery_uncertain",
                 error:callbackError == "" ? "panel_open_rejected" : callbackError};
         }
         return {queued:true, attemptStarted:true,
@@ -532,14 +538,16 @@ class org.flashNight.arki.item.LootContainerService {
         return failureFor(record, dispatchError);
     }
 
-    private static function handlePanelOpenResponse(identity:Object, response:Object):Void {
+    private static function handlePanelOpenResponse(identity:Object, response:Object,
+                                                     disposition:String):Void {
         var record:Object = _active;
-        if (record == null || record.state != STATE_ACTIVE
+        if (record == null
+                || (record.state != STATE_ACTIVE && record.state != STATE_PENDING)
                 || record.chestSessionId !== identity.chestSessionId
                 || record.lootContainerId !== identity.lootContainerId
                 || Number(record.containerEpoch) != Number(identity.containerEpoch)
                 || Number(record.openAttemptSeq) != Number(identity.openAttemptSeq)) return;
-        if (response != null && response.success === true && response.accepted === true) {
+        if (disposition == "queued") {
             // 只有 exact callback accepted 才把 pending attempt 升格为 Host 已接纳。
             // open 来源是 attempt 的持久属性，不能因 callback 先后顺序被清掉。
             record.acceptedOpenAttemptSeq = Number(identity.openAttemptSeq);
@@ -549,8 +557,46 @@ class org.flashNight.arki.item.LootContainerService {
             return;
         }
         var failureReason:String = LootContainerValidation.panelOpenFailureReason(response);
+        if (disposition == "delivery_uncertain") {
+            beginPanelOpenUncertainRecovery(
+                record, failureReason, Number(identity.openAttemptSeq));
+            return;
+        }
         restoreSuspendedAfterPanelFailure(
             record, failureReason, Number(identity.openAttemptSeq));
+    }
+
+    /**
+     * callback timeout、畸形 ACK 或 send 异常都无法证明 Host 未建立本次 binding。
+     * 先冻结 authority，再主动关闭当前 socket generation；ServerManager 的既有
+     * onSocketClose → reconcileSocketDetach 路径会为 exact attempt 建立因果 proof。
+     */
+    private static function beginPanelOpenUncertainRecovery(record:Object, reason:String,
+                                                             attemptSeq:Number):Boolean {
+        if (record == null || _active !== record
+                || (record.state != STATE_ACTIVE && record.state != STATE_PENDING)
+                || Number(record.openAttemptSeq) != Number(attemptSeq)) return false;
+        if (record.transportDetachNeeded !== true) {
+            record.transportDetachNeeded = true;
+            record.transportDetachReleasePause = true;
+            record.transportDetachReason = isSafeReason(reason)
+                ? reason : "panel_open_protocol_uncertain";
+            record.state = STATE_PENDING;
+            record.authorityRevision++;
+            invalidateLootLeases();
+        }
+        var transport:Object = _root.server;
+        if (transport != undefined && transport != null
+                && typeof transport.forceSocketRecovery == "function") {
+            try {
+                if (transport.forceSocketRecovery("loot_panel_open_uncertain") === true) {
+                    return true;
+                }
+            } catch (forceRecoveryError) {
+            }
+        }
+        trace("[LootContainerService] uncertain panel open is waiting for socket detach");
+        return false;
     }
 
     /**
@@ -617,8 +663,10 @@ class org.flashNight.arki.item.LootContainerService {
         // timeout 表示已投递但结果未知；即使当前尚未观察到 lease，也必须等
         // exact Host close/unpause 或 socket detach 证明后才能再次互动。明确 rejection
         // 与同步 no-send 则只在真实观察到本次全局 lease 时等待释放。
-        record.suspendPauseReleasePending = reason == "panel_open_timeout"
-            || _root._webPanelPauseLease != undefined;
+        var socketDetachProven:Boolean = Number(record.socketDetachObservedOpenAttemptSeq)
+            == attemptSeq;
+        record.suspendPauseReleasePending = (reason == "panel_open_timeout"
+                && !socketDetachProven) || _root._webPanelPauseLease != undefined;
         record.acceptedOpenAttemptSeq = 0;
         record.transportDetachNeeded = false;
         record.transportDetachReleasePause = false;
@@ -1120,10 +1168,22 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /**
-     * 破碎帧专用入口复用同一 shape/authority 栅栏，防止互动 kill 与破碎时间轴
-     * 竞态绕开 reservation/active authority。
+     * 破碎帧只拦同 target reservation/authority 与 malformed shape。另一箱即使在
+     * 当前 Web authority 挂起/提交期间被 authored attack-break，也必须继续原生
+     * direct drop；否则箱体已破碎却既无 Web authority、也无地面奖励。
      */
     public static function guardBreakGrid(target:Object):Object {
+        var shape:String = classifyMapChestShape(target);
+        var sameReservation:Boolean = _reservation != null
+            && _reservation.target === target;
+        var sameAuthority:Boolean = _active != null && _active.target === target;
+        if (!sameReservation && !sameAuthority) {
+            if (shape == SHAPE_UNSUPPORTED_GRID) {
+                return {handled:true, reason:SHAPE_UNSUPPORTED_GRID};
+            }
+            return {handled:false, reason:shape == SHAPE_SUPPORTED_WEB_GRID
+                ? "break_direct_drop" : shape};
+        }
         return guardAnyMapChestGrid(target);
     }
 
@@ -1476,12 +1536,13 @@ class org.flashNight.arki.item.LootContainerService {
             return executeRecoveryProofQuery(record, params);
         }
         if (record.transportDetachNeeded === true) {
-            // connected/socket recovery 只能由 exact 9 键 proof 续跑。attempt=0 仅供
-            // 内部 transport 测试，普通 triple query 不再是 handoff proof。
-            if (Number(record.recoveryPendingOpenAttemptSeq) > 0
-                    || Number(record.socketDetachObservedOpenAttemptSeq) > 0) {
+            // 真实 panel attempt 的 connected/socket recovery 只能由 exact 9 键 proof、
+            // ServerManager.onSocketClose 或 exact webPanelUnpause 续跑。普通 triple
+            // query 绝不能在 force-close 失败时冒充 transport proof 并提前解冻。
+            if (Number(record.openAttemptSeq) > 0) {
                 return failureFor(record, "commit_pending");
             }
+            // attempt=0 只保留给不涉及 Web binding 的内部 transport fixture。
             var detachResult:Object = continueTransportDetach(record);
             if (detachResult == null || detachResult.success !== true) {
                 return failureFor(record, "commit_pending");

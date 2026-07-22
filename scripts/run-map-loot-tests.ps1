@@ -15,6 +15,7 @@ $compilerErrorsPath = Join-Path $projectDir 'scripts\compiler_errors.txt'
 $suitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootContainerServiceTest.as'
 $plannerSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootMaterializationPlannerTest.as'
 $arbiterSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\BoxInteractionArbiterTest.as'
+$serverManagerPath = Join-Path $projectDir 'scripts\类定义\org\flashNight\neur\Server\ServerManager.as'
 $backupPath = $null
 $hadRunner = $false
 $originalRunnerHash = $null
@@ -34,7 +35,7 @@ $repoHash = ([System.BitConverter]::ToString($repoHashBytes)).Replace('-', '').S
 $mutexName = 'Local\CF7_FocusedTestLoader_' + $repoHash
 $runMutex = [System.Threading.Mutex]::new($false, $mutexName)
 $runId = [System.Guid]::NewGuid().ToString('N')
-$expectedServicePassCount = 129
+$expectedServicePassCount = 138
 $expectedPlannerPassCount = 9
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount
 
@@ -118,6 +119,71 @@ try {
             throw "Box interaction arbiter AS2 suite is missing required sentinel: $pattern"
         }
     }
+
+    if (-not (Test-Path -LiteralPath $serverManagerPath)) {
+        throw "ServerManager AS2 source is missing; cannot verify XMLSocket source isolation: $serverManagerPath"
+    }
+    $serverManagerBytes = [System.IO.File]::ReadAllBytes($serverManagerPath)
+    if ($serverManagerBytes.Length -lt 3 -or $serverManagerBytes[0] -ne 0xEF -or
+        $serverManagerBytes[1] -ne 0xBB -or $serverManagerBytes[2] -ne 0xBF) {
+        throw 'ServerManager.as is not UTF-8 with BOM; XMLSocket source-isolation contract was not evaluated.'
+    }
+    $serverManagerSource = Get-Content -LiteralPath $serverManagerPath -Raw -Encoding UTF8
+    $initSocketStart = $serverManagerSource.IndexOf('public function initXMLSocket')
+    $socketConnectHandlerStart = if ($initSocketStart -ge 0) {
+        $serverManagerSource.IndexOf('private function onSocketConnect', $initSocketStart)
+    } else { -1 }
+    if ($initSocketStart -lt 0 -or $socketConnectHandlerStart -le $initSocketStart) {
+        throw 'ServerManager XMLSocket source-isolation contract is missing a bounded initXMLSocket implementation.'
+    }
+    $initSocketSource = $serverManagerSource.Substring(
+        $initSocketStart, $socketConnectHandlerStart - $initSocketStart)
+    foreach ($requirement in ([ordered]@{
+            'a local XMLSocket generation capture' =
+                'var\s+socket\s*:\s*XMLSocket\s*=\s*new\s+XMLSocket\s*\(\s*\)\s*;';
+            'installation of the captured generation as the current socket source' =
+                'xmlSocket\s*=\s*socket\s*;'
+        }).GetEnumerator()) {
+        if ($initSocketSource -notmatch $requirement.Value) {
+            throw ("ServerManager XMLSocket source-isolation contract is missing {0}." -f
+                $requirement.Key)
+        }
+    }
+    $socketSourceGuardCount = [regex]::Matches(
+        $initSocketSource, 'self\.xmlSocket\s*!==\s*socket').Count
+    if ($socketSourceGuardCount -lt 3) {
+        throw ("ServerManager XMLSocket source-isolation contract requires at least 3 current-source guards " +
+            "('self.xmlSocket !== socket'); found {0}." -f $socketSourceGuardCount)
+    }
+
+    $forceRecoveryStart = $serverManagerSource.IndexOf(
+        'public function forceSocketRecovery')
+    $messageSendingSection = if ($forceRecoveryStart -ge 0) {
+        $serverManagerSource.IndexOf('// ==================== 消息发送', $forceRecoveryStart)
+    } else { -1 }
+    if ($forceRecoveryStart -lt 0 -or $messageSendingSection -le $forceRecoveryStart) {
+        throw 'ServerManager XMLSocket source-isolation contract is missing a bounded forceSocketRecovery implementation.'
+    }
+    $forceRecoverySource = $serverManagerSource.Substring(
+        $forceRecoveryStart, $messageSendingSection - $forceRecoveryStart)
+    foreach ($requirement in ([ordered]@{
+            'capture of the retiring XMLSocket generation' =
+                'var\s+retiringSocket\s*:\s*XMLSocket\s*=\s*xmlSocket\s*;';
+            'close of the retiring XMLSocket generation' =
+                'retiringSocket\.close\s*\(\s*\)\s*;';
+            'identity-guarded retirement to null' =
+                'if\s*\(\s*xmlSocket\s*===\s*retiringSocket\s*\)\s*xmlSocket\s*=\s*null\s*;';
+            'handoff to the unified onSocketClose recovery path' =
+                '(?m)^\s*onSocketClose\s*\(\s*\)\s*;\s*$'
+        }).GetEnumerator()) {
+        if ($forceRecoverySource -notmatch $requirement.Value) {
+            throw ("ServerManager forceSocketRecovery source-isolation contract is missing {0}." -f
+                $requirement.Key)
+        }
+    }
+    Write-Host (("[INFO] Verified ServerManager XMLSocket source isolation: {0} current-source guards, " +
+        'captured generation retirement, and unified onSocketClose handoff.') -f
+        $socketSourceGuardCount)
     Write-Host ("[INFO] Verified focused map loot, materialization, and box arbiter AS2 suites: {0}" -f $suitePath)
 
     if ($hadRunner) {
