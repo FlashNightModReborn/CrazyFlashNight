@@ -351,6 +351,17 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <dualWield>2</dualWield>
+        <pierce>1</pierce>
+        <damageType>1</damageType>
+        <shotgun>1</shotgun>
+        <magPrice>50</magPrice>
+        <weightLayers>0</weightLayers>
+        <category>1</category>
+        <formula>1</formula>
+        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      </balance>
     </item>
   <!-- 54式手枪需要考虑是否转次级穿刺-->
   <item weapontype="手枪">
@@ -441,6 +452,17 @@
         <impact>150</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <dualWield>2</dualWield>
+        <pierce>1</pierce>
+        <damageType>1</damageType>
+        <shotgun>1</shotgun>
+        <magPrice>50</magPrice>
+        <weightLayers>0</weightLayers>
+        <category>1</category>
+        <formula>1</formula>
+        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>WaltherP99C</name>
@@ -637,6 +659,17 @@
         <impact>200</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <dualWield>2</dualWield>
+        <pierce>1</pierce>
+        <damageType>1</damageType>
+        <shotgun>1</shotgun>
+        <magPrice>300</magPrice>
+        <weightLayers>0</weightLayers>
+        <category>1</category>
+        <formula>1</formula>
+        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；加强普通子弹仍为物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=300 取马格南手枪弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>SIGP210</name>
@@ -667,6 +700,17 @@
         <impact>10</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <dualWield>2</dualWield>
+        <pierce>1</pierce>
+        <damageType>1</damageType>
+        <shotgun>1</shotgun>
+        <magPrice>50</magPrice>
+        <weightLayers>0</weightLayers>
+        <category>1</category>
+        <formula>1</formula>
+        <rationale>WL=0：现役金币商店 data/shops/npcs/King.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>Type92G</name>
@@ -695,6 +739,17 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <dualWield>2</dualWield>
+        <pierce>1</pierce>
+        <damageType>1</damageType>
+        <shotgun>1</shotgun>
+        <magPrice>50</magPrice>
+        <weightLayers>0</weightLayers>
+        <category>1</category>
+        <formula>1</formula>
+        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>御天敌V-1</name>
