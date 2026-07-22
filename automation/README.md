@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**最后核对代码基线**：本轮以 `b072f97841ccb30e167c14495241ae64d9054e22` 为 pre-push upstream base；`release/map-loot-20260721-final` 冻结 source commit `c60aab2386aee4516608397373ae4c59148c5f77`（tag `runtime-build-v2/20260721-map-loot-canary-v1`），并由 commit `6218f8b1d82efc57b77131616667fe45f3033297` 记录正式 promotion。唯一 canary 已达到 `standard_entry_verified`；source-tree、candidate 与 formal runtime 证据仍按下文分层记录。
+**最后核对代码基线**：当前商店修复发布冻结 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`（tag `runtime-build-v2/20260722-shop-tooltip-v2`），由 commit `48a638968076aba6105f6875ae9e4f0e35885165` 记录正式 promotion；无参标准入口已核对同一正式身份，商店真人交互 smoke 未补做，严格状态为 `promoted`。
 
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
@@ -179,7 +179,7 @@ powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 
 正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
 
-正式 v2 consensus 当前绑定 tag `runtime-build-v2/20260721-map-loot-canary-v1`、request `FBA91942C57DC3E6662AB77AC88EEAE3CA2AFA3C82BF5FFEA6BC68CFD6C31AE4`、source commit `c60aab2386aee4516608397373ae4c59148c5f77`、release tree `e1e6e059f148a640b3e37cbf1d912f297156d956`、build identity `2A0CDDB077B760328B3141EFFFEEE3996841FA1CE49AD09E5D7339417F60A107` 与 payload closure `3B837DCDBC69AA47074E635DACACAE3B80263023E6032AC1FDF209768B1C150C`；promotion 记录 commit 为 `6218f8b1d82efc57b77131616667fe45f3033297`。registry 只保存本地 builder 公钥，GitHub 证明通过 keyless provenance 验真。换机账户没有复制 `builder-local-a` 的历史私钥；本次实际 local signer 是 `builder-local-b` / `physical-host-b`，CurrentUser 不可导出 key 的 keyId 为 `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`、thumbprint 为 `141A0B12F18A1C25C2BF4A32B3C279F81C44D007`，其公钥已进入 immutable tree并实际签发本次 local proof；GitHub hosted OIDC/Sigstore 已提供不同故障域的第二票，双 signer / 双 faultDomain quorum 已满足。cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch。
+正式 v2 consensus 当前绑定 tag `runtime-build-v2/20260722-shop-tooltip-v2`、request `58DF2A7C6F3824EBDD9D3A6BAE26442D22A554B0C810F03D38161C338586548C`、source commit `9b784cb49c8febed863ff570d38795c3e96670d2`、release tree `f1f881c5392a385e73f3e9fecc3445df1e50ad17`、build identity `7E320BC3CED9F66B7B9FCACD261979434577DFD72660652D2378F398AF433E3E` 与 payload closure `A3546ED7AB1F0D33768B44DA9E81A919C582A7E792321A7F14E97E0BD72BC390`；promotion 记录 commit 为 `48a638968076aba6105f6875ae9e4f0e35885165`。本次 local signer 是 `builder-local-a` / `physical-host-a`，不可导出 keyId 为 `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint 为 `647AFE92BD801518AF25F2A2EE1845E6847C2118`；GitHub OIDC identity `24C5B0719891CA58AC31A4A189F784F1178CD298F4134591583FED3F0FAC163C` 提供 `github-hosted-windows` 第二票。cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch。
 
 ```powershell
 $queueRoot = 'C:\cf7q' # 本列车专用短根；不得与未 ready/superseded 的旧 request 混跑
