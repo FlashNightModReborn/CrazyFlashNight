@@ -30,6 +30,17 @@
       <impact>10</impact>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>1000</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <rationale>WL=0：现役金币商店 data/shops/npcs/Pig.json，price=19500 符合权威 WL0。use=长枪→dualWield=1；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=1000 取机枪通用弹药。容量 20，不属于大容量压制机枪加层域；未配置 singleshoot，使用 XML interval 原值。公式1按 averageDPS≈weightedDPS 复算通过（偏差 +0.42%）。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>M249</name>
