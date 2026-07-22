@@ -272,7 +272,8 @@ var KShop = (function() {
         var incomingCart = options.preserveCart ? _cart : (resp.cart || []);
         var sanitized = KShopCartController.sanitizeCart(incomingCart, findCatalogItem, isStackable);
         _cart = sanitized.cart;
-        if ((resp.cartAdjusted || sanitized.adjusted) && !options.preserveCart) {
+        var cartAdjusted = !!(resp.cartAdjusted || sanitized.adjusted);
+        if (cartAdjusted && !options.preserveCart) {
             toast('购物车中超过当前持有上限或已失效的数量已自动调整。');
         }
         _purchased = resp.purchased || [];
@@ -285,6 +286,21 @@ var KShop = (function() {
         _catalogPresenter.render();
         _cartController.render();
         renderClaimed();
+        return {cartAdjusted:cartAdjusted};
+    }
+
+    function applyWriteCatalog(catalog) {
+        _catalog = Array.isArray(catalog) ? catalog : _catalog;
+        var sanitized = KShopCartController.sanitizeCart(_cart, findCatalogItem, isStackable);
+        _cart = sanitized.cart;
+        _catalogPresenter.rebuildCategories();
+        _catalogPresenter.render();
+        _cartController.render();
+        if (sanitized.adjusted) {
+            toast('购物车中超过最新持有上限的数量已自动调整。');
+            markCartDirty();
+        }
+        return sanitized.adjusted;
     }
 
     function refreshWriteControls(state) {
@@ -578,8 +594,10 @@ var KShop = (function() {
                     && isFinite(Number(resp.playerLevel)) && isFinite(Number(resp.reverseLevel))
                     && typeof resp.purchasedToken === 'string' && resp.purchasedToken.length > 0) {
                 _shopReady = true;
-                applyBulkSnapshot(resp);
+                var applied = applyBulkSnapshot(resp);
                 _writeCoordinator.acceptAuthoritativeCart();
+                // bulkQuery 返回的是清理后的影子，不代表 AS2 已把清理结果写回存档。
+                if (applied.cartAdjusted) markCartDirty();
             } else {
                 _shopReady = false;
                 refreshWriteControls(_writeCoordinator.debugState());
@@ -620,7 +638,7 @@ var KShop = (function() {
                 _cart = resp.cart || [];
                 _writeCoordinator.acceptAuthoritativeCart();
                 _cartController.closeSettlement();
-                _cartController.render();
+                applyWriteCatalog(resp.catalog);
                 renderClaimed();
             }
             if (!_inventoryCoordinator.completeExternalWrite(inventoryWrite, needsInventoryRefresh, function(refreshResult) {
@@ -718,6 +736,7 @@ var KShop = (function() {
                 if (resp.success) {
                     _purchased = resp.purchased || [];
                     _purchasedToken = String(resp.purchasedToken || _purchasedToken);
+                    applyWriteCatalog(resp.catalog);
                     renderClaimed();
                 }
                 _ownedPresenter.render();

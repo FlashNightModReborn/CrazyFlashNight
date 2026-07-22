@@ -356,11 +356,13 @@ namespace CF7Launcher.Tasks
                     return IsNumber(msg["newBalance"])
                         && (cmd != "checkoutCommit" || (msg.Value<int?>("v") == 1
                             && msg["delivered"] != null && msg["delivered"].Type == JTokenType.Array
-                            && msg["cart"] != null && msg["cart"].Type == JTokenType.Array))
+                            && msg["cart"] != null && msg["cart"].Type == JTokenType.Array
+                            && msg["catalog"] != null && msg["catalog"].Type == JTokenType.Array))
                         && msg["purchased"] != null && msg["purchased"].Type == JTokenType.Array
                         && !string.IsNullOrEmpty(msg.Value<string>("purchasedToken"));
                 if (cmd == "claim")
                     return msg["purchased"] != null && msg["purchased"].Type == JTokenType.Array
+                        && msg["catalog"] != null && msg["catalog"].Type == JTokenType.Array
                         && !string.IsNullOrEmpty(msg.Value<string>("purchasedToken"));
                 return cmd == "saveCart";
             }

@@ -414,8 +414,10 @@
         if (response.success) {
             if (cmd === 'checkoutCommit') return response.v === 1 && isFiniteNumber(response.newBalance)
                 && Array.isArray(response.delivered) && Array.isArray(response.cart) && Array.isArray(response.purchased)
+                && Array.isArray(response.catalog)
                 && typeof response.purchasedToken === 'string' && response.purchasedToken.length > 0;
             if (cmd === 'claim') return Array.isArray(response.purchased)
+                && Array.isArray(response.catalog)
                 && typeof response.purchasedToken === 'string' && response.purchasedToken.length > 0;
             return false;
         }

@@ -2,7 +2,7 @@
  * PanelTooltip — 通用面板内 tooltip 模块
  *
  * 提供两种展示模式:
- *   1. hover 模式: showAtMouse / followMouse / hide — 跟随鼠标，鼠标离开即隐藏
+ *   1. hover 模式: showAtMouse / followMouse / hideHover — 跟随鼠标，触发物与浮层组成复合 hover 区
  *   2. anchored 模式: showAnchored — 锚定到指定元素，支持 outside-click 关闭 + 自动超时
  *
  * 内容由调用方负责生成 HTML 字符串，本模块只管 DOM、定位和生命周期。
@@ -35,12 +35,103 @@ var PanelTooltip = (function() {
     var _showGen = 0;
     // 显式追踪 80ms 兜底定时器，hide() 时主动清掉避免空转
     var _repositionTimer = null;
+    // tooltip 本身必须可悬停，长说明才能用滚轮读取。当前展示 owner 通过这一条全局
+    // interaction bridge 接收 enter/leave，避免给每个物品格都向同一 tooltip DOM 挂监听器。
+    var _interactionOwner = null;
+    var _interactionHandlers = null;
+    // 兼容仍手工调用 showAtMouse() 的旧面板：mouseleave 不能立即 hide，否则鼠标永远
+    // 进不了可滚动浮层。hideHover() 提供短暂过桥时间，进入 tooltip 后暂停，离开再收起。
+    var _hoverHideTimer = null;
+    var _hoverHidePending = false;
+    var _hoverHideOwner = null;
+    var _tooltipHovered = false;
+
+    function clearHoverHide() {
+        if (_hoverHideTimer) clearTimeout(_hoverHideTimer);
+        _hoverHideTimer = null;
+        _hoverHidePending = false;
+        _hoverHideOwner = null;
+    }
+
+    function pauseHoverHide() {
+        if (_hoverHideTimer) clearTimeout(_hoverHideTimer);
+        _hoverHideTimer = null;
+    }
+
+    function scheduleHoverHide() {
+        pauseHoverHide();
+        if (!_hoverHidePending || _tooltipHovered) return;
+        _hoverHideTimer = setTimeout(function() {
+            _hoverHideTimer = null;
+            if (!_hoverHidePending || _tooltipHovered) return;
+            var owner = _hoverHideOwner;
+            _hoverHidePending = false;
+            _hoverHideOwner = null;
+            hide(owner);
+        }, 140);
+    }
+
+    function setInteraction(owner, handlers) {
+        _interactionOwner = owner;
+        _interactionHandlers = handlers || null;
+    }
+
+    function clearInteraction(owner) {
+        if (owner != null && _interactionOwner !== owner) return;
+        _interactionOwner = null;
+        _interactionHandlers = null;
+    }
+
+    function activeInteraction() {
+        return _interactionOwner != null && _interactionOwner === _owner ? _interactionHandlers : null;
+    }
+
+    function scrollableDescription() {
+        if (!_el) return null;
+        var desc = _el.querySelector('.flash-tt-desc, .kshop-tt-desc');
+        return desc && desc.scrollHeight > desc.clientHeight + 1 ? desc : null;
+    }
+
+    function refreshScrollableState() {
+        if (!_el) return false;
+        var desc = _el.querySelector('.flash-tt-desc, .kshop-tt-desc');
+        var scrollable = !!(desc && desc.scrollHeight > desc.clientHeight + 1);
+        _el.classList.toggle('panel-tooltip-scrollable', scrollable);
+        if (desc) {
+            desc.classList.toggle('flash-tt-desc--scrollable', scrollable);
+            if (scrollable) desc.setAttribute('aria-label', '完整物品说明，可用滚轮或 PageUp、PageDown 滚动');
+            else desc.removeAttribute('aria-label');
+        }
+        return scrollable;
+    }
 
     function init() {
         _el = document.getElementById('panel-tooltip');
         if (_el) {
             _el.setAttribute('role', 'tooltip');
             _el.setAttribute('aria-hidden', _visible ? 'false' : 'true');
+            _el.addEventListener('mouseenter', function(event) {
+                _tooltipHovered = true;
+                pauseHoverHide();
+                var interaction = activeInteraction();
+                if (interaction && interaction.enter) interaction.enter(event);
+            });
+            _el.addEventListener('mouseleave', function(event) {
+                _tooltipHovered = false;
+                var interaction = activeInteraction();
+                if (interaction && interaction.leave) interaction.leave(event);
+                scheduleHoverHide();
+            });
+            _el.addEventListener('wheel', function(event) {
+                var desc = scrollableDescription();
+                if (!desc || !isFinite(Number(event.deltaY)) || Number(event.deltaY) === 0) return;
+                var before = desc.scrollTop;
+                desc.scrollTop += Number(event.deltaY);
+                if (desc.scrollTop !== before) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }, {passive:false});
         }
     }
 
@@ -70,6 +161,8 @@ var PanelTooltip = (function() {
     function showAtMouse(html, e, owner) {
         if (!_el) return;
         cleanupHandlers();
+        clearHoverHide();
+        clearInteraction();
         _showGen++;                  // 让上一次 show 注册的延迟 reposition 全部失效
         _owner = owner == null ? null : owner;
         _el.innerHTML = html;
@@ -80,6 +173,7 @@ var PanelTooltip = (function() {
         // 双面板模式：给 desc 写 inline width（port AS2 estimateMainWidth）。
         // 内容只在 setText 时变，鼠标移动不需要重算 → 放 showAtMouse 阶段。
         applyDescWidth();
+        refreshScrollableState();
         if (e) {
             _lastEvt = {
                 clientX: e.clientX,
@@ -372,6 +466,8 @@ var PanelTooltip = (function() {
         var owner = opts.owner == null ? null : opts.owner;
 
         cleanupHandlers();
+        clearHoverHide();
+        clearInteraction();
         _showGen++;                  // anchored 也是新一轮 show，失效上一次的延迟回调
         _owner = owner;
         _el.innerHTML = html;
@@ -385,6 +481,7 @@ var PanelTooltip = (function() {
         // 注意：anchored 不跑 positionAtMouse 的 desc marginTop/height 公式（依赖 mouseY），
         // desc 高度由内容自然撑开。
         applyDescWidth();
+        refreshScrollableState();
 
         // 定位：使用 transform 后的物理尺寸，并覆盖字体/图片迟到导致的尺寸变化。
         if (_lastAnchor) {
@@ -425,6 +522,7 @@ var PanelTooltip = (function() {
         if (!_el || !_visible || (owner != null && _owner !== owner)) return false;
         _el.innerHTML = html;
         applyDescWidth();
+        refreshScrollableState();
         if (_lastEvt) {
             // 沿用当前 _showGen——updateContent 是同一次 show 的内容刷新，不是新 show。
             // 旧 scheduleReposition 注册的延迟回调依然 alive，新 schedule 添加针对新
@@ -444,6 +542,11 @@ var PanelTooltip = (function() {
     function hide(owner) {
         if (owner != null && _owner !== owner) return false;
         cleanupHandlers();
+        clearHoverHide();
+        // display:none 时浏览器不保证再派发 mouseleave；显式归零避免下一次手工
+        // hideHover() 把已经消失的旧浮层误判为仍在 hover。
+        _tooltipHovered = false;
+        clearInteraction(owner);
         _visible = false;
         _owner = null;
         _showGen++;                  // 让所有未 fire 的 reposition 回调失效
@@ -457,6 +560,19 @@ var PanelTooltip = (function() {
             _el.style.display = 'none';
             _el.setAttribute('aria-hidden', 'true');
         }
+        return true;
+    }
+
+    /**
+     * hover 模式的延迟隐藏。给指针 140ms 从触发物跨入 tooltip；进入后保持展示，
+     * 离开 tooltip 才继续收起。面板关闭/重渲染等确定性生命周期仍应调用 hide()。
+     */
+    function hideHover(owner) {
+        if (!_visible || (owner != null && _owner !== owner)) return false;
+        clearHoverHide();
+        _hoverHidePending = true;
+        _hoverHideOwner = owner == null ? null : owner;
+        scheduleHoverHide();
         return true;
     }
 
@@ -843,6 +959,9 @@ var PanelTooltip = (function() {
         var owner = {};
         var activePointers = {};
         var focusWithin = false;
+        var tooltipHovered = false;
+        var leaveTimer = null;
+        var keyboardDismissed = false;
         var disposed = false;
         var activeKey = null;
         var activeItem = null;
@@ -892,7 +1011,13 @@ var PanelTooltip = (function() {
             return false;
         }
 
-        function isActive() { return focusWithin || hasActivePointer(); }
+        function isActive() { return focusWithin || tooltipHovered || !!leaveTimer || hasActivePointer(); }
+
+        function clearLeaveTimer() {
+            if (!leaveTimer) return;
+            clearTimeout(leaveTimer);
+            leaveTimer = null;
+        }
 
         function hasDocumentFocus() {
             var activeElement = document && document.activeElement;
@@ -954,7 +1079,7 @@ var PanelTooltip = (function() {
         }
 
         function showCurrent(event) {
-            if (!isLive()) return false;
+            if (keyboardDismissed || !isLive()) return false;
             if (suppressed(event)) {
                 hide(owner);
                 return false;
@@ -968,6 +1093,7 @@ var PanelTooltip = (function() {
                 : (typeof options.renderBasic === 'function' ? options.renderBasic(item) : '');
             if (hasActivePointer() && lastPointerEvent) showAtMouse(html, lastPointerEvent, owner);
             else showAnchored(html, node, { autoClose: 0, outsideClick: false, owner: owner });
+            setInteraction(owner, {enter:onTooltipEnter, leave:onTooltipLeave});
             requestRich(key, item);
             return true;
         }
@@ -981,8 +1107,31 @@ var PanelTooltip = (function() {
             if (hide(owner)) restoreActiveBinding(binding);
         }
 
+        function scheduleInactiveClear() {
+            clearLeaveTimer();
+            leaveTimer = setTimeout(function() {
+                leaveTimer = null;
+                clearIfInactive();
+            }, 140);
+        }
+
+        function onTooltipEnter() {
+            if (disposed || !isVisible(owner)) return;
+            clearLeaveTimer();
+            tooltipHovered = true;
+            markActiveBinding(binding);
+        }
+
+        function onTooltipLeave() {
+            if (disposed) return;
+            tooltipHovered = false;
+            if (!focusWithin && !hasActivePointer()) scheduleInactiveClear();
+        }
+
         function onEnter(e) {
             if (disposed || suppressed(e)) return;
+            clearLeaveTimer();
+            keyboardDismissed = false;
             var pointerId = pointerIdOf(e);
             if (activePointers[pointerId]) return;
             activePointers[pointerId] = true;
@@ -1009,12 +1158,13 @@ var PanelTooltip = (function() {
             if (hasActivePointer()) return;
             lastPointerEvent = null;
             if (focusWithin) showCurrent(e);
-            else clearIfInactive();
+            else scheduleInactiveClear();
         }
 
         function onFocusIn(e) {
             if (disposed || (e.relatedTarget && node.contains(e.relatedTarget))) return;
             focusWithin = true;
+            keyboardDismissed = false;
             markActiveBinding(binding);
             addTooltipDescription();
             if (!hasActivePointer()) showCurrent(e);
@@ -1028,6 +1178,32 @@ var PanelTooltip = (function() {
             else clearIfInactive();
         }
 
+        function onKeyDown(e) {
+            if (!isVisible(owner)) return;
+            if (e.key === 'Escape') {
+                keyboardDismissed = true;
+                clearLeaveTimer();
+                tooltipHovered = false;
+                hide(owner);
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+            var desc = scrollableDescription();
+            if (!desc) return;
+            var handled = true;
+            var page = Math.max(40, Math.floor(desc.clientHeight * 0.8));
+            if (e.key === 'PageDown') desc.scrollTop += page;
+            else if (e.key === 'PageUp') desc.scrollTop -= page;
+            else if (e.altKey && e.key === 'ArrowDown') desc.scrollTop += 40;
+            else if (e.altKey && e.key === 'ArrowUp') desc.scrollTop -= 40;
+            else handled = false;
+            if (handled) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+
         var hasPointerEvent = typeof window !== 'undefined' && typeof window.PointerEvent === 'function';
         var useMouse = options.events === 'mouse' || (!hasPointerEvent && options.events !== 'pointer');
         var enterEvent = useMouse ? 'mouseenter' : 'pointerenter';
@@ -1038,11 +1214,12 @@ var PanelTooltip = (function() {
         node.addEventListener(leaveEvent, onLeave);
         node.addEventListener('focusin', onFocusIn);
         node.addEventListener('focusout', onFocusOut);
+        node.addEventListener('keydown', onKeyDown);
 
         var binding = {
             scope: scope,
             canRestore: function() {
-                return isLive();
+                return !keyboardDismissed && isLive();
             },
             restore: function() {
                 return isLive()
@@ -1054,11 +1231,15 @@ var PanelTooltip = (function() {
                 disposed = true;
                 requestSequence++;
                 pending = {};
+                clearLeaveTimer();
+                tooltipHovered = false;
+                clearInteraction(owner);
                 node.removeEventListener(enterEvent, onEnter);
                 node.removeEventListener(moveEvent, onMove);
                 node.removeEventListener(leaveEvent, onLeave);
                 node.removeEventListener('focusin', onFocusIn);
                 node.removeEventListener('focusout', onFocusOut);
+                node.removeEventListener('keydown', onKeyDown);
                 focusWithin = false;
                 activePointers = {};
                 removeActiveBinding(binding);
@@ -1130,6 +1311,7 @@ var PanelTooltip = (function() {
         showAnchored: showAnchored,
         updateContent: updateContent,
         hide: hide,
+        hideHover: hideHover,
         createScope: createScope,
         releaseTree: releaseTree,
         debugState: debugState,

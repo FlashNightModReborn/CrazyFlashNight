@@ -54,9 +54,9 @@
     --tt-warn:       #ff8080;                    /* 锁定红，沿用 launcher 风格 */
     --tt-icon-blend: overlay;                    /* 对齐 AS2 物品图标定位 blendMode="overlay" */
 
-    /* 注释属于被动呈现层：不截获输入；JS 几何契约同时保证有可用空间时不覆盖
-       当前鼠标热点或触发元素。 */
-    position:fixed; z-index:1100; pointer-events:none; display:none;
+    /* 注释仍是非聚焦说明层，但必须允许指针移入，以满足长内容滚轮读取与 hover
+       附加内容的可悬停契约；JS 几何层继续避免初始位置覆盖热点或触发元素。 */
+    position:fixed; z-index:1100; pointer-events:auto; display:none;
     background:var(--tt-bg); border:var(--tt-border); color:var(--tt-text);
     padding:10px 14px; font-size:12px; max-width:480px; letter-spacing:0.3px;
     line-height:1.5;
@@ -532,8 +532,8 @@
 }
 
 /* Desc 右面板（对齐 AS2 mainBg 的视觉，不继承其可遮挡鼠标的舞台定位）。
-   超长内容限制在视口内滚动，浮层仍保持 pointer-events:none，因此滚动由页面/键盘
-   控制而非把 tooltip 变成第二个交互上下文。 */
+   超长内容限制在视口内；共享 tooltip 生命周期把触发物与浮层视为一个复合 hover
+   区域，鼠标滚轮直接滚动 desc，焦点仍留在触发物并用 PageUp/PageDown 访问。 */
 .flash-tt-desc,
 .kshop-tt-desc {
     flex: 0 0 auto;
@@ -547,6 +547,8 @@
     box-sizing: border-box;
     max-height: min(70vh, 520px);
     overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
     /* desc 内部目前没用 mix-blend-mode，但保留 isolation 让 future 子元素如有 blend 需求
        有独立合成空间。也跟 intro-panel 对称，避免哪天加 desc icon 时漏配置。 */
     isolation: isolate;

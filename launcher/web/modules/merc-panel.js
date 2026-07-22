@@ -979,7 +979,7 @@
         if (html) PanelTooltip.showAtMouse(html, e);
     }
     function onSkillLeave() {
-        PanelTooltip.hide();
+        PanelTooltip.hideHover();
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1302,7 +1302,7 @@
 
     function onEquipLeave() {
         _ttHoverKey = null;
-        PanelTooltip.hide();
+        PanelTooltip.hideHover();
     }
 
     function onEquipMove(e) {

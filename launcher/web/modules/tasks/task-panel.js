@@ -2043,7 +2043,7 @@
         if (e.relatedTarget && cell.contains(e.relatedTarget)) return;
         _hoverItemKey = null;
         _hoverItemIcon = null;
-        hideTip();
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.hideHover) PanelTooltip.hideHover();
     }
     function closestItem(node) {
         while (node && node !== _el) {

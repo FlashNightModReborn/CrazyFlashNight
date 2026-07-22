@@ -17,6 +17,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         testExactBalance();
         testLargeStackQuantity();
         testMaterialRouting();
+        testInformationCommitRefreshesCatalog();
         testInformationCapacityIsZeroWrite();
         testLegacyCheckoutUsesAuthority();
         testLegacyCheckoutDirectDelivery();
@@ -151,6 +152,15 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             "direct delivery routes materials to the material collection");
     }
 
+    private static function testInformationCommitRefreshesCatalog():Void {
+        resetState();
+        var preview:Object = requestPreview([{idx:3, qty:1}]);
+        var commit:Object = requestCommit(preview.checkoutToken);
+        check(commit.success && _root.收集品栏.情报.getValue("测试情报") == 1
+            && commit.catalog[3].maxQuantity == 0,
+            "successful checkout returns catalog limits from the post-delivery state");
+    }
+
     private static function testInformationCapacityIsZeroWrite():Void {
         resetState();
         _root.收集品栏.情报.add("测试情报", 1);
@@ -200,7 +210,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         });
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(response.success && _root.收集品栏.情报.getValue("测试情报") == 1
-            && _root.商城已购买物品.length == 0,
+            && _root.商城已购买物品.length == 0 && response.catalog[3].maxQuantity == 0,
             "legacy information claim follows its collection destination instead of requiring an unrelated bag vacancy");
     }
 

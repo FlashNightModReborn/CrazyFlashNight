@@ -320,6 +320,9 @@ function createServer() {
                 || !visualState.tooltip.anchoredRichInsideViewport || !visualState.tooltip.anchoredScaleGapStable
                 || !visualState.tooltip.focusOwnerInitiallyVisible || !visualState.tooltip.hoverOwnerTookControl
                 || !visualState.tooltip.focusedOwnerRestored || !visualState.tooltip.restoredOwnerExitHidden
+                || !visualState.tooltip.hoverSurfacePersistent || !visualState.tooltip.wheelScrollsLongDescription
+                || !visualState.tooltip.forcedHideResetsHoverState
+                || !visualState.tooltip.keyboardScrollsLongDescription || !visualState.tooltip.escapeDismissesTooltip
                 || !visualState.tooltip.detachedOwnerNotRestored || !visualState.tooltip.scopeCleanupComplete
                 || !visualState.tooltip.placement || visualState.tooltip.placement.pointerOverlap > 0
                 || visualState.tooltip.placement.anchorOverlap > 0);
@@ -345,6 +348,9 @@ function createServer() {
         || !realTooltip.anchoredRichInsideViewport || !realTooltip.anchoredScaleGapStable
         || !realTooltip.focusOwnerInitiallyVisible || !realTooltip.hoverOwnerTookControl
         || !realTooltip.focusedOwnerRestored || !realTooltip.restoredOwnerExitHidden
+        || !realTooltip.hoverSurfacePersistent || !realTooltip.wheelScrollsLongDescription
+        || !realTooltip.forcedHideResetsHoverState
+        || !realTooltip.keyboardScrollsLongDescription || !realTooltip.escapeDismissesTooltip
         || !realTooltip.detachedOwnerNotRestored || !realTooltip.scopeCleanupComplete
         || !realTooltip.placement || realTooltip.placement.pointerOverlap > 0
         || realTooltip.placement.anchorOverlap > 0;

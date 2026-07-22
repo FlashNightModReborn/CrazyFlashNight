@@ -29,6 +29,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testSameNamePlainEquipmentSale();
         testOverlappingBulkAndExactSaleRejected();
         testReturnedModsAreAggregated();
+        testDuplicateInformationCapacityClassification();
         testMultipleEquipmentPurchaseAndBounds();
         testPurchaseBoundsAtConfiguredLimit();
         testTradeRejectsStaleAndReplay();
@@ -166,6 +167,17 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(commit.success && _root.收集品栏.材料.getValue("强化石") == 4549
             && _root.金钱 == 90200,
             "large NPC purchase charges and delivers the exact same quantity atomically");
+    }
+
+    private static function testDuplicateInformationCapacityClassification():Void {
+        resetOwned();
+        var capacity:Object = service().analyzeTradeCapacity({
+            sales:[],
+            acquireItems:[{name:"解锁情报",value:1},{name:"解锁情报",value:1}]
+        });
+        check(!capacity.enough && capacity.error == "destination_full"
+            && capacity.missingCollection == 1,
+            "capacity analysis aggregates duplicate information rows before classifying the destination error");
     }
 
     private static function testLegacyCatalogResolution():Void {

@@ -27,6 +27,38 @@ _root.UI系统.商城WebView.getPurchaseLimit = function(itemName:String):Number
     return this.maxStackPurchaseQuantity;
 };
 
+_root.UI系统.商城WebView.buildCatalog = function():Array {
+    var catalog:Array = [];
+    for (var i:Number = 0; i < _root.kshop_list.length; i++) {
+        var entry:Object = _root.kshop_list[i];
+        var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(entry.item);
+        var attrs:Object = _root.根据物品名查找全部属性(entry.item);
+        if (itemData != undefined && attrs != undefined) {
+            catalog.push({
+                idx:         i,
+                id:          entry.id,
+                item:        entry.item,
+                type:        entry.type,
+                price:       entry.price,
+                displayname: String(itemData.displayname || entry.item),
+                majorType:   String(attrs[2]),
+                subType:     String(attrs[3]),
+                actionType:  String(itemData.actiontype || ""),
+                weaponType:  String(itemData.weapontype || ""),
+                setId:       String(itemData.setId || ""),
+                setName:     String(itemData.setName || ""),
+                setOrder:    Number(itemData.setOrder || 0),
+                level:       Number(attrs[9]),
+                icon:        String(attrs[1]),
+                maxQuantity: this.getPurchaseLimit(String(entry.item))
+            });
+        } else {
+            this.log("WARNING: skipped [" + i + "] item=" + entry.item);
+        }
+    }
+    return catalog;
+};
+
 // 诊断日志 helper
 _root.UI系统.商城WebView.log = function(msg):Void {
     _root.server.sendServerMessage("[ShopWV] " + msg);
@@ -84,34 +116,7 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
     _root.UI系统.商城WebView.rotatePurchasedToken();
     var callId = params.callId;
     _root.UI系统.商城WebView.log("shopBulkQuery callId=" + callId + " kshop_list.length=" + _root.kshop_list.length);
-    var catalog = [];
-    for (var i = 0; i < _root.kshop_list.length; i++) {
-        var entry = _root.kshop_list[i];
-        var itemData = org.flashNight.arki.item.ItemUtil.getItemData(entry.item);
-        var attrs = _root.根据物品名查找全部属性(entry.item);
-        if (itemData != undefined && attrs != undefined) {
-            catalog.push({
-                idx:         i,
-                id:          entry.id,
-                item:        entry.item,
-                type:        entry.type,
-                price:       entry.price,
-                displayname: String(itemData.displayname || entry.item),
-                majorType:   String(attrs[2]),
-                subType:     String(attrs[3]),
-                actionType:  String(itemData.actiontype || ""),
-                weaponType:  String(itemData.weapontype || ""),
-                setId:       String(itemData.setId || ""),
-                setName:     String(itemData.setName || ""),
-                setOrder:    Number(itemData.setOrder || 0),
-                level:       Number(attrs[9]),
-                icon:        String(attrs[1]),
-                maxQuantity: _root.UI系统.商城WebView.getPurchaseLimit(String(entry.item))
-            });
-        } else {
-            _root.UI系统.商城WebView.log("WARNING: skipped [" + i + "] item=" + entry.item);
-        }
-    }
+    var catalog:Array = _root.UI系统.商城WebView.buildCatalog();
     // 将旧格式购物车转为 idx 格式（M2: 精确匹配 + first-match 回退）
     var cartMigrated = [];
     var cartAdjusted:Boolean = false;
@@ -319,6 +324,8 @@ _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Ob
     resp.cart = [];
     resp.purchased = _root.商城已购买物品;
     resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+    // 动态 maxQuantity 依赖本次交付后的情报剩余容量，成功回包必须同步刷新目录。
+    resp.catalog = this.buildCatalog();
     return resp;
 };
 
@@ -436,6 +443,7 @@ _root.gameCommands["shopClaim"] = function(params) {
             resp.success = true;
             resp.purchased = _root.商城已购买物品;
             resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
+            resp.catalog = _root.UI系统.商城WebView.buildCatalog();
             // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。
             // 删除原本的 _root.存盘商城已购买物品() 子层 flush：
             // 子层 SOL 写入与下方 mydata 顶层 flushNow 之间存在崩溃窗口

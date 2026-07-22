@@ -63,7 +63,7 @@ window.BootstrapAudio = {
 if (new URLSearchParams(location.search).get('visual') !== 'battlebox-real-icons') window.PanelTooltip = {
     visible:false,
     lastRichOptions:null,
-    showAtMouse:function(){ this.visible=true; }, showAnchored:function(){ this.visible=true; }, followMouse:function(){}, hide:function(){ this.visible=false; },
+    showAtMouse:function(){ this.visible=true; }, showAnchored:function(){ this.visible=true; }, followMouse:function(){}, hide:function(){ this.visible=false; }, hideHover:function(){ this.visible=false; },
     isVisible:function(){ return this.visible; }, updateContent:function(){}, inferLayoutType:function(){ return 'narrow'; },
     dynamicIconHtml:function(name){ return Icons.html(name,'tooltip-rich-icon'); },
     staticIconUrl:function(){ return null; },
@@ -196,7 +196,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
     var BASE_CATALOG = [
         {idx:0,id:'w0',item:'测试手枪',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1},
-        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999},
+        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999,dynamicCapacity:true},
         {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备',maxQuantity:1},
         {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',use:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑',maxQuantity:1},
         {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',use:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀',maxQuantity:1}
@@ -703,6 +703,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 this.state.kpoints -= plan.total;
                 for (var lineIndex=0;lineIndex<plan.lines.length;lineIndex++) {
                     var delivery=plan.lines[lineIndex];
+                    var deliveredCatalogItem=this.state.catalog[delivery.catalogIndex];
+                    if (deliveredCatalogItem && deliveredCatalogItem.dynamicCapacity) {
+                        deliveredCatalogItem.maxQuantity=Math.max(0,Number(deliveredCatalogItem.maxQuantity)-Number(delivery.quantity));
+                    }
                     var mergeSlot=this.state.inventory.背包.findIndex(function(entry){ return entry&&entry.name===delivery.itemName&&entry.itemKind==='stack'; });
                     if (delivery.itemKind==='stack'&&mergeSlot>=0) this.state.inventory.背包[mergeSlot].quantity+=delivery.quantity;
                     else {
@@ -720,7 +724,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     this.respond(message, {success:false,error:'reconcile_required'}, delay);
                 } else {
                     this.respond(message, {success:true,v:1,newBalance:this.state.kpoints,delivered:clone(plan.lines),cart:[],
-                        purchased:clone(this.state.purchased),purchasedToken:this.state.purchasedToken}, delay);
+                        catalog:clone(this.state.catalog),purchased:clone(this.state.purchased),purchasedToken:this.state.purchasedToken}, delay);
                 }
                 return;
             }
@@ -735,8 +739,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     var vacancy = this.state.inventory.背包.findIndex(function(item){ return !item; });
                     if (vacancy < 0) { this.respond(message,{success:false,error:'inventory_full',purchasedToken:this.state.purchasedToken},delay); return; }
                     this.state.inventory.背包[vacancy] = {name:String(receipt[1]),displayName:String(receipt[1]),icon:String(receipt[1]),itemKind:'stack',quantity:Number(receipt[receipt.length-1])};
+                    for (var catalogIndex=0;catalogIndex<this.state.catalog.length;catalogIndex++) {
+                        var claimedCatalogItem=this.state.catalog[catalogIndex];
+                        if (claimedCatalogItem.dynamicCapacity && claimedCatalogItem.item===String(receipt[1])) {
+                            claimedCatalogItem.maxQuantity=Math.max(0,Number(claimedCatalogItem.maxQuantity)-Number(receipt[receipt.length-1]));
+                        }
+                    }
                     this.state.purchased.splice(index, 1);
-                    this.respond(message, {success:true,purchased:clone(this.state.purchased),purchasedToken:this.rotatePurchasedToken()}, delay);
+                    this.respond(message, {success:true,catalog:clone(this.state.catalog),purchased:clone(this.state.purchased),purchasedToken:this.rotatePurchasedToken()}, delay);
                 }
             }
         }
@@ -774,6 +784,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-limit1','大额堆叠购买不再被 999 UI 常量拒绝，并按权威目录上限夹紧',
             largeQuantity.changed && largeQuantity.cart[0].qty === 4549
                 && cappedQuantity.cart[0].qty === 999999 && cappedQuantity.error === 'limit_reached');
+        var removedAtZeroLimit = KShopCartController.adjustItem([{idx:1,qty:1}],1,1,false,0);
+        assert('kshop-limit2','动态上限降为零时移除购物车行并使用 sold_out 分类',
+            removedAtZeroLimit.changed && removedAtZeroLimit.error === 'sold_out'
+                && removedAtZeroLimit.cart.length === 0);
         var keyboardCatalogCard = document.querySelector('.kshop-card:not(.kshop-card-locked):not(.kshop-card-nosale)');
         var keyboardCatalogName = keyboardCatalogCard && keyboardCatalogCard.querySelector('.kshop-card-name').textContent;
         var keyboardCatalogAction = keyboardCatalogCard && keyboardCatalogCard.querySelector('.kshop-add-btn');
@@ -1023,6 +1037,16 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && !document.querySelector('#kshop-checkout').disabled,
             'before=' + JSON.stringify(loadingGateState) + ' after=' + JSON.stringify(KShop.debugState()));
 
+        Panels.close();
+        Host.reset();
+        Host.state.cart = [{idx:1,qty:1000000},{idx:99,qty:1}];
+        Panels.open('kshop');
+        await waitFor(function(){ return KShop.debugState().shopReady && countCmd('saveCart') === 1; }, 700);
+        assert('kshop-ui2f','首次快照自动清理的失效/超限购物车会写回权威恢复影子',
+            Host.state.cart.length === 1 && Host.state.cart[0].idx === 1
+                && Host.state.cart[0].qty === 999999 && !KShop.debugState().write.dirty,
+            'cart=' + JSON.stringify(Host.state.cart) + ' state=' + JSON.stringify(KShop.debugState().write));
+
         var muxSent = [], muxCalls = 0, muxErrors = 0;
         var mux = new KShopRequestMux({
             send:function(message){ muxSent.push(message); }, sessionNonce:'mux', timeoutMs:500,
@@ -1082,6 +1106,21 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && KShop.debugState().purchasedCount === BASE_PURCHASED.length,
             'purchased=' + Host.state.purchased.length + ' cart=' + KShop.debugState().cartCount);
 
+        Panels.close();
+        Host.reset();
+        Host.state.catalog[1].maxQuantity = 2;
+        Panels.open('kshop');
+        await waitFor(function(){ return KShop.debugState().shopReady; }, 500);
+        addStackable(2);
+        await confirmCheckout();
+        await waitFor(function(){ return KShop.debugState().cartCount === 0 && !KShop.debugState().inventory.busyOwner; }, 700);
+        var refreshedLimitCard = document.querySelector('.kshop-card[data-idx="1"]');
+        assert('kshop-ui6d','成功结账立即采用交付后的动态目录上限',
+            refreshedLimitCard && refreshedLimitCard.classList.contains('kshop-card-locked')
+                && !refreshedLimitCard.querySelector('.kshop-add-btn')
+                && refreshedLimitCard.textContent.indexOf('已达持有上限') >= 0,
+            refreshedLimitCard && refreshedLimitCard.textContent);
+
         await Host.open();
         addEquipment();
         await waitFor(function(){ return countCmd('saveCart') === 1 && Host.state.cart.length === 1; }, 500);
@@ -1116,6 +1155,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         Host.delays.claim = 160;
         Host.delays.snapshot = 120;
         var snapshotsBeforeClaim = countInventoryCmd('snapshot');
+        Host.state.catalog[0].dynamicCapacity = true;
         var claimButtons = document.querySelectorAll('.kshop-claim-btn');
         claimButtons[0].click();
         var allLocked = Array.from(document.querySelectorAll('.kshop-claim-btn')).every(function(button){ return button.disabled; });
@@ -1126,7 +1166,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             && !KShop.debugState().inventory.busyOwner; }, 800);
         assert('kshop-ui7','claim 全局单飞、携 purchased token，并锁到背包 snapshot 完成',
             countCmd('claim') === 1 && allLocked && claimMessage && !!claimMessage.expectedPurchasedToken
-                && countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1,
+                && countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1
+                && !document.querySelector('.kshop-add-btn[data-idx="0"]'),
             'claim=' + countCmd('claim') + ' inventorySnapshot=' + countInventoryCmd('snapshot'));
 
         await Host.open();
@@ -2292,6 +2333,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 hoverOwnerProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
                     bubbles:false,clientX:500,clientY:300,pointerId:22,pointerType:'mouse',isPrimary:true
                 }));
+                await wait(170);
                 var focusedOwnerRestored = PanelTooltip.isVisible()
                     && tooltipNode.textContent.indexOf('focus-owner-a') >= 0
                     && focusOwnerProbe.getAttribute('aria-describedby') === 'panel-tooltip';
@@ -2300,6 +2342,52 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     && !focusOwnerProbe.hasAttribute('aria-describedby');
                 focusOwnerBinding.destroy(); hoverOwnerBinding.destroy();
                 focusOwnerProbe.remove(); hoverOwnerProbe.remove();
+
+                var longTooltipProbe = document.createElement('button');
+                longTooltipProbe.type = 'button'; longTooltipProbe.textContent = 'long tooltip probe';
+                document.body.appendChild(longTooltipProbe);
+                var longLines = '';
+                for (var longIndex = 0; longIndex < 40; longIndex++) {
+                    longLines += '<div>长说明滚动探针 ' + longIndex + '</div>';
+                }
+                var longTooltipBinding = PanelTooltip.bindAsync(longTooltipProbe, {
+                    key:'long-tooltip-probe', item:{}, cache:{},
+                    renderBasic:function(){
+                        return '<div class="flash-tt-rich flash-tt-rich--merge">'
+                            + '<div class="flash-tt-desc" style="width:260px;max-height:90px;overflow:auto">'
+                            + longLines + '</div></div>';
+                    }
+                });
+                longTooltipProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter', {
+                    bubbles:false,clientX:720,clientY:420,pointerId:24,pointerType:'mouse',isPrimary:true
+                }));
+                longTooltipProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
+                    bubbles:false,clientX:720,clientY:420,pointerId:24,pointerType:'mouse',isPrimary:true
+                }));
+                tooltipNode.dispatchEvent(new MouseEvent('mouseenter', {bubbles:false}));
+                await wait(170);
+                var hoverSurfacePersistent = PanelTooltip.isVisible();
+                var longDescription = tooltipNode.querySelector('.flash-tt-desc');
+                longDescription.scrollTop = 0;
+                longDescription.dispatchEvent(new WheelEvent('wheel', {deltaY:180,bubbles:true,cancelable:true}));
+                var wheelScrollsLongDescription = longDescription.scrollTop > 0;
+                // 在浮层 hover 中发生确定性关闭时，浏览器不保证再发 mouseleave；下一次
+                // 手工 hover 仍必须能按 hideHover 延迟收起，不能继承幽灵 hover 状态。
+                PanelTooltip.hide();
+                PanelTooltip.showAtMouse('<div class="flash-tt-desc">manual hover reset</div>', {
+                    clientX:720,clientY:420,currentTarget:longTooltipProbe,target:longTooltipProbe
+                });
+                PanelTooltip.hideHover();
+                await wait(170);
+                var forcedHideResetsHoverState = !PanelTooltip.isVisible();
+                longTooltipProbe.focus();
+                longDescription = tooltipNode.querySelector('.flash-tt-desc');
+                longDescription.scrollTop = 0;
+                longTooltipProbe.dispatchEvent(new KeyboardEvent('keydown', {key:'PageDown',bubbles:true,cancelable:true}));
+                var keyboardScrollsLongDescription = longDescription.scrollTop > 0;
+                longTooltipProbe.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape',bubbles:true,cancelable:true}));
+                var escapeDismissesTooltip = !PanelTooltip.isVisible();
+                longTooltipBinding.destroy(); longTooltipProbe.remove();
 
                 var lifecycleScope = PanelTooltip.createScope('detached-probe');
                 var detachedProbe = document.createElement('button');
@@ -2320,6 +2408,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 replacementProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
                     bubbles:false,clientX:640,clientY:360,pointerId:23,pointerType:'mouse',isPrimary:true
                 }));
+                await wait(170);
                 var detachedOwnerNotRestored = !PanelTooltip.isVisible()
                     && PanelTooltip.debugState().detachedBindingCount === 1;
                 lifecycleScope.dispose();
@@ -2346,6 +2435,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     hoverOwnerTookControl:hoverOwnerTookControl,
                     focusedOwnerRestored:focusedOwnerRestored,
                     restoredOwnerExitHidden:restoredOwnerExitHidden,
+                    hoverSurfacePersistent:hoverSurfacePersistent,
+                    wheelScrollsLongDescription:wheelScrollsLongDescription,
+                    forcedHideResetsHoverState:forcedHideResetsHoverState,
+                    keyboardScrollsLongDescription:keyboardScrollsLongDescription,
+                    escapeDismissesTooltip:escapeDismissesTooltip,
                     detachedOwnerNotRestored:detachedOwnerNotRestored,
                     scopeCleanupComplete:scopeCleanupComplete,
                     placement:PanelTooltip.debugState().lastPlacement

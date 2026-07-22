@@ -159,16 +159,19 @@ var IntelligenceHarnessQA = (function() {
                         api.assert(!!tt.querySelector('u'), 'AS2 underline converted');
                         api.assert(!!tt.querySelector('span[style]'), 'AS2 font color converted');
                         item.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
-                        api.assert(tt.style.display === 'none', 'tooltip hides on leave');
-
-                        var missing = findCatalogButton('缺图记录');
-                        missing.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 300, clientY: 260 }));
+                        api.assert(tt.style.display === 'block', 'tooltip keeps a short bridge for entering the scroll surface');
                         return api.waitFor(function() {
-                            return tt.textContent.indexOf('注释暂不可用') >= 0 ? true : null;
-                        }, 1000, 'tooltip failure fallback').then(function() {
-                            api.assert(tt.textContent.indexOf('缺图记录') >= 0, 'basic tooltip remains useful after failure');
-                            missing.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
-                            return 'runtime tooltip ok';
+                            return tt.style.display === 'none' ? true : null;
+                        }, 500, 'tooltip delayed hide').then(function() {
+                            var missing = findCatalogButton('缺图记录');
+                            missing.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 300, clientY: 260 }));
+                            return api.waitFor(function() {
+                                return tt.textContent.indexOf('注释暂不可用') >= 0 ? true : null;
+                            }, 1000, 'tooltip failure fallback').then(function() {
+                                api.assert(tt.textContent.indexOf('缺图记录') >= 0, 'basic tooltip remains useful after failure');
+                                missing.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+                                return 'runtime tooltip ok';
+                            });
                         });
                     });
                 });

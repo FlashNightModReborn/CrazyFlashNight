@@ -828,13 +828,13 @@ _root.UI系统.NPC商店WebView.analyzeTradeCapacity = function(plan:Object):Obj
     var required:Number = 0;
     var missingCollection:Number = 0;
     var mergeable:Object = {};
+    var informationTotals:Object = {};
     for (var j:Number = 0; j < plan.acquireItems.length; j++) {
         var requested:Object = plan.acquireItems[j];
         var name:String = String(requested.name);
         var quantity:Number = Number(requested.value);
         if (org.flashNight.arki.item.ItemUtil.isInformation(name)) {
-            missingCollection += Math.max(0, quantity
-                - org.flashNight.arki.item.ItemUtil.getInformationRemaining(name));
+            informationTotals[name] = Number(informationTotals[name] || 0) + quantity;
             continue;
         }
         if (org.flashNight.arki.item.ItemUtil.isMaterial(name)
@@ -844,6 +844,12 @@ _root.UI系统.NPC商店WebView.analyzeTradeCapacity = function(plan:Object):Obj
         } else {
             mergeable[name] = true;
         }
+    }
+    // buildAcquireItems 已聚合同名 collection；这里仍按函数自身契约防御任意内部调用方，
+    // 避免同一情报拆成多行时逐行低于剩余、合计却超限而误报 inventory_full。
+    for (var informationName:String in informationTotals) {
+        missingCollection += Math.max(0, Number(informationTotals[informationName])
+            - org.flashNight.arki.item.ItemUtil.getInformationRemaining(informationName));
     }
     for (var mergeName:String in mergeable) {
         var remains:Boolean = false;

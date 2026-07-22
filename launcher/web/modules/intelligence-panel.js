@@ -710,7 +710,7 @@ var IntelligencePanel = (function() {
         });
         btn.addEventListener('mouseleave', function() {
             _hoverTooltipName = '';
-            if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
+            if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hideHover();
         });
         return btn;
     }

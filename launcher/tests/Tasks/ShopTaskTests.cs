@@ -59,11 +59,13 @@ namespace CF7Launcher.Tests.Tasks
                 response["delivered"] = new JArray();
                 response["cart"] = new JArray();
                 response["purchased"] = new JArray();
+                response["catalog"] = new JArray();
                 response["purchasedToken"] = "shop.test.2";
             }
             if (success && (string)sent["action"] == "shopClaim")
             {
                 response["purchased"] = new JArray();
+                response["catalog"] = new JArray();
                 response["purchasedToken"] = "shop.test.3";
             }
             return response;
@@ -222,6 +224,26 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False((bool)response["success"]);
             Assert.Equal("reconcile_required", (string)response["error"]);
             Assert.Equal("invalid_response", (string)response["cause"]);
+        }
+
+        [Theory]
+        [InlineData("checkoutCommit")]
+        [InlineData("claim")]
+        public void SuccessfulInventoryWriteWithoutRefreshedCatalog_RequiresReconcile(string cmd)
+        {
+            var sent = new List<string>();
+            string posted = null;
+            var task = new ShopTask(() => true, payload => { sent.Add(payload); return true; });
+            task.SetPostToWeb(json => posted = json);
+
+            task.HandleWebRequest(cmd, JObject.Parse("{\"callId\":\"wb.s.1.1\",\"purchasedIdx\":0}"));
+            var malformed = ResponseFor(sent[0], true);
+            malformed.Remove("catalog");
+            task.HandleFlashResponse(malformed, _ => { });
+
+            var response = JObject.Parse(posted);
+            Assert.False((bool)response["success"]);
+            Assert.Equal("reconcile_required", (string)response["error"]);
         }
 
         [Fact]

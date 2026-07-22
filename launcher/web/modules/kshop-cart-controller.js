@@ -97,8 +97,11 @@
                 next[i].qty += Number(delta) || 0;
                 if (next[i].qty <= 0) next.splice(i, 1);
                 else if (isFinite(Number(maximum)) && next[i].qty > Number(maximum)) {
-                    if (Number(maximum) <= 0) next.splice(i, 1);
-                    else next[i].qty = Math.floor(Number(maximum));
+                    if (Number(maximum) <= 0) {
+                        next.splice(i, 1);
+                        return {changed:true, error:'sold_out', cart:next};
+                    }
+                    next[i].qty = Math.floor(Number(maximum));
                     return {changed:true, error:'limit_reached', cart:next};
                 }
             }
@@ -273,6 +276,7 @@
         var result = adjustItem(this._cart(), idx, delta, removeAll, maximum);
         if (result.changed) this._commitCart(result.cart);
         if (result.error === 'limit_reached') this._intent.toast('已达到当前可购买上限 ' + maximum + '。');
+        else if (result.error === 'sold_out') this._intent.toast('该商品已达持有上限，已从购物车移除。');
         return result.changed;
     };
 

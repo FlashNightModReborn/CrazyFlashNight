@@ -342,7 +342,7 @@
         if (!_tipEl) return;
         var to = e.relatedTarget;
         if (to && _tipEl.contains(to)) return; // 仍在同一 tip 元素内部移动
-        PanelTooltip.hide();
+        PanelTooltip.hideHover();
         _tipEl = null;
     }
     // 重渲染/切页/关闭时，悬浮元素可能被移除而 mouseout 不触发 → 主动收起，避免注释框残留

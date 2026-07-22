@@ -4687,7 +4687,7 @@
     }
 
     function onSkillLeave() {
-        PanelTooltip.hide();
+        PanelTooltip.hideHover();
     }
 
     // 烘焙图加载失败：移除 img + 去 baked 类（露出占位字 + 还原虚线样式），与 merc 一致
@@ -4721,7 +4721,7 @@
 
     function onEquipLeave() {
         _ttHoverKey = null;
-        PanelTooltip.hide();
+        PanelTooltip.hideHover();
     }
 
     function onEquipMove(e) {
