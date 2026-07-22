@@ -144,6 +144,7 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         var grid:MovieClip = createBox("F03Grid", "保险柜", 12, 2, 3, true);
         var direct:MovieClip = createBox("F03Direct", "资源箱", 3, 0, 0, false);
         emitInteraction(null);
+        _root.地图元件.资源箱开启脚本(direct);
         check(direct._killed && !grid._killed
                 && ChestSessionService.getActiveSessionId() == ""
                 && _requestCount == 0 && _deathCount == 1

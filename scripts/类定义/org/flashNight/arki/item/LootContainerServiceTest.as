@@ -1859,7 +1859,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && emptyReleaseDone.handled && emptyReleaseDone.success
                     && emptyTerminal.success && emptyTerminal.state == "CONSUMED"
                     && emptyTerminal.terminal != null
-                    && emptyTerminal.terminal.reason == "reopen_failure_empty"
+                    && emptyTerminal.terminal.reason == "panel_open_failure_empty"
                     && emptyStable.authorityRevision == emptyTerminal.authorityRevision
                     && !emptyDuplicateRelease.handled
                     && emptyFlow.target.playCount == 1
