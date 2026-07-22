@@ -70,8 +70,7 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
 
     private static function target(id:String, drops:Object):Object {
         return {
-            presetName:"装备箱", row:2, col:4, 掉落物:drops,
-            chestRolloutId:id, lootFlowProfile:"web-loot-v1", unlockPolicy:"skip"
+            presetName:"装备箱", row:2, col:4, 掉落物:drops
         };
     }
 
@@ -91,6 +90,20 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
         var oversizedResult:Object = LootMaterializationPlanner.materialize(
             target("mat.oversized", oversized));
 
+        resetEntropy(1003, {});
+        var defaultQuantity:Object = {名字:ITEM};
+        var oneSlot:Object = target("mat.default-quantity", defaultQuantity);
+        oneSlot.row = 1;
+        oneSlot.col = 1;
+        var defaulted:Object = LootMaterializationPlanner.materialize(oneSlot);
+
+        resetEntropy(1004, {});
+        var boundaryTarget:Object = target(
+            "mat.capacity-boundary", {名字:ITEM, 最小数量:1, 最大数量:1});
+        boundaryTarget.row = 8;
+        boundaryTarget.col = 8;
+        var boundary:Object = LootMaterializationPlanner.materialize(boundaryTarget);
+
         resetEntropy(1002, {});
         var first:Object = rule(undefined, 5);
         var second:Object = rule(undefined, 6);
@@ -100,15 +113,19 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
         var retryable:Object = LootMaterializationPlanner.materialize(frozenTarget);
         frozenDrops[0] = second;
         frozenDrops[1] = first;
-        frozenTarget.unlockPolicy = "changed";
         var changed:Object = LootMaterializationPlanner.materialize(frozenTarget);
         check(!result.success && result.error == "invalid_drop_probability"
                 && result.terminalFailure && validationKeptEntropy
                 && ownKeyCount(state) == 0 && valid.总数 == 5 && fixture.掉落物 != null
                 && !oversizedResult.success && oversizedResult.error == "invalid_drop_rule"
+                && defaulted.success && defaulted.capacity == 1
+                && defaulted.inventory.capacity == 1 && defaulted.inventory.size() == 1
+                && defaulted.entries[0].quantity == 1
+                && boundary.success && boundary.capacity == 64
+                && boundary.inventory.capacity == 64 && boundary.inventory.size() == 1
                 && retryable.error == "materialization_input_changed"
                 && changed === retryable && changed.terminalFailure,
-            "校验先于随机推进并拒绝超 safe-int；retry 冻结数组顺序与全部 rollout marker");
+            "校验先于随机推进并拒绝超 safe-int；缺省数量归一为 1；接受 64 格能力边界；retry 冻结源数组顺序");
     }
 
     private static function testQuantitySpanBoundary():Void {

@@ -20,7 +20,6 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
     private static var _oldWorld:Object;
     private static var _oldServer:Object;
     private static var _oldSceneWorld:MovieClip;
-    private static var _oldInventoryDrop:Function;
     private static var _oldEnemyDropCheck:Function;
     private static var _oldEnemyDropItem:Object;
 
@@ -32,7 +31,7 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
     private static var _killDispatchCount:Number = 0;
     private static var _deathCount:Number = 0;
     private static var _spyCount:Number = 0;
-    private static var _legacyRewardOrUiCount:Number = 0;
+    private static var _directDropCount:Number = 0;
 
     public static function runAllTests():Void {
         _passed = 0;
@@ -91,9 +90,9 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
             "F01 PASS: production KillEventComponent observes one own-kill chain");
         check(completed.state == ChestSessionService.COMPLETED_NO_REWARD
                 && _requestCount == 1 && _spyCount == 1
-                && _legacyRewardOrUiCount == 0
+                && _directDropCount == 0
                 && ChestSessionService.__getRetainedTargetCount() == 0,
-            "F01 PASS: real root open callback completes once with zero reward/UI");
+            "F01 PASS: real root open callback completes once without entering direct-drop delivery");
     }
 
     private static function testF02KnownFailureAndRetry():Void {
@@ -114,8 +113,8 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
                 && retryId.length > 0 && retryId != firstId && failure.success,
             "F02 PASS: cancel/failure revoke, retry uses a new identity, old result is stale");
         check(_killDispatchCount == 0 && _deathCount == 0 && _spyCount == 0
-                && _legacyRewardOrUiCount == 0,
-            "F02 PASS: known non-success paths have zero kill/reward/UI side effects");
+                && _directDropCount == 0,
+            "F02 PASS: known non-success paths have zero kill/direct-drop side effects");
 
         resetWiring(true);
         _queueOpen = false;
@@ -147,8 +146,9 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         emitInteraction(null);
         check(direct._killed && !grid._killed
                 && ChestSessionService.getActiveSessionId() == ""
-                && _requestCount == 0 && _deathCount == 1,
-            "F03 PASS: grid/direct-drop mix dispatches only the nearest legacy box");
+                && _requestCount == 0 && _deathCount == 1
+                && _directDropCount == 1,
+            "F03 PASS: grid/direct-drop mix dispatches only the nearest direct box");
 
         resetWiring(true);
         var consumerBoxA:MovieClip = createBox("F03ConsumerA", "保险柜", 4, 2, 3, true);
@@ -186,7 +186,7 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         _root.地图元件.资源箱开启脚本(duplicateTarget);
         check(!duplicateResult.success && _killDispatchCount == 1
                 && _deathCount == 1 && _spyCount == 1
-                && _legacyRewardOrUiCount == 0,
+                && _directDropCount == 0,
             "F04 PASS: duplicate result/root callback has no late side effects");
 
         resetWiring(true);
@@ -197,8 +197,8 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         _root.地图元件.资源箱破碎脚本(breakTarget);
         check(ChestSessionService.querySession(breakId).state == ChestSessionService.EXPIRED
                 && _killDispatchCount == 0 && _deathCount == 0
-                && _legacyRewardOrUiCount == 0,
-            "F04 PASS: real root break callback expires once and never falls into legacy reward");
+                && _directDropCount == 0,
+            "F04 PASS: real root break callback expires once and never enters direct-drop delivery");
 
         resetWiring(true);
         var sceneTarget:MovieClip = createBox("F04Scene", "保险柜", 4, 2, 3, true);
@@ -213,7 +213,7 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
             sceneId, 1, {result:"success"});
         check(ChestSessionService.querySession(sceneId).state == ChestSessionService.EXPIRED
                 && !lateAfterScene.success && _killDispatchCount == 0
-                && _deathCount == 0 && _legacyRewardOrUiCount == 0
+                && _deathCount == 0 && _directDropCount == 0
                 && ChestSessionService.__getRetainedTargetCount() == 0,
             "F04 PASS: SceneManager.removeGameWorld expires first; late work stays inert");
     }
@@ -222,18 +222,14 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         _oldWorld = _root.gameworld;
         _oldServer = _root.server;
         _oldSceneWorld = SceneManager.getInstance().gameworld;
-        _oldInventoryDrop = _root.地图元件.掉落物转换为物品栏;
         _oldEnemyDropCheck = _root.敌人函数.掉落物判定;
         _oldEnemyDropItem = _root.敌人函数.掉落物品;
     }
 
     private static function installRootSpies():Void {
         _root.server = null;
-        _root.地图元件.掉落物转换为物品栏 = function(target:Object):Void {
-            ChestS0ProductionFlashWiringTest.observeLegacyRewardOrUi();
-        };
         _root.敌人函数.掉落物判定 = function():Void {
-            ChestS0ProductionFlashWiringTest.observeLegacyRewardOrUi();
+            ChestS0ProductionFlashWiringTest.observeDirectDrop();
         };
         _root.敌人函数.掉落物品 = function():Void {};
     }
@@ -243,7 +239,6 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         SceneManager.getInstance().gameworld = _oldSceneWorld;
         _root.gameworld = _oldWorld;
         _root.server = _oldServer;
-        _root.地图元件.掉落物转换为物品栏 = _oldInventoryDrop;
         _root.敌人函数.掉落物判定 = _oldEnemyDropCheck;
         _root.敌人函数.掉落物品 = _oldEnemyDropItem;
     }
@@ -256,7 +251,7 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         _killDispatchCount = 0;
         _deathCount = 0;
         _spyCount = 0;
-        _legacyRewardOrUiCount = 0;
+        _directDropCount = 0;
         _targets = [];
         _world = _root.createEmptyMovieClip(
             "__chestS0ProductionWorld" + getTimer(), _root.getNextHighestDepth());
@@ -349,8 +344,8 @@ class org.flashNight.arki.scene.ChestS0ProductionFlashWiringTest {
         _deathCount++;
     }
 
-    public static function observeLegacyRewardOrUi():Void {
-        _legacyRewardOrUiCount++;
+    public static function observeDirectDrop():Void {
+        _directDropCount++;
     }
 
     private static function check(condition:Boolean, message:String):Void {

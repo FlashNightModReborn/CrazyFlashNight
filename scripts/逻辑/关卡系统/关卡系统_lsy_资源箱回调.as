@@ -12,41 +12,42 @@ _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
         return;
     }
 
-    // recovery 比当前箱优先；任何网格箱都只能重新呈现那份尚未取空的唯一 inventory。
-    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardAnyGridFixture(target);
+    // 任一既有 authority / suspend / recovery fence 都必须拦截当前回调。
+    // guard 命中后只停住并等待 Web-only 服务收敛，绝不渲染 Flash 资源箱 UI。
+    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardOpenGridFixture(target);
     if (lootGuard.handled) {
-        // LOOT_SUSPENDED 的 authored callback 若被重复触发只能停住；重开必须回到
-        // InteractionHandler exact anchor，绝不把 suspend 误解释成 legacy recovery。
-        if (lootGuard.recovery === true) {
-            if (lootGuard.rendererConfirmed === true) {
-                _root.地图元件.显示Web战利品旧界面(lootGuard);
-            } else {
-                _root.地图元件.回退Web战利品到旧界面(null);
-            }
-        }
+        trace("[LootContainer] open callback guarded: " + lootGuard.reason);
         return;
     }
-    if (_root.地图元件.具有Web战利品标记(target)) {
+
+    // 与 InteractionHandler 共用唯一 shape 分类，不能在结束帧用 Number() 宽松转换
+    // 重开一条字符串/小数/超界尺寸旁路。正常交互已在 kill 前为 supported Web grid
+    // 建立 reservation；结束帧只负责激活同一 authority 并请求 Web。
+    var lootShape:String = org.flashNight.arki.item.LootContainerService.classifyFixtureShape(target);
+    if (lootShape == "supported_web_grid") {
         var activated:Object = org.flashNight.arki.item.LootContainerService.activateReservedOpen(target);
         if (activated.success) {
             if (activated.duplicate !== true
                     && !org.flashNight.arki.item.LootContainerService.requestOpenPanel()) {
-                _root.地图元件.回退Web战利品到旧界面(target);
+                trace("[LootContainer] Web panel request rejected; authority retained");
             }
         } else {
-            _root.地图元件.回退Web战利品到旧界面(target);
+            trace("[LootContainer] reserved activation rejected: " + activated.error);
         }
         return;
     }
 
-    // 如果有物品栏则弹出，否则爆出物品
-    if (target.row > 0 && target.col > 0) {
-        _root.地图元件.掉落物转换为物品栏(target);
-    } else {
-        target.掉落物判定 = _root.敌人函数.掉落物判定;
-        target.掉落物品 = _root.敌人函数.掉落物品;
-        target.掉落物判定();
+    // 已准入箱体中，只有两维完整的非正整数保留地面直投。malformed/超界尺寸与
+    // 意外调用本回调的非箱对象均 fail closed，不能借旧 AS2 路径掩盖配置错误。
+    if (lootShape != "direct_delivery") {
+        trace("[LootContainer] open callback rejected shape: " + lootShape);
+        return;
     }
+
+    // 非正网格箱从来不创建物品栏 UI，保持直接地面掉落。
+    target.掉落物判定 = _root.敌人函数.掉落物判定;
+    target.掉落物品 = _root.敌人函数.掉落物品;
+    target.掉落物判定();
 }
 
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
@@ -58,33 +59,15 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
         return;
     }
 
-    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardAnyGridFixture(target);
+    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardBreakGridFixture(target);
     if (lootGuard.handled) {
-        if (lootGuard.recovery === true) {
-            if (lootGuard.rendererConfirmed === true) {
-                _root.地图元件.显示Web战利品旧界面(lootGuard);
-            } else {
-                _root.地图元件.回退Web战利品到旧界面(null);
-            }
-        }
+        trace("[LootContainer] break callback guarded: " + lootGuard.reason);
         return;
     }
 
-    // rollout marker 即使因资产/linkage 漂移落到破碎回调，也不能绕回直接爆落旧链。
-    if (_root.地图元件.具有Web战利品标记(target)) {
-        var activated:Object = org.flashNight.arki.item.LootContainerService.activateReservedOpen(target);
-        if (activated.success) {
-            if (activated.duplicate !== true
-                    && !org.flashNight.arki.item.LootContainerService.requestOpenPanel()) {
-                _root.地图元件.回退Web战利品到旧界面(target);
-            }
-        } else {
-            _root.地图元件.回退Web战利品到旧界面(target);
-        }
-        return;
-    }
-
-    // 不尝试弹出物品栏，直接爆出物品
+    // Web-only 迁移只替换“正常交互 → 结束时间轴 → 网格 UI”路径。破碎时间轴没有
+    // InteractionHandler reservation，继续保持既有直接爆落语义；上面的 guard 会先
+    // 截住同一箱已经 reservation、物化、激活、挂起或待收敛的 Web authority，避免重复发奖。
     target.掉落物判定 = _root.敌人函数.掉落物判定;
     target.掉落物品 = _root.敌人函数.掉落物品;
     target.掉落物判定();

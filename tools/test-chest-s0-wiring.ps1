@@ -69,10 +69,15 @@ Assert-True ($openStart -ge 0 -and $breakStart -gt $openStart) `
 $openSection = $rootCallbacks.Substring($openStart, $breakStart - $openStart)
 $breakSection = $rootCallbacks.Substring($breakStart)
 
-Assert-Before $openSection "ChestSessionService.handleOpenFrame(target)" "掉落物转换为物品栏(target)" `
-    "open-frame S0 guard precedes legacy container/reward path"
+Assert-Before $openSection "ChestSessionService.handleOpenFrame(target)" `
+    "LootContainerService.guardOpenGridFixture(target)" `
+    "open-frame S0 guard precedes the Web-only loot authority path"
 Assert-Before $breakSection "ChestSessionService.handleBreakFrame(target)" "target.掉落物判定()" `
-    "break-frame S0 guard precedes legacy drop path"
+    "break-frame S0 guard precedes direct-drop delivery"
+Assert-NotContains $rootCallbacks "掉落物转换为物品栏" `
+    "root callbacks never restore the removed Flash grid renderer"
+Assert-NotContains $rootCallbacks "回退Web战利品到旧界面" `
+    "root callbacks never recover Web loot through Flash UI"
 Assert-Contains $openSection "if (chestS0Result.handled) {" `
     "root open callback enters the handled S0 fail-closed block"
 Assert-Before $openSection "ChestS0SocketBridge.handleAuthorityTransition(chestS0Result)" `
@@ -88,9 +93,9 @@ Assert-True ([regex]::IsMatch($interaction,
     'if\s*\(BoxInteractionArbiter\.isBoxPreset\(target\.presetName\)\)\s*\{\s*return BoxInteractionArbiter\.register\(target, _root\.gameworld\);\s*\}')) `
     "recognized boxes fail closed when central arbiter registration fails"
 Assert-Contains $arbiterTest "testA03FRegistrationFailureNeverFallsBack" `
-    "A03F covers central registration failure without legacy per-target fallback"
+    "A03F covers central registration failure without per-target fallback"
 Assert-Before $interaction "ChestSessionService.beginFixture(" "InteractionHandler.executePickup(target)" `
-    "late marker read occurs before legacy pickup"
+    "the exact S0 fixture check occurs before ordinary pickup dispatch"
 Assert-Before $interaction "ChestS0SocketBridge.observeLocalFixture(target);" `
     "var s0Result:Object = ChestSessionService.beginFixture(" `
     "interaction submission refreshes the exact per-target gate before begin"
@@ -300,6 +305,8 @@ Assert-Contains $productionFlashWiringTest "_root.地图元件.资源箱开启�
     "F smoke reaches the canonical root open callback"
 Assert-Contains $productionFlashWiringTest "_root.地图元件.资源箱破碎脚本" `
     "F smoke reaches the canonical root break callback"
+Assert-NotContains $productionFlashWiringTest "掉落物转换为物品栏" `
+    "F smoke observes session/direct-drop wiring without replacing the removed Flash grid renderer"
 Assert-True ([regex]::IsMatch($productionFlashWiringTest,
     'cleanupWiring\(\);\s*ChestS0SocketBridge\.__testOnlyReset\(\);\s*\}\s*finally\s*\{\s*restoreRootState\(\);')) `
     "production-path cleanup clears bridge authorization before restoring root state"

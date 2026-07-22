@@ -262,7 +262,7 @@ _root.gameCommands["webPanelUnpause"] = function() {
     var suspendedRelease:Object =
         org.flashNight.arki.item.LootContainerService.releaseSuspendedPauseForClose();
     if (suspendedRelease != null && suspendedRelease.handled === true) return;
-    // loot socket/navigation handoff 由 LootContainerService 原子证明 renderer + pause；
+    // loot socket/navigation handoff 由 LootContainerService 原子证明权威 suspend/terminal；
     // Host 的迟到 generic unpause 不得越过仍在重试的本地 transport fence。
     if (org.flashNight.arki.item.LootContainerService.hasPendingTransportDetach()) return;
     if (_root._webPanelPauseLease != undefined) {
@@ -270,12 +270,8 @@ _root.gameCommands["webPanelUnpause"] = function() {
         _root._webPanelPauseLease = undefined;
     }
     // loot 正常 terminal 已先在 AS2 落权威终态，但特意保留 lease；只有 Host 收齐
-    // exact DOM/native visual-close 证明后调用到这里，才解除暂停。随后无 active loot，
-    // fallback 保持无事发生；强制关闭/Host 拒绝才交还同一 transient inventory。
-    if (_root.地图元件 != undefined
-            && typeof _root.地图元件.回退Web战利品到旧界面 == "function") {
-        _root.地图元件.回退Web战利品到旧界面(null);
-    }
+    // exact DOM/native visual-close 证明后调用到这里，才解除暂停。非终态由服务保留
+    // Web-only suspend，不存在 Flash UI 通用回退。
 };
 
 // 主线任务进度 → 控制按钮可见性

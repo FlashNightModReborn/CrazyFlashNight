@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.item.LootContainerService;
+import org.flashNight.arki.item.LootMaterializationPlanner;
 
 /**
  * 交互处理组件 - 负责处理地图元件的交互功能，如拾取等
@@ -101,8 +102,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
             if (s0Result.handled) return;
 
             // 生产 Web 战利品箱在 kill 前先拿到唯一 reservation，并完整物化奖励。
-            // beginFixture 也会优先拦截任何尚未取空的 legacy recovery，避免后开的
-            // 网格箱覆盖那份唯一 transient inventory。
+            // 所有正网格箱都在这里进入 Web-only 权威；任何失败均保持 fail-closed，
+            // 不得重新暴露已经退役的 Flash 资源箱 UI。
             var lootResult:Object = LootContainerService.beginFixture(target);
             if (lootResult.handled) {
                 if (lootResult.reopen === true) {
@@ -115,58 +116,35 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
                     }
                     return;
                 }
-                if (lootResult.recovery === true) {
-                    if (lootResult.rendererConfirmed === true
-                            && _root.地图元件 != undefined
-                            && typeof _root.地图元件.显示Web战利品旧界面 == "function") {
-                        _root.地图元件.显示Web战利品旧界面(lootResult);
-                    } else if (_root.地图元件 != undefined
-                            && typeof _root.地图元件.回退Web战利品到旧界面 == "function") {
-                        // 未确认 renderer 必须经 consume + confirm 包装；直接 display
-                        // 会留下 claimOnly UI 已显示但 service adapter 尚未授权的半状态。
-                        _root.地图元件.回退Web战利品到旧界面(null);
-                    }
+                if (lootResult.reserved !== true) {
+                    // Web-only 的 fail-closed 不能表现成“箱子偶尔没反应”。测试期必须把
+                    // classifier / authority fence 的精确原因留在 trace，便于第一时间暴露
+                    // 数据畸形、并发占用或未收束提交；仍然禁止回弹 Flash UI。
+                    trace("[LootContainer] open rejected before materialization: reason="
+                        + (lootResult.reason == undefined ? "unknown" : lootResult.reason)
+                        + ", state="
+                        + (lootResult.state == undefined ? "none" : lootResult.state));
                     return;
                 }
-                if (lootResult.reserved !== true) return;
 
-                var materialized:Object = null;
-                if (_root.地图元件 != undefined
-                        && typeof _root.地图元件.物化Web战利品物品栏 == "function") {
-                    materialized = _root.地图元件.物化Web战利品物品栏(target);
-                }
+                var materialized:Object = LootMaterializationPlanner.materialize(target);
                 if (materialized == null || materialized.success !== true) {
                     LootContainerService.abortReservedOpen(target, "materialization_failed");
                     trace("[LootContainer] materialization rejected: "
-                        + (materialized == null ? "helper_unavailable" : materialized.error));
+                        + (materialized == null ? "planner_returned_null" : materialized.error));
                     return;
                 }
 
-                var metadata:Object = {
-                    presetName:String(target.presetName),
-                    displayName:String(target.presetName),
-                    row:Number(target.row),
-                    col:Number(target.col),
-                    chestRolloutId:String(target.chestRolloutId),
-                    lootFlowProfile:String(target.lootFlowProfile),
-                    unlockPolicy:String(target.unlockPolicy)
-                };
                 var committed:Object = LootContainerService.commitReservedOpen(
-                    target, materialized.inventory, metadata,
+                    target, materialized.inventory,
                     function(box:MovieClip):Boolean {
                         return InteractionHandler.executePickup(box);
                     });
                 if (!committed.success) {
-                    var recovered:Boolean = false;
-                    if (_root.地图元件 != undefined
-                            && typeof _root.地图元件.回退Web战利品到旧界面 == "function") {
-                        recovered = _root.地图元件.回退Web战利品到旧界面(target) === true;
-                    }
-                    // register/metadata 前置失败尚无 inventory 可 recovery；显式撤销
-                    // reservation，不能把全局 loot 槽卡到下一次换场。
-                    if (!recovered) {
-                        LootContainerService.abortReservedOpen(target, "registration_failed");
-                    }
+                    // 物化完成后 service/journal 是唯一恢复依据。这里绝不撤销或重投影
+                    // 到 Flash UI，否则会把协议/Host 故障伪装成一次成功的旧流程。
+                    trace("[LootContainer] reserved commit rejected: "
+                        + (committed.error == undefined ? "unknown" : committed.error));
                 }
                 return;
             }
@@ -174,7 +152,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
         };
         var deathFunc:Function = function(target:MovieClip):Void {
             // commitReservedOpen 要求 death 在同一 kill 调用栈内完成 own-target 证明。
-            LootContainerService.observeDeath(target);
+            var lootDeath:Object = LootContainerService.observeDeath(target);
+            if (lootDeath != null && lootDeath.handled === true
+                    && lootDeath.ownKill !== true) {
+                // 测试阶段必须显式暴露外部破坏、重入或时序漂移；这里仍只记录诊断，
+                // 不得把未收束 authority 回弹到 Flash 资源箱 UI。
+                trace("[LootContainer] unexpected target death: reason="
+                    + (lootDeath.reason == undefined ? "unknown" : lootDeath.reason)
+                    + ", state="
+                    + (lootDeath.state == undefined ? "none" : lootDeath.state));
+            }
             BoxInteractionArbiter.unregister(target);
             ChestS0SocketBridge.handleTargetInvalid(target);
         };

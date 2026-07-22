@@ -11,7 +11,7 @@ import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.arki.scene.SceneManager;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter;
 
-/** S1：瞬态 loot container 的 identity/lease/事务/终态/legacy recovery 回归。 */
+/** S1：瞬态 Web loot container 的 identity/lease/事务/挂起/终态回归。 */
 class org.flashNight.arki.item.LootContainerServiceTest {
     private static var _passed:Number = 0;
     private static var _failed:Number = 0;
@@ -30,6 +30,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         installMetadata();
 
         testReservationKillGateAndOverwrite();
+        testMaterializedInventoryValidationFence();
         testReservationKillUnavailableRecovery();
         testReservationActivationGateRecovery();
         testUnexpectedDeathBeforeMaterialization();
@@ -43,11 +44,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testPostCommitDirtyRetryGate();
         testPostCommitDestinationCacheRetry();
         testSceneTeardownPendingBarrier();
-        testTransportDetachSettlesPendingClaim();
-        testTransportDetachUncertainFailClosed();
-        testTransportDetachPostCommitRecovery();
-        testTransportDetachRendererRetry();
         testTransportDetachUnpauseLastItemRetry();
+        testTransportDetachConflictStaysPending();
         testPendingClaimSceneExpiryEmpty();
         testPendingClaimSceneExpiryMerge();
         testPendingClaimSceneExpiryEquipment();
@@ -74,12 +72,9 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testCloseAttemptProofSurvivesRejectedReopen();
         testRecoveryProofLedgerOrderingAndCapacity();
         testSuspendReopenFailureEmptyConsumes();
-        testInitialOpenSynchronousFailureRendersLegacyOnce();
+        testInitialOpenSynchronousFailureSuspendsSameInventory();
         testSuspendAnchorFailureIsZeroAuthority();
         testSuspendedAnchorUnloadExpires();
-        testLegacyClaimOnlyServiceAdapter();
-        testLegacyRecoveryKeepsSameInventory();
-        testLegacyRecoveryObserverLifecycle();
         testReliablePanelOpenCallbacks();
         testRecoveryProofStrictShapeAndNonce();
         testInitialRecoveryBeforeAckProof();
@@ -182,7 +177,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         };
         var target:Object = {
             presetName:"装备箱", row:2, col:4,
-            chestRolloutId:id, lootFlowProfile:"web-loot-v1", unlockPolicy:"skip",
+            testFixtureId:id,
             _parent:_root.gameworld, _x:0, Z轴坐标:0, area:{},
             interactionEnabled:true, pickupEnabled:true, _killed:false,
             dispatcher:dispatcher, stopCount:0, playCount:0, stopped:false
@@ -247,10 +242,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var inventory:ArrayInventory = makeInventory(items);
         var begun:Object = LootContainerService.beginFixture(target);
         var committed:Object = LootContainerService.commitReservedOpen(
-            target, inventory, {
-                presetName:"装备箱", row:2, col:4, chestRolloutId:id,
-                lootFlowProfile:"web-loot-v1", unlockPolicy:"skip"
-            },
+            target, inventory,
             function(box:Object):Boolean {
                 box._killed = true;
                 return LootContainerService.observeDeath(box).ownKill === true;
@@ -344,62 +336,167 @@ class org.flashNight.arki.item.LootContainerServiceTest {
 
     private static function testReservationKillGateAndOverwrite():Void {
         resetWorld();
-        var ordinary:Object = {presetName:"装备箱", row:2, col:4};
-        check(!LootContainerService.beginFixture(ordinary).handled,
-            "无 exact marker 的旧箱继续委托 legacy");
-        var malformed:Object = {presetName:"装备箱", row:2, col:4,
+        var arbitrary:Object = {presetName:"装备箱", row:3, col:5};
+        var arbitraryResult:Object = LootContainerService.beginFixture(arbitrary);
+        LootContainerService.abortReservedOpen(arbitrary, "test_arbitrary_grid");
+        var smallest:Object = {presetName:"资源箱", row:1, col:1};
+        var smallestResult:Object = LootContainerService.beginFixture(smallest);
+        LootContainerService.abortReservedOpen(smallest, "test_smallest_grid");
+        var boundary:Object = {presetName:"保险柜", row:8, col:8};
+        var boundaryResult:Object = LootContainerService.beginFixture(boundary);
+        LootContainerService.abortReservedOpen(boundary, "test_boundary_grid");
+        var tooWide:Object = LootContainerService.beginFixture(
+            {presetName:"装备箱", row:1, col:9});
+        var tooLarge:Object = LootContainerService.beginFixture(
+            {presetName:"资源箱", row:9, col:8});
+        var directResult:Object = LootContainerService.beginFixture(
+            {presetName:"资源箱", row:0, col:0});
+        check(arbitraryResult.handled && arbitraryResult.reserved
+                && smallestResult.handled && smallestResult.reserved
+                && boundaryResult.handled && boundaryResult.reserved
+                && LootContainerService.classifyFixtureShape(arbitrary)
+                    == "supported_web_grid"
+                && LootContainerService.classifyFixtureShape(smallest)
+                    == "supported_web_grid"
+                && LootContainerService.classifyFixtureShape(boundary)
+                    == "supported_web_grid"
+                && tooWide.handled && !tooWide.reserved
+                && tooWide.reason == "unsupported_grid_shape"
+                && tooLarge.handled && !tooLarge.reserved
+                && tooLarge.reason == "unsupported_grid_shape"
+                && !directResult.handled && directResult.reason == "direct_delivery",
+            "任意正网格按 8 列/64 格边界进入 Web，超界 fail closed，非正网格才 direct");
+
+        var fractionTarget:Object = {presetName:"装备箱", row:2.5, col:4};
+        var stringTarget:Object = {presetName:"装备箱", row:"2", col:4};
+        var nanTarget:Object = {presetName:"装备箱", row:Number("not-a-number"), col:4};
+        var infinityTarget:Object = {
+            presetName:"装备箱", row:Number.POSITIVE_INFINITY, col:4};
+        var knownMissingTarget:Object = {presetName:"装备箱"};
+        var mixedMalformedTarget:Object = {presetName:"资源箱", row:2};
+        var mixedSignTarget:Object = {presetName:"资源箱", row:-1, col:4};
+        var unrelatedTarget:Object = {presetName:"投影召唤器", row:4, col:8};
+        var fractionResult:Object = LootContainerService.beginFixture(fractionTarget);
+        var stringResult:Object = LootContainerService.beginFixture(stringTarget);
+        var nanResult:Object = LootContainerService.beginFixture(nanTarget);
+        var infinityResult:Object = LootContainerService.beginFixture(infinityTarget);
+        var knownMissingResult:Object = LootContainerService.beginFixture(knownMissingTarget);
+        var mixedMalformedResult:Object = LootContainerService.beginFixture(mixedMalformedTarget);
+        var mixedSignResult:Object = LootContainerService.beginFixture(mixedSignTarget);
+        var unrelatedResult:Object = LootContainerService.beginFixture(unrelatedTarget);
+        check(LootContainerService.classifyFixtureShape(fractionTarget)
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyFixtureShape(stringTarget)
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyFixtureShape(nanTarget)
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyFixtureShape(infinityTarget)
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyFixtureShape(knownMissingTarget)
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyFixtureShape(mixedMalformedTarget)
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyFixtureShape(mixedSignTarget)
+                    == "direct_delivery"
+                && LootContainerService.classifyFixtureShape(unrelatedTarget)
+                    == "not_web_loot_grid"
+                && fractionResult.handled && stringResult.handled
+                && nanResult.handled && infinityResult.handled
+                && knownMissingResult.handled && mixedMalformedResult.handled
+                && !mixedSignResult.handled
+                && !unrelatedResult.handled && !unrelatedResult.reserved
+                && unrelatedResult.reason == "not_web_loot_grid",
+            "六箱域内 malformed fail closed、完整非正整数 direct；正网格投影召唤器不被 loot 劫持");
+        var markerIgnored:Object = {presetName:"装备箱", row:2, col:4,
             chestRolloutId:"s1.partial"};
-        var malformedResult:Object = LootContainerService.beginFixture(malformed);
-        check(malformedResult.handled && !malformedResult.reserved
-                && malformedResult.reason == "invalid_rollout_marker",
-            "partial marker fail closed，不穿回 legacy kill");
-        var missingThird:Object = {presetName:"装备箱", row:2, col:4,
-            chestRolloutId:"s1.missing-third", lootFlowProfile:"web-loot-v1"};
-        var missingThirdResult:Object = LootContainerService.beginFixture(missingThird);
-        check(missingThirdResult.handled && !missingThirdResult.reserved
-                && missingThirdResult.reason == "invalid_rollout_marker",
-            "缺少 unlockPolicy 的两字段 marker fail closed");
-        var wrongThird:Object = {presetName:"装备箱", row:2, col:4,
-            chestRolloutId:"s1.wrong-third", lootFlowProfile:"web-loot-v1",
-            unlockPolicy:"open"};
-        var wrongThirdResult:Object = LootContainerService.beginFixture(wrongThird);
-        check(wrongThirdResult.handled && !wrongThirdResult.reserved
-                && wrongThirdResult.reason == "invalid_rollout_marker",
-            "unlockPolicy 非 skip 时 fail closed");
+        var markerIgnoredResult:Object = LootContainerService.beginFixture(markerIgnored);
+        check(markerIgnoredResult.handled && markerIgnoredResult.reserved,
+            "authored rollout marker 不再参与运行时路由");
+        LootContainerService.abortReservedOpen(markerIgnored, "test_marker_ignored");
 
         var target:Object = makeTarget("s1.reserve");
         var inventory:ArrayInventory = makeInventory([stack(STACK, 2, 1)]);
         var begun:Object = LootContainerService.beginFixture(target);
-        var markerMismatch:Object = LootContainerService.register(
-            target, inventory, {unlockPolicy:"open"});
-        var firstRegister:Object = LootContainerService.register(target, inventory, {
-            presetName:"装备箱", row:2, col:4, chestRolloutId:"s1.reserve",
-            lootFlowProfile:"web-loot-v1", unlockPolicy:"skip"
-        });
-        var overwrite:Object = LootContainerService.register(target, makeInventory([]), null);
-        var secondTarget:Object = LootContainerService.beginFixture(makeTarget("s1.second"));
-        check(begun.handled && begun.state == "LOOT_COMMIT_PENDING"
-                && !markerMismatch.success && markerMismatch.error == "metadata_mismatch"
-                && firstRegister.success
-                && !overwrite.success && overwrite.error == "materialization_conflict"
-                && secondTarget.handled && secondTarget.reason == "loot_flow_busy",
-            "一次只允许一个 reservation，已物化 inventory 不可覆盖");
-
-        var committed:Object = LootContainerService.commitReservedOpen(target, inventory, null,
+        var reentrantBegin:Object = null;
+        var committed:Object = LootContainerService.commitReservedOpen(target, inventory,
             function(box:Object):Boolean {
+                reentrantBegin = LootContainerService.beginFixture(
+                    makeTarget("s1.reentrant-busy"));
                 return LootContainerService.observeDeath(box).ownKill === true;
             });
+        var overwrite:Object = LootContainerService.commitReservedOpen(
+            target, makeInventory([]), function(box:Object):Boolean { return false; });
+        var secondTarget:Object = LootContainerService.beginFixture(makeTarget("s1.second"));
+        var pendingOpen:Object = LootContainerService.guardOpenGridFixture(target);
+        var pendingBreak:Object = LootContainerService.guardBreakGridFixture(target);
+        var unrelatedBreak:Object = LootContainerService.guardBreakGridFixture(
+            makeTarget("s1.break-other"));
+        check(begun.handled && begun.state == "LOOT_COMMIT_PENDING"
+                && reentrantBegin.handled && !reentrantBegin.reserved
+                && reentrantBegin.reason == "loot_flow_busy"
+                && !overwrite.success && overwrite.error == "materialization_conflict"
+                && secondTarget.handled && secondTarget.reason == "loot_flow_busy"
+                && !pendingOpen.handled
+                && pendingOpen.reason == "loot_reservation_ready"
+                && pendingBreak.handled && pendingBreak.reason == "loot_reservation_pending"
+                && !unrelatedBreak.handled,
+            "commit 先固化唯一 inventory；覆盖、并发 reservation 与同箱破碎均 fail closed");
+
         var duplicateDeath:Object = LootContainerService.observeDeath(target);
         var active:Object = LootContainerService.activateReservedOpen(target);
         var revision:Number = active.authorityRevision;
         var duplicateActivation:Object = LootContainerService.activateReservedOpen(target);
+        var activeBreak:Object = LootContainerService.guardBreakGridFixture(target);
         check(committed.success
                 && duplicateDeath.ownKill && duplicateDeath.reason == "duplicate_own_death"
                 && active.success && active.closeLease != ""
                 && duplicateActivation.success && duplicateActivation.duplicate
-                && duplicateActivation.authorityRevision == revision,
+                && duplicateActivation.authorityRevision == revision
+                && activeBreak.handled && activeBreak.reason == "loot_authority_active",
             "kill proof 后重复 death/open-frame 均幂等且不推进 revision");
         LootContainerService.expireScene("scene_cleanup");
+    }
+
+    private static function testMaterializedInventoryValidationFence():Void {
+        resetWorld();
+        var target:Object = makeTarget("s1.materialization-fence-inventory");
+        var inventory:ArrayInventory = new ArrayInventory(null, 7);
+        var item:BaseItem = stack(STACK, 1, 82);
+        inventory.add(0, item);
+        var begun:Object = LootContainerService.beginFixture(target);
+        var killCalls:Number = 0;
+        var inventoryRejected:Object = LootContainerService.commitReservedOpen(
+            target, inventory,
+            function(box:Object):Boolean { killCalls++; return true; });
+        var replacement:ArrayInventory = makeInventory([stack(STACK, 1, 81)]);
+        var overwriteRejected:Object = LootContainerService.commitReservedOpen(
+            target, replacement,
+            function(box:Object):Boolean { killCalls++; return true; });
+        var abortRejected:Object = LootContainerService.abortReservedOpen(
+            target, "materialization_failed");
+        var expiryRejected:Object = LootContainerService.expireScene("scene_cleanup");
+        var diagnostic:Object = LootContainerService.execute("query", {
+            v:1,
+            chestSessionId:begun.chestSessionId,
+            lootContainerId:begun.lootContainerId,
+            containerEpoch:begun.containerEpoch
+        });
+        var breakGuard:Object = LootContainerService.guardBreakGridFixture(target);
+
+        check(!inventoryRejected.success
+                && inventoryRejected.error == "invalid_loot_inventory"
+                && inventoryRejected.state == "LOOT_COMMIT_PENDING"
+                && inventoryRejected.remainingCount == 1 && killCalls == 0
+                && !overwriteRejected.success
+                && overwriteRejected.error == "materialization_conflict"
+                && overwriteRejected.remainingCount == 1
+                && !abortRejected.success && abortRejected.error == "commit_pending"
+                && !expiryRejected.success && expiryRejected.error == "commit_pending"
+                && !diagnostic.success && diagnostic.error == "commit_pending"
+                && diagnostic.state == "LOOT_COMMIT_PENDING"
+                && diagnostic.remainingCount == 1 && inventory.getItem("0") === item
+                && breakGuard.handled && breakGuard.reason == "loot_reservation_pending",
+            "planner inventory 先固化；capacity 拒绝后覆盖、abort 与 scene cleanup 均不可吞奖励");
     }
 
     private static function testReservationKillUnavailableRecovery():Void {
@@ -408,18 +505,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var unavailableInventory:ArrayInventory = makeInventory([stack(STACK, 1, 9)]);
         var unavailableBegin:Object = LootContainerService.beginFixture(unavailableTarget);
         var unavailable:Object = LootContainerService.commitReservedOpen(
-            unavailableTarget, unavailableInventory, null, null);
-        var unavailableFallback:Object = LootContainerService.consumeLegacyFallback(
-            unavailableTarget);
-        var unavailableGuard:Object = LootContainerService.guardAnyGridFixture(unavailableTarget);
+            unavailableTarget, unavailableInventory, null);
+        var unavailableRetry:Object = LootContainerService.beginFixture(unavailableTarget);
+        var unavailableBreak:Object = LootContainerService.guardBreakGridFixture(unavailableTarget);
+        var unavailableExpiry:Object = LootContainerService.expireScene("scene_cleanup");
         check(unavailableBegin.reserved
                 && !unavailable.success && unavailable.error == "kill_adapter_unavailable"
-                && unavailableFallback.success
-                && unavailableFallback.inventory === unavailableInventory
-                && unavailableGuard.handled
-                && unavailableGuard.reason == "kill_adapter_unavailable",
-            "materialized reservation 的 kill adapter 缺失进入 same-object ACTIVE recovery");
-        LootContainerService.expireScene("scene_cleanup");
+                && unavailableRetry.handled && !unavailableRetry.reserved
+                && unavailableRetry.reason == "loot_reservation_pending"
+                && unavailableBreak.handled
+                && unavailableBreak.reason == "loot_reservation_pending"
+                && !unavailableExpiry.success
+                && unavailableExpiry.error == "commit_pending"
+                && unavailableExpiry.state == "LOOT_COMMIT_PENDING"
+                && unavailableInventory.getItem("0") != null,
+            "kill adapter 缺失保留 pending hard fence，scene cleanup 不得吞掉已物化奖励");
     }
 
     private static function testReservationActivationGateRecovery():Void {
@@ -427,19 +527,40 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var gateTarget:Object = makeTarget("s1.activation-gate");
         var gateInventory:ArrayInventory = makeInventory([stack(STACK, 1, 10)]);
         LootContainerService.beginFixture(gateTarget);
-        var registered:Object = LootContainerService.register(gateTarget, gateInventory, {
-            presetName:"装备箱", row:2, col:4, chestRolloutId:"s1.activation-gate",
-            lootFlowProfile:"web-loot-v1", unlockPolicy:"skip"
-        });
+        var gateCommitted:Object = LootContainerService.commitReservedOpen(
+            gateTarget, gateInventory,
+            function(box:Object):Boolean { return false; });
         var rejected:Object = LootContainerService.activateReservedOpen(gateTarget);
-        var gateFallback:Object = LootContainerService.consumeLegacyFallback(gateTarget);
-        var gateGuard:Object = LootContainerService.guardAnyGridFixture(gateTarget);
-        check(registered.success
+        var gateRetry:Object = LootContainerService.beginFixture(gateTarget);
+        var gateBreak:Object = LootContainerService.guardBreakGridFixture(gateTarget);
+        var gateExpiry:Object = LootContainerService.expireScene("scene_cleanup");
+
+        resetWorld();
+        var holdTarget:Object = makeTarget("s1.activation-hold");
+        holdTarget.stop = function():Void { throw "forced_target_hold_failure"; };
+        var holdInventory:ArrayInventory = makeInventory([stack(STACK, 1, 11)]);
+        LootContainerService.beginFixture(holdTarget);
+        var holdCommitted:Object = LootContainerService.commitReservedOpen(
+            holdTarget, holdInventory, function(box:Object):Boolean {
+                box._killed = true;
+                return LootContainerService.observeDeath(box).ownKill === true;
+            });
+        var holdRejected:Object = LootContainerService.activateReservedOpen(holdTarget);
+        var holdExpiry:Object = LootContainerService.expireScene("scene_cleanup");
+        var holdBreak:Object = LootContainerService.guardBreakGridFixture(holdTarget);
+        check(!gateCommitted.success && gateCommitted.error == "kill_adapter_failed"
                 && !rejected.success && rejected.error == "activation_gate_failed"
-                && gateFallback.success && gateFallback.inventory === gateInventory
-                && gateGuard.handled && gateGuard.reason == "activation_gate_failed",
-            "未取得 own-kill proof 的 activation gate 失败不遗留 busy reservation");
-        LootContainerService.expireScene("scene_cleanup");
+                && gateRetry.handled && gateRetry.reason == "loot_reservation_pending"
+                && gateBreak.handled && gateBreak.reason == "loot_reservation_pending"
+                && !gateExpiry.success && gateExpiry.error == "commit_pending"
+                && gateInventory.getItem("0") != null
+                && holdCommitted.success
+                && !holdRejected.success && holdRejected.error == "target_hold_failed"
+                && !holdExpiry.success && holdExpiry.error == "commit_pending"
+                && holdExpiry.state == "LOOT_COMMIT_PENDING"
+                && holdBreak.handled && holdBreak.reason == "loot_reservation_pending"
+                && holdInventory.getItem("0") != null,
+            "activation/target hold 内部失败保留 materialized pending hard fence，scene cleanup 不吞奖励");
     }
 
     private static function testUnexpectedDeathBeforeMaterialization():Void {
@@ -469,7 +590,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         LootContainerService.beginFixture(target);
         var deathDuringDispatch:Object = null;
         var committed:Object = LootContainerService.commitReservedOpen(
-            target, inventory, null, function(box:Object):Boolean {
+            target, inventory, function(box:Object):Boolean {
                 deathDuringDispatch = LootContainerService.observeDeath(box);
                 return deathDuringDispatch.ownKill === true;
             });
@@ -728,7 +849,6 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 "claim", claimParams(authority, 0, "claim.post-commit-other"));
             var closeBlocked:Object = LootContainerService.execute(
                 "close", closeParams(authority, "close.post-commit", authority.closeLease, true));
-            var legacyBlocked:Object = LootContainerService.consumeLegacyFallback(flow.target);
             LootContainerService.testOnlyFailNextPostCommit("dirty");
             var expiryBlocked:Object = LootContainerService.expireScene("scene_cleanup");
             var recovered:Object = LootContainerService.execute("query", queryParams(authority));
@@ -739,7 +859,6 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && !snapshotBlocked.success && snapshotBlocked.error == "commit_pending"
                     && !otherClaim.success && otherClaim.error == "commit_pending"
                     && !closeBlocked.success && closeBlocked.error == "commit_pending"
-                    && !legacyBlocked.success && legacyBlocked.error == "claim_commit_pending"
                     && !expiryBlocked.success && expiryBlocked.error == "commit_pending"
                     && expiryBlocked.state == "LOOT_COMMIT_PENDING"
                     && recovered.success && recovered.state == "LOOT_ACTIVE"
@@ -855,188 +974,17 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         }
     }
 
-    private static function testTransportDetachSettlesPendingClaim():Void {
-        var previousMapElements:Object = _root.地图元件;
-        try {
-            resetWorld();
-            var presented:Array = [];
-            installLegacyRenderer(presented);
-            var item:BaseItem = equipment(3944);
-            var flow:Object = activate([item], "s1.detach-pending");
-            var authority:Object = snapshot(flow);
-            LootClaimCommitCoordinator.testOnlyFailNext(
-                "ordinary_destination_write", "after_false");
-            LootClaimCommitCoordinator.testOnlyFailNext("ordinary_source_write", "false");
-            var pending:Object = LootContainerService.execute(
-                "claim", claimParams(authority, 0, "claim.detach-pending"));
-            var genericBlocked:Object = LootContainerService.consumeLegacyFallback(flow.target);
-            var reconciled:Object = LootContainerService.reconcileTransportDetach(flow.target);
-            var afterTerminal:Object = LootContainerService.consumeLegacyFallback(flow.target);
-
-            check(!pending.success && pending.error == "commit_pending"
-                    && !genericBlocked.success && genericBlocked.error == "claim_commit_pending"
-                    && reconciled.success && reconciled.readyForLegacy
-                    && reconciled.state == "CONSUMED"
-                    && !afterTerminal.success && afterTerminal.error == "no_legacy_fallback"
-                    && presented.length == 1 && presented[0].inventory === flow.inventory
-                    && flow.inventory.getItem("0") == null
-                    && _root.物品栏.背包.getItem("0") === item
-                    && _root.存档系统.dirtyMark === true,
-                "transport detach 只按 exact journal 收敛半提交，呈现同一空 inventory 后落终态");
-            LootContainerService.testOnlyReset();
-        } finally {
-            _root.地图元件 = previousMapElements;
-        }
-    }
-
-    private static function testTransportDetachUncertainFailClosed():Void {
-        resetWorld();
-        var item:BaseItem = equipment(3945);
-        var flow:Object = activate([item], "s1.detach-uncertain");
-        var authority:Object = snapshot(flow);
-        LootClaimCommitCoordinator.testOnlyFailNext(
-            "ordinary_destination_write", "after_false");
-        var pending:Object = LootContainerService.execute(
-            "claim", claimParams(authority, 0, "claim.detach-uncertain"));
-        var conflicting:BaseItem = equipment(3946);
-        _root.物品栏.背包.transactionWrite(0, conflicting);
-
-        var reconciled:Object = LootContainerService.reconcileTransportDetach(flow.target);
-        var genericBlocked:Object = LootContainerService.consumeLegacyFallback(flow.target);
-        var queried:Object = LootContainerService.execute("query", queryParams(authority));
-        check(!pending.success && pending.error == "commit_pending"
-                && !reconciled.success && !reconciled.readyForLegacy
-                && reconciled.error == "claim_commit_pending"
-                && reconciled.state == "LOOT_COMMIT_PENDING"
-                && !genericBlocked.success && genericBlocked.error == "claim_commit_pending"
-                && !queried.success && queried.error == "commit_pending"
-                && !LootContainerService.requestOpenPanel()
-                && flow.inventory.getItem("0") === item
-                && _root.物品栏.背包.getItem("0") === conflicting
-                && _root.存档系统.dirtyMark === false,
-            "transport detach 遇 destination conflict 保持 pending，禁止 legacy/open/dirty");
-        LootContainerService.testOnlyReset();
-    }
-
-    private static function testTransportDetachPostCommitRecovery():Void {
-        var previousMapElements:Object = _root.地图元件;
-        try {
-            resetWorld();
-            var presented:Array = [];
-            installLegacyRenderer(presented);
-            var oneShotItem:BaseItem = stack(STACK, 2, 3947);
-            var oneShotFlow:Object = activate([oneShotItem], "s1.detach-post-once");
-            var oneShotAuthority:Object = snapshot(oneShotFlow);
-            LootContainerService.testOnlyFailNextPostCommit("dirty");
-            var oneShotPending:Object = LootContainerService.execute("claim", claimParams(
-                oneShotAuthority, 0, "claim.detach-post-once"));
-            var oneShotGeneric:Object = LootContainerService.consumeLegacyFallback(oneShotFlow.target);
-            var oneShotReady:Object = LootContainerService.reconcileTransportDetach(oneShotFlow.target);
-
-            resetWorld();
-            installLegacyRenderer(presented);
-            var persistentItem:BaseItem = equipment(3948);
-            var persistentFlow:Object = activate([persistentItem], "s1.detach-post-persistent");
-            var persistentAuthority:Object = snapshot(persistentFlow);
-            _root.存档系统 = null;
-            var persistentPending:Object = LootContainerService.execute("claim", claimParams(
-                persistentAuthority, 0, "claim.detach-post-persistent"));
-            var firstBlocked:Object = LootContainerService.reconcileTransportDetach(persistentFlow.target);
-            var secondBlocked:Object = LootContainerService.reconcileTransportDetach(persistentFlow.target);
-            var persistentGeneric:Object = LootContainerService.consumeLegacyFallback(persistentFlow.target);
-            _root.存档系统 = {dirtyMark:false};
-            var persistentReady:Object = LootContainerService.reconcileTransportDetach(persistentFlow.target);
-
-            check(!oneShotPending.success && oneShotPending.error == "commit_pending"
-                    && !oneShotGeneric.success && oneShotGeneric.error == "claim_commit_pending"
-                    && oneShotReady.success && oneShotReady.readyForLegacy
-                    && oneShotReady.state == "CONSUMED"
-                    && oneShotFlow.inventory.getItem("0") == null
-                    && !persistentPending.success && persistentPending.error == "commit_pending"
-                    && !firstBlocked.success && !secondBlocked.success
-                    && firstBlocked.error == "claim_commit_pending"
-                    && secondBlocked.error == "claim_commit_pending"
-                    && !persistentGeneric.success
-                    && persistentGeneric.error == "claim_commit_pending"
-                    && persistentReady.success && persistentReady.readyForLegacy
-                    && persistentReady.state == "CONSUMED"
-                    && persistentFlow.inventory.getItem("0") == null
-                    && _root.物品栏.背包.getItem("0") === persistentItem
-                    && _root.存档系统.dirtyMark === true && presented.length == 2,
-                "transport detach 可恢复一次性 post effect；持久失败保持前置门，条件恢复后各呈现一次并终止空箱");
-            LootContainerService.testOnlyReset();
-        } finally {
-            _root.地图元件 = previousMapElements;
-        }
-    }
-
-    private static function testTransportDetachRendererRetry():Void {
-        var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
-        try {
-            resetWorld();
-            var sent:Array = [];
-            var callbacks:Array = [];
-            installPanelTransport(sent, callbacks);
-            var attempts:Number = 0;
-            var presented:Array = [];
-            _root.地图元件 = {
-                显示Web战利品旧界面:function(projection:Object):Boolean {
-                    attempts++;
-                    if (attempts == 1) return false;
-                    presented.push(projection);
-                    return true;
-                }
-            };
-            var flow:Object = activate([
-                stack(STACK, 2, 3949), stack(STACK, 3, 3950)
-            ], "s1.detach-renderer-retry");
-            LootContainerService.requestOpenPanel();
-            var openAttemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
-            callbacks[0]({success:true, accepted:true});
-            var authority:Object = snapshot(flow);
-            var first:Object = LootContainerService.reconcileSocketDetach(flow.target);
-            var snapshotBlocked:Object = snapshot(flow);
-            var expiryBlocked:Object = LootContainerService.expireScene("scene_cleanup");
-            var ordinaryBlocked:Object = LootContainerService.execute(
-                "query", queryParams(authority));
-            var queryRecovered:Object = LootContainerService.execute(
-                "query", proofQueryParams(authority, openAttemptSeq,
-                    "socket.renderer.retry"));
-            var projection:Object = LootContainerService.consumeLegacyFallback(flow.target);
-
-            check(!first.success && first.error == "claim_commit_pending"
-                    && first.state == "LOOT_COMMIT_PENDING"
-                    && !snapshotBlocked.success && snapshotBlocked.error == "commit_pending"
-                    && !expiryBlocked.success && expiryBlocked.error == "commit_pending"
-                    && expiryBlocked.state == "LOOT_COMMIT_PENDING"
-                    && !ordinaryBlocked.success && ordinaryBlocked.error == "commit_pending"
-                    && attempts == 2 && presented.length == 1
-                    && presented[0].inventory === flow.inventory
-                    && queryRecovered.success && queryRecovered.state == "LOOT_ACTIVE"
-                    && projection.success && projection.rendererConfirmed === true,
-                "socket renderer 首次失败保持 fence；普通 query 不续跑，exact 9 键 proof 重试成功");
-            LootContainerService.expireScene("scene_cleanup");
-        } finally {
-            _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
-        }
-    }
-
     private static function testTransportDetachUnpauseLastItemRetry():Void {
         var sourceOwner:MovieClip = _root.createEmptyMovieClip(
             "__loot_detach_unpause_source", _root.getNextHighestDepth());
         var destinationOwner:MovieClip = _root.createEmptyMovieClip(
             "__loot_detach_unpause_destination", _root.getNextHighestDepth());
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
             installPanelTransport(sent, callbacks);
-            var presented:Array = [];
-            installLegacyRenderer(presented);
             var item:BaseItem = equipment(3951);
             var flow:Object = activate([item], "s1.detach-unpause-last-item");
             LootContainerService.requestOpenPanel();
@@ -1055,6 +1003,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.testOnlyFailNextPostCommit("dirty");
             var pending:Object = LootContainerService.execute("claim", claimParams(
                 authority, 0, "claim.detach-unpause-last-item"));
+            _root._webPanelPauseLease = "test-detach-unpause-last-item";
             LootContainerService.testOnlyFailNextTransportHandoff("unpause");
             var firstDetach:Object = LootContainerService.handlePanelRecovery({
                 task:"cmd", action:"lootPanelRecovery",
@@ -1070,26 +1019,67 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 "query", proofQueryParams(authority, openAttemptSeq,
                     "recovery.unpause.last.item"));
             var fenceReleased:Boolean = !LootContainerService.hasPendingTransportDetach();
-            var afterTerminal:Object = LootContainerService.consumeLegacyFallback(flow.target);
 
             check(!pending.success && pending.error == "commit_pending"
                     && firstDetach.handled && !firstDetach.recovered
-                    && firstDetach.rendered && firstDetach.reason == "recovery_pending"
+                    && firstDetach.reason == "recovery_pending"
                     && fenceHeld && fenceReleased
-                    && presented.length == 1 && presented[0].inventory === flow.inventory
                     && queryRecovered.success && queryRecovered.state == "CONSUMED"
                     && queryRecovered.terminal != null
                     && queryRecovered.terminal.kind == "CONSUMED"
-                    && !afterTerminal.success && afterTerminal.error == "no_legacy_fallback"
                     && sourceEvents == 1 && destinationEvents == 1
                     && flow.inventory.getItem("0") == null
                     && _root.物品栏.背包.getItem("0") === item,
                 "detach unpause retry");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
+            _root._webPanelPauseLease = undefined;
             sourceOwner.removeMovieClip();
             destinationOwner.removeMovieClip();
+        }
+    }
+
+    private static function testTransportDetachConflictStaysPending():Void {
+        var previousServer:Object = _root.server;
+        try {
+            resetWorld();
+            var sent:Array = [];
+            var callbacks:Array = [];
+            installPanelTransport(sent, callbacks);
+            var item:BaseItem = equipment(3952);
+            var flow:Object = activate([item], "s1.detach-conflict");
+            LootContainerService.requestOpenPanel();
+            callbacks[0]({success:true, accepted:true});
+            var openAttemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
+            var authority:Object = snapshot(flow);
+
+            LootClaimCommitCoordinator.testOnlyFailNext(
+                "ordinary_destination_write", "after_false");
+            var pending:Object = LootContainerService.execute(
+                "claim", claimParams(authority, 0, "claim.detach-conflict"));
+            var conflicting:BaseItem = equipment(3953);
+            _root.物品栏.背包.transactionWrite(0, conflicting);
+            _root._webPanelPauseLease = "test-detach-conflict";
+
+            var detached:Object = LootContainerService.reconcileSocketDetach(flow.target);
+            var exactRetry:Object = LootContainerService.execute("query",
+                proofQueryParams(authority, openAttemptSeq, "socket.detach.conflict"));
+            var expiryBlocked:Object = LootContainerService.expireScene("scene_cleanup");
+
+            check(!pending.success && pending.error == "commit_pending"
+                    && !detached.success && detached.error == "claim_commit_pending"
+                    && detached.state == "LOOT_COMMIT_PENDING"
+                    && !exactRetry.success && exactRetry.error == "commit_pending"
+                    && !expiryBlocked.success && expiryBlocked.error == "commit_pending"
+                    && LootContainerService.hasPendingTransportDetach()
+                    && flow.inventory.getItem("0") === item
+                    && _root.物品栏.背包.getItem("0") === conflicting
+                    && _root._webPanelPauseLease == "test-detach-conflict"
+                    && _root.存档系统.dirtyMark === false,
+                "detach 遇 destination 冲突保持 journal、inventory、pause 与 scene hard fence");
+        } finally {
+            _root.server = previousServer;
+            _root._webPanelPauseLease = undefined;
         }
     }
 
@@ -1312,15 +1302,13 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 before, "close.suspend", oldLease, false);
             var suspended:Object = LootContainerService.execute("close", suspendRequest);
             var duplicateSuspend:Object = LootContainerService.execute("close", suspendRequest);
-            var fallback:Object = LootContainerService.consumeLegacyFallback(flow.target);
             check(suspended.success && suspended.state == "LOOT_SUSPENDED"
                     && suspended.closeLease == "" && suspended.terminal == null
                     && suspended.snapshots.length == 0 && suspended.remainingCount == 1
                     && duplicateSuspend.success && duplicateSuspend.state == "LOOT_SUSPENDED"
-                    && !fallback.success && fallback.error == "loot_suspended"
                     && flow.target._killed === true && flow.target.stopCount == 1
                     && flow.target.stopped,
-                "非空 close(false) 落 first-class suspend，保留 killed/同一 inventory 并旁路 legacy");
+                "非空 close(false) 落 first-class suspend，保留 killed/同一 inventory");
 
             var pauseReleased:Object = LootContainerService.releaseSuspendedPauseForClose();
             var same:Object = LootContainerService.beginFixture(flow.target);
@@ -1372,16 +1360,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var first:Object = LootContainerService.reconcileSocketDetach(flow.target);
         _root._webPanelPauseLease = "later-panel-lease";
         var second:Object = LootContainerService.reconcileSocketDetach(flow.target);
-        var fallback:Object = LootContainerService.consumeLegacyFallback(flow.target);
-        check(suspended.success && first.success && first.suspendedNoRenderer
+        check(suspended.success && first.success && first.suspendedWithoutPanel
                 && first.pauseReleaseRequired && first.pauseReleased
                 && first.state == "LOOT_SUSPENDED"
-                && second.success && second.suspendedNoRenderer
+                && second.success && second.suspendedWithoutPanel
                 && second.pauseReleaseRequired !== true
                 && _root._webPanelPauseLease == "later-panel-lease"
-                && !fallback.success && fallback.error == "loot_suspended"
                 && LootContainerService.canReopenSuspendedTarget(flow.target),
-            "socket close 对 suspend 只完成 exact pause proof；稳定态不 renderer、不 pending、不释放后来 lease");
+            "socket close 对 suspend 只完成 exact pause proof；稳定态不派生替代展示、不 pending、不释放后来 lease");
         _root._webPanelPauseLease = undefined;
         LootContainerService.expireScene("scene_cleanup");
     }
@@ -1418,11 +1404,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
 
     private static function testSuspendSynchronousCallbackFailureRestoresAnchor():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
-            var presented:Array = [];
-            installLegacyRenderer(presented);
             // 对齐真实 ServerManager：transport 对象 / 方法仍存在，但 socket
             // 未连接时 sendTaskWithCallback 会在当前调用栈同步回调失败。
             _root.server = {
@@ -1447,25 +1430,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && authority.remainingCount == 1 && authority.closeLease == ""
                     && guard.handled && guard.reopen
                     && LootContainerService.canReopenSuspendedTarget(flow.target)
-                    && presented.length == 0 && flow.target.stopped,
-                "transport 存在但 disconnected 的同步 callback failure 恢复 exact suspend，不误报 reopen/不回弹旧 UI");
+                    && flow.target.stopped,
+                "transport 存在但 disconnected 的同步 callback failure 恢复 exact suspend，不误报 reopen");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendAsyncRejectionRestoresAndStalesLateCallback():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 616)], "s1.suspend-async-reject");
             var before:Object = snapshot(flow);
             LootContainerService.execute("close",
@@ -1487,25 +1466,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && guarded.handled && guarded.reopen
                     && second.success && second.reopened && active.success
                     && active.state == "LOOT_ACTIVE" && active.remainingCount == 1
-                    && presented.length == 0 && flow.target.stopCount == 1,
-                "async rejection 收回 exact suspend；新 reopen 后迟到旧 callback 不污染 authority/不回弹旧 UI");
+                    && flow.target.stopCount == 1,
+                "async rejection 收回 exact suspend；新 reopen 后迟到旧 callback 不污染 authority");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendAsyncTimeoutRestoresAnchor():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 617)], "s1.suspend-async-timeout");
             var before:Object = snapshot(flow);
             LootContainerService.execute("close",
@@ -1525,25 +1500,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && guard.handled && guard.reopen
                     && blockedBeforeProof && released.handled && released.success
                     && LootContainerService.canReopenSuspendedTarget(flow.target)
-                    && presented.length == 0 && flow.target.stopped,
+                    && flow.target.stopped,
                 "async timeout 收回原 suspend，但必须等 exact unpause/detach proof 后才重新开放 anchor");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendSocketDetachOrderingAndLateCallback():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 618)], "s1.suspend-socket-order");
             var before:Object = snapshot(flow);
             LootContainerService.execute("close",
@@ -1553,7 +1524,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var first:Object = LootContainerService.resumeSuspended(flow.target);
             var firstAttempt:Number = Number(sent[0].payload.initData.openAttemptSeq);
             // 对齐 ServerManager.onSocketClose：先执行 transport detach，随后才失败
-            // _pendingCallbacks。此时绝不能先创建 legacy renderer。
+            // _pendingCallbacks。此时必须直接恢复 Web-only suspend。
             var detached:Object = LootContainerService.reconcileSocketDetach(flow.target);
             var suspended:Object = LootContainerService.execute("query",
                 proofQueryParams(before, firstAttempt, "socket.first.attempt"));
@@ -1588,7 +1559,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             if (callbacks.length > 2) callbacks[2]({success:true, accepted:true});
 
             check(first.success && first.reopened
-                    && detached.success && detached.suspendedNoRenderer
+                    && detached.success && detached.suspendedWithoutPanel
                     && detached.state == "LOOT_SUSPENDED"
                     && suspended.success && suspended.state == "LOOT_SUSPENDED"
                     && canRetry && second.success && second.reopened
@@ -1605,25 +1576,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && third.success && third.reopened
                     && !oldProofDuringThird.success
                     && afterSecondLate.success && afterSecondLate.state == "LOOT_ACTIVE"
-                    && presented.length == 0 && callbacks.length == 3,
+                    && callbacks.length == 3,
                 "socket proof 恢复 suspend；pre-ACK recovery 只登记，ACK 后才应用且旧 proof 不证明新 ACTIVE");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendReopenAnchorLossExpires():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 619)], "s1.suspend-reopen-anchor-loss");
             var before:Object = snapshot(flow);
             LootContainerService.execute("close",
@@ -1632,7 +1599,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var dispatched:Object = LootContainerService.resumeSuspended(flow.target);
 
             // callback 前 target 已失去 scene anchor；恢复不得停留 ACTIVE，也不得
-            // 把同一 inventory 交给旧 renderer。
+            // 把同一 inventory 交给第二套展示生命周期。
             flow.target.area = null;
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var expired:Object = LootContainerService.execute("query", queryParams(before));
@@ -1643,26 +1610,22 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && expired.remainingCount == 1 && expired.terminal != null
                     && expired.terminal.reason == "suspended_anchor_lost"
                     && !LootContainerService.canReopenSuspendedTarget(flow.target)
-                    && presented.length == 0 && flow.target.playCount == 1
+                    && flow.target.playCount == 1
                     && next.handled && next.reserved,
-                "reopen rollback 丢失 exact anchor 时显式 EXPIRED、释放 busy，绝不回弹 legacy");
+                "reopen rollback 丢失 exact anchor 时显式 EXPIRED、释放 busy");
             LootContainerService.abortReservedOpen(nextTarget, "test_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendSocketDetachAnchorLossReleasesPause():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 621)],
                 "s1.suspend-socket-anchor-loss");
             var before:Object = snapshot(flow);
@@ -1683,33 +1646,29 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var nextTarget:Object = makeTarget("s1.after-socket-anchor-loss");
             var next:Object = LootContainerService.beginFixture(nextTarget);
             check(dispatched.success && dispatched.reopened
-                    && detached.success && detached.suspendedNoRenderer
+                    && detached.success && detached.suspendedWithoutPanel
                     && detached.state == "EXPIRED" && detached.pauseReleaseRequired === false
                     && _root._webPanelPauseLease == undefined
                     && terminal.success && terminal.state == "EXPIRED"
                     && terminal.terminal != null
                     && terminal.terminal.reason == "suspended_anchor_lost"
-                    && presented.length == 0 && flow.target.playCount == 1
+                    && flow.target.playCount == 1
                     && next.handled && next.reserved,
-                "pending reopen 断线+锚点丢失先释放 exact pause，再落 EXPIRED 且不渲染 legacy");
+                "pending reopen 断线+锚点丢失先释放 exact pause，再落 EXPIRED");
             LootContainerService.abortReservedOpen(nextTarget, "test_cleanup");
         } finally {
             _root._webPanelPauseLease = undefined;
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendSocketDetachPauseReleaseRetry():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 622)],
                 "s1.suspend-socket-unpause-retry");
             var before:Object = snapshot(flow);
@@ -1727,7 +1686,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var ordinaryBlocked:Object = LootContainerService.execute(
                 "query", queryParams(before));
             // exact socket proof 只重试被冻结的 pause-release 阶段；不得重滚、重发 open
-            // 或先创建 legacy renderer。
+            // 或先改变 authority。
             LootContainerService.testOnlyFailNextTransportHandoff("unpause");
             var proofStillPending:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptSeq, "socket.unpause.retry"));
@@ -1738,11 +1697,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var stable:Object = LootContainerService.execute("query", queryParams(before));
 
             check(dispatched.success && dispatched.reopened && sent.length == 1
-                    && !firstDetach.success && firstDetach.suspendedNoRenderer
+                    && !firstDetach.success && firstDetach.suspendedWithoutPanel
                     && firstDetach.pauseReleaseRequired
                     && firstDetach.error == "suspend_pause_release_failed"
                     && firstDetach.state == "LOOT_COMMIT_PENDING"
-                    && fenceHeld && leaseHeld && presented.length == 0
+                    && fenceHeld && leaseHeld
                     && !ordinaryBlocked.success && ordinaryBlocked.error == "commit_pending"
                     && !proofStillPending.success
                     && proofStillPending.state == "LOOT_COMMIT_PENDING"
@@ -1757,20 +1716,16 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         } finally {
             _root._webPanelPauseLease = undefined;
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendDirectReopenPauseReleaseRetry():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 623)],
                 "s1.suspend-direct-unpause-retry");
             var before:Object = snapshot(flow);
@@ -1809,28 +1764,24 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && !duplicateRelease.handled
                     && _root._webPanelPauseLease == undefined
                     && LootContainerService.canReopenSuspendedTarget(flow.target)
-                    && presented.length == 0 && flow.target.playCount == 0,
-                "direct reopen rejection 的 non-empty pause release 可 exact 重试；不改 revision、不渲染 legacy");
+                    && flow.target.playCount == 0,
+                "direct reopen rejection 的 non-empty pause release 可 exact 重试且不改 revision");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root._webPanelPauseLease = undefined;
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendTerminalReopenPauseReleaseRetry():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             // empty reopen failure：首次内部 release 失败后必须保留 PENDING fence；
             // 未授权 proof 只投影 commit_pending，不得顺带推进 release。
             resetWorld();
             var emptySent:Array = [];
             var emptyCallbacks:Array = [];
-            var emptyPresented:Array = [];
             installPanelTransport(emptySent, emptyCallbacks);
-            installLegacyRenderer(emptyPresented);
             var emptyFlow:Object = activate([stack(STACK, 1, 625)],
                 "s1.suspend-terminal-empty-unpause-retry");
             var emptyBefore:Object = snapshot(emptyFlow);
@@ -1871,9 +1822,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             resetWorld();
             var anchorSent:Array = [];
             var anchorCallbacks:Array = [];
-            var anchorPresented:Array = [];
             installPanelTransport(anchorSent, anchorCallbacks);
-            installLegacyRenderer(anchorPresented);
             var anchorFlow:Object = activate([stack(STACK, 1, 626)],
                 "s1.suspend-terminal-anchor-unpause-retry");
             var anchorBefore:Object = snapshot(anchorFlow);
@@ -1913,7 +1862,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && emptyTerminal.terminal.reason == "reopen_failure_empty"
                     && emptyStable.authorityRevision == emptyTerminal.authorityRevision
                     && !emptyDuplicateRelease.handled
-                    && emptyPresented.length == 0 && emptyFlow.target.playCount == 1
+                    && emptyFlow.target.playCount == 1
                     && afterEmpty.handled && afterEmpty.reserved
                     && anchorDispatched.success && anchorDispatched.reopened
                     && anchorFenceHeld && !anchorPending.success
@@ -1924,27 +1873,23 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && anchorTerminal.terminal != null
                     && anchorTerminal.terminal.reason == "suspended_anchor_lost"
                     && anchorStable.authorityRevision == anchorTerminal.authorityRevision
-                    && anchorPresented.length == 0 && anchorFlow.target.playCount == 1
+                    && anchorFlow.target.playCount == 1
                     && afterAnchor.handled && afterAnchor.reserved,
                 "empty/anchor-lost reopen 的 pause release 失败保留可重试 fence；终态只提交一次且 proof shape 合法");
             LootContainerService.abortReservedOpen(afterAnchorTarget, "test_cleanup");
         } finally {
             _root._webPanelPauseLease = undefined;
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendAcceptedRecoveryStaysSuspended():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 2, 623)],
                 "s1.suspend-accepted-recovery");
             var before:Object = snapshot(flow);
@@ -1967,35 +1912,30 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var authority:Object = LootContainerService.execute("query", queryParams(before));
             var proof:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptSeq, "recovery.accepted.reopen"));
-            var guard:Object = LootContainerService.guardAnyGridFixture(
+            var guard:Object = LootContainerService.guardOpenGridFixture(
                 flow.target);
             check(dispatched.success && dispatched.reopened
-                    && recovered.handled && recovered.recovered && !recovered.rendered
+                    && recovered.handled && recovered.recovered
                     && recovered.suspended
                     && authority.success && authority.state == "LOOT_SUSPENDED"
                     && authority.remainingCount == 1
                     && proof.success && proof.state == "LOOT_SUSPENDED"
                     && LootContainerService.canReopenSuspendedTarget(flow.target)
-                    && guard.handled && guard.reopen && !guard.recovery
-                    && presented.length == 0,
-                "reopen recovery 在 accepted callback 前后都回到 first-class SUSPENDED，不创建 legacy UI");
+                    && guard.handled && guard.reopen,
+                "reopen recovery 在 accepted callback 前后都回到 first-class SUSPENDED");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testCloseAttemptProofSurvivesRejectedReopen():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 2, 625)],
                 "s1.close-attempt-proof");
             LootContainerService.requestOpenPanel();
@@ -2047,26 +1987,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && !noSend.success && noSend.error == "panel_open_unavailable"
                     && proofAAfterNoSend.success
                     && reopenedC.success && reopenedC.reopened
-                    && proofAAfterCReject.success
-                    && presented.length == 0,
+                    && proofAAfterCReject.success,
                 "close 不提前推进 attempt；A proof 丢回包后跨 B/C rejection 与no-send 仍可证明 suspend");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testRecoveryProofLedgerOrderingAndCapacity():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 626)],
                 "s1.proof-ledger-capacity");
             LootContainerService.requestOpenPanel();
@@ -2120,26 +2055,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && newestAttempt == laterAttempt + 1
                     && newestDetached.success && newestDetached.state == "LOOT_SUSPENDED"
                     && laterProofAfterDelayedOlder.success
-                    && laterProofAfterDelayedOlder.state == "LOOT_SUSPENDED"
-                    && presented.length == 0,
+                    && laterProofAfterDelayedOlder.state == "LOOT_SUSPENDED",
                 "proof ledger 满时 fail closed 不 LRU；exact query 收敛旧项，迟到较旧 query 不删 later proof");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testSuspendReopenFailureEmptyConsumes():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 624)],
                 "s1.suspend-reopen-empty");
             var before:Object = snapshot(flow);
@@ -2153,53 +2083,48 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             flow.inventory.remove(0);
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var terminal:Object = LootContainerService.execute("query", queryParams(before));
-            var fallback:Object = LootContainerService.consumeLegacyFallback(flow.target);
             var nextTarget:Object = makeTarget("s1.after-reopen-empty");
             var next:Object = LootContainerService.beginFixture(nextTarget);
             check(dispatched.success && dispatched.reopened
                     && terminal.success && terminal.state == "CONSUMED"
                     && terminal.remainingCount == 0 && terminal.terminal != null
                     && terminal.terminal.kind == "CONSUMED"
-                    && terminal.terminal.reason == "reopen_failure_empty"
-                    && !fallback.success && fallback.error == "no_legacy_fallback"
-                    && presented.length == 0 && flow.target.playCount == 1
+                    && terminal.terminal.reason == "panel_open_failure_empty"
+                    && flow.target.playCount == 1
                     && next.handled && next.reserved,
-                "reopen failure 发现同一 inventory 已空时直接 CONSUMED，不生成空 suspend/legacy");
+                "reopen failure 发现同一 inventory 已空时直接 CONSUMED，不生成空 suspend");
             LootContainerService.abortReservedOpen(nextTarget, "test_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
-    private static function testInitialOpenSynchronousFailureRendersLegacyOnce():Void {
+    private static function testInitialOpenSynchronousFailureSuspendsSameInventory():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
-            var presented:Array = [];
-            installLegacyRenderer(presented);
             _root.server = {
                 sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
                                               callback:Function, timeoutFrames:Number):Void {
                     callback({success:false, error:"socket not connected"});
                 }
             };
-            var flow:Object = activate([stack(STACK, 1, 620)], "s1.initial-sync-failure");
+            var item:BaseItem = stack(STACK, 1, 620);
+            var flow:Object = activate([item], "s1.initial-sync-failure");
             var requested:Boolean = LootContainerService.requestOpenPanel();
-            // authored caller 会因 false 再进入 fallback helper；rendererConfirmed 必须
-            // 让第二次调用只复取 projection，不再渲染第二个 AS2 窗口。
-            var duplicate:Object = LootContainerService.consumeLegacyFallback(flow.target);
             var authority:Object = LootContainerService.execute(
                 "query", queryParams(flow.active));
-            check(!requested && duplicate.success && duplicate.rendererConfirmed
-                    && authority.success && authority.state == "LOOT_ACTIVE"
-                    && presented.length == 1 && presented[0].inventory === flow.inventory,
-                "初次 open 同步 callback failure 保持既有 legacy fallback，authored 二次调用不重复渲染");
+            var guard:Object = LootContainerService.beginFixture(flow.target);
+            check(!requested && authority.success
+                    && authority.state == "LOOT_SUSPENDED"
+                    && authority.remainingCount == 1
+                    && flow.inventory.getItem("0") === item
+                    && guard.handled && guard.reopen
+                    && LootContainerService.canReopenSuspendedTarget(flow.target),
+                "初次 open 同步失败保留 same target/inventory 并进入 Web-only suspend");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
@@ -2247,366 +2172,12 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         LootContainerService.abortReservedOpen(freshTarget, "test_cleanup");
     }
 
-    private static function testLegacyClaimOnlyServiceAdapter():Void {
-        // foreign inventory 不能借本地 adapter 写当前 authority；普通最后一格仍走
-        // CommitCoordinator、dirty 与显式 CONSUMED，不依赖同步 remove observer。
-        resetWorld();
-        var ordinaryItem:BaseItem = equipment(690);
-        var ordinaryFlow:Object = activate([ordinaryItem], "s1.legacy-claim-ordinary");
-        var ordinaryProjection:Object = LootContainerService.consumeLegacyFallback(
-            ordinaryFlow.target);
-        var unconfirmed:Object = LootContainerService.claimLegacyRecoverySlot(
-            ordinaryFlow.inventory, 0);
-        LootContainerService.confirmLegacyRenderer(ordinaryFlow.target);
-        var foreign:Object = LootContainerService.claimLegacyRecoverySlot(
-            new ArrayInventory(null, 8), 0);
-        _root.存档系统.dirtyMark = false;
-        var ordinary:Object = LootContainerService.claimLegacyRecoverySlot(
-            ordinaryFlow.inventory, 0);
-        check(ordinaryProjection.success
-                && !unconfirmed.success && unconfirmed.error == "legacy_renderer_unconfirmed"
-                && !foreign.success && foreign.error == "recovery_inventory_mismatch"
-                && ordinary.success && ordinary.released === true
-                && ordinary.state == "CONSUMED"
-                && _root.物品栏.背包.getItem("0") === ordinaryItem
-                && ordinaryFlow.inventory.getItem("0") == null
-                && _root.存档系统.dirtyMark === true,
-            "claim-only adapter 拒绝未呈现/foreign inventory；普通最后一格经事务落 dirty+CONSUMED");
-
-        // 满背包装备必须严格零写。
-        resetWorld();
-        for (var i:Number = 0; i < 50; i++) {
-            _root.物品栏.背包.add(i, stack(STACK, i + 1, 700 + i));
-        }
-        var fullItem:BaseItem = equipment(760);
-        var fullFlow:Object = activate([fullItem], "s1.legacy-claim-full");
-        LootContainerService.consumeLegacyFallback(fullFlow.target);
-        LootContainerService.confirmLegacyRenderer(fullFlow.target);
-        var fullRevision:Number = fullFlow.inventory.getMutationRevision();
-        _root.存档系统.dirtyMark = false;
-        var full:Object = LootContainerService.claimLegacyRecoverySlot(
-            fullFlow.inventory, 0);
-        check(!full.success && full.error == "target_full"
-                && fullFlow.inventory.getItem("0") === fullItem
-                && fullFlow.inventory.getMutationRevision() == fullRevision
-                && _root.物品栏.背包.size() == 50
-                && _root.存档系统.dirtyMark === false,
-            "claim-only 满背包装备返回 target_full，source/revision/背包/dirty 零变化");
-        LootContainerService.expireScene("scene_cleanup");
-
-        // 背包虽满但已有数值栈时仍由 coordinator 原位合并。
-        resetWorld();
-        var destination:BaseItem = stack(ANTIBIOTIC, 358, 761);
-        _root.物品栏.背包.add(14, destination);
-        for (i = 0; i < 50; i++) {
-            if (i != 14) _root.物品栏.背包.add(i, stack(STACK, i + 1, 762 + i));
-        }
-        var antibiotic:BaseItem = stack(ANTIBIOTIC, 3, 812);
-        var stackFlow:Object = activate([antibiotic], "s1.legacy-claim-stack");
-        LootContainerService.consumeLegacyFallback(stackFlow.target);
-        LootContainerService.confirmLegacyRenderer(stackFlow.target);
-        _root.存档系统.dirtyMark = false;
-        var merged:Object = LootContainerService.claimLegacyRecoverySlot(
-            stackFlow.inventory, 0);
-        check(merged.success && merged.released === true && merged.state == "CONSUMED"
-                && destination.value == 361 && _root.物品栏.背包.size() == 50
-                && stackFlow.inventory.getItem("0") == null
-                && _root.存档系统.dirtyMark === true,
-            "claim-only 满背包已有抗生素栈仍原位合并并终止空箱");
-
-        // 特殊资产也只走事务域：材料成功必 dirty；情报超 cap 必整格保留且零 dirty。
-        resetWorld();
-        var material:BaseItem = stack(MATERIAL, 3, 813);
-        var materialFlow:Object = activate([material], "s1.legacy-claim-material");
-        LootContainerService.consumeLegacyFallback(materialFlow.target);
-        LootContainerService.confirmLegacyRenderer(materialFlow.target);
-        _root.存档系统.dirtyMark = false;
-        var materialClaim:Object = LootContainerService.claimLegacyRecoverySlot(
-            materialFlow.inventory, 0);
-        check(materialClaim.success && materialClaim.released === true
-                && _root.收集品栏.材料.getValue(MATERIAL) == 3
-                && materialFlow.inventory.getItem("0") == null
-                && _root.存档系统.dirtyMark === true,
-            "claim-only 材料经 collection transaction 提交并标 dirty");
-
-        resetWorld();
-        _root.收集品栏.情报.add(INFORMATION, 4);
-        var information:BaseItem = stack(INFORMATION, 2, 814);
-        var infoFlow:Object = activate([information], "s1.legacy-claim-info-cap");
-        LootContainerService.consumeLegacyFallback(infoFlow.target);
-        LootContainerService.confirmLegacyRenderer(infoFlow.target);
-        var infoRevision:Number = infoFlow.inventory.getMutationRevision();
-        _root.存档系统.dirtyMark = false;
-        var capped:Object = LootContainerService.claimLegacyRecoverySlot(
-            infoFlow.inventory, 0);
-        check(!capped.success && capped.error == "cap_reached"
-                && _root.收集品栏.情报.getValue(INFORMATION) == 4
-                && infoFlow.inventory.getItem("0") === information
-                && infoFlow.inventory.getMutationRevision() == infoRevision
-                && _root.存档系统.dirtyMark === false,
-            "claim-only 情报超 cap 整格保留，source/revision/dirty 零变化");
-        LootContainerService.expireScene("scene_cleanup");
-
-        // 已写 journal 后的连续 mandatory-effect 故障由 adapter/completion/guard 的 causal
-        // retry 分阶段收敛；事件和实际写入都只能发生一次。
-        var sourceOwner:MovieClip = _root.createEmptyMovieClip(
-            "__loot_legacy_claim_source", _root.getNextHighestDepth());
-        var destinationOwner:MovieClip = _root.createEmptyMovieClip(
-            "__loot_legacy_claim_destination", _root.getNextHighestDepth());
-        try {
-            resetWorld();
-            var pendingItem:BaseItem = equipment(815);
-            var pendingFlow:Object = activate([pendingItem], "s1.legacy-claim-reconcile");
-            var sourceEvents:Number = 0;
-            var destinationEvents:Number = 0;
-            var sourceDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(sourceOwner);
-            var destinationDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(
-                destinationOwner);
-            pendingFlow.inventory.setDispatcher(sourceDispatcher);
-            _root.物品栏.背包.setDispatcher(destinationDispatcher);
-            sourceDispatcher.subscribe("ItemRemoved", function():Void { sourceEvents++; });
-            destinationDispatcher.subscribe("ItemAdded", function():Void { destinationEvents++; });
-            LootContainerService.consumeLegacyFallback(pendingFlow.target);
-            LootContainerService.confirmLegacyRenderer(pendingFlow.target);
-            var sourceRevisionBefore:Number = pendingFlow.inventory.getMutationRevision();
-            var destinationRevisionBefore:Number = _root.物品栏.背包.getMutationRevision();
-            // claim、adapter causal query、adapter completion 与首次 fixture guard 连续失败；
-            // 第二次 guard 必须只重试 effects 后终止，绝不能重放 source/destination 写。
-            LootContainerService.testOnlyFailNextPostCommit("dirty", 4);
-            _root.存档系统.dirtyMark = false;
-            var pendingAdapter:Object = LootContainerService.claimLegacyRecoverySlot(
-                pendingFlow.inventory, 0);
-            var pendingExposure:Object = LootContainerService.consumeLegacyFallback(null);
-            var writeAppliedOnce:Boolean = pendingFlow.inventory.getItem("0") == null
-                && _root.物品栏.背包.getItem("0") === pendingItem
-                && pendingFlow.inventory.getMutationRevision() == sourceRevisionBefore + 1
-                && _root.物品栏.背包.getMutationRevision() == destinationRevisionBefore + 1
-                && sourceEvents == 0 && destinationEvents == 0
-                && _root.存档系统.dirtyMark === false;
-            var blockedGuard:Object = LootContainerService.guardAnyGridFixture(
-                makeTarget("s1.legacy-claim-pending-blocked"));
-            var stillSingleWrite:Boolean = pendingFlow.inventory.getMutationRevision()
-                    == sourceRevisionBefore + 1
-                && _root.物品栏.背包.getMutationRevision() == destinationRevisionBefore + 1
-                && sourceEvents == 0 && destinationEvents == 0
-                && _root.存档系统.dirtyMark === false;
-            var releasedGuard:Object = LootContainerService.guardAnyGridFixture(
-                makeTarget("s1.legacy-claim-after-effects"));
-            var terminal:Object = LootContainerService.execute(
-                "query", queryParams(pendingFlow.active));
-            var postEffectsPassed:Boolean = !pendingAdapter.success
-                    && pendingAdapter.error == "commit_pending"
-                    && !pendingExposure.success
-                    && pendingExposure.error == "claim_commit_pending"
-                    && writeAppliedOnce
-                    && blockedGuard.handled && blockedGuard.recovery === false
-                    && blockedGuard.reason == "claim_commit_pending"
-                    && stillSingleWrite
-                    && !releasedGuard.handled && releasedGuard.reason == "recovery_consumed"
-                    && terminal.success && terminal.state == "CONSUMED"
-                    && pendingFlow.inventory.getItem("0") == null
-                    && _root.物品栏.背包.getItem("0") === pendingItem
-                    && _root.物品栏.背包.size() == 1
-                    && pendingFlow.inventory.getMutationRevision() == sourceRevisionBefore + 1
-                    && _root.物品栏.背包.getMutationRevision() == destinationRevisionBefore + 1
-                    && sourceEvents == 1 && destinationEvents == 1
-                    && _root.存档系统.dirtyMark === true;
-
-            // source 已空但 pendingCommit 的连续 causal query 仍可能失败。adapter 内置 query、
-            // completion 与首次 guard 都必须保持 fence；下一次 guard 只能续跑同一 journal。
-            resetWorld();
-            var journalItem:BaseItem = equipment(816);
-            var journalFlow:Object = activate([journalItem], "s1.legacy-claim-pending-journal");
-            sourceEvents = 0;
-            destinationEvents = 0;
-            var journalSourceDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(
-                sourceOwner);
-            var journalDestinationDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(
-                destinationOwner);
-            journalFlow.inventory.setDispatcher(journalSourceDispatcher);
-            _root.物品栏.背包.setDispatcher(journalDestinationDispatcher);
-            journalSourceDispatcher.subscribe("ItemRemoved", function():Void { sourceEvents++; });
-            journalDestinationDispatcher.subscribe("ItemAdded", function():Void { destinationEvents++; });
-            LootContainerService.consumeLegacyFallback(journalFlow.target);
-            LootContainerService.confirmLegacyRenderer(journalFlow.target);
-            var journalSourceRevision:Number = journalFlow.inventory.getMutationRevision();
-            var journalDestinationRevision:Number = _root.物品栏.背包.getMutationRevision();
-            LootClaimCommitCoordinator.testOnlyFailNext(
-                "ordinary_source_write", "after_false");
-            LootClaimCommitCoordinator.testOnlyFailNext("ordinary_rollback", "false");
-            LootClaimCommitCoordinator.testOnlyFailNext("resume", "false", 3);
-            _root.存档系统.dirtyMark = false;
-            var journalPending:Object = LootContainerService.claimLegacyRecoverySlot(
-                journalFlow.inventory, 0);
-            var journalExposure:Object = LootContainerService.consumeLegacyFallback(null);
-            var journalAppliedOnce:Boolean = journalFlow.inventory.getItem("0") == null
-                && _root.物品栏.背包.getItem("0") === journalItem
-                && journalFlow.inventory.getMutationRevision() == journalSourceRevision + 1
-                && _root.物品栏.背包.getMutationRevision() == journalDestinationRevision + 1
-                && sourceEvents == 0 && destinationEvents == 0
-                && _root.存档系统.dirtyMark === false;
-            var journalBlocked:Object = LootContainerService.guardAnyGridFixture(
-                makeTarget("s1.legacy-journal-pending-blocked"));
-            var journalStillSingleWrite:Boolean = journalFlow.inventory.getMutationRevision()
-                    == journalSourceRevision + 1
-                && _root.物品栏.背包.getMutationRevision() == journalDestinationRevision + 1
-                && sourceEvents == 0 && destinationEvents == 0
-                && _root.存档系统.dirtyMark === false;
-            var journalReleased:Object = LootContainerService.guardAnyGridFixture(
-                makeTarget("s1.legacy-journal-after-reconcile"));
-            var journalTerminal:Object = LootContainerService.execute(
-                "query", queryParams(journalFlow.active));
-            var pendingJournalPassed:Boolean = !journalPending.success
-                && journalPending.error == "commit_pending"
-                && !journalExposure.success
-                && journalExposure.error == "claim_commit_pending"
-                && journalAppliedOnce
-                && journalBlocked.handled && journalBlocked.recovery === false
-                && journalBlocked.reason == "claim_commit_pending"
-                && journalStillSingleWrite
-                && !journalReleased.handled && journalReleased.reason == "recovery_consumed"
-                && journalTerminal.success && journalTerminal.state == "CONSUMED"
-                && journalFlow.inventory.getItem("0") == null
-                && _root.物品栏.背包.getItem("0") === journalItem
-                && journalFlow.inventory.getMutationRevision() == journalSourceRevision + 1
-                && _root.物品栏.背包.getMutationRevision() == journalDestinationRevision + 1
-                && sourceEvents == 1 && destinationEvents == 1
-                && _root.存档系统.dirtyMark === true;
-
-            // 可证明 rollback 必须恢复 source 并保持 recovery；foreign fixture 只可重呈现
-            // 原箱，不能被误判空箱 CONSUMED，也不能获得新的网格 authority。
-            resetWorld();
-            var rollbackItem:BaseItem = equipment(817);
-            var rollbackFlow:Object = activate([rollbackItem], "s1.legacy-claim-rolled-back");
-            LootContainerService.consumeLegacyFallback(rollbackFlow.target);
-            LootContainerService.confirmLegacyRenderer(rollbackFlow.target);
-            LootClaimCommitCoordinator.testOnlyFailNext("ordinary_source_write", "false");
-            _root.存档系统.dirtyMark = false;
-            var rolledBack:Object = LootContainerService.claimLegacyRecoverySlot(
-                rollbackFlow.inventory, 0);
-            var rollbackCompletion:Object = LootContainerService.completeLegacyRecoveryIfEmpty();
-            var rollbackGuard:Object = LootContainerService.guardAnyGridFixture(
-                makeTarget("s1.legacy-rollback-foreign"));
-            var rollbackAuthority:Object = LootContainerService.execute(
-                "query", queryParams(rollbackFlow.active));
-            var rollbackPassed:Boolean = !rolledBack.success && rolledBack.error == "commit_failed"
-                && rollbackCompletion.success && rollbackCompletion.released === false
-                && rollbackCompletion.reason == "recovery_nonempty"
-                && rollbackFlow.inventory.getItem("0") === rollbackItem
-                && _root.物品栏.背包.size() == 0
-                && rollbackGuard.handled && rollbackGuard.recovery === true
-                && rollbackGuard.requestedTargetMatches === false
-                && rollbackAuthority.success && rollbackAuthority.state == "LOOT_ACTIVE"
-                && rollbackAuthority.remainingCount == 1
-                && _root.存档系统.dirtyMark === false;
-            LootContainerService.expireScene("scene_cleanup");
-
-            check(postEffectsPassed && pendingJournalPassed && rollbackPassed,
-                "claim-only 空箱持续 journal/effects 故障保持 guard；重试零写重放，rollback 不误终止");
-        } finally {
-            sourceOwner.removeMovieClip();
-            destinationOwner.removeMovieClip();
-        }
-    }
-
-    private static function testLegacyRecoveryKeepsSameInventory():Void {
-        resetWorld();
-        var sourceItem:BaseItem = stack(STACK, 2, 701);
-        var flow:Object = activate([sourceItem], "s1.recovery");
-        var first:Object = LootContainerService.consumeLegacyFallback(flow.target);
-        var second:Object = LootContainerService.consumeLegacyFallback(flow.target);
-        var guard:Object = LootContainerService.guardAnyGridFixture(makeTarget("s1.blocked"));
-        var direct:Object = LootContainerService.beginFixture({presetName:"直接爆落", row:0, col:0});
-        var nonempty:Object = LootContainerService.completeLegacyRecoveryIfEmpty();
-        var recoveryQuery:Object = LootContainerService.execute("query", queryParams(flow.active));
-        var refusedClose:Object = LootContainerService.execute("close",
-            closeParams(recoveryQuery, "close.recovery-nonempty", recoveryQuery.closeLease, false));
-        check(first.success && first.inventory === flow.inventory
-                && second.success && second.duplicate && second.inventory === first.inventory
-                && guard.handled && guard.recovery && guard.inventory === first.inventory
-                && !direct.handled
-                && !nonempty.released
-                && recoveryQuery.success && recoveryQuery.state == "LOOT_ACTIVE"
-                && !refusedClose.success && refusedClose.error == "suspend_unavailable"
-                && refusedClose.state == "LOOT_ACTIVE",
-            "legacy recovery 保持同一 ACTIVE inventory，禁止伪装 suspend 且只阻止新网格箱");
-        flow.inventory.transactionWrite(0, null);
-        var released:Object = LootContainerService.completeLegacyRecoveryIfEmpty();
-        var consumedQuery:Object = LootContainerService.execute("query", queryParams(flow.active));
-        check(released.released && released.state == "CONSUMED"
-                && consumedQuery.success && consumedQuery.state == "CONSUMED"
-                && consumedQuery.terminal.remainingCount == 0
-                && !LootContainerService.guardAnyGridFixture(flow.target).handled,
-            "legacy inventory 取空后才提交 CONSUMED tombstone/remaining=0 并释放");
-
-        resetWorld();
-        var failedTarget:Object = makeTarget("s1.killfail");
-        var failedInventory:ArrayInventory = makeInventory([stack(STACK, 1, 702)]);
-        var begun:Object = LootContainerService.beginFixture(failedTarget);
-        var failed:Object = LootContainerService.commitReservedOpen(
-            failedTarget, failedInventory, null, function():Boolean { return false; });
-        var fallback:Object = LootContainerService.consumeLegacyFallback(failedTarget);
-        var recoveryState:Object = LootContainerService.execute("query", {
-            v:1, chestSessionId:begun.chestSessionId,
-            lootContainerId:begun.lootContainerId, containerEpoch:begun.containerEpoch
-        });
-        LootContainerService.expireScene("scene_cleanup");
-        var expiredRecovery:Object = LootContainerService.execute("query", {
-            v:1, chestSessionId:begun.chestSessionId,
-            lootContainerId:begun.lootContainerId, containerEpoch:begun.containerEpoch
-        });
-        check(!failed.success && failed.error == "kill_adapter_failed"
-                && fallback.inventory === failedInventory
-                && recoveryState.success && recoveryState.state == "LOOT_ACTIVE"
-                && expiredRecovery.success && expiredRecovery.state == "EXPIRED"
-                && expiredRecovery.terminal.reason == "scene_cleanup",
-            "kill adapter 失败保持 same-object ACTIVE recovery，只有 scene cleanup 才 EXPIRED");
-    }
-
-    private static function testLegacyRecoveryObserverLifecycle():Void {
-        var owner:MovieClip = _root.createEmptyMovieClip(
-            "__loot_recovery_observer_test", _root.getNextHighestDepth());
-        try {
-            resetWorld();
-            var flow:Object = activate([stack(STACK, 1, 703)], "s1.recovery-observer");
-            LootContainerService.consumeLegacyFallback(flow.target);
-            var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(owner);
-            flow.inventory.setDispatcher(dispatcher);
-            var attached:Object = LootContainerService.attachLegacyRecoveryObserver();
-            flow.inventory.remove(0);
-            var consumed:Object = LootContainerService.execute("query", queryParams(flow.active));
-            check(attached.success && consumed.success && consumed.state == "CONSUMED"
-                    && consumed.terminal.remainingCount == 0,
-                "legacy UI 最后一格移除事件自动提交 CONSUMED，不等待 scene cleanup");
-
-            resetWorld();
-            var oldFlow:Object = activate([stack(STACK, 1, 704)], "s1.recovery-observer-old");
-            LootContainerService.consumeLegacyFallback(oldFlow.target);
-            var secondDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(owner);
-            oldFlow.inventory.setDispatcher(secondDispatcher);
-            LootContainerService.attachLegacyRecoveryObserver();
-            LootContainerService.expireScene("scene_cleanup");
-            resetWorld();
-            var freshFlow:Object = activate([stack(STACK, 1, 705)], "s1.recovery-observer-fresh");
-            oldFlow.inventory.remove(0);
-            var fresh:Object = LootContainerService.execute("query", queryParams(freshFlow.active));
-            check(fresh.success && fresh.state == "LOOT_ACTIVE",
-                "terminal/reset 会解绑旧 recovery observer，旧 inventory 事件不污染 fresh authority");
-            LootContainerService.expireScene("scene_cleanup");
-        } finally {
-            owner.removeMovieClip();
-        }
-    }
-
     private static function testReliablePanelOpenCallbacks():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             resetWorld();
             var rejectedFlow:Object = activate([stack(STACK, 1, 711)], "s1.panel-rejected");
             var requested:Boolean = LootContainerService.requestOpenPanel();
@@ -2625,80 +2196,73 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var rejectedQuery:Object = LootContainerService.execute(
                 "query", queryParams(rejectedFlow.active));
-            var rejectedGuard:Object = LootContainerService.guardAnyGridFixture(
+            var rejectedGuard:Object = LootContainerService.guardOpenGridFixture(
                 makeTarget("s1.after-panel-rejected"));
-            check(rejectedQuery.success && rejectedQuery.state == "LOOT_ACTIVE"
-                    && rejectedGuard.handled && rejectedGuard.reason == "panel_open_rejected"
-                    && presented.length == 1 && presented[0].inventory === rejectedFlow.inventory,
-                "无 callId 的 Host rejection callback 进入 same-object ACTIVE recovery 并显示旧 UI");
+            check(rejectedQuery.success && rejectedQuery.state == "LOOT_SUSPENDED"
+                    && rejectedQuery.remainingCount == 1
+                    && rejectedGuard.handled && rejectedGuard.reason == "loot_flow_busy"
+                    && rejectedFlow.inventory.getItem("0") != null,
+                "无 callId 的 Host rejection 收回 same inventory 到 Web-only suspend");
 
-            sent = []; callbacks = []; presented = [];
+            sent = []; callbacks = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             resetWorld();
             var timeoutFlow:Object = activate([stack(STACK, 1, 712)], "s1.panel-timeout");
             LootContainerService.requestOpenPanel();
             callbacks[0]({success:false, error:"callback timeout"});
             var timeoutQuery:Object = LootContainerService.execute("query", queryParams(timeoutFlow.active));
-            var timeoutGuard:Object = LootContainerService.guardAnyGridFixture(makeTarget("s1.after-timeout"));
-            check(timeoutQuery.success && timeoutQuery.state == "LOOT_ACTIVE"
-                    && timeoutGuard.handled && timeoutGuard.reason == "panel_open_timeout"
-                    && presented[0].inventory === timeoutFlow.inventory,
-                "panel callback timeout 保留 same-object ACTIVE authority 并提供 legacy recovery");
+            var timeoutGuard:Object = LootContainerService.guardOpenGridFixture(makeTarget("s1.after-timeout"));
+            check(timeoutQuery.success && timeoutQuery.state == "LOOT_SUSPENDED"
+                    && timeoutGuard.handled && timeoutGuard.reason == "loot_flow_busy"
+                    && timeoutFlow.inventory.getItem("0") != null,
+                "panel callback timeout 保留 same inventory 并进入 Web-only suspend");
 
-            sent = []; callbacks = []; presented = [];
+            sent = []; callbacks = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             resetWorld();
             var disconnectFlow:Object = activate([stack(STACK, 1, 713)], "s1.panel-disconnect");
             LootContainerService.requestOpenPanel();
             callbacks[0]({success:false, error:"socket closed"});
             var disconnectQuery:Object = LootContainerService.execute(
                 "query", queryParams(disconnectFlow.active));
-            var disconnectGuard:Object = LootContainerService.guardAnyGridFixture(
+            var disconnectGuard:Object = LootContainerService.guardOpenGridFixture(
                 makeTarget("s1.after-disconnect"));
-            check(disconnectQuery.success && disconnectQuery.state == "LOOT_ACTIVE"
-                    && disconnectGuard.handled && disconnectGuard.reason == "panel_open_unavailable"
-                    && presented[0].inventory === disconnectFlow.inventory,
-                "panel callback 断线保留 same-object ACTIVE authority 并提供 legacy recovery");
+            check(disconnectQuery.success && disconnectQuery.state == "LOOT_SUSPENDED"
+                    && disconnectGuard.handled && disconnectGuard.reason == "loot_flow_busy"
+                    && disconnectFlow.inventory.getItem("0") != null,
+                "panel callback 断线保留 same inventory 并进入 Web-only suspend");
 
-            sent = []; callbacks = []; presented = [];
+            sent = []; callbacks = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             resetWorld();
             var oldFlow:Object = activate([stack(STACK, 1, 714)], "s1.panel-old-callback");
             LootContainerService.requestOpenPanel();
             var oldCallback:Function = callbacks[0];
             LootContainerService.expireScene("scene_cleanup");
-            sent = []; callbacks = []; presented = [];
+            sent = []; callbacks = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             resetWorld();
             var freshFlow:Object = activate([stack(STACK, 1, 715)], "s1.panel-fresh-authority");
             oldCallback({success:false, accepted:false, error:"open_not_queued"});
             var freshQuery:Object = LootContainerService.execute("query", queryParams(freshFlow.active));
-            var freshGuard:Object = LootContainerService.guardAnyGridFixture(
+            var freshGuard:Object = LootContainerService.guardOpenGridFixture(
                 makeTarget("s1.after-stale-callback"));
             check(freshQuery.success && freshQuery.state == "LOOT_ACTIVE"
-                    && !freshGuard.handled && presented.length == 0,
+                    && !freshGuard.handled,
                 "迟到旧 open callback 复核 session/container/epoch，不污染 fresh authority");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testRecoveryProofStrictShapeAndNonce():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 718)],
                 "s1.recovery-shape");
             LootContainerService.requestOpenPanel();
@@ -2790,26 +2354,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && !badRecoveryResult.handled
                     && badRecoveryResult.reason == "invalid_payload"
                     && validRecoveryResult.handled && !validRecoveryResult.recovered
-                    && validRecoveryResult.reason == "recovery_pending"
-                    && presented.length == 0,
+                    && validRecoveryResult.reason == "recovery_pending",
                 "wire query 严格 7/9 键、recovery 严格 8 键；opaque 与 Host 统一 ._~- 及 128 边界");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testInitialRecoveryBeforeAckProof():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             resetWorld();
             var sent:Array = [];
             var callbacks:Array = [];
-            var presented:Array = [];
             installPanelTransport(sent, callbacks);
-            installLegacyRenderer(presented);
             var flow:Object = activate([stack(STACK, 1, 719)],
                 "s1.initial-recovery-pre-ack");
             LootContainerService.requestOpenPanel();
@@ -2834,30 +2393,25 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && registered.reason == "recovery_pending"
                     && !proofBeforeAck.success && proofBeforeAck.error == "recovery_pending"
                     && ordinaryBeforeAck.success && ordinaryBeforeAck.state == "LOOT_ACTIVE"
-                    && presented.length == 1
-                    && proofAfterAck.success && proofAfterAck.state == "LOOT_ACTIVE"
+                    && proofAfterAck.success && proofAfterAck.state == "LOOT_SUSPENDED"
                     && duplicateSignal.handled && duplicateSignal.recovered
                     && duplicateSignal.duplicate
                     && duplicateProof.success
                     && !wrongNonce.success && wrongNonce.error == "recovery_nonce_mismatch"
-                    && presented[0].inventory === flow.inventory,
-                "initial recovery 早于 ACK 只登记；ACK 后才完成 legacy proof，重复幂等且错 nonce 零副作用");
+                    && flow.inventory.getItem("0") != null,
+                "initial recovery 早于 ACK 只登记；ACK 后挂起同一 inventory，错 nonce 零副作用");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
     private static function testConnectedPanelRecoverySignal():Void {
         var previousServer:Object = _root.server;
-        var previousMapElements:Object = _root.地图元件;
         try {
             var sent:Array = [];
             var callbacks:Array = [];
             installPanelTransport(sent, callbacks);
-            var presented:Array = [];
-            installLegacyRenderer(presented);
             resetWorld();
             var flow:Object = activate([stack(STACK, 1, 716)], "s1.connected-recovery");
             LootContainerService.requestOpenPanel();
@@ -2885,7 +2439,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var recoveryQuery:Object = LootContainerService.execute("query",
                 proofQueryParams(flow.active, openAttemptSeq,
                     "recovery.connected.initial"));
-            var recoveryGuard:Object = LootContainerService.guardAnyGridFixture(
+            var recoveryGuard:Object = LootContainerService.guardOpenGridFixture(
                 makeTarget("s1.after-connected-recovery"));
 
             LootContainerService.expireScene("scene_cleanup");
@@ -2895,19 +2449,17 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var freshQuery:Object = LootContainerService.execute("query", queryParams(freshFlow.active));
             check(!malformedResult.handled && malformedResult.reason == "invalid_payload"
                     && !staleResult.handled && staleResult.reason == "stale_open_attempt"
-                    && recovered.handled && recovered.recovered && recovered.rendered
+                    && recovered.handled && recovered.recovered && recovered.suspended
                     && duplicate.handled && duplicate.recovered && duplicate.duplicate
-                    && presented.length == 1
-                    && presented[0].inventory === flow.inventory
-                    && recoveryQuery.success && recoveryQuery.state == "LOOT_ACTIVE"
-                    && recoveryGuard.handled && recoveryGuard.reason == "web_mount_failed"
+                    && flow.inventory.getItem("0") != null
+                    && recoveryQuery.success && recoveryQuery.state == "LOOT_SUSPENDED"
+                    && recoveryGuard.handled && recoveryGuard.reason == "loot_flow_busy"
                     && !late.handled && late.reason == "stale_identity"
                     && freshQuery.success && freshQuery.state == "LOOT_ACTIVE",
-                "accepted 后 exact8 recovery 匹配 identity+attempt+nonce；畸形/迟到拒绝、重复幂等");
+                "accepted 后 exact8 recovery 匹配 identity+attempt+nonce并挂起；畸形/迟到拒绝、重复幂等");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
-            _root.地图元件 = previousMapElements;
         }
     }
 
@@ -2918,15 +2470,6 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 sent.push({task:task, payload:payload, extra:extra,
                     timeoutFrames:timeoutFrames});
                 callbacks.push(callback);
-            }
-        };
-    }
-
-    private static function installLegacyRenderer(presented:Array):Void {
-        _root.地图元件 = {
-            显示Web战利品旧界面:function(projection:Object):Boolean {
-                presented.push(projection);
-                return true;
             }
         };
     }

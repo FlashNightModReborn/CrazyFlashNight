@@ -508,60 +508,6 @@ _root.物品UI函数.计算战备箱总页数 = function():Number{
 }
 
 
-_root.物品UI函数.创建资源箱图标 = function(inventory, name, row, col,
-		claimOnly:Boolean):Boolean{
-	if(row > 8) row = 8;
-	if(col > 8) col = 8;
-	var 资源箱界面 = _root.从库中加载外部UI("资源箱界面");
-	if (资源箱界面 == null) return false;
-	// Web fallback 仍复用旧外观，但交互权威只能走 LootContainerService。
-	// 此 policy 落在可见容器上并在普通旧箱四参调用时显式复位，避免 terminal
-	// 清掉 service identity 后，同一次 mouse-up 又把背包物品拖回空 loot。
-	资源箱界面.__lootClaimOnly = claimOnly === true;
-	资源箱界面.gotoAndStop("完毕");
-	资源箱界面.资源箱名称.text = name;
-
-	var 网格 = 资源箱界面.资源箱界面网格;
-	网格.clear();
-	网格.lineStyle(1, 0x3B3B39, 100);
-	var padding = 28;
-	var w = padding * col;
-	var h = padding * row;
-	for(var i=0; i < row+1; i++){
-		网格.moveTo(0, i * padding);
-		网格.lineTo(w, i * padding);
-	}
-	for(var i=0; i < col+1; i++){
-		网格.moveTo(i * padding, 0);
-		网格.lineTo(i * padding, h);
-	}
-	资源箱界面.窗体area._width = 16 + w;
-	资源箱界面.窗体area._height = 48 + h;
-	资源箱界面.分割线._width = 6 + w;
-	资源箱界面.关闭按钮._x = 1 + w;
-
-	var info = {
-		startindex: 0, 
-		startdepth: 0, 
-		row: row, 
-		col: col, 
-		padding: 28
-	}
-	var iconList:Array = IconFactory.createInventoryLayout(
-		inventory, 资源箱界面.物品图标, info);
-	if (iconList == null) {
-		资源箱界面._visible = false;
-		return false;
-	}
-
-	资源箱界面._x = 80;
-	资源箱界面._y = 120;
-	资源箱界面._visible = true;
-	return true;
-}
-
-
-
 //收集品栏相关（临时）
 _root.物品UI函数.创建材料图标 = function(methodName:String, keepPage:Boolean){
 	if(_root.物品栏界面.界面 != "材料") return;

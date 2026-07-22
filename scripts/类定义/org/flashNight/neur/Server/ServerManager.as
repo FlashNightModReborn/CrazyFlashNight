@@ -2,6 +2,7 @@
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.path.PathManager;
 import org.flashNight.arki.scene.ChestS0SocketBridge;
+import org.flashNight.arki.item.LootContainerService;
 import FastJSON;
 
 /**
@@ -640,16 +641,23 @@ class org.flashNight.neur.Server.ServerManager {
         // capability 绑定当前 socket generation；断线必须先让本地权威失效。
         ChestS0SocketBridge.handleSocketClosed();
 
-        // loot 奖励只存在本地内存；Host 断线时启动持久 same-object handoff。服务只有在
-        // journal/effects、旧 UI renderer 与本地 pause lease 全部得到证明后才返回 true；
-        // 任一阶段失败由重连后的 causal lootQuery 原地续跑。
-        var lootRecovered:Boolean = false;
-        if (_root.地图元件 != undefined
-                && typeof _root.地图元件.断线回退Web战利品到旧界面 == "function") {
-            try { lootRecovered = _root.地图元件.断线回退Web战利品到旧界面(null) === true; }
-            catch (lootRecoveryError) { lootRecovered = false; }
+        // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，
+        // 并把同一 authority 收敛到 Web-only SUSPENDED 或终态。不存在 Flash UI 回退。
+        var lootReconciled:Boolean = false;
+        try {
+            var lootDetach:Object = LootContainerService.reconcileSocketDetach(null);
+            lootReconciled = lootDetach != null && lootDetach.success === true;
+            if (!lootReconciled && lootDetach != null
+                    && lootDetach.error != "no_web_loot_authority"
+                    && lootDetach.error != "terminal_state") {
+                trace("[LootContainerService] socket detach not settled: "
+                    + (lootDetach.error == undefined ? "unknown" : lootDetach.error));
+            }
+        } catch (lootReconcileError) {
+            lootReconciled = false;
+            trace("[LootContainerService] socket detach exception: " + lootReconcileError);
         }
-        if (lootRecovered && _root._webPanelPauseLease != undefined) {
+        if (lootReconciled && _root._webPanelPauseLease != undefined) {
             trace("[LootContainerService] detach proof returned with pause lease; fail closed");
         }
 

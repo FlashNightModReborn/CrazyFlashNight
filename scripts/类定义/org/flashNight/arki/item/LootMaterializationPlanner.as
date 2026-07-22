@@ -12,14 +12,16 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
  * 任一边界失败都保留同一计划供下一次互动继续，不重滚、不复制物品、不提前扣总数。
  */
 class org.flashNight.arki.item.LootMaterializationPlanner {
-    private static var JOURNAL_VERSION:Number = 1;
+    // v2 删除 rollout marker 冻结，并把缺省数量归一写入私有 descriptor。
+    private static var JOURNAL_VERSION:Number = 2;
     private static var JOURNAL_FIELD:String = "__cf7WebLootMaterialization";
-    private static var MAX_CAPACITY:Number = 100;
+    // 与 Host/Web 战利品面板能力边界保持一致；超界正网格由 service fail-closed。
+    private static var MAX_CAPACITY:Number = 64;
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
     // AVM1 全局 random(n) 的正有符号 31 位上界；span=max-min+1 必须落在此范围。
     private static var MAX_RANDOM_SPAN:Number = 2147483647;
-    // 当前资源箱唯一 outcome-affecting bonus 为逆向技能（满级 10 × 0.05）。
-    private static var MAX_CANARY_LUCK_BONUS:Number = 0.5;
+    // 当前地图箱唯一 outcome-affecting bonus 为逆向技能（满级 10 × 0.05）。
+    private static var MAX_LOOT_LUCK_BONUS:Number = 0.5;
 
     private static var _testFailureStage:String = "";
     private static var _testFailureRuleIndex:Number = -1;
@@ -65,7 +67,7 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
         if (typeof target.row != "number" || typeof target.col != "number"
                 || target.row <= 0 || target.col <= 0
                 || Math.floor(target.row) != target.row || Math.floor(target.col) != target.col
-                || cap <= 1 || cap > MAX_CAPACITY) {
+                || cap < 1 || cap > MAX_CAPACITY) {
             fail(journal, "invalid_capacity", true);
             return false;
         }
@@ -91,8 +93,9 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
         var descriptors:Array = [];
         for (var ruleIndex:Number = 0; ruleIndex < sourceRules.length; ruleIndex++) {
             var rule:Object = sourceRules[ruleIndex];
-            if (!validateRule(rule)) {
-                fail(journal, validationError(rule), true);
+            var quantity:Object = normalizeQuantity(rule);
+            if (!validateRule(rule, quantity)) {
+                fail(journal, validationError(rule, quantity), true);
                 return false;
             }
             for (var prior:Number = 0; prior < ruleIndex; prior++) {
@@ -103,13 +106,15 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
             }
             var hasProbability:Boolean = rule.概率 != undefined;
             var hasTotal:Boolean = rule.总数 != undefined;
-            var totalBefore:Number = hasTotal ? Number(rule.总数) : Number(rule.最大数量);
+            var totalBefore:Number = hasTotal ? Number(rule.总数) : quantity.max;
             descriptors.push({
                 index:ruleIndex,
                 rule:rule,
                 name:String(rule.名字),
-                min:Number(rule.最小数量),
-                max:Number(rule.最大数量),
+                rawMin:rule.最小数量,
+                rawMax:rule.最大数量,
+                min:quantity.min,
+                max:quantity.max,
                 hasProbability:hasProbability,
                 probability:hasProbability ? Number(rule.概率) : undefined,
                 hasTotal:hasTotal,
@@ -117,11 +122,11 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
             });
         }
 
-        // DropLuckRoller 在本 canary 路径只读取逆向 luck bonus；数量抽取不读取任何
+        // DropLuckRoller 在地图箱路径只读取逆向 luck bonus；数量抽取不读取任何
         // luck/bonus。这里在 slot/roll/quantity 任一随机推进前冻结 bonus 与 PRD 引擎。
         var luckBonus:Number = Number(DropLuckRoller.getLuckBonus());
         if (typeof luckBonus != "number" || isNaN(luckBonus)
-                || luckBonus < 0 || luckBonus > MAX_CANARY_LUCK_BONUS) {
+                || luckBonus < 0 || luckBonus > MAX_LOOT_LUCK_BONUS) {
             fail(journal, "invalid_luck_bonus", true);
             return false;
         }
@@ -144,9 +149,6 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
         journal.col = Number(target.col);
         journal.capacity = cap;
         journal.presetName = String(target.presetName);
-        journal.chestRolloutId = String(target.chestRolloutId);
-        journal.lootFlowProfile = String(target.lootFlowProfile);
-        journal.unlockPolicy = String(target.unlockPolicy);
         journal.luckBonus = luckBonus;
         journal.prdEngine = prdEngine;
         journal.inventory = new ArrayInventory(null, cap);
@@ -347,10 +349,7 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
     private static function validateFrozenInput(target:Object, journal:Object):Boolean {
         if (target !== journal.target || target.掉落物 !== journal.rawDrops
                 || target.row !== journal.row || target.col !== journal.col
-                || target.presetName !== journal.presetName
-                || target.chestRolloutId !== journal.chestRolloutId
-                || target.lootFlowProfile !== journal.lootFlowProfile
-                || target.unlockPolicy !== journal.unlockPolicy) return false;
+                || target.presetName !== journal.presetName) return false;
         if (journal.rawDropsIsArray) {
             if (!(target.掉落物 instanceof Array)
                     || target.掉落物.length != journal.rawDropsLength) return false;
@@ -362,8 +361,8 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
             var descriptor:Object = journal.rules[ruleIndex];
             var rule:Object = descriptor.rule;
             if (rule == null || rule.名字 !== descriptor.name
-                    || rule.最小数量 !== descriptor.min
-                    || rule.最大数量 !== descriptor.max) return false;
+                    || rule.最小数量 !== descriptor.rawMin
+                    || rule.最大数量 !== descriptor.rawMax) return false;
             if (descriptor.hasProbability) {
                 if (rule.概率 === undefined || rule.概率 !== descriptor.probability) return false;
             } else if (rule.概率 != undefined) return false;
@@ -374,39 +373,51 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
         return true;
     }
 
-    private static function validateRule(rule:Object):Boolean {
+    private static function normalizeQuantity(rule:Object):Object {
+        if (rule == null || typeof rule != "object") return {min:NaN, max:NaN};
+        var min:Number = Number(rule.最小数量);
+        var max:Number = Number(rule.最大数量);
+        // 复现旧地图箱语义：任一数量缺失或不可转为数字时，两端都默认为 1。
+        if (isNaN(min) || isNaN(max)) {
+            min = 1;
+            max = 1;
+        }
+        return {min:min, max:max};
+    }
+
+    private static function validateRule(rule:Object, quantity:Object):Boolean {
+        var min:Number = quantity.min;
+        var max:Number = quantity.max;
         if (rule == null || typeof rule != "object"
                 || typeof rule.名字 != "string" || rule.名字.length < 1
                 || !ItemUtil.isItem(String(rule.名字))
-                || typeof rule.最小数量 != "number" || typeof rule.最大数量 != "number"
-                || Math.floor(rule.最小数量) != rule.最小数量
-                || Math.floor(rule.最大数量) != rule.最大数量
-                || rule.最小数量 <= 0 || rule.最大数量 < rule.最小数量
-                || rule.最小数量 > MAX_SAFE_INTEGER
-                || rule.最大数量 > MAX_SAFE_INTEGER
-                || rule.最大数量 - rule.最小数量 > MAX_RANDOM_SPAN - 1) return false;
+                || isNaN(min) || isNaN(max)
+                || Math.floor(min) != min || Math.floor(max) != max
+                || min <= 0 || max < min
+                || min > MAX_SAFE_INTEGER || max > MAX_SAFE_INTEGER
+                || max - min > MAX_RANDOM_SPAN - 1) return false;
         if (rule.概率 != undefined
                 && (typeof rule.概率 != "number" || isNaN(rule.概率)
                     || rule.概率 <= 0 || rule.概率 > 100)) return false;
         if (rule.总数 != undefined
                 && (typeof rule.总数 != "number" || Math.floor(rule.总数) != rule.总数
-                    || rule.总数 < rule.最小数量 || rule.总数 > MAX_SAFE_INTEGER)) return false;
+                    || rule.总数 < min || rule.总数 > MAX_SAFE_INTEGER)) return false;
         return true;
     }
 
-    private static function validationError(rule:Object):String {
+    private static function validationError(rule:Object, quantity:Object):String {
         if (rule != null && typeof rule == "object") {
             if (rule.概率 != undefined
                     && (typeof rule.概率 != "number" || isNaN(rule.概率)
                         || rule.概率 <= 0 || rule.概率 > 100)) return "invalid_drop_probability";
             if (rule.总数 != undefined
                     && (typeof rule.总数 != "number" || Math.floor(rule.总数) != rule.总数
-                        || rule.总数 < Number(rule.最小数量)
+                        || rule.总数 < quantity.min
                         || rule.总数 > MAX_SAFE_INTEGER)) return "invalid_drop_total";
-            if (typeof rule.最小数量 == "number" && typeof rule.最大数量 == "number"
-                    && Math.floor(rule.最小数量) == rule.最小数量
-                    && Math.floor(rule.最大数量) == rule.最大数量
-                    && rule.最大数量 - rule.最小数量 > MAX_RANDOM_SPAN - 1) {
+            if (!isNaN(quantity.min) && !isNaN(quantity.max)
+                    && Math.floor(quantity.min) == quantity.min
+                    && Math.floor(quantity.max) == quantity.max
+                    && quantity.max - quantity.min > MAX_RANDOM_SPAN - 1) {
                 return "invalid_drop_quantity_span";
             }
         }

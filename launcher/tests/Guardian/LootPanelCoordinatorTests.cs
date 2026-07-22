@@ -242,6 +242,31 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void PanelRequest_GridCapabilityBoundaryMatchesAs2Contract()
+        {
+            LootPanelCoordinator.OpenRequest normalized;
+            string error;
+
+            JObject boundary = Request();
+            boundary["initData"]["capacity"] = 64;
+            boundary["initData"]["columns"] = 8;
+            Assert.True(LootPanelCoordinator.TryNormalizePanelRequest(
+                boundary, out normalized, out error));
+            Assert.Equal(64, normalized.Capacity);
+            Assert.Equal(8, normalized.Columns);
+
+            JObject tooLarge = Request();
+            tooLarge["initData"]["capacity"] = 65;
+            Assert.False(LootPanelCoordinator.TryNormalizePanelRequest(
+                tooLarge, out normalized, out error));
+
+            JObject tooWide = Request();
+            tooWide["initData"]["columns"] = 9;
+            Assert.False(LootPanelCoordinator.TryNormalizePanelRequest(
+                tooWide, out normalized, out error));
+        }
+
+        [Fact]
         public void TypedOpen_CannotBypassPositiveAttemptInvariant()
         {
             LootPanelCoordinator.OpenRequest normalized;

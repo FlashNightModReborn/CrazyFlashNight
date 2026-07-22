@@ -770,7 +770,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(0, harness.Task.LastAuthorityRevision);
             JObject revisionOneQuery = WaitForSent(harness, 5);
             AssertDetachedQuery(revisionOneQuery, 1, harness, freshNonce, 2);
-            harness.Task.HandleFlashResponse(ActiveResponse(revisionOneQuery, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(revisionOneQuery,
+                "operation.recovery.suspended", 1, 1), null);
 
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.Task.LastAuthorityRevision);
@@ -846,7 +847,8 @@ namespace CF7Launcher.Tests.Tasks
             harness.Task.OnSocketReconnected();
             JObject freshAttemptQuery = WaitForSent(harness, 4);
             AssertDetachedQuery(freshAttemptQuery, 3, harness, expectedAttempt: 2);
-            harness.Task.HandleFlashResponse(ActiveResponse(freshAttemptQuery, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(freshAttemptQuery,
+                "operation.recovery.suspended", 1, 1), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(2, harness.DetachedReconcileSettled);
         }
@@ -2337,8 +2339,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.DoesNotContain(harness.Sent, value =>
                 value.Value<string>("action") == "lootClose");
 
-            harness.Task.HandleFlashResponse(ActiveResponse(query,
-                "operation.claim.1", 2), null);
+            harness.Task.HandleFlashResponse(TerminalResponse(query,
+                "operation.claim.1", "CONSUMED", 2, 0), null);
 
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal("idle", harness.Task.WriteState);
@@ -2375,7 +2377,8 @@ namespace CF7Launcher.Tests.Tasks
             // A generic ready notification for the same generation is also idempotent.
             harness.Task.OnSocketReconnected();
             Assert.Equal(1, harness.SentCount);
-            harness.Task.HandleFlashResponse(ActiveResponse(query, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(query,
+                "operation.recovery.suspended", 1, 1), null);
 
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.True(WebOverlayForm.IsLootPauseReleaseAllowed(harness.Task));
@@ -2384,7 +2387,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void ConnectedRecovery_FailedActiveProofRetriesUntilExactAppliedSuccess()
+        public void ConnectedRecovery_FailedProofRetriesUntilExactSuspendedProof()
         {
             using var harness = new Harness(retryInitialMs: 10, retryMaximumMs: 20);
             LootPanelCoordinator.Binding binding = harness.Coordinator.ActiveBinding;
@@ -2402,7 +2405,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(0, harness.DetachedReconcileSettled);
             JObject appliedQuery = WaitForSent(harness, 2);
             AssertDetachedQuery(appliedQuery, 1, harness, RecoveryNonce);
-            harness.Task.HandleFlashResponse(ActiveResponse(appliedQuery, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(appliedQuery,
+                "operation.recovery.suspended", 1, 1), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.DetachedReconcileSettled);
             Assert.Equal(0, harness.PostedCount);
@@ -2478,7 +2482,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(1, harness.SentCount);
             Assert.Equal(nonce, harness.SentAt(0).Value<string>("recoveryNonce"));
             Assert.True(harness.Task.RequiresDetachedReconcile);
-            harness.Task.HandleFlashResponse(ActiveResponse(query, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(query,
+                "operation.recovery.suspended", 1, 1), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.DetachedReconcileSettled);
         }
@@ -2508,13 +2513,14 @@ namespace CF7Launcher.Tests.Tasks
             JObject query = WaitForSent(harness, 1);
             AssertDetachedQuery(query, 2, harness);
             Assert.NotEqual(RecoveryNonce, query.Value<string>("recoveryNonce"));
-            harness.Task.HandleFlashResponse(ActiveResponse(query, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(query,
+                "operation.recovery.suspended", 1, 1), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.DetachedReconcileSettled);
         }
 
         [Fact]
-        public void SocketReconnect_NoWriteStillQueriesExactDetachedAuthorityBeforeUnpause()
+        public void SocketReconnect_ActiveProjectionCannotReleaseDetachedFence()
         {
             using var harness = new Harness();
             harness.Task.HandleWebRequest(Request("snapshot", "snapshot.before.detach"));
@@ -2528,9 +2534,17 @@ namespace CF7Launcher.Tests.Tasks
             JObject query = WaitForSent(harness, 2);
             AssertDetachedQuery(query, 2, harness);
 
-            // AS2 may return success ACTIVE only after same-object legacy render and its local
-            // pause-release verification have completed.
+            // A detached document cannot own an ACTIVE projection. Even a fresh success response
+            // keeps the recovery fence and forces another exact query.
             harness.Task.HandleFlashResponse(ActiveResponse(query, "", 2), null);
+
+            Assert.True(harness.Task.RequiresDetachedReconcile);
+            Assert.Equal(0, harness.DetachedReconcileSettled);
+            JObject terminalQuery = WaitForSent(harness, 3);
+            AssertDetachedQuery(terminalQuery, 2, harness,
+                query.Value<string>("recoveryNonce"));
+            harness.Task.HandleFlashResponse(TerminalResponse(terminalQuery, "",
+                "CONSUMED", 3, 0), null);
 
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal("idle", harness.Task.WriteState);
@@ -2549,7 +2563,8 @@ namespace CF7Launcher.Tests.Tasks
 
             harness.Task.OnSocketReconnected();
             JObject query = WaitForSent(harness, 1);
-            harness.Task.HandleFlashResponse(ActiveResponse(query, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(query,
+                "operation.recovery.suspended", 1, 1), null);
 
             Assert.Equal(0, harness.PostedCount);
             Assert.False(harness.Task.RequiresDetachedReconcile);
@@ -2666,7 +2681,8 @@ namespace CF7Launcher.Tests.Tasks
             harness.Coordinator.OnPanelHostClosed("loot", PanelInstanceId);
             Assert.Equal(1, harness.Task.PendingCount);
 
-            harness.Task.HandleFlashResponse(ActiveResponse(query, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(query,
+                "operation.recovery.suspended", 1, 1), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(0, harness.Task.PendingCount);
             Assert.Equal(1, harness.DetachedReconcileSettled);
@@ -2730,8 +2746,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(0, harness.DetachedReconcileSettled);
 
             JObject causalQuery = WaitForSent(harness, 5);
-            harness.Task.HandleFlashResponse(ActiveResponse(causalQuery,
-                "operation.claim.1", 2), null);
+            harness.Task.HandleFlashResponse(TerminalResponse(causalQuery,
+                "operation.claim.1", "CONSUMED", 2, 0), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal("idle", harness.Task.WriteState);
             Assert.Equal(1, harness.DetachedReconcileSettled);
@@ -2753,7 +2769,8 @@ namespace CF7Launcher.Tests.Tasks
             harness.SendResult = true;
             JObject retry = WaitForSent(harness, 2);
             AssertDetachedQuery(retry, 2, harness);
-            harness.Task.HandleFlashResponse(ActiveResponse(retry, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(retry,
+                "operation.recovery.suspended", 1, 1), null);
 
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.DetachedReconcileSettled);
@@ -2774,7 +2791,8 @@ namespace CF7Launcher.Tests.Tasks
 
             JObject retry = WaitForSent(harness, 2);
             Assert.NotEqual(first.Value<int>("callId"), retry.Value<int>("callId"));
-            harness.Task.HandleFlashResponse(ActiveResponse(retry, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(retry,
+                "operation.recovery.suspended", 1, 1), null);
 
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.DetachedReconcileSettled);
@@ -2802,7 +2820,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(0, harness.DetachedReconcileSettled);
 
-            harness.Task.HandleFlashResponse(ActiveResponse(fresh, "", 1), null);
+            harness.Task.HandleFlashResponse(SuspendedResponse(fresh,
+                "operation.recovery.suspended", 1, 1), null);
             Assert.False(harness.Task.RequiresDetachedReconcile);
             Assert.Equal(1, harness.DetachedReconcileSettled);
         }

@@ -18,7 +18,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     public function ArrayInventory(_items:Object,_capacity:Number) {
         super(_items);
         mutationRevision = 1;
-        if(_capacity <= 1) _capacity = 8;
+        if(_capacity < 1) _capacity = 8;
         this.capacity = _capacity;
         // 建立索引TreeSet（强制使用 WAVL：性能更优；并配合索引自修复避免长时间运行后的索引失真）
         indexes = new TreeSet(null, TreeSet.TYPE_WAVL);

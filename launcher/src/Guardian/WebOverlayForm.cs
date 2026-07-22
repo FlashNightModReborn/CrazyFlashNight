@@ -4617,9 +4617,9 @@ namespace CF7Launcher.Guardian
                 return true;
             }
 
-            // A local write failure does not itself make TcpClient.Connected false.  Close only
-            // the generation whose recovery send failed so AS2 deterministically takes its
-            // transport-disconnect legacy fallback, without ever disconnecting a replacement.
+            // A local write failure does not itself make TcpClient.Connected false. Close only
+            // the generation whose authority-handoff send failed so AS2 deterministically takes
+            // its socket-detach proof path, without ever disconnecting a replacement.
             LogManager.Log("event=loot_panel_recovery_transport_failed generation=" + generation);
             _socketServer.ForceCloseCurrentClientIfGen(generation);
             return false;
@@ -4719,8 +4719,8 @@ namespace CF7Launcher.Guardian
                     _pauseNeedsRestore = false;
             }
             // Generic panels can release their stale pause lease immediately. Loot is stricter:
-            // AS2 must first reconcile the exact detached authority and prove same-object legacy
-            // handoff. The completion callback above performs the idempotent unpause afterwards.
+            // AS2 must first reconcile the exact detached authority and prove the same-object
+            // suspended/terminal handoff. The completion callback performs idempotent unpause.
             bool lootReconcilePending = _lootTask != null
                 && _lootTask.RequiresDetachedReconcile;
             if (lootReconcilePending) _lootTask.OnSocketReconnected();

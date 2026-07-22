@@ -1,7 +1,8 @@
 ﻿param(
     [string]$StageRoot = (Join-Path (Split-Path -Parent $PSScriptRoot) "data\stages"),
+    [string]$ItemRoot = (Join-Path (Split-Path -Parent $PSScriptRoot) "data\items"),
     [switch]$Json,
-    [switch]$NoBaseline
+    [switch]$NoItemCatalog
 )
 
 $ErrorActionPreference = "Stop"
@@ -14,16 +15,7 @@ $chestTypes = @(
     "隐藏资源点",
     "纸箱"
 )
-$gridTypes = @("装备箱", "保险柜", "生存箱")
-$directTypes = @("资源箱", "隐藏资源点", "纸箱")
 $modes = @("修罗", "非修罗")
-$rolloutProfile = "web-loot-v1"
-$rolloutPolicies = @("skip")
-$gridCapacities = @{
-    "装备箱" = 8
-    "保险柜" = 32
-    "生存箱" = 16
-}
 
 function New-CountTable([string[]]$Keys) {
     $table = [ordered]@{}
@@ -133,6 +125,253 @@ function Test-PositiveWholeText([string]$Text) {
     return [int]::TryParse($Text, [ref]$value) -and $value -gt 0
 }
 
+function Get-WebGridCapability([string]$LootServicePath, $ErrorList) {
+    $result = [ordered]@{ maxColumns = 0; maxCapacity = 0 }
+    if (-not (Test-Path -LiteralPath $LootServicePath -PathType Leaf)) {
+        Add-AuditError $ErrorList "preset-shape" "LootContainerService 真源不存在: $LootServicePath"
+        return [pscustomobject]$result
+    }
+    $source = Get-Content -LiteralPath $LootServicePath -Raw -Encoding UTF8
+    foreach ($entry in @(
+        @{ name = "MAX_WEB_COLUMNS"; property = "maxColumns" },
+        @{ name = "MAX_WEB_CAPACITY"; property = "maxCapacity" }
+    )) {
+        $pattern = '(?m)^\s*private\s+static\s+var\s+' +
+            $entry.name + ':Number\s*=\s*(?<value>[0-9]+)\s*;'
+        $matches = [regex]::Matches($source, $pattern)
+        if ($matches.Count -ne 1) {
+            Add-AuditError $ErrorList "preset-shape" (
+                "LootContainerService.$($entry.name) 必须恰有一个正整数定义；actual=$($matches.Count)")
+            continue
+        }
+        $value = [int]$matches[0].Groups["value"].Value
+        if ($value -le 0) {
+            Add-AuditError $ErrorList "preset-shape" (
+                "LootContainerService.$($entry.name) 必须大于 0；actual=$value")
+            continue
+        }
+        $result[$entry.property] = $value
+    }
+    return [pscustomobject]$result
+}
+
+function Get-PresetShapeMap([string]$PresetManagerPath, [string[]]$Types,
+                            [int]$MaxColumns, [int]$MaxCapacity, $ErrorList) {
+    $shapeMap = [ordered]@{}
+    if (-not (Test-Path -LiteralPath $PresetManagerPath -PathType Leaf)) {
+        Add-AuditError $ErrorList "preset-shape" "PresetManager 真源不存在: $PresetManagerPath"
+        return $shapeMap
+    }
+
+    $source = Get-Content -LiteralPath $PresetManagerPath -Raw -Encoding UTF8
+    foreach ($type in $Types) {
+        $presetPattern = '(?s)PresetManager\.registerPreset\("' +
+            [regex]::Escape($type) + '"\s*,\s*\{(?<body>.*?)\}\s*\);'
+        $presetMatches = [regex]::Matches($source, $presetPattern)
+        if ($presetMatches.Count -ne 1) {
+            Add-AuditError $ErrorList "preset-shape" (
+                "'$type' 必须在 PresetManager 中恰有一个默认 preset；actual=$($presetMatches.Count)")
+            continue
+        }
+
+        $body = $presetMatches[0].Groups["body"].Value
+        $rowMatches = [regex]::Matches($body, '(?m)^\s*row\s*:\s*(?<value>-?[0-9]+(?:\.[0-9]+)?)\s*,?\s*$')
+        $colMatches = [regex]::Matches($body, '(?m)^\s*col\s*:\s*(?<value>-?[0-9]+(?:\.[0-9]+)?)\s*,?\s*$')
+        if ($rowMatches.Count -ne 1 -or $colMatches.Count -ne 1) {
+            Add-AuditError $ErrorList "preset-shape" (
+                "'$type' 必须在默认 preset 中恰有一个数值 row/col；row=$($rowMatches.Count), col=$($colMatches.Count)")
+            continue
+        }
+
+        $row = [double]::Parse(
+            $rowMatches[0].Groups["value"].Value,
+            [System.Globalization.CultureInfo]::InvariantCulture)
+        $col = [double]::Parse(
+            $colMatches[0].Groups["value"].Value,
+            [System.Globalization.CultureInfo]::InvariantCulture)
+        $delivery = if ($row -ne [Math]::Floor($row) -or $col -ne [Math]::Floor($col)) {
+            "unsupported"
+        } elseif ($row -le 0 -or $col -le 0) {
+            "direct"
+        } elseif ($col -le $MaxColumns -and $row * $col -le $MaxCapacity) {
+            "grid"
+        } else {
+            "unsupported"
+        }
+        $shapeMap[$type] = [pscustomobject]@{
+            row = $row
+            col = $col
+            delivery = $delivery
+        }
+        if ($delivery -eq "unsupported") {
+            Add-AuditError $ErrorList "preset-shape" (
+                "'$type' 的默认 shape row=$row col=$col 超出当前 Web/direct 能力；必须显式修正 preset 或能力契约")
+        }
+    }
+    return $shapeMap
+}
+
+function Test-ProbabilityText([string]$Text) {
+    if ([string]::IsNullOrWhiteSpace($Text)) { return $false }
+    $value = 0.0
+    return [double]::TryParse(
+        $Text,
+        [System.Globalization.NumberStyles]::Float,
+        [System.Globalization.CultureInfo]::InvariantCulture,
+        [ref]$value) -and $value -gt 0 -and $value -le 100
+}
+
+function Get-DropRuleVariants($DropRule) {
+    $variants = New-Object System.Collections.Generic.List[object]
+    $variantErrors = New-Object System.Collections.Generic.List[string]
+    $switchNodes = @($DropRule.SelectNodes("./CaseSwitch"))
+
+    if ($switchNodes.Count -eq 0) {
+        $variants.Add([pscustomobject]@{
+            node = $DropRule
+            activeModes = @($modes)
+        })
+        return [pscustomobject]@{
+            variants = $variants.ToArray()
+            errors = $variantErrors.ToArray()
+        }
+    }
+
+    $elementChildren = @($DropRule.ChildNodes | Where-Object {
+        $_.NodeType -eq [System.Xml.XmlNodeType]::Element
+    })
+    if ($switchNodes.Count -ne 1 -or $elementChildren.Count -ne 1) {
+        $variantErrors.Add("掉落物的条件形式必须只包含一个 CaseSwitch")
+        return [pscustomobject]@{
+            variants = $variants.ToArray()
+            errors = $variantErrors.ToArray()
+        }
+    }
+
+    $switchNode = $switchNodes[0]
+    $expression = Get-AttributeValue $switchNode "expression"
+    $params = Get-AttributeValue $switchNode "params"
+    if ($expression -ne "_root.难度是否达到" -or $params -ne "修罗") {
+        $variantErrors.Add("掉落物 CaseSwitch 只允许 expression='_root.难度是否达到' params='修罗'")
+        return [pscustomobject]@{
+            variants = $variants.ToArray()
+            errors = $variantErrors.ToArray()
+        }
+    }
+
+    $seenShura = $false
+    $seenNonShura = $false
+    foreach ($caseNode in @($switchNode.SelectNodes("./Case"))) {
+        $caseValue = Get-AttributeValue $caseNode "casevalue"
+        $normalized = if ($null -eq $caseValue) { "" } else { $caseValue.ToLowerInvariant() }
+        if ($normalized -eq "true") {
+            if ($seenShura) {
+                $variantErrors.Add("掉落物 CaseSwitch 重复声明修罗分支")
+                continue
+            }
+            $seenShura = $true
+            $activeModes = @("修罗")
+        } elseif ($normalized -eq "false" -or $normalized -eq "default") {
+            if ($seenNonShura) {
+                $variantErrors.Add("掉落物 CaseSwitch 重复声明非修罗分支")
+                continue
+            }
+            $seenNonShura = $true
+            $activeModes = @("非修罗")
+        } else {
+            $variantErrors.Add("掉落物 CaseSwitch 使用未知 casevalue='$caseValue'")
+            continue
+        }
+        if (@($caseNode.SelectNodes("./CaseSwitch")).Count -gt 0) {
+            $variantErrors.Add("掉落物 CaseSwitch 不允许嵌套 CaseSwitch")
+            continue
+        }
+        $variants.Add([pscustomobject]@{
+            node = $caseNode
+            activeModes = $activeModes
+        })
+    }
+
+    if (-not $seenShura -or -not $seenNonShura) {
+        $variantErrors.Add("掉落物 CaseSwitch 必须同时覆盖修罗与非修罗")
+    }
+    return [pscustomobject]@{
+        variants = $variants.ToArray()
+        errors = $variantErrors.ToArray()
+    }
+}
+
+function Get-GridDropAudit($ParametersNode, [int]$Capacity) {
+    $messages = New-Object System.Collections.Generic.List[string]
+    $dropRules = @(if ($ParametersNode) { $ParametersNode.SelectNodes("./掉落物") })
+    if ($dropRules.Count -lt 1) {
+        $messages.Add("网格箱必须至少有一条掉落物")
+    }
+    if ($Capacity -gt 0 -and $dropRules.Count -gt $Capacity) {
+        $messages.Add("掉落物规则数 $($dropRules.Count) 超过容器容量 $Capacity")
+    }
+
+    $dropVariantCount = 0
+    foreach ($dropRule in $dropRules) {
+        $resolvedDrop = Get-DropRuleVariants $dropRule
+        foreach ($message in $resolvedDrop.errors) { $messages.Add($message) }
+        foreach ($variant in $resolvedDrop.variants) {
+            $dropVariantCount++
+            $variantNode = $variant.node
+            $dropName = Get-DirectChildText $variantNode "名字"
+            $minNodes = @($variantNode.SelectNodes("./最小数量"))
+            $maxNodes = @($variantNode.SelectNodes("./最大数量"))
+            $minText = Get-DirectChildText $variantNode "最小数量"
+            $maxText = Get-DirectChildText $variantNode "最大数量"
+            $probabilityNodes = @($variantNode.SelectNodes("./概率"))
+            $totalNodes = @($variantNode.SelectNodes("./总数"))
+            $probabilityText = if ($probabilityNodes.Count -eq 1) {
+                $probabilityNodes[0].InnerText.Trim()
+            } else { "" }
+            $totalText = if ($totalNodes.Count -eq 1) {
+                $totalNodes[0].InnerText.Trim()
+            } else { "" }
+            $modeLabel = @($variant.activeModes) -join "/"
+            if ([string]::IsNullOrWhiteSpace($dropName)) {
+                $messages.Add("[$modeLabel] 掉落物缺少唯一非空名字")
+            } elseif ($script:itemCatalogEnabled -and -not $script:itemNames.Contains($dropName)) {
+                $messages.Add("[$modeLabel] '$dropName' 不在 data/items/list.xml 权威物品目录")
+            }
+            if ($minNodes.Count -gt 1 -or $maxNodes.Count -gt 1) {
+                $messages.Add("[$modeLabel] '$dropName' 的最小/最大数量不得重复")
+            }
+            $effectiveMin = 1
+            if ($minNodes.Count -eq 1 -and $maxNodes.Count -eq 1) {
+                if (-not (Test-PositiveWholeText $minText) -or -not (Test-PositiveWholeText $maxText)) {
+                    $messages.Add("[$modeLabel] '$dropName' 的显式最小/最大数量必须为正整数")
+                } elseif ([int]$minText -gt [int]$maxText) {
+                    $messages.Add("[$modeLabel] '$dropName' 最小数量大于最大数量")
+                } else {
+                    $effectiveMin = [int]$minText
+                }
+            }
+            if ($probabilityNodes.Count -gt 1 -or
+                    ($probabilityNodes.Count -eq 1 -and
+                        -not (Test-ProbabilityText $probabilityText))) {
+                $messages.Add("[$modeLabel] '$dropName' 的概率必须为 (0,100] 数字")
+            }
+            if ($totalNodes.Count -gt 1 -or
+                    ($totalNodes.Count -eq 1 -and
+                        (-not (Test-PositiveWholeText $totalText) -or
+                            ((Test-PositiveWholeText $totalText) -and
+                                [int]$totalText -lt $effectiveMin)))) {
+                $messages.Add("[$modeLabel] '$dropName' 的总数必须为不小于最小数量的正整数")
+            }
+        }
+    }
+
+    return [pscustomobject]@{
+        dropRules = $dropRules.Count
+        dropVariants = $dropVariantCount
+        errors = $messages.ToArray()
+    }
+}
+
 $errors = New-Object System.Collections.Generic.List[object]
 $warnings = New-Object System.Collections.Generic.List[object]
 $records = New-Object System.Collections.Generic.List[object]
@@ -141,8 +380,75 @@ $commentedByFile = [ordered]@{}
 $declarationsByType = New-CountTable $chestTypes
 $logicalGroups = @{}
 $actualInstanceNodes = New-Object System.Collections.Generic.HashSet[string]
-$rolloutIds = @{}
-$rolloutRecords = New-Object System.Collections.Generic.List[object]
+$obsoleteRolloutRecords = New-Object System.Collections.Generic.List[object]
+$script:itemCatalogEnabled = -not $NoItemCatalog
+$script:itemNames = New-Object System.Collections.Generic.HashSet[string]
+$itemCatalogFiles = 0
+$projectRoot = Split-Path -Parent $PSScriptRoot
+$presetManagerPath = Join-Path $projectRoot `
+    "scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\ElementComponent\PresetManager.as"
+$lootServicePath = Join-Path $projectRoot `
+    "scripts\类定义\org\flashNight\arki\item\LootContainerService.as"
+$webGridCapability = Get-WebGridCapability $lootServicePath $errors
+$presetShapes = Get-PresetShapeMap $presetManagerPath $chestTypes `
+    $webGridCapability.maxColumns $webGridCapability.maxCapacity $errors
+$gridTypes = @($chestTypes | Where-Object {
+    $presetShapes.Contains($_) -and $presetShapes[$_].delivery -eq "grid"
+})
+$directTypes = @($chestTypes | Where-Object {
+    $presetShapes.Contains($_) -and $presetShapes[$_].delivery -eq "direct"
+})
+
+if ($script:itemCatalogEnabled) {
+    $resolvedItemRoot = [System.IO.Path]::GetFullPath($ItemRoot)
+    $itemRootPrefix = $resolvedItemRoot.TrimEnd(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+    $itemListPath = Join-Path $resolvedItemRoot "list.xml"
+    if (-not (Test-Path -LiteralPath $itemListPath -PathType Leaf)) {
+        Add-AuditError $errors "item-catalog" "物品目录入口不存在: $itemListPath"
+    } else {
+        try {
+            [xml]$itemListDocument = Get-Content -LiteralPath $itemListPath -Raw -Encoding UTF8
+            $itemEntries = @($itemListDocument.SelectNodes("/root/items"))
+            if ($itemEntries.Count -lt 1) {
+                Add-AuditError $errors "item-catalog" "data/items/list.xml 没有 items 条目" "list.xml"
+            }
+            foreach ($entry in $itemEntries) {
+                $relativeItemPath = $entry.InnerText.Trim()
+                if ([string]::IsNullOrWhiteSpace($relativeItemPath)) {
+                    Add-AuditError $errors "item-catalog" "data/items/list.xml 含空 items 条目" "list.xml"
+                    continue
+                }
+                $itemPath = [System.IO.Path]::GetFullPath(
+                    (Join-Path $resolvedItemRoot $relativeItemPath))
+                if (-not $itemPath.StartsWith(
+                        $itemRootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    Add-AuditError $errors "item-catalog" "items 路径越出 data/items: $relativeItemPath" "list.xml"
+                    continue
+                }
+                if (-not (Test-Path -LiteralPath $itemPath -PathType Leaf)) {
+                    Add-AuditError $errors "item-catalog" "items 文件不存在: $relativeItemPath" "list.xml"
+                    continue
+                }
+                try {
+                    [xml]$itemDocument = Get-Content -LiteralPath $itemPath -Raw -Encoding UTF8
+                    $itemCatalogFiles++
+                    foreach ($nameNode in @($itemDocument.SelectNodes("/root/item/name"))) {
+                        $itemName = $nameNode.InnerText.Trim()
+                        if (-not [string]::IsNullOrWhiteSpace($itemName)) {
+                            [void]$script:itemNames.Add($itemName)
+                        }
+                    }
+                } catch {
+                    Add-AuditError $errors "item-catalog" $_.Exception.Message $relativeItemPath
+                }
+            }
+        } catch {
+            Add-AuditError $errors "item-catalog" $_.Exception.Message "list.xml"
+        }
+    }
+}
 
 if (-not (Test-Path -LiteralPath $StageRoot -PathType Container)) {
     Add-AuditError $errors "input" "关卡目录不存在: $StageRoot"
@@ -211,73 +517,30 @@ foreach ($file in $stageFiles) {
                 $rolloutIdNodes = @(if ($parametersNode) { $parametersNode.SelectNodes("./chestRolloutId") })
                 $profileNodes = @(if ($parametersNode) { $parametersNode.SelectNodes("./lootFlowProfile") })
                 $policyNodes = @(if ($parametersNode) { $parametersNode.SelectNodes("./unlockPolicy") })
+                $rowOverrideNodes = @(if ($parametersNode) { $parametersNode.SelectNodes("./row") })
+                $colOverrideNodes = @(if ($parametersNode) { $parametersNode.SelectNodes("./col") })
                 $hasAnyRolloutField = $rolloutIdNodes.Count -gt 0 -or $profileNodes.Count -gt 0 -or $policyNodes.Count -gt 0
-                $rolloutId = ""
-                $profile = ""
-                $policy = ""
+                $hasShapeOverride = $rowOverrideNodes.Count -gt 0 -or $colOverrideNodes.Count -gt 0
+                $gridAudit = $null
+                if ($gridTypes -contains $identifier) {
+                    $presetShape = $presetShapes[$identifier]
+                    $presetCapacity = [int]($presetShape.row * $presetShape.col)
+                    $gridAudit = Get-GridDropAudit $parametersNode $presetCapacity
+                    foreach ($message in $gridAudit.errors) {
+                        Add-AuditError $errors "grid" "$logicalKey ($identifier): $message" $relativeFile
+                    }
+                }
 
                 if ($hasAnyRolloutField) {
-                    if ($rolloutIdNodes.Count -ne 1 -or $profileNodes.Count -ne 1 -or $policyNodes.Count -ne 1) {
-                        Add-AuditError $errors "rollout" "$logicalKey ($identifier): rollout 必须恰有一个 chestRolloutId / lootFlowProfile / unlockPolicy" $relativeFile
-                    } else {
-                        $rolloutId = $rolloutIdNodes[0].InnerText.Trim()
-                        $profile = $profileNodes[0].InnerText.Trim()
-                        $policy = $policyNodes[0].InnerText.Trim()
-
-                        if ($rolloutId -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$') {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): 非法 chestRolloutId='$rolloutId'" $relativeFile
-                        } elseif ($rolloutIds.ContainsKey($rolloutId)) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): chestRolloutId='$rolloutId' 与 $($rolloutIds[$rolloutId]) 重复" $relativeFile
-                        } else {
-                            $rolloutIds[$rolloutId] = $logicalKey
-                        }
-                        if ($profile -ne $rolloutProfile) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): lootFlowProfile 必须为 '$rolloutProfile'，实际 '$profile'" $relativeFile
-                        }
-                        if ($rolloutPolicies -notcontains $policy) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): unlockPolicy='$policy' 不在白名单" $relativeFile
-                        }
-                        if ($gridTypes -notcontains $identifier) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): direct 型箱子禁止进入 Web loot rollout" $relativeFile
-                        }
-                        if (@($parametersNode.SelectNodes("./chestS0FixtureId | ./chestS0As2GateId")).Count -gt 0) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): S0 开发 marker 与生产 loot rollout 禁止共存" $relativeFile
-                        }
-
-                        $dropRules = @($parametersNode.SelectNodes("./掉落物"))
-                        $capacity = if ($gridCapacities.ContainsKey($identifier)) { [int]$gridCapacities[$identifier] } else { 0 }
-                        if ($dropRules.Count -lt 1) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): rollout 箱必须至少有一条掉落物" $relativeFile
-                        }
-                        if ($capacity -le 0 -or $dropRules.Count -gt $capacity) {
-                            Add-AuditError $errors "rollout" "$logicalKey ($identifier): 掉落规则数 $($dropRules.Count) 超过容量 $capacity" $relativeFile
-                        }
-                        foreach ($dropRule in $dropRules) {
-                            $dropName = Get-DirectChildText $dropRule "名字"
-                            $minText = Get-DirectChildText $dropRule "最小数量"
-                            $maxText = Get-DirectChildText $dropRule "最大数量"
-                            if ([string]::IsNullOrWhiteSpace($dropName)) {
-                                Add-AuditError $errors "rollout" "$logicalKey ($identifier): 掉落物缺少唯一非空名字" $relativeFile
-                            }
-                            if (-not (Test-PositiveWholeText $minText) -or -not (Test-PositiveWholeText $maxText)) {
-                                Add-AuditError $errors "rollout" "$logicalKey ($identifier): '$dropName' 的最小/最大数量必须为正整数" $relativeFile
-                            } elseif ([int]$minText -gt [int]$maxText) {
-                                Add-AuditError $errors "rollout" "$logicalKey ($identifier): '$dropName' 最小数量大于最大数量" $relativeFile
-                            }
-                        }
-
-                        $rolloutRecords.Add([pscustomobject]@{
-                            rolloutId = $rolloutId
-                            profile = $profile
-                            unlockPolicy = $policy
-                            file = $relativeFile
-                            logicalKey = $logicalKey
-                            identifier = $identifier
-                            activeModes = @($modeInfo.activeModes)
-                            capacity = $capacity
-                            dropRules = $dropRules.Count
-                        })
-                    }
+                    Add-AuditError $errors "obsolete-rollout-marker" "$logicalKey ($identifier): chestRolloutId / lootFlowProfile / unlockPolicy 已停用；正网格由服务统一路由" $relativeFile
+                    $obsoleteRolloutRecords.Add([pscustomobject]@{
+                        file = $relativeFile
+                        logicalKey = $logicalKey
+                        identifier = $identifier
+                    })
+                }
+                if ($hasShapeOverride) {
+                    Add-AuditError $errors "shape-override" "$logicalKey ($identifier): stage Parameters 不得覆盖 row/col；静态分类以六箱 preset 的权威 shape 为准" $relativeFile
                 }
 
                 $record = [pscustomobject]@{
@@ -298,6 +561,8 @@ foreach ($file in $stageFiles) {
                     }
                     activeModes = @($modeInfo.activeModes)
                     caseSwitches = @($modeInfo.switches)
+                    hasObsoleteRolloutMarker = $hasAnyRolloutField
+                    hasShapeOverride = $hasShapeOverride
                 }
                 $records.Add($record)
 
@@ -380,42 +645,23 @@ $logicalIdentities = $logicalGroups.Count
 $commentedIdentifierMentions = 0
 foreach ($type in $chestTypes) { $commentedIdentifierMentions += $commentedByType[$type] }
 $caseSwitchBranchDeclarations = @($records | Where-Object { $_.caseSwitches.Count -gt 0 }).Count
+$autoGridRecords = @($records | Where-Object { $_.delivery -eq "grid" })
+$autoGridModes = [ordered]@{}
+foreach ($mode in $modes) {
+    $autoGridModes[$mode] = @($autoGridRecords | Where-Object {
+        $_.activeModes -contains $mode
+    }).Count
+}
 $rockParkFile = "基地车库/摇滚公园.xml"
 $rockParkActiveDeclarations = @($records | Where-Object { $_.file -eq $rockParkFile }).Count
 $rockParkCommentedDeclarations = if ($commentedByFile.Contains($rockParkFile)) { $commentedByFile[$rockParkFile] } else { 0 }
 
-if (-not $NoBaseline) {
-    $baselineChecks = @(
-        @{ label = "branchDeclarations"; actual = $branchDeclarations; expected = 28 },
-        @{ label = "instanceNodes"; actual = $instanceNodes; expected = 27 },
-        @{ label = "logicalIdentities"; actual = $logicalIdentities; expected = 26 },
-        @{ label = "identityCollapses"; actual = $identityCollapses.Count; expected = 1 },
-        @{ label = "caseSwitchBranchDeclarations"; actual = $caseSwitchBranchDeclarations; expected = 2 },
-        @{ label = "declarationsByType.装备箱"; actual = $declarationsByType["装备箱"]; expected = 5 },
-        @{ label = "declarationsByType.保险柜"; actual = $declarationsByType["保险柜"]; expected = 3 },
-        @{ label = "declarationsByType.生存箱"; actual = $declarationsByType["生存箱"]; expected = 1 },
-        @{ label = "declarationsByType.资源箱"; actual = $declarationsByType["资源箱"]; expected = 12 },
-        @{ label = "declarationsByType.隐藏资源点"; actual = $declarationsByType["隐藏资源点"]; expected = 4 },
-        @{ label = "declarationsByType.纸箱"; actual = $declarationsByType["纸箱"]; expected = 3 },
-        @{ label = "修罗.logicalIdentities"; actual = $modeSummary["修罗"].logicalIdentities; expected = 26 },
-        @{ label = "修罗.grid"; actual = $modeSummary["修罗"].grid; expected = 9 },
-        @{ label = "修罗.direct"; actual = $modeSummary["修罗"].direct; expected = 17 },
-        @{ label = "非修罗.logicalIdentities"; actual = $modeSummary["非修罗"].logicalIdentities; expected = 26 },
-        @{ label = "非修罗.grid"; actual = $modeSummary["非修罗"].grid; expected = 8 },
-        @{ label = "非修罗.direct"; actual = $modeSummary["非修罗"].direct; expected = 18 },
-        @{ label = "摇滚公园.activeDeclarations"; actual = $rockParkActiveDeclarations; expected = 1 },
-        @{ label = "摇滚公园.commentedDeclarationsExcluded"; actual = $rockParkCommentedDeclarations; expected = 8 },
-        @{ label = "lootRollouts"; actual = $rolloutRecords.Count; expected = 1 }
-    )
-    foreach ($check in $baselineChecks) {
-        if ($check.actual -ne $check.expected) {
-            Add-AuditError $errors "baseline" "$($check.label): expected=$($check.expected), actual=$($check.actual)"
-        }
-    }
-}
-
 $result = [ordered]@{
     stageRoot = [System.IO.Path]::GetFullPath($StageRoot)
+    presetManagerPath = [System.IO.Path]::GetFullPath($presetManagerPath)
+    lootServicePath = [System.IO.Path]::GetFullPath($lootServicePath)
+    webGridCapability = $webGridCapability
+    presetShapes = [pscustomobject]$presetShapes
     xmlFiles = $stageFiles.Count
     branchDeclarations = $branchDeclarations
     instanceNodes = $instanceNodes
@@ -428,11 +674,19 @@ $result = [ordered]@{
     commentedIdentifierMentionsExcluded = $commentedIdentifierMentions
     commentedByType = [pscustomobject]$commentedByType
     commentedByFile = [pscustomobject]$commentedByFile
+    chestRecords = $records.ToArray()
     rockPark = [pscustomobject]@{
         activeDeclarations = $rockParkActiveDeclarations
         commentedDeclarationsExcluded = $rockParkCommentedDeclarations
     }
-    lootRollouts = $rolloutRecords.ToArray()
+    obsoleteLootRolloutMarkers = $obsoleteRolloutRecords.ToArray()
+    autoRoutedGridDeclarations = $autoGridRecords
+    autoRoutedGridModes = [pscustomobject]$autoGridModes
+    itemCatalog = [pscustomobject]@{
+        enabled = $script:itemCatalogEnabled
+        referencedFiles = $itemCatalogFiles
+        uniqueNames = $script:itemNames.Count
+    }
     warnings = $warnings.ToArray()
     errors = $errors.ToArray()
 }
@@ -447,7 +701,7 @@ if ($Json) {
     }
     Write-Output ("  CaseSwitch branch declarations={0}; same-Identifier dedupes={1}; identity collapses={2}" -f $caseSwitchBranchDeclarations, $sameIdentifierDedupes.Count, $identityCollapses.Count)
     Write-Output ("  XML comments excluded={0}; 摇滚公园 active={1}, commented/excluded={2}" -f $commentedIdentifierMentions, $rockParkActiveDeclarations, $rockParkCommentedDeclarations)
-    Write-Output ("  Web loot rollouts={0}" -f $rolloutRecords.Count)
+    Write-Output ("  Web auto-routed grid declarations={0}; obsolete rollout markers={1}" -f $autoGridRecords.Count, $obsoleteRolloutRecords.Count)
     foreach ($warning in $warnings) {
         Write-Output ("[WARN] {0}: {1}" -f $warning.file, $warning.message)
     }

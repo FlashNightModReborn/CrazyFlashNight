@@ -570,8 +570,8 @@ namespace CF7Launcher.Guardian
                 if (authorityVisualCloseProven)
                 {
                     // A visual/transport detach can never downgrade a strict AS2 tombstone or
-                    // LOOT_SUSPENDED proof, nor hand either already-settled object to legacy
-                    // recovery.
+                    // LOOT_SUSPENDED proof, nor re-enter either already-settled object into the
+                    // authority-handoff path.
                     _state = authorityCloseState;
                     CancelBindWatchdogLocked();
                 }
@@ -591,7 +591,7 @@ namespace CF7Launcher.Guardian
             {
                 // The captured execution gate is now stale and will reject if the queued command
                 // eventually reaches the UI thread. No pause/native/DOM side effect is required
-                // for same-object AS2 recovery, so it is safe to finish immediately.
+                // for same-object AS2 authority convergence, so it is safe to finish immediately.
                 FinalizeDetached(binding, false);
                 return true;
             }
@@ -1047,7 +1047,8 @@ namespace CF7Launcher.Guardian
                 // Claim the at-most-once slot before invoking external transport: a failed send
                 // may synchronously fire disconnect handlers that re-enter ForceDetach.  The
                 // production delegate fails closed by disconnecting only its captured generation,
-                // so false means "transport fallback now owns recovery", not "retry later".
+                // so false means "socket-detach proof now owns authority convergence", not
+                // "retry later".
                 if (_disposed || !ReferenceEquals(_active, binding)
                     || AuthorityCloseStateLocked(binding) != BindingState.Idle
                     || _recoverySignalAttempted) return;

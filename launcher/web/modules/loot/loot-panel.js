@@ -20,7 +20,7 @@ var LootPanel = (function() {
         onRequestClose:requestClose,
         // Panels.close() already performed visual detach before this narrow notification hook.
         onForceClose:function() {
-            toast('连接已分离；游戏将恢复同一只箱子的领取入口。');
+            toast('连接已分离；箱内物品已保留，请重新打开战利品面板。');
         }
     });
 
@@ -113,7 +113,7 @@ var LootPanel = (function() {
             var failedInstanceId = _transportInstanceId;
             cleanup();
             _transportInstanceId = failedInstanceId;
-            toast('战利品工作台无法装载，游戏将恢复原箱子入口。');
+            toast('战利品工作台无法装载；箱内物品已保留，请重新互动后打开战利品面板。');
             _terminalCloseTimer = setTimeout(function() { finishVisualClose('mount_failed'); }, 0);
         }
     }

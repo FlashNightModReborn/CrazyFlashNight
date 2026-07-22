@@ -531,6 +531,9 @@ namespace CF7Launcher.Tasks
                                 || responseSuccess && exactRecoveryProof)
                             && (entry.WebCmd != "query"
                                 || QueryMayCloseTerminalLocked(entry, sanitized));
+                        // A detached document can no longer own an ACTIVE projection. Only a
+                        // first-class suspended authority or exact terminal tombstone settles
+                        // the visual recovery fence; ACTIVE falls through to another exact query.
                         if ((suspendedCloseProven || terminalCloseProven)
                             && ReferenceEquals(_detachedReconcileBinding, entry.Binding)
                             && _detachedReconcileRequired)
@@ -590,16 +593,6 @@ namespace CF7Launcher.Tasks
                         {
                             _writeState = "idle";
                             ClearUnknownLocked();
-                        }
-                        bool detachedProjectionSettles = responseSuccess
-                                && sanitized.Value<string>("state") == "LOOT_ACTIVE"
-                            || suspendedCloseProven || terminalCloseProven;
-                        if (entry.IsDetachedReconcile && detachedProjectionSettles
-                            && _writeState != "reconcile_required"
-                            && _detachedReconcileRequired)
-                        {
-                            ClearDetachedReconcileLocked();
-                            detachedReconcileSettled = true;
                         }
                     }
                     retryDetachedReconcile = entry.IsDetachedReconcile
@@ -672,9 +665,10 @@ namespace CF7Launcher.Tasks
             int currentGeneration = SafeReadyGeneration();
             if (currentGeneration != transportGeneration)
             {
-                // The recovery frame belonged to a socket that has already been replaced.  Its
-                // nonce may never have reached AS2, while socket close itself is the causal legacy
-                // fallback.  Drop only that exact nonce and reconcile on the replacement.
+                // The connected authority-handoff frame belonged to a socket that has already
+                // been replaced. Its nonce may never have reached AS2; socket close itself selects
+                // the causal socket-detach proof path. Drop only that nonce, then reconcile on
+                // the replacement.
                 string socketNonce = DowngradeConnectedRecoveryToSocketProof(binding,
                     recoveryNonce, transportGeneration);
                 if (currentGeneration > 0 && socketNonce != null)

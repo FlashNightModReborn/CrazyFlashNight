@@ -2,7 +2,6 @@
 import org.flashNight.arki.item.itemIcon.CollectionIcon;
 import org.flashNight.arki.item.itemIcon.IconFactory;
 import org.flashNight.arki.item.ItemUtil;
-import org.flashNight.arki.item.LootContainerService;
 import org.flashNight.arki.key.KeyManager;
 /*
  * 在背包、仓库或战备箱中的物品图标，继承CollectionIcon
@@ -24,30 +23,6 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
 
     public function Press():Void{
         _root.注释结束();
-        // Web loot fallback 只复用旧外观，不复用旧写权威。必须早于钱/K点、
-        // 收集品直写、quick-move 与拖拽图标创建。
-        if (isLootClaimOnlyView()) {
-            var claimResult:Object = LootContainerService.claimLegacyRecoverySlot(
-                this.collection, Number(this.index));
-            if (claimResult != null && claimResult.released === true) {
-                var lootPanel:MovieClip = this.getIconMovieClip()._parent;
-                lootPanel.__lootClaimOnly = true;
-                lootPanel._visible = false;
-                if (typeof lootPanel.关闭 == "function") lootPanel.关闭();
-            } else if (claimResult == null || claimResult.success !== true) {
-                var claimError:String = claimResult == null ? "" : String(claimResult.error);
-                if (claimError == "target_full") {
-                    _root.发布消息("背包已满，物品保持在箱内。");
-                } else if (claimError == "cap_reached") {
-                    _root.发布消息("持有数量已达上限，物品保持在箱内。");
-                } else if (claimError == "commit_pending") {
-                    _root.发布消息("领取正在核对，请稍后重试。");
-                } else {
-                    _root.发布消息("领取失败，物品保持在箱内。");
-                }
-            }
-            return;
-        }
         if (this.locked) return;
 
         var type = itemData.type;
@@ -140,9 +115,6 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
     }
 
     public function Release():Void{
-        // claim-only source 从不生成拖拽事务；消费 mouse-up，禁止落入装备、药剂、
-        // 任意 inventory、商店或垃圾箱旧路径。
-        if (isLootClaimOnlyView()) return;
         _root.鼠标.物品图标容器.物品图标.removeMovieClip();
         icon._alpha = 100;
 
@@ -196,9 +168,6 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
                 for (var i = 0; i < info.list.length; i++){
                     var iconMovieClip = info.list[i];
                     if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                        // 背包/仓库 source 不得把物品写回 service-owned transient loot；
-                        // policy 留在 UI 容器，terminal 后同一次 mouse-up 也仍被拒绝。
-                        if (info.container.__lootClaimOnly === true) return;
                         ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
                         return;
                     }
@@ -242,12 +211,6 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
                 }
             }
         }
-    }
-
-    private function isLootClaimOnlyView():Boolean {
-        var iconMC:MovieClip = this.getIconMovieClip();
-        return iconMC != null && iconMC._parent != null
-            && iconMC._parent.__lootClaimOnly === true;
     }
 
     /**

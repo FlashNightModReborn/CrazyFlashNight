@@ -10,7 +10,7 @@ import org.flashNight.gesh.tooltip.TooltipComposer;
  * 地图网格箱的瞬态战利品权威。
  *
  * 奖励只在 AS2 内存中存在。Web 只收到投影与不可猜写 lease；所有领取均由本类按
- * loot -> player 单向策略提交。beginFixture/register/commitReservedOpen/observeDeath/
+ * loot -> player 单向策略提交。beginFixture/commitReservedOpen/observeDeath/
  * activateReservedOpen 把“完整物化后才 kill”收成同步门，避免 source 已死而容器未注册。
  */
 class org.flashNight.arki.item.LootContainerService {
@@ -21,7 +21,12 @@ class org.flashNight.arki.item.LootContainerService {
     private static var STATE_ABANDONED:String = "ABANDONED";
     private static var STATE_EXPIRED:String = "EXPIRED";
     private static var PANEL_SOURCE:String = "map_chest";
-    private static var FLOW_PROFILE:String = "web-loot-v1";
+    private static var MAX_WEB_COLUMNS:Number = 8;
+    private static var MAX_WEB_CAPACITY:Number = 64;
+    private static var SHAPE_SUPPORTED_WEB_GRID:String = "supported_web_grid";
+    private static var SHAPE_UNSUPPORTED_GRID:String = "unsupported_grid_shape";
+    private static var SHAPE_DIRECT_DELIVERY:String = "direct_delivery";
+    private static var SHAPE_NOT_WEB_LOOT_GRID:String = "not_web_loot_grid";
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
     private static var MAX_TOMBSTONES:Number = 16;
     private static var MAX_RECOVERY_PROOFS:Number = 8;
@@ -35,13 +40,8 @@ class org.flashNight.arki.item.LootContainerService {
     private static var _leaseSeq:Number = 0;
     private static var _closeLeaseSeq:Number = 0;
     private static var _snapshotSeq:Number = 0;
-    private static var _legacyClaimSeq:Number = 0;
     private static var _reservation:Object = null;
     private static var _active:Object = null;
-    private static var _legacyRecovery:Object = null;
-    private static var _legacyObserverRecord:Object = null;
-    private static var _legacyObserverDispatcher:Object = null;
-    private static var _legacyObserverCallback:Function = null;
     private static var _terminalBySession:Object = {};
     private static var _terminalOrder:Array = [];
     private static var _lootLeaseIds:Array = [];
@@ -100,30 +100,49 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /**
-     * InteractionHandler 的最早裁决。无 marker 委托 legacy；精确 marker 一旦命中即由本服务
-     * handled=true 占住，禁止旧 handler 在奖励完整物化前直接 kill。
+     * 地图箱 shape 的唯一分类器。六箱 preset 是领域准入；其他互动元件即使携带
+     * row/col 也不属于 loot。域内只有两维都是有限整数时才允许分流：正整数能力内
+     * 进入 Web，正整数超界或任意 malformed shape 均 fail closed；两维完整且任一
+     * 非正才允许 direct delivery。
      */
+    public static function classifyFixtureShape(target:Object):String {
+        var knownBox:Boolean = target != null
+            && org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter.isBoxPreset(
+                String(target.presetName));
+        if (!knownBox) return SHAPE_NOT_WEB_LOOT_GRID;
+        var hasRow:Boolean = hasOwnField(target, "row");
+        var hasCol:Boolean = hasOwnField(target, "col");
+        if (!hasRow && !hasCol) return SHAPE_UNSUPPORTED_GRID;
+        if (!hasRow || !hasCol
+                || !isWhole(target.row) || !isWhole(target.col)) {
+            return SHAPE_UNSUPPORTED_GRID;
+        }
+        var rows:Number = Number(target.row);
+        var columns:Number = Number(target.col);
+        if (rows <= 0 || columns <= 0) return SHAPE_DIRECT_DELIVERY;
+        var capacity:Number = rows * columns;
+        if (columns <= MAX_WEB_COLUMNS && capacity <= MAX_WEB_CAPACITY) {
+            return SHAPE_SUPPORTED_WEB_GRID;
+        }
+        return SHAPE_UNSUPPORTED_GRID;
+    }
+
+    /** InteractionHandler 的最早裁决；所有分支只消费统一 shape 分类。 */
     public static function beginFixture(target:Object):Object {
         var guard:Object = guardAnyGridFixture(target);
         if (guard.handled) return guard;
 
-        var hasRollout:Boolean = hasOwnField(target, "chestRolloutId");
-        var hasProfile:Boolean = hasOwnField(target, "lootFlowProfile");
-        var hasUnlockPolicy:Boolean = hasOwnField(target, "unlockPolicy");
-        if (!hasRollout && !hasProfile && !hasUnlockPolicy) {
-            return {handled:false, reserved:false, reason:"not_web_loot_fixture"};
+        var shape:String = classifyFixtureShape(target);
+        if (shape == SHAPE_NOT_WEB_LOOT_GRID || shape == SHAPE_DIRECT_DELIVERY) {
+            return {handled:false, reserved:false, reason:shape};
         }
-        if (!hasRollout || !hasProfile || !hasUnlockPolicy
-                || typeof target.chestRolloutId != "string"
-                || !isSafeToken(String(target.chestRolloutId), 64)
-                || typeof target.lootFlowProfile != "string"
-                || target.lootFlowProfile !== FLOW_PROFILE
-                || typeof target.unlockPolicy != "string"
-                || target.unlockPolicy !== "skip") {
-            return {handled:true, reserved:false, reason:"invalid_rollout_marker"};
+        if (shape == SHAPE_UNSUPPORTED_GRID) {
+            return {handled:true, reserved:false, reason:shape};
         }
-        if (!hasExactGridShape(target)) {
-            return {handled:true, reserved:false, reason:"invalid_grid_shape"};
+        // claim/commit/kill 的同步重入不得创建 reservation；否则调用者可能先完成
+        // planner 物化，而 commit 在绑定 hard fence 前因 _busy 返回，造成奖励失联。
+        if (_busy) {
+            return {handled:true, reserved:false, reason:"loot_flow_busy"};
         }
         if (_reservation != null || _active != null) {
             return {handled:true, reserved:false, reason:"loot_flow_busy"};
@@ -134,9 +153,6 @@ class org.flashNight.arki.item.LootContainerService {
         var stem:String = _authorityEpoch + "." + _sessionSeq;
         _reservation = {
             target:target,
-            rolloutId:String(target.chestRolloutId),
-            rolloutProfile:String(target.lootFlowProfile),
-            unlockPolicy:String(target.unlockPolicy),
             presetName:String(target.presetName),
             row:Number(target.row),
             col:Number(target.col),
@@ -158,30 +174,20 @@ class org.flashNight.arki.item.LootContainerService {
             postCommitEffects:null,
             transportDetachNeeded:false,
             transportDetachReason:"",
-            transportRendererDone:false,
-            transportUnpauseDone:false,
-            legacyRendererConfirmed:false,
-            legacyRecovery:false,
             targetHeld:false,
             suspendedAnchorRegistered:false,
             suspendPauseReleasePending:false,
             openAttemptSeq:0,
-            openAttemptWasReopen:false,
             reopenBaseSuspendedAttemptSeq:0,
             suspendedFromOpenAttemptSeq:0,
             terminalFromOpenAttemptSeq:0,
-            reopenAttemptSeq:0,
             acceptedOpenAttemptSeq:0,
             recoveryPendingOpenAttemptSeq:0,
             recoveryPendingNonce:"",
             recoveryPendingReason:"",
-            recoveryAppliedOpenAttemptSeq:0,
-            recoveryAppliedNonce:"",
             socketDetachObservedOpenAttemptSeq:0,
-            socketDetachAppliedOpenAttemptSeq:0,
             completedRecoveryProofs:{},
             completedRecoveryProofOrder:[],
-            transportDetachResumeSuspended:false,
             transportDetachReleasePause:false
         };
         return {
@@ -195,33 +201,9 @@ class org.flashNight.arki.item.LootContainerService {
         };
     }
 
-    /** 把一次且仅一次的已滚取 ArrayInventory 绑定到 reservation。这里只登记，不 kill、不开放 Web。 */
-    public static function register(target:Object, inventory:ArrayInventory, metadata:Object):Object {
-        if (_busy) return localFailure("busy");
-        var reservation:Object = _reservation;
-        if (reservation == null || reservation.target !== target) return localFailure("reservation_mismatch");
-        if (reservation.state != STATE_PENDING) return localFailure("terminal_state");
-        if (reservation.materialized) {
-            if (reservation.inventory === inventory && metadataMatches(reservation, metadata)) {
-                var duplicate:Object = recordResponse(reservation, true, "");
-                duplicate.duplicate = true;
-                return duplicate;
-            }
-            return localFailure("materialization_conflict");
-        }
-        if (!metadataMatches(reservation, metadata)) return localFailure("metadata_mismatch");
-        if (!validateInventory(inventory, reservation.row * reservation.col)) {
-            return localFailure("invalid_loot_inventory");
-        }
-        reservation.inventory = inventory;
-        reservation.materialized = true;
-        reservation.authorityRevision++;
-        return recordResponse(reservation, true, "");
-    }
-
     /**
-     * 奖励创建/验证失败时撤销尚未 kill 的 reservation。只终止精确同一 target，
-     * 不接触 active authority，也不把业务失败遗留成全局 busy。
+     * planner 尚未交付 inventory 时可撤销 reservation；一旦 materialized hard fence
+     * 建立，abort 必须 fail closed，不能把唯一奖励对象写成 EXPIRED。
      */
     public static function abortReservedOpen(target:Object, reason:String):Object {
         if (_busy) return localFailure("busy");
@@ -229,23 +211,49 @@ class org.flashNight.arki.item.LootContainerService {
         if (reservation == null || reservation.target !== target) {
             return localFailure("reservation_mismatch");
         }
+        if (reservation.materialized === true) {
+            reservation.state = STATE_PENDING;
+            return failureFor(reservation, "commit_pending");
+        }
         if (reservation.killIssued) return localFailure("kill_already_issued");
         var terminalReason:String = isSafeReason(reason) ? reason : "reservation_aborted";
         return finishTerminal(reservation, STATE_EXPIRED, terminalReason, "");
     }
 
     /**
-     * 安全 kill 提交：先保存唯一 inventory/killIssued，再在同步调用栈执行 killAction。
-     * killAction 必须返回 true，并在返回前经 observeDeath(target) 证明观察到 own kill。
+     * 安全 kill 提交：planner 返回后先把 exact target/inventory 固化为不可清理的
+     * materialization hard fence，再做 inventory 校验与同步 kill。任何校验
+     * 拒绝都保留同一 journal/inventory 为 LOOT_COMMIT_PENDING。
      */
     public static function commitReservedOpen(target:Object, inventory:ArrayInventory,
-                                              metadata:Object, killAction:Function):Object {
+                                              killAction:Function):Object {
         if (_busy) return localFailure("busy");
-        var registered:Object = register(target, inventory, metadata);
-        if (!registered.success) return registered;
         var reservation:Object = _reservation;
+        if (reservation == null || reservation.target !== target) {
+            return localFailure("reservation_mismatch");
+        }
+        if (reservation.state != STATE_PENDING) return localFailure("terminal_state");
+
+        // 这是 planner-success 后的第一项可变操作。先绑定 exact inventory，再执行
+        // 任何可能失败的 capacity / item validation。
+        if (reservation.materialized === true) {
+            if (reservation.inventory !== inventory) {
+                return failureFor(reservation, "materialization_conflict");
+            }
+        } else {
+            reservation.inventory = inventory;
+            reservation.materialized = true;
+            reservation.authorityRevision++;
+        }
+        if (!validateInventory(
+                reservation.inventory, reservation.row * reservation.col)) {
+            reservation.reason = "invalid_loot_inventory";
+            return failureFor(reservation, "invalid_loot_inventory");
+        }
+        reservation.reason = "";
+
         if (typeof killAction != "function") {
-            moveToLegacyRecovery(reservation, "kill_adapter_unavailable");
+            reservation.reason = "kill_adapter_unavailable";
             return localFailure("kill_adapter_unavailable");
         }
         if (reservation.killIssued) return localFailure("kill_already_issued");
@@ -264,11 +272,11 @@ class org.flashNight.arki.item.LootContainerService {
         _busy = false;
 
         if (!adapterAccepted) {
-            moveToLegacyRecovery(reservation, "kill_adapter_failed");
+            reservation.reason = "kill_adapter_failed";
             return localFailure("kill_adapter_failed");
         }
         if (!reservation.ownKillObserved) {
-            moveToLegacyRecovery(reservation, "own_kill_unobserved");
+            reservation.reason = "own_kill_unobserved";
             return localFailure("own_kill_unobserved");
         }
         return recordResponse(reservation, true, "");
@@ -285,18 +293,15 @@ class org.flashNight.arki.item.LootContainerService {
                 _reservation.authorityRevision++;
                 return {handled:true, ownKill:true, reason:"own_kill_observed"};
             }
-            if (_reservation.inventory == null) {
+            if (_reservation.materialized !== true) {
                 finishTerminal(_reservation, STATE_EXPIRED, "unexpected_death", "");
                 return {handled:true, ownKill:false, reason:"unexpected_death"};
             }
-            moveToLegacyRecovery(_reservation, "unexpected_death");
+            _reservation.reason = "unexpected_death";
             return {handled:true, ownKill:false, reason:"unexpected_death"};
         }
         if (_active != null && _active.target === target && _active.ownKillObserved) {
             return {handled:true, ownKill:true, reason:"duplicate_own_death"};
-        }
-        if (_legacyRecovery != null && _legacyRecovery.target === target) {
-            return {handled:true, ownKill:false, reason:"legacy_recovery"};
         }
         return {handled:false, ownKill:false, reason:"not_active_target"};
     }
@@ -341,13 +346,13 @@ class org.flashNight.arki.item.LootContainerService {
         var reservation:Object = _reservation;
         if (reservation == null || reservation.target !== target) return localFailure("reservation_mismatch");
         if (!reservation.materialized || !reservation.killIssued || !reservation.ownKillObserved) {
-            moveToLegacyRecovery(reservation, "activation_gate_failed");
+            reservation.reason = "activation_gate_failed";
             return localFailure("activation_gate_failed");
         }
         // 本函数只在箱体 authored open/break callback 的同步调用栈执行。先冻结根时间轴，
         // 后开放 authority，保证 Web 生命周期内不会自然跑到“无效”帧 removeMovieClip。
         if (!holdTargetTimeline(reservation)) {
-            moveToLegacyRecovery(reservation, "target_hold_failed");
+            reservation.reason = "target_hold_failed";
             return localFailure("target_hold_failed");
         }
         reservation.state = STATE_ACTIVE;
@@ -359,12 +364,22 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /**
-     * 通过 ServerManager callback envelope 请求打开 panel。同步投递失败由调用方回退；
-     * 已投递后的拒绝、断线或 timeout 则由 exact callback 自动进入 same-object recovery。
+     * 通过 ServerManager callback envelope 请求打开 panel。任何投递/拒绝/断线/timeout
+     * 失败都在本服务内收回同一 inventory，落 SUSPENDED 或明确终态。
      */
     public static function requestOpenPanel():Boolean {
         var dispatched:Object = dispatchPanelOpen(false);
-        return dispatched != null && dispatched.queued === true;
+        if (dispatched != null && dispatched.queued === true) return true;
+        var record:Object = _active;
+        if (dispatched != null && dispatched.attemptStarted === true
+                && record != null && record.state == STATE_ACTIVE
+                && Number(record.openAttemptSeq) > 0) {
+            var failureReason:String = dispatched == null || typeof dispatched.error != "string"
+                ? "panel_open_unavailable" : String(dispatched.error);
+            restoreSuspendedAfterPanelFailure(
+                record, failureReason, Number(record.openAttemptSeq));
+        }
+        return false;
     }
 
     /**
@@ -379,35 +394,32 @@ class org.flashNight.arki.item.LootContainerService {
             return {queued:false, attemptStarted:false, callbackObserved:false,
                 callbackAccepted:false, error:"panel_open_unavailable"};
         }
-        var transport:Object = _root.server;
-        if (transport == undefined || typeof transport.sendTaskWithCallback != "function") {
-            return {queued:false, attemptStarted:false, callbackObserved:false,
-                callbackAccepted:false, error:"panel_open_unavailable"};
-        }
         if (!hasRecoveryProofCapacity(record)) {
             return {queued:false, attemptStarted:false, callbackObserved:false,
                 callbackAccepted:false, error:"recovery_history_full"};
         }
         clearCurrentRecoveryProof(record);
         record.openAttemptSeq = Number(record.openAttemptSeq) + 1;
-        record.openAttemptWasReopen = reopenAttempt === true;
         record.reopenBaseSuspendedAttemptSeq = reopenAttempt === true
             ? Number(record.suspendedFromOpenAttemptSeq) : 0;
         // callback 之外也必须持久保存当前 open 的来源。socket close 会先执行
         // transport detach、随后才清 pending callback；只放在 closure 内无法在
-        // legacy handoff 前识别这是一次 reopen。
-        record.reopenAttemptSeq = reopenAttempt === true ? record.openAttemptSeq : 0;
+        // transport recovery 前识别这是一次 reopen。
         record.acceptedOpenAttemptSeq = 0;
         var identity:Object = {
             chestSessionId:record.chestSessionId,
             lootContainerId:record.lootContainerId,
             containerEpoch:record.containerEpoch,
-            openAttemptSeq:record.openAttemptSeq,
-            reopenAttempt:reopenAttempt === true
+            openAttemptSeq:record.openAttemptSeq
         };
         var callbackObserved:Boolean = false;
         var callbackAccepted:Boolean = false;
         var callbackError:String = "";
+        var transport:Object = _root.server;
+        if (transport == undefined || typeof transport.sendTaskWithCallback != "function") {
+            return {queued:false, attemptStarted:true, callbackObserved:false,
+                callbackAccepted:false, error:"panel_open_unavailable"};
+        }
         try {
             transport.sendTaskWithCallback(
                 "panel_request",
@@ -508,9 +520,9 @@ class org.flashNight.arki.item.LootContainerService {
             ? "panel_open_unavailable" : String(dispatched.error);
         // 同步 callback failure 已在 exact attempt 回调中收回 SUSPENDED；
         // 方法缺失 / send 抛错则由调用方执行同一恢复 helper。两条路都
-        // 不报 reopened，也不触发 same-object legacy renderer。
+        // 不报 reopened，也不创建任何替代展示路径。
         if (record.state != STATE_SUSPENDED && !isTerminalState(record.state)) {
-            var restored:Object = restoreSuspendedAfterReopenFailure(
+            var restored:Object = restoreSuspendedAfterPanelFailure(
                 record, dispatchError, Number(record.openAttemptSeq));
             if (restored == null || restored.success !== true) {
                 return restored == null ? failureFor(record, "suspend_unavailable") : restored;
@@ -536,38 +548,26 @@ class org.flashNight.arki.item.LootContainerService {
             return;
         }
         var failureReason:String = LootContainerValidation.panelOpenFailureReason(response);
-        if (identity.reopenAttempt === true) {
-            restoreSuspendedAfterReopenFailure(
-                record, failureReason, Number(identity.openAttemptSeq));
-            return;
-        }
-        // transport-detach reconcile 可能已先完成 same-object recovery；随后清理
-        // pending callback 时不得为同一 record 再创建一次 legacy renderer。
-        if (_legacyRecovery === record) return;
-        record.transportDetachReason = failureReason;
-        reconcileTransportDetach(record.target);
+        restoreSuspendedAfterPanelFailure(
+            record, failureReason, Number(identity.openAttemptSeq));
     }
 
     /**
-     * reopen 在任何权威写开始前失败时，不具备跳回旧 AS2 renderer 的理由：
-     * 先重新建立 exact target anchor，再把 authority 收回 LOOT_SUSPENDED。这个
-     * helper 同时服务“方法不存在 / send 抛错”的 no-send 与 callback 失败。
+     * 任意 Web open 在权威写开始前失败时，先重新建立 exact target anchor，再把
+     * authority 收回 LOOT_SUSPENDED。初次打开与 reopen 共用同一条恢复路径。
      */
-    private static function restoreSuspendedAfterReopenFailure(record:Object,
-                                                                reason:String,
-                                                                attemptSeq:Number):Object {
+    private static function restoreSuspendedAfterPanelFailure(record:Object,
+                                                               reason:String,
+                                                               attemptSeq:Number):Object {
         if (record == null || _active !== record
-                || Number(record.openAttemptSeq) != Number(attemptSeq)
-                || record.openAttemptWasReopen !== true) {
+                || Number(record.openAttemptSeq) != Number(attemptSeq)) {
             return localFailure("stale_open_attempt");
         }
         if (record.state == STATE_SUSPENDED) {
             return recordResponse(record, true, "");
         }
         if (record.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
-        if (record.pendingCommit != null || record.postCommitEffects != null
-                || (record.transportDetachNeeded === true
-                    && record.transportDetachResumeSuspended !== true)) {
+        if (record.pendingCommit != null || record.postCommitEffects != null) {
             return failureFor(record, "commit_pending");
         }
         var attemptOwnsRecovery:Boolean = Number(record.acceptedOpenAttemptSeq) == attemptSeq
@@ -579,33 +579,30 @@ class org.flashNight.arki.item.LootContainerService {
 
         // 可恢复性证明必须先于 authority/revision 改变。若 target 已经离开
         // world 或 arbiter 不可用，原地继续 ACTIVE 会只留不可达强引用；按锚点
-        // 丢失的生命周期边界显式 EXPIRED，也绝不创建 legacy renderer。
+        // 丢失的生命周期边界显式 EXPIRED，也绝不创建替代展示路径。
         // reopen 失败时 inventory 已可能在上一页被取空；空 authority 不得制造
         // LOOT_SUSPENDED(remaining=0)。先安全释放可能存在的本次 panel lease，
         // 再按同一 inventory 落 CONSUMED。
         if (remainingCount(record) <= 0) {
             if (_root._webPanelPauseLease != undefined && !releaseTransportPauseLease()) {
-                return holdReopenTerminalPauseRetry(record, reason);
+                return holdPanelTerminalPauseRetry(record, reason);
             }
             markCompletedRecoveryProofs(record, attemptSeq);
             record.terminalFromOpenAttemptSeq = suspendedOriginAttempt;
             recordAuthorityClosedProof(record, suspendedOriginAttempt);
-            record.reopenAttemptSeq = 0;
             record.acceptedOpenAttemptSeq = 0;
             record.transportDetachNeeded = false;
-            record.transportDetachResumeSuspended = false;
             record.transportDetachReleasePause = false;
-            return finishTerminal(record, STATE_CONSUMED, "reopen_failure_empty", "");
+            return finishTerminal(record, STATE_CONSUMED, "panel_open_failure_empty", "");
         }
         if (!registerSuspendedAnchor(record)) {
             if (_root._webPanelPauseLease != undefined && !releaseTransportPauseLease()) {
-                return holdReopenTerminalPauseRetry(record, reason);
+                return holdPanelTerminalPauseRetry(record, reason);
             }
             markCompletedRecoveryProofs(record, attemptSeq);
             record.terminalFromOpenAttemptSeq = suspendedOriginAttempt;
             recordAuthorityClosedProof(record, suspendedOriginAttempt);
             record.transportDetachNeeded = false;
-            record.transportDetachResumeSuspended = false;
             record.transportDetachReleasePause = false;
             return finishTerminal(record, STATE_EXPIRED, "suspended_anchor_lost", "");
         }
@@ -621,10 +618,8 @@ class org.flashNight.arki.item.LootContainerService {
         // 与同步 no-send 则只在真实观察到本次全局 lease 时等待释放。
         record.suspendPauseReleasePending = reason == "panel_open_timeout"
             || _root._webPanelPauseLease != undefined;
-        record.reopenAttemptSeq = 0;
         record.acceptedOpenAttemptSeq = 0;
         record.transportDetachNeeded = false;
-        record.transportDetachResumeSuspended = false;
         record.transportDetachReleasePause = false;
         record.authorityRevision++;
         invalidateLootLeases();
@@ -637,13 +632,12 @@ class org.flashNight.arki.item.LootContainerService {
      * 空箱 / 锚点丢失的 reopen failure 必须先释放本次 Web pause 才能落终态。
      * release 暂时失败时冻结与 socket recovery 相同的 resume-suspended fence；
      * exact webPanelUnpause、socket close 或 causal query 后续只重试 release，不会
-     * 重发 open、重滚物品或创建 legacy renderer。
+     * 重发 open、重滚物品或创建替代展示路径。
      */
-    private static function holdReopenTerminalPauseRetry(record:Object,
-                                                          reason:String):Object {
+    private static function holdPanelTerminalPauseRetry(record:Object,
+                                                         reason:String):Object {
         var isNewFence:Boolean = record.transportDetachNeeded !== true;
         record.transportDetachNeeded = true;
-        record.transportDetachResumeSuspended = true;
         record.transportDetachReleasePause = true;
         record.transportDetachReason = isSafeReason(reason)
             ? reason : "panel_open_unavailable";
@@ -676,7 +670,6 @@ class org.flashNight.arki.item.LootContainerService {
         var recoveryReason:String = String(params.reason);
         if (hasExactConnectedAppliedProof(record, recoveryAttemptSeq, recoveryNonce)) {
             return {handled:true, recovered:true, duplicate:true,
-                rendered:record.legacyRendererConfirmed === true,
                 suspended:record.state == STATE_SUSPENDED, reason:record.reason};
         }
         if (isTerminalState(record.state) || record.state == STATE_SUSPENDED) {
@@ -689,7 +682,6 @@ class org.flashNight.arki.item.LootContainerService {
             }
         } else {
             if (Number(record.recoveryPendingOpenAttemptSeq) > 0
-                    || Number(record.recoveryAppliedOpenAttemptSeq) == recoveryAttemptSeq
                     || hasConnectedProofForAttempt(record, recoveryAttemptSeq)) {
                 return {handled:false, recovered:false, reason:"recovery_nonce_mismatch"};
             }
@@ -700,14 +692,13 @@ class org.flashNight.arki.item.LootContainerService {
         // recovery 可以比 panel_request accepted callback 更早进入 AS2。此时只登记
         // pending，不先行宣称成功；ACK 到达后由 callback 继续同一 proof。
         if (Number(record.acceptedOpenAttemptSeq) != recoveryAttemptSeq) {
-            return {handled:true, recovered:false, rendered:false,
+            return {handled:true, recovered:false,
                 suspended:false, reason:"recovery_pending"};
         }
         var detachResult:Object = advancePendingPanelRecovery(record);
         var recovered:Boolean = hasExactConnectedAppliedProof(
             record, recoveryAttemptSeq, recoveryNonce);
         return {handled:true, recovered:recovered,
-            rendered:record.legacyRendererConfirmed === true,
             suspended:record.state == STATE_SUSPENDED,
             reason:recovered ? record.reason : "recovery_pending"};
     }
@@ -720,11 +711,7 @@ class org.flashNight.arki.item.LootContainerService {
         }
         var reason:String = isSafeReason(String(record.recoveryPendingReason))
             ? String(record.recoveryPendingReason) : "web_open_failed";
-        if (hasCurrentReopenAttempt(record)) {
-            return startReopenTransportRecovery(record, reason, false);
-        }
-        record.transportDetachReason = reason;
-        return reconcileTransportDetach(record.target);
+        return startPanelTransportRecovery(record, reason, false);
     }
 
     private static function clearCurrentRecoveryProof(record:Object):Void {
@@ -732,10 +719,7 @@ class org.flashNight.arki.item.LootContainerService {
         record.recoveryPendingOpenAttemptSeq = 0;
         record.recoveryPendingNonce = "";
         record.recoveryPendingReason = "";
-        record.recoveryAppliedOpenAttemptSeq = 0;
-        record.recoveryAppliedNonce = "";
         record.socketDetachObservedOpenAttemptSeq = 0;
-        record.socketDetachAppliedOpenAttemptSeq = 0;
     }
 
     private static function recoveryProofKey(attemptSeq:Number):String {
@@ -802,8 +786,6 @@ class org.flashNight.arki.item.LootContainerService {
         if (record == null || attemptSeq <= 0
                 || Number(record.openAttemptSeq) != attemptSeq) return;
         if (Number(record.recoveryPendingOpenAttemptSeq) == attemptSeq) {
-            record.recoveryAppliedOpenAttemptSeq = attemptSeq;
-            record.recoveryAppliedNonce = String(record.recoveryPendingNonce);
             recordConnectedAppliedProof(
                 record, attemptSeq, String(record.recoveryPendingNonce));
             record.recoveryPendingOpenAttemptSeq = 0;
@@ -811,7 +793,6 @@ class org.flashNight.arki.item.LootContainerService {
             record.recoveryPendingReason = "";
         }
         if (Number(record.socketDetachObservedOpenAttemptSeq) == attemptSeq) {
-            record.socketDetachAppliedOpenAttemptSeq = attemptSeq;
             recordSocketAppliedProof(record, attemptSeq);
         }
     }
@@ -826,8 +807,6 @@ class org.flashNight.arki.item.LootContainerService {
                                                            attemptSeq:Number,
                                                            nonce:String):Boolean {
         if (record == null) return false;
-        if (Number(record.recoveryAppliedOpenAttemptSeq) == attemptSeq
-                && record.recoveryAppliedNonce === nonce) return true;
         var entry:Object = completedRecoveryProof(record, attemptSeq);
         return entry != null && entry.connectedApplied === true
             && entry.connectedNonce === nonce;
@@ -836,7 +815,6 @@ class org.flashNight.arki.item.LootContainerService {
     private static function hasSocketAppliedProof(record:Object,
                                                    attemptSeq:Number):Boolean {
         if (record == null) return false;
-        if (Number(record.socketDetachAppliedOpenAttemptSeq) == attemptSeq) return true;
         var entry:Object = completedRecoveryProof(record, attemptSeq);
         return entry != null && entry.socketApplied === true;
     }
@@ -870,13 +848,12 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /**
-     * socket detach 的持久恢复入口。首次调用先冻结 transportDetachNeeded；之后只有 exact
-     * journal 收敛、mandatory effects、same-object renderer 与本地 pause lease 四项均得到证明，
-     * 才重新暴露 ACTIVE/terminal。失败阶段由后续 causal query 原地重试，绝不重滚奖励。
+     * socket detach 的持久恢复入口。首次调用冻结 transportDetachNeeded；之后只续跑
+     * exact journal / mandatory effects / pause release，并把同一 inventory 收回
+     * SUSPENDED 或终态。失败阶段由 causal query 原地重试，绝不重滚奖励。
      */
     public static function reconcileSocketDetach(target:Object):Object {
-        var record:Object = _legacyRecovery != null
-            ? _legacyRecovery : (_active != null ? _active : _reservation);
+        var record:Object = _active != null ? _active : _reservation;
         if (record != null && record.inventory != null
                 && (target == null || record.target === target)
                 && !isTerminalState(record.state)
@@ -888,48 +865,34 @@ class org.flashNight.arki.item.LootContainerService {
         return reconcileTransportDetach(target);
     }
 
-    public static function reconcileTransportDetach(target:Object):Object {
-        if (_busy) return {success:false, readyForLegacy:false, error:"busy"};
-        var record:Object = _legacyRecovery != null
-            ? _legacyRecovery : (_active != null ? _active : _reservation);
+    private static function reconcileTransportDetach(target:Object):Object {
+        if (_busy) return {success:false, error:"busy"};
+        var record:Object = _active != null ? _active : _reservation;
         if (record == null || record.inventory == null) {
-            return {success:false, readyForLegacy:false, error:"no_legacy_fallback"};
+            return {success:false, error:"no_web_loot_authority"};
         }
         if (target != null && record.target !== target) {
-            return {success:false, readyForLegacy:false, error:"recovery_target_mismatch"};
+            return {success:false, error:"recovery_target_mismatch"};
         }
 
-        // ServerManager.onSocketClose 的生产顺序是先调用本入口，再逐个失败 pending
-        // callback。当前 reopen 意图因此必须由 record 持久识别，先恢复 suspend，
-        // 绝不能进入下面的 same-object legacy renderer。
-        if (hasCurrentReopenAttempt(record)) {
-            return startReopenTransportRecovery(
-                record, "panel_open_unavailable", true);
-        }
-
-        // 已落权威 suspend 的 socket close 不是 renderer failure。只在 exact close 尚待
+        // 已落权威 suspend 的 socket close 不是 open failure。只在 exact close 尚待
         // generic unpause 时释放这一次 loot pause；稳定 suspend 不碰后来面板的共享 lease。
         if (record.state == STATE_SUSPENDED) {
             return reconcileSuspendedTransportDetach(record);
         }
         if (isTerminalState(record.state)) {
-            return {success:false, readyForLegacy:false,
-                error:"terminal_state", state:record.state};
+            return {success:false, error:"terminal_state", state:record.state};
         }
-        if (record.transportDetachNeeded !== true) {
-            record.transportDetachNeeded = true;
-            record.transportRendererDone = record.legacyRendererConfirmed === true;
-            record.transportUnpauseDone = false;
-            record.state = STATE_PENDING;
-            record.authorityRevision++;
-            invalidateLootLeases();
+        if (!hasCurrentOpenAttempt(record)) {
+            return {success:false, error:"stale_open_attempt", state:record.state};
         }
-        return continueTransportDetach(record);
+        return startPanelTransportRecovery(
+            record, "panel_open_unavailable", true);
     }
 
     private static function continueTransportDetach(record:Object):Object {
         if (record == null || record.transportDetachNeeded !== true) {
-            return {success:false, readyForLegacy:false, error:"transport_detach_not_pending"};
+            return {success:false, error:"transport_detach_not_pending"};
         }
 
         // 不重放客户端写，只按冻结 journal 观察 exact before/after，前滚 source 或接受
@@ -950,164 +913,81 @@ class org.flashNight.arki.item.LootContainerService {
                 record.state = STATE_PENDING;
             } else {
                 record.state = STATE_PENDING;
-                return {success:false, readyForLegacy:false,
+                return {success:false,
                     error:"claim_commit_pending", state:STATE_PENDING};
             }
         }
         if (record.postCommitEffects != null && !retryPostCommitEffects(record)) {
-            return {success:false, readyForLegacy:false,
+            return {success:false,
                 error:"claim_commit_pending", state:STATE_PENDING};
         }
         if (record.pendingCommit != null || record.postCommitEffects != null) {
-            return {success:false, readyForLegacy:false,
+            return {success:false,
                 error:"claim_commit_pending", state:STATE_PENDING};
         }
 
-        // reopen transport recovery 可复用上面的 exact journal/effect 收敛，但最终
-        // handoff 是 first-class SUSPENDED/terminal，不是旧 AS2 renderer。connected
-        // watchdog 等 Host exact close 后 generic unpause；socket close 则在本栈立即
-        // 释放当前 pause lease，避免断线后永久暂停。
-        if (record.transportDetachResumeSuspended === true) {
-            var reopenAttemptSeq:Number = Number(record.reopenAttemptSeq);
-            var releasePauseNow:Boolean = record.transportDetachReleasePause === true;
-            var reopenReason:String = isSafeReason(String(record.transportDetachReason))
-                ? String(record.transportDetachReason) : "panel_open_unavailable";
-            // socket detach 已是本次 reopen pause lease 的最终因果证明。必须在
-            // suspend anchor 恢复之前先释放：若 anchor 同时丢失，后续会落
-            // EXPIRED 并清掉 _active，届时已没有可重试的 record 能补放租约。
-            // 释放失败则保留整个 transport fence，供后续 causal query/socket
-            // retry 只继续这一阶段。
-            if (releasePauseNow && !releaseTransportPauseLease()) {
-                return {success:false, readyForLegacy:false, suspendedNoRenderer:true,
-                    pauseReleaseRequired:true, error:"suspend_pause_release_failed",
-                    state:STATE_PENDING};
-            }
-            record.state = STATE_ACTIVE;
-            var restored:Object = restoreSuspendedAfterReopenFailure(
-                record, reopenReason, reopenAttemptSeq);
-            if (restored == null || restored.success !== true) {
-                return {success:false, readyForLegacy:false,
-                    suspendedNoRenderer:true,
-                    error:restored == null ? "suspend_unavailable" : restored.error,
-                    state:record.state};
-            }
-            if (isTerminalState(record.state)) {
-                return {success:true, readyForLegacy:false, suspendedNoRenderer:true,
-                    pauseReleaseRequired:false, state:record.state};
-            }
-            return {success:true, readyForLegacy:false, suspendedNoRenderer:true,
-                pauseReleaseRequired:record.suspendPauseReleasePending === true,
-                pauseReleased:releasePauseNow, state:STATE_SUSPENDED};
+        // transport recovery 始终落 first-class SUSPENDED/terminal。connected watchdog
+        // 等 Host exact close 后 generic unpause；socket close 则在本栈立即释放当前 lease。
+        var openAttemptSeq:Number = Number(record.openAttemptSeq);
+        var releasePauseNow:Boolean = record.transportDetachReleasePause === true;
+        var openFailureReason:String = isSafeReason(String(record.transportDetachReason))
+            ? String(record.transportDetachReason) : "panel_open_unavailable";
+        // socket detach 已是本次 reopen pause lease 的最终因果证明。必须在
+        // suspend anchor 恢复之前先释放：若 anchor 同时丢失，后续会落
+        // EXPIRED 并清掉 _active，届时已没有可重试的 record 能补放租约。
+        // 释放失败则保留整个 transport fence，供后续 causal query/socket
+        // retry 只继续这一阶段。
+        if (releasePauseNow && !releaseTransportPauseLease()) {
+            return {success:false, suspendedWithoutPanel:true,
+                pauseReleaseRequired:true, error:"suspend_pause_release_failed",
+                state:STATE_PENDING};
         }
-
-        if (!prepareTransportLegacyRecovery(record)) {
-            return {success:false, readyForLegacy:false,
-                error:"legacy_fallback_failed", state:STATE_PENDING};
-        }
-
-        if (record.transportRendererDone !== true) {
-            var rendered:Boolean = false;
-            if (record.legacyRendererConfirmed === true) {
-                rendered = true;
-            } else if (_root.地图元件 != undefined
-                    && typeof _root.地图元件.显示Web战利品旧界面 == "function") {
-                try {
-                    injectTransportHandoffFailure("renderer");
-                    rendered = _root.地图元件.显示Web战利品旧界面(
-                        legacyRendererProjection(record, false)) === true;
-                } catch (rendererError) {
-                    rendered = false;
-                }
-            }
-            if (!rendered) {
-                record.state = STATE_PENDING;
-                return {success:false, readyForLegacy:false,
-                    error:"claim_commit_pending", state:STATE_PENDING};
-            }
-            record.legacyRendererConfirmed = true;
-            record.transportRendererDone = true;
-        }
-
-        if (record.transportUnpauseDone !== true) {
-            if (!releaseTransportPauseLease()) {
-                record.state = STATE_PENDING;
-                return {success:false, readyForLegacy:false,
-                    error:"claim_commit_pending", state:STATE_PENDING};
-            }
-            record.transportUnpauseDone = true;
-        }
-
-        record.transportDetachNeeded = false;
         record.state = STATE_ACTIVE;
-        record.authorityRevision++;
-        invalidateLootLeases();
-        var completedAttemptSeq:Number = Number(record.openAttemptSeq);
-        markCompletedRecoveryProofs(record, completedAttemptSeq);
-
-        // renderer 内可能同步观察到最后一件已被领取；transport/pause 证明完成后再落 CONSUMED。
-        if (remainingCount(record) <= 0) {
-            record.terminalFromOpenAttemptSeq = completedAttemptSeq;
-            recordAuthorityClosedProof(record, completedAttemptSeq);
-            var terminal:Object = finishTerminal(record, STATE_CONSUMED, "legacy_consumed", "");
-            return {success:terminal.success, readyForLegacy:terminal.success,
-                state:record.state, terminal:terminal};
+        var restored:Object = restoreSuspendedAfterPanelFailure(
+            record, openFailureReason, openAttemptSeq);
+        if (restored == null || restored.success !== true) {
+            return {success:false,
+                suspendedWithoutPanel:true,
+                error:restored == null ? "suspend_unavailable" : restored.error,
+                state:record.state};
         }
-        return {success:true, readyForLegacy:true, state:record.state};
+        if (isTerminalState(record.state)) {
+            return {success:true, suspendedWithoutPanel:true,
+                pauseReleaseRequired:false, state:record.state};
+        }
+        return {success:true, suspendedWithoutPanel:true,
+            pauseReleaseRequired:record.suspendPauseReleasePending === true,
+            pauseReleased:releasePauseNow, state:STATE_SUSPENDED};
     }
 
     /**
-     * reopen 的 transport/mount 恢复与初次 open 的 legacy handoff 分流。先冻结 mode，
-     * 再复用 continueTransportDetach 的 pending journal 收敛；重复 socket close 可把
-     * connected recovery 升级成 releasePauseNow，但绝不反向降级。
+     * 初次打开与 reopen 共用 transport/mount 恢复。重复 socket close 可把 connected
+     * recovery 升级成 releasePauseNow，但绝不反向降级。
      */
-    private static function startReopenTransportRecovery(record:Object, reason:String,
-                                                          releasePauseNow:Boolean):Object {
-        if (!hasCurrentReopenAttempt(record)) {
-            return {success:false, readyForLegacy:false, error:"stale_open_attempt"};
+    private static function startPanelTransportRecovery(record:Object, reason:String,
+                                                         releasePauseNow:Boolean):Object {
+        if (!hasCurrentOpenAttempt(record)) {
+            return {success:false, error:"stale_open_attempt"};
         }
         if (record.transportDetachNeeded !== true) {
             record.transportDetachNeeded = true;
-            record.transportDetachResumeSuspended = true;
             record.transportDetachReleasePause = releasePauseNow === true;
             record.transportDetachReason = isSafeReason(reason)
                 ? reason : "panel_open_unavailable";
             record.state = STATE_PENDING;
             record.authorityRevision++;
             invalidateLootLeases();
-        } else if (record.transportDetachResumeSuspended !== true) {
-            return {success:false, readyForLegacy:false,
-                error:"claim_commit_pending", state:STATE_PENDING};
         } else if (releasePauseNow === true) {
             record.transportDetachReleasePause = true;
         }
         return continueTransportDetach(record);
     }
 
-    private static function hasCurrentReopenAttempt(record:Object):Boolean {
+    private static function hasCurrentOpenAttempt(record:Object):Boolean {
         var attemptSeq:Number = record == null ? 0 : Number(record.openAttemptSeq);
         return record != null && !isTerminalState(record.state)
             && (record.state == STATE_ACTIVE || record.state == STATE_PENDING)
-            && record.legacyRecovery !== true && record.openAttemptWasReopen === true
-            && attemptSeq > 0 && Number(record.reopenAttemptSeq) == attemptSeq;
-    }
-
-    private static function prepareTransportLegacyRecovery(record:Object):Boolean {
-        if (record == null || record.inventory == null
-                || record.transportDetachNeeded !== true
-                || record.pendingCommit != null || record.postCommitEffects != null
-                || isTerminalState(record.state)) return false;
-        if ((_active != null && _active !== record)
-                || (_legacyRecovery != null && _legacyRecovery !== record)) return false;
-        record.state = STATE_PENDING;
-        record.reason = typeof record.transportDetachReason == "string"
-                && isSafeReason(String(record.transportDetachReason))
-            ? String(record.transportDetachReason) : "transport_detach";
-        record.legacyRecovery = true;
-        _active = record;
-        if (_reservation === record) _reservation = null;
-        _legacyRecovery = record;
-        invalidateLootLeases();
-        return true;
+            && attemptSeq > 0;
     }
 
     private static function releaseTransportPauseLease():Boolean {
@@ -1131,7 +1011,6 @@ class org.flashNight.arki.item.LootContainerService {
         // 仍是最直接的因果重试入口。
         if (record != null && record.state == STATE_PENDING
                 && record.transportDetachNeeded === true
-                && record.transportDetachResumeSuspended === true
                 && record.transportDetachReleasePause === true) {
             var continued:Object = continueTransportDetach(record);
             return {
@@ -1157,305 +1036,111 @@ class org.flashNight.arki.item.LootContainerService {
         if (releaseRequired) {
             var released:Object = releaseSuspendedPauseForClose();
             if (released == null || released.success !== true) {
-                return {success:false, readyForLegacy:false, suspendedNoRenderer:true,
+                return {success:false, suspendedWithoutPanel:true,
                     pauseReleaseRequired:true, error:"suspend_pause_release_failed",
                     state:STATE_SUSPENDED};
             }
         }
         markCompletedRecoveryProofs(record, Number(record.openAttemptSeq));
-        return {success:true, readyForLegacy:false, suspendedNoRenderer:true,
+        return {success:true, suspendedWithoutPanel:true,
             pauseReleaseRequired:releaseRequired,
             pauseReleased:releaseRequired && _root._webPanelPauseLease == undefined,
             state:STATE_SUSPENDED};
     }
 
-    public static function consumeLegacyFallback(target:Object):Object {
-        // Suspend 是用户完成的一次权威 close，不是 transport failure；generic unpause、
-        // navigation close 与 socket callback 都不得借此弹回旧 AS2 资源箱 UI。
-        if (_active != null && _active.state == STATE_SUSPENDED) {
-            return localFailure("loot_suspended");
-        }
-        if (_legacyRecovery != null) {
-            if (target != null && _legacyRecovery.target !== target) return localFailure("recovery_target_mismatch");
-            // 最后一格 source 写可能已完成，但 claim journal / mandatory effects 仍待
-            // causal retry；此时绝不能把空 inventory 再暴露给 renderer。
-            if (_legacyRecovery.pendingCommit != null
-                    || _legacyRecovery.postCommitEffects != null
-                    || _legacyRecovery.transportDetachNeeded === true) {
-                return localFailure("claim_commit_pending");
-            }
-            return legacyRendererProjection(_legacyRecovery, true);
-        }
-        var record:Object = _active != null ? _active : _reservation;
-        // legacy renderer 不是事务 reconcile 入口；只有同 op 或 causal query 可以推进 journal。
-        if (record != null && (record.pendingCommit != null
-                || record.postCommitEffects != null
-                || record.transportDetachNeeded === true)) return localFailure("claim_commit_pending");
-        if (record == null || record.inventory == null) return localFailure("no_legacy_fallback");
-        if (target != null && record.target !== target) return localFailure("recovery_target_mismatch");
-        moveToLegacyRecovery(record, "legacy_fallback");
-        if (_legacyRecovery == null) return localFailure("legacy_fallback_failed");
-        return legacyRendererProjection(_legacyRecovery, false);
-    }
-
-    /** 地图 renderer 成功返回后登记可见性证明；重复确认只接受同一 recovery target。 */
-    public static function confirmLegacyRenderer(target:Object):Boolean {
-        var record:Object = _legacyRecovery;
-        if (record == null || (target != null && record.target !== target)) return false;
-        record.legacyRendererConfirmed = true;
-        if (record.transportDetachNeeded === true) record.transportRendererDone = true;
-        return true;
-    }
-
-    /**
-     * 旧资源箱外观的唯一领取适配器。UI 不得直接写 transient inventory；本入口先用
-     * causal query 收敛可能残留的 claim journal/effects，再从新鲜权威快照铸造现有
-     * loot -> 背包 claim。最后一格只在 claim 完整提交后显式落 CONSUMED。
-     */
-    public static function claimLegacyRecoverySlot(inventory:Object, slot:Number):Object {
-        var record:Object = _legacyRecovery;
-        if (record == null) return localFailure("no_legacy_recovery");
-        if (record.inventory !== inventory) return localFailure("recovery_inventory_mismatch");
-        if (record.legacyRendererConfirmed !== true) {
-            return localFailure("legacy_renderer_unconfirmed");
-        }
-        if (!isWhole(slot) || slot < 0 || slot >= record.inventory.capacity) {
-            return failureFor(record, "invalid_slot");
-        }
-
-        var queryParams:Object = {
-            v:1,
-            chestSessionId:record.chestSessionId,
-            lootContainerId:record.lootContainerId,
-            containerEpoch:record.containerEpoch
-        };
-        var current:Object = execute("query", queryParams);
-        if (current == null || current.success !== true) return current;
-        if (current.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
-        if (!(current.snapshots instanceof Array)) {
-            return failureFor(record, "authority_unavailable");
-        }
-
-        var lootSnapshot:Object = null;
-        for (var i:Number = 0; i < current.snapshots.length; i++) {
-            if (current.snapshots[i].containerId === record.lootContainerId) {
-                lootSnapshot = current.snapshots[i];
-                break;
-            }
-        }
-        if (lootSnapshot == null || !(lootSnapshot.slots instanceof Array)) {
-            return failureFor(record, "authority_unavailable");
-        }
-        var sourceRow:Object = null;
-        for (i = 0; i < lootSnapshot.slots.length; i++) {
-            if (Number(lootSnapshot.slots[i].physicalSlot) == slot) {
-                sourceRow = lootSnapshot.slots[i];
-                break;
-            }
-        }
-        if (sourceRow == null || sourceRow.occupied !== true) {
-            var emptyCompletion:Object = completeLegacyRecoveryIfEmpty();
-            if (emptyCompletion != null && emptyCompletion.released === true) {
-                return emptyCompletion;
-            }
-            return failureFor(record, "stale_state");
-        }
-
-        _legacyClaimSeq++;
-        var operationId:String = "legacy." + String(record.containerEpoch)
-            + "." + String(_legacyClaimSeq);
-        var claim:Object = execute("claim", {
-            v:1,
-            chestSessionId:record.chestSessionId,
-            lootContainerId:record.lootContainerId,
-            containerEpoch:record.containerEpoch,
-            expectedAuthorityRevision:current.authorityRevision,
-            operationId:operationId,
-            direction:"loot_to_player",
-            targetContainerId:"背包",
-            source:{
-                containerId:lootSnapshot.containerId,
-                slot:sourceRow.physicalSlot,
-                expectedLease:sourceRow.slotLease,
-                expectedContainerVersion:lootSnapshot.containerVersion
-            }
-        });
-        // 同步故障可能已留下可判定 journal；立即用 query 做一次 causal reconcile，
-        // 仍不确定则保持 pending，绝不另造 operation 或退回旧直写路径。
-        if (claim != null && claim.success !== true && claim.error == "commit_pending") {
-            claim = execute("query", queryParams);
-        }
-
-        var completion:Object = completeLegacyRecoveryIfEmpty();
-        if (completion != null && completion.released === true) return completion;
-        return claim;
-    }
-
     /** generic webPanelUnpause 的本地栅栏；loot handoff 未证明时不得提前释放游戏暂停。 */
     public static function hasPendingTransportDetach():Boolean {
-        var record:Object = _legacyRecovery != null
-            ? _legacyRecovery : (_active != null ? _active : _reservation);
+        var record:Object = _active != null ? _active : _reservation;
         return record != null && record.transportDetachNeeded === true;
     }
 
-    /** recovery 存在时任何新网格箱都必须停止；原 renderer 可复取同一 inventory 参数。 */
-    public static function guardAnyGridFixture(target:Object):Object {
-        if (_active != null && _active.state == STATE_SUSPENDED) {
-            if (_active.target === target) {
-                return {handled:true, recovery:false, reopen:true,
+    /** SUSPENDED authority 存在时，同一 supported target 可重开；其他 shape 统一分类。 */
+    private static function guardAnyGridFixture(target:Object):Object {
+        var shape:String = classifyFixtureShape(target);
+        if (_reservation != null && _reservation.target === target) {
+            return {handled:true,
+                reason:"loot_reservation_pending", state:_reservation.state,
+                chestSessionId:_reservation.chestSessionId,
+                lootContainerId:_reservation.lootContainerId,
+                containerEpoch:_reservation.containerEpoch};
+        }
+        if (_active != null && _active.target === target) {
+            if (_active.state == STATE_SUSPENDED
+                    && shape == SHAPE_SUPPORTED_WEB_GRID) {
+                return {handled:true, reopen:true,
                     reason:"loot_suspended", state:STATE_SUSPENDED,
                     chestSessionId:_active.chestSessionId,
                     lootContainerId:_active.lootContainerId,
                     containerEpoch:_active.containerEpoch};
             }
-            if (hasExactGridShape(target)) {
-                return {handled:true, recovery:false, reopen:false,
-                    reason:"loot_flow_busy", state:STATE_SUSPENDED};
+            if (_active.state == STATE_PENDING) {
+                return {handled:true,
+                    reason:"claim_commit_pending", state:STATE_PENDING,
+                    chestSessionId:_active.chestSessionId,
+                    lootContainerId:_active.lootContainerId,
+                    containerEpoch:_active.containerEpoch};
             }
-            return {handled:false, recovery:false, reason:"not_grid_fixture"};
+            return {handled:true,
+                reason:shape == SHAPE_UNSUPPORTED_GRID
+                    ? SHAPE_UNSUPPORTED_GRID : "loot_authority_active",
+                state:_active.state,
+                chestSessionId:_active.chestSessionId,
+                lootContainerId:_active.lootContainerId,
+                containerEpoch:_active.containerEpoch};
         }
-        if (_legacyRecovery == null) return {handled:false, recovery:false, reason:"no_recovery"};
-        if (_legacyRecovery.transportDetachNeeded === true) {
-            return {handled:true, recovery:true, reason:"claim_commit_pending"};
+        if (shape == SHAPE_UNSUPPORTED_GRID) {
+            return {handled:true,
+                reason:SHAPE_UNSUPPORTED_GRID};
         }
-        if (remainingCount(_legacyRecovery) <= 0) {
-            var completion:Object = completeLegacyRecoveryIfEmpty();
-            if (completion == null || completion.released !== true) {
-                // 最后一格写入已经落地但 mandatory effects 尚未收敛时，仍由原
-                // recovery 占住所有网格箱；否则普通旧箱可从 handled:false 绕过权威门。
-                return {handled:true, recovery:false, reason:"claim_commit_pending",
-                    state:_legacyRecovery == null ? STATE_PENDING : _legacyRecovery.state};
-            }
-            return {handled:false, recovery:false, reason:"recovery_consumed"};
+        if (shape != SHAPE_SUPPORTED_WEB_GRID) {
+            return {handled:false, reason:shape};
         }
-        var sameRecoveryTarget:Boolean = _legacyRecovery.target === target;
-        if (!sameRecoveryTarget && !hasExactGridShape(target)) {
-            return {handled:false, recovery:false, reason:"not_grid_fixture"};
+        if (_active != null && _active.state == STATE_SUSPENDED) {
+            return {handled:true,
+                reason:"loot_flow_busy", state:STATE_SUSPENDED};
         }
-        var projection:Object = legacyRendererProjection(_legacyRecovery, true);
-        projection.handled = true;
-        projection.recovery = true;
-        projection.reason = _legacyRecovery.reason;
-        projection.requestedTargetMatches = sameRecoveryTarget;
-        return projection;
-    }
-
-    /** 旧 UI 关闭/刷新时调用；非空只隐藏 UI，不释放唯一容器强引用。 */
-    public static function completeLegacyRecoveryIfEmpty():Object {
-        if (_legacyRecovery == null) return {success:true, released:false, reason:"no_recovery"};
-        var record:Object = _legacyRecovery;
-        // destination/source 事务可能已进入 exact journal，但 source 槽已经为空。旧 UI 此时
-        // 没有图标可再次触发 query；completion 必须只续跑同一 pending operation，绝不另造
-        // operationId 或重放 begin/write。query 后必须重新读 remaining，兼容安全回滚恢复 source。
-        if (record.pendingCommit != null) {
-            var reconciled:Object = execute("query", {
-                v:1,
-                chestSessionId:record.chestSessionId,
-                lootContainerId:record.lootContainerId,
-                containerEpoch:record.containerEpoch
-            });
-            if (_legacyRecovery !== record && isTerminalState(String(record.state))) {
-                return legacyTerminalCompletion(record);
-            }
-            if (record.pendingCommit != null) {
-                if (reconciled == null || reconciled.success === true) {
-                    reconciled = failureFor(record, "commit_pending");
-                }
-                reconciled.released = false;
-                reconciled.reason = "recovery_pending";
-                return reconciled;
-            }
+        if (_active != null && _active.state == STATE_PENDING) {
+            return {handled:true,
+                reason:"claim_commit_pending", state:STATE_PENDING};
         }
-        if (remainingCount(record) > 0) {
-            return {success:true, released:false, reason:"recovery_nonempty"};
-        }
-        // claim 的 source/destination 写可能已完成，而 dirty/cache/event mandatory effects
-        // 仍处于可重试 journal。空 UI 已没有可再次点击的物品，因此 completion 本身必须
-        // 推进一步；只重放 effects，绝不重放 claim 写事务。
-        if (record.postCommitEffects != null && !retryPostCommitEffects(record)) {
-            var pendingEffects:Object = failureFor(record, "commit_pending");
-            pendingEffects.released = false;
-            pendingEffects.reason = "recovery_pending";
-            return pendingEffects;
-        }
-        // 测试兼容 observer 可能在 post-effect 事件栈内已完成 terminal；避免外层二次提交。
-        if (_legacyRecovery !== record && isTerminalState(String(record.state))) {
-            return legacyTerminalCompletion(record);
-        }
-        var result:Object = finishTerminal(record, STATE_CONSUMED, "legacy_consumed", "");
-        if (result == null || result.success !== true) {
-            if (result == null) result = failureFor(record, "commit_pending");
-            result.released = false;
-            result.reason = "recovery_pending";
-            return result;
-        }
-        result.released = true;
-        result.reason = "recovery_consumed";
-        return result;
-    }
-
-    private static function legacyTerminalCompletion(record:Object):Object {
-        var terminalResult:Object = recordResponse(record, true, "");
-        terminalResult.released = record != null && record.state == STATE_CONSUMED;
-        terminalResult.reason = terminalResult.released
-            ? "recovery_consumed" : "recovery_pending";
-        return terminalResult;
+        return {handled:false, reason:"web_grid_available"};
     }
 
     /**
-     * 旧 UI 创建布局后会给同一 inventory 安装生命周期 dispatcher；此时订阅移除/数量变化，
-     * 让最后一个物品被拿走的同步事件直接提交 CONSUMED，而不是等场景清理误记 EXPIRED。
+     * authored 开启帧专用栅栏。同 target reservation 正是该帧要激活的 authority，
+     * 因此只在这里放行；其他 active/suspended/pending/shape 仍复用统一 guard。
      */
-    public static function attachLegacyRecoveryObserver():Object {
-        var record:Object = _legacyRecovery;
-        if (record == null || !(record.inventory instanceof ArrayInventory)) {
-            return localFailure("no_legacy_recovery");
+    public static function guardOpenGridFixture(target:Object):Object {
+        if (_reservation != null && _reservation.target === target) {
+            return {handled:false, reason:"loot_reservation_ready",
+                state:_reservation.state};
         }
-        var dispatcher:Object = record.inventory.getDispatcher();
-        if (dispatcher == null || typeof dispatcher.subscribe != "function") {
-            return localFailure("legacy_dispatcher_unavailable");
-        }
-        if (_legacyObserverRecord === record && _legacyObserverDispatcher === dispatcher
-                && _legacyObserverCallback != null) {
-            return {success:true, duplicate:true};
-        }
-
-        detachLegacyRecoveryObserver(null);
-        var inventory:ArrayInventory = record.inventory;
-        var callback:Function = function(changedInventory:Object, key:String):Void {
-            org.flashNight.arki.item.LootContainerService.handleLegacyRecoveryMutation(
-                record, changedInventory);
-        };
-        var removedSubscribed:Boolean = false;
-        var valueSubscribed:Boolean = false;
-        try {
-            removedSubscribed = dispatcher.subscribe("ItemRemoved", callback, null);
-            valueSubscribed = dispatcher.subscribe("ItemValueChanged", callback, null);
-        } catch (subscribeError) {
-            removedSubscribed = false;
-            valueSubscribed = false;
-        }
-        if (!removedSubscribed || !valueSubscribed) {
-            try {
-                if (removedSubscribed) dispatcher.unsubscribe("ItemRemoved", callback, null);
-                if (valueSubscribed) dispatcher.unsubscribe("ItemValueChanged", callback, null);
-            } catch (unsubscribeError) {
-            }
-            return localFailure("legacy_observer_subscribe_failed");
-        }
-        _legacyObserverRecord = record;
-        _legacyObserverDispatcher = dispatcher;
-        _legacyObserverCallback = callback;
-        return {success:true, duplicate:false};
+        return guardAnyGridFixture(target);
     }
 
-    /** 场景卸载是唯一允许非空 recovery 无 UI 接管而过期的生命周期边界。 */
+    /**
+     * 破碎帧专用入口复用同一 shape/authority 栅栏，防止互动 kill 与破碎时间轴
+     * 竞态绕开 reservation/active authority。
+     */
+    public static function guardBreakGridFixture(target:Object):Object {
+        return guardAnyGridFixture(target);
+    }
+
+    /**
+     * 场景卸载只允许安全终止未物化 reservation 或已稳定的 authority。
+     * 已物化 reservation 已持有唯一奖励对象；kill/activate/hold 任一内部失败后
+     * 必须保留 hard fence 供诊断与恢复，不能以 EXPIRED 吞掉奖励。
+     */
     public static function expireScene(reason:String):Object {
         var safeReason:String = isSafeReason(reason) ? reason : "scene_cleanup";
         var record:Object = _active != null ? _active : _reservation;
         var result:Object;
+        if (_reservation != null && _reservation.materialized === true) {
+            _reservation.state = STATE_PENDING;
+            return failureFor(_reservation, "commit_pending");
+        }
         if (record != null && record.transportDetachNeeded === true) {
-            // scene cleanup 不是 renderer/pause handoff 的 causal continuation；transport detach
+            // scene cleanup 不是 panel/pause handoff 的 causal continuation；transport detach
             // 必须只由原 lifecycle 调用或重连 lootQuery 续跑，禁止同栈显示后立刻 EXPIRED。
             return failureFor(record, "commit_pending");
         }
@@ -1485,8 +1170,6 @@ class org.flashNight.arki.item.LootContainerService {
         }
         if (record != null) result = finishTerminal(record, STATE_EXPIRED, safeReason, "");
         else result = {success:true, state:STATE_EXPIRED, reason:safeReason};
-        detachLegacyRecoveryObserver(null);
-        _legacyRecovery = null;
         return result;
     }
 
@@ -1751,11 +1434,8 @@ class org.flashNight.arki.item.LootContainerService {
             record.suspendedFromOpenAttemptSeq = closingAttemptSeq;
             recordAuthorityClosedProof(record, closingAttemptSeq);
             clearCurrentRecoveryProof(record);
-            record.openAttemptWasReopen = false;
             record.reopenBaseSuspendedAttemptSeq = 0;
-            record.reopenAttemptSeq = 0;
             record.acceptedOpenAttemptSeq = 0;
-            record.transportDetachResumeSuspended = false;
             record.transportDetachReleasePause = false;
             record.authorityRevision++;
             record.operations[operationKey(operationId)].authorityRevision =
@@ -1776,9 +1456,7 @@ class org.flashNight.arki.item.LootContainerService {
         record.terminalFromOpenAttemptSeq = closingAttemptSeq;
         recordAuthorityClosedProof(record, closingAttemptSeq);
         clearCurrentRecoveryProof(record);
-        record.openAttemptWasReopen = false;
         record.reopenBaseSuspendedAttemptSeq = 0;
-        record.reopenAttemptSeq = 0;
         record.acceptedOpenAttemptSeq = 0;
         var response:Object = finishTerminal(record, terminalState, terminalReason, operationId);
         if (response == null || response.success !== true) {
@@ -1797,8 +1475,8 @@ class org.flashNight.arki.item.LootContainerService {
             return executeRecoveryProofQuery(record, params);
         }
         if (record.transportDetachNeeded === true) {
-            // connected/socket recovery 只能由 exact 9 键 proof 续跑。保留旧的
-            // attempt=0 内部 transport 测试路径，但普通 triple query 不再是 handoff proof。
+            // connected/socket recovery 只能由 exact 9 键 proof 续跑。attempt=0 仅供
+            // 内部 transport 测试，普通 triple query 不再是 handoff proof。
             if (Number(record.recoveryPendingOpenAttemptSeq) > 0
                     || Number(record.socketDetachObservedOpenAttemptSeq) > 0) {
                 return failureFor(record, "commit_pending");
@@ -1834,6 +1512,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (record.postCommitEffects != null) {
             if (!retryPostCommitEffects(record)) return failureFor(record, "commit_pending");
         }
+        if (record.state == STATE_PENDING) return failureFor(record, "commit_pending");
         return buildQueryProjection(record);
     }
 
@@ -1850,14 +1529,13 @@ class org.flashNight.arki.item.LootContainerService {
                 == attemptSeq && record.recoveryPendingNonce === nonce;
         var exactSocketObserved:Boolean = Number(record.socketDetachObservedOpenAttemptSeq)
             == attemptSeq;
-        // 授权检查必须先于任何 journal/renderer/pause 变更。错 attempt/nonce
+        // 授权检查必须先于任何 journal/authority/pause 变更。错 attempt/nonce
         // 即使当前有 transport fence，也不得误 settle。
         if (!exactConnectedPending && !exactSocketObserved) {
             var exactConnectedApplied:Boolean = hasExactConnectedAppliedProof(
                 record, attemptSeq, nonce);
             if (Number(record.recoveryPendingOpenAttemptSeq) == attemptSeq
-                    || ((Number(record.recoveryAppliedOpenAttemptSeq) == attemptSeq
-                            || hasConnectedProofForAttempt(record, attemptSeq))
+                    || (hasConnectedProofForAttempt(record, attemptSeq)
                         && !exactConnectedApplied)) {
                 return recoveryProofFailureFor(record, "recovery_nonce_mismatch");
             }
@@ -1902,6 +1580,10 @@ class org.flashNight.arki.item.LootContainerService {
             record, attemptSeq, nonce);
         var exactSocket:Boolean = hasSocketAppliedProof(record, attemptSeq);
         var authorityClosed:Boolean = entry != null && entry.authorityClosed === true;
+        // 同一 attempt 已绑定 connected nonce 后，authorityClosed 不得把错 nonce
+        // 提升成成功 proof；纯 close/socket proof 没有 connected nonce，仍按原规则投影。
+        if (entry != null && entry.connectedApplied === true
+                && !exactConnected && !exactSocket) return false;
         if (record.state == STATE_SUSPENDED) {
             if (Number(record.socketDetachObservedOpenAttemptSeq) == attemptSeq
                     && !exactSocket) return false;
@@ -1912,14 +1594,8 @@ class org.flashNight.arki.item.LootContainerService {
             return Number(record.terminalFromOpenAttemptSeq) == attemptSeq
                 || exactConnected || exactSocket || authorityClosed;
         }
-        // ACTIVE 成功投影只能是同 attempt 已完成的 legacy handoff。
-        // 旧 proof 绝不能拿新 attempt 的 Web ACTIVE 当成恢复证明。
-        return record.state == STATE_ACTIVE
-            && Number(record.openAttemptSeq) == attemptSeq
-            && record.legacyRecovery === true
-            && record.legacyRendererConfirmed === true
-            && _root._webPanelPauseLease == undefined
-            && (exactConnected || exactSocket);
+        // recovery proof 只允许投影已关闭的 authority；ACTIVE 永远不是恢复成功。
+        return false;
     }
 
     private static function buildQueryProjection(record:Object):Object {
@@ -1940,7 +1616,8 @@ class org.flashNight.arki.item.LootContainerService {
         var checked:Object = validateAnyIdentity(params);
         if (!checked.success) return checked;
         if (checked.record.state != STATE_ACTIVE) {
-            var errorCode:String = checked.record.pendingCommit != null
+            var errorCode:String = checked.record.state == STATE_PENDING
+                    || checked.record.pendingCommit != null
                     || checked.record.postCommitEffects != null
                     || checked.record.transportDetachNeeded === true
                 ? "commit_pending" : "terminal_state";
@@ -2266,7 +1943,6 @@ class org.flashNight.arki.item.LootContainerService {
         // 待 LootPanelCoordinator 收齐关闭证明后经 webPanelUnpause 释放；否则游戏会
         // 在旧面板仍可见或仍可回调时提前恢复。reopen failure 等无可见面板路径已在
         // 各自调用 finishTerminal 前完成其 mandatory pause-release stage。
-        detachLegacyRecoveryObserver(record);
         releaseSuspendedAnchor(record);
         releaseHeldTargetTimeline(record);
         record.state = terminalState;
@@ -2301,75 +1977,16 @@ class org.flashNight.arki.item.LootContainerService {
             remainingCount:remainingCount(record),
             operations:record.operations,
             openAttemptSeq:record.openAttemptSeq,
-            openAttemptWasReopen:record.openAttemptWasReopen,
             suspendedFromOpenAttemptSeq:record.suspendedFromOpenAttemptSeq,
             terminalFromOpenAttemptSeq:record.terminalFromOpenAttemptSeq,
-            recoveryAppliedOpenAttemptSeq:record.recoveryAppliedOpenAttemptSeq,
-            recoveryAppliedNonce:record.recoveryAppliedNonce,
             socketDetachObservedOpenAttemptSeq:record.socketDetachObservedOpenAttemptSeq,
-            socketDetachAppliedOpenAttemptSeq:record.socketDetachAppliedOpenAttemptSeq,
             completedRecoveryProofs:record.completedRecoveryProofs,
             completedRecoveryProofOrder:record.completedRecoveryProofOrder
         };
         storeTombstone(tombstone);
         if (_active === record) _active = null;
         if (_reservation === record) _reservation = null;
-        if (_legacyRecovery === record) _legacyRecovery = null;
         return recordResponse(tombstone, true, "");
-    }
-
-    private static function handleLegacyRecoveryMutation(record:Object,
-                                                         changedInventory:Object):Void {
-        if (_legacyRecovery !== record || record == null
-                || record.inventory !== changedInventory) return;
-        // ArrayInventory.remove 先发布事件、后维护 occupiedCount；强制索引校验会按已删除的
-        // items 重建计数，使 completeLegacyRecoveryIfEmpty 在同一事件栈读取到真实空状态。
-        try {
-            record.inventory.getIndexes();
-        } catch (indexError) {
-            return;
-        }
-        completeLegacyRecoveryIfEmpty();
-    }
-
-    private static function detachLegacyRecoveryObserver(record:Object):Void {
-        if (record != null && _legacyObserverRecord !== record) return;
-        var dispatcher:Object = _legacyObserverDispatcher;
-        var callback:Function = _legacyObserverCallback;
-        _legacyObserverRecord = null;
-        _legacyObserverDispatcher = null;
-        _legacyObserverCallback = null;
-        if (dispatcher == null || callback == null) return;
-        try {
-            if (typeof dispatcher.isDestroyed != "function" || !dispatcher.isDestroyed()) {
-                dispatcher.unsubscribe("ItemRemoved", callback, null);
-                dispatcher.unsubscribe("ItemValueChanged", callback, null);
-            }
-        } catch (unsubscribeError) {
-        }
-    }
-
-    private static function moveToLegacyRecovery(record:Object, reason:String):Void {
-        if (record == null || record.inventory == null || isTerminalState(record.state)) return;
-        // reservation 在 kill/open 门期间也使用 LOOT_COMMIT_PENDING，但它没有 claim journal，
-        // 且完整物化失败后必须能交回 same-object legacy UI。只阻止真实领取半提交。
-        if (record.pendingCommit != null || record.postCommitEffects != null
-                || record.transportDetachNeeded === true) return;
-        if ((_active != null && _active !== record)
-                || (_legacyRecovery != null && _legacyRecovery !== record)) return;
-        if (_legacyRecovery === record) return;
-        record.state = STATE_ACTIVE;
-        record.reason = isSafeReason(reason) ? reason : "legacy_fallback";
-        record.legacyRecovery = true;
-        record.reopenAttemptSeq = 0;
-        record.acceptedOpenAttemptSeq = 0;
-        record.transportDetachResumeSuspended = false;
-        record.transportDetachReleasePause = false;
-        record.authorityRevision++;
-        _active = record;
-        if (_reservation === record) _reservation = null;
-        _legacyRecovery = record;
-        invalidateLootLeases();
     }
 
     private static function holdTargetTimeline(record:Object):Boolean {
@@ -2388,8 +2005,7 @@ class org.flashNight.arki.item.LootContainerService {
 
     /** suspend authority 落地前的 exact scene-object anchor 证明。 */
     private static function registerSuspendedAnchor(record:Object):Boolean {
-        if (record == null || record.target == null || record.targetHeld !== true
-                || record.legacyRecovery === true) return false;
+        if (record == null || record.target == null || record.targetHeld !== true) return false;
         if (record.suspendedAnchorRegistered === true) return true;
         var target:Object = record.target;
         var gameworld:Object = _root.gameworld;
@@ -2436,21 +2052,6 @@ class org.flashNight.arki.item.LootContainerService {
         _closeLeaseSeq++;
         return "close." + String(record.chestSessionId) + "."
             + String(record.containerEpoch) + "." + _closeLeaseSeq + "." + getTimer();
-    }
-
-    private static function legacyRendererProjection(record:Object, duplicate:Boolean):Object {
-        return {
-            success:true,
-            duplicate:duplicate,
-            inventory:record.inventory,
-            target:record.target,
-            presetName:record.presetName,
-            row:record.row,
-            col:record.col,
-            chestSessionId:record.chestSessionId,
-            lootContainerId:record.lootContainerId,
-            rendererConfirmed:record.legacyRendererConfirmed === true
-        };
     }
 
     private static function storeTombstone(record:Object):Void {
@@ -2535,7 +2136,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (!(inventory instanceof ArrayInventory)
                 || inventory.capacity != expectedCapacity
                 || !isPositiveWhole(inventory.capacity)
-                || inventory.capacity > 100) return false;
+                || inventory.capacity > MAX_WEB_CAPACITY) return false;
         var indexes:Array = inventory.getIndexes();
         if (!(indexes instanceof Array) || indexes.length > inventory.capacity) return false;
         for (var i:Number = 0; i < indexes.length; i++) {
@@ -2587,36 +2188,6 @@ class org.flashNight.arki.item.LootContainerService {
         }
         seen.pop();
         return true;
-    }
-
-    private static function metadataMatches(record:Object, metadata:Object):Boolean {
-        if (metadata == undefined || metadata == null) return true;
-        if (typeof metadata != "object" || metadata instanceof Array) return false;
-        for (var key:String in metadata) {
-            if (typeof metadata.hasOwnProperty == "function" && !metadata.hasOwnProperty(key)) continue;
-            if (key != "presetName" && key != "displayName" && key != "row"
-                    && key != "col" && key != "chestRolloutId"
-                    && key != "lootFlowProfile" && key != "unlockPolicy") return false;
-        }
-        if (metadata.presetName != undefined && metadata.presetName !== record.presetName) return false;
-        if (metadata.displayName != undefined && metadata.displayName !== record.presetName) return false;
-        if (metadata.row != undefined && Number(metadata.row) != record.row) return false;
-        if (metadata.col != undefined && Number(metadata.col) != record.col) return false;
-        if (metadata.chestRolloutId != undefined && metadata.chestRolloutId !== record.rolloutId) return false;
-        if (metadata.lootFlowProfile != undefined
-                && metadata.lootFlowProfile !== record.rolloutProfile) return false;
-        if (metadata.unlockPolicy != undefined
-                && metadata.unlockPolicy !== record.unlockPolicy) return false;
-        return true;
-    }
-
-    private static function hasExactGridShape(target:Object):Boolean {
-        if (target == null || typeof target.presetName != "string"
-                || !isPositiveWhole(target.row) || !isPositiveWhole(target.col)) return false;
-        if (target.presetName === "保险柜") return target.row === 4 && target.col === 8;
-        if (target.presetName === "生存箱") return target.row === 4 && target.col === 4;
-        if (target.presetName === "装备箱") return target.row === 2 && target.col === 4;
-        return false;
     }
 
     private static function hasOwnField(target:Object, key:String):Boolean {
@@ -2731,9 +2302,9 @@ class org.flashNight.arki.item.LootContainerService {
                 && repeatCount > 0 && repeatCount <= 100 ? repeatCount : 1;
     }
 
-    /** TestLoader 专用：下一次 transport renderer/unpause 证明失败。 */
+    /** TestLoader 专用：下一次 transport unpause 证明失败。 */
     public static function testOnlyFailNextTransportHandoff(stage:String):Void {
-        if (stage != "renderer" && stage != "unpause") return;
+        if (stage != "unpause") return;
         _testTransportHandoffFailureStage = stage;
     }
 
@@ -2745,7 +2316,6 @@ class org.flashNight.arki.item.LootContainerService {
 
     /** TestLoader 专用：隔离静态 authority、lease、tombstone 与 recovery。 */
     public static function testOnlyReset():Void {
-        detachLegacyRecoveryObserver(null);
         releaseSuspendedAnchor(_active);
         releaseHeldTargetTimeline(_active);
         if (_reservation !== _active) releaseHeldTargetTimeline(_reservation);
@@ -2757,10 +2327,8 @@ class org.flashNight.arki.item.LootContainerService {
         _leaseSeq = 0;
         _closeLeaseSeq = 0;
         _snapshotSeq = 0;
-        _legacyClaimSeq = 0;
         _reservation = null;
         _active = null;
-        _legacyRecovery = null;
         _testPostCommitFailureStage = "";
         _testPostCommitFailureRemaining = 0;
         _testTransportHandoffFailureStage = "";
