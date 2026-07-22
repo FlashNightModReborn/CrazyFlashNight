@@ -731,7 +731,7 @@ namespace CF7Launcher.Guardian
         private bool DoOpen(string name, string initDataJson, string reservedPanelInstanceId,
             bool requireTrackedDelivery, Action trackedWebPostAccepted)
         {
-            // S0 tracked open promises that the game is already under the global webpanel lease
+            // Loot tracked open promises that the game is already under the global webpanel lease
             // before any native/Web visual side effect.  A socket write failure is therefore a
             // known pre-open failure, never an OpenPosted outcome.
             if (requireTrackedDelivery)

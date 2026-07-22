@@ -1,6 +1,6 @@
 # 游戏系统索引
 
-**文档角色**：游戏系统 canonical 索引。**最后核对代码基线**：当前工作树基于 commit `54fd4c1f2f36ef6cd95aefe8bb8496c8f3e17f89`（2026-07-22），地图箱最终收敛仍在验证；历史 candidate/promotion 不能代表当前 tree。
+**文档角色**：游戏系统 canonical 索引。**最后核对系统边界**：2026-07-22。本文只维护稳定设计与入口索引；变动中的 candidate、promotion、测试计数和真人结论归对应实施基线或冻结发布记录，历史证据不能代表当前 tree。
 
 ---
 
@@ -135,8 +135,8 @@
 
 - **唯一产品路径**：六类地图箱由 `BoxInteractionArbiter` 做领域准入；所有合法正整数 `row/col` 只进入 `LootContainerService` 与 Web loot panel。生产 XML/runtime 不使用 rollout marker，Flash renderer、claim-only adapter、observer recovery 与 S0 平行编排均不属于当前路径。
 - **中央裁决**：每个 world 只有一个箱体互动监听，一次输入按 `(dx²+dz², registrationOrder)` 选择至多一个箱。六 preset 白名单只防止投影召唤器等非箱元件被 `row/col` 劫持，不是地图或尺寸白名单；已识别箱注册失败必须整体 initialize 回滚，不能降级到逐 target legacy listener。
-- **网格选择**：`LootContainerService.classifyMapChestShape()` 接受 `1×1`，并以 `col<=8 && row*col<=64` 作为 Web 能力上限。畸形或超界正网格 fail-closed：不 kill、不滚奖、不显示 Flash UI。任一非正的 direct 箱继续地面掉落；攻击破碎也保持地面掉落语义，不打开 Web。
-- **破碎时间轴**：六类 canonical linkage 都必须有统一开启回调；所有可攻击且有“破碎”标签的箱必须在该标签帧调用统一破碎脚本。已存在 reservation/active/suspended authority 时，break guard 阻止重复发奖。
+- **网格选择**：`LootContainerService.classifyMapChestShape()` 接受 `1×1`，并以 `col<=8 && row*col<=64` 作为 Web 能力上限。畸形或超界正网格 fail-closed：不 kill、不滚奖、不显示 Flash UI。只有精确 `0×0` 的 direct 箱继续地面掉落；负数、单边为零、混合或缺字段全部 fail-closed。攻击破碎保持地面掉落语义，不打开 Web。
+- **破碎时间轴**：六类 canonical linkage 都必须有统一开启回调；所有可攻击且有“破碎”标签的箱必须在该标签帧调用统一破碎脚本。已存在 reservation/active/suspended authority 时，break guard 阻止重复发奖；没有 authority 的破碎与精确 `0×0` 直投也必须先通过 Web 物化器共用的完整掉落规则校验，坏配置只 trace 并停止。
 - **AS2 权威**：`LOOT_COMMIT_PENDING` 先完整预检并一次物化到真实 `ArrayInventory`，再提交 own-kill/opening frame；`chestSessionId ↔ lootContainerId ↔ inventory` 一对一。只允许 loot→玩家，特殊资产先完整预检再事务提交。
 - **幂等与未知结果**：claim/close 使用 operation id、authority revision、slot/close lease 与 exact binding。未知写不得重放，只能 query；成功和容量零写都需精确状态证明，错误名本身不是证明。
 - **状态收束**：空箱为 `CONSUMED`；非空 X/Esc/backdrop 为 `LOOT_SUSPENDED`；只有二次确认的“放弃剩余”进入 `ABANDONED`；anchor/场景失效进入 `EXPIRED`。同场景同 anchor 可重开同一 inventory，v1 不跨游戏进程持久化瞬态 loot。

@@ -119,14 +119,23 @@ function Get-DirectChildText($Node, [string]$Name) {
     return $children[0].InnerText.Trim()
 }
 
-function Test-PositiveWholeText([string]$Text) {
+function Test-PositiveWholeText([string]$Text, [long]$Maximum = [long]::MaxValue) {
     if ([string]::IsNullOrWhiteSpace($Text)) { return $false }
-    $value = 0
-    return [int]::TryParse($Text, [ref]$value) -and $value -gt 0
+    [long]$value = 0
+    return [long]::TryParse($Text, [ref]$value) -and
+        $value -gt 0 -and $value -le $Maximum
 }
 
-function Get-WebGridCapability([string]$LootServicePath, $ErrorList) {
-    $result = [ordered]@{ maxColumns = 0; maxCapacity = 0 }
+function Get-WebGridCapability([string]$LootServicePath,
+                               [string]$MaterializationPlannerPath,
+                               $ErrorList) {
+    $result = [ordered]@{
+        maxColumns = 0
+        maxCapacity = 0
+        materializationMaxCapacity = 0
+        maxSafeInteger = 0
+        maxRandomSpan = 0
+    }
     if (-not (Test-Path -LiteralPath $LootServicePath -PathType Leaf)) {
         Add-AuditError $ErrorList "preset-shape" "LootContainerService 真源不存在: $LootServicePath"
         return [pscustomobject]$result
@@ -148,6 +157,48 @@ function Get-WebGridCapability([string]$LootServicePath, $ErrorList) {
         if ($value -le 0) {
             Add-AuditError $ErrorList "preset-shape" (
                 "LootContainerService.$($entry.name) 必须大于 0；actual=$value")
+            continue
+        }
+        $result[$entry.property] = $value
+    }
+
+    if (-not (Test-Path -LiteralPath $MaterializationPlannerPath -PathType Leaf)) {
+        Add-AuditError $ErrorList "capacity-contract" `
+            "LootMaterializationPlanner 真源不存在: $MaterializationPlannerPath"
+        return [pscustomobject]$result
+    }
+    $plannerSource = Get-Content -LiteralPath $MaterializationPlannerPath -Raw -Encoding UTF8
+    $plannerCapacityMatches = [regex]::Matches(
+        $plannerSource,
+        '(?m)^\s*private\s+static\s+var\s+MAX_CAPACITY:Number\s*=\s*(?<value>[0-9]+)\s*;')
+    if ($plannerCapacityMatches.Count -ne 1) {
+        Add-AuditError $ErrorList "capacity-contract" (
+            "LootMaterializationPlanner.MAX_CAPACITY 必须恰有一个正整数定义；actual=$($plannerCapacityMatches.Count)")
+        return [pscustomobject]$result
+    }
+    $result.materializationMaxCapacity = [int]$plannerCapacityMatches[0].Groups["value"].Value
+    if ($result.materializationMaxCapacity -le 0) {
+        Add-AuditError $ErrorList "capacity-contract" (
+            "LootMaterializationPlanner.MAX_CAPACITY 必须大于 0；actual=$($result.materializationMaxCapacity)")
+    } elseif ($result.maxCapacity -gt 0 -and
+            $result.materializationMaxCapacity -ne $result.maxCapacity) {
+        Add-AuditError $ErrorList "capacity-contract" (
+            "Web 容器容量与物化容量不一致；service=$($result.maxCapacity), planner=$($result.materializationMaxCapacity)")
+    }
+    foreach ($entry in @(
+        @{ name = "MAX_SAFE_INTEGER"; property = "maxSafeInteger" },
+        @{ name = "MAX_RANDOM_SPAN"; property = "maxRandomSpan" }
+    )) {
+        $matches = [regex]::Matches(
+            $plannerSource,
+            ('(?m)^\s*private\s+static\s+var\s+' + $entry.name +
+                ':Number\s*=\s*(?<value>[0-9]+)\s*;'))
+        [long]$value = 0
+        if ($matches.Count -ne 1 -or
+                -not [long]::TryParse($matches[0].Groups["value"].Value, [ref]$value) -or
+                $value -le 0) {
+            Add-AuditError $ErrorList "quantity-contract" (
+                "LootMaterializationPlanner.$($entry.name) 必须恰有一个 Int64 范围内的正整数定义；actual=$($matches.Count)")
             continue
         }
         $result[$entry.property] = $value
@@ -191,8 +242,10 @@ function Get-PresetShapeMap([string]$PresetManagerPath, [string[]]$Types,
             [System.Globalization.CultureInfo]::InvariantCulture)
         $delivery = if ($row -ne [Math]::Floor($row) -or $col -ne [Math]::Floor($col)) {
             "unsupported"
-        } elseif ($row -le 0 -or $col -le 0) {
+        } elseif ($row -eq 0 -and $col -eq 0) {
             "direct"
+        } elseif ($row -le 0 -or $col -le 0) {
+            "unsupported"
         } elseif ($col -le $MaxColumns -and $row * $col -le $MaxCapacity) {
             "grid"
         } else {
@@ -301,11 +354,12 @@ function Get-DropRuleVariants($DropRule) {
     }
 }
 
-function Get-GridDropAudit($ParametersNode, [int]$Capacity) {
+function Get-ChestDropAudit($ParametersNode, [int]$Capacity,
+                            [long]$MaxSafeInteger, [long]$MaxRandomSpan) {
     $messages = New-Object System.Collections.Generic.List[string]
     $dropRules = @(if ($ParametersNode) { $ParametersNode.SelectNodes("./掉落物") })
     if ($dropRules.Count -lt 1) {
-        $messages.Add("网格箱必须至少有一条掉落物")
+        $messages.Add("地图箱必须至少有一条掉落物")
     }
     if ($Capacity -gt 0 -and $dropRules.Count -gt $Capacity) {
         $messages.Add("掉落物规则数 $($dropRules.Count) 超过容器容量 $Capacity")
@@ -337,17 +391,21 @@ function Get-GridDropAudit($ParametersNode, [int]$Capacity) {
             } elseif ($script:itemCatalogEnabled -and -not $script:itemNames.Contains($dropName)) {
                 $messages.Add("[$modeLabel] '$dropName' 不在 data/items/list.xml 权威物品目录")
             }
+            [long]$effectiveMin = 1
             if ($minNodes.Count -gt 1 -or $maxNodes.Count -gt 1) {
                 $messages.Add("[$modeLabel] '$dropName' 的最小/最大数量不得重复")
-            }
-            $effectiveMin = 1
-            if ($minNodes.Count -eq 1 -and $maxNodes.Count -eq 1) {
-                if (-not (Test-PositiveWholeText $minText) -or -not (Test-PositiveWholeText $maxText)) {
-                    $messages.Add("[$modeLabel] '$dropName' 的显式最小/最大数量必须为正整数")
-                } elseif ([int]$minText -gt [int]$maxText) {
+            } elseif (($minNodes.Count -eq 0) -ne ($maxNodes.Count -eq 0)) {
+                $messages.Add("[$modeLabel] '$dropName' 的最小/最大数量必须同时缺省或同时提供")
+            } elseif ($minNodes.Count -eq 1 -and $maxNodes.Count -eq 1) {
+                if (-not (Test-PositiveWholeText $minText $MaxSafeInteger) -or
+                        -not (Test-PositiveWholeText $maxText $MaxSafeInteger)) {
+                    $messages.Add("[$modeLabel] '$dropName' 的显式最小/最大数量必须为正整数且不超过 $MaxSafeInteger")
+                } elseif ([long]$minText -gt [long]$maxText) {
                     $messages.Add("[$modeLabel] '$dropName' 最小数量大于最大数量")
+                } elseif (([long]$maxText - [long]$minText + 1) -gt $MaxRandomSpan) {
+                    $messages.Add("[$modeLabel] '$dropName' 的数量随机跨度不得超过 $MaxRandomSpan")
                 } else {
-                    $effectiveMin = [int]$minText
+                    $effectiveMin = [long]$minText
                 }
             }
             if ($probabilityNodes.Count -gt 1 -or
@@ -357,9 +415,9 @@ function Get-GridDropAudit($ParametersNode, [int]$Capacity) {
             }
             if ($totalNodes.Count -gt 1 -or
                     ($totalNodes.Count -eq 1 -and
-                        (-not (Test-PositiveWholeText $totalText) -or
-                            ((Test-PositiveWholeText $totalText) -and
-                                [int]$totalText -lt $effectiveMin)))) {
+                        (-not (Test-PositiveWholeText $totalText $MaxSafeInteger) -or
+                            ((Test-PositiveWholeText $totalText $MaxSafeInteger) -and
+                                [long]$totalText -lt $effectiveMin)))) {
                 $messages.Add("[$modeLabel] '$dropName' 的总数必须为不小于最小数量的正整数")
             }
         }
@@ -389,7 +447,10 @@ $presetManagerPath = Join-Path $projectRoot `
     "scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\ElementComponent\PresetManager.as"
 $lootServicePath = Join-Path $projectRoot `
     "scripts\类定义\org\flashNight\arki\item\LootContainerService.as"
-$webGridCapability = Get-WebGridCapability $lootServicePath $errors
+$materializationPlannerPath = Join-Path $projectRoot `
+    "scripts\类定义\org\flashNight\arki\item\LootMaterializationPlanner.as"
+$webGridCapability = Get-WebGridCapability $lootServicePath `
+    $materializationPlannerPath $errors
 $presetShapes = Get-PresetShapeMap $presetManagerPath $chestTypes `
     $webGridCapability.maxColumns $webGridCapability.maxCapacity $errors
 $gridTypes = @($chestTypes | Where-Object {
@@ -521,14 +582,17 @@ foreach ($file in $stageFiles) {
                 $colOverrideNodes = @(if ($parametersNode) { $parametersNode.SelectNodes("./col") })
                 $hasAnyRolloutField = $rolloutIdNodes.Count -gt 0 -or $profileNodes.Count -gt 0 -or $policyNodes.Count -gt 0
                 $hasShapeOverride = $rowOverrideNodes.Count -gt 0 -or $colOverrideNodes.Count -gt 0
-                $gridAudit = $null
-                if ($gridTypes -contains $identifier) {
-                    $presetShape = $presetShapes[$identifier]
-                    $presetCapacity = [int]($presetShape.row * $presetShape.col)
-                    $gridAudit = Get-GridDropAudit $parametersNode $presetCapacity
-                    foreach ($message in $gridAudit.errors) {
-                        Add-AuditError $errors "grid" "$logicalKey ($identifier): $message" $relativeFile
-                    }
+                $presetShape = $presetShapes[$identifier]
+                $presetCapacity = if ($gridTypes -contains $identifier) {
+                    [int]($presetShape.row * $presetShape.col)
+                } else {
+                    0
+                }
+                $dropAudit = Get-ChestDropAudit $parametersNode $presetCapacity `
+                    $webGridCapability.maxSafeInteger $webGridCapability.maxRandomSpan
+                $dropErrorKind = if ($gridTypes -contains $identifier) { "grid" } else { "direct" }
+                foreach ($message in $dropAudit.errors) {
+                    Add-AuditError $errors $dropErrorKind "$logicalKey ($identifier): $message" $relativeFile
                 }
 
                 if ($hasAnyRolloutField) {

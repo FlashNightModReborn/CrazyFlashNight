@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5644 unique assets -->
+  <!-- 5646 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -5539,6 +5539,7 @@
   <asset id="货架A" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="货架/货架A/货架A" />
   <asset id="购买物品界面" swf="flashswf/UI/物品与技能相关界面.swf" symbolName="新版商店界面" />
   <asset id="贯空天盖上衣披风" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="防具/贯空天盖/男变装成果/贯空天盖上衣披风" />
+  <asset id="资源箱" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="箱子素材/资源箱/资源箱" />
   <asset id="资源箱界面" swf="flashswf/UI/物品与技能相关界面.swf" />
   <asset id="赤橙增幅" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/00.增幅系列/赤橙增幅/赤橙增幅" />
   <asset id="赤橙强击" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/赤橙强击/赤橙强击" />
@@ -5594,6 +5595,7 @@
   <asset id="阴影所用1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/特战队员套装/图标/阴影所用1" />
   <asset id="阿修罗闪空" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="陨星坠地" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/10.力大砖飞/陨星坠地/陨星坠地" />
+  <asset id="隐藏资源点" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="箱子素材/隐藏资源点" />
   <asset id="集束连环爆炸" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/集束连环爆炸文件/集束连环爆炸" />
   <asset id="雾人整合特效" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="0.总元件-雾人整合特效" />
   <asset id="雾人调整装备" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="0.总元件-雾人调整装备" />
@@ -5651,7 +5653,7 @@
   <asset id="￧�ￍ￭￺垿￧ﾷ￹￨ﾈﾟ￦ﾗﾠ￤ﾺﾺ￦ﾜﾺ" swf="flashswf/arts/new/收割者无人机.swf" symbolName="sprite 96 (￧�ￍ￭￺垿￧ﾷ￹￨﾿ﾟ￦ﾗﾠ￤ﾺﾺ￦ﾜﾺ)" />
   <asset id="￯﾿ﾪ-￩ﾕ﾿￦ﾞﾪ-AK47" swf="flashswf/arts/new/fs配置素材.swf" symbolName="未命名文件夹 1/未命名文件夹 1/重复项目文件夹/sprite 4226 (￯﾿ﾪ-￩ﾕ﾿￦ﾞﾪ-AK47)" />
 
-  <!-- 18 DUPLICATES: same ID, same SWF, multiple symbolNames -->
+  <!-- 16 DUPLICATES: same ID, same SWF, multiple symbolNames -->
   <duplicate id="npc">
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/npc" orphan="true" />
     <source swf="flashswf/levels/基地场景合集.swf" symbolName="sprite/Symbol 2364" />
@@ -5704,10 +5706,6 @@
     <source swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-持续组/血滴落" orphan="true" />
     <source swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-持续组/血滴落/血滴落" />
   </duplicate>
-  <duplicate id="资源箱">
-    <source swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="箱子素材/资源箱/资源箱" />
-    <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
-  </duplicate>
   <duplicate id="跳动的火焰">
     <source swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="杂项/跳动的火焰" />
     <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
@@ -5718,10 +5716,6 @@
   </duplicate>
   <duplicate id="闪烁的灯光">
     <source swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="杂项/闪烁的灯光" />
-    <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
-  </duplicate>
-  <duplicate id="隐藏资源点">
-    <source swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="箱子素材/隐藏资源点" />
     <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
   </duplicate>
 

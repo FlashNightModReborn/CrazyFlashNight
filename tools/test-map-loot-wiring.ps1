@@ -64,6 +64,7 @@ function Assert-Count([string]$Text, [string]$Needle, [int]$Expected, [string]$L
 $interaction = Read-Utf8 "scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\ElementComponent\InteractionHandler.as"
 $arbiter = Read-Utf8 "scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\ElementComponent\BoxInteractionArbiter.as"
 $service = Read-Utf8 "scripts\类定义\org\flashNight\arki\item\LootContainerService.as"
+$planner = Read-Utf8 "scripts\类定义\org\flashNight\arki\item\LootMaterializationPlanner.as"
 $map = Read-Utf8 "scripts\逻辑\关卡系统\关卡系统_lsy_地图元件.as"
 $callback = Read-Utf8 "scripts\逻辑\关卡系统\关卡系统_lsy_资源箱回调.as"
 $scene = Read-Utf8 "scripts\类定义\org\flashNight\arki\scene\SceneManager.as"
@@ -72,6 +73,9 @@ $restartCleanup = Read-Utf8 "scripts\通信\通信_fs_帧计时器.as"
 $server = Read-Utf8 "scripts\类定义\org\flashNight\neur\Server\ServerManager.as"
 $ui = Read-Utf8 "scripts\展现\UI交互\UI交互_lsy_UI管理.as"
 $install = Read-Utf8 "scripts\逻辑系统分区\物品系统_WebView.as"
+$taskRegistry = Read-Utf8 "launcher\src\Bus\TaskRegistry.cs"
+$launcherRouter = Read-Utf8 "launcher\src\Guardian\LauncherCommandRouter.cs"
+$lootTask = Read-Utf8 "launcher\src\Tasks\LootTask.cs"
 
 # 只锁跨文件因果，不锁 service 私有实现快照。
 Assert-Ordered $interaction @(
@@ -109,10 +113,35 @@ Assert-Ordered $service @(
     "BoxInteractionArbiter.isBoxPreset(",
     "if (!knownBox) return SHAPE_NOT_WEB_LOOT_GRID",
     "!isWhole(target.row) || !isWhole(target.col)",
-    "if (rows <= 0 || columns <= 0) return SHAPE_DIRECT_DELIVERY",
+    "if (rows == 0 && columns == 0) return SHAPE_DIRECT_DELIVERY",
+    "if (rows <= 0 || columns <= 0) return SHAPE_UNSUPPORTED_GRID",
     "columns <= MAX_WEB_COLUMNS && capacity <= MAX_WEB_CAPACITY",
     "return SHAPE_UNSUPPORTED_GRID"
 ) "six-box admission precedes the single strict shape classifier"
+$serviceCapacity = [regex]::Match(
+    $service,
+    '(?m)^\s*private\s+static\s+var\s+MAX_WEB_CAPACITY:Number\s*=\s*(?<value>[0-9]+)\s*;')
+$plannerCapacity = [regex]::Match(
+    $planner,
+    '(?m)^\s*private\s+static\s+var\s+MAX_CAPACITY:Number\s*=\s*(?<value>[0-9]+)\s*;')
+Assert-True ($serviceCapacity.Success -and $plannerCapacity.Success) (
+    "service/planner capacity constants must remain statically readable")
+Assert-True ([int]$serviceCapacity.Groups["value"].Value -eq
+        [int]$plannerCapacity.Groups["value"].Value) (
+    "service Web capacity and planner materialization capacity must match")
+Assert-Ordered $planner @(
+    'var hasMin:Boolean = hasOwnField(rule, "最小数量")',
+    'var hasMax:Boolean = hasOwnField(rule, "最大数量")',
+    "if (!hasMin && !hasMax)",
+    "return {min:1, max:1, hasMin:false, hasMax:false, paired:true}",
+    "if (!hasMin || !hasMax)",
+    "return {min:NaN, max:NaN, hasMin:hasMin, hasMax:hasMax, paired:false}"
+) "quantity defaults only when both bounds are absent"
+Assert-Regex $planner (
+    'quantity\.paired !== true[\s\S]*?' +
+    'typeof rule\.最小数量 != "number"[\s\S]*?' +
+    'typeof rule\.最大数量 != "number"'
+) "explicit quantity bounds require a strict numeric pair"
 foreach ($marker in @("chestRolloutId", "lootFlowProfile", "unlockPolicy")) {
     Assert-NotContains $service $marker "runtime route ignores obsolete rollout markers"
 }
@@ -138,8 +167,12 @@ Assert-Ordered $callback @(
     "LootContainerService.activateReservedOpen(target)",
     "LootContainerService.requestOpenPanel()",
     'lootShape != "direct_delivery"',
+    "LootMaterializationPlanner.validateDropRules(",
+    "if (!directValidation.success)",
     "target.掉落物判定()"
 ) "open frame activates Web authority or takes the explicit direct branch"
+Assert-Count $callback "LootMaterializationPlanner.validateDropRules(" 2 (
+    "direct and break paths share the planner rule validator")
 Assert-NotContains $callback "Number(target.row) > 0" (
     "open callback cannot widen the strict classifier by coercion")
 foreach ($retired in @(
@@ -160,6 +193,8 @@ Assert-True ($breakStart -ge 0) "break callback missing"
 $breakText = $callback.Substring($breakStart)
 Assert-Ordered $breakText @(
     "LootContainerService.guardBreakGrid(target)",
+    "LootMaterializationPlanner.validateDropRules(",
+    "if (!breakValidation.success)",
     "target.掉落物判定()"
 ) "break frame keeps direct-drop semantics behind the authority guard"
 Assert-NotContains $breakText "LootContainerService.activateReservedOpen(target)" (
@@ -272,6 +307,26 @@ Assert-True (-not ($includeHrefs -ccontains "资源箱.xml")) (
     "orphan top-level resource-box symbol entered the publish closure")
 Assert-True (-not ($includeHrefs -ccontains "隐藏资源点.xml")) (
     "orphan top-level hidden-resource symbol entered the publish closure")
+$retiredMapChestSymbols = @(
+    "资源箱.xml",
+    "隐藏资源点.xml",
+    "箱子素材/资源箱本体素材.xml",
+    "资源箱碎片1.xml",
+    "资源箱碎片2.xml",
+    "资源箱碎片3.xml",
+    "资源箱碎片4.xml",
+    "资源箱碎片5.xml",
+    "资源箱碎片6.xml",
+    "资源箱碎片7.xml",
+    "资源箱碎片8.xml",
+    "资源箱碎片9.xml",
+    "资源箱碎片10.xml"
+)
+foreach ($retiredSymbol in $retiredMapChestSymbols) {
+    Assert-True (-not (Test-Path -LiteralPath (
+        Join-Path $mapXflLibraryRoot ($retiredSymbol -replace '/', '\')))) (
+        "retired orphan map-chest symbol must stay deleted: " + $retiredSymbol)
+}
 foreach ($retired in @(
     "掉落物转换为物品栏",
     "创建资源箱图标",
@@ -361,6 +416,33 @@ Assert-Ordered $ui @(
     "PauseManager.releaseLease"
 ) "generic unpause cannot cross an unresolved loot handoff"
 Assert-Contains $install "LootContainerService.install()" "loot command install"
+
+# Flash 只能从 panel_request 专用分支进入 loot coordinator；通用 panel router 明确拒绝。
+Assert-Regex $taskRegistry (
+    'if\s*\(panel == "loot"\)[\s\S]*?' +
+    'return\s+lootPanelCoordinator\.HandlePanelRequest\(request\);'
+) "TaskRegistry owns the only Flash loot ingress"
+Assert-Count $taskRegistry "lootPanelCoordinator.HandlePanelRequest(request)" 1 (
+    "TaskRegistry has one dedicated loot coordinator call")
+$launcherSourceCorpus = @(
+    Get-ChildItem -LiteralPath (Join-Path $ProjectRoot "launcher\src") `
+        -Recurse -File -Filter "*.cs" |
+        ForEach-Object { [IO.File]::ReadAllText($_.FullName, [Text.Encoding]::UTF8) }
+) -join [Environment]::NewLine
+Assert-Count $launcherSourceCorpus ".HandlePanelRequest(" 1 (
+    "launcher source has exactly one loot panel request caller")
+Assert-Contains $launcherRouter "dedicated_panel_request_required" (
+    "generic panel router rejects loot ingress")
+foreach ($retiredGenericLootIngress in @(
+    "_lootPanelCoordinator",
+    "SetLootPanelCoordinator",
+    "HandlePanelRequest(request)"
+)) {
+    Assert-NotContains $launcherRouter $retiredGenericLootIngress (
+        "generic panel router cannot retain a loot coordinator path")
+}
+Assert-NotContains $lootTask "HandleWebRequestForRouter" (
+    "LootTask has no generic-router adapter")
 
 # 全 production AS2 与 stage corpus 的不可回退门。
 $productionLootAsFiles = @(

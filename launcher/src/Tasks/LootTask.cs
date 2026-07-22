@@ -449,12 +449,6 @@ namespace CF7Launcher.Tasks
                 HandleSendFailure(entry.FlashCallId);
         }
 
-        public string HandleWebRequestForRouter(JObject parsed)
-        {
-            HandleWebRequest(parsed);
-            return null;
-        }
-
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             int fid;

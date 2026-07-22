@@ -81,6 +81,17 @@ data/intelligence_h5/         → 按情报名称存放的 H5 JSON 组件树正�
 data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一个文件）
 ```
 
+### 关卡地图资源箱声明
+
+`data/stages/**/*.xml` 中六类地图箱（保险柜、生存箱、装备箱、资源箱、纸箱、隐藏资源点）的 `row/col` 是行为契约，不是宽松展示参数：
+
+- `row > 0 && col > 0` 表达 Web 战利品意图；当前能力上限为 `col <= 8 && row * col <= 64`，超界或非整数 fail-closed。
+- 只有精确 `row == 0 && col == 0` 表达直接地面掉落。负数、单边为零、正负混合、只缺一维或显式坏值都是配置错误，禁止静默降级为直投。
+- 掉落规则的 `最小数量/最大数量` 必须同时省略或同时给出。两者同时省略时按明确默认 `1/1`；只缺一端、不可解析、非正、非整数、倒置或超出安全跨度均 fail-closed。该契约由 Web 物化、精确 `0×0` 直投和攻击破碎共用同一个运行时校验器，静态审计覆盖全部六类箱声明。
+- 攻击破碎是独立玩法语义：在尚未建立 Web authority 时直接地面掉落；已 reservation/active/suspended/pending 的箱必须先由统一 break guard 截住，不能重复发奖。
+
+改动关卡箱声明后运行 `tools/test-audit-stage-chests.ps1`；改箱体 XFL/回调时再追加 `tools/test-map-loot-wiring.ps1` 与对应独立 XFL 发布验证。完整权威、状态机与人工代表场见 [地图资源箱实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md)。
+
 ### NPC 商店 `npc-shop.v2`
 
 `data/shops/list.xml` 中每个 `<shops>` 指向一个独立 NPC JSON。运行时加载器把 v2 文档归一化回 `_root.shops[shopId] = catalog`，因此旧 NPC 对目录对象的引用与 `catalogIndex` 协议身份不变；展示配置进入 `_root.shopLayouts[shopId]`。

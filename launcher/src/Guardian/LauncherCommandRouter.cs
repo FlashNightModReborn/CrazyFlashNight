@@ -38,7 +38,6 @@ namespace CF7Launcher.Guardian
         private static long _fallbackPanelInstanceSequence;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
-        private LootPanelCoordinator _lootPanelCoordinator;
         private Func<string, bool> _gameCommandSenderOverride;
         private readonly object _skillOpenLock = new object();
         private System.Threading.Timer _skillOpenTimer;
@@ -73,10 +72,6 @@ namespace CF7Launcher.Guardian
         public void SetPanelHost(PanelHostController host) { _panelHost = host; }
         public void SetSkillTask(SkillTask task) { _skillTask = task; }
         public void SetEquipmentTuningTask(EquipmentTuningTask task) { _equipmentTuningTask = task; }
-        public void SetLootPanelCoordinator(LootPanelCoordinator coordinator)
-        {
-            _lootPanelCoordinator = coordinator;
-        }
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
         internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
         internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
@@ -279,6 +274,7 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
         /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile/view 枚举；npcshop 只接收 shopId；其他 panel 保持各自显式分支或 unsupported。
+        /// loot 不经过此通用路由；其唯一 Flash ingress 是 TaskRegistry 的 panel_request 专用分支。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
@@ -325,25 +321,7 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "loot", StringComparison.OrdinalIgnoreCase))
             {
-                if (_lootPanelCoordinator == null)
-                {
-                    LogManager.Log("event=loot_panel_open_rejected reason=coordinator_unavailable");
-                    return;
-                }
-                JObject init;
-                try { init = JObject.Parse(initDataExtrasJson ?? "{}"); }
-                catch
-                {
-                    LogManager.Log("event=loot_panel_open_rejected reason=invalid_init_data");
-                    return;
-                }
-                JObject request = new JObject
-                {
-                    ["panel"] = "loot",
-                    ["source"] = safeSource,
-                    ["initData"] = init
-                };
-                _lootPanelCoordinator.HandlePanelRequest(request);
+                LogManager.Log("event=loot_panel_open_rejected reason=dedicated_panel_request_required");
                 return;
             }
             if (string.Equals(panelName, "workbench", StringComparison.OrdinalIgnoreCase))

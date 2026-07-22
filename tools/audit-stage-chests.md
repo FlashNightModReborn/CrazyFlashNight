@@ -9,7 +9,7 @@
 - `autoRoutedGridDeclarations`：所有网格箱声明。运行时按正整数 `row/col` 统一进入 Web 战利品链，不再由每箱 rollout marker 决定。
 - `presetShapes` / `shape-override`：前者记录从运行时 preset 真源解析出的六箱 shape 与分类；关卡 `Parameters` 若自行覆盖 `row` / `col` 会使按 preset 的静态全量审计失真，因此当前直接报错。若未来确需逐实例 shape，必须先让审计合并 preset 默认值与 Parameters override，再放宽此门。
 - `obsoleteLootRolloutMarkers`：已停用的 `chestRolloutId` / `lootFlowProfile` / `unlockPolicy`。任何生产声明仍含这些字段都会失败关闭，避免恢复双轨路由。
-- 网格掉落会校验名字存在于 `data/items/list.xml` 权威目录、条件分支可静态求值、概率/总数合法，并要求原始掉落规则数不超过对应 preset 的 `row×col` 容量；否则运行时物化器必然拒绝，必须在静态阶段提前失败。`最小数量` 或 `最大数量` 任一缺省时按旧行为私有归一为 `1/1`，不要求地图 XML 填冗余默认值。
+- 六类地图箱的掉落都会校验名字存在于 `data/items/list.xml` 权威目录、条件分支可静态求值、概率/总数合法；网格箱还要求原始掉落规则数不超过对应 preset 的 `row×col` 容量。`最小数量` 与 `最大数量` 只有同时缺省时才按明确默认 `1/1` 处理；只缺一端、显式坏值或非法区间在 Web、`0×0` 直投与攻击破碎三条路径上都 fail-closed，不能借通用敌人掉落的历史容错掩盖箱体数据错误。
 
 默认运行校验全部语义约束；声明、节点、逻辑身份、难度投影和摇滚公园注释数只作为报告，不构成隐藏的数量白名单。合法增删关卡箱无需同步工具内硬编码计数；解析失败、未建模条件、未知分类、无效掉落、容量越界、shape override 或旧 marker 才返回非零：
 

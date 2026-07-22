@@ -70,6 +70,10 @@ try {
     Assert-Equal $current.payload.obsoleteLootRolloutMarkers.Count 0 "production XML has no obsolete rollout markers"
     Assert-Equal $current.payload.webGridCapability.maxColumns 8 "runtime Web column capability"
     Assert-Equal $current.payload.webGridCapability.maxCapacity 64 "runtime Web capacity capability"
+    Assert-Equal $current.payload.webGridCapability.maxSafeInteger 9007199254740991 (
+        "runtime drop safe-integer capability")
+    Assert-Equal $current.payload.webGridCapability.maxRandomSpan 2147483647 (
+        "runtime random-span capability")
     Assert-Equal $current.payload.presetShapes.装备箱.delivery "grid" "equipment preset runtime shape"
     Assert-Equal $current.payload.presetShapes.保险柜.delivery "grid" "safe preset runtime shape"
     Assert-Equal $current.payload.presetShapes.生存箱.delivery "grid" "survival preset runtime shape"
@@ -103,15 +107,25 @@ try {
           <Case casevalue="true"><Identifier>装备箱</Identifier><Parameters>
             <掉落物><名字>测试装备箱物品</名字><最小数量>1</最小数量><最大数量>1</最大数量></掉落物>
           </Parameters></Case>
-          <Case casevalue="false"><Identifier>资源箱</Identifier></Case>
+          <Case casevalue="false"><Identifier>资源箱</Identifier><Parameters>
+            <掉落物><名字>测试资源</名字></掉落物>
+          </Parameters></Case>
         </CaseSwitch>
       </Instance>
-      <Instance id="2"><Identifier>隐藏资源点</Identifier></Instance>
-      <Instance id="2"><Identifier>隐藏资源点</Identifier></Instance>
+      <Instance id="2"><Identifier>隐藏资源点</Identifier><Parameters>
+        <掉落物><名字>测试隐藏资源</名字></掉落物>
+      </Parameters></Instance>
+      <Instance id="2"><Identifier>隐藏资源点</Identifier><Parameters>
+        <掉落物><名字>测试隐藏资源</名字></掉落物>
+      </Parameters></Instance>
       <Instance id="3">
         <CaseSwitch expression="_root.难度是否达到" params="修罗">
-          <Case casevalue="true"><Identifier>纸箱</Identifier></Case>
-          <Case casevalue="false"><Identifier>纸箱</Identifier></Case>
+          <Case casevalue="true"><Identifier>纸箱</Identifier><Parameters>
+            <掉落物><名字>测试纸箱资源</名字></掉落物>
+          </Parameters></Case>
+          <Case casevalue="false"><Identifier>纸箱</Identifier><Parameters>
+            <掉落物><名字>测试纸箱资源</名字></掉落物>
+          </Parameters></Case>
         </CaseSwitch>
       </Instance>
     </Instances>
@@ -184,13 +198,87 @@ try {
 <GameStage><SubStage id="0"><Instances>
   <Instance id="0"><Identifier>装备箱</Identifier><Parameters>
     <掉落物><名字>A</名字></掉落物>
-    <掉落物><名字>B</名字><最小数量>99</最小数量><总数>1</总数></掉落物>
   </Parameters></Instance>
 </Instances></SubStage></GameStage>
 '@
     [System.IO.File]::WriteAllText((Join-Path $defaultQuantityRoot "default.xml"), $defaultQuantityXml, (New-Object System.Text.UTF8Encoding($false)))
     $defaultQuantity = Invoke-ChestAudit $defaultQuantityRoot $false
-    Assert-Equal $defaultQuantity.exitCode 0 "missing quantity fields use legacy 1/1 default"
+    Assert-Equal $defaultQuantity.exitCode 0 "both missing quantity fields use 1/1 default"
+
+    $partialQuantityRoot = Join-Path $tempRoot "partial-quantity"
+    [void](New-Item -ItemType Directory -Path $partialQuantityRoot)
+    $partialQuantityXml = @'
+<?xml version="1.0" encoding="UTF-8"?>
+<GameStage><SubStage id="0"><Instances>
+  <Instance id="0"><Identifier>装备箱</Identifier><Parameters>
+    <掉落物><名字>A</名字><最小数量>1</最小数量></掉落物>
+    <掉落物><名字>B</名字><最大数量>2</最大数量></掉落物>
+    <掉落物><名字>C</名字><最小数量>bad</最小数量><最大数量>2</最大数量></掉落物>
+  </Parameters></Instance>
+</Instances></SubStage></GameStage>
+'@
+    [System.IO.File]::WriteAllText(
+        (Join-Path $partialQuantityRoot "partial.xml"),
+        $partialQuantityXml,
+        (New-Object System.Text.UTF8Encoding($false)))
+    $partialQuantity = Invoke-ChestAudit $partialQuantityRoot $false
+    Assert-True ($partialQuantity.exitCode -ne 0) "partial or malformed quantity pair exit"
+    Assert-Equal @($partialQuantity.payload.errors | Where-Object {
+        $_.kind -eq "grid" -and $_.message -match "必须同时缺省或同时提供"
+    }).Count 2 "one-sided quantity bounds are rejected"
+    Assert-Equal @($partialQuantity.payload.errors | Where-Object {
+        $_.kind -eq "grid" -and $_.message -match "必须为正整数"
+    }).Count 1 "explicit unparsable quantity is rejected"
+
+    $partialDirectRoot = Join-Path $tempRoot "partial-direct-quantity"
+    [void](New-Item -ItemType Directory -Path $partialDirectRoot)
+    $partialDirectXml = @'
+<?xml version="1.0" encoding="UTF-8"?>
+<GameStage><SubStage id="0"><Instances>
+  <Instance id="0"><Identifier>资源箱</Identifier><Parameters>
+    <掉落物><名字>A</名字><最小数量>1</最小数量></掉落物>
+    <掉落物><名字>B</名字><最大数量>2</最大数量></掉落物>
+    <掉落物><名字>C</名字><最小数量>bad</最小数量><最大数量>2</最大数量></掉落物>
+  </Parameters></Instance>
+</Instances></SubStage></GameStage>
+'@
+    [System.IO.File]::WriteAllText(
+        (Join-Path $partialDirectRoot "partial-direct.xml"),
+        $partialDirectXml,
+        (New-Object System.Text.UTF8Encoding($false)))
+    $partialDirect = Invoke-ChestAudit $partialDirectRoot $false
+    Assert-True ($partialDirect.exitCode -ne 0) "direct partial quantity pair exit"
+    Assert-Equal @($partialDirect.payload.errors | Where-Object {
+        $_.kind -eq "direct" -and $_.message -match "必须同时缺省或同时提供"
+    }).Count 2 "direct one-sided quantity bounds are rejected"
+    Assert-Equal @($partialDirect.payload.errors | Where-Object {
+        $_.kind -eq "direct" -and $_.message -match "必须为正整数"
+    }).Count 1 "direct explicit unparsable quantity is rejected"
+
+    $quantityBoundsRoot = Join-Path $tempRoot "quantity-bounds"
+    [void](New-Item -ItemType Directory -Path $quantityBoundsRoot)
+    $quantityBoundsXml = @'
+<?xml version="1.0" encoding="UTF-8"?>
+<GameStage><SubStage id="0"><Instances>
+  <Instance id="0"><Identifier>装备箱</Identifier><Parameters>
+    <掉落物><名字>A</名字><最小数量>9007199254740991</最小数量><最大数量>9007199254740991</最大数量></掉落物>
+    <掉落物><名字>B</名字><最小数量>9007199254740992</最小数量><最大数量>9007199254740992</最大数量></掉落物>
+    <掉落物><名字>C</名字><最小数量>1</最小数量><最大数量>2147483648</最大数量></掉落物>
+  </Parameters></Instance>
+</Instances></SubStage></GameStage>
+'@
+    [System.IO.File]::WriteAllText(
+        (Join-Path $quantityBoundsRoot "quantity-bounds.xml"),
+        $quantityBoundsXml,
+        (New-Object System.Text.UTF8Encoding($false)))
+    $quantityBounds = Invoke-ChestAudit $quantityBoundsRoot $false
+    Assert-True ($quantityBounds.exitCode -ne 0) "unsafe quantity bounds exit"
+    Assert-Equal @($quantityBounds.payload.errors | Where-Object {
+        $_.kind -eq "grid" -and $_.message -match "且不超过 9007199254740991"
+    }).Count 1 "quantity above runtime safe integer is rejected"
+    Assert-Equal @($quantityBounds.payload.errors | Where-Object {
+        $_.kind -eq "grid" -and $_.message -match "随机跨度不得超过 2147483647"
+    }).Count 1 "quantity span above AVM1 random bound is rejected"
 
     $overCapacityRoot = Join-Path $tempRoot "over-capacity"
     [void](New-Item -ItemType Directory -Path $overCapacityRoot)

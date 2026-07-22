@@ -1143,7 +1143,6 @@ class Program
         LootTask lootTask = new LootTask(socketServer, lootPanelCoordinator);
         lootPanelCoordinator.SetAdmissionLeaseFactory(
             lootTask.TryAcquirePanelAdmissionLease);
-        commandRouter.SetLootPanelCoordinator(lootPanelCoordinator);
         if (panelHost != null)
             panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);

@@ -30,14 +30,21 @@ _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
         return;
     }
 
-    // 已准入箱体中，只有两维完整的非正整数保留地面直投。malformed/超界尺寸与
+    // 已准入箱体中，只有精确 0x0 保留地面直投。malformed/超界尺寸与
     // 意外调用本回调的非箱对象均 fail closed，不能借旧 AS2 路径掩盖配置错误。
     if (lootShape != "direct_delivery") {
         trace("[LootContainer] open callback rejected shape: " + lootShape);
         return;
     }
 
-    // 非正网格箱从来不创建物品栏 UI，保持直接地面掉落。
+    // 0x0 箱从来不创建物品栏 UI，保持直接地面掉落；先复用 Web 物化器的同一份
+    // 完整规则校验，不能让通用敌人掉落的历史 1/1 容错掩盖箱体数据错误。
+    var directValidation:Object = org.flashNight.arki.item.LootMaterializationPlanner.validateDropRules(
+        target.掉落物);
+    if (!directValidation.success) {
+        trace("[LootContainer] direct drop rejected: " + directValidation.error);
+        return;
+    }
     target.掉落物判定 = _root.敌人函数.掉落物判定;
     target.掉落物品 = _root.敌人函数.掉落物品;
     target.掉落物判定();
@@ -55,6 +62,13 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
     // Web-only 迁移只替换“正常交互 → 结束时间轴 → 网格 UI”路径。破碎时间轴没有
     // InteractionHandler reservation，继续保持既有直接爆落语义；上面的 guard 会先
     // 截住同一箱已经 reservation、物化、激活、挂起或待收敛的 Web authority，避免重复发奖。
+    // 爆落前仍使用同一份严格规则契约，坏配置只留 trace，不回退到 1/1。
+    var breakValidation:Object = org.flashNight.arki.item.LootMaterializationPlanner.validateDropRules(
+        target.掉落物);
+    if (!breakValidation.success) {
+        trace("[LootContainer] break drop rejected: " + breakValidation.error);
+        return;
+    }
     target.掉落物判定 = _root.敌人函数.掉落物判定;
     target.掉落物品 = _root.敌人函数.掉落物品;
     target.掉落物判定();

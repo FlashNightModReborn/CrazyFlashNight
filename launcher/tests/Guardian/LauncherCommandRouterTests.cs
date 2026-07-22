@@ -432,6 +432,23 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RequestOpenPanel_Loot_RejectsGenericRouterBypass()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.RequestOpenPanel("loot", "map_chest", null, null, null, null, null,
+                "{\"v\":1,\"chestSessionId\":\"chest.session.1\"," +
+                "\"lootContainerId\":\"loot.container.1\",\"containerEpoch\":1," +
+                "\"openAttemptSeq\":1,\"displayName\":\"装备箱\"," +
+                "\"capacity\":8,\"columns\":4}");
+
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+        }
+
+        [Fact]
         public void RequestOpenPanel_SkillsTrainer_RebuildsStrictRuntimeInitData()
         {
             Capture c = new Capture();

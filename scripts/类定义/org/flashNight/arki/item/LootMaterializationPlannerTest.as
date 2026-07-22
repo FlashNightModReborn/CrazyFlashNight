@@ -17,6 +17,8 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
         installWorld();
         try {
             testValidationBeforeRandomAdvance();
+            testQuantityPairContract();
+            testSharedRuleValidationForDirectDrops();
             testQuantitySpanBoundary();
             testLuckBonusFrozenBeforeRetry();
             testRollRollbackAndResume();
@@ -147,6 +149,69 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
                 && !rejected.success && rejected.terminalFailure
                 && rejected.error == "invalid_drop_quantity_span",
             "AVM1 random span 接受 2^31-1 边界并在 2^31 时于随机推进前 fail-closed");
+    }
+
+    private static function testQuantityPairContract():Void {
+        resetEntropy(1201, {});
+        var minOnly:Object = {名字:ITEM, 最小数量:1};
+        var maxOnly:Object = {名字:ITEM, 最大数量:1};
+        var malformed:Object = {名字:ITEM, 最小数量:"1", 最大数量:2};
+        var unparsable:Object = {名字:ITEM, 最小数量:"bad", 最大数量:2};
+        var explicitUndefined:Object = {名字:ITEM};
+        explicitUndefined.最小数量 = undefined;
+        explicitUndefined.最大数量 = undefined;
+        var before:Number = LinearCongruentialEngine.getInstance().captureState();
+        var minOnlyResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.min-only", minOnly));
+        var maxOnlyResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.max-only", maxOnly));
+        var malformedResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.numeric-string", malformed));
+        var unparsableResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.unparsable", unparsable));
+        var explicitUndefinedResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.explicit-undefined", explicitUndefined));
+        check(!minOnlyResult.success && minOnlyResult.terminalFailure
+                && minOnlyResult.error == "invalid_drop_rule"
+                && !maxOnlyResult.success && maxOnlyResult.terminalFailure
+                && maxOnlyResult.error == "invalid_drop_rule"
+                && !malformedResult.success && malformedResult.terminalFailure
+                && malformedResult.error == "invalid_drop_rule"
+                && !unparsableResult.success && unparsableResult.terminalFailure
+                && unparsableResult.error == "invalid_drop_rule"
+                && !explicitUndefinedResult.success
+                && explicitUndefinedResult.terminalFailure
+                && explicitUndefinedResult.error == "invalid_drop_rule"
+                && LinearCongruentialEngine.getInstance().captureState() == before,
+            "数量仅允许两端同时缺省或同时提供严格数字；半缺省/字符串/显式 undefined 均在随机前 fail closed");
+    }
+
+    private static function testSharedRuleValidationForDirectDrops():Void {
+        resetEntropy(1301, {});
+        var defaultRule:Object = {名字:ITEM};
+        var minOnly:Object = {名字:ITEM, 最小数量:1};
+        var numericString:Object = {名字:ITEM, 最小数量:"1", 最大数量:2};
+        var invalidProbability:Object = {名字:ITEM, 概率:0};
+        var duplicate:Object = {名字:ITEM, 最小数量:1, 最大数量:1};
+        var before:Number = LinearCongruentialEngine.getInstance().captureState();
+        var accepted:Object = LootMaterializationPlanner.validateDropRules([defaultRule]);
+        var minOnlyResult:Object = LootMaterializationPlanner.validateDropRules([minOnly]);
+        var stringResult:Object = LootMaterializationPlanner.validateDropRules([numericString]);
+        var probabilityResult:Object = LootMaterializationPlanner.validateDropRules(
+            [invalidProbability]);
+        var duplicateResult:Object = LootMaterializationPlanner.validateDropRules(
+            [duplicate, duplicate]);
+        check(accepted.success && accepted.ruleCount == 1
+                && !minOnlyResult.success && minOnlyResult.error == "invalid_drop_rule"
+                && !stringResult.success && stringResult.error == "invalid_drop_rule"
+                && !probabilityResult.success
+                && probabilityResult.error == "invalid_drop_probability"
+                && !duplicateResult.success
+                && duplicateResult.error == "duplicate_drop_rule_reference"
+                && !defaultRule.hasOwnProperty("最小数量")
+                && !defaultRule.hasOwnProperty("最大数量")
+                && LinearCongruentialEngine.getInstance().captureState() == before,
+            "direct/break 复用 Web 同一规则校验；失败不归一源数据且不推进随机");
     }
 
     private static function testLuckBonusFrozenBeforeRetry():Void {

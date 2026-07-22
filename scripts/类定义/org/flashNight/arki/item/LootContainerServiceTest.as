@@ -351,6 +351,10 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             {presetName:"资源箱", row:9, col:8});
         var directResult:Object = LootContainerService.beginMapChestOpen(
             {presetName:"资源箱", row:0, col:0});
+        var zeroRowResult:Object = LootContainerService.beginMapChestOpen(
+            {presetName:"资源箱", row:0, col:4});
+        var zeroColResult:Object = LootContainerService.beginMapChestOpen(
+            {presetName:"资源箱", row:4, col:0});
         check(arbitraryResult.handled && arbitraryResult.reserved
                 && smallestResult.handled && smallestResult.reserved
                 && boundaryResult.handled && boundaryResult.reserved
@@ -364,8 +368,12 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && tooWide.reason == "unsupported_grid_shape"
                 && tooLarge.handled && !tooLarge.reserved
                 && tooLarge.reason == "unsupported_grid_shape"
-                && !directResult.handled && directResult.reason == "direct_delivery",
-            "任意正网格按 8 列/64 格边界进入 Web，超界 fail closed，非正网格才 direct");
+                && !directResult.handled && directResult.reason == "direct_delivery"
+                && zeroRowResult.handled && !zeroRowResult.reserved
+                && zeroRowResult.reason == "unsupported_grid_shape"
+                && zeroColResult.handled && !zeroColResult.reserved
+                && zeroColResult.reason == "unsupported_grid_shape",
+            "任意正网格按 8 列/64 格边界进入 Web，精确 0x0 direct，其余非正或超界 fail closed");
 
         var fractionTarget:Object = {presetName:"装备箱", row:2.5, col:4};
         var stringTarget:Object = {presetName:"装备箱", row:"2", col:4};
@@ -375,6 +383,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var knownMissingTarget:Object = {presetName:"装备箱"};
         var mixedMalformedTarget:Object = {presetName:"资源箱", row:2};
         var mixedSignTarget:Object = {presetName:"资源箱", row:-1, col:4};
+        var negativePairTarget:Object = {presetName:"资源箱", row:-1, col:-1};
         var unrelatedTarget:Object = {presetName:"投影召唤器", row:4, col:8};
         var fractionResult:Object = LootContainerService.beginMapChestOpen(fractionTarget);
         var stringResult:Object = LootContainerService.beginMapChestOpen(stringTarget);
@@ -383,6 +392,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var knownMissingResult:Object = LootContainerService.beginMapChestOpen(knownMissingTarget);
         var mixedMalformedResult:Object = LootContainerService.beginMapChestOpen(mixedMalformedTarget);
         var mixedSignResult:Object = LootContainerService.beginMapChestOpen(mixedSignTarget);
+        var negativePairResult:Object = LootContainerService.beginMapChestOpen(negativePairTarget);
         var unrelatedResult:Object = LootContainerService.beginMapChestOpen(unrelatedTarget);
         check(LootContainerService.classifyMapChestShape(fractionTarget)
                     == "unsupported_grid_shape"
@@ -397,16 +407,18 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && LootContainerService.classifyMapChestShape(mixedMalformedTarget)
                     == "unsupported_grid_shape"
                 && LootContainerService.classifyMapChestShape(mixedSignTarget)
-                    == "direct_delivery"
+                    == "unsupported_grid_shape"
+                && LootContainerService.classifyMapChestShape(negativePairTarget)
+                    == "unsupported_grid_shape"
                 && LootContainerService.classifyMapChestShape(unrelatedTarget)
                     == "not_web_loot_grid"
                 && fractionResult.handled && stringResult.handled
                 && nanResult.handled && infinityResult.handled
                 && knownMissingResult.handled && mixedMalformedResult.handled
-                && !mixedSignResult.handled
+                && mixedSignResult.handled && negativePairResult.handled
                 && !unrelatedResult.handled && !unrelatedResult.reserved
                 && unrelatedResult.reason == "not_web_loot_grid",
-            "六箱域内 malformed fail closed、完整非正整数 direct；正网格投影召唤器不被 loot 劫持");
+            "六箱域内 malformed/负数/混合符号 fail closed；正网格投影召唤器不被 loot 劫持");
         var markerIgnored:Object = {presetName:"装备箱", row:2, col:4,
             chestRolloutId:"s1.partial"};
         var markerIgnoredResult:Object = LootContainerService.beginMapChestOpen(markerIgnored);

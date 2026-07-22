@@ -102,8 +102,8 @@ class org.flashNight.arki.item.LootContainerService {
     /**
      * 地图箱 shape 的唯一分类器。六箱 preset 是领域准入；其他互动元件即使携带
      * row/col 也不属于 loot。域内只有两维都是有限整数时才允许分流：正整数能力内
-     * 进入 Web，正整数超界或任意 malformed shape 均 fail closed；两维完整且任一
-     * 非正才允许 direct delivery。
+     * 进入 Web，精确 0x0 才保留 direct delivery；正整数超界、混合零值、负数或任意
+     * malformed shape 均 fail closed。
      */
     public static function classifyMapChestShape(target:Object):String {
         var knownBox:Boolean = target != null
@@ -119,7 +119,8 @@ class org.flashNight.arki.item.LootContainerService {
         }
         var rows:Number = Number(target.row);
         var columns:Number = Number(target.col);
-        if (rows <= 0 || columns <= 0) return SHAPE_DIRECT_DELIVERY;
+        if (rows == 0 && columns == 0) return SHAPE_DIRECT_DELIVERY;
+        if (rows <= 0 || columns <= 0) return SHAPE_UNSUPPORTED_GRID;
         var capacity:Number = rows * columns;
         if (columns <= MAX_WEB_COLUMNS && capacity <= MAX_WEB_CAPACITY) {
             return SHAPE_SUPPORTED_WEB_GRID;

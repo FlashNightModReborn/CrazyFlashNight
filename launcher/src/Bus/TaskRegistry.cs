@@ -178,8 +178,8 @@ namespace CF7Launcher.Bus
                     string panel = request.Value<string>("panel") ?? "";
                     string source = request.Value<string>("source") ?? "as2_request";
 
-                    // 生产 loot panel 使用 tracked PanelHost 与 exact identity。专用协调器先对
-                    // 顶层 source 和 initData 分别做 exact-shape 校验；queue accepted 明确不是 bound。
+                    // 这是生产 loot panel 唯一的 Flash ingress：使用 tracked PanelHost 与 exact identity。
+                    // 专用协调器先对顶层 source 和 initData 分别做 exact-shape 校验；queue accepted 明确不是 bound。
                     if (panel == "loot")
                     {
                         if (lootPanelCoordinator == null)
