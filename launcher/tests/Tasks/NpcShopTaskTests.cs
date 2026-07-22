@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using CF7Launcher.Tasks;
+using CF7Launcher.Tests.Contracts;
 
 namespace CF7Launcher.Tests.Tasks
 {
@@ -25,6 +27,33 @@ namespace CF7Launcher.Tests.Tasks
             if (!string.IsNullOrEmpty(operation)) response["operation"] = operation;
             if (operation == "tradeCommit") response["trade"] = new JObject { ["buyTotal"] = 0, ["sellTotal"] = 0 };
             return response;
+        }
+
+        private static JObject TradePreviewResponse(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
+                ["tradeToken"] = "npctrade10.1",
+                ["purchaseLines"] = new JArray(new JObject
+                {
+                    ["catalogIndex"] = 3, ["itemName"] = "训练手枪", ["displayName"] = "训练手枪",
+                    ["icon"] = "训练手枪", ["itemKind"] = "equipment", ["quantity"] = 2,
+                    ["unitPrice"] = 1000, ["total"] = 2000, ["maxQuantity"] = 50,
+                    ["destinationView"] = "bag", ["purchaseLimit"] = 50, ["maxAffordable"] = 5,
+                    ["maxByCapacity"] = 3, ["maxPurchasable"] = 3, ["limitingReason"] = "inventory_full"
+                }),
+                ["saleLines"] = new JArray(new JObject
+                {
+                    ["itemName"] = "强化石", ["displayName"] = "强化石", ["icon"] = "强化石",
+                    ["itemKind"] = "stack", ["quantity"] = 4, ["total"] = 100,
+                    ["sourceIdentity"] = "material:强化石", ["scope"] = "slot",
+                    ["matchedCount"] = 1, ["eligibleCount"] = 1, ["protectedCount"] = 0
+                }),
+                ["buyTotal"] = 2000, ["sellTotal"] = 100, ["netDelta"] = -1900,
+                ["projectedBalance"] = 3100, ["requiredSlots"] = 2, ["availableSlots"] = 3,
+                ["missingSlots"] = 0, ["canCommit"] = true, ["blockingError"] = ""
+            };
         }
 
         private static JObject Request(string cmd, string callId = "npc.test.1")
@@ -231,6 +260,233 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("强化石", (string)command["sales"][0]["source"]["key"]);
         }
 
+        [Fact]
+        public void TradePreview_AuthoritativeShape_IsForwardedToWeb()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.valid.1"));
+                int fid = (int)ParseSent(sent)["callId"];
+
+                task.HandleFlashResponse(TradePreviewResponse(fid), null);
+
+                JObject response = JObject.Parse(posted);
+                Assert.True((bool)response["success"]);
+                Assert.Equal("npctrade10.1", (string)response["tradeToken"]);
+                Assert.Equal(3, (int)response["purchaseLines"][0]["maxPurchasable"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Null(response["requiresReconcile"]);
+            }
+        }
+
+        [Fact]
+        public void TradePreview_MalformedSuccess_IsReadFailureWithoutPoisoningWriteGate()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.malformed.1"));
+                int fid = (int)ParseSent(sent)["callId"];
+
+                task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true
+                }, null);
+
+                JObject response = JObject.Parse(posted);
+                Assert.False((bool)response["success"]);
+                Assert.Equal("malformed_response", (string)response["error"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Null(response["requiresReconcile"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("insufficient_money")]
+        [InlineData("inventory_full")]
+        [InlineData("destination_full")]
+        public void TradePreview_ConsistentBlockedState_IsAccepted(string blockingError)
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.blocked." + blockingError));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject response = TradePreviewResponse(fid);
+                response["canCommit"] = false;
+                response["blockingError"] = blockingError;
+                if (blockingError == "insufficient_money") response["projectedBalance"] = -1;
+                else if (blockingError == "inventory_full")
+                {
+                    response["requiredSlots"] = 4; response["availableSlots"] = 3; response["missingSlots"] = 1;
+                }
+                else
+                {
+                    response["purchaseLines"][0]["itemKind"] = "stack";
+                    response["purchaseLines"][0]["destinationView"] = "intelligence";
+                    response["purchaseLines"][0]["maxByCapacity"] = 0;
+                    response["purchaseLines"][0]["maxPurchasable"] = 0;
+                    response["purchaseLines"][0]["limitingReason"] = "destination_full";
+                    response["requiredSlots"] = 0;
+                }
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.False((bool)web["canCommit"]);
+                Assert.Equal(blockingError, (string)web["blockingError"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("purchase_identity")]
+        [InlineData("purchase_quantity")]
+        [InlineData("purchase_bounds")]
+        [InlineData("sale_identity")]
+        [InlineData("sale_scope")]
+        [InlineData("aggregate_total")]
+        [InlineData("capacity_total")]
+        [InlineData("commit_capacity_state")]
+        [InlineData("commit_money_state")]
+        [InlineData("slot_counts")]
+        [InlineData("destination_without_source")]
+        public void TradePreview_ResponseMustMatchIntentAndRemainSelfConsistent(string mutation)
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.mismatch." + mutation));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject response = TradePreviewResponse(fid);
+                if (mutation == "purchase_identity") response["purchaseLines"][0]["catalogIndex"] = 4;
+                else if (mutation == "purchase_quantity") response["purchaseLines"][0]["quantity"] = 3;
+                else if (mutation == "purchase_bounds") response["purchaseLines"][0]["maxPurchasable"] = 2;
+                else if (mutation == "sale_identity") response["saleLines"][0]["sourceIdentity"] = "material:伪造材料";
+                else if (mutation == "sale_scope") response["saleLines"][0]["scope"] = "same_name";
+                else if (mutation == "aggregate_total") response["buyTotal"] = 1999;
+                else if (mutation == "capacity_total") response["missingSlots"] = 1;
+                else if (mutation == "commit_capacity_state")
+                {
+                    response["requiredSlots"] = 4; response["availableSlots"] = 3; response["missingSlots"] = 1;
+                }
+                else if (mutation == "commit_money_state") response["projectedBalance"] = -1;
+                else if (mutation == "slot_counts")
+                {
+                    response["saleLines"][0]["matchedCount"] = 2;
+                    response["saleLines"][0]["protectedCount"] = 1;
+                }
+                else
+                {
+                    response["canCommit"] = false;
+                    response["blockingError"] = "destination_full";
+                }
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Null(web["requiresReconcile"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("tradeCommit", true)]
+        [InlineData("tradePreview", false)]
+        public void PendingSendFailure_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
+        {
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, _ => false))
+            {
+                task.SetPostToWeb(json => posted = json);
+
+                task.HandleWebRequest(cmd, Request(cmd, "npc.send-failure." + cmd));
+
+                JObject response = JObject.Parse(posted);
+                Assert.Equal("disconnected", (string)response["error"]);
+                Assert.Equal(isWrite, response.Value<bool?>("requiresReconcile") == true);
+                Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("tradeCommit", true)]
+        [InlineData("tradePreview", false)]
+        public void Timeout_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
+        {
+            JObject posted = null;
+            using (var responseSeen = new ManualResetEventSlim(false))
+            using (var task = new NpcShopTask(() => true, _ => true, 20))
+            {
+                task.SetPostToWeb(json => { posted = JObject.Parse(json); responseSeen.Set(); });
+
+                task.HandleWebRequest(cmd, Request(cmd, "npc.timeout." + cmd));
+                Assert.True(responseSeen.Wait(TimeSpan.FromSeconds(2)), "NPC shop timeout response was not posted");
+
+                Assert.Equal("timeout", (string)posted["error"]);
+                Assert.Equal(isWrite, posted.Value<bool?>("requiresReconcile") == true);
+                Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PanelContractVectors.NpcShopPurchaseQuantityValid), MemberType = typeof(PanelContractVectors))]
+        public void PurchaseQuantity_WithinProtocolCeiling_IsForwardedToAuthority(int quantity)
+        {
+            foreach (string cmd in new[] { "buy", "tradePreview" })
+            {
+                string sent = null;
+                using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+                {
+                    JObject request = Request(cmd, "npc.quantity." + cmd + "." + quantity);
+                    if (cmd == "buy") request["payload"]["quantity"] = quantity;
+                    else request["payload"]["purchases"][0]["quantity"] = quantity;
+
+                    task.HandleWebRequest(cmd, request);
+
+                    JObject command = ParseSent(sent);
+                    int forwarded = cmd == "buy"
+                        ? (int)command["quantity"]
+                        : (int)command["purchases"][0]["quantity"];
+                    Assert.Equal(quantity, forwarded);
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PanelContractVectors.NpcShopPurchaseQuantityInvalid), MemberType = typeof(PanelContractVectors))]
+        public void PurchaseQuantity_OutsideProtocolCeiling_IsRejectedBeforeFlash(int quantity)
+        {
+            foreach (string cmd in new[] { "buy", "tradePreview" })
+            {
+                int sends = 0;
+                string posted = null;
+                using (var task = new NpcShopTask(() => true, _ => { sends++; return true; }))
+                {
+                    task.SetPostToWeb(json => posted = json);
+                    JObject request = Request(cmd, "npc.quantity.invalid." + cmd + "." + quantity);
+                    if (cmd == "buy") request["payload"]["quantity"] = quantity;
+                    else request["payload"]["purchases"][0]["quantity"] = quantity;
+
+                    task.HandleWebRequest(cmd, request);
+
+                    Assert.Equal(0, sends);
+                    Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+                }
+            }
+        }
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
@@ -322,6 +578,30 @@ namespace CF7Launcher.Tests.Tasks
             }, _ => { });
 
             Assert.Equal("idle", task.WriteState);
+        }
+
+        [Fact]
+        public void DestinationFull_IsDefinitiveWriteRejectionAndReopensGate()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.destination-full.1"));
+                int fid = (int)ParseSent(sent)["callId"];
+
+                task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "npcshop_response", ["callId"] = fid,
+                    ["success"] = false, ["error"] = "destination_full"
+                }, null);
+
+                JObject response = JObject.Parse(posted);
+                Assert.Equal("destination_full", (string)response["error"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Null(response["requiresReconcile"]);
+            }
         }
 
         [Fact]

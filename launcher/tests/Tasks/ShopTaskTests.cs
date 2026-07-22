@@ -5,6 +5,7 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using CF7Launcher.Tasks;
+using CF7Launcher.Tests.Contracts;
 
 namespace CF7Launcher.Tests.Tasks
 {
@@ -109,6 +110,26 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(action, (string)message["action"]);
             Assert.Equal(2, (int)message["cart"][0]["qty"]);
             Assert.Null(message["cmd"]);
+        }
+
+        [Theory]
+        [MemberData(nameof(PanelContractVectors.KShopPurchaseQuantityAll), MemberType = typeof(PanelContractVectors))]
+        public void CheckoutQuantity_IsPassedThroughForFlashAuthorityToJudge(int quantity)
+        {
+            string sent = null;
+            using (var task = new ShopTask(() => true, payload => { sent = payload; return true; }))
+            {
+                var request = new JObject
+                {
+                    ["callId"] = "shop.quantity." + quantity,
+                    ["v"] = 1,
+                    ["cart"] = new JArray(new JObject { ["idx"] = 1, ["qty"] = quantity })
+                };
+
+                task.HandleWebRequest("checkoutPreview", request);
+
+                Assert.Equal(quantity, (int)ParseSent(sent)["cart"][0]["qty"]);
+            }
         }
 
         [Fact]

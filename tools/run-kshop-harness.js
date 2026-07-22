@@ -242,6 +242,101 @@ function createServer() {
     });
 }
 
+async function runPhysicalTooltipPointerProbe(page) {
+    const owner = page.locator('#tooltip-physical-hover-probe');
+    const legacyOwner = page.locator('#tooltip-legacy-hover-probe');
+    const blank = page.locator('#tooltip-physical-blank-probe');
+    const tooltip = page.locator('#panel-tooltip');
+    const ownerBox = await owner.boundingBox();
+    const legacyOwnerBox = await legacyOwner.boundingBox();
+    const blankBox = await blank.boundingBox();
+    if (!ownerBox || !legacyOwnerBox || !blankBox) throw new Error('Physical tooltip pointer probes are missing');
+    const ownerPoint = {x:ownerBox.x + ownerBox.width / 2, y:ownerBox.y + ownerBox.height / 2};
+    const legacyOwnerPoint = {
+        x:legacyOwnerBox.x + legacyOwnerBox.width / 2,
+        y:legacyOwnerBox.y + legacyOwnerBox.height / 2
+    };
+    const blankPoint = {x:blankBox.x + blankBox.width / 2, y:blankBox.y + blankBox.height / 2};
+
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    const visibleOnOwner = await page.evaluate(() => PanelTooltip.isVisible());
+    const tooltipBox = await tooltip.boundingBox();
+    if (!tooltipBox) throw new Error('Physical pointer tooltip did not render');
+    const tooltipPoint = {
+        x:tooltipBox.x + Math.max(2, Math.min(tooltipBox.width - 2, tooltipBox.width / 2)),
+        y:tooltipBox.y + Math.max(2, Math.min(tooltipBox.height - 2, tooltipBox.height / 2))
+    };
+    await page.mouse.move(tooltipPoint.x, tooltipPoint.y, {steps:4});
+    await page.waitForTimeout(170);
+    const hoverBridgePersistent = await page.evaluate(() => PanelTooltip.isVisible());
+
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const hoverSurfaceExitHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    const blankLandingWasOutside = await page.evaluate(point => {
+        const tip = document.getElementById('panel-tooltip');
+        const hit = document.elementFromPoint(point.x, point.y);
+        return !!(hit && tip && hit !== tip && !tip.contains(hit));
+    }, blankPoint);
+    await page.waitForTimeout(170);
+    const rapidBlankLandingHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    const geometryCoveredBlank = await page.evaluate(point => {
+        const tip = document.getElementById('panel-tooltip');
+        if (!tip) return false;
+        tip.style.left = (point.x - 12) + 'px';
+        tip.style.top = (point.y - 12) + 'px';
+        // Fault injection for the browser's delayed geometry-enter ordering. It follows a
+        // real owner -> blank mouse sequence but deliberately does not send a tooltip move.
+        tip.dispatchEvent(new MouseEvent('mouseenter', {
+            bubbles:false,clientX:point.x,clientY:point.y,relatedTarget:document.body
+        }));
+        const hit = document.elementFromPoint(point.x, point.y);
+        return hit === tip || tip.contains(hit);
+    }, blankPoint);
+    await page.waitForTimeout(170);
+    const lateGeometryEnterIgnored = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    // 手工 showAtMouse/hideHover 路径有独立的 global pending/timer 状态，
+    // 必须也由浏览器真实 hit-test 覆盖，不能只用 bindAsync probe 代替。
+    await page.mouse.move(legacyOwnerPoint.x, legacyOwnerPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    const legacyVisibleOnOwner = await page.evaluate(() => PanelTooltip.isVisible());
+    const legacyTooltipBox = await tooltip.boundingBox();
+    if (!legacyTooltipBox) throw new Error('Legacy physical pointer tooltip did not render');
+    const legacyTooltipPoint = {
+        x:legacyTooltipBox.x + Math.max(2, Math.min(legacyTooltipBox.width - 2, legacyTooltipBox.width / 2)),
+        y:legacyTooltipBox.y + Math.max(2, Math.min(legacyTooltipBox.height - 2, legacyTooltipBox.height / 2))
+    };
+    await page.mouse.move(legacyTooltipPoint.x, legacyTooltipPoint.y, {steps:4});
+    await page.waitForTimeout(170);
+    const legacyHoverBridgePersistent = await page.evaluate(() => PanelTooltip.isVisible());
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const legacyHoverSurfaceExitHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    return {
+        visibleOnOwner,
+        hoverBridgePersistent,
+        hoverSurfaceExitHidden,
+        blankLandingWasOutside,
+        rapidBlankLandingHidden,
+        geometryCoveredBlank,
+        lateGeometryEnterIgnored,
+        legacyVisibleOnOwner,
+        legacyHoverBridgePersistent,
+        legacyHoverSurfaceExitHidden
+    };
+}
+
 (async function() {
     const architectureAudit = auditArchitectureBoundaries();
     if (!fs.existsSync(PLAYWRIGHT)) {
@@ -262,6 +357,8 @@ function createServer() {
     await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html' + targetQuery, {waitUntil:'load'});
     if (visualMode) {
         await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
+        const physicalTooltipPointer = visualMode === 'battlebox-real-icons'
+            ? await runPhysicalTooltipPointerProbe(page) : null;
         if (shotArg) {
             const shotPath = path.resolve(ROOT, shotArg.slice('--shot='.length));
             await page.screenshot({path:shotPath,fullPage:true});
@@ -307,6 +404,7 @@ function createServer() {
             tooltip:window.__visualTooltipState || null,
             bodyOverflow:document.body.scrollWidth > document.body.clientWidth || document.body.scrollHeight > document.body.clientHeight
         }), visualMode);
+        if (visualState.tooltip) visualState.tooltip.physicalPointer = physicalTooltipPointer;
         await browser.close();
         server.close();
         process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');
@@ -322,6 +420,19 @@ function createServer() {
                 || !visualState.tooltip.focusedOwnerRestored || !visualState.tooltip.restoredOwnerExitHidden
                 || !visualState.tooltip.hoverSurfacePersistent || !visualState.tooltip.wheelScrollsLongDescription
                 || !visualState.tooltip.forcedHideResetsHoverState
+                || !visualState.tooltip.penPointerHoverPersistent
+                || !visualState.tooltip.lateGeometryEnterIgnored
+                || !visualState.tooltip.physicalPointer
+                || !visualState.tooltip.physicalPointer.visibleOnOwner
+                || !visualState.tooltip.physicalPointer.hoverBridgePersistent
+                || !visualState.tooltip.physicalPointer.hoverSurfaceExitHidden
+                || !visualState.tooltip.physicalPointer.blankLandingWasOutside
+                || !visualState.tooltip.physicalPointer.rapidBlankLandingHidden
+                || !visualState.tooltip.physicalPointer.geometryCoveredBlank
+                || !visualState.tooltip.physicalPointer.lateGeometryEnterIgnored
+                || !visualState.tooltip.physicalPointer.legacyVisibleOnOwner
+                || !visualState.tooltip.physicalPointer.legacyHoverBridgePersistent
+                || !visualState.tooltip.physicalPointer.legacyHoverSurfaceExitHidden
                 || !visualState.tooltip.keyboardScrollsLongDescription || !visualState.tooltip.escapeDismissesTooltip
                 || !visualState.tooltip.detachedOwnerNotRestored || !visualState.tooltip.scopeCleanupComplete
                 || !visualState.tooltip.placement || visualState.tooltip.placement.pointerOverlap > 0
@@ -334,6 +445,7 @@ function createServer() {
     await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html?visual=battlebox-real-icons', {waitUntil:'load'});
     await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
     const realTooltip = await page.evaluate(() => window.__visualTooltipState || null);
+    if (realTooltip) realTooltip.physicalPointer = await runPhysicalTooltipPointerProbe(page);
     await browser.close();
     server.close();
 
@@ -350,6 +462,19 @@ function createServer() {
         || !realTooltip.focusedOwnerRestored || !realTooltip.restoredOwnerExitHidden
         || !realTooltip.hoverSurfacePersistent || !realTooltip.wheelScrollsLongDescription
         || !realTooltip.forcedHideResetsHoverState
+        || !realTooltip.penPointerHoverPersistent
+        || !realTooltip.lateGeometryEnterIgnored
+        || !realTooltip.physicalPointer
+        || !realTooltip.physicalPointer.visibleOnOwner
+        || !realTooltip.physicalPointer.hoverBridgePersistent
+        || !realTooltip.physicalPointer.hoverSurfaceExitHidden
+        || !realTooltip.physicalPointer.blankLandingWasOutside
+        || !realTooltip.physicalPointer.rapidBlankLandingHidden
+        || !realTooltip.physicalPointer.geometryCoveredBlank
+        || !realTooltip.physicalPointer.lateGeometryEnterIgnored
+        || !realTooltip.physicalPointer.legacyVisibleOnOwner
+        || !realTooltip.physicalPointer.legacyHoverBridgePersistent
+        || !realTooltip.physicalPointer.legacyHoverSurfaceExitHidden
         || !realTooltip.keyboardScrollsLongDescription || !realTooltip.escapeDismissesTooltip
         || !realTooltip.detachedOwnerNotRestored || !realTooltip.scopeCleanupComplete
         || !realTooltip.placement || realTooltip.placement.pointerOverlap > 0

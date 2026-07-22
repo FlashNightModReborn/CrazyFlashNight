@@ -13,11 +13,18 @@
 <body>
 <div id="panel-content"></div><pre id="qa-output">running…</pre>
 <script>
-window.__NPCSHOP_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness'};
+window.__NPCSHOP_CONFIG__={requestTimeoutMs:300,sessionNonce:'harness'};
+window.__contractPurchaseProbe=Number(new URLSearchParams(location.search).get('contractQuantity'))||4549;
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;window.__malformedCommit=false;
+window.__tradePreviewQuantityCeiling=null;window.__tradePreviewMaxOverride=null;window.__nextTradePreviewDelay=0;window.__nextTradeCommitDelay=0;window.__dropNextTradePreview=false;window.__nextTradePreviewError='';window.__rejectedTradePreviews=0;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
-  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd!=='close')setTimeout(function(){respond(message)},0)}
+  send:function(message){
+    __sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='close')return;
+    if(message.cmd==='tradePreview'&&__dropNextTradePreview){__dropNextTradePreview=false;return}
+    var delay=message.cmd==='tradePreview'?Number(__nextTradePreviewDelay||0):(message.cmd==='tradeCommit'?Number(__nextTradeCommitDelay||0):0);if(message.cmd==='tradePreview')__nextTradePreviewDelay=0;else if(message.cmd==='tradeCommit')__nextTradeCommitDelay=0;
+    setTimeout(function(){respond(message)},delay)
+  }
 };
 window.Toast={add:function(message){__toasts.push(message)}};
 window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
@@ -98,7 +105,7 @@ function state(){return{
 function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
 function tradePreview(payload){
   var capacityMax=spaceFreed?3:2;
-  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0];return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:item.unitPrice,total:item.unitPrice*line.quantity,maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:5,maxByCapacity:capacityMax,maxPurchasable:Math.min(5,capacityMax),destinationView:item.use==='材料'?'material':'bag'}});
+  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0],override=Number(window.__tradePreviewMaxOverride);var maxPurchasable=isFinite(override)&&override>0?override:Math.min(5,capacityMax);return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:item.unitPrice,total:item.unitPrice*line.quantity,maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:maxPurchasable,maxByCapacity:item.majorType==='武器'?capacityMax:item.maxQuantity,maxPurchasable:maxPurchasable,destinationView:item.use==='材料'?'material':'bag'}});
   var saleLines=payload.sales.map(function(line){var material=line.source.viewId==='material';if(material)return{itemName:'强化石',displayName:'强化石',icon:'强化石',itemKind:'stack',quantity:line.quantity,total:25*line.quantity,sourceIdentity:'material:'+line.source.key,scope:'slot',matchedCount:1,eligibleCount:1,protectedCount:0};var bulk=line.scope==='same_name';return{itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:bulk?2:1,total:bulk?500:250,sourceIdentity:'bag:'+line.source.slot,scope:bulk?'same_name':'slot',matchedCount:bulk?3:1,eligibleCount:bulk?2:1,protectedCount:bulk?1:0}});
   var buyTotal=purchaseLines.reduce(function(n,x){return n+x.total},0),sellTotal=saleLines.reduce(function(n,x){return n+x.total},0);
   var requested=purchaseLines.reduce(function(n,x){return n+(x.itemKind==='equipment'?x.quantity:0)},0),missing=Math.max(0,requested-capacityMax),moneyOk=balance+sellTotal>=buyTotal;
@@ -116,7 +123,12 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   }
   if(message.cmd==='snapshot'){window.__lastNpcState=state();Object.assign(result,window.__lastNpcState)}
   else if(message.cmd==='tooltip')Object.assign(result,{displayname:'物品',descHTML:'说明',introHTML:'简介'});
-  else if(message.cmd==='tradePreview'){window.__lastTrade=tradePreview(message.payload);Object.assign(result,window.__lastTrade)}
+  else if(message.cmd==='tradePreview'){
+    if(window.__nextTradePreviewError){var injectedError=window.__nextTradePreviewError;window.__nextTradePreviewError='';Object.assign(result,{success:false,error:injectedError});emit(result);return}
+    var overCeiling=window.__tradePreviewQuantityCeiling!=null&&message.payload.purchases.some(function(line){return line.quantity>window.__tradePreviewQuantityCeiling});
+    if(overCeiling){window.__rejectedTradePreviews++;Object.assign(result,{success:false,error:'invalid_payload'})}
+    else{window.__lastTrade=tradePreview(message.payload);Object.assign(result,window.__lastTrade)}
+  }
   else if(message.cmd==='tradeCommit'){
     if(window.__malformedCommit){Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
     var plan=window.__lastTrade;balance=plan.projectedBalance;
@@ -140,7 +152,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
 <script src="../../npcshop.js"></script>
 <script>
 (async function(){
-  var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(){return new Promise(function(r){setTimeout(r,25)})}
+  var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(ms){return new Promise(function(r){setTimeout(r,ms==null?25:Number(ms))})}
   ['settlement','bulk_sale','inventory_full'].forEach(function(topic){try{localStorage.removeItem('cf7.npcshop.guide.v1.'+topic)}catch(error){}});
   try{localStorage.removeItem('cf7.itemgrid.mode.npcshop')}catch(error){}
   Panels.open('npcshop',{shopId:'前治安官'});await wait();
@@ -317,6 +329,22 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('equipment purchase supports +5 quantity and authoritative re-preview',previews[previews.length-1].payload.purchases[0].quantity===6);
+  window.__tradePreviewMaxOverride=window.__contractPurchaseProbe;
+  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0].click();await wait();
+  window.__tradePreviewQuantityCeiling=99;
+  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
+  var recoveredQuantity=document.querySelector('[data-purchase-lines] .npcshop-stepper b');
+  var recoveredMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
+  ok('old Host rejection of contract max rolls back to the last authoritative quantity and keeps settlement operable',__rejectedTradePreviews===1&&previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&recoveredQuantity&&recoveredQuantity.textContent==='5'&&recoveredMinus&&!recoveredMinus.disabled&&document.querySelector('[data-trade-error]').textContent.indexOf('已恢复上一次可核算的清单')>=0);
+  window.__tradePreviewQuantityCeiling=null;window.__tradePreviewMaxOverride=null;
+  recoveredMinus.click();await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
+  ok('quantity controls recover after a rejected preview',previews[previews.length-1].payload.purchases[0].quantity===4&&document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent==='4');
+  document.querySelector('[data-trade-back]').click();
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
+  document.querySelector('.npcshop-checkout-btn').click();await wait();
+  ok('returning to selection after rejection can add another item that appears in the next settlement',NpcShop.debugState().purchaseCount===2&&document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2&&document.querySelector('[data-purchase-lines]').textContent.indexOf('强化石')>=0);
   ok('inventory-full settlement offers organization route',!document.querySelector('[data-space-organize]').hidden&&document.querySelector('[data-trade-error]').textContent.indexOf('背包空间不足')>=0);
   ok('first inventory-full result explains the organizer route',__toasts.some(function(message){return message.indexOf('整理空间')>=0&&message.indexOf('重新核算')>=0}));
   document.querySelector('[data-space-organize]').click();await wait();
@@ -332,7 +360,12 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('authoritative max clamps equipment purchase after space change',previews[previews.length-1].payload.purchases[0].quantity===3);
   ok('settlement still contains no native form control',document.querySelectorAll('.npcshop-settlement-page input').length===0);
-  document.querySelector('[data-trade-commit]').click();await wait();
+  window.__nextTradeCommitDelay=120;document.querySelector('[data-trade-commit]').click();
+  var commitsDuringWrite=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length,busyQuantity=document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent;
+  var busyBack=document.querySelector('[data-trade-back]'),busyMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0],busyCommit=document.querySelector('[data-trade-commit]');
+  busyBack.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyMinus.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyCommit.dispatchEvent(new MouseEvent('click',{bubbles:true}));await wait(35);
+  ok('in-flight commit locks settlement navigation and quantity mutation',NpcShop.debugState().busy&&NpcShop.debugState().settling&&busyBack.disabled&&busyMinus.disabled&&document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent===busyQuantity&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsDuringWrite);
+  await wait(120);
   ok('commit sends opaque AS2 trade token',__sent.some(function(m){return m.cmd==='tradeCommit'&&/^npctrade\./.test(m.payload.expectedTradeToken)}));
   ok('successful commit clears intents and returns main page',NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0&&!NpcShop.debugState().settling);
   var owned=document.querySelector('.npcshop-owned-grid');ok('owned grid has no horizontal overflow',owned.scrollWidth<=owned.clientWidth+1);
@@ -351,7 +384,51 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   document.querySelector('.npcshop-category-tabs [data-filter-path="set/training_long_gun"]').click();var npcSetBreadcrumb=document.querySelector('.npcshop-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set"]'),npcSetCurrent=document.querySelector('.npcshop-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set/training_long_gun"][aria-current="page"]');
   if(npcSetBreadcrumb)npcSetBreadcrumb.click();
   ok('set branch filters the current NPC catalog and title breadcrumb returns upward',setRootCount===2&&document.querySelectorAll('.npcshop-catalog-card').length===2&&document.querySelector('[data-category="combined:set:training_long_gun"]')&&npcSetCurrent&&document.querySelector('.npcshop-category-tabs [data-filter-path="set/training_long_gun"]'));
+
+  // Contract vector → real Web max path: prove a value well above 99 remains a successful,
+  // adjustable preview before the Host/AS2 business authority makes its final decision.
   Panels.close();manualLayout=false;Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  catalog[1].maxQuantity=999999;window.__tradePreviewMaxOverride=window.__contractPurchaseProbe;
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});var contractQuantityNode=document.querySelector('[data-purchase-lines] .npcshop-stepper b');
+  ok('shared contract quantity above 99 survives Web max and authoritative preview',window.__contractPurchaseProbe>99&&previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&contractQuantityNode&&Number(contractQuantityNode.textContent)===window.__contractPurchaseProbe);
+  var contractMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];contractMinus.click();await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
+  ok('quantity above 99 remains adjustable after preview',previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe-1&&Number(document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent)===window.__contractPurchaseProbe-1);
+  document.querySelector('[data-trade-back]').click();document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  ok('returning after a large quantity can add another item to the next settlement',NpcShop.debugState().purchaseCount===2&&document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2);
+  window.__tradePreviewMaxOverride=null;
+
+  // A response from the previous settlement epoch must not replace the new two-line order.
+  Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();window.__nextTradePreviewDelay=120;
+  document.querySelector('.npcshop-checkout-btn').click();document.querySelector('[data-trade-back]').click();
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait(45);
+  var newEpochHasTwoLines=document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2;await wait(120);
+  ok('late preview from a closed settlement cannot pollute a reopened settlement checkpoint',newEpochHasTwoLines&&NpcShop.debugState().purchaseCount===2&&document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2);
+
+  // Read failures restore the last accepted preview; they do not poison the write gate.
+  Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait();
+  window.__dropNextTradePreview=true;Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait(340);
+  var timeoutQuantity=document.querySelector('[data-purchase-lines] .npcshop-stepper b'),timeoutMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];
+  ok('read preview timeout restores the checkpoint without entering write reconcile',!NpcShop.debugState().needsReconcile&&NpcShop.debugState().settling&&timeoutQuantity&&timeoutQuantity.textContent==='6'&&timeoutMinus&&!timeoutMinus.disabled);
+  window.__nextTradePreviewError='malformed_response';timeoutMinus.click();await wait();
+  ok('malformed read preview also restores the checkpoint and stays operable',!NpcShop.debugState().needsReconcile&&document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent==='6');
+  var snapshotsBeforeAuthorityRefresh=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
+  window.__nextTradePreviewError='item_not_found';timeoutMinus.click();await wait();await wait();
+  ok('authority-invalid preview refreshes catalog instead of retaining divergent speculative intent',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===snapshotsBeforeAuthorityRefresh+1&&!NpcShop.debugState().settling&&NpcShop.debugState().purchaseCount===0);
+  var authorityPreviewErrors=['invalid_quantity','insufficient_quantity','nothing_to_sell','sell_forbidden'];
+  for(var authorityErrorIndex=0;authorityErrorIndex<authorityPreviewErrors.length;authorityErrorIndex++){
+    Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+    var authorityError=authorityPreviewErrors[authorityErrorIndex],authoritySnapshots=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
+    window.__nextTradePreviewError=authorityError;Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+'})[0].click();await wait();await wait();
+    ok(authorityError+' preview refreshes authority instead of restoring a divergent checkpoint',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===authoritySnapshots+1&&!NpcShop.debugState().settling&&NpcShop.debugState().purchaseCount===0);
+  }
+
+  Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
   document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
   var snapshotsBeforeMalformed=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
   window.__malformedCommit=true;document.querySelector('[data-trade-commit]').click();await wait();await wait();window.__malformedCommit=false;

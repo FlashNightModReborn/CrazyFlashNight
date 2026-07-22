@@ -11,6 +11,7 @@ const INVENTORY_WORKBENCH_MODULES=[
 ];
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
+  const harness=fs.readFileSync(path.join(WEB,'modules','crafting','dev','harness.html'),'utf8');
   const equipmentInspector=fs.readFileSync(path.join(WEB,'modules','equipment-inspector.js'),'utf8');
   const craftingInspector=fs.readFileSync(path.join(WEB,'modules','crafting-inspector.js'),'utf8');
   const dressupRenderer=fs.readFileSync(path.join(WEB,'modules','dressup-doll-renderer.js'),'utf8');
@@ -24,7 +25,13 @@ function audit(){
   if(!panel.includes("new Workbench.DualPaneShell")||!panel.includes("leftLabel:'配方目录'")||!panel.includes("rightLabel:'合成详情'"))throw new Error('dual-pane contract missing');
   if(!panel.includes("request('preview'")||!panel.includes("request('commit'")||!panel.includes('expectedCraftToken'))throw new Error('preview/token/commit flow missing');
   if(/price\s*\*|smithLevel\s*\*/.test(panel))throw new Error('Web must not reproduce authoritative crafting formulas');
-  if(!panel.includes('requiresReconcile')||!panel.includes('requestPreview();'))throw new Error('ambiguous write reconcile flow missing');
+  if(!panel.includes('function isWriteAmbiguous')||!panel.includes('dispatched && isTransportUncertain(response)')
+      ||!panel.includes('function requiresReconcile')||panel.includes('function isAmbiguous'))throw new Error('read/write reconcile classification missing');
+  if(!panel.includes('function restorePreviewCheckpoint')||!panel.includes('function requiresAuthorityRefresh')
+      ||!panel.includes('_needsRefresh')||!panel.includes('return Bridge.send(message)'))throw new Error('preview checkpoint or read-refresh contract missing');
+  if(!harness.includes("mode:'delay'")||!harness.includes("mode:'drop'")||!harness.includes("mode:'send_false'")
+      ||!harness.includes("error:'malformed_response'")||!harness.includes("'item_not_found'")
+      ||!harness.includes("'insufficient_money'"))throw new Error('transport and authority fault regression matrix missing');
   if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")||!panel.includes('craftCount:requestedCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
   if(!panel.includes('canCraftOne === true')||!panel.includes('craftableOnly:_craftableOnly')||!panel.includes('crafting-craftable-toggle'))throw new Error('snapshot availability or craftable-only contract missing');
   if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'")

@@ -32,11 +32,28 @@
   };
   window.cancelAnimationFrame=function(id){if(active[id]){delete active[id];stats.active--;stats.cancelled++}return nativeCancel(id)};
 })(window.requestAnimationFrame.bind(window),window.cancelAnimationFrame.bind(window));
-window.__CRAFTING_CONFIG__={requestTimeoutMs:1000,sessionNonce:'harness',inspectorManifestUrl:'../../../assets/dressup/manifest.json'};
-window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;
+window.__CRAFTING_CONFIG__={requestTimeoutMs:250,sessionNonce:'harness',inspectorManifestUrl:'../../../assets/dressup/manifest.json'};
+window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;window.__bridgeFaults=[];
+window.__queueCraftingFault=function(fault){window.__bridgeFaults.push(fault)};
+function takeCraftingFault(cmd){for(var i=0;i<__bridgeFaults.length;i++){if(!__bridgeFaults[i].cmd||__bridgeFaults[i].cmd===cmd)return __bridgeFaults.splice(i,1)[0]}return null}
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
-  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd!=='close')setTimeout(function(){respond(message)},message.cmd==='preview'?__previewDelay:0)}
+  send:function(message){
+    __sent.push(JSON.parse(JSON.stringify(message)));
+    var fault=takeCraftingFault(message.cmd);
+    if(fault){
+      if(fault.mode==='send_false')return false;
+      if(fault.mode==='throw')throw new Error('harness transport disconnected');
+      if(fault.mode==='drop')return true;
+      if(fault.mode==='error'){
+        setTimeout(function(){emit({type:'panel_resp',domain:'crafting',cmd:message.cmd,callId:message.callId,
+          success:false,error:fault.error,requiresReconcile:!!fault.requiresReconcile})},Number(fault.delayMs)||0);return true
+      }
+      if(fault.mode==='delay'){setTimeout(function(){respond(message)},Number(fault.delayMs)||0);return true}
+    }
+    if(message.cmd!=='close')setTimeout(function(){respond(message)},message.cmd==='preview'?__previewDelay:0);
+    return true
+  }
 };
 window.Toast={add:function(message){__toasts.push(message)}};
 window.__iconStats={html:0,static:0};window.Icons={
@@ -106,6 +123,25 @@ function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:me
 <script src="../../crafting.js"></script>
 <script>
 (async function(){var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(){return new Promise(function(r){setTimeout(r,35)})}async function waitFor(test,timeout){var deadline=Date.now()+(timeout||1000);while(Date.now()<deadline){if(test())return true;await wait()}return false}
+function quantityButton(label){return document.querySelector('.crafting-quantity-btn[aria-label="'+label+'"]')}
+async function exercisePreviewReadFailure(name,fault,waitForLateResponse){
+  var before=CraftingPanel.debugState().craftCount;__queueCraftingFault(fault);quantityButton('增加一份').click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy},1400);
+  var restored=CraftingPanel.debugState(),restoredPlus=quantityButton('增加一份');
+  ok(name+' restores authoritative preview without reconcile',restored.craftCount===before&&restored.previewCheckpoint&&restored.previewCheckpoint.craftCount===before&&!restored.needsReconcile&&!restored.needsRefresh&&restoredPlus&&!restoredPlus.disabled,
+    JSON.stringify(restored));
+  restoredPlus.click();await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.craftCount===before+1},1200);
+  if(waitForLateResponse)await new Promise(function(resolve){setTimeout(resolve,Number(fault.delayMs)||0)});
+  var recovered=CraftingPanel.debugState();
+  ok(name+' keeps quantity adjustable after recovery',recovered.craftCount===before+1&&!recovered.needsReconcile&&!recovered.needsRefresh&&document.querySelector('.crafting-output-card'),JSON.stringify(recovered));
+}
+async function exerciseAuthorityRefresh(name,error){
+  var before=CraftingPanel.debugState().craftCount,snapshots=__sent.filter(function(x){return x.cmd==='snapshot'}).length;
+  __queueCraftingFault({cmd:'preview',mode:'error',error:error});quantityButton('增加一份').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&!state.needsRefresh&&state.craftCount===before+1&&document.querySelector('.crafting-output-card')},1400);
+  var state=CraftingPanel.debugState();
+  ok(name+' refreshes authoritative snapshot',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshots+1&&!state.needsReconcile&&!state.needsRefresh&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===before+1,JSON.stringify(state));
+}
 try{
   Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
   ok('mounts dual panes',document.querySelector('[data-instance-key="crafting:catalog"]')&&document.querySelector('[data-instance-key="crafting:detail"]'));
@@ -238,7 +274,14 @@ try{
   ok('post-craft fallback to another recipe resets catalog and detail windows',fallbackCatalog.scrollTop===0&&fallbackDetail.scrollTop===0,
     JSON.stringify({catalog:fallbackCatalog.scrollTop,detail:fallbackDetail.scrollTop,selected:CraftingPanel.debugState().selectedIndex}));
   document.querySelector('.crafting-craftable-toggle').click();fallbackCatalog.style.cssText=fallbackCatalogStyle;fallbackDetail.style.cssText=fallbackDetailStyle;
-  materials=5;Panels.open('crafting',{category:'武器合成'});await wait();
+  materials=30;Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
+  var reconcileToasts=__toasts.filter(function(x){return x.indexOf('对账')>=0}).length;
+  __queueCraftingFault({cmd:'commit',mode:'send_false'});document.querySelector('.crafting-commit-btn').click();await wait();
+  ok('commit rejected before dispatch stays definitive and operable',!CraftingPanel.debugState().needsReconcile&&__toasts.filter(function(x){return x.indexOf('对账')>=0}).length===reconcileToasts&&!document.querySelector('.crafting-commit-btn').disabled,JSON.stringify(CraftingPanel.debugState()));
+  var previewsBeforeDroppedWrite=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  __queueCraftingFault({cmd:'commit',mode:'drop'});document.querySelector('.crafting-commit-btn').click();
+  await waitFor(function(){return __toasts.filter(function(x){return x.indexOf('对账')>=0}).length>reconcileToasts&&!CraftingPanel.debugState().previewBusy},1400);
+  ok('issued commit drop enters reconcile and obtains fresh preview',__toasts.filter(function(x){return x.indexOf('对账')>=0}).length===reconcileToasts+1&&__sent.filter(function(x){return x.cmd==='preview'}).length>previewsBeforeDroppedWrite&&!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled,JSON.stringify(CraftingPanel.debugState()));
   window.__ambiguous=true;document.querySelector('.crafting-commit-btn').click();await wait();await wait();
   ok('ambiguous commit triggers preview reconcile',__toasts.some(function(x){return x.indexOf('对账')>=0})&&__sent.filter(function(x){return x.cmd==='preview'}).length>=3);
   ok('preview clears reconcile gate',!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled);
@@ -251,9 +294,23 @@ try{
   var detailScrollAfter=detailScrollProbe.scrollTop;ok('quantity preview refresh preserves overflowing detail position',detailScrollBefore>0&&Math.abs(detailScrollAfter-detailScrollBefore)<=1,JSON.stringify({before:detailScrollBefore,after:detailScrollAfter}));
   detailScrollProbe.style.cssText=detailScrollStyle;detailScrollProbe.scrollTop=0;
   ok('batch preview binds count and total output',__sent.some(function(x){return x.cmd==='preview'&&x.payload.recipeIndex===1&&x.payload.craftCount===2})&&document.querySelector('.crafting-output-card').textContent.indexOf('×6')>=0);
+  await exercisePreviewReadFailure('late preview', {cmd:'preview',mode:'delay',delayMs:400}, true);
+  await exercisePreviewReadFailure('dropped preview', {cmd:'preview',mode:'drop'}, false);
+  await exercisePreviewReadFailure('Flash preview timeout', {cmd:'preview',mode:'error',error:'timeout'}, false);
+  await exercisePreviewReadFailure('preview disconnect', {cmd:'preview',mode:'error',error:'disconnected'}, false);
+  await exercisePreviewReadFailure('malformed preview', {cmd:'preview',mode:'error',error:'malformed_response'}, false);
+  await exerciseAuthorityRefresh('stale preview', 'stale_state');
+  await exerciseAuthorityRefresh('missing item preview', 'item_not_found');
+  await exerciseAuthorityRefresh('material drift preview', 'material_missing');
+  await exerciseAuthorityRefresh('price drift preview', 'insufficient_money');
   document.querySelector('[data-filter-path="category"]').click();
   var consumableFilter=document.querySelector('[data-filter-path="category/consumable"]');consumableFilter.click();await wait();
   ok('shared tree filters recipe cards locally',document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath.slice(0,2).join('/')==='category/consumable',JSON.stringify({cards:document.querySelectorAll('.crafting-recipe-card').length,path:CraftingPanel.debugState().filterPath}));
+  __queueCraftingFault({cmd:'snapshot',mode:'drop'});Panels.open('crafting',{category:'武器合成'});
+  await waitFor(function(){return CraftingPanel.debugState().needsRefresh},1400);
+  ok('dropped snapshot requests retry without write reconcile',CraftingPanel.debugState().needsRefresh&&!CraftingPanel.debugState().needsReconcile&&document.querySelector('.workbench-mode-btn.warning').textContent==='重新同步',JSON.stringify(CraftingPanel.debugState()));
+  document.querySelector('.workbench-mode-btn.warning').click();await waitFor(function(){return document.querySelector('.crafting-output-card')&&!CraftingPanel.debugState().needsRefresh},1400);
+  ok('snapshot retry restores authoritative panel',document.querySelector('.crafting-output-card')&&!CraftingPanel.debugState().needsRefresh&&!CraftingPanel.debugState().needsReconcile,JSON.stringify(CraftingPanel.debugState()));
   materials=0;Panels.open('crafting',{category:'武器合成'});await wait();
   document.querySelector('[data-filter-path="category"]').click();document.querySelector('[data-filter-path=""]').click();await wait();
   var snapshotsBeforeToggle=__sent.filter(function(x){return x.cmd==='snapshot'}).length,toggle=document.querySelector('.crafting-craftable-toggle');toggle.click();await wait();

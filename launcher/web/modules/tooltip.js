@@ -45,6 +45,10 @@ var PanelTooltip = (function() {
     var _hoverHidePending = false;
     var _hoverHideOwner = null;
     var _tooltipHovered = false;
+    // mouseenter 不足以证明用户主动进入浮层：tooltip 因异步内容重排、缩放或换 owner
+    // 移到静止指针下时，Chromium 也可能迟到派发 enter。只有真实 move 的命中目标是
+    // 当前 tooltip，才授予复合 hover 资格；延迟关闭时再用 elementFromPoint 复核。
+    var _lastHoverPointer = null;
 
     function clearHoverHide() {
         if (_hoverHideTimer) clearTimeout(_hoverHideTimer);
@@ -58,12 +62,86 @@ var PanelTooltip = (function() {
         _hoverHideTimer = null;
     }
 
+    function pointerTargetsTooltip() {
+        if (!_el || !_visible || !_tooltipHovered || !_lastHoverPointer
+                || _lastHoverPointer.showGen !== _showGen) return false;
+        var hit = null;
+        if (document && typeof document.elementFromPoint === 'function') {
+            hit = document.elementFromPoint(_lastHoverPointer.clientX, _lastHoverPointer.clientY);
+        }
+        return !!(hit && (hit === _el || _el.contains(hit)));
+    }
+
+    function resetTooltipHover(notifyInteraction) {
+        var wasHovered = _tooltipHovered;
+        _tooltipHovered = false;
+        _lastHoverPointer = null;
+        if (!wasHovered || !notifyInteraction) return;
+        var interaction = activeInteraction();
+        if (interaction && interaction.leave) interaction.leave(null);
+    }
+
+    function confirmTooltipHover(event) {
+        if (!_el || !_visible || !event || !isFinite(Number(event.clientX))
+                || !isFinite(Number(event.clientY))) return false;
+        var target = event.target;
+        if (!target || (target !== _el && !_el.contains(target))) return false;
+        var clientX = Number(event.clientX);
+        var clientY = Number(event.clientY);
+        // Chromium 的真实 mouse 会依次派发 pointermove 与兼容 mousemove。pointermove
+        // 已完成同一坐标的 hit-test 后，兼容事件只需复用结论，避免重复触发几何查询；
+        // interaction.enter 仍由下面的 _tooltipHovered 守卫保证每轮只调用一次。
+        if (event.type === 'mousemove' && _tooltipHovered && _lastHoverPointer
+                && _lastHoverPointer.input === 'pointer'
+                && _lastHoverPointer.showGen === _showGen
+                && _lastHoverPointer.clientX === clientX
+                && _lastHoverPointer.clientY === clientY) return true;
+        var hit = document.elementFromPoint(clientX, clientY);
+        if (!hit || (hit !== _el && !_el.contains(hit))) return false;
+        _lastHoverPointer = {
+            clientX:clientX,
+            clientY:clientY,
+            showGen:_showGen,
+            input:event.type === 'pointermove' ? 'pointer' : 'mouse'
+        };
+        if (_tooltipHovered) return true;
+        var interaction = activeInteraction();
+        if (interaction && interaction.enter && interaction.enter(event) === false) {
+            _lastHoverPointer = null;
+            return false;
+        }
+        _tooltipHovered = true;
+        // 不取消过桥计时：140ms 到点仍做一次最终 hit-test。实际仍在浮层上时
+        // 计时回调只保留 pending，之后 mouseleave 会重新安排收起。
+        return true;
+    }
+
+    function trackHoverPointer(event) {
+        if (!_visible || !event || !isFinite(Number(event.clientX)) || !isFinite(Number(event.clientY))) return;
+        if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+        var target = event.target;
+        var targetsTooltip = !!(_el && target && (target === _el || _el.contains(target)));
+        if (targetsTooltip) return;
+        _lastHoverPointer = {
+            clientX:Number(event.clientX),
+            clientY:Number(event.clientY),
+            showGen:_showGen
+        };
+        if (!_tooltipHovered) return;
+        _tooltipHovered = false;
+        var interaction = activeInteraction();
+        if (interaction && interaction.leave) interaction.leave(event);
+        scheduleHoverHide();
+    }
+
     function scheduleHoverHide() {
         pauseHoverHide();
-        if (!_hoverHidePending || _tooltipHovered) return;
+        if (!_hoverHidePending) return;
         _hoverHideTimer = setTimeout(function() {
             _hoverHideTimer = null;
-            if (!_hoverHidePending || _tooltipHovered) return;
+            if (!_hoverHidePending) return;
+            if (pointerTargetsTooltip()) return;
+            resetTooltipHover(true);
             var owner = _hoverHideOwner;
             _hoverHidePending = false;
             _hoverHideOwner = null;
@@ -110,14 +188,17 @@ var PanelTooltip = (function() {
         if (_el) {
             _el.setAttribute('role', 'tooltip');
             _el.setAttribute('aria-hidden', _visible ? 'false' : 'true');
-            _el.addEventListener('mouseenter', function(event) {
-                _tooltipHovered = true;
-                pauseHoverHide();
-                var interaction = activeInteraction();
-                if (interaction && interaction.enter) interaction.enter(event);
-            });
+            // enter 只能表示几何命中发生变化；必须等 move 真正落在浮层上才确认交互。
+            // PointerEvent 环境直接消费 pointermove，让 pen 不依赖 UA 是否派发
+            // 兼容 mousemove；同时保留 mousemove 给旧浏览器与现有调用方。
+            if (typeof window !== 'undefined' && typeof window.PointerEvent === 'function') {
+                _el.addEventListener('pointermove', confirmTooltipHover);
+            }
+            _el.addEventListener('mousemove', confirmTooltipHover);
             _el.addEventListener('mouseleave', function(event) {
+                if (!_tooltipHovered) return;
                 _tooltipHovered = false;
+                _lastHoverPointer = null;
                 var interaction = activeInteraction();
                 if (interaction && interaction.leave) interaction.leave(event);
                 scheduleHoverHide();
@@ -132,6 +213,11 @@ var PanelTooltip = (function() {
                     event.stopPropagation();
                 }
             }, {passive:false});
+            if (typeof window !== 'undefined' && typeof window.PointerEvent === 'function') {
+                document.addEventListener('pointermove', trackHoverPointer, true);
+            } else {
+                document.addEventListener('mousemove', trackHoverPointer, true);
+            }
         }
     }
 
@@ -162,6 +248,7 @@ var PanelTooltip = (function() {
         if (!_el) return;
         cleanupHandlers();
         clearHoverHide();
+        resetTooltipHover(true);
         clearInteraction();
         _showGen++;                  // 让上一次 show 注册的延迟 reposition 全部失效
         _owner = owner == null ? null : owner;
@@ -467,6 +554,7 @@ var PanelTooltip = (function() {
 
         cleanupHandlers();
         clearHoverHide();
+        resetTooltipHover(true);
         clearInteraction();
         _showGen++;                  // anchored 也是新一轮 show，失效上一次的延迟回调
         _owner = owner;
@@ -545,7 +633,7 @@ var PanelTooltip = (function() {
         clearHoverHide();
         // display:none 时浏览器不保证再派发 mouseleave；显式归零避免下一次手工
         // hideHover() 把已经消失的旧浮层误判为仍在 hover。
-        _tooltipHovered = false;
+        resetTooltipHover(true);
         clearInteraction(owner);
         _visible = false;
         _owner = null;
@@ -1111,15 +1199,21 @@ var PanelTooltip = (function() {
             clearLeaveTimer();
             leaveTimer = setTimeout(function() {
                 leaveTimer = null;
+                // enter 事件可能来自浮层重排到静止指针之下；只有同一 show generation
+                // 内由真实 move 确认、且最终 hit-test 仍落在 tooltip，才保留复合 hover。
+                if (tooltipHovered && !pointerTargetsTooltip()) {
+                    tooltipHovered = false;
+                    resetTooltipHover(false);
+                }
                 clearIfInactive();
             }, 140);
         }
 
         function onTooltipEnter() {
-            if (disposed || !isVisible(owner)) return;
-            clearLeaveTimer();
+            if (disposed || !isVisible(owner) || !isLive()) return false;
             tooltipHovered = true;
             markActiveBinding(binding);
+            return true;
         }
 
         function onTooltipLeave() {
