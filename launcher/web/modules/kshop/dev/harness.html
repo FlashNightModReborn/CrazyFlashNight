@@ -2364,7 +2364,15 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 longTooltipProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
                     bubbles:false,clientX:720,clientY:420,pointerId:24,pointerType:'mouse',isPrimary:true
                 }));
-                tooltipNode.dispatchEvent(new MouseEvent('mouseenter', {bubbles:false}));
+                var longTooltipRect = tooltipNode.getBoundingClientRect();
+                var longTooltipX = longTooltipRect.left + Math.max(2, longTooltipRect.width / 2);
+                var longTooltipY = longTooltipRect.top + Math.max(2, longTooltipRect.height / 2);
+                tooltipNode.dispatchEvent(new MouseEvent('mouseenter', {
+                    bubbles:false,clientX:longTooltipX,clientY:longTooltipY
+                }));
+                tooltipNode.dispatchEvent(new MouseEvent('mousemove', {
+                    bubbles:true,clientX:longTooltipX,clientY:longTooltipY
+                }));
                 await wait(170);
                 var hoverSurfacePersistent = PanelTooltip.isVisible();
                 var longDescription = tooltipNode.querySelector('.flash-tt-desc');
@@ -2380,6 +2388,56 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 PanelTooltip.hideHover();
                 await wait(170);
                 var forcedHideResetsHoverState = !PanelTooltip.isVisible();
+
+                // PointerEvent 输入不能偷偷依赖 UA 合成 mousemove；pen 的真实命中
+                // 必须直接进入 tooltip 交互桥，并在过桥计时结束后保持可见。
+                var penPointerHoverPersistent = !window.PointerEvent;
+                if (window.PointerEvent) {
+                    longTooltipProbe.dispatchEvent(new PointerEvent('pointerenter', {
+                        bubbles:false,clientX:720,clientY:420,
+                        pointerId:26,pointerType:'pen',isPrimary:true
+                    }));
+                    longTooltipProbe.dispatchEvent(new PointerEvent('pointerleave', {
+                        bubbles:false,clientX:720,clientY:420,
+                        pointerId:26,pointerType:'pen',isPrimary:true
+                    }));
+                    var penTooltipRect = tooltipNode.getBoundingClientRect();
+                    var penTooltipX = penTooltipRect.left + Math.max(2, penTooltipRect.width / 2);
+                    var penTooltipY = penTooltipRect.top + Math.max(2, penTooltipRect.height / 2);
+                    var penPointerHit = tooltipNode.contains(document.elementFromPoint(penTooltipX, penTooltipY));
+                    tooltipNode.dispatchEvent(new PointerEvent('pointermove', {
+                        bubbles:true,clientX:penTooltipX,clientY:penTooltipY,
+                        pointerId:26,pointerType:'pen',isPrimary:true
+                    }));
+                    await wait(170);
+                    penPointerHoverPersistent = penPointerHit && PanelTooltip.isVisible();
+                    PanelTooltip.hide();
+                }
+
+                // 回归：快速离开 owner 后，tooltip 因几何重排在空白点迟到收到 enter，
+                // 不能把 140ms 关闭计时续命。只有真实 move 命中浮层才构成复合 hover。
+                longTooltipProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter', {
+                    bubbles:false,clientX:720,clientY:420,pointerId:25,pointerType:'mouse',isPrimary:true
+                }));
+                var blankCandidates = [
+                    {x:8,y:innerHeight - 8}, {x:innerWidth - 8,y:innerHeight - 8},
+                    {x:innerWidth - 8,y:8}, {x:8,y:8}
+                ];
+                var blankPoint = blankCandidates.filter(function(point) {
+                    var hit = document.elementFromPoint(point.x, point.y);
+                    return hit && !tooltipNode.contains(hit) && !longTooltipProbe.contains(hit);
+                })[0] || {x:innerWidth - 8,y:innerHeight - 8};
+                longTooltipProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
+                    bubbles:false,clientX:blankPoint.x,clientY:blankPoint.y,
+                    pointerId:25,pointerType:'mouse',isPrimary:true
+                }));
+                var lateEnterPointWasBlank = !tooltipNode.contains(document.elementFromPoint(blankPoint.x, blankPoint.y));
+                tooltipNode.dispatchEvent(new MouseEvent('mouseenter', {
+                    bubbles:false,clientX:blankPoint.x,clientY:blankPoint.y
+                }));
+                await wait(170);
+                var lateGeometryEnterIgnored = lateEnterPointWasBlank && !PanelTooltip.isVisible();
+
                 longTooltipProbe.focus();
                 longDescription = tooltipNode.querySelector('.flash-tt-desc');
                 longDescription.scrollTop = 0;
@@ -2414,6 +2472,47 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 lifecycleScope.dispose();
                 replacementBinding.destroy(); replacementProbe.remove();
                 var scopeCleanupComplete = PanelTooltip.debugState().detachedBindingCount === 0;
+
+                // Node runner 用 Playwright page.mouse 驱动这一对固定探针，覆盖浏览器真实
+                // hit-test/event ordering；透明 blank surface 代表没有物品触发物的界面空白。
+                var physicalHoverProbe = document.createElement('button');
+                physicalHoverProbe.id = 'tooltip-physical-hover-probe';
+                physicalHoverProbe.type = 'button';
+                physicalHoverProbe.setAttribute('aria-label', 'tooltip physical hover probe');
+                physicalHoverProbe.style.cssText = 'position:fixed;left:36px;top:36px;width:36px;height:36px;opacity:.001;z-index:2147483000';
+                document.body.appendChild(physicalHoverProbe);
+                // 保留仍由 arena/merc/pet/tasks/intelligence 使用的手工 API 路径：
+                // runner 会用真实 page.mouse 覆盖 showAtMouse -> hideHover 复合 hover。
+                var legacyHoverProbe = document.createElement('button');
+                legacyHoverProbe.id = 'tooltip-legacy-hover-probe';
+                legacyHoverProbe.type = 'button';
+                legacyHoverProbe.setAttribute('aria-label', 'tooltip legacy hover probe');
+                legacyHoverProbe.style.cssText = 'position:fixed;left:96px;top:36px;width:36px;height:36px;opacity:.001;z-index:2147483000';
+                legacyHoverProbe.addEventListener('mouseenter', function(event) {
+                    PanelTooltip.showAtMouse(
+                        '<div class="flash-tt-desc" style="width:220px;height:96px">legacy pointer tooltip</div>',
+                        event
+                    );
+                });
+                legacyHoverProbe.addEventListener('mousemove', function(event) {
+                    PanelTooltip.followMouse(event);
+                });
+                legacyHoverProbe.addEventListener('mouseleave', function() {
+                    PanelTooltip.hideHover();
+                });
+                document.body.appendChild(legacyHoverProbe);
+                var physicalBlankProbe = document.createElement('div');
+                physicalBlankProbe.id = 'tooltip-physical-blank-probe';
+                physicalBlankProbe.setAttribute('aria-hidden', 'true');
+                physicalBlankProbe.style.cssText = 'position:fixed;right:20px;bottom:20px;width:48px;height:48px;background:transparent;z-index:1099';
+                document.body.appendChild(physicalBlankProbe);
+                PanelTooltip.bindAsync(physicalHoverProbe, {
+                    key:'physical-hover-probe', item:{}, cache:{},
+                    renderBasic:function(){
+                        return '<div class="flash-tt-rich flash-tt-rich--merge" style="width:220px;height:96px">'
+                            + '<div class="flash-tt-desc">physical pointer tooltip</div></div>';
+                    }
+                });
                 window.__visualTooltipState = {
                     visible:richVisible,
                     basicStyled:basicStyled,
@@ -2438,6 +2537,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     hoverSurfacePersistent:hoverSurfacePersistent,
                     wheelScrollsLongDescription:wheelScrollsLongDescription,
                     forcedHideResetsHoverState:forcedHideResetsHoverState,
+                    penPointerHoverPersistent:penPointerHoverPersistent,
+                    lateGeometryEnterIgnored:lateGeometryEnterIgnored,
                     keyboardScrollsLongDescription:keyboardScrollsLongDescription,
                     escapeDismissesTooltip:escapeDismissesTooltip,
                     detachedOwnerNotRestored:detachedOwnerNotRestored,

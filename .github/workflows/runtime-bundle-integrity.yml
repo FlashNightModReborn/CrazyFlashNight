@@ -76,6 +76,7 @@ on:
       - launcher/build.ps1
       - launcher/build-runtime-candidate.ps1
       - launcher/CRAZYFLASHER7MercenaryEmpire.csproj
+      - launcher/contracts/panel-contracts.v1.json
       - launcher/Directory.Packages.props
       - launcher/native/**
       - launcher/native/assert-pinned-tools.bat
@@ -115,11 +116,13 @@ on:
       - tools/test-invoke-runtime-**
       - tools/test-main-branch-**
       - tools/test-main-branch-admission.ps1
+      - tools/test-panel-contracts.js
       - tools/test-resolve-runtime-**
       - tools/test-resolve-runtime-trusted-base.ps1
       - tools/test-runtime-**
       - tools/validate-launcher-release-**
       - tools/validate-launcher-release-policy.ps1
+      - tools/validate-panel-contracts.js
       - tools/verify-runtime-**
       - 本地开发启动.cmd
   push:

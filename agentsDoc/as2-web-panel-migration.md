@@ -82,6 +82,8 @@ NPC 金币商店使用独立 `npcshop` domain 与 `NpcShopTask`，不复用 K �
 
 NPC 目录对象的 `purchaseLimit` 仅在策划显式配置时生效，合法域为 `1..999999`；未配置的装备以当前背包技术容量为上限，普通堆叠物品使用 `999999` 技术护栏，情报再取实时剩余容量。snapshot、trade preview、commit 与 legacy buy 必须复用同一上限解析；Web 对 `maxQuantity=0` 必须呈现“已达持有上限”并禁止创建购买意图。金额、收集栏容量任一不足均须在写前失败，禁止先扣全额再让 collection clamp 丢弃超额部分。
 
+Host 的 `1..999999` 只是 NPC 购买数量的 transport 护栏，不是业务配额；AS2 返回的 `purchaseLimit/maxAffordable/maxByCapacity/maxPurchasable` 才是动态有效上限。Host 不得复制固定 100/999 上限，但必须对成功 `tradePreview` 严格校验 token、总额、容量、`projectedBalance/missingSlots/canCommit/blockingError` 自洽、slot/same_name 计数、行类型/小计，以及买入/卖出行与归一化请求的物品身份、数量、scope 一致性；畸形读回包不得污染写门。Web 用 preview epoch 屏蔽关闭/重开前的迟到回包，每次成功 preview 把精确请求与 settlement 绑成 checkpoint：普通读 timeout、断线或畸形回包恢复最近 checkpoint 并保持加减/返回可操作；`stale_state/shop_not_found/item_not_found/locked/invalid_price/invalid_quantity/insufficient_quantity/nothing_to_sell/sell_forbidden` 必须获取 fresh authority snapshot；只有 Host 明示 `requiresReconcile` 的写 timeout/send failure、`reconcile_required` 或畸形 commit 才进对账，绝不自动重放 token；`tradeCommit` 在途必须同时锁住返回、加减、最大、批售、移除与重复提交。
+
 合成工作台使用独立 `crafting` domain 与 `CraftingTask`，不复用 inventory/NPC/KShop 的写协议。旧 `_root.改装系统.加载改装清单(分类)` 先尝试发送 `panel_request panel=crafting initData.category`，Launcher 或 socket 不可用时才回退 `物品改装界面` SWF。Host 与 AS2 对分类均固定白名单：`铁枪会/属性武器/烹饪/化学生产/武器合成/饰品合成/进阶防具/基础防具/公社防具/黑白契约/插件合成/大学装备`；Web 不能提交任意配方对象、物品名、材料数、价格、技能折扣或强化继承结果。snapshot 顶层 `gender:"男"|"女"` 是装备检视分支的权威值：AS2 从 `_root.性别` 规范化，Host 对缺失或非法值 fail-closed，Web 不从名称或素材反猜性别。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
@@ -118,7 +120,7 @@ Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{typ
 
 只有可提交预览才签发 opaque 单次 `craftToken`。`commit` 先消费 token，再按分类 + recipeIndex 重取配方，并比较配方签名、金币/K 点、等级/技能、背包/药剂栏 `mutationRevision` 与相关材料/情报/装备拥有态；任一变化返回 `stale_state` 且零写。复核成功后先备份四个容器与余额，`ItemUtil.submit` 扣材料、`ItemUtil.singleAcquire` 交付，交付失败则恢复容器/余额/dirty 状态；成功后才扣调整后的金币/K 点并标 dirty。内部 recipe/ref/备份不得进入 wire，token 在成功、失败或再次 snapshot/preview 后均不可重放。
 
-`CraftingTask` 与 Web 均采用 `idle/write_pending/needs_reconcile`。超时、断线、发送失败、未知结果或畸形 commit 回包后禁止自动重放；合成的对账读必须是同一 recipeIndex 的结构完整 `preview`，因为它同时覆盖材料、余额、容量和产物状态，成功 preview 才解除 Host 写门。单独 `snapshot` 不足以证明具体配方资源状态，不得解除 `needs_reconcile`。
+`CraftingTask` 与 Web 均采用 `idle/write_pending/needs_reconcile`。Web 把每次成功 preview 保存为同 `category/recipeIndex/craftCount` 的 checkpoint：普通 preview timeout/client_timeout/disconnected/畸形或未知非权威读错恢复 checkpoint 并继续可操作；stale/category/recipe/item/material/money/kpoint/inventory/level/batch 分歧先刷新 snapshot。只有回包明示 `requiresReconcile/reconcile_required`，或已投递 commit 的 timeout/drop/disconnected/畸形结果才进入写对账；同步未投递的 commit 失败保持可操作，任何失败都禁止自动重放；合成的对账读必须是同一 recipeIndex 的结构完整 `preview`，因为它同时覆盖材料、余额、容量和产物状态，成功 preview 才解除 Host 写门。单独 `snapshot` 不足以证明具体配方资源状态，不得解除 `needs_reconcile`。
 
 资源 lease 与交易计划 token 必须分开治理。`slotLease` 是 inventory 资源的 OCC 版本：同一 `ArrayInventory` 实例、同一 `mutationRevision`、同一槽位引用与确认指纹上的重复 snapshot 必须返回同一 opaque lease，纯读不得调用全局 session reset 或使其他面板刚取得的 lease 失效；snapshot 同时回显 `containerVersion` 供诊断。任一真实容器写入推进 `mutationRevision`，容器替换、引用/数量/名称/强化/进阶/插件/更新时间变化也必须使旧 lease 返回 `stale_state`。NPC 材料/情报的 collection lease 同理：同商店、同 view/key/count 的重复读保持稳定，切换商店、键消失或数量变化才轮换并清理旧映射。`tradeToken` / `checkoutToken` / batch token 是一次性交易计划，显式重同步或一次提交尝试后仍须失效，不能为了“稳定 lease”改成可重放。
 
@@ -209,6 +211,12 @@ close v1、嵌入式 organizer、严格 proof 与焦点恢复已由上述自动�
 当前真人业务证据已覆盖 attempt `62f04…1754` 的正常 NativeHud 入口、同实例 organizer、真实一次点击 modal、discard、fresh ACTIVE 返回、继续领取与 terminal close/unpause 主链，以及普通主页单次 X→`LOOT_SUSPENDED`→同锚点内容不变重开→最终领取；历史 `b9bb…2748` 与冷启动 `7560…add7` 仍只负责旧流程经济写 / 跨进程持久化旁证。`c-2a0cddb0…f32a40a3` 的隔离候选阶段保持 **e2e_verified / NOT_DEPLOYED** 历史，候选已优雅退出且 Flash CS6 保留；同一 `2A0CD…A107` / `3B837…150C` 身份现已完成 production promotion，并从正式 `runtime/` 标准入口通过 attempt-bound 受控进档、两次真实 claim、terminal close/unpause 与稳定存盘，故获批单 canary 当前为 **standard_entry_verified / 正式部署**。地图临时夹具也已恢复并以 stage **41/41**、map **243/243** 复验；完整 S1/S2 资产与 S0 exact fixture/全局 arbiter 人工门仍独立保留，不能外推为整体迁移或 S0 actual-feature 验收。
 
 补充冻结门：claim 的成功 operation journal 写入后，dirty 读回验证、loot lease cache 与 destination cache 失效属于分段幂等 mandatory effects。全部完成前 authority 保持 `LOOT_COMMIT_PENDING`；新 claim/close、snapshot/tooltip、panel/legacy recovery 与 scene terminal 均不得旁路，只有同 operation 或被 exact attempt/nonce 授权的 causal query 可恢复。初次 open transport detach 才按「exact journal → mandatory effects → same-object legacy renderer proof → exact pause-release proof」回 ACTIVE；reopen transport detach 复用前两项后回 SUSPENDED/terminal，禁止 renderer。Host 连接中 mount/navigation recovery 与 socket detach 共用该收敛机；内部 generation-bound 九键 proof query 必须先收束 in-flight claim，旧 generation 不得再 PostToWeb 或提前释放 pause。
+
+### 2.3 跨层契约与交互生命周期（2026-07-22）
+
+NPC/KShop/Crafting 的可执行登记表为 [`launcher/contracts/panel-contracts.v1.json`](../launcher/contracts/panel-contracts.v1.json)；它统一记录 cmd→action、`flashResponseTask → hostResponseHandler` 精确唯一绑定、读写级别、Host payload 模式、数值字段的 protocol/transport/business-authority 归属与共享边界向量，并在剥离源码注释后对照 `TaskRegistry`、Host 与 AS2 可执行注册点；注释、重复注册或跨 handler 错绑均须 fail closed。C# xUnit 直接读同一份 fixture；NPC 与 KShop 固定覆盖 `1/99/100/101/4549/999999` 与非法 `0/1000000`，Crafting 保持固定 `1..99`。契约只约束跨层语义与技术边界，不替代 AS2 对价格、持有量、容量与存档的最终裁决。详细 ADR 见 [Web Panel 跨层契约与交互可靠性专项治理](../docs/Web-Panel跨层契约与交互可靠性专项治理-2026-07-22.md)。
+
+凡 preview 改变可见本地意图，必须同时定义成功 checkpoint、迟到回包 epoch 隔离、普通读失败恢复、权威失鲜刷新和写结果未知 reconcile 五条路径；不得用单一 `error/busy` 布尔值合并。共享 Tooltip 的可见性由“有效 owner + 触发物/浮层复合 hover”决定；grace 结束后必须用真实命中状态复核空白终态，panel close/scope dispose 立即清理 owner、surface、timer 与 focus restore。浏览器回归必须同时用 pointer 和 pen 的真实 `PointerEvent` 覆盖复合过桥/快速划入空白，并为仍调用 `showAtMouse/hideHover` 的 legacy 消费者保留物理鼠标探针；直接调内部函数不能替代浏览器事件链。
 
 ## 3. C# 接入清单
 
@@ -310,6 +318,8 @@ Launcher 状态统一为 `compiled → candidate_built → candidate_executed �
 |--------|------|
 | C# Task / router / PanelHost | `launcher/tests/run_tests.ps1` + `launcher/build.ps1`；随后启动返回的精确 candidate、记录身份并跑受影响领域 E2E。需要正式验收时再走 promotion + 标准入口复核 |
 | Web module / CSS / harness | 对应 browser harness 或静态 QA；没有入口时先补入口 |
+| NPC/KShop/Crafting 命令或数值边界 | `node tools/validate-panel-contracts.js` + `node tools/test-panel-contracts.js` + 共享 contract vectors 的领域 harness/xUnit；production policy 必须通过 `panel-cross-layer-contracts` |
+| 共享 Tooltip / hover 生命周期 | `node tools/run-kshop-harness.js`；必须包含 pointer + pen 真实事件、复合过桥、空白终态和 legacy `showAtMouse/hideHover` 物理探针 |
 | AS2 service / include / gameCommand | `scripts/compile_test.ps1` fresh trace，或说明 IDE 人工复核状态 |
 | 写存档 / 金钱 / K点 / 背包 / 伙伴 / 宠物 | 游戏内端到端手测 + 回读存档状态 |
 | 文档入口、协议、验证入口变化 | `node tools/validate-doc-governance.js` |

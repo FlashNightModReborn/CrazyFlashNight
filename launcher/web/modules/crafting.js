@@ -2,8 +2,8 @@
 var CraftingPanel = (function() {
     'use strict';
     var _shellEl, _shell, _catalogView, _detailView, _catalogRenderer, _detailBody;
-    var _category = '', _snapshot = null, _preview = null, _selectedIndex = -1, _craftCount = 1;
-    var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _generation = 0;
+    var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
+    var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _needsRefresh = false, _generation = 0;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _commitButton = null, _craftableToggle = null, _tooltipCache = {};
     var _inspector = null, _tooltipScope = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
@@ -11,7 +11,7 @@ var CraftingPanel = (function() {
     var _detailScrollTop = 0, _detailScrollLeft = 0;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var _mux = new CraftingRuntime.RequestMux({
-        send:function(message) { Bridge.send(message); },
+        send:function(message) { return Bridge.send(message); },
         timeoutMs:_config.requestTimeoutMs,
         sessionNonce:_config.sessionNonce
     });
@@ -193,7 +193,7 @@ var CraftingPanel = (function() {
         var visible = filteredRecipes(_snapshot && _snapshot.recipes ? _snapshot.recipes : []);
         if (!visible.some(function(recipe) { return Number(recipe.recipeIndex) === _selectedIndex; })) {
             _selectedIndex = visible.length ? Number(visible[0].recipeIndex) : -1;
-            _craftCount = 1; _preview = null;
+            _craftCount = 1; _preview = null; clearPreviewCheckpoint();
             renderCatalog({preserveScroll:false}); renderDetail({preserveScroll:false});
             if (_selectedIndex >= 0) requestPreview(); else refreshControls();
             return;
@@ -203,7 +203,7 @@ var CraftingPanel = (function() {
 
     function selectRecipe(recipeIndex) {
         if (_busy || recipeIndex < 0) return;
-        _selectedIndex = recipeIndex; _craftCount = 1; _preview = null;
+        _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; clearPreviewCheckpoint();
         if (_catalogRenderer) _catalogRenderer.setSelectedKey(String(recipeIndex));
         renderDetail({preserveScroll:false}); requestPreview();
     }
@@ -219,10 +219,24 @@ var CraftingPanel = (function() {
                 renderDetail(); refreshControls(); requestPreview(); return;
             }
             if (response.success) {
-                _preview = response; _needsReconcile = false; applyBalance(response.balance);
+                _preview = response; rememberPreview(response, requestedIndex, requestedCount);
+                _needsReconcile = false; _needsRefresh = false; applyBalance(response.balance);
+            } else if (requiresReconcile(response)) {
+                _preview = null; clearPreviewCheckpoint(); _needsReconcile = true;
+                toast(errorMessage(response.error));
+            } else if (requiresAuthorityRefresh(response)) {
+                _preview = null; clearPreviewCheckpoint(); _needsRefresh = true;
+                toast(errorMessage(response.error));
+                renderDetail(); refreshControls();
+                refreshSnapshot(requestedIndex, requestedCount);
+                if (callback) callback(response);
+                return;
             } else {
-                _preview = null;
-                if (isAmbiguous(response)) _needsReconcile = true;
+                var restored = !_needsReconcile && restorePreviewCheckpoint(requestedIndex);
+                if (!restored) {
+                    _preview = null;
+                    if (!_needsReconcile) _needsRefresh = true;
+                }
                 toast(errorMessage(response.error));
             }
             renderDetail(); refreshControls(); if (callback) callback(response);
@@ -296,7 +310,7 @@ var CraftingPanel = (function() {
         _commitButton.className = 'crafting-commit-btn'; _commitButton.textContent = _busy ? '提交中…' : '确认合成';
         _commitButton.setAttribute('aria-label', '确认合成 ' + Number(_preview.craftCount || 1) + ' 份');
         _commitButton.setAttribute('data-title', '确认合成');
-        _commitButton.disabled = _busy || _needsReconcile || !_preview.canCommit || !_preview.craftToken;
+        _commitButton.disabled = _busy || _needsReconcile || _needsRefresh || !_preview.canCommit || !_preview.craftToken;
         _commitButton.addEventListener('click', commitCraft); _detailBody.appendChild(_commitButton);
         restoreScroll();
     }
@@ -327,9 +341,9 @@ var CraftingPanel = (function() {
         minus.setAttribute('data-title', '减少一份');
         plus.setAttribute('data-title', '增加一份');
         maximum.setAttribute('data-title', '合成上限 ' + max + ' 份');
-        minus.disabled = _craftCount <= 1 || _busy || _previewBusy;
-        plus.disabled = max <= 0 || _craftCount >= max || _busy || _previewBusy;
-        maximum.disabled = max <= 0 || _craftCount === max || _busy || _previewBusy;
+        minus.disabled = _craftCount <= 1 || _busy || _previewBusy || _needsReconcile || _needsRefresh;
+        plus.disabled = max <= 0 || _craftCount >= max || _busy || _previewBusy || _needsReconcile || _needsRefresh;
+        maximum.disabled = max <= 0 || _craftCount === max || _busy || _previewBusy || _needsReconcile || _needsRefresh;
         group.appendChild(minus); group.appendChild(value); group.appendChild(plus); group.appendChild(maximum);
         var hint = document.createElement('small'); hint.textContent = max > 0 ? '当前最多 ' + max + ' 份' : '当前资源不足 1 份';
         control.appendChild(label); control.appendChild(group); control.appendChild(hint); return control;
@@ -342,7 +356,7 @@ var CraftingPanel = (function() {
     }
 
     function setCraftCount(value) {
-        if (_busy || _previewBusy || !_preview || !_preview.batchEligible) return false;
+        if (_busy || _previewBusy || _needsReconcile || _needsRefresh || !_preview || !_preview.batchEligible) return false;
         var max = Math.max(0, Number(_preview.maxCraftCount) || 0);
         var next = Math.max(1, Math.min(99, Math.floor(Number(value) || 1)));
         if (max > 0) next = Math.min(next, max);
@@ -370,35 +384,46 @@ var CraftingPanel = (function() {
     }
 
     function commitCraft() {
-        if (_busy || _needsReconcile || !_preview || !_preview.canCommit || !_preview.craftToken) return;
+        if (_busy || _needsReconcile || _needsRefresh || !_preview || !_preview.canCommit || !_preview.craftToken) return;
         _busy = true; refreshControls(); renderDetail();
         var preferred = _selectedIndex, preferredCount = _craftCount;
-        request('commit', {category:_category, expectedCraftToken:_preview.craftToken}, function(response) {
+        var issuing = true;
+        var callId = request('commit', {category:_category, expectedCraftToken:_preview.craftToken}, function(response) {
+            var dispatched = !issuing;
             _busy = false;
             if (response.success) {
                 toast('已合成 ' + ((response.crafted && response.crafted.displayName) || '目标物品'));
-                _preview = null; refreshSnapshot(preferred, preferredCount); return;
+                _preview = null; clearPreviewCheckpoint(); refreshSnapshot(preferred, preferredCount); return;
             }
-            if (isAmbiguous(response)) {
+            if (isWriteAmbiguous(response, dispatched)) {
                 _needsReconcile = true; toast('提交结果不明确，正在向 Flash 对账。');
                 requestPreview();
+            } else if (requiresAuthorityRefresh(response)) {
+                toast(errorMessage(response.error)); _preview = null; clearPreviewCheckpoint();
+                _needsRefresh = true; refreshSnapshot(preferred, preferredCount); return;
             } else {
-                toast(errorMessage(response.error)); _preview = null; requestPreview();
+                toast(errorMessage(response.error));
             }
             renderDetail(); refreshControls();
         });
+        issuing = false;
+        if (!callId) { _busy = false; renderDetail(); refreshControls(); }
     }
 
     function refreshSnapshot(preferredIndex, preferredCount) {
         if (!_category) return false;
         _shell.setStatus('同步中', 'loading');
+        if (_retryButton) _retryButton.disabled = true;
         var generation = _generation, previousIndex = _selectedIndex;
         return !!request('snapshot', {category:_category}, function(response) {
             if (generation !== _generation) return;
             if (!response.success) {
-                _needsReconcile = true; toast(errorMessage(response.error)); refreshControls(); return;
+                if (requiresReconcile(response)) {
+                    _preview = null; clearPreviewCheckpoint(); _needsReconcile = true; _needsRefresh = false;
+                } else if (!_needsReconcile) _needsRefresh = true;
+                toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
             }
-            _snapshot = response; applyBalance(response.balance); rebuildFilterTree();
+            _snapshot = response; _needsRefresh = false; applyBalance(response.balance); rebuildFilterTree();
             var recipes = response.recipes || [], visible = filteredRecipes(recipes);
             var next = Number(preferredIndex);
             if (isNaN(next) || next < 0 || !visible.some(function(recipe) { return Number(recipe.recipeIndex) === next; })) {
@@ -406,8 +431,10 @@ var CraftingPanel = (function() {
             }
             var selectionChanged = next !== previousIndex;
             _selectedIndex = next;
-            _craftCount = Math.max(1, Math.min(99, Math.floor(Number(preferredCount) || 1)));
-            _preview = null;
+            var selectedRecipe = findRecipe(next);
+            _craftCount = selectedRecipe && selectedRecipe.batchEligible === true
+                ? Math.max(1, Math.min(99, Math.floor(Number(preferredCount) || 1))) : 1;
+            _preview = null; clearPreviewCheckpoint();
             renderCatalog({preserveScroll:!selectionChanged});
             renderDetail({preserveScroll:!selectionChanged});
             if (next >= 0) requestPreview(); else refreshControls();
@@ -415,18 +442,25 @@ var CraftingPanel = (function() {
     }
 
     function reconcile() {
-        if (_selectedIndex >= 0) requestPreview(); else refreshSnapshot();
+        if (_needsRefresh) refreshSnapshot(_selectedIndex, _craftCount);
+        else if (_selectedIndex >= 0) requestPreview();
+        else refreshSnapshot();
     }
 
     function openOrganizer() {
-        if (_busy || _previewBusy || _organizerBusy || !_category) return false;
+        if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh || !_category) return false;
         _organizerBusy = true; refreshControls();
         var generation = _generation;
         return !!request('snapshot', {category:_category}, function(response) {
             if (generation !== _generation) return;
             _organizerBusy = false;
-            if (!response.success) { toast(errorMessage(response.error)); refreshControls(); return; }
-            _preview = null;
+            if (!response.success) {
+                if (requiresReconcile(response)) {
+                    _preview = null; clearPreviewCheckpoint(); _needsReconcile = true;
+                }
+                toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
+            }
+            _preview = null; clearPreviewCheckpoint();
             Panels.open('workbench', {profile:'battlebox', returnTo:{panel:'crafting', initData:{
                 category:_category, preferredRecipeIndex:_selectedIndex, preferredCraftCount:_craftCount
             }}});
@@ -453,15 +487,20 @@ var CraftingPanel = (function() {
     function refreshControls() {
         if (!_shell) return;
         if (_needsReconcile) _shell.setStatus('需要重新核对', 'error');
+        else if (_needsRefresh) _shell.setStatus('需要重新同步', 'error');
         else if (_organizerBusy) _shell.setStatus('正在打开战备箱', 'loading');
         else if (_busy || _previewBusy) _shell.setStatus('权威核算中', 'loading');
         else if (_snapshot) _shell.setStatus('Flash 权威状态', 'idle');
         else _shell.setStatus('同步中', 'loading');
-        if (_retryButton) { _retryButton.style.display = _needsReconcile ? '' : 'none'; _retryButton.disabled = _previewBusy; }
-        if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile;
-        if (_filterNavigator) _filterNavigator.setDisabled(_busy || _previewBusy || _organizerBusy);
-        if (_craftableToggle) _craftableToggle.disabled = _busy || _previewBusy || _organizerBusy;
-        if (_commitButton) _commitButton.disabled = _busy || _needsReconcile || !_preview || !_preview.canCommit || !_preview.craftToken;
+        if (_retryButton) {
+            _retryButton.textContent = _needsReconcile ? '重新核对' : '重新同步';
+            _retryButton.style.display = _needsReconcile || _needsRefresh ? '' : 'none';
+            _retryButton.disabled = _previewBusy;
+        }
+        if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
+        if (_filterNavigator) _filterNavigator.setDisabled(_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh);
+        if (_craftableToggle) _craftableToggle.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
+        if (_commitButton) _commitButton.disabled = _busy || _needsReconcile || _needsRefresh || !_preview || !_preview.canCommit || !_preview.craftToken;
     }
 
     function onOpen(el, initData) {
@@ -474,8 +513,8 @@ var CraftingPanel = (function() {
         _category = nextCategory;
         var preferredIndex = initData && Number(initData.preferredRecipeIndex);
         var preferredCount = initData && Number(initData.preferredCraftCount);
-        _snapshot = null; _preview = null; _selectedIndex = -1; _busy = false; _previewBusy = false;
-        _craftCount = 1; _organizerBusy = false; _needsReconcile = false; _tooltipCache = {}; buildDOM();
+        _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1; _busy = false; _previewBusy = false;
+        _craftCount = 1; _organizerBusy = false; _needsReconcile = false; _needsRefresh = false; _tooltipCache = {}; buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _mux.openSession(); refreshSnapshot(preferredIndex, preferredCount);
@@ -487,6 +526,7 @@ var CraftingPanel = (function() {
         if (_shell) _shell.closeModal();
         _inspector = null;
         _busy = false; _previewBusy = false; _organizerBusy = false; _snapshot = null; _preview = null;
+        clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false;
         disposeFilterNavigator(); _craftableToggle = null;
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
     }
@@ -524,10 +564,38 @@ var CraftingPanel = (function() {
         });
     }
 
-    function isAmbiguous(response) {
+    function rememberPreview(response, recipeIndex, craftCount) {
+        _previewCheckpoint = {category:_category, recipeIndex:Number(recipeIndex), craftCount:Number(craftCount), preview:response};
+    }
+
+    function restorePreviewCheckpoint(recipeIndex) {
+        var checkpoint = _previewCheckpoint;
+        if (!checkpoint || checkpoint.category !== _category || checkpoint.recipeIndex !== Number(recipeIndex)) return false;
+        _craftCount = checkpoint.craftCount; _preview = checkpoint.preview; applyBalance(_preview.balance); return true;
+    }
+
+    function clearPreviewCheckpoint() { _previewCheckpoint = null; }
+
+    function requiresReconcile(response) {
+        return !!(response && response.requiresReconcile) || (response && response.error) === 'reconcile_required';
+    }
+
+    function isTransportUncertain(response) {
         var error = response && response.error;
-        return !!(response && response.requiresReconcile) || error === 'timeout' || error === 'client_timeout'
-            || error === 'disconnected' || error === 'reconcile_required' || error === 'malformed_response';
+        return error === 'timeout' || error === 'client_timeout' || error === 'disconnected'
+            || error === 'malformed_response' || error === 'invalid_response';
+    }
+
+    function isWriteAmbiguous(response, dispatched) {
+        return requiresReconcile(response) || (dispatched && isTransportUncertain(response));
+    }
+
+    function requiresAuthorityRefresh(response) {
+        var error = response && response.error;
+        return error === 'category_not_found' || error === 'recipe_not_found' || error === 'item_not_found'
+            || error === 'stale_state' || error === 'material_missing' || error === 'insufficient_money'
+            || error === 'insufficient_kpoint' || error === 'inventory_full' || error === 'level_locked'
+            || error === 'batch_not_supported';
     }
 
     function costText(cost) {
@@ -563,7 +631,10 @@ var CraftingPanel = (function() {
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
-        needsReconcile:_needsReconcile, gender:_snapshot && _snapshot.gender,
+        needsReconcile:_needsReconcile, needsRefresh:_needsRefresh,
+        previewCheckpoint:_previewCheckpoint ? {category:_previewCheckpoint.category,
+            recipeIndex:_previewCheckpoint.recipeIndex, craftCount:_previewCheckpoint.craftCount} : null,
+        gender:_snapshot && _snapshot.gender,
         inspector:_inspector && _inspector.debugState ? _inspector.debugState() : null,
         mux:_mux.debugState()}; }};
 })();

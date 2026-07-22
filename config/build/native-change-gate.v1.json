@@ -64,15 +64,18 @@
     "config/build/native-change-gate.v1.json",
     "config/build/runtime-inputs.v2.json",
     "launcher/build.ps1",
+    "launcher/contracts/panel-contracts.v1.json",
     "tools/lib/runtime-process-identity.js",
     "tools/audit-native-cursor-assets.js",
     "tools/audit-main-branch-admission.ps1",
     "tools/classify-runtime-release-state.ps1",
     "tools/resolve-runtime-trusted-base.ps1",
     "tools/test-main-branch-admission.ps1",
+    "tools/test-panel-contracts.js",
     "tools/test-resolve-runtime-trusted-base.ps1",
     "tools/prepare-launcher-release-assets.ps1",
     "tools/validate-launcher-release-policy.ps1",
+    "tools/validate-panel-contracts.js",
     "本地开发启动.cmd"
   ],
   "protectedPrefixes": [

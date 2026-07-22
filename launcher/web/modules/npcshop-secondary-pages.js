@@ -93,25 +93,36 @@
     SettlementPresenter.prototype.close = function(reason) { return this.secondary.close(reason || 'return'); };
     SettlementPresenter.prototype.isActive = function() { return this.secondary.isActive(); };
     SettlementPresenter.prototype.setOrganizing = function(active) { this.root.classList.toggle('organizing-space', !!active); };
+    SettlementPresenter.prototype.reset = function() {
+        this._renderLines('purchase', [], {}); this._renderLines('sale', [], {});
+        this.root.querySelector('[data-trade-economy]').textContent = '';
+        this.root.querySelector('[data-trade-context]').textContent = '价格与容量由游戏实时核算；确认后整单一次生效。';
+        this._organizeButton.hidden = true;
+        this.commitBar.update({label:'核算中…', status:'', busy:true, canCommit:false, state:'busy'});
+    };
     SettlementPresenter.prototype.renderLoading = function() {
         this.commitBar.update({label:'核算中…', busy:true, canCommit:false, state:'busy'});
     };
-    SettlementPresenter.prototype.renderFailure = function(errorCode) {
+    SettlementPresenter.prototype.renderFailure = function(errorCode, recovered) {
         this.commitBar.update({
-            label:'无法结算', status:this._ports.errorMessage(errorCode),
+            label:'无法结算', status:this._ports.errorMessage(errorCode)
+                + (recovered ? ' 已恢复上一次可核算的清单，可继续调整或返回选购。' : ''),
             disabled:true, canCommit:false, state:'error'
         });
     };
     SettlementPresenter.prototype.render = function(settlement, intents, ui) {
         if (!settlement) return false;
         intents = intents || {purchases:{}, sales:{}};
-        this._renderLines('purchase', settlement.purchaseLines || [], intents.purchases || {});
-        this._renderLines('sale', settlement.saleLines || [], intents.sales || {});
+        ui = ui || {};
+        this._renderLines('purchase', settlement.purchaseLines || [], intents.purchases || {}, ui);
+        this._renderLines('sale', settlement.saleLines || [], intents.sales || {}, ui);
         this.root.querySelector('[data-trade-economy]').innerHTML = '<b>购买 -$' + Number(settlement.buyTotal || 0).toLocaleString() + '</b>'
             + '<b>出售 +$' + Number(settlement.sellTotal || 0).toLocaleString() + '</b>'
             + '<strong>结余 $' + Number(settlement.projectedBalance || 0).toLocaleString() + '</strong>'
             + '<small>需 ' + Number(settlement.requiredSlots || 0) + ' 格 / 可用 ' + Number(settlement.availableSlots || 0) + ' 格</small>';
         var vm = settlementViewModel(settlement, ui, this._ports.errorMessage);
+        this.root.querySelector('[data-trade-back]').disabled = !!ui.busy;
+        this._helpButton.disabled = !!ui.busy;
         this._organizeButton.hidden = !vm.organizeVisible;
         this._organizeButton.disabled = vm.organizeDisabled;
         this.root.querySelector('[data-trade-context]').textContent = vm.context;
@@ -122,8 +133,9 @@
         });
         return true;
     };
-    SettlementPresenter.prototype._renderLines = function(kind, lines, intents) {
+    SettlementPresenter.prototype._renderLines = function(kind, lines, intents, ui) {
         var self = this;
+        ui = ui || {};
         var list = this.root.querySelector(kind === 'purchase' ? '[data-purchase-lines]' : '[data-sale-lines]');
         var previousScrollTop = list.scrollTop;
         var previousScrollLeft = list.scrollLeft;
@@ -189,6 +201,10 @@
                     stepper.appendChild(all);
                 }
                 stepper.appendChild(remove);
+            }
+            if (ui.busy) {
+                var rowButtons = stepper.querySelectorAll('button');
+                for (var buttonIndex = 0; buttonIndex < rowButtons.length; buttonIndex++) rowButtons[buttonIndex].disabled = true;
             }
             row.appendChild(icon); row.appendChild(copy); row.appendChild(stepper); list.appendChild(row);
         });

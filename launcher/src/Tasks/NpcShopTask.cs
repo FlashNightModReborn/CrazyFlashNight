@@ -17,10 +17,14 @@ namespace CF7Launcher.Tasks
             public string WebCallId;
             public string WebCmd;
             public bool IsWrite;
+            public JObject NormalizedPayload;
         }
 
         private const int DefaultTimeoutMs = 10000;
         private const int RecentCallIdCapacity = 256;
+        // npc-shop.v2 的跨层整数技术护栏，不是策划购买配额。装备、情报容量与
+        // purchaseLimit 仍由 AS2 在 snapshot/preview/commit 的同一权威路径裁决。
+        private const int MaxPurchaseQuantity = 999999;
         private static readonly Regex ValidCallId = new Regex("^[A-Za-z0-9._-]{1,96}$", RegexOptions.Compiled);
         private static readonly Regex ValidLease = new Regex("^[A-Za-z0-9._-]{1,160}$", RegexOptions.Compiled);
 
@@ -91,7 +95,13 @@ namespace CF7Launcher.Tasks
                     return;
                 }
                 fid = ++_seq;
-                _pending[fid] = new PendingRequest { WebCallId = callId, WebCmd = cmd, IsWrite = isWrite };
+                _pending[fid] = new PendingRequest
+                {
+                    WebCallId = callId,
+                    WebCmd = cmd,
+                    IsWrite = isWrite,
+                    NormalizedPayload = (JObject)normalized.DeepClone()
+                };
                 _activeCallIds.Add(callId);
                 if (isWrite) _writeState = "write_pending";
             }
@@ -177,7 +187,7 @@ namespace CF7Launcher.Tasks
                 int catalogIndex, quantity;
                 if (!CopyShopId(payload, normalized)
                     || !TryReadInteger(payload["catalogIndex"], 0, 10000, out catalogIndex)
-                    || !TryReadInteger(payload["quantity"], 1, 100, out quantity)) return false;
+                    || !TryReadInteger(payload["quantity"], 1, MaxPurchaseQuantity, out quantity)) return false;
                 normalized["catalogIndex"] = catalogIndex;
                 normalized["quantity"] = quantity;
                 return true;
@@ -246,7 +256,7 @@ namespace CF7Launcher.Tasks
                     int catalogIndex, quantity;
                     if (line == null
                         || !TryReadInteger(line["catalogIndex"], 0, 10000, out catalogIndex)
-                        || !TryReadInteger(line["quantity"], 1, 100, out quantity)
+                        || !TryReadInteger(line["quantity"], 1, MaxPurchaseQuantity, out quantity)
                         || !purchaseIds.Add(catalogIndex)) return false;
                     cleanPurchases.Add(new JObject { ["catalogIndex"] = catalogIndex, ["quantity"] = quantity });
                 }
@@ -361,7 +371,7 @@ namespace CF7Launcher.Tasks
                 case "invalid_payload": case "shop_not_found": case "item_not_found": case "invalid_quantity": case "locked":
                 case "insufficient_money": case "inventory_full": case "stale_state": case "sell_forbidden":
                 case "insufficient_quantity": case "nothing_to_sell": case "busy": return true;
-                case "duplicate_line": case "invalid_price": return true;
+                case "duplicate_line": case "invalid_price": case "destination_full": return true;
                 default: return false;
             }
         }
@@ -373,11 +383,206 @@ namespace CF7Launcher.Tasks
             if (entry.IsWrite)
             {
                 if (success) return !IsAuthoritativeWriteSuccess(msg, entry.WebCmd);
-                return string.IsNullOrEmpty(msg.Value<string>("error"));
+                return !HasErrorCode(msg);
             }
             if (entry.WebCmd == "snapshot")
-                return success ? !IsAuthoritativeState(msg) : string.IsNullOrEmpty(msg.Value<string>("error"));
+                return success ? !IsAuthoritativeState(msg) : !HasErrorCode(msg);
+            if (entry.WebCmd == "tradePreview")
+                return success ? !IsAuthoritativeTradePreview(msg, entry.NormalizedPayload)
+                    : !HasErrorCode(msg);
+            return !success && !HasErrorCode(msg);
+        }
+
+        private static bool IsAuthoritativeTradePreview(JObject msg, JObject request)
+        {
+            if (msg == null || msg["v"] == null || msg["v"].Type != JTokenType.Integer
+                || msg.Value<int>("v") != 1 || request == null) return false;
+            string token = msg.Value<string>("tradeToken");
+            JArray purchaseLines = msg["purchaseLines"] as JArray;
+            JArray saleLines = msg["saleLines"] as JArray;
+            JArray requestedPurchases = request["purchases"] as JArray;
+            JArray requestedSales = request["sales"] as JArray;
+            if (msg["tradeToken"] == null || msg["tradeToken"].Type != JTokenType.String
+                || string.IsNullOrEmpty(token) || !ValidLease.IsMatch(token)
+                || purchaseLines == null || saleLines == null
+                || requestedPurchases == null || requestedSales == null
+                || purchaseLines.Count != requestedPurchases.Count || saleLines.Count != requestedSales.Count
+                || !IsNonNegativeNumber(msg["buyTotal"]) || !IsNonNegativeNumber(msg["sellTotal"])
+                || !IsNumber(msg["netDelta"]) || !IsNumber(msg["projectedBalance"])
+                || !IsNonNegativeInteger(msg["requiredSlots"]) || !IsNonNegativeInteger(msg["availableSlots"])
+                || !IsNonNegativeInteger(msg["missingSlots"])
+                || msg["canCommit"] == null || msg["canCommit"].Type != JTokenType.Boolean
+                || msg["blockingError"] == null || msg["blockingError"].Type != JTokenType.String) return false;
+
+            var requestedPurchaseById = new Dictionary<int, JObject>();
+            foreach (JToken requestToken in requestedPurchases)
+            {
+                JObject line = requestToken as JObject;
+                int catalogIndex;
+                if (line == null || !TryReadInteger(line["catalogIndex"], 0, 10000, out catalogIndex)) return false;
+                requestedPurchaseById[catalogIndex] = line;
+            }
+
+            double purchaseTotal = 0;
+            bool hasPotentialCollectionAcquisition = false;
+            var seenPurchases = new HashSet<int>();
+            foreach (JToken responseToken in purchaseLines)
+            {
+                JObject line = responseToken as JObject;
+                int catalogIndex, quantity, maxQuantity, purchaseLimit;
+                int maxAffordable, maxByCapacity, maxPurchasable;
+                JObject requestedLine;
+                string itemKind = line != null ? line.Value<string>("itemKind") : null;
+                string destinationView = line != null ? line.Value<string>("destinationView") : null;
+                if (line == null
+                    || !TryReadInteger(line["catalogIndex"], 0, 10000, out catalogIndex)
+                    || !seenPurchases.Add(catalogIndex)
+                    || !requestedPurchaseById.TryGetValue(catalogIndex, out requestedLine)
+                    || !TryReadInteger(line["quantity"], 1, MaxPurchaseQuantity, out quantity)
+                    || quantity != requestedLine.Value<int>("quantity")
+                    || !TryReadInteger(line["maxQuantity"], 1, MaxPurchaseQuantity, out maxQuantity)
+                    || !TryReadInteger(line["purchaseLimit"], 1, MaxPurchaseQuantity, out purchaseLimit)
+                    || quantity > maxQuantity || quantity > purchaseLimit || maxQuantity != purchaseLimit
+                    || !TryReadInteger(line["maxAffordable"], 0, MaxPurchaseQuantity, out maxAffordable)
+                    || !TryReadInteger(line["maxByCapacity"], 0, MaxPurchaseQuantity, out maxByCapacity)
+                    || !TryReadInteger(line["maxPurchasable"], 0, MaxPurchaseQuantity, out maxPurchasable)
+                    || maxPurchasable > purchaseLimit || maxPurchasable > maxAffordable || maxPurchasable > maxByCapacity
+                    || !IsSafeString(line["itemName"], 128, false)
+                    || !IsSafeString(line["displayName"], 256, false)
+                    || !IsSafeString(line["icon"], 256, false)
+                    || !IsOneOf(line["itemKind"], "equipment", "stack")
+                    || !IsOneOf(line["destinationView"], "bag", "material", "intelligence", "quickslot")
+                    || (destinationView == "intelligence" && itemKind != "stack")
+                    || !IsOneOf(line["limitingReason"], "", "insufficient_money", "inventory_full", "destination_full")
+                    || !IsNonNegativeNumber(line["unitPrice"]) || !IsNonNegativeNumber(line["total"])) return false;
+                int expectedMaximum = Math.Min(purchaseLimit, Math.Min(maxAffordable, maxByCapacity));
+                string expectedLimitingReason = expectedMaximum < purchaseLimit
+                    ? (maxByCapacity <= maxAffordable
+                        ? (line.Value<string>("destinationView") == "intelligence" ? "destination_full" : "inventory_full")
+                        : "insufficient_money")
+                    : "";
+                if (maxPurchasable != expectedMaximum
+                    || line.Value<string>("limitingReason") != expectedLimitingReason) return false;
+                if (destinationView == "intelligence") hasPotentialCollectionAcquisition = true;
+                purchaseTotal += line.Value<double>("total");
+            }
+
+            var requestedSaleByIdentity = new Dictionary<string, JObject>(StringComparer.Ordinal);
+            foreach (JToken requestToken in requestedSales)
+            {
+                JObject line = requestToken as JObject;
+                string identity = TradeSaleIdentity(line);
+                if (line == null || string.IsNullOrEmpty(identity) || requestedSaleByIdentity.ContainsKey(identity)) return false;
+                requestedSaleByIdentity[identity] = line;
+            }
+
+            double saleTotal = 0;
+            var seenSales = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken responseToken in saleLines)
+            {
+                JObject line = responseToken as JObject;
+                long quantity;
+                int matchedCount, eligibleCount, protectedCount;
+                string identity = line != null && line["sourceIdentity"] != null
+                    && line["sourceIdentity"].Type == JTokenType.String ? line.Value<string>("sourceIdentity") : null;
+                string scope = line != null ? line.Value<string>("scope") : null;
+                JObject requestedLine;
+                if (line == null || string.IsNullOrEmpty(identity) || !seenSales.Add(identity)
+                    || !requestedSaleByIdentity.TryGetValue(identity, out requestedLine)
+                    || !TryReadPositiveInteger(line["quantity"], out quantity)
+                    || !TryReadInteger(line["matchedCount"], 1, int.MaxValue, out matchedCount)
+                    || !TryReadInteger(line["eligibleCount"], 1, int.MaxValue, out eligibleCount)
+                    || !TryReadInteger(line["protectedCount"], 0, int.MaxValue, out protectedCount)
+                    || eligibleCount > matchedCount || protectedCount > matchedCount
+                    || (long)eligibleCount + protectedCount != matchedCount
+                    || scope != requestedLine.Value<string>("scope")
+                    || (scope == "slot" && (quantity != requestedLine.Value<int>("quantity")
+                        || matchedCount != 1 || eligibleCount != 1 || protectedCount != 0))
+                    || !IsSafeString(line["itemName"], 128, false)
+                    || !IsSafeString(line["displayName"], 256, false)
+                    || !IsSafeString(line["icon"], 256, false)
+                    || !IsOneOf(line["itemKind"], "equipment", "stack")
+                    || !IsOneOf(line["scope"], "slot", "same_name")
+                    || !IsNonNegativeNumber(line["total"])) return false;
+                if (line.Value<string>("itemKind") == "equipment") hasPotentialCollectionAcquisition = true;
+                saleTotal += line.Value<double>("total");
+            }
+
+            double buyTotal = msg.Value<double>("buyTotal");
+            double sellTotal = msg.Value<double>("sellTotal");
+            string blockingError = msg.Value<string>("blockingError");
+            bool canCommit = msg.Value<bool>("canCommit");
+            int requiredSlots = msg.Value<int>("requiredSlots");
+            int availableSlots = msg.Value<int>("availableSlots");
+            int missingSlots = msg.Value<int>("missingSlots");
+            double projectedBalance = msg.Value<double>("projectedBalance");
+            bool consistentCommitState = projectedBalance < 0
+                ? !canCommit && blockingError == "insufficient_money"
+                : blockingError == "destination_full"
+                    ? !canCommit && hasPotentialCollectionAcquisition
+                    : missingSlots > 0
+                        ? !canCommit && blockingError == "inventory_full"
+                        : canCommit && string.IsNullOrEmpty(blockingError);
+            return buyTotal == purchaseTotal && sellTotal == saleTotal
+                && msg.Value<double>("netDelta") == sellTotal - buyTotal
+                && missingSlots == Math.Max(0, requiredSlots - availableSlots)
+                && IsOneOf(msg["blockingError"], "", "insufficient_money", "inventory_full", "destination_full")
+                && consistentCommitState;
+        }
+
+        private static string TradeSaleIdentity(JObject line)
+        {
+            JObject source = line != null ? line["source"] as JObject : null;
+            if (source == null) return null;
+            if (source.Value<string>("containerId") == "背包") return "bag:" + source.Value<int>("slot");
+            if (source.Value<string>("viewId") == "material") return "material:" + source.Value<string>("key");
+            return null;
+        }
+
+        private static bool IsSafeString(JToken token, int max, bool allowEmpty)
+        {
+            if (token == null || token.Type != JTokenType.String) return false;
+            string value = token.Value<string>();
+            if (value == null || (!allowEmpty && value.Length == 0) || value.Length > max) return false;
+            for (int i = 0; i < value.Length; i++) if (char.IsControl(value[i])) return false;
+            return true;
+        }
+
+        private static bool HasErrorCode(JObject msg)
+        {
+            return msg != null && IsSafeString(msg["error"], 80, false);
+        }
+
+        private static bool IsOneOf(JToken token, params string[] values)
+        {
+            if (token == null || token.Type != JTokenType.String) return false;
+            string candidate = token.Value<string>();
+            for (int i = 0; i < values.Length; i++) if (candidate == values[i]) return true;
             return false;
+        }
+
+        private static bool IsNonNegativeInteger(JToken token)
+        {
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            long candidate = token.Value<long>();
+            return candidate >= 0 && candidate <= int.MaxValue;
+        }
+
+        private static bool TryReadPositiveInteger(JToken token, out long value)
+        {
+            value = 0;
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            long candidate = token.Value<long>();
+            if (candidate < 1 || candidate > 9007199254740991L) return false;
+            value = candidate;
+            return true;
+        }
+
+        private static bool IsNonNegativeNumber(JToken token)
+        {
+            if (!IsNumber(token)) return false;
+            double candidate = token.Value<double>();
+            return !double.IsNaN(candidate) && !double.IsInfinity(candidate) && candidate >= 0;
         }
 
         private static bool IsAuthoritativeWriteSuccess(JObject msg, string cmd)
@@ -397,7 +602,9 @@ namespace CF7Launcher.Tasks
 
         private static bool IsNumber(JToken token)
         {
-            return token != null && (token.Type == JTokenType.Integer || token.Type == JTokenType.Float);
+            if (token == null || (token.Type != JTokenType.Integer && token.Type != JTokenType.Float)) return false;
+            double candidate = token.Value<double>();
+            return !double.IsNaN(candidate) && !double.IsInfinity(candidate);
         }
 
         private void HandleTimeout(int fid)
@@ -410,7 +617,7 @@ namespace CF7Launcher.Tasks
                 CompletePendingLocked(fid, entry);
                 if (entry.IsWrite) _writeState = "needs_reconcile";
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "timeout");
+            RespondError(entry.WebCallId, entry.WebCmd, "timeout", entry.IsWrite);
         }
 
         private void HandleSendFailure(int fid)
@@ -422,7 +629,7 @@ namespace CF7Launcher.Tasks
                 CompletePendingLocked(fid, entry);
                 if (entry.IsWrite) _writeState = "needs_reconcile";
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "disconnected");
+            RespondError(entry.WebCallId, entry.WebCmd, "disconnected", entry.IsWrite);
         }
 
         private void CompletePendingLocked(int fid, PendingRequest entry)
@@ -451,13 +658,15 @@ namespace CF7Launcher.Tasks
             while (_recentOrder.Count > RecentCallIdCapacity) _recentCallIds.Remove(_recentOrder.Dequeue());
         }
 
-        private void RespondError(string callId, string cmd, string error)
+        private void RespondError(string callId, string cmd, string error, bool requiresReconcile = false)
         {
-            PostToWeb(new JObject
+            var response = new JObject
             {
                 ["type"] = "panel_resp", ["domain"] = "npcshop", ["cmd"] = cmd ?? "",
                 ["callId"] = callId ?? "", ["success"] = false, ["error"] = error
-            }.ToString(Formatting.None));
+            };
+            if (requiresReconcile) response["requiresReconcile"] = true;
+            PostToWeb(response.ToString(Formatting.None));
         }
 
         private void PostToWeb(string json)

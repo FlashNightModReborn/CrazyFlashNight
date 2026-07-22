@@ -1,0 +1,271 @@
+{
+  "contractVersion": 1,
+  "authorityKinds": [
+    "protocol",
+    "transport",
+    "business-authority"
+  ],
+  "domains": [
+    {
+      "id": "npcshop",
+      "wireDomain": "npcshop",
+      "hostTask": "launcher/src/Tasks/NpcShopTask.cs",
+      "flashResponseTask": "npcshop_response",
+      "hostResponseHandler": "npcShopTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashSources": [
+        "scripts/逻辑系统分区/商店系统_兼容.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "npcShopSnapshot", "access": "read" },
+        { "cmd": "tooltip", "action": "npcShopTooltip", "access": "read" },
+        { "cmd": "batchPreview", "action": "npcShopBatchPreview", "access": "read" },
+        { "cmd": "tradePreview", "action": "npcShopTradePreview", "access": "read" },
+        { "cmd": "buy", "action": "npcShopBuy", "access": "write" },
+        { "cmd": "sell", "action": "npcShopSell", "access": "write" },
+        { "cmd": "batchSell", "action": "npcShopBatchSell", "access": "write" },
+        { "cmd": "tradeCommit", "action": "npcShopTradeCommit", "access": "write" }
+      ],
+      "numericFields": [
+        {
+          "id": "purchaseQuantity",
+          "integer": true,
+          "requestPaths": [
+            { "cmd": "buy", "path": "quantity" },
+            { "cmd": "tradePreview", "path": "purchases[].quantity" }
+          ],
+          "boundaries": [
+            {
+              "name": "minimum",
+              "side": "min",
+              "value": 1,
+              "authority": "protocol",
+              "hostEnforcement": "fixed"
+            },
+            {
+              "name": "technical-ceiling",
+              "side": "max",
+              "value": 999999,
+              "authority": "transport",
+              "hostEnforcement": "fixed"
+            },
+            {
+              "name": "effective-maximum",
+              "side": "max",
+              "authority": "business-authority",
+              "dynamic": true,
+              "hostEnforcement": "none",
+              "responseFields": [
+                "purchaseLimit",
+                "maxPurchasable"
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceChecks": [
+        {
+          "kind": "csharp-const-int",
+          "file": "launcher/src/Tasks/NpcShopTask.cs",
+          "symbol": "MaxPurchaseQuantity",
+          "fieldId": "purchaseQuantity",
+          "boundary": "technical-ceiling"
+        },
+        {
+          "kind": "csharp-integer-guard",
+          "file": "launcher/src/Tasks/NpcShopTask.cs",
+          "argument": "payload[\"quantity\"]",
+          "minimum": "1",
+          "maximum": "MaxPurchaseQuantity",
+          "occurrences": 1
+        },
+        {
+          "kind": "csharp-integer-guard",
+          "file": "launcher/src/Tasks/NpcShopTask.cs",
+          "argument": "line[\"quantity\"]",
+          "minimum": "1",
+          "maximum": "MaxPurchaseQuantity",
+          "occurrences": 2
+        },
+        {
+          "kind": "as2-ternary-else-int",
+          "file": "scripts/逻辑系统分区/商店系统_兼容.as",
+          "variable": "technicalLimit",
+          "condition": "equipment",
+          "fieldId": "purchaseQuantity",
+          "boundary": "technical-ceiling"
+        }
+      ]
+    },
+    {
+      "id": "crafting",
+      "wireDomain": "crafting",
+      "hostTask": "launcher/src/Tasks/CraftingTask.cs",
+      "flashResponseTask": "crafting_response",
+      "hostResponseHandler": "craftingTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "craftingSnapshot", "access": "read" },
+        { "cmd": "preview", "action": "craftingPreview", "access": "read" },
+        { "cmd": "tooltip", "action": "craftingTooltip", "access": "read" },
+        { "cmd": "commit", "action": "craftingCommit", "access": "write" }
+      ],
+      "numericFields": [
+        {
+          "id": "craftCount",
+          "integer": true,
+          "requestPaths": [
+            { "cmd": "preview", "path": "craftCount" }
+          ],
+          "boundaries": [
+            {
+              "name": "minimum",
+              "side": "min",
+              "value": 1,
+              "authority": "protocol",
+              "hostEnforcement": "fixed"
+            },
+            {
+              "name": "protocol-maximum",
+              "side": "max",
+              "value": 99,
+              "authority": "protocol",
+              "hostEnforcement": "fixed"
+            },
+            {
+              "name": "effective-maximum",
+              "side": "max",
+              "authority": "business-authority",
+              "dynamic": true,
+              "hostEnforcement": "none",
+              "responseFields": [
+                "maxCraftCount"
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceChecks": [
+        {
+          "kind": "csharp-integer-guard",
+          "file": "launcher/src/Tasks/CraftingTask.cs",
+          "argument": "payload[\"craftCount\"]",
+          "minimum": "1",
+          "maximum": "99",
+          "occurrences": 1
+        },
+        {
+          "kind": "as2-number-assignment",
+          "file": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "symbol": "MAX_CRAFT_COUNT",
+          "fieldId": "craftCount",
+          "boundary": "protocol-maximum"
+        }
+      ]
+    },
+    {
+      "id": "kshop",
+      "wireDomain": "shop",
+      "hostTask": "launcher/src/Tasks/ShopTask.cs",
+      "flashResponseTask": "shop_response",
+      "hostResponseHandler": "shopTask.HandleFlashResponse",
+      "hostPayloadMode": "passthrough",
+      "flashSources": [
+        "scripts/逻辑系统分区/商城系统_WebView.as"
+      ],
+      "commands": [
+        { "cmd": "bulkQuery", "action": "shopBulkQuery", "access": "read" },
+        { "cmd": "tooltip", "action": "shopTooltip", "access": "read" },
+        { "cmd": "saveCart", "action": "shopSaveCart", "access": "write" },
+        { "cmd": "checkoutPreview", "action": "shopCheckoutPreview", "access": "read" },
+        { "cmd": "checkoutCommit", "action": "shopCheckoutCommit", "access": "write" },
+        { "cmd": "checkout", "action": "shopCheckout", "access": "write" },
+        { "cmd": "claim", "action": "shopClaim", "access": "write" }
+      ],
+      "numericFields": [
+        {
+          "id": "purchaseQuantity",
+          "integer": true,
+          "requestPaths": [
+            { "cmd": "checkoutPreview", "path": "cart[].qty" },
+            { "cmd": "checkout", "path": "cart[].qty" }
+          ],
+          "boundaries": [
+            {
+              "name": "minimum",
+              "side": "min",
+              "value": 1,
+              "authority": "protocol",
+              "hostEnforcement": "none"
+            },
+            {
+              "name": "technical-ceiling",
+              "side": "max",
+              "value": 999999,
+              "authority": "transport",
+              "hostEnforcement": "none"
+            },
+            {
+              "name": "effective-maximum",
+              "side": "max",
+              "authority": "business-authority",
+              "dynamic": true,
+              "hostEnforcement": "none",
+              "responseFields": [
+                "maxQuantity",
+                "maxPurchasable"
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceChecks": [
+        {
+          "kind": "as2-number-assignment",
+          "file": "scripts/逻辑系统分区/商城系统_WebView.as",
+          "symbol": "_root.UI系统.商城WebView.maxStackPurchaseQuantity",
+          "fieldId": "purchaseQuantity",
+          "boundary": "technical-ceiling"
+        }
+      ]
+    }
+  ],
+  "vectors": {
+    "npcshop": {
+      "purchaseQuantity": {
+        "fieldId": "purchaseQuantity",
+        "cmd": "buy",
+        "payloadPath": "quantity",
+        "valid": [1, 99, 100, 101, 4549, 999999],
+        "invalid": [0, 1000000],
+        "hostPolicy": "enforce-static-boundaries",
+        "businessOutcome": "authority-dependent"
+      }
+    },
+    "crafting": {
+      "craftCount": {
+        "fieldId": "craftCount",
+        "cmd": "preview",
+        "payloadPath": "craftCount",
+        "valid": [1, 99],
+        "invalid": [100],
+        "hostPolicy": "enforce-static-boundaries",
+        "businessOutcome": "authority-dependent"
+      }
+    },
+    "kshop": {
+      "purchaseQuantity": {
+        "fieldId": "purchaseQuantity",
+        "cmd": "checkoutPreview",
+        "payloadPath": "cart[].qty",
+        "valid": [1, 99, 100, 101, 4549, 999999],
+        "invalid": [0, 1000000],
+        "hostPolicy": "delegate-to-flash",
+        "businessOutcome": "authority-dependent"
+      }
+    }
+  }
+}

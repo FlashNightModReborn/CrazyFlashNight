@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
+using CF7Launcher.Tests.Contracts;
 
 namespace Launcher.Tests.Tasks
 {
@@ -110,17 +111,45 @@ namespace Launcher.Tests.Tasks
                 Assert.Equal("invalid_payload", (string)JObject.Parse(web)["error"]);
 
                 sent = false;
-                JObject badCount = Request("preview", "craft.bad.count");
-                badCount["payload"]["craftCount"] = 100;
-                task.HandleWebRequest("preview", badCount);
-                Assert.False(sent);
-                Assert.Equal("invalid_payload", (string)JObject.Parse(web)["error"]);
-
-                sent = false;
                 JObject wrongVersion = Request("snapshot", "craft.bad.version");
                 wrongVersion["payload"]["v"] = "1";
                 task.HandleWebRequest("snapshot", wrongVersion);
                 Assert.False(sent);
+                Assert.Equal("invalid_payload", (string)JObject.Parse(web)["error"]);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PanelContractVectors.CraftingCraftCountValid), MemberType = typeof(PanelContractVectors))]
+        public void PreviewCraftCount_WithinContract_IsForwardedToAuthority(int craftCount)
+        {
+            string sent = null;
+            using (var task = new CraftingTask(() => true, value => { sent = value; return true; }))
+            {
+                JObject request = Request("preview", "craft.count.valid." + craftCount);
+                request["payload"]["craftCount"] = craftCount;
+
+                task.HandleWebRequest("preview", request);
+
+                Assert.Equal(craftCount, (int)JObject.Parse(sent.TrimEnd('\0'))["craftCount"]);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PanelContractVectors.CraftingCraftCountInvalid), MemberType = typeof(PanelContractVectors))]
+        public void PreviewCraftCount_OutsideContract_IsRejectedBeforeFlash(int craftCount)
+        {
+            int sends = 0;
+            string web = null;
+            using (var task = new CraftingTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(value => web = value);
+                JObject request = Request("preview", "craft.count.invalid." + craftCount);
+                request["payload"]["craftCount"] = craftCount;
+
+                task.HandleWebRequest("preview", request);
+
+                Assert.Equal(0, sends);
                 Assert.Equal("invalid_payload", (string)JObject.Parse(web)["error"]);
             }
         }

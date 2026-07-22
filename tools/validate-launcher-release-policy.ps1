@@ -172,6 +172,8 @@ function Get-Cf7ProductionChecks {
         -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'task-condition-regression' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\test-derive-task-conditions.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'panel-cross-layer-contracts' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\validate-panel-contracts.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'web-item-icon-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-web-item-icon-closure.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'web-icon-render-entrypoints' -FilePath $node `
