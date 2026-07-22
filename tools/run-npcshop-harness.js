@@ -68,6 +68,12 @@ function audit(){
 }
 function contractQuantityProbe(){
   const contract=JSON.parse(fs.readFileSync(PANEL_CONTRACT_SOURCE,'utf8'));
+  const npcDomain=contract&&Array.isArray(contract.domains)&&contract.domains.find(domain=>domain&&domain.id==='npcshop');
+  const quantityField=npcDomain&&Array.isArray(npcDomain.numericFields)&&npcDomain.numericFields.find(field=>field&&field.id==='purchaseQuantity');
+  const policy=quantityField&&quantityField.interactionPolicy;
+  const requiredPolicy={previewInputMaximumField:'purchaseLimit',directCommitMaximumField:'maxPurchasable',maximumAction:'set-direct-commit-maximum',infeasibleIntent:'allow-preview-block-commit',previewInFlight:'visible-lock'};
+  const policyKeys=policy&&Object.keys(policy).sort(),requiredPolicyKeys=Object.keys(requiredPolicy).sort();
+  if(!policy||JSON.stringify(policyKeys)!==JSON.stringify(requiredPolicyKeys)||requiredPolicyKeys.some(key=>policy[key]!==requiredPolicy[key]))throw new Error('NPC purchase quantity interaction policy drift');
   const values=contract&&contract.vectors&&contract.vectors.npcshop&&contract.vectors.npcshop.purchaseQuantity&&contract.vectors.npcshop.purchaseQuantity.valid;
   if(!Array.isArray(values))throw new Error('NPC purchase quantity contract vector missing');
   const probe=values.find(value=>Number(value)===4549)||values.find(value=>Number.isInteger(value)&&value>100&&value<999999);

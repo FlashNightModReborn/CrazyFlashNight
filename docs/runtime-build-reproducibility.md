@@ -1,15 +1,15 @@
 # Launcher runtime v2 可复现构建与发布列车
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
-**最后核对代码基线**：当前商店修复正式发布冻结 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`（tag `runtime-build-v2/20260722-shop-tooltip-v2`）、release tree `f1f881c5392a385e73f3e9fecc3445df1e50ad17` 与 request `58DF2A7C6F3824EBDD9D3A6BAE26442D22A554B0C810F03D38161C338586548C`，并由 commit `48a638968076aba6105f6875ae9e4f0e35885165` 记录 production promotion。无参 `automation/start.ps1` 已验证正式 Core 身份一致；商店真人交互 smoke 因桌面控制后端不可用未补做，故本轮严格状态保留为 `promoted`，不把入口身份门单独冒充 `standard_entry_verified`。Flash publish-only 产物与 fresh AS2 trace 仍是独立证据层。
+**最后核对代码基线**：当前商店双上限与预览可见锁正式发布冻结 source commit `77d7630b6a17770b59f3675a756b59f95e204e1f`（tag `runtime-build-v2/20260722-panel-interaction-contract-v1`）、release tree `9d23e22c62e6e8f2366fe068c2e1595a1ab14163` 与 request `D6D9BA75DDE90615C2953636F7E60117FD7025118C6EAC8B26F3098F4A9B6B87`，并由 commit `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73` 记录 production promotion。无参 `automation/start.ps1` 已以 `formal_runtime` 从仓库根 `runtime/` 启动并核对正式 Core 身份；真人商店 smoke 又完成大数量增减、超出当前可直接结算时安全阻断、`最大` 恢复及返回加购第二件仍保留，未提交交易，故本轮严格状态为 `standard_entry_verified`。Flash publish-only 产物与 fresh AS2 trace 仍是独立证据层；本次未改 AS2，未重复编译。
 
 ## 当前迁移状态
 
-runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。当前 consensus 的 artifact source `81532EF9BA3A20F45166BF59CE645F5E39E5D25241C90A44C5809E58CC9B5CB6`、producer recipe `75723146B70547AD1B87F54A19A806A356501290D1507CBD43952ECB9C5906EE` 与 toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD` 形成 build identity `7E320BC3CED9F66B7B9FCACD261979434577DFD72660652D2378F398AF433E3E`；payload closure 为 `A3546ED7AB1F0D33768B44DA9E81A919C582A7E792321A7F14E97E0BD72BC390`，manifest SHA-256 为 `B72B7E0BD203CC85C752CFB04C4C8682F92C1057D52634E5B1CE809E8C4C9566`。production policy `0C184E875470F2179DAFBE6DAFB9ECBC8C4BBB15CDE4483DC6E56D8ABB8903F7` 的 receipt SHA-256 为 `C7F7C6A5A8E6A16C83751186AF9E297005A8C2108D3E8A6B6567E272BF86996E`；`builder-local-a` / `physical-host-a` 与 GitHub OIDC / `github-hosted-windows` 的双 signer、双 faultDomain、production receipt 与 v2 strict/full-install verifier 全部满足后，于 `2026-07-22T03:17:40.8957095Z` 完成 promotion。
+runtime v2 的工具、schema、队列、本地 X509 证明、GitHub OIDC/Sigstore 证明、promotion 与 CI 状态机已经完成正式闭环；**仓库当前受控部署已是 manifest/consensus v2**。当前 consensus 的 artifact source `5CA93738294C50FB5A4FAB5986B5F5C16DC9CF73417BA7F7CD08D75CD0D89108`、producer recipe `75723146B70547AD1B87F54A19A806A356501290D1507CBD43952ECB9C5906EE` 与 toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD` 形成 build identity `089BD4B726CD4167B94D0AA228426EFAA68ADCB07594B4A30139A58FD7C47864`；payload closure 为 `BA4DE8E6615363166F9FF8856F4A2851958682DA133A3BC2C947146D35F710CF`，manifest SHA-256 为 `99A1F2A274FD756B64B38834F5A4762189BE8131F2D69B55AAA7E78172F43EA4`。production policy `A722D30DEF6C346C64D2C5B8AB038B35D6ADE1858099AD4A8A0BA6C1CCF556B1` 的 21/21 receipt SHA-256 为 `804CBAE17783E6365EC6276BD2A00A4A516A64F3DEE21C7F0C82A5118202F2DC`；`builder-local-a` / `physical-host-a` 与 GitHub OIDC builder `4FBBF7E8979946AD3672338CBCC7E1A160E0190E7C58F4E3A716E7C5D32EF521` / `github-hosted-windows` 的双 signer、双 faultDomain、production receipt 与 v2 strict/full-install verifier 全部满足后，于 `2026-07-22T11:53:57.5101033Z` 完成 promotion。
 
 v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入。该 marker 曾精确绑定 base `711c469036ad6b1226833faf255499abb1ebf2ed`、旧 artifact closure 与目标 builder registry 字节哈希，并在 legacy deployment 零变化时解决“cloud workflow 必须先进入 default branch”的 bootstrap 悖论；marker 后的首个部署提交已经完成完整 v2 promotion。CI 从此只接受 v2 strict 状态，并永久拒绝 v2 → v1 降级。
 
-当前正式部署对应 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`、build identity `7E320BC3CED9F66B7B9FCACD261979434577DFD72660652D2378F398AF433E3E`、payload closure `A3546ED7AB1F0D33768B44DA9E81A919C582A7E792321A7F14E97E0BD72BC390` 与 Core SHA-256 `F88902B961102BC891FD60BBF8A6700FB3F1ECEFFA038E412FF9D7C3A74199C7`，包含 ShopTask 写后目录同步；正式根入口已打印并核对同一身份。source-only、隔离 candidate 与已 promotion 的正式 Core 仍是三件不同的事；root EXE、`runtime/**`、manifest、builder registry 或 consensus 若变化，Audit 必须转入 strict 并在无匹配 promotion 时失败。
+当前正式部署对应 source commit `77d7630b6a17770b59f3675a756b59f95e204e1f`、build identity `089BD4B726CD4167B94D0AA228426EFAA68ADCB07594B4A30139A58FD7C47864`、payload closure `BA4DE8E6615363166F9FF8856F4A2851958682DA133A3BC2C947146D35F710CF` 与 Core SHA-256 `EB2AEC6A402E3E43592F950AD32A863D62B8B1BAC0CBC2DBC5F0738B1A8089E8`，包含 NPC 商店 `purchaseLimit` 预览输入上限、`maxPurchasable` 当前可直接结算上限、非可提交意图仍允许预览但阻断 commit，以及 preview 在途可见锁契约。正式根入口已打印并核对同一身份，窗口标题为纯 `CF7:FlashNight`；真人 smoke 中数量由 `2403` 继续调整到 `2416` 后可用 `最大` 恢复至 `2403`，返回加购后两行仍同时存在，且金币不足时确认按钮保持禁用。source-only、隔离 candidate 与已 promotion 的正式 Core 仍是三件不同的事；root EXE、`runtime/**`、manifest、builder registry 或 consensus 若变化，Audit 必须转入 strict 并在无匹配 promotion 时失败。
 
 历史 `chest-s0-a8a-local-r3/r4` 是 2026-07-18 基于 `a8a760a3cc` 的同机未注册诊断；S0 已从当前源码与 required-assets policy 退役，这些旧 artifactSource/buildIdentity/payloadClosure 只留在 Git 历史和旧 ADR 中，不代表当前工作树、release evidence 或待恢复的发布输入。
 
@@ -92,7 +92,7 @@ $entry = .\tools\register-runtime-builder.ps1 `
 
 脚本在 `Cert:\CurrentUser\My` 创建 3072-bit、不可导出的 RSA 私钥，只把 public certificate/`keyId`/epoch/faultDomain 写到 `tmp/runtime-builder-enrollment/`，**不会自动改 registry**。维护者核对机器与故障域后，才把 entry 合入 `config/build/runtime-builders.v2.json`。私钥不得导出或跨机复制；轮换/撤销通过新 epoch/key 或 `enabled=false` 完成。两台 VM 若共享同一宿主、磁盘或管理员边界，不得宣称两个 faultDomain。
 
-tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张公钥；本次 consensus 实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub OIDC builder identity `24C5B0719891CA58AC31A4A189F784F1178CD298F4134591583FED3F0FAC163C` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
+tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张公钥；本次 consensus 实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub OIDC builder identity `4FBBF7E8979946AD3672338CBCC7E1A160E0190E7C58F4E3A716E7C5D32EF521` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
 
 本次 local proof 使用已注册的 `builder-local-a` 3072-bit CurrentUser 不可导出 RSA key：keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint `647AFE92BD801518AF25F2A2EE1845E6847C2118`、epoch `1`；未复制或导出私钥。不同故障域的第二票由 GitHub hosted OIDC/Sigstore 提供，双 faultDomain quorum 已满足；dirty staged/unstaged/untracked 工作树仍不能冒充 source commit。
 
@@ -215,13 +215,13 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 .\tools\test-runtime-build-consensus.ps1   # v1 migration guard
 .\tools\test-runtime-release-consensus-v2.ps1
 
-# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 408
+# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 409
 .\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-submit-contribution.ps1
 .\launcher\tests\run_tests.ps1
 ```
 
-最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **408** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当前 **9/9**，不计入 11 个入口或 408。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
+最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **409** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当前 **9/9**，不计入 11 个入口或 409。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
 
 - candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
 - 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。
