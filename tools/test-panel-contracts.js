@@ -96,6 +96,35 @@ function run() {
     assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.required_vector");
   });
 
+  test("required NPC interaction policy cannot be removed", function () {
+    const fixture = clone(contract);
+    delete fixture.domains[0].numericFields[0].interactionPolicy;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.interaction_policy_missing");
+  });
+
+  test("NPC preview and direct-commit maxima cannot be conflated", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].numericFields[0].interactionPolicy.previewInputMaximumField = "maxPurchasable";
+    const conflated = validator.validateRepository({ root: ROOT, contract: fixture });
+    assertError(conflated, "contract.interaction_policy_distinct");
+    assertError(conflated, "contract.interaction_policy_drift");
+
+    const unknown = clone(contract);
+    unknown.domains[0].numericFields[0].interactionPolicy.previewInputMaximumField = "inventedLimit";
+    assertError(validator.validateRepository({ root: ROOT, contract: unknown }), "contract.interaction_policy_response_field");
+  });
+
+  test("NPC preview-in-flight clicks cannot regress to a silent-drop policy", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].numericFields[0].interactionPolicy.previewInFlight = "silent-drop";
+    const silentDrop = validator.validateRepository({ root: ROOT, contract: fixture });
+    assertError(silentDrop, "schema.enum");
+
+    const extraKey = clone(contract);
+    extraKey.domains[0].numericFields[0].interactionPolicy.uncontractedClickPolicy = true;
+    assertError(validator.validateRepository({ root: ROOT, contract: extraKey }), "schema.unknown_key");
+  });
+
   test("old NpcShop Host 1..100 cap mutation is detected", function () {
     const file = "launcher/src/Tasks/NpcShopTask.cs";
     const mutated = replaceOnce(read(file), /(\bMaxPurchaseQuantity\s*=\s*)999999(\s*;)/,

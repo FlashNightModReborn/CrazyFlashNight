@@ -215,13 +215,13 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 .\tools\test-runtime-build-consensus.ps1   # v1 migration guard
 .\tools\test-runtime-release-consensus-v2.ps1
 
-# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 408
+# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 409
 .\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-submit-contribution.ps1
 .\launcher\tests\run_tests.ps1
 ```
 
-最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **408** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当前 **9/9**，不计入 11 个入口或 408。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
+最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **409** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当前 **9/9**，不计入 11 个入口或 409。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
 
 - candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
 - 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。

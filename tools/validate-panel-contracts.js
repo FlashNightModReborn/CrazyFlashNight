@@ -21,6 +21,15 @@ const REQUIRED_VECTOR_VALUES = {
     invalid: [0, 1000000]
   }
 };
+const REQUIRED_INTERACTION_POLICIES = {
+  "npcshop.purchaseQuantity": {
+    previewInputMaximumField: "purchaseLimit",
+    directCommitMaximumField: "maxPurchasable",
+    maximumAction: "set-direct-commit-maximum",
+    infeasibleIntent: "allow-preview-block-commit",
+    previewInFlight: "visible-lock"
+  }
+};
 
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -152,6 +161,21 @@ function validateBoundarySchema(boundary, at, errors) {
   }
 }
 
+function validateInteractionPolicySchema(policy, at, errors) {
+  if (!exactKeys(policy,
+    ["previewInputMaximumField", "directCommitMaximumField", "maximumAction", "infeasibleIntent", "previewInFlight"],
+    [], at, errors)) return;
+  Object.keys(policy).forEach(function (key) { stringValue(policy[key], at + "." + key, errors); });
+  const enums = {
+    maximumAction: ["set-direct-commit-maximum"],
+    infeasibleIntent: ["allow-preview-block-commit"],
+    previewInFlight: ["visible-lock"]
+  };
+  Object.keys(enums).forEach(function (key) {
+    if (!enums[key].includes(policy[key])) addError(errors, "schema.enum", at + "." + key, "unknown interaction policy value");
+  });
+}
+
 function validateSourceCheckSchema(check, at, errors) {
   if (!isObject(check)) {
     addError(errors, "schema.type", at, "expected object");
@@ -232,7 +256,7 @@ function validateContractSchema(contract, errors) {
       } else {
         domain.numericFields.forEach(function (field, fieldIndex) {
           const fieldAt = at + ".numericFields[" + fieldIndex + "]";
-          if (!exactKeys(field, ["id", "integer", "requestPaths", "boundaries"], [], fieldAt, errors)) return;
+          if (!exactKeys(field, ["id", "integer", "requestPaths", "boundaries"], ["interactionPolicy"], fieldAt, errors)) return;
           stringValue(field.id, fieldAt + ".id", errors);
           if (field.integer !== true) addError(errors, "schema.literal", fieldAt + ".integer", "v1 numeric fields must be integer=true");
           if (!Array.isArray(field.requestPaths) || field.requestPaths.length === 0) {
@@ -251,6 +275,9 @@ function validateContractSchema(contract, errors) {
             field.boundaries.forEach(function (boundary, boundaryIndex) {
               validateBoundarySchema(boundary, fieldAt + ".boundaries[" + boundaryIndex + "]", errors);
             });
+          }
+          if (Object.prototype.hasOwnProperty.call(field, "interactionPolicy")) {
+            validateInteractionPolicySchema(field.interactionPolicy, fieldAt + ".interactionPolicy", errors);
           }
         });
       }
@@ -411,6 +438,34 @@ function validateSemantics(contract, errors) {
       if (staticMaxes.length < 1) addError(errors, "contract.maximum_count", fieldAt + ".boundaries", "numeric field needs at least one static maximum");
       if (staticMins.length === 1 && staticMaxes.some(function (maximum) { return maximum < staticMins[0]; })) {
         addError(errors, "contract.inverted_range", fieldAt + ".boundaries", "static maximum is below the minimum");
+      }
+
+      const policyKey = domain.id + "." + field.id;
+      const requiredPolicy = REQUIRED_INTERACTION_POLICIES[policyKey];
+      if (requiredPolicy && !isObject(field.interactionPolicy)) {
+        addError(errors, "contract.interaction_policy_missing", fieldAt + ".interactionPolicy",
+          "required interaction policy is missing for " + policyKey);
+      } else if (isObject(field.interactionPolicy)) {
+        const effectiveMaximum = field.boundaries.find(function (boundary) { return boundary.name === "effective-maximum"; });
+        ["previewInputMaximumField", "directCommitMaximumField"].forEach(function (key) {
+          const responseFields = effectiveMaximum && effectiveMaximum.responseFields;
+          if (!Array.isArray(responseFields) || !responseFields.includes(field.interactionPolicy[key])) {
+            addError(errors, "contract.interaction_policy_response_field", fieldAt + ".interactionPolicy." + key,
+              "interaction policy must reference an effective-maximum response field");
+          }
+        });
+        if (field.interactionPolicy.previewInputMaximumField === field.interactionPolicy.directCommitMaximumField) {
+          addError(errors, "contract.interaction_policy_distinct", fieldAt + ".interactionPolicy",
+            "preview input and direct-commit maxima must remain distinct");
+        }
+        if (requiredPolicy) {
+          Object.keys(requiredPolicy).forEach(function (key) {
+            if (field.interactionPolicy[key] !== requiredPolicy[key]) {
+              addError(errors, "contract.interaction_policy_drift", fieldAt + ".interactionPolicy." + key,
+                "expected " + JSON.stringify(requiredPolicy[key]));
+            }
+          });
+        }
       }
     });
 
@@ -889,6 +944,7 @@ module.exports = {
   AUTHORITY_KINDS: AUTHORITY_KINDS,
   DEFAULT_CONTRACT: DEFAULT_CONTRACT,
   REQUIRED_VECTOR_VALUES: REQUIRED_VECTOR_VALUES,
+  REQUIRED_INTERACTION_POLICIES: REQUIRED_INTERACTION_POLICIES,
   parseCSharpCommandMap: parseCSharpCommandMap,
   parseCalls: parseCalls,
   validateRepository: validateRepository

@@ -553,7 +553,9 @@ var NpcShop = (function() {
         }
     }
     function renderSettlementLoading() {
-        if (_settlementPresenter) _settlementPresenter.renderLoading();
+        if (!_settlementPresenter) return;
+        if (_settlement) renderSettlement();
+        _settlementPresenter.renderLoading();
     }
     function renderSettlementFailure(errorCode, recovered) {
         if (_settlementPresenter) _settlementPresenter.renderFailure(errorCode, recovered);

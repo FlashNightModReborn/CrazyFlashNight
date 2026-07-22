@@ -165,7 +165,7 @@
             copy.appendChild(name); copy.appendChild(total);
             if (kind === 'purchase') {
                 var bound = self._document.createElement('em');
-                bound.textContent = '当前最多可购 ' + intent.maxPurchasable + ' / 单笔上限 ' + intent.purchaseLimit;
+                bound.textContent = '当前可直接结算 ' + intent.maxPurchasable + ' / 单笔上限 ' + intent.purchaseLimit;
                 copy.appendChild(bound);
             } else if (line.scope === 'same_name') {
                 var bulk = self._document.createElement('em');
@@ -202,7 +202,7 @@
                 }
                 stepper.appendChild(remove);
             }
-            if (ui.busy) {
+            if (ui.busy || ui.previewBusy) {
                 var rowButtons = stepper.querySelectorAll('button');
                 for (var buttonIndex = 0; buttonIndex < rowButtons.length; buttonIndex++) rowButtons[buttonIndex].disabled = true;
             }

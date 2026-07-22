@@ -60,7 +60,14 @@
                 "maxPurchasable"
               ]
             }
-          ]
+          ],
+          "interactionPolicy": {
+            "previewInputMaximumField": "purchaseLimit",
+            "directCommitMaximumField": "maxPurchasable",
+            "maximumAction": "set-direct-commit-maximum",
+            "infeasibleIntent": "allow-preview-block-commit",
+            "previewInFlight": "visible-lock"
+          }
         }
       ],
       "sourceChecks": [
