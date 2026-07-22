@@ -15,6 +15,17 @@ _root.UI系统.商城WebView.rotatePurchasedToken = function():String {
 _root.UI系统.商城WebView.rotatePurchasedToken();
 // 暂停 lease id（由 PauseManager.lease 返回；undefined 表示当前未持有 lease）
 _root.UI系统.商城WebView.pauseLeaseId = undefined;
+// JSON/AS2 Number 安全域内的单行技术护栏；不是设计配额。装备与情报另受动态容量约束。
+_root.UI系统.商城WebView.maxStackPurchaseQuantity = 999999;
+
+_root.UI系统.商城WebView.getPurchaseLimit = function(itemName:String):Number {
+    if (org.flashNight.arki.item.ItemUtil.isEquipment(itemName)) return 1;
+    if (org.flashNight.arki.item.ItemUtil.isInformation(itemName)) {
+        return Math.min(this.maxStackPurchaseQuantity,
+            org.flashNight.arki.item.ItemUtil.getInformationRemaining(itemName));
+    }
+    return this.maxStackPurchaseQuantity;
+};
 
 // 诊断日志 helper
 _root.UI系统.商城WebView.log = function(msg):Void {
@@ -94,7 +105,8 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
                 setName:     String(itemData.setName || ""),
                 setOrder:    Number(itemData.setOrder || 0),
                 level:       Number(attrs[9]),
-                icon:        String(attrs[1])
+                icon:        String(attrs[1]),
+                maxQuantity: _root.UI系统.商城WebView.getPurchaseLimit(String(entry.item))
             });
         } else {
             _root.UI系统.商城WebView.log("WARNING: skipped [" + i + "] item=" + entry.item);
@@ -102,6 +114,7 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
     }
     // 将旧格式购物车转为 idx 格式（M2: 精确匹配 + first-match 回退）
     var cartMigrated = [];
+    var cartAdjusted:Boolean = false;
     for (var c = 0; c < _root.商城购物车.length; c++) {
         var cartItem = _root.商城购物车[c];
         var matched = -1;
@@ -112,8 +125,18 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
             }
         }
         if (matched >= 0) {
-            cartMigrated.push({idx: matched, qty: Number(cartItem[cartItem.length - 1])});
-        }
+            var migratedQuantity:Number = Number(cartItem[cartItem.length - 1]);
+            var migratedMaximum:Number = _root.UI系统.商城WebView.getPurchaseLimit(String(_root.kshop_list[matched].item));
+            if (isNaN(migratedQuantity) || migratedQuantity <= 0 || migratedQuantity != Math.floor(migratedQuantity)
+                    || migratedMaximum <= 0) cartAdjusted = true;
+            else {
+                if (migratedQuantity > migratedMaximum) {
+                    migratedQuantity = migratedMaximum;
+                    cartAdjusted = true;
+                }
+                cartMigrated.push({idx: matched, qty: migratedQuantity});
+            }
+        } else cartAdjusted = true;
     }
     var resp = {
         task: "shop_response", callId: callId, success: true,
@@ -122,6 +145,7 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
         reverseLevel: Number(_root.主角被动技能.逆向.启用 ? _root.主角被动技能.逆向.等级 : 0),
         kpoints: Number(_root.虚拟币),
         cart: cartMigrated,
+        cartAdjusted: cartAdjusted,
         purchased: _root.商城已购买物品,
         purchasedToken: _root.UI系统.商城WebView.purchasedToken
     };
@@ -135,7 +159,7 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
 // 新 Web 不再生成待领取记录；余额或容量不足时整单不扣 K 点。
 _root.UI系统.商城WebView.isWholeNumber = function(value):Boolean {
     var number:Number = Number(value);
-    return !isNaN(number) && number == Math.floor(number);
+    return !isNaN(number) && number != Infinity && number != -Infinity && number == Math.floor(number);
 };
 
 _root.UI系统.商城WebView.resolveCheckoutLine = function(request:Object):Object {
@@ -156,7 +180,8 @@ _root.UI系统.商城WebView.resolveCheckoutLine = function(request:Object):Obje
     if (isNaN(reverseLevel)) reverseLevel = 0;
     if (Number(attrs[9]) > Number(_root.等级) + reverseLevel) return {success:false, error:"locked"};
     var equipment:Boolean = org.flashNight.arki.item.ItemUtil.isEquipment(itemName);
-    var maxQuantity:Number = equipment ? 1 : 999;
+    var information:Boolean = org.flashNight.arki.item.ItemUtil.isInformation(itemName);
+    var maxQuantity:Number = this.getPurchaseLimit(itemName);
     if (quantity > maxQuantity) return {success:false, error:"invalid_quantity"};
     var unitPrice:Number = Number(entry.price);
     if (isNaN(unitPrice) || unitPrice < 0) return {success:false, error:"invalid_price"};
@@ -170,7 +195,7 @@ _root.UI系统.商城WebView.resolveCheckoutLine = function(request:Object):Obje
         unitPrice:unitPrice,
         total:unitPrice * quantity,
         maxQuantity:maxQuantity,
-        itemKind:equipment ? "equipment" : "stack"
+        itemKind:equipment ? "equipment" : (information ? "information" : "stack")
     };
 };
 
@@ -238,6 +263,7 @@ _root.UI系统.商城WebView.buildCheckoutPreview = function(cart:Array, issueTo
     var balance:Number = Number(_root.虚拟币);
     if (isNaN(balance)) balance = 0;
     var enoughSpace:Boolean = this.canAcquireCheckoutLines(lines);
+    var capacityError:String = "inventory_full";
     for (var boundIndex:Number = 0; boundIndex < lines.length; boundIndex++) {
         var bounded:Object = lines[boundIndex];
         var otherTotal:Number = total - Number(bounded.total);
@@ -248,6 +274,9 @@ _root.UI系统.商城WebView.buildCheckoutPreview = function(cart:Array, issueTo
         bounded.maxAffordable = maxAffordable;
         bounded.maxByCapacity = this.checkoutCapacityBound(lines, boundIndex);
         bounded.maxPurchasable = Math.min(maxAffordable, Number(bounded.maxByCapacity));
+        if (bounded.itemKind == "information" && Number(bounded.maxByCapacity) < Number(bounded.quantity)) {
+            capacityError = "destination_full";
+        }
     }
     var token:String = "";
     if (issueToken) {
@@ -264,8 +293,33 @@ _root.UI系统.商城WebView.buildCheckoutPreview = function(cart:Array, issueTo
         balance:balance,
         projectedBalance:balance - total,
         canCommit:balance >= total && enoughSpace,
-        blockingError:balance < total ? "insufficient_kpoints" : (enoughSpace ? "" : "inventory_full")
+        blockingError:balance < total ? "insufficient_kpoints" : (enoughSpace ? "" : capacityError)
     };
+};
+
+// 新旧 checkout wire 共用唯一写入实现。历史待领取列表只读兼容，不再由任何结账入口增长。
+_root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Object):Object {
+    if (!org.flashNight.arki.item.ItemUtil.acquire(this.buildCheckoutAcquireItems(preview.purchaseLines))) {
+        resp.success = false;
+        resp.error = String(preview.blockingError || "inventory_full");
+        return resp;
+    }
+    _root.虚拟币 = Number(preview.balance) - Number(preview.total);
+    _root.商城购物车 = [];
+    _root.soundEffectManager.playSound("收银机.mp3");
+    if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+        org.flashNight.arki.achievement.AchievementMetrics.record("商城结账次数", 1);
+        org.flashNight.arki.achievement.AchievementMetrics.record("商城花费K点", Number(preview.total));
+    }
+    _root.强制存盘();
+    resp.success = true;
+    resp.v = 1;
+    resp.newBalance = _root.虚拟币;
+    resp.delivered = preview.purchaseLines;
+    resp.cart = [];
+    resp.purchased = _root.商城已购买物品;
+    resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+    return resp;
 };
 
 _root.gameCommands["shopCheckoutPreview"] = function(params) {
@@ -328,27 +382,8 @@ _root.gameCommands["shopCheckoutCommit"] = function(params) {
     } else if (!current.canCommit) {
         resp.success = false;
         resp.error = String(current.blockingError);
-    } else if (!org.flashNight.arki.item.ItemUtil.acquire(
-            _root.UI系统.商城WebView.buildCheckoutAcquireItems(current.purchaseLines))) {
-        resp.success = false;
-        resp.error = "inventory_full";
     } else {
-        _root.虚拟币 = Number(plan.balance) - Number(plan.total);
-        _root.商城购物车 = [];
-        _root.soundEffectManager.playSound("收银机.mp3");
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("商城结账次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("商城花费K点", Number(plan.total));
-        }
-        _root.强制存盘();
-        resp.success = true;
-        resp.v = 1;
-        resp.newBalance = _root.虚拟币;
-        resp.delivered = current.purchaseLines;
-        resp.cart = [];
-        // 历史待领取列表不再增长，但仍回传以支持旧存档自然清空。
-        resp.purchased = _root.商城已购买物品;
-        resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+        _root.UI系统.商城WebView.finalizeCheckout(current, resp);
     }
     _root.UI系统.商城WebView.sendResponse(resp);
 };
@@ -360,46 +395,17 @@ _root.gameCommands["shopCheckout"] = function(params) {
     var items = (params.cart != undefined && params.cart.length != undefined) ? params.cart : [];
     var callId = params.callId;
     _root.UI系统.商城WebView.log("shopCheckout callId=" + callId + " items=" + items.length);
-    var total = 0;
-    var resolved = [];
-
-    for (var i = 0; i < items.length; i++) {
-        var idx = Number(items[i].idx);
-        var qty = Number(items[i].qty);
-        if (isNaN(idx) || idx < 0 || idx >= _root.kshop_list.length) continue;
-        if (isNaN(qty) || qty <= 0 || qty != Math.floor(qty)) continue;
-        var entry = _root.kshop_list[idx];
-        total += Number(entry.price) * qty;
-        resolved.push([entry.id, entry.item, entry.type, entry.price, qty]);
-    }
-
     var resp = { task: "shop_response", callId: callId };
-    if (_root.虚拟币 > total) {
-        _root.虚拟币 -= total;
-        for (var j = 0; j < resolved.length; j++) {
-            _root.商城已购买物品.push(resolved[j]);
-        }
-        _root.商城购物车 = [];
-        _root.soundEffectManager.playSound("收银机.mp3");
-        resp.success = true;
-        resp.newBalance = _root.虚拟币;
-        resp.purchased = _root.商城已购买物品;
-        resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
-        // Plan A: 商城 checkout 真实扣 K 点 + 写入已购列表，必达。
-        // 删除原本的 _root.存盘商城已购买物品() / _root.保存购物车() 子层 flush：
-        // 子层只写 shop/cart 子层 SOL，与下方 mydata 顶层完整 flushNow 之间存在崩溃窗口
-        // （子层已写但 mydata 没扣 K 点）。改为只走一次 _root.强制存盘() 写完整 mydata，
-        // 保证原子：要么全存，要么全回滚到上次成功的 saveAll 状态。
-        // 成就记账（埋点 #1，须在 强制存盘 之前——计数随本次结账同一笔 flush 原子落盘）
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("商城结账次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("商城花费K点", total);
-        }
-        _root.强制存盘();
-    } else {
+    var preview:Object = _root.UI系统.商城WebView.buildCheckoutPreview(items, false);
+    if (!preview.success) {
         resp.success = false;
-        resp.error = "insufficient_kpoints";
-        resp.balance = _root.虚拟币;
+        resp.error = String(preview.error);
+    } else if (!preview.canCommit) {
+        resp.success = false;
+        resp.error = String(preview.blockingError);
+        resp.balance = Number(preview.balance);
+    } else {
+        _root.UI系统.商城WebView.finalizeCheckout(preview, resp);
     }
     _root.UI系统.商城WebView.sendResponse(resp);
 };
@@ -425,10 +431,7 @@ _root.gameCommands["shopClaim"] = function(params) {
         var qty = Number(item[item.length - 1]);
         if (isNaN(qty) || qty <= 0) qty = 1;
 
-        if (_root.物品栏.背包.getFirstVacancy() == -1) {
-            resp.success = false; resp.error = "inventory_full";
-            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
-        } else if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty)) {
+        if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty)) {
             _root.商城已购买物品.splice(claimIdx, 1);
             resp.success = true;
             resp.purchased = _root.商城已购买物品;
@@ -443,7 +446,9 @@ _root.gameCommands["shopClaim"] = function(params) {
             }
             _root.强制存盘();
         } else {
-            resp.success = false; resp.error = "acquire_failed";
+            resp.success = false;
+            resp.error = org.flashNight.arki.item.ItemUtil.isInformation(itemName)
+                ? "destination_full" : "inventory_full";
             resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
         }
     }
@@ -463,6 +468,9 @@ _root.gameCommands["shopSaveCart"] = function(params) {
         if (isNaN(idx) || idx < 0 || idx >= _root.kshop_list.length) continue;
         if (isNaN(qty) || qty <= 0 || qty != Math.floor(qty)) continue;
         var entry = _root.kshop_list[idx];
+        var maximum:Number = _root.UI系统.商城WebView.getPurchaseLimit(String(entry.item));
+        if (maximum <= 0) continue;
+        if (qty > maximum) qty = maximum;
         _root.商城购物车.push([entry.id, entry.item, entry.type, entry.price, qty]);
     }
     // Plan A audit: shopSaveCart 写 _root.商城购物车（save-relevant）。

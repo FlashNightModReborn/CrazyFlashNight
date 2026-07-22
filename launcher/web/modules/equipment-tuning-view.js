@@ -60,6 +60,7 @@ var EquipmentTuningView = (function() {
         this._snapshot = null;
         this._preview = null;
         this._tooltipCache = {};
+        this._tooltipScope = null;
         this._operation = 'enhance';
         this._targetLevel = 0;
         this._enhancePreviewTimer = 0;
@@ -102,6 +103,7 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.unmount = function() {
+        if (this._tooltipScope) { this._tooltipScope.dispose(); this._tooltipScope = null; }
         if (this._densityController && this._densityController.unregister) this._densityController.unregister(this);
         this._root = null;
         this.root = null;
@@ -111,6 +113,8 @@ var EquipmentTuningView = (function() {
 
     TuningView.prototype.openSession = function(panelInstanceId) {
         this.closeSession();
+        this._tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('equipment-tuning') : null;
         panelInstanceId = EquipmentTuningRuntime.safeToken(panelInstanceId);
         if (!panelInstanceId) {
             this._status = 'Host 面板实例无效';
@@ -147,6 +151,7 @@ var EquipmentTuningView = (function() {
         this._preview = null;
         this._previewIntentKey = '';
         this._tooltipCache = {};
+        if (this._tooltipScope) { this._tooltipScope.dispose(); this._tooltipScope = null; }
         this._busy = false;
         this._inventoryWriteHandle = null;
         this._readPending = false;

@@ -46,21 +46,18 @@
 
     function releaseElementBindings(element) {
         if (!element) return;
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.releaseTree) PanelTooltip.releaseTree(element);
         var nodes = [element].concat(element.querySelectorAll
             ? Array.prototype.slice.call(element.querySelectorAll('*')) : []);
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
-            if (node.__panelTooltipBinding && typeof node.__panelTooltipBinding.destroy === 'function') node.__panelTooltipBinding.destroy();
-            if (node.__workbenchEntityTileBinding
-                    && typeof node.__workbenchEntityTileBinding.destroy === 'function') node.__workbenchEntityTileBinding.destroy();
+            if (node.__workbenchEntityTileBinding && typeof node.__workbenchEntityTileBinding.destroy === 'function') node.__workbenchEntityTileBinding.destroy();
         }
     }
 
     function clearElement(element) {
         if (!element) return;
-        // Re-rendering a grid is also a lifecycle boundary. Explicitly release
-        // shared tile/tooltip bindings before detaching nodes so pending async
-        // callbacks cannot retain an obsolete entity tree until timeout.
+        // Re-render is a lifecycle boundary: release bindings before detaching obsolete nodes.
         releaseElementBindings(element);
         while (element && element.firstChild) element.removeChild(element.firstChild);
     }
@@ -994,6 +991,8 @@
         ItemCard: ItemCard,
         ItemGrid: ItemGrid,
         GridDensityController: GridDensityController,
+        releaseElementBindings: releaseElementBindings,
+        clearElement: clearElement,
         WorkbenchState: WorkbenchState
     };
 });

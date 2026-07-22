@@ -121,7 +121,8 @@ _root.UI系统.NPC商店WebView.sendResponse = function(response:Object):Boolean
 
 _root.UI系统.NPC商店WebView.isWholeNumber = function(value):Boolean {
     var numberValue:Number = Number(value);
-    return !isNaN(numberValue) && numberValue >= 0 && Math.floor(numberValue) == numberValue;
+    return !isNaN(numberValue) && numberValue != Infinity && numberValue != -Infinity
+        && numberValue >= 0 && Math.floor(numberValue) == numberValue;
 };
 
 _root.UI系统.NPC商店WebView.beginCollectionSnapshot = function(shopId:String):Void {
@@ -189,12 +190,23 @@ _root.UI系统.NPC商店WebView.resolveSaleEntry = function(shopId:String, catal
 };
 
 _root.UI系统.NPC商店WebView.getPurchaseLimit = function(resolved:Object):Number {
-    var fallback:Number = org.flashNight.arki.item.ItemUtil.isEquipment(resolved.itemName) ? 50 : 100;
+    var equipment:Boolean = org.flashNight.arki.item.ItemUtil.isEquipment(resolved.itemName);
+    var bagCapacity:Number = _root.物品栏 == undefined || _root.物品栏.背包 == undefined
+        ? 50 : Number(_root.物品栏.背包.capacity);
+    if (isNaN(bagCapacity) || bagCapacity < 1) bagCapacity = 50;
+    var technicalLimit:Number = equipment ? Math.floor(bagCapacity) : 999999;
     var raw:Object = resolved.raw;
-    if (typeof raw == "string" || raw.purchaseLimit == undefined) return fallback;
-    var configured:Number = Number(raw.purchaseLimit);
-    if (isNaN(configured) || Math.floor(configured) != configured || configured < 1) return fallback;
-    return Math.min(100, configured);
+    if (typeof raw != "string" && raw.purchaseLimit != undefined) {
+        var configured:Number = Number(raw.purchaseLimit);
+        if (!isNaN(configured) && Math.floor(configured) == configured && configured >= 1) {
+            technicalLimit = Math.min(technicalLimit, configured);
+        }
+    }
+    if (org.flashNight.arki.item.ItemUtil.isInformation(resolved.itemName)) {
+        technicalLimit = Math.min(technicalLimit,
+            org.flashNight.arki.item.ItemUtil.getInformationRemaining(resolved.itemName));
+    }
+    return Math.max(0, technicalLimit);
 };
 
 _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
@@ -387,7 +399,8 @@ _root.UI系统.NPC商店WebView.executeBuy = function(params:Object):Object {
     var quantity:Number = Number(params.quantity);
     // legacy buy 保持原版“一次一件装备”；npc-shop.v2 purchaseLimit 只作用于
     // 新 tradePreview/tradeCommit 协议，后者会把复数装备展开为独立实例。
-    var maxQuantity:Number = org.flashNight.arki.item.ItemUtil.isEquipment(itemName) ? 1 : 100;
+    var maxQuantity:Number = org.flashNight.arki.item.ItemUtil.isEquipment(itemName)
+        ? 1 : this.getPurchaseLimit(resolved);
     if (quantity > maxQuantity) return this.fail("invalid_quantity");
     var requiredInfo:String = typeof resolved.raw == "string" || resolved.raw.requiredInfo == undefined
         ? "" : String(resolved.raw.requiredInfo);
@@ -397,7 +410,9 @@ _root.UI系统.NPC商店WebView.executeBuy = function(params:Object):Object {
     var total:Number = Math.floor(basePrice * quantity * this.getBuyMultiplier());
     if (isNaN(_root.金钱) || isNaN(total) || total > Number(_root.金钱)) return this.fail("insufficient_money");
     var destination:String = this.resolvePurchaseDestination(itemName);
-    if (!org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, quantity)) return this.fail("inventory_full");
+    if (!org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, quantity)) {
+        return this.fail(destination == "intelligence" ? "destination_full" : "inventory_full");
+    }
     _root.金钱 -= total;
     if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
         org.flashNight.arki.achievement.AchievementMetrics.record("购买物品次数", 1);
@@ -811,13 +826,18 @@ _root.UI系统.NPC商店WebView.analyzeTradeCapacity = function(plan:Object):Obj
         }
     }
     var required:Number = 0;
+    var missingCollection:Number = 0;
     var mergeable:Object = {};
     for (var j:Number = 0; j < plan.acquireItems.length; j++) {
         var requested:Object = plan.acquireItems[j];
         var name:String = String(requested.name);
         var quantity:Number = Number(requested.value);
+        if (org.flashNight.arki.item.ItemUtil.isInformation(name)) {
+            missingCollection += Math.max(0, quantity
+                - org.flashNight.arki.item.ItemUtil.getInformationRemaining(name));
+            continue;
+        }
         if (org.flashNight.arki.item.ItemUtil.isMaterial(name)
-                || org.flashNight.arki.item.ItemUtil.isInformation(name)
                 || this.resolvePurchaseDestination(name) == "quickslot") continue;
         if (org.flashNight.arki.item.ItemUtil.isEquipment(name)) {
             required += quantity;
@@ -840,7 +860,14 @@ _root.UI系统.NPC商店WebView.analyzeTradeCapacity = function(plan:Object):Obj
         }
         if (!remains) required++;
     }
-    return {requiredSlots:required, availableSlots:available, missingSlots:Math.max(0, required - available), enough:required <= available};
+    return {
+        requiredSlots:required,
+        availableSlots:available,
+        missingSlots:Math.max(0, required - available),
+        missingCollection:missingCollection,
+        enough:required <= available && missingCollection <= 0,
+        error:missingCollection > 0 ? "destination_full" : (required <= available ? "" : "inventory_full")
+    };
 };
 
 _root.UI系统.NPC商店WebView.checkTradeCapacity = function(plan:Object):Boolean {
@@ -898,7 +925,12 @@ _root.UI系统.NPC商店WebView.getPurchaseBounds = function(plan:Object, target
         purchaseLimit:limit,
         maxAffordable:maxAffordable,
         maxByCapacity:maxByCapacity,
-        maxPurchasable:Math.min(limit, Math.min(maxAffordable, maxByCapacity))
+        maxPurchasable:Math.min(limit, Math.min(maxAffordable, maxByCapacity)),
+        limitingReason:Math.min(maxAffordable, maxByCapacity) < limit
+            ? (maxByCapacity <= maxAffordable
+                ? (target.destinationView == "intelligence" ? "destination_full" : "inventory_full")
+                : "insufficient_money")
+            : ""
     };
 };
 
@@ -959,6 +991,7 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         plan.purchases[purchaseIndex].maxAffordable = bounds.maxAffordable;
         plan.purchases[purchaseIndex].maxByCapacity = bounds.maxByCapacity;
         plan.purchases[purchaseIndex].maxPurchasable = bounds.maxPurchasable;
+        plan.purchases[purchaseIndex].limitingReason = bounds.limitingReason;
     }
     this.tradeSeq++;
     plan.token = "npctrade" + getTimer() + "." + this.tradeSeq;
@@ -977,7 +1010,7 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         availableSlots:capacity.availableSlots,
         missingSlots:capacity.missingSlots,
         canCommit:enoughMoney && enoughSpace,
-        blockingError:enoughMoney ? (enoughSpace ? "" : "inventory_full") : "insufficient_money"
+        blockingError:enoughMoney ? (enoughSpace ? "" : capacity.error) : "insufficient_money"
     };
 };
 
@@ -1011,7 +1044,8 @@ _root.UI系统.NPC商店WebView.validateTradePlan = function(plan:Object):Object
     }
     if (buyTotal != Number(plan.buyTotal) || sellTotal != Number(plan.sellTotal)) return this.fail("stale_state");
     if (Number(_root.金钱) + sellTotal < buyTotal) return this.fail("insufficient_money");
-    if (!this.checkTradeCapacity(plan)) return this.fail("inventory_full");
+    var capacity:Object = this.analyzeTradeCapacity(plan);
+    if (!capacity.enough) return this.fail(capacity.error);
     return {success:true};
 };
 

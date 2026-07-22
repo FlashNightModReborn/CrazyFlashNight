@@ -35,7 +35,7 @@ var EquipmentTuningRender = (function() {
         var bodyScroll = preserveScroll && previousBody ? {top:previousBody.scrollTop,left:previousBody.scrollLeft} : null;
         var previewScroll = preserveScroll && previousPreview ? {top:previousPreview.scrollTop,left:previousPreview.scrollLeft} : null;
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
-        clear(this._root);
+        clear(this._root, this._tooltipScope);
         var root = element('div', 'equipment-tuning-view');
         root.setAttribute('data-operation', this._operation === 'replace_mod' ? 'install_mod' : this._operation);
         root.setAttribute('data-reconcile', this._needsReconcile ? 'required' : 'clear');
@@ -374,7 +374,8 @@ var EquipmentTuningRender = (function() {
         if (!node || !candidate || !candidate.candidateKey || typeof PanelTooltip === 'undefined'
                 || !PanelTooltip || typeof PanelTooltip.bindAsyncHover !== 'function') return;
         var self = this;
-        PanelTooltip.bindAsyncHover(node, {
+        var tooltipBinder = this._tooltipScope || PanelTooltip;
+        tooltipBinder.bindAsyncHover(node, {
             cache:this._tooltipCache,
             key:'equipment-tuning:' + this._viewSessionId + ':'
                 + String(this._source && this._source.expectedLease || '') + ':' + String(candidate.candidateKey),
@@ -606,7 +607,11 @@ var EquipmentTuningRender = (function() {
     }
 
     function element(tag, className) { var node = document.createElement(tag); if (className) node.className = className; return node; }
-    function clear(node) { while (node && node.firstChild) node.removeChild(node.firstChild); }
+    function clear(node, tooltipScope) {
+        if (tooltipScope && typeof tooltipScope.releaseTree === 'function') tooltipScope.releaseTree(node);
+        else if (typeof PanelTooltip !== 'undefined' && PanelTooltip.releaseTree) PanelTooltip.releaseTree(node);
+        while (node && node.firstChild) node.removeChild(node.firstChild);
+    }
     function empty(text) { var node = element('div', 'equipment-tuning-empty'); node.textContent = text || ''; return node; }
     function actionButton(text, handler) { var button = element('button', 'equipment-tuning-action'); button.type = 'button'; button.textContent = text; if (handler) button.addEventListener('click', handler); return button; }
     function iconHtml(name, cls) {

@@ -195,11 +195,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     }
 
     var BASE_CATALOG = [
-        {idx:0,id:'w0',item:'测试手枪',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪'},
-        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂'},
-        {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备'},
-        {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',use:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑'},
-        {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',use:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀'}
+        {idx:0,id:'w0',item:'测试手枪',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1},
+        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999},
+        {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备',maxQuantity:1},
+        {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',use:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑',maxQuantity:1},
+        {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',use:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀',maxQuantity:1}
     ];
     var BASE_PURCHASED = [
         ['w0','测试手枪','武器',30,1],
@@ -669,13 +669,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     var item = this.state.catalog[cart[i].idx];
                     total += Number(item.price) * Number(cart[i].qty);
                     var equipment = item.majorType === '武器' || item.majorType === '防具';
-                    var maxQuantity = equipment ? 1 : 999;
+                    var maxQuantity = Number(item.maxQuantity);
                     var maxAffordable = Math.max(0,Math.min(maxQuantity,Math.floor(this.state.kpoints / Number(item.price))));
                     var vacancyCount = 0;
                     for (var vacancyIndex=0;vacancyIndex<this.state.inventory.背包.length;vacancyIndex++) {
                         if (!this.state.inventory.背包[vacancyIndex]) vacancyCount++;
                     }
-                    var maxByCapacity = equipment ? vacancyCount : 999;
+                    var maxByCapacity = equipment ? vacancyCount : maxQuantity;
                     if (equipment) requiredSlots += Number(cart[i].qty);
                     lines.push({catalogIndex:item.idx,itemName:item.item,displayName:item.displayname,icon:item.icon,
                         quantity:Number(cart[i].qty),unitPrice:Number(item.price),total:Number(item.price)*Number(cart[i].qty),
@@ -769,6 +769,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui2','生产格子走动态图标 HTML 入口',
             document.querySelectorAll('[data-icon]').length >= 3,
             document.querySelectorAll('[data-icon]').length + ' icons');
+        var largeQuantity = KShopCartController.addItem([], 1, 4549, true, 999999);
+        var cappedQuantity = KShopCartController.addItem(largeQuantity.cart, 1, 999999, true, 999999);
+        assert('kshop-limit1','大额堆叠购买不再被 999 UI 常量拒绝，并按权威目录上限夹紧',
+            largeQuantity.changed && largeQuantity.cart[0].qty === 4549
+                && cappedQuantity.cart[0].qty === 999999 && cappedQuantity.error === 'limit_reached');
         var keyboardCatalogCard = document.querySelector('.kshop-card:not(.kshop-card-locked):not(.kshop-card-nosale)');
         var keyboardCatalogName = keyboardCatalogCard && keyboardCatalogCard.querySelector('.kshop-card-name').textContent;
         var keyboardCatalogAction = keyboardCatalogCard && keyboardCatalogCard.querySelector('.kshop-add-btn');
@@ -2257,8 +2262,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 }
                 var smallScaleAnchor = measureAnchoredScale(0.667);
                 var largeScaleAnchor = measureAnchoredScale(1.25);
-                var anchoredScaleGapStable = Math.abs(smallScaleAnchor.gap - 8) < 1.5
-                    && Math.abs(largeScaleAnchor.gap - 8) < 1.5
+                var anchoredScaleGapStable = Math.abs(smallScaleAnchor.gap - 10) < 1.5
+                    && Math.abs(largeScaleAnchor.gap - 10) < 1.5
                     && Math.abs(smallScaleAnchor.width - 240 * 0.667) < 1.5
                     && Math.abs(largeScaleAnchor.width - 240 * 1.25) < 1.5
                     && smallScaleAnchor.inside && largeScaleAnchor.inside;
@@ -2295,6 +2300,31 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     && !focusOwnerProbe.hasAttribute('aria-describedby');
                 focusOwnerBinding.destroy(); hoverOwnerBinding.destroy();
                 focusOwnerProbe.remove(); hoverOwnerProbe.remove();
+
+                var lifecycleScope = PanelTooltip.createScope('detached-probe');
+                var detachedProbe = document.createElement('button');
+                var replacementProbe = document.createElement('button');
+                detachedProbe.textContent = 'detached owner'; replacementProbe.textContent = 'replacement owner';
+                document.body.appendChild(detachedProbe); document.body.appendChild(replacementProbe);
+                lifecycleScope.bindAsyncHover(detachedProbe, {
+                    key:'detached-owner', item:{}, cache:{}, renderBasic:function(){ return '<b>detached-owner</b>'; }
+                });
+                var replacementBinding = PanelTooltip.bindAsync(replacementProbe, {
+                    key:'replacement-owner', item:{}, cache:{}, renderBasic:function(){ return '<b>replacement-owner</b>'; }
+                });
+                detachedProbe.focus();
+                detachedProbe.remove();
+                replacementProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter', {
+                    bubbles:false,clientX:640,clientY:360,pointerId:23,pointerType:'mouse',isPrimary:true
+                }));
+                replacementProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
+                    bubbles:false,clientX:640,clientY:360,pointerId:23,pointerType:'mouse',isPrimary:true
+                }));
+                var detachedOwnerNotRestored = !PanelTooltip.isVisible()
+                    && PanelTooltip.debugState().detachedBindingCount === 1;
+                lifecycleScope.dispose();
+                replacementBinding.destroy(); replacementProbe.remove();
+                var scopeCleanupComplete = PanelTooltip.debugState().detachedBindingCount === 0;
                 window.__visualTooltipState = {
                     visible:richVisible,
                     basicStyled:basicStyled,
@@ -2315,7 +2345,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     focusOwnerInitiallyVisible:focusOwnerInitiallyVisible,
                     hoverOwnerTookControl:hoverOwnerTookControl,
                     focusedOwnerRestored:focusedOwnerRestored,
-                    restoredOwnerExitHidden:restoredOwnerExitHidden
+                    restoredOwnerExitHidden:restoredOwnerExitHidden,
+                    detachedOwnerNotRestored:detachedOwnerNotRestored,
+                    scopeCleanupComplete:scopeCleanupComplete,
+                    placement:PanelTooltip.debugState().lastPlacement
                 };
             }
             if (mode === 'battlebox-pages') click('.inventory-page-jump');

@@ -63,6 +63,7 @@ var KShop = (function() {
     var _cartDropTarget, _selectedCatalogIdx = null;
     var _dragTooltipSuppressed = false;
     var _ownedTooltipSelectionSuppressed = false;
+    var _tooltipScope = null;
     var _layoutMode = 'full', _densityController = null;
     var _el, _shellEl, _grid, _balanceEl, _checkoutBtn, _loadingEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
@@ -102,7 +103,12 @@ var KShop = (function() {
         intent:{
             requestShop:requestShop,
             requestInventory:requestInventory,
-            ownedSlotRef:KShopOwnedInventoryPresenter.ownedSlotRef
+            ownedSlotRef:KShopOwnedInventoryPresenter.ownedSlotRef,
+            bindAsyncHover:function(node, options) {
+                return _tooltipScope
+                    ? _tooltipScope.bindAsyncHover(node, options)
+                    : PanelTooltip.bindAsyncHover(node, options);
+            }
         }
     });
 
@@ -205,6 +211,8 @@ var KShop = (function() {
         if (scope === 'checkout') {
             if (code === 'insufficient_kpoints') return 'K点不足！';
             if (code === 'inventory_full') return '背包容量不足，整单未扣款。';
+            if (code === 'destination_full') return '对应收集项已达持有上限，整单未扣款。';
+            if (code === 'invalid_quantity') return '购买数量超过当前商品上限，请按目录提示调整。';
             if (code === 'stale_state') return '商品、余额或背包状态已变化，请重新核对。';
             if (code === 'busy') return '商城正在处理另一笔写入，请稍后再试。';
             if (code === 'timeout' || code === 'client_timeout' || code === 'reconcile_required') return '结账结果不确定，已按服务器状态刷新，未自动重试。';
@@ -214,6 +222,7 @@ var KShop = (function() {
         }
         if (scope === 'claim') {
             if (code === 'inventory_full') return '物品栏已满，无法领取！';
+            if (code === 'destination_full') return '对应收集项已达持有上限，暂时无法领取！';
             if (code === 'acquire_failed') return '背包空间不足，无法领取！';
             if (code === 'item_not_found') return '商品不存在或已被领取。';
             if (code === 'stale_state') return '待领取列表已变化，已刷新。';
@@ -260,7 +269,12 @@ var KShop = (function() {
     function applyBulkSnapshot(resp, options) {
         options = options || {};
         _catalog = resp.catalog || _catalog || [];
-        if (!options.preserveCart) _cart = resp.cart || [];
+        var incomingCart = options.preserveCart ? _cart : (resp.cart || []);
+        var sanitized = KShopCartController.sanitizeCart(incomingCart, findCatalogItem, isStackable);
+        _cart = sanitized.cart;
+        if ((resp.cartAdjusted || sanitized.adjusted) && !options.preserveCart) {
+            toast('购物车中超过当前持有上限或已失效的数量已自动调整。');
+        }
         _purchased = resp.purchased || [];
         _purchasedToken = String(resp.purchasedToken || '');
         _kpoints = Number(resp.kpoints || 0);
@@ -516,6 +530,9 @@ var KShop = (function() {
     function onOpen(el) {
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
+        if (_tooltipScope) _tooltipScope.dispose();
+        _tooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope)
+            ? PanelTooltip.createScope('kshop') : null;
         _closing = false;
         _shopReady = false;
         _loading = true;
@@ -760,6 +777,7 @@ var KShop = (function() {
         dismissDialog();
         _cartController.closeSettlement();
         hideTooltip();
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         _shopReady = false;
         _loading = false;
         _writeCoordinator.forceClose();
@@ -822,6 +840,7 @@ var KShop = (function() {
         _cartController.closeSettlement();
         _cartController.dismissQuantityInput();
         hideTooltip();
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         toast('连接断开，商城已关闭');
     }
 

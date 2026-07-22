@@ -158,8 +158,10 @@ function auditArchitectureBoundaries() {
     }
     const tooltipSource = fs.readFileSync(path.join(WEB_ROOT, 'modules', 'tooltip.js'), 'utf8');
     if (!tooltipSource.includes('function bindAsync(')
+            || !tooltipSource.includes('function createScope(')
+            || !tooltipSource.includes('function releaseTree(')
             || !tooltipSource.includes('function bindAsyncHover(node, options) { return bindAsync(node, options); }')) {
-        throw new Error('PanelTooltip neutral pointer/focus binding or compatibility alias missing');
+        throw new Error('PanelTooltip binding, ownership scope, subtree release, or compatibility alias missing');
     }
     const itemFilterSource = fs.readFileSync(ITEM_FILTER_SOURCE, 'utf8');
     if (!itemFilterSource.includes('function FilterNavigator(')
@@ -177,9 +179,14 @@ function auditArchitectureBoundaries() {
     if (!kshopUiSource.includes('Workbench.ItemCard.renderCatalog') || !npcshopUiSource.includes('Workbench.ItemCard.renderCatalog')) {
         throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
     }
-    if (!kshopUiSource.includes('PanelTooltip.bindAsyncHover') || !npcshopUiSource.includes('PanelTooltip.bindAsyncHover')
+    if (!kshopUiSource.includes('PanelTooltip.bindAsyncHover') || !npcshopUiSource.includes('.bindAsyncHover(node,')
             || !inventoryWorkbenchUiSource.includes('PanelTooltip.bindAsyncHover')) {
         throw new Error('Panel async tooltip binding is not shared across shop and workbench panels');
+    }
+    if (!kshopSource.includes("PanelTooltip.createScope('kshop')")
+            || !kshopSource.includes('_tooltipScope.dispose()')
+            || !kshopUiSource.includes('this._intent.bindAsyncHover(node, options)')) {
+        throw new Error('KShop tooltip bindings are not owned by the panel session scope');
     }
     if (!panelsCssSource.includes('.item-grid-compact')) {
         throw new Error('Compact item-grid modifier styles missing');
@@ -312,7 +319,10 @@ function createServer() {
                 || !visualState.tooltip.teardownIdempotent || !visualState.tooltip.anchoredRichRepositioned
                 || !visualState.tooltip.anchoredRichInsideViewport || !visualState.tooltip.anchoredScaleGapStable
                 || !visualState.tooltip.focusOwnerInitiallyVisible || !visualState.tooltip.hoverOwnerTookControl
-                || !visualState.tooltip.focusedOwnerRestored || !visualState.tooltip.restoredOwnerExitHidden);
+                || !visualState.tooltip.focusedOwnerRestored || !visualState.tooltip.restoredOwnerExitHidden
+                || !visualState.tooltip.detachedOwnerNotRestored || !visualState.tooltip.scopeCleanupComplete
+                || !visualState.tooltip.placement || visualState.tooltip.placement.pointerOverlap > 0
+                || visualState.tooltip.placement.anchorOverlap > 0);
         if (pageErrors.length || failedRequests.length || tooltipFailed) process.exit(1);
         return;
     }
@@ -334,7 +344,10 @@ function createServer() {
         || !realTooltip.teardownIdempotent || !realTooltip.anchoredRichRepositioned
         || !realTooltip.anchoredRichInsideViewport || !realTooltip.anchoredScaleGapStable
         || !realTooltip.focusOwnerInitiallyVisible || !realTooltip.hoverOwnerTookControl
-        || !realTooltip.focusedOwnerRestored || !realTooltip.restoredOwnerExitHidden;
+        || !realTooltip.focusedOwnerRestored || !realTooltip.restoredOwnerExitHidden
+        || !realTooltip.detachedOwnerNotRestored || !realTooltip.scopeCleanupComplete
+        || !realTooltip.placement || realTooltip.placement.pointerOverlap > 0
+        || realTooltip.placement.anchorOverlap > 0;
     if (qa.failed || tooltipFailed || pageErrors.length || failedRequests.length) process.exit(1);
 })().catch(error => {
     console.error(error && error.stack ? error.stack : String(error));

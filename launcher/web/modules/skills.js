@@ -13,7 +13,7 @@ var SkillsPanel = (function() {
     }
 
 
-    var _scaleEl = null, _scaleHandle = null, _shell = null;
+    var _scaleEl = null, _scaleHandle = null, _shell = null, _tooltipScope = null;
     var _leftRoot = null, _rightRoot = null, _list = null, _search = null;
     var _searchToggle = null, _searchControls = null, _searchClose = null, _searchExpanded = false;
     var _filterNavigators = {}, _filterBoard = null, _filterResetButton = null;
@@ -52,6 +52,7 @@ var SkillsPanel = (function() {
             };
         },
         visibleEntries:visibleEntries, focusKeyOf:focusKeyOf, restoreFocusKey:restoreFocusKey,
+        clearElement:function(element) { Workbench.clearElement(element); },
         empty:empty, iconNode:iconNode, safeNumber:safeNumber, cooldownText:cooldownText,
         healthLabel:healthLabel, compactStateLabel:compactStateLabel, skillAriaLabel:skillAriaLabel,
         normalizeAS2Description:normalizeAS2Description, escapeHtml:escapeHtml, button:button,
@@ -98,6 +99,8 @@ var SkillsPanel = (function() {
 
     function beginOpen(initData) {
         cleanupView(false);
+        _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('skills') : null;
         _initData = initData || {};
         _view = _initData.view === 'trainer' ? 'trainer' : 'manage';
         _snapshot = null;
@@ -119,8 +122,8 @@ var SkillsPanel = (function() {
     }
 
     function buildDOM() {
-        while (_scaleEl.firstChild) _scaleEl.removeChild(_scaleEl.firstChild);
         if (_shell) _shell.destroy();
+        Workbench.clearElement(_scaleEl);
         _shell = new Workbench.DualPaneShell({
             title: _view === 'trainer' ? '技能研习' : '我的技能',
             subtitle: _view === 'trainer' ? '选择技能，查看说明后研习' : '技能库与快捷技能带',
@@ -1043,6 +1046,7 @@ var SkillsPanel = (function() {
         _filterNavigators = {}; _filterBoard = null; _filterResetButton = null;
         if (_density) { _density.destroy(); _density = null; }
         _densityToggle = null; _confirmationToggle = null;
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         if (_shell) { _shell.destroy(); _shell = null; }
         _leftRoot = null; _rightRoot = null; _list = null; _search = null;
         _searchToggle = null; _searchControls = null; _searchClose = null; _searchExpanded = false;
@@ -1051,7 +1055,6 @@ var SkillsPanel = (function() {
         if (detachScale !== false && _scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         _snapshot = null; _preview = null; _schemaError = ''; _lastDiagnostic = null;
         _previewError = ''; _previewReceivedAt = 0; _trainerExpired = false;
-        if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
     }
 
     function writesDisabled(entry) {
@@ -1077,7 +1080,8 @@ var SkillsPanel = (function() {
             description:slot.stateHealth === 'unknown' ? '该槽引用了当前技能表中不存在的技能；仅允许安全卸载。' : '暂无技能说明。'
         } : null);
         if (!model) return;
-        PanelTooltip.bindAsyncHover(node, {
+        var tooltipBinder = _tooltipScope || PanelTooltip;
+        tooltipBinder.bindAsyncHover(node, {
             key:'skill:' + String(model.skillKey || ''), item:model,
             renderBasic:function(value) { return buildSkillTooltipHtml(value); },
             isSuppressed:function() {

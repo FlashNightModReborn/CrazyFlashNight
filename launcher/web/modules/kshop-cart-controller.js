@@ -21,6 +21,32 @@
         return result;
     }
 
+    function quantityLimit(item, stackable) {
+        if (!stackable) return 1;
+        var authority = Number(item && item.maxQuantity);
+        // 老版 Flash 未下发 maxQuantity 时保留旧 999 护栏；新版由权威目录显式给出。
+        if (!isFinite(authority) || authority < 0) return 999;
+        return Math.min(999999, Math.floor(authority));
+    }
+
+    function sanitizeCart(cart, findCatalogItem, isStackable) {
+        var next = [], adjusted = false, seen = {};
+        cart = cart || [];
+        for (var i = 0; i < cart.length; i++) {
+            var idx = Number(cart[i].idx);
+            var item = findCatalogItem(idx);
+            if (!item || seen[idx]) { adjusted = true; continue; }
+            var maximum = quantityLimit(item, isStackable(item));
+            var raw = Number(cart[i].qty);
+            if (!isFinite(raw) || raw <= 0 || maximum <= 0) { adjusted = true; continue; }
+            var qty = Math.min(maximum, Math.floor(raw));
+            if (qty !== raw) adjusted = true;
+            seen[idx] = true;
+            next.push({idx:idx, qty:qty});
+        }
+        return {cart:next, adjusted:adjusted};
+    }
+
     function buildPayload(cart) { return copyCart(cart); }
 
     function quantity(cart) {
@@ -40,21 +66,28 @@
         return value;
     }
 
-    function addItem(cart, idx, qty, stackable) {
+    function addItem(cart, idx, qty, stackable, maximum) {
         var next = copyCart(cart);
         idx = Number(idx);
         qty = Math.max(1, Math.floor(Number(qty) || 1));
+        maximum = stackable ? Math.max(0, Math.floor(Number(maximum))) : 1;
+        if (!isFinite(maximum)) maximum = stackable ? 999 : 1;
+        if (maximum <= 0) return {changed:false, error:'sold_out', cart:next};
         for (var i = 0; i < next.length; i++) {
             if (next[i].idx !== idx) continue;
             if (!stackable) return {changed:false, error:'duplicate_single', cart:next};
-            next[i].qty += qty;
-            return {changed:true, error:'', cart:next};
+            var requested = next[i].qty + qty;
+            var combined = Math.min(maximum, requested);
+            if (combined === next[i].qty) return {changed:false, error:'limit_reached', cart:next};
+            next[i].qty = combined;
+            return {changed:true, error:combined < requested ? 'limit_reached' : '', cart:next};
         }
-        next.push({idx:idx, qty:stackable ? qty : 1});
-        return {changed:true, error:'', cart:next};
+        var inserted = stackable ? Math.min(maximum, qty) : 1;
+        next.push({idx:idx, qty:inserted});
+        return {changed:true, error:inserted < qty ? 'limit_reached' : '', cart:next};
     }
 
-    function adjustItem(cart, idx, delta, removeAll) {
+    function adjustItem(cart, idx, delta, removeAll, maximum) {
         var next = copyCart(cart);
         idx = Number(idx);
         for (var i = 0; i < next.length; i++) {
@@ -63,18 +96,28 @@
             else {
                 next[i].qty += Number(delta) || 0;
                 if (next[i].qty <= 0) next.splice(i, 1);
+                else if (isFinite(Number(maximum)) && next[i].qty > Number(maximum)) {
+                    if (Number(maximum) <= 0) next.splice(i, 1);
+                    else next[i].qty = Math.floor(Number(maximum));
+                    return {changed:true, error:'limit_reached', cart:next};
+                }
             }
             return {changed:true, cart:next};
         }
         return {changed:false, cart:next};
     }
 
-    function setItemQuantity(cart, idx, value) {
+    function setItemQuantity(cart, idx, value, maximum) {
         var next = copyCart(cart);
         idx = Number(idx);
         var target = Math.max(1, Math.floor(Number(value) || 1));
+        if (isFinite(Number(maximum))) target = Math.min(target, Math.max(0, Math.floor(Number(maximum))));
         for (var i = 0; i < next.length; i++) {
             if (next[i].idx !== idx) continue;
+            if (target <= 0) {
+                next.splice(i, 1);
+                return {changed:true, error:'sold_out', cart:next};
+            }
             if (next[i].qty === target) return {changed:false, cart:next};
             next[i].qty = target;
             return {changed:true, cart:next};
@@ -182,13 +225,18 @@
         if (!this._state.canEdit()) return false;
         var item = this._state.findCatalogItem(idx);
         if (!item || this._state.isLocked(item) || item.type === '非卖品') return false;
-        var result = addItem(this._cart(), idx, qty, this._state.isStackable(item));
+        var stackable = this._state.isStackable(item);
+        var maximum = quantityLimit(item, stackable);
+        var result = addItem(this._cart(), idx, qty, stackable, maximum);
         if (!result.changed) {
             if (result.error === 'duplicate_single') this._intent.toast('该装备已在购物车中');
+            else if (result.error === 'sold_out') this._intent.toast('该商品当前已达持有上限。');
+            else if (result.error === 'limit_reached') this._intent.toast('已达到当前可购买上限 ' + maximum + '。');
             this._intent.playCue('error');
             return false;
         }
         this._commitCart(result.cart);
+        if (result.error === 'limit_reached') this._intent.toast('数量已调整为当前可购买上限 ' + maximum + '。');
         this._intent.playCue('confirm');
         return true;
     };
@@ -220,14 +268,19 @@
 
     CartController.prototype.adjust = function(idx, delta, removeAll) {
         if (!this._state.canEdit()) return false;
-        var result = adjustItem(this._cart(), idx, delta, removeAll);
+        var item = this._state.findCatalogItem(idx);
+        var maximum = quantityLimit(item, item && this._state.isStackable(item));
+        var result = adjustItem(this._cart(), idx, delta, removeAll, maximum);
         if (result.changed) this._commitCart(result.cart);
+        if (result.error === 'limit_reached') this._intent.toast('已达到当前可购买上限 ' + maximum + '。');
         return result.changed;
     };
 
     CartController.prototype.setQuantity = function(idx, value) {
         if (!this._state.canEdit()) return false;
-        var result = setItemQuantity(this._cart(), idx, value);
+        var item = this._state.findCatalogItem(idx);
+        var maximum = quantityLimit(item, item && this._state.isStackable(item));
+        var result = setItemQuantity(this._cart(), idx, value, maximum);
         if (result.changed) this._commitCart(result.cart);
         return result.changed;
     };
@@ -320,12 +373,14 @@
         var self = this;
         var item = this._state.findCatalogItem(idx);
         if (!item) return;
+        var maximum = quantityLimit(item, true);
+        if (maximum <= 0) { this._intent.toast('该商品当前已达持有上限。'); return; }
         var popup = document.createElement('div');
         popup.className = 'kshop-qty-popup';
         popup.innerHTML = '<div class="kshop-qty-popup-title">' + this._intent.escapeHtml(item.displayname) + '</div>'
             + '<div class="kshop-qty-popup-row"><button class="kshop-qty-pop-btn" data-v="-10" data-audio-cue="click">−−</button>'
             + '<button class="kshop-qty-pop-btn" data-v="-1" data-audio-cue="click">−</button>'
-            + '<input class="kshop-qty-input" type="number" value="1" min="1" max="999">'
+            + '<input class="kshop-qty-input" type="number" value="1" min="1" max="' + maximum + '">'
             + '<button class="kshop-qty-pop-btn" data-v="1" data-audio-cue="click">+</button>'
             + '<button class="kshop-qty-pop-btn" data-v="10" data-audio-cue="click">++</button></div>'
             + '<div class="kshop-qty-popup-foot"><span class="kshop-qty-subtotal">K ' + item.price + '</span>'
@@ -345,20 +400,20 @@
         var input = popup.querySelector('.kshop-qty-input');
         var subtotal = popup.querySelector('.kshop-qty-subtotal');
         function updateSubtotal() {
-            var value = Math.max(1, Math.floor(Number(input.value) || 1));
+            var value = Math.min(maximum, Math.max(1, Math.floor(Number(input.value) || 1)));
             input.value = value;
             subtotal.textContent = 'K ' + value * Number(item.price);
         }
         function confirm() {
             if (!self._state.canEdit()) return;
-            self.addCatalogIntent(idx, Math.max(1, Math.floor(Number(input.value) || 1)));
+            self.addCatalogIntent(idx, Math.min(maximum, Math.max(1, Math.floor(Number(input.value) || 1))));
             self.dismissQuantityInput();
         }
         var buttons = popup.querySelectorAll('.kshop-qty-pop-btn');
         for (var i = 0; i < buttons.length; i++) {
             (function(button) {
                 self._holdRepeat(button, function() {
-                    input.value = Math.max(1, (Number(input.value) || 1) + Number(button.getAttribute('data-v')));
+                    input.value = Math.min(maximum, Math.max(1, (Number(input.value) || 1) + Number(button.getAttribute('data-v'))));
                     updateSubtotal();
                 });
             })(buttons[i]);
@@ -448,6 +503,8 @@
     return {
         CartController:CartController,
         copyCart:copyCart,
+        quantityLimit:quantityLimit,
+        sanitizeCart:sanitizeCart,
         buildPayload:buildPayload,
         quantity:quantity,
         total:total,

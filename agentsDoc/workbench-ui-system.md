@@ -137,7 +137,9 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 - `workbench-primitives.js`：EntityTile、ItemCard、InteractionBroker、PointerDragController 等中性 UI/交互 primitive；
 - `workbench-components.js`：SecondaryPage、ChoiceGroup、CommitBar、OwnedInventoryPane；所有 open/close/destroy 回调都必须容忍重入和异常，并保持 DOM、focus stack 与业务 active 状态一致。并列 SecondaryPage 按打开顺序形成模态栈，只允许顶层页进入可访问树；关闭顶层恢复下层，关闭被覆盖下层不得在后续 unwind 中复活，焦点须沿 opener 链跳过已关闭页。
 
-共享异步 tooltip 同时记录 pointer/focus 活性和 owner 顺序。临时 hover owner 离开或销毁后，应恢复仍聚焦的上一 owner；anchored 内容从占位更新为富内容、字体或图片迟到时，必须以 transform 后的物理尺寸重新测量并夹紧视口。
+共享异步 tooltip 同时记录 pointer/focus 活性和 owner 顺序。每个 panel/view 实例必须持有一个 tooltip scope；关闭、rebind 或整树替换时由 scope/disposable 一次性销毁域内 binding，`clearElement/releaseTree` 必须在节点脱离 DOM 前执行。恢复旧 owner 前还要复核 scope 活性、节点 `isConnected` 与真实 `document.activeElement`，不能依赖浏览器一定派发 `pointerleave/focusout`。临时 hover owner 离开或销毁后，只能恢复仍连接且仍聚焦的上一 owner；迟到回包不得复活 detached owner。`debugState` 的 detached binding 在稳定关闭后必须为 0。
+
+tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc 双栏，但几何契约归 Web 浮层系统：被动注释固定 `pointer-events:none`，初始位置在存在可行候选时不得覆盖当前鼠标热点或触发元素；按 left/right/top/bottom 做视口碰撞选择并保留至少 `10px` anchor gap，最后夹紧 `8px` viewport inset。并排双栏超出视口时转为纵向，不能以“复刻 AS2 舞台坐标”为理由允许注释压住鼠标。anchored 内容从占位更新为富内容、字体或图片迟到时，必须以 transform 后的物理尺寸重新测量并再次执行同一契约。
 
 ## 9. 组件边界
 

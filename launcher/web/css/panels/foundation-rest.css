@@ -54,6 +54,8 @@
     --tt-warn:       #ff8080;                    /* 锁定红，沿用 launcher 风格 */
     --tt-icon-blend: overlay;                    /* 对齐 AS2 物品图标定位 blendMode="overlay" */
 
+    /* 注释属于被动呈现层：不截获输入；JS 几何契约同时保证有可用空间时不覆盖
+       当前鼠标热点或触发元素。 */
     position:fixed; z-index:1100; pointer-events:none; display:none;
     background:var(--tt-bg); border:var(--tt-border); color:var(--tt-text);
     padding:10px 14px; font-size:12px; max-width:480px; letter-spacing:0.3px;
@@ -412,15 +414,25 @@
 
     display: flex;
     gap: var(--tt-gap);
-    align-items: flex-start;       /* 两面板都从容器顶部开始，desc 的最终 Y/高度由 JS 写 inline
-                                      style 决定（margin-top + height）。这跟 AS2 端
-                                      positionTooltip 的算法语义一致：
-                                      - IF 分支（mouseY 靠近屏幕底部 + intro 比 main 高）：
-                                        desc 整块下移 offset，底部对齐 intro 底部
-                                      - ELSE 分支（mouseY 靠顶 / main 比 intro 高）：
-                                        desc 紧贴顶部，高度膨胀到 max(textH, iconH)+10 下限
-                                      公式 ground-truth 来自 TooltipGroundTruthDump（862 物品 × 9 mouseY 采样
-                                      落到 launcher/perf/tooltip-regression/tooltip-truth.json，供 regression 校对） */
+    align-items: flex-start;
+}
+
+/* 视口放不下并排双栏时由定位器切成纵向。内容视觉仍沿用 Flash token，几何不再
+   以遮挡鼠标为代价强行复刻 AS2 舞台坐标。 */
+.flash-tt-rich--stacked,
+.kshop-tt-rich.flash-tt-rich--stacked {
+    flex-direction: column;
+    align-items: stretch;
+}
+.flash-tt-rich--stacked .flash-tt-intro-panel,
+.flash-tt-rich--stacked .kshop-tt-intro-panel {
+    width: min(var(--tt-intro-w), calc(100vw - 32px));
+    min-height: 0;
+}
+.flash-tt-rich--stacked .flash-tt-desc,
+.flash-tt-rich--stacked .kshop-tt-desc {
+    width: min(var(--tt-desc-max-w), calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
 }
 
 /* ── default 分支：非武器/护甲/技能/药水的物品（消耗品/材料/收集品/情报…）──
@@ -519,16 +531,9 @@
     line-height: var(--tt-intro-line-height);
 }
 
-/* Desc 右面板（对齐 AS2 mainBg）
-   独立背景 + 边框，对齐 AS2 端 mainBg MovieClip 视觉。
-   marginTop / height 由 JS positionAtMouse 写 inline style（不在 CSS 里固定）：
-   公式直接 port AS2 TooltipLayout.positionTooltip：
-     tipsH    = max(introBgH, mainBgH)
-     tipsY    = clamp(0, stageH - tipsH, mouseY - tipsH - MOUSE_OFFSET)
-     offset   = mouseY - (tipsY + mainBgH) - MOUSE_OFFSET
-     IF offset > 0:  marginTop = offset, height = mainBgH
-     ELSE:           marginTop = 0,      height = max(mainTH, iconH) + HEIGHT_ADJUST
-   box-sizing: border-box 让 inline height 直接控制外框（含 border + padding） */
+/* Desc 右面板（对齐 AS2 mainBg 的视觉，不继承其可遮挡鼠标的舞台定位）。
+   超长内容限制在视口内滚动，浮层仍保持 pointer-events:none，因此滚动由页面/键盘
+   控制而非把 tooltip 变成第二个交互上下文。 */
 .flash-tt-desc,
 .kshop-tt-desc {
     flex: 0 0 auto;
@@ -540,7 +545,8 @@
     box-shadow: var(--tt-shadow);
     padding: var(--tt-panel-pad);          /* AS2 端 mainBg 无 padding，TextField 4px gutter */
     box-sizing: border-box;
-    overflow: hidden;
+    max-height: min(70vh, 520px);
+    overflow: auto;
     /* desc 内部目前没用 mix-blend-mode，但保留 isolation 让 future 子元素如有 blend 需求
        有独立合成空间。也跟 intro-panel 对称，避免哪天加 desc icon 时漏配置。 */
     isolation: isolate;

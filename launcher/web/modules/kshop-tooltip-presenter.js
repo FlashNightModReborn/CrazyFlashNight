@@ -53,6 +53,11 @@
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip.hide) PanelTooltip.hide();
     };
 
+    TooltipPresenter.prototype._bindAsyncHover = function(node, options) {
+        if (this._intent.bindAsyncHover) return this._intent.bindAsyncHover(node, options);
+        return PanelTooltip.bindAsyncHover(node, options);
+    };
+
     TooltipPresenter.prototype._iconHtml = function(iconKey) {
         var html = PanelTooltip.dynamicIconHtml(iconKey);
         return html || '<div class="kshop-tt-icon-placeholder"></div>';
@@ -111,7 +116,7 @@
 
     TooltipPresenter.prototype.bindCatalog = function(card, item) {
         var self = this;
-        PanelTooltip.bindAsyncHover(card, {
+        this._bindAsyncHover(card, {
             cache:this._catalogCache,
             key:item.idx,
             item:item,
@@ -131,7 +136,7 @@
     TooltipPresenter.prototype.bindOwned = function(node, containerId, slot) {
         var self = this;
         var item = slot.item || {};
-        PanelTooltip.bindAsyncHover(node, {
+        this._bindAsyncHover(node, {
             cache:this._ownedCache,
             key:ownedTooltipKey(containerId, slot),
             item:item,

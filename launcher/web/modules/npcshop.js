@@ -8,7 +8,7 @@ var NpcShop = (function() {
     var _scaleHandle = null, _retryButton, _checkoutButton, _helpButton, _category = {mode:'auto', path:[]}, _categoryInitialized = false;
     var _purchaseIntents = {}, _saleIntents = {}, _settlement = null, _settlementPresenter = null;
     var _previewBusy = false, _previewQueued = false, _previewRevision = 0;
-    var _tooltipCache = {};
+    var _tooltipCache = {}, _tooltipScope = null;
     var _layoutMode = 'full', _densityController = null;
     var _spacePresenter = null, _spaceBusy = false, _spaceMutated = false;
     var _helpPresenter = null, _bagFilterControl = null;
@@ -56,8 +56,8 @@ var NpcShop = (function() {
     function buildDOM() {
         disposeFilterNavigators();
         disposeSharedComponents();
-        while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         if (_shell) _shell.destroy();
+        Workbench.clearElement(_shellEl);
         _rightViews = {}; _ownedPanes = {}; _viewButtons = {};
         _shell = new Workbench.DualPaneShell({title:_shopId, status:'同步中', leftLabel:'商品', rightLabel:'背包'});
         var root = _shell.getRoot();
@@ -265,8 +265,11 @@ var NpcShop = (function() {
 
     function renderCatalogCard(item) {
         var selected = !!_purchaseIntents[String(item.catalogIndex)];
-        var markerText = item.locked ? '未解锁' : (selected ? '待购 ×' + _purchaseIntents[String(item.catalogIndex)].quantity : '点击加入待购');
-        var lockTitle = item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁';
+        var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
+        var markerText = item.locked ? '未解锁' : (atLimit ? '已达持有上限'
+            : (selected ? '待购 ×' + _purchaseIntents[String(item.catalogIndex)].quantity : '点击加入待购'));
+        var lockTitle = atLimit ? '已达持有上限'
+            : (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁');
         return Workbench.ItemCard.renderCatalog({
             skin: 'npcshop',
             item: item,
@@ -275,7 +278,7 @@ var NpcShop = (function() {
             name: item.displayName || item.itemName,
             meta: ItemFilter.catalogPath(item).map(function(part) { return part.label; }).join(' · '),
             priceText: '$ ' + Number(item.unitPrice || 0).toLocaleString(),
-            locked: item.locked,
+            locked: item.locked || atLimit,
             lockTitle: lockTitle,
             selected: selected,
             markerText: markerText
@@ -294,8 +297,9 @@ var NpcShop = (function() {
             nodes[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
             Workbench.EntityTile.setSelected(nodes[i], selected);
             var marker = nodes[i].querySelector('.npcshop-selection-marker');
-            if (marker) marker.textContent = item.locked ? '未解锁'
-                : (selected ? '待购 ×' + _purchaseIntents[key].quantity : '点击加入待购');
+            var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
+            if (marker) marker.textContent = item.locked ? '未解锁' : (atLimit ? '已达持有上限'
+                : (selected ? '待购 ×' + _purchaseIntents[key].quantity : '点击加入待购'));
             return;
         }
     }
@@ -341,9 +345,12 @@ var NpcShop = (function() {
 
     function togglePurchase(item) {
         if (_busy || _needsReconcile || !item || item.locked) return;
+        var maximum = Number(item.maxQuantity);
+        if (isFinite(maximum) && maximum <= 0) { toast('该情报已达持有上限。'); return; }
         var key = String(item.catalogIndex);
         if (_purchaseIntents[key]) delete _purchaseIntents[key];
-        else _purchaseIntents[key] = {catalogIndex:Number(item.catalogIndex), quantity:1, maxQuantity:Number(item.maxQuantity) || 1, item:item};
+        else _purchaseIntents[key] = {catalogIndex:Number(item.catalogIndex), quantity:1,
+            maxQuantity:isFinite(maximum) && maximum >= 1 ? Math.floor(maximum) : 1, item:item};
         syncCatalogIntentCard(item); refreshControls();
     }
 
@@ -767,7 +774,8 @@ var NpcShop = (function() {
     }
 
     function bindCatalogCard(node, item) {
-        PanelTooltip.bindAsyncHover(node, {
+        var tooltipBinder = _tooltipScope || PanelTooltip;
+        tooltipBinder.bindAsyncHover(node, {
             cache: _tooltipCache,
             key: 'catalog:' + item.itemName,
             item: item,
@@ -781,7 +789,7 @@ var NpcShop = (function() {
             itemName:item.displayName || item.itemName,
             label:node.getAttribute('aria-label') || '',
             selected:!!_purchaseIntents[String(item.catalogIndex)],
-            disabled:!!item.locked,
+            disabled:!!item.locked || (isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0),
             onActivate:function() { togglePurchase(item); }
         });
     }
@@ -792,7 +800,8 @@ var NpcShop = (function() {
         var payload = viewId === 'bag'
             ? {source:{containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)}}
             : {itemName:String(item.name || '')};
-        PanelTooltip.bindAsyncHover(node, {
+        var tooltipBinder = _tooltipScope || PanelTooltip;
+        tooltipBinder.bindAsyncHover(node, {
             cache: _tooltipCache,
             key: key,
             item: item,
@@ -828,6 +837,9 @@ var NpcShop = (function() {
 
     function onOpen(el, initData) {
         disposeSharedComponents();
+        if (_tooltipScope) _tooltipScope.dispose();
+        _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('npcshop') : null;
         _generation++; _shopId = initData && typeof initData.shopId === 'string' ? initData.shopId : '';
         _state = null; _busy = false; _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null;
         _spaceBusy = false; _spaceMutated = false; _helpButton = null;
@@ -908,7 +920,7 @@ var NpcShop = (function() {
         _helpButton = null;
         disposeFilterNavigators();
         if (_densityController) { _densityController.destroy(); _densityController = null; }
-        if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
     }
     function disposeFilterNavigators() {
         if (_categoryNavigator && typeof _categoryNavigator.destroy === 'function') _categoryNavigator.destroy();
@@ -951,6 +963,7 @@ var NpcShop = (function() {
     function errorMessage(error) {
         var messages = {
             shop_not_found:'未找到该 NPC 的商店。', locked:'尚未获得所需情报。', insufficient_money:'金币不足。', inventory_full:'背包空间不足。',
+            destination_full:'对应收集项已达持有上限。',
             stale_state:'物品状态已经变化。', sell_forbidden:'该容器不允许出售。', insufficient_quantity:'物品数量不足。', duplicate_line:'交易清单包含重复物品。',
             invalid_quantity:'购买或出售数量无效。', nothing_to_sell:'没有可批量出售的普通实例。', target_full:'目标容器已满。', slot_locked:'该战备箱槽位尚未解锁。',
             busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', malformed_response:'交易回包不完整，正在重新同步。',

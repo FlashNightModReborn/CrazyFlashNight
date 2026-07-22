@@ -17,6 +17,14 @@
 
         function state() { return ports.getState(); }
 
+        function clearElement(element) {
+            if (typeof ports.clearElement === 'function') {
+                ports.clearElement(element);
+                return;
+            }
+            while (element && element.firstChild) element.removeChild(element.firstChild);
+        }
+
         function renderList(list, renderOptions) {
             if (!list) return;
             renderOptions = renderOptions || {};
@@ -30,7 +38,7 @@
                 list.scrollLeft = previousScrollLeft;
                 ports.restoreFocusKey(focusKey);
             }
-            while (list.firstChild) list.removeChild(list.firstChild);
+            clearElement(list);
             if (current.schemaError) {
                 list.appendChild(ports.empty('技能数据暂时无法读取，请重试。', 'error'));
                 finishListRender();
@@ -90,7 +98,7 @@
             if (!root) return;
             var current = state();
             var focusKey = current.pendingFocusKey || ports.focusKeyOf(document.activeElement);
-            while (root.firstChild) root.removeChild(root.firstChild);
+            clearElement(root);
             if (current.trainerExpired) {
                 root.appendChild(renderTrainerExpired());
                 ports.restoreFocusKey(focusKey);

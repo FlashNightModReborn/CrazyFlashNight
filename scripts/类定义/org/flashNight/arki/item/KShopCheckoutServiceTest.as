@@ -15,7 +15,12 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         testCatalogProjection();
         testDirectDelivery();
         testExactBalance();
+        testLargeStackQuantity();
         testMaterialRouting();
+        testInformationCapacityIsZeroWrite();
+        testLegacyCheckoutUsesAuthority();
+        testLegacyCheckoutDirectDelivery();
+        testLegacyInformationClaimIgnoresBagVacancy();
         testInventoryFullIsZeroWrite();
         testPriceChangeRejectsCommit();
         testTokenReplayRejected();
@@ -29,6 +34,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         itemDict["药剂"] = itemData("药剂", "消耗品", "药剂", 100);
         itemDict["强化石"] = itemData("强化石", "收集品", "材料", 200);
         itemDict["测试手枪"] = itemData("测试手枪", "武器", "手枪", 1000);
+        itemDict["测试情报"] = itemData("测试情报", "收集品", "情报", 100);
         itemDict["测试手枪"].weapontype = "手枪";
         itemDict["测试手枪"].setId = "test_sidearm";
         itemDict["测试手枪"].setName = "测试侧武器套装";
@@ -38,11 +44,13 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         ItemUtil.materialDict = {};
         ItemUtil.materialDict["强化石"] = true;
         ItemUtil.informationMaxValueDict = {};
+        ItemUtil.informationMaxValueDict["测试情报"] = 1;
 
         _root.kshop_list = [
             {id:"potion", item:"药剂", type:"医疗专柜", price:40},
             {id:"material", item:"强化石", type:"研究专柜", price:25},
-            {id:"pistol", item:"测试手枪", type:"训练专柜", price:500}
+            {id:"pistol", item:"测试手枪", type:"训练专柜", price:500},
+            {id:"intel", item:"测试情报", type:"研究专柜", price:100}
         ];
         _root.等级 = 20;
         _root.主角被动技能 = {逆向:{启用:false, 等级:0}};
@@ -121,6 +129,19 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             "new checkout permits an exact K-point balance");
     }
 
+    private static function testLargeStackQuantity():Void {
+        resetState();
+        _root.虚拟币 = 200000;
+        var preview:Object = requestPreview([{idx:0, qty:4549}]);
+        var commit:Object = requestCommit(preview.checkoutToken);
+        check(preview.success && preview.purchaseLines[0].maxQuantity == 999999
+            && preview.purchaseLines[0].quantity == 4549 && preview.canCommit,
+            "stack purchase accepts large quantities below the technical guard");
+        check(commit.success && _root.物品栏.背包.getItem(0).value == 4549
+            && _root.虚拟币 == 18040,
+            "large stack checkout charges and delivers the exact same quantity");
+    }
+
     private static function testMaterialRouting():Void {
         resetState();
         var preview:Object = requestPreview([{idx:1, qty:3}]);
@@ -128,6 +149,59 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         check(commit.success && _root.收集品栏.材料.getValue("强化石") == 3
             && _root.物品栏.背包.getIndexes().length == 0,
             "direct delivery routes materials to the material collection");
+    }
+
+    private static function testInformationCapacityIsZeroWrite():Void {
+        resetState();
+        _root.收集品栏.情报.add("测试情报", 1);
+        var beforeBalance:Number = _root.虚拟币;
+        var preview:Object = requestPreview([{idx:3, qty:1}]);
+        check(!preview.success && preview.error == "invalid_quantity"
+            && _root.虚拟币 == beforeBalance && _root.收集品栏.情报.getValue("测试情报") == 1,
+            "full information capacity rejects before charging instead of relying on lossy clamp");
+    }
+
+    private static function testLegacyCheckoutUsesAuthority():Void {
+        resetState();
+        _root.收集品栏.情报.add("测试情报", 1);
+        var beforePurchased:Number = _root.商城已购买物品.length;
+        callSeq++;
+        _root.gameCommands["shopCheckout"]({callId:callSeq, cart:[{idx:3, qty:1}]});
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(!response.success && response.error == "invalid_quantity"
+            && _root.虚拟币 == 1000 && _root.商城已购买物品.length == beforePurchased
+            && _root.testKShopSaveCount == 0,
+            "legacy checkout reuses authoritative quantity validation and never charges a full information destination");
+    }
+
+    private static function testLegacyCheckoutDirectDelivery():Void {
+        resetState();
+        _root.虚拟币 = 80;
+        var beforePurchased:Number = _root.商城已购买物品.length;
+        callSeq++;
+        _root.gameCommands["shopCheckout"]({callId:callSeq, cart:[{idx:0, qty:2}]});
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        var item:Object = _root.物品栏.背包.getItem(0);
+        check(response.success && response.newBalance == 0 && item.name == "药剂" && item.value == 2
+            && _root.商城已购买物品.length == beforePurchased && _root.testKShopSaveCount == 1,
+            "legacy checkout shares direct delivery, exact-balance and no-new-pending-claim semantics");
+    }
+
+    private static function testLegacyInformationClaimIgnoresBagVacancy():Void {
+        resetState();
+        _root.物品栏.背包 = new ArrayInventory(null, 1);
+        _root.物品栏.背包.add(0, BaseItem.create("药剂", 1));
+        _root.商城已购买物品 = [["intel", "测试情报", "研究专柜", 100, 1]];
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq,
+            purchasedIdx:0,
+            expectedPurchasedToken:_root.UI系统.商城WebView.purchasedToken
+        });
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(response.success && _root.收集品栏.情报.getValue("测试情报") == 1
+            && _root.商城已购买物品.length == 0,
+            "legacy information claim follows its collection destination instead of requiring an unrelated bag vacancy");
     }
 
     private static function testInventoryFullIsZeroWrite():Void {

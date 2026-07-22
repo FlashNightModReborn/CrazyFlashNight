@@ -21,6 +21,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testSnapshotResponseWire();
         testTradePreviewResponseWire();
         testBuyRoutesCollections();
+        testLargeStackPurchase();
         testLeaseBoundSell();
         testBatchSell();
         testAtomicTrade();
@@ -56,7 +57,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         ItemUtil.informationMaxValueDict["解锁情报"] = 1;
         _root.shops = {};
         var shop:Object = {};
-        shop[0] = "药剂";
+        shop[0] = {name:"药剂",purchaseLimit:100};
         shop[1] = "强化石";
         shop[2] = "解锁情报";
         shop[3] = {name:"门槛商品",requiredInfo:"解锁情报"};
@@ -144,7 +145,27 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(material.success && material.destinationView == "material" && _root.收集品栏.材料.getValue("强化石") == 2,"material buy routes to material view");
         var information:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:2,quantity:1});
         check(information.success && information.destinationView == "intelligence" && _root.收集品栏.情报.getValue("解锁情报") == 1,"information buy routes to intelligence view");
+        var balanceAfterFirst:Number = _root.金钱;
+        var overflow:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:2,quantity:1});
+        check(!overflow.success && overflow.error == "invalid_quantity"
+            && _root.金钱 == balanceAfterFirst && _root.收集品栏.情报.getValue("解锁情报") == 1,
+            "full information capacity rejects without charging or truncating delivery");
         check(_root.金钱 == 4300 && _root.存档系统.dirtyMark,"buy re-derives price and marks dirty");
+    }
+
+    private static function testLargeStackPurchase():Void {
+        resetOwned();
+        _root.金钱 = 1000000;
+        var preview:Object = service().execute("tradePreview",{
+            shopId:"测试商店",purchases:[{catalogIndex:1,quantity:4549}],sales:[]
+        });
+        check(preview.success && preview.canCommit && preview.purchaseLines[0].purchaseLimit == 999999
+            && preview.purchaseLines[0].quantity == 4549,
+            "unconfigured stack purchase uses technical guard instead of arbitrary 100 quota");
+        var commit:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
+        check(commit.success && _root.收集品栏.材料.getValue("强化石") == 4549
+            && _root.金钱 == 90200,
+            "large NPC purchase charges and delivers the exact same quantity atomically");
     }
 
     private static function testLegacyCatalogResolution():Void {

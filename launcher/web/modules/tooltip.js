@@ -81,7 +81,11 @@ var PanelTooltip = (function() {
         // 内容只在 setText 时变，鼠标移动不需要重算 → 放 showAtMouse 阶段。
         applyDescWidth();
         if (e) {
-            _lastEvt = { clientX: e.clientX, clientY: e.clientY };
+            _lastEvt = {
+                clientX: e.clientX,
+                clientY: e.clientY,
+                anchor: e.currentTarget || e.target || null
+            };
             positionAtMouse(_lastEvt);
             // Safety net：覆盖 async 加载源（字体 swap / icon 图加载 / 外部资源）
             var pointerPosition = _lastEvt;
@@ -228,187 +232,126 @@ var PanelTooltip = (function() {
     /** hover 模式：跟随鼠标移动 */
     function followMouse(e, owner) {
         if (!_el || !_visible || (owner != null && _owner !== owner)) return;
-        _lastEvt = { clientX: e.clientX, clientY: e.clientY };
+        _lastEvt = {
+            clientX: e.clientX,
+            clientY: e.clientY,
+            anchor: e.currentTarget || (_lastEvt && _lastEvt.anchor) || e.target || null
+        };
         positionAtMouse(_lastEvt);
     }
 
-    // AS2 TooltipLayout.positionTooltip 端口（CSS 像素域）：
-    //
-    // ground truth 来源：scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipGroundTruthDump.as 跑出 862 物品
-    // × 9 个 mouseY 采样，落到 launcher/perf/tooltip-regression/tooltip-truth.json（dev-only
-    // 中间产物，不进 runtime 包；需要重采就跑 parse-gt.py）。统计：
-    //   - mouseY 接近屏顶时：ELSE 分支主导（desc 紧贴顶，膨胀到 max(textH, iconH)+10 下限）
-    //   - mouseY 接近屏底时：IF 分支主导（desc 整块下移让底部与 intro 底部对齐）
-    //   - 同一物品在不同 mouseY 下 desc 位置/高度都变化——这就是"侧边栏根据鼠标位置自由排版"
-    //
-    // 公式（在 pre-scale 域跑）：
-    //   tipsH   = max(introBgH, mainBgH)         # mainBgH 是 base = mainText.textHeight + 10
-    //   tipsY   = clamp(0, stageH - tipsH, mouseY - tipsH - MOUSE_OFFSET)
-    //   offset  = mouseY - (tipsY + mainBgH) - MOUSE_OFFSET
-    //   if offset > 0:  desc marginTop = offset, height = mainBgH
-    //   else:           desc marginTop = 0,      height = max(mainTH, iconH) + HEIGHT_ADJUST
-    //
-    // 关键测量约定（坐标域）：
-    //   - #panel-tooltip 通过 `transform: scale(var(--cf7-overlay-scale))` 缩放（panels.css），
-    //     transform 不影响 layout：introPanel/descPanel.offsetHeight 是 pre-scale CSS px。
-    //   - e.clientX/Y、window.innerHeight 是 post-scale 视口 CSS px。
-    //   - AS2 positionTooltip 原本在单一 stage 坐标系中跑，所以这里要把 mouseY/vh 折算到
-    //     pre-scale 域（除以 scale）后再代入公式；输出的 rightBgY/rightBgH 写到 descPanel
-    //     的 inline style（pre-scale），外层 transform 自动把视觉缩到对应比例。
-    //   - _el 的 left/top 是 pre-transform 的位置；视觉边界比较用 getBoundingClientRect（post-scale）。
-    //
-    // 没 .flash-tt-rich 根（spark-tooltip / 旧调用方）退化为传统 +14/+14。
-    var MOUSE_OFFSET = 20;
-    var HEIGHT_ADJUST = 10;
+    // Web tooltip 的几何契约与 AS2 视觉契约分离：内容仍复用 TooltipComposer，
+    // 但浮层作为一个整体围绕触发元素放置。初始位置不得覆盖触发元素或当前鼠标热点；
+    // 空间不足时按 left -> right -> top -> bottom 选择最小碰撞候选，再夹紧视口。
+    var POINTER_EXCLUSION = 16;
+    var ANCHOR_GAP = 10;
+    var VIEWPORT_INSET = 8;
+    var _lastPlacement = null;
 
-    // 读当前 overlay scale。
-    // 优先用 bridge.js 的 window.OverlayScale.get()——它在 resize/visualViewport.resize
-    // 时已 cache，零成本调用；hover 模式 mousemove 60Hz 触发 positionAtMouse，避免
-    // 每帧 getComputedStyle 触发 style 引擎多余工作。
-    // fallback：OverlayScale 未加载（理论上 bridge.js 先于 tooltip.js）时读 CSS var。
-    function getOverlayScale() {
-        if (typeof window !== 'undefined' && window.OverlayScale
-            && typeof window.OverlayScale.get === 'function') {
-            var cached = window.OverlayScale.get();
-            if (isFinite(cached) && cached > 0) return cached;
-        }
-        if (!document.documentElement) return 1;
-        var v = getComputedStyle(document.documentElement)
-            .getPropertyValue('--cf7-overlay-scale');
-        var s = parseFloat(v);
-        return (isFinite(s) && s > 0) ? s : 1;
+    function clamp(value, minimum, maximum) {
+        return Math.max(minimum, Math.min(value, maximum));
     }
 
-    // descPanel chrome（padding 上下 + border 上下）缓存。
-    // 在 hover 模式 mousemove 60Hz 路径里，每帧 getComputedStyle 会让 style 引擎多做
-    // 一次解析。chrome 只取决于 CSS（不随内容变），所以可以按 _showGen 缓存——一次
-    // show 期间 CSS 不变就复用；showAtMouse / showAnchored / updateContent 换 innerHTML
-    // 时 _descChromeGen 会跟新 _showGen 错位，自动失效。
-    // 主题切换（[data-tooltip-theme]）会改 padding/border 但极罕见；切换后下一次 show
-    // 自动重读。
-    var _descChromeV = -1;
-    var _descChromeGen = -1;
-    function getDescChromeV(el) {
-        if (_descChromeGen === _showGen && _descChromeV >= 0) return _descChromeV;
-        var cs = getComputedStyle(el);
-        _descChromeV = (parseFloat(cs.paddingTop) || 0)
-                     + (parseFloat(cs.paddingBottom) || 0)
-                     + (parseFloat(cs.borderTopWidth) || 0)
-                     + (parseFloat(cs.borderBottomWidth) || 0);
-        _descChromeGen = _showGen;
-        return _descChromeV;
+    function overlapArea(a, b) {
+        var width = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+        var height = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+        return width * height;
+    }
+
+    function rectAt(x, y, width, height) {
+        return {left:x, top:y, right:x + width, bottom:y + height, width:width, height:height};
+    }
+
+    function anchorRectOf(anchor, pointer) {
+        if (anchor && anchor.isConnected !== false && typeof anchor.getBoundingClientRect === 'function') {
+            return anchor.getBoundingClientRect();
+        }
+        var x = Number(pointer && pointer.clientX) || 0;
+        var y = Number(pointer && pointer.clientY) || 0;
+        return {left:x, right:x, top:y, bottom:y, width:0, height:0};
+    }
+
+    function candidateScore(candidate, anchorRect, pointerRect, vw, vh, priority) {
+        var rect = rectAt(candidate.x, candidate.y, candidate.width, candidate.height);
+        var overflow = Math.max(0, VIEWPORT_INSET - rect.left)
+            + Math.max(0, VIEWPORT_INSET - rect.top)
+            + Math.max(0, rect.right - (vw - VIEWPORT_INSET))
+            + Math.max(0, rect.bottom - (vh - VIEWPORT_INSET));
+        return overflow * 1000000
+            + overlapArea(rect, pointerRect) * 10000
+            + overlapArea(rect, anchorRect) * 100
+            + Number(candidate.shift || 0) * 10
+            + priority;
+    }
+
+    function positionFloating(pointer, anchor, anchored) {
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var rich = _el.querySelector('.flash-tt-rich');
+        if (rich) {
+            var descPanel = rich.querySelector('.flash-tt-desc');
+            if (descPanel) {
+                descPanel.style.marginTop = '';
+                descPanel.style.height = '';
+            }
+            rich.classList.remove('flash-tt-rich--stacked');
+            var wideRect = _el.getBoundingClientRect();
+            if (wideRect.width > vw - VIEWPORT_INSET * 2) {
+                rich.classList.add('flash-tt-rich--stacked');
+            }
+        }
+        var tooltipRect = _el.getBoundingClientRect();
+        var tw = tooltipRect.width || 1;
+        var th = tooltipRect.height || 1;
+        var anchorRect = anchorRectOf(anchor, pointer);
+        var pointerX = Number(pointer && pointer.clientX);
+        var pointerY = Number(pointer && pointer.clientY);
+        if (!isFinite(pointerX)) pointerX = (anchorRect.left + anchorRect.right) / 2;
+        if (!isFinite(pointerY)) pointerY = (anchorRect.top + anchorRect.bottom) / 2;
+        var pointerRadius = anchored ? 0 : POINTER_EXCLUSION;
+        var pointerRect = {
+            left:pointerX - pointerRadius, right:pointerX + pointerRadius,
+            top:pointerY - pointerRadius, bottom:pointerY + pointerRadius
+        };
+        var candidates = [
+            {name:'left', x:anchorRect.left - tw - ANCHOR_GAP, y:anchorRect.top, width:tw, height:th},
+            {name:'right', x:anchorRect.right + ANCHOR_GAP, y:anchorRect.top, width:tw, height:th},
+            {name:'top', x:anchorRect.left, y:anchorRect.top - th - ANCHOR_GAP, width:tw, height:th},
+            {name:'bottom', x:anchorRect.left, y:anchorRect.bottom + ANCHOR_GAP, width:tw, height:th}
+        ];
+        var best = null;
+        for (var i = 0; i < candidates.length; i++) {
+            var candidate = candidates[i];
+            var rawX = candidate.x, rawY = candidate.y;
+            candidate.x = clamp(rawX, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET));
+            candidate.y = clamp(rawY, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET));
+            candidate.shift = Math.abs(candidate.x - rawX) + Math.abs(candidate.y - rawY);
+            candidate.score = candidateScore(candidate, anchorRect, pointerRect, vw, vh, i);
+            if (!best || candidate.score < best.score) best = candidate;
+        }
+        var x = clamp(best.x, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET));
+        var y = clamp(best.y, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET));
+        _el.style.left = x + 'px';
+        _el.style.top = y + 'px';
+        _el.setAttribute('data-placement', best.name);
+        var finalRect = rectAt(x, y, tw, th);
+        _lastPlacement = {
+            placement:best.name,
+            pointerOverlap:anchored ? 0 : overlapArea(finalRect, pointerRect),
+            anchorOverlap:overlapArea(finalRect, anchorRect),
+            insideViewport:finalRect.left >= VIEWPORT_INSET - 1 && finalRect.top >= VIEWPORT_INSET - 1
+                && finalRect.right <= vw - VIEWPORT_INSET + 1 && finalRect.bottom <= vh - VIEWPORT_INSET + 1
+        };
     }
 
     function positionAtMouse(e) {
-        var vw = window.innerWidth, vh = window.innerHeight;
-        var rich = _el.querySelector('.flash-tt-rich');
-        var x, y;
-
-        if (rich) {
-            var isSplit = !rich.classList.contains('flash-tt-rich--merge')
-                && !!rich.querySelector('.flash-tt-desc');
-            var introPanel = rich.querySelector('.flash-tt-intro-panel');
-            var descPanel = rich.querySelector('.flash-tt-desc');
-
-            // 双面板：跑 AS2 positionTooltip 公式算 desc 的 marginTop + height
-            if (isSplit && introPanel && descPanel) {
-                // 清掉上一帧 inline style 才能拿自然态高度
-                descPanel.style.marginTop = '';
-                descPanel.style.height = '';
-
-                var scale = getOverlayScale();
-                var introBgH = introPanel.offsetHeight;       // pre-scale
-                var mainBgH = descPanel.offsetHeight;          // pre-scale，自然态 = padding + text + border
-                var iconEl = introPanel.querySelector('.flash-tt-icon');
-                var iconH = iconEl ? iconEl.offsetHeight : 0;
-                // mainTH = desc 文字内容高度，从 offsetHeight 减 chrome；
-                // getComputedStyle 现读 padding/border，跟 CSS 实际值同步。
-                var mainTH = Math.max(0, mainBgH - getDescChromeV(descPanel));
-
-                // mouseY / stageH 折算到 pre-scale，跟 introBgH/mainBgH 同域
-                var mouseY = e.clientY / scale;
-                var stageH = vh / scale;
-
-                var tipsH = Math.max(introBgH, mainBgH);
-                var tipsY = Math.min(stageH - tipsH, Math.max(0, mouseY - tipsH - MOUSE_OFFSET));
-                var rightBottomH = tipsY + mainBgH;
-                var offset = mouseY - rightBottomH - MOUSE_OFFSET;
-
-                var rightBgY, rightBgH;
-                if (offset > 0) {
-                    rightBgY = offset;
-                    rightBgH = mainBgH;
-                } else {
-                    rightBgY = 0;
-                    rightBgH = Math.max(mainTH, iconH) + HEIGHT_ADJUST;
-                }
-                descPanel.style.marginTop = rightBgY + 'px';
-                descPanel.style.height = rightBgH + 'px';
-            }
-
-            // 物理尺寸（含 transform: scale）用于和鼠标位置比对
-            var rect = _el.getBoundingClientRect();
-            var tw = rect.width, th = rect.height;
-
-            // AS2 TooltipLayout.positionTooltip 严格 clamp 复刻（无翻转分支）：
-            //   tips._x = clamp(introBg._width, mouseX - rightBg._width, stageW - rightBg._width)
-            //   tips._y = clamp(0, mouseY - tipsH - MOUSE_OFFSET, stageH - tipsH)
-            // 旧实现有 `if (y < 8) y = e.clientY + MOUSE_OFFSET`——即鼠标靠近屏顶时
-            // 把 tooltip 翻到鼠标 *下方* MOUSE_OFFSET 处。这跟 AS2 行为不一致：
-            // AS2 会把 tooltip 贴屏顶（y=0），允许鼠标落进 tooltip 内部，但不引入额外 gap。
-            // 翻转分支会让用户感到"鼠标和 tooltip 离得远"——已删除。
-            x = e.clientX - tw;
-            if (x < 0) x = 0;
-            if (x + tw > vw) x = vw - tw;
-
-            y = e.clientY - th - MOUSE_OFFSET;
-            if (y < 0) y = 0;
-            if (y + th > vh) y = vh - th;
-        } else {
-            // 普通 tooltip 同样受 overlay transform 影响；只把可视尺寸用于 viewport
-            // 碰撞检测，正常的 +14 pointer gap 保持不变。
-            var fallbackRect = _el.getBoundingClientRect();
-            var fw = fallbackRect.width, fh = fallbackRect.height;
-            x = e.clientX + 14; y = e.clientY + 14;
-            if (x + fw > vw - 8) x = e.clientX - fw - 8;
-            if (y + fh > vh - 8) y = vh - fh - 8;
-        }
-
-        _el.style.left = x + 'px';
-        _el.style.top = y + 'px';
+        if (!_el || !e) return;
+        positionFloating(e, e.anchor || null, false);
     }
 
-    var ANCHOR_GAP = 8;
-    var VIEWPORT_INSET = 8;
-
     // anchor rect 和 getBoundingClientRect() 都在 transform 后的 viewport CSS px 域。
-    // tooltip 的 offsetWidth/offsetHeight 则是 transform 前尺寸，不能与前者混算。
     function positionAnchored(anchorEl) {
         if (!_el || !anchorEl || typeof anchorEl.getBoundingClientRect !== 'function') return;
-        var anchorRect = anchorEl.getBoundingClientRect();
-        var tooltipRect = _el.getBoundingClientRect();
-        var scale = getOverlayScale();
-        var tw = tooltipRect.width || (_el.offsetWidth || 300) * scale;
-        var th = tooltipRect.height || (_el.offsetHeight || 200) * scale;
-        var vw = window.innerWidth, vh = window.innerHeight;
-
-        // 优先左侧；左侧放不下时选右侧。两侧都不足则选择空间更大的一侧，
-        // 最后统一夹紧，避免异步富内容把 tooltip 推出 viewport。
-        var leftSpace = anchorRect.left - VIEWPORT_INSET;
-        var rightSpace = vw - VIEWPORT_INSET - anchorRect.right;
-        var x = anchorRect.left - tw - ANCHOR_GAP;
-        if (leftSpace < tw + ANCHOR_GAP && rightSpace > leftSpace) {
-            x = anchorRect.right + ANCHOR_GAP;
-        }
-        var maxX = Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET);
-        x = Math.max(VIEWPORT_INSET, Math.min(x, maxX));
-
-        var y = anchorRect.top;
-        var maxY = Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET);
-        y = Math.max(VIEWPORT_INSET, Math.min(y, maxY));
-
-        _el.style.left = x + 'px';
-        _el.style.top = y + 'px';
+        positionFloating(null, anchorEl, true);
     }
 
     // ── anchored 模式 ──
@@ -752,11 +695,106 @@ var PanelTooltip = (function() {
 
     // 当前仍有 pointer/focus 活性的异步绑定，按最近激活顺序排列。全局 tooltip 被
     // 临时 hover owner 覆盖后，该 owner 离开时从栈顶恢复仍聚焦的 binding。
+    // _allAsyncBindings 只用于生命周期审计；展示恢复仍只扫描 active 栈。
     var _activeAsyncBindings = [];
+    var _allAsyncBindings = [];
+    var _tooltipScopes = [];
+    var _scopeSequence = 0;
+
+    function removeFromArray(array, value) {
+        var index = array.indexOf(value);
+        if (index >= 0) array.splice(index, 1);
+    }
+
+    function noBinding() {
+        return {
+            destroy: function() { return false; },
+            refresh: function() {},
+            canRestore: function() { return false; }
+        };
+    }
+
+    function isNodeConnected(node) {
+        if (!node) return false;
+        if (typeof node.isConnected === 'boolean') return node.isConnected;
+        var root = document && document.documentElement;
+        return !!(root && (node === root || root.contains(node)));
+    }
+
+    /**
+     * Panel 级 tooltip 所有权域。面板关闭时只需 dispose 一次，域内所有 tile 的
+     * listener、异步回包和可恢复状态都会同时失效，避免调用方手工逐节点清理。
+     */
+    function createScope(label) {
+        var scope = {
+            id: 'tooltip-scope-' + (++_scopeSequence),
+            label: String(label || 'panel'),
+            disposed: false,
+            bindings: [],
+            isActive: function() { return !scope.disposed; },
+            bindAsync: function(node, options) {
+                if (scope.disposed) return noBinding();
+                var scopedOptions = {};
+                options = options || {};
+                for (var key in options) {
+                    if (Object.prototype.hasOwnProperty.call(options, key)) scopedOptions[key] = options[key];
+                }
+                scopedOptions.scope = scope;
+                return bindAsync(node, scopedOptions);
+            },
+            bindAsyncHover: function(node, options) {
+                return scope.bindAsync(node, options);
+            },
+            releaseTree: function(root) {
+                return releaseTree(root, scope);
+            },
+            dispose: function() {
+                if (scope.disposed) return false;
+                scope.disposed = true;
+                var bindings = scope.bindings.slice();
+                for (var i = bindings.length - 1; i >= 0; i--) bindings[i].destroy();
+                scope.bindings = [];
+                removeFromArray(_tooltipScopes, scope);
+                return true;
+            }
+        };
+        _tooltipScopes.push(scope);
+        return scope;
+    }
+
+    /** 在 DOM subtree 被替换前释放绑定；scope 可选，用于避免误伤别的面板。 */
+    function releaseTree(root, scope) {
+        if (!root) return 0;
+        var released = 0;
+        function releaseNode(node) {
+            var binding = node && node.__panelTooltipBinding;
+            if (!binding || (scope && binding.scope !== scope)) return;
+            if (binding.destroy()) released++;
+        }
+        releaseNode(root);
+        if (root.querySelectorAll) {
+            var descendants = root.querySelectorAll('*');
+            for (var i = 0; i < descendants.length; i++) releaseNode(descendants[i]);
+        }
+        return released;
+    }
+
+    function debugState() {
+        var detached = 0;
+        for (var i = 0; i < _allAsyncBindings.length; i++) {
+            if (!_allAsyncBindings[i].isConnected()) detached++;
+        }
+        return {
+            activeBindingCount: _activeAsyncBindings.length,
+            bindingCount: _allAsyncBindings.length,
+            detachedBindingCount: detached,
+            activeScopeCount: _tooltipScopes.length,
+            lastPlacement: _lastPlacement
+        };
+    }
 
     function removeActiveBinding(binding) {
-        var index = _activeAsyncBindings.indexOf(binding);
-        if (index >= 0) _activeAsyncBindings.splice(index, 1);
+        removeFromArray(_activeAsyncBindings, binding);
     }
 
     function markActiveBinding(binding) {
@@ -795,7 +833,9 @@ var PanelTooltip = (function() {
      *   - events: 'pointer' | 'mouse'                     默认 pointer；mouse 兼容旧代码
      */
     function bindAsync(node, options) {
-        if (!node || !options) return { destroy: function() {} };
+        if (!node || !options) return noBinding();
+        var scope = options.scope || null;
+        if (scope && scope.disposed) return noBinding();
         if (node.__panelTooltipBinding && typeof node.__panelTooltipBinding.destroy === 'function') {
             node.__panelTooltipBinding.destroy();
         }
@@ -854,6 +894,22 @@ var PanelTooltip = (function() {
 
         function isActive() { return focusWithin || hasActivePointer(); }
 
+        function hasDocumentFocus() {
+            var activeElement = document && document.activeElement;
+            return !!(activeElement && (activeElement === node || node.contains(activeElement)));
+        }
+
+        function isLive() {
+            if (disposed || (scope && scope.disposed) || !isNodeConnected(node)) return false;
+            // DOM 替换不会可靠地产生 focusout / pointerleave。恢复前用真实 DOM 状态
+            // 校正逻辑状态，阻断已脱离面板的 binding 复活最后一次技能注释。
+            if (focusWithin && !hasDocumentFocus()) {
+                focusWithin = false;
+                removeTooltipDescription();
+            }
+            return isActive();
+        }
+
         function addTooltipDescription() {
             var tokens = (node.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
             if (tokens.indexOf(tooltipId) < 0) tokens.push(tooltipId);
@@ -870,7 +926,7 @@ var PanelTooltip = (function() {
         }
 
         function renderRichIfCurrent(key, response) {
-            if (disposed || activeKey !== key || !isActive() || !isVisible(owner)
+            if (!isLive() || activeKey !== key || !isVisible(owner)
                     || typeof options.renderRich !== 'function') return;
             updateContent(options.renderRich(activeItem, response), owner);
         }
@@ -898,7 +954,7 @@ var PanelTooltip = (function() {
         }
 
         function showCurrent(event) {
-            if (disposed || !isActive()) return false;
+            if (!isLive()) return false;
             if (suppressed(event)) {
                 hide(owner);
                 return false;
@@ -984,11 +1040,12 @@ var PanelTooltip = (function() {
         node.addEventListener('focusout', onFocusOut);
 
         var binding = {
+            scope: scope,
             canRestore: function() {
-                return !disposed && isActive();
+                return isLive();
             },
             restore: function() {
-                return !disposed && isActive()
+                return isLive()
                     ? showCurrent(lastPointerEvent || { target: node, currentTarget: node })
                     : false;
             },
@@ -1008,15 +1065,20 @@ var PanelTooltip = (function() {
                 activeKey = null;
                 activeItem = null;
                 removeTooltipDescription();
+                removeFromArray(_allAsyncBindings, binding);
+                if (scope) removeFromArray(scope.bindings, binding);
                 if (hide(owner)) restoreActiveBinding(binding);
                 if (node.__panelTooltipBinding === binding) node.__panelTooltipBinding = null;
                 return true;
             },
             refresh: function() {
-                if (!disposed && isActive()) showCurrent(lastPointerEvent || { target: node });
-            }
+                if (isLive()) showCurrent(lastPointerEvent || { target: node });
+            },
+            isConnected: function() { return isNodeConnected(node); }
         };
         node.__panelTooltipBinding = binding;
+        _allAsyncBindings.push(binding);
+        if (scope) scope.bindings.push(binding);
         return binding;
     }
 
@@ -1068,6 +1130,9 @@ var PanelTooltip = (function() {
         showAnchored: showAnchored,
         updateContent: updateContent,
         hide: hide,
+        createScope: createScope,
+        releaseTree: releaseTree,
+        debugState: debugState,
         bindAsync: bindAsync,
         bindAsyncHover: bindAsyncHover,
         convertAS2Html: convertAS2Html,

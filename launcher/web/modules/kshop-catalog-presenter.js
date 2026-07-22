@@ -19,6 +19,10 @@
         return !!item && Number(item.level) > Number(playerLevel || 0) + Number(reverseLevel || 0);
     }
 
+    function isAtLimit(item) {
+        return !!item && isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
+    }
+
     function findCatalogItem(catalog, idx) {
         catalog = catalog || [];
         for (var i = 0; i < catalog.length; i++) {
@@ -91,7 +95,7 @@
             bindItem: function(card) { self.bindCard(card); },
             render: function() { self.render(); },
             exportOffer: function(item) {
-                if (!item || self.isLocked(item) || item.type === '非卖品') return null;
+                if (!item || self.isLocked(item) || item.type === '非卖品' || isAtLimit(item)) return null;
                 return {
                     subjectKind: 'catalogEntry',
                     sourceRef: {catalogIdx:item.idx},
@@ -178,9 +182,10 @@
     CatalogPresenter.prototype.renderCard = function(item) {
         var locked = this.isLocked(item);
         var nosale = item.type === '非卖品';
+        var atLimit = isAtLimit(item);
         var stackable = isStackable(item);
         var actionHtml = '';
-        if (!nosale && !locked) {
+        if (!nosale && !locked && !atLimit) {
             actionHtml = '<button class="kshop-add-btn' + (stackable ? '' : ' kshop-add-single')
                 + '" data-idx="' + item.idx + '" data-audio-cue="select" aria-label="加入购物车">'
                 + (stackable ? '+' : '加入') + '</button>';
@@ -189,8 +194,8 @@
             skin:'kshop', item:item, id:item.idx,
             iconHtml:this._intent.iconHtml ? this._intent.iconHtml(item.icon) : '',
             name:item.displayname, meta:item.subType || item.majorType || item.type,
-            price:item.price, priceLabel:'K', locked:locked,
-            lockReason:'Lv.' + item.level + ' 解锁', nosale:nosale,
+            price:item.price, priceLabel:'K', locked:locked || atLimit,
+            lockReason:atLimit ? '已达持有上限' : ('Lv.' + item.level + ' 解锁'), nosale:nosale,
             ariaLabel:item.displayname + '，K ' + item.price, extraHtml:actionHtml
         });
     };
@@ -204,7 +209,7 @@
             itemName:item ? item.displayname : '',
             label:card.getAttribute('aria-label') || '',
             selected:this._state.getSelectedIdx && this._state.getSelectedIdx() === idx,
-            disabled:!item || this.isLocked(item) || item.type === '非卖品',
+            disabled:!item || this.isLocked(item) || item.type === '非卖品' || isAtLimit(item),
             onActivate:function(event) { self._activateCard(event); }
         });
         card.addEventListener('dblclick', function(event) { self._doubleClickCard(event); });
@@ -221,7 +226,7 @@
         if (event.target.closest && event.target.closest('button')) return;
         if (this._intent.consumeDragClick && this._intent.consumeDragClick()) return;
         var item = this.find(Number(event.currentTarget.getAttribute('data-idx')));
-        if (!item || this.isLocked(item) || item.type === '非卖品') return;
+        if (!item || this.isLocked(item) || item.type === '非卖品' || isAtLimit(item)) return;
         if (this._intent.select) this._intent.select(item, event.currentTarget);
         if (this._intent.playCue) this._intent.playCue('select');
     };

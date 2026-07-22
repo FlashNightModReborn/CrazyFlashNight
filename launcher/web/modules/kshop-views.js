@@ -255,6 +255,7 @@
         if (!status && invalid) status = '目录已变化，请移除失效商品后再结账。';
         if (!status && preview && preview.blockingError === 'insufficient_kpoints') status = 'K 点不足，整单不会扣款。';
         if (!status && preview && preview.blockingError === 'inventory_full') status = '背包容量不足，请先到“战备箱”整理空间。';
+        if (!status && preview && preview.blockingError === 'destination_full') status = '对应收集项已达持有上限，请减少数量。';
         if (!status && preview) status = '权威核算完成，可直接交付到对应物品栏。';
         this._status.textContent = status;
         this._status.classList.toggle('error', !!this._errorMessage || !!invalid || !!(preview && preview.blockingError));

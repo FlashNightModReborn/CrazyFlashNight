@@ -5,7 +5,7 @@ var CraftingPanel = (function() {
     var _category = '', _snapshot = null, _preview = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _generation = 0;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _commitButton = null, _craftableToggle = null, _tooltipCache = {};
-    var _inspector = null;
+    var _inspector = null, _tooltipScope = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
     var _detailScrollTop = 0, _detailScrollLeft = 0;
@@ -32,8 +32,8 @@ var CraftingPanel = (function() {
 
     function buildDOM() {
         disposeFilterNavigator();
-        while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
         if (_shell) _shell.destroy();
+        Workbench.clearElement(_shellEl);
         _shell = new Workbench.DualPaneShell({title:_category || '合成工作台', subtitle:'权威预览',
             status:'同步中', leftLabel:'配方目录', rightLabel:'合成详情', flowLabel:'核算'});
         var root = _shell.getRoot();
@@ -243,7 +243,7 @@ var CraftingPanel = (function() {
             _detailBody.scrollTop = previousScrollTop;
             _detailBody.scrollLeft = previousScrollLeft;
         }
-        while (_detailBody.firstChild) _detailBody.removeChild(_detailBody.firstChild);
+        Workbench.clearElement(_detailBody);
         if (_selectedIndex < 0) { appendEmpty('从左侧选择一项配方'); restoreScroll(); return; }
         if (_previewBusy || !_preview) { appendEmpty(_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览'); restoreScroll(); return; }
         var output = _preview.output || {};
@@ -466,6 +466,9 @@ var CraftingPanel = (function() {
 
     function onOpen(el, initData) {
         _generation++;
+        if (_tooltipScope) _tooltipScope.dispose();
+        _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('crafting') : null;
         var nextCategory = initData && typeof initData.category === 'string' ? initData.category : '';
         if (nextCategory !== _category) { _filterPath = []; _craftableOnly = false; }
         _category = nextCategory;
@@ -485,7 +488,7 @@ var CraftingPanel = (function() {
         _inspector = null;
         _busy = false; _previewBusy = false; _organizerBusy = false; _snapshot = null; _preview = null;
         disposeFilterNavigator(); _craftableToggle = null;
-        if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
     }
 
     function disposeFilterNavigator() {
@@ -502,7 +505,8 @@ var CraftingPanel = (function() {
 
     function bindTooltip(node, item) {
         if (!node || !item || !item.name || typeof PanelTooltip === 'undefined') return;
-        PanelTooltip.bindAsyncHover(node, {
+        var tooltipBinder = _tooltipScope || PanelTooltip;
+        tooltipBinder.bindAsyncHover(node, {
             cache:_tooltipCache, key:'craft:' + item.name, item:item,
             renderBasic:function(value) {
                 return '<div class="kshop-tt-header"><b>' + escapeHtml(value.displayName || value.name) + '</b></div>'

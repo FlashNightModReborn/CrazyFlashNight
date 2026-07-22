@@ -94,7 +94,7 @@ data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一
 }
 ```
 
-- `catalog` 键必须是稳定的非负整数索引；值只能是物品名字符串或 `{name,requiredInfo,purchaseLimit}`。`purchaseLimit` 可省略，存在时必须为 `1..100` 整数；装备默认单笔 50，其他物品默认 100。该字段只限制单笔采购意图，不改变背包容量或物品堆叠规则。
+- `catalog` 键必须是稳定的非负整数索引；值只能是物品名字符串或 `{name,requiredInfo,purchaseLimit}`。`purchaseLimit` 可省略，存在时必须为 `1..999999` 整数；它是策划显式设置的单笔设计配额，而不是统一默认限额。未配置时，装备以背包技术容量为上限，堆叠物品使用 `999999` 技术护栏，情报再与当前剩余持有容量取最小值。预览与提交必须复用同一动态上限；不得先按请求量扣款、再依赖收集栏 clamp 截断入账。
 - `sections` 可省略；省略时 Web 从物品现有字段构建互斥分类树：一级 `type=武器/防具/消耗品/收集品`，二级使用 `use`，武器三级以刀的 `actiontype` 或枪械的 `weapontype` 细分。未知值进入“其他”，不会隐藏商品；AS2 snapshot 只透传这些现有展示字段，不改变物品 XML 权威。
 - `sections` 存在时完整替代自动分类，必须覆盖目录内全部索引，`all` 为 Web 隐式保留分组。当前生产目录不启用人工分组；配置规则与示例见 [`data/shops/README.md`](../data/shops/README.md)。
 - 空目录合法，用于显式停用但仍需保留身份的 NPC。

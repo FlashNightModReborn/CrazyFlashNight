@@ -43,8 +43,8 @@ function normalizeEntry(entry, context) {
     fail(context + ': requiredInfo must be a non-empty string when present');
   }
   if (entry.purchaseLimit !== undefined
-      && (!Number.isSafeInteger(entry.purchaseLimit) || entry.purchaseLimit < 1 || entry.purchaseLimit > 100)) {
-    fail(context + ': purchaseLimit must be an integer from 1 to 100 when present');
+      && (!Number.isSafeInteger(entry.purchaseLimit) || entry.purchaseLimit < 1 || entry.purchaseLimit > 999999)) {
+    fail(context + ': purchaseLimit must be an integer from 1 to 999999 when present');
   }
   return entry.name;
 }

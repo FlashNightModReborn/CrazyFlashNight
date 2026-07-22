@@ -265,6 +265,21 @@ class org.flashNight.arki.item.ItemUtil{
     public static function isInformation(name:String):Boolean{
         return informationMaxValueDict[name] > 0;
     }
+    /**
+     * 返回某情报仍可安全写入的数量。交易与奖励预览必须以此为权威容量，不能依赖
+     * InformationCollection 的末端 clamp，否则会出现按请求量扣款、按剩余量入账。
+     */
+    public static function getInformationRemaining(name:String):Number{
+        var maximum:Number = Number(informationMaxValueDict[name]);
+        if(isNaN(maximum) || maximum <= 0) return 0;
+        var current:Number = 0;
+        var collection:Object = _root.收集品栏 == undefined ? undefined : _root.收集品栏.情报;
+        if(collection != undefined && typeof collection.getValue == "function") {
+            current = Number(collection.getValue(name));
+            if(isNaN(current) || current < 0) current = 0;
+        }
+        return Math.max(0, Math.floor(maximum - current));
+    }
     /*
      * 辅助函数，判断装备物品是否存在进阶数据
      */
@@ -415,7 +430,11 @@ class org.flashNight.arki.item.ItemUtil{
             if(isMaterial(name)){
                 list.材料[name] = value;
             } else if(isInformation(name)){
-                list.情报[name] = value;
+                var informationTotal:Number = Number(list.情报[name] || 0) + value;
+                if(isNaN(informationTotal) || informationTotal <= 0
+                        || informationTotal != Math.floor(informationTotal)
+                        || informationTotal > getInformationRemaining(name)) return null;
+                list.情报[name] = informationTotal;
             } else if(!isEquipment(name)){
                 // 可合并物品
                 if(mergables[name] != undefined){
