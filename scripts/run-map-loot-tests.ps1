@@ -35,7 +35,7 @@ $repoHash = ([System.BitConverter]::ToString($repoHashBytes)).Replace('-', '').S
 $mutexName = 'Local\CF7_FocusedTestLoader_' + $repoHash
 $runMutex = [System.Threading.Mutex]::new($false, $mutexName)
 $runId = [System.Guid]::NewGuid().ToString('N')
-$expectedServicePassCount = 138
+$expectedServicePassCount = 142
 $expectedPlannerPassCount = 9
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount
 

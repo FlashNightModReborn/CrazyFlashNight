@@ -29,7 +29,8 @@ class org.flashNight.arki.item.LootContainerService {
     private static var SHAPE_NOT_WEB_LOOT_GRID:String = "not_web_loot_grid";
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
     private static var MAX_TOMBSTONES:Number = 16;
-    private static var MAX_RECOVERY_PROOFS:Number = 8;
+    private static var MAX_STABLE_RECOVERY_PROOFS:Number = 8;
+    private static var MAX_RECOVERY_PROOFS_WITH_RESERVE:Number = 9;
 
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
@@ -793,9 +794,12 @@ class org.flashNight.arki.item.LootContainerService {
         var existing:Object = completedRecoveryProof(record, attemptSeq);
         if (existing != null) return existing;
         ensureRecoveryProofLedger(record);
-        // 未经 Host 确认的 proof 不可盲目淘汰。dispatch 在容量尽头前
-        // 会 fail closed，直到 Host 的 exact proof query 将候选集收敛。
-        if (record.completedRecoveryProofOrder.length >= MAX_RECOVERY_PROOFS) return null;
+        // 未经 Host 确认的 proof 不可盲目淘汰。八条稳定历史之外只保留一个
+        // admission/recovery reserve：第八条时仍可发起一次可能由 strict accepted
+        // 剪枝的 open；若该次也走 uncertain/socket，允许把 exact proof 写成第九条。
+        // reserve 用尽后 fail closed，直到 Host 的 exact proof query 将候选集收敛。
+        if (record.completedRecoveryProofOrder.length
+                >= MAX_RECOVERY_PROOFS_WITH_RESERVE) return null;
         var entry:Object = {
             attemptSeq:attemptSeq,
             connectedNonce:"",
@@ -884,10 +888,37 @@ class org.flashNight.arki.item.LootContainerService {
         record.completedRecoveryProofOrder = kept;
     }
 
+    /**
+     * exact Host proof query 代表 Host 当前仍持有的唯一 admission fence。
+     * 该 query 成功后，更旧 proof 已被收敛，更新 attempt 也只可能是
+     * flow_busy/ACK 丢失期间的未接纳候选；全部删除，只保留 exact proof。
+     */
+    private static function retainOnlyCompletedRecoveryProof(record:Object,
+                                                               attemptSeq:Number):Void {
+        if (record == null) return;
+        var retained:Object = completedRecoveryProof(record, attemptSeq);
+        record.completedRecoveryProofs = {};
+        record.completedRecoveryProofOrder = [];
+        if (retained != null) {
+            record.completedRecoveryProofs[recoveryProofKey(attemptSeq)] = retained;
+            record.completedRecoveryProofOrder.push(attemptSeq);
+        }
+        // completed entry 保留后，清掉后续未接纳 attempt 的 current markers；
+        // 否则迟到 socket flag 仍可以重建已被收敛的候选 proof。
+        clearCurrentRecoveryProof(record);
+        record.reopenBaseSuspendedAttemptSeq = 0;
+        if (record.state == STATE_SUSPENDED) {
+            record.suspendedFromOpenAttemptSeq = attemptSeq;
+        } else if (isTerminalState(record.state)) {
+            record.terminalFromOpenAttemptSeq = attemptSeq;
+        }
+    }
+
     private static function hasRecoveryProofCapacity(record:Object):Boolean {
         if (record == null) return false;
         ensureRecoveryProofLedger(record);
-        return record.completedRecoveryProofOrder.length < MAX_RECOVERY_PROOFS;
+        return record.completedRecoveryProofOrder.length
+            <= MAX_STABLE_RECOVERY_PROOFS;
     }
 
     private static function canRecordRecoveryProof(record:Object,
@@ -909,7 +940,15 @@ class org.flashNight.arki.item.LootContainerService {
                 && Number(record.openAttemptSeq) > 0) {
             // 只有 ServerManager.onSocketClose 的专用入口能写 observed。
             // callback/recovery 共用的 reconcileTransportDetach 不具备这个能力。
-            record.socketDetachObservedOpenAttemptSeq = Number(record.openAttemptSeq);
+            // reopen B 已明确拒绝/no-send 后，稳定 SUSPENDED 仍由 A 权威来源
+            // 支撑，openAttemptSeq 却保留 B。此后的 socket close 不属于已否定的 B，
+            // 不得把它升格为 socket-observed recovery proof。
+            var stableSuspendedFromEarlierAttempt:Boolean = record.state == STATE_SUSPENDED
+                && Number(record.suspendedFromOpenAttemptSeq)
+                    != Number(record.openAttemptSeq);
+            if (!stableSuspendedFromEarlierAttempt) {
+                record.socketDetachObservedOpenAttemptSeq = Number(record.openAttemptSeq);
+            }
         }
         return reconcileTransportDetach(target);
     }
@@ -1583,7 +1622,7 @@ class org.flashNight.arki.item.LootContainerService {
         var nonce:String = String(params.recoveryNonce);
 
         if (recoveryProofCanProject(record, attemptSeq, nonce)) {
-            pruneCompletedRecoveryProofsBefore(record, attemptSeq);
+            retainOnlyCompletedRecoveryProof(record, attemptSeq);
             return buildQueryProjection(record);
         }
 
@@ -1621,7 +1660,7 @@ class org.flashNight.arki.item.LootContainerService {
         }
 
         if (recoveryProofCanProject(record, attemptSeq, nonce)) {
-            pruneCompletedRecoveryProofsBefore(record, attemptSeq);
+            retainOnlyCompletedRecoveryProof(record, attemptSeq);
             return buildQueryProjection(record);
         }
         return recoveryProofFailureFor(record, "recovery_pending");

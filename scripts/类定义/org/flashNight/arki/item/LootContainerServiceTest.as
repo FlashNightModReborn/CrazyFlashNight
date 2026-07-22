@@ -72,6 +72,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testSuspendTerminalReopenPauseReleaseRetry();
         testSuspendAcceptedRecoveryStaysSuspended();
         testCloseAttemptProofSurvivesRejectedReopen();
+        testRecoveryProofLedgerAcceptedPrunesAtStableLimit();
+        testRecoveryProofLedgerDefiniteFailuresDoNotConsumeReserve();
         testRecoveryProofLedgerOrderingAndCapacity();
         testSuspendReopenFailureEmptyConsumes();
         testInitialOpenSynchronousFailureSuspendsSameInventory();
@@ -2020,6 +2022,55 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         }
     }
 
+    private static function buildStableRecoveryProofHistory(targetId:String,
+                                                             itemSeed:Number):Object {
+        resetWorld();
+        var sent:Array = [];
+        var callbacks:Array = [];
+        installPanelTransport(sent, callbacks);
+        var flow:Object = activate([stack(STACK, 1, itemSeed)], targetId);
+        var opened:Boolean = LootContainerService.requestOpenPanel();
+        var attemptA:Number = Number(sent[0].payload.initData.openAttemptSeq);
+        callbacks[0](panelOpenAcceptedAck());
+        var before:Object = snapshot(flow);
+        var closed:Object = LootContainerService.execute("close", closeParams(before,
+            "close." + targetId, before.closeLease, false));
+        LootContainerService.releaseSuspendedPauseForClose();
+
+        var complete:Boolean = opened && closed.success
+            && closed.state == "LOOT_SUSPENDED";
+        var socketAttempts:Array = [];
+        for (var i:Number = 0; i < 7; i++) {
+            var sentBefore:Number = sent.length;
+            var callbacksBefore:Number = callbacks.length;
+            var reopened:Object = LootContainerService.resumeSuspended(flow.target);
+            if (sent.length != sentBefore + 1
+                    || callbacks.length != callbacksBefore + 1) {
+                complete = false;
+                break;
+            }
+            var attempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            socketAttempts.push(attempt);
+            var detached:Object = LootContainerService.reconcileSocketDetach(flow.target);
+            callbacks[callbacks.length - 1]({success:false, error:"socket closed"});
+            if (!reopened.success || !detached.success
+                    || detached.state != "LOOT_SUSPENDED") {
+                complete = false;
+                break;
+            }
+        }
+        return {
+            complete:complete && socketAttempts.length == 7,
+            flow:flow,
+            before:before,
+            sent:sent,
+            callbacks:callbacks,
+            attemptA:attemptA,
+            socketAttempts:socketAttempts
+        };
+    }
+
     private static function testCloseAttemptProofSurvivesRejectedReopen():Void {
         var previousServer:Object = _root.server;
         try {
@@ -2051,6 +2102,12 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[1](panelOpenRejectedAck("panel_busy"));
             var proofAAfterBReject:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptA, "unknown.close.a"));
+            var lateSocketAfterBReject:Object =
+                LootContainerService.reconcileSocketDetach(flow.target);
+            var proofBAfterLateSocket:Object = LootContainerService.execute("query",
+                proofQueryParams(before, attemptB, "socket.after.rejected.b"));
+            var proofAAfterLateSocket:Object = LootContainerService.execute("query",
+                proofQueryParams(before, attemptA, "unknown.close.a"));
 
             // no-send 与明确 rejection 都不是新 Host binding ACK，不得淘汰 A。
             var workingServer:Object = _root.server;
@@ -2075,11 +2132,108 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     && staleRecoveryA.reason == "stale_open_attempt"
                     && proofAAfterBReject.success
                     && proofAAfterBReject.state == "LOOT_SUSPENDED"
+                    && lateSocketAfterBReject.success
+                    && lateSocketAfterBReject.state == "LOOT_SUSPENDED"
+                    && !proofBAfterLateSocket.success
+                    && proofBAfterLateSocket.error == "recovery_not_applied"
+                    && proofAAfterLateSocket.success
                     && !noSend.success && noSend.error == "panel_open_unavailable"
                     && proofAAfterNoSend.success
                     && reopenedC.success && reopenedC.reopened
                     && proofAAfterCReject.success,
-                "close 不提前推进 attempt；A proof 丢回包后跨 B/C rejection 与no-send 仍可证明 suspend");
+                "A proof 跨 B/C rejection/no-send 保留；拒绝 B 后的迟到 socket 不伪造 B proof");
+            LootContainerService.expireScene("scene_cleanup");
+        } finally {
+            _root.server = previousServer;
+        }
+    }
+
+    private static function testRecoveryProofLedgerAcceptedPrunesAtStableLimit():Void {
+        var previousServer:Object = _root.server;
+        try {
+            var setup:Object = buildStableRecoveryProofHistory(
+                "s1.proof-ledger-accepted-prune", 626);
+            var flow:Object = setup.flow;
+            var sent:Array = setup.sent;
+            var callbacks:Array = setup.callbacks;
+
+            var acceptedReopen:Object = LootContainerService.resumeSuspended(flow.target);
+            var acceptedAttempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            callbacks[callbacks.length - 1](panelOpenAcceptedAck());
+            var active:Object = snapshot(flow);
+            var closed:Object = LootContainerService.execute("close", closeParams(active,
+                "close.accepted-prunes-full-history", active.closeLease, false));
+            LootContainerService.releaseSuspendedPauseForClose();
+            var nextReopen:Object = LootContainerService.resumeSuspended(flow.target);
+            var nextAttempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            if (nextReopen.success) {
+                callbacks[callbacks.length - 1](panelOpenRejectedAck("panel_busy"));
+            }
+
+            check(setup.complete
+                    && acceptedReopen.success && acceptedReopen.reopened
+                    && acceptedAttempt == Number(setup.attemptA) + 8
+                    && active.success && active.state == "LOOT_ACTIVE"
+                    && closed.success && closed.state == "LOOT_SUSPENDED"
+                    && nextReopen.success && nextReopen.reopened
+                    && nextAttempt == acceptedAttempt + 1,
+                "八条稳定 proof 时仍可 admission；strict accepted 立即剪枝并允许后续 close/reopen");
+            LootContainerService.expireScene("scene_cleanup");
+        } finally {
+            _root.server = previousServer;
+        }
+    }
+
+    private static function testRecoveryProofLedgerDefiniteFailuresDoNotConsumeReserve():Void {
+        var previousServer:Object = _root.server;
+        try {
+            var setup:Object = buildStableRecoveryProofHistory(
+                "s1.proof-ledger-definite-failures", 627);
+            var flow:Object = setup.flow;
+            var before:Object = setup.before;
+            var sent:Array = setup.sent;
+            var callbacks:Array = setup.callbacks;
+
+            var rejectedReopen:Object = LootContainerService.resumeSuspended(flow.target);
+            var rejectedAttempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            callbacks[callbacks.length - 1](panelOpenRejectedAck("flow_busy"));
+            var retryAfterReject:Object = LootContainerService.resumeSuspended(flow.target);
+            var retryAttempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            callbacks[callbacks.length - 1](panelOpenRejectedAck("panel_busy"));
+
+            var workingServer:Object = _root.server;
+            _root.server = {
+                sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
+                                              callback:Function,
+                                              timeoutFrames:Number):Void {
+                    callback({success:false, error:"socket not connected"});
+                }
+            };
+            var noSend:Object = LootContainerService.resumeSuspended(flow.target);
+            _root.server = workingServer;
+
+            var retryAfterNoSend:Object = LootContainerService.resumeSuspended(flow.target);
+            var retryAfterNoSendAttempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            callbacks[callbacks.length - 1](panelOpenRejectedAck("panel_busy"));
+            var proofA:Object = LootContainerService.execute("query",
+                proofQueryParams(before, Number(setup.attemptA),
+                    "proof.original.a.after.definite.failures"));
+
+            check(setup.complete
+                    && rejectedReopen.success && rejectedReopen.reopened
+                    && rejectedAttempt == Number(setup.attemptA) + 8
+                    && retryAfterReject.success && retryAfterReject.reopened
+                    && retryAttempt == rejectedAttempt + 1
+                    && !noSend.success && noSend.error == "panel_open_unavailable"
+                    && retryAfterNoSend.success && retryAfterNoSend.reopened
+                    && retryAfterNoSendAttempt == retryAttempt + 2
+                    && proofA.success && proofA.state == "LOOT_SUSPENDED",
+                "满八条时 definite rejection/no-send 不占 reserve，原 A proof 保留且可继续重开");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
@@ -2089,43 +2243,38 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function testRecoveryProofLedgerOrderingAndCapacity():Void {
         var previousServer:Object = _root.server;
         try {
-            resetWorld();
-            var sent:Array = [];
-            var callbacks:Array = [];
-            installPanelTransport(sent, callbacks);
-            var flow:Object = activate([stack(STACK, 1, 626)],
-                "s1.proof-ledger-capacity");
-            LootContainerService.requestOpenPanel();
-            var attemptA:Number = Number(sent[0].payload.initData.openAttemptSeq);
-            callbacks[0](panelOpenAcceptedAck());
-            var before:Object = snapshot(flow);
-            LootContainerService.execute("close", closeParams(before,
-                "close.proof-ledger-capacity", before.closeLease, false));
-            LootContainerService.releaseSuspendedPauseForClose();
-
-            var socketAttempts:Array = [];
-            for (var i:Number = 0; i < 7; i++) {
-                var reopened:Object = LootContainerService.resumeSuspended(flow.target);
-                var attempt:Number = Number(sent[sent.length - 1].payload.initData.openAttemptSeq);
-                socketAttempts.push(attempt);
-                var detached:Object = LootContainerService.reconcileSocketDetach(flow.target);
-                callbacks[callbacks.length - 1]({success:false, error:"socket closed"});
-                if (!reopened.success || !detached.success
-                        || detached.state != "LOOT_SUSPENDED") break;
-            }
-            var blocked:Object = LootContainerService.resumeSuspended(flow.target);
-            var latestBeforePrune:Number = Number(
+            var setup:Object = buildStableRecoveryProofHistory(
+                "s1.proof-ledger-capacity", 628);
+            var flow:Object = setup.flow;
+            var before:Object = setup.before;
+            var sent:Array = setup.sent;
+            var callbacks:Array = setup.callbacks;
+            var attemptA:Number = Number(setup.attemptA);
+            var socketAttempts:Array = setup.socketAttempts;
+            var latestStableAttempt:Number = Number(
                 socketAttempts[socketAttempts.length - 1]);
-            var firstLatestProof:Object = LootContainerService.execute("query",
-                proofQueryParams(before, latestBeforePrune, "socket.latest.first"));
+            // A + 七次 socket proof 已占满八条稳定历史。仍必须允许一次
+            // admission reserve；若该次也走 socket，则精确写入第九条。
+            var reserveReopen:Object = LootContainerService.resumeSuspended(flow.target);
+            var reserveAttempt:Number = Number(
+                sent[sent.length - 1].payload.initData.openAttemptSeq);
+            var reserveDetached:Object = LootContainerService.reconcileSocketDetach(flow.target);
+            callbacks[callbacks.length - 1]({success:false, error:"socket closed"});
 
-            var reopenedAfterPrune:Object = LootContainerService.resumeSuspended(flow.target);
+            var blocked:Object = LootContainerService.resumeSuspended(flow.target);
+            // Host admission fence 仍绑 A；B..reserve 只是 flow_busy/ACK 丢失后
+            // 的未接纳候选。exact A query 必须 retain-only，删除两侧其余候选。
+            var hostFenceProofA:Object = LootContainerService.execute("query",
+                proofQueryParams(before, attemptA, "host.fence.a.first"));
+
+            var reopenedAfterConverge:Object = LootContainerService.resumeSuspended(flow.target);
             var laterAttempt:Number = Number(sent[sent.length - 1].payload.initData.openAttemptSeq);
             var laterDetached:Object = LootContainerService.reconcileSocketDetach(flow.target);
             callbacks[callbacks.length - 1]({success:false, error:"socket closed"});
-            // B proof 的超时重试只可 prune <B，绝不能删掉已完成的 later proof。
+            // A query 的超时重试仍代表同一 Host admission fence；必须
+            // 再次删除后续未接纳 later candidate，不能被大 attempt 误导。
             var delayedOlderProof:Object = LootContainerService.execute("query",
-                proofQueryParams(before, latestBeforePrune, "socket.latest.retry"));
+                proofQueryParams(before, attemptA, "host.fence.a.retry"));
 
             var reopenedNewest:Object = LootContainerService.resumeSuspended(flow.target);
             var newestAttempt:Number = Number(sent[sent.length - 1].payload.initData.openAttemptSeq);
@@ -2133,21 +2282,28 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[callbacks.length - 1]({success:false, error:"socket closed"});
             var laterProofAfterDelayedOlder:Object = LootContainerService.execute("query",
                 proofQueryParams(before, laterAttempt, "socket.later.proof"));
+            var newestProof:Object = LootContainerService.execute("query",
+                proofQueryParams(before, newestAttempt, "socket.newest.proof"));
 
-            check(socketAttempts.length == 7
-                    && latestBeforePrune == attemptA + 7
+            check(setup.complete && socketAttempts.length == 7
+                    && latestStableAttempt == attemptA + 7
+                    && reserveReopen.success && reserveReopen.reopened
+                    && reserveAttempt == attemptA + 8
+                    && reserveDetached.success
+                    && reserveDetached.state == "LOOT_SUSPENDED"
                     && !blocked.success && blocked.error == "recovery_history_full"
                     && LootContainerService.canReopenSuspendedTarget(flow.target)
-                    && firstLatestProof.success
-                    && reopenedAfterPrune.success && reopenedAfterPrune.reopened
+                    && hostFenceProofA.success
+                    && reopenedAfterConverge.success && reopenedAfterConverge.reopened
                     && laterDetached.success && laterDetached.state == "LOOT_SUSPENDED"
                     && delayedOlderProof.success
                     && reopenedNewest.success && reopenedNewest.reopened
                     && newestAttempt == laterAttempt + 1
                     && newestDetached.success && newestDetached.state == "LOOT_SUSPENDED"
-                    && laterProofAfterDelayedOlder.success
-                    && laterProofAfterDelayedOlder.state == "LOOT_SUSPENDED",
-                "proof ledger 满时 fail closed 不 LRU；exact query 收敛旧项，迟到较旧 query 不删 later proof");
+                    && !laterProofAfterDelayedOlder.success
+                    && laterProofAfterDelayedOlder.error == "stale_recovery_proof"
+                    && newestProof.success && newestProof.state == "LOOT_SUSPENDED",
+                "proof ledger 保留 8+1 reserve；第九条后 fail closed，exact A query retain-only 并解锁");
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
