@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对代码基线**：当前商店修复正式发布冻结 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`（tag `runtime-build-v2/20260722-shop-tooltip-v2`），由 commit `48a638968076aba6105f6875ae9e4f0e35885165` 记录 production promotion。无参标准入口已验证正式 Core、build identity 与 payload closure 一致；商店真人交互 smoke 因桌面控制后端不可用未补做，严格状态保留为 `promoted`。高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准。
+> **最后核对代码基线**：当前商店双上限与预览可见锁正式发布冻结 source commit `77d7630b6a17770b59f3675a756b59f95e204e1f`（tag `runtime-build-v2/20260722-panel-interaction-contract-v1`），由 commit `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73` 记录 production promotion。无参标准入口已验证正式 Core、build identity 与 payload closure 一致；真人商店 smoke 完成大数量调整、安全阻断、`最大` 恢复与返回加购保留，严格状态为 `standard_entry_verified`。高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 > **路径约定**：正文与代码块中以裸 `tools/` 开头的脚本路径，除 `launcher/tools/` 下三个小游戏工具（`lockbox-bake.js` / `run-minigame-qa.js` / `validate-minigame-final-state.js`）外，**默认相对仓库根**（`launcher/` 的上一级，从仓库根执行）；跨出 launcher 的 markdown 链接统一用 `../`。
 
@@ -704,7 +704,7 @@ powershell -File automation\dev.ps1
 
 正式发布不以 `build.ps1` 的单机 exit 0 为准：最终 tree 先经 `new-runtime-build-request.ps1` 冻结为 Git bundle；注册本地 worker 在隔离 clone 中运行纯 producer，并用 CurrentUser 不可导出 X509 key 签名。共享 queue 必须限制为受信维护者可写，因为 bundle 内构建源码会在 builder 账户执行；worker 会清除调用者 Git index/worktree/object 上下文，失败日志在 checkout 删除前受限归档。推荐第二故障域由 `.github/workflows/runtime-cloud-builder.yml` 在明确的 `windows-2022` / VS 2022 runner family 构建相同 full commit，再用 GitHub OIDC/Sigstore keyless provenance 证明。cloud 只接受 `Crazyfs` / `Flash-Night` 固定 actor ID 的首次 `workflow_dispatch`，但不要求两人共同在线或互相审批；任一授权发布者都可组合本地票与自动云端票。promotion 至少要求两个不同 signer identity 和两个不同 `faultDomain`，且 artifact/recipe/toolchain/build identity/payload closure 全等。
 
-当前商店修复 consensus 采用 `builder-local-a`（keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`）/ `physical-host-a` 与 GitHub OIDC builder identity `24C5B0719891CA58AC31A4A189F784F1178CD298F4134591583FED3F0FAC163C` / `github-hosted-windows`；tracked registry 仍只含公钥。正式 bootstrap/runtime/manifest/consensus 已由唯一 promotion 入口切换到 request `58DF2A7C6F3824EBDD9D3A6BAE26442D22A554B0C810F03D38161C338586548C`、build identity `7E320BC3CED9F66B7B9FCACD261979434577DFD72660652D2378F398AF433E3E` 与 payload closure `A3546ED7AB1F0D33768B44DA9E81A919C582A7E792321A7F14E97E0BD72BC390`；上一轮地图资源箱的 `builder-local-b` / `physical-host-b` 共识保留为历史记录。一次性 migration fuse 不得复用，后续发布不得降级 v1。
+当前商店修复 consensus 采用 `builder-local-a`（keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`）/ `physical-host-a` 与 GitHub OIDC builder identity `4FBBF7E8979946AD3672338CBCC7E1A160E0190E7C58F4E3A716E7C5D32EF521` / `github-hosted-windows`；tracked registry 仍只含公钥。正式 bootstrap/runtime/manifest/consensus 已由唯一 promotion 入口切换到 request `D6D9BA75DDE90615C2953636F7E60117FD7025118C6EAC8B26F3098F4A9B6B87`、build identity `089BD4B726CD4167B94D0AA228426EFAA68ADCB07594B4A30139A58FD7C47864` 与 payload closure `BA4DE8E6615363166F9FF8856F4A2851958682DA133A3BC2C947146D35F710CF`；上一轮地图资源箱的 `builder-local-b` / `physical-host-b` 共识保留为历史记录。一次性 migration fuse 不得复用，后续发布不得降级 v1。
 
 ```powershell
 $request = .\tools\new-runtime-build-request.ps1 `
@@ -1650,7 +1650,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 
 ### 面板系统（Panel System）
 
-本节回归以 `b072f97841ccb30e167c14495241ae64d9054e22` 为 upstream base，并覆盖 source commit `c60aab2386aee4516608397373ae4c59148c5f77` 的 Panel lifecycle/focus/tooltip、资源箱与 Agent attempt-bound 结果；该 source 已由 commit `6218f8b1d82efc57b77131616667fe45f3033297` 完成 runtime promotion。Launcher source-tree 当前全量为 **1262/1262**，其中 AgentControl 定向 **29/29**。各功能条目残留的 **1210/1210** 仅表示该功能当轮快照，其余未重跑计数按上游基线或待复验标注。
+本节回归以 `b072f97841ccb30e167c14495241ae64d9054e22` 为历史 upstream base，并已覆盖 source commit `77d7630b6a17770b59f3675a756b59f95e204e1f` 的 Panel lifecycle/focus/tooltip、NPC 商店双上限/预览可见锁、资源箱与 Agent attempt-bound 结果；该 source 已由 commit `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73` 完成 runtime promotion，并通过无参正式入口商店 smoke 达到 `standard_entry_verified`。Launcher source-tree 当前全量为 **1262/1262**，其中 AgentControl 定向 **29/29**。各功能条目残留的 **1210/1210** 仅表示该功能当轮快照，其余未重跑计数按上游基线或待复验标注。
 
 全屏遮罩面板框架，用于承载需要独占交互的复杂 UI（商城、帮助、调试小游戏等），取代 Flash MovieClip 弹窗。
 

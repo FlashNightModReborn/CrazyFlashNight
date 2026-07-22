@@ -1,5 +1,5 @@
 # 测试约定与验证矩阵
-**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：当前商店修复 promotion commit `48a638968076aba6105f6875ae9e4f0e35885165`（source `9b784cb49c8febed863ff570d38795c3e96670d2`、release tree `f1f881c5392a385e73f3e9fecc3445df1e50ad17`，2026-07-22）；正式入口身份核验已通过，商店真人交互 smoke 未补做，当前严格状态为 `promoted`。未重跑计数须标为历史基线或待复验。
+**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：当前商店双上限与预览可见锁 promotion commit `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73`（source `77d7630b6a17770b59f3675a756b59f95e204e1f`、release tree `9d23e22c62e6e8f2366fe068c2e1595a1ab14163`，2026-07-22）；无参正式入口身份与真人商店 smoke 均已通过，当前严格状态为 `standard_entry_verified`。未重跑计数须标为历史基线或待复验。
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 ## 0. 通用前缀
 PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。

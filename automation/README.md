@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**最后核对代码基线**：当前商店修复发布冻结 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`（tag `runtime-build-v2/20260722-shop-tooltip-v2`），由 commit `48a638968076aba6105f6875ae9e4f0e35885165` 记录正式 promotion；无参标准入口已核对同一正式身份，商店真人交互 smoke 未补做，严格状态为 `promoted`。
+**最后核对代码基线**：当前商店双上限与预览可见锁发布冻结 source commit `77d7630b6a17770b59f3675a756b59f95e204e1f`（tag `runtime-build-v2/20260722-panel-interaction-contract-v1`），由 commit `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73` 记录正式 promotion；无参标准入口已核对同一正式身份，真人商店 smoke 完成大数量调整、安全阻断、`最大` 恢复与返回加购保留，严格状态为 `standard_entry_verified`。
 
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
@@ -179,7 +179,7 @@ powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 
 正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
 
-正式 v2 consensus 当前绑定 tag `runtime-build-v2/20260722-shop-tooltip-v2`、request `58DF2A7C6F3824EBDD9D3A6BAE26442D22A554B0C810F03D38161C338586548C`、source commit `9b784cb49c8febed863ff570d38795c3e96670d2`、release tree `f1f881c5392a385e73f3e9fecc3445df1e50ad17`、build identity `7E320BC3CED9F66B7B9FCACD261979434577DFD72660652D2378F398AF433E3E` 与 payload closure `A3546ED7AB1F0D33768B44DA9E81A919C582A7E792321A7F14E97E0BD72BC390`；promotion 记录 commit 为 `48a638968076aba6105f6875ae9e4f0e35885165`。本次 local signer 是 `builder-local-a` / `physical-host-a`，不可导出 keyId 为 `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint 为 `647AFE92BD801518AF25F2A2EE1845E6847C2118`；GitHub OIDC identity `24C5B0719891CA58AC31A4A189F784F1178CD298F4134591583FED3F0FAC163C` 提供 `github-hosted-windows` 第二票。cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch。
+正式 v2 consensus 当前绑定 tag `runtime-build-v2/20260722-panel-interaction-contract-v1`、request `D6D9BA75DDE90615C2953636F7E60117FD7025118C6EAC8B26F3098F4A9B6B87`、source commit `77d7630b6a17770b59f3675a756b59f95e204e1f`、release tree `9d23e22c62e6e8f2366fe068c2e1595a1ab14163`、build identity `089BD4B726CD4167B94D0AA228426EFAA68ADCB07594B4A30139A58FD7C47864` 与 payload closure `BA4DE8E6615363166F9FF8856F4A2851958682DA133A3BC2C947146D35F710CF`；promotion 记录 commit 为 `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73`。本次 local signer 是 `builder-local-a` / `physical-host-a`，不可导出 keyId 为 `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint 为 `647AFE92BD801518AF25F2A2EE1845E6847C2118`；GitHub OIDC identity `4FBBF7E8979946AD3672338CBCC7E1A160E0190E7C58F4E3A716E7C5D32EF521` 提供 `github-hosted-windows` 第二票。production policy `A722D30DEF6C346C64D2C5B8AB038B35D6ADE1858099AD4A8A0BA6C1CCF556B1` 的 21/21 receipt SHA-256 为 `804CBAE17783E6365EC6276BD2A00A4A516A64F3DEE21C7F0C82A5118202F2DC`；cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch。
 
 ```powershell
 $queueRoot = 'C:\cf7q' # 本列车专用短根；不得与未 ready/superseded 的旧 request 混跑
