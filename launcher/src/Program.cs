@@ -1454,51 +1454,6 @@ class Program
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
 
-        // Dev-only lockbox S0 actual wire.  The only AS2 ingress is XmlSocketServer's dedicated
-        // handler; no TaskRegistry/MessageRouter/HTTP/Web task registration exists for this task.
-        DevLockboxS0Runtime devLockboxS0 = new DevLockboxS0Runtime(
-            new DevLockboxS0PanelHostPort(panelHost),
-            delegate { return SteamOwnershipCheck.IsDevRepository(projectRoot); },
-            delegate { return Environment.GetEnvironmentVariable("CF7_DEV_LOCKBOX_S0"); },
-            delegate
-            {
-                Process flash = processManager.FlashProcess;
-                if (flash == null) return (DevLockboxS0Runtime.GameProcessIdentity?)null;
-                try
-                {
-                    if (flash.HasExited) return (DevLockboxS0Runtime.GameProcessIdentity?)null;
-                    return new DevLockboxS0Runtime.GameProcessIdentity(
-                        flash.Id, flash.StartTime.ToUniversalTime().Ticks);
-                }
-                catch { return (DevLockboxS0Runtime.GameProcessIdentity?)null; }
-            },
-            delegate(string json, int generation)
-            {
-                return socketServer.TrySendIfGen(json + "\0", generation);
-            },
-            webOverlay.TryPostToWeb,
-            delegate(int expectedGeneration)
-            {
-                return socketServer.TrySendIfGen(
-                    "{\"task\":\"cmd\",\"action\":\"webPanelPause\"}\0", expectedGeneration);
-            },
-            delegate(int expectedGeneration)
-            {
-                return socketServer.TrySendIfGen(
-                    "{\"task\":\"cmd\",\"action\":\"webPanelUnpause\"}\0",
-                    expectedGeneration);
-            });
-        socketServer.SetDedicatedJsonHandler(devLockboxS0.TryHandleSocketJson);
-        socketServer.OnClientReadyForGeneration += devLockboxS0.OnSocketReady;
-        socketServer.OnClientDisconnectedForGeneration += devLockboxS0.OnSocketDisconnected;
-        webOverlay.SetDevLockboxS0Runtime(devLockboxS0);
-        if (panelHost != null)
-        {
-            panelHost.SetPanelOpenGate(devLockboxS0.AllowRegularPanelOpen);
-            panelHost.PanelClosed += devLockboxS0.OnPanelHostClosed;
-            panelHost.OrchestrationSettled += devLockboxS0.OnPanelHostOrchestrationSettled;
-        }
-
         form.BindWindowManager(windowManager);
 
         // 11b-α: processManager.Start / TrackProcess / TrackFlashProcess 迁入 GameLaunchFlow.TransitionToSpawning
@@ -1664,7 +1619,6 @@ class Program
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }
-        try { devLockboxS0.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (panelHost != null) panelHost.Dispose(); } catch { }

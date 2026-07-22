@@ -262,29 +262,13 @@ var Panels = (function() {
         }
     }
 
-    function isLockboxS0OpenLog(data) {
-        var initData = data && data.initData;
-        if (!data || data.cmd !== 'open' || data.panel !== 'lockbox' || !initData) return false;
-        return initData.source === 'as2-chest-s0'
-            || initData.fixture === 'insurance-safe-s0-v1'
-            || Object.prototype.hasOwnProperty.call(initData, '__lockboxChestS0')
-            || (Object.prototype.hasOwnProperty.call(initData, 'capability')
-                && Object.prototype.hasOwnProperty.call(initData, 'connectionGeneration')
-                && Object.prototype.hasOwnProperty.call(initData, 'gameProcessId')
-                && Object.prototype.hasOwnProperty.call(initData, 'documentEpoch')
-                && Object.prototype.hasOwnProperty.call(initData, 'flowHandle')
-                && Object.prototype.hasOwnProperty.call(initData, 'panelInstanceId'));
-    }
-
     function isLootOpenLog(data) {
         return !!(data && data.cmd === 'open' && data.panel === 'loot' && data.initData);
     }
 
     function safePanelCommandLog(data) {
-        var redactS0InitData = isLockboxS0OpenLog(data);
         var redactLootInitData = isLootOpenLog(data);
-        var redactWholeInitData = redactS0InitData || redactLootInitData;
-        if (!data || !data.initData || (!redactWholeInitData
+        if (!data || !data.initData || (!redactLootInitData
                 && !Object.prototype.hasOwnProperty.call(data.initData, 'capability'))) {
             return JSON.stringify(data);
         }
@@ -293,10 +277,10 @@ var Panels = (function() {
         for (key in data) {
             if (Object.prototype.hasOwnProperty.call(data, key)) safe[key] = data[key];
         }
-        // S0（含 browser-host-shim）和 loot 的完整 identity 都整段固定成常量，避免
-        // 未来新增字段再次形成日志旁路。普通 panel 仍保留逐字段日志语义。
-        safe.initData = redactWholeInitData ? '[redacted]' : {};
-        if (redactWholeInitData) return JSON.stringify(safe);
+        // Loot 的完整权威载荷整段固定成常量，避免未来新增字段形成日志旁路。
+        // 普通 panel 仍保留逐字段日志语义，并单独隐藏 capability。
+        safe.initData = redactLootInitData ? '[redacted]' : {};
+        if (redactLootInitData) return JSON.stringify(safe);
         for (key in data.initData) {
             if (!Object.prototype.hasOwnProperty.call(data.initData, key)) continue;
             safe.initData[key] = key === 'capability' ? '[redacted]' : data.initData[key];

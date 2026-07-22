@@ -1,9 +1,0 @@
-﻿import org.flashNight.arki.scene.*;
-
-if (_root.地图元件 == undefined) _root.地图元件 = {};
-if (_root.敌人函数 == undefined) _root.敌人函数 = {};
-#include "逻辑/关卡系统/关卡系统_lsy_资源箱回调.as"
-
-trace("ChestS0TestRunId Start: __CHEST_S0_RUN_ID__");
-ChestS0TestSuite.runAllTests();
-trace("ChestS0TestRunId Complete: __CHEST_S0_RUN_ID__");

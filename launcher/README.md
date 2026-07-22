@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对代码基线**：当前工作树基于 `origin/main` commit `1d2679a330`（2026-07-22）。商店修复正式发布冻结 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`（tag `runtime-build-v2/20260722-shop-tooltip-v2`），由 commit `48a638968076aba6105f6875ae9e4f0e35885165` 记录 production promotion；无参标准入口已验证正式 Core、build identity 与 payload closure 一致，真人商店 smoke 未补做，严格状态为 `promoted`。地图箱全正网格 Web-only 不改 Host/Web 协议，但本轮仍是 source-only，尚未取得 fresh CS6、publish 或部署结论；commit `6218f8b1d82efc57b77131616667fe45f3033297` 的旧单-canary `standard_entry_verified` 不得外推。高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准。
+> **最后核对代码基线**：当前工作树基于 `origin/main` commit `1d2679a330`（2026-07-22）。商店修复正式发布冻结 source commit `9b784cb49c8febed863ff570d38795c3e96670d2`（tag `runtime-build-v2/20260722-shop-tooltip-v2`），由 commit `48a638968076aba6105f6875ae9e4f0e35885165` 记录 production promotion；无参标准入口已验证正式 Core、build identity 与 payload closure 一致，真人商店 smoke 未补做，严格状态为 `promoted`。地图箱全正网格 Web-only 不改 loot Host/Web wire，本轮已取得 fresh TestLoader、`asLoader` 与地图元件 XFL 发布证据，严格状态为 `compiled / candidate_pending`；commit `6218f8b1d82efc57b77131616667fe45f3033297` 的旧单-canary `standard_entry_verified` 不得外推。高变动功能的真机结论与未闭合 Gate 以对应专题章节和 [验证矩阵](../agentsDoc/testing-guide.md) 为准。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 > **路径约定**：正文与代码块中以裸 `tools/` 开头的脚本路径，除 `launcher/tools/` 下三个小游戏工具（`lockbox-bake.js` / `run-minigame-qa.js` / `validate-minigame-final-state.js`）外，**默认相对仓库根**（`launcher/` 的上一级，从仓库根执行）；跨出 launcher 的 markdown 链接统一用 `../`。
 
@@ -1648,7 +1648,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 
 ### 面板系统（Panel System）
 
-本节回归以 `b072f97841ccb30e167c14495241ae64d9054e22` 为 upstream base，并覆盖 source commit `c60aab2386aee4516608397373ae4c59148c5f77` 的 Panel lifecycle/focus/tooltip、资源箱与 Agent attempt-bound 结果；该 source 已由 commit `6218f8b1d82efc57b77131616667fe45f3033297` 完成 runtime promotion。Launcher source-tree 当前全量为 **1220/1220**，其中 AgentControl 定向 **29/29**。各功能条目残留的 **1210/1210** 仅表示该功能当轮快照，其余未重跑计数按上游基线或待复验标注。
+本节只描述 Panel lifecycle、focus、tooltip 与业务面板的当前架构；动态测试计数、候选身份和 promotion 状态统一以 [验证矩阵](../agentsDoc/testing-guide.md) 及对应专题 ADR 为准，历史提交不得外推为当前树证据。
 
 全屏遮罩面板框架，用于承载需要独占交互的复杂 UI（商城、帮助、调试小游戏等），取代 Flash MovieClip 弹窗。
 
@@ -1671,10 +1671,10 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 **面板类型**：
 
-> **地图资源箱现状覆盖说明**：旧单-canary promotion、candidate、CS6 与实机计数仅作历史。当前工作树不改 Host/Web wire、Coordinator 或 Web 模块：先由六类资源箱 preset 完成箱体领域准入，准入后的所有正整数 `row/col` 都是 Web intent，支持 `1×1`、`col<=8`、`capacity<=64`；超界正网格 fail-closed，非正 direct 与无 reservation 的 break 地面掉落。生产 XML/runtime marker 和 Flash recovery renderer 均不再是当前路径；准确计数以最新脚本输出为准。
+> **地图资源箱现状覆盖说明**：旧单-canary promotion、candidate、CS6 与实机计数仅作历史。当前真实 loot wire、Coordinator 与 Web 模块协议不变，S0 平行 Host/Web/AS2 接线已物理删除；六类资源箱 preset 完成箱体领域准入后，所有正整数 `row/col` 都是 Web intent，支持 `1×1`、`col<=8`、`capacity<=64`。超界正网格 fail-closed，非正 direct 与无 reservation 的 break 地面掉落；生产 XML/runtime marker 和 Flash recovery renderer 均不再是当前路径。
 
 - **loot**（地图网格箱 S1/S2，当前 Web-only source）：`web/modules/loot/loot-runtime.js`、`loot-state.js`、`loot-view.js`、`loot-organizer.js`、`loot-panel.js` 复用 `transfer-pair` 与 owned inventory primitive；AS2 是奖励、容器与状态唯一权威，Host 只负责 strict shape / exact binding / 串行 / panel 生命周期，Web 只发意图。AS2 先以六类资源箱 preset 做箱体领域准入，防止投影召唤器等非箱正网格被劫持；准入后选择器把所有正整数 `row/col` 视为 Web intent：`1×1` 有效，`col<=8 && row*col<=64`。超界/畸形正网格 fail-closed，非正 direct 与无 reservation 的 break 保持地面掉落；箱型名及当前 2×4 / 4×4 / 4×8 不构成准入后的 rollout/shape 白名单，生产 XML/runtime marker=0。claim/close 继续要求 exact revision/remaining/operation/slot/lease 证明；unknown 只 query、不 replay，Host/Web 各维护独立 freshness watermark。ordinary `target_full / inventory_full` 在同一 tracked `loot`、同一 `panelInstanceId` 内打开背包—战备箱 organizer，只允许 strict `snapshot/autoTransfer/discard`；全程保持 Coordinator `Bound`、pause 与 `LOOT_ACTIVE`，返回前必须取得 fresh ACTIVE snapshot。主页非空 X/Esc/backdrop 进入 `LOOT_SUSPENDED`，明确放弃才 `ABANDONED`。初次、reopen、mount、navigation 与 socket failure 都保留同一 inventory/anchor并收束为 `LOOT_SUSPENDED`（空→`CONSUMED`，anchor 失效→`EXPIRED`）；journal/effects/proof 未完成时保持 `LOOT_COMMIT_PENDING`。Flash 网格 renderer、claim-only adapter 与 observer recovery 不再是产品路径。场景切换/restart 必须先通过 `expireScene` teardown barrier；pending 时完整保留 world。静态门全量审计真实声明、item catalog、缺省数量 1/1、能力边界、direct/break 负向路径与 marker=0，准确计数以最新脚本输出为准；人工采用集中代表场，不造 9 站。旧单-canary candidate/promotion/standard-entry 仅是历史证据，详见 [S1/S2 ADR](../docs/地图资源箱-S1S2真实战利品容器与Web双栏-ADR-2026-07-18.md) 与 [验证矩阵](../agentsDoc/testing-guide.md)。
-- **lockbox**（开锁小游戏）：`web/modules/minigames/lockbox/` 下的正式小游戏模块；资源箱 S0 的 `chest-s0-adapter.js`、`chest-s0-actual-wire.js` 与默认休眠 `chest-s0-dev-bootstrap.js` 已进入 production overlay 源码，只有 exact Host arm 才懒加载实际 wire。关卡 exact marker 与 Host dev-repo + 环境变量双门默认关闭。中央六类箱 arbiter 一旦随 `asLoader.swf` 发布即进入 Flash 注入面；这仍不等于 S0 actual-feature cross-stack 或正式部署，必须另做单箱/邻箱、网格/直投、`currentMC`、投影召唤器、地面拾取及 XFL 人工回归。
+- **lockbox**（开锁小游戏）：`web/modules/minigames/lockbox/` 下的独立正式小游戏模块，保留 core/solver/generator、panel、audio、CSS、普通 browser harness 与 Node QA。地图资源箱 S0 bootstrap/adapter/actual-wire 及 Host/AS2 接线已退役，不再存在 dormant gate 或当前地图箱业务分流；未来开锁奖励需另立协议与 ADR。普通 `minigame_session` 继续固定脱敏。
 
 > **Web transport 返回值边界**：`Bridge.send(message)` 在 WebView2 `postMessage` 可同步调用时返回 `true`，transport 缺失或调用抛错时返回 `false`；这个布尔值只描述本地投递，不是 Host 业务受理回执。需要业务定局的面板必须继续等待自身 response/rebind。Skill 的 trainer↔manage 控制在成功投递后进入等待态，新 `panelInstanceId` rebind 才算切换完成；3 秒无 rebind 会恢复原页面按钮，教师 capability 的有效性仍由 Host/AS2 校验。
 

@@ -7,6 +7,28 @@ namespace CF7Launcher.Tests.Guardian
     public class WebOverlayFormPanelCloseTests
     {
         [Fact]
+        public void FormatPanelEnvelopeLog_MinigameSessionRedactsWholePayload()
+        {
+            const string secret = "one-time-capability";
+            string json = "{\"cmd\":\"minigame_session\",\"payload\":{\"game\":\"lockbox\",\"capability\":\""
+                + secret + "\"}}";
+
+            string line = WebOverlayForm.FormatPanelEnvelopeLog("minigame_session", json);
+
+            Assert.Equal("[Panel] HandlePanelMessage: cmd=minigame_session payload=redacted", line);
+            Assert.DoesNotContain(secret, line);
+        }
+
+        [Fact]
+        public void FormatPanelEnvelopeLog_NonMinigameKeepsDiagnosticEnvelope()
+        {
+            const string json = "{\"cmd\":\"ready\"}";
+
+            Assert.Equal("[Panel] HandlePanelMessage: " + json,
+                WebOverlayForm.FormatPanelEnvelopeLog("ready", json));
+        }
+
+        [Fact]
         public void ResolvePanelCloseGameCommand_StageSelect_NotifiesFlashClose()
         {
             Assert.Equal("stageSelectPanelClose", WebOverlayForm.ResolvePanelCloseGameCommand("stage-select"));

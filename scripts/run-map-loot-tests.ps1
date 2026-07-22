@@ -14,6 +14,7 @@ $freshTracePath = Join-Path $projectDir 'scripts\flashlog.txt'
 $compilerErrorsPath = Join-Path $projectDir 'scripts\compiler_errors.txt'
 $suitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootContainerServiceTest.as'
 $plannerSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootMaterializationPlannerTest.as'
+$arbiterSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\BoxInteractionArbiterTest.as'
 $backupPath = $null
 $hadRunner = $false
 $originalRunnerHash = $null
@@ -30,7 +31,7 @@ try {
     $sha256.Dispose()
 }
 $repoHash = ([System.BitConverter]::ToString($repoHashBytes)).Replace('-', '').Substring(0, 24)
-$mutexName = 'Local\CF7_ChestS0Tests_' + $repoHash
+$mutexName = 'Local\CF7_FocusedTestLoader_' + $repoHash
 $runMutex = [System.Threading.Mutex]::new($false, $mutexName)
 $runId = [System.Guid]::NewGuid().ToString('N')
 $expectedServicePassCount = 129
@@ -100,7 +101,24 @@ try {
             throw "Map loot materialization AS2 suite is missing required sentinel: $pattern"
         }
     }
-    Write-Host ("[INFO] Verified focused map loot AS2 suite and explicit imports: {0}" -f $suitePath)
+    if (-not (Test-Path -LiteralPath $arbiterSuitePath)) {
+        throw "Box interaction arbiter AS2 suite is missing: $arbiterSuitePath"
+    }
+    $arbiterBytes = [System.IO.File]::ReadAllBytes($arbiterSuitePath)
+    if ($arbiterBytes.Length -lt 3 -or $arbiterBytes[0] -ne 0xEF -or
+        $arbiterBytes[1] -ne 0xBB -or $arbiterBytes[2] -ne 0xBF) {
+        throw 'BoxInteractionArbiterTest.as is not UTF-8 with BOM.'
+    }
+    $arbiterSource = Get-Content -LiteralPath $arbiterSuitePath -Raw -Encoding UTF8
+    foreach ($pattern in @(
+            'class\s+org\.flashNight\.arki\.unit\.UnitComponent\.Initializer\.test\.BoxInteractionArbiterTest';
+            'public\s+static\s+function\s+runAllTests\s*\(';
+            'trace\("BoxInteractionArbiterTest: "\s*\+\s*caseCount')) {
+        if ($arbiterSource -notmatch $pattern) {
+            throw "Box interaction arbiter AS2 suite is missing required sentinel: $pattern"
+        }
+    }
+    Write-Host ("[INFO] Verified focused map loot, materialization, and box arbiter AS2 suites: {0}" -f $suitePath)
 
     if ($hadRunner) {
         $backupPath = Join-Path ([System.IO.Path]::GetTempPath()) `
@@ -178,6 +196,7 @@ try {
                 $startCount, $completeCount, $runBlockMatches.Count)
         }
         $requiredTracePatterns = @(
+            '(?m)^BoxInteractionArbiterTest: 13/13 cases, 53 assertions passed\r?$';
             '(?m)^=== LootContainerServiceTest start ===\r?$';
             "(?m)^LootContainerServiceTest Tests Passed: $expectedServicePassCount\r?$";
             '(?m)^LootContainerServiceTest Tests Failed: 0\r?$';

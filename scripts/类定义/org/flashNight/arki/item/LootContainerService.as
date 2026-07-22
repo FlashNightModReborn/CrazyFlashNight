@@ -10,7 +10,7 @@ import org.flashNight.gesh.tooltip.TooltipComposer;
  * 地图网格箱的瞬态战利品权威。
  *
  * 奖励只在 AS2 内存中存在。Web 只收到投影与不可猜写 lease；所有领取均由本类按
- * loot -> player 单向策略提交。beginFixture/commitReservedOpen/observeDeath/
+ * loot -> player 单向策略提交。beginMapChestOpen/commitReservedOpen/observeDeath/
  * activateReservedOpen 把“完整物化后才 kill”收成同步门，避免 source 已死而容器未注册。
  */
 class org.flashNight.arki.item.LootContainerService {
@@ -105,7 +105,7 @@ class org.flashNight.arki.item.LootContainerService {
      * 进入 Web，正整数超界或任意 malformed shape 均 fail closed；两维完整且任一
      * 非正才允许 direct delivery。
      */
-    public static function classifyFixtureShape(target:Object):String {
+    public static function classifyMapChestShape(target:Object):String {
         var knownBox:Boolean = target != null
             && org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter.isBoxPreset(
                 String(target.presetName));
@@ -128,11 +128,11 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /** InteractionHandler 的最早裁决；所有分支只消费统一 shape 分类。 */
-    public static function beginFixture(target:Object):Object {
-        var guard:Object = guardAnyGridFixture(target);
+    public static function beginMapChestOpen(target:Object):Object {
+        var guard:Object = guardAnyMapChestGrid(target);
         if (guard.handled) return guard;
 
-        var shape:String = classifyFixtureShape(target);
+        var shape:String = classifyMapChestShape(target);
         if (shape == SHAPE_NOT_WEB_LOOT_GRID || shape == SHAPE_DIRECT_DELIVERY) {
             return {handled:false, reserved:false, reason:shape};
         }
@@ -1055,8 +1055,8 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /** SUSPENDED authority 存在时，同一 supported target 可重开；其他 shape 统一分类。 */
-    private static function guardAnyGridFixture(target:Object):Object {
-        var shape:String = classifyFixtureShape(target);
+    private static function guardAnyMapChestGrid(target:Object):Object {
+        var shape:String = classifyMapChestShape(target);
         if (_reservation != null && _reservation.target === target) {
             return {handled:true,
                 reason:"loot_reservation_pending", state:_reservation.state,
@@ -1110,20 +1110,20 @@ class org.flashNight.arki.item.LootContainerService {
      * authored 开启帧专用栅栏。同 target reservation 正是该帧要激活的 authority，
      * 因此只在这里放行；其他 active/suspended/pending/shape 仍复用统一 guard。
      */
-    public static function guardOpenGridFixture(target:Object):Object {
+    public static function guardOpenGrid(target:Object):Object {
         if (_reservation != null && _reservation.target === target) {
             return {handled:false, reason:"loot_reservation_ready",
                 state:_reservation.state};
         }
-        return guardAnyGridFixture(target);
+        return guardAnyMapChestGrid(target);
     }
 
     /**
      * 破碎帧专用入口复用同一 shape/authority 栅栏，防止互动 kill 与破碎时间轴
      * 竞态绕开 reservation/active authority。
      */
-    public static function guardBreakGridFixture(target:Object):Object {
-        return guardAnyGridFixture(target);
+    public static function guardBreakGrid(target:Object):Object {
+        return guardAnyMapChestGrid(target);
     }
 
     /**

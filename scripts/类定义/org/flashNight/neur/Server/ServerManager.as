@@ -1,7 +1,6 @@
 ﻿import org.flashNight.neur.Event.Delegate;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.path.PathManager;
-import org.flashNight.arki.scene.ChestS0SocketBridge;
 import org.flashNight.arki.item.LootContainerService;
 import FastJSON;
 
@@ -518,12 +517,6 @@ class org.flashNight.neur.Server.ServerManager {
 
         // 处理 C#→AS2 游戏命令
         if (response.task == "cmd") {
-            // Chest S0 只允许独立 socket dispatcher；专用 action 即使 schema 非法
-            // 也必须在这里 fail-closed，不能落入普通 _root.gameCommands。
-            if (ChestS0SocketBridge.isDedicatedHostAction(response.action)) {
-                ChestS0SocketBridge.handleHostCommand(response);
-                return;
-            }
             handleGameCommand(response.action, response);
             return;
         }
@@ -637,9 +630,6 @@ class org.flashNight.neur.Server.ServerManager {
     public function onSocketClose():Void {
         trace("XMLSocket connection closed");
         isSocketConnected = false;
-
-        // capability 绑定当前 socket generation；断线必须先让本地权威失效。
-        ChestS0SocketBridge.handleSocketClosed();
 
         // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，
         // 并把同一 authority 收敛到 Web-only SUSPENDED 或终态。不存在 Flash UI 回退。

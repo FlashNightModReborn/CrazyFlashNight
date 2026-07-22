@@ -46,8 +46,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
         }
 
         target.__cf7InteractionHandlerInitialized = true;
-        // 只观察精确 authored 开发 fixture；普通箱子不会开启 S0 本地门。
-        ChestS0SocketBridge.observeLocalFixture(target);
         _global.ASSetPropFlags(target, [
             "__cf7InteractionHandlerInitialized",
             "__cf7InteractionHandlerDispatcher",
@@ -94,17 +92,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
     private static function setupPickupHandler(target:MovieClip):Boolean {
         if (!target.dispatcher || typeof target.dispatcher.subscribe != "function") return false;
         var pickFunc:Function = function(target:MovieClip):Void {
-            // SceneManager 在 attachMovie 后才 clone XML Parameters；提交互动时必须重读，
-            // 不能依赖 initialize 阶段尚未出现的 authored 双 marker。
-            ChestS0SocketBridge.observeLocalFixture(target);
-            var s0Result:Object = ChestSessionService.beginFixture(
-                target, ChestSessionService.SOURCE_ID);
-            if (s0Result.handled) return;
-
             // 生产 Web 战利品箱在 kill 前先拿到唯一 reservation，并完整物化奖励。
             // 所有正网格箱都在这里进入 Web-only 权威；任何失败均保持 fail-closed，
             // 不得重新暴露已经退役的 Flash 资源箱 UI。
-            var lootResult:Object = LootContainerService.beginFixture(target);
+            var lootResult:Object = LootContainerService.beginMapChestOpen(target);
             if (lootResult.handled) {
                 if (lootResult.reopen === true) {
                     // 原 target 始终保留 _killed；这里只恢复同一 authority/panel，禁止
@@ -163,7 +154,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
                     + (lootDeath.state == undefined ? "none" : lootDeath.state));
             }
             BoxInteractionArbiter.unregister(target);
-            ChestS0SocketBridge.handleTargetInvalid(target);
         };
         target.__cf7InteractionPickFunc = pickFunc;
         target.__cf7InteractionDeathFunc = deathFunc;
@@ -190,7 +180,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
             // 未预期 unload 也必须释放 pending reservation；正常 own-kill unload 幂等。
             LootContainerService.handleTargetUnload(this);
             BoxInteractionArbiter.forget(this);
-            ChestS0SocketBridge.handleTargetInvalid(this);
         };
         target.__cf7InteractionUnloadHandlerId = target.dispatcher.subscribeTargetEvent(
             "onUnload", unloadFunc, target);
@@ -294,7 +283,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
         LootContainerService.handleTargetUnload(target);
         InteractionHandler.detachFromDispatcher(
             target, target.__cf7InteractionHandlerDispatcher);
-        ChestS0SocketBridge.handleTargetInvalid(target);
         if (target.dispatcher) {
             target.dispatcher.unsubscribeAll();
         }

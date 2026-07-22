@@ -126,11 +126,9 @@ namespace CF7Launcher.Guardian
         private readonly Queue<PanelCommand> _queue = new Queue<PanelCommand>();
         private readonly object _queueLock = new object();
         private Func<string, bool> _rebindGate;
-        private Func<string, bool> _panelOpenGate;
         private Func<string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
         public event Action<string, string> PanelClosed;
-        public event Action OrchestrationSettled;
         private PanelCommand? _deferredRebind;
         private bool _processing;
         private bool _delayedKickRegistered;
@@ -230,8 +228,6 @@ namespace CF7Launcher.Guardian
         public bool TryOpenPanel(string name, string initDataJson, string returnToName, string returnInitDataJson)
         {
             if (_disposed || string.IsNullOrEmpty(name)) return false;
-            Func<string, bool> openGate = _panelOpenGate;
-            if (openGate != null && !openGate(name)) return false;
             return EnqueueAndPump(new PanelCommand(
                 PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
         }
@@ -302,18 +298,12 @@ namespace CF7Launcher.Guardian
         public bool ReleaseIdleFenceExact(string token)
         {
             if (string.IsNullOrEmpty(token)) return false;
-            bool released = false;
             lock (_queueLock)
             {
                 if (!string.Equals(_idleFenceToken, token, StringComparison.Ordinal)) return false;
                 _idleFenceToken = null;
-                released = true;
+                return true;
             }
-            // The fence itself made the host non-idle.  Re-emit the settled edge after releasing
-            // it so an S0 arm (or another orchestration waiter) rejected during the fenced socket
-            // write is not stranded until some unrelated panel event occurs.
-            if (released) NotifyOrchestrationSettledIfIdle();
-            return released;
         }
 
         public void ClosePanel()
@@ -324,7 +314,6 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[PanelHost] generic close rejected while tracked open/lease is active");
         }
 
-        public void SetPanelOpenGate(Func<string, bool> gate) { _panelOpenGate = gate; }
         public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
         public void SetInitDataEnricher(Func<string, string, string> enricher) { _initDataEnricher = enricher; }
         public void SetPanelCloseObserver(Action<string, string> observer) { _panelCloseObserver = observer; }
@@ -452,7 +441,6 @@ namespace CF7Launcher.Guardian
                     catch { }
                 }
             }
-            NotifyOrchestrationSettledIfIdle();
         }
 
         private void PumpQueue()
@@ -484,7 +472,6 @@ namespace CF7Launcher.Guardian
                 }
                 if (queueDrained)
                 {
-                    NotifyOrchestrationSettledIfIdle();
                     return;
                 }
                 try
@@ -497,24 +484,6 @@ namespace CF7Launcher.Guardian
                     try { ResetToClosedState(); }
                     catch (Exception ex2) { LogManager.Log("[PanelHost] reset failed: " + ex2); }
                 }
-            }
-        }
-
-        private void NotifyOrchestrationSettledIfIdle()
-        {
-            Action settled = null;
-            lock (_queueLock)
-            {
-                if (!_disposed && !_processing && _queue.Count == 0 && _activePanel == null
-                    && !_trackedOpenReserved && _trackedLeaseInstanceId == null
-                    && _idleFenceToken == null)
-                    settled = OrchestrationSettled;
-            }
-            if (settled == null) return;
-            try { settled(); }
-            catch (Exception ex)
-            {
-                LogManager.Log("[PanelHost] orchestration-settled event failed: " + ex.Message);
             }
         }
 
@@ -532,13 +501,6 @@ namespace CF7Launcher.Guardian
             }
             if (cmd.Kind == PanelCommandKind.Open)
             {
-                Func<string, bool> openGate = _panelOpenGate;
-                if (openGate != null && !openGate(cmd.Name))
-                {
-                    LogManager.Log("[PanelHost] panel open rejected by global gate: " + cmd.Name);
-                    _consecutiveFailures = 0;
-                    return;
-                }
                 if (_activePanel == cmd.Name)
                 {
                     Func<string, bool> gate = _rebindGate;

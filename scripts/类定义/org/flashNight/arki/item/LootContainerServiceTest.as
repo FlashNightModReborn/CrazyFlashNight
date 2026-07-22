@@ -240,7 +240,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function activate(items:Array, id:String):Object {
         var target:Object = makeTarget(id);
         var inventory:ArrayInventory = makeInventory(items);
-        var begun:Object = LootContainerService.beginFixture(target);
+        var begun:Object = LootContainerService.beginMapChestOpen(target);
         var committed:Object = LootContainerService.commitReservedOpen(
             target, inventory,
             function(box:Object):Boolean {
@@ -337,28 +337,28 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function testReservationKillGateAndOverwrite():Void {
         resetWorld();
         var arbitrary:Object = {presetName:"装备箱", row:3, col:5};
-        var arbitraryResult:Object = LootContainerService.beginFixture(arbitrary);
+        var arbitraryResult:Object = LootContainerService.beginMapChestOpen(arbitrary);
         LootContainerService.abortReservedOpen(arbitrary, "test_arbitrary_grid");
         var smallest:Object = {presetName:"资源箱", row:1, col:1};
-        var smallestResult:Object = LootContainerService.beginFixture(smallest);
+        var smallestResult:Object = LootContainerService.beginMapChestOpen(smallest);
         LootContainerService.abortReservedOpen(smallest, "test_smallest_grid");
         var boundary:Object = {presetName:"保险柜", row:8, col:8};
-        var boundaryResult:Object = LootContainerService.beginFixture(boundary);
+        var boundaryResult:Object = LootContainerService.beginMapChestOpen(boundary);
         LootContainerService.abortReservedOpen(boundary, "test_boundary_grid");
-        var tooWide:Object = LootContainerService.beginFixture(
+        var tooWide:Object = LootContainerService.beginMapChestOpen(
             {presetName:"装备箱", row:1, col:9});
-        var tooLarge:Object = LootContainerService.beginFixture(
+        var tooLarge:Object = LootContainerService.beginMapChestOpen(
             {presetName:"资源箱", row:9, col:8});
-        var directResult:Object = LootContainerService.beginFixture(
+        var directResult:Object = LootContainerService.beginMapChestOpen(
             {presetName:"资源箱", row:0, col:0});
         check(arbitraryResult.handled && arbitraryResult.reserved
                 && smallestResult.handled && smallestResult.reserved
                 && boundaryResult.handled && boundaryResult.reserved
-                && LootContainerService.classifyFixtureShape(arbitrary)
+                && LootContainerService.classifyMapChestShape(arbitrary)
                     == "supported_web_grid"
-                && LootContainerService.classifyFixtureShape(smallest)
+                && LootContainerService.classifyMapChestShape(smallest)
                     == "supported_web_grid"
-                && LootContainerService.classifyFixtureShape(boundary)
+                && LootContainerService.classifyMapChestShape(boundary)
                     == "supported_web_grid"
                 && tooWide.handled && !tooWide.reserved
                 && tooWide.reason == "unsupported_grid_shape"
@@ -376,29 +376,29 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var mixedMalformedTarget:Object = {presetName:"资源箱", row:2};
         var mixedSignTarget:Object = {presetName:"资源箱", row:-1, col:4};
         var unrelatedTarget:Object = {presetName:"投影召唤器", row:4, col:8};
-        var fractionResult:Object = LootContainerService.beginFixture(fractionTarget);
-        var stringResult:Object = LootContainerService.beginFixture(stringTarget);
-        var nanResult:Object = LootContainerService.beginFixture(nanTarget);
-        var infinityResult:Object = LootContainerService.beginFixture(infinityTarget);
-        var knownMissingResult:Object = LootContainerService.beginFixture(knownMissingTarget);
-        var mixedMalformedResult:Object = LootContainerService.beginFixture(mixedMalformedTarget);
-        var mixedSignResult:Object = LootContainerService.beginFixture(mixedSignTarget);
-        var unrelatedResult:Object = LootContainerService.beginFixture(unrelatedTarget);
-        check(LootContainerService.classifyFixtureShape(fractionTarget)
+        var fractionResult:Object = LootContainerService.beginMapChestOpen(fractionTarget);
+        var stringResult:Object = LootContainerService.beginMapChestOpen(stringTarget);
+        var nanResult:Object = LootContainerService.beginMapChestOpen(nanTarget);
+        var infinityResult:Object = LootContainerService.beginMapChestOpen(infinityTarget);
+        var knownMissingResult:Object = LootContainerService.beginMapChestOpen(knownMissingTarget);
+        var mixedMalformedResult:Object = LootContainerService.beginMapChestOpen(mixedMalformedTarget);
+        var mixedSignResult:Object = LootContainerService.beginMapChestOpen(mixedSignTarget);
+        var unrelatedResult:Object = LootContainerService.beginMapChestOpen(unrelatedTarget);
+        check(LootContainerService.classifyMapChestShape(fractionTarget)
                     == "unsupported_grid_shape"
-                && LootContainerService.classifyFixtureShape(stringTarget)
+                && LootContainerService.classifyMapChestShape(stringTarget)
                     == "unsupported_grid_shape"
-                && LootContainerService.classifyFixtureShape(nanTarget)
+                && LootContainerService.classifyMapChestShape(nanTarget)
                     == "unsupported_grid_shape"
-                && LootContainerService.classifyFixtureShape(infinityTarget)
+                && LootContainerService.classifyMapChestShape(infinityTarget)
                     == "unsupported_grid_shape"
-                && LootContainerService.classifyFixtureShape(knownMissingTarget)
+                && LootContainerService.classifyMapChestShape(knownMissingTarget)
                     == "unsupported_grid_shape"
-                && LootContainerService.classifyFixtureShape(mixedMalformedTarget)
+                && LootContainerService.classifyMapChestShape(mixedMalformedTarget)
                     == "unsupported_grid_shape"
-                && LootContainerService.classifyFixtureShape(mixedSignTarget)
+                && LootContainerService.classifyMapChestShape(mixedSignTarget)
                     == "direct_delivery"
-                && LootContainerService.classifyFixtureShape(unrelatedTarget)
+                && LootContainerService.classifyMapChestShape(unrelatedTarget)
                     == "not_web_loot_grid"
                 && fractionResult.handled && stringResult.handled
                 && nanResult.handled && infinityResult.handled
@@ -409,27 +409,27 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             "六箱域内 malformed fail closed、完整非正整数 direct；正网格投影召唤器不被 loot 劫持");
         var markerIgnored:Object = {presetName:"装备箱", row:2, col:4,
             chestRolloutId:"s1.partial"};
-        var markerIgnoredResult:Object = LootContainerService.beginFixture(markerIgnored);
+        var markerIgnoredResult:Object = LootContainerService.beginMapChestOpen(markerIgnored);
         check(markerIgnoredResult.handled && markerIgnoredResult.reserved,
             "authored rollout marker 不再参与运行时路由");
         LootContainerService.abortReservedOpen(markerIgnored, "test_marker_ignored");
 
         var target:Object = makeTarget("s1.reserve");
         var inventory:ArrayInventory = makeInventory([stack(STACK, 2, 1)]);
-        var begun:Object = LootContainerService.beginFixture(target);
+        var begun:Object = LootContainerService.beginMapChestOpen(target);
         var reentrantBegin:Object = null;
         var committed:Object = LootContainerService.commitReservedOpen(target, inventory,
             function(box:Object):Boolean {
-                reentrantBegin = LootContainerService.beginFixture(
+                reentrantBegin = LootContainerService.beginMapChestOpen(
                     makeTarget("s1.reentrant-busy"));
                 return LootContainerService.observeDeath(box).ownKill === true;
             });
         var overwrite:Object = LootContainerService.commitReservedOpen(
             target, makeInventory([]), function(box:Object):Boolean { return false; });
-        var secondTarget:Object = LootContainerService.beginFixture(makeTarget("s1.second"));
-        var pendingOpen:Object = LootContainerService.guardOpenGridFixture(target);
-        var pendingBreak:Object = LootContainerService.guardBreakGridFixture(target);
-        var unrelatedBreak:Object = LootContainerService.guardBreakGridFixture(
+        var secondTarget:Object = LootContainerService.beginMapChestOpen(makeTarget("s1.second"));
+        var pendingOpen:Object = LootContainerService.guardOpenGrid(target);
+        var pendingBreak:Object = LootContainerService.guardBreakGrid(target);
+        var unrelatedBreak:Object = LootContainerService.guardBreakGrid(
             makeTarget("s1.break-other"));
         check(begun.handled && begun.state == "LOOT_COMMIT_PENDING"
                 && reentrantBegin.handled && !reentrantBegin.reserved
@@ -446,7 +446,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var active:Object = LootContainerService.activateReservedOpen(target);
         var revision:Number = active.authorityRevision;
         var duplicateActivation:Object = LootContainerService.activateReservedOpen(target);
-        var activeBreak:Object = LootContainerService.guardBreakGridFixture(target);
+        var activeBreak:Object = LootContainerService.guardBreakGrid(target);
         check(committed.success
                 && duplicateDeath.ownKill && duplicateDeath.reason == "duplicate_own_death"
                 && active.success && active.closeLease != ""
@@ -463,7 +463,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var inventory:ArrayInventory = new ArrayInventory(null, 7);
         var item:BaseItem = stack(STACK, 1, 82);
         inventory.add(0, item);
-        var begun:Object = LootContainerService.beginFixture(target);
+        var begun:Object = LootContainerService.beginMapChestOpen(target);
         var killCalls:Number = 0;
         var inventoryRejected:Object = LootContainerService.commitReservedOpen(
             target, inventory,
@@ -481,7 +481,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             lootContainerId:begun.lootContainerId,
             containerEpoch:begun.containerEpoch
         });
-        var breakGuard:Object = LootContainerService.guardBreakGridFixture(target);
+        var breakGuard:Object = LootContainerService.guardBreakGrid(target);
 
         check(!inventoryRejected.success
                 && inventoryRejected.error == "invalid_loot_inventory"
@@ -503,11 +503,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         resetWorld();
         var unavailableTarget:Object = makeTarget("s1.kill-unavailable");
         var unavailableInventory:ArrayInventory = makeInventory([stack(STACK, 1, 9)]);
-        var unavailableBegin:Object = LootContainerService.beginFixture(unavailableTarget);
+        var unavailableBegin:Object = LootContainerService.beginMapChestOpen(unavailableTarget);
         var unavailable:Object = LootContainerService.commitReservedOpen(
             unavailableTarget, unavailableInventory, null);
-        var unavailableRetry:Object = LootContainerService.beginFixture(unavailableTarget);
-        var unavailableBreak:Object = LootContainerService.guardBreakGridFixture(unavailableTarget);
+        var unavailableRetry:Object = LootContainerService.beginMapChestOpen(unavailableTarget);
+        var unavailableBreak:Object = LootContainerService.guardBreakGrid(unavailableTarget);
         var unavailableExpiry:Object = LootContainerService.expireScene("scene_cleanup");
         check(unavailableBegin.reserved
                 && !unavailable.success && unavailable.error == "kill_adapter_unavailable"
@@ -526,20 +526,20 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         resetWorld();
         var gateTarget:Object = makeTarget("s1.activation-gate");
         var gateInventory:ArrayInventory = makeInventory([stack(STACK, 1, 10)]);
-        LootContainerService.beginFixture(gateTarget);
+        LootContainerService.beginMapChestOpen(gateTarget);
         var gateCommitted:Object = LootContainerService.commitReservedOpen(
             gateTarget, gateInventory,
             function(box:Object):Boolean { return false; });
         var rejected:Object = LootContainerService.activateReservedOpen(gateTarget);
-        var gateRetry:Object = LootContainerService.beginFixture(gateTarget);
-        var gateBreak:Object = LootContainerService.guardBreakGridFixture(gateTarget);
+        var gateRetry:Object = LootContainerService.beginMapChestOpen(gateTarget);
+        var gateBreak:Object = LootContainerService.guardBreakGrid(gateTarget);
         var gateExpiry:Object = LootContainerService.expireScene("scene_cleanup");
 
         resetWorld();
         var holdTarget:Object = makeTarget("s1.activation-hold");
         holdTarget.stop = function():Void { throw "forced_target_hold_failure"; };
         var holdInventory:ArrayInventory = makeInventory([stack(STACK, 1, 11)]);
-        LootContainerService.beginFixture(holdTarget);
+        LootContainerService.beginMapChestOpen(holdTarget);
         var holdCommitted:Object = LootContainerService.commitReservedOpen(
             holdTarget, holdInventory, function(box:Object):Boolean {
                 box._killed = true;
@@ -547,7 +547,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             });
         var holdRejected:Object = LootContainerService.activateReservedOpen(holdTarget);
         var holdExpiry:Object = LootContainerService.expireScene("scene_cleanup");
-        var holdBreak:Object = LootContainerService.guardBreakGridFixture(holdTarget);
+        var holdBreak:Object = LootContainerService.guardBreakGrid(holdTarget);
         check(!gateCommitted.success && gateCommitted.error == "kill_adapter_failed"
                 && !rejected.success && rejected.error == "activation_gate_failed"
                 && gateRetry.handled && gateRetry.reason == "loot_reservation_pending"
@@ -566,7 +566,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function testUnexpectedDeathBeforeMaterialization():Void {
         resetWorld();
         var earlyDeathTarget:Object = makeTarget("s1.early-unexpected-death");
-        var earlyBegin:Object = LootContainerService.beginFixture(earlyDeathTarget);
+        var earlyBegin:Object = LootContainerService.beginMapChestOpen(earlyDeathTarget);
         var earlyDeath:Object = LootContainerService.observeDeath(earlyDeathTarget);
         var earlyTerminal:Object = LootContainerService.execute("query", {
             v:1, chestSessionId:earlyBegin.chestSessionId,
@@ -574,7 +574,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             containerEpoch:earlyBegin.containerEpoch
         });
         var afterEarlyDeathTarget:Object = makeTarget("s1.after-early-death");
-        var afterEarlyDeath:Object = LootContainerService.beginFixture(afterEarlyDeathTarget);
+        var afterEarlyDeath:Object = LootContainerService.beginMapChestOpen(afterEarlyDeathTarget);
         check(!earlyDeath.ownKill && earlyDeath.reason == "unexpected_death"
                 && earlyTerminal.success && earlyTerminal.state == "EXPIRED"
                 && earlyTerminal.terminal.reason == "unexpected_death"
@@ -587,7 +587,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         resetWorld();
         var target:Object = makeTarget("s1.death-unload-order");
         var inventory:ArrayInventory = makeInventory([stack(STACK, 1, 13)]);
-        LootContainerService.beginFixture(target);
+        LootContainerService.beginMapChestOpen(target);
         var deathDuringDispatch:Object = null;
         var committed:Object = LootContainerService.commitReservedOpen(
             target, inventory, function(box:Object):Boolean {
@@ -612,17 +612,17 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function testAbortReservationAndClaimExceptionRecovery():Void {
         resetWorld();
         var target:Object = makeTarget("s1.abort");
-        var begun:Object = LootContainerService.beginFixture(target);
+        var begun:Object = LootContainerService.beginMapChestOpen(target);
         var wrongTarget:Object = LootContainerService.abortReservedOpen(
             makeTarget("s1.not-current"), "materialization_failed");
-        var stillReserved:Object = LootContainerService.beginFixture(makeTarget("s1.busy"));
+        var stillReserved:Object = LootContainerService.beginMapChestOpen(makeTarget("s1.busy"));
         var aborted:Object = LootContainerService.abortReservedOpen(target, "materialization_failed");
         var tombstone:Object = LootContainerService.execute("query", {
             v:1, chestSessionId:begun.chestSessionId,
             lootContainerId:begun.lootContainerId, containerEpoch:begun.containerEpoch
         });
         var nextTarget:Object = makeTarget("s1.after-abort");
-        var next:Object = LootContainerService.beginFixture(nextTarget);
+        var next:Object = LootContainerService.beginMapChestOpen(nextTarget);
         check(!wrongTarget.success && wrongTarget.error == "reservation_mismatch"
                 && stillReserved.reason == "loot_flow_busy"
                 && aborted.success && aborted.state == "EXPIRED"
@@ -1311,8 +1311,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 "非空 close(false) 落 first-class suspend，保留 killed/同一 inventory");
 
             var pauseReleased:Object = LootContainerService.releaseSuspendedPauseForClose();
-            var same:Object = LootContainerService.beginFixture(flow.target);
-            var neighbour:Object = LootContainerService.beginFixture(makeTarget("s1.suspend-neighbour"));
+            var same:Object = LootContainerService.beginMapChestOpen(flow.target);
+            var neighbour:Object = LootContainerService.beginMapChestOpen(makeTarget("s1.suspend-neighbour"));
             var heroArea:Object = {};
             heroArea.hitTest = function(other:Object):Boolean { return true; };
             BoxInteractionArbiter.__setTestInteractionContext(
@@ -1383,7 +1383,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.releaseSuspendedPauseForClose();
             _root.server = null;
             var rejected:Object = LootContainerService.resumeSuspended(flow.target);
-            var guarded:Object = LootContainerService.beginFixture(flow.target);
+            var guarded:Object = LootContainerService.beginMapChestOpen(flow.target);
             var sent:Array = [];
             var callbacks:Array = [];
             installPanelTransport(sent, callbacks);
@@ -1423,7 +1423,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
 
             var rejected:Object = LootContainerService.resumeSuspended(flow.target);
             var authority:Object = LootContainerService.execute("query", queryParams(before));
-            var guard:Object = LootContainerService.beginFixture(flow.target);
+            var guard:Object = LootContainerService.beginMapChestOpen(flow.target);
             check(!rejected.success && rejected.error == "panel_open_unavailable"
                     && rejected.state == "LOOT_SUSPENDED" && rejected.reopened !== true
                     && authority.success && authority.state == "LOOT_SUSPENDED"
@@ -1454,7 +1454,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var first:Object = LootContainerService.resumeSuspended(flow.target);
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var suspended:Object = LootContainerService.execute("query", queryParams(before));
-            var guarded:Object = LootContainerService.beginFixture(flow.target);
+            var guarded:Object = LootContainerService.beginMapChestOpen(flow.target);
 
             // 再次重开后重放旧 attempt callback，exact openAttemptSeq 必须使其惰性。
             var second:Object = LootContainerService.resumeSuspended(flow.target);
@@ -1490,7 +1490,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var dispatched:Object = LootContainerService.resumeSuspended(flow.target);
             callbacks[0]({success:false, error:"callback timeout"});
             var authority:Object = LootContainerService.execute("query", queryParams(before));
-            var guard:Object = LootContainerService.beginFixture(flow.target);
+            var guard:Object = LootContainerService.beginMapChestOpen(flow.target);
             var blockedBeforeProof:Boolean =
                 !LootContainerService.canReopenSuspendedTarget(flow.target);
             var released:Object = LootContainerService.releaseSuspendedPauseForClose();
@@ -1604,7 +1604,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var expired:Object = LootContainerService.execute("query", queryParams(before));
             var nextTarget:Object = makeTarget("s1.after-reopen-anchor-loss");
-            var next:Object = LootContainerService.beginFixture(nextTarget);
+            var next:Object = LootContainerService.beginMapChestOpen(nextTarget);
             check(dispatched.success && dispatched.reopened
                     && expired.success && expired.state == "EXPIRED"
                     && expired.remainingCount == 1 && expired.terminal != null
@@ -1644,7 +1644,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 proofQueryParams(before, attemptSeq, "socket.anchor.loss"));
             if (callbacks.length > 0) callbacks[0]({success:false, error:"socket closed"});
             var nextTarget:Object = makeTarget("s1.after-socket-anchor-loss");
-            var next:Object = LootContainerService.beginFixture(nextTarget);
+            var next:Object = LootContainerService.beginMapChestOpen(nextTarget);
             check(dispatched.success && dispatched.reopened
                     && detached.success && detached.suspendedWithoutPanel
                     && detached.state == "EXPIRED" && detached.pauseReleaseRequired === false
@@ -1815,7 +1815,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var emptyDuplicateRelease:Object =
                 LootContainerService.releaseSuspendedPauseForClose();
             var afterEmptyTarget:Object = makeTarget("s1.after-terminal-empty-retry");
-            var afterEmpty:Object = LootContainerService.beginFixture(afterEmptyTarget);
+            var afterEmpty:Object = LootContainerService.beginMapChestOpen(afterEmptyTarget);
             LootContainerService.abortReservedOpen(afterEmptyTarget, "test_cleanup");
 
             // anchor-lost reopen failure 走同一 fence；成功释放后必须只落一次 EXPIRED。
@@ -1848,7 +1848,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var anchorStable:Object = LootContainerService.execute(
                 "query", queryParams(anchorBefore));
             var afterAnchorTarget:Object = makeTarget("s1.after-terminal-anchor-retry");
-            var afterAnchor:Object = LootContainerService.beginFixture(afterAnchorTarget);
+            var afterAnchor:Object = LootContainerService.beginMapChestOpen(afterAnchorTarget);
 
             check(emptyDispatched.success && emptyDispatched.reopened
                     && emptyFenceHeld && !emptyPending.success
@@ -1912,7 +1912,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var authority:Object = LootContainerService.execute("query", queryParams(before));
             var proof:Object = LootContainerService.execute("query",
                 proofQueryParams(before, attemptSeq, "recovery.accepted.reopen"));
-            var guard:Object = LootContainerService.guardOpenGridFixture(
+            var guard:Object = LootContainerService.guardOpenGrid(
                 flow.target);
             check(dispatched.success && dispatched.reopened
                     && recovered.handled && recovered.recovered
@@ -2084,7 +2084,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var terminal:Object = LootContainerService.execute("query", queryParams(before));
             var nextTarget:Object = makeTarget("s1.after-reopen-empty");
-            var next:Object = LootContainerService.beginFixture(nextTarget);
+            var next:Object = LootContainerService.beginMapChestOpen(nextTarget);
             check(dispatched.success && dispatched.reopened
                     && terminal.success && terminal.state == "CONSUMED"
                     && terminal.remainingCount == 0 && terminal.terminal != null
@@ -2114,7 +2114,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var requested:Boolean = LootContainerService.requestOpenPanel();
             var authority:Object = LootContainerService.execute(
                 "query", queryParams(flow.active));
-            var guard:Object = LootContainerService.beginFixture(flow.target);
+            var guard:Object = LootContainerService.beginMapChestOpen(flow.target);
             check(!requested && authority.success
                     && authority.state == "LOOT_SUSPENDED"
                     && authority.remainingCount == 1
@@ -2160,7 +2160,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var unloaded:Object = LootContainerService.handleTargetUnload(flow.target);
         var terminal:Object = LootContainerService.execute("query", queryParams(before));
         var freshTarget:Object = makeTarget("s1.after-suspend-unload");
-        var fresh:Object = LootContainerService.beginFixture(freshTarget);
+        var fresh:Object = LootContainerService.beginMapChestOpen(freshTarget);
         check(unloaded.success && unloaded.handled && unloaded.state == "EXPIRED"
                 && terminal.success && terminal.state == "EXPIRED"
                 && terminal.terminal.reason == "suspended_anchor_unloaded"
@@ -2196,7 +2196,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[0]({success:false, accepted:false, error:"panel_busy"});
             var rejectedQuery:Object = LootContainerService.execute(
                 "query", queryParams(rejectedFlow.active));
-            var rejectedGuard:Object = LootContainerService.guardOpenGridFixture(
+            var rejectedGuard:Object = LootContainerService.guardOpenGrid(
                 makeTarget("s1.after-panel-rejected"));
             check(rejectedQuery.success && rejectedQuery.state == "LOOT_SUSPENDED"
                     && rejectedQuery.remainingCount == 1
@@ -2211,7 +2211,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.requestOpenPanel();
             callbacks[0]({success:false, error:"callback timeout"});
             var timeoutQuery:Object = LootContainerService.execute("query", queryParams(timeoutFlow.active));
-            var timeoutGuard:Object = LootContainerService.guardOpenGridFixture(makeTarget("s1.after-timeout"));
+            var timeoutGuard:Object = LootContainerService.guardOpenGrid(makeTarget("s1.after-timeout"));
             check(timeoutQuery.success && timeoutQuery.state == "LOOT_SUSPENDED"
                     && timeoutGuard.handled && timeoutGuard.reason == "loot_flow_busy"
                     && timeoutFlow.inventory.getItem("0") != null,
@@ -2225,7 +2225,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             callbacks[0]({success:false, error:"socket closed"});
             var disconnectQuery:Object = LootContainerService.execute(
                 "query", queryParams(disconnectFlow.active));
-            var disconnectGuard:Object = LootContainerService.guardOpenGridFixture(
+            var disconnectGuard:Object = LootContainerService.guardOpenGrid(
                 makeTarget("s1.after-disconnect"));
             check(disconnectQuery.success && disconnectQuery.state == "LOOT_SUSPENDED"
                     && disconnectGuard.handled && disconnectGuard.reason == "loot_flow_busy"
@@ -2245,7 +2245,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var freshFlow:Object = activate([stack(STACK, 1, 715)], "s1.panel-fresh-authority");
             oldCallback({success:false, accepted:false, error:"open_not_queued"});
             var freshQuery:Object = LootContainerService.execute("query", queryParams(freshFlow.active));
-            var freshGuard:Object = LootContainerService.guardOpenGridFixture(
+            var freshGuard:Object = LootContainerService.guardOpenGrid(
                 makeTarget("s1.after-stale-callback"));
             check(freshQuery.success && freshQuery.state == "LOOT_ACTIVE"
                     && !freshGuard.handled,
@@ -2439,7 +2439,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var recoveryQuery:Object = LootContainerService.execute("query",
                 proofQueryParams(flow.active, openAttemptSeq,
                     "recovery.connected.initial"));
-            var recoveryGuard:Object = LootContainerService.guardOpenGridFixture(
+            var recoveryGuard:Object = LootContainerService.guardOpenGrid(
                 makeTarget("s1.after-connected-recovery"));
 
             LootContainerService.expireScene("scene_cleanup");

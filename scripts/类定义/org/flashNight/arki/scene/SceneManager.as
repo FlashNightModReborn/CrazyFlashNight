@@ -6,8 +6,6 @@ import flash.geom.Point;
 
 import org.flashNight.arki.scene.SceneInteractionManager;
 import org.flashNight.arki.scene.SceneCollisionManager;
-import org.flashNight.arki.scene.ChestSessionService;
-import org.flashNight.arki.scene.ChestS0SocketBridge;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter;
 import org.flashNight.arki.item.LootContainerService;
 
@@ -187,8 +185,6 @@ class org.flashNight.arki.scene.SceneManager {
             return true;
         }
 
-        // S0 箱会话必须先于 dispatcher/gameworld 销毁进入可解释终态。
-        ChestS0SocketBridge.handleSceneUnload();
         BoxInteractionArbiter.cleanup(gameworld);
 
         // 安全网：清除刘海屏波次计时器（正常路径由 clearStage/failStage 触发，
@@ -381,9 +377,6 @@ class org.flashNight.arki.scene.SceneManager {
             inst.swapDepths(info.Depth);
         }
         if (info.Parameters) ObjectUtil.cloneParameters(inst, info.Parameters);
-        // attachMovie 会先触发元件初始化；XML Parameters 到这里才完整注入。
-        // 立即补观察双 marker，互动提交处还会再次重读作为最终逐目标门。
-        ChestS0SocketBridge.observeLocalFixture(inst);
         return inst;
     }
 

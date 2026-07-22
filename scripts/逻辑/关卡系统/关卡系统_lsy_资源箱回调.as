@@ -1,20 +1,13 @@
 ﻿
 
-// 资源箱根回调的唯一源码；asLoader frame39 与 Chest S0 TestLoader 共用此 include。
-// S0 精确 fixture 必须在所有旧滚奖、container 与 UI 逻辑之前 fail-closed。
+// 资源箱根回调的唯一源码；所有网格箱只允许进入 Web loot authority。
 
 _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
     target._visible = true;
 
-    var chestS0Result:Object = org.flashNight.arki.scene.ChestSessionService.handleOpenFrame(target);
-    if (chestS0Result.handled) {
-        org.flashNight.arki.scene.ChestS0SocketBridge.handleAuthorityTransition(chestS0Result);
-        return;
-    }
-
     // 任一既有 authority / suspend / recovery fence 都必须拦截当前回调。
     // guard 命中后只停住并等待 Web-only 服务收敛，绝不渲染 Flash 资源箱 UI。
-    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardOpenGridFixture(target);
+    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardOpenGrid(target);
     if (lootGuard.handled) {
         trace("[LootContainer] open callback guarded: " + lootGuard.reason);
         return;
@@ -23,7 +16,7 @@ _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
     // 与 InteractionHandler 共用唯一 shape 分类，不能在结束帧用 Number() 宽松转换
     // 重开一条字符串/小数/超界尺寸旁路。正常交互已在 kill 前为 supported Web grid
     // 建立 reservation；结束帧只负责激活同一 authority 并请求 Web。
-    var lootShape:String = org.flashNight.arki.item.LootContainerService.classifyFixtureShape(target);
+    var lootShape:String = org.flashNight.arki.item.LootContainerService.classifyMapChestShape(target);
     if (lootShape == "supported_web_grid") {
         var activated:Object = org.flashNight.arki.item.LootContainerService.activateReservedOpen(target);
         if (activated.success) {
@@ -53,13 +46,7 @@ _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
     target._visible = true;
 
-    var chestS0Result:Object = org.flashNight.arki.scene.ChestSessionService.handleBreakFrame(target);
-    if (chestS0Result.handled) {
-        org.flashNight.arki.scene.ChestS0SocketBridge.handleAuthorityTransition(chestS0Result);
-        return;
-    }
-
-    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardBreakGridFixture(target);
+    var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardBreakGrid(target);
     if (lootGuard.handled) {
         trace("[LootContainer] break callback guarded: " + lootGuard.reason);
         return;

@@ -61,11 +61,6 @@ Assert-Cf7Test ($validatorSource.Contains(". `$buildEnvGate -ProjectRoot `$Proje
     'production candidate checks must initialize the project-pinned runtime toolchain'
 Assert-Cf7Test ($validatorSource.Contains('candidate policy validation is forbidden')) `
     'production candidate checks must fail closed when the pinned dotnet host is unavailable'
-$s0RequiredWebPaths = @(
-    'modules\minigames\lockbox\chest-s0-dev-bootstrap.js',
-    'modules\minigames\lockbox\chest-s0-adapter.js',
-    'modules\minigames\lockbox\chest-s0-actual-wire.js'
-)
 $lootRequiredWebPaths = @(
     'modules\loot\loot-runtime.js',
     'modules\loot\loot-state.js',
@@ -78,10 +73,6 @@ $requiredWebPathsMatch = [regex]::Match(
     '(?s)\$requiredWebPaths\s*=\s*@\((?<body>.*?)\)\s*\r?\n\s*\$checks\s*\+=\s*New-Cf7RequiredPathsCheck\s+-Name\s+''required-web-runtime-assets''')
 Assert-Cf7Test $requiredWebPathsMatch.Success `
     'production required-Web-assets declaration must remain statically discoverable'
-foreach ($relativePath in $s0RequiredWebPaths) {
-    Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
-        "production required-Web-assets must include the S0 overlay chain asset: $relativePath"
-}
 foreach ($relativePath in $lootRequiredWebPaths) {
     Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
         "production required-Web-assets must include the loot panel asset: $relativePath"
@@ -204,43 +195,7 @@ exit 0
     Assert-Cf7Test ($missingRun.ExitCode -eq 1 -and $missingJson.passed -eq $false) 'missing resource must fail validation'
     Assert-Cf7Test (@($missingJson.checks | Where-Object { $_.name -eq 'required-missing' -and -not $_.passed }).Count -eq 1) 'missing resource failure must be recorded'
 
-    # 2b. Every production S0 overlay chain asset is independently required.  Keep
-    # these fixture files untracked so removing one exercises requiredPaths itself,
-    # rather than the tracked-tree materialization invariant.
-    $s0WebRoot = Join-Path $fixtureRoot 'web'
-    foreach ($relativePath in $s0RequiredWebPaths) {
-        Write-Cf7Utf8NoBom -Path (Join-Path $s0WebRoot $relativePath) -Text "fixture`n"
-    }
-    $s0Manifest = Join-Path $fixtureRoot 'tmp\s0-web-assets-manifest.json'
-    Write-Cf7TestManifest -Path $s0Manifest -Entries @(
-        [ordered]@{
-            name = 'required-s0-overlay-chain'
-            kind = 'requiredPaths'
-            root = '${PROJECT_ROOT}\web'
-            paths = $s0RequiredWebPaths
-        }
-    )
-    foreach ($missingPath in $s0RequiredWebPaths) {
-        $missingFullPath = Join-Path $s0WebRoot $missingPath
-        Remove-Item -LiteralPath $missingFullPath -Force
-        try {
-            $leaf = [IO.Path]::GetFileNameWithoutExtension($missingPath)
-            $receiptPath = Join-Path $fixtureRoot "tmp\s0-web-assets-missing-$leaf-receipt.json"
-            $s0MissingRun = Invoke-Cf7Validator -ManifestPath $s0Manifest -ReceiptPath $receiptPath
-            $s0MissingJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $receiptPath | ConvertFrom-Json
-            $failedCheck = @($s0MissingJson.checks | Where-Object {
-                $_.name -eq 'required-s0-overlay-chain' -and -not $_.passed
-            })
-            Assert-Cf7Test ($s0MissingRun.ExitCode -eq 1 -and $s0MissingJson.passed -eq $false) `
-                "missing S0 overlay asset must fail validation: $missingPath"
-            Assert-Cf7Test ($failedCheck.Count -eq 1 -and [string]$failedCheck[0].detail -match [regex]::Escape($missingPath)) `
-                "missing S0 overlay asset must be named in the failed policy check: $missingPath"
-        } finally {
-            Write-Cf7Utf8NoBom -Path $missingFullPath -Text "fixture`n"
-        }
-    }
-
-    # 2c. The production loot panel is a four-module closure: the complete set passes,
+    # 2b. The production loot panel is a five-module closure: the complete set passes,
     # while removing any single module fails closed and names that path in the receipt.
     $lootWebRoot = Join-Path $fixtureRoot 'web'
     foreach ($relativePath in $lootRequiredWebPaths) {

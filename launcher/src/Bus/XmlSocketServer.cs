@@ -22,14 +22,6 @@ namespace CF7Launcher.Bus
     /// </summary>
     public class XmlSocketServer : IDisposable
     {
-        /// <summary>
-        /// Narrow, socket-only JSON interception point.  Returning true means the message was
-        /// consumed and must never reach MessageRouter (and therefore can never be exposed by
-        /// the HTTP or Web task bridges).  response may be null for one-way messages.
-        /// </summary>
-        public delegate bool DedicatedJsonHandler(string message, int connectionGeneration,
-            out string response);
-
         private TcpListener _listener;    // IPv4 loopback (127.0.0.1)
         private TcpListener _listener6;   // IPv6 loopback (::1)，IPv6 不可用时为 null
         private TcpClient _client;
@@ -52,8 +44,6 @@ namespace CF7Launcher.Bus
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换。
         private volatile int _generation;
         private int _lastDisconnectedGeneration;
-        private DedicatedJsonHandler _dedicatedJsonHandler;
-
         // 业务就绪标记：policy 握手完成后的首条业务消息时触发
         private volatile bool _clientReady;
 
@@ -85,15 +75,6 @@ namespace CF7Launcher.Bus
         public XmlSocketServer(MessageRouter router)
         {
             _router = router;
-        }
-
-        /// <summary>
-        /// Installs the single dedicated socket-only handler.  It is intentionally not a task
-        /// registration API: callers cannot reach it through MessageRouter, HTTP, or WebView2.
-        /// </summary>
-        public void SetDedicatedJsonHandler(DedicatedJsonHandler handler)
-        {
-            _dedicatedJsonHandler = handler;
         }
 
         public int CurrentGeneration { get { return _generation; } }
@@ -671,39 +652,12 @@ namespace CF7Launcher.Bus
                 return;
             }
 
-            // Dedicated socket-only routes are intercepted before MessageRouter.  The same task
-            // name is consequently unreachable through HttpApiServer and WebOverlayForm's generic
-            // task bridge, even when a caller forges an otherwise valid JSON envelope.
-            DedicatedJsonHandler dedicatedHandler = _dedicatedJsonHandler;
-            if (dedicatedHandler != null)
-            {
-                string dedicatedResponse;
-                bool consumed = false;
-                try
-                {
-                    consumed = dedicatedHandler(message, connectionGen, out dedicatedResponse);
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[XmlSocket:Dedicated] handler failed: " + ex.GetType().Name);
-                    dedicatedResponse = "{\"success\":false,\"error\":\"dedicated_handler_failed\"}";
-                    consumed = true;
-                }
-                if (consumed)
-                {
-                    PerfTrace.Counter("socket.json.dedicated");
-                    if (dedicatedResponse != null)
-                        TrySendIfGen(dedicatedResponse + "\0", connectionGen);
-                    return;
-                }
-            }
-
             // 路由到 MessageRouter
             // Phase D Step D2: 响应走 gen-bound TrySendIfGen, 原连接已被替换时自动 drop.
             // 捕获 ReadLoop 形参 connectionGen 进闭包, 保持 "本消息的响应只发回发起它的 connection" 语义.
-            // Dedicated routes and the loot authority route can carry one-time capabilities,
-            // full container identities, and reward projections.  Keep those payloads out of
-            // logs even though loot_response still travels through the generic task router.
+            // The loot authority route can carry one-time capabilities, full container identities,
+            // and reward projections. Keep those payloads out of logs even though loot_response
+            // still travels through the generic task router.
             PerfTrace.Counter("socket.json");
             LogManager.Log(FormatJsonMessageLog(message));
 

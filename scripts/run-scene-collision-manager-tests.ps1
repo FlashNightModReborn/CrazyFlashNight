@@ -32,7 +32,7 @@ try {
 }
 $repoHash = ([System.BitConverter]::ToString($repoHashBytes)).Replace('-', '').Substring(0, 24)
 # 与其他 focused TestLoader runner 共用同一仓库互斥锁。
-$mutexName = 'Local\CF7_ChestS0Tests_' + $repoHash
+$mutexName = 'Local\CF7_FocusedTestLoader_' + $repoHash
 $runMutex = [System.Threading.Mutex]::new($false, $mutexName)
 
 function Test-Utf8Bom([string]$Path) {

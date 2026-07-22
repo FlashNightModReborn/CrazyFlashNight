@@ -75,8 +75,7 @@ $install = Read-Utf8 "scripts\逻辑系统分区\物品系统_WebView.as"
 
 # 只锁跨文件因果，不锁 service 私有实现快照。
 Assert-Ordered $interaction @(
-    "ChestSessionService.beginFixture(",
-    "LootContainerService.beginFixture(target)",
+    "LootContainerService.beginMapChestOpen(target)",
     "LootMaterializationPlanner.materialize(target)",
     "LootContainerService.commitReservedOpen(",
     "InteractionHandler.executePickup(box)"
@@ -106,7 +105,7 @@ Assert-Regex $interaction (
 ) "unexpected loot death is visible and remains fail closed"
 
 Assert-Ordered $service @(
-    "public static function classifyFixtureShape(target:Object):String",
+    "public static function classifyMapChestShape(target:Object):String",
     "BoxInteractionArbiter.isBoxPreset(",
     "if (!knownBox) return SHAPE_NOT_WEB_LOOT_GRID",
     "!isWhole(target.row) || !isWhole(target.col)",
@@ -133,9 +132,8 @@ foreach ($retired in @(
 }
 
 Assert-Ordered $callback @(
-    "ChestSessionService.handleOpenFrame(target)",
-    "LootContainerService.guardOpenGridFixture(target)",
-    "LootContainerService.classifyFixtureShape(target)",
+    "LootContainerService.guardOpenGrid(target)",
+    "LootContainerService.classifyMapChestShape(target)",
     'lootShape == "supported_web_grid"',
     "LootContainerService.activateReservedOpen(target)",
     "LootContainerService.requestOpenPanel()",
@@ -161,8 +159,7 @@ $breakStart = $callback.IndexOf("资源箱破碎脚本", [StringComparison]::Ord
 Assert-True ($breakStart -ge 0) "break callback missing"
 $breakText = $callback.Substring($breakStart)
 Assert-Ordered $breakText @(
-    "ChestSessionService.handleBreakFrame(target)",
-    "LootContainerService.guardBreakGridFixture(target)",
+    "LootContainerService.guardBreakGrid(target)",
     "target.掉落物判定()"
 ) "break frame keeps direct-drop semantics behind the authority guard"
 Assert-NotContains $breakText "LootContainerService.activateReservedOpen(target)" (
@@ -194,8 +191,8 @@ Assert-True ($missingIncludes.Count -eq 0) (
 
 $chestSymbols = @(
     [pscustomobject]@{ Name="保险柜"; Href="箱子素材/保险柜/保险柜.xml"; Breaks=1 },
-    [pscustomobject]@{ Name="生存箱"; Href="箱子素材/生存箱/生存箱.xml"; Breaks=0 },
-    [pscustomobject]@{ Name="装备箱"; Href="箱子素材/装备箱/装备箱.xml"; Breaks=0 },
+    [pscustomobject]@{ Name="生存箱"; Href="箱子素材/生存箱/生存箱.xml"; Breaks=1 },
+    [pscustomobject]@{ Name="装备箱"; Href="箱子素材/装备箱/装备箱.xml"; Breaks=1 },
     [pscustomobject]@{ Name="资源箱"; Href="箱子素材/资源箱/资源箱.xml"; Breaks=1 },
     [pscustomobject]@{ Name="纸箱"; Href="箱子素材/纸箱/纸箱.xml"; Breaks=1 },
     [pscustomobject]@{ Name="隐藏资源点"; Href="箱子素材/隐藏资源点.xml"; Breaks=0 }
@@ -241,6 +238,24 @@ foreach ($chest in $chestSymbols) {
         "canonical symbol uses the root open callback: " + $chest.Name)
     Assert-Count $symbol "_root.地图元件.资源箱破碎脚本(this)" $chest.Breaks (
         "canonical symbol break topology: " + $chest.Name)
+    if ($chest.Breaks -eq 1) {
+        [xml]$symbolXml = $symbol
+        $breakLabels = @($symbolXml.SelectNodes(
+            "//*[local-name()='DOMLayer'][@name='Labels Layer']" +
+            "/*[local-name()='frames']/*[local-name()='DOMFrame'][@name='破碎']"))
+        Assert-True ($breakLabels.Count -eq 1) (
+            "canonical symbol has one break label: " + $chest.Name)
+        $breakIndex = [string]$breakLabels[0].index
+        $breakScripts = @($symbolXml.SelectNodes(
+            "//*[local-name()='DOMLayer'][@name='Script Layer']" +
+            "/*[local-name()='frames']/*[local-name()='DOMFrame'][@index='$breakIndex']" +
+            "//*[local-name()='script']"))
+        Assert-True ($breakScripts.Count -eq 1 -and
+            $breakScripts[0].InnerText.Contains(
+                "_root.地图元件.资源箱破碎脚本(this)")) (
+            "canonical symbol invokes break callback on the break label frame: " +
+            $chest.Name)
+    }
     foreach ($retired in @(
         "_root.创建可拾取物",
         "掉落物转换为物品栏",
@@ -335,10 +350,8 @@ Assert-Ordered $restartText @(
     "return true;"
 ) "restart cleanup preflights loot before manager disposal"
 
-Assert-Ordered $server @(
-    "ChestS0SocketBridge.handleSocketClosed()",
-    "LootContainerService.reconcileSocketDetach(null)"
-) "socket loss enters Web-only authority convergence"
+Assert-Contains $server "LootContainerService.reconcileSocketDetach(null)" (
+    "socket loss enters Web-only authority convergence")
 Assert-NotContains $server "PauseManager.releaseLease(_root._webPanelPauseLease)" (
     "socket lifecycle cannot release pause outside loot proof")
 Assert-Ordered $ui @(
@@ -360,7 +373,7 @@ $productionLootAsFiles = @(
 $retiredLootRefs = @(
     $productionLootAsFiles |
         Select-String -Pattern (
-            '掉落物转换为物品栏|创建资源箱图标|' +
+            '资源箱界面|掉落物转换为物品栏|创建资源箱图标|' +
             '显示Web战利品旧界面|回退Web战利品到旧界面|' +
             'consumeLegacyFallback|confirmLegacyRenderer|' +
             'claimLegacyRecoverySlot|attachLegacyRecoveryObserver|__lootClaimOnly'
@@ -369,6 +382,33 @@ $retiredLootRefs = @(
 Assert-True ($retiredLootRefs.Count -eq 0) (
     "production AS2 still references retired Flash loot UI: " +
     (($retiredLootRefs | ForEach-Object { $_.Path }) -join ", "))
+
+# 已退役的 Lockbox S0 是第二套箱子协议/状态机；生产代码必须只保留 Loot authority。
+$productionS0Files = @(
+    $productionLootAsFiles | Where-Object { $_.Name -ne "TestLoader.as" }
+    Get-ChildItem -LiteralPath (Join-Path $ProjectRoot "launcher\src") -Recurse -File -Filter "*.cs"
+    Get-ChildItem -LiteralPath (Join-Path $ProjectRoot "launcher\web") -Recurse -File |
+        Where-Object { $_.Extension -in @(".js", ".html") }
+)
+$retiredS0Pattern = (
+    'ChestSessionService|ChestS0SocketBridge|DevLockboxS0|' +
+    'CF7_DEV_LOCKBOX_S0|chestS0|chest-s0-|dev_lockbox_s0|' +
+    's0-harness|lockbox.*s0|s0.*lockbox|lockbox_chest_s0|' +
+    'as2-chest-s0|insurance-safe-s0-v1|' +
+    'local-as2-dev-s0-v1'
+)
+$retiredS0Refs = @($productionS0Files | Select-String -Pattern $retiredS0Pattern)
+Assert-True ($retiredS0Refs.Count -eq 0) (
+    "production code still references retired Lockbox S0: " +
+    (($retiredS0Refs | ForEach-Object { $_.Path }) -join ", "))
+$retiredS0NamedFiles = @(
+    $productionS0Files | Where-Object {
+        $_.Name -match 'ChestS0|ChestSessionService|DevLockboxS0|chest-s0|s0-harness|lockbox.*s0|s0.*lockbox'
+    }
+)
+Assert-True ($retiredS0NamedFiles.Count -eq 0) (
+    "production files still carry retired Lockbox S0 names: " +
+    (($retiredS0NamedFiles | ForEach-Object { $_.FullName }) -join ", "))
 
 $stageRoot = Join-Path $ProjectRoot "data\stages"
 $stageFiles = @(
@@ -389,5 +429,7 @@ Assert-NotContains $stageCorpus "<unlockPolicy>" (
     "production stages contain per-box unlock policy")
 Assert-NotContains $stageCorpus "<chestS0FixtureId>" (
     "production stages contain S0 fixture markers")
+Assert-NotContains $stageCorpus "<chestS0As2GateId>" (
+    "production stages contain S0 AS2 gate markers")
 
 Write-Output ("[PASS] map-loot-wiring: {0} assertions" -f $script:Assertions)

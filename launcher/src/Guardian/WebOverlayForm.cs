@@ -161,45 +161,14 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Never serialize the generic minigame envelope at the routing boundary.  S0 applies a
-        /// stricter allow-list later, and logging the raw JSON here would leak the payload before
-        /// that sanitizer gets a chance to run.
+        /// Never serialize the generic minigame envelope at the routing boundary. Logging the raw
+        /// JSON here would expose session payloads before game-specific handling can redact them.
         /// </summary>
         internal static string FormatPanelEnvelopeLog(string cmd, string json)
         {
             return cmd == "minigame_session"
                 ? "[Panel] HandlePanelMessage: cmd=minigame_session payload=redacted"
                 : "[Panel] HandlePanelMessage: " + json;
-        }
-
-        /// <summary>
-        /// Consumes every minigame_session while S0 owns the global pause, and every Lockbox
-        /// session even after release.  This closes the late-message window in which a settled S0
-        /// DOM could otherwise reach generic raw logging.  Only the exact four-field normalized
-        /// observation may cross the boundary; malformed payloads use a fixed rejection code.
-        /// </summary>
-        internal static bool TryLogS0MinigameSession(JToken payload, bool holdsGlobalPause,
-            Action<string> log)
-        {
-            JObject safeTelemetry;
-            string line;
-            if (DevLockboxS0Runtime.TryNormalizeMinigameTelemetry(payload, out safeTelemetry))
-            {
-                line = "[LockboxS0] "
-                    + safeTelemetry.ToString(Newtonsoft.Json.Formatting.None);
-            }
-            else
-            {
-                JObject payloadObject = payload as JObject;
-                string game = payloadObject != null ? payloadObject.Value<string>("game") : null;
-                if (!holdsGlobalPause
-                    && !string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase))
-                    return false;
-                line = "[DevLockboxS0] event=telemetry_dropped"
-                    + " code=non_allowlisted_minigame_session";
-            }
-            if (log != null) log(line);
-            return true;
         }
 
         internal static bool IsValidSkillCloseEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
@@ -952,8 +921,6 @@ namespace CF7Launcher.Guardian
                     _webReady = false;
                     _webNavigationId = args.NavigationId;
                     _webNavigationLoadedNewDocument = false;
-                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-                    if (runtime != null) runtime.OnWebDocumentNavigationStarting(args.NavigationId);
                     LootPanelCoordinator lootCoordinator = _lootPanelCoordinator;
                     if (lootCoordinator != null && lootCoordinator.State != LootPanelCoordinator.BindingState.Idle)
                     {
@@ -965,15 +932,10 @@ namespace CF7Launcher.Guardian
                 {
                     if (_webNavigationId == args.NavigationId)
                         _webNavigationLoadedNewDocument = true;
-                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-                    if (runtime != null) runtime.OnWebDocumentContentLoading(args.NavigationId);
                 };
                 _webView.CoreWebView2.NavigationCompleted += delegate(object sender,
                     CoreWebView2NavigationCompletedEventArgs args)
                 {
-                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-                    if (runtime != null)
-                        runtime.OnWebDocumentNavigationCompleted(args.NavigationId, args.IsSuccess);
                     if (_webNavigationId == args.NavigationId)
                     {
                         bool restoreOldReady = (!args.IsSuccess || !_webNavigationLoadedNewDocument)
@@ -984,7 +946,6 @@ namespace CF7Launcher.Guardian
                         if (restoreOldReady)
                         {
                             _webReady = true;
-                            if (runtime != null) runtime.OnWebReady();
                         }
                     }
                 };
@@ -1084,13 +1045,6 @@ namespace CF7Launcher.Guardian
                     this.BeginInvoke(new Action(() =>
                     {
                         if (_disposed || _webView == null || _webView.CoreWebView2 == null) return;
-                        DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-                        if (runtime != null && !runtime.CanRebuildWebDocument)
-                        {
-                            LogManager.Log("[DevLockboxS0] event=gate_rejected code=hot_reload_blocked origin=web_control");
-                            return;
-                        }
-
                         // 重置就绪状态，使消息进入缓冲/fallback 通道
                         _webReady = false;
                         _webView.CoreWebView2.Reload();
@@ -1612,14 +1566,7 @@ namespace CF7Launcher.Guardian
                 }
                 catch { }
 
-                if (type == DevLockboxS0Runtime.WebControlType
-                    || type == DevLockboxS0Runtime.WebBusinessType)
-                {
-                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-                    if (runtime != null) runtime.TryHandleWebMessage(parsed);
-                    else LogManager.Log("[DevLockboxS0] event=gate_rejected code=runtime_unavailable origin=web_control");
-                }
-                else if (type == "viewportMetrics")
+                if (type == "viewportMetrics")
                 {
                     HandleViewportMetrics(parsed);
                 }
@@ -1676,8 +1623,6 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
                     _webFailed = false; // 热重载恢复时清除降级标记
-                    DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-                    if (runtime != null) runtime.OnWebReady();
                     ApplyWebPerfMode("ready");
 
                     // 取消热重载超时 Timer
@@ -3361,7 +3306,6 @@ namespace CF7Launcher.Guardian
         // _frozenForIdle 负责拦截 UIData JS dispatch、timer 与位置同步，ResumeForPanel 再解冻。
 
         private PanelHostController _panelHost;
-        private DevLockboxS0Runtime _devLockboxS0Runtime;
         private volatile bool _panelMode;
         private volatile bool _frozenForIdle;
 
@@ -3381,11 +3325,6 @@ namespace CF7Launcher.Guardian
         public void SetPanelHost(PanelHostController host)
         {
             _panelHost = host;
-        }
-
-        public void SetDevLockboxS0Runtime(DevLockboxS0Runtime runtime)
-        {
-            _devLockboxS0Runtime = runtime;
         }
 
         /// <summary>
@@ -4414,17 +4353,14 @@ namespace CF7Launcher.Guardian
                         JToken payload = parsed["payload"];
                         if (payload == null) break;
 
-                        DevLockboxS0Runtime s0Runtime = _devLockboxS0Runtime;
-                        // The global pause is owned exclusively by this S0 flow.  While it is
-                        // held, no generic minigame_session payload may reach raw logging under a
-                        // forged/missing game name; only the exact four-field allow-list survives.
-                        if (TryLogS0MinigameSession(payload,
-                            s0Runtime != null && s0Runtime.HoldsGlobalPause, LogManager.Log)) break;
-
                         string game = (string)payload["game"];
 
                         string prefix;
-                        if (string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase)) prefix = "Lockbox";
+                        if (string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase))
+                        {
+                            LogManager.Log("[Lockbox] minigame_session payload=redacted");
+                            break;
+                        }
                         else if (string.Equals(game, "pinalign", StringComparison.OrdinalIgnoreCase)) prefix = "PinAlign";
                         else if (string.Equals(game, "gobang", StringComparison.OrdinalIgnoreCase)) prefix = "Gobang";
                         else prefix = "Minigame";
@@ -4565,8 +4501,6 @@ namespace CF7Launcher.Guardian
 
         private bool TryReleaseGenericWebPanelPause()
         {
-            DevLockboxS0Runtime runtime = _devLockboxS0Runtime;
-            if (runtime != null) return runtime.TryReleaseGenericPause();
             return TrySendGameCommand("webPanelUnpause");
         }
 
