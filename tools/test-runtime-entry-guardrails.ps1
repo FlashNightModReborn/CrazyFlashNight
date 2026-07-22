@@ -47,6 +47,17 @@ foreach ($path in @($buildPath, $producerPath, $startPath)) {
     Assert-Cf7ScriptParses -Path $path
 }
 
+$toolchainLockPath = Join-Path $ProjectRoot 'config\build\runtime-toolchain.lock.json'
+Assert-Cf7Guardrail -Condition (Test-Path -LiteralPath $toolchainLockPath -PathType Leaf) `
+    -Message "toolchain lock missing: $toolchainLockPath"
+$toolchainLock = Get-Content -LiteralPath $toolchainLockPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$dotnetInstallUrl = [string]$toolchainLock.provisioning.dotnetInstallScriptUrl
+$dotnetInstallSha256 = [string]$toolchainLock.provisioning.dotnetInstallScriptSha256
+Assert-Cf7Guardrail -Condition ($dotnetInstallUrl -cmatch '^https://raw\.githubusercontent\.com/dotnet/install-scripts/[0-9a-f]{40}/src/dotnet-install\.ps1$') `
+    -Message 'dotnet-install provisioning must use an immutable official commit URL'
+Assert-Cf7Guardrail -Condition ($dotnetInstallSha256 -cmatch '^[0-9A-F]{64}$') `
+    -Message 'dotnet-install provisioning must pin an uppercase SHA-256'
+
 $build = Get-Content -LiteralPath $buildPath -Raw -Encoding UTF8
 Assert-Cf7Contains $build "deploymentStatus = 'NOT_DEPLOYED'" 'build result must expose NOT_DEPLOYED'
 Assert-Cf7Contains $build 'formalDeploymentModified = $false' 'build result must deny formal closure mutation explicitly'

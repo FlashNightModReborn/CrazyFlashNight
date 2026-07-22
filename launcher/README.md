@@ -646,7 +646,7 @@ launcher/
 ### 前置条件
 
 - **Windows 10 22H2+ / Windows 11，x64**
-- **正式 runtime 发布工具链**：从仓库根运行 `powershell -ExecutionPolicy Bypass -File tools\bootstrap-runtime-build-env.ps1`。脚本按 [`runtime-toolchain.lock.json`](../config/build/runtime-toolchain.lock.json) 补齐 .NET `10.0.300`、Rust `1.96.0`、VS Build Tools `17.14.32` / MSVC `19.44.35227` 与 Windows SDK `22621`，并校验固定安装器和最终 executable 的 SHA-256；只有 VS 阶段需要一次 UAC。已有环境用 `-VerifyOnly`，不会下载或安装。
+- **正式 runtime 发布工具链**：从仓库根运行 `powershell -ExecutionPolicy Bypass -File tools\bootstrap-runtime-build-env.ps1`。脚本按 [`runtime-toolchain.lock.json`](../config/build/runtime-toolchain.lock.json) 补齐 .NET `10.0.300`、Rust `1.96.0`、VS Build Tools `17.14.36` / MSVC `19.44.35228.0` 与 Windows SDK `22621`，并校验固定安装器和最终 executable 的 SHA-256；`.NET` provisioning 固定到官方 `dotnet/install-scripts` 的完整 commit URL，避免 mutable `dot.net` 重签导致云端 hash 漂移。只有 VS 阶段需要一次 UAC。已有环境用 `-VerifyOnly`，不会下载或安装。
   - .NET 与 Rust 使用 user scope，不要求改系统 PATH；VS 可以与机器已有更高版本实例并存，检测器遍历所有实例选择精确匹配字节。
   - 纯 producer 会再次运行正式门禁；bootstrap 的退出码不能代替构建验证。完整身份、队列、证明与换机规则见 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md)。
   - 普通 Web / AS2 / 数据开发不要求取得 runtime 发布权，但不得用不匹配环境重建并提交二进制。

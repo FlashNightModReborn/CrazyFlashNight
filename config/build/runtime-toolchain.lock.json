@@ -1,6 +1,6 @@
 {
   "schema": "cf7-runtime-toolchain.v1",
-  "baseline": "cf7-win-x64-2026-07-18",
+  "baseline": "cf7-win-x64-2026-07-22",
   "dotnet": {
     "sdkVersion": "10.0.300",
     "rollForward": "disable",
@@ -28,8 +28,8 @@
     "cargoSha256": "122F18D28A63FA358F3DB266ABEE1FF1D8AABF0AB7F2DD9AC38A38DA99977AE5"
   },
   "provisioning": {
-    "dotnetInstallScriptUrl": "https://dot.net/v1/dotnet-install.ps1",
-    "dotnetInstallScriptSha256": "6585899AED55FF6AE13DBE1E8C3B878F2D00433520E7EFBE250B75DB948B7DA9",
+    "dotnetInstallScriptUrl": "https://raw.githubusercontent.com/dotnet/install-scripts/4a37a9f9d1a061fc389d6515100336db4e51710e/src/dotnet-install.ps1",
+    "dotnetInstallScriptSha256": "3BB07BC8025211836C1E4F9D3F6A044E55B1FB6EEC518A6C78851D04E210442B",
     "rustupInitUrl": "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe",
     "rustupInitSha256": "86478E53F769379D7F0EBFA7C9AA97CB76CA92233F79AA2CC0DBEE2EFAAC73C7",
     "visualStudio": {
