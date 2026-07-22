@@ -59,6 +59,8 @@ cd "<项目根目录>"
 
 `-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
 
+完整游戏 E2E 还受 Flash 既有资源定位约束：当前项目根的 canonical 路径必须保留 `...\resources` 这一层级语义。任意名的普通 Worktree 即使能生成并启动 candidate，也可能因 `PathManager` 无法建立资源基址而停在任务数据加载。需要隔离实机验证时，应把独立 Worktree 建成 `<隔离目录>\resources`，再从该根运行 `automation/dev.ps1`；不要为满足路径约束覆盖、复制或清理正在使用的 Steam `resources` 工作区。仅构建、静态门和 Host/Web 单测不需要这一完整游戏路径形态。
+
 断网可以完成已有 candidate 的精确复用；若需重建，本机必须已安装并通过锁定的 .NET / MSVC / Windows SDK / Rust 工具链，且 NuGet / Cargo 依赖已在本地缓存。首次开发机供给仍可能需要联网，这与正式云端双生产者验证是两个独立问题。
 
 正式已部署入口与低层诊断入口则明确区分：
