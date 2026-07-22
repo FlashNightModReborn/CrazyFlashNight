@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5643 unique assets -->
+  <!-- 5644 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -154,7 +154,7 @@
   <asset id="兵器攻击容器-长枪1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" />
   <asset id="兵器攻击容器-长柄1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招" />
   <asset id="兵器攻击容器-长棍1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" />
-  <asset id="兵器攻击容器-风卷残云" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-风卷残云" />
+  <asset id="兵器攻击容器-风卷残云" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/！兵器攻击容器-风卷残云（更名为疾空旋风破）" />
   <asset id="兵器攻击容器-飞沙走石" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-飞沙走石" />
   <asset id="冰冷子弹" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷子弹" />
   <asset id="冰冷普通子弹" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷普通子弹" />
@@ -3469,6 +3469,7 @@
   <asset id="敌人-凤凰眷属黑金" swf="flashswf/arts/new/魔神菲尼克斯.swf" symbolName="小兵/敌人-凤凰眷属黑金" />
   <asset id="敌人-刀狙少女" swf="flashswf/arts/new/3XD做的npc.swf" symbolName="刀狙少女/敌人-刀狙少女" />
   <asset id="敌人-剑道社社员" swf="flashswf/arts/new/大学人员.swf" symbolName="敌人动画合集/敌人-剑道社社员" />
+  <asset id="敌人-剑道社长" swf="flashswf/arts/new/剑道社长.swf" />
   <asset id="敌人-劫掠少女" swf="flashswf/arts/new/3XD做的npc.swf" symbolName="劫掠少女/敌人-劫掠少女" />
   <asset id="敌人-医疗女仆" swf="flashswf/arts/new/公共素材位0.swf" symbolName="女仆白/女仆" />
   <asset id="敌人-原体融合生物" swf="flashswf/arts/new/原体融合生物.swf" />
