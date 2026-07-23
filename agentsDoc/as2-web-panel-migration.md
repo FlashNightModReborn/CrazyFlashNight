@@ -141,7 +141,7 @@ Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{typ
 
 AS2 从现役 `_root.发型库 / 发型名称库 / 发型价格` 三数组逐行投影 `{identifier,name}`，必须保持 77 行源顺序和重复项，不按 identifier/name 去重；长度不一致、空标识、非数值价格或任一非零价格均整体 fail-closed。snapshot 的 `gender/face/currentHair` 是权威文本；Web 不反猜二值性别，renderer 无法识别时只显示可读降级，目录和提交仍可用。发型选择只在 Web 内以既有 `DressupDollRenderer` 预览脸型/发型，使用 strict fields、非动画且光头项只渲染脸型；预览、取消、X、ESC、backdrop 和 close 都不写业务状态。
 
-commit 只接受 `{v:1,hairIdentifier}`，不接受价格、货币、backend preview、execution token 或任意 catalog 行对象。AS2 每次重新解析当前免费目录，并在写前一次性确认目标存在、root actor、live actor、存档对象与装扮刷新方法可用；全部前置条件通过后，顺序固定为 `_root.发型` → live actor `发型` → `gotoAndPlay("刷新装扮")` → `_root.存档系统.dirtyMark=true`。它保持现役免费语义，不扣 K 点/金币，也不新增自动存盘命令。
+commit 只接受 `{v:1,hairIdentifier}`，不接受价格、货币、backend preview、execution token 或任意 catalog 行对象。AS2 每次重新解析当前免费目录，并在写前一次性确认目标存在、root actor、live actor、存档对象与装扮刷新方法可用；全部前置条件通过后，顺序固定为 `_root.发型` → live actor `发型` → `gotoAndPlay("刷新装扮")` → `_root.存档系统.dirtyMark=true`。它保持现役免费语义，不扣 K 点/金币，也不新增自动存盘命令。Web 收到字段完整且 `currentHair` 精确等于本次选择的权威成功回包后，必须立即复用正常 `requestClose()`：当前 Web session 只关闭一次，Host 继续独占 pending 清理和游戏焦点恢复。确定失败保持面板可操作；未知结果仍在当前面板读取 fresh snapshot 并显示 applied/not-applied，不用延时器猜成功，也不因普通重开 snapshot 自动关闭。
 
 `HairdresserTask` 直接组合同一 `PanelPendingCallTracker<TContext>`，只在领域内维护 `idle/write_pending/needs_reconcile` 和期望发型。确定成功或确定失败恢复 idle；已投递 commit 的 timeout、send-false、断线、畸形或未知回包进入 `needs_reconcile`。随后只准发新鲜、结构完整且越过在途写的 snapshot；若 `currentHair` 等于期望值则记为 applied，否则记为 not-applied，两种都可解除写门，任何路径都禁止自动重放 commit。Web 仍用共享 `PanelRequestMux` 做 generation/session 隔离；生产 PanelHost close observer 同时显式调用 `HairdresserTask.ClearPending()`。若关闭时已有 commit，clear 只终结 transport pending 并保留领域 `needs_reconcile` 与期望发型；重开再以 post-unknown fresh snapshot 收敛，旧 commit 回包不得复活，也不得跨会话保留选择或重放写。
 

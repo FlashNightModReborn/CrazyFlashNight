@@ -173,6 +173,9 @@ window.Panels=(function(){
   function closeMessages(){return __sent.filter(function(message){return message.panel==='hairdresser'&&message.cmd==='close'})}
   async function openDefault(){
     __configureHairdresser({});
+    await reopenCurrent()
+  }
+  async function reopenCurrent(){
     Panels.open('hairdresser');
     await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200)
   }
@@ -254,18 +257,26 @@ window.Panels=(function(){
         return node.textContent==='发型-男式-平头'
       }).length===2);
 
-    var commitBefore=writes().length;
+    var commitBefore=writes().length,commitCloseBefore=closeMessages().length;
     document.querySelector('.hairdresser-commit').click();
-    await waitFor(function(){return !HairdresserPanel.debugState().busy&&HairdresserPanel.debugState().currentHair==='发型-男式-平头'});
+    await waitFor(function(){return Panels.getActive()===null&&__model.currentHair==='发型-男式-平头'});
     var commitMessage=writes()[commitBefore];
+    await reopenCurrent();
     state=HairdresserPanel.debugState();
     ok('commit sends only the frozen v1 raw identifier payload',
       commitMessage&&Object.keys(commitMessage.payload).sort().join(',')==='hairIdentifier,v'
       &&commitMessage.payload.v===1&&commitMessage.payload.hairIdentifier==='发型-男式-平头',
       JSON.stringify(commitMessage));
-    ok('commit success retains both duplicate current rows',
-      document.querySelectorAll('.hairdresser-style-card.current').length===2
-      &&state.selectedIndex===32&&state.currentHair==='发型-男式-平头');
+    ok('definitive commit auto-closes once and reopen retains both duplicate current rows',
+      closeMessages().length===commitCloseBefore+1
+      &&document.querySelectorAll('.hairdresser-style-card.current').length===2
+      &&state.selectedIndex===20&&state.currentHair==='发型-男式-平头',
+      JSON.stringify({
+        closeDelta:closeMessages().length-commitCloseBefore,
+        currentRows:document.querySelectorAll('.hairdresser-style-card.current').length,
+        selectedIndex:state.selectedIndex,
+        currentHair:state.currentHair
+      }));
 
     document.querySelector('.hairdresser-style-card[data-index="35"]').click();
     __queueFault({cmd:'commit',mode:'delay',delayMs:110});
@@ -281,7 +292,10 @@ window.Panels=(function(){
       Panels.getActive()==='hairdresser'&&writes().length===busyWrites
       &&closeMessages().length===busyCloses&&__toasts.length>0,
       JSON.stringify({active:Panels.getActive(),writes:writes().length-busyWrites,close:closeMessages().length-busyCloses}));
-    await waitFor(function(){return !HairdresserPanel.debugState().busy},900);
+    await waitFor(function(){
+      return Panels.getActive()===null&&closeMessages().length===busyCloses+1
+    },900);
+    await reopenCurrent();
 
     document.querySelector('.hairdresser-style-card[data-index="36"]').click();
     __queueFault({cmd:'commit',mode:'send_false'});
@@ -307,6 +321,7 @@ window.Panels=(function(){
     state=HairdresserPanel.debugState();
     ok('applied unknown commit uses one fresh snapshot and never replays',
       writes().length===unknownAppliedWrites+1&&reads().length===unknownAppliedReads+1
+      &&Panels.getActive()==='hairdresser'
       &&state.currentHair==='发型-男式-金色大奔头'&&!state.needsReconcile,
       JSON.stringify(state));
 
@@ -319,6 +334,7 @@ window.Panels=(function(){
     state=HairdresserPanel.debugState();
     ok('fresh currentHair comparison overrides contradictory Host hint',
       writes().length===unknownMissWrites+1&&reads().length===unknownMissReads+1
+      &&Panels.getActive()==='hairdresser'
       &&state.currentHair==='发型-男式-金色大奔头'
       &&state.selectedIdentifier===state.currentHair
       &&state.hostReconcileFlags&&state.hostReconcileFlags.writeApplied===true,
@@ -332,6 +348,7 @@ window.Panels=(function(){
     state=HairdresserPanel.debugState();
     ok('client timeout also reconciles without automatic write replay',
       writes().length===timeoutWrites+1&&reads().length===timeoutReads+1
+      &&Panels.getActive()==='hairdresser'
       &&state.currentHair==='发型-男式-bob自由爆炸头',JSON.stringify(state));
 
     document.querySelector('.hairdresser-style-card[data-index="40"]').click();

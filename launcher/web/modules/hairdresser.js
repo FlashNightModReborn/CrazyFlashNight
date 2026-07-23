@@ -660,9 +660,10 @@ var HairdresserPanel = (function() {
                 _snapshot.currentHair = response.currentHair;
                 _errorText = '';
                 setStatus('发型已更换并标记存档。', 'ready');
-                refreshCatalogSelection();
-                renderPreview();
-                refreshControls();
+                // A definitive authoritative write completes this short flow.
+                // Reuse the normal close lifecycle so Host pending cleanup,
+                // focus restoration and the close envelope keep one owner.
+                requestClose();
                 return;
             }
             if (response && response.success === true) {
