@@ -38,7 +38,7 @@ test('response router installs one bridge listener and unregisters handlers', ()
     assert.strictEqual(router.uninstall(), true);
 });
 
-test('request mux rejects late generation responses', () => {
+test('request mux isolates close/reopen generations and rejects late responses', () => {
     const sent = [];
     const timers = createTimers();
     const mux = new Runtime.PanelRequestMux({
@@ -47,11 +47,21 @@ test('request mux rejects late generation responses', () => {
         validateResponse:(data, entry) => data.callId === entry.callId && data.cmd === entry.cmd
     });
     mux.openSession({panelInstanceId:'one'});
+    const firstGeneration = mux.debugState().generation;
     const calls = [];
-    const oldCallId = mux.request('snapshot', {}, response => calls.push(response));
+    const oldCallId = mux.request('snapshot', {}, response => calls.push(response.callId));
+    mux.closeSession();
+    assert.strictEqual(timers.timers[0].cleared, true);
     mux.openSession({panelInstanceId:'two'});
+    const secondGeneration = mux.debugState().generation;
+    const newCallId = mux.request('snapshot', {}, response => calls.push(response.callId));
+    assert.strictEqual(secondGeneration, firstGeneration + 1);
+    assert.notStrictEqual(newCallId, oldCallId);
     assert.strictEqual(mux.handleResponse({type:'panel_resp', cmd:'snapshot', callId:oldCallId}), false);
     assert.deepStrictEqual(calls, []);
+    assert.strictEqual(mux.debugState().pendingCount, 1);
+    assert.strictEqual(mux.handleResponse({type:'panel_resp', cmd:'snapshot', callId:newCallId}), true);
+    assert.deepStrictEqual(calls, [newCallId]);
     assert.strictEqual(mux.debugState().pendingCount, 0);
 });
 
@@ -72,6 +82,27 @@ test('latest-wins cancels the previous kind and accepts the newest call', () => 
     assert.deepStrictEqual(seen, [second]);
 });
 
+test('completed calls suppress duplicate responses', () => {
+    const timers = createTimers();
+    const mux = new Runtime.PanelRequestMux({
+        callPrefix:'test', sessionNonce:'nonce', send:() => true,
+        setTimer:timers.setTimer, clearTimer:timers.clearTimer,
+        validateResponse:(data, entry) => data.callId === entry.callId && data.cmd === entry.cmd
+    });
+    mux.openSession({});
+    const seen = [];
+    const callId = mux.request('snapshot', {}, response => seen.push(response.marker));
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp', cmd:'snapshot', callId, marker:'first'
+    }), true);
+    assert.strictEqual(timers.timers[0].cleared, true);
+    assert.strictEqual(mux.pendingCount(), 0);
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp', cmd:'snapshot', callId, marker:'duplicate'
+    }), false);
+    assert.deepStrictEqual(seen, ['first']);
+});
+
 test('timeout and send failure are synthetic and deterministic', () => {
     const timers = createTimers();
     const responses = [];
@@ -80,10 +111,15 @@ test('timeout and send failure are synthetic and deterministic', () => {
         setTimer:timers.setTimer, clearTimer:timers.clearTimer
     });
     mux.openSession({});
-    mux.request('write', {}, {write:true}, response => responses.push(response));
+    const timedOutCallId = mux.request('write', {}, {write:true}, response => responses.push(response));
     timers.timers[0].callback();
     assert.strictEqual(responses[0].error, 'client_timeout');
     assert.strictEqual(responses[0].requiresReconcile, true);
+    assert.strictEqual(mux.pendingCount(), 0);
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp', cmd:'write', callId:timedOutCallId, success:true
+    }), false);
+    assert.strictEqual(responses.length, 1);
     mux.closeSession();
 
     const failed = new Runtime.PanelRequestMux({callPrefix:'test', sessionNonce:'nonce', send:() => false});

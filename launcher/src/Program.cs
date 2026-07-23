@@ -1345,6 +1345,8 @@ class Program
             frameTask.Stop();
             shopTask.Dispose();
             lootTask.Dispose();
+            npcShopTask.Dispose();
+            craftingTask.Dispose();
             equipmentTuningTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
@@ -1396,6 +1398,8 @@ class Program
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
             try { lootTask.Dispose(); } catch { }
+            try { npcShopTask.Dispose(); } catch { }
+            try { craftingTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
@@ -1613,6 +1617,8 @@ class Program
         try { gomokuTask.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
         try { lootTask.Dispose(); } catch { }
+        try { npcShopTask.Dispose(); } catch { }
+        try { craftingTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }

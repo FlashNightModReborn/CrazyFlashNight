@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
@@ -14,51 +13,44 @@ namespace CF7Launcher.Tasks
     {
         private sealed class PendingRequest
         {
-            public string WebCallId;
             public string WebCmd;
             public bool IsWrite;
             public JObject NormalizedPayload;
         }
 
         private const int DefaultTimeoutMs = 10000;
-        private const int RecentCallIdCapacity = 256;
         // npc-shop.v2 的跨层整数技术护栏，不是策划购买配额。装备、情报容量与
         // purchaseLimit 仍由 AS2 在 snapshot/preview/commit 的同一权威路径裁决。
         private const int MaxPurchaseQuantity = 999999;
         private static readonly Regex ValidCallId = new Regex("^[A-Za-z0-9._-]{1,96}$", RegexOptions.Compiled);
         private static readonly Regex ValidLease = new Regex("^[A-Za-z0-9._-]{1,160}$", RegexOptions.Compiled);
 
-        private readonly Func<bool> _isClientReady;
-        private readonly Func<string, bool> _trySend;
-        private readonly int _timeoutMs;
-        private readonly Dictionary<int, PendingRequest> _pending = new Dictionary<int, PendingRequest>();
-        private readonly Dictionary<int, Timer> _timers = new Dictionary<int, Timer>();
-        private readonly HashSet<string> _activeCallIds = new HashSet<string>(StringComparer.Ordinal);
-        private readonly HashSet<string> _recentCallIds = new HashSet<string>(StringComparer.Ordinal);
-        private readonly Queue<string> _recentOrder = new Queue<string>();
+        private readonly PanelPendingCallTracker<PendingRequest> _pendingCalls;
         private readonly object _lock = new object();
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
         private string _writeState = "idle";
-        private int _seq;
-        private volatile bool _disposed;
-
         public NpcShopTask(XmlSocketServer socket)
             : this(delegate { return socket != null && socket.IsClientReady; },
                    delegate(string payload) { return socket != null && socket.TrySend(payload); }, DefaultTimeoutMs) { }
 
         public NpcShopTask(Func<bool> isClientReady, Func<string, bool> trySend, int timeoutMs = DefaultTimeoutMs)
         {
-            _isClientReady = isClientReady ?? delegate { return false; };
-            _trySend = trySend ?? delegate { return false; };
-            _timeoutMs = Math.Max(1, timeoutMs);
+            _pendingCalls = new PanelPendingCallTracker<PendingRequest>(
+                isClientReady,
+                trySend,
+                timeoutMs,
+                HandlePendingEnded);
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
         internal string WriteState { get { lock (_lock) return _writeState; } }
 
-        public void Dispose() { _disposed = true; ClearPending(); }
+        public void Dispose()
+        {
+            lock (_lock) { _pendingCalls.Dispose(); }
+        }
 
         public void HandleWebRequest(string cmd, JObject parsed)
         {
@@ -81,50 +73,53 @@ namespace CF7Launcher.Tasks
             JObject normalized;
             if (!TryNormalizePayload(cmd, payload, out normalized))
             { RejectAndRemember(callId, cmd, "invalid_payload"); return; }
-            if (!_isClientReady())
+            if (!_pendingCalls.IsReady())
             { RejectAndRemember(callId, cmd, "disconnected"); return; }
 
             int fid;
             lock (_lock)
             {
-                if (_activeCallIds.Contains(callId) || _recentCallIds.Contains(callId)) return;
+                if (_pendingCalls.IsKnownWebCallId(callId)) return;
                 if (isWrite && _writeState != "idle")
                 {
-                    RememberRecentLocked(callId);
+                    if (!_pendingCalls.TryRememberRejected(callId)) return;
                     RespondError(callId, cmd, _writeState == "needs_reconcile" ? "reconcile_required" : "busy");
                     return;
                 }
-                fid = ++_seq;
-                _pending[fid] = new PendingRequest
-                {
-                    WebCallId = callId,
-                    WebCmd = cmd,
-                    IsWrite = isWrite,
-                    NormalizedPayload = (JObject)normalized.DeepClone()
-                };
-                _activeCallIds.Add(callId);
+                if (!_pendingCalls.TryBegin(
+                    callId,
+                    new PendingRequest
+                    {
+                        WebCmd = cmd,
+                        IsWrite = isWrite,
+                        NormalizedPayload = (JObject)normalized.DeepClone()
+                    },
+                    out fid)) return;
                 if (isWrite) _writeState = "write_pending";
             }
 
-            var timer = new Timer(delegate { HandleTimeout(fid); }, null, _timeoutMs, Timeout.Infinite);
-            lock (_lock) { if (_pending.ContainsKey(fid)) _timers[fid] = timer; else timer.Dispose(); }
             string json = PanelBridge.BuildFlashCommand(action, fid, normalized).ToString(Formatting.None);
             LogManager.Log("[NpcShopTask] -> Flash: " + json);
-            if (!_trySend(json + "\0")) HandleSendFailure(fid);
+            _pendingCalls.Send(fid, json + "\0");
         }
 
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             int fid = msg != null ? msg.Value<int>("callId") : 0;
             PendingRequest entry;
+            PanelPendingCall<PendingRequest> pendingCall;
             bool malformed = false;
             bool definitiveWrite = false;
             lock (_lock)
             {
-                if (!_pending.TryGetValue(fid, out entry)) { if (respond != null) respond(null); return; }
+                if (!_pendingCalls.TryComplete(fid, out pendingCall))
+                {
+                    if (respond != null) respond(null);
+                    return;
+                }
+                entry = pendingCall.Context;
                 malformed = IsMalformedResponse(msg, entry);
                 definitiveWrite = entry.IsWrite && !malformed && IsDefinitiveWriteResponse(msg, entry.WebCmd);
-                CompletePendingLocked(fid, entry);
                 if (entry.IsWrite)
                     _writeState = definitiveWrite ? "idle" : "needs_reconcile";
                 else if (entry.WebCmd == "snapshot" && !malformed
@@ -139,7 +134,7 @@ namespace CF7Launcher.Tasks
             web["type"] = "panel_resp";
             web["domain"] = "npcshop";
             web["cmd"] = entry.WebCmd;
-            web["callId"] = entry.WebCallId;
+            web["callId"] = pendingCall.WebCallId;
             if (entry.IsWrite && !definitiveWrite) web["requiresReconcile"] = true;
             PostToWeb(web.ToString(Formatting.None));
             if (respond != null) respond(null);
@@ -147,18 +142,7 @@ namespace CF7Launcher.Tasks
 
         public void ClearPending()
         {
-            lock (_lock)
-            {
-                foreach (PendingRequest entry in _pending.Values)
-                {
-                    _activeCallIds.Remove(entry.WebCallId);
-                    RememberRecentLocked(entry.WebCallId);
-                    if (entry.IsWrite) _writeState = "needs_reconcile";
-                }
-                foreach (Timer timer in _timers.Values) timer.Dispose();
-                _timers.Clear();
-                _pending.Clear();
-            }
+            lock (_lock) { _pendingCalls.Clear(); }
         }
 
         private static bool TryResolveCommand(string cmd, out string action, out bool isWrite)
@@ -607,55 +591,27 @@ namespace CF7Launcher.Tasks
             return !double.IsNaN(candidate) && !double.IsInfinity(candidate);
         }
 
-        private void HandleTimeout(int fid)
+        private void HandlePendingEnded(
+            PanelPendingCall<PendingRequest> pendingCall,
+            PanelPendingCallEndReason reason)
         {
-            if (_disposed) return;
-            PendingRequest entry;
+            PendingRequest entry = pendingCall.Context;
             lock (_lock)
             {
-                if (!_pending.TryGetValue(fid, out entry)) return;
-                CompletePendingLocked(fid, entry);
                 if (entry.IsWrite) _writeState = "needs_reconcile";
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "timeout", entry.IsWrite);
-        }
-
-        private void HandleSendFailure(int fid)
-        {
-            PendingRequest entry;
-            lock (_lock)
-            {
-                if (!_pending.TryGetValue(fid, out entry)) return;
-                CompletePendingLocked(fid, entry);
-                if (entry.IsWrite) _writeState = "needs_reconcile";
-            }
-            RespondError(entry.WebCallId, entry.WebCmd, "disconnected", entry.IsWrite);
-        }
-
-        private void CompletePendingLocked(int fid, PendingRequest entry)
-        {
-            _pending.Remove(fid);
-            Timer timer;
-            if (_timers.TryGetValue(fid, out timer)) { timer.Dispose(); _timers.Remove(fid); }
-            _activeCallIds.Remove(entry.WebCallId);
-            RememberRecentLocked(entry.WebCallId);
+            if (reason == PanelPendingCallEndReason.Cleared) return;
+            RespondError(
+                pendingCall.WebCallId,
+                entry.WebCmd,
+                reason == PanelPendingCallEndReason.Timeout ? "timeout" : "disconnected",
+                entry.IsWrite);
         }
 
         private void RejectAndRemember(string callId, string cmd, string error)
         {
-            lock (_lock)
-            {
-                if (_activeCallIds.Contains(callId) || _recentCallIds.Contains(callId)) return;
-                RememberRecentLocked(callId);
-            }
+            if (!_pendingCalls.TryRememberRejected(callId)) return;
             RespondError(callId, cmd, error);
-        }
-
-        private void RememberRecentLocked(string callId)
-        {
-            if (string.IsNullOrEmpty(callId) || !_recentCallIds.Add(callId)) return;
-            _recentOrder.Enqueue(callId);
-            while (_recentOrder.Count > RecentCallIdCapacity) _recentCallIds.Remove(_recentOrder.Dequeue());
         }
 
         private void RespondError(string callId, string cmd, string error, bool requiresReconcile = false)

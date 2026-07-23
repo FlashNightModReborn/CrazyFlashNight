@@ -421,6 +421,27 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Theory]
+        [InlineData("tradeCommit")]
+        [InlineData("tradePreview")]
+        public void ClientNotReady_RejectsWithoutEnteringReconcile(string cmd)
+        {
+            int sends = 0;
+            string posted = null;
+            using (var task = new NpcShopTask(() => false, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+
+                task.HandleWebRequest(cmd, Request(cmd, "npc.not-ready." + cmd));
+
+                JObject response = JObject.Parse(posted);
+                Assert.Equal(0, sends);
+                Assert.Equal("disconnected", (string)response["error"]);
+                Assert.Null(response["requiresReconcile"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Theory]
         [InlineData("tradeCommit", true)]
         [InlineData("tradePreview", false)]
         public void Timeout_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
@@ -437,6 +458,74 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Equal("timeout", (string)posted["error"]);
                 Assert.Equal(isWrite, posted.Value<bool?>("requiresReconcile") == true);
                 Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void ActiveAndRecentDuplicateCallIds_DispatchAndRespondOnce()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+                JObject request = Request("snapshot", "npc.duplicate.1");
+
+                task.HandleWebRequest("snapshot", request);
+                task.HandleWebRequest("snapshot", request);
+                Assert.Single(sent);
+
+                task.HandleFlashResponse(StateResponse((int)sent[0]["callId"]), null);
+                task.HandleWebRequest("snapshot", request);
+
+                Assert.Single(sent);
+                Assert.Single(posted);
+            }
+        }
+
+        [Fact]
+        public void DuplicateFlashResponse_PostsOnce()
+        {
+            var posted = new List<JObject>();
+            string sent = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.response.once"));
+                int fid = (int)ParseSent(sent)["callId"];
+
+                task.HandleFlashResponse(StateResponse(fid), null);
+                task.HandleFlashResponse(StateResponse(fid), null);
+
+                Assert.Single(posted);
+                Assert.True((bool)posted[0]["success"]);
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ClearOrDispose_DrainsWriteAndLateResponseCannotReviveIt(bool dispose)
+        {
+            var posted = new List<JObject>();
+            string sent = null;
+            var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            try
+            {
+                task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+                task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.drain." + dispose));
+                int fid = (int)ParseSent(sent)["callId"];
+
+                if (dispose) task.Dispose();
+                else task.ClearPending();
+                task.HandleFlashResponse(StateResponse(fid, "tradeCommit"), null);
+
+                Assert.Equal("needs_reconcile", task.WriteState);
+                Assert.Empty(posted);
+            }
+            finally
+            {
+                task.Dispose();
             }
         }
 

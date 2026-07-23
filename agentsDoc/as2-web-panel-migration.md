@@ -193,11 +193,13 @@ NPC/KShop/Crafting 的唯一可执行登记表为 [`launcher/contracts/panel-con
 
 凡 preview 改变可见本地意图，必须同时定义成功 checkpoint、迟到回包 epoch 隔离、普通读失败恢复、权威失鲜刷新和写结果未知 reconcile 五条路径；不得用单一 `error/busy` 布尔值合并。共享 Tooltip 的可见性由“有效 owner + 触发物/浮层复合 hover”决定；grace 结束后必须用真实命中状态复核空白终态，panel close/scope dispose 立即清理 owner、surface、timer 与 focus restore。浏览器回归必须同时用 pointer 和 pen 的真实 `PointerEvent` 覆盖复合过桥/快速划入空白，并为仍调用 `showAtMouse/hideHover` 的 legacy 消费者保留物理鼠标探针；直接调内部函数不能替代浏览器事件链。
 
+NpcShop 与 Crafting 的 Host transport lifecycle 统一组合内部 sealed `PanelPendingCallTracker<TContext>`。helper 只拥有 backend/Web callId correlation、pending/Timer、active/recent 去重、readiness/send、timeout、迟到/重复抑制和 clear/dispose drain；`TContext` 对它完全 opaque，command、payload、read/write、token、业务 verdict、`writeState` 与何种读可解除 reconcile 全部留在领域 Task。response、timeout、send-false、clear 与 dispose 都通过同一个原子 take 竞争唯一终态，callback 在 helper 锁外执行；`XmlSocketServer.TrySend(false)` 内部保守记为 `DeliveryUnknown`，Task 对现役 wire 仍映射 `disconnected`，且只由领域自己的 `IsWrite` 决定是否返回 `requiresReconcile`。`ClearPending()` / shutdown dispose 不伪造 Web 回包，但已开始的写必须进入领域 `needs_reconcile`；dispose 是 shutdown-only 终态，返回后拒绝新的请求入队，三条进程退出路径都显式 dispose 两个 Task。Web 继续使用独立的 `PanelRequestMux` 做 browser generation/session 隔离，普通 panel close 不直接 drain Host helper；Skill/Loot 的 execution lease 与恢复机制不接入本 helper。
+
 ## 3. C# 接入清单
 
 新增生产 panel 的 C# 最小接入面：
 
-- `launcher/src/Tasks/*Task.cs`：在 P0-F F2 形成经两个消费者证明的公共 pending-call helper 前，仍自行实现双层 `callId` 桥接、timeout、`ClearPending()`、`Dispose()`；F2 关闭后，只有具名工作流的 F3 试点改为组合该 helper，且不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。其他领域不因 P0-F 被迫改造。
+- `launcher/src/Tasks/*Task.cs`：NpcShop/Crafting 已作为两个参考消费者组合 `PanelPendingCallTracker<TContext>`；具名 P0-F F3 试点必须直接复用它，不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。领域 Task 仍独占 payload/response 白名单、写门和 reconcile 裁决；其他领域不因 P0-F 被迫改造。
 - `launcher/src/Program.cs`：创建 Task，注入 `WebOverlayForm`，传入 `TaskRegistry.RegisterAll`。
 - `launcher/src/Bus/TaskRegistry.cs`：注册 AS2 response task，例如 `xxx_response`。
 - `launcher/src/Guardian/WebOverlayForm.cs`：
@@ -206,7 +208,7 @@ NPC/KShop/Crafting 的唯一可执行登记表为 [`launcher/contracts/panel-con
   - `OnSocketDisconnected()` 始终逐 Task 触发生命周期清理；采用 F2 helper 的 Task 由自己的 `ClearPending()` 委托 helper drain，不让 `WebOverlayForm` 直接依赖 helper，也不保留 Task/helper 双轨 pending。两种形态都必须在断线时清 pending，防止旧回包错配新会话。
   - `ResolvePanelCloseGameCommand()` 明确 close 是否通知 Flash。
 - `launcher/CRAZYFLASHER7MercenaryEmpire.csproj`：当前 SDK-style 会自动包含 `.cs`，但迁移时仍要确认构建清单没有旧式残留假设。
-- `launcher/tests/Tasks/*TaskTests.cs`：至少覆盖断连错误、cmd→action、Flash 回包重写、unsupported cmd。
+- `launcher/tests/Tasks/*TaskTests.cs`：至少覆盖断连错误、cmd→action、Flash 回包重写、unsupported cmd；采用共享 helper 的 Task 另固定 ready=false、read/write send-false 与 timeout、active/recent duplicate、重复/迟到 response、response-timeout 单终态、`ClearPending()` / `Dispose()` drain 与 shutdown 后不复活。
 
 禁止只新增 JS 和 AS2 service 而漏 C# 分发层。C# build 通过也不代表协议能到达 AS2，必须有 Task 级测试或游戏内验证。
 

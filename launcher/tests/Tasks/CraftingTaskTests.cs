@@ -241,6 +241,137 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData("commit")]
+        [InlineData("preview")]
+        public void ClientNotReady_RejectsWithoutEnteringReconcile(string cmd)
+        {
+            int sends = 0;
+            string posted = null;
+            using (var task = new CraftingTask(() => false, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(value => posted = value);
+
+                task.HandleWebRequest(cmd, Request(cmd, "craft.not-ready." + cmd));
+
+                JObject response = JObject.Parse(posted);
+                Assert.Equal(0, sends);
+                Assert.Equal("disconnected", (string)response["error"]);
+                Assert.Null(response["requiresReconcile"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("commit", true)]
+        [InlineData("preview", false)]
+        public void SendFailure_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
+        {
+            string posted = null;
+            using (var task = new CraftingTask(() => true, _ => false))
+            {
+                task.SetPostToWeb(value => posted = value);
+
+                task.HandleWebRequest(cmd, Request(cmd, "craft.send-failure." + cmd));
+
+                JObject response = JObject.Parse(posted);
+                Assert.Equal("disconnected", (string)response["error"]);
+                Assert.Equal(isWrite, response.Value<bool?>("requiresReconcile") == true);
+                Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("commit", true)]
+        [InlineData("preview", false)]
+        public void Timeout_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
+        {
+            JObject posted = null;
+            using (var responseSeen = new ManualResetEventSlim(false))
+            using (var task = new CraftingTask(() => true, _ => true, 20))
+            {
+                task.SetPostToWeb(value => { posted = JObject.Parse(value); responseSeen.Set(); });
+
+                task.HandleWebRequest(cmd, Request(cmd, "craft.timeout.matrix." + cmd));
+                Assert.True(responseSeen.Wait(TimeSpan.FromSeconds(2)), "Crafting timeout response was not posted");
+
+                Assert.Equal("timeout", (string)posted["error"]);
+                Assert.Equal(isWrite, posted.Value<bool?>("requiresReconcile") == true);
+                Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void ActiveAndRecentDuplicateCallIds_DispatchAndRespondOnce()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                JObject request = Request("preview", "craft.duplicate.1");
+
+                task.HandleWebRequest("preview", request);
+                task.HandleWebRequest("preview", request);
+                Assert.Single(sent);
+
+                task.HandleFlashResponse(PreviewResponse((int)sent[0]["callId"]), null);
+                task.HandleWebRequest("preview", request);
+
+                Assert.Single(sent);
+                Assert.Single(posted);
+            }
+        }
+
+        [Fact]
+        public void DuplicateFlashResponse_PostsOnce()
+        {
+            var posted = new List<JObject>();
+            string sent = null;
+            using (var task = new CraftingTask(() => true, value => { sent = value; return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                task.HandleWebRequest("preview", Request("preview", "craft.response.once"));
+                int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+                task.HandleFlashResponse(PreviewResponse(fid), null);
+                task.HandleFlashResponse(PreviewResponse(fid), null);
+
+                Assert.Single(posted);
+                Assert.True((bool)posted[0]["success"]);
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ClearOrDispose_DrainsWriteAndLateResponseCannotReviveIt(bool dispose)
+        {
+            var posted = new List<JObject>();
+            string sent = null;
+            var task = new CraftingTask(() => true, value => { sent = value; return true; });
+            try
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                task.HandleWebRequest("commit", Request("commit", "craft.drain." + dispose));
+                int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+                if (dispose) task.Dispose();
+                else task.ClearPending();
+                task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "crafting_response", ["callId"] = fid, ["success"] = false, ["error"] = "busy"
+                }, null);
+
+                Assert.Equal("needs_reconcile", task.WriteState);
+                Assert.Empty(posted);
+            }
+            finally
+            {
+                task.Dispose();
+            }
+        }
+
         [Fact]
         public void DomainRouting_RecognizesCraftingAndCloseStillWins()
         {
