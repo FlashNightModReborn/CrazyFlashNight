@@ -75,7 +75,7 @@ Protocol 2 已让 Launcher 负责启动时 SOL / shadow JSON 的选择、修复�
 
 > Launcher 已有启动快照选择权和文件保管能力，但还没有运行期玩家状态的业务/语义权威。
 
-C# `ArchiveTask` 当前主要提供整份 JSON 的原子替换和一致性检查，没有领域 revision、CAS、幂等命令账本或多聚合事务核心。
+C# `ArchiveTask` 当前主要提供整份 JSON 替换和一致性检查，没有领域 revision、CAS、幂等命令账本或多聚合事务核心；现役实现的“删旧文件 → 移动 `.tmp`”也不能直接充当未来 StateCore 的事务原子性证明。
 
 ### 2.2 背包、仓库和经济仍由 AS2 运行态对象掌管
 
@@ -106,7 +106,7 @@ C# `ArchiveTask` 当前主要提供整份 JSON 的原子替换和一致性检查
 2. 在换弹提交点通过 `ItemUtil.singleSubmit(name, 1)` 扣除；
 3. `ItemUtil.getTotal(name)` 刷新剩余弹匣数。
 
-`ItemUtil.contain()` 当前搜索背包和药剂栏。生产代码中约有 48 处 `singleContain/singleSubmit/getTotal` 调用，大多数集中于 `ReloadManager`、`LongGunSubWeaponCore`、`WeaponStateManager` 和少量战斗技能；另有佣兵、成就等非战斗调用，不能把整个 `ItemUtil` 直接重定向到战术包。
+`ItemUtil.contain()` 会先按物品身份把材料、情报路由到对应收集品栏，普通物品才搜索背包和药剂栏；`getTotal()` 又只对材料/情报走收集品栏，普通物品只累计背包。因此这些门面并非同一个统一容器查询。生产代码中约有 48 处 `singleContain/singleSubmit/getTotal` 调用，大多数集中于 `ReloadManager`、`LongGunSubWeaponCore`、`WeaponStateManager` 和少量战斗技能；另有佣兵、成就等非战斗调用，不能把整个 `ItemUtil` 直接重定向到战术包。
 
 ### 2.5 “50 格全传输”不是主要性能瓶颈
 
@@ -230,9 +230,11 @@ AS2/Web 只应用单调递增投影；发现 revision 空洞、上下文变化�
 
 - versioned envelope；
 - 整聚合临时文件 + 原子 rename；
-- 有界幂等命令账本；
+- 与聚合新状态、命令结果处于同一耐久提交的有界幂等命令账本；
 - 备份与显式迁移；
 - JSON 导入导出和诊断投影。
+
+账本若与聚合分文件，必须由正式 ADR 给出可恢复的原子提交协议；不得先写聚合、后写账本再声称 exactly-once。账本淘汰也必须绑定客户端最大重试窗口、持久 tombstone 或等价防重规则，不能让旧 `commandId` 在失忆后重新生效。
 
 只有当多聚合事务、历史查询、长 Run 日志或审计量证明需要时，再评估 SQLite。不要让数据库选择阻塞 ownership 边界验证，也不要引入自制通用 event store。
 
@@ -452,12 +454,12 @@ Run 结束时由 Host 通过 `runId + settlementId` 幂等结算到 CampaignProf
 
 ### P0：稳定性止损 + 迁移基座收敛
 
-P0 拆成两个并行工作包，完整范围和退出门见 [P0-F 跨层迁移基座与架构收敛专项](P0-跨层迁移基座与架构收敛专项-2026-07-23.md)：
+P0 拆成两个可并行但治理独立的工作包；P0-F 的完整范围和退出门见 [P0-F 跨层迁移基座与架构收敛专项](P0-跨层迁移基座与架构收敛专项-2026-07-23.md)：
 
 - **P0-S 稳定性止损**：冻结当前物资箱继续泛化；完成 `force_flush`/安全退出握手等已知存档窗口加固；明确“shadow 主路径”与 SOL legacy/回退的长期关系，但不把文件保管误称为业务权威迁移。
 - **P0-F 迁移基座收敛**：新增 durable-domain Web panel 前先冻结命令业务裁决层、现役 identity 和失败语义；复用现有 Panel/Task/inventory/事务/测试基建，只收口 transport lifecycle 机械重复，不在 P0-F 预做聚合权威迁移或通用 context 框架。
 
-本文本身不修改生产协议；P0-S 的具体修复，以及 P0-F 中真正触发 wire/schema 变化的工作，仍分别通过窄 ADR 或现役契约变更落地。P0-F 当前已作为本开发机的 `Active` 施工范围：纯展示页面可继续迁移；除专项 F3 试点外，新的持久状态或经济写入页面持续暂停到专项 F4 写入 terminal 记录，先行必须登记专项 §10.1 的具名例外和删除路径；若结果不是 `Closed`，只能按 F4 回流的替代治理入口继续。该本机治理门不改变其他协作者的贡献方式或主线准入。Execution lease 另立玩法/上下文 ADR，只复用 P0-F 已证明的机械原语，不由 P0-F 预建。
+本文本身不修改生产协议；P0-S 的具体修复，以及 P0-F 中真正触发 wire/schema 变化的工作，仍分别通过窄 ADR 或现役契约变更落地。P0-S 不属于 P0-F 的 F0–F4，不得随其顺带施工。P0-F 的当前状态、workstreamId、owner、暂停范围与 terminal 只以专项章程头部为准，本文不复制动态状态；该门不按机器位置套用，也不改变其他协作者的贡献方式或主线准入。Execution lease 另立玩法/上下文 ADR，只复用 P0-F 已证明的机械原语，不由 P0-F 预建。
 
 ### P1：收口与清单
 

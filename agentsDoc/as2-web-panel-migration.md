@@ -1,11 +1,11 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：当前工作树基于 commit `54fd4c1f2f36ef6cd95aefe8bb8496c8f3e17f89`（2026-07-22），地图箱最终收敛仍在验证。commit `6218f8b1d82efc57b77131616667fe45f3033297` 的 immutable request、v2 consensus、promotion 与标准入口只保留为旧单-canary 历史证据。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
+**最后核对代码基线**：commit `466b899b515078169f342f7e0541be04e0f6e81d`（2026-07-23）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
-涉及“UI 全迁后是否把存档/背包/经济持久权威转入 Launcher”、肉鸽同进程角色热切换或战术携行集时，先读 [AS2 → Launcher 持久状态权威与战术携行集长期演进调研](../docs/AS2-Launcher持久状态权威与战术携行集-长期演进调研-2026-07-23.md)；继续批量迁移持久状态/经济界面前，再读 [P0-F 跨层迁移基座与架构收敛专项](../docs/P0-跨层迁移基座与架构收敛专项-2026-07-23.md)。长期路线仍是候选储备，不得据此绕过现有 AS2 权威与验证门；P0-F 当前是本开发机的 `Active` 施工治理范围：除其 F3 试点外，新的持久状态/经济写 Panel 持续暂停到专项 F4 写入 terminal 记录，先行必须登记专项 §10.1 的具名例外和删除路径；若结果不是 `Closed`，只能按 F4 回流的替代治理入口继续。该本机门不改变其他协作者的贡献方式或主线准入。
+涉及“UI 全迁后是否把存档/背包/经济持久权威转入 Launcher”、肉鸽同进程角色热切换或战术携行集时，先读 [AS2 → Launcher 持久状态权威与战术携行集长期演进调研](../docs/AS2-Launcher持久状态权威与战术携行集-长期演进调研-2026-07-23.md)；继续批量迁移持久状态/经济界面前，再读 [P0-F 跨层迁移基座与架构收敛专项](../docs/P0-跨层迁移基座与架构收敛专项-2026-07-23.md)。长期路线仍是候选储备，不得据此绕过现有 AS2 权威与验证门。P0-F 的当前状态、workstreamId、owner、暂停范围与 terminal 只以专项章程头部为准；对其具名工作流，自 `Preflight` 起除 F3 试点外暂停新的持久状态/经济写 Panel，直至 F4 完成并写入 terminal。该门不按机器位置套用，也不改变其他协作者的贡献方式或主线准入。
 
 专题规划与施工记录：[技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md](../docs/技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md) 已落地 `panel/domain=skills`、管理/教师双模式、学习 token 原子提交和快捷栏模型抽离；我的技能主入口归 NativeHud / fallback Notch 的独立 `SKILLS`，NPC 教师保留情境入口，旧物品栏技能页不迁成 Web 转发器。Skill 使用 same-panel rebind + 顶层 `panelInstanceId`、`reconcileId/reconcileAfterCallId` 显式未知写对账、active/candidate/return trainer capability 撤销、正确 escaping JSON encoder，以及观察期旧 UI writer 领域 bridge；这些差异不得照抄 Crafting 的普通 snapshot/generation 恢复。教师页提供 Host 盖章的 `switch_manage`；只有该路径派生的 manage 实例得到 `canReturnTrainer=true` 并可发 `switch_trainer`，trainer session 始终留在 Host、learnToken 不跨 view。Web 展示层复用 `GridDensityController`、`FilterNavigator` 的按钮/计数/键盘 primitive、`PointerDragController/InteractionBroker` 与 `PanelTooltip.convertAS2Html`，manage 采用全宽技能库 + 1—12 单排技能带；紧凑态与物品 owned grid 共用 `48px` 格、`40px` 图标和 `4px` 间距，完整卡共用 `68px` 高度节奏，但不复用物品 taxonomy/facets/lease。技能→快捷槽保持 equip 确认，快捷槽→快捷槽以单条 `moveSlot` 在空槽间移动或对占用槽交换，技能→技能格直接调用既有 reorder 交换；常驻上移/下移退役，快捷槽 `Alt+←/→` 与技能格 `Alt+↑/↓` 保留非指针兜底。已装备目标、普通模式已装备源及异常行在排序落点阶段拒绝；EasyMode 只放宽已装备源。Skill 不再照搬物品目录树：形态、配置/学习、流派三组直接 facet 始终同时可见，首击即生效、跨组可组合并支持一键清除；武术、科技等流派按真实 `Type` 投影。名称搜索默认收起；manage 不显示 metric，trainer 只保留等级/技能点，稳定同步/刷新/协议术语退出常态视觉层。异常态才显示玩家语言的重试/确认结果与诊断复制，复制内容保留实例/revision/callId/reconcile 但禁止输出 trainer session/learnToken。S0–S5 代码与自动门、四个实际 Flash 目标发布及 FFDec 静态证据已接入；NativeHud `SKILLS` 的真实 Win32 manage 点击已覆盖常规、生产最小、4:3 与 1920×1080 几何，真实 `The Girl → 学习技能` 已打开 `技能研习` 并渲染 `兴奋剂 / 能量盾`，此前 trainer→manage same-panel rebind 也已通过；新布局/往返尚只有自动几何证据。旧技能页的两个 live 图标实例以互斥 child-depth 指纹确认实际命中 main `DefineSprite 53`，不是 things id2706；S4C 现只缺 legacy fallback 事务等价/重启回读，S5 现只缺 legacy Notch/fallback、pending-write/断线真机 Gate，S6 观察/旧 UI 删除仍按专题规划保持未完成。
 
@@ -197,13 +197,13 @@ NPC/KShop/Crafting 的可执行登记表为 [`launcher/contracts/panel-contracts
 
 新增生产 panel 的 C# 最小接入面：
 
-- `launcher/src/Tasks/*Task.cs`：实现双层 `callId` 桥接、timeout、`ClearPending()`、`Dispose()`。
+- `launcher/src/Tasks/*Task.cs`：在 P0-F F2 形成经两个消费者证明的公共 pending-call helper 前，仍自行实现双层 `callId` 桥接、timeout、`ClearPending()`、`Dispose()`；F2 关闭后，只有具名工作流的 F3 试点改为组合该 helper，且不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。其他领域不因 P0-F 被迫改造。
 - `launcher/src/Program.cs`：创建 Task，注入 `WebOverlayForm`，传入 `TaskRegistry.RegisterAll`。
 - `launcher/src/Bus/TaskRegistry.cs`：注册 AS2 response task，例如 `xxx_response`。
 - `launcher/src/Guardian/WebOverlayForm.cs`：
   - Task 字段（如 `_petTask`）与 `SetXTask()` 注入方法。
   - `HandlePanelMessage` 覆盖所有 Web cmd。
-  - `OnSocketDisconnected()` 里补一行 `if (_xTask != null) _xTask.ClearPending();`，与既有各 Task 的清理逐项对齐（断线时清 pending，防止旧回包错配新会话）。
+  - `OnSocketDisconnected()` 始终逐 Task 触发生命周期清理；采用 F2 helper 的 Task 由自己的 `ClearPending()` 委托 helper drain，不让 `WebOverlayForm` 直接依赖 helper，也不保留 Task/helper 双轨 pending。两种形态都必须在断线时清 pending，防止旧回包错配新会话。
   - `ResolvePanelCloseGameCommand()` 明确 close 是否通知 Flash。
 - `launcher/CRAZYFLASHER7MercenaryEmpire.csproj`：当前 SDK-style 会自动包含 `.cs`，但迁移时仍要确认构建清单没有旧式残留假设。
 - `launcher/tests/Tasks/*TaskTests.cs`：至少覆盖断连错误、cmd→action、Flash 回包重写、unsupported cmd。

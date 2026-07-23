@@ -15,7 +15,7 @@
 
 ## 1. 背景：为什么值得专门彻查
 
-存档权威迁移到 Launcher 后，`sol_parser`（Rust cdylib，经 flash-lso）负责把 SOL 解成 JSON。其中 AMF0 Reference 的索引基址反复改过三次，每次都「有看似充分的依据 + 通过的测试」，事后又被推翻：
+启动期 SOL / shadow 快照决议迁到 Launcher 后，`sol_parser`（Rust cdylib，经 flash-lso）负责把 SOL 解成 JSON；运行期玩家状态的业务/语义权威仍在 AS2。其中 AMF0 Reference 的索引基址反复改过三次，每次都「有看似充分的依据 + 通过的测试」，事后又被推翻：
 
 | 版本 | 行为 | 当时依据 | 结局 |
 |---|---|---|---|

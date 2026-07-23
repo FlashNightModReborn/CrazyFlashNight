@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `0f51b55eaf`（2026-07-15）+ 当前 runtime v2 发布列车与 Skill S0–S5 工作树；S4C 资产发布与 S5 真机 Gate 尚未闭合，S6 未开始。
+**最后核对代码基线**：commit `466b899b515078169f342f7e0541be04e0f6e81d`（2026-07-23）；高变动功能、构建与验收状态仍以对应专题 canonical doc 为准。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
@@ -57,9 +57,11 @@
   - 音频系统、Notch / Toast / Web overlay 宿主
   - 启动前存档决议与 Protocol 2
 - 当前存档 authority 边界：
+  - Launcher 拥有启动期 SOL / shadow 快照选择权、文件保管、修复与外部编辑入口；这不是运行期领域事务权威
+  - 运行期玩家状态仍由 AS2 `_root.*` 业务对象裁决并组装 `mydata`，写入 SOL 后再把整份 shadow 推给 Launcher；`ArchiveTask` 当前没有领域 revision、CAS、幂等命令账本或多聚合事务
   - valid legacy SOL 在 Resolver 命中 `Snapshot(source=sol)` 时，会被同步 seed 到当前运行根的 `saves/{slot}.json`
   - Bootstrap `list/load/load_raw` 只对标准 10 槽做 legacy 预热；自定义 legacy 槽不自动继承
-  - `resources/` 与 `CrazyFlashNight/` 是两套物理隔离运行根；authority、legacy SOL 搜索和删除都不跨根
+  - `resources/` 与 `CrazyFlashNight/` 是两套物理隔离运行根；启动快照决议、shadow 文件、legacy SOL 搜索和删除都不跨根
 - `launcher/README.md` 是该子系统的 source of truth
 
 ### D. Launcher Web / Minigames / Overlay 链
@@ -94,9 +96,9 @@
 - 集成测试入口：`--bus-only`
 - 鼠标手型迁移边界：AS2 `_root.鼠标` 是纯脚本兼容代理，只保留状态接口与物品拖拽容器；几何命中统一走 `_root._xmouse/_ymouse` 点命中和 `interactionMouseDown` / `interactionMouseUp` 事件，不再把 `_root.鼠标` 作为 `hitTest` 目标；`cursor_control` 只传低频状态。真实 cursor 视觉坐标由 Launcher 低级鼠标 hook / 坐标泵采样，视觉只由 C# `CursorOverlayForm` 原生 layered window 接管并按 monitor DPI 缩放；Web DOM 只通过 `cursorFeedback` 回传 hover/press 状态变化，不承担 cursor 视觉 fallback；AS2 仅在物品拖拽期间同步图标容器位置，不恢复旧鼠标视觉。
 
-### Save Authority Boundary
+### Save Snapshot / File-Custody Boundary
 
-- Launcher authority 固定落在 `<projectRoot>/saves/`；哪个根启动 launcher，就只认哪个根的 authority
+- Launcher 的 shadow 文件保管与启动快照候选固定落在 `<projectRoot>/saves/`；哪个根启动 launcher，就只读取和维护哪个根的文件
 - legacy SOL 定位只在当前运行根对应的 SharedObject 子树内进行，探测顺序为 `.swf` → `.exe` → 当前根 root-scoped fallback
 - `reset` / `rebuild` / legacy SOL 删除都只影响当前运行根，不承担跨根合并或恢复职责
 

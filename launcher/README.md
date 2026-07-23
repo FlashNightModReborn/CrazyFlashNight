@@ -5,7 +5,7 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
 > **最后核对架构与工作流**：2026-07-23。本文只维护 Launcher 的稳定入口、协议与验证规则，不复制各功能当前 tree 的 candidate、promotion、测试计数或真人验收状态；这些证据天然随提交变化，复制后会形成冲突的“第二事实源”。地图箱当前轮状态见 [实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md)，通用命令与判定口径见 [验证矩阵](../agentsDoc/testing-guide.md)。历史 release 只在对应冻结提交与发布记录中审计，不得外推到当前源码。
 > **冻结专项证据**：地图资源箱 Web-only source `2c87d31fecbbfb50c072ec199da0134755974402` 已由 immutable tag `runtime-build-v2/20260722-map-loot-web-only-v1`、request `F1F9493CF08DD88F26E1493FCACE306AC160866EA21440FC62698E5965A1AF04` 与 promotion commit `40119635ae5527225a425eb7f69af54f85115066` 完成正式发布；隔离 candidate attempt `82b9e602526c4e93a02d26aac0a44f20` 达到 `e2e_verified`，标准入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 达到 `standard_entry_verified`。该结论只覆盖冻结的 build identity `7C72B92B0C1CF57EB9BC0D3C1024D31657EE52E6B13D7BBF9FDB94FD5A6186DB`、payload closure `7E5EDCD4FEA80E1269C0B8BCC325D1FE0994EE8C7321F0F71CB9AF4B369C4A44` 与 Core SHA-256 `3EB1D3910B764F0B7F9ACA1FA989A4D8732F75479E64325223F270502256A5DF`，不得外推到后续源码。
-> **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
+> **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [启动期存档决议 (Protocol 2)](#启动期存档决议protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 > **路径约定**：正文与代码块中以裸 `tools/` 开头的脚本路径，除 `launcher/tools/` 下三个小游戏工具（`lockbox-bake.js` / `run-minigame-qa.js` / `validate-minigame-final-state.js`）外，**默认相对仓库根**（`launcher/` 的上一级，从仓库根执行）；跨出 launcher 的 markdown 链接统一用 `../`。
 
 ## 技术栈
@@ -390,12 +390,12 @@ launcher/
 │   │   └── BenchTrace.cs                  性能基准追踪（条件编译）
 │   │
 │   ├── Save/                              【启动前存档决议链 — Protocol 2】
-│   │   ├── SolResolver.cs                 决议矩阵入口：tombstone → shadow → SOL → 版本分流；`source=sol` 时同步首导入 authority
+│   │   ├── SolResolver.cs                 决议矩阵入口：tombstone → shadow → SOL → 版本分流；`source=sol` 时同步首导入 shadow
 │   │   ├── SolParserNative.cs             sol_parser.dll P/Invoke 封装
 │   │   ├── NativeSolParser.cs             `ISolParser` 默认实现
 │   │   ├── SolFileLocator.cs              SOL 路径定位（仅当前运行根；`.swf/.exe` 双兼容 + root-scoped fallback）
 │   │   ├── SaveMigrator.cs                2.7→3.0 迁移（含 legacy `mydata[3]` 缺失补 0）+ MergeTopLevelKeys + ValidateResolvedSnapshot
-│   │   ├── LegacyPresetSlotSeeder.cs      标准 10 槽 authority 预热：`list/load/load_raw` 前探测 legacy SOL 并补种 shadow
+│   │   ├── LegacyPresetSlotSeeder.cs      标准 10 槽 shadow 预热：`list/load/load_raw` 前探测 legacy SOL 并补种 shadow
 │   │   ├── SaveAutoRepairService.cs       启动期 silent 自动修复高置信度存档问题
 │   │   ├── RepairPolicy.cs / RepairDictionary.cs / RepairMatcher.cs / RepairBackupStore.cs
 │   │   ├── SaveCorruptionScanner.cs / SaveFieldLayering.cs / LauncherVersionGate.cs
@@ -1342,7 +1342,7 @@ zip 内容：
 ```
 diagnostic-{slot}-{ts}.zip
 ├── save/{slot}.json           当前编辑器聚焦的 shadow JSON
-├── save/{slot}.sol            通过 SolFileLocator 解析的 SOL 二进制原件（迁移期权威源对比需要）
+├── save/{slot}.sol            通过 SolFileLocator 解析的 SOL 二进制原件（启动决议源对比需要）
 ├── logs/launcher.log          + launcher.log.1（FileShare.ReadWrite 打开，避开锁）
 ├── logs/bootstrap.log         + bootstrap.log.old（native 引导器 + Core 早期启动诊断）
 ├── logs/perf-latest.jsonl     Core 启动性能时间线（若存在）
@@ -1475,11 +1475,11 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 - **前馈 hold**: 关卡脚本 setPerformanceLevel() 可挂起远程模式 N 秒
 - **断线后备**: AS2 极简阈值降级 (FPS<15→tier=1)；15 秒无样本自动触发 warmup
 
-### 存档权威迁移（Protocol 2）
+### 启动期存档决议（Protocol 2）
 
-自 2026-04-18 起，**存档权威从 AS2 迁到 Launcher**。启动期 Launcher 预先读并决议 shadow + SOL，通过 `bootstrap_handshake` 响应把 snapshot 直接下发给 Flash，彻底消除启动期 async I/O 等待。当前 v3.0 规则下，**同秒或更新的 shadow 会覆盖 SOL**，这样 Bootstrap editor / import 写入的 JSON 会在下次启动直接生效。
+自 2026-04-18 起，Launcher 拥有**启动期快照选择权和文件保管能力**：它预先读取并决议 shadow + SOL，通过 `bootstrap_handshake` 把 snapshot 直接下发给 Flash，消除启动期 async I/O 等待。运行期玩家状态的业务/语义权威仍在 AS2：AS2 从 `_root.*` 组装并写入 SOL，再把整份 shadow 推送给 Launcher；`ArchiveTask` 还不是领域事务、revision/CAS 或幂等命令核心。当前 v3.0 规则下，**同秒或更新的 shadow 会覆盖 SOL**，这样 Bootstrap editor / import 写入的 JSON 会在下次启动直接生效。
 
-自 2026-04-22 起，**valid legacy SOL 不再只是“临时给 Flash 用”**：当 Resolver 返回 `Snapshot(source=sol)` 时，会立刻通过 `ArchiveTask` 复用同一条 `.tmp -> rename` 原子写路径，把归一化后的 snapshot 首次落盘为 `saves/{slot}.json`。Bootstrap `list/load/load_raw` 还会在标准 10 槽上先做一次 legacy 预热，因此外部用户即使还没“先进游戏存一次”，只要当前运行根下存在可解析的旧 SOL，也能直接在 launcher editor / 任务系统里看到 authority。
+自 2026-04-22 起，**valid legacy SOL 不再只是“临时给 Flash 用”**：当 Resolver 返回 `Snapshot(source=sol)` 时，会立刻通过 `ArchiveTask` 复用同一条 `.tmp` 写完后删除旧目标、再移动到目标的替换路径，把归一化后的 snapshot 首次落盘为 `saves/{slot}.json`。Bootstrap `list/load/load_raw` 还会在标准 10 槽上先做一次 legacy 预热，因此外部用户即使还没“先进游戏存一次”，只要当前运行根下存在可解析的旧 SOL，也能直接在 launcher editor / 任务系统里看到已决议快照。当前实现不提供 crash-atomic replacement 或多文件事务保证。
 
 运行根边界也在同轮收紧：`resources/` 与 `CrazyFlashNight/` 继续保持物理隔离；`SolFileLocator` 只在**当前运行根**对应的 SharedObject 子树中搜索 `.swf` / `.exe` 两类历史路径，不再做跨根 glob；`rebuild` / legacy SOL 删除也只会作用于当前运行根。
 
@@ -1520,11 +1520,11 @@ SolResolver.Resolve(slot, swfPath)
               └─ shadow 严格更新（>）→ Snapshot(json_shadow)，否则 DeferToFlash
 ```
 
-当 `Snapshot(sol)` 成立时，Resolver 还会同步执行一次 authority seed：
+当 `Snapshot(sol)` 成立时，Resolver 还会同步执行一次 shadow seed：
 
 ```
 ArchiveTask.TrySeedShadowSync(slot, normalizedSnapshot)
-   └─ saves/{slot}.json.tmp → rename saves/{slot}.json
+   └─ 写 saves/{slot}.json.tmp → 删除旧目标（若有）→ Move 到 saves/{slot}.json
 ```
 
 seed 失败只记日志，不改变 `bootstrap_handshake` 的决议结果；也就是说，seed 失败时 Flash 仍会按 `snapshotSource: "sol"` 启动。
@@ -1560,21 +1560,21 @@ Flash 侧 `通信_fs_bootstrap.as` 把这些字段透传到 `_root._launcher*`�
 
 | 文件 | 职责 |
 |------|------|
-| `SolResolver.cs` | 决议入口，上述矩阵实现；`source=sol` 时触发 authority seed |
+| `SolResolver.cs` | 决议入口，上述矩阵实现；`source=sol` 时触发 shadow seed |
 | `SolParserNative.cs` | sol_parser.dll P/Invoke（UTF-16 路径，UTF-8 JSON 回传） |
 | `SolFileLocator.cs` | 多 hash 子目录；只搜当前运行根，兼容 `.swf + .exe` 父目录，不跨根 fallback |
 | `SaveMigrator.cs` | 2.7→3.0 迁移（含 legacy 主线位补 0）+ MergeTopLevelKeys + ValidateResolvedSnapshot |
-| `LegacyPresetSlotSeeder.cs` | Bootstrap `list/load/load_raw` 前预热标准 10 槽，把 valid legacy SOL 提前 seed 成 authority |
+| `LegacyPresetSlotSeeder.cs` | Bootstrap `list/load/load_raw` 前预热标准 10 槽，把 valid legacy SOL 提前 seed 为 shadow 文件 |
 | `SaveResolutionContext.cs` | DI 聚合（传给 GameLaunchFlow / Bootstrap handlers） |
 
 ### ArchiveTask shadow 辅助链
 
-shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolver 的候选权威源。Bootstrap UI 的存档 CRUD / import / editor 全都写这条链；下次启动时，只要 shadow `lastSaved` 同秒或更新于 SOL，就会直接作为 `json_shadow` snapshot 下发给 Flash。
+shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolver 的 snapshot 候选。Bootstrap UI 的存档 CRUD / import / editor 全都写这条链；下次启动时，只要 shadow `lastSaved` 同秒或更新于 SOL，就会直接作为 `json_shadow` snapshot 下发给 Flash。
 
-现在这条链还承担 **legacy authority 首导入**：
+现在这条链还承担 **legacy shadow 首导入**：
 
-- `SolResolver` 返回 `Snapshot(source=sol)` 时，立即把归一化后的 snapshot 原子落盘到 `saves/{slot}.json`
-- `ArchiveCommandHandler` 在 `list/load/load_raw` 前对标准 10 槽执行预热；若当前 authority 缺失但当前根存在 valid legacy SOL，会先 seed shadow 再继续现有查询逻辑
+- `SolResolver` 返回 `Snapshot(source=sol)` 时，立即把归一化后的 snapshot 经现役 delete-and-move 替换路径落盘到 `saves/{slot}.json`；这不是 crash-atomic replacement 证明
+- `ArchiveCommandHandler` 在 `list/load/load_raw` 前对标准 10 槽执行预热；若当前 shadow 缺失但当前根存在 valid legacy SOL，会先 seed shadow 再继续现有查询逻辑
 - 预热只覆盖 `crazyflasher7_saves` 到 `crazyflasher7_saves9`；自定义 legacy 槽名不在自动继承范围内
 - root 隔离保持不变：每个 launcher 运行根只看自己的 `saves/` 与自己的 SharedObject 子树，不会跨 `resources/` / `CrazyFlashNight/` 互相读档或删档
 
@@ -1582,11 +1582,11 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 
 | op | 方向 | 动作 |
 |----|------|------|
-| `shadow` | Flash → C# | 游戏内存盘时推 mydata JSON，落盘为 `saves/{slot}.json`（tmp + rename 原子写），附带前后快照语义 diff 发 warnings |
+| `shadow` | Flash → C# | 游戏内存盘时推 mydata JSON，写 tmp 后以 delete-and-move 替换 `saves/{slot}.json`（当前无 crash-atomic replacement 保证），附带前后快照语义 diff 发 warnings |
 | `load` | Flash → C# | 按 slot 读 shadow JSON 返回；遇 tombstone 直接报错 |
 | `load_raw` | Bootstrap → C# | 绕过 tombstone 读原始 JSON（editor 用） |
 | `list` | Bootstrap → C# | 枚举所有 slot（合并 .json + .tombstone），带 corrupt/inconsistent/mainProgress 元信息 |
-| `delete` | Bootstrap → C# | 原子写 `.tombstone` 再删 `.json` |
+| `delete` | Bootstrap → C# | 写 tmp 后以 delete-and-move 替换 `.tombstone`，再删 `.json`；当前不是跨两文件事务 |
 | `reset` | Bootstrap → C# | 清 launcher 副本 + tombstone（不清 SOL） |
 
 **HTTP `/save-push`**（辅助接口，非启动主路径）：从 `saves/` 读指定 slot 的 JSON，通过 XMLSocket 推给 AS2（`save_push` task），可被外部工具用于调试/恢复。启动期恢复不走这条——主路径是 Protocol 2 的 `bootstrap_handshake` snapshot 下发。
