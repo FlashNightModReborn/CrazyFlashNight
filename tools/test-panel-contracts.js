@@ -66,11 +66,14 @@ function run() {
       "hairdresser must not invent numeric boundaries or filler vectors");
   });
 
-  test("hairdresser AS2 opener and production install remain reachable", function () {
+  test("hairdresser AS2 opener is Web-only and retired renderer cannot return", function () {
     const service = read("scripts/类定义/org/flashNight/arki/ui/HairdresserPanelService.as");
     const install = read("scripts/展现/UI交互/UI交互_lsy_UI管理.as");
     const npc = read(
       "flashswf/levels/基地场景合集/LIBRARY/sprite/理发师/理发师-NPC.xml");
+    const uiDocument = read("flashswf/UI/基地特殊UI合集/DOMDocument.xml");
+    const uiLibrary = read("flashswf/UI/基地特殊UI合集/LIBRARY/素材库-基地特殊UI.xml");
+    const mainDocument = read("CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml");
     assert((service.match(/_root\.gameCommands\["openHairdresser"\]\s*=/g) || []).length === 1,
       "expected one openHairdresser command registration");
     assert(service.includes(
@@ -83,9 +86,29 @@ function run() {
       "production activation must install HairdresserPanelService exactly once");
     assert((npc.match(/_root\.gameCommands\["openHairdresser"\]\(\)/g) || []).length === 1,
       "the production hairdresser NPC must call openHairdresser exactly once");
-    assert((npc.match(/_root\.从库中加载外部UI\("理发店界面"\)/g) || []).length === 1
-      && npc.includes('if (!opened) _root.从库中加载外部UI("理发店界面");'),
-      "the legacy hairdresser UI must remain only as the send-failure fallback");
+    assert(!npc.includes("理发店界面") && !npc.includes("if (!opened)"),
+      "the production hairdresser NPC must fail closed without the retired renderer");
+    assert(!uiDocument.includes('href="理发店界面.xml"')
+      && !uiDocument.includes('libraryItemName="理发店界面"')
+      && !uiLibrary.includes('libraryItemName="理发店界面"'),
+      "the retired renderer must not remain bound into the base UI XFL");
+    assert(!fs.existsSync(path.join(
+      ROOT, "flashswf/UI/基地特殊UI合集/LIBRARY/理发店界面.xml"))
+      && !fs.existsSync(path.join(
+        ROOT, "flashswf/UI/基地特殊UI合集/LIBRARY/sprite/Symbol 31.xml")),
+      "the retired renderer and 发型TAB linkage sources must be deleted");
+    ["改变发型", "预览发型", "恢复发型"].forEach(function (name) {
+      assert(!new RegExp("function\\s+" + name + "\\s*\\(").test(mainDocument),
+        "retired global function must stay absent: " + name);
+    });
+    assert((mainDocument.match(
+      /_root\.发型 = "发型-男式-黑暴走头";/g) || []).length === 1
+      && (mainDocument.match(
+        /_root\.发型 = "发型-女式-咖啡色中长马尾";/g) || []).length === 1,
+      "new-character male/female default hair writers must remain exact");
+    assert((mainDocument.match(/name="界面-发型选择[1-4]"/g) || []).length === 8
+      && (mainDocument.match(/控制值 = "发型";/g) || []).length === 2,
+      "new-character appearance selectors must remain outside hairdresser cleanup");
   });
 
   test("hairdresser Web activation remains exact and production-reachable", function () {

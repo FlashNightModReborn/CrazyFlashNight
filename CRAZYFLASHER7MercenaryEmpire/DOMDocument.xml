@@ -1280,21 +1280,6 @@ _root.__boot.mainReadyToContinue = true;]]></script>
 脸型库[0] = "女变装-基本脸型";
 脸型库[1] = "男变装-基本脸型";
 
-function 改变发型(target, num)
-{
-   target.发型 = _root.发型库[num];
-   _root.发型 = _root.发型库[num];
-}
-function 预览发型(target, num)
-{
-   target.发型 = _root.发型库[num];
-   target.gotoAndPlay(刷新装扮);
-}
-function 恢复发型(target)
-{
-   target.发型 = _root.发型;
-   target.gotoAndPlay(刷新装扮);
-}
 ]]></script>
                                    </Actionscript>
                                    <elements/>
