@@ -17,6 +17,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         testCatalogGateHasNoWrite();
         testCommitPreconditionsHaveNoWrite();
         testCommitWritesAndRefreshesOnce();
+        testOpenPanelEnvelope();
         testResponseEnvelope();
         trace("HairdresserPanelServiceTest Tests Passed: " + passed);
         trace("HairdresserPanelServiceTest Tests Failed: " + failed);
@@ -206,6 +207,27 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         check(_root.金钱 == 1234 && _root.虚拟币 == 567
             && _root.存档系统.saveCalls == 0,
             "commit does not charge currency or autosave");
+    }
+
+    private static function testOpenPanelEnvelope():Void {
+        resetState();
+        _root.server = undefined;
+        check(!_root.gameCommands["openHairdresser"](),
+            "open entry fails closed when the socket sender is unavailable");
+
+        _root.server = {sent:"", result:true};
+        _root.server.sendSocketMessage = function(message:String):Boolean {
+            this.sent = message;
+            return this.result;
+        };
+        var opened:Boolean = _root.gameCommands["openHairdresser"]();
+        check(opened && _root.server.sent
+            == '{"task":"panel_request","panel":"hairdresser","source":"world_hairdresser"}',
+            "open entry emits the exact hairdresser panel_request envelope");
+
+        _root.server.result = false;
+        check(!_root.gameCommands["openHairdresser"](),
+            "open entry propagates send failure for the NPC fallback decision");
     }
 
     private static function testResponseEnvelope():Void {

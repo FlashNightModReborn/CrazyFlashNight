@@ -182,6 +182,24 @@
       ]
     },
     {
+      "id": "hairdresser",
+      "wireDomain": "hairdresser",
+      "hostTask": "launcher/src/Tasks/HairdresserTask.cs",
+      "flashResponseTask": "hairdresser_response",
+      "hostResponseHandler": "hairdresserTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.HairdresserPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/HairdresserPanelService.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "hairdresserSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "commit", "action": "hairdresserCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
       "id": "kshop",
       "wireDomain": "shop",
       "hostTask": "launcher/src/Tasks/ShopTask.cs",

@@ -68,6 +68,11 @@ $lootRequiredWebPaths = @(
     'modules\loot\loot-organizer.js',
     'modules\loot\loot-panel.js'
 )
+$hairdresserRequiredWebPaths = @(
+    'css\hairdresser.css',
+    'modules\hairdresser-runtime.js',
+    'modules\hairdresser.js'
+)
 $requiredWebPathsMatch = [regex]::Match(
     $validatorSource,
     '(?s)\$requiredWebPaths\s*=\s*@\((?<body>.*?)\)\s*\r?\n\s*\$checks\s*\+=\s*New-Cf7RequiredPathsCheck\s+-Name\s+''required-web-runtime-assets''')
@@ -76,6 +81,10 @@ Assert-Cf7Test $requiredWebPathsMatch.Success `
 foreach ($relativePath in $lootRequiredWebPaths) {
     Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
         "production required-Web-assets must include the loot panel asset: $relativePath"
+}
+foreach ($relativePath in $hairdresserRequiredWebPaths) {
+    Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
+        "production required-Web-assets must include the hairdresser panel asset: $relativePath"
 }
 
 New-Item -ItemType Directory -Path $fixtureRoot -Force | Out-Null

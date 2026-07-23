@@ -26,7 +26,8 @@ const IMPORTS = [
     './workbench/equipment-tuning.css',
     './workbench/components.css',
     './workbench/states.css',
-    './workbench/motion.css'
+    './workbench/motion.css',
+    './hairdresser.css'
 ];
 
 function fail(message) {

@@ -49,10 +49,61 @@ function run() {
     const report = validator.validateRepository({ root: ROOT, contract: clone(contract) });
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
-    assert(report.checked.domains === 3, "expected three governed domains");
-    assert(report.checked.commands === 19, "expected nineteen governed command mappings");
-    assert(!contract.domains.some(function (domain) { return domain.id === "hairdresser"; }),
-      "F1 must not pre-register the F3 hairdresser pilot");
+    assert(report.checked.domains === 4, "expected four governed domains");
+    assert(report.checked.commands === 21, "expected twenty-one governed command mappings");
+    const hairdresser = contract.domains.find(function (domain) {
+      return domain.id === "hairdresser";
+    });
+    assert(hairdresser && hairdresser.hostPayloadMode === "normalized",
+      "F3 hairdresser domain must use the normalized Host boundary");
+    assert(hairdresser.commands.length === 2
+      && hairdresser.commands[0].cmd === "snapshot"
+      && hairdresser.commands[1].cmd === "commit",
+      "hairdresser must expose only the frozen snapshot/commit pair");
+    assert(hairdresser.numericFields.length === 0
+      && hairdresser.sourceChecks.length === 0
+      && !contract.vectors.hairdresser,
+      "hairdresser must not invent numeric boundaries or filler vectors");
+  });
+
+  test("hairdresser AS2 opener and production install remain reachable", function () {
+    const service = read("scripts/类定义/org/flashNight/arki/ui/HairdresserPanelService.as");
+    const install = read("scripts/展现/UI交互/UI交互_lsy_UI管理.as");
+    assert((service.match(/_root\.gameCommands\["openHairdresser"\]\s*=/g) || []).length === 1,
+      "expected one openHairdresser command registration");
+    assert(service.includes(
+      'org.flashNight.arki.ui.PanelRequestEnvelope.build(\n'
+      + '            "hairdresser", "world_hairdresser", [], []\n'
+      + "        )"),
+      "openHairdresser must emit the exact field-free panel_request");
+    assert((install.match(
+      /org\.flashNight\.arki\.ui\.HairdresserPanelService\.install\(\);/g) || []).length === 1,
+      "production activation must install HairdresserPanelService exactly once");
+  });
+
+  test("hairdresser Web activation remains exact and production-reachable", function () {
+    const registry = read("launcher/web/modules/panels-lazy-registry.js");
+    const match = registry.match(
+      /Panels\.registerLazy\('hairdresser',([\s\S]*?)\n\s*noop\);/);
+    assert(match, "hairdresser lazy registration is missing");
+    const dependencies = Array.from(match[1].matchAll(/'([^']+\.js)'/g),
+      function (entry) { return entry[1]; });
+    assert(JSON.stringify(dependencies) === JSON.stringify([
+      "modules/panel-runtime.js",
+      "modules/asset-timeline.js",
+      "modules/dressup-doll-renderer.js",
+      "modules/hairdresser-runtime.js",
+      "modules/hairdresser.js"
+    ]), "hairdresser lazy dependencies must remain minimal and ordered");
+    assert(!match[1].includes("panel-scale.js"),
+      "boot-loaded PanelScale must not be executed again by the lazy loader");
+
+    const cssFacade = read("launcher/web/css/panels.css");
+    assert((cssFacade.match(/@import url\("\.\/hairdresser\.css"\);/g) || []).length === 1,
+      "production panels CSS must import hairdresser.css exactly once");
+    const harness = read("launcher/web/modules/hairdresser/dev/harness.html");
+    assert(!harness.includes('href="/launcher/web/css/hairdresser.css"'),
+      "hairdresser harness must exercise the production CSS facade");
   });
 
   test("transaction previews remain read access without collapsing into queries", function () {
@@ -60,7 +111,8 @@ function run() {
       contract.domains[0].commands.find(function (command) { return command.cmd === "batchPreview"; }),
       contract.domains[0].commands.find(function (command) { return command.cmd === "tradePreview"; }),
       contract.domains[1].commands.find(function (command) { return command.cmd === "preview"; }),
-      contract.domains[2].commands.find(function (command) { return command.cmd === "checkoutPreview"; })
+      contract.domains.find(function (domain) { return domain.id === "kshop"; })
+        .commands.find(function (command) { return command.cmd === "checkoutPreview"; })
     ];
     assert(previewCommands.every(function (command) {
       return command && command.capability === "transaction" && command.access === "read";

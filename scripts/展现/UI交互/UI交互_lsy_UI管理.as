@@ -56,6 +56,7 @@ _root.加载引导界面 = function(filename){
 // C#→AS2 游戏命令注册
 // ============================================================
 if (_root.gameCommands == undefined) _root.gameCommands = {};
+org.flashNight.arki.ui.HairdresserPanelService.install();
 
 _root.gameCommands["togglePause"] = function() {
     _root.暂停 = !_root.暂停;  // watch 自动 pushUiState("p:0/1")

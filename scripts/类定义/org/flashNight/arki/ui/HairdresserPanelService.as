@@ -20,6 +20,19 @@ class org.flashNight.arki.ui.HairdresserPanelService {
         _root.gameCommands["hairdresserCommit"] = function(params) {
             org.flashNight.arki.ui.HairdresserPanelService.handle("commit", params);
         };
+        _root.gameCommands["openHairdresser"] = function():Boolean {
+            return org.flashNight.arki.ui.HairdresserPanelService.openPanel();
+        };
+    }
+
+    public static function openPanel():Boolean {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) {
+            return false;
+        }
+        var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
+            "hairdresser", "world_hairdresser", [], []
+        );
+        return _root.server.sendSocketMessage(payload);
     }
 
     public static function handle(commandName:String, params:Object):Void {
