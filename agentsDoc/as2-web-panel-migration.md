@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `466b899b515078169f342f7e0541be04e0f6e81d`（2026-07-23）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
+**最后核对代码基线**：commit `5b624757113c302ec756b0a8a6a809a2a8d862a5`（2026-07-23）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
@@ -28,7 +28,7 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 | 静态原型 | 只有 `launcher/web/modules/*/dev/` harness、mock 数据、美术资源 | 不得说“已接入运行态” |
 | Web panel 原型 | 有正式 JS module 与 `Panels.register`，但未接 AS2 / C# 写操作 | 不得说“功能完成” |
 | 协议接入 | Web cmd、C# Task、AS2 handler、response task 全链存在 | 不得跳过验证直接合并 |
-| 生产可用 | 完成构建、xUnit / harness、Flash fresh trace 或人工复核、游戏内端到端手测 | 才能说“迁移完成” |
+| 生产可用 | 完成构建、xUnit / harness、Flash fresh trace / fresh Output Panel 副本 / IDE 复核（明确证据类型）、游戏内端到端手测 | 才能说“迁移完成” |
 
 `modules/*/dev` 默认只是原型。进入生产前必须有正式模块、panel 注册、协议接入、验证入口和文档同步。
 
@@ -132,6 +132,19 @@ Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{typ
 
 `CraftingTask` 与 Web 均采用 `idle/write_pending/needs_reconcile`。Web 把每次成功 preview 保存为同 `category/recipeIndex/craftCount` 的 checkpoint：普通 preview timeout/client_timeout/disconnected/畸形或未知非权威读错恢复 checkpoint 并继续可操作；stale/category/recipe/item/material/money/kpoint/inventory/level/batch 分歧先刷新 snapshot。只有回包明示 `requiresReconcile/reconcile_required`，或已投递 commit 的 timeout/drop/disconnected/畸形结果才进入写对账；同步未投递的 commit 失败保持可操作，任何失败都禁止自动重放；合成的对账读必须是同一 recipeIndex 的结构完整 `preview`，因为它同时覆盖材料、余额、容量和产物状态，成功 preview 才解除 Host 写门。单独 `snapshot` 不足以证明具体配方资源状态，不得解除 `needs_reconcile`。
 
+基地理发店使用独立 `hairdresser` domain，入口固定为 `基地场景合集` 中理发师 NPC → `_root.gameCommands["openHairdresser"]()` → 精确 `panel_request {panel:"hairdresser",source:"world_hairdresser"}`；命令缺失或 socket 发送失败时，才执行同一入口内唯一的 `if (!opened) _root.从库中加载外部UI("理发店界面")`。旧 Flash UI 在真实 candidate E2E、写后完整重启回读和维护者入口/视觉验收前仍是冻结 fallback，不能提前删除；主 XFL 的三个全局发型函数也不在 F3 删除。
+
+| Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
+|---------|-----------|-------------|-------------------|---------------|------------|--------|
+| `snapshot` | `hairdresserSnapshot` | `HairdresserPanelService.handle("snapshot")` → `executeSnapshot` | `hairdresser_response` | `panel_resp domain=hairdresser cmd=snapshot` | `HairdresserRuntime.RequestMux` callback | 读；`gender/face/currentHair` + 77 行权威目录 |
+| `commit` | `hairdresserCommit` | `HairdresserPanelService.handle("commit")` → `executeCommit` | `hairdresser_response` | `panel_resp domain=hairdresser cmd=commit` | 提交 / 对账 callback | 写；发型 root + live actor 刷新 + dirty mark |
+
+AS2 从现役 `_root.发型库 / 发型名称库 / 发型价格` 三数组逐行投影 `{identifier,name}`，必须保持 77 行源顺序和重复项，不按 identifier/name 去重；长度不一致、空标识、非数值价格或任一非零价格均整体 fail-closed。snapshot 的 `gender/face/currentHair` 是权威文本；Web 不反猜二值性别，renderer 无法识别时只显示可读降级，目录和提交仍可用。发型选择只在 Web 内以既有 `DressupDollRenderer` 预览脸型/发型，使用 strict fields、非动画且光头项只渲染脸型；预览、取消、X、ESC、backdrop 和 close 都不写业务状态。
+
+commit 只接受 `{v:1,hairIdentifier}`，不接受价格、货币、backend preview、execution token 或任意 catalog 行对象。AS2 每次重新解析当前免费目录，并在写前一次性确认目标存在、root actor、live actor、存档对象与装扮刷新方法可用；全部前置条件通过后，顺序固定为 `_root.发型` → live actor `发型` → `gotoAndPlay("刷新装扮")` → `_root.存档系统.dirtyMark=true`。它保持现役免费语义，不扣 K 点/金币，也不新增自动存盘命令。
+
+`HairdresserTask` 直接组合同一 `PanelPendingCallTracker<TContext>`，只在领域内维护 `idle/write_pending/needs_reconcile` 和期望发型。确定成功或确定失败恢复 idle；已投递 commit 的 timeout、send-false、断线、畸形或未知回包进入 `needs_reconcile`。随后只准发新鲜、结构完整且越过在途写的 snapshot；若 `currentHair` 等于期望值则记为 applied，否则记为 not-applied，两种都可解除写门，任何路径都禁止自动重放 commit。Web 仍用共享 `PanelRequestMux` 做 generation/session 隔离；生产 PanelHost close observer 同时显式调用 `HairdresserTask.ClearPending()`。若关闭时已有 commit，clear 只终结 transport pending 并保留领域 `needs_reconcile` 与期望发型；重开再以 post-unknown fresh snapshot 收敛，旧 commit 回包不得复活，也不得跨会话保留选择或重放写。
+
 资源 lease 与交易计划 token 必须分开治理。`slotLease` 是 inventory 资源的 OCC 版本：同一 `ArrayInventory` 实例、同一 `mutationRevision`、同一槽位引用与确认指纹上的重复 snapshot 必须返回同一 opaque lease，纯读不得调用全局 session reset 或使其他面板刚取得的 lease 失效；snapshot 同时回显 `containerVersion` 供诊断。任一真实容器写入推进 `mutationRevision`，容器替换、引用/数量/名称/强化/进阶/插件/更新时间变化也必须使旧 lease 返回 `stale_state`。NPC 材料/情报的 collection lease 同理：同商店、同 view/key/count 的重复读保持稳定，切换商店、键消失或数量变化才轮换并清理旧映射。`tradeToken` / `checkoutToken` / batch token 是一次性交易计划，显式重同步或一次提交尝试后仍须失效，不能为了“稳定 lease”改成可重放。
 
 装备调制的 Web 组合遵守同一边界：顶层固定为“强化度 / 交换 / 进阶 / 配件”四栏，wire 为七类 operation（含 Web 组合态 `replace_mod`；旧 renderer 仍只适配原六类入口）。成功 snapshot 顶层必须携带规范化 `gender:"男"|"女"`；AS2 由 `_root.性别` 生成，Host 对缺失/非法值以及 commit 内嵌畸形 snapshot 一律 fail-closed，Web 不猜默认性别。强化度采用本地整数目标控件，停止调整后 debounce 发送最终 target，任何材料消耗只显示 AS2 preview，最终仍以单枚 token 提交；snapshot 的材料持有量按 `{itemName,count}[]` 读取，动态 `availableMaxLevel` 与永久 `hardMaxLevel=13` 必须分开，封顶态不得构造不可执行的 `+14`。强化石当前持有、preview 消耗和强化后剩余统一在顶部 DLS 核心呈现，持有数是主信息；强化 footer 只保留动态 CTA，不再重复装备 delta、材料行和核算说明。不得恢复逐级确认、二级强化切换行或常驻“核算强化”按钮。进入交换态时，左栏继续只承担主装备选择，既有 `filterKey/filterSpec`、面包屑和排序不得被改写；组合层通过 inventory coordinator 的独立只读 projection，以 source 的精确 `majorType + use` 取得带新鲜 lease 的同类装备并在右栏渲染目标候选。与 source 强化度相同的装备不进入 Web 候选目录，空态须明确说明“没有强化度不同的同类装备”；AS2 同级 no-op 校验继续保留以处理 projection 后状态变化。projection 不写回可见 `_requests/_windows`，同槽/不同 use 仍由 Web 收敛与 AS2 二次拒绝，右栏候选不能成为安全边界。候选 tooltip 必须把 AS2 `TooltipComposer` 产出的 `introHTML/descHTML/itemType/itemUse` 保持分段到共享 `PanelTooltip`，不得提前拼成单列；玩家态 workbench 禁止浏览器原生 `title` 与富注释竞争，精确信息使用可见文案、`aria-label` 或共享 tooltip。配件候选的“档级 / 用途 / 定位 / 状态”树与面包屑复用 `ItemFilter.FilterNavigator`，但由 tuning host CSS variables 与 scoped active state 呈现 DLS 晶体索引风格，不分叉共享筛选逻辑；分类只消费 `EquipmentTuningService.modCandidates[]` 的展示投影；点击已安装配件只进入替换选择，`replace_mod {candidateKey,replaceCandidateKey}` 必须由 AS2 在一次 preview/commit 中原子完成旧件及其直接依赖返还、新件扣除和最终配置写入，另保留显式单拆/全拆与每个已安装件的专用单拆按钮。顶栏提供本地持久化的“配件｜安全 / 快速”：安全模式是默认值，所有操作停在权威预览；快速模式仍先取 AS2 preview/token，只允许材料 delta 精确匹配且 `removedMods` 无连带项的单件安装、单件替换、单件卸下自动提交。任何依赖级联、额外材料返还、no-op、卸下全部以及强化/交换/进阶都必须停在预览，模式切换不得增加 wire 字段或绕过 `beginExternalWrite`。commit 的 `_busy` 与 write capability 必须覆盖同步回包后的 inventory refresh 整段；刷新 settle 前不得接受换装备或发起新 snapshot，释放后只能基于新 lease 继续。紧凑密度只作用候选目录，严格复用 owned grid 的 `48px` 格、`40px` 图标、`4px` 间距和持有数量角标，最低 1024×576 画布下 25 个候选必须无需滚屏全部可达，预览/材料/提交决策区保持固定信息量。整个工作台使用 DLS 青/深蓝/黑铁语言，插件档级、危险动作等语义色仍保持独立；强化栏目只允许一个强化石动态能量核心，紧凑和 reduced-motion 使用静态首帧；当前升阶与已安装插件使用真实物品图标，不退化为纯文字状态。`?` 位于 workbench 顶栏，与技能/商店的帮助层级一致，通过共享 modal 解释强化度、交换、进阶、配件筛选、直接替换、安全/快速边界及“选择只预览、确认后提交”，开闭不得产生业务消息。自动门至少固定 fresh `EquipmentTuningServiceTest 39/39`、`InventoryPanelServiceTest 92/92`、三视口调制 harness `68/68`、共享 KShop/工作台回归 `88/88`，以及 `asLoader.swf` 刷新与 Compiler Errors `0/0`。
@@ -189,17 +202,17 @@ snapshot 请求的 `filterKey=all|weapon|armor|consumable|material|other` 由 C#
 
 ### 2.4 跨层契约与交互生命周期（2026-07-22）
 
-NPC/KShop/Crafting 的唯一可执行登记表为 [`launcher/contracts/panel-contracts.v2.json`](../launcher/contracts/panel-contracts.v2.json)。v2 把 `(wireDomain, cmd)` 冻结为全局唯一命令身份，并逐命令记录 cmd→全局唯一 AS2 action、`query|transaction` capability、read/write access 与唯一 `businessDecisionOwner=as2`；`query` 只能 read，铸造/消费短期计划的 preview 则保持 `transaction + read`，不能按 access 误降成 query。domain 的 nullable `flashCommandHandler` 只表达现役 wrapper binding：NpcShop/Crafting 记录精确 delegated `handle` receiver，KShop 以 `null` 明确保持 inline；`action + flashCommandHandler + flashResponseTask + hostResponseHandler` 共同构成请求/回包 handler binding。validator 在剥离注释和字符串伪证据后对照 `HandleWebRequest` 的 command resolver/domain fail-closed 分支、Host command map、AS2 可执行注册和 `TaskRegistry`，拒绝未登记 Host 命令、跨域重复 action/response handler、错误 action→cmd/receiver dispatch、未执行裁决路径或跨 handler 错绑。`callId/fid` 只作现役 transport correlation；`shopId/category/lease/token` 等领域身份仍由各 Task/AS2 校验，不进入第二份通用 identity 表。无数值边界的真实 domain 可用空 `numericFields/sourceChecks` 且不得填 vector 占位，F3 试点只能在真实绑定同阶段登记。NPC `purchaseQuantity.interactionPolicy` 仍机器化固定 `purchaseLimit` 为 preview 输入硬上限、`maxPurchasable` 为直接提交与“最大”目标、不可提交意图只预览不写，以及 preview 在途采用 `visible-lock`；字段缺失、两类上限混用或回退到静默吞点击都必须由契约变异测试拒绝。C# xUnit 直接读同一份 fixture；NPC 与 KShop 固定覆盖 `1/99/100/101/4549/999999` 与非法 `0/1000000`，Crafting 保持固定 `1..99`。契约只约束跨层语义与技术边界，不替代 AS2 对价格、持有量、容量与存档的最终裁决。详细 ADR 见 [Web Panel 跨层契约与交互可靠性专项治理](../docs/Web-Panel跨层契约与交互可靠性专项治理-2026-07-22.md)。
+NPC/KShop/Crafting/Hairdresser 的唯一可执行登记表为 [`launcher/contracts/panel-contracts.v2.json`](../launcher/contracts/panel-contracts.v2.json)。v2 把 `(wireDomain, cmd)` 冻结为全局唯一命令身份，并逐命令记录 cmd→全局唯一 AS2 action、`query|transaction` capability、read/write access 与唯一 `businessDecisionOwner=as2`；`query` 只能 read，铸造/消费短期计划的 preview 则保持 `transaction + read`，不能按 access 误降成 query。domain 的 nullable `flashCommandHandler` 只表达现役 wrapper binding：NpcShop/Crafting/Hairdresser 记录精确 delegated `handle` receiver，KShop 以 `null` 明确保持 inline；`action + flashCommandHandler + flashResponseTask + hostResponseHandler` 共同构成请求/回包 handler binding。validator 在剥离注释和字符串伪证据后对照 `HandleWebRequest` 的 command resolver/domain fail-closed 分支、Host command map、AS2 可执行注册和 `TaskRegistry`，拒绝未登记 Host 命令、跨域重复 action/response handler、错误 action→cmd/receiver dispatch、未执行裁决路径或跨 handler 错绑。`callId/fid` 只作现役 transport correlation；`shopId/category/lease/token` 等领域身份仍由各 Task/AS2 校验，不进入第二份通用 identity 表。Hairdresser 作为真实无数值边界 domain 使用空 `numericFields/sourceChecks` 且不填 vector 占位。NPC `purchaseQuantity.interactionPolicy` 仍机器化固定 `purchaseLimit` 为 preview 输入硬上限、`maxPurchasable` 为直接提交与“最大”目标、不可提交意图只预览不写，以及 preview 在途采用 `visible-lock`；字段缺失、两类上限混用或回退到静默吞点击都必须由契约变异测试拒绝。C# xUnit 直接读同一份 fixture；NPC 与 KShop 固定覆盖 `1/99/100/101/4549/999999` 与非法 `0/1000000`，Crafting 保持固定 `1..99`。契约只约束跨层语义与技术边界，不替代 AS2 对价格、持有量、容量与存档的最终裁决。详细 ADR 见 [Web Panel 跨层契约与交互可靠性专项治理](../docs/Web-Panel跨层契约与交互可靠性专项治理-2026-07-22.md)。
 
 凡 preview 改变可见本地意图，必须同时定义成功 checkpoint、迟到回包 epoch 隔离、普通读失败恢复、权威失鲜刷新和写结果未知 reconcile 五条路径；不得用单一 `error/busy` 布尔值合并。共享 Tooltip 的可见性由“有效 owner + 触发物/浮层复合 hover”决定；grace 结束后必须用真实命中状态复核空白终态，panel close/scope dispose 立即清理 owner、surface、timer 与 focus restore。浏览器回归必须同时用 pointer 和 pen 的真实 `PointerEvent` 覆盖复合过桥/快速划入空白，并为仍调用 `showAtMouse/hideHover` 的 legacy 消费者保留物理鼠标探针；直接调内部函数不能替代浏览器事件链。
 
-NpcShop 与 Crafting 的 Host transport lifecycle 统一组合内部 sealed `PanelPendingCallTracker<TContext>`。helper 只拥有 backend/Web callId correlation、pending/Timer、active/recent 去重、readiness/send、timeout、迟到/重复抑制和 clear/dispose drain；`TContext` 对它完全 opaque，command、payload、read/write、token、业务 verdict、`writeState` 与何种读可解除 reconcile 全部留在领域 Task。response、timeout、send-false、clear 与 dispose 都通过同一个原子 take 竞争唯一终态，callback 在 helper 锁外执行；`XmlSocketServer.TrySend(false)` 内部保守记为 `DeliveryUnknown`，Task 对现役 wire 仍映射 `disconnected`，且只由领域自己的 `IsWrite` 决定是否返回 `requiresReconcile`。`ClearPending()` / shutdown dispose 不伪造 Web 回包，但已开始的写必须进入领域 `needs_reconcile`；dispose 是 shutdown-only 终态，返回后拒绝新的请求入队，三条进程退出路径都显式 dispose 两个 Task。Web 继续使用独立的 `PanelRequestMux` 做 browser generation/session 隔离，普通 panel close 不直接 drain Host helper；Skill/Loot 的 execution lease 与恢复机制不接入本 helper。
+NpcShop、Crafting 与 Hairdresser 的 Host transport lifecycle 统一组合内部 sealed `PanelPendingCallTracker<TContext>`。helper 只拥有 backend/Web callId correlation、pending/Timer、active/recent 去重、readiness/send、timeout、迟到/重复抑制和 clear/dispose drain；`TContext` 对它完全 opaque，command、payload、read/write、token、业务 verdict、`writeState` 与何种读可解除 reconcile 全部留在领域 Task。response、timeout、send-false、clear 与 dispose 都通过同一个原子 take 竞争唯一终态，callback 在 helper 锁外执行；`XmlSocketServer.TrySend(false)` 内部保守记为 `DeliveryUnknown`，Task 对现役 wire 仍映射 `disconnected`，且只由领域自己的 `IsWrite` 决定是否返回 `requiresReconcile`。`ClearPending()` / shutdown dispose 不伪造 Web 回包，但已开始的写必须进入领域 `needs_reconcile`；dispose 是 shutdown-only 终态，返回后拒绝新的请求入队，三条进程退出路径都显式 dispose 三个 Task。Web 继续使用独立的 `PanelRequestMux` 做 browser generation/session 隔离；NpcShop/Crafting 的普通 browser close 不直接 drain Host helper，而 Hairdresser 的生产 close observer 会显式 clear 其 pending 并保留未知写对账门。Skill/Loot 的 execution lease 与恢复机制不接入本 helper。
 
 ## 3. C# 接入清单
 
 新增生产 panel 的 C# 最小接入面：
 
-- `launcher/src/Tasks/*Task.cs`：NpcShop/Crafting 已作为两个参考消费者组合 `PanelPendingCallTracker<TContext>`；具名 P0-F F3 试点必须直接复用它，不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。领域 Task 仍独占 payload/response 白名单、写门和 reconcile 裁决；其他领域不因 P0-F 被迫改造。
+- `launcher/src/Tasks/*Task.cs`：NpcShop/Crafting 是两个冻结参考消费者，Hairdresser 是已落地的第三消费者，三者组合同一 `PanelPendingCallTracker<TContext>`；不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。领域 Task 仍独占 payload/response 白名单、写门和 reconcile 裁决；其他领域不因 P0-F 被迫改造。
 - `launcher/src/Program.cs`：创建 Task，注入 `WebOverlayForm`，传入 `TaskRegistry.RegisterAll`。
 - `launcher/src/Bus/TaskRegistry.cs`：注册 AS2 response task，例如 `xxx_response`。
 - `launcher/src/Guardian/WebOverlayForm.cs`：
@@ -295,9 +308,9 @@ Launcher 状态统一为 `compiled → candidate_built → candidate_executed �
 |--------|------|
 | C# Task / router / PanelHost | `launcher/tests/run_tests.ps1` + `launcher/build.ps1`；随后启动返回的精确 candidate、记录身份并跑受影响领域 E2E。需要正式验收时再走 promotion + 标准入口复核 |
 | Web module / CSS / harness | 对应 browser harness 或静态 QA；没有入口时先补入口 |
-| NPC/KShop/Crafting 命令或数值边界 | `node tools/validate-panel-contracts.js` + `node tools/test-panel-contracts.js` + 共享 contract vectors 的领域 harness/xUnit；production policy 必须通过 `panel-cross-layer-contracts` |
+| NPC/KShop/Crafting/Hairdresser 命令或数值边界 | `node tools/validate-panel-contracts.js` + `node tools/test-panel-contracts.js` + 适用领域的 shared contract vectors harness/xUnit；Hairdresser 不填占位 vector，另跑 `node tools/run-hairdresser-harness.js`；production policy 必须通过 `panel-cross-layer-contracts` |
 | 共享 Tooltip / hover 生命周期 | `node tools/run-kshop-harness.js`；必须包含 pointer + pen 真实事件、复合过桥、空白终态和 legacy `showAtMouse/hideHover` 物理探针 |
-| AS2 service / include / gameCommand | `scripts/compile_test.ps1` fresh trace，或说明 IDE 人工复核状态 |
+| AS2 service / include / gameCommand | `scripts/compile_test.ps1` 的 fresh trace / fresh Output Panel 副本，或说明 IDE 复核状态；必须明确证据类型 |
 | 写存档 / 金钱 / K点 / 背包 / 伙伴 / 宠物 | 游戏内端到端手测 + 回读存档状态 |
 | 文档入口、协议、验证入口变化 | `node tools/validate-doc-governance.js` |
 
@@ -316,7 +329,7 @@ Launcher 状态统一为 `compiled → candidate_built → candidate_executed �
 - Launcher 当前状态、实际 Core 路径、build identity / payload closure；未到 `standard_entry_verified` 时明确写“未部署 / 未正式验收”。
 - 已跑 xUnit。
 - 已跑 Web harness / Node QA。
-- 已拿到 Flash fresh trace。
+- 已取得哪一种 Flash 证据：fresh trace / fresh Output Panel 副本 / IDE 复核。
 - 已做游戏内端到端手测。
 - 未验证项与风险。
 
@@ -350,10 +363,10 @@ Launcher 状态统一为 `compiled → candidate_built → candidate_executed �
 迁移级别：静态原型 / Web panel 原型 / 协议接入 / 生产可用
 协议闭环：列出已覆盖 cmd，说明 Web→C#→AS2→C#→Web 是否完整
 写状态：列出会改存档/金钱/K点/背包/伙伴/宠物/任务的路径
-验证：build / xUnit / harness / Flash fresh trace / 游戏内手测
+验证：build / xUnit / harness / Flash fresh trace 或 fresh Output Panel 副本（明确类型）/ IDE 复核 / 游戏内手测
 Launcher 状态：compiled / candidate_built / candidate_executed / e2e_verified / promoted / standard_entry_verified；实际 Core 路径与身份
 未验证：明确列出
 文档：已更新的 canonical doc 与巡检结果
 ```
 
-如果缺 Flash fresh trace 或游戏内手测，必须显式说“未做”，不能用 C# build 或 Web harness 替代。
+若缺上述任一种 fresh Flash 行为证据（或 IDE 复核）或游戏内手测，必须显式说“未做”，不能用 C# build 或 Web harness 替代。
