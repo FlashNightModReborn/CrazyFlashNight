@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Hairdresser Harness</title>
+  <link rel="stylesheet" href="/launcher/web/css/panels.css">
+  <link rel="stylesheet" href="/launcher/web/css/hairdresser.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607;color:#eee}
+    #qa-output{position:fixed;z-index:1000;right:6px;bottom:6px;max-width:520px;max-height:42vh;overflow:auto;padding:7px;background:#111;border:1px solid #555;font:10px/1.3 Consolas;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+<div id="panel-container" data-panel="hairdresser">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<pre id="qa-output">running…</pre>
+<script>
+(function(NativeResizeObserver){
+  var stats=window.__resizeObserverStats={created:0,observed:0,disconnected:0,active:0};
+  if(!NativeResizeObserver)return;
+  function TrackedResizeObserver(callback){this.nativeObserver=new NativeResizeObserver(callback);this.active=false;stats.created++}
+  TrackedResizeObserver.prototype.observe=function(target){if(!this.active){this.active=true;stats.observed++;stats.active++}return this.nativeObserver.observe(target)};
+  TrackedResizeObserver.prototype.unobserve=function(target){return this.nativeObserver.unobserve(target)};
+  TrackedResizeObserver.prototype.disconnect=function(){if(this.active){this.active=false;stats.disconnected++;stats.active--}return this.nativeObserver.disconnect()};
+  window.ResizeObserver=TrackedResizeObserver;
+})(window.ResizeObserver);
+
+window.__HAIRDRESSER_CONFIG__={
+  requestTimeoutMs:420,
+  sessionNonce:'hair.harness',
+  manifestUrl:'/launcher/web/assets/dressup/manifest.json'
+};
+window.__sent=[];
+window.__toasts=[];
+window.__handlers={};
+window.__faults=[];
+window.__catalog=[];
+window.__catalogOverride=null;
+window.__model={gender:'男',face:'1',currentHair:'光头'};
+window.__reconcileProbe=null;
+
+function clone(value){return JSON.parse(JSON.stringify(value))}
+function emit(data){(__handlers.panel_resp||[]).slice().forEach(function(handler){handler(data)})}
+function takeFault(cmd){
+  for(var i=0;i<__faults.length;i++){
+    if(!__faults[i].cmd||__faults[i].cmd===cmd)return __faults.splice(i,1)[0]
+  }
+  return null
+}
+window.__queueFault=function(fault){__faults.push(fault)};
+window.__configureHairdresser=function(options){
+  options=options||{};
+  __model={
+    gender:typeof options.gender==='string'?options.gender:'男',
+    face:typeof options.face==='string'?options.face:'1',
+    currentHair:typeof options.currentHair==='string'?options.currentHair:'光头'
+  };
+  __catalogOverride=Object.prototype.hasOwnProperty.call(options,'catalog')?clone(options.catalog):null;
+  __reconcileProbe=null;
+};
+function snapshotPayload(){
+  var response={
+    success:true,v:1,
+    gender:__model.gender,
+    face:__model.face,
+    currentHair:__model.currentHair,
+    catalog:clone(__catalogOverride===null?__catalog:__catalogOverride)
+  };
+  if(__reconcileProbe){
+    response.reconciled=true;
+    response.writeApplied=__reconcileProbe.reportedApplied===true;
+    __reconcileProbe=null
+  }
+  return response
+}
+function makeResponse(message,override){
+  var response={type:'panel_resp',domain:'hairdresser',cmd:message.cmd,callId:message.callId};
+  if(message.cmd==='snapshot')Object.assign(response,snapshotPayload());
+  else if(message.cmd==='commit'){
+    __model.currentHair=message.payload.hairIdentifier;
+    Object.assign(response,{success:true,v:1,operation:'commit',currentHair:__model.currentHair})
+  }
+  if(override)Object.assign(response,clone(override));
+  return response
+}
+window.Bridge={
+  on:function(type,handler){(__handlers[type]||(__handlers[type]=[])).push(handler)},
+  off:function(type,handler){var list=__handlers[type]||[],index=list.indexOf(handler);if(index>=0)list.splice(index,1)},
+  send:function(message){
+    __sent.push(clone(message));
+    if(message.cmd==='close')return true;
+    var fault=takeFault(message.cmd);
+    if(fault){
+      if(fault.mode==='send_false')return false;
+      if(fault.mode==='throw')throw new Error('hairdresser harness transport down');
+      if(fault.mode==='drop')return true;
+      if(fault.mode==='drop_applied'){
+        __model.currentHair=message.payload.hairIdentifier;
+        __reconcileProbe={reportedApplied:true};
+        return true
+      }
+      if(fault.mode==='error'){
+        setTimeout(function(){emit({
+          type:'panel_resp',domain:'hairdresser',cmd:message.cmd,callId:message.callId,
+          success:false,error:fault.error||'disconnected',
+          requiresReconcile:fault.requiresReconcile===true
+        })},Number(fault.delayMs)||0);
+        return true
+      }
+      if(fault.mode==='unknown_applied'||fault.mode==='unknown_not_applied'){
+        if(fault.mode==='unknown_applied')__model.currentHair=message.payload.hairIdentifier;
+        __reconcileProbe={reportedApplied:fault.reportedApplied===true};
+        setTimeout(function(){emit({
+          type:'panel_resp',domain:'hairdresser',cmd:message.cmd,callId:message.callId,
+          success:false,error:'timeout',requiresReconcile:true
+        })},Number(fault.delayMs)||0);
+        return true
+      }
+      if(fault.mode==='delay'){
+        var delayed=makeResponse(message,fault.override);
+        setTimeout(function(){emit(delayed)},Number(fault.delayMs)||80);
+        return true
+      }
+    }
+    setTimeout(function(){emit(makeResponse(message))},0);
+    return true
+  }
+};
+window.Toast={add:function(message){__toasts.push(String(message))}};
+window.Panels=(function(){
+  var specs={},active=null;
+  return{
+    register:function(id,spec){specs[id]=spec},
+    open:function(id,initData){
+      if(active&&specs[active]&&specs[active].onClose)specs[active].onClose();
+      active=id;
+      var container=document.getElementById('panel-container');
+      container.setAttribute('data-panel',id);
+      var host=document.getElementById('panel-content');
+      host.innerHTML='';
+      host.appendChild(specs[id].create());
+      if(specs[id].onOpen)specs[id].onOpen(host,initData||{})
+    },
+    close:function(){
+      if(active&&specs[active]&&specs[active].onClose)specs[active].onClose();
+      active=null
+    },
+    getActive:function(){return active},
+    requestClose:function(){if(active&&specs[active].onRequestClose)return specs[active].onRequestClose()},
+    _specs:specs
+  }
+})();
+</script>
+<script src="/launcher/web/modules/panel-runtime.js"></script>
+<script src="/launcher/web/modules/panel-scale.js"></script>
+<script src="/launcher/web/modules/asset-timeline.js"></script>
+<script src="/launcher/web/modules/dressup-doll-renderer.js"></script>
+<script src="/launcher/web/modules/hairdresser-runtime.js"></script>
+<script src="/launcher/web/modules/hairdresser.js"></script>
+<script>
+(async function(){
+  var checks=[];
+  function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}
+  function wait(ms){return new Promise(function(resolve){setTimeout(resolve,ms===undefined?24:ms)})}
+  async function waitFor(test,timeout){
+    var deadline=Date.now()+(timeout||1600);
+    while(Date.now()<deadline){if(test())return true;await wait()}
+    return false
+  }
+  function writes(){return __sent.filter(function(message){return message.domain==='hairdresser'&&message.cmd==='commit'})}
+  function reads(){return __sent.filter(function(message){return message.domain==='hairdresser'&&message.cmd==='snapshot'})}
+  function closeMessages(){return __sent.filter(function(message){return message.panel==='hairdresser'&&message.cmd==='close'})}
+  async function openDefault(){
+    __configureHairdresser({});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200)
+  }
+  async function closePath(name,action){
+    var beforeWrites=writes().length,beforeClose=closeMessages().length;
+    action();
+    await wait();
+    ok(name+' closes with zero business writes',
+      Panels.getActive()===null&&writes().length===beforeWrites&&closeMessages().length===beforeClose+1,
+      JSON.stringify({active:Panels.getActive(),writes:writes().length-beforeWrites,close:closeMessages().length-beforeClose}))
+  }
+  try{
+    var xmlText=await fetch('/data/items/hairstyle.xml').then(function(response){
+      if(!response.ok)throw new Error('hairstyle fixture '+response.status);
+      return response.text()
+    });
+    var xml=new DOMParser().parseFromString(xmlText,'application/xml');
+    __catalog=Array.prototype.map.call(xml.querySelectorAll('Hair'),function(row){
+      return{
+        identifier:row.querySelector('Identifier').textContent,
+        name:row.querySelector('Name').textContent
+      }
+    });
+    ok('AS2 fixture contains exactly 77 source rows',__catalog.length===77,String(__catalog.length));
+
+    await openDefault();
+    await waitFor(function(){return HairdresserPanel.debugState().manifestReady},3200);
+    var state=HairdresserPanel.debugState();
+    ok('mounts the standalone full-screen panel',!!document.querySelector('.hairdresser-panel')&&!!document.querySelector('.hairdresser-preview-pane')&&!!document.querySelector('.hairdresser-catalog-pane'));
+    var panelRect=document.getElementById('panel-container').getBoundingClientRect();
+    var contentRect=document.getElementById('panel-content').getBoundingClientRect();
+    var shellRect=document.querySelector('.hairdresser-scale-shell').getBoundingClientRect();
+    ok('fixed 1024x576 shell scales inside the production anchor',
+      contentRect.width/panelRect.width>.999&&contentRect.height/panelRect.height>.999
+      &&shellRect.width/contentRect.width>.997&&shellRect.height/contentRect.height>.997,
+      JSON.stringify({panel:[panelRect.width,panelRect.height],content:[contentRect.width,contentRect.height],shell:[shellRect.width,shellRect.height]}));
+    ok('renders all 77 catalog rows without filtering',state.catalogCount===77&&document.querySelectorAll('.hairdresser-style-card').length===77,JSON.stringify(state.catalogCount));
+    var duplicates=state.catalog.filter(function(row){return row.identifier==='发型-男式-平头'});
+    ok('preserves duplicate identifiers at AS2 source positions 20 and 32',
+      duplicates.length===2&&state.catalog[20].identifier==='发型-男式-平头'
+      &&state.catalog[32].identifier==='发型-男式-平头'
+      &&state.catalog[20].sourceIndex===20&&state.catalog[32].sourceIndex===32,
+      JSON.stringify(duplicates));
+    ok('initial open performs one read and zero writes',reads().length===1&&writes().length===0,JSON.stringify(__sent));
+    ok('numeric face id resolves through appearance.faceById',
+      state.resolvedFaceKey==='男变装-基本脸型',state.resolvedFaceKey);
+    ok('bald preview uses only the face holder',
+      state.previewFields.join(',')==='脸型'
+      &&state.rendererOptions.strictFields===true&&state.rendererOptions.animate===false
+      &&state.rendererMeta&&state.rendererMeta.holders===1&&state.rendererMeta.strictFields===true,
+      JSON.stringify(state));
+
+    var localReadCount=reads().length,localWriteCount=writes().length;
+    var firstOption=document.querySelector('.hairdresser-style-card[data-index="0"]');
+    firstOption.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('listbox arrow navigation uses one roving tab stop and stays local',
+      state.selectedIndex===1
+      &&document.querySelectorAll('.hairdresser-style-card[tabindex="0"]').length===1
+      &&document.activeElement.getAttribute('data-index')==='1'
+      &&reads().length===localReadCount&&writes().length===localWriteCount,
+      JSON.stringify(state));
+    document.querySelector('.hairdresser-style-card[data-index="32"]').click();
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('catalog click is a purely browser-local preview',
+      state.selectedIndex===32&&state.selectedIdentifier==='发型-男式-平头'
+      &&reads().length===localReadCount&&writes().length===localWriteCount,
+      JSON.stringify(state));
+    ok('hair preview is strict face plus hair and non-animated',
+      state.previewFields.join(',')==='脸型,发型'
+      &&state.rendererMeta&&state.rendererMeta.holders===2
+      &&state.rendererMeta.strictFields===true&&state.rendererMeta.animated===false,
+      JSON.stringify(state.rendererMeta));
+    ok('duplicate rows remain independently selectable',
+      document.querySelectorAll('.hairdresser-style-card').length===77
+      &&Array.prototype.filter.call(document.querySelectorAll('.hairdresser-style-copy small'),function(node){
+        return node.textContent==='发型-男式-平头'
+      }).length===2);
+
+    var commitBefore=writes().length;
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){return !HairdresserPanel.debugState().busy&&HairdresserPanel.debugState().currentHair==='发型-男式-平头'});
+    var commitMessage=writes()[commitBefore];
+    state=HairdresserPanel.debugState();
+    ok('commit sends only the frozen v1 raw identifier payload',
+      commitMessage&&Object.keys(commitMessage.payload).sort().join(',')==='hairIdentifier,v'
+      &&commitMessage.payload.v===1&&commitMessage.payload.hairIdentifier==='发型-男式-平头',
+      JSON.stringify(commitMessage));
+    ok('commit success retains both duplicate current rows',
+      document.querySelectorAll('.hairdresser-style-card.current').length===2
+      &&state.selectedIndex===32&&state.currentHair==='发型-男式-平头');
+
+    document.querySelector('.hairdresser-style-card[data-index="35"]').click();
+    __queueFault({cmd:'commit',mode:'delay',delayMs:110});
+    document.querySelector('.hairdresser-commit').click();
+    state=HairdresserPanel.debugState();
+    ok('commit busy state blocks controls without extra writes',
+      state.busy&&document.querySelector('.hairdresser-panel').getAttribute('data-state')==='busy'
+      &&document.querySelector('.hairdresser-commit').disabled
+      &&document.querySelector('.hairdresser-close').disabled);
+    var busyWrites=writes().length,busyCloses=closeMessages().length;
+    Panels.requestClose();
+    ok('busy ESC/backdrop intent is blocked with zero additional writes',
+      Panels.getActive()==='hairdresser'&&writes().length===busyWrites
+      &&closeMessages().length===busyCloses&&__toasts.length>0,
+      JSON.stringify({active:Panels.getActive(),writes:writes().length-busyWrites,close:closeMessages().length-busyCloses}));
+    await waitFor(function(){return !HairdresserPanel.debugState().busy},900);
+
+    document.querySelector('.hairdresser-style-card[data-index="36"]').click();
+    __queueFault({cmd:'commit',mode:'send_false'});
+    document.querySelector('.hairdresser-commit').click();
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('pre-dispatch rejection is definitive and remains manually operable',
+      !state.busy&&!state.needsReconcile&&!document.querySelector('.hairdresser-commit').disabled
+      &&state.errorText.indexOf('没有发出')>=0,JSON.stringify(state));
+
+    document.querySelector('.hairdresser-style-card[data-index="37"]').click();
+    var unknownAppliedWrites=writes().length,unknownAppliedReads=reads().length;
+    __queueFault({cmd:'commit',mode:'unknown_applied',reportedApplied:true});
+    __queueFault({cmd:'snapshot',mode:'delay',delayMs:100});
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){return HairdresserPanel.debugState().needsReconcile},500);
+    state=HairdresserPanel.debugState();
+    ok('uncertain commit enters an explicit reconcile gate',
+      state.needsReconcile&&state.reconcileExpected==='发型-男式-金色大奔头'
+      &&document.querySelector('.hairdresser-panel').getAttribute('data-state')==='reconcile'
+      &&document.querySelector('.hairdresser-commit').disabled,JSON.stringify(state));
+    await waitFor(function(){return HairdresserPanel.debugState().reconcileOutcome==='applied'},1200);
+    state=HairdresserPanel.debugState();
+    ok('applied unknown commit uses one fresh snapshot and never replays',
+      writes().length===unknownAppliedWrites+1&&reads().length===unknownAppliedReads+1
+      &&state.currentHair==='发型-男式-金色大奔头'&&!state.needsReconcile,
+      JSON.stringify(state));
+
+    document.querySelector('.hairdresser-style-card[data-index="38"]').click();
+    var unknownMissWrites=writes().length,unknownMissReads=reads().length;
+    __queueFault({cmd:'commit',mode:'unknown_not_applied',reportedApplied:true});
+    __queueFault({cmd:'snapshot',mode:'delay',delayMs:80});
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){return HairdresserPanel.debugState().reconcileOutcome==='not_applied'},1200);
+    state=HairdresserPanel.debugState();
+    ok('fresh currentHair comparison overrides contradictory Host hint',
+      writes().length===unknownMissWrites+1&&reads().length===unknownMissReads+1
+      &&state.currentHair==='发型-男式-金色大奔头'
+      &&state.selectedIdentifier===state.currentHair
+      &&state.hostReconcileFlags&&state.hostReconcileFlags.writeApplied===true,
+      JSON.stringify(state));
+
+    document.querySelector('.hairdresser-style-card[data-index="39"]').click();
+    var timeoutWrites=writes().length,timeoutReads=reads().length;
+    __queueFault({cmd:'commit',mode:'drop_applied'});
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){return HairdresserPanel.debugState().reconcileOutcome==='applied'},1400);
+    state=HairdresserPanel.debugState();
+    ok('client timeout also reconciles without automatic write replay',
+      writes().length===timeoutWrites+1&&reads().length===timeoutReads+1
+      &&state.currentHair==='发型-男式-bob自由爆炸头',JSON.stringify(state));
+
+    document.querySelector('.hairdresser-style-card[data-index="40"]').click();
+    var retryReconcileWrites=writes().length,retryReconcileReads=reads().length;
+    __queueFault({cmd:'commit',mode:'unknown_applied',reportedApplied:true});
+    __queueFault({cmd:'snapshot',mode:'error',error:'disconnected'});
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){
+      var value=HairdresserPanel.debugState();
+      return value.needsReconcile&&value.needsRefresh&&!value.snapshotBusy
+    },1200);
+    state=HairdresserPanel.debugState();
+    ok('failed reconcile snapshot preserves the write barrier and exposes retry',
+      state.reconcileExpected===__catalog[40].identifier
+      &&document.querySelector('.hairdresser-retry').hidden===false
+      &&document.querySelector('.hairdresser-retry').textContent==='重新对账'
+      &&writes().length===retryReconcileWrites+1&&reads().length===retryReconcileReads+1,
+      JSON.stringify(state));
+    document.querySelector('.hairdresser-retry').click();
+    await waitFor(function(){return HairdresserPanel.debugState().reconcileOutcome==='applied'},1200);
+    state=HairdresserPanel.debugState();
+    ok('manual reconcile retry confirms fresh state without replaying commit',
+      writes().length===retryReconcileWrites+1&&reads().length===retryReconcileReads+2
+      &&state.currentHair===__catalog[40].identifier&&!state.needsReconcile,
+      JSON.stringify(state));
+
+    document.querySelector('.hairdresser-style-card[data-index="41"]').click();
+    var reopenReconcileWrites=writes().length,reopenReconcileReads=reads().length;
+    __queueFault({cmd:'commit',mode:'unknown_applied',reportedApplied:true});
+    __queueFault({cmd:'snapshot',mode:'delay',delayMs:130});
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){return HairdresserPanel.debugState().needsReconcile},500);
+    Panels.requestClose();
+    Panels.open('hairdresser');
+    await waitFor(function(){
+      var value=HairdresserPanel.debugState();
+      return value.currentHair===__catalog[41].identifier&&!value.snapshotBusy
+    },1200);
+    await wait(150);
+    state=HairdresserPanel.debugState();
+    ok('unknown commit close and reopen reconciles from a fresh snapshot without write replay',
+      writes().length===reopenReconcileWrites+1&&reads().length===reopenReconcileReads+2
+      &&state.currentHair===__catalog[41].identifier
+      &&state.selectedIdentifier===__catalog[41].identifier
+      &&!state.needsReconcile,
+      JSON.stringify(state));
+
+    __configureHairdresser({catalog:[
+      {identifier:'光头',name:'光头'},
+      {identifier:'测试-缺失发型',name:'缺失资源测试'}
+    ]});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===2&&!HairdresserPanel.debugState().snapshotBusy});
+    document.querySelector('.hairdresser-style-card[data-index="1"]').click();
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('missing artwork keeps a readable name fallback and usable commit',
+      state.previewIssue==='hair_missing'
+      &&document.querySelector('.hairdresser-preview-fallback').hidden===false
+      &&document.querySelector('.hairdresser-preview-name').textContent==='缺失资源测试'
+      &&!document.querySelector('.hairdresser-commit').disabled,
+      JSON.stringify(state));
+
+    __configureHairdresser({
+      gender:'未知',currentHair:'光头',
+      catalog:[{identifier:'光头',name:'光头'},{identifier:'测试发型',name:'测试发型'}]
+    });
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===2&&!HairdresserPanel.debugState().snapshotBusy});
+    document.querySelector('.hairdresser-style-card[data-index="1"]').click();
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('non-binary authority value keeps the catalog writable without guessing a renderer gender',
+      state.gender==='未知'&&state.previewIssue==='gender_unsupported'
+      &&document.querySelector('.hairdresser-preview-fallback').hidden===false
+      &&!document.querySelector('.hairdresser-commit').disabled,
+      JSON.stringify(state));
+
+    __configureHairdresser({
+      face:'1',currentHair:'0',
+      catalog:[{identifier:'0',name:'编号光头'},{identifier:'1',name:'编号头巾'}]
+    });
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===2&&!HairdresserPanel.debugState().snapshotBusy});
+    ok('defensive hairById mapping treats numeric zero as bald',
+      HairdresserPanel.debugState().previewFields.join(',')==='脸型',JSON.stringify(HairdresserPanel.debugState()));
+    document.querySelector('.hairdresser-style-card[data-index="1"]').click();
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('defensive hairById mapping changes rendering only',
+      state.resolvedHairKey==='发型-男式-蓝色头巾',JSON.stringify(state));
+    var numericWriteBefore=writes().length;
+    document.querySelector('.hairdresser-commit').click();
+    await waitFor(function(){return !HairdresserPanel.debugState().busy});
+    ok('numeric catalog identifier is submitted unchanged',
+      writes()[numericWriteBefore].payload.hairIdentifier==='1',JSON.stringify(writes()[numericWriteBefore]));
+
+    __configureHairdresser({catalog:[],currentHair:'光头'});
+    Panels.open('hairdresser');
+    await waitFor(function(){return !HairdresserPanel.debugState().snapshotBusy});
+    state=HairdresserPanel.debugState();
+    ok('empty catalog renders a safe non-writable state',
+      state.catalogCount===0&&document.querySelector('.hairdresser-empty').hidden===false
+      &&document.querySelector('.hairdresser-commit').disabled
+      &&document.querySelector('.hairdresser-panel').getAttribute('data-state')==='empty',
+      JSON.stringify(state));
+
+    __configureHairdresser({});
+    __queueFault({cmd:'snapshot',mode:'error',error:'disconnected'});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().needsRefresh});
+    state=HairdresserPanel.debugState();
+    ok('snapshot failure exposes an accessible retry state',
+      state.needsRefresh&&document.querySelector('.hairdresser-error').hidden===false
+      &&document.querySelector('.hairdresser-retry').hidden===false,JSON.stringify(state));
+    document.querySelector('.hairdresser-retry').click();
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().needsRefresh});
+    ok('snapshot retry restores the authoritative catalog',HairdresserPanel.debugState().catalogCount===77);
+
+    await closePath('X control',function(){document.querySelector('.hairdresser-close').click()});
+    await openDefault();
+    await closePath('cancel control',function(){document.querySelector('.hairdresser-cancel').click()});
+    await openDefault();
+    await closePath('ESC lifecycle path',function(){Panels.requestClose()});
+    await openDefault();
+    await closePath('backdrop lifecycle path',function(){Panels.requestClose()});
+
+    __configureHairdresser({currentHair:'光头'});
+    __queueFault({cmd:'snapshot',mode:'delay',delayMs:130,override:{
+      success:true,v:1,gender:'男',face:'1',currentHair:'光头',catalog:clone(__catalog)
+    }});
+    Panels.open('hairdresser');
+    await wait(18);
+    Panels.close();
+    __configureHairdresser({currentHair:'发型-男式-黑中分头'});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().currentHair==='发型-男式-黑中分头'});
+    await wait(150);
+    ok('close and reopen rejects the old generation response',
+      HairdresserPanel.debugState().currentHair==='发型-男式-黑中分头'
+      &&HairdresserPanel.debugState().selectedIdentifier==='发型-男式-黑中分头',
+      JSON.stringify(HairdresserPanel.debugState()));
+
+    var list=document.querySelector('.hairdresser-catalog');
+    ok('catalog remains scrollable within the fixed viewport',
+      list.scrollHeight>list.clientHeight&&list.getBoundingClientRect().bottom<=document.querySelector('.hairdresser-panel').getBoundingClientRect().bottom,
+      JSON.stringify({scrollHeight:list.scrollHeight,clientHeight:list.clientHeight}));
+    Panels.close();
+    await wait();
+    ok('panel close releases every ResizeObserver',
+      __resizeObserverStats.active===0,JSON.stringify(__resizeObserverStats));
+
+    var result={passed:checks.filter(function(check){return check.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=result;
+    window.__qaDone=true;
+    document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
+  }catch(error){
+    window.__qaError=error.stack||String(error);
+    window.__qaDone=true;
+    document.getElementById('qa-output').textContent=window.__qaError
+  }
+})();
+</script>
+</body>
+</html>
