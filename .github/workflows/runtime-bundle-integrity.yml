@@ -76,7 +76,7 @@ on:
       - launcher/build.ps1
       - launcher/build-runtime-candidate.ps1
       - launcher/CRAZYFLASHER7MercenaryEmpire.csproj
-      - launcher/contracts/panel-contracts.v1.json
+      - launcher/contracts/panel-contracts.v2.json
       - launcher/Directory.Packages.props
       - launcher/native/**
       - launcher/native/assert-pinned-tools.bat

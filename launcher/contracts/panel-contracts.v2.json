@@ -1,5 +1,5 @@
 {
-  "contractVersion": 1,
+  "contractVersion": 2,
   "authorityKinds": [
     "protocol",
     "transport",
@@ -13,18 +13,19 @@
       "flashResponseTask": "npcshop_response",
       "hostResponseHandler": "npcShopTask.HandleFlashResponse",
       "hostPayloadMode": "normalized",
+      "flashCommandHandler": "_root.UI系统.NPC商店WebView",
       "flashSources": [
         "scripts/逻辑系统分区/商店系统_兼容.as"
       ],
       "commands": [
-        { "cmd": "snapshot", "action": "npcShopSnapshot", "access": "read" },
-        { "cmd": "tooltip", "action": "npcShopTooltip", "access": "read" },
-        { "cmd": "batchPreview", "action": "npcShopBatchPreview", "access": "read" },
-        { "cmd": "tradePreview", "action": "npcShopTradePreview", "access": "read" },
-        { "cmd": "buy", "action": "npcShopBuy", "access": "write" },
-        { "cmd": "sell", "action": "npcShopSell", "access": "write" },
-        { "cmd": "batchSell", "action": "npcShopBatchSell", "access": "write" },
-        { "cmd": "tradeCommit", "action": "npcShopTradeCommit", "access": "write" }
+        { "cmd": "snapshot", "action": "npcShopSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "tooltip", "action": "npcShopTooltip", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "batchPreview", "action": "npcShopBatchPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "tradePreview", "action": "npcShopTradePreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "buy", "action": "npcShopBuy", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "sell", "action": "npcShopSell", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "batchSell", "action": "npcShopBatchSell", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "tradeCommit", "action": "npcShopTradeCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
       ],
       "numericFields": [
         {
@@ -84,7 +85,10 @@
           "argument": "payload[\"quantity\"]",
           "minimum": "1",
           "maximum": "MaxPurchaseQuantity",
-          "occurrences": 1
+          "occurrences": 1,
+          "allowedAlternates": [
+            { "minimum": "1", "maximum": "int.MaxValue", "occurrences": 1 }
+          ]
         },
         {
           "kind": "csharp-integer-guard",
@@ -92,7 +96,10 @@
           "argument": "line[\"quantity\"]",
           "minimum": "1",
           "maximum": "MaxPurchaseQuantity",
-          "occurrences": 2
+          "occurrences": 2,
+          "allowedAlternates": [
+            { "minimum": "1", "maximum": "int.MaxValue", "occurrences": 1 }
+          ]
         },
         {
           "kind": "as2-ternary-else-int",
@@ -111,14 +118,15 @@
       "flashResponseTask": "crafting_response",
       "hostResponseHandler": "craftingTask.HandleFlashResponse",
       "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.item.CraftingPanelService",
       "flashSources": [
         "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as"
       ],
       "commands": [
-        { "cmd": "snapshot", "action": "craftingSnapshot", "access": "read" },
-        { "cmd": "preview", "action": "craftingPreview", "access": "read" },
-        { "cmd": "tooltip", "action": "craftingTooltip", "access": "read" },
-        { "cmd": "commit", "action": "craftingCommit", "access": "write" }
+        { "cmd": "snapshot", "action": "craftingSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "preview", "action": "craftingPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "tooltip", "action": "craftingTooltip", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "commit", "action": "craftingCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
       ],
       "numericFields": [
         {
@@ -180,17 +188,18 @@
       "flashResponseTask": "shop_response",
       "hostResponseHandler": "shopTask.HandleFlashResponse",
       "hostPayloadMode": "passthrough",
+      "flashCommandHandler": null,
       "flashSources": [
         "scripts/逻辑系统分区/商城系统_WebView.as"
       ],
       "commands": [
-        { "cmd": "bulkQuery", "action": "shopBulkQuery", "access": "read" },
-        { "cmd": "tooltip", "action": "shopTooltip", "access": "read" },
-        { "cmd": "saveCart", "action": "shopSaveCart", "access": "write" },
-        { "cmd": "checkoutPreview", "action": "shopCheckoutPreview", "access": "read" },
-        { "cmd": "checkoutCommit", "action": "shopCheckoutCommit", "access": "write" },
-        { "cmd": "checkout", "action": "shopCheckout", "access": "write" },
-        { "cmd": "claim", "action": "shopClaim", "access": "write" }
+        { "cmd": "bulkQuery", "action": "shopBulkQuery", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "tooltip", "action": "shopTooltip", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "saveCart", "action": "shopSaveCart", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "checkoutPreview", "action": "shopCheckoutPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "checkoutCommit", "action": "shopCheckoutCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "checkout", "action": "shopCheckout", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "claim", "action": "shopClaim", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
       ],
       "numericFields": [
         {

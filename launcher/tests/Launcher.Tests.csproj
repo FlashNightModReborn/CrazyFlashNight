@@ -33,7 +33,7 @@
     <None Update="Fixtures\MapHud\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\contracts\panel-contracts.v1.json" Link="Contracts\panel-contracts.v1.json">
+    <None Include="..\contracts\panel-contracts.v2.json" Link="Contracts\panel-contracts.v2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

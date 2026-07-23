@@ -48,8 +48,23 @@ function run() {
   test("baseline repository contract passes", function () {
     const report = validator.validateRepository({ root: ROOT, contract: clone(contract) });
     assert(report.ok, JSON.stringify(report.errors));
+    assert(report.contractVersion === 2, "expected strict panel contract v2");
     assert(report.checked.domains === 3, "expected three governed domains");
     assert(report.checked.commands === 19, "expected nineteen governed command mappings");
+    assert(!contract.domains.some(function (domain) { return domain.id === "hairdresser"; }),
+      "F1 must not pre-register the F3 hairdresser pilot");
+  });
+
+  test("transaction previews remain read access without collapsing into queries", function () {
+    const previewCommands = [
+      contract.domains[0].commands.find(function (command) { return command.cmd === "batchPreview"; }),
+      contract.domains[0].commands.find(function (command) { return command.cmd === "tradePreview"; }),
+      contract.domains[1].commands.find(function (command) { return command.cmd === "preview"; }),
+      contract.domains[2].commands.find(function (command) { return command.cmd === "checkoutPreview"; })
+    ];
+    assert(previewCommands.every(function (command) {
+      return command && command.capability === "transaction" && command.access === "read";
+    }), "token/plan previews must remain transaction/read");
   });
 
   test("shared boundary vectors expose stable consumer paths", function () {
@@ -72,10 +87,159 @@ function run() {
     assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "schema.unknown_key");
   });
 
+  test("v1 manifests cannot silently acquire v2 semantics", function () {
+    const fixture = clone(contract);
+    fixture.contractVersion = 1;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.version");
+  });
+
+  test("command capability is required", function () {
+    const fixture = clone(contract);
+    delete fixture.domains[0].commands[0].capability;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "schema.missing_key");
+  });
+
+  test("command business decision owner is required", function () {
+    const fixture = clone(contract);
+    delete fixture.domains[0].commands[0].businessDecisionOwner;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "schema.missing_key");
+  });
+
+  test("Flash command handler binding is explicit and string-or-null", function () {
+    const missing = clone(contract);
+    delete missing.domains[0].flashCommandHandler;
+    assertError(validator.validateRepository({ root: ROOT, contract: missing }), "schema.missing_key");
+
+    const invalid = clone(contract);
+    invalid.domains[0].flashCommandHandler = {};
+    assertError(validator.validateRepository({ root: ROOT, contract: invalid }), "schema.string_or_null");
+  });
+
+  test("unknown command capability is rejected", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].commands[0].capability = "stream";
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "schema.enum");
+  });
+
+  test("query capability cannot acquire write access", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].commands[0].access = "write";
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.capability_access_conflict");
+  });
+
+  test("business decision owner cannot drift away from AS2", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].commands[0].businessDecisionOwner = "host";
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }),
+      "contract.business_decision_owner_conflict");
+  });
+
   test("duplicate commands are rejected", function () {
     const fixture = clone(contract);
     fixture.domains[0].commands.push(clone(fixture.domains[0].commands[0]));
     assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.duplicate_cmd");
+  });
+
+  test("Flash actions are globally unique across domains", function () {
+    const fixture = clone(contract);
+    fixture.domains[1].commands[0].action = fixture.domains[0].commands[0].action;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.duplicate_action");
+  });
+
+  test("Host response handlers cannot be shared by two domains", function () {
+    const fixture = clone(contract);
+    fixture.domains[1].hostResponseHandler = fixture.domains[0].hostResponseHandler;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }),
+      "contract.duplicate_response_handler");
+  });
+
+  test("wire domain and cmd form a globally unique command identity", function () {
+    const fixture = clone(contract);
+    fixture.domains[1].wireDomain = fixture.domains[0].wireDomain;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.duplicate_wire_cmd");
+  });
+
+  test("Host domain guards must match the contracted wire identity", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].wireDomain = "npcshop_typo";
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }),
+      "source.csharp_domain_identity_drift");
+  });
+
+  test("reference Host domain guards cannot disappear", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    const mutated = replaceOnce(read(file),
+      /if\s*\(!string\.Equals\(parsed\.Value<string>\("domain"\),\s*"npcshop",\s*StringComparison\.Ordinal\)\)/,
+      "if (false)",
+      "NpcShop required domain guard");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_domain_identity_drift");
+  });
+
+  test("Host domain guard evidence must come from HandleWebRequest", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    let mutated = replaceOnce(read(file),
+      /if\s*\(!string\.Equals\(parsed\.Value<string>\("domain"\),\s*"npcshop",\s*StringComparison\.Ordinal\)\)/,
+      "if (false)",
+      "NpcShop actual domain guard removal");
+    mutated = replaceOnce(mutated,
+      /(\s+)(private\s+static\s+bool\s+TryResolveCommand\s*\()/,
+      function (_match, whitespace, methodStart) {
+        return whitespace
+          + "private static void UnusedDomainGuard(JObject parsed)\n"
+          + "        {\n"
+          + '            if (!string.Equals(parsed.Value<string>("domain"), "npcshop", StringComparison.Ordinal)) return;\n'
+          + "        }"
+          + whitespace
+          + methodStart;
+      },
+      "NpcShop unused guard decoy");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_domain_identity_drift");
+  });
+
+  test("Host domain guard must execute the fail-closed rejection branch", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    const mutated = replaceOnce(read(file),
+      /\{\s*RejectAndRemember\(callId,\s*cmd,\s*"unsupported_domain"\);\s*return;\s*\}/,
+      "{ }",
+      "NpcShop no-op domain guard branch");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_domain_identity_drift");
+  });
+
+  test("authority kind set rejects duplicate filler", function () {
+    const fixture = clone(contract);
+    fixture.authorityKinds.push("protocol");
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.authority_kinds");
+  });
+
+  test("numeric-less domains cannot carry vector filler", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].numericFields = [];
+    fixture.domains[0].sourceChecks = [];
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }),
+      "contract.vector_without_numeric_fields");
+  });
+
+  test("required boundary vectors cannot disappear with their numeric field", function () {
+    const fixture = clone(contract);
+    fixture.domains[0].numericFields = [];
+    fixture.domains[0].sourceChecks = [];
+    delete fixture.vectors.npcshop;
+    assertError(validator.validateRepository({ root: ROOT, contract: fixture }), "contract.required_vector");
   });
 
   test("dynamic business maximum cannot become a Host fixed cap", function () {
@@ -136,6 +300,17 @@ function run() {
       sourceOverrides: { [file]: mutated }
     });
     assertError(report, "source.csharp_const_drift");
+
+    const conflictingGuard = replaceOnce(read(file),
+      '|| !TryReadInteger(payload["quantity"], 1, MaxPurchaseQuantity, out quantity))',
+      '|| !TryReadInteger(payload["quantity"], 1, MaxPurchaseQuantity, out quantity)\n'
+        + '                    || !TryReadInteger(payload["quantity"], 1, 100, out quantity))',
+      "NpcShop conflicting purchase quantity guard");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: conflictingGuard }
+    }), "source.csharp_guard_drift");
   });
 
   test("NpcShop AS2 technical ceiling mutation is detected", function () {
@@ -155,6 +330,30 @@ function run() {
     const file = "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as";
     const mutated = replaceOnce(read(file), /(\bMAX_CRAFT_COUNT:Number\s*=\s*)99(\s*;)/,
       function (_match, prefix, suffix) { return prefix + "100" + suffix; }, "Crafting MAX_CRAFT_COUNT");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.as2_assignment_drift");
+
+    const maintenanceEquivalent = read(file)
+      + "\nvar OLD_MAX_CRAFT_COUNT:Number = 99;\n";
+    const maintenanceReport = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: maintenanceEquivalent }
+    });
+    assert(maintenanceReport.ok, JSON.stringify(maintenanceReport.errors));
+  });
+
+  test("source-check literals inside strings are not executable evidence", function () {
+    const file = "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as";
+    let mutated = replaceOnce(read(file),
+      /MAX_CRAFT_COUNT:Number\s*=\s*99\s*;/,
+      "MAX_CRAFT_COUNT:Number = 98 + 0;",
+      "Crafting non-literal protocol maximum");
+    mutated += '\nvar contractProbe:String = "MAX_CRAFT_COUNT:Number = 99;";\n';
     const report = validator.validateRepository({
       root: ROOT,
       contract: clone(contract),
@@ -189,6 +388,17 @@ function run() {
       sourceOverrides: { [file]: mutated }
     });
     assertError(report, "source.csharp_passthrough_guard");
+
+    const decoy = replaceOnce(read(file),
+      "var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);",
+      "PanelBridge.BuildFlashCommand(action, fid, parsed);\n"
+        + "            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, new JObject());",
+      "ShopTask unused raw forward decoy");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: decoy }
+    }), "source.csharp_flash_dispatch_drift");
   });
 
   test("C# cmd to action mapping drift is detected", function () {
@@ -202,6 +412,353 @@ function run() {
       sourceOverrides: { [file]: mutated }
     });
     assertError(report, "source.csharp_action_drift");
+
+    const dispatchDrift = replaceOnce(read(file),
+      "PanelBridge.BuildFlashCommand(action, fid, normalized)",
+      'PanelBridge.BuildFlashCommand("wrongAction", fid, normalized)',
+      "NpcShop actual Flash dispatch action");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: dispatchDrift }
+    }), "source.csharp_flash_dispatch_drift");
+  });
+
+  test("C# command cases reject overwrite and ambiguous return shapes", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    const source = read(file);
+    [
+      'case "buy": action = "npcShopBuy"; action = null; isWrite = true; return true;',
+      'case "buy": action = "npcShopBuy"; isWrite = true; isWrite = false; return true;',
+      'case "buy": action = "npcShopBuy"; isWrite = true; if (false) return true; return false;'
+    ].forEach(function (replacement) {
+      const mutated = replaceOnce(source,
+        /case\s+"buy"\s*:\s*action\s*=\s*"npcShopBuy"\s*;\s*isWrite\s*=\s*true\s*;\s*return\s+true\s*;/,
+        replacement,
+        "NpcShop strict command case");
+      const report = validator.validateRepository({
+        root: ROOT,
+        contract: clone(contract),
+        sourceOverrides: { [file]: mutated }
+      });
+      assertError(report, "source.csharp_command_case");
+    });
+  });
+
+  test("qualified object properties do not impersonate Host out assignments", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    const mutated = replaceOnce(read(file),
+      'case "snapshot": action = "npcShopSnapshot"; return true;',
+      'case "snapshot": audit . action = "telemetry"; audit /* probe */ . isWrite = false; '
+        + 'action = "npcShopSnapshot"; isWrite = false; return true;',
+      "NpcShop qualified audit properties");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assert(report.ok, JSON.stringify(report.errors));
+  });
+
+  test("HandleWebRequest must execute the contracted command resolver", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    let mutated = replaceOnce(read(file),
+      "if (!TryResolveCommand(cmd, out action, out isWrite))",
+      "if (!TryResolveCommandUnchecked(cmd, out action, out isWrite))",
+      "NpcShop command resolver invocation");
+    mutated = replaceOnce(mutated,
+      /(\s+)(private\s+static\s+bool\s+TryResolveCommand\s*\()/,
+      function (_match, whitespace, methodStart) {
+        return whitespace
+          + "private static bool TryResolveCommandUnchecked(string cmd, out string action, out bool isWrite)\n"
+          + "        { action = \"npcShopBuy\"; isWrite = false; return true; }"
+          + whitespace
+          + methodStart;
+      },
+      "NpcShop alternate resolver helper");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_command_resolution_drift");
+
+    const qualified = replaceOnce(read(file),
+      "if (!TryResolveCommand(cmd, out action, out isWrite))",
+      "if (!LegacyResolver /* probe */ . TryResolveCommand(cmd, out action, out isWrite))",
+      "NpcShop qualified alternate resolver");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: qualified }
+    }), "source.csharp_command_resolution_drift");
+
+    const discardedResult = replaceOnce(read(file),
+      /if\s*\(!TryResolveCommand\(cmd,\s*out action,\s*out isWrite\)\)\s*\{\s*RejectAndRemember\(callId,\s*cmd,\s*"unsupported_cmd"\);\s*return;\s*\}/,
+      'TryResolveCommand(cmd, out action, out isWrite);\n'
+        + '            if (false) { RejectAndRemember(callId, cmd, "unsupported_cmd"); return; }',
+      "NpcShop discarded resolver result");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: discardedResult }
+    }), "source.csharp_command_resolution_drift");
+
+    [
+      'action = "wrongAction";',
+      "isWrite = false;"
+    ].forEach(function (overwrite) {
+      const withOverwrite = replaceOnce(read(file),
+        "{ RejectAndRemember(callId, cmd, \"unsupported_cmd\"); return; }",
+        "{ RejectAndRemember(callId, cmd, \"unsupported_cmd\"); return; }\n"
+          + "            " + overwrite,
+        "NpcShop resolver output overwrite");
+      assertError(validator.validateRepository({
+        root: ROOT,
+        contract: clone(contract),
+        sourceOverrides: { [file]: withOverwrite }
+      }), "source.csharp_command_output_drift");
+    });
+  });
+
+  test("Host commands absent from the contract are rejected", function () {
+    const file = "launcher/src/Tasks/NpcShopTask.cs";
+    const mutated = replaceOnce(read(file),
+      /(\s+)(default:\s*action\s*=\s*null;\s*return\s+false;)/,
+      function (_match, whitespace, defaultCase) {
+        return whitespace + 'case "uncontracted": action = "npcShopUncontracted"; return true;'
+          + whitespace + defaultCase;
+      },
+      "NpcShop uncontracted Host command");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_command_uncontracted");
+  });
+
+  test("AS2 action wrappers must dispatch the contracted cmd", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const mutated = replaceOnce(read(file),
+      /(_root\.gameCommands\["npcShopSnapshot"\]\s*=\s*function\(params\)\s*\{\s*_root\.UI系统\.NPC商店WebView\.handle\(")snapshot("\s*,\s*params\);\s*\};)/,
+      function (_match, prefix, suffix) { return prefix + "tooltip" + suffix; },
+      "NpcShop AS2 action dispatch");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_command_dispatch_drift");
+  });
+
+  test("delegated AS2 domains cannot collapse to another wrapper primitive", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const occurrences = (source.match(/_root\.UI系统\.NPC商店WebView\.handle\(/g) || []).length;
+    assert(occurrences === 8, "expected all eight NpcShop delegated wrappers");
+    const mutated = source.replace(/_root\.UI系统\.NPC商店WebView\.handle\(/g,
+      "_root.UI系统.NPC商店WebView.dispatch(");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_command_dispatch_drift");
+
+    const unreachable = replaceOnce(source,
+      '_root.gameCommands["npcShopSnapshot"] = function(params) { '
+        + '_root.UI系统.NPC商店WebView.handle("snapshot", params); };',
+      '_root.gameCommands["npcShopSnapshot"] = function(params) { '
+        + 'return; _root.UI系统.NPC商店WebView.handle("snapshot", params); };',
+      "NpcShop unreachable delegated wrapper");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: unreachable }
+    }), "source.flash_command_dispatch_drift");
+  });
+
+  test("AS2 wrapper parameter names are not part of the contract", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const mutated = replaceOnce(read(file),
+      /(_root\.gameCommands\["npcShopSnapshot"\]\s*=\s*function\()params(\)\s*\{\s*_root\.UI系统\.NPC商店WebView\.handle\("snapshot",\s*)params(\);\s*\};)/,
+      function (_match, prefix, middle, suffix) { return prefix + "请求" + middle + "请求" + suffix; },
+      "NpcShop AS2 formal parameter rename");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assert(report.ok, JSON.stringify(report.errors));
+  });
+
+  test("AS2 strings cannot impersonate wrapper calls", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const mutated = read(file)
+      + '\nvar wrapperProbe:String = "Fake.handle(\\\"snapshot\\\", params)";\n';
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assert(report.ok, JSON.stringify(report.errors));
+  });
+
+  test("AS2 wrappers cannot drift to a second service receiver", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const mutated = replaceOnce(read(file),
+      '_root.UI系统.NPC商店WebView.handle("snapshot", params)',
+      'org.flashNight.arki.item.CraftingPanelService.handle("snapshot", params)',
+      "NpcShop AS2 handler receiver");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_command_handler_drift");
+  });
+
+  test("delegated AS2 handler receiver cannot drift as a whole domain", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const occurrences = (source.match(/_root\.UI系统\.NPC商店WebView\.handle\(/g) || []).length;
+    assert(occurrences === 8, "expected all eight NpcShop delegated wrappers");
+    const mutated = source.replace(/_root\.UI系统\.NPC商店WebView\.handle\(/g,
+      "_root.UI系统.OtherService.handle(");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_command_handler_drift");
+  });
+
+  test("inline AS2 domains cannot silently acquire delegated handle wrappers", function () {
+    const file = "scripts/逻辑系统分区/商城系统_WebView.as";
+    const mutated = replaceOnce(read(file),
+      '_root.gameCommands["shopBulkQuery"] = function(params) {',
+      '_root.gameCommands["shopBulkQuery"] = function(params) {\n'
+        + '    _root.UI系统.商城WebView.handle("bulkQuery", params);',
+      "KShop delegated handle insertion");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_dispatch_mode_drift");
+
+    const responseDrift = replaceOnce(read(file),
+      'var resp = { task: "shop_response", callId: callId, success: true };',
+      'var resp = { task: "wrong_response", callId: callId, success: true };',
+      "KShop SaveCart response task");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: responseDrift }
+    }), "source.flash_response_task_drift");
+  });
+
+  test("duplicate executable AS2 action registrations are rejected", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const anchor = '_root.gameCommands["npcShopSnapshot"] = function(params) { _root.UI系统.NPC商店WebView.handle("snapshot", params); };';
+    assert(source.includes(anchor), "NpcShop executable registration anchor is missing");
+    const mutated = source.replace(anchor, anchor + "\n" + anchor);
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_action_drift");
+  });
+
+  test("non-function AS2 action overwrites are counted as duplicate assignments", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const anchor = '_root.gameCommands["npcShopSnapshot"] = function(params) { _root.UI系统.NPC商店WebView.handle("snapshot", params); };';
+    assert(source.includes(anchor), "NpcShop executable registration anchor is missing");
+    const mutated = source.replace(anchor,
+      anchor + '\n_root . gameCommands["npcShopSnapshot"] = _root.npcShopSnapshotAlias;');
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_action_drift");
+  });
+
+  test("static dot-property AS2 action overwrites are counted", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const anchor = '_root.gameCommands["npcShopSnapshot"] = function(params) { _root.UI系统.NPC商店WebView.handle("snapshot", params); };';
+    assert(source.includes(anchor), "NpcShop executable registration anchor is missing");
+    const mutated = source.replace(anchor,
+      anchor + "\n_root.gameCommands.npcShopSnapshot = _root.npcShopSnapshotAlias;");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_action_drift");
+  });
+
+  test("AS2 strings cannot impersonate action assignments", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const mutated = source
+      + '\nvar assignmentProbe:String = "_root.gameCommands[\\\"npcShopSnapshot\\\"] = _root.npcShopSnapshotAlias;";\n';
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assert(report.ok, JSON.stringify(report.errors));
+  });
+
+  test("non-global root-like identifiers do not impersonate gameCommands", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const source = read(file);
+    const mutated = source
+      + '\nbackup_root.gameCommands.npcShopSnapshot = function(params) {};\n'
+      + '前_root.gameCommands.npcShopSnapshot = function(params) {};\n'
+      + 'backup /* probe */ . _root . gameCommands.npcShopSnapshot = function(params) {};\n';
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assert(report.ok, JSON.stringify(report.errors));
+  });
+
+  test("duplicate AS2 actions in another contracted Flash source are rejected", function () {
+    const file = "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as";
+    const mutated = read(file)
+      + '\n_root.gameCommands["npcShopSnapshot"] = function(params) { '
+      + '_root.UI系统.NPC商店WebView.handle("snapshot", params); };\n';
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_action_drift");
+  });
+
+  test("AS2 action registrations must remain in their domain sources", function () {
+    const npcFile = "scripts/逻辑系统分区/商店系统_兼容.as";
+    const craftingFile = "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as";
+    const anchor = '_root.gameCommands["npcShopSnapshot"] = function(params) { _root.UI系统.NPC商店WebView.handle("snapshot", params); };';
+    const npcSource = replaceOnce(read(npcFile), anchor, "", "NpcShop source ownership removal");
+    const craftingSource = read(craftingFile) + "\n" + anchor + "\n";
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: {
+        [npcFile]: npcSource,
+        [craftingFile]: craftingSource
+      }
+    });
+    assertError(report, "source.flash_action_source_drift");
   });
 
   test("Flash response task drift is detected across AS2 and TaskRegistry", function () {
@@ -210,6 +767,32 @@ function run() {
     const report = validator.validateRepository({ root: ROOT, contract: fixture });
     assertError(report, "source.flash_response_task_drift");
     assertError(report, "source.csharp_response_task_drift");
+  });
+
+  test("Flash response task evidence must be a static task assignment", function () {
+    const file = "scripts/逻辑系统分区/商店系统_兼容.as";
+    let mutated = replaceOnce(read(file),
+      'response.task = "npcshop_response";',
+      'response.task = "wrong_response";',
+      "NpcShop actual response task");
+    mutated += '\nvar contractProbe:String = "npcshop_response";\n';
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.flash_response_task_drift");
+
+    const bracketEquivalent = replaceOnce(read(file),
+      'response.task = "npcshop_response";',
+      'response["task"] = "npcshop_response";',
+      "NpcShop bracket response task");
+    const equivalentReport = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: bracketEquivalent }
+    });
+    assert(equivalentReport.ok, JSON.stringify(equivalentReport.errors));
   });
 
   test("TaskRegistry response handler cross-binding is detected", function () {
@@ -226,12 +809,41 @@ function run() {
     assertError(report, "source.csharp_response_task_drift");
   });
 
+  test("TaskRegistry bindings must use the MessageRouter receiver", function () {
+    const file = "launcher/src/Bus/TaskRegistry.cs";
+    const mutated = replaceOnce(read(file),
+      'router.RegisterAsync("npcshop_response", npcShopTask.HandleFlashResponse);',
+      'auditRouter.RegisterAsync("npcshop_response", npcShopTask.HandleFlashResponse);',
+      "NpcShop TaskRegistry receiver");
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_response_task_drift");
+  });
+
   test("TaskRegistry duplicate cross-handler binding is detected", function () {
     const file = "launcher/src/Bus/TaskRegistry.cs";
     const source = read(file);
     const anchor = 'router.RegisterAsync("npcshop_response", npcShopTask.HandleFlashResponse);';
     assert(source.includes(anchor), "NpcShop TaskRegistry registration anchor is missing");
     const mutated = source.replace(anchor, anchor + '\n                router.RegisterAsync("npcshop_response", craftingTask.HandleFlashResponse);');
+    const report = validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    });
+    assertError(report, "source.csharp_response_task_drift");
+  });
+
+  test("TaskRegistry handlers cannot acquire an alias response task", function () {
+    const file = "launcher/src/Bus/TaskRegistry.cs";
+    const source = read(file);
+    const anchor = 'router.RegisterAsync("npcshop_response", npcShopTask.HandleFlashResponse);';
+    assert(source.includes(anchor), "NpcShop TaskRegistry registration anchor is missing");
+    const mutated = source.replace(anchor,
+      anchor + '\n                router.RegisterAsync("npcshop_alias_response", npcShopTask . HandleFlashResponse);');
     const report = validator.validateRepository({
       root: ROOT,
       contract: clone(contract),

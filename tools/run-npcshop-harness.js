@@ -12,7 +12,7 @@ const KSHOP_SOURCE=path.join(WEB,'modules','kshop.js');
 const ITEM_FILTER_SOURCE=path.join(WEB,'modules','item-filter.js');
 const WORKBENCH_COMPONENTS_SOURCE=path.join(WEB,'modules','workbench-components.js');
 const NPCSHOP_SECONDARY_SOURCE=path.join(WEB,'modules','npcshop-secondary-pages.js');
-const PANEL_CONTRACT_SOURCE=path.join(ROOT,'launcher','contracts','panel-contracts.v1.json');
+const PANEL_CONTRACT_SOURCE=path.join(ROOT,'launcher','contracts','panel-contracts.v2.json');
 const KSHOP_MODULE_SOURCES=['kshop-cart-controller.js','kshop-catalog-presenter.js','kshop-owned-inventory-presenter.js','kshop-tooltip-presenter.js'];
 const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js'];
 

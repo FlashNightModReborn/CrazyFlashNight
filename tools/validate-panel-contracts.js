@@ -5,8 +5,10 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
-const DEFAULT_CONTRACT = "launcher/contracts/panel-contracts.v1.json";
+const DEFAULT_CONTRACT = "launcher/contracts/panel-contracts.v2.json";
 const AUTHORITY_KINDS = ["protocol", "transport", "business-authority"];
+const COMMAND_CAPABILITIES = ["query", "transaction"];
+const BUSINESS_DECISION_OWNER = "as2";
 const REQUIRED_VECTOR_VALUES = {
   "npcshop.purchaseQuantity": {
     valid: [1, 99, 100, 101, 4549, 999999],
@@ -82,6 +84,38 @@ function stripCodeComments(source) {
     result += current;
   }
   return result;
+}
+
+function codePositionMask(source) {
+  source = String(source);
+  const mask = new Uint8Array(source.length);
+  let quote = null;
+  let verbatim = false;
+  for (let index = 0; index < source.length; index += 1) {
+    const current = source[index];
+    const next = source[index + 1];
+    if (quote !== null) {
+      if (verbatim && current === '"' && next === '"') { index += 1; continue; }
+      if (!verbatim && current === "\\" && next !== undefined) { index += 1; continue; }
+      if (current === quote) { quote = null; verbatim = false; }
+      continue;
+    }
+    mask[index] = 1;
+    if (current === '"' || current === "'") {
+      quote = current;
+      verbatim = current === '"' && index > 0 && source[index - 1] === "@";
+    }
+  }
+  return mask;
+}
+
+function isUnqualifiedIdentifierAt(source, index) {
+  if (index > 0 && /[A-Za-z0-9_$\u0080-\uFFFF]/.test(source[index - 1])) {
+    return false;
+  }
+  let cursor = index - 1;
+  while (cursor >= 0 && /\s/.test(source[cursor])) cursor -= 1;
+  return cursor < 0 || source[cursor] !== ".";
 }
 
 function addError(errors, code, at, message) {
@@ -194,7 +228,8 @@ function validateSourceCheckSchema(check, at, errors) {
     return;
   }
   const specific = definitions[check.kind];
-  if (!exactKeys(check, common.concat(specific), [], at, errors)) return;
+  const optional = check.kind === "csharp-integer-guard" ? ["allowedAlternates"] : [];
+  if (!exactKeys(check, common.concat(specific), optional, at, errors)) return;
   stringValue(check.kind, at + ".kind", errors);
   safeRelativeFile(check.file, at + ".file", errors);
   specific.forEach(function (key) {
@@ -203,6 +238,31 @@ function validateSourceCheckSchema(check, at, errors) {
   });
   if (check.occurrences !== undefined && check.occurrences < 1) {
     addError(errors, "schema.range", at + ".occurrences", "occurrences must be positive");
+  }
+  if (check.kind === "csharp-integer-guard" && check.allowedAlternates !== undefined) {
+    if (!Array.isArray(check.allowedAlternates)) {
+      addError(errors, "schema.array", at + ".allowedAlternates", "expected array");
+    } else {
+      const signatures = new Set([canonicalExpression(check.minimum) + "|" + canonicalExpression(check.maximum)]);
+      check.allowedAlternates.forEach(function (alternate, index) {
+        const alternateAt = at + ".allowedAlternates[" + index + "]";
+        if (!exactKeys(alternate, ["minimum", "maximum", "occurrences"], [], alternateAt, errors)) return;
+        stringValue(alternate.minimum, alternateAt + ".minimum", errors);
+        stringValue(alternate.maximum, alternateAt + ".maximum", errors);
+        integerValue(alternate.occurrences, alternateAt + ".occurrences", errors);
+        if (alternate.occurrences < 1) {
+          addError(errors, "schema.range", alternateAt + ".occurrences",
+            "occurrences must be positive");
+        }
+        const signature = canonicalExpression(alternate.minimum)
+          + "|" + canonicalExpression(alternate.maximum);
+        if (signatures.has(signature)) {
+          addError(errors, "schema.duplicate", alternateAt,
+            "guard boundary signature is duplicated");
+        }
+        signatures.add(signature);
+      });
+    }
   }
 }
 
@@ -222,7 +282,7 @@ function validateContractSchema(contract, errors) {
     contract.domains.forEach(function (domain, domainIndex) {
       const at = "$.domains[" + domainIndex + "]";
       if (!exactKeys(domain,
-        ["id", "wireDomain", "hostTask", "flashResponseTask", "hostResponseHandler", "hostPayloadMode", "flashSources", "commands", "numericFields", "sourceChecks"],
+        ["id", "wireDomain", "hostTask", "flashResponseTask", "hostResponseHandler", "hostPayloadMode", "flashCommandHandler", "flashSources", "commands", "numericFields", "sourceChecks"],
         [], at, errors)) return;
       stringValue(domain.id, at + ".id", errors);
       stringValue(domain.wireDomain, at + ".wireDomain", errors);
@@ -231,6 +291,12 @@ function validateContractSchema(contract, errors) {
       stringValue(domain.hostResponseHandler, at + ".hostResponseHandler", errors);
       if (domain.hostPayloadMode !== "normalized" && domain.hostPayloadMode !== "passthrough") {
         addError(errors, "schema.enum", at + ".hostPayloadMode", "expected normalized or passthrough");
+      }
+      if (domain.flashCommandHandler !== null
+          && (typeof domain.flashCommandHandler !== "string"
+            || domain.flashCommandHandler.length === 0)) {
+        addError(errors, "schema.string_or_null", at + ".flashCommandHandler",
+          "expected a non-empty qualified handler receiver or null for inline dispatch");
       }
       stringArray(domain.flashSources, at + ".flashSources", errors);
       if (Array.isArray(domain.flashSources)) {
@@ -243,22 +309,28 @@ function validateContractSchema(contract, errors) {
       } else {
         domain.commands.forEach(function (command, commandIndex) {
           const commandAt = at + ".commands[" + commandIndex + "]";
-          if (!exactKeys(command, ["cmd", "action", "access"], [], commandAt, errors)) return;
+          if (!exactKeys(command,
+            ["cmd", "action", "capability", "access", "businessDecisionOwner"],
+            [], commandAt, errors)) return;
           stringValue(command.cmd, commandAt + ".cmd", errors);
           stringValue(command.action, commandAt + ".action", errors);
+          if (!COMMAND_CAPABILITIES.includes(command.capability)) {
+            addError(errors, "schema.enum", commandAt + ".capability", "expected query or transaction");
+          }
           if (command.access !== "read" && command.access !== "write") {
             addError(errors, "schema.enum", commandAt + ".access", "expected read or write");
           }
+          stringValue(command.businessDecisionOwner, commandAt + ".businessDecisionOwner", errors);
         });
       }
-      if (!Array.isArray(domain.numericFields) || domain.numericFields.length === 0) {
-        addError(errors, "schema.array", at + ".numericFields", "expected non-empty numericFields array");
+      if (!Array.isArray(domain.numericFields)) {
+        addError(errors, "schema.array", at + ".numericFields", "expected numericFields array");
       } else {
         domain.numericFields.forEach(function (field, fieldIndex) {
           const fieldAt = at + ".numericFields[" + fieldIndex + "]";
           if (!exactKeys(field, ["id", "integer", "requestPaths", "boundaries"], ["interactionPolicy"], fieldAt, errors)) return;
           stringValue(field.id, fieldAt + ".id", errors);
-          if (field.integer !== true) addError(errors, "schema.literal", fieldAt + ".integer", "v1 numeric fields must be integer=true");
+          if (field.integer !== true) addError(errors, "schema.literal", fieldAt + ".integer", "v2 numeric fields must be integer=true");
           if (!Array.isArray(field.requestPaths) || field.requestPaths.length === 0) {
             addError(errors, "schema.array", fieldAt + ".requestPaths", "expected non-empty request path array");
           } else {
@@ -281,8 +353,8 @@ function validateContractSchema(contract, errors) {
           }
         });
       }
-      if (!Array.isArray(domain.sourceChecks) || domain.sourceChecks.length === 0) {
-        addError(errors, "schema.array", at + ".sourceChecks", "expected non-empty sourceChecks array");
+      if (!Array.isArray(domain.sourceChecks)) {
+        addError(errors, "schema.array", at + ".sourceChecks", "expected sourceChecks array");
       } else {
         domain.sourceChecks.forEach(function (check, checkIndex) {
           validateSourceCheckSchema(check, at + ".sourceChecks[" + checkIndex + "]", errors);
@@ -336,18 +408,21 @@ function findBoundary(domain, fieldId, boundaryName) {
 }
 
 function validateSemantics(contract, errors) {
-  if (contract.contractVersion !== 1) {
-    addError(errors, "contract.version", "$.contractVersion", "only panel contract version 1 is supported");
+  if (contract.contractVersion !== 2) {
+    addError(errors, "contract.version", "$.contractVersion", "only panel contract version 2 is supported");
   }
   const authoritySet = new Set(contract.authorityKinds);
-  if (authoritySet.size !== AUTHORITY_KINDS.length
+  if (contract.authorityKinds.length !== AUTHORITY_KINDS.length
+      || authoritySet.size !== AUTHORITY_KINDS.length
       || AUTHORITY_KINDS.some(function (kind) { return !authoritySet.has(kind); })) {
-    addError(errors, "contract.authority_kinds", "$.authorityKinds", "authorityKinds must be the exact v1 authority set");
+    addError(errors, "contract.authority_kinds", "$.authorityKinds", "authorityKinds must be the exact v2 authority set");
   }
 
   const domainIds = new Set();
   const wireCommands = new Set();
   const responseTasks = new Set();
+  const responseHandlers = new Set();
+  const actions = new Set();
   contract.domains.forEach(function (domain, domainIndex) {
     const domainAt = "$.domains[" + domainIndex + "]";
     if (domainIds.has(domain.id)) addError(errors, "contract.duplicate_domain", domainAt + ".id", "duplicate domain id " + domain.id);
@@ -357,18 +432,33 @@ function validateSemantics(contract, errors) {
         "duplicate Flash response task " + domain.flashResponseTask);
     }
     responseTasks.add(domain.flashResponseTask);
+    if (responseHandlers.has(domain.hostResponseHandler)) {
+      addError(errors, "contract.duplicate_response_handler", domainAt + ".hostResponseHandler",
+        "duplicate Host response handler " + domain.hostResponseHandler);
+    }
+    responseHandlers.add(domain.hostResponseHandler);
 
     const commandNames = new Set();
-    const actions = new Set();
     domain.commands.forEach(function (command, commandIndex) {
       const commandAt = domainAt + ".commands[" + commandIndex + "]";
       if (commandNames.has(command.cmd)) addError(errors, "contract.duplicate_cmd", commandAt + ".cmd", "duplicate cmd " + command.cmd);
       commandNames.add(command.cmd);
-      if (actions.has(command.action)) addError(errors, "contract.duplicate_action", commandAt + ".action", "duplicate action " + command.action);
+      if (actions.has(command.action)) {
+        addError(errors, "contract.duplicate_action", commandAt + ".action",
+          "duplicate global Flash action " + command.action);
+      }
       actions.add(command.action);
       const wireKey = domain.wireDomain + "\u0000" + command.cmd;
       if (wireCommands.has(wireKey)) addError(errors, "contract.duplicate_wire_cmd", commandAt + ".cmd", "duplicate wire domain/cmd pair");
       wireCommands.add(wireKey);
+      if (command.capability === "query" && command.access !== "read") {
+        addError(errors, "contract.capability_access_conflict", commandAt,
+          "query capability must use read access");
+      }
+      if (command.businessDecisionOwner !== BUSINESS_DECISION_OWNER) {
+        addError(errors, "contract.business_decision_owner_conflict", commandAt + ".businessDecisionOwner",
+          "current executable contract requires AS2 as the sole business decision owner");
+      }
     });
 
     const fieldIds = new Set();
@@ -479,6 +569,10 @@ function validateSemantics(contract, errors) {
         }
       }
     });
+    if (domain.numericFields.length > 0 && domain.sourceChecks.length === 0) {
+      addError(errors, "contract.source_checks_missing", domainAt + ".sourceChecks",
+        "a domain with numeric fields needs executable source checks");
+    }
   });
 
   ["npcshop", "crafting", "kshop"].forEach(function (requiredDomain) {
@@ -491,6 +585,13 @@ function validateSemantics(contract, errors) {
   });
   contract.domains.forEach(function (domain) {
     const domainVectors = contract.vectors[domain.id];
+    if (domain.numericFields.length === 0) {
+      if (domainVectors !== undefined) {
+        addError(errors, "contract.vector_without_numeric_fields", "$.vectors." + domain.id,
+          "a domain without numeric fields must not carry vector filler");
+      }
+      return;
+    }
     if (!isObject(domainVectors)) {
       addError(errors, "contract.vector_missing_domain", "$.vectors." + domain.id, "numeric domain needs vectors");
       return;
@@ -540,7 +641,11 @@ function validateSemantics(contract, errors) {
   for (const key of Object.keys(REQUIRED_VECTOR_VALUES)) {
     const parts = key.split(".");
     const vector = contract.vectors[parts[0]] && contract.vectors[parts[0]][parts[1]];
-    if (!vector) continue;
+    if (!vector) {
+      addError(errors, "contract.required_vector", "$.vectors." + key,
+        "required boundary vector is missing");
+      continue;
+    }
     ["valid", "invalid"].forEach(function (kind) {
       const actual = new Set(vector[kind]);
       REQUIRED_VECTOR_VALUES[key][kind].forEach(function (value) {
@@ -595,8 +700,10 @@ function parseCSharpCommandMap(source) {
   if (body === null) return { error: "TryResolveCommand body is unterminated" };
   const markers = [];
   const markerPattern = /\b(case\s+"([^"]+)"|default)\s*:/g;
+  const bodyCodePositions = codePositionMask(body);
   let match;
   while ((match = markerPattern.exec(body)) !== null) {
+    if (!bodyCodePositions[match.index]) continue;
     markers.push({ index: match.index, end: markerPattern.lastIndex, cmd: match[2] || null });
   }
   const commands = new Map();
@@ -605,12 +712,32 @@ function parseCSharpCommandMap(source) {
     if (marker.cmd === null) return;
     const end = index + 1 < markers.length ? markers[index + 1].index : body.length;
     const block = body.slice(marker.end, end);
-    const actions = [];
-    const actionPattern = /\baction\s*=\s*"([^"]+)"\s*;/g;
-    let actionMatch;
-    while ((actionMatch = actionPattern.exec(block)) !== null) actions.push(actionMatch[1]);
-    if (actions.length !== 1 || !/\breturn\s+true\s*;/.test(block)) {
-      errors.push("case " + marker.cmd + " must assign exactly one action and return true");
+    const blockCodePositions = codePositionMask(block);
+    function collectExpressions(pattern) {
+      const expressions = [];
+      let expressionMatch;
+      while ((expressionMatch = pattern.exec(block)) !== null) {
+        if (blockCodePositions[expressionMatch.index]
+            && isUnqualifiedIdentifierAt(block, expressionMatch.index)) {
+          expressions.push(expressionMatch[1].trim());
+        }
+      }
+      return expressions;
+    }
+    const actionAssignments = collectExpressions(/\baction\s*=\s*([^;]+)\s*;/g);
+    const writeAssignments = collectExpressions(/\bisWrite\s*=\s*([^;]+)\s*;/g);
+    const returnExpressions = collectExpressions(/\breturn\s+([^;]+)\s*;/g);
+    const action = actionAssignments.length === 1 ? quotedLiteral(actionAssignments[0]) : null;
+    const exactWriteShape = writeAssignments.length === 0
+      || (writeAssignments.length === 1
+        && (canonicalExpression(writeAssignments[0]) === "true"
+          || canonicalExpression(writeAssignments[0]) === "false"));
+    const exactReturnShape = returnExpressions.length === 1
+      && canonicalExpression(returnExpressions[0]) === "true";
+    if (action === null || !exactWriteShape || !exactReturnShape) {
+      errors.push("case " + marker.cmd
+        + " must assign one literal action, optionally assign literal isWrite=true/false once, "
+        + "and contain exactly one return true");
       return;
     }
     if (commands.has(marker.cmd)) {
@@ -618,8 +745,9 @@ function parseCSharpCommandMap(source) {
       return;
     }
     commands.set(marker.cmd, {
-      action: actions[0],
-      access: /\bisWrite\s*=\s*true\s*;/.test(block) ? "write" : "read"
+      action: action,
+      access: writeAssignments.length === 1
+        && canonicalExpression(writeAssignments[0]) === "true" ? "write" : "read"
     });
   });
   return { commands: commands, errors: errors };
@@ -678,8 +806,10 @@ function splitArguments(value) {
 function parseCalls(source, name) {
   const calls = [];
   const pattern = new RegExp("\\b" + escapeRegExp(name) + "\\s*\\(", "g");
+  const codePositions = codePositionMask(source);
   let match;
   while ((match = pattern.exec(source)) !== null) {
+    if (!codePositions[match.index]) continue;
     const open = source.indexOf("(", match.index);
     const close = matchingParen(source, open);
     if (close < 0) return { calls: calls, error: name + " call is unterminated" };
@@ -687,6 +817,131 @@ function parseCalls(source, name) {
     pattern.lastIndex = close + 1;
   }
   return { calls: calls, error: null };
+}
+
+function parseBareCalls(source, name) {
+  const calls = [];
+  const pattern = new RegExp("\\b" + escapeRegExp(name) + "\\s*\\(", "g");
+  const codePositions = codePositionMask(source);
+  let match;
+  while ((match = pattern.exec(source)) !== null) {
+    if (!codePositions[match.index] || !isUnqualifiedIdentifierAt(source, match.index)) continue;
+    const open = source.indexOf("(", match.index);
+    const close = matchingParen(source, open);
+    if (close < 0) return { calls: calls, error: name + " call is unterminated" };
+    calls.push(splitArguments(source.slice(open + 1, close)));
+    pattern.lastIndex = close + 1;
+  }
+  return { calls: calls, error: null };
+}
+
+function parseQualifiedCalls(source, name) {
+  const calls = [];
+  const identifier = "[A-Za-z_$\\u0080-\\uFFFF][A-Za-z0-9_$\\u0080-\\uFFFF]*";
+  const pattern = new RegExp("(" + identifier + "(?:\\s*\\.\\s*" + identifier + ")*)\\s*\\.\\s*"
+    + escapeRegExp(name) + "\\s*\\(", "g");
+  const codePositions = codePositionMask(source);
+  let match;
+  while ((match = pattern.exec(source)) !== null) {
+    if (!codePositions[match.index]) continue;
+    const open = source.indexOf("(", match.index + match[0].lastIndexOf(name));
+    const close = matchingParen(source, open);
+    if (close < 0) return { calls: calls, error: name + " call is unterminated" };
+    calls.push({
+      receiver: canonicalExpression(match[1]),
+      arguments: splitArguments(source.slice(open + 1, close)),
+      start: match.index,
+      end: close + 1
+    });
+    pattern.lastIndex = close + 1;
+  }
+  return { calls: calls, error: null };
+}
+
+function parseFunctionParameterNames(value) {
+  if (String(value).trim().length === 0) return [];
+  return splitArguments(value).map(function (parameter) {
+    const match = /^\s*([A-Za-z_$\u0080-\uFFFF][A-Za-z0-9_$\u0080-\uFFFF]*)/.exec(parameter);
+    return match ? match[1] : null;
+  });
+}
+
+function parseAs2GameCommandRegistrations(source) {
+  const registrations = new Map();
+  const errors = [];
+  const pattern = /_root\s*\.\s*gameCommands\s*(?:\[\s*(["'])([^"']+)\1\s*\]|\.\s*([A-Za-z_$][A-Za-z0-9_$]*))\s*=(?!=)/g;
+  const codePositions = codePositionMask(source);
+  let match;
+  while ((match = pattern.exec(source)) !== null) {
+    if (!codePositions[match.index] || !isUnqualifiedIdentifierAt(source, match.index)) continue;
+    const action = match[2] || match[3];
+    let cursor = pattern.lastIndex;
+    while (cursor < source.length && /\s/.test(source[cursor])) cursor += 1;
+    const functionHeader = /^function\s*\(([^)]*)\)\s*(?::\s*[A-Za-z_$][\w$\.]*)?\s*\{/.exec(source.slice(cursor));
+    let body = null;
+    let parameterNames = [];
+    if (functionHeader) {
+      const open = cursor + functionHeader[0].lastIndexOf("{");
+      body = findBalancedBody(source, open);
+      parameterNames = parseFunctionParameterNames(functionHeader[1]);
+      if (body === null) {
+        errors.push("unterminated gameCommands function for " + action);
+      }
+    }
+    if (!registrations.has(action)) registrations.set(action, []);
+    registrations.get(action).push({ body: body, parameterNames: parameterNames });
+  }
+  return { registrations: registrations, errors: errors };
+}
+
+function findCSharpMethodBody(source, methodName) {
+  const pattern = new RegExp("\\b" + escapeRegExp(methodName) + "\\s*\\([^)]*\\)\\s*\\{", "g");
+  const codePositions = codePositionMask(source);
+  const bodies = [];
+  let match;
+  while ((match = pattern.exec(source)) !== null) {
+    if (!codePositions[match.index]) continue;
+    const open = source.lastIndexOf("{", pattern.lastIndex - 1);
+    const body = findBalancedBody(source, open);
+    if (body === null) return { body: null, error: methodName + " body is unterminated" };
+    bodies.push(body);
+  }
+  if (bodies.length !== 1) {
+    return { body: null, error: methodName + " body count is " + bodies.length + ", expected 1" };
+  }
+  return { body: bodies[0], error: null };
+}
+
+function quotedLiteral(value) {
+  const match = /^\s*(["'])([^"']*)\1\s*$/.exec(String(value));
+  return match ? match[2] : null;
+}
+
+function parseStaticStringPropertyValues(source, propertyName) {
+  const values = [];
+  const codePositions = codePositionMask(source);
+  const escapedProperty = escapeRegExp(propertyName);
+  [
+    {
+      pattern: new RegExp("\\b" + escapedProperty + "\\s*:\\s*([\"'])([^\"']*)\\1", "g"),
+      valueIndex: 2
+    },
+    {
+      pattern: new RegExp("\\.\\s*" + escapedProperty + "\\s*=\\s*([\"'])([^\"']*)\\1\\s*;", "g"),
+      valueIndex: 2
+    },
+    {
+      pattern: new RegExp("\\[\\s*([\"'])" + escapedProperty
+        + "\\1\\s*\\]\\s*=\\s*([\"'])([^\"']*)\\2\\s*;", "g"),
+      valueIndex: 3
+    }
+  ].forEach(function (definition) {
+    let match;
+    while ((match = definition.pattern.exec(source)) !== null) {
+      if (codePositions[match.index]) values.push(match[definition.valueIndex]);
+    }
+  });
+  return values;
 }
 
 function sourceReader(root, overrides, errors) {
@@ -714,6 +969,38 @@ function validateSources(contract, root, overrides, errors) {
   const read = sourceReader(root, overrides, errors);
   const taskRegistryPath = "launcher/src/Bus/TaskRegistry.cs";
   const taskRegistrySource = read(taskRegistryPath, "$.taskRegistry");
+  const taskRegistryCalls = taskRegistrySource === null
+    ? { calls: [], error: null }
+    : parseQualifiedCalls(taskRegistrySource, "RegisterAsync");
+  if (taskRegistryCalls.error) {
+    addError(errors, "source.csharp_response_task_parser", "$.taskRegistry", taskRegistryCalls.error);
+  }
+  const globalFlashRegistrations = new Map();
+  const scannedFlashSources = new Set();
+  contract.domains.forEach(function (domain, domainIndex) {
+    domain.flashSources.forEach(function (flashFile, flashIndex) {
+      const key = slash(flashFile);
+      if (scannedFlashSources.has(key)) return;
+      scannedFlashSources.add(key);
+      const at = "$.domains[" + domainIndex + "].flashSources[" + flashIndex + "]";
+      const source = read(flashFile, at);
+      if (source === null) return;
+      const parsedRegistrations = parseAs2GameCommandRegistrations(source);
+      parsedRegistrations.errors.forEach(function (message) {
+        addError(errors, "source.flash_registration_parser", at, message);
+      });
+      parsedRegistrations.registrations.forEach(function (entries, action) {
+        if (!globalFlashRegistrations.has(action)) globalFlashRegistrations.set(action, []);
+        entries.forEach(function (entry) {
+          globalFlashRegistrations.get(action).push({
+            body: entry.body,
+            parameterNames: entry.parameterNames,
+            source: key
+          });
+        });
+      });
+    });
+  });
   contract.domains.forEach(function (domain, domainIndex) {
     const domainAt = "$.domains[" + domainIndex + "]";
     const hostSource = read(domain.hostTask, domainAt + ".hostTask");
@@ -741,18 +1028,156 @@ function validateSources(contract, root, overrides, errors) {
           if (!expected.has(cmd)) addError(errors, "source.csharp_command_uncontracted", domainAt + ".commands", "Host exposes uncontracted cmd " + cmd);
         });
       }
-      if (domain.hostPayloadMode === "passthrough") {
-        const buildCalls = parseCalls(hostSource, "BuildFlashCommand");
-        const rawForwardCount = buildCalls.calls.filter(function (argumentsList) {
-          return argumentsList.length >= 3
-            && canonicalExpression(argumentsList[0]) === "action"
-            && canonicalExpression(argumentsList[1]) === "fid"
-            && canonicalExpression(argumentsList[2]) === "parsed";
-        }).length;
-        if (buildCalls.error || rawForwardCount !== 1) {
-          addError(errors, "source.csharp_passthrough_drift", domainAt + ".hostPayloadMode",
-            buildCalls.error || "expected exactly one BuildFlashCommand(action, fid, parsed) raw forward");
+      const domainGuards = [];
+      const handleWebRequest = findCSharpMethodBody(hostSource, "HandleWebRequest");
+      const domainGuardPattern = /if\s*\(\s*!\s*string\.Equals\s*\(\s*parsed\.Value<string>\s*\(\s*"domain"\s*\)\s*,\s*"([^"]+)"\s*,\s*StringComparison\.Ordinal\s*\)\s*\)\s*\{/g;
+      let domainGuardMatch;
+      if (handleWebRequest.body !== null) {
+        const guardCodePositions = codePositionMask(handleWebRequest.body);
+        while ((domainGuardMatch = domainGuardPattern.exec(handleWebRequest.body)) !== null) {
+          if (!guardCodePositions[domainGuardMatch.index]) continue;
+          const guardOpen = handleWebRequest.body.lastIndexOf("{", domainGuardPattern.lastIndex - 1);
+          const guardBody = findBalancedBody(handleWebRequest.body, guardOpen);
+          const rejectCalls = guardBody === null
+            ? { calls: [], error: "domain guard body is unterminated" }
+            : parseBareCalls(guardBody, "RejectAndRemember");
+          let returnCount = 0;
+          if (guardBody !== null) {
+            const returnPattern = /\breturn\s*;/g;
+            const returnCodePositions = codePositionMask(guardBody);
+            let returnMatch;
+            while ((returnMatch = returnPattern.exec(guardBody)) !== null) {
+              if (returnCodePositions[returnMatch.index]) returnCount += 1;
+            }
+          }
+          const exactRejects = rejectCalls.calls.filter(function (argumentsList) {
+            return argumentsList.length === 3
+              && canonicalExpression(argumentsList[0]) === "callId"
+              && canonicalExpression(argumentsList[1]) === "cmd"
+              && quotedLiteral(argumentsList[2]) === "unsupported_domain";
+          });
+          domainGuards.push({
+            domain: domainGuardMatch[1],
+            validBranch: guardBody !== null
+              && !rejectCalls.error
+              && rejectCalls.calls.length === 1
+              && exactRejects.length === 1
+              && returnCount === 1
+          });
         }
+      }
+      const requiresDomainGuard = domain.hostPayloadMode === "normalized";
+      if ((requiresDomainGuard && handleWebRequest.error !== null)
+          || (requiresDomainGuard && domainGuards.length !== 1)
+          || (domainGuards.length > 0
+            && (domainGuards.length !== 1
+              || domainGuards[0].domain !== domain.wireDomain
+              || !domainGuards[0].validBranch))) {
+        addError(errors, "source.csharp_domain_identity_drift", domainAt + ".wireDomain",
+          (handleWebRequest.error ? handleWebRequest.error + "; " : "")
+            + "Host domain guards are " + JSON.stringify(domainGuards)
+            + (requiresDomainGuard
+              ? ", expected exactly [" + JSON.stringify(domain.wireDomain) + "]"
+              : ", expected no guard or exactly [" + JSON.stringify(domain.wireDomain) + "]"));
+      }
+      if (handleWebRequest.body !== null) {
+        const resolutionCalls = parseBareCalls(handleWebRequest.body, "TryResolveCommand");
+        const exactResolutionCalls = resolutionCalls.calls.filter(function (argumentsList) {
+          return argumentsList.length === 3
+            && canonicalExpression(argumentsList[0]) === "cmd"
+            && canonicalExpression(argumentsList[1]) === "outaction"
+            && canonicalExpression(argumentsList[2]) === "outisWrite";
+        });
+        if (resolutionCalls.error || resolutionCalls.calls.length !== 1
+            || exactResolutionCalls.length !== 1) {
+          addError(errors, "source.csharp_command_resolution_drift", domainAt + ".hostTask",
+            resolutionCalls.error
+              || "HandleWebRequest must call TryResolveCommand(cmd, out action, out isWrite) exactly once");
+        }
+        const resolutionGuards = [];
+        const resolutionGuardPattern = /if\s*\(\s*!\s*TryResolveCommand\s*\(\s*cmd\s*,\s*out\s+action\s*,\s*out\s+isWrite\s*\)\s*\)\s*\{/g;
+        const resolutionCodePositions = codePositionMask(handleWebRequest.body);
+        let resolutionGuardMatch;
+        while ((resolutionGuardMatch = resolutionGuardPattern.exec(handleWebRequest.body)) !== null) {
+          if (!resolutionCodePositions[resolutionGuardMatch.index]) continue;
+          const guardOpen = handleWebRequest.body.lastIndexOf("{", resolutionGuardPattern.lastIndex - 1);
+          const guardBody = findBalancedBody(handleWebRequest.body, guardOpen);
+          const rejectCalls = guardBody === null
+            ? { calls: [], error: "command resolver guard body is unterminated" }
+            : parseBareCalls(guardBody, "RejectAndRemember");
+          const exactRejects = rejectCalls.calls.filter(function (argumentsList) {
+            return (argumentsList.length === 2 || argumentsList.length === 3)
+              && quotedLiteral(argumentsList[argumentsList.length - 1]) === "unsupported_cmd";
+          });
+          let returnCount = 0;
+          if (guardBody !== null) {
+            const returnPattern = /\breturn\s*;/g;
+            const returnCodePositions = codePositionMask(guardBody);
+            let returnMatch;
+            while ((returnMatch = returnPattern.exec(guardBody)) !== null) {
+              if (returnCodePositions[returnMatch.index]) returnCount += 1;
+            }
+          }
+          resolutionGuards.push(guardBody !== null
+            && !rejectCalls.error
+            && rejectCalls.calls.length === 1
+            && exactRejects.length === 1
+            && returnCount === 1);
+        }
+        if (resolutionGuards.length !== 1 || resolutionGuards[0] !== true) {
+          addError(errors, "source.csharp_command_resolution_drift", domainAt + ".hostTask",
+            "HandleWebRequest must fail closed from one exact "
+              + "if (!TryResolveCommand(cmd, out action, out isWrite)) branch");
+        }
+        const handleCodePositions = codePositionMask(handleWebRequest.body);
+        ["action", "isWrite"].forEach(function (outputName) {
+          const assignmentPattern = new RegExp("\\b" + outputName + "\\s*=(?!=)", "g");
+          let assignmentCount = 0;
+          let assignmentMatch;
+          while ((assignmentMatch = assignmentPattern.exec(handleWebRequest.body)) !== null) {
+            if (handleCodePositions[assignmentMatch.index]
+                && isUnqualifiedIdentifierAt(handleWebRequest.body, assignmentMatch.index)) {
+              assignmentCount += 1;
+            }
+          }
+          if (assignmentCount !== 0) {
+            addError(errors, "source.csharp_command_output_drift", domainAt + ".hostTask",
+              "HandleWebRequest overwrites resolver output " + outputName);
+          }
+        });
+        let pendingWriteBindingCount = 0;
+        const pendingWriteBindingPattern = /\bIsWrite\s*=\s*isWrite\b/g;
+        let pendingWriteBindingMatch;
+        while ((pendingWriteBindingMatch = pendingWriteBindingPattern.exec(handleWebRequest.body)) !== null) {
+          if (handleCodePositions[pendingWriteBindingMatch.index]) pendingWriteBindingCount += 1;
+        }
+        let writeGateUseCount = 0;
+        const writeGateUsePattern = /\bif\s*\(\s*isWrite\b/g;
+        let writeGateUseMatch;
+        while ((writeGateUseMatch = writeGateUsePattern.exec(handleWebRequest.body)) !== null) {
+          if (handleCodePositions[writeGateUseMatch.index]) writeGateUseCount += 1;
+        }
+        if (pendingWriteBindingCount !== 1 || writeGateUseCount < 1) {
+          addError(errors, "source.csharp_access_binding_drift", domainAt + ".hostTask",
+            "HandleWebRequest must bind IsWrite=isWrite exactly once and use isWrite in a write gate");
+        }
+        const buildCalls = parseQualifiedCalls(handleWebRequest.body, "BuildFlashCommand");
+        const expectedPayload = domain.hostPayloadMode === "normalized" ? "normalized" : "parsed";
+        const exactBuildCalls = buildCalls.calls.filter(function (call) {
+          return call.receiver === "PanelBridge"
+            && call.arguments.length >= 3
+            && canonicalExpression(call.arguments[0]) === "action"
+            && canonicalExpression(call.arguments[1]) === "fid"
+            && canonicalExpression(call.arguments[2]) === expectedPayload;
+        });
+        if (buildCalls.error || buildCalls.calls.length !== 1 || exactBuildCalls.length !== 1) {
+          addError(errors, "source.csharp_flash_dispatch_drift", domainAt + ".hostTask",
+            buildCalls.error
+              || "HandleWebRequest must contain exactly one PanelBridge.BuildFlashCommand(action, fid, "
+                + expectedPayload + ") dispatch");
+        }
+      }
+      if (domain.hostPayloadMode === "passthrough") {
         ["TryReadInteger", "TryNormalizePayload"].forEach(function (method) {
           const calls = parseCalls(hostSource, method);
           if (calls.error || calls.calls.length !== 0) {
@@ -763,43 +1188,124 @@ function validateSources(contract, root, overrides, errors) {
       }
     }
 
-    const flashActions = new Map();
     let flashResponseTaskCount = 0;
     domain.flashSources.forEach(function (flashFile, flashIndex) {
       const source = read(flashFile, domainAt + ".flashSources[" + flashIndex + "]");
       if (source === null) return;
-      const pattern = /_root\.gameCommands\s*\[\s*"([^"]+)"\s*\]\s*=/g;
-      let match;
-      while ((match = pattern.exec(source)) !== null) {
-        flashActions.set(match[1], (flashActions.get(match[1]) || 0) + 1);
-      }
-      const responsePattern = new RegExp("[\"']" + escapeRegExp(domain.flashResponseTask) + "[\"']", "g");
-      while (responsePattern.exec(source) !== null) flashResponseTaskCount++;
+      parseStaticStringPropertyValues(source, "task").forEach(function (value) {
+        if (value === domain.flashResponseTask) flashResponseTaskCount += 1;
+      });
     });
+    const domainFlashSources = new Set(domain.flashSources.map(slash));
+    const delegatedDispatch = domain.flashCommandHandler !== null;
+    const delegatedReceivers = new Set();
     domain.commands.forEach(function (command) {
-      const count = flashActions.get(command.action) || 0;
-      if (count !== 1) {
+      const registrations = globalFlashRegistrations.get(command.action) || [];
+      if (registrations.length !== 1 || registrations[0].body === null) {
         addError(errors, "source.flash_action_drift", domainAt + ".flashSources",
-          command.action + " registration count is " + count + ", expected 1");
+          command.action + " assignment count is " + registrations.length
+            + " and must contain exactly one executable function registration");
+        return;
+      }
+      const registration = registrations[0];
+      if (!domainFlashSources.has(registration.source)) {
+        addError(errors, "source.flash_action_source_drift", domainAt + ".flashSources",
+          command.action + " is registered by " + registration.source
+            + ", outside this domain's contracted Flash sources");
+      }
+      if (delegatedDispatch) {
+        const dispatchCalls = parseQualifiedCalls(registration.body, "handle");
+        const forwardedParameter = registration.parameterNames.length === 1
+          ? registration.parameterNames[0] : null;
+        const delegatedShapeCalls = dispatchCalls.calls.filter(function (call) {
+          return call.arguments.length === 2
+            && quotedLiteral(call.arguments[0]) === command.cmd
+            && forwardedParameter !== null
+            && canonicalExpression(call.arguments[1]) === forwardedParameter;
+        });
+        delegatedShapeCalls.forEach(function (call) {
+          delegatedReceivers.add(call.receiver);
+        });
+        const exactCalls = delegatedShapeCalls.filter(function (call) {
+          return call.receiver === canonicalExpression(domain.flashCommandHandler);
+        });
+        let thinWrapper = false;
+        if (exactCalls.length === 1) {
+          const prefix = registration.body.slice(0, exactCalls[0].start).trim();
+          const suffix = registration.body.slice(exactCalls[0].end).trim();
+          thinWrapper = (prefix === "" || prefix === "return")
+            && /^[;\s]*$/.test(suffix);
+        }
+        if (dispatchCalls.error || delegatedShapeCalls.length !== 1
+            || exactCalls.length !== 1 || !thinWrapper) {
+          addError(errors, "source.flash_command_dispatch_drift", domainAt + ".flashSources",
+            command.action + " must be a thin wrapper that dispatches exactly once to a qualified handle("
+              + JSON.stringify(command.cmd) + ", <its sole function parameter>)");
+        }
+      } else {
+        const unexpectedDispatchCalls = parseQualifiedCalls(registration.body, "handle");
+        const forwardedParameter = registration.parameterNames.length === 1
+          ? registration.parameterNames[0] : null;
+        const delegatedShapeCalls = unexpectedDispatchCalls.calls.filter(function (call) {
+          return call.arguments.length === 2
+            && quotedLiteral(call.arguments[0]) === command.cmd
+            && forwardedParameter !== null
+            && canonicalExpression(call.arguments[1]) === forwardedParameter;
+        });
+        if (unexpectedDispatchCalls.error || delegatedShapeCalls.length !== 0) {
+          addError(errors, "source.flash_dispatch_mode_drift", domainAt + ".flashCommandHandler",
+            command.action + " is inline but contains a delegated handle("
+              + JSON.stringify(command.cmd) + ", <its sole function parameter>) wrapper");
+        }
+        const inlineResponseTasks = parseStaticStringPropertyValues(registration.body, "task");
+        const expectedResponseCount = inlineResponseTasks.filter(function (task) {
+          return task === domain.flashResponseTask;
+        }).length;
+        if (expectedResponseCount < 1
+            || inlineResponseTasks.some(function (task) { return task !== domain.flashResponseTask; })) {
+          addError(errors, "source.flash_response_task_drift", domainAt + ".flashResponseTask",
+            command.action + " must emit only the contracted inline response task "
+              + JSON.stringify(domain.flashResponseTask) + ", got "
+              + JSON.stringify(inlineResponseTasks));
+        }
       }
     });
+    if (delegatedDispatch
+        && (delegatedReceivers.size !== 1
+          || !delegatedReceivers.has(canonicalExpression(domain.flashCommandHandler)))) {
+      addError(errors, "source.flash_command_handler_drift", domainAt + ".flashSources",
+        "delegated domain commands must use contracted AS2 handler "
+          + JSON.stringify(domain.flashCommandHandler) + ", got "
+          + JSON.stringify(Array.from(delegatedReceivers)));
+    }
     if (flashResponseTaskCount < 1) {
       addError(errors, "source.flash_response_task_drift", domainAt + ".flashResponseTask",
         domain.flashResponseTask + " is not emitted by the contracted Flash sources");
     }
     if (taskRegistrySource !== null) {
-      const responseRegistrationsPattern = new RegExp("router\\.RegisterAsync\\s*\\(\\s*[\"']"
-        + escapeRegExp(domain.flashResponseTask) + "[\"']\\s*,", "g");
-      const registrationPattern = new RegExp("router\\.RegisterAsync\\s*\\(\\s*[\"']"
-        + escapeRegExp(domain.flashResponseTask)
-        + "[\"']\\s*,\\s*" + escapeRegExp(domain.hostResponseHandler) + "\\s*\\)", "g");
-      const responseRegistrations = taskRegistrySource.match(responseRegistrationsPattern) || [];
-      const registrations = taskRegistrySource.match(registrationPattern) || [];
-      if (registrations.length !== 1 || responseRegistrations.length !== 1) {
+      const responseRegistrations = taskRegistryCalls.calls.filter(function (call) {
+        return call.receiver === "router"
+          && call.arguments.length >= 2
+          && quotedLiteral(call.arguments[0]) === domain.flashResponseTask;
+      });
+      const registrations = responseRegistrations.filter(function (call) {
+        return canonicalExpression(call.arguments[1]) === canonicalExpression(domain.hostResponseHandler);
+      });
+      const handlerRegistrations = taskRegistryCalls.calls.filter(function (call) {
+        return call.receiver === "router"
+          && call.arguments.length >= 2
+          && canonicalExpression(call.arguments[1]) === canonicalExpression(domain.hostResponseHandler);
+      }).map(function (call) {
+        return quotedLiteral(call.arguments[0]);
+      });
+      if (registrations.length !== 1 || responseRegistrations.length !== 1
+          || handlerRegistrations.length !== 1
+          || handlerRegistrations[0] !== domain.flashResponseTask) {
         addError(errors, "source.csharp_response_task_drift", domainAt + ".hostResponseHandler",
           "TaskRegistry registration count for " + domain.flashResponseTask + " -> "
             + domain.hostResponseHandler + " is " + registrations.length + " and total task registrations are "
-            + responseRegistrations.length + ", both expected 1");
+            + responseRegistrations.length + "; handler tasks are "
+            + JSON.stringify(handlerRegistrations) + ", all expected to bind exactly once");
       }
     }
 
@@ -807,6 +1313,7 @@ function validateSources(contract, root, overrides, errors) {
       const checkAt = domainAt + ".sourceChecks[" + checkIndex + "]";
       const source = read(check.file, checkAt + ".file");
       if (source === null) return;
+      const sourceCodePositions = codePositionMask(source);
       let expectedValue = null;
       if (check.fieldId !== undefined) {
         const boundary = findBoundary(domain, check.fieldId, check.boundary);
@@ -816,31 +1323,56 @@ function validateSources(contract, root, overrides, errors) {
         const pattern = new RegExp("\\bconst\\s+int\\s+" + escapeRegExp(check.symbol) + "\\s*=\\s*(-?\\d+)\\s*;", "g");
         const values = [];
         let match;
-        while ((match = pattern.exec(source)) !== null) values.push(Number(match[1]));
+        while ((match = pattern.exec(source)) !== null) {
+          if (sourceCodePositions[match.index]) values.push(Number(match[1]));
+        }
         if (values.length !== 1 || values[0] !== expectedValue) {
           addError(errors, "source.csharp_const_drift", checkAt,
             check.symbol + " parsed values " + JSON.stringify(values) + ", expected [" + expectedValue + "]");
         }
       } else if (check.kind === "csharp-integer-guard") {
-        const parsed = parseCalls(source, "TryReadInteger");
+        const parsed = parseBareCalls(source, "TryReadInteger");
         if (parsed.error) addError(errors, "source.csharp_guard_parser", checkAt, parsed.error);
-        const target = [check.argument, check.minimum, check.maximum].map(canonicalExpression);
-        const count = parsed.calls.filter(function (argumentsList) {
-          if (argumentsList.length < 3) return false;
-          return target.every(function (expected, index) {
-            return canonicalExpression(argumentsList[index]) === expected;
-          });
-        }).length;
-        if (count !== check.occurrences) {
+        const argument = canonicalExpression(check.argument);
+        const relevantCalls = parsed.calls.filter(function (argumentsList) {
+          return argumentsList.length >= 3
+            && canonicalExpression(argumentsList[0]) === argument;
+        });
+        const guardDefinitions = [{
+          minimum: check.minimum,
+          maximum: check.maximum,
+          occurrences: check.occurrences
+        }].concat(check.allowedAlternates || []);
+        let recognizedCount = 0;
+        guardDefinitions.forEach(function (guard) {
+          const minimum = canonicalExpression(guard.minimum);
+          const maximum = canonicalExpression(guard.maximum);
+          const count = relevantCalls.filter(function (argumentsList) {
+            return canonicalExpression(argumentsList[1]) === minimum
+              && canonicalExpression(argumentsList[2]) === maximum;
+          }).length;
+          recognizedCount += count;
+          if (count !== guard.occurrences) {
+            addError(errors, "source.csharp_guard_drift", checkAt,
+              "parsed integer guard count is " + count + ", expected " + guard.occurrences
+                + " for " + check.argument + " in [" + guard.minimum + ", " + guard.maximum + "]");
+          }
+        });
+        if (recognizedCount !== relevantCalls.length) {
           addError(errors, "source.csharp_guard_drift", checkAt,
-            "parsed integer guard count is " + count + ", expected " + check.occurrences
-              + " for " + check.argument + " in [" + check.minimum + ", " + check.maximum + "]");
+            "found " + (relevantCalls.length - recognizedCount)
+              + " uncontracted integer guard(s) for " + check.argument);
         }
       } else if (check.kind === "as2-number-assignment") {
         const pattern = new RegExp(escapeRegExp(check.symbol) + "(?:\\s*:\\s*[A-Za-z_$][\\w$]*)?\\s*=\\s*(-?\\d+)\\s*;", "g");
         const values = [];
         let match;
-        while ((match = pattern.exec(source)) !== null) values.push(Number(match[1]));
+        while ((match = pattern.exec(source)) !== null) {
+          if (sourceCodePositions[match.index]
+              && isUnqualifiedIdentifierAt(source, match.index)) {
+            values.push(Number(match[1]));
+          }
+        }
         if (values.length !== 1 || values[0] !== expectedValue) {
           addError(errors, "source.as2_assignment_drift", checkAt,
             check.symbol + " parsed values " + JSON.stringify(values) + ", expected [" + expectedValue + "]");
@@ -851,7 +1383,9 @@ function validateSources(contract, root, overrides, errors) {
           + "\\s*\\?\\s*[^:;]+\\s*:\\s*(-?\\d+)\\s*;", "g");
         const values = [];
         let match;
-        while ((match = pattern.exec(source)) !== null) values.push(Number(match[1]));
+        while ((match = pattern.exec(source)) !== null) {
+          if (sourceCodePositions[match.index]) values.push(Number(match[1]));
+        }
         if (values.length !== 1 || values[0] !== expectedValue) {
           addError(errors, "source.as2_ternary_drift", checkAt,
             check.variable + " else values " + JSON.stringify(values) + ", expected [" + expectedValue + "]");

@@ -49,7 +49,7 @@ namespace CF7Launcher.Tests.Contracts
 
         private static JObject LoadContract()
         {
-            string path = Path.Combine(AppContext.BaseDirectory, "Contracts", "panel-contracts.v1.json");
+            string path = Path.Combine(AppContext.BaseDirectory, "Contracts", "panel-contracts.v2.json");
             if (!File.Exists(path)) throw new FileNotFoundException("Panel contract fixture was not copied to the test output.", path);
             return JObject.Parse(File.ReadAllText(path));
         }
