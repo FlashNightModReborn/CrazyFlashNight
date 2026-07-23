@@ -46,6 +46,18 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("pets"));
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("team"));
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("arena"));
+            Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("hairdresser"));
+        }
+
+        [Fact]
+        public void HairdresserDomain_RoutesExplicitlyWhileCloseKeepsPriority()
+        {
+            Assert.Equal(
+                WebOverlayForm.PanelDomainRoute.Hairdresser,
+                WebOverlayForm.ResolvePanelDomainRoute("snapshot", "hairdresser"));
+            Assert.Equal(
+                WebOverlayForm.PanelDomainRoute.Close,
+                WebOverlayForm.ResolvePanelDomainRoute("close", "hairdresser"));
         }
 
         [Fact]

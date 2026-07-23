@@ -29,6 +29,7 @@ namespace CF7Launcher.Tests.Bus
             Assert.Contains("task_response", names);
             Assert.Contains("intelligence_response", names);
             Assert.Contains("skill_response", names);
+            Assert.Contains("hairdresser_response", names);
         }
 
         [Fact]

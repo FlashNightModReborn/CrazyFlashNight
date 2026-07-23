@@ -1147,6 +1147,7 @@ class Program
             panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
         CraftingTask craftingTask = new CraftingTask(socketServer);
+        HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
         commandRouter.SetEquipmentTuningTask(equipmentTuningTask);
         SkillTask skillTask = new SkillTask(socketServer);
@@ -1169,6 +1170,7 @@ class Program
                 if (panelName == "skills") skillTask.HandleAuthoritativePanelClosed(panelInstanceId);
                 if (panelName == "workbench" && equipmentTuningTask.HasBoundPanel)
                     equipmentTuningTask.HandlePanelClosed(panelInstanceId);
+                if (panelName == "hairdresser") hairdresserTask.ClearPending();
             });
         }
         skillTask.SetCoordinatorSettled(delegate
@@ -1280,7 +1282,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, equipmentTuningTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, hairdresserTask, equipmentTuningTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -1294,6 +1296,7 @@ class Program
         webOverlay.SetLootPanelCoordinator(lootPanelCoordinator);
         webOverlay.SetNpcShopTask(npcShopTask);
         webOverlay.SetCraftingTask(craftingTask);
+        webOverlay.SetHairdresserTask(hairdresserTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetSkillTask(skillTask);
         webOverlay.SetGomokuTask(gomokuTask);
@@ -1347,6 +1350,7 @@ class Program
             lootTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
+            hairdresserTask.Dispose();
             equipmentTuningTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
@@ -1400,6 +1404,7 @@ class Program
             try { lootTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
+            try { hairdresserTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
@@ -1619,6 +1624,7 @@ class Program
         try { lootTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
+        try { hairdresserTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }

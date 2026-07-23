@@ -568,6 +568,53 @@ namespace Launcher.Tests.Tasks
         [Theory]
         [InlineData(ExpectedHair, true)]
         [InlineData(OtherHair, false)]
+        public void CloseThenReopenSnapshot_ReconcilesWithoutLateWriteRevival(
+            string currentHair,
+            bool expectedApplied)
+        {
+            var flash = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new HairdresserTask(
+                () => true,
+                value =>
+                {
+                    flash.Add(ParseSent(value));
+                    return true;
+                }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                task.HandleWebRequest(
+                    "commit",
+                    Request("commit", "hair.close.commit." + expectedApplied));
+                int lateCommitFid = (int)flash[0]["callId"];
+
+                task.ClearPending();
+                Assert.Equal("needs_reconcile", task.WriteState);
+                task.HandleFlashResponse(
+                    CommitResponse(lateCommitFid, ExpectedHair),
+                    null);
+                Assert.Empty(posted);
+
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "hair.reopen.snapshot." + expectedApplied));
+                task.HandleFlashResponse(
+                    SnapshotResponse((int)flash[1]["callId"], currentHair),
+                    null);
+
+                JObject response = Assert.Single(posted);
+                Assert.True((bool)response["reconciled"]);
+                Assert.Equal(expectedApplied, (bool)response["writeApplied"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Equal(
+                    new[] { "hairdresserCommit", "hairdresserSnapshot" },
+                    flash.Select(value => (string)value["action"]).ToArray());
+            }
+        }
+
+        [Theory]
+        [InlineData(ExpectedHair, true)]
+        [InlineData(OtherHair, false)]
         public void FreshSnapshot_ReconcilesAppliedOrNotAppliedWithoutReplay(
             string currentHair,
             bool expectedApplied)

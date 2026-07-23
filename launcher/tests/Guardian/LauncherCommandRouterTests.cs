@@ -214,6 +214,61 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void HairdresserRequest_UsesExactRuntimeInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.RequestOpenPanel(
+                "hairdresser",
+                "world_hairdresser",
+                "ignored-page",
+                "ignored-frame",
+                "ignored-return-frame",
+                "ignored-return-panel",
+                "{\"ignored\":true}",
+                "{\"ignored\":true}");
+
+            JObject open = JObject.Parse(Assert.Single(c.Posts));
+            Assert.Equal("hairdresser", (string)open["panel"]);
+            JObject initData = Assert.IsType<JObject>(open["initData"]);
+            Assert.Equal(4, initData.Count);
+            Assert.Equal("runtime", (string)initData["mode"]);
+            Assert.Equal("world_hairdresser", (string)initData["source"]);
+            Assert.False((bool)initData["debug"]);
+            Assert.Equal(
+                (string)open["panelInstanceId"],
+                (string)initData["panelInstanceId"]);
+            Assert.Null(initData["ignored"]);
+            Assert.Equal(new[] { "hairdresser" }, c.ActivePanels);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("as2_request")]
+        [InlineData("world_hairdresser ")]
+        public void HairdresserRequest_RejectsNonExactSource(string source)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.RequestOpenPanel(
+                "hairdresser",
+                source,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+        }
+
+        [Fact]
         public void GOBANG_TEST_OpenPanelFallback_IncludesInitData()
         {
             Capture c = new Capture();

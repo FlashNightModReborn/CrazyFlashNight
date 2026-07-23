@@ -273,7 +273,9 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
-        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile/view 枚举；npcshop 只接收 shopId；其他 panel 保持各自显式分支或 unsupported。
+        /// map 透传 pageId；stage-select 透传 frameLabel/returnFrameLabel；workbench 只接收 profile/view 枚举；
+        /// npcshop 只接收 shopId；hairdresser 只接受 world_hairdresser 且重建固定 initData；
+        /// 其他 panel 保持各自显式分支或 unsupported。
         /// loot 不经过此通用路由；其唯一 Flash ingress 是 TaskRegistry 的 panel_request 专用分支。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
@@ -342,6 +344,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "crafting", StringComparison.OrdinalIgnoreCase))
             {
                 OpenCraftingPanel(safeSource, initDataExtrasJson);
+                return;
+            }
+            if (string.Equals(panelName, "hairdresser", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenHairdresserPanel(safeSource);
                 return;
             }
             if (string.Equals(panelName, "skills", StringComparison.OrdinalIgnoreCase))
@@ -483,6 +490,22 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[Router] OpenCraftingPanel extras parse failed: " + ex.Message);
             }
+        }
+
+        private void OpenHairdresserPanel(string source)
+        {
+            if (!string.Equals(source, "world_hairdresser", StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] OpenHairdresserPanel rejected source=" + source);
+                return;
+            }
+            var initData = new JObject
+            {
+                ["mode"] = "runtime",
+                ["source"] = "world_hairdresser",
+                ["debug"] = false
+            };
+            OpenPanel("hairdresser", initData.ToString(Formatting.None));
         }
 
         private static bool IsCraftingCategory(string category)

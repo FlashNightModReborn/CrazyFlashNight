@@ -142,6 +142,7 @@ namespace CF7Launcher.Guardian
             Inventory,
             NpcShop,
             Crafting,
+            Hairdresser,
             EquipmentTuning,
             Skills,
             Unsupported
@@ -155,6 +156,7 @@ namespace CF7Launcher.Guardian
             if (domain == "inventory") return PanelDomainRoute.Inventory;
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
             if (domain == "crafting") return PanelDomainRoute.Crafting;
+            if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "skills") return PanelDomainRoute.Skills;
             return PanelDomainRoute.Unsupported;
@@ -540,6 +542,7 @@ namespace CF7Launcher.Guardian
         private LootPanelCoordinator _lootPanelCoordinator;
         private NpcShopTask _npcShopTask;
         private CraftingTask _craftingTask;
+        private HairdresserTask _hairdresserTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private SkillTask _skillTask;
         private MapTask _mapTask;
@@ -3215,6 +3218,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetHairdresserTask(HairdresserTask task)
+        {
+            _hairdresserTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetEquipmentTuningTask(EquipmentTuningTask task)
         {
             _equipmentTuningTask = task;
@@ -4081,6 +4091,14 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Hairdresser)
+            {
+                LogManager.Log("[Panel] Routing domain=hairdresser cmd=" + cmd
+                    + " to HairdresserTask, _hairdresserTask=" + (_hairdresserTask != null ? "ok" : "NULL"));
+                if (_hairdresserTask != null) _hairdresserTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "hairdresser_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.EquipmentTuning)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -4145,6 +4163,10 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
+                        bool trackedHairdresserClose = panel == "hairdresser"
+                            && _panelHost != null
+                            && _panelHost.IsPanelOpen
+                            && _panelHost.ActivePanelName == "hairdresser";
                         if (panel == "workbench")
                         {
                             string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -4217,6 +4239,11 @@ namespace CF7Launcher.Guardian
                             // 还会读到栈顶 entry 并 enqueue reopen 命令。
                             if (dismissReturnStack) _panelHost.ClearReturnStack();
                             _panelHost.ClosePanel();
+                        }
+                        if (panel == "hairdresser" && !trackedHairdresserClose
+                            && _hairdresserTask != null)
+                        {
+                            _hairdresserTask.ClearPending();
                         }
                     }
                     break;
@@ -4632,6 +4659,7 @@ namespace CF7Launcher.Guardian
                 _lootTask.OnSocketTransportDetached(closedGeneration);
             if (_npcShopTask != null) _npcShopTask.ClearPending();
             if (_craftingTask != null) _craftingTask.ClearPending();
+            if (_hairdresserTask != null) _hairdresserTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
             if (_skillTask != null) _skillTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();

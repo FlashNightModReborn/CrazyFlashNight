@@ -7,7 +7,7 @@ namespace Launcher.Tests.Tasks
     public sealed class ProgramPanelTaskShutdownTests
     {
         [Fact]
-        public void NpcShopAndCraftingTrackers_AreDisposedOnEveryShutdownPath()
+        public void TransactionPanelTrackers_AreDisposedOnEveryShutdownPath()
         {
             string source = File.ReadAllText(FindProgramSource());
             string early = Slice(
@@ -23,27 +23,47 @@ namespace Launcher.Tests.Tasks
                 "Application.Run(ctx);",
                 "StartupDiagnostics.Mark(\"guardian.shutdown_complete\");");
 
-            AssertShutdownPair(early);
-            AssertShutdownPair(busOnly);
-            AssertShutdownPair(normal);
+            AssertShutdownOrder(early);
+            AssertShutdownOrder(busOnly);
+            AssertShutdownOrder(normal);
             Assert.Equal(3, CountOccurrences(source, "npcShopTask.Dispose();"));
             Assert.Equal(3, CountOccurrences(source, "craftingTask.Dispose();"));
+            Assert.Equal(3, CountOccurrences(source, "hairdresserTask.Dispose();"));
         }
 
-        private static void AssertShutdownPair(string block)
+        [Fact]
+        public void HairdresserTrackedClose_ClearsPendingAtPanelHostObserver()
+        {
+            string source = File.ReadAllText(FindProgramSource());
+            string observer = Slice(
+                source,
+                "panelHost.SetPanelCloseObserver(delegate",
+                "skillTask.SetCoordinatorSettled");
+
+            const string clear =
+                "if (panelName == \"hairdresser\") hairdresserTask.ClearPending();";
+            Assert.Contains(clear, observer);
+            Assert.Equal(1, CountOccurrences(observer, "hairdresserTask.ClearPending();"));
+        }
+
+        private static void AssertShutdownOrder(string block)
         {
             const string npcShopDispose = "npcShopTask.Dispose();";
             const string craftingDispose = "craftingTask.Dispose();";
+            const string hairdresserDispose = "hairdresserTask.Dispose();";
             int npcShopIndex = block.IndexOf(npcShopDispose, StringComparison.Ordinal);
             int craftingIndex = block.IndexOf(craftingDispose, StringComparison.Ordinal);
+            int hairdresserIndex = block.IndexOf(hairdresserDispose, StringComparison.Ordinal);
 
             Assert.True(npcShopIndex >= 0, "NpcShopTask must be disposed in this shutdown path.");
             Assert.True(craftingIndex >= 0, "CraftingTask must be disposed in this shutdown path.");
+            Assert.True(hairdresserIndex >= 0, "HairdresserTask must be disposed in this shutdown path.");
             Assert.True(
-                npcShopIndex < craftingIndex,
-                "NpcShopTask and CraftingTask must keep their declared shutdown order.");
+                npcShopIndex < craftingIndex && craftingIndex < hairdresserIndex,
+                "Transaction panel tasks must keep their declared shutdown order.");
             Assert.Equal(1, CountOccurrences(block, npcShopDispose));
             Assert.Equal(1, CountOccurrences(block, craftingDispose));
+            Assert.Equal(1, CountOccurrences(block, hairdresserDispose));
         }
 
         private static string Slice(string source, string startMarker, string endMarker)
