@@ -1,5 +1,5 @@
 # 测试约定与验证矩阵
-**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：地图箱 fail-loud + 商店双上限合并树（2026-07-22）。本文维护稳定的命令、触发条件和通过口径；功能分支的 current candidate、promotion、运行身份与真人结论由对应实施基线或冻结发布记录维护。商店双上限与预览可见锁的 source `77d7630b6a17770b59f3675a756b59f95e204e1f` 已由 promotion commit `17753a0b1ad14fc823701b4b7b44b0b7e65a6c73` 完成专项 `standard_entry_verified`，但该冻结证据不证明当前合并后的地图箱 tree 已发布。未重跑计数须标为历史基线、待复验或“以最新脚本输出为准”，不得用旧 promotion/standard-entry 外推当前 tree。
+**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：地图资源箱 Web-only 正式发布（2026-07-23）。本文维护稳定的命令、触发条件和通过口径；功能分支的 current candidate、promotion、运行身份与真人结论由对应实施基线或冻结发布记录维护。地图箱 source `2c87d31fecbbfb50c072ec199da0134755974402` 已经 request `F1F9493CF08DD88F26E1493FCACE306AC160866EA21440FC62698E5965A1AF04` 的双 signer / 双 faultDomain v2 列车发布，由 promotion commit `40119635ae5527225a425eb7f69af54f85115066` 写入正式闭包；容量/情报上限由隔离 candidate attempt `82b9e602526c4e93a02d26aac0a44f20` 覆盖，无参标准入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 完成 Web loot 领取、终态关闭、恢复游戏与存盘，严格状态为 `standard_entry_verified`。未重跑计数仍须标为历史基线、待复验或“以最新脚本输出为准”，不得用该冻结结论外推未来 tree。
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 ## 0. 通用前缀
 PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
