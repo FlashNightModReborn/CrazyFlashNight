@@ -20,7 +20,9 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testFilteredSnapshot();
         testArrayInventoryMutationRevision();
         testFacetCacheInvalidation();
+        testItemUtilBalanceExtraction();
         testPresentationProjection();
+        testBalanceSummaryProjection();
         testTooltipLeaseAndInstance();
         testSourceAndTargetStale();
         testMergeCountStale();
@@ -440,16 +442,102 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
     }
 
+    private static function testItemUtilBalanceExtraction():Void {
+        var previous:Object = {
+            itemDataDict:ItemUtil.itemDataDict,
+            balanceDataDict:ItemUtil.balanceDataDict,
+            itemDataArray:ItemUtil.itemDataArray,
+            itemNamesByID:ItemUtil.itemNamesByID,
+            maxID:ItemUtil.maxID,
+            equipmentDict:ItemUtil.equipmentDict,
+            materialDict:ItemUtil.materialDict,
+            informationMaxValueDict:ItemUtil.informationMaxValueDict,
+            multiTierDict:ItemUtil.multiTierDict,
+            itemSetDict:ItemUtil.itemSetDict,
+            itemSetByItem:ItemUtil.itemSetByItem,
+            itemSetConfigDict:ItemUtil.itemSetConfigDict
+        };
+        var previousRoot:Object = {
+            itemData:_root.物品属性列表,
+            itemArray:_root.物品属性数组,
+            itemSets:_root.物品套装索引,
+            itemSetConfigs:_root.物品套装配置索引,
+            names:_root.id物品名对应表,
+            maxId:_root.物品最大id,
+            count:_root.物品总数
+        };
+        var embeddedBalance:Object = {
+            formulaFamily:"weapon", schemaVersion:1, workbookVersion:1,
+            profiles:{data:{status:"unresolved"}}
+        };
+        var combinedData:Object = {
+            only:{
+                name:"balance提取测试物品", type:"消耗品", use:"药剂",
+                data:{level:1}, balance:embeddedBalance
+            }
+        };
+
+        ItemUtil.loadItemData(combinedData);
+        var raw:Object = ItemUtil.getRawItemData("balance提取测试物品");
+        var clone:Object = ItemUtil.getItemData("balance提取测试物品");
+        assertTrue(raw.balance == undefined && clone.balance == undefined
+                && ItemUtil.getRawBalanceData("balance提取测试物品") === embeddedBalance
+                && ItemUtil.getRawBalanceData(1) === embeddedBalance,
+            "ItemUtil 装入时独立提取 balance，常规 raw/clone 不再携带审计树");
+
+        ItemUtil.itemDataDict = previous.itemDataDict;
+        ItemUtil.balanceDataDict = previous.balanceDataDict;
+        ItemUtil.itemDataArray = previous.itemDataArray;
+        ItemUtil.itemNamesByID = previous.itemNamesByID;
+        ItemUtil.maxID = previous.maxID;
+        ItemUtil.equipmentDict = previous.equipmentDict;
+        ItemUtil.materialDict = previous.materialDict;
+        ItemUtil.informationMaxValueDict = previous.informationMaxValueDict;
+        ItemUtil.multiTierDict = previous.multiTierDict;
+        ItemUtil.itemSetDict = previous.itemSetDict;
+        ItemUtil.itemSetByItem = previous.itemSetByItem;
+        ItemUtil.itemSetConfigDict = previous.itemSetConfigDict;
+        _root.物品属性列表 = previousRoot.itemData;
+        _root.物品属性数组 = previousRoot.itemArray;
+        _root.物品套装索引 = previousRoot.itemSets;
+        _root.物品套装配置索引 = previousRoot.itemSetConfigs;
+        _root.id物品名对应表 = previousRoot.names;
+        _root.物品最大id = previousRoot.maxId;
+        _root.物品总数 = previousRoot.count;
+    }
+
     private static function testPresentationProjection():Void {
         resetInventories();
         var name:String = "GateA3槽位展示装备";
         var itemDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        var balanceDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.balanceDataDict == undefined;
+        if (balanceDictWasUndefined) org.flashNight.arki.item.ItemUtil.balanceDataDict = {};
         var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        var previousBalance:Object = org.flashNight.arki.item.ItemUtil.balanceDataDict[name];
         var previousModDict:Object = org.flashNight.arki.item.EquipmentUtil.modDict;
         org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
             name: name, displayname: "GateA3展示名称", type: "武器", use: "手枪", price: 1,
-            data: {level: 1, modslot: 3}, data_2: {level: 2}
+            data: {
+                level:1, power:100, interval:400, capacity:8, weight:1, impact:2, modslot:3,
+                bullet:"普通子弹", clipname:"手枪通用弹药", split:1, singleshoot:true
+            },
+            data_2: {level:2}
+        };
+        org.flashNight.arki.item.ItemUtil.balanceDataDict[name] = {
+            formulaFamily:"weapon", schemaVersion:1, workbookVersion:1,
+            profiles:{
+                data:{
+                    dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                    weightLayers:0, category:1, formula:1, status:"confirmed", displayEligible:true,
+                    inputDigest:"fnv1a32:ed41885c", auditRef:"weapon:GateA3槽位展示装备:data"
+                },
+                data_2:{
+                    dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                    weightLayers:1, category:1, formula:1, status:"confirmed", displayEligible:true,
+                    inputDigest:"fnv1a32:8dc680d9", auditRef:"weapon:GateA3槽位展示装备:data_2"
+                }
+            }
         };
         org.flashNight.arki.item.EquipmentUtil.modDict = {
             插件A: {
@@ -472,6 +560,18 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         };
         _root.物品栏.背包.add(0, equipment);
         _root.物品栏.背包.add(1, item("插件A", 12345));
+        _root.物品栏.背包.add(2, {
+            name:name, value:{level:1, tier:"狱火", mods:[]}, lastUpdate:1,
+            getData:function():Object { return {name:name, type:"武器", use:"手枪", data:{modslot:3}}; }
+        });
+        _root.物品栏.背包.add(3, {
+            name:name, value:{level:1, tier:"不存在进阶", mods:[]}, lastUpdate:1,
+            getData:function():Object { return {name:name, type:"武器", use:"手枪", data:{modslot:3}}; }
+        });
+        _root.物品栏.背包.add(4, {
+            name:name, value:{level:1, mods:[]}, lastUpdate:1,
+            getData:function():Object { return {name:name, type:"武器", use:"手枪", data:{modslot:3}}; }
+        });
         var response:Object = snapshot(10, 10);
         var equipmentProjection:Object = response.snapshots[0].slots[0].item;
         var stackProjection:Object = response.snapshots[0].slots[1].item;
@@ -484,19 +584,234 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             && equipmentProjection.modSlots[0].grade == "medium"
             && equipmentProjection.modSlots[0].symbol == "triangle-outline"
             && equipmentProjection.modSlots[1].gradeColor == "#FFFF00"
-            && equipmentProjection.modSlots[1].symbol == "star-solid",
-            "装备投影优先 displayname，并提供动态满级、独立升阶状态与插件档级/角色符号");
+            && equipmentProjection.modSlots[1].symbol == "star-solid"
+            && equipmentProjection.balanceSummary != undefined
+            && equipmentProjection.balanceSummary.state == "confirmed"
+            && equipmentProjection.balanceSummary.weightLayers == 1
+            && equipmentProjection.balanceSummary.formula == 1
+            && equipmentProjection.balanceSummary.level == 2,
+            "库存进阶实例严格选择对应 balance profile，并保留展示与插件投影");
         assertTrue(stackProjection.itemKind == "stack" && stackProjection.quantity == 12345
             && !stackProjection.isMaxEnhancement && stackProjection.modSlotCapacity == 0
             && stackProjection.modMeta.grade == "medium"
             && stackProjection.modMeta.scope == "firearm"
             && stackProjection.modMeta.role == "precision",
             "插件材料投影读取数量与 mod 元数据");
+        assertTrue(response.snapshots[0].slots[2].item.balanceSummary == undefined,
+            "映射到未配置变体时隐藏，不回退 data");
+        assertTrue(response.snapshots[0].slots[3].item.balanceSummary == undefined,
+            "非空且无法映射的进阶严格 fail-closed");
+        assertTrue(response.snapshots[0].slots[4].item.balanceSummary != undefined
+                && response.snapshots[0].slots[4].item.balanceSummary.level == 1
+                && response.snapshots[0].slots[4].item.balanceSummary.weightLayers == 0,
+            "无进阶库存实例选择 data profile");
 
         if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
         else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previousMeta;
+        if (previousBalance == undefined) delete org.flashNight.arki.item.ItemUtil.balanceDataDict[name];
+        else org.flashNight.arki.item.ItemUtil.balanceDataDict[name] = previousBalance;
         org.flashNight.arki.item.EquipmentUtil.modDict = previousModDict;
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+        if (balanceDictWasUndefined) org.flashNight.arki.item.ItemUtil.balanceDataDict = undefined;
+    }
+
+    private static function testBalanceSummaryProjection():Void {
+        var profile:Object = {
+            dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+            weightLayers:0, category:1, formula:1, status:"confirmed", displayEligible:true,
+            inputDigest:"fnv1a32:96ca5e46", auditRef:"weapon:测试手枪:data"
+        };
+        var balance:Object = {
+            schemaVersion:1, formulaFamily:"weapon", workbookVersion:1,
+            profiles:{data:profile}
+        };
+        var raw:Object = {
+            name:"测试手枪", type:"武器", use:"手枪",
+            data:{
+                level:1, power:100, interval:400, capacity:8, weight:1, impact:2,
+                bullet:"普通子弹", clipname:"手枪通用弹药", split:1, singleshoot:true
+            }
+        };
+
+        var summary:Object = InventoryPanelService.buildBalanceSummary(raw, balance, "data");
+        var wire:String = new LiteJSON().stringify(summary);
+        assertTrue(summary != null && summary.state == "confirmed"
+            && summary.weightLayers == 0 && summary.formula == 1 && summary.level == 1,
+            "digest 匹配的 weapon-v1 data profile 生成最小摘要");
+        assertTrue(summary.auditRef == undefined && summary.profileKey == undefined
+            && summary.inputDigest == undefined && summary.workbookVersion == undefined
+            && summary.workbookSha256 == undefined
+            && wire.indexOf("workbookVersion") < 0 && wire.indexOf("workbookSha256") < 0
+            && wire.indexOf("WBR-") < 0
+            && wire.indexOf("SHA256") < 0 && wire.indexOf("auditRef") < 0,
+            "balance 摘要不泄漏 profile、auditRef、digest 或工作簿信息");
+        var frozenVectorRaw:Object = {
+            name:"测试手枪", type:"武器", use:"手枪",
+            data:{
+                level:10, power:135, interval:110, capacity:30, weight:4, impact:20,
+                bullet:"普通子弹", clipname:"手枪弹药", split:1, singleshoot:true
+            }
+        };
+        var frozenVectorBalance:Object = {
+            schemaVersion:1, formulaFamily:"weapon", workbookVersion:1,
+            profiles:{data:{
+                dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                weightLayers:0, category:1, formula:1, status:"confirmed", displayEligible:true,
+                inputDigest:"fnv1a32:4bbce563", auditRef:"weapon:测试手枪:data"
+            }}
+        };
+        var frozenVectorSummary:Object = InventoryPanelService.buildBalanceSummary(
+            frozenVectorRaw, frozenVectorBalance, "data");
+        assertTrue(frozenVectorSummary != null && frozenVectorSummary.level == 10,
+            "AS2 通过工具侧冻结的 weapon-v1 跨栈 digest vector fnv1a32:4bbce563");
+        raw.balance = balance;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, null, "data") == null,
+            "运行时不读取 rawItemData 内嵌 balance fallback");
+        delete raw.balance;
+
+        delete balance.workbookVersion;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "容器缺少 workbookVersion 时直接省略投影");
+        balance.workbookVersion = 2;
+        var rejectsFutureWorkbook:Boolean = InventoryPanelService.buildBalanceSummary(
+            raw, balance, "data") == null;
+        balance.workbookVersion = "1";
+        var rejectsStringWorkbook:Boolean = InventoryPanelService.buildBalanceSummary(
+            raw, balance, "data") == null;
+        balance.workbookVersion = true;
+        var rejectsBooleanWorkbook:Boolean = InventoryPanelService.buildBalanceSummary(
+            raw, balance, "data") == null;
+        assertTrue(rejectsFutureWorkbook && rejectsStringWorkbook && rejectsBooleanWorkbook,
+            "未实现版本、字符串1与布尔 true 都不得冒充数字 workbookVersion=1");
+        balance.workbookVersion = 1;
+        balance.workbookSha256 = "BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A";
+        var rejectsLegacyWorkbookSha:Boolean = InventoryPanelService.buildBalanceSummary(
+            raw, balance, "data") == null;
+        delete balance.workbookSha256;
+        var acceptsCurrentWorkbook:Boolean = InventoryPanelService.buildBalanceSummary(
+            raw, balance, "data") != null;
+        assertTrue(rejectsLegacyWorkbookSha && acceptsCurrentWorkbook,
+            "旧 workbookSha256 按未知字段拒绝，只有数字 workbookVersion=1 可投影");
+        var itemName:String = raw.name;
+        delete raw.name;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "digest 身份缺少 itemName 时 fail-closed");
+        raw.name = itemName;
+
+        delete raw.data.impact;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "十四项数字输入不完整时 fail-closed");
+        raw.data.impact = 2;
+        raw.data.level = "1";
+        summary = InventoryPanelService.buildBalanceSummary(raw, balance, "data");
+        assertTrue(summary != null && summary.level == 1,
+            "数字字符串按 String(Number(v)) 与工具产生相同 canonical 值");
+        raw.data.level = 1;
+
+        raw.data.power = 101;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "data 公式输入变化后旧 inputDigest 立即失效");
+        raw.data.power = 100;
+        raw.data.bullet = "异常子弹";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "bullet 等机制输入漂移后旧 inputDigest 立即失效");
+        raw.data.bullet = "普通子弹";
+        profile.weightLayers = 1;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "profile 公式输入变化后旧 inputDigest 立即失效");
+        profile.weightLayers = 0;
+
+        profile.formula = 2;
+        profile.inputDigest = "fnv1a32:95ca5cb3";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "即使 digest 与输入一致，未实现的 formula=2 仍被严格 v1 门拒绝");
+        profile.formula = true;
+        profile.inputDigest = "fnv1a32:96ca5e46";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "布尔 true 不得借 Number(true)=1 冒充 formula=1");
+        profile.formula = 1;
+
+        raw.data_fire = {level:2};
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "任一实际 data_* 缺少 profile 时，基础 data 也不得显示绿色");
+        delete raw.data_fire;
+        balance.profiles.data_fire = profile;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "balance 多出无实际 data_* 来源的 profile 时整容器 fail-closed");
+        delete balance.profiles.data_fire;
+
+        balance.dualWield = 2;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "旧平铺公式字段混入 v1 容器时不得被忽略");
+        delete balance.dualWield;
+        balance.audit = {ruleRefs:[]};
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "审计结构混入 compact 容器时不得被忽略");
+        delete balance.audit;
+        profile.rationale = "旧自由文本";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "旧 rationale 混入 compact profile 时不得被忽略");
+        delete profile.rationale;
+        profile.sourceDigest = "sha256:ledger-only";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "仅属外部台账的 sourceDigest 混入 runtime profile 时不得被忽略");
+        delete profile.sourceDigest;
+
+        delete profile.displayEligible;
+        balance.displayEligible = true;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "只接受 profile 内的 displayEligible，不信任容器同名标志");
+        profile.displayEligible = true;
+        delete balance.displayEligible;
+
+        var baseData:Object = raw.data;
+        raw.data = [baseData];
+        balance.profiles.data = [profile];
+        summary = InventoryPanelService.buildBalanceSummary(raw, [balance], "data");
+        assertTrue(summary != null && summary.state == "confirmed",
+            "XML 单元素 data/balance/profile 数组形状仍保持唯一语义");
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, [balance, balance], "data") == null,
+            "多个 balance 容器因歧义 fail-closed");
+        balance.profiles.data = [profile, profile];
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "同键多个 profile 因歧义 fail-closed");
+        balance.profiles.data = profile;
+        raw.data = [baseData, baseData];
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "多个基础 data 节点因公式输入歧义 fail-closed");
+
+        raw.data = baseData;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data_fire") == null,
+            "选中 profile 缺失时不回退 data");
+        profile.status = "unresolved";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "非 confirmed profile 不生成绿色摘要");
+        profile.status = "confirmed";
+        var auditRef:String = profile.auditRef;
+        profile.auditRef = "";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "auditRef 缺失时不生成摘要");
+        profile.auditRef = auditRef;
+        delete balance.formulaFamily;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "缺少 weapon formulaFamily 时直接省略投影");
+        balance.formulaFamily = "armor";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "非 weapon formulaFamily 不生成武器摘要");
+        balance.formulaFamily = "weapon";
+        delete balance.schemaVersion;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "缺少严格 v1 schema 标记时直接省略投影");
+        balance.schemaVersion = 2;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "未上线旧 v2 平铺记录不兼容、不生成摘要");
+        balance.schemaVersion = true;
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "布尔 true 不得借 Number(true)=1 冒充 schemaVersion=1");
+        balance.schemaVersion = 1;
+        raw.type = "防具";
+        assertTrue(InventoryPanelService.buildBalanceSummary(raw, balance, "data") == null,
+            "非武器原始记录不生成 balance 摘要");
     }
 
     private static function testSourceAndTargetStale():Void {

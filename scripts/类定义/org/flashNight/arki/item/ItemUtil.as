@@ -50,6 +50,7 @@ import org.flashNight.naki.Sort.QuickSort;
 class org.flashNight.arki.item.ItemUtil{
     
     public static var itemDataDict:Object;
+    public static var balanceDataDict:Object; // balance 审计投影独立存放，避免常规物品克隆携带
     public static var itemDataArray:Array;
     public static var itemNamesByID:Object;
     public static var maxID:Number;
@@ -114,6 +115,7 @@ class org.flashNight.arki.item.ItemUtil{
      */
     public static function loadItemData(combinedData):Void{
         var _itemDataDict = new Object();
+        var _balanceDataDict = new Object();
         var _itemDataArray = new Array();
         var _itemNamesByID = new Object();
         var _maxID = 0;
@@ -137,6 +139,13 @@ class org.flashNight.arki.item.ItemUtil{
             if (i == "itemSets") continue;
             var itemData = combinedData[i];
             var itemName = itemData.name;
+
+            // balance 是严格校验后才能投影的审计元数据，不参与战斗物品克隆。
+            // 只保留独立原始索引，不提供嵌入 itemData 的 fallback。
+            if(itemData.balance !== undefined){
+                _balanceDataDict[itemName] = itemData.balance;
+                delete itemData.balance;
+            }
 
             // 自动分配ID（忽略XML中的ID）
             itemData.id = autoIncrementID++;
@@ -189,6 +198,7 @@ class org.flashNight.arki.item.ItemUtil{
         }
 
         itemDataDict = _itemDataDict;
+        balanceDataDict = _balanceDataDict;
         itemDataArray = _itemDataArray;
         itemNamesByID = _itemNamesByID;
         maxID = _maxID;
@@ -233,6 +243,16 @@ class org.flashNight.arki.item.ItemUtil{
     public static function getRawItemData(index):Object{
         if (index.__proto__ == String.prototype) return ItemUtil.itemDataDict[index];
         if (index.__proto__ == Number.prototype) return ItemUtil.itemDataDict[itemNamesByID[index]];
+        return null;
+    }
+
+    /**
+     * 获取物品的原始 balance 容器。返回值只供严格校验与展示投影使用，
+     * 不并入 getRawItemData/getItemData，也不应被游戏性能修改。
+     */
+    public static function getRawBalanceData(index):Object{
+        if (index.__proto__ == String.prototype) return ItemUtil.balanceDataDict[index];
+        if (index.__proto__ == Number.prototype) return ItemUtil.balanceDataDict[itemNamesByID[index]];
         return null;
     }
 

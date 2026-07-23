@@ -63,15 +63,25 @@
       <reloadPenalty>-17</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>150</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，price=39000 符合权威 WL0。use=长枪→dualWield=1；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取冲锋枪通用弹药。未配置 singleshoot，使用 XML interval 原值。公式1按 averageDPS≈weightedDPS 复算通过（偏差 -3.31%）。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>150</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:c4677f9d</inputDigest>
+          <auditRef>weapon:PPSh41:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="冲锋枪">
@@ -103,15 +113,25 @@
       <reloadPenalty>-17</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>150</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：现役金币商店 data/shops/npcs/Boy.json，price=48000 符合权威 WL0。use=长枪→dualWield=1；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取冲锋枪通用弹药。未配置 singleshoot，使用 XML interval 原值。公式1按 averageDPS≈weightedDPS 复算通过（偏差 -2.71%）。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>150</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:b8f77441</inputDigest>
+          <auditRef>weapon:汤姆逊冲锋枪:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="冲锋枪">
@@ -321,15 +341,25 @@
       <reloadPenalty>-17</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>150</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，price=81900 符合权威 WL0。use=长枪→dualWield=1；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取冲锋枪通用弹药。未配置 singleshoot，使用 XML interval 原值。公式1按 averageDPS≈weightedDPS 复算通过（偏差 -3.39%）。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>150</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:09dc1117</inputDigest>
+          <auditRef>weapon:PP1901:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="冲锋枪">

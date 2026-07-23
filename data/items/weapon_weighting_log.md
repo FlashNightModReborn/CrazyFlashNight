@@ -1,5 +1,7 @@
 # 武器加权等级计算日志
 
+> **历史日志，禁止作为现行平衡依据。** 其中公式、字段和“已完成”状态均未按当前权威工作簿与 `<balance>` 契约复核。当前施工入口见 [`agent-balance-record-design.md`](../../tools/cf7-balance-tool/docs/agent-balance-record-design.md)，业务判据见 [`weapon-balance-rulebook.md`](../../tools/cf7-balance-tool/docs/weapon-balance-rulebook.md)。
+
 ## 日志格式
 每条记录包含：
 - 时间戳
@@ -133,7 +135,7 @@ grep "武器ID" data/kshop/* data/crafting/* data/shops/* data/task/*
 ### 参考资料位置
 
 #### 核心参考文件
-1. **Excel计算表**：`0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式.xlsx`
+1. **公式最高权威**：`0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx`
    - 枪械sheet：DPS计算公式和系数说明
    - 装备价格sheet：价格参考标准
 
@@ -144,8 +146,9 @@ grep "武器ID" data/kshop/* data/crafting/* data/shops/* data/task/*
    - 任务奖励：`data/task/`
 
 3. **工作流文档**：
-   - `weapon_weighting_workflow.md`：详细计算方法
-   - `weapon_weighting_log.md`：本文件，记录所有计算结果
+   - `tools/cf7-balance-tool/docs/agent-balance-record-design.md`：现行 schema、施工与验证契约
+   - `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md`：现行业务判据与条款 ID
+   - `weapon_weighting_log.md`：本文件，仅记录历史计算结果
 
 ### 计算公式总结
 
@@ -195,6 +198,6 @@ if 特殊武器: +1~4分
 - [ ] 其余86把手枪...
 
 ## 备注
-- 工作流文档：weapon_weighting_workflow.md
-- 每次处理一把武器，确保分析充分
-- 记忆模糊时重新阅读工作流文档
+- 本文件的待处理清单和结论均须按现行契约重新审计。
+- 每次处理一把武器，确保分析充分；不得沿用旧 `weightlevel` 结论。
+- 需要判据时查现行规则表，不从本历史日志或旧 workflow 反推。

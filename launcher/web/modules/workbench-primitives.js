@@ -329,6 +329,90 @@
     /** Shared catalog-card presentation primitive. */
     function ItemCard() {}
 
+    function balanceSource(value) {
+        if (!value || typeof value !== 'object') return null;
+        return Object.prototype.hasOwnProperty.call(value, 'balanceSummary')
+            ? value.balanceSummary : value;
+    }
+
+    function balanceNumber(value, decimals) {
+        var factor = Math.pow(10, decimals);
+        var rounded = Math.round(Number(value) * factor) / factor;
+        if (rounded === 0) rounded = 0;
+        return String(rounded);
+    }
+
+    function signedBalanceNumber(value) {
+        value = Number(value);
+        return (value > 0 ? '+' : '') + balanceNumber(value, 2);
+    }
+
+    function normalizeBalanceSummary(value) {
+        var summary = balanceSource(value);
+        if (!summary || summary.state !== 'confirmed') return null;
+        var allowedKeys = {state:true, weightLayers:true, formula:true, level:true};
+        var keys = Object.keys(summary);
+        if (keys.length !== 4) return null;
+        for (var keyIndex = 0; keyIndex < keys.length; keyIndex++) {
+            if (!allowedKeys[keys[keyIndex]]) return null;
+        }
+        var weightLayers = summary.weightLayers;
+        if (typeof weightLayers !== 'number' || !isFinite(weightLayers)) return null;
+        if (typeof summary.formula !== 'number' || summary.formula !== 1) return null;
+        if (typeof summary.level !== 'number' || !isFinite(summary.level)) return null;
+        return {
+            state: 'confirmed',
+            weightLayers: weightLayers === 0 ? 0 : weightLayers,
+            formula: 1,
+            level: summary.level === 0 ? 0 : summary.level
+        };
+    }
+
+    function escapeBalanceHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    ItemCard.normalizeBalanceSummary = normalizeBalanceSummary;
+
+    ItemCard.balanceAriaLabel = function(value) {
+        var summary = normalizeBalanceSummary(value);
+        if (!summary) return '';
+        var parts = ['平衡标定已确认'];
+        parts.push('等级 ' + balanceNumber(summary.level, 2));
+        parts.push('同级加权 ' + signedBalanceNumber(summary.weightLayers));
+        return parts.join('，');
+    };
+
+    ItemCard.renderBalanceBadge = function(value) {
+        var summary = normalizeBalanceSummary(value);
+        if (!summary) return null;
+        var tone = summary.weightLayers > 0 ? 'positive'
+            : summary.weightLayers < 0 ? 'negative' : 'neutral';
+        var badge = makeElement('span', 'balance-weight-badge balance-weight-' + tone);
+        badge.setAttribute('data-balance-state', 'confirmed');
+        badge.setAttribute('data-balance-weight', String(summary.weightLayers));
+        badge.setAttribute('aria-label', ItemCard.balanceAriaLabel(summary));
+        var level = makeElement('span', 'balance-badge-level');
+        level.textContent = 'Lv' + balanceNumber(summary.level, 2);
+        badge.appendChild(level);
+        var weight = makeElement('span', 'balance-badge-weight');
+        weight.textContent = '◆' + signedBalanceNumber(summary.weightLayers);
+        badge.appendChild(weight);
+        return badge;
+    };
+
+    ItemCard.balanceTooltipMetaHtml = function(value) {
+        var summary = normalizeBalanceSummary(value);
+        if (!summary) return '';
+        var aria = ItemCard.balanceAriaLabel(summary);
+        var html = '<div class="balance-tooltip-meta" aria-label="' + escapeBalanceHtml(aria) + '">'
+            + '<div class="balance-tooltip-summary"><span class="balance-tooltip-caption">同级加权</span>'
+            + '<b class="balance-tooltip-weight">◆' + escapeBalanceHtml(signedBalanceNumber(summary.weightLayers)) + '</b>';
+        return html + '</div></div>';
+    };
+
     ItemCard.renderCatalog = function(options) {
         options = options || {};
         var skin = options.skin || 'kshop';
@@ -360,6 +444,9 @@
         var icon = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-icon '
             + (skin === 'kshop' ? 'kshop-card-icon-frame' : 'npcshop-card-icon'));
         icon.innerHTML = options.iconHtml || '';
+        var balanceValue = options.balanceSummary != null ? options.balanceSummary : options.item;
+        var balanceBadge = ItemCard.renderBalanceBadge(balanceValue);
+        if (balanceBadge) icon.appendChild(balanceBadge);
         node.appendChild(icon);
 
         var body = makeElement(skin === 'kshop' ? 'div' : 'span', 'item-card-body '
@@ -411,6 +498,8 @@
             options.priceText != null ? options.priceText : (options.price != null ? options.price : ''),
             locked ? (options.lockTitle || options.lockReason || '未解锁') : ''
         ].filter(function(part) { return part !== ''; }).join('，');
+        var balanceAria = ItemCard.balanceAriaLabel(balanceValue);
+        if (balanceAria) stateLabel += (stateLabel ? '，' : '') + balanceAria;
         EntityTile.applySemantics(node, {
             itemName: options.name || '',
             label: stateLabel,

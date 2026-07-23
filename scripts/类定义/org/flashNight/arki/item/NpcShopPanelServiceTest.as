@@ -47,8 +47,31 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         itemDict["测试手枪"].weapontype = "手枪";
         itemDict["测试手枪"].setId = "test_sidearm";
         itemDict["测试手枪"].setName = "测试侧武器套装";
+        itemDict["测试手枪"].data = {
+            level:1, power:100, interval:400, capacity:8, weight:1, impact:2,
+            bullet:"普通子弹", clipname:"手枪通用弹药", split:1, singleshoot:true
+        };
+        itemDict["测试手枪"].data_2 = {level:2};
         itemDict["测试插件"] = itemData("测试插件", "收集品", "材料", 50);
         ItemUtil.itemDataDict = itemDict;
+        ItemUtil.balanceDataDict = {};
+        ItemUtil.balanceDataDict["测试手枪"] = {
+            schemaVersion:1, formulaFamily:"weapon", workbookVersion:1,
+            profiles:{
+                data:{
+                    dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                    weightLayers:0, category:1, formula:1,
+                    status:"confirmed", displayEligible:true,
+                    inputDigest:"fnv1a32:96ca5e46", auditRef:"weapon:测试手枪:data"
+                },
+                data_2:{
+                    dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                    weightLayers:1, category:1, formula:1,
+                    status:"confirmed", displayEligible:true,
+                    inputDigest:"fnv1a32:2f617c63", auditRef:"weapon:测试手枪:data_2"
+                }
+            }
+        };
         ItemUtil.equipmentDict = {};
         ItemUtil.equipmentDict["测试手枪"] = true;
         ItemUtil.materialDict = {};
@@ -119,6 +142,20 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(snapshot.catalog[4].weaponType == "手枪" && snapshot.catalog[4].actionType == ""
             && snapshot.catalog[4].setId == "test_sidearm" && snapshot.catalog[4].setName == "测试侧武器套装",
             "existing weapon subtype and set fields projected for automatic grouping");
+        var summary:Object = snapshot.catalog[4].balanceSummary;
+        var wire:String = new LiteJSON().stringify(snapshot.catalog[4]);
+        check(summary != undefined && summary.state == "confirmed"
+            && summary.weightLayers == 0 && summary.formula == 1 && summary.level == 1
+            && wire.indexOf("inputDigest") < 0 && wire.indexOf("rationale") < 0
+            && wire.indexOf("workbookVersion") < 0 && wire.indexOf("workbookSha256") < 0
+            && wire.indexOf("auditRef") < 0
+            && wire.indexOf("WBR-") < 0 && wire.indexOf("SHA256") < 0,
+            "NPC 目录即使存在进阶 profile 也固定投影 data 的最小 balanceSummary");
+        ItemUtil.itemDataDict["测试手枪"].data.power = 101;
+        var staleBalance:Object = service().execute("snapshot",{shopId:"测试商店"});
+        check(staleBalance.catalog[4].balanceSummary == undefined,
+            "NPC 目录在原始公式输入变化后 fail-closed 移除旧绿色摘要");
+        ItemUtil.itemDataDict["测试手枪"].data.power = 100;
         check(snapshot.layout.title == "测试商人" && snapshot.layout.sections[0].entries.length == 5,"developer curated layout projected");
         var denied:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:3,quantity:1});
         check(!denied.success && denied.error == "locked" && _root.金钱 == 5000,"locked buy has no write");

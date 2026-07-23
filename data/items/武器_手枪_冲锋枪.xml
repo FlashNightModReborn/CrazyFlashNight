@@ -174,15 +174,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=75。公式1按 averageDPS≈weightedDPS 复算 1383.97≈1412.65，残差 -2.0303%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:18598029</inputDigest>
+            <auditRef>weapon:TMP:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -213,15 +223,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json 与 data/shops/npcs/Shop Girl.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=85。公式1按 averageDPS≈weightedDPS 复算 1444.77≈1504.17，残差 -3.9491%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:37807b32</inputDigest>
+            <auditRef>weapon:Mp5 pdw:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -252,15 +272,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/soldier.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=133。公式1按 averageDPS≈weightedDPS 复算 1802.25≈1872.97，残差 -3.7761%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:bcb895f1</inputDigest>
+            <auditRef>weapon:M3SMG:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -292,15 +322,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json 与 data/shops/npcs/Shop Girl.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=80。公式1按 averageDPS≈weightedDPS 复算 1858.27≈1895.59，残差 -1.9689%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:1c8f29bb</inputDigest>
+            <auditRef>weapon:MP7:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -365,15 +405,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json 与 data/shops/npcs/Shop Girl.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=70。权威枪械表“示例P90”与当前 data 输入逐项一致；lifecycle 的 P90初始化/P90周期仅做 MagazineFrameSync 视觉同步，不改变平衡输入。公式1按 averageDPS≈weightedDPS 复算 2228.58≈2225.70，残差 +0.1295%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:7fe6e998</inputDigest>
+            <auditRef>weapon:P90:data</auditRef>
+          </data>
+        </profiles>
       </balance>
       <lifecycle>
         <attr_0>
@@ -414,15 +464,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=70。公式1按 averageDPS≈weightedDPS 复算 2533.09≈2480.58，残差 +2.1168%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:f89b45f3</inputDigest>
+            <auditRef>weapon:蝎式冲锋枪弹鼓版:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -537,15 +597,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>50</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/soldier.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取 data/items/消耗品_弹夹.xml 的手枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=80。公式1按 averageDPS≈weightedDPS 复算 2937.12≈2926.05，残差 +0.3786%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:7c406743</inputDigest>
+            <auditRef>weapon:APSstechkin:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -611,15 +681,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=100。公式1按 averageDPS≈weightedDPS 复算 3304.82≈3346.65，残差 -1.2498%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:b74180f0</inputDigest>
+            <auditRef>weapon:vactorPP-7400U:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -651,15 +731,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>150</magPrice>
-        <weightLayers>1</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=1：现役来源仅为金币商店 data/shops/npcs/King.json；price=83000≈20×3900÷1.5×1.6=83200，符合工作簿“仅购买高价计1层”。use=手枪→dualWield=2；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=150 取 data/items/消耗品_弹夹.xml 的冲锋枪通用弹药。未配置 singleshoot，按自动枪语义使用 XML interval=85。公式1按 averageDPS≈weightedDPS 复算 3682.80≈3738.40，残差 -1.4875%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>150</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:50530744</inputDigest>
+            <auditRef>weapon:vactorPP-7400U长枪托:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -896,15 +986,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1.5</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>400</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1.5</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/King.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；次级穿刺子弹按权威规则取 pierce=1.5，物理且 split=1→damageType=1,shotgun=1；category=1.5；magPrice=400 取 data/items/消耗品_弹夹.xml 的冲锋枪钢芯穿甲弹。未配置 singleshoot，按自动枪语义使用 XML interval=110。公式1按 averageDPS≈weightedDPS 复算 4189.94≈4158.07，残差 +0.7666%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1.5</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>400</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1.5</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:0554c27b</inputDigest>
+            <auditRef>weapon:OPDW17:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">
@@ -1143,15 +1243,25 @@
         <reloadPenalty>-17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>1000</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役来源为金币商店 data/shops/npcs/heeho君.json，按工作簿金币购买默认0层。use=手枪→dualWield=2；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=1000 取 data/items/消耗品_弹夹.xml 的冲锋枪达姆弹弹药。未配置 singleshoot，按自动枪语义使用 XML interval=65。公式1按 averageDPS≈weightedDPS 复算 13360.54≈13999.76，残差 -4.5660%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>1000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:d5ea2f8a</inputDigest>
+            <auditRef>weapon:转换者:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="冲锋枪">

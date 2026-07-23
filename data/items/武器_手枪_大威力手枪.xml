@@ -281,15 +281,25 @@
         <reloadPenalty>17</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>2</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>300</magPrice>
-        <weightLayers>1</weightLayers>
-        <category>2</category>
-        <formula>1</formula>
-        <rationale>WL=1：现役来源为合成，配方见 data/crafting/武器合成.json；未发现 K 点或高难掉落来源。use=手枪→dualWield=2；穿刺子弹、物理、split=1→pierce=2,damageType=1,shotgun=1；category=2；magPrice=300 取马格南手枪弹药。权威枪械表“示例韦森改装”明确使用该枪 XML interval 原值与 WL=1，本记录据此不再为 slay=5 另加效果层。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>2</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:eaf370b0</inputDigest>
+            <auditRef>weapon:韦森686改装版:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="大威力手枪">

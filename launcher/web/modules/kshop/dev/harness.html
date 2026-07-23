@@ -195,8 +195,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     }
 
     var BASE_CATALOG = [
-        {idx:0,id:'w0',item:'测试手枪',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1},
-        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999,dynamicCapacity:true},
+        {idx:0,id:'w0',item:'测试手枪',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1,balanceSummary:{state:'confirmed',weightLayers:2,formula:1,level:1}},
+        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999,dynamicCapacity:true,balanceSummary:{state:'review',weightLayers:8,formula:1,level:1}},
         {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备',maxQuantity:1},
         {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',use:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑',maxQuantity:1},
         {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',use:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀',maxQuantity:1}
@@ -256,6 +256,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.state.inventory.背包[1] = {
                 name:'吉他喷火器',displayName:'烈火吉他',icon:'吉他喷火器',majorType:'武器',use:'长枪',itemKind:'equipment',quantity:1,
                 enhancementLevel:13,maxEnhancementLevel:13,isMaxEnhancement:true,
+                balanceSummary:{state:'confirmed',weightLayers:0,formula:1,level:35},
                 tierSlotAvailable:true,tierSlotUsed:false,modSlotCapacity:3,modSlotUsed:2,
                 modSlots:[
                     {name:'脉冲式惯性阻尼器',grade:'medium',gradeLabel:'中等',gradeColor:'#996600',role:'precision',roleLabel:'精准与操控',symbol:'triangle-outline'},
@@ -779,6 +780,27 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui2','生产格子走动态图标 HTML 入口',
             document.querySelectorAll('[data-icon]').length >= 3,
             document.querySelectorAll('[data-icon]').length + ' icons');
+        var confirmedBalanceCard = document.querySelector('.kshop-card[data-idx="0"]');
+        var confirmedBalanceBadge = confirmedBalanceCard && confirmedBalanceCard.querySelector('.balance-weight-badge');
+        var unresolvedBalanceCard = document.querySelector('.kshop-card[data-idx="1"]');
+        assert('kshop-balance1','商城图标层只显示已确认加权，零依赖颜色仍有菱形与有符号数字',
+            confirmedBalanceBadge && confirmedBalanceBadge.textContent.indexOf('Lv1') >= 0
+                && confirmedBalanceBadge.textContent.indexOf('◆+2') >= 0
+                && confirmedBalanceBadge.getAttribute('aria-label').indexOf('同级加权 +2') >= 0
+                && confirmedBalanceCard.getAttribute('aria-label').indexOf('平衡标定已确认') >= 0
+                && unresolvedBalanceCard && !unresolvedBalanceCard.querySelector('.balance-weight-badge'));
+        PanelTooltip.lastRichOptions = null;
+        var balanceHoverRect = confirmedBalanceCard.getBoundingClientRect();
+        confirmedBalanceCard.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:balanceHoverRect.left + 8,clientY:balanceHoverRect.top + 8}));
+        await waitFor(function(){ return PanelTooltip.lastRichOptions && PanelTooltip.lastRichOptions.metaHTML; }, 300);
+        var balanceMetaHTML = PanelTooltip.lastRichOptions && PanelTooltip.lastRichOptions.metaHTML || '';
+        var balanceMetaDoc = new DOMParser().parseFromString(balanceMetaHTML, 'text/html');
+        confirmedBalanceCard.dispatchEvent(new MouseEvent('mouseleave',{bubbles:false,clientX:balanceHoverRect.right + 4,clientY:balanceHoverRect.bottom + 4}));
+        assert('kshop-balance2','商城 Tooltip 仅投影四字段协议的一行同级加权摘要',
+            balanceMetaDoc.querySelectorAll('.balance-tooltip-summary').length === 1
+                && balanceMetaDoc.querySelectorAll('.balance-tooltip-tags,.balance-tooltip-dps,.balance-tooltip-label').length === 0
+                && balanceMetaDoc.body.textContent.indexOf('同级加权') >= 0
+                && !/DPS|WBR|SHA|rationale/i.test(balanceMetaHTML), balanceMetaHTML);
         var largeQuantity = KShopCartController.addItem([], 1, 4549, true, 999999);
         var cappedQuantity = KShopCartController.addItem(largeQuantity.cart, 1, 999999, true, 999999);
         assert('kshop-limit1','大额堆叠购买不再被 999 UI 常量拒绝，并按权威目录上限夹紧',
@@ -1396,6 +1418,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var presentationBattleboxEquip = document.querySelector('.inventory-owned-warehouse .inventory-slot-card[data-physical-slot="2"]');
         var presentationUsedSlots = presentationEquip.querySelectorAll('.inventory-equip-slot.used');
         var presentationBattleboxUsedSlots = presentationBattleboxEquip.querySelectorAll('.inventory-equip-slot.used');
+        var ownedBalanceBadge = presentationEquip && presentationEquip.querySelector('.balance-weight-badge');
+        assert('kshop-balance3','owned 装备复用左下加权徽标，确认零层可辨且不占用升阶/强化角标',
+            ownedBalanceBadge && ownedBalanceBadge.textContent.indexOf('◆0') >= 0
+                && ownedBalanceBadge.getAttribute('data-balance-state') === 'confirmed'
+                && getComputedStyle(ownedBalanceBadge.querySelector('.balance-badge-level')).display === 'none'
+                && presentationEquip.querySelector('.inventory-tier-marker.empty')
+                && presentationEquip.querySelector('.inventory-slot-value.level'));
         assert('kshop-ui8w','owned 格使用 displayname、独立升阶菱形与三插件槽，插件按档级色和实心/线框角色符号编码',
             presentationEquip.classList.contains('max-enhancement')
                 && presentationEquip.querySelector('.inventory-slot-copy b').textContent === '烈火吉他'

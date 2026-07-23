@@ -1,6 +1,8 @@
 # CF7 数值平衡工具 — 设计决策记录 (ADR)
 
 > Architecture Decision Records - 记录工具开发中的关键设计决策。
+>
+> **武器标定边界提示**：本文保留历史决策过程；当前权威矩阵、schema 和业务判据分别以 [`agent-balance-record-design.md`](agent-balance-record-design.md) 与 [`weapon-balance-rulebook.md`](weapon-balance-rulebook.md) 为准。
 
 ---
 
@@ -25,7 +27,7 @@
 | 运行时 | Node.js >=18 | 生态丰富，tsx直接执行 |
 | 测试 | Vitest | 输出结构化，Agent解析友好 |
 | XML处理 | fast-xml-parser | preserveOrder保留格式 |
-| Excel | SheetJS (xlsx) | 仅用于legacy导入 |
+| Excel | SheetJS (xlsx) | 读取/校准权威工作簿，并兼容历史导入 |
 | GUI | Electron + React + Vite | 独立桌面应用 |
 | Schema | Zod | 运行时校验+类型推导 |
 
@@ -38,13 +40,13 @@
 ## ADR-002: 数据源单一化
 
 ### 状态
-已接受 (2026-03-06)
+已被 ADR-011 取代 (2026-07-22)
 
 ### 背景
 存在多个数据来源：Excel表格、XML配置文件、散落的md文档。需要确定单一数据源。
 
-### 决策
-**XML是真正的数据源**，Excel仅作为legacy import通道。
+### 历史决策
+当时决定“XML 是唯一数据源、Excel 仅作 legacy import”。该表述已不适用于当前武器标定，保留在此仅为解释早期实现。
 
 ```
 工作流:
@@ -53,9 +55,10 @@
                    CLI / Electron GUI / Agent 均可操作
 ```
 
-### 后果
-- **正面**: 消除数据不一致，Agent可直接修改XML
-- **负面**: 需要实现完整的XML round-trip保格式
+### 当前边界
+- 权威 XLSX 负责公式、系数含义和价格规则。
+- 现役 XML `<data>` 负责单件运行数值，`<balance>` 负责审计后选定的公式输入。
+- 工具实现与 baseline 均为派生物；冲突时按 [`agent-balance-record-design.md`](agent-balance-record-design.md) 的权威矩阵处理。
 
 ---
 
@@ -157,23 +160,15 @@ interface EnemyParser       // 中文节点名 怪物
 ## ADR-007: 双轨公式体系
 
 ### 状态
-已发现 (2026-03-06) - 需明确
+已被 ADR-011 取代 (2026-07-22)
 
 ### 背景
 发现存在两套武器计算公式：
 - **Excel公式**: 25列精细计算（DevSpec描述）
 - **Workflow公式**: 简化快速估算（weapon_weighting_workflow.md）
 
-### 决策
-**工具同时支持两套体系**：
-
-| 体系 | 用途 | 实现优先级 |
-|------|------|------------|
-| Excel公式 | 精细化平衡计算 | P0 - 必须 |
-| Workflow公式 | 快速估算筛选 | P2 - 可选 |
-
-### 说明
-两套公式服务于不同场景，不是替代关系。
+### 当前结论
+旧 `weapon_weighting_workflow.md` 的简化公式已降级为历史材料，不再构成第二套现行体系。当前只有权威 XLSX 的公式口径；工具对其做可执行翻译。
 
 ---
 
@@ -251,6 +246,16 @@ data_2只写变化的字段: { modslot: 3, level: 28, hp: 150 }
 3. 检查是否是公式理解偏差
 4. 使用`CALIBRATION_TODO`注释标记
 5. 继续推进，不阻塞开发
+
+---
+
+## ADR-011: 武器标定权威分层
+
+### 状态
+已接受 (2026-07-22)
+
+### 决策
+武器平衡采用四个明确事实层：权威 XLSX 定义公式与业务含义；现役 XML `<data>` 保存运行值；工具侧 `records/weapon-balance-audit.xml` 保存完整 v1 审计决策；item 根 `<balance>` 只保存由台账机械同步的 compact runtime profile。功能尚未上线，旧平铺结构和开发期 v2 草案都不是兼容对象，统一迁移为严格 v1。每个 `data/data_*` 静态形态独立审计，缺 profile 禁止回退；强化等级不复制 profile。条款、证据、预算和短 note 不进入运行时物品树，ItemUtil 在加载期再把 compact balance 提取到独立缓存。只有台账/runtime 对账、两种 digest、证据与公式门全部通过的 confirmed profile 可投影最小玩家摘要。完整矩阵与 schema 见 [`agent-balance-record-design.md`](agent-balance-record-design.md)；业务判据见 [`weapon-balance-rulebook.md`](weapon-balance-rulebook.md)。
 
 ---
 

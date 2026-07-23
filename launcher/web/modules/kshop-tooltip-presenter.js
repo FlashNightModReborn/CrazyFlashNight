@@ -1,9 +1,13 @@
 /** KShop tooltip presenter. No transport or item authority is owned here. */
 (function(root, factory) {
-    var api = factory();
+    var workbenchApi = root && (root.Workbench || root.WorkbenchPrimitives);
+    if (!workbenchApi && typeof module !== 'undefined' && module.exports) {
+        workbenchApi = require('./workbench-primitives.js');
+    }
+    var api = factory(workbenchApi);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.KShopTooltipPresenter = api;
-})(typeof window !== 'undefined' ? window : this, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchApi) {
     'use strict';
 
     function escapeHtml(value) {
@@ -34,6 +38,12 @@
             quantity:Math.max(0, Number(item.quantity) || 0),
             enhancementLevel:Math.max(0, Number(item.enhancementLevel) || 0)
         };
+    }
+
+    function balanceMetaHtml(item) {
+        var itemCard = WorkbenchApi && WorkbenchApi.ItemCard;
+        return itemCard && itemCard.balanceTooltipMetaHtml
+            ? itemCard.balanceTooltipMetaHtml(item) : '';
     }
 
     function TooltipPresenter(options) {
@@ -72,6 +82,7 @@
             + '<span class="kshop-tt-price">K ' + escapeHtml(facts.price) + '</span>';
         return PanelTooltip.buildItemRichHtml({
             iconHtml:this._iconHtml(item.icon), introWebHTML:intro, descHTML:'',
+            metaHTML:balanceMetaHtml(item),
             rootClass:'kshop-tt-rich-context',
             layoutType:PanelTooltip.inferLayoutType(item.majorType)
         });
@@ -84,6 +95,7 @@
             iconUrl:PanelTooltip.staticIconUrl(item.icon),
             introHTML:data.introHTML,
             descHTML:data.descHTML,
+            metaHTML:balanceMetaHtml(item),
             rootClass:'kshop-tt-rich-context',
             suffix:locked ? '<div class="flash-tt-lock-banner kshop-tt-lock-banner">⚿ 锁定 — 需要 Lv.' + item.level + '</div>' : '',
             layoutType:PanelTooltip.inferLayoutType(item.majorType)
@@ -99,6 +111,7 @@
             + (facts.enhancementLevel > 0 ? '<span class="kshop-tt-dim">强化</span> +' + facts.enhancementLevel + '<br>' : '');
         return PanelTooltip.buildItemRichHtml({
             iconHtml:this._iconHtml(iconKey), introWebHTML:intro, descHTML:'',
+            metaHTML:balanceMetaHtml(item),
             rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
             layoutType:PanelTooltip.inferLayoutType(item.majorType || item.use)
         });
@@ -109,6 +122,7 @@
         return PanelTooltip.buildItemRichHtml({
             iconHtml:this._iconHtml(iconKey), iconUrl:PanelTooltip.staticIconUrl(iconKey),
             introHTML:data.introHTML || '', descHTML:data.descHTML || '',
+            metaHTML:balanceMetaHtml(item),
             rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
             layoutType:PanelTooltip.inferLayoutType(data.itemType || item.majorType || item.use)
         });
@@ -180,6 +194,7 @@
         ownedTooltipKey:ownedTooltipKey,
         catalogBasicFacts:catalogBasicFacts,
         ownedBasicFacts:ownedBasicFacts,
+        balanceMetaHtml:balanceMetaHtml,
         escapeHtml:escapeHtml
     };
 });

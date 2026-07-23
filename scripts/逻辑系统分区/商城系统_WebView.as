@@ -32,9 +32,10 @@ _root.UI系统.商城WebView.buildCatalog = function():Array {
     for (var i:Number = 0; i < _root.kshop_list.length; i++) {
         var entry:Object = _root.kshop_list[i];
         var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(entry.item);
+        var rawItemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(entry.item);
         var attrs:Object = _root.根据物品名查找全部属性(entry.item);
         if (itemData != undefined && attrs != undefined) {
-            catalog.push({
+            var catalogItem:Object = {
                 idx:         i,
                 id:          entry.id,
                 item:        entry.item,
@@ -51,7 +52,14 @@ _root.UI系统.商城WebView.buildCatalog = function():Array {
                 level:       Number(attrs[9]),
                 icon:        String(attrs[1]),
                 maxQuantity: this.getPurchaseLimit(String(entry.item))
-            });
+            };
+            var balanceSummary:Object = org.flashNight.arki.item.InventoryPanelService.buildBalanceSummary(
+                rawItemData,
+                org.flashNight.arki.item.ItemUtil.getRawBalanceData(entry.item),
+                "data"
+            );
+            if (balanceSummary != null) catalogItem.balanceSummary = balanceSummary;
+            catalog.push(catalogItem);
         } else {
             this.log("WARNING: skipped [" + i + "] item=" + entry.item);
         }

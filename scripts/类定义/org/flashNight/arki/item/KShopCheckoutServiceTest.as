@@ -39,7 +39,30 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         itemDict["测试手枪"].weapontype = "手枪";
         itemDict["测试手枪"].setId = "test_sidearm";
         itemDict["测试手枪"].setName = "测试侧武器套装";
+        itemDict["测试手枪"].data = {
+            level:1, power:100, interval:400, capacity:8, weight:1, impact:2,
+            bullet:"普通子弹", clipname:"手枪通用弹药", split:1, singleshoot:true
+        };
+        itemDict["测试手枪"].data_2 = {level:2};
         ItemUtil.itemDataDict = itemDict;
+        ItemUtil.balanceDataDict = {};
+        ItemUtil.balanceDataDict["测试手枪"] = {
+            schemaVersion:1, formulaFamily:"weapon", workbookVersion:1,
+            profiles:{
+                data:{
+                    dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                    weightLayers:0, category:1, formula:1,
+                    status:"confirmed", displayEligible:true,
+                    inputDigest:"fnv1a32:96ca5e46", auditRef:"weapon:测试手枪:data"
+                },
+                data_2:{
+                    dualWield:2, pierce:1, damageType:1, shotgun:1, magPrice:200,
+                    weightLayers:1, category:1, formula:1,
+                    status:"confirmed", displayEligible:true,
+                    inputDigest:"fnv1a32:2f617c63", auditRef:"weapon:测试手枪:data_2"
+                }
+            }
+        };
         ItemUtil.equipmentDict = {};
         ItemUtil.equipmentDict["测试手枪"] = true;
         ItemUtil.materialDict = {};
@@ -104,6 +127,23 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             && response.catalog[2].weaponType == "手枪" && response.catalog[2].actionType == ""
             && response.catalog[2].setId == "test_sidearm" && response.catalog[2].setName == "测试侧武器套装",
             "catalog projects curated group, automatic taxonomy and set metadata independently");
+        var summary:Object = response.catalog[2].balanceSummary;
+        var wire:String = String(_root.server.sent);
+        check(summary != undefined && summary.state == "confirmed"
+            && summary.weightLayers == 0 && summary.formula == 1 && summary.level == 1
+            && wire.indexOf("inputDigest") < 0 && wire.indexOf("rationale") < 0
+            && wire.indexOf("workbookVersion") < 0 && wire.indexOf("workbookSha256") < 0
+            && wire.indexOf("auditRef") < 0
+            && wire.indexOf("WBR-") < 0 && wire.indexOf("SHA256") < 0,
+            "K 点目录即使存在进阶 profile 也固定投影 data 的最小 balanceSummary");
+
+        ItemUtil.itemDataDict["测试手枪"].data.power = 101;
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var stale:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(stale.catalog[2].balanceSummary == undefined,
+            "K 点目录在原始公式输入变化后 fail-closed 移除旧绿色摘要");
+        ItemUtil.itemDataDict["测试手枪"].data.power = 100;
     }
 
     private static function testDirectDelivery():Void {

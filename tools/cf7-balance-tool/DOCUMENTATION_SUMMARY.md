@@ -1,6 +1,8 @@
 # CF7 数值平衡工具 — 文档完善总结
 
 > 本次会话对 `tools/cf7-balance-tool` 进行了全面调研、审计和文档完善。
+>
+> **历史会话总结，禁止作为当前武器标定权威。** 其中“XML 单一数据源”和“双轨公式”是已被取代的旧结论；现行边界见 [`docs/agent-balance-record-design.md`](docs/agent-balance-record-design.md)，现行业务判据见 [`docs/weapon-balance-rulebook.md`](docs/weapon-balance-rulebook.md)。
 
 ---
 

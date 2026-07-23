@@ -352,15 +352,25 @@
         <reloadPenalty>-15</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>50</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:4951cf1e</inputDigest>
+            <auditRef>weapon:HKUSP9:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <!-- 54式手枪需要考虑是否转次级穿刺-->
@@ -453,15 +463,25 @@
         <reloadPenalty>-15</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>50</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:02af8588</inputDigest>
+            <auditRef>weapon:WaltherP99:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="手枪">
@@ -660,15 +680,25 @@
         <reloadPenalty>-15</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>300</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；加强普通子弹仍为物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=300 取马格南手枪弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:bfc89592</inputDigest>
+            <auditRef>weapon:PMR3:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="手枪">
@@ -701,15 +731,25 @@
         <reloadPenalty>-15</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>50</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/King.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:408f2fc4</inputDigest>
+            <auditRef>weapon:SIGP210:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="手枪">
@@ -740,15 +780,25 @@
         <reloadPenalty>-15</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>50</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/soldier.json，未发现 K 点、合成或高难掉落来源。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=50 取手枪通用弹药。未配置 singleshoot，按运行时全自动语义使用 XML interval 原值。公式1以 averageDPS≈weightedDPS 为判据复算通过。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:ddaf67d9</inputDigest>
+            <auditRef>weapon:Type92G:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="手枪">

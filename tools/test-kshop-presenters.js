@@ -148,6 +148,19 @@ test('tooltip fact models normalize sparse projections', () => {
     });
 });
 
+test('tooltip balance metadata is confirmed-only and player-facing', () => {
+    const html = Tooltip.balanceMetaHtml({balanceSummary:{
+        state:'confirmed', weightLayers:2, formula:1, level:20
+    }});
+    assert.match(html, /同级加权/);
+    assert.match(html, /◆\+2/);
+    assert.doesNotMatch(html, /DPS|合成强化|balance-tooltip-(?:label|dps|tags)/);
+    assert.strictEqual(Tooltip.balanceMetaHtml({balanceSummary:{state:'review', weightLayers:8, formula:1, level:20}}), '');
+    assert.strictEqual(Tooltip.balanceMetaHtml({balanceSummary:{state:'confirmed', weightLayers:'unknown', formula:1, level:20}}), '');
+    assert.strictEqual(Tooltip.balanceMetaHtml({balanceSummary:{state:'confirmed', weightLayers:2, formula:2, level:20}}), '');
+    assert.strictEqual(Tooltip.balanceMetaHtml({balanceSummary:{state:'confirmed', weightLayers:2, formula:1, level:20, averageDPS:88.04}}), '');
+});
+
 test('presenter modules contain no mux, bridge or authority coordinator', () => {
     const moduleNames = [
         'kshop-catalog-presenter.js', 'kshop-cart-controller.js',

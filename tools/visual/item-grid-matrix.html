@@ -59,7 +59,7 @@
       document.getElementById('matrix').appendChild(shell);return stage;
     }
     function catalogCard(skin,id,state){
-      state=state||{};return Workbench.ItemCard.renderCatalog({skin:skin,id:id,name:state.name||'训练步枪',meta:state.meta||'长枪 · 突击步枪',priceText:state.price||'$ 1,250',priceLabel:skin==='kshop'?'K':'',iconHtml:icon(state.icon||'AR','weapon'),locked:!!state.locked,nosale:!!state.disabled,selected:!!state.selected,markerText:state.selected?'待购 ×1':'点击加入待购',lockReason:'Lv.20',lockTitle:'未解锁',extraHtml:skin==='kshop'?'<button class="kshop-add-btn">加入</button>':''});
+      state=state||{};return Workbench.ItemCard.renderCatalog({skin:skin,id:id,item:{balanceSummary:state.balanceSummary},name:state.name||'训练步枪',meta:state.meta||'长枪 · 突击步枪',priceText:state.price||'$ 1,250',priceLabel:skin==='kshop'?'K':'',iconHtml:icon(state.icon||'AR','weapon'),locked:!!state.locked,nosale:!!state.disabled,selected:!!state.selected,markerText:state.selected?'待购 ×1':'点击加入待购',lockReason:'Lv.20',lockTitle:'未解锁',extraHtml:skin==='kshop'?'<button class="kshop-add-btn">加入</button>':''});
     }
     function ownedCard(slot,state){
       state=state||{};var node=InventoryUI.renderOwnedSlot('背包',slot,{iconHtml:function(){return icon(state.icon||'ITEM',state.locked?'locked':'weapon')}});
@@ -72,13 +72,13 @@
     function addCatalogCase(skin,density){
       var stage=section((skin==='kshop'?'KShop':'NPC 商店')+'目录',density,skin),grid=document.createElement('div');
       grid.className=(skin==='kshop'?'kshop-grid':'npcshop-catalog-grid')+(density==='compact'?' item-grid-compact':'');stage.appendChild(grid);
-      grid.appendChild(catalogCard(skin,1,{}));grid.appendChild(catalogCard(skin,2,{selected:true,name:'已选商品'}));grid.appendChild(catalogCard(skin,3,{locked:true,name:'锁定商品'}));grid.appendChild(catalogCard(skin,4,{disabled:true,name:'不可购买'}));
+      grid.appendChild(catalogCard(skin,1,{balanceSummary:{state:'confirmed',weightLayers:2,formula:1,level:20}}));grid.appendChild(catalogCard(skin,2,{selected:true,name:'已选商品',balanceSummary:{state:'confirmed',weightLayers:0,formula:1,level:20}}));grid.appendChild(catalogCard(skin,3,{locked:true,name:'锁定商品',balanceSummary:{state:'review',weightLayers:9,formula:1,level:20}}));grid.appendChild(catalogCard(skin,4,{disabled:true,name:'不可购买'}));
       stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>普通</span><span>选中</span><span>锁定</span><span>禁用</span></div>');
     }
     function addOwnedCase(density){
       var stage=section('Owned 库存格',density,'owned'),grid=document.createElement('div');grid.className='inventory-owned-grid npcshop-owned-grid'+(density==='compact'?' item-grid-compact':'');stage.appendChild(grid);
       var stack={physicalSlot:0,occupied:true,item:{name:'药剂',displayName:'高级药剂',icon:'药剂',itemKind:'stack',quantity:6806,majorType:'消耗品',use:'药剂'}};
-      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪'}};
+      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪',balanceSummary:{state:'confirmed',weightLayers:-1,formula:1,level:20}}};
       grid.appendChild(ownedCard(stack,{}));grid.appendChild(ownedCard(equip,{selected:true,icon:'EQ'}));grid.appendChild(ownedCard(Object.assign({},stack,{physicalSlot:2}),{readOnly:true,icon:'RO'}));grid.appendChild(ownedCard({physicalSlot:3,occupied:false},{}));
       stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>堆叠</span><span>装备·选中</span><span>只读</span><span>空槽</span></div>');
     }
@@ -110,6 +110,10 @@
     check('compact semantic bodies are hidden',Array.prototype.every.call(compact,function(scope){return Array.prototype.every.call(scope.querySelectorAll('.item-card-body'),function(node){return getComputedStyle(node).display==='none'})}));
     check('compact unselected auxiliaries are hidden',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .item-card:not(.item-card-selected) .item-card-auxiliary'),function(node){return getComputedStyle(node).display==='none'}));
     check('compact selected markers are icon-only',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .item-card-selected .item-card-selection-marker'),function(node){var style=getComputedStyle(node);return style.display==='grid'&&style.fontSize==='0px'}));
+    var confirmedBadges=document.querySelectorAll('.balance-weight-badge[data-balance-state="confirmed"]');
+    check('confirmed balance uses a signed diamond badge while unresolved rows stay silent',confirmedBadges.length===10&&Array.prototype.every.call(confirmedBadges,function(node){return node.textContent.indexOf('◆')>=0&&/同级加权/.test(node.getAttribute('aria-label')||'')})&&!document.querySelector('[data-idx="3"] .balance-weight-badge')&&!document.querySelector('[data-catalog-index="3"] .balance-weight-badge'));
+    check('balance badge owns the lower-left icon corner without relying on hue',Array.prototype.every.call(confirmedBadges,function(node){var badge=node.getBoundingClientRect(),icon=node.parentNode.getBoundingClientRect();return badge.left<=icon.left+2.1&&badge.bottom>=icon.bottom-2.1&&badge.right<=icon.right+4.1&&getComputedStyle(node).borderLeftWidth!=='0px'}));
+    check('compact and owned badges prioritize weight while full catalog may retain level',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-compact"] .balance-badge-level,.inventory-slot-icon-frame .balance-badge-level'),function(node){return getComputedStyle(node).display==='none'})&&Array.prototype.every.call(document.querySelectorAll('[data-matrix-case="kshop-full"] .balance-badge-level,[data-matrix-case="npcshop-full"] .balance-badge-level'),function(node){return getComputedStyle(node).display!=='none'}));
     check('full semantic bodies remain visible',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case$="-full"] .item-card-body'),function(node){return getComputedStyle(node).display!=='none'}));
     check('full owned cards retain readable column width',Array.prototype.every.call(document.querySelectorAll('[data-matrix-case="owned-full"] .inventory-slot-card'),function(node){return node.getBoundingClientRect().width>=128}));
     var compactOwnedMetrics=Array.prototype.map.call(document.querySelectorAll('[data-matrix-case="owned-compact"] .inventory-slot-card'),function(card){return card.getBoundingClientRect().width});

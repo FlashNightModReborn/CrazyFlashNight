@@ -1,5 +1,7 @@
 # CF7 数值平衡工具 — 开发规格书 v3
 
+> **历史开发规格，禁止作为当前武器标定权威。** 当前 schema、落盘流程和权威边界见 [`docs/agent-balance-record-design.md`](docs/agent-balance-record-design.md)，业务判据见 [`docs/weapon-balance-rulebook.md`](docs/weapon-balance-rulebook.md)。本文中“Excel 为 legacy”“XML 是唯一数据源”及旧简化武器公式均已被现行契约取代，仅供追溯工具早期设计。
+
 > 供 Agent 执行的完整开发任务书。
 > 基于 v2 + 两轮仓库全量调研结论修订。所有 v2 待探索清单(Q1-Q25)已解决，结论内联在相应章节。
 > 完整调研过程见 CF7-BalanceTool-Investigation-Report.md。

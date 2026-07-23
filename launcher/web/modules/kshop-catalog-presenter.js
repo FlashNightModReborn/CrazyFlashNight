@@ -196,7 +196,9 @@
             name:item.displayname, meta:item.subType || item.majorType || item.type,
             price:item.price, priceLabel:'K', locked:locked || atLimit,
             lockReason:atLimit ? '已达持有上限' : ('Lv.' + item.level + ' 解锁'), nosale:nosale,
-            ariaLabel:item.displayname + '，K ' + item.price, extraHtml:actionHtml
+            ariaLabel:item.displayname + '，K ' + item.price,
+            balanceSummary:item.balanceSummary,
+            extraHtml:actionHtml
         });
     };
 

@@ -7,10 +7,14 @@
  */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var workbenchApi = root && (root.Workbench || root.WorkbenchPrimitives);
+    if (!workbenchApi && typeof module !== 'undefined' && module.exports) {
+        workbenchApi = require('./workbench-primitives.js');
+    }
+    var api = factory(workbenchApi);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.InventoryUI = api;
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchApi) {
     'use strict';
 
     function integerOr(value, fallback) {
@@ -209,16 +213,23 @@
         }
         node.classList.add(isEquipment ? 'equipment' : 'stack');
         if (isEquipment && item.isMaxEnhancement) node.classList.add('max-enhancement');
+        var itemCard = WorkbenchApi && WorkbenchApi.ItemCard;
+        var balanceAria = itemCard && itemCard.balanceAriaLabel ? itemCard.balanceAriaLabel(item) : '';
         node.setAttribute('aria-label', containerId + '槽位 ' + (Number(slot.physicalSlot) + 1) + '，'
-            + String(item.displayName || item.name || '未知物品'));
+            + String(item.displayName || item.name || '未知物品') + (balanceAria ? '，' + balanceAria : ''));
         var icon = typeof options.iconHtml === 'function'
             ? options.iconHtml(item.icon || item.name, 'inventory-owned-icon') : '';
+        var balanceBadge = itemCard && itemCard.renderBalanceBadge ? itemCard.renderBalanceBadge(item) : null;
         node.innerHTML = '<span class="item-card-icon inventory-slot-icon-frame"><span class="inventory-slot-icon">'
             + icon + '</span>' + (isEquipment ? renderTierMarker(item) : '') + badge
             + (isEquipment ? renderEquipmentSlotCompactRail(item) : '') + '</span>'
             + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || item.name || '未知物品') + '</b>'
             + (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>'
             + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" aria-label="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
+        if (balanceBadge) {
+            var iconFrame = node.querySelector('.inventory-slot-icon-frame');
+            if (iconFrame) iconFrame.appendChild(balanceBadge);
+        }
         return node;
     }
 

@@ -57,6 +57,12 @@ PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得�
 - capability adapter：声明 select、transfer、inspect、discard、buy 等意图；
 - tooltip adapter：提供 pointer 与 focus 共用的内容和生命周期。
 
+### 3.1 武器加权徽标
+
+武器标定摘要是购买引导层，不是普通描述字段：Web 只接受恰含 `{state:"confirmed",weightLayers:Number,formula:1,level:Number}` 的严格四字段摘要，其中 `weightLayers/level` 必须为真实有限 number；缺字段、多字段、公式版本不符、黄/红审计或任一畸形摘要都 fail-closed。通过后实体格图标左下显示加权徽标：完整目录为 `LvN ◆±N`，紧凑目录与 owned 格为 `◆±N`，零层必须显示 `◆0`；隐藏时完全不占位。该徽标优先于稀有度等装饰信息，但不能覆盖锁定、不可购买、数量与主动作等业务状态。
+
+`◆N` 的玩家语义固定为“同等级标准枪械之上的额外加权层”，不是全局战力、品质或价格。正/零/负同时用符号、数字和 ARIA 文案表达，颜色不能成为唯一编码。Tooltip 只增加一行“同级加权”摘要；WBR 条款号、SHA/digest、evidence 路径和内部 note 永不进入常态 UI。未来条款解释只能先映射为受控玩家短标签，最多三项；DPS 只有在全量标定和显示口径另行冻结后才能启用。
+
 ## 4. 排版、颜色与层级
 
 ### 4.1 排版下限
@@ -200,7 +206,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 截图用于人眼比较，不单独构成像素级通过证据；字体、Edge/WebView2 版本和资源闭包稳定前不启用脆弱的全图像素 golden。atlas 证明共享合同，不能替代各领域真实数据、滚动极值、中文长文案和游戏内动效验收。
 
-当前自动基线为：atlas `48/48` 且 `0 error / 0 warning`；物品格矩阵 `14/14`；静态审计 `0 error / 0 warning`；共享 runtime/lifecycle/focus/focus-integration/primitives/components 与各拆分 presenter/model 的纯 Node 门全部通过。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
+当前自动基线为：atlas `48/48` 且 `0 error / 0 warning`；物品格矩阵 `17/17`；静态审计 `0 error / 0 warning`；共享 runtime/lifecycle/focus/focus-integration/primitives/components 与各拆分 presenter/model 的纯 Node 门全部通过。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
 
 ## 12. 例外与变更流程
 
@@ -216,6 +222,6 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 | 可访问性 | EntityTile 键盘激活与完整动作命名、统一 focus-visible、FocusScope 的 trap/inert/Esc/opener restore、嵌套与重入异常回归 | 游戏内 WebView2 的完整键盘走查和系统缩放/输入法组合仍是人工门 |
 | 前端架构 | 单 Bridge response router、generation-aware mux、DisposableStack/PanelLifecycle、共享 primitive/component、领域 presenter/model 拆分、lazy/build 资产闭包审计 | 不把领域 authority/reconcile 合并到视觉组件；只有出现第二个相同变化原因才继续抽象 |
 | 文件治理 | `panels.css` 收敛为 15 行 facade；工作台 CSS 分域；主 facade 均低于当前行数预算（KShop 853、Inventory 949、NPC 971、Skills 1177、Tuning 717、Workbench 1000） | 历史 `panels/features.css` 与旧 unlayered cascade 继续分阶段迁移；不得与大规模视觉改版同轮重排 |
-| 视觉验证 | 48 场景 atlas、14 项物品格矩阵、各工作台领域 browser harness（含滚动窗口保持/重置探针）、严格零 warning 静态门 | 字体/Edge/WebView2/资源闭包稳定前不启用全图像素 golden；自动 Edge 证据不替代游戏内动效与真实存档验收 |
+| 视觉验证 | 48 场景 atlas、17 项物品格矩阵、各工作台领域 browser harness（含滚动窗口保持/重置探针）、严格零 warning 静态门 | 字体/Edge/WebView2/资源闭包稳定前不启用全图像素 golden；自动 Edge 证据不替代游戏内动效与真实存档验收 |
 
 因此当前值得“现在完成”的债务是响应 listener、多实例生命周期、焦点栈、实体格密度、重复 presenter、超大 facade、CSS 物理边界和可执行验证门；这些已治理。旧样式全面 named-layer 化、像素 golden 与更细粒度 feature CSS 拆分属于下一阶段工程，不是以继续缩短文件为目的立即施工。

@@ -296,6 +296,52 @@ test('ItemCard renders the shared catalog semantics for both skins', () => withD
     assert.throws(() => Primitives.ItemCard.renderCatalog({skin:'unknown'}), /Unsupported ItemCard skin/);
 }));
 
+test('ItemCard projects only confirmed balance summaries into the icon layer', () => withDocument(() => {
+    const confirmed = Primitives.ItemCard.renderCatalog({
+        skin:'kshop', id:8, name:'标定手枪', price:120,
+        item:{balanceSummary:{state:'confirmed', weightLayers:2, formula:1, level:25}}
+    });
+    const icon = confirmed.children[0];
+    const badge = icon.children[0];
+    assert.strictEqual(badge.classList.contains('balance-weight-badge'), true);
+    assert.strictEqual(badge.classList.contains('balance-weight-positive'), true);
+    assert.strictEqual(badge.getAttribute('data-balance-state'), 'confirmed');
+    assert.strictEqual(badge.getAttribute('data-balance-weight'), '2');
+    assert.strictEqual(badge.children[0].textContent, 'Lv25');
+    assert.strictEqual(badge.children[1].textContent, '◆+2');
+    assert.match(badge.getAttribute('aria-label'), /平衡标定已确认.*同级加权 \+2/);
+    assert.match(confirmed.getAttribute('aria-label'), /平衡标定已确认/);
+
+    const zero = Primitives.ItemCard.renderBalanceBadge({state:'confirmed', weightLayers:0, formula:1, level:25});
+    assert.strictEqual(zero.classList.contains('balance-weight-neutral'), true);
+    assert.strictEqual(zero.children[1].textContent, '◆0');
+    const hidden = Primitives.ItemCard.renderCatalog({
+        skin:'npcshop', id:9, name:'待审手枪', price:80,
+        item:{balanceSummary:{state:'review', weightLayers:9, formula:1, level:25}}
+    });
+    assert.strictEqual(hidden.children[0].children.length, 0);
+    assert.doesNotMatch(hidden.getAttribute('aria-label'), /加权|标定/);
+}));
+
+test('balance tooltip projection accepts only the exact four-field v1 summary', () => {
+    const summary = {state:'confirmed', weightLayers:-1.25, formula:1, level:12};
+    assert.deepStrictEqual(Primitives.ItemCard.normalizeBalanceSummary(summary), {
+        state:'confirmed', weightLayers:-1.25, formula:1, level:12
+    });
+    const html = Primitives.ItemCard.balanceTooltipMetaHtml(summary);
+    assert.match(html, /◆-1\.25/);
+    assert.doesNotMatch(html, /DPS|balance-tooltip-(?:label|dps|tags)/);
+    assert.strictEqual(Primitives.ItemCard.balanceTooltipMetaHtml({state:'review', weightLayers:4, formula:1, level:12}), '');
+    assert.strictEqual(Primitives.ItemCard.normalizeBalanceSummary({state:'confirmed', weightLayers:'bad', formula:1, level:12}), null);
+    assert.strictEqual(Primitives.ItemCard.normalizeBalanceSummary({state:'confirmed', weightLayers:1, level:12}), null);
+    assert.strictEqual(Primitives.ItemCard.normalizeBalanceSummary({state:'confirmed', weightLayers:1, formula:2, level:12}), null);
+    assert.strictEqual(Primitives.ItemCard.normalizeBalanceSummary({state:'confirmed', weightLayers:1, formula:1, level:Infinity}), null);
+    assert.strictEqual(Primitives.ItemCard.normalizeBalanceSummary({
+        state:'confirmed', weightLayers:1, formula:1, level:12,
+        label:'同级高配', annotations:['合成强化'], averageDPS:123.46
+    }), null);
+});
+
 test('InteractionBroker keeps selection semantics and emits a neutral accepted intent', () => withDocument(document => {
     const sourceNode = document.createElement('article');
     const otherNode = document.createElement('article');

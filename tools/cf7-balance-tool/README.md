@@ -1,7 +1,7 @@
 # CF7 数值平衡工具
 
 > 闪客快打7佣兵帝国 (CF7:ME) 数值平衡管理工具
-> 直接读写游戏XML数据，内置从Excel翻译的平衡计算引擎
+> 直接读写游戏 XML 数据，内置对权威工作簿公式的派生实现；工具输出不得覆盖工作簿明确规则
 >
 > 当前已初始化 **npm workspace** 骨架；实际可运行命令见 [docs/bootstrap-status.md](./docs/bootstrap-status.md)。
 
@@ -11,9 +11,11 @@
 
 | 文档 | 说明 | 优先级 |
 |------|------|--------|
-| [CF7-BalanceTool-DevSpec-v3.md](./CF7-BalanceTool-DevSpec-v3.md) | **主开发规格书** - 完整技术规格和实施计划 | 必读 |
-| [CF7-BalanceTool-Investigation-Report.md](./CF7-BalanceTool-Investigation-Report.md) | **调研报告** - Q1-Q25结论和规格书修正 | 必读 |
-| [CF7-BalanceTool-DocAudit-v1.md](./CF7-BalanceTool-DocAudit-v1.md) | **审计报告** - 文档准确性验证和修正建议 | 推荐 |
+| [docs/agent-balance-record-design.md](./docs/agent-balance-record-design.md) | **当前契约** - 武器 `<balance>` schema、权威边界、施工与验证 | 必读 |
+| [docs/weapon-balance-rulebook.md](./docs/weapon-balance-rulebook.md) | **当前规则** - 武器平衡业务判据与稳定条款 ID | 必读 |
+| [CF7-BalanceTool-DevSpec-v3.md](./CF7-BalanceTool-DevSpec-v3.md) | 历史开发规格；与当前契约冲突时不得采用 | 历史 |
+| [CF7-BalanceTool-Investigation-Report.md](./CF7-BalanceTool-Investigation-Report.md) | 历史调研报告 | 历史 |
+| [CF7-BalanceTool-DocAudit-v1.md](./CF7-BalanceTool-DocAudit-v1.md) | 历史文档审计 | 历史 |
 | [docs/field-reference.md](./docs/field-reference.md) | **字段参考** - 全部70个字段的详细说明 | 开发参考 |
 | [docs/design-decisions.md](./docs/design-decisions.md) | **决策记录** - 关键设计决策(ADR) | 维护参考 |
 | [docs/bootstrap-status.md](./docs/bootstrap-status.md) | **当前落地状态** - 已验证命令、首轮扫描结果、已知缺口 | 开发入口 |
@@ -24,23 +26,21 @@
 
 ### 是什么
 
-数值平衡管理工具，取代当前「Excel离线算 -> 手动抄回XML」的工作流。
+数值平衡管理工具，把“权威工作簿规则 + 游戏 XML 数值 + 单件 `<balance>` 依据”接成可复算、可审计的工作流。工作簿仍是公式最高权威，工具负责翻译、批量操作和辅助验证。
 
 ```
-旧工作流:
-WPS Excel（离线计算器）──人工对照──> data/items/*.xml ──> AS2运行时
-
-新工作流:
-游戏XML数据 <──双向读写──> 平衡工具 <──公式引擎──> 计算内核
-                                 |
-                   CLI / Electron GUI / Agent 均可操作
+权威工作簿 ──规则/公式──> 平衡契约与规则表 ──派生实现──> 平衡工具
+                                  |                         |
+                                  └──证据──> XML <balance> <──┘
+                                                |
+                                        XML <data> / AS2运行时
 ```
 
 ### 核心约束
 
 | # | 约束 | 说明 |
 |---|------|------|
-| C1 | 向前兼容 | XML是真正的数据源，Excel仅作legacy import |
+| C1 | 真源分层 | XLSX 管公式；XML `<data>` 管运行数值；XML `<balance>` 管单件平衡输入与依据 |
 | C2 | 人类友好 | Electron GUI表格编辑，即时校验 |
 | C3 | Agent友好 | headless CLI，Agent可无GUI操作 |
 | C4 | LLM预留 | JSON I/O，CLI已存在 |
@@ -151,6 +151,12 @@ npm install
 npm run typecheck
 npm test
 
+# 检查 v1 台账与 compact runtime profile 是否一致
+npm run balance-sync -- --check
+
+# 严格检查仓库内已有的 weapon balance v1 记录
+npm run balance-check
+
 # 生成字段扫描报告
 npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
 
@@ -166,7 +172,10 @@ npm run dev:electron
 
 | 决策 | 选择 | 原因 |
 |------|------|------|
-| 数据源 | XML是主数据 | 消除不一致 |
+| 权威分层 | XLSX 管公式，XML `<data>` 管运行值，工具侧 v1 台账管完整审计，item `<balance>` 只放派生运行时核 | 避免工具或旧记录循环证明自身，并减少加载/克隆成本 |
+| 武器旧 schema | 不兼容；未上线草案统一迁移为严格 v1 | 旧平铺/v2 草案从未形成可用契约 |
+| 变体 profile | `data/data_*` 独立完整记录，缺失禁止回退 | 基础形态不能证明进阶形态 |
+| 玩家展示 | 仅投影通过门禁的等级/加权层最小摘要 | 提供购买引导且隔离内部审计信息 |
 | 公式输出 | 只读参考值 | 不回写XML |
 | 解析器 | 分层而非单一 | 结构差异大 |
 | 插件计算 | 三阶段实现 | 复杂度递进 |
@@ -184,7 +193,7 @@ npm run dev:electron
 |------|------|------|
 | 插件数值设计讨论.md | data/items/ | 插件算子说明 |
 | 射线插件数值建模_2026-02.md | data/items/equipment_mods/ | 495行射线模型 |
-| weapon_weighting_workflow.md | data/items/ | 武器加权工作流 |
+| weapon_weighting_workflow.md | data/items/ | 旧简化武器加权流程，仅供历史追溯 |
 | weapon_classification_log.md | data/items/ | weapontype标注日志 |
 | DamageCalculator.as | scripts/.../Damage/ | 伤害计算源码 |
 | DamageResistanceHandler.as | scripts/.../StatHandler/ | 减伤公式源码 |

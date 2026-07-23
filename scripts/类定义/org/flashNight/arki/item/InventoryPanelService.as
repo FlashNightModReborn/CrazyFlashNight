@@ -3,6 +3,7 @@
 import org.flashNight.gesh.tooltip.TooltipComposer;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.item.equipment.TierSystem;
 
 /**
@@ -21,6 +22,15 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static var _sessionNonce:String = "";
     private static var _leaseSeq:Number = 0;
     private static var _snapshotSeq:Number = 0;
+    private static var _weaponBalanceWorkbookVersion:Number = 1;
+    private static var _weaponBalanceContainerFields:Object = {
+        formulaFamily:true, schemaVersion:true, workbookVersion:true, profiles:true
+    };
+    private static var _weaponBalanceProfileFields:Object = {
+        dualWield:true, pierce:true, damageType:true, shotgun:true,
+        magPrice:true, weightLayers:true, category:true, formula:true,
+        status:true, displayEligible:true, inputDigest:true, auditRef:true
+    };
     private static var _containerEpochs:Object = {};
     private static var _facetCache:Object = {};
     private static var _leaseIds:Object = {};
@@ -926,7 +936,7 @@ class org.flashNight.arki.item.InventoryPanelService {
                 }
             }
         }
-        return {
+        var projection:Object = {
             name: item.name,
             displayName: displayName,
             icon: iconName,
@@ -950,6 +960,305 @@ class org.flashNight.arki.item.InventoryPanelService {
             modMeta: looseModMeta,
             rarity: rarity == undefined ? "" : rarity
         };
+        // balanceSummary 只从未合并的 XML 原始记录与独立 balance 索引生成。
+        // 实例进阶只选择已标定 profile，不用 getData 覆盖审计输入。
+        var rawItemData:Object = org.flashNight.arki.item.ItemUtil.itemDataDict == undefined
+            ? null : org.flashNight.arki.item.ItemUtil.getRawItemData(item.name);
+        var balanceRoot:Object = org.flashNight.arki.item.ItemUtil.balanceDataDict == undefined
+            ? null : org.flashNight.arki.item.ItemUtil.getRawBalanceData(item.name);
+        var profileKey:String = resolveBalanceProfileKey(item);
+        var balanceSummary:Object = profileKey == "" ? null
+            : buildBalanceSummary(rawItemData, balanceRoot, profileKey);
+        if (balanceSummary != null) projection.balanceSummary = balanceSummary;
+        return projection;
+    }
+
+    /**
+     * 库存实例的静态进阶名转换为 balance profile 键。无进阶固定为 data；
+     * 非空进阶无法映射时返回空串，由调用方 fail-closed，禁止回退 data。
+     */
+    private static function resolveBalanceProfileKey(item:Object):String {
+        if (item == null || typeof item.value != "object" || item.value == null
+                || item.value.tier == undefined || item.value.tier == null
+                || String(item.value.tier) == "") {
+            return "data";
+        }
+        var tierKey:String = EquipmentConfigManager.getTierKey(String(item.value.tier));
+        return tierKey == undefined || tierKey == null || tierKey == "" ? "" : tierKey;
+    }
+
+    /**
+     * 将工具确认且 digest 仍与当前原始机制/公式输入一致的严格 v1 profile
+     * 投影为最小展示摘要。审计引用、digest 与工作簿标识不进入 Web 消息。
+     * rawItemData 与 balanceRoot 必须来自 ItemUtil 的两个独立索引；不读取嵌入 balance。
+     */
+    public static function buildBalanceSummary(rawItemData:Object, balanceRoot:Object, profileKey:String):Object {
+        if (rawItemData === undefined || rawItemData === null
+            || typeof rawItemData.type != "string" || rawItemData.type != "武器") {
+            return null;
+        }
+        if (!isValidBalanceProfileKey(profileKey)) return null;
+
+        // balance 容器必须唯一；不能从多个版本中挑选可过门禁者。
+        var balance:Object = getSingleBalanceNode(balanceRoot);
+        if (balance === null
+            || !hasOnlyBalanceFields(balance, _weaponBalanceContainerFields)) return null;
+        if (!isFiniteBalanceNumber(balance.schemaVersion) || Number(balance.schemaVersion) != 1
+            || typeof balance.formulaFamily != "string" || balance.formulaFamily != "weapon"
+            || typeof balance.workbookVersion != "number"
+            || !isFiniteBalanceNumber(balance.workbookVersion)
+            || Number(balance.workbookVersion) != _weaponBalanceWorkbookVersion) {
+            return null;
+        }
+        var profiles:Object = getSingleBalanceNode(balance.profiles);
+        if (profiles === null
+            || !hasExactWeaponBalanceProfileCoverage(rawItemData, profiles)) return null;
+        var profile:Object = getSingleBalanceNode(profiles[profileKey]);
+        if (profile === null || typeof profile.status != "string" || profile.status != "confirmed"
+            || profile.displayEligible !== true
+            || !hasNonWhitespaceBalanceText(profile.auditRef)) {
+            return null;
+        }
+
+        var data:Object = buildEffectiveBalanceData(rawItemData, profileKey);
+        if (data === null || normalizeBalanceDigestText(rawItemData.name) == ""
+            || normalizeBalanceDigestText(profileKey) == ""
+            || !hasCompleteWeaponBalanceDigestInput(data, profile)) return null;
+        var canonical:String = buildWeaponBalanceCanonicalInput(rawItemData, data, profile,
+            profileKey, balance.workbookVersion);
+        if (canonical === null) return null;
+        var expectedDigest:String = "fnv1a32:" + fnv1a32Utf16(canonical);
+        if (typeof profile.inputDigest != "string" || profile.inputDigest != expectedDigest) return null;
+
+        return {
+            state:"confirmed",
+            weightLayers:Number(profile.weightLayers),
+            formula:Number(profile.formula),
+            level:Number(data.level)
+        };
+    }
+
+    private static function isValidBalanceProfileKey(profileKey:String):Boolean {
+        if (profileKey == "data") return true;
+        return profileKey != undefined && profileKey != null
+            && profileKey.length > 5 && profileKey.indexOf("data_") == 0;
+    }
+
+    /**
+     * runtime balance 必须与工具的严格 v1 parser 接受同一组字段；旧平铺字段、
+     * rationale/sourceDigest/ruleRefs 等审计字段一旦混入即整容器 fail-closed。
+     */
+    private static function hasOnlyBalanceFields(source:Object, allowed:Object):Boolean {
+        for (var key:String in source) {
+            if (!hasOwnBalanceField(source, key)) continue;
+            if (allowed[key] !== true) return false;
+        }
+        return true;
+    }
+
+    private static function hasOwnBalanceField(source:Object, key:String):Boolean {
+        return Object.prototype.hasOwnProperty.call(source, key);
+    }
+
+    /**
+     * item 的实际 data/data_* 与 compact profiles 必须一一闭合。基础商店也先
+     * 检查全部变体覆盖，避免遗漏一个进阶 profile 时仍把 data 标成绿色。
+     */
+    private static function hasExactWeaponBalanceProfileCoverage(rawItemData:Object,
+            profiles:Object):Boolean {
+        var dataProfileCount:Number = 0;
+        for (var dataKey:String in rawItemData) {
+            if (!hasOwnBalanceField(rawItemData, dataKey)
+                || !isValidBalanceProfileKey(dataKey)) continue;
+            dataProfileCount++;
+            if (getSingleBalanceNode(rawItemData[dataKey]) === null
+                || !hasOwnBalanceField(profiles, dataKey)
+                || getSingleBalanceNode(profiles[dataKey]) === null) return false;
+        }
+        if (dataProfileCount == 0) return false;
+
+        var balanceProfileCount:Number = 0;
+        for (var profileKey:String in profiles) {
+            if (!hasOwnBalanceField(profiles, profileKey)) continue;
+            if (!isValidBalanceProfileKey(profileKey)
+                || !hasOwnBalanceField(rawItemData, profileKey)
+                || getSingleBalanceNode(rawItemData[profileKey]) === null) return false;
+            var profile:Object = getSingleBalanceNode(profiles[profileKey]);
+            if (profile === null || !isStrictWeaponBalanceProfile(profile)) return false;
+            balanceProfileCount++;
+        }
+        return dataProfileCount == balanceProfileCount;
+    }
+
+    /** compact profile 全字段、类型与公式版本均按 v1 严格解析。 */
+    private static function isStrictWeaponBalanceProfile(profile:Object):Boolean {
+        if (!hasOnlyBalanceFields(profile, _weaponBalanceProfileFields)
+            || !isFiniteBalanceNumber(profile.dualWield)
+            || !isFiniteBalanceNumber(profile.pierce)
+            || !isFiniteBalanceNumber(profile.damageType)
+            || !isFiniteBalanceNumber(profile.shotgun)
+            || !isFiniteBalanceNumber(profile.magPrice)
+            || !isFiniteBalanceNumber(profile.weightLayers)
+            || !isFiniteBalanceNumber(profile.category)
+            || !isFiniteBalanceNumber(profile.formula)
+            || Number(profile.formula) != 1
+            || !hasNonWhitespaceBalanceText(profile.inputDigest)
+            || !hasNonWhitespaceBalanceText(profile.auditRef)
+            || (profile.status != "confirmed" && profile.status != "unresolved"
+                && profile.status != "invalid")
+            || (profile.displayEligible !== true && profile.displayEligible !== false)
+            || (profile.status != "confirmed" && profile.displayEligible !== false)) {
+            return false;
+        }
+        return true;
+    }
+
+    private static function hasNonWhitespaceBalanceText(value):Boolean {
+        if (typeof value != "string") return false;
+        for (var i:Number = 0; i < value.length; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (code > 32 && code != 160) return true;
+        }
+        return false;
+    }
+
+    /** base data 与选中变体做一层覆盖，与 TierSystem 的静态属性语义一致。 */
+    private static function buildEffectiveBalanceData(rawItemData:Object, profileKey:String):Object {
+        var baseData:Object = getSingleBalanceNode(rawItemData.data);
+        if (baseData === null) return null;
+        var effective:Object = {};
+        for (var baseKey:String in baseData) effective[baseKey] = baseData[baseKey];
+        if (profileKey != "data") {
+            var variantData:Object = getSingleBalanceNode(rawItemData[profileKey]);
+            if (variantData === null) return null;
+            for (var variantKey:String in variantData) effective[variantKey] = variantData[variantKey];
+        }
+        return effective;
+    }
+
+    /** XML 同名节点可能是对象或数组；只有唯一节点才有无歧义语义。 */
+    private static function getSingleBalanceNode(value):Object {
+        if (value === undefined || value === null) return null;
+        if (value instanceof Array) {
+            if (value.length != 1) return null;
+            value = value[0];
+        }
+        if (value === undefined || value === null || value instanceof Array || typeof value != "object") {
+            return null;
+        }
+        return value;
+    }
+
+    private static function buildWeaponBalanceCanonicalInput(rawItemData:Object, data:Object,
+            profile:Object, profileKey:String, workbookVersion:Number):String {
+        var parts:Array = ["weapon-v1"];
+        appendBalanceDigestString(parts, "itemName", rawItemData.name);
+        appendBalanceDigestString(parts, "profileKey", profileKey);
+        if (!appendBalanceDigestNumber(parts, "workbookVersion", workbookVersion)) return null;
+        appendBalanceDigestString(parts, "use", rawItemData.use);
+        appendBalanceDigestString(parts, "bullet", data.bullet);
+        appendBalanceDigestString(parts, "clipname", data.clipname);
+        appendBalanceDigestString(parts, "split", data.split);
+        appendBalanceDigestString(parts, "damagetype", data.damagetype);
+        appendBalanceDigestString(parts, "magictype", data.magictype);
+        appendBalanceDigestString(parts, "singleshoot", data.singleshoot);
+        if (!appendBalanceDigestNumber(parts, "level", data.level)
+            || !appendBalanceDigestInput(parts, "power", data.power)
+            || !appendBalanceDigestInput(parts, "interval", data.interval)
+            || !appendBalanceDigestInput(parts, "capacity", data.capacity)
+            || !appendBalanceDigestInput(parts, "weight", data.weight)
+            || !appendBalanceDigestInput(parts, "impact", data.impact)
+            || !appendBalanceDigestInput(parts, "dualWield", profile.dualWield)
+            || !appendBalanceDigestInput(parts, "pierce", profile.pierce)
+            || !appendBalanceDigestInput(parts, "damageType", profile.damageType)
+            || !appendBalanceDigestInput(parts, "shotgun", profile.shotgun)
+            || !appendBalanceDigestInput(parts, "magPrice", profile.magPrice)
+            || !appendBalanceDigestInput(parts, "weightLayers", profile.weightLayers)
+            || !appendBalanceDigestInput(parts, "category", profile.category)
+            || !appendBalanceDigestInput(parts, "formula", profile.formula)) {
+            return null;
+        }
+        return parts.join("|");
+    }
+
+    /** 工具只会批准十四项数字输入完整的记录；AS2 同样 fail-closed，不能批准空值摘要。 */
+    private static function hasCompleteWeaponBalanceDigestInput(data:Object, profile:Object):Boolean {
+        return isCompleteBalanceDigestNumber(data.level)
+            && isCompleteBalanceDigestNumber(data.power)
+            && isCompleteBalanceDigestNumber(data.interval)
+            && isCompleteBalanceDigestNumber(data.capacity)
+            && isCompleteBalanceDigestNumber(data.weight)
+            && isCompleteBalanceDigestNumber(data.impact)
+            && isCompleteBalanceDigestNumber(profile.dualWield)
+            && isCompleteBalanceDigestNumber(profile.pierce)
+            && isCompleteBalanceDigestNumber(profile.damageType)
+            && isCompleteBalanceDigestNumber(profile.shotgun)
+            && isCompleteBalanceDigestNumber(profile.magPrice)
+            && isCompleteBalanceDigestNumber(profile.weightLayers)
+            && isCompleteBalanceDigestNumber(profile.category)
+            && isCompleteBalanceDigestNumber(profile.formula);
+    }
+
+    private static function isCompleteBalanceDigestNumber(value):Boolean {
+        var normalized:String = normalizeBalanceDigestNumber(value);
+        return normalized !== null && normalized != "";
+    }
+
+    private static function appendBalanceDigestString(parts:Array, key:String, value):Void {
+        var normalized:String = normalizeBalanceDigestText(value);
+        parts.push(key + "#" + normalized.length + "=" + normalized);
+    }
+
+    /** 与工具一致：只接受字符串/数字/布尔标量，缺失或复合值规范化为空串。 */
+    private static function normalizeBalanceDigestText(value):String {
+        if (value === undefined || value === null) return "";
+        var valueType:String = typeof value;
+        if (valueType != "string" && valueType != "number" && valueType != "boolean") return "";
+        return String(value);
+    }
+
+    private static function appendBalanceDigestNumber(parts:Array, key:String, value):Boolean {
+        var normalized:String = normalizeBalanceDigestNumber(value);
+        if (normalized === null) return false;
+        parts.push(key + "#" + normalized.length + "=" + normalized);
+        return true;
+    }
+
+    // 保留同一内部入口名，让六项 data 与八项 profile 数字按完全相同的规则序列化。
+    private static function appendBalanceDigestInput(parts:Array, key:String, value):Boolean {
+        return appendBalanceDigestNumber(parts, key, value);
+    }
+
+    /** 缺失输入按契约序列化为空串；出现的数字按 String(Number(v)) 规范化且必须有限。 */
+    private static function normalizeBalanceDigestNumber(value):String {
+        if (value === undefined || value === null || value === "") return "";
+        if (!isFiniteBalanceNumber(value)) return null;
+        return String(Number(value));
+    }
+
+    private static function isFiniteBalanceNumber(value):Boolean {
+        if (value === undefined || value === null || value === "") return false;
+        var valueType:String = typeof value;
+        if (valueType != "number" && valueType != "string") return false;
+        if (valueType == "string" && !hasNonWhitespaceBalanceText(value)) return false;
+        var numeric:Number = Number(value);
+        return (numeric - numeric) == 0;
+    }
+
+    /** FNV-1a/UTF-16 code-unit；移位加法等价于乘 0x01000193，避免超出精确整数域。 */
+    private static function fnv1a32Utf16(value:String):String {
+        var hash:Number = 2166136261;
+        for (var i:Number = 0; i < value.length; i++) {
+            hash = hash ^ value.charCodeAt(i);
+            hash = hash + (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+            hash = hash | 0;
+        }
+        var digits:String = "0123456789abcdef";
+        var result:String = "";
+        for (var shift:Number = 28; shift >= 0; shift -= 4) {
+            result += digits.charAt((hash >>> shift) & 15);
+        }
+        return result;
     }
 
     /** 将存档中的插件名解析为纯展示投影；未知旧插件使用中性线框菱形，绝不影响库存读取。 */

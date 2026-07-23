@@ -207,15 +207,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Shop Girl.json。use=长枪→dualWield=1；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差+0.51%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:212c8486</inputDigest>
+          <auditRef>weapon:G36:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -336,15 +346,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Boy.json。use=长枪→dualWield=1；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差-3.84%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:7c4f73a0</inputDigest>
+          <auditRef>weapon:AK200:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -378,15 +398,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Shop Girl.json。use=长枪→dualWield=1；加强普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差+4.67%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:6bda3bc8</inputDigest>
+          <auditRef>weapon:XM8:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -421,15 +451,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1.5</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1.5</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Boy.json。use=长枪→dualWield=1；次级穿刺子弹为物理次级穿刺且 split=1→pierce=1.5,damageType=1,shotgun=1，定价 category=1.5；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差+0.08%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1.5</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1.5</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:b026f226</inputDigest>
+          <auditRef>weapon:MK17:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -494,15 +534,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/soldier.json。use=长枪→dualWield=1；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差-3.14%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:ed1e9394</inputDigest>
+          <auditRef>weapon:AKS74U:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -685,15 +735,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Boy.json。use=长枪→dualWield=1；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差-2.81%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:d7dcddeb</inputDigest>
+          <auditRef>weapon:HK33KA3:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -901,15 +961,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>1</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>WL=1：现役来源为合成，配方见 data/crafting/武器合成.json。use=长枪→dualWield=1；普通子弹为物理非穿刺且 split=1→pierce=1,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差-2.54%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:37aa2e1d</inputDigest>
+          <auditRef>weapon:HK33A2:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -942,15 +1012,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>2</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>2</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Boy.json。use=长枪→dualWield=1；穿刺子弹为物理普通穿刺且 split=1→pierce=2,damageType=1,shotgun=1，定价 category=2；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差+2.22%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>2</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:d1d3bce0</inputDigest>
+          <auditRef>weapon:QBZ-191:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -1509,15 +1589,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>2</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>2</category>
-      <formula>1</formula>
-      <rationale>WL=0：金币来源为 data/shops/npcs/Boy.json。use=长枪→dualWield=1；穿刺子弹为物理普通穿刺且 split=1→pierce=2,damageType=1,shotgun=1，定价 category=2；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差-1.66%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>2</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:2553a3ed</inputDigest>
+          <auditRef>weapon:AK74M:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">
@@ -2033,15 +2123,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>2</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>200</magPrice>
-      <weightLayers>1</weightLayers>
-      <category>2</category>
-      <formula>1</formula>
-      <rationale>WL=1：金币来源为 data/shops/npcs/Boy.json，金币高价记+1层；category=2 后权威推荐价661440，当前 price=650000，价格闭环。use=长枪→dualWield=1；穿刺子弹为物理普通穿刺且 split=1→pierce=2,damageType=1,shotgun=1；magPrice=200 取突击步枪通用弹药现价。未设置 singleshoot，按 XML interval 原值复算；公式1以 averageDPS≈weightedDPS 为判据，残差+0.53%。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>2</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0f99e0ff</inputDigest>
+          <auditRef>weapon:战术-QBZ-191:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="突击步枪">

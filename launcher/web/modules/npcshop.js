@@ -278,7 +278,7 @@ var NpcShop = (function() {
             priceText: '$ ' + Number(item.unitPrice || 0).toLocaleString(),
             locked: item.locked || atLimit,
             lockTitle: lockTitle,
-            selected: selected,
+            selected: selected, balanceSummary: item.balanceSummary,
             markerText: markerText
         });
     }
@@ -828,12 +828,13 @@ var NpcShop = (function() {
         });
     }
     function buildTooltipBasic(item) {
-        return '<div class="kshop-tt-header"><b>' + escapeHtml(item.displayName || item.itemName || item.name || '物品') + '</b></div><div class="kshop-tt-loading">加载中…</div>';
+        return '<div class="kshop-tt-header"><b>' + escapeHtml(item.displayName || item.itemName || item.name || '物品') + '</b></div>' + Workbench.ItemCard.balanceTooltipMetaHtml(item) + '<div class="kshop-tt-loading">加载中…</div>';
     }
     function buildTooltipRich(item, rich) {
         return PanelTooltip.buildItemRichHtml({
             iconHtml:PanelTooltip.dynamicIconHtml(item.icon || item.name || item.itemName), iconUrl:PanelTooltip.staticIconUrl(item.icon || item.name || item.itemName),
-            introHTML:rich.introHTML || '', descHTML:rich.descHTML || '', rootClass:'npcshop-tooltip', layoutType:PanelTooltip.inferLayoutType(item.majorType || item.use)
+            introHTML:rich.introHTML || '', descHTML:rich.descHTML || '',
+            metaHTML:Workbench.ItemCard.balanceTooltipMetaHtml(item), rootClass:'npcshop-tooltip', layoutType:PanelTooltip.inferLayoutType(item.majorType || item.use)
         });
     }
 

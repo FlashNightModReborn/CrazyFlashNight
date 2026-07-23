@@ -5,12 +5,22 @@ import XLSX from "xlsx";
 
 import {
   applyXmlBatchUpdates,
+  applyWeaponBalanceSyncPlansToXml,
+  assertWeaponBalanceSyncCoverage,
+  buildWeaponBalanceSyncPlansFromXml,
+  DEFAULT_WEAPON_BALANCE_AUDIT_LEDGER,
   discoverXmlFiles,
   loadProjectContext,
   loadXmlDocument,
+  buildWeaponAcquisitionIndex,
+  mergeWeaponBalanceSyncPlanIntoLedger,
+  parseWeaponBalanceAuditLedgerFromXml,
+  parseWeaponBalanceItemsFromXml,
   previewXmlBatchUpdates,
   runXmlRoundtripCheck,
-  scanProjectFields
+  scanProjectFields,
+  serializeWeaponBalanceAuditLedgerXml,
+  validateWeaponBalanceEvidence
 } from "@cf7-balance-tool/xml-io";
 import type { XmlBatchOptions, XmlBatchUpdate } from "@cf7-balance-tool/xml-io";
 import {
@@ -27,8 +37,8 @@ import {
   computePotionRow,
   computeMonsterRow,
   solveWeaponPower,
+  validateWeaponBalanceRecord,
 } from "@cf7-balance-tool/core";
-import { XMLParser } from "fast-xml-parser";
 
 interface CliOptions {
   attribute?: string;
@@ -45,6 +55,8 @@ interface CliOptions {
   sort?: string;
   target?: string;
   value?: string;
+  ledger?: string;
+  write: boolean;
 }
 
 interface BatchCommandContext {
@@ -136,6 +148,11 @@ function main(): void {
 
   if (group === "balance-check") {
     runBalanceCheck(args.slice(1));
+    return;
+  }
+
+  if (group === "balance-sync") {
+    runBalanceSync(args.slice(1));
     return;
   }
 
@@ -373,7 +390,8 @@ function parseBatchUpdate(entry: unknown, index: number): XmlBatchUpdate {
 
 function parseOptions(args: string[]): CliOptions {
   const options: CliOptions = {
-    inPlace: false
+    inPlace: false,
+    write: false
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -455,6 +473,17 @@ function parseOptions(args: string[]): CliOptions {
     if (current === "--target" && next) {
       options.target = next;
       index += 1;
+      continue;
+    }
+
+    if (current === "--ledger" && next) {
+      options.ledger = next;
+      index += 1;
+      continue;
+    }
+
+    if (current === "--write") {
+      options.write = true;
       continue;
     }
 
@@ -895,72 +924,336 @@ function runSolve(args: string[]): void {
 function runBalanceCheck(args: string[]): void {
   const options = parseOptions(args);
   const projectConfigPath = resolveProjectConfigPath(options.project);
-  const files = discoverXmlFiles(projectConfigPath).filter((f) => /武器_.*\.xml$/.test(f.absolutePath));
-  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", parseTagValue: true });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const num = (v: any): number => (v === "" || v == null ? NaN : Number(v));
-
+  const context = loadProjectContext(projectConfigPath);
+  const repositoryRoot = path.dirname(path.dirname(context.resolvedDirs.items));
+  const ledgerPath = resolveWeaponBalanceLedgerPath(options.ledger, repositoryRoot);
+  const ledger = parseWeaponBalanceAuditLedgerFromXml(
+    fs.readFileSync(ledgerPath, "utf8")
+  );
+  const ledgerByAuditRef = new Map(
+    ledger.records.map((record) => [record.auditRef, record] as const)
+  );
+  const acquisitionIndex = buildWeaponAcquisitionIndex(repositoryRoot);
+  const files = discoverXmlFiles(projectConfigPath).filter((file) =>
+    /武器_.*\.xml$/.test(file.absolutePath)
+  );
   const errors: string[] = [];
+  const warnings: string[] = [];
   const checked: string[] = [];
+  const auditRefJoinCounts = new Map<string, number>();
+  const summaries: Array<Record<string, unknown>> = [];
 
   for (const file of files) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const doc = parser.parse(fs.readFileSync(file.absolutePath, "utf8")) as any;
-    let items = doc?.root?.item;
-    if (!items) continue;
-    if (!Array.isArray(items)) items = [items];
     const base = path.basename(file.absolutePath);
+    let parsedItems;
+    try {
+      parsedItems = parseWeaponBalanceItemsFromXml(
+        fs.readFileSync(file.absolutePath, "utf8")
+      );
+    } catch (error) {
+      errors.push(
+        `${base}: balance parse failed: ${error instanceof Error ? error.message : String(error)}`
+      );
+      continue;
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const it of items as any[]) {
-      const bal = it.balance;
-      if (!bal) continue; // 仅校验带 <balance> 的武器
-      const name = String(it.name);
-      const tag = `${base} / ${name}`;
-      checked.push(name);
-      const d = it.data ?? {};
-
-      const input = {
-        level: num(d.level), bulletPower: num(d.power), shootInterval: num(d.interval),
-        magSize: num(d.capacity), magPrice: num(bal.magPrice), weight: num(d.weight),
-        dualWieldFactor: num(bal.dualWield), pierceFactor: num(bal.pierce),
-        damageTypeFactor: num(bal.damageType), shotgunValue: num(bal.shotgun),
-        impact: num(d.impact), extraWeightLayers: num(bal.weightLayers),
-        categoryFactor: bal.category != null ? num(bal.category) : 1,
-      };
-
-      const missing = Object.entries(input).filter(([, v]) => isNaN(v)).map(([k]) => k);
-      if (missing.length) { errors.push(`${tag}: 平衡输入缺失/非数值 [${missing.join(",")}]`); continue; }
-
-      const out = computeWeaponRow(input);
-
-      // ② DPS 带
-      const ratio = out.averageDPS / out.balanceDPS;
-      if (ratio > 1.3 || ratio < 0.5) {
-        errors.push(`${tag}: averageDPS ${Math.round(out.averageDPS)} vs balanceDPS ${Math.round(out.balanceDPS)} (ratio ${ratio.toFixed(2)} 越界[0.5,1.3])`);
+    for (const item of parsedItems) {
+      const tag = `${base} / ${item.itemName} / ${item.profileKey}`;
+      checked.push(`${item.itemName}/${item.profileKey}`);
+      const auditRecord = ledgerByAuditRef.get(item.profile.auditRef);
+      if (auditRecord) {
+        auditRefJoinCounts.set(
+          auditRecord.auditRef,
+          (auditRefJoinCounts.get(auditRecord.auditRef) ?? 0) + 1
+        );
       }
+      const validation = validateWeaponBalanceRecord(item.record, {
+        container: item.container,
+        ledger,
+        ...(auditRecord ? { auditRecord } : {}),
+        itemName: item.itemName,
+        profileKey: item.profileKey,
+        digestInput: item.digestInput,
+        currentInputDigest: item.currentInputDigest,
+        currentSourceDigest: item.currentSourceDigest,
+        runtimeInputs: item.runtimeInputs
+      });
+      const evidence = auditRecord
+        ? validateWeaponBalanceEvidence(item.itemName, auditRecord, acquisitionIndex)
+        : { displayEligible: false, issues: [] };
+      const localErrors = [
+        ...validation.issues.filter((issue) => issue.severity === "error"),
+        ...evidence.issues.filter((issue) => issue.severity === "error")
+      ];
+      const localWarnings = [
+        ...validation.issues.filter((issue) => issue.severity === "warning"),
+        ...evidence.issues.filter((issue) => issue.severity === "warning")
+      ];
 
-      // ③a dualWield ↔ use
-      const expDw = (it.use === "手枪" || it.use === "手枪2") ? 2 : 1;
-      if (input.dualWieldFactor !== expDw) {
-        errors.push(`${tag}: dualWield=${input.dualWieldFactor} 与 use=${String(it.use)} 不符(期望 ${expDw})`);
-      }
-
-      // ③b price ↔ 公式价
-      const price = num(it.price);
-      if (!isNaN(price) && price > 0) {
-        const expPrice = input.level * 3900 * Math.pow(1.6, input.extraWeightLayers)
-          * input.categoryFactor * Math.pow(1.6, input.damageTypeFactor - 1) / input.dualWieldFactor;
-        const pr = price / expPrice;
-        if (pr > 1.25 || pr < 0.8) {
-          errors.push(`${tag}: price ${price} 与公式价 ${Math.round(expPrice)} 偏离(ratio ${pr.toFixed(2)}) — weightLayers/category/damageType 可能与档位不符`);
+      if (item.itemUse) {
+        const expectedDualWield =
+          item.itemUse === "手枪" || item.itemUse === "手枪2" ? 2 : 1;
+        if (item.profile.dualWield !== expectedDualWield) {
+          localErrors.push({
+            severity: "error",
+            code: "dual_wield_use_mismatch",
+            path: `balance.profiles.${item.profileKey}.dualWield`,
+            message: `dualWield=${item.profile.dualWield}, use=${item.itemUse}, expected ${expectedDualWield}`
+          });
         }
       }
+
+      errors.push(...localErrors.map((issue) => `${tag}: ${issue.code}: ${issue.message}`));
+      warnings.push(
+        ...localWarnings.map((issue) => `${tag}: ${issue.code}: ${issue.message}`)
+      );
+
+      const metrics = validation.metrics;
+      summaries.push({
+        file: base,
+        itemName: item.itemName,
+        profileKey: item.profileKey,
+        schemaVersion: item.container.schemaVersion,
+        auditStatus: item.profile.status,
+        declaredDisplayEligible: item.profile.displayEligible,
+        displayEligible:
+          validation.displayEligible && evidence.displayEligible && localErrors.length === 0,
+        auditRef: item.profile.auditRef,
+        storedInputDigest: item.profile.inputDigest,
+        currentInputDigest: item.currentInputDigest,
+        storedSourceDigest: auditRecord?.sourceDigest ?? null,
+        currentSourceDigest: item.currentSourceDigest,
+        averageDPS: metrics?.averageDPS ?? null,
+        weightedDPS: metrics?.weightedDPS ?? null,
+        signedResidual: metrics?.residualRatio ?? null,
+        signedResidualPercent:
+          metrics === undefined ? null : metrics.residualRatio * 100,
+        calibrationMetrics:
+          metrics === undefined
+            ? null
+            : `averageDPS=${metrics.averageDPS.toFixed(2)}，weightedDPS=${metrics.weightedDPS.toFixed(2)}，残差=${(metrics.residualRatio * 100).toFixed(2)}%`,
+        issueCodes: [...localErrors, ...localWarnings].map((issue) => issue.code)
+      });
     }
   }
 
-  emitJson({ checkedCount: checked.length, checked, failures: errors, ok: errors.length === 0 }, options.output);
+  for (const record of ledger.records) {
+    const joinCount = auditRefJoinCounts.get(record.auditRef) ?? 0;
+    if (joinCount === 0) {
+      errors.push(
+        `weaponBalanceAudit / ${record.auditRef}: orphan_ledger_record: no strict v1 weapon profile joined ${record.itemName}/${record.profileKey}`
+      );
+    } else if (joinCount > 1) {
+      errors.push(
+        `weaponBalanceAudit / ${record.auditRef}: duplicate_runtime_audit_join: expected exactly one runtime profile, joined ${joinCount}`
+      );
+    }
+  }
+
+  emitJson(
+    {
+      checkedCount: checked.length,
+      checked,
+      ledger: path.relative(repositoryRoot, ledgerPath).split(path.sep).join("/"),
+      displayEligibleCount: summaries.filter(
+        (summary) => summary.displayEligible === true
+      ).length,
+      summaries,
+      failures: errors,
+      warnings,
+      ok: errors.length === 0
+    },
+    options.output
+  );
   if (errors.length) process.exitCode = 1;
+}
+
+// ─── balance-sync command（ledger 真源 → runtime profile + digest） ───
+
+function runBalanceSync(args: string[]): void {
+  const options = parseOptions(args);
+  const projectConfigPath = resolveProjectConfigPath(options.project);
+  const context = loadProjectContext(projectConfigPath);
+  const repositoryRoot = path.dirname(path.dirname(context.resolvedDirs.items));
+  const ledgerPath = resolveWeaponBalanceLedgerPath(options.ledger, repositoryRoot);
+  const ledgerSource = fs.readFileSync(ledgerPath, "utf8");
+  const ledger = parseWeaponBalanceAuditLedgerFromXml(ledgerSource);
+  const files = discoverXmlFiles(projectConfigPath).filter((file) =>
+    /武器_.*\.xml$/.test(file.absolutePath)
+  );
+  const allPlans: ReturnType<typeof applyWeaponBalanceSyncPlansToXml>["plans"] = [];
+  const pendingWrites = new Map<string, string>();
+  const proposedProfiles: Array<{
+    file: string;
+    item: ReturnType<typeof parseWeaponBalanceItemsFromXml>[number];
+  }> = [];
+  const fileSummaries: Array<Record<string, unknown>> = [];
+
+  for (const file of files) {
+    const original = fs.readFileSync(file.absolutePath, "utf8");
+    const expectedPlans = buildWeaponBalanceSyncPlansFromXml(original, ledger);
+    const applied = applyWeaponBalanceSyncPlansToXml(original, ledger);
+    const expectedSignatures = expectedPlans.map(syncPlanSignature);
+    const appliedSignatures = applied.plans.map(syncPlanSignature);
+    if (JSON.stringify(expectedSignatures) !== JSON.stringify(appliedSignatures)) {
+      throw new Error(
+        `${path.basename(file.absolutePath)}: text patcher did not cover the same item/profile set as structural discovery`
+      );
+    }
+    if (applied.plans.length === 0) continue;
+    allPlans.push(...applied.plans);
+
+    // 写盘前必须能以严格 v1 反向解析，且 profile 数量与计划一致。
+    let parsedAfter;
+    try {
+      parsedAfter = parseWeaponBalanceItemsFromXml(applied.source);
+    } catch (error) {
+      throw new Error(
+        `${path.basename(file.absolutePath)}: strict post-sync parse failed: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+    const expectedProfileCount = applied.plans.reduce(
+      (sum, plan) => sum + plan.profileKeys.length,
+      0
+    );
+    if (parsedAfter.length !== expectedProfileCount) {
+      throw new Error(
+        `${path.basename(file.absolutePath)}: sync verification parsed ${parsedAfter.length} profiles, expected ${expectedProfileCount}`
+      );
+    }
+    proposedProfiles.push(
+      ...parsedAfter.map((item) => ({ file: path.basename(file.absolutePath), item }))
+    );
+
+    if (applied.source !== original) pendingWrites.set(file.absolutePath, applied.source);
+    fileSummaries.push({
+      file: path.basename(file.absolutePath),
+      changed: applied.source !== original,
+      items: applied.plans.map((plan) => ({
+        itemName: plan.itemName,
+        profileKeys: plan.profileKeys,
+        inSync: plan.inSync,
+        differences: plan.differences,
+        proposedBalanceXml: plan.inSync ? null : plan.balanceXml
+      }))
+    });
+  }
+
+  assertWeaponBalanceSyncCoverage(ledger, allPlans);
+
+  const updatedLedger = mergeWeaponBalanceSyncPlanIntoLedger(ledger, allPlans);
+  const updatedByAuditRef = new Map(
+    updatedLedger.records.map((record) => [record.auditRef, record] as const)
+  );
+  const acquisitionIndex = buildWeaponAcquisitionIndex(repositoryRoot);
+  const proposedErrors: string[] = [];
+  for (const proposed of proposedProfiles) {
+    const item = proposed.item;
+    const auditRecord = updatedByAuditRef.get(item.profile.auditRef);
+    const validation = validateWeaponBalanceRecord(item.profile, {
+      container: item.container,
+      ledger: updatedLedger,
+      ...(auditRecord ? { auditRecord } : {}),
+      itemName: item.itemName,
+      profileKey: item.profileKey,
+      digestInput: item.digestInput,
+      currentInputDigest: item.currentInputDigest,
+      currentSourceDigest: item.currentSourceDigest,
+      runtimeInputs: item.runtimeInputs
+    });
+    const tag = `${proposed.file} / ${item.itemName} / ${item.profileKey}`;
+    proposedErrors.push(
+      ...validation.issues
+        .filter((issue) => issue.severity === "error")
+        .map((issue) => `${tag}: ${issue.code}: ${issue.message}`)
+    );
+    if (auditRecord) {
+      const evidence = validateWeaponBalanceEvidence(
+        item.itemName,
+        auditRecord,
+        acquisitionIndex
+      );
+      proposedErrors.push(
+        ...evidence.issues
+          .filter((issue) => issue.severity === "error")
+          .map((issue) => `${tag}: ${issue.code}: ${issue.message}`)
+      );
+    }
+    if (item.itemUse) {
+      const expectedDualWield =
+        item.itemUse === "手枪" || item.itemUse === "手枪2" ? 2 : 1;
+      if (item.profile.dualWield !== expectedDualWield) {
+        proposedErrors.push(
+          `${tag}: dual_wield_use_mismatch: dualWield=${item.profile.dualWield}, use=${item.itemUse}, expected ${expectedDualWield}`
+        );
+      }
+    }
+  }
+  if (proposedErrors.length > 0) {
+    throw new Error(
+      `balance-sync proposed state failed strict validation (${proposedErrors.length}):\n${proposedErrors.join("\n")}`
+    );
+  }
+  const updatedLedgerSource = serializeWeaponBalanceAuditLedgerXml(updatedLedger);
+  const ledgerSemanticChanged = allPlans.some((plan) =>
+    plan.differences.some((difference) => difference.startsWith("ledger digest drift:"))
+  );
+  const outOfSync = allPlans.some((plan) => !plan.inSync);
+
+  if (options.write) {
+    for (const [target, contents] of pendingWrites) atomicWriteTextFile(target, contents);
+    if (ledgerSemanticChanged || updatedLedgerSource !== ledgerSource) {
+      atomicWriteTextFile(ledgerPath, updatedLedgerSource);
+    }
+  }
+
+  emitJson(
+    {
+      mode: options.write ? "write" : "check",
+      ledger: path.relative(repositoryRoot, ledgerPath).split(path.sep).join("/"),
+      checkedItemCount: allPlans.length,
+      checkedProfileCount: allPlans.reduce(
+        (sum, plan) => sum + plan.profileKeys.length,
+        0
+      ),
+      changedFileCount: pendingWrites.size,
+      ledgerDigestChanged: ledgerSemanticChanged,
+      files: fileSummaries,
+      ok: options.write || !outOfSync
+    },
+    options.output
+  );
+  if (!options.write && outOfSync) process.exitCode = 1;
+}
+
+function syncPlanSignature(plan: {
+  itemName: string;
+  profileKeys: string[];
+}): string {
+  return `${plan.itemName}\u0000${plan.profileKeys.join("\u0000")}`;
+}
+
+function resolveWeaponBalanceLedgerPath(
+  option: string | undefined,
+  repositoryRoot: string
+): string {
+  return option
+    ? path.resolve(process.cwd(), option)
+    : path.join(repositoryRoot, ...DEFAULT_WEAPON_BALANCE_AUDIT_LEDGER.split("/"));
+}
+
+function atomicWriteTextFile(target: string, contents: string): void {
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const temp = path.join(
+    path.dirname(target),
+    `.${path.basename(target)}.balance-sync-${process.pid}-${Date.now()}.tmp`
+  );
+  try {
+    fs.writeFileSync(temp, contents, "utf8");
+    fs.renameSync(temp, target);
+  } finally {
+    if (fs.existsSync(temp)) fs.rmSync(temp, { force: true });
+  }
 }
 
 // ─── query command ───
@@ -1544,6 +1837,7 @@ function printHelp(): void {
       "  export --input <baseline.json> --output <file.xlsx|file.csv>",
       "  solve weapons --input <fixed.json> [--target <dps>] [--output <file>]",
       "  balance-check [--project <file>] [--output <file>]",
+      "  balance-sync [--project <file>] [--ledger <file>] [--write] [--output <file>]",
       "",
       "Formula categories (calc): weapons, armor, melee, explosives, potions, monsters,",
       "  physicalDamage, magicDamage, weaponPrice, armorPrice, synthesis, dungeonRewards",

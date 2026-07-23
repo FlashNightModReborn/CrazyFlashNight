@@ -1,203 +1,249 @@
-# 武器平衡留档与复现设计（agent 友好）
+# 武器 `<balance>` v1 落盘、审计与展示契约
 
-> 把"依赖人类自觉的 Excel 数值平衡"升级为**进 git、可复现、可审计、agent 可独立操作**的闭环。
-> 状态：设计 + 追月连弩试点（2026-06-26）。落地路线见 §8。
+**文档角色**：武器平衡记录 schema、权威边界、profile 解析、机器门禁与玩家展示投影的 canonical doc。
+**最后核对代码基线**：commit `ff5ea2e95a`；其上工作树已完成首批尚未上线的 weapon balance v1 收敛。
 
----
+本文件回答“平衡结论怎样可复现地落盘、怎样按基础/进阶形态复算、怎样进入显示层”。具体业务判据与稳定条款 ID 查 [weapon-balance-rulebook.md](weapon-balance-rulebook.md)，本文件不复制条款正文。
 
-## 0. TL;DR
+## 0. 当前决定
 
-- **病根**：重算一把武器平衡所需的 6~7 个输入系数（双枪/穿刺/伤害类型/霰弹/弹夹价格/加权层数/种类）**只活在不进 git 的 Excel 里**，游戏 XML 只存输出（power/price）。→ 谁都无法从数据复现/审计一把武器是怎么平衡的。
-- **方案**：在武器 XML 加结构化 `<balance>` 记录，**只装 XML 里没有的那几个系数**，使其成为**进 git 的平衡单一真值**，取代 Excel。
-- **闭环**：`<balance>` 系数 + `<data>` 数值 → 工具 `calc weapons` 重算 → 校验门断言 `averageDPS≈balanceDPS`（或实际 power≈推荐）→ 不符即红。
-- **落点**：重算在 **工具/校验门**（权威），DPS 展示在 **web tooltip**；**AS2 不动**（已有 `WeaponDpsEstimator` 服务 AI 选武器，是另一套"持续 DPS"）。
+- 公式、系数解释和价格规则的最高权威是 `0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx`。
+- 当前权威映射：`workbookVersion=1` → SHA-256 `BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A`。
+- 枪械验收目标是 **`averageDPS≈weightedDPS`**；`balanceDPS` 是中间量，不是本轮通过条件。
+- 本功能尚未上线，之前的平铺结构和开发期 strict v2 草案均不是兼容对象。首次上线冻结前统一称 **weapon balance v1**；草案发生破坏性变化时直接迁移 v1，不制造虚假的 v2/v3 历史。
+- 只接受 `formulaFamily=weapon + schemaVersion=1`。不存在旧结构读取、自动升级、缺 profile 回退或 `legacy` 状态。
+- AS2 战斗逻辑不消费 balance。AS2 只从 compact runtime profile 生成最小玩家摘要；完整证据不进入游戏常驻物品树和 Web 消息。
+- `tools/cf7-balance-tool` 是工作簿的派生实现和辅助门禁。若工具与当前工作簿冲突，以工作簿为准，并修工具，禁止反向调整判据迎合工具。
 
----
+## 1. 两层记录模型
 
-## 1. 背景与诊断
+同一个审计结论分成两层，但只允许一处人工维护：
 
-- **平衡模型成熟且已代码化**：Excel（16+ 互锁列，带 level 分段 + sigmoid 防钻空）→ `tools/cf7-balance-tool` 的 TS 内核（`baseline-extracted.json` 为权威真值，标定 <0.1%，6 大品类 25 输出列全过）。
-- **工具 ~90% 就绪**：16 个 CLI 命令全 JSON；XML 读写**无损**（位置 patch 解析，保 BOM/属性序/缩进，89/89 round-trip）。
-- **根因 = 平衡输入不在数据里**（下表）。
-- **执行缺口**：① `npm install` 没跑过 → CLI 调不动；② `calc` 需要的系数 XML 没有 → calc↔XML 断层；③ `data/items/weapon_weighting_workflow.md` 是**简化/陈旧公式**，勿用，以工具为准。
+| 层 | 路径 | 角色 | 是否进入运行时 |
+|---|---|---|---|
+| 完整审计台账 | `tools/cf7-balance-tool/records/weapon-balance-audit.xml` | 完整 8 输入、状态、条款、证据、预算、备注和 source digest；人工复核真源 | 否 |
+| compact runtime profile | 对应 `data/items/武器_*.xml` 的 item 根 `<balance>` | 8 输入、状态、显示门、input digest、审计引用 | 是，由工具从台账同步 |
 
-### 输入字段来源（枪械，权威见 `packages/core/src/formulas/weapons.ts`）
+工具必须复算 digest，并逐字段证明台账与 runtime profile 一致。禁止手工分别维护两份数值；`balance-sync --check` 发现差异即失败，写入由显式 `--write` 完成。
 
-| 输入 | TS 字段 | 来源 | 取值 |
-|------|---------|------|------|
-| 限制等级 | level | **XML `<data><level>`** | — |
-| 子弹威力 | bulletPower | **XML `<data><power>`** | — |
-| 射击间隔 | shootInterval | **XML `<data><interval>`** | ms |
-| 弹容量 | magSize | **XML `<data><capacity>`** | — |
-| 重量 | weight | **XML `<data><weight>`** | — |
-| 冲击力 | impact | **XML `<data><impact>`** | — |
-| **双枪系数** | dualWieldFactor | **`<balance>`（XML 没有）** | 长枪1 / 短枪2 |
-| **穿刺系数** | pierceFactor | **`<balance>`** | 非穿1 / 普通穿2 / 喷火·次级穿1.5 |
-| **伤害类型系数** | damageTypeFactor | **`<balance>`** | 物理1 / 魔法2 / 真伤3 |
-| **霰弹值** | shotgunValue | **`<balance>`** | 霰弹填散射数；爆炸类4；默认1 |
-| **弹夹价格** | magPrice | **`<balance>`** | 经济输入（补满一夹弹药的成本） |
-| **额外加权层数** | extraWeightLayers | **`<balance>`** | −1~4（档位） |
-| **种类系数** | categoryFactor | **`<balance>`（可选）** | 定价乘数，默认1 |
+## 2. profile 身份与有效数据
 
-> basePower：长枪 `power*1.5+30`，短枪 `power+20`（由 dualWieldFactor 区分）。
-> 价格：`金价 = level×3900×1.6^层数×种类系数×1.6^(伤害类型−1) / 双枪系数`；K点 `level×120×1.5^层数×…`。
+### 2.1 静态形态
 
----
+- 基础形态固定为 `profileKey=data`。
+- 每个真实存在的 `data_2/data_3/data_4/data_ice/data_fire/...` 都是独立静态 profile。
+- 有 `<balance>` 的 item 必须覆盖其全部现有静态 profile；缺任意 profile 时工具失败，AS2 隐藏摘要，绝不回退到 `data`。
+- v1 不提供 `inherits`。即使某个变体看似纯视觉，也要么有独立记录，要么先由工具/人类证明并明确生成同值 profile；不能靠隐式继承绕过审计。
 
-## 2. 平衡记录 schema（结构化 `<balance>`）
+### 2.2 有效数据展开
 
-放在 `<item>` 内、与 `<data>` 同级。**只装 `<data>` 里没有的输入**，绝不重复 power/interval/capacity/level/weight/impact。
+工具与 AS2 必须模拟 `TierSystem`：
+
+1. `data` 是基础数据。
+2. `data_*` 的普通字段浅覆盖基础 `data`。
+3. `skill/lifecycle/icon/displayname/description` 等顶层特例按现役 TierSystem 规则替换；其中 skill/lifecycle 纳入工具侧机械源摘要。
+4. profile 审计发生在强化、配件、角色技能和临时状态之前。
+
+普通强化 Lv1–Lv13 是实例级统一倍率，不产生 13 套静态 profile。未来的实例 DPS 展示应由静态 profile 与实例倍率即时派生。
+
+## 3. compact runtime schema
+
+`<balance>` 放在 `<item>` 根下，与 `<data>`、`<data_*>` 同级；禁止放入 `data_*`，否则会污染战斗数据域。
 
 ```xml
-<data> … 现有数值，不动 … </data>
 <balance>
-  <dualWield>1</dualWield>        <!-- 双枪系数：长枪1 / 短枪2 -->
-  <pierce>1</pierce>             <!-- 穿刺系数：非穿1 / 普通穿2 / 喷火·次级1.5 -->
-  <damageType>1</damageType>    <!-- 伤害类型系数：物理1 / 魔法2 / 真伤3 -->
-  <shotgun>1</shotgun>          <!-- 霰弹值：散射数；爆炸类4；默认1 -->
-  <magPrice>0</magPrice>        <!-- 弹夹价格（经济输入） -->
-  <weightLayers>0</weightLayers> <!-- 额外加权层数 −1~4（档位） -->
-  <category>1</category>        <!-- 种类系数，默认1，可省 -->
-  <formula>1</formula>          <!-- 公式版本号，便于将来迁移 -->
+  <formulaFamily>weapon</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <workbookVersion>1</workbookVersion>
+  <profiles>
+    <data>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>200</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:00000000</inputDigest>
+      <auditRef>weapon:示例武器:data</auditRef>
+    </data>
+    <data_ice>
+      <!-- 独立完整记录；不得只写与 data 的差值 -->
+    </data_ice>
+  </profiles>
 </balance>
 ```
 
-- **结构化子节点**（非 JSON 串）：git diff 友好、无需 XML 转义、工具的无损 patch I/O 原生支持、人/agent 都好读。
-- 复用并扩展了原 `weightlevel`（死字段，无运行时读取）的意图，但纳入完整 `<balance>` 块。
-- 运行时安全：游戏 AS2 不解析 `<balance>`（透传字段），不影响战斗。
+`schemaVersion` 只描述 XML 结构，`workbookVersion` 只描述公式权威版本。runtime 不重复保存 64 位 SHA；工具代码、规则表和完整审计台账共同维护精确的“版本 → SHA”映射，未知版本或映射不一致必须失败。当前尚未上线的 SHA 草案不提供兼容读取。
 
----
+`profiles` 使用 profile key 作为子标签，避免重复 `<profile>` 的数组歧义，也让 AS2 可按键 O(1) 选择。每个 profile 必须完整保存八个公式输入：
 
-## 3. 系数决策表（把"人脑判断"文档化 → agent 可复现）
+| 字段 | 含义 | 主要条款域 |
+|---|---|---|
+| `dualWield` | 双枪/枪位系数 | `WBR-DUAL-*` |
+| `pierce` | 穿刺能力系数 | `WBR-PIERCE-*` |
+| `damageType` | 伤害类型系数 | `WBR-DMG-*` |
+| `shotgun` | 多弹丸/多段预算值 | `WBR-SHOT-*` |
+| `magPrice` | 公式使用的弹药价格 | `WBR-AMMO-*` |
+| `weightLayers` | 同等级枪械额外强度预算层 | `WBR-WL-*` |
+| `category` | 定价种类系数 | `WBR-CAT-*` |
+| `formula` | 工作簿公式版本，当前为 1 | `WBR-AUTH-*` |
 
-agent/人按此表从武器的客观属性推出系数，**不再凭记忆**：
+`status` 只允许 `confirmed | unresolved | invalid`。只有全部门禁通过的 `confirmed + displayEligible=true` 可投影；另外两种状态必须为 false。
 
-| 系数 | 判定依据 | 规则 |
-|------|----------|------|
-| `dualWield` | `<use>` | 长枪→1；手枪/手枪2→2 |
-| `pierce` | 子弹是否穿透 / 武器定位 | 普通不穿→1；明确穿透弹→2；喷火、次级穿刺、链式→1.5 |
-| `damageType` | `<data><damagetype>`/`<magictype>` 与元素 | 物理/无→1；魔法（含元素）→2；真伤/无视防御→3 |
-| `shotgun` | `<data><split>` 与机制 | 单发→1；霰弹→散射弹数；爆炸/AOE→4 |
-| `magPrice` | 弹药稀缺度（设计选择） | 普通弹低、稀有弹高；**游戏设计师定**，记录留痕即可复核 |
-| `weightLayers` | 获取方式/稀有度档位 | 练习/低标→−1~0；商店/掉落→0；K点/合成→1；稀有/高价→2；史诗→3；活动/开发者→4。**可由现价反验**：`金价≈level×3900×1.6^层数` |
-| `category` | 特殊定价乘数 | 默认1，特殊品类才改 |
+## 4. 完整审计台账
 
-> 这张表是 agent 填法的核心契约——把原本只在作者脑中的判断变成可查、可审、可复现的规则。
-
----
-
-## 4. 公式契约与"两种 DPS"
-
-- **权威 = `tools/cf7-balance-tool`**（TS，已标定 <0.1%）。`weapon_weighting_workflow.md` 是旧简化版，**勿用**（本设计落地后应纠正/废弃该文档）。
-- 平衡逻辑：`balanceDPS` = 该 level+系数+档位下的**目标** DPS；`averageDPS` = 当前 power 算出的**实际** DPS。**调 power 使 average≈balance** 即平衡达标。
-- **两种 DPS 不要混**：
-  - **平衡/加权 DPS**（Excel/工具指标，需系数+重公式）→ 服务**作者/平衡核对**，算在工具。
-  - **持续 DPS**（`scripts/类定义/org/flashNight/arki/unit/UnitAI/combat/WeaponDpsEstimator.as`，需角色上下文）→ 服务**AI 选武器**，已存在，不动。
-  - 字符串"反求"主要服务前者；重公式放工具/web，**不进 AS2**。
-
----
-
-## 5. agent 填一把武器的工作流（headless，可复现）
-
+```xml
+<weaponBalanceAudit>
+  <formulaFamily>weapon</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <workbookVersion>1</workbookVersion>
+  <workbookSha256>BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A</workbookSha256>
+  <records>
+    <record>
+      <auditRef>weapon:示例武器:data</auditRef>
+      <itemName>示例武器</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>200</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:00000000</inputDigest>
+      <sourceDigest>sha256:0000000000000000000000000000000000000000000000000000000000000000</sourceDigest>
+      <budgetBreakdown>
+        <entry><code>acquisition.gold-standard</code><delta>0</delta><ruleRef>WBR-WL-003</ruleRef><evidenceRef>data/shops/npcs/example.json#catalog</evidenceRef></entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref><id>WBR-DUAL-001</id><target>input.dualWield</target><evidenceRef>data/items/武器_示例.xml#item=示例武器/use</evidenceRef></ref>
+      </ruleRefs>
+      <!-- 普通 confirmed 可省略 note；黄/红必须写不可派生的短说明 -->
+    </record>
+  </records>
+</weaponBalanceAudit>
 ```
-前置（一次）：cd tools/cf7-balance-tool && npm install
+
+### 4.1 台账闭合规则
+
+- `auditRef` 全局唯一，并与 `itemName + profileKey` 一一对应。
+- 台账与 runtime 的 8 输入、状态、显示门和 input digest 必须完全相同。
+- `budgetBreakdown.entry.delta` 之和严格等于 `weightLayers`；零层也要有可复核的零贡献依据。
+- `confirmed` 必须让八个 `input.*` target 都有合法条款和真实证据；获取证据还要通过现役商店/合成等专项索引。
+- `unresolved/invalid` 必须 `displayEligible=false` 并提供非空 `note`；`confirmed` 的普通说明由结构化记录生成，`note` 可省。
+- v1 不再存在 `rationale` 字段。DPS、残差、条款列表、SHA 和路径均可机械生成，不在每个 item 中复述。
+
+## 5. 两种 digest
+
+### 5.1 `inputDigest`：工具与 AS2 共验
+
+固定字段顺序：
+
+```text
+itemName, profileKey, workbookVersion, use, bullet, clipname, split, damagetype, magictype,
+singleshoot, level, power, interval, capacity, weight, impact,
+dualWield, pierce, damageType, shotgun, magPrice, weightLayers, category, formula
 ```
 
-1. 读武器客观属性（`<use>/<damagetype>/<split>/bullet/level/price` 等）。
-2. 按 §3 决策表推出 6~7 个系数（含由现价反验 weightLayers）。
-3. 写 `<balance>` 记录（§2）到该 `<item>`。
-4. 组装 WeaponInput（英文键）= `<data>` 数值 + `<balance>` 系数，跑：
-   ```
-   node packages/cli/src/index.ts calc weapons --input weapon-input.json
-   ```
-   读 `output.averageDPS / balanceDPS / weightedDPS / recommendedGoldPrice`。
-5. 调 `<data><power>` 使 `averageDPS≈balanceDPS`（或直接采纳推荐），用工具无损写回：
-   ```
-   node packages/cli/src/index.ts xml set --file <xml> --path <…/power> --value <n> --in-place
-   ```
-   多字段用 `project batch-set --input payload.json --output-dir …`。
-6. 跑校验门（§6）确认闭环。
+规范化规则：
 
-> calc 入参是**英文键**（直传 `computeWeaponRow`）；calibrate/query 才做中文列名映射。
+1. `itemName/profileKey/use/bullet/clipname/split/damagetype/magictype/singleshoot` 按字符串处理；缺失为 `""`，其他值用 `String(value)`。
+2. `workbookVersion` 与后十四项必须是有限数字，用 JavaScript `String(Number(value))`。
+3. 每项编码为 `key#<UTF-16 code unit 长度>=<规范值>`。
+4. 完整规范串为 `weapon-v1|<项1>|...|<项24>`。
+5. 对规范串按 UTF-16 code unit 执行 32 位 FNV-1a，存为 `fnv1a32:<8位小写十六进制>`。
 
----
+它同时绑定物品身份、profile、工作簿版本、弹种/弹药/射击语义、六个运行数值与八个公式输入。任一项漂移，AS2 都停止投影，直到重新审计同步。
 
-## 6. 校验门设计（治本，仿 `validate-equip-fn-coverage.js`）
+工具与 AS2 共用的当前冻结测试向量为 `fnv1a32:4bbce563`；任何一侧变更字段顺序、数值规范化或 UTF-16 处理而未同步另一侧，测试必须失败。
 
-**已实现** CLI `balance-check` 命令（`npm run balance-check`）：
+### 5.2 `sourceDigest`：工具侧完整机械源
 
-1. 扫描 `data/items/武器_*.xml` 中带 `<balance>` 的 `<item>`。
-2. 组装 WeaponInput（`<data>` 数值 + `<balance>` 系数）→ 调 `@cf7-balance-tool/core` 的 `computeWeaponRow`。
-3. 断言（两种模式）：
-   - **模式 A（forward，新武器/严格）**：实际 `power` 算出的 `averageDPS` 与 `balanceDPS` 在容差带内（如 ±15%）。
-   - **模式 B（band，旧武器/宽松）**：`averageDPS` 落在 `balanceDPS` 的 [0.5×, 1.3×]（对齐工具 `validate` 的现有阈值）。
-4. 越界 → 打印 `武器名 / 实际DPS / 目标DPS / 偏离%` 并 `exit 1`。
-5. 接入：独立命令 + 可挂 `validate-doc-governance.js` 或 CI；本质是"提交即验平衡"。
+工具按稳定键序列化并计算 SHA-256，至少覆盖：
 
-效果：平衡从"不可审计的 trust me"变成"机器可复现核对"；agent/手填错当场红。
+- `itemName/profileKey/use`；
+- 展开后的完整 effective data；
+- 该 profile 生效的 skill/lifecycle。
 
----
+结果存为 `sha256:<64位小写十六进制>`，只存在审计台账。它补足 AS2 固定字段摘要无法覆盖的复杂脚本/生命周期漂移；`balance-check` 必须复算一致。
 
-## 7. 反求 / 显示落点
+两种 digest 都是防漂移门，不替代来源证据或 Git 审计。
 
-- **算**：工具 / 校验门（权威，提交时）。
-- **显示**：web tooltip（`launcher/web/modules/tooltip.js`/`kshop.js`）读 `<balance>`+`<data>` 算并展示 DPS/档位——浏览器原生 JSON、不动 AS2 运行时。
-- **AS2**：不动。其 `WeaponDpsEstimator` 是给 AI 的"持续 DPS"，与本"平衡 DPS"职责不同，无需重复。
+## 6. 可复现施工流程
 
----
+1. 冻结 `workbookVersion → SHA` 映射、sheet/cell 和公式版本。
+2. 展开基础 data 与全部 `data_*`，检查 bullet、弹药、lifecycle、skill/subweapon 和完整玩家获取路径。
+3. 先按规则表建立 `ruleRefs` 与 `budgetBreakdown`，再填 8 输入；不得为追平 DPS 反推系数。
+4. 独立复算 `averageDPS`、`weightedDPS` 和带符号残差。超过 ±5% 先转 `unresolved`，不自动判红。
+5. 在审计台账写完整记录；普通绿记录不写重复说明，黄/红只写不可派生的短 note。
+6. 运行 `balance-sync --check` 查看差异，显式 `balance-sync --write` 生成/更新 compact runtime profile。
+7. 运行 `balance-check` 反向读取所有物品，检查 profile 完整性、两种 digest、台账闭合、条款证据与公式残差。
+8. 涉及 AS2/Web 时执行定向测试；没有新鲜 Flash trace 时只能报告静态/工具验证，不能声称已编译通过。
 
-## 8. 落地路线 + 前置
+本流程不顺手修改 `power/price/interval` 等战斗值。数值整改必须是另一个有明确授权、可独立复核的任务。
 
-| 阶段 | 动作 | 状态 |
-|------|------|------|
-| 前置 | `npm install`（解 #1 阻塞）；可选 payload-gen helper（按武器名生成 batch payload） | 待做 |
-| 试点 | 追月连弩：写 `<balance>` → calc → 核对（见本轮试点记录） | 进行中 |
-| 校验门 | `tools/validate-weapon-balance.js`（§6） | 待做 |
-| 回填 | 逐类给现有武器补 `<balance>`（优先有 lifecycle/争议的），可用 import-excel + baseline 反查历史系数 | 待做 |
-| 显示 | web tooltip DPS（§7） | 待做 |
-| 文档治理 | 纠正/废弃 `weapon_weighting_workflow.md`；AGENTS.md/data-schemas.md 加 `<balance>` schema 指针 | 待做 |
+## 7. 玩家显示边界
 
-- **向后兼容**：无 `<balance>` 的武器 → 校验门跳过（或走模式 B 的纯 stat band 估算）；运行时不受影响（透传字段）。
-- **单一真值**：`<balance>` 进 git 后，Excel 退化为一次性 legacy import（`import-excel` 仍可用于历史系数反查回填）。
+ItemDataLoader 加载后，ItemUtil 把 compact balance 提取到独立只读缓存，并从一般物品数据树删除，避免 `getItemData()` 深拷贝审计结构。库存按 `item.value.tier → EquipmentConfigManager.getTierKey()` 选择 profile；商店固定选择 `data`。
 
----
+AS2 复核 v1 容器、已知工作簿版本、profile 状态、显示门、auditRef 和 input digest 后，只发送：
 
-## 9. 防 hack：依据驱动 + 系数交叉校验（2026-06-26 精化）
+```js
+balanceSummary = {
+  state: "confirmed",
+  weightLayers: 1,
+  formula: 1,
+  level: 30
+}
+```
 
-**风险**：平衡公式多输入，若"固定目标 DPS、放任系数浮动"，可用**等效依据**凑出想要的 power（谎报 pierce=2 撑高伤害预算、或抬 weightLayers 拔档位）。
+- 多义节点、未知 tier、缺 profile、过期 digest、黄/红状态均省略整个属性。
+- Web 不读取审计台账，不从 price/rarity 推断强度，也不显示 WBR ID、路径、SHA 或 note。
+- 当前最高优先级是物品格 `◆层数`；Tooltip 只加简短“同级加权”。DPS 与玩家语言短标签待全量标定和信息层级冻结后再启用。
+- 内部条款可以生成受控解释文案，但常态 UI 不直接展示条款编号或自由证据文本，避免信息过载。
 
-**双重防线**：
-1. **系数必须有客观依据**：每个非平凡系数在 `<rationale>` 写明绑定的**可验证武器属性**（pierce=2 ⟺ 子弹真穿透；weightLayers=3 ⟺ 获取/稀有度真到该档），不是自由旋钮。人/agent 据此读懂"为什么是这个值"。
-2. **校验门交叉校验系数↔客观数据**（不止重算 DPS）：
-   - `dualWield` ↔ `<use>`（长枪1/手枪2）
-   - `damageType` ↔ `<data><damagetype>`/`<magictype>`
-   - `weightLayers` ↔ `<price>`（应满足 `price≈level×3900×1.6^层数`，本设计已实证追月连弩 WL=2）
-   - `pierce` ↔ 子弹穿透配置（bullets_cases）
-   不符即红 → **结构上堵死"等效依据 hack"**。
+## 8. 验证矩阵
 
-**schema 补充**：`<balance>` 加 `<rationale>`（自由文本，承载依据）；可选 `<class>`（如 `压制机枪`）便于规则化。
-**「存全部参数？」结论**：存**系数 + 目标档位 + rationale**，**不复制** `<data>` 的 power/interval/cap（复制 = 第二处漂移面）；需要"一处看全"时由**工具写 `<derived>` 快照**（balanceDPS/推荐power，工具/校验门生成，绝不手维护）。
+在 `tools/cf7-balance-tool` 下运行：
 
-**压制机枪类（capacity>150）**：DPS 公式下换弹项被摊薄、cycleDamage 巨大但 averageDPS 归一；其价值在**持续压制**而非单体，故 weightLayers/系数取舍必须在 `<rationale>` 说明（如"压制定位，单体 DPS 让位于持续火力"），并建议打 `<class>压制机枪</class>` 以便后续按类给默认系数。
+```powershell
+npm run typecheck
+npm test
+npm run roundtrip-check
+npm run balance-sync -- --check
+npm run balance-check
+```
 
-## 10. 求解器（auto-solve，替代人肉试错）
+仓库根另运行：
 
-原版"凑平衡"= 人肉试错、不可自动化。但公式是 `inputs→DPS` 的纯函数，**求解 = 逆问题**：
+```powershell
+node tools/validate-doc-governance.js
+git diff --check
+```
 
-- **单未知（power）求目标 DPS = 单调 1D 问题**，二分/牛顿稳解（已原型验证）。覆盖 ~90% 场景。
-- **通用形态**：固定 N−1 个输入，解 1 个自由量（通常 power）对目标（`averageDPS=balanceDPS` 自洽，或指定 DPS）。多未知欠定 → 需多目标或多固定，文档约定"固定到只剩一个自由量"。
-- **追月连弩 demo（2026-06-26）**：固定 level50/interval200/cap7/系数/WL，二分解得 **power≈3400** 使 `averageDPS≈balanceDPS≈25510`；跨档位敏感度 WL1/2/3 → power 3380/3399/3415、金价 312k/499k/799k。对照旧约束(cap50/interval150) 只需 power≈1238——**约束变化对单发威力的影响一目了然**。
-- **已实现并折进 CLI（2026-06-26）**：core `solveWeaponPower`（`packages/core/src/formulas/weapon-solve.ts`）+ CLI 子命令 `solve weapons` / `balance-check`：
-  - `npm run solve -- weapons --input <fixed.json> [--target <dps>]` — 固定其余、二分解 power 命中目标（默认 balanceDPS）。
-  - `npm run balance-check` — 扫全部带 `<balance>` 武器，重算 + DPS 带 + dualWield↔use + price↔公式 交叉校验，失败 exit 1。
-  - 追月连弩实证：cap7/interval200 解得 **power=3399**（averageDPS=balanceDPS=25510）；balance-check `ok`。
-- **构建已修（2026-06-26）**：`tsc -b core+xml-io+cli` 现 exit 0。两个根因——① 陈旧 `.tsbuildinfo` 让 `tsc -b` 误判"已构建"而跳过 emit（dist 缺失 → 跨包 `@cf7-balance-tool/*` TS2307 级联 + implicit-any），`tsc -b --force` 重建即出 dist；② `fast-xml-parser` 被 xml-io 使用却**从未在任何 package.json 声明**（原始 `npm install` 因此漏装），已补进 `xml-io`/`cli` deps。注：web/electron GUI 构建另需完整 `npm install`（electron/react/vite），不在 CLI 范围。
-- **规模化后**：积累各武器 `<rationale>` → 提炼每类默认系数规则 → 参数化规范 / 自动建议系数（**先有数据再形式化**，勿过早固化）。
+| 检查 | 证明范围 |
+|---|---|
+| strict v1 parser | v2/平铺结构、缺字段、多义 profile 不会被兼容 |
+| profile resolver | 基础 + 变体覆盖与 TierSystem 一致；缺 profile fail closed |
+| digest vectors | TS 与 AS2 对同一 24 项得到相同 input digest；工具复核完整 source digest |
+| `balance-sync` | runtime core 可由台账机械生成且无手工双源漂移 |
+| `balance-check` | schema、profile 完整性、台账 join、SHA、digest、预算、条款证据和 DPS 绿色带 |
+| AS2 定向测试 | base/tier 选择、缓存剥离、错误输入隐藏和最小消息边界 |
+| Web/harness | 徽标、Tooltip、紧凑态、ARIA 与敏感审计字段隔离 |
 
-## 11. 相关文件
-- 公式内核：`tools/cf7-balance-tool/packages/core/src/formulas/weapons.ts`、`economy.ts`
-- CLI：`tools/cf7-balance-tool/packages/cli/src/index.ts`（calc/xml set/batch-set/calibrate/query）
-- 权威真值：`tools/cf7-balance-tool/baseline/baseline-extracted.json`
-- 标定：`packages/core/tests/formulas/*.calibration.test.ts`
-- 运行时持续 DPS（勿混）：`scripts/类定义/org/flashNight/arki/unit/UnitAI/combat/WeaponDpsEstimator.as`
-- 陈旧勿用：`data/items/weapon_weighting_workflow.md`
+`balance-check` 只要求已经存在 `<balance>` 的 item 覆盖自身全部 profile；不会强迫本轮范围外的所有武器立刻补记录。首次上线前仍须另行定义全量覆盖门。
+
+## 9. 相关入口
+
+- 业务判据：[weapon-balance-rulebook.md](weapon-balance-rulebook.md)
+- 通用 XML 约束：[agentsDoc/data-schemas.md](../../../agentsDoc/data-schemas.md)
+- 验证矩阵：[agentsDoc/testing-guide.md](../../../agentsDoc/testing-guide.md)
+- AS2 → Web 护栏：[agentsDoc/as2-web-panel-migration.md](../../../agentsDoc/as2-web-panel-migration.md)
+- 公式实现：`packages/core/src/formulas/weapons.ts`

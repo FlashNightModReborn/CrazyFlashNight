@@ -202,11 +202,11 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 装备平衡记录 `<balance>`
 
-`<balance>` 是给平衡工具/审计看的留档字段，运行时 AS2 不依赖它。原则是**只记录 XML `<data>` 里没有的平衡输入**，不要复制 `level/weight/defence/hp/mp/damage/power/interval` 等现有数值，避免双源漂移。
+`<balance>` 的原则是**只记录 XML `<data>` 中没有的公式输入与最小展示门**，不要复制 `level/weight/defence/hp/mp/damage/power/interval` 等现有数值。AS2 战斗逻辑不消费它；展示层只允许从严格验证的武器 profile 生成最小 `balanceSummary`，不能让 Web 自行读取审计原文或推断状态。
 
-**枪械 / 武器**：schema 以 `tools/cf7-balance-tool/docs/agent-balance-record-design.md` 为准，使用 `dualWield/pierce/damageType/shotgun/magPrice/weightLayers/category/formula/rationale`。
+**枪械 / 武器**：尚未上线的契约统一为严格 `formulaFamily=weapon + schemaVersion=1`，不兼容此前平铺/v2 或 runtime SHA 开发草案。item 根 `<balance>` 只保留容器身份、数字 `workbookVersion` 和 `<profiles>`；完整 SHA 只在工具注册表、规则表与外部审计台账保存一次。`data/data_*` 每个静态形态都要有独立完整 profile，保存八个公式输入、`status/displayEligible/inputDigest/auditRef`，缺 profile 禁止回退基础形态。条款、证据、预算和可选短备注存入不由 ItemDataLoader 加载的 `tools/cf7-balance-tool/records/weapon-balance-audit.xml`，runtime profile 必须由台账机械同步并逐字段对账。完整 schema、digest 和施工流程以 `tools/cf7-balance-tool/docs/agent-balance-record-design.md` 为准，取值判据及条款 ID 以 `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md` 为准。公式最高权威仍是 `0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx`。
 
-**防具**：不要沿用枪械字段。防具平衡表的核心额外输入是 `extraWeightLayers`；`armorType` 仅在不能从装备位/用途稳定推断时填写，合法值为 `standard | glove | necklace`。
+**防具**：属于另一公式族，不因武器 v1 的不兼容决定而迁移。不要沿用枪械字段；防具平衡表的核心额外输入是 `extraWeightLayers`，`armorType` 仅在不能从装备位/用途稳定推断时填写，合法值为 `standard | glove | necklace`。
 
 ```xml
 <balance>

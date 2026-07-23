@@ -33,15 +33,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>500</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>弓弩谱系/栓动单发狙击弩，cap3=携3支待发箭的游戏化抽象(真实弩单发手动上弦)。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=0(商店货)，magPrice=500=箭矢真实价(消耗品_弹夹.xml)。lv18+cap3+interval1000(栓动节奏≈1/s,贴53式步骑枪手感)，工具求解 power≈2941 使 averageDPS≈balanceDPS(≈5199)。price=70200=18×3900×1.6^0。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:c6ad277a</inputDigest>
+          <auditRef>weapon:追月弩:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="弓弩">
@@ -75,15 +85,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>500</magPrice>
-      <weightLayers>0</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>弓弩谱系/栓动单发狙击弩，原型 Ravin R29(实测6.75lbs→weight7)。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=0(商店货)，magPrice=500=箭矢真实价。lv35+cap3+interval1000(栓动≈1/s)，工具求解 power≈5843 使 averageDPS≈balanceDPS(≈11242)。price=136500=35×3900×1.6^0。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:042ac6a3</inputDigest>
+          <auditRef>weapon:玄鸦弩:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
   <item weapontype="弓弩">
@@ -117,15 +137,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>500</magPrice>
-      <weightLayers>1</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>弓弩谱系/连弩速射(诸葛连弩血统,cap7 弹仓)。高级弩 weight 翻倍=14。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=1(K点商城)，magPrice=500=箭矢真实价。lv42+cap7+interval200(瞬时5/s,谱系最快)，工具求解 power≈2362 使 averageDPS≈balanceDPS(≈16990)。price=262080=42×3900×1.6^1。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:43c7cfc8</inputDigest>
+          <auditRef>weapon:追月连弩:data</auditRef>
+        </data>
+      </profiles>
     </balance>
     <lifecycle>
       <attr_0>
@@ -169,15 +199,25 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
-      <dualWield>1</dualWield>
-      <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
-      <magPrice>500</magPrice>
-      <weightLayers>3</weightLayers>
-      <category>1</category>
-      <formula>1</formula>
-      <rationale>弓弩谱系/旗舰重型弹仓弩(高级弩 weight 翻倍=14,记额外机构+备弹代价)。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=3(K点高价合成)，magPrice=500=箭矢真实价。lv50+cap13+interval300(瞬时3.3/s,慢于连弩使单发更重),工具求解 power≈3603 使 averageDPS≈balanceDPS(≈23222);单发(8038)>追月连弩(5097)、面板DPS>追月连弩。price=798720=50×3900×1.6^3。</rationale>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>3</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:743b3b9c</inputDigest>
+          <auditRef>weapon:追风邀月弩:data</auditRef>
+        </data>
+      </profiles>
     </balance>
   </item>
 </root>

@@ -30,8 +30,8 @@ window.Toast={add:function(message){__toasts.push(message)}};
 window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
 window.PanelScale={attach:function(el,w,h){el.style.setProperty('--pss-w',w+'px');el.style.setProperty('--pss-h',h+'px');return{detach:function(){}}}};
 window.PanelTooltip={
-  _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},isVisible:function(){return this._visible},updateContent:function(){},
-  dynamicIconHtml:function(){return ''},staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(){return '<div>rich</div>'},
+  _visible:false,lastHTML:'',lastRichOptions:null,showAtMouse:function(html){this._visible=true;this.lastHTML=html||''},followMouse:function(){},hide:function(){this._visible=false},isVisible:function(){return this._visible},updateContent:function(html){this.lastHTML=html||''},
+  dynamicIconHtml:function(){return ''},staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(options){this.lastRichOptions=options||{};return '<div>rich'+(options&&options.metaHTML||'')+'</div>'},
   bindAsyncHover:function(node, options){
     var cache = options.cache || {};
     function resolveKey(e){
@@ -66,8 +66,8 @@ window.Panels=(function(){var specs={},active=null;return{
 
 var balance=10000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=false,manualLayout=false;
 var catalog=[
-  {catalogIndex:0,itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
-  {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false},
+  {catalogIndex:0,itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false,balanceSummary:{state:'confirmed',weightLayers:1,formula:1,level:1}},
+  {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false,balanceSummary:{state:'review',weightLayers:7,formula:1,level:1}},
   {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'',locked:false},
   {catalogIndex:3,itemName:'训练步枪',displayName:'训练步枪',icon:'训练步枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'突击步枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
   {catalogIndex:4,itemName:'训练霰弹枪',displayName:'训练霰弹枪',icon:'训练霰弹枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'霰弹枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
@@ -75,7 +75,7 @@ var catalog=[
   {catalogIndex:6,itemName:'食材',displayName:'食材',icon:'食材',majorType:'消耗品',use:'材料',actionType:'',weaponType:'',basePrice:20,unitPrice:20,maxQuantity:100,requiredInfo:'',locked:false}
 ];
 var bagItems=[
-  {name:'训练手枪',displayName:'训练手枪',itemKind:'equipment',majorType:'武器',use:'手枪',weaponType:'手枪',quantity:1,enhancementLevel:1},
+  {name:'训练手枪',displayName:'训练手枪',itemKind:'equipment',majorType:'武器',use:'手枪',weaponType:'手枪',quantity:1,enhancementLevel:1,balanceSummary:{state:'confirmed',weightLayers:0,formula:1,level:1}},
   {name:'训练手枪',displayName:'训练手枪',itemKind:'equipment',majorType:'武器',use:'手枪',weaponType:'手枪',quantity:1,enhancementLevel:1},
   {name:'训练手枪',displayName:'训练手枪 +3',itemKind:'equipment',majorType:'武器',use:'手枪',weaponType:'大威力手枪',quantity:1,enhancementLevel:3},
   {name:'药剂',displayName:'药剂',itemKind:'stack',majorType:'消耗品',use:'消耗品',quantity:5,enhancementLevel:0}
@@ -88,7 +88,7 @@ function inventorySnapshot(containerId){
   for(var i=0;i<items.length;i++){
     if(path.length&&!ItemFilter.matchesPath(items[i],path,function(item){return ItemFilter.catalogPath(item)}))continue;
     var projected=slot(i,items[i].name,items[i].displayName,items[i].quantity,'iw.r'+inventoryRevision+'.'+i,items[i].use,items[i].itemKind,items[i].enhancementLevel);
-    projected.item.majorType=items[i].majorType||projected.item.majorType;projected.item.weaponType=items[i].weaponType||'';projected.item.actionType=items[i].actionType||'';slots.push(projected);
+    projected.item.majorType=items[i].majorType||projected.item.majorType;projected.item.weaponType=items[i].weaponType||'';projected.item.actionType=items[i].actionType||'';projected.item.balanceSummary=items[i].balanceSummary?JSON.parse(JSON.stringify(items[i].balanceSummary)):undefined;slots.push(projected);
   }
   var tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)});
   var snapshot={containerId:containerId,capacity:capacity,accessibleCapacity:capacity,viewCapacity:slots.length,offset:0,limit:slots.length,filterKey:request.filterKey||'all',snapshotSeq:seq,filterFacets:tree.children,filterItemCount:items.length,slots:slots};
@@ -158,6 +158,15 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   Panels.open('npcshop',{shopId:'前治安官'});await wait();
   ok('opens catalog + bag',document.querySelector('[data-instance-key="npcshop:catalog"]')&&document.querySelector('[data-instance-key="npcshop:bag"]'));
   ok('NPC domain response excludes duplicate bag authority',__lastNpcState&&__lastNpcState.views&&__lastNpcState.views.bag===undefined);
+  var npcConfirmedCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]'),npcConfirmedBadge=npcConfirmedCard&&npcConfirmedCard.querySelector('.balance-weight-badge');
+  var npcUnresolvedCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]');
+  var npcOwnedBalanceBadge=document.querySelector('.npcshop-bag-view .inventory-slot-card[data-physical-slot="0"] .balance-weight-badge');
+  ok('NPC 商店目录与 owned 格复用确认加权徽标，未确认条目不显示正式数字',npcConfirmedBadge&&npcConfirmedBadge.textContent.indexOf('◆+1')>=0&&npcConfirmedCard.getAttribute('aria-label').indexOf('平衡标定已确认')>=0&&npcUnresolvedCard&&!npcUnresolvedCard.querySelector('.balance-weight-badge')&&npcOwnedBalanceBadge&&npcOwnedBalanceBadge.textContent.indexOf('◆0')>=0);
+  PanelTooltip.lastHTML='';PanelTooltip.lastRichOptions=null;var npcBalanceRect=npcConfirmedCard.getBoundingClientRect();
+  npcConfirmedCard.dispatchEvent(new PointerEvent('pointerenter',{bubbles:false,clientX:npcBalanceRect.left+8,clientY:npcBalanceRect.top+8,pointerId:11,pointerType:'mouse',isPrimary:true}));
+  var npcBalanceBasic=PanelTooltip.lastHTML;await wait();var npcBalanceMeta=PanelTooltip.lastRichOptions&&PanelTooltip.lastRichOptions.metaHTML||'',npcBalanceMetaDoc=new DOMParser().parseFromString(npcBalanceMeta,'text/html');
+  npcConfirmedCard.dispatchEvent(new PointerEvent('pointerleave',{bubbles:false,clientX:npcBalanceRect.right+4,clientY:npcBalanceRect.bottom+4,pointerId:11,pointerType:'mouse',isPrimary:true}));
+  ok('NPC Tooltip basic/rich 只投影四字段协议的一行同级加权摘要',npcBalanceBasic.indexOf('balance-tooltip-summary')>=0&&npcBalanceMetaDoc.querySelectorAll('.balance-tooltip-summary').length===1&&npcBalanceMetaDoc.querySelectorAll('.balance-tooltip-tags,.balance-tooltip-dps,.balance-tooltip-label').length===0&&npcBalanceMetaDoc.body.textContent.indexOf('同级加权')>=0&&!/DPS|WBR|SHA|rationale/i.test(npcBalanceBasic+npcBalanceMeta),npcBalanceMeta);
   var bagFilter=document.querySelector('.npcshop-bag-view .inventory-filter-control.tree');
   var bagFilterTrigger=bagFilter&&bagFilter.querySelector('.inventory-filter-tree-trigger'),bagFilterNavigator=bagFilter&&bagFilter.querySelector('.inventory-filter-navigator');
   ok('shop bag and catalog use the same inline current-level drilldown',bagFilter&&!bagFilterTrigger&&bagFilter.querySelector('select').hidden&&getComputedStyle(bagFilterNavigator).display==='flex'&&bagFilterNavigator.classList.contains('item-filter-drilldown')&&document.querySelector('.npcshop-category-tabs.item-filter-drilldown')&&bagFilterNavigator.querySelectorAll('.item-filter-row').length===1);

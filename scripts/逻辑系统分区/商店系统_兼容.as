@@ -233,7 +233,7 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
                 || _root.收集品栏.情报.getValue(requiredInfo) <= 0);
         var basePrice:Number = Number(itemData.price);
         if (isNaN(basePrice)) basePrice = 0;
-        result.push({
+        var catalogItem:Object = {
             catalogIndex:keys[i],
             itemName:resolved.itemName,
             displayName:String(itemData.displayname || resolved.itemName),
@@ -250,7 +250,14 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
             maxQuantity:this.getPurchaseLimit(resolved),
             requiredInfo:requiredInfo,
             locked:locked
-        });
+        };
+        var balanceSummary:Object = org.flashNight.arki.item.InventoryPanelService.buildBalanceSummary(
+            itemData,
+            org.flashNight.arki.item.ItemUtil.getRawBalanceData(resolved.itemName),
+            "data"
+        );
+        if (balanceSummary != null) catalogItem.balanceSummary = balanceSummary;
+        result.push(catalogItem);
     }
     return result;
 };

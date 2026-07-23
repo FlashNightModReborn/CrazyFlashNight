@@ -64,15 +64,25 @@
         <reloadPenalty>0</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>200</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/King.json，price=75000 落在权威 WL0 反验带。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=200 取突击步枪通用弹药。未配置 singleshoot，使用 XML interval 原值。公式1按 averageDPS≈weightedDPS 复算通过（偏差 -1.18%）。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>200</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:6f872f4c</inputDigest>
+            <auditRef>weapon:QBZ-192:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
   <item weapontype="突击步枪">
@@ -104,15 +114,25 @@
         <reloadPenalty>0</reloadPenalty>
       </data>
       <balance>
-        <dualWield>2</dualWield>
-        <pierce>1</pierce>
-        <damageType>1</damageType>
-        <shotgun>1</shotgun>
-        <magPrice>200</magPrice>
-        <weightLayers>0</weightLayers>
-        <category>1</category>
-        <formula>1</formula>
-        <rationale>WL=0：现役金币商店 data/shops/npcs/King.json，price=125000 落在权威 WL0 反验带。use=手枪→dualWield=2；普通物理非穿且 split=1→pierce=1,damageType=1,shotgun=1；category=1；magPrice=200 取突击步枪通用弹药。未配置 singleshoot，使用 XML interval 原值。公式1按 averageDPS≈weightedDPS 复算通过（偏差 -0.26%）。权威工作簿 SHA256=BAC3D341DB2B2BF966C3D473ED4793725BAF0B68BE01BA0D2804A76D6DCB840A。</rationale>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>200</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:ede06aa9</inputDigest>
+            <auditRef>weapon:战术-QBZ-192:data</auditRef>
+          </data>
+        </profiles>
       </balance>
     </item>
 </root>
