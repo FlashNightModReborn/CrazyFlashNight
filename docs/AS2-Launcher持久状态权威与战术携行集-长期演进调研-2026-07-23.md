@@ -2,7 +2,7 @@
 
 **文档角色**：长期架构调研储备 / 候选路线图；不是已批准 ADR，不是当前协议 source of truth。
 
-**最后核对代码基线**：commit `466b899b515078169f342f7e0541be04e0f6e81d`（2026-07-23）。
+**最后核对代码基线**：commit `3d8e5b7b68833a255c26a472e87fc93584010dd0`（2026-07-24）。
 
 **讨论输入**：物资箱三层权威施工经验、当前存档/背包/装备/弹药实现、肉鸽热切换目标，以及经代码复核后内化的异构审阅结论。
 
@@ -454,12 +454,12 @@ Run 结束时由 Host 通过 `runId + settlementId` 幂等结算到 CampaignProf
 
 ### P0：稳定性止损 + 迁移基座收敛
 
-P0 拆成两个可并行但治理独立的工作包；P0-F 的完整范围和退出门见 [P0-F 跨层迁移基座与架构收敛专项](P0-跨层迁移基座与架构收敛专项-2026-07-23.md)：
+P0 拆成两个可并行但治理独立的工作包；P0-F 的完整范围与冻结证据见[P0-F 跨层迁移基座与架构收敛专项](P0-跨层迁移基座与架构收敛专项-2026-07-23.md)：
 
 - **P0-S 稳定性止损**：冻结当前物资箱继续泛化；完成 `force_flush`/安全退出握手等已知存档窗口加固；明确“shadow 主路径”与 SOL legacy/回退的长期关系，但不把文件保管误称为业务权威迁移。
-- **P0-F 迁移基座收敛**：新增 durable-domain Web panel 前先冻结命令业务裁决层、现役 identity 和失败语义；复用现有 Panel/Task/inventory/事务/测试基建，只收口 transport lifecycle 机械重复，不在 P0-F 预做聚合权威迁移或通用 context 框架。
+- **P0-F 迁移基座收敛（已证明成果）**：留下 `panel-contracts.v2` 机器登记、只收敛 transport mechanical state 的组合式 `PanelPendingCallTracker`，以及 Hairdresser 第三个真实消费者证明；没有迁移聚合权威，也没有建立通用 context、业务状态机或批量迁移框架。
 
-本文本身不修改生产协议；P0-S 的具体修复，以及 P0-F 中真正触发 wire/schema 变化的工作，仍分别通过窄 ADR 或现役契约变更落地。P0-S 不属于 P0-F 的 F0–F4，不得随其顺带施工。P0-F 的当前状态、workstreamId、owner、暂停范围与 terminal 只以专项章程头部为准，本文不复制动态状态；该门不按机器位置套用，也不改变其他协作者的贡献方式或主线准入。Execution lease 另立玩法/上下文 ADR，只复用 P0-F 已证明的机械原语，不由 P0-F 预建。
+本文本身不修改生产协议。P0-S 的具体修复继续通过独立窄 ADR 推进，不属于 P0-F 的 F0–F4。P0-F 专项文档只作为具名决策与冻结证据，不再承担当前暂停或执行路由；未来 durable/economic panel 必须按真实领域逐项登记、裁决和验证，但不会自动重启 P0-F 或触发批量迁移。Execution lease 另立玩法/上下文 ADR，只复用已经证明的机械原语，不预建通用框架。
 
 ### P1：收口与清单
 
@@ -615,9 +615,9 @@ P0 拆成两个可并行但治理独立的工作包；P0-F 的完整范围和退
 4. StateCore versioned envelope 与 command ledger 设计；
 5. 肉鸽无持久化热切换探针；
 6. 绿色 RogueRun 持久试点；
-7. P0-F 现有机器契约演进、Host pending-call helper 与首个 Transaction 试点 ADR。
+7. 以 P0-F 已冻结的机器契约、Host pending-call helper 与 Hairdresser 第三个消费者证明为输入，为下一项 durable-domain Transaction 试点另立 ADR。
 
-开始实施前必须重新核对当前 commit、工作树、最新物资箱状态与 canonical docs；本文中的行数、调用点数量和实现状态是 `466b899...` 基线上的调研快照，不得当作永久不变量。
+开始实施前必须重新核对当前 commit、工作树、最新物资箱状态与 canonical docs；本文中的历史行数与调用点数量仍是 `466b899...` 基线上的调研快照，P0-F 回流则核对到 `3d8e5b7...`，均不得当作永久不变量。
 
 ---
 
@@ -630,7 +630,7 @@ P0 拆成两个可并行但治理独立的工作包；P0-F 的完整范围和退
 - [技术栈保留 / 收敛评估](tech-stack-rationalization.md)
 - [地图资源箱 S1/S2 ADR](地图资源箱-S1S2真实战利品容器与Web双栏-ADR-2026-07-18.md)
 - [跨层契约与交互可靠性专项治理](Web-Panel跨层契约与交互可靠性专项治理-2026-07-22.md)
-- [P0-F 跨层迁移基座与架构收敛专项](P0-跨层迁移基座与架构收敛专项-2026-07-23.md)
+- [P0-F 具名决策与冻结证据：跨层迁移基座与架构收敛](P0-跨层迁移基座与架构收敛专项-2026-07-23.md)
 - [`SaveManager.as`](../scripts/类定义/org/flashNight/neur/Server/SaveManager.as)
 - [`InventoryPanelService.as`](../scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as)
 - [`ArrayInventory.as`](../scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as)

@@ -74,6 +74,7 @@ function run() {
     const uiDocument = read("flashswf/UI/基地特殊UI合集/DOMDocument.xml");
     const uiLibrary = read("flashswf/UI/基地特殊UI合集/LIBRARY/素材库-基地特殊UI.xml");
     const mainDocument = read("CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml");
+    const assetSourceMap = read("data/items/asset_source_map.xml");
     assert((service.match(/_root\.gameCommands\["openHairdresser"\]\s*=/g) || []).length === 1,
       "expected one openHairdresser command registration");
     assert(service.includes(
@@ -92,11 +93,33 @@ function run() {
       && !uiDocument.includes('libraryItemName="理发店界面"')
       && !uiLibrary.includes('libraryItemName="理发店界面"'),
       "the retired renderer must not remain bound into the base UI XFL");
-    assert(!fs.existsSync(path.join(
-      ROOT, "flashswf/UI/基地特殊UI合集/LIBRARY/理发店界面.xml"))
-      && !fs.existsSync(path.join(
-        ROOT, "flashswf/UI/基地特殊UI合集/LIBRARY/sprite/Symbol 31.xml")),
-      "the retired renderer and 发型TAB linkage sources must be deleted");
+    [
+      "button/Symbol 945.xml",
+      "button/Symbol 2732.xml",
+      "button/Symbol 2735.xml",
+      "button/Symbol 2737.xml",
+      "button/理发店滚动条.xml",
+      "shape/Symbol 297.xml",
+      "shape/Symbol 2734.xml",
+      "shape/Symbol 2736.xml",
+      "sprite/Symbol 29.xml",
+      "sprite/Symbol 31.xml",
+      "sprite/Symbol 2551.xml",
+      "sprite/Symbol 2743.xml",
+      "sprite/Symbol 2746.xml",
+      "sprite/通用按钮.xml",
+      "理发店界面.xml"
+    ].forEach(function (relativePath) {
+      assert(!uiDocument.includes('href="' + relativePath + '"'),
+        "retired base UI Include must stay absent: " + relativePath);
+      assert(!fs.existsSync(path.join(
+        ROOT, "flashswf/UI/基地特殊UI合集/LIBRARY", relativePath)),
+        "retired base UI source must stay deleted: " + relativePath);
+    });
+    ["发型TAB", "理发店界面"].forEach(function (assetId) {
+      assert(!assetSourceMap.includes('<asset id="' + assetId + '"'),
+        "retired base UI asset map entry must stay absent: " + assetId);
+    });
     ["改变发型", "预览发型", "恢复发型"].forEach(function (name) {
       assert(!new RegExp("function\\s+" + name + "\\s*\\(").test(mainDocument),
         "retired global function must stay absent: " + name);

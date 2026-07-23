@@ -1,11 +1,11 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `5b624757113c302ec756b0a8a6a809a2a8d862a5`（2026-07-23）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
+**最后核对代码基线**：commit `3d8e5b7b68833a255c26a472e87fc93584010dd0`（2026-07-24）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
-涉及“UI 全迁后是否把存档/背包/经济持久权威转入 Launcher”、肉鸽同进程角色热切换或战术携行集时，先读 [AS2 → Launcher 持久状态权威与战术携行集长期演进调研](../docs/AS2-Launcher持久状态权威与战术携行集-长期演进调研-2026-07-23.md)；继续批量迁移持久状态/经济界面前，再读 [P0-F 跨层迁移基座与架构收敛专项](../docs/P0-跨层迁移基座与架构收敛专项-2026-07-23.md)。长期路线仍是候选储备，不得据此绕过现有 AS2 权威与验证门。P0-F 的当前状态、workstreamId、owner、暂停范围与 terminal 只以专项章程头部为准；对其具名工作流，自 `Preflight` 起除 F3 试点外暂停新的持久状态/经济写 Panel，直至 F4 完成并写入 terminal。该门不按机器位置套用，也不改变其他协作者的贡献方式或主线准入。
+涉及“UI 全迁后是否把存档/背包/经济持久权威转入 Launcher”、肉鸽同进程角色热切换或战术携行集时，先读 [AS2 → Launcher 持久状态权威与战术携行集长期演进调研](../docs/AS2-Launcher持久状态权威与战术携行集-长期演进调研-2026-07-23.md)。[P0-F 跨层迁移基座与架构收敛专项](../docs/P0-跨层迁移基座与架构收敛专项-2026-07-23.md)只作为本轮 `panel-contracts.v2`、窄 `PanelPendingCallTracker` 与 Hairdresser 第三个真实消费者的具名决策与冻结证据，不再承担当前暂停或执行路由。长期路线仍是候选储备，不得据此绕过现有 AS2 权威与验证门；未来持久状态/经济写 Panel 必须按真实领域逐项登记、裁决和验证，不授权批量迁移、持久权威转移或自动重启 P0-F。
 
 专题规划与施工记录：[技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md](../docs/技能系统-Web面板独立迁移-工程落地规划-2026-07-15.md) 已落地 `panel/domain=skills`、管理/教师双模式、学习 token 原子提交和快捷栏模型抽离；我的技能主入口归 NativeHud / fallback Notch 的独立 `SKILLS`，NPC 教师保留情境入口，旧物品栏技能页不迁成 Web 转发器。Skill 使用 same-panel rebind + 顶层 `panelInstanceId`、`reconcileId/reconcileAfterCallId` 显式未知写对账、active/candidate/return trainer capability 撤销、正确 escaping JSON encoder，以及观察期旧 UI writer 领域 bridge；这些差异不得照抄 Crafting 的普通 snapshot/generation 恢复。教师页提供 Host 盖章的 `switch_manage`；只有该路径派生的 manage 实例得到 `canReturnTrainer=true` 并可发 `switch_trainer`，trainer session 始终留在 Host、learnToken 不跨 view。Web 展示层复用 `GridDensityController`、`FilterNavigator` 的按钮/计数/键盘 primitive、`PointerDragController/InteractionBroker` 与 `PanelTooltip.convertAS2Html`，manage 采用全宽技能库 + 1—12 单排技能带；紧凑态与物品 owned grid 共用 `48px` 格、`40px` 图标和 `4px` 间距，完整卡共用 `68px` 高度节奏，但不复用物品 taxonomy/facets/lease。技能→快捷槽保持 equip 确认，快捷槽→快捷槽以单条 `moveSlot` 在空槽间移动或对占用槽交换，技能→技能格直接调用既有 reorder 交换；常驻上移/下移退役，快捷槽 `Alt+←/→` 与技能格 `Alt+↑/↓` 保留非指针兜底。已装备目标、普通模式已装备源及异常行在排序落点阶段拒绝；EasyMode 只放宽已装备源。Skill 不再照搬物品目录树：形态、配置/学习、流派三组直接 facet 始终同时可见，首击即生效、跨组可组合并支持一键清除；武术、科技等流派按真实 `Type` 投影。名称搜索默认收起；manage 不显示 metric，trainer 只保留等级/技能点，稳定同步/刷新/协议术语退出常态视觉层。异常态才显示玩家语言的重试/确认结果与诊断复制，复制内容保留实例/revision/callId/reconcile 但禁止输出 trainer session/learnToken。S0–S5 代码与自动门、四个实际 Flash 目标发布及 FFDec 静态证据已接入；NativeHud `SKILLS` 的真实 Win32 manage 点击已覆盖常规、生产最小、4:3 与 1920×1080 几何，真实 `The Girl → 学习技能` 已打开 `技能研习` 并渲染 `兴奋剂 / 能量盾`，此前 trainer→manage same-panel rebind 也已通过；新布局/往返尚只有自动几何证据。旧技能页的两个 live 图标实例以互斥 child-depth 指纹确认实际命中 main `DefineSprite 53`，不是 things id2706；S4C 现只缺 legacy fallback 事务等价/重启回读，S5 现只缺 legacy Notch/fallback、pending-write/断线真机 Gate，S6 观察/旧 UI 删除仍按专题规划保持未完成。
 
@@ -132,7 +132,7 @@ Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{typ
 
 `CraftingTask` 与 Web 均采用 `idle/write_pending/needs_reconcile`。Web 把每次成功 preview 保存为同 `category/recipeIndex/craftCount` 的 checkpoint：普通 preview timeout/client_timeout/disconnected/畸形或未知非权威读错恢复 checkpoint 并继续可操作；stale/category/recipe/item/material/money/kpoint/inventory/level/batch 分歧先刷新 snapshot。只有回包明示 `requiresReconcile/reconcile_required`，或已投递 commit 的 timeout/drop/disconnected/畸形结果才进入写对账；同步未投递的 commit 失败保持可操作，任何失败都禁止自动重放；合成的对账读必须是同一 recipeIndex 的结构完整 `preview`，因为它同时覆盖材料、余额、容量和产物状态，成功 preview 才解除 Host 写门。单独 `snapshot` 不足以证明具体配方资源状态，不得解除 `needs_reconcile`。
 
-基地理发店使用独立 `hairdresser` domain，入口固定为 `基地场景合集` 中理发师 NPC → `_root.gameCommands["openHairdresser"]()` → 精确 `panel_request {panel:"hairdresser",source:"world_hairdresser"}`；命令缺失或 socket 发送失败时，才执行同一入口内唯一的 `if (!opened) _root.从库中加载外部UI("理发店界面")`。旧 Flash UI 在真实 candidate E2E、写后完整重启回读和维护者入口/视觉验收前仍是冻结 fallback，不能提前删除；主 XFL 的三个全局发型函数也不在 F3 删除。
+基地理发店使用独立 `hairdresser` domain，入口固定为 `基地场景合集` 中理发师 NPC → `_root.gameCommands["openHairdresser"]()` → 精确 `panel_request {panel:"hairdresser",source:"world_hairdresser"}`。该入口已冻结为 Web-only：命令缺失或 socket 发送失败均 fail-closed，不再加载旧 UI。旧 `理发店界面 / 发型TAB` renderer、实例、linkage 与主 XFL 的 `改变发型 / 预览发型 / 恢复发型` 已退役；新建角色流程中的男女默认发型 writer、8 个 `界面-发型选择[1-4]` 控件及 2 个 `控制值="发型"` 绑定不属于理发店 renderer，继续保留。冻结候选证据严格为 `e2e_verified / NOT_DEPLOYED`，不表示 Launcher runtime 已 promotion、部署或通过标准入口验收。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
 |---------|-----------|-------------|-------------------|---------------|------------|--------|
@@ -190,7 +190,7 @@ snapshot 请求的 `filterKey=all|weapon|armor|consumable|material|other` 由 C#
 - Flash 网格 renderer、claim-only adapter、observer recovery、按地图 rollout 与失败后地面掉落均不是恢复路径。发布事务回滚只处理 runtime 字节原子性，不得恢复上述实现。
 - wire shape、状态机、不变量和当前证据只在 [S1/S2 ADR](../docs/地图资源箱-S1S2真实战利品容器与Web双栏-ADR-2026-07-18.md) 维护；命令与人工矩阵只在 [testing-guide](testing-guide.md) 维护，本通用迁移文档不复制动态计数或历史哈希。
 
-### 2.3 地图资源箱 S1/S2 全正网格 Web-only 路由（2026-07-22；实施验证中）
+### 2.3 地图资源箱 S1/S2 全正网格 Web-only 路由（2026-07-22；已冻结）
 
 维护者已批准 `APPROVED_S1_S2_ALL_POSITIVE_GRID_WEB_ONLY`：旧语义中所有正整数 `row/col` 都是 Web intent，由 `InteractionHandler → LootContainerService.beginMapChestOpen` 在 kill 前统一 reservation。这里的“所有”以 `BoxInteractionArbiter` 已通过六个资源箱 preset 完成**箱体领域准入**为前提；该白名单只防止投影召唤器等非箱元件因带有 `row/col` 被劫持，不是 Web rollout/shape 白名单，也不得扩大。进入箱体领域后，`1×1` 有效，当前能力上限为 `col<=8 && row*col<=64`；超界或畸形尺寸 fail-closed，不 kill、不滚奖、不显示 Flash UI。只有精确 `0×0` 的 direct 箱继续地面掉落；负数、单边零、混合或缺字段全部拒绝。箱型名与当前恰有的 `2×4 / 4×4 / 4×8` 不参与准入后的 Web 选择；生产 XML 和运行时都不再使用 rollout marker。
 
@@ -212,7 +212,7 @@ NpcShop、Crafting 与 Hairdresser 的 Host transport lifecycle 统一组合内�
 
 新增生产 panel 的 C# 最小接入面：
 
-- `launcher/src/Tasks/*Task.cs`：NpcShop/Crafting 是两个冻结参考消费者，Hairdresser 是已落地的第三消费者，三者组合同一 `PanelPendingCallTracker<TContext>`；不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。领域 Task 仍独占 payload/response 白名单、写门和 reconcile 裁决；其他领域不因 P0-F 被迫改造。
+- `launcher/src/Tasks/*Task.cs`：NpcShop/Crafting 是两个冻结参考消费者，Hairdresser 是已落地的第三消费者，三者组合同一 `PanelPendingCallTracker<TContext>`；不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。领域 Task 仍独占 payload/response 白名单、写门和 reconcile 裁决。三个消费者只是组合式先例，不是通用基类或批量迁移授权；未来领域须先以真实生命周期证明同构，并在冻结 Web-only 的同轮删除旧 renderer/fallback 与重复 pending 机制，不能先抽象后找用途。
 - `launcher/src/Program.cs`：创建 Task，注入 `WebOverlayForm`，传入 `TaskRegistry.RegisterAll`。
 - `launcher/src/Bus/TaskRegistry.cs`：注册 AS2 response task，例如 `xxx_response`。
 - `launcher/src/Guardian/WebOverlayForm.cs`：
@@ -318,9 +318,9 @@ Launcher 状态统一为 `compiled → candidate_built → candidate_executed �
 
 无人值守入口遵循“受控直达 + 真实入口小门”双轨：
 
-- 受控直达只可绕过旧 Flash 按钮查找；它必须从窄化 `agent_control` 动作进入正式 AS2 opener，再经 `panel_request`、Host 白名单、PanelHost 与领域 Task。不得直接开 Host/Web panel，也不得用 `/console` 调业务读写。迁移功能进入人工反馈期后，不得继续保留仅供测试环境切换的独立 feature flag/capability 分支；但尚未冻结为 Web-only 的其他领域，旧 AS2 入口可以按正式 `source` 语义有意保持服务化原生 renderer，而 Web 反馈面仅由另一个正常工作台入口进入。该隔离不是调试开关：两条路径必须共用领域服务，Host 在未放行切流前应 fail-closed 拒绝残留 legacy redirect；人工验收门通过后再单独裁决是否把旧入口切到 Web。**已明确冻结为 Web-only 的迁移（当前包括地图网格箱）不适用这条双入口规则：不得保留 legacy renderer、fallback 或对应专项；direct/break 是独立掉落语义，不是 UI 回退。**
+- 受控直达只可绕过旧 Flash 按钮查找；它必须从窄化 `agent_control` 动作进入正式 AS2 opener，再经 `panel_request`、Host 白名单、PanelHost 与领域 Task。不得直接开 Host/Web panel，也不得用 `/console` 调业务读写。迁移功能进入人工反馈期后，不得继续保留仅供测试环境切换的独立 feature flag/capability 分支；但尚未冻结为 Web-only 的其他领域，旧 AS2 入口可以按正式 `source` 语义有意保持服务化原生 renderer，而 Web 反馈面仅由另一个正常工作台入口进入。该隔离不是调试开关：两条路径必须共用领域服务，Host 在未放行切流前应 fail-closed 拒绝残留 legacy redirect；人工验收门通过后再单独裁决是否把旧入口切到 Web。**已明确冻结为 Web-only 的迁移（当前包括地图网格箱与基地理发店）不适用这条双入口规则：不得保留 legacy renderer、fallback 或对应专项；地图箱的 direct/break 是独立掉落语义，不是 UI 回退。**
 - 动作必须绑定专用 `cf7_agent_*` 克隆槽、当前 attempt/save runtime ack 与本轮新鲜 handoff；live slot、旧 attempt 或未 ready 均应零发送。受控进档顺序固定为：记录本次 `start` 日志水位 → 在该水位后同时取得 fresh handoff 与真实 `[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared`（watchdog 事件不计，缺失报 `title_frame_not_observed`）→ 仅调用一次 `agentEnterResolvedSave()` → helper fail-closed 调 `_root.notifyGameEntered()`，同包发送 attempt-bound `s:1|ga:<_bootstrapAttemptId>`，再以 `gotoAndStop` 进入“读盘”帧 → Host 排除 legacy 无 `ga` 包、将 receipt exact 绑定当前 attempt，且只有该 receipt 才设 `gameEnteredObserved=true` → runtime ready。每次 `start` 与后续 `s:0` 都重新加锁；裸 `s:1`、helper 已调用、watchdog 或 `revealPerformed` 均非成功证据。
-- 直达 runner 可以只负责正式 opener、active instance 与首个权威 snapshot 的只读入口门；若它声明会继续执行 preview/commit/reconcile/存盘/重启回读，则必须显式列出写入 fixture、命令和回读证据，不能从 snapshot 推导业务写闭环。尚未冻结 Web-only 的领域可给旧 AS2 入口、Web 正常入口与故障边界保留限时专项；Web-only 地图箱只测 Web 成功或 fail-closed，不再测试 Flash fallback。入口搜索超过 60–90 秒或两次截图即停止并记缺陷，不让导航失败吞掉整轮验证时间。
+- 直达 runner 可以只负责正式 opener、active instance 与首个权威 snapshot 的只读入口门；若它声明会继续执行 preview/commit/reconcile/存盘/重启回读，则必须显式列出写入 fixture、命令和回读证据，不能从 snapshot 推导业务写闭环。尚未冻结 Web-only 的领域可给旧 AS2 入口、Web 正常入口与故障边界保留限时专项；Web-only 地图箱与基地理发店只测 Web 成功或 fail-closed，不再测试 Flash fallback。入口搜索超过 60–90 秒或两次截图即停止并记缺陷，不让导航失败吞掉整轮验证时间。
 - `agent_control` 的“已请求打开”不是业务成功；runner 至少等待 start 水位后的 fresh handoff 与真实 title-frame marker、随后单次 helper 的 exact-attempt game-enter receipt、runtime ready、Host active panel instance 及该实例首个领域 snapshot，才可继续。
 
 结束汇报必须区分：
