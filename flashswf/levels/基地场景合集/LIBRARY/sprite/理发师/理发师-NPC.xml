@@ -34,7 +34,12 @@
 	_root.是否达成任务检测();
 	if (_root.点击npc后检测任务(名字, this) == "路过")
 	{
-		_root.从库中加载外部UI("理发店界面");
+		var opened:Boolean = false;
+		if (_root.gameCommands != undefined && _root.gameCommands["openHairdresser"] != undefined)
+		{
+			opened = _root.gameCommands["openHairdresser"]();
+		}
+		if (!opened) _root.从库中加载外部UI("理发店界面");
 		_root.NPC功能菜单._visible = 1;
 		_root.NPC功能菜单._x = _root._xmouse;
 		_root.NPC功能菜单._y = _root._ymouse;

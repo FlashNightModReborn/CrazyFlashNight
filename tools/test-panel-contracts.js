@@ -69,6 +69,8 @@ function run() {
   test("hairdresser AS2 opener and production install remain reachable", function () {
     const service = read("scripts/类定义/org/flashNight/arki/ui/HairdresserPanelService.as");
     const install = read("scripts/展现/UI交互/UI交互_lsy_UI管理.as");
+    const npc = read(
+      "flashswf/levels/基地场景合集/LIBRARY/sprite/理发师/理发师-NPC.xml");
     assert((service.match(/_root\.gameCommands\["openHairdresser"\]\s*=/g) || []).length === 1,
       "expected one openHairdresser command registration");
     assert(service.includes(
@@ -79,6 +81,11 @@ function run() {
     assert((install.match(
       /org\.flashNight\.arki\.ui\.HairdresserPanelService\.install\(\);/g) || []).length === 1,
       "production activation must install HairdresserPanelService exactly once");
+    assert((npc.match(/_root\.gameCommands\["openHairdresser"\]\(\)/g) || []).length === 1,
+      "the production hairdresser NPC must call openHairdresser exactly once");
+    assert((npc.match(/_root\.从库中加载外部UI\("理发店界面"\)/g) || []).length === 1
+      && npc.includes('if (!opened) _root.从库中加载外部UI("理发店界面");'),
+      "the legacy hairdresser UI must remain only as the send-failure fallback");
   });
 
   test("hairdresser Web activation remains exact and production-reachable", function () {
