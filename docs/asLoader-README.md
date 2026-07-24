@@ -1,8 +1,8 @@
 # asLoader 启动架构 · 导览与待测
 
 **文档角色**：asLoader 启动子系统的**入口导览**（反直觉架构的心智地图 + 验证状态 + 测试入口）。深层细节下沉到设计 / 施工 doc，本文只回答「这是什么、为什么这么怪、验了什么、还要测什么」。
-**最后核对代码基线**：commit `e9af7030e7`（2026-07-13）；具体 import 白名单含本轮待提交 `SkillReleaseGuard`。
-**深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）。
+**最后核对代码基线**：commit `6a7010ec8fb0`（2026-07-24）。
+**深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）· [asLoader / TestLoader 维护性路线](asLoader-TestLoader维护性重构-架构路线-2026-07-24.md)（`PROPOSED`，后续债务治理方向；尚未改变当前入口与门禁）。
 
 ## 0. TL;DR（先读这段）
 
@@ -12,19 +12,19 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**承载全�
 1. **整个 boot 是一帧**。这帧定义一堆 `_root.__boot.fN = function(){…}` staged 函数，最后 `BootSequencer.run(this)`。没有多帧时间轴。
 2. **异步 boot 逻辑住在 class**（BootSequencer），靠挂在 `_root` 上的 `onEnterFrame` tick clip 驱动——因为 asLoader 自身 boot 完会自删，tick 必须挂 `_root` 才存活。
 3. **大帧被切成 chunk 函数** `fN_1..fN_k`：AVM1 单函数体 ≤64KB（`DefineFunction2.codeSize` 是 UI16），单位函数 506KB / 装备 456KB 装不进一个 function。
-4. **常规 import 是一个 81 包通配并集头**；另有由组装器 exact-match 守门的 9 个具体 import：`BootSequencer` + `Action.Skill` 包内 8 个现役类。该包因会话期新增类需要显式导入而整体从通配头改为具体类集合（AS2 不允许同包通配与具体 import 并存），用于规避 Flash CS6 常驻会话包索引陈旧。
+4. **常规 import 是一个 82 包通配并集头**；另有由组装器 exact-match 守门的 9 个具体 import：`BootSequencer` + `Action.Skill` 包内 8 个现役类。该包因会话期新增类需要显式导入而整体从通配头改为具体类集合（AS2 不允许同包通配与具体 import 并存），用于规避 Flash CS6 常驻会话包索引陈旧。
 
 ## 1. 文件地图（boot 散落 4 处）
 
 | 件 | 路径 | 作用 |
 |---|---|---|
 | symbol | `scripts/asLoader/LIBRARY/asLoader.xml` | 单帧，`#include _collapsed_frame.as`；备份 `asLoader.xml.pre-collapse.bak`（回退用） |
-| 帧 CDATA | `scripts/asLoaderManifest/_collapsed_frame.as` | **生成物，勿手改**：81 包并集头 + 9 个具体 import 白名单 + staged fN 定义 + s0..s9 编排 + `BootSequencer.run(this)` |
+| 帧 CDATA | `scripts/asLoaderManifest/_collapsed_frame.as` | **生成物，勿手改**：82 包并集头 + 9 个具体 import 白名单 + staged fN 定义 + s0..s9 编排 + `BootSequencer.run(this)` |
 | 生成器 | `tools/assemble-collapsed-frame.js` | 重生成 `_collapsed_frame.as`（改 boot 同步逻辑改这个再 regen） |
 | 状态机 | `scripts/类定义/org/flashNight/boot/BootSequencer.as` | S0-S10 异步序列（握手 / loader 队列 / await / handoff） |
 | 主 SWF 改 A | `CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml`（f33） | `_root.__boot.mainReadyToContinue = true`（替代旧 `_root.asLoader.play()`） |
 
-> **`scripts/asLoaderManifest/frameNN.as` 的角色（塌缩后）**：① **生成器输入**（被 `assemble-collapsed-frame.js` 读取并内联进 `_collapsed_frame.as`）= STAGED 帧 `2,3,9,10,18,32,36–42` + loader-fire 帧 `53–56,58,59,62–70,74`——改 boot 同步逻辑改这些再 regen；② **其余 frameNN.as（f4/5/6/7/11/25–27/48–52/57/75/91 等）= 历史参考**，对应异步/控制逻辑已搬进 `BootSequencer.as`，改它们**不影响** boot。一次性脚本 `tools/strip-stale-frame-imports.js` 已退役（勿作常驻门、勿扩白名单）。
+> **`scripts/asLoaderManifest/frameNN.as` 的角色（塌缩后）**：① **生成器输入**（被 `assemble-collapsed-frame.js` 读取并内联进 `_collapsed_frame.as`）= STAGED 帧 `2,3,9,10,18,32,36–42` + loader-fire 帧 `53–56,58,59,62–70,74`——改 boot 同步逻辑改这些再 regen；② **当前未被生成器读取的 9 个文件** `frame0/1/4/5/6/7/26/75/91.as` = 历史参考，对应顶层 / 异步 / 控制逻辑已由生成器或 `BootSequencer.as` 接管，改它们**不影响** boot。一次性脚本 `tools/strip-stale-frame-imports.js` 已退役（勿作常驻门、勿扩白名单）。
 
 ## 2. Boot 流（S0-S10）
 
@@ -45,13 +45,13 @@ S0 init → S1 syncCode（引擎+通信，建 `_root._bootstrap`）→ **S2 握�
 3. **异步 preload→consume 靠帧间隔**，塌缩压紧 tick 须加显式等待门（见 S6）。
 4. **大小写 typo 被并集头更严格类型解析暴露**（多帧时该上下文未 typed-resolve 不报，塌缩后报编译错）。
 
-## 5. 验证状态（2026-06-17）
+## 5. 验证状态（boot 行为基线 2026-06-17；静态产物复核 2026-07-24）
 
 | 项 | 状态 |
 |---|---|
 | Happy-path 真机 boot | ✅ 通过（引擎/通信/玩家/装备/战斗/UI/关卡/佣兵满编 204/刀光褪色/存档 loadAll OK） |
-| 静态门 codeSize <64K | ✅ 门过（`--max 60000` exit 0），**但最大 chunk = 58064 B**（次大 53240 B，均在 `DoAction[sprite=1 frame=0]` 即 boot 帧），距 UI16 硬限 65535 仅 ~7.5KB、距门 ~1.9KB，3 函数标 ⚠接近。⚠ 余量薄：最大者极可能是**不可再切的单文件 chunk**（如玩家模板迁移），该源文件再长 ~7KB 即静默溢出。**勿信旧「29K」表述** |
-| 静态门 single-ownership | ✅ main=0 / loader=572 / 交集=0 |
+| 静态门 codeSize <64K | ✅ 2026-07-24 复核：`--max 60000` exit 0，最大三个函数为 **56,646 / 55,844 / 53,291 B**；最大项已超过 55 KiB，前三项都应视为近墙热点。UI16 硬限是编译后单函数 / 方法 `codeSize=65535`，不是整个 `.as` 文件或顶层 `DoAction` 大小。 |
+| 静态门 single-ownership | ✅ 2026-07-24 复核：main=0 / loader=599 / 交集=0 |
 | 编译 0 错 / BOM / whitespace / doc-gov | ✅ |
 | **trace 等价门（happy-path）** | ✅ 2026-06-17 重抓塌缩 boot golden（`tools/baselines/boot-golden.log`，单次完整 boot S2→S10），`trace-diff diff` [OK]，10 事件全含 `CRAFTING_OK`/`HANDOFF_PLAY`（真机实测 SWF 870267 发出，非仅单测）。旧 golden 仅 S2–S4 已替换；870418 SWF 已补 prewarm hold smoke + 完整 `start_game → Ready → handoff` 真机烟测，trace-diff 仍 [OK]。注意：本轮 `bootstrap_reveal_ready` 晚于 10s reveal watchdog 到达，launcher 先 force reveal，后续仍需优化 reveal ack 时序。 |
 | **§5 七边界** | ✅ 基本完成（2026-06-17 真机）：(c) shim 缺失双层 fail-closed、(a) 坏档 C2-β 修复 gate、(d) 正常/新档(decision=empty)/坏档(随 a)、握手失败 fail-closed(测试churn顺带实证)、(e)(f) 随 happy-path boot 覆盖。(b) socket 超时=纯看屏(独立开 SWF 已见卡死协议帧)+L1 逻辑已覆盖。详见构建标准 §5.3 |
