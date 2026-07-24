@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `3d8e5b7b68833a255c26a472e87fc93584010dd0`（2026-07-24）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
+**最后核对代码基线**：commit `5c074eb4192d05df6fa58dc940301877a89a1d65`（2026-07-24）；地图箱已在 commit `40119635ae5527225a425eb7f69af54f85115066` 完成 v2 promotion，并由后续标准入口记录达到 `standard_entry_verified`。基地理发店 Web-only source `7237762fa9b5b89b5cb103c3d73e67ef46b08756` 已由 immutable tag `runtime-build-v2/20260724-p0f-hairdresser-web-only-v1`、request `DC44D51855EFDE2D7F3223CA3038008023B36A404BB32064511C962ABF824131` 和 promotion commit `5c074eb4192d05df6fa58dc940301877a89a1d65` 完成双 signer / 双 faultDomain v2 发布；无参标准入口首次 bootstrap attempt `0ebb4f1d1bd94585add33f20538e8ee1` 与重启 bootstrap attempt `fac214115f3743308234c0e995193aca` 验证正式 manifest 并以 `formal_runtime` 启动，该 manifest 绑定 build identity `3F6110809903BF28D08E90F92087A4333E5C604F0AC62994E945775690CD25C6`、payload closure `C16ED23C85DCF0C2B2A321158F2269BED9D45ACC32BACCD428ED51AD4D49E107` 与 Core SHA-256 `15E22D10B450A8616766D25F709D761C20B5A773BA60314680060348B7970EC2`。维护者随后完成“蓝色头巾”提交、自动关闭、存盘、完整退出及重启回读，游戏角色与理发店权威快照一致，严格状态为 `standard_entry_verified`。Skill、合成、双栏工作台与 runtime v2 的细分门以对应专题 canonical doc 为准。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
@@ -132,7 +132,7 @@ Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{typ
 
 `CraftingTask` 与 Web 均采用 `idle/write_pending/needs_reconcile`。Web 把每次成功 preview 保存为同 `category/recipeIndex/craftCount` 的 checkpoint：普通 preview timeout/client_timeout/disconnected/畸形或未知非权威读错恢复 checkpoint 并继续可操作；stale/category/recipe/item/material/money/kpoint/inventory/level/batch 分歧先刷新 snapshot。只有回包明示 `requiresReconcile/reconcile_required`，或已投递 commit 的 timeout/drop/disconnected/畸形结果才进入写对账；同步未投递的 commit 失败保持可操作，任何失败都禁止自动重放；合成的对账读必须是同一 recipeIndex 的结构完整 `preview`，因为它同时覆盖材料、余额、容量和产物状态，成功 preview 才解除 Host 写门。单独 `snapshot` 不足以证明具体配方资源状态，不得解除 `needs_reconcile`。
 
-基地理发店使用独立 `hairdresser` domain，入口固定为 `基地场景合集` 中理发师 NPC → `_root.gameCommands["openHairdresser"]()` → 精确 `panel_request {panel:"hairdresser",source:"world_hairdresser"}`。该入口已冻结为 Web-only：命令缺失或 socket 发送失败均 fail-closed，不再加载旧 UI。旧 `理发店界面 / 发型TAB` renderer、实例、linkage 与主 XFL 的 `改变发型 / 预览发型 / 恢复发型` 已退役；新建角色流程中的男女默认发型 writer、8 个 `界面-发型选择[1-4]` 控件及 2 个 `控制值="发型"` 绑定不属于理发店 renderer，继续保留。冻结候选证据严格为 `e2e_verified / NOT_DEPLOYED`，不表示 Launcher runtime 已 promotion、部署或通过标准入口验收。
+基地理发店使用独立 `hairdresser` domain，入口固定为 `基地场景合集` 中理发师 NPC → `_root.gameCommands["openHairdresser"]()` → 精确 `panel_request {panel:"hairdresser",source:"world_hairdresser"}`。该入口已冻结为 Web-only：命令缺失或 socket 发送失败均 fail-closed，不再加载旧 UI。旧 `理发店界面 / 发型TAB` renderer、实例、linkage 与主 XFL 的 `改变发型 / 预览发型 / 恢复发型` 已退役；新建角色流程中的男女默认发型 writer、8 个 `界面-发型选择[1-4]` 控件及 2 个 `控制值="发型"` 绑定不属于理发店 renderer，继续保留。P0-F F3 关闭当时的冻结候选证据严格为 `e2e_verified / NOT_DEPLOYED`，不得改写为当时已经部署；其后独立完成的 v2 promotion 与标准入口复读已将 2026-07-24 冻结正式身份推进到 `standard_entry_verified`。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
 |---------|-----------|-------------|-------------------|---------------|------------|--------|
