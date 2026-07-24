@@ -215,9 +215,12 @@ var PanelTooltip = (function() {
             }, {passive:false});
             if (typeof window !== 'undefined' && typeof window.PointerEvent === 'function') {
                 document.addEventListener('pointermove', trackHoverPointer, true);
+                document.addEventListener('pointerdown', notePointerInput, true);
             } else {
                 document.addEventListener('mousemove', trackHoverPointer, true);
+                document.addEventListener('mousedown', notePointerInput, true);
             }
+            document.addEventListener('keydown', noteKeyboardInput, true);
         }
     }
 
@@ -629,6 +632,10 @@ var PanelTooltip = (function() {
     /** 隐藏 tooltip 并清理所有句柄 */
     function hide(owner) {
         if (owner != null && _owner !== owner) return false;
+        // 无 owner 的调用是面板/业务层的确定性 dismiss。除关闭视觉层外还要撤销
+        // bindAsync 的两个输入 owner，避免 selection、drag 或 inspector 关闭后旧 owner
+        // 被下一次 pointer leave 恢复。bindAsync 内部始终携带私有 owner token。
+        if (owner == null) releaseAllAsyncOwners();
         cleanupHandlers();
         clearHoverHide();
         // display:none 时浏览器不保证再派发 mouseleave；显式归零避免下一次手工
@@ -897,10 +904,12 @@ var PanelTooltip = (function() {
         }
     }
 
-    // 当前仍有 pointer/focus 活性的异步绑定，按最近激活顺序排列。全局 tooltip 被
-    // 临时 hover owner 覆盖后，该 owner 离开时从栈顶恢复仍聚焦的 binding。
-    // _allAsyncBindings 只用于生命周期审计；展示恢复仍只扫描 active 栈。
-    var _activeAsyncBindings = [];
+    // 异步 tooltip 只有两个可恢复来源：当前物理指针 owner 与当前键盘焦点 owner。
+    // DOM 同时只有一个 activeElement，桌面 hover 也只有一个当前 owner；保留任意长度
+    // 的“最近活跃栈”会让鼠标点击产生的旧焦点在空白处复活，且没有真实输入状态依据。
+    var _pointerAsyncBinding = null;
+    var _keyboardAsyncBinding = null;
+    var _inputModality = 'keyboard';
     var _allAsyncBindings = [];
     var _tooltipScopes = [];
     var _scopeSequence = 0;
@@ -914,7 +923,8 @@ var PanelTooltip = (function() {
         return {
             destroy: function() { return false; },
             refresh: function() {},
-            canRestore: function() { return false; }
+            canRestorePointer: function() { return false; },
+            canRestoreKeyboard: function() { return false; }
         };
     }
 
@@ -955,6 +965,8 @@ var PanelTooltip = (function() {
             dispose: function() {
                 if (scope.disposed) return false;
                 scope.disposed = true;
+                if (_pointerAsyncBinding && _pointerAsyncBinding.scope === scope) _pointerAsyncBinding = null;
+                if (_keyboardAsyncBinding && _keyboardAsyncBinding.scope === scope) _keyboardAsyncBinding = null;
                 var bindings = scope.bindings.slice();
                 for (var i = bindings.length - 1; i >= 0; i--) bindings[i].destroy();
                 scope.bindings = [];
@@ -988,8 +1000,14 @@ var PanelTooltip = (function() {
         for (var i = 0; i < _allAsyncBindings.length; i++) {
             if (!_allAsyncBindings[i].isConnected()) detached++;
         }
+        var activeCount = 0;
+        if (_pointerAsyncBinding) activeCount++;
+        if (_keyboardAsyncBinding && _keyboardAsyncBinding !== _pointerAsyncBinding) activeCount++;
         return {
-            activeBindingCount: _activeAsyncBindings.length,
+            activeBindingCount: activeCount,
+            pointerOwnerActive: !!_pointerAsyncBinding,
+            keyboardOwnerActive: !!_keyboardAsyncBinding,
+            inputModality: _inputModality,
             bindingCount: _allAsyncBindings.length,
             detachedBindingCount: detached,
             activeScopeCount: _tooltipScopes.length,
@@ -997,33 +1015,80 @@ var PanelTooltip = (function() {
         };
     }
 
-    function removeActiveBinding(binding) {
-        removeFromArray(_activeAsyncBindings, binding);
+    function claimPointerBinding(binding) {
+        _pointerAsyncBinding = binding || null;
     }
 
-    function markActiveBinding(binding) {
-        removeActiveBinding(binding);
-        _activeAsyncBindings.push(binding);
+    function releasePointerBinding(binding) {
+        if (_pointerAsyncBinding === binding) _pointerAsyncBinding = null;
     }
 
-    function restoreActiveBinding(excluded) {
-        for (var i = _activeAsyncBindings.length - 1; i >= 0; i--) {
-            var candidate = _activeAsyncBindings[i];
-            if (!candidate || candidate === excluded || !candidate.canRestore()) {
-                if (!candidate || !candidate.canRestore()) _activeAsyncBindings.splice(i, 1);
-                continue;
+    function claimKeyboardBinding(binding) {
+        if (_keyboardAsyncBinding && _keyboardAsyncBinding !== binding
+                && _keyboardAsyncBinding.suspendDescription) {
+            _keyboardAsyncBinding.suspendDescription();
+        }
+        _keyboardAsyncBinding = binding || null;
+    }
+
+    function releaseKeyboardBinding(binding) {
+        if (_keyboardAsyncBinding === binding) _keyboardAsyncBinding = null;
+    }
+
+    function restoreOwnedBinding(excluded) {
+        var pointer = _pointerAsyncBinding;
+        if (pointer && pointer !== excluded) {
+            if (pointer.canRestorePointer()) {
+                if (pointer.restorePointer()) return true;
+            } else {
+                _pointerAsyncBinding = null;
             }
-            if (candidate.restore()) return true;
+        }
+        var keyboard = _keyboardAsyncBinding;
+        if (keyboard && keyboard !== excluded) {
+            if (keyboard.canRestoreKeyboard()) {
+                if (keyboard.restoreKeyboard()) return true;
+            } else {
+                if (keyboard.suspendDescription) keyboard.suspendDescription();
+                _keyboardAsyncBinding = null;
+            }
         }
         return false;
+    }
+
+    function noteKeyboardInput(event) {
+        var key = event && event.key;
+        if (key === 'Shift' || key === 'Control' || key === 'Alt' || key === 'Meta'
+                || key === 'CapsLock' || key === 'NumLock' || key === 'ScrollLock') return;
+        _inputModality = 'keyboard';
+    }
+
+    function notePointerInput() {
+        _inputModality = 'pointer';
+        var keyboard = _keyboardAsyncBinding;
+        if (keyboard && keyboard.revokeKeyboardFromPointer) {
+            keyboard.revokeKeyboardFromPointer();
+        }
+    }
+
+    function releaseAllAsyncOwners() {
+        var pointer = _pointerAsyncBinding;
+        var keyboard = _keyboardAsyncBinding;
+        _pointerAsyncBinding = null;
+        _keyboardAsyncBinding = null;
+        if (pointer && pointer.abandonInputOwners) pointer.abandonInputOwners();
+        if (keyboard && keyboard !== pointer && keyboard.abandonInputOwners) {
+            keyboard.abandonInputOwners();
+        }
     }
 
     /**
      * 异步 entity tooltip 通用绑定。
      *
-     * pointer 与键盘焦点是两个并行输入源：pointer 活跃时跟随鼠标；pointer 离开但
-     * 焦点仍在 tile 内时退回 anchored 展示；两个输入源都离开才隐藏。每个绑定持有
-     * 独立 owner，迟到回包、Icons.load 回调和 teardown 都不能覆盖其他 tile。
+     * pointer 与键盘焦点是两个并行输入源：pointer 活跃时跟随鼠标；pointer 离开后
+     * 只允许恢复仍匹配 document.activeElement 的 keyboard owner。鼠标/笔点击形成的
+     * DOM focus 不会取得 keyboard owner。每个绑定持有独立 owner，迟到回包、
+     * Icons.load 回调和 teardown 都不能覆盖其他 tile。
      *
      * options:
      *   - key: string | function(event, node) -> string   缓存键
@@ -1045,8 +1110,8 @@ var PanelTooltip = (function() {
         }
         var cache = options.cache || {};
         var owner = {};
+        var binding = null;
         var activePointers = {};
-        var focusWithin = false;
         var tooltipHovered = false;
         var leaveTimer = null;
         var keyboardDismissed = false;
@@ -1099,8 +1164,6 @@ var PanelTooltip = (function() {
             return false;
         }
 
-        function isActive() { return focusWithin || tooltipHovered || !!leaveTimer || hasActivePointer(); }
-
         function clearLeaveTimer() {
             if (!leaveTimer) return;
             clearTimeout(leaveTimer);
@@ -1112,15 +1175,36 @@ var PanelTooltip = (function() {
             return !!(activeElement && (activeElement === node || node.contains(activeElement)));
         }
 
+        function baseLive() {
+            return !disposed && !(scope && scope.disposed) && isNodeConnected(node);
+        }
+
+        function canOwnPointer(e, includeGrace) {
+            if (!baseLive() || _pointerAsyncBinding !== binding) return false;
+            if (!hasActivePointer() && !tooltipHovered && !(includeGrace && leaveTimer)) return false;
+            return !suppressed(e || lastPointerEvent);
+        }
+
+        function canOwnKeyboard(e) {
+            return baseLive() && _keyboardAsyncBinding === binding && !keyboardDismissed
+                && hasDocumentFocus() && !suppressed(e);
+        }
+
         function isLive() {
-            if (disposed || (scope && scope.disposed) || !isNodeConnected(node)) return false;
-            // DOM 替换不会可靠地产生 focusout / pointerleave。恢复前用真实 DOM 状态
-            // 校正逻辑状态，阻断已脱离面板的 binding 复活最后一次技能注释。
-            if (focusWithin && !hasDocumentFocus()) {
-                focusWithin = false;
+            if (!baseLive()) {
+                releasePointerBinding(binding);
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                return false;
+            }
+            // DOM 替换不会可靠地产生 focusout。恢复前只信任真实 activeElement，
+            // 不维护另一份 focusWithin 布尔状态。
+            if (_keyboardAsyncBinding === binding && !hasDocumentFocus()) {
+                releaseKeyboardBinding(binding);
                 removeTooltipDescription();
             }
-            return isActive();
+            return canOwnPointer(lastPointerEvent, true)
+                || canOwnKeyboard({target:node, currentTarget:node});
         }
 
         function addTooltipDescription() {
@@ -1166,11 +1250,24 @@ var PanelTooltip = (function() {
             }
         }
 
-        function showCurrent(event) {
-            if (keyboardDismissed || !isLive()) return false;
-            if (suppressed(event)) {
-                hide(owner);
-                return false;
+        function suspendOtherKeyboardDescription() {
+            var keyboard = _keyboardAsyncBinding;
+            if (keyboard && keyboard !== binding && keyboard.suspendDescription) {
+                keyboard.suspendDescription();
+            }
+        }
+
+        function showCurrent(event, source) {
+            var pointerSource = source === 'pointer';
+            if (pointerSource) {
+                if (!canOwnPointer(event, false)) return false;
+                suspendOtherKeyboardDescription();
+            } else {
+                var pointer = _pointerAsyncBinding;
+                if (pointer && pointer.canRestorePointer && pointer.canRestorePointer()) return false;
+                if (pointer) _pointerAsyncBinding = null;
+                if (!canOwnKeyboard(event)) return false;
+                addTooltipDescription();
             }
             var key = resolveKey(event);
             var item = resolveItem(event);
@@ -1179,69 +1276,102 @@ var PanelTooltip = (function() {
             var html = cache[key] && typeof options.renderRich === 'function'
                 ? options.renderRich(item, cache[key])
                 : (typeof options.renderBasic === 'function' ? options.renderBasic(item) : '');
-            if (hasActivePointer() && lastPointerEvent) showAtMouse(html, lastPointerEvent, owner);
+            if (pointerSource) showAtMouse(html, lastPointerEvent || event, owner);
             else showAnchored(html, node, { autoClose: 0, outsideClick: false, owner: owner });
             setInteraction(owner, {enter:onTooltipEnter, leave:onTooltipLeave});
             requestRich(key, item);
             return true;
         }
 
-        function clearIfInactive() {
-            if (isActive()) return;
-            removeActiveBinding(binding);
-            activeKey = null;
-            activeItem = null;
-            lastPointerEvent = null;
-            if (hide(owner)) restoreActiveBinding(binding);
+        function hideOwnedTooltip() {
+            clearInteraction(owner);
+            return hide(owner);
         }
 
-        function scheduleInactiveClear() {
+        function clearPointerState() {
             clearLeaveTimer();
-            leaveTimer = setTimeout(function() {
-                leaveTimer = null;
-                // enter 事件可能来自浮层重排到静止指针之下；只有同一 show generation
-                // 内由真实 move 确认、且最终 hit-test 仍落在 tooltip，才保留复合 hover。
-                if (tooltipHovered && !pointerTargetsTooltip()) {
-                    tooltipHovered = false;
-                    resetTooltipHover(false);
-                }
-                clearIfInactive();
-            }, 140);
+            activePointers = {};
+            tooltipHovered = false;
+            lastPointerEvent = null;
+            releasePointerBinding(binding);
+        }
+
+        function clearCurrentAndRestore() {
+            activeKey = null;
+            activeItem = null;
+            if (hideOwnedTooltip()) restoreOwnedBinding(null);
+        }
+
+        function finishPointerLeave() {
+            leaveTimer = null;
+            // enter 事件可能来自浮层重排到静止指针之下；只有同一 show generation
+            // 内由真实 move 确认、且最终 hit-test 仍落在 tooltip，才保留复合 hover。
+            if (tooltipHovered && !pointerTargetsTooltip()) {
+                tooltipHovered = false;
+                resetTooltipHover(false);
+            }
+            if (hasActivePointer() || tooltipHovered) return;
+            // 迟到的 A timer 不能在 pointer B 已接管后隐藏 B 或把 keyboard A
+            // 提前覆盖回来；A 仍保留为 keyboard owner，等 B 的真实终态统一恢复。
+            if (_pointerAsyncBinding !== binding) {
+                lastPointerEvent = null;
+                return;
+            }
+            releasePointerBinding(binding);
+            lastPointerEvent = null;
+            if (_keyboardAsyncBinding === binding
+                    && showCurrent({target:node, currentTarget:node}, 'keyboard')) return;
+            clearCurrentAndRestore();
+        }
+
+        function schedulePointerLeave() {
+            clearLeaveTimer();
+            leaveTimer = setTimeout(finishPointerLeave, 140);
         }
 
         function onTooltipEnter() {
-            if (disposed || !isVisible(owner) || !isLive()) return false;
+            if (disposed || !isVisible(owner) || _pointerAsyncBinding !== binding
+                    || !isLive()) return false;
+            clearLeaveTimer();
             tooltipHovered = true;
-            markActiveBinding(binding);
+            claimPointerBinding(binding);
             return true;
         }
 
         function onTooltipLeave() {
             if (disposed) return;
             tooltipHovered = false;
-            if (!focusWithin && !hasActivePointer()) scheduleInactiveClear();
+            if (!hasActivePointer()) schedulePointerLeave();
         }
 
         function onEnter(e) {
-            if (disposed || suppressed(e)) return;
+            if (disposed) return;
+            if (suppressed(e)) {
+                clearPointerState();
+                clearCurrentAndRestore();
+                return;
+            }
             clearLeaveTimer();
             keyboardDismissed = false;
             var pointerId = pointerIdOf(e);
-            if (activePointers[pointerId]) return;
             activePointers[pointerId] = true;
-            markActiveBinding(binding);
+            claimPointerBinding(binding);
             lastPointerEvent = pointerSnapshot(e);
-            showCurrent(e);
+            showCurrent(e, 'pointer');
         }
 
         function onMove(e) {
             if (disposed) return;
+            var pointerId = pointerIdOf(e);
+            if (!activePointers[pointerId]) return;
             lastPointerEvent = pointerSnapshot(e);
             if (suppressed(e)) {
-                hide(owner);
+                clearPointerState();
+                clearCurrentAndRestore();
                 return;
             }
-            if (!isVisible(owner)) showCurrent(e);
+            claimPointerBinding(binding);
+            if (!isVisible(owner)) showCurrent(e, 'pointer');
             else followMouse(e, owner);
         }
 
@@ -1250,39 +1380,91 @@ var PanelTooltip = (function() {
             if (!activePointers[pointerId]) return;
             delete activePointers[pointerId];
             if (hasActivePointer()) return;
-            lastPointerEvent = null;
-            if (focusWithin) showCurrent(e);
-            else scheduleInactiveClear();
+            schedulePointerLeave();
+        }
+
+        function onPointerCancel(e) {
+            var pointerId = pointerIdOf(e);
+            delete activePointers[pointerId];
+            if (hasActivePointer()) return;
+            clearPointerState();
+            clearCurrentAndRestore();
         }
 
         function onFocusIn(e) {
             if (disposed || (e.relatedTarget && node.contains(e.relatedTarget))) return;
-            focusWithin = true;
+            if (_inputModality !== 'keyboard') {
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                return;
+            }
+            if (suppressed(e)) {
+                clearPointerState();
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                clearCurrentAndRestore();
+                return;
+            }
             keyboardDismissed = false;
-            markActiveBinding(binding);
-            addTooltipDescription();
-            if (!hasActivePointer()) showCurrent(e);
+            claimKeyboardBinding(binding);
+            var pointer = _pointerAsyncBinding;
+            if (pointer && pointer.canRestorePointer && pointer.canRestorePointer()) {
+                if (pointer === binding) addTooltipDescription();
+                else removeTooltipDescription();
+                return;
+            }
+            if (pointer) _pointerAsyncBinding = null;
+            showCurrent(e, 'keyboard');
         }
 
         function onFocusOut(e) {
             if (e.relatedTarget && node.contains(e.relatedTarget)) return;
-            focusWithin = false;
+            keyboardDismissed = false;
+            releaseKeyboardBinding(binding);
             removeTooltipDescription();
-            if (hasActivePointer()) showCurrent(lastPointerEvent || e);
-            else clearIfInactive();
+            if (canOwnPointer(lastPointerEvent, false)) {
+                showCurrent(lastPointerEvent || e, 'pointer');
+                return;
+            }
+            clearCurrentAndRestore();
         }
 
         function onKeyDown(e) {
-            if (!isVisible(owner)) return;
             if (e.key === 'Escape') {
+                // 只消费当前由本 binding 展示的 tooltip。DOM focus 可能由鼠标点击
+                // 留在一个已隐藏 owner，或 keyboard A 正被 pointer B 覆盖；这两种
+                // 情况必须把 Escape 交给面板/模态层，不能截断上层关闭语义。
+                if (!isVisible(owner)) return;
                 keyboardDismissed = true;
-                clearLeaveTimer();
-                tooltipHovered = false;
-                hide(owner);
+                clearPointerState();
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                clearCurrentAndRestore();
                 e.preventDefault();
                 e.stopPropagation();
                 return;
             }
+            if (suppressed(e)) {
+                clearPointerState();
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                clearCurrentAndRestore();
+                return;
+            }
+            if (!keyboardDismissed && _inputModality === 'keyboard'
+                    && hasDocumentFocus()) {
+                claimKeyboardBinding(binding);
+                var pointer = _pointerAsyncBinding;
+                if (!pointer || !(pointer.canRestorePointer && pointer.canRestorePointer())) {
+                    var switchingFromPointer = !!pointer;
+                    if (pointer) _pointerAsyncBinding = null;
+                    if (switchingFromPointer || !isVisible(owner)) showCurrent(e, 'keyboard');
+                    else addTooltipDescription();
+                } else if (pointer === binding) {
+                    addTooltipDescription();
+                }
+            }
+            if (!isVisible(owner)) return;
             var desc = scrollableDescription();
             if (!desc) return;
             var handled = true;
@@ -1303,22 +1485,44 @@ var PanelTooltip = (function() {
         var enterEvent = useMouse ? 'mouseenter' : 'pointerenter';
         var moveEvent = useMouse ? 'mousemove' : 'pointermove';
         var leaveEvent = useMouse ? 'mouseleave' : 'pointerleave';
+        var cancelEvent = useMouse ? null : 'pointercancel';
         node.addEventListener(enterEvent, onEnter);
         node.addEventListener(moveEvent, onMove);
         node.addEventListener(leaveEvent, onLeave);
+        if (cancelEvent) node.addEventListener(cancelEvent, onPointerCancel);
         node.addEventListener('focusin', onFocusIn);
         node.addEventListener('focusout', onFocusOut);
         node.addEventListener('keydown', onKeyDown);
 
-        var binding = {
+        binding = {
             scope: scope,
-            canRestore: function() {
-                return !keyboardDismissed && isLive();
+            canRestorePointer: function() {
+                return !!lastPointerEvent && canOwnPointer(lastPointerEvent, false);
             },
-            restore: function() {
-                return isLive()
-                    ? showCurrent(lastPointerEvent || { target: node, currentTarget: node })
-                    : false;
+            restorePointer: function() {
+                return showCurrent(lastPointerEvent, 'pointer');
+            },
+            canRestoreKeyboard: function() {
+                return canOwnKeyboard({target:node, currentTarget:node});
+            },
+            restoreKeyboard: function() {
+                return showCurrent({target:node, currentTarget:node}, 'keyboard');
+            },
+            suspendDescription: function() {
+                removeTooltipDescription();
+            },
+            revokeKeyboardFromPointer: function() {
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                if (canOwnPointer(lastPointerEvent, false)) return;
+                clearCurrentAndRestore();
+            },
+            abandonInputOwners: function() {
+                keyboardDismissed = true;
+                clearPointerState();
+                releaseKeyboardBinding(binding);
+                removeTooltipDescription();
+                clearInteraction(owner);
             },
             destroy: function() {
                 if (disposed) return false;
@@ -1331,23 +1535,27 @@ var PanelTooltip = (function() {
                 node.removeEventListener(enterEvent, onEnter);
                 node.removeEventListener(moveEvent, onMove);
                 node.removeEventListener(leaveEvent, onLeave);
+                if (cancelEvent) node.removeEventListener(cancelEvent, onPointerCancel);
                 node.removeEventListener('focusin', onFocusIn);
                 node.removeEventListener('focusout', onFocusOut);
                 node.removeEventListener('keydown', onKeyDown);
-                focusWithin = false;
                 activePointers = {};
-                removeActiveBinding(binding);
+                releasePointerBinding(binding);
+                releaseKeyboardBinding(binding);
                 activeKey = null;
                 activeItem = null;
                 removeTooltipDescription();
                 removeFromArray(_allAsyncBindings, binding);
                 if (scope) removeFromArray(scope.bindings, binding);
-                if (hide(owner)) restoreActiveBinding(binding);
+                if (hideOwnedTooltip()) restoreOwnedBinding(binding);
                 if (node.__panelTooltipBinding === binding) node.__panelTooltipBinding = null;
                 return true;
             },
             refresh: function() {
-                if (isLive()) showCurrent(lastPointerEvent || { target: node });
+                if (canOwnPointer(lastPointerEvent, false)) showCurrent(lastPointerEvent, 'pointer');
+                else if (canOwnKeyboard({target:node, currentTarget:node})) {
+                    showCurrent({target:node, currentTarget:node}, 'keyboard');
+                }
             },
             isConnected: function() { return isNodeConnected(node); }
         };

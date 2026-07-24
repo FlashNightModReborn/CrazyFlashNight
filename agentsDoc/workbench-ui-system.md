@@ -55,7 +55,9 @@ PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得�
 - `EntityTile`：icon、body、name、meta、badge、action、state slots；
 - 领域 presenter：把商品、owned slot、技能、配件候选投影到 slots；
 - capability adapter：声明 select、transfer、inspect、discard、buy 等意图；
-- tooltip adapter：提供 pointer 与 focus 共用的内容和生命周期。
+- tooltip adapter：提供 pointer 与由键盘导航取得的 focus 共用内容和生命周期。
+
+现役 tooltip 交互只分三种原型，不扩成领域可配置工作流：KShop、NPC、Crafting、Skills、Equipment Tuning、Inventory Workbench 与 Loot 的实体/动作卡统一走 `bindAsync` 被动说明；非聚焦材料行等只读节点只消费其中的 pointer 分支；购物车点击检视等明确要求持续展示的详情独立走 `showAnchored`。实体格内 nested button 仍属于外层实体说明，但鼠标/笔点击子按钮形成的 focus 不升级为 keyboard owner。selection、busy、drag 只决定当前 owner 是否 eligible，不成为新的核心状态维度；验证锁定输入来源转换与 owner 交接旅程，不把领域状态做笛卡尔积。
 
 ### 3.1 武器加权徽标
 
@@ -143,7 +145,9 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 - `workbench-primitives.js`：EntityTile、ItemCard、InteractionBroker、PointerDragController 等中性 UI/交互 primitive；
 - `workbench-components.js`：SecondaryPage、ChoiceGroup、CommitBar、OwnedInventoryPane；所有 open/close/destroy 回调都必须容忍重入和异常，并保持 DOM、focus stack 与业务 active 状态一致。并列 SecondaryPage 按打开顺序形成模态栈，只允许顶层页进入可访问树；关闭顶层恢复下层，关闭被覆盖下层不得在后续 unwind 中复活，焦点须沿 opener 链跳过已关闭页。
 
-共享异步 tooltip 同时记录 pointer/focus 活性和 owner 顺序。每个 panel/view 实例必须持有一个 tooltip scope；关闭、rebind 或整树替换时由 scope/disposable 一次性销毁域内 binding，`clearElement/releaseTree` 必须在节点脱离 DOM 前执行。恢复旧 owner 前还要复核 scope 活性、节点 `isConnected` 与真实 `document.activeElement`，不能依赖浏览器一定派发 `pointerleave/focusout`。临时 hover owner 离开或销毁后，只能恢复仍连接且仍聚焦的上一 owner；迟到回包不得复活 detached owner。`debugState` 的 detached binding 在稳定关闭后必须为 0。
+共享异步 tooltip 的核心状态固定为一个 pointer owner 和一个 keyboard owner，pointer 展示优先。共享层以 document capture 的 `pointerdown` / `keydown` 判定输入模态；focus 只有由键盘导航取得时才登记 keyboard owner，鼠标/笔点击造成的 DOM focus 必须撤权。pointer 离开后最多恢复仍连接、仍匹配真实 `document.activeElement` 且未被 suppression 的当前 keyboard owner；不保存 owner 历史栈，也不接受领域 `restoreOn…`、`focusMode` 等恢复策略开关。无 owner 的 `hide()` 是确定性 dismiss，显式点击详情继续独立使用 `showAnchored`，不得混入这两个被动说明 owner。
+
+每个 panel/view 实例必须持有一个 tooltip scope；关闭、rebind 或整树替换时由 scope/disposable 一次性销毁域内 binding，`clearElement/releaseTree` 必须在节点脱离 DOM 前执行。恢复前还要复核 scope 活性、节点 `isConnected` 与真实 `document.activeElement`，不能依赖浏览器一定派发 `pointerleave/focusout`。迟到回包不得复活 detached owner，`debugState` 的 detached binding 在稳定关闭后必须为 0。
 
 tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc 双栏，但几何契约归 Web 浮层系统：被动注释固定 `pointer-events:none`，初始位置在存在可行候选时不得覆盖当前鼠标热点或触发元素；按 left/right/top/bottom 做视口碰撞选择并保留至少 `10px` anchor gap，最后夹紧 `8px` viewport inset。并排双栏超出视口时转为纵向，不能以“复刻 AS2 舞台坐标”为理由允许注释压住鼠标。anchored 内容从占位更新为富内容、字体或图片迟到时，必须以 transform 后的物理尺寸重新测量并再次执行同一契约。
 

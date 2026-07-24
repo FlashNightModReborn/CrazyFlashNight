@@ -262,6 +262,32 @@ Object.keys(moduleThresholds).forEach(function (rel) {
     expect(exists(rel), 'WB016', 'workbench feature has no browser harness entry', rel);
 });
 
+var tooltipRel = 'launcher/web/modules/tooltip.js';
+var tooltipSource = exists(tooltipRel) ? read(tooltipRel) : '';
+expect(!!tooltipSource, 'WB029', 'shared PanelTooltip runtime is missing', tooltipRel);
+if (tooltipSource) {
+    var hasFixedOwners = /var _pointerAsyncBinding = null;/.test(tooltipSource)
+        && /var _keyboardAsyncBinding = null;/.test(tooltipSource)
+        && /var _inputModality = 'keyboard';/.test(tooltipSource);
+    var hasInputFacts = /addEventListener\('pointerdown', notePointerInput, true\)/.test(tooltipSource)
+        && /addEventListener\('keydown', noteKeyboardInput, true\)/.test(tooltipSource);
+    var hasOwnerHistory = /_activeAsyncBindings|restoreActiveBinding|markActiveBinding/.test(tooltipSource);
+    var hasDomainPolicyKnob =
+        /\b(?:restoreOnPointerLeave|restoreOnBlur|focusMode|tooltipPolicy|ownerPolicy|keepAfterClick)\b/.test(tooltipSource);
+    expect(hasFixedOwners && hasInputFacts, 'WB030',
+        'PanelTooltip must derive restoration from one pointer owner, one keyboard owner, and shared input modality facts',
+        tooltipRel);
+    expect(!hasOwnerHistory && !hasDomainPolicyKnob, 'WB031',
+        'PanelTooltip must not reintroduce owner history or per-domain restoration policy knobs',
+        tooltipRel);
+    metrics.tooltipOwnership = {
+        pointerOwners:hasFixedOwners ? 1 : 0,
+        keyboardOwners:hasFixedOwners ? 1 : 0,
+        ownerHistory:hasOwnerHistory,
+        domainPolicyKnob:hasDomainPolicyKnob
+    };
+}
+
 var panelRuntimeRel = 'launcher/web/modules/panel-runtime.js';
 var panelRuntime = exists(panelRuntimeRel) ? read(panelRuntimeRel) : '';
 warnUnless(/PanelRequestMux/.test(panelRuntime) && /PanelResponseRouter/.test(panelRuntime), 'WB113', 'shared panel request mux/router has not been extracted yet', panelRuntimeRel);

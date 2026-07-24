@@ -1,7 +1,7 @@
 # 测试约定与验证矩阵
 **文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：commit `5c074eb4192d05df6fa58dc940301877a89a1d65`（2026-07-24）。本文维护稳定的命令、触发条件和通过口径；功能分支的 current candidate、promotion、运行身份与真人结论由对应实施基线或冻结发布记录维护。地图箱 source `2c87d31fecbbfb50c072ec199da0134755974402` 已经 request `F1F9493CF08DD88F26E1493FCACE306AC160866EA21440FC62698E5965A1AF04` 的双 signer / 双 faultDomain v2 列车发布，由 promotion commit `40119635ae5527225a425eb7f69af54f85115066` 写入正式闭包；容量/情报上限由隔离 candidate attempt `82b9e602526c4e93a02d26aac0a44f20` 覆盖，无参标准入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 完成 Web loot 领取、终态关闭、恢复游戏与存盘，严格状态为 `standard_entry_verified`。理发店在 P0-F F3 关闭时只达到 `e2e_verified / NOT_DEPLOYED`；随后 source `7237762fa9b5b89b5cb103c3d73e67ef46b08756` 经 request `DC44D51855EFDE2D7F3223CA3038008023B36A404BB32064511C962ABF824131` 和 promotion commit `5c074eb4192d05df6fa58dc940301877a89a1d65` 完成双 signer / 双 faultDomain v2 发布，无参标准入口首次 attempt `0ebb4f1d1bd94585add33f20538e8ee1` 与重启 attempt `fac214115f3743308234c0e995193aca` 复核 build identity `3F6110809903BF28D08E90F92087A4333E5C604F0AC62994E945775690CD25C6` 与 payload closure `C16ED23C85DCF0C2B2A321158F2269BED9D45ACC32BACCD428ED51AD4D49E107` 后，维护者完成“蓝色头巾”提交、自动关闭、存盘、完整退出及重启回读，游戏角色与理发店权威快照一致，当前冻结状态为 `standard_entry_verified`。未重跑计数仍须标为历史基线、待复验或“以最新脚本输出为准”，不得用冻结结论外推未来 tree。
 ## 0. 通用前缀
-PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
+PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。共享 `PanelTooltip.bindAsync` 合同中的“focus A→hover B→leave B 恢复 A”专指真实键盘导航取得 focus 的 A；固定反例门为“真实鼠标点击 A→空白隐藏”和“真实鼠标点击 A→hover B→空白不得恢复 A”，并须确认鼠标点击已键盘聚焦的 A 会撤销 keyboard owner；测试不得用裸 `.focus()` 冒充 pointer/keyboard 来源。
 ## 1. 任务 → 验证入口矩阵
 
 | 任务类型 | 必跑 | 视改动追加 |

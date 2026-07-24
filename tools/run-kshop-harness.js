@@ -243,15 +243,22 @@ function createServer() {
 }
 
 async function runPhysicalTooltipPointerProbe(page) {
+    const keyboardStart = page.locator('#tooltip-physical-keyboard-start');
     const owner = page.locator('#tooltip-physical-hover-probe');
+    const ownerB = page.locator('#tooltip-physical-hover-probe-b');
     const legacyOwner = page.locator('#tooltip-legacy-hover-probe');
     const blank = page.locator('#tooltip-physical-blank-probe');
     const tooltip = page.locator('#panel-tooltip');
+    const keyboardStartBox = await keyboardStart.boundingBox();
     const ownerBox = await owner.boundingBox();
+    const ownerBBox = await ownerB.boundingBox();
     const legacyOwnerBox = await legacyOwner.boundingBox();
     const blankBox = await blank.boundingBox();
-    if (!ownerBox || !legacyOwnerBox || !blankBox) throw new Error('Physical tooltip pointer probes are missing');
+    if (!keyboardStartBox || !ownerBox || !ownerBBox || !legacyOwnerBox || !blankBox) {
+        throw new Error('Physical tooltip pointer probes are missing');
+    }
     const ownerPoint = {x:ownerBox.x + ownerBox.width / 2, y:ownerBox.y + ownerBox.height / 2};
+    const ownerBPoint = {x:ownerBBox.x + ownerBBox.width / 2, y:ownerBBox.y + ownerBBox.height / 2};
     const legacyOwnerPoint = {
         x:legacyOwnerBox.x + legacyOwnerBox.width / 2,
         y:legacyOwnerBox.y + legacyOwnerBox.height / 2
@@ -305,6 +312,178 @@ async function runPhysicalTooltipPointerProbe(page) {
     await page.waitForTimeout(170);
     const lateGeometryEnterIgnored = await page.evaluate(() => !PanelTooltip.isVisible());
 
+    // 用户原始路径：真实鼠标 click 会让 DOM 保留 focus，但不能把它登记成 keyboard owner。
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.mouse.down();
+    await page.mouse.up();
+    const pointerClickFocused = await page.evaluate(() =>
+        document.activeElement === document.getElementById('tooltip-physical-hover-probe'));
+    const pointerClickHasNoKeyboardOwner = await page.evaluate(() =>
+        !PanelTooltip.debugState().keyboardOwnerActive);
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const pointerClickBlankHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+    const hiddenOwnerEscapePassedThrough = await page.evaluate(() => {
+        const ownerNode = document.getElementById('tooltip-physical-hover-probe');
+        let passed = false;
+        ownerNode.addEventListener('keydown', event => {
+            passed = !event.defaultPrevented;
+            event.stopImmediatePropagation();
+        }, {once:true});
+        ownerNode.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Escape', bubbles:true, cancelable:true
+        }));
+        return passed && !PanelTooltip.isVisible();
+    });
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.mouse.down();
+    await page.mouse.up();
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.keyboard.press('ArrowRight');
+    await page.waitForTimeout(170);
+    const keyboardIntentDuringLeaveGraceAnchored = await page.evaluate(() => {
+        const ownerNode = document.getElementById('tooltip-physical-hover-probe');
+        const tip = document.getElementById('panel-tooltip');
+        const state = PanelTooltip.debugState();
+        return document.activeElement === ownerNode && state.keyboardOwnerActive
+            && !state.pointerOwnerActive && PanelTooltip.isVisible()
+            && tip.textContent.indexOf('tooltip A') >= 0
+            && ownerNode.getAttribute('aria-describedby') === 'panel-tooltip';
+    });
+    await keyboardStart.focus();
+
+    // click A 留下的 DOM focus 不是恢复目标；hover B 后落空白也不能把 A 复活。
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.mouse.down();
+    await page.mouse.up();
+    await page.mouse.move(ownerBPoint.x, ownerBPoint.y);
+    await page.waitForFunction(() => {
+        const tip = document.getElementById('panel-tooltip');
+        return PanelTooltip.isVisible() && tip && tip.textContent.indexOf('tooltip B') >= 0;
+    }, null, {timeout:1000});
+    const pointerOtherOwnerTookControl = true;
+    await page.waitForTimeout(170);
+    const stalePreviousTimerIgnored = await page.evaluate(() => {
+        const tip = document.getElementById('panel-tooltip');
+        return PanelTooltip.isVisible() && tip && tip.textContent.indexOf('tooltip B') >= 0
+            && PanelTooltip.debugState().pointerOwnerActive;
+    });
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const pointerClickOtherBlankHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    // 真实 Tab 才建立 keyboard owner。pointer B 临时覆盖时撤下 A 的 ARIA 关联，
+    // B 离开后只恢复仍与 activeElement 一致的 A。
+    await keyboardStart.focus();
+    await page.keyboard.press('Tab');
+    await page.waitForFunction(() => {
+        const ownerNode = document.getElementById('tooltip-physical-hover-probe');
+        const tip = document.getElementById('panel-tooltip');
+        return document.activeElement === ownerNode && PanelTooltip.isVisible()
+            && tip && tip.textContent.indexOf('tooltip A') >= 0;
+    }, null, {timeout:1000});
+    const keyboardOwnerAcquired = await page.evaluate(() => {
+        const ownerNode = document.getElementById('tooltip-physical-hover-probe');
+        const state = PanelTooltip.debugState();
+        return document.activeElement === ownerNode && state.keyboardOwnerActive
+            && ownerNode.getAttribute('aria-describedby') === 'panel-tooltip';
+    });
+    await page.mouse.move(ownerBPoint.x, ownerBPoint.y);
+    await page.waitForFunction(() => {
+        const tip = document.getElementById('panel-tooltip');
+        return tip && tip.textContent.indexOf('tooltip B') >= 0;
+    }, null, {timeout:1000});
+    const keyboardDescriptionSuspended = await page.evaluate(() =>
+        !document.getElementById('tooltip-physical-hover-probe').hasAttribute('aria-describedby'));
+    const dualOwnerBounded = await page.evaluate(() => {
+        const state = PanelTooltip.debugState();
+        return state.activeBindingCount === 2 && state.pointerOwnerActive && state.keyboardOwnerActive;
+    });
+    const coveredKeyboardEscapePassedThrough = await page.evaluate(() => {
+        const ownerNode = document.getElementById('tooltip-physical-hover-probe');
+        const tip = document.getElementById('panel-tooltip');
+        let passed = false;
+        ownerNode.addEventListener('keydown', event => {
+            passed = !event.defaultPrevented;
+            event.stopImmediatePropagation();
+        }, {once:true});
+        ownerNode.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Escape', bubbles:true, cancelable:true
+        }));
+        const state = PanelTooltip.debugState();
+        return passed && state.pointerOwnerActive && state.keyboardOwnerActive
+            && PanelTooltip.isVisible() && tip.textContent.indexOf('tooltip B') >= 0;
+    });
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const keyboardOwnerRestored = await page.evaluate(() => {
+        const ownerNode = document.getElementById('tooltip-physical-hover-probe');
+        const tip = document.getElementById('panel-tooltip');
+        return document.activeElement === ownerNode && PanelTooltip.isVisible()
+            && tip && tip.textContent.indexOf('tooltip A') >= 0
+            && ownerNode.getAttribute('aria-describedby') === 'panel-tooltip';
+    });
+
+    // 点击一个已经由键盘聚焦的节点不会再次派发 focusin；pointerdown 必须显式撤权。
+    await page.mouse.move(ownerPoint.x, ownerPoint.y);
+    await page.mouse.down();
+    await page.mouse.up();
+    const pointerReclickRevokedKeyboard = await page.evaluate(() =>
+        !PanelTooltip.debugState().keyboardOwnerActive
+        && !document.getElementById('tooltip-physical-hover-probe').hasAttribute('aria-describedby'));
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const pointerReclickBlankHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    // Escape 撤销 owner 而不只关闭视觉层；随后 hover B 的离开不能复活仍聚焦的 A。
+    await keyboardStart.focus();
+    await page.keyboard.press('Tab');
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    await page.keyboard.press('Escape');
+    const escapeReleasedOwners = await page.evaluate(() => {
+        const state = PanelTooltip.debugState();
+        return !PanelTooltip.isVisible() && !state.pointerOwnerActive && !state.keyboardOwnerActive;
+    });
+    await page.mouse.move(ownerBPoint.x, ownerBPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const escapeOwnerNotRestored = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    // pointercancel 是确定性终态，不经过 tooltip surface 的 140ms bridge。
+    const pointerCancelHidden = await page.evaluate(() => {
+        if (!window.PointerEvent) return true;
+        const probe = document.getElementById('tooltip-physical-hover-probe-b');
+        const rect = probe.getBoundingClientRect();
+        const init = {
+            bubbles:false, clientX:rect.left + rect.width / 2, clientY:rect.top + rect.height / 2,
+            pointerId:91, pointerType:'pen', isPrimary:true
+        };
+        probe.dispatchEvent(new PointerEvent('pointerenter', init));
+        probe.dispatchEvent(new PointerEvent('pointercancel', init));
+        return !PanelTooltip.isVisible() && !PanelTooltip.debugState().pointerOwnerActive;
+    });
+    await keyboardStart.focus();
+    await page.keyboard.press('Tab');
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    const pointerCancelRestoredKeyboard = await page.evaluate(() => {
+        if (!window.PointerEvent) return true;
+        const probe = document.getElementById('tooltip-physical-hover-probe-b');
+        const keyboardOwner = document.getElementById('tooltip-physical-hover-probe');
+        const tip = document.getElementById('panel-tooltip');
+        const rect = probe.getBoundingClientRect();
+        const init = {
+            bubbles:false, clientX:rect.left + rect.width / 2, clientY:rect.top + rect.height / 2,
+            pointerId:92, pointerType:'pen', isPrimary:true
+        };
+        probe.dispatchEvent(new PointerEvent('pointerenter', init));
+        probe.dispatchEvent(new PointerEvent('pointercancel', init));
+        const state = PanelTooltip.debugState();
+        return state.keyboardOwnerActive && !state.pointerOwnerActive && PanelTooltip.isVisible()
+            && tip.textContent.indexOf('tooltip A') >= 0
+            && keyboardOwner.getAttribute('aria-describedby') === 'panel-tooltip';
+    });
+
     // 手工 showAtMouse/hideHover 路径有独立的 global pending/timer 状态，
     // 必须也由浏览器真实 hit-test 覆盖，不能只用 bindAsync probe 代替。
     await page.mouse.move(legacyOwnerPoint.x, legacyOwnerPoint.y);
@@ -323,6 +502,40 @@ async function runPhysicalTooltipPointerProbe(page) {
     await page.waitForTimeout(170);
     const legacyHoverSurfaceExitHidden = await page.evaluate(() => !PanelTooltip.isVisible());
 
+    // 最后直接打开真实 KShop 目录锁住用户反馈，而不是只用合成按钮证明共享层。
+    await page.evaluate(() => window.KShopHarnessHost.open());
+    const catalogCards = page.locator('.kshop-card:not(.kshop-card-locked)');
+    await catalogCards.first().waitFor({state:'visible', timeout:1000});
+    const catalogA = catalogCards.nth(0);
+    const catalogB = catalogCards.nth(1);
+    const catalogABox = await catalogA.boundingBox();
+    const catalogBBox = await catalogB.boundingBox();
+    if (!catalogABox || !catalogBBox) throw new Error('KShop catalog tooltip probes are missing');
+    const catalogAPoint = {x:catalogABox.x + 18, y:catalogABox.y + 18};
+    const catalogBPoint = {x:catalogBBox.x + 18, y:catalogBBox.y + 18};
+    await page.mouse.move(catalogAPoint.x, catalogAPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    await page.mouse.down();
+    await page.mouse.up();
+    const catalogClickFocused = await page.evaluate(() => {
+        const card = document.querySelector('.kshop-card:not(.kshop-card-locked)');
+        return !!(card && (document.activeElement === card || card.contains(document.activeElement)));
+    });
+    const catalogClickHasNoKeyboardOwner = await page.evaluate(() =>
+        !PanelTooltip.debugState().keyboardOwnerActive);
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const catalogClickBlankHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
+    await page.mouse.move(catalogAPoint.x, catalogAPoint.y);
+    await page.mouse.down();
+    await page.mouse.up();
+    await page.mouse.move(catalogBPoint.x, catalogBPoint.y);
+    await page.waitForFunction(() => PanelTooltip.isVisible(), null, {timeout:1000});
+    await page.mouse.move(blankPoint.x, blankPoint.y);
+    await page.waitForTimeout(170);
+    const catalogClickOtherBlankHidden = await page.evaluate(() => !PanelTooltip.isVisible());
+
     return {
         visibleOnOwner,
         hoverBridgePersistent,
@@ -331,10 +544,74 @@ async function runPhysicalTooltipPointerProbe(page) {
         rapidBlankLandingHidden,
         geometryCoveredBlank,
         lateGeometryEnterIgnored,
+        pointerClickFocused,
+        pointerClickHasNoKeyboardOwner,
+        pointerClickBlankHidden,
+        hiddenOwnerEscapePassedThrough,
+        keyboardIntentDuringLeaveGraceAnchored,
+        pointerOtherOwnerTookControl,
+        stalePreviousTimerIgnored,
+        pointerClickOtherBlankHidden,
+        keyboardOwnerAcquired,
+        keyboardDescriptionSuspended,
+        dualOwnerBounded,
+        coveredKeyboardEscapePassedThrough,
+        keyboardOwnerRestored,
+        pointerReclickRevokedKeyboard,
+        pointerReclickBlankHidden,
+        escapeReleasedOwners,
+        escapeOwnerNotRestored,
+        pointerCancelHidden,
+        pointerCancelRestoredKeyboard,
         legacyVisibleOnOwner,
         legacyHoverBridgePersistent,
-        legacyHoverSurfaceExitHidden
+        legacyHoverSurfaceExitHidden,
+        catalogClickFocused,
+        catalogClickHasNoKeyboardOwner,
+        catalogClickBlankHidden,
+        catalogClickOtherBlankHidden
     };
+}
+
+function tooltipRegressionFailed(state) {
+    const required = [
+        'visible', 'basicStyled', 'hasRichLayout', 'hasIcon',
+        'keyboardFocusDescription', 'keyboardFocusFallbackVisible', 'focusExitHidden',
+        'asyncFocusVisible', 'lateResponseStayedHidden', 'teardownStayedHidden',
+        'teardownIdempotent', 'anchoredRichRepositioned', 'anchoredRichInsideViewport',
+        'anchoredScaleGapStable', 'focusOwnerInitiallyVisible', 'hoverOwnerTookControl',
+        'keyboardDescriptionSuspendedDuringPointer', 'focusedOwnerRestored',
+        'restoredOwnerExitHidden', 'hoverSurfacePersistent', 'wheelScrollsLongDescription',
+        'forcedHideResetsHoverState', 'forcedHideReleasedOwners',
+        'penPointerHoverPersistent', 'lateGeometryEnterIgnored',
+        'keyboardScrollsLongDescription', 'escapeDismissesTooltip', 'escapeReleasedOwners',
+        'detachedOwnerNotRestored', 'scopeCleanupComplete'
+    ];
+    const physicalRequired = [
+        'visibleOnOwner', 'hoverBridgePersistent', 'hoverSurfaceExitHidden',
+        'blankLandingWasOutside', 'rapidBlankLandingHidden', 'geometryCoveredBlank',
+        'lateGeometryEnterIgnored', 'pointerClickFocused', 'pointerClickHasNoKeyboardOwner',
+        'pointerClickBlankHidden', 'hiddenOwnerEscapePassedThrough',
+        'keyboardIntentDuringLeaveGraceAnchored',
+        'pointerOtherOwnerTookControl', 'stalePreviousTimerIgnored',
+        'pointerClickOtherBlankHidden',
+        'keyboardOwnerAcquired', 'keyboardDescriptionSuspended', 'dualOwnerBounded',
+        'coveredKeyboardEscapePassedThrough',
+        'keyboardOwnerRestored',
+        'pointerReclickRevokedKeyboard', 'pointerReclickBlankHidden', 'pointerCancelHidden',
+        'pointerCancelRestoredKeyboard',
+        'escapeReleasedOwners', 'escapeOwnerNotRestored',
+        'legacyVisibleOnOwner', 'legacyHoverBridgePersistent', 'legacyHoverSurfaceExitHidden',
+        'catalogClickFocused', 'catalogClickHasNoKeyboardOwner', 'catalogClickBlankHidden',
+        'catalogClickOtherBlankHidden'
+    ];
+    return !state
+        || required.some(key => !state[key])
+        || !state.physicalPointer
+        || physicalRequired.some(key => !state.physicalPointer[key])
+        || !state.placement
+        || state.placement.pointerOverlap > 0
+        || state.placement.anchorOverlap > 0;
 }
 
 (async function() {
@@ -357,8 +634,6 @@ async function runPhysicalTooltipPointerProbe(page) {
     await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html' + targetQuery, {waitUntil:'load'});
     if (visualMode) {
         await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
-        const physicalTooltipPointer = visualMode === 'battlebox-real-icons'
-            ? await runPhysicalTooltipPointerProbe(page) : null;
         if (shotArg) {
             const shotPath = path.resolve(ROOT, shotArg.slice('--shot='.length));
             await page.screenshot({path:shotPath,fullPage:true});
@@ -404,39 +679,14 @@ async function runPhysicalTooltipPointerProbe(page) {
             tooltip:window.__visualTooltipState || null,
             bodyOverflow:document.body.scrollWidth > document.body.clientWidth || document.body.scrollHeight > document.body.clientHeight
         }), visualMode);
+        const physicalTooltipPointer = visualMode === 'battlebox-real-icons'
+            ? await runPhysicalTooltipPointerProbe(page) : null;
         if (visualState.tooltip) visualState.tooltip.physicalPointer = physicalTooltipPointer;
         await browser.close();
         server.close();
         process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');
         const tooltipFailed = visualMode === 'battlebox-real-icons'
-            && (!visualState.tooltip || !visualState.tooltip.visible || !visualState.tooltip.basicStyled
-                || !visualState.tooltip.hasRichLayout || !visualState.tooltip.hasIcon
-                || !visualState.tooltip.focusDescription || !visualState.tooltip.focusFallbackVisible
-                || !visualState.tooltip.focusExitHidden || !visualState.tooltip.asyncFocusVisible
-                || !visualState.tooltip.lateResponseStayedHidden || !visualState.tooltip.teardownStayedHidden
-                || !visualState.tooltip.teardownIdempotent || !visualState.tooltip.anchoredRichRepositioned
-                || !visualState.tooltip.anchoredRichInsideViewport || !visualState.tooltip.anchoredScaleGapStable
-                || !visualState.tooltip.focusOwnerInitiallyVisible || !visualState.tooltip.hoverOwnerTookControl
-                || !visualState.tooltip.focusedOwnerRestored || !visualState.tooltip.restoredOwnerExitHidden
-                || !visualState.tooltip.hoverSurfacePersistent || !visualState.tooltip.wheelScrollsLongDescription
-                || !visualState.tooltip.forcedHideResetsHoverState
-                || !visualState.tooltip.penPointerHoverPersistent
-                || !visualState.tooltip.lateGeometryEnterIgnored
-                || !visualState.tooltip.physicalPointer
-                || !visualState.tooltip.physicalPointer.visibleOnOwner
-                || !visualState.tooltip.physicalPointer.hoverBridgePersistent
-                || !visualState.tooltip.physicalPointer.hoverSurfaceExitHidden
-                || !visualState.tooltip.physicalPointer.blankLandingWasOutside
-                || !visualState.tooltip.physicalPointer.rapidBlankLandingHidden
-                || !visualState.tooltip.physicalPointer.geometryCoveredBlank
-                || !visualState.tooltip.physicalPointer.lateGeometryEnterIgnored
-                || !visualState.tooltip.physicalPointer.legacyVisibleOnOwner
-                || !visualState.tooltip.physicalPointer.legacyHoverBridgePersistent
-                || !visualState.tooltip.physicalPointer.legacyHoverSurfaceExitHidden
-                || !visualState.tooltip.keyboardScrollsLongDescription || !visualState.tooltip.escapeDismissesTooltip
-                || !visualState.tooltip.detachedOwnerNotRestored || !visualState.tooltip.scopeCleanupComplete
-                || !visualState.tooltip.placement || visualState.tooltip.placement.pointerOverlap > 0
-                || visualState.tooltip.placement.anchorOverlap > 0);
+            && tooltipRegressionFailed(visualState.tooltip);
         if (pageErrors.length || failedRequests.length || tooltipFailed) process.exit(1);
         return;
     }
@@ -451,34 +701,7 @@ async function runPhysicalTooltipPointerProbe(page) {
 
     const output = {browser:'edge',executablePath,architectureAudit,qa,realTooltip,pageErrors,failedRequests};
     process.stdout.write(JSON.stringify(output, null, 2) + '\n');
-    const tooltipFailed = !realTooltip || !realTooltip.visible || !realTooltip.basicStyled
-        || !realTooltip.hasRichLayout || !realTooltip.hasIcon
-        || !realTooltip.focusDescription || !realTooltip.focusFallbackVisible
-        || !realTooltip.focusExitHidden || !realTooltip.asyncFocusVisible
-        || !realTooltip.lateResponseStayedHidden || !realTooltip.teardownStayedHidden
-        || !realTooltip.teardownIdempotent || !realTooltip.anchoredRichRepositioned
-        || !realTooltip.anchoredRichInsideViewport || !realTooltip.anchoredScaleGapStable
-        || !realTooltip.focusOwnerInitiallyVisible || !realTooltip.hoverOwnerTookControl
-        || !realTooltip.focusedOwnerRestored || !realTooltip.restoredOwnerExitHidden
-        || !realTooltip.hoverSurfacePersistent || !realTooltip.wheelScrollsLongDescription
-        || !realTooltip.forcedHideResetsHoverState
-        || !realTooltip.penPointerHoverPersistent
-        || !realTooltip.lateGeometryEnterIgnored
-        || !realTooltip.physicalPointer
-        || !realTooltip.physicalPointer.visibleOnOwner
-        || !realTooltip.physicalPointer.hoverBridgePersistent
-        || !realTooltip.physicalPointer.hoverSurfaceExitHidden
-        || !realTooltip.physicalPointer.blankLandingWasOutside
-        || !realTooltip.physicalPointer.rapidBlankLandingHidden
-        || !realTooltip.physicalPointer.geometryCoveredBlank
-        || !realTooltip.physicalPointer.lateGeometryEnterIgnored
-        || !realTooltip.physicalPointer.legacyVisibleOnOwner
-        || !realTooltip.physicalPointer.legacyHoverBridgePersistent
-        || !realTooltip.physicalPointer.legacyHoverSurfaceExitHidden
-        || !realTooltip.keyboardScrollsLongDescription || !realTooltip.escapeDismissesTooltip
-        || !realTooltip.detachedOwnerNotRestored || !realTooltip.scopeCleanupComplete
-        || !realTooltip.placement || realTooltip.placement.pointerOverlap > 0
-        || realTooltip.placement.anchorOverlap > 0;
+    const tooltipFailed = tooltipRegressionFailed(realTooltip);
     if (qa.failed || tooltipFailed || pageErrors.length || failedRequests.length) process.exit(1);
 })().catch(error => {
     console.error(error && error.stack ? error.stack : String(error));

@@ -2235,6 +2235,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 var realIconSlot = document.querySelector('.inventory-owned-battlebox .inventory-slot-card[data-physical-slot="2"]');
                 if (!realIconSlot) throw new Error('real tooltip probe slot missing');
                 var HoverEvent = window.PointerEvent || window.MouseEvent;
+                function focusFromKeyboard(node) {
+                    document.dispatchEvent(new KeyboardEvent('keydown', {
+                        key:'Tab', bubbles:true, cancelable:true
+                    }));
+                    node.focus();
+                }
                 realIconSlot.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter',{
                     bubbles:false,clientX:1120,clientY:220,pointerId:1,pointerType:'mouse',isPrimary:true
                 }));
@@ -2246,12 +2252,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 var richVisible = PanelTooltip.isVisible();
                 var hasRichLayout = !!(tooltipNode && tooltipNode.querySelector('.flash-tt-rich'));
                 var hasIcon = !!(tooltipNode && tooltipNode.querySelector('.flash-tt-icon img'));
-                realIconSlot.focus();
-                var focusDescription = realIconSlot.getAttribute('aria-describedby') === 'panel-tooltip';
+                focusFromKeyboard(realIconSlot);
+                var keyboardFocusDescription = realIconSlot.getAttribute('aria-describedby') === 'panel-tooltip';
                 realIconSlot.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave',{
                     bubbles:false,clientX:1120,clientY:220,pointerId:1,pointerType:'mouse',isPrimary:true
                 }));
-                var focusFallbackVisible = PanelTooltip.isVisible();
+                var keyboardFocusFallbackVisible = PanelTooltip.isVisible();
                 var focusExitTarget = document.querySelector('.workbench-close-btn');
                 if (focusExitTarget) focusExitTarget.focus();
                 var focusExitHidden = !PanelTooltip.isVisible()
@@ -2267,7 +2273,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     renderRich:function(){ return '<b>rich</b>'; },
                     fetch:function(_, callback){ lateTooltipCallback = callback; }
                 });
-                asyncProbe.focus();
+                focusFromKeyboard(asyncProbe);
                 var asyncFocusVisible = PanelTooltip.isVisible()
                     && asyncProbe.getAttribute('aria-describedby') === 'panel-tooltip';
                 if (focusExitTarget) focusExitTarget.focus();
@@ -2301,7 +2307,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     renderRich:function(){ return '<div class="flash-tt-rich flash-tt-rich--merge" style="display:block;width:580px;height:240px">rich geometry</div>'; },
                     fetch:function(_, callback){ geometryCallback = callback; }
                 });
-                geometryProbe.focus();
+                focusFromKeyboard(geometryProbe);
                 var basicAnchorRect = rectOf(tooltipNode);
                 if (geometryCallback) geometryCallback({success:true});
                 await wait(20);
@@ -2353,12 +2359,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 var hoverOwnerBinding = PanelTooltip.bindAsync(hoverOwnerProbe, {
                     key:'hover-owner', item:{}, cache:{}, renderBasic:function(){ return '<b>hover-owner-b</b>'; }
                 });
-                focusOwnerProbe.focus();
+                focusFromKeyboard(focusOwnerProbe);
                 var focusOwnerInitiallyVisible = tooltipNode.textContent.indexOf('focus-owner-a') >= 0;
                 hoverOwnerProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter', {
                     bubbles:false,clientX:500,clientY:300,pointerId:22,pointerType:'mouse',isPrimary:true
                 }));
                 var hoverOwnerTookControl = tooltipNode.textContent.indexOf('hover-owner-b') >= 0;
+                var keyboardDescriptionSuspendedDuringPointer =
+                    !focusOwnerProbe.hasAttribute('aria-describedby');
                 hoverOwnerProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerleave' : 'mouseleave', {
                     bubbles:false,clientX:500,clientY:300,pointerId:22,pointerType:'mouse',isPrimary:true
                 }));
@@ -2411,6 +2419,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 // 在浮层 hover 中发生确定性关闭时，浏览器不保证再发 mouseleave；下一次
                 // 手工 hover 仍必须能按 hideHover 延迟收起，不能继承幽灵 hover 状态。
                 PanelTooltip.hide();
+                var forcedHideReleasedOwners = !PanelTooltip.debugState().pointerOwnerActive
+                    && !PanelTooltip.debugState().keyboardOwnerActive;
                 PanelTooltip.showAtMouse('<div class="flash-tt-desc">manual hover reset</div>', {
                     clientX:720,clientY:420,currentTarget:longTooltipProbe,target:longTooltipProbe
                 });
@@ -2467,13 +2477,15 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 await wait(170);
                 var lateGeometryEnterIgnored = lateEnterPointWasBlank && !PanelTooltip.isVisible();
 
-                longTooltipProbe.focus();
+                focusFromKeyboard(longTooltipProbe);
                 longDescription = tooltipNode.querySelector('.flash-tt-desc');
                 longDescription.scrollTop = 0;
                 longTooltipProbe.dispatchEvent(new KeyboardEvent('keydown', {key:'PageDown',bubbles:true,cancelable:true}));
                 var keyboardScrollsLongDescription = longDescription.scrollTop > 0;
                 longTooltipProbe.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape',bubbles:true,cancelable:true}));
                 var escapeDismissesTooltip = !PanelTooltip.isVisible();
+                var escapeReleasedOwners = !PanelTooltip.debugState().pointerOwnerActive
+                    && !PanelTooltip.debugState().keyboardOwnerActive;
                 longTooltipBinding.destroy(); longTooltipProbe.remove();
 
                 var lifecycleScope = PanelTooltip.createScope('detached-probe');
@@ -2487,7 +2499,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 var replacementBinding = PanelTooltip.bindAsync(replacementProbe, {
                     key:'replacement-owner', item:{}, cache:{}, renderBasic:function(){ return '<b>replacement-owner</b>'; }
                 });
-                detachedProbe.focus();
+                focusFromKeyboard(detachedProbe);
                 detachedProbe.remove();
                 replacementProbe.dispatchEvent(new HoverEvent(window.PointerEvent ? 'pointerenter' : 'mouseenter', {
                     bubbles:false,clientX:640,clientY:360,pointerId:23,pointerType:'mouse',isPrimary:true
@@ -2504,12 +2516,24 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
                 // Node runner 用 Playwright page.mouse 驱动这一对固定探针，覆盖浏览器真实
                 // hit-test/event ordering；透明 blank surface 代表没有物品触发物的界面空白。
+                var physicalKeyboardStart = document.createElement('button');
+                physicalKeyboardStart.id = 'tooltip-physical-keyboard-start';
+                physicalKeyboardStart.type = 'button';
+                physicalKeyboardStart.setAttribute('aria-label', 'tooltip keyboard start');
+                physicalKeyboardStart.style.cssText = 'position:fixed;left:4px;top:36px;width:12px;height:12px;opacity:.001;z-index:2147483000';
+                document.body.appendChild(physicalKeyboardStart);
                 var physicalHoverProbe = document.createElement('button');
                 physicalHoverProbe.id = 'tooltip-physical-hover-probe';
                 physicalHoverProbe.type = 'button';
                 physicalHoverProbe.setAttribute('aria-label', 'tooltip physical hover probe');
                 physicalHoverProbe.style.cssText = 'position:fixed;left:36px;top:36px;width:36px;height:36px;opacity:.001;z-index:2147483000';
                 document.body.appendChild(physicalHoverProbe);
+                var physicalHoverProbeB = document.createElement('button');
+                physicalHoverProbeB.id = 'tooltip-physical-hover-probe-b';
+                physicalHoverProbeB.type = 'button';
+                physicalHoverProbeB.setAttribute('aria-label', 'tooltip physical hover probe b');
+                physicalHoverProbeB.style.cssText = 'position:fixed;left:156px;top:36px;width:36px;height:36px;opacity:.001;z-index:2147483000';
+                document.body.appendChild(physicalHoverProbeB);
                 // 保留仍由 arena/merc/pet/tasks/intelligence 使用的手工 API 路径：
                 // runner 会用真实 page.mouse 覆盖 showAtMouse -> hideHover 复合 hover。
                 var legacyHoverProbe = document.createElement('button');
@@ -2539,7 +2563,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     key:'physical-hover-probe', item:{}, cache:{},
                     renderBasic:function(){
                         return '<div class="flash-tt-rich flash-tt-rich--merge" style="width:220px;height:96px">'
-                            + '<div class="flash-tt-desc">physical pointer tooltip</div></div>';
+                            + '<div class="flash-tt-desc">physical pointer tooltip A</div></div>';
+                    }
+                });
+                PanelTooltip.bindAsync(physicalHoverProbeB, {
+                    key:'physical-hover-probe-b', item:{}, cache:{},
+                    renderBasic:function(){
+                        return '<div class="flash-tt-rich flash-tt-rich--merge" style="width:220px;height:96px">'
+                            + '<div class="flash-tt-desc">physical pointer tooltip B</div></div>';
                     }
                 });
                 window.__visualTooltipState = {
@@ -2547,8 +2578,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     basicStyled:basicStyled,
                     hasRichLayout:hasRichLayout,
                     hasIcon:hasIcon,
-                    focusDescription:focusDescription,
-                    focusFallbackVisible:focusFallbackVisible,
+                    keyboardFocusDescription:keyboardFocusDescription,
+                    keyboardFocusFallbackVisible:keyboardFocusFallbackVisible,
                     focusExitHidden:focusExitHidden,
                     asyncFocusVisible:asyncFocusVisible,
                     lateResponseStayedHidden:lateResponseStayedHidden,
@@ -2561,15 +2592,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     largeScaleAnchor:largeScaleAnchor,
                     focusOwnerInitiallyVisible:focusOwnerInitiallyVisible,
                     hoverOwnerTookControl:hoverOwnerTookControl,
+                    keyboardDescriptionSuspendedDuringPointer:keyboardDescriptionSuspendedDuringPointer,
                     focusedOwnerRestored:focusedOwnerRestored,
                     restoredOwnerExitHidden:restoredOwnerExitHidden,
                     hoverSurfacePersistent:hoverSurfacePersistent,
                     wheelScrollsLongDescription:wheelScrollsLongDescription,
                     forcedHideResetsHoverState:forcedHideResetsHoverState,
+                    forcedHideReleasedOwners:forcedHideReleasedOwners,
                     penPointerHoverPersistent:penPointerHoverPersistent,
                     lateGeometryEnterIgnored:lateGeometryEnterIgnored,
                     keyboardScrollsLongDescription:keyboardScrollsLongDescription,
                     escapeDismissesTooltip:escapeDismissesTooltip,
+                    escapeReleasedOwners:escapeReleasedOwners,
                     detachedOwnerNotRestored:detachedOwnerNotRestored,
                     scopeCleanupComplete:scopeCleanupComplete,
                     placement:PanelTooltip.debugState().lastPlacement
