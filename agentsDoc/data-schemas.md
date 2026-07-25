@@ -81,6 +81,25 @@ data/intelligence_h5/         → 按情报名称存放的 H5 JSON 组件树正�
 data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一个文件）
 ```
 
+### 关卡敌人屏外尸体保留参数
+
+`data/stages/**/*.xml` 的 `SubStage/Wave/SubWave/EnemyGroup/Enemy/Parameters` 支持实例级参数 `保留屏外尸体:true`。该参数由 `ObjectUtil.cloneParameters()` 解析为严格布尔值，并随当前敌人实例的初始化对象传入；不要在 `DeathEffectRenderer` 中硬编码兵种 ID、名称或素材名。
+
+```xml
+<Enemy>
+    <Type>兵种67</Type>
+    <Quantity>1</Quantity>
+    <Parameters>称号:火凤堂赤旌,保留屏外尸体:true</Parameters>
+</Enemy>
+```
+
+- 省略或写 `false`：保持默认策略，尸体中心处于屏外时跳过 `BitmapData.draw()`。
+- 写 `true`：只在死亡贴图事务内绕过离屏拒绝，并在单位已被常规可见性剔除时临时设为可见；同步绘制结束后立即恢复原隐藏状态。
+- 该参数不关闭单位存活期的屏外剔除，不覆盖 `DeathEffectRenderer.isEnabled` 总开关，也不改变死亡音效、变身阈值或伤害结算。
+- 只应用于少量需要死亡结果可追溯的重要实例；不要给成群杂兵批量标记，避免同帧多次矢量 `draw()` 形成尖峰。
+
+当前代表验收点是 `黑铁会总部/黑铁会总堂.xml` 第二图首波的火凤。修改渲染器或该参数后，运行 `tools/test-offscreen-corpse-retention.ps1`；需要 Flash 行为证据时再运行 `scripts/run-offscreen-corpse-retention-tests.ps1`。
+
 ### 关卡地图资源箱声明
 
 `data/stages/**/*.xml` 中六类地图箱（保险柜、生存箱、装备箱、资源箱、纸箱、隐藏资源点）的 `row/col` 是行为契约，不是宽松展示参数：

@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId offscreen-corpse-retention Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.corpse.DeathEffectRendererTest.runAllTests();
+trace("FocusedTestRunId offscreen-corpse-retention Complete: __FOCUSED_RUN_ID__");

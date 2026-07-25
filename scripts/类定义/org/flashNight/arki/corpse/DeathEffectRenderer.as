@@ -36,6 +36,12 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     
     /** @private {Boolean} 是否启用离屏剔除优化 */
     public static var enableCulling:Boolean = true;
+
+    /**
+     * 单位实例参数：允许重要单位在屏外死亡时仍写入尸体位图。
+     * 该参数只绕过本次死亡贴图的离屏剔除，不改变单位存活期的可见性剔除。
+     */
+    private static var RETAIN_OFFSCREEN_CORPSE_PARAM:String = "保留屏外尸体";
     
     
     // ------------------ 公共方法 ------------------
@@ -59,6 +65,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         if (!DeathEffectRenderer.isEnabled) return;
 
         var gameWorld:MovieClip = _root.gameworld;
+        var retainOffscreenCorpse:Boolean = DeathEffectRenderer.shouldRetainOffscreenCorpse(target);
 
         // 同一个全局点分别转换到 gameWorld(剔除用) 与 deadbody(写 BD 用) 坐标系
         var pt:Object = {x: 0, y: 0};
@@ -68,7 +75,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         gameWorld.deadbody.globalToLocal(layerPt);
 
         // 离屏剔除（gameworld 平移+缩放闭式映射）
-        if (DeathEffectRenderer.enableCulling) {
+        if (DeathEffectRenderer.enableCulling && !retainOffscreenCorpse) {
 
             var sx:Number = gameWorld._xscale * 0.01;
 
@@ -98,6 +105,9 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         reusableMatrix.tx = layerPt.x;
         reusableMatrix.ty = layerPt.y;
 
+        // 屏外单位可能已被常规可见性剔除；只在同步 draw 期间临时恢复，随后还原。
+        var restoreHidden:Boolean = retainOffscreenCorpse && !target._visible;
+        if (restoreHidden) target._visible = true;
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
             reusableMatrix,
@@ -106,6 +116,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
             undefined,
             true
         );
+        if (restoreHidden) target._visible = false;
     }
 
     
@@ -126,6 +137,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
         if (!DeathEffectRenderer.isEnabled) return;
         var gameWorld:MovieClip = _root.gameworld;
+        var retainOffscreenCorpse:Boolean = DeathEffectRenderer.shouldRetainOffscreenCorpse(target);
         var worldPt:Object = {x: 0, y: 0};
         target.localToGlobal(worldPt);
         var layerPt:Object = {x: worldPt.x, y: worldPt.y};
@@ -133,7 +145,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         gameWorld.deadbody.globalToLocal(layerPt);
 
         // 离屏剔除（gameworld 平移+缩放闭式映射）
-        if (DeathEffectRenderer.enableCulling) {
+        if (DeathEffectRenderer.enableCulling && !retainOffscreenCorpse) {
             
             var sx:Number = gameWorld._xscale * 0.01;
             // 局部(世界)中心 → 屏幕坐标
@@ -175,6 +187,8 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         reusableTransformMatrix.ty = layerPt.y;
 
         // 将目标 MovieClip 按照计算好的矩阵绘制到指定尸体层
+        var restoreHidden:Boolean = retainOffscreenCorpse && !target._visible;
+        if (restoreHidden) target._visible = true;
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
             reusableTransformMatrix,
@@ -183,11 +197,19 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
             undefined,
             true
         );
+        if (restoreHidden) target._visible = false;
     }
 
     
     
     // ------------------ 私有工具方法 ------------------
+
+    /**
+     * 只有显式布尔 true 才启用，避免字符串或任意 truthy 值意外扩大绘制范围。
+     */
+    private static function shouldRetainOffscreenCorpse(target:MovieClip):Boolean {
+        return target[RETAIN_OFFSCREEN_CORPSE_PARAM] === true;
+    }
 
     /**
      * 根据原始 ColorTransform 快速生成暗化版的 ColorTransform 并进行缓存。
