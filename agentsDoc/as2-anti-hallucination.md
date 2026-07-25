@@ -93,7 +93,7 @@
 
 ### AVM1 静默失败陷阱（塌缩暴露：编译 0 错但运行时坏）
 - **「未定义类.方法()」静默返回 `undefined` 不抛错**：eager 自单例 `public static var instance:X = new X();` 在**类注册期**就构造；若构造里调用**另一尚未注册的类**（如 `Delegate.create1(...)`），AVM1 静默返回 undefined → 该字段变 undefined、其余构造照跑（极隐蔽，无报错，只在很久后表现为功能缺失）。**通用律：eager 自单例构造勿做跨类调用**；改在首次真正使用时（晚于 boot）惰性绑定。实例 = 刀光渐隐 bug（`VectorAfterimageRenderer._fadeCallback`），详 [BootSequencer 构建标准 §0](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)。
-- **AVM1 单函数体 ≤64KB**：`DefineFunction2.codeSize` 是 UI16。把大段帧脚本 wrap 进单个 `function(){}` 超限会**编译 0 错却静默产坏函数**（从不执行）；帧脚本 DoAction 是 UI32 无此限。检测门 = `tools/swf-function-sizes.js`（无需真机即拦溢出）。
+- **AVM1 单函数体 ≤64KB**：`DefineFunction2.codeSize` 是 UI16。把大段帧脚本 wrap 进单个 `function(){}` 超限会**编译 0 错却静默产坏函数**（从不执行）；帧脚本 DoAction 是 UI32 无此限。`tools/swf-function-sizes.js` 只能拦尚未越墙的近墙值；已经超过 65,535 B 的函数会把 UI16 `codeSize` 回绕成小值，编译后无法区分。因此真正护栏是源端单函数 / chunk 传递闭包预算，编译后 `codeSize` 与新鲜行为证据只作联合门。
 
 ### 原型链
 - AS2 类底层基于原型链继承

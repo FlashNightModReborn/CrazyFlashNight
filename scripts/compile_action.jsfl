@@ -8,6 +8,33 @@ function normalizeDocumentURI(uri) {
 	return value.replace(/\\/g, "/").replace(/\/+$/, "").toLowerCase();
 }
 
+function containsOnly32KCompilerErrors(text) {
+	var lines = String(text || "").split(/\r?\n/);
+	var errorCount = -1;
+	var warningCount = -1;
+	var diagnosticCount = 0;
+	var sawSummary = false;
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		if (/^\s*$/.test(line)) continue;
+		var summary = /^\s*(\d+)\s+[^,\r\n]+,\s*(\d+)\s+[^,\r\n]+\s*$/.exec(line);
+		if (summary) {
+			if (sawSummary) return false;
+			errorCount = parseInt(summary[1], 10);
+			warningCount = parseInt(summary[2], 10);
+			sawSummary = true;
+		} else {
+			// Conservative contract: one exported line per error, every line itself
+			// names the 32K branch diagnostic, and no text follows the summary.
+			if (sawSummary || line.indexOf("32K") < 0) return false;
+			diagnosticCount++;
+		}
+	}
+	// 多行/上下文格式无法证明一一对应时不重试；人工检查首轮完整诊断。
+	return sawSummary && errorCount > 0 && warningCount == 0 &&
+		diagnosticCount == errorCount;
+}
+
 function main() {
 	var cfgPath = fl.configURI + "Commands/flash_project_path.cfg";
 	var projectURI = FLfile.read(cfgPath);
@@ -40,13 +67,23 @@ function main() {
 		if (_t) targetURI = _t.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");  // 剥 BOM/空白
 	}
 
+	// mode 与 target 属于同一轮一次性指令；必须在任何 target/doc early return 前一并消费，
+	// 否则一次坏目标会把 publish 模式泄漏给后续手工触发。
+	var modeCfg = projectURI + "/scripts/compile_mode.cfg";
+	var compileMode = "test";
+	if (FLfile.exists(modeCfg)) {
+		var _m = FLfile.read(modeCfg);
+		FLfile.remove(modeCfg);
+		if (_m) compileMode = _m.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");
+	}
+
 	var doc;
 	if (targetURI) {
 		fl.trace("[compile] target cfg: " + targetURI);
 		if (!FLfile.exists(targetURI)) {
-			FLfile.write(errorMarker, "target not found: " + targetURI);
 			fl.trace("[compile] ERROR: target not found: " + targetURI);
 			fl.outputPanel.save(outputLog);
+			FLfile.write(errorMarker, "target not found: " + targetURI);
 			return;
 		}
 		// 目标若已打开 → 先关（false=不存盘，丢弃 in-memory，强制从盘重读外部编辑），再开 = 与活动文档路径同款 reload。
@@ -78,23 +115,14 @@ function main() {
 	}
 
 	if (!doc) {
-		FLfile.write(errorMarker, "no document (target=" + targetURI + ")");
 		fl.trace("[compile] ERROR: no document");
 		fl.outputPanel.save(outputLog);
+		FLfile.write(errorMarker, "no document (target=" + targetURI + ")");
 		return;
 	}
 
-	// 编译动作模式：默认 testMovie（asLoader/TestLoader 需运行产 trace / 刷新 SWF）。
-	//   compile_mode.cfg == "publish" → 用 doc.publish()：只编译产出 SWF + 填充 fl.compilerErrors，
-	//   不启动测试播放器。main（整套游戏）目标必须走这条，否则 testMovie 会拉起全量游戏窗口
-	//   （连不上 launcher socket 卡住 / 撞反盗版层 / 留僵尸窗口）。一次性指令，读到即删。
-	var modeCfg = projectURI + "/scripts/compile_mode.cfg";
-	var compileMode = "test";
-	if (FLfile.exists(modeCfg)) {
-		var _m = FLfile.read(modeCfg);
-		FLfile.remove(modeCfg);
-		if (_m) compileMode = _m.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");
-	}
+	// 默认 testMovie（TestLoader/显式测试目标需运行产 trace / 刷新 SWF）。
+	// compile_mode.cfg == "publish" 时只编译产出 SWF，不拉起全量游戏窗口。
 	if (compileMode == "publish") {
 		fl.trace("[compile] publish (no testMovie): " + doc.name);
 		doc.publish();
@@ -107,8 +135,9 @@ function main() {
 	// 第二次仍失败也会原样保存并由 PowerShell fail-closed。
 	if (fl.compilerErrors) fl.compilerErrors.save(compilerErrorsLog);
 	var firstCompilerErrors = FLfile.exists(compilerErrorsLog) ? FLfile.read(compilerErrorsLog) : "";
-	if (firstCompilerErrors && firstCompilerErrors.indexOf("32K") >= 0) {
+	if (containsOnly32KCompilerErrors(firstCompilerErrors)) {
 		fl.trace("[compile] cold ASO 32K branch detected; retry same target once");
+		fl.trace("[compile] first 32K compiler diagnostics (preserved before retry):\n" + firstCompilerErrors);
 		try {
 			if (fl.compilerErrors && fl.compilerErrors.clear) fl.compilerErrors.clear();
 		} catch (retryClearError) {

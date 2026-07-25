@@ -1,17 +1,17 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：上游基线 commit `b072f97841ccb30e167c14495241ae64d9054e22`（`origin/main`，2026-07-21 发布前复核）+ 当前发布候选树中的 `publish/asloader` 别名隐式 publish-only 修复。
+**最后核对代码基线**：commit `3d33fd238032e4ffc81cc91b41223b7ac67415f9` + 2026-07-25 当前工作树的编译 mutex、fresh Compiler Errors 与 TestLoader 近墙门收口。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
-`compile_test.ps1` 只保存本次新增 Flash trace 到 `scripts/flashlog.txt`，并将 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0` 视为失败。
+`compile_test.ps1` 只保存本次新增 Flash trace 到 `scripts/flashlog.txt`，并将 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0`、缺失/陈旧/非 `0/0` 的 Compiler Errors 视为失败。
 
 ## 1. 当前定位
 
 - Agent 可从终端触发 Flash CS6 `testMovie()` 或 `publish()`，并读取对应的 trace / 编译器输出
 - 这条链路当前仍属于 **smoke 级验证**
-- 没有新鲜 trace、`compiler_errors.txt`、Output Panel 副本或 IDE 复核时，不要直接声称“已编译通过”
+- 没有目标所需的新鲜证据组合（至少本轮 `compiler_errors.txt` `0/0`；publish 另需 SWF 刷新，测试另需行为证据）时，不要直接声称“已编译通过”
 
 ## 2. 前提条件
 
@@ -95,18 +95,26 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 
 `TimeoutSeconds` 允许 `1..3600`，只调整等待 marker 的轮询上限，不改变编译内容或成功判据。
 
+`compile_test.ps1` 在 `Start-ScheduledTask` 前先写本轮 exact-owned in-flight `scripts/compile_state_uncertain.marker`；`[TIMEOUT]`、触发后的 host 崩溃或其它非 terminal 退出都会保留它，后续编译在仓库 mutex 内 fail-closed。terminal 路径只删除内容仍与本轮 in-flight body 完全相同的文件，避免旧 lease child 擦掉另一故障刚写入的新闸。非 terminal 路径保留 `compile_target.cfg` / `compile_mode.cfg` 给迟到 JSFL 按原目标消费，不能提前删 target 后让它回退并误编当前活动文档。focused / map / Gobang / protocol scratch writer 另在改写 `TestLoader.as` 前创建 `scripts/.testloader-scratch-recovery/<token>.as`、验证原件 SHA-256，并写 `scripts/testloader_scratch_inflight.marker`；普通编译见该 marker 一律拒绝，只有 installed/original SHA-256 均验证后才删除 marker 与 sidecar。先确认 Flash / `CompileTriggerTask` / 旧 test player 已静止并核对迟到的 marker、SWF 与 diagnostics；若 scratch marker 仍在，按其中 `backup_path/original_sha256/had_runner` 恢复 `scripts/TestLoader.as`，不能只删闸或把遗留 scratch 当原件。完成这些人工复核后再删除 compile uncertain marker；下轮在触发前会清理未被迟到 JSFL 消费的旧 cfg。lease 不是鉴权，marker 是人工复核与恢复材料，不会自动猜测覆盖。
+
+仓库内唯一受支持的人工编译入口是 `compile_test.ps1` / `compile_test.sh`；`cf7_compile_loader.jsfl` 与 `compile_action.jsfl` 只是该事务内部组件，不应单独打开或执行。旧诊断入口 `test_publish.jsfl`、`test_trace.jsfl` 以及绕过事务的 `train_cycle.sh` 已删除；Gobang 长耗时回归改走持同一仓库 mutex 的 `gobang_trainer_cycle.ps1`。
+
 ## 4. 当前链路
 
 ```
 compile_test.ps1 / compile_test.sh
+  → 取得仓库级 CF7_FlashCompile mutex（scratch 父 runner持同一把锁，并以持久事务 marker + exact-match lease 允许子进程复用）
   → Start-ScheduledTask 'CompileTriggerTask'
     → cf7_compile_loader.jsfl
       → compile_action.jsfl
         → 清空独立 Compiler Errors 面板并删除旧导出
         → 按 compile_mode.cfg 选择 doc.testMovie() 或 doc.publish()
         → fl.compilerErrors.save()（只保存本轮诊断）
-        → 仅遇到冷 ASO「32K 分支超限」时清面板并同目标重试一次
+        → 仅当唯一汇总可解析、warnings=0、且汇总前逐行含「32K」的诊断数恰等于 errors 时重试一次
+          → 首轮诊断先 trace 到 Output Panel；混合/多行上下文/汇总后文本/不可解析格式均不重试
           → publish_done.marker / flashlog / compiler_errors
+  → marker 后要求 compiler_errors 本轮刷新且严格 0/0
+  → TestLoader 另要求 SWF 刷新与 codeSize < 60000
 ```
 
 ## 5. 关键产物与判据
@@ -114,8 +122,8 @@ compile_test.ps1 / compile_test.sh
 | 文件 | 用途 | 判读方式 |
 |------|------|----------|
 | `scripts/flashlog.txt` | Flash trace 副本 | 优先看是否为本次运行新鲜生成 |
-| `scripts/compile_output.txt` | Output Panel 副本 | 辅助看 JSFL / 输出面板文本 |
-| `scripts/compiler_errors.txt` | 本轮 Compiler Errors 面板副本 | JSFL 会在每个目标编译前清独立面板并删除旧导出；有错误时应直接视为失败 |
+| `scripts/compile_output.txt` | Output Panel 副本 | 辅助看 JSFL / 输出面板文本；若触发纯 32K 重试，首轮完整诊断保存在这里 |
+| `scripts/compiler_errors.txt` | 最终 Compiler Errors 面板副本 | JSFL 会在每个目标编译前清独立面板并删除旧导出；PowerShell 要求文件存在、身份/mtime 属于本轮且内容严格 `0/0`；若发生纯 32K 重试，本文件属于第二轮 |
 | `scripts/publish_done.marker` | JSFL 触发完成标记 | 不能单独代表编译并运行成功 |
 
 2026-07-21 17:12:59 +08 的最终资源箱回归使用 `-Target publish`（未额外传 `-PublishOnly`）实际走 `doc.publish()`：生成 `scripts/asLoader.swf` **1,041,903 bytes**，SHA-256 `AD799970A8A2AFD0F9A402C704934F08985A3144FA608A7564E17BC4899C815E`，Git blob `3dd59f73f9fc71128da99c2eb03796290df1e010`；本轮 Compiler Errors 为 **0/0**。该 publish-only 证据只证明目标 SWF 刷新与编译器零错误，AS2 行为结论由随后独立 fresh TestLoader 的 **166/166** trace 支撑。
@@ -125,12 +133,12 @@ compile_test.ps1 / compile_test.sh
 - `已完成 Flash CS6 自动化 smoke 验证`
 - `已触发 Flash CS6 编译并拿到新鲜 trace`
 
-接近 AS2 单分支 32K 上限的旧类在切换 XFL 后可能出现冷 ASO 首编失败、同目标热编通过。JSFL 只对诊断中明确包含 `32K` 的这一种情况自动重试一次；第二轮诊断才写入最终 `compiler_errors.txt`。其他编译错误不重试，第二轮仍超限也照常失败。testMovie 重试可能让 trace 中出现两组同名 suite 输出，判据仍要求最后一轮无失败且最终 Compiler Errors 为 0。
+接近 AS2 单分支 32K 上限的旧类在切换 XFL 后可能出现首次 ASO 编译失败、同目标再次编译通过。JSFL 只接受保守的一行一诊断格式：唯一最终汇总可解析、errors>0、warnings=0，且汇总前恰有同数量的非空诊断行、每行自身含 `32K`。只要混有语法/链接错误、多行上下文、汇总后文本或无法解析，就不重试。重试前的完整诊断会 trace 到 `compile_output.txt`，第二轮诊断才写入最终 `compiler_errors.txt`；第二轮仍失败则照常失败。focused runner 只接受唯一闭合 runId block，且健康基线必须 `32K retry=0`；自动恢复只能作为诊断证据，不能冒充健康通过。
 
 ### 不正确表述
 
 - 只看到 `publish_done.marker` 就说 `已编译通过`
-- 没有新鲜 trace 或 IDE 复核还说 `编译成功`
+- 缺少该目标要求的新鲜证据组合还说 `编译成功`（例如 publish-only 缺本轮 Compiler Errors `0/0` 或目标 SWF 刷新；testMovie 缺其要求的 trace / Output 证据）
 
 ## 6. 当前边界
 

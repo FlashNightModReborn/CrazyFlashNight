@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId player-manual-input Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest.runAllTests();
+org.flashNight.arki.unit.Action.Skill.ManualCooldownServiceTest.runAllTests();
+org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest.runAllTests();
+trace("FocusedTestRunId player-manual-input Complete: __FOCUSED_RUN_ID__");

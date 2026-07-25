@@ -12,16 +12,17 @@ $templatePath = Join-Path $projectDir 'scripts\test-runners\map-loot\TestLoader.
 $compilePath = Join-Path $projectDir 'scripts\compile_test.ps1'
 $freshTracePath = Join-Path $projectDir 'scripts\flashlog.txt'
 $compilerErrorsPath = Join-Path $projectDir 'scripts\compiler_errors.txt'
+$compileOutputPath = Join-Path $projectDir 'scripts\compile_output.txt'
+$uncertainMarker = Join-Path $projectDir 'scripts\compile_state_uncertain.marker'
+$scratchMarker = Join-Path $projectDir 'scripts\testloader_scratch_inflight.marker'
+. (Join-Path $projectDir 'scripts\test-runners\testloader-scratch-transaction.ps1')
 $suitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootContainerServiceTest.as'
 $plannerSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootMaterializationPlannerTest.as'
 $arbiterSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\BoxInteractionArbiterTest.as'
 $serverManagerPath = Join-Path $projectDir 'scripts\类定义\org\flashNight\neur\Server\ServerManager.as'
-$backupPath = $null
-$hadRunner = $false
-$originalRunnerHash = $null
-$runnerInstalled = $false
-$restoreSucceeded = $false
-$mutexAcquired = $false
+$installedRunnerHash = $null
+$scratchTransaction = $null
+$compileMutexAcquired = $false
 
 $normalizedProjectDir = [System.IO.Path]::GetFullPath($projectDir).TrimEnd('\').ToUpperInvariant()
 $sha256 = [System.Security.Cryptography.SHA256]::Create()
@@ -32,29 +33,59 @@ try {
     $sha256.Dispose()
 }
 $repoHash = ([System.BitConverter]::ToString($repoHashBytes)).Replace('-', '').Substring(0, 24)
-$mutexName = 'Local\CF7_FocusedTestLoader_' + $repoHash
-$runMutex = [System.Threading.Mutex]::new($false, $mutexName)
+$compileMutex = [System.Threading.Mutex]::new(
+    $false, 'Local\CF7_FlashCompile_' + $repoHash)
+$compileLease = $null
 $runId = [System.Guid]::NewGuid().ToString('N')
 $expectedServicePassCount = 142
 $expectedPlannerPassCount = 9
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount
 
+function Get-EvidenceIdentity([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path)) { return $null }
+    $item = Get-Item -LiteralPath $Path
+    return '{0}|{1}|{2}' -f $item.LastWriteTimeUtc.Ticks, $item.Length,
+        (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
+}
+
+function Write-MapBehaviorUncertain {
+    param([Parameter(Mandatory = $true)][string]$Reason)
+
+    $prior = if (Test-Path -LiteralPath $uncertainMarker) {
+        [System.IO.File]::ReadAllText(
+            $uncertainMarker, [System.Text.Encoding]::UTF8)
+    } else {
+        ''
+    }
+    $body = '{0:o} | map loot TestLoader: {1}' -f
+        [System.DateTime]::UtcNow, $Reason
+    if (-not [string]::IsNullOrWhiteSpace($prior)) {
+        $body += "`nprevious_marker:`n" + $prior
+    }
+    [System.IO.File]::WriteAllText(
+        $uncertainMarker, $body, [System.Text.UTF8Encoding]::new($false))
+}
+
+$childCompileSucceeded = $false
+$behaviorTerminalObserved = $false
+
 try {
     try {
-        $mutexAcquired = $runMutex.WaitOne(0)
+        $compileMutexAcquired = $compileMutex.WaitOne(0)
     } catch [System.Threading.AbandonedMutexException] {
-        $mutexAcquired = $true
-        throw 'A previous focused TestLoader runner terminated while holding the repository mutex. Inspect scripts/TestLoader.as before retrying.'
+        $compileMutexAcquired = $true
+        Write-MapBehaviorUncertain `
+            -Reason 'map runner observed abandoned compile mutex'
+        throw 'A previous compile abandoned the repository mutex. Confirm Flash/JSFL stopped and clear late markers before retrying.'
     }
-    if (-not $mutexAcquired) {
-        throw 'Another focused TestLoader runner is already using this repository. Refusing to overwrite the shared TestLoader/trace artifacts.'
+    if (-not $compileMutexAcquired) {
+        throw 'Another Flash compile is using this repository; refusing to install a temporary TestLoader.'
     }
-    Write-Host ("[INFO] Acquired shared TestLoader repository mutex: {0}" -f $mutexName)
-
-    $hadRunner = Test-Path -LiteralPath $runnerPath
-    if ($hadRunner) {
-        $originalRunnerHash = (Get-FileHash -LiteralPath $runnerPath -Algorithm SHA256).Hash
+    if (Test-Path -LiteralPath $uncertainMarker) {
+        throw 'Compile state is uncertain. Confirm Flash/JSFL stopped, inspect late evidence, then remove scripts/compile_state_uncertain.marker.'
     }
+    $compileLease = 'v1:{0}:{1}:{2}' -f $repoHash, $PID,
+        [System.Guid]::NewGuid().ToString('N')
 
     if (-not (Test-Path -LiteralPath $suitePath)) {
         throw "Map loot AS2 suite is missing: $suitePath"
@@ -186,17 +217,11 @@ try {
         $socketSourceGuardCount)
     Write-Host ("[INFO] Verified focused map loot, materialization, and box arbiter AS2 suites: {0}" -f $suitePath)
 
-    if ($hadRunner) {
-        $backupPath = Join-Path ([System.IO.Path]::GetTempPath()) `
-            ('cf7-TestLoader-' + [System.Guid]::NewGuid().ToString('N') + '.as')
-        Copy-Item -LiteralPath $runnerPath -Destination $backupPath
-        $backupHash = (Get-FileHash -LiteralPath $backupPath -Algorithm SHA256).Hash
-        if ($backupHash -ne $originalRunnerHash) {
-            throw 'TestLoader recovery backup hash does not match the original scratch runner.'
-        }
-    }
+    $scratchTransaction = New-Cf7TestLoaderScratchTransaction `
+        -MarkerPath $scratchMarker -RunnerPath $runnerPath -RepoHash $repoHash `
+        -CompileLease $compileLease -OwnerKind 'map-loot'
+    Assert-Cf7TestLoaderScratchReadyToInstall -Transaction $scratchTransaction
 
-    $runnerInstalled = $true
     Copy-Item -LiteralPath $templatePath -Destination $runnerPath -Force
     $runnerText = [System.IO.File]::ReadAllText(
         $runnerPath, [System.Text.Encoding]::UTF8)
@@ -213,32 +238,44 @@ try {
     if ($bytes.Length -lt 3 -or $bytes[0] -ne 0xEF -or $bytes[1] -ne 0xBB -or $bytes[2] -ne 0xBF) {
         throw 'Map loot TestLoader template is not UTF-8 with BOM.'
     }
+    $installedRunnerHash = (Get-FileHash -LiteralPath $runnerPath -Algorithm SHA256).Hash
 
     Write-Host ("[INFO] Installed focused map loot TestLoader runner for runId {0}." -f $runId)
     if ($SkipCompile) {
         Write-Host '[OK] Map loot focused runner static validation passed; compile was intentionally skipped.'
     } else {
         $runStartedUtc = [DateTime]::UtcNow
-        $traceBeforeUtc = if (Test-Path -LiteralPath $freshTracePath) {
-            (Get-Item -LiteralPath $freshTracePath).LastWriteTimeUtc
-        } else { $null }
-        $compilerErrorsBeforeUtc = if (Test-Path -LiteralPath $compilerErrorsPath) {
-            (Get-Item -LiteralPath $compilerErrorsPath).LastWriteTimeUtc
-        } else { $null }
+        $evidenceBefore = @{}
+        foreach ($path in @($freshTracePath, $compilerErrorsPath, $compileOutputPath)) {
+            $evidenceBefore[$path] = Get-EvidenceIdentity $path
+        }
 
-        & powershell -NoProfile -ExecutionPolicy Bypass -File $compilePath `
-            -Target test -TimeoutSeconds $TimeoutSeconds
+        $previousCompileLease = $env:CF7_FLASH_COMPILE_LEASE
+        try {
+            $env:CF7_FLASH_COMPILE_LEASE = $compileLease
+            & powershell -NoProfile -ExecutionPolicy Bypass -File $compilePath `
+                -Target test -TimeoutSeconds $TimeoutSeconds
+        } finally {
+            if ($null -eq $previousCompileLease) {
+                Remove-Item Env:CF7_FLASH_COMPILE_LEASE -ErrorAction SilentlyContinue
+            } else {
+                $env:CF7_FLASH_COMPILE_LEASE = $previousCompileLease
+            }
+        }
         if ($LASTEXITCODE -ne 0) {
             throw "Map loot TestLoader failed with exit code $LASTEXITCODE"
+        }
+        $childCompileSucceeded = $true
+        foreach ($path in @($freshTracePath, $compilerErrorsPath, $compileOutputPath)) {
+            if (-not (Test-Path -LiteralPath $path) -or
+                (Get-EvidenceIdentity $path) -eq $evidenceBefore[$path] -or
+                (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $runStartedUtc.AddSeconds(-1)) {
+                throw "Map loot evidence was not freshly replaced: $path"
+            }
         }
 
         if (-not (Test-Path -LiteralPath $freshTracePath)) {
             throw 'Map loot TestLoader produced no fresh scripts/flashlog.txt.'
-        }
-        $traceItem = Get-Item -LiteralPath $freshTracePath
-        if (($traceBeforeUtc -and $traceItem.LastWriteTimeUtc -le $traceBeforeUtc) -or
-            $traceItem.LastWriteTimeUtc -lt $runStartedUtc.AddSeconds(-1)) {
-            throw 'Map loot scripts/flashlog.txt was not refreshed by this run.'
         }
 
         $trace = Get-Content -LiteralPath $freshTracePath -Raw -Encoding UTF8
@@ -250,17 +287,15 @@ try {
         $startCount = [regex]::Matches($trace, $startPattern).Count
         $completeCount = [regex]::Matches($trace, $completePattern).Count
         $runBlockMatches = [regex]::Matches($trace, $runBlockPattern)
-        # compile_action.jsfl is allowed to retry the same TestLoader target once after the
-        # documented cold-ASO 32K branch failure. testMovie writes trace on both attempts, so a
-        # valid fresh run may contain one or two complete blocks with the same injected runId.
-        # Accept only those two shapes and validate every block independently; unmatched or a
-        # third execution remains a hard failure instead of being hidden by the final green run.
-        if ($startCount -lt 1 -or $startCount -gt 2 -or
-            $completeCount -ne $startCount -or
-            $runBlockMatches.Count -ne $startCount) {
+        # A healthy focused run never accepts the compile_action 32K retry path.
+        if ($startCount -ne 1 -or $completeCount -ne 1 -or
+            $runBlockMatches.Count -ne 1) {
             throw ("Map loot fresh trace contains an invalid runId block set: starts={0}, completes={1}, orderedBlocks={2}." -f
                 $startCount, $completeCount, $runBlockMatches.Count)
         }
+        # Content assertions are meaningful only after one exact ordered
+        # start/complete pair proves the test player reached a terminal state.
+        $behaviorTerminalObserved = $true
         $requiredTracePatterns = @(
             '(?m)^BoxInteractionArbiterTest: 13/13 cases, 53 assertions passed\r?$';
             '(?m)^=== LootContainerServiceTest start ===\r?$';
@@ -275,8 +310,9 @@ try {
         for ($blockIndex = 0; $blockIndex -lt $runBlockMatches.Count; $blockIndex++) {
             $runTrace = $runBlockMatches[$blockIndex].Groups['body'].Value
             foreach ($pattern in $requiredTracePatterns) {
-                if ($runTrace -notmatch $pattern) {
-                    throw "Map loot fresh trace block $($blockIndex + 1) is missing required suite sentinel: $pattern"
+                $patternCount = [regex]::Matches($runTrace, $pattern).Count
+                if ($patternCount -ne 1) {
+                    throw "Map loot fresh trace block $($blockIndex + 1) requires exactly one suite sentinel (found $patternCount): $pattern"
                 }
             }
             $passCount = [regex]::Matches($runTrace, '(?m)^PASS: ').Count
@@ -293,51 +329,43 @@ try {
         if (-not (Test-Path -LiteralPath $compilerErrorsPath)) {
             throw 'Map loot TestLoader produced no fresh scripts/compiler_errors.txt.'
         }
-        $compilerErrorsItem = Get-Item -LiteralPath $compilerErrorsPath
-        if (($compilerErrorsBeforeUtc -and
-                $compilerErrorsItem.LastWriteTimeUtc -le $compilerErrorsBeforeUtc) -or
-            $compilerErrorsItem.LastWriteTimeUtc -lt $runStartedUtc.AddSeconds(-1)) {
-            throw 'Map loot scripts/compiler_errors.txt was not refreshed by this run.'
-        }
         $compilerErrors = Get-Content -LiteralPath $compilerErrorsPath -Raw -Encoding UTF8
         if ($compilerErrors -notmatch '^\s*0\s+[^,\r\n]+,\s*0\s+[^,\r\n]+\s*$') {
             throw 'Map loot compiler_errors.txt does not report zero compiler errors.'
         }
+        $compileOutput = Get-Content -LiteralPath $compileOutputPath -Raw -Encoding UTF8
+        $retryCount = [regex]::Matches(
+            $compileOutput, 'cold ASO 32K branch detected').Count
+        if ($retryCount -ne 0) {
+            throw "Map loot compile required $retryCount 32K retry; diagnostics were preserved, but this is not a healthy pass."
+        }
 
-        Write-Host ("[OK] Map loot fresh trace verified: exact runId, {0} complete block(s), {1} passed per block, 0 failed, and 0 compiler errors." -f
-            $runBlockMatches.Count, $expectedPassCount)
+        Write-Host ("[OK] Map loot fresh trace verified: exact runId, one block, {0} passed, 0 failed, 32K retry=0, and compiler 0/0." -f
+            $expectedPassCount)
     }
 }
 finally {
     try {
-        if ($runnerInstalled) {
-            if ($hadRunner) {
-                if (-not $backupPath -or -not (Test-Path -LiteralPath $backupPath)) {
-                    throw 'Cannot restore the original TestLoader because its recovery backup is missing.'
-                }
-                Copy-Item -LiteralPath $backupPath -Destination $runnerPath -Force
-                $restoredHash = (Get-FileHash -LiteralPath $runnerPath -Algorithm SHA256).Hash
-                if ($restoredHash -ne $originalRunnerHash) {
-                    throw 'Restored TestLoader hash does not match the original scratch runner.'
-                }
-                Write-Host '[INFO] Restored original TestLoader scratch runner.'
-            } elseif (Test-Path -LiteralPath $runnerPath) {
-                Remove-Item -LiteralPath $runnerPath -Force
-                Write-Host '[INFO] Removed temporary TestLoader scratch runner.'
-            }
+        if ($childCompileSucceeded -and -not $behaviorTerminalObserved) {
+            Write-MapBehaviorUncertain (
+                "child compile succeeded but exact behavior closure was not observed; " +
+                "runId=$runId; the old test player may still append late evidence")
         }
-        $restoreSucceeded = $true
     } finally {
         try {
-            if ($mutexAcquired) { $runMutex.ReleaseMutex() }
+            if ($scratchTransaction) {
+                Restore-Cf7TestLoaderScratchTransaction `
+                    -Transaction $scratchTransaction -InstalledHash $installedRunnerHash
+                Write-Host '[INFO] Restored original TestLoader scratch runner.'
+            }
         } finally {
-            $runMutex.Dispose()
-        }
-        if ($restoreSucceeded -and $backupPath -and (Test-Path -LiteralPath $backupPath)) {
-            Remove-Item -LiteralPath $backupPath -Force
-        } elseif (-not $restoreSucceeded -and $backupPath -and
-                (Test-Path -LiteralPath $backupPath)) {
-            Write-Warning ("TestLoader restore failed; recovery backup retained at {0}" -f $backupPath)
+            if ($compileMutexAcquired) { $compileMutex.ReleaseMutex() }
+            $compileMutex.Dispose()
+            if ($scratchTransaction -and
+                (Test-Path -LiteralPath $scratchTransaction.MarkerPath)) {
+                Write-Warning ("TestLoader scratch transaction remains blocked; recovery backup: {0}" -f
+                    $scratchTransaction.BackupPath)
+            }
         }
     }
 }

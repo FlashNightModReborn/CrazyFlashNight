@@ -1,16 +1,18 @@
 # asLoader BootSequencer · 权威启动契约 · 构建标准 · 2026-06-16
 
 **文档角色**：BootSequencer（C2 全量异步-B）施工的**权威跨时间轴启动契约**。
-**最后核对代码基线**：commit `e9af7030e7`（2026-07-13）；具体 import 白名单含本轮待提交 `SkillReleaseGuard`。
+**最后核对代码基线**：commit `3d33fd238032e4ffc81cc91b41223b7ac67415f9` + 2026-07-25 当前工作树维护性收口。
 **来源**：8-agent workflow（3 readers → 综合 → 3 对抗校验 → spec），全部 file:line 二次核对。
 **上游设计**：[asLoader重构-架构设计-2026-06-15.md](asLoader重构-架构设计-2026-06-15.md)。
-**状态**：契约已闭合；BootSequencer 已编译落地——happy-path 真机 boot + L1 单测（BootSequencerTest / BootstrapHandshakeTest）+ trace 等价门通过；§5 七边界真机验收推进中（见 §5.3）。
+**状态**：契约与单帧实现均已落地；当前 29 个 live source 由唯一 `BOOT_SOURCES` 生成 6 个纯装配 stage，S0/S5/S9 业务归 `BootSequencer`。happy-path 真机 boot、S2→S10 全 10 事件 trace 等价门、L1 `BootSequencerTest 58/58` / `BootstrapHandshakeTest 12/12` 已通过；七边界只保留真 socket 10s 超时为低价值人工观察项（见 §5.3）。
+
+> **2026-07-25 现行装配入口**：只编辑 `scripts/asLoaderManifest/` 中表列 live source、`BootSequencer.as` 与 `tools/assemble-collapsed-frame.js`；运行生成器后以 `_collapsed_frame.as` 为唯一生成物。旧 `frame0/1/4/5/6/7/26/75/91.as` 与 pre-collapse backup 已删除，历史只查 Git。生成器以 canonical LF、剥 BOM并计根源体的方式报告源闭包；`70,000 B` 只是调查提示线，不是 hard gate 或 no-growth ratchet。当前提示项为 `f3=149298`、`f36_2=121117`、`f37_7=76380`，仍须与 fresh SWF `codeSize` 和行为证据合用。
 
 > ## ⚠ 2026-06-16 重大修正 + 进展（读 Runbook 前必看）
 > 1. **AVM1 函数体 64KB 硬限推翻「单函数 staging」**：`DefineFunction2.codeSize` 是 UI16（≤65535B 字节码）。大帧（单位函数 506KB/装备 456KB/UI 189KB 源）wrap 进单个 `function(){}` 即溢出 → 编译 0 错却静默产坏函数（真机实证 f36/f37/f41 staged 函数从不执行）。帧脚本(DoAction)是 UI32 无此限。
-> 2. **修复 = chunk 分块**：`tools/stage-wrap-frame.js --chunk-bytes <源字节预算> [--flatten]` 把帧 includes 切多个 `_root.__boot.fN_k` 函数各 <64KB 字节码（保序/不拆单文件/`--flatten` 展平聚合 include，如装备帧 62 武器现固化于 frame37.as）；`tools/swf-function-sizes.js` = codeSize 门（解析 SWF 每个 DefineFunction2，>阈值 exit1，**无需真机即拦溢出**）。源→字节码比实测 0.34-0.43。
+> 2. **修复 = chunk 分块**：`tools/stage-wrap-frame.js --chunk-bytes <源字节预算> [--flatten]` 把帧 includes 切多个 `_root.__boot.fN_k` 函数（保序/不拆单文件/`--flatten` 展平聚合 include，如装备帧 62 武器现固化于 frame37.as）；`tools/swf-function-sizes.js` 解析 SWF 的 UI16 `codeSize` 并对 `>=60000` 近墙项失败。它不能识别已经越墙后回绕成小值的函数，必须与 canonical 源闭包度量和 fresh 行为证据合用；度量只帮助定位，不单独判成败。源→字节码比实测 0.34-0.43。
 > 3. **function form 而非 class form**（工程裁决）：class 静态方法不捕获时间轴 scope（裸 `打印加载内容`/自定义函数静默不解析），function-on-`_root` 闭包捕获时间轴已 f2 真机证；**且 class wrap≠静态 typing**（内部仍 untyped `_root.X=function`）。typed class 化作独立长期 track，不耦合 collapse。
-> 4. **进度：全 12 sync 帧已 staged + 真机验证通过**（f2/3/9/10/18/32/38/39/40 单函数 + f36/f37/f41 chunk）；`_root.__boot` 收尾删除已加（frame91 + 本 doc §3 S10）。**剩 = 本 Runbook 的 async 帧（f4 握手/f5,6 await/f7 parse/f26 loader-seq/f48-74 fanout/f75 craft/f91 handoff）→ BootSequencer + P5 塌缩 + §4 三处主 FLA 改动 + §5 真机边界验**。下面 Runbook 的「单 staged 函数」表述统一按 chunk 化理解。
+> 4. **进度（现行）**：13 个 sync source 已 staged，16 个 loader-fire source 由生成器薄包装；原 f4/f5/f6/f7/f26/f75/f91 的握手、await、解析、逐 tick 队列、craft 与 handoff 已归 `BootSequencer`。`_root.__boot` 由 S10 回收。下面 Runbook 的旧帧号继续作为迁移来源坐标，不再代表现行可编辑文件。
 > 5. **2026-06-16 评审修复轮**（两点，已验证）：
 >    - **工具 import 正则盲区**：`stage-wrap-frame.js`/`lint-frame-imports.js` 旧正则强制 `;`，漏剥**无分号 import**（AS2 分号非必需）。实证 `单位函数_fs_aka_玩家模板迁移.as`/`单位函数_lsy_敌人模板迁移.as` 的 `import …RandomNumberEngine.*`（无分号）泄进 f36 staged 函数体、lint 假报「子文件无残留」。修 = 正则改**行首锚定 + 分号可选 + 标识符分段式** `[seg](?:\.[seg])*(?:\.\*)?`（⚠ 仅去 `;` 会因贪婪 `[\w.$]*` 吞掉 `.*` 前的点、末尾全可选不回溯→漏下游离 `*`；分段式根治）。两文件已 BOM 安全剥（`tools/strip-stale-frame-imports.js`，包已在 f36 联合头覆盖故行为不变，待下次 publish 入 SWF）。lint `--fold-specific --strict`=0、check-bom 205、全 tools 已无同类盲区。
 >    - **compile_test asLoader 假成功**：脚本只看 compiler_errors / `[TEST_FAIL]` 即 exit 0，从不校验 `asLoader.swf` 是否真刷新（marker 产出但 SWF 未重写=与 testing-guide 口径相反地假通过）。修 = 新增 opt-in `-VerifySwf <path>`，触发前记 mtime/size 基线、成功路径校验其变化，未刷新→`exit 1`（fail-closed）。**asLoader publish 一律 `-VerifySwf scripts/asLoader.swf`**（testing-guide §2 已写硬）。
@@ -18,13 +20,13 @@
 >    - **f42(视觉) 已 staged** → 全 13 sync `#include` 帧 staged 完成（f2/3/9/10/18/32/36/37/38/39/40/41/42）。剩余帧皆非 stage-wrap 类归 BootSequencer。
 >    - **⚠ §3 原 S6 描述（"同步串行 最终化1→最终化2→最终化3"）不准**：实读源码，f18(最终化1)=`for-in` 跑全部 `_root.preloaders`（一次性）；**f26(最终化2)=`onEnterFrame` 每帧抽 1 个 `_root.loaders`（时间切片，async 多帧）**；f32(最终化3)=跑全部 `_root.loaderkillers` + 删三队列。队列生命周期：f9 建 `_root.loaders` → f10(佣兵/兵种/商城/商店_兼容) 各 push → f26 抽干 → f32 删。**BootSequencer.as 已据此改 S6=stepSyncSys（sysPhase 0 跑 s6_pre=f9+f10+f18，相位 1 每 tick 抽 1 个 loader，队空跑 s6_post=f32→S7）**，已更 §3。
 >    - **f5/f6 parity**：原 f5 调 `打印加载内容("加载任务数据……")` + cb `_root.发布消息("任务数据加载完毕")`、f6 cb `_root.发布消息("任务文本加载完毕")`，draft 漏；已补进 BootSequencer S3/S4（host.打印加载内容 + _root.发布消息，C1 事件副作用必留）。
->    - **塌缩帧需定义的 s-函数**（映射 staged fN）：s0_init=f1·s1_syncCode=f2,f3·s5_parseTask=f7·**s6_pre=f9,f10,f18 / s6_post=f32**·s7_syncLogic=f36..f42+f48-59·s8_fanout=f62-74·s9_onCrafting=f75。**未做**：写塌缩帧 CDATA + 改 asLoader.xml 单帧 + 3 主 FLA 改（destructive，待评审后执行）。
+>    - **现行所有权**：生成器只定义 `s1_syncCode / s6_pre / s6_post / s7_syncLogic / s7_miscLoaders / s8_fanout` 六个纯装配 stage；S0 初始化、S5 task/guide 与 S9 crafting 直接由 `BootSequencer` 实现，不再生成 `s0_init / s5_parseTask / s9_onCrafting`。
 > 7. **2026-06-17 P5 塌缩已应用 + happy-path 真机全绿（4 个运行时回归已修，凡塌缩必查）**：塌缩 boot 首测暴露 4 类**编译 0 错却运行时坏**的陷阱（publish 无 trace，全靠注入诊断定位）——
 >    - **(a) chunk 帧调度必须调全部 chunk 名，不能调 base `fN`**：组装器 `s7_syncLogic` 调 `_root.__boot.f36()/f37()/f41()`，但这三帧是 chunk 帧只定义 `fN_1..fN_k` **无 base `fN`** → 调用 no-op → 三最大帧（单位函数 506K/装备 456K/UI 189K ≈ 游戏主体）从不执行。**症状=入 base_lobby 但角色瘫痪 + 刘海屏不展开（notifyGameEntered 在 f41 没跑）+「大量代码未运行」观感，且无报错**。修 = `assemble-collapsed-frame.js` 加 `extractDefNames`+`callsFor(N)`（chunk 帧=顺序调全 chunk 名），s1/s6/s7 全改 callsFor。
 >    - **(b) 异步 preload→consume 靠帧间隔，塌缩压成紧 tick → 数据未落地就被读**：`佣兵系统_兼容.as` 是 preloader(异步 XML.load→GetFileByPath 异步 LoadVars)+loader(读 preload 数据建 `_root.mercs_list`) 双阶段；原版 f18(fire)→goto链→f26(consume) 有帧间隔，塌缩压到相邻 tick → loader 在 `onData` 回来前读空 → `mercs_list` 只 1 条 → 佣兵几乎不刷（trace 实证 `mercsList=1`）。**系统性**：全 `兼容` 文件 + 任何 GetFileByPath 型 preload 同理。修 = `GetFileByPath` 加全局在途计数 `_root.__pendingFileLoads`（load++/onData--），BootSequencer.stepSyncSys S6 插**相位 1 等待门**（最少 30 帧 + 等 `__pendingFileLoads==0`，150 帧兜底）再抽 loader。真机验 `mercsList=204` 满编。**通用律：凡「fire 异步→后续帧 consume」的 boot 序列，塌缩后都要加显式等待门**。
 >    - **(c) eager 自单例（`static var instance = new Self()`）构造里做跨类调用 = 类注册序陷阱**：`VectorAfterimageRenderer.as:59` 在类注册期即构造，构造里 `_fadeCallback = Delegate.create1(this, onFadeUpdate)`；塌缩单帧使依赖类 `Delegate` 可能**尚未注册** → **AVM1 对「未定义类.方法()」静默返回 undefined 不抛错** → `_fadeCallback` 变 undefined（其余构造照跑/绘制正常）→ 渐隐回调形同虚设、刀光不消失（**无报错，极隐蔽，只在很久后表现为功能缺失**）。修 = 入队前（initializeCanvas，引擎早就绪）重绑委托。审计：eager 自单例 ∩ 构造调 `Delegate.create*` = 仅此一例（EventBus 的 Delegate.create 只在注释；余自单例皆平凡值构造）。**通用律：eager 自单例构造勿做跨类调用**。
 >    - **(d) 潜伏大小写 typo 被塌缩联合头更严格解析暴露**：`单位函数_lsy_敌人模板迁移.as` 误写 `StaticDeinitializer.deinitializeUnit`（真方法 `deInitializeUnit` 大写 I）。多帧时该上下文未解析为 typed 类故 0 错；塌缩联合头使其解析为 typed 类 → 静态方法类型检查 → 编译报错（非塌缩 bug，是先前潜伏 typo 被更严格解析揪出）。**⚠C1 注记**：若旧运行时大小写敏感(SWF v7+)则修前这 2 处 enemy-deinit 是静默 no-op、修后真 deinit=行为变化，可游戏内验敌人死亡清理。
->    - **状态**：塌缩 boot happy-path 全绿（引擎/通信/玩家模板/装备/战斗/UI/关卡/佣兵满编/刀光褪色/存档 loadAll OK，launcher.log 无 boot 错），诊断插桩已清理净化重编（SWF 869820B）。**剩 = §5 七边界验 + trace 等价门**。
+>    - **状态（该轮）**：塌缩 boot happy-path 全绿（引擎/通信/玩家模板/装备/战斗/UI/关卡/佣兵满编/刀光褪色/存档 loadAll OK，launcher.log 无 boot 错），诊断插桩已清理。后续 §5 trace 与边界已按本文顶部 2026-07-25 状态继续闭合。
 
 > 帧号：MAIN = `CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml`（场景帧 0-based）；asLoader = `scripts/asLoader/LIBRARY/asLoader.xml`（DefineSprite 内 f 序号 0-based）；shim = `scripts/通信/通信_fs_bootstrap.as`；类 = `scripts/类定义/org/flashNight/neur/Server/{BootstrapHandshake,BootstrapWait,SaveManager}.as`。
 
@@ -88,12 +90,13 @@
 
 ## 3. BootSequencer 状态机规格（施工核心）
 
-**形态**：asLoader 折叠为单关键帧 MovieClip；帧首 `stop()`；`_root` 挂 tick（仿 `DataQueryService.whenAvailable` 存活模式，确保自删后回调可达）。原 f0-f91 折叠为顺序 stage + gate。**防重跑靠帧首 stop + 幂等 guard，不靠"play 不 loop"**（§0）。
+**形态**：asLoader 折叠为单关键帧 MovieClip；生成物帧顶先执行结构前导 `_lockroot=false; stop();`，再启动业务状态机；`_root` 挂 tick（仿 `DataQueryService.whenAvailable` 存活模式，确保自删后回调可达）。原 f0-f91 折叠为顺序 stage + gate。**防重跑靠帧首 stop + 幂等 guard，不靠"play 不 loop"**（§0）。
 
 ```
+FRAME_PREAMBLE [结构]      _lockroot=false; stop(); 必须早于任何 _root 读写
 _root.__boot.tick()  (onEnterFrame 驱动)
 
-S0_INIT      [同步 f0-f1]   guard s0done: _lockroot=false; GlobalInitializer.initialize(); →S1
+S0_INIT      [同步 f0-f1]   guard s0done: GlobalInitializer.initialize(); →S1
 S1_SYNC_CODE [同步 f2-f3]   guard s1done: #include 引擎×18+通信×9(建 _root._bootstrap); →S2
 S2_HANDSHAKE [异步, 移植 f4] ★跨SWF★
    if(_bootstrap==undefined){置 _bootstrapFailed; HALT 加载画面}  // fail-closed
@@ -129,15 +132,15 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 采集有序事件：`frame4 entered`(:139)=S2进入 → `socket ready firing handshake`(:170)=阶段1 → `hs=Success`+`firing preload`(:182/195)=阶段2 → `存档恢复等待中` gate 进出(:198)=C2-β边界 → `sending ready ack`(:203)+`jumping boot_check`(:206)=S2收尾 → 三异步cb(`任务数据/文本/合成表加载成功`,:792)=S3/S4/S9 → f91 `_root.play()` 前后=S10。BootSequencer 发同 schema → comparator diff（顺序+事件类型+关键状态，容时间戳差）。**字节门不适用**（结构变了）。
 
-**真机必验**：(a) C2-β 注入 `_repairPending` 坏档→S2 gate 自旋→修复卡→`applyRepairResolved`(SaveManager.as:908/924) 放行；(b) 阻断 socket→10s `socket_connect_timeout`(:162)；(c) shim 缺失 fail-closed（MAIN 冻结非靠 f62）；(d) 存档三分支 `重新游戏确认`/`存档损坏`/`跳转地图("房间")`(:1448/1452/1480)；(e) **最终化2 在场**（S6 没漏 land-frame）；(f) 生命周期不抢（改动 B **未做**，靠 f33 `stop()` 使实例在 1–33 跨度存活、handoff 先于 f34 自删 → 仍应只卸载一次，见 §4 改动 B）；(g) 单帧 loop 回绕一轮，#include/loader 不重复执行（guard 生效）。
+**真机必验**：(a) C2-β 注入 `_repairPending` 坏档→S2 gate 自旋→修复卡→`applyRepairResolved`(SaveManager.as:908/924) 放行；(b) 阻断 socket→10s `socket_connect_timeout`(:162)；(c) shim 缺失 fail-closed（MAIN 冻结非靠 f62）；(d) 存档三分支 `重新游戏确认`/`存档损坏`/`跳转地图("房间")`(:1448/1452/1480)；(e) **最终化2 在场**（S6 没漏 land-frame）；(f) 生命周期不抢，S10 严格 `_root.play()` 后才卸载 host 且只卸载一次；(g) 单帧 loop 回绕一轮，#include/loader 不重复执行（guard 生效）。
 
 ### 5.1 trace-diff 门 + 各边界期望信号（2026-06-17 BootSequencer 化 + 失败路径日志落地）
 
-**comparator 已就位**：`node tools/trace-diff.js diff <golden> <new>`（事件序列 LCS diff，分歧 exit 1）；`extract <log>` 抽规范事件。**已批处理感知**：launcher LogBatch 用 `|` 把同帧多条 `[BootstrapAS]` 拼进一行，extract 现按位置多匹配（不再 break，否则 `hs=Success|firing preload` 只留前者→假分歧）。**BootSequencer 词表已对齐 trace-diff RULES**：`handshake stage entered`→S2_ENTER（rule 已加别名）、`socket ready, firing handshake`→SOCKET_READY、`handshake hs=Success`/`handshake FAILED`→HANDSHAKE_RESULT、`firing preload`→PRELOAD_FIRE、`sending ready ack`→READY_ACK、`bootstrap complete`/`jumping boot_check`→BOOT_CHECK_JUMP、`任务数据/文本加载完毕`→TASKDATA_OK/TASKTEXT_OK。
+**comparator 已就位**：`node tools/trace-diff.js diff <golden> <new>`（事件序列 LCS diff，分歧 exit 1）；`extract <log>` 抽规范事件。**已批处理感知**：launcher LogBatch 用 `|` 把同帧多条 `[BootstrapAS]` 拼进一行，extract 现按位置多匹配（不再 break，否则 `hs=Success|firing preload` 只留前者→假分歧）。旧 handoff 坐标 `f91` 只按独立 token 匹配，随机 attemptId 内嵌 `f91` 不再虚增 `HANDOFF_PLAY`，selftest 有正反例固定。**BootSequencer 词表已对齐 trace-diff RULES**：`handshake stage entered`→S2_ENTER（rule 已加别名）、`socket ready, firing handshake`→SOCKET_READY、`handshake hs=Success`/`handshake FAILED`→HANDSHAKE_RESULT、`firing preload`→PRELOAD_FIRE、`sending ready ack`→READY_ACK、`bootstrap complete`/`jumping boot_check`→BOOT_CHECK_JUMP、`任务数据/文本加载完毕`→TASKDATA_OK/TASKTEXT_OK。
 
 **happy-path 期望规范序列**（extract 应见，容时间戳/批处理）：`S2_ENTER → SOCKET_READY → HANDSHAKE_RESULT → PRELOAD_FIRE →（坏档时 +RECOVERY_GATE_ENTER/EXIT）→ READY_ACK → BOOT_CHECK_JUMP → TASKDATA_OK → TASKTEXT_OK → … → CRAFTING_OK → HANDOFF_PLAY`。**✅ 2026-06-17 已实测全 10 段**（真机 boot，SWF 870267：HANDSHAKE_RESULT + 新 CRAFTING_OK/HANDOFF_PLAY 全在，`trace-diff diff` [OK]）。
 
-> **⚠ 2026-06-17 trace 门覆盖修正（外部审阅 Medium）**：当前固化的 `tools/baselines/boot-golden.log` **仅覆盖 S2–S4**（末事件 = `TASKTEXT_OK`）。根因：`TASKDATA_OK/TASKTEXT_OK` 之所以可见，是因为 f5/f6 走 `_root.发布消息`→toast→socket→launcher.log；而**原 frame75（S9）/ frame91（S10）只有 `trace()`，Flash SA 剔 trace → 从不进 launcher.log**，故 golden 无 `CRAFTING_OK`/`HANDOFF_PLAY`，**S5–S10 整段对 trace-diff 不可见 → S9/S10 回归能通过门**。
+> **⚠ 2026-06-17 当时的 trace 门覆盖缺口（外部审阅 Medium）**：初版 `tools/baselines/boot-golden.log` **仅覆盖 S2–S4**（末事件 = `TASKTEXT_OK`）。根因：`TASKDATA_OK/TASKTEXT_OK` 之所以可见，是因为 f5/f6 走 `_root.发布消息`→toast→socket→launcher.log；而原 frame75（S9）/ frame91（S10）只有 `trace()`，Flash SA 剔 trace，故初版 golden 无 `CRAFTING_OK`/`HANDOFF_PLAY`。
 > **已修（源级，待重编 + 重抓 golden 生效）**：`BootSequencer.stepCrafting` 成功 cb 加 `bslog("合成表数据加载完毕")`→`CRAFTING_OK`；`handoff()` 首行加 `bslog("event=handoff")`→`HANDOFF_PLAY`（走 `[BootstrapAS]` 诊断通道，**不发 `发布消息` 故无新 UI toast**，行为零变化）。
 > **语义须知**：旧多帧 boot 对 S9/S10 **物理上发不出**可见事件，故 `CRAFTING_OK`/`HANDOFF_PLAY` **不是「旧↔新等价」项，而是「塌缩 boot 的前向回归快照」**——必须用**塌缩 boot 重抓一份新 golden**（含这两事件）作基线，旧 golden 只继续守 S2–S4 等价。**✅ 2026-06-17 已闭合**：真机 boot（recompile 后 SWF 870267）→ `tools/baselines/boot-golden.log` 重抓为单次完整 boot（S2→S10 共 10 事件），`trace-diff diff` [OK]。两新事件真机确发。
 
@@ -260,7 +263,7 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 
 4 份独立审阅（本仓 + kimicode/codex/zcode）交叉核对，落实 15 项有效修复（驳回 zcode-M2「刀光只加注释」=实为 initializeCanvas 真重绑、commit 重写=越界、改动B=有意取舍）：
 - **F1 S6 race 加固**：`__pendingFileLoads` 只计二级 `GetFileByPath`、不计一级 `XML.load`（佣兵/兵种/商城/商店 4 个 `兼容.as` 的 `list.xml`）→ 慢盘下 pending==0 会提前抽空 loader（同 `merc only 1` 类回归）。BootSequencer 加 `sawPending`：pending==0 仅在「曾观测到 pending>0」或 150 帧兜底时放行；phase2 对 malformed `_root.loaders.current` 归零防 NaN 卡死。BootSequencerTest 扩 `test_s6_waitGateThenDrain`(慢-list race) + `test_s6_ceilingRelease`(150 帧兜底) + `test_s6_loaderQueueCurrentDefaults`(队列 current 防御)。
-- **守门工具**：swf-function-sizes `--max` NaN/等号式（裸 `--max`→exit2）+ 诚实记 UI16 wrap 本质不可测（真护栏=源端 chunk 预算）；耦合门 `maskNested` 修同行 `};stop()` 漏判（audit + stage-wrap 2 文件）；assemble `callsFor` fail-fast（不再回退调 base fN）+ 具体 import 白名单 exact-match 断言；默认包 import 垃圾头守卫（3 文件）；trace-diff 末次-boot 窗口（修累积 launcher.log 假分歧）+ selftest 顺序错位/累积用例。
+- **守门工具**：swf-function-sizes `--max` NaN/等号式（裸 `--max`→exit2）+ 诚实记 UI16 wrap 本质不可由该字段单独证明（需结合 canonical 源闭包度量与 fresh 行为；源字节本身不作 hard gate）；耦合门 `maskNested` 修同行 `};stop()` 漏判（audit + stage-wrap 2 文件）；assemble `callsFor` fail-fast（不再回退调 base fN）+ 具体 import 白名单 exact-match 断言；默认包 import 垃圾头守卫（3 文件）；trace-diff 末次-boot 窗口（修累积 launcher.log 假分歧）+ selftest 顺序错位/累积用例。
 - **产物/收尾**：`carftingDict→craftingDict`（regen，产物仅此 1 处变更）；frame70.as EOF 空白；strip-stale 退役标记；compile_test BOM 门扩到 boot / Server / StateMachine / 通信 + 本地 `scripts/TestLoader.as`（187 文件）；核心 doc 基线→`6ed0404f9a`/状态校正 + manifest 角色说明。
 - **prewarm handshake timeout 对齐**：`BootstrapHandshake.start(...,60000)` 现把 `timeoutMs` 传给 sender，shim 将其换算为 per-call callback timeout frame 传给 `ServerManager.sendTaskWithCallback`；其它调用保留默认 600 帧。真 launcher prewarm-only smoke（20:30）实证：`PrewarmHandshakeHeld` 后无 `callback timeout`，45s 走统一 `prewarm_deadline` 降级。随后 870418 完整 `start_game → Ready → handoff` 真机烟测通过，`trace-diff diff tools/baselines/boot-golden.log logs/launcher.log` [OK]；但 `bootstrap_reveal_ready` 晚于 10s reveal watchdog 到达，launcher 先走 force reveal，作为后续 reveal 时序优化项保留。
 - ✅ **asLoader 重编 0 错 0 警**：870326→**870418**，codeSize 门最大 58064B 不变、single-ownership main=0/loader=572、check-bom 187、git diff --check 净、doc-gov ok、trace-diff selftest+golden 自洽。
@@ -272,6 +275,8 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 ---
 
 ## 6. 残留不确定（需真机确认）
+
+> **2026-07-25 状态说明**：下列是 2026-06 施工期调查清单，不再是当前阻断项。land-frame 已由 `stepSyncSys` 明确拥有，live source 清单由生成器 exact-match，handoff/whenAvailable 生命周期已有 L1 + 真机证据；仍保留的人工边界只有 §5.3 的真 socket 10s 超时观察。
 
 1. **f25→f27 land-frame 精确 AVM1 时序**：已从"游戏可启动"反推确凿，建议真机插桩确认最终化2/3 执行先后（折叠后此不确定性消失）。
 2. **UI交互/视觉系统层 #include 行号**（asLoader.xml:936/976）：未逐字 re-grep，施工前确认这两层文件清单完整。
@@ -297,7 +302,7 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 折叠（把每帧 #include 包成 `_root.__boot.sN=function(){...}` 由状态机调度）有两处静态风险，原 Runbook 只有 TODO 没有工具。现各建一门，**两门均给出确定性绿灯结论**：
 
 - **门 ① 联合 import 头碰撞**：`node tools/lint-frame-imports.js --fold-specific [--strict]`。把 47 个具体 import 的「包」并入通配并集（= 子文件剥具体 import、靠单帧联合头解析的终态），重算跨包叶名碰撞。**结论：折叠新增 6 包（`gesh.pratt`/`gesh.text`/`gesh.xml.LoadXml`/`neur.InputCommand`/`neur.PerformanceOptimizer`/`arki.unit.Action.Melee`）→ 并集 76→82，新引入碰撞 = 0**。⇒ 折叠时子文件**仅需删掉自带具体 import，零 FQN 改写**。`--strict --fold-specific` exit 0。
-  - **⚠ 具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化；2026-07-13 扩为 9 项）**：塌缩产物 `_collapsed_frame.as` 为规避 L42 陷阱（CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败）保留由 `assemble-collapsed-frame.js::SPECIFIC_IMPORTS` 管理的具体 import。当前 exact-match 白名单为 `org.flashNight.boot.BootSequencer`，以及 `org.flashNight.arki.unit.Action.Skill` 包内 8 个现役类（`DrugInputService / ManualCooldownService / QuickSkillInputService / SkillReleaseGuard / SkillAttributeCore / SkillDamageCore / SkillReloadCore / WeaponSkillInputService`）。其中会话期新增且被帧脚本直接引用的 `QuickSkillInputService`、`SkillReleaseGuard` 必须显式导入；又因 AS2 编译器拒绝同包 `Action.Skill.*` 与具体 import 并存，该包整体从 82 包通配头移出并改为具体类集合，最终为 81 包通配 + 9 具体 import。组装器生成后逐项 exact-match，任何未登记具体 import、同包通配回流或顺序漂移都 fail-fast；这些 import 不在被 lint 扫描的源帧内，故 `lint --fold-specific` 的 strict 分支仍只判折叠碰撞。新增白名单项必须有“本会话新增类被帧脚本直接引用”的证据并同步本文，不能把列表当通用逃生口。
+  - **⚠ 具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化；2026-07-13 扩为 9 项）**：塌缩产物 `_collapsed_frame.as` 为规避 L42 陷阱（CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败）保留由 `assemble-collapsed-frame.js::SPECIFIC_IMPORTS` 管理的具体 import。当前 exact-match 白名单为 `org.flashNight.boot.BootSequencer`，以及 `org.flashNight.arki.unit.Action.Skill` 包内 8 个现役类（`DrugInputService / ManualCooldownService / QuickSkillInputService / SkillReleaseGuard / SkillAttributeCore / SkillDamageCore / SkillReloadCore / WeaponSkillInputService`）。其中会话期新增且被帧脚本直接引用的 `QuickSkillInputService`、`SkillReleaseGuard` 必须显式导入；又因 AS2 编译器拒绝同包 `Action.Skill.*` 与具体 import 并存，该包 wildcard 被排除并改为具体类集合，最终仍是 **82 包通配 + 9 具体 import**。具体类所属包集合直接从同一 `SPECIFIC_IMPORTS` 白名单派生，不维护第二张包表；组装器生成后逐项 exact-match，任何未登记具体 import、同包通配回流或顺序漂移都 fail-fast。`lint-frame-imports --fold-specific --strict` 会读取生成物中的具体 import，并把 2 个具体包折入 82 个通配包，验证当前 84 包模拟并集为 0 碰撞。新增白名单项必须有“本会话新增类被帧脚本直接引用”的证据并同步本文，不能把列表当通用逃生口。
   - **权威联合头（82 包，已验证 0 碰撞）= 折叠后单帧 CDATA 顶部固定块**：
 
 ```as2
@@ -360,14 +365,14 @@ P3 改变执行结构（包进函数+延迟调用）→ **字节门不适用**�
 
 5. 评审 `org.flashNight.boot.BootSequencer.as`（DRAFT）：消除 6 条未验证假设；接 staged 函数名与 P3 对齐；显式 import 自检（L42）。
 6. 主 FLA 改动 A（必须）：`DOMDocument.xml:1271` `_root.asLoader.play()` → `_root.__boot.mainReadyToContinue=true`。
-7. 主 FLA 改动 B（必须）：asLoader 实例 keyframe 寿命（:1684/:1696）—— 选延展 keyframe 或 attachMovie 代码挂载（推荐后者）。
+7. 主 FLA 改动 B（原计划必须，实际未做且可省）：asLoader 实例 keyframe 寿命维持原状，正确性依赖 f33 `stop()`；现行取舍与潜伏脆弱见 §4，不得把本行当待办自动施工。
 8. 主 FLA 改动 C（建议）：删 f62-64 死代码自旋（:1311-1356）。
 9. **boot trace 插桩**：给「当前（未折叠）boot」按 §5 事件清单插桩发 `[BOOTTRACE] event=<ID>`（走 `_root.server.sendServerMessage`），跑一次真机 boot → 存 golden 事件日志。
 10. compile 门（主 SWF 也需重编 —— 仅 11 个 mx 类，快）+ `node tools/audit-as2-class-embedding.js --policy single-ownership`（主 SWF 仍 0 org.flashNight）。
 
 ### P5 — 时间轴塌缩单帧 + 收尾
 
-11. asLoader symbol 塌缩为单关键帧：联合头 + staged `#include` + `BootSequencer.run(this)`；删旧多帧多层（留旧 symbol 副本备回退）。
+11. asLoader symbol 塌缩为单关键帧：联合头 + staged `#include` + `BootSequencer.run(this)`；删旧多帧多层。现行不保留工作树 symbol 副本，历史与回退只走 Git。
 12. compile 门 0 错 + SWF 刷新。
 13. **trace 等价门**：折叠后真机 boot 发 `[BOOTTRACE]` → `node tools/trace-diff.js diff <golden.log> <new.log>` 必 `[OK]`。
 14. **真机必验**（§5 a-g）：C2-β 坏档修复 / socket 超时 / shim 缺失 fail-closed / 存档三分支 / 最终化2 在场 / 生命周期不抢 / 单帧 loop 不重复加载。
@@ -375,4 +380,4 @@ P3 改变执行结构（包进函数+延迟调用）→ **字节门不适用**�
 
 ### 回退点
 
-- P3/P4/P5 各自留 git 提交边界 + asLoader symbol 副本。任一相位 trace/真机红 → 回退该相位 symbol/源，不影响已落地的 P0-P2 工具与 P1 守门。
+- P3/P4/P5 的历史提交是唯一回退来源。任一相位 trace/真机红 → 按 Git 边界一并回退该相位 symbol、生成器、live manifest 与源，不复活工作树 pre-collapse/symbol 副本，也不影响已落地的 P0-P2 工具与 P1 守门。

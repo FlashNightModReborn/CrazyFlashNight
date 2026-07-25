@@ -35,7 +35,9 @@ var RULES = [
   { re: /event=tasktext\b|任务文本加载(完毕|成功)/i, ev: "TASKTEXT_OK" },
   { re: /event=parse_task\b|ParseTaskData|任务数据.*配置/i, ev: "PARSE_TASK" },
   { re: /event=crafting\b|合成表数据加载(完毕|成功)/i, ev: "CRAFTING_OK" },
-  { re: /event=handoff\b|f91|_root\.play|卸载影片剪辑/i, ev: "HANDOFF_PLAY" },
+  // 旧坐标 f91 必须是独立 token；不加边界会把随机 attemptId 中的 "...f91..."
+  // 误判为 handoff，并让同一 fresh boot 虚增多条 HANDOFF_PLAY。
+  { re: /event=handoff\b|\bf91\b|_root\.play|卸载影片剪辑/i, ev: "HANDOFF_PLAY" },
 ];
 
 function extractEvents(text) {
@@ -129,6 +131,10 @@ function selftest() {
   check("含 BOOT_CHECK_JUMP", ev.indexOf("BOOT_CHECK_JUMP") >= 0);
   check("含 CRAFTING_OK", ev.indexOf("CRAFTING_OK") >= 0);
   check("含 HANDOFF_PLAY", ev.indexOf("HANDOFF_PLAY") >= 0);
+  check("opaque attemptId 内嵌 f91 不得冒充 handoff",
+    extractEvents("[Prewarm] attemptId=e33889e55c174d06bf91493ed2e33e8e\n").length === 0);
+  check("独立旧坐标 f91 仍映射 handoff",
+    extractEvents("[BootstrapAS] f91\n").map(function (e) { return e.ev; }).join(",") === "HANDOFF_PLAY");
 
   // BootSequencer 规范文案应映射到同序列
   var newLog =

@@ -19,7 +19,18 @@ The repeatable harness lives at:
 
 - `scripts/protocol_latency_cycle.ps1`
 
-It temporarily swaps in a benchmark `TestLoader.as`, compiles through Flash CS6, reads fresh `flashlog.txt`, then restores the user's original `TestLoader.as` bytes.
+It holds the repository compile mutex, creates a same-volume persistent recovery sidecar plus scratch marker, temporarily swaps in a benchmark `TestLoader.as`, and compiles through Flash CS6. A sample is accepted only from one exact runId START→END block, fresh compiler output/errors, Compiler Errors `0/0`, and `32K retry=0`; the original runner is then restored by installed/original SHA-256 before the mutex is released.
+
+The current contract contains exactly 14 literal `enqueueMetric(name,count,...)` specifications. The PowerShell schema is derived from those AS2 queue definitions rather than a second hand-maintained metric table, but still asserts the contract count is 14. Every expected summary and raw sample set must occur with the derived count; non-finite/negative values, duplicate summaries, missing names, unexpected names, and summary min/avg/max values that disagree with raw samples all fail the cycle. If child compile succeeds but a unique END is not observed, `compile_state_uncertain.marker` blocks later compilation because the old test player may still append late evidence.
+
+## 2026-07-25 runner-contract replay
+
+This replay validates the current harness and evidence contract; it does not replace the latency samples below:
+
+- cycle runId `38f167b2d06841c5b9ea75fa9b6dd37e`: all exact 14 summaries plus 14 raw-sample sets accepted, `failures=0`, Compiler Errors `0/0`, `32K retry=0`
+- `protocol_latency_sweep.ps1 -Runs 1 -Json`: one complete 14-metric sample accepted, `failures=0`
+- the self-started bus was bound to the exact Core PID and current ports-file PID, received graceful `/shutdown`, and exited without a hard kill
+- the original `TestLoader.as` SHA-256 was restored; no scratch, recovery, uncertain marker, Core process, or owned ports file remained
 
 ## Latest baseline
 
@@ -74,6 +85,8 @@ The JSON callback transport itself is cheap. The real latency spikes come from h
 To study variance, use:
 
 - `scripts/protocol_latency_sweep.ps1`
+
+The sweep accepts a sample only when the underlying cycle exits `0` and returns non-empty JSON with the complete connect/14-metric schema; null, non-finite, negative, missing, duplicate, or failed-cycle values are never converted into zero-valued latency samples.
 
 Latest 5-run sweep at 30 FPS:
 
@@ -179,3 +192,5 @@ To run the jitter sweep:
 chcp.com 65001 | Out-Null
 powershell -ExecutionPolicy Bypass -File scripts/protocol_latency_sweep.ps1 -Runs 5 -Json
 ```
+
+The sweep fails closed if any cycle exits nonzero or returns empty / invalid JSON; partial failure data is not included in percentile statistics.

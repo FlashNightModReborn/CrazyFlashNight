@@ -1,7 +1,7 @@
 ﻿// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。
 // ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。
-// 联合头 82 包 + 具体类 9 | staged fN 13 | loader-fire fN 16 | s0..s9 分组 + BootSequencer.run
-// 异步/控制帧(f4握手/f5,6 await/f7→s5_parseTask/f26 最终化2 队列/f75 craft/f91 handoff) 由 BootSequencer.as 编排。
+// 联合头 82 包 + 具体类 9 | live sources 29 | generated stages 6 | BootSequencer.run
+// S0/S5/S9 业务、异步/控制行为与 f48 进度文案由 BootSequencer.as 编排。
 this._lockroot = false;
 this.stop();
 
@@ -13,7 +13,7 @@ function onError():Void {
     // 原 f41 空 TODO 死桩；保留同等 benign no-op（f3 载入关卡数据错误回调裸调，经闭包→时间轴解析）
 }
 
-// === 联合通配 import 头（收集去重；lint --fold-specific 已证 82 超集 0 碰撞，子集亦 0） ===
+// === 联合通配 import 头（82 包；lint --fold-specific 已证把 2 个具体包折入后的 84 包模拟并集仍为 0 碰撞） ===
 import flash.display.*;
 import flash.filters.*;
 import flash.geom.*;
@@ -109,7 +109,8 @@ import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 
 // === staged 同步代码函数（仅定义，无内联调用；#include 编译期展开） ===
 if (_root.__boot == undefined) _root.__boot = {};
-_root.__boot.f2 = function() {
+// 基础运行时：作弊码 / eval / 通用工具 / 调试 / 随机 / 层级。
+_root.__boot.f2_1 = function() {
     打印加载内容("加载游戏代码……");
 
     #include "../引擎/引擎_aka_作弊码.as"
@@ -119,12 +120,18 @@ _root.__boot.f2 = function() {
     #include "../引擎/引擎_fs_随机数引擎.as"
     #include "../引擎/引擎_lsy_层级管理器.as"
     #include "../引擎/引擎_lsy_常数.as"
+};
+// 成长与路由基础：等级 / 技能 / 空中控制 / 基础与技能路由。
+_root.__boot.f2_2 = function() {
     #include "../引擎/引擎_lsy_等级与经验值.as"
-     #include "../引擎/引擎_lsy_技能系统.as"
-     #include "../逻辑/单位函数/单位函数_fs_空中控制器.as"
-     #include "../引擎/引擎_fs_路由基础.as"
-     #include "../引擎/引擎_fs_技能路由.as"
-     #include "../引擎/引擎_fs_战技路由.as"
+    #include "../引擎/引擎_lsy_技能系统.as"
+    #include "../逻辑/单位函数/单位函数_fs_空中控制器.as"
+    #include "../引擎/引擎_fs_路由基础.as"
+    #include "../引擎/引擎_fs_技能路由.as"
+};
+// 攻击与子系统路由：战技 / 兵器 / 空手 / 战宠 / 物品 / 声音 / 基建。
+_root.__boot.f2_3 = function() {
+    #include "../引擎/引擎_fs_战技路由.as"
     #include "../引擎/引擎_fs_兵器攻击路由.as"
     #include "../引擎/引擎_fs_空手攻击路由.as"
     #include "../引擎/引擎_lsy_战宠系统.as"
@@ -311,11 +318,15 @@ _root.__boot.f38 = function() {
     #include "../逻辑/功能函数/功能函数_fs_导弹模板.as"
     #include "../逻辑/功能函数/功能函数_fs_新弹壳系统.as"
 };
-_root.__boot.f39 = function() {
+// 关卡进入与场景建立。
+_root.__boot.f39_1 = function() {
     #include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"
     #include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
     #include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"
     #include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"
+};
+// 刷新、回调与场景限制。
+_root.__boot.f39_2 = function() {
     #include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
     #include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
     #include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
@@ -352,6 +363,9 @@ _root.__boot.f41_2 = function() {
     #include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
 };
 _root.__boot.f41_3 = function() {
+    #include "../展现/UI交互/UI交互_lsy_物品栏UI_强化与样品栏.as"
+};
+_root.__boot.f41_4 = function() {
     #include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
     #include "../展现/UI交互/UI交互_lsy_对话框UI.as"
     #include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
@@ -673,51 +687,98 @@ _root.__boot.f74 = function() {
     );
 };
 
-// === stage 分组函数（BootSequencer 按序 + 异步门调度） ===
-_root.__boot.s0_init = function() {
-    org.flashNight.gesh.init.GlobalInitializer.initialize();   // 原 f1
-};
+// === 由 BOOT_SOURCES 派生的纯装配 stage（业务条件归 BootSequencer） ===
 _root.__boot.s1_syncCode = function() {
-    _root.__boot.f2(); _root.__boot.f3();                       // 引擎 + 通信(建 _root._bootstrap)
-};
-_root.__boot.s5_parseTask = function(host) {                    // 原 f7（this→host：rawTaskData 在 BootSequencer.host 上）
-    org.flashNight.arki.task.TaskUtil.ParseTaskData(host.rawTaskData, host.rawTextData);
-    host.rawTaskData = null;
-    host.rawTextData = null;
-    var guideLoader = org.flashNight.gesh.json.LoadJson.ProgressGuideLoader.getInstance();
-    guideLoader.loadGuideData(
-        function(data:Object):Void { org.flashNight.arki.task.TaskUtil.ParseGuideData(data); },
-        function():Void {}
-    );
+    // engine-core (frame2)
+    _root.__boot.f2_1();
+    _root.__boot.f2_2();
+    _root.__boot.f2_3();
+    // communication-bootstrap (frame3)
+    _root.__boot.f3();
 };
 _root.__boot.s6_pre = function() {
-    _root.__boot.f9(); _root.__boot.f10(); _root.__boot.f18();  // 建_root.loaders + 兼容×4 push + 最终化1 跑 preloaders
+    // loader-queue-init (frame9)
+    _root.__boot.f9();
+    // legacy-system-compatibility (frame10)
+    _root.__boot.f10();
+    // preloader-fire (frame18)
+    _root.__boot.f18();
 };
 _root.__boot.s6_post = function() {
-    _root.__boot.f32();                                          // 最终化3 跑 loaderkillers + 删三队列
+    // loader-cleanup (frame32)
+    _root.__boot.f32();
 };
 _root.__boot.s7_syncLogic = function() {
-    _root.__boot.f36_1(); _root.__boot.f36_2(); _root.__boot.f36_3(); _root.__boot.f36_4(); _root.__boot.f36_5(); _root.__boot.f36_6(); _root.__boot.f36_7(); _root.__boot.f36_8(); _root.__boot.f36_9(); _root.__boot.f36_10(); _root.__boot.f37_1(); _root.__boot.f37_2(); _root.__boot.f37_3(); _root.__boot.f37_4(); _root.__boot.f37_5(); _root.__boot.f37_6(); _root.__boot.f37_7(); _root.__boot.f37_8(); _root.__boot.f38(); _root.__boot.f39(); _root.__boot.f40(); _root.__boot.f41_1(); _root.__boot.f41_2(); _root.__boot.f41_3(); _root.__boot.f42();   // 单位函数/装备/功能/关卡/战斗/UI交互/视觉
-    打印加载内容("加载杂项数据……");                              // 原 f48
-    _root.__boot.f53(); _root.__boot.f54(); _root.__boot.f55(); _root.__boot.f56(); _root.__boot.f58(); _root.__boot.f59();   // 子弹/发型/色彩/宠物/技能/过场
+    // unit-functions (frame36)
+    _root.__boot.f36_1();
+    _root.__boot.f36_2();
+    _root.__boot.f36_3();
+    _root.__boot.f36_4();
+    _root.__boot.f36_5();
+    _root.__boot.f36_6();
+    _root.__boot.f36_7();
+    _root.__boot.f36_8();
+    _root.__boot.f36_9();
+    _root.__boot.f36_10();
+    // equipment-functions (frame37)
+    _root.__boot.f37_1();
+    _root.__boot.f37_2();
+    _root.__boot.f37_3();
+    _root.__boot.f37_4();
+    _root.__boot.f37_5();
+    _root.__boot.f37_6();
+    _root.__boot.f37_7();
+    _root.__boot.f37_8();
+    // feature-functions (frame38)
+    _root.__boot.f38();
+    // stage-functions (frame39)
+    _root.__boot.f39_1();
+    _root.__boot.f39_2();
+    // combat-functions (frame40)
+    _root.__boot.f40();
+    // ui-interaction (frame41)
+    _root.__boot.f41_1();
+    _root.__boot.f41_2();
+    _root.__boot.f41_3();
+    _root.__boot.f41_4();
+    // visual-system (frame42)
+    _root.__boot.f42();
+};
+_root.__boot.s7_miscLoaders = function() {
+    // bullet-mappings (frame53)
+    _root.__boot.f53();
+    // hairstyles (frame54)
+    _root.__boot.f54();
+    // color-presets (frame55)
+    _root.__boot.f55();
+    // pets (frame56)
+    _root.__boot.f56();
+    // skill-data (frame58)
+    _root.__boot.f58();
+    // loading-scenes (frame59)
+    _root.__boot.f59();
 };
 _root.__boot.s8_fanout = function() {
-    _root.__boot.f62(); _root.__boot.f63(); _root.__boot.f64(); _root.__boot.f65(); _root.__boot.f66(); _root.__boot.f67(); _root.__boot.f68(); _root.__boot.f69(); _root.__boot.f70(); _root.__boot.f74();   // fire-and-forget：物品/敌人属性/称号+材料+地图/情报/关卡/环境×2/基建/装备配置/NPC技能
-};
-_root.__boot.s9_onCrafting = function(data) {                   // 原 f75 cb：建改装清单 + ItemObtainIndex
-    var craftingDict = {};
-    for (var category in data) {
-        var list = data[category];
-        for (var i = 0; i < list.length; i++) {
-            var item = list[i];
-            craftingDict[item.name] = item;
-            if (isNaN(item.value)) item.value = 1;
-        }
-    }
-    _root.改装清单 = data;
-    _root.改装清单对象 = craftingDict;
-    var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
-    obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+    // item-data (frame62)
+    _root.__boot.f62();
+    // enemy-properties (frame63)
+    _root.__boot.f63();
+    // hero-material-map-data (frame64)
+    _root.__boot.f64();
+    // information-data (frame65)
+    _root.__boot.f65();
+    // stage-data (frame66)
+    _root.__boot.f66();
+    // stage-environment (frame67)
+    _root.__boot.f67();
+    // scene-environment (frame68)
+    _root.__boot.f68();
+    // infrastructure-data (frame69)
+    _root.__boot.f69();
+    // equipment-config (frame70)
+    _root.__boot.f70();
+    // npc-skills (frame74)
+    _root.__boot.f74();
 };
 
 // === 启动状态机（tick 挂 _root，自删后回调可达） ===

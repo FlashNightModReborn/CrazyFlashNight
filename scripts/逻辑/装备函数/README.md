@@ -24,7 +24,7 @@ asLoader 在 2026-06 **塌缩成单帧**后，本目录的 `.as` **不是被直�
 ```
 scripts/asLoaderManifest/frame37.as   ← 真源：f37_1..f37_8 八个 chunk，逐个 #include 本目录脚本
    │  (stage-wrap --flatten 当初已把旧 装备函数列表.as 展平到这里；切 chunk 是为绕 AVM1 单函数体 64KB 硬限)
-   ▼  node tools/assemble-collapsed-frame.js
+   ▼  BOOT_SOURCES 中 equipment-functions → node tools/assemble-collapsed-frame.js
 scripts/asLoaderManifest/_collapsed_frame.as   ← 生成物，勿手改
    ▼  Flash CS6 重编 asLoader.swf（#include 之）
 asLoader.swf
@@ -55,11 +55,11 @@ asLoader.swf
 4. **接线 frame37**：在 `scripts/asLoaderManifest/frame37.as` 选一个未过载的 `f37_N` chunk 加
    `#include "../逻辑/装备函数/XXX.as"`（顺序不影响功能，只是注册顺序）。**这步最易忘**。
 5. **登记 README**：在 §6 脚本索引加一行（含 `XXX.as`）——校验门要求。
-6. **重生成**：`node tools/assemble-collapsed-frame.js`。
-7. **重编**：CS6 重开 asLoader FLA → 编译 → 重启游戏（物品 XML 在 boot 阶段加载）。
-8. **自检**：`node tools/validate-equip-fn-coverage.js` 应 `ok`。
+6. **重生成并核对**：依次运行 `node tools/assemble-collapsed-frame.js`、`node tools/assemble-collapsed-frame.js --check` 与 `node tools/check-bom.js`；后两项分别守字节级可重建与所有 `.as` 的严格 BOM。
+7. **自检**：`node tools/validate-equip-fn-coverage.js` 应 `ok`。
+8. **重编**：仅改外置 `.as` 时直接运行 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180`，再重启游戏（物品 XML 在 boot 阶段加载）；只有改动 asLoader XFL 时间轴 / symbol 结构时才关闭并重开 FLA。没有新鲜 trace、Output Panel 副本或 IDE 复核时，不声称“编译通过”。
 
-> chunk 撑爆 64KB 由 `tools/swf-function-sizes.js` 拦（编译验证步内）；真撑爆就把脚本挪到更空的 `f37_N`。
+> 生成器会用 canonical LF、剥 BOM 的口径报告源闭包；`70,000 B` 只是人工复核提示线，不是修改防增长 hard gate，也不维护 exact no-growth 表。当前 `f37_7=76,380 B` 属于优先调查候选：修改时应结合实际 `codeSize`、副作用边界与 fresh 行为证据判断是否移到更空的 `f37_N` 或继续拆分，不能仅因注释 / 格式增长阻断构建。
 
 ---
 

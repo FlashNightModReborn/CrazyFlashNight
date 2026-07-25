@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId equipment-tuning Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.EquipmentTuningServiceTest.runAllTests();
+org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
+trace("FocusedTestRunId equipment-tuning Complete: __FOCUSED_RUN_ID__");

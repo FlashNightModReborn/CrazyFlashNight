@@ -1,5 +1,6 @@
-﻿// [stage-wrap chunked<90000B] frame41 折叠中间态：帧顶联合头(lint --fold-specific 子集,0 碰撞)
-//   + staged 函数(3 chunk 绕 AVM1 64KB 函数体上限,见 swf-function-sizes 门) + 内联调用。
+﻿// [stage-wrap] frame41 折叠中间态：帧顶联合头(lint --fold-specific 子集,0 碰撞)
+// [manual semantic split] 4 个 chunk 手工保序；物品栏核心与“强化/样品栏”各自独立边界。
+// 这里不声明持续的 90000B 自动预算；后续修改须同时复核源闭包与 SWF codeSize。
 import flash.display.*;
 import flash.filters.*;
 import flash.geom.*;
@@ -49,6 +50,9 @@ _root.__boot.f41_2 = function() {
     #include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
 };
 _root.__boot.f41_3 = function() {
+    #include "../展现/UI交互/UI交互_lsy_物品栏UI_强化与样品栏.as"
+};
+_root.__boot.f41_4 = function() {
     #include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
     #include "../展现/UI交互/UI交互_lsy_对话框UI.as"
     #include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
@@ -58,3 +62,4 @@ _root.__boot.f41_3 = function() {
 _root.__boot.f41_1();
 _root.__boot.f41_2();
 _root.__boot.f41_3();
+_root.__boot.f41_4();

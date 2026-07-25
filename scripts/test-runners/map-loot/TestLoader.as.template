@@ -1,10 +1,5 @@
-﻿import org.flashNight.arki.item.LootContainerServiceTest;
-
-import org.flashNight.arki.item.LootMaterializationPlannerTest;
-import org.flashNight.arki.unit.UnitComponent.Initializer.test.*;
-
-trace("MapLootTestRunId Start: __MAP_LOOT_RUN_ID__");
-BoxInteractionArbiterTest.runAllTests();
-LootContainerServiceTest.runAllTests();
-LootMaterializationPlannerTest.runAllTests();
+﻿trace("MapLootTestRunId Start: __MAP_LOOT_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Initializer.test.BoxInteractionArbiterTest.runAllTests();
+org.flashNight.arki.item.LootContainerServiceTest.runAllTests();
+org.flashNight.arki.item.LootMaterializationPlannerTest.runAllTests();
 trace("MapLootTestRunId Complete: __MAP_LOOT_RUN_ID__");

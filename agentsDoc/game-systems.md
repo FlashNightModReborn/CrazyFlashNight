@@ -117,7 +117,7 @@
 ## 12. 关卡系统
 - **帧脚本**：`scripts/逻辑/关卡系统/`
 - **数据**：`data/stages/`
-- **碰撞层权威与重绘**：`SceneCollisionManager` 持有边界之外的 polygon 追加快照与 MC 矩形；`ObstacleRenderer` 在普通障碍初绘成功后把同一 MC / 矩形直接登记进该权威集合（AVM1 不保证 `for..in gameworld` 枚举时间轴子实例），`redraw()` 在 `clearAll()` 后只回放全部追加来源与存活登记 MC，不得因任一 MC 卸载丢失普通障碍。`SceneManager.removeGameWorld()` 必须先通过 loot authority barrier；成功后才停帧更新，再在 dispatcher/gameworld 存活时 `dispose()` 精确旧层和 MC/矩形强引用，最后才销毁 dispatcher 与 gameworld；本轮静态门 **35/35**，fresh CS6 runId `a5bbc5c450704bceba88cd92bc387b70` 为 **21/21、4/4 cases、0 failed、Compiler Errors 0/0**；专项门见 [testing-guide.md](testing-guide.md) §2。
+- **碰撞层权威与重绘**：`SceneCollisionManager` 持有边界之外的 polygon 追加快照与 MC 矩形；`ObstacleRenderer` 在普通障碍初绘成功后把同一 MC / 矩形直接登记进该权威集合（AVM1 不保证 `for..in gameworld` 枚举时间轴子实例），`redraw()` 在 `clearAll()` 后只回放全部追加来源与存活登记 MC，不得因任一 MC 卸载丢失普通障碍。`SceneManager.removeGameWorld()` 必须先通过 loot authority barrier；成功后才停帧更新，再在 dispatcher/gameworld 存活时 `dispose()` 精确旧层和 MC/矩形强引用，最后才销毁 dispatcher 与 gameworld；本轮静态门 **35/35**，2026-07-25 最终 helper/marker 代码冻结后的 fresh CS6 回归为 **21/21、4/4 cases、0 failed、Compiler Errors 0/0、32K retry=0**；专项门见 [testing-guide.md](testing-guide.md) §2。
 - **关卡事件音效**：`StageEvent` 消费 XML 解析后已归一化的 `Sound[]`，只逐项播放有效非空音效名；不得再保留永远不可达的字符串分支。本轮静态回归 **11/11**。
 
 ## 13. 装备生命周期系统

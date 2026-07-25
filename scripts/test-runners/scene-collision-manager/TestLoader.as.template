@@ -1,5 +1,3 @@
-﻿import org.flashNight.arki.scene.*;
-
-trace("SceneCollisionManagerTestRunId Start: __SCENE_COLLISION_RUN_ID__");
-SceneCollisionManagerTest.runAllTests();
-trace("SceneCollisionManagerTestRunId Complete: __SCENE_COLLISION_RUN_ID__");
+﻿trace("FocusedTestRunId scene-collision-manager Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.SceneCollisionManagerTest.runAllTests();
+trace("FocusedTestRunId scene-collision-manager Complete: __FOCUSED_RUN_ID__");

@@ -1,0 +1,11 @@
+﻿trace("FocusedTestRunId item-panels Start: __FOCUSED_RUN_ID__");
+// NPC 商店仍由生产 leaf script 安装；这里只补齐它在 boot 中依赖的两个容器，
+// 不装入 frameNN 或复刻启动时序。
+_root.preloaders = _root.preloaders || [];
+_root.loaders = _root.loaders || [];
+#include "逻辑系统分区/商店系统_兼容.as"
+
+org.flashNight.arki.item.NpcShopPanelServiceTest.runAllTests();
+org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
+org.flashNight.arki.item.CraftingPanelServiceTest.runAllTests();
+trace("FocusedTestRunId item-panels Complete: __FOCUSED_RUN_ID__");

@@ -85,7 +85,8 @@ class org.flashNight.neur.Server.SaveManager {
      *
      * == 已审计路径（有 dirtyMark setter）==
      *   - scripts/通信/通信_鸡蛋_任务系统.as:135 → 修复错位的任务存档 末尾标脏
-     *   - scripts/展现/UI交互/UI交互_lsy_物品栏UI.as:150 / 226 / 2074 / 2349 → 购买/出售/批量
+     *   - scripts/展现/UI交互/UI交互_lsy_物品栏UI.as:149 / 230 → 购买/出售
+     *   - scripts/展现/UI交互/UI交互_lsy_物品栏UI_强化与样品栏.as:1140 / 1415 → 批量样品栏写入
      *   - scripts/类定义/.../EnemyKilledEventComponent.as:59 → 击杀统计更新
      *   - scripts/类定义/.../ItemUtil.as:218 / 246 / 254 → moveItem 三态（背包/装备栏/药剂栏迁移）
      *   - scripts/类定义/.../itemIcon/InventoryIcon.as:194 / 308 / 320 → 物品图标拖拽/丢弃
@@ -121,7 +122,7 @@ class org.flashNight.neur.Server.SaveManager {
      *   - 引擎_lsy_技能系统.as: _root.更新主角被动技能 line 64 / 70 重建 _root.主角被动技能
      *       理由：_root.主角被动技能 是从 _root.主角技能表 重建的 cache，原 mutator
      *       在调用方（学习技能/启用技能 UI），_root.主角技能表 写入处应已通过物品栏 UI
-     *       150 / 226 / 2074 / 2349 路径标脏
+     *       已由物品栏核心 149 / 230 与“强化与样品栏”1140 / 1415 路径标脏
      *   - 引擎_lsy_技能系统.as line 230-232: _root.主角技能表 init 默认数组（length>0 提前 return 幂等）
      *   - 引擎_lsy_等级与经验值.as line 43 / 64 / 86 / 107: 升级路径 _root.技能点数 +=
      *       理由：升级路径末尾走 _root.强制存盘() = flushNow，已绕过 debounce 立即落盘

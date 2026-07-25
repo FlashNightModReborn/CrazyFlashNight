@@ -288,8 +288,8 @@ Program.Run(args)
 
 复测入口：
 
-- [`../scripts/protocol_latency_cycle.ps1`](../scripts/protocol_latency_cycle.ps1)：单轮基线
-- [`../scripts/protocol_latency_sweep.ps1`](../scripts/protocol_latency_sweep.ps1)：多轮抖动/尾延迟统计
+- [`../scripts/protocol_latency_cycle.ps1`](../scripts/protocol_latency_cycle.ps1)：单轮基线；只接受唯一 runId 闭环、由 AS2 队列定义派生的 exact 14 指标 schema、fresh compiler 0/0 与 retry=0，并交叉核对 raw samples 和 summary
+- [`../scripts/protocol_latency_sweep.ps1`](../scripts/protocol_latency_sweep.ps1)：多轮抖动/尾延迟统计；任一 cycle 非零退出，或 JSON 缺失/null/非有限/负值/schema 不完整时整轮 fail closed，不把失败样本折成 0
 
 ## 目录结构
 

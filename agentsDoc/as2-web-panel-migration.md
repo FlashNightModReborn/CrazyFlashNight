@@ -230,7 +230,7 @@ NpcShop、Crafting 与 Hairdresser 的 Host transport lifecycle 统一组合内�
 AS2 侧修改必须遵守：
 
 - 新增 / 重建 `.as` 必须 UTF-8 with BOM；优先复制现有 `.as` 改名保留 BOM。
-- 新增 boot 期 `.as` 入口：asLoader.xml 已塌成单帧 `#include _collapsed_frame.as`（见 [docs/asLoader-README.md](../docs/asLoader-README.md)）→ 不再直接改时间轴；同步入口加进对应 staged 帧 manifest 后 `node tools/assemble-collapsed-frame.js` regen，异步入口归 BootSequencer；被引用的 class 自动嵌入无需手动 include。
+- 新增 boot 期 `.as` 入口：asLoader.xml 已塌成单帧 `#include _collapsed_frame.as`（见 [docs/asLoader-README.md](../docs/asLoader-README.md)），不再直接改时间轴。内容接入现有 live source；确需新增顶层 source 时只向生成器唯一 `BOOT_SOURCES` 表增加一行，不另建 frame / stage 清单。运行 `node tools/assemble-collapsed-frame.js` 后必须再跑 `node tools/assemble-collapsed-frame.js --check` 与 `node tools/check-bom.js`；根 `frameNN.as` exact-match、输入 BOM 和字节级生成一致性均为严格门。S0 / S5 / S9、异步与控制行为、S7 杂项加载顺序归 `BootSequencer`；被引用的 class 自动嵌入，无需手动 include。
 - response task 名必须唯一，并与 C# `TaskRegistry` 一致。
 - 修改 AS2 后必须说明 `scripts/asLoader.swf` 是否已重编。
 - 没有 fresh trace、Output Panel 副本或 IDE 复核时，不能说“Flash 编译通过”。

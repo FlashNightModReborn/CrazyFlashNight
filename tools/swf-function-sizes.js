@@ -15,9 +15,10 @@
  * ⚠ **能力边界（必读，勿误以为本门能拦一切 64KB 溢出）**：codeSize 是 UI16，一个**已经**溢出（如体 70000B）
  *   的坏函数其 codeSize 字段存的是低 16 位（70000 & 0xFFFF = 4464），从编译后 SWF 看与一个真 4464B 的小函数
  *   **字节级无法区分**（CS6 不报错、流不一定 desync）。故本门只能拦「**逼近**阈值」（靠默认 60000 给 ~5.5KB
- *   余量预警），**无法**拦「**已越过** 64KB 后回绕成小值」的函数。真正的护栏是**源端 chunk 预算保守**
- *   （stage-wrap-frame.js --chunk-bytes；源→字节码比实测最坏 ~0.43，故 70KB 源预算 ≈ 30KB 码很安全）。
- *   当前最大 chunk 已达 58064B（距阈 60000 仅 ~1.9KB），任何「向 boot 加代码」务必先看本门 + 守源预算。
+ *   余量预警），**无法**拦「**已越过** 64KB 后回绕成小值」的函数。canonical 源闭包度量可帮助定位
+ *   chunk 候选，但源字节与 AVM1 codeSize 没有可证明的单调边界，不能单独作为 hard gate。
+ *   当前最大值会随每次发布变化，不在源码注释里冻结易腐数字；任何「向 boot 加代码」都必须重跑本门，
+ *   并结合源闭包度量与 fresh 行为证据。
  *
  * 用法：
  *   node tools/swf-function-sizes.js <swf> [--max 60000 | --max=60000] [--top 15] [--json]
@@ -151,6 +152,6 @@ function main() {
     over.forEach(function (f) { console.log("    " + f.codeSize + " B  " + f.name + "  @ " + f.owner); });
     process.exit(1);
   }
-  console.log("✓ 全部函数体 < " + MAX + " B，无 64KB 溢出风险。");
+  console.log("✓ 未发现 codeSize >= " + MAX + " B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。");
 }
 main();

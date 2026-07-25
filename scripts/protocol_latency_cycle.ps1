@@ -1,4 +1,4 @@
-param(
+﻿param(
     [int]$WaitTimeoutSec = 180,
     [switch]$Json,
     [switch]$NoBus,
@@ -16,20 +16,57 @@ $CompileScript = Join-Path $ScriptDir 'compile_test.ps1'
 $TestLoaderAs = Join-Path $ScriptDir 'TestLoader.as'
 $FlashLog = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
 $LocalFlashLog = Join-Path $ScriptDir 'protocol_latency_flashlog.txt'
-$LauncherExe = Join-Path $ProjectRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
+$CompileOutputPath = Join-Path $ScriptDir 'compile_output.txt'
+$CompilerErrorsPath = Join-Path $ScriptDir 'compiler_errors.txt'
+$UncertainMarker = Join-Path $ScriptDir 'compile_state_uncertain.marker'
+$ScratchMarker = Join-Path $ScriptDir 'testloader_scratch_inflight.marker'
+. (Join-Path $ScriptDir 'test-runners\testloader-scratch-transaction.ps1')
+$BootstrapExe = Join-Path $ProjectRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
+$LauncherExe = Join-Path $ProjectRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe'
 $PortsFile = Join-Path $ProjectRoot 'launcher_ports.json'
+. (Join-Path $ProjectRoot 'tools\dotnet-runtime-detect.ps1')
 
 $BusPorts = @(1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000)
 
+function Write-ProtocolUncertain {
+    param([Parameter(Mandatory = $true)][string]$Reason)
+
+    $prior = if (Test-Path -LiteralPath $UncertainMarker) {
+        [System.IO.File]::ReadAllText(
+            $UncertainMarker, [System.Text.Encoding]::UTF8)
+    } else {
+        ''
+    }
+    $body = '{0:o} | protocol latency cycle: {1}' -f
+        [System.DateTime]::UtcNow, $Reason
+    if (-not [string]::IsNullOrWhiteSpace($prior)) {
+        $body += "`nprevious_marker:`n" + $prior
+    }
+    [System.IO.File]::WriteAllText(
+        $UncertainMarker, $body, [System.Text.UTF8Encoding]::new($false))
+}
+
 function Get-BusHttpPort {
-    if (Test-Path $PortsFile) {
+    param([int]$ExpectedPid = 0)
+
+    if (Test-Path -LiteralPath $PortsFile) {
         try {
-            $json = Get-Content -Raw -Encoding UTF8 $PortsFile | ConvertFrom-Json
-            if ($json.httpPort) {
-                return [int]$json.httpPort
+            $json = Get-Content -LiteralPath $PortsFile -Raw -Encoding UTF8 |
+                ConvertFrom-Json
+            $httpPort = [int]$json.httpPort
+            if (($ExpectedPid -eq 0 -or [int]$json.pid -eq $ExpectedPid) -and
+                $httpPort -ge 1 -and $httpPort -le 65535) {
+                $response = Invoke-WebRequest `
+                    -Uri "http://localhost:$httpPort/testConnection" `
+                    -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing `
+                    -ErrorAction Stop
+                if ($response.StatusCode -eq 200) {
+                    return $httpPort
+                }
             }
         } catch {}
     }
+    if ($ExpectedPid -gt 0) { return $null }
 
     foreach ($p in $BusPorts) {
         try {
@@ -47,8 +84,19 @@ function Test-BusRunning {
     return ($null -ne (Get-BusHttpPort))
 }
 
+function Get-EvidenceIdentity {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path)) { return $null }
+    $item = Get-Item -LiteralPath $Path
+    $digest = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
+    return '{0}|{1}|{2}' -f $item.LastWriteTimeUtc.Ticks, $item.Length, $digest
+}
+
 function Stop-BusIfReachable {
-    $httpPort = Get-BusHttpPort
+    param([int]$ExpectedPid = 0)
+
+    $httpPort = Get-BusHttpPort -ExpectedPid $ExpectedPid
     if ($null -eq $httpPort) { return }
     try {
         Invoke-WebRequest -Uri "http://localhost:$httpPort/shutdown" `
@@ -56,26 +104,25 @@ function Stop-BusIfReachable {
     } catch {}
 }
 
-function Get-LatestBenchLines {
-    param([string]$RawText)
+function Get-ClosedBenchLines {
+    param(
+        [string]$RawText,
+        [Parameter(Mandatory = $true)][string]$RunId
+    )
 
-    $startMarker = '=== PROTOCOL LATENCY BENCH ==='
-    $endMarker = '[bench] done'
-    $idx = $RawText.LastIndexOf($startMarker)
-    if ($idx -lt 0) {
+    $startMarker = '[CF7_PROTOCOL_RUN_START id=' + $RunId + ']'
+    $endMarker = '[CF7_PROTOCOL_RUN_END id=' + $RunId + ']'
+    $startPattern = '(?m)^' + [regex]::Escape($startMarker) + '\r?$'
+    $endPattern = '(?m)^' + [regex]::Escape($endMarker) + '\r?$'
+    if ([regex]::Matches($RawText, $startPattern).Count -ne 1 -or
+        [regex]::Matches($RawText, $endPattern).Count -ne 1) {
         return @()
     }
-
-    $slice = $RawText.Substring($idx)
-    $lines = $slice -split "`r?`n"
-    $result = New-Object System.Collections.Generic.List[string]
-    foreach ($line in $lines) {
-        $result.Add($line)
-        if ($line -eq $endMarker) {
-            break
-        }
-    }
-    return $result.ToArray()
+    $blockPattern = '(?ms)^' + [regex]::Escape($startMarker) +
+        '\r?\n.*?^' + [regex]::Escape($endMarker) + '\r?$'
+    $blocks = [regex]::Matches($RawText, $blockPattern)
+    if ($blocks.Count -ne 1) { return @() }
+    return ($blocks[0].Value -split "`r?`n")
 }
 
 function Parse-BenchSummary {
@@ -91,10 +138,15 @@ function Parse-BenchSummary {
         raw_samples = [ordered]@{}
         notes = [ordered]@{}
         failures = @()
+        parse_counts = [ordered]@{
+            connect = 0
+            metric_summaries = [ordered]@{}
+        }
     }
 
     foreach ($line in $Lines) {
         if ($line -match '^\[bench\] connect ports_file_ms=([0-9\-]+) socket_port_ms=([0-9\-]+) socket_connected_ms=([0-9\-]+)$') {
+            $result.parse_counts.connect++
             $result.connect.ports_file_ms = [int]$matches[1]
             $result.connect.socket_port_ms = [int]$matches[2]
             $result.connect.socket_connected_ms = [int]$matches[3]
@@ -102,6 +154,10 @@ function Parse-BenchSummary {
         }
         if ($line -match '^\[bench\] metric name=([^ ]+) count=(\d+) min=([0-9.\-]+) avg=([0-9.\-]+) max=([0-9.\-]+)$') {
             $name = $matches[1]
+            if (-not $result.parse_counts.metric_summaries.Contains($name)) {
+                $result.parse_counts.metric_summaries[$name] = 0
+            }
+            $result.parse_counts.metric_summaries[$name]++
             $result.metrics[$name] = [ordered]@{
                 count = [int]$matches[2]
                 min_ms = [double]$matches[3]
@@ -130,11 +186,111 @@ function Parse-BenchSummary {
     return $result
 }
 
+function Test-NonNegativeFiniteNumber {
+    param([AllowNull()]$Value)
+
+    if ($null -eq $Value) { return $false }
+    try {
+        $number = [System.Convert]::ToDouble(
+            $Value, [System.Globalization.CultureInfo]::InvariantCulture)
+    } catch {
+        return $false
+    }
+    return -not [double]::IsNaN($number) -and
+        -not [double]::IsInfinity($number) -and $number -ge 0
+}
+
+function Get-BenchSummaryValidationErrors {
+    param([Parameter(Mandatory = $true)]$Summary)
+
+    $errors = New-Object System.Collections.Generic.List[string]
+    if ([int]$Summary.parse_counts.connect -ne 1) {
+        $errors.Add("Connect summary must occur exactly once; found $($Summary.parse_counts.connect).")
+    }
+    foreach ($name in @('ports_file_ms', 'socket_port_ms', 'socket_connected_ms')) {
+        if (-not (Test-NonNegativeFiniteNumber $Summary.connect[$name])) {
+            $errors.Add("connect.$name is missing or non-finite.")
+        }
+    }
+
+    $actualMetricNames = @($Summary.metrics.Keys)
+    $actualRawNames = @($Summary.raw_samples.Keys)
+    foreach ($name in $actualMetricNames) {
+        if (-not $ExpectedMetricCounts.Contains($name)) {
+            $errors.Add("Unexpected metric summary '$name'.")
+        }
+    }
+    foreach ($name in $actualRawNames) {
+        if (-not $ExpectedMetricCounts.Contains($name)) {
+            $errors.Add("Unexpected raw metric '$name'.")
+        }
+    }
+
+    foreach ($name in $ExpectedMetricCounts.Keys) {
+        $expectedCount = [int]$ExpectedMetricCounts[$name]
+        $metricSummaryCount = if (
+            $Summary.parse_counts.metric_summaries.Contains($name)) {
+            [int]$Summary.parse_counts.metric_summaries[$name]
+        } else {
+            0
+        }
+        if ($metricSummaryCount -ne 1) {
+            $errors.Add("Metric '$name' summary must occur exactly once; found $metricSummaryCount.")
+        }
+        if (-not $Summary.metrics.Contains($name)) {
+            $errors.Add("Missing metric summary '$name'.")
+            continue
+        }
+        if (-not $Summary.raw_samples.Contains($name)) {
+            $errors.Add("Missing raw samples '$name'.")
+            continue
+        }
+        $metric = $Summary.metrics[$name]
+        $samples = @($Summary.raw_samples[$name])
+        if ([int]$metric.count -ne $expectedCount) {
+            $errors.Add("Metric '$name' count is $($metric.count), expected $expectedCount.")
+        }
+        if ($samples.Count -ne $expectedCount) {
+            $errors.Add("Metric '$name' raw sample count is $($samples.Count), expected $expectedCount.")
+        }
+        foreach ($field in @('min_ms', 'avg_ms', 'max_ms')) {
+            if (-not (Test-NonNegativeFiniteNumber $metric[$field])) {
+                $errors.Add("Metric '$name' field '$field' is missing or non-finite.")
+            }
+        }
+        foreach ($sample in $samples) {
+            if (-not (Test-NonNegativeFiniteNumber $sample)) {
+                $errors.Add("Metric '$name' contains a missing or non-finite raw sample.")
+                break
+            }
+        }
+        if ($samples.Count -gt 0 -and
+            @($samples | Where-Object {
+                    -not (Test-NonNegativeFiniteNumber $_)
+                }).Count -eq 0) {
+            $measure = $samples | Measure-Object -Minimum -Maximum -Average
+            $expected = [ordered]@{
+                min_ms = [double]$measure.Minimum
+                avg_ms = [Math]::Floor(([double]$measure.Average * 100) + 0.5) / 100
+                max_ms = [double]$measure.Maximum
+            }
+            foreach ($field in $expected.Keys) {
+                if ([Math]::Abs(
+                        [double]$metric[$field] - [double]$expected[$field]) -gt 0.001) {
+                    $errors.Add(
+                        "Metric '$name' $field=$($metric[$field]) disagrees with raw samples ($($expected[$field])).")
+                }
+            }
+        }
+    }
+    return $errors.ToArray()
+}
+
 $benchAs2 = @'
 import org.flashNight.neur.Server.*;
 import org.flashNight.arki.render.*;
 
-trace("=== PROTOCOL LATENCY BENCH ===");
+trace("[CF7_PROTOCOL_RUN_START id=__CF7_PROTOCOL_RUN_ID__]");
 
 if (_root.gameCommands == undefined) {
     _root.gameCommands = {};
@@ -339,7 +495,7 @@ function finishBench():Void {
     if (bench.archiveFirstSlot != null) {
         trace("[bench] note archive_first_slot=" + bench.archiveFirstSlot);
     }
-    trace("[bench] done");
+    trace("[CF7_PROTOCOL_RUN_END id=__CF7_PROTOCOL_RUN_ID__]");
     delete bench.clip.onEnterFrame;
 }
 
@@ -574,55 +730,213 @@ bench.clip.onEnterFrame = function():Void {
 };
 '@
 
+$ExpectedMetricCounts = [ordered]@{}
+$metricSpecs = [regex]::Matches(
+    $benchAs2,
+    '(?m)^\s*enqueueMetric\("([A-Za-z0-9_]+)",\s*(\d+),')
+if ($metricSpecs.Count -ne 14) {
+    throw "Protocol latency contract requires exactly 14 literal metric specifications; found $($metricSpecs.Count)."
+}
+foreach ($metricSpec in $metricSpecs) {
+    $metricName = $metricSpec.Groups[1].Value
+    $metricCount = [int]$metricSpec.Groups[2].Value
+    if ($metricCount -le 0) {
+        throw "Protocol latency metric '$metricName' must request at least one sample."
+    }
+    if ($ExpectedMetricCounts.Contains($metricName)) {
+        throw "Protocol latency scratch source defines metric '$metricName' more than once."
+    }
+    $ExpectedMetricCounts[$metricName] = $metricCount
+}
+
 $busStartedByUs = $false
 $busProc = $null
-$TestLoaderBackup = $null
+$busReady = $false
+$selfStartedBusPid = $null
+$selfStartedBusHttpPort = $null
+$installedTestLoaderHash = $null
+$scratchTransaction = $null
 $compileOutput = ''
 $compileExit = $null
 $summary = $null
+$summaryValidationErrors = @()
+$runId = [System.Guid]::NewGuid().ToString('N')
+$normalizedProjectRoot = [System.IO.Path]::GetFullPath(
+    $ProjectRoot).TrimEnd('\').ToUpperInvariant()
+$compileHasher = [System.Security.Cryptography.SHA256]::Create()
+try {
+    $compileRepoHash = ([System.BitConverter]::ToString(
+        $compileHasher.ComputeHash(
+            [System.Text.Encoding]::UTF8.GetBytes($normalizedProjectRoot)))).
+        Replace('-', '').Substring(0, 24)
+} finally {
+    $compileHasher.Dispose()
+}
+$compileMutex = [System.Threading.Mutex]::new(
+    $false, 'Local\CF7_FlashCompile_' + $compileRepoHash)
+$compileMutexAcquired = $false
+$compileLease = $null
+$behaviorStarted = $false
+$behaviorClosed = $false
+$runCompletedCleanly = $false
 
 try {
+    try {
+        $compileMutexAcquired = $compileMutex.WaitOne(0)
+    } catch [System.Threading.AbandonedMutexException] {
+        $compileMutexAcquired = $true
+        Write-ProtocolUncertain `
+            -Reason 'protocol cycle observed abandoned compile mutex'
+        throw 'A previous compile abandoned the repository mutex. Confirm Flash/JSFL stopped and clear late markers before retrying.'
+    }
+    if (-not $compileMutexAcquired) {
+        throw 'Another Flash compile is using this repository; refusing to replace TestLoader.as.'
+    }
+    if (Test-Path -LiteralPath $UncertainMarker) {
+        throw 'Compile state is uncertain. Confirm Flash/JSFL stopped, inspect late evidence, then remove scripts/compile_state_uncertain.marker.'
+    }
+    $compileLease = 'v1:{0}:{1}:{2}' -f $compileRepoHash, $PID,
+        [System.Guid]::NewGuid().ToString('N')
+
     if (-not $NoBus) {
         if (Test-BusRunning) {
+            $busReady = $true
             Write-Host '[bus] Already running'
         } else {
-            if (-not (Test-Path $LauncherExe)) {
-                Write-Host "[bus] ERROR: Launcher not found: $LauncherExe" -ForegroundColor Red
-                exit 1
+            if (-not (Test-Path -LiteralPath $BootstrapExe -PathType Leaf)) {
+                throw "Bootstrap integrity probe not found: $BootstrapExe"
+            }
+            $verifyProc = Start-Process -FilePath $BootstrapExe `
+                -ArgumentList '--verify-only' -PassThru -Wait `
+                -WindowStyle Hidden
+            try {
+                if ($verifyProc.ExitCode -ne 0) {
+                    throw (
+                        'Runtime bundle integrity verification failed with ' +
+                        "exit code $($verifyProc.ExitCode).")
+                }
+            } finally {
+                $verifyProc.Dispose()
+            }
+            if (-not (Test-Path -LiteralPath $LauncherExe -PathType Leaf)) {
+                throw "Launcher not found: $LauncherExe"
+            }
+            if (-not (Set-DotnetRootForCore)) {
+                throw 'Unable to locate the required .NET Desktop runtime.'
             }
             Write-Host '[bus] Starting launcher --bus-only...'
-            $busProc = Start-Process -FilePath $LauncherExe -ArgumentList '--bus-only' -PassThru -WindowStyle Minimized
+            $busProc = Start-Process -FilePath $LauncherExe `
+                -ArgumentList @('--bus-only', '--project-root', $ProjectRoot) `
+                -PassThru -WindowStyle Hidden
             $busStartedByUs = $true
+            $selfStartedBusPid = $busProc.Id
 
             $busDeadline = (Get-Date).AddSeconds(15)
             while ((Get-Date) -lt $busDeadline) {
                 Start-Sleep -Milliseconds 500
-                if (Test-BusRunning) { break }
+                $busProc.Refresh()
+                if ($busProc.HasExited) { break }
+                $ownedPort = Get-BusHttpPort `
+                    -ExpectedPid $selfStartedBusPid
+                if ($null -ne $ownedPort) {
+                    $selfStartedBusHttpPort = [int]$ownedPort
+                    $busReady = $true
+                    break
+                }
             }
-            if (-not (Test-BusRunning)) {
-                Write-Host '[bus] ERROR: Bus failed to start within 15s' -ForegroundColor Red
-                exit 1
+            if (-not $busReady) {
+                throw "Bus PID $selfStartedBusPid failed exact readiness within 15 seconds."
             }
-            Write-Host '[bus] Ready'
+            Write-Host (
+                "[bus] Ready pid=$selfStartedBusPid " +
+                "http=$selfStartedBusHttpPort")
         }
     }
 
-    if (Test-Path $TestLoaderAs) {
-        $TestLoaderBackup = [System.IO.File]::ReadAllBytes($TestLoaderAs)
+    $runIdPlaceholder = '__CF7_PROTOCOL_RUN_ID__'
+    if ([regex]::Matches(
+            $benchAs2, [regex]::Escape($runIdPlaceholder)).Count -ne 2) {
+        throw 'Protocol latency scratch source must contain exactly two runId placeholders.'
     }
+    $installedBenchAs2 = $benchAs2.Replace($runIdPlaceholder, $runId)
+    $scratchTransaction = New-Cf7TestLoaderScratchTransaction `
+        -MarkerPath $ScratchMarker -RunnerPath $TestLoaderAs `
+        -RepoHash $compileRepoHash -CompileLease $compileLease `
+        -OwnerKind 'protocol-latency'
+    Assert-Cf7TestLoaderScratchReadyToInstall -Transaction $scratchTransaction
 
     $beforeTime = if (Test-Path $FlashLog) { (Get-Item $FlashLog).LastWriteTimeUtc } else { [datetime]::MinValue }
     $beforeLength = if (Test-Path $FlashLog) { (Get-Item $FlashLog).Length } else { 0 }
 
     $bom = [byte[]]@(0xEF, 0xBB, 0xBF)
-    $codeBytes = [System.Text.Encoding]::UTF8.GetBytes($benchAs2)
+    $codeBytes = [System.Text.Encoding]::UTF8.GetBytes($installedBenchAs2)
     $allBytes = New-Object byte[] ($bom.Length + $codeBytes.Length)
     [Array]::Copy($bom, 0, $allBytes, 0, $bom.Length)
     [Array]::Copy($codeBytes, 0, $allBytes, $bom.Length, $codeBytes.Length)
     [System.IO.File]::WriteAllBytes($TestLoaderAs, $allBytes)
+    $installedTestLoaderHash = (Get-FileHash -LiteralPath $TestLoaderAs -Algorithm SHA256).Hash
 
-    $compileOutput = (& $CompileScript *>&1 | Out-String)
-    $compileExit = $LASTEXITCODE
+    $compileEvidenceBefore = [ordered]@{}
+    foreach ($path in @($CompileOutputPath, $CompilerErrorsPath)) {
+        $compileEvidenceBefore[$path] = Get-EvidenceIdentity -Path $path
+    }
+    $compileStartedUtc = [System.DateTime]::UtcNow
+    $previousCompileLease = $env:CF7_FLASH_COMPILE_LEASE
+    try {
+        $env:CF7_FLASH_COMPILE_LEASE = $compileLease
+        $compileOutput = (& powershell.exe -NoProfile -ExecutionPolicy Bypass `
+            -File $CompileScript -Target test `
+            -TimeoutSeconds $WaitTimeoutSec *>&1 | Out-String)
+        $compileExit = $LASTEXITCODE
+    } finally {
+        if ($null -eq $previousCompileLease) {
+            Remove-Item Env:CF7_FLASH_COMPILE_LEASE -ErrorAction SilentlyContinue
+        } else {
+            $env:CF7_FLASH_COMPILE_LEASE = $previousCompileLease
+        }
+    }
+    if ($compileExit -ne 0) {
+        $freshCompilerDiagnostics = (Test-Path -LiteralPath $CompilerErrorsPath) -and
+            (Get-EvidenceIdentity -Path $CompilerErrorsPath) -ne
+                $compileEvidenceBefore[$CompilerErrorsPath] -and
+            (Get-Item -LiteralPath $CompilerErrorsPath).LastWriteTimeUtc -ge
+                $compileStartedUtc.AddSeconds(-1)
+        $freshCompileOutput = (Test-Path -LiteralPath $CompileOutputPath) -and
+            (Get-EvidenceIdentity -Path $CompileOutputPath) -ne
+                $compileEvidenceBefore[$CompileOutputPath] -and
+            (Get-Item -LiteralPath $CompileOutputPath).LastWriteTimeUtc -ge
+                $compileStartedUtc.AddSeconds(-1)
+        $compilerWasClean = $freshCompilerDiagnostics -and
+            (Get-Content -LiteralPath $CompilerErrorsPath -Raw -Encoding UTF8) -match
+                '^\s*0\s+[^,\r\n]+,\s*0\s+[^,\r\n]+\s*$'
+        if ($compilerWasClean -or
+            (-not $freshCompilerDiagnostics -and $freshCompileOutput)) {
+            # A post-testMovie gate can fail while the asynchronous bench
+            # remains alive; retain the behavior uncertainty barrier.
+            $behaviorStarted = $true
+        }
+        Write-Host $compileOutput.TrimEnd()
+        throw "Protocol latency TestLoader compile failed with exit code $compileExit."
+    }
+    $behaviorStarted = $true
+    foreach ($path in @($CompileOutputPath, $CompilerErrorsPath)) {
+        if (-not (Test-Path -LiteralPath $path) -or
+            (Get-EvidenceIdentity -Path $path) -eq $compileEvidenceBefore[$path] -or
+            (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt
+                $compileStartedUtc.AddSeconds(-1)) {
+            throw "Protocol compile evidence was not freshly replaced: $path"
+        }
+    }
+    $compilerErrors = Get-Content -LiteralPath $CompilerErrorsPath -Raw -Encoding UTF8
+    if ($compilerErrors -notmatch '^\s*0\s+[^,\r\n]+,\s*0\s+[^,\r\n]+\s*$') {
+        throw 'Protocol compiler diagnostics are not 0 errors / 0 warnings.'
+    }
+    $compileEvidence = Get-Content -LiteralPath $CompileOutputPath -Raw -Encoding UTF8
+    $retryCount = [regex]::Matches(
+        $compileEvidence, 'cold ASO 32K branch detected').Count
+    if ($retryCount -ne 0) {
+        throw "Protocol compile required $retryCount 32K retry; refusing a duplicate behavior run."
+    }
 
     $deadline = (Get-Date).AddSeconds($WaitTimeoutSec)
     while ((Get-Date) -lt $deadline) {
@@ -630,10 +944,20 @@ try {
             $item = Get-Item $FlashLog
             if ($item.LastWriteTimeUtc -gt $beforeTime -or $item.Length -gt $beforeLength) {
                 $raw = Get-Content -Raw -Encoding UTF8 $FlashLog
-                $lines = Get-LatestBenchLines -RawText $raw
-                if ($lines.Length -gt 0 -and ($lines -contains '[bench] done')) {
+                $lines = Get-ClosedBenchLines -RawText $raw -RunId $runId
+                if ($lines.Length -gt 0) {
+                    $behaviorClosed = $true
                     Copy-Item $FlashLog $LocalFlashLog -Force
                     $summary = Parse-BenchSummary -Lines $lines
+                    $summaryValidationErrors = @(
+                        Get-BenchSummaryValidationErrors -Summary $summary)
+                    foreach ($validationError in $summaryValidationErrors) {
+                        $summary.failures +=
+                            ('[runner] schema validation: ' + $validationError)
+                    }
+                    $runCompletedCleanly =
+                        $summaryValidationErrors.Count -eq 0 -and
+                        $summary.failures.Count -eq 0
                     break
                 }
             }
@@ -642,16 +966,79 @@ try {
     }
 }
 finally {
-    if ($null -ne $TestLoaderBackup) {
-        [System.IO.File]::WriteAllBytes($TestLoaderAs, $TestLoaderBackup)
-    }
-
-    if ($busStartedByUs -and $StopBusAfter) {
-        Stop-BusIfReachable
-        Start-Sleep -Milliseconds 500
-        if ($busProc -and -not $busProc.HasExited) {
-            try { $busProc.Kill() } catch {}
+    $cleanupErrors = New-Object System.Collections.Generic.List[string]
+    if ($behaviorStarted -and -not $behaviorClosed) {
+        try {
+            Write-ProtocolUncertain (
+                "behavior did not reach one exact terminal block; runId=$runId; " +
+                'the old test player may still append to the global Flash log')
+        } catch {
+            $cleanupErrors.Add("uncertain marker: $($_.Exception.Message)")
         }
+    }
+    # 持有 compile mutex 到 scratch 恢复与本轮自启 bus 停止完成。
+    if ($scratchTransaction -and $installedTestLoaderHash) {
+        try {
+            Restore-Cf7TestLoaderScratchTransaction `
+                -Transaction $scratchTransaction `
+                -InstalledHash $installedTestLoaderHash
+        } catch {
+            $cleanupErrors.Add("scratch restore: $($_.Exception.Message)")
+        }
+    }
+    if ($busStartedByUs -and ($StopBusAfter -or -not $runCompletedCleanly)) {
+        try {
+            Stop-BusIfReachable -ExpectedPid $selfStartedBusPid
+            $busProc.Refresh()
+            if (-not $busProc.HasExited -and
+                -not $busProc.WaitForExit(10000)) {
+                $busProc.Kill()
+                if (-not $busProc.WaitForExit(5000)) {
+                    throw "Self-started bus PID $selfStartedBusPid did not exit after Kill()."
+                }
+                Write-Host (
+                    "[bus] Forced exact PID $selfStartedBusPid " +
+                    'after graceful timeout')
+            } else {
+                Write-Host (
+                    "[bus] Graceful stop confirmed for exact PID " +
+                    $selfStartedBusPid)
+            }
+            if (Test-Path -LiteralPath $PortsFile) {
+                try {
+                    $ports = Get-Content -LiteralPath $PortsFile `
+                        -Raw -Encoding UTF8 | ConvertFrom-Json
+                    if ([int]$ports.pid -eq $selfStartedBusPid -and
+                        [int]$ports.httpPort -eq $selfStartedBusHttpPort) {
+                        Remove-Item -LiteralPath $PortsFile -Force
+                    }
+                } catch {
+                    Write-Warning (
+                        'Could not prove launcher_ports.json belongs to the ' +
+                        'self-started protocol bus; leaving it untouched.')
+                }
+            }
+            $busProc.Dispose()
+            $busStartedByUs = $false
+        } catch {
+            $cleanupErrors.Add("bus stop: $($_.Exception.Message)")
+        }
+    }
+    if ($compileMutexAcquired) {
+        try { $compileMutex.ReleaseMutex() } catch {
+            $cleanupErrors.Add("compile mutex release: $($_.Exception.Message)")
+        }
+    }
+    try { $compileMutex.Dispose() } catch {
+        $cleanupErrors.Add("compile mutex dispose: $($_.Exception.Message)")
+    }
+    if ($scratchTransaction -and
+        (Test-Path -LiteralPath $scratchTransaction.MarkerPath)) {
+        Write-Warning ("TestLoader scratch transaction remains blocked; recovery backup: {0}" -f
+            $scratchTransaction.BackupPath)
+    }
+    if ($cleanupErrors.Count -gt 0) {
+        throw ('Protocol latency cleanup failed: ' + ($cleanupErrors -join ' | '))
     }
 }
 
@@ -667,15 +1054,19 @@ if ($summary -eq $null) {
 
 $result = [ordered]@{
     compile_exit = $compileExit
+    run_id = $runId
     connect = $summary.connect
     metrics = $summary.metrics
     raw_samples = $summary.raw_samples
     notes = $summary.notes
     failures = $summary.failures
+    validation_errors = $summaryValidationErrors
 }
+$protocolFailed = $summary.failures.Count -gt 0
 
 if ($Json) {
     $result | ConvertTo-Json -Depth 8
+    if ($protocolFailed) { exit 1 }
     exit 0
 }
 
@@ -698,3 +1089,4 @@ if ($summary.failures.Count -gt 0) {
         Write-Host ('  ' + $line)
     }
 }
+if ($protocolFailed) { exit 1 }

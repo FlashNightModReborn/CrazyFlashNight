@@ -21,11 +21,14 @@ class org.flashNight.boot.BootSequencerTest {
 
     public function runTests():Void {
         trace("=== BootSequencerTest start ===");
+        this.test_s0_initializesGlobals();
         this.test_shimMissing_halts();
         this.test_socketTimeout_halts();
         this.test_socketReady_firesHandshake();
         this.test_handshakeFailed_halts();
         this.test_repairGate_spinsThenReleases();
+        this.test_s5_parsesTaskAndStartsGuide();
+        this.test_s7_preservesOrder();
         this.test_crafting_emitsEvent();
         this.test_handoff_emitsEvent();
         this.test_run_idempotent();
@@ -44,7 +47,7 @@ class org.flashNight.boot.BootSequencerTest {
         var t:BootSequencerTest = this;
         this._serverMsgs = [];
         this._printed = [];
-        this._calls = {};
+        this._calls = {handoffOrder: []};
 
         _root.server = {
             isSocketConnected: false,
@@ -66,34 +69,57 @@ class org.flashNight.boot.BootSequencerTest {
         _root.存档恢复等待中 = function() { return _root._repairWaiting == true; };
         _root.发布消息 = function(m) {};
         _root.gotoAndStop = function(s) { t._calls.gotoAndStop = s; };
-        _root.play = function() { t._calls.rootPlay = t.inc(t._calls.rootPlay); };
+        _root.play = function() {
+            t._calls.rootPlay = t.inc(t._calls.rootPlay);
+            t._calls.handoffOrder.push("play");
+        };
 
         // staged 函数桩（仅记录；构造函数见 _root.__boot != undefined 即直接用本对象）
         _root.__boot = {
-            s0_init: function() { t._calls.s0 = t.inc(t._calls.s0); },
             s1_syncCode: function() { t._calls.s1 = t.inc(t._calls.s1); },
-            s5_parseTask: function(host) { t._calls.s5 = t.inc(t._calls.s5); },
             s6_pre: function() { t._calls.s6pre = t.inc(t._calls.s6pre); },
             s6_post: function() { t._calls.s6post = t.inc(t._calls.s6post); },
             s7_syncLogic: function() { t._calls.s7 = t.inc(t._calls.s7); },
-            s8_fanout: function() { t._calls.s8 = t.inc(t._calls.s8); },
-            s9_onCrafting: function(data) { t._calls.s9 = t.inc(t._calls.s9); }
+            s7_miscLoaders: function() { t._calls.s7misc = t.inc(t._calls.s7misc); },
+            s8_fanout: function() { t._calls.s8 = t.inc(t._calls.s8); }
         };
 
         BootSequencer._instance = undefined;   // 复位重入保护
 
         return {
             打印加载内容: function(s) { t._printed.push(s); },
-            removeMovieClip: function() { t._calls.hostRemoved = t.inc(t._calls.hostRemoved); }
+            removeMovieClip: function() {
+                t._calls.hostRemoved = t.inc(t._calls.hostRemoved);
+                t._calls.handoffOrder.push("remove");
+            }
         };
     }
 
     public function inc(n:Number):Number { return (n == undefined ? 0 : n) + 1; }   // 经 t.inc() 由闭包调用
 
-    // 驱 S_INIT + S_SYNCCODE → 停在 S_HANDSHAKE 子相位 1
+    // 握手 case 不真跑全局初始化；S0 由独立 case 覆盖。
     private function driveToHsP1(inst:BootSequencer):Void {
-        inst.step();   // S_INIT → s0_init, → S_SYNCCODE
+        inst.state = BootSequencer.S_SYNCCODE;
         inst.step();   // S_SYNCCODE → s1_syncCode, → S_HANDSHAKE hsPhase=1
+    }
+
+    // ====== S0：全局初始化业务归 BootSequencer，不回流生成器 ======
+    private function test_s0_initializesGlobals():Void {
+        var host = this.freshEnv();
+        var initializer:Object = org.flashNight.gesh.init.GlobalInitializer;
+        var originalInitialize:Function = initializer.initialize;
+        var t:BootSequencerTest = this;
+        initializer.initialize = function():Void {
+            t._calls.globalInitialize = t.inc(t._calls.globalInitialize);
+        };
+        var inst:BootSequencer = new BootSequencer(host);
+        try {
+            inst.step();
+        } finally {
+            initializer.initialize = originalInitialize;
+        }
+        this.assert(this._calls.globalInitialize == 1, "(S0) GlobalInitializer.initialize() 调用一次");
+        this.assert(inst.state == BootSequencer.S_SYNCCODE, "(S0) 初始化后进入 S_SYNCCODE");
     }
 
     // ====== 边界 (c)：shim 缺失 → HALT shim_missing ======
@@ -173,18 +199,118 @@ class org.flashNight.boot.BootSequencerTest {
         this.assert(inst.hsPhase == 3, "(a) gate 放行 → hsPhase=3 等主 SWF resume");
     }
 
+    // ====== S5：任务解析 + guide fire-and-forget 业务归 BootSequencer ======
+    private function test_s5_parsesTaskAndStartsGuide():Void {
+        var host = this.freshEnv();
+        var rawTask:Object = {id:"task"};
+        var rawText:Object = {id:"text"};
+        var guideData:Object = {id:"guide"};
+        host.rawTaskData = rawTask;
+        host.rawTextData = rawText;
+
+        var t:BootSequencerTest = this;
+        var taskUtil:Object = org.flashNight.arki.task.TaskUtil;
+        var guideLoader:Object = org.flashNight.gesh.json.LoadJson.ProgressGuideLoader.getInstance();
+        var originalParseTask:Function = taskUtil.ParseTaskData;
+        var originalParseGuide:Function = taskUtil.ParseGuideData;
+        var originalLoadGuide:Function = guideLoader.loadGuideData;
+        taskUtil.ParseTaskData = function(task:Object, text:Object):Void {
+            t._calls.parsedTask = task;
+            t._calls.parsedText = text;
+        };
+        taskUtil.ParseGuideData = function(data:Object):Void {
+            t._calls.parsedGuide = data;
+        };
+        guideLoader.loadGuideData = function(ok:Function, fail:Function):Void {
+            t._calls.guideLoads = t.inc(t._calls.guideLoads);
+            ok(guideData);
+        };
+
+        var inst:BootSequencer = new BootSequencer(host);
+        inst.state = BootSequencer.S_PARSE;
+        try {
+            inst.step();
+        } finally {
+            taskUtil.ParseTaskData = originalParseTask;
+            taskUtil.ParseGuideData = originalParseGuide;
+            guideLoader.loadGuideData = originalLoadGuide;
+        }
+        this.assert(this._calls.parsedTask == rawTask && this._calls.parsedText == rawText,
+            "(S5) ParseTaskData 收到两份原始引用");
+        this.assert(host.rawTaskData == null && host.rawTextData == null,
+            "(S5) 任务解析后清空 host raw 数据");
+        this.assert(this._calls.guideLoads == 1 && this._calls.parsedGuide == guideData,
+            "(S5) guide fire-and-forget 发起并解析成功回调");
+        this.assert(inst.state == BootSequencer.S_SYNCSYS, "(S5) 不等待 guide，直接进入 S_SYNCSYS");
+    }
+
+    // ====== f48 / S7：同 tick 保持 sync logic → 文案 → misc loaders 顺序 ======
+    private function test_s7_preservesOrder():Void {
+        var host = this.freshEnv();
+        var order:Array = [];
+        var expectedText:String = "加载杂项数据……";
+        host.打印加载内容 = function(text:String):Void { order.push("print:" + text); };
+        _root.__boot.s7_syncLogic = function():Void { order.push("sync"); };
+        _root.__boot.s7_miscLoaders = function():Void { order.push("misc"); };
+
+        var inst:BootSequencer = new BootSequencer(host);
+        inst.state = BootSequencer.S_SYNCLOGIC;
+        inst.step();
+        this.assert(order.join("|") == "sync|print:" + expectedText + "|misc",
+            "(S7) sync logic → f48 文案 → misc loaders 保序且同 tick");
+        this.assert(inst.state == BootSequencer.S_FANOUT, "(S7) 完成后进入 S_FANOUT");
+    }
+
     // ====== Finding 1：S9 成功发 CRAFTING_OK ======
     private function test_crafting_emitsEvent():Void {
         var host = this.freshEnv();
         var inst:BootSequencer = new BootSequencer(host);
         inst.state = BootSequencer.S_CRAFTING;
-        // 把真单例的 loadCraftingList 换成同步成功桩；用后**还原**，避免污染后续 suite / 真游戏复用该单例（顺序无关）。
+
+        var recipe:Object = {name:"测试配方"};
+        var crafting:Object = {testCategory:[recipe]};
+        var shops:Object = {shop:true};
+        var kshop:Object = {kshop:true};
+        var oldCrafting = _root.改装清单;
+        var oldCraftingDict = _root.改装清单对象;
+        var oldShops = _root.shops;
+        var oldKshop = _root.kshop_list;
+        _root.shops = shops;
+        _root.kshop_list = kshop;
+
+        // 把两个真单例换成同步成功/记录桩；用后还原，避免 _isBuilt 等状态污染后续 suite。
         var loader:Object = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
-        var origLoad = loader.loadCraftingList;
-        loader.loadCraftingList = function(ok, fail) { ok({}); };
-        inst.step();                             // stepCrafting → 同步 ok → s9_onCrafting + bslog + craftReady → S_HANDOFF
-        loader.loadCraftingList = origLoad;      // 还原真方法
-        this.assert(this._calls.s9 == 1, "(S9) s9_onCrafting 调用一次");
+        var obtainIndex:Object = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
+        var originalLoad:Function = loader.loadCraftingList;
+        var originalBuildIndex:Function = obtainIndex.buildIndex;
+        var t:BootSequencerTest = this;
+        loader.loadCraftingList = function(ok:Function, fail:Function):Void { ok(crafting); };
+        obtainIndex.buildIndex = function(craftingArg:Object, shopsArg:Object, kshopArg:Object):Void {
+            t._calls.indexCrafting = craftingArg;
+            t._calls.indexShops = shopsArg;
+            t._calls.indexKshop = kshopArg;
+        };
+
+        var installedCrafting;
+        var installedDict;
+        try {
+            inst.step();
+            installedCrafting = _root.改装清单;
+            installedDict = _root.改装清单对象;
+        } finally {
+            loader.loadCraftingList = originalLoad;
+            obtainIndex.buildIndex = originalBuildIndex;
+            _root.改装清单 = oldCrafting;
+            _root.改装清单对象 = oldCraftingDict;
+            _root.shops = oldShops;
+            _root.kshop_list = oldKshop;
+        }
+        this.assert(installedCrafting == crafting && installedDict != undefined &&
+            installedDict["测试配方"] == recipe,
+            "(S9) 合成表与 name→recipe 字典按原引用落地");
+        this.assert(recipe.value == 1, "(S9) 缺省 recipe.value 保持旧语义补为 1");
+        this.assert(this._calls.indexCrafting == crafting && this._calls.indexShops == shops &&
+            this._calls.indexKshop == kshop, "(S9) ItemObtainIndex 收到 crafting/shop/kshop 原引用");
         this.assert(this.msgHas("合成表数据加载完毕"), "(S9) 成功 cb 发 CRAFTING_OK（合成表数据加载完毕）");
         this.assert(inst.state == BootSequencer.S_HANDOFF, "(S9) craftReady → S_HANDOFF");
     }
@@ -198,6 +324,8 @@ class org.flashNight.boot.BootSequencerTest {
         this.assert(this.msgHas("event=handoff"), "(S10) handoff 发 HANDOFF_PLAY（event=handoff）");
         this.assert(this._calls.rootPlay == 1, "(S10) _root.play() 先于卸载");
         this.assert(this._calls.hostRemoved == 1, "(S10) host.removeMovieClip()");
+        this.assert(this._calls.handoffOrder.join(",") == "play,remove",
+            "(S10) 调用顺序严格为 _root.play() → host.removeMovieClip()");
         this.assert(inst.state == BootSequencer.S_HALT, "(S10) handoff → state=HALT");
         this.assert(BootSequencer._instance == undefined, "(S10) 释放 _instance（同会话可重挂）");
     }

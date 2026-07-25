@@ -11,7 +11,7 @@ param(
     # 对齐 testing-guide「0 错误 + scripts/asLoader.swf 已刷新」口径。默认空 = 不校验(普通 trace 测试不受影响)。
     [string]$VerifySwf = '',
     # 编译目标切换（免去手动切 Flash 活动文档）：
-    #   test / testloader → scripts/TestLoader（带 trace 的逻辑回归，跑 TransitionsTest + BootSequencerTest）
+    #   test / testloader → scripts/TestLoader（带 trace；实际 suite 由被忽略的 scripts/TestLoader.as scratch runner 决定）
     #   publish / asloader → scripts/asLoader（发布 asLoader.swf；自动启用 -VerifySwf scripts/asLoader.swf）
     #   <FLA/XFL 路径>     → 指定文档（相对仓库根或绝对路径）
     #   省略             → 用 Flash 当前活动文档（向后兼容旧行为）
@@ -30,11 +30,45 @@ $ScriptDir = Split-Path -Parent $PSCommandPath
 $ProjectDir = Split-Path -Parent $ScriptDir
 $Marker = Join-Path $ScriptDir 'publish_done.marker'
 $ErrorMarker = Join-Path $ScriptDir 'publish_error.marker'
+$UncertainMarker = Join-Path $ScriptDir 'compile_state_uncertain.marker'
+$ScratchMarker = Join-Path $ScriptDir 'testloader_scratch_inflight.marker'
 $CompileOutput = Join-Path $ScriptDir 'compile_output.txt'
 $CompilerErrors = Join-Path $ScriptDir 'compiler_errors.txt'
 $FlashLog = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
 $LocalFlashLog = Join-Path $ScriptDir 'flashlog.txt'
+$ScratchTransactionScript = Join-Path $ScriptDir 'test-runners\testloader-scratch-transaction.ps1'
+. $ScratchTransactionScript
 $LoaderFileName = 'cf7_compile_loader.jsfl'
+$compileTriggered = $false
+$compileTerminalObserved = $false
+$nonTerminalUncertainWritten = $false
+$compileUncertainToken = [System.Guid]::NewGuid().ToString('N')
+$inFlightUncertainBody = $null
+
+function Write-CompileUncertain {
+    param([Parameter(Mandatory = $true)][string]$Reason)
+
+    $body = '{0:o} | token={1} | {2}' -f
+        [System.DateTime]::UtcNow, $compileUncertainToken, $Reason
+    [System.IO.File]::WriteAllText(
+        $UncertainMarker, $body, [System.Text.UTF8Encoding]::new($false))
+    return $body
+}
+
+function Remove-OwnedCompileUncertain {
+    param([Parameter(Mandatory = $true)][string]$ExpectedBody)
+
+    if (-not (Test-Path -LiteralPath $UncertainMarker)) {
+        return
+    }
+    $actualBody = [System.IO.File]::ReadAllText(
+        $UncertainMarker, [System.Text.Encoding]::UTF8)
+    if ($actualBody -ceq $ExpectedBody) {
+        Remove-Item -LiteralPath $UncertainMarker
+    } else {
+        Write-Host '[WARN] uncertain marker 已由其他故障事件替换；保留该闸门，拒绝删除非本轮 marker。'
+    }
+}
 
 function Convert-ToJsflUri {
     param([Parameter(Mandatory = $true)][string]$Path)
@@ -179,6 +213,82 @@ if ($taskMode.IsLegacy) {
     Write-Host '[WARN] CompileTriggerTask 仍在使用旧版 trigger_compile.ps1 包装器。当前仓库已兼容，但建议重新运行 setup 以切到直开 JSFL。'
 }
 
+# 所有编译目标共用 compile_target/mode cfg、marker 与诊断文件；跨进程并发会串目标或伪造新鲜证据。
+$normalizedCompileRoot = [System.IO.Path]::GetFullPath($ProjectDir).TrimEnd('\').ToUpperInvariant()
+$compileHasher = [System.Security.Cryptography.SHA256]::Create()
+try {
+    $compileRepoHash = ([System.BitConverter]::ToString(
+        $compileHasher.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($normalizedCompileRoot)))).
+        Replace('-', '').Substring(0, 24)
+} finally {
+    $compileHasher.Dispose()
+}
+$compileMutex = [System.Threading.Mutex]::new(
+    $false, 'Local\CF7_FlashCompile_' + $compileRepoHash)
+$compileMutexAcquired = $false
+$compileLease = $env:CF7_FLASH_COMPILE_LEASE
+$leaseOwnerPid = 0
+try {
+    if ([string]::IsNullOrWhiteSpace($compileLease)) {
+        try {
+            $compileMutexAcquired = $compileMutex.WaitOne(0)
+        } catch [System.Threading.AbandonedMutexException] {
+            $compileMutexAcquired = $true
+            [void](Write-CompileUncertain 'repository compile mutex was abandoned')
+            Write-Host '[ERROR] 上一个编译进程异常退出；Flash/JSFL 可能仍会迟到写入，确认运行态与 marker 后再重试。'
+            exit 1
+        }
+        if (-not $compileMutexAcquired) {
+            Write-Host '[ERROR] 同一仓库已有 Flash 编译在运行；拒绝覆盖共享 cfg/marker/诊断文件。'
+            exit 1
+        }
+    } else {
+        # Focused runners install a temporary TestLoader entry and therefore own this
+        # mutex across install -> compile -> evidence consumption -> restore. The
+        # nonce is process-local (inherited only by this child); the probe makes an
+        # accidentally supplied lease fail closed unless another process really
+        # holds the repository compile mutex.
+        $expectedLeasePattern = '^v1:' + [regex]::Escape($compileRepoHash) +
+            ':\d+:[0-9a-f]{32}$'
+        if ($compileLease -notmatch $expectedLeasePattern) {
+            Write-Host '[ERROR] CF7_FLASH_COMPILE_LEASE 格式或仓库身份不匹配。'
+            exit 1
+        }
+        $leaseOwnerPid = [int]($compileLease.Split(':')[2])
+        $leaseProbeAcquired = $false
+        try {
+            try {
+                $leaseProbeAcquired = $compileMutex.WaitOne(0)
+            } catch [System.Threading.AbandonedMutexException] {
+                $leaseProbeAcquired = $true
+                [void](Write-CompileUncertain 'focused parent compile mutex was abandoned')
+            }
+            if ($leaseProbeAcquired) {
+                Write-Host '[ERROR] 编译 lease 没有对应的父进程 mutex；拒绝无锁执行。'
+                exit 1
+            }
+        } finally {
+            if ($leaseProbeAcquired) {
+                $compileMutex.ReleaseMutex()
+            }
+        }
+        Write-Host '[INFO] 复用 focused runner 持有的仓库编译 mutex。'
+    }
+    try {
+        Assert-Cf7TestLoaderScratchAdmission -MarkerPath $ScratchMarker `
+            -RunnerPath (Join-Path $ScriptDir 'TestLoader.as') `
+            -RepoHash $compileRepoHash -CompileLease $compileLease `
+            -LeaseOwnerPid $leaseOwnerPid
+    } catch {
+        Write-Host ('[ERROR] {0}' -f $_.Exception.Message)
+        exit 1
+    }
+    if (Test-Path -LiteralPath $UncertainMarker) {
+        Write-Host '[ERROR] 检测到 scripts/compile_state_uncertain.marker；上一轮可能仍有迟到的 Flash/JSFL 写入。'
+        Write-Host '        先确认 Flash/计划任务已静止并核对迟到 marker/SWF/diagnostics，再手工删除该文件。'
+        exit 1
+    }
+
 # 编译目标切换：把 -Target 解析成具体 FLA/XFL，写 scripts/compile_target.cfg（file:/// URI）供 compile_action.jsfl 读取。
 #   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。传 -Target → JSFL 读到后删除，避免旧目标残留。
 $TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
@@ -186,6 +296,7 @@ $ModeCfg = Join-Path $ScriptDir 'compile_mode.cfg'
 Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
 Remove-Item -Path $ModeCfg -ErrorAction SilentlyContinue
 $targetUri = ''
+$isTestLoaderTarget = $false
 # 编译动作模式：默认 test（testMovie，跑 trace / 刷新 SWF）。main（整套游戏主文件）走 publish——
 #   doc.publish() 只编译产出 SWF + 填充 fl.compilerErrors，不 testMovie 拉起全量游戏窗口（连不上 launcher
 #   socket 卡住 / 撞反盗版层 / 留僵尸窗口）。compile_action.jsfl 据 compile_mode.cfg 选 publish vs testMovie。
@@ -210,6 +321,13 @@ if ($Target) {
         Write-Host ('[ERROR] 编译目标不存在: {0}' -f $targetPath)
         Write-Host '        -Target 取值: test | publish | main | <FLA/XFL 路径>（相对仓库根或绝对）'
         exit 1
+    }
+    $testLoaderXflPath = [System.IO.Path]::GetFullPath(
+        (Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl'))
+    $isTestLoaderTarget = [System.IO.Path]::GetFullPath($targetPath) -ieq $testLoaderXflPath
+    if ($isTestLoaderTarget -and -not $VerifySwf) {
+        $VerifySwf = 'scripts/TestLoader.swf'
+        Write-Host '[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门'
     }
     $targetUri = Convert-ToJsflUri $targetPath
     Write-Host ('[INFO] 编译目标: {0} -> {1} (模式: {2})' -f $Target, $targetPath, $compileMode)
@@ -285,6 +403,11 @@ $flashLogBeforeBytes = if ($flashLogBeforeItem) {
 }
 $flashLogBeforeSize = $flashLogBeforeBytes.Length
 $compileOutputBefore = if (Test-Path $CompileOutput) { (Get-Item $CompileOutput).LastWriteTimeUtc } else { $null }
+$compilerErrorsBefore = if (Test-Path $CompilerErrors) {
+    $item = Get-Item $CompilerErrors
+    '{0}|{1}|{2}' -f $item.LastWriteTimeUtc.Ticks, $item.Length,
+        (Get-FileHash -LiteralPath $CompilerErrors -Algorithm SHA256).Hash
+} else { $null }
 
 # SWF 刷新门：触发前记录目标 SWF 的 mtime/size 基线（仅当 -VerifySwf 指定）
 $VerifySwfPath = $null
@@ -301,6 +424,7 @@ if ($VerifySwf) {
 }
 
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
+$compileStartedUtc = [System.DateTime]::UtcNow
 if ($targetUri) {
     [System.IO.File]::WriteAllText($TargetCfg, $targetUri, (New-Object System.Text.UTF8Encoding($false)))
 }
@@ -308,10 +432,14 @@ if ($targetUri) {
 if ($compileMode -eq 'publish') {
     [System.IO.File]::WriteAllText($ModeCfg, $compileMode, (New-Object System.Text.UTF8Encoding($false)))
 }
+$inFlightUncertainBody = Write-CompileUncertain ('in-flight; target={0}' -f $Target)
+$compileTriggered = $true
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
 for ($i = 1; $i -le $TimeoutSeconds; $i++) {
     if (Test-Path $Marker) {
+        $compileTerminalObserved = $true
+        Remove-OwnedCompileUncertain -ExpectedBody $inFlightUncertainBody
         Write-Host ('[OK] 编译完成 ({0}s)' -f $i)
         Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 
@@ -363,11 +491,23 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             }
         }
 
-        # 检查 Compiler Errors 面板输出
+        # Compiler Errors 是所有目标的成功必需证据：必须由本轮重新导出且严格为 0/0。
         $hasCompileError = $false
-        if (Test-Path $CompilerErrors) {
+        if (-not (Test-Path $CompilerErrors)) {
+            Write-Host '[ERROR] 本轮没有导出 compiler_errors.txt；不能用 marker 或 SWF 刷新替代编译器 0/0 证据。'
+            $hasCompileError = $true
+        } else {
+            $compilerErrorsItem = Get-Item $CompilerErrors
+            $compilerErrorsNow = '{0}|{1}|{2}' -f
+                $compilerErrorsItem.LastWriteTimeUtc.Ticks,
+                $compilerErrorsItem.Length,
+                (Get-FileHash -LiteralPath $CompilerErrors -Algorithm SHA256).Hash
             $errContent = Get-Content -Path $CompilerErrors -Raw -Encoding UTF8
-            if ($errContent -and $errContent -notmatch '^\s*0 个错误' -and $errContent -notmatch '^\s*0 Errors') {
+            if ($compilerErrorsNow -eq $compilerErrorsBefore -or
+                $compilerErrorsItem.LastWriteTimeUtc -lt $compileStartedUtc.AddSeconds(-1)) {
+                Write-Host '[ERROR] compiler_errors.txt 未由本轮刷新；拒绝复用旧的 0/0 证据。'
+                $hasCompileError = $true
+            } elseif ($errContent -notmatch '^\s*0\s+[^,\r\n]+,\s*0\s+[^,\r\n]+\s*$') {
                 Write-Host '=== COMPILER ERRORS ==='
                 Write-Host $errContent
                 Write-Host '=== END COMPILER ERRORS ==='
@@ -399,19 +539,39 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             }
         }
 
-        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale) {
-            Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+        # TestLoader 编译后近墙门：codeSize 是 UI16，只能拦尚未越墙项；
+        # canonical 源闭包度量只作调查信号，还须结合 fresh 行为证据。
+        $hasFunctionSizeFailure = $false
+        if ($isTestLoaderTarget -and -not $hasSwfStale) {
+            $functionSizeTool = Join-Path $ProjectDir 'tools\swf-function-sizes.js'
+            $testLoaderSwf = Join-Path $ProjectDir 'scripts\TestLoader.swf'
+            if (-not (Test-Path $functionSizeTool) -or -not (Get-Command node -ErrorAction SilentlyContinue)) {
+                Write-Host '[ERROR] TestLoader function codeSize 门缺少 node 或 tools/swf-function-sizes.js。'
+                $hasFunctionSizeFailure = $true
+            } else {
+                & node $functionSizeTool $testLoaderSwf --max 60000 --top 5
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Host '[ERROR] TestLoader 存在 codeSize >= 60000B 的近墙函数。'
+                    $hasFunctionSizeFailure = $true
+                }
+            }
+        }
+
+        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure) {
+            Remove-Item -Path $TargetCfg, $ModeCfg -ErrorAction SilentlyContinue
             exit 1
         }
-        Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg, $ModeCfg -ErrorAction SilentlyContinue
         exit 0
     }
 
     if (Test-Path $ErrorMarker) {
+        $compileTerminalObserved = $true
+        Remove-OwnedCompileUncertain -ExpectedBody $inFlightUncertainBody
         Write-Host '[ERROR] 编译失败:'
         Get-Content -Path $ErrorMarker -Encoding UTF8
         Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
-        Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg, $ModeCfg -ErrorAction SilentlyContinue
         exit 1
     }
 
@@ -424,5 +584,16 @@ Write-Host '  - TestLoader 未在 Flash 中打开'
 Write-Host '  - CompileTriggerTask 计划任务未创建'
 Write-Host '  - 仍在弹 UAC 或旧任务卡住'
 Write-Host '  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds 调大重试'
-Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+[void](Write-CompileUncertain ('timeout after {0}s; target={1}' -f $TimeoutSeconds, $Target))
+$nonTerminalUncertainWritten = $true
 exit 1
+} finally {
+    if ($compileTriggered -and -not $compileTerminalObserved -and
+        -not $nonTerminalUncertainWritten) {
+        [void](Write-CompileUncertain ('compile_test exited before a terminal marker; target={0}' -f $Target))
+    }
+    if ($compileMutexAcquired) {
+        $compileMutex.ReleaseMutex()
+    }
+    $compileMutex.Dispose()
+}

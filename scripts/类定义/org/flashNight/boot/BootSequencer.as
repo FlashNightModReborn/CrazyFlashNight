@@ -1,9 +1,11 @@
-﻿// 2026-06-16 P4 起点 → 2026-06-17 已编译 + 塌缩 boot happy-path 真机通过（佣兵满编/刀光/存档 OK）。由 _collapsed_frame.as 显式 import + BootSequencer.run(this) 驱动。⚠ §5 七边界（shim 缺失/socket 超时/握手失败/存档三分支/最终化2/生命周期/单帧 loop）尚未逐一验。
+﻿// 2026-06-16 P4 起点；2026-07-25 当前由 _collapsed_frame.as 显式 import + BootSequencer.run(this) 驱动。
+// happy-path、完整 S2→S10 trace、shim/握手/存档/S6/生命周期与单帧防重入已有分层证据；
+// 真 socket 10s 超时仍保留为低价值人工边界，详见构建标准 §5.3。
 // 权威契约: docs/asLoader-BootSequencer-构建标准-2026-06-16.md
 // 未验证假设（编译期/真机必查）:
 //  1. L42 陷阱: 本类被引用时引用方需显式 import org.flashNight.boot.BootSequencer。
-//  2. _root.__boot 由折叠后的单帧 staged 函数预先填充(s0_init/s1_syncCode/s5_parseTask/s6_pre/s6_post/
-//     s7_syncLogic/s8_fanout/s9_onCrafting + 标志位)。本类只编排，不 #include（避开 import-in-method）。
+//  2. _root.__boot 由折叠后的单帧 staged 函数预先填充(s1_syncCode/s6_pre/s6_post/
+//     s7_syncLogic/s7_miscLoaders/s8_fanout + 标志位)。S0/S5/S9 业务归本类，不 #include（避开 import-in-method）。
 //     ⚠ S6 拆 s6_pre(f9 建 _root.loaders + f10 兼容×4 push 入队 + f18 最终化1 跑 _root.preloaders)
 //        / s6_post(f32 最终化3 跑 _root.loaderkillers + 删三队列)；中间 _root.loaders 由本类 stepSyncSys
 //        每 tick 抽 1 个（复刻 f26 最终化2 的 onEnterFrame 时间切片，prevent 单帧抽干卡顿）。
@@ -62,7 +64,6 @@ class org.flashNight.boot.BootSequencer {
     }
 
     function start():Void {
-        this.host._lockroot = false;
         var self:BootSequencer = this;
         // tick 挂 _root（仿 DataQueryService.whenAvailable 存活模式），asLoader 自删后回调仍可达
         this.tickClip = _root.createEmptyMovieClip("__bootSeqTick", _root.getNextHighestDepth());
@@ -71,14 +72,14 @@ class org.flashNight.boot.BootSequencer {
 
     function step():Void {
         switch (this.state) {
-            case S_INIT:      this.b.s0_init();        this.state = S_SYNCCODE;  break;
+            case S_INIT:      org.flashNight.gesh.init.GlobalInitializer.initialize(); this.state = S_SYNCCODE; break;
             case S_SYNCCODE:  this.b.s1_syncCode();    this.state = S_HANDSHAKE; this.hsPhase = 1; this.hsStart = getTimer(); this.bslog("handshake stage entered, _bootstrap=" + (_root._bootstrap != undefined) + " server=" + (_root.server != undefined)); break;
             case S_HANDSHAKE: this.stepHandshake();    break;
             case S_TASKDATA:  this.stepTaskData();     break;
             case S_TASKTEXT:  this.stepTaskText();     break;
-            case S_PARSE:     this.b.s5_parseTask(this.host); this.state = S_SYNCSYS; break;
+            case S_PARSE:     this.parseTaskAndStartGuide(); this.state = S_SYNCSYS; break;
             case S_SYNCSYS:   this.stepSyncSys();      break;
-            case S_SYNCLOGIC: this.b.s7_syncLogic();   this.state = S_FANOUT;    break;
+            case S_SYNCLOGIC: this.b.s7_syncLogic(); this.host.打印加载内容("加载杂项数据……"); this.b.s7_miscLoaders(); this.state = S_FANOUT; break;
             case S_FANOUT:    this.b.s8_fanout();      this.state = S_CRAFTING;  break;
             case S_CRAFTING:  this.stepCrafting();     break;
             case S_HANDOFF:   this.handoff();          break;
@@ -124,7 +125,7 @@ class org.flashNight.boot.BootSequencer {
             if (elapsed > 10000) {
                 _root._bootstrapFailed = "socket_connect_timeout";
                 this.bslog("socket timeout after " + elapsed + "ms, connected=" + (_root.server != undefined ? _root.server.isSocketConnected : "n/a"));
-                this.host.打印加载内容("启动器连接超时");   // bslog 先于 打印加载内容，对齐 frame4.as:32-33 顺序
+                this.host.打印加载内容("启动器连接超时");   // bslog 先于打印加载内容，保持旧 f4 顺序
                 this.halt("socket_connect_timeout");
                 return;
             }
@@ -148,7 +149,7 @@ class org.flashNight.boot.BootSequencer {
             if (hs != "Success") return;
             if (!_root._bootstrapPreloadFired) {
                 _root._bootstrapPreloadFired = true;
-                this.bslog("handshake hs=Success");   // 握手成功沿记一次（frame4 经 tick 轮询日志 hs=Success；供 trace-diff HANDSHAKE_RESULT 等价）
+                this.bslog("handshake hs=Success");   // 握手成功沿记一次（旧 f4 经 tick 轮询日志 hs=Success；供 trace-diff HANDSHAKE_RESULT 等价）
                 this.host.打印加载内容("读取存档数据……");
                 this.bslog("firing preload");
                 _root.读取本地存盘();
@@ -201,14 +202,50 @@ class org.flashNight.boot.BootSequencer {
         if (this.b.taskTextReady == true) this.state = S_PARSE;
     }
 
+    // === S5 任务解析（原 f7；guide 为 fire-and-forget，不新增等待态） ===
+    function parseTaskAndStartGuide():Void {
+        org.flashNight.arki.task.TaskUtil.ParseTaskData(
+            this.host.rawTaskData,
+            this.host.rawTextData
+        );
+        this.host.rawTaskData = null;
+        this.host.rawTextData = null;
+
+        var guideLoader = org.flashNight.gesh.json.LoadJson.ProgressGuideLoader.getInstance();
+        guideLoader.loadGuideData(
+            function(data:Object):Void {
+                org.flashNight.arki.task.TaskUtil.ParseGuideData(data);
+            },
+            function():Void {}
+        );
+    }
+
+    // === S9 合成表落地（原 f75 成功回调） ===
+    function applyCraftingData(data:Object):Void {
+        var craftingDict = {};
+        for (var category in data) {
+            var list = data[category];
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                craftingDict[item.name] = item;
+                if (isNaN(item.value)) item.value = 1;
+            }
+        }
+        _root.改装清单 = data;
+        _root.改装清单对象 = craftingDict;
+
+        var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
+        obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+    }
+
     function stepCrafting():Void {
         if (this.b.craftFired != true) {
             this.b.craftFired = true;
             var self:BootSequencer = this;
             CraftingListLoader.getInstance().loadCraftingList(
                 function(data:Object):Void {
-                    self.b.s9_onCrafting(data);
-                    self.bslog("合成表数据加载完毕");   // S9 完成事件 → trace-diff CRAFTING_OK。原 frame75 仅 trace()（SA 剔除）→ gate 对 S9 盲；此处补 [BootstrapAS] 可见事件。
+                    self.applyCraftingData(data);
+                    self.bslog("合成表数据加载完毕");   // S9 完成事件 → trace-diff CRAFTING_OK。旧 f75 仅 trace()（SA 剔除）→ gate 对 S9 盲；此处补 [BootstrapAS] 可见事件。
                     self.b.craftReady = true;
                 },
                 function():Void {});

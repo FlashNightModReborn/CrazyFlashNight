@@ -1,3 +1,3 @@
-﻿import org.flashNight.arki.skill.SkillMigrationTestSuite;
-
-SkillMigrationTestSuite.runAllTests();
+﻿trace("FocusedTestRunId skill-migration Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.skill.SkillMigrationTestSuite.runAllTests();
+trace("FocusedTestRunId skill-migration Complete: __FOCUSED_RUN_ID__");
