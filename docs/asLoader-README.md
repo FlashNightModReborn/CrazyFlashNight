@@ -1,7 +1,7 @@
 # asLoader 启动架构 · 导览与待测
 
 **文档角色**：asLoader 启动子系统的**入口导览**（反直觉架构的心智地图 + 验证状态 + 测试入口）。深层细节下沉到设计 / 施工 doc，本文只回答「这是什么、为什么这么怪、验了什么、还要测什么」。
-**最后核对代码基线**：commit `3d33fd238032e4ffc81cc91b41223b7ac67415f9`（2026-07-25）；下列“当前”结论均以该基线之上的同一工作树为对象。
+**最后核对代码基线**：commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` + 当前审阅修复工作树（2026-07-25）；下列“当前”结论均以该工作树为对象。
 **深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）· [asLoader / TestLoader 维护性路线](asLoader-TestLoader维护性重构-架构路线-2026-07-24.md)（维护性施工路线；阶段状态以该文档为准，当前构建入口与门禁以本文为准）。
 
 ## 0. TL;DR（先读这段）
@@ -62,7 +62,7 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**承载全�
 | **S3 生成器事实** | ✅ `--check` 字节级通过：82 包 + 9 具体类、29 live source（13 staged + 16 loader-fire）、6 个 stage；生成物由 `.gitattributes` 固定 LF；canonical 源闭包度量最大为 `f3=149298 B`，高于 70,000 B 的三项只列作调查候选，不作构建 hard gate |
 | BOM | ✅ `node tools/check-bom.js`：当前 172 个 `.as` 全部带 UTF-8 BOM |
 | 静态门 single-ownership | ✅ 当前复核：main=0 / loader=599 / 交集=0 |
-| **当前 S1/S3 编译与真机 boot** | ✅ 最终生成物 fresh publish 36 s，Compiler Errors 面板副本 `0 个错误, 0 个警告`，`scripts/asLoader.swf` 刷新为 1,034,400 B（SHA-256 `2B8A61DE2531852B399370EFD487AA081F656BCBBFE679FD1EA1889631026B8E`）；正式标准入口以专用克隆槽启动，attempt `ba5c8503e3dc4e0ab569879f1dc83016` 获得 fresh handoff、真实 `bootstrap_reveal_ready`、同 attempt `s:1` / runtime ack 与只读装备 snapshot，且本轮没有 reveal watchdog |
+| **当前 S1/S3 编译与真机 boot** | ✅ 最终生成物 fresh publish 约 35 s，Compiler Errors 面板副本 `0 个错误, 0 个警告`，`scripts/asLoader.swf` 刷新为 1,034,400 B（SHA-256 `5FAEB960ECB8F9375E9037CBB52854281E23DBE3DAE036451B0BAD0B4B00FACA`）；正式标准入口以专用克隆槽启动，attempt `f18ce86d75564adf8ac3457de4d9b063` 获得 fresh handoff、真实 `bootstrap_reveal_ready`、同 attempt `s:1` / runtime ack 与只读装备 snapshot，且本轮没有 reveal watchdog；报告为 `tmp/equipment-tuning/unattended/20260725T045156Z-cf7_agent_equipment_tuning/run-report.json` |
 | **trace 等价门（happy-path）** | ✅ golden 仍为 2026-06-17 的单次完整 boot S2→S10；2026-07-25 对当前 fresh 真机日志执行 `trace-diff diff`，golden 10 事件 / new 10 事件 / LCS 10，顺序 `S2_ENTER → SOCKET_READY → HANDSHAKE_RESULT → PRELOAD_FIRE → READY_ACK → BOOT_CHECK_JUMP → TASKDATA_OK → TASKTEXT_OK → CRAFTING_OK → HANDOFF_PLAY` 完全一致 |
 | **§5 七边界** | ✅ 基本完成（2026-06-17 真机）：(c) shim 缺失双层 fail-closed、(a) 坏档 C2-β 修复 gate、(d) 正常/新档(decision=empty)/坏档(随 a)、握手失败 fail-closed(测试churn顺带实证)、(e)(f) 随 happy-path boot 覆盖。(b) socket 超时=纯看屏(独立开 SWF 已见卡死协议帧)+L1 逻辑已覆盖。详见构建标准 §5.3 |
 

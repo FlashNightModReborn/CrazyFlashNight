@@ -27,7 +27,7 @@ The current contract contains exactly 14 literal `enqueueMetric(name,count,...)`
 
 This replay validates the current harness and evidence contract; it does not replace the latency samples below:
 
-- cycle runId `38f167b2d06841c5b9ea75fa9b6dd37e`: all exact 14 summaries plus 14 raw-sample sets accepted, `failures=0`, Compiler Errors `0/0`, `32K retry=0`
+- cycle runId `374dc0fc165640bdb2b5a319b90290dc`: all exact 14 summaries plus 14 raw-sample sets accepted, `failures=0`, Compiler Errors `0/0`, `32K retry=0`
 - `protocol_latency_sweep.ps1 -Runs 1 -Json`: one complete 14-metric sample accepted, `failures=0`
 - the self-started bus was bound to the exact Core PID and current ports-file PID, received graceful `/shutdown`, and exited without a hard kill
 - the original `TestLoader.as` SHA-256 was restored; no scratch, recovery, uncertain marker, Core process, or owned ports file remained

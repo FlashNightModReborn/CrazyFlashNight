@@ -8,7 +8,7 @@
 
 ## 文件变动
 
-### 新增文件
+### 历史新增文件（现行归属以 `tools/assemble-collapsed-frame.js` 的 `BOOT_SOURCES` 为准）
 
 1. 任务系统_兼容.as
 
@@ -28,7 +28,7 @@
 
 9. 逻辑系统分区_最终化1.as
 
-10. 逻辑系统分区_最终化2.as
+10. ~~逻辑系统分区_最终化2.as~~（历史 f26 时间切片源；现由 `BootSequencer.stepSyncSys()` 复刻并持有，活跃文件已删除，追溯走 Git）
 
 11. 逻辑系统分区_最终化3.as
 
@@ -38,4 +38,4 @@
 
 ## 额外说明
 
-asLoader文件直接替换即可。因编码便利，各.as文件目前放置在与asLoader.fla同一目录下。整合时应当咨询代码组的意见，将其放到合适的目录下并依次修改asLoader中的#include路径。
+现行 asLoader 已是单帧 + `BootSequencer`：顶层 live source、顺序与阶段只由 `tools/assemble-collapsed-frame.js` 的 `BOOT_SOURCES` 管理，生成物为 `scripts/asLoaderManifest/_collapsed_frame.as`。不要按本页历史清单直接复制旧文件或另建平行 frame 清单；迁移来源追溯统一走 Git。

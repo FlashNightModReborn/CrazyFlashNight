@@ -1,7 +1,7 @@
 # asLoader BootSequencer · 权威启动契约 · 构建标准 · 2026-06-16
 
 **文档角色**：BootSequencer（C2 全量异步-B）施工的**权威跨时间轴启动契约**。
-**最后核对代码基线**：commit `3d33fd238032e4ffc81cc91b41223b7ac67415f9` + 2026-07-25 当前工作树维护性收口。
+**最后核对代码基线**：commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` + 当前工作树的审阅收口。
 **来源**：8-agent workflow（3 readers → 综合 → 3 对抗校验 → spec），全部 file:line 二次核对。
 **上游设计**：[asLoader重构-架构设计-2026-06-15.md](asLoader重构-架构设计-2026-06-15.md)。
 **状态**：契约与单帧实现均已落地；当前 29 个 live source 由唯一 `BOOT_SOURCES` 生成 6 个纯装配 stage，S0/S5/S9 业务归 `BootSequencer`。happy-path 真机 boot、S2→S10 全 10 事件 trace 等价门、L1 `BootSequencerTest 58/58` / `BootstrapHandshakeTest 12/12` 已通过；七边界只保留真 socket 10s 超时为低价值人工观察项（见 §5.3）。
@@ -61,7 +61,7 @@
 | 7f | asLoader | :200-207 | 清 onEnterFrame@200；`sendReady()`@204；**`_root.gotoAndStop("boot_check")`@207** | 把 MAIN f1→f5 |
 | 8 | MAIN | :1219-1220 (f5 `boot_check`) | `注释结束()`；`gotoAndPlay("单机版开始")`@1220 | →f30 |
 | 9 | MAIN | :1244-1261 (f30 `单机版开始`) | 清欢迎语；FSCommand showmenu；`useCodepage=false`；`Stage.showMenu=false` | 计时→f33 |
-| 10 | MAIN | :1270-1271 (f33 `外置大脑继续加载`) | `stop()`@1270；**`_root.asLoader.play()`@1271**（解冻 asLoader f4→f5） | **MAIN 阻塞**；交还驱动权 |
+| 10 | MAIN | `DOMFrame index=33`（历史 f33 `外置大脑继续加载`） | 迁移前为 `stop(); _root.asLoader.play()`（解冻 asLoader f4→f5）；现行脚本改为 main-ready signal | **MAIN 阻塞**；交还驱动权 |
 | 11 | asLoader | :222-231 (f5) | `this.stop()`；`TaskDataLoader.loadTaskData`，cb `play()`@231 | **异步阻塞**：任务数据 JSON |
 | 12 | asLoader | :245-254 (f6) | `this.stop()`；`TaskTextLoader.loadTaskText`，cb `play()`@254 | **异步阻塞**：任务文本 JSON |
 | 13 | asLoader | :266-273 (f7) | `TaskUtil.ParseTaskData`@266；raw*=null；fire-and-forget `loadGuideData`@273 | →f9 |
@@ -81,7 +81,7 @@
 
 ## 2. stop/play 配对（完整性已闭合）
 
-- **配对①（f4→f5，跨时间轴两跳链）**：asLoader f4 `this.stop()`@138 ←解冻← MAIN f33 `_root.asLoader.play()`@1271。中间链：f4 onEnterFrame 成功不解冻自己，而是 `gotoAndStop("boot_check")`@207 把 MAIN f1→f5→(单机版开始)→f33。
+- **配对①（f4→f5，跨时间轴两跳链，历史迁移来源）**：asLoader f4 `this.stop()` ←解冻← MAIN `DOMFrame index=33` 的旧 `_root.asLoader.play()`。中间链：f4 onEnterFrame 成功不解冻自己，而是 `gotoAndStop("boot_check")` 把 MAIN f1→f5→(单机版开始)→f33；现行单帧实现以同帧 main-ready signal 代替 `play()`。
 - **配对②（MAIN f33→f52+，asLoader 卸载回驱）**：MAIN f33 `stop()`@1270 ←解冻← asLoader f91 `_root.play()`@821。**顺序铁律：先 `_root.play()` 再 `removeMovieClip()`**。
 - **配对③（asLoader 内部异步 JSON 硬门）**：f5 stop@222←cb@231；f6 stop@245←cb@254；f75 stop@787←cb@810。
 - **fail-closed**：shim 缺失 = MAIN 永冻 f1（非靠 f62）；socket 10s（asLoader.xml:160）；handshake 60s（shim:59，覆盖 `BootstrapHandshake.DEFAULT_TIMEOUT_MS=5000`，并透传到 `ServerManager.sendTaskWithCallback` 的 per-call timeout，避免 prewarm hold 被默认 600 帧 callback timeout 抢先判失败）；f4 内联注释「整体10s」**过时勿信**。
@@ -90,14 +90,14 @@
 
 ## 3. BootSequencer 状态机规格（施工核心）
 
-**形态**：asLoader 折叠为单关键帧 MovieClip；生成物帧顶先执行结构前导 `_lockroot=false; stop();`，再启动业务状态机；`_root` 挂 tick（仿 `DataQueryService.whenAvailable` 存活模式，确保自删后回调可达）。原 f0-f91 折叠为顺序 stage + gate。**防重跑靠帧首 stop + 幂等 guard，不靠"play 不 loop"**（§0）。
+**形态**：asLoader 折叠为单关键帧 MovieClip；生成物帧顶先执行结构前导 `_lockroot=false; stop();`，再启动业务状态机；`_root` 挂 tick（仿 `DataQueryService.whenAvailable` 存活模式，确保自删后回调可达）。原 f0-f91 折叠为顺序 stage + gate。**防重跑靠帧首 stop + `BootSequencer.run()` 单例 / `_root.__boot` 装配 guard，不存在 `s0done/s1done` 字段，也不靠"play 不 loop"**（§0）。
 
 ```
 FRAME_PREAMBLE [结构]      _lockroot=false; stop(); 必须早于任何 _root 读写
 _root.__boot.tick()  (onEnterFrame 驱动)
 
-S0_INIT      [同步 f0-f1]   guard s0done: GlobalInitializer.initialize(); →S1
-S1_SYNC_CODE [同步 f2-f3]   guard s1done: #include 引擎×18+通信×9(建 _root._bootstrap); →S2
+S0_INIT      [同步 f0-f1]   state=S_INIT: GlobalInitializer.initialize(); →S1
+S1_SYNC_CODE [同步 f2-f3]   state=S_SYNCCODE: #include 引擎×18+通信×9(建 _root._bootstrap); →S2
 S2_HANDSHAKE [异步, 移植 f4] ★跨SWF★
    if(_bootstrap==undefined){置 _bootstrapFailed; HALT 加载画面}  // fail-closed
    阶段1 等 isSocketConnected; >10000ms→socket_connect_timeout HALT; 连上→startHandshake()(幂等)
@@ -121,7 +121,7 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 ## 4. 必须的主 FLA 改动清单（精确 file:line）
 
-- **改动 A（必须）— MAIN f33 resume 信号**：`DOMDocument.xml:1271` `_root.asLoader.play()` → 状态机可观测信号（如 `_root.__boot.mainReadyToContinue=true`，S2 后据此放行 S3 起加载链）。折叠后 asLoader 单帧帧首已 stop 等握手，f33 不应再 `play()` 推帧。同帧 :1270 `stop()` 保留。
+- **改动 A（必须）— MAIN f33 resume 信号**：`DOMDocument.xml` 的 `DOMFrame index=33`（当前脚本锚点 `_root.__boot.mainReadyToContinue = true`）由旧 `_root.asLoader.play()` 改为状态机可观测信号，S2 后据此放行 S3 起加载链。折叠后 asLoader 单帧帧首已 stop 等握手，f33 不应再 `play()` 推帧；同一帧的 `stop()` 保留。
 - **改动 B（原标「必须」→ 2026-06-17 经分析降级为「未做且可省，但属潜伏脆弱」，外部审阅 M1）— asLoader 实例 keyframe 寿命**：`DOMDocument.xml:1684`(index=1 dur=33) + `:1696`(index=34 移除)。**现状：未改**（实例仍 frames 1–33、f34 空关键帧移除）。**为何 happy-path 仍对**：S2 `gotoAndStop("boot_check")` 后 MAIN 走 f5→f30→**f33 `stop()` 冻结**，f33 ∈ [1,33] 跨度内 → 实例全程存活；S10 handoff 的 `_root.play()`+`removeMovieClip()` 先于 MAIN 推进到 f34 执行 → 实例由自删收尾、f34 空关键帧从不真正抢删。真机 happy-path 已印证。**潜伏脆弱（必须知晓）**：此正确性**唯一依赖 f33 的 `stop()`**——若后续任何改动移除该 stop、或失败路径让 MAIN 越过 f33，实例会在 f34 被空关键帧抢删 → `BootSequencer.host.*`（`打印加载内容`/`rawTaskData`…）全失效。**若要根除依赖**：二选一 ①延展 :1684 duration 覆盖整个加载窗 + 删/后移 :1696；②删时间轴实例改 MAIN f1 `_root.attachMovie("asLoader",…)` 代码挂载，由 S10 统一生命周期。当前选择「不改 + 靠 f33 stop」是有意取舍，非遗漏。
 - **改动 C（建议）— 删 f62-64 死代码自旋**：`:1311-1316/1325-1335/1347-1356`。当前不可达；折叠后握手全在 S2。删 f63/f64 的 `gotoAndPlay(63/64)` 自旋回环；f62 可留纯诊断不驱动控制流。
 - **未破坏（无需改）**：MAIN f5/f30/f52/f61/f65/f81/f129 label 与脚本不依赖 asLoader 内部帧结构；f65 `sendReady`、f81 `sendRevealReady` 保留（幂等）。
@@ -199,13 +199,13 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 ### 5.3 验证分层与载体（2026-06-17 落地，回答「用 TestLoader / bus-only 是否更方便」）
 
-把七边界拆三层载体，**绝大多数故障逻辑可自动化，残留人类项收敛到 3 类**：
+把七边界拆三层载体；逻辑故障优先自动化，当前未闭合项只剩真 socket 10s 超时的低价值人工观察：
 
 - **L1 — TestLoader 单元测试**（`scripts/类定义/org/flashNight/boot/BootSequencerTest.as` + `scripts/类定义/org/flashNight/neur/Server/test/BootstrapHandshakeTest.as` → 挂进本地 `scripts/TestLoader.as` → `compile_test.ps1` 抓 trace）：在 debug player 里 **mock `host`/`_root._bootstrap`/`_root.server`/`_root.__boot` staged 函数/`存档恢复等待中` 等**，直接 `new BootSequencer(host)` + 手动驱 `step()` 断言状态机；BootstrapHandshakeTest 额外守 `timeoutMs` 传给 sender。**deterministic、每次改 BootSequencer.as / bootstrap handshake 即回归**。覆盖：(b) socket 超时、(c) shim 缺失、握手失败、(a) 修复 gate 自旋→放行、(g) `run()` 幂等、S6 等待门/抽干顺序、**新 `CRAFTING_OK`/`HANDOFF_PLAY` 发一条**（= 把 Finding 1 变回归守卫）、prewarm hold 不再被 ServerManager 默认 20s callback timeout 抢先打断。
 - **L2 — `launcher --bus-only` + `cfn-cli`**（headless 起 socket bus + 托管游戏，不建 BootstrapPanel）：抓 **happy-path golden**（`cfn-cli start-bus` → 游戏 boot → `cfn-cli ... log` 导 launcher.log → `trace-diff.js diff`）。socket-present 集成验。
 - **L3 — 真机正常模式**：不可 mock 的 Flash/集成行为。
 
-| 边界 | 载体 | 自动化 | 备注 |
+| 边界 | 载体 | 当前状态 | 备注 |
 |---|---|---|---|
 | (b) socket 超时（逻辑） | L1 | ✅ | `inst.hsStart = getTimer()-11000` 后 step → HALT |
 | (c) shim 缺失 | L1 | ✅ | `_root._bootstrap=undefined` |
@@ -218,8 +218,8 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 | (b) **真** socket 连接/超时 | L3 | ◑ | 视觉态等价已见（独立开 SWF 卡死协议帧）；纯看屏(socket 断→日志哑)、L1 已覆盖逻辑。**连接/XMLSocket/trust 类只用真 launcher，桩常假阳性**（testing-guide） |
 | (a) 修复**端到端**（修复卡 UI） | L3 | ✅ | 2026-06-17 过：L0 坏档→RepairPending→S2 gate 自旋→applyRepairResolved→boot（见 §5.3 进度） |
 | (d) 存档三分支 | L3 | ✅ | 2026-06-17 过：正常/新档(decision=empty)/坏档(随 a)；真 SaveManager + 真 SOL/JSON |
-| (e) 佣兵满编 / staged #include 真跑 | L3 | ✗ | 需真编译 SWF（64KB chunk + 真 preloader 时序） |
-| (f) 跨 SWF 生命周期 + f33-stop 依赖 | L3 | ✗ | Flash 时间轴实例寿命，mock 不出 |
+| (e) 佣兵满编 / staged #include 真跑 | L3 | ✅（真机 boot） | 不能由 mock 代证；历史 happy-path 与当前 fresh boot 均覆盖真 SWF、64KB chunk 和 preloader 时序 |
+| (f) 跨 SWF 生命周期 + f33-stop 依赖 | L3 | ✅（真机 boot） | 不能由 mock 代证；fresh handoff 覆盖 f33 signal、实例寿命与 S10 自删顺序 |
 
 **⚠ L1 的边界（别误判覆盖）**：单测跑的是 **mock 后的逻辑**；塌缩引入的 4 个回归全是「**编译 0 错却运行时坏**」（chunk 调 base 名 / eager 单例跨类调用 / 大小写 typo / 异步压紧 tick），**恰好盲于 L1**。L1 是快速内环（守状态机逻辑回归），**不替代 L2/L3**。
 
@@ -364,7 +364,7 @@ P3 改变执行结构（包进函数+延迟调用）→ **字节门不适用**�
 ### P4 — 接 BootSequencer + 主 FLA 改动（最高危）
 
 5. 评审 `org.flashNight.boot.BootSequencer.as`（DRAFT）：消除 6 条未验证假设；接 staged 函数名与 P3 对齐；显式 import 自检（L42）。
-6. 主 FLA 改动 A（必须）：`DOMDocument.xml:1271` `_root.asLoader.play()` → `_root.__boot.mainReadyToContinue=true`。
+6. 主 FLA 改动 A（必须）：`DOMDocument.xml` 的 `DOMFrame index=33` 中，旧 `_root.asLoader.play()` → `_root.__boot.mainReadyToContinue = true`。
 7. 主 FLA 改动 B（原计划必须，实际未做且可省）：asLoader 实例 keyframe 寿命维持原状，正确性依赖 f33 `stop()`；现行取舍与潜伏脆弱见 §4，不得把本行当待办自动施工。
 8. 主 FLA 改动 C（建议）：删 f62-64 死代码自旋（:1311-1356）。
 9. **boot trace 插桩**：给「当前（未折叠）boot」按 §5 事件清单插桩发 `[BOOTTRACE] event=<ID>`（走 `_root.server.sendServerMessage`），跑一次真机 boot → 存 golden 事件日志。

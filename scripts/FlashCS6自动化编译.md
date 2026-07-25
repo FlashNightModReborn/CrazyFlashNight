@@ -1,7 +1,7 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `3d33fd238032e4ffc81cc91b41223b7ac67415f9` + 2026-07-25 当前工作树的编译 mutex、fresh Compiler Errors 与 TestLoader 近墙门收口。
+**最后核对代码基线**：commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` + 当前工作树的编译 mutex、fresh Compiler Errors、Node 前置与 TestLoader 近墙门收口。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
@@ -18,6 +18,7 @@
 - 已以管理员身份运行过 `scripts/setup_compile_env.bat`
 - Flash CS6 正在运行
 - `scripts/TestLoader` XFL 已打开
+- 已安装 Node.js；TestLoader 的 `function codeSize < 60000` 是硬门，缺少 `node` 或 `tools/swf-function-sizes.js` 时会在触发 Flash 前失败。非 TestLoader 目标缺少 Node 时，预编译 BOM 门仍只告警降级
 - 如果近期更新过编译自动化脚本或换过机器，先重新运行一次 setup
 
 ## 3. 使用方式
@@ -104,6 +105,7 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 ```
 compile_test.ps1 / compile_test.sh
   → 取得仓库级 CF7_FlashCompile mutex（scratch 父 runner持同一把锁，并以持久事务 marker + exact-match lease 允许子进程复用）
+  → 显式 TestLoader 目标先检查 node + swf-function-sizes.js；缺失则不触发 Flash
   → Start-ScheduledTask 'CompileTriggerTask'
     → cf7_compile_loader.jsfl
       → compile_action.jsfl

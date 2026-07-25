@@ -325,6 +325,13 @@ if ($Target) {
     $testLoaderXflPath = [System.IO.Path]::GetFullPath(
         (Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl'))
     $isTestLoaderTarget = [System.IO.Path]::GetFullPath($targetPath) -ieq $testLoaderXflPath
+    $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+    $functionSizeTool = Join-Path $ProjectDir 'tools\swf-function-sizes.js'
+    if ($isTestLoaderTarget -and
+        (-not $nodeCmd -or -not (Test-Path -LiteralPath $functionSizeTool))) {
+        Write-Host '[ERROR] TestLoader 编译前置缺少 node 或 tools/swf-function-sizes.js；function codeSize<60000 是硬门，拒绝触发 Flash。'
+        exit 1
+    }
     if ($isTestLoaderTarget -and -not $VerifySwf) {
         $VerifySwf = 'scripts/TestLoader.swf'
         Write-Host '[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门'
@@ -348,10 +355,13 @@ if ($Target) {
 
 # [asLoader 重构 P0] 预编译 BOM 门：被 #include 的 .as 丢 BOM 会被 CS6 静默跳过
 #   （DoAction 0 字节，compiler_errors 仍报 0 错误），现有冒烟链抓不到。先 fail-fast，
-#   省掉一次 77-113s 的无效编译。node 缺失则降级为告警，不阻断旧环境。
+#   省掉一次 77-113s 的无效编译。非 TestLoader 目标在 node 缺失时仍降级为告警；
+#   TestLoader 已在目标解析后 fail-fast，因为其 function codeSize<60000 是硬门。
 $BomChecker = Join-Path $ProjectDir 'tools\check-bom.js'
 if (Test-Path $BomChecker) {
-    $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+    if (-not $nodeCmd) {
+        $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+    }
     if ($nodeCmd) {
         # asLoader #include 闭包 + import 类包/TestLoader 入口：
         #   import 目标不在 #include 图内 → 显式覆盖，避免 CS6 静默跳过类体或首行语法错。

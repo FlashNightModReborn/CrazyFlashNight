@@ -335,7 +335,7 @@ try {
         }
         $compileOutput = Get-Content -LiteralPath $compileOutputPath -Raw -Encoding UTF8
         $retryCount = [regex]::Matches(
-            $compileOutput, 'cold ASO 32K branch detected').Count
+            $compileOutput, 'ASO 32K branch detected').Count
         if ($retryCount -ne 0) {
             throw "Map loot compile required $retryCount 32K retry; diagnostics were preserved, but this is not a healthy pass."
         }
@@ -353,7 +353,10 @@ finally {
         }
     } finally {
         try {
-            if ($scratchTransaction) {
+            # The persistent transaction exists before the temporary runner has
+            # a proven installed hash. Preserve its marker on any earlier
+            # failure instead of attempting an unprovable automatic restore.
+            if ($scratchTransaction -and $installedRunnerHash) {
                 Restore-Cf7TestLoaderScratchTransaction `
                     -Transaction $scratchTransaction -InstalledHash $installedRunnerHash
                 Write-Host '[INFO] Restored original TestLoader scratch runner.'

@@ -577,7 +577,7 @@ try {
     }
     $compileEvidence = Get-Content -LiteralPath $CompileOutputPath -Raw -Encoding UTF8
     $retryCount = [regex]::Matches(
-        $compileEvidence, 'cold ASO 32K branch detected').Count
+        $compileEvidence, 'ASO 32K branch detected').Count
     if ($retryCount -ne 0) {
         throw "Gobang compile required $retryCount 32K retry; refusing a duplicate behavior run."
     }
@@ -639,6 +639,13 @@ finally {
             Write-Host '[bus] Stopped'
         } catch {
             $cleanupErrors.Add("bus stop: $($_.Exception.Message)")
+        }
+    }
+    if ($busStartedByUs -and $null -ne $busProc) {
+        # Keep the intentionally surviving bus, but do not retain this cycle's
+        # local Process wrapper/OS handle until the caller happens to run GC.
+        try { $busProc.Dispose() } catch {
+            $cleanupErrors.Add("bus process handle dispose: $($_.Exception.Message)")
         }
     }
     if ($compileMutexAcquired) {

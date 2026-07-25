@@ -130,13 +130,13 @@ function main() {
 		fl.trace("[compile] testMovie: " + doc.name);
 		doc.testMovie();
 	}
-	// 靠近 AS2 单分支 32K 上限的旧大类在切换 XFL 后，CS6 冷 ASO 首编可能失败，
-	// 同目标热编则稳定通过。只对这一条可识别诊断重试一次；语法/链接等其他错误绝不重试，
+	// 靠近 AS2 单分支 32K 上限的旧大类在部分 ASO 状态下首轮可能失败，
+	// 同目标再次编译则稳定通过。只对这一条可识别诊断重试一次；语法/链接等其他错误绝不重试，
 	// 第二次仍失败也会原样保存并由 PowerShell fail-closed。
 	if (fl.compilerErrors) fl.compilerErrors.save(compilerErrorsLog);
 	var firstCompilerErrors = FLfile.exists(compilerErrorsLog) ? FLfile.read(compilerErrorsLog) : "";
 	if (containsOnly32KCompilerErrors(firstCompilerErrors)) {
-		fl.trace("[compile] cold ASO 32K branch detected; retry same target once");
+		fl.trace("[compile] ASO 32K branch detected; retry same target once");
 		fl.trace("[compile] first 32K compiler diagnostics (preserved before retry):\n" + firstCompilerErrors);
 		try {
 			if (fl.compilerErrors && fl.compilerErrors.clear) fl.compilerErrors.clear();

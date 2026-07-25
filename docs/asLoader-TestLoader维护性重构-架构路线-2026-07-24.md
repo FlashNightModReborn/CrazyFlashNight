@@ -453,10 +453,10 @@ Gobang / 协议两个长跑入口也复用了同一持久 scratch 事务，但�
 
 2026-07-25 最终生产验证：
 
-- `compile_test.ps1 -Target publish`：36 s，Compiler Errors 面板副本 `0 个错误, 0 个警告`，`scripts/asLoader.swf` 新鲜刷新为 1,034,400 B，SHA-256 `2B8A61DE2531852B399370EFD487AA081F656BCBBFE679FD1EA1889631026B8E`；
+- `compile_test.ps1 -Target publish`：约 35 s，Compiler Errors 面板副本 `0 个错误, 0 个警告`，`scripts/asLoader.swf` 新鲜刷新为 1,034,400 B，SHA-256 `5FAEB960ECB8F9375E9037CBB52854281E23DBE3DAE036451B0BAD0B4B00FACA`；
 - `swf-function-sizes --max 60000`：9,493 个函数，最大 `45,868 B`；
 - single ownership：main=0 / loader=599 / intersection=0；
-- 正式标准入口经 immutable runtime identity / payload closure 核验后，以专用克隆槽 `cf7_agent_equipment_tuning` 启动；attempt `ba5c8503e3dc4e0ab569879f1dc83016` 获得 fresh handoff、真实 `bootstrap_reveal_ready`、同 attempt `s:1` 与 runtime ack，并到达只读装备 snapshot，未触发 reveal watchdog；报告为 `tmp/equipment-tuning/unattended/20260725T025939Z-cf7_agent_equipment_tuning/run-report.json`，正式 Core SHA-256 为 `15E22D10B450A8616766D25F709D761C20B5A773BA60314680060348B7970EC2`，build identity / payload closure 分别为 `3F6110809903BF28D08E90F92087A4333E5C604F0AC62994E945775690CD25C6` / `C16ED23C85DCF0C2B2A321158F2269BED9D45ACC32BACCD428ED51AD4D49E107`；
+- 正式标准入口经 immutable runtime identity / payload closure 核验后，以专用克隆槽 `cf7_agent_equipment_tuning` 启动；attempt `f18ce86d75564adf8ac3457de4d9b063` 获得 fresh handoff、真实 `bootstrap_reveal_ready`、同 attempt `s:1` 与 runtime ack，并到达只读装备 snapshot，未触发 reveal watchdog；报告为 `tmp/equipment-tuning/unattended/20260725T045156Z-cf7_agent_equipment_tuning/run-report.json`，正式 Core SHA-256 为 `15E22D10B450A8616766D25F709D761C20B5A773BA60314680060348B7970EC2`，build identity / payload closure 分别为 `3F6110809903BF28D08E90F92087A4333E5C604F0AC62994E945775690CD25C6` / `C16ED23C85DCF0C2B2A321158F2269BED9D45ACC32BACCD428ED51AD4D49E107`；
 - `trace-diff` 修正旧 `f91` 无边界匹配（随机 attemptId 内嵌 `f91` 不再冒充 handoff）并扩充 selftest 后，当前 fresh 日志仍为 golden 10 事件 / new 10 事件 / LCS 10，顺序从 `S2_ENTER` 到 `HANDOFF_PLAY` 完全一致。
 
 ### 13.4 S4 决策：不启动

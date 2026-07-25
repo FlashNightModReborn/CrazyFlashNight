@@ -933,7 +933,7 @@ try {
     }
     $compileEvidence = Get-Content -LiteralPath $CompileOutputPath -Raw -Encoding UTF8
     $retryCount = [regex]::Matches(
-        $compileEvidence, 'cold ASO 32K branch detected').Count
+        $compileEvidence, 'ASO 32K branch detected').Count
     if ($retryCount -ne 0) {
         throw "Protocol compile required $retryCount 32K retry; refusing a duplicate behavior run."
     }
@@ -1022,6 +1022,14 @@ finally {
             $busStartedByUs = $false
         } catch {
             $cleanupErrors.Add("bus stop: $($_.Exception.Message)")
+        }
+    }
+    if ($busStartedByUs -and $null -ne $busProc) {
+        # A clean direct cycle may intentionally leave its self-started bus
+        # running. Release only this script's Process wrapper/OS handle; Dispose
+        # does not terminate the child process.
+        try { $busProc.Dispose() } catch {
+            $cleanupErrors.Add("bus process handle dispose: $($_.Exception.Message)")
         }
     }
     if ($compileMutexAcquired) {

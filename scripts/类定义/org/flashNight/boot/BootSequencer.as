@@ -9,7 +9,7 @@
 //     ⚠ S6 拆 s6_pre(f9 建 _root.loaders + f10 兼容×4 push 入队 + f18 最终化1 跑 _root.preloaders)
 //        / s6_post(f32 最终化3 跑 _root.loaderkillers + 删三队列)；中间 _root.loaders 由本类 stepSyncSys
 //        每 tick 抽 1 个（复刻 f26 最终化2 的 onEnterFrame 时间切片，prevent 单帧抽干卡顿）。
-//  3. 主 FLA 改动 A: MAIN f33 (DOMDocument.xml:1271) _root.asLoader.play() → _root.__boot.mainReadyToContinue=true。
+//  3. 主 FLA 改动 A: MAIN f33 (DOMFrame index=33) _root.asLoader.play() → _root.__boot.mainReadyToContinue=true。
 //  4. 异步 loader 回调与 tick clip 均挂 _root，保证 asLoader 自删(S_HANDOFF)后仍存活。
 //  5. 握手逻辑移植自 asLoader.xml f4(socket 10s / handshake 60s / 存档恢复 gate)；失败=halt() fail-closed(主 SWF 不前进=匹配原版 hang)+恢复 f4 的 host.打印加载内容 玩家文案 + [BootstrapAS] socket 日志(便于边界 smoke 定位卡死点)。
 //  6. S6 串行序列必须含「最终化2」(原 f26 land-frame，易漏)。

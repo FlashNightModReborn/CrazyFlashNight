@@ -232,7 +232,7 @@ try {
         }
         $compileOutput = Get-Content -LiteralPath $outputPath -Raw -Encoding UTF8
         $retryCount = [regex]::Matches(
-            $compileOutput, 'cold ASO 32K branch detected').Count
+            $compileOutput, 'ASO 32K branch detected').Count
         if ($retryCount -ne 0) {
             throw 'Focused compile required the 32K retry; diagnostics were preserved, but this is not a healthy pass.'
         }
@@ -248,7 +248,11 @@ try {
         }
     } finally {
         try {
-            if ($scratchTransaction) {
+            # Transaction creation precedes runner installation. If readiness,
+            # copy, rewrite, or hashing fails, the installed identity is not
+            # proven; keep the marker/backup for fail-closed manual recovery
+            # instead of masking the original error with an empty hash bind.
+            if ($scratchTransaction -and $installedHash) {
                 Restore-Cf7TestLoaderScratchTransaction `
                     -Transaction $scratchTransaction -InstalledHash $installedHash
             }
