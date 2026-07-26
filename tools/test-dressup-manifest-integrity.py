@@ -316,6 +316,24 @@ def assert_battle_rig(manifest: dict[str, Any], failures: list[str]) -> None:
                 field_counts[field] = field_counts.get(field, 0) + 1
                 if holder.get("rig") != "battle":
                     failures.append(f"battle holder {gender}/{state_label}/{field} missing rig marker")
+                if field in _SIDE_SPECIFIC_FIELDS:
+                    expected_reference = f"{field}_引用"
+                    reference_name = holder.get("referenceName") or ""
+                    if reference_name != expected_reference:
+                        failures.append(
+                            f"battle holder {gender}/{state_label}/{field} reference mismatch: "
+                            f"{reference_name} != {expected_reference}"
+                        )
+                    basic_linkage = ((holder.get("basic") or {}).get("linkageId") or "")
+                    basic_field = next(
+                        (candidate for candidate in _SIDE_SPECIFIC_FIELDS if candidate in basic_linkage),
+                        "",
+                    )
+                    if basic_field and basic_field != field:
+                        failures.append(
+                            f"battle holder {gender}/{state_label}/{field} basic side mismatch: "
+                            f"{basic_linkage}"
+                        )
                 matrix = holder.get("matrix") or {}
                 for key in ("a", "b", "c", "d", "tx", "ty"):
                     if not isinstance(matrix.get(key), (int, float)):
@@ -437,6 +455,7 @@ _TORSO_FIELD = "身体"
 # 躯干皮绝不可贴到四肢。左右对称肢体共用同一 PNG（如武装jk 的 mirrored_limb）合法，故只查
 # 躯干 vs 臂/手，不查肢体互等。根因见 bake-dressup-offline 删掉的 same_item_body_fallback。
 _LIMB_FIELDS = ("上臂", "左下臂", "右下臂", "左手", "右手")
+_SIDE_SPECIFIC_FIELDS = ("左下臂", "右下臂", "左手", "右手", "左大腿", "右大腿")
 
 
 def _resolved_field_png(manifest: dict[str, Any], skin_key: str) -> str | None:

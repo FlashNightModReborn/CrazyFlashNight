@@ -66,13 +66,7 @@ BATTLE_RIG_REQUIRED_FIELDS = {
     "兵器站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
 }
 
-# P1#4: 主角肢体素材/左手臂 是右下臂占位器（其内部 配置装扮 clip-action 即右前臂
-# 占位），但调用在 FLA 里被误键到 左下臂_引用。若不在此处校正，每个战斗站立态都会
-# 出现两个 左下臂 占位器、零个 右下臂。键 = (宿主符号名 hostSymbol, 误键得到的
-# field) → 正确 field。
-BATTLE_HOLDER_FIELD_FIXUPS = {
-    ("主角肢体素材/左手臂", "左下臂"): "右下臂",
-}
+BATTLE_SIDE_SPECIFIC_FIELDS = ("左下臂", "右下臂", "左手", "右手", "左大腿", "右大腿")
 
 # P1#5/P1#6: 女性裸体兜底是 AS2 DressupReferenceManager.femaleFallbacks 的唯一真相
 # （keys 原为 X_引用，此处按战斗占位器 field 名重键，去掉 _引用 后缀）。战斗 rig 仅
@@ -1042,9 +1036,7 @@ def record_battle_holder(
 ) -> None:
     script = instance["script"]
     for call in instance.get("dressupConfigCalls", []):
-        field = BATTLE_HOLDER_FIELD_FIXUPS.get(
-            (symbol_name, call["field"]), call["field"]
-        )
+        field = call["field"]
         fallback_basic = battle_holder_uses_basic(field, symbols, instance)
         holders.append(
             {
@@ -1142,6 +1134,36 @@ def apply_female_battle_fallbacks(holder: dict[str, Any]) -> None:
     basic["linkageId"] = male_to_female_linkage(basic.get("linkageId"))
 
 
+def audit_battle_holder_sides(state_label: str, holders: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    errors: list[dict[str, Any]] = []
+    for holder in holders:
+        field = holder.get("field") or ""
+        if field not in BATTLE_SIDE_SPECIFIC_FIELDS:
+            continue
+        reference_name = holder.get("referenceName") or ""
+        basic_linkage = ((holder.get("basic") or {}).get("linkageId") or "")
+        basic_field = next(
+            (candidate for candidate in BATTLE_SIDE_SPECIFIC_FIELDS if candidate in basic_linkage),
+            "",
+        )
+        expected_reference = f"{field}_引用"
+        if reference_name == expected_reference and (not basic_field or basic_field == field):
+            continue
+        errors.append(
+            {
+                "stateLabel": state_label,
+                "error": "holder_side_mismatch",
+                "field": field,
+                "referenceName": reference_name,
+                "expectedReferenceName": expected_reference,
+                "basicLinkageId": basic_linkage,
+                "basicField": basic_field,
+                "hostSymbol": holder.get("hostSymbol") or "",
+            }
+        )
+    return errors
+
+
 def build_battle_rig(project_root: Path) -> dict[str, Any]:
     library_dir = project_root / "flashswf" / "arts" / "things0" / "LIBRARY"
     symbols = load_xfl_symbols(library_dir)
@@ -1179,6 +1201,7 @@ def build_battle_rig(project_root: Path) -> dict[str, Any]:
                     "fields": missing_required,
                 }
             )
+        audit_errors.extend(audit_battle_holder_sides(state_label, holders))
         states[state_label] = {
             "frame": frame_index,
             "templateSymbol": "主角-男",
@@ -2766,11 +2789,17 @@ def holder_basic_identity(holder: dict[str, Any]) -> tuple[Any, ...] | None:
 
 def preserve_basic_holder_exports(manifest: dict[str, Any], existing_manifest: dict[str, Any]) -> int:
     existing_by_identity: dict[tuple[Any, ...], dict[str, Any]] = {}
+    existing_by_linkage: dict[str, dict[str, Any]] = {}
     for holder in iter_rig_holders(existing_manifest):
         identity = holder_basic_identity(holder)
         basic = holder.get("basic") or {}
         if identity is not None and basic.get("export"):
             existing_by_identity.setdefault(identity, basic)
+            linkage_id = basic.get("linkageId") or ""
+            if linkage_id:
+                # Basic PNGs are exported solely by linkageId from the dialogue SWF.
+                # A corrected holder field/reference may safely reuse the same linkage export.
+                existing_by_linkage.setdefault(linkage_id, basic)
 
     preserved = 0
     for holder in iter_rig_holders(manifest):
@@ -2778,6 +2807,9 @@ def preserve_basic_holder_exports(manifest: dict[str, Any], existing_manifest: d
         if identity is None:
             continue
         existing_basic = existing_by_identity.get(identity)
+        if not existing_basic:
+            linkage_id = ((holder.get("basic") or {}).get("linkageId") or "")
+            existing_basic = existing_by_linkage.get(linkage_id)
         if not existing_basic:
             continue
         basic = holder.get("basic") or {}
