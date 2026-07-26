@@ -58,10 +58,22 @@ equal(Library.reorderBlockReason(learned[0], 'target', {writesDisabled:false,eas
 equal(Library.healthLabel(learned[2], 'manage'), '重复', 'duplicate health label');
 equal(Library.compactStateLabel(learned[1], 'manage'), 'ON', 'compact passive state');
 
-equal(Trainer.initialDesiredLevel({currentLevel:0,maxLevel:20}), 1, 'initial learn fixed to one');
-equal(Trainer.initialDesiredLevel({currentLevel:4,maxLevel:5}), 5, 'next learned level');
-equal(Trainer.normalizedDesiredLevel({currentLevel:4,maxLevel:10}, 99), 10, 'desired level upper clamp');
-equal(Trainer.normalizedDesiredLevel({currentLevel:4,maxLevel:10}, 2), 5, 'desired level lower clamp');
+equal(Trainer.affordableMaxLevel({currentLevel:1,maxLevel:10,upgradeSP:30}, 160), 6,
+    'available SP caps the target at the highest affordable level');
+equal(Trainer.affordableMaxLevel({currentLevel:1,maxLevel:10,upgradeSP:30}, 20), 1,
+    'insufficient SP leaves no learned-skill upgrade target');
+equal(Trainer.affordableMaxLevel({currentLevel:2,maxLevel:10,upgradeSP:0}, 0), 10,
+    'zero-cost upgrades keep the metadata maximum');
+equal(Trainer.affordableMaxLevel({currentLevel:0,maxLevel:20,upgradeSP:30}, 0), 1,
+    'initial learn remains fixed to level one');
+equal(Trainer.initialDesiredLevel({currentLevel:0,maxLevel:20,upgradeSP:30}, 0), 1, 'initial learn fixed to one');
+equal(Trainer.initialDesiredLevel({currentLevel:4,maxLevel:5,upgradeSP:10}, 10), 5, 'next affordable learned level');
+equal(Trainer.initialDesiredLevel({currentLevel:4,maxLevel:10,upgradeSP:10}, 0), 4,
+    'no affordable upgrade keeps the current level as a non-target state');
+equal(Trainer.normalizedDesiredLevel({currentLevel:4,maxLevel:10,upgradeSP:10}, 99, 30), 7,
+    'desired level upper clamp uses the affordable maximum');
+equal(Trainer.normalizedDesiredLevel({currentLevel:4,maxLevel:10,upgradeSP:10}, 2, 30), 5,
+    'desired level lower clamp keeps the next affordable level');
 equal(Trainer.targetMarkLevels(1, 6), [1,2,3,4,5,6], 'short range shows every mark');
 equal(Trainer.targetMarkLevels(2, 20), [2,5,10,15,20], 'long range uses five-level landmarks');
 const preview = {skillKey:'闪现', desiredLevel:1, canCommit:true, learnToken:'opaque'};
