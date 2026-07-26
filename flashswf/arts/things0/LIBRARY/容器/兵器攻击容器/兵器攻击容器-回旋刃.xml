@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-回旋刃" itemID="6a5cf955-00002a09" lastModified="1784479003" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-回旋刃" itemID="6a5cf955-00002a09" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-回旋刃" lastModified="1785084482" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-回旋刃">
+    <DOMTimeline name="兵器攻击容器-回旋刃" currentFrame="29">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="43" name="回旋刃" labelType="name" keyMode="9728">
               <elements/>
@@ -10,11 +10,17 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="42" keyMode="9728">
+            <DOMFrame index="0" duration="29" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("百万突刺开始");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("裂地拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -151,7 +157,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="500.7" centerPoint3DY="-115.1">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="543.25" ty="-163.75"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="543.25" ty="-163.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -211,7 +217,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="694.75" centerPoint3DY="-111.5">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="737.3" ty="-160.15"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="737.3" ty="-160.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -271,7 +277,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="626.75" centerPoint3DY="-115.1">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="669.3" ty="-163.75"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="669.3" ty="-163.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -331,7 +337,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="652.7" centerPoint3DY="-101.35">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="695.25" ty="-150"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="695.25" ty="-150"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -391,7 +397,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="654.75" centerPoint3DY="-115.1">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="697.3" ty="-163.75"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="697.3" ty="-163.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -451,7 +457,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="537.7" centerPoint3DY="-115.1">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="580.25" ty="-163.75"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="580.25" ty="-163.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -511,7 +517,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="408" centerPoint3DY="-49.05">
                   <matrix>
-                    <Matrix a="33.1164703369141" d="21.4920501708984" tx="450.55" ty="-97.7"/>
+                    <Matrix a="33.1164703369141" d="21.4920349121094" tx="450.55" ty="-97.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -571,7 +577,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="232.65" centerPoint3DY="161">
                   <matrix>
-                    <Matrix a="59.8083343505859" d="23.4985504150391" tx="608" ty="86.35"/>
+                    <Matrix a="59.8083190917969" d="23.4985504150391" tx="608" ty="86.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -636,7 +642,7 @@
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="35.35" centerPoint3DY="46.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="35.35" centerPoint3DY="46.25">
                   <matrix>
                     <Matrix a="35.2920837402344" d="23.9962310791016" tx="105.9" ty="-34.7"/>
                   </matrix>
@@ -698,7 +704,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="515.4" centerPoint3DY="-60.8">
                   <matrix>
-                    <Matrix a="35.2920837402344" d="19.1970520019531" tx="585.95" ty="-81.75"/>
+                    <Matrix a="35.2920837402344" d="19.1970367431641" tx="585.95" ty="-81.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -818,7 +824,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="580.95" centerPoint3DY="-109">
                   <matrix>
-                    <Matrix a="35.2920837402344" d="19.1896820068359" tx="651.5" ty="-130.4"/>
+                    <Matrix a="35.2920837402344" d="19.1896667480469" tx="651.5" ty="-130.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.45"/>
@@ -878,7 +884,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="507.45" centerPoint3DY="-102.8">
                   <matrix>
-                    <Matrix a="31.6215667724609" d="19.7250518798828" tx="532.1" ty="-130.95"/>
+                    <Matrix a="31.6215515136719" d="19.7250366210938" tx="532.1" ty="-130.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -938,7 +944,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="561" centerPoint3DY="-112.8">
                   <matrix>
-                    <Matrix a="33.4756164550781" d="20.5408477783203" tx="608.85" ty="-150.55"/>
+                    <Matrix a="33.4756011962891" d="20.5408325195313" tx="608.85" ty="-150.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -998,7 +1004,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="275.4" centerPoint3DY="-80.85">
                   <matrix>
-                    <Matrix a="31.904296875" d="19.5328216552734" tx="303.6" ty="-105.4"/>
+                    <Matrix a="31.904296875" d="19.5328063964844" tx="303.6" ty="-105.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1058,7 +1064,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="222.65" centerPoint3DY="61.95">
                   <matrix>
-                    <Matrix a="33.1164855957031" d="35.5888977050781" tx="265.2" ty="-163.8"/>
+                    <Matrix a="33.1164703369141" d="35.5888824462891" tx="265.2" ty="-163.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1118,7 +1124,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="251.7" centerPoint3DY="85.95">
                   <matrix>
-                    <Matrix a="56.6293792724609" d="40.6424407958984" tx="589" ty="-202.1"/>
+                    <Matrix a="56.6293640136719" d="40.6424255371094" tx="589" ty="-202.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>

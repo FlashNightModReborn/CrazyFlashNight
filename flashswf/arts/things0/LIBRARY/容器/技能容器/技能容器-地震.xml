@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-地震" itemID="695637e4-0000095d" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-地震" itemID="695637e4-0000095d" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1785080269">
   <timeline>
-    <DOMTimeline name="技能容器-地震" currentFrame="14">
+    <DOMTimeline name="技能容器-地震" currentFrame="17">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -51,7 +51,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="sound" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="sound" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <Actionscript>
@@ -85,7 +85,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>

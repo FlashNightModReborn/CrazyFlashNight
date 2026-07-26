@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1782748625" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1785084997" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="21">
+    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="51">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -844,7 +844,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="24" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -892,7 +892,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="64" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -943,7 +943,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -1492,7 +1492,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -2066,8 +2066,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!904 3847[-4146 1978 -6900 -793!-6900 -793[-9652 -3563 -8490 -5613!-8490 -5613[-7330 -7663 -2936 -7791!-2936 -7791[1458 -7919 6511 -6051!6511 -6051[11562 -4181 14315 -1410!14315 -1410[17066 1360 15904 3410!15904 3410[14746 5460 10351
- 5587!10351 5587[5957 5716 904 3847"/>
+!14315 -1410[17066 1360 15904 3410!15904 3410[14746 5460 10351 5587!10351 5587[5957 5716 904 3847!904 3847[-4146 1978 -6900 -793!-6900 -793[-9652 -3563 -8490 -5613!-8490 -5613[-7330 -7663 -2936 -7791!-2936 -7791[1458 -7919 6511 -6051
+!6511 -6051[11562 -4181 14315 -1410"/>
                   </edges>
                 </DOMShape>
               </elements>

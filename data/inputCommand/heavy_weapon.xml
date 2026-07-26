@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
     重武器搓招配置
     与轻武器类似，但剑气释放替换为飞沙走石
@@ -38,6 +38,18 @@
             </Tags>
         </Command>
 
+        <!-- 飞跃砸击: 双击前 -->
+        <Command name="飞跃砸击" action="飞跃砸击" priority="5">
+            <Sequence>
+                <Event>DOUBLE_TAP_FORWARD</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>基础</Tag>
+            </Tags>
+        </Command>
+
         <!-- 蓄力重劈: Shift + 下 + A -->
         <Command name="蓄力重劈" action="蓄力重劈" priority="8">
             <Sequence>
@@ -53,6 +65,38 @@
 
         <!-- 百万突刺: Shift前 + A，要求下劈 Lv1 -->
         <Command name="百万突刺" action="百万突刺" priority="10">
+            <Sequence>
+                <Event>SHIFT_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 迷踪连刺: Shift前 + A，要求下劈 Lv1 -->
+        <Command name="迷踪连刺" action="迷踪连刺" priority="10">
+            <Sequence>
+                <Event>SHIFT_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 回旋刃: Shift前 + A，要求下劈 Lv1 -->
+        <Command name="回旋刃" action="回旋刃" priority="10">
             <Sequence>
                 <Event>SHIFT_FORWARD</Event>
                 <Event>A_PRESS</Event>
@@ -154,6 +198,22 @@
             </Requirements>
         </Command>       
 
+         <!-- 疾空旋风破: 上 + C，要求上挑 Lv1 -->
+        <Command name="疾空旋风破" action="疾空旋风破" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command> 
+
         <!-- 空坠强袭: 下 + A，要求下劈 Lv1 -->
         <Command name="空坠强袭" action="空坠强袭" priority="8">
             <Sequence>
@@ -199,6 +259,38 @@
         </Command>
     </Commands>
 
+        <!-- 重架: 后 + C，要求上挑 Lv1 -->
+        <Command name="重架" action="重架" priority="7">
+            <Sequence>
+                <Event>SHIFT_BACK</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+    </Commands>
+
+        <!-- 微风拂柳: 后 + C，要求上挑 Lv1 -->
+        <Command name="微风拂柳" action="微风拂柳" priority="7">
+            <Sequence>
+                <Event>SHIFT_BACK</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+    </Commands>
+
     <Derivations>
         <Derive from="飞沙走石">
             <To>贯穿突刺</To>
@@ -206,9 +298,15 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="贯穿突刺">
             <To>飞沙走石</To>
@@ -216,9 +314,15 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="蓄力重劈">
             <To>飞沙走石</To>
@@ -226,9 +330,15 @@
             <To>百万突刺</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="月光斩">
             <To>飞沙走石</To>
@@ -236,9 +346,15 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="百万突刺">
             <To>飞沙走石</To>
@@ -249,6 +365,12 @@
             <To>空坠强袭</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="粉碎切割">
             <To>飞沙走石</To>
@@ -256,8 +378,14 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="狂乱龙卷">
             <To>飞沙走石</To>
@@ -265,8 +393,14 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="空坠强袭">
             <To>飞沙走石</To>
@@ -277,6 +411,12 @@
             <To>粉碎切割</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="全垒打">
             <To>飞沙走石</To>
@@ -286,6 +426,12 @@
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="无双击">
             <To>飞沙走石</To>
@@ -295,6 +441,12 @@
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="十六夜月华">
             <To>飞沙走石</To>
@@ -305,6 +457,12 @@
             <To>空坠强袭</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
         <Derive from="见切">
             <To>飞沙走石</To>
@@ -315,8 +473,111 @@
             <To>月光斩</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
         </Derive>
-    </Derivations>
+        <Derive from="重架">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>空坠强袭</To>
+            <To>月光斩</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>见切</To>
+            <To>微风拂柳</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
+        </Derive>
+        <Derive from="微风拂柳">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>空坠强袭</To>
+            <To>月光斩</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>见切</To>
+            <To>重架</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
+        </Derive>
+        <Derive from="飞跃砸击">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>空坠强袭</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
+            <To>飞跃砸击</To>
+        </Derive>
+        <Derive from="迷踪连刺">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>空坠强袭</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+        </Derive>
+        <Derive from="回旋刃">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>空坠强袭</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>疾空旋风破</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+        </Derive>
+        <Derive from="疾空旋风破">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>重架</To>
+            <To>微风拂柳</To>
+            <To>空坠强袭</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>飞跃砸击</To>
+            <To>迷踪连刺</To>
+            <To>回旋刃</To>
+            <To>疾空旋风破</To>
+        </Derive>    </Derivations>
 
     <Groups>
         <Group name="重武器全部">
