@@ -544,6 +544,11 @@ window.Icons={
       &&document.querySelector('.skills-cost-card').textContent.indexOf('160 → 10')>=0);
     setHost({instance:'inst-trainer-low-sp',view:'trainer',trainerSession:'trainer-low-sp',skillPoints:20});
     await until(function(){return row('预算训练')&&!SkillsPanel.debugState().previewLoading},300);
+    var previewCountBeforeUnaffordableSwitch=sent('learnPreview').length;
+    row('闪现').click();row('预算训练').click();await wait(30);
+    ok('switching to an unaffordable skill cancels the previous skill preview debounce',
+      sent('learnPreview').length===previewCountBeforeUnaffordableSwitch
+      &&SkillsPanel.debugState().selectedKey==='预算训练'&&SkillsPanel.debugState().desiredLevel===1);
     var previewCountBeforeUnaffordable=sent('learnPreview').length;row('预算训练').click();await wait(30);
     ok('less than one upgrade cost renders an explicit non-target state without a doomed preview',
       sent('learnPreview').length===previewCountBeforeUnaffordable&&!document.querySelector('.skills-level-range')

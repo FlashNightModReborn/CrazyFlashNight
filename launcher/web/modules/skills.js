@@ -496,7 +496,7 @@ var SkillsPanel = (function() {
         if (_view !== 'trainer' || _trainerExpired || !entry || writesDisabled(entry)
                 || currentLevel >= Number(entry.maxLevel || 1)
                 || (currentLevel > 0 && targetMaxLevel(entry) <= currentLevel)) {
-            _previewLoading = false; renderDetail(); return false;
+            cancelPreviewWork(); renderDetail(); return false;
         }
         if (_previewTimer !== null) clearTimeout(_previewTimer);
         var intent = ++_previewIntent;
