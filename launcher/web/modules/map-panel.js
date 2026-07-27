@@ -1,7 +1,7 @@
 var MapPanel = (function() {
     'use strict';
 
-    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
+    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _currentRadarEl, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl, _coordinateReadoutEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -69,6 +69,12 @@ var MapPanel = (function() {
     var _coordinateRaf = 0;
     var _panelAnimationEndHandler = null;
     var _panelEventListenersBound = false;
+    // 分页入场编排 (第二节): applyPage 后 .is-page-entering 的摘除定时器 (animationend 不可靠兜底)
+    var _pageEnteringTimer = 0;
+    // 悬停视差/导航一击共用的 reduced-motion 查询 (matches 为瞬时读, 监听非必需)
+    var _reduceMotionMql = (typeof window !== 'undefined' && window.matchMedia)
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : null;
 
     function playCue(name) {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
@@ -105,6 +111,8 @@ var MapPanel = (function() {
                         // fg=反馈标记/提示/未开放提示 (z=6, 顶层 feedback)
                         '<canvas class="map-stage-canvas map-stage-canvas--bg" id="map-stage-canvas" aria-hidden="true"></canvas>' +
                         '<canvas class="map-stage-canvas map-stage-canvas--ring" id="map-stage-canvas-ring" aria-hidden="true"></canvas>' +
+                        // 静态氛围层 (z=3): vignette + 噪点 + accent tint, 纯静态无动画, 低于 content-fit(z=4) 内的 hitcapture
+                        '<div class="map-stage-atmosphere" id="map-stage-atmosphere" aria-hidden="true"></div>' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
                             // sceneVisual DOM 层 (Phase 1B) — 常态隐藏, current/hover/focus 显示;
                             // canvas drawScenes 非 hierarchy 整层短路, hierarchy 跳过 DOM 已显示的 visualId
@@ -116,6 +124,9 @@ var MapPanel = (function() {
                             // 唯一接收鼠标的 hotspot 命中层; .map-hotspot button 改 pointer-events:none
                             '<div class="map-hotspot-hitcapture" id="map-hotspot-hitcapture"></div>' +
                             '<div class="map-hotspot-label-layer" id="map-hotspot-label-layer"></div>' +
+                            // 当前位置雷达扫针 (DOM 化, 原 fg canvas drawRadarSweep): conic + CSS rotate 6s,
+                            // 定位/显隐由 syncCurrentRadar 驱动; 低于 fg canvas 的脉冲环/标记本体
+                            '<div class="map-current-radar" id="map-current-radar" aria-hidden="true"></div>' +
                         '</div>' +
                         '<canvas class="map-stage-canvas map-stage-canvas--fg" id="map-stage-canvas-fg" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-corner map-stage-corner--tl" aria-hidden="true"></div>' +
@@ -147,6 +158,7 @@ var MapPanel = (function() {
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
         _hitcaptureEl = _el.querySelector('#map-hotspot-hitcapture');
         _hotspotLabelLayer = _el.querySelector('#map-hotspot-label-layer');
+        _currentRadarEl = _el.querySelector('#map-current-radar');
         _stageShellEl = _el.querySelector('#map-stage-shell');
         _railEl = _el.querySelector('#map-rail-shell');
         _loadingEl = _el.querySelector('#map-stage-loading');
@@ -447,6 +459,26 @@ var MapPanel = (function() {
         }
     }
 
+    // 分页入场编排 (第二节): 面板打开/切页时给容器加 .is-page-entering,
+    // hotspot label / filter 按钮 / rail 子项 / avatar 按 --stagger 延迟做 opacity+translateY 入场
+    // (单项 ~25ms 步进, 序号封顶 6 → 总量 ~0.4s); filter 切换不经过 applyPage → 天然不触发。
+    // 700ms 定时兜底摘除 (animationend 可能因元素重建漏发); reduced-motion/perf-low 由 CSS 禁用。
+    function markPageEntering() {
+        if (!_el) return;
+        if (_pageEnteringTimer) {
+            clearTimeout(_pageEnteringTimer);
+            _pageEnteringTimer = 0;
+        }
+        _el.classList.remove('is-page-entering');
+        // 强制回流后重加 class, 保证连续切页时动画重新播放
+        void _el.offsetWidth;
+        _el.classList.add('is-page-entering');
+        _pageEnteringTimer = setTimeout(function() {
+            _pageEnteringTimer = 0;
+            if (_el) _el.classList.remove('is-page-entering');
+        }, 700);
+    }
+
     function applyPage(pageId) {
         _activePage = MapPanelData.getPage(pageId);
         _hoverHotspotId = '';
@@ -489,6 +521,7 @@ var MapPanel = (function() {
         renderFeedback();
         renderFilterButtons();
         updatePageTabs();
+        markPageEntering();
         updatePageSummary();
         // First open can paint before ResizeObserver/rAF layout settles. Force one
         // synchronous layout pass so the first canvas state uses the visible panel size.
@@ -501,6 +534,28 @@ var MapPanel = (function() {
         return !!(page && page.renderMode === 'assembled' && page.sceneVisuals && page.sceneVisuals.length);
     }
 
+    // accent 主题 (第四节): 面板 chrome 随页面/派系换色。
+    // base 页恒 base; faction/defense/school 页跟随 active filter 的 unlockGroup
+    // (只读调用 MapPanelData.getFilterUnlockGroup, 不改数据文件);
+    // meta filter (all/hierarchy) 无 unlockGroup → 回退页级默认 accent。
+    var _ACCENT_THEME_IDS = {
+        warlord:1, rock:1, blackiron:1, fallen:1,
+        defense:1, restricted:1, schoolOutside:1, schoolInside:1
+    };
+    var _PAGE_FALLBACK_ACCENT = { base:'base', faction:'base', defense:'defense', school:'schoolOutside' };
+
+    function syncAccentTheme() {
+        if (!_el) return;
+        var accent = 'base';
+        if (_activePage) {
+            var activeFilter = getActiveFilter(_activePage);
+            var group = MapPanelData.getFilterUnlockGroup(_activePage.id, activeFilter ? activeFilter.id : '');
+            accent = (group && _ACCENT_THEME_IDS[group]) ? group
+                : (_PAGE_FALLBACK_ACCENT[_activePage.id] || 'base');
+        }
+        _el.dataset.accent = accent;
+    }
+
     function renderStageBackdrop() {
         var activeViewMode = getActiveViewMode(_activePage);
         var activeFilter = _activePage ? getActiveFilter(_activePage) : null;
@@ -509,6 +564,7 @@ var MapPanel = (function() {
         _stageEl.classList.toggle('is-layer-relation', activeViewMode === 'hierarchy');
         _stageEl.setAttribute('data-page-id', _activePage ? _activePage.id : '');
         _stageEl.setAttribute('data-active-filter', activeFilterId);
+        syncAccentTheme();
         syncCanvasStage();
     }
 
@@ -892,6 +948,24 @@ var MapPanel = (function() {
         });
     }
 
+    // 导航锁定一击 (第二节): 在热点中心生成一次性 reticle 覆层 (~350ms),
+    // 只动 transform/opacity, 不阻塞导航; animationend 后自移除。
+    // reduced-motion / perf-low 直接不生成 (CSS 侧另有 display:none 双保险)。
+    function spawnNavStrike(hotspot) {
+        if (!_contentFitEl || !_activePage || !hotspot || !hotspot.rect) return;
+        if (_reduceMotionMql && _reduceMotionMql.matches) return;
+        if (isLowEffectsMode()) return;
+        var el = document.createElement('div');
+        el.className = 'map-nav-strike';
+        el.setAttribute('aria-hidden', 'true');
+        el.style.left = toPercent(hotspot.rect.x + hotspot.rect.w / 2, _activePage.width);
+        el.style.top = toPercent(hotspot.rect.y + hotspot.rect.h / 2, _activePage.height);
+        el.addEventListener('animationend', function() {
+            if (el.parentNode) el.parentNode.removeChild(el);
+        });
+        _contentFitEl.appendChild(el);
+    }
+
     function requestNavigate(hotspot) {
         if (!_activePage || _closing) return;
 
@@ -903,6 +977,7 @@ var MapPanel = (function() {
 
         if (_busyLookup[hotspot.id]) return;
 
+        spawnNavStrike(hotspot);
         // hotspot 按钮本身带 data-audio-cue='transition'，overlay click 代理已播一次 cue
         var reqId = 'map-nav-' + (++_reqSeq);
         var currentSession = _session;
@@ -1176,6 +1251,7 @@ var MapPanel = (function() {
             btn.setAttribute('data-filter-id', filter.id);
             btn.setAttribute('data-audio-cue', isLocked ? 'error' : 'select');
             btn.setAttribute('aria-label', buildFilterTitle(filter, enabledCount, filterMeta, isLocked));
+            btn.style.setProperty('--stagger', String(Math.min(i, 6)));
             btn.classList.toggle('is-active', !!activeFilter && activeFilter.id === filter.id);
             btn.classList.toggle('is-empty', enabledCount === 0);
             btn.classList.toggle('is-locked', isLocked);
@@ -1296,6 +1372,7 @@ var MapPanel = (function() {
             }
             item.setAttribute('aria-disabled', enabled ? 'false' : 'true');
             item.setAttribute('aria-label', hotspot.label);
+            item.style.setProperty('--stagger', String(Math.min(i + 2, 6)));
             // 末端任务红点：只在已解锁 + 有可交付任务时显示（剧透防护已在 rebuildTaskBadgeLookup 内做掉）
             item.classList.toggle('has-quest', hasQuest);
             var questDotHtml = hasQuest
@@ -1380,7 +1457,37 @@ var MapPanel = (function() {
         };
     }
 
+    // 当前位置雷达扫针 (DOM 化, 原 fg canvas drawRadarSweep): 与 buildCanvasFeedbackMarkers
+    // 同口径取 currentLocation 锚点并过 spoiler 过滤; 页坐标 % 定位, 直径 52 页单位
+    // (= 旧 canvas sweep 半径 r+18=26, r=8), 缩放/位移随 content-fit transform。
+    // 锚点缺失时隐藏; reduced-motion 静止 / perf-low 隐藏均由 CSS 降级块负责。
+    function syncCurrentRadar() {
+        if (!_currentRadarEl) return;
+        var anchor = null;
+        var i;
+        var marker;
+        if (_activePage) {
+            for (i = 0; i < _snapshotMarkers.length; i++) {
+                marker = _snapshotMarkers[i];
+                if (!marker || marker.kind !== 'currentLocation') continue;
+                if (!shouldRenderFeedbackItem(marker)) continue;
+                anchor = resolveFeedbackAnchor(marker);
+                break;
+            }
+        }
+        if (!anchor) {
+            _currentRadarEl.classList.remove('is-visible');
+            return;
+        }
+        _currentRadarEl.style.left = toPercent(anchor.x, _activePage.width);
+        _currentRadarEl.style.top = toPercent(anchor.y, _activePage.height);
+        _currentRadarEl.style.width = toPercent(52, _activePage.width);
+        _currentRadarEl.style.height = toPercent(52, _activePage.height);
+        _currentRadarEl.classList.add('is-visible');
+    }
+
     function renderFeedback() {
+        syncCurrentRadar();
         syncCanvasStage();
     }
 
@@ -1402,6 +1509,7 @@ var MapPanel = (function() {
             var label = document.createElement('div');
             label.className = 'map-hotspot-overlay-label';
             label.setAttribute('data-hotspot-id', hotspot.id);
+            label.style.setProperty('--stagger', String(Math.min(i, 6)));
             label.style.left = toPercent(rect.x + 8, _activePage.width);
             label.style.top = toPercent((rect.y + rect.h) - 8, _activePage.height);
             // 卡片头: 地点名; hover/current 时整张卡片浮出, 操作行附在下方

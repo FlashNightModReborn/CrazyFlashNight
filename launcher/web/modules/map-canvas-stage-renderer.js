@@ -1367,10 +1367,8 @@ var MapCanvasStageRenderer = (function() {
         if (!p) return;
         r = isCurrent ? 8 : 7;
         ctx.save();
-        // 雷达扫针 (仅 currentLocation, 非低性能) — conic 6s
-        if (isCurrent && !lowEffects) {
-            drawRadarSweep(ctx, p.x, p.y, r + 18, t);
-        }
+        // 雷达扫针已迁 DOM (.map-current-radar, conic-gradient + CSS rotate) — 合成器
+        // 承担 6s 旋转, fg canvas 不再为其逐帧重绘; 本层只保留外发光/脉冲环/标记本体。
         if (!lowEffects) {
             // 外发光 (box-shadow 近似)
             radialA(ctx, p.x, p.y, r + (isCurrent ? 13 : 11), 'rgba(114,230,255,1)', isCurrent ? 0.30 : 0.26);
@@ -1388,32 +1386,6 @@ var MapCanvasStageRenderer = (function() {
         ctx.arc(p.x, p.y, r, 0, TWO_PI);
         ctx.fill();
         ctx.stroke();
-        ctx.restore();
-    }
-
-    function drawRadarSweep(ctx, x, y, radius, t) {
-        var ang = phase(t, 6000) * TWO_PI;
-        var g;
-        ctx.save();
-        ctx.globalAlpha = 0.82;
-        if (typeof ctx.createConicGradient === 'function') {
-            g = ctx.createConicGradient(ang, x, y);
-            g.addColorStop(0, 'rgba(114,230,255,0.45)');
-            g.addColorStop(30 / 360, 'rgba(114,230,255,0.18)');
-            g.addColorStop(60 / 360, 'rgba(114,230,255,0)');
-            g.addColorStop(1, 'rgba(114,230,255,0)');
-            ctx.fillStyle = g;
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, TWO_PI);
-            ctx.fill();
-        } else {
-            ctx.fillStyle = 'rgba(114,230,255,0.22)';
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.arc(x, y, radius, ang, ang + Math.PI / 6);
-            ctx.closePath();
-            ctx.fill();
-        }
         ctx.restore();
     }
 
