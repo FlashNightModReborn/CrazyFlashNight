@@ -1,22 +1,22 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1777470503">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1785147370">
   <timeline>
     <DOMTimeline name="兵器攻击容器-长棍1连招">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" name="长棍1连招" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="17" name="长棍1连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="16" name="长棍2连招" labelType="name" keyMode="9728">
+            <DOMFrame index="17" duration="19" name="长棍2连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="17" name="长棍3连招" labelType="name" keyMode="9728">
+            <DOMFrame index="36" duration="20" name="长棍3连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="47" duration="17" name="长棍4连招" labelType="name" keyMode="9728">
+            <DOMFrame index="56" duration="20" name="长棍4连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="64" duration="14" name="长棍5连招" labelType="name" keyMode="9728">
+            <DOMFrame index="76" duration="16" name="长棍5连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -24,56 +24,56 @@
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
         <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="15" keyMode="9728">
+            <DOMFrame index="17" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
+            <DOMFrame index="35" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="16" keyMode="9728">
+            <DOMFrame index="36" duration="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" keyMode="9728">
+            <DOMFrame index="55" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="47" duration="16" keyMode="9728">
+            <DOMFrame index="56" duration="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
+            <DOMFrame index="75" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="64" duration="8" keyMode="9728">
+            <DOMFrame index="76" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" duration="5" keyMode="9728">
+            <DOMFrame index="84" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器五段结束");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="77" keyMode="9728">
+            <DOMFrame index="91" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
@@ -138,106 +138,106 @@ function 长棍旋击(击倒率)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="4" keyMode="9728">
+            <DOMFrame index="10" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="7" keyMode="9728">
+            <DOMFrame index="17" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="2" keyMode="9728">
+            <DOMFrame index="24" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10,1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="23" duration="2" keyMode="9728">
+            <DOMFrame index="26" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10,1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="25" duration="5" keyMode="9728">
+            <DOMFrame index="28" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10,1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="2" keyMode="9728">
+            <DOMFrame index="36" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍旋击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" keyMode="9728">
+            <DOMFrame index="38" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍旋击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" duration="2" keyMode="9728">
+            <DOMFrame index="41" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍旋击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" duration="2" keyMode="9728">
+            <DOMFrame index="43" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍旋击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="39" duration="2" keyMode="9728">
+            <DOMFrame index="45" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍旋击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" duration="6" keyMode="9728">
+            <DOMFrame index="47" duration="9" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍旋击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="47" duration="10" keyMode="9728">
+            <DOMFrame index="56" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="66" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="58" duration="2" keyMode="9728">
+            <DOMFrame index="67" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="60" duration="4" keyMode="9728">
+            <DOMFrame index="69" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10,3);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="64" duration="4" keyMode="9728">
+            <DOMFrame index="76" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" duration="2" keyMode="9728">
+            <DOMFrame index="80" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="70" duration="2" keyMode="9728">
+            <DOMFrame index="82" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10,3);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" duration="6" keyMode="9728">
+            <DOMFrame index="84" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[长棍攻击(10);]]></script>
               </Actionscript>
@@ -247,7 +247,7 @@ function 长棍旋击(击倒率)
         </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="78" keyMode="9728">
+            <DOMFrame index="0" duration="92" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -263,7 +263,7 @@ function 长棍旋击(击倒率)
         </DOMLayer>
         <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="78" keyMode="9728">
+            <DOMFrame index="0" duration="92" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -300,13 +300,13 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="4" keyMode="9728">
+            <DOMFrame index="10" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="17" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="3" keyMode="9728">
+            <DOMFrame index="22" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -324,10 +324,10 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="8" keyMode="9728">
+            <DOMFrame index="25" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="13" keyMode="9728">
+            <DOMFrame index="36" duration="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -345,13 +345,13 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="43" duration="4" keyMode="9728">
+            <DOMFrame index="49" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
+            <DOMFrame index="56" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="11" keyMode="9728">
+            <DOMFrame index="57" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -369,13 +369,13 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="59" duration="5" keyMode="9728">
+            <DOMFrame index="68" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="64" duration="4" keyMode="9728">
+            <DOMFrame index="76" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" duration="2" keyMode="9728">
+            <DOMFrame index="80" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -393,17 +393,17 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="8" keyMode="9728">
+            <DOMFrame index="82" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="4" keyMode="9728">
+            <DOMFrame index="10" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -424,10 +424,10 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="17" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="25" duration="5" keyMode="9728">
+            <DOMFrame index="28" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -448,10 +448,10 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" duration="13" keyMode="9728">
+            <DOMFrame index="36" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="43" duration="4" keyMode="9728">
+            <DOMFrame index="49" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -472,10 +472,10 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="47" duration="13" keyMode="9728">
+            <DOMFrame index="56" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="60" duration="4" keyMode="9728">
+            <DOMFrame index="69" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -496,10 +496,10 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="64" duration="8" keyMode="9728">
+            <DOMFrame index="76" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" duration="6" keyMode="9728">
+            <DOMFrame index="84" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -523,14 +523,14 @@ function 长棍旋击(击倒率)
         </DOMLayer>
         <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="78" keyMode="9728">
+            <DOMFrame index="0" duration="92" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="78" keyMode="9728">
+            <DOMFrame index="0" duration="92" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -615,7 +615,7 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!2591 -1373[2884 4810 2884 7814!2884 7814[2885 10818 3655 11995!3655 11995[4967 12854 8219 10599!8219 10599[11471 8344 13155 4001!13155 4001[14580 139 14654 -1954!14654 -1954|2591 -1373"/>
+                    <Edge fillStyle0="1" edges="!8219 10599[11471 8344 13155 4001!13155 4001[14580 139 14654 -1954!14654 -1954|2591 -1373!2591 -1373[2884 4810 2884 7814!2884 7814[2885 10818 3655 11995!3655 11995[4967 12854 8219 10599"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -635,7 +635,7 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!3042 -1433[3335 4750 3335 7754!3335 7754[3336 10758 4106 11935!4106 11935[5418 12794 8670 10539!8670 10539[11922 8284 13606 3941!13606 3941[15031 79 15105 -2014!15105 -2014|3042 -1433"/>
+                    <Edge fillStyle0="1" edges="!8670 10539[11922 8284 13606 3941!13606 3941[15031 79 15105 -2014!15105 -2014|3042 -1433!3042 -1433[3335 4750 3335 7754!3335 7754[3336 10758 4106 11935!4106 11935[5418 12794 8670 10539"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -655,18 +655,18 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!3461 -1533[3754 4650 3754 7654!3754 7654[3755 10658 4525 11835!4525 11835[5837 12694 9089 10439!9089 10439[12341 8184 14025 3841!14025 3841[15450 -21 15524 -2114!15524 -2114|3461 -1533"/>
+                    <Edge fillStyle0="1" edges="!9089 10439[12341 8184 14025 3841!14025 3841[15450 -21 15524 -2114!15524 -2114|3461 -1533!3461 -1533[3754 4650 3754 7654!3754 7654[3755 10658 4525 11835!4525 11835[5837 12694 9089 10439"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="13" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="6" keyMode="9728">
+            <DOMFrame index="17" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
+            <DOMFrame index="23" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -686,7 +686,7 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
+            <DOMFrame index="24" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -701,12 +701,12 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!13933 -509[9564 #FFECC2.5E -8841 -4120!-8841 -4120[#B00.1B -2559 2967 -438!2967 -438|13933 -509"/>
+                    <Edge fillStyle0="1" edges="!2967 -438|13933 -509!13933 -509[9564 #FFECC2.5E -8841 -4120!-8841 -4120[#B00.1B -2559 2967 -438"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
+            <DOMFrame index="25" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -726,7 +726,7 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
+            <DOMFrame index="26" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -746,7 +746,7 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
+            <DOMFrame index="27" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -766,10 +766,10 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="5" keyMode="9728">
+            <DOMFrame index="28" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728">
+            <DOMFrame index="36" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="128.8" centerPoint3DY="-151.35">
                   <matrix>
@@ -781,7 +781,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" keyMode="9728">
+            <DOMFrame index="37" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="29.7" centerPoint3DY="26.45">
                   <matrix>
@@ -793,7 +793,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-149.3" centerPoint3DY="4.75">
                   <matrix>
@@ -805,7 +805,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="33" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-159.55" centerPoint3DY="-265.15">
                   <matrix>
@@ -817,7 +817,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" keyMode="9728">
+            <DOMFrame index="40" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="8.75" centerPoint3DY="-307.7">
                   <matrix>
@@ -829,7 +829,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="82.65" centerPoint3DY="-256.05">
                   <matrix>
@@ -841,7 +841,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="42" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="164" centerPoint3DY="-167.15">
                   <matrix>
@@ -853,7 +853,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
+            <DOMFrame index="43" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="166.7" centerPoint3DY="-33.95">
                   <matrix>
@@ -865,7 +865,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="38" keyMode="9728">
+            <DOMFrame index="44" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="70.6" centerPoint3DY="49.05">
                   <matrix>
@@ -877,7 +877,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
+            <DOMFrame index="45" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-56.3" centerPoint3DY="-77.85">
                   <matrix>
@@ -889,7 +889,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" keyMode="9728">
+            <DOMFrame index="46" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="76.65" centerPoint3DY="0.15">
                   <matrix>
@@ -901,7 +901,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="41" keyMode="9728">
+            <DOMFrame index="47" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-168.55" centerPoint3DY="-77.05">
                   <matrix>
@@ -913,7 +913,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-69.35" centerPoint3DY="-237.1">
                   <matrix>
@@ -925,10 +925,10 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="43" duration="14" keyMode="9728">
+            <DOMFrame index="49" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="66" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -943,12 +943,12 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!7476 -430[7541 322 7020 1225!7020 1225[6321 2195 4656 3046!4656 3046[-1590 5085 -9325 854!-9325 854|-62 -8790!-62 -8790|7476 -430"/>
+                    <Edge fillStyle1="1" edges="!4656 3046[-1590 5085 -9325 854!-9325 854|-62 -8790!-62 -8790|7476 -430!7476 -430[7541 322 7020 1225!7020 1225[6321 2195 4656 3046"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="58" keyMode="9728">
+            <DOMFrame index="67" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -968,7 +968,7 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
+            <DOMFrame index="68" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -988,7 +988,7 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1008,13 +1008,13 @@ function 长棍旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="61" duration="3" keyMode="9728">
+            <DOMFrame index="70" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="64" duration="5" keyMode="9728">
+            <DOMFrame index="76" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="3" tweenType="shape" keyMode="17922">
+            <DOMFrame index="81" duration="3" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFF2.21, #FFFFFE.F7" startPointB="#15.21, #FFFFFC.39" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1039,12 +1039,12 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!15947 742S1[5091 -300 -3551 -265!-3551 -265|-3196 2527!-3196 2527[6103 2271 15947 742"/>
+                    <Edge fillStyle0="1" edges="!-3196 2527S1[6103 2271 15947 742!15947 742[5091 -300 -3551 -265!-3551 -265|-3196 2527"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="72" tweenType="shape" keyMode="17922">
+            <DOMFrame index="84" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments/>
                 <morphHintsList/>
@@ -1063,12 +1063,12 @@ function 长棍旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!5797 2074[15927 1795 26654 129!26654 129[14824 -1006 5409 -967!5409 -967|5797 2074"/>
+                    <Edge fillStyle0="1" edges="!26654 129[14824 -1006 5409 -967!5409 -967|5797 2074!5797 2074[15927 1795 26654 129"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="73" duration="5" keyMode="9728">
+            <DOMFrame index="85" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3766,7 +3766,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="13" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-40.9" centerPoint3DY="207.7">
                   <matrix>
@@ -3973,7 +3973,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="17" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="26.15" centerPoint3DY="206.1">
                   <matrix>
@@ -4180,7 +4180,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
+            <DOMFrame index="18" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="26.15" centerPoint3DY="206.1">
                   <matrix>
@@ -4387,7 +4387,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="55.55" centerPoint3DY="-301.65">
                   <matrix>
@@ -4594,7 +4594,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-103.2" centerPoint3DY="-123.8">
                   <matrix>
@@ -4801,7 +4801,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
+            <DOMFrame index="21" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-112" centerPoint3DY="-4.75">
                   <matrix>
@@ -5008,7 +5008,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728">
+            <DOMFrame index="22" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-105.35" centerPoint3DY="10.25">
                   <matrix>
@@ -5215,7 +5215,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
+            <DOMFrame index="23" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-57.2" centerPoint3DY="-62.9">
                   <matrix>
@@ -5422,7 +5422,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
+            <DOMFrame index="24" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="302.75" centerPoint3DY="-123.9">
                   <matrix>
@@ -5629,7 +5629,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
+            <DOMFrame index="25" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-16.45" centerPoint3DY="192.2">
                   <matrix>
@@ -5836,7 +5836,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
+            <DOMFrame index="26" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-16.45" centerPoint3DY="192.2">
                   <matrix>
@@ -6043,7 +6043,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
+            <DOMFrame index="27" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-29.4" centerPoint3DY="191.2">
                   <matrix>
@@ -6250,7 +6250,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" keyMode="9728">
+            <DOMFrame index="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-42.15" centerPoint3DY="188.6">
                   <matrix>
@@ -6457,7 +6457,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="26" keyMode="9728">
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-19.55" centerPoint3DY="171.2">
                   <matrix>
@@ -6664,7 +6664,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" keyMode="9728">
+            <DOMFrame index="30" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="3.85" centerPoint3DY="148.4">
                   <matrix>
@@ -6871,7 +6871,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="2" keyMode="9728">
+            <DOMFrame index="31" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="26.3" centerPoint3DY="120.5">
                   <matrix>
@@ -7078,7 +7078,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728">
+            <DOMFrame index="36" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="39.35" centerPoint3DY="103.8">
                   <matrix>
@@ -7285,7 +7285,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" keyMode="9728">
+            <DOMFrame index="37" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="39.35" centerPoint3DY="101.75">
                   <matrix>
@@ -7492,7 +7492,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="39.35" centerPoint3DY="99.75">
                   <matrix>
@@ -7699,7 +7699,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="33" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="39.35" centerPoint3DY="97.75">
                   <matrix>
@@ -7906,7 +7906,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" keyMode="9728">
+            <DOMFrame index="40" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="39.35" centerPoint3DY="95.75">
                   <matrix>
@@ -8113,7 +8113,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="39.35" centerPoint3DY="93.8">
                   <matrix>
@@ -8320,7 +8320,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="42" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="9.85" centerPoint3DY="105.7">
                   <matrix>
@@ -8527,7 +8527,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
+            <DOMFrame index="43" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-21.1" centerPoint3DY="108.3">
                   <matrix>
@@ -8734,7 +8734,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="38" keyMode="9728">
+            <DOMFrame index="44" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-49.65" centerPoint3DY="102.1">
                   <matrix>
@@ -8941,7 +8941,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
+            <DOMFrame index="45" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-75.05" centerPoint3DY="88.15">
                   <matrix>
@@ -9148,7 +9148,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" keyMode="9728">
+            <DOMFrame index="46" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-23.2" centerPoint3DY="116.45">
                   <matrix>
@@ -9355,7 +9355,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="41" keyMode="9728">
+            <DOMFrame index="47" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-49.2" centerPoint3DY="113.3">
                   <matrix>
@@ -9562,7 +9562,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-74" centerPoint3DY="102.9">
                   <matrix>
@@ -9769,7 +9769,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="43" keyMode="9728">
+            <DOMFrame index="49" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="44.25" centerPoint3DY="102.9">
                   <matrix>
@@ -9976,7 +9976,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
+            <DOMFrame index="50" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="17.1" centerPoint3DY="117.25">
                   <matrix>
@@ -10183,7 +10183,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="2" keyMode="9728">
+            <DOMFrame index="51" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="17.1" centerPoint3DY="117.25">
                   <matrix>
@@ -10390,7 +10390,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
+            <DOMFrame index="56" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-10.45" centerPoint3DY="124.05">
                   <matrix>
@@ -10597,7 +10597,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" keyMode="9728">
+            <DOMFrame index="57" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-46.2" centerPoint3DY="148.2">
                   <matrix>
@@ -10804,7 +10804,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
+            <DOMFrame index="58" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-47.75" centerPoint3DY="34.55">
                   <matrix>
@@ -11011,7 +11011,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
+            <DOMFrame index="59" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-52.4" centerPoint3DY="-76.5">
                   <matrix>
@@ -11218,7 +11218,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728">
+            <DOMFrame index="60" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-61.6" centerPoint3DY="-79.15">
                   <matrix>
@@ -11425,7 +11425,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" keyMode="9728">
+            <DOMFrame index="61" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-71" centerPoint3DY="-82.55">
                   <matrix>
@@ -11632,7 +11632,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="53" keyMode="9728">
+            <DOMFrame index="62" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-80" centerPoint3DY="-86.65">
                   <matrix>
@@ -11839,7 +11839,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
+            <DOMFrame index="63" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-131.55" centerPoint3DY="-268.8">
                   <matrix>
@@ -12046,7 +12046,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" keyMode="9728">
+            <DOMFrame index="64" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="1.5" centerPoint3DY="-239.65">
                   <matrix>
@@ -12253,7 +12253,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
+            <DOMFrame index="65" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="80.45" centerPoint3DY="-93.8">
                   <matrix>
@@ -12460,7 +12460,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="66" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="29.55" centerPoint3DY="74.65">
                   <matrix>
@@ -12667,7 +12667,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="58" keyMode="9728">
+            <DOMFrame index="67" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-20.55" centerPoint3DY="138.75">
                   <matrix>
@@ -12874,7 +12874,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
+            <DOMFrame index="68" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-68.5" centerPoint3DY="180.7">
                   <matrix>
@@ -13081,7 +13081,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-68.5" centerPoint3DY="180.7">
                   <matrix>
@@ -13288,7 +13288,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="61" duration="3" keyMode="9728">
+            <DOMFrame index="70" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-68.5" centerPoint3DY="188.7">
                   <matrix>
@@ -13495,7 +13495,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
+            <DOMFrame index="76" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-68.5" centerPoint3DY="180.7">
                   <matrix>
@@ -13702,7 +13702,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="65" keyMode="9728">
+            <DOMFrame index="77" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-39.75" centerPoint3DY="186.55">
                   <matrix>
@@ -13909,7 +13909,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="66" keyMode="9728">
+            <DOMFrame index="78" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-10.7" centerPoint3DY="183.6">
                   <matrix>
@@ -14116,7 +14116,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="67" keyMode="9728">
+            <DOMFrame index="79" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="15.65" centerPoint3DY="172.75">
                   <matrix>
@@ -14323,7 +14323,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="68" keyMode="9728">
+            <DOMFrame index="80" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="37.3" centerPoint3DY="155.05">
                   <matrix>
@@ -14530,7 +14530,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" keyMode="9728">
+            <DOMFrame index="81" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-20" centerPoint3DY="181.8">
                   <matrix>
@@ -14737,7 +14737,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" keyMode="9728">
+            <DOMFrame index="82" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-80.35" centerPoint3DY="167.05">
                   <matrix>
@@ -14944,7 +14944,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728">
+            <DOMFrame index="83" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="139.9" centerPoint3DY="110.7">
                   <matrix>
@@ -15151,7 +15151,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="72" duration="2" keyMode="9728">
+            <DOMFrame index="84" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-86.65" centerPoint3DY="172">
                   <matrix>
@@ -15358,7 +15358,7 @@ function 长棍旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="74" duration="4" keyMode="9728">
+            <DOMFrame index="86" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-89.25" centerPoint3DY="174.2">
                   <matrix>
@@ -15567,12 +15567,12 @@ function 长棍旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="14" keyMode="9728">
+            <DOMFrame index="1" duration="17" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[{
 	_root.播放音效("cudgel_4_slash.wav");
@@ -15580,7 +15580,7 @@ function 长棍旋击(击倒率)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" duration="16" keyMode="9728">
+            <DOMFrame index="18" duration="19" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[{
 	_root.播放音效("cudgel_2_Split.wav");
@@ -15588,7 +15588,7 @@ function 长棍旋击(击倒率)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" duration="17" keyMode="9728">
+            <DOMFrame index="37" duration="20" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[{
 	_root.播放音效("cudgel_1.wav");
@@ -15596,7 +15596,7 @@ function 长棍旋击(击倒率)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="17" keyMode="9728">
+            <DOMFrame index="57" duration="20" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[{
 	_root.播放音效("cudgel_2_Split.wav");
@@ -15604,7 +15604,7 @@ function 长棍旋击(击倒率)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="65" duration="13" keyMode="9728">
+            <DOMFrame index="77" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[{
 	_root.播放音效("cudgel_3_stab.wav");
@@ -15616,375 +15616,11 @@ function 长棍旋击(击倒率)
         </DOMLayer>
         <DOMLayer name="阴影" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="6" keyMode="9728">
+            <DOMFrame index="0" duration="92" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="99.55" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="2.54144287109375" d="0.559799194335938" tx="12.9" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="99.55" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="2.54144287109375" d="0.559799194335938" tx="12.9" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="53.7" centerPoint3DY="330.05">
-                  <matrix>
-                    <Matrix a="2.54144287109375" d="0.559799194335938" tx="-32.95" ty="243.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="53.7" centerPoint3DY="330.05">
-                  <matrix>
-                    <Matrix a="2.54144287109375" d="0.559799194335938" tx="-32.95" ty="243.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="105.45" centerPoint3DY="336">
-                  <matrix>
-                    <Matrix a="2.54144287109375" d="0.559799194335938" tx="18.8" ty="249.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="3" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="49.25" centerPoint3DY="336">
-                  <matrix>
-                    <Matrix a="2.54144287109375" d="0.559799194335938" tx="-37.4" ty="249.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="25" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="49.25" centerPoint3DY="336">
-                  <matrix>
-                    <Matrix a="2.54144287109375" d="0.559799194335938" tx="-37.4" ty="249.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="49.25" centerPoint3DY="336">
-                  <matrix>
-                    <Matrix a="2.04771423339844" d="0.559799194335938" tx="-37.4" ty="249.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="30" duration="27" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="60" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="25.6" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="2.07449340820313" d="0.559799194335938" tx="-61.05" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="25.6" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="2.07449340820313" d="0.559799194335938" tx="-61.05" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="68" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="121.75" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.86978149414063" d="0.559799194335938" tx="35.1" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="71" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="36.15" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="2.313232421875" d="0.559799194335938" tx="-50.65" ty="233.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

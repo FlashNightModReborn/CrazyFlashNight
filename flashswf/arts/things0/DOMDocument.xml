@@ -35,14 +35,14 @@
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
-          <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板" itemID="699e0c3e-00001e05"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件" itemID="699e0c3e-00001e06"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="69949a8d-0000357a"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/属性标签标志元件" itemID="699e0c3e-00001e09"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/主角肢体素材" itemID="699e0c3e-00001e0c"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
-          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
+          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
@@ -1152,7 +1152,7 @@
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1780960837"/>
           <Include href="sprite/兵器攻击标志.xml" loadImmediate="false" itemID="697b1094-00002018" lastModified="1719241660"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1779390244"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1785081695"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1785146587"/>
           <Include href="sprite/兵器使用标签.xml" loadImmediate="false" itemID="697b1094-00002017" lastModified="1719241655"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1777902307"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1769694922"/>
@@ -1299,7 +1299,7 @@
           <Include href="容器/兵器攻击容器/↓R兵攻容器-追地祀.xml" itemID="695dde14-0000317a" lastModified="1777378574"/>
           <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="6976bf0b-00000a1f" lastModified="1769694922"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-百裂刺.xml" itemID="6a36f836-00000bbb" lastModified="1784475337"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1782004334"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1785146260"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-飞沙走石.xml" itemID="695a4279-000014b2" lastModified="1777377797"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-飞跃砸击.xml" itemID="6a5cfc55-00002b28" lastModified="1785084717"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1784477153"/>
@@ -1332,20 +1332,20 @@
           <Include href="容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml" loadImmediate="false" itemID="6986462c-00000c0f" lastModified="1770407468"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6976bef2-00000a1e" lastModified="1777901493"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1779374821"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1778039997"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1785147087"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1777470439"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1777471697"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1782748595"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1785146646"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1782004691"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1781976604"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1781976655"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1782004683"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1777471731"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1777470503"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1785077883"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1785147368"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1785147370"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1785146890"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1785084997"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1785090235"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1785146877"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="69949a8d-00003587" lastModified="1706272572"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="69949a8d-00003589" lastModified="1706271675"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="69949a8d-00003588" lastModified="1706271749"/>
