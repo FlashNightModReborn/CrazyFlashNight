@@ -325,7 +325,14 @@ namespace CF7Launcher.Bus
         private void HandleShutdown(HttpListenerContext ctx)
         {
             ctx.Response.ContentType = "application/json";
-            WriteResponse(ctx, "{\"ok\":true,\"message\":\"shutting down\"}");
+            // The persistence fence may veto the later UI-thread exit. This endpoint only
+            // acknowledges queuing the request; it must never claim the process has exited.
+            ctx.Response.StatusCode =
+                (int)HttpStatusCode.Accepted;
+            WriteResponse(
+                ctx,
+                "{\"ok\":true,\"status\":\"shutdown_requested\","
+                    + "\"message\":\"shutdown requested\"}");
             LogManager.Log("[HTTP] Shutdown requested via /shutdown");
             if (_shutdownAction != null)
             {

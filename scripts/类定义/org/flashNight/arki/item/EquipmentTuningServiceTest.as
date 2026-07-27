@@ -1,17 +1,31 @@
 ﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
 
 import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.itemCollection.EquipmentInventory;
+import org.flashNight.arki.item.itemCollection.DrugInventory;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.EquipmentTuningService;
+import org.flashNight.arki.item.CharacterBuildService;
 
 /** EquipmentTuningService 行为与事务回归。 */
 class org.flashNight.arki.item.EquipmentTuningServiceTest {
     private static var _passed:Number = 0;
     private static var _failed:Number = 0;
+    private static var SLOT_KEYS:Array = [
+        "头部装备", "上装装备", "下装装备", "手部装备",
+        "脚部装备", "颈部装备", "长枪", "手枪",
+        "手枪2", "刀", "手雷"
+    ];
+    private static var SLOT_DATA_KEYS:Array = [
+        "头部装备数据", "上装装备数据", "下装装备数据",
+        "手部装备数据", "脚部装备数据", "颈部装备数据",
+        "长枪数据", "手枪数据", "手枪2数据", "刀数据",
+        "手雷数据"
+    ];
 
     public static function runAllTests():Void {
         _passed = 0;
@@ -29,6 +43,10 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWebInstallModAndTooltip();
         testLegacyDetachSemantics();
         testFinalStateEventsAndBusyGuard();
+        testStrictSourceKindsAndWornStaleFences();
+        testWornCommitAndLiveDirtyBoundary();
+        testWornAllowedOperationMatrix();
+        testWornRollbackAndUnknownReconcile();
         trace("EquipmentTuningServiceTest Tests Passed: " + _passed);
         trace("EquipmentTuningServiceTest Tests Failed: " + _failed);
         trace("=== EquipmentTuningServiceTest end ===");
@@ -87,6 +105,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         EquipmentTuningService.install();
         InventoryPanelService.testOnlyReset();
         EquipmentTuningService.testOnlyReset();
+        CharacterBuildService.testOnlyReset();
     }
 
     private static function testSnapshotGenderNormalization():Void {
@@ -118,7 +137,13 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
     private static function sourceRef(snapshot:Object, slot:Number):Object {
         for (var i:Number = 0; i < snapshot.slots.length; i++) {
             if (Number(snapshot.slots[i].physicalSlot) == slot) {
-                return {containerId:"背包",slot:slot,expectedLease:String(snapshot.slots[i].slotLease)};
+                return {
+                    sourceKind:"inventory",
+                    containerId:"背包",
+                    slot:slot,
+                    expectedLease:String(
+                        snapshot.slots[i].slotLease)
+                };
             }
         }
         return null;
@@ -131,6 +156,59 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             if (String(rows[i].itemName) == itemName) return Number(rows[i].count);
         }
         return -1;
+    }
+
+    private static function installWornPublishProbe(
+        fixture:Object,
+        suffix:String):Object {
+        var probe:Object = {
+            equipmentPublishes:0,
+            materialPublishes:0
+        };
+        var equipmentHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningWornEquipment_" + suffix,
+            _root.getNextHighestDepth());
+        var materialHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningWornMaterial_" + suffix,
+            _root.getNextHighestDepth());
+        probe.equipmentHolder = equipmentHolder;
+        probe.materialHolder = materialHolder;
+        var equipmentDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(equipmentHolder);
+        var materialDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(materialHolder);
+        var countEquipment:Function = function():Void {
+            probe.equipmentPublishes++;
+        };
+        var countMaterial:Function = function():Void {
+            probe.materialPublishes++;
+        };
+        equipmentDispatcher.subscribe(
+            "ItemAdded", countEquipment);
+        equipmentDispatcher.subscribe(
+            "ItemRemoved", countEquipment);
+        equipmentDispatcher.subscribe(
+            "ItemValueChanged", countEquipment);
+        materialDispatcher.subscribe(
+            "ItemAdded", countMaterial);
+        materialDispatcher.subscribe(
+            "ItemRemoved", countMaterial);
+        materialDispatcher.subscribe(
+            "ItemValueChanged", countMaterial);
+        fixture.inventory.setDispatcher(
+            equipmentDispatcher);
+        _root.收集品栏.材料.setDispatcher(
+            materialDispatcher);
+        return probe;
+    }
+
+    private static function removeWornPublishProbe(
+        fixture:Object,
+        probe:Object):Void {
+        fixture.inventory.setDispatcher(null);
+        _root.收集品栏.材料.setDispatcher(null);
+        probe.equipmentHolder.removeMovieClip();
+        probe.materialHolder.removeMovieClip();
     }
 
     private static function params(view:String):Object {
@@ -677,5 +755,666 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         _root.收集品栏.材料.setDispatcher(null);
         bagHolder.removeMovieClip();
         materialHolder.removeMovieClip();
+    }
+
+    private static function installWornFixture(
+        slotKey:String,
+        item:BaseItem):Object {
+        _root.getItemData = function(name):Object {
+            return ItemUtil.getItemData(String(name));
+        };
+        var equipmentInventory:EquipmentInventory =
+            new EquipmentInventory(null);
+        var added:Boolean =
+            equipmentInventory.add(slotKey, item);
+        _root.物品栏.装备栏 = equipmentInventory;
+        _root.物品栏.药剂栏 =
+            new DrugInventory(null, 4);
+        _root._webPanelPauseLease =
+            "lease.fixture.worn-tuning";
+
+        var gameworld:Object = {};
+        var hero:Object = {
+            _name:"wornTuningHero",
+            _parent:gameworld,
+            aabbCollider:{},
+            新版人物文字信息:{},
+            dispatcher:{
+                publish:function():Void {},
+                subscribe:function():String { return "fixture"; },
+                destroy:function():Void {}
+            },
+            buffManager:{
+                update:function():Void {},
+                addBuff:function():String { return "fixture"; },
+                removeBuff:function():Boolean { return true; },
+                destroy:function():Void {}
+            },
+            buff:{
+                初始:function():Void {},
+                更新:function():Void {}
+            },
+            读取基础被动效果:function():Void {},
+            gotoAndStop:function():Void {},
+            根据模式重新读取武器加成:function():Void {},
+            装载主动战技:function():Void {},
+            装载生命周期函数:function():Void {},
+            完成生命周期函数装载:function():Void {},
+            syncRefs:{},
+            dressupRegistry:{},
+            dressupRefreshing:false,
+            重量:1,
+            行走X速度:1,
+            hp满血值:100,
+            mp满血值:50,
+            防御力:10,
+            魔法抗性:{基础:10},
+            主动战技:{},
+            生命周期函数列表:[],
+            格斗架势:false
+        };
+        _root.控制目标 = hero._name;
+        _root.gameworld = gameworld;
+        gameworld[hero._name] = hero;
+        _root.装备引用配置 = {
+            刷新所有装扮:function():Void {}
+        };
+        _root.根据等级计算值 =
+            function():Number { return 1; };
+        _root.主角函数 = {
+            创建主动战技槽位表:
+                function():Object { return {}; },
+            获取装备主动战技种类:
+                function():String { return ""; }
+        };
+        _root.敌人函数 = {魔法伤害种类:[]};
+        _root.玩家信息界面 = {
+            刷新攻击模式:function():Void {}
+        };
+        _root.UI系统 = {
+            iconBar:{initialize:function():Void {}}
+        };
+        _root.refreshCalls = 0;
+        _root.刷新人物装扮 =
+            function(targetName:String):Void {
+                _root.refreshCalls++;
+            };
+        for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
+            var key:String = String(SLOT_KEYS[i]);
+            var equipped:Object =
+                equipmentInventory.getItem(key);
+            hero[key] = equipped;
+            hero[SLOT_DATA_KEYS[i]] = equipped == null
+                ? null : equipped.getData();
+        }
+
+        CharacterBuildService.testOnlyUseRoot(_root);
+        var opened:Object = CharacterBuildService.open();
+        return {
+            added:added,
+            opened:opened,
+            inventory:equipmentInventory,
+            item:item,
+            slotKey:slotKey,
+            hero:hero
+        };
+    }
+
+    private static function wornSource(fixture:Object,
+                                       revision:Number):Object {
+        return {
+            sourceKind:"loadout",
+            sessionGeneration:
+                Number(fixture.opened.sessionGeneration),
+            slotKey:String(fixture.slotKey),
+            expectedLoadoutRevision:revision
+        };
+    }
+
+    private static function currentWornSource(
+        fixture:Object):Object {
+        var current:Object = CharacterBuildService.snapshot(
+            Number(fixture.opened.sessionGeneration));
+        return wornSource(
+            fixture, Number(current.loadoutRevision));
+    }
+
+    private static function findCandidateKey(
+        snapshot:Object,
+        operation:String,
+        itemName:String):String {
+        var rows:Array = operation == "install_tier"
+            ? snapshot.tierCandidates : snapshot.modCandidates;
+        for (var i:Number = 0; i < rows.length; i++) {
+            if (String(rows[i].itemName) == itemName) {
+                return String(rows[i].candidateKey);
+            }
+        }
+        return "";
+    }
+
+    private static function prepareWornOperation(
+        fixture:Object,
+        view:String,
+        operation:String,
+        candidateName:String,
+        replaceCandidateName:String,
+        targetLevel):Object {
+        var source:Object = currentWornSource(fixture);
+        var snapshotParams:Object = params(view);
+        snapshotParams.source = source;
+        var snapshot:Object =
+            EquipmentTuningService.execute(
+                "snapshot", snapshotParams);
+        if (!snapshot.success) {
+            return {source:source, snapshot:snapshot};
+        }
+        var previewParams:Object = params(view);
+        previewParams.operation = operation;
+        previewParams.source = source;
+        if (targetLevel != undefined) {
+            previewParams.targetLevel = targetLevel;
+        }
+        if (candidateName != undefined
+                && candidateName != "") {
+            previewParams.candidateKey =
+                findCandidateKey(snapshot.snapshot,
+                    operation, candidateName);
+        }
+        if (replaceCandidateName != undefined
+                && replaceCandidateName != "") {
+            previewParams.replaceCandidateKey =
+                findCandidateKey(snapshot.snapshot,
+                    "replace_mod", replaceCandidateName);
+        }
+        var preview:Object =
+            EquipmentTuningService.execute(
+                "preview", previewParams);
+        return {
+            source:source,
+            snapshot:snapshot,
+            preview:preview
+        };
+    }
+
+    private static function commitWornOperation(
+        fixture:Object,
+        view:String,
+        operation:String,
+        candidateName:String,
+        replaceCandidateName:String,
+        targetLevel):Object {
+        var prepared:Object = prepareWornOperation(
+            fixture, view, operation, candidateName,
+            replaceCandidateName, targetLevel);
+        if (prepared.preview == null
+                || !prepared.preview.success) {
+            return prepared;
+        }
+        var commitParams:Object = params(view);
+        commitParams.expectedTuningToken =
+            prepared.preview.tuningToken;
+        prepared.commit = EquipmentTuningService.execute(
+            "commit", commitParams);
+        return prepared;
+    }
+
+    private static function testStrictSourceKindsAndWornStaleFences():Void {
+        resetFixture();
+        var bagItem:BaseItem =
+            equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, bagItem);
+        _root.收集品栏.材料.add("强化石", 10);
+        var strictParams:Object = params("strict-source");
+        var exactInventory:Object =
+            sourceRef(inventorySnapshot(), 0);
+        strictParams.source = {
+            containerId:"背包",
+            slot:exactInventory.slot,
+            expectedLease:exactInventory.expectedLease
+        };
+        var missingKind:Object =
+            EquipmentTuningService.execute(
+                "snapshot", strictParams);
+        var legacy:Object =
+            EquipmentTuningService.executeLegacy(
+                "enhance", _root.物品栏.背包, 0,
+                bagItem, {targetLevel:2});
+        assertTrue(!missingKind.success
+                && missingKind.error == "invalid_payload"
+                && legacy.success && bagItem.value.level == 2,
+            "生产 wire 缺 sourceKind fail-closed；仅显式 legacy adapter 兼容旧来源");
+
+        resetFixture();
+        var item:BaseItem =
+            equipment("测试手枪A", 1, []);
+        var fixture:Object =
+            installWornFixture("手枪", item);
+        var source:Object = wornSource(
+            fixture,
+            Number(fixture.opened.loadoutRevision));
+        var validParams:Object = params("worn-source");
+        validParams.source = source;
+        var valid:Object =
+            EquipmentTuningService.execute(
+                "snapshot", validParams);
+        assertTrue(fixture.added && fixture.opened.success
+                && valid.success
+                && valid.snapshot.source.sourceKind
+                    == "loadout"
+                && valid.snapshot.source.sessionGeneration
+                    == source.sessionGeneration
+                && valid.snapshot.source.slotKey == "手枪"
+                && valid.snapshot.source
+                    .expectedLoadoutRevision
+                    == source.expectedLoadoutRevision
+                && !valid.snapshot.source.hasOwnProperty(
+                    "containerId"),
+            "loadout snapshot 只镜像 exact generation/slot/revision 四键来源");
+
+        var staleGeneration:Object = {
+            sourceKind:"loadout",
+            sessionGeneration:
+                Number(source.sessionGeneration) + 1,
+            slotKey:"手枪",
+            expectedLoadoutRevision:
+                Number(source.expectedLoadoutRevision)
+        };
+        var staleRevision:Object = {
+            sourceKind:"loadout",
+            sessionGeneration:
+                Number(source.sessionGeneration),
+            slotKey:"手枪",
+            expectedLoadoutRevision:
+                Number(source.expectedLoadoutRevision) + 1
+        };
+        var invalidSlot:Object = {
+            sourceKind:"loadout",
+            sessionGeneration:
+                Number(source.sessionGeneration),
+            slotKey:"饰品",
+            expectedLoadoutRevision:
+                Number(source.expectedLoadoutRevision)
+        };
+        var staleParams:Object = params("worn-stale");
+        staleParams.source = staleGeneration;
+        var generationDenied:Object =
+            EquipmentTuningService.execute(
+                "snapshot", staleParams);
+        staleParams.source = staleRevision;
+        var revisionDenied:Object =
+            EquipmentTuningService.execute(
+                "snapshot", staleParams);
+        staleParams.source = invalidSlot;
+        var slotDenied:Object =
+            EquipmentTuningService.execute(
+                "snapshot", staleParams);
+        var extraSource:Object = wornSource(
+            fixture,
+            Number(source.expectedLoadoutRevision));
+        extraSource.containerId = "背包";
+        staleParams.source = extraSource;
+        var extraDenied:Object =
+            EquipmentTuningService.execute(
+                "snapshot", staleParams);
+        assertTrue(!generationDenied.success
+                && generationDenied.error == "stale_session"
+                && !revisionDenied.success
+                && revisionDenied.error == "stale_state"
+                && !slotDenied.success
+                && slotDenied.error == "invalid_slot"
+                && !extraDenied.success
+                && extraDenied.error == "invalid_payload",
+            "loadout source 对 stale generation/revision、白名单外槽和多余键全部 fail-closed");
+
+        var convertSnapshotParams:Object =
+            params("worn-convert");
+        convertSnapshotParams.source = source;
+        EquipmentTuningService.execute(
+            "snapshot", convertSnapshotParams);
+        var convertParams:Object = params("worn-convert");
+        convertParams.operation = "convert";
+        convertParams.source = source;
+        var convertDenied:Object =
+            EquipmentTuningService.execute(
+                "preview", convertParams);
+        assertTrue(!convertDenied.success
+                && convertDenied.error
+                    == "unsupported_operation"
+                && item.value.level == 1,
+            "loadout 明确拒绝 convert 且零装备写");
+    }
+
+    private static function testWornCommitAndLiveDirtyBoundary():Void {
+        resetFixture();
+        _root.收集品栏.材料.add("强化石", 10);
+        var item:BaseItem =
+            equipment("测试手枪A", 1, []);
+        var fixture:Object =
+            installWornFixture("手枪", item);
+        var beforeEquipmentRevision:Number =
+            fixture.inventory.getMutationRevision();
+        var beforeMaterialRevision:Number =
+            _root.收集品栏.材料
+                .getMutationRevision();
+        var beforeDerived:Object =
+            fixture.hero.手枪数据;
+        var result:Object = commitWornOperation(
+            fixture, "worn-enhance", "enhance",
+            "", "", 2);
+        var current:Object = CharacterBuildService.snapshot(
+            Number(fixture.opened.sessionGeneration));
+
+        assertTrue(result.snapshot.success
+                && result.preview.success
+                && result.commit.success
+                && item.value.level == 2
+                && _root.收集品栏.材料
+                    .getValue("强化石") == 9
+                && fixture.inventory
+                    .getMutationRevision()
+                    == beforeEquipmentRevision + 1
+                && _root.收集品栏.材料
+                    .getMutationRevision()
+                    == beforeMaterialRevision + 1,
+            "worn item value 与材料以单批次原子提交且两边 raw revision 各推进一次");
+        assertTrue(result.commit.inventorySnapshots
+                    instanceof Array
+                && result.commit.inventorySnapshots.length == 0
+                && result.commit.before.source.source
+                    .expectedLoadoutRevision
+                    == fixture.opened.loadoutRevision
+                && result.commit.after.source.source
+                    .expectedLoadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && result.commit.snapshot.source
+                    .expectedLoadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && snapshotMaterialCount(
+                    result.commit.snapshot,
+                    "强化石") == 9
+                && result.commit.materials[0].after == 9,
+            "worn commit 返回 pre-before/post-after/post-snapshot、写后材料且不伪造背包 snapshot");
+        assertTrue(current.success
+                && current.loadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && current.loadoutChanged == false
+                && current.liveRefreshDirty
+                && fixture.hero.手枪 === item
+                && fixture.hero.手枪数据 === beforeDerived
+                && _root.refreshCalls == 0,
+            "Character hook 精确同步一次；共享 worn item 引用不冒充派生属性已刷新");
+    }
+
+    private static function testWornAllowedOperationMatrix():Void {
+        resetFixture();
+        _root.收集品栏.材料.add(
+            "二阶复合防御组件", 1);
+        var armor:BaseItem =
+            equipment("测试头盔", 1, []);
+        var armorFixture:Object =
+            installWornFixture("头部装备", armor);
+        var tier:Object = commitWornOperation(
+            armorFixture, "worn-tier", "install_tier",
+            "二阶复合防御组件", "", undefined);
+        assertTrue(tier.commit.success
+                && armor.value.tier == "二阶"
+                && _root.收集品栏.材料.getValue(
+                    "二阶复合防御组件") == 0,
+            "loadout 允许 install_tier 并消费材料");
+
+        resetFixture();
+        _root.收集品栏.材料.add("普通握把", 2);
+        _root.收集品栏.材料.add("级联核心", 1);
+        _root.收集品栏.材料.add("基础导轨", 1);
+        var weapon:BaseItem =
+            equipment("测试手枪A", 1, []);
+        var weaponFixture:Object =
+            installWornFixture("手枪", weapon);
+        var installed:Object = commitWornOperation(
+            weaponFixture, "worn-mod-install",
+            "install_mod", "普通握把", "", undefined);
+        var replaced:Object = commitWornOperation(
+            weaponFixture, "worn-mod-replace",
+            "replace_mod", "级联核心",
+            "普通握把", undefined);
+        var detached:Object = commitWornOperation(
+            weaponFixture, "worn-mod-detach",
+            "detach_mod", "级联核心", "", undefined);
+        var installedAgain:Object = commitWornOperation(
+            weaponFixture, "worn-mod-install-again",
+            "install_mod", "普通握把", "", undefined);
+        var installedRail:Object = commitWornOperation(
+            weaponFixture, "worn-mod-install-rail",
+            "install_mod", "基础导轨", "", undefined);
+        var detachedAll:Object = commitWornOperation(
+            weaponFixture, "worn-mod-detach-all",
+            "detach_all_mods", "", "", undefined);
+        assertTrue(installed.commit.success
+                && replaced.commit.success
+                && detached.commit.success
+                && installedAgain.commit.success
+                && installedRail.commit.success
+                && detachedAll.commit.success
+                && weapon.value.mods.length == 0
+                && _root.收集品栏.材料
+                    .getValue("普通握把") == 2
+                && _root.收集品栏.材料
+                    .getValue("级联核心") == 1
+                && _root.收集品栏.材料
+                    .getValue("基础导轨") == 1,
+            "loadout 允许 install/replace/detach/detach_all mod，返还与扣料无复制");
+    }
+
+    private static function testWornRollbackAndUnknownReconcile():Void {
+        resetFixture();
+        _root.收集品栏.材料.add("强化石", 10);
+        var item:BaseItem =
+            equipment("测试手枪A", 1, []);
+        var fixture:Object =
+            installWornFixture("手枪", item);
+        var materialPrepared:Object = prepareWornOperation(
+            fixture, "worn-material-failure",
+            "enhance", "", "", 2);
+        var beforeValue:Object = item.value;
+        var beforeItemTime:Number = item.lastUpdate;
+        var beforeEquipmentRevision:Number =
+            fixture.inventory.getMutationRevision();
+        var beforeMaterialRevision:Number =
+            _root.收集品栏.材料
+                .getMutationRevision();
+        EquipmentTuningService
+            .testOnlyFailNextMaterialCommit();
+        var commitParams:Object =
+            params("worn-material-failure");
+        commitParams.expectedTuningToken =
+            materialPrepared.preview.tuningToken;
+        var materialFailed:Object =
+            EquipmentTuningService.execute(
+                "commit", commitParams);
+        var afterMaterialFailure:Object =
+            CharacterBuildService.snapshot(
+                Number(fixture.opened.sessionGeneration));
+        assertTrue(!materialFailed.success
+                && materialFailed.error == "commit_failed"
+                && item.value === beforeValue
+                && item.lastUpdate == beforeItemTime
+                && _root.收集品栏.材料
+                    .getValue("强化石") == 10
+                && fixture.inventory
+                    .getMutationRevision()
+                    == beforeEquipmentRevision
+                && _root.收集品栏.材料
+                    .getMutationRevision()
+                    == beforeMaterialRevision
+                && afterMaterialFailure.loadoutRevision
+                    == fixture.opened.loadoutRevision
+                && !afterMaterialFailure
+                    .liveRefreshDirty,
+            "材料提交失败完整 rollback worn value/材料/revision，Character authority 不前进");
+        var materialReplay:Object =
+            EquipmentTuningService.execute(
+                "commit", commitParams);
+        assertTrue(!materialReplay.success
+                && materialReplay.error == "token_invalid",
+            "材料失败已消费 token，绝不重放");
+
+        resetFixture();
+        _root.收集品栏.材料.add("强化石", 10);
+        item = equipment("测试手枪A", 1, []);
+        fixture = installWornFixture("手枪", item);
+        var serializationPrepared:Object =
+            prepareWornOperation(
+                fixture, "worn-serialization-failure",
+                "enhance", "", "", 2);
+        beforeValue = item.value;
+        beforeItemTime = item.lastUpdate;
+        beforeEquipmentRevision =
+            fixture.inventory.getMutationRevision();
+        beforeMaterialRevision =
+            _root.收集品栏.材料
+                .getMutationRevision();
+        var rollbackProbe:Object =
+            installWornPublishProbe(
+                fixture, "pre_authority_rollback");
+        EquipmentTuningService
+            .testOnlyFailNextSerialization();
+        commitParams =
+            params("worn-serialization-failure");
+        commitParams.expectedTuningToken =
+            serializationPrepared.preview.tuningToken;
+        var serializationFailed:Object =
+            EquipmentTuningService.execute(
+                "commit", commitParams);
+        var afterSerializationFailure:Object =
+            CharacterBuildService.snapshot(
+                Number(fixture.opened.sessionGeneration));
+        assertTrue(!serializationFailed.success
+                && serializationFailed.error
+                    == "commit_failed"
+                && item.value === beforeValue
+                && item.lastUpdate == beforeItemTime
+                && _root.收集品栏.材料
+                    .getValue("强化石") == 10
+                && fixture.inventory
+                    .getMutationRevision()
+                    == beforeEquipmentRevision
+                && _root.收集品栏.材料
+                    .getMutationRevision()
+                    == beforeMaterialRevision
+                && afterSerializationFailure
+                    .loadoutRevision
+                    == fixture.opened.loadoutRevision,
+            "写后投影序列化预检异常完整 rollback，不扣重、不复制、不推进 loadout");
+        assertTrue(rollbackProbe.equipmentPublishes == 0
+                && rollbackProbe.materialPublishes == 0
+                && serializationFailed.writeEpoch == 0
+                && !_root.存档系统.dirtyMark
+                && _root._saveExt.成就.cnt[
+                    "装备强化次数"] == undefined,
+            "pre-authority rollback 零 publish、零 write epoch、零 dirty/成就副作用");
+        removeWornPublishProbe(
+            fixture, rollbackProbe);
+
+        resetFixture();
+        _root.收集品栏.材料.add("强化石", 10);
+        item = equipment("测试手枪A", 1, []);
+        fixture = installWornFixture("手枪", item);
+        var observedPrepared:Object =
+            prepareWornOperation(
+                fixture, "worn-observed-postcondition",
+                "enhance", "", "", 2);
+        var observedProbe:Object =
+            installWornPublishProbe(
+                fixture, "observed_unknown");
+        CharacterBuildService
+            .testOnlyFailNextWornPostcondition();
+        commitParams =
+            params("worn-observed-postcondition");
+        commitParams.expectedTuningToken =
+            observedPrepared.preview.tuningToken;
+        var observedFailure:Object =
+            EquipmentTuningService.execute(
+                "commit", commitParams);
+        var observedState:Object =
+            CharacterBuildService.snapshot(
+                Number(fixture.opened.sessionGeneration));
+        var observedReplay:Object =
+            EquipmentTuningService.execute(
+                "commit", commitParams);
+        assertTrue(!observedFailure.success
+                && observedFailure.error
+                    == "needs_reconcile"
+                && item.value.level == 2
+                && _root.收集品栏.材料
+                    .getValue("强化石") == 9
+                && observedState.loadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && observedState.liveRefreshDirty
+                && observedFailure.writeEpoch == 1
+                && _root.存档系统.dirtyMark,
+            "hook 已观察 post authority 后置异常时保留 raw commit、推进 dirty/write epoch 并 needs_reconcile");
+        assertTrue(observedProbe.equipmentPublishes == 1
+                && observedProbe.materialPublishes == 1
+                && _root._saveExt.成就.cnt[
+                    "装备强化次数"] == 1
+                && !observedReplay.success
+                && observedReplay.error == "token_invalid"
+                && observedReplay.writeEpoch == 1,
+            "observed-unknown 的装备/材料 publish 与成就恰好一次，token replay 不重复副作用");
+        removeWornPublishProbe(
+            fixture, observedProbe);
+
+        resetFixture();
+        _root.收集品栏.材料.add("强化石", 10);
+        item = equipment("测试手枪A", 1, []);
+        fixture = installWornFixture("手枪", item);
+        var unknown:Object = commitWornOperation(
+            fixture, "worn-unknown",
+            "enhance", "", "", 2);
+        commitParams = params("worn-unknown");
+        commitParams.expectedTuningToken =
+            unknown.preview.tuningToken;
+        var replay:Object =
+            EquipmentTuningService.execute(
+                "commit", commitParams);
+        var staleReconcileParams:Object =
+            params("worn-unknown");
+        staleReconcileParams.source = unknown.source;
+        staleReconcileParams.reconcileAfterCallId =
+            "worn.unknown.commit";
+        var staleReconcile:Object =
+            EquipmentTuningService.execute(
+                "snapshot", staleReconcileParams);
+        var freshLoadout:Object =
+            CharacterBuildService.snapshot(
+                Number(fixture.opened.sessionGeneration));
+        var freshReconcileParams:Object =
+            params("worn-unknown");
+        freshReconcileParams.source = wornSource(
+            fixture,
+            Number(freshLoadout.loadoutRevision));
+        freshReconcileParams.reconcileAfterCallId =
+            "worn.unknown.commit";
+        var reconciled:Object =
+            EquipmentTuningService.execute(
+                "snapshot", freshReconcileParams);
+        assertTrue(unknown.commit.success
+                && !replay.success
+                && replay.error == "token_invalid"
+                && !staleReconcile.success
+                && staleReconcile.error == "stale_state"
+                && reconciled.success
+                && reconciled.reconciled
+                && reconciled.reconcileAfterCallId
+                    == "worn.unknown.commit"
+                && reconciled.snapshot.source
+                    .expectedLoadoutRevision
+                    == freshLoadout.loadoutRevision
+                && reconciled.snapshot.equipment.level == 2
+                && snapshotMaterialCount(
+                    reconciled.snapshot,
+                    "强化石") == 9,
+            "unknown 不 replay：旧 source 拒绝，先取 fresh loadout revision 后 exact tuning reconcile 成功");
     }
 }

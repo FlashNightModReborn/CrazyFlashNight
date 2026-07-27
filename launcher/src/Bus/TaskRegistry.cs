@@ -69,6 +69,7 @@ namespace CF7Launcher.Bus
             CraftingTask craftingTask,
             HairdresserTask hairdresserTask,
             EquipmentTuningTask equipmentTuningTask,
+            CharacterBuildTask characterBuildTask,
             SkillTask skillTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
@@ -125,6 +126,11 @@ namespace CF7Launcher.Bus
             // 装备调制 domain 回包路由
             if (equipmentTuningTask != null)
                 router.RegisterAsync("equipment_tuning_response", equipmentTuningTask.HandleFlashResponse);
+
+            // 角色构筑 loadout domain 回包。Web ingress 只由 WebOverlayForm exact-instance
+            // 路由进入，不能把它注册成通用 socket/http request task。
+            if (characterBuildTask != null)
+                router.RegisterAsync("loadout_response", characterBuildTask.HandleFlashResponse);
 
             // 独立技能面板 domain 回包路由
             if (skillTask != null)
@@ -338,6 +344,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "loadout_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);

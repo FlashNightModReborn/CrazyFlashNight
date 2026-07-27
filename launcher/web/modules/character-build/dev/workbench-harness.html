@@ -1,0 +1,2440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Character Build Production Controller Harness</title>
+<base href="../../../">
+<link rel="stylesheet" href="css/panels.css">
+<style>
+html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#05070b; }
+#panel-container { position:fixed; inset:0; }
+#panel-backdrop { position:absolute; inset:0; background:#05070b; }
+#panel-content { position:absolute; inset:0; display:grid; place-items:center; }
+#qa-output { position:fixed; z-index:100; right:8px; bottom:8px; max-width:520px; max-height:36vh;
+    overflow:auto; padding:8px; color:#d7e2ec; background:#101318; border:1px solid #46515c;
+    font:11px/1.4 Consolas,monospace; white-space:pre-wrap; }
+body[data-character-stats-fixture] .character-build-stats-profile::before {
+    position:absolute; z-index:2; top:5px; right:9px; content:"QA 测试夹具 · AS2 EXACT SHAPE";
+    color:#8ea1a7; font:8px/1 Consolas,monospace; letter-spacing:.08em;
+}
+</style>
+</head>
+<body data-character-stats-fixture="true">
+<div id="panel-container" style="display:none">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<pre id="qa-output">running…</pre>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/icons.js"></script>
+<script>
+(function(nativeFetch) {
+    'use strict';
+    window.__characterBuild404Icon = '__qa_icon_404_fallback__';
+    window.fetch = function(input, init) {
+        return nativeFetch(input, init).then(function(response) {
+            if (String(input).indexOf('icons/manifest.json') < 0) return response;
+            return response.clone().json().then(function(manifest) {
+                manifest[window.__characterBuild404Icon] = {
+                    f1:'__qa_expected_asset_failure_icon_404__.png'
+                };
+                return new Response(JSON.stringify(manifest), {
+                    status:200,
+                    headers:{'Content-Type':'application/json'}
+                });
+            });
+        });
+    };
+})(window.fetch.bind(window));
+</script>
+<script src="modules/dressup/dev/character-build-combination-fixture.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/character-build/dev/stats-fixture.js"></script>
+<script>
+(function() {
+    'use strict';
+    var handlers = {};
+    var dressup = CharacterBuildDressupFixture;
+    var absentIconName = window.__characterBuildAbsentIcon = '__qa_icon_absent_from_manifest__';
+    var equipmentKeys = [
+        '头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备',
+        '长枪','手枪','手枪2','刀','手雷'
+    ];
+    var equipmentBySlot = {
+        '头部装备':dressup.equipment.head,
+        '上装装备':dressup.equipment.upper,
+        '下装装备':dressup.equipment.lower,
+        '手部装备':dressup.equipment.hands,
+        '脚部装备':dressup.equipment.feet,
+        '颈部装备':absentIconName,
+        '长枪':dressup.equipment.longGun,
+        '手枪':dressup.equipment.pistol,
+        '手枪2':dressup.equipment.pistol,
+        '刀':dressup.equipment.blade,
+        '手雷':dressup.equipment.grenade
+    };
+    var enhancementBySlot = {};
+    equipmentKeys.forEach(function(slotKey, index) {
+        enhancementBySlot[slotKey] = index % 4;
+    });
+    var drugNames = ['普通hp药剂','普通mp药剂','抗生素',window.__characterBuild404Icon];
+    var portraitGender = '男';
+    window.__routeHarness = {
+        sent:[],
+        events:[],
+        renderer:{created:0, active:0, maxActive:0, renders:0, destroyed:0, pixelRatios:[],
+            lastMeta:null, lastBuild:null, failNextField:'', expectedAssetFailures:0},
+        manifest:{attempts:0, firstRejected:false, retryResolved:false, toasts:[]},
+        shots:{},
+        storage:{activations:0, leaves:0, closes:0, active:false, view:'storage',
+            externalBegins:0, externalCompletes:0, appliedSnapshots:0, busy:null},
+        rejectNextCandidate:false,
+        rejectNextSnapshot:false,
+        rejectNextMutation:false,
+        unknownNextMutation:false,
+        holdNextSnapshot:false,
+        heldSnapshot:null,
+        holdNextReconcile:false,
+        heldReconcile:null,
+        pendingUnknownMutation:null,
+        tuning:{
+            rejectNextCommit:false,
+            unknownNextCommit:false,
+            holdNextReconcile:false,
+            heldReconcile:null,
+            transaction:0
+        },
+        authority:{writeEpoch:0, loadoutRevision:5, liveRevision:5,
+            drugRevision:3, liveRefreshDirty:false}
+    };
+    window.__routeHarness.setPortraitGender = function(gender) {
+        portraitGender = gender === '女' ? '女' : '男';
+    };
+    window.__routeHarness.setEquipment = function(slotKey, itemName) {
+        if (equipmentKeys.indexOf(slotKey) < 0) return false;
+        equipmentBySlot[slotKey] = String(itemName || '');
+        return true;
+    };
+    function emit(type, data) {
+        (handlers[type] || []).slice().forEach(function(handler) { handler(data); });
+    }
+    function equipmentRows() {
+        return equipmentKeys.map(function(slotKey, index) {
+            var itemName = equipmentBySlot[slotKey];
+            return {
+                slotKey:slotKey,
+                occupied:!!itemName,
+                quantity:slotKey === '手雷' ? 3 : 1,
+                disabled:false,
+                item:itemName ? {
+                    name:itemName,
+                    displayName:itemName,
+                    icon:itemName,
+                    itemKind:'equipment',
+                    use:slotKey === '手枪2' ? '手枪' : slotKey,
+                    enhancementLevel:enhancementBySlot[slotKey],
+                    quantity:slotKey === '手雷' ? 3 : 1,
+                    tierSlotAvailable:slotKey === '长枪',
+                    tierSlotUsed:slotKey === '长枪',
+                    modSlotCapacity:slotKey === '长枪' ? 3 : 0,
+                    modSlotUsed:slotKey === '长枪' ? 2 : 0,
+                    modSlots:slotKey === '长枪' ? [
+                        {name:'稳定导轨', grade:'high', gradeLabel:'高级',
+                            gradeColor:'#0099FF', roleLabel:'结构与功能', symbol:'diamond-solid'},
+                        {name:'战术镜片', grade:'special', gradeLabel:'特殊',
+                            gradeColor:'#FFFF00', roleLabel:'瞄准辅助', symbol:'star-outline'}
+                    ] : []
+                } : null
+            };
+        });
+    }
+    function projection() {
+        var portraitEquipment = {};
+        equipmentKeys.forEach(function(key) { portraitEquipment[key] = equipmentBySlot[key]; });
+        return {
+            equipment:equipmentRows(),
+            drugs:[0,1,2,3].map(function(slot) {
+                return {
+                    slot:slot,
+                    occupied:!!drugNames[slot],
+                    quantity:slot + 1,
+                    disabled:false,
+                    item:drugNames[slot] ? {
+                        name:drugNames[slot],
+                        displayName:drugNames[slot],
+                        icon:drugNames[slot],
+                        itemKind:'drug',
+                        use:'药剂',
+                        quantity:slot + 1
+                    } : null
+                };
+            }),
+            portrait:{
+                gender:portraitGender,
+                appearance:dressup.appearanceByGender[portraitGender],
+                equipment:portraitEquipment
+            },
+            stateHealth:'ok',
+            diagnostics:[]
+        };
+    }
+    function fullBackpack(sequence) {
+        return {
+            containerId:'背包', capacity:50, accessibleCapacity:50, viewCapacity:50,
+            filterKey:'all', pageSizeHint:50, locked:false,
+            snapshotSeq:sequence, containerEpoch:4, containerVersion:sequence,
+            offset:0, limit:50,
+            slots:Array.from({length:50}, function(_, slot) {
+                return {physicalSlot:slot, slotLease:'lease.after.' + sequence + '.' + slot,
+                    occupied:false, item:null};
+            })
+        };
+    }
+    function applyMutation(message) {
+        var authority = window.__routeHarness.authority;
+        if (message.cmd === 'equipEquipment') {
+            equipmentBySlot[message.payload.slotKey] =
+                dressup.scenarios.candidate.candidateItem;
+            authority.loadoutRevision++;
+            authority.liveRefreshDirty = true;
+        } else if (message.cmd === 'unequipEquipment') {
+            equipmentBySlot[message.payload.slotKey] = '';
+            authority.loadoutRevision++;
+            authority.liveRefreshDirty = true;
+        } else if (message.cmd === 'equipDrug') {
+            drugNames[message.payload.drugSlot] = '普通hp药剂';
+            authority.drugRevision++;
+        } else if (message.cmd === 'unequipDrug') {
+            drugNames[message.payload.drugSlot] = '';
+            authority.drugRevision++;
+        }
+    }
+    function responseBase(message) {
+        var authority = window.__routeHarness.authority;
+        return {
+            type:'panel_resp',
+            panel:'workbench',
+            domain:'loadout',
+            cmd:message.cmd,
+            callId:message.callId,
+            panelInstanceId:message.panelInstanceId,
+            v:1,
+            success:true,
+            writeEpoch:authority.writeEpoch,
+            sessionGeneration:17,
+            loadoutRevision:authority.loadoutRevision,
+            liveRevision:authority.liveRevision,
+            drugRevision:authority.drugRevision,
+            liveRefreshDirty:authority.liveRefreshDirty,
+            active:message.cmd !== 'finalize'
+        };
+    }
+    function loadoutResponse(message) {
+        var harness = window.__routeHarness;
+        var mutation = /^(equip|unequip)(Equipment|Drug)$/.test(message.cmd);
+        if (mutation && harness.rejectNextMutation) {
+            harness.rejectNextMutation = false;
+            var rejected = responseBase(message);
+            rejected.success = false;
+            rejected.error = 'stale_source';
+            return rejected;
+        }
+        if (mutation && harness.unknownNextMutation) {
+            harness.unknownNextMutation = false;
+            harness.authority.writeEpoch++;
+            harness.pendingUnknownMutation = JSON.parse(JSON.stringify(message));
+            var unknown = responseBase(message);
+            unknown.success = false;
+            unknown.error = 'delivery_unknown';
+            unknown.requiresReconcile = true;
+            unknown.reconcileAfterCallId = message.callId;
+            return unknown;
+        }
+        if (mutation) {
+            harness.authority.writeEpoch++;
+            applyMutation(message);
+        } else if (message.cmd === 'snapshot' && message.payload.reconcileAfterCallId
+                && harness.pendingUnknownMutation) {
+            applyMutation(harness.pendingUnknownMutation);
+            harness.pendingUnknownMutation = null;
+        } else if (message.cmd === 'flushLive' || message.cmd === 'finalize') {
+            harness.authority.writeEpoch++;
+            harness.authority.liveRevision = harness.authority.loadoutRevision;
+            harness.authority.liveRefreshDirty = false;
+        }
+        var response = responseBase(message);
+        if (message.cmd === 'snapshot' && window.__routeHarness.rejectNextSnapshot) {
+            window.__routeHarness.rejectNextSnapshot = false;
+            response.success = false;
+            response.error = 'service_not_ready';
+            response.active = false;
+            response.sessionGeneration = 0;
+            response.loadoutRevision = 0;
+            response.liveRevision = 0;
+            response.drugRevision = 0;
+        } else if (message.cmd === 'snapshot') {
+            response.payload = projection();
+            if (message.payload.reconcileAfterCallId) {
+                response.reconcileAfterCallId = message.payload.reconcileAfterCallId;
+                response.inventorySnapshots = [
+                    fullBackpack(20 + harness.authority.writeEpoch)
+                ];
+            }
+        }
+        else if (message.cmd === 'candidates') {
+            if (window.__routeHarness.rejectNextCandidate) {
+                window.__routeHarness.rejectNextCandidate = false;
+                response.success = false;
+                response.error = 'service_not_ready';
+                return response;
+            }
+            var candidateName = message.payload.slotKey === '长枪'
+                ? dressup.scenarios.candidate.candidateItem
+                : equipmentBySlot[message.payload.slotKey] || drugNames[0];
+            response.payload = {
+                target:message.payload.slotKey
+                    ? {kind:'equipment', slotKey:message.payload.slotKey}
+                    : {kind:'drug', drugSlot:message.payload.drugSlot},
+                candidates:[{
+                    physicalSlot:9,
+                    disabled:false,
+                    source:{expectedLease:'lease.candidate.9'},
+                    item:{
+                        name:candidateName,
+                        displayName:candidateName,
+                        icon:candidateName,
+                        itemKind:'equipment',
+                        use:message.payload.slotKey || '药剂',
+                        tierSlotAvailable:true,
+                        tierSlotUsed:false,
+                        modSlotCapacity:2,
+                        modSlotUsed:1,
+                        modSlots:[{name:'候选稳定器', grade:'medium', gradeLabel:'中级',
+                            gradeColor:'#996600', roleLabel:'结构与功能', symbol:'square-solid'}]
+                    }
+                }],
+                backpackVersion:12,
+                stateHealth:'ok',
+                diagnostics:[]
+            };
+        } else if (message.cmd === 'statsSnapshot') {
+            response.payload = CharacterBuildStatsFixture.create();
+        } else if (mutation) {
+            response.changed = true;
+            response.operation = message.cmd;
+            response.affectedBackpackSlot = message.payload.source
+                ? message.payload.source.slot : 12;
+            response.payload = projection();
+            response.inventorySnapshots = [
+                fullBackpack(20 + harness.authority.writeEpoch)
+            ];
+        } else if (message.cmd === 'flushLive') response.changed = true;
+        else if (message.cmd === 'finalize') {
+            response.closed = true;
+            response.liveChanged = false;
+            response.persistence = {success:true, changed:false};
+        } else {
+            response.success = false;
+            response.error = 'unsupported_cmd';
+        }
+        return response;
+    }
+    function tuningResponseBase(message) {
+        return {
+            type:'panel_resp',
+            panel:'workbench',
+            domain:'equipment_tuning',
+            cmd:message.cmd,
+            callId:message.callId,
+            panelInstanceId:message.panelInstanceId,
+            viewSessionId:message.payload.viewSessionId,
+            v:1,
+            success:true,
+            writeEpoch:window.__routeHarness.authority.writeEpoch
+        };
+    }
+    function tuningSnapshot(source) {
+        var slotKey = source.slotKey;
+        var item = equipmentRows().filter(function(row) {
+            return row.slotKey === slotKey;
+        })[0].item;
+        return {
+            gender:'男',
+            source:source,
+            equipment:{
+                name:item.name,
+                displayName:item.displayName,
+                icon:item.icon,
+                type:'武器',
+                use:item.use,
+                level:item.enhancementLevel,
+                tier:'',
+                mods:[],
+                lastUpdate:10,
+                maxLevel:13,
+                hardMaxLevel:13
+            },
+            enhance:{
+                currentLevel:item.enhancementLevel,
+                availableMaxLevel:13,
+                hardMaxLevel:13
+            },
+            tierCandidates:[{
+                candidateKey:'tier|测试进阶',
+                itemName:'测试进阶',
+                tierName:'一阶',
+                owned:1,
+                available:true
+            }],
+            modCandidates:[{
+                candidateKey:'mod|测试导轨',
+                itemName:'测试导轨',
+                owned:2,
+                available:true,
+                grade:'low',
+                gradeLabel:'低级',
+                scope:'firearm',
+                scopeLabel:'枪械',
+                role:'utility',
+                roleLabel:'结构与功能'
+            }],
+            materials:[{itemName:'强化石', count:20}]
+        };
+    }
+    function applyTuning(source, targetLevel) {
+        var harness = window.__routeHarness;
+        enhancementBySlot[source.slotKey] = targetLevel;
+        harness.authority.writeEpoch++;
+        harness.authority.loadoutRevision++;
+        harness.authority.liveRefreshDirty = true;
+        harness.tuning.transaction++;
+    }
+    function equipmentTuningResponse(message) {
+        var harness = window.__routeHarness;
+        var response = tuningResponseBase(message);
+        if (message.cmd === 'snapshot') {
+            harness.tuning.lastSource = JSON.parse(JSON.stringify(message.payload.source));
+            response.snapshot = tuningSnapshot(message.payload.source);
+            if (message.payload.reconcileAfterCallId) {
+                response.reconciled = true;
+                response.reconcileAfterCallId = message.payload.reconcileAfterCallId;
+            }
+        } else if (message.cmd === 'preview') {
+            harness.tuning.lastSource = JSON.parse(JSON.stringify(message.payload.source));
+            var current = enhancementBySlot[message.payload.source.slotKey];
+            var target = message.payload.operation === 'enhance'
+                ? message.payload.targetLevel : current;
+            response.operation = message.payload.operation;
+            response.tuningToken = 'token.' + message.payload.operation + '.' + target;
+            response.noOp = target === current;
+            response.before = {source:{equipment:{level:current}}};
+            response.after = {source:{equipment:{level:target}}};
+            response.materials = target === current ? [] : [{
+                itemName:'强化石',
+                before:20,
+                delta:-1,
+                after:19
+            }];
+            response.removedMods = [];
+        } else if (message.cmd === 'commit') {
+            if (harness.tuning.rejectNextCommit) {
+                harness.tuning.rejectNextCommit = false;
+                response.success = false;
+                response.error = 'transaction_rolled_back';
+                return response;
+            }
+            var tokenParts = String(message.payload.expectedTuningToken || '').split('.');
+            var targetLevel = Number(tokenParts[tokenParts.length - 1]);
+            applyTuning(harness.tuning.lastSource, targetLevel);
+            if (harness.tuning.unknownNextCommit) {
+                harness.tuning.unknownNextCommit = false;
+                response.success = false;
+                response.error = 'delivery_unknown';
+                response.requiresReconcile = true;
+                response.reconcileAfterCallId = message.callId;
+                return response;
+            }
+            response.operation = tokenParts[1] || 'enhance';
+            response.transactionId = 'tuning.tx.' + harness.tuning.transaction;
+            response.noOp = false;
+            response.snapshot = tuningSnapshot(harness.tuning.lastSource);
+            response.materials = [{itemName:'强化石', before:20, delta:-1, after:19}];
+            response.inventorySnapshots = [];
+        } else if (message.cmd === 'tooltip') {
+            response.candidateKey = message.payload.candidateKey;
+            response.text = '权威调制候选';
+        } else if (message.cmd === 'detach') {
+            response.detached = true;
+        } else {
+            response.success = false;
+            response.error = 'unsupported_cmd';
+        }
+        return response;
+    }
+    window.Bridge = {
+        on:function(type, handler) {
+            (handlers[type] || (handlers[type] = [])).push(handler);
+        },
+        off:function(type, handler) {
+            var list = handlers[type] || [];
+            var index = list.indexOf(handler);
+            if (index >= 0) list.splice(index, 1);
+        },
+        send:function(message) {
+            var captured = JSON.parse(JSON.stringify(message));
+            window.__routeHarness.sent.push(captured);
+            if (message.type === 'panel' && message.domain === 'loadout') {
+                window.__routeHarness.events.push(message.cmd + '_request');
+                setTimeout(function() {
+                    if (message.cmd === 'finalize') window.__routeHarness.events.push('finalize_response');
+                    var response = loadoutResponse(message);
+                    if (message.cmd === 'snapshot' && message.payload.reconcileAfterCallId
+                            && window.__routeHarness.holdNextReconcile) {
+                        window.__routeHarness.holdNextReconcile = false;
+                        window.__routeHarness.heldReconcile = response;
+                        return;
+                    }
+                    if (message.cmd === 'snapshot' && !message.payload.reconcileAfterCallId
+                            && window.__routeHarness.holdNextSnapshot) {
+                        window.__routeHarness.holdNextSnapshot = false;
+                        window.__routeHarness.heldSnapshot = response;
+                        return;
+                    }
+                    emit('panel_resp', response);
+                }, 0);
+            } else if (message.type === 'panel' && message.domain === 'equipment_tuning') {
+                window.__routeHarness.events.push('tuning_' + message.cmd + '_request');
+                setTimeout(function() {
+                    var response = equipmentTuningResponse(message);
+                    window.__routeHarness.events.push('tuning_' + message.cmd + '_response');
+                    if (message.cmd === 'snapshot' && message.payload.reconcileAfterCallId
+                            && window.__routeHarness.tuning.holdNextReconcile) {
+                        window.__routeHarness.tuning.holdNextReconcile = false;
+                        window.__routeHarness.tuning.heldReconcile = response;
+                        return;
+                    }
+                    emit('panel_resp', response);
+                }, 0);
+            } else if (message.type === 'panel' && message.cmd === 'close') {
+                window.__routeHarness.events.push('close_sent');
+            }
+            return true;
+        },
+        emit:emit
+    };
+    window.__routeHarness.releaseReconcile = function() {
+        if (!this.heldReconcile) return false;
+        var response = this.heldReconcile;
+        this.heldReconcile = null;
+        emit('panel_resp', response);
+        return true;
+    };
+    window.__routeHarness.releaseSnapshot = function() {
+        if (!this.heldSnapshot) return false;
+        var response = this.heldSnapshot;
+        this.heldSnapshot = null;
+        emit('panel_resp', response);
+        return true;
+    };
+    window.__routeHarness.releaseTuningReconcile = function() {
+        if (!this.tuning.heldReconcile) return false;
+        var response = this.tuning.heldReconcile;
+        this.tuning.heldReconcile = null;
+        emit('panel_resp', response);
+        return true;
+    };
+    window.Toast = {messages:[], add:function(message) { this.messages.push(String(message)); }};
+    window.Notch = {reportRect:function() {}};
+    var rejectFirstManifest = null;
+    var nativeLoadManifest = DressupDollRenderer.loadManifest;
+    DressupDollRenderer.loadManifest = function(url) {
+        var metrics = window.__routeHarness.manifest;
+        metrics.attempts++;
+        if (metrics.attempts === 1) {
+            return new Promise(function(_, reject) { rejectFirstManifest = reject; });
+        }
+        return nativeLoadManifest(url).then(function(manifest) {
+            metrics.retryResolved = true;
+            return manifest;
+        });
+    };
+    window.__routeHarness.rejectFirstManifest = function() {
+        if (!rejectFirstManifest) return false;
+        var reject = rejectFirstManifest;
+        rejectFirstManifest = null;
+        this.manifest.firstRejected = true;
+        reject(new Error('qa_manifest_transient_failure'));
+        return true;
+    };
+    function rewriteAssetUris(value, uri) {
+        if (!value || typeof value !== 'object') return;
+        Object.keys(value).forEach(function(key) {
+            if (key === 'uri') value[key] = uri;
+            else rewriteAssetUris(value[key], uri);
+        });
+    }
+    var nativeBuildState = DressupDollRenderer.buildStateFromEquipment;
+    DressupDollRenderer.buildStateFromEquipment = function(manifest, options) {
+        var metrics = window.__routeHarness.renderer;
+        metrics.lastBuild = {
+            gender:options.gender,
+            stateLabel:options.stateLabel,
+            attackMode:options.attackMode,
+            fitFields:(options.fitFields || []).slice(),
+            drawFields:(options.drawFields || []).slice(),
+            zoom:options.zoom,
+            margin:options.margin
+        };
+        var state = nativeBuildState(manifest, options);
+        var failureField = metrics.failNextField;
+        if (failureField && state.keyMap[failureField]
+                && manifest.skinKeys[state.keyMap[failureField]]) {
+            metrics.failNextField = '';
+            metrics.expectedAssetFailures++;
+            var failureKey = '__qa_expected_asset_failure_'
+                + metrics.expectedAssetFailures;
+            var broken = JSON.parse(JSON.stringify(
+                manifest.skinKeys[state.keyMap[failureField]]));
+            rewriteAssetUris(broken, 'skins/' + failureKey + '.png');
+            manifest.skinKeys[failureKey] = broken;
+            state.keyMap[failureField] = failureKey;
+        }
+        return state;
+    };
+    var nativeCreateRenderer = DressupDollRenderer.create;
+    DressupDollRenderer.create = function(canvas, options) {
+        var metrics = window.__routeHarness.renderer, observed = {}, key;
+        for (key in options) if (Object.prototype.hasOwnProperty.call(options, key)) {
+            observed[key] = options[key];
+        }
+        var downstream = observed.onRender;
+        observed.onRender = function(meta) {
+            metrics.renders++;
+            metrics.lastMeta = meta;
+            if (downstream) downstream(meta);
+        };
+        var renderer = nativeCreateRenderer(canvas, observed);
+        var nativeDestroy = renderer.destroy, nativeSetPixelRatio = renderer.setPixelRatio;
+        var destroyed = false;
+        metrics.created++; metrics.active++;
+        metrics.maxActive = Math.max(metrics.maxActive, metrics.active);
+        renderer.setPixelRatio = function(ratio) {
+            metrics.pixelRatios.push(ratio);
+            return nativeSetPixelRatio.call(renderer, ratio);
+        };
+        renderer.destroy = function() {
+            if (destroyed) return false;
+            destroyed = true;
+            nativeDestroy.call(renderer);
+            metrics.active--; metrics.destroyed++;
+            return true;
+        };
+        return renderer;
+    };
+    // Deliberate facade stub: this harness proves the production build
+    // controller inside workbench routing, not the storage controller or Host.
+    window.InventoryStorageWorkbench = {
+        activate:function(ports, view) {
+            var state = window.__routeHarness.storage;
+            state.activations++;
+            state.active = true;
+            state.view = view;
+            this._ports = ports;
+            if (ports.onViewChanged) ports.onViewChanged(view);
+            return true;
+        },
+        deactivate:function() {
+            window.__routeHarness.storage.active = false;
+            this._ports = null;
+            return true;
+        },
+        switchView:function(view) {
+            window.__routeHarness.storage.view = view;
+            if (this._ports && this._ports.onViewChanged) this._ports.onViewChanged(view);
+            return true;
+        },
+        prepareLeave:function(view, callback) {
+            window.__routeHarness.storage.leaves++;
+            callback(view === 'build');
+            return true;
+        },
+        prepareClose:function(_, callback) {
+            window.__routeHarness.storage.closes++;
+            callback(true);
+            return true;
+        },
+        beginExternalWrite:function(owner) {
+            var state = window.__routeHarness.storage;
+            if (state.busy) return false;
+            state.externalBegins++;
+            state.busy = {id:state.externalBegins, owner:owner};
+            return state.busy;
+        },
+        completeExternalWrite:function(operation, snapshots) {
+            var state = window.__routeHarness.storage;
+            if (!operation || operation !== state.busy) return false;
+            state.externalCompletes++;
+            if (snapshots) state.appliedSnapshots += snapshots.length;
+            state.busy = null;
+            return true;
+        },
+        openHelp:function() { return true; },
+        setConfirmationMode:function() { return true; },
+        getHeaderState:function() {
+            return {view:window.__routeHarness.storage.view, confirmationMode:'safe', disabled:false};
+        },
+        getView:function() { return window.__routeHarness.storage.view; },
+        debugState:function() {
+            return {
+                active:window.__routeHarness.storage.active,
+                view:window.__routeHarness.storage.view
+            };
+        }
+    };
+})();
+</script>
+<script src="modules/panel-runtime.js"></script>
+<script src="modules/panel-scale.js"></script>
+<script src="modules/workbench-lifecycle.js"></script>
+<script src="modules/workbench-focus.js"></script>
+<script src="modules/workbench-primitives.js"></script>
+<script src="modules/workbench.js"></script>
+<script src="modules/workbench-components.js"></script>
+<script src="modules/workbench-inspection-viewport.js"></script>
+<script src="modules/item-filter.js"></script>
+<script src="modules/inventory-ui.js"></script>
+<script src="modules/equipment-tuning-runtime.js"></script>
+<script src="modules/equipment-tuning-model.js"></script>
+<script src="modules/equipment-tuning-render.js"></script>
+<script src="modules/equipment-tuning-view.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/inventory-workbench-config.js"></script>
+<script src="modules/inventory-workbench-header.js"></script>
+<script src="modules/character-build/character-build-mutation.js"></script>
+<script src="modules/character-build-session.js"></script>
+<script src="modules/character-build/character-build-action-view.js"></script>
+<script src="modules/character-build/character-build-stats-view.js"></script>
+<script src="modules/character-build/character-build-doll-preview.js"></script>
+<script src="modules/character-build-view.js"></script>
+<script src="modules/character-build/character-build-tuning.js"></script>
+<script src="modules/character-build/character-build-pose.js"></script>
+<script src="modules/character-build.js"></script>
+<script src="modules/inventory-workbench.js"></script>
+<script>
+window.EquipmentInspector = {
+    open:function(options) {
+        options = options || {};
+        var shell = options.shell;
+        if (!shell || typeof shell.openModal !== 'function') return null;
+        var active = shell.openModal({
+            kind:options.kind || 'equipment-inspector',
+            kicker:options.kicker || '当前装备检视',
+            title:String(options.item && (options.item.displayName || options.item.name) || '装备'),
+            message:'生产组合 harness：验证调制检视的模态焦点与 Esc 分层。',
+            actions:[{
+                id:'close',
+                label:options.closeLabel || '返回调制',
+                primary:true
+            }],
+            onClose:function(reason) {
+                if (typeof options.onClose === 'function') options.onClose(reason);
+            }
+        });
+        if (!active) return null;
+        return {
+            close:function() { return shell.closeModal('controller'); },
+            destroy:function() { return shell.closeModal('destroy'); }
+        };
+    }
+};
+(async function() {
+    'use strict';
+    var checks = [];
+    function check(name, condition, detail) {
+        checks.push({name:name, ok:!!condition, detail:detail || ''});
+        if (!condition) throw new Error(name + (detail ? ': ' + detail : ''));
+    }
+    function wait(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms || 20); }); }
+    function parseCssColor(value) {
+        var source = String(value || '').trim();
+        var rgb = /^rgba?\(\s*([\d.]+)\s*[, ]\s*([\d.]+)\s*[, ]\s*([\d.]+)(?:\s*[,/]\s*([\d.]+))?\s*\)$/i.exec(source);
+        if (rgb) {
+            return [
+                Number(rgb[1]) / 255,
+                Number(rgb[2]) / 255,
+                Number(rgb[3]) / 255,
+                rgb[4] == null ? 1 : Number(rgb[4])
+            ];
+        }
+        var srgb = /^color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)$/i.exec(source);
+        return srgb ? [
+            Number(srgb[1]),
+            Number(srgb[2]),
+            Number(srgb[3]),
+            srgb[4] == null ? 1 : Number(srgb[4])
+        ] : null;
+    }
+    function equivalentCssColor(left, right) {
+        var a = parseCssColor(left), b = parseCssColor(right);
+        return !!a && !!b && a.every(function(value, index) {
+            return Math.abs(value - b[index]) <= (index === 3 ? 0.005 : 1 / 255 + 0.0001);
+        });
+    }
+    async function until(test, timeout) {
+        var deadline = Date.now() + (timeout || 15000);
+        while (Date.now() < deadline) {
+            if (test()) return true;
+            await wait();
+        }
+        return false;
+    }
+    function loadoutMessages() {
+        return window.__routeHarness.sent.filter(function(message) {
+            return message.domain === 'loadout';
+        });
+    }
+    function tuningMessages(command) {
+        return window.__routeHarness.sent.filter(function(message) {
+            return message.domain === 'equipment_tuning'
+                && (!command || message.cmd === command);
+        });
+    }
+    function visibleHeaderActions() {
+        return Array.prototype.slice.call(
+            document.querySelectorAll('.workbench-header [data-header-action]'))
+            .filter(function(node) {
+                var style = getComputedStyle(node);
+                return !node.hidden && style.display !== 'none' && style.visibility !== 'hidden';
+            })
+            .map(function(node) { return node.getAttribute('data-header-action'); });
+    }
+    function candidateActionRow() {
+        var toolbar = document.querySelector('.character-build-candidate-actions');
+        var heading = document.querySelector(
+            '.character-build-candidate-pane > .character-build-pane-heading');
+        var buttons = Array.prototype.filter.call(toolbar.querySelectorAll('button'),
+            function(node) {
+                var style = getComputedStyle(node);
+                return !node.hidden && style.display !== 'none' && style.visibility !== 'hidden';
+            });
+        var rects = buttons.map(function(node) { return node.getBoundingClientRect(); });
+        var toolbarRect = toolbar.getBoundingClientRect();
+        var headingRect = heading.getBoundingClientRect();
+        return {
+            nested:toolbar.closest('.character-build-pane-heading') === heading,
+            count:buttons.length,
+            labels:buttons.map(function(node) { return node.textContent.trim(); }),
+            aria:buttons.map(function(node) { return node.getAttribute('aria-label'); }),
+            sameRow:Math.max.apply(Math, rects.map(function(rect) { return rect.top; }))
+                - Math.min.apply(Math, rects.map(function(rect) { return rect.top; })) <= 1,
+            inside:toolbarRect.left >= headingRect.left - 1
+                && toolbarRect.right <= headingRect.right + 1
+                && toolbarRect.top >= headingRect.top - 1
+                && toolbarRect.bottom <= headingRect.bottom + 1,
+            overflow:toolbar.scrollWidth > toolbar.clientWidth + 1
+                || heading.scrollWidth > heading.clientWidth + 1,
+            clipped:buttons.some(function(node) {
+                return node.scrollWidth > node.clientWidth + 1;
+            }),
+            wrapped:toolbarRect.height > Math.max.apply(Math,
+                rects.map(function(rect) { return rect.height; })) + 2,
+            minWidth:Math.min.apply(Math, rects.map(function(rect) { return rect.width; }))
+        };
+    }
+    function commandCount(command) {
+        return loadoutMessages().filter(function(message) {
+            return message.cmd === command;
+        }).length;
+    }
+    function canvasProbe() {
+        var canvas = document.querySelector('.character-build-doll-canvas');
+        if (!canvas || !canvas.width || !canvas.height) return null;
+        var pixels = canvas.getContext('2d').getImageData(
+            0, 0, canvas.width, canvas.height).data;
+        var alphaPixels = 0, minX = canvas.width, minY = canvas.height;
+        var maxX = -1, maxY = -1, hash = 2166136261;
+        for (var index = 0; index < pixels.length; index += 4) {
+            var alpha = pixels[index + 3];
+            hash ^= pixels[index]; hash = Math.imul(hash, 16777619);
+            hash ^= pixels[index + 1]; hash = Math.imul(hash, 16777619);
+            hash ^= pixels[index + 2]; hash = Math.imul(hash, 16777619);
+            hash ^= alpha; hash = Math.imul(hash, 16777619);
+            if (!alpha) continue;
+            var pixel = index / 4, x = pixel % canvas.width, y = Math.floor(pixel / canvas.width);
+            alphaPixels++;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+        }
+        var bbox = maxX >= minX
+            ? [minX, minY, maxX, maxY] : null;
+        var rect = canvas.getBoundingClientRect();
+        return {
+            width:canvas.width,
+            height:canvas.height,
+            clientWidth:canvas.clientWidth,
+            clientHeight:canvas.clientHeight,
+            rectWidth:rect.width,
+            rectHeight:rect.height,
+            alphaPixels:alphaPixels,
+            bbox:bbox,
+            bboxWidthRatio:bbox ? (maxX - minX + 1) / canvas.width : 0,
+            bboxHeightRatio:bbox ? (maxY - minY + 1) / canvas.height : 0,
+            hash:(hash >>> 0).toString(16)
+        };
+    }
+    function rendererSettled() {
+        var renderer = window.__routeHarness.renderer;
+        var probe = canvasProbe();
+        return renderer.active === 1 && renderer.lastMeta
+            && renderer.lastMeta.pendingImages === 0
+            && renderer.lastMeta.failedImages === 0
+            && probe && probe.alphaPixels > 2500
+            && Math.abs(probe.width - Math.round(probe.rectWidth * devicePixelRatio)) <= 1
+            && Math.abs(probe.height - Math.round(probe.rectHeight * devicePixelRatio)) <= 1;
+    }
+    var visual = {poseMatrix:[]};
+    function captureCanvas(name) {
+        var canvas = document.querySelector('.character-build-doll-canvas');
+        window.__routeHarness.shots[name] = canvas.toDataURL('image/png');
+    }
+    function slotKeyFor(slotKey) {
+        return (slotKey.indexOf('装备') >= 0 ? 'armor:' : 'weapon:') + slotKey;
+    }
+    async function refreshProjection() {
+        var snapshotBase = commandCount('snapshot');
+        document.querySelector('[data-header-action="storage"]').click();
+        if (!await until(function() {
+            return InventoryWorkbench.debugState().view === 'storage';
+        })) return false;
+        Bridge.emit('panel_esc', {});
+        return until(function() {
+            var state = InventoryWorkbench.debugState();
+            return commandCount('snapshot') === snapshotBase + 1
+                && state.view === 'build' && state.build && state.build.mounted
+                && rendererSettled();
+        });
+    }
+    async function selectPose(gender, slotKey, expectedLabel, expectedMode, shotName) {
+        var requestBase = commandCount('candidates');
+        var key = slotKeyFor(slotKey);
+        var before = InventoryWorkbench.debugState().build;
+        var sameActiveSlot = before && before.selectedSlotKey === key
+            && before.view && before.view.selectedSlotKey === key
+            && !before.view.candidateLoadFailed;
+        var expectedRequestCount = requestBase + (sameActiveSlot ? 0 : 1);
+        var node = document.querySelector('[data-roving-key="' + key + '"]');
+        node.click();
+        var settled = await until(function() {
+            var build = window.__routeHarness.renderer.lastBuild;
+            var state = InventoryWorkbench.debugState().build;
+            return commandCount('candidates') === expectedRequestCount
+                && state && state.view && state.view.selectedSlotKey === key
+                && state.view.candidateCount === 1
+                && document.querySelectorAll('.character-build-candidate').length === 1
+                && build && build.gender === gender
+                && build.stateLabel === expectedLabel
+                && build.attackMode === expectedMode
+                && rendererSettled();
+        });
+        var probe = canvasProbe();
+        check('production pose ' + gender + '/' + slotKey + ' selects '
+            + expectedLabel + '/' + expectedMode, settled,
+            JSON.stringify({
+                build:window.__routeHarness.renderer.lastBuild,
+                state:InventoryWorkbench.debugState().build,
+                candidateRequests:commandCount('candidates'),
+                expectedRequestCount:expectedRequestCount
+            }));
+        check('production pose ' + gender + '/' + slotKey
+            + ' keeps one healthy visible Canvas',
+            document.querySelectorAll('.character-build-doll-canvas').length === 1
+            && window.__routeHarness.renderer.active === 1
+            && window.__routeHarness.renderer.maxActive === 1
+            && window.__routeHarness.renderer.lastMeta.failedImages === 0
+            && probe && probe.alphaPixels > 2500,
+            JSON.stringify({probe:probe, meta:window.__routeHarness.renderer.lastMeta}));
+        visual.poseMatrix.push({
+            gender:gender, slotKey:slotKey, stateLabel:expectedLabel,
+            attackMode:expectedMode, probe:probe
+        });
+        if (shotName) captureCanvas(shotName);
+        return probe;
+    }
+    async function runPoseMatrix(gender) {
+        var fixture = CharacterBuildDressupFixture;
+        window.__routeHarness.setPortraitGender(gender);
+        window.__routeHarness.setEquipment('长枪', fixture.equipment.longGun);
+        window.__routeHarness.setEquipment('手枪', fixture.equipment.pistol);
+        window.__routeHarness.setEquipment('手枪2', fixture.equipment.pistol);
+        window.__routeHarness.setEquipment('刀', fixture.equipment.blade);
+        window.__routeHarness.setEquipment('手雷', fixture.equipment.grenade);
+        check('production pose matrix refreshes ' + gender + ' authority',
+            await refreshProjection());
+
+        var slots = [
+            ['头部装备','长枪站立','长枪','head'],
+            ['上装装备','长枪站立','长枪','upper'],
+            ['下装装备','长枪站立','长枪','lower'],
+            ['手部装备','长枪站立','长枪','hands'],
+            ['脚部装备','长枪站立','长枪','feet'],
+            ['颈部装备','长枪站立','长枪','neck'],
+            ['长枪','长枪站立','长枪','long-gun'],
+            ['手枪','双枪站立','双枪','dual-pistol-primary'],
+            ['手枪2','双枪站立','双枪','dual-pistol-secondary'],
+            ['刀','兵器站立','兵器','blade'],
+            ['手雷','空手站立','手雷','grenade']
+        ];
+        for (var index = 0; index < slots.length; index++) {
+            var row = slots[index];
+            await selectPose(gender, row[0], row[1], row[2],
+                'production-' + (gender === '女' ? 'female-' : 'male-') + row[3]);
+        }
+
+        var longGun = await selectPose(gender, '长枪', '长枪站立', '长枪');
+        document.querySelector('.character-build-candidate').click();
+        check('production candidate overlay changes ' + gender + ' pixels on the same pose',
+            await until(function() {
+                var probe = canvasProbe();
+                return rendererSettled() && probe && probe.hash !== longGun.hash;
+            }));
+        var candidateProbe = canvasProbe();
+        captureCanvas('production-' + (gender === '女' ? 'female' : 'male')
+            + '-candidate');
+        var restored = await selectPose(gender, '头部装备', '长枪站立', '长枪',
+            'production-' + (gender === '女' ? 'female' : 'male') + '-restored');
+        check('production candidate overlay restores the ' + gender + ' build geometry',
+            restored.hash !== candidateProbe.hash
+            && restored.width === longGun.width && restored.height === longGun.height
+            && Math.abs(restored.alphaPixels - longGun.alphaPixels)
+                <= longGun.alphaPixels * 0.03
+            && Math.abs(restored.bboxHeightRatio - longGun.bboxHeightRatio) <= 0.02,
+            JSON.stringify({before:longGun, candidate:candidateProbe, restored:restored}));
+
+        window.__routeHarness.renderer.failNextField = '长枪_装扮';
+        var failureBase = window.__routeHarness.renderer.expectedAssetFailures;
+        document.querySelector('[data-roving-key="weapon:长枪"]').click();
+        check('production asset failure is reported and locally isolated for ' + gender,
+            await until(function() {
+                var renderer = window.__routeHarness.renderer;
+                var probe = canvasProbe();
+                return renderer.expectedAssetFailures === failureBase + 1
+                    && renderer.lastBuild.stateLabel === '长枪站立'
+                    && renderer.lastMeta && renderer.lastMeta.pendingImages === 0
+                    && renderer.lastMeta.failedImages > 0
+                    && renderer.active === 1 && probe && probe.alphaPixels > 2500;
+            }), JSON.stringify(window.__routeHarness.renderer.lastMeta));
+        captureCanvas('production-' + (gender === '女' ? 'female' : 'male')
+            + '-asset-failure');
+        await selectPose(gender, '头部装备', '长枪站立', '长枪');
+
+        window.__routeHarness.setEquipment('手枪2', '');
+        check('single primary pistol refresh settles for ' + gender, await refreshProjection());
+        await selectPose(gender, '手枪', '手枪站立', '手枪',
+            'production-' + (gender === '女' ? 'female' : 'male') + '-pistol');
+
+        window.__routeHarness.setEquipment('手枪', '');
+        window.__routeHarness.setEquipment('手枪2', fixture.equipment.pistol);
+        check('single secondary pistol refresh settles for ' + gender, await refreshProjection());
+        await selectPose(gender, '手枪2', '手枪2站立', '手枪2',
+            'production-' + (gender === '女' ? 'female' : 'male') + '-pistol-2');
+
+        ['长枪','手枪','手枪2','刀'].forEach(function(slotKey) {
+            window.__routeHarness.setEquipment(slotKey, '');
+        });
+        check('empty representative refresh settles for ' + gender, await refreshProjection());
+        await selectPose(gender, '头部装备', '空手站立', '空手',
+            'production-' + (gender === '女' ? 'female' : 'male') + '-empty');
+    }
+    function layoutProbe() {
+        var body = document.querySelector('.character-build-body');
+        var panes = body && body.querySelectorAll(':scope > .character-build-pane');
+        var canvas = document.querySelector('.character-build-doll-canvas');
+        var shell = document.querySelector('.workbench-shell');
+        var candidatePane = document.querySelector('.character-build-candidate-pane');
+        var first = panes && panes[0] && panes[0].getBoundingClientRect();
+        var second = panes && panes[1] && panes[1].getBoundingClientRect();
+        var canvasRect = canvas && canvas.getBoundingClientRect();
+        return {
+            viewport:[innerWidth, innerHeight],
+            shell:shell ? [shell.getBoundingClientRect().width, shell.getBoundingClientRect().height] : null,
+            paneWidths:first && second ? [first.width, second.width] : null,
+            paneRatio:first && second ? first.width / (first.width + second.width) : 0,
+            canvasRect:canvasRect ? [canvasRect.width, canvasRect.height] : null,
+            bodyScrollWidth:body && body.scrollWidth,
+            bodyClientWidth:body && body.clientWidth,
+            candidateScrollWidth:candidatePane && candidatePane.scrollWidth,
+            candidateClientWidth:candidatePane && candidatePane.clientWidth
+        };
+    }
+    function statsProbe() {
+        var page = document.querySelector('.character-build-stats-page');
+        var scroll = page.querySelector('[data-scroll-region="stats"]');
+        var hint = page.querySelector('[data-stats-scroll-hint]');
+        var footer = page.querySelector('footer');
+        var sections = Array.prototype.slice.call(
+            page.querySelectorAll('[data-stats-detail-grid] > section'));
+        var detailGrid = page.querySelector('[data-stats-detail-grid]');
+        var rows = Array.prototype.slice.call(
+            page.querySelectorAll('[data-stats-detail-grid] dl > div'));
+        var visibleTextNodes = Array.prototype.slice.call(
+            page.querySelectorAll('[data-stats-grid] *')).filter(function(node) {
+                var nodeStyle = getComputedStyle(node);
+                return node.childElementCount === 0 && node.textContent.trim()
+                    && nodeStyle.display !== 'none' && nodeStyle.visibility !== 'hidden';
+            });
+        var last = sections[sections.length - 1];
+        var scrollRect = scroll.getBoundingClientRect();
+        var footerRect = footer.getBoundingClientRect();
+        var lastRect = last && last.getBoundingClientRect();
+        var style = getComputedStyle(scroll);
+        var maxScroll = Math.max(0, scroll.scrollHeight - scroll.clientHeight);
+        return {
+            viewport:[innerWidth, innerHeight],
+            rowCount:rows.length,
+            titles:sections.map(function(section) { return section.querySelector('h4').textContent; }),
+            minFont:Math.min.apply(Math, rows.map(function(row) {
+                return Math.min(parseFloat(getComputedStyle(row.querySelector('dt')).fontSize),
+                    parseFloat(getComputedStyle(row.querySelector('dd')).fontSize));
+            })),
+            minVisibleTextFont:Math.min.apply(Math, visibleTextNodes.map(function(node) {
+                return parseFloat(getComputedStyle(node).fontSize);
+            })),
+            groupKeys:sections.map(function(section) {
+                return section.getAttribute('data-stats-group');
+            }),
+            detailColumns:getComputedStyle(detailGrid).gridTemplateColumns
+                .trim().split(/\s+/).filter(Boolean).length,
+            statKeys:rows.map(function(row) {
+                return row.getAttribute('data-stat-key');
+            }),
+            chartKeys:Array.prototype.map.call(
+                page.querySelectorAll('[data-chart]'),
+                function(node) { return node.getAttribute('data-chart'); }),
+            chartMaximums:Array.prototype.map.call(
+                page.querySelectorAll('[data-chart]'),
+                function(node) {
+                    return Math.max.apply(Math, Array.prototype.map.call(
+                        node.querySelectorAll('dd i b'),
+                        function(bar) { return parseFloat(bar.style.width) || 0; }));
+                }),
+            resistanceChartIcons:page.querySelectorAll(
+                '[data-chart="resistance"] [data-resistance-key]').length,
+            resistanceDetailIcons:page.querySelectorAll(
+                '[data-stats-group="resistance"] [data-resistance-key]').length,
+            resistanceIconOrder:Array.prototype.map.call(page.querySelectorAll(
+                '[data-chart="resistance"] [data-resistance-key]'), function(node) {
+                    return node.getAttribute('data-resistance-key');
+                }),
+            resistanceSvgSafe:Array.prototype.every.call(page.querySelectorAll(
+                '[data-resistance-key] svg'), function(svg) {
+                    return svg.getAttribute('aria-hidden') === 'true'
+                        && svg.getAttribute('focusable') === 'false';
+                }),
+            weightRatio:Number(page.querySelector('[data-stats-encumbrance]')
+                .getAttribute('data-weight-ratio')),
+            weightCopy:page.querySelector('[data-stats-encumbrance]').textContent
+                .replace(/\s+/g, ' ').trim(),
+            profileCopy:page.querySelector('[data-stats-profile]').textContent
+                .replace(/\s+/g, ' ').trim(),
+            styledTitleParts:page.querySelectorAll('[data-styled-title] > span').length,
+            ratioDetail:page.querySelector('[data-stat-key="weightRatio"] dd').textContent,
+            stateDetail:page.querySelector('[data-stat-key="encumbranceState"] dd').textContent,
+            scrollTop:scroll.scrollTop,
+            clientHeight:scroll.clientHeight,
+            scrollHeight:scroll.scrollHeight,
+            maxScroll:maxScroll,
+            position:scroll.getAttribute('data-scroll-position'),
+            tabIndex:scroll.tabIndex,
+            focused:document.activeElement === scroll,
+            focusVisible:scroll.matches ? scroll.matches(':focus-visible') : false,
+            scrollbarGutter:style.scrollbarGutter,
+            horizontalOverflow:scroll.scrollWidth > scroll.clientWidth + 1,
+            hintHidden:hint.hidden,
+            hintText:hint.textContent.replace(/\s+/g, ' ').trim(),
+            footerGap:footerRect.top - scrollRect.bottom,
+            lastTitle:last ? last.querySelector('h4').textContent : '',
+            lastVisible:!!lastRect && lastRect.top >= scrollRect.top - 1
+                && lastRect.bottom <= scrollRect.bottom + 1,
+            reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches
+        };
+    }
+    try {
+        var manifestProbeHost = document.createElement('div');
+        document.body.appendChild(manifestProbeHost);
+        var manifestProbe = new CharacterBuild.CharacterBuildController({
+            document:document,
+            send:function() { return true; },
+            timeoutMs:30000,
+            ports:{
+                getDensity:function() { return 'compact'; },
+                toast:function(message) {
+                    window.__routeHarness.manifest.toasts.push(String(message));
+                }
+            }
+        });
+        check('first manifest activate starts one shared pending load',
+            manifestProbe.activate(manifestProbeHost, 'panel.manifest-probe')
+            && window.__routeHarness.manifest.attempts === 1);
+        manifestProbe.activate(manifestProbeHost, 'panel.manifest-probe');
+        check('concurrent manifest activate reuses the pending promise',
+            window.__routeHarness.manifest.attempts === 1
+            && manifestProbe.debugState().rendererCount === 0);
+        check('manifest transient failure is injected once',
+            window.__routeHarness.rejectFirstManifest());
+        check('failed shared manifest promise settles before retry', await until(function() {
+            return window.__routeHarness.manifest.firstRejected
+                && window.__routeHarness.manifest.toasts.length === 1
+                && manifestProbe.debugState().rendererCount === 0;
+        }));
+        manifestProbe.activate(manifestProbeHost, 'panel.manifest-probe');
+        check('next activate retries the rejected manifest and creates one renderer',
+            await until(function() {
+                return window.__routeHarness.manifest.attempts === 2
+                    && window.__routeHarness.manifest.retryResolved
+                    && manifestProbe.debugState().rendererCount === 1;
+            }));
+        var manifestRetryCreateCount = window.__routeHarness.renderer.created;
+        manifestProbe.activate(manifestProbeHost, 'panel.manifest-probe');
+        await wait();
+        check('settled manifest activate neither reloads nor duplicates the renderer',
+            window.__routeHarness.manifest.attempts === 2
+            && window.__routeHarness.renderer.created === manifestRetryCreateCount
+            && manifestProbe.debugState().rendererCount === 1);
+        manifestProbe.destroy();
+        manifestProbeHost.remove();
+        check('manifest retry probe releases its renderer before production routing',
+            window.__routeHarness.renderer.active === 0);
+
+        Panels.init();
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                panelInstanceId:'panel.workbench.route-harness'
+            }
+        });
+        check('initial production snapshot settles', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.build && state.build.session.state === 'idle'
+                && state.build.rendererCount === 1 && rendererSettled();
+        }));
+        var initial = loadoutMessages()[0];
+        check('outbound route has exact top-level identity',
+            JSON.stringify(Object.keys(initial).sort()) === JSON.stringify(
+                ['callId','cmd','domain','panel','panelInstanceId','payload','type'])
+            && initial.panelInstanceId === 'panel.workbench.route-harness'
+            && JSON.stringify(initial.payload) === '{"v":1}');
+        check('facade owns one shell and one visible header',
+            document.querySelectorAll('.workbench-shell').length === 1
+            && document.querySelectorAll('.workbench-header').length === 1
+            && visibleHeaderActions().join('|') === 'storage|stats|help|close',
+            visibleHeaderActions().join('|'));
+        var densityToggle = document.querySelector(
+            '[data-build-density-mount] .item-grid-mode-switch');
+        var actionRow = candidateActionRow();
+        var candidateScrollRect = document.querySelector(
+            '.character-build-candidate-scroll').getBoundingClientRect();
+        check('build exposes one density control and embeds actions in candidate PaneChrome',
+            !!densityToggle
+            && !document.querySelector(
+                '.inventory-workbench-mode-actions .item-grid-mode-switch')
+            && actionRow.nested && actionRow.count === 2
+            && actionRow.labels.join('|') === '装备|卸下'
+            && actionRow.sameRow
+            && actionRow.inside && !actionRow.overflow && !actionRow.clipped
+            && !actionRow.wrapped && actionRow.minWidth >= 44
+            && document.querySelector(
+                '.character-build-candidate-actions p') === null,
+            JSON.stringify({
+                density:!!densityToggle,
+                actionRow:actionRow,
+                candidateTop:candidateScrollRect.top
+            }));
+        var loadoutHeading = document.querySelector(
+            '.character-build-composite-pane > .character-build-pane-heading');
+        var loadoutTools = loadoutHeading.querySelector('.character-build-loadout-tools');
+        var loadoutFocusSummary = loadoutHeading.querySelector('[data-focus-summary]');
+        var loadoutPreviewAction = loadoutHeading.querySelector('[data-doll-preview-open]');
+        var loadoutSlotCount = loadoutHeading.querySelector('[data-slot-count]');
+        check('loadout heading owns browse status, enlarged preview and current slot count',
+            loadoutHeading.querySelector(':scope > div > span').textContent === '外观与配置'
+            && loadoutHeading.querySelector('h2').textContent === '当前构筑'
+            && loadoutFocusSummary.closest('.character-build-pane-heading') === loadoutHeading
+            && loadoutPreviewAction.closest('.character-build-pane-heading') === loadoutHeading
+            && loadoutPreviewAction.getBoundingClientRect().width >= 76
+            && loadoutPreviewAction.getBoundingClientRect().height >= 44
+            && loadoutSlotCount.closest('.character-build-pane-heading') === loadoutHeading
+            && loadoutHeading.scrollWidth <= loadoutHeading.clientWidth + 1
+            && loadoutTools.scrollWidth <= loadoutTools.clientWidth + 1
+            && document.querySelectorAll(
+                '.character-build-composite-pane > .character-build-focus-summary,'
+                + '.character-build-loadout-column > .character-build-focus-summary').length === 0,
+            loadoutHeading.textContent);
+        check('candidate decision face has at most three actions and no detail/pin surface',
+            actionRow.count <= 3
+            && document.querySelectorAll('[data-info-action]').length === 0
+            && document.querySelectorAll(
+                '[data-info-panel],.character-build-info-panel').length === 0,
+            JSON.stringify(actionRow));
+        check('manifest-absent and real image-404 icons both settle to the diamond fallback',
+            await until(function() {
+                var absent = document.querySelector(
+                    '[data-roving-key="armor:颈部装备"] .inventory-icon-fallback');
+                var failed = document.querySelector(
+                    '[data-roving-key="drug:drug4"] .inventory-icon-fallback');
+                return absent && failed && absent.textContent === '◇' && failed.textContent === '◇'
+                    && absent.getAttribute('aria-hidden') === 'true'
+                    && failed.getAttribute('aria-hidden') === 'true';
+            }));
+        var currentIcons = Array.prototype.map.call(document.querySelectorAll(
+            '.character-build-slot-card .inventory-owned-icon[data-icon-name]'),
+            function(node) { return node.getAttribute('data-icon-name'); });
+        check('build shell uses DLS character skin, canonical icons and explicit missing-image fallbacks',
+            document.querySelector('.workbench-shell').getAttribute('data-workbench-skin') === 'character'
+            && currentIcons.length === 13
+            && currentIcons.indexOf(CharacterBuildDressupFixture.equipment.longGun) >= 0
+            && currentIcons.indexOf('普通hp药剂') >= 0
+            && document.querySelectorAll('.character-build-slot-card .inventory-icon-fallback').length === 2
+            && currentIcons.indexOf(window.__characterBuildAbsentIcon) < 0
+            && currentIcons.indexOf(window.__characterBuild404Icon) < 0,
+            JSON.stringify(currentIcons));
+        var currentLongGun = document.querySelector('[data-roving-key="weapon:长枪"]');
+        var currentLongGunCard = currentLongGun.querySelector('.character-build-slot-card');
+        check('current equipment is a legal button/span composition using canonical tier and mod rails',
+            currentLongGun.tagName === 'BUTTON' && currentLongGunCard.tagName === 'SPAN'
+            && document.querySelectorAll('button > article').length === 0
+            && !!currentLongGunCard.querySelector('.inventory-tier-marker.used')
+            && currentLongGunCard.querySelectorAll('.inventory-equip-slot').length === 3
+            && currentLongGunCard.querySelectorAll('.inventory-equip-slot.used').length === 2
+            && currentLongGunCard.querySelectorAll('.inventory-equip-slot-compact').length === 3
+            && currentLongGunCard.querySelectorAll('.inventory-equip-slot-compact.used').length === 2);
+        check('outer slot accessibility keeps canonical tier, mod and quantity semantics',
+            currentLongGun.getAttribute('aria-label').indexOf('装备已升阶') >= 0
+            && currentLongGun.getAttribute('aria-label').indexOf('插件槽 1：稳定导轨，高级，结构与功能') >= 0
+            && currentLongGun.getAttribute('aria-label').indexOf('插件槽 3：空闲') >= 0
+            && document.querySelector('[data-roving-key="weapon:手雷"]')
+                .getAttribute('aria-label').indexOf('数量 3') >= 0
+            && document.querySelector('[data-roving-key="drug:drug4"]')
+                .getAttribute('aria-label').indexOf('数量 4') >= 0);
+        check('exactly one dressup renderer is mounted',
+            window.__routeHarness.renderer.active === 1
+            && window.__routeHarness.renderer.maxActive === 1);
+        var build = window.__routeHarness.renderer.lastBuild;
+        check('real renderer uses frozen narrow camera fields',
+            build.fitFields.join('|') === '脸型|发型|面具|屁股|左大腿|右大腿|小腿|脚'
+            && build.drawFields.indexOf('身体') >= 0
+            && build.drawFields.indexOf('长枪_装扮') >= 0
+            && build.drawFields.indexOf('手枪2_装扮') >= 0
+            && build.drawFields.indexOf('上臂') >= 0
+            && build.fitFields.indexOf('身体') < 0
+            && build.fitFields.indexOf('长枪_装扮') < 0
+            && build.zoom === 0.93 && build.margin === 18,
+            JSON.stringify(build));
+        visual.initial = canvasProbe();
+        visual.layout = layoutProbe();
+        check('real alpha bbox fills the single canvas without vertical clipping',
+            visual.initial.bboxHeightRatio >= 0.68
+            && visual.initial.bboxHeightRatio <= 0.92
+            && visual.initial.bbox[1] > 0
+            && visual.initial.bbox[3] < visual.initial.height - 1,
+            JSON.stringify(visual.initial));
+        check('canvas backing covers physical PanelScale pixels and body preserves the 55/45 character-first split',
+            Math.abs(visual.initial.width - Math.round(
+                visual.initial.rectWidth * devicePixelRatio)) <= 1
+            && Math.abs(visual.initial.height - Math.round(
+                visual.initial.rectHeight * devicePixelRatio)) <= 1
+            && visual.layout.paneRatio >= 0.545 && visual.layout.paneRatio <= 0.555
+            && visual.layout.paneWidths[0] > visual.layout.paneWidths[1]
+            && visual.layout.paneWidths[1] >= 360
+            && visual.layout.canvasRect[0] >= 210
+            && visual.layout.canvasRect[0] * visual.layout.canvasRect[1] >= 80000
+            && visual.layout.bodyScrollWidth === visual.layout.bodyClientWidth
+            && visual.layout.candidateScrollWidth === visual.layout.candidateClientWidth,
+            JSON.stringify(visual.layout));
+        check('production route mounts exactly one canvas',
+            document.querySelectorAll('.character-build-doll-canvas').length === 1);
+
+        var longGunKey = 'weapon:长枪';
+        document.querySelector('[data-weapon-grid] [data-roving-key="' + longGunKey + '"]').click();
+        check('candidate read uses production route and real icon pipeline', await until(function() {
+            var image = document.querySelector(
+                '.character-build-candidate .inventory-owned-icon[data-icon-name]');
+            return commandCount('candidates') === 1
+                && document.querySelectorAll('.character-build-candidate').length === 1
+                && image && image.complete && image.naturalWidth > 0;
+        }));
+        var candidate = document.querySelector('.character-build-candidate');
+        var densityTraffic = loadoutMessages().length;
+        densityToggle.querySelector('[data-layout-mode="compact"]').click();
+        check('compact build density uses the shared 48px icon tile without rebuilding authority',
+            candidate === document.querySelector('.character-build-candidate')
+            && Math.abs(parseFloat(getComputedStyle(candidate).width) - 48) < 1
+            && Math.abs(parseFloat(getComputedStyle(candidate).height) - 48) < 1
+            && getComputedStyle(candidate.querySelector('.inventory-slot-copy')).display === 'none'
+            && Array.prototype.every.call(document.querySelectorAll('.character-build-slot'),
+                function(slot) { return slot.getBoundingClientRect().height >= 44; })
+            && loadoutMessages().length === densityTraffic);
+        densityToggle.querySelector('[data-layout-mode="full"]').click();
+        check('full build density restores the complete card with the same candidate node',
+            candidate === document.querySelector('.character-build-candidate')
+            && parseFloat(getComputedStyle(candidate).height) >= 68
+            && getComputedStyle(candidate.querySelector('.inventory-slot-copy')).display !== 'none'
+            && loadoutMessages().length === densityTraffic);
+        var candidateIcon = candidate.querySelector('.inventory-owned-icon[data-icon-name]');
+        var candidateBadge = candidate.querySelector('[data-badge-kind]');
+        check('candidate icon is the real manifest asset, not a monogram fallback',
+            candidateIcon.getAttribute('data-icon-name')
+                === CharacterBuildDressupFixture.scenarios.candidate.candidateItem
+            && candidate.querySelector('.inventory-slot-icon').textContent.trim() === '',
+            candidateIcon.getAttribute('data-icon-name'));
+        check('candidate remains one legal canonical owned-card article with tier/mod accessibility',
+            candidate.tagName === 'ARTICLE' && !candidate.closest('button')
+            && !!candidate.querySelector('.inventory-tier-marker.empty')
+            && candidate.querySelectorAll('.inventory-equip-slot').length === 3
+            && candidate.querySelectorAll('.inventory-equip-slot.used').length === 1
+            && candidate.querySelector('.inventory-mod-glyph').classList.contains('symbol-square-solid')
+            && candidate.getAttribute('aria-label').indexOf('装备可升阶但尚未升阶') >= 0
+            && candidate.getAttribute('aria-label')
+                .indexOf('插件槽 1：候选稳定器，中级，结构与功能') >= 0);
+        var previewColorProbe = document.createElement('i');
+        previewColorProbe.style.color = 'var(--dls-crystal-faint)';
+        candidate.appendChild(previewColorProbe);
+        var expectedPreviewColor = getComputedStyle(previewColorProbe).color;
+        previewColorProbe.remove();
+        var actualPreviewColor = getComputedStyle(candidateBadge).color;
+        check('preview badge is semantically and visually neutral',
+            candidateBadge.getAttribute('data-badge-kind') === 'preview'
+            && equivalentCssColor(actualPreviewColor, expectedPreviewColor),
+            actualPreviewColor + ' vs ' + expectedPreviewColor);
+        candidate.click();
+        check('real renderer redraws the candidate overlay', await until(function() {
+            var probe = canvasProbe();
+            return rendererSettled() && probe && probe.hash !== visual.initial.hash;
+        }));
+        visual.candidate = canvasProbe();
+        check('candidate selection previews without mutation traffic',
+            document.querySelector('[data-overlay-copy]').textContent.indexOf(
+                CharacterBuildDressupFixture.scenarios.candidate.candidateItem) >= 0
+             && loadoutMessages().every(function(message) {
+                return ['snapshot','candidates','flushLive','statsSnapshot','finalize',
+                    'equipEquipment','unequipEquipment','equipDrug','unequipDrug']
+                     .indexOf(message.cmd) >= 0;
+             }));
+        var selectedActionRow = candidateActionRow();
+        check('1024 candidate PaneChrome keeps its three direct actions on one row',
+            selectedActionRow.count === 3
+            && selectedActionRow.labels.join('|') === '装备|调制|卸下'
+            && selectedActionRow.aria.join('|') ===
+                '装备所选候选|调制当前装备|卸下当前物品'
+            && selectedActionRow.sameRow && selectedActionRow.inside
+            && !selectedActionRow.overflow && !selectedActionRow.clipped
+            && !selectedActionRow.wrapped && selectedActionRow.minWidth >= 44
+            && document.querySelectorAll('[data-info-action]').length === 0
+            && document.querySelectorAll(
+                '[data-info-panel],.character-build-info-panel').length === 0,
+            JSON.stringify(selectedActionRow));
+        var previewCanvas = document.querySelector('.character-build-doll-canvas');
+        var previewMount = document.querySelector('[data-doll-preview-mount]');
+        var embeddedWheelEvent = new WheelEvent('wheel', {
+            deltaY:-120, clientX:20, clientY:20, bubbles:true, cancelable:true
+        });
+        var embeddedWheelAccepted = previewMount.dispatchEvent(embeddedWheelEvent);
+        check('embedded build does not consume wheel or retain camera transform',
+            embeddedWheelAccepted && !embeddedWheelEvent.defaultPrevented
+            && previewCanvas.style.transform === ''
+            && !previewMount.hasAttribute('data-inspection-active')
+            && Array.prototype.every.call(document.querySelectorAll(
+                '[data-inspection-action]'), function(node) { return node.disabled; }));
+        var previewEmbeddedRect = previewCanvas.getBoundingClientRect();
+        var previewRendererCreated = window.__routeHarness.renderer.created;
+        var previewPixelRatioCount = window.__routeHarness.renderer.pixelRatios.length;
+        var previewCandidateKey = InventoryWorkbench.debugState().build.view.selectedCandidateKey;
+        var previewOverlayCopy = document.querySelector('[data-overlay-copy]').textContent;
+        document.querySelector('[data-doll-preview-open]').click();
+        check('single-canvas enlarged preview opens with inert backing and stable renderer ownership',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var rect = previewCanvas.getBoundingClientRect();
+                return state.view.dollPreviewOpen
+                    && document.querySelectorAll('.character-build-doll-canvas').length === 1
+                    && document.querySelectorAll('[data-layer="candidate-preview"]').length === 1
+                    && previewCanvas === document.querySelector('.character-build-doll-canvas')
+                    && rect.width * rect.height
+                        > previewEmbeddedRect.width * previewEmbeddedRect.height * 1.5
+                    && document.querySelector('.character-build-body').hasAttribute('inert')
+                    && document.querySelector('.workbench-header').hasAttribute('inert')
+                    && document.activeElement === previewMount
+                    && window.__routeHarness.renderer.active === 1
+                    && window.__routeHarness.renderer.maxActive === 1
+                    && window.__routeHarness.renderer.created === previewRendererCreated
+                    && window.__routeHarness.renderer.pixelRatios.length
+                        === previewPixelRatioCount + 1;
+            }));
+        var previewPage = document.querySelector('[data-doll-preview-page]');
+        var previewFooter = document.querySelector('.character-build-doll-preview-footer');
+        var previewControls = document.querySelector('.workbench-inspection-controls');
+        var previewClose = document.querySelector('[data-doll-preview-close]');
+        var previewControlButtons = Array.prototype.slice.call(
+            document.querySelectorAll('[data-inspection-action]'));
+        check('enlarged preview exposes one overflow-safe 44px camera toolbar',
+            previewControlButtons.map(function(node) {
+                return node.getAttribute('data-inspection-action');
+            }).join('|') === 'left|up|down|right|zoom-out|zoom-in|fit'
+            && previewControlButtons.every(function(node) {
+                var rect = node.getBoundingClientRect();
+                return rect.width >= 44 && rect.height >= 44 && !node.disabled;
+            })
+            && previewClose.getBoundingClientRect().width >= 44
+            && previewClose.getBoundingClientRect().height >= 44
+            && [previewPage, previewMount, previewFooter, previewControls].every(
+                function(node) { return node.scrollWidth <= node.clientWidth + 1; }),
+            JSON.stringify(previewControlButtons.map(function(node) {
+                var rect = node.getBoundingClientRect();
+                return {
+                    action:node.getAttribute('data-inspection-action'),
+                    width:rect.width,
+                    height:rect.height
+                };
+            })));
+        var expandedWheelRect = previewMount.getBoundingClientRect();
+        var wheelPixelRatioCount = window.__routeHarness.renderer.pixelRatios.length;
+        var expandedWheelEvent = new WheelEvent('wheel', {
+            deltaY:-120,
+            clientX:expandedWheelRect.left + expandedWheelRect.width / 2,
+            clientY:expandedWheelRect.top + expandedWheelRect.height / 2,
+            bubbles:true,
+            cancelable:true
+        });
+        var expandedWheelAccepted = previewMount.dispatchEvent(expandedWheelEvent);
+        check('expanded wheel zoom is consumed by the one live Canvas renderer',
+            await until(function() {
+                var transformed = Array.prototype.filter.call(
+                    previewPage.querySelectorAll('[style]'),
+                    function(node) { return !!node.style.transform; });
+                return !expandedWheelAccepted && expandedWheelEvent.defaultPrevented
+                    && document.querySelector('.workbench-inspection-status').textContent === '120%'
+                    && previewCanvas.style.transform.indexOf('scale(1.2)') >= 0
+                    && transformed.length === 1 && transformed[0] === previewCanvas
+                    && document.querySelector('.character-build-doll-stage').style.transform === ''
+                    && document.querySelector(
+                        '[data-layer="candidate-preview"]').style.transform === ''
+                    && window.__routeHarness.renderer.active === 1
+                    && window.__routeHarness.renderer.maxActive === 1
+                    && window.__routeHarness.renderer.created === previewRendererCreated
+                    && window.__routeHarness.renderer.pixelRatios.length
+                        === wheelPixelRatioCount + 1
+                    && rendererSettled();
+            }));
+        document.querySelector('[data-inspection-action="zoom-in"]').click();
+        check('camera plus control increases the same transient zoom',
+            await until(function() {
+                return document.querySelector('.workbench-inspection-status').textContent === '140%'
+                    && previewCanvas.style.transform.indexOf('scale(1.4)') >= 0
+                    && rendererSettled();
+            }));
+        document.querySelector('[data-inspection-action="zoom-out"]').click();
+        check('camera minus control decreases the same transient zoom',
+            await until(function() {
+                return document.querySelector('.workbench-inspection-status').textContent === '120%'
+                    && previewCanvas.style.transform.indexOf('scale(1.2)') >= 0
+                    && rendererSettled();
+            }));
+        previewMount.focus();
+        var arrowEvent = new KeyboardEvent('keydown', {
+            key:'ArrowRight', bubbles:true, cancelable:true
+        });
+        var arrowAccepted = previewMount.dispatchEvent(arrowEvent);
+        check('focused enlarged preview pans with direction keys',
+            !arrowAccepted && arrowEvent.defaultPrevented
+            && previewCanvas.style.transform.indexOf('translate3d(34px') >= 0
+            && previewCanvas.style.transform.indexOf('scale(1.2)') >= 0,
+            previewCanvas.style.transform);
+        document.querySelector('[data-inspection-action="fit"]').click();
+        check('full-view camera action resets zoom and pan',
+            await until(function() {
+                return document.querySelector('.workbench-inspection-status').textContent === '100%'
+                    && previewCanvas.style.transform.indexOf('translate3d(0px') >= 0
+                    && previewCanvas.style.transform.indexOf('scale(1)') >= 0
+                    && rendererSettled();
+            }));
+        document.querySelector('[data-inspection-action="zoom-in"]').click();
+        previewMount.focus();
+        previewMount.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'ArrowDown', bubbles:true, cancelable:true
+        }));
+        Bridge.emit('panel_esc', {});
+        check('preview Escape restores Canvas, candidate, opener and cleared camera state',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return !state.view.dollPreviewOpen
+                    && previewCanvas === document.querySelector('.character-build-doll-canvas')
+                    && previewCanvas.parentNode
+                        .classList.contains('character-build-doll-stage')
+                    && previewCanvas.parentNode.parentNode
+                        .hasAttribute('data-doll-stage-home')
+                    && state.view.selectedCandidateKey === previewCandidateKey
+                    && document.querySelector('[data-overlay-copy]').textContent
+                        === previewOverlayCopy
+                    && document.activeElement.hasAttribute('data-doll-preview-open')
+                    && previewCanvas.style.transform === ''
+                    && !previewMount.hasAttribute('data-inspection-active')
+                    && document.querySelector('.workbench-inspection-status').textContent === '100%'
+                    && Array.prototype.every.call(document.querySelectorAll(
+                        '[data-inspection-action]'), function(node) { return node.disabled; })
+                    && rendererSettled();
+            }));
+        document.querySelector('[data-doll-preview-open]').click();
+        check('reopened preview starts from a clean full-view camera on the same renderer',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.view.dollPreviewOpen
+                    && previewCanvas === document.querySelector('.character-build-doll-canvas')
+                    && document.activeElement === previewMount
+                    && previewMount.hasAttribute('data-inspection-active')
+                    && document.querySelector('.workbench-inspection-status').textContent === '100%'
+                    && previewCanvas.style.transform.indexOf('translate3d(0px') >= 0
+                    && previewCanvas.style.transform.indexOf('scale(1)') >= 0
+                    && window.__routeHarness.renderer.active === 1
+                    && window.__routeHarness.renderer.maxActive === 1
+                    && window.__routeHarness.renderer.created === previewRendererCreated
+                    && rendererSettled();
+            }));
+        document.querySelector('[data-doll-preview-close]').click();
+        check('explicit preview close restores focus and removes transient transform',
+            await until(function() {
+                return !InventoryWorkbench.debugState().build.view.dollPreviewOpen
+                    && document.activeElement.hasAttribute('data-doll-preview-open')
+                    && previewCanvas.style.transform === ''
+                    && !previewMount.hasAttribute('data-inspection-active')
+                    && rendererSettled();
+            }));
+
+        var headKey = 'armor:头部装备';
+        window.__routeHarness.rejectNextCandidate = true;
+        document.querySelector('[data-roving-key="' + headKey + '"]').click();
+        check('candidate read failure leaves an explicit retry state', await until(function() {
+            var state = InventoryWorkbench.debugState().build;
+            return state && state.view && state.view.selectedSlotKey === headKey
+                && state.view.candidateLoadFailed
+                && document.querySelector('[data-build-notice]')
+                    .textContent.indexOf('再次选择当前槽位') >= 0;
+        }));
+        var failedCandidateCount = commandCount('candidates');
+        document.querySelector('[data-roving-key="' + headKey + '"]').click();
+        check('same-slot activation retries a failed candidate read', await until(function() {
+            var state = InventoryWorkbench.debugState().build;
+            return state && state.view && !state.view.candidateLoadFailed
+                && state.view.candidateCount === 1
+                && commandCount('candidates') === failedCandidateCount + 1;
+        }));
+        document.querySelector('[data-roving-key="' + longGunKey + '"]').click();
+        check('candidate retry flow can return to the original slot', await until(function() {
+            var state = InventoryWorkbench.debugState().build;
+            return state && state.view && state.view.selectedSlotKey === longGunKey
+                && state.view.candidateCount === 1;
+        }));
+        var candidateCountBeforeStorage = commandCount('candidates');
+
+        document.querySelector('[data-header-action="stats"]').click();
+        check('stats uses the same production session and common header', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.build && state.build.view && state.build.view.statsOpen;
+        }));
+        check('stats header exposes only back/help/close',
+            visibleHeaderActions().join('|') === 'back-build|help|close',
+            visibleHeaderActions().join('|'));
+        var statsTop = statsProbe();
+        var exactStatsKeys = CharacterBuildStatsFixture.create().groups.reduce(
+            function(all, group) {
+                return all.concat(group.rows.map(function(row) { return row.key; }));
+            }, []);
+        var degradationHost = document.createElement('div');
+        var degradationPresenter = new CharacterBuildStatsView.StatsView({
+            host:degradationHost,
+            scroll:document.createElement('div'),
+            hint:document.createElement('span'),
+            copy:document.createElement('span'),
+            glyph:document.createElement('i')
+        });
+        var nullRatioStats = CharacterBuildStatsFixture.create();
+        nullRatioStats.groups[1].rows.filter(function(row) {
+            return row.key === 'weightRatio';
+        })[0].value = null;
+        degradationPresenter.render(nullRatioStats);
+        var nullRatioGauge = !!degradationHost.querySelector('[data-stats-encumbrance]');
+        var negativeResistanceStats = CharacterBuildStatsFixture.create();
+        negativeResistanceStats.groups.filter(function(group) {
+            return group.key === 'resistance';
+        })[0].rows[0].value = -5;
+        degradationPresenter.render(negativeResistanceStats);
+        var negativeResistanceCharts = Array.prototype.map.call(
+            degradationHost.querySelectorAll('[data-chart]'),
+            function(node) { return node.getAttribute('data-chart'); });
+        var negativeResistanceDetailIcons = degradationHost.querySelectorAll(
+            '[data-stats-group="resistance"] [data-resistance-key]').length;
+        var nullResistanceStats = CharacterBuildStatsFixture.create();
+        nullResistanceStats.groups.filter(function(group) {
+            return group.key === 'resistance';
+        })[0].rows[2].value = null;
+        degradationPresenter.render(nullResistanceStats);
+        var nullResistanceCharts = Array.prototype.map.call(
+            degradationHost.querySelectorAll('[data-chart]'),
+            function(node) { return node.getAttribute('data-chart'); });
+        var zeroResistanceStats = CharacterBuildStatsFixture.create();
+        zeroResistanceStats.groups.filter(function(group) {
+            return group.key === 'resistance';
+        })[0].rows.forEach(function(row) { row.value = 0; });
+        degradationPresenter.render(zeroResistanceStats);
+        var zeroResistanceCharts = Array.prototype.map.call(
+            degradationHost.querySelectorAll('[data-chart]'),
+            function(node) { return node.getAttribute('data-chart'); });
+        var zeroResistanceDetailIcons = degradationHost.querySelectorAll(
+            '[data-stats-group="resistance"] [data-resistance-key]').length;
+        var negativePowerStats = CharacterBuildStatsFixture.create();
+        negativePowerStats.groups.filter(function(group) {
+            return group.key === 'power';
+        })[0].rows[0].value = -1;
+        degradationPresenter.render(negativePowerStats);
+        var negativePowerCharts = Array.prototype.map.call(
+            degradationHost.querySelectorAll('[data-chart]'),
+            function(node) { return node.getAttribute('data-chart'); });
+        check('stats missing ratios and signed chart inputs omit only misleading visuals',
+            !nullRatioGauge && negativeResistanceCharts.join('|') === 'power'
+            && negativeResistanceDetailIcons === 8
+            && nullResistanceCharts.join('|') === 'power'
+            && zeroResistanceCharts.join('|') === 'power'
+            && zeroResistanceDetailIcons === 8
+            && negativePowerCharts.join('|') === 'resistance',
+            JSON.stringify({
+                nullRatioGauge:nullRatioGauge,
+                negativeResistanceCharts:negativeResistanceCharts,
+                negativeResistanceDetailIcons:negativeResistanceDetailIcons,
+                nullResistanceCharts:nullResistanceCharts,
+                zeroResistanceCharts:zeroResistanceCharts,
+                zeroResistanceDetailIcons:zeroResistanceDetailIcons,
+                negativePowerCharts:negativePowerCharts
+            }));
+        check('stats exposes a non-overlapping focusable scroll affordance at the top',
+            statsTop.rowCount === 47 && statsTop.minFont >= 11
+            && statsTop.minVisibleTextFont >= 11 && statsTop.focused
+            && statsTop.detailColumns === 3
+            && statsTop.groupKeys.join('|') === 'profile|encumbrance|vitals|resistance|defense|tenacity|mobility|offense|power'
+            && statsTop.statKeys.join('|') === exactStatsKeys.join('|')
+            && statsTop.titles.slice(-2).join('|') === '伤害加成|武器威力'
+            && statsTop.chartKeys.join('|') === 'power|resistance'
+            && statsTop.chartMaximums.every(function(value) { return value === 100; })
+            && statsTop.resistanceChartIcons === 8
+            && statsTop.resistanceDetailIcons === 8
+            && statsTop.resistanceSvgSafe
+            && statsTop.resistanceIconOrder.join('|') === [
+                'energyResistance','heatResistance','corrosionResistance','poisonResistance',
+                'coldResistance','lightningResistance','waveResistance','impactResistance'
+            ].join('|')
+            && Math.abs(statsTop.weightRatio - 0.36267605633802817) < 0.000001
+            && statsTop.weightCopy.indexOf('103kg') >= 0
+            && statsTop.weightCopy.indexOf('14.6m/s') >= 0
+            && statsTop.weightCopy.indexOf('71kg') >= 0
+            && statsTop.weightCopy.indexOf('142kg') >= 0
+            && statsTop.weightCopy.indexOf('284kg') >= 0
+            && statsTop.profileCopy.indexOf('血量很多') >= 0
+            && statsTop.styledTitleParts === 1
+            && statsTop.ratioDetail === '36.3%'
+            && statsTop.stateDetail === '标准负载'
+            && statsTop.maxScroll > 1 && statsTop.tabIndex === 0
+            && statsTop.position === 'start' && !statsTop.hintHidden
+            && statsTop.hintText.indexOf('PageDown') >= 0
+            && statsTop.scrollbarGutter.indexOf('stable') >= 0
+            && statsTop.footerGap >= -1 && !statsTop.horizontalOverflow,
+            JSON.stringify(statsTop));
+        var statsScroll = document.querySelector('[data-scroll-region="stats"]');
+        statsScroll.scrollTop = Math.ceil(statsTop.maxScroll / 2);
+        statsScroll.dispatchEvent(new Event('scroll'));
+        await wait();
+        var statsMiddle = statsProbe();
+        statsScroll.scrollTop = statsTop.maxScroll;
+        statsScroll.dispatchEvent(new Event('scroll'));
+        await wait();
+        var statsEnd = statsProbe();
+        check('stats affordance tracks middle and end while the last group becomes fully visible',
+            statsMiddle.position === 'middle'
+            && statsMiddle.hintText.indexOf('PageUp / PageDown') >= 0
+            && statsEnd.position === 'end'
+            && statsEnd.hintText.indexOf('已到属性末尾') >= 0
+            && statsEnd.lastTitle === '武器威力' && statsEnd.lastVisible,
+            JSON.stringify({middle:statsMiddle, end:statsEnd}));
+        statsScroll.scrollTop = 0;
+        await wait();
+        visual.stats = {top:statsTop, middle:statsMiddle, end:statsEnd};
+        if (new URLSearchParams(location.search).get('stats-probe') === '1') {
+            window.__statsProbeReady = true;
+            await new Promise(function(resolve) { window.__continueStatsProbe = resolve; });
+            var inputProbe = window.__routeHarness.statsInputProbe || {};
+            check('trusted reduced-motion keyboard and wheel input reaches the stats scroll region',
+                inputProbe.reducedMotion === true && inputProbe.keyboardFocused === true
+                && inputProbe.focusVisible === true && inputProbe.pageDownDelta > 1
+                && inputProbe.endReached === true && inputProbe.lastVisible === true
+                && inputProbe.homeReached === true && inputProbe.wheelDelta > 1,
+                JSON.stringify(inputProbe));
+            visual.stats.input = inputProbe;
+        }
+        document.querySelector('[data-header-action="back-build"]').click();
+        check('stats return restores the build header', await until(function() {
+            return visibleHeaderActions().join('|') === 'storage|stats|help|close';
+        }));
+
+        var generationBeforeStorage =
+            InventoryWorkbench.debugState().build.session.sessionGeneration;
+        var densityToggleIdentity = document.querySelector('.item-grid-mode-switch');
+        document.querySelector('[data-header-action="storage"]').click();
+        check('build to storage suspends only view and renderer', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.view === 'storage' && state.build
+                && state.build.mounted === false && state.build.rendererCount === 0;
+        }));
+        check('storage keeps the same active loadout session',
+            InventoryWorkbench.debugState().build.session.sessionGeneration === generationBeforeStorage
+            && InventoryWorkbench.debugState().build.session.state === 'idle');
+        check('the same density control moves back to storage chrome without duplication',
+            densityToggleIdentity === document.querySelector(
+                '.inventory-workbench-mode-actions .item-grid-mode-switch')
+            && document.querySelectorAll('.item-grid-mode-switch').length === 1);
+        Bridge.emit('panel_esc', {});
+        check('Esc from storage returns to build with a fresh snapshot', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.view === 'build' && state.build && state.build.mounted
+                && state.build.session.state === 'idle'
+                && state.build.view.candidateCount === 1
+                && commandCount('snapshot') === 2
+                && commandCount('candidates') === candidateCountBeforeStorage + 1
+                && rendererSettled();
+        }));
+        check('returning to build moves the same persisted density control into the new candidate pane',
+            densityToggleIdentity === document.querySelector(
+                '[data-build-density-mount] .item-grid-mode-switch')
+            && densityToggleIdentity.getAttribute('data-layout-mode') === 'full'
+            && document.querySelectorAll('.item-grid-mode-switch').length === 1);
+        var snapshots = loadoutMessages().filter(function(message) {
+            return message.cmd === 'snapshot';
+        });
+        check('return snapshot carries exact bound generation',
+            JSON.stringify(snapshots[1].payload) === '{"v":1,"sessionGeneration":17}');
+        var restored = InventoryWorkbench.debugState().build;
+        var activeElement = document.activeElement;
+        check('fresh snapshot restores legal selected slot, focus and candidates',
+            restored.selectedSlotKey === longGunKey
+            && restored.view.selectedSlotKey === longGunKey
+            && restored.view.candidateCount === 1
+            && activeElement && activeElement.getAttribute('data-roving-key') === longGunKey
+            && document.querySelector('.character-build-candidate-scroll').scrollTop === 0,
+            JSON.stringify(restored.view));
+        check('storage Esc does not close or finalize',
+            commandCount('finalize') === 0
+            && window.__routeHarness.events.indexOf('close_sent') < 0);
+        visual.restored = canvasProbe();
+        check('renderer never overlaps across view dispatch',
+            window.__routeHarness.renderer.maxActive === 1
+            && window.__routeHarness.renderer.active === 1);
+
+        var writesBefore = window.__routeHarness.storage.externalBegins;
+        document.querySelector('.character-build-candidate').click();
+        document.querySelector('[data-build-action="commit"]').click();
+        check('deterministic equip success adopts loadout and backpack then restores focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var slot = document.querySelector('[data-roving-key="' + longGunKey + '"]');
+                return state && state.session.state === 'idle'
+                    && state.view.candidateCount === 1
+                    && commandCount('equipEquipment') === 1
+                    && slot && slot.getAttribute('data-focus-name') ===
+                        CharacterBuildDressupFixture.scenarios.candidate.candidateItem
+                    && document.activeElement.getAttribute('data-roving-key') === longGunKey
+                    && window.__routeHarness.storage.externalBegins === writesBefore + 1
+                    && window.__routeHarness.storage.externalCompletes === 1
+                    && window.__routeHarness.storage.appliedSnapshots === 1;
+            }));
+        var firstEquip = loadoutMessages().filter(function(message) {
+            return message.cmd === 'equipEquipment';
+        })[0];
+        check('equip request uses only frozen revision and candidate lease fields',
+            JSON.stringify(firstEquip.payload) === JSON.stringify({
+                v:1, sessionGeneration:17, expectedLoadoutRevision:5, slotKey:'长枪',
+                source:{containerId:'背包', slot:9, expectedLease:'lease.candidate.9'}
+            }), JSON.stringify(firstEquip.payload));
+
+        window.__routeHarness.rejectNextMutation = true;
+        document.querySelector('.character-build-candidate').click();
+        document.querySelector('[data-build-action="commit"]').click();
+        check('deterministic mutation failure keeps old authority and releases the write gate',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state && state.session.state === 'idle'
+                    && state.session.loadoutRevision === 6
+                    && commandCount('equipEquipment') === 2
+                    && window.__routeHarness.storage.externalCompletes === 2
+                    && window.__routeHarness.storage.appliedSnapshots === 1;
+            }));
+
+        window.__routeHarness.unknownNextMutation = true;
+        window.__routeHarness.holdNextReconcile = true;
+        document.querySelector('[data-build-action="commit"]').click();
+        check('unknown mutation locks navigation and issues one watermarked reconcile',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var header = Array.prototype.slice.call(
+                    document.querySelectorAll('[data-header-action]'));
+                var storageAction = document.querySelector('[data-header-action="storage"]');
+                var roving = Array.prototype.slice.call(
+                    document.querySelectorAll('[data-roving-key]'));
+                return state && state.session.state === 'needs_reconcile'
+                    && window.__routeHarness.heldReconcile
+                    && commandCount('equipEquipment') === 3
+                    && header.every(function(node) {
+                        return node === storageAction
+                            ? !node.disabled && node.getAttribute('aria-disabled') === 'true'
+                            : node.disabled;
+                    })
+                    && roving.every(function(node) {
+                        return node.matches('.character-build-candidate')
+                            ? node.hasAttribute('inert')
+                                && node.getAttribute('aria-disabled') === 'true'
+                            : node.disabled;
+                    })
+                    && !document.querySelector('[data-build-action="commit"]').disabled
+                    && document.querySelector('[data-build-action="commit"]').textContent
+                        === '确认'
+                    && document.querySelector('[data-build-action="commit"]')
+                        .getAttribute('aria-label') === '重新确认结果';
+            }));
+        var storageActivationsWhileLocked = window.__routeHarness.storage.activations;
+        var toastCountWhileLocked = Toast.messages.length;
+        document.querySelector('[data-header-action="storage"]').click();
+        check('locked storage intent is explained without navigating',
+            InventoryWorkbench.debugState().view === 'build'
+            && window.__routeHarness.storage.activations === storageActivationsWhileLocked
+            && Toast.messages.length === toastCountWhileLocked + 1
+            && Toast.messages[Toast.messages.length - 1].indexOf('完成对账后才能进入收纳') >= 0
+            && document.querySelector('.workbench-status').getAttribute('role') === 'status'
+            && document.querySelector('.workbench-status').textContent === '等待结果确认');
+        var unknownEquip = loadoutMessages().filter(function(message) {
+            return message.cmd === 'equipEquipment';
+        })[2];
+        var reconcile = loadoutMessages().filter(function(message) {
+            return message.cmd === 'snapshot' && message.payload.reconcileAfterCallId;
+        })[0];
+        check('reconcile carries the exact unknown call watermark and does not replay equip',
+            !!reconcile
+            && reconcile.payload.reconcileAfterCallId === unknownEquip.callId
+            && commandCount('equipEquipment') === 3);
+        window.__routeHarness.releaseReconcile();
+        check('full reconcile proof clears unknown, applies backpack and restores stable slot focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state && state.session.state === 'idle'
+                    && state.session.loadoutRevision === 7
+                    && state.view.candidateCount === 1
+                    && document.activeElement.getAttribute('data-roving-key') === longGunKey
+                    && document.querySelector('.workbench-status').textContent === '写入结果已确认'
+                    && !document.querySelector('[data-header-action="storage"]').disabled
+                    && document.querySelector('[data-header-action="storage"]')
+                        .getAttribute('aria-disabled') === 'false'
+                    && window.__routeHarness.storage.externalCompletes === 3
+                    && window.__routeHarness.storage.appliedSnapshots === 2
+                    && commandCount('equipEquipment') === 3;
+            }));
+
+        var tuningSnapshotBase = commandCount('snapshot');
+        var tuningCommitBase = tuningMessages('commit').length;
+        var tuningCompleteBase = window.__routeHarness.storage.externalCompletes;
+        var tuningBackpackBase = window.__routeHarness.storage.appliedSnapshots;
+        document.querySelector('[data-build-action="tune"]').click();
+        check('occupied equipment enters shared current-only tuning with an exact loadout source',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state && state.tuning && state.tuning.active
+                    && state.tuning.tuning && state.tuning.tuning.hasPreview
+                    && !state.tuning.tuning.readPending;
+            }));
+        var candidateChrome = document.querySelectorAll(
+            '.character-build-candidate-pane > .character-build-pane-heading,'
+            + '.character-build-candidate-pane > .character-build-candidate-focus-summary,'
+            + '.character-build-candidate-pane > .character-build-candidate-scroll');
+        var candidateHeading = document.querySelector(
+            '.character-build-candidate-pane > .character-build-pane-heading');
+        var candidateActions = candidateHeading.querySelector(
+            '.character-build-candidate-actions');
+        check('embedded tuning has one visible chrome layer and hides the candidate decision face',
+            Array.prototype.every.call(candidateChrome, function(node) {
+                return node.hidden && node.hasAttribute('inert')
+                    && getComputedStyle(node).display === 'none';
+            })
+            && candidateHeading.contains(candidateActions)
+            && Array.prototype.every.call(candidateActions.querySelectorAll('button'),
+                function(node) { return node.closest('[inert]') === candidateHeading; })
+            && getComputedStyle(document.querySelector('.character-build-tuning-shell')).display !== 'none',
+            Array.prototype.map.call(candidateChrome, function(node) {
+                return node.className + ':' + getComputedStyle(node).display;
+            }).join('|'));
+        var tuningDensityToggle = document.querySelector(
+            '.character-build-tuning-tools [data-build-density-mount] .item-grid-mode-switch');
+        check('embedded tuning moves the one shared persisted density control into visible chrome',
+            tuningDensityToggle === densityToggleIdentity
+            && document.querySelectorAll('.item-grid-mode-switch').length === 1
+            && !tuningDensityToggle.closest('[hidden]')
+            && !tuningDensityToggle.closest('[inert]'));
+        document.querySelectorAll('.equipment-tuning-tab')[2].click();
+        var tuningCandidate = document.querySelector('.equipment-tuning-candidate');
+        var tuningDensityTraffic = tuningMessages().length;
+        tuningDensityToggle.querySelector('[data-layout-mode="compact"]').click();
+        check('compact tuning density reuses the shared 48px icon grid without authority traffic',
+            InventoryWorkbench.debugState().build.view.density === 'compact'
+            && document.querySelector('.character-build-tuning-mount').classList.contains(
+                'item-grid-compact')
+            && Math.abs(parseFloat(getComputedStyle(tuningCandidate).width) - 48) < 1
+            && Math.abs(parseFloat(getComputedStyle(tuningCandidate).height) - 48) < 1
+            && getComputedStyle(tuningCandidate.querySelector('span')).display === 'none'
+            && localStorage.getItem('cf7.itemgrid.mode.workbench') === 'compact'
+            && tuningMessages().length === tuningDensityTraffic);
+        tuningDensityToggle.querySelector('[data-layout-mode="full"]').click();
+        check('full tuning density restores complete cards through the same control',
+            tuningDensityToggle === document.querySelector(
+                '.character-build-tuning-tools .item-grid-mode-switch')
+            && !document.querySelector('.character-build-tuning-mount').classList.contains(
+                'item-grid-compact')
+            && parseFloat(getComputedStyle(tuningCandidate).width) >= 100
+            && getComputedStyle(tuningCandidate.querySelector('span')).display !== 'none'
+            && localStorage.getItem('cf7.itemgrid.mode.workbench') === 'full'
+            && tuningMessages().length === tuningDensityTraffic,
+            JSON.stringify({
+                same:tuningDensityToggle === document.querySelector(
+                    '.character-build-tuning-tools .item-grid-mode-switch'),
+                compact:document.querySelector('.character-build-tuning-mount')
+                    .classList.contains('item-grid-compact'),
+                rect:tuningCandidate.getBoundingClientRect().toJSON(),
+                copy:getComputedStyle(tuningCandidate.querySelector('span')).display,
+                stored:localStorage.getItem('cf7.itemgrid.mode.workbench'),
+                traffic:[tuningMessages().length, tuningDensityTraffic]
+            }));
+        document.querySelectorAll('.equipment-tuning-tab')[0].click();
+        check('density inspection returns to enhancement without disturbing its preview',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build.tuning.tuning;
+                return state.operation === 'enhance' && state.hasPreview && !state.readPending;
+            }));
+        var firstTuningSource = tuningMessages('snapshot')[0].payload.source;
+        check('loadout tuning source binds generation, slot and current revision only',
+            JSON.stringify(firstTuningSource) === JSON.stringify({
+                sourceKind:'loadout',
+                sessionGeneration:17,
+                slotKey:'长枪',
+                expectedLoadoutRevision:7
+            }), JSON.stringify(firstTuningSource));
+        var tuningRebindBase = tuningMessages('snapshot').length;
+        var feetKey = 'armor:脚部装备';
+        var feetSlot = document.querySelector('[data-roving-key="' + feetKey + '"]');
+        var feetName = feetSlot.getAttribute('data-focus-name');
+        var emptyLockProbe = document.querySelector('[data-roving-key="weapon:手枪"]');
+        emptyLockProbe.setAttribute('data-empty', 'true');
+        feetSlot.click();
+        check('tuning target rebind locks every loadout slot while the new source is pending',
+            Array.prototype.every.call(
+                document.querySelectorAll('.character-build-slot'),
+                function(node) { return node.disabled; }));
+        check('idle tuning rebinds the shared session, right heading and left selection together',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return tuningMessages('snapshot').length === tuningRebindBase + 1
+                    && state.tuning.slotKey === '脚部装备'
+                    && state.tuning.tuning.source.slotKey === '脚部装备'
+                    && state.tuning.tuning.hasPreview && !state.tuning.tuning.readPending
+                    && state.view.selectedSlotKey === feetKey
+                    && document.querySelector('.character-build-tuning-heading h2').textContent
+                        === feetName
+                    && !feetSlot.disabled;
+            }));
+        var reboundSource = tuningMessages('snapshot')[tuningRebindBase].payload.source;
+        check('stable tuning enables occupied equipment but keeps drugs and empty slots locked',
+            JSON.stringify(reboundSource) === JSON.stringify({
+                sourceKind:'loadout',
+                sessionGeneration:17,
+                slotKey:'脚部装备',
+                expectedLoadoutRevision:7
+            })
+            && emptyLockProbe.disabled
+            && Array.prototype.every.call(
+                document.querySelectorAll('[data-drug-grid] .character-build-slot'),
+                function(node) { return node.disabled; })
+            && !document.querySelector('[data-roving-key="' + longGunKey + '"]').disabled,
+            JSON.stringify(reboundSource));
+        emptyLockProbe.setAttribute('data-empty', 'false');
+        document.querySelector('[data-roving-key="' + longGunKey + '"]').click();
+        check('tuning can rebind back without detaching or creating a second adapter state machine',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return tuningMessages('snapshot').length === tuningRebindBase + 2
+                    && state.tuning.slotKey === '长枪'
+                    && state.tuning.tuning.source.slotKey === '长枪'
+                    && state.tuning.tuning.hasPreview && !state.tuning.tuning.readPending
+                    && state.view.selectedSlotKey === longGunKey
+                    && !emptyLockProbe.disabled;
+            }));
+        check('loadout tuning removes convert instead of sending a hidden cross-container intent',
+            Array.prototype.map.call(
+                document.querySelectorAll('.equipment-tuning-tab'),
+                function(node) { return node.textContent; }).join('|') === '强化度|进阶|配件'
+            && tuningMessages('preview').every(function(message) {
+                return message.payload.operation !== 'convert';
+            }));
+        var tuningTabSize = parseFloat(getComputedStyle(
+            document.querySelector('.equipment-tuning-tab')).fontSize);
+        var tuningCommitHeight = parseFloat(getComputedStyle(
+            document.querySelector('.equipment-tuning-commit')).minHeight);
+        check('tuning usability debts are closed in the embedded view',
+            tuningTabSize >= 11 && tuningCommitHeight >= 40
+            && document.querySelector('.equipment-tuning-info-open').textContent.trim()
+                === '调制说明'
+            && document.querySelector('.equipment-tuning-info-open')
+                .getAttribute('aria-label').indexOf('调制说明') >= 0
+            && getComputedStyle(document.querySelector(
+                '[data-doll-preview-open]')).display === 'none',
+            JSON.stringify({tab:tuningTabSize, commit:tuningCommitHeight,
+                info:document.querySelector('.equipment-tuning-info-open').textContent}));
+        var inspectTrigger = document.querySelector('.equipment-tuning-main-icon');
+        var inspectToastBase = Toast.messages.length;
+        inspectTrigger.focus();
+        inspectTrigger.click();
+        check('current equipment inspection opens as a modal above tuning',
+            document.querySelector('.workbench-modal[data-modal-kind="equipment-inspector"]')
+            && InventoryWorkbench.debugState().build.tuning.active);
+        var inspectEscape = new KeyboardEvent('keydown', {
+            key:'Escape', bubbles:true, cancelable:true
+        });
+        document.activeElement.dispatchEvent(inspectEscape);
+        check('Escape closes only the inspection modal and restores tuning focus',
+            await until(function() {
+                return !document.querySelector(
+                    '.workbench-modal[data-modal-kind="equipment-inspector"]');
+            })
+            && inspectEscape.defaultPrevented
+            && InventoryWorkbench.debugState().build.tuning.active
+            && document.activeElement
+            && document.activeElement.getAttribute('data-tuning-focus-key') === 'source:inspect'
+            && Toast.messages.length === inspectToastBase);
+        document.querySelector('.equipment-tuning-info-open').focus();
+        document.querySelector('.equipment-tuning-info-open').click();
+        var tuningInfoPanel = document.querySelector('.equipment-tuning-info-panel');
+        var tuningInfoClose = document.querySelector('[data-tuning-focus-key="info:close"]');
+        check('explicit tuning explanation opens without hover or a persistent pin mode',
+            !tuningInfoPanel.hidden
+            && tuningInfoPanel.getAttribute('aria-hidden') === 'false'
+            && !!tuningInfoClose
+            && document.querySelector('[data-tuning-focus-key="info:pin"]') === null
+            && !tuningInfoPanel.hasAttribute('data-pinned'));
+        var infoEscape = new KeyboardEvent('keydown', {
+            key:'Escape', bubbles:true, cancelable:true
+        });
+        tuningInfoClose.focus();
+        tuningInfoClose.dispatchEvent(infoEscape);
+        check('Escape closes tuning explanation before returning to candidates',
+            await until(function() {
+                return document.querySelector('.equipment-tuning-info-panel').hidden
+                    && document.activeElement
+                    && document.activeElement.getAttribute('data-tuning-focus-key') === 'info:open';
+            })
+            && infoEscape.defaultPrevented
+            && InventoryWorkbench.debugState().build.tuning.active);
+        document.querySelector('.equipment-tuning-info-open').click();
+        document.querySelector('[data-roving-key="' + longGunKey + '"]').focus();
+        Bridge.emit('panel_esc', {});
+        var facadeEscapeClosedInfo = await until(function() {
+            return document.querySelector('.equipment-tuning-info-panel').hidden
+                && InventoryWorkbench.debugState().build.tuning.active
+                && document.activeElement
+                && document.activeElement.getAttribute('data-roving-key') === longGunKey;
+        });
+        check('facade Escape closes tuning explanation before exiting tuning',
+            facadeEscapeClosedInfo, JSON.stringify({
+                panelHidden:document.querySelector('.equipment-tuning-info-panel').hidden,
+                view:InventoryWorkbench.debugState().view,
+                tuning:InventoryWorkbench.debugState().build.tuning,
+                focus:document.activeElement && (document.activeElement.getAttribute(
+                    'data-tuning-focus-key') || document.activeElement.getAttribute('data-roving-key'))
+            }));
+
+        window.__routeHarness.tuning.rejectNextCommit = true;
+        document.querySelector('.equipment-tuning-commit').click();
+        check('deterministic tuning rollback releases the gate without a loadout or backpack refresh',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return tuningMessages('commit').length === tuningCommitBase + 1
+                    && state.session.loadoutRevision === 7
+                    && state.tuning.tuning.hasPreview
+                    && !state.tuning.tuning.inventoryWritePending
+                    && window.__routeHarness.storage.externalCompletes === tuningCompleteBase + 1;
+            })
+            && commandCount('snapshot') === tuningSnapshotBase
+            && window.__routeHarness.storage.appliedSnapshots === tuningBackpackBase);
+
+        var knownEventBase = window.__routeHarness.events.length;
+        window.__routeHarness.holdNextSnapshot = true;
+        document.querySelector('.equipment-tuning-commit').click();
+        check('known barrier pins the original generation and slot until loadout proof arrives',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var barrier = state.tuning.tuning.loadoutBarrier;
+                return window.__routeHarness.heldSnapshot
+                    && state.tuning.writePending && barrier
+                    && barrier.kind === 'known'
+                    && barrier.sessionGeneration === 17
+                    && barrier.slotKey === '长枪';
+            }));
+        window.__routeHarness.releaseSnapshot();
+        check('known tuning commit adopts a fresh full loadout before releasing the global lock',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.session.loadoutRevision === 8
+                    && state.tuning.tuning.source.expectedLoadoutRevision === 8
+                    && !state.tuning.writePending
+                    && !state.tuning.tuning.loadoutBarrier
+                    && window.__routeHarness.storage.externalCompletes === tuningCompleteBase + 2;
+            }));
+        var knownEvents = window.__routeHarness.events.slice(knownEventBase);
+        check('known barrier order is tuning response then ordinary loadout snapshot',
+            knownEvents.indexOf('tuning_commit_response')
+                < knownEvents.indexOf('snapshot_request')
+            && commandCount('snapshot') === tuningSnapshotBase + 1
+            && window.__routeHarness.storage.appliedSnapshots === tuningBackpackBase
+            && tuningMessages('commit')[tuningCommitBase + 1].payload.source === undefined
+            && Object.keys(tuningMessages('commit')[tuningCommitBase + 1].payload)
+                .sort().join('|') === 'expectedTuningToken|v|viewSessionId',
+            knownEvents.join('|'));
+
+        document.querySelector('[data-build-tuning-return]').click();
+        check('return from tuning restores the original slot, candidates and stable-key focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning && !state.tuning.active
+                    && state.view.selectedSlotKey === longGunKey
+                    && state.view.candidateCount === 1
+                    && document.activeElement
+                    && document.activeElement.getAttribute('data-roving-key') === longGunKey;
+            }));
+        check('return from tuning moves the same density control back without losing preference',
+            densityToggleIdentity === document.querySelector(
+                '.character-build-pane-tools [data-build-density-mount] .item-grid-mode-switch')
+            && densityToggleIdentity.getAttribute('data-layout-mode') === 'full'
+            && document.querySelectorAll('.item-grid-mode-switch').length === 1);
+
+        document.querySelector('[data-build-action="tune"]').click();
+        check('second tuning entry settles for unknown-outcome coverage',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning && state.tuning.active
+                    && state.tuning.tuning.hasPreview;
+            }));
+        var unknownCommitBase = tuningMessages('commit').length;
+        var unknownLoadoutBase = commandCount('snapshot');
+        var unknownEventBase = window.__routeHarness.events.length;
+        window.__routeHarness.tuning.unknownNextCommit = true;
+        window.__routeHarness.tuning.holdNextReconcile = true;
+        document.querySelector('.equipment-tuning-commit').click();
+        check('unknown tuning first adopts loadout, then holds a watermarked tuning reconcile under lock',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var barrier = state.tuning.tuning.loadoutBarrier;
+                return window.__routeHarness.tuning.heldReconcile
+                    && state.session.loadoutRevision === 9
+                    && state.tuning.writePending
+                    && state.tuning.tuning.needsReconcile
+                    && barrier && barrier.kind === 'unknown'
+                    && barrier.sessionGeneration === 17
+                    && barrier.slotKey === '长枪'
+                    && document.querySelector('[data-header-action="storage"]')
+                        .getAttribute('aria-disabled') === 'true';
+            }));
+        var unknownCommit = tuningMessages('commit')[unknownCommitBase];
+        var unknownReconcile = tuningMessages('snapshot').filter(function(message) {
+            return message.payload.reconcileAfterCallId === unknownCommit.callId;
+        })[0];
+        check('unknown reconcile uses the post-intent revision and never replays token or refreshes backpack',
+            !!unknownReconcile
+            && unknownReconcile.payload.source.expectedLoadoutRevision === 9
+            && unknownReconcile.payload.reconcileAfterCallId === unknownCommit.callId
+            && tuningMessages('commit').length === unknownCommitBase + 1
+            && commandCount('snapshot') === unknownLoadoutBase + 1
+            && window.__routeHarness.storage.appliedSnapshots === tuningBackpackBase,
+            JSON.stringify(unknownReconcile && unknownReconcile.payload));
+        var unknownEvents = window.__routeHarness.events.slice(unknownEventBase);
+        check('unknown barrier order is commit response, loadout snapshot, then tuning watermark',
+            unknownEvents.indexOf('tuning_commit_response')
+                < unknownEvents.indexOf('snapshot_request')
+            && unknownEvents.indexOf('snapshot_request')
+                < unknownEvents.indexOf('tuning_snapshot_request'),
+            unknownEvents.join('|'));
+        window.__routeHarness.tuning.heldReconcile.success = false;
+        window.__routeHarness.tuning.heldReconcile.error = 'snapshot_failed';
+        delete window.__routeHarness.tuning.heldReconcile.snapshot;
+        delete window.__routeHarness.tuning.heldReconcile.reconciled;
+        window.__routeHarness.releaseTuningReconcile();
+        check('failed tuning watermark keeps the write handle and barrier locked',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning.writePending
+                    && state.tuning.tuning.needsReconcile
+                    && state.tuning.tuning.loadoutBarrier
+                    && !state.tuning.tuning.readPending;
+            }));
+        var tuningRetryBase = tuningMessages('snapshot').length;
+        document.querySelector('.equipment-tuning-retry').click();
+        check('tuning watermark retry reuses the adopted revision and exact identity',
+            await until(function() {
+                return tuningMessages('snapshot').length === tuningRetryBase + 1;
+            })
+            && JSON.stringify(tuningMessages('snapshot')[tuningRetryBase].payload.source)
+                === JSON.stringify({
+                    sourceKind:'loadout',
+                    sessionGeneration:17,
+                    slotKey:'长枪',
+                    expectedLoadoutRevision:9
+                })
+            && tuningMessages('snapshot')[tuningRetryBase].payload.reconcileAfterCallId
+                === unknownCommit.callId);
+        check('two-proof unknown convergence unlocks without replay',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return !state.tuning.writePending
+                    && !state.tuning.tuning.needsReconcile
+                    && !state.tuning.tuning.loadoutBarrier
+                    && document.querySelector('[data-header-action="storage"]')
+                        .getAttribute('aria-disabled') === 'false';
+            })
+            && tuningMessages('commit').length === unknownCommitBase + 1);
+        document.querySelector('[data-build-tuning-return]').click();
+        check('unknown convergence also restores the original focus contract',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return !state.tuning.active && state.view.candidateCount === 1
+                    && document.activeElement
+                    && document.activeElement.getAttribute('data-roving-key') === longGunKey;
+            }));
+
+        var candidateCountBeforeSecondStorage = commandCount('candidates');
+        var snapshotCountBeforeSecondStorage = commandCount('snapshot');
+
+        document.querySelector('[data-header-action="storage"]').click();
+        check('second storage switch settles', await until(function() {
+            return InventoryWorkbench.debugState().view === 'storage';
+        }));
+        InventoryStorageWorkbench.switchView('tuning');
+        check('storage workbench exposes tuning state',
+            InventoryWorkbench.debugState().view === 'tuning');
+        Bridge.emit('panel_esc', {});
+        check('Esc from tuning returns to build without closing', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.view === 'build' && state.build && state.build.mounted
+                && state.build.selectedSlotKey === longGunKey
+                && state.build.view.selectedSlotKey === longGunKey
+                && state.build.view.candidateCount === 1
+                && commandCount('snapshot') === snapshotCountBeforeSecondStorage + 1
+                && commandCount('candidates') === candidateCountBeforeSecondStorage + 1
+                && rendererSettled();
+        }));
+        check('tuning Esc also preserves focus and avoids writes',
+            document.activeElement
+            && document.activeElement.getAttribute('data-roving-key') === longGunKey
+            && commandCount('finalize') === 0
+            && window.__routeHarness.events.indexOf('close_sent') < 0);
+
+        await runPoseMatrix('男');
+        await runPoseMatrix('女');
+        check('production controller pose matrix covers both genders and every equipment slot',
+            visual.poseMatrix.length === 34
+            && visual.poseMatrix.filter(function(row) { return row.gender === '男'; }).length === 17
+            && visual.poseMatrix.filter(function(row) { return row.gender === '女'; }).length === 17,
+            visual.poseMatrix.length);
+
+        window.__routeHarness.setPortraitGender('男');
+        window.__routeHarness.setEquipment('长枪',
+            CharacterBuildDressupFixture.equipment.longGun);
+        window.__routeHarness.setEquipment('手枪',
+            CharacterBuildDressupFixture.equipment.pistol);
+        window.__routeHarness.setEquipment('手枪2',
+            CharacterBuildDressupFixture.equipment.pistol);
+        window.__routeHarness.setEquipment('刀',
+            CharacterBuildDressupFixture.equipment.blade);
+        check('pose matrix restores a healthy production build before close',
+            await refreshProjection());
+        await selectPose('男', '长枪', '长枪站立', '长枪');
+
+        document.querySelector('[data-header-action="storage"]').click();
+        check('third storage switch settles', await until(function() {
+            return InventoryWorkbench.debugState().view === 'storage';
+        }));
+        document.querySelector('[data-header-action="close"]').click();
+        check('close in storage waits for finalize then exact close', await until(function() {
+            return window.__routeHarness.events.indexOf('close_sent') >= 0;
+        }));
+        var finalMessages = loadoutMessages();
+        var finalize = finalMessages.filter(function(message) {
+            return message.cmd === 'finalize';
+        })[0];
+        var close = window.__routeHarness.sent.filter(function(message) {
+            return message.type === 'panel' && message.cmd === 'close'
+                && !message.domain;
+        })[0];
+        check('finalize carries same generation and revision',
+            !!finalize && JSON.stringify(finalize.payload) ===
+                '{"v":1,"sessionGeneration":17,"expectedLoadoutRevision":9}');
+        check('exact close is emitted once with no extra fields',
+            !!close && JSON.stringify(Object.keys(close).sort()) === JSON.stringify(
+                ['cmd','panel','panelInstanceId','type'])
+            && close.panelInstanceId === 'panel.workbench.route-harness');
+        check('finalize proof precedes close emission',
+            window.__routeHarness.events.indexOf('finalize_response')
+                < window.__routeHarness.events.indexOf('close_sent'));
+        check('panel is fully closed after proven finalize',
+            Panels.isOpen() === false && window.__routeHarness.renderer.active === 0);
+
+        window.__routeHarness.rejectNextSnapshot = true;
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                panelInstanceId:'panel.workbench.rejected-harness'
+            }
+        });
+        check('definitive asynchronous open rejection tears down exact workbench',
+            await until(function() {
+                return window.__routeHarness.sent.some(function(message) {
+                    return message.type === 'panel' && message.cmd === 'close'
+                        && message.reason === 'mount_failed'
+                        && message.panelInstanceId === 'panel.workbench.rejected-harness';
+                }) && Panels.isOpen() === false
+                    && window.__routeHarness.renderer.active === 0;
+            }));
+    } catch (error) {
+        checks.push({name:'harness execution', ok:false, detail:error.stack || String(error)});
+    }
+    window.__qaReport = {
+        checks:checks,
+        sent:window.__routeHarness.sent,
+        events:window.__routeHarness.events,
+        renderer:window.__routeHarness.renderer,
+        manifest:window.__routeHarness.manifest,
+        storage:window.__routeHarness.storage,
+        visual:visual,
+        shotNames:Object.keys(window.__routeHarness.shots).sort(),
+        boundary:{controller:'production', storage:'facade_stub', host:'fake_bridge'}
+    };
+    document.getElementById('qa-output').textContent = JSON.stringify(window.__qaReport, null, 2);
+    window.__qaReady = true;
+})();
+</script>
+</body>
+</html>

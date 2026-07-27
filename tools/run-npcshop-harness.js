@@ -14,7 +14,7 @@ const WORKBENCH_COMPONENTS_SOURCE=path.join(WEB,'modules','workbench-components.
 const NPCSHOP_SECONDARY_SOURCE=path.join(WEB,'modules','npcshop-secondary-pages.js');
 const PANEL_CONTRACT_SOURCE=path.join(ROOT,'launcher','contracts','panel-contracts.v2.json');
 const KSHOP_MODULE_SOURCES=['kshop-cart-controller.js','kshop-catalog-presenter.js','kshop-owned-inventory-presenter.js','kshop-tooltip-presenter.js'];
-const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js'];
+const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js','inventory-tuning-scope.js','inventory-storage-workbench.js'];
 
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','npcshop.js'),'utf8');

@@ -30,6 +30,7 @@ namespace CF7Launcher.Tests.Bus
             Assert.Contains("intelligence_response", names);
             Assert.Contains("skill_response", names);
             Assert.Contains("hairdresser_response", names);
+            Assert.Contains("loadout_response", names);
         }
 
         [Fact]
@@ -55,6 +56,23 @@ namespace CF7Launcher.Tests.Bus
             Assert.True((bool)control["httpCallable"]);
             Assert.False((bool)response["httpCallable"]);
             Assert.True((bool)agentControl["httpCallable"]);
+        }
+
+        [Fact]
+        public void LoadoutResponse_IsAsyncSocketOnlyMetadata()
+        {
+            JObject loadout = null;
+            var status = JObject.Parse(
+                TaskRegistry.ToStatusJson(true, 3000, 3001));
+            foreach (JObject task in (JArray)status["tasks"])
+                if ((string)task["name"] == "loadout_response")
+                    loadout = task;
+
+            Assert.NotNull(loadout);
+            Assert.Equal("json_async", (string)loadout["transport"]);
+            Assert.Equal("AS2<->C#", (string)loadout["direction"]);
+            Assert.False((bool)loadout["httpCallable"]);
+            Assert.False(TaskRegistry.IsHttpCallable("loadout_response"));
         }
     }
 }

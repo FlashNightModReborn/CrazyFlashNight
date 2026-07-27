@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>角色构筑 · 单 Canvas 全装备组合证伪台</title>
+<base href="../../../">
+<style>
+:root {
+    color-scheme: dark;
+    font-family: "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    background: #070a0e;
+    color: #eef3f7;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body {
+    background:
+        radial-gradient(circle at 58% 20%, rgba(79, 144, 171, .16), transparent 32%),
+        linear-gradient(135deg, #111820 0%, #070a0e 58%, #0c1117 100%);
+}
+button {
+    min-height: 32px;
+    border: 1px solid rgba(190, 220, 231, .22);
+    border-radius: 5px;
+    padding: 0 11px;
+    background: #17222c;
+    color: #dfeaf0;
+    font: inherit;
+    cursor: pointer;
+}
+button:hover, button:focus-visible { border-color: #81c3d7; outline: none; }
+button[aria-pressed="true"] {
+    border-color: #8fd3e7;
+    background: #1d4b5a;
+    color: #fff;
+}
+.qa-shell {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 68px minmax(0, 1fr);
+}
+.qa-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(205, 228, 236, .12);
+    background: rgba(8, 13, 18, .9);
+}
+.qa-title { min-width: 240px; margin-right: auto; }
+.qa-title strong { display: block; font-size: 15px; letter-spacing: .04em; }
+.qa-title span { color: #8da2ad; font-size: 11px; }
+.qa-main {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(470px, 1.55fr) minmax(310px, .85fr);
+    gap: 12px;
+    padding: 12px;
+}
+.qa-stage, .qa-evidence {
+    min-height: 0;
+    border: 1px solid rgba(190, 220, 231, .14);
+    background: rgba(10, 15, 20, .78);
+    box-shadow: 0 18px 54px rgba(0, 0, 0, .28);
+}
+.qa-stage {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(143, 195, 215, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(143, 195, 215, .035) 1px, transparent 1px),
+        radial-gradient(circle at 50% 45%, rgba(43, 99, 119, .23), transparent 53%),
+        #080d12;
+    background-size: 24px 24px, 24px 24px, auto, auto;
+}
+#doll-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.qa-stage-label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: grid;
+    gap: 2px;
+    pointer-events: none;
+}
+.qa-stage-label strong { font-size: 14px; }
+.qa-stage-label span { color: #86a3af; font-size: 11px; }
+.qa-pose {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 5px 8px;
+    border: 1px solid rgba(135, 199, 220, .24);
+    background: rgba(8, 14, 19, .86);
+    color: #a9d6e4;
+    font-size: 11px;
+}
+.qa-evidence {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    overflow: hidden;
+}
+.qa-summary {
+    padding: 12px;
+    border-bottom: 1px solid rgba(190, 220, 231, .1);
+}
+.qa-summary h1 { margin: 0 0 6px; font-size: 15px; font-weight: 650; }
+.qa-summary p { margin: 0; color: #93a9b3; font-size: 11px; line-height: 1.5; }
+.qa-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(190, 220, 231, .1);
+}
+.qa-fact {
+    padding: 3px 6px;
+    border: 1px solid rgba(190, 220, 231, .13);
+    color: #b8c8cf;
+    background: #101820;
+    font-size: 10px;
+}
+.qa-fact[data-kind="pass"] { color: #a8dbb5; border-color: rgba(88, 181, 111, .28); }
+.qa-fact[data-kind="gap"] { color: #f1c58c; border-color: rgba(222, 157, 70, .34); }
+.qa-slots {
+    min-height: 0;
+    overflow-y: auto;
+    display: grid;
+    align-content: start;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    padding: 10px 12px;
+}
+.qa-slot {
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid rgba(190, 220, 231, .13);
+    background: rgba(18, 27, 34, .8);
+}
+.qa-slot[data-status="gap"] { border-color: rgba(222, 157, 70, .42); }
+.qa-slot strong, .qa-slot span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qa-slot strong { font-size: 11px; }
+.qa-slot span { margin-top: 3px; color: #8198a3; font-size: 9px; }
+.qa-slot em {
+    display: block;
+    margin-top: 5px;
+    color: #9cccb0;
+    font-size: 9px;
+    font-style: normal;
+}
+.qa-slot[data-status="gap"] em { color: #f0bd7b; }
+.qa-runtime {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    border-top: 1px solid rgba(190, 220, 231, .1);
+    background: rgba(190, 220, 231, .08);
+}
+.qa-runtime span {
+    min-width: 0;
+    padding: 7px 5px;
+    background: #0d141a;
+    color: #8298a3;
+    text-align: center;
+    font-size: 9px;
+}
+.qa-runtime b { display: block; color: #dbe9ee; font-size: 11px; }
+#qa-state {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+}
+@media (max-width: 760px) {
+    .qa-main { grid-template-columns: minmax(0, 1fr); }
+    .qa-evidence { display: none; }
+    .qa-title { min-width: 180px; }
+}
+</style>
+</head>
+<body>
+<main class="qa-shell">
+    <header class="qa-toolbar">
+        <div class="qa-title">
+            <strong>全装备组合 · renderer 证伪台</strong>
+            <span>真实 manifest / 单一现役 Canvas / 不接生产路由</span>
+        </div>
+        <button type="button" data-gender="男" aria-pressed="true">男</button>
+        <button type="button" data-gender="女" aria-pressed="false">女</button>
+        <button type="button" data-scenario="longGun" aria-pressed="true">长枪</button>
+        <button type="button" data-scenario="dualPistol" aria-pressed="false">双枪</button>
+        <button type="button" data-scenario="pistol" aria-pressed="false">手枪</button>
+        <button type="button" data-scenario="pistol2" aria-pressed="false">手枪2</button>
+        <button type="button" data-scenario="blade" aria-pressed="false">刀</button>
+        <button type="button" data-scenario="empty" aria-pressed="false">空手</button>
+        <button type="button" data-scenario="grenadeCombined" aria-pressed="false">手雷缺口</button>
+    </header>
+    <section class="qa-main">
+        <div class="qa-stage">
+            <canvas id="doll-canvas" aria-label="单 Canvas 全装备纸娃娃"></canvas>
+            <div class="qa-stage-label">
+                <strong id="stage-gender">男 · 长枪站立</strong>
+                <span id="stage-item">A兵团精致套装 / HK416战术版</span>
+            </div>
+            <div class="qa-pose" id="stage-pose">battle · 长枪站立</div>
+        </div>
+        <aside class="qa-evidence">
+            <div class="qa-summary">
+                <h1 id="evidence-title">能力边界</h1>
+                <p id="evidence-copy">组合投影由现役 renderer 直接绘制；静态图标与无 holder 的装备必须由上层 UI 回退。</p>
+            </div>
+            <div class="qa-facts" id="qa-facts"></div>
+            <div class="qa-slots" id="qa-slots"></div>
+            <div class="qa-runtime">
+                <span>Canvas<b id="runtime-canvas">1</b></span>
+                <span>Holders<b id="runtime-holders">0</b></span>
+                <span>Missing<b id="runtime-missing">0</b></span>
+                <span>Failed<b id="runtime-failed">0</b></span>
+            </div>
+        </aside>
+    </section>
+</main>
+<output id="qa-state">booting</output>
+
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/character-build/character-build-pose.js"></script>
+<script src="modules/dressup/dev/character-build-combination-fixture.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var fixture = CharacterBuildDressupFixture;
+    var canvas = document.getElementById('doll-canvas');
+    var context = canvas.getContext('2d');
+    var nativeGetContext = canvas.getContext.bind(canvas);
+    var nativeClearRect = context.clearRect.bind(context);
+    var nativeDrawImage = context.drawImage.bind(context);
+    var nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
+    var nativeCancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+    var activeAnimationFrames = {};
+    var renderSequence = 0;
+    var drawSources = [];
+    var manifest = null;
+    var renderer = null;
+    var currentState = null;
+    var currentScenario = 'longGun';
+    var currentGender = '男';
+    var currentFault = null;
+    var currentPixelRatio = 1;
+    var lastMeta = null;
+    var active = true;
+    var resizeRequest = null;
+    var listenerCounts = {resize:0, motion:0};
+    var motionQuery = window.matchMedia
+        ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    // Character-build camera contract: body and armor own framing; weapons still draw
+    // but their long silhouettes cannot shrink the person.
+    var BODY_FIT_FIELDS = [
+        '身体', '脸型', '发型', '面具', '屁股',
+        '上臂', '左下臂', '右下臂', '左手', '右手',
+        '左大腿', '右大腿', '小腿', '脚'
+    ];
+    var CHARACTER_DRAW_FIELDS = BODY_FIT_FIELDS.concat([
+        '长枪_装扮', '手枪_装扮', '手枪2_装扮',
+        '刀_装扮', '刀2_装扮', '刀3_装扮'
+    ]);
+
+    canvas.getContext = function(type) {
+        return type === '2d' ? context : nativeGetContext(type);
+    };
+    context.clearRect = function() {
+        renderSequence++;
+        drawSources = [];
+        return nativeClearRect.apply(context, arguments);
+    };
+    context.drawImage = function(image) {
+        drawSources.push(normalizeSource(image && (image.currentSrc || image.src)));
+        return nativeDrawImage.apply(context, arguments);
+    };
+    window.requestAnimationFrame = function(callback) {
+        var requestId = nativeRequestAnimationFrame(function(timestamp) {
+            delete activeAnimationFrames[requestId];
+            callback(timestamp);
+        });
+        activeAnimationFrames[requestId] = true;
+        return requestId;
+    };
+    window.cancelAnimationFrame = function(requestId) {
+        delete activeAnimationFrames[requestId];
+        return nativeCancelAnimationFrame(requestId);
+    };
+
+    function normalizeSource(value) {
+        var source = String(value || '');
+        if (!source) return '';
+        if (source.indexOf('data:') === 0) return source.slice(0, 48);
+        if (/^(?:skins|rigs)\//.test(source)) return source;
+        try {
+            var pathname = new URL(source, document.baseURI).pathname;
+            var marker = '/assets/dressup/';
+            var markerIndex = pathname.indexOf(marker);
+            return markerIndex >= 0 ? pathname.slice(markerIndex + marker.length) : pathname;
+        } catch (error) {
+            return source;
+        }
+    }
+
+    function allEquipment() {
+        var result = {};
+        fixture.armorSlots.forEach(function(slot) {
+            result[slot.id] = slot.item;
+        });
+        result['长枪'] = fixture.equipment.longGun;
+        result['手枪'] = fixture.equipment.pistol;
+        result['手枪2'] = fixture.equipment.pistol;
+        result['刀'] = fixture.equipment.blade;
+        result['手雷'] = fixture.equipment.grenade;
+        return result;
+    }
+
+    function itemFields(itemName, gender) {
+        var item = manifest && manifest.items && manifest.items[itemName];
+        var byGender = item && item.fieldsByGender;
+        return byGender && byGender[gender] ? byGender[gender] : {};
+    }
+
+    function scenarioState(name, gender) {
+        var scenario = fixture.scenarios[name] || fixture.scenarios.longGun;
+        var equipment = allEquipment();
+        (scenario.clearSlots || []).forEach(function(slotKey) {
+            equipment[slotKey] = '';
+        });
+        if (scenario.candidateItem) {
+            equipment[scenario.targetSlot] = scenario.candidateItem;
+        }
+        var pose = CharacterBuildPose.select(equipment, {
+            kind:'equipment',
+            slotKey:scenario.targetSlot
+        });
+        return DressupDollRenderer.buildStateFromEquipment(manifest, {
+            gender: gender,
+            equipment: equipment,
+            appearance: fixture.appearanceByGender[gender],
+            fitFields: BODY_FIT_FIELDS,
+            drawFields: CHARACTER_DRAW_FIELDS,
+            rig: 'battle',
+            stateLabel: pose.stateLabel,
+            attackMode: pose.attackMode,
+            zoom: 0.96,
+            margin: 24
+        });
+    }
+
+    function grenadeProductState(gender) {
+        var fields = itemFields(fixture.equipment.grenade, gender);
+        return DressupDollRenderer.buildStateFromEquipment(manifest, {
+            gender: gender,
+            directSkinKey: fields['手雷_装扮'],
+            attackMode: '手雷',
+            zoom: 0.9,
+            margin: 28
+        });
+    }
+
+    function entryUris(entry, result, seen) {
+        if (!entry || typeof entry !== 'object' || seen.indexOf(entry) >= 0) return;
+        seen.push(entry);
+        var exported = entry.export || {};
+        if (exported.uri) result.push(normalizeSource(exported.uri));
+        [entry.frames, entry.timelineFrames, exported.frames, exported.timelineFrames].forEach(function(frames) {
+            (frames || []).forEach(function(frame) {
+                if (frame && frame.uri) result.push(normalizeSource(frame.uri));
+            });
+        });
+        Object.keys(entry.runtimeVariants || {}).forEach(function(variant) {
+            entryUris(entry.runtimeVariants[variant], result, seen);
+        });
+        var nested = exported.nestedAnimation || entry.nestedAnimation || {};
+        (nested.layers || []).forEach(function(layer) {
+            entryUris(layer, result, seen);
+        });
+    }
+
+    function evidenceForItem(itemName, gender) {
+        var fields = itemFields(itemName, gender);
+        var uris = [];
+        Object.keys(fields).forEach(function(field) {
+            entryUris(manifest.skinKeys[fields[field]], uris, []);
+        });
+        var uniqueUris = [];
+        var seen = {};
+        uris.forEach(function(uri) {
+            if (uri && !seen[uri]) {
+                seen[uri] = true;
+                uniqueUris.push(uri);
+            }
+        });
+        var drawn = uniqueUris.filter(function(uri) {
+            return drawSources.indexOf(uri) >= 0;
+        });
+        return {
+            fields: Object.keys(fields),
+            skinKeys: Object.keys(fields).map(function(field) { return fields[field]; }),
+            expectedUris: uniqueUris,
+            drawnUris: drawn,
+            projected: Object.keys(fields).length > 0,
+            drawn: drawn.length > 0
+        };
+    }
+
+    function manifestFacts() {
+        var neckItems = [];
+        Object.keys(manifest.items || {}).forEach(function(name) {
+            var item = manifest.items[name];
+            if (item.use === '颈部装备') neckItems.push(item);
+        });
+        var emptyNeckItems = neckItems.filter(function(item) {
+            return !item.dressup && Object.keys(item.fieldsByGender || {}).length === 0;
+        });
+        var grenadeHolders = 0;
+        var battle = manifest.rigs && manifest.rigs.battle;
+        Object.keys(battle && battle.genders || {}).forEach(function(gender) {
+            var states = battle.genders[gender].states || {};
+            Object.keys(states).forEach(function(stateLabel) {
+                (states[stateLabel].holders || []).forEach(function(holder) {
+                    if (holder.field === '手雷_装扮') grenadeHolders++;
+                });
+            });
+        });
+        return {
+            neckItems: neckItems.length,
+            neckItemsWithoutProjection: emptyNeckItems.length,
+            grenadeBattleHolders: grenadeHolders,
+            rendererOwnsStaticIcons: false
+        };
+    }
+
+    function holderFields() {
+        var battle = manifest.rigs && manifest.rigs.battle;
+        var gender = battle && battle.genders && battle.genders[currentGender];
+        var state = gender && gender.states && gender.states[currentState.stateLabel];
+        return (state && state.holders || []).map(function(holder) { return holder.field; });
+    }
+
+    function currentEvidence() {
+        var armor = {};
+        fixture.armorSlots.forEach(function(slot) {
+            armor[slot.id] = evidenceForItem(slot.item, currentGender);
+        });
+        return {
+            armor: armor,
+            longGun: evidenceForItem(fixture.equipment.longGun, currentGender),
+            pistol: evidenceForItem(fixture.equipment.pistol, currentGender),
+            blade: evidenceForItem(fixture.equipment.blade, currentGender),
+            grenade: evidenceForItem(fixture.equipment.grenade, currentGender),
+            candidate: evidenceForItem(fixture.scenarios.candidate.candidateItem, currentGender)
+        };
+    }
+
+    function cameraMetrics() {
+        if (!lastMeta || !lastMeta.bounds || !lastMeta.scale) return null;
+        var bounds = lastMeta.bounds;
+        var width = Math.max(0, (bounds.maxX - bounds.minX) * lastMeta.scale);
+        var height = Math.max(0, (bounds.maxY - bounds.minY) * lastMeta.scale);
+        return {
+            fitWidthRatio: canvas.clientWidth ? width / canvas.clientWidth : 0,
+            fitHeightRatio: canvas.clientHeight ? height / canvas.clientHeight : 0,
+            centerXRatio: 0.5,
+            centerYRatio: 0.5,
+            fitFields: currentState && currentState.fitFields
+                ? currentState.fitFields.slice(0) : [],
+            drawFields: currentState && currentState.drawFields
+                ? currentState.drawFields.slice(0) : []
+        };
+    }
+
+    function updateButtons() {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-gender]'), function(button) {
+            button.setAttribute('aria-pressed', button.getAttribute('data-gender') === currentGender ? 'true' : 'false');
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('[data-scenario]'), function(button) {
+            button.setAttribute('aria-pressed', button.getAttribute('data-scenario') === currentScenario ? 'true' : 'false');
+        });
+    }
+
+    function makeFact(label, kind) {
+        var node = document.createElement('span');
+        node.className = 'qa-fact';
+        node.setAttribute('data-kind', kind);
+        node.textContent = label;
+        return node;
+    }
+
+    function updateUi() {
+        if (!manifest || !currentState) return;
+        var scenario = fixture.scenarios[currentScenario] || fixture.scenarios.longGun;
+        var facts = manifestFacts();
+        var evidence = currentEvidence();
+        var factRoot = document.getElementById('qa-facts');
+        factRoot.innerHTML = '';
+        factRoot.appendChild(makeFact('单 Canvas', document.querySelectorAll('canvas').length === 1 ? 'pass' : 'gap'));
+        factRoot.appendChild(makeFact('颈部 ' + facts.neckItemsWithoutProjection + '/' + facts.neckItems + ' 零投影', 'gap'));
+        factRoot.appendChild(makeFact('手雷 battle holder ' + facts.grenadeBattleHolders, 'gap'));
+        var camera = cameraMetrics();
+        factRoot.appendChild(makeFact(camera
+            ? '人物高度 ' + Math.round(camera.fitHeightRatio * 100) + '%' : '人物取景待定',
+            camera && camera.fitHeightRatio >= 0.6 ? 'pass' : 'gap'));
+        factRoot.appendChild(makeFact(currentFault ? '逐部位故障注入' : '真实组合', currentFault ? 'gap' : 'pass'));
+
+        var slots = document.getElementById('qa-slots');
+        slots.innerHTML = '';
+        fixture.armorSlots.forEach(function(slot) {
+            var slotEvidence = evidence.armor[slot.id];
+            var node = document.createElement('div');
+            var isFault = currentFault && currentFault.slotId === slot.id;
+            var isGap = slot.id === 'neck' || isFault;
+            node.className = 'qa-slot';
+            node.setAttribute('data-slot-id', slot.id);
+            node.setAttribute('data-status', isGap ? 'gap' : 'projected');
+            var title = document.createElement('strong');
+            title.textContent = slot.label + ' · ' + slot.item;
+            var fields = document.createElement('span');
+            fields.textContent = slotEvidence.fields.length
+                ? slotEvidence.fields.join(' / ') : 'manifest 无投影字段';
+            var status = document.createElement('em');
+            status.textContent = slot.id === 'neck'
+                ? '需要上层静态图标回退'
+                : isFault
+                    ? '缺素材被局部隔离；静态图标仍是上层缺口'
+                    : slotEvidence.drawn ? '现役投影已绘制' : '等待素材';
+            node.appendChild(title);
+            node.appendChild(fields);
+            node.appendChild(status);
+            slots.appendChild(node);
+        });
+
+        document.getElementById('stage-gender').textContent = currentGender + ' · ' + scenario.label;
+        document.getElementById('stage-item').textContent = currentScenario === 'candidate'
+            ? fixture.equipment.longGun + ' → ' + scenario.candidateItem
+            : 'A兵团精致套装 / ' + fixture.equipment.longGun;
+        document.getElementById('stage-pose').textContent =
+            (lastMeta ? lastMeta.rig : 'battle') + ' · ' + (lastMeta ? lastMeta.stateLabel : scenario.stateLabel);
+        document.getElementById('runtime-canvas').textContent = String(document.querySelectorAll('canvas').length);
+        document.getElementById('runtime-holders').textContent = String(lastMeta && lastMeta.holders || 0);
+        document.getElementById('runtime-missing').textContent = String(lastMeta && lastMeta.missing || 0);
+        document.getElementById('runtime-failed').textContent = String(lastMeta && lastMeta.failedImages || 0);
+        document.getElementById('qa-state').textContent = active ? 'ready' : 'destroyed';
+        updateButtons();
+    }
+
+    function useManifest(nextManifest) {
+        renderer.setManifest(nextManifest || manifest);
+    }
+
+    function renderScenario(name, gender) {
+        if (!active) return null;
+        currentScenario = fixture.scenarios[name] ? name : 'longGun';
+        currentGender = gender === '女' ? '女' : gender === '男' ? '男' : currentGender;
+        currentFault = null;
+        useManifest(manifest);
+        currentState = scenarioState(currentScenario, currentGender);
+        lastMeta = renderer.render(currentState);
+        updateUi();
+        return debugState();
+    }
+
+    function renderGrenadeProduct(gender) {
+        if (!active) return null;
+        currentScenario = 'grenadeProduct';
+        currentGender = gender === '女' ? '女' : gender === '男' ? '男' : currentGender;
+        currentFault = null;
+        useManifest(manifest);
+        currentState = grenadeProductState(currentGender);
+        lastMeta = renderer.render(currentState);
+        updateUi();
+        return debugState();
+    }
+
+    function shadowManifestForSlot(slotId, mode) {
+        var slot = fixture.armorSlots.filter(function(candidate) { return candidate.id === slotId; })[0];
+        if (!slot) throw new Error('unknown armor slot: ' + slotId);
+        var fields = itemFields(slot.item, currentGender);
+        var shadow = Object.create(manifest);
+        shadow.skinKeys = Object.create(manifest.skinKeys);
+        Object.keys(fields).forEach(function(field) {
+            var skinKey = fields[field];
+            if (mode === 'asset-load') {
+                shadow.skinKeys[skinKey] = {
+                    covered: true,
+                    export: {
+                        uri: 'data:image/png;base64,invalid-' + slotId + '-' + field,
+                        width: 48,
+                        height: 48,
+                        zoom: 1
+                    }
+                };
+            } else {
+                shadow.skinKeys[skinKey] = null;
+            }
+        });
+        return {slot:slot, fields:fields, manifest:shadow};
+    }
+
+    function faultArmor(slotId, mode, gender) {
+        if (!active) return null;
+        currentGender = gender === '女' ? '女' : gender === '男' ? '男' : currentGender;
+        currentScenario = 'longGun';
+        currentState = scenarioState('longGun', currentGender);
+        var fault = shadowManifestForSlot(slotId, mode || 'mapping-missing');
+        currentFault = {
+            slotId: slotId,
+            mode: mode || 'mapping-missing',
+            projectedFields: Object.keys(fault.fields)
+        };
+        useManifest(fault.manifest);
+        lastMeta = renderer.render(currentState);
+        updateUi();
+        return debugState();
+    }
+
+    function setPixelRatio(value) {
+        if (!active) return null;
+        currentPixelRatio = Math.max(0.25, Number(value) || 1);
+        lastMeta = renderer.setPixelRatio(currentPixelRatio);
+        updateUi();
+        return debugState();
+    }
+
+    function onResize() {
+        if (!active || resizeRequest !== null) return;
+        resizeRequest = window.requestAnimationFrame(function() {
+            resizeRequest = null;
+            if (!active || !renderer || !currentState) return;
+            lastMeta = renderer.render(currentState);
+            updateUi();
+        });
+    }
+
+    function onMotionChange() {
+        if (!active || !renderer) return;
+        renderer.setAnimationEnabled(!(motionQuery && motionQuery.matches));
+        updateUi();
+    }
+
+    function addLifecycleListeners() {
+        window.addEventListener('resize', onResize);
+        listenerCounts.resize++;
+        if (motionQuery) {
+            if (motionQuery.addEventListener) motionQuery.addEventListener('change', onMotionChange);
+            else if (motionQuery.addListener) motionQuery.addListener(onMotionChange);
+            listenerCounts.motion++;
+        }
+    }
+
+    function removeLifecycleListeners() {
+        if (listenerCounts.resize) {
+            window.removeEventListener('resize', onResize);
+            listenerCounts.resize = 0;
+        }
+        if (motionQuery && listenerCounts.motion) {
+            if (motionQuery.removeEventListener) motionQuery.removeEventListener('change', onMotionChange);
+            else if (motionQuery.removeListener) motionQuery.removeListener(onMotionChange);
+            listenerCounts.motion = 0;
+        }
+    }
+
+    function destroy() {
+        if (!active) return debugState();
+        active = false;
+        removeLifecycleListeners();
+        if (resizeRequest !== null) {
+            window.cancelAnimationFrame(resizeRequest);
+            resizeRequest = null;
+        }
+        if (renderer) renderer.destroy();
+        lastMeta = null;
+        updateUi();
+        return debugState();
+    }
+
+    function debugState() {
+        var facts = manifest ? manifestFacts() : null;
+        var evidence = manifest && currentState ? currentEvidence() : null;
+        return {
+            ready: !!manifest,
+            active: active,
+            gender: currentGender,
+            scenario: currentScenario,
+            fault: currentFault,
+            canvasCount: document.querySelectorAll('canvas').length,
+            canvas: {
+                width: canvas.width,
+                height: canvas.height,
+                clientWidth: canvas.clientWidth,
+                clientHeight: canvas.clientHeight
+            },
+            pixelRatio: currentPixelRatio,
+            reducedMotion: !!(motionQuery && motionQuery.matches),
+            animationEnabled: renderer ? renderer.isAnimationEnabled() : false,
+            activeAnimationFrames: Object.keys(activeAnimationFrames).length,
+            listenerCounts: {
+                resize: listenerCounts.resize,
+                motion: listenerCounts.motion
+            },
+            renderSequence: renderSequence,
+            drawSources: drawSources.slice(0),
+            state: currentState ? {
+                rig: currentState.rig,
+                stateLabel: currentState.stateLabel,
+                attackMode: currentState.attackMode,
+                keyMap: currentState.keyMap,
+                fitFields: currentState.fitFields,
+                drawFields: currentState.drawFields
+            } : null,
+            camera: cameraMetrics(),
+            holderFields: currentState ? holderFields() : [],
+            meta: lastMeta,
+            facts: facts,
+            evidence: evidence
+        };
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-gender]'), function(button) {
+        button.addEventListener('click', function() {
+            renderScenario(currentScenario, button.getAttribute('data-gender'));
+        });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-scenario]'), function(button) {
+        button.addEventListener('click', function() {
+            renderScenario(button.getAttribute('data-scenario'), currentGender);
+        });
+    });
+
+    window.CharacterBuildDressupHarness = {
+        renderScenario: renderScenario,
+        renderGrenadeProduct: renderGrenadeProduct,
+        faultArmor: faultArmor,
+        setPixelRatio: setPixelRatio,
+        debugState: debugState,
+        destroy: destroy
+    };
+
+    DressupDollRenderer.loadManifest(fixture.manifestUrl).then(function(data) {
+        manifest = data;
+        renderer = DressupDollRenderer.create(canvas, {
+            manifest: manifest,
+            fps: 24,
+            pixelRatio: currentPixelRatio,
+            animate: !(motionQuery && motionQuery.matches),
+            zoom: 0.96,
+            margin: 24,
+            onRender: function(meta) {
+                lastMeta = meta || null;
+                updateUi();
+            }
+        });
+        addLifecycleListeners();
+        renderScenario('longGun', '男');
+        window.__qaReady = true;
+    }).catch(function(error) {
+        document.getElementById('qa-state').textContent = String(error && error.stack || error);
+        window.__qaError = String(error && error.stack || error);
+    });
+})();
+</script>
+</body>
+</html>

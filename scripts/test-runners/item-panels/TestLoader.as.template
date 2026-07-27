@@ -5,6 +5,7 @@ _root.preloaders = _root.preloaders || [];
 _root.loaders = _root.loaders || [];
 #include "逻辑系统分区/商店系统_兼容.as"
 
+org.flashNight.arki.item.itemCollection.EquipmentInventoryTest.runAllTests();
 org.flashNight.arki.item.NpcShopPanelServiceTest.runAllTests();
 org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
 org.flashNight.arki.item.CraftingPanelServiceTest.runAllTests();

@@ -18,7 +18,9 @@ const INVENTORY_UI_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-ui.js');
 const ITEM_FILTER_SOURCE = path.join(WEB_ROOT, 'modules', 'item-filter.js');
 const INVENTORY_WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-workbench.js');
 const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior.js');
+const INSPECTION_VIEWPORT_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench-inspection-viewport.js');
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
+const KSHOP_HARNESS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop', 'dev', 'harness.html');
 const NPCSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop.js');
 const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
 const KSHOP_MODULE_SOURCES = [
@@ -28,7 +30,9 @@ const KSHOP_MODULE_SOURCES = [
 const NPCSHOP_SECONDARY_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-secondary-pages.js');
 const INVENTORY_WORKBENCH_MODULE_SOURCES = [
     'inventory-workbench-config.js', 'inventory-workbench-header.js',
-    'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js'
+    'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
+    'inventory-tuning-scope.js',
+    'inventory-storage-workbench.js'
 ].map(name => path.join(WEB_ROOT, 'modules', name));
 const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
 const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
@@ -65,6 +69,15 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory operation resolver branches on concrete container pair');
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
+    const kshopHarnessSource = fs.readFileSync(KSHOP_HARNESS_SOURCE, 'utf8');
+    const inspectionViewportSource = fs.readFileSync(INSPECTION_VIEWPORT_SOURCE, 'utf8');
+    const viewportScriptIndex = kshopHarnessSource.indexOf('modules/workbench-inspection-viewport.js');
+    const inspectorScriptIndex = kshopHarnessSource.indexOf('modules/equipment-inspector.js');
+    if (viewportScriptIndex < 0 || inspectorScriptIndex <= viewportScriptIndex
+            || !inspectionViewportSource.includes('function Camera(')
+            || !inspectionViewportSource.includes('Camera.prototype.destroy')) {
+        throw new Error('KShop harness must load the shared inspection viewport before EquipmentInspector');
+    }
     const npcshopSource = fs.readFileSync(NPCSHOP_SOURCE, 'utf8');
     const kshopUiSource = [kshopSource].concat(KSHOP_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))).join('\n');
     const npcshopUiSource = npcshopSource + '\n' + fs.readFileSync(NPCSHOP_SECONDARY_SOURCE, 'utf8');
@@ -204,6 +217,7 @@ function auditArchitectureBoundaries() {
         sharedWorkbenchComponents:true,
         standaloneBattleboxWorkbench:true,
         sharedIconManifestGate:true,
+        inspectionViewportLoadOrder:true,
         workbenchFullAnchor:true,
         nativeBehaviorGuard:behaviorEvents
     };

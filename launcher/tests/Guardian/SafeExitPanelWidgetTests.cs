@@ -10,18 +10,20 @@ namespace CF7Launcher.Tests.Guardian
     /// SafeExitPanelWidget 状态机回归。
     ///
     /// 关键不变量（防 d6ef 引入的 sv-only 误显示回归）：
-    /// 1. sv:1/2 不带 Arm() → Visible=false（普通自动存盘 / 商店关闭 / 升级路径不能弹面板）
+    /// 1. sv:1/2/3 不带 Arm() → Visible=false（普通自动存盘 / 商店关闭 / 升级路径不能弹面板）
     /// 2. SAFEEXIT click → Arm() → Visible=true，sv:1 显示 Saving，sv:2 切 Done
     /// 3. 取消按钮：本地 disarm + dismissed → 再次 Arm() 可正常重开
-    /// 4. EXIT_CONFIRM click：清 _armed + dispatch（router.OnSafeExit* 不重入）
+    /// 4. EXIT_CONFIRM click：由 widget 的 armed+Done capability exact-once 消费后退出
     /// 5. button-level Down/Up 匹配：down idx=0 + up idx=1 → 不触发任何分发
     /// 6. s:0 → Disarm 完整复位
+    /// 7. sv:3 只暴露取消/重试，第二按钮绝不派发 EXIT_CONFIRM
     /// </summary>
     public class SafeExitPanelWidgetTests
     {
         private class Capture
         {
             public List<Keys> SentKeys = new List<Keys>();
+            public List<string> Posts = new List<string>();
             public int Exit;
         }
 
@@ -33,7 +35,7 @@ namespace CF7Launcher.Tests.Guardian
                 onToggleFullscreen: () => { },
                 onToggleLog: () => { },
                 onForceExit: () => c.Exit++,
-                postToWeb: s => { },
+                postToWeb: s => c.Posts.Add(s),
                 onPanelStateChanged: b => { },
                 setActivePanel: name => { });
         }
@@ -46,6 +48,10 @@ namespace CF7Launcher.Tests.Guardian
             Control anchor = new Control();
             SafeExitPanelWidget w = new SafeExitPanelWidget(anchor, router);
             w.ForceGameReady(true);
+            router.OnSafeExitArm = w.Arm;
+            router.OnSafeExitSendFailed = w.FailAttempt;
+            router.TryConsumeSafeExitConfirm =
+                w.TryAuthorizeExitConfirm;
             return w;
         }
 
@@ -133,6 +139,105 @@ namespace CF7Launcher.Tests.Guardian
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             Assert.True(w.Visible);
             Assert.True(w.IsDoneState);
+        }
+
+        [Fact]
+        public void FailedRetry_CanRepeatSv1ToSv3WithoutExiting()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            int sends = 0;
+            router.SetGameCommandSenderForTests(
+                delegate
+                {
+                    sends++;
+                    return true;
+                });
+            router.Dispatch("SAFEEXIT");
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
+            w.OnUiDataChanged(Snapshot("sv:3"), new HashSet<string> { "sv" });
+
+            Assert.True(w.Visible);
+            Assert.True(w.IsFailedState);
+            Assert.False(w.IsDoneState);
+            Assert.False(w.WantsAnimationTick);
+
+            w.InternalDownIndex = 1;
+            SafeExitPanelWidget.ClickOutcome outcome = w.TryFireButtonClick(1);
+            Assert.Equal(SafeExitPanelWidget.ClickOutcome.Retried, outcome);
+            Assert.Equal(0, cap.Exit);
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsSavingState);
+
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
+            w.OnUiDataChanged(Snapshot("sv:3"), new HashSet<string> { "sv" });
+            Assert.True(w.IsFailedState);
+
+            w.InternalDownIndex = 1;
+            outcome = w.TryFireButtonClick(1);
+            Assert.Equal(SafeExitPanelWidget.ClickOutcome.Retried, outcome);
+            Assert.True(w.IsSavingState);
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
+            w.OnUiDataChanged(Snapshot("sv:3"), new HashSet<string> { "sv" });
+
+            Assert.True(w.IsFailedState);
+            Assert.Equal(3, sends);
+            Assert.Equal(0, cap.Exit);
+            Assert.Empty(cap.Posts);
+        }
+
+        [Fact]
+        public void SafeExitSendFalseImmediatelyFailsNativeAndWebWithoutExiting()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w =
+                MakeWidget(out router, out cap);
+            int sends = 0;
+            router.SetGameCommandSenderForTests(
+                delegate
+                {
+                    sends++;
+                    return false;
+                });
+
+            router.Dispatch("SAFEEXIT");
+
+            Assert.Equal(1, sends);
+            Assert.True(w.Visible);
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsFailedState);
+            Assert.False(w.IsSavingState);
+            Assert.Equal(0, cap.Exit);
+            Assert.Equal(
+                "{\"type\":\"safe_exit_failed\"}",
+                Assert.Single(cap.Posts));
+        }
+
+        [Fact]
+        public void SafeExitSendThrowImmediatelyFailsNativeAndWebWithoutExiting()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w =
+                MakeWidget(out router, out cap);
+            int sends = 0;
+            router.SetGameCommandSenderForTests(
+                delegate
+                {
+                    sends++;
+                    throw new System.InvalidOperationException(
+                        "safe exit transport down");
+                });
+
+            router.Dispatch("SAFEEXIT");
+
+            Assert.Equal(1, sends);
+            Assert.True(w.Visible);
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsFailedState);
+            Assert.Equal(0, cap.Exit);
+            Assert.Equal(
+                "{\"type\":\"safe_exit_failed\"}",
+                Assert.Single(cap.Posts));
         }
 
         [Fact]
@@ -227,6 +332,56 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(SafeExitPanelWidget.ClickOutcome.Confirmed, outcome);
             Assert.False(w.IsArmed);
             Assert.Equal(1, cap.Exit);
+
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(1, cap.Exit);
+        }
+
+        [Fact]
+        public void RawExitConfirm_IsRejectedWhenUnarmedSavingOrFailed()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w =
+                MakeWidget(out router, out cap);
+
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(0, cap.Exit);
+
+            w.Arm();
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(0, cap.Exit);
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsSavingState);
+
+            w.FailAttempt();
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(0, cap.Exit);
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsFailedState);
+        }
+
+        [Fact]
+        public void FallbackPacketAuthority_AllowsDoneConfirmExactlyOnce()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w =
+                MakeWidget(out router, out cap);
+            router.SetGameCommandSenderForTests(
+                delegate { return true; });
+
+            router.Dispatch("SAFEEXIT");
+            w.HandleUiData(
+                new UiDataPacket("s:1|sv:1"));
+            Assert.True(w.IsSavingState);
+            w.HandleUiData(
+                new UiDataPacket("s:1|sv:2"));
+            Assert.True(w.IsDoneState);
+
+            router.Dispatch("EXIT_CONFIRM");
+            router.Dispatch("EXIT_CONFIRM");
+
+            Assert.Equal(1, cap.Exit);
+            Assert.False(w.IsArmed);
         }
 
         // ── MED 回归：button-level Down/Up 必须匹配 ──
@@ -293,6 +448,7 @@ namespace CF7Launcher.Tests.Guardian
         [Theory]
         [InlineData("sv:1", 1)]
         [InlineData("sv:2", 2)]
+        [InlineData("sv:3", 3)]
         [InlineData("sv:0", 0)]
         [InlineData("1", 1)]
         [InlineData("", 0)]

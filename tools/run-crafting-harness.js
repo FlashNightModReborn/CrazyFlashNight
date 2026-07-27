@@ -7,6 +7,8 @@ const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
 const INVENTORY_WORKBENCH_MODULES=[
   'inventory-workbench-config.js','inventory-workbench-header.js',
   'inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js',
+  'inventory-tuning-scope.js',
+  'inventory-storage-workbench.js',
   'inventory-workbench.js'
 ];
 function audit(){
@@ -14,6 +16,7 @@ function audit(){
   const harness=fs.readFileSync(path.join(WEB,'modules','crafting','dev','harness.html'),'utf8');
   const equipmentInspector=fs.readFileSync(path.join(WEB,'modules','equipment-inspector.js'),'utf8');
   const craftingInspector=fs.readFileSync(path.join(WEB,'modules','crafting-inspector.js'),'utf8');
+  const inspectionViewport=fs.readFileSync(path.join(WEB,'modules','workbench-inspection-viewport.js'),'utf8');
   const dressupRenderer=fs.readFileSync(path.join(WEB,'modules','dressup-doll-renderer.js'),'utf8');
   const runtime=fs.readFileSync(path.join(WEB,'modules','crafting-runtime.js'),'utf8');
   const panelRuntime=fs.readFileSync(path.join(WEB,'modules','panel-runtime.js'),'utf8');
@@ -35,15 +38,18 @@ function audit(){
   if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")||!panel.includes('craftCount:requestedCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
   if(!panel.includes('canCraftOne === true')||!panel.includes('craftableOnly:_craftableOnly')||!panel.includes('crafting-craftable-toggle'))throw new Error('snapshot availability or craftable-only contract missing');
   if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'")
-      ||!inventoryWorkbenchPanel.includes('InventoryWorkbenchConfig.resolveReturnTarget(initData)'))throw new Error('battlebox return contract missing');
+      ||!inventoryWorkbench.includes('InventoryWorkbenchConfig.resolveReturnTarget(initData)'))throw new Error('battlebox return contract missing');
   if(!runtime.includes("require('./panel-runtime.js')")||!runtime.includes('new PanelRuntime.PanelRequestMux')
       ||!runtime.includes("data.domain === 'crafting'")||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting mux missing');
   if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")||!css.includes('.crafting-commit-btn')||!css.includes('.crafting-catalog-grid::-webkit-scrollbar'))throw new Error('lazy registry or crafting skin missing');
   if(!css.includes('.item-filter-catalog .item-filter-option')||!css.includes('grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr)')||!css.includes('.crafting-recipe-card.craftable'))throw new Error('shared filter, 60:40 layout, or craftable marker skin missing');
   if(!css.includes('#panel-container[data-panel="crafting"] #panel-content')||!css.includes('#panel-container[data-panel="crafting"] #panel-backdrop'))throw new Error('crafting full-screen anchor contract missing');
   if(!panel.includes('CraftingInspector.open')||!panel.includes('gender: _snapshot && _snapshot.gender')||!panel.includes('PanelTooltip.hide()'))throw new Error('crafting inspector entry or gender contract missing');
+  const harnessViewportIndex=harness.indexOf('workbench-inspection-viewport.js');
+  const harnessInspectorIndex=harness.indexOf('equipment-inspector.js');
+  if(harnessViewportIndex<0||harnessInspectorIndex<=harnessViewportIndex)throw new Error('crafting harness must load the shared inspection viewport before EquipmentInspector');
   const craftingRegistry=registry.slice(registry.indexOf("registerLazy('crafting'"),registry.indexOf("registerLazy('skills'"));
-  const orderedInspectorDeps=['modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/equipment-inspector.js','modules/crafting-inspector.js'];
+  const orderedInspectorDeps=['modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/workbench-inspection-viewport.js','modules/equipment-inspector.js','modules/crafting-inspector.js'];
   let previousDependencyIndex=-1;
   orderedInspectorDeps.forEach(dependency=>{
     const dependencyIndex=craftingRegistry.indexOf("'"+dependency+"'");
@@ -54,6 +60,10 @@ function audit(){
       !craftingInspector.includes('EquipmentInspector.resolveItemSource(output, gender, manifest)')||
       !craftingInspector.includes("result.kind = 'crafting-inspector'")||
       !craftingInspector.includes("result.context = 'crafting'"))throw new Error('CraftingInspector compatibility adapter contract missing');
+  if(!inspectionViewport.includes('function Camera(')
+      ||!inspectionViewport.includes('Camera.prototype.activate')
+      ||!inspectionViewport.includes('Camera.prototype.deactivate')
+      ||!equipmentInspector.includes('WorkbenchInspectionViewport.create'))throw new Error('shared inspection viewport contract missing');
   if(!equipmentInspector.includes("majorType === '武器'")||!equipmentInspector.includes("majorType === '防具'")||!equipmentInspector.includes('attackMode: source.use')||!equipmentInspector.includes('Icons.resolveStatic(iconState.name)'))throw new Error('equipment inspector route, variant, or icon animation contract missing');
   if(!dressupRenderer.includes('state.directSkinKey')||!dressupRenderer.includes("rig: 'product-direct'")
       ||!dressupRenderer.includes('strictFields')||!equipmentInspector.includes("'刀2_装扮'")||!equipmentInspector.includes("'刀3_装扮'")

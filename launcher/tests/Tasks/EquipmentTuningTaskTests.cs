@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -9,6 +10,44 @@ namespace Launcher.Tests.Tasks
 {
     public sealed class EquipmentTuningTaskTests
     {
+        private sealed class CommitHarness :
+            IDisposable
+        {
+            public readonly List<JObject> Sent =
+                new List<JObject>();
+            public readonly List<JObject> Web =
+                new List<JObject>();
+            public readonly EquipmentTuningTask Task;
+            public readonly JObject Command;
+
+            public CommitHarness(JObject source)
+            {
+                Task = NewTask(
+                    value =>
+                    {
+                        Sent.Add(
+                            ParseWire(value));
+                        return true;
+                    },
+                    Web);
+                PrimeSession(
+                    Task, Sent, source);
+                Sent.Clear();
+                Web.Clear();
+                Task.HandleWebRequest(
+                    "commit",
+                    Request(
+                        "commit",
+                        "tune.harness.commit"));
+                Command = Assert.Single(Sent);
+            }
+
+            public void Dispose()
+            {
+                Task.Dispose();
+            }
+        }
+
         [Fact]
         public void SnapshotRequest_RebuildsStrictPayloadAndInjectsHostAuthority()
         {
@@ -25,6 +64,10 @@ namespace Launcher.Tests.Tasks
                 Assert.Equal("tuning.session.1", (string)command["viewSessionId"]);
                 Assert.Equal("tune.snapshot.1", (string)command["requestCallId"]);
                 Assert.Equal(0, (int)command["writeEpoch"]);
+                Assert.Equal(
+                    "inventory",
+                    (string)command["source"][
+                        "sourceKind"]);
                 Assert.Equal("背包", (string)command["source"]["containerId"]);
                 Assert.Equal(7, (int)command["source"]["slot"]);
                 Assert.Null(command["payload"]);
@@ -73,6 +116,56 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public void SuccessfulPreview_RequiresAs2SubjectProjectionShape()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.projection.snapshot"));
+                task.HandleFlashResponse(SnapshotResponse(Assert.Single(sent)), null);
+                sent.Clear();
+                web.Clear();
+
+                task.HandleWebRequest(
+                    "preview",
+                    Request("preview", "tune.projection.nested", "enhance"));
+                JObject nested = PreviewResponse(Assert.Single(sent), "enhance");
+                task.HandleFlashResponse(nested, null);
+
+                JObject accepted = Assert.Single(web);
+                Assert.True((bool)accepted["success"]);
+                Assert.Equal(
+                    "inventory",
+                    (string)accepted["before"]["source"]["source"]["sourceKind"]);
+
+                sent.Clear();
+                web.Clear();
+                task.HandleWebRequest(
+                    "preview",
+                    Request("preview", "tune.projection.flattened", "enhance"));
+                JObject flattened = PreviewResponse(Assert.Single(sent), "enhance");
+                JObject source =
+                    (JObject)flattened["before"]["source"]["source"];
+                flattened["before"] = new JObject
+                {
+                    ["level"] = 7,
+                    ["source"] = source.DeepClone()
+                };
+                flattened["after"] = new JObject
+                {
+                    ["level"] = 8,
+                    ["source"] = source.DeepClone()
+                };
+                task.HandleFlashResponse(flattened, null);
+
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(web)["error"]);
+            }
+        }
+
         [Theory]
         [InlineData("enhance")]
         [InlineData("convert")]
@@ -99,6 +192,10 @@ namespace Launcher.Tests.Tasks
                 if (operation == "enhance") Assert.Equal(8, (int)command["targetLevel"]);
                 else if (operation == "convert")
                 {
+                    Assert.Equal(
+                        "inventory",
+                        (string)command["target"][
+                            "sourceKind"]);
                     Assert.Equal(8, (int)command["target"]["slot"]);
                     Assert.Equal("lease.target.8", (string)command["target"]["expectedLease"]);
                 }
@@ -340,6 +437,26 @@ namespace Launcher.Tests.Tasks
                 Assert.Null(web[0]["requiresReconcile"]);
                 Assert.Equal("idle", task.WriteState);
                 Assert.Equal(0, task.PendingCount);
+                Assert.Equal(
+                    1,
+                    task.PreviewBindingCount);
+
+                failSend = false;
+                task.HandleWebRequest(
+                    "commit",
+                    Request(
+                        "commit",
+                        "tune.commit.retry"));
+                Assert.Equal(2, sent.Count);
+                task.HandleFlashResponse(
+                    CommitResponse(sent[1]),
+                    null);
+
+                Assert.True((bool)web[1]["success"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Equal(
+                    0,
+                    task.PreviewBindingCount);
             }
         }
 
@@ -541,6 +658,761 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData("头部装备")]
+        [InlineData("上装装备")]
+        [InlineData("下装装备")]
+        [InlineData("手部装备")]
+        [InlineData("脚部装备")]
+        [InlineData("颈部装备")]
+        [InlineData("长枪")]
+        [InlineData("手枪")]
+        [InlineData("手枪2")]
+        [InlineData("刀")]
+        [InlineData("手雷")]
+        public void LoadoutSource_AcceptsOnlyFrozenElevenSlotKeys(
+            string slotKey)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                JObject source =
+                    LoadoutSource(17, slotKey, 23);
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request(
+                        "snapshot",
+                        "tune.loadout.slot."
+                            + sent.Count,
+                        null,
+                        source));
+
+                JObject command =
+                    Assert.Single(sent);
+                Assert.Equal(
+                    "loadout",
+                    (string)command["source"][
+                        "sourceKind"]);
+                Assert.Equal(
+                    slotKey,
+                    (string)command["source"][
+                        "slotKey"]);
+                Assert.Equal(
+                    4,
+                    ((JObject)command["source"]).Count);
+                task.HandleFlashResponse(
+                    SnapshotResponse(command),
+                    null);
+                Assert.True(
+                    (bool)Assert.Single(web)[
+                        "success"]);
+            }
+        }
+
+        [Fact]
+        public void DualSource_RejectsLegacyMixedAndOutOfRangeShapes()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                var sources = new List<JObject>
+                {
+                    new JObject
+                    {
+                        ["containerId"] = "背包",
+                        ["slot"] = 7,
+                        ["expectedLease"] =
+                            "legacy.lease"
+                    },
+                    new JObject
+                    {
+                        ["sourceKind"] = "inventory",
+                        ["containerId"] = "背包",
+                        ["slot"] = 50,
+                        ["expectedLease"] =
+                            "bad.slot"
+                    },
+                    new JObject
+                    {
+                        ["sourceKind"] = "loadout",
+                        ["sessionGeneration"] = 0,
+                        ["slotKey"] = "手枪2",
+                        ["expectedLoadoutRevision"] = 3
+                    },
+                    new JObject
+                    {
+                        ["sourceKind"] = "loadout",
+                        ["sessionGeneration"] = 7,
+                        ["slotKey"] = "不存在",
+                        ["expectedLoadoutRevision"] = 3
+                    },
+                    new JObject
+                    {
+                        ["sourceKind"] = "loadout",
+                        ["sessionGeneration"] = 7,
+                        ["slotKey"] = "手枪2",
+                        ["expectedLoadoutRevision"] = -1
+                    },
+                    new JObject
+                    {
+                        ["sourceKind"] = "loadout",
+                        ["sessionGeneration"] = 7,
+                        ["slotKey"] = "手枪2",
+                        ["expectedLoadoutRevision"] = 3,
+                        ["containerId"] = "背包"
+                    }
+                };
+                for (int i = 0;
+                    i < sources.Count; i++)
+                {
+                    task.HandleWebRequest(
+                        "snapshot",
+                        Request(
+                            "snapshot",
+                            "tune.bad.source." + i,
+                            null,
+                            sources[i]));
+                }
+
+                Assert.Empty(sent);
+                Assert.Equal(
+                    sources.Count, web.Count);
+                Assert.All(
+                    web,
+                    response => Assert.Equal(
+                        "invalid_payload",
+                        (string)response["error"]));
+            }
+        }
+
+        [Fact]
+        public void LoadoutPreview_RejectsConvertBeforeFlashDispatch()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                JObject source =
+                    LoadoutSource(
+                        9, "手枪2", 12);
+                PrimeSession(
+                    task, sent, source);
+                sent.Clear();
+                web.Clear();
+
+                task.HandleWebRequest(
+                    "preview",
+                    Request(
+                        "preview",
+                        "tune.loadout.convert",
+                        "convert",
+                        source));
+
+                Assert.Empty(sent);
+                Assert.Equal(
+                    "invalid_payload",
+                    (string)Assert.Single(web)[
+                        "error"]);
+            }
+        }
+
+        [Fact]
+        public void LoadoutSnapshotAndPreview_RejectStaleEchoedSource()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            JObject source =
+                LoadoutSource(
+                    9, "手枪2", 12);
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request(
+                        "snapshot",
+                        "tune.loadout.stale.snapshot",
+                        null,
+                        source));
+                JObject staleSnapshot =
+                    SnapshotResponse(
+                        Assert.Single(sent));
+                staleSnapshot["snapshot"][
+                    "source"][
+                    "expectedLoadoutRevision"] =
+                    11;
+                task.HandleFlashResponse(
+                    staleSnapshot, null);
+                Assert.Equal(
+                    "malformed_response",
+                    (string)web[0]["error"]);
+
+                sent.Clear();
+                task.HandleWebRequest(
+                    "preview",
+                    Request(
+                        "preview",
+                        "tune.loadout.stale.preview",
+                        "enhance",
+                        source));
+                JObject stalePreview =
+                    PreviewResponse(
+                        Assert.Single(sent),
+                        "enhance",
+                        "tuning.token.stale");
+                stalePreview["after"]["source"]["source"][
+                    "sessionGeneration"] = 8;
+                task.HandleFlashResponse(
+                    stalePreview, null);
+
+                Assert.Equal(
+                    "malformed_response",
+                    (string)web[1]["error"]);
+                Assert.Equal(
+                    0,
+                    task.PreviewBindingCount);
+            }
+        }
+
+        [Fact]
+        public void ConvertTarget_RejectsLegacyThreeKeyInventoryReference()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                PrimeSession(task, sent);
+                sent.Clear();
+                web.Clear();
+                JObject request =
+                    Request(
+                        "preview",
+                        "tune.convert.legacy.target",
+                        "convert");
+                ((JObject)request["payload"][
+                    "target"]).Remove(
+                    "sourceKind");
+
+                task.HandleWebRequest(
+                    "preview", request);
+
+                Assert.Empty(sent);
+                Assert.Equal(
+                    "invalid_payload",
+                    (string)Assert.Single(web)[
+                        "error"]);
+            }
+        }
+
+        [Fact]
+        public void LoadoutCommit_RequiresExactPlusOneOrNoOpRevision()
+        {
+            JObject source =
+                LoadoutSource(
+                    21, "手枪2", 41);
+            using (var harness =
+                new CommitHarness(source))
+            {
+                JObject response =
+                    CommitResponse(
+                        harness.Command,
+                        source,
+                        false);
+                harness.Task.HandleFlashResponse(
+                    response, null);
+
+                JObject web =
+                    Assert.Single(harness.Web);
+                Assert.True(
+                    (bool)web["success"]);
+                Assert.Equal(
+                    42,
+                    (int)web["snapshot"]["source"][
+                        "expectedLoadoutRevision"]);
+                Assert.Empty(
+                    (JArray)web[
+                        "inventorySnapshots"]);
+                Assert.Equal(
+                    "idle",
+                    harness.Task.WriteState);
+            }
+
+            using (var harness =
+                new CommitHarness(source))
+            {
+                JObject response =
+                    CommitResponse(
+                        harness.Command,
+                        source,
+                        true);
+                harness.Task.HandleFlashResponse(
+                    response, null);
+
+                JObject web =
+                    Assert.Single(harness.Web);
+                Assert.True(
+                    (bool)web["success"]);
+                Assert.Equal(
+                    41,
+                    (int)web["snapshot"]["source"][
+                        "expectedLoadoutRevision"]);
+                Assert.Equal(
+                    "idle",
+                    harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void LoadoutCommit_RejectsSourceDriftAndInventorySnapshots()
+        {
+            JObject source =
+                LoadoutSource(
+                    21, "手枪2", 41);
+
+            AssertMalformedLoadoutCommit(
+                source,
+                response =>
+                {
+                    response["after"]["source"]["source"][
+                        "expectedLoadoutRevision"] =
+                        41;
+                });
+            AssertMalformedLoadoutCommit(
+                source,
+                response =>
+                {
+                    response["snapshot"]["source"][
+                        "sessionGeneration"] = 22;
+                });
+            AssertMalformedLoadoutCommit(
+                source,
+                response =>
+                {
+                    response["after"]["source"]["source"][
+                        "slotKey"] = "刀";
+                });
+            AssertMalformedLoadoutCommit(
+                source,
+                response =>
+                {
+                    ((JArray)response[
+                        "inventorySnapshots"]).Add(
+                        new JObject());
+                });
+            AssertMalformedLoadoutCommit(
+                source,
+                response =>
+                {
+                    response["tuningToken"] =
+                        "tuning.token.drift";
+                });
+            AssertMalformedLoadoutCommit(
+                source,
+                response =>
+                {
+                    response["after"]["source"]["source"][
+                        "expectedLoadoutRevision"] =
+                        42;
+                    response["snapshot"]["source"][
+                        "expectedLoadoutRevision"] =
+                        42;
+                },
+                true);
+        }
+
+        [Fact]
+        public void InventoryCommit_RequiresNewLeaseAndFullBackpackSnapshot()
+        {
+            JObject source =
+                Source(
+                    7, "lease.source.7");
+            using (var harness =
+                new CommitHarness(source))
+            {
+                JObject response =
+                    CommitResponse(
+                        harness.Command,
+                        source,
+                        false);
+                response["inventorySnapshots"] =
+                    new JArray();
+                harness.Task.HandleFlashResponse(
+                    response, null);
+
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(
+                        harness.Web)["error"]);
+                Assert.Equal(
+                    "needs_reconcile",
+                    harness.Task.WriteState);
+            }
+
+            using (var harness =
+                new CommitHarness(source))
+            {
+                JObject response =
+                    CommitResponse(
+                        harness.Command,
+                        source,
+                        false);
+                response["after"]["source"]["source"] =
+                    source.DeepClone();
+                response["snapshot"]["source"] =
+                    source.DeepClone();
+                harness.Task.HandleFlashResponse(
+                    response, null);
+
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(
+                        harness.Web)["error"]);
+                Assert.Equal(
+                    "needs_reconcile",
+                    harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void CommitRequiresSuccessfulPreviewBindingButTokenAuthorityRemainsAs2()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request(
+                        "snapshot",
+                        "tune.no.preview.snapshot"));
+                task.HandleFlashResponse(
+                    SnapshotResponse(
+                        Assert.Single(sent)),
+                    null);
+                sent.Clear();
+                web.Clear();
+
+                task.HandleWebRequest(
+                    "commit",
+                    Request(
+                        "commit",
+                        "tune.no.preview.commit"));
+
+                Assert.Empty(sent);
+                Assert.Equal(
+                    "invalid_payload",
+                    (string)Assert.Single(web)[
+                        "error"]);
+                Assert.Equal(
+                    "idle",
+                    task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void PreviewBindings_AreCappedAtSixtyFourAndEvictOldest()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request(
+                        "snapshot",
+                        "tune.capacity.snapshot"));
+                task.HandleFlashResponse(
+                    SnapshotResponse(
+                        Assert.Single(sent)),
+                    null);
+
+                for (int i = 0; i < 65; i++)
+                {
+                    task.HandleWebRequest(
+                        "preview",
+                        Request(
+                            "preview",
+                            "tune.capacity.preview." + i,
+                            "enhance"));
+                    JObject command =
+                        sent[sent.Count - 1];
+                    task.HandleFlashResponse(
+                        PreviewResponse(
+                            command,
+                            "enhance",
+                            "tuning.token.capacity." + i),
+                        null);
+                }
+
+                Assert.Equal(
+                    64,
+                    task.PreviewBindingCount);
+                int sentBeforeCommit =
+                    sent.Count;
+                JObject evicted =
+                    Request(
+                        "commit",
+                        "tune.capacity.evicted");
+                evicted["payload"][
+                    "expectedTuningToken"] =
+                    "tuning.token.capacity.0";
+                task.HandleWebRequest(
+                    "commit", evicted);
+
+                Assert.Equal(
+                    sentBeforeCommit,
+                    sent.Count);
+                Assert.Equal(
+                    "invalid_payload",
+                    (string)web[web.Count - 1][
+                        "error"]);
+                Assert.Equal(
+                    64,
+                    task.PreviewBindingCount);
+
+                JObject newest =
+                    Request(
+                        "commit",
+                        "tune.capacity.newest");
+                newest["payload"][
+                    "expectedTuningToken"] =
+                    "tuning.token.capacity.64";
+                task.HandleWebRequest(
+                    "commit", newest);
+
+                Assert.Equal(
+                    sentBeforeCommit + 1,
+                    sent.Count);
+                Assert.Equal(
+                    63,
+                    task.PreviewBindingCount);
+                task.HandleFlashResponse(
+                    CommitResponse(
+                        sent[sent.Count - 1]),
+                    null);
+                Assert.True(
+                    (bool)web[web.Count - 1][
+                        "success"]);
+                Assert.Equal(
+                    "idle",
+                    task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void LoadoutUnknown_ReconcilesOnlyAfterOrderedExternalSnapshotAndWatermarkAck()
+        {
+            var order = new List<string>();
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            JObject source =
+                LoadoutSource(
+                    31, "手枪2", 8);
+            using (var tuning = NewTask(
+                value =>
+                {
+                    JObject wire =
+                        ParseWire(value);
+                    sent.Add(wire);
+                    order.Add(
+                        (string)wire["action"]);
+                    return true;
+                },
+                web))
+            using (var loadout =
+                new CharacterBuildTask(
+                    delegate(string value)
+                    {
+                        JObject wire =
+                            ParseWire(value);
+                        order.Add(
+                            (string)wire["action"]);
+                        return true;
+                    }))
+            {
+                PrimeSession(
+                    tuning, sent, source);
+                sent.Clear();
+                web.Clear();
+                order.Clear();
+
+                tuning.HandleWebRequest(
+                    "commit",
+                    Request(
+                        "commit",
+                        "tune.loadout.unknown"));
+                JObject malformed =
+                    CommitResponse(
+                        Assert.Single(sent),
+                        source,
+                        false);
+                malformed.Remove(
+                    "transactionId");
+                tuning.HandleFlashResponse(
+                    malformed, null);
+                Assert.Equal(
+                    "needs_reconcile",
+                    tuning.WriteState);
+
+                Assert.True(
+                    loadout.TryBindPanelInstance(
+                        "workbench.instance.1"));
+                loadout.HandleWebRequest(
+                    "snapshot",
+                    LoadoutSnapshotRequest(
+                        "loadout.current.1"));
+                Assert.Equal(
+                    "needs_reconcile",
+                    tuning.WriteState);
+
+                JObject currentSource =
+                    LoadoutSource(
+                        31, "手枪2", 9);
+                JObject reconcile =
+                    Request(
+                        "snapshot",
+                        "tune.loadout.reconcile",
+                        null,
+                        currentSource);
+                reconcile["payload"][
+                    "reconcileAfterCallId"] =
+                    "tune.loadout.unknown";
+                tuning.HandleWebRequest(
+                    "snapshot", reconcile);
+                JObject command = sent[1];
+                Assert.Equal(
+                    "needs_reconcile",
+                    tuning.WriteState);
+
+                JObject acknowledged =
+                    SnapshotResponse(command);
+                acknowledged["reconciled"] =
+                    true;
+                acknowledged[
+                    "reconcileAfterCallId"] =
+                    "tune.loadout.unknown";
+                tuning.HandleFlashResponse(
+                    acknowledged, null);
+
+                Assert.Equal(
+                    new[]
+                    {
+                        "equipmentTuningCommit",
+                        "characterBuildSnapshot",
+                        "equipmentTuningSnapshot"
+                    },
+                    order);
+                Assert.Equal(
+                    "idle",
+                    tuning.WriteState);
+                Assert.Single(
+                    order.FindAll(
+                        action => action
+                            == "equipmentTuningCommit"));
+
+                tuning.HandleWebRequest(
+                    "commit",
+                    Request(
+                        "commit",
+                        "tune.loadout.replay"));
+                Assert.Equal(
+                    2,
+                    sent.Count);
+                Assert.Equal(
+                    "invalid_payload",
+                    (string)web[2]["error"]);
+            }
+        }
+
+        private static void AssertMalformedLoadoutCommit(
+            JObject source,
+            Action<JObject> mutate,
+            bool noOp = false)
+        {
+            using (var harness =
+                new CommitHarness(source))
+            {
+                JObject response =
+                    CommitResponse(
+                        harness.Command,
+                        source,
+                        noOp);
+                mutate(response);
+                harness.Task.HandleFlashResponse(
+                    response, null);
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(
+                        harness.Web)["error"]);
+                Assert.Equal(
+                    "needs_reconcile",
+                    harness.Task.WriteState);
+            }
+        }
+
+        private static JObject LoadoutSnapshotRequest(
+            string callId)
+        {
+            return new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "workbench",
+                ["domain"] = "loadout",
+                ["cmd"] = "snapshot",
+                ["callId"] = callId,
+                ["panelInstanceId"] =
+                    "workbench.instance.1",
+                ["payload"] =
+                    new JObject
+                    {
+                        ["v"] = 1
+                    }
+            };
+        }
+
         private static EquipmentTuningTask NewTask(Func<string, bool> send,
             List<JObject> web, int timeoutMs = 10000)
         {
@@ -550,24 +1422,62 @@ namespace Launcher.Tests.Tasks
             return task;
         }
 
-        private static void PrimeSession(EquipmentTuningTask task, List<JObject> sent)
+        private static void PrimeSession(
+            EquipmentTuningTask task,
+            List<JObject> sent,
+            JObject source = null,
+            string tuningToken =
+                "tuning.token.1")
         {
-            task.HandleWebRequest("snapshot", Request("snapshot", "tune.prime." + sent.Count));
+            task.HandleWebRequest(
+                "snapshot",
+                Request(
+                    "snapshot",
+                    "tune.prime." + sent.Count,
+                    null,
+                    source));
             task.HandleFlashResponse(SnapshotResponse(sent[sent.Count - 1]), null);
+            task.HandleWebRequest(
+                "preview",
+                Request(
+                    "preview",
+                    "tune.prime.preview."
+                        + sent.Count,
+                    "enhance",
+                    source));
+            task.HandleFlashResponse(
+                PreviewResponse(
+                    sent[sent.Count - 1],
+                    "enhance",
+                    tuningToken),
+                null);
         }
 
-        private static JObject Request(string cmd, string callId, string operation = null)
+        private static JObject Request(
+            string cmd,
+            string callId,
+            string operation = null,
+            JObject source = null)
         {
             var payload = new JObject
             {
                 ["v"] = 1,
                 ["viewSessionId"] = "tuning.session.1"
             };
-            if (cmd == "snapshot") payload["source"] = Source(7, "lease.source.7");
+            if (cmd == "snapshot")
+                payload["source"] = (source
+                    ?? Source(
+                        7,
+                        "lease.source.7"))
+                    .DeepClone();
             else if (cmd == "preview")
             {
                 payload["operation"] = operation;
-                payload["source"] = Source(7, "lease.source.7");
+                payload["source"] = (source
+                    ?? Source(
+                        7,
+                        "lease.source.7"))
+                    .DeepClone();
                 if (operation == "enhance") payload["targetLevel"] = 8;
                 else if (operation == "convert") payload["target"] = Source(8, "lease.target.8");
                 else if (operation != "detach_all_mods") payload["candidateKey"] = "候选.一";
@@ -592,9 +1502,26 @@ namespace Launcher.Tests.Tasks
         {
             return new JObject
             {
+                ["sourceKind"] = "inventory",
                 ["containerId"] = "背包",
                 ["slot"] = slot,
                 ["expectedLease"] = lease
+            };
+        }
+
+        private static JObject LoadoutSource(
+            int sessionGeneration,
+            string slotKey,
+            int expectedLoadoutRevision)
+        {
+            return new JObject
+            {
+                ["sourceKind"] = "loadout",
+                ["sessionGeneration"] =
+                    sessionGeneration,
+                ["slotKey"] = slotKey,
+                ["expectedLoadoutRevision"] =
+                    expectedLoadoutRevision
             };
         }
 
@@ -616,35 +1543,110 @@ namespace Launcher.Tests.Tasks
         private static JObject SnapshotResponse(JObject command)
         {
             JObject response = CommonResponse(command, "snapshot", true);
-            response["snapshot"] = Snapshot();
+            response["snapshot"] = Snapshot(
+                command["source"] as JObject);
             return response;
         }
 
-        private static JObject PreviewResponse(JObject command, string operation)
+        private static JObject PreviewResponse(
+            JObject command,
+            string operation,
+            string tuningToken =
+                "tuning.token.1")
         {
             JObject response = CommonResponse(command, "preview", true);
-            response["tuningToken"] = "tuning.token.1";
+            response["tuningToken"] = tuningToken;
             response["operation"] = operation;
-            response["before"] = new JObject { ["level"] = 7 };
-            response["after"] = new JObject { ["level"] = 8 };
+            JObject source =
+                (JObject)command["source"].DeepClone();
+            response["before"] =
+                TuningProjection(source, 7);
+            response["after"] =
+                TuningProjection(source, 8);
             response["materials"] = new JArray();
             response["canCommit"] = true;
             return response;
         }
 
-        private static JObject CommitResponse(JObject command)
+        private static JObject CommitResponse(
+            JObject command,
+            JObject beforeSource = null,
+            bool noOp = false)
         {
             JObject response = CommonResponse(command, "commit", true);
-            response["tuningToken"] = "tuning.token.1";
+            response["tuningToken"] =
+                (string)command[
+                    "expectedTuningToken"];
             response["operation"] = "enhance";
-            response["before"] = new JObject { ["level"] = 7 };
-            response["after"] = new JObject { ["level"] = 8 };
+            beforeSource = beforeSource
+                ?? Source(7, "lease.source.7");
+            JObject afterSource =
+                BuildPostSource(
+                    beforeSource, noOp);
+            response["before"] =
+                TuningProjection(
+                    beforeSource,
+                    7);
+            response["after"] =
+                TuningProjection(
+                    afterSource,
+                    noOp ? 7 : 8);
             response["materials"] = new JArray();
             response["canCommit"] = true;
-            response["snapshot"] = Snapshot();
-            response["inventorySnapshots"] = new JArray();
+            response["noOp"] = noOp;
+            response["snapshot"] = Snapshot(
+                afterSource);
+            response["inventorySnapshots"] =
+                (string)beforeSource["sourceKind"]
+                    == "loadout"
+                ? new JArray()
+                : FullBackpackSnapshots();
             response["transactionId"] = "txn.1";
             return response;
+        }
+
+        private static JObject TuningProjection(
+            JObject source,
+            int level)
+        {
+            return new JObject
+            {
+                ["source"] = new JObject
+                {
+                    ["source"] =
+                        source.DeepClone(),
+                    ["equipment"] =
+                        new JObject
+                        {
+                            ["itemKind"] =
+                                "equipment",
+                            ["level"] = level
+                        }
+                }
+            };
+        }
+
+        private static JObject BuildPostSource(
+            JObject beforeSource,
+            bool noOp)
+        {
+            JObject post =
+                (JObject)beforeSource.DeepClone();
+            if (noOp) return post;
+            if ((string)post["sourceKind"]
+                == "loadout")
+            {
+                post["expectedLoadoutRevision"] =
+                    (int)post[
+                        "expectedLoadoutRevision"] + 1;
+            }
+            else
+            {
+                post["expectedLease"] =
+                    (string)post["expectedLease"]
+                    + ".post";
+            }
+            return post;
         }
 
         private static JObject TooltipResponse(JObject command)
@@ -660,17 +1662,62 @@ namespace Launcher.Tests.Tasks
             return response;
         }
 
-        private static JObject Snapshot()
+        private static JObject Snapshot(
+            JObject source = null)
         {
             return new JObject
             {
                 ["gender"] = "男",
-                ["source"] = Source(7, "lease.source.7"),
+                ["source"] = (source
+                    ?? Source(
+                        7,
+                        "lease.source.7"))
+                    .DeepClone(),
                 ["equipment"] = new JObject { ["itemKind"] = "equipment", ["level"] = 7 },
                 ["enhance"] = new JObject { ["currentLevel"] = 7, ["maxLevel"] = 13 },
                 ["tierCandidates"] = new JArray(),
                 ["modCandidates"] = new JArray(),
                 ["materials"] = new JArray()
+            };
+        }
+
+        private static JArray FullBackpackSnapshots()
+        {
+            var slots = new JArray();
+            for (int slot = 0; slot < 50; slot++)
+            {
+                slots.Add(new JObject
+                {
+                    ["physicalSlot"] = slot,
+                    ["occupied"] = false,
+                    ["slotLease"] =
+                        "lease.empty." + slot
+                });
+            }
+            return new JArray
+            {
+                new JObject
+                {
+                    ["containerId"] = "背包",
+                    ["capacity"] = 50,
+                    ["accessibleCapacity"] = 50,
+                    ["viewCapacity"] = 50,
+                    ["filterKey"] = "all",
+                    ["pageSizeHint"] = 50,
+                    ["locked"] = false,
+                    ["snapshotSeq"] = 1,
+                    ["containerEpoch"] = 1,
+                    ["containerVersion"] = 1,
+                    ["offset"] = 0,
+                    ["limit"] = 50,
+                    ["slots"] = slots,
+                    ["filterFacets"] =
+                        new JArray(),
+                    ["filterItemCount"] = 0,
+                    ["setFacets"] =
+                        new JArray(),
+                    ["setFilterItemCount"] = 0
+                }
             };
         }
 

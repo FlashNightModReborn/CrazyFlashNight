@@ -4,6 +4,7 @@
  * 再以无事件批处理完成装备和材料写入，最后统一 dirty、成就、事件与投影。
  */
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.achievement.AchievementMetrics;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.TooltipComposer;
@@ -31,9 +32,22 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static var _processedCalls:Object = {};
     private static var _processedCallOrder:Array = [];
     private static var _testFailNext:Boolean = false;
+    private static var _testFailNextMaterialCommit:Boolean = false;
+    private static var _testFailNextSerialization:Boolean = false;
     private static var _allowedOperations:Object = {
         enhance:true, convert:true, install_tier:true,
         install_mod:true, replace_mod:true, detach_mod:true, detach_all_mods:true
+    };
+    private static var _loadoutAllowedOperations:Object = {
+        enhance:true, install_tier:true, install_mod:true,
+        replace_mod:true, detach_mod:true, detach_all_mods:true
+    };
+    private static var _inventorySourceKeys:Object = {
+        sourceKind:true, containerId:true, slot:true, expectedLease:true
+    };
+    private static var _loadoutSourceKeys:Object = {
+        sourceKind:true, sessionGeneration:true,
+        slotKey:true, expectedLoadoutRevision:true
     };
 
     public static function install():Void {
@@ -108,10 +122,17 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (_allowedOperations[operation] !== true) return fail("unsupported_operation");
         var source:Object = resolveWebSlot(params.source);
         if (!source.success) return source;
+        if (source.sourceKind == "loadout"
+                && _loadoutAllowedOperations[operation] !== true) {
+            return fail("unsupported_operation");
+        }
         var target:Object = null;
         if (operation == "convert") {
             target = resolveWebSlot(params.target);
             if (!target.success) return target;
+            if (target.sourceKind != "inventory") {
+                return fail("unsupported_operation");
+            }
         }
 
         var candidateName:String = "";
@@ -178,7 +199,9 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
         if (fresh.noOp == true) {
             var noOpSnapshot:Object = buildTuningSnapshot(source, safeSourceRef(source));
-            var noOpInventory:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+            var noOpInventory:Object = source.sourceKind == "inventory"
+                ? InventoryPanelService.buildExternalSnapshot("背包", 0, 50)
+                : null;
             _busy = false;
             return {
                 success:true, transactionId:transactionId, tuningToken:token,
@@ -186,7 +209,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
                 before:fresh.before, after:fresh.after, materials:fresh.materials,
                 removedMods:fresh.removedMods,
                 snapshot:noOpSnapshot,
-                inventorySnapshots:noOpInventory == null ? [] : [noOpInventory]
+                inventorySnapshots:noOpInventory == null
+                    ? [] : [noOpInventory]
             };
         }
 
@@ -209,6 +233,15 @@ class org.flashNight.arki.item.EquipmentTuningService {
                 lastUpdate:timestamp
             });
         }
+
+        if (source.sourceKind == "loadout") {
+            var wornResult:Object = commitWornPlan(
+                fresh, source, valueChanges, materials,
+                timestamp, token, transactionId);
+            _busy = false;
+            return wornResult;
+        }
+
         var bag:ArrayInventory = ArrayInventory(source.inventory);
         if (!bag.canApplyValueTransaction(valueChanges)) {
             _busy = false;
@@ -256,6 +289,260 @@ class org.flashNight.arki.item.EquipmentTuningService {
             snapshot:committedSnapshot,
             inventorySnapshots:inventorySnapshot == null ? [] : [inventorySnapshot]
         };
+    }
+
+    /**
+     * 已穿戴单件调制的跨资源提交。装备栏与材料均先完整预检，再无事件写入；
+     * 材料、投影或序列化预检失败时恢复两边 value/revision。只有完整回包形状已经
+     * 可序列化后，才由 CharacterBuildService 的窄 hook 消费一次 loadout revision。
+     */
+    private static function commitWornPlan(
+        plan:Object,
+        source:Object,
+        valueChanges:Array,
+        materials:Object,
+        timestamp:Number,
+        token:String,
+        transactionId:String):Object {
+        var equipment:EquipmentInventory =
+            EquipmentInventory(source.inventory);
+        if (equipment == null
+                || typeof equipment.canApplyWornValueTransaction
+                    != "function"
+                || typeof equipment.transactionApplyWornValueChanges
+                    != "function"
+                || typeof equipment.rollbackWornValueTransaction
+                    != "function"
+                || typeof equipment.publishWornValueTransaction
+                    != "function"
+                || typeof materials.rollbackTransactionDeltas
+                    != "function") {
+            return commitFail("service_not_ready", transactionId);
+        }
+        if (!equipment.canApplyWornValueTransaction(valueChanges)
+                || !materials.canApplyTransactionDeltas(
+                    plan.materialDeltas)) {
+            return commitFail("stale_state", transactionId);
+        }
+
+        var equipmentCommit:Object = null;
+        try {
+            equipmentCommit =
+                equipment.transactionApplyWornValueChanges(valueChanges);
+        } catch (equipmentError) {
+            equipmentCommit = {success:false, rollbackComplete:false};
+        }
+        if (equipmentCommit == null
+                || equipmentCommit.success !== true) {
+            return commitFail(
+                equipmentCommit != null
+                    && equipmentCommit.rollbackComplete === true
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+
+        var materialCommit:Object = null;
+        try {
+            if (_testFailNextMaterialCommit) {
+                _testFailNextMaterialCommit = false;
+                materialCommit = {success:false, rollbackComplete:true};
+            } else {
+                materialCommit =
+                    materials.transactionApplyDeltas(
+                        plan.materialDeltas);
+            }
+        } catch (materialError) {
+            materialCommit = {success:false, rollbackComplete:false};
+        }
+        if (materialCommit == null
+                || materialCommit.success !== true) {
+            var equipmentRestored:Boolean =
+                equipment.rollbackWornValueTransaction(
+                    equipmentCommit);
+            var materialKnownClean:Boolean = materialCommit != null
+                && materialCommit.rollbackComplete === true;
+            return commitFail(
+                equipmentRestored && materialKnownClean
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+
+        var nextLoadoutRevision:Number =
+            Number(source.expectedLoadoutRevision) + 1;
+        var postSource:Object = {
+            sourceKind:"loadout",
+            sessionGeneration:Number(source.sessionGeneration),
+            slotKey:String(source.slot),
+            expectedLoadoutRevision:nextLoadoutRevision
+        };
+        var committedSnapshot:Object = null;
+        var committedAfter:Object = null;
+        var response:Object = null;
+        try {
+            committedSnapshot =
+                buildTuningSnapshot(source, postSource);
+            var changed:Object = plan.changes[0];
+            committedAfter = {
+                source:{
+                    source:postSource,
+                    equipment:buildEquipmentProjection(
+                        changed.slot.item,
+                        changed.afterValue,
+                        timestamp)
+                }
+            };
+            response = {
+                success:true,
+                transactionId:transactionId,
+                tuningToken:token,
+                canCommit:false,
+                operation:plan.operation,
+                noOp:false,
+                before:plan.before,
+                after:committedAfter,
+                materials:buildCommittedMaterials(plan.materials),
+                removedMods:plan.removedMods,
+                snapshot:committedSnapshot,
+                inventorySnapshots:[]
+            };
+        } catch (projectionError) {
+            response = null;
+        }
+        if (response == null || committedSnapshot == null
+                || !commitProjectionSerializable(response)) {
+            var projectionRollback:Boolean = rollbackWornRawCommit(
+                equipment, equipmentCommit,
+                materials, materialCommit);
+            return commitFail(
+                projectionRollback
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+
+        var synced:Object =
+            org.flashNight.arki.item.CharacterBuildService
+                .commitWornTuningSynchronization(
+                    Number(source.sessionGeneration),
+                    String(source.slot),
+                    Number(source.expectedLoadoutRevision),
+                    source.item);
+        if (synced == null || synced.success !== true) {
+            if (synced != null
+                    && synced.authorityObserved === true) {
+                // Character baseline 已观察 post-state；反向回滚会制造
+                // baseline=post / raw=pre 的二次漂移，只能保留 authority 对账。
+                publishCommittedWornSideEffects(
+                    plan, materials, materialCommit,
+                    equipment, equipmentCommit);
+                return commitFail(
+                    "needs_reconcile", transactionId);
+            }
+            var hookRollback:Boolean = rollbackWornRawCommit(
+                equipment, equipmentCommit,
+                materials, materialCommit);
+            var hookError:String = synced == null
+                || synced.error == undefined
+                ? "needs_reconcile" : String(synced.error);
+            return commitFail(
+                hookRollback && hookError != "needs_reconcile"
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+        if (Number(synced.loadoutRevision)
+                    != nextLoadoutRevision
+                || synced.liveRefreshDirty !== true) {
+            // Character authority 已观察到 raw commit；此后只能通过 fresh snapshot 对账，
+            // 绝不能反向伪装成确定未写。
+            publishCommittedWornSideEffects(
+                plan, materials, materialCommit,
+                equipment, equipmentCommit);
+            return commitFail("needs_reconcile", transactionId);
+        }
+
+        publishCommittedWornSideEffects(
+            plan, materials, materialCommit,
+            equipment, equipmentCommit);
+        return response;
+    }
+
+    /**
+     * Character authority 已观察 raw commit 后的唯一副作用出口。
+     *
+     * success 与 observed-unknown 都必须恰好调用一次；在此之前的失败必须先回滚，
+     * 且绝不能调用本函数。监听器/统计异常只隔离当前副作用，不能反向改变 authority。
+     */
+    private static function publishCommittedWornSideEffects(
+        plan:Object,
+        materials:Object,
+        materialCommit:Object,
+        equipment:EquipmentInventory,
+        equipmentCommit:Object):Void {
+        _writeEpoch++;
+        try {
+            markDirty();
+        } catch (dirtyError) {
+            // authority 已提交；dirty 写异常只允许由后续 reconcile/保存策略收敛。
+        }
+        try {
+            if (plan.achievementMetric != "") {
+                AchievementMetrics.record(
+                    plan.achievementMetric, 1);
+            }
+        } catch (achievementError) {
+            // 权威已提交；统计失败不能回滚玩法状态。
+        }
+        try {
+            materials.publishTransactionChanges(
+                materialCommit.changes);
+        } catch (materialPublishError) {
+            // 监听器只能观察完整最终状态，派发异常不改变 authority。
+        }
+        try {
+            equipment.publishWornValueTransaction(
+                equipmentCommit);
+        } catch (equipmentPublishError) {
+            // 同上；未知响应通过 snapshot reconcile 收敛。
+        }
+    }
+
+    private static function rollbackWornRawCommit(
+        equipment:EquipmentInventory,
+        equipmentCommit:Object,
+        materials:Object,
+        materialCommit:Object):Boolean {
+        var materialRestored:Boolean = false;
+        var equipmentRestored:Boolean = false;
+        try {
+            materialRestored =
+                materials.rollbackTransactionDeltas(
+                    materialCommit) === true;
+        } catch (materialRollbackError) {
+            materialRestored = false;
+        }
+        try {
+            equipmentRestored =
+                equipment.rollbackWornValueTransaction(
+                    equipmentCommit) === true;
+        } catch (equipmentRollbackError) {
+            equipmentRestored = false;
+        }
+        return materialRestored && equipmentRestored;
+    }
+
+    private static function commitProjectionSerializable(
+        response:Object):Boolean {
+        try {
+            if (_testFailNextSerialization) {
+                _testFailNextSerialization = false;
+                throw "fixture_tuning_serialization";
+            }
+            var serializer:LiteJSON =
+                _json == null ? new LiteJSON() : _json;
+            serializer.stringify(response);
+            return true;
+        } catch (serializationError) {
+            return false;
+        }
     }
 
     private static function executeTooltip(params:Object):Object {
@@ -706,17 +993,92 @@ class org.flashNight.arki.item.EquipmentTuningService {
     }
 
     private static function resolveWebSlot(ref:Object):Object {
-        if (ref == null) return fail("invalid_payload");
-        var checked:Object = InventoryPanelService.validateExternalSlotRef(ref, false);
+        if (ref == null || typeof ref != "object"
+                || typeof ref.sourceKind != "string") {
+            return fail("invalid_payload");
+        }
+        var sourceKind:String = String(ref.sourceKind);
+        if (sourceKind == "inventory") {
+            return resolveWebInventorySlot(ref);
+        }
+        if (sourceKind == "loadout") {
+            return resolveWebLoadoutSlot(ref);
+        }
+        return fail("invalid_payload");
+    }
+
+    private static function resolveWebInventorySlot(ref:Object):Object {
+        if (!hasExactKeys(ref, _inventorySourceKeys)
+                || typeof ref.containerId != "string"
+                || typeof ref.slot != "number"
+                || typeof ref.expectedLease != "string"
+                || String(ref.expectedLease) == "") {
+            return fail("invalid_payload");
+        }
+        var checked:Object =
+            InventoryPanelService.validateExternalSlotRef({
+                containerId:String(ref.containerId),
+                slot:Number(ref.slot),
+                expectedLease:String(ref.expectedLease)
+            }, false);
         if (!checked.success) return checked;
         if (checked.containerId != "背包") return fail("container_forbidden");
         var valid:Object = validateEquipment(checked.item);
         if (!valid.success) return valid;
-        checked.ref = {containerId:"背包", slot:checked.slot, expectedLease:String(ref.expectedLease)};
+        checked.sourceKind = "inventory";
+        checked.ref = {
+            sourceKind:"inventory",
+            containerId:"背包",
+            slot:checked.slot,
+            expectedLease:String(ref.expectedLease)
+        };
         checked.legacy = false;
         checked.expectedValue = ObjectUtil.clone(checked.item.value);
         checked.expectedLastUpdate = Number(checked.item.lastUpdate);
         return checked;
+    }
+
+    private static function resolveWebLoadoutSlot(ref:Object):Object {
+        if (!hasExactKeys(ref, _loadoutSourceKeys)
+                || typeof ref.sessionGeneration != "number"
+                || typeof ref.slotKey != "string"
+                || String(ref.slotKey) == ""
+                || typeof ref.expectedLoadoutRevision != "number"
+                || !isWholeNumber(ref.sessionGeneration)
+                || !isWholeNumber(ref.expectedLoadoutRevision)) {
+            return fail("invalid_payload");
+        }
+        var resolved:Object =
+            org.flashNight.arki.item.CharacterBuildService
+                .resolveWornTuningSource(
+                    Number(ref.sessionGeneration),
+                    String(ref.slotKey),
+                    Number(ref.expectedLoadoutRevision));
+        if (resolved == null || resolved.success !== true) {
+            return resolved == null
+                ? fail("service_not_ready") : resolved;
+        }
+        var valid:Object = validateEquipment(resolved.item);
+        if (!valid.success) return valid;
+        return {
+            success:true,
+            sourceKind:"loadout",
+            inventory:resolved.inventory,
+            slot:String(resolved.slotKey),
+            item:resolved.item,
+            legacy:false,
+            sessionGeneration:Number(resolved.sessionGeneration),
+            expectedLoadoutRevision:Number(resolved.loadoutRevision),
+            ref:{
+                sourceKind:"loadout",
+                sessionGeneration:Number(resolved.sessionGeneration),
+                slotKey:String(resolved.slotKey),
+                expectedLoadoutRevision:
+                    Number(resolved.loadoutRevision)
+            },
+            expectedValue:ObjectUtil.clone(resolved.item.value),
+            expectedLastUpdate:Number(resolved.item.lastUpdate)
+        };
     }
 
     private static function resolveLegacySlot(inventory:Object, slot:Number, item:Object):Object {
@@ -726,9 +1088,14 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var valid:Object = validateEquipment(item);
         if (!valid.success) return valid;
         return {
-            success:true, containerId:"背包", inventory:inventory,
+            success:true, sourceKind:"inventory",
+            containerId:"背包", inventory:inventory,
             slot:Number(slot), item:item, legacy:true,
-            ref:{containerId:"背包", slot:Number(slot)},
+            ref:{
+                sourceKind:"inventory",
+                containerId:"背包",
+                slot:Number(slot)
+            },
             expectedValue:ObjectUtil.clone(item.value), expectedLastUpdate:Number(item.lastUpdate)
         };
     }
@@ -756,20 +1123,52 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
     private static function safeSourceRef(slot:Object):Object {
         if (slot == null) return null;
-        var ref:Object = {containerId:"背包", slot:Number(slot.slot)};
-        if (slot.ref != null && slot.ref.expectedLease != undefined) ref.expectedLease = String(slot.ref.expectedLease);
+        if (slot.sourceKind == "loadout") {
+            return {
+                sourceKind:"loadout",
+                sessionGeneration:Number(slot.sessionGeneration),
+                slotKey:String(slot.slot),
+                expectedLoadoutRevision:
+                    Number(slot.expectedLoadoutRevision)
+            };
+        }
+        var ref:Object = {
+            sourceKind:"inventory",
+            containerId:"背包",
+            slot:Number(slot.slot)
+        };
+        if (slot.ref != null
+                && slot.ref.expectedLease != undefined) {
+            ref.expectedLease =
+                String(slot.ref.expectedLease);
+        }
         return ref;
     }
 
     private static function refFromInventorySnapshot(snapshot:Object, slot:Number):Object {
-        if (snapshot == null || !(snapshot.slots instanceof Array)) return {containerId:"背包", slot:slot};
+        if (snapshot == null || !(snapshot.slots instanceof Array)) {
+            return {
+                sourceKind:"inventory",
+                containerId:"背包",
+                slot:slot
+            };
+        }
         for (var i:Number = 0; i < snapshot.slots.length; i++) {
             var row:Object = snapshot.slots[i];
             if (Number(row.physicalSlot) == Number(slot)) {
-                return {containerId:"背包", slot:Number(slot), expectedLease:String(row.slotLease)};
+                return {
+                    sourceKind:"inventory",
+                    containerId:"背包",
+                    slot:Number(slot),
+                    expectedLease:String(row.slotLease)
+                };
             }
         }
-        return {containerId:"背包", slot:Number(slot)};
+        return {
+            sourceKind:"inventory",
+            containerId:"背包",
+            slot:Number(slot)
+        };
     }
 
     private static function isTierTransitionAllowed(item:BaseItem, materialName:String):Boolean {
@@ -991,6 +1390,27 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return leftCount == rightCount;
     }
 
+    private static function hasExactKeys(value:Object,
+                                         allowed:Object):Boolean {
+        if (value == null || typeof value != "object"
+                || allowed == null) return false;
+        var seen:Object = {};
+        for (var key:String in value) {
+            if (typeof value.hasOwnProperty == "function"
+                    && !value.hasOwnProperty(key)) {
+                continue;
+            }
+            if (allowed[key] !== true) return false;
+            seen[key] = true;
+        }
+        for (key in allowed) {
+            if (allowed[key] === true && seen[key] !== true) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static function isWholeNumber(value):Boolean {
         return typeof value == "number" && !isNaN(value) && Math.floor(value) == value;
     }
@@ -1012,6 +1432,14 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _testFailNext = true;
     }
 
+    public static function testOnlyFailNextMaterialCommit():Void {
+        _testFailNextMaterialCommit = true;
+    }
+
+    public static function testOnlyFailNextSerialization():Void {
+        _testFailNextSerialization = true;
+    }
+
     public static function testOnlyReset():Void {
         _busy = false;
         _sessionPanel = "";
@@ -1025,5 +1453,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _tokenTransactions = {};
         _tokenTransactionOrder = [];
         _testFailNext = false;
+        _testFailNextMaterialCommit = false;
+        _testFailNextSerialization = false;
     }
 }

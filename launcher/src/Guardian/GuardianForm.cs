@@ -13,6 +13,18 @@ namespace CF7Launcher.Guardian
 {
     public class GuardianForm : Form
     {
+        /// <summary>
+        /// Closed allowlist for destructive exits that may discard CharacterBuild state.
+        /// Unknown enum values fail closed through the normal persistence-fenced path.
+        /// </summary>
+        public enum EmergencyExitReason
+        {
+            CtrlQ,
+            HardExitKeyQ,
+            FlashExitedReady,
+            FlashZombieWatchdog
+        }
+
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
@@ -393,8 +405,10 @@ namespace CF7Launcher.Guardian
                 if (!IsReadyForHotkey()) return;
                 ToggleFullscreen();
             });
-            // Ctrl+Q → 退出（bootstrap / Ready 均硬退出，不经协调器）
-            _kbHook.RegisterAction(0x51, delegate { ForceExit(); });
+            // Ctrl+Q → 明示放弃未保存改动并强退（bootstrap / Ready 均可用）
+            _kbHook.RegisterAction(0x51, delegate {
+                EmergencyExit(EmergencyExitReason.CtrlQ);
+            });
             // Ctrl+G GPU 探针在 EnableDevGpuProbeHotkey() 中按 config 启用，玩家版不注入
             // Escape：固定回调，按 volatile 标志分支（避免 Dictionary 并发竞态）
             _kbHook.RegisterAction(0x1B, delegate {
@@ -523,7 +537,8 @@ namespace CF7Launcher.Guardian
                 }
                 if (id == HK_CTRL_Q)
                 {
-                    ForceExit();
+                    EmergencyExit(
+                        EmergencyExitReason.CtrlQ);
                     return;
                 }
             }
@@ -717,7 +732,10 @@ namespace CF7Launcher.Guardian
             switch (key)
             {
                 case Keys.F: ToggleFullscreen(); break;
-                case Keys.Q: ForceExit(); break;
+                case Keys.Q:
+                    EmergencyExit(
+                        EmergencyExitReason.HardExitKeyQ);
+                    break;
                 default: SendKeyToFlash(key); break;
             }
         }
@@ -1022,10 +1040,25 @@ namespace CF7Launcher.Guardian
         // - 三条终态路径共用 _closeTerminated 门闩，只有第一条命中的路径真正调 ForceExit
         private int _closeTerminated;
         private int _exitStarted;
-        private bool _closeAlreadyInProgress;
+        private volatile bool _closeAlreadyInProgress;
         // Phase D Step D11: OnStateChanged 扩三元 (silentAtEmit), close watcher 签名同步.
         private Action<string, string, bool> _closeStateWatcher;
         private System.Windows.Forms.Timer _closeTimeoutTimer;
+
+        /// <summary>
+        /// True from the first controlled-close admission decision until that close either
+        /// aborts at the persistence fence or terminates the process. Background HTTP/socket
+        /// ingress uses this narrow gate while the UI thread is waiting for Reset/KillFlash.
+        /// </summary>
+        public bool IsShutdownAdmissionClosed
+        {
+            get
+            {
+                return _closeAlreadyInProgress
+                    || System.Threading.Interlocked.CompareExchange(
+                        ref _exitStarted, 0, 0) != 0;
+            }
+        }
 
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
@@ -1038,14 +1071,24 @@ namespace CF7Launcher.Guardian
             // 闪退诊断: 把 CloseReason 写进所有分支, 区分 X-按钮 / Alt+F4 / Application.Exit / WM_QUERYENDSESSION / TaskKill
             string closeReason = e.CloseReason.ToString();
 
+            if (_closeAlreadyInProgress)
+            {
+                LogManager.Log(
+                    "[Guardian] OnFormClosing state=" + state
+                    + " reason=" + closeReason
+                    + " → close already in progress, suppress");
+                e.Cancel = true;
+                return;
+            }
+
             // Ready / Idle / Error → legacy 硬退出路径
             if (state == "Ready" || state == "Idle" || state == "Error")
             {
                 LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → DoExit (legacy hard exit)");
                 _closeAlreadyInProgress = true;
                 System.Threading.Interlocked.Exchange(ref _closeTerminated, 1);
-                e.Cancel = false;
-                DoExit();
+                e.Cancel =
+                    !DoExit();
                 return;
             }
 
@@ -1059,7 +1102,20 @@ namespace CF7Launcher.Guardian
             }
 
             e.Cancel = true;
+            _closeAlreadyInProgress = true;
             LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → async cancel + wait terminal");
+
+            // CharacterBuild admission is Ready-gated, but an external cancel may already have
+            // moved a previously Ready session into Resetting. Obtain the same persistence proof
+            // before this close path initiates (or joins) Reset; otherwise Reset can kill the only
+            // Flash process capable of answering recoverDetach.
+            if (!TryPassShutdownFence())
+            {
+                _closeAlreadyInProgress = false;
+                LogManager.Log(
+                    "[Guardian] async close cancelled before launch reset by persistence fence");
+                return;
+            }
 
             // 订阅 OnStateChanged 等待 Idle/Error (close watcher 不受 silentAtEmit 过滤, 无论静默与否都要反应终态)
             _closeStateWatcher = delegate(string nextState, string msg, bool silentAtEmit)
@@ -1126,7 +1182,9 @@ namespace CF7Launcher.Guardian
                 {
                     if (this.IsHandleCreated && !this.IsDisposed)
                     {
-                        this.BeginInvoke(new Action(DoExit));
+                        this.BeginInvoke(
+                            new Action(
+                                delegate { DoExit(); }));
                         invoked = true;
                     }
                 }
@@ -1140,15 +1198,157 @@ namespace CF7Launcher.Guardian
             DoExit();
         }
 
+        /// <summary>
+        /// Explicit destructive exit. Only the closed reason enum may bypass the persistence
+        /// fence; invalid enum values fall back to ForceExit and therefore remain fenced.
+        /// </summary>
+        public void EmergencyExit(
+            EmergencyExitReason reason)
+        {
+            string reasonCode =
+                EmergencyExitReasonCodeForTest(
+                    reason);
+            if (reasonCode == null)
+            {
+                LogManager.Log(
+                    "[Guardian] event=emergency_exit_rejected reason=unknown");
+                ForceExit();
+                return;
+            }
+
+            if (this.InvokeRequired)
+            {
+                bool invoked = false;
+                try
+                {
+                    if (this.IsHandleCreated
+                        && !this.IsDisposed)
+                    {
+                        this.BeginInvoke(
+                            new Action(
+                                delegate
+                                {
+                                    DoExit(
+                                        true,
+                                        reasonCode);
+                                }));
+                        invoked = true;
+                    }
+                }
+                catch { }
+
+                if (!invoked)
+                {
+                    LogManager.Log(
+                        "[Guardian] event=emergency_exit reason="
+                        + reasonCode
+                        + " shutdown_fence=skipped ui_dispatch=unavailable");
+                    CleanupTrayIcon();
+                    Environment.Exit(0);
+                }
+                return;
+            }
+
+            DoExit(
+                true,
+                reasonCode);
+        }
+
+        internal static string EmergencyExitReasonCodeForTest(
+            EmergencyExitReason reason)
+        {
+            switch (reason)
+            {
+                case EmergencyExitReason.CtrlQ:
+                    return "ctrl_q";
+                case EmergencyExitReason.HardExitKeyQ:
+                    return "hard_exit_key_q";
+                case EmergencyExitReason.FlashExitedReady:
+                    return "flash_exited_ready";
+                case EmergencyExitReason.FlashZombieWatchdog:
+                    return "flash_zombie_watchdog";
+                default:
+                    return null;
+            }
+        }
+
         /// <summary>退出前回调。Program.cs 注入，在 Form dispose 之前断开快车道。</summary>
         public Action OnShutdownEarly;
+
+        /// <summary>
+        /// 可取消的退出持久化栅栏。必须在 MarkShuttingDown、8 秒 exit guard 和任何资源清理前
+        /// 成功；false 保持进程与 Flash 存活，让玩家稍后重试。
+        /// </summary>
+        public Func<bool> OnShutdownFence;
 
         /// <summary>退出前杀 Flash + 停音频。Program.cs 注入，在 ExitThread 之前执行。</summary>
         public Action OnKillFlash;
 
-        private void DoExit()
+        private bool TryPassShutdownFence()
         {
-            if (System.Threading.Interlocked.Exchange(ref _exitStarted, 1) != 0) return;
+            bool fencePassed = true;
+            if (OnShutdownFence != null)
+            {
+                try
+                {
+                    fencePassed =
+                        OnShutdownFence();
+                }
+                catch (Exception ex)
+                {
+                    fencePassed = false;
+                    LogManager.Log(
+                        "[Guardian] shutdown fence threw "
+                        + ex.GetType().Name);
+                }
+            }
+            if (!fencePassed)
+            {
+                LogManager.Log(
+                    "[Guardian] shutdown cancelled by persistence fence");
+                return false;
+            }
+            OnShutdownFence = null;
+            return true;
+        }
+
+        private bool DoExit()
+        {
+            return DoExit(
+                false,
+                null);
+        }
+
+        private bool DoExit(
+            bool skipShutdownFence,
+            string emergencyReason)
+        {
+            if (System.Threading.Interlocked.CompareExchange(
+                    ref _exitStarted, 1, 0) != 0)
+            {
+                return true;
+            }
+
+            if (skipShutdownFence)
+            {
+                LogManager.Log(
+                    "[Guardian] event=emergency_exit reason="
+                    + emergencyReason
+                    + " shutdown_fence=skipped");
+            }
+
+            if (!skipShutdownFence
+                && !TryPassShutdownFence())
+            {
+                _closeAlreadyInProgress = false;
+                System.Threading.Interlocked.Exchange(
+                    ref _closeTerminated, 0);
+                System.Threading.Interlocked.Exchange(
+                    ref _exitStarted, 0);
+                return false;
+            }
+            // Emergency exit intentionally consumes the callback without invoking it.
+            OnShutdownFence = null;
             GuardianLifecycle.MarkShuttingDown();
 
             // 最先启动绝对保底线程：独立前台线程，不依赖 ThreadPool/消息循环/任何锁
@@ -1190,6 +1390,7 @@ namespace CF7Launcher.Guardian
             }
 
             Application.ExitThread();
+            return true;
         }
 
         private void CleanupTrayIcon()

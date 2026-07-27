@@ -56,6 +56,19 @@ namespace CF7Launcher.Guardian
             Failed
         }
 
+        public enum VisualRetireOutcome
+        {
+            RetiredExact,
+            VisualAlreadyAbsent,
+            HostUnavailable
+        }
+
+        private sealed class VisualRetireWaiter
+        {
+            public bool RetiredExact;
+            public Action<VisualRetireOutcome> Completed;
+        }
+
         public struct PanelCommand
         {
             public PanelCommandKind Kind;
@@ -65,10 +78,14 @@ namespace CF7Launcher.Guardian
             public string ReturnInitDataJson;    // 可空；reopen returnTo 时用作 initData
             public bool IsTrackedOpen;
             public bool IsTrackedClose;
+            public bool IsExactClose;
+            public bool IsVisualRetire;
             public string ReservedPanelInstanceId;
             public Func<bool> TrackedExecutionGate;
             public Action<TrackedOpenOutcome> TrackedOpenCompleted;
             public Action<bool> TrackedCloseCompleted;
+            public Action<bool> ExactCloseCompleted;
+            public Action<VisualRetireOutcome> VisualRetireCompleted;
             public PanelCommand(PanelCommandKind kind, string name, string initDataJson)
                 : this(kind, name, initDataJson, null, null)
             {
@@ -83,10 +100,14 @@ namespace CF7Launcher.Guardian
                 ReturnInitDataJson = returnInitDataJson;
                 IsTrackedOpen = false;
                 IsTrackedClose = false;
+                IsExactClose = false;
+                IsVisualRetire = false;
                 ReservedPanelInstanceId = null;
                 TrackedExecutionGate = null;
                 TrackedOpenCompleted = null;
                 TrackedCloseCompleted = null;
+                ExactCloseCompleted = null;
+                VisualRetireCompleted = null;
             }
         }
 
@@ -124,12 +145,16 @@ namespace CF7Launcher.Guardian
         private readonly ToastOverlay _toastOverlay;
 
         private readonly Queue<PanelCommand> _queue = new Queue<PanelCommand>();
+        private readonly List<VisualRetireWaiter> _visualRetireWaiters =
+            new List<VisualRetireWaiter>();
         private readonly object _queueLock = new object();
+        private Func<string, bool> _openGate;
         private Func<string, bool> _rebindGate;
         private Func<string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
         public event Action<string, string> PanelClosed;
         private PanelCommand? _deferredRebind;
+        private PanelCommand? _deferredBarrierOpen;
         private bool _processing;
         private bool _delayedKickRegistered;
 
@@ -139,6 +164,8 @@ namespace CF7Launcher.Guardian
         private volatile string _trackedLeasePanelName;
         private volatile string _trackedLeaseInstanceId;
         private string _idleFenceToken;
+        private readonly Action<Action> _testPumpDispatcher;
+        private readonly Action<Action> _testClosedEventDispatcher;
         private static long _panelInstanceSequence;
         public bool IsPanelOpen { get { return _activePanel != null; } }
         public string ActivePanelName { get { return _activePanel; } }
@@ -189,6 +216,22 @@ namespace CF7Launcher.Guardian
 
             // Backdrop 点击外侧 → web panel_esc（等价 web 端 panels.js 的 backdrop click）
             _backdrop.BackdropClickedOutsidePanel += OnBackdropClickOutsidePanel;
+        }
+
+        /// <summary>
+        /// Deterministic queue/surface harness for behavioral tests. Production always uses the
+        /// WinForms constructor above; this constructor deliberately exercises the real command,
+        /// identity, tracked-lease, waiter, and event code without creating native windows.
+        /// </summary>
+        internal PanelHostController(
+            Action<Action> pumpDispatcher,
+            Action<Action> closedEventDispatcher)
+        {
+            if (pumpDispatcher == null)
+                throw new ArgumentNullException("pumpDispatcher");
+            _testPumpDispatcher = pumpDispatcher;
+            _testClosedEventDispatcher =
+                closedEventDispatcher ?? delegate(Action fire) { fire(); };
         }
 
         private void OnBackdropClickOutsidePanel()
@@ -265,6 +308,92 @@ namespace CF7Launcher.Guardian
             return EnqueueAndPump(command);
         }
 
+        /// <summary>
+        /// Queues a generic close that remains bound to the exact visible instance at execution.
+        /// A delayed workbench close can therefore never tear down a same-name replacement.
+        /// </summary>
+        public bool TryClosePanelExact(string panelName, string panelInstanceId,
+            Action<bool> completed)
+        {
+            if (_disposed || string.IsNullOrEmpty(panelName)
+                || string.IsNullOrEmpty(panelInstanceId)) return false;
+            lock (_queueLock)
+            {
+                _deferredRebind = null;
+                _deferredBarrierOpen = null;
+            }
+            PanelCommand command =
+                new PanelCommand(PanelCommandKind.Close, panelName, null);
+            command.IsExactClose = true;
+            command.ReservedPanelInstanceId = panelInstanceId;
+            command.ExactCloseCompleted = completed;
+            return EnqueueAndPump(command);
+        }
+
+        /// <summary>
+        /// Retires the requested visual without ever closing a different instance. Unlike a
+        /// generic exact close, this request is admitted behind an already-reserved tracked open
+        /// and through a matching tracked lease. Its completion is an authoritative Host-idle
+        /// proof and does not depend on the best-effort PanelClosed notification.
+        /// </summary>
+        public bool TryRetirePanelVisualExact(
+            string panelName,
+            string panelInstanceId,
+            Action<VisualRetireOutcome> completed)
+        {
+            if (_disposed || string.IsNullOrEmpty(panelName)
+                || string.IsNullOrEmpty(panelInstanceId)
+                || completed == null)
+            {
+                return false;
+            }
+            bool confirmedVisualIdle = false;
+            lock (_queueLock)
+            {
+                confirmedVisualIdle =
+                    _activePanel == null
+                    && _queue.Count == 0
+                    && !_processing
+                    && !_trackedOpenReserved;
+                if (_idleFenceToken != null
+                    && !confirmedVisualIdle)
+                {
+                    return false;
+                }
+                if (confirmedVisualIdle
+                    && string.Equals(
+                        _trackedLeasePanelName,
+                        panelName,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _trackedLeaseInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    _trackedLeasePanelName = null;
+                    _trackedLeaseInstanceId = null;
+                }
+                _deferredRebind = null;
+                _deferredBarrierOpen = null;
+            }
+            if (confirmedVisualIdle)
+            {
+                try
+                {
+                    completed(
+                        VisualRetireOutcome.VisualAlreadyAbsent);
+                }
+                catch { }
+                return true;
+            }
+            PanelCommand command =
+                new PanelCommand(PanelCommandKind.Close, panelName, null);
+            command.IsVisualRetire = true;
+            command.ReservedPanelInstanceId = panelInstanceId;
+            command.VisualRetireCompleted = completed;
+            return EnqueueAndPump(command);
+        }
+
         public bool IsIdleForTrackedOpen
         {
             get
@@ -309,11 +438,16 @@ namespace CF7Launcher.Guardian
         public void ClosePanel()
         {
             if (_disposed) return;
-            lock (_queueLock) { _deferredRebind = null; }
+            lock (_queueLock)
+            {
+                _deferredRebind = null;
+                _deferredBarrierOpen = null;
+            }
             if (!EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null)))
                 LogManager.Log("[PanelHost] generic close rejected while tracked open/lease is active");
         }
 
+        public void SetOpenGate(Func<string, bool> gate) { _openGate = gate; }
         public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
         public void SetInitDataEnricher(Func<string, string, string> enricher) { _initDataEnricher = enricher; }
         public void SetPanelCloseObserver(Action<string, string> observer) { _panelCloseObserver = observer; }
@@ -335,6 +469,25 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// Resumes the last generic open stopped by a global authority barrier. The gate is checked
+        /// again on execution, so an early callback cannot escape a still-retained binding.
+        /// </summary>
+        public void FlushDeferredBarrierOpen()
+        {
+            PanelCommand? deferred = null;
+            lock (_queueLock)
+            {
+                if (_deferredBarrierOpen.HasValue)
+                {
+                    deferred = _deferredBarrierOpen;
+                    _deferredBarrierOpen = null;
+                }
+            }
+            if (deferred.HasValue)
+                EnqueueAndPump(deferred.Value);
+        }
+
+        /// <summary>
         /// 异常路径（断线 / force_close / 进程退出前）专用：清空 return stack，
         /// 让接下来的 ClosePanel 不要尝试 reopen 任何上层 panel。
         /// 正常 user-close 路径（点 ✕ / ESC / backdrop）不应该调本方法。
@@ -342,7 +495,11 @@ namespace CF7Launcher.Guardian
         public void ClearReturnStack()
         {
             if (_disposed) return;
-            lock (_queueLock) { _returnStack.Clear(); }
+            lock (_queueLock)
+            {
+                _returnStack.Clear();
+                _deferredBarrierOpen = null;
+            }
         }
 
         #endregion
@@ -371,7 +528,9 @@ namespace CF7Launcher.Guardian
                             StringComparison.Ordinal))
                         return false;
                 }
-                else if (_trackedOpenReserved || _trackedLeaseInstanceId != null)
+                else if (!cmd.IsVisualRetire
+                    && (_trackedOpenReserved
+                        || _trackedLeaseInstanceId != null))
                 {
                     return false;
                 }
@@ -381,6 +540,23 @@ namespace CF7Launcher.Guardian
             }
 
             // guard: handle 未创建时 BeginInvoke 抛
+            if (_testPumpDispatcher != null)
+            {
+                try
+                {
+                    _testPumpDispatcher(PumpQueue);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] test pump dispatch failed: "
+                        + ex.Message);
+                    FailPendingPumpDispatch(false);
+                    return false;
+                }
+            }
+
             if (!_ownerForm.IsHandleCreated)
             {
                 if (!_delayedKickRegistered)
@@ -397,6 +573,15 @@ namespace CF7Launcher.Guardian
             catch (Exception ex)
             {
                 LogManager.Log("[PanelHost] BeginInvoke pump failed: " + ex.Message);
+                if (cmd.IsVisualRetire
+                    && !_ownerForm.InvokeRequired)
+                {
+                    // All production retire callers enter on the owner thread. If the handle is
+                    // torn down between the precheck and BeginInvoke, finish the already-admitted
+                    // queue directly instead of leaking the CharacterBuild authority barrier.
+                    PumpQueue();
+                    return true;
+                }
                 // 释放 _processing 让下次入队能重试
                 FailPendingPumpDispatch(true);
                 return false;
@@ -428,8 +613,9 @@ namespace CF7Launcher.Guardian
             }
             for (int i = 0; i < failed.Count; i++)
             {
-                if (skipFirstCallback && i == 0) continue;
                 PanelCommand command = failed[i];
+                if (skipFirstCallback && i == 0
+                    && !command.IsVisualRetire) continue;
                 if (command.IsTrackedOpen && command.TrackedOpenCompleted != null)
                 {
                     try { command.TrackedOpenCompleted(TrackedOpenOutcome.PreExecutionRejected); }
@@ -438,6 +624,21 @@ namespace CF7Launcher.Guardian
                 if (command.IsTrackedClose && command.TrackedCloseCompleted != null)
                 {
                     try { command.TrackedCloseCompleted(false); }
+                    catch { }
+                }
+                if (command.IsExactClose && command.ExactCloseCompleted != null)
+                {
+                    try { command.ExactCloseCompleted(false); }
+                    catch { }
+                }
+                if (command.IsVisualRetire
+                    && command.VisualRetireCompleted != null)
+                {
+                    try
+                    {
+                        command.VisualRetireCompleted(
+                            VisualRetireOutcome.HostUnavailable);
+                    }
                     catch { }
                 }
             }
@@ -472,6 +673,7 @@ namespace CF7Launcher.Guardian
                 }
                 if (queueDrained)
                 {
+                    CompleteVisualRetireWaitersIfIdle();
                     return;
                 }
                 try
@@ -489,6 +691,11 @@ namespace CF7Launcher.Guardian
 
         private void ExecuteCommand(PanelCommand cmd)
         {
+            if (cmd.IsVisualRetire)
+            {
+                ExecuteVisualRetire(cmd);
+                return;
+            }
             if (cmd.IsTrackedOpen)
             {
                 ExecuteTrackedOpen(cmd);
@@ -499,8 +706,38 @@ namespace CF7Launcher.Guardian
                 ExecuteTrackedClose(cmd);
                 return;
             }
+            if (cmd.IsExactClose)
+            {
+                ExecuteExactClose(cmd);
+                return;
+            }
             if (cmd.Kind == PanelCommandKind.Open)
             {
+                if (HasVisualRetireBarrier())
+                {
+                    lock (_queueLock)
+                    {
+                        _deferredBarrierOpen = cmd;
+                    }
+                    LogManager.Log(
+                        "[PanelHost] open deferred by visual-retire barrier: "
+                        + cmd.Name);
+                    _consecutiveFailures = 0;
+                    return;
+                }
+                Func<string, bool> openGate = _openGate;
+                if (openGate != null && !openGate(cmd.Name))
+                {
+                    lock (_queueLock)
+                    {
+                        _deferredBarrierOpen = cmd;
+                    }
+                    LogManager.Log(
+                        "[PanelHost] open deferred by authority barrier: "
+                        + cmd.Name);
+                    _consecutiveFailures = 0;
+                    return;
+                }
                 if (_activePanel == cmd.Name)
                 {
                     Func<string, bool> gate = _rebindGate;
@@ -533,12 +770,7 @@ namespace CF7Launcher.Guardian
                 // 异常路径（断线 / force_close）应在 ClosePanel 之前调 ClearReturnStack 跳过 reopen。
                 if (_returnStack.Count > 0)
                 {
-                    var top = _returnStack[_returnStack.Count - 1];
-                    _returnStack.RemoveAt(_returnStack.Count - 1);
-                    lock (_queueLock)
-                    {
-                        _queue.Enqueue(new PanelCommand(PanelCommandKind.Open, top.Name, top.InitDataJson));
-                    }
+                    QueueReturnOpen();
                 }
             }
             _consecutiveFailures = 0;
@@ -551,6 +783,12 @@ namespace CF7Launcher.Guardian
             bool webPostAccepted = false;
             try
             {
+                if (HasVisualRetireBarrier())
+                {
+                    outcome =
+                        TrackedOpenOutcome.PreExecutionRejected;
+                    return;
+                }
                 if (_activePanel != null || _trackedLeaseInstanceId != null)
                 {
                     outcome = TrackedOpenOutcome.PanelBusy;
@@ -637,6 +875,206 @@ namespace CF7Launcher.Guardian
                         LogManager.Log("[PanelHost] tracked close completion failed: " + ex.Message);
                     }
                 }
+            }
+        }
+
+        private void ExecuteExactClose(PanelCommand cmd)
+        {
+            bool closed = false;
+            try
+            {
+                if (!string.Equals(
+                        _activePanel, cmd.Name, StringComparison.Ordinal)
+                    || !string.Equals(
+                        _activePanelInstanceId,
+                        cmd.ReservedPanelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    LogManager.Log(
+                        "[PanelHost] stale exact close ignored: "
+                        + (cmd.Name ?? "<null>") + " instance="
+                        + (cmd.ReservedPanelInstanceId ?? "<null>"));
+                    return;
+                }
+                DoClose();
+                closed = true;
+                if (_returnStack.Count > 0)
+                    QueueReturnOpen();
+                _consecutiveFailures = 0;
+            }
+            finally
+            {
+                Action<bool> completed =
+                    cmd.ExactCloseCompleted;
+                if (completed != null)
+                {
+                    try { completed(closed); }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log(
+                            "[PanelHost] exact close completion failed: "
+                            + ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void ExecuteVisualRetire(
+            PanelCommand cmd)
+        {
+            bool retiredExact = false;
+            try
+            {
+                bool activeMatches =
+                    string.Equals(
+                        _activePanel,
+                        cmd.Name,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _activePanelInstanceId,
+                        cmd.ReservedPanelInstanceId,
+                        StringComparison.Ordinal);
+                bool hasTrackedLease =
+                    _trackedLeaseInstanceId != null;
+                bool trackedLeaseMatches =
+                    hasTrackedLease
+                    && string.Equals(
+                        _trackedLeasePanelName,
+                        cmd.Name,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _trackedLeaseInstanceId,
+                        cmd.ReservedPanelInstanceId,
+                        StringComparison.Ordinal);
+
+                if (activeMatches
+                    && (!hasTrackedLease
+                        || trackedLeaseMatches))
+                {
+                    _returnStack.Clear();
+                    DoClose();
+                    if (trackedLeaseMatches)
+                    {
+                        _trackedLeasePanelName = null;
+                        _trackedLeaseInstanceId = null;
+                    }
+                    retiredExact = true;
+                    _consecutiveFailures = 0;
+                }
+                else if (_activePanel == null
+                    && trackedLeaseMatches)
+                {
+                    // A reset may have removed the visual before the tracked close command could
+                    // run. The exact lease no longer protects any visual and must not remain wedged.
+                    _trackedLeasePanelName = null;
+                    _trackedLeaseInstanceId = null;
+                }
+                else if (_activePanel != null)
+                {
+                    LogManager.Log(
+                        "[PanelHost] visual retire waiting for replacement: "
+                        + (_activePanel ?? "<null>") + " instance="
+                        + (_activePanelInstanceId ?? "<null>")
+                        + " requested=" + (cmd.Name ?? "<null>")
+                        + " instance="
+                        + (cmd.ReservedPanelInstanceId ?? "<null>"));
+                }
+
+                lock (_queueLock)
+                {
+                    _visualRetireWaiters.Add(
+                        new VisualRetireWaiter
+                        {
+                            RetiredExact = retiredExact,
+                            Completed =
+                                cmd.VisualRetireCompleted
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[PanelHost] visual retire failed: "
+                    + ex.Message);
+                Action<VisualRetireOutcome> completed =
+                    cmd.VisualRetireCompleted;
+                if (completed != null)
+                {
+                    try
+                    {
+                        completed(
+                            VisualRetireOutcome.HostUnavailable);
+                    }
+                    catch { }
+                }
+                throw;
+            }
+        }
+
+        private bool HasVisualRetireBarrier()
+        {
+            lock (_queueLock)
+            {
+                if (_visualRetireWaiters.Count != 0)
+                    return true;
+                foreach (PanelCommand queued in _queue)
+                    if (queued.IsVisualRetire)
+                        return true;
+                return false;
+            }
+        }
+
+        private void CompleteVisualRetireWaitersIfIdle()
+        {
+            List<VisualRetireWaiter> completed = null;
+            lock (_queueLock)
+            {
+                if (_activePanel != null
+                    || _queue.Count != 0
+                    || _processing
+                    || _trackedOpenReserved)
+                {
+                    return;
+                }
+                if (_visualRetireWaiters.Count == 0)
+                    return;
+                completed =
+                    new List<VisualRetireWaiter>(
+                        _visualRetireWaiters);
+                _visualRetireWaiters.Clear();
+            }
+
+            foreach (VisualRetireWaiter waiter in completed)
+            {
+                Action<VisualRetireOutcome> callback =
+                    waiter.Completed;
+                if (callback == null) continue;
+                try
+                {
+                    callback(
+                        waiter.RetiredExact
+                            ? VisualRetireOutcome.RetiredExact
+                            : VisualRetireOutcome.VisualAlreadyAbsent);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] visual retire completion failed: "
+                        + ex.Message);
+                }
+            }
+        }
+
+        private void QueueReturnOpen()
+        {
+            var top = _returnStack[_returnStack.Count - 1];
+            _returnStack.RemoveAt(_returnStack.Count - 1);
+            lock (_queueLock)
+            {
+                _queue.Enqueue(new PanelCommand(
+                    PanelCommandKind.Open,
+                    top.Name,
+                    top.InitDataJson));
             }
         }
 
@@ -731,6 +1169,24 @@ namespace CF7Launcher.Guardian
         private bool DoOpen(string name, string initDataJson, string reservedPanelInstanceId,
             bool requireTrackedDelivery, Action trackedWebPostAccepted)
         {
+            if (_testPumpDispatcher != null)
+            {
+                string testInstance =
+                    string.IsNullOrEmpty(
+                        reservedPanelInstanceId)
+                        ? NextPanelInstanceId()
+                        : reservedPanelInstanceId;
+                _activePanel = name;
+                _activePanelInstanceId =
+                    testInstance;
+                if (requireTrackedDelivery
+                    && trackedWebPostAccepted != null)
+                {
+                    trackedWebPostAccepted();
+                }
+                return true;
+            }
+
             // Loot tracked open promises that the game is already under the global webpanel lease
             // before any native/Web visual side effect.  A socket write failure is therefore a
             // known pre-open failure, never an OpenPosted outcome.
@@ -986,6 +1442,32 @@ namespace CF7Launcher.Guardian
 
         private void DoClose()
         {
+            if (_testPumpDispatcher != null)
+            {
+                string testClosingName =
+                    _activePanel;
+                string testClosingInstance =
+                    _activePanelInstanceId;
+                Action<string, string> testObserver =
+                    _panelCloseObserver;
+                if (testObserver != null)
+                {
+                    try
+                    {
+                        testObserver(
+                            testClosingName,
+                            testClosingInstance);
+                    }
+                    catch { }
+                }
+                _activePanel = null;
+                _activePanelInstanceId = null;
+                PostPanelClosed(
+                    testClosingName,
+                    testClosingInstance);
+                return;
+            }
+
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             string closingName = _activePanel;
             string closingInstance = _activePanelInstanceId;
@@ -1041,17 +1523,53 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             _disposed = true;
-            try { _ownerForm.HandleCreated -= DelayedKickOnHandleCreated; } catch { }
+            try
+            {
+                if (_ownerForm != null)
+                    _ownerForm.HandleCreated -=
+                        DelayedKickOnHandleCreated;
+            }
+            catch { }
+            List<VisualRetireWaiter> failedRetires;
             lock (_queueLock)
             {
+                failedRetires =
+                    new List<VisualRetireWaiter>(
+                        _visualRetireWaiters);
+                foreach (PanelCommand queued in _queue)
+                {
+                    if (queued.IsVisualRetire
+                        && queued.VisualRetireCompleted
+                            != null)
+                    {
+                        failedRetires.Add(
+                            new VisualRetireWaiter
+                            {
+                                Completed =
+                                    queued.VisualRetireCompleted
+                            });
+                    }
+                }
                 _queue.Clear();
                 _processing = false;
                 _returnStack.Clear();
                 _deferredRebind = null;
+                _deferredBarrierOpen = null;
                 _trackedOpenReserved = false;
                 _trackedLeasePanelName = null;
                 _trackedLeaseInstanceId = null;
                 _idleFenceToken = null;
+                _visualRetireWaiters.Clear();
+            }
+            foreach (VisualRetireWaiter waiter in failedRetires)
+            {
+                if (waiter.Completed == null) continue;
+                try
+                {
+                    waiter.Completed(
+                        VisualRetireOutcome.HostUnavailable);
+                }
+                catch { }
             }
             try { UnsubscribeOwnerLayout(); } catch { }
             if (_ownerLayoutSettleTimer != null)
@@ -1060,7 +1578,13 @@ namespace CF7Launcher.Guardian
                 try { _ownerLayoutSettleTimer.Dispose(); } catch { }
                 _ownerLayoutSettleTimer = null;
             }
-            try { _backdrop.BackdropClickedOutsidePanel -= OnBackdropClickOutsidePanel; } catch { }
+            try
+            {
+                if (_backdrop != null)
+                    _backdrop.BackdropClickedOutsidePanel -=
+                        OnBackdropClickOutsidePanel;
+            }
+            catch { }
         }
 
         private void PostPanelClosed(string panelName, string panelInstanceId)
@@ -1074,6 +1598,11 @@ namespace CF7Launcher.Guardian
             };
             try
             {
+                if (_testClosedEventDispatcher != null)
+                {
+                    _testClosedEventDispatcher(fire);
+                    return;
+                }
                 if (_ownerForm.IsHandleCreated) _ownerForm.BeginInvoke(fire);
                 else fire();
             }
@@ -1158,6 +1687,7 @@ namespace CF7Launcher.Guardian
 
             // 异常路径不应触发 returnTo reopen：清栈避免在已经混乱的状态上叠加新 panel 命令。
             _returnStack.Clear();
+            _deferredBarrierOpen = null;
 
             _consecutiveFailures++;
             if (_consecutiveFailures >= FAILURE_CIRCUIT_BREAKER)

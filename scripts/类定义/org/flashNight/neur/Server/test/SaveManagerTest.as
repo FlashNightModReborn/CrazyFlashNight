@@ -1,4 +1,6 @@
 ﻿import org.flashNight.neur.Server.SaveManager;
+import org.flashNight.neur.Server.ServerManager;
+import org.flashNight.arki.render.FrameBroadcaster;
 import JSON;
 
 /**
@@ -18,6 +20,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         failedCount = 0;
 
         runMigrationAndCoreTests();
+        runSaveFlowTests();
         runLoadFromMydataTests();
         runPrefetchTests();
         runLoadAllTests();
@@ -43,6 +46,22 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadShopCart_empty_top_level_keeps_nested_shop();
         test_loadShopPurchased_empty_top_level_keeps_nested_shop();
         test_ext_namespace_roundtrip();
+    }
+
+    private static function runSaveFlowTests():Void {
+        test_save_flow_restores_missing_save_system();
+        test_hasPendingChanges_combines_both_latches();
+        test_flushNow_success_clears_both_latches();
+        test_flushNow_repeated_early_failure_publishes_attempt_edges();
+        test_flushNow_save_disabled_preserves_dirty();
+        test_flushNow_in_flight_preserves_dirty();
+        test_flushNow_write_gate_rejection_preserves_dirty();
+        test_flushNow_storage_false_preserves_dirty_and_retries();
+        test_flushNow_storage_pending_preserves_dirty_and_retries();
+        test_flushNow_precommit_throw_resets_in_flight();
+        test_debounce_precommit_throw_resets_in_flight();
+        test_debounce_exception_publishes_failed_state();
+        test_flushNow_postcommit_notification_throw_keeps_success();
     }
 
     private static function runLoadFromMydataTests():Void {
@@ -107,7 +126,409 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         }
     }
 
+    private static function beginFrameUiCapture():Object {
+        var capture:Object = {
+            hadServer: (_root.server != undefined),
+            server: _root.server,
+            hadGameworld: (_root.gameworld != undefined),
+            gameworld: _root.gameworld,
+            messages: []
+        };
+        _root.server = {
+            isSocketConnected: true,
+            sendSocketMessage: function(message:String):Void {
+                capture.messages.push(message);
+            }
+        };
+        _root.gameworld = {_x:0, _y:0, _xscale:100};
+        // 清掉前一测试尚未被帧末消费的通用 UI 状态，保证本次序列可精确断言。
+        FrameBroadcaster.send();
+        capture.messages = [];
+        return capture;
+    }
+
+    private static function takeFrameUiPayload(capture:Object):String {
+        FrameBroadcaster.send();
+        if (capture.messages.length == 0) return "";
+        var message:String = String(capture.messages[capture.messages.length - 1]);
+        capture.messages = [];
+        var uiIndex:Number = message.indexOf("\x03");
+        if (uiIndex < 0) return "";
+        var payload:String = message.substring(uiIndex + 1);
+        var inputIndex:Number = payload.indexOf("\x04");
+        return inputIndex >= 0 ? payload.substring(0, inputIndex) : payload;
+    }
+
+    private static function endFrameUiCapture(capture:Object):Void {
+        if (capture.hadServer) _root.server = capture.server;
+        else delete _root.server;
+        if (capture.hadGameworld) _root.gameworld = capture.gameworld;
+        else delete _root.gameworld;
+    }
+
+    private static function beginSaveFlowTest():Object {
+        var hadSaveSystem:Boolean = (_root.存档系统 != undefined);
+        if (!hadSaveSystem) _root.存档系统 = {};
+
+        var server:ServerManager = ServerManager.getInstance();
+        var saved:Object = {
+            hadSaveSystem: hadSaveSystem,
+            savePath: _root.savePath,
+            allowSave: _root.允许存档,
+            roleName: _root.角色名,
+            level: _root.等级,
+            baseWorth: _root.基础身价值,
+            calibrationNoSave: _root.斗兽标定禁存档,
+            agentCalibrationNoSave: _root._agentCalibrationNoSave,
+            internalDirty: SaveManager.getInstance().isDirty(),
+            externalDirty: _root.存档系统.dirtyMark,
+            updateTaskProgress: _root.UpdateTaskProgress,
+            socketConnected: server.isSocketConnected,
+            mydata: _root.mydata,
+            saveFlag: _root.存盘标志,
+            mainlineProgress: _root.主线任务进度,
+            worth: _root.身价,
+            saveExt: _root._saveExt,
+            killStats: _root.killStats
+        };
+
+        _root.savePath = TEST_SLOT;
+        SharedObject.getLocal(TEST_SLOT).clear();
+        _root.允许存档 = true;
+        _root.角色名 = "SaveManagerTest";
+        _root.等级 = 1;
+        _root.基础身价值 = 1000;
+        _root.斗兽标定禁存档 = false;
+        _root._agentCalibrationNoSave = false;
+        _root.存档系统.dirtyMark = false;
+        _root.存盘标志 = 0;
+        _root.UpdateTaskProgress = function():Void {};
+        server.isSocketConnected = false;
+        SaveManager.getInstance()._configureSaveFlowForTest({
+            saveInFlight:false,
+            beforeLocalCommit:null,
+            flushResult:undefined,
+            resetDirty:true
+        });
+        return saved;
+    }
+
+    private static function endSaveFlowTest(saved:Object):Void {
+        SharedObject.getLocal(TEST_SLOT).clear();
+        SaveManager.getInstance()._configureSaveFlowForTest({
+            saveInFlight:false,
+            beforeLocalCommit:null,
+            flushResult:undefined,
+            resetDirty:true
+        });
+        _root.savePath = saved.savePath;
+        _root.允许存档 = saved.allowSave;
+        _root.角色名 = saved.roleName;
+        _root.等级 = saved.level;
+        _root.基础身价值 = saved.baseWorth;
+        _root.斗兽标定禁存档 = saved.calibrationNoSave;
+        _root._agentCalibrationNoSave = saved.agentCalibrationNoSave;
+        if (saved.internalDirty === true) SaveManager.getInstance().markDirty();
+        if (saved.hadSaveSystem === true) {
+            _root.存档系统.dirtyMark = saved.externalDirty;
+        } else {
+            delete _root.存档系统;
+        }
+        _root.UpdateTaskProgress = saved.updateTaskProgress;
+        _root.mydata = saved.mydata;
+        _root.存盘标志 = saved.saveFlag;
+        _root.主线任务进度 = saved.mainlineProgress;
+        _root.身价 = saved.worth;
+        _root._saveExt = saved.saveExt;
+        _root.killStats = saved.killStats;
+        ServerManager.getInstance().isSocketConnected = saved.socketConnected;
+    }
+
     // ── test cases ──
+
+    private static function test_save_flow_restores_missing_save_system():Void {
+        var hadSaveSystem:Boolean = (_root.存档系统 != undefined);
+        var originalSaveSystem:Object = _root.存档系统;
+        delete _root.存档系统;
+        var saved:Object = beginSaveFlowTest();
+        endSaveFlowTest(saved);
+        assert(_root.存档系统 == undefined,
+               "save_flow_fixture: removes the temporary save system when none existed");
+        if (hadSaveSystem) _root.存档系统 = originalSaveSystem;
+    }
+
+    private static function test_hasPendingChanges_combines_both_latches():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            assert(sm.hasPendingChanges() == false,
+                   "hasPendingChanges: clean when both latches are false");
+
+            _root.存档系统.dirtyMark = true;
+            assert(sm.hasPendingChanges() == true,
+                   "hasPendingChanges: observes external dirtyMark");
+            assert(sm.isDirty() == false,
+                   "hasPendingChanges: query has no write side effect and isDirty compatibility remains");
+
+            _root.存档系统.dirtyMark = false;
+            sm.markDirty();
+            assert(sm.hasPendingChanges() == true,
+                   "hasPendingChanges: observes private dirty latch");
+            assert(sm.isDirty() == true,
+                   "hasPendingChanges: isDirty still exposes private latch");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_success_clears_both_latches():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            _root.存档系统.dirtyMark = true;
+
+            var ok:Boolean = sm.flushNow();
+            assert(ok == true, "flushNow_success: returns true after local SharedObject commit");
+            assert(sm.hasPendingChanges() == false,
+                   "flushNow_success: clears private and external dirty latches");
+            assert(SharedObject.getLocal(TEST_SLOT).data["test"] != undefined,
+                   "flushNow_success: committed save payload exists");
+            assert(_root.存盘标志 == 1,
+                   "flushNow_success: publishes the saved flag only after local commit");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_repeated_early_failure_publishes_attempt_edges():Void {
+        var saved:Object = beginSaveFlowTest();
+        var capture:Object = beginFrameUiCapture();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            _root.允许存档 = false;
+
+            assert(sm.flushNow() == false,
+                   "flushNow_repeated_early_failure: first attempt is rejected");
+            assert(takeFrameUiPayload(capture) == "sv:1|sv:3",
+                   "flushNow_repeated_early_failure: first attempt publishes Saving then Failed");
+
+            assert(sm.flushNow() == false,
+                   "flushNow_repeated_early_failure: retry with the same cause is rejected");
+            assert(takeFrameUiPayload(capture) == "sv:1|sv:3",
+                   "flushNow_repeated_early_failure: retry still crosses a dedup-safe state edge");
+        } finally {
+            endFrameUiCapture(capture);
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_save_disabled_preserves_dirty():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            _root.允许存档 = false;
+
+            assert(sm.flushNow() == false,
+                   "flushNow_save_disabled: returns false");
+            assert(sm.hasPendingChanges() == true,
+                   "flushNow_save_disabled: dirty remains pending");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_in_flight_preserves_dirty():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._configureSaveFlowForTest({saveInFlight:true});
+
+            assert(sm.flushNow() == false,
+                   "flushNow_in_flight: returns false");
+            assert(sm.hasPendingChanges() == true,
+                   "flushNow_in_flight: dirty remains pending");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_write_gate_rejection_preserves_dirty():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            _root.角色名 = "";
+
+            assert(sm.flushNow() == false,
+                   "flushNow_write_gate: invalid role is rejected");
+            assert(sm.hasPendingChanges() == true,
+                   "flushNow_write_gate: dirty remains pending");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_storage_false_preserves_dirty_and_retries():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._configureSaveFlowForTest({flushResult:false});
+
+            assert(sm.flushNow() == false,
+                   "flushNow_storage_false: explicit storage failure returns false");
+            assert(sm.hasPendingChanges() == true,
+                   "flushNow_storage_false: dirty remains pending");
+            assert(_root.存盘标志 == 0,
+                   "flushNow_storage_false: failed local commit never publishes the saved flag");
+
+            sm._configureSaveFlowForTest({flushResult:undefined});
+            assert(sm.flushNow() == true,
+                   "flushNow_storage_false: retry succeeds because in-flight resets");
+            assert(_root.存盘标志 == 1,
+                   "flushNow_storage_false: successful retry publishes the saved flag");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_storage_pending_preserves_dirty_and_retries():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+
+            assert(sm.flushNow() == false,
+                   "flushNow_storage_pending: pending is not committed success");
+            assert(sm.hasPendingChanges() == true,
+                   "flushNow_storage_pending: dirty remains pending");
+            assert(_root.存盘标志 == 0,
+                   "flushNow_storage_pending: pending local commit never publishes the saved flag");
+
+            sm._configureSaveFlowForTest({flushResult:undefined});
+            assert(sm.flushNow() == true,
+                   "flushNow_storage_pending: retry succeeds because in-flight resets");
+            assert(_root.存盘标志 == 1,
+                   "flushNow_storage_pending: successful retry publishes the saved flag");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_precommit_throw_resets_in_flight():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._configureSaveFlowForTest({
+                beforeLocalCommit:function():Void {
+                    throw new Error("injected pre-commit failure");
+                }
+            });
+
+            var threw:Boolean = false;
+            try {
+                sm.flushNow();
+            } catch (error:Error) {
+                threw = true;
+            }
+            assert(threw == true,
+                   "flushNow_precommit_throw: injected exception propagates");
+            assert(sm.hasPendingChanges() == true,
+                   "flushNow_precommit_throw: dirty remains pending");
+
+            sm._configureSaveFlowForTest({beforeLocalCommit:null});
+            assert(sm.flushNow() == true,
+                   "flushNow_precommit_throw: retry succeeds because in-flight resets");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_debounce_precommit_throw_resets_in_flight():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._configureSaveFlowForTest({
+                beforeLocalCommit:function():Void {
+                    throw new Error("injected debounce pre-commit failure");
+                }
+            });
+
+            var threw:Boolean = false;
+            try {
+                sm._triggerDebounceForTest();
+            } catch (error:Error) {
+                threw = true;
+            }
+            assert(threw == true,
+                   "debounce_precommit_throw: injected exception propagates");
+            assert(sm.hasPendingChanges() == true,
+                   "debounce_precommit_throw: dirty remains pending");
+
+            sm._configureSaveFlowForTest({beforeLocalCommit:null});
+            assert(sm.flushNow() == true,
+                   "debounce_precommit_throw: retry succeeds because in-flight resets");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_debounce_exception_publishes_failed_state():Void {
+        var saved:Object = beginSaveFlowTest();
+        var capture:Object = beginFrameUiCapture();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._configureSaveFlowForTest({
+                beforeLocalCommit:function():Void {
+                    throw new Error("injected debounce UI failure");
+                }
+            });
+
+            var threw:Boolean = false;
+            try {
+                sm._triggerDebounceForTest();
+            } catch (error:Error) {
+                threw = true;
+            }
+            assert(threw == true,
+                   "debounce_ui_failure: injected exception still propagates");
+            assert(takeFrameUiPayload(capture) == "sv:1|sv:3",
+                   "debounce_ui_failure: background failure closes the generic Saving state");
+        } finally {
+            endFrameUiCapture(capture);
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_postcommit_notification_throw_keeps_success():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            _root.存档系统.dirtyMark = true;
+            _root.UpdateTaskProgress = function():Void {
+                throw new Error("injected post-commit notification failure");
+            };
+
+            var ok:Boolean = sm.flushNow();
+            assert(ok == true,
+                   "flushNow_postcommit_throw: local commit remains successful");
+            assert(sm.hasPendingChanges() == false,
+                   "flushNow_postcommit_throw: committed dirty latches stay clear");
+            assert(SharedObject.getLocal(TEST_SLOT).data["test"] != undefined,
+                   "flushNow_postcommit_throw: local payload remains committed");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
 
     private static function test_migrate_undefined_to_3_0():Void {
         var sm:SaveManager = SaveManager.getInstance();

@@ -27,7 +27,7 @@
     --tuning-convert-arrow:#5cd7ee;
     --tuning-delta:#d4bd85;
     --tuning-fast:#e1b75c;
-    height:100%; min-height:0; display:grid; grid-template-rows:auto auto minmax(0,1fr) auto;
+    height:100%; min-height:0; display:grid; grid-template-rows:auto auto auto minmax(0,1fr) auto;
     overflow:hidden; color:#d9eef2;
     background:
         radial-gradient(circle at 80% 12%,rgba(var(--dls-crystal-rgb),.085),transparent 36%),
@@ -35,7 +35,8 @@
         linear-gradient(180deg,rgba(8,31,40,.55),rgba(6,13,17,.35) 48%),#05080a;
 }
 .equipment-tuning-summary {
-    min-height:64px; padding:8px; box-sizing:border-box; display:grid; grid-template-columns:52px minmax(0,1fr) auto;
+    min-height:64px; padding:8px; box-sizing:border-box; display:grid;
+    grid-template-columns:52px minmax(0,1fr) auto auto;
     align-items:center; gap:8px; border-bottom:1px solid #244d58;
     background:linear-gradient(110deg,rgba(var(--dls-crystal-rgb),.12),transparent 58%),#0d171c;
 }
@@ -86,6 +87,13 @@
     text-shadow:0 0 6px rgba(225,183,92,.22);
 }
 .equipment-tuning-installed-state { display:flex; align-items:center; justify-content:flex-end; gap:3px; }
+.equipment-tuning-info-open {
+    min-width:66px; height:32px; padding:0 8px; border:1px solid #2a6878; background:#081216;
+    color:#9feafa; font:700 11px/1.2 "Microsoft YaHei",sans-serif; cursor:pointer;
+}
+.equipment-tuning-info-open:hover,.equipment-tuning-info-open:focus-visible {
+    outline:0; border-color:var(--dls-crystal); color:#e4fbff;
+}
 .equipment-tuning-status-icon {
     position:relative; width:25px; height:25px; padding:1px; display:grid; place-items:center; box-sizing:border-box;
     overflow:hidden; border:1px solid #4a5155; border-radius:0; background:#080b0e; cursor:pointer;
@@ -107,9 +115,10 @@
     filter:none; pointer-events:none;
 }
 .equipment-tuning-tabs { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid #233d44; background:#081014; }
+.equipment-tuning-view[data-source-kind="loadout"] .equipment-tuning-tabs { grid-template-columns:repeat(3,1fr); }
 .equipment-tuning-tab {
-    min-height:30px; padding:0 4px; border:0; border-right:1px solid #21363d; border-radius:0;
-    background:#0d171b; color:#78939a; font:700 9px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
+    min-height:34px; padding:0 4px; border:0; border-right:1px solid #21363d; border-radius:0;
+    background:#0d171b; color:#78939a; font:700 11px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .equipment-tuning-tab:last-child { border-right:0; }
 .equipment-tuning-tab:hover:not(:disabled) { color:#c7f5ff; background:#112329; }
@@ -117,6 +126,17 @@
     color:#baf3ff; background:var(--tuning-active-bg); box-shadow:inset 0 -2px var(--tuning-active-border),var(--tuning-active-glow);
 }
 .equipment-tuning-tab:disabled { opacity:.4; cursor:default; }
+.equipment-tuning-info-panel {
+    display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 9px; padding:7px 9px;
+    border-bottom:1px solid #28515b; background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.08),transparent),#081014;
+}
+.equipment-tuning-info-panel[hidden] { display:none; }
+.equipment-tuning-info-copy { min-width:0; }
+.equipment-tuning-info-copy > span { color:#6294a0; font:700 9px/1 Consolas,sans-serif; letter-spacing:.08em; }
+.equipment-tuning-info-copy > b { display:block; overflow:hidden; margin-top:2px; color:#d9f7fc; font:700 11px/1.2 "Microsoft YaHei",sans-serif; text-overflow:ellipsis; white-space:nowrap; }
+.equipment-tuning-info-copy > p { margin:3px 0 0; color:#8aa0a6; font:10px/1.35 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-info-actions { display:flex; align-items:center; gap:4px; }
+.equipment-tuning-info-actions .equipment-tuning-action { min-height:40px; }
 .equipment-tuning-body { min-height:0; overflow:auto; padding:9px; scrollbar-width:thin; scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track); }
 .equipment-tuning-empty { min-height:54px; display:grid; place-items:center; padding:8px; color:#69747a; font:10px/1.5 "Microsoft YaHei",sans-serif; text-align:center; }
 .equipment-tuning-enhance-reactor {
@@ -341,7 +361,9 @@
 .item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all::before { content:'✕✕'; font-size:10px; letter-spacing:-2px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action { position:relative; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:hover::after,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:hover::after {
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:focus-visible::after,
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:hover::after,
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:focus-visible::after {
     content:attr(data-title); position:absolute; left:50%; bottom:calc(100% + 4px); transform:translateX(-50%);
     padding:3px 6px; border:1px solid var(--dls-crystal-soft,#4a9fb3); border-radius:1px; background:#05080a; color:#d9faff;
     font:9px/1.2 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
@@ -445,12 +467,13 @@
 .equipment-tuning-material-delta.strengthening-stone em { color:#a8eaf6; }
 .equipment-tuning-material-delta.strengthening-stone b { color:#c7f6ff; }
 .equipment-tuning-removed { margin:6px 0 0; color:#d08b80; font:9px/1.35 "Microsoft YaHei",sans-serif; }
-.equipment-tuning-commit { width:100%; margin-top:7px; min-height:31px; }
 .equipment-tuning-commit {
+    width:100%; margin-top:7px; min-height:40px;
     border-color:var(--dls-crystal-deep); color:#d8f9ff;
     background:linear-gradient(180deg,rgba(var(--dls-crystal-rgb),.34),rgba(16,66,78,.72));
     box-shadow:inset 0 0 16px rgba(var(--dls-crystal-rgb),.09),0 0 8px rgba(var(--dls-crystal-rgb),.08);
 }
+.workbench-shell .equipment-tuning-commit { min-height:40px; }
 .equipment-tuning-commit:hover:not(:disabled) { border-color:var(--dls-crystal); color:#fff; box-shadow:inset 0 0 18px rgba(var(--dls-crystal-rgb),.18),0 0 11px rgba(var(--dls-crystal-rgb),.22); }
 .item-grid-compact .equipment-tuning-enhance-reactor { min-height:68px; padding-left:71px; }
 .item-grid-compact .equipment-tuning-stone-core { width:54px; height:54px; }

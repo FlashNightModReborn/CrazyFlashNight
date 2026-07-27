@@ -66,6 +66,7 @@ function makeSnapshot(request, seq, options) {
         })
     };
     if (request.filterSpec != null) snapshot.filterSpec = clone(request.filterSpec);
+    if (request.scope === 'equipment') snapshot.scope = 'equipment';
     return snapshot;
 }
 
@@ -186,6 +187,98 @@ test('snapshot exact-set rejects an unexpected filterSpec', function() {
     }, [{containerId:'背包', offset:0, limit:2, filterKey:'all'}]);
 });
 
+test('equipment scope is exact, backpack-only, and carried by projections', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport, [
+        {containerId:'背包', offset:0, limit:2, filterKey:'all', scope:'equipment'}
+    ]);
+    const results = [];
+    coordinator.open(function(result) { results.push(result); });
+    assert.strictEqual(transport.calls[0].payload.requests[0].scope, 'equipment');
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    assert.strictEqual(results[0].success, true);
+    assert.strictEqual(coordinator.getRequest('背包').scope, 'equipment');
+    assert.strictEqual(coordinator.getWindow('背包').scope, 'equipment');
+
+    const bad = createCoordinator(new DeferredTransport());
+    assert.strictEqual(bad.configureRequests([
+        {containerId:'仓库', offset:0, limit:2, filterKey:'all', scope:'equipment'}
+    ]), false);
+    assert.strictEqual(bad.configureRequests([
+        {containerId:'背包', offset:0, limit:2, filterKey:'all', scope:'developer'}
+    ]), false);
+});
+
+test('snapshot exact-set rejects a missing equipment scope echo', function() {
+    invalidBootstrapCase(function(snapshots) {
+        delete snapshots[0].scope;
+    }, [{containerId:'背包', offset:0, limit:2, filterKey:'all', scope:'equipment'}]);
+});
+
+test('replaceWindowRequest atomically enters equipment scope', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    const results = [];
+    assert.strictEqual(coordinator.replaceWindowRequest('背包', {
+        containerId:'背包', offset:0, limit:2, filterKey:'all', scope:'equipment'
+    }, function(result) { results.push(result); }), true);
+    assert.strictEqual(transport.calls[1].payload.requests[0].scope, 'equipment');
+    transport.respond(1, exactResponse(transport.calls[1], 20));
+    assert.strictEqual(results[0].success, true);
+    assert.strictEqual(coordinator.getRequest('背包').scope, 'equipment');
+    assert.strictEqual(coordinator.getWindow('背包').scope, 'equipment');
+});
+
+test('replaceWindowRequest failure restores the exact prior request and retry stays safe', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport, [
+        {
+            containerId:'背包', offset:2, limit:2, filterKey:'weapon',
+            filterSpec:{branch:'category', major:'weapon', use:'长枪'}
+        }
+    ]);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    const prior = coordinator.getRequest('背包');
+    const results = [];
+    assert.strictEqual(coordinator.replaceWindowRequest('背包', {
+        containerId:'背包', offset:0, limit:2, filterKey:'all', scope:'equipment'
+    }, function(result) { results.push(result); }), true);
+    const invalid = exactResponse(transport.calls[1], 20);
+    delete invalid.snapshots[0].scope;
+    transport.respond(1, invalid);
+
+    assert.strictEqual(results[0].success, false);
+    assert.strictEqual(results[0].rolledBack, true);
+    assert.deepStrictEqual(coordinator.getRequest('背包'), prior);
+    assert.strictEqual(coordinator.getWindow('背包').filterSpec.use, '长枪');
+    assert.strictEqual(coordinator.debugState().refreshRequired, true);
+    assert.strictEqual(coordinator.retryRefresh(), true);
+    assert.deepStrictEqual(transport.calls[2].payload.requests[0], prior);
+    transport.respond(2, exactResponse(transport.calls[2], 30));
+    assert.strictEqual(coordinator.isReady(), true);
+});
+
+test('readProjection forwards equipment scope without replacing the visible request', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    const visible = coordinator.getRequest('背包');
+    const results = [];
+    assert.strictEqual(coordinator.readProjection({
+        containerId:'背包', offset:0, limit:2, filterKey:'weapon',
+        filterSpec:{branch:'category', major:'weapon'}, scope:'equipment'
+    }, function(result) { results.push(result); }), true);
+    assert.strictEqual(transport.calls[1].payload.requests[0].scope, 'equipment');
+    transport.respond(1, exactResponse(transport.calls[1], 20));
+    assert.strictEqual(results[0].success, true);
+    assert.strictEqual(results[0].snapshot.scope, 'equipment');
+    assert.deepStrictEqual(coordinator.getRequest('背包'), visible);
+});
+
 test('invalid refresh is atomic and retry applies the next exact batch together', function() {
     const transport = new DeferredTransport();
     const coordinator = createCoordinator(transport);
@@ -278,6 +371,30 @@ test('external completion requires the exact owner handle in the same session', 
     assert.strictEqual(coordinator.debugState().busyOwner, 'external.second');
     assert.strictEqual(coordinator.completeExternalWrite(second, false), true);
     assert.strictEqual(coordinator.debugState().busyOwner, null);
+});
+
+test('character-build external completion atomically applies the full backpack snapshot', function() {
+    const transport = new DeferredTransport();
+    const requests = [
+        {containerId:'背包', offset:0, limit:50, filterKey:'all'},
+        {containerId:'仓库', offset:0, limit:2, filterKey:'all'}
+    ];
+    const coordinator = createCoordinator(transport, requests);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10, {
+        背包:{capacity:50, viewCapacity:50}
+    }));
+    const warehouseBefore = coordinator.getWindow('仓库');
+    const handle = coordinator.beginExternalWrite('character-build.equipEquipment');
+    const backpack = makeSnapshot(requests[0], 20, {capacity:50, viewCapacity:50});
+    let completion = null;
+    assert.strictEqual(coordinator.completeExternalSnapshots(
+        handle, [backpack], result => { completion = result; }), true);
+    assert(completion && completion.success && completion.applied);
+    assert.strictEqual(coordinator.getWindow('背包'), backpack);
+    assert.strictEqual(coordinator.getWindow('仓库'), warehouseBefore);
+    assert.strictEqual(coordinator.debugState().busyOwner, null);
+    assert.strictEqual(coordinator.debugState().refreshRequired, false);
 });
 
 test('external owner handle is single-use while its refresh is in flight', function() {

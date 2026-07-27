@@ -31,6 +31,9 @@ namespace CF7Launcher.Tasks
             public string CandidateKey;
             public string ReconcileAfterCallId;
             public JObject NormalizedPayload;
+            public JObject Source;
+            public string ExpectedTuningToken;
+            public PreviewBinding ConsumedPreviewBinding;
             public bool IsWrite;
             public bool IsReconcile;
             public bool IsDetach;
@@ -38,8 +41,19 @@ namespace CF7Launcher.Tasks
             public int ReconcileTargetEpoch;
         }
 
+        private sealed class PreviewBinding
+        {
+            public string TuningToken;
+            public string PanelInstanceId;
+            public string ViewSessionId;
+            public string Operation;
+            public JObject Source;
+            public LinkedListNode<PreviewBinding> OrderNode;
+        }
+
         private const int DefaultTimeoutMs = 10000;
         private const int RecentCallIdCapacity = 256;
+        private const int PreviewBindingCapacity = 64;
         private const int MaxPending = 24;
 
         private static readonly Regex ValidCallId = new Regex(
@@ -72,6 +86,10 @@ namespace CF7Launcher.Tasks
         private readonly HashSet<string> _activeCallIds = new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> _recentCallIds = new HashSet<string>(StringComparer.Ordinal);
         private readonly Queue<string> _recentCallIdOrder = new Queue<string>();
+        private readonly Dictionary<string, PreviewBinding> _previewBindings =
+            new Dictionary<string, PreviewBinding>(StringComparer.Ordinal);
+        private readonly LinkedList<PreviewBinding> _previewBindingOrder =
+            new LinkedList<PreviewBinding>();
 
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
@@ -108,6 +126,7 @@ namespace CF7Launcher.Tasks
         internal string WriteState { get { lock (_lock) return _writeState; } }
         internal int WriteEpoch { get { lock (_lock) return _writeEpoch; } }
         internal int PendingCount { get { lock (_lock) return _pending.Count; } }
+        internal int PreviewBindingCount { get { lock (_lock) return _previewBindings.Count; } }
         internal string PanelInstanceId { get { lock (_lock) return _panelInstanceId; } }
         internal string ActiveViewSessionId { get { lock (_lock) return _activeViewSessionId; } }
         public bool HasBoundPanel { get { lock (_lock) return !string.IsNullOrEmpty(_panelInstanceId); } }
@@ -130,6 +149,7 @@ namespace CF7Launcher.Tasks
                     // a new tuning view session; old tokens remain bound to the old pair.
                     _activeViewSessionId = null;
                     _detachingViewSessionId = null;
+                    ClearPreviewBindingsLocked();
                 }
             }
             if (changed)
@@ -147,6 +167,7 @@ namespace CF7Launcher.Tasks
                 _panelInstanceId = null;
                 _activeViewSessionId = null;
                 _detachingViewSessionId = null;
+                ClearPreviewBindingsLocked();
                 return true;
             }
         }
@@ -217,6 +238,11 @@ namespace CF7Launcher.Tasks
                 CandidateKey = candidateKey,
                 ReconcileAfterCallId = reconcileAfterCallId,
                 NormalizedPayload = normalized,
+                Source = normalized["source"] is JObject
+                    ? (JObject)normalized["source"].DeepClone()
+                    : null,
+                ExpectedTuningToken =
+                    ReadString(normalized["expectedTuningToken"]),
                 IsWrite = isWrite,
                 IsReconcile = isReconcile,
                 IsDetach = cmd == "detach"
@@ -255,7 +281,8 @@ namespace CF7Launcher.Tasks
                         else if (_writeState == "write_pending") reject = "busy";
                         else
                         {
-                            _activeViewSessionId = viewSessionId;
+                            RotateViewSessionLocked(
+                                viewSessionId);
                             entry.ReconcileTargetEpoch = _writeEpoch;
                             entry.WriteEpoch = _writeEpoch;
                         }
@@ -265,31 +292,14 @@ namespace CF7Launcher.Tasks
                     else
                     {
                         // A fresh snapshot is the only Web command that starts/rotates a view session.
-                        _activeViewSessionId = viewSessionId;
+                        RotateViewSessionLocked(
+                            viewSessionId);
                         entry.WriteEpoch = _writeEpoch;
                     }
                 }
                 else if (cmd == "preview")
                 {
-                    if (isReconcile)
-                    {
-                        if (!IsCallId(_lastWriteCallId)
-                            || !string.Equals(_lastWriteCallId, reconcileAfterCallId, StringComparison.Ordinal))
-                            reject = "invalid_payload";
-                        else if (_writeState == "write_pending") reject = "busy";
-                        else
-                        {
-                            if (string.IsNullOrEmpty(_activeViewSessionId)) _activeViewSessionId = viewSessionId;
-                            if (!string.Equals(_activeViewSessionId, viewSessionId, StringComparison.Ordinal))
-                                reject = "view_session_expired";
-                            else
-                            {
-                                entry.ReconcileTargetEpoch = _writeEpoch;
-                                entry.WriteEpoch = _writeEpoch;
-                            }
-                        }
-                    }
-                    else if (!string.Equals(_activeViewSessionId, viewSessionId, StringComparison.Ordinal))
+                    if (!string.Equals(_activeViewSessionId, viewSessionId, StringComparison.Ordinal))
                         reject = "view_session_expired";
                     else if (_writeState != "idle")
                         reject = _writeState == "needs_reconcile" ? "reconcile_required" : "busy";
@@ -303,10 +313,28 @@ namespace CF7Launcher.Tasks
                         reject = _writeState == "needs_reconcile" ? "reconcile_required" : "busy";
                     else
                     {
-                        _writeEpoch++;
-                        entry.WriteEpoch = _writeEpoch;
-                        _writeState = "write_pending";
-                        _lastWriteCallId = callId;
+                        PreviewBinding binding;
+                        if (!TryConsumePreviewBindingLocked(
+                                entry.ExpectedTuningToken,
+                                boundInstance,
+                                viewSessionId,
+                                out binding))
+                        {
+                            reject = "invalid_payload";
+                        }
+                        else
+                        {
+                            entry.ConsumedPreviewBinding =
+                                binding;
+                            entry.Source = (JObject)
+                                binding.Source.DeepClone();
+                            entry.Operation =
+                                binding.Operation;
+                            _writeEpoch++;
+                            entry.WriteEpoch = _writeEpoch;
+                            _writeState = "write_pending";
+                            _lastWriteCallId = callId;
+                        }
                     }
                 }
                 else // tooltip
@@ -361,6 +389,28 @@ namespace CF7Launcher.Tasks
                 }
 
                 bool valid = IsValidResponse(msg, entry);
+                if (valid
+                    && entry.WebCmd == "preview"
+                    && msg.Value<bool?>("success") == true)
+                {
+                    valid = TryRememberPreviewBindingLocked(
+                        new PreviewBinding
+                        {
+                            TuningToken =
+                                ReadString(
+                                    msg["tuningToken"]),
+                            PanelInstanceId =
+                                entry.PanelInstanceId,
+                            ViewSessionId =
+                                entry.ViewSessionId,
+                            Operation =
+                                entry.Operation,
+                            Source = entry.Source != null
+                                ? (JObject)entry.Source
+                                    .DeepClone()
+                                : null
+                        });
+                }
                 snapshotConfirmed = valid && entry.WebCmd == "snapshot"
                     && msg.Value<bool?>("success") == true;
                 bool definitiveWrite = entry.IsWrite && valid && IsDefinitiveWriteResponse(msg);
@@ -403,6 +453,7 @@ namespace CF7Launcher.Tasks
                     {
                         _activeViewSessionId = null;
                         _detachingViewSessionId = null;
+                        ClearPreviewBindingsLocked();
                     }
                     else if (valid)
                     {
@@ -447,6 +498,7 @@ namespace CF7Launcher.Tasks
                 _panelInstanceId = null;
                 _activeViewSessionId = null;
                 _detachingViewSessionId = null;
+                ClearPreviewBindingsLocked();
             }
         }
 
@@ -512,7 +564,16 @@ namespace CF7Launcher.Tasks
                 if (!_pending.TryGetValue(fid, out entry)) return;
                 CompletePendingLocked(entry);
                 definitivelyNotSent = entry.IsWrite || entry.IsDetach;
-                if (entry.IsWrite) _writeState = "idle";
+                if (entry.IsWrite)
+                {
+                    _writeState = "idle";
+                    if (entry.ConsumedPreviewBinding
+                        != null)
+                    {
+                        TryRememberPreviewBindingLocked(
+                            entry.ConsumedPreviewBinding);
+                    }
+                }
                 if (entry.IsDetach)
                 {
                     _activeViewSessionId = entry.ViewSessionId;
@@ -536,6 +597,118 @@ namespace CF7Launcher.Tasks
             }
             _activeCallIds.Remove(entry.WebCallId);
             RememberRecentLocked(entry.WebCallId);
+        }
+
+        private void RotateViewSessionLocked(
+            string viewSessionId)
+        {
+            if (!string.Equals(
+                    _activeViewSessionId,
+                    viewSessionId,
+                    StringComparison.Ordinal))
+            {
+                ClearPreviewBindingsLocked();
+            }
+            _activeViewSessionId =
+                viewSessionId;
+        }
+
+        private bool TryRememberPreviewBindingLocked(
+            PreviewBinding binding)
+        {
+            JObject normalizedSource;
+            if (binding == null
+                || !IsOpaque(binding.TuningToken)
+                || !IsOpaque(binding.PanelInstanceId)
+                || !IsOpaque(binding.ViewSessionId)
+                || !Operations.Contains(
+                    binding.Operation)
+                || !TryNormalizeSourceRef(
+                    binding.Source,
+                    out normalizedSource))
+            {
+                return false;
+            }
+            binding.Source = normalizedSource;
+
+            PreviewBinding existing;
+            if (_previewBindings.TryGetValue(
+                    binding.TuningToken,
+                    out existing))
+            {
+                return string.Equals(
+                        existing.PanelInstanceId,
+                        binding.PanelInstanceId,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        existing.ViewSessionId,
+                        binding.ViewSessionId,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        existing.Operation,
+                        binding.Operation,
+                        StringComparison.Ordinal)
+                    && JToken.DeepEquals(
+                        existing.Source,
+                        binding.Source);
+            }
+
+            _previewBindings[
+                binding.TuningToken] = binding;
+            binding.OrderNode =
+                _previewBindingOrder.AddLast(
+                    binding);
+            while (_previewBindings.Count
+                > PreviewBindingCapacity)
+            {
+                PreviewBinding oldest =
+                    _previewBindingOrder.First.Value;
+                _previewBindingOrder.RemoveFirst();
+                oldest.OrderNode = null;
+                _previewBindings.Remove(
+                    oldest.TuningToken);
+            }
+            return true;
+        }
+
+        private bool TryConsumePreviewBindingLocked(
+            string tuningToken,
+            string panelInstanceId,
+            string viewSessionId,
+            out PreviewBinding binding)
+        {
+            binding = null;
+            PreviewBinding candidate;
+            if (!IsOpaque(tuningToken)
+                || !_previewBindings.TryGetValue(
+                    tuningToken, out candidate)
+                || !string.Equals(
+                    candidate.PanelInstanceId,
+                    panelInstanceId,
+                    StringComparison.Ordinal)
+                || !string.Equals(
+                    candidate.ViewSessionId,
+                    viewSessionId,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            _previewBindings.Remove(
+                tuningToken);
+            if (candidate.OrderNode != null)
+            {
+                _previewBindingOrder.Remove(
+                    candidate.OrderNode);
+                candidate.OrderNode = null;
+            }
+            binding = candidate;
+            return true;
+        }
+
+        private void ClearPreviewBindingsLocked()
+        {
+            _previewBindings.Clear();
+            _previewBindingOrder.Clear();
         }
 
         private static bool TryResolveCommand(string cmd, out string action, out bool isWrite)
@@ -589,6 +762,8 @@ namespace CF7Launcher.Tasks
             }
 
             bool hasReconcile = payload["reconcileAfterCallId"] != null;
+            if (hasReconcile && cmd != "snapshot")
+                return false;
             if (hasReconcile)
             {
                 reconcileAfterCallId = ReadString(payload["reconcileAfterCallId"]);
@@ -603,7 +778,10 @@ namespace CF7Launcher.Tasks
                     ? Set("v", "viewSessionId", "source", "reconcileAfterCallId")
                     : Set("v", "viewSessionId", "source");
                 JObject source;
-                if (!IsExactObject(payload, keys) || !TryNormalizeSlotRef(payload["source"] as JObject, out source))
+                if (!IsExactObject(payload, keys)
+                    || !TryNormalizeSourceRef(
+                        payload["source"] as JObject,
+                        out source))
                     return false;
                 result["source"] = source;
             }
@@ -613,7 +791,6 @@ namespace CF7Launcher.Tasks
                 if (!Operations.Contains(operation)) return false;
                 var keys = new HashSet<string>(StringComparer.Ordinal)
                     { "v", "viewSessionId", "operation", "source" };
-                if (hasReconcile) keys.Add("reconcileAfterCallId");
                 if (operation == "enhance") keys.Add("targetLevel");
                 else if (operation == "convert") keys.Add("target");
                 else if (operation != "detach_all_mods") keys.Add("candidateKey");
@@ -621,7 +798,18 @@ namespace CF7Launcher.Tasks
                 if (!IsExactObject(payload, keys)) return false;
 
                 JObject source;
-                if (!TryNormalizeSlotRef(payload["source"] as JObject, out source)) return false;
+                if (!TryNormalizeSourceRef(
+                        payload["source"] as JObject,
+                        out source))
+                {
+                    return false;
+                }
+                if (operation == "convert"
+                    && ReadString(source["sourceKind"])
+                        == "loadout")
+                {
+                    return false;
+                }
                 result["operation"] = operation;
                 result["source"] = source;
                 if (operation == "enhance")
@@ -633,7 +821,12 @@ namespace CF7Launcher.Tasks
                 else if (operation == "convert")
                 {
                     JObject target;
-                    if (!TryNormalizeSlotRef(payload["target"] as JObject, out target)) return false;
+                    if (!TryNormalizeInventorySourceRef(
+                            payload["target"] as JObject,
+                            out target))
+                    {
+                        return false;
+                    }
                     result["target"] = target;
                 }
                 else if (operation != "detach_all_mods")
@@ -664,16 +857,82 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool TryNormalizeSlotRef(JObject input, out JObject normalized)
+        private static bool TryNormalizeSourceRef(
+            JObject input,
+            out JObject normalized)
         {
             normalized = null;
-            if (!IsExactObject(input, Set("containerId", "slot", "expectedLease"))) return false;
-            if (ReadString(input["containerId"]) != "背包") return false;
+            string sourceKind =
+                ReadString(
+                    input != null
+                        ? input["sourceKind"] : null);
+            if (sourceKind == "inventory")
+                return TryNormalizeInventorySourceRef(
+                    input, out normalized);
+            if (sourceKind != "loadout"
+                || !IsExactObject(
+                    input,
+                    Set("sourceKind",
+                        "sessionGeneration",
+                        "slotKey",
+                        "expectedLoadoutRevision")))
+            {
+                return false;
+            }
+
+            int sessionGeneration;
+            int expectedLoadoutRevision;
+            string slotKey =
+                ReadString(input["slotKey"]);
+            if (!TryReadInteger(
+                    input["sessionGeneration"],
+                    1,
+                    int.MaxValue,
+                    out sessionGeneration)
+                || !CharacterBuildProtocol
+                    .IsEquipmentSlotKey(slotKey)
+                || !TryReadInteger(
+                    input["expectedLoadoutRevision"],
+                    0,
+                    int.MaxValue,
+                    out expectedLoadoutRevision))
+            {
+                return false;
+            }
+            normalized = new JObject
+            {
+                ["sourceKind"] = "loadout",
+                ["sessionGeneration"] =
+                    sessionGeneration,
+                ["slotKey"] = slotKey,
+                ["expectedLoadoutRevision"] =
+                    expectedLoadoutRevision
+            };
+            return true;
+        }
+
+        private static bool TryNormalizeInventorySourceRef(
+            JObject input,
+            out JObject normalized)
+        {
+            normalized = null;
+            if (!IsExactObject(
+                    input,
+                    Set("sourceKind", "containerId",
+                        "slot", "expectedLease"))
+                || ReadString(input["sourceKind"])
+                    != "inventory"
+                || ReadString(input["containerId"])
+                    != "背包")
+            {
+                return false;
+            }
             int slot;
             string lease = ReadString(input["expectedLease"]);
             if (!TryReadInteger(input["slot"], 0, 49, out slot) || !IsLease(lease)) return false;
             normalized = new JObject
             {
+                ["sourceKind"] = "inventory",
                 ["containerId"] = "背包",
                 ["slot"] = slot,
                 ["expectedLease"] = lease
@@ -706,9 +965,17 @@ namespace CF7Launcher.Tasks
                 return IsSafeText(ReadString(msg["error"]), 1, 64);
             }
 
-            if (entry.WebCmd == "snapshot") return IsSnapshotResponse(msg);
-            if (entry.WebCmd == "preview") return IsPreviewResponse(msg, entry.Operation);
-            if (entry.WebCmd == "commit") return IsCommitResponse(msg);
+            if (entry.WebCmd == "snapshot")
+                return IsSnapshotResponse(
+                    msg, entry.Source);
+            if (entry.WebCmd == "preview")
+                return IsPreviewResponse(
+                    msg,
+                    entry.Operation,
+                    entry.Source);
+            if (entry.WebCmd == "commit")
+                return IsCommitResponse(
+                    msg, entry);
             if (entry.WebCmd == "detach") return true;
             return ReadString(msg["candidateKey"]) == entry.CandidateKey
                 && msg["introHTML"] != null && msg["introHTML"].Type == JTokenType.String
@@ -750,18 +1017,70 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsSnapshotResponse(JObject msg)
+        private static bool IsSnapshotResponse(
+            JObject msg,
+            JObject expectedSource)
         {
             JObject snapshot = msg["snapshot"] as JObject;
             string gender = snapshot != null ? ReadString(snapshot["gender"]) : null;
-            if (snapshot == null || !(snapshot["source"] is JObject)
+            if (snapshot == null
+                || !IsExactSource(
+                    expectedSource,
+                    snapshot["source"] as JObject)
                 || !(snapshot["equipment"] is JObject) || !(snapshot["enhance"] is JObject)
                 || !(snapshot["tierCandidates"] is JArray) || !(snapshot["modCandidates"] is JArray))
                 return false;
             return (gender == "男" || gender == "女") && IsContainer(snapshot["materials"]);
         }
 
-        private static bool IsPreviewResponse(JObject msg, string expectedOperation)
+        private static bool IsPreviewResponse(
+            JObject msg,
+            string expectedOperation,
+            JObject expectedSource)
+        {
+            if (!IsTuningProjectionResponseShape(
+                    msg, expectedOperation))
+            {
+                return false;
+            }
+            JObject before = (JObject)msg["before"];
+            JObject after = (JObject)msg["after"];
+            JObject beforeSource;
+            JObject afterSource;
+            return TryReadProjectedSource(
+                    before,
+                    out beforeSource)
+                && TryReadProjectedSource(
+                    after,
+                    out afterSource)
+                && IsExactSource(
+                    expectedSource,
+                    beforeSource)
+                && IsExactSource(
+                    expectedSource,
+                    afterSource);
+        }
+
+        private static bool TryReadProjectedSource(
+            JObject projection,
+            out JObject source)
+        {
+            source = null;
+            JObject subject = projection == null
+                ? null
+                : projection["source"] as JObject;
+            if (subject == null
+                || !(subject["equipment"] is JObject))
+            {
+                return false;
+            }
+            source = subject["source"] as JObject;
+            return source != null;
+        }
+
+        private static bool IsTuningProjectionResponseShape(
+            JObject msg,
+            string expectedOperation)
         {
             string operation = ReadString(msg["operation"]);
             if (!Operations.Contains(operation)
@@ -775,12 +1094,155 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsCommitResponse(JObject msg)
+        private static bool IsCommitResponse(
+            JObject msg,
+            PendingRequest entry)
         {
-            return IsPreviewResponse(msg, null)
-                && IsOpaque(ReadString(msg["transactionId"]))
-                && IsSnapshotResponse(msg)
-                && msg["inventorySnapshots"] is JArray;
+            if (entry == null
+                || entry.Source == null
+                || ReadString(msg["tuningToken"])
+                    != entry.ExpectedTuningToken
+                || !IsTuningProjectionResponseShape(
+                    msg,
+                    entry.Operation)
+                || !IsOpaque(
+                    ReadString(msg["transactionId"]))
+                || msg["noOp"] == null
+                || msg["noOp"].Type
+                    != JTokenType.Boolean
+                || !(msg["inventorySnapshots"]
+                    is JArray inventorySnapshots))
+            {
+                return false;
+            }
+
+            bool noOp = msg.Value<bool>("noOp");
+            JObject before = (JObject)msg["before"];
+            JObject after = (JObject)msg["after"];
+            JObject beforeSource;
+            JObject afterSource;
+            JObject normalizedAfter;
+            if (!TryReadProjectedSource(
+                    before,
+                    out beforeSource)
+                || !TryReadProjectedSource(
+                    after,
+                    out afterSource)
+                || !IsExactSource(
+                    entry.Source,
+                    beforeSource)
+                || !TryNormalizeSourceRef(
+                    afterSource,
+                    out normalizedAfter))
+            {
+                return false;
+            }
+
+            JObject expectedPostSource;
+            if (!TryResolveCommitPostSource(
+                    entry.Source,
+                    normalizedAfter,
+                    noOp,
+                    out expectedPostSource)
+                || !IsSnapshotResponse(
+                    msg,
+                    expectedPostSource))
+            {
+                return false;
+            }
+
+            if (ReadString(
+                    entry.Source["sourceKind"])
+                == "loadout")
+            {
+                return inventorySnapshots.Count == 0;
+            }
+            return CharacterBuildProtocol
+                .IsFullBackpackSnapshots(
+                    inventorySnapshots);
+        }
+
+        private static bool TryResolveCommitPostSource(
+            JObject beforeSource,
+            JObject afterSource,
+            bool noOp,
+            out JObject expectedPostSource)
+        {
+            expectedPostSource = null;
+            JObject normalizedBefore;
+            if (!TryNormalizeSourceRef(
+                    beforeSource,
+                    out normalizedBefore))
+            {
+                return false;
+            }
+            if (noOp)
+            {
+                if (!JToken.DeepEquals(
+                        normalizedBefore,
+                        afterSource))
+                {
+                    return false;
+                }
+                expectedPostSource = normalizedBefore;
+                return true;
+            }
+
+            string sourceKind =
+                ReadString(
+                    normalizedBefore["sourceKind"]);
+            if (sourceKind == "loadout")
+            {
+                int revision =
+                    normalizedBefore.Value<int>(
+                        "expectedLoadoutRevision");
+                if (revision == int.MaxValue)
+                    return false;
+                expectedPostSource =
+                    (JObject)normalizedBefore
+                        .DeepClone();
+                expectedPostSource[
+                    "expectedLoadoutRevision"] =
+                    revision + 1;
+                return JToken.DeepEquals(
+                    expectedPostSource,
+                    afterSource);
+            }
+
+            if (sourceKind != "inventory"
+                || ReadString(
+                    normalizedBefore["containerId"])
+                    != ReadString(
+                        afterSource["containerId"])
+                || normalizedBefore.Value<int>("slot")
+                    != afterSource.Value<int>("slot")
+                || ReadString(
+                    normalizedBefore["expectedLease"])
+                    == ReadString(
+                        afterSource["expectedLease"]))
+            {
+                return false;
+            }
+            expectedPostSource =
+                (JObject)afterSource.DeepClone();
+            return true;
+        }
+
+        private static bool IsExactSource(
+            JObject expected,
+            JObject actual)
+        {
+            JObject normalizedExpected;
+            JObject normalizedActual;
+            return TryNormalizeSourceRef(
+                    expected,
+                    out normalizedExpected)
+                && TryNormalizeSourceRef(
+                    actual,
+                    out normalizedActual)
+                && JToken.DeepEquals(
+                    normalizedExpected,
+                    normalizedActual);
         }
 
         private static bool IsReconcileAcknowledged(JObject msg, PendingRequest entry)

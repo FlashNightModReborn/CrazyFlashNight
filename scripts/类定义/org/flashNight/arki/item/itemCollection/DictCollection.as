@@ -87,17 +87,78 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     public function transactionApplyDeltas(deltas:Object):Object {
         if (!canApplyTransactionDeltas(deltas)) return {success: false};
         var changes:Array = [];
+        var beforeRevision:Number = getMutationRevision();
         for (var key:String in deltas) {
             var delta:Number = Number(deltas[key]);
             if (delta == 0) continue;
             var before:Number = getValue(key);
             var after:Number = before + delta;
-            if (after <= 0) delete items[key];
-            else items[key] = after;
             changes.push({key: key, before: before, delta: delta, after: after});
         }
-        if (changes.length > 0) bumpMutationRevision();
-        return {success: true, changes: changes, revision: getMutationRevision()};
+        try {
+            for (var i:Number = 0; i < changes.length; i++) {
+                var change:Object = changes[i];
+                if (Number(change.after) <= 0) delete items[String(change.key)];
+                else items[String(change.key)] = Number(change.after);
+            }
+            if (changes.length > 0) bumpMutationRevision();
+        } catch (writeError) {
+            var restored:Boolean = restoreTransactionChanges(
+                changes, beforeRevision);
+            return {success:false, rollbackComplete:restored};
+        }
+        return {
+            success:true,
+            changes:changes,
+            beforeRevision:beforeRevision,
+            revision:getMutationRevision()
+        };
+    }
+
+    /**
+     * 跨资源领域事务的补偿入口。只接受仍精确处于本 transaction receipt
+     * post-state 的材料批次；先完整验证后一次恢复，期间不派发事件。
+     */
+    public function rollbackTransactionDeltas(receipt:Object):Boolean {
+        if (receipt == null || receipt.success !== true
+                || !(receipt.changes instanceof Array)
+                || getMutationRevision() != Number(receipt.revision)) {
+            return false;
+        }
+        var changes:Array = receipt.changes;
+        for (var i:Number = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            if (getValue(String(change.key)) != Number(change.after)) {
+                return false;
+            }
+        }
+        return restoreTransactionChanges(
+            changes, Number(receipt.beforeRevision));
+    }
+
+    private function restoreTransactionChanges(changes:Array,
+                                               beforeRevision:Number):Boolean {
+        try {
+            for (var i:Number = 0; i < changes.length; i++) {
+                var change:Object = changes[i];
+                if (Number(change.before) <= 0) {
+                    delete items[String(change.key)];
+                } else {
+                    items[String(change.key)] = Number(change.before);
+                }
+            }
+            mutationRevision = beforeRevision;
+        } catch (rollbackError) {
+            return false;
+        }
+        if (getMutationRevision() != beforeRevision) return false;
+        for (i = 0; i < changes.length; i++) {
+            change = changes[i];
+            if (getValue(String(change.key)) != Number(change.before)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function publishTransactionChanges(changes:Array):Void {

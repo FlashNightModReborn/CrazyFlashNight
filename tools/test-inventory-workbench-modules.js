@@ -7,6 +7,7 @@ const Config = require('../launcher/web/modules/inventory-workbench-config.js');
 const Header = require('../launcher/web/modules/inventory-workbench-header.js');
 const Quick = require('../launcher/web/modules/inventory-workbench-quick-transfer.js');
 const OwnedView = require('../launcher/web/modules/inventory-workbench-owned-view.js');
+const TuningScope = require('../launcher/web/modules/inventory-tuning-scope.js');
 
 let passed = 0;
 function test(name, fn) {
@@ -22,6 +23,9 @@ test('profile and view resolution reject unknown launch shapes', () => {
     });
     assert.strictEqual(Config.resolveProfile({profile:'unknown'}), null);
     assert.strictEqual(Config.resolveView({view:'tuning'}), 'tuning');
+    assert.strictEqual(Config.resolveView({view:'build'}), 'build');
+    assert.strictEqual(Config.isViewAllowed('battlebox', 'build'), true);
+    assert.strictEqual(Config.isViewAllowed('warehouse', 'build'), false);
     assert.strictEqual(Config.resolveView({view:'debug'}), null);
 });
 
@@ -177,19 +181,109 @@ test('owned-view presentation rules centralize locked, filtered, and capacity co
         {emptyText:'战备箱尚未解锁', meta:'未解锁'});
     assert.deepStrictEqual(OwnedView.presentationFor('背包', {filterKey:'weapon', accessibleCapacity:50,
         slots:[{occupied:true},{occupied:false}]}), {emptyText:'当前分类暂无物品', meta:'1 / 50'});
+    assert.deepStrictEqual(OwnedView.presentationFor('背包', {scope:'equipment', accessibleCapacity:50, slots:[]}),
+        {emptyText:'背包中暂无可调制装备', meta:'0 / 50'});
     assert.strictEqual(OwnedView.countOccupied([{occupied:true},{occupied:false},{occupied:true}]), 2);
 });
 
-test('facade delegates and stays below the physical line budget', () => {
-    const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-workbench.js'), 'utf8');
+test('tuning scope restores exact request, viewport, and focused tile', () => {
+    const calls = [];
+    let request = {
+        containerId:'背包', offset:50, limit:50, filterKey:'weapon',
+        filterSpec:{branch:'category', major:'weapon', use:'长枪'}
+    };
+    const callbacks = [];
+    const coordinator = {
+        getRequest:() => JSON.parse(JSON.stringify(request)),
+        replaceWindowRequest:(containerId, next, callback) => {
+            calls.push({containerId, next:JSON.parse(JSON.stringify(next))});
+            request = JSON.parse(JSON.stringify(next));
+            callbacks.push(callback);
+            return true;
+        }
+    };
+    let focused = false;
+    const tile = {
+        getAttribute:name => name === 'data-workbench-key' ? '17' : null,
+        querySelector:() => null,
+        focus:() => { focused = true; }
+    };
+    const root = {
+        scrollTop:73, scrollLeft:11, listeners:{},
+        addEventListener(type, callback) { this.listeners[type] = callback; },
+        removeEventListener(type) { delete this.listeners[type]; },
+        contains:() => true, querySelectorAll:() => [tile]
+    };
+    const transition = new TuningScope.Transition({coordinator, getRoot:() => root});
+    transition.attach();
+    root.listeners.focusin({target:{closest:selector =>
+        selector === '[data-workbench-key]' ? tile : null}});
+    const original = JSON.parse(JSON.stringify(request));
+    assert.strictEqual(transition.enter(), true);
+    assert.deepStrictEqual(calls[0].next,
+        {containerId:'背包', offset:0, limit:50, filterKey:'all', scope:'equipment'});
+    callbacks[0]({success:true});
+    root.scrollTop = 0; root.scrollLeft = 0;
+    assert.strictEqual(transition.leave(() => {}), true);
+    assert.deepStrictEqual(calls[1].next, original);
+    callbacks[1]({success:true});
+    assert.strictEqual(transition.restore(), true);
+    assert.strictEqual(root.scrollTop, 73);
+    assert.strictEqual(root.scrollLeft, 11);
+    assert.strictEqual(focused, true);
+    assert.strictEqual(transition.debugState().hasReturnState, false);
+});
+
+test('direct tuning starts scoped but preserves the default return request', () => {
+    const coordinator = {getRequest:() => null, replaceWindowRequest:() => false};
+    const transition = new TuningScope.Transition({coordinator, getRoot:() => null});
+    const initial = {containerId:'背包', offset:0, limit:50, filterKey:'all'};
+    assert.deepStrictEqual(transition.prepareInitial(initial, 'tuning'),
+        {containerId:'背包', offset:0, limit:50, filterKey:'all', scope:'equipment'});
+    assert.deepStrictEqual(transition.debugState().returnState.request, initial);
+});
+
+test('facade owns registration and delegates to the bounded storage controller', () => {
+    const facade = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-workbench.js'), 'utf8');
+    const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-storage-workbench.js'), 'utf8');
+    const buildSession = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build-session.js'), 'utf8');
+    const buildController = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build.js'), 'utf8');
     const extracted = ['inventory-workbench-config.js', 'inventory-workbench-header.js',
-        'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js']
+        'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
+        'inventory-tuning-scope.js']
         .map(file => fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', file), 'utf8')).join('\n');
     assert(source.includes('InventoryWorkbenchQuickTransfer.QuickTransferController'));
-    assert(source.includes('InventoryWorkbenchHeader.TuningHeaderController'));
     assert(source.includes('InventoryWorkbenchOwnedView.createView'));
+    assert(source.includes('new InventoryTuningScope.Transition'));
+    assert(source.includes('activate:activate'));
+    assert(source.includes('deactivate:cleanup'));
+    assert(source.includes('beginExternalWrite:beginExternalWrite'));
+    assert(source.includes('completeExternalWrite:completeExternalWrite'));
+    assert(!/Panels\.register|InventoryWorkbenchHeader|new Workbench\.DualPaneShell|workbench-close-btn/.test(source));
+    assert.strictEqual((facade.match(/Panels\.register\('workbench'/g) || []).length, 1);
+    assert(facade.includes('new Workbench.DualPaneShell'));
+    assert(facade.includes('new InventoryWorkbenchHeader.TuningHeaderController'));
+    assert(facade.includes('window.__INVENTORY_WORKBENCH_CONFIG__'));
+    assert(facade.includes('timeoutMs:_runtimeConfig.requestTimeoutMs'));
+    assert(facade.includes('sessionNonce:_runtimeConfig.sessionNonce'));
+    assert(/InventoryStorageWorkbench\.activate\(\s*controllerPorts\(\),\s*initialView\s*\)/.test(facade));
+    assert(facade.includes('InventoryStorageWorkbench.deactivate()'));
+    assert(facade.includes("button('close', '×'"));
+    assert(facade.includes('function requestView(next)'));
+    assert(facade.includes('function finalizeClose()'));
+    assert(buildController.includes('new SessionModule.CharacterBuildSession'));
+    assert.deepStrictEqual(
+        require('../launcher/web/modules/character-build-session.js').commands,
+        [
+            'snapshot', 'candidates', 'flushLive', 'statsSnapshot', 'finalize',
+            'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
+        ]);
+    assert(!/Panels\.register|Bridge\.send/.test(buildSession));
     assert(!/Bridge\.send|RequestMux|InventoryCoordinator/.test(extracted), 'extracted modules must not own transport or authority');
-    assert(source.split(/\r?\n/).length < 1000);
+    // Readable parent orchestration is budgeted explicitly; do not line-compress the facade merely
+    // to satisfy the old pre-extraction threshold. audit-workbench-ui.js carries the same ceiling.
+    assert(facade.split(/\r?\n/).length <= 550);
+    assert(source.split(/\r?\n/).length <= 900);
 });
 
 process.stdout.write('Inventory workbench modules: ' + passed + '/' + passed + ' passed\n');

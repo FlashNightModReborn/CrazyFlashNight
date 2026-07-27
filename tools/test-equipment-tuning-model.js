@@ -3,6 +3,8 @@
 
 const assert = require('assert');
 const Model = require('../launcher/web/modules/equipment-tuning-model.js');
+const CharacterBuildTuning = require(
+    '../launcher/web/modules/character-build/character-build-tuning.js').CharacterBuildTuning;
 
 let checks = 0;
 function equal(actual, expected, message) {
@@ -25,6 +27,135 @@ equal(Model.wireRef(candidates[1]), {containerId:'背包',slot:3,expectedLease:'
     'wire ref uses physical slot and lease');
 equal(Model.sameRef(source, {containerId:'背包',slot:2,expectedLease:'rotated'}), true,
     'identity ignores rotating lease');
+equal(Model.normalizeTuningSource({
+    sourceKind:'inventory',containerId:'背包',slot:2,expectedLease:'lease.source'
+}), {
+    sourceKind:'inventory',containerId:'背包',slot:2,expectedLease:'lease.source'
+}, 'inventory tuning source keeps its exact slot lease');
+equal(Model.normalizeTuningSource({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'手枪2',expectedLoadoutRevision:7
+}), {
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'手枪2',expectedLoadoutRevision:7
+}, 'loadout tuning source uses the exact slot and loadout revision');
+equal(Model.normalizeTuningSource({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'饰品',expectedLoadoutRevision:7
+}), null, 'loadout tuning source rejects keys outside the frozen eleven slots');
+equal(Model.normalizeTuningSource({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',
+    expectedLoadoutRevision:7,containerId:'背包'
+}), null, 'loadout tuning source cannot alias an inventory container');
+equal(Model.normalizeTuningSource({
+    sourceKind:'loadout',slotKey:'长枪',expectedLoadoutRevision:7
+}), null, 'loadout tuning source cannot omit the active Character Build generation');
+equal(Model.normalizeTuningSource({
+    sourceKind:'inventory',containerId:'背包',slot:2,
+    expectedLease:'lease.source',sessionGeneration:17
+}), null, 'inventory source rejects loadout generation fields');
+equal(Model.normalizeTuningSource({
+    sourceKind:'inventory',containerId:'战备箱',slot:2,expectedLease:'lease.other'
+}), null, 'first-round tuning source cannot widen beyond the backpack');
+equal(Model.tuningSourceKey({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:9
+}), 'loadout:17:颈部装备', 'loadout focus identity binds generation while staying stable across revision refreshes');
+equal(Model.sameLoadoutIdentity(
+    {sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:5},
+    {sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:9}
+), true, 'loadout barrier identity allows only revision to advance');
+equal(Model.sameLoadoutIdentity(
+    {sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:5},
+    {sourceKind:'loadout',sessionGeneration:18,slotKey:'颈部装备',expectedLoadoutRevision:9}
+), false, 'loadout barrier identity rejects generation changes');
+equal(Model.sameLoadoutIdentity(
+    {sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:5},
+    {sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9}
+), false, 'loadout barrier identity rejects slot changes');
+
+let adapterGeneration = 17;
+let refreshCallback = null;
+let refreshCalls = 0;
+let adoptedPayloads = 0;
+const adapterSession = {
+    debugState:function() {
+        return {sessionGeneration:adapterGeneration, loadoutRevision:9};
+    },
+    getState:function() { return 'idle'; },
+    refreshSnapshot:function(callback) {
+        refreshCalls += 1;
+        refreshCallback = callback;
+        return 'loadout.snapshot.test';
+    }
+};
+const tuningAdapter = new CharacterBuildTuning({
+    session:adapterSession,
+    view:{},
+    adoptSnapshot:function() { adoptedPayloads += 1; }
+});
+tuningAdapter._active = true;
+tuningAdapter._slotKey = '长枪';
+tuningAdapter._entrySource = {
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:7
+};
+equal(tuningAdapter._refreshLoadout({
+    sourceKind:'loadout',sessionGeneration:18,slotKey:'长枪',expectedLoadoutRevision:9
+}, function() {}), false, 'loadout adapter rejects a new generation before requesting refresh');
+equal(refreshCalls, 0, 'generation rejection sends no ordinary loadout snapshot');
+equal(tuningAdapter._refreshLoadout({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'手枪',expectedLoadoutRevision:9
+}, function() {}), false, 'loadout adapter rejects a different slot before requesting refresh');
+let refreshResult = null;
+equal(tuningAdapter._refreshLoadout({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
+}, function(result) { refreshResult = result; }), true,
+'loadout adapter accepts the original identity while allowing revision advance');
+adapterGeneration = 18;
+refreshCallback({payload:{equipment:[{
+    slotKey:'长枪',occupied:true,item:{itemKind:'equipment',name:'测试长枪'}
+}]}}, true);
+equal(refreshResult && refreshResult.success, false,
+    'loadout adapter rejects a generation change that races the refresh callback');
+equal(adoptedPayloads, 0,
+    'cross-generation refresh is rejected before Character Build adopts its projection');
+const scheduledScrollRestores = [];
+const originalSetTimeout = global.setTimeout;
+const scrollProbe = {scrollTop:0};
+const scrollAdapter = new CharacterBuildTuning({
+    session:adapterSession,
+    view:{
+        root:{querySelector:function() { return scrollProbe; }},
+        debugState:function() { return {candidateCount:0}; }
+    }
+});
+try {
+    global.setTimeout = function(callback) {
+        scheduledScrollRestores.push(callback);
+        return scheduledScrollRestores.length;
+    };
+    scrollAdapter._scrollRestoreGeneration = 1;
+    scrollAdapter._restoreScroll({scrollTop:73}, 1, 1);
+    equal(scrollProbe.scrollTop, 73,
+        'tuning return restores the captured candidate scroll position');
+    equal(scheduledScrollRestores.length, 1,
+        'an empty candidate projection schedules one bounded restore retry');
+    scrollAdapter._scrollRestoreGeneration = 2;
+    scrollProbe.scrollTop = 19;
+    scheduledScrollRestores.shift()();
+    equal(scrollProbe.scrollTop, 19,
+        'a later tuning generation cancels stale scroll restore timers');
+} finally {
+    global.setTimeout = originalSetTimeout;
+}
+equal(Model.tuningSourceSupports({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
+}, 'enhance'), true, 'loadout source admits first-round single-item tuning');
+equal(Model.tuningSourceSupports({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
+}, 'convert'), false, 'loadout source keeps cross-container conversion out of scope');
+equal(Model.tuningSnapshotRequest({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
+}), {
+    source:{sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9}
+}, 'read-only snapshot prototype emits the normalized loadout authority shape');
+equal(Model.loadoutSlotKeys.length, 11, 'loadout source whitelist remains exactly eleven slots');
 equal(Model.normalizeConversionCandidates(candidates, source, sourceItem), [candidates[1]],
     'conversion projection filters source/use/level/duplicates atomically');
 equal(Model.previewIntentKey('enhance', {targetLevel:8.9}), 'enhance|8', 'enhance intent is discrete');

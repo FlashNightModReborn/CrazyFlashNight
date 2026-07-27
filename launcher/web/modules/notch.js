@@ -20,6 +20,8 @@ var Notch = (function() {
 
     // 展开图状态
     var chartVisible = false;
+    var safeExitState = 'idle';
+    var safeExitDoneResetTimer = null;
 
     // tooltip 元素
     var tooltipEl = null;
@@ -153,34 +155,22 @@ var Notch = (function() {
         });
 
         // 安全退出面板状态机
-        var sePanel = document.getElementById('safe-exit-panel');
-        var seStatus = document.getElementById('safe-exit-status');
-        var seButtons = document.getElementById('safe-exit-buttons');
-        var seBtn = document.querySelector('[data-key="SAFEEXIT"]');
+        var seRetryBtn = document.getElementById('safe-exit-retry');
+        if (seRetryBtn) {
+            seRetryBtn.addEventListener('click', function() {
+                if (safeExitState !== 'failed') return;
+                renderSafeExitState('saving');
+                Bridge.send({ type: 'click', key: 'SAFEEXIT' });
+            });
+        }
 
         UiData.on('sv', function(val) {
             if (val === '1') {
-                // 存盘中 → ✕ 变脉冲
-                if (seBtn) {
-                    seBtn.textContent = '··';
-                    seBtn.classList.add('saving');
-                }
-                if (seStatus) { seStatus.textContent = '存盘中…'; seStatus.className = 'saving'; }
-                if (seButtons) seButtons.style.display = 'none';
+                renderSafeExitState('saving');
             } else if (val === '2') {
-                // 存盘成功 → ✕ 短暂变 ✓
-                if (seBtn) {
-                    seBtn.classList.remove('saving');
-                    seBtn.textContent = '✓';
-                    seBtn.classList.add('save-done');
-                    setTimeout(function() {
-                        seBtn.classList.remove('save-done');
-                        seBtn.textContent = '✕';
-                    }, 1500);
-                }
-                if (seStatus) { seStatus.textContent = '存盘成功'; seStatus.className = 'done'; }
-                if (seButtons) { seButtons.style.display = ''; }
-                setTimeout(reportRect, 50);
+                renderSafeExitState('done');
+            } else if (val === '3') {
+                renderSafeExitState('failed');
             }
         });
 
@@ -238,11 +228,16 @@ var Notch = (function() {
         Bridge.on('safe_exit_show', function() {
             try {
                 var panel = document.getElementById('safe-exit-panel');
-                var status = document.getElementById('safe-exit-status');
-                var btns = document.getElementById('safe-exit-buttons');
                 if (!panel) return;
-                if (status) { status.textContent = '存盘中…'; status.className = 'saving'; }
-                if (btns) btns.style.display = 'none';
+                renderSafeExitState('saving');
+                panel.style.display = 'block';
+            } catch (e) {}
+        });
+        Bridge.on('safe_exit_failed', function() {
+            try {
+                var panel = document.getElementById('safe-exit-panel');
+                if (!panel) return;
+                renderSafeExitState('failed');
                 panel.style.display = 'block';
             } catch (e) {}
         });
@@ -1056,14 +1051,9 @@ var Notch = (function() {
 
     function openSafeExitPanel() {
         var panel = document.getElementById('safe-exit-panel');
-        var status = document.getElementById('safe-exit-status');
-        var btns = document.getElementById('safe-exit-buttons');
         var exitBtn = document.querySelector('[data-key="SAFEEXIT"]');
         if (!panel) return;
-        // 重置状态
-        status.textContent = '存盘中…';
-        status.className = 'saving';
-        btns.style.display = 'none';
+        renderSafeExitState('saving');
         panel.style.display = 'block';
         if (exitBtn) exitBtn.classList.add('panel-open');
         setTimeout(reportRect, 50);
@@ -1075,6 +1065,57 @@ var Notch = (function() {
         var exitBtn = document.querySelector('[data-key="SAFEEXIT"]');
         if (panel) panel.style.display = 'none';
         if (exitBtn) exitBtn.classList.remove('panel-open');
+        setTimeout(reportRect, 50);
+    }
+
+    function renderSafeExitState(nextState) {
+        var status = document.getElementById('safe-exit-status');
+        var buttons = document.getElementById('safe-exit-buttons');
+        var trigger = document.querySelector('[data-key="SAFEEXIT"]');
+        var confirm = document.querySelector('#safe-exit-buttons [data-key="EXIT_CONFIRM"]');
+        var retry = document.getElementById('safe-exit-retry');
+        safeExitState = nextState;
+        if (safeExitDoneResetTimer !== null) {
+            clearTimeout(safeExitDoneResetTimer);
+            safeExitDoneResetTimer = null;
+        }
+
+        if (nextState === 'saving') {
+            if (trigger) {
+                trigger.textContent = '··';
+                trigger.classList.remove('save-done');
+                trigger.classList.add('saving');
+            }
+            if (status) { status.textContent = '存盘中…'; status.className = 'saving'; }
+            if (confirm) { confirm.disabled = true; confirm.style.display = 'none'; }
+            if (retry) { retry.disabled = true; retry.style.display = 'none'; }
+            if (buttons) buttons.style.display = 'none';
+            return;
+        }
+
+        if (trigger) trigger.classList.remove('saving', 'save-done');
+        if (nextState === 'done') {
+            if (trigger) {
+                trigger.textContent = '✓';
+                trigger.classList.add('save-done');
+                safeExitDoneResetTimer = setTimeout(function() {
+                    safeExitDoneResetTimer = null;
+                    if (safeExitState !== 'done') return;
+                    trigger.classList.remove('save-done');
+                    trigger.textContent = '✕';
+                }, 1500);
+            }
+            if (status) { status.textContent = '存盘成功'; status.className = 'done'; }
+            if (confirm) { confirm.disabled = false; confirm.style.display = ''; }
+            if (retry) { retry.disabled = true; retry.style.display = 'none'; }
+            if (buttons) buttons.style.display = '';
+        } else if (nextState === 'failed') {
+            if (trigger) trigger.textContent = '!';
+            if (status) { status.textContent = '存盘失败'; status.className = 'failed'; }
+            if (confirm) { confirm.disabled = true; confirm.style.display = 'none'; }
+            if (retry) { retry.disabled = false; retry.style.display = ''; }
+            if (buttons) buttons.style.display = '';
+        }
         setTimeout(reportRect, 50);
     }
 

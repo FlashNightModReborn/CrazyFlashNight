@@ -21,7 +21,15 @@
 
     function resolveView(initData) {
         var view = initData && initData.view != null ? String(initData.view) : 'storage';
-        return view === 'storage' || view === 'tuning' ? view : null;
+        return view === 'storage' || view === 'tuning' || view === 'build' ? view : null;
+    }
+
+    function isViewAllowed(profile, view) {
+        profile = typeof profile === 'string' ? profile
+            : profile && typeof profile.profile === 'string' ? profile.profile : '';
+        return profile === 'warehouse' ? view === 'storage'
+            : profile === 'battlebox'
+                && (view === 'storage' || view === 'tuning' || view === 'build');
     }
 
     function resolveReturnTarget(initData) {
@@ -64,6 +72,7 @@
         MOD_CONFIRMATION_STORAGE_KEY:MOD_CONFIRMATION_STORAGE_KEY,
         resolveProfile:resolveProfile,
         resolveView:resolveView,
+        isViewAllowed:isViewAllowed,
         resolveReturnTarget:resolveReturnTarget,
         normalizeConfirmationMode:normalizeConfirmationMode,
         ConfirmationPreference:ConfirmationPreference

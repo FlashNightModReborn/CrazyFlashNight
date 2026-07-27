@@ -38,11 +38,21 @@ namespace CF7Launcher.Guardian
         private static long _fallbackPanelInstanceSequence;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
+        private CharacterBuildTask _characterBuildTask;
+        private Func<string, bool> _fallbackVisualRetire;
         private Func<string, bool> _gameCommandSenderOverride;
+        private Func<bool> _panelAdmissionGate;
         private readonly object _skillOpenLock = new object();
         private System.Threading.Timer _skillOpenTimer;
         private int _skillOpenGeneration;
+        private readonly object _nativeEquipmentBuildOpenLock = new object();
+        private System.Threading.Timer _nativeEquipmentBuildOpenTimer;
+        private int _nativeEquipmentBuildOpenGeneration;
+        private bool _nativeEquipmentBuildOpenPending;
+        private string _nativeEquipmentBuildOpenBaselinePanel;
+        private string _nativeEquipmentBuildOpenBaselineInstance;
         internal int SkillOpenTimeoutMs { get; set; } = 1800;
+        internal int NativeEquipmentBuildOpenTimeoutMs { get; set; } = 1800;
 
         public LauncherCommandRouter(
             Bus.XmlSocketServer socketServer,
@@ -72,7 +82,16 @@ namespace CF7Launcher.Guardian
         public void SetPanelHost(PanelHostController host) { _panelHost = host; }
         public void SetSkillTask(SkillTask task) { _skillTask = task; }
         public void SetEquipmentTuningTask(EquipmentTuningTask task) { _equipmentTuningTask = task; }
+        public void SetCharacterBuildTask(CharacterBuildTask task) { _characterBuildTask = task; }
+        internal void SetFallbackVisualRetire(Func<string, bool> retire)
+        {
+            _fallbackVisualRetire = retire;
+        }
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
+        internal void SetPanelAdmissionGate(Func<bool> gate)
+        {
+            _panelAdmissionGate = gate;
+        }
         internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
         internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
         internal void ClearFallbackPanelInstance()
@@ -96,6 +115,18 @@ namespace CF7Launcher.Guardian
         /// 必须在 SendGameCommand("safeExit") 之前调，否则 widget 收到 sv:1 时还没 armed，会忽略。
         /// </summary>
         public Action OnSafeExitArm { get; set; }
+
+        /// <summary>
+        /// safeExit 命令未送达时通知当前 Native SafeExit session 进入失败态。
+        /// Web fallback 由 Router 同时发送 safe_exit_failed，不依赖此回调。
+        /// </summary>
+        public Action OnSafeExitSendFailed { get; set; }
+
+        /// <summary>
+        /// EXIT_CONFIRM 的唯一授权能力。只有当前 armed 且已收到本轮 sv:2 的
+        /// SafeExit session 才能消费成功；消费必须是 exact one-shot。
+        /// </summary>
+        public Func<bool> TryConsumeSafeExitConfirm { get; set; }
 
         /// <summary>
         /// 来自刘海“地图开关”的 click → 切 C# 小地图显示/关闭。
@@ -153,7 +184,7 @@ namespace CF7Launcher.Guardian
                     // Phase 4.2：必须先 Arm widget（否则普通自动存盘也会拉起面板——sv 是通用事件）；再触发 AS2 存盘。
                     // widget Arm 后立即进 Saving 显示状态条；sv:1 推达后保持 Saving；sv:2 切到 Done 显示 取消/退出 按钮。
                     { Action arm = OnSafeExitArm; if (arm != null) arm(); }
-                    SendGameCommand("safeExit");
+                    RouteSafeExit();
                     break;
                 case "TEAM":
                     LogManager.Log("[Router] TEAM clicked");
@@ -215,8 +246,12 @@ namespace CF7Launcher.Guardian
                         PostToWeb("{\"type\":\"toast\",\"text\":\"任务面板暂时不可用\"}");
                     }
                     break;
-                // D9：刘海装备键永远打开旧装备主界面；Web 调制仅从 battlebox 收纳箱反馈入口进入。
-                case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
+                case "EQUIP_UI":
+                    RouteEquipmentUi();
+                    break;
+                case "MATERIALS":
+                    RouteMaterialUi();
+                    break;
                 case "INTELLIGENCE":
                     OpenPanel("intelligence", "{\"mode\":\"prod\",\"source\":\"runtime\",\"debug\":false}");
                     break;
@@ -264,7 +299,10 @@ namespace CF7Launcher.Guardian
                     // issue #7 bug2：动画测试面板（Ruffle 预览 flashswf/movies/ 过场）
                     OpenPanel("cutscene-test", "{\"mode\":\"dev\",\"source\":\"runtime\",\"debug\":true}");
                     break;
-                case "EXIT_CONFIRM": ForceExit(); break;
+                case "EXIT_CONFIRM":
+                    if (ConsumeSafeExitConfirmCapability())
+                        ForceExit();
+                    break;
                 default:
                     LogManager.Log("[Router] unknown key=" + key);
                     break;
@@ -333,7 +371,13 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[Router] legacy AS2 equipment tuning redirect paused; keeping native renderer");
                     return;
                 }
-                OpenInventoryWorkbench(safeSource, initDataExtrasJson);
+                OpenInventoryWorkbench(
+                    safeSource,
+                    initDataExtrasJson,
+                    string.Equals(
+                        panelName,
+                        "workbench",
+                        StringComparison.Ordinal));
                 return;
             }
             if (string.Equals(panelName, "npcshop", StringComparison.OrdinalIgnoreCase))
@@ -393,15 +437,19 @@ namespace CF7Launcher.Guardian
             OpenPanel("stage-select", initData);
         }
 
-        private bool OpenInventoryWorkbench(string source, string initDataExtrasJson)
+        private bool OpenInventoryWorkbench(
+            string source,
+            string initDataExtrasJson,
+            bool exactPanelName = true)
         {
             string profile = "battlebox";
             string view = "storage";
+            JObject extras = null;
             if (!string.IsNullOrEmpty(initDataExtrasJson))
             {
                 try
                 {
-                    JObject extras = JObject.Parse(initDataExtrasJson);
+                    extras = JObject.Parse(initDataExtrasJson);
                     string requested = extras.Value<string>("profile");
                     if (!string.IsNullOrEmpty(requested)) profile = requested;
                     string requestedView = extras.Value<string>("view");
@@ -420,7 +468,8 @@ namespace CF7Launcher.Guardian
                 return false;
             }
             if (!string.Equals(view, "storage", StringComparison.Ordinal)
-                && !string.Equals(view, "tuning", StringComparison.Ordinal))
+                && !string.Equals(view, "tuning", StringComparison.Ordinal)
+                && !string.Equals(view, "build", StringComparison.Ordinal))
             {
                 LogManager.Log("[Router] OpenInventoryWorkbench rejected view=" + view);
                 return false;
@@ -430,6 +479,50 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] OpenInventoryWorkbench rejected tuning profile=" + profile);
                 return false;
             }
+            if (view == "build"
+                && (!string.Equals(profile, "battlebox", StringComparison.Ordinal)
+                    || (!string.Equals(source, "agent_control", StringComparison.Ordinal)
+                        && !string.Equals(
+                            source,
+                            "nativehud_equipment",
+                            StringComparison.Ordinal))))
+            {
+                LogManager.Log("[Router] OpenInventoryWorkbench rejected build admission profile="
+                    + profile + " source=" + (source ?? "<null>"));
+                return false;
+            }
+            if (view == "build"
+                && string.Equals(
+                    source,
+                    "nativehud_equipment",
+                    StringComparison.Ordinal))
+            {
+                string rejectionReason =
+                    null;
+                bool exactInitData =
+                    extras != null
+                    && extras.Count == 2
+                    && extras["profile"] != null
+                    && extras["profile"].Type
+                        == JTokenType.String
+                    && extras["view"] != null
+                    && extras["view"].Type
+                        == JTokenType.String;
+                if (!exactPanelName
+                    || !exactInitData
+                    || !TryConsumeNativeEquipmentBuildOpenWait(
+                        out rejectionReason))
+                {
+                    LogManager.Log(
+                        "event=character_build_open_rejected source=nativehud_equipment reason="
+                        + (!exactPanelName
+                            ? "panel_contract"
+                            : !exactInitData
+                                ? "init_data_contract"
+                                : rejectionReason));
+                    return false;
+                }
+            }
             var initData = new JObject
             {
                 ["mode"] = "runtime",
@@ -438,7 +531,24 @@ namespace CF7Launcher.Guardian
                 ["source"] = source,
                 ["debug"] = false
             };
-            return OpenPanel("workbench", initData.ToString(Formatting.None));
+            bool opened =
+                OpenPanel(
+                    "workbench",
+                    initData.ToString(
+                        Formatting.None));
+            if (!opened
+                && view == "build"
+                && string.Equals(
+                    source,
+                    "nativehud_equipment",
+                    StringComparison.Ordinal))
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source=nativehud_equipment reason=host_gate");
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"装备面板被当前操作阻止，请稍后重试\"}");
+            }
+            return opened;
         }
 
         private void OpenNpcShopPanel(string source, string initDataExtrasJson)
@@ -752,12 +862,52 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private bool OpenPanel(string panelName, string initDataJson, string returnToPanel, string returnToInitDataJson)
         {
+            if (!CanAdmitPanel("open:" + (panelName ?? "<null>")))
+                return false;
             string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
             string currentInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
                 : _activeFallbackPanelInstanceId;
-            bool activeTuning = currentPanel == "workbench" && _equipmentTuningTask != null
+            bool activeTuning = currentPanel == "workbench"
+                && _equipmentTuningTask != null
                 && !string.IsNullOrEmpty(currentInstance)
-                && _equipmentTuningTask.PanelInstanceId == currentInstance;
+                && _equipmentTuningTask.PanelInstanceId
+                    == currentInstance;
+            // Any retained CharacterBuild binding still owns the exact AS2 pause authority, even
+            // after finalize. A same-name storage/build rebind must first close and consume that
+            // authority; otherwise its later name-only close can release the old lease behind a
+            // replacement panel.
+            if (_characterBuildTask != null
+                && _characterBuildTask.HasBoundPanel)
+            {
+                if (activeTuning
+                    && !_equipmentTuningTask.CanClose)
+                {
+                    LogManager.Log(
+                        "[Router] panel open rejected: equipment tuning request/reconcile is pending behind character authority");
+                    return false;
+                }
+                if (_characterBuildTask.RequiresDetachRecovery)
+                {
+                    LogManager.Log(
+                        "[Router] panel open rejected: character build detach recovery "
+                        + "status=" + _characterBuildTask.DetachRecoveryStatus
+                        + " error="
+                        + (_characterBuildTask.DetachRecoveryFailure ?? "none")
+                        + "; caller must retry after recovery settles");
+                    return false;
+                }
+                if (!_characterBuildTask.CanRebind)
+                {
+                    LogManager.Log(
+                        "[Router] panel open rejected: character build finalize is unresolved; caller must retry");
+                    return false;
+                }
+                return BeginCharacterBuildSwitchHandoff(
+                    _characterBuildTask.PanelInstanceId,
+                    currentPanel,
+                    currentInstance,
+                    panelName);
+            }
             if (activeTuning && panelName != "workbench" && !_equipmentTuningTask.CanClose)
             {
                 LogManager.Log("[Router] panel switch deferred: equipment tuning request/reconcile is pending");
@@ -815,11 +965,515 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        /// <summary>
+        /// Switching away from a finalized character-build session is a two-request handoff.
+        /// This request starts the Host-only acknowledged close and removes the old visual, but is
+        /// deliberately rejected. A fresh request may open the target only after AS2 proves
+        /// persistence, clean revisions and pause release and the coordinator consumes the binding.
+        /// </summary>
+        private bool BeginCharacterBuildSwitchHandoff(
+            string boundInstance,
+            string currentPanel,
+            string currentInstance,
+            string requestedPanel)
+        {
+            if (_characterBuildTask == null
+                || !_characterBuildTask.BeginNormalCloseBarrier(
+                    boundInstance))
+            {
+                LogManager.Log(
+                    "[Router] panel switch rejected: character build close handoff lost exact binding; caller must retry");
+                return false;
+            }
+
+            if (_panelHost != null)
+            {
+                _panelHost.ClearReturnStack();
+                string retirePanel =
+                    string.IsNullOrEmpty(currentPanel)
+                        ? "workbench" : currentPanel;
+                string retireInstance =
+                    string.IsNullOrEmpty(currentInstance)
+                        ? boundInstance : currentInstance;
+                if (!_panelHost.TryRetirePanelVisualExact(
+                    retirePanel,
+                    retireInstance,
+                    delegate(
+                        PanelHostController.VisualRetireOutcome
+                            outcome)
+                    {
+                        if (outcome
+                                == PanelHostController
+                                    .VisualRetireOutcome
+                                    .RetiredExact
+                            || outcome
+                                == PanelHostController
+                                    .VisualRetireOutcome
+                                    .VisualAlreadyAbsent)
+                        {
+                            _characterBuildTask
+                                .ContinueDetachRecoveryAfterVisualRetired(0);
+                        }
+                        else
+                        {
+                            LogManager.Log(
+                                "[Router] character build recovery remains fenced: Host visual retire unavailable");
+                        }
+                    }))
+                {
+                    LogManager.Log(
+                        "[Router] character build recovery remains fenced: Host visual retire was not queued");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(currentPanel)
+                    && !string.IsNullOrEmpty(currentInstance))
+                {
+                    PostToWeb(new JObject
+                    {
+                        ["type"] = "panel_cmd",
+                        ["cmd"] = "close",
+                        ["panel"] = currentPanel,
+                        ["panelInstanceId"] = currentInstance
+                    }.ToString(Formatting.None));
+                }
+                ClearFallbackPanelInstance();
+                if (_setActivePanel != null) _setActivePanel(null);
+                if (_onPanelStateChanged != null)
+                    _onPanelStateChanged(false);
+                bool visualRetired = false;
+                try
+                {
+                    visualRetired = _fallbackVisualRetire != null
+                        && _fallbackVisualRetire(
+                            "character_build_switch");
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[Router] fallback character visual retire failed: "
+                        + ex.Message);
+                }
+                if (visualRetired)
+                {
+                    _characterBuildTask
+                        .ContinueDetachRecoveryAfterVisualRetired(0);
+                }
+                else
+                {
+                    LogManager.Log(
+                        "[Router] character build recovery remains fenced: fallback visual retire not confirmed");
+                }
+            }
+
+            LogManager.Log(
+                "[Router] panel switch rejected after starting acknowledged character build close; "
+                + "requested=" + (requestedPanel ?? "<null>")
+                + "; caller must retry after recovery settles");
+            return false;
+        }
+
         private void SendKey(Keys k) { if (_onSendKey != null) _onSendKey(k); }
         private void ToggleFullscreen() { if (_onToggleFullscreen != null) _onToggleFullscreen(); }
         private void ToggleLog() { if (_onToggleLog != null) _onToggleLog(); }
         private void ForceExit() { if (_onForceExit != null) _onForceExit(); }
         private void PostToWeb(string json) { if (_postToWeb != null) _postToWeb(json); }
+
+        private void RouteSafeExit()
+        {
+            bool delivered = false;
+            try
+            {
+                delivered = TrySendGameCommand("safeExit");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Router] SAFEEXIT send threw: " + ex.Message);
+            }
+            if (delivered) return;
+
+            LogManager.Log(
+                "[Router] SAFEEXIT command was not delivered; entering failed state");
+            Action failed = OnSafeExitSendFailed;
+            if (failed != null)
+            {
+                try { failed(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[Router] SAFEEXIT native failure callback threw: "
+                        + ex.Message);
+                }
+            }
+            try
+            {
+                PostToWeb(
+                    "{\"type\":\"safe_exit_failed\"}");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Router] SAFEEXIT web failure notification threw: "
+                    + ex.Message);
+            }
+        }
+
+        private bool ConsumeSafeExitConfirmCapability()
+        {
+            Func<bool> consume =
+                TryConsumeSafeExitConfirm;
+            if (consume == null)
+            {
+                LogManager.Log(
+                    "[Router] EXIT_CONFIRM rejected: no armed SafeExit capability");
+                return false;
+            }
+            try
+            {
+                if (consume()) return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Router] EXIT_CONFIRM capability threw: "
+                    + ex.Message);
+                return false;
+            }
+            LogManager.Log(
+                "[Router] EXIT_CONFIRM rejected: SafeExit session is not armed and done");
+            return false;
+        }
+
+        private void RouteMaterialUi()
+        {
+            if (!CanAdmitPanel("materials"))
+                return;
+            bool characterRecovery =
+                _characterBuildTask != null
+                && _characterBuildTask.RequiresDetachRecovery;
+            bool characterBound =
+                _characterBuildTask != null
+                && _characterBuildTask.HasBoundPanel;
+            if (characterRecovery || characterBound)
+            {
+                LogManager.Log(
+                    "[Router] MATERIALS rejected: character build authority is retained"
+                    + (characterRecovery
+                        ? " during detach recovery"
+                        : ""));
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"请先完成当前装备面板操作\"}");
+                return;
+            }
+
+            bool hostVisualActiveOrPending =
+                _panelHost != null
+                && !_panelHost.IsIdleForTrackedOpen;
+            bool activeVisual =
+                hostVisualActiveOrPending
+                || !string.IsNullOrEmpty(
+                    _activeFallbackPanelName)
+                || !string.IsNullOrEmpty(
+                    _activeFallbackPanelInstanceId);
+            if (activeVisual)
+            {
+                string active =
+                    hostVisualActiveOrPending
+                        ? _panelHost.ActivePanelName
+                        : _activeFallbackPanelName;
+                LogManager.Log(
+                    "[Router] MATERIALS rejected: active or pending Web panel visual="
+                    + (active ?? "<unknown>"));
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"请先关闭当前面板\"}");
+                return;
+            }
+
+            bool delivered = false;
+            try
+            {
+                delivered =
+                    TrySendGameCommand(
+                        "openMaterialUI");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Router] MATERIALS openMaterialUI send threw: "
+                    + ex.Message);
+            }
+            if (delivered) return;
+
+            LogManager.Log(
+                "[Router] MATERIALS openMaterialUI was not delivered");
+            PostToWeb(
+                "{\"type\":\"toast\",\"text\":\"材料面板暂时不可用\"}");
+        }
+
+        private void RouteEquipmentUi()
+        {
+            if (!CanAdmitPanel("equipment"))
+            {
+                CancelNativeEquipmentBuildOpenWait();
+                return;
+            }
+            if (!WebInventoryWorkbenchEnabled)
+            {
+                CancelNativeEquipmentBuildOpenWait();
+                LogManager.Log(
+                    "[Router] EQUIP_UI web workbench explicitly disabled -> Flash fallback");
+                SendGameCommand(
+                    "openEquipUI");
+                return;
+            }
+
+            string activePanel = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : _activeFallbackPanelName;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : _activeFallbackPanelInstanceId;
+            bool exactActiveBuild =
+                string.Equals(
+                    activePanel,
+                    "workbench",
+                    StringComparison.Ordinal)
+                && !string.IsNullOrEmpty(
+                    activeInstance)
+                && _characterBuildTask != null
+                && _characterBuildTask.IsBoundTo(
+                    activeInstance);
+            if (exactActiveBuild)
+            {
+                CancelNativeEquipmentBuildOpenWait();
+                // Re-click is only a Web close request. CharacterBuild's existing
+                // finalize/unknown barrier remains the sole authority that may later
+                // acknowledge and retire this exact Host visual.
+                PostToWeb(
+                    "{\"type\":\"panel_esc\"}");
+                return;
+            }
+
+            LogManager.Log(
+                "event=character_build_open_requested source=nativehud_equipment");
+            int generation;
+            if (!TryBeginNativeEquipmentBuildOpenWait(
+                    out generation))
+            {
+                LogManager.Log(
+                    "event=character_build_open_suppressed source=nativehud_equipment reason=pending");
+                return;
+            }
+            if (TrySendNativeEquipmentBuildPreflight())
+                return;
+
+            CancelNativeEquipmentBuildOpenWait(
+                generation);
+            LogManager.Log(
+                "event=character_build_open_failed source=nativehud_equipment reason=preflight_send");
+            PostToWeb(
+                "{\"type\":\"toast\",\"text\":\"装备面板暂时不可用，请稍后重试\"}");
+        }
+
+        private bool TrySendNativeEquipmentBuildPreflight()
+        {
+            const string payload =
+                "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
+                + "\"profile\":\"battlebox\",\"view\":\"build\","
+                + "\"source\":\"nativehud_equipment\"}\0";
+            if (_gameCommandSenderOverride != null)
+                return _gameCommandSenderOverride(
+                    payload);
+            if (_socketServer == null
+                || !_socketServer.IsClientReady)
+            {
+                return false;
+            }
+            return _socketServer.TrySend(
+                payload);
+        }
+
+        private bool CanAdmitPanel(string route)
+        {
+            Func<bool> gate =
+                _panelAdmissionGate;
+            if (gate == null) return true;
+            try
+            {
+                if (gate()) return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Router] panel admission gate threw route="
+                    + route + " ex=" + ex.Message);
+                return false;
+            }
+            LogManager.Log(
+                "[Router] panel admission rejected during shutdown route="
+                + route);
+            return false;
+        }
+
+        private bool TryBeginNativeEquipmentBuildOpenWait(
+            out int generation)
+        {
+            generation = 0;
+            lock (_nativeEquipmentBuildOpenLock)
+            {
+                if (_nativeEquipmentBuildOpenPending)
+                    return false;
+                generation =
+                    ++_nativeEquipmentBuildOpenGeneration;
+                _nativeEquipmentBuildOpenPending =
+                    true;
+                _nativeEquipmentBuildOpenBaselinePanel =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelName
+                        : _activeFallbackPanelName;
+                _nativeEquipmentBuildOpenBaselineInstance =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelInstanceId
+                        : _activeFallbackPanelInstanceId;
+                int timerGeneration =
+                    generation;
+                _nativeEquipmentBuildOpenTimer =
+                    new System.Threading.Timer(
+                        delegate
+                        {
+                            OnNativeEquipmentBuildOpenTimeout(
+                                timerGeneration);
+                        },
+                        null,
+                        Math.Max(
+                            1,
+                            NativeEquipmentBuildOpenTimeoutMs),
+                        System.Threading.Timeout.Infinite);
+                return true;
+            }
+        }
+
+        private bool TryConsumeNativeEquipmentBuildOpenWait(
+            out string rejectionReason)
+        {
+            System.Threading.Timer timer;
+            lock (_nativeEquipmentBuildOpenLock)
+            {
+                if (!_nativeEquipmentBuildOpenPending)
+                {
+                    rejectionReason =
+                        "missing_preflight";
+                    return false;
+                }
+                string activePanel =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelName
+                        : _activeFallbackPanelName;
+                string activeInstance =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelInstanceId
+                        : _activeFallbackPanelInstanceId;
+                if (!string.Equals(
+                        activePanel,
+                        _nativeEquipmentBuildOpenBaselinePanel,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        activeInstance,
+                        _nativeEquipmentBuildOpenBaselineInstance,
+                        StringComparison.Ordinal))
+                {
+                    timer =
+                        ClearNativeEquipmentBuildOpenWaitLocked();
+                    rejectionReason =
+                        "competing_panel";
+                }
+                else
+                {
+                    timer =
+                        ClearNativeEquipmentBuildOpenWaitLocked();
+                    rejectionReason =
+                        null;
+                }
+            }
+            if (timer != null)
+                timer.Dispose();
+            return rejectionReason == null;
+        }
+
+        private void OnNativeEquipmentBuildOpenTimeout(
+            int generation)
+        {
+            System.Threading.Timer timer;
+            string activePanel;
+            lock (_nativeEquipmentBuildOpenLock)
+            {
+                if (!_nativeEquipmentBuildOpenPending
+                    || generation
+                        != _nativeEquipmentBuildOpenGeneration)
+                {
+                    return;
+                }
+                activePanel =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelName
+                        : _activeFallbackPanelName;
+                timer =
+                    ClearNativeEquipmentBuildOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            if (!string.IsNullOrEmpty(activePanel))
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source=nativehud_equipment "
+                    + "reason=panel_request_timeout active_panel="
+                    + activePanel
+                    + " toast=suppressed");
+                return;
+            }
+            LogManager.Log(
+                "event=character_build_open_failed source=nativehud_equipment reason=panel_request_timeout");
+            PostToWeb(
+                "{\"type\":\"toast\",\"text\":\"装备服务未就绪，请稍后重试\"}");
+        }
+
+        private void CancelNativeEquipmentBuildOpenWait(
+            int expectedGeneration = 0)
+        {
+            System.Threading.Timer timer;
+            lock (_nativeEquipmentBuildOpenLock)
+            {
+                if (!_nativeEquipmentBuildOpenPending
+                    || (expectedGeneration != 0
+                        && expectedGeneration
+                            != _nativeEquipmentBuildOpenGeneration))
+                {
+                    return;
+                }
+                timer =
+                    ClearNativeEquipmentBuildOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+        }
+
+        private System.Threading.Timer ClearNativeEquipmentBuildOpenWaitLocked()
+        {
+            _nativeEquipmentBuildOpenPending =
+                false;
+            _nativeEquipmentBuildOpenGeneration++;
+            _nativeEquipmentBuildOpenBaselinePanel =
+                null;
+            _nativeEquipmentBuildOpenBaselineInstance =
+                null;
+            System.Threading.Timer timer =
+                _nativeEquipmentBuildOpenTimer;
+            _nativeEquipmentBuildOpenTimer =
+                null;
+            return timer;
+        }
 
         private void SendGameCommand(string action)
         {

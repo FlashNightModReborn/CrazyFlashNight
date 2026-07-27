@@ -76,4 +76,53 @@
         font:700 12px/1.2 "Microsoft YaHei",sans-serif;
     }
     .workbench-owned-pane { min-width:0; min-height:0; overflow:hidden; }
+
+    .workbench-inspection-viewport {
+        touch-action:none;
+        cursor:grab;
+    }
+    .workbench-inspection-viewport.is-dragging { cursor:grabbing; }
+    .workbench-inspection-target {
+        transform-origin:50% 50%;
+        will-change:transform;
+    }
+    .workbench-inspection-controls {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        min-width:0;
+    }
+    .workbench-inspection-pan-controls,
+    .workbench-inspection-zoom-controls {
+        display:flex;
+        align-items:center;
+        gap:4px;
+    }
+    .workbench-inspection-control {
+        min-width:44px;
+        min-height:44px;
+        padding:0 9px;
+        color:var(--wb-text);
+        background:var(--wb-surface);
+        border:1px solid var(--wb-line);
+        font:700 11px/1 "Microsoft YaHei",sans-serif;
+    }
+    .workbench-inspection-control:hover:not(:disabled),
+    .workbench-inspection-control:focus-visible {
+        color:var(--wb-bg);
+        background:var(--wb-focus);
+        border-color:var(--wb-focus);
+        outline:0;
+    }
+    .workbench-inspection-control:disabled {
+        color:var(--wb-semantic-disabled);
+        cursor:default;
+    }
+    .workbench-inspection-status {
+        min-width:48px;
+        color:var(--wb-accent);
+        font:700 11px/1 "Consolas","Microsoft YaHei",monospace;
+        text-align:center;
+    }
 }

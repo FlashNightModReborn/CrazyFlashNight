@@ -8,6 +8,7 @@
     --workbench-compact-gap:4px;
     --wb-bg:#090a0c;
     --wb-surface:#101216;
+    --wb-panel:var(--wb-surface);
     --wb-surface-2:#15181d;
     --wb-line:#34383f;
     --wb-line-soft:#23272d;
@@ -167,6 +168,7 @@
     padding:10px;
     box-sizing:border-box;
 }
+.workbench-shell > .workbench-body[hidden] { display:none; }
 .workbench-slot {
     position:relative;
     display:grid;

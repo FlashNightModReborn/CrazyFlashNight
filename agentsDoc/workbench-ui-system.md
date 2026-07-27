@@ -1,9 +1,9 @@
 # 双栏工作台 UI 系统约束
 
 **文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
-**最后核对代码基线**：commit `711c469036ad6b1226833faf255499abb1ebf2ed`（2026-07-18）+ 当前工作台回归修复工作树。
+**最后核对代码基线**：commit `c806ac19beacd500277d5cd9f689fefed1a9982c`（2026-07-26）+ 当前角色构筑施工工作树。
 
-本文适用于 `kshop`、`npcshop`、`crafting`、独立 `workbench`、嵌入式装备调制和 `skills` 中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
+本文适用于 `kshop`、`npcshop`、`crafting`、独立 `workbench`、角色构筑、嵌入式装备调制和 `skills` 中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
 
 ## 1. 不变量与职责边界
 
@@ -25,12 +25,13 @@
 | `transfer-pair` | 背包—战备箱、背包—仓库 | 两个可操作容器近似对称；容量差异只能做受控 token 覆盖 |
 | `library-action-strip` | 技能管理 | 全宽库 + 固定 Hotbar；密度只作用技能库 |
 | `library-decision` | 技能教师、调制候选 | 目录/候选 + 固定信息量的预览提交区 |
+| `character-build` | 角色构筑 | 左右固定 `55:45`；左侧内层为弹性单 Canvas + 按内容收缩并贴右的 11 装备槽/4 药剂槽，不能把槽区右侧空白保留成无效列宽；右侧候选/调制决策区不得窄于 `360px`；55% 是 1024 下仍保持三列完整候选和八列紧凑图标的左倾上限；详细属性以全 body SecondaryPage 与编辑态互斥 |
 
-任何新 profile 都必须先进入本文，说明适用角色、最小画布和验证样本；禁止只在单个 feature CSS 中创造隐式第五种结构。
+`character-build` 的最低画布为 1024×576；“当前装备/候选预览”只改变同一个 Canvas 的合成输入，不生成第二个并排 Canvas。需要更大构图时，`character-build-doll-preview.js` 只把现有 `.character-build-doll-stage` 与 exact Canvas 临时迁入全 body SecondaryPage；不得复制 renderer、Canvas 或 current/preview state。打开时底层 body/header inert，Esc 后按原顺序放回 stage 并恢复 opener。放大页复用 `workbench-inspection-viewport.js` 的瞬态相机：滚轮或 `+/-` 缩放、主键拖拽或方向键平移、“全貌”/`Home` 复位；transform 只作用 exact Canvas，不作用 stage、候选覆盖层或 renderer 输入。关闭必须清零缩放/位移；嵌入态停用相机且不得吞掉 pointer、wheel 或键盘输入。该 profile 必须覆盖满 11+4、空/blocked、长中文、未知性别/缺素材、stats SecondaryPage 与完整键盘路径。stats 在最低画布下不得靠缩小中文字号硬塞：标题/footer 固定，正文使用单一、可聚焦的纵向滚动区，保留可见滚动提示、滚轮与键盘滚动，并在关闭后把焦点还给入口。任何新 profile 都必须先进入本文，说明适用角色、最小画布和验证样本；禁止只在单个 feature CSS 中创造隐式结构。
 
 ### 2.2 纵向节奏
 
-生产工作台按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮。二级页从顶栏下沿覆盖整个 workbench body，不在底层双栏上叠半透明可点击内容。
+生产工作台通常按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。Character Build 是受控例外：左侧“外观与配置 / 当前构筑”的 PaneChrome 标题行同时容纳当前浏览提示、放大预览入口与 `15 / 15` 槽计数；routine 浏览提示不得再占用 pane 底部空间，底部只为 blocked/warning/error 等必须持续可读的异常信息让位。右侧候选动作直接并入“背包候选 / 候选对比”同一 PaneChrome 标题行；删除无领域决策价值的通用“详情”和任何钉住动作，装备上下文最多显示“装备 / 调制 / 卸下”三项，药剂提交短标签改为“装入”。完整动作语义保留在 `aria-label`；“装备/装入”是唯一主 CTA，“调制”只在当前槽存在可调制装备且能力允许时出现。1024×576 下动作组必须单行、不换行、不横向溢出；删除独立动作行以扩大候选区，候选可滚区底部也不再复制 action rail 或长快捷键说明。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮。二级页从顶栏下沿覆盖整个 workbench body，不在底层双栏上叠半透明可点击内容。
 
 PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得再造第二套局部顶栏。FlowRail 是关系提示，不是常亮主 CTA：待命时低能量，只有拖拽接收、权威 pending 或预览更新时提升亮度。
 
@@ -42,11 +43,32 @@ PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得�
 - full 模式必须能读到主名称和关键状态；空间不足时减少列数，不得把 full 退化成“略大的 compact”。
 - 空态分为 `empty`、`filtered-empty`、`unavailable`、`error`；每种都提供下一步动作或原因，不用装饰填满空白。
 
+### 2.4 角色属性 SecondaryPage
+
+`launcher/web/modules/character-build/character-build-stats-view.js` 是角色属性页的只读 leaf presenter，专责格式化标量、绘制权威负重带、组内相对条和完整属性投影；它不持有 session、Bridge、候选选择或装备写入时序。现役 browser fixture 为 `launcher/web/modules/character-build/dev/stats-fixture.js`，固定 `CharacterBuildStatsSnapshot v1` 的 **9 组、47 行 exact shape**；fixture 只用于验证顺序、格式与降级，不是第二份游戏数值真源。
+
+负重带的位置、分界与速度读数只消费 AS2 已投影的 `weightRatio`、`lightMediumThreshold`、`mediumHeavyThreshold`、`heavyThreshold` 与 `movementSpeed`。Web 不重算负重或速度公式，不把候选装备代入预测，也不复制 `UnitUtil` 等 AS2 公式。当前轻装读数使用 `success`、重装读数使用 `danger`，标准负载保持中性；`warning` 不表示正常状态。相对条只在整组均为有限非负值且不全为零时出现：武器威力先做 `log10(value+1)` 视觉压缩、再按同组最大变换值归一，并标注“对数相对量级”；抗性使用原值线性组内归一，并标注“当前组相对量级”。出现负数、缺值或全零时省略对应图表并保留原始明细。`log10` 不能进入 authority、AS2 公式、候选预测或 DPS。每一行继续显示带单位的原始权威值，禁止把条长解释为跨组战力或用图形替代原值。
+
+完整 9 组 47 行采用 3×3 分组网格；抗性首屏摘要为 4×2，完整明细中的抗性组为 2×4。八种抗性可使用 inline SVG 帮助扫读，但图标必须 `aria-hidden`、使用 `currentColor`，中文字段名与原始权威值始终存在，禁止仅靠图形或颜色识别。
+
+stats 页只允许一个可聚焦的纵向滚动区：header 与 footer 固定，打开时焦点直接进入该滚动区，滚动提示跟随 start/middle/end，支持滚轮、PageUp/PageDown，并在退出时恢复 opener；所有玩家可见 stats 正文不得小于 11px。`groups` 为空时显示 `unavailable`，不得填默认值；`weightRatio` 缺失/`null` 或负重阈值畸形时只撤掉负重带，47 行原始明细仍照常投影；相对组缺失、含缺值/负值或全为零时只省略对应图表，抗性明细图标与文字仍保留。现役资产与验证入口为：
+
+| 路径 / 命令 | 职责 |
+|-------------|------|
+| `launcher/web/modules/character-build/character-build-stats-view.js` | stats 只读 presenter 与渐进降级 |
+| `launcher/web/css/workbench/character-build-stats.css` | 档案白信息层、DLS 诊断/焦点、单滚动区和负重仪表 |
+| `launcher/web/modules/character-build/dev/stats-fixture.js` | 9 组 47 行 exact browser fixture |
+| `node tools/run-character-build-harness.js` | 独立三视口结构、exact rows、畸形阈值降级、滚动/焦点/reduced-motion |
+| `node tools/run-character-build-workbench-harness.js` | 生产 controller + storage facade + fake Host 的三视口 stats/权威闭环 |
+| `node tools/audit-workbench-ui.js --strict-warnings` | 新 CSS/JS 的颜色、字号、动效、模块阈值与依赖治理 |
+
 ## 3. 密度与实体格
 
 共享尺寸基线：完整 owned 卡高度 `68px`；紧凑 owned 实体格 `48px`、图标 `40px`、间距 `4px`。KShop / NPC 目录 compact 使用固定 `54px` 图标瓦片，不把自适应列宽分摊到每张卡；目录 full 的可读列宽不得低于 `128px`。最低画布下仍须满足领域容量目标，例如战备箱 40 格、调制候选 25 格的无滚动可达性。
 
-`full` 显示名称、核心 meta、价格/数量/状态与必要动作；`compact` 以图标和角标为主，隐藏语义正文后必须通过键盘可达的共享 tooltip 或可见详情提供同等信息。Hotbar、权威预览、材料核算和提交区不随目录密度压缩。
+`full` 显示名称、核心 meta、价格/数量/状态与必要动作；`compact` 以图标和角标为主，隐藏语义正文后必须通过键盘可达的共享 tooltip 或可见的当前浏览摘要提供同等信息，不为此恢复通用“详情”动作。Hotbar、权威预览、材料核算和提交区不随目录密度压缩。
+
+Character Build 的 density 只作用右侧候选网格：full 沿用 68px owned card，compact 沿用 48px 格、40px 图标、4px 间距；左侧纸娃娃与固定 11+4 槽、PaneChrome 内联候选操作组和调制提交区均不压缩。compact 隐藏的中性 preview badge 不得承载独占业务信息，选中、blocked、数量等仍由角标、ARIA、当前浏览摘要或共享 tooltip 表达。同一个持久化 density toggle DOM 在 storage chrome 与 Character Build 候选 PaneChrome 之间迁移；切换不发送业务消息，也不创建第二份偏好。full → compact → full 必须保持候选稳定顺序、选择和焦点。
 
 商城 compact 的加购动作采用 `24×24px` 透明 hitbox 包围 `16×16px` glyph；默认只保留低能量深色角标，hover / focus-visible 才点亮。按钮不得重新铺满实体格，也不得以缩小命中区换取视觉留白。空槽与有内容的 compact 卡共享同一固定宽度，禁止按内容收缩。
 
@@ -113,7 +135,7 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 - 所有可操作实体必须有包含名称与当前动作的 `aria-label`；仅写“加入”“查看”不合格。
 - focus ring 必须可见、与 skin 协调且不能只依赖浏览器默认蓝框；禁止全局 `outline:none` 后不给替代。
 
-模态框与二级页必须：设置可关联标题、把焦点移入、trap Tab/Shift+Tab、使背景 inert/不可聚焦、Esc 按域规则关闭、关闭后归还 opener。二级页不是普通 DOM `display` 切换；它与 modal 共用焦点栈和底层禁用语义。
+模态框与二级页必须：设置可关联标题、把焦点移入、trap Tab/Shift+Tab、使背景 inert/不可聚焦、Esc 按域规则关闭、关闭后归还 opener。二级页不是普通 DOM `display` 切换；它与 modal 共用焦点栈和底层禁用语义。Character Build 的域内 Esc 顺序固定为：纸娃娃放大预览 → 调制检视 modal → 内联“调制说明” → 未提交候选 → tuning/stats/storage → 面板关闭；一次只消费最上层。特别是检视 modal 的 Esc 只能关闭 modal 并把焦点还给调制装备图标；“调制说明”的 Esc 只收起说明并回到入口，下一次 Esc 才能退出 tuning。说明保持打开时必须随当前 operation 或键盘/指针 focus 更新，不提供 pin、`aria-pressed` 或持久化主题。
 
 ## 7. 动效语言
 
@@ -144,6 +166,7 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 - `workbench-focus.js`：栈式 `FocusScope`，统一初始焦点、Tab 环、Esc、opener restore 与祖先 `hidden/inert/aria-hidden` 排除；多层 scope 对底层 suppression 采用引用计数，乱序关闭也必须精确还原；
 - `workbench-primitives.js`：EntityTile、ItemCard、InteractionBroker、PointerDragController 等中性 UI/交互 primitive；
 - `workbench-components.js`：SecondaryPage、ChoiceGroup、CommitBar、OwnedInventoryPane；所有 open/close/destroy 回调都必须容忍重入和异常，并保持 DOM、focus stack 与业务 active 状态一致。并列 SecondaryPage 按打开顺序形成模态栈，只允许顶层页进入可访问树；关闭顶层恢复下层，关闭被覆盖下层不得在后续 unwind 中复活，焦点须沿 opener 链跳过已关闭页。
+- `workbench-inspection-viewport.js`：共享瞬态 inspection camera，只拥有 Canvas presentation transform、wheel/键盘/拖拽与控制按钮；不创建 renderer/Canvas，不持有领域 selection、authority 或持久偏好，deactivate/close 必须复位且 inactive 时不得消费输入。
 
 共享异步 tooltip 的核心状态固定为一个 pointer owner 和一个 keyboard owner，pointer 展示优先。共享层以 document capture 的 `pointerdown` / `keydown` 判定输入模态；focus 只有由键盘导航取得时才登记 keyboard owner，鼠标/笔点击造成的 DOM focus 必须撤权。pointer 离开后最多恢复仍连接、仍匹配真实 `document.activeElement` 且未被 suppression 的当前 keyboard owner；不保存 owner 历史栈，也不接受领域 `restoreOn…`、`focusMode` 等恢复策略开关。无 owner 的 `hide()` 是确定性 dismiss，显式点击详情继续独立使用 `showAnchored`，不得混入这两个被动说明 owner。
 
@@ -163,18 +186,21 @@ tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc �
 | `EntityTile/ItemGrid` | 几何、密度、状态 slots、键盘入口 | 物品 taxonomy 与价格 |
 | `OwnedInventoryPane` | pager/filter/sort/grid/selection 机械能力 | transfer/sell/discard 权限裁决 |
 | `AuthorityPreview/CommitBar` | 核算布局、阻断原因、单 CTA | token 校验和 commit |
+| `WorkbenchInspectionViewport` | Canvas-only 瞬态缩放/平移、全貌复位、输入与控制按钮 | renderer、领域预览状态、持久相机 |
 | `PanelRequestMux/Router` | callId、timeout、session 分发 | 各领域 envelope validator 与 reconcile 策略 |
 | `DisposableStack` | 幂等清理 | 业务状态 |
 
 共享层只抽“相同原因而变化”的部分。仅 DOM 相似、但 authority 或失败恢复不同的代码不得为了减少行数合并。
 
-物理拆分遵循“facade 只编排、presenter 只投影、runtime 才持有领域时序”：KShop 的 cart/catalog/owned/tooltip、Inventory Workbench 的 config/header/quick-transfer/owned-view、NPC 的 secondary pages、Skills 的 library/loadout/trainer/interactions/render/diagnostics、Equipment Tuning 的 model/render 均为显式依赖模块。它们不得自行拥有 Bridge listener、authority token 或跨面板 session；懒加载表必须先加载共享 runtime/生命周期/焦点/primitive/component，再加载 feature module，最后加载 facade。
+物理拆分遵循“facade 只编排、presenter 只投影、runtime 才持有领域时序”：KShop 的 cart/catalog/owned/tooltip、Inventory Workbench 的 config/header/quick-transfer/owned-view/storage controller、NPC 的 secondary pages、Skills 的 library/loadout/trainer/interactions/render/diagnostics、Equipment Tuning 的 model/render，以及 Character Build 的 session/view/controller/mutation/action-view/tuning/pose/stats-view/doll-preview 均为显式依赖模块。`character-build-doll-preview.js` 只编排 exact stage 的 SecondaryPage 迁移、底层 inert、Esc/opener restore，并把瞬态相机机械能力委托给 `workbench-inspection-viewport.js`；它不创建 Canvas/renderer，也不持有 Bridge/session/候选。各模块不得自行拥有第二个 Bridge response listener、跨面板 session 或不属于本模块的 authority token；懒加载表必须先加载共享 runtime/生命周期/焦点/primitive/component/inspection viewport，再加载 feature module，最后加载 facade。
 
 ## 10. CSS 级联与文件治理
 
-当前 `css/panels.css` 是纯 `@import` facade；历史样式按原顺序保存在 `panels/foundation-top.css`、`panels/foundation-rest.css`、`panels/features.css`，工作台样式物理拆为 `workbench/{tokens,core,inventory,skins,entities,crafting,equipment-inspector,skills,equipment-tuning,components,states,motion}.css`。`tools/lib/read-css-bundle.js` 以与浏览器相同的顺序递归解析，拒绝循环、越根和丢失的外部 import；静态审计必须扫描聚合结果而不是只扫 facade。`launcher/build.ps1` 必须调用 `tools/check-workbench-css-bundle.js`，因此 transitive import 与本地 `url()` 闭包也是 candidate build 的 fail-fast 门；checker 与 reader 本身属于 runtime build recipe 身份输入。
+当前 `css/panels.css` 是纯 `@import` facade；历史样式按原顺序保存在 `panels/foundation-top.css`、`panels/foundation-rest.css`、`panels/features.css`，工作台样式物理拆为 `workbench/{tokens,core,inventory,skins,entities,crafting,equipment-inspector,skills,equipment-tuning,components,character-build,character-build-stats,states,motion}.css`。`tools/lib/read-css-bundle.js` 以与浏览器相同的顺序递归解析，拒绝循环、越根和丢失的外部 import；静态审计必须扫描聚合结果而不是只扫 facade。`launcher/build.ps1` 必须调用 `tools/check-workbench-css-bundle.js`，因此 transitive import 与本地 `url()` 闭包也是 candidate build 的 fail-fast 门；checker 与 reader 本身属于 runtime build recipe 身份输入。
 
 新共享规则已使用 `workbench.components → workbench.states → workbench.motion` named layers；历史 feature/skin 仍暂时保持 unlayered，以避免物理拆分同时重排既有级联。下一阶段的目标层序仍为 `tokens → reset/base → shell → components → states → feature → skin → utilities`，但只有在跨面板截图与 computed style 对照稳定后才迁移旧规则。组件 selector 不得依赖面板祖先超过一层；skin 通过 token 或明确 `data-workbench-skin` 覆盖。`!important` 只允许暂存于迁移兼容层，并登记退出条件。
+
+`inventory-workbench` 根暂时保留历史类名 `.kshop-workbench`，因为现役 `skins.css` 仍以它作为共享工作台 skin selector 命名空间；实际面板身份由 `data-workbench-skin=inventory|character|shop` 与领域 controller 决定，该类不表示商城路由或商城 authority。只有另开 CSS selector migration、完成 atlas 与各领域 harness 的 computed-style 对照后才允许改名，不在角色构筑视觉收敛轮为语义洁癖扩大级联变更。
 
 新 selector、字号、transition、animation 和颜色必须通过静态治理门。当前历史债务先作为 warning 登记；warning 数只允许下降，达到约定预算后再升级为 error，禁止无说明增加。
 
@@ -195,6 +221,7 @@ node tools/run-workbench-visual-atlas.js
 node tools/run-workbench-visual-atlas.js --shot-dir=tmp/workbench-visual-atlas
 node tools/audit-workbench-ui.js --strict-warnings
 node tools/check-workbench-css-bundle.js
+node tools/test-workbench-inspection-viewport.js
 node tools/run-item-grid-visual-matrix.js --shot=tmp/item-grid-visual-matrix.png
 ```
 
@@ -202,7 +229,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 | 改动面 | 必跑 |
 |--------|------|
-| 共享 shell/entity/state/motion/CSS token | static audit + 48 场景 atlas + item-grid matrix |
+| 共享 shell/entity/state/motion/CSS token/inspection viewport | static audit + 48 场景 atlas + inspection viewport Node gate + item-grid matrix |
 | KShop / NPC / Crafting / Inventory / Skills / Tuning feature | 上述共享门 + 对应 feature harness |
 | focus/modal/secondary page | atlas focus/secondary 场景 + 键盘人工走查 |
 | reduced-motion/keyframes | atlas reduced 场景 + computed animation/transition 断言 |
@@ -210,7 +237,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 截图用于人眼比较，不单独构成像素级通过证据；字体、Edge/WebView2 版本和资源闭包稳定前不启用脆弱的全图像素 golden。atlas 证明共享合同，不能替代各领域真实数据、滚动极值、中文长文案和游戏内动效验收。
 
-当前自动基线为：atlas `48/48` 且 `0 error / 0 warning`；物品格矩阵 `17/17`；静态审计 `0 error / 0 warning`；共享 runtime/lifecycle/focus/focus-integration/primitives/components 与各拆分 presenter/model 的纯 Node 门全部通过。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
+共享稳定基线为 atlas `48/48`、物品格矩阵 `17/17` 与静态审计 `0 error / 0 warning`。角色构筑另有 workbench、领域控制器和 dressup combination 三条 browser runner；它们必须覆盖三个视口、`55:45` 且右栏不少于 `360px`、1024 下左内层 Canvas 至少 `300px`、槽区按内容收缩到约 `204px` 并贴右、三组槽位末格与左 pane 右缘对齐、四药剂同排且内层零横溢出、左 PaneChrome 同行浏览提示/放大入口/15 槽计数、routine 底部提示不占空间、候选 action group 最多三项（装备/调制/卸下，药剂为装入）且无通用详情/pin、完整 `aria-label`、仅适用时显示“调制”、1024 单行无溢出、无独立动作行和底部重复 rail、单一 density toggle DOM、候选 full/compact 往返零业务流量、stats 3×3 与抗性 4×2/2×4、power `data-scale=log10` / resistance linear、八 SVG `aria-hidden`、负值/缺值/全零降级、同一 Canvas/renderer identity、放大页 Canvas-only wheel/`+/-`/drag/arrows/full-view reset、关闭复位、嵌入态不吞输入、inert/focus/Esc、11+4 槽位、无 pin 且随 operation/focus 更新的“调制说明”、检视 modal/内联说明逐层 Esc 与权威写后刷新。case 总数随契约增加而变化，本文不冻结最终数字；验收只引用同一源码树的完整 runner 输出。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
 
 ## 12. 例外与变更流程
 
@@ -225,7 +252,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 | 动效 | micro/standard/structural/reject/busy/ambient token、禁止 `transition:all`、根级 reduced-motion 关闭非必要动画 | 只有出现新的状态语义才新增 keyframes；装饰性 ambient 不作为普通控件默认态 |
 | 可访问性 | EntityTile 键盘激活与完整动作命名、统一 focus-visible、FocusScope 的 trap/inert/Esc/opener restore、嵌套与重入异常回归 | 游戏内 WebView2 的完整键盘走查和系统缩放/输入法组合仍是人工门 |
 | 前端架构 | 单 Bridge response router、generation-aware mux、DisposableStack/PanelLifecycle、共享 primitive/component、领域 presenter/model 拆分、lazy/build 资产闭包审计 | 不把领域 authority/reconcile 合并到视觉组件；只有出现第二个相同变化原因才继续抽象 |
-| 文件治理 | `panels.css` 收敛为 15 行 facade；工作台 CSS 分域；主 facade 均低于当前行数预算（KShop 853、Inventory 949、NPC 971、Skills 1177、Tuning 717、Workbench 1000） | 历史 `panels/features.css` 与旧 unlayered cascade 继续分阶段迁移；不得与大规模视觉改版同轮重排 |
+| 文件治理 | `panels.css` 保持纯 `@import` facade；工作台 CSS 分域；逐模块阈值由 `tools/audit-workbench-ui.js` 单源维护，覆盖 Character Build 的 session/view/controller/mutation/action-view/tuning/pose/stats-view、storage controller 与 workbench facade | 不在本文复制易漂移的当前行数；不提高阈值、不压行伪造余量。父 facade 触线优先抽 header/close 协调，view 触线只按真实 reducer/filter 变化原因抽 model；历史 `panels/features.css` 与旧 unlayered cascade 继续分阶段迁移，不与大规模视觉改版同轮重排 |
 | 视觉验证 | 48 场景 atlas、17 项物品格矩阵、各工作台领域 browser harness（含滚动窗口保持/重置探针）、严格零 warning 静态门 | 字体/Edge/WebView2/资源闭包稳定前不启用全图像素 golden；自动 Edge 证据不替代游戏内动效与真实存档验收 |
 
 因此当前值得“现在完成”的债务是响应 listener、多实例生命周期、焦点栈、实体格密度、重复 presenter、超大 facade、CSS 物理边界和可执行验证门；这些已治理。旧样式全面 named-layer 化、像素 golden 与更细粒度 feature CSS 拆分属于下一阶段工程，不是以继续缩短文件为目的立即施工。

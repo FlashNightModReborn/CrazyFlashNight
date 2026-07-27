@@ -22,6 +22,7 @@ class FakeNode {
         this.hidden = false;
         this.inert = false;
         this.focusCalls = [];
+        this.listeners = {};
     }
     appendChild(node) {
         if (node.parentNode) node.parentNode.removeChild(node);
@@ -47,6 +48,25 @@ class FakeNode {
     }
     hasAttribute(name) { return Object.prototype.hasOwnProperty.call(this.attributes, name); }
     removeAttribute(name) { delete this.attributes[name]; }
+    addEventListener(type, handler, options) {
+        (this.listeners[type] = this.listeners[type] || []).push({handler, options});
+    }
+    removeEventListener(type, handler, options) {
+        const list = this.listeners[type] || [];
+        const index = list.findIndex(entry => entry.handler === handler && entry.options === options);
+        if (index >= 0) list.splice(index, 1);
+    }
+    dispatch(type, init) {
+        const event = Object.assign({
+            type,
+            target:this,
+            key:'',
+            preventDefault() { this.defaultPrevented = true; }
+        }, init || {});
+        (this.listeners[type] || []).slice().forEach(entry => entry.handler(event));
+        return event;
+    }
+    listenerCount(type) { return (this.listeners[type] || []).length; }
     focus(options) {
         this.focusCalls.push(options);
         this.ownerDocument.activeElement = this;
@@ -134,7 +154,111 @@ function assertNoActiveScopes() {
 }
 
 test('exports FocusScope helpers', () => {
-    assert.deepStrictEqual(Object.keys(Focus).sort(), ['FocusScope', 'debugActiveCount', 'focusables']);
+    assert.deepStrictEqual(Object.keys(Focus).sort(), ['FocusScope', 'RovingGridFocus', 'debugActiveCount', 'focusables']);
+    assertNoActiveScopes();
+});
+
+function rovingItem(document, key, tabindex) {
+    const item = document.createElement('button');
+    item.setAttribute('data-roving-key', key);
+    if (tabindex != null) item.setAttribute('tabindex', tabindex);
+    return item;
+}
+
+test('RovingGridFocus owns one tab stop and follows column-aware arrow keys', () => {
+    const {document, root} = fixture();
+    const items = ['a','b','c','d','e','f'].map(key => {
+        const item = rovingItem(document, key);
+        root.appendChild(item);
+        return item;
+    });
+    const changes = [];
+    const grid = new Focus.RovingGridFocus({
+        root,
+        document,
+        columns:3,
+        items:() => root.children,
+        onActiveChange:key => changes.push(key)
+    });
+    assert.deepStrictEqual(items.map(item => item.getAttribute('tabindex')), ['0','-1','-1','-1','-1','-1']);
+    items[0].focus();
+    root.dispatch('focusin', {target:items[0]});
+    const right = root.dispatch('keydown', {target:items[0], key:'ArrowRight'});
+    assert.strictEqual(right.defaultPrevented, true);
+    assert.strictEqual(document.activeElement, items[1]);
+    root.dispatch('keydown', {target:items[1], key:'ArrowDown'});
+    assert.strictEqual(document.activeElement, items[4]);
+    root.dispatch('keydown', {target:items[4], key:'ArrowLeft'});
+    assert.strictEqual(document.activeElement, items[3]);
+    root.dispatch('keydown', {target:items[3], key:'ArrowUp'});
+    assert.strictEqual(document.activeElement, items[0]);
+    root.dispatch('keydown', {target:items[0], key:'ArrowLeft'});
+    assert.strictEqual(document.activeElement, items[0], 'left edge must not wrap into another row');
+    assert.deepStrictEqual(changes, ['b','e','d','a']);
+    grid.destroy();
+    assertNoActiveScopes();
+});
+
+test('RovingGridFocus accepts explicit irregular adjacency without spatial inference', () => {
+    const {document, root} = fixture();
+    const head = rovingItem(document, 'head');
+    const neck = rovingItem(document, 'neck');
+    const body = rovingItem(document, 'body');
+    [head, neck, body].forEach(item => root.appendChild(item));
+    const grid = new Focus.RovingGridFocus({
+        root,
+        document,
+        items:() => root.children,
+        neighbors:{
+            head:{down:'body', right:'neck'},
+            neck:{left:'head', down:'body'},
+            body:{up:'head'}
+        }
+    });
+    grid.setActive('head');
+    root.dispatch('keydown', {target:head, key:'ArrowDown'});
+    assert.strictEqual(grid.getActiveKey(), 'body');
+    root.dispatch('keydown', {target:body, key:'ArrowUp'});
+    assert.strictEqual(grid.getActiveKey(), 'head');
+    root.dispatch('keydown', {target:head, key:'ArrowRight'});
+    assert.strictEqual(grid.getActiveKey(), 'neck');
+    root.dispatch('keydown', {target:neck, key:'ArrowRight'});
+    assert.strictEqual(grid.getActiveKey(), 'neck', 'missing explicit edge must stay put');
+    grid.destroy();
+    assertNoActiveScopes();
+});
+
+test('RovingGridFocus restores a stable key after DOM replacement and tears down exactly', () => {
+    const {document, root} = fixture();
+    const originalA = rovingItem(document, 'a', '5');
+    const originalB = rovingItem(document, 'b');
+    root.appendChild(originalA);
+    root.appendChild(originalB);
+    const grid = new Focus.RovingGridFocus({root, document, columns:2, items:() => root.children});
+    grid.setActive('b');
+    assert.strictEqual(document.activeElement, originalB);
+
+    root.removeChild(originalA);
+    root.removeChild(originalB);
+    const nextA = rovingItem(document, 'a');
+    const nextB = rovingItem(document, 'b');
+    root.appendChild(nextA);
+    root.appendChild(nextB);
+    assert.strictEqual(grid.refresh({focus:true}), true);
+    assert.strictEqual(grid.getActiveKey(), 'b');
+    assert.strictEqual(document.activeElement, nextB);
+    assert.strictEqual(nextB.getAttribute('tabindex'), '0');
+    assert.strictEqual(originalA.getAttribute('tabindex'), '5', 'detached nodes are restored during refresh');
+    assert.strictEqual(root.listenerCount('keydown'), 1);
+    assert.strictEqual(root.listenerCount('focusin'), 1);
+
+    assert.strictEqual(grid.destroy(), true);
+    assert.strictEqual(grid.destroy(), false);
+    assert.strictEqual(root.listenerCount('keydown'), 0);
+    assert.strictEqual(root.listenerCount('focusin'), 0);
+    assert.strictEqual(originalA.getAttribute('tabindex'), '5');
+    assert.strictEqual(nextA.hasAttribute('tabindex'), false);
+    assert.strictEqual(grid.refresh(), false);
     assertNoActiveScopes();
 });
 

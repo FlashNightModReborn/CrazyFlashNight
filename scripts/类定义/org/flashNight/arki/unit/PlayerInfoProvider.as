@@ -36,12 +36,10 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
     }
 
     /**
-     * 获得减伤率（格式化为百分比字符串）
-     * 综合考虑防御减伤和系数减伤（damageTakenMultiplier）
-     * @param unit 目标单位
-     * @return String 减伤率（如 "45.3%"）
+     * 获得减伤率原始百分比值（保留一位小数）。
+     * 综合考虑防御减伤和系数减伤（damageTakenMultiplier）。
      */
-    public static function getDamageReductionRate(unit:MovieClip):String {
+    public static function getDamageReductionValue(unit:MovieClip):Number {
         // 防御减伤系数
         var defenseDamageRatio:Number = DamageResistanceHandler.defenseDamageRatio(unit.防御力);
 
@@ -56,7 +54,12 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
 
         // 减伤率 = 1 - 综合伤害系数
         var reductionRate:Number = (1 - totalDamageRatio) * 100;
-        return Math.floor(reductionRate * 10) / 10 + "%"; // 保留一位小数
+        return Math.floor(reductionRate * 10) / 10;
+    }
+
+    /** 获得 legacy 百分比字符串（如 "45.3%"）。 */
+    public static function getDamageReductionRate(unit:MovieClip):String {
+        return getDamageReductionValue(unit) + "%";
     }
 
     /**
@@ -68,21 +71,20 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         return Math.floor(unit.基本防御力);
     }
 
-    /**
-     * 获得装备防御（包含加成显示）
-     * @param unit 目标单位
-     * @return String/Number 装备防御（如 "100 + 20" 或 100）
-     */
-    public static function getEquipmentDefense(unit:MovieClip) {
-        var baseDefense:Number = Math.floor(unit.装备防御力);
-        var bonus:Number = unit.装备防御力加成 ? Math.floor(unit.装备防御力加成) : 0;
+    /** 获得装备防御的原始基础值。 */
+    public static function getEquipmentDefenseBase(unit:MovieClip):Number {
+        return Math.floor(unit.装备防御力);
+    }
 
-        if (bonus > 0) {
-            return baseDefense + " + " + bonus;
-        } else if (bonus < 0) {
-            return baseDefense + " " + bonus;
-        }
-        return baseDefense;
+    /** 获得装备防御的原始加成值。 */
+    public static function getEquipmentDefenseBonus(unit:MovieClip):Number {
+        return unit.装备防御力加成 ? Math.floor(unit.装备防御力加成) : 0;
+    }
+
+    /** 获得 legacy 装备防御显示（如 "100 + 20" 或 100）。 */
+    public static function getEquipmentDefense(unit:MovieClip) {
+        return formatEquipmentDefenseValues(
+            getEquipmentDefenseBase(unit), getEquipmentDefenseBonus(unit));
     }
 
     // ========================================
@@ -138,32 +140,26 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         return Math.floor(unit.命中率 * 10);
     }
 
-    /**
-     * 获得速度（带负重颜色标识）
-     * @param unit 目标单位
-     * @return String 速度字符串（可能包含HTML颜色标签）
-     */
-    public static function getMovementSpeed(unit:MovieClip):String {
-        var speedValue:Number = Math.floor(unit.行走X速度 * 20) / 10;
-        var speedText:String = speedValue + "m/s";
+    /** 获得速度原始值（单位 m/s，保留一位小数）。 */
+    public static function getMovementSpeedValue(unit:MovieClip):Number {
+        return Math.floor(unit.行走X速度 * 20) / 10;
+    }
 
-        // 根据负重情况添加颜色
-        var baseEncumbrance:Number = UnitUtil.getBaseEncumbrance(unit.等级);
+    /** 获得只含领域语义、不含颜色的负重状态。 */
+    public static function getEncumbranceState(unit:MovieClip):String {
         var currentWeight:Number = unit.重量;
-        var lightThreshold:Number = baseEncumbrance;
-        var heavyThreshold:Number = baseEncumbrance * 2;
+        var lightThreshold:Number = getBaseEncumbranceValue(unit);
+        var heavyThreshold:Number = getMediumHeavyEncumbranceValue(unit);
 
-        // 判断负重状态并添加HTML颜色
-        if (currentWeight < lightThreshold) {
-            // 低负重增益 - 绿色
-            return "<font color='#00FF00'>" + speedText + "</font>";
-        } else if (currentWeight > heavyThreshold) {
-            // 高负重拖累 - 红色
-            return "<font color='#FF0000'>" + speedText + "</font>";
-        } else {
-            // 标准负重 - 白色（默认颜色）
-            return speedText;
-        }
+        if (currentWeight < lightThreshold) return "light";
+        if (currentWeight > heavyThreshold) return "heavy";
+        return "normal";
+    }
+
+    /** 获得带负重颜色标识的 legacy 速度字符串。 */
+    public static function getMovementSpeed(unit:MovieClip):String {
+        return formatMovementSpeedValues(
+            getMovementSpeedValue(unit), getEncumbranceState(unit));
     }
 
     // ========================================
@@ -276,26 +272,24 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         return String(Math.floor(value)); // 修复：转换为字符串类型
     }
 
-    /**
-     * 获得韧性上限
-     * @param unit 目标单位
-     * @return String 韧性上限（可能带k单位）
-     */
-    public static function getTenacityLimit(unit:MovieClip):String {
-        var tenacityLimit:Number = unit.韧性系数 * unit.hp / DamageResistanceHandler.defenseDamageRatio(unit.防御力 / 1000);
-        return formatLargeNumber(tenacityLimit);
+    /** 获得未经 k 单位格式化的韧性上限。 */
+    public static function getTenacityLimitValue(unit:MovieClip):Number {
+        return unit.韧性系数 * unit.hp
+            / DamageResistanceHandler.defenseDamageRatio(unit.防御力 / 1000);
     }
 
-    /**
-     * 获得踉跄韧性
-     * @param unit 目标单位
-     * @return String 踉跄韧性阈值（可能带k单位）
-     */
-    public static function getStaggerTenacity(unit:MovieClip):String {
+    public static function getTenacityLimit(unit:MovieClip):String {
+        return formatLargeNumber(getTenacityLimitValue(unit));
+    }
+
+    /** 获得未经 k 单位格式化的踉跄韧性。 */
+    public static function getStaggerTenacityValue(unit:MovieClip):Number {
         // 踉跄判定阈值 = 韧性上限 / 2 / 躲闪率
-        var tenacityLimit:Number = unit.韧性系数 * unit.hp / DamageResistanceHandler.defenseDamageRatio(unit.防御力 / 1000);
-        var staggerTenacity:Number = tenacityLimit / 2 / unit.躲闪率;
-        return formatLargeNumber(staggerTenacity);
+        return getTenacityLimitValue(unit) / 2 / unit.躲闪率;
+    }
+
+    public static function getStaggerTenacity(unit:MovieClip):String {
+        return formatLargeNumber(getStaggerTenacityValue(unit));
     }
 
     /**
@@ -513,13 +507,19 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
     // 角色信息
     // ========================================
 
-    /**
-     * 获得身高体重（合并显示）
-     * @param unit 目标单位
-     * @return String 身高体重字符串（如 "175cm/70kg"）
-     */
+    /** 获得身高原始值。 */
+    public static function getHeightValue(unit:MovieClip):Number {
+        return Number(_root.身高);
+    }
+
+    /** 获得体重原始值。 */
+    public static function getBodyWeightValue(unit:MovieClip):Number {
+        return Number(unit.体重);
+    }
+
+    /** 获得 legacy 身高体重字符串（如 "175cm/70kg"）。 */
     public static function getHeightAndWeight(unit:MovieClip):String {
-        return _root.身高 + "cm/" + unit.体重 + "kg";
+        return getHeightValue(unit) + "cm/" + getBodyWeightValue(unit) + "kg";
     }
 
     /**
@@ -527,12 +527,16 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
      * @param unit 目标单位（暂未使用，为未来扩展预留）
      * @return String 总杀敌数字符串
      */
-    public static function getKillCount(unit:MovieClip):String {
+    public static function getKillCountValue(unit:MovieClip) {
         // 从全局击杀统计获取总数
         if (_root.killStats && _root.killStats.total != undefined) {
-            return String(_root.killStats.total);
+            return _root.killStats.total;
         }
-        return "0";
+        return 0;
+    }
+
+    public static function getKillCount(unit:MovieClip):String {
+        return String(getKillCountValue(unit));
     }
 
     /**
@@ -545,22 +549,255 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
     }
 
     /**
-     * 获得装备重量
-     * @param unit 目标单位
-     * @return String 装备重量字符串（如 "50kg"）
+     * 将现役称号的受限 font 子集投成纯文本 + 净化 spans。
+     * 不认识、嵌套或未闭合的标签整体降为纯文本，绝不透传原始 HTML。
      */
-    public static function getEquipmentWeight(unit:MovieClip):String {
-        return unit.重量 + "kg";
+    public static function getTitleProjection(unit:MovieClip):Object {
+        var title = getTitle(unit);
+        return parseTitleProjection(
+            title == null || title == undefined ? "" : String(title));
     }
 
-    /**
-     * 获得经验值（格式化为带颜色的HTML字符串）
-     * @return String 经验值和等级的HTML格式字符串
-     */
-    public static function getExperience():String {
+    private static function parseTitleProjection(input:String):Object {
+        var source:String = input == null ? "" : String(input);
+        var spans:Array = [];
+        var cursor:Number = 0;
+        var style:Object = null;
+
+        while (cursor < source.length) {
+            var tagStart:Number = source.indexOf("<", cursor);
+            if (tagStart < 0) {
+                appendTitleSpan(spans, source.substring(cursor), style);
+                cursor = source.length;
+                break;
+            }
+
+            appendTitleSpan(
+                spans, source.substring(cursor, tagStart), style);
+            var tagEnd:Number = source.indexOf(">", tagStart + 1);
+            if (tagEnd < 0) return plainTitleProjection(source);
+
+            var tagBody:String =
+                trimAsciiWhitespace(source.substring(tagStart + 1, tagEnd));
+            var lowerTag:String = tagBody.toLowerCase();
+            if (lowerTag == "/font") {
+                if (style == null) return plainTitleProjection(source);
+                style = null;
+            } else if (lowerTag.substring(0, 4) == "font"
+                       && lowerTag.length > 4
+                       && isAsciiWhitespace(lowerTag.charCodeAt(4))) {
+                if (style != null) return plainTitleProjection(source);
+                style = parseFontAttributes(tagBody.substring(4));
+                if (style == null) return plainTitleProjection(source);
+            } else {
+                return plainTitleProjection(source);
+            }
+            cursor = tagEnd + 1;
+        }
+
+        if (style != null) return plainTitleProjection(source);
+        return {text:joinTitleSpanText(spans), spans:spans};
+    }
+
+    private static function parseFontAttributes(source:String):Object {
+        var result:Object = {};
+        var hasColor:Boolean = false;
+        var hasSize:Boolean = false;
+        var cursor:Number = 0;
+
+        while (cursor < source.length) {
+            while (cursor < source.length
+                   && isAsciiWhitespace(source.charCodeAt(cursor))) {
+                cursor++;
+            }
+            if (cursor >= source.length) break;
+
+            var nameStart:Number = cursor;
+            while (cursor < source.length) {
+                var nameCode:Number = source.charCodeAt(cursor);
+                if ((nameCode >= 65 && nameCode <= 90)
+                    || (nameCode >= 97 && nameCode <= 122)) {
+                    cursor++;
+                } else {
+                    break;
+                }
+            }
+            if (cursor == nameStart) return null;
+            var name:String =
+                source.substring(nameStart, cursor).toLowerCase();
+
+            while (cursor < source.length
+                   && isAsciiWhitespace(source.charCodeAt(cursor))) {
+                cursor++;
+            }
+            if (source.charAt(cursor) != "=") return null;
+            cursor++;
+            while (cursor < source.length
+                   && isAsciiWhitespace(source.charCodeAt(cursor))) {
+                cursor++;
+            }
+
+            var quote:String = source.charAt(cursor);
+            if (quote != "'" && quote != "\"") return null;
+            cursor++;
+            var valueEnd:Number = source.indexOf(quote, cursor);
+            if (valueEnd < 0) return null;
+            var value:String = source.substring(cursor, valueEnd);
+            cursor = valueEnd + 1;
+
+            if (name == "color" && !hasColor && isSafeTitleColor(value)) {
+                result.color = value.toUpperCase();
+                hasColor = true;
+            } else if (name == "size" && !hasSize
+                       && isSafeTitleSize(value)) {
+                result.size = Number(value);
+                hasSize = true;
+            } else {
+                return null;
+            }
+        }
+
+        return hasColor || hasSize ? result : null;
+    }
+
+    private static function isSafeTitleColor(value:String):Boolean {
+        if (value.length != 7 || value.charAt(0) != "#") return false;
+        for (var i:Number = 1; i < 7; i++) {
+            var code:Number = value.charCodeAt(i);
+            var isHex:Boolean = (code >= 48 && code <= 57)
+                || (code >= 65 && code <= 70)
+                || (code >= 97 && code <= 102);
+            if (!isHex) return false;
+        }
+        return true;
+    }
+
+    private static function isSafeTitleSize(value:String):Boolean {
+        if (value.length == 0) return false;
+        for (var i:Number = 0; i < value.length; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (code < 48 || code > 57) return false;
+        }
+        var size:Number = Number(value);
+        return size >= 1 && size <= 72 && Math.floor(size) == size;
+    }
+
+    private static function appendTitleSpan(spans:Array, text:String,
+                                            style:Object):Void {
+        if (text.length == 0) return;
+        var color:String = style && style.color ? String(style.color) : null;
+        var size:Number = style && style.size ? Number(style.size) : 0;
+        var previous:Object =
+            spans.length > 0 ? spans[spans.length - 1] : null;
+        if (previous && String(previous.color || "") == String(color || "")
+            && Number(previous.size || 0) == size) {
+            previous.text += text;
+            return;
+        }
+
+        var span:Object = {text:text};
+        if (color != null) span.color = color;
+        if (size > 0) span.size = size;
+        spans.push(span);
+    }
+
+    private static function joinTitleSpanText(spans:Array):String {
+        var parts:Array = [];
+        for (var i:Number = 0; i < spans.length; i++) {
+            parts.push(spans[i].text);
+        }
+        return parts.join("");
+    }
+
+    private static function plainTitleProjection(source:String):Object {
+        var parts:Array = [];
+        var cursor:Number = 0;
+        while (cursor < source.length) {
+            var tagStart:Number = source.indexOf("<", cursor);
+            if (tagStart < 0) {
+                parts.push(source.substring(cursor).split(">").join(""));
+                break;
+            }
+            parts.push(
+                source.substring(cursor, tagStart).split(">").join(""));
+            var tagEnd:Number = source.indexOf(">", tagStart + 1);
+            if (tagEnd < 0) {
+                parts.push(source.substring(tagStart + 1).split(">").join(""));
+                break;
+            }
+            cursor = tagEnd + 1;
+        }
+        var text:String = parts.join("");
+        var spans:Array = text.length > 0 ? [{text:text}] : [];
+        return {text:text, spans:spans};
+    }
+
+    private static function trimAsciiWhitespace(value:String):String {
+        var start:Number = 0;
+        var end:Number = value.length;
+        while (start < end && isAsciiWhitespace(value.charCodeAt(start))) {
+            start++;
+        }
+        while (end > start && isAsciiWhitespace(value.charCodeAt(end - 1))) {
+            end--;
+        }
+        return value.substring(start, end);
+    }
+
+    private static function isAsciiWhitespace(code:Number):Boolean {
+        return code == 32 || code == 9 || code == 10 || code == 13;
+    }
+
+    /** 获得装备重量原始值。 */
+    public static function getEquipmentWeightValue(unit:MovieClip):Number {
+        return Number(unit.重量);
+    }
+
+    /** 获得 legacy 装备重量字符串（如 "50kg"）。 */
+    public static function getEquipmentWeight(unit:MovieClip):String {
+        return getEquipmentWeightValue(unit) + "kg";
+    }
+
+    /** 获得等级原始值。 */
+    public static function getLevelValue():Number {
+        return Number(_root.等级);
+    }
+
+    /** 获得经验值原始值。 */
+    public static function getExperienceValue():Number {
+        return Number(_root.经验值);
+    }
+
+    private static function formatExperience(level:Number, experience:Number):String {
         // 返回 "等级 + 经验值" 组合信息，节省UI空间
         // 等级显示为绿色，经验值显示为青色（与MP相同的颜色），方括号显示为浅灰色
-        return "<font color='#8E9599'>[</font><font color='#00FF00'> Lv." + String(_root.等级) + "</font> <font color='#8E9599'>]</font>  ·  <font color='#8E9599'>[</font> <font color='#66FFFF'>" + String(_root.经验值) + "</font> <font color='#8E9599'>]</font>";
+        return "<font color='#8E9599'>[</font><font color='#00FF00'> Lv." + String(level) + "</font> <font color='#8E9599'>]</font>  ·  <font color='#8E9599'>[</font> <font color='#66FFFF'>" + String(experience) + "</font> <font color='#8E9599'>]</font>";
+    }
+
+    /** 获得 legacy 等级/经验值 HTML 字符串。 */
+    public static function getExperience():String {
+        return formatExperience(getLevelValue(), getExperienceValue());
+    }
+
+    public static function getBaseEncumbranceValue(unit:MovieClip):Number {
+        return UnitUtil.getBaseEncumbrance(unit.等级);
+    }
+
+    public static function getMediumHeavyEncumbranceValue(unit:MovieClip):Number {
+        return getBaseEncumbranceValue(unit) * 2;
+    }
+
+    public static function getHeavyEncumbranceValue(unit:MovieClip):Number {
+        return getBaseEncumbranceValue(unit) * 4;
+    }
+
+    public static function getEncumbranceRatio(unit:MovieClip):Number {
+        var baseEncumbrance:Number = getBaseEncumbranceValue(unit);
+        var weightRatio:Number =
+            getEquipmentWeightValue(unit) / baseEncumbrance / 4;
+        if (weightRatio < 0) weightRatio = 0;
+        if (weightRatio > 1) weightRatio = 1;
+        return weightRatio;
     }
 
     /**
@@ -569,14 +806,11 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
      * @param unit 目标单位
      */
     public static function displayEncumbranceStatus(target:MovieClip, unit:MovieClip):Void {
-        var baseEncumbrance:Number = UnitUtil.getBaseEncumbrance(unit.等级);
+        var baseEncumbrance:Number = getBaseEncumbranceValue(unit);
         target.轻甲_中甲重量 = baseEncumbrance + "kg";
-        target.中甲_重甲重量 = baseEncumbrance * 2 + "kg";
-        target.重甲重量 = baseEncumbrance * 4 + "kg";
-        var weightRatio:Number = unit.重量 / baseEncumbrance / 4;
-        if (weightRatio < 0) weightRatio = 0;
-        if (weightRatio > 1) weightRatio = 1;
-        target.负重滑块._x = 20 + weightRatio * 240;
+        target.中甲_重甲重量 = getMediumHeavyEncumbranceValue(unit) + "kg";
+        target.重甲重量 = getHeavyEncumbranceValue(unit) + "kg";
+        target.负重滑块._x = 20 + getEncumbranceRatio(unit) * 240;
     }
 
     // ========================================
@@ -584,30 +818,211 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
     // ========================================
 
     /**
-     * 获取人物信息（主入口函数）
-     * 将所有计算好的信息填充到目标UI对象上
-     *
-     * @param target UI目标MovieClip，信息将被设置到该对象的属性上
+     * 返回不含 MovieClip 字段名、HTML 或布局坐标的只读人物信息投影。
+     * 每次调用都返回新对象；缺少 hero 或存在不可序列化数值时 fail-closed。
      */
-    public static function populatePlayerInfo(target:MovieClip):Void {
-        var heroUnit:MovieClip = TargetCacheManager.findHero();
+    public static function getPlayerInfoSnapshot():Object {
+        return org.flashNight.arki.unit.PlayerInfoSnapshotBuilder.build(
+            TargetCacheManager.findHero());
+    }
+
+    private static function indexSnapshotValues(snapshot:Object):Object {
+        var values:Object = {};
+        var groups:Array = snapshot.groups;
+        for (var i:Number = 0; i < groups.length; i++) {
+            var rows:Array = groups[i].rows;
+            for (var j:Number = 0; j < rows.length; j++) {
+                var row:Object = rows[j];
+                values[row.key] = row.value;
+            }
+        }
+        return values;
+    }
+
+    private static function findSnapshotRow(snapshot:Object, key:String):Object {
+        var groups:Array = snapshot.groups;
+        for (var i:Number = 0; i < groups.length; i++) {
+            var rows:Array = groups[i].rows;
+            for (var j:Number = 0; j < rows.length; j++) {
+                if (rows[j].key == key) return rows[j];
+            }
+        }
+        return null;
+    }
+
+    private static function formatEquipmentDefenseValues(baseDefense:Number, bonus:Number) {
+        if (bonus > 0) return baseDefense + " + " + bonus;
+        if (bonus < 0) return baseDefense + " " + bonus;
+        return baseDefense;
+    }
+
+    private static function formatMovementSpeedValues(speedValue:Number,
+                                                       encumbranceState:String):String {
+        var speedText:String = speedValue + "m/s";
+        if (encumbranceState == "light") {
+            return "<font color='#00FF00'>" + speedText + "</font>";
+        }
+        if (encumbranceState == "heavy") {
+            return "<font color='#FF0000'>" + speedText + "</font>";
+        }
+        return speedText;
+    }
+
+    private static function formatTitleRow(row:Object):String {
+        var plainText:String = row ? String(row.value) : "";
+        if (!row || !(row.spans instanceof Array)) {
+            return escapeLegacyHtmlText(plainText);
+        }
+
+        var output:Array = [];
+        var joined:Array = [];
+        for (var i:Number = 0; i < row.spans.length; i++) {
+            var span:Object = row.spans[i];
+            if (!span || typeof(span.text) != "string") {
+                return escapeLegacyHtmlText(plainText);
+            }
+            var text:String = String(span.text);
+            joined.push(text);
+            var color:String =
+                span.color == undefined ? null : String(span.color);
+            var size:Number =
+                span.size == undefined ? 0 : Number(span.size);
+            if ((color != null && !isSafeTitleColor(color))
+                || (span.size != undefined
+                    && (!isSafeTitleSize(String(span.size))
+                        || Math.floor(size) != size))) {
+                return escapeLegacyHtmlText(plainText);
+            }
+
+            var escaped:String = escapeLegacyHtmlText(text);
+            if (color == null && size == 0) {
+                output.push(escaped);
+            } else {
+                var openTag:String = "<font";
+                if (color != null) {
+                    openTag += " color='" + color.toUpperCase() + "'";
+                }
+                if (size > 0) openTag += " size='" + size + "'";
+                output.push(openTag + ">" + escaped + "</font>");
+            }
+        }
+        if (joined.join("") != plainText) {
+            return escapeLegacyHtmlText(plainText);
+        }
+        return output.join("");
+    }
+
+    private static function escapeLegacyHtmlText(value:String):String {
+        var output:Array = [];
+        for (var i:Number = 0; i < value.length; i++) {
+            var ch:String = value.charAt(i);
+            if (ch == "&") output.push("&amp;");
+            else if (ch == "<") output.push("&lt;");
+            else if (ch == ">") output.push("&gt;");
+            else output.push(ch);
+        }
+        return output.join("");
+    }
+
+    /**
+     * Legacy MovieClip renderer。赋值顺序与旧 populatePlayerInfo 保持一致；
+     * 富文本与滑块坐标只在此适配层生成，不进入 snapshot。
+     */
+    private static function renderPlayerInfoSnapshot(target:MovieClip, snapshot:Object):Void {
+        if (!target || !snapshot || snapshot.stateHealth != "ok") return;
+        var values:Object = indexSnapshotValues(snapshot);
 
         // ========== 基础信息 ==========
-        target.身高体重 = getHeightAndWeight(heroUnit);
-        target.杀敌数 = getKillCount(heroUnit);
-        target.称号 = getTitle(heroUnit);
-        target.经验值 = getExperience();
+        target.身高体重 = values.height + "cm/" + values.bodyWeight + "kg";
+        target.杀敌数 = String(values.killCount);
+        target.称号 = formatTitleRow(findSnapshotRow(snapshot, "title"));
+        target.经验值 = formatExperience(values.level, values.experience);
 
         // ========== 负重系统 ==========
+        target.装备重量 = values.equipmentWeight + "kg";
+        target.轻甲_中甲重量 = values.lightMediumThreshold + "kg";
+        target.中甲_重甲重量 = values.mediumHeavyThreshold + "kg";
+        target.重甲重量 = values.heavyThreshold + "kg";
+        target.负重滑块._x = 20 + values.weightRatio * 240;
+
+        // ========== 生命与能量 ==========
+        target.最大HP = values.maxHp;
+        target.最大MP = values.maxMp;
+        target.内力 = values.innerPower;
+
+        // ========== 魔法抗性 ==========
+        target.能量抗性 = values.energyResistance;
+        target.热抗性 = values.heatResistance;
+        target.蚀抗性 = values.corrosionResistance;
+        target.毒抗性 = values.poisonResistance;
+        target.冷抗性 = values.coldResistance;
+        target.电抗性 = values.lightningResistance;
+        target.波抗性 = values.waveResistance;
+        target.冲抗性 = values.impactResistance;
+
+        // ========== 防御系统 ==========
+        target.综合防御力 = values.totalDefense;
+        target.基本防御 = values.baseDefense;
+        target.装备防御 = formatEquipmentDefenseValues(
+            values.equipmentDefense, values.equipmentDefenseBonus);
+        target.减伤率 = values.damageReduction + "%";
+
+        // ========== 韧性系统 ==========
+        target.韧性上限 = formatLargeNumber(values.tenacityLimit);
+        target.踉跄韧性 = formatLargeNumber(values.staggerTenacity);
+        target.拆挡能力 = values.guardBreakAbility;
+        target.坚稳能力 = values.stabilityAbility;
+
+        // ========== 闪避与命中 ==========
+        target.命中力 = values.accuracy;
+        target.闪避负荷 = values.evasionCost;
+        target.懒闪避 = values.lazyDodge;
+
+        // ========== 硬直与移动 ==========
+        target.速度 = formatMovementSpeedValues(
+            values.movementSpeed, values.encumbranceState);
+
+        // ========== 伤害加成 ==========
+        target.伤害加成 = values.damageBonus;
+        target.空手加成 = values.unarmedBonus;
+        target.空手攻击力 = values.unarmedAttack;
+        target.冷兵加成 = values.meleeBonus;
+        target.枪械加成 = values.firearmBonus;
+
+        // ========== 武器威力 ==========
+        target.空手威力 = values.unarmedPower;
+        target.冷兵威力 = values.meleePower;
+        target.主手威力 = values.mainHandPower;
+        target.副手威力 = values.offHandPower;
+        target.长枪威力 = values.riflePower;
+        target.手雷威力 = values.grenadePower;
+    }
+
+    /**
+     * 结构化 Web snapshot 对任一非法 row 继续 fail-closed；旧 MovieClip 则保持
+     * 历史逐字段刷新语义，避免一个坏字段把整张现役个人信息页冻结。这里仍只调用
+     * 既有 getter，不建立第二套人物属性公式；称号继续走受限 spans 净化。
+     */
+    private static function renderDegradedLegacyPlayerInfo(
+        target:MovieClip, heroUnit:MovieClip):Void {
+        if (!target || !heroUnit) return;
+        var titleProjection:Object = getTitleProjection(heroUnit);
+
+        target.身高体重 = getHeightAndWeight(heroUnit);
+        target.杀敌数 = getKillCount(heroUnit);
+        target.称号 = formatTitleRow({
+            value:titleProjection.text,
+            spans:titleProjection.spans
+        });
+        target.经验值 = getExperience();
+
         target.装备重量 = getEquipmentWeight(heroUnit);
         displayEncumbranceStatus(target, heroUnit);
 
-        // ========== 生命与能量 ==========
         target.最大HP = getMaxHP(heroUnit);
         target.最大MP = getMaxMP(heroUnit);
         target.内力 = getInnerPower(heroUnit);
 
-        // ========== 魔法抗性 ==========
         target.能量抗性 = getEnergyResistance(heroUnit);
         target.热抗性 = getHeatResistance(heroUnit);
         target.蚀抗性 = getCorrosionResistance(heroUnit);
@@ -617,40 +1032,55 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         target.波抗性 = getWaveResistance(heroUnit);
         target.冲抗性 = getImpactResistance(heroUnit);
 
-        // ========== 防御系统 ==========
         target.综合防御力 = getTotalDefense(heroUnit);
         target.基本防御 = getBaseDefense(heroUnit);
         target.装备防御 = getEquipmentDefense(heroUnit);
         target.减伤率 = getDamageReductionRate(heroUnit);
 
-        // ========== 韧性系统 ==========
         target.韧性上限 = getTenacityLimit(heroUnit);
         target.踉跄韧性 = getStaggerTenacity(heroUnit);
         target.拆挡能力 = getGuardBreakAbility(heroUnit);
         target.坚稳能力 = getStabilityAbility(heroUnit);
 
-        // ========== 闪避与命中 ==========
         target.命中力 = getAccuracy(heroUnit);
         target.闪避负荷 = getEvasionCost(heroUnit);
         target.懒闪避 = getLazyDodge(heroUnit);
-
-        // ========== 硬直与移动 ==========
         target.速度 = getMovementSpeed(heroUnit);
 
-        // ========== 伤害加成 ==========
         target.伤害加成 = getDamageBonus(heroUnit);
         target.空手加成 = getUnarmedBonus(heroUnit);
         target.空手攻击力 = getUnarmedAttack(heroUnit);
         target.冷兵加成 = getMeleeBonus(heroUnit);
         target.枪械加成 = getFirearmBonus(heroUnit);
 
-        // ========== 武器威力 ==========
         target.空手威力 = getUnarmedPower(heroUnit);
         target.冷兵威力 = getMeleePower(heroUnit);
         target.主手威力 = getMainHandPower(heroUnit);
         target.副手威力 = getOffHandPower(heroUnit);
         target.长枪威力 = getRiflePower(heroUnit);
         target.手雷威力 = getGrenadePower(heroUnit);
+    }
+
+    /**
+     * 获取人物信息（主入口函数）
+     * 将结构化 snapshot 适配到旧 UI MovieClip。
+     *
+     * @param target UI目标MovieClip，信息将被设置到该对象的属性上
+     */
+    public static function populatePlayerInfo(target:MovieClip):Void {
+        var heroUnit:MovieClip = TargetCacheManager.findHero();
+        var snapshot:Object =
+            org.flashNight.arki.unit.PlayerInfoSnapshotBuilder.build(heroUnit);
+        if (snapshot.stateHealth == "ok") {
+            renderPlayerInfoSnapshot(target, snapshot);
+            return;
+        }
+        var reason:String = snapshot.diagnostics instanceof Array
+            && snapshot.diagnostics.length > 0
+            ? String(snapshot.diagnostics[0]) : "";
+        if (heroUnit && reason.indexOf("invalid_row:") == 0) {
+            renderDegradedLegacyPlayerInfo(target, heroUnit);
+        }
     }
 
     // ========================================

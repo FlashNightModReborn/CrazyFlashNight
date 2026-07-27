@@ -226,6 +226,8 @@ class org.flashNight.neur.Server.SaveManager {
     private var _dispatchToken;
     private static var DEBOUNCE_MS:Number = 300;
     private var _saveInFlight:Boolean = false; // 重入护栏
+    private var _beforeLocalCommitHookForTests:Function = null;
+    private var _flushResultOverrideForTests:Object = undefined;
 
     // ── Protocol 2 (launcher 存档决议) ──
     // 握手回调把 _root._launcher* 写入, preload() 一次性消费并转存到实例字段后 delete.
@@ -304,6 +306,36 @@ class org.flashNight.neur.Server.SaveManager {
         _c4WarnedOnce = false;
     }
 
+    /**
+     * 存盘边界测试夹具：生产代码不得调用。
+     * saveInFlight 用于覆盖重入拒绝，beforeLocalCommit 用于在 SharedObject.flush 前注入异常。
+     * flushResult 用于覆盖 SharedObject.flush 的 false / pending 结果；undefined 恢复真实 flush。
+     * 仅改写 config 显式携带的字段，便于测试观察 finally 是否自行复位 in-flight。
+     */
+    public function _configureSaveFlowForTest(config:Object):Void {
+        if (config == null) return;
+        if (config.hasOwnProperty("saveInFlight")) {
+            _saveInFlight = (config.saveInFlight === true);
+        }
+        if (config.hasOwnProperty("beforeLocalCommit")) {
+            _beforeLocalCommitHookForTests =
+                (typeof config.beforeLocalCommit == "function")
+                ? config.beforeLocalCommit
+                : null;
+        }
+        if (config.hasOwnProperty("flushResult")) {
+            _flushResultOverrideForTests = config.flushResult;
+        }
+        if (config.resetDirty === true) {
+            _dirtyMark = false;
+        }
+    }
+
+    /** 存盘 debounce 测试夹具：生产代码不得调用。 */
+    public function _triggerDebounceForTest():Void {
+        _onDebounceFire();
+    }
+
     // ==================== 预取管理 ====================
 
     public function getPrefetchStatus():Object {
@@ -377,8 +409,18 @@ class org.flashNight.neur.Server.SaveManager {
         _dispatchToken = undefined;
         if (_saveInFlight) return;
         _saveInFlight = true;
-        var ok:Boolean = _doSaveAll();
-        _saveInFlight = false;
+        try {
+            _doSaveAll();
+        } catch (saveError) {
+            // 后台 saveAll 同样必须结束通用存盘指示；保留异常供既有诊断链处理。
+            try {
+                FrameBroadcaster.pushUiState("sv:3");
+            } catch (uiStateError) {
+            }
+            throw saveError;
+        } finally {
+            _saveInFlight = false;
+        }
     }
 
     /**
@@ -387,27 +429,53 @@ class org.flashNight.neur.Server.SaveManager {
      * SceneChanged hook 也调本入口（保证 pending 在 deactivateAll 前落盘）。
      */
     public function flushNow():Boolean {
-        if (_root.允许存档 !== true) return false;
+        // 每次同步尝试都先推进到 Saving。否则连续两次早拒绝只会产生相同 sv:3，
+        // Host/Web 的状态去重会吞掉第二次失败，令已按“重试”复位的 UI 永久卡在 Saving。
+        FrameBroadcaster.pushUiState("sv:1");
+        if (_root.允许存档 !== true) {
+            FrameBroadcaster.pushUiState("sv:3");
+            return false;
+        }
         if (_dispatchToken != undefined) {
             EnhancedCooldownWheel.I().removeTask(_dispatchToken);
             _dispatchToken = undefined;
         }
-        if (_saveInFlight) return false;
+        if (_saveInFlight) {
+            FrameBroadcaster.pushUiState("sv:3");
+            return false;
+        }
         _saveInFlight = true;
-        var ok:Boolean = _doSaveAll();
-        _saveInFlight = false;
+        var ok:Boolean = false;
+        try {
+            ok = _doSaveAll();
+        } catch (saveError) {
+            // 生产异常同样不得让安全退出永远停在 Saving；先投影失败，再保留原异常语义。
+            try {
+                FrameBroadcaster.pushUiState("sv:3");
+            } catch (uiStateError) {
+            }
+            throw saveError;
+        } finally {
+            _saveInFlight = false;
+        }
         return ok;
     }
 
     private function _doSaveAll():Boolean {
-        if (_root.允许存档 !== true) return false;
+        if (_root.允许存档 !== true) {
+            FrameBroadcaster.pushUiState("sv:3");
+            return false;
+        }
 
         // 同步外部 dirtyMark
         if (_root.存档系统.dirtyMark) _dirtyMark = true;
 
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.saveAll] 角色=" + _root.角色名 + " 等级=" + _root.等级 + " 金钱=" + _root.金钱 + " savePath=" + _root.savePath);
-        if (!canWriteCurrentRootState(sm)) return false;
+        if (!canWriteCurrentRootState(sm)) {
+            FrameBroadcaster.pushUiState("sv:3");
+            return false;
+        }
 
         FrameBroadcaster.pushUiState("sv:1");
 
@@ -440,28 +508,67 @@ class org.flashNight.neur.Server.SaveManager {
         soData.商城已购买物品 = _root.商城已购买物品;
         soData.商城购物车 = _root.商城购物车;
 
-        // 单次 flush
+        // 单次 flush。这里是本地 SharedObject 的唯一提交点；此前异常不得清 dirty。
+        if (_beforeLocalCommitHookForTests != null) {
+            _beforeLocalCommitHookForTests();
+        }
         var ok:Boolean = flushSO(so);
         if (ok) {
             _dirtyMark = false;
             _root.存档系统.dirtyMark = false;
+            _root.存盘标志 = 1;
         }
 
         _root.mydata = mydata;
-        _root.存盘标志 = 1;
-        FrameBroadcaster.pushUiState("sv:2");
-        _root.UpdateTaskProgress();
+        try {
+            // sv:2 只代表 SharedObject.flush() 已确认成功；false / "pending"
+            // 必须投影为失败态，安全退出面板据此禁止 EXIT_CONFIRM。
+            FrameBroadcaster.pushUiState(ok ? "sv:2" : "sv:3");
+        } catch (uiStateError) {
+            reportPostFlushFailure(sm, "ui_state", uiStateError, ok);
+        }
+        try {
+            _root.UpdateTaskProgress();
+        } catch (taskProgressError) {
+            reportPostFlushFailure(sm, "task_progress", taskProgressError, ok);
+        }
 
-        var _saLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
-        sm.sendServerMessage("[SaveManager.saveAll] flush=" + ok + " version=" + mydata.version + " tasks_to_do.len=" + _saLen);
+        try {
+            var _saLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
+            sm.sendServerMessage("[SaveManager.saveAll] flush=" + ok + " version=" + mydata.version + " tasks_to_do.len=" + _saLen);
+        } catch (saveLogError) {
+            reportPostFlushFailure(sm, "save_log", saveLogError, ok);
+        }
 
         // P3a: shadow 推送到 Launcher 落盘 + 回调确认
-        sm.sendServerMessage("[SaveManager] shadow gate: ok=" + ok + " socket=" + sm.isSocketConnected);
+        try {
+            sm.sendServerMessage("[SaveManager] shadow gate: ok=" + ok + " socket=" + sm.isSocketConnected);
+        } catch (shadowGateLogError) {
+            reportPostFlushFailure(sm, "shadow_gate_log", shadowGateLogError, ok);
+        }
         if (ok && sm.isSocketConnected) {
-            pushShadowWithConfirm(sm, mydata);
+            try {
+                pushShadowWithConfirm(sm, mydata);
+            } catch (shadowDispatchError) {
+                reportPostFlushFailure(sm, "shadow_dispatch", shadowDispatchError, true);
+            }
         }
 
         return ok;
+    }
+
+    /**
+     * 本地 flush 已有确定结果后，通知/日志/shadow 的异常只能作为独立证据记录，
+     * 不得覆盖 SharedObject 的成功或失败裁决。trace 是日志通道自身异常时的兜底。
+     */
+    private function reportPostFlushFailure(sm:ServerManager, stage:String, error:Object, localCommitted:Boolean):Void {
+        var message:String = "[SaveManager.saveAll] post-flush failure stage=" + stage
+            + " localCommitted=" + localCommitted + " error=" + error;
+        trace(message);
+        try {
+            sm.sendServerMessage(message);
+        } catch (reportError) {
+        }
     }
 
     private function canWriteCurrentRootState(sm:ServerManager):Boolean {
@@ -1632,6 +1739,14 @@ class org.flashNight.neur.Server.SaveManager {
         return _dirtyMark;
     }
 
+    /**
+     * 无写副作用的全局待保存查询。
+     * isDirty() 保留只读内部 latch 的历史语义；close/finalize 应使用本方法。
+     */
+    public function hasPendingChanges():Boolean {
+        return _dirtyMark || _root.存档系统.dirtyMark === true;
+    }
+
     // ==================== 迁移 ====================
 
     /**
@@ -2015,7 +2130,9 @@ class org.flashNight.neur.Server.SaveManager {
      * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
      */
     private function flushSO(so:SharedObject):Boolean {
-        var result:Object = so.flush();
+        var result:Object = _flushResultOverrideForTests !== undefined
+            ? _flushResultOverrideForTests
+            : so.flush();
         if (result === true) {
             return true;
         }

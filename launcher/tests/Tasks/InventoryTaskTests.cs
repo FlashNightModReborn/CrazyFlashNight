@@ -123,6 +123,42 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(50, (int)message["requests"][1]["offset"]);
             Assert.Equal("material", (string)message["requests"][1]["filterKey"]);
             Assert.Null(message["requests"][0]["action"]);
+            Assert.Null(message["requests"][0]["scope"]);
+        }
+
+        [Fact]
+        public void Snapshot_EquipmentScopeIsWhitelistedForBackpackOnly()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("snapshot", "wb.inventory.scope.equipment");
+            request["payload"]["requests"][0]["scope"] = "equipment";
+
+            task.HandleWebRequest("snapshot", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("equipment", (string)message["requests"][0]["scope"]);
+            Assert.Null(message["requests"][1]["scope"]);
+        }
+
+        [Theory]
+        [InlineData("背包", "developer")]
+        [InlineData("仓库", "equipment")]
+        [InlineData("战备箱", "equipment")]
+        public void Snapshot_RejectsUnknownOrNonBackpackEquipmentScope(string containerId, string scope)
+        {
+            int sends = 0;
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("snapshot", "wb.inventory.scope.bad");
+            request["payload"]["requests"][0]["containerId"] = containerId;
+            request["payload"]["requests"][0]["scope"] = scope;
+
+            task.HandleWebRequest("snapshot", request);
+
+            Assert.Equal(0, sends);
+            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
         }
 
         [Fact]
@@ -341,6 +377,23 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void SortAndMerge_RejectsScopedProjectionToAvoidSortingHiddenFullInventory()
+        {
+            int sends = 0;
+            string posted = null;
+            var task = new InventoryTask(() => true, _ => { sends++; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request("sortAndMerge", "wb.inventory.sort.equipment-scope");
+            request["payload"]["container"]["containerId"] = "背包";
+            request["payload"]["container"]["scope"] = "equipment";
+
+            task.HandleWebRequest("sortAndMerge", request);
+
+            Assert.Equal(0, sends);
+            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+        }
+
+        [Fact]
         public void AutoTransfer_RebuildsSourceTargetPolicyAndVisibleWindowsOnly()
         {
             string sent = null;
@@ -360,6 +413,21 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("material", (string)message["windows"][1]["filterKey"]);
             Assert.Null(message["target"]);
             Assert.Null(message["windows"][0]["action"]);
+        }
+
+        [Fact]
+        public void AutoTransfer_PreservesTrustedEquipmentWindowScope()
+        {
+            string sent = null;
+            var task = new InventoryTask(() => true, payload => { sent = payload; return true; });
+            JObject request = Request("autoTransfer", "wb.inventory.auto.scope");
+            request["payload"]["windows"][0]["scope"] = "equipment";
+
+            task.HandleWebRequest("autoTransfer", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("equipment", (string)message["windows"][0]["scope"]);
+            Assert.Null(message["windows"][1]["scope"]);
         }
 
         [Theory]

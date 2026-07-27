@@ -52,6 +52,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         all: true, weapon: true, armor: true, consumable: true,
         material: true, collection: true, other: true
     };
+    private static var _projectionScopes:Object = {
+        all: true, equipment: true
+    };
 
     // Gate A2 的确定性失败注入，仅供 TestLoader 验证 rollback；生产默认永不命中。
     private static var _testFailContainerId:String = "";
@@ -127,11 +130,23 @@ class org.flashNight.arki.item.InventoryPanelService {
         if (profile != "warehouse" && profile != "battlebox") return false;
         var view:String = params == undefined || params.view == undefined
             ? "storage" : String(params.view);
-        if (view != "storage" && view != "tuning") return false;
-        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
-        if (_json == undefined) _json = new LiteJSON();
         var source:String = params == undefined || params.source == undefined
             ? "inventory_workbench" : String(params.source);
+        if (view == "build") {
+            if (profile != "battlebox"
+                    || (source != "agent_control"
+                        && source != "nativehud_equipment")) {
+                return false;
+            }
+            if (!org.flashNight.arki.item.CharacterBuildService
+                    .canOpenPanel()) {
+                return false;
+            }
+        } else if (view != "storage" && view != "tuning") {
+            return false;
+        }
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
+        if (_json == undefined) _json = new LiteJSON();
         return _root.server.sendSocketMessage(_json.stringify({
             task: "panel_request",
             panel: "workbench",
@@ -513,11 +528,17 @@ class org.flashNight.arki.item.InventoryPanelService {
             var filterKey:String = request == undefined || request.filterKey == undefined
                 ? "all" : String(request.filterKey);
             var filterSpec:Object = request == undefined ? null : normalizeFilterSpec(request.filterSpec);
+            var scope:String = request == undefined || request.scope == undefined
+                ? "all" : String(request.scope);
             var inventory:ArrayInventory = resolveContainer(containerId);
             if (inventory == null) return fail("unsupported_container");
             if (_filterKeys[filterKey] !== true) return fail("unsupported_filter");
             if (request != undefined && request.filterSpec != undefined && filterSpec == null) return fail("unsupported_filter");
             if (filterSpec != null && !filterSpecMatchesKey(filterKey, filterSpec)) return fail("unsupported_filter");
+            if (_projectionScopes[scope] !== true
+                    || (scope == "equipment" && containerId != "背包")) {
+                return fail("unsupported_scope");
+            }
             if (!isWholeNumber(request.offset) || !isWholeNumber(request.limit)) return fail("invalid_payload");
             var offset:Number = Number(request.offset);
             var limit:Number = Number(request.limit);
@@ -535,7 +556,8 @@ class org.flashNight.arki.item.InventoryPanelService {
                 offset: offset,
                 limit: limit,
                 filterKey: filterKey,
-                filterSpec: filterSpec
+                filterSpec: filterSpec,
+                scope: scope
             });
         }
         return {success: true, normalized: normalized};
@@ -551,7 +573,8 @@ class org.flashNight.arki.item.InventoryPanelService {
                 entry.offset,
                 entry.limit,
                 entry.filterKey,
-                entry.filterSpec
+                entry.filterSpec,
+                entry.scope
             ));
         }
         return snapshots;
@@ -635,11 +658,12 @@ class org.flashNight.arki.item.InventoryPanelService {
         return snapshots;
     }
 
-    private static function buildSnapshot(containerId:String, inventory:ArrayInventory, offset:Number, limit:Number, filterKey:String, filterSpec:Object):Object {
+    private static function buildSnapshot(containerId:String, inventory:ArrayInventory, offset:Number, limit:Number, filterKey:String, filterSpec:Object, scope:String):Object {
         var accessibleCapacity:Number = getAccessibleCapacity(containerId);
         var mutationRevision:Number = inventory.getMutationRevision();
         if (_filterKeys[filterKey] !== true) filterKey = "all";
         filterSpec = normalizeFilterSpec(filterSpec);
+        if (_projectionScopes[scope] !== true) scope = "all";
         var slots:Array = [];
         var viewCapacity:Number = accessibleCapacity;
         var effectiveOffset:Number = offset;
@@ -647,7 +671,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         var item:Object;
 
         var setFilterActive:Boolean = filterSpec != null && String(filterSpec.branch) == "set";
-        if (filterKey == "all" && !setFilterActive) {
+        if (scope == "all" && filterKey == "all" && !setFilterActive) {
             if (viewCapacity <= 0) effectiveOffset = 0;
             else if (effectiveOffset >= viewCapacity) {
                 effectiveOffset = Math.floor((viewCapacity - 1) / limit) * limit;
@@ -661,7 +685,11 @@ class org.flashNight.arki.item.InventoryPanelService {
             var matches:Array = [];
             for (slot = 0; slot < accessibleCapacity; slot++) {
                 item = inventory.getItem(String(slot));
-                if (item != null && itemMatchesFilter(item, filterKey, filterSpec)) matches.push(slot);
+                if (item != null && itemMatchesScope(item, scope)
+                        && itemMatchesFilter(item, filterKey, filterSpec,
+                            scope == "equipment")) {
+                    matches.push(slot);
+                }
             }
             viewCapacity = matches.length;
             if (viewCapacity <= 0) effectiveOffset = 0;
@@ -676,7 +704,8 @@ class org.flashNight.arki.item.InventoryPanelService {
             }
         }
         _snapshotSeq++;
-        var facetSummary:Object = buildFilterFacetSummary(containerId, inventory, accessibleCapacity);
+        var facetSummary:Object = buildFilterFacetSummary(
+            containerId, inventory, accessibleCapacity, scope);
         var snapshot:Object = {
             containerId: containerId,
             capacity: inventory.capacity,
@@ -697,6 +726,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             setFilterItemCount: facetSummary.setItemCount
         };
         if (filterSpec != null) snapshot.filterSpec = filterSpec;
+        if (scope != "all") snapshot.scope = scope;
         return snapshot;
     }
 
@@ -714,16 +744,32 @@ class org.flashNight.arki.item.InventoryPanelService {
         return slotSnapshot;
     }
 
-    private static function itemMatchesFilter(item:Object, filterKey:String, filterSpec:Object):Boolean {
+    private static function itemMatchesScope(item:Object, scope:String):Boolean {
+        if (scope == "all") return true;
+        if (scope != "equipment" || item == null
+                || typeof item.value != "object" || item.value == null) {
+            return false;
+        }
+        var data:Object =
+            org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+        var typeName:String = data == null ? ""
+            : String(data.type != undefined ? data.type : data.类型);
+        return typeName == "武器" || typeName == "防具";
+    }
+
+    private static function itemMatchesFilter(item:Object, filterKey:String,
+                                               filterSpec:Object,
+                                               catalogOnly:Boolean):Boolean {
         if (filterSpec != null) {
             if (String(filterSpec.branch || "category") == "set") {
-                var setData:Object = item != null && typeof item.getData == "function"
+                var setData:Object = !catalogOnly && item != null
+                    && typeof item.getData == "function"
                     ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
                 var itemSetId:String = setData == null || setData.setId == undefined ? "" : String(setData.setId);
                 var requestedSetId:String = filterSpec.setId == undefined ? "" : String(filterSpec.setId);
                 return itemSetId != "" && (requestedSetId == "" || requestedSetId == itemSetId);
             }
-            var taxonomy:Object = itemTaxonomy(item);
+            var taxonomy:Object = itemTaxonomy(item, catalogOnly);
             var major:String = String(filterSpec.major || "all");
             if (major != "all" && taxonomy.major != major) return false;
             if (filterSpec.use != undefined && String(filterSpec.use) != taxonomy.use) return false;
@@ -731,7 +777,8 @@ class org.flashNight.arki.item.InventoryPanelService {
             return true;
         }
         if (filterKey == "all") return true;
-        var data:Object = item != null && typeof item.getData == "function"
+        var data:Object = !catalogOnly && item != null
+            && typeof item.getData == "function"
             ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
         var majorType:String = data == null ? "" : String(data.type != undefined ? data.type : data.类型);
         var useName:String = data == null || data.use == undefined ? "" : String(data.use);
@@ -784,8 +831,10 @@ class org.flashNight.arki.item.InventoryPanelService {
         return true;
     }
 
-    private static function itemTaxonomy(item:Object):Object {
-        var data:Object = item != null && typeof item.getData == "function"
+    private static function itemTaxonomy(item:Object,
+                                         catalogOnly:Boolean):Object {
+        var data:Object = !catalogOnly && item != null
+            && typeof item.getData == "function"
             ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
         var typeName:String = data == null ? "" : String(data.type != undefined ? data.type : data.类型);
         var useName:String = data == null || data.use == undefined || String(data.use) == "" ? "其他" : String(data.use);
@@ -807,9 +856,15 @@ class org.flashNight.arki.item.InventoryPanelService {
         return {major:major, label:label, use:useName, subtype:subtype};
     }
 
-    private static function buildFilterFacetSummary(containerId:String, inventory:ArrayInventory, accessibleCapacity:Number):Object {
+    private static function buildFilterFacetSummary(containerId:String,
+                                                     inventory:ArrayInventory,
+                                                     accessibleCapacity:Number,
+                                                     scope:String):Object {
         var epoch:Number = getContainerEpoch(containerId);
-        var cached:Object = _facetCache[containerId];
+        if (_projectionScopes[scope] !== true) scope = "all";
+        var cacheKey:String = containerId
+            + (scope == "equipment" ? "|equipment" : "");
+        var cached:Object = _facetCache[cacheKey];
         if (cached != undefined && Number(cached.epoch) == epoch
                 && Number(cached.accessibleCapacity) == accessibleCapacity
                 && facetCacheMatchesInventory(cached, inventory)) return cached;
@@ -819,9 +874,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         var setItemCount:Number = 0;
         for (var slot:Number = 0; slot < accessibleCapacity; slot++) {
             var item:Object = inventory.getItem(String(slot));
-            if (item == null) continue;
+            if (item == null || !itemMatchesScope(item, scope)) continue;
             itemCount++;
-            var taxonomy:Object = itemTaxonomy(item);
+            var taxonomy:Object = itemTaxonomy(item, scope == "equipment");
             var majorNode:Object = facetNode(facets, taxonomy.major, taxonomy.label);
             majorNode.count++;
             var useNode:Object = facetNode(majorNode.children, taxonomy.use, taxonomy.use);
@@ -830,7 +885,8 @@ class org.flashNight.arki.item.InventoryPanelService {
                 var subtypeNode:Object = facetNode(useNode.children, taxonomy.subtype, taxonomy.subtype);
                 subtypeNode.count++;
             }
-            var setData:Object = typeof item.getData == "function"
+            var setData:Object = scope != "equipment"
+                && typeof item.getData == "function"
                 ? item.getData() : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
             var setId:String = setData == null || setData.setId == undefined ? "" : String(setData.setId);
             var setName:String = setData == null || setData.setName == undefined ? "" : String(setData.setName);
@@ -851,7 +907,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             setFacets:setFacets,
             setItemCount:setItemCount
         };
-        _facetCache[containerId] = cached;
+        _facetCache[cacheKey] = cached;
         return cached;
     }
 
@@ -1374,6 +1430,7 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function invalidateSlot(containerId:String, slot:Number):Void {
         delete _facetCache[containerId];
+        delete _facetCache[containerId + "|equipment"];
         leaseArray(_leaseIds, containerId)[slot] = null;
         leaseArray(_leaseInventories, containerId)[slot] = null;
         leaseArray(_leaseRevisions, containerId)[slot] = null;
@@ -1385,6 +1442,7 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function invalidateContainer(containerId:String):Void {
         delete _facetCache[containerId];
+        delete _facetCache[containerId + "|equipment"];
         _leaseIds[containerId] = [];
         _leaseInventories[containerId] = [];
         _leaseRevisions[containerId] = [];

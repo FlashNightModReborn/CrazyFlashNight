@@ -32,6 +32,7 @@ function currentSourceDigest() {
             path.join(ROOT, 'launcher', 'web', 'icons', 'manifest.json'),
             path.join(ROOT, 'launcher', 'web', 'assets', 'dressup', 'manifest.json'),
             path.join(ROOT, 'launcher', 'web', 'modules', 'dressup-doll-renderer.js'),
+            path.join(ROOT, 'launcher', 'web', 'modules', 'workbench-inspection-viewport.js'),
             path.join(ROOT, 'launcher', 'web', 'modules', 'equipment-inspector.js'),
             path.join(ROOT, 'launcher', 'web', 'modules', 'crafting-inspector.js'),
             path.join(ROOT, 'launcher', 'web', 'modules', 'crafting-product-review', 'dev', 'render-harness.html'),

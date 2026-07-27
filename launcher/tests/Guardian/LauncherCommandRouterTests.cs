@@ -20,12 +20,14 @@ namespace CF7Launcher.Tests.Guardian
             public List<string> Posts = new List<string>();
             public List<string> ActivePanels = new List<string>();
             public List<bool> StateCallbacks = new List<bool>();
+            public List<string> VisualRetires = new List<string>();
             public int Fullscreen, Log, Exit;
         }
 
         private static LauncherCommandRouter MakeRouter(Capture c)
         {
-            return new LauncherCommandRouter(
+            LauncherCommandRouter router =
+                new LauncherCommandRouter(
                 socketServer: null,
                 onSendKey: k => c.SentKeys.Add(k),
                 onToggleFullscreen: () => c.Fullscreen++,
@@ -34,6 +36,12 @@ namespace CF7Launcher.Tests.Guardian
                 postToWeb: s => c.Posts.Add(s),
                 onPanelStateChanged: b => c.StateCallbacks.Add(b),
                 setActivePanel: name => c.ActivePanels.Add(name));
+            router.SetFallbackVisualRetire(delegate(string reason)
+            {
+                c.VisualRetires.Add(reason);
+                return true;
+            });
+            return router;
         }
 
         [Fact]
@@ -69,11 +77,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void EXIT_AndExitConfirm_ForceExit()
+        public void EXIT_ForceExits_ButExitConfirmRequiresCapability()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             r.Dispatch("EXIT");
+            r.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(1, c.Exit);
+
+            r.TryConsumeSafeExitConfirm =
+                delegate { return false; };
+            r.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(1, c.Exit);
+
+            r.TryConsumeSafeExitConfirm =
+                delegate { return true; };
             r.Dispatch("EXIT_CONFIRM");
             Assert.Equal(2, c.Exit);
         }
@@ -118,6 +136,346 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void MATERIALS_RoutesToMaterialOnlyFlashCommand()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                value =>
+                {
+                    commands.Add(value);
+                    return true;
+                });
+
+            r.Dispatch("MATERIALS");
+
+            JObject command =
+                JObject.Parse(
+                    Assert.Single(commands)
+                        .TrimEnd('\0'));
+            Assert.Equal(
+                "cmd",
+                (string)command["task"]);
+            Assert.Equal(
+                "openMaterialUI",
+                (string)command["action"]);
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void MATERIALS_SendFalseShowsUnavailableWithoutOpeningLegacyUi()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                delegate(string value)
+                {
+                    commands.Add(value);
+                    return false;
+                });
+
+            r.Dispatch("MATERIALS");
+
+            Assert.Single(commands);
+            Assert.Contains(
+                "材料面板暂时不可用",
+                Assert.Single(c.Posts));
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void MATERIALS_SendThrowShowsUnavailableWithoutEscapingRouter()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            int attempts = 0;
+            r.SetGameCommandSenderForTests(
+                delegate
+                {
+                    attempts++;
+                    throw new InvalidOperationException(
+                        "material transport down");
+                });
+
+            r.Dispatch("MATERIALS");
+
+            Assert.Equal(1, attempts);
+            Assert.Contains(
+                "材料面板暂时不可用",
+                Assert.Single(c.Posts));
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void MATERIALS_CharacterBuildBindingRejectsBeforeFlashSend()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using (var task =
+                new CharacterBuildTask(
+                    delegate
+                    {
+                        throw new InvalidOperationException(
+                            "material route must not use character transport");
+                    }))
+            {
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        "panel.workbench.material.bound"));
+                r.SetCharacterBuildTask(task);
+                int sends = 0;
+                r.SetGameCommandSenderForTests(
+                    delegate
+                    {
+                        sends++;
+                        return true;
+                    });
+
+                r.Dispatch("MATERIALS");
+
+                Assert.Equal(0, sends);
+                Assert.Contains(
+                    "请先完成当前装备面板操作",
+                    Assert.Single(c.Posts));
+                Assert.True(task.HasBoundPanel);
+            }
+        }
+
+        [Fact]
+        public void MATERIALS_CharacterBuildRecoveryRejectsBeforeFlashSend()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using (var task =
+                new CharacterBuildTask(
+                    delegate { return true; }))
+            {
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        "panel.workbench.material.recovery"));
+                Assert.True(
+                    task.BeginWebViewDetachBarrier());
+                Assert.True(
+                    task.RequiresDetachRecovery);
+                r.SetCharacterBuildTask(task);
+                int sends = 0;
+                r.SetGameCommandSenderForTests(
+                    delegate
+                    {
+                        sends++;
+                        return true;
+                    });
+
+                r.Dispatch("MATERIALS");
+
+                Assert.Equal(0, sends);
+                Assert.Contains(
+                    "请先完成当前装备面板操作",
+                    Assert.Single(c.Posts));
+                Assert.True(
+                    task.RequiresDetachRecovery);
+            }
+        }
+
+        [Fact]
+        public void MATERIALS_ActiveFallbackVisualRejectsBeforeFlashSend()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                delegate(string value)
+                {
+                    commands.Add(value);
+                    return true;
+                });
+            r.Dispatch("HELP");
+            Assert.Equal(
+                "help",
+                r.ActiveFallbackPanelName);
+            c.Posts.Clear();
+            commands.Clear();
+
+            r.Dispatch("MATERIALS");
+
+            Assert.Empty(commands);
+            Assert.Contains(
+                "请先关闭当前面板",
+                Assert.Single(c.Posts));
+        }
+
+        [Fact]
+        public void MATERIALS_ActivePanelHostVisualRejectsBeforeFlashSend()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var pumps = new Queue<Action>();
+            using (var host =
+                new PanelHostController(
+                    delegate(Action pump)
+                    {
+                        pumps.Enqueue(pump);
+                    },
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                r.SetPanelHost(host);
+                Assert.True(
+                    host.TryOpenPanel(
+                        "map",
+                        "{}",
+                        null,
+                        null));
+                Assert.Single(pumps);
+                Action pump =
+                    pumps.Dequeue();
+                pump();
+                Assert.True(host.IsPanelOpen);
+                int sends = 0;
+                r.SetGameCommandSenderForTests(
+                    delegate
+                    {
+                        sends++;
+                        return true;
+                    });
+
+                r.Dispatch("MATERIALS");
+
+                Assert.Equal(0, sends);
+                Assert.Contains(
+                    "请先关闭当前面板",
+                    Assert.Single(c.Posts));
+                Assert.Equal(
+                    "map",
+                    host.ActivePanelName);
+            }
+        }
+
+        [Fact]
+        public void MATERIALS_QueuedPanelHostOpenRejectsBeforeFlashSend()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var pumps = new Queue<Action>();
+            using (var host =
+                new PanelHostController(
+                    delegate(Action pump)
+                    {
+                        pumps.Enqueue(pump);
+                    },
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                r.SetPanelHost(host);
+                Assert.True(
+                    host.TryOpenPanel(
+                        "map",
+                        "{}",
+                        null,
+                        null));
+                Assert.False(host.IsPanelOpen);
+                Assert.False(host.IsIdleForTrackedOpen);
+                Assert.Single(pumps);
+                int sends = 0;
+                r.SetGameCommandSenderForTests(
+                    delegate
+                    {
+                        sends++;
+                        return true;
+                    });
+
+                r.Dispatch("MATERIALS");
+
+                Assert.Equal(0, sends);
+                Assert.Contains(
+                    "请先关闭当前面板",
+                    Assert.Single(c.Posts));
+                Assert.False(host.IsPanelOpen);
+            }
+        }
+
+        [Fact]
+        public void MATERIALS_ReservedTrackedOpenRejectsBeforeFlashSend()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var pumps = new Queue<Action>();
+            using (var host =
+                new PanelHostController(
+                    delegate(Action pump)
+                    {
+                        pumps.Enqueue(pump);
+                    },
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                r.SetPanelHost(host);
+                Assert.True(
+                    host.TryOpenTrackedPanel(
+                        "loot",
+                        "{}",
+                        "panel.loot.material-race",
+                        delegate { return true; },
+                        null));
+                Assert.False(host.IsPanelOpen);
+                Assert.False(host.IsIdleForTrackedOpen);
+                Assert.Single(pumps);
+                int sends = 0;
+                r.SetGameCommandSenderForTests(
+                    delegate
+                    {
+                        sends++;
+                        return true;
+                    });
+
+                r.Dispatch("MATERIALS");
+
+                Assert.Equal(0, sends);
+                Assert.Contains(
+                    "请先关闭当前面板",
+                    Assert.Single(c.Posts));
+                Assert.False(host.IsPanelOpen);
+            }
+        }
+
+        [Fact]
+        public void ShutdownAdmissionGateRejectsNewBuildMaterialAndWebPanelIngress()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            int sends = 0;
+            r.SetGameCommandSenderForTests(
+                delegate
+                {
+                    sends++;
+                    return true;
+                });
+            r.SetPanelAdmissionGate(
+                delegate { return false; });
+
+            r.Dispatch("EQUIP_UI");
+            r.Dispatch("MATERIALS");
+            r.RequestOpenPanel(
+                "help",
+                "shutdown_race",
+                null);
+
+            Assert.Equal(0, sends);
+            Assert.Empty(c.Posts);
+            Assert.Null(
+                r.ActiveFallbackPanelName);
+        }
+
+        [Fact]
         public void WAREHOUSE_DisabledRoute_DoesNotOpenWebPanel()
         {
             Capture c = new Capture();
@@ -130,7 +488,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void EQUIP_UI_AlwaysKeepsLegacyEquipmentCommand()
+        public void EQUIP_UI_DefaultSendsFixedBuildPreflightWithoutOpeningPanel()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
@@ -138,28 +496,42 @@ namespace CF7Launcher.Tests.Guardian
             r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
             r.Dispatch("EQUIP_UI");
 
-            Assert.Single(commands);
-            Assert.Equal("openEquipUI", (string)JObject.Parse(commands[0].TrimEnd('\0'))["action"]);
-        }
-
-        [Fact]
-        public void EQUIP_UI_DoesNotOpenWorkbenchSideRoute()
-        {
-            Capture c = new Capture();
-            LauncherCommandRouter r = MakeRouter(c);
-            var commands = new List<string>();
-            r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
-            r.Dispatch("EQUIP_UI");
-
-            JObject command = JObject.Parse(Assert.Single(commands).TrimEnd('\0'));
-            Assert.Equal("cmd", (string)command["task"]);
-            Assert.Equal("openEquipUI", (string)command["action"]);
-            Assert.Equal(2, command.Count);
+            JObject command =
+                JObject.Parse(
+                    Assert.Single(commands)
+                        .TrimEnd('\0'));
+            Assert.Equal(
+                "cmd",
+                (string)command["task"]);
+            Assert.Equal(
+                "openInventoryWorkbench",
+                (string)command["action"]);
+            Assert.Equal(
+                "battlebox",
+                (string)command["profile"]);
+            Assert.Equal(
+                "build",
+                (string)command["view"]);
+            Assert.Equal(
+                "nativehud_equipment",
+                (string)command["source"]);
+            Assert.Equal(5, command.Count);
             Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
         }
 
         [Fact]
-        public void EQUIP_UI_SendFailure_DoesNotAttemptTuningSideRoute()
+        public void EQUIP_UI_PreflightFailureToastsWithoutLegacyOrPanelFallback()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
@@ -167,8 +539,302 @@ namespace CF7Launcher.Tests.Guardian
             r.SetGameCommandSenderForTests(value => { commands.Add(value); return false; });
             r.Dispatch("EQUIP_UI");
 
+            JObject command =
+                JObject.Parse(
+                    Assert.Single(commands)
+                        .TrimEnd('\0'));
+            Assert.Equal(
+                "openInventoryWorkbench",
+                (string)command["action"]);
+            JObject toast =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "toast",
+                (string)toast["type"]);
+            Assert.Null(toast["panel"]);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+        }
+
+        [Fact]
+        public void EQUIP_UI_SendTrueWaitsForExactPanelRequestAndTimesOut()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 500;
+            r.SetGameCommandSenderForTests(_ => true);
+
+            r.Dispatch("EQUIP_UI");
+
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+            Assert.True(
+                System.Threading.SpinWait.SpinUntil(
+                    () => c.Posts.Count == 1,
+                    2000));
+            Assert.Contains(
+                "装备服务未就绪",
+                c.Posts[0]);
+            Assert.DoesNotContain(
+                "\"cmd\":\"open\"",
+                c.Posts[0]);
+        }
+
+        [Fact]
+        public void EQUIP_UI_ExactAckCancelsTimeoutAndOpensOnce()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            // Keep the injected test timeout comfortably above scheduler jitter so
+            // an unrelated runner pause cannot race the immediate acknowledgement.
+            r.NativeEquipmentBuildOpenTimeoutMs = 500;
+            r.SetGameCommandSenderForTests(_ => true);
+
+            r.Dispatch("EQUIP_UI");
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            System.Threading.Thread.Sleep(650);
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "workbench",
+                (string)opened["panel"]);
+            Assert.Equal(
+                "build",
+                (string)opened["initData"]["view"]);
+        }
+
+        [Fact]
+        public void EQUIP_UI_SynchronousAckDuringSendCannotLeaveStaleTimeout()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 500;
+            r.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    r.RequestOpenPanel(
+                        "workbench",
+                        "nativehud_equipment",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                    return true;
+                });
+
+            r.Dispatch("EQUIP_UI");
+            System.Threading.Thread.Sleep(650);
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "workbench",
+                (string)opened["panel"]);
+        }
+
+        [Fact]
+        public void EQUIP_UI_DuplicateWhilePendingSendsOnlyOnePreflight()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 2000;
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
+
+            r.Dispatch("EQUIP_UI");
+            r.Dispatch("EQUIP_UI");
+
             Assert.Single(commands);
-            Assert.Equal("openEquipUI", (string)JObject.Parse(commands[0].TrimEnd('\0'))["action"]);
+            Assert.Empty(c.Posts);
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+        }
+
+        [Fact]
+        public void EQUIP_UI_TimeoutRejectsLateNativeBuildAck()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 100;
+            r.SetGameCommandSenderForTests(_ => true);
+
+            r.Dispatch("EQUIP_UI");
+            Assert.True(
+                System.Threading.SpinWait.SpinUntil(
+                    () => c.Posts.Count == 1,
+                    2000));
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+
+            Assert.Single(c.Posts);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void EQUIP_UI_CompetingPanelRejectsPendingNativeBuildAck()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 2000;
+            r.SetGameCommandSenderForTests(_ => true);
+
+            r.Dispatch("EQUIP_UI");
+            r.RequestOpenPanel(
+                "map",
+                "competition",
+                null);
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "map",
+                (string)opened["panel"]);
+            Assert.Equal(
+                new[] { "map" },
+                c.ActivePanels);
+        }
+
+        [Fact]
+        public void EQUIP_UI_TimeoutWithAnotherActivePanelCancelsWithoutFalseToast()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 500;
+            r.SetGameCommandSenderForTests(_ => true);
+
+            r.Dispatch("EQUIP_UI");
+            r.RequestOpenPanel(
+                "map",
+                "competition",
+                null);
+            System.Threading.Thread.Sleep(650);
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "map",
+                (string)opened["panel"]);
+            Assert.DoesNotContain(
+                "装备服务未就绪",
+                c.Posts[0]);
+
+            // Timeout still consumes the pending admission, so a late native ack cannot
+            // replace the panel that won the competition.
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            Assert.Single(c.Posts);
+            Assert.Equal(
+                new[] { "map" },
+                c.ActivePanels);
+        }
+
+        [Fact]
+        public void EQUIP_UI_NearMatchDoesNotConsumePendingExactAck()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 2000;
+            r.SetGameCommandSenderForTests(_ => true);
+
+            r.Dispatch("EQUIP_UI");
+            r.RequestOpenPanel(
+                "WORKBENCH",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            Assert.Empty(c.Posts);
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "workbench",
+                (string)opened["panel"]);
+        }
+
+        [Fact]
+        public void EQUIP_UI_ExplicitDisabledFlagUsesLegacyEquipmentFallback()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.WebInventoryWorkbenchEnabled =
+                false;
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
+            r.Dispatch("EQUIP_UI");
+
+            JObject command =
+                JObject.Parse(
+                    Assert.Single(commands)
+                        .TrimEnd('\0'));
+            Assert.Equal(
+                "openEquipUI",
+                (string)command["action"]);
+            Assert.Equal(2, command.Count);
             Assert.Empty(c.Posts);
         }
 
@@ -461,6 +1127,533 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"view\":\"tuning\"", c.Posts[0]);
             Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
             Assert.Contains("\"source\":\"agent_control\"", c.Posts[0]);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_WorkbenchBuild_AllowsOnlyFixedProductionSources()
+        {
+            Capture accepted = new Capture();
+            LauncherCommandRouter router = MakeRouter(accepted);
+            router.RequestOpenPanel(
+                "workbench",
+                "agent_control",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            JObject opened = JObject.Parse(Assert.Single(accepted.Posts));
+            Assert.Equal("workbench", (string)opened["panel"]);
+            Assert.Equal("battlebox", (string)opened["initData"]["profile"]);
+            Assert.Equal("build", (string)opened["initData"]["view"]);
+            Assert.Equal("agent_control", (string)opened["initData"]["source"]);
+
+            Capture nativeHud = new Capture();
+            LauncherCommandRouter nativeRouter =
+                MakeRouter(nativeHud);
+            nativeRouter.SetGameCommandSenderForTests(
+                _ => true);
+            nativeRouter.Dispatch(
+                "EQUIP_UI");
+            nativeRouter.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            JObject nativeOpened =
+                JObject.Parse(
+                    Assert.Single(
+                        nativeHud.Posts));
+            Assert.Equal(
+                "workbench",
+                (string)nativeOpened["panel"]);
+            Assert.Equal(
+                "build",
+                (string)nativeOpened[
+                    "initData"]["view"]);
+            Assert.Equal(
+                "nativehud_equipment",
+                (string)nativeOpened[
+                    "initData"]["source"]);
+
+            Capture foreign = new Capture();
+            MakeRouter(foreign).RequestOpenPanel(
+                "workbench",
+                "as2_request",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            Assert.Empty(foreign.Posts);
+
+            Capture warehouse = new Capture();
+            MakeRouter(warehouse).RequestOpenPanel(
+                "workbench",
+                "agent_control",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"warehouse\",\"view\":\"build\"}");
+            Assert.Empty(warehouse.Posts);
+        }
+
+        [Fact]
+        public void EQUIP_UI_ExactActiveBuildReclickPostsOnlyPanelEscape()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            using (var task =
+                new CharacterBuildTask(_ => true))
+            {
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        instance));
+                router.SetCharacterBuildTask(
+                    task);
+                capture.Posts.Clear();
+                var commands =
+                    new List<string>();
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
+
+                router.Dispatch("EQUIP_UI");
+
+                Assert.Equal(
+                    "{\"type\":\"panel_esc\"}",
+                    Assert.Single(capture.Posts));
+                Assert.Empty(commands);
+                Assert.Equal(
+                    instance,
+                    router.ActiveFallbackPanelInstanceId);
+                Assert.True(
+                    task.IsBoundTo(instance));
+                Assert.Empty(
+                    capture.VisualRetires);
+            }
+        }
+
+        [Fact]
+        public void EQUIP_UI_DisabledFlagUsesLegacyEvenWhenBuildIsActive()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            using (var task =
+                new CharacterBuildTask(_ => true))
+            {
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        instance));
+                router.SetCharacterBuildTask(
+                    task);
+                router.WebInventoryWorkbenchEnabled =
+                    false;
+                capture.Posts.Clear();
+                var commands =
+                    new List<string>();
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
+
+                router.Dispatch("EQUIP_UI");
+
+                JObject command =
+                    JObject.Parse(
+                        Assert.Single(commands)
+                            .TrimEnd('\0'));
+                Assert.Equal(
+                    "openEquipUI",
+                    (string)command["action"]);
+                Assert.Empty(capture.Posts);
+                Assert.Equal(
+                    instance,
+                    router.ActiveFallbackPanelInstanceId);
+                Assert.True(
+                    task.IsBoundTo(instance));
+            }
+        }
+
+        [Fact]
+        public void EQUIP_UI_SameNameStorageWithForeignBuildBindingDoesNotEscape()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            router.RequestOpenPanel(
+                "workbench",
+                "nativehud",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
+            string storageInstance =
+                router.ActiveFallbackPanelInstanceId;
+            using (var task =
+                new CharacterBuildTask(_ => true))
+            {
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        "panel.workbench.build.foreign"));
+                router.SetCharacterBuildTask(
+                    task);
+                capture.Posts.Clear();
+                var commands =
+                    new List<string>();
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
+
+                router.Dispatch("EQUIP_UI");
+
+                JObject command =
+                    JObject.Parse(
+                        Assert.Single(commands)
+                            .TrimEnd('\0'));
+                Assert.Equal(
+                    "openInventoryWorkbench",
+                    (string)command["action"]);
+                Assert.Equal(
+                    "nativehud_equipment",
+                    (string)command["source"]);
+                Assert.Empty(capture.Posts);
+                Assert.Equal(
+                    storageInstance,
+                    router.ActiveFallbackPanelInstanceId);
+                Assert.True(
+                    task.IsBoundTo(
+                        "panel.workbench.build.foreign"));
+            }
+        }
+
+        [Fact]
+        public void EQUIP_UI_ExactBuildPendingSnapshotStaysBehindWebCloseGate()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            using (var task =
+                new CharacterBuildTask(_ => true))
+            {
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        instance));
+                router.SetCharacterBuildTask(
+                    task);
+                Assert.True(
+                    task.TryBeginHostAccepted(
+                        instance,
+                        null,
+                        "router.reclick.pending",
+                        "snapshot",
+                        null,
+                        out int backendCallId,
+                        out string beginError),
+                    beginError);
+                Assert.True(backendCallId > 0);
+                capture.Posts.Clear();
+                var commands =
+                    new List<string>();
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
+
+                router.Dispatch("EQUIP_UI");
+
+                Assert.Equal(
+                    "{\"type\":\"panel_esc\"}",
+                    Assert.Single(capture.Posts));
+                Assert.Empty(commands);
+                Assert.Equal(
+                    1,
+                    task.PendingCount);
+                Assert.True(
+                    task.IsBoundTo(instance));
+                Assert.Equal(
+                    instance,
+                    router.ActiveFallbackPanelInstanceId);
+                Assert.Empty(
+                    capture.VisualRetires);
+            }
+        }
+
+        [Fact]
+        public void EQUIP_UI_ExactBuildUnknownWriteStaysBehindWebCloseGate()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            bool taskSend = true;
+            using (var task =
+                new CharacterBuildTask(
+                    delegate(string payload)
+                    {
+                        return taskSend;
+                    }))
+            {
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.TryBindPanelInstance(
+                        instance));
+                PrimeCharacterBuild(
+                    task,
+                    instance,
+                    9);
+                taskSend = false;
+                Assert.True(
+                    task.TryBeginHostAccepted(
+                        instance,
+                        9,
+                        "router.reclick.unknown",
+                        "equipEquipment",
+                        null,
+                        out int backendCallId,
+                        out string beginError),
+                    beginError);
+                Assert.True(backendCallId > 0);
+                Assert.Equal(
+                    "needs_reconcile",
+                    task.WriteState);
+                router.SetCharacterBuildTask(
+                    task);
+                capture.Posts.Clear();
+                var commands =
+                    new List<string>();
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
+
+                router.Dispatch("EQUIP_UI");
+
+                Assert.Equal(
+                    "{\"type\":\"panel_esc\"}",
+                    Assert.Single(capture.Posts));
+                Assert.Empty(commands);
+                Assert.Equal(
+                    "needs_reconcile",
+                    task.WriteState);
+                Assert.True(
+                    task.IsBoundTo(instance));
+                Assert.Equal(
+                    instance,
+                    router.ActiveFallbackPanelInstanceId);
+                Assert.Empty(
+                    capture.VisualRetires);
+            }
+        }
+
+        [Fact]
+        public void FallbackPanelSwitchWaitsForCharacterBuildFinalizeProof()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            var flash = new List<string>();
+            using (var task = new CharacterBuildTask(delegate(string payload)
+            {
+                flash.Add(payload.TrimEnd('\0'));
+                return true;
+            }))
+            {
+                router.SetCharacterBuildTask(task);
+                router.RequestOpenPanel(
+                    "workbench",
+                    "agent_control",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                string instance = router.ActiveFallbackPanelInstanceId;
+                Assert.True(task.BindPanelInstance(instance));
+                Assert.True(task.TryBeginHostAccepted(
+                    instance,
+                    null,
+                    "router.build.initial",
+                    "snapshot",
+                    null,
+                    out int initialCallId,
+                    out string initialError),
+                    initialError);
+                Assert.True(task.TryCompleteSuccess(
+                    initialCallId,
+                    instance,
+                    9,
+                    "router.build.initial",
+                    "snapshot",
+                    0,
+                    3,
+                    3,
+                    5,
+                    false,
+                    true,
+                    null,
+                    null,
+                    out string snapshotError),
+                    snapshotError);
+
+                router.RequestOpenPanel("map", "switch_test", null);
+                Assert.Single(capture.Posts);
+                Assert.Equal(instance, router.ActiveFallbackPanelInstanceId);
+
+                Assert.True(task.TryBeginHostAccepted(
+                    instance,
+                    9,
+                    "router.build.finalize",
+                    "finalize",
+                    null,
+                    out int finalizeCallId,
+                    out string finalizeError),
+                    finalizeError);
+                Assert.True(task.TryCompleteSuccess(
+                    finalizeCallId,
+                    instance,
+                    9,
+                    "router.build.finalize",
+                    "finalize",
+                    1,
+                    3,
+                    3,
+                    5,
+                    false,
+                    false,
+                    true,
+                    true,
+                    out string proofError),
+                    proofError);
+
+                router.RequestOpenPanel("map", "switch_test", null);
+                Assert.Equal(2, capture.Posts.Count);
+                Assert.Contains("\"cmd\":\"close\"", capture.Posts[1]);
+                Assert.Contains("\"panel\":\"workbench\"", capture.Posts[1]);
+                Assert.DoesNotContain("\"panel\":\"map\"", capture.Posts[1]);
+                Assert.True(task.HasBoundPanel);
+                Assert.True(task.RequiresDetachRecovery);
+                Assert.Null(router.ActiveFallbackPanelName);
+                Assert.Equal(
+                    new[] { "character_build_switch" },
+                    capture.VisualRetires);
+                Assert.Equal(3, flash.Count);
+                JObject recovery = JObject.Parse(flash[2]);
+                Assert.Equal(
+                    "characterBuildRecoverDetach",
+                    recovery.Value<string>("action"));
+
+                task.HandleFlashResponse(
+                    new JObject
+                    {
+                        ["task"] = "loadout_response",
+                        ["callId"] =
+                            recovery.Value<int>("callId"),
+                        ["v"] = 1,
+                        ["success"] = true,
+                        ["command"] = "recoverDetach",
+                        ["requestCallId"] =
+                            recovery.Value<string>(
+                                "requestCallId"),
+                        ["panelInstanceId"] =
+                            recovery.Value<string>(
+                                "panelInstanceId"),
+                        ["writeEpoch"] =
+                            recovery.Value<int>(
+                                "writeEpoch"),
+                        ["active"] = false,
+                        ["sessionGeneration"] = 9,
+                        ["loadoutRevision"] = 3,
+                        ["liveRevision"] = 3,
+                        ["liveRefreshDirty"] = false,
+                        ["drugRevision"] = 5,
+                        ["recoveryState"] = "settled",
+                        ["closed"] = true,
+                        ["pauseReleased"] = true,
+                        ["persistence"] =
+                            new JObject
+                            {
+                                ["success"] = true,
+                                ["changed"] = true
+                            }
+                    },
+                    null);
+                Assert.False(task.HasBoundPanel);
+                Assert.False(task.RequiresDetachRecovery);
+                // External panel requests are edge-triggered UI actions. The handoff request
+                // closes authority A and is intentionally rejected; it is not replayed later.
+                Assert.Equal(2, capture.Posts.Count);
+
+                router.RequestOpenPanel(
+                    "map", "switch_test", null);
+                Assert.Equal(3, capture.Posts.Count);
+                Assert.Contains(
+                    "\"panel\":\"map\"",
+                    capture.Posts[2]);
+            }
+        }
+
+        [Fact]
+        public void CharacterBuildDetachRecoveryFencesEveryPanelBeforePauseReuse()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            using (var task = new CharacterBuildTask(_ => true))
+            {
+                router.SetCharacterBuildTask(task);
+                router.RequestOpenPanel(
+                    "workbench",
+                    "agent_control",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                string instance =
+                    router.ActiveFallbackPanelInstanceId;
+                Assert.True(task.BindPanelInstance(instance));
+                Assert.True(task.BeginWebViewDetach(0));
+                Assert.True(task.RequiresDetachRecovery);
+
+                router.RequestOpenPanel(
+                    "map", "switch_test", null);
+
+                Assert.Single(capture.Posts);
+                Assert.Equal(
+                    instance,
+                    router.ActiveFallbackPanelInstanceId);
+            }
         }
 
         [Theory]
@@ -808,6 +2001,62 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("NONEXISTENT_KEY");
             Assert.Empty(c.SentKeys);
             Assert.Empty(c.Posts);
+        }
+
+        private static string OpenFallbackBuild(
+            LauncherCommandRouter router)
+        {
+            router.RequestOpenPanel(
+                "workbench",
+                "agent_control",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            string instance =
+                router.ActiveFallbackPanelInstanceId;
+            Assert.False(
+                string.IsNullOrEmpty(instance));
+            Assert.Equal(
+                "workbench",
+                router.ActiveFallbackPanelName);
+            return instance;
+        }
+
+        private static void PrimeCharacterBuild(
+            CharacterBuildTask task,
+            string panelInstanceId,
+            long generation)
+        {
+            Assert.True(
+                task.TryBeginHostAccepted(
+                    panelInstanceId,
+                    null,
+                    "router.build.prime",
+                    "snapshot",
+                    null,
+                    out int backendCallId,
+                    out string beginError),
+                beginError);
+            Assert.True(
+                task.TryCompleteSuccess(
+                    backendCallId,
+                    panelInstanceId,
+                    generation,
+                    "router.build.prime",
+                    "snapshot",
+                    0,
+                    3,
+                    3,
+                    5,
+                    false,
+                    true,
+                    null,
+                    null,
+                    out string completionError),
+                completionError);
         }
 
         private static JObject SkillRequest(string cmd, string callId)

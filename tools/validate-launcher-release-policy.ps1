@@ -192,7 +192,8 @@ function Get-Cf7ProductionChecks {
         'css\panels\foundation-rest.css', 'css\workbench\core.css', 'css\panels\features.css',
         'css\workbench\inventory.css', 'css\workbench\skins.css', 'css\workbench\entities.css',
         'css\workbench\crafting.css', 'css\workbench\skills.css', 'css\workbench\equipment-tuning.css',
-        'css\workbench\components.css', 'css\workbench\states.css', 'css\workbench\motion.css',
+        'css\workbench\components.css', 'css\workbench\character-build.css',
+        'css\workbench\states.css', 'css\workbench\motion.css',
         'css\hairdresser.css', 'css\task_panel.css', 'css\pet_panel.css', 'css\merc_panel.css',
         'css\team_panel.css',
         'lib\marked.min.js', 'help\controls.md', 'help\worldview.md', 'help\easter-eggs.md',
@@ -211,10 +212,21 @@ function Get-Cf7ProductionChecks {
         'modules\panel-scale.js', 'modules\panels-lazy-registry.js', 'modules\tooltip.js',
         'modules\icons.js', 'modules\panel-runtime.js', 'modules\workbench-lifecycle.js',
         'modules\workbench-focus.js', 'modules\workbench-primitives.js', 'modules\workbench.js',
-        'modules\workbench-components.js', 'modules\item-filter.js', 'modules\kshop-runtime.js',
+        'modules\workbench-components.js', 'modules\workbench-inspection-viewport.js',
+        'modules\character-build\character-build-mutation.js',
+        'modules\character-build-session.js',
+        'modules\character-build\character-build-action-view.js',
+        'modules\character-build\character-build-stats-view.js',
+        'modules\character-build\character-build-doll-preview.js',
+        'modules\character-build-view.js', 'modules\character-build\character-build-tuning.js',
+        'modules\character-build\character-build-pose.js',
+        'modules\character-build.js',
+        'modules\item-filter.js', 'modules\kshop-runtime.js',
         'modules\inventory-runtime.js', 'modules\inventory-ui.js', 'modules\equipment-tuning-runtime.js',
         'modules\equipment-tuning-model.js', 'modules\equipment-tuning-render.js',
-        'modules\equipment-tuning-view.js', 'modules\inventory-workbench.js', 'modules\kshop.js',
+        'modules\equipment-tuning-view.js', 'modules\inventory-tuning-scope.js',
+        'modules\inventory-storage-workbench.js',
+        'modules\inventory-workbench.js', 'modules\kshop.js',
         'modules\kshop-views.js', 'modules\kshop-cart-controller.js',
         'modules\kshop-catalog-presenter.js', 'modules\kshop-owned-inventory-presenter.js',
         'modules\kshop-tooltip-presenter.js', 'modules\inventory-workbench-config.js',
@@ -263,6 +275,8 @@ function Get-Cf7ProductionChecks {
         -Root (Join-Path $ProjectRoot 'launcher\web') -Paths $requiredWebPaths
     $checks += New-Cf7CommandCheck -Name 'workbench-css-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\check-workbench-css-bundle.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'workbench-inspection-viewport' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-workbench-inspection-viewport.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'map-lossless-webp-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-map-webp-assets.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'map-scale-experience' -FilePath $node `

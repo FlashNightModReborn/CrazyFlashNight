@@ -770,11 +770,13 @@ class org.flashNight.arki.item.ItemUtil{
     public static function submit(itemArray:Array):Boolean{
         var list = ItemUtil.contain(itemArray);
         if(list == null) return false;
+        var wrote:Boolean = false;
         //材料
         var 材料 = _root.收集品栏.材料;
         for(var name in list.材料){
             var value = list.材料[name];
             材料.addValue(name,-value);
+            wrote = true;
         }
         //情报不需要提交
         // var 情报 = _root.收集品栏.情报;
@@ -800,6 +802,7 @@ class org.flashNight.arki.item.ItemUtil{
             } else {
                 背包.addValue(i, -list.背包[i]);  // 减少数量
             }
+            wrote = true;
         }
         //药剂栏
         var 药剂栏 = _root.物品栏.药剂栏;
@@ -807,7 +810,9 @@ class org.flashNight.arki.item.ItemUtil{
             var item = 药剂栏.getItem(i);
             if(isNaN(item.value)) 药剂栏.remove(i);
             else 药剂栏.addValue(i, -list.药剂栏[i]);
+            wrote = true;
         }
+        if(wrote && _root.存档系统) _root.存档系统.dirtyMark = true;
         return true;
     }
 

@@ -11,11 +11,20 @@
     if (!workbenchApi && typeof module !== 'undefined' && module.exports) {
         workbenchApi = require('./workbench-primitives.js');
     }
-    var api = factory(workbenchApi);
+    var focusApi = root && (root.WorkbenchFocus || root.CF7 && root.CF7.WorkbenchFocus);
+    if (!focusApi && typeof module !== 'undefined' && module.exports) {
+        focusApi = require('./workbench-focus.js');
+    }
+    var api = factory(workbenchApi, focusApi);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.InventoryUI = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchApi) {
+})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchApi, WorkbenchFocus) {
     'use strict';
+
+    if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
+        throw new Error('inventory-ui.js requires workbench-focus.js');
+    }
+    var RovingGridFocus = WorkbenchFocus.RovingGridFocus;
 
     function integerOr(value, fallback) {
         value = Number(value);
@@ -190,10 +199,32 @@
         return html + '</span>';
     }
 
+    function ownedProjectionAria(item) {
+        var parts = [];
+        if (Number(item.enhancementLevel) > 1) parts.push('强化等级 ' + Number(item.enhancementLevel));
+        if (Number(item.quantity) > 1) parts.push('数量 ' + exactQuantity(item.quantity));
+        if (item.tierSlotAvailable || item.tierSlotUsed) {
+            parts.push(item.tierSlotUsed ? '装备已升阶' : '装备可升阶但尚未升阶');
+        }
+        if (item.itemKind === 'equipment') {
+            var slots = getEquipmentModSlots(item);
+            for (var index = 0; index < slots.length; index++) {
+                var slot = slots[index], label = '插件槽 ' + (index + 1) + '：';
+                if (slot.available && slot.mod) {
+                    label += String(slot.mod.name || '未知插件') + '，'
+                        + String(slot.mod.gradeLabel || '未知档级') + '，'
+                        + String(slot.mod.roleLabel || '结构与功能');
+                } else label += slot.available ? '空闲' : '不存在';
+                parts.push(label);
+            }
+        }
+        return parts.join('，');
+    }
+
     /** Shared owned-slot presentation used by shop inventory and standalone workbenches. */
     function renderOwnedSlot(containerId, slot, options) {
         options = options || {};
-        var node = document.createElement('article');
+        var node = document.createElement(options.tagName === 'span' ? 'span' : 'article');
         node.className = 'item-card item-card-owned inventory-slot-card ' + (slot.occupied ? 'occupied' : 'empty');
         node.setAttribute('data-container-id', containerId);
         node.setAttribute('data-physical-slot', slot.physicalSlot);
@@ -215,8 +246,10 @@
         if (isEquipment && item.isMaxEnhancement) node.classList.add('max-enhancement');
         var itemCard = WorkbenchApi && WorkbenchApi.ItemCard;
         var balanceAria = itemCard && itemCard.balanceAriaLabel ? itemCard.balanceAriaLabel(item) : '';
+        var projectionAria = ownedProjectionAria(item);
         node.setAttribute('aria-label', containerId + '槽位 ' + (Number(slot.physicalSlot) + 1) + '，'
-            + String(item.displayName || item.name || '未知物品') + (balanceAria ? '，' + balanceAria : ''));
+            + String(item.displayName || item.name || '未知物品')
+            + (projectionAria ? '，' + projectionAria : '') + (balanceAria ? '，' + balanceAria : ''));
         var icon = typeof options.iconHtml === 'function'
             ? options.iconHtml(item.icon || item.name, 'inventory-owned-icon') : '';
         var balanceBadge = itemCard && itemCard.renderBalanceBadge ? itemCard.renderBalanceBadge(item) : null;
@@ -255,6 +288,13 @@
         this._disabled = false;
         this._attached = false;
         this._createDOM();
+        var self = this;
+        this._pageRoving = new RovingGridFocus({
+            root:this.pageGrid,
+            columns:function() { return self.columns; },
+            itemSelector:'.inventory-page-option',
+            getKey:function(node) { return node.getAttribute('data-page'); }
+        });
         this.refresh();
     }
 
@@ -339,6 +379,8 @@
 
     InventoryWindowPager.prototype._renderMenu = function(state) {
         var self = this;
+        var activeElement = this.pageGrid.ownerDocument && this.pageGrid.ownerDocument.activeElement;
+        var restoreMenuFocus = !!(activeElement && this.pageGrid.contains(activeElement));
         this.pageGrid.innerHTML = '';
         var fragment = document.createDocumentFragment();
         for (var page = 1; page <= state.pageCount; page++) {
@@ -350,6 +392,7 @@
             button.textContent = page < 10 ? '0' + page : String(page);
             button.setAttribute('role', 'menuitemradio');
             button.setAttribute('data-page', String(page));
+            button.setAttribute('data-roving-key', String(page));
             button.setAttribute('aria-checked', page === state.page ? 'true' : 'false');
             var rangeName = state.filtered ? '匹配项' : '槽位';
             button.setAttribute('aria-label', '第 ' + page + ' 页，' + rangeName + ' ' + start + ' 至 ' + end);
@@ -363,6 +406,7 @@
             fragment.appendChild(button);
         }
         this.pageGrid.appendChild(fragment);
+        this._pageRoving.refresh({preferredKey:String(state.page), focus:restoreMenuFocus});
     };
 
     InventoryWindowPager.prototype._applyDisabled = function(state) {
@@ -383,7 +427,7 @@
         this.pageLabel.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
         if (nextOpen) {
             var current = this.menu.querySelector('.inventory-page-option.current');
-            if (current) current.focus();
+            if (current) this._pageRoving.setActive(current, {focus:true, reason:'menu-open'});
         } else if (returnFocus) {
             this.pageLabel.focus();
         }
@@ -401,19 +445,6 @@
             this.setMenuOpen(false, true);
             return;
         }
-        var options = Array.prototype.slice.call(this.menu.querySelectorAll('.inventory-page-option'));
-        if (!options.length) return;
-        var index = options.indexOf(document.activeElement);
-        var nextIndex = index < 0 ? 0 : index;
-        if (event.key === 'ArrowRight') nextIndex = Math.min(options.length - 1, nextIndex + 1);
-        else if (event.key === 'ArrowLeft') nextIndex = Math.max(0, nextIndex - 1);
-        else if (event.key === 'ArrowDown') nextIndex = Math.min(options.length - 1, nextIndex + this.columns);
-        else if (event.key === 'ArrowUp') nextIndex = Math.max(0, nextIndex - this.columns);
-        else if (event.key === 'Home') nextIndex = 0;
-        else if (event.key === 'End') nextIndex = options.length - 1;
-        else return;
-        event.preventDefault();
-        options[nextIndex].focus();
     };
 
     InventoryWindowPager.prototype.requestRelative = function(direction) {
@@ -712,7 +743,7 @@
         var slots = snapshot && snapshot.slots ? snapshot.slots : [];
         var windowSignature = snapshot ? [String(snapshot.containerId || this.containerId),
             Number(snapshot.offset || 0), Number(snapshot.limit || 0), String(snapshot.filterKey || 'all'),
-            JSON.stringify(snapshot.filterSpec || null)].join('|') : 'snapshot:none';
+            JSON.stringify(snapshot.filterSpec || null), String(snapshot.scope || 'all')].join('|') : 'snapshot:none';
         var preserveScroll = options.preserveScroll !== false && this._windowSignature === windowSignature;
         this._windowSignature = windowSignature;
         if (options.emptyText != null) this.view.renderer.options.emptyText = String(options.emptyText);

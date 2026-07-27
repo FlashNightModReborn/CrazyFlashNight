@@ -107,7 +107,7 @@ _root.gameCommands["toggleTablet"] = function() {
 
 _root.gameCommands["safeExit"] = function() {
     // 安全退出界面已迁移到 Launcher Web 侧
-    // 只触发存盘，sv:1/sv:2 通知 Launcher 面板状态
+    // 只触发存盘，sv:1/sv:2/sv:3 分别通知存盘中/成功/失败
     _root.仓库标志 = 0;
     _root.存盘标志 = 0;
     // Plan A: safeExit 必达，绕过 debounce 立即同步落盘
@@ -183,7 +183,14 @@ _root.gameCommands["openTaskUI"] = function() {
     _root.从库中加载全屏UI("任务栏界面");
 };
 
+_root.gameCommands["openMaterialUI"] = function() {
+    _root.__legacyMaterialOnly = true;
+    _root.物品栏界面._visible = true;
+    _root.物品栏界面.gotoAndStop("材料");
+};
+
 _root.gameCommands["openEquipUI"] = function() {
+    _root.__legacyMaterialOnly = false;
     _root.物品栏界面._visible = true;
     _root.物品栏界面.gotoAndStop(_root.物品栏界面.界面);
 };
@@ -266,6 +273,11 @@ _root.gameCommands["webPanelUnpause"] = function() {
     // loot socket/navigation handoff 由 LootContainerService 原子证明权威 suspend/terminal；
     // Host 的迟到 generic unpause 不得越过仍在重试的本地 transport fence。
     if (org.flashNight.arki.item.LootContainerService.hasPendingTransportDetach()) return;
+    // CharacterBuild 的 finalize receipt 不等于 Host visual-close/pause-release proof。
+    // generic close 只查询 fence，绝不替 stale build authority 结算或释放当前/后来 lease；
+    // 正常 close 与重连 recovery 只能走 Host-only characterBuildRecoverDetach。
+    if (org.flashNight.arki.item.CharacterBuildService
+            .blocksGenericPauseRelease()) return;
     if (_root._webPanelPauseLease != undefined) {
         org.flashNight.arki.pause.PauseManager.releaseLease(_root._webPanelPauseLease);
         _root._webPanelPauseLease = undefined;

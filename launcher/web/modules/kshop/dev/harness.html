@@ -26,6 +26,7 @@ html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#0507
 
 <script src="modules/asset-timeline.js"></script>
 <script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/workbench-inspection-viewport.js"></script>
 <script src="modules/equipment-inspector.js"></script>
 <script src="modules/icons.js"></script>
 <script src="modules/tooltip.js"></script>
@@ -140,6 +141,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/inventory-workbench-header.js"></script>
 <script src="modules/inventory-workbench-quick-transfer.js"></script>
 <script src="modules/inventory-workbench-owned-view.js"></script>
+<script src="modules/inventory-tuning-scope.js"></script>
+<script src="modules/inventory-storage-workbench.js"></script>
 <script src="modules/inventory-workbench.js"></script>
 <script>
 (function() {
@@ -314,15 +317,25 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && type !== '材料' && !(type === '收集品' && use === '材料');
         },
 
-        inventoryFacetTree: function(items, accessibleCapacity) {
+        itemMatchesScope: function(item, scope) {
+            if (scope !== 'equipment') return !!item;
+            return !!item && item.itemKind === 'equipment'
+                && (item.majorType === '武器' || item.majorType === '防具');
+        },
+
+        inventoryFacetTree: function(items, accessibleCapacity, scope) {
             var occupied = [];
-            for (var i=0; i<accessibleCapacity; i++) if (items[i]) occupied.push(items[i]);
+            for (var i=0; i<accessibleCapacity; i++) {
+                if (this.itemMatchesScope(items[i], scope)) occupied.push(items[i]);
+            }
             return ItemFilter.build(occupied, function(item){ return ItemFilter.catalogPath(item); });
         },
 
-        inventorySetTree: function(items, accessibleCapacity) {
+        inventorySetTree: function(items, accessibleCapacity, scope) {
             var occupied = [];
-            for (var i=0; i<accessibleCapacity; i++) if (items[i]) occupied.push(items[i]);
+            for (var i=0; i<accessibleCapacity; i++) {
+                if (this.itemMatchesScope(items[i], scope)) occupied.push(items[i]);
+            }
             return ItemFilter.buildSetTree(occupied);
         },
 
@@ -341,21 +354,26 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             var limit = Number(request.limit);
             var filterKey = String(request.filterKey || 'all');
             var filterSpec = request.filterSpec ? clone(request.filterSpec) : null;
+            var scope = String(request.scope || 'all');
             var accessibleCapacity = containerId === '战备箱' ? this.battleboxAccessibleCapacity : items.length;
             var physicalSlots = [];
             if (filterSpec && filterSpec.major !== 'all') {
                 for (var structuredPhysical=0; structuredPhysical<accessibleCapacity; structuredPhysical++) {
-                    if (items[structuredPhysical] && this.itemMatchesFilterSpec(items[structuredPhysical],filterSpec)) physicalSlots.push(structuredPhysical);
+                    if (this.itemMatchesScope(items[structuredPhysical],scope)
+                            && this.itemMatchesFilterSpec(items[structuredPhysical],filterSpec)) physicalSlots.push(structuredPhysical);
                 }
             } else if (filterKey === 'all') {
-                for (var physical=0; physical<accessibleCapacity; physical++) physicalSlots.push(physical);
+                for (var physical=0; physical<accessibleCapacity; physical++) {
+                    if (scope !== 'equipment' || this.itemMatchesScope(items[physical],scope)) physicalSlots.push(physical);
+                }
             } else {
                 for (physical=0; physical<accessibleCapacity; physical++) {
-                    if (items[physical] && this.itemMatchesFilter(items[physical],filterKey)) physicalSlots.push(physical);
+                    if (this.itemMatchesScope(items[physical],scope)
+                            && this.itemMatchesFilter(items[physical],filterKey)) physicalSlots.push(physical);
                 }
             }
-            var facetTree = this.inventoryFacetTree(items, accessibleCapacity);
-            var setTree = this.inventorySetTree(items, accessibleCapacity);
+            var facetTree = this.inventoryFacetTree(items, accessibleCapacity, scope);
+            var setTree = this.inventorySetTree(items, accessibleCapacity, scope);
             var viewCapacity = physicalSlots.length;
             if (viewCapacity <= 0) offset = 0;
             else if (offset >= viewCapacity) offset = Math.floor((viewCapacity-1)/limit)*limit;
@@ -385,6 +403,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 snapshotSeq:this.inventorySnapshotSeq,containerEpoch:this.inventoryEpochs[containerId] || 1,
                 offset:offset,limit:slots.length,slots:slots};
             if (filterSpec) snapshot.filterSpec = filterSpec;
+            if (scope === 'equipment') snapshot.scope = scope;
             return snapshot;
         },
 
@@ -1863,6 +1882,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         PanelTooltip.lastRichOptions = null;
         await Host.openWorkbench(240, 'battlebox');
+        var tuningReturnGrid = document.querySelector('.inventory-owned-backpack .inventory-owned-grid');
+        var tuningReturnCard = document.querySelector('.inventory-owned-backpack [data-physical-slot="1"]');
+        tuningReturnGrid.scrollTop = 72;
+        var tuningReturnScroll = tuningReturnGrid.scrollTop;
+        var tuningReturnKey = tuningReturnCard.getAttribute('data-workbench-key');
+        tuningReturnCard.focus({preventScroll:true});
         click('.equipment-tuning-view-switch');
         await waitFor(function(){
             return InventoryWorkbench.debugState().view === 'tuning'
@@ -1878,6 +1903,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && tuningEntryRequest && tuningEntryRequest.panelInstanceId === 'panel.harness.tuning-entry'
                 && tuningEntryRequest.payload.source.containerId === '背包',
             JSON.stringify({state:InventoryWorkbench.debugState(),request:tuningEntryRequest}));
+        var tuningScopedState = InventoryWorkbench.debugState();
+        assert('workbench-tuning-scope','调制视图只消费背包 equipment scope，且权威整理在裁剪投影中禁用',
+            tuningScopedState.coordinator.requests[0].scope === 'equipment'
+                && document.querySelectorAll('.inventory-owned-backpack .inventory-slot-card').length === 1
+                && document.querySelector('.inventory-owned-backpack .inventory-sort-commit').disabled);
         await waitFor(function(){
             var trigger = document.querySelector('.equipment-tuning-inspect-trigger');
             return trigger && !trigger.disabled && InventoryWorkbench.debugState().tuning.hasSnapshot;
@@ -1931,6 +1961,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && fastPersisted === 'fast' && fastState.modConfirmationMode === 'fast'
                 && fastState.tuning && fastState.tuning.modConfirmationMode === 'fast'
                 && InventoryWorkbench.debugState().modConfirmationMode === 'safe');
+        click('.equipment-tuning-view-switch');
+        await waitFor(function(){
+            return InventoryWorkbench.debugState().view === 'storage'
+                && InventoryWorkbench.debugState().coordinator.ready;
+        }, 700);
+        var tuningRestoredState = InventoryWorkbench.debugState();
+        assert('workbench-tuning-return','离开调制精确恢复原背包请求、滚动与焦点，并清除 return state',
+            !tuningRestoredState.coordinator.requests[0].scope
+                && tuningRestoredState.coordinator.requests[0].filterKey === 'all'
+                && !tuningRestoredState.tuningScope.hasReturnState
+                && tuningReturnGrid.scrollTop === tuningReturnScroll
+                && document.activeElement.getAttribute('data-workbench-key') === tuningReturnKey);
         Panels.close();
 
         await Host.openWorkbench(240);
@@ -2203,7 +2245,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             onOpen:function(el, initData) { returnedCraftingInit = clone(initData || {}); }
         });
         Host.reset();
-        Panels.open('workbench', {mode:'runtime',profile:'battlebox',returnTo:{panel:'crafting',initData:{
+        Panels.open('workbench', {mode:'runtime',profile:'battlebox',panelInstanceId:'panel.harness.return-target',returnTo:{panel:'crafting',initData:{
             category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
         }}});
         await waitFor(function(){ return Panels.getActive() === 'workbench'

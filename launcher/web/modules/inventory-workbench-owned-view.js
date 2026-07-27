@@ -14,9 +14,62 @@
         return count;
     }
 
+    function primitiveProjection(item) {
+        var projection = {};
+        item = item || {};
+        for (var key in item) {
+            if (!Object.prototype.hasOwnProperty.call(item, key)) continue;
+            var value = item[key];
+            if (value == null || typeof value === 'string' || typeof value === 'number'
+                    || typeof value === 'boolean') projection[key] = value;
+        }
+        return projection;
+    }
+
+    function basicTooltip(item, escapeHtml) {
+        item = item || {};
+        var safe = typeof escapeHtml === 'function' ? escapeHtml : String;
+        var type = item.majorType || item.use || item.itemKind || '物品';
+        return '<div class="kshop-tt-header"><b>' + safe(item.displayName || item.name || '未知物品') + '</b></div>'
+            + '<div class="kshop-tt-divider"></div><span class="kshop-tt-dim">类型</span> ' + safe(type) + '<br>'
+            + (Number(item.quantity) > 1 ? '<span class="kshop-tt-dim">数量</span> ' + Number(item.quantity) + '<br>' : '')
+            + (Number(item.enhancementLevel) > 0 ? '<span class="kshop-tt-dim">强化</span> +' + Number(item.enhancementLevel) + '<br>' : '')
+            + '<div class="kshop-tt-loading">加载中…</div>';
+    }
+
+    function richTooltip(item, data, tooltip) {
+        item = item || {};
+        data = data || {};
+        var iconKey = data.iconName || item.icon || item.name;
+        return tooltip.buildItemRichHtml({
+            iconHtml:tooltip.dynamicIconHtml(iconKey),
+            iconUrl:tooltip.staticIconUrl(iconKey),
+            introHTML:data.introHTML || '',
+            descHTML:data.descHTML || '',
+            rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
+            layoutType:tooltip.inferLayoutType(data.itemType || item.majorType || item.use)
+        });
+    }
+
+    function iconHtml(iconName, className, icons) {
+        var html = icons && icons.html
+            ? icons.html(iconName, className || 'kshop-icon', ' onerror="this.style.display=\'none\'"') : '';
+        return html || '<div class="' + (className || 'kshop-icon') + ' kshop-icon-placeholder"></div>';
+    }
+
+    function errorMessage(error) {
+        if (error === 'slot_locked') return '该容器槽位尚未解锁。';
+        if (error === 'stale_state') return '库存已经变化，请重试。';
+        if (error === 'client_timeout' || error === 'timeout') return '库存响应超时，请重试。';
+        if (error === 'inventory_refresh_failed') return '库存同步失败，请重试。';
+        return '操作失败，请重试。';
+    }
+
     function presentationFor(containerId, snapshot) {
-        var filtered = snapshot && String(snapshot.filterKey || 'all') !== 'all';
-        var emptyText = filtered ? '当前分类暂无物品' : '本页暂无物品';
+        var equipmentScope = snapshot && String(snapshot.scope || 'all') === 'equipment';
+        var filtered = snapshot && (String(snapshot.filterKey || 'all') !== 'all' || equipmentScope);
+        var emptyText = equipmentScope ? '背包中暂无可调制装备'
+            : filtered ? '当前分类暂无物品' : '本页暂无物品';
         if (containerId === '战备箱' && snapshot && Number(snapshot.accessibleCapacity) <= 0) {
             emptyText = '战备箱尚未解锁';
         }
@@ -134,6 +187,15 @@
         return {root:toolbar, controls:controls};
     }
 
-    return {countOccupied:countOccupied, presentationFor:presentationFor,
-        createView:createView, createToolbar:createToolbar};
+    return {
+        countOccupied:countOccupied,
+        presentationFor:presentationFor,
+        primitiveProjection:primitiveProjection,
+        basicTooltip:basicTooltip,
+        richTooltip:richTooltip,
+        iconHtml:iconHtml,
+        errorMessage:errorMessage,
+        createView:createView,
+        createToolbar:createToolbar
+    };
 });

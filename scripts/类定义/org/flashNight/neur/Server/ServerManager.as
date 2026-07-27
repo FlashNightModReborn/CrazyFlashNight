@@ -661,6 +661,25 @@ class org.flashNight.neur.Server.ServerManager {
             trace("[LootContainerService] detach proof returned with pause lease; fail closed");
         }
 
+        // CharacterBuild 没有远端 UI 回退。断线时在清 pending callback 前只同步完成
+        // exact finalize/persist，并保留 session 开始时捕获的 pause lease。AS2 此刻无法
+        // 证明 Host visual 已退场；真正释放必须等待重连后的 Host-only recoverDetach。
+        try {
+            var characterBuildDetach:Object =
+                org.flashNight.arki.item.CharacterBuildService
+                    .reconcileSocketDetach();
+            if (characterBuildDetach != null
+                    && characterBuildDetach.handled === true
+                    && characterBuildDetach.success !== true) {
+                trace("[CharacterBuildService] socket detach not settled: "
+                    + (characterBuildDetach.error == undefined
+                        ? "unknown" : characterBuildDetach.error));
+            }
+        } catch (characterBuildReconcileError) {
+            trace("[CharacterBuildService] socket detach exception: "
+                + characterBuildReconcileError);
+        }
+
         // 清理所有 pending callback（断线后不会再收到响应）
         for (var k:String in _pendingCallbacks) {
             _pendingCallbacks[k].cb({success: false, error: "socket closed"});

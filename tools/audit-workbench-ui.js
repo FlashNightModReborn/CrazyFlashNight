@@ -67,6 +67,8 @@ var REQUIRED_FILES = [
     'launcher/web/css/workbench/skills.css',
     'launcher/web/css/workbench/equipment-tuning.css',
     'launcher/web/css/workbench/components.css',
+    'launcher/web/css/workbench/character-build.css',
+    'launcher/web/css/workbench/character-build-stats.css',
     'launcher/web/css/workbench/states.css',
     'launcher/web/css/workbench/motion.css',
     'launcher/web/modules/panel-scale.js',
@@ -75,13 +77,25 @@ var REQUIRED_FILES = [
     'launcher/web/modules/workbench-focus.js',
     'launcher/web/modules/workbench-primitives.js',
     'launcher/web/modules/workbench-components.js',
+    'launcher/web/modules/workbench-inspection-viewport.js',
     'launcher/web/modules/workbench.js',
+    'launcher/web/modules/character-build/character-build-mutation.js',
+    'launcher/web/modules/character-build/character-build-action-view.js',
+    'launcher/web/modules/character-build/character-build-stats-view.js',
+    'launcher/web/modules/character-build/character-build-doll-preview.js',
+    'launcher/web/modules/character-build/character-build-tuning.js',
+    'launcher/web/modules/character-build/character-build-pose.js',
+    'launcher/web/modules/character-build-session.js',
+    'launcher/web/modules/character-build-view.js',
+    'launcher/web/modules/character-build.js',
     'launcher/web/modules/inventory-ui.js',
     'launcher/web/modules/inventory-runtime.js',
     'launcher/web/modules/inventory-workbench-config.js',
     'launcher/web/modules/inventory-workbench-header.js',
     'launcher/web/modules/inventory-workbench-quick-transfer.js',
     'launcher/web/modules/inventory-workbench-owned-view.js',
+    'launcher/web/modules/inventory-tuning-scope.js',
+    'launcher/web/modules/inventory-storage-workbench.js',
     'launcher/web/modules/kshop-cart-controller.js',
     'launcher/web/modules/kshop-catalog-presenter.js',
     'launcher/web/modules/kshop-owned-inventory-presenter.js',
@@ -101,12 +115,17 @@ var REQUIRED_FILES = [
     'tools/test-workbench-focus-integration.js',
     'tools/test-workbench-primitives.js',
     'tools/test-workbench-components.js',
+    'tools/test-workbench-inspection-viewport.js',
     'tools/test-inventory-runtime.js',
     'tools/test-inventory-workbench-modules.js',
+    'tools/test-character-build-session.js',
     'tools/test-kshop-presenters.js',
     'tools/test-npcshop-secondary-pages.js',
     'tools/test-skills-ui-modules.js',
-    'tools/test-equipment-tuning-model.js'
+    'tools/test-equipment-tuning-model.js',
+    'tools/run-character-build-harness.js',
+    'tools/run-character-build-dressup-harness.js',
+    'tools/run-character-build-workbench-harness.js'
 ];
 
 REQUIRED_FILES.forEach(function (rel) {
@@ -164,7 +183,7 @@ if (exists('launcher/web/css/panels.css')) {
     var cleanCss = css.replace(/\/\*[\s\S]*?\*\//g, function (comment) {
         return comment.replace(/[^\r\n]/g, ' ');
     });
-    var relevant = /(?:workbench|item-card|item-grid|inventory-|kshop-|npcshop-|crafting-|skills-|equipment-tuning-)/;
+    var relevant = /(?:workbench|item-card|item-grid|inventory-|kshop-|npcshop-|crafting-|skills-|equipment-tuning-|character-build-)/;
     var ruleRe = /([^{}]+)\{([^{}]*)\}/g;
     var match;
     var transitionAll = [];
@@ -188,6 +207,49 @@ if (exists('launcher/web/css/panels.css')) {
     metrics.fontBelow9Rules = undersizedType.length;
     if (transitionAll.length) finding('warning', 'WB101', 'workbench-related rules still use transition:all', cssRel, transitionAll[0].line, {count:transitionAll.length, samples:transitionAll.slice(0, 8)});
     if (undersizedType.length) finding('warning', 'WB102', 'workbench-related rules still contain typography below 9px', cssRel, undersizedType[0].line, {count:undersizedType.length, samples:undersizedType.slice(0, 10)});
+
+    var statsCssRel = 'launcher/web/css/workbench/character-build-stats.css';
+    if (exists(statsCssRel)) {
+        var statsCss = read(statsCssRel);
+        var statsCleanCss = statsCss.replace(/\/\*[\s\S]*?\*\//g, function (comment) {
+            return comment.replace(/[^\r\n]/g, ' ');
+        });
+        var statsRuleRe = /([^{}]+)\{([^{}]*)\}/g;
+        var statsMatch;
+        var statsUndersizedType = [];
+        while ((statsMatch = statsRuleRe.exec(statsCleanCss)) !== null) {
+            var statsSelector = statsMatch[1].trim();
+            var statsBody = statsMatch[2];
+            var statsSizeRe = /font-size\s*:\s*([0-9.]+)px/gi;
+            var statsSizeMatch;
+            while ((statsSizeMatch = statsSizeRe.exec(statsBody)) !== null) {
+                if (Number(statsSizeMatch[1]) < 11) statsUndersizedType.push({
+                    selector:statsSelector.slice(0, 160),
+                    size:Number(statsSizeMatch[1]),
+                    line:lineOf(statsCleanCss, statsMatch.index)
+                });
+            }
+            var statsShorthandRe = /font\s*:[^;{}]*?([0-9.]+)px(?:\s*\/|\/|\s)/gi;
+            while ((statsSizeMatch = statsShorthandRe.exec(statsBody)) !== null) {
+                if (Number(statsSizeMatch[1]) < 11) statsUndersizedType.push({
+                    selector:statsSelector.slice(0, 160),
+                    size:Number(statsSizeMatch[1]),
+                    line:lineOf(statsCleanCss, statsMatch.index)
+                });
+            }
+        }
+        var statsRawColors = statsCleanCss.match(
+            /(?:#[0-9a-f]{3,8}\b|rgba?\(\s*(?:[0-9]|\.[0-9]))/gi) || [];
+        metrics.characterStatsFontBelow11Rules = statsUndersizedType.length;
+        metrics.characterStatsRawColorLiterals = statsRawColors.length;
+        if (statsUndersizedType.length) finding('warning', 'WB119',
+            'character stats contains player-facing typography below 11px',
+            statsCssRel, statsUndersizedType[0].line,
+            {count:statsUndersizedType.length, samples:statsUndersizedType.slice(0, 10)});
+        if (statsRawColors.length) finding('warning', 'WB120',
+            'character stats bypasses semantic or legacy-spectrum color tokens',
+            statsCssRel, null, {count:statsRawColors.length});
+    }
 
     var dlsLiterals = [];
     resolvedCss.files.slice(1).forEach(function (file) {
@@ -224,6 +286,10 @@ if (exists('launcher/web/modules/workbench.js')) {
     var hasFocusTrap = /FocusScope/.test(focus) && /keydown/.test(focus) && /focusin/.test(focus);
     var hasInert = /\.inert\s*=|setAttribute\(['"]inert['"]/.test(focus);
     warnUnless(hasFocusTrap && hasInert && /new FocusScope/.test(workbench), 'WB107', 'shared WorkbenchDialog focus trap and background inert contract is not fully implemented', focusRel);
+    warnUnless(/function RovingGridFocus\(/.test(focus)
+            && /RovingGridFocus:RovingGridFocus/.test(focus)
+            && /getNeighbor/.test(focus),
+        'WB117', 'shared roving-grid focus must preserve stable keys and explicit adjacency', focusRel);
     var lifecycleRel = 'launcher/web/modules/workbench-lifecycle.js';
     var lifecycle = exists(lifecycleRel) ? read(lifecycleRel) : '';
     warnUnless(/DisposableStack/.test(workbench) || /DisposableStack/.test(lifecycle), 'WB108', 'shared DisposableStack lifecycle primitive is not implemented', lifecycleRel);
@@ -236,11 +302,56 @@ warnUnless(/ChoiceGroup\s*:\s*ChoiceGroup/.test(components), 'WB110', 'shared Ch
 warnUnless(/CommitBar\s*:\s*CommitBar/.test(components), 'WB111', 'shared CommitBar primitive is not exported from the workbench layer', componentRel);
 warnUnless(/new FocusScope/.test(components) && /_requestClose\('escape'/.test(components), 'WB116', 'SecondaryPage must share the canonical nested focus scope and Escape close path', componentRel);
 
+var inspectionViewportRel = 'launcher/web/modules/workbench-inspection-viewport.js';
+var inspectionViewport = exists(inspectionViewportRel) ? read(inspectionViewportRel) : '';
+expect(/function Camera\(/.test(inspectionViewport)
+        && /Camera:Camera/.test(inspectionViewport)
+        && /create:function\(options\)/.test(inspectionViewport),
+    'WB032', 'shared inspection viewport must export the camera factory',
+    inspectionViewportRel);
+expect(/Camera\.prototype\.activate/.test(inspectionViewport)
+        && /Camera\.prototype\.deactivate/.test(inspectionViewport)
+        && /Camera\.prototype\.destroy/.test(inspectionViewport)
+        && /target\.style\.transform/.test(inspectionViewport)
+        && !/viewport\.style\.transform/.test(inspectionViewport),
+    'WB033', 'inspection viewport must own a target-only, deterministic lifecycle',
+    inspectionViewportRel);
+if (inspectionViewport) {
+    expect(exists('tools/test-workbench-inspection-viewport.js'),
+        'WB034', 'inspection viewport needs a pure Node regression entry',
+        'tools/test-workbench-inspection-viewport.js');
+}
+[
+    'launcher/web/modules/crafting/dev/harness.html',
+    'launcher/web/modules/kshop/dev/harness.html',
+    'launcher/web/modules/equipment-inspector-review/dev/review.html',
+    'launcher/web/modules/crafting-product-review/dev/render-harness.html'
+].forEach(function (rel) {
+    var source = exists(rel) ? read(rel) : '';
+    var cameraAt = source.indexOf('workbench-inspection-viewport.js');
+    var inspectorAt = source.indexOf('equipment-inspector.js');
+    expect(cameraAt >= 0 && inspectorAt > cameraAt,
+        'WB037', 'EquipmentInspector browser harnesses must load the shared viewport first',
+        rel);
+});
+
 var moduleThresholds = {
     'launcher/web/modules/kshop.js':1200,
     'launcher/web/modules/skills.js':1200,
     'launcher/web/modules/equipment-tuning-view.js':1200,
-    'launcher/web/modules/inventory-workbench.js':1000,
+    'launcher/web/modules/workbench-inspection-viewport.js':420,
+    'launcher/web/modules/character-build/character-build-mutation.js':260,
+    'launcher/web/modules/character-build/character-build-action-view.js':180,
+    'launcher/web/modules/character-build/character-build-stats-view.js':360,
+    'launcher/web/modules/character-build/character-build-doll-preview.js':340,
+    'launcher/web/modules/character-build/character-build-tuning.js':380,
+    'launcher/web/modules/character-build/character-build-pose.js':90,
+    'launcher/web/modules/character-build-session.js':700,
+    'launcher/web/modules/character-build-view.js':760,
+    'launcher/web/modules/character-build.js':550,
+    'launcher/web/modules/inventory-tuning-scope.js':200,
+    'launcher/web/modules/inventory-storage-workbench.js':900,
+    'launcher/web/modules/inventory-workbench.js':550,
     'launcher/web/modules/npcshop.js':1000,
     'launcher/web/modules/workbench.js':1000
 };
@@ -257,7 +368,10 @@ Object.keys(moduleThresholds).forEach(function (rel) {
     'launcher/web/modules/npcshop/dev/harness.html',
     'launcher/web/modules/crafting/dev/harness.html',
     'launcher/web/modules/skills/dev/harness.html',
-    'launcher/web/modules/equipment-tuning/dev/harness.html'
+    'launcher/web/modules/equipment-tuning/dev/harness.html',
+    'launcher/web/modules/character-build/dev/harness.html',
+    'launcher/web/modules/character-build/dev/workbench-harness.html',
+    'launcher/web/modules/dressup/dev/character-build-combination-harness.html'
 ].forEach(function (rel) {
     expect(exists(rel), 'WB016', 'workbench feature has no browser harness entry', rel);
 });
@@ -327,12 +441,32 @@ if (exists(registryRel)) {
         'modules/kshop.js'
     ], 'WB022', 'KShop presenter modules must load before the facade', registryRel);
     expectOrdered(lazyBlock('workbench'), [
+        'modules/dressup-doll-renderer.js',
+        'modules/workbench-inspection-viewport.js',
+        'modules/equipment-inspector.js',
         'modules/inventory-workbench-config.js',
         'modules/inventory-workbench-header.js',
         'modules/inventory-workbench-quick-transfer.js',
         'modules/inventory-workbench-owned-view.js',
+        'modules/inventory-tuning-scope.js',
+        'modules/inventory-storage-workbench.js',
+        'modules/character-build/character-build-mutation.js',
+        'modules/character-build-session.js',
+        'modules/character-build/character-build-action-view.js',
+        'modules/character-build/character-build-stats-view.js',
+        'modules/character-build/character-build-doll-preview.js',
+        'modules/character-build-view.js',
+        'modules/character-build/character-build-tuning.js',
+        'modules/character-build/character-build-pose.js',
+        'modules/character-build.js',
         'modules/inventory-workbench.js'
     ], 'WB023', 'inventory workbench feature modules must load before the facade', registryRel);
+    expectOrdered(lazyBlock('crafting'), [
+        'modules/dressup-doll-renderer.js',
+        'modules/workbench-inspection-viewport.js',
+        'modules/equipment-inspector.js',
+        'modules/crafting-inspector.js'
+    ], 'WB035', 'crafting inspection consumers must load after the shared viewport', registryRel);
     expectOrdered(lazyBlock('npcshop'), [
         'modules/npcshop-secondary-pages.js',
         'modules/npcshop.js'
@@ -365,6 +499,10 @@ if (exists(buildRel) && exists(releasePolicyRel)) {
     expect(releasePolicySource.indexOf('tools/check-workbench-css-bundle.js') !== -1
             && releasePolicySource.indexOf("'workbench-css-closure'") !== -1,
         'WB028', 'Launcher release policy must execute the workbench CSS import/asset closure gate', releasePolicyRel);
+    expect(releasePolicySource.indexOf('tools/test-workbench-inspection-viewport.js') !== -1
+            && releasePolicySource.indexOf("'workbench-inspection-viewport'") !== -1,
+        'WB036', 'Launcher release policy must execute the shared inspection viewport regression gate',
+        releasePolicyRel);
 }
 
 [
@@ -373,7 +511,16 @@ if (exists(buildRel) && exists(releasePolicyRel)) {
     'launcher/web/modules/crafting-runtime.js', 'launcher/web/modules/crafting.js',
     'launcher/web/modules/skills-runtime.js', 'launcher/web/modules/skills.js',
     'launcher/web/modules/equipment-tuning-runtime.js', 'launcher/web/modules/equipment-tuning-view.js',
-    'launcher/web/modules/inventory-runtime.js', 'launcher/web/modules/inventory-workbench.js'
+    'launcher/web/modules/character-build-session.js',
+    'launcher/web/modules/character-build-view.js',
+    'launcher/web/modules/character-build/character-build-stats-view.js',
+    'launcher/web/modules/character-build/character-build-doll-preview.js',
+    'launcher/web/modules/character-build/character-build-tuning.js',
+    'launcher/web/modules/character-build/character-build-pose.js',
+    'launcher/web/modules/character-build.js',
+    'launcher/web/modules/inventory-runtime.js', 'launcher/web/modules/inventory-tuning-scope.js',
+    'launcher/web/modules/inventory-storage-workbench.js',
+    'launcher/web/modules/inventory-workbench.js'
 ].forEach(function (rel) {
     if (!exists(rel)) return;
     expect(!/addMessageListener\s*\(/.test(read(rel)), 'WB026', 'domain modules must not install direct Bridge response listeners outside PanelResponseRouter', rel);

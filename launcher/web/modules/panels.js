@@ -17,6 +17,7 @@ var Panels = (function() {
     // is applied both to an already-resolved spec and to future register() calls.
     var _registrationDecorators = {};
     var _active = null;
+    var _activePanelInstanceId = null;
     var _container, _backdrop, _content;
     // 所有生产 Panel 共用的最低资源门：物品 / 装备 / 奖励图标 manifest。
     // icons.js 本身是 boot 脚本，但 manifest 是异步加载；若不在生命周期层拦住首次 open，
@@ -26,6 +27,11 @@ var Panels = (function() {
     // _pendingOpen：required-assets / lazy 加载期间记录最新 open 请求；中途若被 close/切面板，
     //   这里被覆盖或清空。完成时按当前值决定是否真正打开，避免已关闭面板被异步拉起。
     var _pendingOpen = null;
+
+    function readPanelInstanceId(initData) {
+        var value = initData && initData.panelInstanceId;
+        return typeof value === 'string' && value ? value : '';
+    }
 
     function applyRegistrationDecorators(id, opts) {
         var decorators = _registrationDecorators[id];
@@ -65,15 +71,14 @@ var Panels = (function() {
             if (pending.id === 'skills') {
                 // skills close 是独立的四键 exact envelope。即使面板尚未完成 lazy
                 // 注册，也要用 Host 下发的实例撤销教师 capability，不能夹带 reason。
-                closeMessage.panelInstanceId = String(pending.initData && pending.initData.panelInstanceId || '');
+                closeMessage.panelInstanceId = readPanelInstanceId(pending.initData);
             } else {
                 closeMessage.reason = reason || 'lazy_cancel';
-                if (pending.id === 'loot') {
-                    // loot 由 Host 的 tracked panelInstanceId 持有暂停租约。即使依赖尚未
-                    // 加载完成，取消也必须携带 exact instance，供 Host 只做视觉解绑；
-                    // 缺失或过期实例会由 Host fail closed，绝不能退回普通 close/unpause。
-                    closeMessage.panelInstanceId = String(
-                        pending.initData && pending.initData.panelInstanceId || '');
+                if (pending.id === 'loot' || pending.id === 'workbench') {
+                    // capability-bound workbench 与 tracked loot 都必须用 Host 下发的 exact
+                    // instance 撤销 pending open。缺失或过期实例由 Host fail closed，
+                    // 不能退回只凭 panel name 的普通 close。
+                    closeMessage.panelInstanceId = readPanelInstanceId(pending.initData);
                 }
             }
             Bridge.send(closeMessage);
@@ -85,7 +90,7 @@ var Panels = (function() {
         _container = document.getElementById('panel-container');
         _backdrop  = document.getElementById('panel-backdrop');
         _content   = document.getElementById('panel-content');
-        _backdrop.addEventListener('click', function() { triggerRequestClose(); });
+        _backdrop.addEventListener('click', function() { triggerRequestClose('backdrop'); });
         // 尽早预热；open() 仍会等待该门完成，因此即使 C# 紧接 ready 下发 open 也不会抢跑。
         ensureRequiredAssets();
     }
@@ -126,8 +131,12 @@ var Panels = (function() {
 
     function _doOpen(id, initData) {
         if (_active === id) {
+            _activePanelInstanceId = readPanelInstanceId(initData);
             var activePanel = _registry[id];
-            if (activePanel && activePanel.onRebind) activePanel.onRebind(activePanel._el, initData);
+            if (activePanel && activePanel.onRebind
+                    && activePanel.onRebind(activePanel._el, initData) === false) {
+                rejectPanelMount(id, activePanel, initData);
+            }
             return;
         }
         if (_active) close();
@@ -141,11 +150,38 @@ var Panels = (function() {
         _container.style.display = '';
         _container.setAttribute('data-panel', id);
         _content.setAttribute('data-panel', id);
-        if (panel.onOpen) panel.onOpen(panel._el, initData);
+        if (panel.onOpen && panel.onOpen(panel._el, initData) === false) {
+            rejectPanelMount(id, panel, initData);
+            return;
+        }
         _active = id;
+        _activePanelInstanceId = readPanelInstanceId(initData);
         setTimeout(function() {
             if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
         }, 50);
+    }
+
+    function rejectPanelMount(id, panel, initData) {
+        if (panel && panel._el) panel._el.style.display = 'none';
+        _container.style.display = 'none';
+        _container.removeAttribute('data-panel');
+        _content.removeAttribute('data-panel');
+        _active = null;
+        _activePanelInstanceId = null;
+        if (panel && panel.onClose) panel.onClose();
+        if (id === 'workbench') {
+            Bridge.send({type:'panel', cmd:'close', panel:'workbench',
+                reason:'mount_failed', panelInstanceId:readPanelInstanceId(initData)});
+        }
+    }
+
+    function rejectActiveMount(id, panelInstanceId) {
+        if (_active !== id || !panelInstanceId
+                || _activePanelInstanceId !== String(panelInstanceId)) return false;
+        rejectPanelMount(id, _registry[id], {
+            panelInstanceId:String(panelInstanceId)
+        });
+        return true;
     }
 
     function openAfterRequiredAssets(id) {
@@ -157,7 +193,7 @@ var Panels = (function() {
             // tracked loot 可能已经被 Host 标记为 OpenPosted 并持有统一 pause。这里不能
             // 静默清 pending；必须携 exact panelInstanceId 回告视觉解绑。普通 panel 保持
             // 既有清理语义，避免把本修复扩张成其他协议的行为变化。
-            if (id === 'loot') cancelPendingOpen(true, 'mount_failed');
+            if (id === 'loot' || id === 'workbench') cancelPendingOpen(true, 'mount_failed');
             else _pendingOpen = null;
             return;
         }
@@ -202,7 +238,7 @@ var Panels = (function() {
         console.log('[Panels] open called: id=' + id + ', _active=' + _active + ', registered=' + !!_registry[id]);
         if (!_registry[id]) {
             console.error('[Panels] panel not registered: ' + id);
-            if (id === 'loot') {
+            if (id === 'loot' || id === 'workbench') {
                 // Host 的 tracked open 已经携带 exact identity；registry 缺失仍须走统一
                 // pending-cancel 路径发五键 close，否则 Host 会永远停在 OpenPosted/pause。
                 _pendingOpen = { id: id, initData: initData };
@@ -215,8 +251,7 @@ var Panels = (function() {
         // receive a new Host capability/session (skills manage <-> trainer) opt into an
         // explicit rebind hook so the existing pause lease and DOM host stay in place.
         if (_active === id) {
-            var activePanel = _registry[id];
-            if (activePanel && activePanel.onRebind) activePanel.onRebind(activePanel._el, initData);
+            _doOpen(id, initData);
             return;
         }
 
@@ -226,9 +261,9 @@ var Panels = (function() {
         ensureRequiredAssets(function() { openAfterRequiredAssets(id); });
     }
 
-    function close() {
+    function close(preservePendingOpen) {
         // 若 lazy panel 仍在加载，取消挂起的打开
-        if (_pendingOpen) cancelPendingOpen(false, 'panel_close');
+        if (_pendingOpen && !preservePendingOpen) cancelPendingOpen(false, 'panel_close');
         if (!_active) return;
         var panel = _registry[_active];
         if (panel && panel._el) panel._el.style.display = 'none';
@@ -236,6 +271,7 @@ var Panels = (function() {
         _container.removeAttribute('data-panel');
         _content.removeAttribute('data-panel');
         _active = null;
+        _activePanelInstanceId = null;
         // onClose：任何关闭路径（C# close / finishClose / 切换面板）都要触发，
         // 用于 observer/listener/rAF 清理。onForceClose 仍在 force_close 分支额外触发，
         // 语义窄化为"C# 强关时的状态复位"。
@@ -245,9 +281,9 @@ var Panels = (function() {
         }, 50);
     }
 
-    function triggerRequestClose() {
+    function triggerRequestClose(reason) {
         if (_active && _registry[_active] && _registry[_active].onRequestClose) {
-            _registry[_active].onRequestClose();
+            _registry[_active].onRequestClose(reason || 'close');
         } else if (_pendingOpen) {
             // Loot 尚未完成 required-assets/lazy mount 时没有 authorityRevision/closeLease，
             // 因而不能把 ESC/backdrop 伪装成故障解绑，也不能猜测普通 close 写入。保持
@@ -294,6 +330,62 @@ var Panels = (function() {
         if (data.cmd === 'open') open(data.panel, data.initData);
         else if (data.cmd === 'close') close();
         else if (data.cmd === 'force_close') {
+            var targetsWorkbench = data && data.panel === 'workbench';
+            var activeWorkbench = _active === 'workbench';
+            var pendingWorkbench = _pendingOpen && _pendingOpen.id === 'workbench';
+            // A generic Host disconnect still belongs to an already-mounted ordinary panel.
+            // close() also cancels any pending replacement so it cannot reopen after the fault.
+            if (!targetsWorkbench && _active && !activeWorkbench) {
+                var ordinaryPanel = _registry[_active];
+                close();
+                if (ordinaryPanel && ordinaryPanel.onForceClose) ordinaryPanel.onForceClose();
+                return;
+            }
+            if (targetsWorkbench) {
+                var exactInstance = data && typeof data.panelInstanceId === 'string'
+                    ? data.panelInstanceId : '';
+                var pendingInstance = pendingWorkbench
+                    ? readPanelInstanceId(_pendingOpen.initData) : '';
+                var activeExact = !!exactInstance && activeWorkbench && !!_activePanelInstanceId
+                    && exactInstance === _activePanelInstanceId;
+                var pendingExact = !!exactInstance && pendingWorkbench && !!pendingInstance
+                    && exactInstance === pendingInstance;
+                var validReason = data && typeof data.reason === 'string' && !!data.reason;
+                // capability-bound workbench 不接受无目标广播。旧实例的延迟强关也不能
+                // 清掉已经 rebind/mount 的 replacement。
+                if (!validReason || (!activeExact && !pendingExact)) return;
+                if (pendingExact) cancelPendingOpen(false, 'force_close');
+                // A targeted failure of the pending workbench replacement also invalidates an
+                // ordinary panel that is still mounted underneath the switch.
+                if (!activeExact && _active && !activeWorkbench) {
+                    var replacedOrdinaryPanel = _registry[_active];
+                    close();
+                    if (replacedOrdinaryPanel && replacedOrdinaryPanel.onForceClose) {
+                        replacedOrdinaryPanel.onForceClose();
+                    }
+                    return;
+                }
+                if (!activeExact) return;
+                var exactPanel = _registry[_active];
+                // 保留不同实例的 pending replacement；只关闭 exact active instance。
+                close(true);
+                if (exactPanel && exactPanel.onForceClose) exactPanel.onForceClose();
+                return;
+            }
+            // A generic fault normally cannot close a capability-bound workbench. During an
+            // in-flight switch to an ordinary panel, however, it must cancel that replacement
+            // and clear the old mounted workbench as one failed transition.
+            if (activeWorkbench) {
+                if (!_pendingOpen || pendingWorkbench) return;
+                var switchingWorkbenchPanel = _registry[_active];
+                cancelPendingOpen(false, 'force_close');
+                close();
+                if (switchingWorkbenchPanel && switchingWorkbenchPanel.onForceClose) {
+                    switchingWorkbenchPanel.onForceClose();
+                }
+                return;
+            }
+            if (pendingWorkbench) return;
             var panel = _active ? _registry[_active] : null;
             close();
             if (panel && panel.onForceClose) panel.onForceClose();
@@ -309,7 +401,7 @@ var Panels = (function() {
             if (OverlayViewportMetrics.schedule) OverlayViewportMetrics.schedule('panel_viewport_set');
         }
     });
-    Bridge.on('panel_esc', triggerRequestClose);
+    Bridge.on('panel_esc', function() { triggerRequestClose('escape'); });
 
     return {
         register: register,
@@ -320,6 +412,7 @@ var Panels = (function() {
         },
         open: open,
         close: close,
+        rejectActiveMount: rejectActiveMount,
         isOpen: function() { return _active !== null; },
         getActive: function() { return _active; },
         requiredAssetsReady: function() { return _requiredAssetsState === 'ready'; },

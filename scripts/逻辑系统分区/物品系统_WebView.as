@@ -4,3 +4,4 @@
 InventoryPanelService.install();
 EquipmentTuningService.install();
 LootContainerService.install();
+org.flashNight.arki.item.CharacterBuildService.install();

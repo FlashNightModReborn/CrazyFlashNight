@@ -148,6 +148,132 @@
 .kshop-workbench[data-workbench-skin="shop"] .workbench-modal { background:#0a0f11; border-color:rgba(var(--dls-crystal-rgb),.38); border-top-color:var(--dls-crystal); clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px)); }
 .kshop-workbench[data-workbench-skin="shop"] .workbench-modal-action.primary { color:#050b0d; background:var(--dls-crystal); border-color:#a6f0ff; }
 
+/* ── Player equipment / profile DLS interface ──
+   This is the protagonist-facing resonance system, not the commercial KShop
+   skin. Item filtering keeps its neutral component semantics. */
+.kshop-workbench[data-workbench-skin="character"] {
+    --wb-scrollbar-track:rgba(4,10,13,.9);
+    --wb-scrollbar-thumb:rgba(var(--dls-crystal-rgb),.22);
+    --wb-scrollbar-thumb-border:rgba(var(--dls-crystal-rgb),.38);
+    --wb-scrollbar-thumb-hover:rgba(var(--dls-crystal-rgb),.5);
+    --wb-bg:#05090c;
+    --wb-surface:#091116;
+    --wb-surface-2:#0d1920;
+    --wb-line:rgba(var(--dls-crystal-rgb),.24);
+    --wb-line-soft:rgba(var(--dls-crystal-rgb),.12);
+    --wb-text:#dff4f8;
+    --wb-muted:#71909a;
+    --wb-accent:var(--dls-crystal);
+    --wb-accent-soft:var(--dls-crystal-soft);
+    /* Legacy PlayerInfo weight spectrum. These three visualization colors are
+       intentionally local: they are thresholds, not generic UI states. */
+    --character-weight-band-light:#28e329;
+    --character-weight-band-normal:#f1ed25;
+    --character-weight-band-heavy:#ff3a16;
+    color:var(--wb-text);
+    background:
+        radial-gradient(circle at 18% 12%,rgba(var(--dls-crystal-rgb),.11),transparent 31%),
+        radial-gradient(circle at 82% 88%,rgba(var(--dls-crystal-rgb),.045),transparent 30%),
+        linear-gradient(180deg,rgba(7,15,19,.98),rgba(3,7,9,.99));
+    border-color:rgba(var(--dls-crystal-rgb),.24);
+    font-family:"Microsoft YaHei",sans-serif;
+}
+.kshop-workbench[data-workbench-skin="character"]::after {
+    background:
+        repeating-linear-gradient(0deg,transparent 0 3px,rgba(var(--dls-crystal-rgb),.014) 3px 4px),
+        repeating-linear-gradient(135deg,transparent 0 32px,rgba(var(--dls-crystal-rgb),.009) 32px 33px);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.035);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-header {
+    background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.105),rgba(7,15,19,.9) 44%,rgba(4,8,10,.94));
+    border-bottom-color:rgba(var(--dls-crystal-rgb),.25);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-header::before {
+    width:248px; height:1px; background:var(--dls-crystal);
+    box-shadow:0 0 11px rgba(var(--dls-crystal-rgb),.52);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-title {
+    color:#e5fbff;
+    text-shadow:0 0 12px rgba(var(--dls-crystal-rgb),.18);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-status {
+    color:#8db2bd; background:rgba(4,10,13,.8);
+    border-color:rgba(var(--dls-crystal-rgb),.18);
+    clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-status[data-state="ready"]::before {
+    color:var(--dls-crystal);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn {
+    color:#7898a1; background:rgba(var(--dls-crystal-rgb),.035);
+    border-color:rgba(var(--dls-crystal-rgb),.16);
+    clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn:hover,
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn:focus-visible {
+    color:#dffaff; border-color:rgba(var(--dls-crystal-rgb),.48);
+    background:rgba(var(--dls-crystal-rgb),.1);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn.active {
+    color:#061116; border-color:#a6f0ff; background:var(--dls-crystal);
+    box-shadow:0 0 10px rgba(var(--dls-crystal-rgb),.2);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-close-btn {
+    color:#df8178; background:rgba(87,28,25,.18); border-color:rgba(223,129,120,.32);
+    clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-close-btn:hover {
+    color:#ffaca4; background:rgba(126,39,34,.34); border-color:rgba(223,129,120,.62);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-body {
+    background:
+        radial-gradient(circle at 48% 50%,rgba(var(--dls-crystal-rgb),.025),transparent 52%),
+        rgba(2,7,9,.48);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-slot {
+    background:rgba(5,11,14,.76); border-color:rgba(var(--dls-crystal-rgb),.17);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-slot.active {
+    border-color:rgba(var(--dls-crystal-rgb),.42);
+    box-shadow:inset 0 0 20px rgba(var(--dls-crystal-rgb),.025);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card {
+    color:#c7dce1; background:rgba(5,11,14,.86);
+    border-color:rgba(var(--dls-crystal-rgb),.17);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card.occupied:not(.character-build-slot-card):hover,
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card.workbench-source-selected {
+    color:#e5fbff; border-color:rgba(var(--dls-crystal-rgb),.72);
+    background:rgba(var(--dls-crystal-rgb),.08);
+    box-shadow:inset 3px 0 0 var(--dls-crystal),0 0 8px rgba(var(--dls-crystal-rgb),.08);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card.empty {
+    color:#48606a; background:rgba(3,8,10,.68);
+    border-color:rgba(var(--dls-crystal-rgb),.09);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-copy b { color:#dff4f8; }
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option {
+    color:#89949f; background:#0d1115; border-color:#343c44;
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option:hover,
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option:focus-visible {
+    color:#d7dce0; background:#171b20; border-color:#69737c;
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option.active {
+    color:#e3e6e8; background:#262b30; border-color:#8a939a;
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option.active small {
+    color:#a8b0b6;
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-modal {
+    background:#081014; border-color:rgba(var(--dls-crystal-rgb),.42);
+    border-top-color:var(--dls-crystal);
+    clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-modal-action.primary {
+    color:#061116; background:var(--dls-crystal); border-color:#a6f0ff;
+}
+
 /* ── Backpack / warehouse tactile skin ── */
 .kshop-workbench[data-workbench-skin="inventory"] {
     --wb-scrollbar-track:rgba(255,255,255,.03);
