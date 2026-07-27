@@ -13,7 +13,7 @@
           <DOMFolderItem name="0.防具相关/10.蓝晶" itemID="668f9f91-00001f2a"/>
           <DOMFolderItem name="0.防具相关/11.剑圣套装相关" itemID="668fcf22-0000103b"/>
           <DOMFolderItem name="0.防具相关/12.兽王虎甲" itemID="6690e2d0-00001122"/>
-          <DOMFolderItem name="0.防具相关/92&amp;61套装" itemID="6690eef2-0000237f"/>
+          <DOMFolderItem name="0.防具相关/92&amp;61套装" itemID="6690eef2-0000237f" isExpanded="true"/>
           <DOMFolderItem name="0.防具相关/bob自由套装" itemID="696105db-0000d0d0"/>
           <DOMFolderItem name="0.防具相关/白中山装" itemID="696105c1-0000d06c"/>
           <DOMFolderItem name="0.防具相关/盗贼相关套装" itemID="69610adf-0000d73e"/>
@@ -97,14 +97,14 @@
           <DOMFolderItem name="主角身体元件副本" itemID="67bc22a2-00001315"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
-          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
-          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
-          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
-          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
-          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
-          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
           <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
+          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
+          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
+          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
+          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
+          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
+          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
      </fonts>
      <media>
           <DOMBitmapItem name="3.位图相关/bitmap2934.png" itemID="678d1911-00000d2f" sourceExternalFilepath="Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2934.png" sourceLastImported="1737536156" externalFileCRC32="1586711525" externalFileSize="4706" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2934.png" bitmapDataHRef="M 118 1720533000.dat" frameRight="640" frameBottom="1020"/>
@@ -425,18 +425,18 @@
           <Include href="0.防具相关/92&amp;61套装/男变装-92式胸甲右下臂.xml" itemID="668e7c1e-0000091b" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/男变装-92式胸甲左下臂.xml" itemID="668e7c1e-0000091f" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/男变装-92式装甲鞋.xml" itemID="668e7c1e-00000919" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式手甲右手.xml" itemID="668e7c1e-00000933" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式手甲左手.xml" itemID="668e7c1e-00000934" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式头部装甲.xml" itemID="668e7c1e-0000092b" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲屁股.xml" itemID="668e7c1e-0000092e" lastModified="1721504306"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲小腿.xml" itemID="668e7c1e-0000093a" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲右大腿.xml" itemID="668e7c1e-0000093b" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲左大腿.xml" itemID="668e7c1e-0000093c" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲上臂.xml" itemID="668e7c1e-00000930" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲身体.xml" itemID="668e7c1e-0000092d" lastModified="1762440034"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲右下臂.xml" itemID="668e7c1e-00000931" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲左下臂.xml" itemID="668e7c1e-00000932" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式装甲鞋.xml" itemID="668e7c1e-0000092f" lastModified="1720533000"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式手甲右手.xml" itemID="668e7c1e-00000933" lastModified="1785019704"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式手甲左手.xml" itemID="668e7c1e-00000934" lastModified="1785062995"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式头部装甲.xml" itemID="668e7c1e-0000092b" lastModified="1784966422"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲屁股.xml" itemID="668e7c1e-0000092e" lastModified="1784975590"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲小腿.xml" itemID="668e7c1e-0000093a" lastModified="1785117228"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲右大腿.xml" itemID="668e7c1e-0000093b" lastModified="1785105264"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式腿甲左大腿.xml" itemID="668e7c1e-0000093c" lastModified="1785115451"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲上臂.xml" itemID="668e7c1e-00000930" lastModified="1784975608"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲身体.xml" itemID="668e7c1e-0000092d" lastModified="1784939912"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲右下臂.xml" itemID="668e7c1e-00000931" lastModified="1785041047"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式胸甲左下臂.xml" itemID="668e7c1e-00000932" lastModified="1785030815"/>
+          <Include href="0.防具相关/92&amp;61套装/男变装-钛合金61式装甲鞋.xml" itemID="668e7c1e-0000092f" lastModified="1785119729"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-61式腿甲屁股.xml" itemID="668e7c1e-00000a61" lastModified="1721503973"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-61式腿甲小腿.xml" itemID="668e7c1e-00000a5c" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-61式腿甲右大腿.xml" itemID="668e7c1e-00000a5e" lastModified="1720533000"/>
@@ -453,12 +453,12 @@
           <Include href="0.防具相关/92&amp;61套装/女变装-92式胸甲身体.xml" itemID="668e7c1e-00000a85" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-92式胸甲右下臂.xml" itemID="668e7c1e-00000a89" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-92式胸甲左下臂.xml" itemID="668e7c1e-00000a83" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式腿甲屁股.xml" itemID="668e7c1e-00000a9e" lastModified="1720533000"/>
+          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式腿甲屁股.xml" itemID="668e7c1e-00000a9e" lastModified="1784969925"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式腿甲小腿.xml" itemID="668e7c1e-00000a99" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式腿甲右大腿.xml" itemID="668e7c1e-00000a9b" lastModified="1720533000"/>
+          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式腿甲右大腿.xml" itemID="668e7c1e-00000a9b" lastModified="1784954664"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式腿甲左大腿.xml" itemID="668e7c1e-00000a9d" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式胸甲上臂.xml" itemID="668e7c1e-00000a96" lastModified="1720533000"/>
-          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式胸甲身体.xml" itemID="668e7c1e-00000a94" lastModified="1762440011"/>
+          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式胸甲上臂.xml" itemID="668e7c1e-00000a96" lastModified="1784975666"/>
+          <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式胸甲身体.xml" itemID="668e7c1e-00000a94" lastModified="1784954676"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式胸甲右下臂.xml" itemID="668e7c1e-00000a97" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/女变装-钛合金61式胸甲左下臂.xml" itemID="668e7c1e-00000a92" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/图标-61式手甲.xml" itemID="668e7c1e-000008f3" lastModified="1720533000"/>
@@ -840,12 +840,12 @@
           <Include href="0.防具相关/异形相关/男变装-异形骨手套左手.xml" itemID="668e7c1e-00000da5" lastModified="1720533000"/>
           <Include href="0.防具相关/异形相关/男变装-异形骨腿甲小腿.xml" itemID="669cbd02-00003c7b" lastModified="1721548034"/>
           <Include href="0.防具相关/异形相关/男变装-异形骨鞋.xml" itemID="668e7c1e-00000db4" lastModified="1720533000"/>
-          <Include href="0.防具相关/异形相关/男变装-异形女王鞋.xml" itemID="668e7c1e-00000dd7" lastModified="1720533000"/>
+          <Include href="0.防具相关/异形相关/男变装-异形女王鞋.xml" loadImmediate="false" itemID="668e7c1e-00000dd7" lastModified="1720533000"/>
           <Include href="0.防具相关/异形相关/女变装-异形骨甲右下臂.xml" itemID="669cbd24-00003c93" lastModified="1721548068"/>
           <Include href="0.防具相关/异形相关/女变装-异形骨甲左下臂.xml" itemID="669cbd17-00003c8b" lastModified="1721548055"/>
           <Include href="0.防具相关/异形相关/女变装-异形骨腿甲小腿.xml" itemID="669cbd0f-00003c83" lastModified="1721548047"/>
           <Include href="0.防具相关/异形相关/图标-异形骨鞋.xml" itemID="668e7c1e-00000db5" lastModified="1720776475"/>
-          <Include href="0.防具相关/异形相关/图标-异形女王鞋.xml" itemID="668e7c1e-00000dd8" lastModified="1720776525"/>
+          <Include href="0.防具相关/异形相关/图标-异形女王鞋.xml" loadImmediate="false" itemID="668e7c1e-00000dd8" lastModified="1720776525"/>
           <Include href="0.防具相关/远古诛神/男变装-远古诛神手套右手.xml" itemID="668e7c1e-00000d54" lastModified="1720533000"/>
           <Include href="0.防具相关/远古诛神/男变装-远古诛神手套左手.xml" itemID="668e7c1e-00000d55" lastModified="1720533000"/>
           <Include href="0.防具相关/远古诛神/男变装-远古诛神头盔.xml" itemID="668e7c1e-00000d4f" lastModified="1720533000"/>
@@ -908,10 +908,10 @@
           <Include href="1.枪械相关/枪-长枪-远古诛神枪.xml" itemID="668e7c1e-00000d6d" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/P90战术版/枪-手枪-P90战术版.xml" itemID="668e7c1e-00000ff4" lastModified="1754207110"/>
           <Include href="1.枪械相关/手枪/P90战术版/图标-P90战术版.xml" itemID="668e7c1e-00001004" lastModified="1754207103"/>
-          <Include href="1.枪械相关/手枪/UZI战术版/枪-手枪-UZI战术版.xml" itemID="668e7c1e-00001056" lastModified="1744213476"/>
-          <Include href="1.枪械相关/手枪/UZI战术版/图标-UZI战术版.xml" itemID="668e7c1e-0000105b" lastModified="1744213502"/>
-          <Include href="1.枪械相关/手枪/极品UZI战术版/枪-手枪-极品UZI战术版.xml" itemID="668e7c1e-0000105e" lastModified="1744213553"/>
-          <Include href="1.枪械相关/手枪/极品UZI战术版/图标-极品UZI战术版.xml" itemID="668e7c1e-0000105f" lastModified="1720790643"/>
+          <Include href="1.枪械相关/手枪/UZI战术版/枪-手枪-UZI战术版.xml" loadImmediate="false" itemID="668e7c1e-00001056" lastModified="1744213476"/>
+          <Include href="1.枪械相关/手枪/UZI战术版/图标-UZI战术版.xml" loadImmediate="false" itemID="668e7c1e-0000105b" lastModified="1744213502"/>
+          <Include href="1.枪械相关/手枪/极品UZI战术版/枪-手枪-极品UZI战术版.xml" loadImmediate="false" itemID="668e7c1e-0000105e" lastModified="1744213553"/>
+          <Include href="1.枪械相关/手枪/极品UZI战术版/图标-极品UZI战术版.xml" loadImmediate="false" itemID="668e7c1e-0000105f" lastModified="1720790643"/>
           <Include href="1.枪械相关/手枪/枪-手枪-COLT PYTHON.xml" itemID="668e7c1e-00000f68" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/枪-手枪-Desert Eagle.xml" itemID="668e7c1e-00000f64" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/枪-手枪-Glock 18.xml" itemID="668e7c1e-00000f6a" lastModified="1720533000"/>
@@ -1195,20 +1195,20 @@
           <Include href="待整理防具相关汇总/男变装-护肩夹克身体.xml" itemID="668e7c1e-000007f7" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-护肩夹克右下臂.xml" itemID="668e7c1e-000007f9" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-护肩夹克左下臂.xml" itemID="668e7c1e-000007fa" lastModified="1720533000"/>
-          <Include href="待整理防具相关汇总/男变装-基本脸型.xml" itemID="69359607-00001009" lastModified="1765119930"/>
+          <Include href="待整理防具相关汇总/男变装-基本脸型.xml" loadImmediate="false" itemID="69359607-00001009" lastModified="1765119930"/>
           <Include href="待整理防具相关汇总/男变装-杰森面具.xml" itemID="69359600-00001008" lastModified="1765119488"/>
           <Include href="待整理防具相关汇总/男变装-金色腰带破洞牛仔裤屁股.xml" itemID="668e7c1e-0000085e" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-金色腰带破洞牛仔裤小腿.xml" itemID="668e7c1e-0000085f" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-金色腰带破洞牛仔裤右大腿.xml" itemID="668e7c1e-00000861" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-金色腰带破洞牛仔裤左大腿.xml" itemID="668e7c1e-00000863" lastModified="1720533000"/>
-          <Include href="待整理防具相关汇总/男变装-噤默面具.xml" itemID="668e7c1e-000011c5" lastModified="1720533000"/>
+          <Include href="待整理防具相关汇总/男变装-噤默面具.xml" loadImmediate="false" itemID="668e7c1e-000011c5" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-咖啡色条纹蒙面.xml" itemID="668e7c1e-00000c13" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-骷髅面具.xml" itemID="693595eb-00000fab" lastModified="1765119467"/>
           <Include href="待整理防具相关汇总/男变装-廉价西服上臂.xml" itemID="668e7c1e-000007af" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-廉价西服身体.xml" itemID="668e7c1e-000007b1" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-廉价西服右下臂.xml" itemID="668e7c1e-000007b3" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-廉价西服左下臂.xml" itemID="668e7c1e-000007b4" lastModified="1720533000"/>
-          <Include href="待整理防具相关汇总/男变装-裸体左大腿.xml" itemID="668e7c1e-000005f7" lastModified="1720533000"/>
+          <Include href="待整理防具相关汇总/男变装-裸体左大腿.xml" loadImmediate="false" itemID="668e7c1e-000005f7" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-米色高腰背心上臂.xml" itemID="668e7c1e-00000bda" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-米色高腰背心身体.xml" itemID="668e7c1e-00000bdc" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-米色高腰背心右下臂.xml" itemID="668e7c1e-00000bdd" lastModified="1720533000"/>
@@ -1452,7 +1452,7 @@
           <Include href="待整理防具相关汇总/图标-金色不良少年头.xml" itemID="668e7c1e-000008c2" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-金色大奔头.xml" itemID="668e7c1e-0000086a" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-金色腰带破洞牛仔裤.xml" itemID="668e7c1e-00000871" lastModified="1720533000"/>
-          <Include href="待整理防具相关汇总/图标-噤默面具.xml" itemID="668e7c1e-000011c6" lastModified="1720533000"/>
+          <Include href="待整理防具相关汇总/图标-噤默面具.xml" loadImmediate="false" itemID="668e7c1e-000011c6" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-精武短发.xml" itemID="668e7c1e-000008f0" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-桔色功夫辫子头.xml" itemID="668e7c1e-000008c0" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-咖啡色条纹蒙面.xml" itemID="668e7c1e-00000c15" lastModified="1720533000"/>
@@ -1477,9 +1477,9 @@
           <Include href="待整理防具相关汇总/图标-深灰色皮鞋.xml" itemID="668e7c1e-00000b94" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-生命收割者.xml" itemID="668e7c1e-000011cd" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-钛合金61式手甲.xml" itemID="668e7c1e-00000938" lastModified="1720533000"/>
-          <Include href="待整理防具相关汇总/图标-钛合金61式头部装甲.xml" itemID="668e7c1e-00000935" lastModified="1720533000"/>
+          <Include href="待整理防具相关汇总/图标-钛合金61式头部装甲.xml" itemID="668e7c1e-00000935" lastModified="1784954761"/>
           <Include href="待整理防具相关汇总/图标-钛合金61式腿甲.xml" itemID="668e7c1e-00000939" lastModified="1720533000"/>
-          <Include href="待整理防具相关汇总/图标-钛合金61式胸甲.xml" itemID="668e7c1e-00000936" lastModified="1720533000"/>
+          <Include href="待整理防具相关汇总/图标-钛合金61式胸甲.xml" itemID="668e7c1e-00000936" lastModified="1784939916"/>
           <Include href="待整理防具相关汇总/图标-钛合金61式装甲鞋.xml" itemID="668e7c1e-00000937" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-新手裤子.xml" itemID="668e7c1e-000007d5" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/图标-新手面具.xml" itemID="668e7c1e-000007d2" lastModified="1720533000"/>
@@ -1580,12 +1580,16 @@
           <Include href="可拾取物相关/可拾取物文字.xml" loadImmediate="false" itemID="678d1c21-00000d66" lastModified="1737301130"/>
           <Include href="烈焰斩马刀发光纹路.xml" loadImmediate="false" itemID="68cf7a57-00003b08" lastModified="1758427735"/>
           <Include href="判定使用.xml" loadImmediate="false" itemID="668d55c7-000024ba" lastModified="1740382463"/>
+          <Include href="屁股.xml" itemIcon="1" loadImmediate="false" itemID="6a647799-00000243" lastModified="1785105251"/>
+          <Include href="上臂.xml" itemIcon="1" loadImmediate="false" itemID="6a647eba-0000024f" lastModified="1785023710"/>
+          <Include href="上身.xml" itemIcon="1" loadImmediate="false" itemID="6a63f406-00000122" lastModified="1785064459"/>
           <Include href="鼠标控制移动效果.xml" itemID="67bc2106-00000dc7" lastModified="1747977550"/>
           <Include href="素材/突击步枪/AK47.xml" loadImmediate="false" itemID="5e2d97e3-000002e4" lastModified="1580047353"/>
           <Include href="素材/突击步枪/弹匣/7.62×39mm×30(AK47).xml" loadImmediate="false" itemID="5e2d9965-000002e9" lastModified="1580046693"/>
           <Include href="特效与子弹相关/背包喷火暂定.xml" itemID="669bbee5-00002a41" lastModified="1762448213"/>
           <Include href="特效与子弹相关/近战子弹.xml" loadImmediate="false" itemID="668fd762-000019f9" lastModified="1721577157"/>
           <Include href="同伴信息界面（弃用）.xml" loadImmediate="false" itemID="67bc2117-00000dc8" lastModified="1740382495"/>
+          <Include href="头.xml" itemIcon="1" loadImmediate="false" itemID="6a6413f4-000001ae" lastModified="1785070055"/>
           <Include href="无AS链接/M134暴力版基地.xml" loadImmediate="false" itemID="67413bcf-00002717" lastModified="1732328539"/>
           <Include href="无AS链接/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005b7" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 5.xml" loadImmediate="false" itemID="668e7c1e-000005b8" lastModified="1720533000"/>
@@ -1729,7 +1733,7 @@
           <Include href="无AS链接/Symbol 1391.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000916" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1409.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000920" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1411.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000922" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 1420.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000092a" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 1420.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000092a" lastModified="1785025202"/>
           <Include href="无AS链接/Symbol 1423.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000092c" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1483.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000093e" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1489.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000944" lastModified="1720533000"/>
@@ -1862,12 +1866,12 @@
           <Include href="无AS链接/Symbol 1906.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a8a" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1908.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a8c" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1910.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a8e" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 1914.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a91" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 1916.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a93" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 1914.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a91" lastModified="1785041031"/>
+          <Include href="无AS链接/Symbol 1916.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a93" lastModified="1784939633"/>
           <Include href="无AS链接/Symbol 1918.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a95" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 1921.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a98" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 1923.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a9a" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 1925.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a9c" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 1921.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a98" lastModified="1785119717"/>
+          <Include href="无AS链接/Symbol 1923.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a9a" lastModified="1785105270"/>
+          <Include href="无AS链接/Symbol 1925.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000a9c" lastModified="1785115460"/>
           <Include href="无AS链接/Symbol 1949.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000aa3" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1951.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000aa5" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1953.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000aa7" lastModified="1720533000"/>
@@ -2264,6 +2268,7 @@
           <Include href="无AS链接/Symbol 5323.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000120e" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 5815.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000012ea" lastModified="1720533000"/>
           <Include href="物品图标（旧版）.xml" loadImmediate="false" itemID="67bc2130-00000dca" lastModified="1740382512"/>
+          <Include href="下腿.xml" itemIcon="1" loadImmediate="false" itemID="6a66b849-000001e3" lastModified="1785118039"/>
           <Include href="消耗道具相关/2.压缩胶囊/Symbol 3902.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f97" lastModified="1720533000"/>
           <Include href="消耗道具相关/2.压缩胶囊/Symbol 3904.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f99" lastModified="1720533000"/>
           <Include href="消耗道具相关/2.压缩胶囊/Symbol 3906.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f9b" lastModified="1720533000"/>
@@ -2358,6 +2363,7 @@
           <Include href="消耗道具相关/the girl套装包.xml" itemID="668e7c1e-00000fe4" lastModified="1720533000"/>
           <Include href="消耗道具相关/图标-pig套装包.xml" itemID="668e7c1e-00000fc8" lastModified="1720533000"/>
           <Include href="消耗道具相关/图标-the girl套装包.xml" itemID="668e7c1e-00000fe5" lastModified="1720533000"/>
+          <Include href="鞋.xml" itemIcon="1" loadImmediate="false" itemID="6a66c394-000001ec" lastModified="1785120574"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/Symbol 273.xml" itemIcon="1" loadImmediate="false" itemID="653d644e-00000cad" lastModified="1698427550"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/Symbol 274.xml" loadImmediate="false" itemID="653d644e-00000cae" lastModified="1698427550"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/Symbol 275.xml" itemIcon="1" loadImmediate="false" itemID="653d644e-00000caf" lastModified="1698427550"/>
@@ -2369,7 +2375,7 @@
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/Symbol 281.xml" itemIcon="1" loadImmediate="false" itemID="653d644e-00000cb5" lastModified="1698427550"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/Symbol 282.xml" loadImmediate="false" itemID="653d644e-00000cb6" lastModified="1698427550"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/Symbol 284.xml" loadImmediate="false" itemID="653d644e-00000cb7" lastModified="1698427550"/>
-          <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/火攻.xml" itemID="653d66cd-00000e22" lastModified="1763113252"/>
+          <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火攻/火攻.xml" loadImmediate="false" itemID="653d66cd-00000e22" lastModified="1763113252"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火焰喷射/Graphic/shape 686.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002ae" lastModified="1477651455"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火焰喷射/Graphic/shape 687.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002af" lastModified="1477651455"/>
           <Include href="牙狼剑系列/1.特效文件夹/03.赤橙色系/火焰喷射/Graphic/shape 688.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002b0" lastModified="1477651455"/>
@@ -2388,6 +2394,9 @@
           <Include href="牙狼剑系列/牙狼剑变斩马刀.xml" itemIcon="1" loadImmediate="false" itemID="69fc6a30-000044b7" lastModified="1778154439"/>
           <Include href="牙狼剑系列/牙狼斩马刀.xml" itemIcon="1" loadImmediate="false" itemID="690f3fe2-0000012f" lastModified="1762690955"/>
           <Include href="牙狼剑系列/斩马刀变牙狼剑.xml" itemIcon="1" loadImmediate="false" itemID="69fc6a37-000044b8" lastModified="1778149943"/>
+          <Include href="右大腿.xml" itemIcon="1" loadImmediate="false" itemID="6a6612c9-000001bd" lastModified="1785115442"/>
+          <Include href="右手.xml" itemIcon="1" loadImmediate="false" itemID="6a64a976-0000028a" lastModified="1785020387"/>
+          <Include href="右下臂.xml" itemIcon="1" loadImmediate="false" itemID="6a657b91-00000197" lastModified="1785061743"/>
           <Include href="元件 1.xml" loadImmediate="false" itemID="69108723-00001162" lastModified="1762690851"/>
           <Include href="杂七杂八/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00001019" lastModified="1710653981"/>
           <Include href="杂七杂八/Symbol 3722.xml" loadImmediate="false" itemID="65f68a66-0000101a" lastModified="1710653981"/>
@@ -2417,6 +2426,9 @@
           <Include href="主角身体元件副本/女变装-裸体左大腿.xml" loadImmediate="false" itemID="67bc2139-00000dcd" lastModified="1740382902"/>
           <Include href="主角身体元件副本/女变装-裸体左手.xml" loadImmediate="false" itemID="67bc2137-00000dcc" lastModified="1740382903"/>
           <Include href="主角身体元件副本/女变装-裸体左下臂.xml" loadImmediate="false" itemID="67bc2136-00000dcb" lastModified="1762441904"/>
+          <Include href="左大腿.xml" itemIcon="1" loadImmediate="false" itemID="6a66b1f0-000001da" lastModified="1785117222"/>
+          <Include href="左手.xml" itemIcon="1" loadImmediate="false" itemID="6a65e03e-000001a0" lastModified="1785062692"/>
+          <Include href="左下臂.xml" itemIcon="1" loadImmediate="false" itemID="6a655da7-00000186" lastModified="1785030779"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -2758,6 +2770,16 @@
                     <SolidSwatchItem color="#DAD5AF" hue="35" saturation="87" brightness="185"/>
                     <SolidSwatchItem color="#EBE8BB" hue="37" saturation="130" brightness="199"/>
                     <SolidSwatchItem color="#B98A70" hue="15" saturation="82" brightness="140"/>
+                    <SolidSwatchItem color="#29292B" hue="160" saturation="3" brightness="40"/>
+                    <SolidSwatchItem color="#1E1E20" hue="160" saturation="8" brightness="29"/>
+                    <SolidSwatchItem color="#6C6C6D" hue="160" saturation="1" brightness="103"/>
+                    <SolidSwatchItem color="#303132" hue="140" saturation="5" brightness="46"/>
+                    <SolidSwatchItem color="#480707" saturation="195" brightness="38"/>
+                    <SolidSwatchItem color="#2E0101" saturation="229" brightness="22"/>
+                    <SolidSwatchItem color="#640203" saturation="230" brightness="48"/>
+                    <SolidSwatchItem color="#151516" hue="160" saturation="6" brightness="21"/>
+                    <SolidSwatchItem color="#E0090D" hue="239" saturation="222" brightness="110"/>
+                    <SolidSwatchItem color="#B60303" saturation="232" brightness="87"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -2966,25 +2988,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2800915" publishTime="1779549549"/>
-          <PublishItem publishSize="2800905" publishTime="1779548548"/>
-          <PublishItem publishSize="2803995" publishTime="1778159062"/>
-          <PublishItem publishSize="2803995" publishTime="1778158433"/>
-          <PublishItem publishSize="2799395" publishTime="1778150079"/>
-          <PublishItem publishSize="2759680" publishTime="1772716326"/>
-          <PublishItem publishSize="2760169" publishTime="1767985471"/>
-          <PublishItem publishSize="2760080" publishTime="1767985392"/>
-          <PublishItem publishSize="2760145" publishTime="1767985302"/>
-          <PublishItem publishSize="2722885" publishTime="1766854234"/>
-          <PublishItem publishSize="2722882" publishTime="1766854167"/>
-          <PublishItem publishSize="2722891" publishTime="1766854088"/>
-          <PublishItem publishSize="2722927" publishTime="1766853985"/>
-          <PublishItem publishSize="2722926" publishTime="1766853809"/>
-          <PublishItem publishSize="2722619" publishTime="1766853669"/>
-          <PublishItem publishSize="2722713" publishTime="1766853108"/>
-          <PublishItem publishSize="2720227" publishTime="1766852185"/>
-          <PublishItem publishSize="2695158" publishTime="1763113295"/>
-          <PublishItem publishSize="2695314" publishTime="1763112554"/>
-          <PublishItem publishSize="2695321" publishTime="1763112322"/>
+          <PublishItem publishSize="2908064" publishTime="1785120626"/>
+          <PublishItem publishSize="2912550" publishTime="1785119773"/>
+          <PublishItem publishSize="2899255" publishTime="1785118135"/>
+          <PublishItem publishSize="2900714" publishTime="1785117835"/>
+          <PublishItem publishSize="2900750" publishTime="1785117267"/>
+          <PublishItem publishSize="2891759" publishTime="1785116133"/>
+          <PublishItem publishSize="2892664" publishTime="1785115515"/>
+          <PublishItem publishSize="2885574" publishTime="1785111353"/>
+          <PublishItem publishSize="2887030" publishTime="1785110642"/>
+          <PublishItem publishSize="2891091" publishTime="1785109836"/>
+          <PublishItem publishSize="2912056" publishTime="1785105887"/>
+          <PublishItem publishSize="2904757" publishTime="1785105303"/>
+          <PublishItem publishSize="2876979" publishTime="1785070097"/>
+          <PublishItem publishSize="2877081" publishTime="1785069741"/>
+          <PublishItem publishSize="2894152" publishTime="1785068703"/>
+          <PublishItem publishSize="2885778" publishTime="1785066914"/>
+          <PublishItem publishSize="2886464" publishTime="1785066310"/>
+          <PublishItem publishSize="2883728" publishTime="1785065510"/>
+          <PublishItem publishSize="2877996" publishTime="1785064698"/>
+          <PublishItem publishSize="2878466" publishTime="1785063034"/>
      </publishHistory>
 </DOMDocument>
