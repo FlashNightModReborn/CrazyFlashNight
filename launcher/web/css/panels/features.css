@@ -90,17 +90,76 @@
     background:#05070a;
 }
 .map-panel {
+    /* accent 变量体系: 面板 chrome 随页面/派系换色。
+       --map-accent-rgb      主 chrome 色 (边框/填充/辉光), 默认毒绿 #c8ff4c
+       --map-accent-hi-rgb   亮色端 (hover/focus 高亮边, 默认 #dcff80 系)
+       --map-accent-lo-rgb   暗色端 (active 渐变深端, 默认 #a2e638 系)
+       语义色不动: 当前位置青 #72e6ff / 任务红 / 锁定橙 / busy 琥珀 / 关闭红一律保持硬编码。 */
+    --map-accent-rgb:200,255,76;
+    --map-accent-hi-rgb:220,255,128;
+    --map-accent-lo-rgb:162,230,56;
     display:flex;
     flex-direction:column;
     height:100%;
     color:var(--cp-text);
     background:
-        radial-gradient(circle at 18% 14%, rgba(121, 175, 74, 0.1), transparent 24%),
+        radial-gradient(circle at 18% 14%, rgba(var(--map-accent-rgb), 0.07), transparent 24%),
         radial-gradient(circle at 78% 24%, rgba(255, 196, 64, 0.08), transparent 22%),
         linear-gradient(180deg, rgba(8, 10, 14, 0.98), rgba(5, 7, 10, 0.96));
     overflow:hidden;
     position:relative;
     font-family:"Consolas","Courier New","Microsoft YaHei",monospace;
+}
+
+/* data-accent 9 套主题 — 值复用 overlay.css #map-hud per-group 调色板 (HUD↔面板一致):
+ *   --map-accent-rgb   ← --hud-accent    (浅色端, 边框/文字 chrome)
+ *   --map-accent-hi-rgb← --hud-silhouette(更亮, hover/focus)
+ *   --map-accent-lo-rgb← --hud-current   (饱和端, active 填充)
+ * base 例外: 保持面板标志性毒绿 (HUD base 浅薄荷仅小地图语义, 不覆盖终端主色)。 */
+.map-panel[data-accent="base"] {
+    --map-accent-rgb:200,255,76;
+    --map-accent-hi-rgb:220,255,128;
+    --map-accent-lo-rgb:162,230,56;
+}
+.map-panel[data-accent="warlord"] {
+    --map-accent-rgb:255,184,130;
+    --map-accent-hi-rgb:255,200,148;
+    --map-accent-lo-rgb:255,140,80;
+}
+.map-panel[data-accent="rock"] {
+    --map-accent-rgb:230,170,255;
+    --map-accent-hi-rgb:220,180,240;
+    --map-accent-lo-rgb:220,130,255;
+}
+.map-panel[data-accent="blackiron"] {
+    --map-accent-rgb:255,140,140;
+    --map-accent-hi-rgb:230,170,170;
+    --map-accent-lo-rgb:255,110,110;
+}
+.map-panel[data-accent="fallen"] {
+    --map-accent-rgb:180,200,220;
+    --map-accent-hi-rgb:190,205,222;
+    --map-accent-lo-rgb:140,180,220;
+}
+.map-panel[data-accent="defense"] {
+    --map-accent-rgb:140,220,240;
+    --map-accent-hi-rgb:170,220,238;
+    --map-accent-lo-rgb:110,225,255;
+}
+.map-panel[data-accent="restricted"] {
+    --map-accent-rgb:255,220,120;
+    --map-accent-hi-rgb:255,225,150;
+    --map-accent-lo-rgb:255,210,90;
+}
+.map-panel[data-accent="schoolOutside"] {
+    --map-accent-rgb:170,220,200;
+    --map-accent-hi-rgb:186,228,208;
+    --map-accent-lo-rgb:140,220,190;
+}
+.map-panel[data-accent="schoolInside"] {
+    --map-accent-rgb:180,210,255;
+    --map-accent-hi-rgb:196,218,250;
+    --map-accent-lo-rgb:140,180,255;
 }
 
 .map-panel::before {
@@ -112,8 +171,8 @@
         0deg,
         transparent 0px,
         transparent 3px,
-        rgba(188, 255, 74, 0.02) 3px,
-        rgba(188, 255, 74, 0.02) 4px
+        rgba(var(--map-accent-rgb), 0.02) 3px,
+        rgba(var(--map-accent-rgb), 0.02) 4px
     );
 }
 
@@ -123,8 +182,8 @@
     flex-wrap:wrap;
     gap:12px 16px;
     padding:12px 18px;
-    border-bottom:1px solid rgba(180, 255, 0, 0.12);
-    background:linear-gradient(90deg, rgba(180,255,0,0.12) 0%, rgba(180,255,0,0.04) 48%, transparent 100%);
+    border-bottom:1px solid rgba(var(--map-accent-rgb), 0.12);
+    background:linear-gradient(90deg, rgba(var(--map-accent-rgb),0.12) 0%, rgba(var(--map-accent-rgb),0.04) 48%, transparent 100%);
     position:relative;
     z-index:1;
 }
@@ -141,11 +200,12 @@
     bottom:-1px;
     width:180px;
     height:1px;
-    background:#c8ff4c;
-    box-shadow:0 0 10px rgba(200,255,76,0.5);
+    background:rgb(var(--map-accent-rgb));
+    box-shadow:0 0 10px rgba(var(--map-accent-rgb),0.5);
 }
 
 .map-panel-close-btn {
+    position:relative;
     background:none;
     border:1px solid rgba(255,0,60,0.28);
     color:var(--cp-red);
@@ -174,8 +234,8 @@
 }
 
 .map-page-tab {
-    background:rgba(180,255,0,0.05);
-    border:1px solid rgba(180,255,0,0.14);
+    background:rgba(var(--map-accent-rgb),0.05);
+    border:1px solid rgba(var(--map-accent-rgb),0.14);
     color:#b5c59b;
     padding:6px 12px;
     cursor:pointer;
@@ -193,15 +253,15 @@
 
 .map-page-tab:hover {
     color:#e4ffc0;
-    border-color:rgba(200,255,76,0.32);
-    background:rgba(200,255,76,0.12);
+    border-color:rgba(var(--map-accent-rgb),0.32);
+    background:rgba(var(--map-accent-rgb),0.12);
 }
 
 .map-page-tab.is-active {
     color:#101505;
-    background:#c8ff4c;
-    border-color:#e9ff9f;
-    box-shadow:0 0 12px rgba(200,255,76,0.2);
+    background:rgb(var(--map-accent-rgb));
+    border-color:rgb(var(--map-accent-hi-rgb));
+    box-shadow:0 0 12px rgba(var(--map-accent-rgb),0.2);
 }
 
 .map-page-summary {
@@ -222,7 +282,7 @@
     min-width:300px;
     max-width:100%;
     padding:5px 9px;
-    border:1px solid rgba(200,255,76,0.18);
+    border:1px solid rgba(var(--map-accent-rgb),0.18);
     color:rgba(225,245,198,0.92);
     background:rgba(6,10,7,0.68);
     font-size:11px;
@@ -234,7 +294,7 @@
     text-overflow:ellipsis;
     pointer-events:none;
     font-variant-numeric:tabular-nums;
-    box-shadow:inset 0 0 12px rgba(200,255,76,0.04);
+    box-shadow:inset 0 0 12px rgba(var(--map-accent-rgb),0.04);
     clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
 }
 
@@ -282,7 +342,7 @@
     /* assembled 页使用中性环境底；非 assembled fallback 可由 applyPage 设置 per-page backgroundImage。 */
     position:relative;
     background:
-        radial-gradient(ellipse at 50% 42%, rgba(121, 175, 74, 0.10), transparent 62%),
+        radial-gradient(ellipse at 50% 42%, rgba(var(--map-accent-rgb), 0.08), transparent 62%),
         linear-gradient(180deg, rgba(8, 12, 10, 0.32), rgba(3, 5, 6, 0.52));
     background-size:cover;
     background-position:center;
@@ -305,7 +365,7 @@
     flex-direction:column;
     gap:8px;
     padding:6px 2px 6px 10px;
-    border-left:1px solid rgba(180,255,0,0.12);
+    border-left:1px solid rgba(var(--map-accent-rgb),0.12);
     overflow-y:auto;
     overflow-x:hidden;
     overscroll-behavior:contain;
@@ -319,16 +379,16 @@
 
 .map-rail-shell::-webkit-scrollbar { width:6px; }
 .map-rail-shell::-webkit-scrollbar-track { background:rgba(0,0,0,0.25); }
-.map-rail-shell::-webkit-scrollbar-thumb { background:rgba(200,255,76,0.2); border-radius:3px; }
-.map-rail-shell::-webkit-scrollbar-thumb:hover { background:rgba(200,255,76,0.4); }
+.map-rail-shell::-webkit-scrollbar-thumb { background:rgba(var(--map-accent-rgb),0.2); border-radius:3px; }
+.map-rail-shell::-webkit-scrollbar-thumb:hover { background:rgba(var(--map-accent-rgb),0.4); }
 
 .map-stage-frame {
     position:relative;
     width:100%;
     max-width:none;
     background:#020303;
-    border:1px solid rgba(186, 255, 92, 0.12);
-    box-shadow:0 0 24px rgba(165, 255, 64, 0.08);
+    border:1px solid rgba(var(--map-accent-rgb), 0.12);
+    box-shadow:0 0 24px rgba(var(--map-accent-rgb), 0.08);
     overflow:hidden;
     clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
 }
@@ -378,6 +438,26 @@
     z-index:6;
 }
 
+/* ─── 静态氛围层 (第一节) ───
+ * 细颗粒噪点 (SVG feTurbulence 128px 平铺) + accent 低透明 tint (每页色彩身份, 第四节变量)
+ * + vignette 暗角。全部静态无动画, 正常混合 + 低 opacity, 不重导资产;
+ * z=3 夹在 bg canvas(z=2) 与 content-fit(z=4, 含 hitcapture 命中层) 之间, pointer-events:none。 */
+.map-stage-atmosphere {
+    position:absolute;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E"),
+        linear-gradient(180deg, rgba(var(--map-accent-rgb),0.05) 0%, rgba(var(--map-accent-rgb),0.015) 42%, rgba(var(--map-accent-rgb),0) 72%),
+        radial-gradient(ellipse at 50% 46%, rgba(2,4,3,0) 56%, rgba(2,4,3,0.38) 100%);
+    background-size:128px 128px, auto, auto;
+}
+
+html.perf-low-effects .map-stage-atmosphere {
+    display:none !important;
+}
+
 .map-stage-content-fit {
     position:absolute;
     inset:0;
@@ -398,6 +478,40 @@
     inset:0;
     z-index:5;
     pointer-events:none;
+}
+
+/* 当前位置雷达扫针 (DOM 化, 原 fg canvas drawRadarSweep 逐帧绘制):
+ * conic-gradient 静帧 + transform rotate 6s 无限 — 旋转走合成器, fg canvas 不再为它重绘。
+ * 位置/尺寸由 syncCurrentRadar 按页坐标 % 写入; 仅 .is-visible 显示。
+ * 颜色保持语义青 (rgba(114,230,255,*) 透明度已乘旧 canvas globalAlpha 0.82)。 */
+.map-current-radar {
+    position:absolute;
+    z-index:5;
+    pointer-events:none;
+    display:none;
+    border-radius:50%;
+    background:conic-gradient(from 0deg,
+        rgba(114,230,255,0.37) 0deg,
+        rgba(114,230,255,0.15) 30deg,
+        rgba(114,230,255,0) 60deg);
+    transform:translate(-50%, -50%);
+    animation:mapCurrentRadarSpin 6s linear infinite;
+}
+.map-current-radar.is-visible {
+    display:block;
+}
+
+@keyframes mapCurrentRadarSpin {
+    from { transform:translate(-50%, -50%) rotate(0deg); }
+    to   { transform:translate(-50%, -50%) rotate(360deg); }
+}
+
+/* reduced-motion: 停在 0deg 静帧 — 等价旧 canvas _reduce 单帧静绘; perf-low 直接隐藏 (旧 !lowEffects 门) */
+@media (prefers-reduced-motion: reduce) {
+    .map-current-radar { animation:none; }
+}
+html.perf-low-effects .map-current-radar {
+    display:none !important;
 }
 
 
@@ -515,7 +629,7 @@
 }
 .map-scene-visual.is-focus .map-scene-visual-glow {
     opacity:0.82;
-    background:radial-gradient(ellipse at center, rgba(200,255,76,0.26) 0%, rgba(200,255,76,0.08) 38%, rgba(200,255,76,0) 72%);
+    background:radial-gradient(ellipse at center, rgba(var(--map-accent-rgb),0.26) 0%, rgba(var(--map-accent-rgb),0.08) 38%, rgba(var(--map-accent-rgb),0) 72%);
 }
 .map-scene-visual.is-current .map-scene-visual-glow {
     opacity:0.94;
@@ -554,15 +668,15 @@
 }
 .map-scene-visual.is-focus::before {
     background:
-        linear-gradient(#c8ff4c, #c8ff4c) left   top    / 16px 2px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) left   top    / 2px 16px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) right  top    / 16px 2px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) right  top    / 2px 16px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) left   bottom / 16px 2px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) left   bottom / 2px 16px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) right  bottom / 16px 2px no-repeat,
-        linear-gradient(#c8ff4c, #c8ff4c) right  bottom / 2px 16px no-repeat;
-    filter:drop-shadow(0 0 5px rgba(200,255,76,0.45));
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   top    / 16px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   top    / 2px 16px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  top    / 16px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  top    / 2px 16px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   bottom / 16px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   bottom / 2px 16px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  bottom / 16px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  bottom / 2px 16px no-repeat;
+    filter:drop-shadow(0 0 5px rgba(var(--map-accent-rgb),0.45));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -598,8 +712,8 @@ html.perf-low-effects .map-scene-visual::before {
     background:rgba(6,8,6,0.82);
     box-shadow:
         0 0 12px rgba(0,0,0,0.5),
-        0 0 8px rgba(190,255,64,0.12),
-        inset 0 0 0 1px rgba(220,255,128,0.25);
+        0 0 8px rgba(var(--map-accent-rgb),0.12),
+        inset 0 0 0 1px rgba(var(--map-accent-hi-rgb),0.25);
     transform:translateY(0) scale(1);
     transform-origin:center center;
     transition:box-shadow 140ms cubic-bezier(0,0,0.2,1),
@@ -615,9 +729,9 @@ html.perf-low-effects .map-scene-visual::before {
     transform:translateY(-1px) scale(1.04);
     box-shadow:
         0 0 12px rgba(0,0,0,0.5),
-        0 0 14px rgba(190,255,64,0.22),
+        0 0 14px rgba(var(--map-accent-rgb),0.22),
         0 0 10px rgba(114,230,255,0.16),
-        inset 0 0 0 1px rgba(220,255,128,0.58);
+        inset 0 0 0 1px rgba(var(--map-accent-hi-rgb),0.58);
 }
 .map-avatar.is-muted {
     opacity:0.34;
@@ -681,7 +795,7 @@ html.perf-low-effects .map-scene-visual::before {
     max-width:188px;
     color:#e9ffc1;
     background:rgba(6, 8, 6, 0.78);
-    border:1px solid rgba(200,255,76,0.22);
+    border:1px solid rgba(var(--map-accent-rgb),0.22);
     border-radius:4px;
     font-size:11px;
     letter-spacing:1px;
@@ -829,7 +943,7 @@ html.perf-low-effects .map-scene-visual::before {
     align-items:center;
     justify-content:space-between;
     gap:8px;
-    border:1px solid rgba(200,255,76,0.22);
+    border:1px solid rgba(var(--map-accent-rgb),0.22);
     background:linear-gradient(180deg, rgba(10, 14, 12, 0.96) 0%, rgba(7, 9, 8, 0.92) 100%);
     color:#e8f5cb;
     cursor:pointer;
@@ -847,7 +961,7 @@ html.perf-low-effects .map-scene-visual::before {
     inset:0;
     pointer-events:none;
     background:
-        linear-gradient(90deg, rgba(200,255,76,0.12) 0, rgba(200,255,76,0.12) 3px, transparent 3px),
+        linear-gradient(90deg, rgba(var(--map-accent-rgb),0.12) 0, rgba(var(--map-accent-rgb),0.12) 3px, transparent 3px),
         linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 28%);
     opacity:0.78;
 }
@@ -874,19 +988,19 @@ html.perf-low-effects .map-scene-visual::before {
 
 .map-filter-hotspot:hover {
     background:linear-gradient(180deg, rgba(16, 22, 18, 0.98) 0%, rgba(10, 13, 11, 0.94) 100%);
-    border-color:rgba(220,255,128,0.46);
+    border-color:rgba(var(--map-accent-hi-rgb),0.46);
     color:#f4ffd6;
 }
 
 .map-filter-hotspot:focus {
     outline:none;
-    border-color:rgba(220,255,128,0.72);
-    box-shadow:0 0 0 1px rgba(220,255,128,0.18), 0 0 18px rgba(190,255,64,0.25);
+    border-color:rgba(var(--map-accent-hi-rgb),0.72);
+    box-shadow:0 0 0 1px rgba(var(--map-accent-hi-rgb),0.18), 0 0 18px rgba(var(--map-accent-rgb),0.25);
 }
 
 .map-filter-hotspot.is-active {
-    background:linear-gradient(180deg, rgba(189, 255, 78, 0.96) 0%, rgba(162, 230, 56, 0.94) 100%);
-    border-color:rgba(220,255,128,0.82);
+    background:linear-gradient(180deg, rgba(var(--map-accent-rgb), 0.96) 0%, rgba(var(--map-accent-lo-rgb), 0.94) 100%);
+    border-color:rgba(var(--map-accent-hi-rgb),0.82);
     box-shadow:inset 3px 0 0 rgba(255,255,255,0.38);
     color:#15200c;
 }
@@ -930,7 +1044,7 @@ html.perf-low-effects .map-scene-visual::before {
     gap:2px;
     margin:4px 0 8px 10px;
     padding:4px 0 4px 8px;
-    border-left:1px solid rgba(200,255,76,0.22);
+    border-left:1px solid rgba(var(--map-accent-rgb),0.22);
 }
 
 .map-rail-scene-row {
@@ -948,7 +1062,7 @@ html.perf-low-effects .map-scene-visual::before {
     height:26px;
     padding:0 8px;
     background:rgba(10, 14, 12, 0.56);
-    border:1px solid rgba(200,255,76,0.1);
+    border:1px solid rgba(var(--map-accent-rgb),0.1);
     color:#c4d8a0;
     font-size:11px;
     letter-spacing:0.3px;
@@ -1025,25 +1139,37 @@ html.perf-low-effects .map-scene-visual::before {
 
 .map-rail-scene-item:hover {
     background:rgba(22, 30, 18, 0.78);
-    border-color:rgba(200,255,76,0.32);
+    border-color:rgba(var(--map-accent-rgb),0.32);
     color:#e7f5bf;
     transform:translateX(1px);
 }
 
 .map-rail-scene-item:focus {
     outline:none;
-    border-color:rgba(200,255,76,0.52);
+    border-color:rgba(var(--map-accent-rgb),0.52);
     color:#f1ffcf;
 }
 
 /* 菱形 dot — 与 .map-rail-stage-select-btn.is-task::before / .map-rail-scene-quest 的
-   菱形语言对齐, 让 rail 整列左侧 icon 形状统一 (颜色仍按状态区分). */
+   菱形语言对齐, 让 rail 整列左侧 icon 形状统一 (颜色仍按状态区分)。
+   菱形视觉由 ::before 承载 (clip-path + drop-shadow 同层技法, 辉光不被裁),
+   ::after 叠同形强辉光做 opacity 呼吸 — 消除旧 mapRailSceneCurrentPulse 的 filter 逐帧 paint。 */
 .map-rail-scene-dot {
     width:6px;
     height:6px;
-    background:rgba(200,255,76,0.34);
-    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    position:relative;
     flex-shrink:0;
+}
+.map-rail-scene-dot::before,
+.map-rail-scene-dot::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:rgba(var(--map-accent-rgb),0.34);
+    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.map-rail-scene-dot::after {
+    opacity:0;
 }
 
 .map-rail-scene-label {
@@ -1061,16 +1187,21 @@ html.perf-low-effects .map-scene-visual::before {
     box-shadow:inset 2px 0 0 rgba(114,230,255,0.7);
 }
 
-.map-rail-scene-item.is-current .map-rail-scene-dot {
+.map-rail-scene-item.is-current .map-rail-scene-dot::before {
     background:rgba(114,230,255,0.95);
-    /* clip-path 切掉 box-shadow, 改用 filter drop-shadow 让发光描出菱形外形 */
-    filter:drop-shadow(0 0 4px rgba(114,230,255,0.7));
-    animation:mapRailSceneCurrentPulse 1.6s ease-in-out infinite;
+    /* clip-path 切掉 box-shadow, 用 filter drop-shadow 让发光描出菱形外形 (静态中层辉光) */
+    filter:drop-shadow(0 0 3px rgba(114,230,255,0.5));
+}
+.map-rail-scene-item.is-current .map-rail-scene-dot::after {
+    background:rgba(114,230,255,0.95);
+    filter:drop-shadow(0 0 7px rgba(114,230,255,0.95));
+    animation:mapRailSceneCurrentGlow 1.6s ease-in-out infinite;
 }
 
-@keyframes mapRailSceneCurrentPulse {
-    0%, 100% { filter:drop-shadow(0 0 3px rgba(114,230,255,0.5)); }
-    50%      { filter:drop-shadow(0 0 7px rgba(114,230,255,0.95)); }
+/* 强辉光层 opacity 交叉淡入 — 合成器-only, 不再动 filter (旧 mapRailSceneCurrentPulse) */
+@keyframes mapRailSceneCurrentGlow {
+    0%, 100% { opacity:0; }
+    50%      { opacity:1; }
 }
 
 /* is-disabled: 锁定/未启用, 弱化但仍可点 (click → toast lockedReason) */
@@ -1088,7 +1219,7 @@ html.perf-low-effects .map-scene-visual::before {
     transform:none;
 }
 
-.map-rail-scene-item.is-disabled .map-rail-scene-dot {
+.map-rail-scene-item.is-disabled .map-rail-scene-dot::before {
     background:rgba(255,142,96,0.52);
 }
 
@@ -1109,15 +1240,15 @@ html.perf-low-effects .map-scene-visual::before {
     color:#ffe6a8;
 }
 
-.map-rail-scene-item.is-busy .map-rail-scene-dot,
-.map-rail-scene-item:disabled .map-rail-scene-dot {
+.map-rail-scene-item.is-busy .map-rail-scene-dot::before,
+.map-rail-scene-item:disabled .map-rail-scene-dot::before {
     background:#ffd04f;
-    /* clip-path 切 box-shadow → drop-shadow 让黄光描菱形外形 */
+    /* clip-path 切 box-shadow → drop-shadow 让黄光描菱形外形 (静态) */
     filter:drop-shadow(0 0 4px rgba(255, 208, 79, 0.6));
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .map-rail-scene-item.is-current .map-rail-scene-dot {
+    .map-rail-scene-item.is-current .map-rail-scene-dot::after {
         animation:none;
     }
     .map-rail-scene-item:hover {
@@ -1270,7 +1401,7 @@ html.perf-low-effects .map-scene-visual::before {
 
 .map-stage-loading {
     font-size:13px;
-    text-shadow:0 0 12px rgba(200,255,76,0.3);
+    text-shadow:0 0 12px rgba(var(--map-accent-rgb),0.3);
 }
 
 .map-stage-error {
@@ -1301,8 +1432,8 @@ html.perf-low-effects .map-scene-visual::before {
 }
 
 .map-stage-error-actions button {
-    background:rgba(200,255,76,0.08);
-    border:1px solid rgba(200,255,76,0.22);
+    background:rgba(var(--map-accent-rgb),0.08);
+    border:1px solid rgba(var(--map-accent-rgb),0.22);
     color:#dfffb1;
     padding:7px 16px;
     cursor:pointer;
@@ -1313,8 +1444,8 @@ html.perf-low-effects .map-scene-visual::before {
 }
 
 .map-stage-error-actions button:hover {
-    background:rgba(200,255,76,0.16);
-    border-color:rgba(200,255,76,0.38);
+    background:rgba(var(--map-accent-rgb),0.16);
+    border-color:rgba(var(--map-accent-rgb),0.38);
 }
 
 /* ─── 视觉升级层 ─── */
@@ -1342,6 +1473,96 @@ html.perf-low-effects .map-scene-visual::before {
     .map-panel.is-entering .map-stage-frame { animation:none; }
 }
 
+/* ─── 分页入场编排 (第二节) ───
+ * 面板打开/切页 (applyPage) 时 label / filter 按钮 / rail 子项 / avatar 按 --stagger 延迟入场。
+ * keyframes 只写 from: 终值取元素自然态 — 默认隐藏的 label 入场后归位隐藏, 不会被闪出;
+ * backwards 填充让 delay 窗口内先吃 from 帧; 只动 opacity/transform。
+ * label 排除 is-hover/is-current/is-busy: 交互态命中即回自然态, 不被入场动画扣住 (hover 即时可读)。 */
+.map-panel.is-page-entering .map-hotspot-overlay-label:not(.is-hover):not(.is-current):not(.is-busy),
+.map-panel.is-page-entering .map-filter-hotspot,
+.map-panel.is-page-entering .map-rail-scene-item,
+.map-panel.is-page-entering .map-avatar {
+    animation:mapStaggerIn 0.3s cubic-bezier(0.2, 0.8, 0.25, 1) backwards;
+    animation-delay:calc(var(--stagger, 0) * 25ms);
+}
+/* avatar 由 MapAvatarLayer 独立构建, 不打 --stagger, 统一第二拍入场 */
+.map-panel.is-page-entering .map-avatar {
+    animation-delay:100ms;
+}
+
+@keyframes mapStaggerIn {
+    from { opacity:0; transform:translateY(7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-panel.is-page-entering .map-hotspot-overlay-label,
+    .map-panel.is-page-entering .map-filter-hotspot,
+    .map-panel.is-page-entering .map-rail-scene-item,
+    .map-panel.is-page-entering .map-avatar {
+        animation:none;
+    }
+}
+
+html.perf-low-effects .map-panel.is-page-entering .map-hotspot-overlay-label,
+html.perf-low-effects .map-panel.is-page-entering .map-filter-hotspot,
+html.perf-low-effects .map-panel.is-page-entering .map-rail-scene-item,
+html.perf-low-effects .map-panel.is-page-entering .map-avatar {
+    animation:none !important;
+}
+
+/* ─── 导航锁定一击 (第二节) ───
+ * requestNavigate 时 spawnNavStrike 在热点中心生成一次性覆层 (~350ms, animationend 自移除):
+ * ::before 四角括号收缩 + ::after 环爆散, 只动 transform/opacity; accent 着色, 不阻塞导航。
+ * reduced-motion / perf-low: JS 不生成 (此处 display:none 双保险)。 */
+.map-nav-strike {
+    position:absolute;
+    width:44px;
+    height:44px;
+    transform:translate(-50%, -50%);
+    z-index:5;
+    pointer-events:none;
+}
+.map-nav-strike::before,
+.map-nav-strike::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+.map-nav-strike::before {
+    background:
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   top    / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   top    / 2px 12px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  top    / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  top    / 2px 12px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   bottom / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) left   bottom / 2px 12px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  bottom / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--map-accent-rgb)), rgb(var(--map-accent-rgb))) right  bottom / 2px 12px no-repeat;
+    animation:mapNavStrikeReticle 0.35s ease-out both;
+}
+.map-nav-strike::after {
+    border:2px solid rgba(var(--map-accent-rgb),0.9);
+    border-radius:50%;
+    animation:mapNavStrikeRing 0.35s ease-out both;
+}
+
+@keyframes mapNavStrikeReticle {
+    from { transform:scale(1.35); opacity:1; }
+    to   { transform:scale(0.7);  opacity:0; }
+}
+@keyframes mapNavStrikeRing {
+    from { transform:scale(0.4); opacity:0.95; }
+    to   { transform:scale(1.5); opacity:0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-nav-strike { display:none; }
+}
+html.perf-low-effects .map-nav-strike {
+    display:none !important;
+}
+
 /* Stage 四角 HUD 括号 —— 静态 L 型装饰，不参与命中 */
 .map-stage-corner {
     position:absolute;
@@ -1355,8 +1576,8 @@ html.perf-low-effects .map-scene-visual::before {
 .map-stage-corner::after {
     content:'';
     position:absolute;
-    background:#c8ff4c;
-    box-shadow:0 0 6px rgba(200,255,76,0.45);
+    background:rgb(var(--map-accent-rgb));
+    box-shadow:0 0 6px rgba(var(--map-accent-rgb),0.45);
 }
 /* 水平短臂 + 垂直短臂 */
 .map-stage-corner::before { width:12px; height:2px; }
@@ -1377,13 +1598,23 @@ html.perf-low-effects .map-scene-visual::before {
 /* Phase 2 已删除 .map-hotspot::before/::after/.sheen 矩形装饰 + 相关 keyframes;
    focus/current/hover/busy 视觉由 .map-scene-visual / .map-avatar DOM 层提供. */
 
-/* 面板关闭红色按钮、重试按钮的视觉细化 —— 增加 hover 时的电流感闪烁 */
-.map-panel-close-btn:hover {
-    animation:mapCloseBtnPulse 1.2s ease-in-out infinite;
+/* 面板关闭红色按钮、重试按钮的视觉细化 —— hover 电流感闪烁:
+ * 静态外发光保留在 .map-panel-close-btn:hover; ::before 内辉光层只做 opacity 交叉淡入,
+ * 消除旧 mapCloseBtnPulse 的 box-shadow 逐帧 paint (::before 画在文字之下, 不糊 X 字形)。 */
+.map-panel-close-btn::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0;
+    background:radial-gradient(ellipse at center, rgba(255,0,60,0.32) 0%, rgba(255,0,60,0) 74%);
 }
-@keyframes mapCloseBtnPulse {
-    0%, 100% { box-shadow:0 0 8px rgba(255,0,60,0.25); }
-    50%      { box-shadow:0 0 14px rgba(255,0,60,0.48); }
+.map-panel-close-btn:hover::before {
+    animation:mapCloseBtnGlow 1.2s ease-in-out infinite;
+}
+@keyframes mapCloseBtnGlow {
+    0%, 100% { opacity:0; }
+    50%      { opacity:1; }
 }
 
 /* Map panel low-effects mode.
@@ -1425,6 +1656,23 @@ html.perf-low-effects .map-rail-scene-quest,
 html.perf-low-effects .map-coordinate-readout,
 html.perf-low-effects .map-panel-close-btn:hover {
     box-shadow:none !important;
+}
+
+/* perf-low: 辉光呼吸层整体摘除 (静态 drop-shadow 也去), 关闭钮内辉光层不建 */
+html.perf-low-effects .map-rail-scene-dot::before,
+html.perf-low-effects .map-rail-scene-dot::after {
+    filter:none !important;
+    animation:none !important;
+}
+html.perf-low-effects .map-panel-close-btn::before {
+    display:none !important;
+}
+
+/* reduced-motion: 关闭钮 hover 内辉光只做静态呈现 */
+@media (prefers-reduced-motion: reduce) {
+    .map-panel-close-btn:hover::before {
+        animation:none;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════
