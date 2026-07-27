@@ -21,6 +21,7 @@ window.__SKILLS_CONFIG__={requestTimeoutMs:120,switchTimeoutMs:80,previewDebounc
   sessionNonce:'harness',copyText:function(value){window.__copiedDiagnostic=String(value)}};
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__iconKeys=[];
 window.__host={instance:'inst-manage',view:'manage',trainerSession:'trainer-A',revision:7,writeEpoch:0,
+  skillPoints:160,
   snapshotDelay:0,previewDelay:0,invalidTrainer:false,previewBlocked:false,unknownNextWrite:false,malformedNextWrite:false,
   expireNextSnapshot:false,expireNextPreview:false,expireNextWrite:false,writeDelay:8,pendingWriteUntil:0,switchSeq:0,
   failNextSwitchTransport:false,dropNextSwitch:false,undefinedNextSwitchReturn:false,
@@ -52,11 +53,12 @@ loadout[11].skillKey='遗留未知技';loadout[11].level=null;loadout[11].iconKe
 function trainerEntries(){return[
   {skillKey:'闪现',currentLevel:3,maxLevel:20,type:'武术-内力',passive:false,equippable:true,unlockLevel:15,unlockSP:20,upgradeSP:20,mp:14,cooldownMs:1700,iconKey:'闪现',description:'教师提供的闪现说明',stateHealth:'ok',writeBlocked:false},
   {skillKey:'新手冲拳',currentLevel:0,maxLevel:10,type:'武术-拳法',passive:false,equippable:true,unlockLevel:1,unlockSP:5,upgradeSP:5,mp:3,cooldownMs:500,iconKey:'新手冲拳',description:'尚未学习，目标只能为 1。',stateHealth:'ok',writeBlocked:false},
+  {skillKey:'预算训练',currentLevel:1,maxLevel:10,type:'武术-内力',passive:false,equippable:true,unlockLevel:1,unlockSP:5,upgradeSP:30,mp:3,cooldownMs:500,iconKey:'预算训练',description:'用于验证可负担等级上限。',stateHealth:'ok',writeBlocked:false},
   {skillKey:'重复技',currentLevel:2,maxLevel:10,type:'武术-异常',passive:false,equippable:true,unlockLevel:1,unlockSP:1,upgradeSP:1,mp:1,cooldownMs:100,iconKey:'重复技',description:'坏档展示',stateHealth:'duplicate',writeBlocked:true}
 ]}
 function authoritativeSnapshot(view,revision){
   var result={success:true,v:1,revision:revision==null?__host.revision:revision,view:view,
-    player:{level:35,skillPoints:240,easyMode:false},learned:copy(learnedRows),loadout:copy(loadout),trainer:null,
+    player:{level:35,skillPoints:__host.skillPoints,easyMode:false},learned:copy(learnedRows),loadout:copy(loadout),trainer:null,
     diagnostics:[{code:'duplicate_skill_rows',skillKey:'重复技',rowCount:2}]};
   if(view==='trainer')result.trainer={session:__host.trainerSession,entries:__host.invalidTrainer?['闪现']:trainerEntries()};
   return result
@@ -96,8 +98,11 @@ function respond(message,ctx){var base=responseBase(message,ctx),p=message.paylo
   }
   if(message.cmd==='learnPreview'){
     if(__host.expireNextPreview){__host.expireNextPreview=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
-    var blocked=__host.previewBlocked;Object.assign(base,{success:true,v:1,trainerSession:p.trainerSession,skillKey:p.skillKey,
-      currentLevel:p.skillKey==='新手冲拳'?0:3,desiredLevel:p.desiredLevel,cost:p.skillKey==='新手冲拳'?5:(p.desiredLevel-3)*20,
+    var blocked=__host.previewBlocked,trainerEntry=trainerEntries().find(function(entry){return entry.skillKey===p.skillKey});
+    var previewCurrent=trainerEntry?trainerEntry.currentLevel:0;
+    var previewCost=previewCurrent<=0?(trainerEntry?trainerEntry.unlockSP:0):(p.desiredLevel-previewCurrent)*(trainerEntry?trainerEntry.upgradeSP:0);
+    Object.assign(base,{success:true,v:1,trainerSession:p.trainerSession,skillKey:p.skillKey,
+      currentLevel:previewCurrent,desiredLevel:p.desiredLevel,cost:previewCost,
       revision:__host.revision,canCommit:!blocked,blockingError:blocked?'insufficient_sp':null,learnToken:blocked?null:'learn.harness.token'});emit(base);return
   }
   if(__host.expireNextWrite){__host.expireNextWrite=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
@@ -478,7 +483,7 @@ window.Icons={
     var preview=sent('learnPreview').slice(-1)[0];
     ok('selection automatically previews with trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
     var validPreviewNode=document.querySelector('.skills-preview-result.ok');
-    ok('valid preview fills cost, balance and requirements before enabling the sticky action',validPreviewNode.textContent.indexOf('240 → 235')>=0
+    ok('valid preview fills cost, balance and requirements before enabling the sticky action',validPreviewNode.textContent.indexOf('160 → 155')>=0
       &&getComputedStyle(validPreviewNode).backgroundImage!=='none'
       &&document.querySelectorAll('.skills-trainer-requirements .ok').length===3&&!document.querySelector('.skills-trainer-commit').disabled);
     var previewCountBeforeFreshen=sent('learnPreview').length;await wait(170);document.querySelector('.skills-trainer-commit').click();
@@ -491,7 +496,7 @@ window.Icons={
     row('闪现').click();await until(function(){return !SkillsPanel.debugState().previewLoading&&document.querySelectorAll('.skills-level-btn').length===2},300);
     var targetRange=document.querySelector('.skills-level-range'),targetValue=document.querySelector('.skills-level-value');
     ok('learned skills expose one exact integer range with number entry and no redundant plus-one preset',targetRange&&targetValue
-      &&targetRange.min==='4'&&targetRange.max==='20'&&targetRange.step==='1'&&targetRange.getAttribute('aria-valuetext')==='目标等级 4'
+      &&targetRange.min==='4'&&targetRange.max==='11'&&targetRange.step==='1'&&targetRange.getAttribute('aria-valuetext')==='目标等级 4'
       &&document.querySelector('.skills-trainer-target').textContent.indexOf('升 1 级')<0);
     var targetRect=document.querySelector('.skills-trainer-target').getBoundingClientRect(),rangeRect=document.querySelector('.skills-level-range-shell').getBoundingClientRect();
     var markNodes=document.querySelectorAll('.skills-level-mark'),firstMarkRect=markNodes[0].getBoundingClientRect(),lastMarkRect=markNodes[markNodes.length-1].getBoundingClientRect();
@@ -524,6 +529,32 @@ window.Icons={
     var rapidTargetPreview=sent('learnPreview').slice(-1)[0];
     ok('rapid fine adjustments stay interactive and debounce to the latest preview',sent('learnPreview').length===previewCountBeforeRapidTarget+1
       &&rapidTargetPreview.payload.desiredLevel===9&&SkillsPanel.debugState().desiredLevel===9);
+    var previewCountBeforeBudget=sent('learnPreview').length;row('预算训练').click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeBudget&&!SkillsPanel.debugState().previewLoading},300);
+    var budgetRange=document.querySelector('.skills-level-range'),budgetPreset=document.querySelector('.skills-target-preset');
+    ok('160 SP at 30 SP per level caps a learned level-one skill at level six',budgetRange&&budgetRange.min==='2'&&budgetRange.max==='6'
+      &&document.querySelector('.skills-trainer-gate').textContent.indexOf('当前可升至 Lv.6')>=0);
+    ok('an affordability-limited target offers the exact affordable preset instead of claiming full level',budgetPreset
+      &&budgetPreset.textContent==='升至可负担最高级'&&document.querySelector('.skills-level-mark[data-level="6"]')
+      &&!document.querySelector('.skills-level-mark[data-level="7"]'));
+    var previewCountBeforeBudgetMax=sent('learnPreview').length;budgetPreset.click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeBudgetMax&&!SkillsPanel.debugState().previewLoading},300);
+    ok('affordable preset previews only the payable level and preserves a non-negative balance',
+      sent('learnPreview').slice(-1)[0].payload.desiredLevel===6
+      &&document.querySelector('.skills-cost-card').textContent.indexOf('160 → 10')>=0);
+    setHost({instance:'inst-trainer-low-sp',view:'trainer',trainerSession:'trainer-low-sp',skillPoints:20});
+    await until(function(){return row('预算训练')&&!SkillsPanel.debugState().previewLoading},300);
+    var previewCountBeforeUnaffordableSwitch=sent('learnPreview').length;
+    row('闪现').click();row('预算训练').click();await wait(30);
+    ok('switching to an unaffordable skill cancels the previous skill preview debounce',
+      sent('learnPreview').length===previewCountBeforeUnaffordableSwitch
+      &&SkillsPanel.debugState().selectedKey==='预算训练'&&SkillsPanel.debugState().desiredLevel===1);
+    var previewCountBeforeUnaffordable=sent('learnPreview').length;row('预算训练').click();await wait(30);
+    ok('less than one upgrade cost renders an explicit non-target state without a doomed preview',
+      sent('learnPreview').length===previewCountBeforeUnaffordable&&!document.querySelector('.skills-level-range')
+      &&document.querySelector('.skills-level-stepper').textContent.indexOf('当前 SP 不足以升级')>=0
+      &&document.querySelector('.skills-trainer-commit').disabled);
+    __host.skillPoints=160;
     __host.previewBlocked=true;row('闪现').click();await until(function(){return document.querySelector('.skills-preview-result.blocked')},300);
     var blockedPreviewNode=document.querySelector('.skills-preview-result.blocked');
     ok('deterministic automatic preview rejection keeps a disabled reason-specific action',blockedPreviewNode

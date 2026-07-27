@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-飞跃砸击" itemID="6a5cfc55-00002b28" lastModified="1784479159" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-飞跃砸击" itemID="6a5cfc55-00002b28" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-飞跃砸击" lastModified="1785084717" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-飞跃砸击" currentFrame="7">
+    <DOMTimeline name="兵器攻击容器-飞跃砸击">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,9 +10,9 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
+            <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if(_parent.性别 == "女")
 {
@@ -25,6 +25,12 @@ else
 _root.播放音效("黑闪.wav");
 
 _parent.UpdateSmallState("飞跃砸击中");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("裂地拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -126,7 +132,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -136,7 +142,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
             <DOMFrame index="7" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-135.55" centerPoint3DY="382.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-135.55" centerPoint3DY="382.7">
                   <matrix>
                     <Matrix a="75.7603454589844" d="30.5301666259766" tx="687.35" ty="85.05"/>
                   </matrix>
@@ -202,7 +208,7 @@ _parent.状态改变("兵器跑");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-194.5" centerPoint3DY="20.6">
                   <matrix>
-                    <Matrix a="25.7456512451172" d="32.0001983642578" tx="0.85" ty="-161.2"/>
+                    <Matrix a="25.7456512451172" d="32.0001831054688" tx="0.85" ty="-161.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -328,7 +334,7 @@ _parent.状态改变("兵器跑");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-287.6" centerPoint3DY="234.45">
                   <matrix>
-                    <Matrix a="70.6399230957031" d="37.1076507568359" tx="471.3" ty="-146.1"/>
+                    <Matrix a="70.6399078369141" d="37.1076354980469" tx="471.3" ty="-146.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -391,7 +397,7 @@ _parent.状态改变("兵器跑");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-287.6" centerPoint3DY="234.45">
                   <matrix>
-                    <Matrix a="70.6399230957031" d="37.1076507568359" tx="471.3" ty="-146.1"/>
+                    <Matrix a="70.6399078369141" d="37.1076354980469" tx="471.3" ty="-146.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>

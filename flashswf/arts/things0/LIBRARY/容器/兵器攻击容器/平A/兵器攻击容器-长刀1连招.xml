@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1777471731" lastUniqueIdentifier="190">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1785147368" lastUniqueIdentifier="225">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长刀1连招" currentFrame="75">
+    <DOMTimeline name="兵器攻击容器-长刀1连招">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" name="长刀1连招" labelType="name" keyMode="9728">
               <elements/>
@@ -16,13 +16,13 @@
             <DOMFrame index="48" duration="15" name="长刀4连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" duration="13" name="长刀5连招" labelType="name" keyMode="9728">
+            <DOMFrame index="63" duration="16" name="长刀5连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="代码相关" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -160,13 +160,13 @@ _root.播放音效("兵器2段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" duration="12" keyMode="9728">
+            <DOMFrame index="63" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器五段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="75" keyMode="9728">
+            <DOMFrame index="78" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
@@ -175,7 +175,7 @@ _root.播放音效("兵器2段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -352,7 +352,7 @@ Z轴攻击范围 = 50;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 2;
 Z轴攻击范围 = 50;
@@ -365,9 +365,9 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="76" keyMode="9728">
+            <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -381,9 +381,9 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="76" keyMode="9728">
+            <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -397,17 +397,17 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="63" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" duration="13" keyMode="9728">
+            <DOMFrame index="63" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -455,7 +455,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
             <DOMFrame index="30" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -516,12 +516,12 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -622,7 +622,7 @@ Z轴攻击范围 = 50;
             <DOMFrame index="63" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" duration="4" keyMode="9728">
+            <DOMFrame index="72" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -644,7 +644,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -721,12 +721,12 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" duration="5" keyMode="9728">
+            <DOMFrame index="71" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -869,12 +869,12 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="特效" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -997,8 +997,8 @@ Z轴攻击范围 = 50;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!6496 7804[2719 9480 -1108 9091!-1108 9091[-4936 8704 -6571 6477!-6571 6477[-7959 4588 -7076 2315!-7076 2315[-6919 1911 -6690 1494!-6690 1494[-6057 343 -5031 -620!-5031 -620|12353 -265!12353 -265[12857 1419 11786 3370!11786 3370[10273
- 6128 6496 7804"/>
+                    <Edge fillStyle1="1" edges="!12353 -265[12857 1419 11786 3370!11786 3370[10273 6128 6496 7804!6496 7804[2719 9480 -1108 9091!-1108 9091[-4936 8704 -6571 6477!-6571 6477[-7959 4588 -7076 2315!-7076 2315[-6919 1911 -6690 1494!-6690 1494[-6057 343 -5031 -620!-5031
+ -620|12353 -265"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1062,12 +1062,12 @@ Z轴攻击范围 = 50;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="72" duration="4" keyMode="9728">
+            <DOMFrame index="72" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="引导层: 右手" color="#FF800A" locked="true" autoNamed="false" layerType="guide">
+        <DOMLayer name="引导层: 右手" color="#FF800A" autoNamed="false" layerType="guide">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -1100,12 +1100,12 @@ Z轴攻击范围 = 50;
             <DOMFrame index="48" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" duration="13" keyMode="9728">
+            <DOMFrame index="63" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#FF800A" parentLayerIndex="12" locked="true" autoNamed="false">
+        <DOMLayer name="右手" color="#FF800A" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4280,7 +4280,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="208.9" centerPoint3DY="-192.3">
                   <matrix>
@@ -4297,7 +4297,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右下臂" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="右下臂" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="63" keyMode="9728">
               <elements/>
@@ -4385,7 +4385,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="158.35" centerPoint3DY="-94.55">
                   <matrix>
@@ -4402,7 +4402,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="引导层: 右下臂" color="#9933CC" locked="true" autoNamed="false" layerType="guide">
+        <DOMLayer name="引导层: 右下臂" color="#9933CC" autoNamed="false" layerType="guide">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -4436,12 +4436,12 @@ Z轴攻击范围 = 50;
             <DOMFrame index="48" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" duration="13" keyMode="9728">
+            <DOMFrame index="63" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右下臂" color="#FF4FFF" parentLayerIndex="15" locked="true" autoNamed="false">
+        <DOMLayer name="右下臂" color="#FF4FFF" parentLayerIndex="15" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -4630,7 +4630,30 @@ Z轴攻击范围 = 50;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="2" keyMode="9728">
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.251068115234375" b="-0.21881103515625" c="0.76141357421875" d="0.0423583984375" tx="-73.85" ty="-36.3"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.807843137254902"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.933333333333333"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!12176 -3034[#34BD.FB #FFF6CA.CB 13385 -1600!13385 -1600|-1440 -1600!-1440 -1600|-1440 1680!-1440 1680[#FFEA4B.A7 #58A.EE -7541 402!-7541 402[-9601 -651 -8171 -1899!-8171 -1899[-6735 -3147 -2655 -3860!-2655 -3860[1437 -4572 5779 -4330
+!5779 -4330[10122 -4089 12176 -3034"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -4647,8 +4670,8 @@ Z轴攻击范围 = 50;
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!6622 -2586[#C2C.56 #FFF4D8.55 -640 -2214.5!-640 -2214.5[#FFFC1F.19 #FFF795.BA -1348 -2086!-1348 -2086[-5489 -1292 -7502 125!-7502 125[-9519 1541 -8235 2750!-8235 2750[#FFE113.C5 #BE8.BD -7442 3291.5!-7442 3291.5|-7442 801!-7442 801|11858
- 801!11858 801[#2FA8.77 #187.09 12243 0!12243 0[#3010.7C #FFFDCE.7B 11747 -1084!11747 -1084[10466 -2292 6622 -2586"/>
+!6622 -2586[#C2C.56 #FFF4D8.55 -640 -2214.5!-640 -2214.5[#FFFC1F.19 #FFF795.BA -1348 -2086!-1348 -2086[-5489 -1292 -7502 125!-7502 125[-9519 1541 -8235 2750!-8235 2750[#FFE113.C5 #BE8.BD -7442 3291.5!-7442 3291.5|-7442 801!-7442 801|10458
+ 2481!10458 2481[#2F87.A5 #479.33 12236 292!12236 292[#3010.71 #FFFDCE.96 11747 -1084!11747 -1084[10466 -2292 6622 -2586"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5157,8 +5180,8 @@ Z轴攻击范围 = 50;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
-!-11073 -1961[-7416 -3736 -1293 -4087"/>
+!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
+ 292!15782 292[16733 2452 13077 4231"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5179,8 +5202,8 @@ Z轴攻击范围 = 50;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
-!-10955 -2636[-7752 -3930 -1385 -4296"/>
+!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
+ 259!16372 259[17361 2505 13559 4354"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5263,7 +5286,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="77.35" centerPoint3DY="-64.75">
                   <matrix>
@@ -5368,6 +5391,219 @@ Z轴攻击范围 = 50;
             </DOMFrame>
             <DOMFrame index="30" duration="2" keyMode="9728">
               <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="64.65" centerPoint3DY="182.85">
+                  <matrix>
+                    <Matrix a="0.304275512695313" b="-0.935623168945313" c="-0.935623168945313" d="-0.304275512695313" tx="-19.9" ty="57.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="174.8" centerPoint3DY="-100.7">
+                  <matrix>
+                    <Matrix a="0.278701782226563" b="-0.7813720703125" c="0.7813720703125" d="0.278701782226563" tx="130.25" ty="-43.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.4" y="-0.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="156.15" centerPoint3DY="-24">
+                  <matrix>
+                    <Matrix a="-0.677154541015625" b="-0.465011596679688" c="0.465011596679688" d="-0.677154541015625" tx="212.9" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.65" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="229.45" centerPoint3DY="-59.75">
+                  <matrix>
+                    <Matrix a="0.0910186767578125" b="-0.807418823242188" c="0.807418823242188" d="0.0910186767578125" tx="255.85" ty="-79.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.95" y="0.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="220.25" centerPoint3DY="67.7">
+                  <matrix>
+                    <Matrix a="-0.0947113037109375" b="0.92706298828125" c="-0.92706298828125" d="-0.0947113037109375" tx="315.1" ty="-100.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="111.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="122.95" centerPoint3DY="91.95">
+                  <matrix>
+                    <Matrix a="-0.232711791992188" b="0.968353271484375" c="-0.968353271484375" d="-0.232711791992188" tx="71.75" ty="49.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="123.8" centerPoint3DY="128.95">
+                  <matrix>
+                    <Matrix a="0.356353759765625" b="-0.76763916015625" c="0.76763916015625" d="0.356353759765625" tx="57.7" ty="78.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.65" y="3.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="41.85" centerPoint3DY="158.55">
+                  <matrix>
+                    <Matrix a="0.807693481445313" b="0.266555786132813" c="-0.266555786132813" d="0.807693481445313" tx="56.7" ty="35.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.35" y="18.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="77.1" centerPoint3DY="116.65">
+                  <matrix>
+                    <Matrix a="0.828643798828125" b="0.209945678710938" c="-0.209945678710938" d="0.828643798828125" tx="38.95" ty="72.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.75" y="-30.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="132.85" centerPoint3DY="233.2">
+                  <matrix>
+                    <Matrix a="0.817352294921875" b="-0.034515380859375" c="0.034515380859375" d="0.817352294921875" tx="92.65" ty="203.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="1.4"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="108.3" centerPoint3DY="183.35">
+                  <matrix>
+                    <Matrix a="0.691207885742188" b="0.462387084960938" c="-0.462387084960938" d="0.691207885742188" tx="151.3" ty="121.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="1.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="28.85" centerPoint3DY="158.95">
+                  <matrix>
+                    <Matrix a="0.77630615234375" b="0.33990478515625" c="-0.33990478515625" d="0.77630615234375" tx="13.9" ty="77.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="2.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-95.75" centerPoint3DY="237.9">
+                  <matrix>
+                    <Matrix a="0.757369995117188" b="0.343536376953125" c="-0.343536376953125" d="0.757369995117188" tx="-121.95" ty="194.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-66.1" centerPoint3DY="232.85">
+                  <matrix>
+                    <Matrix a="0.262908935546875" b="0.785934448242188" c="-0.785934448242188" d="0.262908935546875" tx="-26.5" ty="168.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="2.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="60.55" centerPoint3DY="49.55">
+                  <matrix>
+                    <Matrix a="-0.295333862304688" b="0.950927734375" c="-0.950927734375" d="-0.295333862304688" tx="9.05" ty="7.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="121.1" centerPoint3DY="-48.5">
+                  <matrix>
+                    <Matrix a="0.952850341796875" b="0.097442626953125" c="-0.097442626953125" d="0.952850341796875" tx="102.65" ty="-95.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="-1.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="73.15" centerPoint3DY="-144.1">
+                  <matrix>
+                    <Matrix a="0.021697998046875" b="-0.83441162109375" c="0.83441162109375" d="0.021697998046875" tx="60.8" ty="-76.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.15" y="-2.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="137.15" centerPoint3DY="-129.75">
+                  <matrix>
+                    <Matrix a="-0.369720458984375" b="-0.725128173828125" c="0.725082397460938" d="-0.369735717773438" tx="141.1" ty="-74.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="0.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="172.3" centerPoint3DY="-120.5">
+                  <matrix>
+                    <Matrix a="0.81231689453125" b="0.0565643310546875" c="-0.0565643310546875" d="0.81231689453125" tx="203.3" ty="-104.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="-0.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="15.65" centerPoint3DY="176.35">
                   <matrix>
                     <Matrix a="0.598922729492188" b="-0.780548095703125" c="-0.780548095703125" d="-0.598922729492188" tx="-22.4" ty="29.7"/>
@@ -5379,42 +5615,42 @@ Z轴攻击范围 = 50;
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="214.15" centerPoint3DY="-54.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="179.3" centerPoint3DY="-82.7">
                   <matrix>
-                    <Matrix a="0.523361206054688" b="-0.6436767578125" c="0.6436767578125" d="0.523361206054688" tx="153" ty="-15.95"/>
+                    <Matrix a="0.020477294921875" b="-0.829330444335938" c="0.829330444335938" d="0.020477294921875" tx="154.4" ty="-15.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.45" y="-0.8"/>
+                    <Point x="2.45" y="-0.85"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="163" centerPoint3DY="39.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="213.95" centerPoint3DY="-60.55">
                   <matrix>
-                    <Matrix a="-0.750656127929688" b="-0.3336181640625" c="0.3336181640625" d="-0.750656127929688" tx="220.25" ty="41.4"/>
+                    <Matrix a="-0.0937957763671875" b="-0.816055297851563" c="0.816055297851563" d="-0.0937957763671875" tx="243.3" ty="-12.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.7" y="-0.1"/>
+                    <Point x="-0.7" y="-0.15"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="237.2" centerPoint3DY="-3.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="299.15" centerPoint3DY="-50.45">
                   <matrix>
-                    <Matrix a="-0.265670776367188" b="-0.76788330078125" c="0.76788330078125" d="-0.265670776367188" tx="251.55" ty="-33.15"/>
+                    <Matrix a="0.811691284179688" b="0.0367279052734375" c="-0.0367279052734375" d="0.811691284179688" tx="321.7" ty="-24.3"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1" y="0.35"/>
+                    <Point x="1.05" y="0.3"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="212.4" centerPoint3DY="-214.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="285.2" centerPoint3DY="-196.95">
                   <matrix>
-                    <Matrix a="-0.16864013671875" b="-0.91650390625" c="0.91650390625" d="-0.16864013671875" tx="167.25" ty="-26.2"/>
+                    <Matrix a="-0.156082153320313" b="-0.918716430664063" c="0.918716430664063" d="-0.156082153320313" tx="237.25" ty="-9.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="8.1" y="111.9"/>
@@ -5544,7 +5780,7 @@ Z轴攻击范围 = 50;
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="132.65" centerPoint3DY="-129.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="132.9" centerPoint3DY="-129.2">
                   <matrix>
                     <Matrix a="0.29876708984375" b="-0.779388427734375" c="0.779388427734375" d="0.29876708984375" tx="98.45" ty="-69.8"/>
                   </matrix>
@@ -5555,23 +5791,23 @@ Z轴攻击范围 = 50;
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="188.35" centerPoint3DY="-94.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="205.45" centerPoint3DY="-86.1">
                   <matrix>
-                    <Matrix a="-0.106689453125" b="-0.806915283203125" c="0.806884765625" d="-0.106719970703125" tx="173.55" ty="-41.4"/>
+                    <Matrix a="0.178390502929688" b="-0.794143676757813" c="0.79412841796875" d="0.178359985351563" tx="173.3" ty="-41.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.05" y="0.45"/>
+                    <Point x="1.05" y="0.4"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="218.35" centerPoint3DY="-74.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="226.7" centerPoint3DY="-56.8">
                   <matrix>
-                    <Matrix a="0.746932983398438" b="0.324264526367188" c="-0.324264526367188" d="0.746932983398438" tx="242.15" ty="-48.85"/>
+                    <Matrix a="0.589096069335938" b="0.562149047851563" c="-0.562149047851563" d="0.589096069335938" tx="240.2" ty="-24.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.4" y="-0.3"/>
+                    <Point x="-0.4" y="-0.4"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
@@ -5579,7 +5815,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="2" keyMode="9728">
+            <DOMFrame index="33" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="42.5" centerPoint3DY="175.3">
                   <matrix>
@@ -5592,9 +5828,9 @@ Z轴攻击范围 = 50;
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="161.05" centerPoint3DY="42.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="168.4" centerPoint3DY="41">
                   <matrix>
-                    <Matrix a="0.36895751953125" b="0.742843627929688" c="-0.742843627929688" d="0.36895751953125" tx="151.3" ty="-28.8"/>
+                    <Matrix a="0.444580078125" b="0.700210571289063" c="-0.700210571289063" d="0.444580078125" tx="151.75" ty="-28.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.45" y="-1.15"/>
@@ -5603,34 +5839,23 @@ Z轴攻击范围 = 50;
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="81.95" centerPoint3DY="-47.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="80.1" centerPoint3DY="-39.65">
                   <matrix>
-                    <Matrix a="0.45001220703125" b="-0.685409545898438" c="0.685409545898438" d="0.45001220703125" tx="71.1" ty="8.45"/>
+                    <Matrix a="0.375900268554688" b="-0.72869873046875" c="0.72869873046875" d="0.375900268554688" tx="75.9" ty="17.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.5" y="0.1"/>
+                    <Point x="-0.55" y="0.15"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="108.65" centerPoint3DY="34.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="148.2" centerPoint3DY="13.15">
                   <matrix>
-                    <Matrix a="0.734161376953125" b="-0.335357666015625" c="0.335357666015625" d="0.734161376953125" tx="139" ty="46.25"/>
+                    <Matrix a="0.576171875" b="0.565200805664063" c="-0.565200805664063" d="0.576171875" tx="148.15" ty="46.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="0.55"/>
-                  </transformationPoint>
-                  <filters>
-                    <BlurFilter blurX="15" blurY="0"/>
-                  </filters>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="104.1" centerPoint3DY="-128.8">
-                  <matrix>
-                    <Matrix a="-0.05731201171875" b="-0.910980224609375" c="0.910980224609375" d="-0.05731201171875" tx="38" ty="49.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="7.45" y="112"/>
+                    <Point x="1.2" y="0.6"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
@@ -5757,34 +5982,45 @@ Z轴攻击范围 = 50;
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="134.8" centerPoint3DY="-18.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="97.65" centerPoint3DY="-0.95">
                   <matrix>
-                    <Matrix a="0.68634033203125" b="0.474639892578125" c="-0.474639892578125" d="0.68634033203125" tx="85.15" ty="-65.8"/>
+                    <Matrix a="0.303924560546875" b="0.77716064453125" c="-0.77716064453125" d="0.303924560546875" tx="84.75" ty="-67.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="-2.85"/>
+                    <Point x="1.2" y="-2.9"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="78.35" centerPoint3DY="-37.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="62.75" centerPoint3DY="-47.85">
                   <matrix>
-                    <Matrix a="0.289230346679688" b="-0.755111694335938" c="0.755126953125" d="0.2891845703125" tx="40.15" ty="1.85"/>
+                    <Matrix a="0.661819458007813" b="-0.464584350585938" c="0.464614868164063" d="0.66180419921875" tx="9.65" ty="-36.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="0.45"/>
+                    <Point x="1.3" y="0.45"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="94.8" centerPoint3DY="-5.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="135.2" centerPoint3DY="-116.4">
                   <matrix>
-                    <Matrix a="0.497116088867188" b="0.641525268554688" c="-0.641525268554688" d="0.497116088867188" tx="103.55" ty="27.8"/>
+                    <Matrix a="1.16682434082031" b="-0.677886962890625" c="0.891448974609375" d="0.196136474609375" tx="14.5" ty="35.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.45" y="-0.25"/>
+                    <Point x="7.55" y="111.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="57.3" centerPoint3DY="-12.65">
+                  <matrix>
+                    <Matrix a="0.053741455078125" b="0.809814453125" c="-0.809814453125" d="0.053741455078125" tx="47.7" ty="20.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="-0.35"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="15" blurY="0"/>
@@ -11018,12 +11254,12 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="67" duration="9" keyMode="9728">
+            <DOMFrame index="67" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 7" color="#4F80FF" locked="true">
+        <DOMLayer name="图层 7" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
@@ -11103,12 +11339,12 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="68" duration="8" keyMode="9728">
+            <DOMFrame index="68" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="武器" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="63" keyMode="9728">
               <elements/>
@@ -11213,7 +11449,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="72" duration="4" keyMode="9728">
+            <DOMFrame index="72" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="161.25" centerPoint3DY="4.4">
                   <matrix>
@@ -11230,7 +11466,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="引导层: 武器" color="#FF4FFF" locked="true" autoNamed="false" layerType="guide">
+        <DOMLayer name="引导层: 武器" color="#FF4FFF" autoNamed="false" layerType="guide">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11257,12 +11493,12 @@ Z轴攻击范围 = 50;
             <DOMFrame index="21" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="46" keyMode="9728">
+            <DOMFrame index="30" duration="49" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器" color="#808080" parentLayerIndex="20" locked="true" autoNamed="false">
+        <DOMLayer name="武器" color="#808080" parentLayerIndex="20" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11381,12 +11617,12 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="66" duration="10" keyMode="9728">
+            <DOMFrame index="66" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11558,7 +11794,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="47.7" centerPoint3DY="-11.8">
                   <matrix>
@@ -11575,7 +11811,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="手枪" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11747,7 +11983,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-28.8" centerPoint3DY="196.95">
                   <matrix>
@@ -11764,7 +12000,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11936,7 +12172,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-74.6" centerPoint3DY="224.45">
                   <matrix>
@@ -11953,7 +12189,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="右脚" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12125,7 +12361,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="33.45" centerPoint3DY="112.55">
                   <matrix>
@@ -12142,7 +12378,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12314,7 +12550,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="122.65" centerPoint3DY="182.65">
                   <matrix>
@@ -12331,7 +12567,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12503,7 +12739,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="108.95" centerPoint3DY="234.15">
                   <matrix>
@@ -12520,7 +12756,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左脚" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12692,7 +12928,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="76.4" centerPoint3DY="50.85">
                   <matrix>
@@ -12709,7 +12945,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="屁股" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12881,7 +13117,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="142.5" centerPoint3DY="-118.1">
                   <matrix>
@@ -12898,7 +13134,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13070,7 +13306,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="102.25" centerPoint3DY="71.3">
                   <matrix>
@@ -13087,7 +13323,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="身体" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13209,7 +13445,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="241.3" centerPoint3DY="-223.05">
                   <matrix>
@@ -13226,7 +13462,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="左手" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13398,7 +13634,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="76.6" centerPoint3DY="94.2">
                   <matrix>
@@ -13415,7 +13651,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13617,7 +13853,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="117.15" centerPoint3DY="18.5">
                   <matrix>
@@ -13634,7 +13870,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="手枪2" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13771,7 +14007,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="209.85" centerPoint3DY="-112.65">
                   <matrix>
@@ -13788,7 +14024,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF" locked="true">
+        <DOMLayer name="图层 28" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13978,7 +14214,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="139.7" centerPoint3DY="-49.85">
                   <matrix>
@@ -13995,7 +14231,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -14167,7 +14403,7 @@ Z轴攻击范围 = 50;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="6" keyMode="9728">
+            <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="105.15" centerPoint3DY="25.55">
                   <matrix>
@@ -14184,9 +14420,9 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="76" keyMode="9728">
+            <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

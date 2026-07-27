@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
     轻武器搓招配置
     招式列表：
@@ -213,6 +213,22 @@
             </Requirements>
         </Command>
 
+        <!-- 交叉斩: 下 + A，要求下劈 Lv1 -->
+        <Command name="交叉斩" action="交叉斩" priority="8">
+            <Sequence>
+                <Event>DOWN_BACK</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 十六夜月华: 上后 + A -->
         <Command name="十六夜月华" action="十六夜月华" priority="7">
             <Sequence>
@@ -245,8 +261,40 @@
             </Requirements>
         </Command>
 
+        <!-- 迅捷连斩: 上后 + A -->
+        <Command name="迅捷连斩" action="迅捷连斩" priority="7">
+            <Sequence>
+                <Event>UP_BACK</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 见切: 后 + C，要求上挑 Lv1 -->
         <Command name="见切" action="见切" priority="7">
+            <Sequence>
+                <Event>SHIFT_BACK</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+    </Commands>
+
+        <!-- 交叠: 后 + C，要求上挑 Lv1 -->
+        <Command name="交叠" action="交叠" priority="7">
             <Sequence>
                 <Event>SHIFT_BACK</Event>
             </Sequence>
@@ -269,8 +317,11 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="双剑气">
             <To>贯穿突刺</To>
@@ -279,8 +330,11 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="贯穿突刺">
             <To>剑气释放</To>
@@ -289,8 +343,11 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="蓄力重劈">
             <To>剑气释放</To>
@@ -299,8 +356,11 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="月光斩">
             <To>剑气释放</To>
@@ -309,8 +369,11 @@
             <To>蓄力重劈</To>
             <To>猎影十字</To>
             <To>见切</To>
+            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="外斩劈裂">
             <To>双剑气</To>
@@ -319,8 +382,11 @@
             <To>蓄力重劈</To>
             <To>猎影十字</To>
             <To>见切</To>
+            <To>交叠</To>
             <To>双旋轮切</To>
             <To>双龙连斩</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="百万突刺">
             <To>剑气释放</To>
@@ -331,6 +397,9 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="百裂刺">
             <To>双剑气</To>
@@ -341,6 +410,9 @@
             <To>猎影十字</To>
             <To>外斩劈裂</To>
             <To>见切</To>
+            <To>交叠</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="猎影十字">
             <To>剑气释放</To>
@@ -351,6 +423,9 @@
             <To>粉碎切割</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="十六夜月华">
             <To>剑气释放</To>
@@ -361,6 +436,9 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>交叠</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="双龙连斩">
             <To>双剑气</To>
@@ -371,6 +449,9 @@
             <To>猎影十字</To>
             <To>外斩劈裂</To>
             <To>见切</To>
+            <To>交叠</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
         <Derive from="见切">
             <To>剑气释放</To>
@@ -381,8 +462,50 @@
             <To>月光斩</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
         </Derive>
-    </Derivations>
+        <Derive from="交叠">
+            <To>剑气释放</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>猎影十字</To>
+            <To>月光斩</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>见切</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
+        </Derive>
+        <Derive from="交叉斩">
+            <To>剑气释放</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>猎影十字</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>交叠</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>迅捷连斩</To>
+            <To>交叉斩</To>
+        </Derive>
+        <Derive from="迅捷连斩">
+            <To>剑气释放</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>猎影十字</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>交叠</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+            <To>交叉斩</To>
+            <To>迅捷连斩</To>
+        </Derive>    </Derivations>
 
     <Groups>
         <Group name="轻武器全部">

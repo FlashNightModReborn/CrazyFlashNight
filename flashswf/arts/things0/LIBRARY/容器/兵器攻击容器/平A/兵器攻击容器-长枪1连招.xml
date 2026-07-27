@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1779375752">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1785146890">
   <timeline>
     <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="78">
       <layers>
@@ -347,7 +347,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -391,7 +391,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="19" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -1511,7 +1511,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#808080" autoNamed="false">
+        <DOMLayer name="刀" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -5724,7 +5724,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-8.5" centerPoint3DY="149.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-8.5" centerPoint3DY="149.3">
                   <matrix>
                     <Matrix a="0.4149169921875" b="-0.891708374023438" c="-0.891708374023438" d="-0.4149169921875" tx="-75.2" ty="16"/>
                   </matrix>
@@ -5735,7 +5735,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="149.75" centerPoint3DY="-78.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="149.75" centerPoint3DY="-78.2">
                   <matrix>
                     <Matrix a="0.661788940429688" b="-0.507858276367188" c="0.507858276367188" d="0.661788940429688" tx="81.2" ty="-61.95"/>
                   </matrix>
@@ -5746,7 +5746,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="75.95" centerPoint3DY="2.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="75.95" centerPoint3DY="2.75">
                   <matrix>
                     <Matrix a="-0.5118408203125" b="-0.630645751953125" c="0.630645751953125" d="-0.5118408203125" tx="132.05" ty="5.05"/>
                   </matrix>
@@ -5757,7 +5757,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="163.35" centerPoint3DY="-18.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="163.35" centerPoint3DY="-18.35">
                   <matrix>
                     <Matrix a="0.45208740234375" b="-0.68853759765625" c="0.68853759765625" d="0.45208740234375" tx="189.15" ty="-42.6"/>
                   </matrix>
@@ -5768,7 +5768,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="80.55" centerPoint3DY="59.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="80.55" centerPoint3DY="59.8">
                   <matrix>
                     <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="21.8" ty="27.65"/>
                   </matrix>
@@ -5779,7 +5779,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="78.7" centerPoint3DY="109.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="78.7" centerPoint3DY="109.1">
                   <matrix>
                     <Matrix a="0.367156982421875" b="-0.767257690429688" c="0.767257690429688" d="0.367156982421875" tx="13.4" ty="57.8"/>
                   </matrix>
@@ -5790,7 +5790,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-27.95" centerPoint3DY="122.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-27.95" centerPoint3DY="122.25">
                   <matrix>
                     <Matrix a="0.764694213867188" b="0.372314453125" c="-0.372314453125" d="0.764694213867188" tx="3.85" ty="4"/>
                   </matrix>
@@ -5801,7 +5801,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="80.3" centerPoint3DY="-73.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="80.3" centerPoint3DY="-73.1">
                   <matrix>
                     <Matrix a="0.9434814453125" b="0.161285400390625" c="-0.161285400390625" d="0.9434814453125" tx="63.5" ty="-120.5"/>
                   </matrix>
@@ -5812,7 +5812,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="39.95" centerPoint3DY="92.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="39.95" centerPoint3DY="92.1">
                   <matrix>
                     <Matrix a="0.853378295898438" b="0.052032470703125" c="-0.052032470703125" d="0.853378295898438" tx="-6.1" ty="56.15"/>
                   </matrix>
@@ -5823,7 +5823,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="99.35" centerPoint3DY="226.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="99.35" centerPoint3DY="226.45">
                   <matrix>
                     <Matrix a="0.83837890625" b="-0.0330810546875" c="0.0330810546875" d="0.83837890625" tx="58.15" ty="196.35"/>
                   </matrix>
@@ -5834,7 +5834,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="70.8" centerPoint3DY="173.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="70.8" centerPoint3DY="173.7">
                   <matrix>
                     <Matrix a="0.7374267578125" b="0.411041259765625" c="-0.411041259765625" d="0.7374267578125" tx="108.8" ty="105.65"/>
                   </matrix>
@@ -5845,7 +5845,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-50.45" centerPoint3DY="156.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-50.45" centerPoint3DY="156.25">
                   <matrix>
                     <Matrix a="0.565109252929688" b="0.637603759765625" c="-0.637603759765625" d="0.565109252929688" tx="-29.35" ty="76.15"/>
                   </matrix>
@@ -5856,7 +5856,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-142.3" centerPoint3DY="227.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-142.3" centerPoint3DY="227.5">
                   <matrix>
                     <Matrix a="0.839874267578125" b="-0.0225830078125" c="0.0225830078125" d="0.839874267578125" tx="-184.95" ty="199.15"/>
                   </matrix>
@@ -5867,7 +5867,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-121" centerPoint3DY="217.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-121" centerPoint3DY="217.35">
                   <matrix>
                     <Matrix a="0.52764892578125" b="0.66583251953125" c="-0.66583251953125" d="0.52764892578125" tx="-105.75" ty="141.75"/>
                   </matrix>
@@ -5878,7 +5878,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="11.2" centerPoint3DY="29.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="11.2" centerPoint3DY="29.35">
                   <matrix>
                     <Matrix a="-0.11761474609375" b="0.992660522460938" c="-0.992660522460938" d="-0.11761474609375" tx="-47.55" ty="-2.8"/>
                   </matrix>
@@ -5889,7 +5889,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="188.7" centerPoint3DY="-170">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="188.7" centerPoint3DY="-170">
                   <matrix>
                     <Matrix a="-0.3746337890625" b="-0.812423706054688" c="0.812423706054688" d="-0.3746337890625" tx="93.9" ty="-11.95"/>
                   </matrix>
@@ -5897,7 +5897,7 @@ function 长枪旋击(击倒率)
                     <Point x="5.5" y="102.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-3.35" centerPoint3DY="-32.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-3.35" centerPoint3DY="-32.45">
                   <matrix>
                     <Matrix a="0.703414916992188" b="0.440185546875" c="-0.440185546875" d="0.703414916992188" tx="7.15" ty="-101.2"/>
                   </matrix>
@@ -5908,7 +5908,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-85.35" centerPoint3DY="-69.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-85.35" centerPoint3DY="-69.85">
                   <matrix>
                     <Matrix a="0.18548583984375" b="-0.791717529296875" c="0.791717529296875" d="0.18548583984375" tx="-41.25" ty="-34.5"/>
                   </matrix>
@@ -5919,7 +5919,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="0.25" centerPoint3DY="-36.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="0.25" centerPoint3DY="-36.9">
                   <matrix>
                     <Matrix a="0.736007690429688" b="0.32208251953125" c="-0.32208251953125" d="0.736007690429688" tx="27.55" ty="-15.75"/>
                   </matrix>

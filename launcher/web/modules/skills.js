@@ -62,6 +62,7 @@ var SkillsPanel = (function() {
         copyDiagnostic:copyDiagnostic, requestClose:requestClose, writesDisabled:writesDisabled,
         writeCommand:writeCommand, stageDesiredLevel:stageDesiredLevel, setDesiredLevel:setDesiredLevel,
         setDesiredLevelState:function(level) { _desiredLevel = Number(level); },
+        targetMaxLevel:targetMaxLevel,
         prepareLearnConfirmation:prepareLearnConfirmation, scheduleLearnPreview:scheduleLearnPreview,
         errorMessage:errorMessage, clearPendingFocus:function() { _pendingFocusKey = ''; },
         onSlotClick:onSlotClick, onSlotKeyDown:onSlotKeyDown, proposeUnequip:proposeUnequip,
@@ -417,7 +418,7 @@ var SkillsPanel = (function() {
         _selectedKey = String(skillKey || ''); clearPreviewState();
         var entry = selectedEntry();
         if (_view === 'trainer' && entry) {
-            _desiredLevel = Trainer.initialDesiredLevel(entry);
+            _desiredLevel = Trainer.initialDesiredLevel(entry, trainerSkillPoints());
         }
         syncSelectedSkillRows();
         if (_view === 'trainer' && entry) scheduleLearnPreview(entry, false);
@@ -444,8 +445,15 @@ var SkillsPanel = (function() {
     }
 
     function targetMarkLevels(min, max) { return Trainer.targetMarkLevels(min, max); }
+    function trainerSkillPoints() {
+        var points = Number(_snapshot && _snapshot.player && _snapshot.player.skillPoints);
+        return isFinite(points) && points > 0 ? Math.floor(points) : 0;
+    }
+    function targetMaxLevel(entry) {
+        return Trainer.affordableMaxLevel(entry, trainerSkillPoints());
+    }
     function normalizedDesiredLevel(entry, level) {
-        return Trainer.normalizedDesiredLevel(entry, level);
+        return Trainer.normalizedDesiredLevel(entry, level, trainerSkillPoints());
     }
     function syncTargetSelector(target, entry) { _renderer.syncTargetSelector(target, entry); }
     function stageDesiredLevel(level, entry, target) {
@@ -484,9 +492,11 @@ var SkillsPanel = (function() {
     }
 
     function scheduleLearnPreview(entry, immediate, callback) {
+        var currentLevel = Number(entry && entry.currentLevel || 0);
         if (_view !== 'trainer' || _trainerExpired || !entry || writesDisabled(entry)
-                || Number(entry.currentLevel || 0) >= Number(entry.maxLevel || 1)) {
-            _previewLoading = false; renderDetail(); return false;
+                || currentLevel >= Number(entry.maxLevel || 1)
+                || (currentLevel > 0 && targetMaxLevel(entry) <= currentLevel)) {
+            cancelPreviewWork(); renderDetail(); return false;
         }
         if (_previewTimer !== null) clearTimeout(_previewTimer);
         var intent = ++_previewIntent;
@@ -726,9 +736,10 @@ var SkillsPanel = (function() {
         if (!entries.some(function(entry) { return entry.skillKey === _selectedKey; })) {
             _selectedKey = entries.length ? entries[0].skillKey : '';
             if (_view === 'trainer' && entries.length) {
-                var current = Number(entries[0].currentLevel || 0);
-                _desiredLevel = current <= 0 ? 1 : Math.min(Number(entries[0].maxLevel || 1), current + 1);
+                _desiredLevel = Trainer.initialDesiredLevel(entries[0], trainerSkillPoints());
             }
+        } else if (_view === 'trainer' && entries.length) {
+            _desiredLevel = normalizedDesiredLevel(selectedEntry(), _desiredLevel);
         }
         renderAll();
         if (_view === 'trainer') {

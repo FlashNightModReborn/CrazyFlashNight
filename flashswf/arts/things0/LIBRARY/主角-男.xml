@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1781087736" lastUniqueIdentifier="320">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="29">
+    <DOMTimeline name="主角-男" currentFrame="456">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -822,7 +822,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" selected="true" centerPoint3DX="240.85" centerPoint3DY="219.5">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -933,7 +933,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -960,7 +960,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="51" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 131" name="man" selected="true" centerPoint3DX="293.4" centerPoint3DY="134.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 131" name="man" centerPoint3DX="293.4" centerPoint3DY="134.95">
                   <matrix>
                     <Matrix a="0.277236938476563" d="0.277099609375" tx="3.2" ty="-61.2"/>
                   </matrix>
@@ -1835,7 +1835,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="416" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" selected="true" centerPoint3DX="274.4" centerPoint3DY="213.6">
+                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" centerPoint3DX="274.4" centerPoint3DY="213.6">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -1847,7 +1847,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="426" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器跑" name="man" selected="true" centerPoint3DX="301.9" centerPoint3DY="292.35">
+                <DOMSymbolInstance libraryItemName="sprite/兵器跑" name="man" centerPoint3DX="301.9" centerPoint3DY="292.35">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>

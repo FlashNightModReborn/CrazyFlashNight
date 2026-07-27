@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-蓄力重劈" itemID="695a431f-000015c6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-蓄力重劈" lastModified="1784479772" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-蓄力重劈" itemID="695a431f-000015c6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-蓄力重劈" lastModified="1785084384" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-蓄力重劈" currentFrame="43">
+    <DOMTimeline name="兵器攻击容器-蓄力重劈" currentFrame="34">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -357,7 +357,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -382,14 +382,14 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="187.25" centerPoint3DY="259.65">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="187.25" centerPoint3DY="259.65">
                   <matrix>
                     <Matrix a="23.0612945556641" d="4.57438659667969" tx="400.7" ty="245.05"/>
                   </matrix>
@@ -609,7 +609,7 @@ Z轴攻击范围 = 30;
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" selected="true" symbolType="graphic" centerPoint3DX="-48.05" centerPoint3DY="-171.05" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" symbolType="graphic" centerPoint3DX="-48.05" centerPoint3DY="-171.05" loop="loop">
                   <matrix>
                     <Matrix a="7.19981384277344" d="5.4586181640625" tx="-40.15" ty="312.6"/>
                   </matrix>
@@ -5437,11 +5437,11 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="127.25" centerPoint3DY="-118.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="127.25" centerPoint3DY="-118.35">
                   <matrix>
                     <Matrix a="-0.829086303710938" b="-0.556259155273438" c="0.556259155273438" d="-0.829071044921875" tx="8.7" ty="63.65"/>
                   </matrix>
@@ -5576,7 +5576,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-324.85" centerPoint3DY="-159.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-324.85" centerPoint3DY="-159.25">
                   <matrix>
                     <Matrix a="0.475067138671875" b="0.878097534179688" c="-0.878097534179688" d="0.475067138671875" tx="-137.15" ty="-269.55"/>
                   </matrix>
@@ -5606,7 +5606,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-230.3" centerPoint3DY="-248.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-230.3" centerPoint3DY="-248.7">
                   <matrix>
                     <Matrix a="0.133193969726563" b="0.98944091796875" c="-0.98944091796875" d="0.133193969726563" tx="-17.2" ty="-285.55"/>
                   </matrix>
@@ -5621,7 +5621,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="115.45" centerPoint3DY="-345.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="115.45" centerPoint3DY="-345.45">
                   <matrix>
                     <Matrix a="-0.952301025390625" b="0.299713134765625" c="-0.299713134765625" d="-0.952301025390625" tx="189" ty="-142.65"/>
                   </matrix>
@@ -5636,7 +5636,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="403.55" centerPoint3DY="145.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="403.55" centerPoint3DY="145.55">
                   <matrix>
                     <Matrix a="-0.107818603515625" b="-0.992507934570313" c="0.992507934570313" d="-0.107818603515625" tx="190.35" ty="178.25"/>
                   </matrix>
@@ -5671,7 +5671,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="0.05645751953125" b="-0.996749877929688" c="0.996749877929688" d="0.05645751953125" tx="189.5" ty="170.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.4" y="111.9"/>
+                    <Point x="2.35" y="111.9"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-微风拂柳" itemID="6a5cf19c-000027c2" lastModified="1784478983">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-微风拂柳" itemID="6a5cf19c-000027c2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-微风拂柳" lastModified="1785086031">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-微风拂柳">
+    <DOMTimeline name="兵器攻击容器-微风拂柳" currentFrame="11">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -75,9 +75,15 @@ else
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="12" keyMode="9728">
+            <DOMFrame index="5" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.兵器攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -157,7 +163,7 @@ else
             <DOMFrame index="6" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" duration="14" keyMode="9728">
+            <DOMFrame index="17" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if(_parent.性别 == "女")
 {
@@ -167,6 +173,12 @@ else
 {
 	_root.播放音效("青年冷峻-打斗11_01.wav");
 }]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("裂地拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -232,7 +244,7 @@ else
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -283,14 +295,14 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="77.45" centerPoint3DY="308.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="77.45" centerPoint3DY="308.75">
                   <matrix>
                     <Matrix tx="64.95" ty="296.25"/>
                   </matrix>
@@ -302,10 +314,10 @@ onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
 	{		
+		_parent.见切可派生();
 		if (自机.动作A)
 		{_parent.gotoAndPlay("追击斩");}
-		*/
-		_parent.见切可派生();
+
 	}
 }
 /*
@@ -346,7 +358,7 @@ onClipEvent(unload){
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" selected="true" centerPoint3DX="-150" centerPoint3DY="210.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" centerPoint3DX="-150" centerPoint3DY="210.8">
                   <matrix>
                     <Matrix tx="-150" ty="200"/>
                   </matrix>
@@ -364,7 +376,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="18" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-132.25" centerPoint3DY="37.5">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-132.25" centerPoint3DY="37.5">
                   <matrix>
                     <Matrix a="51.4863739013672" d="16.8862457275391" tx="140.45" ty="46.25"/>
                   </matrix>
@@ -633,7 +645,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_3" color="#FF800A" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层_3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>

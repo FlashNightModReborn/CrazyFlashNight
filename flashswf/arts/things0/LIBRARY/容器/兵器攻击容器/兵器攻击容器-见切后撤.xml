@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-见切后撤" itemID="695a2f8a-000012d5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-见切后撤" lastModified="1784476062">
+﻿<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-见切后撤" itemID="695a2f8a-000012d5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-见切后撤" lastModified="1784476062">
   <timeline>
     <DOMTimeline name="兵器攻击容器-见切后撤">
       <layers>
@@ -86,10 +86,20 @@ else
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[//_parent.动画完毕();
-if (_parent._name == _root.控制目标 && _parent.动作C)
+                <script><![CDATA[if (_parent._name == _root.控制目标)
 {
+	if (_parent.动作A)
+	{
+		gotoAndPlay("见切追斩");
+	}
+	else if (_parent.动作C)
+	{
 		gotoAndPlay("特殊纳刀");
+	}
+	else
+	{
+		_root.兵器攻击路由.动画完毕(this,_parent);
+	}
 }]]></script>
               </Actionscript>
               <elements/>
@@ -284,14 +294,10 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
-	{		
-		/*
-		if(自机.动作C)//R
-		{_parent.gotoAndPlay("见切");}
-		if (自机.动作A && !(自机.上行 || 自机.下行 || 自机.左行 || 自机.右行))
-		{_parent.gotoAndPlay("见切追斩");}
-		*/
+	{
 		_parent.见切可派生();
+		if (自机.动作A)
+		{_parent.gotoAndPlay("见切追斩");}
 	}
 }
 /*

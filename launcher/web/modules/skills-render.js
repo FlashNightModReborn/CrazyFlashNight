@@ -224,23 +224,27 @@
         function renderTrainerActions(entry) {
             var current = state();
             var desiredLevel = current.desiredLevel;
-            var currentLevel = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1);
+            var currentLevel = Number(entry.currentLevel || 0), skillMax = Number(entry.maxLevel || 1);
+            var max = Number(ports.targetMaxLevel(entry));
             var section = document.createElement('section'); section.className = 'skills-trainer-actions';
             var matchingPreview = Trainer.previewMatches(current.preview, entry, desiredLevel) ? current.preview : null;
             var target = document.createElement('div'); target.className = 'skills-trainer-target';
             var heading = document.createElement('div'); heading.className = 'skills-trainer-section-heading';
-            heading.textContent = currentLevel >= max ? '技能等级' : '目标等级'; target.appendChild(heading);
+            heading.textContent = currentLevel >= skillMax ? '技能等级' : '目标等级'; target.appendChild(heading);
             var stepper = document.createElement('div'); stepper.className = 'skills-level-stepper';
             var rangeShell = null;
             var label = document.createElement('span');
-            label.textContent = currentLevel >= max ? 'Lv.' + currentLevel + '（已满级）' : 'Lv.' + currentLevel + ' →';
+            label.textContent = currentLevel >= skillMax ? 'Lv.' + currentLevel + '（已满级）' : 'Lv.' + currentLevel + ' →';
             stepper.appendChild(label);
-            if (currentLevel >= max) {
-                var full = document.createElement('output'); full.textContent = 'Lv.' + max; stepper.appendChild(full);
+            if (currentLevel >= skillMax) {
+                var full = document.createElement('output'); full.textContent = 'Lv.' + skillMax; stepper.appendChild(full);
             } else if (currentLevel <= 0) {
                 var fixed = document.createElement('output'); fixed.textContent = 'Lv.1（初学固定）'; stepper.appendChild(fixed);
                 ports.setDesiredLevelState(1);
                 desiredLevel = 1;
+            } else if (max <= currentLevel) {
+                var unavailable = document.createElement('output');
+                unavailable.textContent = '当前 SP 不足以升级'; stepper.appendChild(unavailable);
             } else {
                 var minus = ports.button('−', 'skills-level-btn', function() {
                     ports.setDesiredLevel(state().desiredLevel - 1);
@@ -290,9 +294,10 @@
             }
             target.appendChild(stepper);
             if (rangeShell) { target.appendChild(rangeShell); syncTargetSelector(target, entry); }
-            if (currentLevel > 0 && currentLevel < max) {
+            if (currentLevel > 0 && max > currentLevel) {
                 var presets = document.createElement('div'); presets.className = 'skills-target-presets';
-                var toMax = ports.button('升至满级', 'skills-target-preset', function() { ports.setDesiredLevel(max, true); });
+                var presetLabel = max < skillMax ? '升至可负担最高级' : '升至满级';
+                var toMax = ports.button(presetLabel, 'skills-target-preset', function() { ports.setDesiredLevel(max, true); });
                 toMax.setAttribute('data-focus-key', 'trainer:level-max');
                 toMax.disabled = ports.writesDisabled(entry) || desiredLevel === max;
                 presets.appendChild(toMax); target.appendChild(presets);
@@ -303,12 +308,19 @@
             if (matchingPreview && !matchingPreview.canCommit && matchingPreview.blockingError) gate.classList.add('blocked');
             gate.textContent = '解锁 Lv.' + ports.safeNumber(entry.unlockLevel) + ' · 初学 '
                 + ports.safeNumber(entry.unlockSP) + ' 点 · 升级 ' + ports.safeNumber(entry.upgradeSP) + ' 点/级';
+            if (currentLevel > 0 && currentLevel < skillMax) {
+                gate.textContent += max > currentLevel
+                    ? ' · 当前可升至 Lv.' + ports.safeNumber(max)
+                    : ' · 当前技能点不足以升级';
+            }
             section.appendChild(gate);
 
             var result = document.createElement('div'); result.className = 'skills-preview-result skills-cost-card';
             var previousPreview = current.preview && current.preview.skillKey === entry.skillKey ? current.preview : null;
-            if (currentLevel >= max) {
+            if (currentLevel >= skillMax) {
                 result.classList.add('ok'); appendCostRow(result, '研习状态', '技能已达到最高等级');
+            } else if (currentLevel > 0 && max <= currentLevel) {
+                result.classList.add('blocked'); appendCostRow(result, '研习状态', '当前技能点不足以升级');
             } else if (matchingPreview) {
                 appendPreviewSummary(result, matchingPreview, entry, false);
                 if (current.previewLoading) {
@@ -337,7 +349,8 @@
 
             var footer = document.createElement('div'); footer.className = 'skills-trainer-footer';
             var commitText = '正在准备研习…', commitEnabled = false;
-            if (currentLevel >= max) commitText = '该技能已满级';
+            if (currentLevel >= skillMax) commitText = '该技能已满级';
+            else if (currentLevel > 0 && max <= currentLevel) commitText = '技能点不足，无法升级';
             else if (current.previewLoading) commitText = '正在更新 Lv.' + ports.safeNumber(desiredLevel) + ' 的消耗…';
             else if (current.previewError) commitText = '暂时无法研习';
             else if (matchingPreview && matchingPreview.canCommit && matchingPreview.learnToken) {
@@ -355,7 +368,7 @@
         function syncTargetSelector(target, entry) {
             if (!target || !entry) return;
             var desiredLevel = state().desiredLevel;
-            var currentLevel = Number(entry.currentLevel || 0), max = Number(entry.maxLevel || 1), min = currentLevel + 1;
+            var currentLevel = Number(entry.currentLevel || 0), max = Number(ports.targetMaxLevel(entry)), min = currentLevel + 1;
             var range = target.querySelector('.skills-level-range'), value = target.querySelector('.skills-level-value');
             if (value && document.activeElement !== value) value.value = String(desiredLevel);
             if (range) {
