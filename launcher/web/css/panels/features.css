@@ -1781,16 +1781,67 @@ html.perf-low-effects .map-panel-close-btn::before {
 .jbp-current-title {
     color:rgba(255,255,255,0.75);
     flex:1; min-width:0;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; overflow:hidden;
     font-size:12px;
+    /* 容器：marquee 动效的裁剪窗口（内容溢出时 .scrolling 启动横向滚动） */
 }
-.jbp-time {
-    font:11px/1 "Consolas","Courier New",monospace;
-    color:var(--jb-text-dim);
+.jbp-current-title .marquee-inner {
+    display:inline-block;
+    white-space:nowrap;
+    max-width:100%;
+    overflow:hidden; text-overflow:ellipsis;
+    vertical-align:bottom;
+}
+.jbp-current-title.scrolling .marquee-inner {
+    max-width:none; overflow:visible;
+    animation:jbp-marquee var(--marquee-dur, 6s) linear infinite;
+}
+/* 自包含 marquee 关键帧：harness 只加载 panels.css，不依赖 overlay.css 的 jukebox-marquee */
+@keyframes jbp-marquee {
+    0%   { transform:translateX(0); }
+    10%  { transform:translateX(0); }       /* 静止片刻 */
+    90%  { transform:translateX(var(--marquee-dist, -50%)); }
+    100% { transform:translateX(var(--marquee-dist, -50%)); } /* 末尾停顿 */
+}
+/* 当前曲目所属专辑 chip（取代旧 header 重复时间显示） */
+.jbp-album-chip {
     flex-shrink:0;
-    letter-spacing:0.5px;
+    max-width:180px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    padding:2px 8px;
+    font-size:10px; letter-spacing:1px;
+    color:var(--jb-accent);
+    background:rgba(var(--jb-accent-rgb),0.08);
+    border:1px solid rgba(var(--jb-accent-rgb),0.22);
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
 }
 .jbp-header-spacer { flex:0 0 8px; }
+
+/* LED 状态灯：播放=主题色呼吸 / 暂停=琥珀 / 停止=暗 */
+.jbp-led {
+    flex-shrink:0;
+    width:9px; height:9px;
+    border-radius:50%;
+    border:1px solid rgba(140,150,120,0.45);
+    background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(0,0,0,0.30));
+    box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);
+    transition:background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.jbp-led.is-live {
+    background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), var(--jb-accent) 42%, rgba(120,170,30,0.92) 100%);
+    border-color:var(--jb-accent);
+    box-shadow:0 0 7px rgba(var(--jb-accent-rgb),0.55);
+    animation:jbp-led-breathe 2.4s ease-in-out infinite;
+}
+.jbp-led.is-paused {
+    background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.45), var(--jb-amber) 42%, rgba(150,105,20,0.92) 100%);
+    border-color:var(--jb-amber);
+    box-shadow:0 0 6px rgba(255,196,64,0.40);
+}
+@keyframes jbp-led-breathe {
+    0%, 100% { opacity:1; }
+    50%      { opacity:0.45; }
+}
 
 /* 控制台按钮：金属切角 + 铆钉 */
 .jbp-panel .jb-ctrl-btn {
@@ -1854,6 +1905,49 @@ html.perf-low-effects .map-panel-close-btn::before {
     background:linear-gradient(180deg, rgba(120,50,44,0.92) 0%, rgba(68,28,24,0.92) 100%);
     border-color:rgba(255,94,74,0.70);
     box-shadow:0 0 8px rgba(255,94,74,0.22);
+}
+
+/* 内联 SVG 图标尺寸统一（currentColor 继承按钮色） */
+.jbp-panel .jb-ctrl-btn svg,
+.jbp-close-btn svg {
+    display:block;
+    width:11px; height:11px;
+}
+/* 继电器按压手感 */
+.jbp-panel .jb-ctrl-btn:active,
+.jbp-close-btn:active,
+.jbp-help-close:active,
+.jbp-album-trigger:active {
+    transform:translateY(1px);
+    box-shadow:inset 0 2px 5px rgba(0,0,0,0.55);
+}
+/* 主操作（暂停/继续）加重：更宽 + accent 描边 */
+.jbp-panel .jbp-pause-btn.jbp-primary {
+    width:34px;
+    border-color:rgba(var(--jb-accent-rgb),0.55);
+    color:var(--jb-accent);
+    box-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.16), inset 0 1px 0 rgba(255,255,255,0.10);
+}
+.jbp-panel .jbp-pause-btn.jbp-primary.paused {
+    color:var(--jb-amber);
+}
+/* 帮助按钮弱化，hover 恢复 */
+.jbp-panel .jbp-help-btn { opacity:0.55; }
+.jbp-panel .jbp-help-btn:hover { opacity:1; }
+
+/* CRT 开机动画：横向亮线展开 + 磷光闪白（一次性；perf-low-effects 全局规则已能禁用） */
+.jbp-panel.is-booting {
+    animation:jbpBoot 340ms cubic-bezier(0.22, 0.9, 0.3, 1);
+    transform-origin:50% 50%;
+}
+@keyframes jbpBoot {
+    0%   { transform:scaleY(0.006); filter:brightness(2.6); }
+    55%  { transform:scaleY(1.015); filter:brightness(1.5); }
+    100% { transform:scaleY(1);     filter:brightness(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .jbp-panel.is-booting { animation:none; }
+    .jbp-led.is-live { animation:none; }
 }
 
 /* ── 双栏控制台 ── */
@@ -1958,13 +2052,15 @@ html.perf-low-effects .map-panel-close-btn::before {
     box-shadow:inset 0 1px 3px rgba(0,0,0,0.6);
 }
 .jbp-prog-fill {
-    position:absolute; top:1px; left:1px; bottom:1px;
-    width:0%;
+    position:absolute; top:1px; left:1px; right:1px; bottom:1px;
     background:
         linear-gradient(180deg, rgba(var(--jb-accent-rgb),0.85) 0%, rgba(160,220,50,0.70) 100%);
     border-radius:1px;
     box-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.35);
-    transition:width 100ms linear;
+    /* scaleX 而非 width：音频数据每 ~60ms 推进一次，transform 走合成层、不触发布局 */
+    transform:scaleX(0);
+    transform-origin:left center;
+    transition:transform 100ms linear;
 }
 
 /* ── 曲库：专辑下拉 + 曲目列表 ── */
@@ -1996,17 +2092,25 @@ html.perf-low-effects .map-panel-close-btn::before {
     color:#f4ffd6;
 }
 .jbp-album-options {
-    display:none; position:absolute; top:100%; left:0; right:0; z-index:10;
+    position:absolute; top:100%; left:0; right:0; z-index:10;
     background:rgba(10,12,8,0.98);
     border:1px solid rgba(var(--jb-accent-rgb),0.25);
     max-height:240px; overflow-y:auto;
     box-shadow:0 6px 18px rgba(0,0,0,0.55);
+    /* 展开过渡：opacity/transform 合成层动画；visibility 延迟切换保证可点击性 */
+    opacity:0; visibility:hidden; pointer-events:none;
+    transform:translateY(-4px);
+    transition:opacity 140ms ease, transform 140ms ease, visibility 0s linear 140ms;
 }
 .jbp-album-options::-webkit-scrollbar { width:7px; }
 .jbp-album-options::-webkit-scrollbar-track { background:rgba(0,0,0,0.35); }
 .jbp-album-options::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.22); border-radius:2px; }
 .jbp-album-options::-webkit-scrollbar-thumb:hover { background:rgba(var(--jb-accent-rgb),0.42); }
-.jbp-album-dropdown.open .jbp-album-options { display:block; }
+.jbp-album-dropdown.open .jbp-album-options {
+    opacity:1; visibility:visible; pointer-events:auto;
+    transform:none;
+    transition:opacity 140ms ease, transform 140ms ease;
+}
 .jbp-album-option {
     padding:6px 10px; cursor:pointer;
     color:var(--jb-text-dim);
@@ -2053,10 +2157,53 @@ html.perf-low-effects .map-panel-close-btn::before {
     cursor:pointer;
     color:var(--jb-text-dim);
     border-bottom:1px solid rgba(255,255,255,0.04);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; overflow:hidden;
     font-size:12px;
     letter-spacing:0.3px;
     transition:all 100ms ease;
+    /* 长列表：屏外行跳过 layout/paint，行高估值 30px 维持滚动条稳定 */
+    content-visibility:auto;
+    contain-intrinsic-size:auto 30px;
+}
+/* 曲名 marquee：默认省略号；测出溢出的项（.can-scroll）在 hover 时横向滚动读全 */
+.jbp-track-item .marquee-inner {
+    display:inline-block;
+    white-space:nowrap;
+    max-width:100%;
+    overflow:hidden; text-overflow:ellipsis;
+    vertical-align:bottom;
+    pointer-events:none; /* 点击/悬停穿透到曲目行 */
+}
+.jbp-track-item.can-scroll:hover .marquee-inner {
+    max-width:none; overflow:visible;
+    animation:jbp-marquee var(--marquee-dur, 6s) linear infinite;
+}
+/* 首屏 stagger 入场（仅前 N 项由 JS 加 .jbp-enter + animationDelay） */
+.jbp-track-item.jbp-enter {
+    animation:jbp-item-in 260ms ease-out backwards;
+}
+@keyframes jbp-item-in {
+    from { opacity:0; transform:translateY(4px); }
+    to   { opacity:1; transform:none; }
+}
+/* 点曲 pending：等待 bgm 确认期间的左边条脉冲（规则置于 .jbp-enter 后，冲突时优先生效） */
+.jbp-track-item.pending {
+    color:#f4ffd6;
+    animation:jbp-track-pending 700ms ease-in-out infinite;
+}
+@keyframes jbp-track-pending {
+    0%, 100% { box-shadow:inset 3px 0 0 rgba(var(--jb-accent-rgb),0.25); }
+    50%      { box-shadow:inset 3px 0 0 rgba(var(--jb-accent-rgb),0.85); }
+}
+/* 专辑分组头（“全部”视图）：sticky 吸附，滚动时分组边界常显 */
+.jbp-album-group {
+    position:sticky; top:0; z-index:2;
+    padding:5px 12px 4px;
+    font-size:10px; letter-spacing:1.6px;
+    color:var(--jb-accent);
+    text-shadow:0 0 6px rgba(var(--jb-accent-rgb),0.30);
+    background:linear-gradient(180deg, rgba(16,19,12,0.97) 0%, rgba(10,13,8,0.97) 100%);
+    border-bottom:1px solid rgba(var(--jb-accent-rgb),0.16);
 }
 .jbp-track-item::before {
     content:'';
@@ -2114,18 +2261,17 @@ html.perf-low-effects .map-panel-close-btn::before {
 .jbp-settings .jb-setting-group-label {
     color:var(--jb-accent);
     font-size:11px; letter-spacing:1.2px;
-    margin-top:2px;
     text-shadow:0 0 6px rgba(var(--jb-accent-rgb),0.25);
 }
 .jbp-settings .jb-setting-divider {
-    height:1px; margin:3px 0;
+    height:1px; margin:2px 0;
     background:linear-gradient(90deg, transparent 0%, rgba(var(--jb-accent-rgb),0.18) 20%, rgba(var(--jb-accent-rgb),0.18) 80%, transparent 100%);
 }
 
 /* 滑条：金属轨道 + 刻度 + 方形旋钮 */
 .jbp-settings .jb-slider-row {
     display:flex; align-items:center; gap:10px;
-    padding:2px 0;
+    padding:1px 0;
 }
 .jbp-settings .jb-slider-label {
     width:40px; flex-shrink:0;
@@ -2191,7 +2337,7 @@ html.perf-low-effects .map-panel-close-btn::before {
 /* 设置项行：控制台开关 */
 .jbp-settings .jb-setting-row {
     display:flex; align-items:center; gap:8px;
-    padding:4px 7px;
+    padding:3px 7px;
     cursor:pointer;
     background:linear-gradient(90deg, rgba(30,34,26,0.55) 0%, rgba(18,20,14,0.55) 100%);
     border:1px solid rgba(120,130,100,0.18);
@@ -2228,7 +2374,7 @@ html.perf-low-effects .map-panel-close-btn::before {
 
 /* ── 帮助弹窗 ── */
 .jbp-help-modal {
-    display:none; position:absolute;
+    position:absolute;
     top:50%; left:50%; transform:translate(-50%,-50%);
     width:80%; max-height:80%;
     background:rgba(10,12,8,0.98);
@@ -2247,8 +2393,16 @@ html.perf-low-effects .map-panel-close-btn::before {
         12px 100%,
         0 calc(100% - 12px)
     );
+    /* 弹入过渡：translate(-50%,-50%) 是定位基准，动画叠加 scale，二者共存于 transform 列表 */
+    opacity:0; visibility:hidden; pointer-events:none;
+    transform:translate(-50%,-50%) scale(0.97);
+    transition:opacity 150ms ease, transform 150ms ease, visibility 0s linear 150ms;
 }
-.jbp-help-modal.visible { display:block; }
+.jbp-help-modal.visible {
+    opacity:1; visibility:visible; pointer-events:auto;
+    transform:translate(-50%,-50%) scale(1);
+    transition:opacity 150ms ease, transform 150ms ease;
+}
 .jbp-help-content {
     color:var(--jb-text); line-height:1.7;
     margin-bottom:14px;

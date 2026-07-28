@@ -208,7 +208,7 @@ function Get-Cf7ProductionChecks {
         'modules\diagnostic-log.js', 'modules\display.js', 'modules\about.js', 'modules\bridge.js',
         'modules\uidata.js', 'modules\toast.js', 'modules\sparkline.js', 'modules\notch.js',
         'modules\perf-frame-limiter.js', 'modules\cursor-feedback.js', 'modules\currency.js',
-        'modules\jukebox.js', 'modules\combo.js', 'modules\lazy-loader.js', 'modules\panels.js',
+        'modules\combo.js', 'modules\lazy-loader.js', 'modules\panels.js',
         'modules\panel-scale.js', 'modules\panels-lazy-registry.js', 'modules\tooltip.js',
         'modules\icons.js', 'modules\panel-runtime.js', 'modules\workbench-lifecycle.js',
         'modules\workbench-focus.js', 'modules\workbench-primitives.js', 'modules\workbench.js',

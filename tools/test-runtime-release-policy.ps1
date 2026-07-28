@@ -73,6 +73,9 @@ $hairdresserRequiredWebPaths = @(
     'modules\hairdresser-runtime.js',
     'modules\hairdresser.js'
 )
+$jukeboxRequiredWebPaths = @(
+    'modules\jukebox\jukebox-panel.js'
+)
 $requiredWebPathsMatch = [regex]::Match(
     $validatorSource,
     '(?s)\$requiredWebPaths\s*=\s*@\((?<body>.*?)\)\s*\r?\n\s*\$checks\s*\+=\s*New-Cf7RequiredPathsCheck\s+-Name\s+''required-web-runtime-assets''')
@@ -86,6 +89,12 @@ foreach ($relativePath in $hairdresserRequiredWebPaths) {
     Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
         "production required-Web-assets must include the hairdresser panel asset: $relativePath"
 }
+foreach ($relativePath in $jukeboxRequiredWebPaths) {
+    Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
+        "production required-Web-assets must include the jukebox panel asset: $relativePath"
+}
+Assert-Cf7Test (-not $requiredWebPathsMatch.Groups['body'].Value.Contains("'modules\jukebox.js'")) `
+    'production required-Web-assets must not resurrect retired modules\jukebox.js'
 
 New-Item -ItemType Directory -Path $fixtureRoot -Force | Out-Null
 try {

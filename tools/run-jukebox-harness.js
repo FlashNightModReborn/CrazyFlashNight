@@ -122,7 +122,8 @@ async function main() {
         qa: result,
         failedRequests,
         brokenImages,
-        pageErrors
+        pageErrors,
+        consoleLogs
     };
     process.stdout.write(JSON.stringify(payload, null, 2) + '\n');
     if (!result || result.failed || failedRequests.length || brokenImages.length || pageErrors.length) {
