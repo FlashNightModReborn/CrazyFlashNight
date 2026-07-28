@@ -62,6 +62,23 @@ var JukeboxHarnessQA = (function() {
                     });
                 });
             }],
+            ['album-chip-catalog-reconcile', 'catalog arrival resolves seeded title album chip', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    // 模拟首次 lazy open：标题 seed 已有，但目录尚未到达。
+                    host.dispatchCatalog([]);
+                    UiData.dispatch('bgm:Tetrriture');
+                    var chip = document.getElementById('jbp-album-chip');
+                    api.assertEqual(getComputedStyle(chip).display, 'none', 'chip hidden before catalog');
+                    host.dispatchCatalog();
+                    return api.waitFor(function() {
+                        return chip.textContent === 'Rammstein' && getComputedStyle(chip).display !== 'none'
+                            ? chip : null;
+                    }, 1000, 'catalog resolves album chip').then(function() {
+                        return 'album chip reconciled';
+                    });
+                });
+            }],
             ['catalog-render', 'album dropdown and track list render', function() {
                 host.open();
                 return waitReady(api).then(function() {
@@ -128,11 +145,32 @@ var JukeboxHarnessQA = (function() {
             ['stop', 'stop button sends stop command', function() {
                 host.open();
                 return waitReady(api).then(function() {
-                    var stopBtn = document.getElementById('jbp-stop-btn');
-                    click(stopBtn);
-                    var stopMsg = host.sentMessages.slice().reverse().find(function(m) { return m.cmd === 'stop'; });
-                    api.assert(!!stopMsg, 'stop message sent');
-                    return 'stop ok';
+                    return waitCatalog(api).then(function() {
+                        // 先确保至少处理过一个音频包，再验证停止后仍能进入待机绘制。
+                        return new Promise(function(resolve) { setTimeout(resolve, 40); });
+                    }).then(function() {
+                        var canvas = document.getElementById('jbp-wave');
+                        var ctx = canvas.getContext('2d');
+                        var originalFillText = ctx.fillText;
+                        var standbyDraws = 0;
+                        ctx.fillText = function(text) {
+                            if (String(text).indexOf('STANDBY') >= 0) standbyDraws++;
+                            return originalFillText.apply(this, arguments);
+                        };
+                        var stopBtn = document.getElementById('jbp-stop-btn');
+                        click(stopBtn);
+                        var stopMsg = host.sentMessages.slice().reverse().find(function(m) { return m.cmd === 'stop'; });
+                        api.assert(!!stopMsg, 'stop message sent');
+                        return api.waitFor(function() {
+                            return standbyDraws > 0;
+                        }, 1000, 'standby canvas rendered after stop').then(function() {
+                            ctx.fillText = originalFillText;
+                            return 'stop and standby ok';
+                        }, function(err) {
+                            ctx.fillText = originalFillText;
+                            throw err;
+                        });
+                    });
                 });
             }],
             ['volume-sliders', 'volume sliders send commands', function() {

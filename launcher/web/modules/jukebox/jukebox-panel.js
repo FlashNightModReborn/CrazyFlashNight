@@ -602,8 +602,10 @@
         ctx.fillStyle = palette.trail;
         ctx.fillRect(0, 0, w, h);
 
-        // 待机屏：无音频数据时画呼吸正弦 + STANDBY 字符（复用同一 30fps 循环，不新增 rAF）
-        if (histLen === 0) { renderStandby(ctx, w, h, midY); return; }
+        // 待机屏按“没有当前 BGM”判定；停止后音频通道仍会持续推送零峰值，不能用 histLen 判断。
+        if (!bgmTitle) { renderStandby(ctx, w, h, midY); return; }
+        // 已有曲名但首个音频包尚未到达时保持空屏，避免把加载窗口误标成待机。
+        if (histLen === 0) return;
 
         // 数据平滑插值：目标 hist 每 ~60ms 更新一次，显示缓冲每帧向目标逼近，
         // 使 60ms 的数据跳变在高帧率渲染下过渡顺滑，消除顿挫感
@@ -726,6 +728,8 @@
         }
         renderAlbumSelect();
         renderTrackList(currentAlbumFilter);
+        // 首次打开时 UiData 的 bgm seed 早于 catalog 回包；目录到达后补做专辑归属对账。
+        updateAlbumChip();
     }
 
     function onCatalogUpdate(data) {
@@ -740,6 +744,8 @@
         }
         renderAlbumSelect();
         renderTrackList(currentAlbumFilter);
+        // 当前曲目可能随增量目录获得、失去或改变专辑归属。
+        updateAlbumChip();
     }
 
     function removeTrackByTitle(title) {

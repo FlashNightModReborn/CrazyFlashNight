@@ -218,10 +218,10 @@
             });
         },
 
-        dispatchCatalog: function() {
+        dispatchCatalog: function(tracks) {
             window.chrome.webview.__dispatch({
                 type: 'catalog',
-                tracks: FIXTURE_TRACKS
+                tracks: Array.isArray(tracks) ? tracks : FIXTURE_TRACKS
             });
         },
 

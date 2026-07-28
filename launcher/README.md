@@ -1736,7 +1736,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 浏览器 harness：`launcher/web/modules/jukebox/dev/harness.html`（手动调 viewport / 单 case）。
 无头运行：`node tools/run-jukebox-harness.js --browser edge [--viewport 1366x768] [--case <id>] [--headed]`。
 
-覆盖项：面板开闭生命周期、seed 状态渲染、曲库/专辑下拉渲染、当前曲目高亮、点击曲目切歌、暂停/继续/停止、音量滑条、覆盖关卡BGM / 真随机 / 播放模式切换、帮助弹窗、设置区无滚动条、专辑下拉滚动条风格统一。
+覆盖项：面板开闭生命周期、seed 状态渲染、首次 catalog 到达后专辑 chip 对账、曲库/专辑下拉渲染、当前曲目高亮、点击曲目 pending→active、暂停/继续、停止后 STANDBY 待机屏、音量滑条、覆盖关卡BGM / 真随机 / 播放模式切换、磷光主题持久化、LED 状态、帮助弹窗、设置区无滚动条、专辑下拉滚动条风格统一。
 
 #### Jukebox panel 手测
 
@@ -1744,16 +1744,16 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 1. **刘海入口与背景包络**：hover 展开 Notch，“辅助”行出现「点歌机 / 地图开关 / 修改器 / 帮助」；FPS 折线背景在 BGM 播放时有低透明度 L/R 包络，暂停后冻结并降透明度；点「点歌机」→ panel 出现；点「地图开关」→ 小地图显示/关闭并以中文 toast 回显；“系统 → 其他”按“控制 / 测试 / 工具”切页，离开并收起刘海后子页不得残留
 2. **panel 全屏铺满**：panel 铺满全 anchor 16:9（固定 1024×576 画布由 `.panel-scale-shell` 整体等比缩放，窄窗口同比缩小不重排）——1024×576 anchor 下 1:1、1920×1080 anchor 下整体约 1.875×；panel 覆盖全幅无可见 backdrop dim；Spy++ 验证 WebOverlay hwnd bounds **就是全 anchor**、EX_STYLE 既无 `WS_EX_LAYERED` 也无 `WS_EX_TRANSPARENT`
-3. **打开 seed 状态**：当前正在播放的曲目标题立刻显示在 panel 标题区（不是 `未播放`）；音量滑条显示当前实际值；覆盖关卡BGM / 真随机 / 播放模式 选中态正确
+3. **打开 seed 状态**：当前正在播放的曲目标题立刻显示在 panel 标题区（不是 `未播放`）；catalog 到达后标题旁显示当前曲目所属专辑 chip；音量滑条显示当前实际值；覆盖关卡BGM / 真随机 / 播放模式 选中态正确
 4. **曲库列表**：专辑下拉显示所有专辑 + 计数；切换专辑过滤；当前播放曲目高亮 active
 5. **选曲**：点击曲目立即切歌；标题更新；进度条归零；含特殊字符（`"` / `\` / 中英混排）的曲名正确发到 AS2（`HandleJukeboxMessage` 已用 JObject 解析）
-6. **播放控制**：暂停 ↔ 继续按钮翻转；停止回到默认 BGM；进度条拖拽 seek 立即生效
+6. **播放控制**：暂停 ↔ 继续按钮翻转；停止回到默认 BGM，波形区进入带 `STANDBY` 字样的待机屏；进度条拖拽 seek 立即生效
 7. **设置**：覆盖关卡BGM / 真随机切换；播放模式三选一切换；AS2 端通过 `setGlobalVolume`/`setBGMVolume`/`jukeboxOverride` 等收到对应命令
 8. **帮助 markdown**：点 `?` 弹模态加载 `sounds/README.md` 渲染；关闭模态正常
 9. **关闭面板（× / ESC / backdrop 三路径全测）**：右上 ×、ESC 键、点 panel 外侧 backdrop 三种入口都立即隐藏 panel（DOM 即刻消失）+ WebView2 SW_HIDE 回到 idle；任一入口关闭后再次打开 panel **必须 onOpen 正常触发**（不能因 panels.js `_active` 滞留早 return）——验证：关 → 再次展开刘海点「点歌机」重开，UI 应正常 seed 当前 bgm 标题，不是空 panel
 10. **重开干净**：关 panel 后再开，**不**显示上一次曲名/进度/音量瞬态（cleanup 已重置 `bgmTitle/currentDuration/progress/wave`；onOpen 重新 seed）
 11. **不漏 listener**：30 次 open/close 循环后 launcher.log 无累积；`Bridge.off` 正确解绑（uidata 走 `UiData.off`）
-12. **legacy 不污染**：[overlay.html](web/overlay.html) 的 `modules/jukebox.js` 脚本入口已注释；DevTools console 无 `audio` / `catalog` 双重处理日志
+12. **legacy 不污染**：旧 `web/modules/jukebox.js` 已删除，生产懒加载、发布资产门禁与 Web overlay 复杂度审计只引用 `web/modules/jukebox/jukebox-panel.js`；DevTools console 无 `audio` / `catalog` 双重处理日志
 
 无法通过手测验证的回归（如 idle iGPU 下降）走 `Ctrl+G` 探针 + Task Manager GPU 标签人工对照。
 
