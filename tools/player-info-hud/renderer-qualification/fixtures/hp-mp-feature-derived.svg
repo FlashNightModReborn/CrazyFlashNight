@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48" viewBox="0 0 160 48">
+  <!-- Source feature anchors only; bounded geometry is synthetic and is not a visual oracle.
+       flashswf/UI/玩家信息界面/LIBRARY/sprite/主角hp显示界面.xml :: 红色底色
+       flashswf/UI/玩家信息界面/LIBRARY/sprite/主角mp显示界面.xml :: 左侧MP槽 -->
+  <defs>
+    <radialGradient id="hpGradient" gradientUnits="userSpaceOnUse" cx="40" cy="15" r="32" spreadMethod="reflect">
+      <stop offset="0" stop-color="#FF0000"/>
+      <stop offset="1" stop-color="#330000"/>
+    </radialGradient>
+    <radialGradient id="mpGradient" gradientUnits="userSpaceOnUse" cx="112" cy="34" r="36" spreadMethod="reflect">
+      <stop offset="0" stop-color="#66FFFF"/>
+      <stop offset="1" stop-color="#0033CC"/>
+    </radialGradient>
+    <clipPath id="hpClip"><rect x="8" y="8" width="64" height="14"/></clipPath>
+    <clipPath id="mpClip"><path d="M88 27H152V41H88Z"/></clipPath>
+  </defs>
+  <g transform="matrix(1 0 0 1 0 0)">
+    <path d="M4 4H76V26H4Z" fill="#160707" opacity="0.92"/>
+    <g clip-path="url(#hpClip)">
+      <path d="M8 8H72V22H8Z" fill="url(#hpGradient)" opacity="0.9"/>
+    </g>
+    <path d="M4 4H76V26H4Z" fill="none" stroke="#d88979" stroke-width="1" stroke-linejoin="miter"/>
+  </g>
+  <g transform="matrix(1 0 0 1 0 0)">
+    <path d="M84 23H156V45H84Z" fill="#061124" opacity="0.92"/>
+    <g clip-path="url(#mpClip)">
+      <path d="M88 27H152V41H88Z" fill="url(#mpGradient)" opacity="0.9"/>
+    </g>
+    <path d="M84 23H156V45H84Z" fill="none" stroke="#68b8e8" stroke-width="1" stroke-linejoin="miter"/>
+  </g>
+</svg>

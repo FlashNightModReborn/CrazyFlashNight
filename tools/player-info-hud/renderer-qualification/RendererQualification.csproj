@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <QualificationScratchRoot>$(MSBuildThisFileDirectory)..\..\..\tmp\player-info-hud-renderer-qualification\</QualificationScratchRoot>
+    <BaseOutputPath>$(QualificationScratchRoot)bin\</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="[3.119.4]" />
+    <PackageReference Include="Svg.Skia" Version="[5.1.1]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="fixtures\*.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

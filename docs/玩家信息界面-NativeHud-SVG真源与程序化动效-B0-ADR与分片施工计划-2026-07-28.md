@@ -4,7 +4,7 @@
 
 **最后核对代码基线**：commit `ea1af623eb297c6bc875d731a3bc85d459ba598a`（2026-07-28）。B0-00 审计入口的工作树只含“新增本文 + 同步总体迁移 ADR”两项本切片文档改动；“工作树干净”不用于描述尚未提交的切片。
 
-**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 仅被批准为 B0 的唯一候选。隔离预检已证明 restore/ABI/win-x64 payload 没有立即阻断，并暴露必须显式封死的危险默认值，但这还不是生产 `renderer_qualified`，仓库当前也**尚未**引入该依赖、canonical SVG、`PlayerInfoWidget` 或新 `pi_*` 协议。本文落盘不等于 B0 代码完成。
+**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 是 B0 的唯一候选。B0-02 已把 exact lock graph、真实 HP/MP feature anchors、strict facade 和安全/并发/dispose corpus 固化入仓，状态为 `isolated_qualification_passed`；这允许 B0-04 开始转换，但 `rendererQualified` 仍为 false，不能冒称生产 `renderer_qualified`。仓库当前也**尚未**把该依赖接入 Launcher、产生 canonical SVG、`PlayerInfoWidget` 或新 `pi_*` 协议。本文落盘不等于 B0 代码完成。
 
 ---
 
@@ -17,8 +17,9 @@
 ### 0.2 当前精确状态
 
 - 已完成：本 ADR、B0 分片边界、依赖准入门、runtime build identity 纳入方案与验收词典；Kimi k3/max 的首轮完整文档异构审计见 §9.5。
-- 已取得但尚待入仓闭环：HP/MP placement closure/source-binary ancestry 的只读证据，以及 `Svg.Skia 5.1.1` 的隔离 renderer/dependency preflight；前者不等于 `oracle_frozen`，后者不等于 `renderer_qualified`。
-- 未开始：可重复的独立 Flash 状态截图、生产受控 SVG validator、转换器、canonical SVG、运行时 bake/cache、fixture widget。
+- 已取得但尚待入仓闭环：HP/MP placement closure/source-binary ancestry 的只读证据；它不等于 `oracle_frozen`。
+- 已完成：B0-02 隔离资格化（10/10、16 项 fail-closed、exact XFL feature anchors、依赖/许可/native/payload 结构化审计）；它不等于生产 `renderer_qualified`。
+- 未开始：可重复的独立 Flash 状态截图、生产受控 SVG validator 复用、转换器、canonical SVG、运行时 bake/cache、fixture widget。
 - 未接受：`Svg.Skia 5.1.1` 作为生产依赖。它必须先完成 B0-02 生产级 strict facade/corpus Gate；通过后才在 B0-03b 写入中央包版本、项目引用和 lockfile。
 - 未改变：AS2 游戏状态/输入/冷却权威、`FrameBroadcaster` 协议、旧 HUD 可见性、药剂拖放命中壳、正式 runtime。
 - 总体视觉交付严格状态：`planned`；分片允许另记 `evidence_ready` / `renderer_preflight_passed` 等较窄中间态。不得把这些中间证据写成 `fixture_static_parity`、`fixture_full_parity`、`runtime_integrated`，更不得写成已部署。
@@ -324,6 +325,8 @@ validator 必须先于 renderer，遇到未知特性 fail-closed；不允许“�
 2026-07-28 的 ignored `tmp/` 隔离预检已取得以下**前置证据**：完整候选图新增 11 个包节点，现有 `SkiaSharp 3.119.4` 未变；producer-shaped win-x64 payload 新增 9 个文件、5,289,528 B，未带入非 Windows native；locked restore、reflect gradient、clip/local `use`、Premul BGRA、独立并发 parse、共享只读 draw 与两批各 500 次 dispose smoke 均通过，漏洞/弃用扫描为零。该结果只允许记为 `renderer_preflight_passed`，因为生产 validator/wrapper、从 HP/MP closure 提取的真实 feature qualification corpus、identity/policy 尚未入仓，不能提前记 `renderer_qualified`。
 
 预检同时证明**不能依赖库默认值**：`DisableDtdProcessing` 默认为 false，external resource policy 默认为 Enabled，broken-image placeholder 默认开启，外部 JavaScript 子开关默认开启（即使总 JavaScript 开关默认关闭），alpha 默认 Unpremul；仅把 external resources 设为 Disabled 时，外部 `<image>` 会静默得到空画面而不是 fail-closed。`<text>` 与 Gaussian blur 也会实际渲染，所以“renderer 支持”绝不等于 B0 子集准入。
+
+B0-02 的 tracked qualification 随后以精确 SDK 10.0.300 完成 locked restore、0 warning/0 error build 和 **10/10** 行为测试：真实 XFL 锚定 HP `#FF0000→#330000`、MP `#66FFFF→#0033CC` 的 reflect radial feature，16 项负例覆盖 DTD/entity、外链/data、未知 grammar、超深/超尺寸与 path complexity；空 picture、BGRA/Premul/stride、8-way 独立 parse+raster、8-way shared-readonly draw 和 1000 次 dispose 均通过。结构化报告同时冻结 11 个新增包的 license/nupkg hash、0 vulnerable/deprecated 和 producer-shaped 9 文件/5,289,528 B；状态精确为 `isolated_qualification_passed`、`rendererQualified=false`。B0-03b 仍须把同一合同复用到生产代码、真实 canonical asset 和 policy gate 后，才能转正 HUD-SVG-005。
 
 ### 5.3 B0-02 strict facade 硬合同
 
@@ -725,7 +728,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 - [ ] HP/MP active placement closure 已持久化并人工复核，达到 `placement_closure_frozen`；unused library 未混入，整座 HUD 的 BitmapFill 未误算进本纵切。
 - [ ] §6.4 oracle provenance、accepted corpus 与人工来源/crop 复核完整，达到 `oracle_frozen`。
 - [ ] `Svg.Skia` 决策由 provisional 转为 accepted，或已有修订 ADR 明确替代候选。
-- [ ] 依赖/许可证/native/security/payload-size 审计有结构化证据。
+- [x] 依赖/许可证/native/security/payload-size 审计有结构化证据。
 - [x] B0-03a exact SDK selector/setup-check 的 only-10.0.301 等负例与 repo-root exact-positive 通过。
 - [ ] 两类正式 builder 可 locked restore，并对同一冻结源形成一致 build identity / payload closure。
 - [ ] canonical SVG/manifest byte-stable，受控子集 validator fail-closed。
@@ -752,7 +755,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | B0-00 | completed | 本 B0-00 commit：两份 ADR 同步；§9.5 k3/max 文档审计；doc governance、链接与 diff check | 无代码/视觉/生产依赖结论 | B0-01A / B0-02 / B0-03a 可并行 |
 | B0-01A | evidence_ready | 16-file exact closure、10/5 symbol、0 BitmapFill、矩阵/脚本边、Git/SWF ancestry 已只读核实 | 结构化证据尚未入仓 | 写 `closure.json`/`source-binary-chain.json` 并复核 |
 | B0-01B | blocked_by_B0-01A | §0.6/§6.4 已冻结安全捕获边界 | TestLoader fixture、截图、manifest、人工来源确认 | B0-01A 后开测试专用捕获片 |
-| B0-02 | renderer_preflight_passed | isolated locked restore/ABI/payload/license/synthetic corpus；危险默认值已实测 | 入仓 strict facade、HP/MP feature qualification corpus、production wrapper 合同 | 固化 preflight 证据并完成资格 Gate |
+| B0-02 | completed (`isolated_qualification_passed`) | exact SDK + locked restore；build 0 warning/error；行为 **10/10**、fail-closed **16**；HP/MP XFL feature anchors；11 包 license/nupkg + 9 文件/5,289,528 B payload 结构化报告 | `rendererQualified=false`；生产 facade/canonical/policy/许可接受仍归 B0-03b | B0-04 可开始；禁止提前写生产 PackageReference |
 | B0-03a | completed | resolver/setup-check 共用 exact 合同；selector + repo-root 集成 **7/7**；setup-check **5/5**；三项首轮并发时序失败隔离复跑 **3/3**，随后全量 xUnit **1257/1257** | 正式 builder 的 10.0.300 证据仍归 B0-03b/发布链 | 继续 B0-01A/B0-02；待真实资产后进 B0-03b |
 | B0-04 | blocked_by_B0-01A/02; exit_waits_B0-01B | 无 canonical asset | converter/validator/canonical SVG 与 accepted oracle parity | 等 closure + renderer subset |
 | B0-03b | blocked_by_B0-02/03a/04 | 现有 SkiaSharp/runtime inputs 基线 | 生产锁定与 identity 回归 | 等 renderer/SDK/真实 asset |

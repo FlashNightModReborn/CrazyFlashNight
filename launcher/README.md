@@ -817,6 +817,19 @@ powershell -File launcher/tests/run_tests.ps1
 
 ### 测试覆盖
 
+PlayerInfo NativeHud 的 `Svg.Skia 5.1.1` 仍未接入生产项目。B0 隔离资格化入口为：
+
+```powershell
+chcp.com 65001 | Out-Null
+. .\launcher\resolve-dotnet.ps1
+$dotnetHost = Resolve-Cf7Dotnet -ProjectRoot (Get-Location).Path
+& $dotnetHost restore tools\player-info-hud\renderer-qualification\RendererQualification.csproj --locked-mode -r win-x64
+& $dotnetHost build tools\player-info-hud\renderer-qualification\RendererQualification.csproj --no-restore -c Release -r win-x64
+& $dotnetHost run --project tools\player-info-hud\renderer-qualification\RendererQualification.csproj --no-build -c Release -r win-x64 -- --report tools\player-info-hud\evidence\b0-02\qualification-report.json
+```
+
+当前结果为 `isolated_qualification_passed`：10/10 行为测试、16 项 fail-closed，报告含 exact XFL feature anchors、完整新增包/许可/nupkg hash 与 producer-shaped win-x64 payload。`rendererQualified` 仍为 false；qualification fixture 不是 canonical HUD asset，不能据此声称 Launcher 已引入或正式验收该 renderer。
+
 2026-07-17 末轮调制交互收口：强化石核心统一承载持有、preview 消耗与强化后剩余，放大持有量并将强化 footer 收敛为单一动态 CTA；交换目录只显示同 `use` 且与 source 强化度不同的装备，无候选时给出明确空态。AS2 的同强化度 no-op 校验仍保留，用于防御 projection 后的状态变化。
 
 `Launcher.Tests.csproj` 采用 SDK glob 自动纳入测试源码；上游 `9f4669e` 的 **960/960** 保留为历史基线，当前全量为 **1257/1257**。`ShopTaskTests` 继续覆盖 KShop `checkoutPreview/checkoutCommit` 映射、只读预览成功载荷校验、commit 写 gate、对账与防重放，并守 legacy checkout/claim；成功 `checkoutCommit/claim` 缺少写后 `catalog` 必须进入 `reconcile_required`，不能把旧动态上限当作定局。`InventoryTaskTests` 除 lease-bound `tooltip`、三容器 source/target、结构化 `filterSpec`、`sortAndMerge` / `autoTransfer` 白名单外，新增 loot organizer 七键 envelope：只接受 `panel=loot`、exact active `panelInstanceId` 与 `snapshot/autoTransfer/discard` 三条命令；`autoTransfer` 仅允许背包↔战备箱，`discard` 仅允许背包，并断言成功、本地拒绝、timeout 与发送失败都回显原 panel/instance binding。`AgentControlTaskTests` 覆盖非 legacy 同包 `s:1|ga:<attemptId>`、裸/缺失/stale attempt 拒绝、`gameEnteredAttemptId` 投影、`start` 清锁，以及实收 `s:0` 时的防御性清锁；后者只是实现回归，不表示现役正常退出已调用该信号。`NpcShopTaskTests`、`CraftingTaskTests`、`HairdresserTaskTests`、`SkillTaskTests`、Router/WebOverlay 与 `LauncherCommandRouterTests` 继续守各自 payload、写门、实例和失败分类契约；Hairdresser 另固定第三个共享 pending consumer、close 清理、未知 commit 后 fresh snapshot applied/not-applied 收敛及零 replay。`SaveMigratorTests` 继续使用代码内 helper 数据，外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
