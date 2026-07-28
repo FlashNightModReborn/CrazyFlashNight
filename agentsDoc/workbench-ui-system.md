@@ -1,7 +1,7 @@
 # 双栏工作台 UI 系统约束
 
 **文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
-**最后核对代码基线**：commit `0e3ed80c79be404285b007a171e4123af5167d44`（2026-07-28）+ 当前角色构筑 ↔ Skills 双向导航与原生 workbench nonce 收口工作树。
+**最后核对代码基线**：commit `c4faf14460238c7ea3e85983f31dee8be1b79afa`（2026-07-28）；角色构筑 ↔ Skills 双向导航与原生 workbench nonce 已由 promotion commit `45b9748baa68786a52557239d5bd7c52869970f7` 正式发布并达到 `standard_entry_verified`。
 
 本文适用于 `kshop`、`npcshop`、`crafting`、独立 `workbench`、角色构筑、嵌入式装备调制和 `skills` 中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
 
