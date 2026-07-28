@@ -1,8 +1,8 @@
 # 玩家信息界面 → C# NativeHud：只读镜像迁移 架构设计（阶段0 行为基线 + 停止线裁决）
 
-**文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻只读 HUD + AS2 服务持有状态权威」的**纲领设计 / ADR**。阶段0 已完成行为基线盘点与停止线对抗审计；截至 2026-07-15，战技/快捷技能/药剂输入、17 路手动冷却与 Skill 装备管理已脱离 HUD 时间轴，后续路线见 §5。
+**文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻只读 HUD + AS2 服务持有状态权威」的**纲领设计 / ADR**。阶段0 已完成行为基线盘点与停止线对抗审计；截至 2026-07-15，战技/快捷技能/药剂输入、17 路手动冷却与 Skill 装备管理已脱离 HUD 时间轴，后续路线见 §5。SVG 真源、渲染器准入、运行时 bake/cache 与 fixture-first 视觉纵切的专项决策见 [B0 / ADR / 分片施工计划](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)。
 
-**最后核对代码基线**：commit `f06021a911`（2026-07-19）及当前工作树；Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
+**最后核对代码基线**：commit `ea1af623eb297c6bc875d731a3bc85d459ba598a`（2026-07-28）及当前工作树；Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
 
 **前置必读 / 关键定位修正**：
 - 本文的 `玩家信息界面` 专指战斗中常驻的 HP/MP/技能/药剂 HUD，不是旧 `新版物品栏界面` 内的「个人信息」详情页。后者已归入 [物品系统双栏工作台](物品系统-双栏工作台-架构设计-2026-06-15.md) §8.1 的 5b-2B 角色构筑路线，与装备槽和纸娃娃联合迁移。
@@ -16,6 +16,7 @@
 ## 0. 状态
 
 - 阶段：**阶段0 完成；阶段1 的战技/快捷技能/药剂输入、手动冷却与 Skill 管理停止线已完成 AS2 服务化**（详见 §2.2 / §5）。C# PlayerInfoWidget 复刻尚未开始；快捷药剂拖放等剩余 MovieClip 能力仍阻止整体删壳。
+- 2026-07-28 已冻结视觉基座 B0 计划：静态矢量以 SVG 为真源、按真实物理尺寸启动后烘焙、动效程序化；当前严格状态仍为 `planned`，`Svg.Skia 5.1.1` 只是待 Gate 候选，尚未引依赖或生成 canonical SVG。B0 的 fixture-only 复刻不新增真实 `pi_*`，因此不推翻 §4 的 state-first 运行态接入顺序。
 - **核心裁决（颠覆早期"纯展示层"判断）**：`玩家信息界面` SWF 在阶段0 时确实承载输入、冷却和装备写，不可直接搬空。现状是 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService` 承接三条手动输入，`ManualCooldownService` 持有 17 路逻辑冷却，`SkillLoadoutService` / `SkillPanelService` 持有技能描述符、学习、装备、排序和被动写；旧控制器与进度条已退化为可选显示投影。消耗品快捷槽拖放 hitTest 和其他显示列表调用仍需按 §2.2 单独处置。（早期把 `frameEnd` 性能心跳列入本 SWF 是误报，详见 §3.1。）
 - **直接后果**：迁移仍须沿“显示 vs 逻辑”切线推进，但目标已从“保活承载输入/冷却的隐形逻辑壳”收敛为“C# 只读 HUD + AS2 纯服务 + 尚未退役的兼容 renderer/hit target”。只有剩余 MovieClip 能力逐项替代并通过观察门后，才可停止实例化整个 symbol；纯 Object facade 仍不能提前代替这些显示列表能力。
 - 已确认可安全只读迁移的显示层：HP / MP / 韧性 / 经验 / 等级 / 弹药数 / 攻击模式视图 / 角色名 / SP / buff 图标条（见 §2.1）。
@@ -53,7 +54,7 @@ rg -n -F '<唯一符号/协议字面量/语义标记>' . -g '!docs/**'
 | buff 图标条（主 FLA，非本 SWF） | `初始化玩家buff界面` / `DetailedIconBar` | [DetailedIconBar.as](../scripts/类定义/org/flashNight/arki/component/Buff/IconBar/DetailedIconBar.as) |
 | 角色名直绑文本 | `variableName="_root.角色名"` | flashswf/UI/玩家信息界面/LIBRARY/UI重构/姓名动画.xml |
 | facade 范本（参考，非可直接套用） | `MouseProxy` | [MouseProxy.as](../scripts/类定义/org/flashNight/arki/cursor/MouseProxy.as) |
-| 升级瞬间强写经验条满帧 | `主角经验值显示界面.frame = 100` | [引擎_lsy_等级与经验值.as](../scripts/引擎/引擎_lsy_等级与经验值.as) |
+| 升级路径中的经验条影子字段写入（疑似无可见效果） | `主角经验值显示界面.frame = 100` | [引擎_lsy_等级与经验值.as](../scripts/引擎/引擎_lsy_等级与经验值.as) |
 
 ---
 
@@ -88,17 +89,19 @@ C# 层只负责**常驻只读 HUD 显示**；AS2 端保留**游戏状态权威 +
 
 | 子系统 | 数据源（权威） | 显示映射 / 公式 | 一致性要点（易错） | 建议发布字段 |
 |---|---|---|---|---|
-| HP 条 | `findHero().hp` / `.hp满血值` | 128 格逆向：`frame = max(1, 129 - floor(ratio*128))`；满血=1、空血=129 | `HP百分比.text = floor(ratio*100)` **无 % 后缀**；isNaN 早退 | `pi_hp` `pi_hpMax`（发原值，C# 自算帧） |
-| MP 条 | `findHero().mp` / `.mp满血值` | 100 格逆向 `frame = max(1,101-floor(ratio*100))`；含 morph 形变遮罩（连续插值非纯离散） | `MP数据显示.text = NNNNN/NNNNN`（5 位补零）；`MP百分比.text` **带 % 后缀**（与 HP 不同！） | `pi_mp` `pi_mpMax` |
+| HP 条 | `findHero().hp` / `.hp满血值` | 128 格逆向：`frame = max(1, 129 - floor(ratio*128))`；满血=1、空血=129 | `HP百分比.text = floor(ratio*100)` **无 % 后缀**；现 AS2 仅对两个原值做 `isNaN` 早退，不检查 `max<=0`/Infinity，也不 clamp | `pi_hp` `pi_hpMax`（发原值，C# 自算帧） |
+| MP 条 | `findHero().mp` / `.mp满血值` | 100 格逆向 `frame = max(1,101-floor(ratio*100))`；含 morph 形变遮罩（连续插值非纯离散） | `MP数据显示.text = NNNNN/NNNNN`（5 位补零）；`MP百分比.text` **带 % 后缀**；现 AS2 的异常防御同 HP | `pi_mp` `pi_mpMax` |
 | 韧性 | `findHero().nonlinearMappingResilience` = `1 - sqrt(remainingImpactForce / 韧性上限)` | 30 格逆向 `frame = max(1,31-floor(poise*30))`；31 帧含多阶段破韧美术动画 | 写 `.poise` 变量绑定文本（非 `.text` 路径）；`+ "%"` | `pi_poise`（0..1 原值） |
-| 经验条 | `_root.经验值` / `_root.升级需要经验值` / `_root.上次升级需要经验值` | `progress = floor((经验-上次)/(需要-上次)*100)` 裁 0-100；`gotoAndStop(100-progress)`，**不走缓动** | 除零防御 `denom<=0→1`；升级瞬间引擎硬写 `.frame=100` 做"涨满闪光" | `pi_exp` `pi_expNeed` `pi_expPrev` |
+| 经验条 | `_root.经验值` / `_root.升级需要经验值` / `_root.上次升级需要经验值` | `progress = floor((经验-上次)/(需要-上次)*100)` 裁 0-100；`remain=max(1,min(100,100-progress))` 后 `gotoAndStop(remain)`，**不走缓动** | 除零防御 `denom<=0→1`；升级路径虽写 `.frame=100`，但经验条不消费该影子字段，且同一 while 的下次刷新会覆写它，B2 真机证明可见前不列为保留语义 | `pi_exp` `pi_expNeed` `pi_expPrev` |
 | 等级 | `_root.等级`（**非** `玩家等级` 字段名） | `padStart(等级,3,'0')`（如 5→`005`） | renderAsHTML=true；上限 等级限制=100/最大等级=60 | `pi_level` |
 | 弹药 | 武器/技能容器帧脚本写 `子弹数 = capacity - shot` | `variableName` 绑定文本 + 透明组件每帧 `_parent.子弹数 → text` | 四字段 `子弹数/子弹数_2/弹夹数/弹夹数_2` 都须可写（~60 散点写入，见 §6 R1） | `pi_ammo` 系列 |
 | 攻击模式 | 单位 `this.攻击模式`，经 `刷新攻击模式` 推送 | `gotoAndStop(帧标签)`：{手枪@1, 手枪2@6, 长枪@12, 兵器@17, 手雷@22, 空手@27, 双枪@32} | 未知标签 AS2 **静默不跳**（不回退空手，回退仅 load 时一次）→ C# 须明确边界（见 §2.4） | `pi_mode` |
 | 角色名 | `_root.角色名`（存档第 0 项，对话 `$PC` 替换） | `variableName="_root.角色名"` 直绑，无格式化 | **早期被误判为纯装饰** | `pi_charName` |
 | SP 技能点 | `_root.技能点数` | DynamicText 直绑 | 与 等级/经验/角色名 同属 `_root` 全局通道，应合并发布 | `pi_sp` |
 | Buff 图标条 | `buffManager`（走事件总线，**不走中央刷新函数**） | `DetailedIconBar`：26 帧倒计时 `targetFrame=((25*remain/total)|0)+1`；28px 间距排布；对象池复用 | **整子系统早期漏盘**；装配在**主 FLA**（玩家buff界面素材），非独立 SWF | `pi_buffs[]`（id/比例） |
-| 平滑缓动器 | onEnterFrame（HP/MP/韧性三条，**经验排除**） | 读 `clip._currentframe` 朝影子字段 `clip.frame` 逼近：**最大过渡 30 帧 / 最小步长 1 / 每帧最多移动剩余距离 20%** | 纯视觉；C# 不复刻则双轨对比恒红 | （C# 端自跑 Lerp） |
+| 平滑缓动器 | onEnterFrame（HP/MP/韧性三条，**经验排除**） | 读 `clip._currentframe` 朝影子字段 `clip.frame` 逼近：`step=max(1,min(ceil(distance*0.2),ceil(distance/30*2),distance))` | “30”只是现有调参量，不保证最多 30 tick（128 格突变实为 41 tick）；C# 必须固定完整序列 | （C# 端自跑同式） |
+
+**B0 新增、不是 AS2 既有行为的防御合同**：NativeHud fixture/未来只读 adapter 仅在 `cur/max` 都为 finite 且 `max>0` 时计算 ratio，并 clamp 到 `[0,1]`；`max<=0`、NaN 或 Infinity 保留 last-known-good、停止推进该 gauge，并输出结构化 `invalid_input` 诊断。B0 尚无 epoch/sequence 合同，不能把数值非法混称 `stale`；旧 snapshot 的生命周期判定留给 B1。该收紧先用于 C# 视觉层，不反写游戏权威；B1 接真实 `pi_*` 前须再次审阅异常值由 AS2 发布层还是 C# adapter 裁决。
 
 ### 2.2 隐藏游戏逻辑清单（停止线 —— 不可只读迁移）
 
@@ -114,7 +117,7 @@ C# 层只负责**常驻只读 HUD 显示**；AS2 端保留**游戏状态权威 +
 | 4 | **技能装备/卸下/排序/被动写已服务化**：`SkillLoadoutService` 原子维护 `主角技能表`、`快捷技能栏1..12`、被动缓存、动态 CD/MP 投影和 `dirtyMark`；旧叉按钮只调用 `legacySkillUnequip()` 委托 | SkillLoadoutService.as；SkillPanelService.as；快捷技能界面.xml | HUD 不再持有技能写权威；旧按钮仍可作 fallback | **已解除 Skill 侧停止线**；S6 观察门前不删除旧入口 |
 | 5 | **药剂控制器库存扣减已迁服务**：`DrugInputService` 在成功使用后扣权威集合并处理耗尽清栏 | DrugInputService.as | 时间轴控制器缺失不再造成不扣库存 | **已解除**；药剂装备/拖放仍单列 #6 |
 | 6 | **快捷药剂 hitTest 拖放落点**：`快捷药剂界面.hitTest(_xmouse,_ymouse,true)` 判断药剂拖入；`attachMovie` 图标容器 | InventoryIcon.as:152；快捷药剂界面.xml:12-13 | 拖放装药失效 | 留 AS2 真 MC，或 DOM 矩形命中替代 |
-| 7 | **显示列表引擎 by-reference 驱动装饰孙级动画**：`默认播放动画(玩家信息界面.主角hp显示界面.血槽内动画 / .网格动画 / 快捷药剂界面.姓名框.网格动画)` 按性能等级 play | 显示列表引擎.as:73-77 | 装饰动画全停 / 路径解析 undefined | 装饰可砍（纯外观），路径需重设计 |
+| 7 | **显示列表引擎 by-reference 驱动装饰孙级动画**：`默认播放动画(玩家信息界面.主角hp显示界面.血槽内动画 / .网格动画 / 快捷药剂界面.姓名框.网格动画)` 按性能等级 play | 显示列表引擎.as:73-77 | 装饰动画全停 / 路径解析 undefined | B0 静态基线可显式延后；B3 按专项 ADR 逐项程序化并过全 union 重绘成本门，不能静默丢失后称全效果 parity |
 
 > **关键不变量（load-bearing，写进注释勿丢）**：底层 `释放技能/释放主动战技/使用药剂` 不自行裁决手动冷却；三条手动输入服务必须先查询并启动同一 `ManualCooldownService` authority。旧 `Symbol 1791` 只能接受投影，不得重新成为 gate。副武器快装不是普通战技，允许绕过共享战技冷却且不启动它。AI（ActionArbiter/各 strategy）与佣兵 ai 仍走逻辑层独立时间制冷却，不读 UI。
 
@@ -141,10 +144,10 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 | 场景 | 验收判据 | 阶段0 已锁定的易错细节 |
 |---|---|---|
-| 受伤 / 回血 | HP 条平滑过渡到目标、文本/百分比同步 | 缓动公式（30/1/20%）；HP 百分比无 % |
+| 受伤 / 回血 | HP 条平滑过渡到目标、文本/百分比同步 | §2.1 精确 `step` 式及完整序列；HP 百分比无 % |
 | 耗蓝 / 回蓝 | MP 条 + `NNNNN/NNNNN` 5 位补零 | MP 百分比带 %（与 HP 相反） |
 | 韧性变化 | 破韧/恢复，sqrt 非线性 | `.poise` 变量绑定；多阶段动画可降级为比例 |
-| 升级 / 经验变化 | 经验条无缓动直跳；升级瞬间"涨满闪光"再回落 | `.frame=100` 强写语义须保留 |
+| 升级 / 经验变化 | 经验条按钳制后的 `remain` 无缓动直跳 | `.frame=100` 影子字段写入当前疑似不可见；B2 真机若证明存在独立闪满效果，再以专项状态补入，不让 B0/B2 预造死行为 |
 | 攻击模式切换 | 视图切到对应模式 | **未知模式：AS2 静默保持上一帧** → C# 须对齐（保持 vs 回退空手，需拍板） |
 | 弹药变化 | 子弹数/弹夹数实时 | 四字段全可写；双枪用 `_2` 后缀 |
 | 技能 / 战技 / 药剂冷却 | 冷却条逐格 + gate 生效 | **属逻辑层（§2.2#2），不是只读镜像** |
@@ -216,7 +219,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 **两条排序无关的硬约束（无论先后都钉进计划）**：
 
-- **C1 — `PlayerInfoState` 显式分 `cur`/`target`**：把 onEnterFrame 缓动（30/1/20%，§2.1 末行）纳入 renderer 契约。只发终值的话 C# 无从复刻 Lerp，阶段6 对比恒红。经验条特例：不缓动（直跳 + 升级闪满）。
+- **C1 — `PlayerInfoState` 显式分 `cur`/`target`**：把 onEnterFrame 缓动（§2.1 精确 `step` 式，不用“30/1/20%”口号替代）纳入 renderer 契约。只发终值的话 C# 无从复刻平滑序列，阶段6 对比恒红。经验条特例：不缓动、按 `remain` 直跳；当前 `.frame=100` 影子字段写入不进入契约，除非 B2 真机证明它有独立可见效果。
 - **C2 — 阶段3 发布钉死 `frameEnd` 批量推送**，勿逐字段挂 watch：C# 侧处理仅 1.25μs/帧、带宽零压力；瓶颈只可能在 AS2/AVM1 侧（20+ watch 压调用栈）。state 对象当帧聚合脏字段、frameEnd 一次性 flush，天然批量。
 
 **经阶段0 修正的两条额外约束**：
@@ -275,8 +278,8 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 | 1 | AS2 外部脚本化（仅 bootstrap） | **核心停止线已完成**：战技/快捷技能/药剂输入、17 路冷却与 Skill 装备写均已进入 AS2 服务；旧进度条只作 renderer。剩余为药剂拖放等独立 MC 能力与退役观察门 |
 | 2 | 建立 PlayerInfoState | 不变；显式 `cur/target`（C1）；先收 HP/MP/exp/mode/ammo，技能/药剂/战技后置 |
 | 3 | UiData 发布 | 不变；frameEnd 批量（C2）；新增 `pi_charName/pi_sp/pi_buffs` |
-| 4 | 资源管线 | 不变；静态图标复用 `launcher/web/icons`；装饰动画（血槽网格/光效）可砍 |
-| 5 | C# PlayerInfoWidget 只读 | 不变；照抄 ComboWidget；复刻缓动 Lerp |
+| 4 | 资源管线 | 由 [SVG/B0 专项 ADR](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md) 细化：HUD 静态矢量转 canonical SVG，按真实物理尺寸启动后烘焙；禁止逐帧 PNG/SVG；原生图标仍走各自管线 |
+| 5 | C# PlayerInfoWidget 只读 | 先做不接业务权威的 B0 HP/MP fixture 纵切；B0 通过后仍按阶段2→3的 state-first 链路接真实 UiData，程序化复刻虚拟帧缓动 |
 | 6 | 双轨对比 | 不变；按 §2.4 验收表 |
 | 7 | facade 化 | **前提**：§2.2 逻辑已剥离（C3）；facade 仅承显示层 + 保留 §6 列出的 MC 能力 |
 | 8 | 隐藏 AS2 可见 UI | **改写**：隐藏可见图层、**保活隐形逻辑壳**（不能停止实例化整个 symbol） |
@@ -318,6 +321,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 | R9 | **键位投影仍有剩余治理面**（§4.1）：快捷技能的行为/显示快照已同批解除；但 SaveManager 读档不刷新 live 投影、战技文字仍为 load 快照，PlayerInfoState 若发"算好的字母"还会把快照失效搬进 C# | 中 | 保留 H1-H4（发键名/改键标脏/读档纳入触发集/注释钉不变量）；后续战技/药剂仍要求显示侧与行为侧同批治理 |
 | R10 | **快捷药剂第 5 格结构齐全但无数据**（§3.3）：按视觉/实例数（5）推断功能槽 → 误布 5 槽超 `DrugInventory` 容量 4；控制器4 是真实例易被当成已接逻辑 | 中 | 功能槽数以数据层（`初始化药剂栏图标` cap 4 / `DrugInventory` 容量 4）为准；第 5 格作保留占位，勿接逻辑 |
 | R11 | **装备/卸载交互末端跨主线依赖只剩药剂侧**（§4.2）：Skill S1/S3 已接管技能写，旧叉仅委托；药剂拖放仍借 HUD hitTest，阶段8 提前 facade→Object/停 placement 会使其失效 | 中 | Skill 旧 UI 等 S6 观察门后退役；药剂删壳等物品/药剂管理切片，未完成前药剂命中壳仍用 `_visible=0` 真 MC + 坐标对齐 |
+| R12 | **升级循环存在 `.frame=100` 写入，但疑似在同一脚本执行内被下一轮刷新覆盖**：“代码存在”可能再次被误判为“视觉生效” | 低 | B2 真机逐帧/录制确认前不在 C# 实现；若证实无效，按死代码治理 |
 
 ---
 
@@ -325,15 +329,15 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 | 支柱 | 成熟度 | 结论 |
 |---|---|---|
-| C# NativeHud | ★★★★★ 生产就绪 | `INativeHudWidget`/`IUiDataConsumer` + 5 widget + GDI+ layered window + 点击穿透全 ready，新 widget ~90% 复用 ComboWidget 范式 |
+| C# NativeHud | ★★★★★ 生产就绪 | `INativeHudWidget`/`IUiDataConsumer` + 5 widget + GDI+ layered window + widget-level 命中/透传范式已存在；PlayerInfo 必须恒不命中，新 widget ~90% 复用 ComboWidget 范式 |
 | UiData 通道 | ★★★★☆ | `FrameBroadcaster.pushUiState` 在跑，加 20-30 字段协议零破坏、C# 处理 1.25μs/帧 |
-| 资源管线 | ★★★★☆ | FFDec CLI 内置；静态图标 100% 复用 `launcher/web/icons`；多帧/矢量/动态文字需 C# 新建 |
+| 资源管线 | ★★☆☆☆ 基座可复用、专项未验收 | FFDec、SkiaSharp、PArgb bridge、byte-budget cache/prewarm 已有；玩家 HUD 的受控 SVG 子集、`Svg.Skia` 准入、canonical asset、物理 scale contract 与 bake cache 尚未通过 B0 |
 | AS2 玩家信息界面 | ★★★☆☆ | **权威逻辑已大幅脱壳**：战技/快捷技能/药剂输入、17 路冷却及 Skill 装备写均已服务化；旧 XFL 主要保留 renderer、药剂拖放命中和 161 个历史显示列表调用点 |
 
 **难度分层**：
 - **只读 C# 显示镜像（阶段3-6 核心）**：中等偏低、低风险（基础设施成熟）。
 - **完整迁移（含 facade + 退场）**：**中等**；C3 与 R2 已关闭，剩余风险集中在 R1（弹药散点）、R4（显示列表能力）、R11（药剂命中）及真实观察门。
-- **建议**：先做一个最小纵切（HP/MP 显示双轨对比），验证镜像保真与 state-first 链路，再决定是否投入逻辑剥离。
+- **建议**：先按专项 ADR 做 HP/MP 的 fixture-only B0，验证 SVG 真源、物理尺寸烘焙与程序化虚拟帧；它只证明视觉基座。B0 通过后再沿阶段2→3建立真实 state/UiData，并做 HP/MP 双轨对比，不能把 fixture parity 外推为运行态接入。
 
 ---
 
@@ -342,10 +346,11 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 - [agentsDoc/as2-web-panel-migration.md](../agentsDoc/as2-web-panel-migration.md)：迁移护栏（仅协议/验证/文档同步节适用）
 - [launcher/README.md](../launcher/README.md)：快车道前缀协议 SOT
 - [docs/protocol-latency-baseline.md](protocol-latency-baseline.md)：通道延迟基线
+- [玩家信息界面 NativeHud：SVG 真源与程序化动效 B0 / ADR / 分片施工计划](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)：视觉资源、渲染器、bake/cache、fixture 与分片台账 SOT
 - [物品系统-双栏工作台-架构设计-2026-06-15.md](物品系统-双栏工作台-架构设计-2026-06-15.md)：同期 AS2 UI 外迁主线（doc 风格范本）
 - [agentsDoc/documentation-governance.md](../agentsDoc/documentation-governance.md)：文档治理
 
-**文档治理**：本文为新 canonical 设计 doc，已运行 `node tools/validate-doc-governance.js`（ok）。**本文为时效性的阶段0 探索成果，暂不钉入 AGENTS.md 核心加载层**——触达靠 docs/ 可搜 + agent 记忆索引 + 既有「AS2 UI → Web Panel 迁移」包的「按需补…对应文档」catch-all（参照物品系统双栏工作台 ADR 同样未单独钉路由的先例）。**待本迁移转为持久工作流（开工编码）再钉 AGENTS.md 路由**。后续进入编码阶段时，按改动面更新本文 §5 路线与 §6 风险，行号锚点随重构刷新。
+**文档治理**：本文为玩家信息 HUD 迁移的纲领 canonical doc；SVG/B0 专项文档只承载视觉渲染子域，避免形成第二份业务权威。本轮仍是纯规划，暂不钉入 AGENTS.md 核心加载层；**B0 首个依赖/代码切片开工时**再同步 AGENTS 路由、`launcher/README.md`、testing guide、技术栈与 runtime build canonical docs。后续按实际改动回写本文 §5 路线与 §6 风险，行号锚点随重构刷新。
 
 ---
 
