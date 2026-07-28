@@ -1,0 +1,1207 @@
+{
+  "format": "cf7.player-info-hud.placement-closure",
+  "formatVersion": 1,
+  "evidenceRevision": "b0-01a-r3",
+  "status": "placement_closure_frozen",
+  "scope": {
+    "xflRoot": "flashswf/UI/玩家信息界面",
+    "logicalCanvas": {
+      "width": 1024,
+      "height": 64,
+      "frameRate": 30
+    },
+    "includedVerticalSlice": [
+      "hp",
+      "mp"
+    ],
+    "fileCount": 16,
+    "anchorFileCount": 3,
+    "uniqueSymbolFileCount": 13,
+    "hpSymbolCount": 10,
+    "mpSymbolCount": 5,
+    "sharedSymbolCount": 2,
+    "placementCardinality": {
+      "authoredDefinitionEdges": 17,
+      "pathExpandedRuntimeEdges": 18,
+      "stageEdges": 1,
+      "hpBranchEdges": 12,
+      "mpBranchEdges": 5,
+      "sharedDefinitionEdgesExpandedTwice": 1
+    },
+    "selectionRule": "Start at the document placement of 玩家信息界面, follow only the placed sprite/主角hp显示界面 and sprite/主角mp显示界面 edges, then follow every descendant DOMSymbolInstance edge at every authored frame. Keep script-reachable stopped descendants. Do not expand sibling library items merely because DOMDocument.xml includes them.",
+    "notClaimed": [
+      "oracle_frozen",
+      "svg_parity",
+      "reproducible_flash_build",
+      "runtime_integrated"
+    ]
+  },
+  "closureDigest": {
+    "algorithm": "sha256",
+    "canonicalization": "Sort the 16 repo-relative paths by unsigned UTF-8 byte order; for each append path, U+0009, lowercase SHA-256 of canonical Git blob bytes read by git cat-file, U+000A; hash the UTF-8 bytes. Raw checkout bytes and EOL style never enter this digest.",
+    "value": "6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368"
+  },
+  "fileIdentityContract": {
+    "canonicalGate": "gitBlobOid + gitBlobBytes + gitBlobSha256",
+    "worktreeBinding": "git hash-object --path=<repo-relative-path> <repo-relative-path> must equal HEAD:<path> blob OID after clean filters",
+    "rawWorktreeFields": "Diagnostic snapshot only; never used for closureDigest and allowed to differ on a fresh checkout with another core.autocrlf/EOL materialization."
+  },
+  "sourceAnchor": {
+    "reviewBaselineCommit": "2d89a78fdb2798dac03f6a18d5405dd1d9cdfce5",
+    "sourceBinaryAnchorCommit": "9845dd9084f7b285dbbf1ed603dad7b201a6a324",
+    "xflTreeOidAtReviewBaseline": "9cf7b65efcbd207f59588f28da833b9c5905be28",
+    "xflTreeOidAtSourceBinaryAnchor": "9cf7b65efcbd207f59588f28da833b9c5905be28",
+    "wholeXflTreeIdentical": true
+  },
+  "symbolSets": {
+    "hp": [
+      "sprite/主角hp显示界面",
+      "shape/Symbol 1839",
+      "sprite/Symbol 1785",
+      "UI重构/血槽相关/血槽光效",
+      "UI重构/血槽相关/血槽内动画",
+      "UI重构/血槽相关/血槽内动画-网格背景",
+      "横线",
+      "shape/Symbol 1784",
+      "UI重构/血槽相关/血槽-图案-1",
+      "UI重构/血槽相关/血槽-图案2"
+    ],
+    "mp": [
+      "sprite/主角mp显示界面",
+      "button/Symbol 1783",
+      "sprite/Symbol 1785",
+      "shape/Symbol 473",
+      "shape/Symbol 1784"
+    ],
+    "shared": [
+      "sprite/Symbol 1785",
+      "shape/Symbol 1784"
+    ]
+  },
+  "files": [
+    {
+      "path": "flashswf/UI/玩家信息界面/DOMDocument.xml",
+      "kind": "document",
+      "membership": [
+        "anchor",
+        "hp",
+        "mp"
+      ],
+      "rawWorktreeBytes": 27306,
+      "rawWorktreeSha256": "0dfe58a2c557f14705b8b57d4e00af8008a44a2a7fc3f9637e090dc8448668fa",
+      "gitBlobOid": "e0f43c605e0e0ea4955c497fca489a244e5d1586",
+      "gitBlobBytes": 27020,
+      "gitBlobSha256": "a3a5817e1f246cfe4d8a8eac08d43fe87d9ed94fe0101147ff54b51e76991278"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/玩家信息界面.xml",
+      "kind": "placement-anchor-symbol",
+      "membership": [
+        "anchor",
+        "hp",
+        "mp"
+      ],
+      "rawWorktreeBytes": 8347,
+      "rawWorktreeSha256": "8514f5814ee349bfee79cd8ee25868f70c91c772366c8ff1143e60d8b3888d34",
+      "gitBlobOid": "0a7de77ec609550850b5325b6981dbb4296bce1f",
+      "gitBlobBytes": 8174,
+      "gitBlobSha256": "0c47ab7a8f82aa5c7ea891627aa12505b56190ebe2b9513c2177a810f9b709ae"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角hp显示界面.xml",
+      "kind": "symbol",
+      "symbol": "sprite/主角hp显示界面",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 1000907,
+      "rawWorktreeSha256": "c5f7b53595be1e511be18d1f06fe29abe017b95db766e0ca60b1588920e1d74b",
+      "gitBlobOid": "d91145015fccacd7715b4886af339fc935b363db",
+      "gitBlobBytes": 1000907,
+      "gitBlobSha256": "c5f7b53595be1e511be18d1f06fe29abe017b95db766e0ca60b1588920e1d74b"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1839.xml",
+      "kind": "symbol",
+      "symbol": "shape/Symbol 1839",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 3339,
+      "rawWorktreeSha256": "79b36d16537c949dfa09fcb0797601ded643728d44a23c74239030321e73bd0b",
+      "gitBlobOid": "a424f7ad330de9fd9c225fc72dcb4ba56bc413a2",
+      "gitBlobBytes": 3339,
+      "gitBlobSha256": "79b36d16537c949dfa09fcb0797601ded643728d44a23c74239030321e73bd0b"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/Symbol 1785.xml",
+      "kind": "symbol",
+      "symbol": "sprite/Symbol 1785",
+      "membership": [
+        "hp",
+        "mp"
+      ],
+      "rawWorktreeBytes": 1300,
+      "rawWorktreeSha256": "988231b8840b074588f3d4eeffc1b5ceb3bf01d6944d07d945e9d94a8acf6749",
+      "gitBlobOid": "3be684b7e4fb9057da4f903e9c73f3bf810edc87",
+      "gitBlobBytes": 1300,
+      "gitBlobSha256": "988231b8840b074588f3d4eeffc1b5ceb3bf01d6944d07d945e9d94a8acf6749"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽光效.xml",
+      "kind": "symbol",
+      "symbol": "UI重构/血槽相关/血槽光效",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 115369,
+      "rawWorktreeSha256": "67f0c7065eee17aea9847c8483433660c13df9ea2613315c09eb883098832281",
+      "gitBlobOid": "0284a1d75078431c1dea932a4aa0db4bb990963a",
+      "gitBlobBytes": 115369,
+      "gitBlobSha256": "67f0c7065eee17aea9847c8483433660c13df9ea2613315c09eb883098832281"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽内动画.xml",
+      "kind": "symbol",
+      "symbol": "UI重构/血槽相关/血槽内动画",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 3456,
+      "rawWorktreeSha256": "6557e5eb6e49ecfb94e733a539daaaeea87b956dea3d191a16d94f14860be2cd",
+      "gitBlobOid": "2a235df373ebbdeeff7607f2ab7d942ebe9fe391",
+      "gitBlobBytes": 3456,
+      "gitBlobSha256": "6557e5eb6e49ecfb94e733a539daaaeea87b956dea3d191a16d94f14860be2cd"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽内动画-网格背景.xml",
+      "kind": "symbol",
+      "symbol": "UI重构/血槽相关/血槽内动画-网格背景",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 122762,
+      "rawWorktreeSha256": "da177b844cb174c6296c5b0b46f5ad9d860dc76d52a205c8e834e35c2f9071bb",
+      "gitBlobOid": "5197ad660d2ff4d0043821995498ff8d90f23b0f",
+      "gitBlobBytes": 122762,
+      "gitBlobSha256": "da177b844cb174c6296c5b0b46f5ad9d860dc76d52a205c8e834e35c2f9071bb"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/横线.xml",
+      "kind": "symbol",
+      "symbol": "横线",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 3674,
+      "rawWorktreeSha256": "c99f17d7050d2f976475a00480b8a0e8af34c67c5148af584d466457aa4f023f",
+      "gitBlobOid": "9e051d308ea20d89e9a929fe046199e5631155d1",
+      "gitBlobBytes": 3674,
+      "gitBlobSha256": "c99f17d7050d2f976475a00480b8a0e8af34c67c5148af584d466457aa4f023f"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1784.xml",
+      "kind": "symbol",
+      "symbol": "shape/Symbol 1784",
+      "membership": [
+        "hp",
+        "mp"
+      ],
+      "rawWorktreeBytes": 1159,
+      "rawWorktreeSha256": "2dbff0d8cb7e0f9c08ce70ae9de35e2e7776efcc798a0dde8e3c4cc9f5f108cf",
+      "gitBlobOid": "7a536dcbd8c145da8504447c40d98fb3825d2367",
+      "gitBlobBytes": 1159,
+      "gitBlobSha256": "2dbff0d8cb7e0f9c08ce70ae9de35e2e7776efcc798a0dde8e3c4cc9f5f108cf"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽-图案-1.xml",
+      "kind": "symbol",
+      "symbol": "UI重构/血槽相关/血槽-图案-1",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 20947,
+      "rawWorktreeSha256": "6c30a3e970d4e486d77f16dc928f037edbef40954553b6a402354856018c834d",
+      "gitBlobOid": "36e67a66ebbaffd4cf0c9f5cb4be1248d8d7d19e",
+      "gitBlobBytes": 20947,
+      "gitBlobSha256": "6c30a3e970d4e486d77f16dc928f037edbef40954553b6a402354856018c834d"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽-图案2.xml",
+      "kind": "symbol",
+      "symbol": "UI重构/血槽相关/血槽-图案2",
+      "membership": [
+        "hp"
+      ],
+      "rawWorktreeBytes": 53950,
+      "rawWorktreeSha256": "d24f36b8956bb0c50d4cfeaa0cfe16f97b2cc3dc3b21d1292ac6c15d8b0787fb",
+      "gitBlobOid": "507bb45b0bc9917f09d4562babafbcf3f4880d7d",
+      "gitBlobBytes": 53950,
+      "gitBlobSha256": "d24f36b8956bb0c50d4cfeaa0cfe16f97b2cc3dc3b21d1292ac6c15d8b0787fb"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角mp显示界面.xml",
+      "kind": "symbol",
+      "symbol": "sprite/主角mp显示界面",
+      "membership": [
+        "mp"
+      ],
+      "rawWorktreeBytes": 92373,
+      "rawWorktreeSha256": "aa473beddb39bba20a8a4907ccf73d48a35b522fc56eb14f1e91b755f09e75d6",
+      "gitBlobOid": "23fb8d416aad79e9e1f40f81bdeed4b27edae139",
+      "gitBlobBytes": 92373,
+      "gitBlobSha256": "aa473beddb39bba20a8a4907ccf73d48a35b522fc56eb14f1e91b755f09e75d6"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/button/Symbol 1783.xml",
+      "kind": "symbol",
+      "symbol": "button/Symbol 1783",
+      "membership": [
+        "mp"
+      ],
+      "rawWorktreeBytes": 1115,
+      "rawWorktreeSha256": "d31df44c7b6f6bd6982377ea78878741d50bb83439830cb6048ed6783e4feae1",
+      "gitBlobOid": "58dbf9ddd48ae69efc941f3e6b2c1fff5cc5d7c2",
+      "gitBlobBytes": 1115,
+      "gitBlobSha256": "d31df44c7b6f6bd6982377ea78878741d50bb83439830cb6048ed6783e4feae1"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 473.xml",
+      "kind": "symbol",
+      "symbol": "shape/Symbol 473",
+      "membership": [
+        "mp"
+      ],
+      "rawWorktreeBytes": 1039,
+      "rawWorktreeSha256": "432350c53f353938c7780cb43dda5ecbfdf988acf127dcf20293b50da2208cdb",
+      "gitBlobOid": "2bff969431ae50a1fab7a4982cc44082ecdf64d7",
+      "gitBlobBytes": 1039,
+      "gitBlobSha256": "432350c53f353938c7780cb43dda5ecbfdf988acf127dcf20293b50da2208cdb"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/玩家信息界面.xfl",
+      "kind": "xfl-proxy",
+      "membership": [
+        "anchor",
+        "hp",
+        "mp"
+      ],
+      "rawWorktreeBytes": 9,
+      "rawWorktreeSha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "gitBlobOid": "860a820ec7b605a70e1f2b371e2c51b7e1e53bde",
+      "gitBlobBytes": 9,
+      "gitBlobSha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    }
+  ],
+  "timelineFacts": [
+    {
+      "symbol": "玩家信息界面",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/玩家信息界面.xml",
+      "domFrameCount": 10,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 0,
+      "domSymbolInstanceCount": 7,
+      "scopeNote": "Only the hp/mp sibling edges are followed."
+    },
+    {
+      "symbol": "sprite/主角hp显示界面",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角hp显示界面.xml",
+      "domFrameCount": 145,
+      "domMaxFrameIndex": 129,
+      "timelineSpan": 130,
+      "domShapeCount": 132,
+      "domSymbolInstanceCount": 6,
+      "shapeTweenFrameCount": 0
+    },
+    {
+      "symbol": "shape/Symbol 1839",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1839.xml",
+      "domFrameCount": 2,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 2,
+      "domSymbolInstanceCount": 0
+    },
+    {
+      "symbol": "sprite/Symbol 1785",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/Symbol 1785.xml",
+      "domFrameCount": 3,
+      "domMaxFrameIndex": 9,
+      "timelineSpan": 10,
+      "domShapeCount": 0,
+      "domSymbolInstanceCount": 1,
+      "frameAction": {
+        "frameIndex": 9,
+        "semantic": "_parent.刷新显示()"
+      }
+    },
+    {
+      "symbol": "UI重构/血槽相关/血槽光效",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽光效.xml",
+      "domFrameCount": 103,
+      "domMaxFrameIndex": 150,
+      "timelineSpan": 216,
+      "domShapeCount": 101,
+      "domSymbolInstanceCount": 0,
+      "firstFrameAction": "stop()"
+    },
+    {
+      "symbol": "UI重构/血槽相关/血槽内动画",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽内动画.xml",
+      "domFrameCount": 6,
+      "domMaxFrameIndex": 99,
+      "timelineSpan": 100,
+      "domShapeCount": 0,
+      "domSymbolInstanceCount": 4,
+      "motionTweenFrameCount": 2,
+      "firstFrameAction": "stop()"
+    },
+    {
+      "symbol": "UI重构/血槽相关/血槽内动画-网格背景",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽内动画-网格背景.xml",
+      "domFrameCount": 12,
+      "domMaxFrameIndex": 10,
+      "timelineSpan": 11,
+      "domShapeCount": 11,
+      "domSymbolInstanceCount": 0,
+      "firstFrameAction": "stop()"
+    },
+    {
+      "symbol": "横线",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/横线.xml",
+      "domFrameCount": 1,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 1,
+      "domSymbolInstanceCount": 0
+    },
+    {
+      "symbol": "shape/Symbol 1784",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1784.xml",
+      "domFrameCount": 1,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 1,
+      "domSymbolInstanceCount": 0
+    },
+    {
+      "symbol": "UI重构/血槽相关/血槽-图案-1",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽-图案-1.xml",
+      "domFrameCount": 1,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 1,
+      "domSymbolInstanceCount": 0
+    },
+    {
+      "symbol": "UI重构/血槽相关/血槽-图案2",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽-图案2.xml",
+      "domFrameCount": 1,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 1,
+      "domSymbolInstanceCount": 0
+    },
+    {
+      "symbol": "sprite/主角mp显示界面",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角mp显示界面.xml",
+      "domFrameCount": 28,
+      "domMaxFrameIndex": 100,
+      "timelineSpan": 101,
+      "domShapeCount": 19,
+      "domSymbolInstanceCount": 2,
+      "shapeTweenFrameCount": 3,
+      "shapeTweenFrameIndices": [
+        0,
+        0,
+        34
+      ]
+    },
+    {
+      "symbol": "button/Symbol 1783",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/button/Symbol 1783.xml",
+      "domFrameCount": 2,
+      "domMaxFrameIndex": 3,
+      "timelineSpan": 4,
+      "domShapeCount": 0,
+      "domSymbolInstanceCount": 1
+    },
+    {
+      "symbol": "shape/Symbol 473",
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 473.xml",
+      "domFrameCount": 1,
+      "domMaxFrameIndex": 0,
+      "timelineSpan": 1,
+      "domShapeCount": 1,
+      "domSymbolInstanceCount": 0
+    }
+  ],
+  "matrixConvention": {
+    "arrayOrder": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "tx",
+      "ty"
+    ],
+    "implicitDefaults": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "libraryRegistrationOrigin": [
+      0,
+      0
+    ],
+    "note": "transformationPoint and centerPoint3D are authoring pivots recorded separately; the placement matrix maps the library registration origin."
+  },
+  "stagePlacementContracts": {
+    "documentRoot": {
+      "path": "_stage/玩家信息界面",
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        3
+      ],
+      "transformationPoint": [
+        499.65,
+        36.6
+      ]
+    },
+    "hp": {
+      "path": "_stage/玩家信息界面/主角hp显示界面",
+      "localMatrix": [
+        0.847213745117188,
+        0,
+        0,
+        0.847213745117188,
+        37.75,
+        2.65
+      ],
+      "composedStageMatrix": [
+        0.847213745117188,
+        0,
+        0,
+        0.847213745117188,
+        37.75,
+        5.65
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ]
+    },
+    "mp": {
+      "path": "_stage/玩家信息界面/主角mp显示界面",
+      "localMatrix": [
+        1.0810546875,
+        0,
+        0,
+        1.0810546875,
+        90.1,
+        -4.3
+      ],
+      "composedStageMatrix": [
+        1.0810546875,
+        0,
+        0,
+        1.0810546875,
+        90.1,
+        -1.3
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ]
+    }
+  },
+  "placements": [
+    {
+      "id": "p00-document-root",
+      "scope": [
+        "hp",
+        "mp"
+      ],
+      "source": "_stage",
+      "layer": "图层 1",
+      "frameIndex": 0,
+      "duration": 1,
+      "target": "玩家信息界面",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        3
+      ],
+      "transformationPoint": [
+        499.65,
+        36.6
+      ],
+      "centerPoint3D": [
+        511.8,
+        50.7
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p01-hp-root",
+      "scope": [
+        "hp"
+      ],
+      "source": "玩家信息界面",
+      "layer": "主角hp显示界面",
+      "frameIndex": 0,
+      "duration": 1,
+      "target": "sprite/主角hp显示界面",
+      "instanceName": "主角hp显示界面",
+      "matrix": [
+        0.847213745117188,
+        0,
+        0,
+        0.847213745117188,
+        37.75,
+        2.65
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        84.25,
+        87.9
+      ],
+      "xflFilterSignatures": [],
+      "visible": true,
+      "loadBinding": "_root.UI系统.血条刷新显示",
+      "loadStopsTimeline": true
+    },
+    {
+      "id": "p02-mp-root",
+      "scope": [
+        "mp"
+      ],
+      "source": "玩家信息界面",
+      "layer": "主角mp显示界面",
+      "frameIndex": 0,
+      "duration": 1,
+      "target": "sprite/主角mp显示界面",
+      "instanceName": "主角mp显示界面",
+      "matrix": [
+        1.0810546875,
+        0,
+        0,
+        1.0810546875,
+        90.1,
+        -4.3
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        135.75,
+        81.55
+      ],
+      "xflFilterSignatures": [
+        "BevelFilter|angle=44.9992520943067;blurX=1;blurY=1;distance=1;highlightColor=#666666;isEnabled=false"
+      ],
+      "visible": true,
+      "loadBinding": "_root.UI系统.蓝条刷新显示",
+      "loadStopsTimeline": true,
+      "filters": [
+        {
+          "type": "BevelFilter",
+          "enabled": false,
+          "blurX": 1,
+          "blurY": 1,
+          "angle": 44.9992520943067,
+          "distance": 1,
+          "highlightColor": "#666666"
+        }
+      ]
+    },
+    {
+      "id": "p10-hp-horizontal-line",
+      "scope": [
+        "hp"
+      ],
+      "source": "sprite/主角hp显示界面",
+      "layer": "横线",
+      "frameIndex": 0,
+      "duration": 129,
+      "target": "横线",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -22.6,
+        7.55
+      ],
+      "transformationPoint": [
+        22.6,
+        0.15
+      ],
+      "centerPoint3D": [
+        0,
+        7.7
+      ],
+      "xflFilterSignatures": [
+        "GlowFilter|"
+      ],
+      "visible": true,
+      "filters": [
+        {
+          "type": "GlowFilter",
+          "xflDefaults": true
+        }
+      ]
+    },
+    {
+      "id": "p11-hp-grid",
+      "scope": [
+        "hp"
+      ],
+      "source": "sprite/主角hp显示界面",
+      "layer": "网格",
+      "frameIndex": 0,
+      "duration": 129,
+      "target": "UI重构/血槽相关/血槽内动画-网格背景",
+      "instanceName": "网格动画",
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.05,
+        -1.85
+      ],
+      "transformationPoint": [
+        2.95,
+        1.85
+      ],
+      "centerPoint3D": [
+        36.6,
+        34.7
+      ],
+      "xflFilterSignatures": [],
+      "visible": true,
+      "deferredEffect": true
+    },
+    {
+      "id": "p12-hp-inner",
+      "scope": [
+        "hp"
+      ],
+      "source": "sprite/主角hp显示界面",
+      "layer": "动画",
+      "frameIndex": 0,
+      "duration": 129,
+      "target": "UI重构/血槽相关/血槽内动画",
+      "instanceName": "血槽内动画",
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        -0.05
+      ],
+      "transformationPoint": [
+        33.05,
+        33.1
+      ],
+      "centerPoint3D": [
+        33.05,
+        33.05
+      ],
+      "xflFilterSignatures": [],
+      "visible": true,
+      "deferredEffect": true
+    },
+    {
+      "id": "p13-hp-refresh-marker",
+      "scope": [
+        "hp"
+      ],
+      "source": "sprite/主角hp显示界面",
+      "layer": "定位符",
+      "frameIndex": 0,
+      "duration": 129,
+      "target": "sprite/Symbol 1785",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -4.7,
+        113.25
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        7.05,
+        125.1
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p14-hp-border",
+      "scope": [
+        "hp"
+      ],
+      "source": "sprite/主角hp显示界面",
+      "layer": "边框",
+      "frameIndex": 0,
+      "duration": 129,
+      "target": "shape/Symbol 1839",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        -0.05,
+        0
+      ],
+      "xflFilterSignatures": [
+        "BevelFilter|blurX=1;blurY=1;distance=1;highlightColor=#666666;quality=3"
+      ],
+      "visible": true,
+      "exportAsBitmap": true,
+      "sourceBitmapFill": false,
+      "filters": [
+        {
+          "type": "BevelFilter",
+          "enabled": true,
+          "blurX": 1,
+          "blurY": 1,
+          "quality": 3,
+          "distance": 1,
+          "highlightColor": "#666666"
+        }
+      ]
+    },
+    {
+      "id": "p15-hp-light",
+      "scope": [
+        "hp"
+      ],
+      "source": "sprite/主角hp显示界面",
+      "layer": "光效",
+      "frameIndex": 0,
+      "duration": 128,
+      "target": "UI重构/血槽相关/血槽光效",
+      "instanceName": "血槽光效",
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -40.4,
+        -45.85
+      ],
+      "transformationPoint": [
+        18.3,
+        18.3
+      ],
+      "centerPoint3D": [
+        -22.1,
+        -27.55
+      ],
+      "xflFilterSignatures": [],
+      "visible": true,
+      "blendMode": "overlay",
+      "deferredEffect": true,
+      "emptyFromFrameIndex": 128
+    },
+    {
+      "id": "p20-shared-marker-shape",
+      "scope": [
+        "hp",
+        "mp"
+      ],
+      "source": "sprite/Symbol 1785",
+      "layer": "Layer 2",
+      "frameIndex": 0,
+      "duration": 10,
+      "target": "shape/Symbol 1784",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        0,
+        0
+      ],
+      "xflFilterSignatures": [],
+      "visible": true,
+      "symbolType": "graphic",
+      "loop": "loop"
+    },
+    {
+      "id": "p30-inner-pattern2-start",
+      "scope": [
+        "hp"
+      ],
+      "source": "UI重构/血槽相关/血槽内动画",
+      "layer": "图层 2",
+      "frameIndex": 0,
+      "duration": 99,
+      "target": "UI重构/血槽相关/血槽-图案2",
+      "instanceName": null,
+      "matrix": [
+        0.979995727539063,
+        0,
+        0,
+        0.979995727539063,
+        0,
+        0
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        37.15,
+        37.1
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p31-inner-pattern2-end",
+      "scope": [
+        "hp"
+      ],
+      "source": "UI重构/血槽相关/血槽内动画",
+      "layer": "图层 2",
+      "frameIndex": 99,
+      "duration": 1,
+      "target": "UI重构/血槽相关/血槽-图案2",
+      "instanceName": null,
+      "matrix": [
+        0.70489501953125,
+        0.680709838867188,
+        -0.680709838867188,
+        0.70489501953125,
+        0,
+        0
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        1,
+        52.45
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p32-inner-pattern1-start",
+      "scope": [
+        "hp"
+      ],
+      "source": "UI重构/血槽相关/血槽内动画",
+      "layer": "图层 1",
+      "frameIndex": 0,
+      "duration": 99,
+      "target": "UI重构/血槽相关/血槽-图案-1",
+      "instanceName": null,
+      "matrix": [
+        0.765945434570313,
+        0.642745971679688,
+        -0.642745971679688,
+        0.765960693359375,
+        -4.05,
+        -46.55
+      ],
+      "transformationPoint": [
+        33.05,
+        33.05
+      ],
+      "centerPoint3D": [
+        0,
+        0
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p33-inner-pattern1-end",
+      "scope": [
+        "hp"
+      ],
+      "source": "UI重构/血槽相关/血槽内动画",
+      "layer": "图层 1",
+      "frameIndex": 99,
+      "duration": 1,
+      "target": "UI重构/血槽相关/血槽-图案-1",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -33.05,
+        -33.1
+      ],
+      "transformationPoint": [
+        33.05,
+        33.1
+      ],
+      "centerPoint3D": [
+        0,
+        0
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p40-mp-refresh-marker",
+      "scope": [
+        "mp"
+      ],
+      "source": "sprite/主角mp显示界面",
+      "layer": "刷新符",
+      "frameIndex": 0,
+      "duration": 101,
+      "target": "sprite/Symbol 1785",
+      "instanceName": null,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -2.9,
+        114.45
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        8.85,
+        126.3
+      ],
+      "xflFilterSignatures": [],
+      "visible": true
+    },
+    {
+      "id": "p41-mp-button",
+      "scope": [
+        "mp"
+      ],
+      "source": "sprite/主角mp显示界面",
+      "layer": "按钮",
+      "frameIndex": 0,
+      "duration": 101,
+      "target": "button/Symbol 1783",
+      "instanceName": null,
+      "matrix": [
+        0.685882568359375,
+        0.18377685546875,
+        -0.431320190429688,
+        1.60978698730469,
+        -13.1,
+        16.95
+      ],
+      "transformationPoint": [
+        11.9,
+        -12.05
+      ],
+      "centerPoint3D": [
+        0,
+        0
+      ],
+      "xflFilterSignatures": [],
+      "visible": false,
+      "symbolType": "button",
+      "interactionNote": "Authored but invisible rollover/out handler; retained because it is a placed edge, not because B0 adds hit testing."
+    },
+    {
+      "id": "p42-mp-button-shape",
+      "scope": [
+        "mp"
+      ],
+      "source": "button/Symbol 1783",
+      "layer": "Layer 1",
+      "frameIndex": 3,
+      "duration": 1,
+      "target": "shape/Symbol 473",
+      "instanceName": null,
+      "matrix": [
+        0.215499877929688,
+        0,
+        0,
+        0.215499877929688,
+        -12.5,
+        -12.5
+      ],
+      "transformationPoint": [
+        0,
+        0
+      ],
+      "centerPoint3D": [
+        0,
+        0
+      ],
+      "xflFilterSignatures": [],
+      "visible": true,
+      "symbolType": "graphic",
+      "loop": "loop"
+    }
+  ],
+  "scriptReachability": {
+    "externalSource": {
+      "path": "scripts/展现/视觉系统/视觉系统_fs_显示列表引擎.as",
+      "gitBlobOid": "8cc8f47c03d69fed0cbca7e1249a20ee64076ec5",
+      "gitBlobSha256": "4d681c31526cba4050dae69f91336c7c90b552eba73c9e1abeb9fe8d104a44fe",
+      "worktreeSha256": "f3efe3562d2daa057e190ed1237119d9b624650adccaa52c5ef799c38c82b4f3",
+      "worktreeEolNote": "The clean Windows working tree uses CRLF; gitBlobSha256 hashes the canonical Git blob."
+    },
+    "edges": [
+      {
+        "line": 75,
+        "runtimePath": "_root.玩家信息界面.主角hp显示界面.血槽内动画",
+        "target": "UI重构/血槽相关/血槽内动画",
+        "operation": "默认播放动画"
+      },
+      {
+        "line": 76,
+        "runtimePath": "_root.玩家信息界面.主角hp显示界面.网格动画",
+        "target": "UI重构/血槽相关/血槽内动画-网格背景",
+        "operation": "默认播放动画"
+      },
+      {
+        "line": 77,
+        "runtimePath": "_root.玩家信息界面.主角hp显示界面.血槽光效",
+        "target": "UI重构/血槽相关/血槽光效",
+        "operation": "默认播放动画"
+      }
+    ],
+    "conclusion": "The three descendants stop on their own first frame but are explicitly advanced by current AS2. They remain in source closure even when B0 static corpus freezes or hides their phase."
+  },
+  "displayFormulaReference": {
+    "path": "scripts/展现/UI交互/UI交互_fs_玩家信息界面.as",
+    "gitBlobOid": "1db0c5a7694bb125ad97980eb5e541ef9a8f6661",
+    "gitBlobSha256": "ce8823198d03269b085f4680073577d24f25112001e4d3541d9727d585ffed7f",
+    "worktreeSha256": "7a31c02f1913903b7cf9ee5371bed2a2bda58e075b873240554b11d462c55296",
+    "hpFunctionLines": [
+      5,
+      23
+    ],
+    "mpFunctionLines": [
+      25,
+      46
+    ],
+    "note": "This behavior reference is not one of the 16 XFL closure files; it freezes why the placed load bindings and virtual frame roots are live."
+  },
+  "bitmapBoundary": {
+    "includedClosureBitmapFillCount": 0,
+    "documentBitmapItemCount": 2,
+    "documentBitmapItemsReferencedBySelectedHpMpGraph": false,
+    "includedClosureDomBitmapInstanceCount": 0,
+    "excludedPlacedSibling": {
+      "edge": "玩家信息界面 -> sprite/玩家必要信息界面",
+      "reason": "Sibling of the selected hp/mp roots; not a descendant of either root.",
+      "closureSymbolCountIncludingRoot": 13,
+      "bitmapFillCount": 4,
+      "uniqueBitmapPaths": [
+        "image/bitmap1804.png",
+        "image/bitmap1805.png"
+      ],
+      "bitmapFillFiles": [
+        {
+          "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/玩家必要信息界面.xml",
+          "bitmapFillCount": 2,
+          "sha256": "04971f81c00871cdbdeec806241bb8f4c96ad965d392b1868db2486ae4750ca5"
+        },
+        {
+          "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1814.xml",
+          "bitmapFillCount": 2,
+          "sha256": "c5ec83ef09d8f3be77f45aab1e28199aa952cd6a636ba3b1d8006a09597ad678"
+        }
+      ]
+    },
+    "excludedUnusedLibraryItem": {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/玩家信息界面示意图.xml",
+      "bitmapFillCount": 2,
+      "uniqueBitmapPaths": [
+        "image/bitmap1804.png",
+        "image/bitmap1805.png"
+      ],
+      "sha256": "6d79e1859e28e402ac18090dd8918648ec89deab4b3df2beffb6e21d0ac04e92"
+    },
+    "existingPayloadsOutsideClosure": [
+      {
+        "bitmapItem": "image/bitmap1804.png",
+        "path": "flashswf/UI/玩家信息界面/bin/M 2 1716646761.dat",
+        "bytes": 69,
+        "sha256": "c3db5b6441c801b5399d4af088e170f1ef890c2840d95b7a2bdced1fe4b272b0"
+      },
+      {
+        "bitmapItem": "image/bitmap1805.png",
+        "path": "flashswf/UI/玩家信息界面/bin/M 1 1716646761.dat",
+        "bytes": 81,
+        "sha256": "362fd55864189026b9c14909731ccd1d47ff7574388ef1c7dc1ad666475ed554"
+      }
+    ],
+    "exportAsBitmapNote": "p14-hp-border has exportAsBitmap=true plus BevelFilter. This is derived Flash raster/filter behavior over vector source, not a BitmapFill and not permission to omit it from visual oracle comparison."
+  },
+  "excludedSiblingEdgesAtPlayerInfoAnchor": [
+    "sprite/快捷技能界面",
+    "UI重构/主角韧性UI",
+    "sprite/快捷药剂界面",
+    "sprite/玩家必要信息界面",
+    "sprite/Symbol 1859"
+  ],
+  "assertions": {
+    "all16FilesExist": true,
+    "all16WorktreeFilesNormalizeToReviewBaselineGitBlobs": true,
+    "all16IndexBlobsMatchReviewBaselineGitBlobs": true,
+    "all16GitBlobsEqualSourceBinaryAnchorCommit": true,
+    "wholeXflTreeEqualsSourceBinaryAnchorCommit": true,
+    "allReferencedHpMpSymbolsResolved": true,
+    "includedClosureBitmapFillCountIsZero": true,
+    "scriptReachableStoppedDescendantsRetained": true,
+    "placementClosureFrozen": true,
+    "oracleFrozen": false
+  }
+}

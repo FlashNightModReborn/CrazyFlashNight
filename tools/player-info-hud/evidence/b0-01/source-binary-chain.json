@@ -1,0 +1,253 @@
+{
+  "format": "cf7.player-info-hud.source-binary-chain",
+  "formatVersion": 1,
+  "evidenceRevision": "b0-01a-r3",
+  "status": "repository_ancestry_verified",
+  "reviewBaseline": {
+    "commit": "2d89a78fdb2798dac03f6a18d5405dd1d9cdfce5",
+    "tree": "2fad8fb6c2883fbd1c8fcaa3e149dded3ddb4b56",
+    "xflTreePath": "flashswf/UI/玩家信息界面",
+    "xflTreeOid": "9cf7b65efcbd207f59588f28da833b9c5905be28",
+    "relevantTrackedPathsMatchHeadInIndexAndAfterCleanFilter": true
+  },
+  "sourceBinaryAnchorCommit": {
+    "commit": "9845dd9084f7b285dbbf1ed603dad7b201a6a324",
+    "parent": "36666b3cf1e24d3107375c6bbacf3f40ab1b7ae5",
+    "tree": "a945a9c675e816392e98a8afe567e32ee414c332",
+    "commitDate": "2026-07-15T21:45:13+08:00",
+    "subject": "开始迁移技能界面",
+    "xflTreeOid": "9cf7b65efcbd207f59588f28da833b9c5905be28",
+    "sameAsReviewBaselineXflTree": true,
+    "relevantBinaryPathsModifiedTogetherByCommit": [
+      "flashswf/UI/玩家信息界面.swf",
+      "CRAZYFLASHER7MercenaryEmpire.swf",
+      "scripts/asLoader.swf"
+    ],
+    "qualification": "A same-commit Git relationship plus byte-identical source tree is repository ancestry only. The commit contains no immutable CS6 producer receipt and does not prove which in-memory CS6 document generated each binary."
+  },
+  "runtimeRelationship": {
+    "captureLoaderContract": {
+      "plannedLoaderPath": "scripts/TestLoader.swf",
+      "actualCaptureLoaderVerified": false,
+      "mainParticipatesInCapture": false,
+      "asLoaderParticipatesInCapture": false,
+      "childPathToVerify": "flashswf/UI/玩家信息界面.swf"
+    },
+    "child": {
+      "path": "flashswf/UI/玩家信息界面.swf",
+      "role": "runtime shared-library child containing linkageIdentifier 玩家信息界面"
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "role": "game shell; its imported symbol declares linkageImportForRS=true, linkageIdentifier=玩家信息界面 and linkageURL=flashswf/UI/玩家信息界面.swf",
+      "placement": {
+        "sourcePath": "CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml",
+        "layer": "玩家信息界面",
+        "frameIndex": 130,
+        "duration": 81,
+        "libraryItemName": "import/UI组件/玩家信息界面",
+        "instanceName": "玩家信息界面",
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          512
+        ],
+        "transformationPoint": [
+          499.65,
+          36.6
+        ]
+      }
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "role": "behavior provider; frame41 includes the player-info display formulas, and the display-list engine advances the three HP descendant animations. It is not represented as the child SWF loader."
+    },
+    "oracleRule": "B0-01B must record the loader that actually loads the child. Under the accepted TestLoader plan that loader is scripts/TestLoader.swf; main/asLoader are not mandatory capture identities unless they really participate in that capture."
+  },
+  "sourceLinkEvidence": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/import/UI组件/玩家信息界面.xml",
+      "semantic": {
+        "linkageImportForRS": true,
+        "linkageExportInFirstFrame": false,
+        "linkageIdentifier": "玩家信息界面",
+        "linkageURL": "flashswf/UI/玩家信息界面.swf"
+      },
+      "worktree": {
+        "rawWorktreeBytes": 566490,
+        "rawWorktreeSha256": "70edeb1332ca155f34e19d49118b635b182a56a1caaff3423711d72e96ccb8b3"
+      },
+      "reviewBaseline": {
+        "gitBlobOid": "bf3dc27fdb7530d94004bcf817b8097287a107c9",
+        "gitBlobSha256": "70edeb1332ca155f34e19d49118b635b182a56a1caaff3423711d72e96ccb8b3"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "bf3dc27fdb7530d94004bcf817b8097287a107c9",
+        "gitBlobSha256": "70edeb1332ca155f34e19d49118b635b182a56a1caaff3423711d72e96ccb8b3"
+      },
+      "identical": true
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml",
+      "semantic": "The main timeline places import/UI组件/玩家信息界面 at frame 130 with matrix ty=512; the targeted placement is unchanged at the source-binary anchor, although unrelated bytes in this large document changed later.",
+      "worktree": {
+        "rawWorktreeBytes": 524988,
+        "rawWorktreeSha256": "bc7da98cc3932e10f68cc5300bce3a4ac848fa42b319e842805531342e8b8532"
+      },
+      "reviewBaseline": {
+        "gitBlobOid": "22f5f47c456d7c5c7f60b2191d8a7d1772031caa",
+        "gitBlobSha256": "bc7da98cc3932e10f68cc5300bce3a4ac848fa42b319e842805531342e8b8532"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "64faf437ad73347f04de169de0ecdfe490eb3ff6",
+        "gitBlobSha256": "c6efaa0f432f3983dec0be5f22b9cb0d61f317b00a11bfbf05720f5a6db0dd9f"
+      },
+      "identical": false
+    },
+    {
+      "path": "scripts/asLoaderManifest/frame41.as",
+      "semantic": "Includes ../展现/UI交互/UI交互_fs_玩家信息界面.as into asLoader.",
+      "worktree": {
+        "rawWorktreeBytes": 3114,
+        "rawWorktreeSha256": "b59a6d2e9aa1c73710321dba9258b32aacde3d1c252507d80d996c24dd616b6a"
+      },
+      "reviewBaseline": {
+        "gitBlobOid": "22a3fbe4734fb1e9122e204472fd00519a8f7d18",
+        "gitBlobSha256": "68644a7192f702e16620be860382266013bcb5eccd20c83951c772a9f5662640"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "fc38eb3b4a34caf7c4b7ac1e4f1447f1da202463",
+        "gitBlobSha256": "994ecd77c2782ee991ad55ab5bed61fd1e0558fa9d33cd4e108fc2edbcbca95a"
+      },
+      "identical": false,
+      "eolNote": "worktree SHA-256 hashes CRLF bytes; gitBlobSha256 hashes canonical Git blob bytes."
+    },
+    {
+      "path": "scripts/展现/UI交互/UI交互_fs_玩家信息界面.as",
+      "semantic": "Defines _root.UI系统.血条刷新显示 and _root.UI系统.蓝条刷新显示 used by the placed child instances.",
+      "worktree": {
+        "rawWorktreeBytes": 9809,
+        "rawWorktreeSha256": "7a31c02f1913903b7cf9ee5371bed2a2bda58e075b873240554b11d462c55296"
+      },
+      "reviewBaseline": {
+        "gitBlobOid": "1db0c5a7694bb125ad97980eb5e541ef9a8f6661",
+        "gitBlobSha256": "ce8823198d03269b085f4680073577d24f25112001e4d3541d9727d585ffed7f"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "1db0c5a7694bb125ad97980eb5e541ef9a8f6661",
+        "gitBlobSha256": "ce8823198d03269b085f4680073577d24f25112001e4d3541d9727d585ffed7f"
+      },
+      "identical": true,
+      "eolNote": "worktree SHA-256 hashes CRLF bytes; gitBlobSha256 hashes canonical Git blob bytes."
+    },
+    {
+      "path": "scripts/asLoaderManifest/frame42.as",
+      "semantic": "Includes ../展现/视觉系统/视觉系统_fs_显示列表引擎.as into asLoader.",
+      "worktree": {
+        "rawWorktreeBytes": 1180,
+        "rawWorktreeSha256": "f5057552e11817ef8b437da8aec6abe235507d5c8c3576c85ddefed77b2669df"
+      },
+      "reviewBaseline": {
+        "gitBlobOid": "376f1ea08882c7492d8eca285f8b4bfbc89a69ac",
+        "gitBlobSha256": "f5057552e11817ef8b437da8aec6abe235507d5c8c3576c85ddefed77b2669df"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "376f1ea08882c7492d8eca285f8b4bfbc89a69ac",
+        "gitBlobSha256": "f5057552e11817ef8b437da8aec6abe235507d5c8c3576c85ddefed77b2669df"
+      },
+      "identical": true
+    },
+    {
+      "path": "scripts/展现/视觉系统/视觉系统_fs_显示列表引擎.as",
+      "semantic": "Lines 75-77 advance 血槽内动画, 网格动画 and 血槽光效.",
+      "worktree": {
+        "rawWorktreeBytes": 2886,
+        "rawWorktreeSha256": "f3efe3562d2daa057e190ed1237119d9b624650adccaa52c5ef799c38c82b4f3"
+      },
+      "reviewBaseline": {
+        "gitBlobOid": "8cc8f47c03d69fed0cbca7e1249a20ee64076ec5",
+        "gitBlobSha256": "4d681c31526cba4050dae69f91336c7c90b552eba73c9e1abeb9fe8d104a44fe"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "8cc8f47c03d69fed0cbca7e1249a20ee64076ec5",
+        "gitBlobSha256": "4d681c31526cba4050dae69f91336c7c90b552eba73c9e1abeb9fe8d104a44fe"
+      },
+      "identical": true,
+      "eolNote": "worktree SHA-256 hashes CRLF bytes; gitBlobSha256 hashes canonical Git blob bytes."
+    }
+  ],
+  "binaries": [
+    {
+      "role": "child",
+      "path": "flashswf/UI/玩家信息界面.swf",
+      "reviewBaseline": {
+        "lastPathChangeCommit": "9845dd9084f7b285dbbf1ed603dad7b201a6a324",
+        "gitBlobOid": "7304a53093e89a3bba38aab93cdca5c079e18546",
+        "bytes": 104124,
+        "sha256": "450b1f9a8b445ee3e28c63682ea00124a191f56d05d759b8590210fc0066a615"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "7304a53093e89a3bba38aab93cdca5c079e18546",
+        "bytes": 104124,
+        "sha256": "450b1f9a8b445ee3e28c63682ea00124a191f56d05d759b8590210fc0066a615"
+      },
+      "identical": true
+    },
+    {
+      "role": "main",
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "reviewBaseline": {
+        "lastPathChangeCommit": "3d8e5b7b68833a255c26a472e87fc93584010dd0",
+        "gitBlobOid": "ef5066ec3f2f83c0383082c819e406d6c87cc317",
+        "bytes": 485167,
+        "sha256": "a45804e29c27cf04ca8964e0982de6f1676b1cef96ded11badec7f173d5994b2"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "85fdaf23b69f4d909242abdaafbe5cd087701b2b",
+        "bytes": 485422,
+        "sha256": "0302fa5c5624e20bf71fb64b81c6a99cd166cc78fcba0f57ea206662e2240c2e"
+      },
+      "identical": false,
+      "note": "Later main changes do not invalidate the unchanged child source tree or child blob; they do prevent treating the current main binary as the anchor binary."
+    },
+    {
+      "role": "asLoader",
+      "path": "scripts/asLoader.swf",
+      "reviewBaseline": {
+        "lastPathChangeCommit": "60f42e1cc9673d18d9c2ed37b232e959b49f0519",
+        "gitBlobOid": "67204cbdca773bd0520da03f32f5119f2ef66a13",
+        "bytes": 1035069,
+        "sha256": "cc6b4e93989d9ec2daa6c3526ab25749728b4a187128ed3023ad91511be38a8e"
+      },
+      "sourceBinaryAnchor": {
+        "gitBlobOid": "4310ebfed10ca1d4fbbc8839687098301d06d14f",
+        "bytes": 989788,
+        "sha256": "5aaf5db51bc37485ae0cffd8b848754c96092dacb84c8f824cbdb6f26baf1f69"
+      },
+      "identical": false,
+      "note": "Current asLoader contains later unrelated behavior changes; the two player-info behavior source blobs cited above remain byte-identical in Git."
+    }
+  ],
+  "conclusions": {
+    "exact16ClosureBlobsEqualAnchor": true,
+    "wholePlayerInfoXflTreeEqualsAnchor": true,
+    "childBlobEqualsAnchor": true,
+    "anchorCommitTouchedChildMainAndAsLoader": true,
+    "currentMainEqualsAnchor": false,
+    "currentAsLoaderEqualsAnchor": false,
+    "repositoryAncestryVerified": true,
+    "reproducibleBuildReceiptPresent": false,
+    "actualCaptureProcessLoadVerified": false,
+    "oracleFrozen": false,
+    "allowedStatus": "placement_closure_frozen"
+  },
+  "failClosedNextEvidence": [
+    "B0-01B must prove the actual process loaded child SHA-256 450b1f9a8b445ee3e28c63682ea00124a191f56d05d759b8590210fc0066a615.",
+    "B0-01B must bind the actual TestLoader SWF and player executable path/version/SHA-256, not substitute current main/asLoader identities.",
+    "B0-01B must bind fixed case state, Flash quality, draw matrix/canvas, raw image and crop hashes, and a human source/layer/crop confirmation.",
+    "If the existing child cannot be bound to the capture or visual fidelity is inadequate, an exact independent UI XFL publish/verify with fresh CS6 evidence is required before oracle_frozen."
+  ]
+}
