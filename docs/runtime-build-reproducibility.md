@@ -11,7 +11,7 @@ v1 与一次性 `migration-bootstrap` 现在只保留为历史迁移审计输入
 
 当前正式部署对应 source commit `7d869c5eadf224953b2c61ec7a6ceee2ca03055f`、build identity `3F7887ADF9041DFEDA74EEA26040A3628919A725B04D322FCE667791425F7B44`、payload closure `A9B142A417CF2AC45EA19845144569391FCDEE8DF4235F5279A1EC5F0F9022F2` 与 Core SHA-256 `DADE2CC2206B9981FF390250BD0DF8FB5CC7393E8EF9FA378567B5FB9009CCA1`，包含材料直达与来源/用途、逐情报上限溢出保护、金币/K 点商城数量交互、K 点结算页、战备箱批量转移、双栏工作台帮助与默认紧凑，以及此前正式能力。无参正式根入口以 `formal_runtime` 启动并绑定上述身份，runtime attempt `f6a0bf80251d46a0af8e2791d4e933f6` 依次完成 Native HUD → 材料档案、战备箱、K 点商城 → 普通关闭回游戏；实际 GUI、fresh Host/AS2 marker 与进程退出共同闭环。native identity / closure 只覆盖正式 runtime 文件闭包；Web/Flash 字节及业务闭环另由冻结 source/release tree、production policy 与实机证据绑定。因此 `standard_entry_verified` 是机器证据与实际视觉验收的组合结论，不由 consensus 单独推出。source-only、隔离 candidate 与已 promotion 的正式 Core 仍是三件不同的事；root EXE、`runtime/**`、manifest、builder registry 或 consensus 若变化，Audit 必须转入 strict 并在无匹配 promotion 时失败。
 
-PlayerInfo B0-03b 是当前 `source-ahead`：生产项目已固定 `Svg.Skia 5.1.1` / `SkiaSharp 3.119.4`，显式嵌入 8 个 canonical SVG + runtime manifest，并把 `launcher/THIRD-PARTY-NOTICES.txt`、窄资产树、共享 strict facade/qualification 与 candidate production contract 纳入四域和政策门。fresh v2 candidate 已通过 actual renderer/deps exact closure、production policy、全量回归与 1-byte identity/Core/payload sensitivity，片状态为 `renderer_qualified`；exact identity 以 [PlayerInfo B0 专项 ADR §12](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md) 的台账为准。它没有修改根 EXE、正式 `runtime/**`、manifest 或 consensus，runtime 生命周期仍只到 `candidate_built / NOT_DEPLOYED`。尚无同一冻结提交在注册本地 X509 与 GitHub hosted OIDC 两个真实 faultDomain 的一致性证据，更没有 promotion / 标准入口结论；不得把 renderer 资格、单机 candidate 或旧正式 runtime 三者混写。
+PlayerInfo B0-03b～B0-06 是当前 `source-ahead`：生产项目已固定 `Svg.Skia 5.1.1` / `SkiaSharp 3.119.4`，显式嵌入 8 个 canonical SVG + runtime manifest，并把 `launcher/THIRD-PARTY-NOTICES.txt`、窄资产树、共享 strict facade/qualification 与 candidate production contract 纳入四域和政策门。B0-03b 的 fresh v2 candidate 已通过 actual renderer/deps exact closure、production policy、全量回归与 1-byte identity/Core/payload sensitivity，达到 `renderer_qualified / candidate_built / NOT_DEPLOYED`；B0-05/06 后续只在最终源码实现基线上完成 raster/cache、`split_required`、fixture-only split surface、47/47 机器资格与自动视觉闭包，尚未为承载最终证据/文档的 closeout containing commit 构建 candidate。B0-03b candidate exact identity 与 B0-06 实现/视觉证据是两个不同作用域，分别以 [PlayerInfo B0 专项 ADR §12](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md) 的对应台账为准。后续实现没有修改根 EXE、正式 `runtime/**`、manifest 或 consensus；该 closeout containing commit 尚未在注册本地 X509 与 GitHub hosted OIDC 两个真实 faultDomain 形成 candidate/quorum，更没有 promotion / 标准入口结论。不得把源码机器资格、早期单机 candidate 或旧正式 runtime 三者混写。
 
 历史 `chest-s0-a8a-local-r3/r4` 是 2026-07-18 基于 `a8a760a3cc` 的同机未注册诊断；S0 已从当前源码与 required-assets policy 退役，这些旧 artifactSource/buildIdentity/payloadClosure 只留在 Git 历史和旧 ADR 中，不代表当前工作树、release evidence 或待恢复的发布输入。
 
@@ -233,13 +233,13 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 .\tools\test-runtime-build-consensus.ps1   # v1 migration guard
 .\tools\test-runtime-release-consensus-v2.ps1
 
-# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 400
+# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 566
 .\tools\test-resolve-runtime-trusted-base.ps1
 .\tools\test-submit-contribution.ps1
 .\launcher\tests\run_tests.ps1
 ```
 
-最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **400** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当前 **9/9**，不计入 11 个入口或 400。bootstrap `-VerifyOnly` 与 build environment `RuntimePublish` 均 exit **0**。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
+在 detached clean commit `0215c03b4594221f02e993bf8d58dd1bc669e815`、Windows PowerShell 5.1 上，最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **566** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，不把异构摘要强行折算成单一 `x/x` 断言数。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，最近独立历史基线为 **9/9**，未在本次 11 项执行中复跑，也不计入 11 个入口或 566。该 Lane 不包含环境 bootstrap `-VerifyOnly`，也不能替代真实双 builder 的 promotion `-VerifyOnly` preflight。这些只证明 runtime/admission 守门回归，本身不产生 candidate identity、runtime proof 或 promotion；功能与端到端回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，不在本文复制。
 
 - candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
 - 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。

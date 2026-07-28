@@ -152,16 +152,20 @@ renderer, and runner closures and independently recomputes every Gate.
 pre-merge attempts without relaxing the original thresholds: v1 was 43/46
 (USER +2, process handles +35); v2 was still 43/46 after one fixed warmup
 (USER +1, process handles +3 and both positive trends). The accepted
-pre-origin-sync v3 snapshot is
-`evidence/b0-06/runtime-qualification-premerge-v3.json`: run
-`261978174b6346228b5f8ba4fd750019`, 647,307 B, SHA-256
-`21BD10F7...717D`, 47/47. Its third warmup group first converged, and the
-immediately adjacent acceptance interval had process/GDI/USER deltas `0/0/0`
+pre-origin-sync v3 snapshot remains historical evidence in
+`evidence/b0-06/runtime-qualification-premerge-v3.json`.
+
+The final implementation-base result is
+`evidence/b0-06/runtime-qualification.json`: base commit
+`0215c03b4594221f02e993bf8d58dd1bc669e815`, run
+`c53cd48cd1054f6e9b988d11f5f06c85`, 647,221 B, SHA-256
+`E41F8CFC...FBFAB`, 47/47. Its third warmup group first converged, and the
+immediately adjacent acceptance interval had process/GDI/USER deltas `-3/0/0`
 with no positive trend. NativeHud hidden/enabled commit p95 was
-`7.2358/7.1857 ms`; split surface/commit p95 was `3.6404/1.1058 ms`.
-This report binds a pre-origin-sync sourceTrace closure. The final merged-tree
-report remains `TBD_FINAL_EVIDENCE`; tool existence or a focused test run is
-not a qualification result.
+`7.3670/7.2699 ms`; split surface/observer-commit p95 was
+`3.6748/1.1382 ms`. The report binds an exact 32-file sourceTrace Git-blob
+closure plus the executed binary/renderer closure. Tool existence or a
+focused test run is not a qualification result.
 
 The C# capture is deliberately opt-in. Run it twice against two empty absolute
 output directories after exact-SDK locked restore:
@@ -197,12 +201,11 @@ Each invocation is structurally required to emit 35 PNGs plus `manifest.json`:
 and one HP full-to-empty contact sheet. The manifest status is only
 `structural_capture_complete`, scope `fixture_only`; it explicitly excludes
 cross-renderer parity, a visual threshold, game composite, human acceptance,
-real UiData, and deployment. The pre-origin-sync A/B snapshots are complete
-36-file closures and are byte-identical: each is 796,806 B with closure
-SHA-256 `37B4037B...1135D`; the identical manifest is 162,661 B with SHA-256
-`2DA576FB...73F7`, and its 35-PNG output closure is
-`0263EFF7...F3D4`. Final merged-tree A/B closure hashes remain
-`TBD_FINAL_EVIDENCE`.
+real UiData, and deployment. The final implementation-base A/B snapshots are
+complete 36-file closures and are byte-identical: each is 796,806 B with
+closure SHA-256 `53F019EB...47000`; the identical manifest is 162,661 B with
+SHA-256 `16B78FB3...66855`, and its 35-PNG output closure is
+634,145 B / `0263EFF7...F3D4`.
 
 After producing the two Web reports below, run the direct-edge diagnostic once
 for each independent C#/Web pair. All paths must be repository-relative, each
@@ -228,14 +231,14 @@ diagnostic PNGs plus
 `csharp-web-flash-comparison-report.json` for the direct C#↔Web and C#↔Flash
 edges. Status remains `diagnostic_awaiting_human_review`: there is no threshold,
 Web↔Flash edge, transitive inference, parity verdict, or Flash-oracle
-acceptance. The pre-origin-sync Web A/B 12-file closures are byte-identical at
-120,280 B / SHA-256 `725BC44B...D5CA`; both Web reports are 5,485 B /
-`A9B0164E...887F`. Both direct-edge runs emit the same 66-PNG closure,
-1,449,236 B / `87EA77C8...E9668`. Their reports are 184,026 B and differ
-only because they retain distinct `-a/-b` input paths; report hashes are
-`DA5A7293...F4353` and `0A657DEB...079D`. The exact index is
-`evidence/b0-06/visual-evidence-premerge-v3.json`. Final merged-tree A/B
-reports and SHA-256 values remain `TBD_FINAL_EVIDENCE`.
+acceptance. The final implementation-base Web A/B 12-file closures are
+byte-identical at 120,280 B / SHA-256 `2608142C...D1388`; both Web reports are
+5,485 B / `C6B6C8E7...BD38`. Both direct-edge runs emit the same 66-PNG
+closure, 1,449,236 B / `87EA77C8...E9668`. Their reports are 183,816 B and
+differ only because they retain distinct `-a/-b` input paths; report hashes
+are `963A16BD...2D2F6` and `23D012E6...3097D`. The exact final index is
+`evidence/b0-06/visual-evidence.json`; the pre-origin index remains historical
+evidence only.
 
 ## Headless Web, FFDec, and Flash diagnostics
 

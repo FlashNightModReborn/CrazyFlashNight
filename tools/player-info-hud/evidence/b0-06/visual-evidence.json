@@ -1,0 +1,98 @@
+{
+  "schema": "cf7.player-info-hud.b0-06-visual-evidence-index.v1",
+  "status": "final_tree_diagnostic_awaiting_human_review",
+  "baseCommitAtExecution": "0215c03b4594221f02e993bf8d58dd1bc669e815",
+  "commitBindingSemantics": "The captures execute the frozen implementation base commit before evidence-only closeout. The containing commit must be verified externally to change only evidence and documentation.",
+  "finalTreeEvidencePending": false,
+  "canonicalDirectoryClosure": "sorted UTF-8 relative path + NUL + exact file bytes + NUL",
+  "csharp": {
+    "captureA": "tmp/player-info-hud-b006-final-csharp-a",
+    "captureB": "tmp/player-info-hud-b006-final-csharp-b",
+    "fileCountEach": 36,
+    "pngCountEach": 35,
+    "totalBytesEach": 796806,
+    "directoryClosureSha256": "53F019EB1AEC15E9E80966B4B083A526EC440E6A54C3CE770EB9466D08847000",
+    "allFilesByteIdentical": true,
+    "manifest": {
+      "byteLength": 162661,
+      "sha256": "16B78FB3A73A506A13FEC40B9BC15ED1168C8DFF4900DB78FD9485C5F0266855",
+      "status": "structural_capture_complete",
+      "scope": "fixture_only",
+      "pngOutputClosure": {
+        "canonicalFormat": "sorted UTF-8 relative path + NUL + decimal byte length + NUL + uppercase SHA-256 + LF",
+        "fileCount": 35,
+        "totalBytes": 634145,
+        "sha256": "0263EFF7FAD9E319ADE3DEE8967FEE0876D44E4ACEB5891C562783086369F3D4"
+      }
+    }
+  },
+  "web": {
+    "captureA": "tmp/player-info-hud-b006-final-web-a",
+    "captureB": "tmp/player-info-hud-b006-final-web-b",
+    "fileCountEach": 12,
+    "pngCountEach": 11,
+    "totalBytesEach": 120280,
+    "directoryClosureSha256": "2608142CC334C9D99A8007F1AE7D1D84A90ABA89B6C1DFE1675CACCF8C2D1388",
+    "allFilesByteIdentical": true,
+    "report": {
+      "byteLength": 5485,
+      "sha256": "C6B6C8E7F47596DE80BCFA91F674ECE671FCC28297ADBAB012106A4A6713BD38",
+      "status": "canonical_manifest_rendered_awaiting_human_review"
+    }
+  },
+  "flashCandidate": {
+    "manifestPath": "tmp/player-info-hud/oracle/20260728T101414Z-d643ecd574a147009c8ada8d6ee1dc9d/oracle-manifest.json",
+    "manifestByteLength": 61487,
+    "manifestSha256": "DCC9E11AF07CDDB8296851EE4541A035CD0AAB1E9B9D430FF82F4B8D265BF472",
+    "oracleFrozen": false,
+    "humanReviewPending": [
+      "source",
+      "state",
+      "layerIsolation",
+      "crop",
+      "visualQuality"
+    ]
+  },
+  "directEdgeDiagnostics": {
+    "comparisonA": "tmp/player-info-hud-b006-final-direct-a",
+    "comparisonB": "tmp/player-info-hud-b006-final-direct-b",
+    "fileCountEach": 67,
+    "pngCountEach": 66,
+    "pngsByteIdentical": true,
+    "reportA": {
+      "byteLength": 183816,
+      "sha256": "963A16BDECC1F501C6BAB9F0F80106065876F9A13B7C1B3FDD5A9C415232D2F6"
+    },
+    "reportB": {
+      "byteLength": 183816,
+      "sha256": "23D012E65C4AC6EFF964B91B094202C7A2C39589FE7670BF8D7FB67FACD3097D"
+    },
+    "reportDifference": "The reports intentionally retain their distinct -a/-b repository-relative input paths. All other diagnostic output files are byte-identical.",
+    "outputClosureExcludingReport": {
+      "fileCount": 66,
+      "totalBytes": 1449236,
+      "sha256": "87EA77C8EF6B7B6C52772B1CDB7CF902319929E5BF29363F928C1C89F77E9668"
+    },
+    "status": "diagnostic_awaiting_human_review",
+    "edges": [
+      "CSharp_to_Web",
+      "CSharp_to_Flash"
+    ]
+  },
+  "automatedClaims": [
+    "C# A/B captures are byte-identical across their complete 36-file closures.",
+    "Web A/B captures are byte-identical across their complete 12-file closures.",
+    "Both direct-edge runs emit byte-identical 66-PNG diagnostic closures.",
+    "The comparator validates input identities and emits metrics without an acceptance threshold."
+  ],
+  "explicitlyUnverified": [
+    "cross-renderer pixel parity",
+    "Flash candidate acceptance",
+    "real game composite",
+    "real UiData integration",
+    "real desktop mouse click-through",
+    "visual aesthetics",
+    "deployment"
+  ],
+  "scopeBoundary": "This index freezes deterministic automated evidence for the final implementation base tree. It does not promote the Flash candidate, establish pixel parity, replace a real-game composite or hand click, accept aesthetics, or deploy runtime bytes; those human checks remain mandatory."
+}
