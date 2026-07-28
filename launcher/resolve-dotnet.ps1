@@ -1,18 +1,70 @@
 # Shared .NET SDK host resolver for Launcher build/test entrypoints.
-# Selects a host that can satisfy the repo-root global.json feature band without
-# changing machine/user PATH, so side-by-side legacy SDK consumers remain safe.
+# The repository currently uses global.json rollForward=disable, so selection and
+# the final repo-root --version probe must both match the pinned SDK exactly.
 
-function Resolve-Cf7Dotnet {
+function Get-Cf7DotnetSdkContract {
     param([Parameter(Mandatory=$true)][string]$ProjectRoot)
 
     $globalJsonPath = Join-Path $ProjectRoot 'global.json'
     if (-not (Test-Path -LiteralPath $globalJsonPath)) {
         throw "global.json missing: $globalJsonPath"
     }
-    $globalJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $globalJsonPath | ConvertFrom-Json
+
+    try {
+        $globalJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $globalJsonPath | ConvertFrom-Json
+    } catch {
+        throw "global.json is invalid: $globalJsonPath ($($_.Exception.Message))"
+    }
+
     $requiredText = [string]$globalJson.sdk.version
-    $required = [Version]$requiredText
-    $requiredFeatureBand = [Math]::Floor($required.Build / 100) * 100
+    if ([string]::IsNullOrWhiteSpace($requiredText)) {
+        throw "global.json sdk.version missing: $globalJsonPath"
+    }
+    try {
+        $required = [Version]$requiredText
+    } catch {
+        throw "global.json sdk.version is invalid: $requiredText"
+    }
+
+    $rollForward = [string]$globalJson.sdk.rollForward
+    if ([string]::IsNullOrWhiteSpace($rollForward)) {
+        throw "global.json sdk.rollForward missing; resolver fails closed"
+    }
+    if (-not [string]::Equals($rollForward, 'disable', [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Unsupported global.json sdk.rollForward '$rollForward'; resolver currently requires 'disable'"
+    }
+
+    return [PSCustomObject]@{
+        VersionText = $requiredText
+        Version = $required
+        RollForward = 'disable'
+    }
+}
+
+function Select-Cf7DotnetSdkVersion {
+    param(
+        [Parameter(Mandatory=$true)][Version]$RequiredVersion,
+        [Parameter(Mandatory=$true)][string]$RollForward,
+        [Version[]]$InstalledVersions = @()
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RollForward)) {
+        throw "SDK rollForward policy missing; selector fails closed"
+    }
+    if (-not [string]::Equals($RollForward, 'disable', [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Unsupported SDK rollForward '$RollForward'; selector currently requires 'disable'"
+    }
+
+    return @($InstalledVersions | Where-Object { $_.Equals($RequiredVersion) }) |
+        Select-Object -First 1
+}
+
+function Resolve-Cf7Dotnet {
+    param([Parameter(Mandatory=$true)][string]$ProjectRoot)
+
+    $contract = Get-Cf7DotnetSdkContract -ProjectRoot $ProjectRoot
+    $requiredText = $contract.VersionText
+    $required = $contract.Version
 
     $candidates = @(
         (Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet\dotnet.exe'),
@@ -41,16 +93,29 @@ function Resolve-Cf7Dotnet {
                 if ($match.Success) { $versions += [Version]$match.Groups[1].Value }
             }
             $probed += "$fullPath => $($versions -join ', ')"
-            $compatible = $versions | Where-Object {
-                ($_.Major -eq $required.Major -and
-                    $_.Minor -eq $required.Minor -and
-                    ([Math]::Floor($_.Build / 100) * 100) -eq $requiredFeatureBand -and
-                    $_ -ge $required)
-            } | Sort-Object -Descending | Select-Object -First 1
-            if ($compatible) { return $fullPath }
+            $selected = Select-Cf7DotnetSdkVersion `
+                -RequiredVersion $required `
+                -RollForward $contract.RollForward `
+                -InstalledVersions $versions
+            if (-not $selected) { continue }
+
+            Push-Location -LiteralPath $ProjectRoot
+            try {
+                $actualLines = @(& $fullPath --version 2>$null)
+                $actualExitCode = $LASTEXITCODE
+            } finally {
+                Pop-Location
+            }
+            $actualText = [string](@($actualLines | ForEach-Object { ([string]$_).Trim() } |
+                Where-Object { $_ -match '^\d+\.\d+\.\d+$' } |
+                Select-Object -First 1))
+            if ($actualExitCode -eq 0 -and [string]::Equals($actualText, $requiredText, [StringComparison]::Ordinal)) {
+                return $fullPath
+            }
+            $probed += "$fullPath => repo-root --version '$actualText' (exit=$actualExitCode), expected $requiredText"
         } catch {
             $probed += "$fullPath => probe failed: $($_.Exception.Message)"
         }
     }
-    throw "No dotnet host can satisfy global.json SDK $requiredText. Probed: $($probed -join '; ')"
+    throw "No dotnet host can satisfy global.json SDK $requiredText with rollForward=disable. Probed: $($probed -join '; ')"
 }

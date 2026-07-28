@@ -2,7 +2,7 @@
 # CF7:ME Guardian Process - Environment Setup Check (net10.0-windows)
 # 构建 / 运行前置依赖检查
 #   - .NET 10 SDK（user-scope %LOCALAPPDATA%\Microsoft\dotnet 或 system PATH）
-#     满足 global.json `version: 10.0.300` + `rollForward: latestPatch`
+#     精确满足 global.json `version: 10.0.300` + `rollForward: disable`
 #   - WebView2 Runtime（Phase 1 全局硬依赖）
 #   - MSVC C 编译器（miniaudio.dll 软依赖：缺则跳过 native build；运行时硬依赖）
 #   - Rust 工具链（sol_parser.dll 硬依赖）
@@ -16,6 +16,8 @@ $launcherDir = $PSScriptRoot
 $projectRoot = Split-Path -Parent $launcherDir
 $failCount = 0
 
+. (Join-Path $launcherDir 'resolve-dotnet.ps1')
+
 function Write-Ok($msg)   { Write-Host "  [OK]   $msg" -ForegroundColor Green }
 function Write-Warn($msg, $hint) {
     Write-Host "  [WARN] $msg" -ForegroundColor Yellow
@@ -27,80 +29,23 @@ function Write-Fail($msg, $hint) {
     $script:failCount++
 }
 
-function Get-GlobalJsonSdkVersion {
-    $globalJsonPath = Join-Path $projectRoot "global.json"
-    if (-not (Test-Path $globalJsonPath)) { return $null }
-
-    try {
-        $json = Get-Content -Raw -Path $globalJsonPath | ConvertFrom-Json
-        if ($json.sdk -and $json.sdk.version) {
-            return [version]$json.sdk.version
-        }
-    } catch { }
-
-    return $null
-}
-
-function Test-SdkVersionMeetsPin {
-    param(
-        [Parameter(Mandatory=$true)][version]$Installed,
-        [Parameter(Mandatory=$true)][version]$Pinned
-    )
-
-    if ($Installed.Major -ne $Pinned.Major) { return $false }
-    if ($Installed.Minor -ne $Pinned.Minor) { return $false }
-
-    # global.json uses rollForward=latestPatch. For 10.0.300 this accepts
-    # the same SDK feature band (10.0.3xx) at or above the pinned patch,
-    # but not a later feature band such as 10.0.400.
-    $installedBand = [math]::Floor($Installed.Build / 100)
-    $pinnedBand = [math]::Floor($Pinned.Build / 100)
-    return ($installedBand -eq $pinnedBand) -and ($Installed.Build -ge $Pinned.Build)
-}
-
 Write-Host "=== CF7:ME Setup Check (net10.0-windows) ===" -ForegroundColor Cyan
 Write-Host ""
 
 # 1. .NET 10 SDK
 Write-Host "[1/5] .NET 10 SDK..." -ForegroundColor Yellow
-$userDotnet = Join-Path $env:LOCALAPPDATA "Microsoft\dotnet\dotnet.exe"
-if (Test-Path $userDotnet) {
-    $dotnet = $userDotnet
-    Write-Ok "user-scope dotnet: $dotnet"
-} else {
-    $sysDotnet = (Get-Command dotnet -ErrorAction SilentlyContinue).Source
-    if ($sysDotnet) {
-        $dotnet = $sysDotnet
-        Write-Ok "system dotnet: $dotnet"
-    } else {
-        $dotnet = $null
-        Write-Fail ".NET runtime/SDK 找不到" `
-            "user-scope 装法（无需 admin）：powershell -c `"iwr https://dot.net/v1/dotnet-install.ps1 -OutFile `$env:TEMP\dotnet-install.ps1; & `$env:TEMP\dotnet-install.ps1 -Channel 10.0 -InstallDir `$env:LOCALAPPDATA\Microsoft\dotnet`""
-    }
+try {
+    $sdkContract = Get-Cf7DotnetSdkContract -ProjectRoot $projectRoot
+    $dotnet = Resolve-Cf7Dotnet -ProjectRoot $projectRoot
+    Write-Ok "dotnet host: $dotnet"
+    Write-Ok ".NET SDK exact global.json contract: $($sdkContract.VersionText) / rollForward=$($sdkContract.RollForward)"
+} catch {
+    $dotnet = $null
+    Write-Fail ".NET SDK 不满足 global.json exact contract" `
+        "$($_.Exception.Message). 安装精确 10.0.300（不能用 10.0.301/10.0.3xx 代替）；user-scope 可用 dotnet-install.ps1 -Version 10.0.300"
 }
 
 if ($dotnet) {
-    $sdks = & $dotnet --list-sdks 2>&1
-    $pinnedSdk = Get-GlobalJsonSdkVersion
-    if (-not $pinnedSdk) {
-        $pinnedSdk = [version]"10.0.300"
-    }
-    $matchingSdk = @()
-    foreach ($line in $sdks) {
-        if ($line -match "^(\d+\.\d+\.\d+)") {
-            $sdkVersion = [version]$matches[1]
-            if (Test-SdkVersionMeetsPin -Installed $sdkVersion -Pinned $pinnedSdk) {
-                $matchingSdk += $line
-            }
-        }
-    }
-    if ($matchingSdk.Count -gt 0) {
-        Write-Ok ".NET SDK satisfies global.json $pinnedSdk latestPatch: $($matchingSdk -join '; ')"
-    } else {
-        Write-Fail ".NET SDK 不满足 global.json pin $pinnedSdk + latestPatch" `
-            "Installed: $($sdks -join '; '). 装法同上 -Channel 10.0；需同 feature band 的 10.0.$($pinnedSdk.Build)+ patch（例如 10.0.3xx），不能漂到 10.0.4xx"
-    }
-
     $rt = & $dotnet --list-runtimes 2>&1
     $desktop10 = $rt | Where-Object { $_ -match "^Microsoft\.WindowsDesktop\.App 10\." }
     if ($desktop10) {

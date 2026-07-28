@@ -726,7 +726,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 - [ ] §6.4 oracle provenance、accepted corpus 与人工来源/crop 复核完整，达到 `oracle_frozen`。
 - [ ] `Svg.Skia` 决策由 provisional 转为 accepted，或已有修订 ADR 明确替代候选。
 - [ ] 依赖/许可证/native/security/payload-size 审计有结构化证据。
-- [ ] B0-03a exact SDK selector/setup-check 的 only-10.0.301 等负例与 repo-root exact-positive 通过。
+- [x] B0-03a exact SDK selector/setup-check 的 only-10.0.301 等负例与 repo-root exact-positive 通过。
 - [ ] 两类正式 builder 可 locked restore，并对同一冻结源形成一致 build identity / payload closure。
 - [ ] canonical SVG/manifest byte-stable，受控子集 validator fail-closed。
 - [ ] SVG/JSON 与包图进入 artifact source；改资产会改变 build identity 与 Core payload closure。
@@ -753,7 +753,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | B0-01A | evidence_ready | 16-file exact closure、10/5 symbol、0 BitmapFill、矩阵/脚本边、Git/SWF ancestry 已只读核实 | 结构化证据尚未入仓 | 写 `closure.json`/`source-binary-chain.json` 并复核 |
 | B0-01B | blocked_by_B0-01A | §0.6/§6.4 已冻结安全捕获边界 | TestLoader fixture、截图、manifest、人工来源确认 | B0-01A 后开测试专用捕获片 |
 | B0-02 | renderer_preflight_passed | isolated locked restore/ABI/payload/license/synthetic corpus；危险默认值已实测 | 入仓 strict facade、HP/MP feature qualification corpus、production wrapper 合同 | 固化 preflight 证据并完成资格 Gate |
-| B0-03a | ready | resolver/setup-check 与 `rollForward:disable` 冲突已复核 | exact selector/集成回归 | 可独立修复 |
+| B0-03a | completed | resolver/setup-check 共用 exact 合同；selector + repo-root 集成 **7/7**；setup-check **5/5**；三项首轮并发时序失败隔离复跑 **3/3**，随后全量 xUnit **1257/1257** | 正式 builder 的 10.0.300 证据仍归 B0-03b/发布链 | 继续 B0-01A/B0-02；待真实资产后进 B0-03b |
 | B0-04 | blocked_by_B0-01A/02; exit_waits_B0-01B | 无 canonical asset | converter/validator/canonical SVG 与 accepted oracle parity | 等 closure + renderer subset |
 | B0-03b | blocked_by_B0-02/03a/04 | 现有 SkiaSharp/runtime inputs 基线 | 生产锁定与 identity 回归 | 等 renderer/SDK/真实 asset |
 | B0-05 | blocked_by_B0-03b/04 | 可复用 cache/prewarm/PArgb 范式 | 专用 rasterizer 生命周期、test-only fixed-bounds union/commit 预检与拓扑裁决 | 等依赖/资产 |

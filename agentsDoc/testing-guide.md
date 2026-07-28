@@ -62,7 +62,7 @@ PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；
 | 用途 | 命令 |
 |------|------|
 | Runtime 候选 / 发布协议 | 日常 Worktree 隔离功能检查：`automation/dev.ps1`（双击根 `本地开发启动.cmd`），可追加 `-Status|-ReuseOnly|-ForceBuild|-BuildOnly`；它按当前 build identity 精确复用/生成 `NOT_DEPLOYED` candidate。无参 `automation/start.ps1`=正式已部署入口；`start.ps1 -CandidateRoot <absolute candidateRoot>`=低层诊断兼容入口。完整本地候选兼容编排：`launcher/build.ps1 -BuilderId local-dev`；纯 producer：`launcher/build-runtime-candidate.ps1`；协议回归：`tools/test-runtime-dev-entry.ps1` + `tools/test-runtime-entry-guardrails.ps1` + `tools/test-runtime-build-v2.ps1` + `tools/test-runtime-release-policy.ps1` + `tools/test-runtime-build-queue.ps1` + `tools/test-runtime-github-attestation.ps1` + `tools/test-invoke-runtime-github-build.ps1` + `tools/test-main-branch-admission.ps1` + `tools/test-runtime-release-state.ps1` + `tools/test-runtime-build-consensus.ps1` + `tools/test-runtime-release-consensus-v2.ps1` |
-| xUnit | `powershell -File launcher/tests/run_tests.ps1` |
+| xUnit | `powershell -File launcher/tests/run_tests.ps1`（先跑 `resolve-dotnet.tests.ps1` 的 exact-SDK 正/负合同，再跑全量 xUnit） |
 | 总线健康 | `bash tools/cfn-cli.sh status` |
 | AS2 回环 | `bash tools/cfn-cli.sh console "help"` |
 | 集成 (testMovie) | `bash tools/cfn-cli.sh start-bus`（headless：直跑 `runtime/Core.exe`，绕 bootstrap 的 MessageBox） |

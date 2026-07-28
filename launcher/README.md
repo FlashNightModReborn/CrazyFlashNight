@@ -808,10 +808,12 @@ powershell -File launcher/tests/run_tests.ps1
 ```
 
 脚本做法：
-1. 通过 `resolve-dotnet.ps1` 探测用户级与系统级 host，并由 `global.json` 强制选择精确 10.0.300 SDK
-2. echo `dotnet --version` 作为日志证据
-3. `Push-Location $projectRoot` 保证 dotnet host 找到 repo root 的 `global.json`（SDK pin 10.0.300 + `rollForward: disable`）
-4. `dotnet test Launcher.Tests.csproj -c Release` —— Microsoft.NET.Test.Sdk + xunit.runner.visualstudio 自动 discover + run，连带编译主工程的 `ProjectReference`
+
+1. 先跑 `resolve-dotnet.tests.ps1` 的纯 selector 负例矩阵与 repo-root 集成检查；只有 10.0.301/10.0.400、缺失或未知 roll-forward 策略都必须 fail-closed
+2. 通过 `resolve-dotnet.ps1` 探测用户级与系统级 host，并由 `global.json` 强制选择精确 10.0.300 SDK；即使只差一个 patch 的 10.0.301 也拒绝
+3. echo `dotnet --version` 作为日志证据
+4. `Push-Location $projectRoot` 保证 dotnet host 找到 repo root 的 `global.json`（SDK pin 10.0.300 + `rollForward: disable`）
+5. `dotnet test Launcher.Tests.csproj -c Release` —— Microsoft.NET.Test.Sdk + xunit.runner.visualstudio 自动 discover + run，连带编译主工程的 `ProjectReference`
 
 ### 测试覆盖
 

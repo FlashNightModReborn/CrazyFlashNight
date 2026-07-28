@@ -13,13 +13,18 @@ $launcherDir = Split-Path -Parent $testsDir
 $projectRoot = Split-Path -Parent $launcherDir
 $testsCsproj = Join-Path $testsDir "Launcher.Tests.csproj"
 
-# dotnet host 探测：按 global.json feature band 在用户级与系统级安装中选择，不改机器 PATH。
+# dotnet host 探测：只接受 global.json 的 exact SDK contract，不改机器 PATH。
 . (Join-Path $launcherDir 'resolve-dotnet.ps1')
-$dotnet = Resolve-Cf7Dotnet -ProjectRoot $projectRoot
 
 Write-Host "=== CF7:ME Launcher Tests (net10.0-windows) ===" -ForegroundColor Cyan
 Write-Host "  Launcher Dir: $launcherDir"
 Write-Host "  Tests Dir   : $testsDir"
+
+Write-Host ""
+Write-Host "[Step 0] exact SDK resolver contract tests..." -ForegroundColor Yellow
+& (Join-Path $testsDir 'resolve-dotnet.tests.ps1')
+
+$dotnet = Resolve-Cf7Dotnet -ProjectRoot $projectRoot
 Write-Host "  dotnet      : $dotnet"
 $dotnetSdk = & $dotnet --version 2>&1
 Write-Host "  dotnet SDK  : $dotnetSdk"
@@ -31,7 +36,7 @@ if (-not (Test-Path $testsCsproj)) {
 }
 
 Write-Host "[Step 1] dotnet test (Release)..." -ForegroundColor Yellow
-# Push-Location $projectRoot 保证 global.json (repo root) 被 dotnet host 找到，SDK pin 10.0.x 生效
+# Push-Location $projectRoot 保证 global.json (repo root) 被 dotnet host 找到，SDK exact pin 生效
 Push-Location $projectRoot
 try {
     & $dotnet test $testsCsproj -c Release
