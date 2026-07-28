@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5644 unique assets -->
+  <!-- 5653 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -117,6 +117,8 @@
   <asset id="公共素材位9" swf="flashswf/arts/new/公共素材位9.swf" />
   <asset id="关卡出口-防御地带内部大门" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="路障与通关门/关卡出口-防御地带内部大门" />
   <asset id="兵器攻击容器-1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-1连招" />
+  <asset id="兵器攻击容器-交叉斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-交叉斩" />
+  <asset id="兵器攻击容器-交叠" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-交叠" />
   <asset id="兵器攻击容器-全垒打" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-全垒打" />
   <asset id="兵器攻击容器-刀剑1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招" />
   <asset id="兵器攻击容器-剑气释放" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-剑气释放" />
@@ -126,8 +128,10 @@
   <asset id="兵器攻击容器-双剑气" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-双剑气" />
   <asset id="兵器攻击容器-双旋轮切" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-双旋轮切" />
   <asset id="兵器攻击容器-双龙连斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-双龙连斩" />
+  <asset id="兵器攻击容器-回旋刃" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-回旋刃" />
   <asset id="兵器攻击容器-外斩劈裂" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-外斩劈裂" />
   <asset id="兵器攻击容器-幻影剑舞" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" />
+  <asset id="兵器攻击容器-微风拂柳" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-微风拂柳" />
   <asset id="兵器攻击容器-无双击" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-无双击" />
   <asset id="兵器攻击容器-日曜三段突" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-日曜三段突" />
   <asset id="兵器攻击容器-月光斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-月光斩" />
@@ -136,6 +140,7 @@
   <asset id="兵器攻击容器-狂野1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招" />
   <asset id="兵器攻击容器-猎影十字" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-猎影十字" />
   <asset id="兵器攻击容器-疾影1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" />
+  <asset id="兵器攻击容器-疾空旋风破" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾空旋风破" />
   <asset id="兵器攻击容器-百万突刺" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-百万突刺" />
   <asset id="兵器攻击容器-百裂刺" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-百裂刺" />
   <asset id="兵器攻击容器-直剑1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" />
@@ -147,8 +152,11 @@
   <asset id="兵器攻击容器-见切后撤" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-见切后撤" />
   <asset id="兵器攻击容器-贯穿突刺" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" />
   <asset id="兵器攻击容器-迅捷1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招" />
+  <asset id="兵器攻击容器-迅捷连斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-迅捷连斩" />
+  <asset id="兵器攻击容器-迷踪连刺" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-迷踪连刺" />
   <asset id="兵器攻击容器-追地祀" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/↓R兵攻容器-追地祀" />
   <asset id="兵器攻击容器-重斩1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招" />
+  <asset id="兵器攻击容器-重架" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-重架" />
   <asset id="兵器攻击容器-镰刀1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招" />
   <asset id="兵器攻击容器-长刀1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" />
   <asset id="兵器攻击容器-长枪1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" />
@@ -156,6 +164,7 @@
   <asset id="兵器攻击容器-长棍1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" />
   <asset id="兵器攻击容器-风卷残云" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/！兵器攻击容器-风卷残云（更名为疾空旋风破）" />
   <asset id="兵器攻击容器-飞沙走石" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-飞沙走石" />
+  <asset id="兵器攻击容器-飞跃砸击" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-飞跃砸击" />
   <asset id="冰冷子弹" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷子弹" />
   <asset id="冰冷普通子弹" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷普通子弹" />
   <asset id="冰冷穿刺子弹" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷穿刺子弹" />

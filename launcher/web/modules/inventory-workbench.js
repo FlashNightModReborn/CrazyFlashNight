@@ -3,7 +3,7 @@ var InventoryWorkbench = (function() {
     'use strict';
 
     var _scaleEl, _scale, _shell, _root, _body, _buildHost, _storageActions, _buildActions;
-    var _densityToggle;
+    var _densityToggle, _helpAction;
     var _density, _tuningHeader, _storageReady = false, _build = null;
     var _profile, _view = 'storage', _panelInstanceId = '', _returnTarget = null;
     var _nestedHostOwner = '';
@@ -94,7 +94,21 @@ var InventoryWorkbench = (function() {
         }
         _shell.setSlotLabel('R', _view === 'build' ? '候选对比'
             : _view === 'tuning' ? '调制操作' : _profile.title);
+        syncHelp();
         syncDensityToggle();
+    }
+
+    function syncHelp() {
+        if (!_helpAction || !_profile) return;
+        _helpAction.update({
+            ariaLabel:_statsMode || _view === 'build' ? '查看角色构筑帮助'
+                : _view === 'tuning' ? '查看装备调制帮助' : '查看' + _profile.title + '帮助',
+            disabled:(_view === 'storage' || _view === 'tuning') && !_storageReady,
+            onOpen:function() {
+                return (_view === 'build' || _statsMode) && _build
+                    ? _build.openHelp() : InventoryStorageWorkbench.openHelp();
+            }
+        });
     }
 
     function syncDensityToggle() {
@@ -129,10 +143,6 @@ var InventoryWorkbench = (function() {
         add(_buildActions, button('back-build', '← 返回构筑', function() {
             if (_build) _build.closeStats('back');
         })).hidden = true;
-        var buildHelp = add(_buildActions, button('help', '?', function() {
-            if (_build) _build.openHelp();
-        }));
-        buildHelp.setAttribute('aria-label', '角色构筑帮助');
         add(_storageActions, button('return-build', '返回构筑', function() {
             requestView('build');
         })).hidden = true;
@@ -147,6 +157,8 @@ var InventoryWorkbench = (function() {
                 '返回合成并重新核算原配方与份数');
         }
 
+        _helpAction = new WorkbenchComponents.HelpAction({shell:_shell});
+        syncHelp();
         var close = button('close', '×', function() {
             requestClose('header');
         });
@@ -172,9 +184,6 @@ var InventoryWorkbench = (function() {
                 view:_view,
                 confirmationMode:'safe',
                 onSwitch:requestView,
-                onHelp:function() {
-                    InventoryStorageWorkbench.openHelp();
-                },
                 onConfirmationChange:function(mode) {
                     InventoryStorageWorkbench.setConfirmationMode(mode, false);
                 }
@@ -429,18 +438,11 @@ var InventoryWorkbench = (function() {
         if (_tuningHeader) _tuningHeader.destroy();
         if (_density) _density.destroy();
         if (_scale) _scale.detach();
+        if (_helpAction) _helpAction.destroy();
         if (_shell) _shell.destroy();
-
-        _storageReady = false;
-        _build = null;
-        _tuningHeader = null;
-        _density = null;
-        _densityToggle = null;
-        _scale = null;
-        _shell = null;
-        _root = null;
-        _body = null;
-        _buildHost = null;
+        _storageReady = false; _build = null; _tuningHeader = null;
+        _density = null; _densityToggle = null; _helpAction = null; _scale = null;
+        _shell = null; _root = null; _body = null; _buildHost = null;
         _closing = false;
         _statsMode = false;
         _buttons = {};
@@ -488,7 +490,8 @@ var InventoryWorkbench = (function() {
         _buildHost.hidden = true;
         _root.insertBefore(_buildHost, _root.querySelector('.workbench-modal-layer'));
         _density = new Workbench.GridDensityController({
-            panelId:'workbench'
+            panelId:'workbench',
+            defaultMode:'compact'
         });
         _root.setAttribute('data-layout-mode', _density.mode);
         makeHeader();

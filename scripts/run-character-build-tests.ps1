@@ -164,9 +164,8 @@ if ($webViewInstallSource -notmatch 'CharacterBuildService\.install\s*\(\s*\)') 
 
 $sceneTransitionSource = Get-RepoText `
     'scripts\逻辑\关卡系统\关卡系统_lsy_场景转换.as'
-if ($sceneTransitionSource -notmatch
-        '__legacyMaterialOnly\s*=\s*false;\s*_root\.物品栏界面\.关闭\(\);') {
-    throw 'Scene transition must clear the legacy material-only flag before closing the old inventory UI.'
+if ($sceneTransitionSource -match '__legacyMaterialOnly') {
+    throw 'Scene transition must not retain the retired material-only flag.'
 }
 
 $saveManagerSource = Get-RepoText `
@@ -222,32 +221,33 @@ $openEquipUi = [regex]::Match(
 )
 if ((-not $openMaterialUi.Success) -or
         ($openMaterialUi.Groups['body'].Value -notmatch
-            '__legacyMaterialOnly\s*=\s*true;[\s\S]*?_visible\s*=\s*true;[\s\S]*?gotoAndStop\("材料"\);') -or
+            'CraftingPanelService\.openMaterialsPanel\("nativehud_materials"\)') -or
+        ($openMaterialUi.Groups['body'].Value -match
+            '__legacyMaterialOnly|物品栏界面|gotoAndStop') -or
         (-not $openEquipUi.Success) -or
         ($openEquipUi.Groups['body'].Value -notmatch
-            '__legacyMaterialOnly\s*=\s*false;[\s\S]*?_visible\s*=\s*true;[\s\S]*?gotoAndStop\(_root\.物品栏界面\.界面\);') -or
+            '_visible\s*=\s*true;[\s\S]*?gotoAndStop\(_root\.物品栏界面\.界面\);') -or
         ($legacyInventoryXfl -notmatch
-            'if\(_root\.存档系统\.dirtyMark\)\s*_root\.自动存盘\(\);\s*_root\.__legacyMaterialOnly\s*=\s*false;\s*this\.关闭\(\);')) {
-    throw 'Legacy material-only open, full equipment open, and close must preserve their exact flag/navigation order.'
+            'if\(_root\.存档系统\.dirtyMark\)\s*_root\.自动存盘\(\);\s*this\.关闭\(\);')) {
+    throw 'Web-only material open, full equipment open, and legacy inventory close contracts are incomplete.'
 }
 
-$materialOnlyGuard = 'if\s*\(\s*_root\.__legacyMaterialOnly\s*===\s*true\s*\)'
-if ([regex]::Matches($legacyInventoryXfl, $materialOnlyGuard).Count -ne 4) {
-    throw 'Legacy inventory top navigation must contain exactly four material-only guards.'
+if (($legacyInventoryXfl -match '__legacyMaterialOnly') -or
+        ($legacyInventoryXfl -match '此入口仅开放材料页')) {
+    throw 'Retired material-only fallback guards must be physically absent from the legacy inventory XFL.'
 }
 foreach ($targetFrame in @('技能', '个人信息', '情报', '物品栏')) {
-    $guardedNavigation = $materialOnlyGuard +
-        '\s*\{\s*_root\.发布消息\("此入口仅开放材料页"\);\s*\}\s*else\s*\{\s*' +
-        'gotoAndStop\("' + [regex]::Escape($targetFrame) + '"\);\s*\}'
-    if ($legacyInventoryXfl -notmatch $guardedNavigation) {
-        throw "Legacy material-only guard is missing for top navigation frame: $targetFrame"
+    $directNavigation =
+        'gotoAndStop\("' + [regex]::Escape($targetFrame) + '"\);'
+    if ($legacyInventoryXfl -notmatch $directNavigation) {
+        throw "Legacy inventory direct top navigation is missing for frame: $targetFrame"
     }
 }
 if ($legacyInventoryXfl -notmatch
         'on\s*\(\s*release\s*\)\s*\{\s*gotoAndStop\("材料"\);\s*\}') {
     throw 'The legacy material tab must remain directly available.'
 }
-Write-Host '[STATIC_PASS] Legacy material-only inventory navigation contract'
+Write-Host '[STATIC_PASS] Web material route and legacy inventory navigation separation contract'
 
 $socketRetainBody = [regex]::Match(
     $characterBuildSource,

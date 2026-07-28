@@ -137,7 +137,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void MATERIALS_RoutesToMaterialOnlyFlashCommand()
+        public void MATERIALS_RoutesToWebMaterialAdmissionCommand()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
@@ -166,7 +166,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void MATERIALS_SendFalseShowsUnavailableWithoutOpeningLegacyUi()
+        public void MATERIALS_SendFalseShowsUnavailableWithoutOpeningPanel()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
@@ -1284,6 +1284,24 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"category\":\"未知分类\"}");
             Assert.Empty(c.Posts);
             Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void CraftingMaterialsRequest_BuildsReadOnlyMaterialInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.RequestOpenPanel("crafting", "nativehud_materials", null, null, null, null, null,
+                "{\"view\":\"materials\",\"category\":\"未知分类\",\"ignored\":\"x\"}");
+
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"crafting\"", c.Posts[0]);
+            Assert.Contains("\"view\":\"materials\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"nativehud_materials\"", c.Posts[0]);
+            Assert.DoesNotContain("\"category\"", c.Posts[0]);
+            Assert.DoesNotContain("ignored", c.Posts[0]);
+            Assert.Equal(new[] { "crafting" }, c.ActivePanels);
         }
 
         [Fact]

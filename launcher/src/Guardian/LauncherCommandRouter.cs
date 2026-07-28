@@ -1295,6 +1295,19 @@ namespace CF7Launcher.Guardian
             try
             {
                 JObject extras = JObject.Parse(initDataExtrasJson);
+                string view = extras.Value<string>("view");
+                if (string.Equals(view, "materials", StringComparison.Ordinal))
+                {
+                    var materialInitData = new JObject
+                    {
+                        ["mode"] = "runtime",
+                        ["view"] = "materials",
+                        ["source"] = source,
+                        ["debug"] = false
+                    };
+                    OpenPanel("crafting", materialInitData.ToString(Formatting.None));
+                    return;
+                }
                 string category = extras.Value<string>("category");
                 if (!IsCraftingCategory(category))
                 {

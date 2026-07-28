@@ -101,20 +101,18 @@ test('tuning header coordinates view, preference, disabled state, and listener t
     const controller = new Header.TuningHeaderController({
         document:new FakeDocument(), shell:{addHeaderAction:node => actions.push(node)},
         view:'storage', confirmationMode:'safe', onSwitch:view => changes.push('view:' + view),
-        onHelp:() => changes.push('help'), onConfirmationChange:mode => changes.push('mode:' + mode)
+        onConfirmationChange:mode => changes.push('mode:' + mode)
     });
-    assert.strictEqual(actions.length, 3);
+    assert.strictEqual(actions.length, 2);
     assert.strictEqual(controller.confirmationRoot.hidden, true);
     controller.switchButton.click();
     assert.deepStrictEqual(changes, ['view:tuning']);
     controller.update({view:'tuning', disabled:true});
-    assert.strictEqual(controller.helpButton.hidden, false);
     assert.strictEqual(controller.switchButton.disabled, true);
     controller.update({confirmationMode:'fast'});
     assert.strictEqual(controller.switchButton.disabled, true, 'partial updates preserve the disabled gate');
     assert.strictEqual(controller.confirmationRoot.children[2].getAttribute('aria-pressed'), 'true');
     controller.destroy();
-    controller.helpButton.click();
     assert.deepStrictEqual(changes, ['view:tuning']);
 });
 
@@ -177,6 +175,8 @@ test('stale queued projection halts atomically before the authority port', () =>
     f.controller.setMode('deposit');
     f.controller.enqueue('背包', f.slots['背包:1']);
     f.controller.enqueue('背包', f.slots['背包:2']);
+    assert.strictEqual(f.calls.length, 0);
+    assert.strictEqual(f.controller.commit(), true);
     f.slots['背包:2'] = slot(2, 'moved');
     f.calls[0].done({success:true});
     assert.strictEqual(f.calls.length, 1);
@@ -186,15 +186,39 @@ test('stale queued projection halts atomically before the authority port', () =>
     assert.strictEqual(f.controller.isBusy(), false);
 });
 
-test('mode click gate consumes only warehouse quick-transfer intents', () => {
+test('batch mode stages battlebox selections and commits them once', () => {
     const f = quickFixture();
     const event = {ctrlKey:false, prevented:false, stopped:false,
         preventDefault() { this.prevented = true; }, stopPropagation() { this.stopped = true; }};
-    assert.strictEqual(f.controller.acceptClick(event, {profile:'battlebox', viewMode:'storage', containerId:'背包', slot:f.slots['背包:1']}), false);
+    f.controller.setMode('deposit');
+    assert.strictEqual(f.controller.acceptClick(event, {
+        profile:'battlebox', viewMode:'storage', containerId:'背包', slot:f.slots['背包:1']
+    }), true);
+    assert.strictEqual(f.controller.acceptClick(event, {
+        profile:'battlebox', viewMode:'storage', containerId:'背包', slot:f.slots['背包:2']
+    }), true);
+    assert.strictEqual(f.calls.length, 0);
+    assert.strictEqual(f.controller.isBusy(), false);
+    assert.strictEqual(f.controller.debugState().staged, 2);
+    assert.strictEqual(f.controller.commit(), true);
+    assert.strictEqual(f.calls.length, 1);
+    assert.strictEqual(f.controller.isBusy(), true);
+    f.calls[0].done({success:true});
+    assert.strictEqual(f.calls.length, 2);
+    f.calls[1].done({success:true});
+    assert.strictEqual(f.controller.getMode(), null);
+    assert.strictEqual(f.controller.debugState().completed, 2);
+});
+
+test('mode click gate consumes wrong-side selections without starting authority writes', () => {
+    const f = quickFixture();
+    const event = {ctrlKey:false, prevented:false, stopped:false,
+        preventDefault() { this.prevented = true; }, stopPropagation() { this.stopped = true; }};
     f.controller.setMode('deposit');
     assert.strictEqual(f.controller.acceptClick(event, {profile:'warehouse', viewMode:'storage', containerId:'仓库', slot:f.slots['仓库:3']}), true);
     assert.strictEqual(event.prevented, true);
     assert.deepStrictEqual(f.notices, ['deposit_source']);
+    assert.strictEqual(f.calls.length, 0);
 });
 
 test('queue limit and rejected authority start expose deterministic failures', () => {
@@ -298,6 +322,14 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(facade.includes('window.__INVENTORY_WORKBENCH_CONFIG__'));
     assert(facade.includes('timeoutMs:_runtimeConfig.requestTimeoutMs'));
     assert(facade.includes('sessionNonce:_runtimeConfig.sessionNonce'));
+    assert(facade.includes("panelId:'workbench'"));
+    assert(facade.includes("defaultMode:'compact'"));
+    assert(source.includes('installQuickTransferActions();'));
+    assert(source.includes('InventoryWorkbenchQuickTransfer.createCommandBar'));
+    assert(extracted.includes("className = 'inventory-quick-transfer-bar'"));
+    assert(source.includes('body.appendChild(_quickBarView.root)'));
+    assert(!/addHeaderAction\(_quick(StatusNode|DepositButton|WithdrawButton|CommitButton)/.test(source));
+    assert(source.includes('commitQuickTransfer'));
     assert(/InventoryStorageWorkbench\.activate\(\s*controllerPorts\(\),\s*initialView\s*\)/.test(facade));
     assert(facade.includes('InventoryStorageWorkbench.deactivate()'));
     assert(facade.includes("button('close', '×'"));

@@ -132,6 +132,7 @@
          'modules/workbench-inspection-viewport.js',
          'modules/equipment-inspector.js',
          'modules/crafting-inspector.js',
+         'modules/crafting-materials.js',
          'modules/crafting-runtime.js',
          'modules/crafting.js'],
         noop);

@@ -66,12 +66,12 @@ $focusedRun = @{
         '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
         '(?m)^NpcShopPanelServiceTest Tests Passed: 46\r?$'
         '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
-        '(?m)^InventoryPanelServiceTest Tests Passed: 138\r?$'
+        '(?m)^InventoryPanelServiceTest Tests Passed: 142\r?$'
         '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
-        '(?m)^CraftingPanelServiceTest Tests Passed: 27\r?$'
+        '(?m)^CraftingPanelServiceTest Tests Passed: 34\r?$'
         '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'EquipmentInventory 28/28, NPC 46/46, Inventory 138/138, Crafting 27/27'
+    SuccessSummary = 'EquipmentInventory 28/28, NPC 46/46, Inventory 142/142, Crafting 34/34'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

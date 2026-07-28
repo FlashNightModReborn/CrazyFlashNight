@@ -498,12 +498,13 @@
 .kshop-workbench .inventory-owned-backpack .inventory-slot-card:focus-within .inventory-slot-copy b { padding-right:12px; }
 .kshop-workbench .kshop-card-drag-hint { display:none; }
 
-/* Standalone 战备箱的紧凑态延续原版图标柜精神，40 槽以 5×8 阵列一次看全；
+/* Standalone 战备箱的紧凑态延续图标柜精神，40 槽以 6×7 阵列一次看全；
+   横向多用一列，为正文批量命令栏留出纵向空间，同时保持图标可辨识。
    完整态回到带名称和状态条的通用卡片，不再让两种密度看起来相同。 */
 .inventory-workbench-panel .inventory-owned-battlebox .inventory-owned-grid.item-grid-compact {
     display:grid;
-    grid-template-columns:repeat(5,minmax(0,1fr));
-    grid-template-rows:repeat(8,minmax(0,1fr));
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    grid-template-rows:repeat(7,minmax(0,1fr));
     align-content:stretch;
     gap:4px;
     padding:6px;
@@ -557,7 +558,7 @@
 }
 .kshop-settlement-page.active { display:grid; }
 .kshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid rgba(var(--dls-crystal-rgb),.16); }
-.kshop-settlement-header button,.kshop-settlement-summary button,.kshop-settlement-stepper button {
+.kshop-settlement-header button,.kshop-settlement-summary > button,.kshop-settlement-stepper > button {
     color:#8be0f1; border:1px solid rgba(var(--dls-crystal-rgb),.38); background:#050b0d; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .kshop-settlement-header button { min-height:28px; padding:3px 10px; }
@@ -574,15 +575,39 @@
 .kshop-settlement-icon .kshop-icon,.kshop-settlement-icon .cfn-layered-icon { width:42px; height:42px; object-fit:contain; }
 .kshop-settlement-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .kshop-settlement-copy b { overflow:hidden; color:#e8f4f7; white-space:nowrap; text-overflow:ellipsis; }
+.kshop-settlement-inspect {
+    display:block;
+    width:max-content;
+    max-width:100%;
+    min-height:24px;
+    padding:0;
+    overflow:hidden;
+    color:#e8f4f7;
+    background:transparent;
+    border:0;
+    font:700 12px/1.2 "Microsoft YaHei",sans-serif;
+    text-align:left;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.kshop-settlement-inspect:hover,
+.kshop-settlement-inspect:focus-visible {
+    color:#a6f0ff;
+    outline:1px solid rgba(var(--dls-crystal-rgb),.5);
+    outline-offset:2px;
+}
+.kshop-settlement-inspect:disabled { color:#78858a; cursor:default; }
 .kshop-settlement-copy small { color:#ffd367; font:10px Consolas,monospace; }
 .kshop-settlement-copy em { color:#5a7a85; font:normal 10px/1.35 "Microsoft YaHei",sans-serif; }
-.kshop-settlement-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:166px; }
+.kshop-settlement-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:252px; }
+.kshop-settlement-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .kshop-settlement-stepper > b { min-width:20px; text-align:center; font:11px Consolas,monospace; }
-.kshop-settlement-stepper button { width:24px; height:24px; padding:0; }
-.kshop-settlement-stepper button.wide { width:auto; min-width:45px; padding:0 5px; font-size:9px; }
-.kshop-settlement-stepper button.remove { color:#e98888; border-color:#713f45; background:#211315; }
-.kshop-settlement-header button:hover,.kshop-settlement-summary button:hover:not(:disabled),.kshop-settlement-stepper button:hover:not(:disabled) { color:#050b0d; border-color:#a6f0ff; background:var(--dls-crystal); }
-.kshop-settlement-stepper button:disabled,.kshop-settlement-summary button:disabled { opacity:.35; cursor:not-allowed; }
+.kshop-settlement-stepper > button { width:24px; height:24px; padding:0; }
+.kshop-settlement-stepper > button.wide { width:auto; min-width:45px; padding:0 5px; font-size:9px; }
+.kshop-settlement-stepper > button.remove { color:#e98888; border-color:#713f45; background:#211315; }
+.kshop-settlement-header button:hover,.kshop-settlement-summary > button:hover:not(:disabled),.kshop-settlement-stepper > button:hover:not(:disabled) { color:#050b0d; border-color:#a6f0ff; background:var(--dls-crystal); }
+.kshop-settlement-stepper > button:disabled,.kshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
 .kshop-settlement-ledger { display:flex; flex-direction:column; }
 .kshop-settlement-ledger [data-kshop-settlement-ledger] { display:grid; gap:7px; padding:12px; }
 .kshop-settlement-ledger [data-kshop-settlement-ledger] > div { display:flex; align-items:center; justify-content:space-between; padding-bottom:7px; border-bottom:1px solid rgba(var(--dls-crystal-rgb),.09); }
@@ -594,7 +619,7 @@
 .kshop-settlement-summary { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; min-height:46px; padding-top:8px; border-top:1px solid rgba(var(--dls-crystal-rgb),.16); }
 .kshop-settlement-summary [data-kshop-settlement-status] { color:#6d8a93; font-size:10px; }
 .kshop-settlement-summary [data-kshop-settlement-status].error { color:#df7f7f; }
-.kshop-settlement-summary > button { min-width:118px; min-height:31px; padding:4px 14px; }
+.kshop-settlement-summary > button { min-width:118px; min-height:40px; padding:4px 14px; }
 
 /* NPC 金币商店：主页面选择意图，二级页面以 AS2 权威预览执行整单原子结算。 */
 .npcshop-panel { --wb-accent:#e5a64d; --wb-scrollbar-track:#111419; --wb-scrollbar-thumb:#705a3c; --wb-scrollbar-thumb-border:#a47d43; --wb-scrollbar-thumb-hover:#967338; }
@@ -731,7 +756,7 @@
 }
 .npcshop-settlement-page.active { display:grid; }
 .npcshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
-.npcshop-settlement-header button,.npcshop-settlement-summary button,.npcshop-stepper button {
+.npcshop-settlement-header button,.npcshop-settlement-summary > button,.npcshop-stepper > button {
     color:#e9b96d; border:1px solid #68502e; background:#1c1710; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .npcshop-settlement-header button { min-height:28px; padding:3px 10px; }
@@ -746,14 +771,15 @@
 .npcshop-settlement-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .npcshop-settlement-copy b { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .npcshop-settlement-copy small { color:#e5a64d; font:10px Consolas,monospace; }
-.npcshop-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:132px; }
+.npcshop-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:252px; }
+.npcshop-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .npcshop-stepper b { text-align:center; font:11px Consolas,monospace; }
-.npcshop-stepper button { width:22px; height:23px; padding:0; }
-.npcshop-stepper button.wide { width:auto; min-width:47px; padding:0 5px; font-size:9px; }
+.npcshop-stepper > button { width:22px; height:23px; padding:0; }
+.npcshop-stepper > button.wide { width:auto; min-width:47px; padding:0 5px; font-size:9px; }
 .npcshop-settlement-copy em { color:#858d96; font:normal 10px/1.35 "Microsoft YaHei",sans-serif; }
-.npcshop-stepper button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary button:hover:not(:disabled) { color:#17191c; background:#e5a64d; border-color:#f4ca88; }
-.npcshop-stepper button:disabled,.npcshop-settlement-summary button:disabled { opacity:.35; cursor:not-allowed; }
-.npcshop-stepper button.remove { color:#d77d7d; border-color:#663d3d; background:#211313; }
+.npcshop-stepper > button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary > button:hover:not(:disabled) { color:#17191c; background:#e5a64d; border-color:#f4ca88; }
+.npcshop-stepper > button:disabled,.npcshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
+.npcshop-stepper > button.remove { color:#d77d7d; border-color:#663d3d; background:#211313; }
 .npcshop-settlement-empty { margin:30px 0; color:#656d76; text-align:center; }
 .npcshop-settlement-summary { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; align-items:center; gap:12px; min-height:46px; padding-top:8px; border-top:1px solid #2d3239; }
 .npcshop-settlement-summary [data-trade-economy] { display:flex; gap:16px; align-items:center; }
@@ -762,7 +788,7 @@
 .npcshop-settlement-summary [data-trade-economy] small { color:#727a83; font:10px "Microsoft YaHei",sans-serif; }
 .npcshop-settlement-summary [data-trade-error] { color:#7fbe86; font-size:10px; }
 .npcshop-settlement-summary [data-trade-error].error { color:#df7f7f; }
-.npcshop-settlement-summary > button { min-width:104px; min-height:31px; padding:4px 13px; }
+.npcshop-settlement-summary > button { min-width:104px; min-height:40px; padding:4px 13px; }
 
 .npcshop-space-page {
     position:absolute; z-index:4; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);

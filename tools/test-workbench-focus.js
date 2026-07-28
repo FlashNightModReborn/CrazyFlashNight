@@ -345,6 +345,43 @@ test('Escape invokes the callback, supports veto, and otherwise deactivates', ()
     assertNoActiveScopes();
 });
 
+test('an active field draft owns only the first Escape inside its focus scope', () => {
+    const {document, root} = fixture();
+    const input = document.createElement('input');
+    input.setAttribute('data-workbench-escape-owner', 'field');
+    root.appendChild(input);
+    const outside = document.createElement('input');
+    outside.setAttribute('data-workbench-escape-owner', 'field');
+    document.body.appendChild(outside);
+    let calls = 0;
+    const scope = new Focus.FocusScope({
+        root,
+        document,
+        onEscape() { calls++; }
+    });
+    scope.activate({initialFocus:input});
+
+    const delegated = document.dispatch('keydown', {key:'Escape', target:input});
+    assert.strictEqual(calls, 0);
+    assert.strictEqual(scope.isActive(), true);
+    assert.strictEqual(delegated.defaultPrevented, undefined);
+    assert.strictEqual(delegated.propagationStopped, undefined);
+
+    input.removeAttribute('data-workbench-escape-owner');
+    const accepted = document.dispatch('keydown', {key:'Escape', target:input});
+    assert.strictEqual(calls, 1);
+    assert.strictEqual(scope.isActive(), false);
+    assert.strictEqual(accepted.defaultPrevented, true);
+
+    scope.activate({initialFocus:input});
+    const external = document.dispatch('keydown', {key:'Escape', target:outside});
+    assert.strictEqual(calls, 2, 'an external draft marker must not intercept the scope Escape');
+    assert.strictEqual(scope.isActive(), false);
+    assert.strictEqual(external.defaultPrevented, true);
+    scope.destroy();
+    assertNoActiveScopes();
+});
+
 test('underlay inert and aria-hidden state is restored exactly', () => {
     const {document, underlay, root} = fixture();
     const secondUnderlay = document.createElement('aside');

@@ -271,7 +271,6 @@ _root.FinishTask = function(index) {
         );
     }
     var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(rewards);
-    var rewardList = [];
     //处理任务奖励的金币和K点减少
     for (var i = 0; i < itemArray.length; i++) {
         var itemName = itemArray[i].name;
@@ -281,18 +280,27 @@ _root.FinishTask = function(index) {
         if (itemName == "金币" && _root.isChallengeMode())
             itemArray[i].value = Math.floor(itemValue * 0.5);
         // if(_root.isEasyMode()) itemArray[i].value = Math.floor(itemValue * 1.5);
-        // 如果有进阶信息，加入第三个元素
-        if(itemArray[i].tier != undefined) {
-            rewardList.push([itemName, itemArray[i].value, itemArray[i].tier]);
-        } else {
-            rewardList.push([itemName, itemArray[i].value]);
-        }
     }
-    //获得奖励
-    var result = org.flashNight.arki.item.ItemUtil.acquire(itemArray);
-    if (!result) {
+    // 获得奖励：情报按逐物品 maxvalue 截断，同批超出量按 price 折算为金币。
+    var rewardSettlement:Object =
+        org.flashNight.arki.item.ItemUtil.acquireReward(itemArray);
+    if (!rewardSettlement.success) {
         _root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
         return false;
+    }
+    var rewardList = [];
+    for (i = 0; i < rewardSettlement.items.length; i++) {
+        var delivered:Object = rewardSettlement.items[i];
+        if(delivered.tier != undefined) {
+            rewardList.push([delivered.name, delivered.value, delivered.tier]);
+        } else {
+            rewardList.push([delivered.name, delivered.value]);
+        }
+    }
+    if (rewardSettlement.hasOverflow) {
+        _root.发布消息(rewardSettlement.overflowMoney > 0
+            ? "超出情报持有上限的奖励已折算为金币" + rewardSettlement.overflowMoney + "。"
+            : "已达持有上限的情报奖励不再重复计入。");
     }
     _root.任务奖励提示界面.奖励品 = rewardList;
     _root.任务奖励提示界面.刷新();

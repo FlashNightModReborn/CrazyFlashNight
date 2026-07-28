@@ -184,13 +184,12 @@ _root.gameCommands["openTaskUI"] = function() {
 };
 
 _root.gameCommands["openMaterialUI"] = function() {
-    _root.__legacyMaterialOnly = true;
-    _root.物品栏界面._visible = true;
-    _root.物品栏界面.gotoAndStop("材料");
+    if (!org.flashNight.arki.item.CraftingPanelService.openMaterialsPanel("nativehud_materials")) {
+        _root.发布消息("材料面板暂时不可用");
+    }
 };
 
 _root.gameCommands["openEquipUI"] = function() {
-    _root.__legacyMaterialOnly = false;
     _root.物品栏界面._visible = true;
     _root.物品栏界面.gotoAndStop(_root.物品栏界面.界面);
 };

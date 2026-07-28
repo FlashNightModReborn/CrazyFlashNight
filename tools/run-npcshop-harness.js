@@ -40,8 +40,26 @@ function audit(){
       ||!panel.includes('view.chrome.title.appendChild(hint)')
       ||!itemFilter.includes('FilterNavigator.prototype._renderDrilldown'))throw new Error('unified full-width inline hierarchy navigation contract missing');
   if(!panel.includes("scope:'same_name'")||!panel.includes("policy:'plain_only'"))throw new Error('same-name protected bulk sale flow missing');
-  if(!panelUi.includes("_stepButton('+5'")||!panelUi.includes("_stepButton('最大'"))throw new Error('equipment quantity accelerators missing');
   const workbenchComponents=fs.readFileSync(WORKBENCH_COMPONENTS_SOURCE,'utf8');
+  const workbenchComponentsCss=fs.readFileSync(path.join(WEB,'css','workbench','components.css'),'utf8');
+  if(!secondary.includes('new this._components.QuantityControl')
+      ||!secondary.includes('showPlusFive:true')||!secondary.includes('showMax:true')||!secondary.includes('showRange:true')
+      ||!workbenchComponents.includes("this.numberInput.type = 'number'")
+      ||!workbenchComponents.includes("this.rangeInput.type = 'range'"))throw new Error('shared numeric and slider quantity control missing');
+  if(!secondary.includes('sliderMax:authorityMaximum')
+      ||!secondary.includes('presetMax:effective')
+      ||!secondary.includes("maxLabel:'可用'")
+      ||!secondary.includes('this._lineRecords = {purchase:{}, sale:{}}')
+      ||!workbenchComponents.includes('Math.log(quantity - this._min + 1)')
+      ||!workbenchComponents.includes('linearSliderThreshold || 200')
+      ||!workbenchComponents.includes("this.rangeInput.setAttribute('aria-valuetext'")
+      ||!workbenchComponents.includes("event.key === 'PageUp'")
+      ||!workbenchComponents.includes("this.numberInput.setAttribute('aria-invalid'")
+      ||!workbenchComponentsCss.includes('.workbench-quantity-range::-webkit-slider-runnable-track')
+      ||!workbenchComponentsCss.includes('var(--quantity-accent) 0 var(--quantity-progress)')
+      ||workbenchComponentsCss.includes('accent-color:')) {
+    throw new Error('adaptive authority-bounded quantity slider, validation, or inherited skin contract missing');
+  }
   if(!panel.includes('InventoryRuntime.InventoryCoordinator')
       ||!panelUi.includes('.OwnedInventoryPane')
       ||!panelUi.includes('_inventoryCoordinator.autoTransfer(source, target')

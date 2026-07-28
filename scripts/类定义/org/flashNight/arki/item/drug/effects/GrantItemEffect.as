@@ -54,8 +54,11 @@ class org.flashNight.arki.item.drug.effects.GrantItemEffect implements IDrugEffe
             return true;
         }
 
-        // 获得物品
-        var success:Boolean = ItemUtil.singleAcquire(itemName, count);
+        // 脚本奖励同样走情报上限保护；商城与合成仍保留严格容量语义。
+        var settlement:Object = ItemUtil.acquireReward([
+            {name:itemName, value:count}
+        ]);
+        var success:Boolean = settlement.success === true;
 
         // 记录结果到上下文（供MessageEffect使用）
         ctx["_grantSuccess"] = success;

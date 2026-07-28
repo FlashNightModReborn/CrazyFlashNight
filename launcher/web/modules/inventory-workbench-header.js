@@ -15,7 +15,6 @@
         this._document = options.document;
         this._shell = options.shell;
         this._onSwitch = typeof options.onSwitch === 'function' ? options.onSwitch : noop;
-        this._onHelp = typeof options.onHelp === 'function' ? options.onHelp : noop;
         this._onConfirmationChange = typeof options.onConfirmationChange === 'function'
             ? options.onConfirmationChange : noop;
         this._mode = options.confirmationMode === 'fast' ? 'fast' : 'safe';
@@ -25,10 +24,8 @@
         this._listeners = [];
         this.confirmationRoot = this._createConfirmationToggle();
         this.switchButton = this._createSwitchButton();
-        this.helpButton = this._createHelpButton();
         this._shell.addHeaderAction(this.confirmationRoot);
         this._shell.addHeaderAction(this.switchButton);
-        this._shell.addHeaderAction(this.helpButton);
         this.update({view:this._view, confirmationMode:this._mode});
     }
 
@@ -65,16 +62,6 @@
         this._listen(button, 'click', function() { self._onSwitch(self._view === 'tuning' ? 'storage' : 'tuning'); });
         return button;
     };
-    TuningHeaderController.prototype._createHelpButton = function() {
-        var self = this;
-        var button = this._document.createElement('button');
-        button.type = 'button';
-        button.className = 'workbench-mode-btn equipment-tuning-help-btn';
-        button.textContent = '?';
-        button.setAttribute('aria-label', '查看装备调制帮助');
-        this._listen(button, 'click', function() { self._onHelp(); });
-        return button;
-    };
     TuningHeaderController.prototype.update = function(state) {
         state = state || {};
         if (state.view === 'storage' || state.view === 'tuning') this._view = state.view;
@@ -82,10 +69,8 @@
         this.confirmationRoot.hidden = this._view !== 'tuning';
         this.switchButton.textContent = this._view === 'tuning' ? '返回收纳' : '装备调制';
         this.switchButton.setAttribute('aria-pressed', this._view === 'tuning' ? 'true' : 'false');
-        this.helpButton.hidden = this._view !== 'tuning';
         if (state.disabled != null) this._disabled = !!state.disabled;
         this.switchButton.disabled = this._disabled;
-        this.helpButton.disabled = this._disabled;
         for (var key in this._buttons) {
             this._buttons[key].setAttribute('aria-pressed', key === this._mode ? 'true' : 'false');
             this._buttons[key].disabled = this._disabled;

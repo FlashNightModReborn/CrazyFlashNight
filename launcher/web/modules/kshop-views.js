@@ -77,7 +77,7 @@
             meta: '0 种 / 0 件',
             className: 'kshop-cart-section',
             gridClassName: 'kshop-cart-list',
-            emptyText: '购物车为空；从左侧选择商品，双击也可加购'
+            emptyText: '购物车为空；单击左侧商品即可加购，也可拖入这里'
         });
         cartGridView.renderer.root.id = 'kshop-cart-list';
 
@@ -86,8 +86,8 @@
         dropTarget.className = 'kshop-cart-drop-target';
         dropTarget.setAttribute('data-audio-cue', 'select');
         dropTarget.innerHTML = '<span class="kshop-drop-glyph">＋</span>'
-            + '<span class="kshop-drop-copy"><b>添加商品</b><small>选择或拖入</small></span>';
-        dropTarget.setAttribute('aria-label', '选择商品后点击，或将商品拖入购物车');
+            + '<span class="kshop-drop-copy"><b>拖拽加购</b><small>可选操作</small></span>';
+        dropTarget.setAttribute('aria-label', '可将商品拖入购物车；单击商品也可直接加购');
         dropTarget.addEventListener('click', options.onCartSinkClick);
         cartGridView.root.insertBefore(dropTarget, cartGridView.renderer.root);
 
@@ -148,13 +148,18 @@
 
     function SettlementPage(options) {
         this._options = options;
+        this._components = options.components || (typeof WorkbenchComponents !== 'undefined'
+            ? WorkbenchComponents : null);
+        if (!this._components || typeof this._components.SecondaryPage !== 'function'
+                || typeof this._components.QuantityControl !== 'function') {
+            throw new Error('KShop SettlementPage requires shared workbench components');
+        }
         this._errorMessage = '';
         this._preview = null;
         this._loading = false;
+        this._lineRecords = {};
         this.root = document.createElement('section');
-        this.root.className = 'workbench-secondary-page kshop-settlement-page';
-        this.root.setAttribute('role', 'dialog');
-        this.root.setAttribute('aria-label', 'K 点商城结算核对');
+        this.root.className = 'kshop-settlement-page';
         this.root.innerHTML = '<header class="kshop-settlement-header">'
             + '<button type="button" data-kshop-settlement-back data-audio-cue="cancel">← 返回商城</button>'
             + '<div><h2>结算核对</h2><p>价格、余额与交付容量由游戏实时核算；确认后整单扣款并直接交付。</p></div>'
@@ -170,15 +175,23 @@
         this._status = this.root.querySelector('[data-kshop-settlement-status]');
         this._commit = this.root.querySelector('[data-kshop-settlement-commit]');
         this._back = this.root.querySelector('[data-kshop-settlement-back]');
-        this._back.addEventListener('click', options.onBack);
-        this._commit.addEventListener('click', options.onCommit);
+        this._commitHandler = options.onCommit;
+        this._commit.addEventListener('click', this._commitHandler);
+        this.secondary = new this._components.SecondaryPage({
+            root:this.root,
+            role:'dialog',
+            ariaLabel:'K 点商城结算核对',
+            removeOnDestroy:true
+        });
+        this.secondary.bindClose(this._back, options.onBack);
     }
 
-    SettlementPage.prototype.mount = function(container) { container.appendChild(this.root); };
-    SettlementPage.prototype.isActive = function() { return this.root.classList.contains('active'); };
+    SettlementPage.prototype.mount = function(container) { return this.secondary.mount(container); };
+    SettlementPage.prototype.isActive = function() { return this.secondary.isActive(); };
     SettlementPage.prototype.debugState = function() {
         return {active:this.isActive(),loading:this._loading,hasPreview:!!this._preview,
-            previewCanCommit:!!(this._preview && this._preview.canCommit),commitDisabled:this._commit.disabled};
+            previewCanCommit:!!(this._preview && this._preview.canCommit),commitDisabled:this._commit.disabled,
+            stableLineCount:Object.keys(this._lineRecords).length};
     };
     SettlementPage.prototype.show = function() {
         this._errorMessage = '';
@@ -186,17 +199,22 @@
         this._loading = true;
         this._list.scrollTop = 0;
         this._list.scrollLeft = 0;
-        this.root.classList.add('active');
         this._options.panelRoot.classList.add('kshop-settling');
+        if (!this.secondary.open({initialFocus:this._back})) {
+            this._options.panelRoot.classList.remove('kshop-settling');
+            return false;
+        }
         this.render();
-        this._back.focus();
+        return true;
     };
-    SettlementPage.prototype.hide = function() {
-        this.root.classList.remove('active');
+    SettlementPage.prototype.hide = function(reason) {
         this._options.panelRoot.classList.remove('kshop-settling');
         this._errorMessage = '';
         this._preview = null;
         this._loading = false;
+        var closed = this.secondary.close(reason || 'return');
+        this._destroyQuantityControls();
+        return closed;
     };
     SettlementPage.prototype.setLoading = function() {
         this._preview = null;
@@ -223,7 +241,6 @@
         if (!cart.length) { this.hide(); return; }
         var previousScrollTop = this._list.scrollTop;
         var previousScrollLeft = this._list.scrollLeft;
-        while (this._list.firstChild) this._list.removeChild(this._list.firstChild);
         var preview = this._preview;
         var previewByIndex = {};
         if (preview && preview.purchaseLines) {
@@ -234,6 +251,8 @@
         var total = 0;
         var quantity = 0;
         var invalid = 0;
+        var nextRecords = {};
+        var desiredRows = [];
         for (var i = 0; i < cart.length; i++) {
             var cartItem = cart[i];
             var item = options.findCatalogItem(cartItem.idx);
@@ -241,7 +260,29 @@
             quantity += qty;
             if (item) total += Number(item.price || 0) * qty;
             else invalid++;
-            this._list.appendChild(this._renderLine(cartItem, item, qty, previewByIndex[String(cartItem.idx)]));
+            var identity = String(cartItem.idx);
+            if (nextRecords[identity]) continue;
+            var variant = !item ? 'missing' : options.isStackable(item) ? 'stackable' : 'fixed';
+            var record = this._lineRecords[identity];
+            if (record && record.variant !== variant) {
+                this._destroyLineRecord(record);
+                record = null;
+            }
+            if (!record) record = this._createLineRecord(cartItem, item, variant);
+            this._updateLineRecord(record, cartItem, item, qty, previewByIndex[identity]);
+            nextRecords[identity] = record;
+            desiredRows.push(record.row);
+        }
+        for (var oldIdentity in this._lineRecords) {
+            if (Object.prototype.hasOwnProperty.call(this._lineRecords, oldIdentity)
+                    && !nextRecords[oldIdentity]) {
+                this._destroyLineRecord(this._lineRecords[oldIdentity]);
+            }
+        }
+        this._lineRecords = nextRecords;
+        for (var rowIndex = 0; rowIndex < desiredRows.length; rowIndex++) {
+            var currentRow = this._list.children[rowIndex] || null;
+            if (currentRow !== desiredRows[rowIndex]) this._list.insertBefore(desiredRows[rowIndex], currentRow);
         }
         this._count.textContent = '购物车 · ' + cart.length + ' 种 / ' + quantity + ' 件';
         var balance = preview ? Number(preview.balance || 0) : Number(options.getBalance() || 0);
@@ -263,65 +304,142 @@
         this._list.scrollTop = previousScrollTop;
         this._list.scrollLeft = previousScrollLeft;
     };
-    SettlementPage.prototype._renderLine = function(cartItem, item, quantity, authorityLine) {
+    SettlementPage.prototype._createLineRecord = function(cartItem, item, variant) {
         var options = this._options;
+        var identity = String(cartItem.idx);
+        var record = {identity:identity, variant:variant};
         var row = document.createElement('article');
         row.className = 'kshop-settlement-line';
         row.setAttribute('data-idx', cartItem.idx);
+        record.row = row;
         var icon = document.createElement('span');
         icon.className = 'kshop-settlement-icon';
-        icon.innerHTML = options.iconHtml(item ? item.icon : '', 'kshop-icon');
+        record.icon = icon;
         var copy = document.createElement('span');
         copy.className = 'kshop-settlement-copy';
-        var name = document.createElement('b');
-        name.textContent = item ? item.displayname : ('失效商品 #' + cartItem.idx);
+        record.copy = copy;
+        var name = document.createElement('button');
+        name.type = 'button';
+        name.className = 'kshop-settlement-inspect';
+        name.addEventListener('click', function(event) {
+            if (event.stopPropagation) event.stopPropagation();
+            if (record.itemAvailable && options.onInspect) options.onInspect(Number(identity), row);
+        });
+        record.name = name;
         var price = document.createElement('small');
-        var unitPrice = authorityLine ? Number(authorityLine.unitPrice || 0) : Number(item && item.price || 0);
-        var lineTotal = authorityLine ? Number(authorityLine.total || 0) : unitPrice * quantity;
-        price.textContent = item ? ('K ' + unitPrice.toLocaleString() + ' / 件 · 小计 '
-            + lineTotal.toLocaleString()) : '目录中已不存在';
+        record.price = price;
+        var bound = document.createElement('em');
+        record.bound = bound;
         copy.appendChild(name);
         copy.appendChild(price);
-        if (authorityLine) {
-            var bound = document.createElement('em');
-            bound.textContent = '当前最多可购 ' + Number(authorityLine.maxPurchasable || 0)
-                + ' · 容量上限 ' + Number(authorityLine.maxByCapacity || 0);
-            copy.appendChild(bound);
-        }
+        copy.appendChild(bound);
         var stepper = document.createElement('span');
         stepper.className = 'kshop-settlement-stepper';
-        if (item && options.isStackable(item)) {
-            stepper.appendChild(this._button('−', function() { options.adjustQuantity(cartItem.idx, -1, false); }));
-            var amount = document.createElement('b'); amount.textContent = String(quantity); stepper.appendChild(amount);
-            stepper.appendChild(this._button('+', function() { options.adjustQuantity(cartItem.idx, 1, false); }));
-            var plusFive = this._button('+5', function() { options.adjustQuantity(cartItem.idx, 5, false); });
-            plusFive.classList.add('wide'); stepper.appendChild(plusFive);
-            if (authorityLine && Number(authorityLine.maxPurchasable) > 0) {
-                var maximum = this._button('最大', function() {
-                    options.setQuantity(cartItem.idx, Number(authorityLine.maxPurchasable));
-                });
-                maximum.classList.add('wide'); stepper.appendChild(maximum);
-            }
-        } else if (item) {
-            var fixed = document.createElement('b'); fixed.textContent = '1 件'; stepper.appendChild(fixed);
+        record.stepper = stepper;
+        if (variant === 'stackable') {
+            record.control = new this._components.QuantityControl({
+                document:document,
+                className:'workbench-quantity-control kshop-settlement-quantity',
+                min:1,
+                max:1,
+                value:1,
+                showPlusFive:true,
+                showMax:true,
+                showRange:true,
+                onChange:function(value) { options.setQuantity(Number(identity), value); }
+            });
+            stepper.appendChild(record.control.root);
+        } else if (variant === 'fixed') {
+            record.fixed = document.createElement('b');
+            record.fixed.textContent = '1 件';
+            stepper.appendChild(record.fixed);
         }
-        var remove = this._button('移除', function() { options.adjustQuantity(cartItem.idx, 0, true); });
-        remove.classList.add('wide', 'remove'); stepper.appendChild(remove);
-        var editable = options.canEditCart() && !this._loading;
-        var buttons = stepper.querySelectorAll('button');
-        for (var i = 0; i < buttons.length; i++) buttons[i].disabled = !editable;
-        if (item && options.onInspect) row.addEventListener('click', function(event) {
-            if (event.target.closest && event.target.closest('button')) return;
-            options.onInspect(cartItem.idx, row);
+        record.remove = this._button('移除', function() {
+            options.adjustQuantity(Number(identity), 0, true);
+        });
+        record.remove.classList.add('wide', 'remove');
+        stepper.appendChild(record.remove);
+        row.addEventListener('click', function(event) {
+            if (event.target.closest && event.target.closest('button,.workbench-quantity-control')) return;
+            if (record.itemAvailable && options.onInspect) options.onInspect(Number(identity), row);
         });
         row.appendChild(icon); row.appendChild(copy); row.appendChild(stepper);
-        return row;
+        return record;
+    };
+    SettlementPage.prototype._updateLineRecord = function(record, cartItem, item, quantity, authorityLine) {
+        var options = this._options;
+        record.itemAvailable = !!item;
+        record.row.setAttribute('data-idx', cartItem.idx);
+        var iconKey = String(item ? item.icon : '');
+        if (record.iconKey !== iconKey) {
+            record.iconKey = iconKey;
+            record.icon.innerHTML = options.iconHtml(iconKey, 'kshop-icon');
+        }
+        var displayName = item ? item.displayname : ('失效商品 #' + cartItem.idx);
+        record.name.textContent = displayName;
+        record.name.disabled = !item || !options.onInspect;
+        record.name.setAttribute('aria-label', item ? '查看 ' + displayName + ' 详情' : displayName);
+        var unitPrice = authorityLine ? Number(authorityLine.unitPrice || 0) : Number(item && item.price || 0);
+        var lineTotal = authorityLine ? Number(authorityLine.total || 0) : unitPrice * quantity;
+        record.price.textContent = item ? ('K ' + unitPrice.toLocaleString() + ' / 件 · 小计 '
+            + lineTotal.toLocaleString()) : '目录中已不存在';
+        if (authorityLine) {
+            record.bound.hidden = false;
+            record.bound.textContent = '当前可直接结算 ' + Number(authorityLine.maxPurchasable || 0)
+                + ' · 容量上限 ' + Number(authorityLine.maxByCapacity || 0);
+        } else {
+            record.bound.hidden = true;
+            record.bound.textContent = '';
+        }
+        var editable = options.canEditCart() && !this._loading;
+        if (record.control) {
+            var catalogMaximum = Math.floor(Number(item && item.maxQuantity));
+            var previewMaximum = Math.floor(Number(authorityLine && authorityLine.maxQuantity));
+            var authorityMaximum = isFinite(previewMaximum) && previewMaximum > 0
+                ? previewMaximum : isFinite(catalogMaximum) && catalogMaximum > 0
+                    ? catalogMaximum : quantity;
+            authorityMaximum = Math.max(1, quantity, authorityMaximum);
+            var effective = authorityLine
+                ? Math.max(0, Math.floor(Number(authorityLine.maxPurchasable || 0)))
+                : 0;
+            record.control.root.setAttribute('aria-label', displayName + '购买数量');
+            record.control.update({
+                min:1,
+                max:authorityMaximum,
+                presetMax:effective,
+                sliderMax:authorityMaximum,
+                value:quantity,
+                disabled:!editable,
+                maxLabel:'可用',
+                maxAriaLabel:'设为当前可直接结算上限'
+            });
+        }
+        record.remove.disabled = !editable;
+    };
+    SettlementPage.prototype._destroyLineRecord = function(record) {
+        if (!record) return;
+        if (record.control) record.control.destroy();
+        if (record.row.parentNode) record.row.parentNode.removeChild(record.row);
+    };
+    SettlementPage.prototype._destroyQuantityControls = function() {
+        for (var identity in this._lineRecords) {
+            if (Object.prototype.hasOwnProperty.call(this._lineRecords, identity)) {
+                this._destroyLineRecord(this._lineRecords[identity]);
+            }
+        }
+        this._lineRecords = {};
     };
     SettlementPage.prototype._button = function(label, handler) {
         var button = document.createElement('button');
         button.type = 'button'; button.textContent = label;
         button.addEventListener('click', handler);
         return button;
+    };
+    SettlementPage.prototype.destroy = function() {
+        this._options.panelRoot.classList.remove('kshop-settling');
+        this._destroyQuantityControls();
+        this._commit.removeEventListener('click', this._commitHandler);
+        return this.secondary.destroy();
     };
 
     return { createCatalog: createCatalog, createOrder: createOrder, SettlementPage: SettlementPage };

@@ -8,7 +8,8 @@ var InventoryStorageWorkbench = (function() {
     'use strict';
     var _el, _shell, _backpackView, _rightView, _ownedPanes = {}, _tuningView, _pager, _retryButton;
     var _backpackSortControls, _rightSortControls;
-    var _quickDepositButton, _quickWithdrawButton, _quickStatusNode;
+    var _quickBarView, _quickDepositButton, _quickWithdrawButton, _quickCommitButton;
+    var _quickCancelButton, _quickStatusNode;
     var _broker, _dragControllers = [], _equipmentInspector = null, _tuningScope = null;
     var _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
     var _tooltipCache = {}, _tooltipSuppressed = false;
@@ -58,7 +59,7 @@ var InventoryStorageWorkbench = (function() {
     });
     var _quickTransfer = new InventoryWorkbenchQuickTransfer.QuickTransferController({
         rightContainerId:_rightContainerId,
-        limit:24,
+        limit:50,
         getAuthorityState:function() { return _state; },
         getGeneration:function() { return _openGeneration; },
         isGenerationCurrent:function(generation) { return generation === _openGeneration; },
@@ -66,15 +67,17 @@ var InventoryStorageWorkbench = (function() {
         slotRef:slotRef,
         autoTransfer:function(source, target, done) { return _coordinator.autoTransfer(source, target, done); },
         onChange:function() {
-            clearSelection(); hideTooltip(); updateQuickTransferUI(); renderInventories();
+            clearSelection(); hideTooltip(); renderInventories(); refreshControls();
         },
         onNotice:function(reason) {
             var messages = {
                 not_ready:'库存尚未就绪。', in_flight:'请等待当前快速转移完成。',
-                deposit_source:'快速存入模式：请点击背包中的物品。',
-                withdraw_source:'快速取出模式：请点击仓库中的物品。',
+                deposit_source:'批量存入模式：请点击背包中的物品。',
+                withdraw_source:'批量取出模式：请点击' + _rightContainerId + '中的物品。',
                 busy:'库存正在处理另一项操作。', already_in_flight:'该物品正在转移，无法取消。',
-                queue_full:'快速转移队列已满，请等待当前项目完成。'
+                queue_full:'批量转移最多选择 50 格。',
+                no_mode:'请先选择批量存入或批量取出。',
+                nothing_selected:'请先选择至少一件物品。'
             };
             toast(messages[reason] || '库存正在处理另一项操作。');
         },
@@ -112,7 +115,9 @@ var InventoryStorageWorkbench = (function() {
         _shell = context.shell; _el = context.root; _ports = context;
         _backpackView = null; _rightView = null; _pager = null;
         _backpackSortControls = null; _rightSortControls = null;
-        _quickDepositButton = null; _quickWithdrawButton = null; _quickStatusNode = null;
+        _quickBarView = null;
+        _quickDepositButton = null; _quickWithdrawButton = null;
+        _quickCommitButton = null; _quickCancelButton = null; _quickStatusNode = null;
         _broker = null; _dragControllers = [];
         _quickTransfer.reset();
         _profile = config.profile; _viewMode = initialView;
@@ -131,7 +136,7 @@ var InventoryStorageWorkbench = (function() {
         ])) throw new Error('Inventory workbench request profile rejected: ' + _profile);
         _el.setAttribute('data-inventory-profile', _profile);
         _el.setAttribute('data-workbench-view', _viewMode);
-        if (_profile === 'warehouse') installQuickTransferActions();
+        installQuickTransferActions();
         _densityController = context.densityController || null;
         if (!_densityController) throw new Error('Inventory workbench density controller is required');
         _layoutMode = _densityController.mode;
@@ -334,25 +339,22 @@ var InventoryStorageWorkbench = (function() {
         return true;
     }
     function installQuickTransferActions() {
-        _quickStatusNode = document.createElement('div'); _quickStatusNode.className = 'inventory-quick-transfer-status';
-        _quickStatusNode.setAttribute('role', 'status');
-        _quickStatusNode.setAttribute('aria-live', 'polite');
-        if (_ports.addHeaderAction) _ports.addHeaderAction(_quickStatusNode);
-        _quickDepositButton = createQuickModeButton('deposit', '快速存入', '背包 → 仓库');
-        _quickWithdrawButton = createQuickModeButton('withdraw', '快速取出', '仓库 → 背包');
-        if (_ports.addHeaderAction) {
-            _ports.addHeaderAction(_quickDepositButton); _ports.addHeaderAction(_quickWithdrawButton);
-        }
+        _quickBarView = InventoryWorkbenchQuickTransfer.createCommandBar({
+            document:document,
+            rightContainerId:_rightContainerId,
+            onMode:setQuickMode,
+            onCancel:exitQuickMode,
+            onCommit:commitQuickTransfer
+        });
+        _quickStatusNode = _quickBarView.statusNode;
+        _quickDepositButton = _quickBarView.depositButton;
+        _quickWithdrawButton = _quickBarView.withdrawButton;
+        _quickCancelButton = _quickBarView.cancelButton;
+        _quickCommitButton = _quickBarView.commitButton;
+        var body = _el && _el.querySelector('.workbench-body');
+        if (!body) throw new Error('Inventory quick-transfer bar requires the workbench body');
+        body.appendChild(_quickBarView.root);
         updateQuickTransferUI();
-    }
-    function createQuickModeButton(mode, label, direction) {
-        var button = document.createElement('button'); button.type = 'button';
-        button.className = 'workbench-mode-btn inventory-quick-transfer-btn';
-        button.setAttribute('data-quick-mode', mode); button.setAttribute('aria-pressed', 'false');
-        button.textContent = label;
-        button.setAttribute('aria-label', label + '（' + direction + '）；也可随时 Ctrl+单击单件快速转移');
-        button.addEventListener('click', function() { setQuickMode(mode); });
-        return button;
     }
     function createInventoryToolbar(containerId, pager) {
         var view = containerId === '背包' ? _backpackView : _rightView;
@@ -390,7 +392,7 @@ var InventoryStorageWorkbench = (function() {
             itemName:itemName,
             label:node.getAttribute('aria-label') || itemName,
             selected:_broker.isSelectedNode(node),
-            // 常驻快速转移允许在首项写入期间继续把后续键盘/指针意图排队。
+            // 批量模式只暂存选择；执行后写入期间锁定新的键盘/指针意图。
             disabled:function() { return !!_state.refreshRequired; },
             onActivate:function(event, context) {
                 if (consumeDragClick()) return;
@@ -488,9 +490,9 @@ var InventoryStorageWorkbench = (function() {
         });
     }
     function setQuickMode(mode) {
-        if (_profile !== 'warehouse') return false;
         return _quickTransfer.setMode(mode);
     }
+    function commitQuickTransfer() { return _quickTransfer.commit(); }
     function exitQuickMode() { return _quickTransfer.exit(); }
     function findCurrentSlot(containerId, physicalSlot) {
         var snapshot = _coordinator.getWindow(containerId);
@@ -502,25 +504,11 @@ var InventoryStorageWorkbench = (function() {
     }
     function updateQuickTransferUI() {
         var quick = _quickTransfer.debugState();
-        if (_quickDepositButton) {
-            _quickDepositButton.classList.toggle('active', quick.mode === 'deposit');
-            _quickDepositButton.setAttribute('aria-pressed', quick.mode === 'deposit' ? 'true' : 'false');
-        }
-        if (_quickWithdrawButton) {
-            _quickWithdrawButton.classList.toggle('active', quick.mode === 'withdraw');
-            _quickWithdrawButton.setAttribute('aria-pressed', quick.mode === 'withdraw' ? 'true' : 'false');
-        }
         if (_el) {
             if (quick.mode) _el.setAttribute('data-quick-transfer-mode', quick.mode);
             else _el.removeAttribute('data-quick-transfer-mode');
         }
-        if (!_quickStatusNode) return;
-        if (quick.mode === 'deposit') _quickStatusNode.textContent = '快速存入：背包 → 仓库';
-        else if (quick.mode === 'withdraw') _quickStatusNode.textContent = '快速取出：仓库 → 背包';
-        else _quickStatusNode.textContent = 'Ctrl+单击：快速转移';
-        if (quick.queued || quick.completed) {
-            _quickStatusNode.textContent += ' · 待处理 ' + quick.queued + ' · 已完成 ' + quick.completed;
-        }
+        if (_quickBarView) _quickBarView.update(quick, {visible:_viewMode === 'storage'});
     }
     function applyQuickTransferSlotState() {
         if (!_el) return;
@@ -585,8 +573,13 @@ var InventoryStorageWorkbench = (function() {
         if (_retryButton) _retryButton.style.display = _state.refreshRequired ? '' : 'none';
         var quickBlocked = _viewMode === 'tuning' || !_state.ready || !!_state.refreshRequired
             || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer');
-        if (_quickDepositButton) _quickDepositButton.disabled = quickBlocked;
-        if (_quickWithdrawButton) _quickWithdrawButton.disabled = quickBlocked;
+        var quickState = _quickTransfer.debugState();
+        if (_quickDepositButton) _quickDepositButton.disabled = quickBlocked || quickState.committing;
+        if (_quickWithdrawButton) _quickWithdrawButton.disabled = quickBlocked || quickState.committing;
+        if (_quickCommitButton) {
+            _quickCommitButton.disabled = quickBlocked || !quickState.mode
+                || quickState.pending < 1 || quickState.committing;
+        }
         if (_ports.refreshHeader) _ports.refreshHeader();
         updateQuickTransferUI();
         if (!_shell) return;
@@ -707,6 +700,20 @@ var InventoryStorageWorkbench = (function() {
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         });
     }
+    function openStorageHelp() {
+        if (!_shell || _viewMode !== 'storage') return false;
+        var target = _rightContainerId === '战备箱' ? '战备箱' : '仓库';
+        return !!_shell.openModal({
+            kind:'inventory-storage-help',
+            title:target + '收纳帮助',
+            message:'常用操作\n• 精确放置：先选择一侧物品，再选择另一侧目标格；也可以直接拖拽到目标位置。\n• 单件快移：按住 Ctrl 单击物品，系统会优先合并同名堆叠，再寻找首个空格。',
+            detail:'批量处理\n• 点击下方“批量存入”或“批量取出”，再依次点击多个物品完成暂存；重复点击可取消。\n• 确认计数后点击“执行转移”，队列会逐件使用现有自动落位规则。\n• Esc 会先取消尚未执行的批次；任一物品状态过期、目标已满或同步失败时，队列会停止并重新核对。\n\n浏览\n• 紧凑模式适合快速收纳，完整模式显示名称与状态；筛选、分页和整理都基于完整权威容器。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        });
+    }
+    function openHelp() {
+        return _viewMode === 'tuning' ? openTuningHelp() : openStorageHelp();
+    }
     function cleanup() {
         _openGeneration += 1;
         if (_pager) _pager.detach();
@@ -723,6 +730,9 @@ var InventoryStorageWorkbench = (function() {
         disposeOwnedPanes();
         _densityController = null;
         _ports = {};
+        _quickBarView = null;
+        _quickDepositButton = null; _quickWithdrawButton = null;
+        _quickCommitButton = null; _quickCancelButton = null; _quickStatusNode = null;
         _el = null;
         _shell = null;
     }
@@ -832,7 +842,7 @@ var InventoryStorageWorkbench = (function() {
         prepareClose:prepareExit,
         beginExternalWrite:beginExternalWrite,
         completeExternalWrite:completeExternalWrite,
-        openHelp:openTuningHelp,
+        openHelp:openHelp,
         setConfirmationMode:setModConfirmationMode,
         getHeaderState:function() {
             return {view:_viewMode, confirmationMode:_modConfirmationMode,

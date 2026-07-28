@@ -1,5 +1,10 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 
+import org.flashNight.arki.item.obtain.ItemObtainIndex;
+import org.flashNight.arki.item.synthesis.SynthesisIndex;
+import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.tooltip.TooltipBridge;
+
 /**
  * 合成 Web Panel 的 Flash 权威服务。
  * C0-C3：目录投影/单份可合成状态、批量权威预览与一次性 token 原子提交。
@@ -34,6 +39,12 @@ class org.flashNight.arki.item.CraftingPanelService {
         _root.gameCommands["craftingSnapshot"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("snapshot", params);
         };
+        _root.gameCommands["craftingMaterials"] = function(params) {
+            org.flashNight.arki.item.CraftingPanelService.handle("materials", params);
+        };
+        _root.gameCommands["craftingMaterialDetail"] = function(params) {
+            org.flashNight.arki.item.CraftingPanelService.handle("materialDetail", params);
+        };
         _root.gameCommands["craftingPreview"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("preview", params);
         };
@@ -63,6 +74,15 @@ class org.flashNight.arki.item.CraftingPanelService {
         return _root.server.sendSocketMessage(payload);
     }
 
+    public static function openMaterialsPanel(source:String):Boolean {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
+        if (source != "nativehud_materials") source = "nativehud_materials";
+        var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
+            "crafting", source, [], [{name:"view", value:"materials"}]
+        );
+        return _root.server.sendSocketMessage(payload);
+    }
+
     public static function handle(commandName:String, params:Object):Void {
         var callId:Number = params == undefined ? 0 : Number(params.callId);
         var response:Object = execute(commandName, params || {});
@@ -72,8 +92,11 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     public static function execute(commandName:String, params:Object):Object {
-        if (_busy && commandName != "snapshot" && commandName != "tooltip") return fail("busy");
+        if (_busy && commandName != "snapshot" && commandName != "materials"
+                && commandName != "materialDetail" && commandName != "tooltip") return fail("busy");
         if (commandName == "snapshot") return executeSnapshot(params);
+        if (commandName == "materials") return executeMaterials();
+        if (commandName == "materialDetail") return executeMaterialDetail(params);
         if (commandName == "preview") return executePreview(params);
         if (commandName == "tooltip") return executeTooltip(params);
         if (commandName != "commit") return fail("unsupported_cmd");
@@ -95,6 +118,156 @@ class org.flashNight.arki.item.CraftingPanelService {
         }
         return {success:true, v:1, category:category, gender:buildGender(), recipes:catalog,
             balance:buildBalance(), skills:buildSkills(), note:categoryNote(category)};
+    }
+
+    private static function executeMaterials():Object {
+        var informationByName:Object = buildMaterialInformationIndex();
+        var names:Array = [];
+        var seen:Object = {};
+        var name:String;
+        for (name in informationByName) {
+            if (ObjectUtil.isInternalKey(name) || seen[name]) continue;
+            seen[name] = true;
+            names.push(name);
+        }
+        for (name in ItemUtil.materialDict) {
+            if (ObjectUtil.isInternalKey(name) || seen[name]) continue;
+            seen[name] = true;
+            names.push(name);
+        }
+        names.sort();
+
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        var catalog:Array = [];
+        for (var i:Number = 0; i < names.length; i++) {
+            name = String(names[i]);
+            var data:Object = ItemUtil.getRawItemData(name);
+            if (data == null || !ItemUtil.isMaterial(name)) continue;
+            var records:Array = index.getObtainRecords(name);
+            var uses:Array = SynthesisIndex.getRecipesUsing(name);
+            catalog.push({
+                name:name,
+                displayName:String(data.displayname || name),
+                icon:String(data.icon || name),
+                owned:Number(_root.收集品栏.材料.getValue(name) || 0),
+                sourceCount:records == null ? 0 : records.length,
+                useCount:uses.length,
+                hasSourceSummary:String(informationByName[name] || "").length > 0
+            });
+        }
+        return {success:true, v:1, view:"materials", materials:catalog};
+    }
+
+    private static function executeMaterialDetail(params:Object):Object {
+        var name:String = String(params.itemName || "");
+        if (!ItemUtil.isMaterial(name)) return fail("item_not_found");
+        var data:Object = ItemUtil.getRawItemData(name);
+        if (data == null) return fail("item_not_found");
+        var informationByName:Object = buildMaterialInformationIndex();
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        var records:Array = index.getObtainRecords(name);
+        var sources:Array = [];
+        for (var i:Number = 0; records != null && i < records.length; i++) {
+            var projected:Object = projectObtainRecord(records[i]);
+            if (projected != null) sources.push(projected);
+        }
+        var products:Array = SynthesisIndex.getRecipesUsing(name);
+        var uses:Array = [];
+        for (i = 0; i < products.length; i++) {
+            var use:Object = projectMaterialUse(name, String(products[i]), index);
+            if (use != null) uses.push(use);
+        }
+        return {
+            success:true,
+            v:1,
+            view:"materials",
+            material:{
+                name:name,
+                displayName:String(data.displayname || name),
+                icon:String(data.icon || name),
+                description:String(data.description || ""),
+                owned:Number(_root.收集品栏.材料.getValue(name) || 0),
+                sourceSummary:String(informationByName[name] || "")
+            },
+            sources:sources,
+            uses:uses
+        };
+    }
+
+    private static function buildMaterialInformationIndex():Object {
+        var result:Object = {};
+        var dictionary:Object = _root.图鉴信息 == undefined
+            ? null : _root.图鉴信息.材料大全;
+        if (dictionary == null) return result;
+        var rows:Array = dictionary instanceof Array ? dictionary : [dictionary];
+        for (var i:Number = 0; i < rows.length; i++) {
+            var row:Object = rows[i];
+            var name:String = String(row == null ? "" : row.Name || "");
+            if (name == "") continue;
+            result[name] = String(row.Information || "");
+        }
+        return result;
+    }
+
+    private static function projectObtainRecord(record:Object):Object {
+        if (record == null) return null;
+        var kind:String = String(record.kind || "");
+        if (kind == ItemObtainIndex.KIND_CRAFT) {
+            return {kind:"craft", category:String(record.category || ""),
+                price:Number(record.price || 0), kpoints:Number(record.kprice || 0)};
+        }
+        if (kind == ItemObtainIndex.KIND_SHOP) {
+            return {kind:"shop", npc:String(record.npc || ""),
+                requirement:String(record.requiredInfo || "")};
+        }
+        if (kind == ItemObtainIndex.KIND_KSHOP) {
+            return {kind:"kshop", category:String(record.type || ""),
+                priceK:Number(record.priceK || 0)};
+        }
+        if (kind == ItemObtainIndex.KIND_QUEST) {
+            return {kind:"quest", questId:String(record.questId || ""),
+                title:String(record.questTitle || ""), quantity:Number(record.quantity || 0)};
+        }
+        if (kind != ItemObtainIndex.KIND_DROP) return null;
+        if (String(record.dropType) == ItemObtainIndex.DROP_TYPE_STAGE) {
+            return {kind:"stage", stageName:String(record.stageName || ""),
+                probability:Number(record.probability || 0),
+                quantityMax:Number(record.quantityMax || 0)};
+        }
+        var enemyType:String = String(record.enemyType || "");
+        return {kind:"enemy", enemyType:enemyType,
+            displayName:String(TooltipBridge.getEnemyDisplayName(enemyType) || enemyType),
+            probability:Number(record.probability || 0),
+            minLevel:Number(record.minLevel || 0),
+            maxLevel:Number(record.maxLevel || 0)};
+    }
+
+    private static function projectMaterialUse(inputName:String, productName:String,
+            index:ItemObtainIndex):Object {
+        var data:Object = ItemUtil.getRawItemData(productName);
+        if (data == null) return null;
+        var recipe:Object = null;
+        if (data.synthesis != undefined) recipe = SynthesisIndex.getRecipe(String(data.synthesis));
+        if (recipe == null) recipe = SynthesisIndex.getRecipe(productName);
+        var required:Number = 0;
+        if (recipe != null) {
+            var requirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
+            for (var i:Number = 0; i < requirements.length; i++) {
+                if (String(requirements[i].name) != inputName) continue;
+                required += Number(requirements[i].value || 0);
+            }
+        }
+        var category:String = "";
+        var records:Array = index.getObtainRecords(productName);
+        for (i = 0; records != null && i < records.length; i++) {
+            if (String(records[i].kind) != ItemObtainIndex.KIND_CRAFT) continue;
+            category = String(records[i].category || "");
+            break;
+        }
+        var item:Object = projectItem(productName, 1);
+        return {name:productName, displayName:String(data.displayname || productName),
+            icon:String(data.icon || productName), itemKind:String(item.itemKind || "stack"),
+            category:category, required:required};
     }
 
     private static function executePreview(params:Object):Object {

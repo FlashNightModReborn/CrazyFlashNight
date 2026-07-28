@@ -165,6 +165,14 @@
     FocusScope.prototype._handleKeyDown = function(event) {
         if (!this._isTop()) return;
         if (event.key === 'Escape' || event.key === 'Esc') {
+            // Editable child controls may own the first Escape while a local
+            // draft is active. The target handler clears that draft; a
+            // subsequent Escape then returns to the enclosing page.
+            if (event.target && this.root.contains && this.root.contains(event.target)
+                    && event.target.getAttribute
+                    && event.target.getAttribute('data-workbench-escape-owner') === 'field') {
+                return;
+            }
             event.preventDefault();
             if (event.stopPropagation) event.stopPropagation();
             var result = typeof this._options.onEscape === 'function'

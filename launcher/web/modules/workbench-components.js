@@ -48,6 +48,7 @@
     }
     var FocusScope = WorkbenchFocus.FocusScope;
     var secondaryOpenSequence = 0;
+    var quantityControlSequence = 0;
 
     function resolveDocument(options, node) {
         return options.document || (node && node.ownerDocument)
@@ -86,6 +87,71 @@
     function secondaryOwner(node) {
         return node && node.__cf7WorkbenchSecondaryPage || null;
     }
+
+    function enclosingSecondaryOwner(node) {
+        var current = node;
+        while (current) {
+            var owner = secondaryOwner(current);
+            if (owner) return owner;
+            current = current.parentNode;
+        }
+        return null;
+    }
+
+    function HelpAction(options) {
+        options = options || {};
+        if (!options.shell || typeof options.shell.addHeaderAction !== 'function'
+                || typeof options.shell.openModal !== 'function') {
+            throw new Error('HelpAction requires a workbench shell');
+        }
+        this.shell = options.shell;
+        this.spec = null;
+        this._destroyed = false;
+        this.button = resolveDocument(options).createElement('button');
+        this.button.type = 'button';
+        this.button.className = 'workbench-mode-btn workbench-help-btn';
+        this.button.textContent = '?';
+        this.button.setAttribute('data-workbench-help', '');
+        this.button.setAttribute('data-audio-cue', 'select');
+        var self = this;
+        this._unbind = listen(this.button, 'click', function() {
+            var current = self.spec;
+            if (!current || self._destroyed) return;
+            if (typeof current.onOpen === 'function') {
+                current.onOpen(self.button, self.shell);
+                return;
+            }
+            var modalSpec = {};
+            for (var key in current) modalSpec[key] = current[key];
+            if (!modalSpec.kind) modalSpec.kind = 'workbench-help';
+            if (!modalSpec.actions) modalSpec.actions = [
+                {id:'close', label:'知道了', primary:true, audioCue:'confirm'}
+            ];
+            self.shell.openModal(modalSpec);
+        });
+        this.shell.addHeaderAction(this.button);
+        this.update(options.spec || null);
+    }
+    HelpAction.prototype.update = function(spec) {
+        if (this._destroyed) return false;
+        this.spec = spec || null;
+        this.button.hidden = !this.spec;
+        this.button.disabled = !!(this.spec && this.spec.disabled);
+        this.button.textContent = this.spec && this.spec.buttonLabel
+            ? String(this.spec.buttonLabel) : '?';
+        this.button.setAttribute('aria-label', this.spec && this.spec.ariaLabel
+            ? String(this.spec.ariaLabel) : '查看工作台帮助');
+        return true;
+    };
+    HelpAction.prototype.destroy = function() {
+        if (this._destroyed) return false;
+        this._destroyed = true;
+        this._unbind();
+        removeNode(this.button);
+        this.spec = null;
+        this.shell = null;
+        return true;
+    };
 
     function syncSecondaryAccessibility(host) {
         if (!host || !host.children) return;
@@ -226,6 +292,7 @@
         var generation = ++this._generation;
         this._stackOrder = ++secondaryOpenSequence;
         this._returnFocus = context.opener || this._document && this._document.activeElement || null;
+        this._initialFocus = context.initialFocus || this._options.initialFocus || null;
         this._active = true;
         setClass(this.root, this._activeClass, true);
         this.root.setAttribute('aria-hidden', 'false');
@@ -305,6 +372,7 @@
         }
         this._host = null;
         this._returnFocus = null;
+        this._initialFocus = null;
         syncSecondaryAccessibility(host);
         this._destroying = false;
         if (firstError) throw firstError;
@@ -690,10 +758,458 @@
         return true;
     };
 
+    function QuantityControl(options) {
+        options = options || {};
+        this._options = options;
+        this._document = resolveDocument(options, options.root);
+        if (!this._document) throw new Error('QuantityControl requires a document or root');
+        this._lifetime = new DisposableStack();
+        this._destroyed = false;
+        this._min = 1;
+        this._max = 1;
+        this._presetMax = 1;
+        this._sliderMax = 1;
+        this._sliderScale = 'linear';
+        this._sliderSteps = 1000;
+        this._value = 1;
+        this._disabled = false;
+        this._numberDraft = null;
+        this._rangeDraft = null;
+        this._pendingFocusRestore = null;
+        this._pendingFocusFallback = null;
+        this._changeFocusOrigin = null;
+        this._feedbackId = 'workbench-quantity-feedback-' + (++quantityControlSequence);
+        this.root = options.root || this._document.createElement('span');
+        this.root.className = options.className || 'workbench-quantity-control';
+        this.root.setAttribute('role', 'group');
+        this.root.setAttribute('aria-label', options.ariaLabel || '数量');
+
+        this.minusButton = this._button('−', '减少 1');
+        this.numberInput = this._document.createElement('input');
+        this.numberInput.type = 'number';
+        this.numberInput.className = 'workbench-quantity-number';
+        this.numberInput.setAttribute('inputmode', 'numeric');
+        this.numberInput.setAttribute('aria-label', options.inputAriaLabel || '输入数量');
+        this.numberInput.setAttribute('aria-describedby', this._feedbackId);
+        this.plusButton = this._button('+', '增加 1');
+        this.plusFiveButton = this._button('+5', '增加 5');
+        this.plusFiveButton.classList.add('wide');
+        this.maxButton = this._button(options.maxLabel || '最大', '使用当前可直接结算上限');
+        this.maxButton.classList.add('wide');
+        this.rangeInput = this._document.createElement('input');
+        this.rangeInput.type = 'range';
+        this.rangeInput.className = 'workbench-quantity-range';
+        this.rangeInput.setAttribute('aria-label', options.rangeAriaLabel || '拖动选择数量');
+        this.rangeInput.setAttribute('aria-keyshortcuts',
+            'ArrowLeft ArrowRight ArrowUp ArrowDown PageUp PageDown Home End');
+        this.rangeShell = this._document.createElement('span');
+        this.rangeShell.className = 'workbench-quantity-range-shell';
+        this.rangeTrack = this._document.createElement('span');
+        this.rangeTrack.className = 'workbench-quantity-track';
+        this.rangeMarker = this._document.createElement('span');
+        this.rangeMarker.className = 'workbench-quantity-effective-marker';
+        this.rangeMarker.setAttribute('aria-hidden', 'true');
+        this.rangeTrack.appendChild(this.rangeInput);
+        this.rangeTrack.appendChild(this.rangeMarker);
+        this.rangeScale = this._document.createElement('span');
+        this.rangeScale.className = 'workbench-quantity-scale';
+        this.rangeScale.setAttribute('aria-hidden', 'true');
+        this.rangeMinLabel = this._document.createElement('span');
+        this.rangeMidLabel = this._document.createElement('span');
+        this.rangeMaxLabel = this._document.createElement('span');
+        this.rangeScale.appendChild(this.rangeMinLabel);
+        this.rangeScale.appendChild(this.rangeMidLabel);
+        this.rangeScale.appendChild(this.rangeMaxLabel);
+        this.rangeShell.appendChild(this.rangeTrack);
+        this.rangeShell.appendChild(this.rangeScale);
+        this.feedback = this._document.createElement('span');
+        this.feedback.className = 'workbench-quantity-feedback';
+        this.feedback.setAttribute('id', this._feedbackId);
+        this.feedback.setAttribute('role', 'status');
+        this.feedback.setAttribute('aria-live', 'polite');
+        this.feedback.setAttribute('aria-atomic', 'true');
+        this.feedback.hidden = true;
+
+        this.root.appendChild(this.minusButton);
+        this.root.appendChild(this.numberInput);
+        this.root.appendChild(this.plusButton);
+        this.root.appendChild(this.plusFiveButton);
+        this.root.appendChild(this.maxButton);
+        this.root.appendChild(this.rangeShell);
+        this.root.appendChild(this.feedback);
+
+        var self = this;
+        this._lifetime.defer(listen(this.minusButton, 'click', function(event) {
+            if (self.minusButton.disabled) return;
+            self.setValue(self._value - 1, {notify:true, reason:'decrement', event:event});
+        }));
+        this._lifetime.defer(listen(this.plusButton, 'click', function(event) {
+            if (self.plusButton.disabled) return;
+            self.setValue(self._value + 1, {notify:true, reason:'increment', event:event});
+        }));
+        this._lifetime.defer(listen(this.plusFiveButton, 'click', function(event) {
+            if (self.plusFiveButton.disabled) return;
+            self.setValue(self._value + 5, {notify:true, reason:'increment_five', event:event});
+        }));
+        this._lifetime.defer(listen(this.maxButton, 'click', function(event) {
+            if (self.maxButton.disabled) return;
+            self.setValue(self._presetMax, {notify:true, reason:'maximum', event:event});
+        }));
+        this._lifetime.defer(listen(this.numberInput, 'input', function() {
+            self._syncNumberDraft(self.numberInput.value);
+        }));
+        this._lifetime.defer(listen(this.numberInput, 'change', function(event) {
+            self._commitNumberDraft(event);
+        }));
+        this._lifetime.defer(listen(this.numberInput, 'keydown', function(event) {
+            if (!event) return;
+            if (event.key === 'Enter') {
+                if (event.preventDefault) event.preventDefault();
+                self._commitNumberDraft(event);
+            } else if (event.key === 'Escape') {
+                if (event.preventDefault) event.preventDefault();
+                if (event.stopPropagation) event.stopPropagation();
+                if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                self._numberDraft = null;
+                self._setValidation(null);
+                self._render();
+            }
+        }));
+        this._lifetime.defer(listen(this.rangeInput, 'input', function() {
+            self._syncSliderDraft(self.rangeInput.value);
+        }));
+        this._lifetime.defer(listen(this.rangeInput, 'change', function(event) {
+            var next = self._rangeDraft == null
+                ? self._sliderToQuantity(self.rangeInput.value) : self._rangeDraft;
+            self._rangeDraft = null;
+            self.setValue(next, {notify:true, reason:'range', event:event});
+        }));
+        this._lifetime.defer(listen(this.rangeInput, 'keydown', function(event) {
+            self._handleRangeKeydown(event);
+        }));
+        this.update(options);
+    }
+
+    QuantityControl.prototype._button = function(label, ariaLabel) {
+        var button = this._document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.setAttribute('aria-label', ariaLabel);
+        return button;
+    };
+    QuantityControl.prototype._clamp = function(value) {
+        value = Math.floor(Number(value));
+        if (!isFinite(value)) value = this._min;
+        return Math.max(this._min, Math.min(this._max, value));
+    };
+    QuantityControl.prototype._sliderUpper = function() {
+        return Math.max(this._min, this._sliderMax);
+    };
+    QuantityControl.prototype._sliderQuantity = function(value) {
+        value = this._clamp(value);
+        return Math.max(this._min, Math.min(this._sliderUpper(), value));
+    };
+    QuantityControl.prototype._quantityToSlider = function(value) {
+        var quantity = this._sliderQuantity(value);
+        if (this._sliderScale !== 'log') return quantity;
+        var span = this._sliderUpper() - this._min;
+        if (span <= 0) return 0;
+        var ratio = Math.log(quantity - this._min + 1) / Math.log(span + 1);
+        return Math.max(0, Math.min(this._sliderSteps, Math.round(ratio * this._sliderSteps)));
+    };
+    QuantityControl.prototype._sliderToQuantity = function(value) {
+        if (this._sliderUpper() <= this._min) return this._min;
+        if (this._sliderScale !== 'log') return this._sliderQuantity(value);
+        var position = Math.max(0, Math.min(this._sliderSteps, Number(value) || 0));
+        var span = this._sliderUpper() - this._min;
+        var quantity = this._min + Math.round(
+            Math.exp(position / this._sliderSteps * Math.log(span + 1)) - 1);
+        return this._sliderQuantity(quantity);
+    };
+    QuantityControl.prototype._physicalProgress = function(value) {
+        var position = this._quantityToSlider(value);
+        if (this._sliderScale === 'log') return position / this._sliderSteps;
+        return (position - this._min) / Math.max(1, this._sliderUpper() - this._min);
+    };
+    QuantityControl.prototype._syncSliderAria = function(quantity) {
+        quantity = this._sliderQuantity(quantity);
+        this.rangeInput.setAttribute('aria-valuemin', String(this._min));
+        this.rangeInput.setAttribute('aria-valuemax', String(this._sliderUpper()));
+        this.rangeInput.setAttribute('aria-valuenow', String(quantity));
+        this.rangeInput.setAttribute('aria-valuetext',
+            this._presetMax >= this._min && this._presetMax < this._sliderUpper()
+                ? quantity + '；当前可直接结算 ' + this._presetMax
+                : String(quantity));
+        var progress = Math.max(0, Math.min(1, this._physicalProgress(quantity)));
+        if (this.rangeInput.style && this.rangeInput.style.setProperty) {
+            this.rangeInput.style.setProperty('--quantity-progress',
+                Math.round(progress * 10000) / 100 + '%');
+        }
+    };
+    QuantityControl.prototype._syncSliderDraft = function(value) {
+        var quantity = this._sliderToQuantity(value);
+        this._rangeDraft = quantity;
+        this._numberDraft = null;
+        this._setValidation(null);
+        this.numberInput.value = String(quantity);
+        this._syncSliderAria(quantity);
+        return quantity;
+    };
+    QuantityControl.prototype._validationResult = function(value) {
+        var draft = String(value == null ? '' : value).trim();
+        var bounds = this._formatSliderLabel(this._min) + '–' + this._formatSliderLabel(this._max);
+        if (!draft) return {valid:false, message:'请输入 ' + bounds + ' 的整数'};
+        if (!/^\d+$/.test(draft)) return {valid:false, message:'数量只能填写整数'};
+        var numeric = Number(draft);
+        if (!isFinite(numeric) || numeric < this._min || numeric > this._max) {
+            return {valid:false, message:'数量须在 ' + bounds + ' 之间'};
+        }
+        return {valid:true, value:numeric, message:''};
+    };
+    QuantityControl.prototype._setValidation = function(result) {
+        var invalid = !!(result && !result.valid);
+        this.numberInput.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+        this.root.classList.toggle('has-invalid-quantity', invalid);
+        this.feedback.textContent = invalid ? result.message : '';
+        this.feedback.hidden = !invalid;
+    };
+    QuantityControl.prototype._syncNumberDraft = function(value) {
+        this._numberDraft = String(value == null ? '' : value);
+        this._rangeDraft = null;
+        this.numberInput.setAttribute('data-workbench-escape-owner', 'field');
+        var result = this._validationResult(this._numberDraft);
+        this._setValidation(result);
+        if (!result.valid) {
+            this.rangeInput.value = String(this._quantityToSlider(this._value));
+            this._syncSliderAria(this._value);
+            return null;
+        }
+        this.rangeInput.value = String(this._quantityToSlider(result.value));
+        this._syncSliderAria(result.value);
+        return result.value;
+    };
+    QuantityControl.prototype._commitNumberDraft = function(event) {
+        var result = this._validationResult(this.numberInput.value);
+        this._numberDraft = String(this.numberInput.value == null ? '' : this.numberInput.value);
+        this._setValidation(result);
+        if (!result.valid) return false;
+        this._numberDraft = null;
+        return this.setValue(result.value, {notify:true, reason:'number', event:event});
+    };
+    QuantityControl.prototype._magnitudeNodes = function() {
+        var nodes = [this._min, this._sliderUpper()];
+        if (this._presetMax >= this._min && this._presetMax <= this._sliderUpper()) {
+            nodes.push(this._presetMax);
+        }
+        var multiplier = 1;
+        while (multiplier <= this._sliderUpper() && multiplier <= 1000000000) {
+            nodes.push(multiplier, multiplier * 2, multiplier * 5);
+            multiplier *= 10;
+        }
+        var unique = {};
+        var result = [];
+        for (var i = 0; i < nodes.length; i++) {
+            var value = Math.floor(Number(nodes[i]));
+            if (!isFinite(value) || value < this._min || value > this._sliderUpper() || unique[value]) continue;
+            unique[value] = true;
+            result.push(value);
+        }
+        result.sort(function(a, b) { return a - b; });
+        return result;
+    };
+    QuantityControl.prototype._pageQuantity = function(current, direction) {
+        var nodes = this._magnitudeNodes();
+        if (direction > 0) {
+            for (var i = 0; i < nodes.length; i++) if (nodes[i] > current) return nodes[i];
+            return this._sliderUpper();
+        }
+        for (var j = nodes.length - 1; j >= 0; j--) if (nodes[j] < current) return nodes[j];
+        return this._min;
+    };
+    QuantityControl.prototype._handleRangeKeydown = function(event) {
+        if (!event || this.rangeInput.disabled) return false;
+        var current = Number(this.rangeInput.getAttribute('aria-valuenow'));
+        if (!isFinite(current)) current = this._value;
+        var next = current;
+        var handled = true;
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') next -= event.shiftKey ? 5 : 1;
+        else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') next += event.shiftKey ? 5 : 1;
+        else if (event.key === 'Home') next = this._min;
+        else if (event.key === 'End') next = this._sliderUpper();
+        else if (event.key === 'PageDown') next = this._pageQuantity(current, -1);
+        else if (event.key === 'PageUp') next = this._pageQuantity(current, 1);
+        else handled = false;
+        if (!handled) return false;
+        if (event.preventDefault) event.preventDefault();
+        this.setValue(next, {notify:true, reason:'range_keyboard', event:event});
+        return true;
+    };
+    QuantityControl.prototype._formatSliderLabel = function(value) {
+        return Math.max(0, Math.floor(Number(value) || 0)).toLocaleString('zh-CN');
+    };
+    QuantityControl.prototype._render = function() {
+        this.numberInput.min = String(this._min);
+        this.numberInput.max = String(this._max);
+        this.numberInput.step = '1';
+        if (this._numberDraft != null) {
+            this.numberInput.setAttribute('data-workbench-escape-owner', 'field');
+        } else {
+            this.numberInput.removeAttribute('data-workbench-escape-owner');
+        }
+        var sliderUpper = this._sliderUpper();
+        this._sliderScale = this._options.sliderScale === 'linear'
+            || this._options.sliderScale === 'log'
+            ? this._options.sliderScale
+            : sliderUpper > Number(this._options.linearSliderThreshold || 200)
+                ? 'log' : 'linear';
+        this.rangeInput.min = this._sliderScale === 'log' ? '0' : String(this._min);
+        this.rangeInput.max = this._sliderScale === 'log'
+            ? String(this._sliderSteps) : String(sliderUpper);
+        this.rangeInput.step = '1';
+        if (this._numberDraft == null) this.numberInput.value = String(this._value);
+        var sliderQuantity = this._numberDraft == null
+            ? (this._rangeDraft == null ? this._value : this._rangeDraft)
+            : this._validationResult(this._numberDraft).valid
+                ? Number(this._numberDraft) : this._value;
+        this.rangeInput.value = String(this._quantityToSlider(sliderQuantity));
+        this.rangeMinLabel.textContent = this._formatSliderLabel(this._min);
+        this.rangeMidLabel.textContent = this._presetMax >= this._min && this._presetMax < sliderUpper
+            ? '可用 ' + this._formatSliderLabel(this._presetMax)
+            : this._formatSliderLabel(this._sliderToQuantity(this._sliderScale === 'log'
+                ? this._sliderSteps / 2 : (this._min + sliderUpper) / 2));
+        this.rangeMaxLabel.textContent = this._formatSliderLabel(sliderUpper);
+        this.maxButton.textContent = this._options.maxLabel || '最大';
+        this.maxButton.setAttribute('aria-label', (this._options.maxAriaLabel || '设为当前可直接结算上限')
+            + (this._presetMax >= this._min ? ' ' + this._presetMax : '（当前为 0）'));
+        this.rangeInput.title = '拖动范围 ' + this._formatSliderLabel(this._min)
+            + '–' + this._formatSliderLabel(sliderUpper)
+            + (this._sliderScale === 'log' ? '（对数刻度；方向键按实际数量增减）' : '');
+        var markerVisible = this._presetMax >= this._min && this._presetMax < sliderUpper;
+        this.rangeMarker.hidden = !markerVisible;
+        this.rangeMarker.title = markerVisible
+            ? '当前可直接结算 ' + this._formatSliderLabel(this._presetMax) : '';
+        if (markerVisible && this.rangeTrack.style && this.rangeTrack.style.setProperty) {
+            this.rangeTrack.style.setProperty('--quantity-effective-position',
+                Math.round(this._physicalProgress(this._presetMax) * 10000) / 100 + '%');
+        }
+        this._syncSliderAria(sliderQuantity);
+        var disabled = this._disabled || this._max <= 0;
+        this.numberInput.disabled = disabled;
+        this.rangeInput.disabled = disabled || sliderUpper <= this._min;
+        this.minusButton.disabled = disabled || this._value <= this._min;
+        this.plusButton.disabled = disabled || this._value >= this._max;
+        this.plusFiveButton.disabled = disabled || this._value >= this._max;
+        this.maxButton.disabled = disabled || this._presetMax < this._min || this._value === this._presetMax;
+        this.plusFiveButton.hidden = this._options.showPlusFive === false;
+        this.maxButton.hidden = this._options.showMax === false;
+        this.rangeInput.hidden = this._options.showRange === false || sliderUpper <= this._min;
+        this.rangeShell.hidden = this.rangeInput.hidden;
+        this.root.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+        this.root.setAttribute('data-value', String(this._value));
+        this.root.setAttribute('data-max', String(this._max));
+        this.root.setAttribute('data-preset-max', String(this._presetMax));
+        this.root.setAttribute('data-slider-max', String(this._sliderMax));
+        this.root.setAttribute('data-slider-scale', this._sliderScale);
+        this.root.setAttribute('data-value-outside-preset',
+            this._presetMax >= this._min && this._value > this._presetMax ? 'true' : 'false');
+    };
+    QuantityControl.prototype.setValue = function(value, meta) {
+        if (this._destroyed || this._disabled) return false;
+        var next = this._clamp(value);
+        var changed = next !== this._value;
+        this._value = next;
+        this._numberDraft = null;
+        this._rangeDraft = null;
+        this._setValidation(null);
+        this._render();
+        if ((changed || meta && meta.forceNotify) && meta && meta.notify
+                && typeof this._options.onChange === 'function') {
+            var focusOrigin = this._document.activeElement;
+            if (focusOrigin && this.root.contains(focusOrigin)) this._changeFocusOrigin = focusOrigin;
+            try {
+                this._options.onChange(next, meta.reason || 'set', meta.event);
+            } finally {
+                if (this._changeFocusOrigin === focusOrigin) this._changeFocusOrigin = null;
+            }
+        }
+        return changed;
+    };
+    QuantityControl.prototype.update = function(state) {
+        if (this._destroyed) return false;
+        state = state || {};
+        if (state.onChange) this._options.onChange = state.onChange;
+        if (state.showPlusFive != null) this._options.showPlusFive = state.showPlusFive;
+        if (state.showMax != null) this._options.showMax = state.showMax;
+        if (state.showRange != null) this._options.showRange = state.showRange;
+        if (state.sliderScale != null) this._options.sliderScale = state.sliderScale;
+        if (state.maxLabel != null) this._options.maxLabel = state.maxLabel;
+        if (state.maxAriaLabel != null) this._options.maxAriaLabel = state.maxAriaLabel;
+        if (state.linearSliderThreshold != null) {
+            this._options.linearSliderThreshold = state.linearSliderThreshold;
+        }
+        this._min = Math.max(0, Math.floor(Number(state.min == null ? this._min : state.min) || 0));
+        this._max = Math.max(this._min, Math.floor(Number(state.max == null ? this._max : state.max) || 0));
+        var presetMax = Math.floor(Number(state.presetMax == null ? this._max : state.presetMax));
+        if (!isFinite(presetMax)) presetMax = this._max;
+        this._presetMax = Math.max(0, Math.min(this._max, presetMax));
+        var sliderMax = Object.prototype.hasOwnProperty.call(state, 'sliderMax')
+            ? Math.floor(Number(state.sliderMax)) : this._max;
+        this._sliderMax = isFinite(sliderMax) ? Math.max(0, Math.min(this._max, sliderMax)) : this._max;
+        this._value = this._clamp(state.value == null ? this._value : state.value);
+        var nextDisabled = !!state.disabled;
+        var activeElement = this._document.activeElement;
+        var restoreOrigin = activeElement && this.root.contains(activeElement)
+            ? activeElement : this._changeFocusOrigin && this.root.contains(this._changeFocusOrigin)
+                ? this._changeFocusOrigin : null;
+        if (!this._disabled && nextDisabled && restoreOrigin) {
+            this._pendingFocusRestore = restoreOrigin;
+            this._pendingFocusFallback = null;
+            this._changeFocusOrigin = null;
+        }
+        this._disabled = nextDisabled;
+        if (this._numberDraft != null && this._document.activeElement !== this.numberInput) {
+            this._numberDraft = null;
+            this._setValidation(null);
+        }
+        this._render();
+        if (this._disabled && this._pendingFocusRestore) {
+            this._pendingFocusFallback = this._document.activeElement;
+        }
+        if (!this._disabled && this._pendingFocusRestore) {
+            var restoreTarget = this._pendingFocusRestore;
+            var fallbackFocus = this._pendingFocusFallback;
+            this._pendingFocusRestore = null;
+            this._pendingFocusFallback = null;
+            var currentFocus = this._document.activeElement;
+            var secondary = enclosingSecondaryOwner(this.root);
+            var neutralFocus = !currentFocus
+                || currentFocus === restoreTarget
+                || currentFocus === this._document.body
+                || currentFocus === this._document.documentElement
+                || currentFocus === fallbackFocus
+                || secondary && currentFocus === secondary._initialFocus;
+            if (neutralFocus && restoreTarget.parentNode && !restoreTarget.disabled
+                    && typeof restoreTarget.focus === 'function') {
+                restoreTarget.focus();
+            }
+        }
+        return true;
+    };
+    QuantityControl.prototype.getValue = function() { return this._value; };
+    QuantityControl.prototype.destroy = function() {
+        if (this._destroyed) return false;
+        this._destroyed = true;
+        this._lifetime.dispose();
+        if (this._options.removeOnDestroy) removeNode(this.root);
+        return true;
+    };
+
     return {
         SecondaryPage: SecondaryPage,
         ChoiceGroup: ChoiceGroup,
         CommitBar: CommitBar,
-        OwnedInventoryPane: OwnedInventoryPane
+        HelpAction: HelpAction,
+        OwnedInventoryPane: OwnedInventoryPane,
+        QuantityControl: QuantityControl
     };
 });

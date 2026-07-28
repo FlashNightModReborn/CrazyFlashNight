@@ -60,4 +60,19 @@ test('NPC facade delegates all three secondary pages and remains below budget', 
     assert(!/Bridge\.send|RequestMux|InventoryCoordinator/.test(presenterSource), 'presenters must not own transport or authority');
 });
 
+test('settlement quantities use the shared number and slider control', () => {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'npcshop.js'), 'utf8');
+    const presenterSource = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'npcshop-secondary-pages.js'), 'utf8');
+    assert(presenterSource.includes('new this._components.QuantityControl'));
+    assert(presenterSource.includes('onSetQuantity(kind, identity, value, reason)'));
+    assert(presenterSource.includes('sliderMax:authorityMaximum'));
+    assert(presenterSource.includes('presetMax:effective'));
+    assert(presenterSource.includes('this._lineRecords = {purchase:{}, sale:{}}'));
+    assert(presenterSource.includes("onSetQuantity:requirePort(options, 'onSetQuantity')"));
+    assert(source.includes('onSetQuantity:setIntentQuantity'));
+    assert(source.includes("reason === 'maximum'"));
+    assert(!presenterSource.includes('onPurchaseMax'));
+    assert(!presenterSource.includes('onAdjust'));
+});
+
 process.stdout.write('NPC secondary pages: ' + passed + '/' + passed + ' passed\n');

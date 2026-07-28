@@ -269,6 +269,21 @@ class org.flashNight.arki.achievement.AchievementService {
         return out;
     }
 
+    private static function projectDeliveredRewards(items:Array):Array {
+        var out:Array = [];
+        if (!(items instanceof Array)) return out;
+        for (var i:Number = 0; i < items.length; i++) {
+            var item:Object = items[i];
+            var itemName:String = String(item.name);
+            out.push({
+                name:itemName,
+                count:Number(item.value),
+                icon:itemIconName(itemName)
+            });
+        }
+        return out;
+    }
+
     // ═══════════════════════════════════════════════════════════
     // handleState — 只读状态叠加（开面板/写后刷新；静态文案/goal 由 web 读 catalog，不经桥）
     // ═══════════════════════════════════════════════════════════
@@ -317,8 +332,11 @@ class org.flashNight.arki.achievement.AchievementService {
         //   （D3：天然化解旧档批量补发雪崩；不应用任务挑战折扣——任务域行为，有意分叉）
         var rewardsArr:Array = (def.rewards != undefined) ? def.rewards : [];
         var ok:Boolean = true;
+        var rewardSettlement:Object = null;
         if (rewardsArr.length > 0) {
-            ok = (ItemUtil.acquire(ItemUtil.getRequirementFromTask(rewardsArr)) == true);
+            rewardSettlement =
+                ItemUtil.acquireReward(ItemUtil.getRequirementFromTask(rewardsArr));
+            ok = rewardSettlement.success === true;
         }
         if (!ok) {
             sendResponse(claimResp(callId, false, "inventory_full", null));
@@ -328,7 +346,10 @@ class org.flashNight.arki.achievement.AchievementService {
         a.claimed[idStr] = 1;
         a.unl[idStr] = 1;
         _root.存档系统.dirtyMark = true;
-        sendResponse(claimResp(callId, true, undefined, parseRewards(def)));
+        sendResponse(claimResp(callId, true, undefined,
+            rewardSettlement == null
+                ? parseRewards(def)
+                : projectDeliveredRewards(rewardSettlement.items)));
     }
 
     // claim 回包：每分支并入完整 state overlay（单一口径），web 原子重渲零额外往返

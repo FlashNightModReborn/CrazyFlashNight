@@ -16,6 +16,7 @@
 <script>
 'use strict';
 try{localStorage.removeItem('cf7.skills.loadoutConfirmationMode')}catch(error){}
+try{localStorage.removeItem('cf7.itemgrid.mode.skills')}catch(error){}
 window.__copiedDiagnostic='';
 window.__SKILLS_CONFIG__={requestTimeoutMs:120,switchTimeoutMs:80,previewDebounceMs:8,previewTokenFreshMs:150,
   sessionNonce:'harness',copyText:function(value){window.__copiedDiagnostic=String(value)}};
@@ -217,7 +218,7 @@ window.Icons={
       &&headerModeTypography.every(function(value){return value===headerModeTypography[0]})
       &&headerModeTypography[0].indexOf('11px|600|')===0,JSON.stringify(headerModeTypography));
     var skillScrollProbe=document.querySelector('.skills-library-list'),skillScrollStyle=skillScrollProbe.style.cssText;
-    skillScrollProbe.style.cssText+=';height:48px!important;min-height:48px!important;max-height:48px!important;flex:0 0 48px!important;overflow:auto!important';skillScrollProbe.scrollTop=skillScrollProbe.scrollHeight;
+    skillScrollProbe.style.cssText+=';height:32px!important;min-height:32px!important;max-height:32px!important;flex:0 0 32px!important;overflow:auto!important';skillScrollProbe.scrollTop=skillScrollProbe.scrollHeight;
     var skillScrollTarget=row('重复技');skillScrollTarget.focus({preventScroll:true});var skillScrollBefore=skillScrollProbe.scrollTop;skillScrollTarget.click();
     var skillScrollAfter=skillScrollProbe.scrollTop,skillScrollSelection=row('重复技');
     ok('skill selection patches the row in place while preserving overflowing library scroll and entity focus',skillScrollBefore>0&&Math.abs(skillScrollAfter-skillScrollBefore)<=1&&document.activeElement===skillScrollSelection&&skillScrollSelection===skillScrollTarget,
@@ -273,7 +274,9 @@ window.Icons={
     ok('manage presents the twelve shortcuts as one continuous skill band',Math.max.apply(Math,slotTops)-Math.min.apply(Math,slotTops)<=1);
     var densityToggle=document.querySelector('.skills-density-toggle');
     ok('density switch is explicitly scoped to the skill library',densityToggle.getAttribute('aria-label')==='技能库布局'
-      &&densityToggle.querySelector('.item-grid-mode-label').textContent==='技能库'&&densityToggle.title.indexOf('快捷技能带保持固定')>=0);
+      &&densityToggle.querySelector('.item-grid-mode-label').textContent==='技能库'&&densityToggle.title.indexOf('快捷技能带保持固定')>=0
+      &&densityToggle.querySelector('[data-layout-mode="compact"]').getAttribute('aria-pressed')==='true'
+      &&document.querySelector('.skills-panel').classList.contains('skills-density-compact'));
     var firstSlot=document.querySelector('[data-slot="1"]'),firstSlotIcon=firstSlot.querySelector('.skills-slot-icon');
     var fixedSlotGeometry={width:firstSlot.offsetWidth,height:firstSlot.offsetHeight,icon:firstSlotIcon.offsetWidth};
     ok('hotbar uses fixed item-like square slots with larger readable icons',fixedSlotGeometry.width===64&&fixedSlotGeometry.height===64
@@ -323,8 +326,10 @@ window.Icons={
     document.querySelector('.skills-filter-reset').click();
     ok('clear filters restores the full library in one click',document.querySelectorAll('.skills-library-row').length===5
       &&document.querySelector('.skills-filter-reset').hidden&&sent('snapshot').length===beforeFacet);
+    document.querySelector('.item-grid-mode-option[data-layout-mode="full"]').click();
     document.querySelector('.item-grid-mode-option[data-layout-mode="compact"]').click();
-    ok('shared density controller applies the compact skill layout',SkillsPanel.debugState().densityMode==='compact'&&document.querySelector('.skills-panel').classList.contains('skills-density-compact'));
+    var compactDensityStored=false;try{compactDensityStored=localStorage.getItem('cf7.itemgrid.mode.skills')==='compact'}catch(error){}
+    ok('shared density controller defaults to and persists the compact skill layout',SkillsPanel.debugState().densityMode==='compact'&&document.querySelector('.skills-panel').classList.contains('skills-density-compact')&&compactDensityStored);
     var compactTile=row('闪现').getBoundingClientRect();
     ok('compact density matches the owned-item tile rhythm',Math.abs(compactTile.width-compactTile.height)<12
       &&row('闪现').offsetHeight===48&&row('闪现').querySelector('.skills-row-icon').offsetWidth===40

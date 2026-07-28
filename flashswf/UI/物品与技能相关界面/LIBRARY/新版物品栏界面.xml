@@ -227,11 +227,7 @@ _root.从库中加载外部UI("情报信息界面");]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   if (_root.__legacyMaterialOnly === true) {
-      _root.发布消息("此入口仅开放材料页");
-   } else {
-      gotoAndStop("技能");
-   }
+   gotoAndStop("技能");
 }
 on(rollOver){
    _root.注释(150,_root.获得翻译("技能"));
@@ -254,11 +250,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   if (_root.__legacyMaterialOnly === true) {
-      _root.发布消息("此入口仅开放材料页");
-   } else {
-      gotoAndStop("个人信息");
-   }
+   gotoAndStop("个人信息");
 }
 on(rollOver){
    _root.注释(150,_root.获得翻译("个人信息"));
@@ -280,11 +272,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   if (_root.__legacyMaterialOnly === true) {
-      _root.发布消息("此入口仅开放材料页");
-   } else {
-      gotoAndStop("情报");
-   }
+   gotoAndStop("情报");
 }]]></script>
                   </Actionscript>
                   <color>
@@ -300,11 +288,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   if (_root.__legacyMaterialOnly === true) {
-      _root.发布消息("此入口仅开放材料页");
-   } else {
-      gotoAndStop("物品栏");
-   }
+   gotoAndStop("物品栏");
 }
 on(rollOver){
    _root.注释(150,_root.获得翻译("物品装备"));
@@ -1658,7 +1642,6 @@ on(rollOut){
                   <Actionscript>
                      <script><![CDATA[on (release) {
 	if(_root.存档系统.dirtyMark) _root.自动存盘();
-	_root.__legacyMaterialOnly = false;
 	this.关闭();
 }]]></script>
                   </Actionscript>
