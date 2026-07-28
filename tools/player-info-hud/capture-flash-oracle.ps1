@@ -808,6 +808,11 @@ function Assert-RunnerStaticContract {
         'Freeze-PlayerInfoDerivedSwfCompiledIdentity',
         'Get-PlayerInfoCompileRecoveryDecision',
         'Get-ExactFlashCs6TaskRegistration',
+        'Cf7PlayerInfoFlashProcessPathNativeMethodsR10',
+        'PROCESS_QUERY_LIMITED_INFORMATION = 0x1000',
+        'QueryFullProcessImageNameW',
+        'Get-Cf7PlayerInfoFlashProcessImagePathLimited',
+        'Assert-Cf7PlayerInfoFlashAuthoringPath',
         'Get-RegisteredFlashDebugPlayerIdentity',
         'Assert-RegisteredFlashDebugPlayerCurrent',
         'Get-PlayerInfoStandaloneLaunchPlan',
@@ -852,6 +857,17 @@ function Assert-RunnerStaticContract {
     if ([regex]::Matches(
             $source, '(?m)^\s*\$ownedPlayer\s*=\s*Start-Process\b').Count -ne 1) {
         throw 'Capture runner must start exactly one owned player process.'
+    }
+    $authoringDefinition =
+        (Get-Command Get-FlashAuthoringIdentity -ErrorAction Stop).Definition
+    if ($authoringDefinition.IndexOf(
+            'Get-Cf7PlayerInfoFlashProcessImagePathLimited',
+            [System.StringComparison]::Ordinal) -lt 0 -or
+        $authoringDefinition -match '(?i)\.MainModule\b' -or
+        $authoringDefinition -match '(?i)\$_\.Path\b') {
+        throw (
+            'Flash authoring identity must use only the limited-information ' +
+            'process-image-path helper.')
     }
     $argumentListLinePattern =
         '(?m)^[ \t]*-ArgumentList[ \t]+\$playerLaunchPlan\.argumentToken[ \t]*`[ \t]*\r?$'
@@ -1358,29 +1374,167 @@ function Get-ExactFlashCs6TaskRegistration {
     }
 }
 
-function Get-FlashAuthoringIdentity {
-    $processes = @(Get-Process -Name Flash -ErrorAction SilentlyContinue)
-    $paths = @($processes | ForEach-Object {
-        try { $_.Path } catch { $null }
-    } | Where-Object {
-        -not [string]::IsNullOrWhiteSpace($_) -and
-        (Test-Path -LiteralPath $_)
-    } | Sort-Object -Unique)
-    if ($paths.Count -ne 1) {
-        throw ("Expected exactly one readable Flash.exe identity after compile; got {0}." -f
-            $paths.Count)
+function Get-Cf7PlayerInfoFlashProcessImagePathLimited {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$ProcessId
+    )
+
+    if (-not ('Cf7PlayerInfoFlashProcessPathNativeMethodsR10' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Text;
+
+public static class Cf7PlayerInfoFlashProcessPathNativeMethodsR10
+{
+    public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr OpenProcess(
+        uint desiredAccess,
+        bool inheritHandle,
+        int processId);
+
+    [DllImport(
+        "kernel32.dll",
+        CharSet = CharSet.Unicode,
+        SetLastError = true)]
+    private static extern bool QueryFullProcessImageNameW(
+        IntPtr processHandle,
+        uint flags,
+        StringBuilder imagePath,
+        ref uint imagePathCharacters);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CloseHandle(IntPtr handle);
+
+    public static string QueryFullImagePath(int processId)
+    {
+        IntPtr processHandle = OpenProcess(
+            PROCESS_QUERY_LIMITED_INFORMATION,
+            false,
+            processId);
+        if (processHandle == IntPtr.Zero)
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        try
+        {
+            uint imagePathCharacters = 32768;
+            var imagePath = new StringBuilder((int)imagePathCharacters);
+            if (!QueryFullProcessImageNameW(
+                    processHandle,
+                    0,
+                    imagePath,
+                    ref imagePathCharacters))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+            if (imagePathCharacters == 0)
+            {
+                throw new InvalidOperationException(
+                    "QueryFullProcessImageNameW returned an empty path.");
+            }
+            return imagePath.ToString(0, (int)imagePathCharacters);
+        }
+        finally
+        {
+            CloseHandle(processHandle);
+        }
     }
-    $path = [System.IO.Path]::GetFullPath($paths[0])
-    $registration = Get-ExactFlashCs6TaskRegistration
-    if ($registration.actionPath -ine $path) {
+}
+'@
+    }
+
+    try {
+        $path =
+            [Cf7PlayerInfoFlashProcessPathNativeMethodsR10]::QueryFullImagePath(
+                $ProcessId)
+    } catch {
+        throw [System.InvalidOperationException]::new(
+            "Could not query limited-information image path for PID $ProcessId.",
+            $_.Exception)
+    }
+    if ([string]::IsNullOrWhiteSpace($path)) {
+        throw "Limited-information image path was empty for PID $ProcessId."
+    }
+    return [System.IO.Path]::GetFullPath($path)
+}
+
+function Assert-Cf7PlayerInfoFlashAuthoringPath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ProcessPath,
+
+        [Parameter(Mandatory = $true)]
+        $Registration
+    )
+
+    $path = [System.IO.Path]::GetFullPath($ProcessPath)
+    if ([System.IO.Path]::GetFileName($path) -ine 'Flash.exe' -or
+        -not (Test-Path -LiteralPath $path)) {
+        throw 'Flash authoring process path is not one existing Flash.exe.'
+    }
+    if (-not [string]::Equals(
+            [string]$Registration.actionPath,
+            $path,
+            [System.StringComparison]::OrdinalIgnoreCase)) {
         throw 'Running Flash.exe does not match the registered FlashCS6Task identity.'
     }
+    return $path
+}
+
+function Get-FlashAuthoringIdentity {
+    $processes = @(
+        Get-Process -Name Flash -ErrorAction SilentlyContinue |
+            Sort-Object -Property Id
+    )
+    if ($processes.Count -ne 1) {
+        throw ("Expected exactly one Flash.exe process after compile; got {0}." -f
+            $processes.Count)
+    }
+    $processPaths = @($processes | ForEach-Object {
+        [pscustomobject]@{
+            processId = [int]$_.Id
+            path = Get-Cf7PlayerInfoFlashProcessImagePathLimited `
+                -ProcessId ([int]$_.Id)
+        }
+    })
+    $paths = @($processPaths.path | Sort-Object -Unique)
+    if ($paths.Count -ne 1) {
+        throw ("Expected exactly one Flash.exe image path after compile; got {0}." -f
+            $paths.Count)
+    }
+    $registration = Get-ExactFlashCs6TaskRegistration
+    $path = Assert-Cf7PlayerInfoFlashAuthoringPath `
+        -ProcessPath $paths[0] -Registration $registration
+    $before = Get-FileIdentity -Path $path
+    if (-not $before.exists) {
+        throw 'Registered Flash.exe disappeared during authoring identity capture.'
+    }
     $item = Get-Item -LiteralPath $path
+    $after = Get-FileIdentity -Path $path
+    if (-not $after.exists -or
+        $after.length -ne $before.length -or
+        $after.sha256 -cne $before.sha256 -or
+        $after.lastWriteUtc -cne $before.lastWriteUtc -or
+        $item.Length -ne $before.length -or
+        $item.LastWriteTimeUtc.ToString('o') -cne $before.lastWriteUtc) {
+        throw 'Registered Flash.exe identity drifted while being read.'
+    }
     return [pscustomobject]@{
+        path = $path
+        processIds = @($processPaths.processId)
         fileName = $item.Name
         fileVersion = $item.VersionInfo.FileVersion
         productVersion = $item.VersionInfo.ProductVersion
-        sha256 = Get-PathSha256 -Path $path
+        length = [long]$before.length
+        lastWriteUtc = [string]$before.lastWriteUtc
+        sha256 = [string]$before.sha256
         registeredTaskMatched = $true
     }
 }
@@ -2123,6 +2277,44 @@ function Invoke-PlayerInfoDerivedSwfTransactionSelfTest {
 }
 
 function Invoke-ValidateOnly {
+    $validateFlashPidsBefore = @(
+        Get-Process -Name Flash -ErrorAction SilentlyContinue |
+            Sort-Object -Property Id |
+            ForEach-Object { [int]$_.Id }
+    )
+    if ($validateFlashPidsBefore.Count -ne 1) {
+        throw 'Validate-only positive identity requires exactly one Flash process.'
+    }
+    $validateAuthoring = Get-FlashAuthoringIdentity
+    if (@($validateAuthoring.processIds).Count -ne 1 -or
+        [int]$validateAuthoring.processIds[0] -ne
+            [int]$validateFlashPidsBefore[0]) {
+        throw 'Validate-only Flash authoring positive identity PID set drifted.'
+    }
+    $invalidPidRejected = $false
+    try {
+        Get-Cf7PlayerInfoFlashProcessImagePathLimited `
+            -ProcessId ([int]::MaxValue) | Out-Null
+    } catch {
+        $invalidPidRejected = $true
+    }
+    if (-not $invalidPidRejected) {
+        throw 'Validate-only accepted a nonexistent process ID.'
+    }
+    $registration = Get-ExactFlashCs6TaskRegistration
+    $wrongProcessPath =
+        Get-Cf7PlayerInfoFlashProcessImagePathLimited -ProcessId $PID
+    $wrongPathRejected = $false
+    try {
+        Assert-Cf7PlayerInfoFlashAuthoringPath `
+            -ProcessPath $wrongProcessPath `
+            -Registration $registration | Out-Null
+    } catch {
+        $wrongPathRejected = $true
+    }
+    if (-not $wrongPathRejected) {
+        throw 'Validate-only accepted a non-Flash process image path.'
+    }
     $validatePlayer = Get-RegisteredFlashDebugPlayerIdentity `
         -ExpectedSha256 $ExpectedPlayerSha256
     $validateLaunchPlan = Get-PlayerInfoStandaloneLaunchPlan `
@@ -2150,6 +2342,7 @@ function Invoke-ValidateOnly {
         $scratchMarker,
         $uncertainMarker,
         $globalFlashLog,
+        $validateAuthoring.path,
         $validatePlayer.path
     )
     $before = @{}
@@ -2231,6 +2424,16 @@ function Invoke-ValidateOnly {
         }
     }
     Assert-RegisteredFlashDebugPlayerCurrent -Expected $validatePlayer
+    $validateFlashPidsAfter = @(
+        Get-Process -Name Flash -ErrorAction SilentlyContinue |
+            Sort-Object -Property Id |
+            ForEach-Object { [int]$_.Id }
+    )
+    if ($validateFlashPidsAfter.Count -ne 1 -or
+        [int]$validateFlashPidsAfter[0] -ne
+            [int]$validateFlashPidsBefore[0]) {
+        throw 'Validate-only changed the running Flash authoring PID set.'
+    }
     $schemaStatus = if ($evidence -and $evidence.gitCanonicalSchema) {
         ('{0}/git-canonical/{1}-{2}' -f
             $evidence.evidenceRevision,
@@ -2250,6 +2453,8 @@ function Invoke-ValidateOnly {
         "SWF recovery=$($derivedTransaction.recoveryScenarios), " +
         "recovery negatives=$($derivedTransaction.recoveryAdmissionNegatives), " +
         "strictToolIdentity=$($validateTooling.status), " +
+        "authoring=$($validateAuthoring.fileVersion)/limited-info, " +
+        'authoring negatives=2, ' +
         "player=$($validatePlayer.fileVersion)/registered-debug, " +
         "templateStaticMax=$($template.staticWorstPartChars), " +
         "closure=$schemaStatus; Flash was not started.")
