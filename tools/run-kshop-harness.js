@@ -145,6 +145,46 @@ function auditArchitectureBoundaries() {
             || inventoryWorkbenchUiSource.includes('shopPanelOpen')) {
         throw new Error('Standalone inventory workbench leaked into shop lifecycle');
     }
+    const workbenchRequestCloseStart = inventoryWorkbenchSource.indexOf('function requestClose(');
+    const workbenchRequestCloseEnd = inventoryWorkbenchSource.indexOf('function teardown(', workbenchRequestCloseStart);
+    const workbenchRequestCloseBody = inventoryWorkbenchSource.slice(
+        workbenchRequestCloseStart, workbenchRequestCloseEnd);
+    const returnToPanelStart = inventoryWorkbenchSource.indexOf('function returnToPanel(');
+    const returnToPanelEnd = inventoryWorkbenchSource.indexOf('function finalizeClose(', returnToPanelStart);
+    const returnToPanelBody = inventoryWorkbenchSource.slice(returnToPanelStart, returnToPanelEnd);
+    if (workbenchRequestCloseStart < 0 || workbenchRequestCloseEnd < 0
+            || workbenchRequestCloseBody.includes('openReturnTarget(')
+            || /reason\s*!==\s*['"]header['"]/.test(workbenchRequestCloseBody)) {
+        throw new Error('Inventory workbench implicit close must not navigate to crafting returnTarget');
+    }
+    if (!inventoryWorkbenchSource.includes(
+            "var nestedOwner = _nestedHostOwner === 'crafting';")
+            || !inventoryWorkbenchSource.includes(
+                'InventoryWorkbenchConfig.createCloseMessage(')
+            || !inventoryWorkbenchUiSource.includes(
+                "if (hostOwner === 'crafting')")
+            || !inventoryWorkbenchUiSource.includes(
+                "return {type:'panel', cmd:'close', panel:'crafting'}")
+            || !inventoryWorkbenchSource.includes("if (Bridge.send(message) === false)")
+            || !inventoryWorkbenchSource.includes("工作台保持打开")) {
+        throw new Error('Nested crafting organizer must close its real Host owner and remain open on transport failure');
+    }
+    if (!panelsSource.includes('function isNestedCraftingOrganizer(')
+            || !panelsSource.includes("return {type:'panel', cmd:'close', panel:'crafting'}")
+            || !panelsSource.includes('panelCloseMessage(pending.id, pending.initData, reason)')
+            || !panelsSource.includes("sendMountFailureClose(id, initData, 'mount_failed')")
+            || !panelsSource.includes('panel mount threw for ')
+            || !panelsSource.includes('panel rebind threw for ')
+            || !panelsSource.includes("_activeHostOwner === 'workbench'")
+            || !panelsSource.includes('!activeCapabilityWorkbench')) {
+        throw new Error('Nested crafting organizer lazy/mount failures must release the crafting Host owner');
+    }
+    if (returnToPanelStart < 0 || returnToPanelEnd < 0
+            || !returnToPanelBody.includes('openReturnTarget(')
+            || !inventoryWorkbenchSource.includes("button('return-panel', '返回合成', returnToPanel)")
+            || !inventoryWorkbenchSource.includes("returnButton.classList.add('inventory-return-crafting-btn')")) {
+        throw new Error('Inventory workbench crafting returnTarget requires the explicit return button path');
+    }
     if (!kshopUiSource.includes('InventoryUI.renderOwnedSlot(')
             || !inventoryWorkbenchUiSource.includes('.renderOwnedSlot(')) {
         throw new Error('Owned-slot renderer is not shared by shop and standalone workbench');
@@ -216,6 +256,7 @@ function auditArchitectureBoundaries() {
         kshopViewComposition:true,
         sharedWorkbenchComponents:true,
         standaloneBattleboxWorkbench:true,
+        explicitCraftingReturnOnly:true,
         sharedIconManifestGate:true,
         inspectionViewportLoadOrder:true,
         workbenchFullAnchor:true,

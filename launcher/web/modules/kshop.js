@@ -806,13 +806,18 @@ var KShop = (function() {
     }
 
     function doClose() {
+        if (Bridge.send({type:'panel', cmd:'close', panel:'kshop'}) === false) {
+            toast('启动器连接不可用，商城保持打开。');
+            _closing = false;
+            return false;
+        }
         dismissDialog();
         _cartController.closeSettlement();
         _cartController.dismissQuantityInput();
         hideTooltip();
         Panels.close();
-        Bridge.send({type:'panel', cmd:'close', panel:'kshop'});
         _closing = false;
+        return true;
     }
 
     function hideTooltip() {

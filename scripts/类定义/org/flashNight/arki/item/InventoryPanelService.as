@@ -132,6 +132,17 @@ class org.flashNight.arki.item.InventoryPanelService {
             ? "storage" : String(params.view);
         var source:String = params == undefined || params.source == undefined
             ? "inventory_workbench" : String(params.source);
+        var hasOpenRequestId:Boolean = params != undefined
+            && typeof params.openRequestId != "undefined";
+        var supportsOpenRequestId:Boolean = profile == "battlebox"
+            && view == "build"
+            && source == "nativehud_equipment";
+        var openRequestId:String;
+        if (hasOpenRequestId) {
+            if (!supportsOpenRequestId) return false;
+            if (!safeOpenRequestId(params.openRequestId)) return false;
+            openRequestId = String(params.openRequestId);
+        }
         if (view == "build") {
             if (profile != "battlebox"
                     || (source != "agent_control"
@@ -147,12 +158,28 @@ class org.flashNight.arki.item.InventoryPanelService {
         }
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
         if (_json == undefined) _json = new LiteJSON();
-        return _root.server.sendSocketMessage(_json.stringify({
+        var request:Object = {
             task: "panel_request",
             panel: "workbench",
             source: source,
             initData: {profile: profile, view: view}
-        }));
+        };
+        if (hasOpenRequestId) request.openRequestId = openRequestId;
+        return _root.server.sendSocketMessage(_json.stringify(request));
+    }
+
+    private static function safeOpenRequestId(value):Boolean {
+        if (typeof value != "string") return false;
+        var s:String = String(value);
+        if (s.length < 1 || s.length > 160) return false;
+        for (var i:Number = 0; i < s.length; i++) {
+            var c:Number = s.charCodeAt(i);
+            var valid:Boolean = (c >= 48 && c <= 57)
+                || (c >= 65 && c <= 90) || (c >= 97 && c <= 122)
+                || c == 45 || c == 46 || c == 95 || c == 126;
+            if (!valid) return false;
+        }
+        return true;
     }
 
     private static function executeSnapshot(params:Object):Object {

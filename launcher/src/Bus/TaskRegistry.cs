@@ -48,6 +48,120 @@ namespace CF7Launcher.Bus
             return _httpCallable.Contains(taskName);
         }
 
+        internal static bool TryReadPanelOpenRequestId(
+            JObject request,
+            string panel,
+            string source,
+            out string openRequestId,
+            out string rejectionReason)
+        {
+            openRequestId =
+                null;
+            rejectionReason =
+                null;
+            if (request == null)
+            {
+                rejectionReason =
+                    "invalid_request";
+                return false;
+            }
+
+            JToken token =
+                request["openRequestId"];
+            JObject initData =
+                request["initData"] as JObject;
+            bool exactNativeEquipmentBuild =
+                string.Equals(
+                    panel,
+                    "workbench",
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    source,
+                    "nativehud_equipment",
+                    StringComparison.Ordinal)
+                && initData != null
+                && initData.Count == 2
+                && initData["profile"] != null
+                && initData["profile"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("profile"),
+                    "battlebox",
+                    StringComparison.Ordinal)
+                && initData["view"] != null
+                && initData["view"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("view"),
+                    "build",
+                    StringComparison.Ordinal);
+            bool supportsOpenRequestId =
+                string.Equals(
+                    panel,
+                    "skills",
+                    StringComparison.Ordinal)
+                || exactNativeEquipmentBuild;
+
+            if (exactNativeEquipmentBuild
+                && token == null)
+            {
+                rejectionReason =
+                    "missing_open_request_id";
+                return false;
+            }
+            if (token == null)
+                return true;
+            if (!supportsOpenRequestId)
+            {
+                rejectionReason =
+                    "unexpected_open_request_id";
+                return false;
+            }
+            if (token.Type != JTokenType.String)
+            {
+                rejectionReason =
+                    "invalid_open_request_id_type";
+                return false;
+            }
+            string value =
+                token.Value<string>();
+            if (!IsOpaqueOpenRequestId(value))
+            {
+                rejectionReason =
+                    "invalid_open_request_id";
+                return false;
+            }
+            openRequestId =
+                value;
+            return true;
+        }
+
+        private static bool IsOpaqueOpenRequestId(
+            string value)
+        {
+            if (string.IsNullOrEmpty(value)
+                || value.Length > 160)
+            {
+                return false;
+            }
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c =
+                    value[i];
+                bool allowed =
+                    (c >= 'A' && c <= 'Z')
+                    || (c >= 'a' && c <= 'z')
+                    || (c >= '0' && c <= '9')
+                    || c == '.'
+                    || c == '_'
+                    || c == '~'
+                    || c == '-';
+                if (!allowed)
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// 向 MessageRouter 注册所有 JSON 路由的 task（快车道 task 不在此注册）。
         /// </summary>
@@ -225,23 +339,22 @@ namespace CF7Launcher.Bus
                     string initDataExtrasJson = initDataToken != null
                         ? initDataToken.ToString(Newtonsoft.Json.Formatting.None)
                         : null;
-                    JToken openRequestIdToken =
-                        request["openRequestId"];
-                    if (panel == "skills"
-                        && openRequestIdToken != null
-                        && openRequestIdToken.Type
-                            != JTokenType.String)
+                    string openRequestId;
+                    string openRequestIdRejection;
+                    if (!TryReadPanelOpenRequestId(
+                            request,
+                            panel,
+                            source,
+                            out openRequestId,
+                            out openRequestIdRejection))
                     {
                         LogManager.Log(
-                            "event=skill_panel_open_rejected reason=invalid_open_request_id_type");
+                            "event=panel_open_rejected reason="
+                            + openRequestIdRejection
+                            + " panel=" + panel
+                            + " source=" + source);
                         return null;
                     }
-                    string openRequestId =
-                        openRequestIdToken != null
-                        && openRequestIdToken.Type
-                            == JTokenType.String
-                            ? openRequestIdToken.Value<string>()
-                            : null;
 
                     // Web 调制仍处在人类反馈期：旧 AS2 插件改装入口一律留在原 renderer。
                     // 即使运行中的旧 SWF 仍发送可信 callback，也只返回明确拒绝，不打开面板。

@@ -118,6 +118,75 @@ equal(Interactions.probeReorder(Interactions.skillOffer(learned[1], false), lear
     'library reorder intent');
 equal(Interactions.rejectMessage('equipped_skill_locked'), '已装备技能需先卸载，才能交换列表顺序。',
     'shared rejection language');
+equal(Interactions.canReturnCharacterBuild('manage',
+    {canReturnCharacterBuild:true,canReturnTrainer:false}), true,
+    'character return requires the exact manage capability');
+equal(Interactions.canReturnCharacterBuild('manage',
+    {canReturnCharacterBuild:true,canReturnTrainer:true}), false,
+    'trainer return capability takes precedence over character return');
+let returnEnvelope = null;
+let returnSent = 0;
+equal(Interactions.requestCharacterBuild({
+    view:'manage',initData:{canReturnCharacterBuild:true},switchPending:false,state:'idle',
+    panelInstanceId:'panel.skills.exact',send(message){returnEnvelope=message;return true;},
+    onSent(){returnSent += 1;}
+}), true, 'character return dispatches from an idle exact capability');
+equal(returnEnvelope, {
+    type:'panel',panel:'skills',cmd:'close',panelInstanceId:'panel.skills.exact',
+    reason:'navigate_character_build'
+}, 'character return uses the strict navigation close envelope');
+equal(returnSent, 1, 'accepted character return enters pending once');
+let returnUnavailable = 0;
+equal(Interactions.requestCharacterBuild({
+    view:'manage',initData:{canReturnCharacterBuild:true},state:'idle',
+    panelInstanceId:'panel.skills.exact',send(){return false;},
+    onUnavailable(){returnUnavailable += 1;}
+}), false, 'failed character return transport remains retryable');
+equal(returnUnavailable, 1, 'failed character return reports unavailability once');
+let viewEnvelope = null;
+let viewWait = null;
+equal(Interactions.requestSkillView({
+    target:'manage',view:'trainer',initData:{panelInstanceId:'panel.skills.trainer'},
+    trainerExpired:false,state:'idle',focusSkillKey:'闪现',
+    send(message){viewEnvelope=message;return true;},
+    onSent(wait){viewWait=wait;}
+}), true, 'trainer can request the exact manage rebind');
+equal(viewEnvelope, {
+    type:'panel',panel:'skills',cmd:'switch_manage',
+    panelInstanceId:'panel.skills.trainer',
+    payload:{v:1,focusSkillKey:'闪现'}
+}, 'skill-view navigation owns one strict envelope');
+equal(viewWait.statusText, '正在切换到技能管理',
+    'skill-view navigation returns presentation copy without owning the timer');
+equal(Interactions.requestNavigation({
+    target:'trainer',view:'manage',
+    initData:{canReturnTrainer:false,panelInstanceId:'panel.skills.manage'},
+    state:'idle',send(){return true;}
+}), false, 'ungranted trainer return is rejected by the shared navigation policy');
+let closedModal = '';
+equal(Interactions.consumeClose({
+    reason:'header',shell:{hasModal(){return true;},closeModal(reason){closedModal=reason;}}
+}), true, 'every close source consumes an active modal first');
+equal(closedModal, 'header', 'modal close retains the initiating reason');
+equal(Interactions.consumeClose({
+    reason:'backdrop',shell:{hasModal(){return false;}},searchExpanded:true
+}), false, 'backdrop bypasses local search/filter history and closes the panel');
+let searchCollapsed = 0;
+let searchFocused = 0;
+equal(Interactions.consumeClose({
+    reason:'escape',shell:{hasModal(){return false;}},searchExpanded:true,
+    collapseSearch(expanded){if (expanded === false) searchCollapsed += 1;},
+    searchToggle:{focus(){searchFocused += 1;}}
+}), true, 'Escape consumes expanded search before panel close');
+equal({searchCollapsed,searchFocused}, {searchCollapsed:1,searchFocused:1},
+    'Escape collapse restores the search-toggle focus');
+let poppedPath = null;
+equal(Interactions.consumeClose({
+    reason:'escape',shell:{hasModal(){return false;}},searchExpanded:false,
+    paths:{school:['武术']},definitions:[{id:'school'}],
+    navigators:{school:{setPath(path){poppedPath=path;},root:{querySelector(){return null;}}}}
+}), true, 'Escape consumes one active filter path before panel close');
+equal(poppedPath, [], 'filter escape pops exactly one path segment');
 
 equal(Diagnostics.redact({
     trainerSession:'secret',

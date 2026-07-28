@@ -1,7 +1,7 @@
 # 双栏工作台 UI 系统约束
 
 **文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
-**最后核对代码基线**：commit `21ad8a272a3bd85f77f3bb891fe55f8981c272b8`（2026-07-27）+ 当前角色构筑布局、相机与 Host 导航收口工作树。
+**最后核对代码基线**：commit `0e3ed80c79be404285b007a171e4123af5167d44`（2026-07-28）+ 当前角色构筑 ↔ Skills 双向导航与原生 workbench nonce 收口工作树。
 
 本文适用于 `kshop`、`npcshop`、`crafting`、独立 `workbench`、角色构筑、嵌入式装备调制和 `skills` 中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
 
@@ -168,6 +168,10 @@ Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；
 - `workbench-components.js`：SecondaryPage、ChoiceGroup、CommitBar、OwnedInventoryPane；所有 open/close/destroy 回调都必须容忍重入和异常，并保持 DOM、focus stack 与业务 active 状态一致。并列 SecondaryPage 按打开顺序形成模态栈，只允许顶层页进入可访问树；关闭顶层恢复下层，关闭被覆盖下层不得在后续 unwind 中复活，焦点须沿 opener 链跳过已关闭页。
 - `workbench-inspection-viewport.js`：共享瞬态 inspection camera，只拥有 Canvas presentation transform、wheel/键盘/拖拽与控制按钮；不创建 renderer/Canvas，不持有领域 selection、authority 或持久偏好，deactivate/close 必须复位且 inactive 时不得消费输入。
 
+合成页的“整理背包”是当前 `crafting` 实例内的纯 Web 子路由，不是 Host panel 切换。进入整理态时 Host active owner、exact `panelInstanceId` 与 pause lease 始终仍属 `crafting`，不得另发 `panel=workbench` open、转移 owner 或制造第二条 Host authority。只有玩家点击显式“返回合成”才恢复合成 DOM 与其本地浏览意图；普通关闭、Host close、lazy 依赖加载失败或 workbench mount 失败都直接关闭 exact `crafting` owner，不隐式返回或复活合成页。独立 workbench 则是另一条生产入口，必须由 Host 分配有效 `panelInstanceId` 后才能挂载；禁止复用合成子路由的实例缺省路径来接受无实例 standalone open。
+
+`Panels` 的生产挂载必须 fail-closed：初始/懒注册缺失、`create()` 抛错或返回非 `Element`、append 失败、`onOpen/onRebind` 返回 `false` 或抛错，都清掉半挂载 DOM/active 状态，并向 Host 对 incoming initData 的 exact `panelInstanceId` 最多发送一次 close；不能误关旧 owner，也不能留下可被迟到 callback 复活的 pending intent。same-active 新 rebind 先退休旧 required-assets/lazy pending，再以新 initData 为唯一意图；lazy loader 同步抛错、返回非 thenable 或异步拒绝均走同一失败关闭。普通 close 先归零 visual/owner，再隔离 `onClose` 异常；force-close 额外隔离 `onForceClose`，`Bridge.send` 异常同样不得破坏清理。create/append/rebind 失败后的节点、active owner、pending open、focus 与领域状态都必须归零，且由 `test-panel-runtime.js` 覆盖精确 owner 与“恰好一次”语义。
+
 共享异步 tooltip 的核心状态固定为一个 pointer owner 和一个 keyboard owner，pointer 展示优先。共享层以 document capture 的 `pointerdown` / `keydown` 判定输入模态；focus 只有由键盘导航取得时才登记 keyboard owner，鼠标/笔点击造成的 DOM focus 必须撤权。pointer 离开后最多恢复仍连接、仍匹配真实 `document.activeElement` 且未被 suppression 的当前 keyboard owner；不保存 owner 历史栈，也不接受领域 `restoreOn…`、`focusMode` 等恢复策略开关。无 owner 的 `hide()` 是确定性 dismiss，显式点击详情继续独立使用 `showAnchored`，不得混入这两个被动说明 owner。
 
 每个 panel/view 实例必须持有一个 tooltip scope；关闭、rebind 或整树替换时由 scope/disposable 一次性销毁域内 binding，`clearElement/releaseTree` 必须在节点脱离 DOM 前执行。恢复前还要复核 scope 活性、节点 `isConnected` 与真实 `document.activeElement`，不能依赖浏览器一定派发 `pointerleave/focusout`。迟到回包不得复活 detached owner，`debugState` 的 detached binding 在稳定关闭后必须为 0。
@@ -194,7 +198,9 @@ tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc �
 
 物理拆分遵循“facade 只编排、presenter 只投影、runtime 才持有领域时序”：KShop 的 cart/catalog/owned/tooltip、Inventory Workbench 的 config/header/quick-transfer/owned-view/storage controller、NPC 的 secondary pages、Skills 的 library/loadout/trainer/interactions/render/diagnostics、Equipment Tuning 的 model/render，以及 Character Build 的 session/view/controller/mutation/action-view/tuning/slot-transition/pose/template/stats-view/doll-preview 均为显式依赖模块。`character-build-template.js` 只返回静态壳 markup，不持有行为或 authority；`character-build-slot-transition.js` 只处理 embedded tuning 活跃时的可调制 source rebind、不可调制 exact detach 与迟到回调 fence，不持有 writer、DOM 或通用路由；`character-build-doll-preview.js` 只编排 exact stage 的 SecondaryPage 迁移、底层 inert、Esc/opener restore，并把瞬态相机机械能力委托给 `workbench-inspection-viewport.js`；它不创建 Canvas/renderer，也不持有 Bridge/session/候选。各模块不得自行拥有第二个 Bridge response listener、跨面板 session 或不属于本模块的 authority token；懒加载表必须先加载共享 runtime/生命周期/焦点/primitive/component/inspection viewport，再加载 feature module，最后加载 facade。
 
-Character Build 的“技能”入口是离开当前工作台的跨面板动作，不是第三种域内 view。前端只能在本地 finalize 成功后，用当前 exact `panelInstanceId` 发送 `reason:"navigate_skills"` 的严格 workbench close；不得自行挂载 Skills、模拟 Native HUD、保留返回栈，或把 Character 的 session/revision/选择状态带入 Skills。按钮触发后沿用正常关闭/blocked 反馈，页面实际切换必须等待 Host visual-retire、AS2 acknowledged detach 与 coordinator settled；失败时由既有关闭/恢复状态和 Host toast 表达，不在 Web 另造“看似已跳转”的乐观状态。最终入口与刘海屏“技能”一致，只接受 `source=nativehud, view=manage`，initData 不含 `trainerSession` 或 `canReturnTrainer=true`，不创建、恢复或继承教师 capability，玩家只能配置自身已学技能与快捷栏。跨层完整契约见 [迁移护栏 §2.5](as2-web-panel-migration.md#25-角色构筑会话默认入口与-visual-retire-屏障2026-07-27-工作树)。
+Character Build 的“技能”入口是离开当前工作台的跨面板动作，不是第三种域内 view。前端只能在本地 finalize 成功后，用当前 exact `panelInstanceId` 发送 `reason:"navigate_skills"` 的严格 workbench close；不得自行挂载 Skills、模拟 Native HUD、建立通用返回栈，或把 Character 的 session/revision/选择状态带入 Skills。按钮触发后沿用正常关闭/blocked 反馈，页面实际切换必须等待 Host visual-retire、AS2 acknowledged detach 与 coordinator settled；失败时由 Host 执行至多一次 Character 回滚并给出结果提示，Web 不造“看似已跳转”的乐观状态。最终业务入口与刘海屏“技能”一致，只接受 `source=nativehud, view=manage`，initData 不含 `trainerSession` 或 `canReturnTrainer=true`，不创建、恢复或继承教师 capability，玩家只能配置自身已学技能与快捷栏。
+
+只有 Character 来源且已绑定 exact Skills instance 的 manage 页可显示“← 返回构筑”；`canReturnCharacterBuild` 只是 Host 投影的展示位，不是 Web capability。点击该按钮发送 strict `reason:"navigate_character_build"`，Host 再复验当前实例与 Skill idle/cleanup 状态；右上 `×`、物理 Esc 和 native backdrop 始终普通关闭到游戏。由于 Host 当前把物理 Esc 与 native backdrop 合并为同一 `panel_esc`，不得在前端文案或状态机里声称二者行为不同。帮助/确认模态与展开搜索先消费 Esc，返回按钮在写入、对账或清理未定局时显示 disabled，而不是吞点击。跨面板返回会销毁原 Skills DOM，焦点恢复不得保存旧元素引用；新 Character Build 只消费 Host 给出的 presentation focus key，并在首屏稳定后聚焦“技能配置”。前向自动回滚也使用同一焦点落点，反向打开失败则停在游戏并明确提示从“装备”重试。跨层完整契约见 [迁移护栏 §2.5](as2-web-panel-migration.md#25-角色构筑会话默认入口与双向导航屏障2026-07-28-工作树)。
 
 ## 10. CSS 级联与文件治理
 

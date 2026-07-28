@@ -27,7 +27,7 @@ var SkillsPanel = (function() {
     var _density = null, _densityToggle = null, _confirmationToggle = null;
     var _drag = null, _dragBroker = null, _dragSourceView = null, _dragSlotSourceView = null;
     var _dragTargetView = null, _dragSlotTargetView = null, _dragOrderTargetView = null;
-    var _switchWaitTimer = null, _switchPending = false;
+    var _switchWaitTimer = null, _switchPending = false, _switchPendingStatus = '';
     var _config = (typeof window !== 'undefined' && window.__SKILLS_CONFIG__) || {};
     var LOADOUT_CONFIRMATION_KEY = 'cf7.skills.loadoutConfirmationMode';
     var _loadoutConfirmationMode = readLoadoutConfirmationMode();
@@ -164,6 +164,10 @@ var SkillsPanel = (function() {
             _switchButton = button('返回研习', 'workbench-mode-btn skills-switch-trainer-btn', requestTrainerView);
             _switchButton.title = '仅本次教师入口有效；返回后需要重新取得学习预览';
             _shell.addHeaderAction(_switchButton);
+        } else if (Interactions.canReturnCharacterBuild(_view, _initData)) {
+            _switchButton = button('← 返回构筑', 'workbench-mode-btn skills-return-character-btn', requestCharacterBuild);
+            _switchButton.title = '返回角色构筑并重新读取当前装备与属性';
+            _shell.addHeaderAction(_switchButton);
         }
         _helpButton = button('?', 'workbench-mode-btn skills-help-btn', openHelp);
         _helpButton.setAttribute('aria-label', '查看技能操作帮助');
@@ -180,7 +184,7 @@ var SkillsPanel = (function() {
         });
         _diagnosticButton.hidden = true;
         _shell.addHeaderAction(_diagnosticButton);
-        _closeButton = button('×', 'workbench-close-btn', requestClose);
+        _closeButton = button('×', 'workbench-close-btn', function() { requestClose('header'); });
         _closeButton.setAttribute('aria-label', '关闭技能面板');
         _shell.addHeaderAction(_closeButton);
 
@@ -813,7 +817,7 @@ var SkillsPanel = (function() {
     function refreshStateControls() {
         if (!_shell) return;
         var state = _coordinator.getState();
-        if (_switchPending) _shell.setStatus(_view === 'trainer' ? '正在切换到技能管理' : '正在返回技能研习', 'loading');
+        if (_switchPending) _shell.setStatus(_switchPendingStatus || '正在切换页面', 'loading');
         else if (_trainerExpired) _shell.setStatus('教师连接已失效', 'error');
         else if (_schemaError) _shell.setStatus('技能数据异常', 'error');
         else if (state === 'write_pending') _shell.setStatus('正在保存', 'loading');
@@ -960,18 +964,7 @@ var SkillsPanel = (function() {
         return Library.entryByKey(_snapshot, _view, skillKey);
     }
     function loadoutSlot(number) { return Loadout.slotByNumber(_snapshot, number); }
-    function requestManageView() {
-        if (_view !== 'trainer' || !_initData || _trainerExpired) return;
-        var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData.panelInstanceId || '');
-        if (!panelInstanceId || _coordinator.getState() !== 'idle') return;
-        var sent = Bridge.send({
-            type:'panel', panel:'skills', cmd:'switch_manage', panelInstanceId:panelInstanceId,
-            payload:{v:1, focusSkillKey:String(_selectedKey || '')}
-        });
-        if (sent === false) { toast('启动器连接不可用，暂时无法切换页面。'); return; }
-        beginSwitchWait('切换中…', '切换到技能管理未完成，请重试。');
-    }
-
+    function requestManageView() { requestNavigation('manage'); }
     function openHelp() {
         if (!_shell) return;
         var trainer = _view === 'trainer';
@@ -991,52 +984,62 @@ var SkillsPanel = (function() {
             modal.dialog.setAttribute('aria-label', title);
         }
     }
-
-    function requestTrainerView() {
-        if (_view !== 'manage' || !_initData || _initData.canReturnTrainer !== true) return;
-        var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData.panelInstanceId || '');
-        if (!panelInstanceId || _coordinator.getState() !== 'idle') return;
-        var sent = Bridge.send({
-            type:'panel', panel:'skills', cmd:'switch_trainer', panelInstanceId:panelInstanceId,
-            payload:{v:1, focusSkillKey:String(_selectedKey || '')}
+    function requestTrainerView() { requestNavigation('trainer'); }
+    function requestCharacterBuild() { requestNavigation('character_build'); }
+    function requestNavigation(target) {
+        return Interactions.requestNavigation({
+            target:target, view:_view, initData:_initData,
+            trainerExpired:_trainerExpired, switchPending:_switchPending,
+            state:_coordinator.getState(), panelInstanceId:_coordinator.getPanelInstanceId(),
+            focusSkillKey:_selectedKey, send:Bridge.send, onUnavailable:toast,
+            onSent:function(wait) {
+                beginSwitchWait(wait.buttonText, wait.timeoutMessage, wait.statusText);
+            }
         });
-        if (sent === false) { toast('启动器连接不可用，暂时无法切换页面。'); return; }
-        beginSwitchWait('返回中…', '返回研习未完成；若教师入口已失效，请重新与教师对话。');
     }
-
-    function beginSwitchWait(buttonText, timeoutMessage) {
+    function beginSwitchWait(buttonText, timeoutMessage, statusText) {
         cancelSwitchWait();
-        _switchPending = true;
-        if (_switchButton) { _switchButton.disabled = true; _switchButton.textContent = buttonText; }
+        _switchPending = true; _switchPendingStatus = statusText || '';
+        if (_switchButton) { _switchButton.setAttribute('data-idle-label', _switchButton.textContent);
+            _switchButton.disabled = true; _switchButton.textContent = buttonText; }
         refreshStateControls();
         _switchWaitTimer = setTimeout(function() {
-            _switchWaitTimer = null;
-            _switchPending = false;
-            if (_switchButton) _switchButton.textContent = _view === 'trainer' ? '管理技能' : '返回研习';
+            _switchWaitTimer = null; _switchPending = false;
+            if (_switchButton) _switchButton.textContent = _switchButton.getAttribute('data-idle-label') ||
+                (_view === 'trainer' ? '管理技能' : '返回研习');
+            _switchPendingStatus = '';
             refreshStateControls();
             toast(timeoutMessage);
         }, switchWaitTimeoutMs());
     }
-
     function cancelSwitchWait() {
-        if (_switchWaitTimer !== null) {
-            clearTimeout(_switchWaitTimer);
-            _switchWaitTimer = null;
-        }
-        _switchPending = false;
+        if (_switchWaitTimer !== null) { clearTimeout(_switchWaitTimer); _switchWaitTimer = null; }
+        _switchPending = false; _switchPendingStatus = '';
     }
-
-    function switchWaitTimeoutMs() {
-        var configured = Number(_config.switchTimeoutMs);
-        return isFinite(configured) && configured >= 50 ? configured : 3000;
-    }
-
-    function requestClose() {
+    function switchWaitTimeoutMs() { var value = Number(_config.switchTimeoutMs);
+        return isFinite(value) && value >= 50 ? value : 3000; }
+    function requestClose(reason) {
+        reason = typeof reason === 'string' ? reason : 'close';
+        if (Interactions.consumeClose({
+                reason:reason,
+                shell:_shell,
+                searchExpanded:_searchExpanded,
+                collapseSearch:setSearchExpanded,
+                searchToggle:_searchToggle,
+                paths:filterPathsForView(),
+                definitions:skillFilterDefinitions(),
+                navigators:_filterNavigators,
+                activeElement:document.activeElement
+            })) return true;
         var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData && _initData.panelInstanceId || '');
+        if (Bridge.send({type:'panel', panel:'skills', cmd:'close',
+                panelInstanceId:panelInstanceId}) === false) {
+            toast('启动器连接不可用，技能面板保持打开。');
+            return false;
+        }
         Panels.close();
-        Bridge.send({type:'panel', panel:'skills', cmd:'close', panelInstanceId:panelInstanceId});
+        return true;
     }
-
     function cleanup() {
         cleanupView(true);
         _coordinator.close();

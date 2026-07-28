@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
@@ -515,7 +516,10 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 "nativehud_equipment",
                 (string)command["source"]);
-            Assert.Equal(5, command.Count);
+            string openRequestId =
+                ReadWorkbenchOpenRequestId(
+                    Assert.Single(commands));
+            Assert.Equal(6, command.Count);
             Assert.Empty(c.Posts);
             Assert.Empty(c.ActivePanels);
             Assert.Empty(c.StateCallbacks);
@@ -527,7 +531,8 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                openRequestId);
         }
 
         [Fact]
@@ -563,7 +568,13 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             r.NativeEquipmentBuildOpenTimeoutMs = 500;
-            r.SetGameCommandSenderForTests(_ => true);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
 
             r.Dispatch("EQUIP_UI");
 
@@ -589,7 +600,13 @@ namespace CF7Launcher.Tests.Guardian
             // Keep the injected test timeout comfortably above scheduler jitter so
             // an unrelated runner pause cannot race the immediate acknowledgement.
             r.NativeEquipmentBuildOpenTimeoutMs = 500;
-            r.SetGameCommandSenderForTests(_ => true);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
 
             r.Dispatch("EQUIP_UI");
             r.RequestOpenPanel(
@@ -600,7 +617,9 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    commands[0]));
             System.Threading.Thread.Sleep(650);
 
             JObject opened =
@@ -623,6 +642,16 @@ namespace CF7Launcher.Tests.Guardian
             r.SetGameCommandSenderForTests(
                 delegate(string payload)
                 {
+                    JObject command =
+                        ParseWire(payload);
+                    if (command.Value<string>("action")
+                        != "openInventoryWorkbench")
+                    {
+                        return true;
+                    }
+                    string openRequestId =
+                        ReadWorkbenchOpenRequestId(
+                            payload);
                     r.RequestOpenPanel(
                         "workbench",
                         "nativehud_equipment",
@@ -631,7 +660,8 @@ namespace CF7Launcher.Tests.Guardian
                         null,
                         null,
                         null,
-                        "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                        "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                        openRequestId);
                     return true;
                 });
 
@@ -644,6 +674,50 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 "workbench",
                 (string)opened["panel"]);
+        }
+
+        [Fact]
+        public void EQUIP_UI_SynchronousAckFollowedBySendFalseDoesNotReportFailure()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.NativeEquipmentBuildOpenTimeoutMs = 40;
+            r.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    JObject command =
+                        ParseWire(payload);
+                    if (command.Value<string>("action")
+                        == "openInventoryWorkbench")
+                    {
+                        r.RequestOpenPanel(
+                            "workbench",
+                            "nativehud_equipment",
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                            command.Value<string>(
+                                "openRequestId"));
+                        return false;
+                    }
+                    return true;
+                });
+
+            r.Dispatch("EQUIP_UI");
+            System.Threading.Thread.Sleep(100);
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "workbench",
+                opened.Value<string>("panel"));
+            Assert.DoesNotContain(
+                "toast",
+                c.Posts[0]);
         }
 
         [Fact]
@@ -673,7 +747,9 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    commands[0]));
         }
 
         [Fact]
@@ -682,7 +758,13 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             r.NativeEquipmentBuildOpenTimeoutMs = 100;
-            r.SetGameCommandSenderForTests(_ => true);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
 
             r.Dispatch("EQUIP_UI");
             Assert.True(
@@ -697,7 +779,9 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    commands[0]));
 
             Assert.Single(c.Posts);
             Assert.Empty(c.ActivePanels);
@@ -709,7 +793,13 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             r.NativeEquipmentBuildOpenTimeoutMs = 2000;
-            r.SetGameCommandSenderForTests(_ => true);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
 
             r.Dispatch("EQUIP_UI");
             r.RequestOpenPanel(
@@ -724,7 +814,9 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    commands[0]));
 
             JObject opened =
                 JObject.Parse(
@@ -738,12 +830,142 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void EQUIP_UI_QueuedHostOpenInvalidatesIdleAdmissionBeforeItBecomesActive()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var pumps =
+                new Queue<Action>();
+            var commands =
+                new List<string>();
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                r.SetPanelHost(host);
+                r.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
+                r.Dispatch("EQUIP_UI");
+                string requestId =
+                    ReadWorkbenchOpenRequestId(
+                        Assert.Single(commands));
+                Assert.True(
+                    host.TryOpenPanel(
+                        "map",
+                        "{}",
+                        null,
+                        null));
+
+                r.RequestOpenPanel(
+                    "workbench",
+                    "nativehud_equipment",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                    requestId);
+
+                Action pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                Assert.Equal(
+                    "map",
+                    host.ActivePanelName);
+                Assert.Empty(pumps);
+            }
+        }
+
+        [Fact]
+        public void EQUIP_UI_FinalAdmissionRejectionDoesNotLeakWebPanelPause()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var pumps = new Queue<Action>();
+            var commands = new List<JObject>();
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                r.SetPanelHost(host);
+                r.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(ParseWire(payload));
+                        return true;
+                    });
+                r.Dispatch("EQUIP_UI");
+                string requestId =
+                    commands.Single(command =>
+                        command.Value<string>("action")
+                            == "openInventoryWorkbench")
+                    .Value<string>("openRequestId");
+
+                bool invalidated = false;
+                r.SetPanelAdmissionGate(
+                    delegate
+                    {
+                        if (!invalidated)
+                        {
+                            invalidated = true;
+                            Assert.True(
+                                host.TryAcquireIdleFence(
+                                    "admission.pause.race"));
+                            Assert.True(
+                                host.ReleaseIdleFenceExact(
+                                    "admission.pause.race"));
+                        }
+                        return true;
+                    });
+                r.RequestOpenPanel(
+                    "workbench",
+                    "nativehud_equipment",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                    requestId);
+
+                Assert.True(invalidated);
+                Assert.DoesNotContain(
+                    commands,
+                    command =>
+                        command.Value<string>("action")
+                            == "webPanelPause");
+                Assert.False(host.IsPanelOpen);
+                Assert.Empty(pumps);
+            }
+        }
+
+        [Fact]
         public void EQUIP_UI_TimeoutWithAnotherActivePanelCancelsWithoutFalseToast()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             r.NativeEquipmentBuildOpenTimeoutMs = 500;
-            r.SetGameCommandSenderForTests(_ => true);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
 
             r.Dispatch("EQUIP_UI");
             r.RequestOpenPanel(
@@ -772,7 +994,9 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    commands[0]));
             Assert.Single(c.Posts);
             Assert.Equal(
                 new[] { "map" },
@@ -785,7 +1009,13 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             r.NativeEquipmentBuildOpenTimeoutMs = 2000;
-            r.SetGameCommandSenderForTests(_ => true);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    commands.Add(payload);
+                    return true;
+                });
 
             r.Dispatch("EQUIP_UI");
             r.RequestOpenPanel(
@@ -796,7 +1026,9 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    Assert.Single(commands)));
             Assert.Empty(c.Posts);
             r.RequestOpenPanel(
                 "workbench",
@@ -807,6 +1039,28 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                "workbench.open.foreign");
+            Assert.Empty(c.Posts);
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    Assert.Single(commands)));
 
             JObject opened =
                 JObject.Parse(
@@ -814,6 +1068,159 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 "workbench",
                 (string)opened["panel"]);
+        }
+
+        [Fact]
+        public void SkillsIntentSupersedesOlderNativeBuildPreflight()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands =
+                new List<string>();
+            r.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    commands.Add(payload);
+                    return true;
+                });
+
+            r.Dispatch("EQUIP_UI");
+            r.Dispatch("SKILLS");
+            JObject native =
+                commands.Select(ParseWire).Single(
+                    command =>
+                        command.Value<string>("action")
+                        == "openInventoryWorkbench");
+            JObject skills =
+                commands.Select(ParseWire).Single(
+                    command =>
+                        command.Value<string>("action")
+                        == "skillPanelOpen");
+
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                native.Value<string>("openRequestId"));
+            Assert.Empty(c.Posts);
+
+            RequestNativeSkillManage(
+                r,
+                skills.Value<string>("openRequestId"));
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "skills",
+                opened.Value<string>("panel"));
+        }
+
+        [Fact]
+        public void NativeBuildIntentSupersedesOlderSkillsPreflight()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands =
+                new List<string>();
+            r.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    commands.Add(payload);
+                    return true;
+                });
+
+            r.Dispatch("SKILLS");
+            r.Dispatch("EQUIP_UI");
+            JObject skills =
+                commands.Select(ParseWire).Single(
+                    command =>
+                        command.Value<string>("action")
+                        == "skillPanelOpen");
+            JObject native =
+                commands.Select(ParseWire).Single(
+                    command =>
+                        command.Value<string>("action")
+                        == "openInventoryWorkbench");
+
+            RequestNativeSkillManage(
+                r,
+                skills.Value<string>("openRequestId"));
+            Assert.Empty(c.Posts);
+
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                native.Value<string>("openRequestId"));
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "workbench",
+                opened.Value<string>("panel"));
+        }
+
+        [Fact]
+        public void NativeStorageRequestCancelsOlderNativeBuildPreflight()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var commands =
+                new List<string>();
+            r.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    commands.Add(payload);
+                    return true;
+                });
+
+            r.Dispatch("EQUIP_UI");
+            string staleRequestId =
+                ReadWorkbenchOpenRequestId(
+                    Assert.Single(commands));
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
+            string storageInstance =
+                r.ActiveFallbackPanelInstanceId;
+            Assert.False(
+                string.IsNullOrEmpty(storageInstance));
+
+            r.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                staleRequestId);
+
+            Assert.Single(c.Posts);
+            Assert.Equal(
+                storageInstance,
+                r.ActiveFallbackPanelInstanceId);
+            Assert.Equal(
+                "storage",
+                JObject.Parse(c.Posts[0])[
+                    "initData"].Value<string>("view"));
         }
 
         [Fact]
@@ -1152,8 +1559,14 @@ namespace CF7Launcher.Tests.Guardian
             Capture nativeHud = new Capture();
             LauncherCommandRouter nativeRouter =
                 MakeRouter(nativeHud);
+            var nativeCommands =
+                new List<string>();
             nativeRouter.SetGameCommandSenderForTests(
-                _ => true);
+                payload =>
+                {
+                    nativeCommands.Add(payload);
+                    return true;
+                });
             nativeRouter.Dispatch(
                 "EQUIP_UI");
             nativeRouter.RequestOpenPanel(
@@ -1164,7 +1577,10 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                ReadWorkbenchOpenRequestId(
+                    Assert.Single(
+                        nativeCommands)));
             JObject nativeOpened =
                 JObject.Parse(
                     Assert.Single(
@@ -1663,14 +2079,24 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router = MakeRouter(capture);
             var flash = new List<string>();
             var gameCommands = new List<string>();
+            var skillFlash = new List<JObject>();
             using (var task = new CharacterBuildTask(
                 delegate(string payload)
                 {
                     flash.Add(payload.TrimEnd('\0'));
                     return true;
                 }))
+            using (var skillTask = new SkillTask(
+                () => true,
+                delegate(string payload)
+                {
+                    skillFlash.Add(
+                        ParseWire(payload));
+                    return true;
+                }))
             {
                 router.SetCharacterBuildTask(task);
+                router.SetSkillTask(skillTask);
                 router.SetGameCommandSenderForTests(
                     delegate(string payload)
                     {
@@ -1771,6 +2197,91 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(
                     "skills",
                     open.Value<string>("panel"));
+                Assert.True(
+                    (bool)open["initData"][
+                        "canReturnCharacterBuild"]);
+
+                string skillsInstance =
+                    router.ActiveFallbackPanelInstanceId;
+                Assert.True(
+                    router.TryArmSkillsCharacterBuildNavigation(
+                        skillsInstance));
+                Assert.False(
+                    router.TryArmSkillsCharacterBuildNavigation(
+                        skillsInstance));
+                Assert.True(
+                    skillTask.HandleAuthoritativePanelClosed(
+                        skillsInstance));
+                Assert.False(
+                    router.TryCompleteSkillsCharacterBuildNavigation());
+                router.ClearFallbackPanelInstance();
+                Assert.False(
+                    router.TryCompleteSkillsCharacterBuildNavigation());
+
+                JObject cleanup =
+                    Assert.Single(
+                        skillFlash);
+                Assert.Equal(
+                    "skillPanelClose",
+                    cleanup.Value<string>(
+                        "action"));
+                skillTask.HandleFlashResponse(
+                    new JObject
+                    {
+                        ["task"] = "skill_response",
+                        ["callId"] =
+                            cleanup.Value<int>(
+                                "callId"),
+                        ["success"] = true,
+                        ["v"] = 1,
+                        ["changed"] = false,
+                        ["revision"] = 12
+                    },
+                    null);
+                Assert.True(
+                    router.TryCompleteSkillsCharacterBuildNavigation());
+                Assert.Null(
+                    router
+                        .PendingSkillsCharacterBuildNavigationInstance);
+
+                JObject buildPreflight =
+                    gameCommands
+                        .Select(ParseWire)
+                        .Last(command =>
+                            command.Value<string>(
+                                "action")
+                            == "openInventoryWorkbench");
+                string buildRequestId =
+                    buildPreflight.Value<string>(
+                        "openRequestId");
+                Assert.False(
+                    string.IsNullOrEmpty(
+                        buildRequestId));
+                capture.Posts.Clear();
+                router.RequestOpenPanel(
+                    "workbench",
+                    "nativehud_equipment",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                    buildRequestId);
+                JObject returnedBuild =
+                    JObject.Parse(
+                        Assert.Single(
+                            capture.Posts));
+                Assert.Equal(
+                    "skills_return",
+                    returnedBuild["initData"]
+                        .Value<string>(
+                            "navigationOrigin"));
+                Assert.Equal(
+                    "skills",
+                    returnedBuild["initData"]
+                        .Value<string>(
+                            "returnFocusAction"));
             }
         }
 
@@ -1809,6 +2320,245 @@ namespace CF7Launcher.Tests.Guardian
                     router.CancelCharacterBuildSkillsNavigation(
                         instance,
                         "duplicate"));
+            }
+        }
+
+        [Fact]
+        public void DuplicateSkillsReturnArmDoesNotRebindAnAlreadyClosedSkillTask()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var pumps =
+                new Queue<Action>();
+            var skillCommands =
+                new List<JObject>();
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            using (var skillTask =
+                new SkillTask(
+                    () => true,
+                    delegate(string payload)
+                    {
+                        skillCommands.Add(
+                            ParseWire(payload));
+                        return true;
+                    }))
+            {
+                router.SetPanelHost(host);
+                router.SetSkillTask(skillTask);
+                Assert.True(
+                    host.TryOpenPanel(
+                        "skills",
+                        "{}",
+                        null,
+                        null));
+                Action pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                string instance =
+                    host.ActivePanelInstanceId;
+                skillTask.EnrichPanelInitData(
+                    "{\"view\":\"manage\",\"source\":\"nativehud\","
+                    + "\"canReturnCharacterBuild\":true}",
+                    instance);
+                skillTask.BindPanelInstance(
+                    instance);
+
+                Assert.True(
+                    router
+                        .TryArmSkillsCharacterBuildNavigation(
+                            instance));
+                Assert.True(
+                    skillTask
+                        .HandleAuthoritativePanelClosed(
+                            instance));
+                Assert.False(
+                    router
+                        .TryArmSkillsCharacterBuildNavigation(
+                            instance));
+
+                JObject cleanup =
+                    Assert.Single(
+                        skillCommands);
+                skillTask.HandleFlashResponse(
+                    new JObject
+                    {
+                        ["task"] = "skill_response",
+                        ["callId"] =
+                            cleanup.Value<int>("callId"),
+                        ["success"] = true,
+                        ["v"] = 1,
+                        ["changed"] = false,
+                        ["revision"] = 12
+                    },
+                    null);
+                Assert.True(
+                    skillTask.IsClosedAndSettled);
+                router.CancelAllPanelNavigationIntents(
+                    "duplicate_after_close");
+                Assert.False(
+                    router
+                        .TryArmSkillsCharacterBuildNavigation(
+                            instance));
+                Assert.True(
+                    skillTask.IsClosedAndSettled);
+            }
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task
+            CancelAllIsLinearizationBarrierForSkillsReturnToNativePreflight()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var pumps =
+                new Queue<Action>();
+            var skillCommands =
+                new List<JObject>();
+            var gameCommands =
+                new List<string>();
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            using (var skillTask =
+                new SkillTask(
+                    () => true,
+                    delegate(string payload)
+                    {
+                        skillCommands.Add(
+                            ParseWire(payload));
+                        return true;
+                    }))
+            using (var entered =
+                new System.Threading.ManualResetEventSlim(
+                    false))
+            using (var release =
+                new System.Threading.ManualResetEventSlim(
+                    false))
+            {
+                router.SetPanelHost(host);
+                router.SetSkillTask(skillTask);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        gameCommands.Add(payload);
+                        return true;
+                    });
+                Assert.True(
+                    host.TryOpenPanel(
+                        "skills",
+                        "{}",
+                        null,
+                        null));
+                Action pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                string instance =
+                    host.ActivePanelInstanceId;
+                skillTask.EnrichPanelInitData(
+                    "{\"view\":\"manage\",\"source\":\"nativehud\","
+                    + "\"canReturnCharacterBuild\":true}",
+                    instance);
+                skillTask.BindPanelInstance(
+                    instance);
+                Assert.True(
+                    router
+                        .TryArmSkillsCharacterBuildNavigation(
+                            instance));
+                Assert.True(
+                    skillTask
+                        .HandleAuthoritativePanelClosed(
+                            instance));
+                JObject cleanup =
+                    Assert.Single(
+                        skillCommands);
+                skillTask.HandleFlashResponse(
+                    new JObject
+                    {
+                        ["task"] = "skill_response",
+                        ["callId"] =
+                            cleanup.Value<int>("callId"),
+                        ["success"] = true,
+                        ["v"] = 1,
+                        ["changed"] = false,
+                        ["revision"] = 12
+                    },
+                    null);
+                Assert.True(
+                    host.TryClosePanelExact(
+                        "skills",
+                        instance,
+                        null));
+                pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                Assert.True(
+                    skillTask.IsClosedAndSettled);
+                Assert.True(
+                    host.IsIdleForTrackedOpen);
+
+                router
+                    .SetBeforeSkillsCharacterBuildNavigationConsumeForTests(
+                        delegate
+                        {
+                            entered.Set();
+                            Assert.True(
+                                release.Wait(
+                                    TimeSpan.FromSeconds(
+                                        2)));
+                        });
+                System.Threading.Tasks.Task<bool>
+                    completion =
+                        System.Threading.Tasks.Task.Run(
+                            delegate
+                            {
+                                return router
+                                    .TryCompleteSkillsCharacterBuildNavigation();
+                            });
+                Assert.True(
+                    entered.Wait(
+                        TimeSpan.FromSeconds(
+                            2)));
+                System.Threading.Tasks.Task cancellation =
+                    System.Threading.Tasks.Task.Run(
+                        delegate
+                        {
+                            router
+                                .CancelAllPanelNavigationIntents(
+                                    "race_test");
+                        });
+                release.Set();
+                await System.Threading.Tasks.Task
+                    .WhenAll(
+                        completion,
+                        cancellation)
+                    .WaitAsync(
+                        TimeSpan.FromSeconds(
+                            3));
+
+                Assert.True(
+                    await completion);
+                Assert.False(
+                    router
+                        .CancelPendingNativeEquipmentBuildOpenIntent(
+                            "probe"));
+                Assert.Null(
+                    host.ActivePanelName);
+                Assert.Empty(pumps);
             }
         }
 
@@ -1939,6 +2689,516 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Fact]
+        public void CharacterBuildSkillsNavigation_PreflightAdmissionFailureReportsOnce()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var flash = new List<string>();
+            var gameCommands = new List<JObject>();
+            var pumps = new Queue<Action>();
+            using (var task = new CharacterBuildTask(
+                delegate(string payload)
+                {
+                    flash.Add(payload.TrimEnd('\0'));
+                    return true;
+                }))
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                router.SetCharacterBuildTask(task);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        gameCommands.Add(ParseWire(payload));
+                        return true;
+                    });
+                bool? completionConsumed = null;
+                task.SetCoordinatorSettled(delegate
+                {
+                    completionConsumed =
+                        router
+                            .TryCompleteCharacterBuildSkillsNavigation();
+                });
+
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.BindPanelInstance(instance));
+                PrimeCharacterBuild(task, instance, 9);
+                FinalizeCharacterBuild(task, instance, 9);
+                capture.Posts.Clear();
+                gameCommands.Clear();
+                Assert.True(
+                    router.TryArmCharacterBuildSkillsNavigation(
+                        instance));
+                Assert.True(
+                    task.BeginNormalCloseBarrier(instance));
+                router.ClearFallbackPanelInstance();
+                Assert.True(
+                    task.ContinueDetachRecoveryAfterVisualRetired(
+                        0));
+
+                router.SetPanelHost(host);
+                Assert.True(
+                    host.TryAcquireIdleFence(
+                        "skill.preflight.baseline"));
+                JObject recovery =
+                    JObject.Parse(
+                        flash[flash.Count - 1]);
+                task.HandleFlashResponse(
+                    CharacterBuildRecoveryAck(
+                        recovery,
+                        9),
+                    null);
+
+                Assert.True(completionConsumed);
+                Assert.Empty(gameCommands);
+                JObject toast =
+                    JObject.Parse(
+                        Assert.Single(
+                            capture.Posts));
+                Assert.Equal(
+                    "toast",
+                    toast.Value<string>("type"));
+                Assert.Contains(
+                    "技能面板未打开",
+                    toast.Value<string>("text"));
+                Assert.True(
+                    host.ReleaseIdleFenceExact(
+                        "skill.preflight.baseline"));
+            }
+        }
+
+        [Fact]
+        public void CharacterBuildSkillsNavigation_ConsumedHostRejectionRollsBackOnce()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var pumps = new Queue<Action>();
+            var flash = new List<string>();
+            var gameCommands = new List<JObject>();
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            using (var task = new CharacterBuildTask(
+                delegate(string payload)
+                {
+                    flash.Add(payload.TrimEnd('\0'));
+                    return true;
+                }))
+            {
+                router.SetPanelHost(host);
+                router.SetCharacterBuildTask(task);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        gameCommands.Add(
+                            ParseWire(payload));
+                        return true;
+                    });
+                task.SetCoordinatorSettled(delegate
+                {
+                    router
+                        .TryCompleteCharacterBuildSkillsNavigation();
+                });
+                router.RequestOpenPanel(
+                    "workbench",
+                    "agent_control",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                Action pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                string instance =
+                    host.ActivePanelInstanceId;
+                Assert.True(
+                    task.BindPanelInstance(
+                        instance));
+                PrimeCharacterBuild(
+                    task,
+                    instance,
+                    9);
+                FinalizeCharacterBuild(
+                    task,
+                    instance,
+                    9);
+                capture.Posts.Clear();
+                gameCommands.Clear();
+
+                Assert.True(
+                    router.TryArmCharacterBuildSkillsNavigation(
+                        instance));
+                Assert.True(
+                    task.BeginNormalCloseBarrier(
+                        instance));
+                Assert.True(
+                    task.ContinueDetachRecoveryAfterVisualRetired(
+                        0));
+                Assert.True(
+                    host.TryClosePanelExact(
+                        "workbench",
+                        instance,
+                        null));
+                pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                JObject recovery =
+                    JObject.Parse(
+                        flash[flash.Count - 1]);
+                task.HandleFlashResponse(
+                    CharacterBuildRecoveryAck(
+                        recovery,
+                        9),
+                    null);
+
+                JObject skillPreflight =
+                    Assert.Single(
+                        gameCommands,
+                        command =>
+                            command.Value<string>("action")
+                                == "skillPanelOpen");
+                Assert.True(
+                    host.TryAcquireIdleFence(
+                        "skill.request.reject"));
+                Assert.True(
+                    host.ReleaseIdleFenceExact(
+                        "skill.request.reject"));
+                RequestNativeSkillManage(
+                    router,
+                    skillPreflight.Value<string>(
+                        "openRequestId"));
+
+                Assert.Single(
+                    gameCommands,
+                    command =>
+                        command.Value<string>("action")
+                            == "openInventoryWorkbench");
+                Assert.Empty(
+                    capture.Posts);
+                Assert.False(
+                    router.CancelPendingSkillOpenIntent(
+                        "probe"));
+                Assert.True(
+                    router.CancelPendingNativeEquipmentBuildOpenIntent(
+                        "test_cleanup"));
+            }
+        }
+
+        [Fact]
+        public void CharacterBuildSkillTimeoutCannotRollbackOverNewNotchIntent()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var flash = new List<string>();
+            var gameCommands =
+                new System.Collections.Concurrent
+                    .ConcurrentQueue<JObject>();
+            using (var task = new CharacterBuildTask(
+                delegate(string payload)
+                {
+                    flash.Add(payload.TrimEnd('\0'));
+                    return true;
+                }))
+            {
+                router.SetCharacterBuildTask(task);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        gameCommands.Enqueue(
+                            ParseWire(payload));
+                        return true;
+                    });
+                task.SetCoordinatorSettled(delegate
+                {
+                    router
+                        .TryCompleteCharacterBuildSkillsNavigation();
+                });
+                router.SkillOpenTimeoutMs =
+                    30;
+
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.BindPanelInstance(instance));
+                PrimeCharacterBuild(task, instance, 9);
+                FinalizeCharacterBuild(task, instance, 9);
+                capture.Posts.Clear();
+                while (gameCommands.TryDequeue(
+                    out JObject ignored))
+                {
+                }
+                Assert.True(
+                    router.TryArmCharacterBuildSkillsNavigation(
+                        instance));
+                Assert.True(
+                    task.BeginNormalCloseBarrier(instance));
+                router.ClearFallbackPanelInstance();
+                Assert.True(
+                    task.ContinueDetachRecoveryAfterVisualRetired(
+                        0));
+                router.SetAfterSkillOpenTimeoutClearedForTests(
+                    delegate
+                    {
+                        router
+                            .SetAfterSkillOpenTimeoutClearedForTests(
+                                null);
+                        router.SkillOpenTimeoutMs =
+                            1000;
+                        router.Dispatch(
+                            "SKILLS");
+                    });
+                JObject recovery =
+                    JObject.Parse(
+                        flash[flash.Count - 1]);
+                task.HandleFlashResponse(
+                    CharacterBuildRecoveryAck(
+                        recovery,
+                        9),
+                    null);
+
+                Assert.True(
+                    System.Threading.SpinWait.SpinUntil(
+                        delegate
+                        {
+                            return gameCommands
+                                .Count(command =>
+                                    command.Value<string>("action")
+                                        == "skillPanelOpen")
+                                == 2;
+                        },
+                        2000));
+                JObject latest =
+                    gameCommands
+                        .Where(command =>
+                            command.Value<string>("action")
+                                == "skillPanelOpen")
+                        .Last();
+                Assert.DoesNotContain(
+                    gameCommands,
+                    command =>
+                        command.Value<string>("action")
+                            == "openInventoryWorkbench");
+                Assert.Empty(
+                    capture.Posts);
+
+                RequestNativeSkillManage(
+                    router,
+                    latest.Value<string>(
+                        "openRequestId"));
+                JObject opened =
+                    JObject.Parse(
+                        Assert.Single(
+                            capture.Posts));
+                Assert.Equal(
+                    "skills",
+                    opened.Value<string>("panel"));
+            }
+        }
+
+        [Fact]
+        public void DirectNativeIntentSupersedesOlderArmedForwardNavigation()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var flash = new List<string>();
+            var gameCommands = new List<JObject>();
+            using (var task = new CharacterBuildTask(
+                delegate(string payload)
+                {
+                    flash.Add(payload.TrimEnd('\0'));
+                    return true;
+                }))
+            {
+                router.SetCharacterBuildTask(task);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        gameCommands.Add(ParseWire(payload));
+                        return true;
+                    });
+                bool? completionConsumed = null;
+                task.SetCoordinatorSettled(delegate
+                {
+                    completionConsumed =
+                        router
+                            .TryCompleteCharacterBuildSkillsNavigation();
+                });
+
+                string instance =
+                    OpenFallbackBuild(router);
+                Assert.True(
+                    task.BindPanelInstance(instance));
+                PrimeCharacterBuild(task, instance, 9);
+                FinalizeCharacterBuild(task, instance, 9);
+                Assert.True(
+                    router.TryArmCharacterBuildSkillsNavigation(
+                        instance));
+                Assert.True(
+                    task.BeginNormalCloseBarrier(instance));
+                router.ClearFallbackPanelInstance();
+                Assert.True(
+                    task.ContinueDetachRecoveryAfterVisualRetired(
+                        0));
+
+                router.Dispatch("EQUIP_UI");
+                Assert.Null(
+                    router
+                        .PendingCharacterBuildSkillsNavigationInstance);
+                JObject recovery =
+                    JObject.Parse(
+                        flash[flash.Count - 1]);
+                task.HandleFlashResponse(
+                    CharacterBuildRecoveryAck(
+                        recovery,
+                        9),
+                    null);
+
+                Assert.False(completionConsumed);
+                Assert.Single(
+                    gameCommands,
+                    command =>
+                        command.Value<string>("action")
+                            == "openInventoryWorkbench");
+                Assert.DoesNotContain(
+                    gameCommands,
+                    command =>
+                        command.Value<string>("action")
+                            == "skillPanelOpen");
+                router.CancelPendingNativeEquipmentBuildOpenIntent(
+                    "test_cleanup");
+            }
+        }
+
+        [Fact]
+        public void DirectSkillsIntentSupersedesOlderArmedReverseNavigation()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(capture);
+            var pumps = new Queue<Action>();
+            var skillCommands = new List<JObject>();
+            var gameCommands = new List<JObject>();
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            using (var skillTask =
+                new SkillTask(
+                    () => true,
+                    delegate(string payload)
+                    {
+                        skillCommands.Add(
+                            ParseWire(payload));
+                        return true;
+                    }))
+            {
+                router.SetPanelHost(host);
+                router.SetSkillTask(skillTask);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        gameCommands.Add(
+                            ParseWire(payload));
+                        return true;
+                    });
+                Assert.True(
+                    host.TryOpenPanel(
+                        "skills",
+                        "{}",
+                        null,
+                        null));
+                Action pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                string instance =
+                    host.ActivePanelInstanceId;
+                skillTask.EnrichPanelInitData(
+                    "{\"view\":\"manage\",\"source\":\"nativehud\","
+                    + "\"canReturnCharacterBuild\":true}",
+                    instance);
+                skillTask.BindPanelInstance(
+                    instance);
+                Assert.True(
+                    router
+                        .TryArmSkillsCharacterBuildNavigation(
+                            instance));
+                Assert.True(
+                    skillTask
+                        .HandleAuthoritativePanelClosed(
+                            instance));
+                JObject cleanup =
+                    Assert.Single(
+                        skillCommands);
+                Assert.True(
+                    host.TryClosePanelExact(
+                        "skills",
+                        instance,
+                        null));
+                pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+
+                router.Dispatch("SKILLS");
+                Assert.Null(
+                    router
+                        .PendingSkillsCharacterBuildNavigationInstance);
+                skillTask.HandleFlashResponse(
+                    new JObject
+                    {
+                        ["task"] =
+                            "skill_response",
+                        ["callId"] =
+                            cleanup.Value<int>("callId"),
+                        ["success"] = true,
+                        ["v"] = 1,
+                        ["changed"] = false,
+                        ["revision"] = 12
+                    },
+                    null);
+
+                Assert.False(
+                    router
+                        .TryCompleteSkillsCharacterBuildNavigation());
+                Assert.Single(
+                    gameCommands,
+                    command =>
+                        command.Value<string>("action")
+                            == "skillPanelOpen");
+                Assert.DoesNotContain(
+                    gameCommands,
+                    command =>
+                        command.Value<string>("action")
+                            == "openInventoryWorkbench");
+                router.CancelPendingSkillOpenIntent(
+                    "test_cleanup");
+            }
+        }
+
         [Theory]
         [InlineData("dormitory", "{\"profile\":\"warehouse\",\"view\":\"tuning\"}")]
         [InlineData("dormitory", "{\"profile\":\"warehouse\",\"view\":\"unknown\"}")]
@@ -2039,9 +3299,56 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter r = MakeRouter(c);
             r.Dispatch("SKILLS");
             Assert.Single(c.Posts);
-            Assert.Contains("旧物品界面", c.Posts[0]);
+            Assert.Contains("稍后重试", c.Posts[0]);
+            Assert.DoesNotContain("旧物品界面", c.Posts[0]);
             Assert.DoesNotContain("\"cmd\":\"open\"", c.Posts[0]);
             Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void SkillsReturnCapability_IsAbsentFromNotchAndTrainerOrigins()
+        {
+            Capture notch = new Capture();
+            LauncherCommandRouter notchRouter =
+                MakeRouter(notch);
+            using (var notchTask = new SkillTask(
+                () => true,
+                _ => true))
+            {
+                notchRouter.SetSkillTask(
+                    notchTask);
+                string notchInstance =
+                    OpenNativeSkillManage(
+                        notchRouter);
+                Assert.False(
+                    notchRouter
+                        .TryArmSkillsCharacterBuildNavigation(
+                            notchInstance));
+            }
+
+            Capture trainer = new Capture();
+            LauncherCommandRouter trainerRouter =
+                MakeRouter(trainer);
+            using (var trainerTask = new SkillTask(
+                () => true,
+                _ => true))
+            {
+                trainerRouter.SetSkillTask(
+                    trainerTask);
+                RequestWorldSkillTrainer(
+                    trainerRouter,
+                    "trainer.return.absent");
+                string trainerInstance =
+                    trainerRouter
+                        .ActiveFallbackPanelInstanceId;
+                Assert.False(
+                    string.IsNullOrEmpty(
+                        trainerInstance));
+                Assert.False(
+                    trainerRouter
+                        .TryArmSkillsCharacterBuildNavigation(
+                            trainerInstance));
+            }
         }
 
         [Fact]
@@ -2213,6 +3520,67 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void SkillsButton_TrackedReservationCycleInvalidatesIdleAdmission()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            var pumps =
+                new Queue<Action>();
+            string skillCommand =
+                null;
+            using (var host =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                r.SetPanelHost(host);
+                r.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        JObject command =
+                            ParseWire(payload);
+                        if (command.Value<string>("action")
+                            == "skillPanelOpen")
+                        {
+                            skillCommand =
+                                payload;
+                        }
+                        return true;
+                    });
+                r.Dispatch("SKILLS");
+                Assert.False(
+                    string.IsNullOrEmpty(
+                        skillCommand));
+                Assert.True(
+                    host.TryOpenTrackedPanel(
+                        "loot",
+                        "{}",
+                        "panel.loot.skill-race",
+                        delegate { return false; },
+                        null));
+                Action pump =
+                    Assert.Single(pumps);
+                pumps.Clear();
+                pump();
+                Assert.True(
+                    host.IsIdleForTrackedOpen);
+
+                RequestNativeSkillManage(
+                    r,
+                    ReadSkillOpenRequestId(
+                        skillCommand));
+
+                Assert.False(
+                    host.IsPanelOpen);
+                Assert.Empty(pumps);
+                Assert.Empty(c.Posts);
+            }
+        }
+
+        [Fact]
         public void SkillsButton_WebNavigationCancellationRejectsLateResponse()
         {
             Capture c = new Capture();
@@ -2256,6 +3624,43 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
             Assert.DoesNotContain("技能服务未就绪", c.Posts[0]);
+        }
+
+        [Fact]
+        public void SkillsButton_SynchronousAckFollowedBySendFalseDoesNotReportFailure()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.SkillOpenTimeoutMs = 40;
+            r.SetGameCommandSenderForTests(
+                delegate(string value)
+                {
+                    JObject command =
+                        ParseWire(value);
+                    if (command.Value<string>("action")
+                        == "skillPanelOpen")
+                    {
+                        RequestNativeSkillManage(
+                            r,
+                            command.Value<string>(
+                                "openRequestId"));
+                        return false;
+                    }
+                    return true;
+                });
+
+            r.Dispatch("SKILLS");
+            System.Threading.Thread.Sleep(100);
+
+            JObject opened =
+                JObject.Parse(
+                    Assert.Single(c.Posts));
+            Assert.Equal(
+                "skills",
+                opened.Value<string>("panel"));
+            Assert.DoesNotContain(
+                "toast",
+                c.Posts[0]);
         }
 
         [Theory]
@@ -2543,6 +3948,22 @@ namespace CF7Launcher.Tests.Guardian
                 ParseWire(command);
             Assert.Equal(
                 "skillPanelOpen",
+                parsed.Value<string>("action"));
+            string requestId =
+                parsed.Value<string>(
+                    "openRequestId");
+            Assert.False(
+                string.IsNullOrEmpty(requestId));
+            return requestId;
+        }
+
+        private static string ReadWorkbenchOpenRequestId(
+            string command)
+        {
+            JObject parsed =
+                ParseWire(command);
+            Assert.Equal(
+                "openInventoryWorkbench",
                 parsed.Value<string>("action"));
             string requestId =
                 parsed.Value<string>(

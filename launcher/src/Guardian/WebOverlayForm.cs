@@ -195,15 +195,27 @@ namespace CF7Launcher.Guardian
 
         internal static bool IsValidSkillCloseEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
         {
-            if (parsed == null || parsed.Count != 4 || activePanel != "skills") return false;
+            if (parsed == null || activePanel != "skills"
+                || string.IsNullOrEmpty(activePanelInstanceId)) return false;
+            bool hasReason = parsed.Property("reason") != null;
+            if (parsed.Count != (hasReason ? 5 : 4)) return false;
             foreach (JProperty property in parsed.Properties())
                 if (property.Name != "type" && property.Name != "panel" && property.Name != "cmd"
-                    && property.Name != "panelInstanceId") return false;
-            return parsed.Value<string>("type") == "panel"
-                && parsed.Value<string>("panel") == "skills"
-                && parsed.Value<string>("cmd") == "close"
-                && !string.IsNullOrEmpty(activePanelInstanceId)
-                && parsed.Value<string>("panelInstanceId") == activePanelInstanceId;
+                    && property.Name != "panelInstanceId"
+                    && property.Name != "reason") return false;
+            if (!HasExactStringValue(parsed["type"], "panel")
+                || !HasExactStringValue(parsed["panel"], "skills")
+                || !HasExactStringValue(parsed["cmd"], "close")
+                || !HasExactStringValue(
+                    parsed["panelInstanceId"],
+                    activePanelInstanceId))
+            {
+                return false;
+            }
+            return !hasReason
+                || HasExactStringValue(
+                    parsed["reason"],
+                    "navigate_character_build");
         }
 
         internal static bool IsValidWorkbenchCloseEnvelope(JObject parsed,
@@ -993,9 +1005,10 @@ namespace CF7Launcher.Guardian
                     if (_commandRouter != null)
                     {
                         _commandRouter
-                            .CancelPendingSkillOpenIntent(
+                            .CancelAllPanelNavigationIntents(
                                 "web_navigation");
                     }
+                    BeginSkillWebNavigationRecovery();
                     BeginCharacterBuildWebNavigationRecovery();
                 };
                 _webView.CoreWebView2.ContentLoading += delegate(object sender,
@@ -3169,6 +3182,12 @@ namespace CF7Launcher.Guardian
 
             if (disposing)
             {
+                if (_commandRouter != null)
+                {
+                    _commandRouter
+                        .CancelAllPanelNavigationIntents(
+                            "web_overlay_dispose");
+                }
                 ShowSystemCursor();
                 if (_fpsTimer != null)
                 {
@@ -4335,7 +4354,9 @@ namespace CF7Launcher.Guardian
                         bool characterBuildPauseReleaseHandled = false;
                         bool characterBuildVisualRetirePending = false;
                         bool navigateSkills = false;
+                        bool navigateCharacterBuild = false;
                         string exactWorkbenchInstance = null;
+                        string exactSkillInstance = null;
                         bool trackedHairdresserClose = panel == "hairdresser"
                             && _panelHost != null
                             && _panelHost.IsPanelOpen
@@ -4462,10 +4483,64 @@ namespace CF7Launcher.Guardian
                                 LogManager.Log("[SkillTask] rejected stale/malformed close envelope");
                                 return;
                             }
+                            navigateCharacterBuild =
+                                string.Equals(
+                                    parsed.Value<string>(
+                                        "reason"),
+                                    "navigate_character_build",
+                                    StringComparison.Ordinal);
+                            exactSkillInstance =
+                                activeInstance;
+                            if (navigateCharacterBuild)
+                            {
+                                bool navigationArmed =
+                                    _commandRouter != null
+                                    && _commandRouter
+                                        .TryArmSkillsCharacterBuildNavigation(
+                                            activeInstance);
+                                if (!navigationArmed)
+                                {
+                                    string pendingNavigation =
+                                        _commandRouter != null
+                                            ? _commandRouter
+                                                .PendingSkillsCharacterBuildNavigationInstance
+                                            : null;
+                                    if (string.Equals(
+                                        pendingNavigation,
+                                        activeInstance,
+                                        StringComparison.Ordinal))
+                                    {
+                                        LogManager.Log(
+                                            "[SkillTask] rejected duplicate Character Build navigation handoff");
+                                        return;
+                                    }
+                                    navigateCharacterBuild =
+                                        false;
+                                    LogManager.Log(
+                                        "[SkillTask] Character Build return unavailable; continuing ordinary close");
+                                    PostToWeb(
+                                        "{\"type\":\"toast\",\"text\":\"返回构筑当前不可用，技能页将正常关闭\"}");
+                                }
+                            }
+                            else if (_commandRouter != null)
+                            {
+                                _commandRouter
+                                    .CancelSkillsCharacterBuildNavigation(
+                                        activeInstance,
+                                        "ordinary_close");
+                            }
                             // skills runtime 可能尚未 lazy-load，因而还没有任何 domain 请求触发 Bind。
                             // close 已通过 Host active name+instance 校验，可安全先绑定再关闭。
                             if (_skillTask == null || !_skillTask.HandleAuthoritativePanelClosed(activeInstance))
                             {
+                                if (navigateCharacterBuild
+                                    && _commandRouter != null)
+                                {
+                                    _commandRouter
+                                        .CancelSkillsCharacterBuildNavigation(
+                                            activeInstance,
+                                            "coordinator_close_race");
+                                }
                                 LogManager.Log("[SkillTask] close rejected by coordinator");
                                 return;
                             }
@@ -4504,7 +4579,8 @@ namespace CF7Launcher.Guardian
                         {
                             // 顺序很关键：必须先清栈再 ClosePanel，否则 ExecuteCommand Close path
                             // 还会读到栈顶 entry 并 enqueue reopen 命令。
-                            if (dismissReturnStack || navigateSkills)
+                            if (dismissReturnStack || navigateSkills
+                                || navigateCharacterBuild)
                                 _panelHost.ClearReturnStack();
                             if (panel == "workbench")
                             {
@@ -4541,6 +4617,66 @@ namespace CF7Launcher.Guardian
                                         "[Workbench] exact Host close was not queued");
                                 }
                             }
+                            else if (panel == "skills")
+                            {
+                                string closeInstance =
+                                    exactSkillInstance
+                                    ?? parsed.Value<string>(
+                                        "panelInstanceId");
+                                bool closeQueued;
+                                if (navigateCharacterBuild)
+                                {
+                                    closeQueued =
+                                        _panelHost
+                                            .TryRetirePanelVisualExact(
+                                                "skills",
+                                                closeInstance,
+                                                delegate(
+                                                    PanelHostController
+                                                        .VisualRetireOutcome
+                                                        outcome)
+                                                {
+                                                    if (outcome
+                                                            == PanelHostController
+                                                                .VisualRetireOutcome
+                                                                .RetiredExact
+                                                        || outcome
+                                                            == PanelHostController
+                                                                .VisualRetireOutcome
+                                                                .VisualAlreadyAbsent)
+                                                    {
+                                                        _commandRouter
+                                                            .TryCompleteSkillsCharacterBuildNavigation();
+                                                        return;
+                                                    }
+                                                    _commandRouter
+                                                        .CancelSkillsCharacterBuildNavigation(
+                                                            closeInstance,
+                                                            "visual_retire_failed");
+                                                });
+                                }
+                                else
+                                {
+                                    closeQueued =
+                                        _panelHost
+                                            .TryClosePanelExact(
+                                                "skills",
+                                                closeInstance,
+                                                null);
+                                }
+                                if (!closeQueued)
+                                {
+                                    if (navigateCharacterBuild)
+                                    {
+                                        _commandRouter
+                                            .CancelSkillsCharacterBuildNavigation(
+                                                closeInstance,
+                                                "visual_retire_not_queued");
+                                    }
+                                    LogManager.Log(
+                                        "[SkillTask] exact Host close was not queued");
+                                }
+                            }
                             else
                             {
                                 _panelHost.ClosePanel();
@@ -4562,6 +4698,17 @@ namespace CF7Launcher.Guardian
                                         exactWorkbenchInstance,
                                         "visual_retire_continuation_failed");
                             }
+                        }
+                        else if (_panelHost == null
+                            && navigateCharacterBuild)
+                        {
+                            // Flag-OFF has no native backdrop/visual lease. The exact fallback
+                            // instance was already cleared above; establish the same visual-idle
+                            // proof before attempting the AS2 workbench preflight.
+                            ForceIdleState(
+                                "skills_character_build_navigation");
+                            _commandRouter
+                                .TryCompleteSkillsCharacterBuildNavigation();
                         }
                         if (panel == "hairdresser" && !trackedHairdresserClose
                             && _hairdresserTask != null)
@@ -4972,6 +5119,70 @@ namespace CF7Launcher.Guardian
             return queued;
         }
 
+        private void BeginSkillWebNavigationRecovery()
+        {
+            if (_skillTask == null)
+                return;
+            string panelName = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelName
+                    : _activePanel);
+            string panelInstanceId = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelInstanceId
+                    : null);
+            if (!string.Equals(
+                    panelName,
+                    "skills",
+                    StringComparison.Ordinal)
+                || string.IsNullOrEmpty(
+                    panelInstanceId))
+            {
+                return;
+            }
+
+            _skillTask.HandleAuthoritativePanelClosed(
+                panelInstanceId);
+            TryReleaseGenericWebPanelPause();
+            if (_panelHost != null)
+            {
+                _panelHost.ClearReturnStack();
+                if (!_panelHost
+                        .TryRetirePanelVisualExact(
+                            "skills",
+                            panelInstanceId,
+                            delegate(
+                                PanelHostController
+                                    .VisualRetireOutcome
+                                    outcome)
+                            {
+                                if (outcome
+                                    == PanelHostController
+                                        .VisualRetireOutcome
+                                        .HostUnavailable)
+                                {
+                                    LogManager.Log(
+                                        "[SkillTask] web navigation visual retire unavailable");
+                                }
+                            }))
+                {
+                    LogManager.Log(
+                        "[SkillTask] web navigation visual retire was not queued");
+                }
+                return;
+            }
+
+            if (_commandRouter != null)
+                _commandRouter.ClearFallbackPanelInstance();
+            _activePanel = null;
+            if (_onPanelStateChanged != null)
+                _onPanelStateChanged(false);
+            ForceIdleState(
+                "skills_web_navigation");
+        }
+
         private void BeginCharacterBuildWebNavigationRecovery()
         {
             CharacterBuildTask task = _characterBuildTask;
@@ -5055,7 +5266,7 @@ namespace CF7Launcher.Guardian
             if (_commandRouter != null)
             {
                 _commandRouter
-                    .CancelPendingSkillOpenIntent(
+                    .CancelAllPanelNavigationIntents(
                         "socket_disconnected");
             }
 
@@ -5310,7 +5521,7 @@ namespace CF7Launcher.Guardian
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
             string returnToPanel, string returnToInitDataJson, string initDataExtrasJson,
-            string skillOpenRequestId)
+            string openRequestId)
         {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
@@ -5321,7 +5532,7 @@ namespace CF7Launcher.Guardian
                     {
                         RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
                             returnToPanel, returnToInitDataJson, initDataExtrasJson,
-                            skillOpenRequestId);
+                            openRequestId);
                     }));
                 }
                 catch { }
@@ -5332,7 +5543,7 @@ namespace CF7Launcher.Guardian
             {
                 _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
                     returnToPanel, returnToInitDataJson, initDataExtrasJson,
-                    skillOpenRequestId);
+                    openRequestId);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

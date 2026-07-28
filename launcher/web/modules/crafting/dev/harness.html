@@ -213,8 +213,26 @@ try{
   ok('animation can be paused without closing inspector',CraftingPanel.debugState().inspector.animationEnabled===false&&__rafStats.active===inspectorRafBaseline,JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
   var resumeToggle=inspectorButtons.find(function(x){return x.textContent==='播放动效'});if(resumeToggle)resumeToggle.click();await wait();
   ok('animation resumes on the same live canvas',CraftingPanel.debugState().inspector.animationEnabled===true&&__rafStats.active>inspectorRafBaseline,JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
-  document.querySelector('.workbench-modal-action[data-action="close"]').click();await wait();
-  ok('closing inspector destroys its live controller and animation frame',!document.querySelector('.crafting-inspector')&&CraftingPanel.debugState().inspector===null&&__rafStats.active===inspectorRafBaseline,JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
+  var inspectorCloseBaseline=__sent.filter(function(x){return x.cmd==='close'}).length;
+  document.querySelector('.workbench-close-btn').click();await wait();
+  ok('header close dismisses the inspector before the crafting panel',
+    Panels.getActive()==='crafting'&&!document.querySelector('.crafting-inspector')
+      &&CraftingPanel.debugState().inspector===null
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===inspectorCloseBaseline
+      &&__rafStats.active===inspectorRafBaseline,
+    JSON.stringify({baseline:inspectorRafBaseline,stats:__rafStats}));
+  document.querySelector('.crafting-output-inspect-trigger').click();
+  await waitFor(function(){return document.querySelector('.crafting-inspector')},3000);
+  Panels._specs.crafting.onRequestClose('backdrop');await wait();
+  ok('native backdrop dismisses the inspector before the crafting panel',
+    Panels.getActive()==='crafting'&&!document.querySelector('.crafting-inspector')
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===inspectorCloseBaseline);
+  document.querySelector('.crafting-output-inspect-trigger').click();
+  await waitFor(function(){return document.querySelector('.crafting-inspector')},3000);
+  Panels._specs.crafting.onRequestClose('escape');await wait();
+  ok('physical Escape dismisses the inspector before the crafting panel',
+    Panels.getActive()==='crafting'&&!document.querySelector('.crafting-inspector')
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===inspectorCloseBaseline);
   __specialWeaponMode='dual';Panels.open('crafting',{category:'武器合成'});await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('炎寒对剑')>=0});document.querySelector('.crafting-output-inspect-trigger').click();
   await waitFor(function(){var state=CraftingPanel.debugState().inspector;return state&&state.composition==='dual-blade'&&state.render&&state.render.pendingImages===0},3000);
   var dualInspectorState=CraftingPanel.debugState().inspector;
@@ -320,6 +338,12 @@ try{
   ok('disabling only-craftable restores blocked cards',document.querySelectorAll('.crafting-recipe-card.blocked').length===2&&!CraftingPanel.debugState().craftableOnly);
   document.querySelectorAll('.crafting-recipe-card')[1].click();await wait();
   ok('blocked preview has disabled submit',document.querySelector('.crafting-commit-status').textContent.indexOf('材料不足')>=0&&document.querySelector('.crafting-commit-btn').disabled);
+  var closeAttemptCount=__sent.filter(function(x){return x.cmd==='close'}).length,closeToastCount=__toasts.length;
+  __queueCraftingFault({cmd:'close',mode:'send_false'});document.querySelector('.workbench-close-btn').click();await wait();
+  ok('close transport failure keeps crafting mounted and retryable',
+    Panels.getActive()==='crafting'
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===closeAttemptCount+1
+      &&__toasts.length===closeToastCount+1);
   var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();
   var route=Panels.lastOpen();ok('organizer revokes token then routes to battlebox',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeRoute+1&&Panels.getActive()==='workbench'&&route.init.profile==='battlebox'&&route.init.returnTo.initData.preferredRecipeIndex===1);
   ok('rebuild and route cleanup disconnect every ResizeObserver',__resizeObserverStats.active===0,JSON.stringify(__resizeObserverStats));

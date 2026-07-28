@@ -148,9 +148,10 @@ namespace CF7Launcher.Guardian
         private readonly List<VisualRetireWaiter> _visualRetireWaiters =
             new List<VisualRetireWaiter>();
         private readonly object _queueLock = new object();
+        private long _openAdmissionEpoch;
         private Func<string, bool> _openGate;
         private Func<string, bool> _rebindGate;
-        private Func<string, string, string> _initDataEnricher;
+        private Func<string, string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
         public event Action<string, string> PanelClosed;
         private PanelCommand? _deferredRebind;
@@ -273,6 +274,69 @@ namespace CF7Launcher.Guardian
             if (_disposed || string.IsNullOrEmpty(name)) return false;
             return EnqueueAndPump(new PanelCommand(
                 PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
+        }
+
+        /// <summary>
+        /// Captures a quiescent Host proof for a delayed, nonce-bound generic open.  The proof covers
+        /// queued/processing commands, tracked reservations and leases, idle fences, deferred
+        /// opens, visual-retire barriers, the return stack, and the exact active identity.  It is
+        /// only useful with TryOpenPanelFromAdmission, which validates and consumes the proof
+        /// atomically with enqueue.
+        /// </summary>
+        internal bool TryCaptureOpenAdmission(
+            out long admissionEpoch,
+            out string activePanel,
+            out string activeInstance)
+        {
+            lock (_queueLock)
+            {
+                admissionEpoch = _openAdmissionEpoch;
+                activePanel = _activePanel;
+                activeInstance = _activePanelInstanceId;
+                return IsStableOpenAdmissionLocked(
+                    activePanel,
+                    activeInstance);
+            }
+        }
+
+        /// <summary>
+        /// Atomically admits a delayed generic open only if no Host lifecycle mutation has occurred
+        /// since TryCaptureOpenAdmission and the Host still has the exact captured active identity.
+        /// </summary>
+        internal bool TryOpenPanelFromAdmission(
+            long admissionEpoch,
+            string expectedActivePanel,
+            string expectedActiveInstance,
+            string name,
+            string initDataJson,
+            string returnToName,
+            string returnInitDataJson)
+        {
+            if (_disposed || string.IsNullOrEmpty(name)) return false;
+            return EnqueueAndPump(
+                new PanelCommand(
+                    PanelCommandKind.Open,
+                    name,
+                    initDataJson,
+                    returnToName,
+                    returnInitDataJson),
+                admissionEpoch,
+                expectedActivePanel,
+                expectedActiveInstance);
+        }
+
+        internal bool IsOpenAdmissionCurrent(
+            long admissionEpoch,
+            string expectedActivePanel,
+            string expectedActiveInstance)
+        {
+            lock (_queueLock)
+            {
+                return admissionEpoch == _openAdmissionEpoch
+                    && IsStableOpenAdmissionLocked(
+                        expectedActivePanel,
+                        expectedActiveInstance);
+            }
         }
 
         /// <summary>
@@ -420,6 +484,7 @@ namespace CF7Launcher.Guardian
                     || _queue.Count != 0 || _processing || _trackedOpenReserved
                     || _trackedLeaseInstanceId != null) return false;
                 _idleFenceToken = token;
+                _openAdmissionEpoch++;
                 return true;
             }
         }
@@ -431,6 +496,7 @@ namespace CF7Launcher.Guardian
             {
                 if (!string.Equals(_idleFenceToken, token, StringComparison.Ordinal)) return false;
                 _idleFenceToken = null;
+                _openAdmissionEpoch++;
                 return true;
             }
         }
@@ -449,7 +515,7 @@ namespace CF7Launcher.Guardian
 
         public void SetOpenGate(Func<string, bool> gate) { _openGate = gate; }
         public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
-        public void SetInitDataEnricher(Func<string, string, string> enricher) { _initDataEnricher = enricher; }
+        public void SetInitDataEnricher(Func<string, string, string, string> enricher) { _initDataEnricher = enricher; }
         public void SetPanelCloseObserver(Action<string, string> observer) { _panelCloseObserver = observer; }
 
         /// <summary>协调器回到可 rebind 状态后，只恢复最后一次同 panel 意图。</summary>
@@ -504,6 +570,30 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private bool IsStableOpenAdmissionLocked(
+            string expectedActivePanel,
+            string expectedActiveInstance)
+        {
+            return !_disposed
+                && string.Equals(
+                    _activePanel,
+                    expectedActivePanel,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    _activePanelInstanceId,
+                    expectedActiveInstance,
+                    StringComparison.Ordinal)
+                && _queue.Count == 0
+                && !_processing
+                && !_trackedOpenReserved
+                && _trackedLeaseInstanceId == null
+                && _idleFenceToken == null
+                && !_deferredRebind.HasValue
+                && !_deferredBarrierOpen.HasValue
+                && _visualRetireWaiters.Count == 0
+                && _returnStack.Count == 0;
+        }
+
         /// <summary>
         /// 异常路径（断线 / force_close / 进程退出前）专用：清空 return stack，
         /// 让接下来的 ClosePanel 不要尝试 reopen 任何上层 panel。
@@ -525,10 +615,32 @@ namespace CF7Launcher.Guardian
 
         private bool EnqueueAndPump(PanelCommand cmd)
         {
+            return EnqueueAndPump(
+                cmd,
+                null,
+                null,
+                null);
+        }
+
+        private bool EnqueueAndPump(
+            PanelCommand cmd,
+            long? requiredOpenAdmission,
+            string expectedActivePanel,
+            string expectedActiveInstance)
+        {
             if (_disposed) return false;
             lock (_queueLock)
             {
                 if (_disposed) return false;
+                if (requiredOpenAdmission.HasValue
+                    && (requiredOpenAdmission.Value
+                            != _openAdmissionEpoch
+                        || !IsStableOpenAdmissionLocked(
+                            expectedActivePanel,
+                            expectedActiveInstance)))
+                {
+                    return false;
+                }
                 if (_idleFenceToken != null) return false;
                 if (cmd.IsTrackedOpen)
                 {
@@ -552,6 +664,7 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
                 _queue.Enqueue(cmd);
+                _openAdmissionEpoch++;
                 if (_processing) return true;
                 _processing = true;
             }
@@ -1092,6 +1205,7 @@ namespace CF7Launcher.Guardian
                     PanelCommandKind.Open,
                     top.Name,
                     top.InitDataJson));
+                _openAdmissionEpoch++;
             }
         }
 
@@ -1244,8 +1358,8 @@ namespace CF7Launcher.Guardian
             // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
             string instanceId = string.IsNullOrEmpty(reservedPanelInstanceId)
                 ? NextPanelInstanceId() : reservedPanelInstanceId;
-            Func<string, string, string> enricher = _initDataEnricher;
-            if (enricher != null) initDataJson = enricher(name, initDataJson);
+            Func<string, string, string, string> enricher = _initDataEnricher;
+            if (enricher != null) initDataJson = enricher(name, initDataJson, instanceId);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             bool delivered = true;
             try
@@ -1304,8 +1418,8 @@ namespace CF7Launcher.Guardian
         private void DoRebind(string name, string initDataJson)
         {
             string instanceId = NextPanelInstanceId();
-            Func<string, string, string> enricher = _initDataEnricher;
-            if (enricher != null) initDataJson = enricher(name, initDataJson);
+            Func<string, string, string, string> enricher = _initDataEnricher;
+            if (enricher != null) initDataJson = enricher(name, initDataJson, instanceId);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             try { _web.PostToWeb(payload); }
             catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb rebind failed: " + ex.Message); throw; }

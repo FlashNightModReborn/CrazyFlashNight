@@ -1229,9 +1229,11 @@ class Program
                 }
                 return true;
             });
-            panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson)
+            panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson, string panelInstanceId)
             {
-                return panelName == "skills" ? skillTask.EnrichPanelInitData(initDataJson) : initDataJson;
+                return panelName == "skills"
+                    ? skillTask.EnrichPanelInitData(initDataJson, panelInstanceId)
+                    : initDataJson;
             });
             panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)
             {
@@ -1244,6 +1246,12 @@ class Program
                 string panelName,
                 string panelInstanceId)
             {
+                if (panelName == "skills")
+                {
+                    commandRouter
+                        .TryCompleteSkillsCharacterBuildNavigation();
+                    return;
+                }
                 // Safety net for Host-owned closes that did not originate in WebOverlay/Router.
                 // PanelClosed fires only after native/Web visual teardown; it may arm and continue
                 // recovery here without releasing pause behind a visible replacement.
@@ -1267,8 +1275,18 @@ class Program
         }
         skillTask.SetCoordinatorSettled(delegate
         {
-            if (panelHost != null) panelHost.FlushDeferredRebind("skills");
-            commandRouter.FlushDeferredFallbackSkillRebind();
+            bool characterBuildNavigationConsumed =
+                commandRouter
+                    .TryCompleteSkillsCharacterBuildNavigation();
+            if (!characterBuildNavigationConsumed
+                && commandRouter
+                    .PendingSkillsCharacterBuildNavigationInstance
+                    == null)
+            {
+                if (panelHost != null)
+                    panelHost.FlushDeferredRebind("skills");
+                commandRouter.FlushDeferredFallbackSkillRebind();
+            }
         });
         equipmentTuningTask.SetCoordinatorSettled(delegate
         {
@@ -1466,6 +1484,8 @@ class Program
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
         {
+            commandRouter.CancelAllPanelNavigationIntents(
+                "host_shutdown");
             // 顺序敏感: 这两步必须最前。
             // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。

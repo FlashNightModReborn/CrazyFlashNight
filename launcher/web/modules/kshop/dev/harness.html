@@ -41,7 +41,7 @@ html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#0507
             var index = list.indexOf(callback);
             if (index >= 0) list.splice(index, 1);
         },
-        send: function(message) { window.KShopHarnessHost.handle(message); }
+        send: function(message) { return window.KShopHarnessHost.handle(message); }
     };
     window.__emitBridge = function(type, data) {
         var list = (listeners[type] || []).slice();
@@ -212,6 +212,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     var Host = window.KShopHarnessHost = {
         sent: [],
         closeCount: 0,
+        rejectedCloseCount: 0,
+        activePanel: null,
+        failNextCloseTransport: false,
         delays: {},
         nextSaveAmbiguous: false,
         nextCheckoutAmbiguous: false,
@@ -231,6 +234,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         reset: function() {
             this.sent = [];
             this.closeCount = 0;
+            this.rejectedCloseCount = 0;
+            this.activePanel = null;
+            this.failNextCloseTransport = false;
             this.delays = {};
             this.nextSaveAmbiguous = false;
             this.nextCheckoutAmbiguous = false;
@@ -417,6 +423,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         open: async function() {
             if (Panels.getActive && Panels.getActive()) Panels.close();
             this.reset();
+            this.activePanel = 'kshop';
             Panels.open('kshop');
             await waitFor(function() {
                 var loading = document.querySelector('#kshop-loading');
@@ -432,6 +439,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.reset();
             this.battleboxAccessibleCapacity = Number(accessibleCapacity);
             var normalizedProfile = profile === 'warehouse' ? 'warehouse' : 'battlebox';
+            this.activePanel = 'workbench';
             Panels.open('workbench', {
                 mode:'runtime', profile:normalizedProfile, view:'storage',
                 panelInstanceId:normalizedProfile === 'battlebox'
@@ -451,8 +459,20 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         },
 
         handle: function(message) {
+            if (message.cmd === 'close' && this.failNextCloseTransport) {
+                this.failNextCloseTransport = false;
+                return false;
+            }
             this.sent.push(clone(message));
-            if (message.cmd === 'close') { this.closeCount += 1; return; }
+            if (message.cmd === 'close') {
+                if (this.activePanel && message.panel !== this.activePanel) {
+                    this.rejectedCloseCount += 1;
+                    return;
+                }
+                this.closeCount += 1;
+                this.activePanel = null;
+                return;
+            }
             var delay = Number(this.delays[message.cmd]) || 0;
             if (message.domain === 'equipment_tuning') {
                 var tuningPayload = message.payload || {};
@@ -1878,7 +1898,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui10','当前 open generation 内 callId 唯一且符合 Host 白名单',
             callIds.length === new Set(callIds).size && callIds.every(function(id){ return /^[A-Za-z0-9._-]{1,96}$/.test(id); }),
             callIds.join(','));
-        Panels.close();
+        Host.failNextCloseTransport = true;
+        click('.kshop-close-btn');
+        await wait(20);
+        assert('kshop-ui10a','商城关闭 transport 失败时保持页面并允许重试',
+            Panels.getActive() === 'kshop' && Host.closeCount === 0
+                && Host.activePanel === 'kshop');
+        click('.kshop-close-btn');
+        await waitFor(function(){ return !Panels.getActive() && Host.closeCount === 1; }, 500);
 
         PanelTooltip.lastRichOptions = null;
         await Host.openWorkbench(240, 'battlebox');
@@ -2244,17 +2271,85 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             create:function() { return document.createElement('div'); },
             onOpen:function(el, initData) { returnedCraftingInit = clone(initData || {}); }
         });
-        Host.reset();
-        Panels.open('workbench', {mode:'runtime',profile:'battlebox',panelInstanceId:'panel.harness.return-target',returnTo:{panel:'crafting',initData:{
-            category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
-        }}});
-        await waitFor(function(){ return Panels.getActive() === 'workbench'
-            && InventoryWorkbench.debugState().coordinator.ready; }, 1000);
+        async function openCraftingReturnWorkbench() {
+            Host.reset();
+            Host.activePanel = 'crafting';
+            returnedCraftingInit = null;
+            Panels.open('workbench', {
+                mode:'runtime',
+                profile:'battlebox',
+                returnTo:{panel:'crafting',initData:{
+                    category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
+                }}
+            });
+            return waitFor(function(){ return Panels.getActive() === 'workbench'
+                && InventoryWorkbench.debugState().coordinator.ready; }, 1000);
+        }
+
+        await openCraftingReturnWorkbench();
+        var backdropReturnState = InventoryWorkbench.debugState().returnTarget;
+        var backdropCloseBefore = Host.closeCount;
+        Host.failNextCloseTransport = true;
+        click('#panel-backdrop');
+        await wait(20);
+        assert('workbench-ui10a','合成子路由关闭 transport 失败时保持同一页面并允许重试',
+            Panels.getActive() === 'workbench'
+                && Host.closeCount === backdropCloseBefore
+                && Host.activePanel === 'crafting'
+                && InventoryWorkbench.debugState().hostOwner === 'crafting',
+            JSON.stringify({active:Panels.getActive(),closeCount:Host.closeCount,
+                hostOwner:InventoryWorkbench.debugState().hostOwner}));
+        click('#panel-backdrop');
+        await waitFor(function(){ return !Panels.getActive()
+            && Host.closeCount === backdropCloseBefore + 1; }, 500);
+        var backdropCloseMessage = Host.sent.filter(function(message){
+            return message.panel === 'crafting' && message.cmd === 'close';
+        }).pop();
+        assert('workbench-ui10b','合成子路由点击 backdrop 关闭真实 Host owner，不隐式返回也不伪造 workbench identity',
+            backdropReturnState && backdropReturnState.panel === 'crafting'
+                && !returnedCraftingInit && !Panels.getActive()
+                && backdropCloseMessage
+                && Object.keys(backdropCloseMessage).sort().join('|') === 'cmd|panel|type'
+                && Host.rejectedCloseCount === 0,
+            JSON.stringify({returnState:backdropReturnState,initData:returnedCraftingInit,
+                closeCount:Host.closeCount,closeMessage:backdropCloseMessage}));
+
+        await openCraftingReturnWorkbench();
+        var escapeReturnState = InventoryWorkbench.debugState().returnTarget;
+        var escapeCloseBefore = Host.closeCount;
+        window.__emitBridge('panel_esc', {});
+        await waitFor(function(){ return !Panels.getActive()
+            && Host.closeCount === escapeCloseBefore + 1; }, 500);
+        var escapeCloseMessage = Host.sent.filter(function(message){
+            return message.panel === 'crafting' && message.cmd === 'close';
+        }).pop();
+        assert('workbench-ui10c','合成子路由按 Esc 关闭真实 Host owner，不隐式返回也不发送空实例',
+            escapeReturnState && escapeReturnState.panel === 'crafting'
+                && !returnedCraftingInit && !Panels.getActive()
+                && escapeCloseMessage
+                && Object.keys(escapeCloseMessage).sort().join('|') === 'cmd|panel|type'
+                && Host.rejectedCloseCount === 0,
+            JSON.stringify({returnState:escapeReturnState,initData:returnedCraftingInit,
+                closeCount:Host.closeCount,closeMessage:escapeCloseMessage}));
+
+        await openCraftingReturnWorkbench();
+        var forceCloseCount = Host.closeCount;
+        window.__emitBridge('panel_cmd', {
+            cmd:'force_close',
+            panel:'crafting',
+            reason:'disconnected'
+        });
+        await wait(20);
+        assert('workbench-ui10d','合成 owner 的 Host 强关会清理嵌套 workbench，而不被独立 workbench capability 门拦截',
+            !Panels.getActive() && Host.closeCount === forceCloseCount
+                && Host.activePanel === 'crafting');
+
+        await openCraftingReturnWorkbench();
         var localReturnCloseBefore = Host.closeCount;
         var returnState = InventoryWorkbench.debugState();
         click('.inventory-return-crafting-btn');
         await waitFor(function(){ return Panels.getActive() === 'crafting'; }, 500);
-        assert('workbench-ui10','合成子路由返回只恢复 UI 意图，不关闭 Host overlay 或复用库存写状态',
+        assert('workbench-ui10e','只有显式“返回合成”恢复子路由 UI 意图，不关闭 Host overlay 或复用库存写状态',
             returnState.returnTarget && returnState.returnTarget.panel === 'crafting'
                 && returnedCraftingInit && returnedCraftingInit.category === '化学生产'
                 && returnedCraftingInit.preferredRecipeIndex === 3
@@ -2262,6 +2357,91 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && Host.closeCount === localReturnCloseBefore,
             JSON.stringify({returnState:returnState.returnTarget,initData:returnedCraftingInit,closeCount:Host.closeCount}));
         Panels.close();
+
+        var mountThrowCleanup = 0;
+        window.LazyLoader = {
+            load:function() { return Promise.resolve(); }
+        };
+        Panels.registerLazy('workbench', ['modules/lifecycle-mount-throw-probe.js'], function() {
+            Panels.register('workbench', {
+                create:function() {
+                    var node = document.createElement('div');
+                    node.className = 'lifecycle-mount-throw-probe';
+                    return node;
+                },
+                onOpen:function() {
+                    throw new Error('expected mount failure');
+                },
+                onClose:function() {
+                    mountThrowCleanup += 1;
+                }
+            });
+        });
+        Host.reset();
+        Host.activePanel = 'crafting';
+        Panels.open('workbench', {
+            profile:'battlebox',
+            returnTo:{panel:'crafting',initData:{
+                category:'化学生产',
+                preferredRecipeIndex:3,
+                preferredCraftCount:7
+            }}
+        });
+        await wait(30);
+        var mountThrowMessages = Host.sent.filter(function(message) {
+            return message.type === 'panel' && message.cmd === 'close';
+        });
+        var mountThrowNode = document.querySelector('.lifecycle-mount-throw-probe');
+        assert('panels-lifecycle1','lazy mount throw 以嵌套 crafting owner 恰好一次 fail-closed，并清空视觉与活动状态',
+            mountThrowMessages.length === 1
+                && Object.keys(mountThrowMessages[0]).sort().join('|') === 'cmd|panel|type'
+                && mountThrowMessages[0].panel === 'crafting'
+                && mountThrowCleanup === 1
+                && Panels.getActive() === null
+                && document.getElementById('panel-container').style.display === 'none'
+                && mountThrowNode && mountThrowNode.style.display === 'none',
+            JSON.stringify({messages:mountThrowMessages,cleanup:mountThrowCleanup,
+                active:Panels.getActive(),display:mountThrowNode && mountThrowNode.style.display}));
+
+        var rebindThrowCleanup = 0;
+        Panels.register('skills', {
+            create:function() {
+                var node = document.createElement('div');
+                node.className = 'lifecycle-rebind-throw-probe';
+                return node;
+            },
+            onOpen:function() {},
+            onRebind:function() {
+                throw new Error('expected rebind failure');
+            },
+            onClose:function() {
+                rebindThrowCleanup += 1;
+            }
+        });
+        Host.reset();
+        Host.activePanel = 'skills';
+        Panels.open('skills', {panelInstanceId:'panel.skills.rebind-old'});
+        Host.sent = [];
+        Host.closeCount = 0;
+        Host.activePanel = 'skills';
+        Panels.open('skills', {panelInstanceId:'panel.skills.rebind-new'});
+        await wait(20);
+        var rebindThrowMessages = Host.sent.filter(function(message) {
+            return message.type === 'panel' && message.cmd === 'close';
+        });
+        var rebindThrowNode = document.querySelector('.lifecycle-rebind-throw-probe');
+        assert('panels-lifecycle2','same-panel rebind throw 保留新 Skills exact instance，恰好一次 fail-closed',
+            rebindThrowMessages.length === 1
+                && Object.keys(rebindThrowMessages[0]).sort().join('|')
+                    === 'cmd|panel|panelInstanceId|type'
+                && rebindThrowMessages[0].panel === 'skills'
+                && rebindThrowMessages[0].panelInstanceId === 'panel.skills.rebind-new'
+                && rebindThrowCleanup === 1
+                && Panels.getActive() === null
+                && document.getElementById('panel-container').style.display === 'none'
+                && rebindThrowNode && rebindThrowNode.style.display === 'none',
+            JSON.stringify({messages:rebindThrowMessages,cleanup:rebindThrowCleanup,
+                active:Panels.getActive(),display:rebindThrowNode && rebindThrowNode.style.display}));
 
         var passed = results.filter(function(item){ return item.pass; }).length;
         var qa = {total:results.length,passed:passed,failed:results.length-passed,results:results};

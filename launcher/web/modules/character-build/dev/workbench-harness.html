@@ -90,6 +90,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         storage:{activations:0, leaves:0, closes:0, active:false, view:'storage',
             externalBegins:0, externalCompletes:0, appliedSnapshots:0, busy:null},
         refuseNextCandidateSend:false,
+        refuseNextCloseSend:false,
         rejectNextCandidate:false,
         rejectNextSnapshot:false,
         rejectNextMutation:false,
@@ -496,6 +497,12 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             if (index >= 0) list.splice(index, 1);
         },
         send:function(message) {
+            if (message.type === 'panel' && message.cmd === 'close'
+                    && window.__routeHarness.refuseNextCloseSend) {
+                window.__routeHarness.refuseNextCloseSend = false;
+                window.__routeHarness.events.push('close_send_refused');
+                return false;
+            }
             if (message.type === 'panel' && message.domain === 'loadout'
                     && message.cmd === 'candidates'
                     && window.__routeHarness.refuseNextCandidateSend) {
@@ -1717,7 +1724,7 @@ window.EquipmentInspector = {
             return state.build && state.build.view && state.build.view.statsOpen;
         }));
         check('stats header exposes only back/help/close',
-            visibleHeaderActions().join('|') === 'skills|back-build|help|close',
+            visibleHeaderActions().join('|') === 'back-build|help|close',
             visibleHeaderActions().join('|'));
         var statsTop = statsProbe();
         var exactStatsKeys = CharacterBuildStatsFixture.create().groups.reduce(
@@ -2627,6 +2634,20 @@ window.EquipmentInspector = {
             return message.type === 'panel' && message.cmd === 'close'
                 && message.reason === 'navigate_skills';
         }).length;
+        window.__routeHarness.refuseNextCloseSend = true;
+        document.querySelector('[data-header-action="skills"]').click();
+        check('skills navigation transport failure keeps the authoritative build mounted and retryable',
+            await until(function() {
+                return commandCount('finalize') === navigationFinalizeBase + 1
+                    && window.__routeHarness.events.indexOf('close_send_refused') >= 0
+                    && Panels.isOpen() === true;
+            }));
+        check('failed skills navigation emits no close envelope and does not duplicate local teardown',
+            window.__routeHarness.sent.filter(function(message) {
+                return message.type === 'panel' && message.cmd === 'close'
+                    && message.reason === 'navigate_skills';
+            }).length === navigationCloseBase
+            && window.__routeHarness.renderer.active === 1);
         document.querySelector('[data-header-action="skills"]').click();
         check('skills header action finalizes then emits one exact navigation close',
             await until(function() {
@@ -2649,6 +2670,32 @@ window.EquipmentInspector = {
             && !window.__routeHarness.sent.some(function(message) {
                 return message.type === 'panel_cmd' && message.cmd === 'open'
                     && message.panel === 'skills';
+            }));
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                panelInstanceId:'panel.workbench.skills-return',
+                returnFocusAction:'skills'
+            }
+        });
+        check('Skills return opens a fresh build and restores the Skills header focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                var skillsButton = document.querySelector('[data-header-action="skills"]');
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId === 'panel.workbench.skills-return'
+                    && visibleHeaderActions().join('|') === 'storage|stats|skills|help|close'
+                    && document.activeElement === skillsButton;
+            }), document.activeElement && document.activeElement.getAttribute(
+                'data-header-action'));
+        document.querySelector('[data-header-action="close"]').click();
+        check('Skills-return probe releases its renderer through the normal close path',
+            await until(function() {
+                return Panels.isOpen() === false
+                    && window.__routeHarness.renderer.active === 0;
             }));
     } catch (error) {
         checks.push({name:'harness execution', ok:false, detail:error.stack || String(error)});

@@ -144,9 +144,23 @@ namespace CF7Launcher.Tests.Guardian
             string panelsSource = File.ReadAllText(
                 FindRepositoryFile(
                     "launcher", "web", "modules", "panels.js"));
+            string closeEnvelope = Slice(
+                panelsSource,
+                "function panelCloseMessage(",
+                "function hostOwnsPanelMount(");
             Assert.Contains(
-                "reason:'mount_failed', panelInstanceId:readPanelInstanceId(initData)",
-                panelsSource);
+                "closeMessage.reason = reason || 'lazy_cancel';",
+                closeEnvelope);
+            Assert.Contains(
+                "closeMessage.panelInstanceId = readPanelInstanceId(initData);",
+                closeEnvelope);
+            string mountFailure = Slice(
+                panelsSource,
+                "function sendMountFailureClose(",
+                "function applyRegistrationDecorators(");
+            Assert.Contains(
+                "panelCloseMessage(id, initData, reason || 'mount_failed')",
+                mountFailure);
 
             JObject emitted = JObject.Parse(
                 "{\"type\":\"panel\",\"cmd\":\"close\","
@@ -611,7 +625,7 @@ namespace CF7Launcher.Tests.Guardian
                 ".DiscardDeferredBarrierOpen()",
                 StringComparison.Ordinal);
             int preflight = completion.IndexOf(
-                "TrySendSkillPanelOpenCommand(openRequestId)",
+                "TrySendSkillPanelOpenCommandIfCurrent(",
                 StringComparison.Ordinal);
             Assert.True(bindingFence >= 0);
             Assert.True(visualFence > bindingFence);
@@ -626,8 +640,87 @@ namespace CF7Launcher.Tests.Guardian
                 "_webView.CoreWebView2.NavigationStarting += delegate",
                 "_webView.CoreWebView2.ContentLoading += delegate");
             Assert.Contains(
-                ".CancelPendingSkillOpenIntent(",
+                ".CancelAllPanelNavigationIntents(",
                 navigation);
+        }
+
+        [Fact]
+        public void SkillsCharacterBuildReturnUsesExactCapabilityAndTwoSettledGates()
+        {
+            string overlay = File.ReadAllText(
+                FindWebOverlaySource());
+            string close = Slice(
+                overlay,
+                "case \"close\":",
+                "case \"bulkQuery\":");
+            int reason = close.IndexOf(
+                "\"navigate_character_build\"",
+                StringComparison.Ordinal);
+            int arm = close.IndexOf(
+                ".TryArmSkillsCharacterBuildNavigation(",
+                reason,
+                StringComparison.Ordinal);
+            int coordinatorClose = close.IndexOf(
+                ".HandleAuthoritativePanelClosed(",
+                arm,
+                StringComparison.Ordinal);
+            int exactVisualRetire = close.IndexOf(
+                ".TryRetirePanelVisualExact(",
+                coordinatorClose,
+                StringComparison.Ordinal);
+            int complete = close.IndexOf(
+                ".TryCompleteSkillsCharacterBuildNavigation()",
+                exactVisualRetire,
+                StringComparison.Ordinal);
+            Assert.True(reason >= 0);
+            Assert.True(arm > reason);
+            Assert.True(coordinatorClose > arm);
+            Assert.True(exactVisualRetire > coordinatorClose);
+            Assert.True(complete > exactVisualRetire);
+            Assert.Contains(
+                ".CancelSkillsCharacterBuildNavigation(",
+                close);
+            Assert.Contains(
+                "VisualAlreadyAbsent",
+                close);
+
+            string router = File.ReadAllText(
+                FindRepositoryFile(
+                    "launcher", "src", "Guardian",
+                    "LauncherCommandRouter.cs"));
+            string completion = Slice(
+                router,
+                "internal bool TryCompleteSkillsCharacterBuildNavigation()",
+                "private void OnSkillsCharacterBuildNavigationTimeout(");
+            Assert.Contains(
+                "_skillTask.IsClosedAndSettled",
+                completion);
+            Assert.Contains(
+                "_panelHost.IsIdleForTrackedOpen",
+                completion);
+            Assert.Contains(
+                "\"skills_return\"",
+                completion);
+            Assert.Contains(
+                "TrySendNativeEquipmentBuildPreflightIfCurrent(",
+                completion);
+            Assert.DoesNotContain(
+                "OpenPanel(\"workbench\"",
+                completion);
+
+            string program = File.ReadAllText(
+                FindRepositoryFile(
+                    "launcher", "src", "Program.cs"));
+            string skillSettled = Slice(
+                program,
+                "skillTask.SetCoordinatorSettled(delegate",
+                "equipmentTuningTask.SetCoordinatorSettled(delegate");
+            Assert.Contains(
+                ".TryCompleteSkillsCharacterBuildNavigation()",
+                skillSettled);
+            Assert.Contains(
+                "PendingSkillsCharacterBuildNavigationInstance",
+                skillSettled);
         }
 
         [Fact]

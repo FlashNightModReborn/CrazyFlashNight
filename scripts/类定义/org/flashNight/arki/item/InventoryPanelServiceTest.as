@@ -206,20 +206,129 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(buildOpened && sendCount == 3
                 && captured.indexOf('"profile":"battlebox"') >= 0
                 && captured.indexOf('"view":"build"') >= 0
-                && captured.indexOf('"source":"agent_control"') >= 0,
-            "agent_control 角色构筑接受 battlebox/build 固定入口");
-        var nativeHudBuildOpened:Boolean =
+                && captured.indexOf('"source":"agent_control"') >= 0
+                && captured.indexOf('"openRequestId"') < 0,
+            "agent_control 旧角色构筑入口缺省 nonce 时保持兼容且不合成字段");
+        var nativeHudLegacyBuildOpened:Boolean =
             InventoryPanelService.requestOpenWorkbench({
                 profile:"battlebox",
                 view:"build",
                 source:"nativehud_equipment"
             });
-        assertTrue(nativeHudBuildOpened && sendCount == 4
+        assertTrue(nativeHudLegacyBuildOpened && sendCount == 4
+                && captured.indexOf('"openRequestId"') < 0,
+            "旧 Host 的 nativehud_equipment 角色构筑请求缺省 nonce 时 AS2 保持发送兼容");
+        var nativeHudLegacyStorageOpened:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"storage",
+                source:"nativehud_equipment"
+            });
+        assertTrue(nativeHudLegacyStorageOpened && sendCount == 5
+                && captured.indexOf('"view":"storage"') >= 0
+                && captured.indexOf('"openRequestId"') < 0,
+            "nativehud_equipment 非 build 请求缺省 nonce 时仍按普通工作台入口发送");
+        var validOpenRequestId:String =
+            "workbench.open.Valid_1-2~3";
+        for (var validNonceIndex:Number =
+                validOpenRequestId.length;
+                validNonceIndex < 160;
+                validNonceIndex++) {
+            validOpenRequestId += "x";
+        }
+        var nativeHudBuildOpened:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:validOpenRequestId
+            });
+        assertTrue(nativeHudBuildOpened && sendCount == 6
                 && captured.indexOf('"profile":"battlebox"') >= 0
                 && captured.indexOf('"view":"build"') >= 0
                 && captured.indexOf(
-                    '"source":"nativehud_equipment"') >= 0,
-            "nativehud_equipment 角色构筑接受同一 battlebox/build 固定入口");
+                    '"source":"nativehud_equipment"') >= 0
+                && captured.indexOf(
+                    '"openRequestId":"' + validOpenRequestId + '"') >= 0,
+            "nativehud_equipment 角色构筑顶层原样回显 160 字符合法 openRequestId");
+        var rejectedStorageOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"storage",
+                source:"nativehud_equipment",
+                openRequestId:"wrong.storage"
+            });
+        var rejectedTuningOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"tuning",
+                source:"nativehud_equipment",
+                openRequestId:"wrong.tuning"
+            });
+        var rejectedAgentOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"agent_control",
+                openRequestId:"wrong.agent"
+            });
+        assertTrue(!rejectedStorageOpenRequestId
+                && !rejectedTuningOpenRequestId
+                && !rejectedAgentOpenRequestId
+                && sendCount == 6,
+            "openRequestId 只允许 nativehud_equipment + battlebox/build 精确 tuple，其他组合零发送");
+        var tooLongOpenRequestId:String =
+            validOpenRequestId + "x";
+        var rejectedNumericOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:7
+            });
+        var rejectedNullOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:null
+            });
+        var rejectedEmptyOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:""
+            });
+        var rejectedWhitespaceOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:"bad token"
+            });
+        var rejectedSlashOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:"bad/token"
+            });
+        var rejectedLongOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:tooLongOpenRequestId
+            });
+        assertTrue(!rejectedNumericOpenRequestId
+                && !rejectedNullOpenRequestId
+                && !rejectedEmptyOpenRequestId
+                && !rejectedWhitespaceOpenRequestId
+                && !rejectedSlashOpenRequestId
+                && !rejectedLongOpenRequestId
+                && sendCount == 6,
+            "显式 openRequestId 拒绝非字符串、空值、非法字符与 161 字符超长值且零发送");
         readinessRoot.gameworld = null;
         var rejectedNotReadyBuild:Boolean =
             InventoryPanelService.requestOpenWorkbench({
@@ -242,7 +351,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(!rejectedNotReadyBuild
                 && storageWhileBuildNotReady
                 && tuningWhileBuildNotReady
-                && sendCount == 6,
+                && sendCount == 8,
             "build readiness 失败零发送，且 storage/tuning 准入不受影响");
         var rejected:Boolean = InventoryPanelService.requestOpenWorkbench({profile: "仓库"});
         var rejectedView:Boolean = InventoryPanelService.requestOpenWorkbench({profile:"warehouse", view:"editor"});
@@ -275,7 +384,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && !rejectedMissingBuildSource
                 && !rejectedNearBuildSource
                 && !rejectedPaddedBuildSource
-                && sendCount == 6,
+                && sendCount == 8,
             "build 仍拒绝非法 profile/view、缺 source、前缀/尾空格及白名单外 source");
 
         CharacterBuildService.testOnlyReset();

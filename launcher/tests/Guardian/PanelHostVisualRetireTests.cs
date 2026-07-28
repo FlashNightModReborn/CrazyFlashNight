@@ -50,6 +50,123 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void IdleOpenAdmissionRejectsAQueuedOpenThatHasNotYetBecomeActive()
+        {
+            using (var harness = new HostHarness())
+            {
+                long admission;
+                string activePanel;
+                string activeInstance;
+                Assert.True(
+                    harness.Host
+                        .TryCaptureOpenAdmission(
+                            out admission,
+                            out activePanel,
+                            out activeInstance));
+                Assert.True(
+                    harness.Host.TryOpenPanel(
+                        "map",
+                        "{}",
+                        null,
+                        null));
+
+                Assert.False(
+                    harness.Host
+                        .TryOpenPanelFromAdmission(
+                            admission,
+                            activePanel,
+                            activeInstance,
+                            "workbench",
+                            "{}",
+                            null,
+                            null));
+
+                harness.Pump();
+                Assert.Equal(
+                    "map",
+                    harness.Host.ActivePanelName);
+            }
+        }
+
+        [Fact]
+        public void IdleOpenAdmissionRejectsAnInterveningTrackedReservationCycle()
+        {
+            using (var harness = new HostHarness())
+            {
+                long admission;
+                string activePanel;
+                string activeInstance;
+                Assert.True(
+                    harness.Host
+                        .TryCaptureOpenAdmission(
+                            out admission,
+                            out activePanel,
+                            out activeInstance));
+                Assert.True(
+                    harness.Host.TryOpenTrackedPanel(
+                        "loot",
+                        "{}",
+                        "panel.loot.rejected",
+                        delegate { return false; },
+                        null));
+                harness.Pump();
+                Assert.True(
+                    harness.Host.IsIdleForTrackedOpen);
+
+                Assert.False(
+                    harness.Host
+                        .TryOpenPanelFromAdmission(
+                            admission,
+                            activePanel,
+                            activeInstance,
+                            "workbench",
+                            "{}",
+                            null,
+                            null));
+                Assert.Empty(harness.Pumps);
+                Assert.False(
+                    harness.Host.IsPanelOpen);
+            }
+        }
+
+        [Fact]
+        public void IdleOpenAdmissionRejectsAnInterveningIdleFenceCycle()
+        {
+            using (var harness = new HostHarness())
+            {
+                long admission;
+                string activePanel;
+                string activeInstance;
+                Assert.True(
+                    harness.Host
+                        .TryCaptureOpenAdmission(
+                            out admission,
+                            out activePanel,
+                            out activeInstance));
+                Assert.True(
+                    harness.Host.TryAcquireIdleFence(
+                        "test.navigation.fence"));
+                Assert.True(
+                    harness.Host.ReleaseIdleFenceExact(
+                        "test.navigation.fence"));
+
+                Assert.False(
+                    harness.Host
+                        .TryOpenPanelFromAdmission(
+                            admission,
+                            activePanel,
+                            activeInstance,
+                            "skills",
+                            "{}",
+                            null,
+                            null));
+                Assert.Empty(harness.Pumps);
+                Assert.False(
+                    harness.Host.IsPanelOpen);
+            }
+        }
+
+        [Fact]
         public void RetireQueuedBehindTrackedOpenReservationRejectsVisualBeforeItAppears()
         {
             using (var harness = new HostHarness())

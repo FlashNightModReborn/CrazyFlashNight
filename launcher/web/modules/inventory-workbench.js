@@ -6,6 +6,7 @@ var InventoryWorkbench = (function() {
     var _densityToggle;
     var _density, _tuningHeader, _storageReady = false, _build = null;
     var _profile, _view = 'storage', _panelInstanceId = '', _returnTarget = null;
+    var _nestedHostOwner = '';
     var _runtimeConfig = (typeof window !== 'undefined'
         && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _activationEpoch = 0;
@@ -20,10 +21,6 @@ var InventoryWorkbench = (function() {
         return Panels.getActive
             ? Panels.getActive() === 'workbench'
             : Panels.isOpen();
-    }
-
-    function validInstance(value) {
-        return /^[A-Za-z0-9._~-]{1,128}$/.test(String(value || ''));
     }
 
     function add(host, node) {
@@ -338,7 +335,7 @@ var InventoryWorkbench = (function() {
         var header = _root.querySelector('.workbench-header');
         _statsMode = !!activeStats;
         _buttons.storage.hidden = _statsMode;
-        _buttons.stats.hidden = _statsMode;
+        _buttons.stats.hidden = _buttons.skills.hidden = _statsMode;
         _buttons['back-build'].hidden = !_statsMode;
         if (_statsMode) statsRoot.insertBefore(header, statsRoot.firstChild);
         else _root.insertBefore(header, _root.firstChild);
@@ -349,16 +346,15 @@ var InventoryWorkbench = (function() {
     function finishClose(reason) {
         if (_closeSent) return false;
         _closeSent = true;
-        var instance = _panelInstanceId;
-        var message = {
-            type:'panel',
-            cmd:'close',
-            panel:'workbench',
-            panelInstanceId:instance
-        };
-        if (reason === 'navigate_skills') message.reason = reason;
+        var nestedOwner = _nestedHostOwner === 'crafting';
+        var message = InventoryWorkbenchConfig.createCloseMessage(
+            nestedOwner ? 'crafting' : 'workbench', _panelInstanceId, reason);
+        if (Bridge.send(message) === false) {
+            _closeSent = false;
+            toast('启动器连接不可用，工作台保持打开。');
+            return false;
+        }
         Panels.close();
-        Bridge.send(message);
         return true;
     }
 
@@ -420,8 +416,7 @@ var InventoryWorkbench = (function() {
         if (_storageReady && _view !== 'build') {
             return InventoryStorageWorkbench.prepareClose(reason, function(ready) {
                 if (!ready) return;
-                if (_returnTarget && reason !== 'header') openReturnTarget();
-                else finalizeClose(reason);
+                finalizeClose(reason);
             });
         }
         return finalizeClose(reason);
@@ -455,6 +450,7 @@ var InventoryWorkbench = (function() {
         _view = 'storage';
         _panelInstanceId = '';
         _returnTarget = null;
+        _nestedHostOwner = '';
         _closeSent = false;
         clear(_scaleEl);
     }
@@ -462,17 +458,16 @@ var InventoryWorkbench = (function() {
     function activate(el, initData) {
         _activationEpoch++;
         initData = initData || {};
-        _profile = InventoryWorkbenchConfig.resolveProfile(initData);
-        _view = InventoryWorkbenchConfig.resolveView(initData);
-        _panelInstanceId = String(initData.panelInstanceId || '');
-        if (!_profile || !_view
-                || !InventoryWorkbenchConfig.isViewAllowed(_profile, _view)
-                || !validInstance(_panelInstanceId)) {
+        var launch = InventoryWorkbenchConfig.resolveLaunchContext(initData);
+        if (!launch) {
             toast('工作台参数无效，已取消打开。');
             return false;
         }
-
-        _returnTarget = InventoryWorkbenchConfig.resolveReturnTarget(initData);
+        _profile = launch.profile;
+        _view = launch.view;
+        _panelInstanceId = launch.panelInstanceId;
+        _returnTarget = launch.returnTarget;
+        _nestedHostOwner = launch.hostOwner === 'crafting' ? 'crafting' : '';
         _closeSent = false;
         _shell = new Workbench.DualPaneShell({
             title:_profile.title,
@@ -504,6 +499,7 @@ var InventoryWorkbench = (function() {
             ? showBuild()
             : ensureStorage(_view);
         updateChrome();
+        if (mounted !== false && _view === 'build' && initData.returnFocusAction === 'skills') _buttons.skills.focus();
         return mounted !== false;
     }
 
@@ -532,6 +528,7 @@ var InventoryWorkbench = (function() {
             state.profile = _profile && _profile.profile;
             state.view = _view;
             state.panelInstanceId = _panelInstanceId;
+            state.hostOwner = _nestedHostOwner || 'workbench';
             state.closing = _closing;
             state.buildInteractionLocked = _buildInteractionLocked;
             state.buildLockReason = _buildLockReason;

@@ -53,7 +53,8 @@ var CraftingPanel = (function() {
         _shell.addHeaderAction(_organizerButton);
         var close = document.createElement('button');
         close.type = 'button'; close.className = 'workbench-close-btn'; close.textContent = '×';
-        close.setAttribute('aria-label', '关闭合成工作台'); close.addEventListener('click', requestClose);
+        close.setAttribute('aria-label', '关闭合成工作台');
+        close.addEventListener('click', function() { requestClose('header'); });
         _shell.addHeaderAction(close);
 
         _catalogView = createCatalogView();
@@ -536,9 +537,17 @@ var CraftingPanel = (function() {
         _filterNavigator = null;
     }
 
-    function requestClose() {
+    function requestClose(reason) {
+        if (_shell && _shell.hasModal()) {
+            return _shell.closeModal(typeof reason === 'string' ? reason : 'close');
+        }
         if (_busy || _organizerBusy) { toast('合成状态正在确认，请稍候。'); return; }
-        Panels.close(); Bridge.send({type:'panel', cmd:'close', panel:'crafting'});
+        if (Bridge.send({type:'panel', cmd:'close', panel:'crafting'}) === false) {
+            toast('启动器连接不可用，合成工作台保持打开。');
+            return false;
+        }
+        Panels.close();
+        return true;
     }
 
     function request(cmd, payload, callback) { payload = payload || {}; payload.v = 1; return _mux.request(cmd, payload, callback); }

@@ -38,7 +38,9 @@ function audit(){
   if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")||!panel.includes('craftCount:requestedCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
   if(!panel.includes('canCraftOne === true')||!panel.includes('craftableOnly:_craftableOnly')||!panel.includes('crafting-craftable-toggle'))throw new Error('snapshot availability or craftable-only contract missing');
   if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'")
-      ||!inventoryWorkbench.includes('InventoryWorkbenchConfig.resolveReturnTarget(initData)'))throw new Error('battlebox return contract missing');
+      ||!inventoryWorkbenchPanel.includes('InventoryWorkbenchConfig.resolveLaunchContext(initData)')
+      ||!inventoryWorkbench.includes("hostOwner:nestedCrafting ? 'crafting' : 'workbench'")
+      ||!inventoryWorkbench.includes("hostOwner === 'crafting'"))throw new Error('battlebox return/owner contract missing');
   if(!runtime.includes("require('./panel-runtime.js')")||!runtime.includes('new PanelRuntime.PanelRequestMux')
       ||!runtime.includes("data.domain === 'crafting'")||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting mux missing');
   if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")||!css.includes('.crafting-commit-btn')||!css.includes('.crafting-catalog-grid::-webkit-scrollbar'))throw new Error('lazy registry or crafting skin missing');

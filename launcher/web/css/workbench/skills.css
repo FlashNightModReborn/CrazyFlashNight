@@ -33,6 +33,7 @@
 .skills-panel .skills-refresh-btn[hidden],
 .skills-panel .skills-diagnostic-btn[hidden] { display:none; }
 .skills-help-btn { min-width:30px; padding:0; font:800 14px/1 Consolas,"Microsoft YaHei",sans-serif; }
+.skills-return-character-btn { white-space:nowrap; }
 .skills-panel .workbench-header-actions { flex:0 0 auto; min-width:0; }
 .skills-panel .item-grid-mode-switch { margin-right:3px; margin-left:3px; }
 .skills-confirmation-toggle .skills-confirmation-option[data-confirmation-mode="fast"][aria-pressed="true"] {

@@ -42,6 +42,8 @@ function staticAudit() {
     const css = read('launcher/web/css/workbench/character-build.css')
         + read('launcher/web/css/workbench/character-build-stats.css');
     const harness = read('launcher/web/modules/character-build/dev/harness.html');
+    const workbenchHarness = read(
+        'launcher/web/modules/character-build/dev/workbench-harness.html');
     const menuKeydown = inventory.slice(
         inventory.indexOf('InventoryWindowPager.prototype._onMenuKeyDown'),
         inventory.indexOf('InventoryWindowPager.prototype.requestRelative'));
@@ -100,6 +102,14 @@ function staticAudit() {
         && facade.includes('statsRoot.insertBefore(header, statsRoot.firstChild)')
         && !view.includes('class="character-build-stats-back"'),
         'candidate gate and single main-header stats return are explicit');
+    check(facade.includes('_buttons.stats.hidden = _buttons.skills.hidden = _statsMode;')
+        && facade.includes("initData.returnFocusAction === 'skills'")
+        && facade.includes('_buttons.skills.focus()')
+        && workbenchHarness.includes(
+            "visibleHeaderActions().join('|') === 'back-build|help|close'")
+        && workbenchHarness.includes("returnFocusAction:'skills'")
+        && workbenchHarness.includes('document.activeElement === skillsButton'),
+        'stats hides Skills and Skills-origin navigation restores its header focus');
     check(!presentation.includes('character-build-vitals') && !presentation.includes('data-preview-action')
         && !presentation.includes('data-info-action') && !presentation.includes('data-info-panel')
         && !actionView.includes('data-info-action') && !actionView.includes('data-info-panel')

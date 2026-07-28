@@ -48,6 +48,40 @@
         };
     }
 
+    function resolveLaunchContext(initData) {
+        initData = initData || {};
+        var profile = resolveProfile(initData);
+        var view = resolveView(initData);
+        var panelInstanceId = typeof initData.panelInstanceId === 'string'
+            ? initData.panelInstanceId : '';
+        var returnTarget = resolveReturnTarget(initData);
+        var validInstance = /^[A-Za-z0-9._~-]{1,128}$/.test(panelInstanceId);
+        var nestedCrafting = !panelInstanceId && returnTarget
+            && profile && profile.profile === 'battlebox' && view === 'storage';
+        if (!profile || !view || !isViewAllowed(profile, view)
+                || (!validInstance && !nestedCrafting)
+                || (validInstance && returnTarget)) return null;
+        return {
+            profile:profile,
+            view:view,
+            panelInstanceId:panelInstanceId,
+            returnTarget:returnTarget,
+            hostOwner:nestedCrafting ? 'crafting' : 'workbench'
+        };
+    }
+
+    function createCloseMessage(hostOwner, panelInstanceId, reason) {
+        if (hostOwner === 'crafting') {
+            return {type:'panel', cmd:'close', panel:'crafting'};
+        }
+        var message = {
+            type:'panel', cmd:'close', panel:'workbench',
+            panelInstanceId:String(panelInstanceId || '')
+        };
+        if (reason === 'navigate_skills') message.reason = reason;
+        return message;
+    }
+
     function normalizeConfirmationMode(mode) { return mode === 'fast' ? 'fast' : 'safe'; }
 
     /** Storage is an injected presentation preference port; no panel authority lives here. */
@@ -74,6 +108,8 @@
         resolveView:resolveView,
         isViewAllowed:isViewAllowed,
         resolveReturnTarget:resolveReturnTarget,
+        resolveLaunchContext:resolveLaunchContext,
+        createCloseMessage:createCloseMessage,
         normalizeConfirmationMode:normalizeConfirmationMode,
         ConfirmationPreference:ConfirmationPreference
     };

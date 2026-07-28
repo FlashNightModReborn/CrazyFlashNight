@@ -74,10 +74,27 @@ function staticAudit() {
     if (!panelService.includes('lastTouchedAt') || !panelService.includes('session.lastTouchedAt = now()')
         || !panelServiceTest.includes('testSuccessfulReadRenewsTrainerLease') || !panelServiceTest.includes('testIdleTrainerLeaseExpires'))
         throw new Error('trainer capability must use a tested renewable idle lease');
-    if (!panel.includes("panel:'skills', cmd:'close', panelInstanceId") || !panel.includes('onRebind: onRebind')) throw new Error('instance-bound close or rebind missing');
-    if (!panel.includes("cmd:'switch_manage'") || !panel.includes('focusSkillKey') || !panel.includes('skills-switch-manage-btn')) throw new Error('trainer to manage rebind UX/contract missing');
-    if (!panel.includes("cmd:'switch_trainer'") || !panel.includes('canReturnTrainer') || !panel.includes('skills-switch-trainer-btn')) throw new Error('scoped manage to trainer return UX/contract missing');
-    if (!panel.includes('sent === false') || !panel.includes('function beginSwitchWait') || !panel.includes('switchPending:_switchPending')) throw new Error('skill switch transport/pending watchdog contract missing');
+    if (!/panel:'skills',\s*cmd:'close',\s*panelInstanceId/.test(panel)
+        || !panel.includes('onRebind: onRebind')) throw new Error('instance-bound close or rebind missing');
+    if (!panel.includes("requestNavigation('manage')") || !interactions.includes("'switch_manage'")
+        || !interactions.includes('focusSkillKey') || !panel.includes('skills-switch-manage-btn')) throw new Error('trainer to manage rebind UX/contract missing');
+    if (!panel.includes("requestNavigation('trainer')") || !interactions.includes("'switch_trainer'") || !interactions.includes('canReturnTrainer')
+        || !panel.includes('skills-switch-trainer-btn')) throw new Error('scoped manage to trainer return UX/contract missing');
+    if (!interactions.includes('sent === false') || !panel.includes('function beginSwitchWait')
+        || !panel.includes('switchPending:_switchPending')) throw new Error('skill switch transport/pending watchdog contract missing');
+    if (!interactions.includes('function canReturnCharacterBuild') || !interactions.includes('canReturnCharacterBuild === true')
+        || !interactions.includes('canReturnTrainer !== true') || !panel.includes('skills-return-character-btn')
+        || !interactions.includes("reason:'navigate_character_build'")
+        || !panel.includes("requestNavigation('character_build')")
+        || !panel.includes('Interactions.requestNavigation({')) throw new Error('character-origin skills manage return capability/contract missing');
+    if (!interactions.includes('shell && shell.hasModal()') || !interactions.includes("reason !== 'escape'")
+        || !interactions.includes('if (context.searchExpanded)')
+        || !interactions.includes('return popFilterPath(') || !panel.includes('Interactions.consumeClose(')
+        || !panel.includes("function() { requestClose('header'); }")
+        || !panel.includes("Bridge.send({type:'panel', panel:'skills', cmd:'close',")
+        || !/panelInstanceId:panelInstanceId\}\)\s*===\s*false/.test(panel)
+        || !panel.includes("技能面板保持打开"))
+        throw new Error('skills close must consume modal, search and filter path before ordinary four-key panel close');
     if (!bridge.includes("typeof window.chrome.webview.postMessage !== 'function'") || !bridge.includes('return true;') || !bridge.includes('return false;')) throw new Error('Bridge.send boolean transport contract missing');
     if (!panel.includes('PanelTooltip.bindAsyncHover') || !renderer.includes('PanelTooltip.buildItemRichHtml') || !skillsSource.includes('normalizeAS2Description')) throw new Error('skills must use the shared sanitized annotation system');
     if (!panel.includes('new Workbench.GridDensityController') || !panel.includes("compactClass:'skills-density-compact'")) throw new Error('skills full/compact density controller missing');
@@ -103,8 +120,19 @@ function staticAudit() {
     if (!runtime.includes("require('./panel-runtime.js')") || !runtime.includes('new PanelRuntime.PanelRequestMux')
         || !runtime.includes('payload:clonePayload(context.payload)') || !runtime.includes("panel:'skills'")
         || !runtime.includes("domain:'skills'") || !runtime.includes('panelInstanceId:context.session.panelInstanceId')) throw new Error('strict shared instance-bound nested skills envelope missing');
-    if (!panels.includes('activePanel.onRebind(activePanel._el, initData)')) throw new Error('Panels same-name rebind hook missing');
-    if (!panels.includes("pending.id === 'skills'") || !panels.includes('closeMessage.panelInstanceId')) throw new Error('skills lazy-cancel must use the instance-bound exact close envelope');
+    const rebindStart = panels.indexOf('if (activePanel && activePanel.onRebind)');
+    const rebindEnd = panels.indexOf('if (!rebindAccepted)', rebindStart);
+    const rebindBody = rebindStart >= 0 && rebindEnd > rebindStart
+        ? panels.slice(rebindStart, rebindEnd) : '';
+    if (!rebindBody.includes('activePanel.onRebind(')
+            || !rebindBody.includes('activePanel._el, initData')
+            || !rebindBody.includes('catch (e)')) {
+        throw new Error('Panels same-name rebind hook missing');
+    }
+    if (!panels.includes("if (id === 'skills')")
+        || !panels.includes('closeMessage.panelInstanceId = readPanelInstanceId(initData)')
+        || !panels.includes('panelCloseMessage(pending.id, pending.initData, reason)'))
+        throw new Error('skills lazy-cancel must use the instance-bound exact close envelope');
     const skillsRegistryStart = registry.indexOf("Panels.registerLazy('skills'");
     const skillsRegistryEnd = registry.indexOf('noop);', skillsRegistryStart);
     const skillsRegistry = skillsRegistryStart >= 0 && skillsRegistryEnd > skillsRegistryStart
@@ -153,6 +181,7 @@ function staticAudit() {
         || !css.includes('.skills-level-range') || !css.includes('.skills-level-mark') || !css.includes('.skills-level-value')
         || !css.includes('.skills-preview-result.stale') || !css.includes('.skills-preview-result.updating')
         || !css.includes('.skills-trainer-expired') || !css.includes('.skills-confirmation-toggle')
+        || !css.includes('.skills-return-character-btn')
         || !css.includes('font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif')
         || !css.includes('.skills-panel .workbench-slot-marker') || !css.includes('data-modal-kind="skills-help"')) throw new Error('skills band/tile/tooltip/filter/search/diagnostic/help CSS missing');
     if (/\.skills-density-compact\s+\.skills-(?:loadout|slot)/.test(css)) throw new Error('skill-library density must not resize the fixed gameplay hotbar');

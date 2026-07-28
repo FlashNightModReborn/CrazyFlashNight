@@ -24,8 +24,8 @@ window.__host={instance:'inst-manage',view:'manage',trainerSession:'trainer-A',r
   skillPoints:160,
   snapshotDelay:0,previewDelay:0,invalidTrainer:false,previewBlocked:false,unknownNextWrite:false,malformedNextWrite:false,
   expireNextSnapshot:false,expireNextPreview:false,expireNextWrite:false,writeDelay:8,pendingWriteUntil:0,switchSeq:0,
-  failNextSwitchTransport:false,dropNextSwitch:false,undefinedNextSwitchReturn:false,
-  canReturnTrainer:false,returnSession:null};
+  failNextSwitchTransport:false,failNextCloseTransport:false,dropNextSwitch:false,undefinedNextSwitchReturn:false,
+  canReturnTrainer:false,canReturnCharacterBuild:false,returnSession:null};
 
 function copy(value){return JSON.parse(JSON.stringify(value))}
 function learned(skillKey,orderIndex,options){options=options||{};return{
@@ -116,12 +116,16 @@ function respond(message,ctx){var base=responseBase(message,ctx),p=message.paylo
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   off:function(type,fn){var list=__handlers[type]||[],i=list.indexOf(fn);if(i>=0)list.splice(i,1)},
-  send:function(message){var switching=message.cmd==='switch_manage'||message.cmd==='switch_trainer';
+  send:function(message){var switching=message.cmd==='switch_manage'||message.cmd==='switch_trainer'
+      ||message.cmd==='close'&&message.reason==='navigate_character_build';
     if(switching&&__host.failNextSwitchTransport){__host.failNextSwitchTransport=false;return false}
-    __sent.push(copy(message));if(message.cmd==='close')return true;
+    if(message.cmd==='close'&&!switching&&__host.failNextCloseTransport){
+      __host.failNextCloseTransport=false;return false}
+    __sent.push(copy(message));
     if(switching&&__host.dropNextSwitch){__host.dropNextSwitch=false;return true}
     var undefinedSwitchReturn=switching&&__host.undefinedNextSwitchReturn;
     if(undefinedSwitchReturn)__host.undefinedNextSwitchReturn=false;
+    if(message.cmd==='close')return undefinedSwitchReturn?undefined:true;
     if(message.cmd==='switch_manage'){
       setTimeout(function(){__host.switchSeq++;__host.returnSession=__host.trainerSession;__host.canReturnTrainer=true;
         __host.instance='inst-manage-switch-'+__host.switchSeq;__host.view='manage';
@@ -171,8 +175,11 @@ window.Icons={
   function sent(cmd){return __sent.filter(function(item){return item.cmd===cmd})}
   function row(key){return Array.prototype.find.call(document.querySelectorAll('.skills-library-row'),function(node){return node.getAttribute('data-skill-key')===key})}
   function clickModalConfirm(){var node=document.querySelector('.workbench-modal-action.primary');if(node)node.click();return!!node}
-  function setHost(init){Object.assign(__host,init);Panels.open('skills',{panelInstanceId:__host.instance,view:__host.view,
-    trainerSession:__host.view==='trainer'?__host.trainerSession:undefined,canReturnTrainer:__host.view==='manage'&&__host.canReturnTrainer===true})}
+  function setHost(init){init=Object.assign({canReturnTrainer:false,canReturnCharacterBuild:false},init||{});Object.assign(__host,init);
+    Panels.open('skills',{panelInstanceId:__host.instance,view:__host.view,
+      trainerSession:__host.view==='trainer'?__host.trainerSession:undefined,
+      canReturnTrainer:__host.view==='manage'&&__host.canReturnTrainer===true,
+      canReturnCharacterBuild:__host.view==='manage'&&__host.canReturnCharacterBuild===true})}
   try{
     Panels.init();setHost({instance:'inst-manage',view:'manage',snapshotDelay:0,invalidTrainer:false,canReturnTrainer:false,returnSession:null});
     await until(function(){return document.querySelectorAll('.skills-slot').length===12});
@@ -187,6 +194,8 @@ window.Icons={
       &&document.querySelector('.skills-refresh-btn').hidden
       &&document.querySelector('.skills-panel').textContent.indexOf('权威')<0
       &&document.querySelector('.skills-panel').textContent.indexOf('版本')<0);
+    ok('direct manage entry exposes no contextual return action',!document.querySelector('.skills-switch-trainer-btn')
+      &&!document.querySelector('.skills-return-character-btn'));
     var confirmationToggle=document.querySelector('.skills-confirmation-toggle');
     var safeConfirmation=document.querySelector('[data-confirmation-mode="safe"]');
     var fastConfirmation=document.querySelector('[data-confirmation-mode="fast"]');
@@ -231,6 +240,27 @@ window.Icons={
       &&helpRect.right<=panelRect.right+1&&helpRect.bottom<=panelRect.bottom+1);
     document.querySelector('.workbench-modal-action.primary').click();
     ok('closing help restores the header help-button focus',document.activeElement===manageHelpButton&&!document.querySelector('.workbench-modal'));
+    var layeredCloseCount=sent('close').length;manageHelpButton.click();
+    (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
+    ok('panel ESC consumes the help modal before panel close',Panels.getActive()==='skills'
+      &&!document.querySelector('.workbench-modal')&&sent('close').length===layeredCloseCount);
+    document.querySelector('.skills-search-toggle').click();
+    var layeredSearch=document.querySelector('.skills-library-controls input');layeredSearch.value='铁壁';
+    layeredSearch.dispatchEvent(new Event('input',{bubbles:true}));
+    (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
+    ok('panel ESC consumes expanded search and clears its local query before panel close',
+      Panels.getActive()==='skills'&&SkillsPanel.debugState().searchExpanded===false
+      &&SkillsPanel.debugState().searchQuery===''&&sent('close').length===layeredCloseCount);
+    document.querySelector('[data-skill-filter="form"] [data-filter-path="equippable"]').click();
+    document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]').click();
+    (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
+    ok('panel ESC pops only the current filter path before panel close',Panels.getActive()==='skills'
+      &&SkillsPanel.debugState().filterPaths.form[0]==='equippable'
+      &&SkillsPanel.debugState().filterPaths.school.length===0&&sent('close').length===layeredCloseCount);
+    (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
+    ok('a second panel ESC pops the remaining filter path without closing',
+      Panels.getActive()==='skills'&&SkillsPanel.debugState().filterPaths.form.length===0
+      &&sent('close').length===layeredCloseCount);
     var wrongManageView=authoritativeSnapshot('trainer');
     ok('manage rejects a trainer-view snapshot',SkillsPanel.validateSnapshot(wrongManageView).ok===false);
     var leakedTrainer=authoritativeSnapshot('manage');leakedTrainer.trainer={session:'trainer-leak',entries:trainerEntries()};
@@ -619,6 +649,62 @@ window.Icons={
       &&SkillsPanel.debugState().switchPending===false&&!document.querySelector('.skills-switch-manage-btn').disabled
       &&document.querySelector('.skills-switch-manage-btn').textContent==='管理技能'
       &&__toasts.slice(-1)[0].indexOf('未完成')>=0);
+    setHost({instance:'inst-manage-trainer-priority',view:'manage',canReturnTrainer:true,canReturnCharacterBuild:true});
+    await until(function(){return row('闪现')&&document.querySelector('.skills-switch-trainer-btn')});
+    ok('trainer capability takes precedence over character-build return capability',
+      document.querySelector('.skills-switch-trainer-btn')&&!document.querySelector('.skills-return-character-btn'));
+    setHost({instance:'inst-manage-character-return',view:'manage',canReturnCharacterBuild:true});
+    await until(function(){return row('铁壁')&&document.querySelector('.skills-return-character-btn')});
+    var characterReturn=document.querySelector('.skills-return-character-btn');
+    ok('character-origin manage exposes one explicit DLS return action',characterReturn
+      &&characterReturn.textContent==='← 返回构筑'&&!document.querySelector('.skills-switch-trainer-btn'));
+    __host.writeDelay=75;row('铁壁').click();document.querySelector('.skills-detail-actions .skills-action-btn.primary').click();
+    ok('character-build return is disabled while a skill write is busy',
+      SkillsPanel.debugState().coordinator.state==='write_pending'&&characterReturn.disabled);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);__host.writeDelay=8;
+    var returnCloseCount=sent('close').length,returnToastCount=__toasts.length;
+    __host.failNextSwitchTransport=true;characterReturn.click();await wait(5);
+    ok('character return transport failure stays open and retryable',Panels.getActive()==='skills'
+      &&SkillsPanel.debugState().switchPending===false&&!characterReturn.disabled
+      &&sent('close').length===returnCloseCount&&__toasts.length===returnToastCount+1);
+    __host.dropNextSwitch=true;characterReturn.click();characterReturn.click();
+    var characterNavigate=sent('close').slice(-1)[0];
+    ok('character return uses the sole strict five-key navigation close envelope',
+      Object.keys(characterNavigate).sort().join(',')==='cmd,panel,panelInstanceId,reason,type'
+      &&characterNavigate.panelInstanceId==='inst-manage-character-return'
+      &&characterNavigate.reason==='navigate_character_build');
+    ok('accepted character return stays mounted and blocks duplicate dispatch until Host rebind',
+      Panels.getActive()==='skills'&&SkillsPanel.debugState().switchPending===true
+      &&characterReturn.disabled&&sent('close').length===returnCloseCount+1);
+    await wait(110);
+    ok('missing character-build rebind times out to the same retryable return action',
+      Panels.getActive()==='skills'&&SkillsPanel.debugState().switchPending===false
+      &&!characterReturn.disabled&&characterReturn.textContent==='← 返回构筑');
+    document.querySelector('.workbench-close-btn').click();await wait(15);
+    var returnHeaderClose=sent('close').slice(-1)[0];
+    ok('return-capable header × remains an ordinary close and never navigates',
+      Panels.getActive()===null
+      &&Object.keys(returnHeaderClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&returnHeaderClose.panelInstanceId==='inst-manage-character-return'
+      &&returnHeaderClose.reason===undefined);
+    setHost({instance:'inst-manage-character-backdrop',view:'manage',canReturnCharacterBuild:true});
+    await until(function(){return document.querySelector('.skills-return-character-btn')});
+    document.getElementById('panel-backdrop').click();await wait(15);
+    var returnBackdropClose=sent('close').slice(-1)[0];
+    ok('return-capable native backdrop remains an ordinary close and never navigates',
+      Panels.getActive()===null
+      &&Object.keys(returnBackdropClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&returnBackdropClose.panelInstanceId==='inst-manage-character-backdrop'
+      &&returnBackdropClose.reason===undefined);
+    setHost({instance:'inst-manage-character-escape',view:'manage',canReturnCharacterBuild:true});
+    await until(function(){return document.querySelector('.skills-return-character-btn')});
+    (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(15);
+    var returnEscapeClose=sent('close').slice(-1)[0];
+    ok('return-capable physical Escape remains an ordinary close and never navigates',
+      Panels.getActive()===null
+      &&Object.keys(returnEscapeClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&returnEscapeClose.panelInstanceId==='inst-manage-character-escape'
+      &&returnEscapeClose.reason===undefined);
     setHost({instance:'inst-manage-B',view:'manage',canReturnTrainer:false,returnSession:null});await until(function(){return row('闪现')});
 
     row('闪现').click();__host.writeDelay=75;document.querySelector('[data-slot="1"] .skills-slot-main').click();clickModalConfirm();
@@ -658,6 +744,16 @@ window.Icons={
     ok('orphan/old ordinary snapshot cannot roll UI back',SkillsPanel.debugState().snapshotRevision===__host.revision);
 
     __host.snapshotDelay=100;document.querySelector('.skills-refresh-btn').click();var activeInstance=SkillsPanel.debugState().coordinator.panelInstanceId;
+    document.querySelector('[data-skill-filter="form"] [data-filter-path="equippable"]').click();
+    document.querySelector('.skills-search-toggle').click();
+    var closeFailureSearch=document.querySelector('.skills-library-controls input');
+    closeFailureSearch.value='闪现';closeFailureSearch.dispatchEvent(new Event('input',{bubbles:true}));
+    var closeFailureToastCount=__toasts.length,closeFailureCount=sent('close').length;
+    __host.failNextCloseTransport=true;document.querySelector('.workbench-close-btn').click();await wait(5);
+    ok('header close bypasses search/filter layers and transport failure keeps the same page retryable',
+      Panels.getActive()==='skills'&&SkillsPanel.debugState().searchExpanded===true
+      &&SkillsPanel.debugState().filterPaths.form[0]==='equippable'
+      &&sent('close').length===closeFailureCount&&__toasts.length===closeFailureToastCount+1);
     document.querySelector('.workbench-close-btn').click();
     var close=sent('close').slice(-1)[0];
     ok('close uses dedicated instance-bound envelope',Object.keys(close).sort().join(',')==='cmd,panel,panelInstanceId,type'&&close.panelInstanceId===activeInstance);
@@ -668,11 +764,20 @@ window.Icons={
     setHost({instance:'inst-final',view:'manage',snapshotDelay:0});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
     var container=document.getElementById('panel-container').getBoundingClientRect(),content=document.getElementById('panel-content').getBoundingClientRect(),scale=document.querySelector('.skills-scale-shell').getBoundingClientRect();
     ok('production anchor and PanelScale fill current viewport',content.width/container.width>.999&&content.height/container.height>.999&&scale.width/content.width>.995&&scale.height/content.height>.995,JSON.stringify({container:[container.width,container.height],content:[content.width,content.height],scale:[scale.width,scale.height]}));
+    document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]').click();
+    document.querySelector('.skills-search-toggle').click();
     document.getElementById('panel-backdrop').click();await wait(15);
-    ok('backdrop close shares instance-bound cleanup',Panels.getActive()===null&&sent('close').slice(-1)[0].panelInstanceId==='inst-final');
+    var backdropClose=sent('close').slice(-1)[0];
+    ok('backdrop bypasses active search/filter layers and sends the ordinary strict four-key cleanup envelope',Panels.getActive()===null
+      &&Object.keys(backdropClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&backdropClose.panelInstanceId==='inst-final');
     setHost({instance:'inst-esc',view:'manage'});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
     (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(15);
-    ok('ESC close shares local cleanup',Panels.getActive()===null&&SkillsPanel.debugState().coordinator.state==='closed');
+    var escClose=sent('close').slice(-1)[0];
+    ok('ESC close shares ordinary strict four-key local cleanup',Panels.getActive()===null
+      &&SkillsPanel.debugState().coordinator.state==='closed'
+      &&Object.keys(escClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&escClose.panelInstanceId==='inst-esc');
     setHost({instance:'inst-disconnect',view:'manage'});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
     (__handlers.panel_cmd||[]).forEach(function(fn){fn({type:'panel_cmd',cmd:'force_close',reason:'disconnected'})});await wait(15);
     ok('force-close/disconnect clears session and pending work',Panels.getActive()===null&&SkillsPanel.debugState().coordinator.state==='closed'&&SkillsPanel.debugState().coordinator.mux.pendingCount===0);

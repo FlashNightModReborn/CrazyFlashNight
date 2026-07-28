@@ -74,5 +74,95 @@ namespace CF7Launcher.Tests.Bus
             Assert.False((bool)loadout["httpCallable"]);
             Assert.False(TaskRegistry.IsHttpCallable("loadout_response"));
         }
+
+        [Fact]
+        public void WorkbenchOpenRequestId_IsAcceptedOnlyForExactNativeBuildTuple()
+        {
+            JObject request =
+                JObject.Parse(
+                    "{\"panel\":\"workbench\","
+                    + "\"source\":\"nativehud_equipment\","
+                    + "\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\"},"
+                    + "\"openRequestId\":\"workbench.open.1.valid\"}");
+
+            string openRequestId;
+            string rejectionReason;
+            Assert.True(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    "workbench",
+                    "nativehud_equipment",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Equal(
+                "workbench.open.1.valid",
+                openRequestId);
+            Assert.Null(rejectionReason);
+        }
+
+        [Theory]
+        [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\"}}")]
+        [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"storage\"},\"openRequestId\":\"workbench.open.1\"}")]
+        [InlineData("{\"initData\":{\"profile\":\"warehouse\",\"view\":\"build\"},\"openRequestId\":\"workbench.open.1\"}")]
+        [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\",\"extra\":true},\"openRequestId\":\"workbench.open.1\"}")]
+        [InlineData("{\"initData\":{\"profile\":7,\"view\":\"build\"},\"openRequestId\":\"workbench.open.1\"}")]
+        [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\"},\"openRequestId\":7}")]
+        [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\"},\"openRequestId\":\"bad token\"}")]
+        public void WorkbenchOpenRequestId_RejectsMissingMalformedOrUnsupportedTuple(
+            string fields)
+        {
+            JObject request =
+                JObject.Parse(
+                    "{\"panel\":\"workbench\","
+                    + "\"source\":\"nativehud_equipment\","
+                    + fields.Substring(1));
+
+            string openRequestId;
+            string rejectionReason;
+            Assert.False(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    "workbench",
+                    "nativehud_equipment",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Null(openRequestId);
+            Assert.False(
+                string.IsNullOrEmpty(
+                    rejectionReason));
+        }
+
+        [Fact]
+        public void SkillsOpenRequestId_RetainsTrainerOptionalAndValidManageTokenRules()
+        {
+            string openRequestId;
+            string rejectionReason;
+            Assert.True(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    JObject.Parse(
+                        "{\"panel\":\"skills\","
+                        + "\"source\":\"world_skill_trainer\","
+                        + "\"initData\":{\"view\":\"trainer\"}}"),
+                    "skills",
+                    "world_skill_trainer",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Null(openRequestId);
+
+            Assert.True(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    JObject.Parse(
+                        "{\"panel\":\"skills\","
+                        + "\"source\":\"nativehud\","
+                        + "\"initData\":{\"view\":\"manage\"},"
+                        + "\"openRequestId\":\"skill.open.1.valid\"}"),
+                    "skills",
+                    "nativehud",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Equal(
+                "skill.open.1.valid",
+                openRequestId);
+        }
     }
 }

@@ -37,6 +37,38 @@ test('return target is normalized without retaining caller-owned objects', () =>
     assert.strictEqual(Config.resolveReturnTarget({returnTo:{panel:'npcshop', initData:{category:'x'}}}), null);
 });
 
+test('launch context separates exact Host workbenches from the crafting-owned organizer child', () => {
+    const exact = Config.resolveLaunchContext({
+        profile:'battlebox', view:'build', panelInstanceId:'panel.workbench.exact'
+    });
+    assert.strictEqual(exact.hostOwner, 'workbench');
+    assert.strictEqual(exact.panelInstanceId, 'panel.workbench.exact');
+    const nested = Config.resolveLaunchContext({
+        profile:'battlebox', view:'storage',
+        returnTo:{panel:'crafting', initData:{category:'weapon'}}
+    });
+    assert.strictEqual(nested.hostOwner, 'crafting');
+    assert.strictEqual(nested.panelInstanceId, '');
+    assert.strictEqual(Config.resolveLaunchContext({
+        profile:'battlebox', view:'build',
+        returnTo:{panel:'crafting', initData:{category:'weapon'}}
+    }), null);
+    assert.strictEqual(Config.resolveLaunchContext({
+        profile:'battlebox', view:'storage', panelInstanceId:'panel.workbench.mixed',
+        returnTo:{panel:'crafting', initData:{category:'weapon'}}
+    }), null);
+    assert.strictEqual(Config.resolveLaunchContext({
+        profile:'battlebox', view:'storage', panelInstanceId:7
+    }), null);
+    assert.deepStrictEqual(Config.createCloseMessage('crafting', '', 'escape'),
+        {type:'panel',cmd:'close',panel:'crafting'});
+    assert.deepStrictEqual(Config.createCloseMessage(
+        'workbench', 'panel.workbench.exact', 'navigate_skills'), {
+        type:'panel',cmd:'close',panel:'workbench',
+        panelInstanceId:'panel.workbench.exact',reason:'navigate_skills'
+    });
+});
+
 test('confirmation preference defaults safely and normalizes writes', () => {
     const values = {};
     const preference = new Config.ConfirmationPreference({
@@ -273,7 +305,7 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(facade.includes('function finalizeClose(reason)'));
     assert(facade.includes("button('skills', '技能配置'"));
     assert(facade.includes("requestClose('navigate_skills')"));
-    assert(facade.includes("message.reason = reason"));
+    assert(extracted.includes("if (reason === 'navigate_skills') message.reason = reason"));
     assert(buildController.includes('new SessionModule.CharacterBuildSession'));
     assert.deepStrictEqual(
         require('../launcher/web/modules/character-build-session.js').commands,
