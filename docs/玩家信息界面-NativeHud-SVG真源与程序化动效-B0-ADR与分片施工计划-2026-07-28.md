@@ -2,9 +2,9 @@
 
 **文档角色**：`flashswf/UI/玩家信息界面` 的**视觉资源与 NativeHud 渲染基座专项 ADR + B0 可执行台账**。本文只权威定义 SVG 真源、受控子集、渲染器准入、运行时烘焙、模拟信号 harness、视觉对照与施工分片；状态所有权、AS2/C# 边界、停止线、显示公式和总体迁移阶段仍以 [玩家信息界面 → C# NativeHud 迁移架构](玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md) 为准。
 
-**最后核对代码基线**：commit `2d89a78fdb2798dac03f6a18d5405dd1d9cdfce5`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 则以该 commit 为 review baseline，并由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor。
+**最后核对代码基线**：commit `7f2431127ba6fec0c8a29d3f0f09ee8d3c79e91d`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4 静态工具审计则以本行基线核对既有受保护 TestLoader/child 身份。
 
-**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 是 B0 的唯一候选。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`；B0-02 已把 exact lock graph、真实 HP/MP feature anchors、strict facade 和安全/并发/dispose corpus 固化入仓，状态为 `isolated_qualification_passed`。两者允许 B0-04 开始转换，但 Flash 截图尚未达到 `oracle_frozen`，`rendererQualified` 仍为 false，不能冒称生产 `renderer_qualified`。仓库当前也**尚未**把该依赖接入 Launcher、产生 canonical SVG、`PlayerInfoWidget` 或新 `pi_*` 协议。本文落盘不等于 B0 代码完成。
+**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 是 B0 的唯一候选。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`；B0-02 已把 exact lock graph、真实 HP/MP feature anchors、strict facade 和安全/并发/dispose corpus 固化入仓，状态为 `isolated_qualification_passed`。B0-01B r4 捕获工具的恢复安全静态审计已通过，但实际 runner/parser 自身份尚未进入 frozen snapshot，真实 CS6 capture 仍被该 provenance Gate 阻断。B0-01A/02 允许 B0-04 开始转换，但 Flash 截图尚未达到 `oracle_frozen`，`rendererQualified` 仍为 false，不能冒称生产 `renderer_qualified`。仓库当前也**尚未**把该依赖接入 Launcher、产生 canonical SVG、`PlayerInfoWidget` 或新 `pi_*` 协议。本文落盘不等于 B0 代码完成。
 
 ---
 
@@ -19,7 +19,8 @@
 - 已完成：本 ADR、B0 分片边界、依赖准入门、runtime build identity 纳入方案与验收词典；Kimi k3/max 的首轮完整文档异构审计见 §9.5。
 - 已完成：B0-01A r3 把 HP/MP placement closure/source-binary ancestry 固化入仓；独立 verifier 从 XFL 重建 17 个定义边/18 个路径展开边，复算 Git-canonical digest `6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368`，并绑定 index/worktree/anchor。它不等于 `oracle_frozen`。
 - 已完成：B0-02 隔离资格化（10/10、16 项 fail-closed、exact XFL feature anchors、依赖/许可/native/payload 结构化审计）；它不等于生产 `renderer_qualified`。
-- 未完成：可重复的独立 Flash 状态截图、生产受控 SVG validator 复用、转换器、canonical SVG、运行时 bake/cache、fixture widget；B0-01B 只因 B0-01A 解锁，尚无 accepted capture。
+- 已完成窄中间态：B0-01B r4 静态工具通过 AST、协议/PNG/事务负例与独立恢复安全审计；它尚未冻结实际 runner/parser 自身份，未启动 Flash，也没有 accepted capture。
+- 未完成：可重复的独立 Flash 状态截图、生产受控 SVG validator 复用、转换器、canonical SVG、运行时 bake/cache、fixture widget。
 - 未接受：`Svg.Skia 5.1.1` 作为生产依赖。它必须先完成 B0-02 生产级 strict facade/corpus Gate；通过后才在 B0-03b 写入中央包版本、项目引用和 lockfile。
 - 未改变：AS2 游戏状态/输入/冷却权威、`FrameBroadcaster` 协议、旧 HUD 可见性、药剂拖放命中壳、正式 runtime。
 - 总体视觉交付严格状态：`planned`；分片允许另记 `evidence_ready` / `renderer_preflight_passed` 等较窄中间态。不得把这些中间证据写成 `fixture_static_parity`、`fixture_full_parity`、`runtime_integrated`，更不得写成已部署。
@@ -442,8 +443,10 @@ B0-02 通过、B0-04 已产生真实 canonical HP/MP asset、B0-03a 通过后，
 - case 只允许 `empty/min_step/p25/p50/p75/p99/full`。HP 使用 `max=12800`、MP 使用 `max=10000`，让最小格与 99% 都能由整数精确表达；模板不接受任意 CLI 数值。
 - 调用现役 `.刷新显示()` 后把 target/current frame 对齐；固定 `网格动画/血槽内动画/血槽光效` 三个相位，静态 corpus 再隐藏 deferred `血槽光效` 并回报 hidden，同时在 closure 中保留其脚本可达边；隐藏韧性/经验/技能/药剂等非本纵切层。
 - 在 Flash 内用透明 `BitmapData(1024,64,true,0x00000000)` identity draw child；manifest 写 `background=transparent_argb_0`、`compositeBackgroundId=null`。每个 case trace 精确 raw/max/ratio、target/current frame、三个相位、visibility，以及刷新后的 HP 当前/最大/百分比、MP 当前/最大/百分比和实际存在的合并显示文本；runner 独立计算期望帧/文本并拒绝偏差。
-- ARGB 分块携带 `runId/caseId/seq/rows`。runner 先记录 flashlog watermark，只接受精确一个同 runId 的 start→complete 闭合块、每个 case 恰好一组 state/chunks、完整无重复连续序列且无 failure sentinel；旧播放器迟到输出不得进入本轮块。
-- scratch transaction 必须复用现役 mutex、BOM、backup/restore sidecar 与 installed/original SHA 校验，并一直持有到行为块/PNG/hash 全部消费、模板 byte-exact 恢复完成。固定用 `compile_test.ps1 -Target test -PublishOnly -VerifySwf scripts/TestLoader.swf`，再由 runner 启动精确播放器；runner 只管理自己 `Start-Process -PassThru` 得到的 PID。先写 ignored `tmp/`，人工确认状态/隔离层/crop 后才把 accepted PNG/manifest 晋升到 repo evidence。
+- ARGB 物理记录携带 `runId/caseId/row/part/partCount/b64`。runner 先记录 flashlog watermark，只接受精确一个同 runId 的 start→complete 闭合块、每个 case 恰好一组 state 与 64×8 条连续 PART、无重复/越序/未知字段/未知类型且无 failure sentinel；每行 Base64 解码后必须精确重编码为同一 canonical 字节串，旧播放器迟到输出不得进入本轮块。
+- scratch transaction 必须复用现役 mutex、BOM、source backup/restore sidecar 与 installed/original SHA 校验；在 source marker 建立后、编译前还必须为既有 `scripts/TestLoader.swf` 建立持久 sidecar/byte backup。只有 compile 子进程返回、全局 uncertain marker 不存在且 compiled identity 已冻结时才允许自动恢复；恢复顺序固定为 SWF → AS → sidecar/backup cleanup → mutex release，任一 late-write/identity drift 保留材料并写 uncertain marker。固定用 `compile_test.ps1 -Target test -PublishOnly -VerifySwf scripts/TestLoader.swf`，再由 runner 启动精确播放器；runner 只管理自己 `Start-Process -PassThru` 得到的 PID。先写 ignored `tmp/`，人工确认状态/隔离层/crop 后才把 accepted PNG/manifest 晋升到 repo evidence。
+
+r4 静态工具已用 3,584 条 PART、最大物理行 829 字符、10 条 canonical summary、2 轮逐像素 PNG/crop round-trip、3 类 SWF 恢复事务和 2 类恢复负例完成独立审计；ValidateOnly 明确未启动 Flash，原 `TestLoader.as`/`TestLoader.swf` 字节与 mtime 未变。它仍缺实际 `capture-flash-oracle.ps1` 与 `flash-oracle-protocol.ps1` 的 frozen/Git-canonical 自身份记录；补齐前不得运行可晋升为 accepted 的 capture。
 
 该路径不经过桌面合成，原始透明像素不受窗口遮挡、DWM 或 Windows scale 改写；manifest 仍须记录播放器/Windows 身份，并明确 `captureMethod=AVM1 BitmapData.draw`、逻辑画布与矩阵。窗口截图只作 fallback；FFDec sprite 导出只作交叉检查，二者都不能自行补齐 accepted provenance。
 
@@ -754,7 +757,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 |---|---|---|---|---|
 | B0-00 | completed | 本 B0-00 commit：两份 ADR 同步；§9.5 k3/max 文档审计；doc governance、链接与 diff check | 无代码/视觉/生产依赖结论 | B0-01A / B0-02 / B0-03a 可并行 |
 | B0-01A | completed (`placement_closure_frozen`) | r3：16-file exact closure、HP/MP/shared=10/5/2、17 authored/18 expanded edge、14 timeline、0 BitmapFill/DOMBitmapInstance；Git-canonical digest `6f4bf9…4368`；index/clean-filter/anchor/source-binary verifier 全绿并经独立复审 ACCEPT | actual TestLoader/player load、截图/crop 与人工来源确认归 B0-01B；不声称 `oracle_frozen` | B0-01B 可开始；B0-04 可开始但视觉 Gate 等 01B |
-| B0-01B | ready; not_captured | §0.6/§6.4 已冻结安全捕获边界，B0-01A r3 已解锁 | tracked TestLoader fixture/capture tool、真实截图、manifest、人工来源确认 | 完成工具 fail-closed 审计后运行精确测试捕获 |
+| B0-01B | `capture_tool_recovery_safe`; capture blocked by tool-identity Gate | r4 三文件静态工具；PART **3584**、max **829**、canonical summary **10**、PNG round-trip **2**、SWF recovery **3**、recovery negative **2**；AST/ValidateOnly 与独立恢复安全审计 ACCEPT；原 TestLoader AS/SWF 未变且未启动 Flash | runner/protocol frozen + Git blob 自身份；真实截图/manifest；人工来源、层、crop 与审美确认 | 先补工具自身份并复审；随后才运行精确测试捕获 |
 | B0-02 | completed (`isolated_qualification_passed`) | exact SDK + locked restore；build 0 warning/error；行为 **10/10**、fail-closed **16**；HP/MP XFL feature anchors；11 包 license/nupkg + 9 文件/5,289,528 B payload 结构化报告 | `rendererQualified=false`；生产 facade/canonical/policy/许可接受仍归 B0-03b | B0-04 可开始；禁止提前写生产 PackageReference |
 | B0-03a | completed | resolver/setup-check 共用 exact 合同；selector + repo-root 集成 **7/7**；setup-check **5/5**；三项首轮并发时序失败隔离复跑 **3/3**，随后全量 xUnit **1257/1257** | 正式 builder 的 10.0.300 证据仍归 B0-03b/发布链 | 继续 B0-01B/B0-04；待真实资产后进 B0-03b |
 | B0-04 | ready; exit_waits_B0-01B | B0-01A r3 closure + B0-02 isolated subset 已满足进入条件；无 canonical asset | converter/validator/canonical SVG 与 accepted oracle parity | 开窄 converter/asset 片；视觉结论等 accepted oracle |

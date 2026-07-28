@@ -1,0 +1,2615 @@
+﻿[CmdletBinding(DefaultParameterSetName = 'Capture')]
+param(
+    [Parameter(Mandatory = $true, ParameterSetName = 'Validate')]
+    [Alias('SelfTest')]
+    [switch]$ValidateOnly,
+
+    [Parameter(ParameterSetName = 'Capture')]
+    [ValidateRange(30, 3600)]
+    [int]$CompileTimeoutSeconds = 240,
+
+    [Parameter(ParameterSetName = 'Capture')]
+    [ValidateRange(30, 600)]
+    [int]$CaptureTimeoutSeconds = 180,
+
+    [Parameter(ParameterSetName = 'Capture')]
+    [ValidatePattern('^[0-9A-Fa-f]{64}$')]
+    [string]$ExpectedUiSwfSha256 =
+        '450B1F9A8B445EE3E28C63682EA00124A191F56D05D759B8590210FC0066A615',
+
+    [Parameter(ParameterSetName = 'Capture')]
+    [ValidatePattern('^[0-9A-Fa-f]{64}$')]
+    [string]$ExpectedPlayerSha256 =
+        '30BA7CF81D10556BB123506693C72F62BA27DB1F37A7A2D546E96AC3A8D31B91'
+)
+
+$ErrorActionPreference = 'Stop'
+[Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+
+$projectDir = [System.IO.Path]::GetFullPath(
+    (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)))
+$scriptsDir = Join-Path $projectDir 'scripts'
+$templatePath = Join-Path $projectDir `
+    'scripts\test-runners\player-info-oracle\TestLoader.as.template'
+$protocolHelperPath = Join-Path $PSScriptRoot 'flash-oracle-protocol.ps1'
+$scratchHelperPath = Join-Path $projectDir `
+    'scripts\test-runners\testloader-scratch-transaction.ps1'
+$scratchRunnerPath = Join-Path $scriptsDir 'TestLoader.as'
+$compilePath = Join-Path $scriptsDir 'compile_test.ps1'
+$loaderSwfPath = Join-Path $scriptsDir 'TestLoader.swf'
+$publishProfilePath = Join-Path $scriptsDir 'TestLoader\PublishSettings.xml'
+$compileOutputPath = Join-Path $scriptsDir 'compile_output.txt'
+$compilerErrorsPath = Join-Path $scriptsDir 'compiler_errors.txt'
+$uiSwfRelativePath = 'flashswf/UI/玩家信息界面.swf'
+$uiSwfPath = Join-Path $projectDir 'flashswf\UI\玩家信息界面.swf'
+$playerRelativePath = 'Adobe Flash Player 20.exe'
+$playerPath = Join-Path $projectDir $playerRelativePath
+$formulaRelativePath = 'scripts/展现/UI交互/UI交互_fs_玩家信息界面.as'
+$formulaPath = Join-Path $projectDir `
+    'scripts\展现\UI交互\UI交互_fs_玩家信息界面.as'
+$closureRelativePath = 'tools/player-info-hud/evidence/b0-01/closure.json'
+$chainRelativePath = 'tools/player-info-hud/evidence/b0-01/source-binary-chain.json'
+$closurePath = Join-Path $projectDir `
+    'tools\player-info-hud\evidence\b0-01\closure.json'
+$chainPath = Join-Path $projectDir `
+    'tools\player-info-hud\evidence\b0-01\source-binary-chain.json'
+$scratchMarker = Join-Path $scriptsDir 'testloader_scratch_inflight.marker'
+$uncertainMarker = Join-Path $scriptsDir 'compile_state_uncertain.marker'
+$globalFlashLog = Join-Path $env:APPDATA `
+    'Macromedia\Flash Player\Logs\flashlog.txt'
+$tmpRoot = Join-Path $projectDir 'tmp\player-info-hud\oracle'
+$naturalExitTimeoutMilliseconds = 15000
+$stabilityPollMilliseconds = 250
+$requiredStablePolls = 4
+$stabilityTimeoutSeconds = 8
+
+. $protocolHelperPath
+. $scratchHelperPath
+
+function Test-Utf8Bom {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    return $bytes.Length -ge 3 -and
+        $bytes[0] -eq 0xEF -and
+        $bytes[1] -eq 0xBB -and
+        $bytes[2] -eq 0xBF
+}
+
+function Get-PathSha256 {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToUpperInvariant()
+}
+
+function Read-SharedBytes {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return ,[byte[]]@()
+    }
+    $stream = [System.IO.File]::Open(
+        $Path,
+        [System.IO.FileMode]::Open,
+        [System.IO.FileAccess]::Read,
+        [System.IO.FileShare]::ReadWrite
+    )
+    try {
+        $bytes = [byte[]]::new($stream.Length)
+        $offset = 0
+        while ($offset -lt $bytes.Length) {
+            $read = $stream.Read($bytes, $offset, $bytes.Length - $offset)
+            if ($read -le 0) {
+                throw "Unexpected EOF while reading shared file: $Path"
+            }
+            $offset += $read
+        }
+        return ,$bytes
+    } finally {
+        $stream.Dispose()
+    }
+}
+
+function Get-FileIdentity {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return [pscustomobject]@{
+            exists = $false
+            length = 0
+            sha256 = $null
+            lastWriteUtc = $null
+        }
+    }
+    $item = Get-Item -LiteralPath $Path
+    return [pscustomobject]@{
+        exists = $true
+        length = [long]$item.Length
+        sha256 = Get-PathSha256 -Path $Path
+        lastWriteUtc = $item.LastWriteTimeUtc.ToString('o')
+    }
+}
+
+function New-FrozenFileInput {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+
+    $before = Get-FileIdentity -Path $Path
+    if (-not $before.exists) {
+        throw "Required frozen input is missing: $Label"
+    }
+    $bytes = Read-SharedBytes -Path $Path
+    $after = Get-FileIdentity -Path $Path
+    $bytesHash = Get-PlayerInfoOracleBytesSha256 -Bytes $bytes
+    if ($before.length -ne $after.length -or
+        $before.sha256 -cne $after.sha256 -or
+        $before.lastWriteUtc -cne $after.lastWriteUtc -or
+        $bytes.Length -ne $after.length -or
+        $bytesHash -cne $after.sha256) {
+        throw "Frozen input changed while being read: $Label"
+    }
+    return [pscustomobject]@{
+        label = $Label
+        path = [System.IO.Path]::GetFullPath($Path)
+        bytes = $bytes
+        length = [long]$bytes.Length
+        sha256 = $bytesHash
+        lastWriteUtc = [string]$after.lastWriteUtc
+    }
+}
+
+function Assert-FrozenFileInputCurrent {
+    param([Parameter(Mandatory = $true)]$Frozen)
+
+    $current = Get-FileIdentity -Path $Frozen.path
+    if (-not $current.exists -or
+        $current.length -ne $Frozen.length -or
+        $current.sha256 -cne $Frozen.sha256 -or
+        $current.lastWriteUtc -cne $Frozen.lastWriteUtc) {
+        throw "Immutable capture input drifted: $($Frozen.label)"
+    }
+}
+
+function Write-AtomicBytes {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][byte[]]$Bytes
+    )
+
+    $temporary = $Path + '.tmp-' + [System.Guid]::NewGuid().ToString('N')
+    [System.IO.File]::WriteAllBytes($temporary, $Bytes)
+    if ((Get-PathSha256 -Path $temporary) -cne
+        (Get-PlayerInfoOracleBytesSha256 -Bytes $Bytes)) {
+        throw "Atomic candidate write hash mismatch: $Path"
+    }
+    $replaceBackup = $null
+    if (Test-Path -LiteralPath $Path) {
+        $replaceBackup = $Path + '.replace-backup-' +
+            [System.Guid]::NewGuid().ToString('N')
+        [System.IO.File]::Replace(
+            $temporary, $Path, $replaceBackup, $true)
+    } else {
+        Move-Item -LiteralPath $temporary -Destination $Path
+    }
+    if ((Get-PathSha256 -Path $Path) -cne
+        (Get-PlayerInfoOracleBytesSha256 -Bytes $Bytes)) {
+        throw "Atomic destination hash mismatch: $Path"
+    }
+    if ($replaceBackup -and (Test-Path -LiteralPath $replaceBackup)) {
+        Remove-Item -LiteralPath $replaceBackup -Force
+    }
+}
+
+function Write-AtomicUtf8Json {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)]$Value
+    )
+
+    $json = $Value | ConvertTo-Json -Depth 40
+    $bytes = [System.Text.UTF8Encoding]::new($false).GetBytes($json + "`n")
+    Write-AtomicBytes -Path $Path -Bytes $bytes
+}
+
+function New-CandidateSnapshot {
+    param(
+        [Parameter(Mandatory = $true)][string]$EvidenceDirectory,
+        [Parameter(Mandatory = $true)][string]$Name,
+        [Parameter(Mandatory = $true)][byte[]]$Bytes
+    )
+
+    if ($Name -match '[/\\]' -or [string]::IsNullOrWhiteSpace($Name)) {
+        throw "Snapshot name must be one file leaf: $Name"
+    }
+    $path = Join-Path $EvidenceDirectory $Name
+    Write-AtomicBytes -Path $path -Bytes $Bytes
+    return [ordered]@{
+        path = 'evidence/' + $Name
+        bytes = $Bytes.Length
+        sha256 = Get-PlayerInfoOracleBytesSha256 -Bytes $Bytes
+    }
+}
+
+function Assert-CandidateSnapshotSet {
+    param(
+        [Parameter(Mandatory = $true)][string]$WorkDirectory,
+        [Parameter(Mandatory = $true)]
+        [System.Collections.IDictionary]$Snapshots
+    )
+
+    foreach ($entry in $Snapshots.GetEnumerator()) {
+        $snapshot = $entry.Value
+        $relative = [string]$snapshot.path
+        if ($relative -notmatch '^evidence/[A-Za-z0-9._-]+$') {
+            throw "Unsafe candidate snapshot path for '$($entry.Key)': $relative"
+        }
+        $absolute = Join-Path $WorkDirectory ($relative.Replace('/', '\'))
+        $identity = Get-FileIdentity -Path $absolute
+        if (-not $identity.exists -or
+            $identity.length -ne [int64]$snapshot.bytes -or
+            $identity.sha256 -cne [string]$snapshot.sha256) {
+            throw "Candidate snapshot drifted before promotion: $($entry.Key)"
+        }
+    }
+}
+
+function Assert-PlayerInfoDerivedSourceMarker {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    if (-not (Test-Path -LiteralPath $Transaction.SourceMarkerPath) -or
+        [System.IO.File]::ReadAllText(
+            $Transaction.SourceMarkerPath,
+            [System.Text.Encoding]::UTF8) -cne
+            $Transaction.SourceMarkerBody) {
+        throw 'Source scratch marker changed during the derived-SWF transaction.'
+    }
+}
+
+function Set-PlayerInfoDerivedSwfSidecar {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    $body = $Transaction.Record | ConvertTo-Json -Depth 12 -Compress
+    $bytes = [System.Text.UTF8Encoding]::new($false).GetBytes($body)
+    Write-AtomicBytes -Path $Transaction.SidecarPath -Bytes $bytes
+    if ([System.IO.File]::ReadAllText(
+            $Transaction.SidecarPath,
+            [System.Text.Encoding]::UTF8) -cne $body) {
+        throw 'Derived-SWF recovery sidecar was not written byte-exactly.'
+    }
+    $Transaction.SidecarBody = $body
+}
+
+function Assert-PlayerInfoDerivedSwfSidecar {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    Assert-PlayerInfoDerivedSourceMarker -Transaction $Transaction
+    if (-not (Test-Path -LiteralPath $Transaction.SidecarPath) -or
+        [System.IO.File]::ReadAllText(
+            $Transaction.SidecarPath,
+            [System.Text.Encoding]::UTF8) -cne
+            $Transaction.SidecarBody) {
+        throw 'Derived-SWF recovery sidecar changed or disappeared.'
+    }
+}
+
+function New-PlayerInfoDerivedSwfTransaction {
+    param(
+        [Parameter(Mandatory = $true)]$SourceTransaction,
+        [Parameter(Mandatory = $true)][string]$SwfPath
+    )
+
+    if (-not (Test-Path -LiteralPath $SourceTransaction.MarkerPath) -or
+        [System.IO.File]::ReadAllText(
+            $SourceTransaction.MarkerPath,
+            [System.Text.Encoding]::UTF8) -cne
+            $SourceTransaction.MarkerBody) {
+        throw 'Derived-SWF transaction requires the source scratch marker first.'
+    }
+    $absoluteSwfPath = [System.IO.Path]::GetFullPath($SwfPath)
+    $recoveryDirectory = Join-Path (
+        Split-Path -Parent $SourceTransaction.MarkerPath) `
+        '.testloader-scratch-recovery'
+    if (-not (Test-Path -LiteralPath $recoveryDirectory)) {
+        [void](New-Item -ItemType Directory -Path $recoveryDirectory)
+    }
+    $token = [System.Guid]::NewGuid().ToString('N')
+    $sidecarPath = Join-Path $recoveryDirectory (
+        $token + '.TestLoader.swf.sidecar.json')
+    $backupPath = Join-Path $recoveryDirectory (
+        $token + '.TestLoader.swf.backup.bin')
+    if ((Test-Path -LiteralPath $sidecarPath) -or
+        (Test-Path -LiteralPath $backupPath)) {
+        throw 'Derived-SWF recovery token unexpectedly collided.'
+    }
+
+    $originalIdentity = Get-FileIdentity -Path $absoluteSwfPath
+    if ($originalIdentity.exists) {
+        $originalFrozen = New-FrozenFileInput `
+            -Path $absoluteSwfPath -Label 'original scripts/TestLoader.swf'
+        $originalBytes = $originalFrozen.bytes
+        $originalIdentity = [pscustomobject]@{
+            exists = $true
+            length = [long]$originalFrozen.length
+            sha256 = [string]$originalFrozen.sha256
+            lastWriteUtc = [string]$originalFrozen.lastWriteUtc
+        }
+        Write-AtomicBytes -Path $backupPath -Bytes $originalBytes
+        if ((Get-FileIdentity -Path $backupPath).sha256 -cne
+            $originalIdentity.sha256) {
+            throw 'Persistent TestLoader.swf recovery backup hash mismatch.'
+        }
+    } else {
+        if ((Get-FileIdentity -Path $absoluteSwfPath).exists) {
+            throw 'TestLoader.swf appeared while its absent identity was captured.'
+        }
+        $backupPath = $null
+    }
+    $sourceMarkerHash = Get-PlayerInfoOracleBytesSha256 -Bytes (
+        [System.Text.UTF8Encoding]::new($false).GetBytes(
+            $SourceTransaction.MarkerBody))
+    $record = [ordered]@{
+        schema = 'cf7.player_info.derived_swf_transaction.v1'
+        token = $token
+        phase = 'prepared'
+        createdUtc = [System.DateTime]::UtcNow.ToString('o')
+        sourceMarkerPath = [System.IO.Path]::GetFullPath(
+            $SourceTransaction.MarkerPath)
+        sourceMarkerSha256 = $sourceMarkerHash
+        swfPath = $absoluteSwfPath
+        original = [ordered]@{
+            exists = [bool]$originalIdentity.exists
+            bytes = [long]$originalIdentity.length
+            sha256 = [string]$originalIdentity.sha256
+            lastWriteUtc = [string]$originalIdentity.lastWriteUtc
+            backupPath = $backupPath
+        }
+        compiled = $null
+        restored = $null
+    }
+    $transaction = [pscustomobject]@{
+        SourceMarkerPath = $SourceTransaction.MarkerPath
+        SourceMarkerBody = $SourceTransaction.MarkerBody
+        SwfPath = $absoluteSwfPath
+        RecoveryDirectory = $recoveryDirectory
+        SidecarPath = $sidecarPath
+        SidecarBody = $null
+        BackupPath = $backupPath
+        Record = $record
+        CompiledBytes = $null
+    }
+    Set-PlayerInfoDerivedSwfSidecar -Transaction $transaction
+    return $transaction
+}
+
+function Freeze-PlayerInfoDerivedSwfCompiledIdentity {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    Assert-PlayerInfoDerivedSwfSidecar -Transaction $Transaction
+    if ([string]$Transaction.Record.phase -cne 'prepared') {
+        throw 'Derived-SWF transaction was not in prepared phase at compile freeze.'
+    }
+    $frozen = New-FrozenFileInput `
+        -Path $Transaction.SwfPath -Label 'compiled scripts/TestLoader.swf'
+    $Transaction.CompiledBytes = $frozen.bytes
+    $Transaction.Record['compiled'] = [ordered]@{
+        exists = $true
+        bytes = [long]$frozen.length
+        sha256 = [string]$frozen.sha256
+        lastWriteUtc = [string]$frozen.lastWriteUtc
+        frozenUtc = [System.DateTime]::UtcNow.ToString('o')
+    }
+    $Transaction.Record['phase'] = 'compiled_frozen'
+    Set-PlayerInfoDerivedSwfSidecar -Transaction $Transaction
+    return $frozen
+}
+
+function Assert-PlayerInfoDerivedSwfCompiledCurrent {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    Assert-PlayerInfoDerivedSwfSidecar -Transaction $Transaction
+    if ([string]$Transaction.Record.phase -cne 'compiled_frozen' -or
+        $null -eq $Transaction.CompiledBytes) {
+        throw 'Derived-SWF compiled identity has not been frozen.'
+    }
+    $identity = Get-FileIdentity -Path $Transaction.SwfPath
+    if (-not $identity.exists -or
+        $identity.length -ne [int64]$Transaction.Record.compiled.bytes -or
+        $identity.sha256 -cne [string]$Transaction.Record.compiled.sha256 -or
+        $identity.lastWriteUtc -cne
+            [string]$Transaction.Record.compiled.lastWriteUtc -or
+        (Get-PlayerInfoOracleBytesSha256 `
+            -Bytes $Transaction.CompiledBytes) -cne $identity.sha256) {
+        throw 'TestLoader.swf no longer matches the frozen compiled launch identity.'
+    }
+}
+
+function Restore-PlayerInfoDerivedSwfTransaction {
+    param(
+        [Parameter(Mandatory = $true)]$Transaction,
+        [string]$UncertainMarkerPath = ''
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($UncertainMarkerPath) -and
+        (Test-Path -LiteralPath $UncertainMarkerPath)) {
+        throw 'Compile-state marker appeared before derived-SWF recovery.'
+    }
+    Assert-PlayerInfoDerivedSwfCompiledCurrent -Transaction $Transaction
+    $original = $Transaction.Record.original
+    if ([bool]$original.exists) {
+        if ([string]::IsNullOrWhiteSpace([string]$Transaction.BackupPath) -or
+            -not (Test-Path -LiteralPath $Transaction.BackupPath)) {
+            throw 'Persistent TestLoader.swf recovery backup is missing.'
+        }
+        $backupIdentity = Get-FileIdentity -Path $Transaction.BackupPath
+        if ($backupIdentity.length -ne [int64]$original.bytes -or
+            $backupIdentity.sha256 -cne [string]$original.sha256) {
+            throw 'Persistent TestLoader.swf recovery backup drifted.'
+        }
+        Write-AtomicBytes `
+            -Path $Transaction.SwfPath `
+            -Bytes (Read-SharedBytes -Path $Transaction.BackupPath)
+        [System.IO.File]::SetLastWriteTimeUtc(
+            $Transaction.SwfPath,
+            [datetime]$original.lastWriteUtc)
+        $restored = Get-FileIdentity -Path $Transaction.SwfPath
+        if (-not $restored.exists -or
+            $restored.length -ne [int64]$original.bytes -or
+            $restored.sha256 -cne [string]$original.sha256 -or
+            $restored.lastWriteUtc -cne [string]$original.lastWriteUtc) {
+            throw 'Restored TestLoader.swf does not match its original identity.'
+        }
+    } else {
+        Remove-Item -LiteralPath $Transaction.SwfPath -Force
+        $restored = Get-FileIdentity -Path $Transaction.SwfPath
+        if ($restored.exists) {
+            throw 'Newly-created TestLoader.swf still exists after recovery.'
+        }
+    }
+    $Transaction.Record['restored'] = [ordered]@{
+        exists = [bool]$restored.exists
+        bytes = [long]$restored.length
+        sha256 = [string]$restored.sha256
+        lastWriteUtc = [string]$restored.lastWriteUtc
+        verifiedUtc = [System.DateTime]::UtcNow.ToString('o')
+    }
+    $Transaction.Record['phase'] = 'restored'
+    Set-PlayerInfoDerivedSwfSidecar -Transaction $Transaction
+}
+
+function Restore-PlayerInfoPreparedDerivedSwfTransaction {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    Assert-PlayerInfoDerivedSwfSidecar -Transaction $Transaction
+    if ([string]$Transaction.Record.phase -cne 'prepared') {
+        throw 'Only an uncompiled prepared derived-SWF transaction can be cancelled.'
+    }
+    $original = $Transaction.Record.original
+    $current = Get-FileIdentity -Path $Transaction.SwfPath
+    if ($current.exists -ne [bool]$original.exists -or
+        $current.length -ne [int64]$original.bytes -or
+        [string]$current.sha256 -cne [string]$original.sha256 -or
+        [string]$current.lastWriteUtc -cne [string]$original.lastWriteUtc) {
+        throw 'Uncompiled TestLoader.swf changed after its prepared snapshot.'
+    }
+    $Transaction.Record['restored'] = [ordered]@{
+        exists = [bool]$current.exists
+        bytes = [long]$current.length
+        sha256 = [string]$current.sha256
+        lastWriteUtc = [string]$current.lastWriteUtc
+        verifiedUtc = [System.DateTime]::UtcNow.ToString('o')
+    }
+    $Transaction.Record['phase'] = 'restored'
+    Set-PlayerInfoDerivedSwfSidecar -Transaction $Transaction
+}
+
+function Complete-PlayerInfoUninstalledSourceScratchCleanup {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    if (-not (Test-Path -LiteralPath $Transaction.MarkerPath) -or
+        [System.IO.File]::ReadAllText(
+            $Transaction.MarkerPath,
+            [System.Text.Encoding]::UTF8) -cne
+            $Transaction.MarkerBody) {
+        throw 'Uninstalled source scratch marker changed before cancellation.'
+    }
+    if ($Transaction.HadRunner) {
+        if (-not (Test-Path -LiteralPath $Transaction.RunnerPath) -or
+            (Get-PathSha256 -Path $Transaction.RunnerPath) -cne
+            [string]$Transaction.OriginalHash -or
+            -not (Test-Path -LiteralPath $Transaction.BackupPath) -or
+            (Get-PathSha256 -Path $Transaction.BackupPath) -cne
+            [string]$Transaction.OriginalHash) {
+            throw 'Uninstalled source scratch no longer matches its original bytes.'
+        }
+    } elseif (Test-Path -LiteralPath $Transaction.RunnerPath) {
+        throw 'Source scratch appeared before installation completed.'
+    }
+    Remove-Item -LiteralPath $Transaction.MarkerPath -Force
+    if ($Transaction.BackupPath -and
+        (Test-Path -LiteralPath $Transaction.BackupPath)) {
+        Remove-Item -LiteralPath $Transaction.BackupPath -Force
+    }
+}
+
+function Assert-PlayerInfoRestoredSwfIdentity {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    if ([string]$Transaction.Record.phase -cne 'restored' -or
+        $null -eq $Transaction.Record.restored) {
+        throw 'Derived-SWF transaction has no verified restored identity.'
+    }
+    $restored = Get-FileIdentity -Path $Transaction.SwfPath
+    if ($restored.exists -ne [bool]$Transaction.Record.restored.exists -or
+        $restored.length -ne [int64]$Transaction.Record.restored.bytes -or
+        [string]$restored.sha256 -cne
+        [string]$Transaction.Record.restored.sha256 -or
+        [string]$restored.lastWriteUtc -cne
+        [string]$Transaction.Record.restored.lastWriteUtc) {
+        throw 'TestLoader.swf drifted after verified restoration.'
+    }
+    return $restored
+}
+
+function Complete-PlayerInfoDerivedSwfCleanup {
+    param([Parameter(Mandatory = $true)]$Transaction)
+
+    if (Test-Path -LiteralPath $Transaction.SourceMarkerPath) {
+        throw 'Cannot clear derived-SWF recovery material before source recovery.'
+    }
+    if (-not (Test-Path -LiteralPath $Transaction.SidecarPath) -or
+        [System.IO.File]::ReadAllText(
+            $Transaction.SidecarPath,
+            [System.Text.Encoding]::UTF8) -cne
+            $Transaction.SidecarBody -or
+        [string]$Transaction.Record.phase -cne 'restored') {
+        throw 'Derived-SWF sidecar is not in its verified restored phase.'
+    }
+    [void](Assert-PlayerInfoRestoredSwfIdentity -Transaction $Transaction)
+    if ($Transaction.BackupPath -and
+        (Test-Path -LiteralPath $Transaction.BackupPath)) {
+        $backup = Get-FileIdentity -Path $Transaction.BackupPath
+        if ($backup.length -ne [int64]$Transaction.Record.original.bytes -or
+            $backup.sha256 -cne [string]$Transaction.Record.original.sha256) {
+            throw 'Derived-SWF backup drifted before cleanup.'
+        }
+        Remove-Item -LiteralPath $Transaction.BackupPath -Force
+    }
+    Remove-Item -LiteralPath $Transaction.SidecarPath -Force
+    if ((Test-Path -LiteralPath $Transaction.SidecarPath) -or
+        ($Transaction.BackupPath -and
+         (Test-Path -LiteralPath $Transaction.BackupPath))) {
+        throw 'Derived-SWF recovery artifacts remain after cleanup.'
+    }
+    if ((Test-Path -LiteralPath $Transaction.RecoveryDirectory) -and
+        @(Get-ChildItem -LiteralPath $Transaction.RecoveryDirectory -Force).
+            Count -eq 0) {
+        Remove-Item -LiteralPath $Transaction.RecoveryDirectory -Force
+    }
+}
+
+function Assert-OracleTemplate {
+    if (-not (Test-Path -LiteralPath $templatePath)) {
+        throw "Oracle TestLoader template is missing: $templatePath"
+    }
+    if (-not (Test-Utf8Bom -Path $templatePath)) {
+        throw 'Oracle TestLoader template must be UTF-8 with BOM.'
+    }
+    $source = [System.IO.File]::ReadAllText(
+        $templatePath, [System.Text.Encoding]::UTF8)
+    if ([regex]::Matches(
+            $source, '__PLAYER_INFO_ORACLE_RUN_ID__').Count -ne 1) {
+        throw 'Oracle template must contain exactly one runId placeholder.'
+    }
+    $required = @(
+        'var __pioRuntimeUrl:String = "../flashswf/UI/玩家信息界面.swf"',
+        'var __pioPartChars:Number = 720',
+        '#include "展现/UI交互/UI交互_fs_玩家信息界面.as"',
+        '_root._quality = "MEDIUM"',
+        '_root.控制目标 = "oracleHero"',
+        '_root.gameworld.oracleHero',
+        'MovieClipLoader',
+        'onLoadInit',
+        'target._url',
+        'escapedUrl=',
+        'runtimeUrlEscaped=',
+        'new BitmapData(',
+        '0x00000000',
+        'bitmap.draw(__pioHolder, new Matrix())',
+        '"PART"',
+        '|partCount=',
+        '|b64=',
+        'partsPerRow=8',
+        'partRecordMaxChars=1000',
+        'HP当前值',
+        'MP数据显示',
+        '网格动画',
+        '血槽内动画',
+        '血槽光效',
+        'outOfScopeHidden'
+    )
+    foreach ($literal in $required) {
+        if ($source.IndexOf($literal, [System.StringComparison]::Ordinal) -lt 0) {
+            throw "Oracle template is missing required literal: $literal"
+        }
+    }
+    if ($source -match '\bCHUNK\b' -or
+        $source -match 'childUrlMatched' -or
+        $source -match 'indexOf\("玩家信息界面\.swf"\)') {
+        throw 'Oracle template retains an obsolete CHUNK or filename-substring binding.'
+    }
+    foreach ($caseId in @('empty', 'min_step', 'p25', 'p50', 'p75', 'p99', 'full')) {
+        if ([regex]::Matches(
+                $source, 'caseId:"' + [regex]::Escape($caseId) + '"').Count -ne 1) {
+            throw "Oracle template must define case exactly once: $caseId"
+        }
+    }
+    if ([regex]::Matches($source, 'caseId:"').Count -ne 7) {
+        throw 'Oracle template defines a case outside the fixed seven-case corpus.'
+    }
+    foreach ($pair in @(@('{', '}'), @('(', ')'), @('[', ']'))) {
+        $openCount = [regex]::Matches(
+            $source, [regex]::Escape($pair[0])).Count
+        $closeCount = [regex]::Matches(
+            $source, [regex]::Escape($pair[1])).Count
+        if ($openCount -ne $closeCount) {
+            throw "Oracle template delimiter count is unbalanced: $($pair -join ' ')."
+        }
+    }
+    foreach ($pattern in @(
+        '\bSharedObject\b',
+        '\bSaveManager\b',
+        '\bServerManager\b',
+        '\bAgentControl\b',
+        '/console',
+        '\bloadVariables(?:Num)?\b',
+        '\bXMLSocket\b',
+        '\bgetURL\s*\('
+    )) {
+        if ($source -match $pattern) {
+            throw "Oracle template contains forbidden surface: $pattern"
+        }
+    }
+    if ($source -match 'TargetCacheManager\s*\.\s*findHero\s*=' -or
+        $source -match 'StringUtils\s*\.\s*padStart\s*=') {
+        throw 'Oracle template monkey-patches a production helper.'
+    }
+    $worstPartLine = (
+        'PLAYER_INFO_ORACLE|PART|runId=' + ('f' * 32) +
+        '|caseId=min_step|row=63|part=7|partCount=8|b64=' + ('A' * 720))
+    if ($worstPartLine.Length -gt 1000 -or
+        $worstPartLine -match '[^\x00-\x7F]') {
+        throw 'Static PART boundary proof exceeds 1000 ASCII characters.'
+    }
+    return [pscustomobject]@{
+        source = $source
+        sha256 = Get-PathSha256 -Path $templatePath
+        staticWorstPartChars = $worstPartLine.Length
+    }
+}
+
+function Assert-RunnerStaticContract {
+    if (-not (Test-Utf8Bom -Path $PSCommandPath) -or
+        -not (Test-Utf8Bom -Path $protocolHelperPath)) {
+        throw 'Runner and protocol helper must be UTF-8 with BOM.'
+    }
+    $source = [System.IO.File]::ReadAllText(
+        $PSCommandPath, [System.Text.Encoding]::UTF8)
+    foreach ($literal in @(
+        "Local\CF7_FlashCompile_",
+        'New-Cf7TestLoaderScratchTransaction',
+        'New-PlayerInfoDerivedSwfTransaction',
+        'Freeze-PlayerInfoDerivedSwfCompiledIdentity',
+        'Get-PlayerInfoCompileRecoveryDecision',
+        'Restore-PlayerInfoDerivedSwfTransaction',
+        'Assert-PlayerInfoRestoredSwfIdentity',
+        'Complete-PlayerInfoDerivedSwfCleanup',
+        'Restore-Cf7TestLoaderScratchTransaction',
+        'CF7_FLASH_COMPILE_LEASE',
+        '-Target test',
+        '-PublishOnly',
+        "-VerifySwf 'scripts/TestLoader.swf'",
+        'Start-Process',
+        '-PassThru',
+        'WaitForExit',
+        'requiredStablePolls = 4',
+        'Get-StableFinalFlashLog',
+        'Test-PlayerInfoOracleTrace',
+        'Stop-OwnedPlayerFailClosed',
+        "'.incomplete-'",
+        'loader-TestLoader.swf',
+        'flashlog-fresh.bin',
+        'oracle-run-block.txt',
+        'oracle-run-summary.canonical.txt',
+        'canonicalRunSummary',
+        'restoredSwfIdentityVerifiedUnderMutex',
+        'Assert-CandidateSnapshotSet',
+        'compile-output.txt',
+        'compiler-errors.txt',
+        'Restore-Cf7TestLoaderScratchTransaction',
+        'Move-Item -LiteralPath $workDir -Destination $finalRunDir'
+    )) {
+        if ($source.IndexOf($literal, [System.StringComparison]::Ordinal) -lt 0) {
+            throw "Capture runner is missing static contract literal: $literal"
+        }
+    }
+    if ([regex]::Matches(
+            $source, '(?m)^\s*\$ownedPlayer\s*=\s*Start-Process\b').Count -ne 1) {
+        throw 'Capture runner must start exactly one owned player process.'
+    }
+    if ([regex]::Matches($source, '\.Kill\(\)').Count -ne 1 -or
+        $source -match '\bCloseMainWindow\b' -or
+        $source -match '(?im)^\s*Stop-Process\b' -or
+        $source -match 'Get-Process\s+-Name\s+[^F\r\n]*Player') {
+        throw 'Capture runner may kill only its exact owned PID and may not close by name.'
+    }
+    $releaseIndex = $source.LastIndexOf(
+        '$compileMutex.ReleaseMutex()',
+        [System.StringComparison]::Ordinal)
+    $promotionIndex = $source.LastIndexOf(
+        'Move-Item -LiteralPath $workDir -Destination $finalRunDir',
+        [System.StringComparison]::Ordinal)
+    if ($releaseIndex -lt 0 -or $promotionIndex -le $releaseIndex) {
+        throw 'Candidate promotion must occur after mutex release and scratch cleanup.'
+    }
+    $sourceCreateIndex = $source.LastIndexOf(
+        '$scratchTransaction = New-Cf7TestLoaderScratchTransaction',
+        [System.StringComparison]::Ordinal)
+    $swfCreateIndex = $source.LastIndexOf(
+        '$derivedSwfTransaction = New-PlayerInfoDerivedSwfTransaction',
+        [System.StringComparison]::Ordinal)
+    $swfRestoreIndex = $source.LastIndexOf(
+        'Restore-PlayerInfoDerivedSwfTransaction',
+        [System.StringComparison]::Ordinal)
+    $sourceRestoreIndex = $source.LastIndexOf(
+        'Restore-Cf7TestLoaderScratchTransaction',
+        [System.StringComparison]::Ordinal)
+    $derivedCleanupIndex = $source.LastIndexOf(
+        'Complete-PlayerInfoDerivedSwfCleanup',
+        [System.StringComparison]::Ordinal)
+    $underMutexIdentityIndex = $source.LastIndexOf(
+        '$restoredIdentityVerifiedUnderMutex = $true',
+        [System.StringComparison]::Ordinal)
+    if ($sourceCreateIndex -lt 0 -or
+        $swfCreateIndex -le $sourceCreateIndex -or
+        $swfRestoreIndex -lt 0 -or
+        $sourceRestoreIndex -le $swfRestoreIndex -or
+        $underMutexIdentityIndex -le $sourceRestoreIndex -or
+        $derivedCleanupIndex -le $underMutexIdentityIndex -or
+        $derivedCleanupIndex -le $sourceRestoreIndex -or
+        $releaseIndex -le $derivedCleanupIndex) {
+        throw (
+            'Source/SWF transaction order must be marker-first, SWF-first restore, ' +
+            'source restore, sidecar cleanup, then mutex release.')
+    }
+    $postReleaseSegment = $source.Substring(
+        $releaseIndex, $promotionIndex - $releaseIndex)
+    if ($postReleaseSegment -match '\$loaderSwfPath\b' -or
+        $postReleaseSegment -match '\bAssert-FrozenFileInputCurrent\b' -or
+        $postReleaseSegment -match '\bGet-FileIdentity\b') {
+        throw (
+            'Post-release finalization may verify only immutable candidate ' +
+            'snapshots and manifest/receipt files.')
+    }
+    $obsoleteEvidenceTokens = @(
+        ('redacted' + 'RunBlock'),
+        ('oracle-run-block.' + 'redacted'),
+        ('ConvertTo-PlayerInfoOracle' + 'RedactedBlock')
+    )
+    foreach ($obsolete in $obsoleteEvidenceTokens) {
+        if ($source.IndexOf(
+                $obsolete,
+                [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            throw 'Runner retains obsolete mixed-block redaction evidence.'
+        }
+    }
+}
+
+function Get-GitCanonicalIdentity {
+    param(
+        [Parameter(Mandatory = $true)][string]$RelativePath,
+        [Parameter(Mandatory = $true)][string]$AbsolutePath
+    )
+
+    $oidOutput = @(& git -C $projectDir hash-object `
+        "--path=$RelativePath" -- $AbsolutePath 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+        throw "git hash-object --path failed for $RelativePath`: $($oidOutput -join ' ')"
+    }
+    $oid = (($oidOutput -join '').Trim()).ToLowerInvariant()
+    if ($oid -notmatch '^[0-9a-f]{40}$') {
+        throw "git hash-object returned an invalid OID for $RelativePath."
+    }
+    $gitPath = (Get-Command git -ErrorAction Stop).Source
+    $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+    $startInfo.FileName = $gitPath
+    $startInfo.WorkingDirectory = $projectDir
+    $startInfo.Arguments = "cat-file blob $oid"
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    $process = [System.Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    $memory = [System.IO.MemoryStream]::new()
+    try {
+        if (-not $process.Start()) {
+            throw "Could not start git cat-file for $RelativePath."
+        }
+        $process.StandardOutput.BaseStream.CopyTo($memory)
+        $stderr = $process.StandardError.ReadToEnd()
+        $process.WaitForExit()
+        if ($process.ExitCode -ne 0) {
+            throw "git cat-file failed for $RelativePath`: $stderr"
+        }
+        $bytes = $memory.ToArray()
+    } finally {
+        $memory.Dispose()
+        $process.Dispose()
+    }
+    return [pscustomobject]@{
+        oid = $oid
+        bytes = $bytes.Length
+        sha256 = (
+            Get-PlayerInfoOracleBytesSha256 -Bytes $bytes).ToLowerInvariant()
+    }
+}
+
+function Assert-B001CaptureEvidence {
+    $closure = [System.IO.File]::ReadAllText(
+        $closurePath, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
+    $chain = [System.IO.File]::ReadAllText(
+        $chainPath, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
+    if ([string]$closure.format -cne 'cf7.player-info-hud.placement-closure' -or
+        [int]$closure.formatVersion -ne 1 -or
+        [string]$closure.evidenceRevision -cne 'b0-01a-r3' -or
+        [string]$closure.status -cne 'placement_closure_frozen') {
+        throw 'B0-01A closure evidence is not the frozen r3 contract.'
+    }
+    $files = @($closure.files)
+    if ($files.Count -ne 16 -or [int]$closure.scope.fileCount -ne 16) {
+        throw 'B0-01A closure evidence no longer contains exactly 16 files.'
+    }
+    $cardinality = $closure.scope.placementCardinality
+    if ([int]$cardinality.authoredDefinitionEdges -ne 17 -or
+        [int]$cardinality.pathExpandedRuntimeEdges -ne 18 -or
+        [int]$cardinality.stageEdges -ne 1 -or
+        [int]$cardinality.hpBranchEdges -ne 12 -or
+        [int]$cardinality.mpBranchEdges -ne 5 -or
+        [int]$cardinality.sharedDefinitionEdgesExpandedTwice -ne 1) {
+        throw 'B0-01A placement cardinality is not the reviewed 17/18 contract.'
+    }
+    $hasGitCanonicalFields = @($files | Where-Object {
+        $null -ne $_.gitBlobBytes -and
+        -not [string]::IsNullOrWhiteSpace([string]$_.gitBlobSha256)
+    }).Count -eq 16
+    $digestLines = [System.Collections.Generic.List[string]]::new()
+    foreach ($file in $files) {
+        $relative = [string]$file.path
+        if ([string]::IsNullOrWhiteSpace($relative) -or
+            [System.IO.Path]::IsPathRooted($relative) -or
+            $relative.Contains('..')) {
+            throw "Unsafe B0-01A closure path: $relative"
+        }
+        $absolute = Join-Path $projectDir $relative
+        if (-not (Test-Path -LiteralPath $absolute)) {
+            throw "B0-01A closure input is missing: $relative"
+        }
+        $identity = Get-GitCanonicalIdentity `
+            -RelativePath $relative -AbsolutePath $absolute
+        if ($identity.oid -cne ([string]$file.gitBlobOid).ToLowerInvariant()) {
+            throw "B0-01A Git-canonical blob drifted: $relative"
+        }
+        if ($hasGitCanonicalFields) {
+            if ($identity.bytes -ne [int64]$file.gitBlobBytes -or
+                $identity.sha256 -cne
+                ([string]$file.gitBlobSha256).ToLowerInvariant()) {
+                throw "B0-01A Git-canonical bytes/SHA drifted: $relative"
+            }
+            $digestLines.Add(
+                $relative + "`t" + $identity.sha256 + "`n")
+        }
+    }
+    $reproducedDigest = $null
+    if ($hasGitCanonicalFields) {
+        $orderedLines = $digestLines.ToArray()
+        [System.Array]::Sort($orderedLines, [System.StringComparer]::Ordinal)
+        $reproducedDigest = (
+            Get-PlayerInfoOracleBytesSha256 -Bytes (
+                [System.Text.Encoding]::UTF8.GetBytes($orderedLines -join '')
+            )).ToLowerInvariant()
+        if ($reproducedDigest -cne
+            ([string]$closure.closureDigest.value).ToLowerInvariant()) {
+            throw 'B0-01A Git-canonical closure digest does not reproduce.'
+        }
+        if ($reproducedDigest -cne
+            '6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368') {
+            throw 'B0-01A Git-canonical closure digest is not the reviewed r3 digest.'
+        }
+    }
+
+    if ([string]$chain.format -cne 'cf7.player-info-hud.source-binary-chain' -or
+        [int]$chain.formatVersion -ne 1 -or
+        [string]$chain.evidenceRevision -cne 'b0-01a-r3' -or
+        [string]$chain.status -cne 'repository_ancestry_verified' -or
+        -not [bool]$chain.reviewBaseline.
+            relevantTrackedPathsMatchHeadInIndexAndAfterCleanFilter -or
+        -not [bool]$chain.conclusions.repositoryAncestryVerified -or
+        [bool]$chain.conclusions.reproducibleBuildReceiptPresent) {
+        throw 'B0-01A source-binary chain is not the ancestry-only r3 contract.'
+    }
+    $captureLoader = $chain.runtimeRelationship.captureLoaderContract
+    if ([string]$captureLoader.plannedLoaderPath -cne 'scripts/TestLoader.swf' -or
+        [bool]$captureLoader.actualCaptureLoaderVerified -or
+        [bool]$captureLoader.mainParticipatesInCapture -or
+        [bool]$captureLoader.asLoaderParticipatesInCapture -or
+        [string]$captureLoader.childPathToVerify -cne $uiSwfRelativePath -or
+        [bool]$chain.conclusions.actualCaptureProcessLoadVerified -or
+        [bool]$chain.conclusions.oracleFrozen -or
+        [string]$chain.conclusions.allowedStatus -cne
+            'placement_closure_frozen') {
+        throw 'B0-01A r3 capture-loader handoff contract drifted.'
+    }
+    $child = @($chain.binaries | Where-Object {
+        [string]$_.role -ceq 'child' -and
+        [string]$_.path -ceq $uiSwfRelativePath
+    })
+    if ($child.Count -ne 1 -or -not [bool]$child[0].identical) {
+        throw 'B0-01A source-binary chain has no unique identical child entry.'
+    }
+    $chainUiHash = (
+        [string]$child[0].reviewBaseline.sha256).ToUpperInvariant()
+    if ($chainUiHash -cne (Get-PathSha256 -Path $uiSwfPath)) {
+        throw 'Current child SWF does not match B0-01A source-binary ancestry.'
+    }
+    $formula = @($chain.sourceLinkEvidence | Where-Object {
+        [string]$_.path -ceq $formulaRelativePath
+    })
+    if ($formula.Count -ne 1) {
+        throw 'B0-01A source-link evidence has no unique display formula.'
+    }
+    $formulaIdentity = Get-GitCanonicalIdentity `
+        -RelativePath $formulaRelativePath -AbsolutePath $formulaPath
+    $expectedFormulaOid = if ($formula[0].worktree.gitBlobOid) {
+        [string]$formula[0].worktree.gitBlobOid
+    } else {
+        [string]$formula[0].reviewBaseline.gitBlobOid
+    }
+    if ($formulaIdentity.oid -cne $expectedFormulaOid.ToLowerInvariant()) {
+        throw 'Current display formula does not match Git-canonical source-link evidence.'
+    }
+    return [pscustomobject]@{
+        evidenceRevision = [string]$closure.evidenceRevision
+        closureDigest = if ($reproducedDigest) {
+            $reproducedDigest
+        } else {
+            [string]$closure.closureDigest.value
+        }
+        sourceBinaryRevision = [string]$chain.evidenceRevision
+        chainUiSha256 = $chainUiHash
+        gitCanonicalSchema = $hasGitCanonicalFields
+        authoredDefinitionEdges = 17
+        pathExpandedRuntimeEdges = 18
+    }
+}
+
+function Get-SystemDpiIdentity {
+    if (-not ('Cf7PlayerInfoOracleNativeMethods' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class Cf7PlayerInfoOracleNativeMethods
+{
+    [DllImport("user32.dll")]
+    public static extern uint GetDpiForSystem();
+}
+'@
+    }
+    try {
+        $dpi = [int][Cf7PlayerInfoOracleNativeMethods]::GetDpiForSystem()
+    } catch {
+        Add-Type -AssemblyName System.Drawing
+        $graphics = [System.Drawing.Graphics]::FromHwnd([System.IntPtr]::Zero)
+        try {
+            $dpi = [int][Math]::Round($graphics.DpiX)
+        } finally {
+            $graphics.Dispose()
+        }
+    }
+    if ($dpi -le 0) {
+        throw 'Could not determine a positive Windows system DPI.'
+    }
+    return [pscustomobject]@{
+        dpi = $dpi
+        scalePercent = [int][Math]::Round(($dpi / 96.0) * 100)
+        affectsLogicalBitmapDraw = $false
+    }
+}
+
+function Get-FlashAuthoringIdentity {
+    $processes = @(Get-Process -Name Flash -ErrorAction SilentlyContinue)
+    $paths = @($processes | ForEach-Object {
+        try { $_.Path } catch { $null }
+    } | Where-Object {
+        -not [string]::IsNullOrWhiteSpace($_) -and
+        (Test-Path -LiteralPath $_)
+    } | Sort-Object -Unique)
+    if ($paths.Count -ne 1) {
+        throw ("Expected exactly one readable Flash.exe identity after compile; got {0}." -f
+            $paths.Count)
+    }
+    $path = [System.IO.Path]::GetFullPath($paths[0])
+    $task = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
+    $taskPaths = @($task.Actions | ForEach-Object {
+        if (-not [string]::IsNullOrWhiteSpace([string]$_.Execute)) {
+            [System.IO.Path]::GetFullPath([string]$_.Execute)
+        }
+    } | Sort-Object -Unique)
+    if ($taskPaths.Count -ne 1 -or $taskPaths[0] -ine $path) {
+        throw 'Running Flash.exe does not match the registered FlashCS6Task identity.'
+    }
+    $item = Get-Item -LiteralPath $path
+    return [pscustomobject]@{
+        fileName = $item.Name
+        fileVersion = $item.VersionInfo.FileVersion
+        productVersion = $item.VersionInfo.ProductVersion
+        sha256 = Get-PathSha256 -Path $path
+        registeredTaskMatched = $true
+    }
+}
+
+function Get-FreshFlashLogFromFullBytes {
+    param(
+        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)][byte[]]$FullBytes,
+        [Parameter(Mandatory = $true)][datetime]$StartedUtc
+    )
+
+    $hasPrefix = $FullBytes.Length -ge $BeforeBytes.Length
+    if ($hasPrefix) {
+        for ($index = 0; $index -lt $BeforeBytes.Length; $index++) {
+            if ($FullBytes[$index] -ne $BeforeBytes[$index]) {
+                $hasPrefix = $false
+                break
+            }
+        }
+    }
+    if ($hasPrefix) {
+        $fresh = [byte[]]::new($FullBytes.Length - $BeforeBytes.Length)
+        if ($fresh.Length -gt 0) {
+            [System.Buffer]::BlockCopy(
+                $FullBytes, $BeforeBytes.Length, $fresh, 0, $fresh.Length)
+        }
+        $mode = 'exact_prefix_tail'
+    } elseif (Test-Path -LiteralPath $globalFlashLog) {
+        $item = Get-Item -LiteralPath $globalFlashLog
+        if ($item.LastWriteTimeUtc -lt $StartedUtc.AddSeconds(-1)) {
+            throw 'Flashlog changed shape without a fresh post-launch timestamp.'
+        }
+        $fresh = $FullBytes
+        $mode = 'post_launch_rewrite'
+    } else {
+        $fresh = [byte[]]@()
+        $mode = 'missing'
+    }
+    return [pscustomobject]@{
+        mode = $mode
+        bytes = $fresh
+        text = [System.Text.Encoding]::UTF8.GetString($fresh)
+        fullLength = $FullBytes.Length
+        fullSha256 = Get-PlayerInfoOracleBytesSha256 -Bytes $FullBytes
+    }
+}
+
+function Get-CurrentFreshFlashLog {
+    param(
+        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)][datetime]$StartedUtc
+    )
+
+    return Get-FreshFlashLogFromFullBytes `
+        -BeforeBytes $BeforeBytes `
+        -FullBytes (Read-SharedBytes -Path $globalFlashLog) `
+        -StartedUtc $StartedUtc
+}
+
+function Get-ExactTerminalKind {
+    param(
+        [Parameter(Mandatory = $true)][string]$FreshText,
+        [Parameter(Mandatory = $true)][string]$RunId
+    )
+
+    $escapedRunId = [regex]::Escape($RunId)
+    $matches = [regex]::Matches(
+        $FreshText,
+        "(?m)^PLAYER_INFO_ORACLE\|(COMPLETE|FAILURE)\|runId=$escapedRunId(?:\||\r?$)"
+    )
+    if ($matches.Count -eq 0) {
+        return $null
+    }
+    return [string]$matches[$matches.Count - 1].Groups[1].Value
+}
+
+function Get-StableFinalFlashLog {
+    param(
+        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)][datetime]$StartedUtc
+    )
+
+    $deadline = [System.DateTime]::UtcNow.AddSeconds($stabilityTimeoutSeconds)
+    $previousIdentity = $null
+    $stablePolls = 0
+    $polls = 0
+    $lastBytes = $null
+    while ([System.DateTime]::UtcNow -lt $deadline) {
+        $lastBytes = Read-SharedBytes -Path $globalFlashLog
+        $identity = '{0}|{1}' -f $lastBytes.Length,
+            (Get-PlayerInfoOracleBytesSha256 -Bytes $lastBytes)
+        $polls++
+        if ($identity -ceq $previousIdentity) {
+            $stablePolls++
+        } else {
+            $previousIdentity = $identity
+            $stablePolls = 1
+        }
+        if ($stablePolls -ge $requiredStablePolls) {
+            $fresh = Get-FreshFlashLogFromFullBytes `
+                -BeforeBytes $BeforeBytes `
+                -FullBytes $lastBytes `
+                -StartedUtc $StartedUtc
+            return [pscustomobject]@{
+                snapshot = $fresh
+                totalPolls = $polls
+                consecutiveStablePolls = $stablePolls
+                pollMilliseconds = $stabilityPollMilliseconds
+            }
+        }
+        [System.Threading.Thread]::Sleep($stabilityPollMilliseconds)
+    }
+    throw ("Flashlog length/hash did not remain stable for {0} consecutive polls " +
+        "within {1} seconds." -f $requiredStablePolls, $stabilityTimeoutSeconds)
+}
+
+$script:playerInfoCompileUncertainWritten = $false
+$script:playerInfoBehaviorFailureWritten = $false
+
+function Set-CompileStateUncertain {
+    param(
+        [Parameter(Mandatory = $true)][string]$Reason,
+        [string]$MarkerPath = $uncertainMarker
+    )
+
+    $isGlobalMarker = [System.IO.Path]::GetFullPath($MarkerPath).Equals(
+        [System.IO.Path]::GetFullPath($uncertainMarker),
+        [System.StringComparison]::OrdinalIgnoreCase)
+    if ($isGlobalMarker -and $script:playerInfoCompileUncertainWritten) {
+        return
+    }
+    $prior = if (Test-Path -LiteralPath $MarkerPath) {
+        [System.IO.File]::ReadAllText(
+            $MarkerPath, [System.Text.Encoding]::UTF8)
+    } else {
+        ''
+    }
+    $body = '{0:o} | player-info Flash oracle: {1}' -f
+        [System.DateTime]::UtcNow, $Reason
+    if (-not [string]::IsNullOrWhiteSpace($prior)) {
+        $body += "`nprevious_marker:`n" + $prior
+    }
+    [System.IO.File]::WriteAllText(
+        $MarkerPath,
+        $body,
+        [System.Text.UTF8Encoding]::new($false)
+    )
+    if ($isGlobalMarker) {
+        $script:playerInfoCompileUncertainWritten = $true
+    }
+}
+
+function Get-PlayerInfoCompileRecoveryDecision {
+    param(
+        [Parameter(Mandatory = $true)][bool]$CompileInvoked,
+        [Parameter(Mandatory = $true)][bool]$CompileReturned,
+        [Parameter(Mandatory = $true)][bool]$TerminalSafeAfterReturn,
+        [Parameter(Mandatory = $true)][bool]$CompiledIdentityFrozen,
+        [Parameter(Mandatory = $true)][string]$UncertainMarkerPath
+    )
+
+    $markerExists = Test-Path -LiteralPath $UncertainMarkerPath
+    $canFreeze = $CompileInvoked -and
+        $CompileReturned -and
+        $TerminalSafeAfterReturn -and
+        -not $markerExists
+    $canRestore = $canFreeze -and $CompiledIdentityFrozen
+    return [pscustomobject]@{
+        markerExists = $markerExists
+        canFreeze = $canFreeze
+        canRestore = $canRestore
+        reason = if (-not $CompileInvoked) {
+            'compile_not_invoked'
+        } elseif (-not $CompileReturned) {
+            'compile_did_not_return'
+        } elseif (-not $TerminalSafeAfterReturn) {
+            'compile_returned_nonterminal'
+        } elseif ($markerExists) {
+            'compile_state_marker_present'
+        } elseif (-not $CompiledIdentityFrozen) {
+            'compiled_identity_not_frozen'
+        } else {
+            'terminal_safe_frozen'
+        }
+    }
+}
+
+function Set-PlayerInfoRecoveryUncertainIfNeeded {
+    param(
+        [Parameter(Mandatory = $true)][bool]$HasDerivedTransaction,
+        [Parameter(Mandatory = $true)][bool]$HasScratchTransaction,
+        [Parameter(Mandatory = $true)][bool]$SwfRestored,
+        [Parameter(Mandatory = $true)][bool]$SourceRestored,
+        [Parameter(Mandatory = $true)][bool]$DerivedCleanupDone,
+        [Parameter(Mandatory = $true)][string]$MarkerPath,
+        [Parameter(Mandatory = $true)][string]$Reason
+    )
+
+    if ($HasDerivedTransaction -and -not $DerivedCleanupDone) {
+        Set-CompileStateUncertain -MarkerPath $MarkerPath -Reason $Reason
+        return $true
+    }
+    if (($HasScratchTransaction -and -not $SourceRestored) -or
+        ($HasDerivedTransaction -and -not $SwfRestored)) {
+        Set-CompileStateUncertain -MarkerPath $MarkerPath -Reason $Reason
+        return $true
+    }
+    return $false
+}
+
+function Write-PlayerInfoOracleBehaviorFailure {
+    param(
+        [Parameter(Mandatory = $true)][string]$Reason,
+        [AllowEmptyString()][string]$RunId = ''
+    )
+
+    if ($script:playerInfoBehaviorFailureWritten) {
+        return
+    }
+    try {
+        $directory = Join-Path $tmpRoot '.behavior-failures'
+        if (-not (Test-Path -LiteralPath $directory)) {
+            [void](New-Item -ItemType Directory -Path $directory)
+        }
+        $leaf = '{0}-{1}.json' -f
+            [System.DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffffffZ'),
+            [System.Guid]::NewGuid().ToString('N')
+        Write-AtomicUtf8Json `
+            -Path (Join-Path $directory $leaf) `
+            -Value ([ordered]@{
+                schema = 'cf7.player_info.flash_oracle_behavior_failure.v1'
+                createdUtc = [System.DateTime]::UtcNow.ToString('o')
+                runId = $RunId
+                reason = $Reason
+                compileStateMarkerWritten = $false
+            })
+        $script:playerInfoBehaviorFailureWritten = $true
+    } catch {
+        Write-Warning (
+            'Could not write ignored player-info behavior failure receipt: ' +
+            $_.Exception.Message)
+    }
+}
+
+function Stop-OwnedPlayerFailClosed {
+    param(
+        [Parameter(Mandatory = $true)]$Process,
+        [Parameter(Mandatory = $true)][string]$Reason
+    )
+
+    Write-PlayerInfoOracleBehaviorFailure `
+        -Reason $Reason -RunId $script:currentPlayerInfoOracleRunId
+    $Process.Refresh()
+    if (-not $Process.HasExited) {
+        $Process.Kill()
+        if (-not $Process.WaitForExit(5000)) {
+            throw "Exact owned player PID $($Process.Id) did not terminate after kill."
+        }
+    }
+}
+
+function Wait-ForOwnedPlayerAndStableTrace {
+    param(
+        [Parameter(Mandatory = $true)]$Process,
+        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)][datetime]$StartedUtc,
+        [Parameter(Mandatory = $true)][string]$RunId,
+        [Parameter(Mandatory = $true)][datetime]$DeadlineUtc
+    )
+
+    $terminalKind = $null
+    while ([System.DateTime]::UtcNow -lt $DeadlineUtc) {
+        $snapshot = Get-CurrentFreshFlashLog `
+            -BeforeBytes $BeforeBytes -StartedUtc $StartedUtc
+        $terminalKind = Get-ExactTerminalKind `
+            -FreshText $snapshot.text -RunId $RunId
+        $Process.Refresh()
+        if ($terminalKind) {
+            $remainingMs = [int][Math]::Max(
+                0,
+                [Math]::Min(
+                    $naturalExitTimeoutMilliseconds,
+                    ($DeadlineUtc - [System.DateTime]::UtcNow).TotalMilliseconds
+                )
+            )
+            if ($remainingMs -le 0 -or -not $Process.WaitForExit($remainingMs)) {
+                Stop-OwnedPlayerFailClosed `
+                    -Process $Process `
+                    -Reason (
+                        "exact $terminalKind record observed but owned PID " +
+                        "$($Process.Id) did not exit naturally; runId=$RunId")
+                throw 'Owned player did not exit naturally after its terminal record.'
+            }
+            break
+        }
+        if ($Process.HasExited) {
+            break
+        }
+        [System.Threading.Thread]::Sleep(200)
+    }
+    $Process.Refresh()
+    if (-not $Process.HasExited) {
+        Stop-OwnedPlayerFailClosed `
+            -Process $Process `
+            -Reason (
+                "capture deadline elapsed before natural owned-PID exit; runId=$RunId")
+        throw 'Player-info oracle capture timed out.'
+    }
+    try {
+        $stable = Get-StableFinalFlashLog `
+            -BeforeBytes $BeforeBytes -StartedUtc $StartedUtc
+    } catch {
+        Write-PlayerInfoOracleBehaviorFailure `
+            -RunId $RunId `
+            -Reason (
+            "owned PID exited but final flashlog was not stable; runId=$RunId; " +
+            "error=$($_.Exception.Message)")
+        throw
+    }
+    $finalTerminal = Get-ExactTerminalKind `
+        -FreshText $stable.snapshot.text -RunId $RunId
+    return [pscustomobject]@{
+        naturalExit = $true
+        earlyTerminalKind = $terminalKind
+        finalTerminalKind = $finalTerminal
+        stability = $stable
+    }
+}
+
+function Invoke-PlayerInfoDerivedSwfTransactionSelfTest {
+    $root = Join-Path ([System.IO.Path]::GetTempPath()) (
+        'cf7-player-info-oracle-swf-selftest-' +
+        [System.Guid]::NewGuid().ToString('N'))
+    [void](New-Item -ItemType Directory -Path $root)
+    $scenarioDirectories = [System.Collections.Generic.List[string]]::new()
+
+    $newScenario = {
+        param([string]$Name)
+        $directory = Join-Path $root $Name
+        [void](New-Item -ItemType Directory -Path $directory)
+        $scenarioDirectories.Add($directory)
+        $marker = Join-Path $directory 'testloader_scratch_inflight.marker'
+        $body = '{"schema":"synthetic-source-marker","name":"' + $Name + '"}'
+        [System.IO.File]::WriteAllText(
+            $marker, $body, [System.Text.UTF8Encoding]::new($false))
+        return [pscustomobject]@{
+            directory = $directory
+            marker = $marker
+            body = $body
+            source = [pscustomobject]@{
+                MarkerPath = $marker
+                MarkerBody = $body
+            }
+            swf = Join-Path $directory 'TestLoader.swf'
+        }
+    }
+
+    $existing = & $newScenario 'existing'
+    $existingOriginal = [byte[]](11, 22, 33, 44, 55)
+    Write-AtomicBytes -Path $existing.swf -Bytes $existingOriginal
+    [System.IO.File]::SetLastWriteTimeUtc(
+        $existing.swf, [datetime]'2026-01-02T03:04:05Z')
+    $existingTransaction = New-PlayerInfoDerivedSwfTransaction `
+        -SourceTransaction $existing.source -SwfPath $existing.swf
+    $existingCompiled = [byte[]](90, 91, 92, 93, 94, 95)
+    Write-AtomicBytes -Path $existing.swf -Bytes $existingCompiled
+    [void](Freeze-PlayerInfoDerivedSwfCompiledIdentity `
+        -Transaction $existingTransaction)
+    Assert-PlayerInfoDerivedSwfCompiledCurrent `
+        -Transaction $existingTransaction
+    Restore-PlayerInfoDerivedSwfTransaction `
+        -Transaction $existingTransaction
+    if (-not (Test-Path -LiteralPath $existing.marker)) {
+        throw 'Derived-SWF self-test cleared the source marker too early.'
+    }
+    Remove-Item -LiteralPath $existing.marker -Force
+    Complete-PlayerInfoDerivedSwfCleanup -Transaction $existingTransaction
+    if ((Get-PathSha256 -Path $existing.swf) -cne
+        (Get-PlayerInfoOracleBytesSha256 -Bytes $existingOriginal)) {
+        throw 'Derived-SWF self-test did not restore existing bytes.'
+    }
+    Remove-Item -LiteralPath $existing.swf -Force
+
+    $absent = & $newScenario 'absent'
+    $absentTransaction = New-PlayerInfoDerivedSwfTransaction `
+        -SourceTransaction $absent.source -SwfPath $absent.swf
+    Write-AtomicBytes -Path $absent.swf -Bytes ([byte[]](1, 3, 5, 7))
+    [void](Freeze-PlayerInfoDerivedSwfCompiledIdentity `
+        -Transaction $absentTransaction)
+    Restore-PlayerInfoDerivedSwfTransaction `
+        -Transaction $absentTransaction
+    if (Test-Path -LiteralPath $absent.swf) {
+        throw 'Derived-SWF self-test did not remove a newly-created SWF.'
+    }
+    Remove-Item -LiteralPath $absent.marker -Force
+    Complete-PlayerInfoDerivedSwfCleanup -Transaction $absentTransaction
+
+    $late = & $newScenario 'late-write'
+    $lateOriginal = [byte[]](2, 4, 6, 8)
+    Write-AtomicBytes -Path $late.swf -Bytes $lateOriginal
+    $lateTransaction = New-PlayerInfoDerivedSwfTransaction `
+        -SourceTransaction $late.source -SwfPath $late.swf
+    Write-AtomicBytes -Path $late.swf -Bytes ([byte[]](10, 12, 14, 16))
+    [void](Freeze-PlayerInfoDerivedSwfCompiledIdentity `
+        -Transaction $lateTransaction)
+    Write-AtomicBytes -Path $late.swf -Bytes ([byte[]](99, 98, 97))
+    $lateWriteRejected = $false
+    try {
+        Restore-PlayerInfoDerivedSwfTransaction `
+            -Transaction $lateTransaction
+    } catch {
+        $lateWriteRejected = $true
+    }
+    if (-not $lateWriteRejected -or
+        -not (Test-Path -LiteralPath $late.marker) -or
+        -not (Test-Path -LiteralPath $lateTransaction.SidecarPath) -or
+        -not (Test-Path -LiteralPath $lateTransaction.BackupPath)) {
+        throw 'Derived-SWF late-write self-test did not retain recovery material.'
+    }
+    Write-AtomicBytes `
+        -Path $late.swf `
+        -Bytes (Read-SharedBytes -Path $lateTransaction.BackupPath)
+    Remove-Item -LiteralPath $lateTransaction.SidecarPath -Force
+    Remove-Item -LiteralPath $lateTransaction.BackupPath -Force
+    Remove-Item -LiteralPath $late.marker -Force
+    Remove-Item -LiteralPath $late.swf -Force
+    if (Test-Path -LiteralPath $lateTransaction.RecoveryDirectory) {
+        if (@(Get-ChildItem -LiteralPath (
+                    $lateTransaction.RecoveryDirectory) -Force).Count -ne 0) {
+            throw 'Derived-SWF self-test recovery directory is unexpectedly nonempty.'
+        }
+        Remove-Item -LiteralPath $lateTransaction.RecoveryDirectory -Force
+    }
+
+    $nonterminal = & $newScenario 'nonterminal-compile'
+    $nonterminalOriginal = [byte[]](31, 32, 33, 34)
+    Write-AtomicBytes `
+        -Path $nonterminal.swf -Bytes $nonterminalOriginal
+    $nonterminalTransaction = New-PlayerInfoDerivedSwfTransaction `
+        -SourceTransaction $nonterminal.source `
+        -SwfPath $nonterminal.swf
+    $nonterminalChanged = [byte[]](41, 42, 43, 44, 45)
+    Write-AtomicBytes `
+        -Path $nonterminal.swf -Bytes $nonterminalChanged
+    $nonterminalMarker = Join-Path $nonterminal.directory `
+        'compile_state_uncertain.marker'
+    Set-CompileStateUncertain `
+        -MarkerPath $nonterminalMarker `
+        -Reason 'synthetic nonterminal compile'
+    $nonterminalDecision = Get-PlayerInfoCompileRecoveryDecision `
+        -CompileInvoked $true `
+        -CompileReturned $true `
+        -TerminalSafeAfterReturn $false `
+        -CompiledIdentityFrozen $false `
+        -UncertainMarkerPath $nonterminalMarker
+    $terminalSafeMarker = Join-Path $nonterminal.directory `
+        'terminal-safe-absent.marker'
+    $terminalCanFreeze = Get-PlayerInfoCompileRecoveryDecision `
+        -CompileInvoked $true `
+        -CompileReturned $true `
+        -TerminalSafeAfterReturn $true `
+        -CompiledIdentityFrozen $false `
+        -UncertainMarkerPath $terminalSafeMarker
+    $terminalCanRestore = Get-PlayerInfoCompileRecoveryDecision `
+        -CompileInvoked $true `
+        -CompileReturned $true `
+        -TerminalSafeAfterReturn $true `
+        -CompiledIdentityFrozen $true `
+        -UncertainMarkerPath $terminalSafeMarker
+    if ($nonterminalDecision.canFreeze -or
+        $nonterminalDecision.canRestore -or
+        -not $terminalCanFreeze.canFreeze -or
+        $terminalCanFreeze.canRestore -or
+        -not $terminalCanRestore.canRestore -or
+        -not (Test-Path -LiteralPath $nonterminal.marker) -or
+        -not (Test-Path -LiteralPath $nonterminalTransaction.SidecarPath) -or
+        -not (Test-Path -LiteralPath $nonterminalTransaction.BackupPath) -or
+        -not (Test-Path -LiteralPath $nonterminalMarker) -or
+        (Get-PathSha256 -Path $nonterminal.swf) -cne
+        (Get-PlayerInfoOracleBytesSha256 -Bytes $nonterminalChanged) -or
+        [string]$nonterminalTransaction.Record.phase -cne 'prepared') {
+        throw (
+            'Nonterminal compile self-test did not deny freeze/recovery while ' +
+            'retaining source marker, sidecar, backup, marker, and changed SWF.')
+    }
+    Write-AtomicBytes `
+        -Path $nonterminal.swf `
+        -Bytes (Read-SharedBytes -Path $nonterminalTransaction.BackupPath)
+    Remove-Item -LiteralPath $nonterminalTransaction.SidecarPath -Force
+    Remove-Item -LiteralPath $nonterminalTransaction.BackupPath -Force
+    Remove-Item -LiteralPath $nonterminal.marker -Force
+    Remove-Item -LiteralPath $nonterminalMarker -Force
+    Remove-Item -LiteralPath $nonterminal.swf -Force
+    Remove-Item `
+        -LiteralPath $nonterminalTransaction.RecoveryDirectory -Force
+
+    $restoreDrift = & $newScenario 'restore-drift'
+    $restoreDriftOriginal = [byte[]](51, 52, 53, 54)
+    Write-AtomicBytes `
+        -Path $restoreDrift.swf -Bytes $restoreDriftOriginal
+    $restoreDriftTransaction = New-PlayerInfoDerivedSwfTransaction `
+        -SourceTransaction $restoreDrift.source `
+        -SwfPath $restoreDrift.swf
+    Write-AtomicBytes `
+        -Path $restoreDrift.swf -Bytes ([byte[]](61, 62, 63, 64))
+    [void](Freeze-PlayerInfoDerivedSwfCompiledIdentity `
+        -Transaction $restoreDriftTransaction)
+    Restore-PlayerInfoDerivedSwfTransaction `
+        -Transaction $restoreDriftTransaction
+    Remove-Item -LiteralPath $restoreDrift.marker -Force
+    $restoreDriftChanged = [byte[]](71, 72, 73, 74, 75)
+    Write-AtomicBytes `
+        -Path $restoreDrift.swf -Bytes $restoreDriftChanged
+    $restoreDriftMarker = Join-Path $restoreDrift.directory `
+        'compile_state_uncertain.marker'
+    $restoreDriftRejected = $false
+    try {
+        Complete-PlayerInfoDerivedSwfCleanup `
+            -Transaction $restoreDriftTransaction
+    } catch {
+        $restoreDriftRejected = $true
+        [void](Set-PlayerInfoRecoveryUncertainIfNeeded `
+            -HasDerivedTransaction $true `
+            -HasScratchTransaction $true `
+            -SwfRestored $true `
+            -SourceRestored $true `
+            -DerivedCleanupDone $false `
+            -MarkerPath $restoreDriftMarker `
+            -Reason 'synthetic restored-SWF drift before cleanup')
+    }
+    if (-not $restoreDriftRejected -or
+        -not (Test-Path -LiteralPath $restoreDriftMarker) -or
+        -not (Test-Path -LiteralPath $restoreDriftTransaction.SidecarPath) -or
+        -not (Test-Path -LiteralPath $restoreDriftTransaction.BackupPath) -or
+        (Get-PathSha256 -Path $restoreDrift.swf) -cne
+        (Get-PlayerInfoOracleBytesSha256 -Bytes $restoreDriftChanged)) {
+        throw (
+            'Restored-SWF drift self-test did not set uncertainty and retain ' +
+            'sidecar/backup before cleanup.')
+    }
+    Write-AtomicBytes `
+        -Path $restoreDrift.swf `
+        -Bytes (Read-SharedBytes -Path $restoreDriftTransaction.BackupPath)
+    Remove-Item -LiteralPath $restoreDriftTransaction.SidecarPath -Force
+    Remove-Item -LiteralPath $restoreDriftTransaction.BackupPath -Force
+    Remove-Item -LiteralPath $restoreDriftMarker -Force
+    Remove-Item -LiteralPath $restoreDrift.swf -Force
+    Remove-Item `
+        -LiteralPath $restoreDriftTransaction.RecoveryDirectory -Force
+
+    $bindingDirectory = Join-Path $root 'snapshot-binding'
+    [void](New-Item -ItemType Directory -Path $bindingDirectory)
+    $scenarioDirectories.Add($bindingDirectory)
+    $bindingEvidence = Join-Path $bindingDirectory 'evidence'
+    [void](New-Item -ItemType Directory -Path $bindingEvidence)
+    $bindingBytes = [byte[]](21, 34, 55, 89)
+    $bindingSnapshots = [ordered]@{
+        loader = New-CandidateSnapshot `
+            -EvidenceDirectory $bindingEvidence `
+            -Name 'loader.bin' `
+            -Bytes $bindingBytes
+    }
+    Write-AtomicBytes `
+        -Path (Join-Path $bindingEvidence 'loader.bin') `
+        -Bytes ([byte[]](1, 1, 2, 3, 5, 8))
+    $snapshotTamperRejected = $false
+    try {
+        Assert-CandidateSnapshotSet `
+            -WorkDirectory $bindingDirectory `
+            -Snapshots $bindingSnapshots
+    } catch {
+        $snapshotTamperRejected = $true
+    }
+    if (-not $snapshotTamperRejected) {
+        throw 'Candidate snapshot cross-binding self-test accepted tampered bytes.'
+    }
+    Write-AtomicBytes `
+        -Path (Join-Path $bindingEvidence 'loader.bin') `
+        -Bytes $bindingBytes
+    Assert-CandidateSnapshotSet `
+        -WorkDirectory $bindingDirectory `
+        -Snapshots $bindingSnapshots
+    Remove-Item -LiteralPath (Join-Path $bindingEvidence 'loader.bin') -Force
+    Remove-Item -LiteralPath $bindingEvidence -Force
+
+    foreach ($directory in $scenarioDirectories) {
+        if (@(Get-ChildItem -LiteralPath $directory -Force).Count -ne 0) {
+            throw "Derived-SWF self-test left scenario artifacts: $directory"
+        }
+        Remove-Item -LiteralPath $directory -Force
+    }
+    if (@(Get-ChildItem -LiteralPath $root -Force).Count -ne 0) {
+        throw 'Derived-SWF self-test root is unexpectedly nonempty.'
+    }
+    Remove-Item -LiteralPath $root -Force
+    return [pscustomobject]@{
+        recoveryScenarios = 3
+        lateWriteRejected = $true
+        nonterminalCompileRejected = $true
+        restoreDriftRejected = $true
+        recoveryAdmissionNegatives = 2
+        sourceMarkerFirst = $true
+        snapshotTamperRejected = $true
+    }
+}
+
+function Invoke-ValidateOnly {
+    $watchedPaths = @(
+        $scratchRunnerPath,
+        $loaderSwfPath,
+        $uiSwfPath,
+        $compileOutputPath,
+        $compilerErrorsPath,
+        $templatePath,
+        $protocolHelperPath,
+        $closurePath,
+        $chainPath,
+        $scratchMarker,
+        $uncertainMarker,
+        $globalFlashLog
+    )
+    $before = @{}
+    foreach ($path in $watchedPaths) {
+        $before[$path] = Get-FileIdentity -Path $path | ConvertTo-Json -Compress
+    }
+    $template = Assert-OracleTemplate
+    Assert-RunnerStaticContract
+    $evidence = $null
+    if ((Test-Path -LiteralPath $closurePath) -and
+        (Test-Path -LiteralPath $chainPath)) {
+        $evidence = Assert-B001CaptureEvidence
+    }
+    $protocol = Invoke-PlayerInfoOracleProtocolSelfTest `
+        -ExpectedChildPath $uiSwfPath
+    $derivedTransaction =
+        Invoke-PlayerInfoDerivedSwfTransactionSelfTest
+    $dpi = Get-SystemDpiIdentity
+    if ($dpi.dpi -le 0) {
+        throw 'Validate-only DPI identity is invalid.'
+    }
+    $prefix = [System.Text.Encoding]::UTF8.GetBytes("old`n")
+    $full = [System.Text.Encoding]::UTF8.GetBytes("old`nfresh`n")
+    $freshProbe = Get-FreshFlashLogFromFullBytes `
+        -BeforeBytes $prefix -FullBytes $full -StartedUtc ([datetime]::UtcNow)
+    if ($freshProbe.mode -cne 'exact_prefix_tail' -or
+        $freshProbe.text -cne "fresh`n") {
+        throw 'Validate-only flashlog watermark slicing failed.'
+    }
+    foreach ($path in $watchedPaths) {
+        $after = Get-FileIdentity -Path $path | ConvertTo-Json -Compress
+        if ($after -cne $before[$path]) {
+            throw "Validate-only mutated a watched path: $path"
+        }
+    }
+    $schemaStatus = if ($evidence -and $evidence.gitCanonicalSchema) {
+        ('{0}/git-canonical/{1}-{2}' -f
+            $evidence.evidenceRevision,
+            $evidence.authoredDefinitionEdges,
+            $evidence.pathExpandedRuntimeEdges)
+    } elseif ($evidence) {
+        'legacy-evidence-detected'
+    } else {
+        'B0-01A-evidence-absent'
+    }
+    Write-Host (
+        '[OK] player-info oracle validate-only passed; ' +
+        "PART records=$($protocol.partRecordCount), " +
+        "maxPART=$($protocol.maxPartLineChars), " +
+        "canonicalSummaryRecords=$($protocol.canonicalSummaryRecords), " +
+        "PNG roundTrips=$($protocol.pngRoundTrips), " +
+        "SWF recovery=$($derivedTransaction.recoveryScenarios), " +
+        "recovery negatives=$($derivedTransaction.recoveryAdmissionNegatives), " +
+        "templateStaticMax=$($template.staticWorstPartChars), " +
+        "closure=$schemaStatus; Flash was not started.")
+}
+
+if ($ValidateOnly) {
+    Invoke-ValidateOnly
+    return
+}
+
+$template = Assert-OracleTemplate
+Assert-RunnerStaticContract
+$requiredCapturePaths = @(
+    $protocolHelperPath,
+    $scratchHelperPath,
+    $compilePath,
+    $publishProfilePath,
+    $uiSwfPath,
+    $playerPath,
+    $formulaPath,
+    $closurePath,
+    $chainPath
+)
+foreach ($path in $requiredCapturePaths) {
+    if (-not (Test-Path -LiteralPath $path)) {
+        throw "Required B0-01B capture input is missing: $path"
+    }
+}
+
+$uiSwfHash = Get-PathSha256 -Path $uiSwfPath
+if ($uiSwfHash -cne $ExpectedUiSwfSha256.ToUpperInvariant()) {
+    throw ("UI child SWF identity drifted: expected {0}, got {1}." -f
+        $ExpectedUiSwfSha256.ToUpperInvariant(), $uiSwfHash)
+}
+$playerHash = Get-PathSha256 -Path $playerPath
+if ($playerHash -cne $ExpectedPlayerSha256.ToUpperInvariant()) {
+    throw ("Standalone player identity drifted: expected {0}, got {1}." -f
+        $ExpectedPlayerSha256.ToUpperInvariant(), $playerHash)
+}
+$b001Evidence = Assert-B001CaptureEvidence
+if (-not $b001Evidence.gitCanonicalSchema) {
+    throw ('B0-01A evidence has not yet migrated to gitBlobBytes/gitBlobSha256; ' +
+        'capture is fail-closed until the Git-canonical schema lands.')
+}
+$frozenInputs = [ordered]@{
+    childSwf = New-FrozenFileInput `
+        -Path $uiSwfPath -Label $uiSwfRelativePath
+    template = New-FrozenFileInput `
+        -Path $templatePath `
+        -Label 'scripts/test-runners/player-info-oracle/TestLoader.as.template'
+    displayFormula = New-FrozenFileInput `
+        -Path $formulaPath -Label $formulaRelativePath
+    placementClosure = New-FrozenFileInput `
+        -Path $closurePath -Label $closureRelativePath
+    sourceBinaryChain = New-FrozenFileInput `
+        -Path $chainPath -Label $chainRelativePath
+}
+if ($frozenInputs.childSwf.sha256 -cne $uiSwfHash -or
+    $frozenInputs.template.sha256 -cne $template.sha256) {
+    throw 'Prevalidated child/template identity changed before capture freeze.'
+}
+
+$normalizedRoot = $projectDir.TrimEnd('\').ToUpperInvariant()
+$repoHasher = [System.Security.Cryptography.SHA256]::Create()
+try {
+    $repoHash = ([System.BitConverter]::ToString(
+        $repoHasher.ComputeHash(
+            [System.Text.Encoding]::UTF8.GetBytes($normalizedRoot)))).
+        Replace('-', '').Substring(0, 24)
+} finally {
+    $repoHasher.Dispose()
+}
+
+$compileMutex = [System.Threading.Mutex]::new(
+    $false, 'Local\CF7_FlashCompile_' + $repoHash)
+$compileMutexAcquired = $false
+$scratchTransaction = $null
+$derivedSwfTransaction = $null
+$installedHash = $null
+$compileLease = $null
+$compileInvoked = $false
+$compileReturned = $false
+$compileTerminalSafeAfterReturn = $false
+$compiledIdentityFrozen = $false
+$compiledLoaderFrozen = $null
+$swfRestored = $false
+$sourceRestored = $false
+$derivedCleanupDone = $false
+$restoredIdentityVerifiedUnderMutex = $false
+$ownedPlayer = $null
+$runId = [System.Guid]::NewGuid().ToString('N')
+$script:currentPlayerInfoOracleRunId = $runId
+$captureStartedUtc = [System.DateTime]::UtcNow
+$workDir = $null
+$finalRunDir = $null
+$manifest = $null
+$candidatePayloadReady = $false
+$cleanupSucceeded = $false
+
+try {
+    try {
+        $compileMutexAcquired = $compileMutex.WaitOne(0)
+    } catch [System.Threading.AbandonedMutexException] {
+        $compileMutexAcquired = $true
+        Set-CompileStateUncertain `
+            -Reason 'capture runner observed an abandoned repository compile mutex'
+        throw 'A previous compile abandoned the repository mutex.'
+    }
+    if (-not $compileMutexAcquired) {
+        throw 'Another Flash compile owns this repository; capture refused.'
+    }
+    if (Test-Path -LiteralPath $uncertainMarker) {
+        throw 'Compile state is uncertain; capture refused.'
+    }
+    $recoveryDirectory = Join-Path $scriptsDir '.testloader-scratch-recovery'
+    if ((Test-Path -LiteralPath $recoveryDirectory) -and
+        @(Get-ChildItem -LiteralPath $recoveryDirectory `
+            -Filter '*.TestLoader.swf.sidecar.json' -Force).Count -ne 0) {
+        throw 'A derived TestLoader.swf recovery sidecar blocks capture.'
+    }
+    foreach ($frozen in $frozenInputs.Values) {
+        Assert-FrozenFileInputCurrent -Frozen $frozen
+    }
+    $compileLease = 'v1:{0}:{1}:{2}' -f
+        $repoHash, $PID, [System.Guid]::NewGuid().ToString('N')
+    $scratchTransaction = New-Cf7TestLoaderScratchTransaction `
+        -MarkerPath $scratchMarker `
+        -RunnerPath $scratchRunnerPath `
+        -RepoHash $repoHash `
+        -CompileLease $compileLease `
+        -OwnerKind 'player-info-oracle'
+    $derivedSwfTransaction = New-PlayerInfoDerivedSwfTransaction `
+        -SourceTransaction $scratchTransaction `
+        -SwfPath $loaderSwfPath
+    Assert-Cf7TestLoaderScratchReadyToInstall -Transaction $scratchTransaction
+
+    Write-AtomicBytes `
+        -Path $scratchRunnerPath `
+        -Bytes $frozenInputs.template.bytes
+    $installedText = [System.IO.File]::ReadAllText(
+        $scratchRunnerPath, [System.Text.Encoding]::UTF8)
+    if ([regex]::Matches(
+            $installedText, '__PLAYER_INFO_ORACLE_RUN_ID__').Count -ne 1) {
+        throw 'Installed TestLoader template has an invalid runId placeholder count.'
+    }
+    $installedText = $installedText.Replace(
+        '__PLAYER_INFO_ORACLE_RUN_ID__', $runId)
+    [System.IO.File]::WriteAllText(
+        $scratchRunnerPath,
+        $installedText,
+        [System.Text.UTF8Encoding]::new($true)
+    )
+    if (-not (Test-Utf8Bom -Path $scratchRunnerPath) -or
+        $installedText -match '__PLAYER_INFO_ORACLE_RUN_ID__' -or
+        [regex]::Matches($installedText, [regex]::Escape($runId)).Count -ne 1) {
+        throw 'Installed TestLoader runner failed BOM/runId installation.'
+    }
+    $installedHash = Get-PathSha256 -Path $scratchRunnerPath
+
+    $compileWatched = @($loaderSwfPath, $compileOutputPath, $compilerErrorsPath)
+    $compileBefore = @{}
+    foreach ($path in $compileWatched) {
+        $compileBefore[$path] = Get-FileIdentity -Path $path | ConvertTo-Json -Compress
+    }
+    $compileStartedUtc = [System.DateTime]::UtcNow
+    $previousCompileLease = $env:CF7_FLASH_COMPILE_LEASE
+    try {
+        $env:CF7_FLASH_COMPILE_LEASE = $compileLease
+        $compileInvoked = $true
+        & powershell.exe -NoProfile -ExecutionPolicy Bypass `
+            -File $compilePath `
+            -Target test `
+            -PublishOnly `
+            -VerifySwf 'scripts/TestLoader.swf' `
+            -TimeoutSeconds $CompileTimeoutSeconds
+        $compileExitCode = $LASTEXITCODE
+        $compileReturned = $true
+    } finally {
+        if ($null -eq $previousCompileLease) {
+            Remove-Item Env:CF7_FLASH_COMPILE_LEASE -ErrorAction SilentlyContinue
+        } else {
+            $env:CF7_FLASH_COMPILE_LEASE = $previousCompileLease
+        }
+    }
+    $compileTerminalSafeAfterReturn =
+        -not (Test-Path -LiteralPath $uncertainMarker)
+    $freezeDecision = Get-PlayerInfoCompileRecoveryDecision `
+        -CompileInvoked $compileInvoked `
+        -CompileReturned $compileReturned `
+        -TerminalSafeAfterReturn $compileTerminalSafeAfterReturn `
+        -CompiledIdentityFrozen $false `
+        -UncertainMarkerPath $uncertainMarker
+    if (-not $freezeDecision.canFreeze) {
+        Set-CompileStateUncertain -Reason (
+            'compile returned without terminal-safe admission; TestLoader.as/SWF ' +
+            "recovery material retained; reason=$($freezeDecision.reason); " +
+            "runId=$runId")
+        throw (
+            'Compile was not terminal-safe after return; refusing SWF identity ' +
+            'freeze and all automatic recovery.')
+    }
+    $compiledLoaderFrozen = Freeze-PlayerInfoDerivedSwfCompiledIdentity `
+        -Transaction $derivedSwfTransaction
+    $compiledIdentityFrozen = $true
+    $postFreezeDecision = Get-PlayerInfoCompileRecoveryDecision `
+        -CompileInvoked $compileInvoked `
+        -CompileReturned $compileReturned `
+        -TerminalSafeAfterReturn $compileTerminalSafeAfterReturn `
+        -CompiledIdentityFrozen $compiledIdentityFrozen `
+        -UncertainMarkerPath $uncertainMarker
+    if (-not $postFreezeDecision.canRestore) {
+        Set-CompileStateUncertain -Reason (
+            'compile state became nonterminal during SWF identity freeze; ' +
+            "recovery material retained; reason=$($postFreezeDecision.reason); " +
+            "runId=$runId")
+        throw 'Compile state lost automatic-recovery admission after SWF freeze.'
+    }
+    if ($compileExitCode -ne 0) {
+        throw "Player-info TestLoader publish-only compile exited $compileExitCode."
+    }
+    foreach ($path in $compileWatched) {
+        $after = Get-FileIdentity -Path $path
+        if (-not $after.exists -or
+            ($after | ConvertTo-Json -Compress) -ceq $compileBefore[$path] -or
+            ([datetime]$after.lastWriteUtc) -lt $compileStartedUtc.AddSeconds(-1)) {
+            throw "Publish-only evidence was not freshly replaced: $path"
+        }
+    }
+    $compilerErrors = [System.IO.File]::ReadAllText(
+        $compilerErrorsPath, [System.Text.Encoding]::UTF8)
+    if ($compilerErrors -notmatch
+        '^\s*0\s+[^,\r\n]+,\s*0\s+[^,\r\n]+\s*$') {
+        throw 'Publish-only compiler diagnostics are not 0 errors / 0 warnings.'
+    }
+    $flashAuthoring = Get-FlashAuthoringIdentity
+    $loaderSwfHash = [string]$compiledLoaderFrozen.sha256
+    $postCompileInputs = [ordered]@{
+        compileOutput = New-FrozenFileInput `
+            -Path $compileOutputPath -Label 'scripts/compile_output.txt'
+        compilerErrors = New-FrozenFileInput `
+            -Path $compilerErrorsPath -Label 'scripts/compiler_errors.txt'
+        publishProfile = New-FrozenFileInput `
+            -Path $publishProfilePath `
+            -Label 'scripts/TestLoader/PublishSettings.xml'
+        compiledTestLoaderSource = New-FrozenFileInput `
+            -Path $scratchRunnerPath -Label 'compiled scripts/TestLoader.as'
+    }
+    if ($postCompileInputs.compiledTestLoaderSource.sha256 -cne $installedHash) {
+        throw 'Compiled TestLoader.as changed after scratch installation.'
+    }
+    foreach ($frozen in $frozenInputs.Values) {
+        Assert-FrozenFileInputCurrent -Frozen $frozen
+    }
+    foreach ($frozen in $postCompileInputs.Values) {
+        Assert-FrozenFileInputCurrent -Frozen $frozen
+    }
+    Assert-PlayerInfoDerivedSwfCompiledCurrent `
+        -Transaction $derivedSwfTransaction
+    $preLaunchDecision = Get-PlayerInfoCompileRecoveryDecision `
+        -CompileInvoked $compileInvoked `
+        -CompileReturned $compileReturned `
+        -TerminalSafeAfterReturn $compileTerminalSafeAfterReturn `
+        -CompiledIdentityFrozen $compiledIdentityFrozen `
+        -UncertainMarkerPath $uncertainMarker
+    if (-not $preLaunchDecision.canRestore) {
+        Set-CompileStateUncertain -Reason (
+            'compile state became nonterminal before player launch; recovery ' +
+            "material retained; reason=$($preLaunchDecision.reason); runId=$runId")
+        throw 'Compile state lost automatic-recovery admission before player launch.'
+    }
+
+    $flashlogBeforeBytes = Read-SharedBytes -Path $globalFlashLog
+    $flashlogWatermark = Get-FileIdentity -Path $globalFlashLog
+    $playerStartedUtc = [System.DateTime]::UtcNow
+    $ownedPlayer = Start-Process `
+        -FilePath $playerPath `
+        -ArgumentList ('"' + $loaderSwfPath + '"') `
+        -WorkingDirectory $projectDir `
+        -PassThru
+    if ($null -eq $ownedPlayer -or $ownedPlayer.Id -le 0) {
+        throw 'Start-Process did not return an exact owned player PID.'
+    }
+    $ownedPlayerId = $ownedPlayer.Id
+    $terminalResult = Wait-ForOwnedPlayerAndStableTrace `
+        -Process $ownedPlayer `
+        -BeforeBytes $flashlogBeforeBytes `
+        -StartedUtc $playerStartedUtc `
+        -RunId $runId `
+        -DeadlineUtc ([System.DateTime]::UtcNow.AddSeconds($CaptureTimeoutSeconds))
+    $finalSnapshot = $terminalResult.stability.snapshot
+    $parsed = Test-PlayerInfoOracleTrace `
+        -FreshText $finalSnapshot.text `
+        -RunId $runId `
+        -ExpectedChildPath $uiSwfPath
+    if (-not $terminalResult.naturalExit -or
+        $terminalResult.finalTerminalKind -cne 'COMPLETE') {
+        throw 'Final stable trace did not close with a natural exact COMPLETE.'
+    }
+    $ownedPlayer.Dispose()
+    $ownedPlayer = $null
+
+    if (-not (Test-Path -LiteralPath $tmpRoot)) {
+        [void](New-Item -ItemType Directory -Path $tmpRoot)
+    }
+    $runName = '{0}-{1}' -f
+        $captureStartedUtc.ToString('yyyyMMddTHHmmssZ'), $runId
+    $workDir = Join-Path $tmpRoot ('.incomplete-' + $runName)
+    $finalRunDir = Join-Path $tmpRoot $runName
+    if ((Test-Path -LiteralPath $workDir) -or
+        (Test-Path -LiteralPath $finalRunDir)) {
+        throw 'Oracle candidate directory unexpectedly already exists.'
+    }
+    [void](New-Item -ItemType Directory -Path $workDir)
+    $evidenceDir = Join-Path $workDir 'evidence'
+    [void](New-Item -ItemType Directory -Path $evidenceDir)
+
+    $snapshots = [ordered]@{}
+    $snapshots.loaderSwf = New-CandidateSnapshot `
+        -EvidenceDirectory $evidenceDir `
+        -Name 'loader-TestLoader.swf' `
+        -Bytes $compiledLoaderFrozen.bytes
+    if ($snapshots.loaderSwf.sha256 -cne $loaderSwfHash) {
+        throw 'Loader snapshot does not equal the actual frozen launch identity.'
+    }
+    $snapshots.childSwf = New-CandidateSnapshot `
+        -EvidenceDirectory $evidenceDir `
+        -Name 'player-info-child.swf' `
+        -Bytes $frozenInputs.childSwf.bytes
+    $snapshots.freshFlashlog = New-CandidateSnapshot `
+        -EvidenceDirectory $evidenceDir `
+        -Name 'flashlog-fresh.bin' `
+        -Bytes $finalSnapshot.bytes
+    $snapshots.freshFlashlog['localOnlyDoNotPromote'] = $true
+    $snapshots.freshFlashlog['mayContainEscapedAbsolutePath'] = $true
+    $blockBytes = [System.Text.UTF8Encoding]::new($false).GetBytes(
+        $parsed.rawBlockText + "`n")
+    $snapshots.oracleRunBlock = New-CandidateSnapshot `
+        -EvidenceDirectory $evidenceDir `
+        -Name 'oracle-run-block.txt' `
+        -Bytes $blockBytes
+    $snapshots.oracleRunBlock['localOnlyDoNotPromote'] = $true
+    $snapshots.oracleRunBlock['mayContainEscapedAbsolutePath'] = $true
+    $canonicalSummary = New-PlayerInfoOracleCanonicalSummary -Parsed $parsed
+    $snapshots.canonicalRunSummary = New-CandidateSnapshot `
+        -EvidenceDirectory $evidenceDir `
+        -Name 'oracle-run-summary.canonical.txt' `
+        -Bytes $canonicalSummary.bytes
+    $snapshots.canonicalRunSummary['promotable'] = $true
+    $snapshotInputSpecs = @(
+        [pscustomobject]@{
+            name = 'compile-output.txt'
+            key = 'compileOutput'
+            input = $postCompileInputs.compileOutput
+        },
+        [pscustomobject]@{
+            name = 'compiler-errors.txt'
+            key = 'compilerErrors'
+            input = $postCompileInputs.compilerErrors
+        },
+        [pscustomobject]@{
+            name = 'TestLoader-PublishSettings.xml'
+            key = 'publishProfile'
+            input = $postCompileInputs.publishProfile
+        },
+        [pscustomobject]@{
+            name = 'compiled-TestLoader.as'
+            key = 'compiledTestLoaderSource'
+            input = $postCompileInputs.compiledTestLoaderSource
+        },
+        [pscustomobject]@{
+            name = 'TestLoader.as.template'
+            key = 'template'
+            input = $frozenInputs.template
+        },
+        [pscustomobject]@{
+            name = 'player-info-formula.as'
+            key = 'displayFormula'
+            input = $frozenInputs.displayFormula
+        },
+        [pscustomobject]@{
+            name = 'b0-01-closure.json'
+            key = 'placementClosure'
+            input = $frozenInputs.placementClosure
+        },
+        [pscustomobject]@{
+            name = 'b0-01-source-binary-chain.json'
+            key = 'sourceBinaryChain'
+            input = $frozenInputs.sourceBinaryChain
+        }
+    )
+    foreach ($snapshotSpec in $snapshotInputSpecs) {
+        $snapshots[$snapshotSpec.key] = New-CandidateSnapshot `
+            -EvidenceDirectory $evidenceDir `
+            -Name $snapshotSpec.name `
+            -Bytes $snapshotSpec.input.bytes
+    }
+
+    $manifestCases = [System.Collections.Generic.List[object]]::new()
+    foreach ($case in $parsed.cases) {
+        $caseId = [string]$case.expected.caseId
+        $bounds = Get-PlayerInfoOracleAlphaBounds `
+            -Argb $case.argb -Width 1024 -Height 64
+        $rawPng = Convert-PlayerInfoOracleArgbToPngBytes `
+            -Argb $case.argb -Width 1024 -Height 64
+        $croppedArgb = Get-PlayerInfoOracleCroppedArgb `
+            -Argb $case.argb -SourceWidth 1024 -Bounds $bounds
+        $cropPng = Convert-PlayerInfoOracleArgbToPngBytes `
+            -Argb $croppedArgb `
+            -Width ([int]$bounds.width) `
+            -Height ([int]$bounds.height)
+        Assert-PlayerInfoOraclePngPixels `
+            -PngBytes $rawPng `
+            -ExpectedArgb $case.argb `
+            -ExpectedWidth 1024 `
+            -ExpectedHeight 64 `
+            -Scenario "$caseId raw capture"
+        Assert-PlayerInfoOraclePngPixels `
+            -PngBytes $cropPng `
+            -ExpectedArgb $croppedArgb `
+            -ExpectedWidth ([int]$bounds.width) `
+            -ExpectedHeight ([int]$bounds.height) `
+            -Scenario "$caseId crop capture"
+        $rawName = $caseId + '.raw.png'
+        $cropName = $caseId + '.crop.png'
+        Write-AtomicBytes -Path (Join-Path $workDir $rawName) -Bytes $rawPng
+        Write-AtomicBytes -Path (Join-Path $workDir $cropName) -Bytes $cropPng
+        $manifestCases.Add([ordered]@{
+            caseId = $caseId
+            state = $case.state
+            rawArgbSha256 = Get-PlayerInfoOracleBytesSha256 -Bytes $case.argb
+            raw = [ordered]@{
+                path = $rawName
+                width = 1024
+                height = 64
+                sha256 = Get-PlayerInfoOracleBytesSha256 -Bytes $rawPng
+            }
+            crop = [ordered]@{
+                path = $cropName
+                rectangle = [ordered]@{
+                    x = [int]$bounds.x
+                    y = [int]$bounds.y
+                    width = [int]$bounds.width
+                    height = [int]$bounds.height
+                }
+                sha256 = Get-PlayerInfoOracleBytesSha256 -Bytes $cropPng
+            }
+        })
+    }
+
+    $playerItem = Get-Item -LiteralPath $playerPath
+    $dpi = Get-SystemDpiIdentity
+    $manifest = [ordered]@{
+        schema = 'cf7.player_info.flash_oracle_manifest.v1'
+        status = 'candidate'
+        runId = $runId
+        capturedUtc = [System.DateTime]::UtcNow.ToString('o')
+        requiresHumanReview = $true
+        source = [ordered]@{
+            placementClosure = [ordered]@{
+                path = $closureRelativePath
+                evidenceRevision = $b001Evidence.evidenceRevision
+                closureDigest = $b001Evidence.closureDigest
+                placementCardinality = [ordered]@{
+                    authoredDefinitionEdges =
+                        $b001Evidence.authoredDefinitionEdges
+                    pathExpandedRuntimeEdges =
+                        $b001Evidence.pathExpandedRuntimeEdges
+                }
+                snapshot = $snapshots.placementClosure
+            }
+            sourceBinaryChain = [ordered]@{
+                path = $chainRelativePath
+                evidenceRevision = $b001Evidence.sourceBinaryRevision
+                childSha256 = $b001Evidence.chainUiSha256
+                snapshot = $snapshots.sourceBinaryChain
+            }
+            formula = [ordered]@{
+                path = $formulaRelativePath
+                snapshot = $snapshots.displayFormula
+            }
+            uiSwf = [ordered]@{
+                path = $uiSwfRelativePath
+                sha256 = $uiSwfHash
+                snapshot = $snapshots.childSwf
+            }
+            loaderSwf = [ordered]@{
+                path = 'scripts/TestLoader.swf'
+                sha256 = $loaderSwfHash
+                snapshot = $snapshots.loaderSwf
+            }
+            childRuntimeBinding = [ordered]@{
+                expectedRepoRelativePath = $uiSwfRelativePath
+                exactCanonicalMatch = [bool]$parsed.childBinding.matched
+                escapedUrlSha256 = $parsed.childBinding.escapedUrlSha256
+                reportedUrlSha256 = $parsed.childBinding.reportedUrlSha256
+                canonicalPathSha256 = $parsed.childBinding.canonicalPathSha256
+            }
+            captureLoaderContract = [ordered]@{
+                actualCaptureLoaderVerified = $true
+                actualLoaderPath = 'scripts/TestLoader.swf'
+                childPathVerified = $uiSwfRelativePath
+                mainParticipatesInCapture = $false
+                asLoaderParticipatesInCapture = $false
+            }
+            compile = [ordered]@{
+                command = (
+                    'scripts/compile_test.ps1 -Target test -PublishOnly ' +
+                    '-VerifySwf scripts/TestLoader.swf')
+                publishProfile = $snapshots.publishProfile
+                compileOutput = $snapshots.compileOutput
+                compilerErrors = $snapshots.compilerErrors
+                compiledTestLoaderSource = $snapshots.compiledTestLoaderSource
+                template = $snapshots.template
+                flashAuthoring = [ordered]@{
+                    fileName = $flashAuthoring.fileName
+                    fileVersion = $flashAuthoring.fileVersion
+                    productVersion = $flashAuthoring.productVersion
+                    sha256 = $flashAuthoring.sha256
+                    registeredTaskMatched = $true
+                }
+            }
+        }
+        runtime = [ordered]@{
+            player = [ordered]@{
+                path = $playerRelativePath
+                fileVersion = $playerItem.VersionInfo.FileVersion
+                productVersion = $playerItem.VersionInfo.ProductVersion
+                sha256 = $playerHash
+                ownedProcessId = $ownedPlayerId
+                naturalExit = $true
+            }
+            windows = [ordered]@{
+                version = [System.Environment]::OSVersion.VersionString
+                architecture = $env:PROCESSOR_ARCHITECTURE
+                systemDpi = [int]$dpi.dpi
+                scalePercent = [int]$dpi.scalePercent
+                affectsLogicalBitmapDraw = $false
+            }
+            flash = [ordered]@{
+                quality = 'MEDIUM'
+                stageScaleMode = 'noScale'
+                stageAlign = 'TL'
+                viewport = [ordered]@{ width = 500; height = 500 }
+            }
+            flashlog = [ordered]@{
+                watermark = $flashlogWatermark
+                consumptionMode = $finalSnapshot.mode
+                finalFullLength = $finalSnapshot.fullLength
+                finalFullSha256 = $finalSnapshot.fullSha256
+                stablePolls =
+                    [int]$terminalResult.stability.consecutiveStablePolls
+                stabilityPollMilliseconds =
+                    [int]$terminalResult.stability.pollMilliseconds
+                freshSnapshot = $snapshots.freshFlashlog
+                exactRunBlock = $snapshots.oracleRunBlock
+                canonicalRunSummary = $snapshots.canonicalRunSummary
+                canonicalRunSummaryRecordCount =
+                    [int]$canonicalSummary.recordCount
+                physicalRecordCount = $parsed.physicalRecordCount
+            }
+        }
+        capture = [ordered]@{
+            captureMethod = 'AVM1 BitmapData.draw'
+            protocol = [ordered]@{
+                rowBytes = 4096
+                partPayloadChars = 720
+                partsPerRow = 8
+                physicalRecordMaxChars = 1000
+                caseOrder = @(
+                    'empty', 'min_step', 'p25', 'p50', 'p75', 'p99', 'full')
+            }
+            canvas = [ordered]@{
+                width = 1024
+                height = 64
+                matrix = @(1, 0, 0, 1, 0, 0)
+                pixelFormat = 'straight_argb32'
+                background = 'transparent_argb_0'
+                compositeBackgroundId = $null
+            }
+            cases = @($manifestCases)
+        }
+        transaction = [ordered]@{
+            sourceScratch = [ordered]@{
+                markerPath = 'scripts/testloader_scratch_inflight.marker'
+                markerBodySha256 =
+                    $derivedSwfTransaction.Record.sourceMarkerSha256
+                originalExisted = [bool]$scratchTransaction.HadRunner
+                originalSha256 = $scratchTransaction.OriginalHash
+                installedSha256 = $installedHash
+                restoredByteExact = $false
+            }
+            derivedSwf = [ordered]@{
+                schema = [string]$derivedSwfTransaction.Record.schema
+                token = [string]$derivedSwfTransaction.Record.token
+                targetPath = 'scripts/TestLoader.swf'
+                sourceMarkerSha256 =
+                    [string]$derivedSwfTransaction.Record.sourceMarkerSha256
+                original = [ordered]@{
+                    exists =
+                        [bool]$derivedSwfTransaction.Record.original.exists
+                    bytes =
+                        [long]$derivedSwfTransaction.Record.original.bytes
+                    sha256 =
+                        [string]$derivedSwfTransaction.Record.original.sha256
+                    lastWriteUtc =
+                        [string]$derivedSwfTransaction.Record.original.lastWriteUtc
+                }
+                compiled = [ordered]@{
+                    exists = $true
+                    bytes =
+                        [long]$derivedSwfTransaction.Record.compiled.bytes
+                    sha256 =
+                        [string]$derivedSwfTransaction.Record.compiled.sha256
+                    lastWriteUtc =
+                        [string]$derivedSwfTransaction.Record.compiled.lastWriteUtc
+                }
+                restored = $null
+                sidecarAndBackupClearedAfterSourceRestore = $false
+            }
+            scratchRestoredByteExact = $false
+            restoredSwfIdentityVerifiedUnderMutex = $false
+            compileMutexReleasedBeforeCandidatePromotion = $false
+        }
+        humanReview = [ordered]@{
+            status = 'required'
+            reviewer = $null
+            checks = [ordered]@{
+                stateCorrect = $null
+                noOtherHudLayers = $null
+                cropDoesNotEatEdges = $null
+                visualAestheticsAccepted = $null
+            }
+            promotionBoundary = (
+                'Only a human may promote reviewed PNG/manifest evidence from ignored ' +
+                'tmp/. Raw flashlog/run-block snapshots are local-only because they ' +
+                'contain an escaped local file URL; only the rebuilt compact canonical ' +
+                'run summary is promotable protocol evidence.')
+        }
+    }
+    foreach ($frozen in $frozenInputs.Values) {
+        Assert-FrozenFileInputCurrent -Frozen $frozen
+    }
+    foreach ($frozen in $postCompileInputs.Values) {
+        Assert-FrozenFileInputCurrent -Frozen $frozen
+    }
+    Assert-PlayerInfoDerivedSwfCompiledCurrent `
+        -Transaction $derivedSwfTransaction
+    Assert-CandidateSnapshotSet `
+        -WorkDirectory $workDir -Snapshots $snapshots
+    foreach ($caseManifest in $manifestCases) {
+        foreach ($image in @($caseManifest.raw, $caseManifest.crop)) {
+            $imagePath = Join-Path $workDir ([string]$image.path)
+            if ((Get-PathSha256 -Path $imagePath) -cne [string]$image.sha256) {
+                throw "Candidate PNG drifted before cleanup: $($image.path)"
+            }
+        }
+    }
+    $candidatePayloadReady = $true
+} finally {
+    try {
+        if ($null -ne $ownedPlayer) {
+            try {
+                $ownedPlayer.Refresh()
+                if (-not $ownedPlayer.HasExited) {
+                    Stop-OwnedPlayerFailClosed `
+                        -Process $ownedPlayer `
+                        -Reason (
+                            "capture failed while exact owned PID remained live; runId=$runId")
+                }
+            } catch {
+                Write-PlayerInfoOracleBehaviorFailure `
+                    -RunId $runId `
+                    -Reason (
+                    "exact owned PID cleanup failed; runId=$runId; " +
+                    "error=$($_.Exception.Message)")
+                throw
+            } finally {
+                $ownedPlayer.Dispose()
+                $ownedPlayer = $null
+            }
+        }
+    } finally {
+        try {
+            try {
+                if ($derivedSwfTransaction) {
+                    if ($compileInvoked) {
+                        $restoreDecision =
+                            Get-PlayerInfoCompileRecoveryDecision `
+                                -CompileInvoked $compileInvoked `
+                                -CompileReturned $compileReturned `
+                                -TerminalSafeAfterReturn `
+                                    $compileTerminalSafeAfterReturn `
+                                -CompiledIdentityFrozen `
+                                    $compiledIdentityFrozen `
+                                -UncertainMarkerPath $uncertainMarker
+                        if (-not $restoreDecision.canRestore) {
+                            Set-CompileStateUncertain -Reason (
+                                'automatic recovery denied by compile terminal-state ' +
+                                "gate; reason=$($restoreDecision.reason); runId=$runId")
+                            throw (
+                                'Refusing automatic source/SWF recovery after a ' +
+                                'nonterminal or marker-contaminated compile.')
+                        }
+                        Restore-PlayerInfoDerivedSwfTransaction `
+                            -Transaction $derivedSwfTransaction `
+                            -UncertainMarkerPath $uncertainMarker
+                    } else {
+                        Restore-PlayerInfoPreparedDerivedSwfTransaction `
+                            -Transaction $derivedSwfTransaction
+                    }
+                    $swfRestored = $true
+                } else {
+                    $swfRestored = -not $compileInvoked
+                }
+
+                if ($scratchTransaction -and $swfRestored) {
+                    if ($compileInvoked) {
+                        $sourceRestoreDecision =
+                            Get-PlayerInfoCompileRecoveryDecision `
+                                -CompileInvoked $compileInvoked `
+                                -CompileReturned $compileReturned `
+                                -TerminalSafeAfterReturn `
+                                    $compileTerminalSafeAfterReturn `
+                                -CompiledIdentityFrozen `
+                                    $compiledIdentityFrozen `
+                                -UncertainMarkerPath $uncertainMarker
+                        if (-not $sourceRestoreDecision.canRestore) {
+                            throw (
+                                'Compile-state marker appeared before source scratch ' +
+                                'recovery; source marker and SWF recovery remain.')
+                        }
+                    }
+                    if ($installedHash) {
+                        Restore-Cf7TestLoaderScratchTransaction `
+                            -Transaction $scratchTransaction `
+                            -InstalledHash $installedHash
+                    } else {
+                        Complete-PlayerInfoUninstalledSourceScratchCleanup `
+                            -Transaction $scratchTransaction
+                    }
+                    $sourceRestored = $true
+                } elseif (-not $scratchTransaction) {
+                    $sourceRestored = $true
+                }
+
+                if ($derivedSwfTransaction -and
+                    $swfRestored -and $sourceRestored) {
+                    if ($compileInvoked) {
+                        $cleanupDecision =
+                            Get-PlayerInfoCompileRecoveryDecision `
+                                -CompileInvoked $compileInvoked `
+                                -CompileReturned $compileReturned `
+                                -TerminalSafeAfterReturn `
+                                    $compileTerminalSafeAfterReturn `
+                                -CompiledIdentityFrozen `
+                                    $compiledIdentityFrozen `
+                                -UncertainMarkerPath $uncertainMarker
+                        if (-not $cleanupDecision.canRestore) {
+                            throw (
+                                'Compile-state marker appeared before recovery ' +
+                                'sidecar cleanup; recovery material remains.')
+                        }
+                    }
+                    [void](Assert-PlayerInfoRestoredSwfIdentity `
+                        -Transaction $derivedSwfTransaction)
+                    $restoredIdentityVerifiedUnderMutex = $true
+                    Complete-PlayerInfoDerivedSwfCleanup `
+                        -Transaction $derivedSwfTransaction
+                    $derivedCleanupDone = $true
+                } elseif (-not $derivedSwfTransaction) {
+                    $derivedCleanupDone = $true
+                }
+                if ($candidatePayloadReady) {
+                    foreach ($frozen in $frozenInputs.Values) {
+                        Assert-FrozenFileInputCurrent -Frozen $frozen
+                    }
+                }
+            } catch {
+                [void](Set-PlayerInfoRecoveryUncertainIfNeeded `
+                    -HasDerivedTransaction ($null -ne $derivedSwfTransaction) `
+                    -HasScratchTransaction ($null -ne $scratchTransaction) `
+                    -SwfRestored $swfRestored `
+                    -SourceRestored $sourceRestored `
+                    -DerivedCleanupDone $derivedCleanupDone `
+                    -MarkerPath $uncertainMarker `
+                    -Reason (
+                        'TestLoader recovery did not reach verified sidecar cleanup; ' +
+                        "recovery material retained; runId=$runId; " +
+                        "error=$($_.Exception.Message)"))
+                throw
+            }
+        } finally {
+            if ($compileMutexAcquired) {
+                $compileMutex.ReleaseMutex()
+            }
+            $compileMutex.Dispose()
+            if ($scratchTransaction -and
+                (Test-Path -LiteralPath $scratchTransaction.MarkerPath)) {
+                Write-Warning (
+                    'TestLoader scratch transaction remains fail-closed; recovery ' +
+                    "backup: $($scratchTransaction.BackupPath)")
+            } else {
+                $cleanupSucceeded =
+                    $swfRestored -and
+                    $sourceRestored -and
+                    $derivedCleanupDone
+            }
+        }
+    }
+}
+
+if (-not $candidatePayloadReady -or -not $cleanupSucceeded -or
+    -not $restoredIdentityVerifiedUnderMutex -or
+    [string]::IsNullOrWhiteSpace($workDir) -or
+    -not (Test-Path -LiteralPath $workDir)) {
+    throw 'Capture payload did not reach post-restore candidate finalization.'
+}
+$manifest.transaction.scratchRestoredByteExact = $true
+$manifest.transaction.sourceScratch.restoredByteExact = $true
+$manifest.transaction.derivedSwf.restored =
+    $derivedSwfTransaction.Record.restored
+$manifest.transaction.derivedSwf.sidecarAndBackupClearedAfterSourceRestore =
+    $true
+$manifest.transaction.restoredSwfIdentityVerifiedUnderMutex =
+    $restoredIdentityVerifiedUnderMutex
+$manifest.transaction.compileMutexReleasedBeforeCandidatePromotion = $true
+Assert-CandidateSnapshotSet `
+    -WorkDirectory $workDir -Snapshots $snapshots
+if ($snapshots.loaderSwf.sha256 -cne
+        [string]$derivedSwfTransaction.Record.compiled.sha256 -or
+    $snapshots.childSwf.sha256 -cne $frozenInputs.childSwf.sha256 -or
+    $snapshots.template.sha256 -cne $frozenInputs.template.sha256 -or
+    $snapshots.displayFormula.sha256 -cne
+        $frozenInputs.displayFormula.sha256 -or
+    $snapshots.placementClosure.sha256 -cne
+        $frozenInputs.placementClosure.sha256 -or
+    $snapshots.sourceBinaryChain.sha256 -cne
+        $frozenInputs.sourceBinaryChain.sha256) {
+    throw 'Candidate snapshot closure no longer cross-binds its frozen inputs.'
+}
+$manifestPath = Join-Path $workDir 'oracle-manifest.json'
+Write-AtomicUtf8Json -Path $manifestPath -Value $manifest
+$receipt = [ordered]@{
+    schema = 'cf7.player_info.flash_oracle_candidate_receipt.v1'
+    status = 'candidate_ready_after_restore'
+    runId = $runId
+    manifest = [ordered]@{
+        path = 'oracle-manifest.json'
+        sha256 = Get-PathSha256 -Path $manifestPath
+    }
+    scratchRestoredByteExact = $true
+    sourceScratch = [ordered]@{
+        markerBodySha256 =
+            [string]$derivedSwfTransaction.Record.sourceMarkerSha256
+        originalSha256 = $scratchTransaction.OriginalHash
+        installedSha256 = $installedHash
+        restoredByteExact = $true
+    }
+    derivedSwf = [ordered]@{
+        targetPath = 'scripts/TestLoader.swf'
+        original = $manifest.transaction.derivedSwf.original
+        compiled = $manifest.transaction.derivedSwf.compiled
+        restored = $manifest.transaction.derivedSwf.restored
+        recoveryArtifactsCleared = $true
+    }
+    canonicalRunSummary = $snapshots.canonicalRunSummary
+    restoredSwfIdentityVerifiedUnderMutex =
+        $restoredIdentityVerifiedUnderMutex
+    compileMutexReleased = $true
+    requiresHumanReview = $true
+}
+$receiptPath = Join-Path $workDir 'candidate-receipt.json'
+Write-AtomicUtf8Json -Path $receiptPath -Value $receipt
+Assert-CandidateSnapshotSet `
+    -WorkDirectory $workDir -Snapshots $snapshots
+if ((Get-PathSha256 -Path $manifestPath) -cne
+        [string]$receipt.manifest.sha256 -or
+    -not (Test-Path -LiteralPath $receiptPath)) {
+    throw 'Candidate manifest/receipt drifted before final move.'
+}
+Move-Item -LiteralPath $workDir -Destination $finalRunDir
+Write-Host "[OK] Candidate Flash oracle captured under: $finalRunDir"
+Write-Host (
+    '[REVIEW REQUIRED] Candidate remains unaccepted until human state/layer/crop/' +
+    'visual review and explicit repo-evidence promotion.')

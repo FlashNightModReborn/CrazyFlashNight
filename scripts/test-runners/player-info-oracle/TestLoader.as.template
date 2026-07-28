@@ -1,0 +1,444 @@
+﻿import flash.display.*;
+import flash.geom.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.gesh.string.*;
+
+// B0-01B 独立 Flash oracle。此文件只会被 runner 复制到 scripts/TestLoader.as。
+// 不得在这里接入存档、网络、控制台或生产 Launcher；状态只来自内存 fixture。
+var __pioRunId:String = "__PLAYER_INFO_ORACLE_RUN_ID__";
+var __pioRuntimeUrl:String = "../flashswf/UI/玩家信息界面.swf";
+var __pioCanvasWidth:Number = 1024;
+var __pioCanvasHeight:Number = 64;
+var __pioPartChars:Number = 720;
+var __pioCaseIndex:Number = -1;
+var __pioPendingCapture:Boolean = false;
+var __pioFailed:Boolean = false;
+var __pioUi:MovieClip = null;
+var __pioChildUrlReported:Boolean = false;
+var __pioCaseState:Object = null;
+
+_root._quality = "MEDIUM";
+Stage.scaleMode = "noScale";
+Stage.align = "TL";
+
+if (_root.UI系统 == undefined) {
+    _root.UI系统 = {};
+}
+if (_root.gameworld == undefined) {
+    _root.createEmptyMovieClip("gameworld", _root.getNextHighestDepth());
+}
+if (_root.gameworld.oracleHero == undefined) {
+    _root.gameworld.createEmptyMovieClip("oracleHero", _root.gameworld.getNextHighestDepth());
+}
+_root.gameworld.oracleHero._visible = false;
+_root.控制目标 = "oracleHero";
+
+#include "展现/UI交互/UI交互_fs_玩家信息界面.as"
+
+var __pioCases:Array = [
+    {caseId:"empty", hp:0, mp:0},
+    {caseId:"min_step", hp:100, mp:100},
+    {caseId:"p25", hp:3200, mp:2500},
+    {caseId:"p50", hp:6400, mp:5000},
+    {caseId:"p75", hp:9600, mp:7500},
+    {caseId:"p99", hp:12672, mp:9900},
+    {caseId:"full", hp:12800, mp:10000}
+];
+
+function __pioTrace(kind:String, fields:String):Void {
+    var line:String = "PLAYER_INFO_ORACLE|" + kind + "|runId=" + __pioRunId;
+    if (fields != undefined && fields.length > 0) {
+        line += "|" + fields;
+    }
+    trace(line);
+}
+
+function __pioFail(code:String, detail:String):Void {
+    if (__pioFailed) {
+        return;
+    }
+    __pioFailed = true;
+    __pioPendingCapture = false;
+    __pioTrace("FAILURE", "code=" + code + "|detail=" + escape(detail));
+    __pioController.onEnterFrame = null;
+    fscommand("quit");
+}
+
+function __pioBool(value):String {
+    return value === true ? "1" : "0";
+}
+
+function __pioSafeText(field):String {
+    if (field == undefined || field.text == undefined) {
+        return "";
+    }
+    return String(field.text);
+}
+
+function __pioClipPresent(clip):Boolean {
+    return clip != undefined && clip != null;
+}
+
+function __pioIsPlayerInfoUi(clip):Boolean {
+    return __pioClipPresent(clip) &&
+        __pioClipPresent(clip.主角hp显示界面) &&
+        __pioClipPresent(clip.主角mp显示界面);
+}
+
+function __pioFindPlayerInfoUi(target:MovieClip):MovieClip {
+    if (__pioIsPlayerInfoUi(target)) {
+        return target;
+    }
+    if (__pioIsPlayerInfoUi(target.玩家信息界面)) {
+        return target.玩家信息界面;
+    }
+    // 主舞台 placement 当前未显式命名。先检查 Flash 暴露的自动实例名，
+    // 再检查 author-time 负 depth；只接受同时具有 HP/MP 子实例的唯一形状。
+    for (var key:String in target) {
+        if (__pioIsPlayerInfoUi(target[key])) {
+            return target[key];
+        }
+    }
+    for (var depth:Number = -16384; depth < 0; depth++) {
+        var candidate:MovieClip = target.getInstanceAtDepth(depth);
+        if (__pioIsPlayerInfoUi(candidate)) {
+            return candidate;
+        }
+    }
+    return null;
+}
+
+function __pioHideDeferredAndOutOfScope(ui:MovieClip):Void {
+    var hiddenNames:Array = [
+        "主角韧性显示界面",
+        "主角经验值显示界面",
+        "快捷技能界面",
+        "快捷药剂界面",
+        "玩家必要信息界面",
+        "功能按钮界面",
+        "性能帧率显示器"
+    ];
+    for (var i:Number = 0; i < hiddenNames.length; i++) {
+        var clip = ui[hiddenNames[i]];
+        if (__pioClipPresent(clip)) {
+            clip._visible = false;
+        }
+    }
+    if (__pioClipPresent(ui.主角hp显示界面)) {
+        ui.主角hp显示界面._visible = true;
+    }
+    if (__pioClipPresent(ui.主角mp显示界面)) {
+        ui.主角mp显示界面._visible = true;
+    }
+}
+
+function __pioOutOfScopeHidden(ui:MovieClip):Boolean {
+    var hiddenNames:Array = [
+        "主角韧性显示界面",
+        "主角经验值显示界面",
+        "快捷技能界面",
+        "快捷药剂界面",
+        "玩家必要信息界面",
+        "功能按钮界面",
+        "性能帧率显示器"
+    ];
+    for (var i:Number = 0; i < hiddenNames.length; i++) {
+        var clip = ui[hiddenNames[i]];
+        if (__pioClipPresent(clip) && clip._visible !== false) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function __pioFreezePhase(clip, hide:Boolean):Object {
+    var state:Object = {present:false, phase:0, visible:false};
+    if (!__pioClipPresent(clip)) {
+        return state;
+    }
+    state.present = true;
+    clip.gotoAndStop(1);
+    clip.stop();
+    if (hide) {
+        clip._visible = false;
+    }
+    state.phase = Number(clip._currentframe);
+    state.visible = clip._visible !== false;
+    return state;
+}
+
+function __pioPad5(value:Number):String {
+    var text:String = String(Math.floor(value));
+    while (text.length < 5) {
+        text = "0" + text;
+    }
+    return text;
+}
+
+function __pioBase64(bytes:Array):String {
+    var alphabet:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    var result:String = "";
+    var i:Number = 0;
+    while (i + 2 < bytes.length) {
+        var a:Number = Number(bytes[i++]);
+        var b:Number = Number(bytes[i++]);
+        var c:Number = Number(bytes[i++]);
+        result += alphabet.charAt(a >> 2);
+        result += alphabet.charAt(((a & 3) << 4) | (b >> 4));
+        result += alphabet.charAt(((b & 15) << 2) | (c >> 6));
+        result += alphabet.charAt(c & 63);
+    }
+    var remaining:Number = bytes.length - i;
+    if (remaining == 1) {
+        var one:Number = Number(bytes[i]);
+        result += alphabet.charAt(one >> 2);
+        result += alphabet.charAt((one & 3) << 4);
+        result += "==";
+    } else if (remaining == 2) {
+        var first:Number = Number(bytes[i]);
+        var second:Number = Number(bytes[i + 1]);
+        result += alphabet.charAt(first >> 2);
+        result += alphabet.charAt(((first & 3) << 4) | (second >> 4));
+        result += alphabet.charAt((second & 15) << 2);
+        result += "=";
+    }
+    return result;
+}
+
+function __pioEncodeRow(bitmap:BitmapData, row:Number):String {
+    var bytes:Array = [];
+    for (var x:Number = 0; x < __pioCanvasWidth; x++) {
+        var pixel:Number = bitmap.getPixel32(x, row);
+        bytes.push((pixel >>> 24) & 255);
+        bytes.push((pixel >>> 16) & 255);
+        bytes.push((pixel >>> 8) & 255);
+        bytes.push(pixel & 255);
+    }
+    return __pioBase64(bytes);
+}
+
+function __pioStateFields(state:Object):String {
+    var fields:Array = [];
+    fields.push("caseId=" + state.caseId);
+    fields.push("quality=" + String(_root._quality));
+    fields.push("width=" + __pioCanvasWidth);
+    fields.push("height=" + __pioCanvasHeight);
+    fields.push("rowCount=" + __pioCanvasHeight);
+    fields.push("partChars=" + __pioPartChars);
+    fields.push("partsPerRow=8");
+    fields.push("partRecordMaxChars=1000");
+    fields.push("pixelFormat=ARGB32");
+    fields.push("childUrlReported=" + __pioBool(__pioChildUrlReported));
+    fields.push("hpRaw=" + state.hpRaw);
+    fields.push("hpMax=" + state.hpMax);
+    fields.push("hpRatioNumerator=" + state.hpRaw);
+    fields.push("hpRatioDenominator=" + state.hpMax);
+    fields.push("hpTargetFrame=" + state.hpTargetFrame);
+    fields.push("hpCurrentFrame=" + state.hp._currentframe);
+    fields.push("hpCurrentText=" + __pioSafeText(state.hp.HP当前值));
+    fields.push("hpMaxText=" + __pioSafeText(state.hp.HP最大值));
+    fields.push("hpPercentText=" + __pioSafeText(state.hp.HP百分比));
+    fields.push("hpVisible=" + __pioBool(state.hp._visible !== false));
+    fields.push("mpRaw=" + state.mpRaw);
+    fields.push("mpMax=" + state.mpMax);
+    fields.push("mpRatioNumerator=" + state.mpRaw);
+    fields.push("mpRatioDenominator=" + state.mpMax);
+    fields.push("mpTargetFrame=" + state.mpTargetFrame);
+    fields.push("mpCurrentFrame=" + state.mp._currentframe);
+    fields.push("mpCurrentText=" + __pioSafeText(state.mp.当前MP));
+    fields.push("mpMaxText=" + __pioSafeText(state.mp.最大MP));
+    fields.push("mpPercentText=" + __pioSafeText(state.mp.MP百分比));
+    fields.push("mpCombinedExists=" + __pioBool(state.mp.MP数据显示 != undefined));
+    fields.push("mpCombinedText=" + __pioSafeText(state.mp.MP数据显示));
+    fields.push("mpVisible=" + __pioBool(state.mp._visible !== false));
+    fields.push("gridPresent=" + __pioBool(state.grid.present));
+    fields.push("gridPhase=" + state.grid.phase);
+    fields.push("gridVisible=" + __pioBool(state.grid.visible));
+    fields.push("innerPresent=" + __pioBool(state.inner.present));
+    fields.push("innerPhase=" + state.inner.phase);
+    fields.push("innerVisible=" + __pioBool(state.inner.visible));
+    fields.push("lightPresent=" + __pioBool(state.light.present));
+    fields.push("lightPhase=" + state.light.phase);
+    fields.push("lightVisible=" + __pioBool(state.light.visible));
+    fields.push("lightHidden=" + __pioBool(!state.light.present || !state.light.visible));
+    fields.push("outOfScopeHidden=" + __pioBool(__pioOutOfScopeHidden(__pioUi)));
+    return fields.join("|");
+}
+
+function __pioCaptureCase():Void {
+    if (__pioFailed || __pioCaseState == null) {
+        return;
+    }
+    var state:Object = __pioCaseState;
+    if (String(_root._quality) != "MEDIUM") {
+        __pioFail("quality_drift", String(_root._quality));
+        return;
+    }
+    if (state.hp._currentframe != state.hpTargetFrame ||
+        state.mp._currentframe != state.mpTargetFrame) {
+        __pioFail(
+            "frame_drift",
+            state.caseId + ":" + state.hp._currentframe + ":" + state.mp._currentframe
+        );
+        return;
+    }
+
+    __pioTrace("STATE", __pioStateFields(state));
+
+    var bitmap:BitmapData = new BitmapData(
+        __pioCanvasWidth,
+        __pioCanvasHeight,
+        true,
+        0x00000000
+    );
+    bitmap.draw(__pioHolder, new Matrix());
+
+    for (var row:Number = 0; row < __pioCanvasHeight; row++) {
+        var encoded:String = __pioEncodeRow(bitmap, row);
+        var partCount:Number = Math.ceil(encoded.length / __pioPartChars);
+        for (var part:Number = 0; part < partCount; part++) {
+            var payload:String = encoded.substr(
+                part * __pioPartChars,
+                __pioPartChars
+            );
+            __pioTrace(
+                "PART",
+                "caseId=" + state.caseId +
+                "|row=" + row +
+                "|part=" + part +
+                "|partCount=" + partCount +
+                "|b64=" + payload
+            );
+        }
+    }
+    bitmap.dispose();
+
+    __pioPendingCapture = false;
+    __pioCaseState = null;
+    __pioBeginNextCase();
+}
+
+function __pioBeginNextCase():Void {
+    if (__pioFailed) {
+        return;
+    }
+    __pioCaseIndex++;
+    if (__pioCaseIndex >= __pioCases.length) {
+        __pioTrace("COMPLETE", "caseCount=" + __pioCases.length);
+        __pioController.onEnterFrame = null;
+        fscommand("quit");
+        return;
+    }
+
+    var item:Object = __pioCases[__pioCaseIndex];
+    var hero:MovieClip = _root.gameworld.oracleHero;
+    hero.hp = item.hp;
+    hero.hp满血值 = 12800;
+    hero.mp = item.mp;
+    hero.mp满血值 = 10000;
+
+    var hp:MovieClip = __pioUi.主角hp显示界面;
+    var mp:MovieClip = __pioUi.主角mp显示界面;
+    if (!__pioClipPresent(hp) || !__pioClipPresent(mp) ||
+        typeof hp.刷新显示 != "function" ||
+        typeof mp.刷新显示 != "function") {
+        __pioFail("refresh_contract_missing", item.caseId);
+        return;
+    }
+
+    __pioHideDeferredAndOutOfScope(__pioUi);
+    __pioUi.onEnterFrame = null;
+
+    // 第一轮调用现役刷新函数取得目标帧；跳转后再调用一次，刷新当前帧文本实例。
+    hp.刷新显示();
+    mp.刷新显示();
+    var hpTarget:Number = Number(hp.frame);
+    var mpTarget:Number = Number(mp.frame);
+    hp.gotoAndStop(hpTarget);
+    mp.gotoAndStop(mpTarget);
+    hp.刷新显示();
+    mp.刷新显示();
+    __pioUi.onEnterFrame = null;
+
+    var grid:Object = __pioFreezePhase(hp.网格动画, false);
+    var inner:Object = __pioFreezePhase(hp.血槽内动画, false);
+    var light:Object = __pioFreezePhase(hp.血槽光效, true);
+    __pioHideDeferredAndOutOfScope(__pioUi);
+
+    __pioCaseState = {
+        caseId:item.caseId,
+        hpRaw:item.hp,
+        hpMax:12800,
+        mpRaw:item.mp,
+        mpMax:10000,
+        hpTargetFrame:hpTarget,
+        mpTargetFrame:mpTarget,
+        hp:hp,
+        mp:mp,
+        grid:grid,
+        inner:inner,
+        light:light
+    };
+    __pioPendingCapture = true;
+}
+
+var __pioHolder:MovieClip = _root.createEmptyMovieClip(
+    "__playerInfoOracleChild",
+    _root.getNextHighestDepth()
+);
+var __pioController:MovieClip = _root.createEmptyMovieClip(
+    "__playerInfoOracleController",
+    _root.getNextHighestDepth()
+);
+__pioController.onEnterFrame = function():Void {
+    if (__pioPendingCapture) {
+        __pioCaptureCase();
+    }
+};
+
+var __pioLoader:MovieClipLoader = new MovieClipLoader();
+var __pioListener:Object = {};
+__pioListener.onLoadInit = function(target:MovieClip):Void {
+    var childUrl:String = String(target._url);
+    __pioChildUrlReported = childUrl.length > 0;
+    __pioTrace(
+        "CHILD",
+        "urlReported=" + __pioBool(__pioChildUrlReported) +
+        "|escapedUrl=" + escape(childUrl)
+    );
+    if (!__pioChildUrlReported) {
+        __pioFail("child_url_missing", "");
+        return;
+    }
+    __pioUi = __pioFindPlayerInfoUi(target);
+    if (!__pioClipPresent(__pioUi)) {
+        __pioFail("player_info_instance_missing", childUrl);
+        return;
+    }
+    __pioUi.onEnterFrame = null;
+    __pioHideDeferredAndOutOfScope(__pioUi);
+    __pioBeginNextCase();
+};
+__pioListener.onLoadError = function(
+    target:MovieClip,
+    errorCode:String,
+    httpStatus:Number
+):Void {
+    __pioFail("child_load_error", errorCode + ":" + httpStatus);
+};
+__pioLoader.addListener(__pioListener);
+
+__pioTrace(
+    "START",
+    "schema=cf7.player_info.flash_oracle.v1" +
+    "|quality=" + String(_root._quality) +
+    "|stageScaleMode=" + String(Stage.scaleMode) +
+    "|stageAlign=" + String(Stage.align) +
+    "|stageWidth=" + String(Stage.width) +
+    "|stageHeight=" + String(Stage.height) +
+    "|runtimeUrlEscaped=" + escape(__pioRuntimeUrl) +
+    "|caseCount=" + __pioCases.length
+);
+if (!__pioLoader.loadClip(__pioRuntimeUrl, __pioHolder)) {
+    __pioFail("child_load_rejected", __pioRuntimeUrl);
+}
