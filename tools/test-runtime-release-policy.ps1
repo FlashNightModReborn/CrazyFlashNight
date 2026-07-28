@@ -61,6 +61,25 @@ Assert-Cf7Test ($validatorSource.Contains(". `$buildEnvGate -ProjectRoot `$Proje
     'production candidate checks must initialize the project-pinned runtime toolchain'
 Assert-Cf7Test ($validatorSource.Contains('candidate policy validation is forbidden')) `
     'production candidate checks must fail closed when the pinned dotnet host is unavailable'
+$playerInfoContractGate = Join-Path $projectRoot 'tools\validate-player-info-svg-production-contract.ps1'
+Assert-Cf7Test (Test-Path -LiteralPath $playerInfoContractGate -PathType Leaf) `
+    'PlayerInfo production SVG contract gate must exist'
+$playerInfoGateSource = [IO.File]::ReadAllText($playerInfoContractGate, [Text.Encoding]::UTF8)
+Assert-Cf7Test ($validatorSource.Contains("New-Cf7CommandCheck -Name 'candidate-player-info-svg-contract'")) `
+    'candidate policy must wire the PlayerInfo SVG production contract as a named command check'
+Assert-Cf7Test ($validatorSource.Contains("'tools\validate-player-info-svg-production-contract.ps1'")) `
+    'candidate policy must invoke the repository-owned PlayerInfo contract gate'
+Assert-Cf7Test ($validatorSource.Contains("'-ProjectRoot', `$ProjectRoot") -and
+    $validatorSource.Contains("'-CandidateRoot', `$resolvedCandidate")) `
+    'candidate policy must bind the PlayerInfo contract to the exact project and candidate roots'
+Assert-Cf7Test ($playerInfoGateSource.Contains("[Environment]::SetEnvironmentVariable('CF7_DOTNET_EXE', `$null, 'Process')")) `
+    'PlayerInfo contract gate must discard a caller-injected dotnet host'
+Assert-Cf7Test ($playerInfoGateSource.Contains(". `$buildEnvironmentGate -ProjectRoot `$ProjectRoot -Mode Validate")) `
+    'PlayerInfo contract gate must reuse the pinned runtime build-environment validator'
+Assert-Cf7Test ($playerInfoGateSource.Contains('--locked-mode') -and
+    $playerInfoGateSource.Contains("'--production-contract-only'") -and
+    $playerInfoGateSource.Contains("'--candidate-root', `$CandidateRoot")) `
+    'PlayerInfo contract gate must locked-restore and run the exact candidate contract mode'
 $lootRequiredWebPaths = @(
     'modules\loot\loot-runtime.js',
     'modules\loot\loot-state.js',

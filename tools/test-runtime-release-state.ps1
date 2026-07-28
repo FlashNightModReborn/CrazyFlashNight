@@ -1196,7 +1196,30 @@ try {
         foreach ($domainName in @('artifactSource','producerRecipe','toolchainLock')) {
             $domain = $inputs.domains.$domainName
             foreach ($path in @($domain.fixedFiles)) { [void]$expectedPathSet.Add([string]$path) }
-            foreach ($tree in @($domain.trees)) { [void]$expectedPathSet.Add(([string]$tree.path).TrimEnd('/') + '/**') }
+            foreach ($tree in @($domain.trees)) {
+                $treePath = ([string]$tree.path).TrimEnd('/')
+                if ($domainName -ceq 'artifactSource' -and
+                        $treePath -ceq 'launcher/src/Guardian/Hud/PlayerInfo/Assets') {
+                    Assert-Test ($actualPathSet.Contains('launcher/src/**')) `
+                        'broad launcher/src trigger must cover the narrow player-info artifact tree, including SVG and JSON'
+                    continue
+                }
+                [void]$expectedPathSet.Add($treePath + '/**')
+            }
+        }
+        # Most policy-only content intentionally avoids allocating this Windows audit. The
+        # production SVG contract is the narrow exception: its executable gate and isolated
+        # renderer corpus must trigger the native audit when either contract changes.
+        foreach ($path in @('tools/validate-player-info-svg-production-contract.ps1')) {
+            Assert-Test (@($inputs.domains.policy.fixedFiles | Where-Object { [string]$_ -ceq $path }).Count -eq 1) `
+                "workflow policy trigger is not an exact descriptor fixed file: $path"
+            [void]$expectedPathSet.Add($path)
+        }
+        foreach ($treePath in @('tools/player-info-hud/renderer-qualification')) {
+            Assert-Test (@($inputs.domains.policy.trees | Where-Object {
+                [string]$_.path -ceq $treePath
+            }).Count -eq 1) "workflow policy trigger is not an exact descriptor tree: $treePath"
+            [void]$expectedPathSet.Add($treePath + '/**')
         }
         foreach ($path in @($inputs.payload.fixedRoots)) { [void]$expectedPathSet.Add([string]$path) }
         foreach ($tree in @($inputs.payload.trees)) { [void]$expectedPathSet.Add(([string]$tree).TrimEnd('/') + '/**') }
@@ -1224,6 +1247,13 @@ try {
         Assert-Test ($sparsePaths -match '(?m)^\s{12}tools/classify-runtime-release-state\.ps1\s*$') 'sparse checkout must retain the classifier'
         Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}tools/resolve-runtime-trusted-base\.ps1\s*$') `
             'audit checkout must not materialize the retired external trusted-base resolver'
+        # Trigger coverage and worktree materialization have different responsibilities here.
+        # The classifier reads changed policy inputs from Git objects and does not execute the
+        # production SVG validator, so those sources stay out of the static sparse checkout.
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}tools/player-info-hud/renderer-qualification(?:/|\s*$)') `
+            'audit checkout must not materialize the renderer qualification corpus it does not execute'
+        Assert-Test ($sparsePaths -notmatch '(?m)^\s{12}tools/validate-player-info-svg-production-contract\.ps1\s*$') `
+            'audit checkout must not materialize the production SVG validator it does not execute'
         Assert-Test ($workflow -notmatch '(?m)^\s{2}(?:actions|checks):\s*read\s*$') 'audit must not request retired trusted-anchor API permissions'
         Assert-Test ($workflow -match '(?m)^\s{2}group:\s*runtime-native-audit-v2-\$\{\{ github\.sha \}\}\s*$' -and
             $workflow -match '(?m)^\s{2}cancel-in-progress:\s*false\s*$') 'each native head needs an uncancelled audit identity'

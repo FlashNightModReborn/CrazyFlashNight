@@ -1,8 +1,9 @@
 # PlayerInfo Svg.Skia renderer qualification
 
-This is an isolated B0-02 qualification harness. It pins `Svg.Skia 5.1.1`
-and the repository's current `SkiaSharp 3.119.4`, but it does not add either
-reference to the Launcher production project.
+This began as the isolated B0-02 qualification harness. The production
+B0-03b integration now pins `Svg.Skia 5.1.1` beside the repository's
+`SkiaSharp 3.119.4`; this project compile-links the production strict facade
+and asset catalog so the two paths cannot drift into separate validators.
 
 The passing result is deliberately named `isolated_qualification_passed`
 while `rendererQualified` remains false. The harness has two small
@@ -16,6 +17,22 @@ When `--asset-manifest` is supplied, the same run additionally validates the
 eight canonical B0-04 SVGs and their runtime manifest. This extends the
 isolated qualification; it still does not claim visual acceptance or production
 integration.
+
+`--production-contract-only` is a separate early-return policy mode. It loads
+the selected candidate Core assembly, first runs the full canonical source
+manifest contract (including exact units/stage/gauges/effect policy), requires
+the exact nine-resource PlayerInfo closure, cross-checks manifest/hash/revision,
+applies the strict facade, performs one minimal raster per asset, and compares
+every embedded byte with the production source under `--project-root`.
+Candidate mode also requires the source-exact third-party notice, 11 managed
+and native renderer payload DLLs as an exact recursively enumerated
+renderer-family closure, and exact renderer-family package identities in both
+the `libraries` and single runtime-target closure of Core `deps.json`, with
+zero Jint or `Svg.Skia.JavaScript`. Unexpected `Svg*`, `Skia*`,
+`HarfBuzz*`, `ExCSS*` or `ShimSkia*` DLL/`.so`/`.dylib` payloads fail closed.
+The report records the actual candidate file sizes/hashes and actual deps
+identities rather than echoing the expected list. This mode reads no
+qualification fixture or repo-only provenance/oracle evidence.
 
 ## Exact run
 
@@ -50,6 +67,45 @@ For the canonical B0-04 closure, use a fresh report path:
   --asset-manifest launcher\src\Guardian\Hud\PlayerInfo\Assets\player-info.manifest.json `
   --report tmp\player-info-hud-b004-validation.json
 ```
+
+For a built runtime candidate:
+
+```powershell
+$candidateRoot = (Resolve-Path tmp\runtime-candidates\v2\<candidate>).Path
+$qualificationExe = (Resolve-Path `
+  tmp\player-info-hud-renderer-qualification\bin\Release\net10.0-windows\win-x64\RendererQualification.exe).Path
+
+& $qualificationExe --production-contract-only `
+  --project-root (Get-Location).Path `
+  --candidate-root $candidateRoot `
+  --report tmp\player-info-hud-production-contract.json
+```
+
+`--core <absolute Core.dll>` may replace `--candidate-root` only as a focused
+diagnostic/negative-test seam; the two options are mutually exclusive.
+Core-only reports explicitly set `policyEligible=false` and leave
+payload/notice/deps unevaluated, so release policy must require candidate mode.
+Success prints `PLAYER_INFO_PRODUCTION_CONTRACT_OK` and exits 0. Contract
+failures use the stable `PLAYER_INFO_PRODUCTION_CONTRACT_ERROR:` prefix and
+exit 1; argument/path failures use
+`PLAYER_INFO_PRODUCTION_CONTRACT_USAGE_ERROR:` and exit 2.
+
+After building a valid candidate and the qualification executable, run the
+focused closure negatives:
+
+```powershell
+.\tools\test-runtime-player-info-svg-production-contract.ps1 `
+  -CandidateRoot $candidateRoot `
+  -QualificationExe $qualificationExe
+```
+
+The test first proves its minimal candidate fixture is valid, then requires
+fail-closed rejection of an unexpected `Svg.Foo.dll`, a recursively nested
+`libHarfBuzzSharp.so`, a runtime junction/reparse point, and an unexpected
+`Svg.Foo/1.0.0` identity in both `deps.json` libraries and its
+renderer-bearing runtime target. It also fixes the family-prefix boundary
+with `SvgUnexpected/1.0.0` and rejects duplicate renderer identities instead
+of silently treating a JSON object as a set.
 
 ## Qualification boundary
 
@@ -127,13 +183,15 @@ The generated qualification report repeats the 11-package license/nupkg
 inventory and the 9-file producer-shaped payload diff as structured evidence;
 the committed lockfile remains the restore authority.
 
-## Still required before `renderer_qualified`
+## Boundary after B0-03b production integration
 
-- the production validator/facade and repository xUnit regression corpus;
-- real Launcher central version, PackageReference and lockfile integration;
-- exact embedded resources plus artifact-source/build-identity/Core-payload
-  and production-policy gates;
-- maintainer acceptance of dependency distribution obligations.
+This slice now supplies the production strict facade/catalog, central package
+and lock integration, exact embedded closure, focused xUnit coverage, complete
+offline notice, and candidate Core/payload/deps contract. The surrounding
+artifact-source/build-identity and release-policy scripts must invoke
+candidate mode and reject `policyEligible=false`; maintainer review of
+distribution obligations remains a human decision rather than an automated
+legal conclusion.
 
 These production-integration gates are independent of visual acceptance.
 The following remain required for B0 visual/runtime acceptance, but do not

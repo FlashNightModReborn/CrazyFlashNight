@@ -22,6 +22,8 @@
 
     <!-- Native HUD WebP 解码；MIT 许可并自带 Windows codec，避免依赖系统可选扩展 -->
     <PackageVersion Include="SkiaSharp" Version="3.119.4" />
+    <!-- PlayerInfo Native HUD 的受控静态 SVG renderer；仅经 production strict facade 使用 -->
+    <PackageVersion Include="Svg.Skia" Version="5.1.1" />
 
     <!-- 测试 -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />

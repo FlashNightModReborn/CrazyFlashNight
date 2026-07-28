@@ -104,6 +104,65 @@ try {
     }
     $artifactSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
     foreach ($path in $artifactInputs) { [void]$artifactSet.Add(([string]$path).Replace('\','/')) }
+    $policySet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    foreach ($path in $policyInputs) { [void]$policySet.Add(([string]$path).Replace('\','/')) }
+    $expectedPlayerInfoRuntimeInputs = @(
+        'launcher/THIRD-PARTY-NOTICES.txt',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/backplate.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/fill.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/rim.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/backplate.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/fill.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/rim-vf70.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/rim-vf91.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/rim.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/player-info.manifest.json'
+    )
+    $actualPlayerInfoRuntimeInputs = @($artifactSet | Where-Object {
+        $_ -ceq 'launcher/THIRD-PARTY-NOTICES.txt' -or
+            $_.StartsWith('launcher/src/Guardian/Hud/PlayerInfo/Assets/', [StringComparison]::Ordinal)
+    })
+    Assert-QueueTest ($actualPlayerInfoRuntimeInputs.Count -eq 10) `
+        "player-info runtime input closure must contain exactly 8 SVG + manifest + notice; actual=$($actualPlayerInfoRuntimeInputs.Count)"
+    Assert-QueueTest (@($actualPlayerInfoRuntimeInputs | Where-Object {
+        $_.EndsWith('.svg', [StringComparison]::Ordinal)
+    }).Count -eq 8) 'player-info artifact source does not contain exactly eight SVG assets'
+    foreach ($required in $expectedPlayerInfoRuntimeInputs) {
+        Assert-QueueTest ($artifactSet.Contains($required)) "player-info runtime input is absent from artifactSource: $required"
+    }
+    $unexpectedPlayerInfoRuntimeInputs = @($actualPlayerInfoRuntimeInputs | Where-Object {
+        [Array]::IndexOf($expectedPlayerInfoRuntimeInputs, [string]$_) -lt 0
+    })
+    Assert-QueueTest ($unexpectedPlayerInfoRuntimeInputs.Count -eq 0) `
+        "player-info artifactSource contains unexpected runtime inputs: $($unexpectedPlayerInfoRuntimeInputs -join ',')"
+
+    $expectedQualificationPolicyInputs = @(
+        'tools/player-info-hud/renderer-qualification/CanonicalAssetValidator.cs',
+        'tools/player-info-hud/renderer-qualification/Program.cs',
+        'tools/player-info-hud/renderer-qualification/RendererQualification.csproj',
+        'tools/player-info-hud/renderer-qualification/fixtures/hp-mp-feature-derived.svg',
+        'tools/player-info-hud/renderer-qualification/packages.lock.json'
+    )
+    $actualQualificationPolicyInputs = @($policySet | Where-Object {
+        $_.StartsWith('tools/player-info-hud/renderer-qualification/', [StringComparison]::Ordinal)
+    })
+    Assert-QueueTest ($actualQualificationPolicyInputs.Count -eq $expectedQualificationPolicyInputs.Count) `
+        "renderer qualification policy closure is not exact; actual=$($actualQualificationPolicyInputs.Count)"
+    foreach ($required in $expectedQualificationPolicyInputs) {
+        Assert-QueueTest ($policySet.Contains($required)) "renderer qualification policy input is absent: $required"
+    }
+    Assert-QueueTest ($policySet.Contains('tools/validate-player-info-svg-production-contract.ps1')) `
+        'player-info production validator is absent from the policy domain'
+    Assert-QueueTest (-not $artifactSet.Contains('tools/player-info-hud/renderer-qualification/fixtures/hp-mp-feature-derived.svg')) `
+        'qualification fixture SVG leaked into artifactSource'
+    $forbiddenEvidenceInputs = @($bundleInputSet | Where-Object {
+        $_.StartsWith('tools/player-info-hud/evidence/', [StringComparison]::Ordinal) -or
+            $_.IndexOf('provenance', [StringComparison]::OrdinalIgnoreCase) -ge 0
+    })
+    Assert-QueueTest ($forbiddenEvidenceInputs.Count -eq 0) `
+        "repository-only evidence/provenance leaked into runtime build inputs: $($forbiddenEvidenceInputs -join ',')"
+    $checks++
+
     foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\src') -Recurse -File -Filter '*.cs')) {
         $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')
         if ($relative -eq 'launcher/src/Guardian/HotkeyGuard.cs') { continue }

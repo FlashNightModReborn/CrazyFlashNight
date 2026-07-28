@@ -168,6 +168,9 @@ layers:
       - "CRAZYFLASHER7MercenaryEmpire.Core.dll"
       - "CRAZYFLASHER7MercenaryEmpire.Core.deps.json"
       - "CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json"
+      # v2 runtime 完整性清单 + 第三方许可证汇总
+      - "cf7-runtime-manifest.tsv"
+      - "THIRD-PARTY-NOTICES.txt"
       # ClearScript V8 引擎（eval/regex/搓招 DFA 依赖）— managed + native
       - "ClearScript.Core.dll"
       - "ClearScript.V8.dll"
@@ -186,6 +189,18 @@ layers:
       - "Vortice.Mathematics.dll"
       - "SharpGen.Runtime.dll"
       - "SharpGen.Runtime.COM.dll"
+      # NativeHud SVG 渲染闭包；保持逐文件白名单，禁止用 *.dll 扩大收编范围
+      - "SkiaSharp.dll"
+      - "libSkiaSharp.dll"
+      - "ExCSS.dll"
+      - "HarfBuzzSharp.dll"
+      - "libHarfBuzzSharp.dll"
+      - "ShimSkiaSharp.dll"
+      - "Svg.Animation.dll"
+      - "Svg.Custom.dll"
+      - "Svg.Model.dll"
+      - "Svg.SceneGraph.dll"
+      - "Svg.Skia.dll"
       # Native side-cars（与 Core.exe 同目录，让 P/Invoke LoadLibrary 默认搜索能命中）
       - "miniaudio.dll"
       - "sol_parser.dll"

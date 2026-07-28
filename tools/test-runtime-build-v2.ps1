@@ -69,8 +69,11 @@ function New-RegistryEntry([System.Security.Cryptography.X509Certificates.X509Ce
 try {
     if (-not (Get-Command New-SelfSignedCertificate -ErrorAction SilentlyContinue)) { throw 'New-SelfSignedCertificate is required by runtime v2 tests.' }
     $repositoryConfig = Read-Cf7RuntimeV2Config -ProjectRoot $ProjectRoot -Mode Worktree
+    $repositoryArtifactFiles = @($repositoryConfig.domains.artifactSource.fixedFiles)
+    $repositoryArtifactTrees = @($repositoryConfig.domains.artifactSource.trees)
     $repositoryProducerFiles = @($repositoryConfig.domains.producerRecipe.fixedFiles)
     $repositoryPolicyFiles = @($repositoryConfig.domains.policy.fixedFiles)
+    $repositoryPolicyTrees = @($repositoryConfig.domains.policy.trees)
     $unicodePolicyFile = [string](@($repositoryPolicyFiles | Where-Object {
         [string]$_ -notmatch '^[\x00-\x7F]+$'
     }) | Select-Object -First 1)
@@ -82,6 +85,40 @@ try {
         (('tools/runtime-build-v2-common.ps1' -in $repositoryProducerFiles) -and ('tools/runtime-build-v2-common.ps1' -notin $repositoryPolicyFiles))
     Assert-Equal 'attestation common belongs only to policy' $true `
         (('tools/runtime-build-attestation-v2-common.ps1' -in $repositoryPolicyFiles) -and ('tools/runtime-build-attestation-v2-common.ps1' -notin $repositoryProducerFiles))
+    Assert-Equal 'third-party notice is an artifact source fixed file' $true `
+        ('launcher/THIRD-PARTY-NOTICES.txt' -cin $repositoryArtifactFiles)
+    $repositoryAttributes = [IO.File]::ReadAllText(
+        (Join-Path $ProjectRoot '.gitattributes'),
+        [Text.Encoding]::UTF8)
+    Assert-Equal 'third-party notice checkout bytes are pinned to LF and preserve bundled notice whitespace' 1 `
+        @([regex]::Matches(
+            $repositoryAttributes,
+            '(?m)^launcher/THIRD-PARTY-NOTICES\.txt text eol=lf whitespace=-blank-at-eol$')).Count
+    $repositoryNoticeBytes = [IO.File]::ReadAllBytes(
+        (Join-Path $ProjectRoot 'launcher\THIRD-PARTY-NOTICES.txt'))
+    Assert-Equal 'third-party notice worktree contains no CR bytes' 0 `
+        @($repositoryNoticeBytes | Where-Object { $_ -eq 13 }).Count
+    $playerInfoAssetTrees = @($repositoryArtifactTrees | Where-Object {
+        [string]$_.path -ceq 'launcher/src/Guardian/Hud/PlayerInfo/Assets'
+    })
+    Assert-Equal 'player-info assets have one narrow artifact-source tree' 1 $playerInfoAssetTrees.Count
+    Assert-Equal 'player-info artifact-source extensions are exactly JSON and SVG' '.json,.svg' `
+        ((@($playerInfoAssetTrees[0].includeExtensions | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
+    Assert-Equal 'player-info artifact-source tree has no path exclusions' 0 @($playerInfoAssetTrees[0].excludePaths).Count
+    Assert-Equal 'player-info artifact-source tree has no prefix exclusions' 0 @($playerInfoAssetTrees[0].excludePrefixes).Count
+    Assert-Equal 'player-info production validator is policy-bound' $true `
+        ('tools/validate-player-info-svg-production-contract.ps1' -cin $repositoryPolicyFiles)
+    $rendererQualificationTrees = @($repositoryPolicyTrees | Where-Object {
+        [string]$_.path -ceq 'tools/player-info-hud/renderer-qualification'
+    })
+    Assert-Equal 'renderer qualification has one narrow policy tree' 1 $rendererQualificationTrees.Count
+    Assert-Equal 'renderer qualification policy extensions are exact' '.cs,.csproj,.json,.svg' `
+        ((@($rendererQualificationTrees[0].includeExtensions | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
+    Assert-Equal 'renderer qualification policy tree has no individual path exclusions' 0 `
+        @($rendererQualificationTrees[0].excludePaths).Count
+    Assert-Equal 'renderer qualification policy tree excludes only machine build caches' `
+        'tools/player-info-hud/renderer-qualification/bin/,tools/player-info-hud/renderer-qualification/obj/' `
+        ((@($rendererQualificationTrees[0].excludePrefixes | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
     $buildScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build.ps1'))
     $producerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'))
     $startScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'automation\start.ps1'))
@@ -224,13 +261,21 @@ try {
         schema = 'cf7-runtime-inputs.v2'
         domains = [pscustomobject][ordered]@{
             artifactSource = [pscustomobject][ordered]@{
-                fixedFiles = @('src/app.cs','native/lib.rs')
-                trees = @([pscustomobject][ordered]@{
-                    path = 'src'
-                    includeExtensions = @('.cs')
-                    excludePaths = @('src/HotkeyGuard.cs','src/app.cs')
-                    excludePrefixes = @()
-                })
+                fixedFiles = @('src/app.cs','native/lib.rs','launcher/THIRD-PARTY-NOTICES.txt')
+                trees = @(
+                    [pscustomobject][ordered]@{
+                        path = 'src'
+                        includeExtensions = @('.cs')
+                        excludePaths = @('src/HotkeyGuard.cs','src/app.cs')
+                        excludePrefixes = @()
+                    },
+                    [pscustomobject][ordered]@{
+                        path = 'launcher/src/Guardian/Hud/PlayerInfo/Assets'
+                        includeExtensions = @('.svg','.json')
+                        excludePaths = @()
+                        excludePrefixes = @()
+                    }
+                )
             }
             producerRecipe = [pscustomobject][ordered]@{ fixedFiles = @('recipe.ps1'); trees = @() }
             toolchainLock = [pscustomobject][ordered]@{ fixedFiles = @('toolchain.json'); trees = @() }
@@ -247,6 +292,11 @@ try {
     Write-TestText (Join-Path $testRoot 'src\app.cs') "class App {}`n"
     Write-TestText (Join-Path $testRoot 'src\HotkeyGuard.cs') "class Ignored {}`n"
     Write-TestText (Join-Path $testRoot 'native\lib.rs') "pub fn value() -> i32 { 1 }`n"
+    Write-TestText (Join-Path $testRoot 'launcher\THIRD-PARTY-NOTICES.txt') "fixture notice`n"
+    Write-TestText (Join-Path $testRoot 'launcher\src\Guardian\Hud\PlayerInfo\Assets\hp\fill.svg') `
+        "<svg xmlns=`"http://www.w3.org/2000/svg`"><path d=`"M0 0h1v1z`"/></svg>`n"
+    Write-TestText (Join-Path $testRoot 'launcher\src\Guardian\Hud\PlayerInfo\Assets\player-info.manifest.json') `
+        "{`"format`":`"fixture`"}`n"
     Write-TestText (Join-Path $testRoot 'recipe.ps1') "Write-Output build`n"
     Write-TestText (Join-Path $testRoot 'toolchain.json') "{`"sdk`":`"1`"}`n"
     Write-TestText (Join-Path $testRoot 'policy.ps1') "Write-Output verify`n"
@@ -290,6 +340,21 @@ try {
     Assert-NotEqual 'artifact change changes build identity' $baseWorktree.buildIdentityHash $sourceChanged.buildIdentityHash
     Assert-Equal 'Index ignores unstaged source edit' $baseIndex.artifactSourceHash (Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath).artifactSourceHash
     Write-TestText (Join-Path $testRoot 'src\app.cs') "class App {}`n"
+
+    Write-TestText (Join-Path $testRoot 'launcher\src\Guardian\Hud\PlayerInfo\Assets\hp\fill.svg') `
+        "<svg xmlns=`"http://www.w3.org/2000/svg`"><path d=`"M0 0h2v1z`"/></svg>`n"
+    $svgChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    Assert-NotEqual 'single SVG byte change changes artifact source' $baseWorktree.artifactSourceHash $svgChanged.artifactSourceHash
+    Assert-Equal 'single SVG byte change leaves producer recipe' $baseWorktree.producerRecipeHash $svgChanged.producerRecipeHash
+    Assert-Equal 'single SVG byte change leaves toolchain lock' $baseWorktree.toolchainLockHash $svgChanged.toolchainLockHash
+    Assert-Equal 'single SVG byte change leaves policy' $baseWorktree.policyHash $svgChanged.policyHash
+    Assert-NotEqual 'single SVG byte change changes build identity' $baseWorktree.buildIdentityHash $svgChanged.buildIdentityHash
+    $svgStillStaged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+        Assert-Equal "Index ignores unstaged SVG edit for $field" $baseIndex.$field $svgStillStaged.$field
+    }
+    Write-TestText (Join-Path $testRoot 'launcher\src\Guardian\Hud\PlayerInfo\Assets\hp\fill.svg') `
+        "<svg xmlns=`"http://www.w3.org/2000/svg`"><path d=`"M0 0h1v1z`"/></svg>`n"
 
     Write-TestText (Join-Path $testRoot 'recipe.ps1') "Write-Output build-v2`n"
     $recipeChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath

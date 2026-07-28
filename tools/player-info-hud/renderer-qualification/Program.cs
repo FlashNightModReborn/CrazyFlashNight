@@ -1,14 +1,21 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using CF7Launcher.Guardian.Hud.PlayerInfo;
 using Cf7.PlayerInfoHud.RendererQualification;
 using SkiaSharp;
 using Svg;
 using Svg.Model;
 using Svg.Skia;
+
+if (args.Contains("--production-contract-only", StringComparer.Ordinal))
+{
+    return RunProductionContractOnly(args);
+}
 
 var reportPath = GetOption(args, "--report");
 var assetManifestPath = GetOption(args, "--asset-manifest");
@@ -631,6 +638,659 @@ static int CountNonTransparent(SKBitmap bitmap)
     return count;
 }
 
+static int RunProductionContractOnly(string[] arguments)
+{
+    try
+    {
+        var options = ParseProductionContractOptions(arguments);
+        var projectRoot = RequireAbsoluteDirectory(
+            options["--project-root"],
+            "--project-root");
+        var sourceManifestPath = GetProductionManifestPath(projectRoot);
+        var canonicalSource = CanonicalAssetValidator.Validate(sourceManifestPath);
+        var selection = ResolveProductionCore(options);
+
+        var loadContext = new AssemblyLoadContext(
+            $"cf7-player-info-contract-{Guid.NewGuid():N}",
+            isCollectible: true);
+        PlayerInfoSvgAssetSet assetSet;
+        try
+        {
+            var assembly = loadContext.LoadFromAssemblyPath(selection.CorePath);
+            assetSet = PlayerInfoSvgAssetContract.LoadAndValidate(
+                assembly,
+                minimumRaster: true);
+        }
+        finally
+        {
+            loadContext.Unload();
+        }
+
+        CrossCheckCanonicalAndEmbedded(canonicalSource, assetSet);
+        ValidateProductionSourceClosure(projectRoot, assetSet);
+        var payloadAudit = selection.CandidateRoot is null
+            ? CandidatePayloadAudit.CoreOnly
+            : ValidateCandidatePayload(
+                projectRoot,
+                selection.CandidateRoot);
+        var result = new
+        {
+            schema = "cf7-player-info-production-contract-v1",
+            status = "passed",
+            mode = selection.CandidateRoot is null ? "core-only" : "candidate",
+            policyEligible = selection.CandidateRoot is not null,
+            assetSetId = assetSet.AssetSetId,
+            assetSetRevision = assetSet.Revision,
+            exactManifestSha256 = assetSet.ExactManifestSha256,
+            rasterContractVersion = assetSet.RasterContractVersion,
+            featureSet = assetSet.FeatureSet,
+            candidateCoreSha256 = Sha256File(selection.CorePath),
+            embeddedResourceCount = assetSet.Assets.Count + 1,
+            assetCount = assetSet.Assets.Count,
+            repoOnlyProvenanceEvidenceResourceCount = 0,
+            sourceClosureMatched = true,
+            minimumRasterCompleted = true,
+            fixtureFilesRead = 0,
+            canonicalSourceContract = new
+            {
+                status = canonicalSource.Status,
+                manifestSha256 = canonicalSource.ManifestSha256,
+                assetSetRevision = canonicalSource.AssetSetRevision,
+                assetCount = canonicalSource.AssetCount,
+                assetBytes = canonicalSource.AssetBytes,
+                matchedEmbeddedContract = true
+            },
+            candidatePayload = new
+            {
+                evaluated = payloadAudit.Evaluated,
+                noticeEvaluated = payloadAudit.NoticeEvaluated,
+                noticeExactBytesMatched = payloadAudit.NoticeExactBytesMatched,
+                noticeSha256 = payloadAudit.NoticeSha256,
+                rendererPayloadFileCount = payloadAudit.RendererPayloadFiles.Count,
+                rendererPayloadFiles = payloadAudit.RendererPayloadFiles,
+                depsEvaluated = payloadAudit.DepsEvaluated,
+                rendererPackageLibraryCount =
+                    payloadAudit.RendererPackageLibraries.Count,
+                rendererPackageLibraries =
+                    payloadAudit.RendererPackageLibraries,
+                rendererTargetClosureCount =
+                    payloadAudit.RendererTargetClosures.Count,
+                rendererTargetClosures =
+                    payloadAudit.RendererTargetClosures,
+                forbiddenJintOrJavaScriptDependencyCount =
+                    payloadAudit.ForbiddenDependencyCount
+            },
+            assets = assetSet.Assets.Select(asset => new
+            {
+                id = asset.Id,
+                path = asset.RelativePath,
+                sha256 = asset.Sha256,
+                bytes = asset.Bytes.Length
+            })
+        };
+        var json = JsonSerializer.Serialize(result, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        }).Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n');
+
+        if (options.TryGetValue("--report", out var requestedReportPath))
+        {
+            var fullReportPath = Path.GetFullPath(requestedReportPath);
+            var parent = Path.GetDirectoryName(fullReportPath)
+                ?? throw new ProductionContractUsageException(
+                    "--report must have a resolvable parent directory.");
+            Directory.CreateDirectory(parent);
+            File.WriteAllText(fullReportPath, json + "\n", new UTF8Encoding(false));
+        }
+
+        Console.WriteLine(
+            "PLAYER_INFO_PRODUCTION_CONTRACT_OK " +
+            $"mode={(selection.CandidateRoot is null ? "core-only" : "candidate")} " +
+            $"assets={assetSet.Assets.Count} " +
+            $"manifestSha256={assetSet.ExactManifestSha256} " +
+            $"revision={assetSet.Revision}");
+        return 0;
+    }
+    catch (ProductionContractUsageException ex)
+    {
+        Console.Error.WriteLine(
+            $"PLAYER_INFO_PRODUCTION_CONTRACT_USAGE_ERROR: {ex.Message}");
+        return 2;
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine(
+            $"PLAYER_INFO_PRODUCTION_CONTRACT_ERROR: {ex.GetType().Name}: {ex.Message}");
+        return 1;
+    }
+}
+
+static Dictionary<string, string> ParseProductionContractOptions(string[] arguments)
+{
+    var values = new Dictionary<string, string>(StringComparer.Ordinal);
+    var sawMode = false;
+    for (var index = 0; index < arguments.Length; index++)
+    {
+        var argument = arguments[index];
+        if (string.Equals(argument, "--production-contract-only", StringComparison.Ordinal))
+        {
+            if (sawMode)
+            {
+                throw new ProductionContractUsageException(
+                    "--production-contract-only may be specified only once.");
+            }
+            sawMode = true;
+            continue;
+        }
+        if (argument is not ("--project-root" or "--candidate-root" or "--core" or "--report"))
+        {
+            throw new ProductionContractUsageException(
+                $"Unknown production-contract argument: {argument}");
+        }
+        if (!values.TryAdd(argument, string.Empty))
+        {
+            throw new ProductionContractUsageException(
+                $"{argument} may be specified only once.");
+        }
+        if (++index >= arguments.Length ||
+            arguments[index].StartsWith("--", StringComparison.Ordinal))
+        {
+            throw new ProductionContractUsageException(
+                $"{argument} requires a value.");
+        }
+        values[argument] = arguments[index];
+    }
+
+    if (!sawMode)
+    {
+        throw new ProductionContractUsageException(
+            "--production-contract-only is required.");
+    }
+    if (!values.ContainsKey("--project-root"))
+    {
+        throw new ProductionContractUsageException(
+            "--project-root is required.");
+    }
+    var hasCandidateRoot = values.ContainsKey("--candidate-root");
+    var hasCore = values.ContainsKey("--core");
+    if (hasCandidateRoot == hasCore)
+    {
+        throw new ProductionContractUsageException(
+            "Specify exactly one of --candidate-root or --core.");
+    }
+    return values;
+}
+
+static ProductionCoreSelection ResolveProductionCore(
+    IReadOnlyDictionary<string, string> options)
+{
+    string corePath;
+    string? candidateRoot = null;
+    if (options.TryGetValue("--candidate-root", out var candidateRootValue))
+    {
+        candidateRoot = RequireAbsoluteDirectory(
+            candidateRootValue,
+            "--candidate-root");
+        corePath = Path.Combine(
+            candidateRoot,
+            "runtime",
+            "CRAZYFLASHER7MercenaryEmpire.Core.dll");
+    }
+    else
+    {
+        var requestedCore = options["--core"];
+        if (!Path.IsPathFullyQualified(requestedCore))
+        {
+            throw new ProductionContractUsageException(
+                "--core must be an absolute path.");
+        }
+        corePath = Path.GetFullPath(requestedCore);
+    }
+
+    if (!File.Exists(corePath))
+    {
+        throw new ProductionContractUsageException(
+            $"Candidate Core does not exist: {corePath}");
+    }
+    return new ProductionCoreSelection(corePath, candidateRoot);
+}
+
+static string RequireAbsoluteDirectory(string value, string option)
+{
+    if (!Path.IsPathFullyQualified(value))
+    {
+        throw new ProductionContractUsageException(
+            $"{option} must be an absolute path.");
+    }
+    var fullPath = Path.GetFullPath(value).TrimEnd(
+        Path.DirectorySeparatorChar,
+        Path.AltDirectorySeparatorChar);
+    if (!Directory.Exists(fullPath))
+    {
+        throw new ProductionContractUsageException(
+            $"{option} directory does not exist: {fullPath}");
+    }
+    return fullPath;
+}
+
+static void ValidateProductionSourceClosure(
+    string projectRoot,
+    PlayerInfoSvgAssetSet assetSet)
+{
+    var sourceRoot = Path.Combine(
+        projectRoot,
+        "launcher",
+        "src",
+        "Guardian",
+        "Hud",
+        "PlayerInfo",
+        "Assets");
+    ValidateProductionSourceFile(
+        Path.Combine(sourceRoot, "player-info.manifest.json"),
+        "player-info.manifest.json",
+        assetSet.ManifestBytes);
+    foreach (var asset in assetSet.Assets)
+    {
+        var segments = asset.RelativePath.Split(
+            '/',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var sourcePath = segments.Aggregate(sourceRoot, Path.Combine);
+        ValidateProductionSourceFile(sourcePath, asset.RelativePath, asset.Bytes);
+    }
+}
+
+static string GetProductionManifestPath(string projectRoot)
+{
+    var manifestPath = Path.Combine(
+        projectRoot,
+        "launcher",
+        "src",
+        "Guardian",
+        "Hud",
+        "PlayerInfo",
+        "Assets",
+        "player-info.manifest.json");
+    if (!File.Exists(manifestPath))
+    {
+        throw new InvalidDataException(
+            "Production source asset is missing: player-info.manifest.json.");
+    }
+    return manifestPath;
+}
+
+static void CrossCheckCanonicalAndEmbedded(
+    CanonicalAssetValidationResult canonical,
+    PlayerInfoSvgAssetSet embedded)
+{
+    if (!string.Equals(
+            canonical.Status,
+            "canonical_assets_validated",
+            StringComparison.Ordinal) ||
+        !string.Equals(
+            canonical.ManifestSha256,
+            embedded.ExactManifestSha256,
+            StringComparison.Ordinal) ||
+        !string.Equals(
+            canonical.AssetSetRevision,
+            embedded.Revision,
+            StringComparison.Ordinal) ||
+        canonical.AssetCount != embedded.Assets.Count)
+    {
+        throw new InvalidDataException(
+            "Canonical source contract does not match the embedded PlayerInfo contract.");
+    }
+
+    for (var index = 0; index < canonical.Assets.Count; index++)
+    {
+        var sourceAsset = canonical.Assets[index];
+        var embeddedAsset = embedded.Assets[index];
+        if (!string.Equals(sourceAsset.Id, embeddedAsset.Id, StringComparison.Ordinal) ||
+            !string.Equals(sourceAsset.Path, embeddedAsset.RelativePath, StringComparison.Ordinal) ||
+            !string.Equals(sourceAsset.Sha256, embeddedAsset.Sha256, StringComparison.Ordinal) ||
+            sourceAsset.Bytes != embeddedAsset.Bytes.Length)
+        {
+            throw new InvalidDataException(
+                $"Canonical source asset does not match embedded contract at index {index}.");
+        }
+    }
+}
+
+static CandidatePayloadAudit ValidateCandidatePayload(
+    string projectRoot,
+    string candidateRoot)
+{
+    string[] expectedFiles =
+    [
+        "ExCSS.dll",
+        "HarfBuzzSharp.dll",
+        "libHarfBuzzSharp.dll",
+        "ShimSkiaSharp.dll",
+        "SkiaSharp.dll",
+        "libSkiaSharp.dll",
+        "Svg.Animation.dll",
+        "Svg.Custom.dll",
+        "Svg.Model.dll",
+        "Svg.SceneGraph.dll",
+        "Svg.Skia.dll"
+    ];
+    string[] expectedPackageIdentities =
+    [
+        "ExCSS/4.3.1",
+        "HarfBuzzSharp/8.3.1.3",
+        "HarfBuzzSharp.NativeAssets.Win32/8.3.1.3",
+        "ShimSkiaSharp/5.1.1",
+        "SkiaSharp/3.119.4",
+        "SkiaSharp.NativeAssets.Win32/3.119.4",
+        "Svg.Animation/5.1.1",
+        "Svg.Custom/5.1.1",
+        "Svg.Model/5.1.1",
+        "Svg.SceneGraph/5.1.1",
+        "Svg.Skia/5.1.1"
+    ];
+
+    var runtimeRoot = Path.Combine(candidateRoot, "runtime");
+    if (!Directory.Exists(runtimeRoot))
+    {
+        throw new InvalidDataException("Candidate runtime directory is missing.");
+    }
+    var runtimePayloadPaths = EnumerateRuntimeFilesWithoutReparsePoints(runtimeRoot);
+    var rendererPayloadPaths = runtimePayloadPaths
+        .Where(IsRendererFamilyPayloadPath)
+        .OrderBy(path => path, StringComparer.Ordinal)
+        .ToArray();
+    RequireExactStringClosure(
+        rendererPayloadPaths,
+        expectedFiles,
+        "Candidate renderer payload");
+
+    var rendererPayloadFiles = new List<CandidatePayloadFile>(
+        rendererPayloadPaths.Length);
+    foreach (var relativePath in rendererPayloadPaths)
+    {
+        var path = Path.Combine(
+            runtimeRoot,
+            relativePath.Replace('/', Path.DirectorySeparatorChar));
+        var file = new FileInfo(path);
+        if (!file.Exists || file.Length <= 0)
+        {
+            throw new InvalidDataException(
+                $"Candidate renderer payload file is empty or missing: runtime/{relativePath}.");
+        }
+        rendererPayloadFiles.Add(new CandidatePayloadFile(
+            relativePath,
+            file.Length,
+            Sha256File(path)));
+    }
+
+    var forbiddenPayloadFiles = runtimePayloadPaths
+        .Where(relativePath =>
+        {
+            var fileName = Path.GetFileName(relativePath);
+            return string.Equals(fileName, "Jint.dll", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(
+                       fileName,
+                       "Svg.Skia.JavaScript.dll",
+                       StringComparison.OrdinalIgnoreCase);
+        })
+        .OrderBy(path => path, StringComparer.Ordinal)
+        .ToArray();
+    if (forbiddenPayloadFiles.Length != 0)
+    {
+        throw new InvalidDataException(
+            "Forbidden renderer payload file is present: " +
+            string.Join(",", forbiddenPayloadFiles.Select(path => "runtime/" + path)) +
+            ".");
+    }
+
+    var sourceNoticePath = Path.Combine(projectRoot, "launcher", "THIRD-PARTY-NOTICES.txt");
+    var candidateNoticePath = Path.Combine(runtimeRoot, "THIRD-PARTY-NOTICES.txt");
+    if (!File.Exists(sourceNoticePath))
+    {
+        throw new InvalidDataException("Production third-party notice source is missing.");
+    }
+    if (!File.Exists(candidateNoticePath))
+    {
+        throw new InvalidDataException(
+            "Candidate third-party notice is missing: runtime/THIRD-PARTY-NOTICES.txt.");
+    }
+    var sourceNoticeBytes = File.ReadAllBytes(sourceNoticePath);
+    var candidateNoticeBytes = File.ReadAllBytes(candidateNoticePath);
+    if (!sourceNoticeBytes.AsSpan().SequenceEqual(candidateNoticeBytes))
+    {
+        throw new InvalidDataException(
+            "Candidate third-party notice bytes differ from launcher/THIRD-PARTY-NOTICES.txt.");
+    }
+
+    var depsPath = Path.Combine(
+        runtimeRoot,
+        "CRAZYFLASHER7MercenaryEmpire.Core.deps.json");
+    if (!File.Exists(depsPath))
+    {
+        throw new InvalidDataException(
+            "Candidate Core dependency manifest is missing.");
+    }
+    var depsBytes = File.ReadAllBytes(depsPath);
+    var depsText = new UTF8Encoding(false, true).GetString(depsBytes);
+    using var depsDocument = JsonDocument.Parse(depsBytes, new JsonDocumentOptions
+    {
+        AllowTrailingCommas = false,
+        CommentHandling = JsonCommentHandling.Disallow,
+        MaxDepth = 128
+    });
+    var depsRoot = depsDocument.RootElement;
+    if (!depsRoot.TryGetProperty("libraries", out var libraries) ||
+        libraries.ValueKind != JsonValueKind.Object ||
+        !depsRoot.TryGetProperty("targets", out var targets) ||
+        targets.ValueKind != JsonValueKind.Object)
+    {
+        throw new InvalidDataException(
+            "Candidate Core dependency manifest lacks libraries/targets.");
+    }
+
+    var forbiddenDependencies = libraries.EnumerateObject()
+        .Select(property => property.Name)
+        .Where(name =>
+            name.StartsWith("Jint/", StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith("Svg.Skia.JavaScript/", StringComparison.OrdinalIgnoreCase))
+        .ToArray();
+    if (forbiddenDependencies.Length != 0 ||
+        depsText.Contains("Svg.Skia.JavaScript", StringComparison.OrdinalIgnoreCase) ||
+        depsText.Contains("\"Jint", StringComparison.OrdinalIgnoreCase))
+    {
+        throw new InvalidDataException(
+            "Candidate Core dependency manifest contains Jint/Svg.Skia.JavaScript.");
+    }
+
+    var rendererPackageLibraries = libraries
+        .EnumerateObject()
+        .Select(property => property.Name)
+        .Where(IsRendererFamilyPackageIdentity)
+        .OrderBy(identity => identity, StringComparer.Ordinal)
+        .ToArray();
+    RequireExactStringClosure(
+        rendererPackageLibraries,
+        expectedPackageIdentities,
+        "Candidate renderer dependency libraries");
+
+    var rendererTargetClosures = targets
+        .EnumerateObject()
+        .Where(property => property.Value.ValueKind == JsonValueKind.Object)
+        .Select(property => new CandidateTargetPackageClosure(
+            property.Name,
+            property.Value
+                .EnumerateObject()
+                .Select(package => package.Name)
+                .Where(IsRendererFamilyPackageIdentity)
+                .OrderBy(identity => identity, StringComparer.Ordinal)
+                .ToArray()))
+        .Where(closure => closure.Packages.Count != 0)
+        .OrderBy(closure => closure.Target, StringComparer.Ordinal)
+        .ToArray();
+    if (rendererTargetClosures.Length != 1)
+    {
+        throw new InvalidDataException(
+            "Candidate renderer dependency targets must contain exactly one " +
+            $"renderer-bearing closure; actual={rendererTargetClosures.Length}.");
+    }
+    RequireExactStringClosure(
+        rendererTargetClosures[0].Packages,
+        expectedPackageIdentities,
+        $"Candidate renderer dependency target '{rendererTargetClosures[0].Target}'");
+
+    foreach (var fileName in expectedFiles)
+    {
+        if (!depsText.Contains(fileName, StringComparison.Ordinal))
+        {
+            throw new InvalidDataException(
+                $"Candidate Core dependency manifest does not bind payload file: {fileName}.");
+        }
+    }
+
+    return new CandidatePayloadAudit(
+        Evaluated: true,
+        NoticeEvaluated: true,
+        NoticeExactBytesMatched: true,
+        NoticeSha256: Sha256File(candidateNoticePath),
+        RendererPayloadFiles: rendererPayloadFiles,
+        DepsEvaluated: true,
+        RendererPackageLibraries: rendererPackageLibraries,
+        RendererTargetClosures: rendererTargetClosures,
+        ForbiddenDependencyCount: 0);
+}
+
+static string[] EnumerateRuntimeFilesWithoutReparsePoints(string runtimeRoot)
+{
+    if ((File.GetAttributes(runtimeRoot) & FileAttributes.ReparsePoint) != 0)
+    {
+        throw new InvalidDataException(
+            "Candidate runtime directory must not be a reparse point.");
+    }
+
+    var pending = new Stack<string>();
+    var files = new List<string>();
+    pending.Push(runtimeRoot);
+    while (pending.Count != 0)
+    {
+        var directory = pending.Pop();
+        foreach (var entry in Directory.EnumerateFileSystemEntries(directory))
+        {
+            var attributes = File.GetAttributes(entry);
+            var relativePath = Path
+                .GetRelativePath(runtimeRoot, entry)
+                .Replace('\\', '/');
+            if ((attributes & FileAttributes.ReparsePoint) != 0)
+            {
+                throw new InvalidDataException(
+                    "Candidate runtime closure contains a reparse point: " +
+                    $"runtime/{relativePath}.");
+            }
+            if ((attributes & FileAttributes.Directory) != 0)
+            {
+                pending.Push(entry);
+            }
+            else
+            {
+                files.Add(relativePath);
+            }
+        }
+    }
+
+    return files.OrderBy(path => path, StringComparer.Ordinal).ToArray();
+}
+
+static bool IsRendererFamilyPayloadPath(string relativePath)
+{
+    var fileName = Path.GetFileName(relativePath);
+    var isLibrary =
+        fileName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+        fileName.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase) ||
+        fileName.EndsWith(".so", StringComparison.OrdinalIgnoreCase) ||
+        fileName.Contains(".so.", StringComparison.OrdinalIgnoreCase);
+    if (!isLibrary)
+    {
+        return false;
+    }
+
+    return fileName.StartsWith("Svg", StringComparison.OrdinalIgnoreCase) ||
+           fileName.StartsWith("Skia", StringComparison.OrdinalIgnoreCase) ||
+           fileName.StartsWith("libSkia", StringComparison.OrdinalIgnoreCase) ||
+           fileName.StartsWith("HarfBuzz", StringComparison.OrdinalIgnoreCase) ||
+           fileName.StartsWith("libHarfBuzz", StringComparison.OrdinalIgnoreCase) ||
+           fileName.StartsWith("ExCSS", StringComparison.OrdinalIgnoreCase) ||
+           fileName.StartsWith("ShimSkia", StringComparison.OrdinalIgnoreCase);
+}
+
+static bool IsRendererFamilyPackageIdentity(string identity)
+{
+    var separator = identity.IndexOf('/');
+    if (separator <= 0)
+    {
+        return false;
+    }
+    var packageId = identity[..separator];
+    return packageId.StartsWith("Svg", StringComparison.OrdinalIgnoreCase) ||
+           packageId.StartsWith("Skia", StringComparison.OrdinalIgnoreCase) ||
+           packageId.StartsWith("HarfBuzz", StringComparison.OrdinalIgnoreCase) ||
+           packageId.StartsWith("ExCSS", StringComparison.OrdinalIgnoreCase) ||
+           packageId.StartsWith("ShimSkia", StringComparison.OrdinalIgnoreCase);
+}
+
+static void RequireExactStringClosure(
+    IEnumerable<string> actualValues,
+    IEnumerable<string> expectedValues,
+    string label)
+{
+    var actual = actualValues
+        .OrderBy(value => value, StringComparer.Ordinal)
+        .ToArray();
+    var expected = expectedValues
+        .OrderBy(value => value, StringComparer.Ordinal)
+        .ToArray();
+    var missing = expected.Except(actual, StringComparer.Ordinal).ToArray();
+    var unexpected = actual.Except(expected, StringComparer.Ordinal).ToArray();
+    var duplicates = actual
+        .GroupBy(value => value, StringComparer.Ordinal)
+        .Where(group => group.Skip(1).Any())
+        .Select(group => group.Key)
+        .ToArray();
+    if (actual.Length != expected.Length ||
+        !actual.SequenceEqual(expected, StringComparer.Ordinal))
+    {
+        throw new InvalidDataException(
+            $"{label} closure mismatch: " +
+            $"actualCount={actual.Length} expectedCount={expected.Length} " +
+            $"missing=[{string.Join(",", missing)}] " +
+            $"unexpected=[{string.Join(",", unexpected)}] " +
+            $"duplicates=[{string.Join(",", duplicates)}].");
+    }
+}
+
+static void ValidateProductionSourceFile(
+    string sourcePath,
+    string relativePath,
+    ReadOnlyMemory<byte> embeddedBytes)
+{
+    if (!File.Exists(sourcePath))
+    {
+        throw new InvalidDataException(
+            $"Production source asset is missing: {relativePath}.");
+    }
+    var sourceBytes = File.ReadAllBytes(sourcePath);
+    if (!sourceBytes.AsSpan().SequenceEqual(embeddedBytes.Span))
+    {
+        throw new InvalidDataException(
+            $"Production source asset bytes differ from embedded resource: {relativePath}.");
+    }
+}
+
+static string Sha256File(string path)
+{
+    using var stream = File.OpenRead(path);
+    return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
+}
+
 static string? GetOption(string[] arguments, string option)
 {
     var index = Array.IndexOf(arguments, option);
@@ -646,3 +1306,39 @@ static void Require(bool condition, string message)
 }
 
 internal sealed record TestResult(string Name, string Status, string? Error);
+
+internal sealed class ProductionContractUsageException(string message) : Exception(message);
+
+internal sealed record ProductionCoreSelection(string CorePath, string? CandidateRoot);
+
+internal sealed record CandidatePayloadAudit(
+    bool Evaluated,
+    bool NoticeEvaluated,
+    bool NoticeExactBytesMatched,
+    string? NoticeSha256,
+    IReadOnlyList<CandidatePayloadFile> RendererPayloadFiles,
+    bool DepsEvaluated,
+    IReadOnlyList<string> RendererPackageLibraries,
+    IReadOnlyList<CandidateTargetPackageClosure> RendererTargetClosures,
+    int ForbiddenDependencyCount)
+{
+    internal static CandidatePayloadAudit CoreOnly { get; } = new(
+        Evaluated: false,
+        NoticeEvaluated: false,
+        NoticeExactBytesMatched: false,
+        NoticeSha256: null,
+        RendererPayloadFiles: [],
+        DepsEvaluated: false,
+        RendererPackageLibraries: [],
+        RendererTargetClosures: [],
+        ForbiddenDependencyCount: 0);
+}
+
+internal sealed record CandidatePayloadFile(
+    string Path,
+    long Bytes,
+    string Sha256);
+
+internal sealed record CandidateTargetPackageClosure(
+    string Target,
+    IReadOnlyList<string> Packages);

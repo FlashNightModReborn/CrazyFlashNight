@@ -59,6 +59,34 @@
     <PackageReference Include="Microsoft.Web.WebView2" />
     <PackageReference Include="Vortice.DXGI" />
     <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="Svg.Skia" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\player-info.manifest.json"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.player-info.manifest.json" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\hp\backplate.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.hp.backplate.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\hp\fill.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.hp.fill.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\hp\rim.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.hp.rim.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\mp\backplate.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.mp.backplate.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\mp\fill.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.mp.fill.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\mp\rim.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.mp.rim.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\mp\rim-vf70.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.mp.rim-vf70.svg" />
+    <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\mp\rim-vf91.svg"
+                      LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.mp.rim-vf91.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="THIRD-PARTY-NOTICES.txt"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

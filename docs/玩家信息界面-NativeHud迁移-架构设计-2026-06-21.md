@@ -2,7 +2,7 @@
 
 **文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻只读 HUD + AS2 服务持有状态权威」的**纲领设计 / ADR**。阶段0 已完成行为基线盘点与停止线对抗审计；截至 2026-07-15，战技/快捷技能/药剂输入、17 路手动冷却与 Skill 装备管理已脱离 HUD 时间轴，后续路线见 §5。SVG 真源、渲染器准入、运行时 bake/cache 与 fixture-first 视觉纵切的专项决策见 [B0 / ADR / 分片施工计划](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)。
 
-**最后核对代码基线**：commit `a6490be9fbd5a56747777bf86bab4e8d8ec08869`（2026-07-28）；B0-04 的后续资产/证据身份以专项 ADR §12 和 `tools/player-info-hud/evidence/b0-04/` 为稳定锚，不以未提交工作树为事实来源。Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
+**最后核对代码基线**：commit `a560bc041ca86036bf27bb01ff2ec4d8ffb66a85`（2026-07-28）及 B0-03b 同提交工作树；B0-04 的资产/证据身份与 B0-03b 的新鲜 candidate/production Gate 身份统一以专项 ADR §12 为稳定锚，不以聊天或过期临时 candidate 为事实来源。Skill S4C 资产发布、S5 真机 Gate 与 S6 观察均尚未闭合。本文 §2/§3 的初始断言来自 13-agent 代码级盘点 + 4 视角对抗审计 workflow，后续施工记录按实际 `.as`/`.xml` 持续回写。
 
 **前置必读 / 关键定位修正**：
 - 本文的 `玩家信息界面` 专指战斗中常驻的 HP/MP/技能/药剂 HUD，不是旧 `新版物品栏界面` 内的「个人信息」详情页。后者已归入 [物品系统双栏工作台](物品系统-双栏工作台-架构设计-2026-06-15.md) §8.1 的 5b-2B 角色构筑路线，与装备槽和纸娃娃联合迁移。
@@ -16,7 +16,7 @@
 ## 0. 状态
 
 - 阶段：**阶段0 完成；阶段1 的战技/快捷技能/药剂输入、手动冷却与 Skill 管理停止线已完成 AS2 服务化**（详见 §2.2 / §5）。C# PlayerInfoWidget 复刻尚未开始；快捷药剂拖放等剩余 MovieClip 能力仍阻止整体删壳。
-- 2026-07-28 的视觉基座 B0 已推进到 `canonical_asset_candidate_validated; awaiting_human_review`：HP/MP active closure 已冻结；第七轮真实 Flash Player 产生 11-case candidate，但人工来源/层/crop/审美尚未签收；8 个 canonical SVG、runtime manifest、strict validator 与仓内 Playwright/Edge、FFDec/Web、Flash/Web 诊断已形成。两次诊断输出闭包的确定性不表示跨 renderer 像素一致，也不代替人审。`Svg.Skia 5.1.1` 仍只是待生产接线与 policy Gate 的候选，尚未写入 Launcher PackageReference，也没有 `PlayerInfoWidget`。B0 的 fixture-only 复刻不新增真实 `pi_*`，因此不推翻 §4 的 state-first 运行态接入顺序。
+- 2026-07-28 的视觉基座 B0 保持两条正交状态：B0-04 仍为 `canonical_asset_candidate_validated; awaiting_human_review`——第七轮真实 Flash Player 的 11-case candidate 尚无人签收来源/层/crop/审美，仓内 Web/FFDec/Flash 诊断的确定性也不表示跨 renderer 像素一致；工程轨的 B0-03b 已把 `Svg.Skia 5.1.1` / `SkiaSharp 3.119.4`、共享 strict facade、8 SVG + manifest embedded resource、notice、runtime identity 与 production contract 接入生产构建链，并以专项 ADR §12 的 fresh v2 candidate 达到 `renderer_qualified / NOT_DEPLOYED`。它仍没有 `PlayerInfoWidget`、真实 `pi_*`、人工视觉通过、两正式 builder 一致性或正式部署；exact candidate 身份只按专项 ADR §12 记录，不能用过期 candidate 或旧正式 runtime 外推。B0 的 fixture-only 复刻不推翻 §4 的 state-first 运行态接入顺序。
 - **核心裁决（颠覆早期"纯展示层"判断）**：`玩家信息界面` SWF 在阶段0 时确实承载输入、冷却和装备写，不可直接搬空。现状是 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService` 承接三条手动输入，`ManualCooldownService` 持有 17 路逻辑冷却，`SkillLoadoutService` / `SkillPanelService` 持有技能描述符、学习、装备、排序和被动写；旧控制器与进度条已退化为可选显示投影。消耗品快捷槽拖放 hitTest 和其他显示列表调用仍需按 §2.2 单独处置。（早期把 `frameEnd` 性能心跳列入本 SWF 是误报，详见 §3.1。）
 - **直接后果**：迁移仍须沿“显示 vs 逻辑”切线推进，但目标已从“保活承载输入/冷却的隐形逻辑壳”收敛为“C# 只读 HUD + AS2 纯服务 + 尚未退役的兼容 renderer/hit target”。只有剩余 MovieClip 能力逐项替代并通过观察门后，才可停止实例化整个 symbol；纯 Object facade 仍不能提前代替这些显示列表能力。
 - 已确认可安全只读迁移的显示层：HP / MP / 韧性 / 经验 / 等级 / 弹药数 / 攻击模式视图 / 角色名 / SP / buff 图标条（见 §2.1）。
@@ -331,7 +331,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 |---|---|---|
 | C# NativeHud | ★★★★★ 生产就绪 | `INativeHudWidget`/`IUiDataConsumer` + 5 widget + GDI+ layered window + widget-level 命中/透传范式已存在；PlayerInfo 必须恒不命中，新 widget ~90% 复用 ComboWidget 范式 |
 | UiData 通道 | ★★★★☆ | `FrameBroadcaster.pushUiState` 在跑，加 20-30 字段协议零破坏、C# 处理 1.25μs/帧 |
-| 资源管线 | ★★★☆☆ canonical candidate 已有、专项未验收 | 8 个 HP/MP SVG、runtime manifest、78 项 strict fail-closed（其中 58 项值级 grammar）与 Web、FFDec/Web、Flash/Web 诊断已形成；跨 renderer 指标无接受阈值，Flash candidate 尚待人工，`Svg.Skia` 生产依赖/embedded resource、物理 scale 与 bake cache 仍未通过后续 B0 片 |
+| 资源管线 | ★★★★☆ renderer 已资格化、视觉未验收 | 8 个 HP/MP SVG（99,564 B）+ runtime manifest 已作为 9 项 embedded resource；`Svg.Skia 5.1.1` / `SkiaSharp 3.119.4`、共享 strict facade、notice、runtime identity 与 production contract 已接线；renderer-family 实际 DLL/native 采用递归路径 exact-closure 门，deps libraries/renderer-bearing target 另做 exact closure，而非仅检查预期项存在。B0-03b 已以 fresh v2 candidate 达到 `renderer_qualified / NOT_DEPLOYED`；跨 renderer 指标仍无接受阈值，Flash candidate 仍待人工，物理 scale、bake/cache/widget 归后续 B0-05/06 |
 | AS2 玩家信息界面 | ★★★☆☆ | **权威逻辑已大幅脱壳**：战技/快捷技能/药剂输入、17 路冷却及 Skill 装备写均已服务化；旧 XFL 主要保留 renderer、药剂拖放命中和 161 个历史显示列表调用点 |
 
 **难度分层**：
@@ -350,7 +350,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 - [物品系统-双栏工作台-架构设计-2026-06-15.md](物品系统-双栏工作台-架构设计-2026-06-15.md)：同期 AS2 UI 外迁主线（doc 风格范本）
 - [agentsDoc/documentation-governance.md](../agentsDoc/documentation-governance.md)：文档治理
 
-**文档治理**：本文为玩家信息 HUD 迁移的纲领 canonical doc；SVG/B0 专项文档只承载视觉渲染子域，避免形成第二份业务权威。B0 已进入资产/工具施工；B0-04 同轮同步 strict canonical validator 与 Web/FFDec/Flash diagnostic 入口，B0-03b 再同步生产包、embedded resource、runtime identity/policy/notice，B0-05/06 分别按实际测试入口和 runtime 结构更新 `launcher/README.md`、testing guide、技术栈与 runtime build canonical docs。后续按实际改动回写本文 §5 路线与 §6 风险，行号锚点随重构刷新。
+**文档治理**：本文为玩家信息 HUD 迁移的纲领 canonical doc；SVG/B0 专项文档只承载视觉渲染子域，避免形成第二份业务权威。B0-04 已同步 strict canonical validator 与 Web/FFDec/Flash diagnostic 入口；B0-03b 已同步生产包、embedded resource、runtime identity/policy/notice、当前测试入口与 `renderer_qualified / NOT_DEPLOYED` 边界，仍未声称 B0-04 人工视觉、widget、`pi_*`、双 builder 或部署。B0-05/06 再分别按实际 raster/cache 与 fixture widget 结构更新 `launcher/README.md`、testing guide、技术栈与 runtime build canonical docs。后续按实际改动回写本文 §5 路线与 §6 风险，行号锚点随重构刷新。
 
 ---
 

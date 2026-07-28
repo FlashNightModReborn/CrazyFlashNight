@@ -1,6 +1,13 @@
+#nullable enable
+
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using SkiaSharp;
@@ -8,7 +15,7 @@ using Svg;
 using Svg.Model;
 using Svg.Skia;
 
-namespace Cf7.PlayerInfoHud.RendererQualification;
+namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
 internal static class StrictSvgValidator
 {
@@ -1155,7 +1162,7 @@ internal static class StrictSvgFacade
             };
             var parameters = new SvgParameters(null, null, null, loadOptions);
             using var stream = new MemoryStream(immutableBytes.ToArray(), writable: false);
-            var picture = svg.Load(stream, parameters, new Uri("urn:cf7:player-info-hud:qualification"));
+            var picture = svg.Load(stream, parameters, new Uri("urn:cf7:player-info-hud:embedded"));
             if (picture is null)
             {
                 throw new InvalidDataException("Svg.Skia returned no picture.");

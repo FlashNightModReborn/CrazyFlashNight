@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对架构与工作流**：commit `5c074eb4192d05df6fa58dc940301877a89a1d65`（2026-07-24）。本文只维护 Launcher 的稳定入口、协议与验证规则；高变动 candidate、promotion、测试计数与真人验收不在各功能章节重复，必要的冻结发布锚点只在顶部登记。地图箱专项冻结状态见 [实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md)，通用命令与判定口径见 [验证矩阵](../agentsDoc/testing-guide.md)。历史 release 只在对应冻结提交与发布记录中审计，不得外推到当前源码。
+> **最后核对架构与工作流**：commit `a560bc041ca86036bf27bb01ff2ec4d8ffb66a85`（2026-07-28）及 B0-03b 同提交工作树。本文只维护 Launcher 的稳定入口、协议与验证规则；高变动 candidate、promotion、测试计数与真人验收不在各功能章节重复，必要的冻结发布锚点只在顶部登记。地图箱专项冻结状态见 [实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md)，PlayerInfo SVG 资格状态与 exact candidate 身份见 [B0 专项 ADR](../docs/玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)，通用命令与判定口径见 [验证矩阵](../agentsDoc/testing-guide.md)。历史 release 只在对应冻结提交与发布记录中审计，不得外推到当前源码。
 > **冻结专项证据**：地图资源箱 Web-only source `2c87d31fecbbfb50c072ec199da0134755974402` 已由 immutable tag `runtime-build-v2/20260722-map-loot-web-only-v1`、request `F1F9493CF08DD88F26E1493FCACE306AC160866EA21440FC62698E5965A1AF04` 与 promotion commit `40119635ae5527225a425eb7f69af54f85115066` 完成正式发布；隔离 candidate attempt `82b9e602526c4e93a02d26aac0a44f20` 达到 `e2e_verified`，标准入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 达到 `standard_entry_verified`。该结论只覆盖冻结的 build identity `7C72B92B0C1CF57EB9BC0D3C1024D31657EE52E6B13D7BBF9FDB94FD5A6186DB`、payload closure `7E5EDCD4FEA80E1269C0B8BCC325D1FE0994EE8C7321F0F71CB9AF4B369C4A44` 与 Core SHA-256 `3EB1D3910B764F0B7F9ACA1FA989A4D8732F75479E64325223F270502256A5DF`，不得外推到后续源码。
 > **理发店冻结发布证据**：基地理发店 Web-only source `7237762fa9b5b89b5cb103c3d73e67ef46b08756` 已由 immutable tag `runtime-build-v2/20260724-p0f-hairdresser-web-only-v1`、request `DC44D51855EFDE2D7F3223CA3038008023B36A404BB32064511C962ABF824131` 与 promotion commit `5c074eb4192d05df6fa58dc940301877a89a1d65` 完成本地 X509 + GitHub hosted OIDC/Sigstore 双 signer / 双 faultDomain v2 发布。无参 `automation/start.ps1` 的首次 bootstrap attempt `0ebb4f1d1bd94585add33f20538e8ee1` 与重启 bootstrap attempt `fac214115f3743308234c0e995193aca` 验证正式 manifest 并以 `formal_runtime` 启动；该 manifest 绑定正式 Core SHA-256 `15E22D10B450A8616766D25F709D761C20B5A773BA60314680060348B7970EC2`、build identity `3F6110809903BF28D08E90F92087A4333E5C604F0AC62994E945775690CD25C6` 与 payload closure `C16ED23C85DCF0C2B2A321158F2269BED9D45ACC32BACCD428ED51AD4D49E107`。维护者随后完成“蓝色头巾”提交、自动关闭、存盘、完整退出及重启回读，游戏角色与理发店权威快照一致，严格状态为 `standard_entry_verified`；该结论不得外推到后续源码。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [启动期存档决议 (Protocol 2)](#启动期存档决议protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
@@ -17,7 +17,7 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 | 语言 | C# (`LangVersion=latest`，对齐 .NET 10) for Core；C++ (Win32-only，no STL) for bootstrap |
 | SDK pin | [`global.json`](../global.json) at repo root, `version: 10.0.300` + `rollForward: disable`；runtime 发布另受 toolchain lock 约束 |
 | UI | WinForms (`UseWindowsForms=true`, WinExe) 单窗体（GuardianForm）+ WebView2（BootstrapPanel 引导页 + WebOverlayForm 运行态 overlay） |
-| Native HUD 图像 | **SkiaSharp 3.119.4**（MIT；共享地图 WebP 按最长边 512px 解码）→ `System.Drawing.Bitmap`；decoded/tinted 分别使用 24/12 MiB 字节预算 LRU |
+| Native HUD 图像 | **SkiaSharp 3.119.4**（MIT；共享地图 WebP 按最长边 512px 解码）→ `System.Drawing.Bitmap`；PlayerInfo 的 8 个 canonical SVG 固定用 **Svg.Skia 5.1.1**，且只能经 `PlayerInfoStrictSvg` 受控 facade 解析；decoded/tinted 地图缓存分别使用 24/12 MiB 字节预算 LRU |
 | 构建 | 纯 producer `build-runtime-candidate.ps1`：**`dotnet publish --self-contained false`**（FDD、无 PDB）+ MSVC `cl.exe`（miniaudio + bootstrap）+ Rust/Cargo（sol_parser）；TypeScript/派生资产准备与产品审计已从 producer 分离 |
 | 包管理 | **PackageReference + [`Directory.Packages.props`](Directory.Packages.props)** 中心化版本锁定（`ManagePackageVersionsCentrally=true`） |
 | GPU 检测 | **`Vortice.DXGI` 3.6.2**（SharpDX 团队接力的社区项目，1:1 替代 SharpDX.DXGI） |
@@ -36,7 +36,8 @@ projectRoot/
 ├── runtime/                            ← FDD 子目录，用户不需要进
 │   ├── CRAZYFLASHER7MercenaryEmpire.Core.exe   FDD apphost
 │   ├── CRAZYFLASHER7MercenaryEmpire.Core.dll   main managed assembly
-│   ├── *.dll (16个 transitive deps，含 SkiaSharp managed/native WebP decoder)
+│   ├── *.dll (ClearScript / WebView2 / Vortice / SkiaSharp / Svg.Skia managed/native 闭包)
+│   ├── THIRD-PARTY-NOTICES.txt                    第三方包与分发 notice
 │   ├── miniaudio.dll                            P/Invoke side-car
 │   ├── sol_parser.dll                           P/Invoke side-car
 │   └── cf7-runtime-manifest.tsv                 producer 生成的 v1/v2 文件清单 + SHA256
@@ -298,7 +299,8 @@ Program.Run(args)
 ```
 launcher/
 ├── CRAZYFLASHER7MercenaryEmpire.csproj   C# 项目文件（SDK-style, net10.0-windows, AssemblyName=...Core）
-├── Directory.Packages.props               中心化 PackageVersion 锁定（ClearScript / WebView2 / Vortice.DXGI / Newtonsoft / xunit / Test.Sdk）
+├── Directory.Packages.props               中心化 PackageVersion 锁定（含 SkiaSharp 3.119.4 / Svg.Skia 5.1.1）
+├── THIRD-PARTY-NOTICES.txt                PlayerInfo SVG renderer 完整依赖图与分发 notice
 ├── build.ps1                              兼容编排器（prepare → pure producer → policy，见下文）
 ├── build-runtime-candidate.ps1            纯二进制 producer（native/Rust/bootstrap/FDD publish）
 ├── setup-check.ps1                        构建/运行前依赖自检（.NET 10 SDK + WebView2 + VC + Rust + Node）
@@ -367,6 +369,7 @@ launcher/
 │   │   │   ├── AudioHudState.cs             Native HUD 唯一 BGM 峰值历史（100ms 采样 / 250ms 播放态轮询）
 │   │   │   ├── MapDisplayState.cs           runtimeMapMode / preference / effective 三层地图显示策略
 │   │   │   ├── MapHudWidget.cs             小地图 shared renderer / blocks fallback
+│   │   │   ├── PlayerInfo/                 HP/MP canonical SVG、runtime manifest、strict facade 与 embedded asset catalog（B0；尚无 widget/真实 UiData）
 │   │   │   └── WidgetScaler.cs / UiDataPacketParser.cs / MapHudDataCatalog.cs 等支撑类
 │   │   │
 │   │   └── Handlers/                      【BootstrapMessageHandler 拆分后的 cmd handler 集】
@@ -703,7 +706,7 @@ powershell -File automation\dev.ps1
 |----|------|------|
 | Prepare | `tools/prepare-launcher-release-assets.ps1` | locked restore、V8 TypeScript 与 task/map/achievement/arena/save-repair 等 tracked 派生资产；默认不重建含私有输入/时间戳的 save schema |
 | Producer | `launcher/build-runtime-candidate.ps1` | 精确环境门 → deterministic miniaudio → clean/locked Rust parser → native bootstrap → 无 PDB FDD publish → immutable candidate/manifest v2 → 120 秒内同步等待 `--verify-runtime-only` 的真实 exit code；失败保留诊断，成功清除 candidate `logs/` |
-| Policy | `tools/validate-launcher-release-policy.ps1` | Web/data/native cursor/优化程序集等只读产品审计；其中 `panel-cross-layer-contracts` 门调用 `node tools/validate-panel-contracts.js` 核对 Panel command identity、capability/access、唯一 AS2 业务裁决 owner、数值权威、NPC 双上限交互策略、exact response handler 与剥离注释后的 Host/AS2 可执行锚点；最后验证 tree 前后不变并签发绑定 tree/identity 的 production receipt |
+| Policy | `tools/validate-launcher-release-policy.ps1` | Web/data/native cursor/优化程序集等只读产品审计；`candidate-player-info-svg-contract` 对精确 v2 candidate 执行 locked restore，并核对 9 项 embedded resource、8 个 canonical source byte、strict 最小 raster、notice、禁用依赖；runtime 根或任意后代出现 reparse/junction 会在递归枚举前被拒绝。随后实际 renderer-family DLL/native 相对路径集合须 exact=11、每项非空并记录 actual size/hash；这些字节再由 candidate payload closure/build identity 绑定。deps libraries 与唯一 renderer-bearing runtime target 也须精确相等；额外顶层 DLL、嵌套 native 文件或 deps library/runtime-target 都 fail-closed；`panel-cross-layer-contracts` 继续核对 Panel command identity、capability/access、唯一 AS2 业务裁决 owner、数值权威、NPC 双上限交互策略、exact response handler 与剥离注释后的 Host/AS2 可执行锚点；最后验证 tree 前后不变并签发绑定 tree/identity 的 production receipt |
 
 输入由 [`runtime-inputs.v2.json`](../config/build/runtime-inputs.v2.json) 分为 `artifactSourceHash`、`producerRecipeHash`、`toolchainLockHash`、`policyHash` 四个互斥域；build identity 只含前三域。payload closure 排除 manifest，所以政策/manifest 变化不会冒充二进制漂移。candidate 位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整身份保留在 metadata/证明；短目录与构建前后的 MAX_PATH 门兼容 native bootstrap 的 legacy 缓冲。producer 使用独立 native/Cargo/MSBuild/temp 输出，不写正式 runtime、不签名、不跑政策门。
 
@@ -753,6 +756,9 @@ net10 FDD 模式 + bootstrap + runtime/ 子目录隐藏：
 | `Microsoft.Web.WebView2.{Core,WinForms,Wpf}.dll` | ~750KB | WebView2 managed |
 | `WebView2Loader.dll` | 158KB | WebView2 native loader |
 | `Vortice.DXGI.dll` + `Vortice.DirectX.dll` + `Vortice.Mathematics.dll` + `SharpGen.Runtime.{,COM}.dll` | ~720KB | DXGI 适配器枚举（GPU pref 检测） |
+| `Svg.Skia.dll` + `Svg.Animation.dll` + `Svg.Custom.dll` + `Svg.Model.dll` + `Svg.SceneGraph.dll` + `ShimSkiaSharp.dll` + `ExCSS.dll` | 生产 lock graph 精确版本 | PlayerInfo 受控静态 SVG managed renderer 闭包；不含 `Svg.Skia.JavaScript` / Jint |
+| `SkiaSharp.dll` + `libSkiaSharp.dll` + `HarfBuzzSharp.dll` + `libHarfBuzzSharp.dll` | 生产 lock graph 精确版本 | Skia/HarfBuzz managed + win-x64 native 依赖；`SkiaSharp` 固定 3.119.4 |
+| `THIRD-PARTY-NOTICES.txt` | ~143KB | PlayerInfo renderer 依赖 attribution、MIT/MS-PL 与 Win32 bundled notice；production contract 要求源码/candidate exact bytes |
 | `miniaudio.dll` | 778KB | 原生音频引擎（WASAPI）；独立 `cl.exe` 编译；与 Core.exe 同目录让 P/Invoke 命中 |
 | `sol_parser.dll` | 225KB | Rust AMF0 → JSON 解析器（Protocol 2 存档决议） |
 
@@ -817,7 +823,7 @@ powershell -File launcher/tests/run_tests.ps1
 
 ### 测试覆盖
 
-PlayerInfo NativeHud 的 `Svg.Skia 5.1.1` 仍未接入生产项目。B0 隔离资格化入口为：
+PlayerInfo NativeHud 已把 `Svg.Skia 5.1.1`（`SkiaSharp 3.119.4` 保持不变）、同一份 `PlayerInfoStrictSvg` facade、8 个 SVG + runtime manifest 和 `THIRD-PARTY-NOTICES.txt` 接入生产项目；repo-only provenance/oracle evidence 不嵌入 Core。隔离 qualification 仍可按下列入口复跑 synthetic/canonical corpus：
 
 ```powershell
 chcp.com 65001 | Out-Null
@@ -830,7 +836,16 @@ $dotnetHost = Resolve-Cf7Dotnet -ProjectRoot (Get-Location).Path
   --report tmp\player-info-hud-b004-validation-fresh.json
 ```
 
-历史 `tools/player-info-hud/evidence/b0-02/qualification-report.json` 固定记录原始 B0-02 的 10/10 行为测试与 16 项 fail-closed，不得被当前 harness 覆盖。当前 B0-04 模式为 `isolated_qualification_passed`：12/12 行为测试、78/78 fail-closed（其中 58 项值级 grammar）与 8/8 canonical SVG；提交快照为 `tools/player-info-hud/evidence/b0-04/canonical-validation-report.json`，普通重跑必须写 ignored `tmp/`。`rendererQualified` 仍为 false；完整 structural/Web/FFDec/Flash diagnostic 入口与人工接受边界见 [`tools/player-info-hud/README.md`](../tools/player-info-hud/README.md)。
+历史 `tools/player-info-hud/evidence/b0-02/qualification-report.json` 固定记录原始 B0-02 的 10/10 行为测试与 16 项 fail-closed，不得被当前 harness 覆盖。B0-04 提交快照保持 `isolated_qualification_passed`：12/12 行为测试、78/78 fail-closed（其中 58 项值级 grammar）与 8/8 canonical SVG，且该历史报告的 `rendererQualified=false` 不回写。B0-03b 的生产结论必须另对**真实 v2 candidate**运行：
+
+```powershell
+& .\tools\validate-player-info-svg-production-contract.ps1 `
+  -ProjectRoot (Get-Location).Path `
+  -CandidateRoot '<absolute-v2-candidate-root>' `
+  -Report 'tmp\player-info-hud-production-contract.json'
+```
+
+只有报告同时为 `status=passed`、`mode=candidate`、`policyEligible=true`，并通过 production policy 与本片全量回归，才可按 [B0 专项 ADR](../docs/玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md) 记为 `renderer_qualified`；直接 `--core` 仅是 `policyEligible=false` 的诊断 seam。该状态不代表视觉 parity、`PlayerInfoWidget`、真实 `pi_*`、promotion 或部署。完整 structural/Web/FFDec/Flash diagnostic 与人工接受边界见 [`tools/player-info-hud/README.md`](../tools/player-info-hud/README.md)。
 
 2026-07-17 末轮调制交互收口：强化石核心统一承载持有、preview 消耗与强化后剩余，放大持有量并将强化 footer 收敛为单一动态 CTA；交换目录只显示同 `use` 且与 source 强化度不同的装备，无候选时给出明确空态。AS2 的同强化度 no-op 校验仍保留，用于防御 projection 后的状态变化。
 

@@ -93,7 +93,7 @@ npm run list-tags
 | sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac}`，含玩家自定义，由 MusicCatalog 运行时扫描）；`export/` 下文件名即运行时 SFX id，legacy `.waz` 只要仍被 `data/items/*.xml` 引用就必须保留；XFL 残余 exclude 为防御性 |
 | config | 全量复制（仅排除 `*.md` 开发文档） |
 | root-files | 根目录运行时文件：native bootstrap `CRAZYFLASHER7MercenaryEmpire.exe`、`hotkey_guard.exe`、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
-| launcher-runtime | FDD Core 运行时：`runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`、managed/native DLL、`*.deps.json` / `*.runtimeconfig.json` |
+| launcher-runtime | FDD Core 运行时：Core apphost / metadata、`cf7-runtime-manifest.tsv`、`THIRD-PARTY-NOTICES.txt`，以及 ClearScript、WebView2、Vortice 和 NativeHud SVG（ExCSS / SkiaSharp / HarfBuzzSharp / Svg.Skia）managed/native 闭包；DLL 均使用逐文件白名单 |
 | runtime-installer | 缺运行时时由 bootstrap 拉起的 Windows Desktop Runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe` |
 | launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help + `icons/**`（WebP 化后整目录收，含 .webp）；排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README、`assets/**/_copy_bg.py` 开发脚本、`assets/**/report.json` 烘焙审计报告 |
 | launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |

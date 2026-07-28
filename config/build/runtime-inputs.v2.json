@@ -8,6 +8,7 @@
         "launcher/packages.lock.json",
         "launcher/app.ico",
         "launcher/app.manifest",
+        "launcher/THIRD-PARTY-NOTICES.txt",
         "launcher/native/sol_parser/Cargo.toml",
         "launcher/native/sol_parser/Cargo.lock"
       ],
@@ -16,6 +17,12 @@
           "path": "launcher/src",
           "includeExtensions": [".cs"],
           "excludePaths": ["launcher/src/Guardian/HotkeyGuard.cs"],
+          "excludePrefixes": []
+        },
+        {
+          "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets",
+          "includeExtensions": [".svg", ".json"],
+          "excludePaths": [],
           "excludePrefixes": []
         },
         {
@@ -116,6 +123,7 @@
         "tools/test-runtime-dev-entry.ps1",
         "tools/test-runtime-entry-guardrails.ps1",
         "tools/test-runtime-github-attestation.ps1",
+        "tools/test-runtime-player-info-svg-production-contract.ps1",
         "tools/test-invoke-runtime-github-build.ps1",
         "tools/test-main-branch-admission.ps1",
         "tools/test-panel-contracts.js",
@@ -129,6 +137,7 @@
         "tools/validate-item-sets.js",
         "tools/validate-npc-shops.js",
         "tools/validate-panel-contracts.js",
+        "tools/validate-player-info-svg-production-contract.ps1",
         "tools/verify-runtime-bundle.ps1",
         "tools/verify-runtime-bundle-v2.ps1",
         "tools/verify-runtime-consensus.ps1",
@@ -192,6 +201,15 @@
           "includeExtensions": [".ts", ".json"],
           "excludePaths": [],
           "excludePrefixes": ["tools/cf7-save-repair-dict-build/node_modules/"]
+        },
+        {
+          "path": "tools/player-info-hud/renderer-qualification",
+          "includeExtensions": [".cs", ".csproj", ".json", ".svg"],
+          "excludePaths": [],
+          "excludePrefixes": [
+            "tools/player-info-hud/renderer-qualification/bin/",
+            "tools/player-info-hud/renderer-qualification/obj/"
+          ]
         }
       ]
     }

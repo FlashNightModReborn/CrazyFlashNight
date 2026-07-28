@@ -2,9 +2,9 @@
 
 **文档角色**：`flashswf/UI/玩家信息界面` 的**视觉资源与 NativeHud 渲染基座专项 ADR + B0 可执行台账**。本文只权威定义 SVG 真源、受控子集、渲染器准入、运行时烘焙、模拟信号 harness、视觉对照与施工分片；状态所有权、AS2/C# 边界、停止线、显示公式和总体迁移阶段仍以 [玩家信息界面 → C# NativeHud 迁移架构](玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md) 为准。
 
-**最后核对代码基线**：commit `a6490be9fbd5a56747777bf86bab4e8d8ec08869`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4-r11 固化恢复安全、实际 runner/parser 的 Git-canonical 自身份、注册 CS6 Debug Player、无引号相对启动、跨完整性级别 authoring 身份与 `Stage.align` requested/reported 语义。第七轮已从该 strict 基线形成真实 Flash candidate；B0-04 的后续资产/证据身份以 §12 和 `tools/player-info-hud/evidence/b0-04/` 的 exact hash 为稳定锚，且不构成正式 runtime。
+**最后核对代码基线**：commit `a560bc041ca86036bf27bb01ff2ec4d8ffb66a85`（2026-07-28）及 B0-03b 同提交工作树。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4-r11 固化恢复安全、实际 runner/parser 的 Git-canonical 自身份、注册 CS6 Debug Player、无引号相对启动、跨完整性级别 authoring 身份与 `Stage.align` requested/reported 语义。第七轮已从该 strict 基线形成真实 Flash candidate；B0-04 的资产/证据身份与 B0-03b 的新鲜 v2 candidate/production Gate 只以 §12 和结构化报告为稳定锚，过期临时 candidate 不得回写，且任一 B0 candidate 都不构成正式 runtime。
 
-**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 是 B0 的唯一候选。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`。B0-01B 第七轮由 CS6 15 秒生成 389,160 B fresh TestLoader SWF，并由注册 Debug Player `11,2,202,228` 实际加载 SHA-256 `450b1f…a615` 的玩家信息 child；11 个 1024×64 raw、11 个紧边 crop、4,458,323 B 精确 run block 与 manifest `dcc9e11a…bf472` 均已形成 candidate，事务精确恢复，但人工来源/层/crop/审美复核仍为空，所以尚未达到 `oracle_frozen`。B0-02 strict corpus 已扩至 12/12、78 项 fail-closed（其中 58 项值级 grammar），并对当前 8/8 canonical SVG 结构验证通过；状态仍是 `isolated_qualification_passed`，`rendererQualified=false`。B0-04 已产生 8 个 SVG（99,564 B）、runtime manifest 与 repo-only provenance；asset-set revision 为 `sha256:c8f58cb7…93871`，manifest SHA-256 为 `1006f90e…5630`。仓内 Playwright + Edge 的两次 11-case Web 输出闭包 A↔B 12/12 文件逐字节一致；FFDec/Web 与 Flash/Web 比较器的两次输出闭包分别 A↔B 34/34 文件逐字节一致。该确定性不表示跨 renderer 像素一致，两类比较均未设置接受阈值，也不替代 Flash Player 或人工验收。生产 PackageReference、embedded resource、raster/cache、fixture widget 与真实 `pi_*` 均尚未接入，因此不能冒称 `renderer_qualified`、`runtime_integrated` 或已部署。
+**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 已由 HUD-SVG-005 接受并锁定为 B0 受控子集的生产 renderer。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`。B0-01B 第七轮由 CS6 15 秒生成 389,160 B fresh TestLoader SWF，并由注册 Debug Player `11,2,202,228` 实际加载 SHA-256 `450b1f…a615` 的玩家信息 child；11 个 1024×64 raw、11 个紧边 crop、4,458,323 B 精确 run block 与 manifest `dcc9e11a…bf472` 均已形成 candidate，事务精确恢复，但人工来源/层/crop/审美复核仍为空，所以尚未达到 `oracle_frozen`。B0-02 strict corpus 已扩至 12/12、78 项 fail-closed（其中 58 项值级 grammar），并对当前 8/8 canonical SVG 结构验证通过；其历史状态仍是 `isolated_qualification_passed`，`rendererQualified=false`，不得回写。B0-04 已产生 8 个 SVG（99,564 B）、runtime manifest 与 repo-only provenance；asset-set revision 为 `sha256:c8f58cb7…93871`，manifest SHA-256 为 `1006f90e…5630`。仓内 Playwright + Edge 的两次 11-case Web 输出闭包 A↔B 12/12 文件逐字节一致；FFDec/Web 与 Flash/Web 比较器的两次输出闭包分别 A↔B 34/34 文件逐字节一致。该确定性不表示跨 renderer 像素一致，两类比较均未设置接受阈值，也不替代 Flash Player 或人工验收。B0-03b 已以 fresh v2 candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a` 闭合生产 PackageReference、共享 strict facade、9 项 embedded resource、actual renderer/deps closure、runtime identity/policy/notice、packer 与全量回归，达到 `renderer_qualified`。该 candidate 严格为 `candidate_built / NOT_DEPLOYED`；正式 Core 仍是 `15E22D10…EC2`，两正式 builder、promotion、标准入口、B0-04 人工视觉、raster/cache、fixture widget 与真实 `pi_*` 均未由本片取得。
 
 ---
 
@@ -18,11 +18,11 @@
 
 - 已完成：本 ADR、B0 分片边界、依赖准入门、runtime build identity 纳入方案与验收词典；Kimi k3/max 的首轮完整文档异构审计见 §9.5。
 - 已完成：B0-01A r3 把 HP/MP placement closure/source-binary ancestry 固化入仓；独立 verifier 从 XFL 重建 17 个定义边/18 个路径展开边，复算 Git-canonical digest `6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368`，并绑定 index/worktree/anchor。它不等于 `oracle_frozen`。
-- 已完成：B0-02 隔离资格化的原始依赖/许可/native/payload 审计；当前 strict corpus 已扩至 12/12、78 项 fail-closed（其中 58 项值级 grammar），并验证 8/8 canonical SVG。它不等于生产 `renderer_qualified`。
+- 已完成：B0-02 隔离资格化的原始依赖/许可/native/payload 审计；当前 strict corpus 已扩至 12/12、78 项 fail-closed（其中 58 项值级 grammar），并验证 8/8 canonical SVG。该历史报告继续保留 `rendererQualified=false`，生产资格另由 B0-03b candidate contract 裁决。
 - 已完成窄中间态：B0-01B 第七轮 runner candidate 已绑定 fresh TestLoader、实际 Debug Player、精确 child、11-case raw/crop 与安全恢复；人工复核未签，所以不是 `oracle_frozen`。
 - 已完成窄中间态：B0-04 的 8 个 canonical SVG、runtime manifest、repo-only provenance、strict validator 与 Web、FFDec/Web、Flash/Web 诊断已闭合自动结构门；一次性 converter 原型按 stop-loss 已移出权威工具树且不进入 build，视觉 Gate 等待人工。
-- 未完成：生产 strict facade 复用/依赖接线、runtime bake/cache、fixture widget、完整 NativeHud 性能门与最终人工验收。
-- 未接受：`Svg.Skia 5.1.1` 作为生产依赖。它必须先完成 B0-02 生产级 strict facade/corpus Gate；通过后才在 B0-03b 写入中央包版本、项目引用和 lockfile。
+- 已完成：B0-03b 以 fresh v2 candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a` 闭合 `Svg.Skia 5.1.1` / `SkiaSharp 3.119.4` 生产包图、共享 strict facade、8 SVG + manifest 的 9 项 embedded resource、notice、窄 artifact-source tree、actual renderer/deps closure、production policy 与全量回归；HUD-SVG-005 已转为 `accepted`，片状态为 `renderer_qualified / NOT_DEPLOYED`。
+- 未完成：runtime bake/cache、fixture widget、完整 NativeHud 性能门与最终人工验收。
 - 未改变：AS2 游戏状态/输入/冷却权威、`FrameBroadcaster` 协议、旧 HUD 可见性、药剂拖放命中壳、正式 runtime。
 - 总体视觉交付严格状态：`canonical_asset_candidate_validated; awaiting_human_review`。不得把结构化验证、FFDec/Web 指标或未签 Flash candidate 写成 `fixture_static_parity`、`fixture_full_parity`、`runtime_integrated`，更不得写成已部署。
 
@@ -44,7 +44,7 @@
 | HUD-SVG-002 | accepted | 不导出逐帧 PNG，也不把 Flash 时间轴逐帧翻译成 SVG 序列 |
 | HUD-SVG-003 | accepted | 动态条、裁切、缓动和明显循环动效用代码表达；SVG 自身不承载动画 |
 | HUD-SVG-004 | accepted | 只转换运行时活跃 placement closure；“库里存在”不等于纳入 |
-| HUD-SVG-005 | provisional | `Svg.Skia 5.1.1` 是唯一候选；B0-02 只完成隔离资格化，须到 B0-03b 复用同一 facade、真实 8-asset closure、包图、identity/policy 与许可分发门后才可转为锁定生产依赖 |
+| HUD-SVG-005 | accepted | `Svg.Skia 5.1.1` 是 B0 受控静态 SVG 子集的锁定生产 renderer；B0-03b 已对真实 8-asset closure 复用唯一 strict facade，并闭合精确包图、embedded/source bytes、actual candidate closure、identity/policy、许可分发与全量回归；不外推为视觉 parity、widget 或部署 |
 | HUD-SVG-006 | accepted | 首版 SVG/manifest 作为 Core 的 embedded resource；源文件与依赖共同进入 runtime build identity |
 | HUD-SVG-007 | accepted | B0 可 fixture-first，但真实接入仍必须 state-first，不新增第二业务权威 |
 | HUD-SVG-008 | accepted | 旧 Flash HUD 在双轨期继续作为独立视觉 oracle 和剩余命中壳 |
@@ -69,7 +69,7 @@
 
 **Oracle 轨**：对 B0-01B 第七轮 Flash candidate 完成人工来源、状态、层隔离、crop 与审美复核，并形成 review receipt。等待人审不阻塞无关结构施工；未签前只能保持 `candidate_captured; awaiting_human_review`，不得写成 `oracle_frozen`。
 
-**工程轨**：先完成 B0-03b 的生产依赖、共享 strict facade、9 项 embedded resource、runtime identity/policy/notice 与 packer 闭包，再进入 B0-05 raster/cache/prewarm 和 test-only union probe。`canonical_asset_candidate_validated` 已足以进入这两片的结构施工；人工签收仍阻断 B0-04 视觉退出、B0-06 parity 结论和最终 B0 接受。
+**工程轨**：B0-03b 已达到 `renderer_qualified / NOT_DEPLOYED`，B0-05 现可开始 raster/cache/prewarm 和 test-only union probe。`canonical_asset_candidate_validated` 足以进入这些结构施工；人工签收仍阻断 B0-04 视觉退出、B0-06 parity 结论和最终 B0 接受。
 
 精确 HP/MP 比例状态目前没有安全、确定性的只读注入入口：`/console` 权限过宽，真实存档也不保存可复现实例态。B0-01B 因此另用**测试专用** TestLoader scratch/fixture 驱动已发布 child SWF，固定 HP/MP frame、文字以及三个装饰播放头；静态 corpus 中 light 固定后隐藏并回报 hidden。它不得接生产 `AgentControl`、不得读写真实存档、不得修改旧 XFL。只有截图、实际 loader/player/SWF/closure 身份和人工复核均闭合后才可声明 `oracle_frozen`。
 
@@ -213,6 +213,8 @@ fixture / PlayerInfoState ── visual state machine
 
 ```text
 launcher/src/Guardian/Hud/PlayerInfo/
+  PlayerInfoStrictSvg.cs
+  PlayerInfoSvgAssetCatalog.cs
   PlayerInfoWidget.cs
   PlayerInfoVisualState.cs
   PlayerInfoAnimationModel.cs
@@ -246,7 +248,7 @@ tools/player-info-hud/
 launcher/tests/Guardian/Hud/PlayerInfo/
 ```
 
-`Assets/`、四个诊断工具、qualification 与 B0-04 evidence 已在本片形成；C# runtime/widget 与测试目录仍是后续目标。闭包规模很小，B0 不另建一套通用 JSON Schema 目录；manifest/closure 规则由窄 validator 与 focused tests 持有，只有 B2 扩域后出现第二个真实消费者才考虑抽出 schema。测试子目录是有意建立 PlayerInfo 专属 fixture/corpus 边界；B0-03b 必须验证现役 test runner 会递归收集它，若不会则沿用 `launcher/tests/Guardian/` 平铺，不为目录美观另造入口。中央高冲突文件（csproj、包版本、lockfile、runtime inputs）只能在 B0-03b 单独落，不和 widget/美术混一片。
+`Assets/`、四个诊断工具、qualification、B0-04 evidence、生产 `PlayerInfoStrictSvg` / `PlayerInfoSvgAssetCatalog` 与专属 focused tests 已形成；`PlayerInfoWidget`、visual state、animation model 与 rasterizer 仍是后续目标。闭包规模很小，B0 不另建一套通用 JSON Schema 目录；manifest/closure 规则由窄 validator 与 focused tests 持有，只有 B2 扩域后出现第二个真实消费者才考虑抽出 schema。现役 SDK glob 已递归收集 `launcher/tests/Guardian/Hud/PlayerInfo/`，无需另造 test runner；qualification 通过 compile link 复用生产 strict facade，不保留第二份 validator。中央高冲突文件（csproj、包版本、lockfile、runtime inputs）只在 B0-03b 集中落盘，没有和 widget/美术实现混片。
 
 ### 4.2 Runtime manifest 与 provenance evidence 分离
 
@@ -361,39 +363,41 @@ B0-02 的生产资格必须用同一份 immutable bytes 完成两段式处理：
 
 本片不改 `PackageReference`、lockfile、SVG 或 manifest。正式 runtime 的 `tools/check-runtime-build-env.ps1` 已有独立精确门，本修复不得弱化它。
 
-### 5.5 B0-03b：通过后的生产锁定动作
+### 5.5 B0-03b：生产锁定动作与最终 Gate
 
-B0-02 通过、B0-04 已产生真实 canonical HP/MP asset、B0-03a 通过后，本片单独完成：
+B0-02、B0-03a 与 B0-04 结构入口满足后，本片已经单独落盘：
 
-1. 在 `launcher/Directory.Packages.props` 加精确 `PackageVersion`；
-2. 在 `launcher/CRAZYFLASHER7MercenaryEmpire.csproj` 加无版本 `PackageReference`；
-3. 用精确 SDK 先 `restore --force-evaluate -r win-x64` 更新 lock，再以 `--locked-mode -r win-x64` 复核；提交 `launcher/packages.lock.json`；
-4. 把真实 `Assets/**/*.svg` 与 runtime manifest JSON 纳入显式 `EmbeddedResource`，repo-only provenance/oracle evidence 不嵌入 Core；
-5. 更新依赖审计记录、third-party notice、`launcher/README.md`、本文决策状态；
-6. 新鲜 restore/test/build，记录实际依赖闭包，不手写推断值。
+1. `launcher/Directory.Packages.props` 精确固定 `Svg.Skia 5.1.1`，既有 `SkiaSharp` 保持 `3.119.4`；主 csproj 使用无版本 `PackageReference`，win-x64 lock graph 由精确 SDK `10.0.300` 的 force-evaluate + locked restore 生成/复核；
+2. 显式嵌入真实 8 SVG + runtime manifest，共 9 个固定 LogicalName；repo-only provenance/oracle evidence 保持 0 项 embedded；
+3. `PlayerInfoStrictSvg.cs` 成为生产与 qualification 唯一 strict facade 源；`PlayerInfoSvgAssetCatalog` 绑定完整 manifest、exact source bytes 与最小 raster，qualification fixture 不进入生产选择；
+4. `launcher/THIRD-PARTY-NOTICES.txt` 记录完整依赖 attribution、MIT/MS-PL 与 Win32 bundled notice，并以 LF canonical byte 同时进入 artifact source、publish/candidate payload 和 packer 白名单；
+5. `tools/validate-player-info-svg-production-contract.ps1` 丢弃调用者注入的 dotnet host，复用正式环境门，locked restore/build 后只对 exact v2 candidate 执行 full canonical + strict/payload/notice/deps Gate；runtime 根或任意后代出现 reparse/junction 会在递归枚举前 fail-closed。随后 renderer-family DLL/native 文件按 candidate 递归实际枚举，相对路径集合 exact=11、每项非空并记录 actual size/hash，实际字节再由 candidate payload closure/build identity 绑定；deps 的 libraries 与唯一 renderer-bearing runtime target 也必须 exact；`--core` 明确为 `policyEligible=false` 的诊断 seam；
+6. production policy 以 `candidate-player-info-svg-contract` 调用该门；runtime inputs、workflow trigger、identity/queue/release-state 与 packer 都有对应回归，production contract 的跟踪负例会注入额外 `Svg.Foo.dll`、嵌套 `libHarfBuzzSharp.so` 和 deps `Svg.Foo`，三类都必须 fail-closed。
 
-不再为尚不存在的 production asset 设计 `notRuntimeSelectable` 占位标志。B0-02 的 qualification fixture 留在隔离 corpus；B0-03b 直接针对 B0-04 的真实 canonical asset 验证资源、identity 和 payload closure。
+LF-canonical notice 修复后的 fresh v2 candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a` 已通过 candidate production contract、production policy 与本片全量测试，因此 HUD-SVG-005 由 provisional 转为 accepted，并记 `renderer_qualified`。旧 candidate、单独 core 诊断或 B0-02 的 `rendererQualified=false` 报告仍不能代替该 Gate。
 
 ### 5.6 Runtime build identity 与 payload closure
 
-`config/build/runtime-inputs.v2.json` 已把 csproj、中央包版本和 lockfile 列为 fixed artifact source；包引用变更会进入身份。当前 `launcher/src` tree 只纳入 `.cs`，所以 B0-03b 必须：
+`config/build/runtime-inputs.v2.json` 已把 csproj、中央包版本、lockfile 与 `launcher/THIRD-PARTY-NOTICES.txt` 列为 fixed artifact source，并新增只覆盖 `launcher/src/Guardian/Hud/PlayerInfo/Assets` 的窄 `.svg/.json` tree；整个 `launcher/src` 的任意 JSON 没有被顺带扩入。回归现固定：
 
-- 优先增加只覆盖 `launcher/src/Guardian/Hud/PlayerInfo/Assets` 的窄范围 artifact-source tree，纳入 `.svg/.json`，不把整个 `launcher/src` 的任意 JSON 顺带扩入；
-- 加回归证明改任一 SVG byte 会改变 artifact source / build identity；
-- 证明 embedded resource 改变 Core，从而改变 payload closure；
-- 核对 `.github/workflows/runtime-bundle-integrity.yml` 的 native path gate 确实会被资产与包文件触发；若修改 gate，同片更新其测试；
-- 禁止仅依赖 Core 输出“碰巧变化”掩盖 artifact source 漏收源资产。
+- 8 SVG + manifest + notice 恰好形成 10 项 PlayerInfo artifact-source 输入，repo-only evidence/provenance 与 qualification fixture 不进入 artifact source；
+- 改任一 SVG byte 必改 artifact source / build identity，而 producer recipe、toolchain lock 与 policy 保持不变；index 模式继续忽略未 staged 的 byte；
+- 9 项 embedded resource 的 source exact bytes 与 Core assembly 同时由 production contract 校验，真实 candidate payload closure 因而绑定资产内容；
+- `.github/workflows/runtime-bundle-integrity.yml` 对 asset/notice 与 production validator/qualification policy 输入均有触发回归；前者经 artifact source，后者是少数显式 policy trigger；
+- packer 对 runtime manifest、notice 与 11 个 renderer managed/native 文件使用逐文件白名单，不用 `*.dll` 扩大收编范围；production contract 另从 candidate 递归枚举实际 renderer-family 文件，不能因 expected 白名单存在就漏过额外顶层或嵌套文件。
+
+受控 1-byte sensitivity 证明把 `hp.fill` 从 13,460 B / `44E12F…` 改为 13,461 B / `97F1A171…`：artifact source `4502F490…→1902DF44…`、build identity `C571959C…→71CB5FA3…`、Core `3262F0CB…→96E704D1…`、payload closure `C60757A6…→626EB2D5…` 同时变化，而 producer recipe `B97998EA…` 与 toolchain `7B83229B…` 不变。实验 byte 已精确恢复，Worktree=Index，canonical dev pointer 重新指向 C571 candidate。
 
 正式发布仍遵守 [runtime build reproducibility](runtime-build-reproducibility.md) v2；B0 日常开发停在 isolated candidate 即可，不要求每片 promotion。
 
 ### 5.7 一次性准入证据与长期生产门
 
-当前 production policy 不会因为存在新的 launcher xUnit 就自动执行它。B0 必须同时建立：
+production policy 不会因为存在新的 launcher xUnit 就自动执行它，因此 B0-03b 同时建立了两层：
 
-- **一次性准入证据**：完整 renderer corpus、依赖/许可/native/payload、两类 builder 的 locked restore 与一致 identity/closure；
-- **长期回流保护**：快速、确定性的 SVG grammar/hash/closure contract auditor，接入 `Get-Cf7ProductionChecks`，或有同等级 production policy 检查。
+- **当前单片准入证据**：完整 renderer corpus、依赖/许可/native/payload、9 embedded、source exact bytes、notice、candidate 实际 DLL/native/deps exact closure 与防御负例，已由 §12 的 fresh v2 candidate + policy/全量测试闭合；
+- **长期回流保护**：`candidate-player-info-svg-contract` 已接入 `Get-Cf7ProductionChecks`，对每个待签 receipt 的 exact candidate 重跑 locked production contract；policy 自测固定其项目根、candidate 根、锁定 SDK 与 fail-closed 调用。
 
-若新增 production check，它属于 policy/构建门槛变化，必须同步 runtime/testing canonical docs 和 policy 自测。只补 xUnit 不得写成“正式 promotion 已受保护”。
+两类正式 builder 的 locked restore 与一致 identity/closure 仍是独立的正式发布/B0 Exit 门；本地 candidate 或 production policy 通过不能替代真实跨 faultDomain 证据。该 policy/构建门槛变化已同步 runtime/testing canonical docs；只补 xUnit 或只取得一次 candidate 报告都不得写成“已 promotion / 已部署”。
 
 ---
 
@@ -760,19 +764,19 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 
 - [x] HP/MP active placement closure 已持久化并独立复核，达到 `placement_closure_frozen`；unused library 未混入，整座 HUD 的 BitmapFill 未误算进本纵切。
 - [ ] §6.4 oracle provenance、accepted corpus 与人工来源/crop 复核完整，达到 `oracle_frozen`。
-- [ ] `Svg.Skia` 决策由 provisional 转为 accepted，或已有修订 ADR 明确替代候选。
+- [x] `Svg.Skia` 决策由 provisional 转为 accepted，或已有修订 ADR 明确替代候选。
 - [x] 依赖/许可证/native/security/payload-size 审计有结构化证据。
 - [x] B0-03a exact SDK selector/setup-check 的 only-10.0.301 等负例与 repo-root exact-positive 通过。
 - [ ] 两类正式 builder 可 locked restore，并对同一冻结源形成一致 build identity / payload closure。
 - [x] canonical SVG/manifest exact closure 已冻结；8 个 SVG 共 99,564 B，asset-set revision `sha256:c8f58cb7…93871`、exact manifest SHA-256 `1006f90e…5630`；strict corpus 12/12、78/78 fail-closed（其中 58 项值级 grammar），Web 两次输出闭包 A↔B 12/12 字节相同。
-- [ ] SVG/JSON 与包图进入 artifact source；改资产会改变 build identity 与 Core payload closure。
-- [ ] production policy 有快速 SVG grammar/hash/closure 回流保护，不能只靠一次性 xUnit。
+- [x] SVG/JSON 与包图进入 artifact source；改资产会改变 build identity 与 Core payload closure。
+- [x] production policy 有快速 SVG grammar/hash/closure 回流保护，不能只靠一次性 xUnit。
 - [ ] runtime 只在新尺寸/DPI key bake，稳态不 parse/raster。
 - [ ] 物理 scale contract 已冻结；PArgb、透明边、DPI、cache、dispose/perf 门通过。
 - [ ] 最大 viewport/DPI 的 3000 tick A/B 已覆盖完整 NativeHud union repaint/commit；计数/UI p95/union 面积与 handle/长循环 Gate 满足 §8.3，CPU/alloc/GC/working-set 已记录供诊断。
 - [ ] fixture HP/MP 静态视觉矩阵与虚拟帧缓动通过，deferred effect 有显式清单，旧 HUD 未隐藏。
 - [ ] `PlayerInfoWidget.TryHitTest` 恒 false 的 focused test 与真实窗口鼠标透传手点均通过。
-- [ ] `launcher/README.md`、testing guide、总体迁移 ADR 与本台账同步现状。
+- [x] `launcher/README.md`、testing guide、总体迁移 ADR 与本台账同步现状。
 - [ ] B1 的 visual-state 接口和真实字段草案已审阅，但尚未被误报为 runtime integrated。
 - [ ] §9.5 文档级 K0 的问题已有逐条 disposition；B0-07 针对最终代码/资产/结构化测试/视觉报告的 K1 也以 `kimi-code/k3`、`max` 完整结束并可复核，均未降 effort/换模型。
 - [ ] 人类已明确接受最终透明 crop、游戏 composite、关键比例、平滑与 UI 交互；自动指标或 Kimi 不代签。
@@ -788,11 +792,11 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | B0-00 | completed | 本 B0-00 commit：两份 ADR 同步；§9.5 k3/max 文档审计；doc governance、链接与 diff check | 无代码/视觉/生产依赖结论 | B0-01A / B0-02 / B0-03a 可并行 |
 | B0-01A | completed (`placement_closure_frozen`) | r3：16-file exact closure、HP/MP/shared=10/5/2、17 authored/18 expanded edge、14 timeline、0 BitmapFill/DOMBitmapInstance；Git-canonical digest `6f4bf9…4368`；index/clean-filter/anchor/source-binary verifier 全绿并经独立复审 ACCEPT | actual TestLoader/player load、截图/crop 与人工来源确认归 B0-01B；不声称 `oracle_frozen` | B0-01B 可开始；B0-04 可开始但视觉 Gate 等 01B |
 | B0-01B | `candidate_captured; awaiting_human_review` | 第七轮：strict r11；CS6 **15 秒** fresh TestLoader **389,160 B**；Debug Player `11,2,202,228` 自然退出；child SHA `450b1f…a615`；**11 raw + 11 crop**、4,458,323 B run block；manifest SHA `dcc9e11a…bf472`；AS/SWF 精确恢复、无 marker | 人工来源、状态、层隔离、crop 与审美确认；未到 `oracle_frozen` | 保留 candidate 与对比包供人审；有修改则重采/重跑 |
-| B0-02 | completed (`isolated_qualification_passed`) | 原依赖审计 exact SDK + locked restore、10/10/16；当前 strict 增量为 **12/12**、fail-closed **78**（值级 **58**），并验证 canonical **8/8**；11 包 license/nupkg + 9 文件/5,289,528 B payload | `rendererQualified=false`；生产 facade/policy/许可分发仍归 B0-03b | B0-03b 复用同一 validator/facade，禁止旁路 |
+| B0-02 | completed (`isolated_qualification_passed`) | 原依赖审计 exact SDK + locked restore、10/10/16；当前 strict 增量为 **12/12**、fail-closed **78**（值级 **58**），并验证 canonical **8/8**；11 包 license/nupkg + 9 文件/5,289,528 B payload | 历史报告固定 `rendererQualified=false`；生产资格不得回写该证据 | B0-03b 已以 compile link 复用同一 validator/facade，禁止旁路 |
 | B0-03a | completed | resolver/setup-check 共用 exact 合同；selector + repo-root 集成 **7/7**；setup-check **5/5**；三项首轮并发时序失败隔离复跑 **3/3**，随后全量 xUnit **1257/1257** | 正式 builder 的 10.0.300 证据仍归 B0-03b/发布链 | 继续 B0-01B/B0-04；待真实资产后进 B0-03b |
 | B0-04 | `canonical_asset_candidate_validated; awaiting_human_review` | **8 SVG / 99,564 B**，manifest SHA `1006f90e…5630`，revision `c8f58cb7…93871`；12/12 + 78 fail-closed（值级 58）；Web 两次输出闭包 A↔B **12/12**，FFDec/Web 与 Flash/Web 比较器的两次输出闭包分别 A↔B **34/34**；provenance/工具边界已落盘 | 跨 renderer 像素并不相同且无接受阈值；Flash candidate 人工复核、Bevel/singular-gradient/MP variants/HP gradient rotation 的视觉接受；不声称 parity | 允许 B0-03b/05 的结构施工；视觉结论等人签 |
-| B0-03b | ready_for_structural_integration | 现有 SkiaSharp/runtime inputs 基线 + B0-02 strict + B0-04 真实资产 | 生产包/lockfile、embedded resource、identity/policy/许可分发回归；最终接受仍受人工 Gate | 单独落中央依赖片 |
-| B0-05 | blocked_by_B0-03b | 可复用 cache/prewarm/PArgb 范式，B0-04 结构入口已满足 | 专用 rasterizer 生命周期、test-only fixed-bounds union/commit 预检与拓扑裁决 | 等生产依赖/strict/embedded/identity |
+| B0-03b | completed (`renderer_qualified`) | candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a`；identity `C571959C1F2AC98341C798E4AD2B6529F0C9972320AE534A0794ADD89812AFEC`；payload `C60757A6636898DB0CEE803D50128C40C2BD9A2DAE14DC7F899646BB30954FB8`；Core `3262F0CB4655CA3BCFD5F2AABB65BFA8C4A5A3BEB69A34E86DF934FCC0C49ED9`；contract 9 resources / 8 assets / 11 actual files / 11 deps / 1 target / notice `1E69FF5A…9287`，防御矩阵 8/8；production policy 22/22；identity 107、queue 17、release-policy 61、release-state 48/0、xUnit 1261/1261（新增 warning 0）、focused 4/4、packer 177 pass + 1 skip、qualification build 0 warning/0 error；1-byte sensitivity 与精确恢复通过 | 两正式 builder / 跨 faultDomain 一致性、promotion、标准入口、B0-04 人工视觉；candidate 为 `NOT_DEPLOYED`，正式 Core 仍为 `15E22D10…EC2` | B0-05 可开始 raster/cache/prewarm 与 union topology probe |
+| B0-05 | ready_for_structural_integration | 可复用 cache/prewarm/PArgb 范式，B0-03b renderer/identity/policy 前置与 B0-04 结构入口已满足 | 专用 rasterizer 生命周期、test-only fixed-bounds union/commit 预检与拓扑裁决 | 开始 B0-05；不提前注册真实 widget |
 | B0-06 | blocked_by_B0-05; parity_exit_blocked_by_human_review | NativeHud widget 接口与 canonical asset 可复用 | fixture 实现等渲染基座；parity 结论另等 B0-04 视觉 Exit | B0-05 后可实现，视觉结论等人签 |
 | B0-07 | blocked_by_B0-06 | §9.5 已完成文档建设 k3/max 审计 | 最终实现包 k3/max 再审、全 Exit Gate、人工接受 | 等全片 |
 
@@ -814,7 +818,7 @@ rg -n -F '"includeExtensions"' config/build/runtime-inputs.v2.json
 
 ### 12.3 下次会话开场
 
-> Oracle 轨保留 B0-01B 第七轮 candidate，等待人类签署来源、状态、层隔离、crop 与审美 review receipt；不得用 FFDec/Web/Flash-Web 指标代签。工程轨从 B0-03b 开始：接入生产 `Svg.Skia 5.1.1`、复用同一 strict facade、精确嵌入 8 SVG + manifest，并闭合 runtime identity、policy、notice 与 packer；通过后进入 B0-05 raster/cache/prewarm 与 union probe。任何一片完成都在同提交回写 §12。
+> Oracle 轨保留 B0-01B 第七轮 candidate，等待人类签署来源、状态、层隔离、crop 与审美 review receipt；不得用 FFDec/Web/Flash-Web 指标代签。工程轨从已达 `renderer_qualified / NOT_DEPLOYED` 的 B0-03b 转入 B0-05 raster/cache/prewarm 与 union topology probe，不提前注册真实 widget。两正式 builder 一致性未取得真实跨 faultDomain 证据前继续保持 Exit 未勾，且不得冒称 promotion、标准入口或部署。任何一片完成都在同提交回写 §12。
 
 ---
 

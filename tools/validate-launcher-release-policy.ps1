@@ -281,6 +281,15 @@ function Get-Cf7ProductionChecks {
         $dotnet = Resolve-Cf7PinnedPolicyDotnet
         $checks += New-Cf7RequiredPathsCheck -Name 'candidate-required-artifacts' -Root $resolvedCandidate `
             -Paths @('CRAZYFLASHER7MercenaryEmpire.exe', 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll')
+        $checks += New-Cf7CommandCheck -Name 'candidate-player-info-svg-contract' -FilePath $powershell `
+            -Arguments @(
+                '-NoProfile',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', (Join-Path $ProjectRoot 'tools\validate-player-info-svg-production-contract.ps1'),
+                '-ProjectRoot', $ProjectRoot,
+                '-CandidateRoot', $resolvedCandidate
+            ) `
+            -WorkingDirectory $ProjectRoot
         $checks += New-Cf7CommandCheck -Name 'candidate-managed-optimized' -FilePath $dotnet `
             -Arguments @('run', (Join-Path $ProjectRoot 'tools\assert-optimized.cs'), '--', (Join-Path $resolvedCandidate 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll')) `
             -WorkingDirectory $ProjectRoot
