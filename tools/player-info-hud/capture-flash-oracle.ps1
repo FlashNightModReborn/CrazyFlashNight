@@ -1323,8 +1323,12 @@ function Get-FlashAuthoringIdentity {
 
 function Get-FreshFlashLogFromFullBytes {
     param(
-        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
-        [Parameter(Mandatory = $true)][byte[]]$FullBytes,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [byte[]]$FullBytes,
         [Parameter(Mandatory = $true)][datetime]$StartedUtc
     )
 
@@ -1366,7 +1370,9 @@ function Get-FreshFlashLogFromFullBytes {
 
 function Get-CurrentFreshFlashLog {
     param(
-        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [byte[]]$BeforeBytes,
         [Parameter(Mandatory = $true)][datetime]$StartedUtc
     )
 
@@ -1395,7 +1401,9 @@ function Get-ExactTerminalKind {
 
 function Get-StableFinalFlashLog {
     param(
-        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [byte[]]$BeforeBytes,
         [Parameter(Mandatory = $true)][datetime]$StartedUtc
     )
 
@@ -1581,7 +1589,9 @@ function Stop-OwnedPlayerFailClosed {
 function Wait-ForOwnedPlayerAndStableTrace {
     param(
         [Parameter(Mandatory = $true)]$Process,
-        [Parameter(Mandatory = $true)][byte[]]$BeforeBytes,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [byte[]]$BeforeBytes,
         [Parameter(Mandatory = $true)][datetime]$StartedUtc,
         [Parameter(Mandatory = $true)][string]$RunId,
         [Parameter(Mandatory = $true)][datetime]$DeadlineUtc
@@ -1972,6 +1982,31 @@ function Invoke-ValidateOnly {
     if ($freshProbe.mode -cne 'exact_prefix_tail' -or
         $freshProbe.text -cne "fresh`n") {
         throw 'Validate-only flashlog watermark slicing failed.'
+    }
+    $emptyBytes = [byte[]]@()
+    $emptyProbe = Get-FreshFlashLogFromFullBytes `
+        -BeforeBytes $emptyBytes `
+        -FullBytes $emptyBytes `
+        -StartedUtc ([datetime]::UtcNow)
+    if ($emptyProbe.mode -cne 'exact_prefix_tail' -or
+        $emptyProbe.bytes.Length -ne 0 -or
+        $emptyProbe.fullSha256 -cne
+            'E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855') {
+        throw 'Validate-only empty flashlog watermark handling failed.'
+    }
+    foreach ($commandName in @(
+        'Get-FreshFlashLogFromFullBytes',
+        'Get-CurrentFreshFlashLog',
+        'Get-StableFinalFlashLog',
+        'Wait-ForOwnedPlayerAndStableTrace'
+    )) {
+        $attributes = (Get-Command $commandName).Parameters[
+            'BeforeBytes'].Attributes
+        if (-not @($attributes | Where-Object {
+            $_ -is [System.Management.Automation.AllowEmptyCollectionAttribute]
+        }).Count) {
+            throw "Empty flashlog watermark binding is not admitted: $commandName"
+        }
     }
     foreach ($path in $watchedPaths) {
         $after = Get-FileIdentity -Path $path | ConvertTo-Json -Compress

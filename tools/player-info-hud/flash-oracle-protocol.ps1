@@ -114,7 +114,11 @@ function Get-PlayerInfoOracleTypedState {
 }
 
 function Get-PlayerInfoOracleBytesSha256 {
-    param([Parameter(Mandatory = $true)][byte[]]$Bytes)
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [byte[]]$Bytes
+    )
 
     $hasher = [System.Security.Cryptography.SHA256]::Create()
     try {
