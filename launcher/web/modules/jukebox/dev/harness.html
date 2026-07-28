@@ -252,8 +252,11 @@
                 host.currentCursor = 0;
                 host.playing = true;
                 host.paused = false;
-                UiData.dispatch('bgm:' + host.currentTitle);
-                setTimeout(function() { host.dispatchAudio(); }, 15);
+                // 模拟真实 Flash 回包延迟：bgm 确认异步到达，点曲 pending 态可被 QA 观测
+                setTimeout(function() {
+                    UiData.dispatch('bgm:' + host.currentTitle);
+                    host.dispatchAudio();
+                }, 15);
             } else if (cmd === 'pause') {
                 host.paused = true;
                 setTimeout(function() { host.dispatchAudio(); }, 15);

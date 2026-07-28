@@ -8,7 +8,11 @@
  *      → PostToWeb panel_cmd open → panels.js 调本 panel 的 onOpen。
  *
  * DOM 用 jbp- 前缀新 id，与 overlay.html 旧 #jukebox-panel DOM 完全隔离（旧 DOM 已被 CSS 整体隐藏，
- *   但 jukebox.js 仍 binding，本面板独立一份 listener，行为收敛于 panel 关闭时清理）。
+ *   旧 modules/jukebox.js 已于 2026-07-28 删除；本面板独立一份 listener，行为收敛于 panel 关闭时清理）。
+ *
+ * 美化轮 2026-07-28：CRT 开机动画 / 标题+曲名 marquee / 点曲 pending / active 滚动定位 / SVG 图标 /
+ *   LED 状态灯 / 待机屏 / 专辑分组 sticky 头 / 下拉与弹窗过渡 / 专辑 chip / 首屏 stagger /
+ *   磷光主题单选（绿磷屏|琥珀磷屏，localStorage 持久化）/ 进度条 scaleX / 列表 content-visibility。
  */
 (function() {
     'use strict';
@@ -42,11 +46,55 @@
     var settingsState = {
         override: false,
         trueRandom: false,
-        playMode: 'singleLoop'
+        playMode: 'singleLoop',
+        phosphor: 'green'
     };
     var sliders = {};
     var isPaused = false;
     var seekRect = null;
+
+    // ── 美化轮（2026-07-28）：内联 SVG 图标 / 磷光主题 / 点曲 pending ──
+    // currentColor 继承按钮文字色，消除 Unicode 符号（‖ ⏼ ?）的字体回退差异
+    var ICON_PLAY  = '<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 2 L10 6 L3 10 Z"/></svg>';
+    var ICON_PAUSE = '<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2.5" y="2" width="2.6" height="8"/><rect x="6.9" y="2" width="2.6" height="8"/></svg>';
+    var ICON_STOP  = '<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2.5" y="2.5" width="7" height="7"/></svg>';
+    var ICON_HELP  = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4.2 4.4 C4.2 3 5.1 2.2 6 2.2 C7 2.2 7.8 3 7.8 4 C7.8 4.9 7.2 5.3 6.6 5.8 C6.1 6.2 6 6.5 6 7.1"/><circle cx="6" cy="9.3" r="0.9" fill="currentColor" stroke="none"/></svg>';
+    var ICON_CLOSE = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 3 L9 9 M9 3 L3 9"/></svg>';
+
+    function setIcon(el, svg, name) {
+        el.innerHTML = svg;
+        el.setAttribute('data-icon', name);
+    }
+
+    // 磷光主题：CSS 侧走 --jb-accent 变量（applyTheme 内联覆盖），canvas 侧走本调色板
+    var THEME_STORAGE_KEY = 'cf7-jukebox-theme';
+    var PALETTES = {
+        green: {
+            accent: '#c8ff4c', accentRgb: '200,255,76', screenBg: '#070b06',
+            trail: 'rgba(7, 11, 6, 0.5)',
+            baseLine: 'rgba(200, 255, 76, 0.1)',
+            lGlow: 'rgba(170, 255, 50, 0.3)',   lCore: 'rgba(230, 255, 180, 0.95)',
+            rGlow: 'rgba(90,  255, 120, 0.25)', rCore: 'rgba(180, 255, 210, 0.90)',
+            standbyLine: 'rgba(200, 255, 76, 0.30)', standbyText: 'rgba(200, 255, 76, 0.55)'
+        },
+        amber: {
+            accent: '#ffb000', accentRgb: '255,176,0', screenBg: '#0b0803',
+            trail: 'rgba(11, 8, 3, 0.5)',
+            baseLine: 'rgba(255, 176, 0, 0.1)',
+            lGlow: 'rgba(255, 176, 0, 0.3)',    lCore: 'rgba(255, 236, 190, 0.95)',
+            rGlow: 'rgba(255, 132, 20, 0.25)',  rCore: 'rgba(255, 208, 150, 0.90)',
+            standbyLine: 'rgba(255, 176, 0, 0.30)', standbyText: 'rgba(255, 176, 0, 0.55)'
+        }
+    };
+    var palette = PALETTES.green;
+
+    // 点曲 pending：点击立即反馈，UiData 'bgm' 确认后转 active，超时兜底清除
+    var _pendingTitle = '';
+    var _pendingTimer = null;
+
+    // 时间文本写入去抖：音频数据 ~60ms 一推，秒级文本每秒才变一次，值不变不碰 DOM
+    var _lastStartText = '';
+    var _lastEndText = '';
 
     // 注册时机：panels.js 已加载（overlay.html 把本文件放在 panels.js 之后）
     Panels.register('jukebox', {
@@ -73,13 +121,14 @@
         _el.innerHTML = [
             '<div class="jbp-header">',
                 '<span class="jbp-title-static">&#9835; 点歌台</span>',
-                '<span class="jbp-current-title" id="jbp-current-title">未播放</span>',
-                '<span class="jbp-time" id="jbp-time"></span>',
+                '<span class="jbp-current-title" id="jbp-current-title"><span class="marquee-inner">未播放</span></span>',
+                '<span class="jbp-album-chip" id="jbp-album-chip" style="display:none"></span>',
                 '<div class="jbp-header-spacer"></div>',
-                '<div class="jbp-pause-btn jb-ctrl-btn" id="jbp-pause-btn" title="暂停/继续">&#8214;</div>',
-                '<div class="jbp-stop-btn jb-ctrl-btn" id="jbp-stop-btn" title="停止(回到默认BGM)">&#9724;</div>',
-                '<div class="jbp-help-btn jb-ctrl-btn" id="jbp-help-btn" title="帮助">?</div>',
-                '<button class="jbp-close-btn" id="jbp-close-btn" type="button">×</button>',
+                '<span class="jbp-led" id="jbp-led" title="播放状态"></span>',
+                '<div class="jbp-pause-btn jb-ctrl-btn jbp-primary" id="jbp-pause-btn" data-icon="pause" title="暂停/继续">' + ICON_PAUSE + '</div>',
+                '<div class="jbp-stop-btn jb-ctrl-btn" id="jbp-stop-btn" data-icon="stop" title="停止(回到默认BGM)">' + ICON_STOP + '</div>',
+                '<div class="jbp-help-btn jb-ctrl-btn" id="jbp-help-btn" data-icon="help" title="帮助">' + ICON_HELP + '</div>',
+                '<button class="jbp-close-btn" id="jbp-close-btn" data-icon="close" type="button" title="关闭">' + ICON_CLOSE + '</button>',
             '</div>',
             // 沉浸全屏化 2026-06-12：双栏控制台（左 Now-Playing：波形+进度+设置；右 曲库：专辑下拉+曲目列表）
             '<div class="jbp-body">',
@@ -132,6 +181,16 @@
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">播完回默认</span>',
                         '</div>',
+                        '<div class="jb-setting-divider"></div>',
+                        '<div class="jb-setting-group-label">显示</div>',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="phosphor" data-value="green">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">绿磷屏</span>',
+                        '</div>',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="phosphor" data-value="amber">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">琥珀磷屏</span>',
+                        '</div>',
                     '</div>',
                 '</div>',
                 '<div class="jbp-library">',
@@ -154,7 +213,8 @@
         ].join('');
 
         _refs.title       = _el.querySelector('#jbp-current-title');
-        _refs.time        = _el.querySelector('#jbp-time');
+        _refs.albumChip   = _el.querySelector('#jbp-album-chip');
+        _refs.led         = _el.querySelector('#jbp-led');
         _refs.canvas      = _el.querySelector('#jbp-wave');
         _refs.progFill    = _el.querySelector('#jbp-prog-fill');
         _refs.progBar     = _el.querySelector('#jbp-progress');
@@ -209,6 +269,19 @@
                 _refs.albumWrap.classList.remove('open');
             }
         };
+        // CRT 开机动画结束即摘除 class，下次 onOpen 可重新触发
+        _el.addEventListener('animationend', function(e) {
+            if (e.animationName === 'jbpBoot') _el.classList.remove('is-booting');
+        });
+        // 标题 marquee：元素随 panel 常驻，observer 建一次即可；尺寸就绪/变化时重测溢出
+        if (typeof ResizeObserver !== 'undefined') {
+            _titleMarqueeObserver = new ResizeObserver(function() {
+                checkMarqueeOverflow(_refs.title);
+            });
+            _titleMarqueeObserver.observe(_refs.title);
+        }
+        // 磷光主题：纯视觉偏好，localStorage 本地持久化（不经 Flash 桥）
+        applyTheme(loadTheme());
         // 沉浸全屏化：固定 1024×576 画布(.jbp-panel)包进共享 .panel-scale-shell，整体等比缩放铺满全 anchor
         _shellEl = document.createElement('div');
         _shellEl.className = 'panel-scale-shell jbp-scale-shell';
@@ -217,6 +290,7 @@
     }
 
     var _onDocClick = null;
+    var _titleMarqueeObserver = null;   // 标题 marquee 溢出重测（createDOM 建一次，元素常驻不析构）
     var _bridgeAudioH = null;
     var _bridgeCatalogH = null;
     var _bridgeCatalogUpdateH = null;
@@ -226,6 +300,10 @@
 
     function onOpen() {
         _opened = true;
+        // CRT 开机动画：class 重触发（元素常驻，每次 open 重放一次；perf-low-effects 全局禁用动画）
+        _el.classList.remove('is-booting');
+        void _el.offsetWidth;
+        _el.classList.add('is-booting');
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         // 双栏布局后波形画布按实际布局尺寸重设 buffer（createDOM 时元件未入 DOM 取不到尺寸，且 CSS 高度由 64→132），避免拉伸/模糊
@@ -329,15 +407,17 @@
         currentDuration = 0;
         playing = false;
         isPaused = false;
-        if (_refs.title) _refs.title.textContent = '未播放';
-        if (_refs.time) _refs.time.textContent = '';
-        if (_refs.progFill) _refs.progFill.style.width = '0%';
-        if (_refs.progTimeStart) _refs.progTimeStart.textContent = '00:00';
-        if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = '00:00';
+        _pendingTitle = '';
+        clearTimeout(_pendingTimer);
+        if (_refs.title) setupMarquee(_refs.title, '未播放', 18);
+        if (_refs.albumChip) _refs.albumChip.style.display = 'none';
+        setProgress(0);
+        setTimeTexts('00:00', '00:00');
         if (_refs.pauseBtn) {
             _refs.pauseBtn.classList.remove('paused');
-            _refs.pauseBtn.textContent = '‖';
+            setIcon(_refs.pauseBtn, ICON_PAUSE, 'pause');
         }
+        updateLed();
         if (_refs.ctx && _refs.canvas) {
             _refs.ctx.clearRect(0, 0, _refs.canvas.width, _refs.canvas.height);
         }
@@ -352,10 +432,70 @@
 
     function setTitle(title) {
         bgmTitle = title || '';
-        if (_refs.title) _refs.title.textContent = bgmTitle || '未播放';
-        if (!bgmTitle && _refs.time) _refs.time.textContent = '';
-        if (!bgmTitle && _refs.progFill) _refs.progFill.style.width = '0%';
-        updateActiveTrack();
+        if (_refs.title) {
+            setupMarquee(_refs.title, bgmTitle || '未播放', 18);
+            _refs.title.title = bgmTitle;
+        }
+        if (!bgmTitle) setProgress(0);
+        // bgm 回包到达：点曲 pending 收敛为 active
+        _pendingTitle = '';
+        clearTimeout(_pendingTimer);
+        updateAlbumChip();
+        refreshTrackStates();
+    }
+
+    // ── 标题/曲名 marquee：内容溢出裁剪窗口时横向滚动 ──
+    function setupMarquee(el, text, speed) {
+        if (!el) return;
+        if (speed == null) speed = 25;
+        el.innerHTML = '<span class="marquee-inner">' + escHtml(text) + '</span>';
+        el.classList.remove('scrolling');
+        el._marqueeSpeed = speed;
+        applyMarqueeVars(el, measureMarqueeOverflow(el), speed);
+    }
+
+    // inner 在非 scrolling 态被 max-width:100% 裁剪：scrollWidth=完整内容宽，offsetWidth=可见宽。
+    // 先摘掉 scrolling 再测，避免类相关度量在 ResizeObserver 回调里自激抖动。
+    function measureMarqueeOverflow(el) {
+        if (!el) return 0;
+        var inner = el.querySelector('.marquee-inner');
+        if (!inner) return 0;
+        el.classList.remove('scrolling');
+        return inner.scrollWidth - inner.offsetWidth;
+    }
+
+    function applyMarqueeVars(el, overflow, speed) {
+        if (overflow > 2) {
+            var dist = overflow + 8;   // 右侧留呼吸空间
+            var dur = Math.max(4, dist / (speed || 25));
+            el.style.setProperty('--marquee-dist', '-' + dist + 'px');
+            el.style.setProperty('--marquee-dur', dur + 's');
+            el.classList.add('scrolling');
+        } else {
+            el.style.removeProperty('--marquee-dist');
+            el.style.removeProperty('--marquee-dur');
+            el.classList.remove('scrolling');
+        }
+    }
+
+    function checkMarqueeOverflow(el) {
+        if (!el) return;
+        applyMarqueeVars(el, measureMarqueeOverflow(el), el._marqueeSpeed);
+    }
+
+    // 当前曲目所属专辑 chip：header 一眼定位（与“全部”视图的分组头同名）
+    function updateAlbumChip() {
+        if (!_refs.albumChip) return;
+        var album = '';
+        for (var i = 0; i < allTracks.length; i++) {
+            if (allTracks[i].title === bgmTitle) { album = allTracks[i].album || ''; break; }
+        }
+        if (album && bgmTitle) {
+            _refs.albumChip.textContent = album;
+            _refs.albumChip.style.display = '';
+        } else {
+            _refs.albumChip.style.display = 'none';
+        }
     }
 
     function fmtTime(sec) {
@@ -380,18 +520,38 @@
         if (histLen < HISTORY) histLen++;
 
         if (duration > 0 && bgmTitle) {
-            var pct = Math.min(cursor / duration, 1) * 100;
-            if (_refs.progFill) _refs.progFill.style.width = pct + '%';
-            if (_refs.time) _refs.time.textContent = fmtTime(cursor) + '/' + fmtTime(duration);
-            if (_refs.progTimeStart) _refs.progTimeStart.textContent = fmtTime(cursor);
-            if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = fmtTime(duration);
+            setProgress(Math.min(cursor / duration, 1));
+            setTimeTexts(fmtTime(cursor), fmtTime(duration));
         } else {
-            if (_refs.progFill) _refs.progFill.style.width = '0%';
-            if (_refs.time) _refs.time.textContent = '';
-            if (_refs.progTimeStart) _refs.progTimeStart.textContent = '00:00';
-            if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = '00:00';
+            setProgress(0);
+            setTimeTexts('00:00', '00:00');
         }
-        // 注：渲染已迁移到独立的 requestAnimationFrame 循环，数据更新与绘制解耦
+        updateLed();
+        // 注：渲染已迁移到独立的 30fps 循环，数据更新与绘制解耦
+    }
+
+    // 进度条 fill 用 scaleX（合成层）；width 写入会随 60ms 数据推送持续触发布局
+    function setProgress(p) {
+        if (_refs.progFill) _refs.progFill.style.transform = 'scaleX(' + p + ')';
+    }
+
+    // 时间文本写入去抖：值不变不碰 DOM（缓存初始 ''，面板重建后首帧必写一次）
+    function setTimeTexts(start, end) {
+        if (start !== _lastStartText) {
+            _lastStartText = start;
+            if (_refs.progTimeStart) _refs.progTimeStart.textContent = start;
+        }
+        if (end !== _lastEndText) {
+            _lastEndText = end;
+            if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = end;
+        }
+    }
+
+    // LED 状态灯：播放=主题色呼吸 / 暂停=琥珀 / 空闲=熄灭
+    function updateLed() {
+        if (!_refs.led) return;
+        _refs.led.classList.toggle('is-live', playing && !isPaused);
+        _refs.led.classList.toggle('is-paused', isPaused);
     }
 
     function startRenderLoop() {
@@ -439,10 +599,11 @@
         // 1. 解决【残留过强】与【画面脏】：提高擦除透明度 (0.18 -> 0.5)
         // 让拖影变短、收尾干脆利落，只保留极短的 CRT 物理余晖，防止画面积灰
         ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = 'rgba(7, 11, 6, 0.5)';
+        ctx.fillStyle = palette.trail;
         ctx.fillRect(0, 0, w, h);
 
-        if (histLen === 0) return;
+        // 待机屏：无音频数据时画呼吸正弦 + STANDBY 字符（复用同一 30fps 循环，不新增 rAF）
+        if (histLen === 0) { renderStandby(ctx, w, h, midY); return; }
 
         // 数据平滑插值：目标 hist 每 ~60ms 更新一次，显示缓冲每帧向目标逼近，
         // 使 60ms 的数据跳变在高帧率渲染下过渡顺滑，消除顿挫感
@@ -467,7 +628,7 @@
         ctx.moveTo(0, midY);
         ctx.lineTo(w, midY);
         ctx.lineWidth = 1 * dpr;
-        ctx.strokeStyle = 'rgba(200, 255, 76, 0.1)';
+        ctx.strokeStyle = palette.baseLine;
         ctx.stroke();
 
         // 开启光学叠加混合 (交叠处会自动过曝爆白)
@@ -475,8 +636,8 @@
 
         // 分别绘制左右声道（传入参数：历史数据, 是否倒置, 外层发光色, 核心高亮色, 相位差）
         // 刻意把左右声道的颜色拉开了一点点层级，交叉时色彩会极其通透
-        drawOscillator(displayHistL, true,  'rgba(170, 255, 50, 0.3)',  'rgba(230, 255, 180, 0.95)', 0);
-        drawOscillator(displayHistR, false, 'rgba(90,  255, 120, 0.25)', 'rgba(180, 255, 210, 0.90)', Math.PI);
+        drawOscillator(displayHistL, true,  palette.lGlow, palette.lCore, 0);
+        drawOscillator(displayHistR, false, palette.rGlow, palette.rCore, Math.PI);
 
         function drawOscillator(hist, isLeft, colorGlow, colorCore, phaseOffset) {
             ctx.beginPath();
@@ -525,6 +686,33 @@
             ctx.strokeStyle = colorCore;
             ctx.stroke();
         }
+    }
+
+    // ── 待机屏：无 BGM 时的呼吸正弦 + STANDBY 字符（复用 render 的 30fps 循环）──
+    // 擦除透明度 0.5 的余晖会让静止字符产生轻微 CRT 辉光拖尾，属于刻意效果
+    function renderStandby(ctx, w, h, midY) {
+        oscPhase += 0.06;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.lineJoin = 'bevel';
+        ctx.lineWidth = 1 * dpr;
+        ctx.strokeStyle = palette.standbyLine;
+        ctx.beginPath();
+        var breathe = 0.5 + 0.5 * Math.sin(oscPhase * 0.09);
+        var amp = (2 + 3 * breathe) * dpr;
+        for (var x = 0; x <= w; x += 4 * dpr) {
+            var y = midY + Math.sin(x * 0.03 / dpr + oscPhase * 0.12) * amp;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        // 字符缓慢明灭
+        ctx.globalAlpha = 0.35 + 0.25 * Math.sin(oscPhase * 0.15);
+        ctx.fillStyle = palette.standbyText;
+        ctx.font = (10 * dpr) + 'px Consolas, "Courier New", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('- STANDBY -', w / 2, midY - 12 * dpr);
+        ctx.globalAlpha = 1;
     }
 
     function onCatalog(data) {
@@ -596,18 +784,64 @@
         }
     }
 
+    // 首屏 stagger：每次重建列表只给前 12 项加入场动画，避免长列表视觉噪音
+    var ENTER_STAGGER_MAX = 12;
+
     function renderTrackList(albumFilter) {
         if (!_refs.trackList) return;
         _refs.trackList.innerHTML = '';
-        var source = albumFilter ? (albums[albumFilter] || []) : allTracks;
+        var enterCount = 0;
+        if (albumFilter) {
+            enterCount = appendTrackItems(albums[albumFilter] || [], enterCount);
+        } else {
+            // “全部”视图：按专辑分组，分组头 sticky 吸附（顺序与专辑下拉一致）
+            var names = [];
+            for (var alb in albums) names.push(alb);
+            names.sort();
+            for (var i = 0; i < names.length; i++) {
+                if (!albums[names[i]].length) continue;
+                var header = document.createElement('div');
+                header.className = 'jbp-album-group';
+                header.textContent = names[i];
+                _refs.trackList.appendChild(header);
+                enterCount = appendTrackItems(albums[names[i]], enterCount);
+            }
+        }
+        refreshTrackStates();
+        // active 项滚动定位：布局落定后执行，仅不在可视区时滚动并居中
+        setTimeout(scrollActiveIntoView, 0);
+    }
+
+    function appendTrackItems(source, enterCount) {
         for (var i = 0; i < source.length; i++) {
             var div = document.createElement('div');
             div.className = 'jbp-track-item';
-            div.textContent = source[i].title;
+            div.innerHTML = '<span class="marquee-inner">' + escHtml(source[i].title) + '</span>';
             div.setAttribute('data-title', source[i].title);
-            if (source[i].title === bgmTitle) div.classList.add('active');
+            div._marqueeSpeed = 25;
+            if (enterCount < ENTER_STAGGER_MAX) {
+                div.classList.add('jbp-enter');
+                div.style.animationDelay = (enterCount * 20) + 'ms';
+                enterCount++;
+            }
             div.addEventListener('click', onTrackClick);
+            div.addEventListener('mouseenter', onTrackHover);
             _refs.trackList.appendChild(div);
+        }
+        return enterCount;
+    }
+
+    // 曲名 marquee：首次 hover 时测量溢出；溢出项挂 .can-scroll，hover 期间滚动读全
+    function onTrackHover(e) {
+        var item = e.currentTarget;
+        if (item._marqueeChecked) return;
+        item._marqueeChecked = true;
+        var overflow = measureMarqueeOverflow(item);
+        if (overflow > 2) {
+            var dist = overflow + 8;   // 右侧留呼吸空间
+            item.style.setProperty('--marquee-dist', '-' + dist + 'px');
+            item.style.setProperty('--marquee-dur', Math.max(4, dist / (item._marqueeSpeed || 25)) + 's');
+            item.classList.add('can-scroll');
         }
     }
 
@@ -615,23 +849,53 @@
         var el = e.target;
         while (el && !el.getAttribute('data-title')) el = el.parentElement;
         var title = el ? el.getAttribute('data-title') : null;
-        if (title) Bridge.send({type: 'jukebox', cmd: 'play', title: title});
+        if (title) {
+            if (title !== bgmTitle) setPendingTrack(title);
+            Bridge.send({type: 'jukebox', cmd: 'play', title: title});
+        }
     }
 
-    function updateActiveTrack() {
+    // 点曲 pending：点击立即反馈，UiData 'bgm' 回包确认后转 active；3s 无回包兜底清除
+    function setPendingTrack(title) {
+        _pendingTitle = title || '';
+        clearTimeout(_pendingTimer);
+        if (_pendingTitle) {
+            _pendingTimer = setTimeout(function() {
+                _pendingTitle = '';
+                refreshTrackStates();
+            }, 3000);
+        }
+        refreshTrackStates();
+    }
+
+    function refreshTrackStates() {
         if (!_refs.trackList) return;
         var items = _refs.trackList.children;
         for (var i = 0; i < items.length; i++) {
             var t = items[i].getAttribute('data-title');
-            if (t === bgmTitle) items[i].classList.add('active');
-            else items[i].classList.remove('active');
+            if (!t) continue;   // 专辑分组头无 data-title
+            items[i].classList.toggle('active', t === bgmTitle);
+            items[i].classList.toggle('pending', t === _pendingTitle && t !== bgmTitle);
+        }
+    }
+
+    // active 项滚动定位：仅不在可视区时滚动（不打扰正在浏览其他位置的用户）
+    function scrollActiveIntoView() {
+        if (!_refs.trackList) return;
+        var active = _refs.trackList.querySelector('.jbp-track-item.active');
+        if (!active) return;
+        var listR = _refs.trackList.getBoundingClientRect();
+        var itemR = active.getBoundingClientRect();
+        if (itemR.top < listR.top || itemR.bottom > listR.bottom) {
+            _refs.trackList.scrollTop += itemR.top - listR.top - (listR.height - itemR.height) / 2;
         }
     }
 
     function onPauseClick() {
         isPaused = !isPaused;
         _refs.pauseBtn.classList.toggle('paused', isPaused);
-        _refs.pauseBtn.textContent = isPaused ? '▶' : '‖';
+        setIcon(_refs.pauseBtn, isPaused ? ICON_PLAY : ICON_PAUSE, isPaused ? 'play' : 'pause');
+        updateLed();
         Bridge.send({type: 'jukebox', cmd: isPaused ? 'pause' : 'resume'});
     }
 
@@ -639,8 +903,9 @@
         isPaused = false;
         if (_refs.pauseBtn) {
             _refs.pauseBtn.classList.remove('paused');
-            _refs.pauseBtn.textContent = '‖';
+            setIcon(_refs.pauseBtn, ICON_PAUSE, 'pause');
         }
+        updateLed();
         Bridge.send({type: 'jukebox', cmd: 'stop'});
     }
 
@@ -649,7 +914,7 @@
             isPaused = false;
             if (_refs.pauseBtn) {
                 _refs.pauseBtn.classList.remove('paused');
-                _refs.pauseBtn.textContent = '‖';
+                setIcon(_refs.pauseBtn, ICON_PAUSE, 'pause');
             }
         }
     }
@@ -712,11 +977,14 @@
         if (item.classList.contains('jb-radio')) {
             var val = item.getAttribute('data-value');
             settingsState[key] = val;
-            var siblings = _refs.settings.querySelectorAll('.jb-radio[data-key="' + key + '"]');
-            for (var i = 0; i < siblings.length; i++) {
-                siblings[i].classList.toggle('active', siblings[i].getAttribute('data-value') === val);
+            syncRadioUI(key, val);
+            if (key === 'playMode') {
+                Bridge.send({type: 'jukebox', cmd: 'playMode', value: val});
+            } else if (key === 'phosphor') {
+                // 纯视觉偏好：本地应用 + localStorage 持久化，不经 Flash 桥
+                applyTheme(val);
+                persistTheme();
             }
-            Bridge.send({type: 'jukebox', cmd: 'playMode', value: val});
             return;
         }
         settingsState[key] = !settingsState[key];
@@ -734,13 +1002,42 @@
         for (var i = 0; i < items.length; i++) items[i].classList.toggle('active', active);
     }
 
-    function syncPlayModeUI(mode) {
+    function syncRadioUI(key, val) {
         if (!_refs.settings) return;
-        settingsState.playMode = mode;
-        var radios = _refs.settings.querySelectorAll('.jb-radio[data-key="playMode"]');
+        var radios = _refs.settings.querySelectorAll('.jb-radio[data-key="' + key + '"]');
         for (var i = 0; i < radios.length; i++) {
-            radios[i].classList.toggle('active', radios[i].getAttribute('data-value') === mode);
+            radios[i].classList.toggle('active', radios[i].getAttribute('data-value') === val);
         }
+    }
+
+    function syncPlayModeUI(mode) {
+        settingsState.playMode = mode;
+        syncRadioUI('playMode', mode);
+    }
+
+    // ── 磷光主题：绿磷屏 / 琥珀磷屏（互斥单选）。CSS 侧内联覆盖 --jb-accent 变量，canvas 侧切换 palette ──
+    function loadTheme() {
+        try {
+            return localStorage.getItem(THEME_STORAGE_KEY) === 'amber' ? 'amber' : 'green';
+        } catch (e) { return 'green'; }
+    }
+
+    function persistTheme() {
+        try {
+            localStorage.setItem(THEME_STORAGE_KEY, settingsState.phosphor);
+        } catch (e) {}
+    }
+
+    function applyTheme(name) {
+        var p = PALETTES[name] || PALETTES.green;
+        palette = p;
+        settingsState.phosphor = (p === PALETTES.amber) ? 'amber' : 'green';
+        if (_el) {
+            _el.style.setProperty('--jb-accent', p.accent);
+            _el.style.setProperty('--jb-accent-rgb', p.accentRgb);
+            _el.style.setProperty('--jb-screen-bg', p.screenBg);
+        }
+        syncRadioUI('phosphor', settingsState.phosphor);
     }
 
     // ── 进度条 seek ──

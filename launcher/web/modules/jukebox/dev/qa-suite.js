@@ -24,6 +24,9 @@ var JukeboxHarnessQA = (function() {
         var cases = [
             ['open-close', 'open and close lifecycle', function() {
                 host.open();
+                // CRT 开机动画：open 后同步可见 is-booting（animationend 后由面板自清除）
+                var bootEl = document.querySelector('.jbp-panel');
+                api.assert(bootEl && bootEl.classList.contains('is-booting'), 'boot animation class present on open');
                 return waitReady(api).then(function() {
                     api.assertEqual(Panels.getActive(), 'jukebox', 'active panel');
                     Panels.close();
@@ -42,10 +45,9 @@ var JukeboxHarnessQA = (function() {
                         var title = document.getElementById('jbp-current-title');
                         api.assertEqual(title.textContent, 'Tetrriture', 'current title seeded');
                         return api.waitFor(function() {
-                            var time = document.getElementById('jbp-time');
-                            return time && time.textContent.indexOf('00:08') >= 0 ? time : null;
-                        }, 1500, 'time displays cursor').then(function(time) {
                             var start = document.getElementById('jbp-prog-time-start');
+                            return start && start.textContent.indexOf('00:08') >= 0 ? start : null;
+                        }, 1500, 'progress start displays cursor').then(function(start) {
                             var end = document.getElementById('jbp-prog-time-end');
                             api.assertEqual(start.textContent, '00:08', 'progress start time');
                             api.assertEqual(end.textContent, '02:58', 'progress end time');
@@ -110,10 +112,10 @@ var JukeboxHarnessQA = (function() {
                 host.open();
                 return waitReady(api).then(function() {
                     var pauseBtn = document.getElementById('jbp-pause-btn');
-                    api.assertEqual(pauseBtn.textContent, '‖', 'initial pause symbol');
+                    api.assertEqual(pauseBtn.getAttribute('data-icon'), 'pause', 'initial pause icon');
                     click(pauseBtn);
                     api.assert(pauseBtn.classList.contains('paused'), 'paused class set');
-                    api.assertEqual(pauseBtn.textContent, '▶', 'resume symbol');
+                    api.assertEqual(pauseBtn.getAttribute('data-icon'), 'play', 'resume play icon');
                     var pauseMsg = host.sentMessages.slice().reverse().find(function(m) { return m.cmd === 'pause'; });
                     api.assert(!!pauseMsg, 'pause message sent');
                     click(pauseBtn);
@@ -225,6 +227,90 @@ var JukeboxHarnessQA = (function() {
                     api.assert(width === 'auto' || width === 'thin' || width === '7px' || width === '', 'dropdown scrollbar width acceptable (computed: ' + width + ')');
                     click(document.body);
                     return 'album scrollbar styled';
+                });
+            }],
+            ['track-pending', 'clicked track shows pending until bgm confirms', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    return waitCatalog(api).then(function() {
+                        // open 会触发 requestCatalog → ~15ms 后重渲染并整体替换列表节点；
+                        // 等刷新落地再取元素，避免点击到上一次渲染的已 detach 旧节点
+                        return new Promise(function(resolve) { setTimeout(resolve, 80); });
+                    }).then(function() {
+                        var findBulletproof = function() {
+                            return [].slice.call(document.querySelectorAll('.jbp-track-item')).find(function(el) {
+                                return el.getAttribute('data-title') === 'Bulletproof';
+                            });
+                        };
+                        var target = findBulletproof();
+                        api.assert(!!target, 'Bulletproof track exists');
+                        click(target);
+                        api.assert(target.classList.contains('pending'), 'pending class set right after click');
+                        api.assert(!target.classList.contains('active'), 'not active before bgm confirm');
+                        return api.waitFor(function() {
+                            var el = findBulletproof();
+                            return el && el.classList.contains('active') ? el : null;
+                        }, 1000, 'bgm confirm turns pending into active').then(function(el) {
+                            api.assert(!el.classList.contains('pending'), 'pending cleared after confirm');
+                            return 'track pending ok';
+                        });
+                    });
+                });
+            }],
+            ['album-groups', 'all view groups tracks by album with sticky headers', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    return waitCatalog(api).then(function() {
+                        var groups = document.querySelectorAll('.jbp-album-group');
+                        api.assert(groups.length >= 5, 'album group headers rendered in all view');
+                        api.assertEqual(groups[0].textContent, 'BONUS', 'groups sorted alphabetically');
+                        click(document.getElementById('jbp-album-trigger'));
+                        var pbOpt = document.querySelector('.jbp-album-option[data-album="PB"]');
+                        api.assert(!!pbOpt, 'PB album option exists');
+                        click(pbOpt);
+                        api.assert(document.querySelectorAll('.jbp-album-group').length === 0, 'no group headers in single album view');
+                        api.assert(document.querySelectorAll('.jbp-track-item').length === 2, 'PB album has 2 tracks');
+                        return 'album groups ok';
+                    });
+                });
+            }],
+            ['theme-toggle', 'phosphor theme radio switches and persists locally', function() {
+                try { localStorage.removeItem('cf7-jukebox-theme'); } catch (e) {}
+                host.open();
+                return waitReady(api).then(function() {
+                    var panel = document.querySelector('.jbp-panel');
+                    var greenRow = document.querySelector('.jb-radio[data-key="phosphor"][data-value="green"]');
+                    var amberRow = document.querySelector('.jb-radio[data-key="phosphor"][data-value="amber"]');
+                    api.assert(!!greenRow && !!amberRow, 'phosphor radio rows exist');
+                    api.assert(greenRow.classList.contains('active'), 'green phosphor default active');
+                    api.assert(!amberRow.classList.contains('active'), 'amber phosphor default inactive');
+                    click(amberRow);
+                    api.assert(amberRow.classList.contains('active'), 'amber active after click');
+                    api.assert(!greenRow.classList.contains('active'), 'green inactive after amber click (mutex)');
+                    api.assertEqual(panel.style.getPropertyValue('--jb-accent'), '#ffb000', 'amber accent applied inline');
+                    var saved = '';
+                    try { saved = localStorage.getItem('cf7-jukebox-theme') || ''; } catch (e) {}
+                    api.assertEqual(saved, 'amber', 'theme persisted to localStorage');
+                    click(greenRow);
+                    api.assert(greenRow.classList.contains('active'), 'green restored');
+                    api.assertEqual(panel.style.getPropertyValue('--jb-accent'), '#c8ff4c', 'green accent restored');
+                    return 'theme radio ok';
+                });
+            }],
+            ['led-state', 'LED reflects playing and paused states', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    return api.waitFor(function() {
+                        var led = document.getElementById('jbp-led');
+                        return led && led.classList.contains('is-live') ? led : null;
+                    }, 1500, 'LED live while playing').then(function(led) {
+                        click(document.getElementById('jbp-pause-btn'));
+                        api.assert(led.classList.contains('is-paused'), 'LED amber while paused');
+                        api.assert(!led.classList.contains('is-live'), 'LED not live while paused');
+                        click(document.getElementById('jbp-pause-btn'));
+                        api.assert(led.classList.contains('is-live'), 'LED live after resume');
+                        return 'led state ok';
+                    });
                 });
             }]
         ];
