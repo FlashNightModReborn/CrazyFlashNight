@@ -34,6 +34,10 @@ $scriptsDir = Join-Path $projectDir 'scripts'
 $templatePath = Join-Path $projectDir `
     'scripts\test-runners\player-info-oracle\TestLoader.as.template'
 $protocolHelperPath = Join-Path $PSScriptRoot 'flash-oracle-protocol.ps1'
+$captureRunnerRelativePath =
+    'tools/player-info-hud/capture-flash-oracle.ps1'
+$protocolHelperRelativePath =
+    'tools/player-info-hud/flash-oracle-protocol.ps1'
 $scratchHelperPath = Join-Path $projectDir `
     'scripts\test-runners\testloader-scratch-transaction.ps1'
 $scratchRunnerPath = Join-Path $scriptsDir 'TestLoader.as'
@@ -253,6 +257,82 @@ function Assert-CandidateSnapshotSet {
             $identity.length -ne [int64]$snapshot.bytes -or
             $identity.sha256 -cne [string]$snapshot.sha256) {
             throw "Candidate snapshot drifted before promotion: $($entry.Key)"
+        }
+    }
+}
+
+function Assert-PlayerInfoCaptureToolingBindings {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Collections.IDictionary]$Snapshots,
+        [Parameter(Mandatory = $true)]
+        [System.Collections.IDictionary]$FrozenInputs,
+        [Parameter(Mandatory = $true)]$StrictTooling,
+        $Manifest = $null
+    )
+
+    if ([string]$StrictTooling.status -cne 'strict') {
+        throw 'Candidate capture tooling is not strict Git provenance.'
+    }
+    $bindings = @(
+        [pscustomobject]@{
+            role = 'capture_runner'
+            path = $captureRunnerRelativePath
+            snapshot = $Snapshots.captureRunner
+            frozen = $FrozenInputs.captureRunner
+            identity = $StrictTooling.runner
+        },
+        [pscustomobject]@{
+            role = 'protocol_helper'
+            path = $protocolHelperRelativePath
+            snapshot = $Snapshots.protocolHelper
+            frozen = $FrozenInputs.protocolHelper
+            identity = $StrictTooling.protocol
+        }
+    )
+    foreach ($binding in $bindings) {
+        if ([string]$binding.identity.status -cne 'strict' -or
+            -not [bool]$binding.identity.headIndexCleanFilterEqual -or
+            [string]$binding.identity.path -cne [string]$binding.path -or
+            [string]$binding.snapshot.sha256 -cne
+                [string]$binding.frozen.sha256 -or
+            [int64]$binding.snapshot.bytes -ne
+                [int64]$binding.frozen.length -or
+            [string]$binding.identity.sha256 -cne
+                [string]$binding.frozen.sha256 -or
+            [int64]$binding.identity.bytes -ne
+                [int64]$binding.frozen.length -or
+            [string]$binding.identity.gitBlobOid -notmatch
+                '^[0-9a-f]{40}$' -or
+            [string]$binding.identity.gitBlobSha256 -notmatch
+                '^[0-9A-F]{64}$' -or
+            [int64]$binding.identity.gitBlobBytes -le 0) {
+            throw "Capture-tool snapshot/Git binding drifted: $($binding.role)"
+        }
+        if ($null -ne $Manifest) {
+            $manifestMatches = @($Manifest.captureTooling.files |
+                Where-Object { [string]$_.role -ceq $binding.role })
+            if ($manifestMatches.Count -ne 1) {
+                throw "Manifest captureTooling role is not unique: $($binding.role)"
+            }
+            $manifestBinding = $manifestMatches[0]
+            if ([string]$manifestBinding.path -cne $binding.path -or
+                [string]$manifestBinding.sha256 -cne
+                    [string]$binding.frozen.sha256 -or
+                [int64]$manifestBinding.bytes -ne
+                    [int64]$binding.frozen.length -or
+                [string]$manifestBinding.gitBlobOid -cne
+                    [string]$binding.identity.gitBlobOid -or
+                [int64]$manifestBinding.gitBlobBytes -ne
+                    [int64]$binding.identity.gitBlobBytes -or
+                [string]$manifestBinding.gitBlobSha256 -cne
+                    [string]$binding.identity.gitBlobSha256 -or
+                [string]$manifestBinding.snapshot.sha256 -cne
+                    [string]$binding.snapshot.sha256 -or
+                [string]$manifestBinding.snapshot.path -cne
+                    [string]$binding.snapshot.path) {
+                throw "Manifest captureTooling cross-binding drifted: $($binding.role)"
+            }
         }
     }
 }
@@ -704,6 +784,9 @@ function Assert-RunnerStaticContract {
         'New-PlayerInfoDerivedSwfTransaction',
         'Freeze-PlayerInfoDerivedSwfCompiledIdentity',
         'Get-PlayerInfoCompileRecoveryDecision',
+        'Get-StrictCaptureToolingSet',
+        'Assert-StrictCaptureToolingCurrent',
+        'Assert-PlayerInfoCaptureToolingBindings',
         'Restore-PlayerInfoDerivedSwfTransaction',
         'Assert-PlayerInfoRestoredSwfIdentity',
         'Complete-PlayerInfoDerivedSwfCleanup',
@@ -725,6 +808,8 @@ function Assert-RunnerStaticContract {
         'oracle-run-block.txt',
         'oracle-run-summary.canonical.txt',
         'canonicalRunSummary',
+        'captureTooling',
+        'strictToolIdentity',
         'restoredSwfIdentityVerifiedUnderMutex',
         'Assert-CandidateSnapshotSet',
         'compile-output.txt',
@@ -740,6 +825,12 @@ function Assert-RunnerStaticContract {
             $source, '(?m)^\s*\$ownedPlayer\s*=\s*Start-Process\b').Count -ne 1) {
         throw 'Capture runner must start exactly one owned player process.'
     }
+    if ($source -notmatch (
+            '(?m)^\s*captureRunner\s*=\s*New-FrozenFileInput\b') -or
+        $source -notmatch (
+            '(?m)^\s*protocolHelper\s*=\s*New-FrozenFileInput\b')) {
+        throw 'Runner/protocol tooling must be part of immutable frozenInputs.'
+    }
     if ([regex]::Matches($source, '\.Kill\(\)').Count -ne 1 -or
         $source -match '\bCloseMainWindow\b' -or
         $source -match '(?im)^\s*Stop-Process\b' -or
@@ -749,9 +840,24 @@ function Assert-RunnerStaticContract {
     $releaseIndex = $source.LastIndexOf(
         '$compileMutex.ReleaseMutex()',
         [System.StringComparison]::Ordinal)
+    $strictToolIndex = $source.LastIndexOf(
+        '$strictCaptureTooling = Get-StrictCaptureToolingSet',
+        [System.StringComparison]::Ordinal)
+    $mutexCreateIndex = $source.LastIndexOf(
+        '$compileMutex = [System.Threading.Mutex]::new',
+        [System.StringComparison]::Ordinal)
     $promotionIndex = $source.LastIndexOf(
         'Move-Item -LiteralPath $workDir -Destination $finalRunDir',
         [System.StringComparison]::Ordinal)
+    if ($strictToolIndex -lt 0 -or
+        $mutexCreateIndex -le $strictToolIndex -or
+        $source.Substring(
+            $strictToolIndex,
+            $mutexCreateIndex - $strictToolIndex).IndexOf(
+                '-RequireStrict',
+                [System.StringComparison]::Ordinal) -lt 0) {
+        throw 'True capture must establish strict tool identity before its mutex.'
+    }
     if ($releaseIndex -lt 0 -or $promotionIndex -le $releaseIndex) {
         throw 'Candidate promotion must occur after mutex release and scratch cleanup.'
     }
@@ -855,6 +961,160 @@ function Get-GitCanonicalIdentity {
         bytes = $bytes.Length
         sha256 = (
             Get-PlayerInfoOracleBytesSha256 -Bytes $bytes).ToLowerInvariant()
+    }
+}
+
+function Get-GitRevisionPathOid {
+    param(
+        [Parameter(Mandatory = $true)][string]$Spec,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+
+    $output = @(& git -C $projectDir rev-parse --verify $Spec 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+        throw "git rev-parse failed for $Label`: $($output -join ' ')"
+    }
+    $oid = (($output -join '').Trim()).ToLowerInvariant()
+    if ($oid -notmatch '^[0-9a-f]{40}$') {
+        throw "git rev-parse returned an invalid blob OID for $Label."
+    }
+    return $oid
+}
+
+function Get-StrictCaptureToolIdentity {
+    param(
+        [Parameter(Mandatory = $true)][string]$RelativePath,
+        [Parameter(Mandatory = $true)]$Frozen,
+        [Parameter(Mandatory = $true)]
+        [ValidatePattern('^[0-9a-fA-F]{40}$')]
+        [string]$HeadCommit,
+        [switch]$RequireStrict
+    )
+
+    if ([System.IO.Path]::IsPathRooted($RelativePath) -or
+        $RelativePath.Contains('..') -or
+        $RelativePath -match '\\') {
+        throw "Capture-tool path is not a safe repo-relative Git path: $RelativePath"
+    }
+    Assert-FrozenFileInputCurrent -Frozen $Frozen
+    $headOid = Get-GitRevisionPathOid `
+        -Spec ($HeadCommit + ':' + $RelativePath) `
+        -Label ('HEAD ' + $RelativePath)
+    $indexOid = Get-GitRevisionPathOid `
+        -Spec (':' + $RelativePath) `
+        -Label ('index ' + $RelativePath)
+    $cleanOutput = @(& git -C $projectDir hash-object `
+        "--path=$RelativePath" -- $Frozen.path 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+        throw (
+            "git hash-object --path failed for $RelativePath`: " +
+            ($cleanOutput -join ' '))
+    }
+    $cleanOid = (($cleanOutput -join '').Trim()).ToLowerInvariant()
+    if ($cleanOid -notmatch '^[0-9a-f]{40}$') {
+        throw "git hash-object returned an invalid OID for $RelativePath."
+    }
+    Assert-FrozenFileInputCurrent -Frozen $Frozen
+    $strict = $headOid -ceq $indexOid -and $headOid -ceq $cleanOid
+    $canonical = $null
+    if ($strict) {
+        $canonical = Get-GitCanonicalIdentity `
+            -RelativePath $RelativePath `
+            -AbsolutePath $Frozen.path
+        Assert-FrozenFileInputCurrent -Frozen $Frozen
+        if ($canonical.oid -cne $headOid) {
+            throw "Strict capture-tool blob changed during verification: $RelativePath"
+        }
+    }
+    if ($RequireStrict -and -not $strict) {
+        throw (
+            'True capture requires HEAD/index/clean-filter blob identity equality: ' +
+            "$RelativePath; HEAD=$headOid; index=$indexOid; clean=$cleanOid")
+    }
+    return [pscustomobject]@{
+        status = if ($strict) { 'strict' } else { 'pending' }
+        path = $RelativePath
+        sha256 = [string]$Frozen.sha256
+        bytes = [long]$Frozen.length
+        gitBlobOid = if ($strict) { $headOid } else { $null }
+        gitBlobBytes = if ($strict) { [long]$canonical.bytes } else { $null }
+        gitBlobSha256 = if ($strict) {
+            ([string]$canonical.sha256).ToUpperInvariant()
+        } else {
+            $null
+        }
+        headBlobOid = $headOid
+        indexBlobOid = $indexOid
+        cleanFilterBlobOid = $cleanOid
+        headIndexCleanFilterEqual = $strict
+    }
+}
+
+function Get-StrictCaptureToolingSet {
+    param(
+        [Parameter(Mandatory = $true)]$RunnerFrozen,
+        [Parameter(Mandatory = $true)]$ProtocolFrozen,
+        [switch]$RequireStrict
+    )
+
+    $headOutput = @(& git -C $projectDir rev-parse --verify HEAD 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+        throw "Could not resolve capture-tool HEAD: $($headOutput -join ' ')"
+    }
+    $headCommit = (($headOutput -join '').Trim()).ToLowerInvariant()
+    if ($headCommit -notmatch '^[0-9a-f]{40}$') {
+        throw 'Capture-tool HEAD is not a full commit OID.'
+    }
+    $runner = Get-StrictCaptureToolIdentity `
+        -RelativePath $captureRunnerRelativePath `
+        -Frozen $RunnerFrozen `
+        -HeadCommit $headCommit `
+        -RequireStrict:$RequireStrict
+    $protocol = Get-StrictCaptureToolIdentity `
+        -RelativePath $protocolHelperRelativePath `
+        -Frozen $ProtocolFrozen `
+        -HeadCommit $headCommit `
+        -RequireStrict:$RequireStrict
+    $headAfter = @(& git -C $projectDir rev-parse --verify HEAD 2>&1)
+    if ($LASTEXITCODE -ne 0 -or
+        (($headAfter -join '').Trim()).ToLowerInvariant() -cne $headCommit) {
+        throw 'Capture-tool HEAD changed during strict identity verification.'
+    }
+    return [pscustomobject]@{
+        status = if (
+            $runner.status -ceq 'strict' -and
+            $protocol.status -ceq 'strict') {
+            'strict'
+        } else {
+            'pending'
+        }
+        headCommit = $headCommit
+        runner = $runner
+        protocol = $protocol
+    }
+}
+
+function Assert-StrictCaptureToolingCurrent {
+    param(
+        [Parameter(Mandatory = $true)]$Expected,
+        [Parameter(Mandatory = $true)]$RunnerFrozen,
+        [Parameter(Mandatory = $true)]$ProtocolFrozen
+    )
+
+    $current = Get-StrictCaptureToolingSet `
+        -RunnerFrozen $RunnerFrozen `
+        -ProtocolFrozen $ProtocolFrozen `
+        -RequireStrict
+    if ([string]$current.headCommit -cne [string]$Expected.headCommit -or
+        [string]$current.runner.gitBlobOid -cne
+            [string]$Expected.runner.gitBlobOid -or
+        [string]$current.protocol.gitBlobOid -cne
+            [string]$Expected.protocol.gitBlobOid -or
+        [string]$current.runner.sha256 -cne
+            [string]$Expected.runner.sha256 -or
+        [string]$current.protocol.sha256 -cne
+            [string]$Expected.protocol.sha256) {
+        throw 'Strict capture tooling changed during the mutex-held capture.'
     }
 }
 
@@ -1665,6 +1925,7 @@ function Invoke-PlayerInfoDerivedSwfTransactionSelfTest {
 
 function Invoke-ValidateOnly {
     $watchedPaths = @(
+        $PSCommandPath,
         $scratchRunnerPath,
         $loaderSwfPath,
         $uiSwfPath,
@@ -1684,6 +1945,13 @@ function Invoke-ValidateOnly {
     }
     $template = Assert-OracleTemplate
     Assert-RunnerStaticContract
+    $validateRunnerFrozen = New-FrozenFileInput `
+        -Path $PSCommandPath -Label $captureRunnerRelativePath
+    $validateProtocolFrozen = New-FrozenFileInput `
+        -Path $protocolHelperPath -Label $protocolHelperRelativePath
+    $validateTooling = Get-StrictCaptureToolingSet `
+        -RunnerFrozen $validateRunnerFrozen `
+        -ProtocolFrozen $validateProtocolFrozen
     $evidence = $null
     if ((Test-Path -LiteralPath $closurePath) -and
         (Test-Path -LiteralPath $chainPath)) {
@@ -1729,6 +1997,7 @@ function Invoke-ValidateOnly {
         "PNG roundTrips=$($protocol.pngRoundTrips), " +
         "SWF recovery=$($derivedTransaction.recoveryScenarios), " +
         "recovery negatives=$($derivedTransaction.recoveryAdmissionNegatives), " +
+        "strictToolIdentity=$($validateTooling.status), " +
         "templateStaticMax=$($template.staticWorstPartChars), " +
         "closure=$schemaStatus; Flash was not started.")
 }
@@ -1773,6 +2042,10 @@ if (-not $b001Evidence.gitCanonicalSchema) {
         'capture is fail-closed until the Git-canonical schema lands.')
 }
 $frozenInputs = [ordered]@{
+    captureRunner = New-FrozenFileInput `
+        -Path $PSCommandPath -Label $captureRunnerRelativePath
+    protocolHelper = New-FrozenFileInput `
+        -Path $protocolHelperPath -Label $protocolHelperRelativePath
     childSwf = New-FrozenFileInput `
         -Path $uiSwfPath -Label $uiSwfRelativePath
     template = New-FrozenFileInput `
@@ -1788,6 +2061,13 @@ $frozenInputs = [ordered]@{
 if ($frozenInputs.childSwf.sha256 -cne $uiSwfHash -or
     $frozenInputs.template.sha256 -cne $template.sha256) {
     throw 'Prevalidated child/template identity changed before capture freeze.'
+}
+$strictCaptureTooling = Get-StrictCaptureToolingSet `
+    -RunnerFrozen $frozenInputs.captureRunner `
+    -ProtocolFrozen $frozenInputs.protocolHelper `
+    -RequireStrict
+if ($strictCaptureTooling.status -cne 'strict') {
+    throw 'True capture tooling did not reach strict Git identity.'
 }
 
 $normalizedRoot = $projectDir.TrimEnd('\').ToUpperInvariant()
@@ -1851,6 +2131,10 @@ try {
     foreach ($frozen in $frozenInputs.Values) {
         Assert-FrozenFileInputCurrent -Frozen $frozen
     }
+    Assert-StrictCaptureToolingCurrent `
+        -Expected $strictCaptureTooling `
+        -RunnerFrozen $frozenInputs.captureRunner `
+        -ProtocolFrozen $frozenInputs.protocolHelper
     $compileLease = 'v1:{0}:{1}:{2}' -f
         $repoHash, $PID, [System.Guid]::NewGuid().ToString('N')
     $scratchTransaction = New-Cf7TestLoaderScratchTransaction `
@@ -2078,6 +2362,16 @@ try {
     $snapshots.canonicalRunSummary['promotable'] = $true
     $snapshotInputSpecs = @(
         [pscustomobject]@{
+            name = 'capture-flash-oracle.ps1'
+            key = 'captureRunner'
+            input = $frozenInputs.captureRunner
+        },
+        [pscustomobject]@{
+            name = 'flash-oracle-protocol.ps1'
+            key = 'protocolHelper'
+            input = $frozenInputs.protocolHelper
+        },
+        [pscustomobject]@{
             name = 'compile-output.txt'
             key = 'compileOutput'
             input = $postCompileInputs.compileOutput
@@ -2250,6 +2544,38 @@ try {
                 }
             }
         }
+        captureTooling = [ordered]@{
+            strictToolIdentity = 'head_index_clean_filter_equal'
+            headCommit = [string]$strictCaptureTooling.headCommit
+            files = @(
+                [ordered]@{
+                    role = 'capture_runner'
+                    path = $captureRunnerRelativePath
+                    bytes = [long]$frozenInputs.captureRunner.length
+                    sha256 = [string]$frozenInputs.captureRunner.sha256
+                    gitBlobOid =
+                        [string]$strictCaptureTooling.runner.gitBlobOid
+                    gitBlobBytes =
+                        [long]$strictCaptureTooling.runner.gitBlobBytes
+                    gitBlobSha256 =
+                        [string]$strictCaptureTooling.runner.gitBlobSha256
+                    snapshot = $snapshots.captureRunner
+                },
+                [ordered]@{
+                    role = 'protocol_helper'
+                    path = $protocolHelperRelativePath
+                    bytes = [long]$frozenInputs.protocolHelper.length
+                    sha256 = [string]$frozenInputs.protocolHelper.sha256
+                    gitBlobOid =
+                        [string]$strictCaptureTooling.protocol.gitBlobOid
+                    gitBlobBytes =
+                        [long]$strictCaptureTooling.protocol.gitBlobBytes
+                    gitBlobSha256 =
+                        [string]$strictCaptureTooling.protocol.gitBlobSha256
+                    snapshot = $snapshots.protocolHelper
+                }
+            )
+        }
         runtime = [ordered]@{
             player = [ordered]@{
                 path = $playerRelativePath
@@ -2377,6 +2703,11 @@ try {
         -Transaction $derivedSwfTransaction
     Assert-CandidateSnapshotSet `
         -WorkDirectory $workDir -Snapshots $snapshots
+    Assert-PlayerInfoCaptureToolingBindings `
+        -Snapshots $snapshots `
+        -FrozenInputs $frozenInputs `
+        -StrictTooling $strictCaptureTooling `
+        -Manifest $manifest
     foreach ($caseManifest in $manifestCases) {
         foreach ($image in @($caseManifest.raw, $caseManifest.crop)) {
             $imagePath = Join-Path $workDir ([string]$image.path)
@@ -2504,6 +2835,10 @@ try {
                     foreach ($frozen in $frozenInputs.Values) {
                         Assert-FrozenFileInputCurrent -Frozen $frozen
                     }
+                    Assert-StrictCaptureToolingCurrent `
+                        -Expected $strictCaptureTooling `
+                        -RunnerFrozen $frozenInputs.captureRunner `
+                        -ProtocolFrozen $frozenInputs.protocolHelper
                 }
             } catch {
                 [void](Set-PlayerInfoRecoveryUncertainIfNeeded `
@@ -2556,6 +2891,11 @@ $manifest.transaction.restoredSwfIdentityVerifiedUnderMutex =
 $manifest.transaction.compileMutexReleasedBeforeCandidatePromotion = $true
 Assert-CandidateSnapshotSet `
     -WorkDirectory $workDir -Snapshots $snapshots
+Assert-PlayerInfoCaptureToolingBindings `
+    -Snapshots $snapshots `
+    -FrozenInputs $frozenInputs `
+    -StrictTooling $strictCaptureTooling `
+    -Manifest $manifest
 if ($snapshots.loaderSwf.sha256 -cne
         [string]$derivedSwfTransaction.Record.compiled.sha256 -or
     $snapshots.childSwf.sha256 -cne $frozenInputs.childSwf.sha256 -or
@@ -2603,6 +2943,11 @@ $receiptPath = Join-Path $workDir 'candidate-receipt.json'
 Write-AtomicUtf8Json -Path $receiptPath -Value $receipt
 Assert-CandidateSnapshotSet `
     -WorkDirectory $workDir -Snapshots $snapshots
+Assert-PlayerInfoCaptureToolingBindings `
+    -Snapshots $snapshots `
+    -FrozenInputs $frozenInputs `
+    -StrictTooling $strictCaptureTooling `
+    -Manifest $manifest
 if ((Get-PathSha256 -Path $manifestPath) -cne
         [string]$receipt.manifest.sha256 -or
     -not (Test-Path -LiteralPath $receiptPath)) {
