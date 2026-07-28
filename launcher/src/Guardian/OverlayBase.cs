@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CF7Launcher.Diagnostic;
+using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
 {
@@ -93,12 +94,21 @@ namespace CF7Launcher.Guardian
         private EventHandler _ownerActivatedHandler;
         private EventHandler _ownerDeactivateHandler;
         private EventHandler _anchorResizeHandler;
+        private LayeredWindowCommitObserverSlot _commitObservation;
 
         /// <summary>
         /// 是否点击穿透。默认 true（Toast/HitNumber）。
         /// NotchOverlay 需返回 false 以接收鼠标事件。
         /// </summary>
         protected virtual bool IsClickThrough { get { return true; } }
+
+        /// <summary>
+        /// Installs a structured commit observer. Passing null restores the unobserved fast path.
+        /// </summary>
+        internal void SetCommitObserver(ILayeredWindowCommitObserver observer)
+        {
+            _commitObservation.Set(observer);
+        }
 
         private bool TryGetExistingHandle(out IntPtr handle)
         {
@@ -324,18 +334,36 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 将 GDI+ Bitmap 提交到屏幕（UpdateLayeredWindow）。
+        /// 保留既有 protected/void API；未安装 observer 时走无 result 分配、无额外计时的快路径。
         /// </summary>
         protected void CommitBitmap(Bitmap bmp, int screenX, int screenY, byte globalAlpha)
         {
-            IntPtr handle;
-            if (!TryGetExistingHandle(out handle)) return;
-            IntPtr hdcScreen = IntPtr.Zero;
-            IntPtr hdcMem = CreateCompatibleDC(hdcScreen);
-            IntPtr hBmp = bmp.GetHbitmap(Color.FromArgb(0));
-            IntPtr hOld = SelectObject(hdcMem, hBmp);
+            if (_commitObservation.IsEnabled)
+            {
+                CommitBitmapObserved(bmp, screenX, screenY, globalAlpha);
+                return;
+            }
 
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle) || bmp == null) return;
+
+            IntPtr memoryDc = IntPtr.Zero;
+            IntPtr bitmapHandle = IntPtr.Zero;
+            IntPtr previousObject = IntPtr.Zero;
+            bool selected = false;
+            bool restored = false;
+            bool bitmapDeleted = false;
+            bool memoryDcDeleted = false;
             try
             {
+                memoryDc = CreateCompatibleDC(IntPtr.Zero);
+                if (memoryDc == IntPtr.Zero) return;
+                bitmapHandle = bmp.GetHbitmap(Color.FromArgb(0));
+                if (bitmapHandle == IntPtr.Zero) return;
+                previousObject = SelectObject(memoryDc, bitmapHandle);
+                if (previousObject == IntPtr.Zero || previousObject == new IntPtr(-1)) return;
+                selected = true;
+
                 POINT ptDst = new POINT { x = screenX, y = screenY };
                 SIZE sz = new SIZE { cx = bmp.Width, cy = bmp.Height };
                 POINT ptSrc = new POINT { x = 0, y = 0 };
@@ -347,18 +375,71 @@ namespace CF7Launcher.Guardian
                     AlphaFormat = AC_SRC_ALPHA
                 };
 
-                // 诊断探针: UlwCommitMonitor 关闭时 StartTick() 返回 0, RecordCommit() 短路, 零开销。
+                // Existing diagnostic probe is internally gated when disabled.
                 long ulwStart = UlwCommitMonitor.StartTick();
-                UpdateLayeredWindow(handle, hdcScreen,
-                    ref ptDst, ref sz, hdcMem, ref ptSrc, 0, ref blend, ULW_ALPHA);
+                UpdateLayeredWindow(handle, IntPtr.Zero,
+                    ref ptDst, ref sz, memoryDc, ref ptSrc, 0, ref blend, ULW_ALPHA);
                 UlwCommitMonitor.RecordCommit(ulwStart);
             }
             finally
             {
-                SelectObject(hdcMem, hOld);
-                DeleteObject(hBmp);
-                DeleteDC(hdcMem);
+                if (selected)
+                {
+                    IntPtr restoreResult = SelectObject(memoryDc, previousObject);
+                    restored = restoreResult != IntPtr.Zero &&
+                        restoreResult != new IntPtr(-1);
+                }
+
+                // Never delete a bitmap while it may still be selected into a live DC.
+                if (bitmapHandle != IntPtr.Zero && (!selected || restored))
+                    bitmapDeleted = DeleteObject(bitmapHandle);
+
+                if (memoryDc != IntPtr.Zero)
+                    memoryDcDeleted = DeleteDC(memoryDc);
+
+                // A failed restore is recoverable once its owning DC has been destroyed.
+                if (bitmapHandle != IntPtr.Zero &&
+                    !bitmapDeleted &&
+                    (restored || !selected || memoryDcDeleted))
+                {
+                    DeleteObject(bitmapHandle);
+                }
             }
+        }
+
+        /// <summary>
+        /// NativeHud/qualification-only structured path. Other overlays do not pay its
+        /// Stopwatch/result-allocation cost unless they explicitly install an observer.
+        /// </summary>
+        internal LayeredWindowCommitResult CommitBitmapObserved(
+            Bitmap bmp,
+            int screenX,
+            int screenY,
+            byte globalAlpha)
+        {
+            IntPtr handle;
+            TryGetExistingHandle(out handle);
+            LayeredWindowCommitResult result = LayeredWindowCommitExecutor.Execute(
+                handle,
+                bmp,
+                screenX,
+                screenY,
+                globalAlpha,
+                Win32LayeredWindowCommitNativeApi.Instance);
+            _commitObservation.Publish(result);
+
+            if (!result.Succeeded)
+            {
+                LogManager.Log(
+                    "[OverlayBase] CommitBitmap failed: " +
+                    result.ErrorValue +
+                    " nativeError=" + result.NativeErrorCode +
+                    " message=" + result.ErrorMessage +
+                    (string.IsNullOrEmpty(result.CleanupError)
+                        ? ""
+                        : " cleanup=" + result.CleanupError));
+            }
+            return result;
         }
 
         #endregion

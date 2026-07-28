@@ -385,12 +385,24 @@ namespace CF7Launcher.Guardian
 
         private void EnsureComposedBitmap(int w, int h)
         {
-            if (_composedBitmap != null && _composedW == w && _composedH == h) return;
-            if (_composedBitmap != null) _composedBitmap.Dispose();
-            _composedBitmap = new Bitmap(Math.Max(1, w), Math.Max(1, h),
+            int targetWidth = Math.Max(1, w);
+            int targetHeight = Math.Max(1, h);
+            if (_composedBitmap != null &&
+                _composedW == targetWidth &&
+                _composedH == targetHeight)
+            {
+                return;
+            }
+
+            // Allocation can fail; keep the previous valid surface until replacement is complete.
+            Bitmap replacement = new Bitmap(targetWidth, targetHeight,
                 System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-            _composedW = w;
-            _composedH = h;
+            Bitmap previous = System.Threading.Interlocked.Exchange(
+                ref _composedBitmap,
+                replacement);
+            _composedW = targetWidth;
+            _composedH = targetHeight;
+            if (previous != null) previous.Dispose();
         }
 
         private void RenderToBitmapAndCommit()
@@ -421,6 +433,9 @@ namespace CF7Launcher.Guardian
                 }
             }
 
+            // Keep the existing NativeHud on OverlayBase's unobserved fast path.
+            // B0-06's dedicated PlayerInfo surface opts into structured ULW
+            // observation explicitly, after it has a real tight-bound workload.
             CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
             _lastCommitTick = Environment.TickCount;
             PerfTrace.Counter("nativeHud.commit");
@@ -974,7 +989,10 @@ namespace CF7Launcher.Guardian
             {
                 if (_animTick != null) { _animTick.Stop(); _animTick.Dispose(); _animTick = null; }
                 if (_renderCoalesceTimer != null) { _renderCoalesceTimer.Stop(); _renderCoalesceTimer.Dispose(); _renderCoalesceTimer = null; }
-                if (_composedBitmap != null) { _composedBitmap.Dispose(); _composedBitmap = null; }
+                Bitmap composed = System.Threading.Interlocked.Exchange(
+                    ref _composedBitmap,
+                    null);
+                if (composed != null) composed.Dispose();
                 // widget 持有的实例 GDI handle（如 RightContextWidget._fontX / ComboWidget._scaledX）
                 // 走 IDisposable 主动释放；不依赖 finalizer 延迟回收。
                 INativeHudWidget[] widgetSnapshot;

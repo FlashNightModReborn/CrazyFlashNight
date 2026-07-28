@@ -48,6 +48,40 @@ The committed B0-04 snapshot is
 ignored `tmp/`. The historical B0-02 report is immutable and must not be
 overwritten. Passing this command does not set `rendererQualified`.
 
+## B0-05 runtime raster qualification
+
+The dedicated runner resolves exact SDK `10.0.300`, performs a locked restore,
+selects only the opt-in qualification test, rejects a stale run ID or BOM, and
+writes a machine-readable report:
+
+```powershell
+chcp.com 65001 | Out-Null
+& tools/player-info-hud/run-b0-05-runtime-qualification.ps1 `
+  -ReportPath tmp/player-info-hud-b0-05-runtime-qualification.json
+```
+
+The committed snapshot is
+`evidence/b0-05/runtime-qualification.json`. The accepted form is UTF-8
+without BOM and canonical LF, with the exact 31 Gate IDs, 37-file executable
+source closure, executing test assembly, Core plus the exact win-x64
+11-file renderer target closure, an independently enumerated exact 15-file
+renderer-family closure under the test output, and a separately enumerated
+actual-loaded subset. Dependencies that the text-free canonical SVG run does not load
+(currently HarfBuzz managed/native) remain bound target inputs but are not
+mislabelled as executed. The runner independently hashes those files and
+recomputes nearest-rank summaries and Gate values from the raw timing samples;
+it does not trust the report's `passed` fields alone.
+
+The report covers the production embedded asset/renderer identity, four
+physical viewports (including 4:3 letterbox), eight-layer PArgb raster batches,
+the 16 MiB active+inactive cache, 100 resize requests, 3000 current-key
+requests, ownership/disposal counters, and a fixed-bounds topology probe. Its
+scope is deliberately
+`measurementKind=synthetic_fixed_bounds`: it does not register a production
+`PlayerInfoWidget`, invoke an actual `UpdateLayeredWindow`, measure the final
+split surface, establish Flash/Web/C# visual parity, or replace human review.
+The accepted B0-05 topology decision is `split_required`.
+
 ## Headless Web, FFDec, and Flash diagnostics
 
 The Web harness uses the repository Playwright installation and the local

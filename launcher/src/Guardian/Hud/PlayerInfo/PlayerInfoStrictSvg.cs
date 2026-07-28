@@ -96,7 +96,7 @@ internal static class StrictSvgValidator
             ["use"] = ["href", "x", "y", "width", "height"]
         };
 
-    internal static void Validate(ReadOnlyMemory<byte> bytes)
+    internal static StrictSvgViewport Validate(ReadOnlyMemory<byte> bytes)
     {
         if (bytes.IsEmpty || bytes.Length > MaxBytes)
         {
@@ -218,10 +218,11 @@ internal static class StrictSvgValidator
 
         ValidateReferences(document.Root, ids, references);
 
-        ValidateRootGeometry(document.Root);
+        var viewport = ValidateRootGeometry(document.Root);
         ValidateCompositeTransforms(document.Root);
         ValidateSemanticCompositeTransforms(document.Root, ids);
         ValidatePathComplexity(document);
+        return viewport;
     }
 
     private static void ValidateAttributeValue(
@@ -359,7 +360,7 @@ internal static class StrictSvgValidator
         }
     }
 
-    private static void ValidateRootGeometry(XElement root)
+    private static StrictSvgViewport ValidateRootGeometry(XElement root)
     {
         var width = ParseFinite(root.Attribute("width")?.Value, "width");
         var height = ParseFinite(root.Attribute("height")?.Value, "height");
@@ -373,6 +374,10 @@ internal static class StrictSvgValidator
         {
             throw new InvalidDataException("viewBox is outside the qualification bounds.");
         }
+        return new StrictSvgViewport(
+            width,
+            height,
+            new PlayerInfoSvgRect(values[0], values[1], values[2], values[3]));
     }
 
     private static double ParseFinite(string? value, string field)
@@ -1137,7 +1142,7 @@ internal static class StrictSvgFacade
 {
     internal static QualifiedSvg Load(ReadOnlyMemory<byte> immutableBytes)
     {
-        StrictSvgValidator.Validate(immutableBytes);
+        var viewport = StrictSvgValidator.Validate(immutableBytes);
         SvgDocument.DisableDtdProcessing = true;
 
         var svg = new SKSvg();
@@ -1177,7 +1182,7 @@ internal static class StrictSvgFacade
             {
                 throw new InvalidDataException("Svg.Skia returned empty or non-finite picture bounds.");
             }
-            return new QualifiedSvg(svg);
+            return new QualifiedSvg(svg, bounds, viewport);
         }
         catch
         {
@@ -1187,16 +1192,69 @@ internal static class StrictSvgFacade
     }
 }
 
-internal sealed class QualifiedSvg(SKSvg svg) : IDisposable
+internal readonly record struct StrictSvgViewport(
+    double IntrinsicWidth,
+    double IntrinsicHeight,
+    PlayerInfoSvgRect ViewBox);
+
+internal sealed class QualifiedSvg(
+    SKSvg svg,
+    SKRect pictureBounds,
+    StrictSvgViewport viewport) : IDisposable
 {
     private SKSvg? _svg = svg;
+    private readonly SKRect _pictureBounds = pictureBounds;
+    private readonly StrictSvgViewport _viewport = viewport;
 
     internal SKBitmap Rasterize(int width, int height)
     {
+        return Rasterize(
+            width,
+            height,
+            _viewport.ViewBox);
+    }
+
+    internal SKBitmap Rasterize(
+        int width,
+        int height,
+        PlayerInfoSvgRect sourceViewBox)
+    {
+        var liveSvg = _svg ??
+            throw new ObjectDisposedException(nameof(QualifiedSvg));
         if (width is <= 0 or > StrictSvgValidator.MaxDimension ||
             height is <= 0 or > StrictSvgValidator.MaxDimension)
         {
             throw new ArgumentOutOfRangeException(nameof(width), "Raster dimensions are outside the contract.");
+        }
+        if (!double.IsFinite(sourceViewBox.X) ||
+            !double.IsFinite(sourceViewBox.Y) ||
+            !double.IsFinite(sourceViewBox.Width) ||
+            !double.IsFinite(sourceViewBox.Height) ||
+            sourceViewBox.Width <= 0 ||
+            sourceViewBox.Height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(sourceViewBox),
+                "Source viewBox must be finite with positive dimensions.");
+        }
+        const double viewBoxTolerance = 0.001;
+        if (Math.Abs(_viewport.ViewBox.Left - sourceViewBox.Left) > viewBoxTolerance ||
+            Math.Abs(_viewport.ViewBox.Top - sourceViewBox.Top) > viewBoxTolerance ||
+            Math.Abs(_viewport.ViewBox.Right - sourceViewBox.Right) > viewBoxTolerance ||
+            Math.Abs(_viewport.ViewBox.Bottom - sourceViewBox.Bottom) > viewBoxTolerance)
+        {
+            throw new InvalidDataException(
+                "Manifest viewBox does not match the strict SVG root viewBox: " +
+                $"manifest=[{sourceViewBox.Left},{sourceViewBox.Top},{sourceViewBox.Right},{sourceViewBox.Bottom}] " +
+                $"svg=[{_viewport.ViewBox.Left},{_viewport.ViewBox.Top},{_viewport.ViewBox.Right},{_viewport.ViewBox.Bottom}].");
+        }
+        if (Math.Abs(_pictureBounds.Left) > viewBoxTolerance ||
+            Math.Abs(_pictureBounds.Top) > viewBoxTolerance ||
+            Math.Abs(_pictureBounds.Right - _viewport.IntrinsicWidth) > viewBoxTolerance ||
+            Math.Abs(_pictureBounds.Bottom - _viewport.IntrinsicHeight) > viewBoxTolerance)
+        {
+            throw new InvalidDataException(
+                "Svg.Skia picture viewport does not match the strict intrinsic dimensions.");
         }
 
         var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
@@ -1208,11 +1266,35 @@ internal sealed class QualifiedSvg(SKSvg svg) : IDisposable
             bitmap.Dispose();
             throw new InvalidDataException("Raster allocation violates the BGRA/Premul stride contract.");
         }
-        using var canvas = new SKCanvas(bitmap);
-        canvas.Clear(SKColors.Transparent);
-        (_svg ?? throw new ObjectDisposedException(nameof(QualifiedSvg))).Draw(canvas);
-        canvas.Flush();
-        return bitmap;
+        try
+        {
+            using var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.Transparent);
+            var scaleX = checked((float)(width / _pictureBounds.Width));
+            var scaleY = checked((float)(height / _pictureBounds.Height));
+            var translateX = checked((float)(-_pictureBounds.Left * scaleX));
+            var translateY = checked((float)(-_pictureBounds.Top * scaleY));
+            if (!float.IsFinite(scaleX) ||
+                !float.IsFinite(scaleY) ||
+                !float.IsFinite(translateX) ||
+                !float.IsFinite(translateY))
+            {
+                throw new InvalidDataException("ViewBox-to-target transform is non-finite.");
+            }
+            canvas.SetMatrix(SKMatrix.CreateScaleTranslation(
+                scaleX,
+                scaleY,
+                translateX,
+                translateY));
+            liveSvg.Draw(canvas);
+            canvas.Flush();
+            return bitmap;
+        }
+        catch
+        {
+            bitmap.Dispose();
+            throw;
+        }
     }
 
     public void Dispose()
