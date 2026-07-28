@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -96,6 +97,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("lazy_register_failed")]
         [InlineData("lazy_register_missing")]
         [InlineData("mount_failed")]
+        [InlineData("navigate_skills")]
         public void WorkbenchCloseEnvelope_LazyCloseRequiresWhitelistedReasonAndExactInstance(
             string reason)
         {
@@ -279,6 +281,58 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains(
                 "panelHost.FlushDeferredBarrierOpen();",
                 settled);
+        }
+
+        [Fact]
+        public void DiscardDeferredBarrierOpenDropsRecoveryWindowCompetitor()
+        {
+            var pumps =
+                new Queue<Action>();
+            using (var host =
+                new PanelHostController(
+                    delegate(Action pump)
+                    {
+                        pumps.Enqueue(
+                            pump);
+                    },
+                    delegate(Action fire)
+                    {
+                        fire();
+                    }))
+            {
+                host.SetOpenGate(
+                    delegate
+                    {
+                        return false;
+                    });
+                Assert.True(
+                    host.TryOpenPanel(
+                        "map",
+                        "{}",
+                        null,
+                        null));
+                Assert.Single(
+                    pumps);
+                pumps.Dequeue()();
+                Assert.False(
+                    host.IsPanelOpen);
+
+                host.SetOpenGate(
+                    delegate
+                    {
+                        return true;
+                    });
+                Assert.True(
+                    host.DiscardDeferredBarrierOpen());
+                host.FlushDeferredBarrierOpen();
+
+                Assert.Empty(
+                    pumps);
+                Assert.False(
+                    host.IsPanelOpen);
+                Assert.False(
+                    host.DiscardDeferredBarrierOpen());
+            }
         }
 
         [Fact]

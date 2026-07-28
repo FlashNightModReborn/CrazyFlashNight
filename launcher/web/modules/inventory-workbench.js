@@ -126,6 +126,9 @@ var InventoryWorkbench = (function() {
         add(_buildActions, button('stats', '个人信息', function() {
             if (_build) _build.openStats(_buttons.stats);
         }));
+        add(_buildActions, button('skills', '技能配置', function() {
+            requestSkillsNavigation();
+        }));
         add(_buildActions, button('back-build', '← 返回构筑', function() {
             if (_build) _build.closeStats('back');
         })).hidden = true;
@@ -343,17 +346,19 @@ var InventoryWorkbench = (function() {
         return _statsMode ? _buttons['back-build'] : opener;
     }
 
-    function finishClose() {
+    function finishClose(reason) {
         if (_closeSent) return false;
         _closeSent = true;
         var instance = _panelInstanceId;
-        Panels.close();
-        Bridge.send({
+        var message = {
             type:'panel',
             cmd:'close',
             panel:'workbench',
             panelInstanceId:instance
-        });
+        };
+        if (reason === 'navigate_skills') message.reason = reason;
+        Panels.close();
+        Bridge.send(message);
         return true;
     }
 
@@ -375,19 +380,29 @@ var InventoryWorkbench = (function() {
                 }));
     }
 
-    function finalizeClose() {
-        if (!_build) return finishClose();
-        if (_build.canClose()) return finishClose();
+    function finalizeClose(reason) {
+        if (!_build) return finishClose(reason);
+        if (_build.canClose()) return finishClose(reason);
         _closing = true;
         var callId = _build.finalize(function(accepted) {
             _closing = false;
-            if (accepted) finishClose();
+            if (accepted) finishClose(reason);
         });
         if (!callId) {
             _closing = false;
             toast('角色构筑仍在同步，请稍候关闭。');
         }
         return !!callId;
+    }
+
+    function requestSkillsNavigation() {
+        if (_view !== 'build' || !_build || _closing) return false;
+        if (_buildInteractionLocked) {
+            toast(_buildLockReason || '构筑操作完成前不能切换到技能配置。');
+            return false;
+        }
+        if (_statsMode) _build.closeStats('navigate_skills');
+        return requestClose('navigate_skills');
     }
 
     function requestClose(reason) {
@@ -406,10 +421,10 @@ var InventoryWorkbench = (function() {
             return InventoryStorageWorkbench.prepareClose(reason, function(ready) {
                 if (!ready) return;
                 if (_returnTarget && reason !== 'header') openReturnTarget();
-                else finalizeClose();
+                else finalizeClose(reason);
             });
         }
-        return finalizeClose();
+        return finalizeClose(reason);
     }
 
     function teardown() {

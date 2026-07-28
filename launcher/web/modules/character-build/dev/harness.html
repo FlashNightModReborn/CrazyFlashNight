@@ -32,23 +32,35 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-action-view.js"></script>
 <script src="modules/character-build/character-build-stats-view.js"></script>
 <script src="modules/character-build/character-build-doll-preview.js"></script>
+<script src="modules/character-build/character-build-template.js"></script>
 <script src="modules/character-build-view.js"></script>
 <script>
 (function() {
     'use strict';
 
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
-    function item(name, meta) {
+    function item(name, meta, fields) {
         var quantity = /×\s*(\d+)/.exec(name);
         var level = /\+(\d+)/.exec(meta || '');
+        fields = fields || {};
+        var itemKind = fields.itemKind || (quantity ? 'stack' : 'equipment');
+        var majorType = fields.majorType || '';
+        var enhancementLevel = fields.enhancementLevel == null
+            ? (level ? Number(level[1]) : 0) : Number(fields.enhancementLevel);
+        var tunable = itemKind === 'equipment'
+            && (majorType === '武器' || majorType === '防具')
+            && enhancementLevel >= 1;
         return {
             name:name,
             meta:meta || '已装备 · 权威快照',
+            tunable:tunable,
+            tuningReason:tunable ? '' : '该物品不能调制',
             presentation:{
                 name:name, displayName:name, icon:name,
-                itemKind:quantity ? 'stack' : 'equipment',
+                itemKind:itemKind,
+                majorType:majorType,
                 quantity:quantity ? Number(quantity[1]) : 1,
-                enhancementLevel:level ? Number(level[1]) : 0
+                enhancementLevel:enhancementLevel
             }
         };
     }
@@ -85,7 +97,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         playerName:'莱拉',
         level:35,
         equipment:{
-            '头部装备':item('北境侦察盔','防护 18'),
+            '头部装备':item('北境侦察盔','防护 18',{
+                majorType:'防具', enhancementLevel:1
+            }),
             '上装装备':item('铁壁实验装甲','护甲 126'),
             '下装装备':item('荒原寻路护腿','机动 +5'),
             '手部装备':item('脉冲稳定手套','操控 +7'),

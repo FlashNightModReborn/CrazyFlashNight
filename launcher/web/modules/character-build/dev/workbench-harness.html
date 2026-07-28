@@ -76,7 +76,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     };
     var enhancementBySlot = {};
     equipmentKeys.forEach(function(slotKey, index) {
-        enhancementBySlot[slotKey] = index % 4;
+        enhancementBySlot[slotKey] = slotKey === '手雷' ? 0 : index % 4 + 1;
     });
     var drugNames = ['普通hp药剂','普通mp药剂','抗生素',window.__characterBuild404Icon];
     var portraitGender = '男';
@@ -89,6 +89,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         shots:{},
         storage:{activations:0, leaves:0, closes:0, active:false, view:'storage',
             externalBegins:0, externalCompletes:0, appliedSnapshots:0, busy:null},
+        refuseNextCandidateSend:false,
         rejectNextCandidate:false,
         rejectNextSnapshot:false,
         rejectNextMutation:false,
@@ -103,6 +104,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             unknownNextCommit:false,
             holdNextReconcile:false,
             heldReconcile:null,
+            rejectNextDetach:false,
+            holdNextDetach:false,
+            heldDetach:null,
             transaction:0
         },
         authority:{writeEpoch:0, loadoutRevision:5, liveRevision:5,
@@ -131,7 +135,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                     name:itemName,
                     displayName:itemName,
                     icon:itemName,
-                    itemKind:'equipment',
+                    itemKind:slotKey === '手雷' ? 'stack' : 'equipment',
+                    majorType:slotKey === '手雷' ? '消耗品'
+                        : index < 6 ? '防具' : '武器',
                     use:slotKey === '手枪2' ? '手枪' : slotKey,
                     enhancementLevel:enhancementBySlot[slotKey],
                     quantity:slotKey === '手雷' ? 3 : 1,
@@ -292,6 +298,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             var candidateName = message.payload.slotKey === '长枪'
                 ? dressup.scenarios.candidate.candidateItem
                 : equipmentBySlot[message.payload.slotKey] || drugNames[0];
+            var stackGrenadeCandidate = message.payload.slotKey === '手雷';
             response.payload = {
                 target:message.payload.slotKey
                     ? {kind:'equipment', slotKey:message.payload.slotKey}
@@ -304,8 +311,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         name:candidateName,
                         displayName:candidateName,
                         icon:candidateName,
-                        itemKind:'equipment',
+                        itemKind:stackGrenadeCandidate ? 'stack' : 'equipment',
+                        majorType:stackGrenadeCandidate ? '消耗品' : '武器',
                         use:message.payload.slotKey || '药剂',
+                        enhancementLevel:stackGrenadeCandidate ? 0 : 1,
+                        quantity:stackGrenadeCandidate ? 3 : 1,
                         tierSlotAvailable:true,
                         tierSlotUsed:false,
                         modSlotCapacity:2,
@@ -465,7 +475,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             response.candidateKey = message.payload.candidateKey;
             response.text = '权威调制候选';
         } else if (message.cmd === 'detach') {
-            response.detached = true;
+            if (harness.tuning.rejectNextDetach) {
+                harness.tuning.rejectNextDetach = false;
+                response.success = false;
+                response.error = 'invalid_session';
+            } else response.detached = true;
         } else {
             response.success = false;
             response.error = 'unsupported_cmd';
@@ -482,6 +496,13 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             if (index >= 0) list.splice(index, 1);
         },
         send:function(message) {
+            if (message.type === 'panel' && message.domain === 'loadout'
+                    && message.cmd === 'candidates'
+                    && window.__routeHarness.refuseNextCandidateSend) {
+                window.__routeHarness.refuseNextCandidateSend = false;
+                window.__routeHarness.events.push('candidates_send_refused');
+                return false;
+            }
             var captured = JSON.parse(JSON.stringify(message));
             window.__routeHarness.sent.push(captured);
             if (message.type === 'panel' && message.domain === 'loadout') {
@@ -514,6 +535,12 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         window.__routeHarness.tuning.heldReconcile = response;
                         return;
                     }
+                    if (message.cmd === 'detach'
+                            && window.__routeHarness.tuning.holdNextDetach) {
+                        window.__routeHarness.tuning.holdNextDetach = false;
+                        window.__routeHarness.tuning.heldDetach = response;
+                        return;
+                    }
                     emit('panel_resp', response);
                 }, 0);
             } else if (message.type === 'panel' && message.cmd === 'close') {
@@ -541,6 +568,13 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         if (!this.tuning.heldReconcile) return false;
         var response = this.tuning.heldReconcile;
         this.tuning.heldReconcile = null;
+        emit('panel_resp', response);
+        return true;
+    };
+    window.__routeHarness.releaseTuningDetach = function() {
+        if (!this.tuning.heldDetach) return false;
+        var response = this.tuning.heldDetach;
+        this.tuning.heldDetach = null;
         emit('panel_resp', response);
         return true;
     };
@@ -716,8 +750,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-action-view.js"></script>
 <script src="modules/character-build/character-build-stats-view.js"></script>
 <script src="modules/character-build/character-build-doll-preview.js"></script>
+<script src="modules/character-build/character-build-template.js"></script>
 <script src="modules/character-build-view.js"></script>
 <script src="modules/character-build/character-build-tuning.js"></script>
+<script src="modules/character-build/character-build-slot-transition.js"></script>
 <script src="modules/character-build/character-build-pose.js"></script>
 <script src="modules/character-build.js"></script>
 <script src="modules/inventory-workbench.js"></script>
@@ -1232,7 +1268,7 @@ window.EquipmentInspector = {
         check('facade owns one shell and one visible header',
             document.querySelectorAll('.workbench-shell').length === 1
             && document.querySelectorAll('.workbench-header').length === 1
-            && visibleHeaderActions().join('|') === 'storage|stats|help|close',
+            && visibleHeaderActions().join('|') === 'storage|stats|skills|help|close',
             visibleHeaderActions().join('|'));
         var densityToggle = document.querySelector(
             '[data-build-density-mount] .item-grid-mode-switch');
@@ -1260,15 +1296,15 @@ window.EquipmentInspector = {
         var loadoutTools = loadoutHeading.querySelector('.character-build-loadout-tools');
         var loadoutFocusSummary = loadoutHeading.querySelector('[data-focus-summary]');
         var loadoutPreviewAction = loadoutHeading.querySelector('[data-doll-preview-open]');
-        var loadoutSlotCount = loadoutHeading.querySelector('[data-slot-count]');
-        check('loadout heading owns browse status, enlarged preview and current slot count',
+        check('loadout heading keeps browse status left and the enlarged preview action right',
             loadoutHeading.querySelector(':scope > div > span').textContent === '外观与配置'
             && loadoutHeading.querySelector('h2').textContent === '当前构筑'
-            && loadoutFocusSummary.closest('.character-build-pane-heading') === loadoutHeading
+            && loadoutFocusSummary.parentNode.classList.contains(
+                'character-build-loadout-heading-copy')
             && loadoutPreviewAction.closest('.character-build-pane-heading') === loadoutHeading
             && loadoutPreviewAction.getBoundingClientRect().width >= 76
             && loadoutPreviewAction.getBoundingClientRect().height >= 44
-            && loadoutSlotCount.closest('.character-build-pane-heading') === loadoutHeading
+            && !loadoutHeading.querySelector('[data-slot-count]')
             && loadoutHeading.scrollWidth <= loadoutHeading.clientWidth + 1
             && loadoutTools.scrollWidth <= loadoutTools.clientWidth + 1
             && document.querySelectorAll(
@@ -1325,15 +1361,19 @@ window.EquipmentInspector = {
             window.__routeHarness.renderer.active === 1
             && window.__routeHarness.renderer.maxActive === 1);
         var build = window.__routeHarness.renderer.lastBuild;
-        check('real renderer uses frozen narrow camera fields',
-            build.fitFields.join('|') === '脸型|发型|面具|屁股|左大腿|右大腿|小腿|脚'
+        check('real renderer fits the structural body while pose extremities remain draw-only',
+            build.fitFields.join('|') === '身体|脸型|发型|面具|屁股|左大腿|右大腿|小腿|脚'
             && build.drawFields.indexOf('身体') >= 0
             && build.drawFields.indexOf('长枪_装扮') >= 0
             && build.drawFields.indexOf('手枪2_装扮') >= 0
             && build.drawFields.indexOf('上臂') >= 0
-            && build.fitFields.indexOf('身体') < 0
+            && build.fitFields.indexOf('上臂') < 0
+            && build.fitFields.indexOf('左手') < 0
             && build.fitFields.indexOf('长枪_装扮') < 0
-            && build.zoom === 0.93 && build.margin === 18,
+            && build.fitFields.indexOf('手枪_装扮') < 0
+            && build.fitFields.indexOf('刀_装扮') < 0
+            && build.fitFields.indexOf('手雷_装扮') < 0
+            && build.zoom === 1.05 && build.margin === 18,
             JSON.stringify(build));
         visual.initial = canvasProbe();
         visual.layout = layoutProbe();
@@ -1615,6 +1655,37 @@ window.EquipmentInspector = {
             }));
 
         var headKey = 'armor:头部装备';
+        var refusalBefore = InventoryWorkbench.debugState().build;
+        var refusalCandidateBase = commandCount('candidates');
+        var refusalToastBase = Toast.messages.length;
+        var refusedSlot = document.querySelector('[data-roving-key="' + headKey + '"]');
+        window.__routeHarness.refuseNextCandidateSend = true;
+        refusedSlot.focus();
+        refusedSlot.click();
+        var refusalAfter = InventoryWorkbench.debugState().build;
+        check('production send refusal rolls View and controller back to one exact identity',
+            refusalAfter.selectedSlotKey === refusalBefore.selectedSlotKey
+            && JSON.stringify(refusalAfter.selectedTarget)
+                === JSON.stringify(refusalBefore.selectedTarget)
+            && refusalAfter.view.selectedSlotKey === refusalBefore.view.selectedSlotKey
+            && refusalAfter.view.selectedCandidateKey
+                === refusalBefore.view.selectedCandidateKey
+            && refusalAfter.view.candidateRequestKey
+                === refusalBefore.view.candidateRequestKey
+            && refusalAfter.view.candidateLoadFailed
+                === refusalBefore.view.candidateLoadFailed
+            && refusalAfter.view.candidateCount === refusalBefore.view.candidateCount
+            && refusalAfter.view.activeSlotKey === headKey
+            && document.activeElement === refusedSlot
+            && document.querySelector('[data-roving-key="'
+                + refusalBefore.selectedSlotKey + '"]').getAttribute('aria-selected') === 'true'
+            && commandCount('candidates') === refusalCandidateBase
+            && Toast.messages.length === refusalToastBase + 1
+            && Toast.messages[Toast.messages.length - 1] === '角色构筑连接不可用。'
+            && document.querySelector('[data-build-notice]')
+                .getAttribute('data-notice-kind') === 'error',
+            JSON.stringify({before:refusalBefore, after:refusalAfter,
+                candidates:commandCount('candidates'), toasts:Toast.messages}));
         window.__routeHarness.rejectNextCandidate = true;
         document.querySelector('[data-roving-key="' + headKey + '"]').click();
         check('candidate read failure leaves an explicit retry state', await until(function() {
@@ -1646,7 +1717,7 @@ window.EquipmentInspector = {
             return state.build && state.build.view && state.build.view.statsOpen;
         }));
         check('stats header exposes only back/help/close',
-            visibleHeaderActions().join('|') === 'back-build|help|close',
+            visibleHeaderActions().join('|') === 'skills|back-build|help|close',
             visibleHeaderActions().join('|'));
         var statsTop = statsProbe();
         var exactStatsKeys = CharacterBuildStatsFixture.create().groups.reduce(
@@ -1784,7 +1855,7 @@ window.EquipmentInspector = {
         }
         document.querySelector('[data-header-action="back-build"]').click();
         check('stats return restores the build header', await until(function() {
-            return visibleHeaderActions().join('|') === 'storage|stats|help|close';
+            return visibleHeaderActions().join('|') === 'storage|stats|skills|help|close';
         }));
 
         var generationBeforeStorage =
@@ -2034,6 +2105,7 @@ window.EquipmentInspector = {
                 expectedLoadoutRevision:7
             }), JSON.stringify(firstTuningSource));
         var tuningRebindBase = tuningMessages('snapshot').length;
+        var tuningRebindCandidateBase = commandCount('candidates');
         var feetKey = 'armor:脚部装备';
         var feetSlot = document.querySelector('[data-roving-key="' + feetKey + '"]');
         var feetName = feetSlot.getAttribute('data-focus-name');
@@ -2081,6 +2153,31 @@ window.EquipmentInspector = {
                     && state.tuning.tuning.hasPreview && !state.tuning.tuning.readPending
                     && state.view.selectedSlotKey === longGunKey
                     && !emptyLockProbe.disabled;
+            }));
+        check('tunable rebind defers the hidden candidate read as one transaction',
+            commandCount('candidates') === tuningRebindCandidateBase
+            && InventoryWorkbench.debugState().build.view.candidateLoadFailed
+            && InventoryWorkbench.debugState().build.view.candidateCount === 0);
+        document.querySelector('[data-build-tuning-return]').click();
+        check('immediate return after a tunable rebind exposes the loaded candidate pane',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning && !state.tuning.active
+                    && state.view.selectedSlotKey === longGunKey
+                    && state.view.candidateCount === 1
+                    && commandCount('candidates') === tuningRebindCandidateBase + 1
+                    && document.querySelector(
+                        '.character-build-inline-notice').textContent
+                        !== '正在读取当前槽位的背包候选…';
+            }));
+        document.querySelector('[data-build-action="tune"]').click();
+        check('re-entering tuning after the rebind-return probe restores the same source',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning && state.tuning.active
+                    && state.tuning.slotKey === '长枪'
+                    && state.tuning.tuning.hasPreview
+                    && !state.tuning.tuning.readPending;
             }));
         check('loadout tuning removes convert instead of sending a hidden cross-container intent',
             Array.prototype.map.call(
@@ -2322,6 +2419,97 @@ window.EquipmentInspector = {
                     && document.activeElement.getAttribute('data-roving-key') === longGunKey;
             }));
 
+        document.querySelector('[data-build-action="tune"]').click();
+        check('third tuning entry settles for untunable slot transition coverage',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning && state.tuning.active
+                    && state.tuning.tuning.hasPreview
+                    && !state.tuning.tuning.readPending;
+            }));
+        var grenadeKey = 'weapon:手雷';
+        var grenadeSlot = document.querySelector(
+            '[data-roving-key="' + grenadeKey + '"]');
+        var transitionCandidateBase = commandCount('candidates');
+        var transitionDetachBase = tuningMessages('detach').length;
+        var transitionEventBase = window.__routeHarness.events.length;
+        window.__routeHarness.tuning.rejectNextDetach = true;
+        grenadeSlot.click();
+        check('failed detach keeps both left selection and right tuning on the old equipment',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return tuningMessages('detach').length === transitionDetachBase + 1
+                    && state.tuning.active
+                    && state.tuning.slotKey === '长枪'
+                    && state.tuning.tuning.source.slotKey === '长枪'
+                    && !state.tuning.tuning.readPending;
+            })
+            && InventoryWorkbench.debugState().build.view.selectedSlotKey === longGunKey
+            && document.querySelector('[data-roving-key="' + longGunKey + '"]')
+                .getAttribute('aria-selected') === 'true'
+            && grenadeSlot.getAttribute('aria-selected') === 'false'
+            && commandCount('candidates') === transitionCandidateBase
+            && document.querySelector('.character-build-tuning-heading h2').textContent
+                === document.querySelector('[data-roving-key="' + longGunKey + '"]')
+                    .getAttribute('data-focus-name')
+            && document.querySelector('[data-build-notice]')
+                .getAttribute('data-notice-kind') === 'error'
+            && document.querySelector('[data-build-notice]').textContent
+                .indexOf('调制仍保持在原装备') >= 0);
+        window.__routeHarness.tuning.holdNextDetach = true;
+        grenadeSlot.click();
+        var pendingTransitionSettled = await until(function() {
+            return !!window.__routeHarness.tuning.heldDetach;
+        });
+        var pendingTransition = InventoryWorkbench.debugState().build;
+        check('admitted untunable detach is neutral pending until authority responds',
+            pendingTransitionSettled
+            && pendingTransition.tuning.active
+            && pendingTransition.tuning.slotKey === '长枪'
+            && pendingTransition.view.selectedSlotKey === longGunKey
+            && commandCount('candidates') === transitionCandidateBase
+            && document.querySelector('[data-build-notice]')
+                .getAttribute('data-notice-kind') === 'pending'
+            && document.querySelector('[data-build-notice]').textContent
+                .indexOf('正在退出当前调制') >= 0
+            && !!window.__routeHarness.tuning.heldDetach,
+            JSON.stringify({state:pendingTransition,
+                notice:document.querySelector('[data-build-notice]').textContent}));
+        window.__routeHarness.releaseTuningDetach();
+        check('stack grenade first detaches tuning, then performs one ordinary candidate selection',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return !state.tuning.active
+                    && state.view.selectedSlotKey === grenadeKey
+                    && state.view.candidateCount === 1
+                    && tuningMessages('detach').length === transitionDetachBase + 2
+                    && commandCount('candidates') === transitionCandidateBase + 1;
+            }));
+        var transitionEvents = window.__routeHarness.events.slice(transitionEventBase);
+        var grenadeTune = document.querySelector('[data-build-action="tune"]');
+        check('untunable stack grenade exposes one explicit disabled tuning action',
+            !grenadeTune.hidden
+            && grenadeTune.disabled
+            && grenadeTune.textContent.trim() === '不可调制'
+            && grenadeTune.getAttribute('aria-disabled') === 'true'
+            && grenadeTune.getAttribute('aria-label') === '数量型手雷不能调制'
+            && grenadeTune.getAttribute('title') === '数量型手雷不能调制'
+            && transitionEvents.lastIndexOf('tuning_detach_response')
+                < transitionEvents.lastIndexOf('candidates_request'),
+            JSON.stringify({
+                events:transitionEvents,
+                label:grenadeTune.textContent,
+                aria:grenadeTune.getAttribute('aria-label'),
+                title:grenadeTune.getAttribute('title')
+            }));
+        document.querySelector('[data-roving-key="' + longGunKey + '"]').click();
+        check('untunable transition probe restores the ordinary long-gun selection',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.view.selectedSlotKey === longGunKey
+                    && state.view.candidateCount === 1;
+            }));
+
         var candidateCountBeforeSecondStorage = commandCount('candidates');
         var snapshotCountBeforeSecondStorage = commandCount('snapshot');
 
@@ -2417,6 +2605,50 @@ window.EquipmentInspector = {
                         && message.panelInstanceId === 'panel.workbench.rejected-harness';
                 }) && Panels.isOpen() === false
                     && window.__routeHarness.renderer.active === 0;
+            }));
+
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                panelInstanceId:'panel.workbench.skills-navigation'
+            }
+        });
+        check('skills navigation probe opens a fresh authoritative build',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId === 'panel.workbench.skills-navigation';
+            }));
+        var navigationFinalizeBase = commandCount('finalize');
+        var navigationCloseBase = window.__routeHarness.sent.filter(function(message) {
+            return message.type === 'panel' && message.cmd === 'close'
+                && message.reason === 'navigate_skills';
+        }).length;
+        document.querySelector('[data-header-action="skills"]').click();
+        check('skills header action finalizes then emits one exact navigation close',
+            await until(function() {
+                return commandCount('finalize') === navigationFinalizeBase + 1
+                    && window.__routeHarness.sent.filter(function(message) {
+                        return message.type === 'panel' && message.cmd === 'close'
+                            && message.reason === 'navigate_skills'
+                            && message.panelInstanceId
+                                === 'panel.workbench.skills-navigation';
+                    }).length === navigationCloseBase + 1
+                    && Panels.isOpen() === false;
+            }));
+        var navigationClose = window.__routeHarness.sent.filter(function(message) {
+            return message.type === 'panel' && message.cmd === 'close'
+                && message.reason === 'navigate_skills';
+        }).slice(-1)[0];
+        check('Web navigation stays a strict five-key close and never opens Skills directly',
+            JSON.stringify(Object.keys(navigationClose).sort()) === JSON.stringify(
+                ['cmd','panel','panelInstanceId','reason','type'])
+            && !window.__routeHarness.sent.some(function(message) {
+                return message.type === 'panel_cmd' && message.cmd === 'open'
+                    && message.panel === 'skills';
             }));
     } catch (error) {
         checks.push({name:'harness execution', ok:false, detail:error.stack || String(error)});

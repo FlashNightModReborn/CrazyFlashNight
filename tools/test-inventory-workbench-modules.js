@@ -270,7 +270,10 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(facade.includes('InventoryStorageWorkbench.deactivate()'));
     assert(facade.includes("button('close', '×'"));
     assert(facade.includes('function requestView(next)'));
-    assert(facade.includes('function finalizeClose()'));
+    assert(facade.includes('function finalizeClose(reason)'));
+    assert(facade.includes("button('skills', '技能配置'"));
+    assert(facade.includes("requestClose('navigate_skills')"));
+    assert(facade.includes("message.reason = reason"));
     assert(buildController.includes('new SessionModule.CharacterBuildSession'));
     assert.deepStrictEqual(
         require('../launcher/web/modules/character-build-session.js').commands,

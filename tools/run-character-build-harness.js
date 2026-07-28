@@ -24,12 +24,19 @@ function staticAudit() {
     const focus = read('launcher/web/modules/workbench-focus.js');
     const inventory = read('launcher/web/modules/inventory-ui.js');
     const view = read('launcher/web/modules/character-build-view.js');
+    const template = read(
+        'launcher/web/modules/character-build/character-build-template.js');
+    const presentation = view + '\n' + template;
     const actionView = read(
         'launcher/web/modules/character-build/character-build-action-view.js');
     const statsView = read(
         'launcher/web/modules/character-build/character-build-stats-view.js');
     const dollPreview = read(
         'launcher/web/modules/character-build/character-build-doll-preview.js');
+    const pose = read(
+        'launcher/web/modules/character-build/character-build-pose.js');
+    const controller = read('launcher/web/modules/character-build.js');
+    const renderer = read('launcher/web/modules/dressup-doll-renderer.js');
     const facade = read('launcher/web/modules/inventory-workbench.js');
     const cssFacade = read('launcher/web/css/panels.css');
     const css = read('launcher/web/css/workbench/character-build.css')
@@ -62,8 +69,8 @@ function staticAudit() {
         && statsView.includes('当前组相对量级')
         && !/getWeightSpeedRatio|candidate.*predict/i.test(statsView),
         'stats presenter consumes authority rows without recreating combat formulas');
-    check((view.match(/createElement\('canvas'\)|<canvas/g) || []).length === 1
-        && view.includes('single-canvas-candidate-overlay')
+    check((presentation.match(/createElement\('canvas'\)|<canvas/g) || []).length === 1
+        && presentation.includes('single-canvas-candidate-overlay')
         && !/<canvas|createElement\(['"]canvas/.test(dollPreview)
         && dollPreview.includes('this._mount.appendChild(this._stage)')
         && dollPreview.includes('this._home.insertBefore(this._stage')
@@ -72,41 +79,58 @@ function staticAudit() {
         && dollPreview.includes('this._inspection.activate({reset:true})')
         && dollPreview.includes('this._inspection.deactivate()'),
         'view declares one Canvas and the enlarged preview reparents it behind a transient shared camera');
-    check(!/READ ONLY SPIKE|<span>LOOK<\/span>|<span>LOADOUT<\/span>|<span>COMPARE<\/span>|单 Canvas|全宽 SecondaryPage/.test(view),
+    check(['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立']
+        .every(label => pose.includes("'" + label + "'"))
+        && pose.includes('cameraEnvelopePoses:cameraEnvelopePoses')
+        && pose.includes('cameraFitFields:cameraFitFields')
+        && pose.includes('drawFields:drawFields')
+        && controller.includes('DressupDollRenderer.withFitEnvelope')
+        && controller.includes('Pose.cameraFitFields()')
+        && !controller.includes("this._panelInstanceId + '|' + state.gender")
+        && renderer.includes('function measureEnvelope(')
+        && renderer.includes('fitEnvelopeApplied'),
+        'character build recomputes one structural-body envelope across all six battle poses');
+    check(!/READ ONLY SPIKE|<span>LOOK<\/span>|<span>LOADOUT<\/span>|<span>COMPARE<\/span>|单 Canvas|全宽 SecondaryPage/.test(presentation),
         'visible view copy contains no prototype or implementation labels');
     check(['头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备',
         '长枪','手枪','手枪2','刀','手雷'].every(key => view.includes("id:'" + key + "'")),
         'view freezes the exact eleven equipment protocol keys');
-    check(view.includes('选择一个装备或药剂槽')
+    check(presentation.includes('选择一个装备或药剂槽')
         && facade.includes("button('back-build', '← 返回构筑'")
         && facade.includes('statsRoot.insertBefore(header, statsRoot.firstChild)')
         && !view.includes('class="character-build-stats-back"'),
         'candidate gate and single main-header stats return are explicit');
-    check(!view.includes('character-build-vitals') && !view.includes('data-preview-action')
-        && !view.includes('data-info-action') && !view.includes('data-info-panel')
+    check(!presentation.includes('character-build-vitals') && !presentation.includes('data-preview-action')
+        && !presentation.includes('data-info-action') && !presentation.includes('data-info-panel')
         && !actionView.includes('data-info-action') && !actionView.includes('data-info-panel')
-        && view.includes('role="toolbar" aria-label="当前槽位与候选操作"')
-        && view.includes('<div class="character-build-pane-tools"><div class="character-build-candidate-actions"')
-        && view.indexOf('character-build-candidate-actions')
-            < view.indexOf('character-build-candidate-focus-summary')
-        && !view.includes('character-build-candidate-actions p')
+        && presentation.includes('role="toolbar" aria-label="当前槽位与候选操作"')
+        && presentation.includes('<div class="character-build-pane-tools"><div class="character-build-candidate-actions"')
+        && presentation.indexOf('character-build-candidate-actions')
+            < presentation.indexOf('character-build-candidate-focus-summary')
+        && !presentation.includes('character-build-candidate-actions p')
         && actionView.includes("event.key === 'Enter' && !event.repeat && selected")
         && actionView.includes('this._tryCommit(this._getCandidate())')
         && actionView.includes("this._state === 'mutation_reconcile'")
         && actionView.includes("action === 'unequip'"),
         'main snapshot invents no vitals or candidate detail/pin surface and embeds one action toolbar in candidate PaneChrome');
-    check(view.includes('class="character-build-loadout-tools"')
-        && view.includes('data-focus-summary')
-        && view.includes('data-doll-preview-action-host')
-        && view.indexOf('data-focus-summary') < view.indexOf('data-doll-preview-action-host')
-        && !view.includes('<div class="character-build-focus-summary"'),
-        'loadout browse summary and enlarged-preview action live in the loadout heading only');
-    check(!/Read-only|read-only|只读/.test(view)
+    check(presentation.includes('class="character-build-loadout-tools"')
+        && presentation.includes('data-focus-summary')
+        && presentation.includes('data-doll-preview-action-host')
+        && template.indexOf('data-focus-summary')
+            < template.indexOf('data-doll-preview-action-host')
+        && presentation.includes('character-build-loadout-heading-copy')
+        && !presentation.includes('data-slot-count')
+        && !presentation.includes('护具 · 6')
+        && !presentation.includes('武装 · 5')
+        && !presentation.includes('药剂 · 4')
+        && !presentation.includes('<div class="character-build-focus-summary"'),
+        'loadout heading keeps the browse summary left, preview action right, and removes redundant counts');
+    check(!/Read-only|read-only|只读/.test(presentation)
         && !/Read-only|read-only|只读/.test(read('launcher/web/modules/character-build.js'))
         && !/Read-only|read-only|只读/.test(harness),
         'editing view, controller and harness contain no stale read-only phase copy');
     const visibleImplementationCopy = /['"][^'"\r\n]*(?:B1|接线|spike|prototype)[^'"\r\n]*['"]/i;
-    check(!visibleImplementationCopy.test(view)
+    check(!visibleImplementationCopy.test(presentation)
         && !visibleImplementationCopy.test(facade)
         && !visibleImplementationCopy.test(read('launcher/web/modules/character-build.js')),
         'production-visible character-build copy contains no implementation-stage vocabulary');
@@ -187,6 +211,8 @@ async function metrics(page) {
         const focusSummary = loadoutHeading.querySelector('[data-focus-summary]');
         const previewButton = loadoutHeading.querySelector('[data-doll-preview-open]');
         const slotCount = loadoutHeading.querySelector('[data-slot-count]');
+        const candidateOverlay = root.querySelector('[data-layer="candidate-preview"]');
+        const routineNotice = root.querySelector('[data-build-notice]');
         const visibleActionButtons = Array.from(actionToolbar.querySelectorAll('button')).filter(
             node => !node.hidden && getComputedStyle(node).display !== 'none'
                 && getComputedStyle(node).visibility !== 'hidden');
@@ -249,13 +275,22 @@ async function metrics(page) {
             infoActionCount:root.querySelectorAll('[data-info-action]').length,
             infoPanelCount:root.querySelectorAll('[data-info-panel],.character-build-info-panel').length,
             loadoutHeadingStructure:!!loadoutTools && !!focusSummary
-                && !!previewButton && !!slotCount,
+                && !!previewButton,
             focusSummaryInHeading:!!focusSummary
                 && focusSummary.closest('.character-build-pane-heading') === loadoutHeading,
+            focusSummaryInHeadingCopy:!!focusSummary
+                && focusSummary.parentNode.classList.contains(
+                    'character-build-loadout-heading-copy'),
+            focusSummaryLeftOfPreview:!!focusSummary && !!previewButton
+                && focusSummary.getBoundingClientRect().right
+                    <= previewButton.getBoundingClientRect().left,
             previewActionInHeading:!!previewButton
                 && previewButton.closest('.character-build-pane-heading') === loadoutHeading,
             slotCountInHeading:!!slotCount
                 && slotCount.closest('.character-build-pane-heading') === loadoutHeading,
+            slotGroupHeadings:Array.from(
+                root.querySelectorAll('.character-build-slot-section > h3'))
+                .map(node => node.textContent.trim()),
             legacyLowerFocusSummaryCount:root.querySelectorAll(
                 '.character-build-composite-pane > .character-build-focus-summary,'
                 + '.character-build-loadout-column > .character-build-focus-summary').length,
@@ -324,6 +359,10 @@ async function metrics(page) {
             selectedSlotKey:state.selectedSlotKey,
             selectedCandidateKey:state.selectedCandidateKey,
             overlayCopy:root.querySelector('[data-overlay-copy]').textContent,
+            overlayHidden:candidateOverlay.hidden
+                && getComputedStyle(candidateOverlay).display === 'none',
+            routineNoticeKind:routineNotice.getAttribute('data-notice-kind'),
+            routineNoticeHidden:getComputedStyle(routineNotice).display === 'none',
             emptyCandidateCopy:(root.querySelector('.character-build-candidate-empty') || {}).textContent || '',
             rootRect:(() => {
                 const rect = document.querySelector('.workbench-shell').getBoundingClientRect();
@@ -480,16 +519,21 @@ async function runViewport(browser, port, viewport) {
                 hitTargetComputed:base.hitTargetComputed
             }));
         check(base.loadoutHeadingStructure && base.focusSummaryInHeading
-            && base.previewActionInHeading && base.slotCountInHeading
+            && base.focusSummaryInHeadingCopy && base.focusSummaryLeftOfPreview
+            && base.previewActionInHeading && !base.slotCountInHeading
             && base.legacyLowerFocusSummaryCount === 0
+            && base.slotGroupHeadings.join('|') === '护具|武装|药剂'
             && base.loadoutEyebrow === '外观与配置' && base.loadoutTitle === '当前构筑'
             && !base.loadoutHeadingOverflow,
-            label + ' keeps browse status, enlarged preview and slot count in the loadout heading',
+            label + ' keeps browse status left and enlarged preview right without redundant counts',
             JSON.stringify({
                 structure:base.loadoutHeadingStructure,
                 focusSummaryInHeading:base.focusSummaryInHeading,
+                focusSummaryInHeadingCopy:base.focusSummaryInHeadingCopy,
+                focusSummaryLeftOfPreview:base.focusSummaryLeftOfPreview,
                 previewActionInHeading:base.previewActionInHeading,
                 slotCountInHeading:base.slotCountInHeading,
+                slotGroupHeadings:base.slotGroupHeadings,
                 legacyLowerFocusSummaryCount:base.legacyLowerFocusSummaryCount,
                 eyebrow:base.loadoutEyebrow,
                 title:base.loadoutTitle,
@@ -508,9 +552,11 @@ async function runViewport(browser, port, viewport) {
             label + ' fresh view exposes only the three populated slot roving groups', JSON.stringify(base));
         check(base.selectedSlots === 0 && base.selectedCandidates === 0
             && base.selectedSlotKey === '' && base.selectedCandidateKey === ''
-            && base.overlayCopy === '尚未选择候选' && base.candidates === 0
+            && base.overlayCopy === '' && base.overlayHidden && base.candidates === 0
+            && base.routineNoticeKind === 'browsing' && base.routineNoticeHidden
             && base.emptyCandidateCopy === '选择一个装备或药剂槽',
-            label + ' fresh open has no slot candidates, selection, or preview', JSON.stringify(base));
+            label + ' fresh open hides empty preview and routine footer chrome',
+            JSON.stringify(base));
         check(Math.abs(base.rootRect.width - 1024) < 1 && Math.abs(base.rootRect.height - 576) < 1,
             label + ' preserves the 1024x576 design canvas', JSON.stringify(base.rootRect));
         await page.evaluate(() => {
@@ -733,12 +779,14 @@ async function runViewport(browser, port, viewport) {
             summary:document.querySelector('[data-focus-summary]').textContent,
             state:CharacterBuildHarness.view.debugState(),
             selected:document.querySelectorAll('.character-build-slot[aria-selected="true"]').length,
-            overlay:document.querySelector('[data-overlay-copy]').textContent
+            overlay:document.querySelector('[data-overlay-copy]').textContent,
+            overlayHidden:document.querySelector(
+                '[data-layer="candidate-preview"]').hidden
         }));
         check(armorArrow.active === 'armor:脚部装备'
             && armorArrow.summary.includes('脚部') && armorArrow.state.selectedSlotKey === ''
             && armorArrow.state.selectedCandidateKey === '' && armorArrow.selected === 0
-            && armorArrow.overlay === '尚未选择候选',
+            && armorArrow.overlay === '' && armorArrow.overlayHidden,
             label + ' armor Arrow navigation updates summary without selecting or previewing',
             JSON.stringify(armorArrow));
 
@@ -760,6 +808,7 @@ async function runViewport(browser, port, viewport) {
         check(afterSlotActivation.selectedSlotKey === 'armor:头部装备'
             && afterSlotActivation.selectedCandidateKey === ''
             && afterSlotActivation.candidates === 12
+            && afterSlotActivation.overlayCopy === '' && afterSlotActivation.overlayHidden
             && afterSlotActivation.candidateTabStops === 1
             && afterSlotActivation.scrollRegions.every(region => region === 'candidates'),
             label + ' native Enter selects a slot before candidates become reachable',
@@ -771,12 +820,15 @@ async function runViewport(browser, port, viewport) {
             summary:document.querySelector('[data-candidate-focus-summary]').textContent,
             state:CharacterBuildHarness.view.debugState(),
             selected:document.querySelectorAll('.character-build-candidate[aria-selected="true"]').length,
-            overlay:document.querySelector('[data-overlay-copy]').textContent
+            overlay:document.querySelector('[data-overlay-copy]').textContent,
+            overlayHidden:document.querySelector(
+                '[data-layer="candidate-preview"]').hidden
         }));
         check(candidateArrow.active === 'candidate-2'
             && candidateArrow.summary.includes('烈火吉他')
             && candidateArrow.state.selectedCandidateKey === ''
-            && candidateArrow.selected === 0 && candidateArrow.overlay === '尚未选择候选',
+            && candidateArrow.selected === 0 && candidateArrow.overlay === ''
+            && candidateArrow.overlayHidden,
             label + ' candidate Arrow navigation updates summary without selecting or previewing',
             JSON.stringify(candidateArrow));
         await page.keyboard.press('Space');
@@ -784,12 +836,15 @@ async function runViewport(browser, port, viewport) {
             state:CharacterBuildHarness.view.debugState(),
             slots:document.querySelectorAll('.character-build-slot[aria-selected="true"]').length,
             candidates:document.querySelectorAll('.character-build-candidate[aria-selected="true"]').length,
-            overlay:document.querySelector('[data-overlay-copy]').textContent
+            overlay:document.querySelector('[data-overlay-copy]').textContent,
+            overlayHidden:document.querySelector(
+                '[data-layer="candidate-preview"]').hidden
         }));
         check(explicitSelection.state.selectedSlotKey === 'armor:头部装备'
             && explicitSelection.state.selectedCandidateKey === 'candidate-2'
             && explicitSelection.slots === 1 && explicitSelection.candidates === 1
-            && explicitSelection.overlay.includes('烈火吉他'),
+            && !explicitSelection.overlayHidden
+            && explicitSelection.overlay === '预览 · 烈火吉他',
             label + ' native Space activation explicitly selects the candidate preview',
             JSON.stringify(explicitSelection));
         const threeActionRow = await metrics(page);

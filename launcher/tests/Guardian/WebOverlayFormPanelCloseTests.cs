@@ -531,6 +531,106 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void CharacterBuildSkillsNavigationArmsBeforeCloseBarrierAndCompletesFromSettledCallback()
+        {
+            string overlay = File.ReadAllText(
+                FindWebOverlaySource());
+            string close = Slice(
+                overlay,
+                "case \"close\":",
+                "case \"bulkQuery\":");
+            int exactReason = close.IndexOf(
+                "\"navigate_skills\"",
+                StringComparison.Ordinal);
+            int arm = close.IndexOf(
+                ".TryArmCharacterBuildSkillsNavigation(",
+                exactReason,
+                StringComparison.Ordinal);
+            int closeBarrier = close.IndexOf(
+                ".BeginNormalCloseBarrier(",
+                arm,
+                StringComparison.Ordinal);
+            int visualRetire = close.IndexOf(
+                "TryRetireCharacterBuildHostVisual(",
+                closeBarrier,
+                StringComparison.Ordinal);
+            Assert.True(exactReason >= 0);
+            Assert.True(arm > exactReason);
+            Assert.True(closeBarrier > arm);
+            Assert.True(visualRetire > closeBarrier);
+            Assert.Contains(
+                ".CancelCharacterBuildSkillsNavigation(",
+                close);
+            Assert.Contains(
+                "dismissReturnStack || navigateSkills",
+                close);
+            Assert.Contains(
+                "bool navigationArmed =",
+                close);
+            Assert.Contains(
+                "navigateSkills = false;",
+                close);
+            Assert.Contains(
+                "continuing ordinary close",
+                close);
+
+            string program = File.ReadAllText(
+                FindRepositoryFile(
+                    "launcher", "src", "Program.cs"));
+            string settled = Slice(
+                program,
+                "characterBuildTask.SetCoordinatorSettled(delegate",
+                "MapTask mapTask");
+            int complete = settled.IndexOf(
+                ".TryCompleteCharacterBuildSkillsNavigation()",
+                StringComparison.Ordinal);
+            int deferredOpen = settled.IndexOf(
+                "panelHost.FlushDeferredBarrierOpen();",
+                StringComparison.Ordinal);
+            Assert.True(complete >= 0);
+            Assert.True(deferredOpen > complete);
+            Assert.Contains(
+                "if (!skillsNavigationConsumed)",
+                settled);
+
+            string router = File.ReadAllText(
+                FindRepositoryFile(
+                    "launcher", "src", "Guardian",
+                    "LauncherCommandRouter.cs"));
+            string completion = Slice(
+                router,
+                "internal bool TryCompleteCharacterBuildSkillsNavigation()",
+                "private void ClearCharacterBuildSkillsNavigationLocked()");
+            int bindingFence = completion.IndexOf(
+                "task.HasBoundPanel",
+                StringComparison.Ordinal);
+            int visualFence = completion.IndexOf(
+                "visual_not_idle",
+                StringComparison.Ordinal);
+            int discardDeferred = completion.IndexOf(
+                ".DiscardDeferredBarrierOpen()",
+                StringComparison.Ordinal);
+            int preflight = completion.IndexOf(
+                "TrySendSkillPanelOpenCommand(openRequestId)",
+                StringComparison.Ordinal);
+            Assert.True(bindingFence >= 0);
+            Assert.True(visualFence > bindingFence);
+            Assert.True(discardDeferred > visualFence);
+            Assert.True(preflight > discardDeferred);
+            Assert.DoesNotContain(
+                "OpenPanel(\"skills\"",
+                completion);
+
+            string navigation = Slice(
+                overlay,
+                "_webView.CoreWebView2.NavigationStarting += delegate",
+                "_webView.CoreWebView2.ContentLoading += delegate");
+            Assert.Contains(
+                ".CancelPendingSkillOpenIntent(",
+                navigation);
+        }
+
+        [Fact]
         public void ForeignVisibleWorkbenchRetiresBeforeOldCharacterAuthorityRecovery()
         {
             string source = File.ReadAllText(

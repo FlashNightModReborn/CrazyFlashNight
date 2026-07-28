@@ -97,6 +97,8 @@ var DressupDollRenderer = (function() {
         }
         if (typeof options.zoom === 'number') state.zoom = options.zoom;
         if (typeof options.margin === 'number') state.margin = options.margin;
+        var fitEnvelope = normalizeBounds(options.fitEnvelope);
+        if (fitEnvelope) state.fitEnvelope = fitEnvelope;
         if (options.rig) state.rig = options.rig;
         if (options.stateLabel) state.stateLabel = options.stateLabel;
         if (options.attackMode) state.attackMode = options.attackMode;
@@ -141,6 +143,28 @@ var DressupDollRenderer = (function() {
 
     function numberOr(value, fallback) {
         return typeof value === 'number' && isFinite(value) ? value : fallback;
+    }
+
+    function copyBounds(bounds) {
+        return {
+            minX: bounds.minX,
+            minY: bounds.minY,
+            maxX: bounds.maxX,
+            maxY: bounds.maxY
+        };
+    }
+
+    function normalizeBounds(value) {
+        if (!value || typeof value !== 'object') return null;
+        var minX = Number(value.minX);
+        var minY = Number(value.minY);
+        var maxX = Number(value.maxX);
+        var maxY = Number(value.maxY);
+        if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)
+                || !(maxX > minX) || !(maxY > minY)) {
+            return null;
+        }
+        return { minX:minX, minY:minY, maxX:maxX, maxY:maxY };
     }
 
     function expandBounds(bounds, x, y) {
@@ -365,6 +389,7 @@ var DressupDollRenderer = (function() {
     }
 
     function resolveRigState(manifest, gender, state, options) {
+        manifest = manifest || {};
         state = state || {};
         options = options || {};
         if (state.directSkinKey && manifest.skinKeys && manifest.skinKeys[state.directSkinKey]) {
@@ -399,6 +424,101 @@ var DressupDollRenderer = (function() {
             stateLabel: '',
             holders: rigGender ? rigGender.holders || [] : []
         };
+    }
+
+    /**
+     * Resolves fit geometry without touching Canvas, loading images or advancing animation.
+     * Consumers can union several returned bounds into one session-owned fit envelope, then
+     * pass that envelope back through state.fitEnvelope. This stays opt-in: callers that omit
+     * fitEnvelope retain the historical per-render auto-fit behavior.
+     */
+    function resolveMeasurement(manifest, state, options) {
+        manifest = manifest || {};
+        state = state || { gender:'男', keyMap:{} };
+        options = options || {};
+        var gender = state.gender || '男';
+        var rigState = resolveRigState(manifest, gender, state, options);
+        var stateContext = {};
+        Object.keys(state).forEach(function(key) {
+            stateContext[key] = state[key];
+        });
+        stateContext.rig = rigState.rig;
+        stateContext.stateLabel = rigState.stateLabel;
+        var holders = rigState.holders || [];
+        var strictFields = state.strictFields === true || options.strictFields === true;
+        var fitHolders = holdersForFit(
+            holders,
+            state.fitFields || options.fitFields,
+            strictFields
+        );
+        var bounds = computeBounds(
+            fitHolders,
+            manifest,
+            state.keyMap || {},
+            options.debugPlaceholders === true,
+            stateContext
+        );
+        return {
+            gender:gender,
+            rigState:rigState,
+            stateContext:stateContext,
+            holders:holders,
+            fitHolders:fitHolders,
+            strictFields:strictFields,
+            bounds:bounds
+        };
+    }
+
+    function measureState(manifest, state, options) {
+        var measured = resolveMeasurement(manifest, state, options);
+        return {
+            gender:measured.gender,
+            rig:measured.rigState.rig,
+            stateLabel:measured.rigState.stateLabel,
+            fitHolders:measured.fitHolders.length,
+            totalHolders:measured.holders.length,
+            strictFields:measured.strictFields,
+            bounds:copyBounds(measured.bounds)
+        };
+    }
+
+    function measureEnvelope(manifest, state, variants, options, padding) {
+        state = state || { gender:'男', keyMap:{} };
+        variants = variants && variants.length ? variants : [{}];
+        var union = null;
+        for (var i = 0; i < variants.length; i++) {
+            var variantState = {};
+            Object.keys(state).forEach(function(key) { variantState[key] = state[key]; });
+            Object.keys(variants[i] || {}).forEach(function(key) {
+                variantState[key] = variants[i][key];
+            });
+            var bounds = resolveMeasurement(manifest, variantState, options).bounds;
+            if (!union) {
+                union = copyBounds(bounds);
+            } else {
+                union.minX = Math.min(union.minX, bounds.minX);
+                union.minY = Math.min(union.minY, bounds.minY);
+                union.maxX = Math.max(union.maxX, bounds.maxX);
+                union.maxY = Math.max(union.maxY, bounds.maxY);
+            }
+        }
+        var ratio = Number(padding);
+        if (!(ratio >= 0) || !isFinite(ratio)) ratio = 0;
+        var width = Math.max(1, union.maxX - union.minX);
+        var height = Math.max(1, union.maxY - union.minY);
+        return {
+            minX:union.minX - width * ratio,
+            minY:union.minY - height * ratio,
+            maxX:union.maxX + width * ratio,
+            maxY:union.maxY + height * ratio
+        };
+    }
+
+    function withFitEnvelope(renderer, state, variants, padding) {
+        if (renderer && typeof renderer.measureEnvelope === 'function') {
+            state.fitEnvelope = renderer.measureEnvelope(state, variants, padding);
+        }
+        return state;
     }
 
     function resolveImageUri(uri, manifest) {
@@ -563,25 +683,17 @@ var DressupDollRenderer = (function() {
             lastState = state || lastState || { gender: '男', keyMap: {} };
             var nowMs = window.performance && window.performance.now ? window.performance.now() : Date.now();
             var size = setupCanvas();
-            var gender = lastState.gender || '男';
-            var rigState = resolveRigState(manifest, gender, lastState, options);
-            var stateContext = {};
-            Object.keys(lastState || {}).forEach(function(key) {
-                stateContext[key] = lastState[key];
-            });
-            stateContext.rig = rigState.rig;
-            stateContext.stateLabel = rigState.stateLabel;
-            var holders = rigState.holders;
-            var strictFields = lastState.strictFields === true || options.strictFields === true;
-            var fitHolders = holdersForFit(holders, lastState.fitFields || options.fitFields, strictFields);
+            var measured = resolveMeasurement(manifest, lastState, options);
+            var gender = measured.gender;
+            var rigState = measured.rigState;
+            var stateContext = measured.stateContext;
+            var holders = measured.holders;
+            var strictFields = measured.strictFields;
             var drawHolders = holdersForDraw(holders, lastState.drawFields || options.drawFields, strictFields);
-            var bounds = computeBounds(
-                fitHolders,
-                manifest,
-                lastState.keyMap,
-                debugPlaceholders,
-                stateContext
-            );
+            var contentBounds = measured.bounds;
+            var fitEnvelope = normalizeBounds(lastState.fitEnvelope)
+                || normalizeBounds(options.fitEnvelope);
+            var bounds = fitEnvelope || copyBounds(contentBounds);
             var margin = numberOr(lastState.margin, numberOr(options.margin, 24));
             var w = Math.max(1, bounds.maxX - bounds.minX);
             var h = Math.max(1, bounds.maxY - bounds.minY);
@@ -692,7 +804,11 @@ var DressupDollRenderer = (function() {
                 totalHolders: holders.length,
                 strictFields: strictFields,
                 bounds: bounds,
+                contentBounds: copyBounds(contentBounds),
+                fitEnvelopeApplied: !!fitEnvelope,
                 scale: scale,
+                offsetX: offsetX,
+                offsetY: offsetY,
                 animated: needsAnimation,
                 missing: missing,
                 pendingImages: pendingImages,
@@ -704,7 +820,21 @@ var DressupDollRenderer = (function() {
 
         return {
             render: render,
-            setManifest: function(nextManifest) { manifest = nextManifest; },
+            measure: function(state) {
+                if (destroyed) return null;
+                return measureState(
+                    manifest,
+                    state || lastState || { gender:'男', keyMap:{} },
+                    options
+                );
+            },
+            measureEnvelope: function(state, variants, padding) {
+                if (destroyed) return null;
+                return measureEnvelope(manifest, state, variants, options, padding);
+            },
+            setManifest: function(nextManifest) {
+                manifest = nextManifest;
+            },
             getManifest: function() { return manifest; },
             setAnimationEnabled: function(enabled) {
                 animationEnabled = enabled !== false;
@@ -738,6 +868,9 @@ var DressupDollRenderer = (function() {
         loadManifest: loadManifest,
         collectItemsByUse: collectItemsByUse,
         buildStateFromEquipment: buildStateFromEquipment,
+        measureState: measureState,
+        measureEnvelope: measureEnvelope,
+        withFitEnvelope: withFitEnvelope,
         create: create
     };
 })();

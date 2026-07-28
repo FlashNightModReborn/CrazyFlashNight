@@ -1,10 +1,4 @@
-/**
- * Character-build view controller.
- *
- * This composes the injected transport, strict session, body renderer and one
- * paper-doll renderer. Parent workbench routing/header/close ownership stays in
- * inventory-workbench.js.
- */
+/** Character Build transport/session/view composition; the parent owns routing and close. */
 (function(root, factory) {
     'use strict';
     var runtime = typeof module !== 'undefined' && module.exports
@@ -19,7 +13,10 @@
         ? require('./character-build/character-build-mutation.js') : root && root.CharacterBuildMutation;
     var pose = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-pose.js') : root && root.CharacterBuildPose;
-    var api = factory(runtime, session, view, tuning, mutation, pose, root);
+    var slotTransition = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-slot-transition.js')
+        : root && root.CharacterBuildSlotTransition;
+    var api = factory(runtime, session, view, tuning, mutation, pose, slotTransition, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -27,7 +24,8 @@
         root.CharacterBuild = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, global) {
+function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
+        SlotTransition, global) {
     'use strict';
 
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
@@ -36,24 +34,15 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
     if (!TuningModule || !TuningModule.CharacterBuildTuning) throw new Error('CharacterBuildTuning is required');
     if (!Mutation) throw new Error('CharacterBuildMutation is required');
     if (!Pose || !Pose.select) throw new Error('CharacterBuildPose is required');
+    if (!SlotTransition || !SlotTransition.handle) {
+        throw new Error('CharacterBuildSlotTransition is required');
+    }
 
     var MANIFEST_URL = 'assets/dressup/manifest.json';
-    var CHARACTER_CAMERA_FIT_FIELDS = [
-        '脸型', '发型', '面具', '屁股',
-        '左大腿', '右大腿', '小腿', '脚'
-    ];
-    var BODY_DRAW_FIELDS = [
-        '身体', '脸型', '发型', '面具', '屁股',
-        '上臂', '左下臂', '右下臂', '左手', '右手',
-        '左大腿', '右大腿', '小腿', '脚'
-    ];
-    var DRAW_FIELDS = BODY_DRAW_FIELDS.concat([
-        '长枪_装扮', '手枪_装扮', '手枪2_装扮',
-        '刀_装扮', '刀2_装扮', '刀3_装扮', '手雷_装扮'
-    ]);
+    // Structural body fields define stable framing; pose extremities stay draw-only for inspection.
+    var CHARACTER_CAMERA_FIT_FIELDS = Pose.cameraFitFields();
+    var DRAW_FIELDS = Pose.drawFields();
     var manifestPromise = null;
-
-    function noop() {}
     function copy(value) {
         var result = {};
         value = value && typeof value === 'object' ? value : {};
@@ -68,7 +57,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
     }
     function safeItem(row) {
         if (!row || row.occupied !== true || !row.item) return null;
-        var item = row.item;
+        var item = row.item, capability = TuningModule.tuningCapability(item);
         var suffix = [];
         if (Number(item.enhancementLevel) > 0) suffix.push('+' + Number(item.enhancementLevel));
         if (Number(row.quantity || item.quantity) > 1) suffix.push('× ' + Number(row.quantity || item.quantity));
@@ -77,7 +66,9 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
             meta:suffix.join(' · ') || String(item.use || item.itemKind || '已装备'),
             type:String(item.use || item.itemKind || ''),
             presentation:item,
-            blocked:row.disabled === true
+            blocked:row.disabled === true,
+            tunable:capability.available,
+            tuningReason:capability.reason
         };
     }
     function viewSnapshot(payload) {
@@ -119,7 +110,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
             var slot = /^drug([1-4])$/.exec(String(selection.id || ''));
             return slot ? {kind:'drug', drugSlot:Number(slot[1]) - 1} : null;
         }
-        return selection.id ? {kind:'equipment', slotKey:String(selection.id)} : null;
+        return /^(armor|weapon)$/.test(String(selection.kind || '')) && selection.id ? {kind:'equipment', slotKey:String(selection.id)} : null;
     }
     function createRequestMux(options) {
         options = options || {};
@@ -347,7 +338,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
             equipment[this._selectedTarget.slotKey] = String(candidate.raw.item.name || '');
         }
         var pose = Pose.select(equipment, this._selectedTarget);
-        return global.DressupDollRenderer.buildStateFromEquipment(this._manifest, {
+        var state = global.DressupDollRenderer.buildStateFromEquipment(this._manifest, {
             gender:portrait.gender === '女' ? '女' : '男',
             equipment:equipment,
             appearance:portrait.appearance || {},
@@ -356,9 +347,14 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
             rig:'battle',
             stateLabel:pose.stateLabel,
             attackMode:pose.attackMode,
-            zoom:0.93,
+            zoom:1.05,
             margin:18
         });
+        return global.DressupDollRenderer.withFitEnvelope(
+            this._renderer,
+            state,
+            Pose.cameraEnvelopePoses(),
+            0.06);
     };
     CharacterBuildController.prototype._renderPortrait = function(candidate) {
         if (!this._renderer) return false;
@@ -378,22 +374,24 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
     };
     CharacterBuildController.prototype._selectSlot = function(selection) {
         var target = targetForSelection(selection);
-        if (this._tuning && this._tuning.isActive()) {
-            var tuningItem = target && target.kind === 'equipment' && this._snapshotPayload
-                ? TuningModule.findEquipment(this._snapshotPayload, target.slotKey) : null;
-            if (!tuningItem || !this._tuning.selectSlot(
-                    target.slotKey, tuningItem, selection && selection.key)) {
-                if (this._ports.toast) this._ports.toast(
-                    '当前调制仍在读取或同步；完成后才能切换装备。');
-                return false;
+        if (!target) return false;
+        var tuningResult = SlotTransition.handle(this, selection, target, TuningModule);
+        if (tuningResult !== null) {
+            if (tuningResult && tuningResult.deferCandidates === true) {
+                this._selectedSlotKey = selection && String(selection.key || '');
+                this._selectedTarget = target;
+                this._renderPortrait(null);
             }
+            return tuningResult;
         }
+        var previousSlotKey = this._selectedSlotKey;
+        var previousTarget = this._selectedTarget;
         this._selectedSlotKey = selection && String(selection.key || '');
         this._selectedTarget = target;
         this._renderPortrait(null);
-        if (!target) return false;
-        var self = this;
+        var self = this, sendRefused = false;
         var callId = this._session.requestCandidates(target, function(response, accepted) {
+            sendRefused = !accepted && response && response.clientSynthetic === true && response.error === 'not_sent';
             if (!self._view) return;
             if (accepted) {
                 self._view.setCandidates(selection.requestKey, viewCandidates(response.payload));
@@ -401,10 +399,13 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose, 
                 self._view.setCandidateFailure(selection.requestKey);
             }
         });
-        if (!callId && this._view) {
-            this._view.setCandidateFailure(selection.requestKey);
+        if (!callId || sendRefused) {
+            // Keep controller and View rollback transactional when transport admission fails.
+            this._selectedSlotKey = previousSlotKey;
+            this._selectedTarget = previousTarget;
+            this._renderPortrait(null);
         }
-        return callId;
+        return sendRefused ? null : callId;
     };
     CharacterBuildController.prototype._enterTuning = function() {
         if (!this._tuning || !this._selectedTarget

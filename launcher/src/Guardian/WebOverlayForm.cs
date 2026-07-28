@@ -227,7 +227,8 @@ namespace CF7Launcher.Guardian
             return reason == "mount_failed"
                 || reason == "lazy_user_cancel" || reason == "lazy_cancel"
                 || reason == "lazy_load_failed" || reason == "lazy_register_failed"
-                || reason == "lazy_register_missing";
+                || reason == "lazy_register_missing"
+                || reason == "navigate_skills";
         }
 
         internal static string BuildPanelForceClosePayload(string activePanel,
@@ -988,6 +989,12 @@ namespace CF7Launcher.Guardian
                     if (lootCoordinator != null && lootCoordinator.State != LootPanelCoordinator.BindingState.Idle)
                     {
                         lootCoordinator.ForceDetach("web_navigation");
+                    }
+                    if (_commandRouter != null)
+                    {
+                        _commandRouter
+                            .CancelPendingSkillOpenIntent(
+                                "web_navigation");
                     }
                     BeginCharacterBuildWebNavigationRecovery();
                 };
@@ -3300,6 +3307,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
             task.SetDetachRecoveryBlocked(delegate(string status, string error)
             {
+                if (_commandRouter != null)
+                {
+                    _commandRouter
+                        .CancelCharacterBuildSkillsNavigation(
+                            task.PanelInstanceId,
+                            "detach_recovery_blocked");
+                }
                 AddMessage(
                     "角色构筑未能安全结束，游戏保持暂停；请重启当前游戏会话以避免覆盖存档。"
                     + "（" + error + "）");
@@ -4320,6 +4334,7 @@ namespace CF7Launcher.Guardian
                         string panel = parsed.Value<string>("panel") ?? "";
                         bool characterBuildPauseReleaseHandled = false;
                         bool characterBuildVisualRetirePending = false;
+                        bool navigateSkills = false;
                         string exactWorkbenchInstance = null;
                         bool trackedHairdresserClose = panel == "hairdresser"
                             && _panelHost != null
@@ -4336,6 +4351,10 @@ namespace CF7Launcher.Guardian
                                 LogManager.Log("[Workbench] rejected stale/malformed close envelope");
                                 return;
                             }
+                            navigateSkills = string.Equals(
+                                parsed.Value<string>("reason"),
+                                "navigate_skills",
+                                StringComparison.Ordinal);
                             bool tuningBound = _equipmentTuningTask != null
                                 && _equipmentTuningTask.PanelInstanceId == activeInstance;
                             bool exactLoadoutBinding = _characterBuildTask != null
@@ -4355,9 +4374,58 @@ namespace CF7Launcher.Guardian
                                 LogManager.Log("[CharacterBuildTask] close deferred until exact finalize proof");
                                 return;
                             }
+                            if (navigateSkills)
+                            {
+                                bool navigationArmed =
+                                    exactLoadoutBinding
+                                    && _commandRouter != null
+                                    && _commandRouter
+                                        .TryArmCharacterBuildSkillsNavigation(
+                                            activeInstance);
+                                if (!navigationArmed)
+                                {
+                                    string pendingNavigation =
+                                        _commandRouter != null
+                                            ? _commandRouter
+                                                .PendingCharacterBuildSkillsNavigationInstance
+                                            : null;
+                                    if (string.Equals(
+                                        pendingNavigation,
+                                        activeInstance,
+                                        StringComparison.Ordinal))
+                                    {
+                                        LogManager.Log(
+                                            "[CharacterBuildTask] rejected duplicate Skills navigation handoff");
+                                        return;
+                                    }
+                                    if (_commandRouter != null
+                                        && !string.IsNullOrEmpty(
+                                            pendingNavigation))
+                                    {
+                                        _commandRouter
+                                            .CancelCharacterBuildSkillsNavigation(
+                                                pendingNavigation,
+                                                "superseded_by_ordinary_close");
+                                    }
+                                    // Web has already retired its local DOM before sending this
+                                    // envelope.  If the optional navigation intent cannot arm,
+                                    // preserve the authoritative ordinary-close path instead of
+                                    // stranding Host visual/pause ownership.
+                                    navigateSkills = false;
+                                    LogManager.Log(
+                                        "[CharacterBuildTask] Skills navigation unavailable; continuing ordinary close");
+                                }
+                            }
                             if (tuningBound
                                 && !_equipmentTuningTask.HandlePanelClosed(activeInstance))
                             {
+                                if (navigateSkills)
+                                {
+                                    _commandRouter
+                                        .CancelCharacterBuildSkillsNavigation(
+                                            activeInstance,
+                                            "equipment_tuning_close_race");
+                                }
                                 LogManager.Log("[EquipmentTuningTask] close lost coordinator race");
                                 return;
                             }
@@ -4370,6 +4438,13 @@ namespace CF7Launcher.Guardian
                                         _characterBuildTask
                                             .PanelInstanceId))
                                 {
+                                    if (navigateSkills)
+                                    {
+                                        _commandRouter
+                                            .CancelCharacterBuildSkillsNavigation(
+                                                activeInstance,
+                                                "character_close_race");
+                                    }
                                     LogManager.Log(
                                         "[CharacterBuildTask] close recovery lost coordinator race");
                                     return;
@@ -4429,7 +4504,8 @@ namespace CF7Launcher.Guardian
                         {
                             // 顺序很关键：必须先清栈再 ClosePanel，否则 ExecuteCommand Close path
                             // 还会读到栈顶 entry 并 enqueue reopen 命令。
-                            if (dismissReturnStack) _panelHost.ClearReturnStack();
+                            if (dismissReturnStack || navigateSkills)
+                                _panelHost.ClearReturnStack();
                             if (panel == "workbench")
                             {
                                 string closeInstance =
@@ -4445,7 +4521,16 @@ namespace CF7Launcher.Guardian
                                         panel,
                                         closeInstance,
                                         0,
-                                        "normal_close")
+                                        "normal_close",
+                                        navigateSkills
+                                            ? (Action)delegate
+                                            {
+                                                _commandRouter
+                                                    .CancelCharacterBuildSkillsNavigation(
+                                                        closeInstance,
+                                                        "visual_retire_failed");
+                                            }
+                                            : null)
                                     : _panelHost.TryClosePanelExact(
                                         panel,
                                         closeInstance,
@@ -4467,9 +4552,16 @@ namespace CF7Launcher.Guardian
                             // before allowing AS2 to release the captured pause lease.
                             ForceIdleState(
                                 "character_build_close");
-                            _characterBuildTask
-                                .ContinueDetachRecoveryAfterVisualRetired(
-                                    0);
+                            if (!_characterBuildTask
+                                    .ContinueDetachRecoveryAfterVisualRetired(
+                                        0)
+                                && navigateSkills)
+                            {
+                                _commandRouter
+                                    .CancelCharacterBuildSkillsNavigation(
+                                        exactWorkbenchInstance,
+                                        "visual_retire_continuation_failed");
+                            }
                         }
                         if (panel == "hairdresser" && !trackedHairdresserClose
                             && _hairdresserTask != null)
@@ -4832,7 +4924,8 @@ namespace CF7Launcher.Guardian
             string panelName,
             string panelInstanceId,
             int readyGeneration,
-            string reason)
+            string reason,
+            Action unavailable = null)
         {
             if (task == null || _panelHost == null)
                 return false;
@@ -4853,15 +4946,20 @@ namespace CF7Launcher.Guardian
                                     .VisualRetireOutcome
                                     .VisualAlreadyAbsent)
                         {
-                            task
-                                .ContinueDetachRecoveryAfterVisualRetired(
-                                    readyGeneration);
+                            if (!task
+                                    .ContinueDetachRecoveryAfterVisualRetired(
+                                        readyGeneration)
+                                && unavailable != null)
+                            {
+                                unavailable();
+                            }
                             return;
                         }
                         LogManager.Log(
                             "[CharacterBuildTask] "
                             + (reason ?? "visual_retire")
                             + " recovery remains fenced: Host visual retire unavailable");
+                        if (unavailable != null) unavailable();
                     });
             if (!queued)
             {
@@ -4869,6 +4967,7 @@ namespace CF7Launcher.Guardian
                     "[CharacterBuildTask] "
                     + (reason ?? "visual_retire")
                     + " recovery remains fenced: Host visual retire was not queued");
+                if (unavailable != null) unavailable();
             }
             return queued;
         }
@@ -4877,6 +4976,13 @@ namespace CF7Launcher.Guardian
         {
             CharacterBuildTask task = _characterBuildTask;
             if (task == null || !task.HasBoundPanel) return;
+            if (_commandRouter != null)
+            {
+                _commandRouter
+                    .CancelCharacterBuildSkillsNavigation(
+                        task.PanelInstanceId,
+                        "web_navigation");
+            }
 
             // Navigation destroys the one browser document that owns every Web panel visual.
             // Capture and retire whichever visual is current before recovery may release the
@@ -4946,12 +5052,26 @@ namespace CF7Launcher.Guardian
             }
             if (closedGeneration <= _lastSocketDisconnectGeneration) return;
             _lastSocketDisconnectGeneration = closedGeneration;
+            if (_commandRouter != null)
+            {
+                _commandRouter
+                    .CancelPendingSkillOpenIntent(
+                        "socket_disconnected");
+            }
 
             // Drain accepted loadout transport ownership and install the no-open barrier before
             // touching visuals. Recovery dispatch remains withheld until PanelHost's exact
             // visual-retire primitive proves that no Host panel is visible.
             CharacterBuildTask disconnectingBuild =
                 _characterBuildTask;
+            if (_commandRouter != null
+                && disconnectingBuild != null)
+            {
+                _commandRouter
+                    .CancelCharacterBuildSkillsNavigation(
+                        disconnectingBuild.PanelInstanceId,
+                        "socket_disconnected");
+            }
             bool characterVisualRetirePending =
                 disconnectingBuild != null
                 && disconnectingBuild.BeginSocketDetachBarrier(
@@ -5176,6 +5296,22 @@ namespace CF7Launcher.Guardian
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
             string returnToPanel, string returnToInitDataJson, string initDataExtrasJson)
         {
+            RequestOpenPanel(
+                panelName,
+                source,
+                pageId,
+                frameLabel,
+                returnFrameLabel,
+                returnToPanel,
+                returnToInitDataJson,
+                initDataExtrasJson,
+                null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
+            string returnToPanel, string returnToInitDataJson, string initDataExtrasJson,
+            string skillOpenRequestId)
+        {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
             {
@@ -5184,7 +5320,8 @@ namespace CF7Launcher.Guardian
                     this.BeginInvoke(new Action(delegate()
                     {
                         RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
-                            returnToPanel, returnToInitDataJson, initDataExtrasJson);
+                            returnToPanel, returnToInitDataJson, initDataExtrasJson,
+                            skillOpenRequestId);
                     }));
                 }
                 catch { }
@@ -5194,7 +5331,8 @@ namespace CF7Launcher.Guardian
             if (_commandRouter != null)
             {
                 _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
-                    returnToPanel, returnToInitDataJson, initDataExtrasJson);
+                    returnToPanel, returnToInitDataJson, initDataExtrasJson,
+                    skillOpenRequestId);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

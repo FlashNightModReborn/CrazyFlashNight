@@ -1,7 +1,7 @@
 # 双栏工作台 UI 系统约束
 
 **文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
-**最后核对代码基线**：commit `c806ac19beacd500277d5cd9f689fefed1a9982c`（2026-07-26）+ 当前角色构筑施工工作树。
+**最后核对代码基线**：commit `21ad8a272a3bd85f77f3bb891fe55f8981c272b8`（2026-07-27）+ 当前角色构筑布局、相机与 Host 导航收口工作树。
 
 本文适用于 `kshop`、`npcshop`、`crafting`、独立 `workbench`、角色构筑、嵌入式装备调制和 `skills` 中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
 
@@ -27,11 +27,11 @@
 | `library-decision` | 技能教师、调制候选 | 目录/候选 + 固定信息量的预览提交区 |
 | `character-build` | 角色构筑 | 左右固定 `55:45`；左侧内层为弹性单 Canvas + 按内容收缩并贴右的 11 装备槽/4 药剂槽，不能把槽区右侧空白保留成无效列宽；右侧候选/调制决策区不得窄于 `360px`；55% 是 1024 下仍保持三列完整候选和八列紧凑图标的左倾上限；详细属性以全 body SecondaryPage 与编辑态互斥 |
 
-`character-build` 的最低画布为 1024×576；“当前装备/候选预览”只改变同一个 Canvas 的合成输入，不生成第二个并排 Canvas。需要更大构图时，`character-build-doll-preview.js` 只把现有 `.character-build-doll-stage` 与 exact Canvas 临时迁入全 body SecondaryPage；不得复制 renderer、Canvas 或 current/preview state。打开时底层 body/header inert，Esc 后按原顺序放回 stage 并恢复 opener。放大页复用 `workbench-inspection-viewport.js` 的瞬态相机：滚轮或 `+/-` 缩放、主键拖拽或方向键平移、“全貌”/`Home` 复位；transform 只作用 exact Canvas，不作用 stage、候选覆盖层或 renderer 输入。关闭必须清零缩放/位移；嵌入态停用相机且不得吞掉 pointer、wheel 或键盘输入。该 profile 必须覆盖满 11+4、空/blocked、长中文、未知性别/缺素材、stats SecondaryPage 与完整键盘路径。stats 在最低画布下不得靠缩小中文字号硬塞：标题/footer 固定，正文使用单一、可聚焦的纵向滚动区，保留可见滚动提示、滚轮与键盘滚动，并在关闭后把焦点还给入口。任何新 profile 都必须先进入本文，说明适用角色、最小画布和验证样本；禁止只在单个 feature CSS 中创造隐式结构。
+`character-build` 的最低画布为 1024×576；“当前装备/候选预览”只改变同一个 Canvas 的合成输入，不生成第二个并排 Canvas。Character Build 每次从当前权威纸娃娃状态重新测量 `空手/长枪/手枪/手枪2/双枪/兵器` 六种 battle pose，合并一个带留白的结构骨架 envelope：`身体/脸型/发型/面具/屁股/大腿/小腿/脚` 参与取景，横向变化最大的手臂、手与武器只绘制、不参与缩小人物。相同身体投影下，切槽、武器候选、嵌入/放大迁移和 resize 使用同一几何结果；装备或外观权威变化必须重新测量，禁止复用只按 `panelInstanceId + gender` 建立的陈旧缓存。嵌入态允许姿态末端受控裁切，完整武器/动作查看由放大页的平移和缩放承担。该能力是 renderer 的 opt-in 输入；未传 envelope 的对话、佣兵与独立 dressup 页面仍保持逐次内容自适应。需要更大构图时，`character-build-doll-preview.js` 只把现有 `.character-build-doll-stage` 与 exact Canvas 临时迁入全 body SecondaryPage；不得复制 renderer、Canvas 或 current/preview state。打开时底层 body/header inert，Esc 后按原顺序放回 stage 并恢复 opener。放大页复用 `workbench-inspection-viewport.js` 的瞬态相机：滚轮或 `+/-` 缩放、主键拖拽或方向键平移、“全貌”/`Home` 复位；transform 只作用 exact Canvas，不作用 stage、候选覆盖层或 renderer 输入。关闭必须清零缩放/位移；嵌入态停用相机且不得吞掉 pointer、wheel 或键盘输入。该 profile 必须覆盖满 11+4、空/blocked、长中文、未知性别/缺素材、stats SecondaryPage 与完整键盘路径。stats 在最低画布下不得靠缩小中文字号硬塞：标题/footer 固定，正文使用单一、可聚焦的纵向滚动区，保留可见滚动提示、滚轮与键盘滚动，并在关闭后把焦点还给入口。任何新 profile 都必须先进入本文，说明适用角色、最小画布和验证样本；禁止只在单个 feature CSS 中创造隐式结构。
 
 ### 2.2 纵向节奏
 
-生产工作台通常按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。Character Build 是受控例外：左侧“外观与配置 / 当前构筑”的 PaneChrome 标题行同时容纳当前浏览提示、放大预览入口与 `15 / 15` 槽计数；routine 浏览提示不得再占用 pane 底部空间，底部只为 blocked/warning/error 等必须持续可读的异常信息让位。右侧候选动作直接并入“背包候选 / 候选对比”同一 PaneChrome 标题行；删除无领域决策价值的通用“详情”和任何钉住动作，装备上下文最多显示“装备 / 调制 / 卸下”三项，药剂提交短标签改为“装入”。完整动作语义保留在 `aria-label`；“装备/装入”是唯一主 CTA，“调制”只在当前槽存在可调制装备且能力允许时出现。1024×576 下动作组必须单行、不换行、不横向溢出；删除独立动作行以扩大候选区，候选可滚区底部也不再复制 action rail 或长快捷键说明。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮。二级页从顶栏下沿覆盖整个 workbench body，不在底层双栏上叠半透明可点击内容。
+生产工作台通常按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。Character Build 是受控例外：左侧“外观与配置 / 当前构筑”的 PaneChrome 以标题复制区承载当前浏览摘要，摘要位于“当前构筑”右侧、放大预览入口左侧；固定 11+4 槽与“护具/武装/药剂”分组不再重复显示 `15 / 15`、`· 6/5/4` 等可从结构直接得出的计数。未选候选时保留语义 overlay 节点但整层隐藏，选中后才显示一行“预览 · 名称”。routine 浏览/读取/恢复提示不得再占用 pane 底部空间，底部只为 blocked/write/reconcile/error 等必须持续可读的异常信息让位。右侧候选动作直接并入“背包候选 / 候选对比”同一 PaneChrome 标题行；删除无领域决策价值的通用“详情”和任何钉住动作，装备上下文最多显示“装备 / 调制 / 卸下”三项，药剂提交短标签改为“装入”。完整动作语义保留在 `aria-label`；“装备/装入”是唯一主 CTA。1024×576 下动作组必须单行、不换行、不横向溢出；删除独立动作行以扩大候选区，候选可滚区底部也不再复制 action rail 或长快捷键说明。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮。二级页从顶栏下沿覆盖整个 workbench body，不在底层双栏上叠半透明可点击内容。
 
 PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得再造第二套局部顶栏。FlowRail 是关系提示，不是常亮主 CTA：待命时低能量，只有拖拽接收、权威 pending 或预览更新时提升亮度。
 
@@ -192,7 +192,9 @@ tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc �
 
 共享层只抽“相同原因而变化”的部分。仅 DOM 相似、但 authority 或失败恢复不同的代码不得为了减少行数合并。
 
-物理拆分遵循“facade 只编排、presenter 只投影、runtime 才持有领域时序”：KShop 的 cart/catalog/owned/tooltip、Inventory Workbench 的 config/header/quick-transfer/owned-view/storage controller、NPC 的 secondary pages、Skills 的 library/loadout/trainer/interactions/render/diagnostics、Equipment Tuning 的 model/render，以及 Character Build 的 session/view/controller/mutation/action-view/tuning/pose/stats-view/doll-preview 均为显式依赖模块。`character-build-doll-preview.js` 只编排 exact stage 的 SecondaryPage 迁移、底层 inert、Esc/opener restore，并把瞬态相机机械能力委托给 `workbench-inspection-viewport.js`；它不创建 Canvas/renderer，也不持有 Bridge/session/候选。各模块不得自行拥有第二个 Bridge response listener、跨面板 session 或不属于本模块的 authority token；懒加载表必须先加载共享 runtime/生命周期/焦点/primitive/component/inspection viewport，再加载 feature module，最后加载 facade。
+物理拆分遵循“facade 只编排、presenter 只投影、runtime 才持有领域时序”：KShop 的 cart/catalog/owned/tooltip、Inventory Workbench 的 config/header/quick-transfer/owned-view/storage controller、NPC 的 secondary pages、Skills 的 library/loadout/trainer/interactions/render/diagnostics、Equipment Tuning 的 model/render，以及 Character Build 的 session/view/controller/mutation/action-view/tuning/slot-transition/pose/template/stats-view/doll-preview 均为显式依赖模块。`character-build-template.js` 只返回静态壳 markup，不持有行为或 authority；`character-build-slot-transition.js` 只处理 embedded tuning 活跃时的可调制 source rebind、不可调制 exact detach 与迟到回调 fence，不持有 writer、DOM 或通用路由；`character-build-doll-preview.js` 只编排 exact stage 的 SecondaryPage 迁移、底层 inert、Esc/opener restore，并把瞬态相机机械能力委托给 `workbench-inspection-viewport.js`；它不创建 Canvas/renderer，也不持有 Bridge/session/候选。各模块不得自行拥有第二个 Bridge response listener、跨面板 session 或不属于本模块的 authority token；懒加载表必须先加载共享 runtime/生命周期/焦点/primitive/component/inspection viewport，再加载 feature module，最后加载 facade。
+
+Character Build 的“技能”入口是离开当前工作台的跨面板动作，不是第三种域内 view。前端只能在本地 finalize 成功后，用当前 exact `panelInstanceId` 发送 `reason:"navigate_skills"` 的严格 workbench close；不得自行挂载 Skills、模拟 Native HUD、保留返回栈，或把 Character 的 session/revision/选择状态带入 Skills。按钮触发后沿用正常关闭/blocked 反馈，页面实际切换必须等待 Host visual-retire、AS2 acknowledged detach 与 coordinator settled；失败时由既有关闭/恢复状态和 Host toast 表达，不在 Web 另造“看似已跳转”的乐观状态。最终入口与刘海屏“技能”一致，只接受 `source=nativehud, view=manage`，initData 不含 `trainerSession` 或 `canReturnTrainer=true`，不创建、恢复或继承教师 capability，玩家只能配置自身已学技能与快捷栏。跨层完整契约见 [迁移护栏 §2.5](as2-web-panel-migration.md#25-角色构筑会话默认入口与-visual-retire-屏障2026-07-27-工作树)。
 
 ## 10. CSS 级联与文件治理
 
@@ -237,7 +239,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 截图用于人眼比较，不单独构成像素级通过证据；字体、Edge/WebView2 版本和资源闭包稳定前不启用脆弱的全图像素 golden。atlas 证明共享合同，不能替代各领域真实数据、滚动极值、中文长文案和游戏内动效验收。
 
-共享稳定基线为 atlas `48/48`、物品格矩阵 `17/17` 与静态审计 `0 error / 0 warning`。角色构筑另有 workbench、领域控制器和 dressup combination 三条 browser runner；它们必须覆盖三个视口、`55:45` 且右栏不少于 `360px`、1024 下左内层 Canvas 至少 `300px`、槽区按内容收缩到约 `204px` 并贴右、三组槽位末格与左 pane 右缘对齐、四药剂同排且内层零横溢出、左 PaneChrome 同行浏览提示/放大入口/15 槽计数、routine 底部提示不占空间、候选 action group 最多三项（装备/调制/卸下，药剂为装入）且无通用详情/pin、完整 `aria-label`、仅适用时显示“调制”、1024 单行无溢出、无独立动作行和底部重复 rail、单一 density toggle DOM、候选 full/compact 往返零业务流量、stats 3×3 与抗性 4×2/2×4、power `data-scale=log10` / resistance linear、八 SVG `aria-hidden`、负值/缺值/全零降级、同一 Canvas/renderer identity、放大页 Canvas-only wheel/`+/-`/drag/arrows/full-view reset、关闭复位、嵌入态不吞输入、inert/focus/Esc、11+4 槽位、无 pin 且随 operation/focus 更新的“调制说明”、检视 modal/内联说明逐层 Esc 与权威写后刷新。case 总数随契约增加而变化，本文不冻结最终数字；验收只引用同一源码树的完整 runner 输出。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
+共享稳定基线为 atlas `48/48`、物品格矩阵 `17/17` 与静态审计 `0 error / 0 warning`。角色构筑另有 workbench、领域控制器和 dressup combination 三条 browser runner；它们必须覆盖三个视口、`55:45` 且右栏不少于 `360px`、1024 下左内层 Canvas 至少 `300px`、槽区按内容收缩到约 `204px` 并贴右、三组槽位末格与左 pane 右缘对齐、四药剂同排且内层零横溢出、左 PaneChrome 的“当前构筑 + 浏览摘要”在左且放大入口在右、无总槽位/分组重复计数、空候选 overlay 隐藏、routine 底部提示折叠、候选 action group 最多三项（装备/调制/卸下，药剂为装入）且无通用详情/pin、完整 `aria-label`、1024 单行无溢出、无独立动作行和底部重复 rail、单一 density toggle DOM、候选 full/compact 往返零业务流量、stats 3×3 与抗性 4×2/2×4、power `data-scale=log10` / resistance linear、八 SVG `aria-hidden`、负值/缺值/全零降级、同一 Canvas/renderer identity、六种 battle pose 的当前状态结构骨架 fit envelope、放大页 Canvas-only wheel/`+/-`/drag/arrows/full-view reset、关闭复位、嵌入态不吞输入、inert/focus/Esc、11+4 槽位、无 pin 且随 operation/focus 更新的“调制说明”、检视 modal/内联说明逐层 Esc 与权威写后刷新。纯几何 envelope 回归另由 `node tools/test-dressup-stable-fit.js` 固定，未传 envelope 的 renderer 默认路径也必须覆盖。case 总数随契约增加而变化，本文不冻结最终数字；验收只引用同一源码树的完整 runner 输出。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
 
 ## 12. 例外与变更流程
 

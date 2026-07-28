@@ -122,7 +122,7 @@
     display:flex;
     align-items:center;
     justify-content:flex-end;
-    flex:1 1 auto;
+    flex:0 0 auto;
     gap:5px;
     min-width:0;
 }
@@ -130,13 +130,28 @@
     display:block;
     flex:0 0 auto;
 }
-.character-build-loadout-tools > [data-slot-count] {
-    flex:0 0 auto;
-    padding:3px 6px;
-    color:var(--wb-accent);
-    background:var(--wb-accent-soft);
-    border:1px solid color-mix(in srgb,var(--wb-accent) 38%,transparent);
-    font:700 11px/1.2 "Consolas","Microsoft YaHei",monospace;
+.character-build-loadout-heading-copy {
+    display:grid;
+    grid-template-columns:max-content minmax(0,1fr);
+    grid-template-rows:auto auto;
+    align-items:center;
+    flex:1 1 auto;
+    column-gap:9px;
+    min-width:0;
+}
+.character-build-loadout-heading-copy > span:first-child {
+    grid-column:1 / -1;
+}
+.character-build-loadout-heading-copy > h2 {
+    grid-column:1;
+}
+.character-build-loadout-heading-copy > .character-build-focus-summary {
+    grid-column:2;
+    font-family:"Microsoft YaHei",sans-serif;
+    font-size:11px;
+    font-weight:500;
+    line-height:16px;
+    letter-spacing:0;
 }
 .character-build-pane-tools [data-build-density-mount]:empty { display:none; }
 .character-build-pane-tools .item-grid-mode-switch {
@@ -301,11 +316,6 @@
     border-left:2px solid var(--wb-focus);
     pointer-events:none;
 }
-.character-build-candidate-overlay span {
-    display:block;
-    color:var(--wb-focus);
-    font-size:11px;
-}
 .character-build-candidate-overlay b {
     display:block;
     overflow:hidden;
@@ -408,18 +418,20 @@
 }
 .character-build-focus-summary {
     display:block;
-    flex:1 1 96px;
     min-width:0;
-    max-width:190px;
-    min-height:26px;
-    padding:5px 6px;
+    min-height:20px;
+    padding:2px 6px;
     box-sizing:border-box;
     overflow:hidden;
     color:var(--wb-muted);
-    background:var(--wb-bg);
-    border:1px solid var(--wb-line-soft);
+    background:color-mix(in srgb,var(--wb-bg) 64%,transparent);
+    border-left:1px solid var(--wb-line-soft);
+    font-family:"Microsoft YaHei",sans-serif;
     font-size:11px;
-    line-height:15px;
+    font-weight:500;
+    line-height:16px;
+    letter-spacing:0;
+    text-align:left;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
@@ -441,6 +453,16 @@
 .character-build-inline-notice[data-notice-kind="blocked"] {
     color:color-mix(in srgb,var(--wb-danger) 70%,var(--wb-text));
     border-color:var(--wb-danger);
+}
+.character-build-inline-notice[data-notice-kind="error"] {
+    color:color-mix(in srgb,var(--wb-danger) 70%,var(--wb-text));
+    border-color:color-mix(in srgb,var(--wb-danger) 70%,var(--wb-line));
+}
+.character-build-inline-notice[data-notice-kind="pending"],
+.character-build-inline-notice[data-notice-kind="write"],
+.character-build-inline-notice[data-notice-kind="reconcile"] {
+    color:color-mix(in srgb,var(--wb-warning) 72%,var(--wb-text));
+    border-color:color-mix(in srgb,var(--wb-warning) 56%,var(--wb-line));
 }
 .character-build-inline-notice[data-notice-kind="browsing"] { display:none; }
 
@@ -524,6 +546,7 @@
 .character-build-workbench[data-build-subview="tuning"] .character-build-candidate-overlay {
     display:none;
 }
+.character-build-candidate-overlay[hidden] { display:none; }
 .character-build-candidate-pane > [hidden] { display:none; }
 .character-build-candidate-focus-summary {
     min-width:0;

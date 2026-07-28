@@ -92,8 +92,22 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
         await page.goto('http://127.0.0.1:' + server.address().port + '/' + HARNESS
             + '?stats-probe=1',
         {waitUntil:'load'});
-        await page.waitForFunction(() => window.__statsProbeReady === true, null,
-            {timeout:30000});
+        try {
+            await page.waitForFunction(() => window.__statsProbeReady === true
+                || window.__qaReady === true, null,
+                {timeout:30000});
+        } catch (error) {
+            throw new Error('stats probe did not become ready: '
+                + JSON.stringify({pageErrors, failedRequests}) + '; ' + error.message);
+        }
+        const probeState = await page.evaluate(() => ({
+            ready:window.__statsProbeReady === true,
+            report:window.__qaReport || null
+        }));
+        if (!probeState.ready) {
+            throw new Error('stats probe stopped on an earlier harness failure: '
+                + JSON.stringify(probeState.report));
+        }
         await page.evaluate(() => {
             const output = document.getElementById('qa-output');
             if (output) output.hidden = true;
@@ -233,7 +247,9 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
         'modules/character-build/character-build-action-view.js',
         'modules/character-build/character-build-stats-view.js',
         'modules/character-build/character-build-doll-preview.js',
+        'modules/character-build/character-build-template.js',
         'modules/character-build/character-build-tuning.js',
+        'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
         'modules/character-build.js',
         'modules/inventory-workbench.js'

@@ -225,6 +225,23 @@ namespace CF7Launcher.Bus
                     string initDataExtrasJson = initDataToken != null
                         ? initDataToken.ToString(Newtonsoft.Json.Formatting.None)
                         : null;
+                    JToken openRequestIdToken =
+                        request["openRequestId"];
+                    if (panel == "skills"
+                        && openRequestIdToken != null
+                        && openRequestIdToken.Type
+                            != JTokenType.String)
+                    {
+                        LogManager.Log(
+                            "event=skill_panel_open_rejected reason=invalid_open_request_id_type");
+                        return null;
+                    }
+                    string openRequestId =
+                        openRequestIdToken != null
+                        && openRequestIdToken.Type
+                            == JTokenType.String
+                            ? openRequestIdToken.Value<string>()
+                            : null;
 
                     // Web 调制仍处在人类反馈期：旧 AS2 插件改装入口一律留在原 renderer。
                     // 即使运行中的旧 SWF 仍发送可信 callback，也只返回明确拒绝，不打开面板。
@@ -241,7 +258,8 @@ namespace CF7Launcher.Bus
                         }.ToString(Newtonsoft.Json.Formatting.None);
                     }
                     webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel,
-                        returnToPanel, returnToInitDataJson, initDataExtrasJson);
+                        returnToPanel, returnToInitDataJson, initDataExtrasJson,
+                        openRequestId);
                     return null;
                 });
             }

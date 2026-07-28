@@ -45,6 +45,15 @@ namespace CF7Launcher.Guardian
         private readonly object _skillOpenLock = new object();
         private System.Threading.Timer _skillOpenTimer;
         private int _skillOpenGeneration;
+        private bool _skillOpenPending;
+        private string _skillOpenRequestId;
+        private string _skillOpenOrigin;
+        private string _skillOpenBaselinePanel;
+        private string _skillOpenBaselineInstance;
+        private readonly object _characterBuildSkillsNavigationLock =
+            new object();
+        private string _pendingCharacterBuildSkillsNavigationInstance;
+        private Action _beforeCharacterBuildSkillsNavigationConsumeForTests;
         private readonly object _nativeEquipmentBuildOpenLock = new object();
         private System.Threading.Timer _nativeEquipmentBuildOpenTimer;
         private int _nativeEquipmentBuildOpenGeneration;
@@ -88,12 +97,181 @@ namespace CF7Launcher.Guardian
             _fallbackVisualRetire = retire;
         }
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
+        internal void SetBeforeCharacterBuildSkillsNavigationConsumeForTests(Action action)
+        {
+            _beforeCharacterBuildSkillsNavigationConsumeForTests = action;
+        }
         internal void SetPanelAdmissionGate(Func<bool> gate)
         {
             _panelAdmissionGate = gate;
         }
         internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
         internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
+        internal string PendingCharacterBuildSkillsNavigationInstance
+        {
+            get
+            {
+                lock (_characterBuildSkillsNavigationLock)
+                    return _pendingCharacterBuildSkillsNavigationInstance;
+            }
+        }
+
+        /// <summary>
+        /// Arms the single exact-instance Character Build -> Skills intent.  The intent does not
+        /// open either surface: WebOverlay must still run the normal CharacterBuild close barrier,
+        /// visual retire, and acknowledged AS2 recovery before the coordinator-settled callback
+        /// may send the existing skillPanelOpen preflight.
+        /// </summary>
+        internal bool TryArmCharacterBuildSkillsNavigation(
+            string panelInstanceId)
+        {
+            if (string.IsNullOrEmpty(panelInstanceId))
+                return false;
+            CharacterBuildTask task = _characterBuildTask;
+            string activePanel = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : _activeFallbackPanelName;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : _activeFallbackPanelInstanceId;
+            if (task == null
+                || !task.IsBoundTo(panelInstanceId)
+                || !task.CanRebind
+                || task.RequiresDetachRecovery
+                || !string.Equals(
+                    activePanel, "workbench",
+                    StringComparison.Ordinal)
+                || !string.Equals(
+                    activeInstance, panelInstanceId,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            lock (_characterBuildSkillsNavigationLock)
+            {
+                if (_pendingCharacterBuildSkillsNavigationInstance != null)
+                    return false;
+                if (!task.IsBoundTo(panelInstanceId)
+                    || !task.CanRebind
+                    || task.RequiresDetachRecovery)
+                {
+                    return false;
+                }
+                _pendingCharacterBuildSkillsNavigationInstance =
+                    panelInstanceId;
+            }
+            LogManager.Log(
+                "event=character_build_skills_navigation_armed panel_instance="
+                + panelInstanceId);
+            return true;
+        }
+
+        internal bool CancelCharacterBuildSkillsNavigation(
+            string panelInstanceId,
+            string reason)
+        {
+            if (string.IsNullOrEmpty(panelInstanceId))
+                return false;
+            lock (_characterBuildSkillsNavigationLock)
+            {
+                if (!string.Equals(
+                    _pendingCharacterBuildSkillsNavigationInstance,
+                    panelInstanceId,
+                    StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                ClearCharacterBuildSkillsNavigationLocked();
+            }
+            LogManager.Log(
+                "event=character_build_skills_navigation_cancelled panel_instance="
+                + panelInstanceId + " reason="
+                + (reason ?? "unknown"));
+            return true;
+        }
+
+        /// <summary>
+        /// Called only from CharacterBuildTask's coordinator-settled callback.  A true result means
+        /// an armed handoff was consumed and competing deferred opens must not be replayed for this
+        /// edge-triggered navigation.
+        /// </summary>
+        internal bool TryCompleteCharacterBuildSkillsNavigation()
+        {
+            string panelInstanceId;
+            lock (_characterBuildSkillsNavigationLock)
+            {
+                panelInstanceId =
+                    _pendingCharacterBuildSkillsNavigationInstance;
+                if (panelInstanceId == null) return false;
+            }
+
+            CharacterBuildTask task = _characterBuildTask;
+            if (task == null
+                || task.HasBoundPanel
+                || task.RequiresDetachRecovery)
+            {
+                CancelCharacterBuildSkillsNavigation(
+                    panelInstanceId,
+                    "coordinator_not_settled");
+                return false;
+            }
+            string activePanel = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : _activeFallbackPanelName;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : _activeFallbackPanelInstanceId;
+            if (!string.IsNullOrEmpty(activePanel)
+                || !string.IsNullOrEmpty(activeInstance))
+            {
+                CancelCharacterBuildSkillsNavigation(
+                    panelInstanceId,
+                    "visual_not_idle");
+                return false;
+            }
+
+            Action beforeConsume =
+                _beforeCharacterBuildSkillsNavigationConsumeForTests;
+            if (beforeConsume != null)
+                beforeConsume();
+
+            lock (_characterBuildSkillsNavigationLock)
+            {
+                if (!string.Equals(
+                    _pendingCharacterBuildSkillsNavigationInstance,
+                    panelInstanceId,
+                    StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                _pendingCharacterBuildSkillsNavigationInstance =
+                    null;
+            }
+
+            LogManager.Log(
+                "event=skill_panel_open_requested source=character_build");
+            if (_panelHost != null)
+                _panelHost.DiscardDeferredBarrierOpen();
+            string openRequestId;
+            int generation = BeginSkillOpenWait(
+                "character_build",
+                out openRequestId);
+            if (!TrySendSkillPanelOpenCommand(openRequestId))
+            {
+                CancelSkillOpenWait(generation);
+                LogManager.Log(
+                    "event=skill_panel_open_failed source=character_build reason=preflight_send");
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"技能面板暂时不可用，请从旧物品界面进入\"}");
+            }
+            return true;
+        }
+
+        private void ClearCharacterBuildSkillsNavigationLocked()
+        {
+            _pendingCharacterBuildSkillsNavigationInstance = null;
+        }
+
         internal void ClearFallbackPanelInstance()
         {
             _activeFallbackPanelInstanceId = null;
@@ -258,8 +436,12 @@ namespace CF7Launcher.Guardian
                 case "SKILLS":
                     LogManager.Log("[Router] SKILLS clicked");
                     LogManager.Log("event=skill_panel_open_requested source=notch");
-                    int skillOpenGeneration = BeginSkillOpenWait();
-                    if (!TrySendGameCommand("skillPanelOpen"))
+                    string skillOpenRequestId;
+                    int skillOpenGeneration = BeginSkillOpenWait(
+                        "notch",
+                        out skillOpenRequestId);
+                    if (!TrySendSkillPanelOpenCommand(
+                            skillOpenRequestId))
                     {
                         CancelSkillOpenWait(skillOpenGeneration);
                         LogManager.Log("[Router] SKILLS skillPanelOpen preflight failed");
@@ -347,6 +529,22 @@ namespace CF7Launcher.Guardian
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
             string returnToPanel, string returnToInitDataJson, string initDataExtrasJson)
         {
+            RequestOpenPanel(
+                panelName,
+                source,
+                pageId,
+                frameLabel,
+                returnFrameLabel,
+                returnToPanel,
+                returnToInitDataJson,
+                initDataExtrasJson,
+                null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
+            string returnToPanel, string returnToInitDataJson, string initDataExtrasJson,
+            string skillOpenRequestId)
+        {
             if (string.IsNullOrEmpty(panelName)) return;
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
             if (string.Equals(panelName, "map", StringComparison.OrdinalIgnoreCase))
@@ -397,7 +595,10 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "skills", StringComparison.OrdinalIgnoreCase))
             {
-                OpenSkillsPanel(initDataExtrasJson);
+                OpenSkillsPanel(
+                    safeSource,
+                    initDataExtrasJson,
+                    skillOpenRequestId);
                 return;
             }
             if (string.Equals(panelName, "arena", StringComparison.OrdinalIgnoreCase))
@@ -629,16 +830,48 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void OpenSkillsPanel(string initDataExtrasJson)
+        private void OpenSkillsPanel(
+            string source,
+            string initDataExtrasJson,
+            string skillOpenRequestId)
         {
             JObject initData;
-            if (!TryBuildSkillsInitData(initDataExtrasJson, out initData))
+            if (!TryBuildSkillsInitData(
+                    source,
+                    initDataExtrasJson,
+                    out initData))
             {
                 LogManager.Log("[Router] OpenSkillsPanel rejected extras");
                 LogManager.Log("event=skill_panel_open_failed reason=invalid_panel_request");
                 return;
             }
-            CancelSkillOpenWait();
+            string view =
+                initData.Value<string>("view");
+            string rejectionReason;
+            string pendingOrigin;
+            if (!TryAdmitSkillPanelRequest(
+                    source,
+                    view,
+                    skillOpenRequestId,
+                    out rejectionReason,
+                    out pendingOrigin))
+            {
+                if (view == "trainer"
+                    && _skillTask != null)
+                {
+                    _skillTask.RequestTrainerCleanup(
+                        initData.Value<string>(
+                            "trainerSession"));
+                }
+                LogManager.Log(
+                    "event=skill_panel_open_rejected reason="
+                    + rejectionReason
+                    + " source=" + source
+                    + " view=" + view
+                    + " pending_origin="
+                    + (pendingOrigin ?? "none"));
+                return;
+            }
             if (initData.Value<string>("view") == "trainer" && _skillTask != null && !_skillTask.CanOpenTrainer)
             {
                 // 旧写状态/旧教师能力尚未安全清理时，不展示刚由 AS2 建立的新 session。
@@ -716,7 +949,10 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
-        internal static bool TryBuildSkillsInitData(string initDataExtrasJson, out JObject initData)
+        internal static bool TryBuildSkillsInitData(
+            string source,
+            string initDataExtrasJson,
+            out JObject initData)
         {
             initData = null;
             if (string.IsNullOrEmpty(initDataExtrasJson)) return false;
@@ -725,6 +961,19 @@ namespace CF7Launcher.Guardian
             catch { return false; }
             string view = extras.Value<string>("view");
             if (view != "manage" && view != "trainer") return false;
+            if ((view == "manage"
+                    && !string.Equals(
+                        source,
+                        "nativehud",
+                        StringComparison.Ordinal))
+                || (view == "trainer"
+                    && !string.Equals(
+                        source,
+                        "world_skill_trainer",
+                        StringComparison.Ordinal)))
+            {
+                return false;
+            }
             int expected = view == "trainer" ? 2 : 1;
             if (extras.Count != expected) return false;
             foreach (JProperty property in extras.Properties())
@@ -864,6 +1113,14 @@ namespace CF7Launcher.Guardian
         {
             if (!CanAdmitPanel("open:" + (panelName ?? "<null>")))
                 return false;
+            if (!string.Equals(
+                    panelName,
+                    "skills",
+                    StringComparison.Ordinal))
+            {
+                CancelPendingSkillOpenIntent(
+                    "competing_panel");
+            }
             string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
             string currentInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
                 : _activeFallbackPanelInstanceId;
@@ -1499,7 +1756,29 @@ namespace CF7Launcher.Guardian
             return _socketServer.TrySend(payload);
         }
 
-        private int BeginSkillOpenWait()
+        private bool TrySendSkillPanelOpenCommand(
+            string openRequestId)
+        {
+            if (!IsOpaqueToken(openRequestId))
+                return false;
+            string payload =
+                "{\"task\":\"cmd\",\"action\":\"skillPanelOpen\","
+                + "\"openRequestId\":\""
+                + EscapeJsonString(openRequestId)
+                + "\"}\0";
+            if (_gameCommandSenderOverride != null)
+                return _gameCommandSenderOverride(payload);
+            if (_socketServer == null
+                || !_socketServer.IsClientReady)
+            {
+                return false;
+            }
+            return _socketServer.TrySend(payload);
+        }
+
+        private int BeginSkillOpenWait(
+            string origin,
+            out string openRequestId)
         {
             System.Threading.Timer previous;
             int generation;
@@ -1507,6 +1786,26 @@ namespace CF7Launcher.Guardian
             {
                 generation = ++_skillOpenGeneration;
                 previous = _skillOpenTimer;
+                openRequestId =
+                    "skill.open."
+                    + generation.ToString("x")
+                    + "."
+                    + Guid.NewGuid().ToString("N");
+                _skillOpenPending = true;
+                _skillOpenRequestId =
+                    openRequestId;
+                _skillOpenOrigin =
+                    string.IsNullOrEmpty(origin)
+                        ? "unknown"
+                        : origin;
+                _skillOpenBaselinePanel =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelName
+                        : _activeFallbackPanelName;
+                _skillOpenBaselineInstance =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelInstanceId
+                        : _activeFallbackPanelInstanceId;
                 _skillOpenTimer = new System.Threading.Timer(delegate { OnSkillOpenTimeout(generation); },
                     null, Math.Max(1, SkillOpenTimeoutMs), System.Threading.Timeout.Infinite);
             }
@@ -1514,23 +1813,150 @@ namespace CF7Launcher.Guardian
             return generation;
         }
 
+        private bool TryAdmitSkillPanelRequest(
+            string source,
+            string view,
+            string openRequestId,
+            out string rejectionReason,
+            out string pendingOrigin)
+        {
+            System.Threading.Timer timer =
+                null;
+            bool admitted =
+                false;
+            lock (_skillOpenLock)
+            {
+                pendingOrigin =
+                    _skillOpenPending
+                        ? _skillOpenOrigin
+                        : null;
+                if (view == "trainer")
+                {
+                    if (_skillOpenPending)
+                    {
+                        rejectionReason =
+                            "manage_preflight_pending";
+                    }
+                    else if (!string.IsNullOrEmpty(
+                        openRequestId))
+                    {
+                        rejectionReason =
+                            "unexpected_open_request_id";
+                    }
+                    else if (string.Equals(
+                        _panelHost != null
+                            ? _panelHost.ActivePanelName
+                            : _activeFallbackPanelName,
+                        "skills",
+                        StringComparison.Ordinal))
+                    {
+                        // A trainer panel_request is only an external world-entry edge. Once
+                        // Skills is active, trainer/manage transitions must use exact-instance
+                        // panel-control rebind; a delayed NPC request may never replace the
+                        // just-opened manage surface.
+                        rejectionReason =
+                            "skills_already_active";
+                    }
+                    else
+                    {
+                        rejectionReason =
+                            null;
+                        admitted =
+                            true;
+                    }
+                }
+                else if (!_skillOpenPending)
+                {
+                    rejectionReason =
+                        "missing_preflight";
+                }
+                else if (!string.Equals(
+                    source,
+                    "nativehud",
+                    StringComparison.Ordinal)
+                    || !string.Equals(
+                        view,
+                        "manage",
+                        StringComparison.Ordinal))
+                {
+                    rejectionReason =
+                        "preflight_contract";
+                }
+                else if (!IsOpaqueToken(
+                        openRequestId)
+                    || !string.Equals(
+                        openRequestId,
+                        _skillOpenRequestId,
+                        StringComparison.Ordinal))
+                {
+                    rejectionReason =
+                        "preflight_nonce";
+                }
+                else
+                {
+                    string activePanel =
+                        _panelHost != null
+                            ? _panelHost.ActivePanelName
+                            : _activeFallbackPanelName;
+                    string activeInstance =
+                        _panelHost != null
+                            ? _panelHost.ActivePanelInstanceId
+                            : _activeFallbackPanelInstanceId;
+                    if (!string.Equals(
+                            activePanel,
+                            _skillOpenBaselinePanel,
+                            StringComparison.Ordinal)
+                        || !string.Equals(
+                            activeInstance,
+                            _skillOpenBaselineInstance,
+                            StringComparison.Ordinal))
+                    {
+                        rejectionReason =
+                            "competing_panel";
+                        timer =
+                            ClearSkillOpenWaitLocked();
+                    }
+                    else
+                    {
+                        rejectionReason =
+                            null;
+                        admitted =
+                            true;
+                        timer =
+                            ClearSkillOpenWaitLocked();
+                    }
+                }
+            }
+            if (timer != null)
+                timer.Dispose();
+            return admitted;
+        }
+
         private void OnSkillOpenTimeout(int generation)
         {
             System.Threading.Timer timer;
             bool showToast;
+            string origin;
             lock (_skillOpenLock)
             {
-                if (generation != _skillOpenGeneration) return;
+                if (!_skillOpenPending
+                    || generation != _skillOpenGeneration)
+                {
+                    return;
+                }
                 string active = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
                 showToast = active != "skills";
-                _skillOpenGeneration++;
-                timer = _skillOpenTimer;
-                _skillOpenTimer = null;
+                origin =
+                    _skillOpenOrigin;
+                timer =
+                    ClearSkillOpenWaitLocked();
             }
             if (timer != null) timer.Dispose();
             if (!showToast) return;
             LogManager.Log("[Router] SKILLS panel_request timeout generation=" + generation);
-            LogManager.Log("event=skill_panel_open_fallback reason=panel_request_timeout target=legacy_inventory");
+            LogManager.Log(
+                "event=skill_panel_open_fallback reason=panel_request_timeout target=legacy_inventory source="
+                + (origin ?? "unknown"));
             PostToWeb("{\"type\":\"toast\",\"text\":\"技能服务未就绪，请从旧物品界面进入\"}");
         }
 
@@ -1539,12 +1965,61 @@ namespace CF7Launcher.Guardian
             System.Threading.Timer timer;
             lock (_skillOpenLock)
             {
-                if (expectedGeneration != 0 && expectedGeneration != _skillOpenGeneration) return;
-                _skillOpenGeneration++;
-                timer = _skillOpenTimer;
-                _skillOpenTimer = null;
+                if (!_skillOpenPending
+                    || (expectedGeneration != 0
+                        && expectedGeneration
+                            != _skillOpenGeneration))
+                {
+                    return;
+                }
+                timer =
+                    ClearSkillOpenWaitLocked();
             }
             if (timer != null) timer.Dispose();
+        }
+
+        internal bool CancelPendingSkillOpenIntent(
+            string reason)
+        {
+            System.Threading.Timer timer;
+            string origin;
+            lock (_skillOpenLock)
+            {
+                if (!_skillOpenPending)
+                    return false;
+                origin =
+                    _skillOpenOrigin;
+                timer =
+                    ClearSkillOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=skill_panel_open_cancelled reason="
+                + (reason ?? "unknown")
+                + " source="
+                + (origin ?? "unknown"));
+            return true;
+        }
+
+        private System.Threading.Timer ClearSkillOpenWaitLocked()
+        {
+            _skillOpenPending =
+                false;
+            _skillOpenGeneration++;
+            _skillOpenRequestId =
+                null;
+            _skillOpenOrigin =
+                null;
+            _skillOpenBaselinePanel =
+                null;
+            _skillOpenBaselineInstance =
+                null;
+            System.Threading.Timer timer =
+                _skillOpenTimer;
+            _skillOpenTimer =
+                null;
+            return timer;
         }
 
         private static string EscapeJsonString(string s)

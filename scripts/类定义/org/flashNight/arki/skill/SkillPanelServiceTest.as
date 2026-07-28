@@ -11,7 +11,10 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         passed = failed = 0;
         testInstallRegistersCommandsAndBridges();
         testManageOpenUsesStrictJson();
-        testGameCommandOpenRunsReadyPreflight();
+        testGameCommandOpenEchoesRequestId();
+        testGameCommandOpenSupportsLegacyHostWithoutRequestId();
+        testGameCommandOpenRejectsInvalidRequestId();
+        testOrdinaryOpenersDoNotCarryRequestId();
         testManageOpenNotReadySendsNothing();
         testManageOpenSendFalseFailsClosed();
         testSparseTrainerObjectNormalization();
@@ -74,11 +77,48 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         check(result.success && parsed.task == "panel_request" && parsed.panel == "skills" && parsed.initData.view == "manage" && parsed.source == "native_hud", "manage opener emits strict panel_request JSON");
     }
 
-    private static function testGameCommandOpenRunsReadyPreflight():Void {
-        var f:Object = fixture(); _root.gameCommands.skillPanelOpen({v:1});
+    private static function testGameCommandOpenEchoesRequestId():Void {
+        var f:Object = fixture();
+        var requestId:String = "skill.open.Request_7~A-B";
+        _root.gameCommands.skillPanelOpen({task:"cmd", action:"skillPanelOpen", openRequestId:requestId});
         var parsed:Object = (new JSON(false)).parse(f.root.server.sent[0]);
-        check(parsed.task == "panel_request" && parsed.initData.view == "manage" && parsed.source == "nativehud",
-            "skillPanelOpen enters AS2 ready preflight and emits the manage panel request");
+        check(parsed.task == "panel_request" && parsed.initData.view == "manage" && parsed.source == "nativehud"
+            && parsed.openRequestId === requestId,
+            "skillPanelOpen echoes the exact Host openRequestId on the nativehud manage request");
+    }
+
+    private static function testGameCommandOpenSupportsLegacyHostWithoutRequestId():Void {
+        var f:Object = fixture();
+        _root.gameCommands.skillPanelOpen({task:"cmd", action:"skillPanelOpen"});
+        var parsed:Object = (new JSON(false)).parse(f.root.server.sent[0]);
+        check(f.root.server.sent.length == 1 && parsed.task == "panel_request"
+            && parsed.panel == "skills" && parsed.initData.view == "manage"
+            && parsed.source == "nativehud" && parsed.openRequestId == undefined,
+            "skillPanelOpen supports the legacy Host command without synthesizing openRequestId");
+    }
+
+    private static function testGameCommandOpenRejectsInvalidRequestId():Void {
+        var f:Object = fixture();
+        var tooLong:String = "";
+        for (var i:Number = 0; i < 161; i++) tooLong += "a";
+        _root.gameCommands.skillPanelOpen({openRequestId:"bad token"});
+        _root.gameCommands.skillPanelOpen({openRequestId:"bad/token"});
+        _root.gameCommands.skillPanelOpen({openRequestId:7});
+        _root.gameCommands.skillPanelOpen({openRequestId:null});
+        _root.gameCommands.skillPanelOpen({openRequestId:tooLong});
+        check(f.root.server.sent.length == 0,
+            "skillPanelOpen rejects non-opaque, non-string, or overlength openRequestId without sending");
+    }
+
+    private static function testOrdinaryOpenersDoNotCarryRequestId():Void {
+        var f:Object = fixture();
+        var manage:Object = _root.openSkillPanel("nativehud");
+        var trainer:Object = _root.openSkillTrainer(f.npc, "world_skill_trainer");
+        var manageWire:Object = (new JSON(false)).parse(f.root.server.sent[0]);
+        var trainerWire:Object = (new JSON(false)).parse(f.root.server.sent[1]);
+        check(manage.success && trainer.success && manageWire.openRequestId == undefined
+            && trainerWire.openRequestId == undefined,
+            "ordinary manage and trainer openers never synthesize or carry openRequestId");
     }
 
     private static function testManageOpenNotReadySendsNothing():Void {

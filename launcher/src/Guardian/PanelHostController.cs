@@ -488,6 +488,23 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// Atomically drops the last generic open captured behind a global authority barrier.
+        /// Character Build -> Skills consumes the old navigation edge instead of replaying a
+        /// competing request that arrived while acknowledged detach recovery was still pending.
+        /// </summary>
+        public bool DiscardDeferredBarrierOpen()
+        {
+            lock (_queueLock)
+            {
+                bool discarded =
+                    _deferredBarrierOpen.HasValue;
+                _deferredBarrierOpen =
+                    null;
+                return discarded;
+            }
+        }
+
+        /// <summary>
         /// 异常路径（断线 / force_close / 进程退出前）专用：清空 return stack，
         /// 让接下来的 ClosePanel 不要尝试 reopen 任何上层 panel。
         /// 正常 user-close 路径（点 ✕ / ESC / backdrop）不应该调本方法。

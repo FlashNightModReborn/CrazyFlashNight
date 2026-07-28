@@ -21,6 +21,22 @@
         var result = target.closest(selector);
         return result && boundary.contains(result) ? result : null;
     }
+    function tuningCapability(item) {
+        var level = Number(item && item.enhancementLevel);
+        if (!item) return {available:false, code:'empty', reason:'当前槽位没有可调制装备'};
+        if (item.itemKind !== 'equipment') return {
+            available:false, code:'not_equipment',
+            reason:item.itemKind === 'stack' && item.use === '手雷'
+                ? '数量型手雷不能调制' : '该物品不属于可调制装备'
+        };
+        if (item.majorType !== '武器' && item.majorType !== '防具') return {
+            available:false, code:'unsupported_type', reason:'仅武器与防具可以调制'
+        };
+        if (!isFinite(level) || Math.floor(level) !== level || level < 1) return {
+            available:false, code:'invalid_level', reason:'该装备缺少有效的强化等级'
+        };
+        return {available:true, code:'available', reason:''};
+    }
     function ActionView(options) {
         options = options || {};
         this._root = options.root;
@@ -80,11 +96,20 @@
             : drug ? '装入所选药剂' : '装备所选候选');
         this._commitButton.disabled = reconcile ? false
             : this._state !== 'idle' || !candidate || candidate.blocked === true;
-        var tunable = !!slot && slot.getAttribute('data-empty') !== 'true'
-            && slot.getAttribute('data-slot-kind') !== 'drug'
+        var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
+            && slot.getAttribute('data-slot-kind') !== 'drug';
+        var tunable = occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
             && slot.getAttribute('data-blocked') !== 'true';
-        this._tuneButton.hidden = !tunable;
+        var tuningReason = slot && slot.getAttribute('data-tuning-reason')
+            || (slot && slot.getAttribute('data-blocked') === 'true'
+                ? '当前装备状态不可用' : '该物品不能调制');
+        this._tuneButton.hidden = !occupiedEquipment;
+        this._tuneButton.textContent = tunable ? '调制' : '不可调制';
         this._tuneButton.disabled = this._state !== 'idle' || !tunable;
+        this._tuneButton.setAttribute('aria-disabled', this._tuneButton.disabled ? 'true' : 'false');
+        this._tuneButton.setAttribute('aria-label', tunable ? '调制当前装备' : tuningReason);
+        if (tunable) this._tuneButton.removeAttribute('title');
+        else this._tuneButton.setAttribute('title', tuningReason);
         this._unequipButton.disabled = this._state !== 'idle'
             || !slot || slot.getAttribute('data-empty') === 'true';
     };
@@ -105,5 +130,5 @@
         this._root.removeEventListener('click', this._onClick);
         this._root.removeEventListener('keydown', this._onKeyDown);
     };
-    return {ActionView:ActionView};
+    return {ActionView:ActionView, tuningCapability:tuningCapability};
 });

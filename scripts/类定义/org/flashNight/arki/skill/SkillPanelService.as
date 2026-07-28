@@ -22,7 +22,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["skillSnapshot"] = function(params:Object):Void { SkillPanelService.handle("snapshot", params); };
         _root.gameCommands["skillPanelOpen"] = function(params:Object):Void {
-            SkillPanelService.openManage("nativehud");
+            SkillPanelService.openManageFromCommand(params);
         };
         _root.gameCommands["skillLearnPreview"] = function(params:Object):Void { SkillPanelService.handle("learnPreview", params); };
         _root.gameCommands["skillLearnCommit"] = function(params:Object):Void { SkillPanelService.handle("learnCommit", params); };
@@ -77,20 +77,35 @@ class org.flashNight.arki.skill.SkillPanelService {
         return fail("unknown_command");
     }
 
-    public static function openManage(source:String):Object {
+    public static function openManageFromCommand(params:Object):Object {
+        if (params == null) {
+            return panelOpenFailure("invalid_payload");
+        }
+        // 滚动部署兼容：旧 Host 的刘海屏 SKILLS 命令没有 openRequestId。
+        // 新 Host 始终发送 nonce，且 Host 侧不会接纳无 nonce 的 panel_request；
+        // 因而这里只维持旧 Host → 新 AS2 的单向兼容，不放宽新握手边界。
+        if (typeof params.openRequestId == "undefined") return openManage("nativehud", undefined);
+        if (!safeOpenRequestId(params.openRequestId)) return panelOpenFailure("invalid_payload");
+        return openManage("nativehud", String(params.openRequestId));
+    }
+
+    public static function openManage(source:String, openRequestId):Object {
+        if (openRequestId != undefined && !safeOpenRequestId(openRequestId)) {
+            return panelOpenFailure("invalid_payload");
+        }
         if (!SkillLoadoutService.isReady()) {
             var r:Object = SkillLoadoutService.root();
             if (r != null && typeof r.发布调试消息 == "function") r.发布调试消息("[SkillPanelService] service_not_ready");
             return {success:false, v:1, error:"service_not_ready", opened:false};
         }
-        return sendPanelRequest("manage", null, source == null ? "native_hud" : source);
+        return sendPanelRequest("manage", null, source == null ? "native_hud" : source, openRequestId);
     }
 
     public static function openTrainer(npcRef:Object, source:String):Object {
         if (!SkillLoadoutService.isReady()) return {success:false, v:1, error:"service_not_ready"};
         var created:Object = createOrReuseSession(npcRef);
         if (!created.success) return created;
-        var sent:Object = sendPanelRequest("trainer", created.session.nonce, source == null ? "world_skill_trainer" : source);
+        var sent:Object = sendPanelRequest("trainer", created.session.nonce, source == null ? "world_skill_trainer" : source, undefined);
         if (!sent.success) {
             if (created.candidate && _candidateSession === created.session) _candidateSession = null;
         } else sent.trainerSession = created.session.nonce;
@@ -386,13 +401,19 @@ class org.flashNight.arki.skill.SkillPanelService {
         return {session:session.nonce, entries:entries, diagnostics:session.catalogDiagnostics.concat()};
     }
 
-    private static function sendPanelRequest(view:String, trainerSession:String, source:String):Object {
+    private static function sendPanelRequest(view:String, trainerSession:String, source:String, openRequestId):Object {
+        if (openRequestId != undefined
+                && (view != "manage" || source != "nativehud" || !safeOpenRequestId(openRequestId))) {
+            return panelOpenFailure("invalid_payload");
+        }
         var r:Object = SkillLoadoutService.root();
         if (r.server == null || typeof r.server.sendSocketMessage != "function") return {success:false, v:1, error:"launcher_unavailable", opened:false};
         if (_json == null) _json = new JSON(false);
         var initData:Object = {view:view};
         if (trainerSession != null) initData.trainerSession = trainerSession;
-        var message:String = _json.stringify({task:"panel_request", panel:"skills", source:sanitizePlain(String(source), 64, "unknown"), initData:initData});
+        var request:Object = {task:"panel_request", panel:"skills", source:sanitizePlain(String(source), 64, "unknown"), initData:initData};
+        if (openRequestId != undefined) request.openRequestId = String(openRequestId);
+        var message:String = _json.stringify(request);
         var sent:Boolean = r.server.sendSocketMessage(message) === true;
         return sent ? {success:true, v:1, opened:true} : {success:false, v:1, error:"launcher_unavailable", opened:false};
     }
@@ -491,6 +512,19 @@ class org.flashNight.arki.skill.SkillPanelService {
         return s.length > 0 && s.length <= 64 && isSafePlain(s) && !isBoundaryWhitespace(s.charCodeAt(0))
             && !isBoundaryWhitespace(s.charCodeAt(s.length - 1));
     }
+    private static function safeOpenRequestId(value):Boolean {
+        if (typeof value != "string") return false;
+        var s:String = String(value);
+        if (s.length < 1 || s.length > 160) return false;
+        for (var i:Number = 0; i < s.length; i++) {
+            var c:Number = s.charCodeAt(i);
+            var valid:Boolean = (c >= 48 && c <= 57)
+                || (c >= 65 && c <= 90) || (c >= 97 && c <= 122)
+                || c == 45 || c == 46 || c == 95 || c == 126;
+            if (!valid) return false;
+        }
+        return true;
+    }
     private static function safeOpaque(value, max:Number):Boolean { return typeof value == "string" && String(value).length > 0 && String(value).length <= max; }
     private static function whole(value, min:Number, max:Number):Boolean { var n:Number = Number(value); return !isNaN(n) && isFinite(n) && Math.floor(n) == n && n >= min && n <= max; }
     private static function safeWhole(value, fallback:Number):Number { var n:Number = Number(value); return isNaN(n) || !isFinite(n) ? fallback : Math.floor(n); }
@@ -533,6 +567,7 @@ class org.flashNight.arki.skill.SkillPanelService {
     }
     private static function addDiagnostic(target:Array, item:Object):Void { if (target.length < 32) target.push(item); }
     private static function fail(errorCode:String):Object { return {success:false, v:1, error:errorCode, revision:SkillLoadoutService.getRevision()}; }
+    private static function panelOpenFailure(errorCode:String):Object { return {success:false, v:1, error:errorCode, opened:false}; }
 
     public static function testOnlyReset():Void {
         _installed = false; _busy = false; _session = null; _candidateSession = null; _learnToken = null; _sessionSeq = 0; _tokenSeq = 0; _testNow = NaN; _json = new JSON(false);

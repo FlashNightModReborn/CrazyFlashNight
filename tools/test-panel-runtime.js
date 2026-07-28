@@ -203,8 +203,18 @@ test('timeout and send failure are synthetic and deterministic', () => {
 
     const failed = new Runtime.PanelRequestMux({callPrefix:'test', sessionNonce:'nonce', send:() => false});
     failed.openSession({});
-    failed.request('snapshot', {}, response => responses.push(response));
+    let requestReturned = false;
+    let failedEntry = null;
+    const failedCallId = failed.request('snapshot', {}, (response, entry) => {
+        assert.strictEqual(requestReturned, false);
+        responses.push(response);
+        failedEntry = entry;
+    });
+    requestReturned = true;
+    assert.ok(failedCallId);
     assert.strictEqual(responses[1].error, 'not_sent');
+    assert.strictEqual(responses[1].callId, failedCallId);
+    assert.strictEqual(failedEntry.callId, failedCallId);
     assert.strictEqual(failed.pendingCount(), 0);
 });
 

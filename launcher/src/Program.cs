@@ -1276,10 +1276,16 @@ class Program
         });
         characterBuildTask.SetCoordinatorSettled(delegate
         {
+            bool skillsNavigationConsumed =
+                commandRouter
+                    .TryCompleteCharacterBuildSkillsNavigation();
             if (panelHost != null)
             {
-                panelHost.FlushDeferredBarrierOpen();
-                panelHost.FlushDeferredRebind("workbench");
+                if (!skillsNavigationConsumed)
+                {
+                    panelHost.FlushDeferredBarrierOpen();
+                    panelHost.FlushDeferredRebind("workbench");
+                }
             }
         });
         MapTask mapTask = new MapTask(socketServer);

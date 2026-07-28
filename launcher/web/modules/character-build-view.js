@@ -16,7 +16,10 @@
     var preview = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-doll-preview.js')
         : root && root.CharacterBuildDollPreview;
-    var api = factory(focus, components, actions, stats, preview);
+    var template = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-template.js')
+        : root && root.CharacterBuildTemplate;
+    var api = factory(focus, components, actions, stats, preview, template);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -24,7 +27,8 @@
         root.CharacterBuildView = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule, DollPreviewModule) {
+function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
+        DollPreviewModule, TemplateModule) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
@@ -40,6 +44,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
     }
     if (!DollPreviewModule || typeof DollPreviewModule.create !== 'function') {
         throw new Error('character-build-view.js requires CharacterBuildDollPreview');
+    }
+    if (!TemplateModule || typeof TemplateModule.create !== 'function') {
+        throw new Error('character-build-view.js requires CharacterBuildTemplate');
     }
 
     var ARMOR_SLOTS = [
@@ -58,10 +65,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
     ];
     function text(value, fallback) {
         return String(value == null || value === '' ? fallback || '' : value);
-    }
-    function escapeHtml(value) {
-        return text(value).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
     function itemAt(collection, id) {
         return collection && Object.prototype.hasOwnProperty.call(collection, id)
@@ -147,51 +150,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         root.setAttribute('aria-label', '角色构筑编辑');
         root.setAttribute('data-render-model', 'single-canvas-candidate-overlay');
         root.setAttribute('data-density', this._density);
-        root.innerHTML = ''
-            + '<main class="character-build-body" data-build-underlay data-pane-layout="52-48">'
-            + '  <section class="character-build-pane character-build-composite-pane" data-build-pane="loadout" aria-labelledby="character-build-loadout-title">'
-            + '    <header class="character-build-pane-heading"><div><span>外观与配置</span><h2 id="character-build-loadout-title">当前构筑</h2></div>'
-            + '      <div class="character-build-loadout-tools">'
-            + '        <span class="character-build-focus-summary" data-focus-summary title="用方向键浏览槽位；按 Enter 或 Space 选择。">浏览：尚未选择槽位</span>'
-            + '        <span data-doll-preview-action-host></span><b data-slot-count>15 / 15</b></div></header>'
-            + '    <div class="character-build-composite">'
-            + '      <div class="character-build-visual-column">'
-            + '        <div class="character-build-doll-home" data-doll-stage-home>'
-            + '        <div class="character-build-doll-stage" data-body-copy>'
-            + '          <canvas class="character-build-doll-canvas" width="440" height="650" aria-label="角色当前装备纸娃娃"></canvas>'
-            + '          <div class="character-build-candidate-overlay" data-layer="candidate-preview" aria-live="polite">'
-            + '            <span>临时预览</span><b data-overlay-copy>尚未选择候选</b></div>'
-            + '        </div></div>'
-            + '      </div>'
-            + '      <div class="character-build-loadout-column">'
-            + '        <section class="character-build-slot-section"><h3>护具 · 6</h3>'
-            + '          <div class="character-build-slot-grid item-grid-compact" data-armor-grid role="grid" aria-label="六格护具栏"></div></section>'
-            + '        <section class="character-build-slot-section"><h3>武装 · 5</h3>'
-            + '          <div class="character-build-slot-grid item-grid-compact" data-weapon-grid role="grid" aria-label="五格武装栏"></div></section>'
-            + '        <section class="character-build-slot-section character-build-drug-section"><h3>药剂 · 4</h3>'
-            + '          <div class="character-build-drug-grid item-grid-compact" data-drug-grid role="grid" aria-label="四格药剂栏"></div></section>'
-            + '      </div>'
-            + '    </div>'
-            + '    <div class="character-build-inline-notice" data-body-copy data-build-notice>选择槽位与候选可查看临时预览。</div>'
-            + '  </section>'
-            + '  <aside class="character-build-pane character-build-candidate-pane" data-build-pane="candidates" aria-labelledby="character-build-candidate-title">'
-            + '    <header class="character-build-pane-heading"><div><span>背包候选</span><h2 id="character-build-candidate-title">候选对比</h2></div>'
-            + '      <div class="character-build-pane-tools"><div class="character-build-candidate-actions" role="toolbar" aria-label="当前槽位与候选操作">'
-            + '        <button type="button" data-build-action="commit" aria-label="装备所选候选" disabled>装备</button>'
-            + '        <button type="button" data-build-action="tune" aria-label="调制当前装备" hidden disabled>调制</button>'
-            + '        <button type="button" data-build-action="unequip" aria-label="卸下当前物品" disabled>卸下</button></div>'
-            + '        <div data-build-density-mount></div><b data-candidate-count>0 项</b></div></header>'
-            + '    <div class="character-build-candidate-focus-summary" data-body-copy data-candidate-focus-summary>方向键只浏览摘要；Enter 或 Space 固定预览，仅再次按 Enter 才提交。</div>'
-            + '    <div class="character-build-candidate-scroll" data-scroll-region="candidates">'
-            + '      <div class="character-build-candidate-list inventory-owned-grid" data-candidate-list role="listbox" aria-label="装备候选"></div></div>'
-            + '  </aside>'
-            + '</main>'
-            + '<section class="character-build-stats-page" role="dialog" aria-label="个人信息统计">'
-            + '  <div class="character-build-stats-scroll" data-scroll-region="stats" tabindex="0" role="region" aria-label="可滚动的个人信息统计"><div class="character-build-stats-grid" data-stats-grid></div></div>'
-            + '  <footer data-body-copy><span class="character-build-stats-scroll-hint" data-stats-scroll-hint hidden>'
-            + '    <i data-stats-scroll-glyph aria-hidden="true">↓</i><span data-stats-scroll-copy>下方还有内容 · 滚轮 / PageDown</span></span>'
-            + '    <span class="character-build-stats-return-hint">Esc 返回构筑</span></footer>'
-            + '</section>';
+        root.innerHTML = TemplateModule.create();
 
         this._underlay = root.querySelector('[data-build-underlay]');
         this._canvas = root.querySelector('.character-build-doll-canvas');
@@ -202,7 +161,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._armorGrid = root.querySelector('[data-armor-grid]');
         this._weaponGrid = root.querySelector('[data-weapon-grid]');
         this._drugGrid = root.querySelector('[data-drug-grid]');
-        this._slotCount = root.querySelector('[data-slot-count]');
         this._notice = root.querySelector('[data-build-notice]');
         this._notice.setAttribute('role', 'status');
         this._notice.setAttribute('aria-live', 'polite');
@@ -333,7 +291,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         var activeElement = this._document.activeElement;
         var restoreFocus = !!(activeElement && grid.contains(activeElement));
         var fragment = this._document.createDocumentFragment();
-        var occupied = 0;
         for (var i = 0; i < definitions.length; i++) {
             var definition = definitions[i];
             var item = itemAt(collection, definition.id);
@@ -347,10 +304,13 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             slot.setAttribute('data-slot-protocol-key', definition.id);
             slot.setAttribute('data-slot-kind', kind);
             slot.setAttribute('data-empty', item ? 'false' : 'true');
+            slot.setAttribute('data-tunable', item && item.tunable === true ? 'true' : 'false');
+            if (item && item.tuningReason) {
+                slot.setAttribute('data-tuning-reason', text(item.tuningReason));
+            }
             slot.setAttribute('data-focus-label', definition.label);
             slot.setAttribute('data-focus-name', item ? item.name : '空槽');
             slot.setAttribute('aria-selected', key === this._selectedSlotKey ? 'true' : 'false');
-            if (item) occupied++;
             if (item && item.blocked) slot.setAttribute('data-blocked', 'true');
             var meta = item ? item.meta || item.type || '已装备' : '点击查看可用候选';
             slot.setAttribute('data-focus-meta', meta);
@@ -375,7 +335,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             preferredKey:this._activeSlotKey.indexOf(kind + ':') === 0 ? this._activeSlotKey : '',
             focus:restoreFocus
         });
-        return occupied;
+        return true;
     };
 
     CharacterBuildView.prototype._renderCandidates = function(candidates) {
@@ -432,9 +392,11 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             buttons[i].classList.toggle('workbench-source-selected', selected);
         }
         var candidate = this._candidateByKey(this._selectedCandidateKey);
+        var overlay = this._overlayCopy.parentNode;
+        overlay.hidden = !candidate;
         this._overlayCopy.textContent = candidate
-            ? text(candidate.name, '候选') + ' · 临时叠加'
-            : '尚未选择候选';
+            ? '预览 · ' + text(candidate.name, '候选')
+            : '';
         this._actionView.sync();
     };
 
@@ -476,14 +438,18 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._drugRoving.refresh({preferredKey:this._activeSlotKey});
         this._candidateRoving.refresh({preferredKey:this._activeCandidateKey});
         if (state === 'write_pending') {
-            this._showLocalNotice('正在写入构筑；槽位、候选与页面切换暂时锁定。');
+            this._showStatusNotice(
+                'write',
+                '正在写入构筑；槽位、候选与页面切换暂时锁定。');
         } else if (state === 'mutation_reconcile') {
-            this._showLocalNotice('写入结果未知；仅可重新确认结果，不会重复提交。');
+            this._showStatusNotice(
+                'reconcile',
+                '写入结果未知；仅可重新确认结果，不会重复提交。');
         } else if (state === 'idle' && previous !== 'idle') {
             var node = this._lockedFocusKey && this.root.querySelector(
                 '[data-roving-key="' + this._lockedFocusKey.replace(/"/g, '\\"') + '"]');
             this._lockedFocusKey = '';
-            this._showLocalNotice('交互已恢复；可继续选择槽位或候选。');
+            this._showBrowsingNotice('交互已恢复；可继续选择槽位或候选。');
             if (node && !node.disabled) {
                 try { node.focus({preventScroll:true}); } catch (_) { node.focus(); }
             }
@@ -520,8 +486,18 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
 
     CharacterBuildView.prototype._selectSlot = function(key) {
         if (!key) return false;
-        var changed = this._selectedSlotKey !== String(key);
-        this._selectedSlotKey = String(key);
+        var nextKey = String(key);
+        var changed = this._selectedSlotKey !== nextKey;
+        var previous = {
+            selectedSlotKey:this._selectedSlotKey,
+            selectedCandidateKey:this._selectedCandidateKey,
+            activeCandidateKey:this._activeCandidateKey,
+            candidateRequestKey:this._candidateRequestKey,
+            candidateLoadFailed:this._candidateLoadFailed,
+            candidates:this._candidates.slice()
+        };
+        var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
+        this._selectedSlotKey = nextKey;
         this._syncSlotSelection();
         if (changed || this._candidateLoadFailed) {
             this.clearCandidateSelection();
@@ -530,7 +506,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             this._candidateLoadFailed = false;
             this._candidateRequestKey = this._selectedSlotKey + ':' + (++this._candidateSequence);
             this._renderCandidates([]);
-            this._showLocalNotice('正在读取当前槽位的背包候选…');
+            this._showBrowsingNotice('正在读取当前槽位的背包候选…');
             var parts = this._selectedSlotKey.split(':');
             var selection = {
                 key:this._selectedSlotKey,
@@ -538,7 +514,32 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
                 id:parts.join(':'),
                 requestKey:this._candidateRequestKey
             };
-            var result = this._onSlotSelect(selection);
+            var result = this._onSlotSelect(selection), deferredSelection = result && result.deferSelection === true;
+            if (result === false || result == null || deferredSelection) {
+                this._selectedSlotKey = previous.selectedSlotKey;
+                this._selectedCandidateKey = previous.selectedCandidateKey;
+                this._activeCandidateKey = previous.activeCandidateKey;
+                this._candidateRequestKey = previous.candidateRequestKey;
+                this._candidateLoadFailed = previous.candidateLoadFailed;
+                this._candidates = previous.candidates;
+                this._renderCandidates(this._candidates);
+                this._syncSlotSelection();
+                if (previousCandidate) {
+                    this._onCandidateSelect(previousCandidate, {
+                        slotKey:previous.selectedSlotKey,
+                        requestKey:previous.candidateRequestKey
+                    });
+                }
+                this._showStatusNotice(
+                    deferredSelection ? 'pending' : 'error',
+                    deferredSelection ? '正在退出当前调制；完成后将打开目标槽位。' : '槽位切换未完成；当前选择与候选保持不变。');
+                return deferredSelection;
+            }
+            if (result && result.deferCandidates === true) {
+                this._candidateLoadFailed = true;
+                this._showBrowsingNotice(
+                    '已切换调制目标；返回候选后将读取当前槽位。');
+            }
             if (Array.isArray(result)) this.setCandidates(selection.requestKey, result);
         }
         return true;
@@ -619,9 +620,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         }) !== false;
     };
 
-    CharacterBuildView.prototype._showLocalNotice = function(message) {
+    CharacterBuildView.prototype._showStatusNotice = function(kind, message) {
         this._notice.textContent = message;
-        this._notice.setAttribute('data-notice-kind', 'local');
+        this._notice.setAttribute('data-notice-kind', kind || 'error');
     };
 
     CharacterBuildView.prototype._showBrowsingNotice = function(message) {
@@ -638,13 +639,12 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._candidateLoadFailed = this.root.getAttribute('data-build-subview') === 'tuning';
         this._candidates = [];
         this.root.setAttribute('data-build-state', this._snapshot.blocked ? 'blocked' : 'ready');
-        var armor = this._renderSlotGroup(
+        this._renderSlotGroup(
             this._armorGrid, ARMOR_SLOTS, this._snapshot.equipment, 'armor', this._armorRoving);
-        var weapons = this._renderSlotGroup(
+        this._renderSlotGroup(
             this._weaponGrid, WEAPON_SLOTS, this._snapshot.equipment, 'weapon', this._weaponRoving);
-        var drugs = this._renderSlotGroup(
+        this._renderSlotGroup(
             this._drugGrid, DRUG_SLOTS, this._snapshot.drugs, 'drug', this._drugRoving);
-        this._slotCount.textContent = (armor + weapons + drugs) + ' / 15';
         this._renderCandidates([]);
         this._notice.textContent = this._snapshot.blocked
             ? text(this._snapshot.blockedReason, '当前候选不满足权威条件。')
@@ -681,7 +681,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._candidateLoadFailed = true;
         this._candidates = [];
         this._renderCandidates([]);
-        this._showLocalNotice('候选读取失败；再次选择当前槽位即可重试。');
+        this._showStatusNotice('error', '候选读取失败；再次选择当前槽位即可重试。');
         return true;
     };
 
@@ -706,6 +706,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
     CharacterBuildView.prototype.getCanvas = function() { return this._canvas; };
     CharacterBuildView.prototype.getStatsRoot = function() { return this._statsRoot; };
     CharacterBuildView.prototype.getSelectedSlotKey = function() { return this._selectedSlotKey; };
+    CharacterBuildView.prototype.setSlotTransitionFailure = function() { this._showStatusNotice('error', '调制仍保持在原装备；可稍后重试切换。'); return true; };
     CharacterBuildView.prototype.refreshSlotNavigation = function() { this._armorRoving.refresh({preferredKey:this._activeSlotKey}); this._weaponRoving.refresh({preferredKey:this._activeSlotKey}); this._drugRoving.refresh({preferredKey:this._activeSlotKey}); return true; };
 
     CharacterBuildView.prototype.consumeEscape = function() {
