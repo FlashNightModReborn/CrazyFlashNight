@@ -334,11 +334,25 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     [IO.File]::WriteAllBytes($manifestPath,$manifestOriginalBytes)
     [IO.File]::WriteAllBytes($recordPath,$recordOriginalBytes)
 
+    # The baseline/pass fixture executables intentionally have the same size. A rapid
+    # Move-Item replacement can therefore look clean to Git for one stat-cache tick on
+    # Windows. Remove the fixture deployment from the index first so this test always
+    # stages bytes instead of accidentally exercising the previous baseline blob.
+    & git -C $fixtureRoot rm --cached -q -r --ignore-unmatch -- `
+        'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json'
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot invalidate promoted fixture deployment index entries.' }
     & git -C $fixtureRoot add -- 'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json'
     if ($LASTEXITCODE -ne 0) { throw 'Cannot stage promoted fixture deployment.' }
+    $indexedBootstrapHash = Get-Cf7BytesSha256 -Bytes (
+        Get-Cf7GitBlobBytes -ProjectRoot $fixtureRoot -RelativePath 'CRAZYFLASHER7MercenaryEmpire.exe')
+    $promotedBootstrapHash = (Get-FileHash -Algorithm SHA256 `
+        -LiteralPath (Join-Path $fixtureRoot 'CRAZYFLASHER7MercenaryEmpire.exe')).Hash
+    Assert-Cf7Fixture -Condition ($indexedBootstrapHash -ceq $promotedBootstrapHash) `
+        -Message 'staged bootstrap bytes do not match the promoted fixture deployment'
     Write-Cf7FixtureText -Path (Join-Path $fixtureRoot 'source.txt') -Text "worktree-only-source-drift`n"
     $stagedVerification = Invoke-Cf7ConsensusProcess -Staged
-    Assert-Cf7Fixture -Condition ($stagedVerification.exitCode -eq 0) -Message "staged consensus did not use Index source mode: $($stagedVerification.output)"
+    Assert-Cf7Fixture -Condition ($stagedVerification.exitCode -eq 0) `
+        -Message "staged deployment consensus verification failed: $($stagedVerification.output)"
 
     Write-Host "[RuntimeReleaseConsensusV2Test] PASS assertions=$script:assertions" -ForegroundColor Green
 } finally {

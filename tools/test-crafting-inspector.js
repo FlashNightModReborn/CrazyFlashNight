@@ -9,6 +9,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CRAFTING_ROOT = path.join(ROOT, 'data', 'crafting');
 const DRESSUP_MANIFEST = path.join(ROOT, 'launcher', 'web', 'assets', 'dressup', 'manifest.json');
 const ICON_MANIFEST = path.join(ROOT, 'launcher', 'web', 'icons', 'manifest.json');
+const INSPECTION_VIEWPORT_MODULE = path.join(ROOT, 'launcher', 'web', 'modules', 'workbench-inspection-viewport.js');
 const EQUIPMENT_INSPECTOR_MODULE = path.join(ROOT, 'launcher', 'web', 'modules', 'equipment-inspector.js');
 const CRAFTING_INSPECTOR_MODULE = path.join(ROOT, 'launcher', 'web', 'modules', 'crafting-inspector.js');
 const ITEM_ROOT = path.join(ROOT, 'data', 'items');
@@ -147,6 +148,7 @@ function loadInspector() {
     };
     vm.createContext(context);
     [
+        [INSPECTION_VIEWPORT_MODULE, 'workbench-inspection-viewport.js'],
         [EQUIPMENT_INSPECTOR_MODULE, 'equipment-inspector.js'],
         [CRAFTING_INSPECTOR_MODULE, 'crafting-inspector.js']
     ].forEach(entry => {

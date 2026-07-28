@@ -830,12 +830,12 @@
         this.view.render();
     };
 
-    ItemGrid.getLayoutMode = function(panelId) {
+    ItemGrid.getLayoutMode = function(panelId, defaultMode) {
         try {
             var v = window.localStorage.getItem('cf7.itemgrid.mode.' + panelId);
             if (v === 'compact' || v === 'full') return v;
         } catch (e) {}
-        return 'full';
+        return defaultMode === 'full' ? 'full' : 'compact';
     };
 
     ItemGrid.setLayoutMode = function(panelId, mode) {
@@ -897,7 +897,7 @@
         this.panelId = String(options.panelId || 'default');
         this.compactClass = String(options.compactClass || 'item-grid-compact');
         this.mode = options.mode === 'compact' || options.mode === 'full'
-            ? options.mode : ItemGrid.getLayoutMode(this.panelId);
+            ? options.mode : ItemGrid.getLayoutMode(this.panelId, options.defaultMode);
         this._targets = [];
         this._listeners = [];
     }

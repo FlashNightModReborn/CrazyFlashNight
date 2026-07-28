@@ -47,8 +47,7 @@
             onClose:requirePort(options, 'onClose'),
             onOrganize:requirePort(options, 'onOrganize'),
             onCommit:requirePort(options, 'onCommit'),
-            onAdjust:requirePort(options, 'onAdjust'),
-            onPurchaseMax:requirePort(options, 'onPurchaseMax'),
+            onSetQuantity:requirePort(options, 'onSetQuantity'),
             onBulkSale:requirePort(options, 'onBulkSale'),
             onRemove:requirePort(options, 'onRemove'),
             onPurchaseBounds:requirePort(options, 'onPurchaseBounds'),
@@ -57,6 +56,7 @@
             iconHtml:requirePort(options, 'iconHtml'),
             errorMessage:requirePort(options, 'errorMessage')
         };
+        this._lineRecords = {purchase:{}, sale:{}};
         this.root = this._document.createElement('section');
         this.root.className = 'workbench-secondary-page npcshop-settlement-page';
         this.root.innerHTML = '<header class="npcshop-settlement-header"><button type="button" data-trade-back>← 返回选购</button>'
@@ -133,81 +133,181 @@
         });
         return true;
     };
-    SettlementPresenter.prototype._renderLines = function(kind, lines, intents, ui) {
+    SettlementPresenter.prototype._lineVariant = function(kind, line) {
+        if (kind === 'purchase') return 'purchase';
+        if (line.scope === 'same_name') return 'same_name';
+        return line.itemKind === 'equipment' ? 'equipment' : 'sale';
+    };
+    SettlementPresenter.prototype._createLineRecord = function(kind, line, identity) {
         var self = this;
+        var variant = this._lineVariant(kind, line);
+        var record = {identity:identity, variant:variant};
+        record.row = this._document.createElement('article');
+        record.row.className = 'npcshop-settlement-line';
+        record.row.setAttribute('data-line-identity', identity);
+        record.icon = this._document.createElement('span');
+        record.icon.className = 'npcshop-card-icon';
+        record.copy = this._document.createElement('span');
+        record.copy.className = 'npcshop-settlement-copy';
+        record.name = this._document.createElement('b');
+        record.total = this._document.createElement('small');
+        record.bound = this._document.createElement('em');
+        record.copy.appendChild(record.name);
+        record.copy.appendChild(record.total);
+        record.copy.appendChild(record.bound);
+        record.stepper = this._document.createElement('span');
+        record.stepper.className = 'npcshop-stepper';
+        record.remove = this._stepButton('×', function() {
+            self._ports.onRemove(kind, identity);
+        });
+        record.remove.classList.add('remove');
+        record.remove.setAttribute('aria-label', '从结算清单移除');
+        if (variant === 'purchase' || variant === 'sale' || variant === 'equipment') {
+            record.control = new this._components.QuantityControl({
+                document:this._document,
+                min:1,
+                max:1,
+                value:1,
+                showPlusFive:true,
+                showMax:true,
+                showRange:true,
+                onChange:function(value, reason) {
+                    self._ports.onSetQuantity(kind, identity, value, reason);
+                }
+            });
+            record.stepper.appendChild(record.control.root);
+        }
+        if (variant === 'same_name') {
+            record.single = this._stepButton('只售此格', function() {
+                self._ports.onBulkSale(identity, false);
+            });
+            record.single.classList.add('wide');
+            record.stepper.appendChild(record.single);
+        } else if (variant === 'equipment') {
+            record.bulk = this._stepButton('同名全售', function() {
+                self._ports.onBulkSale(identity, true);
+            });
+            record.bulk.classList.add('wide');
+            record.stepper.appendChild(record.bulk);
+        }
+        record.stepper.appendChild(record.remove);
+        record.row.appendChild(record.icon);
+        record.row.appendChild(record.copy);
+        record.row.appendChild(record.stepper);
+        return record;
+    };
+    SettlementPresenter.prototype._updateLineRecord = function(record, kind, line, intent, ui) {
+        var displayName = line.displayName || line.itemName;
+        var iconKey = String(line.icon || line.itemName || '');
+        if (record.iconKey !== iconKey) {
+            record.iconKey = iconKey;
+            record.icon.innerHTML = this._ports.iconHtml(iconKey, 'kshop-icon');
+        }
+        record.name.textContent = displayName;
+        record.total.textContent = (kind === 'purchase' ? '-$' : '+$')
+            + Number(line.total || 0).toLocaleString();
+        var blocked = !!(ui.busy || ui.previewBusy);
+        if (kind === 'purchase') {
+            var purchaseLimit = Math.max(1, Math.floor(Number(
+                line.purchaseLimit || intent.purchaseLimit || intent.maxQuantity || 1)));
+            var current = Math.max(1, Math.floor(Number(intent.quantity || 1)));
+            var effective = Math.max(0, Math.floor(Number(
+                line.maxPurchasable == null ? intent.maxPurchasable : line.maxPurchasable) || 0));
+            var authorityMaximum = Math.max(purchaseLimit, current);
+            this._ports.onPurchaseBounds(record.identity, {
+                purchaseLimit:purchaseLimit,
+                maxPurchasable:effective
+            });
+            record.bound.hidden = false;
+            record.bound.textContent = '当前可直接结算 ' + effective + ' / 单笔上限 ' + purchaseLimit;
+            record.control.root.setAttribute('aria-label', displayName + '购买数量');
+            record.control.update({
+                min:1,
+                max:authorityMaximum,
+                presetMax:effective,
+                sliderMax:authorityMaximum,
+                value:current,
+                disabled:blocked,
+                maxLabel:'可用',
+                maxAriaLabel:'设为当前可直接结算上限'
+            });
+        } else if (record.variant === 'same_name') {
+            record.bound.hidden = false;
+            record.bound.textContent = '同名匹配 ' + Number(line.matchedCount || 0) + ' 格，售出 '
+                + Number(line.eligibleCount || 0) + ' 格，保护 ' + Number(line.protectedCount || 0) + ' 格';
+        } else {
+            var saleMaximum = Math.max(1, Math.floor(Number(intent.maxQuantity || 1)),
+                Math.floor(Number(intent.quantity || 1)));
+            record.bound.hidden = true;
+            record.bound.textContent = '';
+            record.control.root.setAttribute('aria-label', displayName + '出售数量');
+            record.control.update({
+                min:1,
+                max:saleMaximum,
+                presetMax:saleMaximum,
+                sliderMax:saleMaximum,
+                value:intent.quantity,
+                disabled:blocked,
+                maxLabel:'全部',
+                maxAriaLabel:'设为全部可出售数量'
+            });
+        }
+        var rowButtons = record.stepper.querySelectorAll('button');
+        for (var buttonIndex = 0; buttonIndex < rowButtons.length; buttonIndex++) {
+            if (!record.control || !record.control.root.contains(rowButtons[buttonIndex])) {
+                rowButtons[buttonIndex].disabled = blocked;
+            }
+        }
+    };
+    SettlementPresenter.prototype._destroyLineRecord = function(record) {
+        if (!record) return;
+        if (record.control) record.control.destroy();
+        if (record.row.parentNode) record.row.parentNode.removeChild(record.row);
+    };
+    SettlementPresenter.prototype._renderLines = function(kind, lines, intents, ui) {
         ui = ui || {};
         var list = this.root.querySelector(kind === 'purchase' ? '[data-purchase-lines]' : '[data-sale-lines]');
         var previousScrollTop = list.scrollTop;
         var previousScrollLeft = list.scrollLeft;
-        while (list.firstChild) list.removeChild(list.firstChild);
-        if (!lines.length) {
-            var empty = this._document.createElement('p');
-            empty.className = 'npcshop-settlement-empty'; empty.textContent = '无'; list.appendChild(empty);
-            list.scrollTop = previousScrollTop; list.scrollLeft = previousScrollLeft; return;
-        }
-        lines.forEach(function(line) {
+        var existing = this._lineRecords[kind];
+        var next = {};
+        var desiredRows = [];
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
             var identity = kind === 'purchase' ? String(line.catalogIndex) : String(line.sourceIdentity);
             var intent = intents[identity];
-            if (!intent) return;
-            if (kind === 'purchase') {
-                self._ports.onPurchaseBounds(identity, {
-                    purchaseLimit:Number(line.purchaseLimit || intent.maxQuantity || 1),
-                    maxPurchasable:Math.max(0, Number(line.maxPurchasable || 0))
-                });
+            if (!intent || next[identity]) continue;
+            var variant = this._lineVariant(kind, line);
+            var record = existing[identity];
+            if (record && record.variant !== variant) {
+                this._destroyLineRecord(record);
+                record = null;
             }
-            var row = self._document.createElement('article'); row.className = 'npcshop-settlement-line';
-            var icon = self._document.createElement('span'); icon.className = 'npcshop-card-icon';
-            icon.innerHTML = self._ports.iconHtml(line.icon || line.itemName, 'kshop-icon');
-            var copy = self._document.createElement('span'); copy.className = 'npcshop-settlement-copy';
-            var name = self._document.createElement('b'); name.textContent = line.displayName || line.itemName;
-            var total = self._document.createElement('small');
-            total.textContent = (kind === 'purchase' ? '-$' : '+$') + Number(line.total || 0).toLocaleString();
-            copy.appendChild(name); copy.appendChild(total);
-            if (kind === 'purchase') {
-                var bound = self._document.createElement('em');
-                bound.textContent = '当前可直接结算 ' + intent.maxPurchasable + ' / 单笔上限 ' + intent.purchaseLimit;
-                copy.appendChild(bound);
-            } else if (line.scope === 'same_name') {
-                var bulk = self._document.createElement('em');
-                bulk.textContent = '同名匹配 ' + Number(line.matchedCount || 0) + ' 格，售出 ' + Number(line.eligibleCount || 0)
-                    + ' 格，保护 ' + Number(line.protectedCount || 0) + ' 格';
-                copy.appendChild(bulk);
+            if (!record) record = this._createLineRecord(kind, line, identity);
+            this._updateLineRecord(record, kind, line, intent, ui);
+            next[identity] = record;
+            desiredRows.push(record.row);
+        }
+        for (var oldIdentity in existing) {
+            if (Object.prototype.hasOwnProperty.call(existing, oldIdentity) && !next[oldIdentity]) {
+                this._destroyLineRecord(existing[oldIdentity]);
             }
-            var stepper = self._document.createElement('span'); stepper.className = 'npcshop-stepper';
-            var remove = self._stepButton('×', function() { self._ports.onRemove(kind, identity); }); remove.classList.add('remove');
-            if (kind === 'purchase') {
-                var minus = self._stepButton('−', function() { self._ports.onAdjust(kind, identity, -1); });
-                var quantity = self._document.createElement('b'); quantity.textContent = String(intent.quantity);
-                var plus = self._stepButton('+', function() { self._ports.onAdjust(kind, identity, 1); });
-                var plusFive = self._stepButton('+5', function() { self._ports.onAdjust(kind, identity, 5); }); plusFive.classList.add('wide');
-                var max = self._stepButton('最大', function() { self._ports.onPurchaseMax(identity); }); max.classList.add('wide');
-                minus.disabled = intent.quantity <= 1;
-                plus.disabled = intent.quantity >= intent.purchaseLimit;
-                plusFive.disabled = intent.quantity >= intent.purchaseLimit;
-                max.disabled = intent.maxPurchasable < 1 || intent.quantity === intent.maxPurchasable;
-                stepper.appendChild(minus); stepper.appendChild(quantity); stepper.appendChild(plus);
-                stepper.appendChild(plusFive); stepper.appendChild(max); stepper.appendChild(remove);
-            } else if (line.scope === 'same_name') {
-                var single = self._stepButton('只售此格', function() { self._ports.onBulkSale(identity, false); }); single.classList.add('wide');
-                stepper.appendChild(single); stepper.appendChild(remove);
-            } else {
-                var saleMinus = self._stepButton('−', function() { self._ports.onAdjust(kind, identity, -1); });
-                var saleQuantity = self._document.createElement('b'); saleQuantity.textContent = String(intent.quantity);
-                var salePlus = self._stepButton('+', function() { self._ports.onAdjust(kind, identity, 1); });
-                saleMinus.disabled = intent.quantity <= 1; salePlus.disabled = intent.quantity >= intent.maxQuantity;
-                stepper.appendChild(saleMinus); stepper.appendChild(saleQuantity); stepper.appendChild(salePlus);
-                if (line.itemKind === 'equipment') {
-                    var all = self._stepButton('同名全售', function() { self._ports.onBulkSale(identity, true); }); all.classList.add('wide');
-                    stepper.appendChild(all);
-                }
-                stepper.appendChild(remove);
+        }
+        this._lineRecords[kind] = next;
+        var empty = list.querySelector('.npcshop-settlement-empty');
+        if (desiredRows.length && empty && empty.parentNode) empty.parentNode.removeChild(empty);
+        for (var rowIndex = 0; rowIndex < desiredRows.length; rowIndex++) {
+            var current = list.children[rowIndex] || null;
+            if (current !== desiredRows[rowIndex]) list.insertBefore(desiredRows[rowIndex], current);
+        }
+        if (!desiredRows.length) {
+            if (!empty) {
+                empty = this._document.createElement('p');
+                empty.className = 'npcshop-settlement-empty';
+                empty.textContent = '无';
             }
-            if (ui.busy || ui.previewBusy) {
-                var rowButtons = stepper.querySelectorAll('button');
-                for (var buttonIndex = 0; buttonIndex < rowButtons.length; buttonIndex++) rowButtons[buttonIndex].disabled = true;
-            }
-            row.appendChild(icon); row.appendChild(copy); row.appendChild(stepper); list.appendChild(row);
-        });
+            if (empty.parentNode !== list) list.appendChild(empty);
+        }
         list.scrollTop = previousScrollTop;
         list.scrollLeft = previousScrollLeft;
     };
@@ -218,6 +318,14 @@
     SettlementPresenter.prototype.destroy = function() {
         this._helpButton.removeEventListener('click', this._helpHandler);
         this._organizeButton.removeEventListener('click', this._organizeHandler);
+        var kinds = ['purchase', 'sale'];
+        for (var kindIndex = 0; kindIndex < kinds.length; kindIndex++) {
+            var records = this._lineRecords[kinds[kindIndex]];
+            for (var identity in records) {
+                if (Object.prototype.hasOwnProperty.call(records, identity)) this._destroyLineRecord(records[identity]);
+            }
+        }
+        this._lineRecords = {purchase:{}, sale:{}};
         this.commitBar.destroy();
         this.secondary.destroy();
         return true;
@@ -236,7 +344,7 @@
             + '<div><h2>商店操作帮助</h2><p>所有选择都可以在确认交易前调整或取消。</p></div></header>'
             + '<div class="npcshop-help-grid">'
             + helpCard('01','选择商品','左侧点击商品加入待购；右侧点击背包或材料加入待售。','此时不会扣钱，也不会移除物品。','待购','待售')
-            + helpCard('02','调整并结算','在结算页用 −、+、+5 或“最大”调整数量，再确认整张订单。','“最多可购”由金币、背包容量和商店限制共同决定。','调整数量','确认交易')
+            + helpCard('02','调整并结算','在结算页直接输入数字、拖动滑条，或用 −、+、+5、“最大”调整数量，再确认整张订单。','“最多可购”由金币、背包容量和商店限制共同决定。','调整数量','确认交易')
             + helpCard('03','同名全售','装备待售行可切换为“同名全售”，快速清理重复装备。','只出售普通实例；强化、进阶和带插件装备自动保护。','同名匹配','保护特殊装备')
             + helpCard('04','整理空间','背包不足时进入背包—战备箱整理页，点击物品即可快速转移。','返回后订单自动重算；商品不会直接购买到战备箱。','整理空间','返回重算')
             + '</div><footer class="npcshop-help-rules"><b>记住三件事</b><span>选择 ≠ 交易</span><span>最大数量会动态变化</span><span>移动后的待售项可能被安全移除</span>'

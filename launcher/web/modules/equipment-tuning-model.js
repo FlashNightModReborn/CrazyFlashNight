@@ -9,6 +9,12 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(ItemFilter) {
     'use strict';
 
+    var LOADOUT_SLOT_KEYS = {
+        '头部装备':true, '上装装备':true, '下装装备':true,
+        '手部装备':true, '脚部装备':true, '颈部装备':true,
+        '长枪':true, '手枪':true, '手枪2':true, '刀':true, '手雷':true
+    };
+
     function wireRef(slot) {
         return {containerId:'背包', slot:Number(slot.physicalSlot != null ? slot.physicalSlot : slot.slot),
             expectedLease:String(slot.slotLease != null ? slot.slotLease : slot.expectedLease)};
@@ -16,6 +22,76 @@
     function sameRef(a, b) { return a && b && a.containerId === b.containerId && Number(a.slot) === Number(b.slot); }
     function refKey(ref) {
         return ref ? String(ref.containerId || '') + ':' + Number(ref.slot) + ':' + String(ref.expectedLease || '') : '';
+    }
+
+    /**
+     * Character-build tuning source prototype. Inventory remains lease-bound; loadout is a
+     * distinct authority shape bound to the exact 11-slot whitelist and loadout revision.
+     * Returning null is intentional fail-closed behavior and does not mutate the input.
+     */
+    function normalizeTuningSource(source) {
+        if (!source || typeof source !== 'object') return null;
+        if (source.sourceKind === 'inventory') {
+            var slot = Number(source.slot);
+            var lease = typeof source.expectedLease === 'string' ? source.expectedLease : '';
+            if (source.containerId !== '背包' || !isFinite(slot)
+                    || Math.floor(slot) !== slot || slot < 0 || !lease
+                    || source.sessionGeneration != null || source.slotKey != null
+                    || source.expectedLoadoutRevision != null) return null;
+            return {
+                sourceKind:'inventory',
+                containerId:'背包',
+                slot:slot,
+                expectedLease:lease
+            };
+        }
+        if (source.sourceKind === 'loadout') {
+            var slotKey = typeof source.slotKey === 'string' ? source.slotKey : '';
+            var generation = Number(source.sessionGeneration);
+            var revision = Number(source.expectedLoadoutRevision);
+            if (LOADOUT_SLOT_KEYS[slotKey] !== true || !isFinite(generation)
+                    || Math.floor(generation) !== generation || generation <= 0
+                    || !isFinite(revision)
+                    || Math.floor(revision) !== revision || revision < 0
+                    || source.containerId != null || source.slot != null
+                    || source.expectedLease != null) return null;
+            return {
+                sourceKind:'loadout',
+                sessionGeneration:generation,
+                slotKey:slotKey,
+                expectedLoadoutRevision:revision
+            };
+        }
+        return null;
+    }
+
+    function tuningSourceKey(source) {
+        var normalized = normalizeTuningSource(source);
+        if (!normalized) return '';
+        return normalized.sourceKind === 'loadout'
+            ? 'loadout:' + normalized.sessionGeneration + ':' + normalized.slotKey
+            : 'inventory:' + normalized.containerId + ':' + normalized.slot;
+    }
+
+    function sameLoadoutIdentity(left, right) {
+        left = normalizeTuningSource(left);
+        right = normalizeTuningSource(right);
+        return !!left && !!right
+            && left.sourceKind === 'loadout' && right.sourceKind === 'loadout'
+            && left.sessionGeneration === right.sessionGeneration
+            && left.slotKey === right.slotKey;
+    }
+
+    function tuningSourceSupports(source, operation) {
+        var normalized = normalizeTuningSource(source);
+        if (!normalized || !isOperation(operation)) return false;
+        // Conversion needs a second inventory item and stays outside first-round loadout tuning.
+        return normalized.sourceKind !== 'loadout' || operation !== 'convert';
+    }
+
+    function tuningSnapshotRequest(source) {
+        var normalized = normalizeTuningSource(source);
+        return normalized ? {source:normalized} : null;
     }
 
     function quickCommitEligible(preview, intent) {
@@ -255,6 +331,12 @@
         wireRef:wireRef,
         sameRef:sameRef,
         refKey:refKey,
+        normalizeTuningSource:normalizeTuningSource,
+        tuningSourceKey:tuningSourceKey,
+        sameLoadoutIdentity:sameLoadoutIdentity,
+        tuningSourceSupports:tuningSourceSupports,
+        tuningSnapshotRequest:tuningSnapshotRequest,
+        loadoutSlotKeys:Object.keys(LOADOUT_SLOT_KEYS),
         quickCommitEligible:quickCommitEligible,
         hasMaterialDelta:hasMaterialDelta,
         materialDeltaEquals:materialDeltaEquals,
@@ -282,4 +364,3 @@
         equipmentDiff:equipmentDiff
     };
 });
-

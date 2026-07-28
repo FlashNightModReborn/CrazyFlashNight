@@ -117,6 +117,11 @@ namespace CF7Launcher.Tasks
         // 仅得到 canReturnTrainer=true，不能读取或使用该 capability。关闭/断线会清理。
         private string _trainerReturnSession;
         private bool _preserveTrainerForNextManage;
+        // Character Build -> Skills return is a Host-only, exact-instance capability. Web only
+        // receives the display bit; a stale/rebound/notch/trainer instance can never exercise it.
+        private bool _panelCanReturnCharacterBuild;
+        private string _nextPanelInstanceId;
+        private bool _nextPanelCanReturnCharacterBuild;
         private string _nextPanelView;
         private string _nextPanelTrainerSession;
         private string _lastClosedPanelInstanceId;
@@ -192,6 +197,40 @@ namespace CF7Launcher.Tasks
             get { lock (_lock) return _writeState == "idle" && !HasCleanupLocked() && !IsOpaque(_trainerReturnSession); }
         }
 
+        public bool TryConsumeCharacterBuildReturnCapability(string panelInstanceId)
+        {
+            lock (_lock)
+            {
+                if (!IsOpaque(panelInstanceId)
+                    || !string.Equals(_panelInstanceId, panelInstanceId, StringComparison.Ordinal)
+                    || _panelView != "manage"
+                    || !_panelCanReturnCharacterBuild
+                    || IsOpaque(_trainerReturnSession)
+                    || _writeState != "idle")
+                {
+                    return false;
+                }
+                _panelCanReturnCharacterBuild = false;
+                return true;
+            }
+        }
+
+        public bool IsClosedAndSettled
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _panelInstanceId == null
+                        && _writeState == "idle"
+                        && _pending.Count == 0
+                        && _queuedReconcile == null
+                        && !HasCleanupLocked()
+                        && _cleanupRetryTimer == null;
+                }
+            }
+        }
+
         public void RequestTrainerCleanup(string trainerSession)
         {
             bool start;
@@ -209,6 +248,16 @@ namespace CF7Launcher.Tasks
             bool startCleanup = false;
             lock (_lock)
             {
+                // Panel instance ids are one-shot capabilities.  An authoritative close may be
+                // followed by a duplicate navigate/close envelope after Router cancellation or
+                // timeout; never let that stale instance resurrect a closed SkillTask binding.
+                if (string.Equals(
+                        _lastClosedPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
                 bool changed = !string.Equals(_panelInstanceId, panelInstanceId, StringComparison.Ordinal);
                 if (!string.IsNullOrEmpty(_panelInstanceId) && changed && _writeState == "idle")
                 {
@@ -217,8 +266,15 @@ namespace CF7Launcher.Tasks
                 }
                 if (changed)
                 {
+                    bool hasExactNextContext =
+                        _nextPanelInstanceId == null
+                        || string.Equals(
+                            _nextPanelInstanceId,
+                            panelInstanceId,
+                            StringComparison.Ordinal);
                     string replacedTrainerSession = _panelView == "trainer" ? _panelTrainerSession : null;
-                    string incomingTrainerSession = _nextPanelView == "trainer" ? _nextPanelTrainerSession : null;
+                    string incomingTrainerSession = hasExactNextContext && _nextPanelView == "trainer"
+                        ? _nextPanelTrainerSession : null;
                     if (IsOpaque(replacedTrainerSession) && IsOpaque(incomingTrainerSession)
                         && !string.Equals(replacedTrainerSession, incomingTrainerSession, StringComparison.Ordinal))
                     {
@@ -228,12 +284,20 @@ namespace CF7Launcher.Tasks
                         QueueTrainerCleanupLocked(replacedTrainerSession, false);
                         startCleanup = _writeState == "idle";
                     }
-                    _panelView = _nextPanelView == "trainer" ? "trainer" : "manage";
+                    _panelView = hasExactNextContext && _nextPanelView == "trainer"
+                        ? "trainer" : "manage";
                     _panelTrainerSession = _panelView == "trainer" ? _nextPanelTrainerSession : null;
                     if (_panelView == "trainer" && IsOpaque(_trainerReturnSession)
                         && string.Equals(_panelTrainerSession, _trainerReturnSession, StringComparison.Ordinal))
                         _trainerReturnSession = null;
                     _preserveTrainerForNextManage = false;
+                    _panelCanReturnCharacterBuild =
+                        hasExactNextContext
+                        && _nextPanelCanReturnCharacterBuild
+                        && _panelView == "manage"
+                        && !IsOpaque(_trainerReturnSession);
+                    _nextPanelInstanceId = null;
+                    _nextPanelCanReturnCharacterBuild = false;
                     _nextPanelView = null;
                     _nextPanelTrainerSession = null;
                 }
@@ -244,6 +308,13 @@ namespace CF7Launcher.Tasks
 
         public string EnrichPanelInitData(string initDataJson)
         {
+            // Compatibility helper for focused unit tests and non-PanelHost callers. Without an
+            // exact generated instance no cross-panel return capability may be minted.
+            return EnrichPanelInitData(initDataJson, null);
+        }
+
+        public string EnrichPanelInitData(string initDataJson, string panelInstanceId)
+        {
             JObject init;
             try { init = string.IsNullOrEmpty(initDataJson) ? new JObject() : JObject.Parse(initDataJson); }
             catch { init = new JObject(); }
@@ -252,6 +323,11 @@ namespace CF7Launcher.Tasks
             {
                 string view = ReadString(init["view"]);
                 string requestedTrainerSession = ReadString(init["trainerSession"]);
+                bool requestedCharacterBuildReturn =
+                    IsOpaque(panelInstanceId)
+                    && init["canReturnCharacterBuild"] != null
+                    && init["canReturnCharacterBuild"].Type == JTokenType.Boolean
+                    && init.Value<bool>("canReturnCharacterBuild");
                 if (view == "trainer" && (_writeState != "idle" || HasCleanupLocked()))
                 {
                     // 断线/未知写之后 AS2 可能已经创建了一个新教师 session。此时不能把它展示给
@@ -260,7 +336,14 @@ namespace CF7Launcher.Tasks
                     init["view"] = "manage";
                     init["source"] = "nativehud";
                     init.Remove("trainerSession");
+                    init.Remove("canReturnCharacterBuild");
+                    requestedCharacterBuildReturn = false;
                     view = "manage";
+                }
+                if (view == "trainer")
+                {
+                    init.Remove("canReturnCharacterBuild");
+                    requestedCharacterBuildReturn = false;
                 }
                 if (view == "manage")
                 {
@@ -274,6 +357,8 @@ namespace CF7Launcher.Tasks
                     {
                         // 只下发无权限的展示布尔值；trainerSession 仍只存在于 Host。
                         init["canReturnTrainer"] = true;
+                        init.Remove("canReturnCharacterBuild");
+                        requestedCharacterBuildReturn = false;
                     }
                     else
                     {
@@ -283,6 +368,21 @@ namespace CF7Launcher.Tasks
                         startCleanup = _writeState == "idle";
                     }
                 }
+                if (requestedCharacterBuildReturn
+                    && init.Value<string>("source") == "nativehud"
+                    && init["canReturnTrainer"] == null)
+                {
+                    init["canReturnCharacterBuild"] = true;
+                }
+                else
+                {
+                    init.Remove("canReturnCharacterBuild");
+                    requestedCharacterBuildReturn = false;
+                }
+                _nextPanelInstanceId = IsOpaque(panelInstanceId)
+                    ? panelInstanceId : null;
+                _nextPanelCanReturnCharacterBuild =
+                    requestedCharacterBuildReturn;
                 _nextPanelView = view == "trainer" ? "trainer" : "manage";
                 _nextPanelTrainerSession = _nextPanelView == "trainer" ? ReadString(init["trainerSession"]) : null;
                 init["writeEpoch"] = _writeEpoch;
@@ -296,6 +396,17 @@ namespace CF7Launcher.Tasks
             }
             if (startCleanup) TryStartTrainerCleanup();
             return init.ToString(Formatting.None);
+        }
+
+        public void DiscardUnboundPanelInitContext()
+        {
+            lock (_lock)
+            {
+                _nextPanelInstanceId = null;
+                _nextPanelCanReturnCharacterBuild = false;
+                _nextPanelView = null;
+                _nextPanelTrainerSession = null;
+            }
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
@@ -624,6 +735,9 @@ namespace CF7Launcher.Tasks
                 _panelTrainerSession = null;
                 _trainerReturnSession = null;
                 _preserveTrainerForNextManage = false;
+                _panelCanReturnCharacterBuild = false;
+                _nextPanelInstanceId = null;
+                _nextPanelCanReturnCharacterBuild = false;
                 _nextPanelView = null;
                 _nextPanelTrainerSession = null;
                 CancelReadsForPanelLocked(panelInstanceId);
@@ -705,6 +819,9 @@ namespace CF7Launcher.Tasks
                 _panelTrainerSession = null;
                 _trainerReturnSession = null;
                 _preserveTrainerForNextManage = false;
+                _panelCanReturnCharacterBuild = false;
+                _nextPanelInstanceId = null;
+                _nextPanelCanReturnCharacterBuild = false;
                 _nextPanelView = null;
                 _nextPanelTrainerSession = null;
                 _learnTokens.Clear();

@@ -214,7 +214,6 @@
             disabled:!item || this.isLocked(item) || item.type === '非卖品' || isAtLimit(item),
             onActivate:function(event) { self._activateCard(event); }
         });
-        card.addEventListener('dblclick', function(event) { self._doubleClickCard(event); });
         var addButton = card.querySelector('.kshop-add-btn');
         if (addButton) {
             Workbench.EntityTile.labelAction(addButton, item && item.displayname, '加入购物车');
@@ -230,13 +229,8 @@
         var item = this.find(Number(event.currentTarget.getAttribute('data-idx')));
         if (!item || this.isLocked(item) || item.type === '非卖品' || isAtLimit(item)) return;
         if (this._intent.select) this._intent.select(item, event.currentTarget);
-        if (this._intent.playCue) this._intent.playCue('select');
-    };
-
-    CatalogPresenter.prototype._doubleClickCard = function(event) {
         if (!this._state.canEdit || !this._state.canEdit()) return;
-        var item = this.find(Number(event.currentTarget.getAttribute('data-idx')));
-        if (item && this._intent.dispatchAdd) this._intent.dispatchAdd(item, 'double_click');
+        if (this._intent.dispatchAdd) this._intent.dispatchAdd(item, 'single_click');
     };
 
     return {

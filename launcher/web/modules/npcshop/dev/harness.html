@@ -153,8 +153,22 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
 <script>
 (async function(){
   var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(ms){return new Promise(function(r){setTimeout(r,ms==null?25:Number(ms))})}
+  function quantityInput(scope){return document.querySelector(scope+' .workbench-quantity-number')}
+  function quantityRange(scope){return document.querySelector(scope+' .workbench-quantity-range')}
+  function quantityValue(scope){var input=quantityInput(scope);return input?Number(input.value):NaN}
+  function quantityButton(scope,label){return Array.from(document.querySelectorAll(scope+' .npcshop-stepper button')).filter(function(button){return button.textContent===label})[0]}
+  function setQuantity(scope,value){var input=quantityInput(scope);input.value=String(value);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))}
   ['settlement','bulk_sale','inventory_full'].forEach(function(topic){try{localStorage.removeItem('cf7.npcshop.guide.v1.'+topic)}catch(error){}});
   try{localStorage.removeItem('cf7.itemgrid.mode.npcshop')}catch(error){}
+  var harnessVisualMode=new URLSearchParams(location.search).get('visual');
+  if(harnessVisualMode==='large-quantity'){
+    catalog[1].maxQuantity=999999;window.__tradePreviewMaxOverride=999999;
+    Panels.open('npcshop',{shopId:'前治安官'});await wait();
+    document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
+    document.querySelector('.npcshop-checkout-btn').click();await wait();
+    setQuantity('[data-purchase-lines]',568797);await wait();
+    window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
+  }
   Panels.open('npcshop',{shopId:'前治安官'});await wait();
   ok('opens catalog + bag',document.querySelector('[data-instance-key="npcshop:catalog"]')&&document.querySelector('[data-instance-key="npcshop:bag"]'));
   ok('NPC domain response excludes duplicate bag authority',__lastNpcState&&__lastNpcState.views&&__lastNpcState.views.bag===undefined);
@@ -180,7 +194,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]').click();await wait();
   document.querySelector('.npcshop-bag-view [data-filter-path=""]').click();await wait();
   var catalogScrollProbe=document.querySelector('.npcshop-catalog-grid'),catalogScrollStyle=catalogScrollProbe.style.cssText;
-  catalogScrollProbe.style.cssText+=';height:112px!important;min-height:112px!important;max-height:112px!important;flex:0 0 112px!important;overflow:auto!important';
+  catalogScrollProbe.style.cssText+=';height:32px!important;min-height:32px!important;max-height:32px!important;flex:0 0 32px!important;overflow:auto!important';
   catalogScrollProbe.scrollTop=catalogScrollProbe.scrollHeight;
   var catalogScrollTarget=Array.prototype.slice.call(catalogScrollProbe.querySelectorAll('.npcshop-catalog-card:not(.locked)')).pop();
   catalogScrollTarget.focus({preventScroll:true});var catalogScrollBefore=catalogScrollProbe.scrollTop,catalogScrollKey=catalogScrollTarget.getAttribute('data-workbench-key');catalogScrollTarget.click();
@@ -190,7 +204,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   document.querySelector('.npcshop-category-tabs [data-filter-path="weapon"]').click();var catalogNavigationReset=catalogNavigationBefore>0&&catalogScrollProbe.scrollTop===0;
   document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();catalogScrollProbe.style.cssText=catalogScrollStyle;catalogScrollProbe.scrollTop=0;
   var ownedScrollProbe=document.querySelector('.npcshop-owned-grid'),ownedScrollStyle=ownedScrollProbe.style.cssText;
-  ownedScrollProbe.style.cssText+=';height:88px!important;min-height:88px!important;max-height:88px!important;flex:0 0 88px!important;overflow:auto!important';
+  ownedScrollProbe.style.cssText+=';height:32px!important;min-height:32px!important;max-height:32px!important;flex:0 0 32px!important;overflow:auto!important';
   ownedScrollProbe.scrollTop=ownedScrollProbe.scrollHeight;
   var ownedScrollTarget=Array.prototype.slice.call(ownedScrollProbe.querySelectorAll('.npcshop-owned-card')).pop();
   ownedScrollTarget.focus({preventScroll:true});var ownedScrollBefore=ownedScrollProbe.scrollTop,ownedScrollKey=ownedScrollTarget.getAttribute('data-workbench-key');ownedScrollTarget.click();
@@ -223,13 +237,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     &&npcKeyboardOwned.getAttribute('aria-label').indexOf(npcKeyboardOwnedName)>=0
     &&npcKeyboardOwnedSelected&&npcKeyboardOwnedSelected.getAttribute('aria-selected')==='true';
   if(npcKeyboardOwnedSelected)npcKeyboardOwnedSelected.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
-  ok('NPC catalog and owned tiles keep Enter/Space parity with pointer in full mode',npcCatalogKeyboardWorks&&npcOwnedKeyboardWorks&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0);
+  ok('NPC catalog and owned tiles keep Enter/Space parity with pointer in initial compact mode',npcCatalogKeyboardWorks&&npcOwnedKeyboardWorks&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0);
   var npcDensityToggle=document.querySelector('.item-grid-mode-toggle');
   var npcFullDensityOption=npcDensityToggle&&npcDensityToggle.querySelector('[data-layout-mode="full"]');
   var npcCompactDensityOption=npcDensityToggle&&npcDensityToggle.querySelector('[data-layout-mode="compact"]');
   var npcCloseButton=document.querySelector('.workbench-header-actions .workbench-close-btn');
   var npcCatalogGrid=document.querySelector('.npcshop-catalog-grid');
-  ok('default full mode with explicit density choices',npcDensityToggle&&npcFullDensityOption&&npcCompactDensityOption&&npcFullDensityOption.getAttribute('aria-pressed')==='true'&&npcCompactDensityOption.getAttribute('aria-pressed')==='false'&&!!(npcDensityToggle.compareDocumentPosition(npcCloseButton)&Node.DOCUMENT_POSITION_FOLLOWING)&&npcCatalogGrid&&!npcCatalogGrid.classList.contains('item-grid-compact'));
+  ok('initial compact mode with explicit density choices',npcDensityToggle&&npcFullDensityOption&&npcCompactDensityOption&&npcFullDensityOption.getAttribute('aria-pressed')==='false'&&npcCompactDensityOption.getAttribute('aria-pressed')==='true'&&!!(npcDensityToggle.compareDocumentPosition(npcCloseButton)&Node.DOCUMENT_POSITION_FOLLOWING)&&npcCatalogGrid&&npcCatalogGrid.classList.contains('item-grid-compact'));
+  npcFullDensityOption.click();
   npcCompactDensityOption.click();
   var npcCompactStored=false;try{npcCompactStored=localStorage.getItem('cf7.itemgrid.mode.npcshop')==='compact';}catch(e){}
   ok('compact toggles catalog grid and persists',document.querySelector('.npcshop-catalog-grid').classList.contains('item-grid-compact')&&npcCompactDensityOption.getAttribute('aria-pressed')==='true'&&npcCompactStored);
@@ -306,14 +321,15 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('checkout requests one authoritative preview',__sent.some(function(m){return m.cmd==='tradePreview'&&m.payload.purchases.length===1&&m.payload.sales[0].source.containerId==='背包'}));
   ok('checkout uses the stable inventory-domain lease',__sent.some(function(m){return m.cmd==='tradePreview'&&/^iw\.r1\./.test(m.payload.sales[0].source.expectedLease)}));
   ok('secondary settlement page opens',document.querySelector('.npcshop-settlement-page.active')&&NpcShop.debugState().settling);
+  ok('settlement shares direct number input and slider quantity controls',quantityInput('[data-purchase-lines]')&&quantityRange('[data-purchase-lines]')&&quantityInput('[data-sale-lines]')&&quantityRange('[data-sale-lines]'));
   ok('first settlement visit explains that confirmation is required',__toasts.some(function(message){return message.indexOf('交易清单')>=0&&message.indexOf('确认交易')>=0}));
   ok('settlement uses authoritative totals and slot bounds',document.querySelector('[data-trade-economy]').textContent.indexOf('结余 $9,250')>=0&&document.querySelector('[data-trade-economy]').textContent.indexOf('可用 2 格')>=0);
   var settlementScrollProbe=document.querySelector('[data-purchase-lines]'),settlementScrollStyle=settlementScrollProbe.style.cssText;
   settlementScrollProbe.style.cssText+=';height:24px!important;min-height:24px!important;max-height:24px!important;overflow:auto!important';settlementScrollProbe.scrollTop=settlementScrollProbe.scrollHeight;
   var settlementScrollBefore=settlementScrollProbe.scrollTop;
-  Array.from(settlementScrollProbe.querySelectorAll('.npcshop-stepper button')).filter(function(b){return b.textContent==='+'})[0].click();await wait();
+  var settlementRange=quantityRange('[data-purchase-lines]');settlementRange.value='2';settlementRange.dispatchEvent(new Event('input',{bubbles:true}));settlementRange.dispatchEvent(new Event('change',{bubbles:true}));await wait();
   settlementScrollProbe=document.querySelector('[data-purchase-lines]');var settlementScrollAfter=settlementScrollProbe.scrollTop,settlementScrollPreserved=settlementScrollBefore>0&&Math.abs(settlementScrollAfter-settlementScrollBefore)<=1;
-  Array.from(settlementScrollProbe.querySelectorAll('.npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0].click();await wait();
+  quantityButton('[data-purchase-lines]','−').click();await wait();
   settlementScrollProbe=document.querySelector('[data-purchase-lines]');settlementScrollProbe.style.cssText=settlementScrollStyle;settlementScrollProbe.scrollTop=0;
   ok('settlement quantity re-preview preserves its overflowing list position',settlementScrollPreserved,JSON.stringify({before:settlementScrollBefore,after:settlementScrollAfter}));
   sentBeforeHelp=__sent.length;
@@ -335,21 +351,25 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('same-name bulk sale sends only seed lease and plain-only policy',previews[previews.length-1].payload.sales[0].scope==='same_name'&&previews[previews.length-1].payload.sales[0].policy==='plain_only'&&previews[previews.length-1].payload.sales[0].quantity===undefined);
   ok('bulk preview reports eligible and protected equipment',document.querySelector('[data-sale-lines]').textContent.indexOf('售出 2 格，保护 1 格')>=0);
   ok('first bulk sale explains protected equipment',__toasts.some(function(message){return message.indexOf('自动保护强化、进阶和带插件')>=0}));
-  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait();
+  quantityButton('[data-purchase-lines]','+5').click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('equipment purchase supports +5 quantity and authoritative re-preview',previews[previews.length-1].payload.purchases[0].quantity===6);
+  catalog[0].maxQuantity=999999;
   window.__tradePreviewMaxOverride=window.__contractPurchaseProbe;
-  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0].click();await wait();
+  quantityButton('[data-purchase-lines]','−').click();await wait();
   window.__tradePreviewQuantityCeiling=99;
-  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
-  var recoveredQuantity=document.querySelector('[data-purchase-lines] .npcshop-stepper b');
-  var recoveredMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];
+  quantityButton('[data-purchase-lines]','可用').click();await wait();
+  var recoveredQuantity=quantityInput('[data-purchase-lines]');
+  var recoveredMinus=quantityButton('[data-purchase-lines]','−');
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
-  ok('old Host rejection of contract max rolls back to the last authoritative quantity and keeps settlement operable',__rejectedTradePreviews===1&&previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&recoveredQuantity&&recoveredQuantity.textContent==='5'&&recoveredMinus&&!recoveredMinus.disabled&&document.querySelector('[data-trade-error]').textContent.indexOf('已恢复上一次可核算的清单')>=0);
-  window.__tradePreviewQuantityCeiling=null;window.__tradePreviewMaxOverride=null;
+  ok('old Host rejection of contract max rolls back to the last authoritative quantity and keeps settlement operable',__rejectedTradePreviews===1&&previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&recoveredQuantity&&recoveredQuantity.value==='5'&&recoveredMinus&&!recoveredMinus.disabled&&document.querySelector('[data-trade-error]').textContent.indexOf('已恢复上一次可核算的清单')>=0,
+    JSON.stringify({rejected:__rejectedTradePreviews,payload:previews[previews.length-1].payload.purchases[0].quantity,
+      probe:window.__contractPurchaseProbe,input:recoveredQuantity&&recoveredQuantity.value,
+      minusDisabled:recoveredMinus&&recoveredMinus.disabled,error:document.querySelector('[data-trade-error]').textContent}));
+  window.__tradePreviewQuantityCeiling=null;window.__tradePreviewMaxOverride=null;catalog[0].maxQuantity=50;
   recoveredMinus.click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
-  ok('quantity controls recover after a rejected preview',previews[previews.length-1].payload.purchases[0].quantity===4&&document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent==='4');
+  ok('quantity controls recover after a rejected preview',previews[previews.length-1].payload.purchases[0].quantity===4&&quantityValue('[data-purchase-lines]')===4);
   document.querySelector('[data-trade-back]').click();
   document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
   document.querySelector('.npcshop-checkout-btn').click();await wait();
@@ -362,18 +382,22 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('organization route renders transferable inventory slots',transferable);
   if(transferable)transferable.click();await wait();
   ok('organizer quick-transfers through authority autoTransfer',__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'&&m.payload.targetContainerId==='战备箱'}));
-  document.querySelector('[data-space-back]').click();await wait();await wait();
+  var spaceBackAfterTransfer=document.querySelector('[data-space-back]');
+  ok('organizer remains mounted and keyboard-returnable after quick transfer',
+    !!spaceBackAfterTransfer&&NpcShop.debugState().organizingSpace,
+    JSON.stringify({hasBack:!!spaceBackAfterTransfer,state:NpcShop.debugState()}));
+  if(spaceBackAfterTransfer)spaceBackAfterTransfer.click();await wait();await wait();
   var fullBagRebind=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='snapshot'&&m.payload.requests&&m.payload.requests.length===1&&m.payload.requests[0].containerId==='背包'&&m.payload.requests[0].filterKey==='all'}).pop();
   ok('returning from organizer uses a full bag snapshot, preserves filtered-out sales, and re-previews',fullBagRebind&&NpcShop.debugState().saleCount===1&&!NpcShop.debugState().organizingSpace&&__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length>=2);
-  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
+  quantityButton('[data-purchase-lines]','可用').click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('authoritative max clamps equipment purchase after space change',previews[previews.length-1].payload.purchases[0].quantity===3);
-  ok('settlement still contains no native form control',document.querySelectorAll('.npcshop-settlement-page input').length===0);
+  ok('settlement keeps number and range controls synchronized',document.querySelectorAll('.npcshop-settlement-page input[type="number"]').length>=2&&document.querySelectorAll('.npcshop-settlement-page input[type="range"]').length>=2&&quantityInput('[data-purchase-lines]').value===quantityRange('[data-purchase-lines]').value);
   window.__nextTradeCommitDelay=120;document.querySelector('[data-trade-commit]').click();
-  var commitsDuringWrite=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length,busyQuantity=document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent;
-  var busyBack=document.querySelector('[data-trade-back]'),busyMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0],busyCommit=document.querySelector('[data-trade-commit]');
+  var commitsDuringWrite=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length,busyQuantity=quantityInput('[data-purchase-lines]').value;
+  var busyBack=document.querySelector('[data-trade-back]'),busyMinus=quantityButton('[data-purchase-lines]','−'),busyCommit=document.querySelector('[data-trade-commit]');
   busyBack.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyMinus.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyCommit.dispatchEvent(new MouseEvent('click',{bubbles:true}));await wait(35);
-  ok('in-flight commit locks settlement navigation and quantity mutation',NpcShop.debugState().busy&&NpcShop.debugState().settling&&busyBack.disabled&&busyMinus.disabled&&document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent===busyQuantity&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsDuringWrite);
+  ok('in-flight commit locks settlement navigation and quantity mutation',NpcShop.debugState().busy&&NpcShop.debugState().settling&&busyBack.disabled&&busyMinus.disabled&&quantityInput('[data-purchase-lines]').value===busyQuantity&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsDuringWrite);
   await wait(120);
   ok('commit sends opaque AS2 trade token',__sent.some(function(m){return m.cmd==='tradeCommit'&&/^npctrade\./.test(m.payload.expectedTradeToken)}));
   ok('successful commit clears intents and returns main page',NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0&&!NpcShop.debugState().settling);
@@ -399,25 +423,40 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   Panels.close();manualLayout=false;Panels.open('npcshop',{shopId:'前治安官'});await wait();
   catalog[1].maxQuantity=999999;window.__tradePreviewMaxOverride=window.__contractPurchaseProbe;
   document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
-  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0].click();await wait();
-  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});var contractQuantityNode=document.querySelector('[data-purchase-lines] .npcshop-stepper b');
-  ok('shared contract quantity above 99 survives Web max and authoritative preview',window.__contractPurchaseProbe>99&&previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&contractQuantityNode&&Number(contractQuantityNode.textContent)===window.__contractPurchaseProbe);
-  var contractMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];contractMinus.click();await wait();
+  var adaptiveQuantity=document.querySelector('[data-purchase-lines] .workbench-quantity-control');
+  var adaptiveRange=quantityRange('[data-purchase-lines]');
+  var adaptiveAccent=adaptiveQuantity?getComputedStyle(adaptiveQuantity).getPropertyValue('--quantity-accent').trim():'';
+  ok('large settlement range is logarithmic, authority-bounded, marks the feasible preset, and inherits the NPC gold accent',
+    adaptiveQuantity&&adaptiveQuantity.getAttribute('data-slider-scale')==='log'
+      &&Number(adaptiveQuantity.getAttribute('data-slider-max'))===999999
+      &&Number(adaptiveQuantity.getAttribute('data-preset-max'))===window.__contractPurchaseProbe
+      &&adaptiveRange&&adaptiveRange.max==='1000'
+      &&adaptiveQuantity.querySelectorAll('.workbench-quantity-scale span').length===3
+      &&!adaptiveQuantity.querySelector('.workbench-quantity-effective-marker').hidden
+      &&adaptiveAccent.toLowerCase()==='#e5a64d',
+    JSON.stringify({scale:adaptiveQuantity&&adaptiveQuantity.getAttribute('data-slider-scale'),
+      sliderMax:adaptiveQuantity&&adaptiveQuantity.getAttribute('data-slider-max'),
+      presetMax:adaptiveQuantity&&adaptiveQuantity.getAttribute('data-preset-max'),
+      rangeMax:adaptiveRange&&adaptiveRange.max,accent:adaptiveAccent}));
+  setQuantity('[data-purchase-lines]',window.__contractPurchaseProbe);await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});var contractQuantityNode=quantityInput('[data-purchase-lines]');
+  ok('shared contract quantity above 99 survives direct number input and authoritative preview',window.__contractPurchaseProbe>99&&previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&contractQuantityNode&&Number(contractQuantityNode.value)===window.__contractPurchaseProbe);
+  var contractMinus=quantityButton('[data-purchase-lines]','−');contractMinus.click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
-  ok('quantity above 99 remains adjustable after preview',previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe-1&&Number(document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent)===window.__contractPurchaseProbe-1);
-  var contractPlusFive=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0];contractPlusFive.click();await wait();
+  ok('quantity above 99 remains adjustable after preview',previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe-1&&quantityValue('[data-purchase-lines]')===window.__contractPurchaseProbe-1);
+  var contractPlusFive=quantityButton('[data-purchase-lines]','+5');contractPlusFive.click();await wait();
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});var overBudgetQuantity=window.__contractPurchaseProbe+4;
-  ok('+5 above the current affordable maximum stays operable and produces an authoritative non-committable preview',previews[previews.length-1].payload.purchases[0].quantity===overBudgetQuantity&&Number(document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent)===overBudgetQuantity&&document.querySelector('[data-purchase-lines] .npcshop-settlement-copy em').textContent.indexOf('当前可直接结算')>=0&&document.querySelector('[data-trade-commit]').disabled&&document.querySelector('[data-trade-error]').textContent.indexOf('金币不足')>=0);
-  var contractMaximum=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0];contractMaximum.click();await wait();
-  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});contractMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];
-  ok('maximum restores the authoritative feasible quantity after an over-budget preview',previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&Number(document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent)===window.__contractPurchaseProbe&&contractMinus&&!contractMinus.disabled);
+  ok('+5 above the current affordable maximum stays operable and produces an authoritative non-committable preview',previews[previews.length-1].payload.purchases[0].quantity===overBudgetQuantity&&quantityValue('[data-purchase-lines]')===overBudgetQuantity&&document.querySelector('[data-purchase-lines] .npcshop-settlement-copy em').textContent.indexOf('当前可直接结算')>=0&&document.querySelector('[data-trade-commit]').disabled&&document.querySelector('[data-trade-error]').textContent.indexOf('金币不足')>=0);
+  var contractMaximum=quantityButton('[data-purchase-lines]','可用');contractMaximum.click();await wait();
+  previews=__sent.filter(function(m){return m.cmd==='tradePreview'});contractMinus=quantityButton('[data-purchase-lines]','−');
+  ok('maximum restores the authoritative feasible quantity after an over-budget preview',previews[previews.length-1].payload.purchases[0].quantity===window.__contractPurchaseProbe&&quantityValue('[data-purchase-lines]')===window.__contractPurchaseProbe&&contractMinus&&!contractMinus.disabled);
   window.__nextTradePreviewDelay=120;contractMinus.click();
   var previewLockButtons=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')),previewLockCount=__sent.filter(function(m){return m.cmd==='tradePreview'}).length;
   var previewLockPlusFive=previewLockButtons.filter(function(b){return b.textContent==='+5'})[0];if(previewLockPlusFive)previewLockPlusFive.click();await wait(35);
-  ok('in-flight preview visibly locks quantity controls instead of silently swallowing an apparently enabled click',previewLockButtons.length>0&&previewLockButtons.every(function(button){return button.disabled})&&Number(document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent)===window.__contractPurchaseProbe-1&&__sent.filter(function(m){return m.cmd==='tradePreview'}).length===previewLockCount);
-  await wait(120);contractMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];
-  ok('quantity controls reopen after the authoritative preview settles',Number(document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent)===window.__contractPurchaseProbe-1&&contractMinus&&!contractMinus.disabled);
-  contractMaximum=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='最大'})[0];contractMaximum.click();await wait();
+  ok('in-flight preview visibly locks quantity controls instead of silently swallowing an apparently enabled click',previewLockButtons.length>0&&previewLockButtons.every(function(button){return button.disabled})&&quantityInput('[data-purchase-lines]').disabled&&quantityRange('[data-purchase-lines]').disabled&&quantityValue('[data-purchase-lines]')===window.__contractPurchaseProbe-1&&__sent.filter(function(m){return m.cmd==='tradePreview'}).length===previewLockCount);
+  await wait(120);contractMinus=quantityButton('[data-purchase-lines]','−');
+  ok('quantity controls reopen after the authoritative preview settles',quantityValue('[data-purchase-lines]')===window.__contractPurchaseProbe-1&&contractMinus&&!contractMinus.disabled&&!quantityInput('[data-purchase-lines]').disabled);
+  contractMaximum=quantityButton('[data-purchase-lines]','可用');contractMaximum.click();await wait();
   document.querySelector('[data-trade-back]').click();document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
   ok('returning after a large quantity can add another item to the next settlement',NpcShop.debugState().purchaseCount===2&&document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2);
   window.__tradePreviewMaxOverride=null;
@@ -433,20 +472,20 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   // Read failures restore the last accepted preview; they do not poison the write gate.
   Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
   document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
-  Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait();
-  window.__dropNextTradePreview=true;Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+5'})[0].click();await wait(340);
-  var timeoutQuantity=document.querySelector('[data-purchase-lines] .npcshop-stepper b'),timeoutMinus=Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='−'})[0];
-  ok('read preview timeout restores the checkpoint without entering write reconcile',!NpcShop.debugState().needsReconcile&&NpcShop.debugState().settling&&timeoutQuantity&&timeoutQuantity.textContent==='6'&&timeoutMinus&&!timeoutMinus.disabled);
+  quantityButton('[data-purchase-lines]','+5').click();await wait();
+  window.__dropNextTradePreview=true;quantityButton('[data-purchase-lines]','+5').click();await wait(340);
+  var timeoutQuantity=quantityInput('[data-purchase-lines]'),timeoutMinus=quantityButton('[data-purchase-lines]','−');
+  ok('read preview timeout restores the checkpoint without entering write reconcile',!NpcShop.debugState().needsReconcile&&NpcShop.debugState().settling&&timeoutQuantity&&timeoutQuantity.value==='6'&&timeoutMinus&&!timeoutMinus.disabled);
   window.__nextTradePreviewError='malformed_response';timeoutMinus.click();await wait();
-  ok('malformed read preview also restores the checkpoint and stays operable',!NpcShop.debugState().needsReconcile&&document.querySelector('[data-purchase-lines] .npcshop-stepper b').textContent==='6');
+  ok('malformed read preview also restores the checkpoint and stays operable',!NpcShop.debugState().needsReconcile&&quantityValue('[data-purchase-lines]')===6);
   var snapshotsBeforeAuthorityRefresh=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
-  window.__nextTradePreviewError='item_not_found';timeoutMinus.click();await wait();await wait();
+  timeoutMinus=quantityButton('[data-purchase-lines]','−');window.__nextTradePreviewError='item_not_found';timeoutMinus.click();await wait();await wait();
   ok('authority-invalid preview refreshes catalog instead of retaining divergent speculative intent',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===snapshotsBeforeAuthorityRefresh+1&&!NpcShop.debugState().settling&&NpcShop.debugState().purchaseCount===0);
   var authorityPreviewErrors=['invalid_quantity','insufficient_quantity','nothing_to_sell','sell_forbidden'];
   for(var authorityErrorIndex=0;authorityErrorIndex<authorityPreviewErrors.length;authorityErrorIndex++){
     Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
     var authorityError=authorityPreviewErrors[authorityErrorIndex],authoritySnapshots=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
-    window.__nextTradePreviewError=authorityError;Array.from(document.querySelectorAll('[data-purchase-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='+'})[0].click();await wait();await wait();
+    window.__nextTradePreviewError=authorityError;quantityButton('[data-purchase-lines]','+').click();await wait();await wait();
     ok(authorityError+' preview refreshes authority instead of restoring a divergent checkpoint',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===authoritySnapshots+1&&!NpcShop.debugState().settling&&NpcShop.debugState().purchaseCount===0);
   }
 

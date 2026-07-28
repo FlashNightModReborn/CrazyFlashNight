@@ -818,7 +818,11 @@ class Program
                 projectRoot,
                 new Action(form.ToggleFullscreen),
                 new Action(form.ToggleLog),
-                new Action(form.ForceExit),
+                delegate
+                {
+                    form.EmergencyExit(
+                        GuardianForm.EmergencyExitReason.HardExitKeyQ);
+                },
                 new Action<Keys>(form.HandleButtonClick));
         }
 
@@ -885,11 +889,16 @@ class Program
         // both native and fallback paths can feed the eventual AgentControlTask without a
         // second raw payload split.
         AgentControlTask agentControlTask = null;
+        CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel = null;
         {
             webOverlay.SetNotchDependencies(frameTask.FpsBuffer,
                 new Action(form.ToggleFullscreen),
                 new Action(form.ToggleLog),
-                new Action(form.ForceExit),
+                delegate
+                {
+                    form.EmergencyExit(
+                        GuardianForm.EmergencyExitReason.HardExitKeyQ);
+                },
                 new Action<Keys>(form.HandleButtonClick));
 
             // GDI+ fallback：WebView2 初始化失败或未就绪时走这里。
@@ -919,6 +928,15 @@ class Program
                     new CF7Launcher.Guardian.Hud.UiDataPacket(raw);
                 try { webOverlay.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
+                try
+                {
+                    if (safeExitPanel != null)
+                        safeExitPanel.HandleUiData(pkt);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Tee] safe-exit UiData throw: " + ex.Message);
+                }
                 try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
             };
@@ -944,6 +962,16 @@ class Program
             new Action<string>(webOverlay.PostToWeb),
             new Action<bool>(form.HandlePanelStateChanged),
             new Action<string>(webOverlay.SetActivePanel));
+        commandRouter.SetFallbackVisualRetire(delegate(string reason)
+        {
+            webOverlay.ForceIdleState(reason);
+            return true;
+        });
+        commandRouter.SetPanelAdmissionGate(
+            delegate
+            {
+                return !form.IsShutdownAdmissionClosed;
+            });
         webOverlay.SetCommandRouter(commandRouter);
         if (notchOverlay != null) notchOverlay.SetCommandRouter(commandRouter);
 
@@ -999,7 +1027,7 @@ class Program
                             + CF7Launcher.Guardian.Hud.MapDisplayPolicy.ToDisplayLabel(preference));
                     });
             nativeHud.AddWidget(rightContext);
-            CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel =
+            safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
             // 地图不再常驻预留 header；仅 SafeExit 真正可见时通知 RightContext 留出状态槽，
             // 避免确认条覆盖地图顶部，同时保持普通地图紧贴动作行。
@@ -1008,9 +1036,6 @@ class Program
                 rightContext.SetExternalStatusSlotActive(safeExitPanel.Visible);
             };
             nativeHud.AddWidget(safeExitPanel);
-            // 必须在 widget 实例化后注入：router SAFEEXIT click → widget.Arm() → 进 Saving 显示状态条。
-            // 否则 widget 仅靠 sv 推送决定可见，会被普通自动存盘（商店关闭/升级/saveAll）误触发。
-            commandRouter.OnSafeExitArm = delegate { safeExitPanel.Arm(); };
             CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
                 new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
             nativeHud.AddWidget(comboWidget);
@@ -1029,7 +1054,11 @@ class Program
                     form.FlashHostPanel, frameTask.FpsBuffer, projectRoot,
                     new Action(form.ToggleFullscreen),
                     new Action(form.ToggleLog),
-                    new Action(form.ForceExit),
+                    delegate
+                    {
+                        form.EmergencyExit(
+                            GuardianForm.EmergencyExitReason.HardExitKeyQ);
+                    },
                     new Action<Keys>(form.HandleButtonClick),
                     audioHudState);
             notchWidget.SetCommandRouter(commandRouter);
@@ -1083,9 +1112,24 @@ class Program
         }
         else
         {
+            // Web HUD rollback still uses the same Host-owned one-shot authority. It is not
+            // rendered by NativeHud, but the fallback UiData tee above feeds s/sv deltas so
+            // EXIT_CONFIRM remains exact instead of becoming a raw Bridge capability.
+            safeExitPanel =
+                new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(
+                    form.FlashHostPanel,
+                    commandRouter);
             LogManager.Log("[NativeHud] disabled (config useNativeHud=false; router goes through PostToWeb fallback)");
             PerfTrace.Mark("native_hud.disabled");
         }
+        // 必须在 authority 实例化后注入：router SAFEEXIT click → Arm → Saving；
+        // sv:2 才赋予一次 EXIT_CONFIRM，send false/throw 则立即进入 Failed。
+        commandRouter.OnSafeExitArm =
+            delegate { safeExitPanel.Arm(); };
+        commandRouter.OnSafeExitSendFailed =
+            delegate { safeExitPanel.FailAttempt(); };
+        commandRouter.TryConsumeSafeExitConfirm =
+            delegate { return safeExitPanel.TryAuthorizeExitConfirm(); };
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
         IToastSink toastSink = webOverlay;
@@ -1150,20 +1194,46 @@ class Program
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
         commandRouter.SetEquipmentTuningTask(equipmentTuningTask);
+        CharacterBuildTask characterBuildTask = new CharacterBuildTask(socketServer);
+        characterBuildTask.SetAdmissionGate(
+            delegate
+            {
+                return !form.IsShutdownAdmissionClosed;
+            });
+        commandRouter.SetCharacterBuildTask(characterBuildTask);
+        lootPanelCoordinator.SetExternalAdmissionGate(
+            delegate
+            {
+                return !form.IsShutdownAdmissionClosed
+                    && !characterBuildTask.HasBoundPanel;
+            });
         SkillTask skillTask = new SkillTask(socketServer);
         commandRouter.SetSkillTask(skillTask);
         if (panelHost != null)
         {
+            panelHost.SetOpenGate(delegate(string panelName)
+            {
+                // CharacterBuild owns the shared pause authority until acknowledged recovery
+                // consumes its exact binding. This gate also covers PanelHost's internal returnTo
+                // reopen path, which never passes through LauncherCommandRouter.
+                  return !form.IsShutdownAdmissionClosed
+                      && !characterBuildTask.HasBoundPanel;
+            });
             panelHost.SetRebindGate(delegate(string panelName)
             {
                 if (panelName == "skills") return skillTask.CanRebind;
-                if (panelName == "workbench" && equipmentTuningTask.HasBoundPanel)
-                    return equipmentTuningTask.CanRebind;
+                if (panelName == "workbench")
+                {
+                    if (equipmentTuningTask.HasBoundPanel
+                        && !equipmentTuningTask.CanRebind) return false;
+                }
                 return true;
             });
-            panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson)
+            panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson, string panelInstanceId)
             {
-                return panelName == "skills" ? skillTask.EnrichPanelInitData(initDataJson) : initDataJson;
+                return panelName == "skills"
+                    ? skillTask.EnrichPanelInitData(initDataJson, panelInstanceId)
+                    : initDataJson;
             });
             panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)
             {
@@ -1172,15 +1242,69 @@ class Program
                     equipmentTuningTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "hairdresser") hairdresserTask.ClearPending();
             });
+            panelHost.PanelClosed += delegate(
+                string panelName,
+                string panelInstanceId)
+            {
+                if (panelName == "skills")
+                {
+                    commandRouter
+                        .TryCompleteSkillsCharacterBuildNavigation();
+                    return;
+                }
+                // Safety net for Host-owned closes that did not originate in WebOverlay/Router.
+                // PanelClosed fires only after native/Web visual teardown; it may arm and continue
+                // recovery here without releasing pause behind a visible replacement.
+                if (panelName != "workbench"
+                    || !characterBuildTask.HasBoundPanel
+                    || characterBuildTask.RequiresDetachRecovery)
+                {
+                    return;
+                }
+                string boundInstance =
+                    characterBuildTask.PanelInstanceId;
+                if (characterBuildTask
+                        .BeginNormalCloseBarrier(
+                            boundInstance))
+                {
+                    characterBuildTask
+                        .ContinueDetachRecoveryAfterVisualRetired(
+                            0);
+                }
+            };
         }
         skillTask.SetCoordinatorSettled(delegate
         {
-            if (panelHost != null) panelHost.FlushDeferredRebind("skills");
-            commandRouter.FlushDeferredFallbackSkillRebind();
+            bool characterBuildNavigationConsumed =
+                commandRouter
+                    .TryCompleteSkillsCharacterBuildNavigation();
+            if (!characterBuildNavigationConsumed
+                && commandRouter
+                    .PendingSkillsCharacterBuildNavigationInstance
+                    == null)
+            {
+                if (panelHost != null)
+                    panelHost.FlushDeferredRebind("skills");
+                commandRouter.FlushDeferredFallbackSkillRebind();
+            }
         });
         equipmentTuningTask.SetCoordinatorSettled(delegate
         {
             if (panelHost != null) panelHost.FlushDeferredRebind("workbench");
+        });
+        characterBuildTask.SetCoordinatorSettled(delegate
+        {
+            bool skillsNavigationConsumed =
+                commandRouter
+                    .TryCompleteCharacterBuildSkillsNavigation();
+            if (panelHost != null)
+            {
+                if (!skillsNavigationConsumed)
+                {
+                    panelHost.FlushDeferredBarrierOpen();
+                    panelHost.FlushDeferredRebind("workbench");
+                }
+            }
         });
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
@@ -1207,6 +1331,14 @@ class Program
             const string payload = "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
                 + "\"profile\":\"battlebox\",\"view\":\"tuning\",\"source\":\"agent_control\"}\0";
             return socketServer != null && socketServer.IsClientReady && socketServer.TrySend(payload);
+        });
+        agentControlTask.SetCharacterBuildOpenAction(delegate
+        {
+            const string payload = "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
+                + "\"profile\":\"battlebox\",\"view\":\"build\",\"source\":\"agent_control\"}\0";
+            return !form.IsShutdownAdmissionClosed
+                && socketServer != null && socketServer.IsClientReady
+                && socketServer.TrySend(payload);
         });
         agentControlTask.SetActivePanelStatusProvider(delegate
         {
@@ -1282,7 +1414,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, hairdresserTask, equipmentTuningTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -1298,6 +1430,7 @@ class Program
         webOverlay.SetCraftingTask(craftingTask);
         webOverlay.SetHairdresserTask(hairdresserTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
+        webOverlay.SetCharacterBuildTask(characterBuildTask);
         webOverlay.SetSkillTask(skillTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
@@ -1310,7 +1443,7 @@ class Program
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
         socketServer.OnClientDisconnectedForGeneration += webOverlay.OnSocketDisconnected;
-        socketServer.OnClientReady += webOverlay.OnSocketReconnected;
+        socketServer.OnClientReadyForGeneration += webOverlay.OnSocketReconnected;
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);
@@ -1319,9 +1452,40 @@ class Program
         httpServer.SetShutdownAction(delegate { form.ForceExit(); });
         agentControlTask.SetShutdownAction(delegate { form.ForceExit(); });
 
+        // CharacterBuild may own dirty live/loadout state even when Web has stopped responding.
+        // Controlled exit must obtain the existing exact recoverDetach persistence proof before
+        // any overlay suspension, task disposal, socket teardown, or Flash termination begins.
+        form.OnShutdownFence = delegate
+        {
+            string outcome;
+            bool passed =
+                characterBuildTask
+                    .TryCompleteHostShutdownPersistence(
+                        3000,
+                        out outcome);
+            if (!passed)
+            {
+                LogManager.Log(
+                    "[Guardian] CharacterBuild shutdown persistence blocked outcome="
+                    + (outcome ?? "unknown"));
+                try
+                {
+                    if (toastSink != null)
+                    {
+                        toastSink.AddMessage(
+                            "角色配装尚未安全保存，已取消退出；请稍后重试，或按 Ctrl+Q 放弃未保存改动并强制退出");
+                    }
+                }
+                catch { }
+            }
+            return passed;
+        };
+
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
         {
+            commandRouter.CancelAllPanelNavigationIntents(
+                "host_shutdown");
             // 顺序敏感: 这两步必须最前。
             // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。
@@ -1352,6 +1516,7 @@ class Program
             craftingTask.Dispose();
             hairdresserTask.Dispose();
             equipmentTuningTask.Dispose();
+            characterBuildTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
             intelligenceTask.Dispose();
@@ -1407,6 +1572,7 @@ class Program
             try { hairdresserTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
+            try { characterBuildTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
             try { stageSelectTask.Dispose(); } catch { }
@@ -1627,6 +1793,7 @@ class Program
         try { hairdresserTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
+        try { characterBuildTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }

@@ -124,6 +124,8 @@
       ],
       "commands": [
         { "cmd": "snapshot", "action": "craftingSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "materials", "action": "craftingMaterials", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "materialDetail", "action": "craftingMaterialDetail", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "preview", "action": "craftingPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "tooltip", "action": "craftingTooltip", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "commit", "action": "craftingCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }

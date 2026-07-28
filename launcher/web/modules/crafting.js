@@ -2,6 +2,7 @@
 var CraftingPanel = (function() {
     'use strict';
     var _shellEl, _shell, _catalogView, _detailView, _catalogRenderer, _detailBody;
+    var _mode = 'recipes', _materials = null, _materialRequestSeq = 0;
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _needsRefresh = false, _generation = 0;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _commitButton = null, _craftableToggle = null, _tooltipCache = {};
@@ -9,6 +10,7 @@ var CraftingPanel = (function() {
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
     var _detailScrollTop = 0, _detailScrollLeft = 0;
+    var _densityController = null, _helpAction = null;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var _mux = new CraftingRuntime.RequestMux({
         send:function(message) { return Bridge.send(message); },
@@ -21,7 +23,7 @@ var CraftingPanel = (function() {
         onOpen:onOpen,
         onClose:cleanup,
         onRequestClose:requestClose,
-        onForceClose:function() { cleanup(); toast('连接断开，合成工作台已关闭'); }
+        onForceClose:function() { cleanup(); toast('连接断开，工作台已关闭'); }
     });
 
     function createDOM() {
@@ -32,32 +34,87 @@ var CraftingPanel = (function() {
 
     function buildDOM() {
         disposeFilterNavigator();
+        if (_materials) { _materials.destroy(); _materials = null; }
+        if (_densityController) { _densityController.destroy(); _densityController = null; }
+        if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
         if (_shell) _shell.destroy();
         Workbench.clearElement(_shellEl);
-        _shell = new Workbench.DualPaneShell({title:_category || '合成工作台', subtitle:'权威预览',
-            status:'同步中', leftLabel:'配方目录', rightLabel:'合成详情', flowLabel:'核算'});
+        _shell = new Workbench.DualPaneShell({
+            title:_mode === 'materials' ? '材料档案' : (_category || '合成工作台'),
+            subtitle:_mode === 'materials' ? '来源与用途' : '权威预览',
+            status:'同步中',
+            leftLabel:_mode === 'materials' ? '材料目录' : '配方目录',
+            rightLabel:_mode === 'materials' ? '来源与用途' : '合成详情',
+            flowLabel:_mode === 'materials' ? '检索' : '核算'
+        });
         var root = _shell.getRoot();
         root.classList.add('kshop-workbench', 'crafting-panel');
         root.setAttribute('data-workbench-skin', 'crafting');
+        root.setAttribute('data-crafting-view', _mode);
         _shellEl.appendChild(root);
 
         _retryButton = document.createElement('button');
         _retryButton.type = 'button'; _retryButton.className = 'workbench-mode-btn warning';
         _retryButton.textContent = '重新核对'; _retryButton.addEventListener('click', reconcile);
         _shell.addHeaderAction(_retryButton);
-        _organizerButton = document.createElement('button');
-        _organizerButton.type = 'button'; _organizerButton.className = 'workbench-mode-btn crafting-organizer-btn';
-        _organizerButton.textContent = '背包 / 战备箱';
-        _organizerButton.setAttribute('aria-label', '切换到背包—战备箱整理；返回后会重新核算当前配方');
-        _organizerButton.addEventListener('click', openOrganizer);
-        _shell.addHeaderAction(_organizerButton);
+        _organizerButton = null;
+        if (_mode !== 'materials') {
+            _organizerButton = document.createElement('button');
+            _organizerButton.type = 'button'; _organizerButton.className = 'workbench-mode-btn crafting-organizer-btn';
+            _organizerButton.textContent = '背包 / 战备箱';
+            _organizerButton.setAttribute('aria-label', '切换到背包—战备箱整理；返回后会重新核算当前配方');
+            _organizerButton.addEventListener('click', openOrganizer);
+            _shell.addHeaderAction(_organizerButton);
+        }
+        if (_mode === 'materials') {
+            _densityController = new Workbench.GridDensityController({
+                panelId:'crafting-materials',
+                defaultMode:'compact'
+            });
+            root.setAttribute('data-layout-mode', _densityController.mode);
+            _shell.addHeaderAction(_densityController.createToggle(function(mode) {
+                root.setAttribute('data-layout-mode', mode);
+            }));
+        }
+        _helpAction = new WorkbenchComponents.HelpAction({
+            shell:_shell,
+            spec:_mode === 'materials' ? {
+            kind:'crafting-materials-help',
+            ariaLabel:'查看材料档案帮助',
+            title:'材料档案帮助',
+            message:'浏览与筛选\n• 搜索框可按材料名称过滤；“已持有”和“有用途”只改变本地视图。\n• 紧凑模式以图标为主，适合快速扫视；完整模式同时显示持有量、来源数和用途数。',
+            detail:'查看来源与用途\n• 选择左侧材料后，右侧会列出掉落敌人、关卡、任务或商店来源。\n• “会用在哪里”列出引用该材料的合成项目及每份需求。\n• 方向键在当前网格移动，Home / End 可直达首尾；Enter 打开当前材料。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        } : {
+            kind:'crafting-help',
+            ariaLabel:'查看合成工作台帮助',
+            title:'合成工作台帮助',
+            message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可直接输入份数；最终结果以最近一次预览为准。',
+            detail:'“只看可合成”只在当前目录内筛选。“背包 / 战备箱”可暂时进入收纳界面，返回后会重新核算原配方。提交前请确认材料、费用和产物数量。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        }});
         var close = document.createElement('button');
         close.type = 'button'; close.className = 'workbench-close-btn'; close.textContent = '×';
-        close.setAttribute('aria-label', '关闭合成工作台'); close.addEventListener('click', requestClose);
+        close.setAttribute('aria-label', _mode === 'materials' ? '关闭材料档案' : '关闭合成工作台');
+        close.addEventListener('click', function() { requestClose('header'); });
         _shell.addHeaderAction(close);
 
-        _catalogView = createCatalogView();
-        _detailView = createDetailView();
+        if (_mode === 'materials') {
+            _catalogRenderer = null;
+            _detailBody = null;
+            _craftableToggle = null;
+            _materials = CraftingMaterials.create({
+                iconHtml:iconHtml,
+                bindTooltip:bindTooltip,
+                onSelect:requestMaterialDetail,
+                densityController:_densityController
+            });
+            _catalogView = _materials.catalogView;
+            _detailView = _materials.detailView;
+        } else {
+            _catalogView = createCatalogView();
+            _detailView = createDetailView();
+        }
         _shell.setDefault('L', _catalogView); _shell.setDefault('R', _detailView);
         _shell.mountInitial(_catalogView, _detailView);
         refreshControls();
@@ -441,7 +498,53 @@ var CraftingPanel = (function() {
         });
     }
 
+    function refreshMaterialsSnapshot(preferredName) {
+        _shell.setStatus('同步中', 'loading');
+        if (_retryButton) _retryButton.disabled = true;
+        _previewBusy = true;
+        var generation = _generation;
+        return !!request('materials', {}, function(response) {
+            if (generation !== _generation || _mode !== 'materials') return;
+            _previewBusy = false;
+            if (!response.success) {
+                _needsRefresh = true;
+                if (_materials) _materials.setError(errorMessage(response.error));
+                toast(errorMessage(response.error));
+                refreshControls();
+                return;
+            }
+            _snapshot = response;
+            _needsRefresh = false;
+            if (_materials) _materials.setSnapshot(response, preferredName);
+            refreshControls();
+        });
+    }
+
+    function requestMaterialDetail(itemName) {
+        if (_mode !== 'materials' || !itemName) return false;
+        var generation = _generation;
+        var requestSeq = ++_materialRequestSeq;
+        _previewBusy = true;
+        refreshControls();
+        return !!request('materialDetail', {itemName:String(itemName)}, function(response) {
+            if (generation !== _generation || requestSeq !== _materialRequestSeq
+                    || _mode !== 'materials') return;
+            _previewBusy = false;
+            if (!response.success) {
+                if (_materials) _materials.setError(errorMessage(response.error));
+                toast(errorMessage(response.error));
+            } else if (_materials) {
+                _materials.setDetail(response);
+            }
+            refreshControls();
+        });
+    }
+
     function reconcile() {
+        if (_mode === 'materials') {
+            refreshMaterialsSnapshot(_materials && _materials.getSelectedName());
+            return;
+        }
         if (_needsRefresh) refreshSnapshot(_selectedIndex, _craftCount);
         else if (_selectedIndex >= 0) requestPreview();
         else refreshSnapshot();
@@ -486,6 +589,18 @@ var CraftingPanel = (function() {
 
     function refreshControls() {
         if (!_shell) return;
+        if (_mode === 'materials') {
+            if (_needsRefresh) _shell.setStatus('需要重新同步', 'error');
+            else if (_previewBusy) _shell.setStatus('正在读取材料档案', 'loading');
+            else if (_snapshot) _shell.setStatus('材料索引已同步', 'idle');
+            else _shell.setStatus('同步中', 'loading');
+            if (_retryButton) {
+                _retryButton.textContent = '重新同步';
+                _retryButton.style.display = _needsRefresh ? '' : 'none';
+                _retryButton.disabled = _previewBusy;
+            }
+            return;
+        }
         if (_needsReconcile) _shell.setStatus('需要重新核对', 'error');
         else if (_needsRefresh) _shell.setStatus('需要重新同步', 'error');
         else if (_organizerBusy) _shell.setStatus('正在打开战备箱', 'loading');
@@ -505,10 +620,13 @@ var CraftingPanel = (function() {
 
     function onOpen(el, initData) {
         _generation++;
+        _materialRequestSeq++;
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('crafting') : null;
-        var nextCategory = initData && typeof initData.category === 'string' ? initData.category : '';
+        _mode = initData && initData.view === 'materials' ? 'materials' : 'recipes';
+        var nextCategory = _mode === 'materials'
+            ? '' : (initData && typeof initData.category === 'string' ? initData.category : '');
         if (nextCategory !== _category) { _filterPath = []; _craftableOnly = false; }
         _category = nextCategory;
         var preferredIndex = initData && Number(initData.preferredRecipeIndex);
@@ -517,17 +635,22 @@ var CraftingPanel = (function() {
         _craftCount = 1; _organizerBusy = false; _needsReconcile = false; _needsRefresh = false; _tooltipCache = {}; buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
-        _mux.openSession(); refreshSnapshot(preferredIndex, preferredCount);
+        _mux.openSession();
+        if (_mode === 'materials') refreshMaterialsSnapshot();
+        else refreshSnapshot(preferredIndex, preferredCount);
     }
 
     function cleanup() {
-        _generation++; _mux.closeSession();
+        _generation++; _materialRequestSeq++; _mux.closeSession();
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_shell) _shell.closeModal();
         _inspector = null;
         _busy = false; _previewBusy = false; _organizerBusy = false; _snapshot = null; _preview = null;
         clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false;
         disposeFilterNavigator(); _craftableToggle = null;
+        if (_materials) { _materials.destroy(); _materials = null; }
+        if (_densityController) { _densityController.destroy(); _densityController = null; }
+        if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
     }
 
@@ -536,9 +659,17 @@ var CraftingPanel = (function() {
         _filterNavigator = null;
     }
 
-    function requestClose() {
-        if (_busy || _organizerBusy) { toast('合成状态正在确认，请稍候。'); return; }
-        Panels.close(); Bridge.send({type:'panel', cmd:'close', panel:'crafting'});
+    function requestClose(reason) {
+        if (_shell && _shell.hasModal()) {
+            return _shell.closeModal(typeof reason === 'string' ? reason : 'close');
+        }
+        if (_busy || _organizerBusy) { toast('工作台状态正在确认，请稍候。'); return; }
+        if (Bridge.send({type:'panel', cmd:'close', panel:'crafting'}) === false) {
+            toast('启动器连接不可用，工作台保持打开。');
+            return false;
+        }
+        Panels.close();
+        return true;
     }
 
     function request(cmd, payload, callback) { payload = payload || {}; payload.v = 1; return _mux.request(cmd, payload, callback); }
@@ -618,16 +749,16 @@ var CraftingPanel = (function() {
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
     function errorMessage(error) {
-        var messages = {category_not_found:'未找到该合成分类。', recipe_not_found:'配方已变化。', item_not_found:'配方包含未知物品。',
+        var messages = {category_not_found:'未找到该合成分类。', recipe_not_found:'配方已变化。', item_not_found:'未找到该材料或配方物品。',
             level_locked:'角色等级与逆向等级不足。', material_missing:'所需材料不足。', insufficient_money:'金币不足。',
             insufficient_kpoint:'K 点不足。', inventory_full:'背包空间不足。', stale_state:'物品状态已变化，请重新核对。',
             batch_not_supported:'该配方包含装备产物或装备素材，只能逐份合成。',
             busy:'Flash 正在处理另一项合成。', reconcile_required:'上次提交结果需要重新核对。',
             malformed_response:'Flash 回包不完整。', timeout:'合成响应超时。', client_timeout:'合成响应超时。', disconnected:'连接已断开。'};
-        return messages[error] || '合成操作失败，请重试。';
+        return messages[error] || (_mode === 'materials' ? '材料档案读取失败，请重试。' : '合成操作失败，请重试。');
     }
 
-    return {debugState:function() { return {category:_category, selectedIndex:_selectedIndex, craftCount:_craftCount,
+    return {debugState:function() { return {mode:_mode, category:_category, selectedIndex:_selectedIndex, craftCount:_craftCount,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
@@ -636,5 +767,6 @@ var CraftingPanel = (function() {
             recipeIndex:_previewCheckpoint.recipeIndex, craftCount:_previewCheckpoint.craftCount} : null,
         gender:_snapshot && _snapshot.gender,
         inspector:_inspector && _inspector.debugState ? _inspector.debugState() : null,
+        materials:_materials && _materials.debugState ? _materials.debugState() : null,
         mux:_mux.debugState()}; }};
 })();

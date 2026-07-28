@@ -142,6 +142,8 @@ namespace CF7Launcher.Tasks
             switch (cmd)
             {
                 case "snapshot": action = "craftingSnapshot"; return true;
+                case "materials": action = "craftingMaterials"; return true;
+                case "materialDetail": action = "craftingMaterialDetail"; return true;
                 case "preview": action = "craftingPreview"; return true;
                 case "tooltip": action = "craftingTooltip"; return true;
                 case "commit": action = "craftingCommit"; isWrite = true; return true;
@@ -152,7 +154,8 @@ namespace CF7Launcher.Tasks
         private static bool TryNormalizePayload(string cmd, JObject payload, out JObject normalized)
         {
             normalized = new JObject { ["v"] = 1 };
-            if (cmd == "tooltip")
+            if (cmd == "materials") return true;
+            if (cmd == "tooltip" || cmd == "materialDetail")
             {
                 string itemName = payload.Value<string>("itemName");
                 if (!IsSafeText(itemName, 128)) return false;
@@ -206,6 +209,8 @@ namespace CF7Launcher.Tasks
             if (msg.Value<bool>("success"))
             {
                 if (entry.WebCmd == "snapshot") return !IsAuthoritativeSnapshot(msg);
+                if (entry.WebCmd == "materials") return !IsAuthoritativeMaterials(msg);
+                if (entry.WebCmd == "materialDetail") return !IsAuthoritativeMaterialDetail(msg);
                 if (entry.WebCmd == "preview") return !IsAuthoritativePreview(msg);
                 if (entry.WebCmd == "commit") return !IsAuthoritativeCommit(msg);
                 return !HasProtocolVersion(msg) || !IsSafeText(msg.Value<string>("itemName"), 128);
@@ -242,6 +247,115 @@ namespace CF7Launcher.Tasks
                     || canCraftOne != string.Equals(availability, "ready", StringComparison.Ordinal)) return false;
             }
             return true;
+        }
+
+        private static bool IsAuthoritativeMaterials(JObject msg)
+        {
+            var materials = msg["materials"] as JArray;
+            if (!HasProtocolVersion(msg)
+                || msg.Value<string>("view") != "materials"
+                || materials == null) return false;
+            var names = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in materials)
+            {
+                var material = token as JObject;
+                int sourceCount;
+                int useCount;
+                if (material == null
+                    || !IsSafeText(material.Value<string>("name"), 128)
+                    || !names.Add(material.Value<string>("name"))
+                    || !IsSafeText(material.Value<string>("displayName"), 256)
+                    || !IsSafeText(material.Value<string>("icon"), 256)
+                    || !IsNonNegativeNumber(material["owned"])
+                    || !TryReadInteger(material["sourceCount"], 0, 100000, out sourceCount)
+                    || !TryReadInteger(material["useCount"], 0, 100000, out useCount)
+                    || material["hasSourceSummary"] == null
+                    || material["hasSourceSummary"].Type != JTokenType.Boolean) return false;
+            }
+            return true;
+        }
+
+        private static bool IsAuthoritativeMaterialDetail(JObject msg)
+        {
+            var material = msg["material"] as JObject;
+            var sources = msg["sources"] as JArray;
+            var uses = msg["uses"] as JArray;
+            if (!HasProtocolVersion(msg)
+                || msg.Value<string>("view") != "materials"
+                || material == null || sources == null || uses == null
+                || !IsSafeText(material.Value<string>("name"), 128)
+                || !IsSafeText(material.Value<string>("displayName"), 256)
+                || !IsSafeText(material.Value<string>("icon"), 256)
+                || !IsSafeMultilineText(material.Value<string>("description"), 12000)
+                || !IsSafeMultilineText(material.Value<string>("sourceSummary"), 20000)
+                || !IsNonNegativeNumber(material["owned"])) return false;
+            foreach (JToken token in sources)
+            {
+                var source = token as JObject;
+                string kind = source != null ? source.Value<string>("kind") : null;
+                if (source == null
+                    || (kind != "craft" && kind != "shop" && kind != "kshop"
+                        && kind != "quest" && kind != "stage" && kind != "enemy")
+                    || !SafeOptionalFields(source, new[]
+                        {
+                            "category", "npc", "requirement", "questId", "title",
+                            "stageName", "enemyType", "displayName"
+                        })) return false;
+                foreach (string field in new[]
+                    {
+                        "price", "kpoints", "priceK", "quantity", "probability",
+                        "quantityMax", "minLevel", "maxLevel"
+                    })
+                {
+                    if (source[field] != null && !IsNumber(source[field])) return false;
+                }
+            }
+            foreach (JToken token in uses)
+            {
+                var use = token as JObject;
+                if (use == null
+                    || !IsSafeText(use.Value<string>("name"), 128)
+                    || !IsSafeText(use.Value<string>("displayName"), 256)
+                    || !IsSafeText(use.Value<string>("icon"), 256)
+                    || !IsSafeText(use.Value<string>("itemKind"), 32)
+                    || !IsSafeOptionalText(use.Value<string>("category"), 128)
+                    || !IsNonNegativeNumber(use["required"])) return false;
+            }
+            return true;
+        }
+
+        private static bool SafeOptionalFields(JObject value, IEnumerable<string> fields)
+        {
+            foreach (string field in fields)
+            {
+                if (value[field] != null
+                    && !IsSafeOptionalText(value.Value<string>(field), 512)) return false;
+            }
+            return true;
+        }
+
+        private static bool IsSafeOptionalText(string value, int max)
+        {
+            if (value == null || value.Length > max) return false;
+            for (int i = 0; i < value.Length; i++) if (char.IsControl(value[i])) return false;
+            return true;
+        }
+
+        private static bool IsSafeMultilineText(string value, int max)
+        {
+            if (value == null || value.Length > max) return false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char current = value[i];
+                if (char.IsControl(current)
+                    && current != '\r' && current != '\n' && current != '\t') return false;
+            }
+            return true;
+        }
+
+        private static bool IsNonNegativeNumber(JToken value)
+        {
+            return IsNumber(value) && value.Value<double>() >= 0;
         }
 
         private static bool IsAuthoritativePreview(JObject msg)

@@ -25,11 +25,75 @@ var EquipmentTuningRender = (function() {
         var commitLabel = Model.commitLabel;
         var equipmentDiff = Model.equipmentDiff;
         var errorMessage = Model.errorMessage;
+        var tuningSourceKey = Model.tuningSourceKey;
+        var tuningSourceSupports = Model.tuningSourceSupports;
+
+    function activeFocusKey(root) {
+        var active = root && root.ownerDocument ? root.ownerDocument.activeElement : null;
+        if (!active || !root.contains(active)) return '';
+        for (var node = active; node && node !== root; node = node.parentNode) {
+            if (!node.getAttribute) continue;
+            var key = node.getAttribute('data-tuning-focus-key');
+            if (key) return key;
+        }
+        return '';
+    }
+
+    function restoreFocusKey(root, key) {
+        if (!root || !key) return false;
+        var nodes = root.querySelectorAll('[data-tuning-focus-key]');
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].getAttribute('data-tuning-focus-key') !== key
+                    || nodes[i].disabled || !focusRestoreVisible(nodes[i], root)) continue;
+            try { nodes[i].focus({preventScroll:true}); }
+            catch (_) { nodes[i].focus(); }
+            return !!(root.ownerDocument && root.ownerDocument.activeElement === nodes[i]);
+        }
+        return false;
+    }
+
+    function focusRestoreVisible(node, root) {
+        if (!node || !root) return false;
+        var view = node.ownerDocument && node.ownerDocument.defaultView;
+        for (var current = node; current; current = current.parentNode) {
+            if (current.hidden || current.inert
+                    || current.getAttribute && (current.getAttribute('aria-hidden') === 'true'
+                        || current.hasAttribute('inert'))) return false;
+            if (view && view.getComputedStyle && current.nodeType === 1) {
+                var style = view.getComputedStyle(current);
+                if (style.display === 'none' || style.visibility === 'hidden'
+                        || style.visibility === 'collapse') return false;
+            }
+            if (current === root) break;
+        }
+        return !node.getClientRects || node.getClientRects().length > 0;
+    }
+
+    function ownsFocusKey(root, target) {
+        for (var node = target; node && node !== root; node = node.parentNode) {
+            if (node.getAttribute && node.getAttribute('data-tuning-focus-key')) return true;
+        }
+        return false;
+    }
 
     TuningView.prototype.render = function(renderOptions) {
         if (!this._root) return;
         renderOptions = renderOptions || {};
         var preserveScroll = renderOptions.preserveScroll !== false;
+        var activeKey = preserveScroll ? activeFocusKey(this._root) : '';
+        var activeElement = this._root.ownerDocument && this._root.ownerDocument.activeElement;
+        if (!preserveScroll) {
+            this._renderFocusKey = '';
+            this._renderFocusDeferred = false;
+        } else if (activeKey) {
+            this._renderFocusKey = activeKey;
+            this._renderFocusDeferred = false;
+        } else if (activeElement && (activeElement !== this._root.ownerDocument.body
+                || !this._renderFocusDeferred)) {
+            this._renderFocusKey = '';
+            this._renderFocusDeferred = false;
+        }
+        var focusKey = activeKey || this._renderFocusKey || '';
         var previousBody = this._root.querySelector('.equipment-tuning-body');
         var previousPreview = this._root.querySelector('.equipment-tuning-preview');
         var bodyScroll = preserveScroll && previousBody ? {top:previousBody.scrollTop,left:previousBody.scrollLeft} : null;
@@ -37,15 +101,30 @@ var EquipmentTuningRender = (function() {
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
         clear(this._root, this._tooltipScope);
         var root = element('div', 'equipment-tuning-view');
+        var self = this;
+        root.addEventListener('pointerdown', function(event) {
+            if (ownsFocusKey(root, event && event.target)) return;
+            self._renderFocusKey = '';
+            self._renderFocusDeferred = false;
+        });
         root.setAttribute('data-operation', this._operation === 'replace_mod' ? 'install_mod' : this._operation);
+        root.setAttribute('data-source-kind', this._source && this._source.sourceKind || 'none');
         root.setAttribute('data-reconcile', this._needsReconcile ? 'required' : 'clear');
         root.appendChild(this._renderHeader());
         root.appendChild(this._renderTabs());
+        root.appendChild(this._renderInfoPanel());
         root.appendChild(this._renderBody());
         root.appendChild(this._renderPreview());
         this._root.appendChild(root);
         var nextBody = root.querySelector('.equipment-tuning-body');
         var nextPreview = root.querySelector('.equipment-tuning-preview');
+        if (restoreFocusKey(root, focusKey)) {
+            this._renderFocusKey = '';
+            this._renderFocusDeferred = false;
+        } else {
+            this._renderFocusKey = focusKey;
+            this._renderFocusDeferred = !!focusKey;
+        }
         if (bodyScroll && nextBody) { nextBody.scrollTop = bodyScroll.top; nextBody.scrollLeft = bodyScroll.left; }
         if (previewScroll && nextPreview) { nextPreview.scrollTop = previewScroll.top; nextPreview.scrollLeft = previewScroll.left; }
     };
@@ -55,7 +134,7 @@ var EquipmentTuningRender = (function() {
         if (!this._sourceItem) {
             var emptyMark = element('div', 'equipment-tuning-empty-mark'); emptyMark.textContent = '＋';
             var emptyCopy = element('div', 'equipment-tuning-summary-copy');
-            emptyCopy.innerHTML = '<b>选择背包装备</b><small>仅背包内武器与防具可调制</small>';
+            emptyCopy.innerHTML = '<b>选择装备</b><small>只接受当前权威来源中的武器与防具</small>';
             header.appendChild(emptyMark); header.appendChild(emptyCopy);
             return header;
         }
@@ -64,6 +143,7 @@ var EquipmentTuningRender = (function() {
         var icon = element('button', 'equipment-tuning-main-icon equipment-tuning-inspect-trigger');
         icon.type = 'button';
         icon.disabled = !this._canInspect(item);
+        icon.setAttribute('data-tuning-focus-key', 'source:inspect');
         icon.setAttribute('aria-label', '检视当前装备：' + String(item.displayName || item.name || '装备'));
         icon.innerHTML = iconHtml(item.icon || item.name, 'kshop-icon');
         icon.addEventListener('click', function() { self.inspectCurrentEquipment(); });
@@ -72,12 +152,119 @@ var EquipmentTuningRender = (function() {
         var level = equipment ? Number(equipment.level || 0) : Number(item.enhancementLevel || 0);
         copy.innerHTML = '<b>' + escapeHtml(item.displayName || item.name) + '</b>'
             + '<span>强化 +' + level + (equipment && equipment.tier ? ' · ' + escapeHtml(equipment.tier) : '') + '</span>'
-            + '<small>' + escapeHtml(this._status) + '</small>';
+            + '<small>' + escapeHtml(this._source && this._source.sourceKind === 'loadout'
+                ? String(this._source.slotKey || '当前槽位') + ' · ' + this._status
+                : this._status) + '</small>';
         header.appendChild(icon);
         header.appendChild(copy);
         var installedState = this._renderInstalledState(equipment);
         if (installedState.childNodes.length) header.appendChild(installedState);
+        var info = element('button', 'equipment-tuning-info-open');
+        info.type = 'button';
+        info.textContent = '调制说明';
+        info.setAttribute('data-tuning-focus-key', 'info:open');
+        info.setAttribute('aria-label', '展开当前调制说明');
+        info.setAttribute('aria-expanded', this._infoPanelOpen ? 'true' : 'false');
+        info.addEventListener('click', this._openInfoPanel.bind(this));
+        header.appendChild(info);
         return header;
+    };
+
+    TuningView.prototype._renderInfoPanel = function() {
+        var panel = element('section', 'equipment-tuning-info-panel');
+        panel.hidden = !this._infoPanelOpen;
+        panel.setAttribute('aria-hidden', this._infoPanelOpen ? 'false' : 'true');
+        panel.setAttribute('aria-label', '当前调制说明');
+        var subject = this._infoSubject || this._defaultInfoSubject();
+        var copy = element('div', 'equipment-tuning-info-copy');
+        copy.innerHTML = '<span>调制说明</span><b data-tuning-info-title>'
+            + escapeHtml(subject.title || '当前操作') + '</b><p data-tuning-info-copy>'
+            + escapeHtml(subject.detail || '暂无进一步说明。') + '</p>';
+        panel.appendChild(copy);
+        var actions = element('div', 'equipment-tuning-info-actions');
+        var self = this;
+        var close = actionButton('收起说明', function() { self._closeInfoPanel(); });
+        close.setAttribute('data-tuning-focus-key', 'info:close');
+        actions.appendChild(close);
+        panel.appendChild(actions);
+        return panel;
+    };
+
+    TuningView.prototype._defaultInfoSubject = function() {
+        var snapshot = this._snapshot || {};
+        var equipment = snapshot.equipment || {};
+        var item = this._sourceItem || {};
+        var name = String(item.displayName || item.name || '当前装备');
+        var operation = this._operation === 'replace_mod' ? 'install_mod' : this._operation;
+        var detail;
+        if (operation === 'enhance') {
+            detail = '当前 +' + Number(snapshot.enhance && snapshot.enhance.currentLevel || 0)
+                + ' · 可用上限 +' + enhancementAvailableMax(snapshot)
+                + ' · 选择目标后先预览材料与结果，再提交。';
+        } else if (operation === 'install_tier') {
+            detail = '当前进阶 ' + String(equipment.tier || '无')
+                + ' · 聚焦候选可读取条件、分类与用途。';
+        } else if (operation === 'install_mod') {
+            detail = '已安装 ' + (equipment.mods instanceof Array ? equipment.mods.length : 0)
+                + ' 个配件 · 聚焦候选可读取条件、分类与用途。';
+        } else {
+            detail = '当前强化 +' + Number(equipment.level || item.enhancementLevel || 0)
+                + ' · 选择同类装备后先预览双向交换结果。';
+        }
+        return {title:name + ' · ' + operationLabel(operation), detail:detail};
+    };
+
+    TuningView.prototype._setInfoSubject = function(candidate) {
+        if (!candidate) return false;
+        this._infoSubject = {
+            key:String(candidate.candidateKey || candidate.itemName || ''),
+            title:String(candidate.itemName || candidate.candidateKey || '候选'),
+            detail:[
+                candidate.gradeLabel || candidate.tierName || '',
+                candidate.scopeLabel || '',
+                candidate.roleLabel || '',
+                candidate.reason || (candidate.available === false ? '当前不可用' : '当前可用')
+            ].filter(function(value) { return !!String(value || ''); }).join(' · ')
+        };
+        if (this._infoPanelOpen) this._updateInfoPanel();
+        return true;
+    };
+
+    TuningView.prototype._updateInfoPanel = function() {
+        if (!this._root || !this._infoPanelOpen || !this._infoSubject) return false;
+        var title = this._root.querySelector('[data-tuning-info-title]');
+        var copy = this._root.querySelector('[data-tuning-info-copy]');
+        if (!title || !copy) return false;
+        title.textContent = this._infoSubject.title;
+        copy.textContent = this._infoSubject.detail || '暂无进一步说明。';
+        return true;
+    };
+
+    TuningView.prototype._openInfoPanel = function() {
+        this._infoPanelOpen = true;
+        this._renderFocusKey = 'info:close';
+        this._renderFocusDeferred = true;
+        var active = this._root && this._root.ownerDocument
+            ? this._root.ownerDocument.activeElement : null;
+        if (active && this._root.contains(active) && active.blur) active.blur();
+        this.render();
+        return true;
+    };
+
+    TuningView.prototype._closeInfoPanel = function() {
+        if (!this._infoPanelOpen) return false;
+        this._infoPanelOpen = false;
+        this._renderFocusKey = 'info:open';
+        this._renderFocusDeferred = true;
+        var active = this._root && this._root.ownerDocument
+            ? this._root.ownerDocument.activeElement : null;
+        if (active && this._root.contains(active) && active.blur) active.blur();
+        this.render();
+        return true;
+    };
+
+    TuningView.prototype.consumeEscape = function() {
+        return this._closeInfoPanel();
     };
 
     TuningView.prototype._renderInstalledState = function(equipment) {
@@ -89,6 +276,7 @@ var EquipmentTuningRender = (function() {
         if (tierName) {
             var tier = element('button', 'equipment-tuning-status-icon tier');
             tier.type = 'button';
+            tier.setAttribute('data-tuning-focus-key', 'installed-tier:' + tierName);
             tier.setAttribute('aria-label', '当前进阶：' + tierName + '，点击查看进阶');
             tier.innerHTML = iconHtml(tierCandidate && tierCandidate.itemName || tierName, 'kshop-icon')
                 + '<span class="equipment-tuning-status-mark" aria-hidden="true">阶</span>';
@@ -103,6 +291,8 @@ var EquipmentTuningRender = (function() {
             var button = element('button', 'equipment-tuning-status-icon mod grade-'
                 + String(candidate && candidate.grade || 'unknown'));
             button.type = 'button';
+            button.setAttribute('data-tuning-focus-key', 'installed-mod:'
+                + String(candidate && candidate.candidateKey || name));
             button.setAttribute('aria-label', '已安装配件：' + String(name) + '，点击选择替换');
             if (candidate && candidate.gradeColor) {
                 button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
@@ -127,10 +317,13 @@ var EquipmentTuningRender = (function() {
         var tabs = element('nav', 'equipment-tuning-tabs');
         var self = this;
         [['enhance','强化度'],['convert','交换'],['install_tier','进阶'],['install_mod','配件']].forEach(function(pair) {
+            if (self._source && !tuningSourceSupports(self._source, pair[0])) return;
             var button = element('button', 'equipment-tuning-tab' + (self._operation === pair[0]
                 || (pair[0] === 'install_mod' && (self._operation === 'replace_mod'
                     || self._operation === 'detach_mod' || self._operation === 'detach_all_mods')) ? ' active' : ''));
-            button.type = 'button'; button.textContent = pair[1]; button.disabled = self._busy || self._readPending;
+            button.type = 'button'; button.textContent = pair[1];
+            button.disabled = !self._source || self._busy || self._readPending;
+            button.setAttribute('data-tuning-focus-key', 'operation:' + pair[0]);
             button.addEventListener('click', function() { self.setOperation(pair[0]); });
             tabs.appendChild(button);
         });
@@ -142,7 +335,9 @@ var EquipmentTuningRender = (function() {
         if (this._refreshRetryRequired) {
             var refreshRetry = element('button', 'equipment-tuning-retry');
             refreshRetry.type = 'button';
-            refreshRetry.textContent = this._refreshRetryPending ? '正在重试刷新…' : '重试背包刷新';
+            var loadout = this._source && this._source.sourceKind === 'loadout';
+            refreshRetry.textContent = this._refreshRetryPending ? '正在重试同步…'
+                : loadout ? '重试构筑同步' : '重试背包刷新';
             refreshRetry.disabled = this._refreshRetryPending;
             var refreshSelf = this;
             refreshRetry.addEventListener('click', function() { refreshSelf.retryInventoryRefresh(); });
@@ -150,7 +345,7 @@ var EquipmentTuningRender = (function() {
             body.appendChild(refreshRetry);
             return body;
         }
-        if (!this._source) { body.appendChild(empty('从左侧选择一件装备后，Flash 会返回权威候选。')); return body; }
+        if (!this._source) { body.appendChild(empty('选择一件装备后，Flash 会返回权威候选。')); return body; }
         if (!this._snapshot) {
             var retry = element('button', 'equipment-tuning-retry'); retry.type = 'button';
             retry.textContent = this._needsReconcile ? '重新对账' : '重试同步';
@@ -248,7 +443,17 @@ var EquipmentTuningRender = (function() {
             (function(markLevel) {
                 var mark = element('button', 'equipment-tuning-level-mark' + (markLevel === target ? ' active' : ''));
                 mark.type = 'button'; mark.textContent = String(markLevel); mark.disabled = input.disabled;
+                mark.setAttribute('data-tuning-focus-key', 'enhance-level:' + markLevel);
                 mark.addEventListener('click', function() { self._chooseEnhancementLevel(markLevel); });
+                mark.addEventListener('focus', function() {
+                    self._setInfoSubject({
+                        candidateKey:'enhance:' + markLevel,
+                        itemName:'强化至 +' + markLevel,
+                        gradeLabel:'当前 +' + current,
+                        scopeLabel:'可用上限 +' + max,
+                        roleLabel:'先预览材料与结果，再提交'
+                    });
+                });
                 marks.appendChild(mark);
             })(level);
         }
@@ -308,6 +513,8 @@ var EquipmentTuningRender = (function() {
                 var button = element('button', 'equipment-tuning-conversion-card' + (selected ? ' selected' : ''));
                 button.type = 'button';
                 button.setAttribute('data-physical-slot', String(slot.physicalSlot));
+                button.setAttribute('data-tuning-focus-key', 'conversion:'
+                    + String(slot.physicalSlot) + ':' + String(slot.slotLease || ''));
                 button.setAttribute('aria-pressed', selected ? 'true' : 'false');
                 button.setAttribute('aria-label', String(item.displayName || item.name || '装备')
                     + '，强化 +' + Number(item.enhancementLevel || 0));
@@ -337,6 +544,8 @@ var EquipmentTuningRender = (function() {
             button.setAttribute('data-grade', String(candidate.grade || 'unknown'));
             button.setAttribute('data-scope', String(candidate.scope || 'unknown'));
             button.setAttribute('data-role', String(candidate.role || 'utility'));
+            button.setAttribute('data-tuning-focus-key', 'candidate:'
+                + String(candidate.candidateKey || ''));
             button.setAttribute('aria-label', String(candidate.itemName || candidate.candidateKey) + '，持有 '
                 + Number(candidate.owned || 0) + '，' + String(candidate.gradeLabel || candidate.tierName || '未分类')
                 + (candidate.scopeLabel ? '，' + String(candidate.scopeLabel) : '')
@@ -371,6 +580,10 @@ var EquipmentTuningRender = (function() {
     };
 
     TuningView.prototype._bindCandidateTooltip = function(node, candidate) {
+        if (node && candidate) {
+            var infoSelf = this;
+            node.addEventListener('focus', function() { infoSelf._setInfoSubject(candidate); });
+        }
         if (!node || !candidate || !candidate.candidateKey || typeof PanelTooltip === 'undefined'
                 || !PanelTooltip || typeof PanelTooltip.bindAsyncHover !== 'function') return;
         var self = this;
@@ -378,7 +591,7 @@ var EquipmentTuningRender = (function() {
         tooltipBinder.bindAsyncHover(node, {
             cache:this._tooltipCache,
             key:'equipment-tuning:' + this._viewSessionId + ':'
-                + String(this._source && this._source.expectedLease || '') + ':' + String(candidate.candidateKey),
+                + tuningSourceKey(this._source) + ':' + String(candidate.candidateKey),
             item:candidate,
             isSuppressed:function() { return self._busy || !self._mux.debugState().active; },
             renderBasic:function(value) {
@@ -431,6 +644,8 @@ var EquipmentTuningRender = (function() {
                 var button = element('button', 'equipment-tuning-installed-card equipment-tuning-detach grade-'
                     + String(candidate && candidate.grade || 'unknown') + (selected ? ' selected' : ''));
                 button.type = 'button';
+                button.setAttribute('data-tuning-focus-key', 'installed-mod:'
+                    + String(candidateKey || name));
                 button.setAttribute('aria-label', '已安装配件：' + String(name) + '，点击选择替换');
                 button.setAttribute('aria-pressed', selected ? 'true' : 'false');
                 if (candidate && candidate.gradeColor) {

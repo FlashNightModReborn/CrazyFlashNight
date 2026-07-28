@@ -48,6 +48,120 @@ namespace CF7Launcher.Bus
             return _httpCallable.Contains(taskName);
         }
 
+        internal static bool TryReadPanelOpenRequestId(
+            JObject request,
+            string panel,
+            string source,
+            out string openRequestId,
+            out string rejectionReason)
+        {
+            openRequestId =
+                null;
+            rejectionReason =
+                null;
+            if (request == null)
+            {
+                rejectionReason =
+                    "invalid_request";
+                return false;
+            }
+
+            JToken token =
+                request["openRequestId"];
+            JObject initData =
+                request["initData"] as JObject;
+            bool exactNativeEquipmentBuild =
+                string.Equals(
+                    panel,
+                    "workbench",
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    source,
+                    "nativehud_equipment",
+                    StringComparison.Ordinal)
+                && initData != null
+                && initData.Count == 2
+                && initData["profile"] != null
+                && initData["profile"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("profile"),
+                    "battlebox",
+                    StringComparison.Ordinal)
+                && initData["view"] != null
+                && initData["view"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("view"),
+                    "build",
+                    StringComparison.Ordinal);
+            bool supportsOpenRequestId =
+                string.Equals(
+                    panel,
+                    "skills",
+                    StringComparison.Ordinal)
+                || exactNativeEquipmentBuild;
+
+            if (exactNativeEquipmentBuild
+                && token == null)
+            {
+                rejectionReason =
+                    "missing_open_request_id";
+                return false;
+            }
+            if (token == null)
+                return true;
+            if (!supportsOpenRequestId)
+            {
+                rejectionReason =
+                    "unexpected_open_request_id";
+                return false;
+            }
+            if (token.Type != JTokenType.String)
+            {
+                rejectionReason =
+                    "invalid_open_request_id_type";
+                return false;
+            }
+            string value =
+                token.Value<string>();
+            if (!IsOpaqueOpenRequestId(value))
+            {
+                rejectionReason =
+                    "invalid_open_request_id";
+                return false;
+            }
+            openRequestId =
+                value;
+            return true;
+        }
+
+        private static bool IsOpaqueOpenRequestId(
+            string value)
+        {
+            if (string.IsNullOrEmpty(value)
+                || value.Length > 160)
+            {
+                return false;
+            }
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c =
+                    value[i];
+                bool allowed =
+                    (c >= 'A' && c <= 'Z')
+                    || (c >= 'a' && c <= 'z')
+                    || (c >= '0' && c <= '9')
+                    || c == '.'
+                    || c == '_'
+                    || c == '~'
+                    || c == '-';
+                if (!allowed)
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// 向 MessageRouter 注册所有 JSON 路由的 task（快车道 task 不在此注册）。
         /// </summary>
@@ -69,6 +183,7 @@ namespace CF7Launcher.Bus
             CraftingTask craftingTask,
             HairdresserTask hairdresserTask,
             EquipmentTuningTask equipmentTuningTask,
+            CharacterBuildTask characterBuildTask,
             SkillTask skillTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
@@ -125,6 +240,11 @@ namespace CF7Launcher.Bus
             // 装备调制 domain 回包路由
             if (equipmentTuningTask != null)
                 router.RegisterAsync("equipment_tuning_response", equipmentTuningTask.HandleFlashResponse);
+
+            // 角色构筑 loadout domain 回包。Web ingress 只由 WebOverlayForm exact-instance
+            // 路由进入，不能把它注册成通用 socket/http request task。
+            if (characterBuildTask != null)
+                router.RegisterAsync("loadout_response", characterBuildTask.HandleFlashResponse);
 
             // 独立技能面板 domain 回包路由
             if (skillTask != null)
@@ -219,6 +339,22 @@ namespace CF7Launcher.Bus
                     string initDataExtrasJson = initDataToken != null
                         ? initDataToken.ToString(Newtonsoft.Json.Formatting.None)
                         : null;
+                    string openRequestId;
+                    string openRequestIdRejection;
+                    if (!TryReadPanelOpenRequestId(
+                            request,
+                            panel,
+                            source,
+                            out openRequestId,
+                            out openRequestIdRejection))
+                    {
+                        LogManager.Log(
+                            "event=panel_open_rejected reason="
+                            + openRequestIdRejection
+                            + " panel=" + panel
+                            + " source=" + source);
+                        return null;
+                    }
 
                     // Web 调制仍处在人类反馈期：旧 AS2 插件改装入口一律留在原 renderer。
                     // 即使运行中的旧 SWF 仍发送可信 callback，也只返回明确拒绝，不打开面板。
@@ -235,7 +371,8 @@ namespace CF7Launcher.Bus
                         }.ToString(Newtonsoft.Json.Formatting.None);
                     }
                     webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel,
-                        returnToPanel, returnToInitDataJson, initDataExtrasJson);
+                        returnToPanel, returnToInitDataJson, initDataExtrasJson,
+                        openRequestId);
                     return null;
                 });
             }
@@ -338,6 +475,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "loadout_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);

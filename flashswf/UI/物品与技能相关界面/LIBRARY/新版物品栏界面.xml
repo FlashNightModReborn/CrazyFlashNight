@@ -1640,7 +1640,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on (release) {
+                     <script><![CDATA[on (release) {
 	if(_root.存档系统.dirtyMark) _root.自动存盘();
 	this.关闭();
 }]]></script>

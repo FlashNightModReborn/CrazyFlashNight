@@ -3,6 +3,8 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.obtain.ItemObtainIndex;
+import org.flashNight.arki.item.synthesis.SynthesisIndex;
 
 /** CraftingPanelService C0-C3 回归测试。 */
 class org.flashNight.arki.item.CraftingPanelServiceTest {
@@ -13,6 +15,8 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         passed = 0; failed = 0;
         setup();
         testOpenRequestWire();
+        testMaterialsProjection();
+        testInformationOverflowPolicy();
         testSnapshotProjection();
         testSnapshotGenderNormalization();
         testSnapshotAvailabilityRefresh();
@@ -30,6 +34,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         var data:Object = {};
         data["测试矿石"] = itemData("测试矿石", "收集品", "材料", 0);
         data["测试图纸"] = itemData("测试图纸", "收集品", "情报", 0);
+        data["测试图纸"].price = 1000;
         data["旧测试枪"] = itemData("旧测试枪", "武器", "手枪", 1);
         data["新测试枪"] = itemData("新测试枪", "武器", "手枪", 12);
         data["新测试枪"].actiontype = "双刀";
@@ -43,7 +48,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         ItemUtil.materialDict = {};
         ItemUtil.materialDict["测试矿石"] = true;
         ItemUtil.informationMaxValueDict = {};
-        ItemUtil.informationMaxValueDict["测试图纸"] = 1;
+        ItemUtil.informationMaxValueDict["测试图纸"] = 99;
         _root.gameCommands = {};
         _root.Web物品注释HTML = function(name:String):Object {
             return {displayname:name, descHTML:"desc", introHTML:"intro"};
@@ -86,6 +91,21 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             {title:"测试药剂图纸", name:"测试药剂", value:3, price:0, kprice:0,
                 materials:["测试矿石#9"]}
         ];
+        _root.改装清单对象 = {};
+        _root.改装清单对象["新测试枪"] = _root.改装清单["武器合成"][0];
+        _root.改装清单对象["测试药剂"] = _root.改装清单["武器合成"][1];
+        ItemUtil.itemDataDict["新测试枪"].synthesis = "新测试枪";
+        ItemUtil.itemDataDict["测试药剂"].synthesis = "测试药剂";
+        _root.图鉴信息 = {材料大全:[
+            {Name:"测试矿石", Information:"【掉落单位】测试敌人\n【掉落关卡】测试关卡"}
+        ]};
+        var shop:Object = {};
+        shop["测试商人"] = {};
+        shop["测试商人"]["0"] = "测试矿石";
+        var obtainIndex:ItemObtainIndex = ItemObtainIndex.getInstance();
+        obtainIndex.reset(true);
+        obtainIndex.buildIndex(_root.改装清单, shop, []);
+        SynthesisIndex.reset();
         CraftingPanelService.testOnlyReset();
     }
 
@@ -98,7 +118,57 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "legacy crafting entry emits strict panel request");
         check(!CraftingPanelService.openPanel("未知分类", "legacy_crafting_entry"),
             "unknown crafting category is rejected before host");
+        check(CraftingPanelService.openMaterialsPanel("nativehud_materials")
+            && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"nativehud_materials","initData":{"view":"materials"}}',
+            "native HUD material entry emits strict Web material request");
         _root.server = previous;
+    }
+
+    private static function testMaterialsProjection():Void {
+        resetOwned();
+        var catalog:Object = CraftingPanelService.execute("materials", {});
+        check(catalog.success && catalog.v == 1 && catalog.view == "materials"
+            && catalog.materials.length == 1 && catalog.materials[0].name == "测试矿石"
+            && catalog.materials[0].owned == 5 && catalog.materials[0].sourceCount == 1
+            && catalog.materials[0].useCount == 2 && catalog.materials[0].hasSourceSummary,
+            "material catalog projects owned count and existing source/use indexes");
+        var detail:Object = CraftingPanelService.execute("materialDetail", {itemName:"测试矿石"});
+        check(detail.success && detail.material.name == "测试矿石"
+            && detail.material.sourceSummary.indexOf("测试关卡") >= 0
+            && detail.sources.length == 1 && detail.sources[0].kind == "shop"
+            && detail.uses.length == 2 && detail.uses[0].required > 0,
+            "material detail exposes annotation, structured sources and recipe uses");
+        var missing:Object = CraftingPanelService.execute("materialDetail", {itemName:"未知材料"});
+        check(!missing.success && missing.error == "item_not_found",
+            "material detail rejects unknown names");
+    }
+
+    private static function testInformationOverflowPolicy():Void {
+        resetOwned();
+        _root.收集品栏.情报.addValue("测试图纸", 97);
+        var direct:Object = ItemUtil.planInformationAcquire("测试图纸", 5);
+        check(direct.valid && direct.remaining == 1 && direct.accepted == 1
+            && direct.overflow == 4 && direct.money == 4000,
+            "information plan uses per-item maxvalue and converts 98 plus 5 overflow");
+
+        var planned:Object = ItemUtil.planRewardAcquire([
+            {name:"测试图纸", value:5},
+            {name:"金币", value:100}
+        ]);
+        check(planned.items.length == 2
+            && planned.items[0].name == "测试图纸" && planned.items[0].value == 1
+            && planned.items[1].name == "金币" && planned.items[1].value == 4100
+            && _root.收集品栏.情报.getValue("测试图纸") == 98,
+            "reward planning reserves capacity and remains read-only");
+
+        var settled:Object = ItemUtil.acquireReward([
+            {name:"测试图纸", value:5},
+            {name:"金币", value:100}
+        ]);
+        check(settled.success && settled.hasOverflow
+            && _root.收集品栏.情报.getValue("测试图纸") == 99
+            && _root.金钱 == 5100,
+            "reward settlement atomically writes accepted information and overflow money");
     }
 
     private static function testSnapshotProjection():Void {

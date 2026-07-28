@@ -67,8 +67,8 @@ class FakeNode {
         const index = list.indexOf(handler);
         if (index >= 0) list.splice(index, 1);
     }
-    dispatch(type) {
-        const event = {type, target:this, preventDefault() { this.defaultPrevented = true; }};
+    dispatch(type, init) {
+        const event = Object.assign({type, target:this, preventDefault() { this.defaultPrevented = true; }}, init || {});
         (this.listeners[type] || []).slice().forEach(handler => handler(event));
         return event;
     }
@@ -93,9 +93,9 @@ class FakeDocument {
     }
 }
 
-test('exports the four shared primitives', () => {
+test('exports the six shared primitives', () => {
     assert.deepStrictEqual(Object.keys(Components).sort(), [
-        'ChoiceGroup', 'CommitBar', 'OwnedInventoryPane', 'SecondaryPage'
+        'ChoiceGroup', 'CommitBar', 'HelpAction', 'OwnedInventoryPane', 'QuantityControl', 'SecondaryPage'
     ]);
 });
 
@@ -188,6 +188,194 @@ test('CommitBar centralizes status, gate state, and commit listener teardown', (
     assert.strictEqual(commits, 1);
     bar.destroy();
     assert.strictEqual(host.children.length, 0);
+});
+
+test('QuantityControl unifies valid direct input, slider, preset maximum, and bounded buttons', () => {
+    const document = new FakeDocument();
+    const changes = [];
+    const control = new Components.QuantityControl({
+        document,
+        min:1,
+        max:10,
+        presetMax:7,
+        value:2,
+        onChange:(value, reason) => changes.push([value, reason])
+    });
+    assert.strictEqual(control.getValue(), 2);
+    assert.strictEqual(control.numberInput.value, '2');
+    assert.strictEqual(control.rangeInput.max, '10');
+
+    control.numberInput.value = '';
+    control.numberInput.dispatch('input');
+    assert.strictEqual(control.numberInput.value, '');
+    assert.strictEqual(control.rangeInput.value, '2');
+    assert.strictEqual(control.numberInput.getAttribute('aria-invalid'), 'true');
+    control.numberInput.value = '8';
+    control.numberInput.dispatch('input');
+    assert.strictEqual(control.numberInput.value, '8');
+    assert.strictEqual(control.rangeInput.value, '8');
+    assert.strictEqual(control.numberInput.getAttribute('aria-invalid'), 'false');
+    control.numberInput.dispatch('change');
+    control.rangeInput.value = '4';
+    control.rangeInput.dispatch('input');
+    assert.strictEqual(control.numberInput.value, '4');
+    control.rangeInput.dispatch('change');
+    control.plusFiveButton.dispatch('click');
+    control.maxButton.dispatch('click');
+    control.numberInput.value = '99';
+    control.numberInput.dispatch('change');
+
+    assert.strictEqual(control.getValue(), 7);
+    assert.strictEqual(control.numberInput.value, '99');
+    assert.strictEqual(control.numberInput.getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(control.feedback.hidden, false);
+    control.numberInput.value = '10';
+    control.numberInput.dispatch('input');
+    control.numberInput.dispatch('change');
+    assert.strictEqual(control.getValue(), 10);
+    assert.deepStrictEqual(changes, [
+        [8, 'number'], [4, 'range'], [9, 'increment_five'], [7, 'maximum'], [10, 'number']
+    ]);
+    control.update({presetMax:0, value:5});
+    assert.strictEqual(control.maxButton.disabled, true);
+    control.maxButton.dispatch('click');
+    assert.strictEqual(control.getValue(), 5);
+    control.update({onChange:() => { throw new Error('preview failed'); }});
+    control.numberInput.focus();
+    assert.throws(
+        () => control.setValue(6, {notify:true, reason:'number'}),
+        /preview failed/
+    );
+    assert.strictEqual(control._changeFocusOrigin, null,
+        'a failed preview callback must not retain a stale focus origin');
+    control.update({disabled:true, value:10});
+    control.minusButton.dispatch('click');
+    assert.strictEqual(control.getValue(), 10);
+    assert.strictEqual(control.numberInput.disabled, true);
+    assert.strictEqual(control.destroy(), true);
+    assert.strictEqual(control.numberInput.listenerCount('change'), 0);
+    assert.strictEqual(control.rangeInput.listenerCount('change'), 0);
+});
+
+test('QuantityControl gives low values usable travel while authority and feasible bounds remain distinct', () => {
+    const document = new FakeDocument();
+    const changes = [];
+    const control = new Components.QuantityControl({
+        document,
+        min:1,
+        max:999999,
+        sliderMax:999999,
+        presetMax:100,
+        value:1,
+        onChange:(value, reason) => changes.push([value, reason])
+    });
+    assert.strictEqual(control.numberInput.max, '999999');
+    assert.strictEqual(control.rangeInput.min, '0');
+    assert.strictEqual(control.rangeInput.max, '1000');
+    assert.strictEqual(control.root.getAttribute('data-slider-scale'), 'log');
+    assert.strictEqual(control.root.getAttribute('data-slider-max'), '999999');
+    assert.strictEqual(control.root.getAttribute('data-preset-max'), '100');
+    assert.strictEqual(control.rangeMarker.hidden, false);
+
+    control.setValue(10);
+    const tenPosition = Number(control.rangeInput.value);
+    assert(tenPosition >= 150 && tenPosition <= 180,
+        'quantity 10 should occupy a meaningful low-end track segment, got ' + tenPosition);
+    assert.strictEqual(control.rangeInput.getAttribute('aria-valuetext'), '10；当前可直接结算 100');
+
+    control.rangeInput.value = '500';
+    control.rangeInput.dispatch('input');
+    const midpointQuantity = Number(control.numberInput.value);
+    assert(midpointQuantity >= 900 && midpointQuantity <= 1100,
+        'log midpoint should resolve near 1,000, got ' + midpointQuantity);
+    control.rangeInput.dispatch('change');
+    assert.strictEqual(control.getValue(), midpointQuantity);
+    assert.deepStrictEqual(changes, [[midpointQuantity, 'range']]);
+
+    control.numberInput.value = '999999';
+    control.numberInput.dispatch('change');
+    assert.strictEqual(control.getValue(), 999999);
+    assert.strictEqual(control.rangeInput.value, '1000');
+
+    control.update({sliderMax:999999, presetMax:0, value:7});
+    assert.strictEqual(control.numberInput.disabled, false);
+    assert.strictEqual(control.rangeInput.hidden, false);
+    assert.strictEqual(control.rangeInput.min, '0');
+    assert.strictEqual(control.rangeInput.max, '1000');
+    assert.strictEqual(control.rangeInput.getAttribute('aria-valuemin'), '1');
+    assert.strictEqual(control.rangeInput.getAttribute('aria-valuemax'), '999999');
+    assert.strictEqual(control.getValue(), 7);
+    assert.strictEqual(control.maxButton.disabled, true);
+});
+
+test('QuantityControl rejects malformed drafts without preview callbacks', () => {
+    const document = new FakeDocument();
+    const changes = [];
+    const control = new Components.QuantityControl({
+        document, min:1, max:50, presetMax:20, value:4,
+        onChange:(value, reason) => changes.push([value, reason])
+    });
+    ['', '1.5', '-2', '51', 'hello'].forEach(value => {
+        control.numberInput.value = value;
+        control.numberInput.dispatch('input');
+        control.numberInput.dispatch('change');
+        assert.strictEqual(control.getValue(), 4);
+        assert.strictEqual(control.numberInput.getAttribute('aria-invalid'), 'true');
+        assert.strictEqual(control.feedback.hidden, false);
+    });
+    assert.deepStrictEqual(changes, []);
+    control.numberInput.value = '05';
+    control.numberInput.dispatch('input');
+    control.numberInput.dispatch('change');
+    assert.strictEqual(control.getValue(), 5);
+    assert.deepStrictEqual(changes, [[5, 'number']]);
+});
+
+test('QuantityControl range keyboard changes actual quantities rather than logarithmic positions', () => {
+    const document = new FakeDocument();
+    const changes = [];
+    const control = new Components.QuantityControl({
+        document, min:1, max:999999, presetMax:100, sliderMax:999999, value:1,
+        onChange:(value, reason) => changes.push([value, reason])
+    });
+    let event = control.rangeInput.dispatch('keydown', {key:'ArrowRight'});
+    assert.strictEqual(event.defaultPrevented, true);
+    assert.strictEqual(control.getValue(), 2);
+    control.rangeInput.dispatch('keydown', {key:'ArrowRight', shiftKey:true});
+    assert.strictEqual(control.getValue(), 7);
+    control.rangeInput.dispatch('keydown', {key:'PageUp'});
+    assert.strictEqual(control.getValue(), 10);
+    control.rangeInput.dispatch('keydown', {key:'End'});
+    assert.strictEqual(control.getValue(), 999999);
+    control.rangeInput.dispatch('keydown', {key:'PageDown'});
+    assert.strictEqual(control.getValue(), 500000);
+    control.rangeInput.dispatch('keydown', {key:'Home'});
+    assert.strictEqual(control.getValue(), 1);
+    assert(changes.every(change => change[1] === 'range_keyboard'));
+});
+
+test('QuantityControl covers linear/log boundary and effective-limit edge states', () => {
+    const document = new FakeDocument();
+    [
+        {authority:1, effective:0, scale:'linear', hidden:true},
+        {authority:50, effective:0, scale:'linear', hidden:false},
+        {authority:200, effective:50, scale:'linear', hidden:false},
+        {authority:201, effective:201, scale:'log', hidden:false},
+        {authority:999999, effective:100, scale:'log', hidden:false}
+    ].forEach(entry => {
+        const control = new Components.QuantityControl({
+            document, min:1, max:entry.authority, sliderMax:entry.authority,
+            presetMax:entry.effective, value:1
+        });
+        assert.strictEqual(control.root.getAttribute('data-slider-scale'), entry.scale);
+        assert.strictEqual(control.rangeInput.hidden, entry.hidden);
+        assert.strictEqual(control.rangeInput.getAttribute('aria-valuemax'), String(entry.authority));
+        assert.strictEqual(control.maxButton.disabled, entry.effective < 1 || entry.effective === 1);
+        if (entry.effective > 0 && entry.effective < entry.authority) {
+            assert.strictEqual(control.rangeMarker.hidden, false);
+        }
+        control.destroy();
+    });
 });
 
 test('OwnedInventoryPane reconciles exact snapshots and serializes quick transfers', () => {

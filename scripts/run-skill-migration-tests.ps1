@@ -24,11 +24,11 @@ $focusedRun = @{
         '(?m)^=== SkillMigrationTestSuite START ===\r?$'
         '(?m)^SkillLoadoutServiceTest Tests Passed: 50\r?$'
         '(?m)^SkillLoadoutServiceTest Tests Failed: 0\r?$'
-        '(?m)^SkillPanelServiceTest Tests Passed: 45\r?$'
+        '(?m)^SkillPanelServiceTest Tests Passed: 48\r?$'
         '(?m)^SkillPanelServiceTest Tests Failed: 0\r?$'
         '(?m)^=== SkillMigrationTestSuite END ===\r?$'
     )
-    SuccessSummary = 'Loadout 50/50, Panel 45/45'
+    SuccessSummary = 'Loadout 50/50, Panel 48/48'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

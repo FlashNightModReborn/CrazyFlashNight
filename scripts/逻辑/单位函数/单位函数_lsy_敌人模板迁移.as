@@ -383,19 +383,6 @@ _root.敌人函数.掉落物品 = function(item) {
     if (isNaN(item.总数))
         item.总数 = item.最大数量;
 
-    // 检查情报物品是否达到上限
-    if (itemData.use === "情报") {
-        var value = _root.收集品栏.情报.getValue(item.名字);
-        var maxvalue = itemData.maxvalue;
-        if (value >= maxvalue)
-            return;
-        else if (maxvalue - value < item.最大数量) {
-            item.最大数量 = maxvalue - value;
-            if (item.最大数量 < item.最小数量) {
-                item.最小数量 = item.最大数量;
-            }
-        }
-    }
     // 使用 LinearCongruentialEngine 的 randomInteger 方法生成指定范围的随机整数
     var 数量 = LinearCongruentialEngine.instance.randomInteger(item.最小数量, item.最大数量);
     if (item.总数 < 数量)
@@ -403,6 +390,24 @@ _root.敌人函数.掉落物品 = function(item) {
     item.总数 -= 数量;
     // 使用 randomOffset 方法生成 Y 轴偏移量,范围为 [-10, 10]
     var yoffset = LinearCongruentialEngine.instance.randomOffset(10);
+    if (itemData.use === "情报") {
+        // 先按原始掉落数量掷骰，再按每件情报自己的 maxvalue 分流。这样不会因接近
+        // 上限而篡改掉落区间；有价格的溢出量精确折算为金币，零价剧情情报则不生成。
+        var informationPlan:Object =
+            org.flashNight.arki.item.ItemUtil.planInformationAcquire(item.名字, 数量);
+        if (informationPlan.accepted > 0) {
+            _root.pickupItemManager.createCollectible(
+                item.名字, informationPlan.accepted,
+                this._x, this._y + yoffset, true);
+        }
+        if (informationPlan.money > 0) {
+            _root.pickupItemManager.createCollectible(
+                "金钱", informationPlan.money,
+                this._x, this._y + yoffset + 4, true,
+                {精确货币数量:true});
+        }
+        return;
+    }
     _root.pickupItemManager.createCollectible(item.名字, 数量, this._x, this._y + yoffset, true);
 }
 

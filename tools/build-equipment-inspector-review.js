@@ -126,6 +126,7 @@ function sourceDigest(sourceFiles) {
         path.join(ROOT, 'launcher', 'web', 'assets', 'dressup', 'manifest.json'),
         path.join(ROOT, 'launcher', 'web', 'modules', 'asset-timeline.js'),
         path.join(ROOT, 'launcher', 'web', 'modules', 'dressup-doll-renderer.js'),
+        path.join(ROOT, 'launcher', 'web', 'modules', 'workbench-inspection-viewport.js'),
         path.join(ROOT, 'launcher', 'web', 'modules', 'equipment-inspector.js'),
         path.join(ROOT, 'launcher', 'web', 'modules', 'crafting-product-review', 'dev', 'render-harness.html'),
         path.join(ROOT, 'launcher', 'web', 'modules', 'equipment-inspector-review', 'dev', 'review.html'),
@@ -826,6 +827,7 @@ async function main() {
             icons: 'launcher/web/icons/manifest.json',
             dressup: 'launcher/web/assets/dressup/manifest.json',
             digestAssets: 'recursive bytes of launcher/web/icons and launcher/web/assets/dressup',
+            camera: 'launcher/web/modules/workbench-inspection-viewport.js',
             resolver: 'launcher/web/modules/equipment-inspector.js',
             renderer: 'launcher/web/modules/crafting-product-review/dev/render-harness.html'
         },

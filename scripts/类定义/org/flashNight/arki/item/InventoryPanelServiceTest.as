@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.CharacterBuildService;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
@@ -18,6 +19,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testRangeSnapshot();
         testStableReadLeaseAndMutationVersion();
         testFilteredSnapshot();
+        testEquipmentProjectionScope();
         testArrayInventoryMutationRevision();
         testFacetCacheInvalidation();
         testItemUtilBalanceExtraction();
@@ -62,6 +64,99 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         InventoryPanelService.testOnlyReset();
     }
 
+    private static function characterBuildReadinessRoot():Object {
+        var equipment:Object = {
+            getItem:function(key:String):Object {
+                return null;
+            }
+        };
+        var drugs:Object = {
+            getMutationRevision:function():Number {
+                return 1;
+            },
+            getItem:function(key:String):Object {
+                return null;
+            }
+        };
+        var backpack:Object = {
+            capacity:50,
+            getMutationRevision:function():Number {
+                return 1;
+            },
+            getItem:function(key:String):Object {
+                return null;
+            }
+        };
+        var root:Object = {
+            物品栏:{
+                装备栏:equipment,
+                药剂栏:drugs,
+                背包:backpack
+            },
+            控制目标:"readinessHero"
+        };
+        var gameworld:Object = {};
+        var hero:Object = {
+            _name:"readinessHero",
+            _parent:gameworld,
+            aabbCollider:{},
+            新版人物文字信息:{},
+            dispatcher:{
+                publish:function():Void {},
+                subscribe:function():String {
+                    return "readiness";
+                },
+                destroy:function():Void {}
+            },
+            buffManager:{
+                update:function():Void {},
+                addBuff:function():String {
+                    return "readiness";
+                },
+                removeBuff:function():Boolean {
+                    return true;
+                },
+                destroy:function():Void {}
+            },
+            buff:{
+                初始:function():Void {},
+                更新:function():Void {}
+            },
+            读取基础被动效果:function():Void {},
+            gotoAndStop:function():Void {},
+            根据模式重新读取武器加成:function():Void {},
+            装载主动战技:function():Void {},
+            装载生命周期函数:function():Void {},
+            完成生命周期函数装载:function():Void {},
+            dressupRefreshing:false
+        };
+        gameworld.readinessHero = hero;
+        root.gameworld = gameworld;
+        root.刷新人物装扮 = function(target:String):Void {};
+        root.装备引用配置 = {
+            刷新所有装扮:function():Void {}
+        };
+        root.根据等级计算值 = function():Number {
+            return 1;
+        };
+        root.主角函数 = {
+            创建主动战技槽位表:function():Object {
+                return {};
+            },
+            获取装备主动战技种类:function():String {
+                return "";
+            }
+        };
+        root.敌人函数 = {魔法伤害种类:[]};
+        root.玩家信息界面 = {
+            刷新攻击模式:function():Void {}
+        };
+        root.UI系统 = {
+            iconBar:{initialize:function():Void {}}
+        };
+        return root;
+    }
+
     private static function item(name:String, value):Object {
         return {name: name, value: value, lastUpdate: 1};
     }
@@ -84,6 +179,10 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 return true;
             }
         };
+        var readinessRoot:Object =
+            characterBuildReadinessRoot();
+        CharacterBuildService.testOnlyUseRoot(
+            readinessRoot);
         var opened:Boolean = InventoryPanelService.requestOpenWorkbench({
             profile: "warehouse",
             source: "dormitory"
@@ -101,11 +200,194 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(tuningOpened && sendCount == 2
                 && captured.indexOf('"view":"tuning"') >= 0,
             "调制入口发送 tuning view");
+        var buildOpened:Boolean = InventoryPanelService.requestOpenWorkbench({
+            profile:"battlebox", view:"build", source:"agent_control"
+        });
+        assertTrue(buildOpened && sendCount == 3
+                && captured.indexOf('"profile":"battlebox"') >= 0
+                && captured.indexOf('"view":"build"') >= 0
+                && captured.indexOf('"source":"agent_control"') >= 0
+                && captured.indexOf('"openRequestId"') < 0,
+            "agent_control 旧角色构筑入口缺省 nonce 时保持兼容且不合成字段");
+        var nativeHudLegacyBuildOpened:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment"
+            });
+        assertTrue(nativeHudLegacyBuildOpened && sendCount == 4
+                && captured.indexOf('"openRequestId"') < 0,
+            "旧 Host 的 nativehud_equipment 角色构筑请求缺省 nonce 时 AS2 保持发送兼容");
+        var nativeHudLegacyStorageOpened:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"storage",
+                source:"nativehud_equipment"
+            });
+        assertTrue(nativeHudLegacyStorageOpened && sendCount == 5
+                && captured.indexOf('"view":"storage"') >= 0
+                && captured.indexOf('"openRequestId"') < 0,
+            "nativehud_equipment 非 build 请求缺省 nonce 时仍按普通工作台入口发送");
+        var validOpenRequestId:String =
+            "workbench.open.Valid_1-2~3";
+        for (var validNonceIndex:Number =
+                validOpenRequestId.length;
+                validNonceIndex < 160;
+                validNonceIndex++) {
+            validOpenRequestId += "x";
+        }
+        var nativeHudBuildOpened:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:validOpenRequestId
+            });
+        assertTrue(nativeHudBuildOpened && sendCount == 6
+                && captured.indexOf('"profile":"battlebox"') >= 0
+                && captured.indexOf('"view":"build"') >= 0
+                && captured.indexOf(
+                    '"source":"nativehud_equipment"') >= 0
+                && captured.indexOf(
+                    '"openRequestId":"' + validOpenRequestId + '"') >= 0,
+            "nativehud_equipment 角色构筑顶层原样回显 160 字符合法 openRequestId");
+        var rejectedStorageOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"storage",
+                source:"nativehud_equipment",
+                openRequestId:"wrong.storage"
+            });
+        var rejectedTuningOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"tuning",
+                source:"nativehud_equipment",
+                openRequestId:"wrong.tuning"
+            });
+        var rejectedAgentOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"agent_control",
+                openRequestId:"wrong.agent"
+            });
+        assertTrue(!rejectedStorageOpenRequestId
+                && !rejectedTuningOpenRequestId
+                && !rejectedAgentOpenRequestId
+                && sendCount == 6,
+            "openRequestId 只允许 nativehud_equipment + battlebox/build 精确 tuple，其他组合零发送");
+        var tooLongOpenRequestId:String =
+            validOpenRequestId + "x";
+        var rejectedNumericOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:7
+            });
+        var rejectedNullOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:null
+            });
+        var rejectedEmptyOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:""
+            });
+        var rejectedWhitespaceOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:"bad token"
+            });
+        var rejectedSlashOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:"bad/token"
+            });
+        var rejectedLongOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment",
+                openRequestId:tooLongOpenRequestId
+            });
+        assertTrue(!rejectedNumericOpenRequestId
+                && !rejectedNullOpenRequestId
+                && !rejectedEmptyOpenRequestId
+                && !rejectedWhitespaceOpenRequestId
+                && !rejectedSlashOpenRequestId
+                && !rejectedLongOpenRequestId
+                && sendCount == 6,
+            "显式 openRequestId 拒绝非字符串、空值、非法字符与 161 字符超长值且零发送");
+        readinessRoot.gameworld = null;
+        var rejectedNotReadyBuild:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"agent_control"
+            });
+        var storageWhileBuildNotReady:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"warehouse",
+                view:"storage",
+                source:"dormitory"
+            });
+        var tuningWhileBuildNotReady:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"warehouse",
+                view:"tuning",
+                source:"equipment_tuning"
+            });
+        assertTrue(!rejectedNotReadyBuild
+                && storageWhileBuildNotReady
+                && tuningWhileBuildNotReady
+                && sendCount == 8,
+            "build readiness 失败零发送，且 storage/tuning 准入不受影响");
         var rejected:Boolean = InventoryPanelService.requestOpenWorkbench({profile: "仓库"});
         var rejectedView:Boolean = InventoryPanelService.requestOpenWorkbench({profile:"warehouse", view:"editor"});
-        assertTrue(!rejected && !rejectedView && sendCount == 2,
-            "拒绝非法 profile/view");
+        var rejectedWarehouseBuild:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"warehouse", view:"build", source:"agent_control"
+            });
+        var rejectedBuildSource:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox", view:"build", source:"inventory_workbench"
+            });
+        var rejectedMissingBuildSource:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox", view:"build"
+            });
+        var rejectedNearBuildSource:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment_extra"
+            });
+        var rejectedPaddedBuildSource:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"build",
+                source:"nativehud_equipment "
+            });
+        assertTrue(!rejected && !rejectedView
+                && !rejectedWarehouseBuild && !rejectedBuildSource
+                && !rejectedMissingBuildSource
+                && !rejectedNearBuildSource
+                && !rejectedPaddedBuildSource
+                && sendCount == 8,
+            "build 仍拒绝非法 profile/view、缺 source、前缀/尾空格及白名单外 source");
 
+        CharacterBuildService.testOnlyReset();
         _root.server = previousServer;
     }
 
@@ -144,6 +426,22 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         return InventoryPanelService.execute("snapshot", {
             v: 1,
             requests: [{containerId: containerId, offset: offset, limit: limit, filterKey: filterKey, filterSpec: filterSpec}]
+        });
+    }
+
+    private static function scopedSnapshot(containerId:String, filterKey:String,
+                                            filterSpec:Object):Object {
+        var request:Object = {
+            containerId:containerId,
+            offset:0,
+            limit:50,
+            filterKey:filterKey,
+            scope:"equipment"
+        };
+        if (filterSpec != null) request.filterSpec = filterSpec;
+        return InventoryPanelService.execute("snapshot", {
+            v:1,
+            requests:[request]
         });
     }
 
@@ -310,6 +608,107 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         if (previousWeapon == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"];
         else org.flashNight.arki.item.ItemUtil.itemDataDict["筛选武器"] = previousWeapon;
         if (itemDictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+    }
+
+    private static function testEquipmentProjectionScope():Void {
+        resetInventories();
+        var dictWasUndefined:Boolean =
+            org.flashNight.arki.item.ItemUtil.itemDataDict == undefined;
+        if (dictWasUndefined) org.flashNight.arki.item.ItemUtil.itemDataDict = {};
+        var names:Array = [
+            "scope长枪", "scope护具", "scope手雷", "scope药剂",
+            "scope数字伪装备", "scope材料"
+        ];
+        var previous:Object = {};
+        for (var i:Number = 0; i < names.length; i++) {
+            previous[String(names[i])] =
+                org.flashNight.arki.item.ItemUtil.itemDataDict[String(names[i])];
+        }
+        org.flashNight.arki.item.ItemUtil.itemDataDict["scope长枪"] = {
+            type:"武器", use:"长枪", weapontype:"突击步枪", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["scope护具"] = {
+            type:"防具", use:"上装装备", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["scope手雷"] = {
+            type:"武器", use:"手雷", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["scope药剂"] = {
+            type:"消耗品", use:"药剂", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["scope数字伪装备"] = {
+            type:"武器", use:"长枪", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["scope材料"] = {
+            type:"材料", use:"材料", price:1
+        };
+
+        _root.物品栏.背包.add(1,
+            new BaseItem("scope长枪", {level:1, mods:[]}, 1));
+        _root.物品栏.背包.add(2, new BaseItem("scope手雷", 4, 1));
+        _root.物品栏.背包.add(3, new BaseItem("scope药剂", 2, 1));
+        _root.物品栏.背包.add(4,
+            new BaseItem("scope护具", {level:1, mods:[]}, 1));
+        _root.物品栏.背包.add(5,
+            new BaseItem("scope数字伪装备", 3, 1));
+        _root.物品栏.背包.add(6,
+            new BaseItem("scope材料", {level:1}, 1));
+        _root.物品栏.背包.add(7,
+            new BaseItem("scope未知目录", {level:1}, 1));
+
+        var scoped:Object = scopedSnapshot("背包", "all", null);
+        var projection:Object = scoped.snapshots[0];
+        var weaponFacet:Object = facetAt(projection.filterFacets, "weapon");
+        var armorFacet:Object = facetAt(projection.filterFacets, "armor");
+        assertTrue(scoped.success && projection.scope == "equipment"
+                && projection.viewCapacity == 2
+                && projection.slots.length == 2
+                && projection.slots[0].physicalSlot == 1
+                && projection.slots[1].physicalSlot == 4,
+            "equipment scope 只按 catalog 武器/防具 + object value 投影并保持物理顺序");
+        assertTrue(projection.filterItemCount == 2
+                && weaponFacet != null && weaponFacet.count == 1
+                && armorFacet != null && armorFacet.count == 1
+                && facetAt(projection.filterFacets, "consumable") == null
+                && facetAt(projection.filterFacets, "material") == null,
+            "equipment scope 的 facets 与计数不泄漏非装备 taxonomy");
+
+        var weaponOnly:Object = scopedSnapshot("背包", "weapon", {
+            branch:"category", major:"weapon"
+        });
+        assertTrue(weaponOnly.success
+                && weaponOnly.snapshots[0].scope == "equipment"
+                && weaponOnly.snapshots[0].viewCapacity == 1
+                && weaponOnly.snapshots[0].slots[0].physicalSlot == 1,
+            "equipment scope 先收紧 authority，再与既有 taxonomy filter 合取");
+
+        var invalidContainer:Object =
+            scopedSnapshot("仓库", "all", null);
+        var unknownScope:Object = InventoryPanelService.execute("snapshot", {
+            v:1,
+            requests:[{
+                containerId:"背包", offset:0, limit:50,
+                filterKey:"all", scope:"developer"
+            }]
+        });
+        assertTrue(!invalidContainer.success
+                && invalidContainer.error == "unsupported_scope"
+                && !unknownScope.success
+                && unknownScope.error == "unsupported_scope",
+            "equipment scope 仅允许背包且拒绝未知 scope");
+
+        for (i = 0; i < names.length; i++) {
+            var name:String = String(names[i]);
+            if (previous[name] == undefined) {
+                delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+            } else {
+                org.flashNight.arki.item.ItemUtil.itemDataDict[name] =
+                    previous[name];
+            }
+        }
+        if (dictWasUndefined) {
+            org.flashNight.arki.item.ItemUtil.itemDataDict = undefined;
+        }
     }
 
     private static function testArrayInventoryMutationRevision():Void {

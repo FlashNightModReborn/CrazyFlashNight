@@ -49,15 +49,22 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
 
         var first:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
         assert(first.used && first.cooldownStarted && !first.depleted, "valid drug input calls effect, starts cooldown and consumes one dose");
-        assert(root.effectCalls == 1 && inventory.getItem("0").value == 1, "first dose keeps one authoritative inventory item");
+        assert(root.effectCalls == 1 && inventory.getItem("0").value == 1
+            && root.存档系统.dirtyMark,
+            "first dose keeps one authoritative inventory item and marks persistence dirty");
         assert(root.快捷物品栏0 == "测试药剂", "non-final dose keeps legacy quick-slot mirror");
 
+        root.存档系统.dirtyMark = false;
         var held:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
-        assert(held == null && root.effectCalls == 1, "one held drug key cannot consume twice");
+        assert(held == null && root.effectCalls == 1
+            && !root.存档系统.dirtyMark,
+            "one held drug key cannot consume twice or mark a no-write attempt dirty");
         drainQueue();
         DrugInputService.updateSlot(unit, 0, false, true, inventory, root, null);
         var last:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
-        assert(last.used && last.depleted && inventory.getItem("0") == null, "last dose removes the authoritative inventory entry");
+        assert(last.used && last.depleted && inventory.getItem("0") == null
+            && root.存档系统.dirtyMark,
+            "last dose removes the authoritative inventory entry and marks persistence dirty");
         assert(root.快捷物品栏0 == "" && root.messages.length == 1, "last dose clears mirror and publishes one exhaustion message");
     }
 
@@ -68,7 +75,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         var inventory:Object = makeInventory([{name: "死亡测试药剂", value: 1}]);
 
         var dead:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
-        assert(dead.attempted && !dead.used && inventory.getItem("0").value == 1, "dead unit consumes hold but not a dose");
+        assert(dead.attempted && !dead.used && inventory.getItem("0").value == 1
+            && !root.存档系统.dirtyMark,
+            "dead unit consumes hold but neither a dose nor persistence state");
         unit.hp = 100;
         assert(DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null) == null,
             "dead-unit attempt still requires key release before retry");
@@ -77,7 +86,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         inventory.getItem("0").value = 0;
         root.快捷物品栏0 = "死亡测试药剂";
         var zero:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
-        assert(zero.depleted && !zero.used && root.快捷物品栏0 == "", "zero-value legacy entry clears mirror without invoking drug effect");
+        assert(zero.depleted && !zero.used && root.快捷物品栏0 == ""
+            && !root.存档系统.dirtyMark,
+            "zero-value legacy entry clears mirror without marking an inventory write dirty");
 
         resetFixture();
         unit = {hp: 100};
@@ -121,7 +132,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         var inventory:Object = makeInventory([{name: "无效药效数据", value: 2}]);
 
         var result:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
-        assert(result.used && root.lastEffectRejected === true, "input transaction still calls the legacy void drug-effect entry");
+        assert(result.used && root.lastEffectRejected === true
+            && root.存档系统.dirtyMark,
+            "input transaction still consumes and marks dirty after the legacy void drug-effect entry");
         assert(inventory.getItem("0").value == 1 && !ManualCooldownService.isReady(ManualCooldownService.drugKey(0)),
             "void effect rejection preserves existing deduct-and-cooldown behavior");
     }
@@ -143,7 +156,12 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
     }
 
     private static function makeRoot():Object {
-        var root:Object = {吃药冷却时间: 100, effectCalls: 0, messages: []};
+        var root:Object = {
+            吃药冷却时间:100,
+            effectCalls:0,
+            messages:[],
+            存档系统:{dirtyMark:false}
+        };
         root.使用药剂 = function(itemName:String):Void {
             this.effectCalls++;
             this.lastDrugName = itemName;

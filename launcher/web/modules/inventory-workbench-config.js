@@ -21,7 +21,15 @@
 
     function resolveView(initData) {
         var view = initData && initData.view != null ? String(initData.view) : 'storage';
-        return view === 'storage' || view === 'tuning' ? view : null;
+        return view === 'storage' || view === 'tuning' || view === 'build' ? view : null;
+    }
+
+    function isViewAllowed(profile, view) {
+        profile = typeof profile === 'string' ? profile
+            : profile && typeof profile.profile === 'string' ? profile.profile : '';
+        return profile === 'warehouse' ? view === 'storage'
+            : profile === 'battlebox'
+                && (view === 'storage' || view === 'tuning' || view === 'build');
     }
 
     function resolveReturnTarget(initData) {
@@ -38,6 +46,40 @@
                 preferredCraftCount:isNaN(craftCount) ? 1 : Math.max(1, Math.min(99, craftCount))
             }
         };
+    }
+
+    function resolveLaunchContext(initData) {
+        initData = initData || {};
+        var profile = resolveProfile(initData);
+        var view = resolveView(initData);
+        var panelInstanceId = typeof initData.panelInstanceId === 'string'
+            ? initData.panelInstanceId : '';
+        var returnTarget = resolveReturnTarget(initData);
+        var validInstance = /^[A-Za-z0-9._~-]{1,128}$/.test(panelInstanceId);
+        var nestedCrafting = !panelInstanceId && returnTarget
+            && profile && profile.profile === 'battlebox' && view === 'storage';
+        if (!profile || !view || !isViewAllowed(profile, view)
+                || (!validInstance && !nestedCrafting)
+                || (validInstance && returnTarget)) return null;
+        return {
+            profile:profile,
+            view:view,
+            panelInstanceId:panelInstanceId,
+            returnTarget:returnTarget,
+            hostOwner:nestedCrafting ? 'crafting' : 'workbench'
+        };
+    }
+
+    function createCloseMessage(hostOwner, panelInstanceId, reason) {
+        if (hostOwner === 'crafting') {
+            return {type:'panel', cmd:'close', panel:'crafting'};
+        }
+        var message = {
+            type:'panel', cmd:'close', panel:'workbench',
+            panelInstanceId:String(panelInstanceId || '')
+        };
+        if (reason === 'navigate_skills') message.reason = reason;
+        return message;
     }
 
     function normalizeConfirmationMode(mode) { return mode === 'fast' ? 'fast' : 'safe'; }
@@ -64,7 +106,10 @@
         MOD_CONFIRMATION_STORAGE_KEY:MOD_CONFIRMATION_STORAGE_KEY,
         resolveProfile:resolveProfile,
         resolveView:resolveView,
+        isViewAllowed:isViewAllowed,
         resolveReturnTarget:resolveReturnTarget,
+        resolveLaunchContext:resolveLaunchContext,
+        createCloseMessage:createCloseMessage,
         normalizeConfirmationMode:normalizeConfirmationMode,
         ConfirmationPreference:ConfirmationPreference
     };

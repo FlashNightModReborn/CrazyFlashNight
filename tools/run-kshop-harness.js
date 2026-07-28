@@ -18,7 +18,9 @@ const INVENTORY_UI_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-ui.js');
 const ITEM_FILTER_SOURCE = path.join(WEB_ROOT, 'modules', 'item-filter.js');
 const INVENTORY_WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-workbench.js');
 const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior.js');
+const INSPECTION_VIEWPORT_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench-inspection-viewport.js');
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
+const KSHOP_HARNESS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop', 'dev', 'harness.html');
 const NPCSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop.js');
 const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
 const KSHOP_MODULE_SOURCES = [
@@ -28,7 +30,9 @@ const KSHOP_MODULE_SOURCES = [
 const NPCSHOP_SECONDARY_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-secondary-pages.js');
 const INVENTORY_WORKBENCH_MODULE_SOURCES = [
     'inventory-workbench-config.js', 'inventory-workbench-header.js',
-    'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js'
+    'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
+    'inventory-tuning-scope.js',
+    'inventory-storage-workbench.js'
 ].map(name => path.join(WEB_ROOT, 'modules', name));
 const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
 const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
@@ -65,6 +69,15 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory operation resolver branches on concrete container pair');
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
+    const kshopHarnessSource = fs.readFileSync(KSHOP_HARNESS_SOURCE, 'utf8');
+    const inspectionViewportSource = fs.readFileSync(INSPECTION_VIEWPORT_SOURCE, 'utf8');
+    const viewportScriptIndex = kshopHarnessSource.indexOf('modules/workbench-inspection-viewport.js');
+    const inspectorScriptIndex = kshopHarnessSource.indexOf('modules/equipment-inspector.js');
+    if (viewportScriptIndex < 0 || inspectorScriptIndex <= viewportScriptIndex
+            || !inspectionViewportSource.includes('function Camera(')
+            || !inspectionViewportSource.includes('Camera.prototype.destroy')) {
+        throw new Error('KShop harness must load the shared inspection viewport before EquipmentInspector');
+    }
     const npcshopSource = fs.readFileSync(NPCSHOP_SOURCE, 'utf8');
     const kshopUiSource = [kshopSource].concat(KSHOP_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))).join('\n');
     const npcshopUiSource = npcshopSource + '\n' + fs.readFileSync(NPCSHOP_SECONDARY_SOURCE, 'utf8');
@@ -72,6 +85,10 @@ function auditArchitectureBoundaries() {
     const workbenchComponentsSource = fs.readFileSync(WORKBENCH_COMPONENTS_SOURCE, 'utf8');
     const inventoryUiSource = fs.readFileSync(INVENTORY_UI_SOURCE, 'utf8');
     const inventoryWorkbenchSource = fs.readFileSync(INVENTORY_WORKBENCH_SOURCE, 'utf8');
+    const quickTransferSource = fs.readFileSync(
+        path.join(WEB_ROOT, 'modules', 'inventory-workbench-quick-transfer.js'), 'utf8');
+    const storageWorkbenchSource = fs.readFileSync(
+        path.join(WEB_ROOT, 'modules', 'inventory-storage-workbench.js'), 'utf8');
     const inventoryWorkbenchUiSource = [inventoryWorkbenchSource].concat(
         INVENTORY_WORKBENCH_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))
     ).join('\n');
@@ -86,8 +103,18 @@ function auditArchitectureBoundaries() {
             || !kshopViewsSource.includes('function createOrder(')) {
         throw new Error('KShop view/settlement composition boundary is incomplete');
     }
+    if (!kshopViewsSource.includes('new this._components.SecondaryPage({')
+            || !kshopViewsSource.includes("role:'dialog'")
+            || !kshopViewsSource.includes('this._lineRecords = {}')
+            || !kshopViewsSource.includes("name.className = 'kshop-settlement-inspect'")
+            || !kshopViewsSource.includes('sliderMax:authorityMaximum')
+            || !workbenchComponentsSource.includes("event.key === 'PageUp'")
+            || !workbenchComponentsSource.includes("this.numberInput.setAttribute('aria-invalid'")) {
+        throw new Error('KShop settlement must use stable shared secondary-page and adaptive quantity semantics');
+    }
     if (!['function SecondaryPage(', 'function ChoiceGroup(', 'function CommitBar(', 'function OwnedInventoryPane(']
             .every(token => workbenchComponentsSource.includes(token))
+            || !workbenchComponentsSource.includes('function HelpAction(')
             || !workbenchComponentsSource.includes("require('./workbench-lifecycle.js')")
             || workbenchComponentsSource.includes('this._disposers')
             || !kshopUiSource.includes('new WorkbenchComponents.ChoiceGroup(')
@@ -96,6 +123,19 @@ function auditArchitectureBoundaries() {
             || !npcshopUiSource.includes('.CommitBar(')
             || !inventoryWorkbenchUiSource.includes('.OwnedInventoryPane(')) {
         throw new Error('Shared workbench component composition boundary is incomplete');
+    }
+    if (!kshopSource.includes('new WorkbenchComponents.HelpAction(')
+            || !kshopSource.includes("kind:'kshop-help'")
+            || !inventoryWorkbenchSource.includes('new WorkbenchComponents.HelpAction(')
+            || !storageWorkbenchSource.includes("kind:'inventory-storage-help'")) {
+        throw new Error('KShop and battlebox must use the standard workbench help capability');
+    }
+    const retiredQuantityTokens = ['kshop-qty-popup', 'showQuantityInput', 'kshop-qty-btn'];
+    const retiredQuantityHits = retiredQuantityTokens.filter(token => kshopUiSource.includes(token));
+    if (retiredQuantityHits.length || !kshopUiSource.includes('kshop-cart-remove-btn')
+            || !kshopViewsSource.includes("name.className = 'kshop-settlement-inspect'")) {
+        throw new Error('KShop quantity editing must exist only on settlement: '
+            + retiredQuantityHits.join(', '));
     }
     const extractedUiTokens = ['function warehousePageState(', 'function renderWarehousePageMenu(',
         'function onWarehousePageShortcut(', 'function changeWarehousePage(', 'function jumpWarehouseToPage('];
@@ -131,6 +171,53 @@ function auditArchitectureBoundaries() {
             || inventoryWorkbenchUiSource.includes("'bulkQuery'")
             || inventoryWorkbenchUiSource.includes('shopPanelOpen')) {
         throw new Error('Standalone inventory workbench leaked into shop lifecycle');
+    }
+    if (!quickTransferSource.includes('function createCommandBar(')
+            || !quickTransferSource.includes("root.className = 'inventory-quick-transfer-bar'")
+            || !storageWorkbenchSource.includes('InventoryWorkbenchQuickTransfer.createCommandBar({')
+            || !storageWorkbenchSource.includes('body.appendChild(_quickBarView.root)')
+            || inventoryWorkbenchSource.includes('inventory-quick-transfer-bar')) {
+        throw new Error('Battlebox batch transfer must live in the body command bar, outside global header composition');
+    }
+    const workbenchRequestCloseStart = inventoryWorkbenchSource.indexOf('function requestClose(');
+    const workbenchRequestCloseEnd = inventoryWorkbenchSource.indexOf('function teardown(', workbenchRequestCloseStart);
+    const workbenchRequestCloseBody = inventoryWorkbenchSource.slice(
+        workbenchRequestCloseStart, workbenchRequestCloseEnd);
+    const returnToPanelStart = inventoryWorkbenchSource.indexOf('function returnToPanel(');
+    const returnToPanelEnd = inventoryWorkbenchSource.indexOf('function finalizeClose(', returnToPanelStart);
+    const returnToPanelBody = inventoryWorkbenchSource.slice(returnToPanelStart, returnToPanelEnd);
+    if (workbenchRequestCloseStart < 0 || workbenchRequestCloseEnd < 0
+            || workbenchRequestCloseBody.includes('openReturnTarget(')
+            || /reason\s*!==\s*['"]header['"]/.test(workbenchRequestCloseBody)) {
+        throw new Error('Inventory workbench implicit close must not navigate to crafting returnTarget');
+    }
+    if (!inventoryWorkbenchSource.includes(
+            "var nestedOwner = _nestedHostOwner === 'crafting';")
+            || !inventoryWorkbenchSource.includes(
+                'InventoryWorkbenchConfig.createCloseMessage(')
+            || !inventoryWorkbenchUiSource.includes(
+                "if (hostOwner === 'crafting')")
+            || !inventoryWorkbenchUiSource.includes(
+                "return {type:'panel', cmd:'close', panel:'crafting'}")
+            || !inventoryWorkbenchSource.includes("if (Bridge.send(message) === false)")
+            || !inventoryWorkbenchSource.includes("工作台保持打开")) {
+        throw new Error('Nested crafting organizer must close its real Host owner and remain open on transport failure');
+    }
+    if (!panelsSource.includes('function isNestedCraftingOrganizer(')
+            || !panelsSource.includes("return {type:'panel', cmd:'close', panel:'crafting'}")
+            || !panelsSource.includes('panelCloseMessage(pending.id, pending.initData, reason)')
+            || !panelsSource.includes("sendMountFailureClose(id, initData, 'mount_failed')")
+            || !panelsSource.includes('panel mount threw for ')
+            || !panelsSource.includes('panel rebind threw for ')
+            || !panelsSource.includes("_activeHostOwner === 'workbench'")
+            || !panelsSource.includes('!activeCapabilityWorkbench')) {
+        throw new Error('Nested crafting organizer lazy/mount failures must release the crafting Host owner');
+    }
+    if (returnToPanelStart < 0 || returnToPanelEnd < 0
+            || !returnToPanelBody.includes('openReturnTarget(')
+            || !inventoryWorkbenchSource.includes("button('return-panel', '返回合成', returnToPanel)")
+            || !inventoryWorkbenchSource.includes("returnButton.classList.add('inventory-return-crafting-btn')")) {
+        throw new Error('Inventory workbench crafting returnTarget requires the explicit return button path');
     }
     if (!kshopUiSource.includes('InventoryUI.renderOwnedSlot(')
             || !inventoryWorkbenchUiSource.includes('.renderOwnedSlot(')) {
@@ -203,7 +290,9 @@ function auditArchitectureBoundaries() {
         kshopViewComposition:true,
         sharedWorkbenchComponents:true,
         standaloneBattleboxWorkbench:true,
+        explicitCraftingReturnOnly:true,
         sharedIconManifestGate:true,
+        inspectionViewportLoadOrder:true,
         workbenchFullAnchor:true,
         nativeBehaviorGuard:behaviorEvents
     };
@@ -630,10 +719,19 @@ function tooltipRegressionFailed(state) {
     page.on('pageerror', error => pageErrors.push(error.message || String(error)));
     page.on('requestfailed', request => failedRequests.push(request.url()));
     const visualMode = visualArg ? visualArg.slice('--visual='.length) : '';
+    const batchVisualMatch = /^battlebox-batch(?:-(0|1|5|50))?$/.exec(visualMode);
+    const expectedBatchCount = batchVisualMatch ? Number(batchVisualMatch[1] || 5) : null;
     const targetQuery = visualMode ? '?visual=' + encodeURIComponent(visualMode) : '?qa=1';
     await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html' + targetQuery, {waitUntil:'load'});
     if (visualMode) {
-        await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
+        await page.waitForFunction(() => window.__visualReady === true
+            || window.__qaResult && window.__qaResult.qa && window.__qaResult.qa.failed > 0, null, {timeout:20000});
+        const visualFatal = await page.evaluate(() => {
+            if (window.__visualReady === true || !window.__qaResult || !window.__qaResult.qa) return null;
+            const failed = (window.__qaResult.qa.results || []).find(item => item && item.pass === false);
+            return failed ? failed.detail || failed.title || 'visual scenario failed' : 'visual scenario failed';
+        });
+        if (visualFatal) throw new Error(visualFatal);
         if (shotArg) {
             const shotPath = path.resolve(ROOT, shotArg.slice('--shot='.length));
             await page.screenshot({path:shotPath,fullPage:true});
@@ -647,11 +745,51 @@ function tooltipRegressionFailed(state) {
                 const header=document.querySelector('.workbench-header');
                 const actions=header && header.querySelector('.workbench-header-actions');
                 if(!header || !actions) return null;
-                const rectOf=node => { const r=node.getBoundingClientRect(); return {x:r.x,width:r.width,right:r.right}; };
+                const rectOf=node => { const r=node.getBoundingClientRect(); return {
+                    x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom
+                }; };
+                const visibleChildren=Array.from(actions.children).filter(node=>getComputedStyle(node).display!=='none');
+                const headerRect=header.getBoundingClientRect();
                 return {
                     header:rectOf(header), actions:rectOf(actions),
                     overflow:actions.scrollWidth>actions.clientWidth || actions.getBoundingClientRect().right>innerWidth+1,
-                    children:Array.from(actions.children).map(node=>({text:(node.textContent||'').replace(/\s+/g,' ').trim(),display:getComputedStyle(node).display,rect:rectOf(node)}))
+                    verticalOverflow:actions.scrollHeight>actions.clientHeight+1
+                        || visibleChildren.some(node=>{
+                            const rect=node.getBoundingClientRect();
+                            return rect.top<headerRect.top-1 || rect.bottom>headerRect.bottom+1
+                                || node.scrollHeight>node.clientHeight+1 || node.scrollWidth>node.clientWidth+1;
+                        }),
+                    children:Array.from(actions.children).map(node=>({
+                        text:(node.textContent||'').replace(/\s+/g,' ').trim(),
+                        display:getComputedStyle(node).display,
+                        clientWidth:node.clientWidth,scrollWidth:node.scrollWidth,
+                        clientHeight:node.clientHeight,scrollHeight:node.scrollHeight,
+                        rect:rectOf(node)
+                    }))
+                };
+            })(),
+            batchLayout:(() => {
+                const bar=document.querySelector('.inventory-quick-transfer-bar');
+                const body=document.querySelector('.inventory-workbench-panel .workbench-body');
+                if(!bar || !body) return null;
+                const rect=bar.getBoundingClientRect(),bodyRect=body.getBoundingClientRect();
+                const visible=Array.from(bar.children).filter(node=>getComputedStyle(node).display!=='none'&&!node.hidden);
+                let overlap=false;
+                for(let i=0;i<visible.length;i++)for(let j=i+1;j<visible.length;j++){
+                    const a=visible[i].getBoundingClientRect(),b=visible[j].getBoundingClientRect();
+                    if(Math.min(a.right,b.right)-Math.max(a.left,b.left)>1
+                        &&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1) overlap=true;
+                }
+                return {
+                    mode:bar.getAttribute('data-mode')||'',
+                    staged:Number(bar.getAttribute('data-staged')||0),
+                    rect:{x:rect.x,y:rect.y,width:rect.width,height:rect.height,right:rect.right,bottom:rect.bottom},
+                    insideBody:rect.left>=bodyRect.left-1&&rect.right<=bodyRect.right+1
+                        &&rect.top>=bodyRect.top-1&&rect.bottom<=bodyRect.bottom+1,
+                    overflow:bar.scrollWidth>bar.clientWidth+1||bar.scrollHeight>bar.clientHeight+1,
+                    overlap,
+                    children:visible.map(node=>({text:(node.textContent||'').replace(/\s+/g,' ').trim(),
+                        rect:(()=>{const r=node.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height};})()}))
                 };
             })(),
             inventoryLayout:(() => {
@@ -677,6 +815,7 @@ function tooltipRegressionFailed(state) {
                 return out;
             })(),
             tooltip:window.__visualTooltipState || null,
+            scrollbar:window.__visualScrollbarState || null,
             bodyOverflow:document.body.scrollWidth > document.body.clientWidth || document.body.scrollHeight > document.body.clientHeight
         }), visualMode);
         const physicalTooltipPointer = visualMode === 'battlebox-real-icons'
@@ -687,7 +826,26 @@ function tooltipRegressionFailed(state) {
         process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');
         const tooltipFailed = visualMode === 'battlebox-real-icons'
             && tooltipRegressionFailed(visualState.tooltip);
-        if (pageErrors.length || failedRequests.length || tooltipFailed) process.exit(1);
+        const headerFailed = visualMode.indexOf('battlebox') === 0
+            && (!visualState.headerLayout || visualState.headerLayout.overflow
+                || visualState.headerLayout.verticalOverflow);
+        const batchFailed = visualMode.indexOf('battlebox') === 0
+            && (!visualState.batchLayout || !visualState.batchLayout.insideBody
+                || visualState.batchLayout.overflow || visualState.batchLayout.overlap)
+            || expectedBatchCount != null
+                && (visualState.batchLayout.mode !== 'deposit'
+                    || visualState.batchLayout.staged !== expectedBatchCount);
+        const scrollbarFailed = visualMode === 'cart-overflow'
+            && (!visualState.scrollbar || !visualState.scrollbar.overflow
+                || !(parseFloat(visualState.scrollbar.width) > 0
+                    && parseFloat(visualState.scrollbar.width) <= 8)
+                || visualState.scrollbar.track === 'rgba(0, 0, 0, 0)'
+                || visualState.scrollbar.thumb === 'rgba(0, 0, 0, 0)'
+                || !(parseFloat(visualState.scrollbar.thumbBorder) >= 1)
+                || !(visualState.scrollbar.buttonDisplay === 'none'
+                    || parseFloat(visualState.scrollbar.buttonWidth) === 0));
+        if (pageErrors.length || failedRequests.length || tooltipFailed
+                || headerFailed || batchFailed || scrollbarFailed || visualState.bodyOverflow) process.exit(1);
         return;
     }
     await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, {timeout:20000});

@@ -142,8 +142,6 @@
         this._intent = options.intent || {};
         this._composition = null;
         this._settlement = null;
-        this._quantityPopup = null;
-        this._holdStops = [];
         this._preview = null;
         this._previewBusy = false;
         this._previewQueued = false;
@@ -221,7 +219,7 @@
     CartController.prototype.setDropSelection = function(item) {
         if (!this._composition) return;
         this._composition.dropTarget.classList.toggle('has-selection', !!item);
-        this._composition.dropLabel.textContent = item ? item.displayname + ' · 点击添加' : '选择或拖入';
+        this._composition.dropLabel.textContent = item ? item.displayname + ' · 可拖入' : '可选操作';
     };
 
     CartController.prototype.addCatalogIntent = function(idx, qty) {
@@ -258,8 +256,7 @@
             this._intent.playCue('error');
             return;
         }
-        if (this._state.isStackable(item)) this.showQuantityInput(event.target, idx);
-        else this.addCatalogIntent(idx, 1);
+        this.addCatalogIntent(idx, 1);
     };
 
     CartController.prototype._commitCart = function(next) {
@@ -290,7 +287,6 @@
     };
 
     CartController.prototype.render = function() {
-        this._killHoldTimers();
         if (this._composition) {
             this._composition.cartGridView.renderer.render(this._cart());
             this._composition.cartGridView.chrome.setMeta(this._cart().length + ' 种 / ' + this.quantity() + ' 件');
@@ -312,136 +308,31 @@
             return row;
         }
         var subtotal = Number(item.price) * cartItem.qty;
-        var stackable = this._state.isStackable(item);
-        var qtyHtml = stackable
-            ? '<span class="kshop-cart-qty"><button class="kshop-qty-btn" data-idx="' + cartItem.idx + '" data-delta="-1" data-audio-cue="click">−</button><b>' + cartItem.qty + '</b><button class="kshop-qty-btn" data-idx="' + cartItem.idx + '" data-delta="1" data-audio-cue="click">＋</button></span>'
-            : '<span class="kshop-cart-qty"><b>1</b></span><button class="kshop-qty-btn kshop-remove-btn" data-idx="' + cartItem.idx + '" data-delta="-1" data-audio-cue="cancel" aria-label="移除">×</button>';
         row.innerHTML = '<span class="kshop-cart-thumb">' + this._intent.iconHtml(item.icon, 'kshop-row-icon') + '</span>'
             + '<span class="kshop-cart-copy"><b class="kshop-cart-name">' + this._intent.escapeHtml(item.displayname) + '</b><small>K ' + item.price + ' / 件</small></span>'
-            + qtyHtml + '<span class="kshop-cart-sub">' + subtotal + '</span>';
+            + '<span class="kshop-cart-qty"><b>×' + cartItem.qty + '</b></span>'
+            + '<span class="kshop-cart-sub">' + subtotal + '</span>'
+            + '<button class="kshop-cart-remove-btn" type="button" data-audio-cue="cancel">×</button>';
         return row;
     };
 
     CartController.prototype.bindRow = function(row) {
         var self = this;
         row.addEventListener('click', function(event) {
-            if (event.target.classList.contains('kshop-qty-btn')) return;
+            if (event.target.closest && event.target.closest('button')) return;
             if (self._intent.inspect) self._intent.inspect(Number(row.getAttribute('data-idx')), row);
         });
-        var buttons = row.querySelectorAll('.kshop-qty-btn');
-        for (var i = 0; i < buttons.length; i++) {
-            (function(button) {
-                self._holdRepeat(button, function() {
-                    self.adjust(Number(button.getAttribute('data-idx')), Number(button.getAttribute('data-delta')), false);
-                });
-            })(buttons[i]);
+        var remove = row.querySelector('.kshop-cart-remove-btn');
+        if (remove) {
+            var item = this._state.findCatalogItem(Number(row.getAttribute('data-idx')));
+            remove.setAttribute('aria-label', '从购物车移除'
+                + (item ? '“' + item.displayname + '”' : '该商品'));
+            remove.addEventListener('click', function(event) {
+                event.stopPropagation();
+                self.adjust(Number(row.getAttribute('data-idx')), 0, true);
+                self._intent.playCue('cancel');
+            });
         }
-    };
-
-    CartController.prototype._holdRepeat = function(element, callback) {
-        var self = this;
-        var timer = null;
-        var interval = 400;
-        function fire() {
-            callback();
-            interval = Math.max(50, interval * 0.85);
-            timer = setTimeout(fire, interval);
-        }
-        function stop() {
-            if (timer) { clearTimeout(timer); timer = null; }
-            interval = 400;
-            document.removeEventListener('mouseup', stop);
-        }
-        function start(event) {
-            event.preventDefault();
-            interval = 400;
-            callback();
-            timer = setTimeout(fire, interval);
-            document.addEventListener('mouseup', stop);
-        }
-        element.addEventListener('mousedown', start);
-        element.addEventListener('mouseup', stop);
-        element.addEventListener('mouseleave', stop);
-        element.addEventListener('click', function(event) { event.stopPropagation(); });
-        self._holdStops.push(stop);
-    };
-
-    CartController.prototype._killHoldTimers = function() {
-        for (var i = 0; i < this._holdStops.length; i++) this._holdStops[i]();
-        this._holdStops = [];
-    };
-
-    CartController.prototype.showQuantityInput = function(anchor, idx) {
-        if (!this._state.canEdit()) return;
-        this.dismissQuantityInput();
-        var self = this;
-        var item = this._state.findCatalogItem(idx);
-        if (!item) return;
-        var maximum = quantityLimit(item, true);
-        if (maximum <= 0) { this._intent.toast('该商品当前已达持有上限。'); return; }
-        var popup = document.createElement('div');
-        popup.className = 'kshop-qty-popup';
-        popup.innerHTML = '<div class="kshop-qty-popup-title">' + this._intent.escapeHtml(item.displayname) + '</div>'
-            + '<div class="kshop-qty-popup-row"><button class="kshop-qty-pop-btn" data-v="-10" data-audio-cue="click">−−</button>'
-            + '<button class="kshop-qty-pop-btn" data-v="-1" data-audio-cue="click">−</button>'
-            + '<input class="kshop-qty-input" type="number" value="1" min="1" max="' + maximum + '">'
-            + '<button class="kshop-qty-pop-btn" data-v="1" data-audio-cue="click">+</button>'
-            + '<button class="kshop-qty-pop-btn" data-v="10" data-audio-cue="click">++</button></div>'
-            + '<div class="kshop-qty-popup-foot"><span class="kshop-qty-subtotal">K ' + item.price + '</span>'
-            + '<button class="kshop-qty-confirm" data-audio-cue="confirm">加购</button></div>';
-        var rect = anchor.getBoundingClientRect();
-        popup.style.left = rect.right + 4 + 'px';
-        popup.style.top = rect.top + 'px';
-        var shell = this._state.getShellElement && this._state.getShellElement();
-        var scale = parseFloat(shell && shell.style.getPropertyValue('--panel-scale')) || 1;
-        if (scale !== 1) {
-            popup.style.transformOrigin = 'top left';
-            popup.style.transform = 'scale(' + scale + ')';
-        }
-        document.body.appendChild(popup);
-        this._quantityPopup = popup;
-        this._intent.playCue('modalOpen');
-        var input = popup.querySelector('.kshop-qty-input');
-        var subtotal = popup.querySelector('.kshop-qty-subtotal');
-        function updateSubtotal() {
-            var value = Math.min(maximum, Math.max(1, Math.floor(Number(input.value) || 1)));
-            input.value = value;
-            subtotal.textContent = 'K ' + value * Number(item.price);
-        }
-        function confirm() {
-            if (!self._state.canEdit()) return;
-            self.addCatalogIntent(idx, Math.min(maximum, Math.max(1, Math.floor(Number(input.value) || 1))));
-            self.dismissQuantityInput();
-        }
-        var buttons = popup.querySelectorAll('.kshop-qty-pop-btn');
-        for (var i = 0; i < buttons.length; i++) {
-            (function(button) {
-                self._holdRepeat(button, function() {
-                    input.value = Math.min(maximum, Math.max(1, (Number(input.value) || 1) + Number(button.getAttribute('data-v'))));
-                    updateSubtotal();
-                });
-            })(buttons[i]);
-        }
-        input.addEventListener('input', updateSubtotal);
-        input.addEventListener('keydown', function(event) { if (event.key === 'Enter') confirm(); });
-        popup.querySelector('.kshop-qty-confirm').addEventListener('click', confirm);
-        setTimeout(function() {
-            if (self._quantityPopup !== popup) return;
-            self._outsideQuantityClick = function(event) {
-                if (self._quantityPopup && !self._quantityPopup.contains(event.target)) self.dismissQuantityInput();
-            };
-            document.addEventListener('click', self._outsideQuantityClick);
-        }, 0);
-        input.focus();
-        input.select();
-    };
-
-    CartController.prototype.dismissQuantityInput = function() {
-        this._killHoldTimers();
-        if (this._outsideQuantityClick) document.removeEventListener('click', this._outsideQuantityClick);
-        this._outsideQuantityClick = null;
-        if (this._quantityPopup && this._quantityPopup.parentNode) this._quantityPopup.parentNode.removeChild(this._quantityPopup);
-        this._quantityPopup = null;
     };
 
     CartController.prototype.openSettlement = function() {
@@ -500,8 +391,11 @@
     };
 
     CartController.prototype.destroy = function() {
-        this.dismissQuantityInput();
         this.closeSettlement();
+        if (this._settlement && typeof this._settlement.destroy === 'function') {
+            this._settlement.destroy();
+            this._settlement = null;
+        }
     };
 
     return {

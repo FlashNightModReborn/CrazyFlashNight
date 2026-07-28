@@ -14,10 +14,10 @@
 <body>
 <div id="host"></div><pre id="qa-output">running…</pre>
 <script>
-window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__collateralPreview=false;window.__inspectorCalls=[];window.__inspectorOpen=false;window.__inspectorCloseCount=0;window.__holdInventoryRefreshOnce=false;window.__heldInventoryRefresh=null;window.__syncCommitResponseOnce=false;
+window.__handlers={};window.__sent=[];window.__toasts=[];window.__writes=[];window.__writeHandle=null;window.__writeSeq=0;window.__ambiguous=false;window.__resumeRequired=false;window.__staleCommit=false;window.__disconnectedCommit=false;window.__commitReconcileRequired=false;window.__rotateLeaseOnRefresh=false;window.__failRefreshOnce=false;window.__refreshRetryCount=0;window.__delayEnhancePreviewOnce=false;window.__delayModPreviewOnce=false;window.__collateralPreview=false;window.__inspectorCalls=[];window.__inspectorOpen=false;window.__inspectorCloseCount=0;window.__holdInventoryRefreshOnce=false;window.__heldInventoryRefresh=null;window.__syncCommitResponseOnce=false;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
-  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='commit'&&__syncCommitResponseOnce){__syncCommitResponseOnce=false;respond(message);return true}var delay=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce?80:0;if(delay)__delayEnhancePreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
+  send:function(message){__sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='commit'&&__syncCommitResponseOnce){__syncCommitResponseOnce=false;respond(message);return true}var delayedEnhance=message.cmd==='preview'&&message.payload.operation==='enhance'&&__delayEnhancePreviewOnce,delayedMod=message.cmd==='preview'&&(message.payload.operation==='install_mod'||message.payload.operation==='replace_mod')&&__delayModPreviewOnce,delay=delayedEnhance||delayedMod?100:0;if(delayedEnhance)__delayEnhancePreviewOnce=false;if(delayedMod)__delayModPreviewOnce=false;setTimeout(function(){respond(message)},delay);return true}
 };
 window.Toast={add:function(message){__toasts.push(message)}};
 window.Icons={
@@ -135,9 +135,30 @@ function respond(message){var result=base(message);
     ok('keeps enhance, convert, tier and mod as four top-level operation tabs',document.querySelectorAll('.equipment-tuning-tab').length===4&&!document.querySelector('.equipment-tuning-enhance-mode')&&[].slice.call(document.querySelectorAll('.equipment-tuning-tab')).map(function(node){return node.textContent}).join('|')==='强化度|交换|进阶|配件');
     ok('compact enhancement uses DLS stone reactor, correct owned count and static motion fallback',document.querySelector('.equipment-tuning-enhance-reactor')&&document.querySelector('.equipment-tuning-stone-core').getAttribute('data-motion')==='static'&&document.querySelector('.equipment-tuning-stone-icon[data-icon-static="1"]')&&document.querySelector('.equipment-tuning-reactor-copy').textContent.indexOf('208,589')>=0&&document.querySelector('.equipment-tuning-reactor-copy').textContent.indexOf('持有 0')<0);
     ok('enhance target controls preview automatically',document.querySelector('.equipment-tuning-level-slider')&&document.querySelectorAll('.equipment-tuning-level-mark').length===4&&document.querySelector('.equipment-tuning-commit').textContent.indexOf('强化至 +6 · 3 强化石')>=0);
+    var enhanceInfoOpen=document.querySelector('.equipment-tuning-info-open');enhanceInfoOpen.click();
+    ok('explicit tuning explanation opens with meaningful enhancement authority, close focus and no pin mode',document.querySelector('.equipment-tuning-info-open').textContent.trim()==='调制说明'&&document.querySelector('.equipment-tuning-info-open').getAttribute('aria-expanded')==='true'&&!document.querySelector('.equipment-tuning-info-panel').hidden&&document.querySelector('[data-tuning-info-title]').textContent.indexOf('炎寒对剑 · 强化')>=0&&document.querySelector('[data-tuning-info-copy]').textContent.indexOf('当前 +5')>=0&&document.querySelector('[data-tuning-info-copy]').textContent.indexOf('可用上限 +9')>=0&&document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')==='info:close'&&!document.querySelector('[data-tuning-focus-key="info:pin"]')&&!document.querySelector('.equipment-tuning-info-panel [aria-pressed]')&&!document.querySelector('.equipment-tuning-info-panel').hasAttribute('data-pinned')&&!('infoPanelPinned' in view.debugState()));
+    document.querySelector('[data-tuning-focus-key="enhance-level:8"]').focus();
+    ok('focused enhancement target updates the already-open explanation',document.querySelector('[data-tuning-info-title]').textContent==='强化至 +8'&&document.querySelector('[data-tuning-info-copy]').textContent.indexOf('先预览材料与结果')>=0&&view.debugState().infoSubjectKey==='enhance:8');
+    var explanationConsumed=view.consumeEscape(),explanationAfterEscape=view.debugState();
+    ok('Escape consumes only the open tuning explanation and restores its opener',explanationConsumed&&!explanationAfterEscape.infoPanelOpen&&document.querySelector('.equipment-tuning-info-panel').hidden&&document.querySelector('.equipment-tuning-info-open').getAttribute('aria-expanded')==='false'&&document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')==='info:open');
+    ok('a closed tuning explanation no longer consumes the next Escape',!view.consumeEscape());
     ok('enhance preview sends intent without formula',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='enhance'&&x.payload.targetLevel===6&&!x.payload.materials}));
     ok('enhance material delta is merged into the DLS reactor without a duplicate footer row',document.querySelector('.equipment-tuning-reactor-spend').textContent.indexOf('消耗 3')>=0&&document.querySelector('.equipment-tuning-reactor-spend').textContent.indexOf('强化后剩余 208,586')>=0&&!document.querySelector('.equipment-tuning-material-deltas')&&document.querySelector('.equipment-tuning-preview.enhance-compact'));
     ok('enhance result stays in the reactor readout while the footer collapses to commit only',document.querySelector('.equipment-tuning-reactor-readout').textContent.indexOf('+5→+6')>=0&&document.querySelectorAll('.equipment-tuning-preview.enhance-compact > *').length===1&&document.querySelector('.equipment-tuning-preview.enhance-compact > .equipment-tuning-commit'));
+    var explanationTabs=document.querySelectorAll('.equipment-tuning-tab');explanationTabs[2].click();await wait();
+    var sourceACandidate=document.querySelector('.equipment-tuning-candidate');sourceACandidate.focus();
+    document.querySelector('.equipment-tuning-info-open').click();
+    var sourceAInfo=view.debugState(),sourceATitle=document.querySelector('[data-tuning-info-title]').textContent;
+    ok('tier candidate focus becomes the live explanation subject without a pin state',sourceAInfo.infoPanelOpen&&sourceAInfo.infoSubjectKey==='tier|二阶复合防御组件'&&sourceATitle==='二阶复合防御组件'&&!('infoPanelPinned' in sourceAInfo));
+    var selectedB=view.handleInventorySelection(slots[3]),resetForB=view.debugState();
+    ok('inventory A to B closes the explanation and clears the stale subject before rebinding',selectedB&&!resetForB.infoPanelOpen&&resetForB.infoSubjectKey===''&&!('infoPanelPinned' in resetForB)&&document.querySelector('.equipment-tuning-info-panel').hidden);
+    await until(function(){var state=view.debugState();return state.source&&state.source.slot===3&&state.hasSnapshot&&!state.readPending});
+    ok('inventory B adopts its own authority without reviving A info',document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('血刀-入鞘')>=0&&!view.debugState().infoPanelOpen&&view.debugState().infoSubjectKey==='');
+    view.handleInventorySelection(slots[2]);await until(function(){var state=view.debugState();return state.source&&state.source.slot===2&&state.hasSnapshot&&!state.readPending});
+    document.querySelector('.equipment-tuning-candidate').focus();document.querySelector('.equipment-tuning-info-open').click();
+    document.querySelectorAll('.equipment-tuning-tab')[0].click();await until(function(){return view.debugState().hasPreview});
+    var operationInfo=view.debugState();
+    ok('changing operation keeps the explanation open but replaces the old candidate subject',operationInfo.infoPanelOpen&&operationInfo.infoSubjectKey===''&&document.querySelector('[data-tuning-info-title]').textContent.indexOf('炎寒对剑 · 强化')>=0&&document.querySelector('[data-tuning-info-copy]').textContent.indexOf('当前 +5')>=0);
     __holdInventoryRefreshOnce=true;__syncCommitResponseOnce=true;var snapshotsBeforeCommit=__sent.filter(function(x){return x.cmd==='snapshot'}).length;
     document.querySelector('.equipment-tuning-commit').click();await until(function(){return typeof __heldInventoryRefresh==='function'});
     var pendingSource=view.debugState().source,pendingSelectionAccepted=view.handleInventorySelection(slots[3]);
@@ -148,6 +169,8 @@ function respond(message){var result=base(message);
     ok('commit sends token only',commits.length===1&&commits[0].payload.expectedTuningToken.indexOf('token.enhance')===0&&commits[0].payload.operation===undefined&&commits[0].payload.source===undefined);
     ok('commit holds the same inventory write capability through refresh',__writes[0].kind==='begin'&&__writes[0].owner==='equipment_tuning.commit'&&__writes[1].kind==='complete'&&__writes[1].refresh===true&&__writes[1].handle===__writes[0].handle&&!view.debugState().inventoryWritePending);
     ok('success refreshes lease and authoritative level',__sent.filter(function(x){return x.cmd==='snapshot'}).length>=2&&document.querySelector('.equipment-tuning-main-copy').textContent.indexOf('+6')>=0);
+    var refreshedInfo=view.debugState();
+    ok('successful inventory refresh closes the explanation before adopting the refreshed object',!refreshedInfo.infoPanelOpen&&refreshedInfo.infoSubjectKey===''&&!('infoPanelPinned' in refreshedInfo)&&document.querySelector('.equipment-tuning-info-panel').hidden);
     await until(function(){return view.debugState().hasPreview});
     __delayEnhancePreviewOnce=true;view._chooseEnhancementLevel(8);await until(function(){return view.debugState().readPending&&view.debugState().previewPendingOperation==='enhance'});
     view._chooseEnhancementLevel(9);
@@ -183,10 +206,22 @@ function respond(message){var result=base(message);
     ok('compact candidates keep shared quantity badges',document.querySelectorAll('.equipment-tuning-candidate .equipment-tuning-owned-count').length===25&&[].slice.call(document.querySelectorAll('.equipment-tuning-owned-count')).every(function(node){return getComputedStyle(node).display!=='none'}));
     ok('tuning view never exposes browser-native title tooltips',document.querySelectorAll('#host [title]').length===0);
     ok('25 compact mod candidates remain reachable without scrolling',compactBody.scrollHeight<=compactBody.clientHeight+1&&compactGrid.getBoundingClientRect().bottom<=compactBody.getBoundingClientRect().bottom+1,JSON.stringify({body:[compactBody.clientHeight,compactBody.scrollHeight],gridBottom:compactGrid.getBoundingClientRect().bottom,bodyBottom:compactBody.getBoundingClientRect().bottom}));
-    var tuningHost=document.getElementById('host');tuningHost.classList.add('scroll-retention-probe');compactBody=document.querySelector('.equipment-tuning-body');compactBody.scrollTop=compactBody.scrollHeight;
-    var tuningScrollBefore=compactBody.scrollTop;document.querySelectorAll('.equipment-tuning-candidate.available')[1].click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='install_mod'});
+    var tuningHost=document.getElementById('host'),noStealCandidate=document.querySelectorAll('.equipment-tuning-candidate.available')[3],noStealKey=noStealCandidate.getAttribute('data-tuning-focus-key');noStealCandidate.focus({preventScroll:true});__delayModPreviewOnce=true;noStealCandidate.click();await until(function(){return view.debugState().readPending});
+    document.querySelector('.equipment-tuning-body').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));
+    await until(function(){return !view.debugState().readPending&&view.debugState().hasPreview});
+    ok('blank pointer intent cancels deferred focus instead of stealing focus back from body',document.activeElement===document.body&&!document.querySelector('[data-tuning-focus-key="'+noStealKey+'"]:focus'),JSON.stringify({active:document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')}));
+    var deferredCandidate=document.querySelectorAll('.equipment-tuning-candidate.available')[4],deferredKey=deferredCandidate.getAttribute('data-tuning-focus-key');deferredCandidate.focus({preventScroll:true});__delayModPreviewOnce=true;deferredCandidate.click();await until(function(){return view.debugState().readPending});
+    var disabledFocusFallsBackToBody=document.activeElement===document.body;
+    await until(function(){return !view.debugState().readPending&&view.debugState().hasPreview});
+    ok('one disabled-to-enabled async redraw restores the same stable focus key',disabledFocusFallsBackToBody&&document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')===deferredKey,JSON.stringify({expected:deferredKey,actual:document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')}));
+    var hiddenKey=document.querySelector('.equipment-tuning-candidate.available').getAttribute('data-tuning-focus-key');if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();view._renderFocusKey=hiddenKey;view._renderFocusDeferred=true;tuningHost.setAttribute('aria-hidden','true');tuningHost.setAttribute('inert','');view.render();
+    ok('focus restoration rejects targets under aria-hidden or inert ancestors',document.activeElement===document.body&&!document.querySelector('[data-tuning-focus-key="'+hiddenKey+'"]:focus'));
+    tuningHost.removeAttribute('aria-hidden');tuningHost.removeAttribute('inert');view._renderFocusKey='';view._renderFocusDeferred=false;view.render();
+    tuningHost.classList.add('scroll-retention-probe');compactBody=document.querySelector('.equipment-tuning-body');compactBody.scrollTop=compactBody.scrollHeight;
+    var tuningScrollBefore=compactBody.scrollTop,focusCandidate=document.querySelectorAll('.equipment-tuning-candidate.available')[1],focusCandidateKey=focusCandidate.getAttribute('data-tuning-focus-key');focusCandidate.focus({preventScroll:true});focusCandidate.click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='install_mod'});
     compactBody=document.querySelector('.equipment-tuning-body');var tuningScrollAfter=compactBody.scrollTop;
     ok('mod preview refresh preserves an overflowing tuning-body position',tuningScrollBefore>0&&Math.abs(tuningScrollAfter-tuningScrollBefore)<=1,JSON.stringify({before:tuningScrollBefore,after:tuningScrollAfter}));
+    ok('full DOM rebuild restores candidate focus by stable entity key',document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')===focusCandidateKey,JSON.stringify({expected:focusCandidateKey,actual:document.activeElement&&document.activeElement.getAttribute('data-tuning-focus-key')}));
     compactBody.scrollTop=compactBody.scrollHeight;var tuningFilterScrollBefore=compactBody.scrollTop;document.querySelector('[data-filter-path="grade"]').click();await wait();compactBody=document.querySelector('.equipment-tuning-body');
     ok('mod filter navigation explicitly resets tuning-body scroll',tuningFilterScrollBefore>0&&compactBody.scrollTop===0,JSON.stringify({before:tuningFilterScrollBefore,after:compactBody.scrollTop}));
     tuningHost.classList.remove('scroll-retention-probe');document.querySelector('[data-filter-path="grade/medium"]').click();await wait();
@@ -253,6 +288,34 @@ function respond(message){var result=base(message);
     var detachEnvelope=__sent.filter(function(x){return x.cmd==='detach'})[0];
     ok('detach uses strict bound view envelope',!!detachEnvelope&&detachEnvelope.payload.viewSessionId===oldSession&&Object.keys(detachEnvelope.payload).sort().join(',')==='v,viewSessionId');
     ok('detach acknowledgement clears pending token/session and live inspector',detachResult===true&&!view.debugState().mux.active&&!view.debugState().source&&!view.debugState().hasPreview&&!view.commit()&&!__inspectorOpen&&__inspectorCloseCount===closeBeforeDetach+1);
+    var staleRefreshCallback=null,staleWrite={id:'stale-loadout-write'};
+    var staleView=EquipmentTuningView.create({
+      refreshLoadout:function(_,callback){staleRefreshCallback=callback;return true}
+    });
+    var staleSource={sourceKind:'loadout',sessionGeneration:3,slotKey:'长枪',expectedLoadoutRevision:7};
+    staleView._source=staleSource;staleView._sourceItem={itemKind:'equipment',name:'stale'};
+    staleView._inventoryWriteHandle=staleWrite;
+    staleView._loadoutBarrier={kind:'known',callId:'tune.stale',changed:true,source:staleSource};
+    var staleRefreshStarted=staleView._beginLoadoutRefresh(),staleRefreshThrew=false;
+    staleView.closeSession();
+    try{staleRefreshCallback({success:true,source:{sourceKind:'loadout',sessionGeneration:3,slotKey:'长枪',expectedLoadoutRevision:8},item:{itemKind:'equipment',name:'late'}})}
+    catch(error){staleRefreshThrew=true}
+    ok('late loadout refresh cannot revive or throw after tuning teardown',staleRefreshStarted&&!staleRefreshThrew&&!staleView.debugState().source&&!staleView.debugState().inventoryWritePending&&!staleView.debugState().loadoutBarrier);
+    var noWaterRequests=[],noWaterWrite={id:'no-water-write'},noWaterCompletes=0;
+    var noWaterView=EquipmentTuningView.create({
+      beginWrite:function(){return noWaterWrite},
+      completeWrite:function(_,__,callback){noWaterCompletes++;callback({success:true});return true}
+    });
+    noWaterView._source={sourceKind:'loadout',sessionGeneration:5,slotKey:'长枪',expectedLoadoutRevision:11};
+    noWaterView._sourceItem={itemKind:'equipment',name:'no-water'};
+    noWaterView._preview={operation:'enhance',tuningToken:'token.no-water'};
+    noWaterView._mux.request=function(cmd,_,callback){
+      noWaterRequests.push(cmd);
+      if(cmd==='commit'){callback({success:true});return null}
+      return 'snapshot.no-water';
+    };
+    noWaterView.commit();
+    ok('ambiguous loadout commit without a usable watermark still releases the write and requests authority',noWaterRequests.join('|')==='commit|snapshot'&&noWaterCompletes===1&&!noWaterView.debugState().inventoryWritePending&&!noWaterView.debugState().loadoutBarrier&&noWaterView.debugState().readPending);
     ok('layout stays inside host',document.querySelector('#host').scrollWidth<=document.querySelector('#host').clientWidth+1&&document.querySelector('#host').scrollHeight<=document.querySelector('#host').clientHeight+1,JSON.stringify({w:document.querySelector('#host').scrollWidth,h:document.querySelector('#host').scrollHeight}));
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
     window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)

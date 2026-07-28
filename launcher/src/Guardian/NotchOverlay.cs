@@ -171,6 +171,7 @@ namespace CF7Launcher.Guardian
             new NotchButtonDef("平板", "TABLET", Keys.None, true, false),
             new NotchButtonDef("战备箱", "WAREHOUSE", Keys.None, true, true),
             new NotchButtonDef("情报", "INTELLIGENCE", Keys.None, true, false),
+            new NotchButtonDef("材料", "MATERIALS", Keys.None, true, false),
             new NotchButtonDef("技能", "SKILLS", Keys.None, true, false),
             new NotchButtonDef("商城", "SHOP", Keys.None, true, false)
         };
@@ -780,14 +781,14 @@ namespace CF7Launcher.Guardian
             {
                 if (_onToggleFullscreen != null) _onToggleFullscreen();
             }
+            else if (def.CommandKey == "Q")
+            {
+                if (_onForceExit != null) _onForceExit();
+            }
             else if (!string.IsNullOrEmpty(def.CommandKey) && _router != null)
             {
                 try { _router.Dispatch(def.CommandKey); }
                 catch (Exception ex) { LogManager.Log("[NotchOverlay] dispatch failed key=" + def.CommandKey + " ex=" + ex.Message); }
-            }
-            else if (def.CommandKey == "Q")
-            {
-                if (_onForceExit != null) _onForceExit();
             }
             else if (def.KeyCode != Keys.None)
             {

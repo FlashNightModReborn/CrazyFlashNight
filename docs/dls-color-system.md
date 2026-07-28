@@ -101,12 +101,21 @@
 | 面板 | 主强调色 token | 当前 CSS 值 | 备注 |
 |---|---|---|---|
 | `workbench` / 库存 | `--wb-accent` | `#e5e5e5` | 档案白， tactile serif |
+| `character-build` / `profile` | `--wb-text`（档案白系）+ `--wb-accent` → `--dls-crystal` | `#dff4f8` + `#3dd5ff` | 主角装备/档案混合皮肤：档案白承载信息，晶体青只强化诊断、焦点与已选状态 |
 | `kshop` | `--wb-accent` → `--dls-crystal` | `#3dd5ff` | 与技能、调制统一为 DLS 晶体青；保留价格/结算中的琥珀作为功能色 |
 | `npcshop` | `--wb-accent` | `#e5a64d` | 商业金 |
 | `crafting` | `--wb-accent` | `#f1b83b` | 锻造琥珀；可与 `dls-energetic` 对齐 |
 | `skills` | `--wb-accent` → `--dls-crystal` | `#3dd5ff` | 与调制统一为 DLS 晶体青 |
 | `equipment-tuning` | `--wb-accent` → `--dls-crystal` | `#3dd5ff` | 保持，收敛变量名 |
 | `intelligence` | `--wb-accent` | `#d8b656` | 档案金 |
+
+### 7.1 主角构筑 / 档案混合皮肤
+
+`character-build` 与 `profile` 是同一套 protagonist-facing 装备共振接口，不复用 K 点商城的商业语气。常态名称、原始属性、说明和档案层级使用档案白/中性灰；DLS 晶体青用于诊断仪表、键盘焦点、选择源和临时预览边界，不能把整页普通信息都染成青色。
+
+在该 profile 内，当前轻装读数使用 `success`、重装读数使用 `danger`，标准负载保持档案白中性色；`warning` 仍保留给容量临界、待处理等通用语义。旧 PlayerInfo 的绿—黄—红负重色带是有出处的数据可视化例外，只能通过 character profile 的三个局部 `--character-weight-band-*` token 消费，不能反向改变普通控件状态。候选装备、预测数值和普通物品筛选不得借用这些颜色暗示尚未发生的结果。筛选器继续使用 inventory 的中性灰状态，即使外层处于 `data-workbench-skin="character"`，也不改成 DLS 青色分类导航。
+
+Character Build 的顶部候选操作、完整/紧凑实体格、个人信息 3×3 分组、八抗性图标和单 Canvas 放大预览都继续服从这套混合皮肤；结构优化不引入新的 DLS 色值。抗性 inline SVG 使用 `currentColor` 并只作装饰，文字/原值才是信息权威；武器威力的 `log10` 压缩只是几何表达，不对应新的 DLS 能量色谱。纸娃娃放大预览沿用同一 stage/Canvas 与既有 token，不另造“预览专用”颜色系统。
 
 ---
 
@@ -164,6 +173,8 @@
 
 ## 10. 版本
 
+- **v1.4 · 2026-07-27** 确认 Character Build 顶部操作、候选 density、属性抗性图标与单 Canvas 放大预览仍使用 protagonist 档案白 + DLS 晶体青混合皮肤；结构变化不引入新色值，抗性 SVG 统一 `currentColor`。
+- **v1.3 · 2026-07-26** 增加主角 `character-build/profile` 的档案白 + DLS 晶体青混合皮肤；冻结权威负重语义色边界，并规定普通物品筛选保持 inventory 中性。
 - **v1.2 · 2026-07-18** 装备调制界面新增 `--tuning-active-*` 选中态原子与 `--tuning-tier-gold / --tuning-danger / --tuning-convert-arrow / --tuning-delta / --tuning-fast` 局部语义 token，统一 active/selected 视觉语言。
 - **v1.1 · 2026-07-17** 技能面板收敛到 `dls-crystal #3dd5ff`；新增 `--dls-crystal-bright` / `--dls-crystal-soft` / `--dls-crystal-faint`；`theta-kinetic` 谱系改为仅用于信息/控制平面，不再用于技能。
 - **v1.0 · 2026-07-17** 初始版本：建立 DLS 物质光谱、θ-域表达光谱、商业/档案色谱、语义色与面板映射。

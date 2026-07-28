@@ -53,6 +53,7 @@
 .equipment-inspector-toolbar {
     min-height:38px; padding-top:7px; display:flex; align-items:center; justify-content:space-between; gap:10px;
 }
+.equipment-inspector-toolbar-controls { width:100%; justify-content:space-between; }
 .equipment-inspector-pan-controls,
 .equipment-inspector-zoom-controls { display:flex; align-items:center; gap:4px; }
 .equipment-inspector-control {

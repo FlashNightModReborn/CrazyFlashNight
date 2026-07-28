@@ -11,13 +11,13 @@ namespace CF7Launcher.Guardian.Hud
     /// <summary>
     /// 替代 web overlay.html #safe-exit-panel。
     ///
-    /// 关键约束：sv 是通用存盘事件（SaveManager.saveAll 在商店关闭、升级、自动存盘等场景都会推 sv:1/2），
+    /// 关键约束：sv 是通用存盘事件（SaveManager.saveAll 在商店关闭、升级、自动存盘等场景都会推 sv:1/2/3），
     /// **不能**单凭 sv 决定面板可见性，否则普通自动存盘也会弹"取消/退出"——这是 web 老路径的隐式正确行为
     /// （web openSafeExitPanel 仅在 SAFEEXIT 按钮 click 路径里 display:block；UiData 'sv' 只更新状态文本）。
     ///
-    /// 此 widget 模仿该语义：必须由 SAFEEXIT click 显式 Arm() 才允许显示；sv:1/2 仅更新内部状态机。
+    /// 此 widget 模仿该语义：必须由 SAFEEXIT click 显式 Arm() 才允许显示；sv:1/2/3 仅更新内部状态机。
     /// 路径：玩家点 SAFEEXIT → router.SAFEEXIT case → widget.Arm() + SendGameCommand("safeExit") →
-    ///       AS2 存盘 → UiData "sv:1" → "sv:2"（显示 取消/退出 按钮）→ 取消（本地 disarm）/ 退出（EXIT_CONFIRM）。
+    ///       AS2 存盘 → "sv:1" → 成功 "sv:2"（取消/退出）或失败 "sv:3"（取消/重试）。
     ///
     /// 位置：与 RightHudLayout 的条件状态槽共用锚点（viewport 右上 right:48px），
     /// Done 状态在同一 252×32 行内展开为“状态 / 取消 / 退出”，不向下新增一行；
@@ -30,10 +30,12 @@ namespace CF7Launcher.Guardian.Hud
         private const float STATUS_FONT_BASE_PX = 13f;
         private const float BUTTON_FONT_BASE_PX = 13f;
 
-        private enum SaveState { Idle, Saving, Done }
+        private enum SaveState { Idle, Saving, Done, Failed }
 
         private static readonly string[] DONE_KEYS   = { "EXIT_CANCEL", "EXIT_CONFIRM" };
         private static readonly string[] DONE_LABELS = { "取消",        "退出游戏"     };
+        private static readonly string[] FAILED_KEYS   = { "EXIT_CANCEL", "SAFEEXIT" };
+        private static readonly string[] FAILED_LABELS = { "取消",        "重试"     };
 
         private readonly Control _anchor;
         private readonly LauncherCommandRouter _router;
@@ -42,6 +44,8 @@ namespace CF7Launcher.Guardian.Hud
         private volatile SaveState _state = SaveState.Idle;
         private volatile bool _armed;        // 仅由 SAFEEXIT click 路径置 true；通用 sv 推送不会显示面板
         private volatile bool _dismissed;
+        private readonly object _exitAuthorizationGate =
+            new object();
         private int _hoverIndex = -1;
         private int _downIndex = -1;         // Down 命中按钮 idx；Click 时若 idx 不匹配则忽略（destructive 操作必需）
         private int _doneAutoDismissRemainingMs;
@@ -98,17 +102,77 @@ namespace CF7Launcher.Guardian.Hud
             _doneAutoDismissRemainingMs = 0;
         }
 
+        /// <summary>
+        /// safeExit 命令未送达时立即结束 Saving。只允许当前显式 armed session
+        /// 进入 Failed；普通后台存盘或过期失败回调不能自行拉起面板。
+        /// </summary>
+        public void FailAttempt()
+        {
+            bool wasTicking = WantsAnimationTick;
+            lock (_exitAuthorizationGate)
+            {
+                if (!_armed) return;
+                _state = SaveState.Failed;
+                _hoverIndex = -1;
+                _downIndex = -1;
+                _doneAutoDismissRemainingMs = 0;
+            }
+            FireBounds();
+            if (wasTicking) FireAnimationStateChanged();
+        }
+
+        /// <summary>
+        /// Consumes the exact armed+Done confirmation once. Raw/replayed EXIT_CONFIRM
+        /// commands therefore cannot exit while unarmed, Saving or Failed.
+        /// </summary>
+        public bool TryAuthorizeExitConfirm()
+        {
+            bool wasTicking = WantsAnimationTick;
+            lock (_exitAuthorizationGate)
+            {
+                if (!_armed || _state != SaveState.Done)
+                    return false;
+                Disarm();
+            }
+            FireBounds();
+            if (wasTicking) FireAnimationStateChanged();
+            return true;
+        }
+
         // ── 测试钩子（InternalsVisibleTo("Launcher.Tests")） ──
         internal bool IsArmed { get { return _armed; } }
         internal bool IsDismissed { get { return _dismissed; } }
         internal bool IsDoneState { get { return _state == SaveState.Done; } }
         internal bool IsSavingState { get { return _state == SaveState.Saving; } }
+        internal bool IsFailedState { get { return _state == SaveState.Failed; } }
         internal int  InternalDownIndex { get { return _downIndex; } set { _downIndex = value; } }
         internal int DoneAutoDismissRemainingMsForTest { get { return _doneAutoDismissRemainingMs; } }
         internal static int DoneAutoDismissMsForTest { get { return DONE_AUTO_DISMISS_MS; } }
         internal void ForceGameReady(bool ready) { _gameReady = ready; }
         internal int HitButtonForTest(int sx, int sy, Rectangle bounds) { return HitButton(sx, sy, bounds); }
         internal void SetHoverForTest(int index) { SetHover(index); }
+
+        /// <summary>
+        /// useNativeHud=false keeps this widget as a non-rendered Host authority. The fallback
+        /// UiData tee forwards only the packet delta here; this consumer reads changed keys only,
+        /// so it does not need a second process-wide snapshot.
+        /// </summary>
+        internal void HandleUiData(UiDataPacket packet)
+        {
+            if (packet == null || packet.IsLegacy) return;
+            var delta =
+                new Dictionary<string, string>();
+            var changed =
+                new HashSet<string>();
+            foreach (KeyValuePair<string, string> pair
+                in UiDataPacketParser.ParseFrom(packet))
+            {
+                delta[pair.Key] = pair.Value;
+                changed.Add(pair.Key);
+            }
+            if (changed.Count != 0)
+                OnUiDataChanged(delta, changed);
+        }
 
         /// <summary>
         /// 提取 Click 分支供测试（绕过 ScreenBounds 依赖）。返回是否真正触发了 dispatch（true=EXIT_CONFIRM 或 dismiss 路径执行了）。
@@ -119,9 +183,12 @@ namespace CF7Launcher.Guardian.Hud
             bool wasTicking = WantsAnimationTick;
             int down = _downIndex;
             _downIndex = -1;
-            if (upIdx < 0 || upIdx >= DONE_KEYS.Length) return ClickOutcome.OutOfRange;
+            string[] keys = _state == SaveState.Done
+                ? DONE_KEYS
+                : (_state == SaveState.Failed ? FAILED_KEYS : null);
+            if (keys == null || upIdx < 0 || upIdx >= keys.Length) return ClickOutcome.OutOfRange;
             if (upIdx != down) return ClickOutcome.MismatchedDownUp;
-            string key = DONE_KEYS[upIdx];
+            string key = keys[upIdx];
             if (key == "EXIT_CANCEL")
             {
                 _armed = false;
@@ -132,16 +199,19 @@ namespace CF7Launcher.Guardian.Hud
                 if (wasTicking) FireAnimationStateChanged();
                 return ClickOutcome.Cancelled;
             }
-            _armed = false;
-            _doneAutoDismissRemainingMs = 0;
-            FireBounds();
-            if (wasTicking) FireAnimationStateChanged();
+            if (key == "SAFEEXIT")
+            {
+                _doneAutoDismissRemainingMs = 0;
+                try { _router.Dispatch(key); }
+                catch (Exception ex) { LogManager.Log("[SafeExitPanel] retry dispatch failed ex=" + ex.Message); }
+                return ClickOutcome.Retried;
+            }
             try { _router.Dispatch(key); }
             catch (Exception ex) { LogManager.Log("[SafeExitPanel] dispatch failed key=" + key + " ex=" + ex.Message); }
             return ClickOutcome.Confirmed;
         }
 
-        internal enum ClickOutcome { OutOfRange, MismatchedDownUp, Cancelled, Confirmed }
+        internal enum ClickOutcome { OutOfRange, MismatchedDownUp, Cancelled, Confirmed, Retried }
 
         public bool WantsAnimationTick
         {
@@ -206,29 +276,35 @@ namespace CF7Launcher.Guardian.Hud
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
                 try
                 {
-                    int statusW = _state == SaveState.Done ? Math.Max(1, (int)Math.Round(r.Width * 0.4)) : r.Width;
+                    bool hasActions = _state == SaveState.Done || _state == SaveState.Failed;
+                    int statusW = hasActions ? Math.Max(1, (int)Math.Round(r.Width * 0.4)) : r.Width;
                     Rectangle statusRect = new Rectangle(localX, localY, statusW, statusH);
                     bool saving = _state == SaveState.Saving;
+                    bool failed = _state == SaveState.Failed;
+                    Color accent = failed
+                        ? NativeHudTheme.Danger
+                        : (saving ? NativeHudTheme.Warning : NativeHudTheme.Success);
                     Color statusFill = NativeHudTheme.Blend(NativeHudTheme.PanelFillDense,
-                        saving ? NativeHudTheme.Warning : NativeHudTheme.Success, 0.14f, 238);
+                        accent, 0.14f, 238);
                     NativeHudTheme.DrawPanel(g, statusRect, scale, statusFill,
-                        saving ? NativeHudTheme.Warning : NativeHudTheme.Success, true);
-                    string statusText = _state == SaveState.Saving ? "存盘中…" : "存盘成功";
+                        accent, true);
+                    string statusText = saving ? "存盘中…" : (failed ? "存盘失败" : "存盘成功");
                     g.DrawString(statusText, statusFont, fg, statusRect, fmt);
 
-                    if (_state == SaveState.Done)
+                    if (hasActions)
                     {
+                        string[] labels = failed ? FAILED_LABELS : DONE_LABELS;
                         int buttonAreaX = statusRect.Right;
                         int buttonAreaW = Math.Max(1, r.Right - hudOrigin.X - buttonAreaX);
-                        int btnW = buttonAreaW / DONE_KEYS.Length;
-                        for (int i = 0; i < DONE_KEYS.Length; i++)
+                        int btnW = buttonAreaW / labels.Length;
+                        for (int i = 0; i < labels.Length; i++)
                         {
                             int bx = buttonAreaX + i * btnW;
-                            int bw = (i == DONE_KEYS.Length - 1) ? (buttonAreaW - i * btnW) : btnW;
+                            int bw = (i == labels.Length - 1) ? (buttonAreaW - i * btnW) : btnW;
                             Rectangle btn = new Rectangle(bx, localY, bw, statusH);
                             bool hover = (i == _hoverIndex);
-                            NativeHudTheme.DrawButton(g, btn, scale, hover, false, false, i == 1);
-                            g.DrawString(DONE_LABELS[i], buttonFont, hover ? fgHover : (Brush)fg, btn, fmt);
+                            NativeHudTheme.DrawButton(g, btn, scale, hover, false, false, !failed && i == 1);
+                            g.DrawString(labels[i], buttonFont, hover ? fgHover : (Brush)fg, btn, fmt);
                         }
                     }
                 }
@@ -273,18 +349,19 @@ namespace CF7Launcher.Guardian.Hud
 
         private int HitButton(int sx, int sy, Rectangle r)
         {
-            if (_state != SaveState.Done) return -1;
+            if (_state != SaveState.Done && _state != SaveState.Failed) return -1;
             if (sy < r.Y || sy >= r.Bottom) return -1;
             int statusW = Math.Max(1, (int)Math.Round(r.Width * 0.4));
             int buttonAreaX = r.X + statusW;
             if (sx < buttonAreaX || sx >= r.Right) return -1;
             int buttonAreaW = r.Right - buttonAreaX;
-            int btnW = buttonAreaW / DONE_KEYS.Length;
+            int buttonCount = 2;
+            int btnW = buttonAreaW / buttonCount;
             if (btnW <= 0) return -1;
             int relX = sx - buttonAreaX;
             int idx = relX / btnW;
-            if (idx >= DONE_KEYS.Length) idx = DONE_KEYS.Length - 1;
-            if (idx < 0 || idx >= DONE_KEYS.Length) return -1;
+            if (idx >= buttonCount) idx = buttonCount - 1;
+            if (idx < 0 || idx >= buttonCount) return -1;
             return idx;
         }
 
@@ -321,6 +398,7 @@ namespace CF7Launcher.Guardian.Hud
                 SaveState next = _state;
                 if (sv == 1) next = SaveState.Saving;
                 else if (sv == 2) next = SaveState.Done;
+                else if (sv == 3) next = SaveState.Failed;
                 else next = SaveState.Idle;
                 if (next != _state)
                 {

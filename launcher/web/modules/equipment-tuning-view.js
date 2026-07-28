@@ -10,6 +10,8 @@ var EquipmentTuningView = (function() {
     var wireRef = Model.wireRef;
     var sameRef = Model.sameRef;
     var refKey = Model.refKey;
+    var normalizeTuningSource = Model.normalizeTuningSource;
+    var tuningSourceSupports = Model.tuningSourceSupports;
     var quickCommitEligible = Model.quickCommitEligible;
     var normalizeConversionCandidates = Model.normalizeConversionCandidates;
     var previewIntentKey = Model.previewIntentKey;
@@ -38,6 +40,10 @@ var EquipmentTuningView = (function() {
             if (callback) callback({success:false, error:'inventory_refresh_unavailable'});
             return false;
         };
+        this._refreshLoadout = options.refreshLoadout || function(_, callback) {
+            if (callback) callback({success:false, error:'loadout_refresh_unavailable'});
+            return false;
+        };
         this._resolveSlot = options.resolveSlot || function() { return null; };
         this._onStateChange = options.onStateChange || function() {};
         this._toast = options.toast || function() {};
@@ -46,7 +52,8 @@ var EquipmentTuningView = (function() {
             if (callback) callback({success:false, error:'inventory_projection_unavailable'});
             return false;
         };
-        this._openInspector = typeof options.openInspector === 'function'
+        this._inspectorAvailable = typeof options.openInspector === 'function';
+        this._openInspector = this._inspectorAvailable
             ? options.openInspector : function() { return false; };
         this._closeInspector = typeof options.closeInspector === 'function'
             ? options.closeInspector : function() { return false; };
@@ -75,6 +82,8 @@ var EquipmentTuningView = (function() {
         this._modNavigator = null;
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
+        this._infoPanelOpen = false;
+        this._infoSubject = null;
         this._modConfirmationMode = options.modConfirmationMode === 'fast' ? 'fast' : 'safe';
         this._quickCommitIntent = null;
         this._busy = false;
@@ -87,6 +96,7 @@ var EquipmentTuningView = (function() {
         this._refreshRetryPending = false;
         this._refreshReconcileCallId = '';
         this._refreshChanged = false;
+        this._loadoutBarrier = null;
         this._status = '请选择左侧背包装备';
         this._mux = new EquipmentTuningRuntime.RequestMux({
             send:function(message) { return self._send(message); },
@@ -162,12 +172,14 @@ var EquipmentTuningView = (function() {
         this._refreshRetryPending = false;
         this._refreshReconcileCallId = '';
         this._refreshChanged = false;
+        this._loadoutBarrier = null;
         this._conversionCandidates = [];
         this._conversionLoading = false;
         this._conversionError = '';
         this._modFilterPath = [];
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
+        this._resetInfoPanel();
         this._quickCommitIntent = null;
         this._status = '调制会话已关闭';
         this._emit();
@@ -186,6 +198,7 @@ var EquipmentTuningView = (function() {
         return !this._busy && !this._readPending && !this._detaching && !this._needsReconcile
             && !this._refreshRetryRequired && !this._refreshRetryPending
             && !this._inventoryWriteHandle
+            && !this._loadoutBarrier
             && !this._conversionLoading
             && this._mux.debugState().pendingCount === 0;
     };
@@ -233,8 +246,15 @@ var EquipmentTuningView = (function() {
                 || (this._needsReconcile && !recoveryCallId)
                 || this._mux.debugState().pendingCount > 0) return false;
         this._closeInspector();
-        var ref = wireRef(slot);
+        var ref = normalizeTuningSource({
+            sourceKind:'inventory',
+            containerId:'背包',
+            slot:Number(slot.physicalSlot != null ? slot.physicalSlot : slot.slot),
+            expectedLease:String(slot.slotLease != null ? slot.slotLease : slot.expectedLease)
+        });
+        if (!ref) return false;
         this._setConversionProjection(false);
+        this._resetInfoPanel();
         this._source = ref;
         this._sourceItem = slot.item;
         this._target = null;
@@ -251,8 +271,34 @@ var EquipmentTuningView = (function() {
         return true;
     };
 
+    TuningView.prototype.handleLoadoutSelection = function(source, item) {
+        var normalized = normalizeTuningSource(source);
+        if (!normalized || normalized.sourceKind !== 'loadout' || !item
+                || item.itemKind !== 'equipment' || this._busy || this._readPending
+                || this._detaching || this._refreshRetryRequired || this._refreshRetryPending
+                || this._needsReconcile || this._mux.debugState().pendingCount > 0) return false;
+        this._closeInspector();
+        this._setConversionProjection(false);
+        this._source = normalized;
+        this._sourceItem = item;
+        this._target = null;
+        this._targetItem = null;
+        this._snapshot = null;
+        this._preview = null;
+        this._replaceCandidateKey = '';
+        this._replaceCandidateName = '';
+        this._resetInfoPanel();
+        this._quickCommitIntent = null;
+        if (!tuningSourceSupports(normalized, this._operation)) this._operation = 'enhance';
+        this._status = '正在读取当前槽位的权威调制状态';
+        this.render({preserveScroll:false});
+        this.requestSnapshot();
+        return true;
+    };
+
     TuningView.prototype.selectConversionTarget = function(slot) {
         if (this._operation !== 'convert' || !this._source || !this._snapshot
+                || !tuningSourceSupports(this._source, 'convert')
                 || !slot || !slot.occupied || !slot.item || slot.item.itemKind !== 'equipment'
                 || this._busy || this._readPending || this._detaching || this._conversionLoading
                 || this._refreshRetryRequired || this._refreshRetryPending || this._needsReconcile) return false;
@@ -273,7 +319,7 @@ var EquipmentTuningView = (function() {
 
     TuningView.prototype._canInspect = function(item) {
         var gender = this._snapshot && String(this._snapshot.gender || '');
-        return !!item && (gender === '男' || gender === '女')
+        return this._inspectorAvailable && !!item && (gender === '男' || gender === '女')
             && !this._busy && !this._readPending && !this._detaching && !this._needsReconcile
             && !this._refreshRetryRequired && !this._refreshRetryPending
             && !this._inventoryWriteHandle && !this._conversionLoading && !this._enhancePreviewTimer
@@ -344,6 +390,12 @@ var EquipmentTuningView = (function() {
             }
             self._emit();
             self.render();
+            if (self._snapshot && reconcileAfterCallId && self._loadoutBarrier
+                    && self._loadoutBarrier.kind === 'unknown'
+                    && self._loadoutBarrier.callId === reconcileAfterCallId) {
+                self._finishLoadoutBarrier();
+                return;
+            }
             if (self._snapshot && self._operation === 'convert') self._setConversionProjection(true);
         });
         if (!callId && this._readPending) { this._readPending = false; this.render(); }
@@ -354,7 +406,7 @@ var EquipmentTuningView = (function() {
         if (!this._source || this._busy || this._readPending || this._detaching
                 || this._refreshRetryRequired || this._refreshRetryPending || this._needsReconcile) return false;
         operation = String(operation || this._operation);
-        if (!isOperation(operation)) return false;
+        if (!isOperation(operation) || !tuningSourceSupports(this._source, operation)) return false;
         this._operation = operation;
         var payload = {operation:operation, source:this._source};
         extra = extra || {};
@@ -432,6 +484,9 @@ var EquipmentTuningView = (function() {
         if (this._busy || this._readPending || this._detaching || this._needsReconcile
             || this._refreshRetryRequired || this._refreshRetryPending
             || !this._preview || !this._preview.tuningToken) return false;
+        if (this._source && this._source.sourceKind === 'loadout') {
+            return this._commitLoadout();
+        }
         this._quickCommitIntent = null;
         var inventoryWrite = this._beginWrite('equipment_tuning.commit');
         if (!inventoryWrite) {
@@ -505,6 +560,211 @@ var EquipmentTuningView = (function() {
         return !!callId;
     };
 
+    TuningView.prototype._validLoadoutCommit = function(response) {
+        return !!response && response.success === true && !!response.snapshot
+            && Array.isArray(response.materials)
+            && Array.isArray(response.inventorySnapshots)
+            && response.inventorySnapshots.length === 0;
+    };
+
+    TuningView.prototype._commitLoadout = function() {
+        if (!this._source || this._source.sourceKind !== 'loadout'
+                || !tuningSourceSupports(this._source, this._preview.operation)) return false;
+        this._quickCommitIntent = null;
+        var write = this._beginWrite('equipment_tuning.commit.loadout');
+        if (!write) {
+            this._toast('角色构筑正在执行其他操作，请稍候。');
+            return false;
+        }
+        this._inventoryWriteHandle = write;
+        var self = this;
+        var operation = String(this._preview.operation || '');
+        this._busy = true;
+        this._status = '正在提交当前装备调制，期间不会重放';
+        this._emit();
+        this.render();
+        var settled = false;
+        var callId = this._mux.request(
+            'commit',
+            {expectedTuningToken:String(this._preview.tuningToken)},
+            function(response) {
+                settled = true;
+                if (self._inventoryWriteHandle !== write) return;
+                var exactSuccess = self._validLoadoutCommit(response);
+                var ambiguous = response && response.success === true
+                    || EquipmentTuningRuntime.isAmbiguous(response);
+                self._preview = null;
+                self._busy = false;
+                if (exactSuccess) {
+                    self._snapshot = response.snapshot;
+                    self._needsReconcile = false;
+                    self._lastCommitCallId = '';
+                    self._loadoutBarrier = {
+                        kind:'known',
+                        callId:String(response.callId || ''),
+                        changed:response.noOp !== true,
+                        operation:operation,
+                        source:{
+                            sourceKind:'loadout',
+                            sessionGeneration:self._source.sessionGeneration,
+                            slotKey:self._source.slotKey,
+                            expectedLoadoutRevision:self._source.expectedLoadoutRevision
+                        }
+                    };
+                    self._status = response.noOp
+                        ? '调制无变化，正在同步完整构筑'
+                        : '调制已确认，正在同步完整构筑';
+                    self._emit();
+                    self.render();
+                    self._beginLoadoutRefresh();
+                    return;
+                }
+                if (ambiguous) {
+                    var barrierId = EquipmentTuningRuntime.safeToken(
+                        response && response.reconcileAfterCallId)
+                        || EquipmentTuningRuntime.safeToken(response && response.callId)
+                        || EquipmentTuningRuntime.safeToken(callId);
+                    self._needsReconcile = !!barrierId;
+                    self._lastCommitCallId = barrierId;
+                    self._loadoutBarrier = barrierId ? {
+                        kind:'unknown',
+                        callId:barrierId,
+                        changed:true,
+                        operation:operation,
+                        source:{
+                            sourceKind:'loadout',
+                            sessionGeneration:self._source.sessionGeneration,
+                            slotKey:self._source.slotKey,
+                            expectedLoadoutRevision:self._source.expectedLoadoutRevision
+                        }
+                    } : null;
+                    self._status = barrierId
+                        ? '提交结果不明确，先同步完整构筑再完成调制水位对账'
+                        : '提交结果不明确，但未取得可用对账水位';
+                    self._emit();
+                    self.render();
+                    if (barrierId) self._beginLoadoutRefresh();
+                    else self._finishInventoryWrite(write, false, function() {
+                        self.requestSnapshot();
+                    });
+                    return;
+                }
+                self._loadoutBarrier = null;
+                self._lastCommitCallId = '';
+                self._status = errorMessage(response && response.error);
+                self._finishInventoryWrite(write, false, function() {
+                    self.requestSnapshot();
+                });
+                self._emit();
+                self.render();
+            }
+        );
+        if (!callId && this._inventoryWriteHandle === write) {
+            this._loadoutBarrier = null;
+            this._needsReconcile = false;
+            this._lastCommitCallId = '';
+            this._status = errorMessage('not_sent');
+            this._finishInventoryWrite(write, false, function() { self.requestSnapshot(); });
+            this._emit();
+            this.render();
+        } else if (!settled) {
+            this._lastCommitCallId = callId;
+        }
+        return !!callId;
+    };
+
+    TuningView.prototype._beginLoadoutRefresh = function() {
+        if (!this._loadoutBarrier || !this._inventoryWriteHandle
+                || !this._source || this._source.sourceKind !== 'loadout'
+                || this._busy || this._readPending || this._refreshRetryPending) return false;
+        var self = this;
+        var write = this._inventoryWriteHandle;
+        var barrier = this._loadoutBarrier;
+        var expectedSource = barrier.source;
+        if (!Model.sameLoadoutIdentity(this._source, expectedSource)) {
+            this._refreshRetryRequired = true;
+            this._status = '角色构筑会话已切换；拒绝跨会话采用快照';
+            this._emit();
+            this.render();
+            return false;
+        }
+        this._refreshRetryRequired = false;
+        this._refreshRetryPending = true;
+        this._busy = true;
+        this._status = '正在采用完整 11+4 角色构筑快照';
+        this._emit();
+        this.render();
+        var callbackCalled = false;
+        var started = this._refreshLoadout(this._source, function(result) {
+            callbackCalled = true;
+            if (self._inventoryWriteHandle !== write
+                    || self._loadoutBarrier !== barrier) return;
+            self._refreshRetryPending = false;
+            var source = normalizeTuningSource(result && result.source);
+            var accepted = result && result.success === true
+                && source && source.sourceKind === 'loadout'
+                && Model.sameLoadoutIdentity(source, expectedSource)
+                && result.item && result.item.itemKind === 'equipment';
+            if (!accepted) {
+                self._busy = false;
+                self._refreshRetryRequired = true;
+                self._status = '完整构筑同步失败；必须重试成功后才能继续';
+                self._emit();
+                self.render();
+                return;
+            }
+            self._resetInfoPanel();
+            self._source = source;
+            self._sourceItem = result.item;
+            self._refreshRetryRequired = false;
+            self._busy = false;
+            if (barrier.kind === 'unknown') {
+                self._status = '完整构筑已采用，正在按新 revision 对账调制水位';
+                self._emit();
+                self.render();
+                self.requestSnapshot(barrier.callId);
+                return;
+            }
+            self._finishLoadoutBarrier();
+        });
+        if (!started && !callbackCalled) {
+            this._busy = false;
+            this._refreshRetryPending = false;
+            this._refreshRetryRequired = true;
+            this._status = '当前无法同步完整构筑，请重试';
+            this._emit();
+            this.render();
+        }
+        return !!started;
+    };
+
+    TuningView.prototype._finishLoadoutBarrier = function() {
+        if (!this._loadoutBarrier || !this._inventoryWriteHandle) return false;
+        var barrier = this._loadoutBarrier;
+        var write = this._inventoryWriteHandle;
+        var self = this;
+        this._loadoutBarrier = null;
+        this._needsReconcile = false;
+        this._lastCommitCallId = '';
+        this._refreshRetryRequired = false;
+        this._refreshRetryPending = false;
+        this._busy = false;
+        this._status = barrier.changed
+            ? '当前装备调制已提交并同步'
+            : '当前装备状态已确认';
+        if (!this._finishInventoryWrite(write, false, function() {
+            self._toast(barrier.changed ? '当前装备调制已提交。' : '当前装备无需变化。');
+            self._emit();
+            self.render();
+        })) {
+            this._status = '构筑写锁释放失败，请重新打开面板';
+            this._emit();
+            this.render();
+            return false;
+        }
+        return true;
+    };
+
     TuningView.prototype.setModConfirmationMode = function(mode) {
         mode = mode === 'fast' ? 'fast' : 'safe';
         if (this._modConfirmationMode === mode) return true;
@@ -553,6 +813,7 @@ var EquipmentTuningView = (function() {
         this._refreshReconcileCallId = '';
         this._refreshChanged = false;
         this._setConversionProjection(false);
+        this._resetInfoPanel();
         var slot = this._source ? this._resolveSlot(this._source.containerId, this._source.slot) : null;
         if (!slot || !slot.occupied || !slot.item || slot.item.itemKind !== 'equipment') {
             this._source = null;
@@ -565,7 +826,21 @@ var EquipmentTuningView = (function() {
             this.render();
             return false;
         }
-        this._source = wireRef(slot);
+        this._source = normalizeTuningSource({
+            sourceKind:'inventory',
+            containerId:'背包',
+            slot:Number(slot.physicalSlot != null ? slot.physicalSlot : slot.slot),
+            expectedLease:String(slot.slotLease != null ? slot.slotLease : slot.expectedLease)
+        });
+        if (!this._source) {
+            this._sourceItem = null;
+            this._snapshot = null;
+            this._preview = null;
+            this._status = '背包装备租约无效，请重新选择';
+            this._emit();
+            this.render();
+            return false;
+        }
         this._sourceItem = slot.item;
         this._target = null;
         this._targetItem = null;
@@ -579,6 +854,9 @@ var EquipmentTuningView = (function() {
     TuningView.prototype.retryInventoryRefresh = function() {
         if (!this._refreshRetryRequired || this._refreshRetryPending || this._busy
                 || this._readPending || this._detaching) return false;
+        if (this._source && this._source.sourceKind === 'loadout') {
+            return this._beginLoadoutRefresh();
+        }
         var self = this;
         var reconcileAfterCallId = this._refreshReconcileCallId;
         var changed = this._refreshChanged;
@@ -608,9 +886,15 @@ var EquipmentTuningView = (function() {
         return !!started;
     };
 
+    TuningView.prototype._resetInfoPanel = function() {
+        this._infoPanelOpen = false;
+        this._infoSubject = null;
+    };
+
     TuningView.prototype.setOperation = function(operation) {
         if (!isOperationGroup(operation) || this._busy || this._readPending || this._detaching
-                || this._refreshRetryRequired || this._refreshRetryPending) return false;
+                || this._refreshRetryRequired || this._refreshRetryPending
+                || !tuningSourceSupports(this._source, operation)) return false;
         this._closeInspector();
         if (operation !== 'enhance') {
             if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
@@ -618,7 +902,9 @@ var EquipmentTuningView = (function() {
             this._queuedEnhanceLevel = null;
         }
         var wasConvert = this._operation === 'convert';
+        var operationChanged = this._operation !== operation;
         this._operation = operation;
+        if (operationChanged) this._infoSubject = null;
         this._preview = null;
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
@@ -693,7 +979,9 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype._setConversionProjection = function(active) {
-        active = !!active && this._operation === 'convert' && !!this._sourceItem && !!this._source && !!this._snapshot;
+        active = !!active && this._operation === 'convert'
+            && tuningSourceSupports(this._source, 'convert')
+            && !!this._sourceItem && !!this._source && !!this._snapshot;
         var epoch = ++this._conversionProjectionEpoch;
         if (!active) {
             this._conversionCandidates = [];
@@ -746,7 +1034,19 @@ var EquipmentTuningView = (function() {
             conversionError:this._conversionError,
             modFilterPath:this._modFilterPath.slice(),
             replaceCandidateKey:this._replaceCandidateKey, replaceCandidateName:this._replaceCandidateName,
+            infoPanelOpen:this._infoPanelOpen,
+            infoSubjectKey:this._infoSubject ? String(this._infoSubject.key || '') : '',
             modConfirmationMode:this._modConfirmationMode, quickCommitPending:!!this._quickCommitIntent,
+            sourceKind:this._source && this._source.sourceKind || '',
+            loadoutBarrier:this._loadoutBarrier ? {
+                kind:this._loadoutBarrier.kind,
+                callId:this._loadoutBarrier.callId,
+                changed:this._loadoutBarrier.changed,
+                sessionGeneration:this._loadoutBarrier.source
+                    ? this._loadoutBarrier.source.sessionGeneration : 0,
+                slotKey:this._loadoutBarrier.source
+                    ? this._loadoutBarrier.source.slotKey : ''
+            } : null,
             lastCommitCallId:this._lastCommitCallId, mux:this._mux.debugState()};
     };
 

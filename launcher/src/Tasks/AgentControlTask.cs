@@ -33,6 +33,7 @@ namespace CF7Launcher.Tasks
         private Func<bool> _isRevealPerformed;
         private Func<JObject> _getLaunchSaveStatus;
         private Func<bool> _openEquipmentTuning;
+        private Func<bool> _openCharacterBuild;
         private Func<JObject> _getActivePanelStatus;
         private JObject _runtimeSaveStatus;
         private bool _gameEnteredObserved;
@@ -121,6 +122,15 @@ namespace CF7Launcher.Tasks
             lock (_gate) { _openEquipmentTuning = openEquipmentTuning; }
         }
 
+        /// <summary>
+        /// Injects the fixed agent-only character-build opener. The delegate owns the exact
+        /// profile=battlebox/view=build/source=agent_control payload; HTTP cannot choose any of it.
+        /// </summary>
+        public void SetCharacterBuildOpenAction(Func<bool> openCharacterBuild)
+        {
+            lock (_gate) { _openCharacterBuild = openCharacterBuild; }
+        }
+
         /// <summary>Read-only panel observation for outer runners; never opens or mutates a panel.</summary>
         public void SetActivePanelStatusProvider(Func<JObject> getActivePanelStatus)
         {
@@ -146,6 +156,8 @@ namespace CF7Launcher.Tasks
                         return Shutdown().ToString(Newtonsoft.Json.Formatting.None);
                     case "openEquipmentTuning":
                         return OpenEquipmentTuning(msg).ToString(Newtonsoft.Json.Formatting.None);
+                    case "openCharacterBuild":
+                        return OpenCharacterBuild(msg).ToString(Newtonsoft.Json.Formatting.None);
                     default:
                         return BuildError("unsupported_action", "unsupported action: " + action).ToString(Newtonsoft.Json.Formatting.None);
                 }
@@ -271,6 +283,16 @@ namespace CF7Launcher.Tasks
 
         private JObject OpenEquipmentTuning(JObject msg)
         {
+            return OpenAgentWorkbench(msg, false);
+        }
+
+        private JObject OpenCharacterBuild(JObject msg)
+        {
+            return OpenAgentWorkbench(msg, true);
+        }
+
+        private JObject OpenAgentWorkbench(JObject msg, bool characterBuild)
+        {
             JToken expectedSlotToken = msg["expectedSlot"];
             string expectedSlot = expectedSlotToken != null && expectedSlotToken.Type == JTokenType.String
                 ? expectedSlotToken.Value<string>()
@@ -329,30 +351,50 @@ namespace CF7Launcher.Tasks
                     "expectedAttemptId must match the current launcher and runtime save attempt");
             }
 
-            Func<bool> openEquipmentTuning;
-            lock (_gate) { openEquipmentTuning = _openEquipmentTuning; }
-            if (openEquipmentTuning == null)
+            Func<bool> open;
+            lock (_gate)
+            {
+                open = characterBuild
+                    ? _openCharacterBuild : _openEquipmentTuning;
+            }
+            if (open == null)
             {
                 return BuildError(
-                    "equipment_tuning_open_unavailable",
-                    "equipment tuning opener is not initialized");
+                    characterBuild
+                        ? "character_build_open_unavailable"
+                        : "equipment_tuning_open_unavailable",
+                    characterBuild
+                        ? "character build opener is not initialized"
+                        : "equipment tuning opener is not initialized");
             }
 
             bool sent;
-            try { sent = openEquipmentTuning(); }
+            try { sent = open(); }
             catch (Exception ex)
             {
-                LogManager.Log("[AgentControlTask] equipment tuning opener exception: " + ex);
-                return BuildError("equipment_tuning_open_exception", ex.Message);
+                LogManager.Log("[AgentControlTask] "
+                    + (characterBuild ? "character build" : "equipment tuning")
+                    + " opener exception: " + ex);
+                return BuildError(
+                    characterBuild
+                        ? "character_build_open_exception"
+                        : "equipment_tuning_open_exception",
+                    ex.Message);
             }
             if (!sent)
             {
                 return BuildError(
-                    "equipment_tuning_open_failed",
+                    characterBuild
+                        ? "character_build_open_failed"
+                        : "equipment_tuning_open_failed",
                     "AS2 openInventoryWorkbench command was not sent");
             }
 
-            return BuildStatus(true, "equipment_tuning_panel_open_requested");
+            return BuildStatus(
+                true,
+                characterBuild
+                    ? "character_build_panel_open_requested"
+                    : "equipment_tuning_panel_open_requested");
         }
 
         private JObject BuildStatus(bool success, string note)

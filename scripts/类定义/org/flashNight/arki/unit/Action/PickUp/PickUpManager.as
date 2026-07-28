@@ -92,6 +92,28 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         } else if (itemName == "K点") {
             _root.虚拟币 += value;
             str += "K点" + value;
+        } else if (ItemUtil.isInformation(itemName)) {
+            // 生成后到实际拾取之间，其他奖励可能已占用剩余容量；这里再次按逐物品
+            // maxvalue 结算，避免同屏多个拾取物越界或变成“捡了但没增加”。
+            var settlement:Object = ItemUtil.acquireReward([
+                {name:itemName, value:value}
+            ]);
+            if (!settlement.success) {
+                _root.发布消息("情报结算失败，暂时无法拾取！");
+                return;
+            }
+            var conversion:Object = settlement.conversions[0];
+            var accepted:Number = Number(conversion.accepted || 0);
+            var overflow:Number = Number(conversion.overflow || 0);
+            var overflowMoney:Number = Number(conversion.money || 0);
+            if (accepted > 0) str += itemName + accepted + "个";
+            else str += itemName + "已达持有上限";
+            if (overflow > 0 && overflowMoney > 0) {
+                str += "，超出的" + overflow + "个已折算为金币" + overflowMoney;
+            } else if (overflow > 0) {
+                str += "，超出部分不再重复计入";
+            }
+            str += "。";
         } else if (!拾取者 && Key.isDown(_root.组合键) && this.拾取并装备(itemName, value)) {
             str = "已拾取" + itemName;
         } else if (_root.singleAcquire(itemName, value)) {
@@ -101,6 +123,8 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             return;
         }
 
+        // 金币/K 点与快捷装备分支不经过 ItemUtil.acquire()，成功拾取后也必须落脏。
+        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
         PickUpManager.claimOneTimePickup(target.一次性领取ID);
         
         // 销毁对象
@@ -184,13 +208,15 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             数量 = 1;
         }
 
+        var exactCurrency:Boolean = parameterObject.精确货币数量 === true;
         if (物品名 === "金币") 物品名 = "金钱";
-        if (物品名 === "金钱" && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
+        if (物品名 === "金钱" && !exactCurrency
+                && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";
         }
 
         // 根据等级对金币和K点掉落进行数量补正
-        if (物品名 === "K点"){
+        if (!exactCurrency && 物品名 === "K点"){
             if (数量 < 10){
                 数量 += 10;
             }
@@ -203,7 +229,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                     数量 = Math.floor(数量 * 0.5);
                 }
             }
-        }else if (物品名 === "金钱"){
+        }else if (!exactCurrency && 物品名 === "金钱"){
             if (数量 < 10){
                 数量 += 10;
             }

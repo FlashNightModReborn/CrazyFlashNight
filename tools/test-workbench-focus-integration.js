@@ -374,6 +374,45 @@ test('shell modal portal remains interactive above an active SecondaryPage', che
     assertScopeResources(check, environment, 0, 'after secondary modal test cleanup');
 });
 
+test('shared HelpAction owns one standard header entry and restores focus after Escape', check => {
+    const environment = loadEnvironment();
+    const {shell} = makeShell(environment);
+    const help = new environment.Components.HelpAction({
+        shell,
+        spec:{
+            kind:'test-help',
+            ariaLabel:'Open test help',
+            title:'Help',
+            message:'Shared workbench guidance'
+        }
+    });
+    const button = help.button;
+    check.ok(button.classList.contains('workbench-help-btn'), 'standard help class is present');
+    check.equal(button.getAttribute('aria-label'), 'Open test help', 'domain aria label is applied');
+    check.equal(button.listenerCount('click'), 1, 'one click listener is installed');
+
+    button.focus();
+    button.dispatch('click');
+    check.equal(shell.getModalKind(), 'test-help', 'help opens through the shared shell modal');
+    check.equal(shell._header.inert, true, 'help modal suppresses header interaction');
+    check.equal(shell._body.inert, true, 'help modal suppresses body interaction');
+    check.ok(shell._modalLayer.querySelector('.workbench-modal-action.primary'),
+        'default close action is supplied');
+    assertScopeResources(check, environment, 1, 'while shared help is open');
+
+    environment.document.dispatch('keydown', {key:'Escape'});
+    check.equal(shell.hasModal(), false, 'Escape closes shared help');
+    check.equal(environment.document.activeElement, button, 'focus returns to help entry');
+    assertScopeResources(check, environment, 0, 'after shared help closes');
+
+    help.update(null);
+    check.equal(button.hidden, true, 'empty spec hides the standard entry');
+    help.destroy();
+    check.equal(button.listenerCount('click'), 0, 'destroy removes the help listener');
+    check.equal(button.parentNode, null, 'destroy removes the help entry');
+    shell.destroy();
+});
+
 test('modal replacement tolerates an onClose reentrant open without orphaning a scope', check => {
     const environment = loadEnvironment();
     const {shell} = makeShell(environment);

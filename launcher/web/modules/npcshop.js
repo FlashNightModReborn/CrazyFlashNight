@@ -509,8 +509,7 @@ var NpcShop = (function() {
             onClose:closeSettlement,
             onOrganize:openSpaceOrganizer,
             onCommit:commitTrade,
-            onAdjust:adjustIntent,
-            onPurchaseMax:setPurchaseMax,
+            onSetQuantity:setIntentQuantity,
             onBulkSale:setBulkSale,
             onRemove:removeIntent,
             onHelp:openHelpPage,
@@ -586,20 +585,21 @@ var NpcShop = (function() {
                 'insufficient_quantity','nothing_to_sell','sell_forbidden'].indexOf(error) >= 0) {
             handleError(response); refreshSnapshot(); return;
         }
-        handleError(response); renderSettlementFailure(error, restoreSettlementCheckpoint());
+        handleError(response);
+        var recovered = restoreSettlementCheckpoint();
+        if (recovered) renderSettlement();
+        renderSettlementFailure(error, recovered);
     }
-    function adjustIntent(kind, identity, delta) {
+    function setIntentQuantity(kind, identity, quantity, reason) {
         var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; var line = map[identity]; if (!line || _busy || _previewBusy || _needsReconcile) return;
         var limit = kind === 'purchase' ? Number(line.purchaseLimit || line.maxQuantity) : line.maxQuantity;
-        line.quantity = Math.max(1, Math.min(limit, line.quantity + delta));
+        if (kind === 'purchase' && reason === 'maximum') {
+            limit = Math.max(limit, Number(line.maxPurchasable || 0));
+        }
+        line.quantity = Math.max(1, Math.min(limit, Math.floor(Number(quantity) || 1)));
         if (kind === 'purchase') syncCatalogIntentCard(line.item);
         else syncAllIntentCards();
         requestTradePreview();
-    }
-    function setPurchaseMax(identity) {
-        var line = _purchaseIntents[identity];
-        if (!line || _busy || _previewBusy || _needsReconcile || Number(line.maxPurchasable) < 1) return;
-        line.quantity = Number(line.maxPurchasable); syncCatalogIntentCard(line.item); requestTradePreview();
     }
     function setBulkSale(identity, enabled) {
         var line = _saleIntents[identity];
@@ -987,7 +987,6 @@ var NpcShop = (function() {
         };
         return messages[error] || '操作失败，请重试。';
     }
-
     return {debugState:function() {
         return {shopId:_shopId, activeRight:_activeRight, busy:_busy, needsReconcile:_needsReconcile,
             purchaseCount:Object.keys(_purchaseIntents).length, saleCount:Object.keys(_saleIntents).length,

@@ -526,6 +526,7 @@ async function main() {
     assert(!builderSource.includes('dressup-armor-male'));
     assert(builderSource.includes("recursiveFiles(path.join(ROOT, 'launcher', 'web', 'icons'))"));
     assert(builderSource.includes("recursiveFiles(path.join(ROOT, 'launcher', 'web', 'assets', 'dressup'))"));
+    assert(builderSource.includes("'workbench-inspection-viewport.js'"));
     assert(builderSource.includes('if (pageErrors.length || failedRequests.length)'));
     assert(builderSource.includes('nestedMotionLayers(childNested'));
     assert(reviewSource.includes("'cf7-equipment-inspector-review:' + dataset.reviewDigest"));

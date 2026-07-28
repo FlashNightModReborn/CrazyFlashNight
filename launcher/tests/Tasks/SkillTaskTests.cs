@@ -1082,8 +1082,94 @@ namespace Launcher.Tests.Tasks
             };
             Assert.True(WebOverlayForm.IsValidSkillCloseEnvelope(close, "skills", "skills.instance.2"));
             Assert.False(WebOverlayForm.IsValidSkillCloseEnvelope(close, "skills", "skills.instance.1"));
+            close["reason"] = "navigate_character_build";
+            Assert.True(WebOverlayForm.IsValidSkillCloseEnvelope(close, "skills", "skills.instance.2"));
+            close["reason"] = "escape";
+            Assert.False(WebOverlayForm.IsValidSkillCloseEnvelope(close, "skills", "skills.instance.2"));
+            close["reason"] = 1;
+            Assert.False(WebOverlayForm.IsValidSkillCloseEnvelope(close, "skills", "skills.instance.2"));
+            close.Remove("reason");
             close["domain"] = "skills";
             Assert.False(WebOverlayForm.IsValidSkillCloseEnvelope(close, "skills", "skills.instance.2"));
+        }
+
+        [Fact]
+        public void CharacterBuildReturnCapability_IsExactOneShotAndWaitsForCloseCleanup()
+        {
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(
+                () => true,
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                }))
+            {
+                JObject init = JObject.Parse(
+                    task.EnrichPanelInitData(
+                        "{\"view\":\"manage\",\"source\":\"nativehud\",\"canReturnCharacterBuild\":true}",
+                        "skills.instance.from-build"));
+                Assert.True((bool)init["canReturnCharacterBuild"]);
+                task.BindPanelInstance("skills.instance.foreign");
+                Assert.False(
+                    task.TryConsumeCharacterBuildReturnCapability(
+                        "skills.instance.foreign"));
+
+                init = JObject.Parse(
+                    task.EnrichPanelInitData(
+                        "{\"view\":\"manage\",\"source\":\"nativehud\",\"canReturnCharacterBuild\":true}",
+                        "skills.instance.from-build"));
+                task.BindPanelInstance("skills.instance.from-build");
+                Assert.False(task.IsClosedAndSettled);
+                Assert.True(
+                    task.TryConsumeCharacterBuildReturnCapability(
+                        "skills.instance.from-build"));
+                Assert.False(
+                    task.TryConsumeCharacterBuildReturnCapability(
+                        "skills.instance.from-build"));
+
+                Assert.True(
+                    task.HandlePanelClosed(
+                        "skills.instance.from-build"));
+                Assert.False(task.IsClosedAndSettled);
+                JObject cleanup = Assert.Single(sent);
+                Assert.Equal(
+                    "skillPanelClose",
+                    (string)cleanup["action"]);
+                task.HandleFlashResponse(
+                    CleanupAck(
+                        (int)cleanup["callId"],
+                        12),
+                    null);
+                Assert.True(task.IsClosedAndSettled);
+            }
+        }
+
+        [Fact]
+        public void CharacterBuildReturnCapability_IsRemovedFromTrainerAndUnboundInit()
+        {
+            using (var task = new SkillTask(
+                () => true,
+                _ => true))
+            {
+                JObject trainer = JObject.Parse(
+                    task.EnrichPanelInitData(
+                        "{\"view\":\"trainer\",\"source\":\"world_skill_trainer\",\"trainerSession\":\"trainer.one\",\"canReturnCharacterBuild\":true}",
+                        "skills.instance.trainer"));
+                Assert.Null(
+                    trainer["canReturnCharacterBuild"]);
+                task.BindPanelInstance(
+                    "skills.instance.trainer");
+                Assert.False(
+                    task.TryConsumeCharacterBuildReturnCapability(
+                        "skills.instance.trainer"));
+
+                JObject unbound = JObject.Parse(
+                    task.EnrichPanelInitData(
+                        "{\"view\":\"manage\",\"source\":\"nativehud\",\"canReturnCharacterBuild\":true}"));
+                Assert.Null(
+                    unbound["canReturnCharacterBuild"]);
+            }
         }
 
         private static SkillTask NewTask(Func<string, bool> send, List<JObject> web = null, int timeout = 10000)

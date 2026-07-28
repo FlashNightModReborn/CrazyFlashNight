@@ -1481,7 +1481,11 @@ namespace CF7Launcher.Guardian
                     }
                     LogManager.Log("[LaunchFlow] Flash exited in Ready state → forcing launcher exit");
                     CancelZombieTimer();
-                    if (_form != null) _form.ForceExit();
+                    if (_form != null)
+                    {
+                        _form.EmergencyExit(
+                            GuardianForm.EmergencyExitReason.FlashExitedReady);
+                    }
                     return;
                 default:
                     // 活跃启动态 (Spawning/WaitingConnect/WaitingHandshake/Embedding/WaitingGameReady)
@@ -1659,8 +1663,12 @@ namespace CF7Launcher.Guardian
             catch { }
             if (shouldKill)
             {
-                LogManager.Log("[LaunchFlow] Flash zombie detected (socket disconnected 10s, process alive, no reconnect) → ForceExit");
-                if (_form != null) _form.ForceExit();
+                LogManager.Log("[LaunchFlow] Flash zombie detected (socket disconnected 10s, process alive, no reconnect) → emergency exit");
+                if (_form != null)
+                {
+                    _form.EmergencyExit(
+                        GuardianForm.EmergencyExitReason.FlashZombieWatchdog);
+                }
             }
         }
 

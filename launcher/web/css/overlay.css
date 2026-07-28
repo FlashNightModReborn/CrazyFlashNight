@@ -990,6 +990,9 @@ button[data-key="SAFEEXIT"].save-done {
 #safe-exit-status.done {
     color:rgba(102,255,102,0.85);
 }
+#safe-exit-status.failed {
+    color:rgba(255,102,102,0.9);
+}
 @keyframes save-status-pulse {
     0%,100% { opacity:0.6; }
     50%     { opacity:1; }
@@ -1024,6 +1027,14 @@ button[data-key="SAFEEXIT"].save-done {
 #safe-exit-buttons button[data-key="EXIT_CONFIRM"]:hover {
     background:rgba(200,60,60,0.5);
     color:#ff8888;
+}
+#safe-exit-retry {
+    background:rgba(255,190,70,0.2);
+    color:rgba(255,215,120,0.95);
+}
+#safe-exit-retry:hover {
+    background:rgba(255,190,70,0.35);
+    color:#ffe0a0;
 }
 
 /* ── 上下文右栏：装备/任务 + 任务状态 ── */

@@ -557,11 +557,13 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
                     // 如果是可堆叠消耗品(有数量),就减1
                     if (!isNaN(grenadeItem.value) && grenadeItem.value > 1) {
                         grenadeItem.value -= 1;
+                        if (_root.存档系统) _root.存档系统.dirtyMark = true;
                         return true;
                     }
                     // 如果只有1个或是装备类型,直接移除并刷新装扮
                     else {
                         装备栏.remove("手雷");
+                        if (_root.存档系统) _root.存档系统.dirtyMark = true;
                         _root.刷新人物装扮(自机._name);
                         return true;
                     }

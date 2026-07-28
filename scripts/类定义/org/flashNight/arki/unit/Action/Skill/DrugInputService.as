@@ -98,10 +98,16 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
 
         if (root && root.使用药剂) root.使用药剂(itemName);
         result.cooldownStarted = ManualCooldownService.start(cooldownKey, Number(root.吃药冷却时间));
+        var quantityBefore:Number = Number(item.value);
         inventory.addValue(String(slotIndex), -1);
         result.used = true;
+        var remaining:Object = inventory.getItem(String(slotIndex));
+        if ((remaining !== item || Number(remaining.value) != quantityBefore)
+                && root && root.存档系统) {
+            root.存档系统.dirtyMark = true;
+        }
 
-        if (!inventory.getItem(String(slotIndex))) {
+        if (!remaining) {
             clearExhaustedMirror(root, slotIndex, itemName);
             result.depleted = true;
         }

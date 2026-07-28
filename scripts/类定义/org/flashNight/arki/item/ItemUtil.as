@@ -300,6 +300,128 @@ class org.flashNight.arki.item.ItemUtil{
         }
         return Math.max(0, Math.floor(maximum - current));
     }
+
+    /**
+     * 以物品自身配置的 maxvalue 规划一次情报写入。超出部分按物品 price
+     * 折算为金币；price 为 0 的剧情情报只截断，不制造无价值拾取物。
+     */
+    public static function planInformationAcquire(name:String, requested:Number):Object{
+        requested = Number(requested);
+        if(!isInformation(name) || isNaN(requested) || requested <= 0
+                || requested != Math.floor(requested)) {
+            return {valid:false, name:name, requested:requested,
+                accepted:0, overflow:0, money:0, unitPrice:0, remaining:0};
+        }
+        var remaining:Number = getInformationRemaining(name);
+        var accepted:Number = Math.min(requested, remaining);
+        var overflow:Number = requested - accepted;
+        var raw:Object = getRawItemData(name);
+        var unitPrice:Number = raw == null ? 0 : Math.floor(Number(raw.price));
+        if(isNaN(unitPrice) || unitPrice < 0) unitPrice = 0;
+        return {
+            valid:true,
+            name:name,
+            requested:requested,
+            accepted:accepted,
+            overflow:overflow,
+            money:overflow * unitPrice,
+            unitPrice:unitPrice,
+            remaining:remaining,
+            maximum:Number(informationMaxValueDict[name])
+        };
+    }
+
+    /**
+     * 奖励结算专用规划：同一批奖励中的重复情报共享剩余容量，全部超出量统一
+     * 折算进金币项。该函数只读，不修改奖励数组或存档。
+     */
+    public static function planRewardAcquire(itemArray:Array):Object{
+        if(!(itemArray instanceof Array)) return null;
+        var items:Array = [];
+        var conversions:Array = [];
+        var reservedRemaining:Object = {};
+        var moneyIndex:Number = -1;
+        var overflowMoney:Number = 0;
+        var hasOverflow:Boolean = false;
+
+        for(var i:Number = 0; i < itemArray.length; i++){
+            var source:Object = itemArray[i];
+            if(source == null || source.name == undefined) return null;
+            var name:String = String(source.name);
+            var value:Number = Number(source.value);
+            if(isInformation(name)){
+                if(isNaN(value) || value <= 0 || value != Math.floor(value)) return null;
+                var remaining:Number;
+                if(reservedRemaining[name] == undefined) remaining = getInformationRemaining(name);
+                else remaining = Number(reservedRemaining[name]);
+                var accepted:Number = Math.min(value, remaining);
+                var overflow:Number = value - accepted;
+                reservedRemaining[name] = remaining - accepted;
+                var raw:Object = getRawItemData(name);
+                var unitPrice:Number = raw == null ? 0 : Math.floor(Number(raw.price));
+                if(isNaN(unitPrice) || unitPrice < 0) unitPrice = 0;
+                var convertedMoney:Number = overflow * unitPrice;
+                overflowMoney += convertedMoney;
+                if(overflow > 0) hasOverflow = true;
+                conversions.push({
+                    name:name,
+                    requested:value,
+                    accepted:accepted,
+                    overflow:overflow,
+                    money:convertedMoney,
+                    unitPrice:unitPrice
+                });
+                if(accepted <= 0) continue;
+                value = accepted;
+            }
+
+            if(name == "金币"){
+                if(moneyIndex < 0){
+                    moneyIndex = items.length;
+                    items.push({name:"金币", value:value});
+                }else{
+                    items[moneyIndex].value += value;
+                }
+                continue;
+            }
+
+            var planned:Object = {name:name, value:value};
+            if(source.tier != undefined) planned.tier = source.tier;
+            if(source.isQuantity != undefined) planned.isQuantity = source.isQuantity;
+            items.push(planned);
+        }
+
+        if(overflowMoney > 0){
+            if(moneyIndex < 0) items.push({name:"金币", value:overflowMoney});
+            else items[moneyIndex].value += overflowMoney;
+        }
+        return {
+            success:false,
+            items:items,
+            conversions:conversions,
+            overflowMoney:overflowMoney,
+            hasOverflow:hasOverflow
+        };
+    }
+
+    /**
+     * 任务、成就与脚本奖励的原子入口。商城和合成仍使用 acquire() 的严格容量
+     * 语义，避免先扣款再折算。
+     */
+    public static function acquireReward(itemArray:Array):Object{
+        var plan:Object = planRewardAcquire(itemArray);
+        if(plan == null){
+            return {success:false, error:"invalid_reward", items:[],
+                conversions:[], overflowMoney:0, hasOverflow:false};
+        }
+        if(plan.items.length == 0){
+            plan.success = true;
+            return plan;
+        }
+        plan.success = acquire(plan.items);
+        if(!plan.success) plan.error = "inventory_full";
+        return plan;
+    }
     /*
      * 辅助函数，判断装备物品是否存在进阶数据
      */
@@ -770,11 +892,13 @@ class org.flashNight.arki.item.ItemUtil{
     public static function submit(itemArray:Array):Boolean{
         var list = ItemUtil.contain(itemArray);
         if(list == null) return false;
+        var wrote:Boolean = false;
         //材料
         var 材料 = _root.收集品栏.材料;
         for(var name in list.材料){
             var value = list.材料[name];
             材料.addValue(name,-value);
+            wrote = true;
         }
         //情报不需要提交
         // var 情报 = _root.收集品栏.情报;
@@ -800,6 +924,7 @@ class org.flashNight.arki.item.ItemUtil{
             } else {
                 背包.addValue(i, -list.背包[i]);  // 减少数量
             }
+            wrote = true;
         }
         //药剂栏
         var 药剂栏 = _root.物品栏.药剂栏;
@@ -807,7 +932,9 @@ class org.flashNight.arki.item.ItemUtil{
             var item = 药剂栏.getItem(i);
             if(isNaN(item.value)) 药剂栏.remove(i);
             else 药剂栏.addValue(i, -list.药剂栏[i]);
+            wrote = true;
         }
+        if(wrote && _root.存档系统) _root.存档系统.dirtyMark = true;
         return true;
     }
 

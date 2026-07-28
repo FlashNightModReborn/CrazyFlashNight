@@ -14,7 +14,8 @@ namespace Launcher.Tests.Tasks
         private static JObject Request(string cmd, string callId)
         {
             var payload = new JObject { ["v"] = 1 };
-            if (cmd == "tooltip") payload["itemName"] = "不锈钢材";
+            if (cmd == "tooltip" || cmd == "materialDetail") payload["itemName"] = "不锈钢材";
+            else if (cmd == "materials") { }
             else
             {
                 payload["category"] = "武器合成";
@@ -30,6 +31,8 @@ namespace Launcher.Tests.Tasks
 
         [Theory]
         [InlineData("snapshot", "craftingSnapshot")]
+        [InlineData("materials", "craftingMaterials")]
+        [InlineData("materialDetail", "craftingMaterialDetail")]
         [InlineData("preview", "craftingPreview")]
         [InlineData("tooltip", "craftingTooltip")]
         [InlineData("commit", "craftingCommit")]
@@ -62,6 +65,37 @@ namespace Launcher.Tests.Tasks
                     task.HandleFlashResponse(inconsistent, null);
                     Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
                 }
+            }
+        }
+
+        [Fact]
+        public void MaterialReads_RequireStrictCatalogAndDetailShapes()
+        {
+            string sent = null;
+            string web = null;
+            using (var task = new CraftingTask(() => true, value => { sent = value; return true; }))
+            {
+                task.SetPostToWeb(value => web = value);
+                task.HandleWebRequest("materials", Request("materials", "craft.materials"));
+                int catalogFid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+                task.HandleFlashResponse(MaterialsResponse(catalogFid), null);
+                JObject catalog = JObject.Parse(web);
+                Assert.True((bool)catalog["success"]);
+                Assert.Equal("不锈钢材", (string)catalog["materials"][0]["name"]);
+
+                task.HandleWebRequest("materialDetail", Request("materialDetail", "craft.material.detail"));
+                int detailFid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+                task.HandleFlashResponse(MaterialDetailResponse(detailFid), null);
+                JObject detail = JObject.Parse(web);
+                Assert.True((bool)detail["success"]);
+                Assert.Equal("武器合成", (string)detail["uses"][0]["category"]);
+
+                task.HandleWebRequest("materials", Request("materials", "craft.materials.bad"));
+                int malformedFid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+                JObject malformed = MaterialsResponse(malformedFid);
+                malformed["materials"][0]["sourceCount"] = -1;
+                task.HandleFlashResponse(malformed, null);
+                Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
             }
         }
 
@@ -411,6 +445,58 @@ namespace Launcher.Tests.Tasks
                         ["canCraftOne"] = true, ["availability"] = "ready", ["materialCount"] = 2,
                         ["output"] = new JObject { ["name"] = "秋月" },
                         ["baseCost"] = new JObject { ["money"] = 10, ["kpoints"] = 2 }
+                    }
+                }
+            };
+        }
+
+        private static JObject MaterialsResponse(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "crafting_response", ["callId"] = fid,
+                ["success"] = true, ["v"] = 1, ["view"] = "materials",
+                ["materials"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["name"] = "不锈钢材", ["displayName"] = "不锈钢材",
+                        ["icon"] = "不锈钢材", ["owned"] = 3,
+                        ["sourceCount"] = 2, ["useCount"] = 1,
+                        ["hasSourceSummary"] = true
+                    }
+                }
+            };
+        }
+
+        private static JObject MaterialDetailResponse(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "crafting_response", ["callId"] = fid,
+                ["success"] = true, ["v"] = 1, ["view"] = "materials",
+                ["material"] = new JObject
+                {
+                    ["name"] = "不锈钢材", ["displayName"] = "不锈钢材",
+                    ["icon"] = "不锈钢材", ["description"] = "合成材料",
+                    ["owned"] = 3, ["sourceSummary"] = "【掉落单位】测试敌人\n【掉落关卡】测试关卡"
+                },
+                ["sources"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["kind"] = "enemy", ["enemyType"] = "测试敌人",
+                        ["displayName"] = "测试敌人", ["probability"] = 0.1,
+                        ["minLevel"] = 0, ["maxLevel"] = 0
+                    }
+                },
+                ["uses"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["name"] = "秋月", ["displayName"] = "秋月",
+                        ["icon"] = "秋月", ["itemKind"] = "equipment",
+                        ["category"] = "武器合成", ["required"] = 2
                     }
                 }
             };

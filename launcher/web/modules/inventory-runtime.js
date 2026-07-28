@@ -14,12 +14,15 @@
         var out = [];
         requests = requests || [];
         for (var i = 0; i < requests.length; i++) {
+            var scope = normalizeProjectionScope(requests[i].scope);
             var cloned = {
                 containerId: String(requests[i].containerId),
                 offset: Number(requests[i].offset),
                 limit: Number(requests[i].limit),
                 filterKey: normalizeFilterKey(requests[i].filterKey)
             };
+            if (scope === 'equipment') cloned.scope = scope;
+            else if (scope == null && requests[i].scope != null) cloned.scope = String(requests[i].scope);
             if (requests[i].filterSpec != null) cloned.filterSpec = normalizeFilterSpec(requests[i].filterSpec, cloned.filterKey);
             out.push(cloned);
         }
@@ -34,6 +37,18 @@
     var FILTER_KEYS = {
         all: true, weapon: true, armor: true, consumable: true, material: true, other: true
     };
+
+    var PROJECTION_SCOPES = {all:true, equipment:true};
+
+    function normalizeProjectionScope(value) {
+        value = value == null ? 'all' : String(value);
+        return PROJECTION_SCOPES[value] ? value : null;
+    }
+
+    function isValidProjectionScope(containerId, value) {
+        var scope = normalizeProjectionScope(value);
+        return scope != null && (scope !== 'equipment' || String(containerId) === '背包');
+    }
 
     function normalizeFilterKey(value) {
         value = String(value || 'all');
@@ -115,6 +130,7 @@
         var limit = Number(snapshot && snapshot.limit);
         return !!snapshot
             && typeof snapshot.containerId === 'string'
+            && isValidProjectionScope(snapshot.containerId, snapshot.scope)
             && isFinite(Number(snapshot.capacity))
             && isFinite(accessible)
             && accessible >= 0
@@ -143,7 +159,8 @@
     function snapshotMatchesRequest(snapshot, request) {
         if (!isValidSnapshot(snapshot) || !request
                 || snapshot.containerId !== String(request.containerId)
-                || String(snapshot.filterKey || 'all') !== normalizeFilterKey(request.filterKey)) return false;
+                || String(snapshot.filterKey || 'all') !== normalizeFilterKey(request.filterKey)
+                || normalizeProjectionScope(snapshot.scope) !== normalizeProjectionScope(request.scope)) return false;
 
         var requestHasSpec = request.filterSpec != null;
         var snapshotHasSpec = snapshot.filterSpec != null;
@@ -331,6 +348,7 @@
                     filterKey: normalizeFilterKey(this._requests[i].filterKey)
                 };
                 if (this._requests[i].filterSpec != null) result.filterSpec = normalizeFilterSpec(this._requests[i].filterSpec, result.filterKey);
+                if (this._requests[i].scope === 'equipment') result.scope = 'equipment';
                 return result;
             }
         }
@@ -344,6 +362,7 @@
         for (var i = 0; i < normalized.length; i++) {
             var request = normalized[i];
             if (!request.containerId || seen[request.containerId]
+                    || !isValidProjectionScope(request.containerId, request.scope)
                     || !isFinite(request.offset) || Math.floor(request.offset) !== request.offset || request.offset < 0
                     || !isFinite(request.limit) || Math.floor(request.limit) !== request.limit
                     || request.limit < 1 || request.limit > 100) return false;
@@ -380,6 +399,36 @@
         return false;
     };
 
+    InventoryCoordinator.prototype.replaceWindowRequest = function(containerId, replacement, callback) {
+        if (!this._opened || !this._ready || this._owner || this._refreshRequired) return false;
+        containerId = String(containerId);
+        var normalized = cloneRequests([replacement || {}])[0];
+        if (!normalized || normalized.containerId !== containerId
+                || !isValidProjectionScope(containerId, normalized.scope)
+                || !isFinite(normalized.offset) || Math.floor(normalized.offset) !== normalized.offset
+                || normalized.offset < 0
+                || !isFinite(normalized.limit) || Math.floor(normalized.limit) !== normalized.limit
+                || normalized.limit < 1 || normalized.limit > 100) return false;
+        var index = -1;
+        for (var i = 0; i < this._requests.length; i++) {
+            if (this._requests[i].containerId === containerId) { index = i; break; }
+        }
+        if (index < 0) return false;
+        var previous = cloneRequests([this._requests[index]])[0];
+        this._requests[index] = normalized;
+        var operation = this._setOwner('request.' + containerId);
+        this._emitState();
+        var self = this;
+        return this._refreshWhileOwned(function(result) {
+            if (!result.success) {
+                self._requests[index] = previous;
+                self._emitState();
+                result.rolledBack = true;
+            }
+            if (typeof callback === 'function') callback(result);
+        }, operation);
+    };
+
     InventoryCoordinator.prototype.isReady = function() { return this._ready; };
 
     InventoryCoordinator.prototype.beginExternalWrite = function(owner) {
@@ -399,6 +448,22 @@
             return true;
         }
         this._refreshWhileOwned(callback, operation);
+        return true;
+    };
+
+    InventoryCoordinator.prototype.completeExternalSnapshots = function(operation, snapshots, callback) {
+        if (!this._isActiveOperation(operation) || this._ownerCompletionStarted) return false;
+        this._ownerCompletionStarted = true;
+        var valid = this._applySnapshots(snapshots, [
+            {containerId:'背包', offset:0, limit:50}
+        ]);
+        this._clearOwner(operation);
+        this._ready = !!valid;
+        this._refreshRequired = !valid;
+        this._emitState();
+        if (typeof callback === 'function') callback(valid
+            ? {success:true, refreshed:false, applied:true}
+            : {success:false, error:'inventory_snapshot_invalid'});
         return true;
     };
 
@@ -648,6 +713,7 @@
         if (!this._opened || !this._ready || this._owner || this._refreshRequired) return false;
         var request = cloneRequests([projection || {}])[0];
         if (!request || !request.containerId
+                || !isValidProjectionScope(request.containerId, request.scope)
                 || !isFinite(request.offset) || Math.floor(request.offset) !== request.offset || request.offset < 0
                 || !isFinite(request.limit) || Math.floor(request.limit) !== request.limit
                 || request.limit < 1 || request.limit > 100) return false;
@@ -676,7 +742,8 @@
         for (var i = 0; i < this._requests.length; i++) {
             var spec = normalizeFilterSpec(this._requests[i].filterSpec, 'all');
             if ((spec && (spec.major !== 'all' || spec.use || spec.subtype))
-                    || normalizeFilterKey(this._requests[i].filterKey) !== 'all') return true;
+                    || normalizeFilterKey(this._requests[i].filterKey) !== 'all'
+                    || normalizeProjectionScope(this._requests[i].scope) === 'equipment') return true;
         }
         return false;
     };
@@ -688,6 +755,11 @@
         if (!operation) return false;
         var request = this.getRequest(containerId);
         if (!request) {
+            this._clearOwner(operation);
+            this._emitState();
+            return false;
+        }
+        if (request.scope === 'equipment') {
             this._clearOwner(operation);
             this._emitState();
             return false;
@@ -768,6 +840,11 @@
                 } else {
                     delete this._requests[r].filterSpec;
                 }
+                if (normalizeProjectionScope(snapshot.scope) === 'equipment') {
+                    this._requests[r].scope = 'equipment';
+                } else {
+                    delete this._requests[r].scope;
+                }
                 break;
             }
         }
@@ -800,5 +877,7 @@
         ,filterMajors: FILTER_MAJORS
         ,normalizeFilterSpec: normalizeFilterSpec
         ,filterKeyForSpec: filterKeyForSpec
+        ,projectionScopes: PROJECTION_SCOPES
+        ,normalizeProjectionScope: normalizeProjectionScope
     };
 });

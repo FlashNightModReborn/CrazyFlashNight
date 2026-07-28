@@ -241,6 +241,7 @@ namespace CF7Launcher.Tasks
                 JObject container = payload["container"] as JObject;
                 string containerId = container != null ? container.Value<string>("containerId") : null;
                 string filterKey = container != null ? (container.Value<string>("filterKey") ?? "all") : null;
+                string scope = container != null ? (container.Value<string>("scope") ?? "all") : null;
                 string methodName = payload.Value<string>("methodName");
                 int offset;
                 int limit;
@@ -249,6 +250,7 @@ namespace CF7Launcher.Tasks
                     || !TryReadNonNegativeInteger(container["offset"], out offset)
                     || !TryReadPositiveInteger(container["limit"], 100, out limit)
                     || !IsFilterKey(filterKey)
+                    || !string.Equals(scope, "all", StringComparison.Ordinal)
                     || !IsSortMethod(methodName)) return false;
                 var cleanContainer = new JObject
                 {
@@ -302,12 +304,15 @@ namespace CF7Launcher.Tasks
                 if (request == null) return false;
                 string containerId = request.Value<string>("containerId");
                 string filterKey = request.Value<string>("filterKey") ?? "all";
+                string scope = request.Value<string>("scope") ?? "all";
                 int offset;
                 int limit;
                 if (!IsContainerId(containerId)
                     || !TryReadNonNegativeInteger(request["offset"], out offset)
                     || !TryReadPositiveInteger(request["limit"], 100, out limit)
-                    || !IsFilterKey(filterKey)) return false;
+                    || !IsFilterKey(filterKey)
+                    || !IsProjectionScope(scope)
+                    || (scope == "equipment" && containerId != "背包")) return false;
                 var cleanRequest = new JObject
                 {
                     ["containerId"] = containerId,
@@ -315,6 +320,7 @@ namespace CF7Launcher.Tasks
                     ["limit"] = limit,
                     ["filterKey"] = filterKey
                 };
+                if (scope == "equipment") cleanRequest["scope"] = scope;
                 JObject filterSpec;
                 if (!TryNormalizeFilterSpec(request["filterSpec"], filterKey, out filterSpec)) return false;
                 if (filterSpec != null) cleanRequest["filterSpec"] = filterSpec;
@@ -386,6 +392,11 @@ namespace CF7Launcher.Tasks
                 default:
                     return false;
             }
+        }
+
+        private static bool IsProjectionScope(string value)
+        {
+            return value == "all" || value == "equipment";
         }
 
         private static bool TryNormalizeFilterSpec(JToken token, string fallbackKey, out JObject normalized)

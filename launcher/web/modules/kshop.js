@@ -7,7 +7,7 @@
  *
  * 商城行为:
  *   - 等级限制: item.level <= playerLevel + reverseLevel 才可购买
- *   - 购买分流: 消耗品/收集品 → 数量+/-, 其他(装备) → 单次加购(qty固定1)
+ *   - 目录与购物车只负责加购/移除；所有数量精调统一进入结算页
  *   - 新购买: checkoutPreview 权威核算 → checkoutCommit 原子直接入包
  *   - 旧存档: 商城已购买物品仅保留历史 claim 兼容，不再增长
  */
@@ -57,7 +57,7 @@ var KShop = (function() {
     });
 
     // Workbench orchestration refs. Presenters own local DOM and interaction details.
-    var _workbenchShell, _catalogView, _orderView, _backpackView, _warehouseView;
+    var _workbenchShell, _workbenchHelp, _catalogView, _orderView, _backpackView, _warehouseView;
     var _cartGridView, _purchasedGridView, _catalogRenderer, _interactionBroker, _dragController;
     var _shopModeButton, _inventoryModeButton, _inventoryRetryButton, _modeChoiceGroup;
     var _cartDropTarget, _selectedCatalogIdx = null;
@@ -120,8 +120,7 @@ var KShop = (function() {
             isStackable:isStackable,
             isLocked:isLocked,
             canEdit:canEditCart,
-            canStartWrite:canStartShopWrite,
-            getShellElement:function() { return _shellEl; }
+            canStartWrite:canStartShopWrite
         },
         intent:{
             replaceCart:function(next) { _cart = next; },
@@ -311,7 +310,7 @@ var KShop = (function() {
         var blockWrites = !_shopReady || (state && !state.canStartWrite);
         var claimBlocked = !!blockWrites || inventoryBlocked;
         _el.classList.toggle('kshop-write-busy', !!blockWrites || !!(state && state.saveInFlight));
-        var editButtons = _el.querySelectorAll('.kshop-add-btn,.kshop-qty-btn,.kshop-qty-pop-btn,.kshop-qty-confirm');
+        var editButtons = _el.querySelectorAll('.kshop-add-btn,.kshop-cart-remove-btn');
         for (var i = 0; i < editButtons.length; i++) editButtons[i].disabled = !!blockEdits;
         if (_checkoutBtn) _checkoutBtn.disabled = _cart.length === 0 || !!blockWrites;
         if (_cartController.getSettlement()) _cartController.getSettlement().render();
@@ -336,7 +335,6 @@ var KShop = (function() {
             else if (state && (state.saveInFlight || state.dirty)) _workbenchShell.setStatus('正在保存', state.saveInFlight ? 'busy' : 'pending');
             else _workbenchShell.setStatus('已同步', 'ready');
         }
-        if (blockEdits) _cartController.dismissQuantityInput();
         if (state && state.reconcileBlocked) {
             showSaveFailedDialog('商城对账失败，写操作保持锁定', true);
         }
@@ -406,6 +404,15 @@ var KShop = (function() {
         _layoutMode = _densityController.mode;
         var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
         _workbenchShell.addHeaderAction(layoutToggle);
+
+        _workbenchHelp = new WorkbenchComponents.HelpAction({shell:_workbenchShell, spec:{
+            kind:'kshop-help',
+            ariaLabel:'查看 K 点商城帮助',
+            title:'K 点商城帮助',
+            message:'选购与结算\n• 单击商品或右上角“+”每次加购 1 件；拖入购物车仍可作为可选操作。\n• 购物车只负责查看与移除整行。需要精确数量时，点击“核对并结账”进入结算页统一调整。',
+            detail:'数量与交付\n• 结算页支持数字输入、− / + / +5、“可用”和滑条；大数量会使用对数滑条，输入值仍是实际件数。\n• “可用”表示当前可直接结算数量，最终价格、容量与上限由每次权威预览裁决。\n• 新购商品会直接进入背包；“历史待领取”只处理旧存档遗留商品。\n\n浏览与库存\n• “完整 / 紧凑”控制物品格密度；分类、套装和专柜可逐层筛选。\n• 顶部“战备箱”切换到库存整理，不会提交商城订单。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        }});
 
         var closeButton = document.createElement('button');
         closeButton.className = 'kshop-close-btn workbench-close-btn';
@@ -806,13 +813,17 @@ var KShop = (function() {
     }
 
     function doClose() {
+        if (Bridge.send({type:'panel', cmd:'close', panel:'kshop'}) === false) {
+            toast('启动器连接不可用，商城保持打开。');
+            _closing = false;
+            return false;
+        }
         dismissDialog();
         _cartController.closeSettlement();
-        _cartController.dismissQuantityInput();
         hideTooltip();
         Panels.close();
-        Bridge.send({type:'panel', cmd:'close', panel:'kshop'});
         _closing = false;
+        return true;
     }
 
     function hideTooltip() {
@@ -857,7 +868,6 @@ var KShop = (function() {
         _mux.closeSession();
         dismissDialog();
         _cartController.closeSettlement();
-        _cartController.dismissQuantityInput();
         hideTooltip();
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         toast('连接断开，商城已关闭');

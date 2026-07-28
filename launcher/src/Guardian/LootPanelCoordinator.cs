@@ -138,6 +138,7 @@ namespace CF7Launcher.Guardian
         private readonly int _closeRetryMaximumMs;
         private readonly int _pauseReleaseRetryMs;
         private Func<IDisposable> _acquireAdmissionLease;
+        private Func<bool> _externalAdmissionGate;
         private BindingState _state;
         private Binding _active;
         private bool _openExecutionStarted;
@@ -199,6 +200,18 @@ namespace CF7Launcher.Guardian
             lock (_sync) _acquireAdmissionLease = acquireAdmissionLease;
         }
 
+        /// <summary>
+        /// Cross-panel admission fence evaluated both before queueing and again on the UI-thread
+        /// tracked-open execution gate. CharacterBuild uses it while its exact pause lease is
+        /// awaiting terminal recovery, so Loot can never reuse or later release that lease.
+        /// </summary>
+        public void SetExternalAdmissionGate(
+            Func<bool> externalAdmissionGate)
+        {
+            lock (_sync)
+                _externalAdmissionGate = externalAdmissionGate;
+        }
+
         public BindingState State { get { lock (_sync) return _state; } }
         public Binding ActiveBinding { get { lock (_sync) return _active; } }
 
@@ -223,6 +236,7 @@ namespace CF7Launcher.Guardian
                 return false;
             }
             Func<IDisposable> acquireAdmissionLease;
+            Func<bool> externalAdmissionGate;
             lock (_sync)
             {
                 if (_disposed)
@@ -231,6 +245,13 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
                 acquireAdmissionLease = _acquireAdmissionLease;
+                externalAdmissionGate = _externalAdmissionGate;
+            }
+            if (!AllowsExternalAdmission(
+                externalAdmissionGate))
+            {
+                rejection = "recovery_pending";
+                return false;
             }
             if (_panel == null || !_panel.IsAvailable)
             {
@@ -270,6 +291,12 @@ namespace CF7Launcher.Guardian
             }
             try
             {
+                if (!AllowsExternalAdmission(
+                    externalAdmissionGate))
+                {
+                    rejection = "recovery_pending";
+                    return false;
+                }
                 lock (_sync)
                 {
                     if (_disposed)
@@ -314,7 +341,12 @@ namespace CF7Launcher.Guardian
             try
             {
                 queued = _panel.TryOpenTracked(init.ToString(Formatting.None), panelInstanceId,
-                    delegate { return MarkOpenExecuting(binding); },
+                    delegate
+                    {
+                        return AllowsExternalAdmission(
+                                externalAdmissionGate)
+                            && MarkOpenExecuting(binding);
+                    },
                     delegate(PanelHostController.TrackedOpenOutcome outcome)
                     {
                         CompleteOpen(binding, outcome);
@@ -348,6 +380,14 @@ namespace CF7Launcher.Guardian
             }
             rejection = "open_not_queued";
             return false;
+        }
+
+        private static bool AllowsExternalAdmission(
+            Func<bool> externalAdmissionGate)
+        {
+            if (externalAdmissionGate == null) return true;
+            try { return externalAdmissionGate(); }
+            catch { return false; }
         }
 
         public bool TryBindExact(string panelInstanceId, string chestSessionId,

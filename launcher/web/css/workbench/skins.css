@@ -148,6 +148,132 @@
 .kshop-workbench[data-workbench-skin="shop"] .workbench-modal { background:#0a0f11; border-color:rgba(var(--dls-crystal-rgb),.38); border-top-color:var(--dls-crystal); clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px)); }
 .kshop-workbench[data-workbench-skin="shop"] .workbench-modal-action.primary { color:#050b0d; background:var(--dls-crystal); border-color:#a6f0ff; }
 
+/* ── Player equipment / profile DLS interface ──
+   This is the protagonist-facing resonance system, not the commercial KShop
+   skin. Item filtering keeps its neutral component semantics. */
+.kshop-workbench[data-workbench-skin="character"] {
+    --wb-scrollbar-track:rgba(4,10,13,.9);
+    --wb-scrollbar-thumb:rgba(var(--dls-crystal-rgb),.22);
+    --wb-scrollbar-thumb-border:rgba(var(--dls-crystal-rgb),.38);
+    --wb-scrollbar-thumb-hover:rgba(var(--dls-crystal-rgb),.5);
+    --wb-bg:#05090c;
+    --wb-surface:#091116;
+    --wb-surface-2:#0d1920;
+    --wb-line:rgba(var(--dls-crystal-rgb),.24);
+    --wb-line-soft:rgba(var(--dls-crystal-rgb),.12);
+    --wb-text:#dff4f8;
+    --wb-muted:#71909a;
+    --wb-accent:var(--dls-crystal);
+    --wb-accent-soft:var(--dls-crystal-soft);
+    /* Legacy PlayerInfo weight spectrum. These three visualization colors are
+       intentionally local: they are thresholds, not generic UI states. */
+    --character-weight-band-light:#28e329;
+    --character-weight-band-normal:#f1ed25;
+    --character-weight-band-heavy:#ff3a16;
+    color:var(--wb-text);
+    background:
+        radial-gradient(circle at 18% 12%,rgba(var(--dls-crystal-rgb),.11),transparent 31%),
+        radial-gradient(circle at 82% 88%,rgba(var(--dls-crystal-rgb),.045),transparent 30%),
+        linear-gradient(180deg,rgba(7,15,19,.98),rgba(3,7,9,.99));
+    border-color:rgba(var(--dls-crystal-rgb),.24);
+    font-family:"Microsoft YaHei",sans-serif;
+}
+.kshop-workbench[data-workbench-skin="character"]::after {
+    background:
+        repeating-linear-gradient(0deg,transparent 0 3px,rgba(var(--dls-crystal-rgb),.014) 3px 4px),
+        repeating-linear-gradient(135deg,transparent 0 32px,rgba(var(--dls-crystal-rgb),.009) 32px 33px);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.035);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-header {
+    background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.105),rgba(7,15,19,.9) 44%,rgba(4,8,10,.94));
+    border-bottom-color:rgba(var(--dls-crystal-rgb),.25);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-header::before {
+    width:248px; height:1px; background:var(--dls-crystal);
+    box-shadow:0 0 11px rgba(var(--dls-crystal-rgb),.52);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-title {
+    color:#e5fbff;
+    text-shadow:0 0 12px rgba(var(--dls-crystal-rgb),.18);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-status {
+    color:#8db2bd; background:rgba(4,10,13,.8);
+    border-color:rgba(var(--dls-crystal-rgb),.18);
+    clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-status[data-state="ready"]::before {
+    color:var(--dls-crystal);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn {
+    color:#7898a1; background:rgba(var(--dls-crystal-rgb),.035);
+    border-color:rgba(var(--dls-crystal-rgb),.16);
+    clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn:hover,
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn:focus-visible {
+    color:#dffaff; border-color:rgba(var(--dls-crystal-rgb),.48);
+    background:rgba(var(--dls-crystal-rgb),.1);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-mode-btn.active {
+    color:#061116; border-color:#a6f0ff; background:var(--dls-crystal);
+    box-shadow:0 0 10px rgba(var(--dls-crystal-rgb),.2);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-close-btn {
+    color:#df8178; background:rgba(87,28,25,.18); border-color:rgba(223,129,120,.32);
+    clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-close-btn:hover {
+    color:#ffaca4; background:rgba(126,39,34,.34); border-color:rgba(223,129,120,.62);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-body {
+    background:
+        radial-gradient(circle at 48% 50%,rgba(var(--dls-crystal-rgb),.025),transparent 52%),
+        rgba(2,7,9,.48);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-slot {
+    background:rgba(5,11,14,.76); border-color:rgba(var(--dls-crystal-rgb),.17);
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-slot.active {
+    border-color:rgba(var(--dls-crystal-rgb),.42);
+    box-shadow:inset 0 0 20px rgba(var(--dls-crystal-rgb),.025);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card {
+    color:#c7dce1; background:rgba(5,11,14,.86);
+    border-color:rgba(var(--dls-crystal-rgb),.17);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card.occupied:not(.character-build-slot-card):hover,
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card.workbench-source-selected {
+    color:#e5fbff; border-color:rgba(var(--dls-crystal-rgb),.72);
+    background:rgba(var(--dls-crystal-rgb),.08);
+    box-shadow:inset 3px 0 0 var(--dls-crystal),0 0 8px rgba(var(--dls-crystal-rgb),.08);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-card.empty {
+    color:#48606a; background:rgba(3,8,10,.68);
+    border-color:rgba(var(--dls-crystal-rgb),.09);
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-slot-copy b { color:#dff4f8; }
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option {
+    color:#89949f; background:#0d1115; border-color:#343c44;
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option:hover,
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option:focus-visible {
+    color:#d7dce0; background:#171b20; border-color:#69737c;
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option.active {
+    color:#e3e6e8; background:#262b30; border-color:#8a939a;
+}
+.kshop-workbench[data-workbench-skin="character"] .inventory-filter-control.tree .item-filter-option.active small {
+    color:#a8b0b6;
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-modal {
+    background:#081014; border-color:rgba(var(--dls-crystal-rgb),.42);
+    border-top-color:var(--dls-crystal);
+    clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));
+}
+.kshop-workbench[data-workbench-skin="character"] .workbench-modal-action.primary {
+    color:#061116; background:var(--dls-crystal); border-color:#a6f0ff;
+}
+
 /* ── Backpack / warehouse tactile skin ── */
 .kshop-workbench[data-workbench-skin="inventory"] {
     --wb-scrollbar-track:rgba(255,255,255,.03);
@@ -372,12 +498,13 @@
 .kshop-workbench .inventory-owned-backpack .inventory-slot-card:focus-within .inventory-slot-copy b { padding-right:12px; }
 .kshop-workbench .kshop-card-drag-hint { display:none; }
 
-/* Standalone 战备箱的紧凑态延续原版图标柜精神，40 槽以 5×8 阵列一次看全；
+/* Standalone 战备箱的紧凑态延续图标柜精神，40 槽以 6×7 阵列一次看全；
+   横向多用一列，为正文批量命令栏留出纵向空间，同时保持图标可辨识。
    完整态回到带名称和状态条的通用卡片，不再让两种密度看起来相同。 */
 .inventory-workbench-panel .inventory-owned-battlebox .inventory-owned-grid.item-grid-compact {
     display:grid;
-    grid-template-columns:repeat(5,minmax(0,1fr));
-    grid-template-rows:repeat(8,minmax(0,1fr));
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    grid-template-rows:repeat(7,minmax(0,1fr));
     align-content:stretch;
     gap:4px;
     padding:6px;
@@ -431,7 +558,7 @@
 }
 .kshop-settlement-page.active { display:grid; }
 .kshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid rgba(var(--dls-crystal-rgb),.16); }
-.kshop-settlement-header button,.kshop-settlement-summary button,.kshop-settlement-stepper button {
+.kshop-settlement-header button,.kshop-settlement-summary > button,.kshop-settlement-stepper > button {
     color:#8be0f1; border:1px solid rgba(var(--dls-crystal-rgb),.38); background:#050b0d; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .kshop-settlement-header button { min-height:28px; padding:3px 10px; }
@@ -448,15 +575,39 @@
 .kshop-settlement-icon .kshop-icon,.kshop-settlement-icon .cfn-layered-icon { width:42px; height:42px; object-fit:contain; }
 .kshop-settlement-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .kshop-settlement-copy b { overflow:hidden; color:#e8f4f7; white-space:nowrap; text-overflow:ellipsis; }
+.kshop-settlement-inspect {
+    display:block;
+    width:max-content;
+    max-width:100%;
+    min-height:24px;
+    padding:0;
+    overflow:hidden;
+    color:#e8f4f7;
+    background:transparent;
+    border:0;
+    font:700 12px/1.2 "Microsoft YaHei",sans-serif;
+    text-align:left;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.kshop-settlement-inspect:hover,
+.kshop-settlement-inspect:focus-visible {
+    color:#a6f0ff;
+    outline:1px solid rgba(var(--dls-crystal-rgb),.5);
+    outline-offset:2px;
+}
+.kshop-settlement-inspect:disabled { color:#78858a; cursor:default; }
 .kshop-settlement-copy small { color:#ffd367; font:10px Consolas,monospace; }
 .kshop-settlement-copy em { color:#5a7a85; font:normal 10px/1.35 "Microsoft YaHei",sans-serif; }
-.kshop-settlement-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:166px; }
+.kshop-settlement-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:252px; }
+.kshop-settlement-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .kshop-settlement-stepper > b { min-width:20px; text-align:center; font:11px Consolas,monospace; }
-.kshop-settlement-stepper button { width:24px; height:24px; padding:0; }
-.kshop-settlement-stepper button.wide { width:auto; min-width:45px; padding:0 5px; font-size:9px; }
-.kshop-settlement-stepper button.remove { color:#e98888; border-color:#713f45; background:#211315; }
-.kshop-settlement-header button:hover,.kshop-settlement-summary button:hover:not(:disabled),.kshop-settlement-stepper button:hover:not(:disabled) { color:#050b0d; border-color:#a6f0ff; background:var(--dls-crystal); }
-.kshop-settlement-stepper button:disabled,.kshop-settlement-summary button:disabled { opacity:.35; cursor:not-allowed; }
+.kshop-settlement-stepper > button { width:24px; height:24px; padding:0; }
+.kshop-settlement-stepper > button.wide { width:auto; min-width:45px; padding:0 5px; font-size:9px; }
+.kshop-settlement-stepper > button.remove { color:#e98888; border-color:#713f45; background:#211315; }
+.kshop-settlement-header button:hover,.kshop-settlement-summary > button:hover:not(:disabled),.kshop-settlement-stepper > button:hover:not(:disabled) { color:#050b0d; border-color:#a6f0ff; background:var(--dls-crystal); }
+.kshop-settlement-stepper > button:disabled,.kshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
 .kshop-settlement-ledger { display:flex; flex-direction:column; }
 .kshop-settlement-ledger [data-kshop-settlement-ledger] { display:grid; gap:7px; padding:12px; }
 .kshop-settlement-ledger [data-kshop-settlement-ledger] > div { display:flex; align-items:center; justify-content:space-between; padding-bottom:7px; border-bottom:1px solid rgba(var(--dls-crystal-rgb),.09); }
@@ -468,7 +619,7 @@
 .kshop-settlement-summary { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; min-height:46px; padding-top:8px; border-top:1px solid rgba(var(--dls-crystal-rgb),.16); }
 .kshop-settlement-summary [data-kshop-settlement-status] { color:#6d8a93; font-size:10px; }
 .kshop-settlement-summary [data-kshop-settlement-status].error { color:#df7f7f; }
-.kshop-settlement-summary > button { min-width:118px; min-height:31px; padding:4px 14px; }
+.kshop-settlement-summary > button { min-width:118px; min-height:40px; padding:4px 14px; }
 
 /* NPC 金币商店：主页面选择意图，二级页面以 AS2 权威预览执行整单原子结算。 */
 .npcshop-panel { --wb-accent:#e5a64d; --wb-scrollbar-track:#111419; --wb-scrollbar-thumb:#705a3c; --wb-scrollbar-thumb-border:#a47d43; --wb-scrollbar-thumb-hover:#967338; }
@@ -605,7 +756,7 @@
 }
 .npcshop-settlement-page.active { display:grid; }
 .npcshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
-.npcshop-settlement-header button,.npcshop-settlement-summary button,.npcshop-stepper button {
+.npcshop-settlement-header button,.npcshop-settlement-summary > button,.npcshop-stepper > button {
     color:#e9b96d; border:1px solid #68502e; background:#1c1710; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .npcshop-settlement-header button { min-height:28px; padding:3px 10px; }
@@ -620,14 +771,15 @@
 .npcshop-settlement-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .npcshop-settlement-copy b { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .npcshop-settlement-copy small { color:#e5a64d; font:10px Consolas,monospace; }
-.npcshop-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:132px; }
+.npcshop-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:252px; }
+.npcshop-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .npcshop-stepper b { text-align:center; font:11px Consolas,monospace; }
-.npcshop-stepper button { width:22px; height:23px; padding:0; }
-.npcshop-stepper button.wide { width:auto; min-width:47px; padding:0 5px; font-size:9px; }
+.npcshop-stepper > button { width:22px; height:23px; padding:0; }
+.npcshop-stepper > button.wide { width:auto; min-width:47px; padding:0 5px; font-size:9px; }
 .npcshop-settlement-copy em { color:#858d96; font:normal 10px/1.35 "Microsoft YaHei",sans-serif; }
-.npcshop-stepper button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary button:hover:not(:disabled) { color:#17191c; background:#e5a64d; border-color:#f4ca88; }
-.npcshop-stepper button:disabled,.npcshop-settlement-summary button:disabled { opacity:.35; cursor:not-allowed; }
-.npcshop-stepper button.remove { color:#d77d7d; border-color:#663d3d; background:#211313; }
+.npcshop-stepper > button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary > button:hover:not(:disabled) { color:#17191c; background:#e5a64d; border-color:#f4ca88; }
+.npcshop-stepper > button:disabled,.npcshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
+.npcshop-stepper > button.remove { color:#d77d7d; border-color:#663d3d; background:#211313; }
 .npcshop-settlement-empty { margin:30px 0; color:#656d76; text-align:center; }
 .npcshop-settlement-summary { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; align-items:center; gap:12px; min-height:46px; padding-top:8px; border-top:1px solid #2d3239; }
 .npcshop-settlement-summary [data-trade-economy] { display:flex; gap:16px; align-items:center; }
@@ -636,7 +788,7 @@
 .npcshop-settlement-summary [data-trade-economy] small { color:#727a83; font:10px "Microsoft YaHei",sans-serif; }
 .npcshop-settlement-summary [data-trade-error] { color:#7fbe86; font-size:10px; }
 .npcshop-settlement-summary [data-trade-error].error { color:#df7f7f; }
-.npcshop-settlement-summary > button { min-width:104px; min-height:31px; padding:4px 13px; }
+.npcshop-settlement-summary > button { min-width:104px; min-height:40px; padding:4px 13px; }
 
 .npcshop-space-page {
     position:absolute; z-index:4; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);

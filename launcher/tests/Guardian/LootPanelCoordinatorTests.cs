@@ -171,6 +171,48 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(webInit["openAttemptSeq"]);
         }
 
+        [Fact]
+        public void CharacterRecoveryGateRejectsLootBeforeQueueAndRechecksAtExecution()
+        {
+            var panel = new FakePanel();
+            bool characterRecoveryClear = false;
+            using var coordinator = Create(panel);
+            coordinator.SetExternalAdmissionGate(
+                delegate
+                {
+                    return characterRecoveryClear;
+                });
+
+            JObject rejected = JObject.Parse(
+                coordinator.HandlePanelRequest(
+                    Request()));
+            Assert.False(
+                rejected.Value<bool>("accepted"));
+            Assert.Equal(
+                "recovery_pending",
+                rejected.Value<string>("error"));
+            Assert.Equal(
+                0,
+                panel.OpenCalls);
+            Assert.Equal(
+                LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+
+            characterRecoveryClear = true;
+            JObject accepted = JObject.Parse(
+                coordinator.HandlePanelRequest(
+                    Request(openAttemptSeq: 2)));
+            Assert.True(
+                accepted.Value<bool>("accepted"));
+            Assert.Equal(
+                1,
+                panel.OpenCalls);
+
+            characterRecoveryClear = false;
+            Assert.False(
+                panel.ExecutionGate());
+        }
+
         [Theory]
         [InlineData("source", "other")]
         [InlineData("panel", "workbench")]

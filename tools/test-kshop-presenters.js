@@ -54,6 +54,19 @@ test('catalog matcher handles root, category, set and curated paths', () => {
     assert.strictEqual(Catalog.matchesCategory(catalog[0], ['curated', '补给'], ItemFilter), false);
 });
 
+test('catalog activation is single-click add while drag remains an independent offer path', () => {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'kshop-catalog-presenter.js'), 'utf8');
+    assert.match(source, /dispatchAdd\(item, 'single_click'\)/);
+    assert.doesNotMatch(source, /addEventListener\('dblclick'/);
+    assert.match(source, /consumeDragClick/);
+});
+
+test('settlement edit gate does not overwrite QuantityControl bounds', () => {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'kshop-views.js'), 'utf8');
+    assert.match(source, /remove\.disabled = !editable/);
+    assert.doesNotMatch(source, /querySelectorAll\('button'\)[\s\S]{0,160}disabled = !editable/);
+});
+
 test('cart payload is normalized and detached from authority state', () => {
     const source = [{idx:'2', qty:'4'}];
     const payload = Cart.buildPayload(source);

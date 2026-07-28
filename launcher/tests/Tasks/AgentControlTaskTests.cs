@@ -598,6 +598,94 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void OpenCharacterBuild_ReadyDedicatedSlot_SendsFixedOpenerExactlyOnce()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_character_build",
+                "attempt-build");
+            task.SetCharacterBuildOpenAction(delegate
+            {
+                sendCount++;
+                return true;
+            });
+
+            JObject resp = JObject.Parse(task.Handle(
+                OpenCharacterBuildRequest(
+                    "cf7_agent_character_build",
+                    "attempt-build")));
+
+            Assert.True((bool)resp["success"]);
+            Assert.Equal(
+                "character_build_panel_open_requested",
+                (string)resp["note"]);
+            Assert.True((bool)resp["readyForRuntimeAutomation"]);
+            Assert.Equal(1, sendCount);
+        }
+
+        [Fact]
+        public void OpenCharacterBuild_ReusesRuntimeWatermarkGatesBeforeCallingOpener()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_character_build",
+                "attempt-build",
+                false);
+            ObserveGameEntered(task);
+            task.SetCharacterBuildOpenAction(delegate
+            {
+                sendCount++;
+                return true;
+            });
+
+            JObject resp = JObject.Parse(task.Handle(
+                OpenCharacterBuildRequest(
+                    "cf7_agent_character_build",
+                    "attempt-build")));
+
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("runtime_not_ready", (string)resp["error"]);
+            Assert.Contains(
+                "runtime_save_not_loaded",
+                resp.Value<JArray>(
+                    "runtimeReadyBlockedBy").Values<string>());
+            Assert.Equal(0, sendCount);
+        }
+
+        [Theory]
+        [InlineData(false, "character_build_open_failed")]
+        [InlineData(null, "character_build_open_unavailable")]
+        public void OpenCharacterBuild_DoesNotClaimRequestWithoutSuccessfulOpener(
+            bool? sendResult,
+            string expectedError)
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_character_build",
+                "attempt-build");
+            if (sendResult.HasValue)
+            {
+                task.SetCharacterBuildOpenAction(delegate
+                {
+                    sendCount++;
+                    return sendResult.Value;
+                });
+            }
+
+            JObject resp = JObject.Parse(task.Handle(
+                OpenCharacterBuildRequest(
+                    "cf7_agent_character_build",
+                    "attempt-build")));
+
+            Assert.False((bool)resp["success"]);
+            Assert.Equal(expectedError, (string)resp["error"]);
+            Assert.Equal(sendResult.HasValue ? 1 : 0, sendCount);
+        }
+
+        [Fact]
         public void Start_RejectsUnsafeSlot()
         {
             bool started = false;
@@ -652,6 +740,21 @@ namespace CF7Launcher.Tests.Tasks
             };
             if (expectedSlot != null) request["expectedSlot"] = expectedSlot;
             if (expectedAttempt != null) request["expectedAttemptId"] = expectedAttempt;
+            return request;
+        }
+
+        private static JObject OpenCharacterBuildRequest(
+            string expectedSlot,
+            string expectedAttempt)
+        {
+            JObject request = new JObject
+            {
+                ["action"] = "openCharacterBuild"
+            };
+            if (expectedSlot != null)
+                request["expectedSlot"] = expectedSlot;
+            if (expectedAttempt != null)
+                request["expectedAttemptId"] = expectedAttempt;
             return request;
         }
 
