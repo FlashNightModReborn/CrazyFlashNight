@@ -1,0 +1,404 @@
+{
+  "format": "cf7.player-info-hud.conversion-provenance",
+  "formatVersion": 1,
+  "evidenceRevision": "b0-04-canonical-asset-candidate-v1",
+  "status": "canonical_asset_candidate_validated",
+  "scope": "Repository-only provenance for the eight canonical HP/MP SVG assets and their runtime manifest.",
+  "runtimeEmbeddable": false,
+  "claims": {
+    "structuralValidationPassed": true,
+    "canonicalAssetClosureFrozen": true,
+    "visualParityClaimed": false,
+    "oracleFrozenClaimed": false,
+    "converterReproducibilityClaimed": false,
+    "adobeFilterPixelExactClaimed": false,
+    "ffdecFlashRuntimeEquivalent": false,
+    "rendererQualified": false,
+    "runtimeIntegrated": false,
+    "productionEmbedded": false,
+    "humanReviewRequired": true
+  },
+  "sourceEvidence": {
+    "placementClosure": {
+      "path": "tools/player-info-hud/evidence/b0-01/closure.json",
+      "bytes": 33774,
+      "sha256": "47740e0bf6b1df7259873eaa0ca368849fd1d7509a74e6db4924e7115a25d11a",
+      "gitBlobOid": "93357a16f8bd84c0ed96fb341c18d7b522af2e48",
+      "closureDigest": "6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368",
+      "status": "placement_closure_frozen"
+    },
+    "sourceBinaryChain": {
+      "path": "tools/player-info-hud/evidence/b0-01/source-binary-chain.json",
+      "bytes": 11534,
+      "sha256": "9f5632196b591a2cbac17a73e4b2c9460bfdbe82a09632363831ed1ffcddc5e8",
+      "gitBlobOid": "dcee2014db1ab9a84a48340676e24659e3dc723c",
+      "status": "repository_ancestry_verified",
+      "sourceBinaryAnchorCommit": "9845dd9084f7b285dbbf1ed603dad7b201a6a324",
+      "reproducibleBuildReceiptPresent": false
+    },
+    "childSwf": {
+      "path": "flashswf/UI/玩家信息界面.swf",
+      "bytes": 104124,
+      "sha256": "450b1f9a8b445ee3e28c63682ea00124a191f56d05d759b8590210fc0066a615",
+      "gitBlobOid": "7304a53093e89a3bba38aab93cdca5c079e18546",
+      "relationship": "Repository ancestry and the separate Flash candidate both bind these exact child bytes; this is not a reproducible CS6 build receipt."
+    }
+  },
+  "oneTimeConverter": {
+    "retained": false,
+    "authoritative": false,
+    "buildStep": false,
+    "reproductionSupported": false,
+    "reproducibilityClaimed": false,
+    "reasonNotRetained": "Generalizing the authoring timeline cost more to maintain than the eight-file target closure; the prototype was used only to create a deterministic six-asset seed before manual curation.",
+    "sourceClosureAlgorithm": "sha256(sorted UTF-8 relative path + NUL + exact file bytes + NUL)",
+    "sourceClosureDigest": "sha256:55a32da861fe32d7e1a8d71ee6b1443b73d537fd733956ce5ceb7cf6382af0f0",
+    "sourceFiles": [
+      {
+        "path": "CandidateGenerator.cs",
+        "bytes": 73761,
+        "sha256": "7a2318800419824baa27f5e6bbe0ce4830ab2ec274a4c3f7f0ebca27e749bae9"
+      },
+      {
+        "path": "Geometry.cs",
+        "bytes": 23081,
+        "sha256": "3d7a1df7e1ef64bf492cb35f1be63bd1cc6d307f12dda168d883579ef5829f5f"
+      },
+      {
+        "path": "PlayerInfoHudConverter.csproj",
+        "bytes": 589,
+        "sha256": "969f85e338ece5cc4384e81e2d5e8921193a84ebd9501b035b054199d3367ffe"
+      },
+      {
+        "path": "Program.cs",
+        "bytes": 41991,
+        "sha256": "4d3234755b404e10e22ef8dd49b20b5aff16daf8a3c54cd0f57f0611f80749e4"
+      },
+      {
+        "path": "SourceAuditor.cs",
+        "bytes": 43110,
+        "sha256": "b1073866ff3f629841a081b382979fff8635f915b3b2fbed6214168d85a8fce8"
+      },
+      {
+        "path": "SourcePolicy.cs",
+        "bytes": 39012,
+        "sha256": "89f69d9aa43cabcc26e660cb12c30ec8312c90650f5e5b481a207c327d623676"
+      }
+    ],
+    "deterministicSeed": {
+      "localRunA": "tmp/player-info-hud-b004-curated-seed-a",
+      "localRunB": "tmp/player-info-hud-b004-curated-seed-b",
+      "closureFileCount": 7,
+      "byteIdenticalFileCount": 7,
+      "assetCount": 6,
+      "candidateAssetSetRevision": "sha256:02d4f01e4e9aa8f31f50712455729dfcfebaec51ee99764416a58aa072e42035",
+      "reportPath": "tmp/player-info-hud-b004-curated-seed-a/conversion-candidate.json",
+      "reportBytes": 11990,
+      "reportSha256": "9dd2460a1d15ad15cb0bc36e1cf22785f06ce59452695e5e5b18e6f69f8b417a",
+      "retention": "ignored local evidence only"
+    }
+  },
+  "manualCuration": [
+    {
+      "id": "hp-border-bevel",
+      "decision": "Expand the static Bevel appearance into named vector-gradient groups in hp/rim.svg.",
+      "limitation": "Not claimed to be Adobe filter pixel-exact.",
+      "humanReviewRequired": true
+    },
+    {
+      "id": "mp-singular-radial-gradients",
+      "decision": "Use the first-stop solid for each of the two determinant-zero radial gradients.",
+      "sourceAnchors": [
+        {
+          "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角mp显示界面.xml",
+          "layer": "左侧MP槽",
+          "sourceFrameIndex": 0,
+          "shapeIndex": 0,
+          "fillStyleIndex": 2,
+          "matrix": [0, 0, 0, 0, 0, 0],
+          "gradientStops": ["#66FFFF", "#0033CC"],
+          "canonicalAsset": "mp/fill.svg",
+          "canonicalElementId": "mp-fill-singular-radial-first-stop-solid-0013"
+        },
+        {
+          "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角mp显示界面.xml",
+          "layer": "背景",
+          "sourceFrameIndex": 0,
+          "shapeIndex": 0,
+          "fillStyleIndex": 1,
+          "matrix": [0, 0, 0, 0, 0, 0],
+          "gradientStops": ["#3E3F31", "#626262"],
+          "canonicalAsset": "mp/backplate.svg",
+          "canonicalElementId": "mp-backplate-singular-radial-first-stop-solid-0013"
+        }
+      ],
+      "limitation": "The source matrix has no unique portable SVG inverse; this fallback is a candidate, not an oracle fact.",
+      "humanReviewRequired": true
+    },
+    {
+      "id": "mp-rim-variants",
+      "decision": "Add rim-vf70.svg and rim-vf91.svg for source visual-frame transitions 70 and 91.",
+      "limitation": "Visual correctness remains subject to Flash-candidate review.",
+      "humanReviewRequired": true
+    },
+    {
+      "id": "hp-fill-rotation",
+      "decision": "Rotate only gradient hp-fill-gradient-0003 with R multiplied by the authored gradient matrix; do not rotate the HP outline geometry.",
+      "limitation": "Runtime animation and visual acceptance are outside this structural evidence.",
+      "humanReviewRequired": true
+    },
+    {
+      "id": "programmatic-effects",
+      "decision": "Defer the HP line glow, light overlay, dynamic text and text glow to native programmatic layers.",
+      "limitation": "These effects are absent from the static SVG pixel diagnostics.",
+      "humanReviewRequired": true
+    }
+  ],
+  "canonicalAssetSet": {
+    "manifest": {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/player-info.manifest.json",
+      "bytes": 9937,
+      "sha256": "1006f90e3c1aa5435226c092019f46a3cd6358b0ece2804e42c85052de235630"
+    },
+    "assetSetRevision": "sha256:c8f58cb781f50c5a62eff163a04524e89fd6a2ee37c9b66347743d766ac93871",
+    "assetSetRevisionAlgorithm": "sha256(sorted UTF-8 relative path + NUL + exact file bytes + NUL)",
+    "assetCount": 8,
+    "assetBytes": 99564,
+    "assets": [
+      {
+        "id": "hp.backplate",
+        "path": "hp/backplate.svg",
+        "bytes": 929,
+        "sha256": "a6d983b6e443db5801aa19dc495b1143977631f189f5bb3d568886d8ab3c5fa2"
+      },
+      {
+        "id": "hp.fill",
+        "path": "hp/fill.svg",
+        "bytes": 13460,
+        "sha256": "44e12fb5ca01d9a884402f01821919a990089b9c1105f122dc3c106f3a9a6e25"
+      },
+      {
+        "id": "hp.rim",
+        "path": "hp/rim.svg",
+        "bytes": 69853,
+        "sha256": "9f8a475255afb74f8e8a1dafcb3c45f75fd7345e28368dd383798c2f2c303790"
+      },
+      {
+        "id": "mp.backplate",
+        "path": "mp/backplate.svg",
+        "bytes": 7187,
+        "sha256": "c40f3aa0a43da1a4e6740f0e759a329d9bf30377a3b955a898b845788b0b9492"
+      },
+      {
+        "id": "mp.fill",
+        "path": "mp/fill.svg",
+        "bytes": 7032,
+        "sha256": "0043d70033de3ce322d71098dc52d69ad4295eea2a8eb272f71bb9c2b3893603"
+      },
+      {
+        "id": "mp.rim",
+        "path": "mp/rim.svg",
+        "bytes": 407,
+        "sha256": "c6aafa525381b94c227133210501d882a1ebfdf94e209ca57ad687c4fa8bf44a"
+      },
+      {
+        "id": "mp.rim-vf70",
+        "path": "mp/rim-vf70.svg",
+        "bytes": 363,
+        "sha256": "a0fac6e149ccedab01f5ab728c6f64350e832bd56f345dd4ebc199bfb363ea01"
+      },
+      {
+        "id": "mp.rim-vf91",
+        "path": "mp/rim-vf91.svg",
+        "bytes": 333,
+        "sha256": "c38fb7525243382b2499fb7ebf6221e60ff52bec83b0f6cb26ce6239b84b679a"
+      }
+    ]
+  },
+  "automaticValidation": {
+    "report": {
+      "path": "tools/player-info-hud/evidence/b0-04/canonical-validation-report.json",
+      "bytes": 10390,
+      "sha256": "c83d0e1ae2505f936c20113d31c0b524b6a8e34418786714e0b1e2d99491c8d0"
+    },
+    "sdk": "10.0.300",
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "behaviorTests": {
+      "passed": 12,
+      "total": 12
+    },
+    "failClosedCases": {
+      "passed": 78,
+      "total": 78,
+      "valueGrammarCases": 58
+    },
+    "canonicalAssets": {
+      "passed": 8,
+      "total": 8
+    },
+    "rendererQualified": false,
+    "sourceClosure": [
+      {
+        "path": "tools/player-info-hud/renderer-qualification/StrictSvgValidator.cs",
+        "bytes": 45895,
+        "sha256": "d12abc4d297f3f668077e05ed19f53d30550a7aadb9d837082c9f362925afc4e"
+      },
+      {
+        "path": "tools/player-info-hud/renderer-qualification/CanonicalAssetValidator.cs",
+        "bytes": 43662,
+        "sha256": "722bc6212d478a619ee3bd5119690a20f760ab08365b65aeb661379ce4496418"
+      },
+      {
+        "path": "tools/player-info-hud/renderer-qualification/Program.cs",
+        "bytes": 32644,
+        "sha256": "1674ee0ce791590b770b55eec990cb37ba0a4eb87526ab88d30fc0d6f3a47694"
+      },
+      {
+        "path": "tools/player-info-hud/renderer-qualification/RendererQualification.csproj",
+        "bytes": 1085,
+        "sha256": "f1465cd5588c2e8ceca5a07a708b8ac79645fdfbef5482f097647d67fd1e442b"
+      },
+      {
+        "path": "tools/player-info-hud/renderer-qualification/packages.lock.json",
+        "bytes": 5628,
+        "sha256": "4e47f801c911bb258952de853351993c7864b9d5ad97fb25cb3b396e7af89a2f"
+      }
+    ]
+  },
+  "localDiagnostics": {
+    "retention": "All image and comparison closures below tmp/ are ignored, machine-local review aids; only this compact identity record is repository evidence.",
+    "headlessWeb": {
+      "tool": {
+        "path": "tools/player-info-hud/run-web-svg-harness.js",
+        "bytes": 18496,
+        "sha256": "3a38a4e231cc100519796366ba516350fedf6ae3b894c4302312d07a536897c9"
+      },
+      "runA": "tmp/player-info-hud-web-canonical-r5-a",
+      "runB": "tmp/player-info-hud-web-canonical-r5-b",
+      "closureFileCount": 12,
+      "byteIdenticalFileCount": 12,
+      "reportPath": "tmp/player-info-hud-web-canonical-r5-a/web-render-report.json",
+      "reportBytes": 4849,
+      "reportSha256": "1a5d38be5963bae95fb2b273ee40a9b7149add37a4d783af36078722377b8dce",
+      "caseCount": 11,
+      "interpretation": "A/B output-closure determinism only; not visual acceptance."
+    },
+    "ffdecReference": {
+      "tool": {
+        "path": "tools/player-info-hud/capture-ffdec-reference.ps1",
+        "bytes": 22192,
+        "sha256": "2c87b324b279e834c60c7079694ee974cd5ad00b5141bb2b216120ee719581a7"
+      },
+      "runA": "tmp/player-info-hud-ffdec-reference-r3a",
+      "runB": "tmp/player-info-hud-ffdec-reference-r3b",
+      "closureFileCount": 23,
+      "byteIdenticalFileCount": 23,
+      "reportPath": "tmp/player-info-hud-ffdec-reference-r3a/ffdec-reference-report.json",
+      "reportBytes": 30433,
+      "reportSha256": "069bfd2b12ef284f11b7f9937bcfc4b1d419d0772af6df5d1c733ff475784167",
+      "referenceSetRevision": "sha256:a8369211446916f0b30f504a4e6fee02f860047dff6f68bc7712fc1eaf4a79c0",
+      "flashPlayerRuntimeOracleEquivalent": false
+    },
+    "ffdecWebComparison": {
+      "tool": {
+        "path": "tools/player-info-hud/compare-ffdec-web-svg.js",
+        "bytes": 38502,
+        "sha256": "bc4235f68ad591eb1637e4d9542c645186ae2c3f13ad5be15a75c3b38efc1328"
+      },
+      "runA": "tmp/player-info-hud-ffdec-web-canonical-r4-a",
+      "runB": "tmp/player-info-hud-ffdec-web-canonical-r4-b",
+      "closureFileCount": 34,
+      "byteIdenticalFileCount": 34,
+      "reportPath": "tmp/player-info-hud-ffdec-web-canonical-r4-a/ffdec-web-comparison-report.json",
+      "reportBytes": 35337,
+      "reportSha256": "5a692a210d4e40934faca193e7dec74cd9fb87a7e5722f26ad3f992399b510ec",
+      "caseCount": 11,
+      "metrics": {
+        "totalPixels": 720896,
+        "changedPixelCount": 78857,
+        "meanAbsoluteErrorRgba8": 8.693509188565342,
+        "rootMeanSquaredErrorRgba8": 41.247915151154615,
+        "maxAbsoluteChannelError": 255
+      },
+      "passThresholdApplied": false,
+      "interpretation": "The A/B comparison-output closures are deterministic. FFDec pixels are not claimed identical to Web pixels."
+    },
+    "flashWebComparison": {
+      "tool": {
+        "path": "tools/player-info-hud/compare-flash-web-svg.js",
+        "bytes": 43959,
+        "sha256": "142819d4bc7b591919b79a20d2846a351338d666d71bb6c9a65693b36bf602b7"
+      },
+      "runA": "tmp/player-info-hud-flash-web-canonical-r4-a",
+      "runB": "tmp/player-info-hud-flash-web-canonical-r4-b",
+      "closureFileCount": 34,
+      "byteIdenticalFileCount": 34,
+      "reportPath": "tmp/player-info-hud-flash-web-canonical-r4-a/flash-web-comparison-report.json",
+      "reportBytes": 52047,
+      "reportSha256": "adbc5ce97f2b3c0157f856335dd1ab7b1cb3669b131431e7535b146e5be5adb3",
+      "caseCount": 11,
+      "metrics": {
+        "totalPixels": 720896,
+        "changedPixelCount": 64100,
+        "changedPixelFraction": 0.08891712535511363,
+        "meanAbsoluteErrorRgba8": 5.605786410245028,
+        "rootMeanSquaredErrorRgba8": 33.17881122232779,
+        "maxAbsoluteChannelError": 255
+      },
+      "passThresholdApplied": false,
+      "interpretation": "The A/B comparison-output closures are deterministic. The Flash input is an unaccepted candidate and includes text/effects absent from the static Web assets; metrics are review aids, not a verdict."
+    }
+  },
+  "flashCandidate": {
+    "localDirectory": "tmp/player-info-hud/oracle/20260728T101414Z-d643ecd574a147009c8ada8d6ee1dc9d",
+    "manifest": {
+      "path": "tmp/player-info-hud/oracle/20260728T101414Z-d643ecd574a147009c8ada8d6ee1dc9d/oracle-manifest.json",
+      "bytes": 61487,
+      "sha256": "dcc9e11af07cddb8296851ee4541a035cd0aab1e9b9d430ff82f4b8d265bf472"
+    },
+    "receipt": {
+      "path": "tmp/player-info-hud/oracle/20260728T101414Z-d643ecd574a147009c8ada8d6ee1dc9d/candidate-receipt.json",
+      "bytes": 2819,
+      "sha256": "89707a18061dcbe2ad586441eb349417c40a48fcf66256cb33d69eef386a5d23"
+    },
+    "status": "candidate_captured",
+    "testLoaderSwf": {
+      "bytes": 389160,
+      "sha256": "ace5b6dc6ad379b7f0a3ce4c80278bf29d9d18254f6663fc741440f3de1f10b2"
+    },
+    "childSwfSha256": "450b1f9a8b445ee3e28c63682ea00124a191f56d05d759b8590210fc0066a615",
+    "playerVersion": "11,2,202,228",
+    "playerExitedNaturally": true,
+    "rawCaptureCount": 11,
+    "rawCaptureSize": {
+      "width": 1024,
+      "height": 64
+    },
+    "cropCount": 11,
+    "cropSizes": {
+      "standardTen": {
+        "count": 10,
+        "width": 278,
+        "height": 45
+      },
+      "empty": {
+        "count": 1,
+        "width": 280,
+        "height": 45
+      }
+    },
+    "oracleFrozen": false
+  },
+  "humanReview": {
+    "status": "required",
+    "reviewer": null,
+    "checks": {
+      "stateCorrect": null,
+      "noOtherHudLayers": null,
+      "cropDoesNotEatEdges": null,
+      "visualAestheticsAccepted": null
+    },
+    "blockingScope": "Blocks oracle_frozen, B0-04 visual exit, B0-06 parity conclusions and final B0 acceptance. It does not block unrelated structural work in B0-03b or B0-05."
+  }
+}

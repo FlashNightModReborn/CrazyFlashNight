@@ -1,0 +1,317 @@
+{
+  "format": "cf7.player-info-hud.asset-manifest",
+  "schemaVersion": 1,
+  "assetSet": {
+    "id": "player-info-hp-mp-b0",
+    "revision": "sha256:c8f58cb781f50c5a62eff163a04524e89fd6a2ee37c9b66347743d766ac93871",
+    "revisionAlgorithm": "sha256(sorted UTF-8 relative path + NUL + exact file bytes + NUL)",
+    "rasterContractVersion": 1,
+    "runtimeCacheIdentityComponents": [
+      "assetSet.revision",
+      "exact-manifest-sha256"
+    ]
+  },
+  "units": {
+    "svgUnit": "logical-pixel",
+    "sourceTwipsPerSvgUnit": 20
+  },
+  "stage": {
+    "logicalWidth": 1024,
+    "logicalHeight": 64,
+    "compositeOrder": ["mp", "hp"]
+  },
+  "rendererContract": {
+    "package": "Svg.Skia",
+    "version": "5.1.1",
+    "skiaSharpVersion": "3.119.4",
+    "featureSet": "cf7-player-info-static-svg-v1",
+    "colorType": "Bgra8888",
+    "alphaType": "premultiplied",
+    "externalResources": "forbidden",
+    "scripts": "forbidden",
+    "runtimeTextElements": "forbidden"
+  },
+  "assets": [
+    {
+      "id": "hp.backplate",
+      "path": "hp/backplate.svg",
+      "sha256": "a6d983b6e443db5801aa19dc495b1143977631f189f5bb3d568886d8ab3c5fa2",
+      "viewBox": [-47, -47, 94, 94],
+      "sourceGeometryBounds": [-39.5, -39.5, 39.5, 39.5],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 0,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "hp.fill",
+      "path": "hp/fill.svg",
+      "sha256": "44e12fb5ca01d9a884402f01821919a990089b9c1105f122dc3c106f3a9a6e25",
+      "viewBox": [-47, -47, 94, 94],
+      "sourceGeometryBounds": [-39.5, -39.5, 39.5, 39.5],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 1,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "hp.rim",
+      "path": "hp/rim.svg",
+      "sha256": "9f8a475255afb74f8e8a1dafcb3c45f75fd7345e28368dd383798c2f2c303790",
+      "viewBox": [-47, -47, 94, 94],
+      "sourceGeometryBounds": [-45.45, -45.4, 45.4, 45.45],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 2,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "mp.backplate",
+      "path": "mp/backplate.svg",
+      "sha256": "c40f3aa0a43da1a4e6740f0e759a329d9bf30377a3b955a898b845788b0b9492",
+      "viewBox": [-41, -3, 218, 45],
+      "sourceGeometryBounds": [-39.55, -1.4, 173.53626098632899525, 40.4],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 0,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "mp.fill",
+      "path": "mp/fill.svg",
+      "sha256": "0043d70033de3ce322d71098dc52d69ad4295eea2a8eb272f71bb9c2b3893603",
+      "viewBox": [-41, -3, 218, 45],
+      "sourceGeometryBounds": [-30.35, 0.2, 175.2, 36.85],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 1,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "mp.rim",
+      "path": "mp/rim.svg",
+      "sha256": "c6aafa525381b94c227133210501d882a1ebfdf94e209ca57ad687c4fa8bf44a",
+      "viewBox": [-41, -3, 218, 45],
+      "sourceGeometryBounds": [75.9, 8.1, 79.15, 18.85],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 2,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "mp.rim-vf70",
+      "path": "mp/rim-vf70.svg",
+      "sha256": "a0fac6e149ccedab01f5ab728c6f64350e832bd56f345dd4ebc199bfb363ea01",
+      "viewBox": [-41, -3, 218, 45],
+      "sourceGeometryBounds": [75.9, 8.1, 79.15, 18.85],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 2,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    },
+    {
+      "id": "mp.rim-vf91",
+      "path": "mp/rim-vf91.svg",
+      "sha256": "c38fb7525243382b2499fb7ebf6221e60ff52bec83b0f6cb26ce6239b84b679a",
+      "viewBox": [-41, -3, 218, 45],
+      "sourceGeometryBounds": [75.9, 8.1, 79.15, 18.85],
+      "registration": [0, 0],
+      "gaugeLayerOrder": 2,
+      "blendMode": "source-over",
+      "opacity": 1,
+      "cacheable": true
+    }
+  ],
+  "gauges": {
+    "hp": {
+      "assetIds": ["hp.backplate", "hp.fill", "hp.rim"],
+      "stageMatrix": [0.847213745117188, 0, 0, 0.847213745117188, 37.75, 5.65],
+      "frameMap": {
+        "stepCount": 128,
+        "virtualFrameCount": 129,
+        "fullVirtualFrame": 1,
+        "emptyVirtualFrame": 129,
+        "reverse": true,
+        "rounding": "floor"
+      },
+      "clip": {
+        "type": "radial-sector",
+        "center": [0, 0],
+        "radius": 128,
+        "startAngleDegrees": -90,
+        "direction": "counterclockwise"
+      },
+      "fillTextureRotation": {
+        "assetId": "hp.fill",
+        "svgGradientIds": ["hp-fill-gradient-0003"],
+        "pivot": [0, 0],
+        "sourceFrameOffset": -1,
+        "degreesPerSourceFrame": 2.8125,
+        "positiveDirection": "clockwise"
+      }
+    },
+    "mp": {
+      "assetIds": ["mp.backplate", "mp.fill"],
+      "stageMatrix": [1.0810546875, 0, 0, 1.0810546875, 90.1, -1.3],
+      "frameMap": {
+        "stepCount": 100,
+        "virtualFrameCount": 101,
+        "fullVirtualFrame": 1,
+        "emptyVirtualFrame": 101,
+        "sourceFrameOffset": -1,
+        "reverse": true,
+        "rounding": "floor"
+      },
+      "rimVariants": [
+        {"startVirtualFrame": 1, "assetId": "mp.rim"},
+        {"startVirtualFrame": 70, "assetId": "mp.rim-vf70"},
+        {"startVirtualFrame": 91, "assetId": "mp.rim-vf91"}
+      ],
+      "maskPaintSemantics": "coverage-only",
+      "clipBindings": [
+        {
+          "id": "mp-left-mask",
+          "assetId": "mp.fill",
+          "svgGroupIds": [
+            "mp-fill-left-background-copy",
+            "mp-fill-left-slot"
+          ]
+        },
+        {
+          "id": "mp-right-mask",
+          "assetId": "mp.fill",
+          "svgGroupIds": [
+            "mp-fill-right-decoration",
+            "mp-fill-right-slot"
+          ]
+        }
+      ],
+      "topologyBreak": {
+        "lastTwoContourVirtualFrame": 34,
+        "firstOneContourVirtualFrame": 35,
+        "policy": "hard-cut-no-cross-topology-interpolation"
+      },
+      "terminalEmpty": {
+        "previousSourceFrame": 99,
+        "emptySourceFrame": 100,
+        "emptyVirtualFrame": 101
+      },
+      "morphIntervals": [
+        {
+          "mask": "mp-left-mask",
+          "sourceStart": 0,
+          "sourceEnd": 99,
+          "interpolation": "ordered-line-only-A/B-correspondence",
+          "correspondence": [
+            {
+              "aStartAndAnchorsTwips": [[-607, 5], [-85, 5], [-85, 737], [-607, 737], [-607, 5]],
+              "bStartAndAnchorsTwips": [[-607, 735], [-85, 735], [-85, 739], [-607, 739], [-607, 735]]
+            }
+          ]
+        },
+        {
+          "mask": "mp-right-mask",
+          "sourceStart": 0,
+          "sourceEnd": 33,
+          "interpolation": "ordered-line-only-A/B-correspondence",
+          "correspondence": [
+            {
+              "aStartAndAnchorsTwips": [[518, 640], [601, 415], [3491, 415], [3406, 640], [518, 640]],
+              "bStartAndAnchorsTwips": [[518, 631], [601, 415], [2537, 415], [2453, 631], [518, 631]]
+            },
+            {
+              "aStartAndAnchorsTwips": [[2527, -63], [3508, -63], [3508, 374], [2528, 374], [2527, -63]],
+              "bStartAndAnchorsTwips": [[2491, -63], [2538, -63], [2538, 374], [2491, 374], [2491, -63]]
+            }
+          ]
+        },
+        {
+          "mask": "mp-right-mask",
+          "sourceStart": 34,
+          "sourceEnd": 99,
+          "interpolation": "ordered-line-only-A/B-correspondence",
+          "correspondence": [
+            {
+              "aStartAndAnchorsTwips": [[518, 631], [601, 415], [2508, 415], [2424, 631], [518, 631]],
+              "bStartAndAnchorsTwips": [[518, 612], [601, 415], [630, 415], [548, 612], [518, 612]]
+            }
+          ]
+        }
+      ],
+      "paletteStates": [
+        {
+          "startVirtualFrame": 1,
+          "rimAssetId": "mp.rim",
+          "label": "#5EEFFB",
+          "percent": "#5EEFFB",
+          "current": "#5EEFFB",
+          "max": "#5EEFFB",
+          "decoration": "#5EEFFB",
+          "decorativeCurrent": {"color": "#FFFFFF", "alpha": 0.2},
+          "decorativeMax": {"color": "#FFFFFF", "alpha": 0.2}
+        },
+        {
+          "startVirtualFrame": 70,
+          "rimAssetId": "mp.rim-vf70",
+          "label": "#5EEFFB",
+          "percent": "#5EEFFB",
+          "current": "#5EEFFB",
+          "max": "#B6B6B6",
+          "decoration": "#5EEFFB",
+          "decorativeCurrent": {"color": "#FFFFFF", "alpha": 0.2},
+          "decorativeMax": {"color": "#FFFFFF", "alpha": 0.2}
+        },
+        {
+          "startVirtualFrame": 91,
+          "rimAssetId": "mp.rim-vf91",
+          "label": "#5EEFFB",
+          "percent": "#5EEFFB",
+          "current": "#B6B6B6",
+          "max": "#B6B6B6",
+          "decoration": "#B6B6B6",
+          "decorativeCurrent": {"color": "#D6D6D6", "alpha": 0.2},
+          "decorativeMax": {"color": "#FFFFFF", "alpha": 0.2}
+        }
+      ]
+    }
+  },
+  "effectPolicy": {
+    "includedStatic": [
+      {
+        "id": "hp-border-bevel",
+        "implementation": "expanded-vector-gradient",
+        "assetId": "hp.rim",
+        "svgGroupId": "hp-rim-static-bevel-expanded"
+      }
+    ],
+    "programmaticLayers": [
+      {
+        "id": "hp-horizontal-line-glow",
+        "rendererOwner": "native-effect",
+        "compositeAfter": "hp.fill",
+        "compositeBefore": "hp.rim",
+        "blendMode": "source-over"
+      },
+      {
+        "id": "hp-light-overlay",
+        "rendererOwner": "native-effect",
+        "compositeAfter": "hp.fill",
+        "compositeBefore": "hp.rim",
+        "blendMode": "overlay"
+      },
+      {
+        "id": "hp-mp-dynamic-text-and-glow",
+        "rendererOwner": "native-draw",
+        "compositeAfter": "gauge-static-layers",
+        "blendMode": "source-over"
+      }
+    ]
+  }
+}

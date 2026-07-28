@@ -825,10 +825,12 @@ chcp.com 65001 | Out-Null
 $dotnetHost = Resolve-Cf7Dotnet -ProjectRoot (Get-Location).Path
 & $dotnetHost restore tools\player-info-hud\renderer-qualification\RendererQualification.csproj --locked-mode -r win-x64
 & $dotnetHost build tools\player-info-hud\renderer-qualification\RendererQualification.csproj --no-restore -c Release -r win-x64
-& $dotnetHost run --project tools\player-info-hud\renderer-qualification\RendererQualification.csproj --no-build -c Release -r win-x64 -- --report tools\player-info-hud\evidence\b0-02\qualification-report.json
+& $dotnetHost run --project tools\player-info-hud\renderer-qualification\RendererQualification.csproj --no-build --no-restore -c Release -r win-x64 -- `
+  --asset-manifest launcher\src\Guardian\Hud\PlayerInfo\Assets\player-info.manifest.json `
+  --report tmp\player-info-hud-b004-validation-fresh.json
 ```
 
-当前结果为 `isolated_qualification_passed`：10/10 行为测试、16 项 fail-closed，报告含 exact XFL feature anchors、完整新增包/许可/nupkg hash 与 producer-shaped win-x64 payload。`rendererQualified` 仍为 false；qualification fixture 不是 canonical HUD asset，不能据此声称 Launcher 已引入或正式验收该 renderer。
+历史 `tools/player-info-hud/evidence/b0-02/qualification-report.json` 固定记录原始 B0-02 的 10/10 行为测试与 16 项 fail-closed，不得被当前 harness 覆盖。当前 B0-04 模式为 `isolated_qualification_passed`：12/12 行为测试、78/78 fail-closed（其中 58 项值级 grammar）与 8/8 canonical SVG；提交快照为 `tools/player-info-hud/evidence/b0-04/canonical-validation-report.json`，普通重跑必须写 ignored `tmp/`。`rendererQualified` 仍为 false；完整 structural/Web/FFDec/Flash diagnostic 入口与人工接受边界见 [`tools/player-info-hud/README.md`](../tools/player-info-hud/README.md)。
 
 2026-07-17 末轮调制交互收口：强化石核心统一承载持有、preview 消耗与强化后剩余，放大持有量并将强化 footer 收敛为单一动态 CTA；交换目录只显示同 `use` 且与 source 强化度不同的装备，无候选时给出明确空态。AS2 的同强化度 no-op 校验仍保留，用于防御 projection 后的状态变化。
 

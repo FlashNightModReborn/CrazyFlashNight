@@ -11,6 +11,7 @@ using Svg.Model;
 using Svg.Skia;
 
 var reportPath = GetOption(args, "--report");
+var assetManifestPath = GetOption(args, "--asset-manifest");
 var fixtureRoot = Path.Combine(AppContext.BaseDirectory, "fixtures");
 var syntheticBytes = Encoding.UTF8.GetBytes(
     "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"20\" viewBox=\"0 0 100 20\">\n" +
@@ -27,10 +28,32 @@ var syntheticBytes = Encoding.UTF8.GetBytes(
     "  </g>\n" +
     "  <use href=\"#marker\" transform=\"matrix(1 0 0 1 90 8)\" fill=\"#ffffff\"/>\n" +
     "</svg>\n");
+var controlledValueGrammarBytes = Encoding.UTF8.GetBytes(
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"32\" viewBox=\"0 0 64 32\" preserveAspectRatio=\"none\">\n" +
+    "  <defs>\n" +
+    "    <linearGradient id=\"base\" gradientUnits=\"objectBoundingBox\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\" spreadMethod=\"repeat\">\n" +
+    "      <stop offset=\"0\" stop-color=\"#AABBCC\" stop-opacity=\"0.5\"/>\n" +
+    "      <stop offset=\"1\" stop-color=\"#112233\" stop-opacity=\"1\"/>\n" +
+    "    </linearGradient>\n" +
+    "    <linearGradient id=\"derived\" href=\"#base\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"0\" x2=\"64\" y2=\"0\" gradientTransform=\"matrix(1 0 0 1 1 2)\" spreadMethod=\"pad\"/>\n" +
+    "    <radialGradient id=\"radial\" gradientUnits=\"userSpaceOnUse\" cx=\"16\" cy=\"16\" r=\"8\" fx=\"16\" fy=\"16\" spreadMethod=\"reflect\">\n" +
+    "      <stop offset=\"0.25\" stop-color=\"#FFFFFF\"/><stop offset=\"0.75\" stop-color=\"#000000\"/>\n" +
+    "    </radialGradient>\n" +
+    "    <clipPath id=\"clip\" clipPathUnits=\"objectBoundingBox\"><rect x=\"0\" y=\"0\" width=\"1\" height=\"1\"/></clipPath>\n" +
+    "    <path id=\"marker\" d=\"M0 0 L1 0 H2 V1 C2 1 3 2 4 3 S5 4 6 5 Q7 6 8 7 T10 9 A1 1 0 0 1 12 11 Z\"/>\n" +
+    "  </defs>\n" +
+    "  <g transform=\"matrix(1 0 0 1 1 0)\"><g transform=\"matrix(1 0 0 1 0 0)\"><g transform=\"matrix(1 0 0 1 0 0)\">\n" +
+    "    <path d=\"M0 0H32V16H0Z\" fill=\"url(#derived)\" stroke=\"#AABBCC\" stroke-width=\"0.5\" opacity=\"0.5\" fill-rule=\"nonzero\" clip-rule=\"evenodd\" clip-path=\"url(#clip)\" stroke-linecap=\"square\" stroke-linejoin=\"bevel\" stroke-miterlimit=\"4\"/>\n" +
+    "  </g></g></g>\n" +
+    "  <use href=\"#marker\" x=\"1\" y=\"1\" width=\"8\" height=\"8\" transform=\"matrix(1 0 0 1 0 0)\" fill=\"#FFFFFF\"/>\n" +
+    "  <circle cx=\"4\" cy=\"4\" r=\"1\" fill=\"none\"/><ellipse cx=\"8\" cy=\"4\" rx=\"2\" ry=\"1\" fill=\"none\"/>\n" +
+    "  <line x1=\"0\" y1=\"31\" x2=\"8\" y2=\"31\" stroke=\"#000000\"/><polyline points=\"10,31 12,29\" fill=\"none\"/><polygon points=\"14,31 16,29 18,31\" fill=\"none\"/>\n" +
+    "</svg>\n");
 var hpMpBytes = File.ReadAllBytes(Path.Combine(fixtureRoot, "hp-mp-feature-derived.svg"));
 var tests = new List<TestResult>();
 var metrics = new SortedDictionary<string, object?>();
 var unsafeDefaults = new SortedDictionary<string, object?>();
+CanonicalAssetValidationResult? canonicalAssets = null;
 
 Run("unsafe_defaults_are_documented", () =>
 {
@@ -57,6 +80,23 @@ Run("strict_validator_accepts_qualification_corpus", () =>
     StrictSvgValidator.Validate(hpMpBytes);
 });
 
+Run("strict_validator_accepts_controlled_value_grammar", () =>
+{
+    using var svg = StrictSvgFacade.Load(controlledValueGrammarBytes);
+    using var bitmap = svg.Rasterize(64, 32);
+    var renderedPixels = CountNonTransparent(bitmap);
+    Require(renderedPixels > 0, "Controlled value-grammar document rasterized empty.");
+    StrictSvgValidator.Validate(
+        Encoding.UTF8.GetBytes(UseReferenceChain(StrictSvgValidator.MaxReferenceDepth)));
+    StrictSvgValidator.Validate(
+        Encoding.UTF8.GetBytes(GradientReferenceChain(StrictSvgValidator.MaxReferenceDepth)));
+    StrictSvgValidator.Validate(Encoding.UTF8.GetBytes(AcyclicUseExpansion(13)));
+    metrics["controlledValueGrammarDocuments"] = 1;
+    metrics["controlledValueGrammarPixels"] = renderedPixels;
+    metrics["referenceDepthAcceptedBoundary"] = StrictSvgValidator.MaxReferenceDepth;
+    metrics["semanticExpansionAcceptedLevels"] = 13;
+});
+
 Run("strict_validator_fail_closed_matrix", () =>
 {
     var cases = new Dictionary<string, string>(StringComparer.Ordinal)
@@ -65,6 +105,9 @@ Run("strict_validator_fail_closed_matrix", () =>
         ["dtd"] = "<!DOCTYPE svg [<!ENTITY x 'boom'>]><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'><path id='&x;' d='M0 0'/></svg>",
         ["script"] = Wrap("<script>throw 1</script>"),
         ["event"] = Wrap("<path d='M0 0' onclick='x()'/>"),
+        ["root_event"] = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' onload='x()'><path d='M0 0'/></svg>",
+        ["root_unknown_attribute"] = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' mystery='1'><path d='M0 0'/></svg>",
+        ["nested_processing_instruction"] = Wrap("<g><?cf7 unsafe?><path d='M0 0'/></g>"),
         ["image_http"] = Wrap("<image href='http://127.0.0.1:9/x.png' width='1' height='1'/>"),
         ["image_data"] = Wrap("<image href='data:image/png;base64,AA==' width='1' height='1'/>"),
         ["text"] = Wrap("<text x='0' y='1'>HP</text>"),
@@ -74,16 +117,107 @@ Run("strict_validator_fail_closed_matrix", () =>
         ["cross_file_href"] = Wrap("<use href='other.svg#x'/>"),
         ["unknown_attribute"] = Wrap("<path d='M0 0' mystery='1'/>"),
         ["unknown_element"] = Wrap("<metadata/>"),
-        ["oversized"] = "<svg xmlns='http://www.w3.org/2000/svg' width='4097' height='1' viewBox='0 0 4097 1'/>",
+        ["oversized"] = "<svg xmlns='http://www.w3.org/2000/svg' width='4097' height='1' viewBox='0 0 4097 1'><path d='M0 0H1V1Z'/></svg>",
+        ["nested_svg"] = Wrap("<svg width='1' height='1' viewBox='0 0 1 1'><path d='M0 0H1V1Z'/></svg>"),
         ["deep"] = DeepSvg(70),
         ["path_complexity"] = TooComplexPath()
+    };
+    var valueGrammarCases = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["transform_unknown"] = Wrap("<g transform='skewX(1)'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_matrix_arity"] = Wrap("<g transform='matrix(1 0 0 1 0)'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_translate_arity"] = Wrap("<g transform='translate(1 2 3)'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_scale_empty"] = Wrap("<g transform='scale()'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_rotate_arity"] = Wrap("<g transform='rotate(1 2)'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_nonfinite"] = Wrap("<g transform='matrix(1 0 0 1 1e309 0)'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_trailing_junk"] = Wrap("<g transform='translate(1)junk'><path d='M0 0H1V1Z'/></g>"),
+        ["transform_missing_separator"] = Wrap("<g transform='translate(1)scale(1)'><path d='M0 0H1V1Z'/></g>"),
+        ["composite_matrix_out_of_bounds"] = Wrap("<g transform='matrix(1001 0 0 1001 0 0)'><g transform='matrix(1000 0 0 1000 0 0)'><path d='M0 0H1V1Z'/></g></g>"),
+        ["semantic_use_composite_matrix_out_of_bounds"] = Wrap(
+            "<defs>" +
+            "<g id='semantic-a' transform='matrix(10 0 0 10 0 0)'><path d='M0 0H1V1Z' clip-path='url(#semantic-clip)'/></g>" +
+            "<clipPath id='semantic-clip' transform='matrix(10 0 0 10 0 0)'><use href='#semantic-b' x='1' y='0'/></clipPath>" +
+            "<g id='semantic-b' transform='matrix(1000 0 0 1000 1000 0)'><path d='M0 0H1V1Z'/></g>" +
+            "</defs><use href='#semantic-a' transform='matrix(10 0 0 10 0 0)'/>"),
+        ["path_not_moveto"] = Wrap("<path d='L0 0L1 1'/>"),
+        ["relative_path"] = Wrap("<path d='m0 0L1 1'/>"),
+        ["path_unknown_command"] = Wrap("<path d='M0 0X1 1'/>"),
+        ["path_wrong_arity"] = Wrap("<path d='M0 0L1'/>"),
+        ["path_nonfinite"] = Wrap("<path d='M0 0L1e309 1'/>"),
+        ["path_unbounded"] = Wrap("<path d='M0 0L1000001 1'/>"),
+        ["path_arc_bad_flag"] = Wrap("<path d='M0 0A1 1 0 2 0 2 2'/>"),
+        ["path_arc_negative_radius"] = Wrap("<path d='M0 0A-1 1 0 0 0 2 2'/>"),
+        ["path_trailing_comma"] = Wrap("<path d='M0 0L1 1,'/>"),
+        ["path_comma_before_command"] = Wrap("<path d='M0 0,L1 1'/>"),
+        ["path_decimal_without_separator"] = Wrap("<path d='M0 0L1.0.5 1'/>"),
+        ["path_garbage_suffix"] = Wrap("<path d='M0 0L1 1 garbage'/>"),
+        ["fill_named_color"] = Wrap("<path d='M0 0H1V1Z' fill='red'/>"),
+        ["fill_short_hex"] = Wrap("<path d='M0 0H1V1Z' fill='#fff'/>"),
+        ["fill_external_url"] = Wrap("<path d='M0 0H1V1Z' fill='url(http://example.invalid/g)'/>"),
+        ["stroke_function_color"] = Wrap("<path d='M0 0H1V1Z' stroke='rgb(0,0,0)'/>"),
+        ["stop_color_named"] = Wrap("<defs><linearGradient id='g'><stop offset='0' stop-color='red'/></linearGradient></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["opacity_above_one"] = Wrap("<path d='M0 0H1V1Z' opacity='1.01'/>"),
+        ["opacity_below_zero"] = Wrap("<path d='M0 0H1V1Z' opacity='-0.01'/>"),
+        ["stop_opacity_above_one"] = Wrap("<defs><linearGradient id='g'><stop offset='0' stop-color='#000000' stop-opacity='2'/></linearGradient></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["offset_above_one"] = Wrap("<defs><linearGradient id='g'><stop offset='1.1' stop-color='#000000'/></linearGradient></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["offset_percent"] = Wrap("<defs><linearGradient id='g'><stop offset='50%' stop-color='#000000'/></linearGradient></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["gradient_units_enum"] = Wrap("<defs><linearGradient id='g' gradientUnits='viewport'/></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["spread_method_enum"] = Wrap("<defs><linearGradient id='g' spreadMethod='mirror'/></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["fill_rule_enum"] = Wrap("<path d='M0 0H1V1Z' fill-rule='alternate'/>"),
+        ["linecap_enum"] = Wrap("<path d='M0 0H1V1Z' stroke-linecap='flat'/>"),
+        ["linejoin_enum"] = Wrap("<path d='M0 0H1V1Z' stroke-linejoin='arcs'/>"),
+        ["preserve_aspect_ratio_enum"] = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' preserveAspectRatio='xMiddleYMid meet'><path d='M0 0H1V1Z'/></svg>",
+        ["coordinate_nonfinite"] = Wrap("<rect x='1e309' y='0' width='1' height='1'/>"),
+        ["dimension_negative"] = Wrap("<rect x='0' y='0' width='-1' height='1'/>"),
+        ["stroke_width_negative"] = Wrap("<path d='M0 0H1V1Z' stroke-width='-1'/>"),
+        ["miterlimit_below_one"] = Wrap("<path d='M0 0H1V1Z' stroke-miterlimit='0.5'/>"),
+        ["points_odd"] = Wrap("<polyline points='0 0 1'/>"),
+        ["points_trailing_junk"] = Wrap("<polygon points='0 0 1 0 1 1 junk'/>"),
+        ["duplicate_id"] = Wrap("<path id='same' d='M0 0H1V1Z'/><path id='same' d='M1 1H2V2Z'/>"),
+        ["unresolved_local_url"] = Wrap("<path d='M0 0H1V1Z' fill='url(#missing)'/>"),
+        ["paint_wrong_target_type"] = Wrap("<defs><path id='p' d='M0 0H1V1Z'/></defs><path d='M0 0H1V1Z' fill='url(#p)'/>"),
+        ["clip_wrong_target_type"] = Wrap("<defs><linearGradient id='g'/></defs><path d='M0 0H1V1Z' clip-path='url(#g)'/>"),
+        ["gradient_href_wrong_target_type"] = Wrap("<defs><path id='p' d='M0 0H1V1Z'/><linearGradient id='g' href='#p'/></defs><path d='M0 0H1V1Z' fill='url(#g)'/>"),
+        ["use_wrong_target_type"] = Wrap("<defs><linearGradient id='g'/></defs><use href='#g'/>"),
+        ["gradient_href_cycle"] = Wrap("<defs><linearGradient id='a' href='#b'/><linearGradient id='b' href='#a'/></defs><path d='M0 0H1V1Z' fill='url(#a)'/>"),
+        ["use_direct_cycle"] = Wrap("<defs><use id='a' href='#b'/><use id='b' href='#a'/></defs><use href='#a'/>"),
+        ["use_group_cycle"] = Wrap("<defs><g id='a'><use href='#b'/></g><g id='b'><use href='#a'/></g></defs><use href='#a'/>"),
+        ["clip_self_cycle"] = Wrap("<defs><clipPath id='clip' clip-path='url(#clip)'><path d='M0 0H1V1Z'/></clipPath></defs><path d='M0 0H1V1Z' clip-path='url(#clip)'/>"),
+        ["clip_use_mixed_cycle"] = Wrap("<defs><clipPath id='clip'><use href='#group'/></clipPath><g id='group' clip-path='url(#clip)'><path d='M0 0H1V1Z'/></g></defs><use href='#group'/>"),
+        ["use_reference_depth_33"] = UseReferenceChain(33),
+        ["gradient_href_depth_33"] = GradientReferenceChain(33),
+        ["acyclic_use_expansion_over_32768"] = AcyclicUseExpansion(15)
+    };
+    var expectedMessages = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["oversized"] = "SVG dimensions",
+        ["nested_svg"] = "Nested svg",
+        ["composite_matrix_out_of_bounds"] = "composite-transform",
+        ["semantic_use_composite_matrix_out_of_bounds"] = "semantic-composite-transform",
+        ["relative_path"] = "Relative path",
+        ["clip_self_cycle"] = "use/clip-path render-reference cycle",
+        ["clip_use_mixed_cycle"] = "use/clip-path render-reference cycle",
+        ["use_reference_depth_33"] = "use/clip-path render-reference depth",
+        ["gradient_href_depth_33"] = "gradient href depth",
+        ["acyclic_use_expansion_over_32768"] = "semantic expansion"
     };
 
     foreach (var item in cases)
     {
-        ExpectRejected(item.Key, Encoding.UTF8.GetBytes(item.Value));
+        ExpectRejected(
+            item.Key,
+            Encoding.UTF8.GetBytes(item.Value),
+            expectedMessages.GetValueOrDefault(item.Key));
     }
-    metrics["failClosedCases"] = cases.Count;
+    foreach (var item in valueGrammarCases)
+    {
+        ExpectRejected(
+            item.Key,
+            Encoding.UTF8.GetBytes(item.Value),
+            expectedMessages.GetValueOrDefault(item.Key));
+    }
+    metrics["valueGrammarFailClosedCases"] = valueGrammarCases.Count;
+    metrics["failClosedCases"] = cases.Count + valueGrammarCases.Count;
 });
 
 Run("synthetic_reflect_use_clip_and_premul", () =>
@@ -124,6 +258,14 @@ Run("hp_mp_feature_derived_corpus", () =>
     Require(mp.Alpha > 150 && mp.Blue > mp.Red, "MP-derived fill did not render as expected.");
     Require(bitmap.GetPixel(0, 0).Alpha == 0, "Corpus background must remain transparent.");
 });
+
+if (!string.IsNullOrWhiteSpace(assetManifestPath))
+{
+    Run("canonical_asset_manifest_and_eight_svg", () =>
+    {
+        canonicalAssets = CanonicalAssetValidator.Validate(assetManifestPath);
+    });
+}
 
 Run("strict_facade_rejects_empty_picture", () =>
 {
@@ -309,6 +451,7 @@ var report = new
         }
     },
     unsafeDefaults,
+    canonicalAssets,
     metrics,
     summary = new { total = tests.Count, passed = tests.Count - failed, failed },
     tests
@@ -369,16 +512,23 @@ static object PayloadFile(string path, int bytes, string sha256) => new
     sha256
 };
 
-static void ExpectRejected(string name, byte[] bytes)
+static void ExpectRejected(string name, byte[] bytes, string? expectedMessage = null)
 {
     try
     {
         StrictSvgValidator.Validate(bytes);
-        throw new InvalidOperationException($"Fail-closed case was accepted: {name}.");
     }
     catch (Exception ex) when (ex is InvalidDataException or System.Xml.XmlException or DecoderFallbackException)
     {
+        if (expectedMessage is not null &&
+            !ex.Message.Contains(expectedMessage, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                $"Fail-closed case {name} rejected for the wrong reason: {ex.Message}");
+        }
+        return;
     }
+    throw new InvalidOperationException($"Fail-closed case was accepted: {name}.");
 }
 
 static string Wrap(string body) =>
@@ -391,6 +541,49 @@ static string DeepSvg(int depth) =>
 
 static string TooComplexPath() =>
     Wrap($"<path d='M0 0{string.Concat(Enumerable.Repeat("L0 0", StrictSvgValidator.MaxPathCommands))}'/>");
+
+static string UseReferenceChain(int referenceDepth)
+{
+    Require(referenceDepth > 0, "Use-reference depth must be positive.");
+    var definitions = new StringBuilder("<defs>");
+    for (var index = 0; index < referenceDepth; index++)
+    {
+        var body = index + 1 < referenceDepth
+            ? $"<use href='#use{index + 1}'/>"
+            : "<path d='M0 0H1V1Z'/>";
+        definitions.Append($"<g id='use{index}'>{body}</g>");
+    }
+    definitions.Append("</defs>");
+    return Wrap(definitions + "<use href='#use0'/>");
+}
+
+static string GradientReferenceChain(int hrefDepth)
+{
+    Require(hrefDepth > 0, "Gradient-reference depth must be positive.");
+    var definitions = new StringBuilder("<defs>");
+    for (var index = 0; index <= hrefDepth; index++)
+    {
+        var href = index < hrefDepth ? $" href='#gradient{index + 1}'" : string.Empty;
+        definitions.Append(
+            $"<linearGradient id='gradient{index}'{href}><stop offset='0' stop-color='#000000'/></linearGradient>");
+    }
+    definitions.Append("</defs>");
+    return Wrap(definitions + "<path d='M0 0H1V1Z' fill='url(#gradient0)'/>");
+}
+
+static string AcyclicUseExpansion(int levels)
+{
+    Require(levels > 1, "Acyclic use-expansion levels must exceed one.");
+    var definitions = new StringBuilder(
+        "<defs><g id='expansion0'><path d='M0 0H1V1Z'/></g>");
+    for (var index = 1; index < levels; index++)
+    {
+        definitions.Append(
+            $"<g id='expansion{index}'><use href='#expansion{index - 1}'/><use href='#expansion{index - 1}'/></g>");
+    }
+    definitions.Append("</defs>");
+    return Wrap(definitions + $"<use href='#expansion{levels - 1}'/>");
+}
 
 static SKBitmap RenderUnchecked(byte[] bytes, int width, int height)
 {

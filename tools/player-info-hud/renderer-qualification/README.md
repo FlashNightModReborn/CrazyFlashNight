@@ -12,6 +12,11 @@ preserves exact gradient kind, reflect mode and endpoint colors from the named
 HP/MP XFL layers while deliberately using small synthetic geometry. It is not
 a canonical HUD asset or visual oracle.
 
+When `--asset-manifest` is supplied, the same run additionally validates the
+eight canonical B0-04 SVGs and their runtime manifest. This extends the
+isolated qualification; it still does not claim visual acceptance or production
+integration.
+
 ## Exact run
 
 Run from the repository root:
@@ -28,11 +33,23 @@ if ((& $dotnetHost --version) -ne '10.0.300') { throw 'Expected SDK 10.0.300' }
   --no-restore -c Release -r win-x64
 & $dotnetHost run --project tools\player-info-hud\renderer-qualification\RendererQualification.csproj `
   --no-build -c Release -r win-x64 -- `
-  --report tools\player-info-hud\evidence\b0-02\qualification-report.json
+  --report tmp\player-info-hud-isolated-qualification-fresh.json
 ```
 
 Use `restore --force-evaluate -r win-x64` only when intentionally refreshing
 the committed lockfile, then immediately rerun `restore --locked-mode`.
+`evidence/b0-02/qualification-report.json` is the immutable historical
+B0-02 snapshot (10/10 behaviors and 16 fail-closed cases). The expanded
+harness must never overwrite it.
+
+For the canonical B0-04 closure, use a fresh report path:
+
+```powershell
+& $dotnetHost run --project tools\player-info-hud\renderer-qualification\RendererQualification.csproj `
+  --no-build -c Release -r win-x64 -- `
+  --asset-manifest launcher\src\Guardian\Hud\PlayerInfo\Assets\player-info.manifest.json `
+  --report tmp\player-info-hud-b004-validation.json
+```
 
 ## Qualification boundary
 
@@ -49,6 +66,15 @@ The harness fixes a strict pre-render contract:
 - malformed XML, DTD/entity, script/event, image, text, animation,
   `foreignObject`, style, external/data href, unknown grammar, excessive depth
   and oversized dimensions fail before renderer entry;
+- root attributes and processing instructions at any document depth are
+  checked; transform/path/paint/opacity/gradient/points/viewBox values must
+  consume their complete bounded grammar; path data accepts only the bounded
+  absolute-command subset, transforms accept one finite `matrix(...)`, nested
+  `svg` is rejected, and reference cycles fail closed;
+- the actual render-root semantic graph expands `use`, `clip-path`, `use`
+  placement and target transforms with a depth-32 reference boundary and a
+  32,768-step cap, while semantic composite matrices remain finite and
+  bounded;
 - reflect gradient, clip, same-document `use`, alpha bytes and bounded
   parse/raster/dispose are exercised;
 - empty/non-finite picture bounds, invalid BGRA/Premul allocation or stride
@@ -60,6 +86,12 @@ The unsafe-default test is intentional. In 5.1.1, DTD processing and external
 resources are not safely disabled by default, the alpha default is unpremul,
 and blocking an external image at renderer level can silently produce an empty
 picture. Production code must not bypass the strict facade.
+
+The current expanded corpus passes 12/12 behaviors and rejects 78/78
+fail-closed cases, including 58 directed value-grammar mutations and one
+complete controlled-value positive document. The canonical mode validates
+8/8 SVGs; these counts belong to the current B0-04 report and do not rewrite
+the historical B0-02 report.
 
 ## Dependency and payload evidence
 
@@ -97,9 +129,18 @@ the committed lockfile remains the restore authority.
 
 ## Still required before `renderer_qualified`
 
-- real HP/MP canonical SVGs and oracle comparison;
 - the production validator/facade and repository xUnit regression corpus;
 - real Launcher central version, PackageReference and lockfile integration;
-- artifact-source/build-identity/Core-payload and production-policy gates;
-- full cancellation/dispose, DPI, performance and long-run evidence;
+- exact embedded resources plus artifact-source/build-identity/Core-payload
+  and production-policy gates;
 - maintainer acceptance of dependency distribution obligations.
+
+These production-integration gates are independent of visual acceptance.
+The following remain required for B0 visual/runtime acceptance, but do not
+block the narrower `renderer_qualified` state:
+
+- accepted Flash-oracle comparison and human visual review for the current
+  eight-asset HP/MP closure;
+- runtime raster/cache cancellation, dispose, DPI, performance and long-run
+  evidence;
+- fixture widget parity without hiding the old Flash HUD.

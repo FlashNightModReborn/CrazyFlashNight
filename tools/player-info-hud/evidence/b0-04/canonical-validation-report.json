@@ -1,0 +1,353 @@
+{
+  "schema": "cf7-player-info-renderer-qualification-v1",
+  "qualificationStatus": "isolated_qualification_passed",
+  "isolatedQualificationPassed": true,
+  "rendererQualified": false,
+  "expectedSdk": "10.0.300",
+  "targetFramework": "net10.0-windows",
+  "runtimeIdentifier": "win-x64",
+  "packagePins": [
+    {
+      "id": "SkiaSharp",
+      "version": "3.119.4"
+    },
+    {
+      "id": "Svg.Skia",
+      "version": "5.1.1"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "synthetic-core:inline",
+      "bytes": 623,
+      "sha256": "57506587D444C1C75D90AC3464C97E7FC40EEAFE0E96F26310CF3F9BC381FDF2"
+    },
+    {
+      "name": "hp-mp-feature-derived.svg",
+      "bytes": 1647,
+      "sha256": "965DE51F78EB000063EF83112A64768E575893BFE98023D8F4276224756D8D80"
+    }
+  ],
+  "sourceFeatureAnchors": [
+    {
+      "fixture": "hp",
+      "source": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角hp显示界面.xml",
+      "layer": "红色底色",
+      "feature": "RadialGradient spreadMethod=reflect",
+      "colors": [
+        "#FF0000",
+        "#330000"
+      ]
+    },
+    {
+      "fixture": "mp",
+      "source": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角mp显示界面.xml",
+      "layer": "左侧MP槽",
+      "feature": "RadialGradient spreadMethod=reflect",
+      "colors": [
+        "#66FFFF",
+        "#0033CC"
+      ]
+    }
+  ],
+  "dependencyAudit": {
+    "addedNodeCount": 11,
+    "lockedGraph": "renderer-qualification/packages.lock.json",
+    "vulnerableFindings": 0,
+    "deprecatedFindings": 0,
+    "javaScriptPackagePresent": false,
+    "packages": [
+      {
+        "id": "Svg.Skia",
+        "version": "5.1.1",
+        "license": "MIT",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "3FC4C8EAECD7A690AD0818F472D0FDFD3D00BC3063ECED4D4D773628658D7B09"
+      },
+      {
+        "id": "ExCSS",
+        "version": "4.3.1",
+        "license": "MIT",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "9CD9F9F9811AA8A4942E1B43B0898D1329DD53F3079DAED5A593541319A8F34A"
+      },
+      {
+        "id": "HarfBuzzSharp",
+        "version": "8.3.1.3",
+        "license": "MIT",
+        "requiresLicenseAcceptance": true,
+        "nupkgSha256": "FFE644863A4EB3C078B4C3F0DEF0F2B90A861991C9116BF2DD668A31A0F09AB5"
+      },
+      {
+        "id": "HarfBuzzSharp.NativeAssets.Linux",
+        "version": "8.3.1.3",
+        "license": "MIT",
+        "requiresLicenseAcceptance": true,
+        "nupkgSha256": "7DE58E9DAFFC9DCBE6AEAEC2C670DCCEFD5F69C576A68655E51F8EC82B687295"
+      },
+      {
+        "id": "HarfBuzzSharp.NativeAssets.macOS",
+        "version": "8.3.1.3",
+        "license": "MIT",
+        "requiresLicenseAcceptance": true,
+        "nupkgSha256": "E962AC27F8C5F691E7696710BDA7B3739015E9F96EDD7B0EC50B3B8B8046609B"
+      },
+      {
+        "id": "HarfBuzzSharp.NativeAssets.Win32",
+        "version": "8.3.1.3",
+        "license": "MIT",
+        "requiresLicenseAcceptance": true,
+        "nupkgSha256": "58D51098B595152C01293F71ED47614B3F53D8503BC226EFC23B8F7B0FF7C943"
+      },
+      {
+        "id": "ShimSkiaSharp",
+        "version": "5.1.1",
+        "license": "MIT",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "76EB2FAA7BA87E6CF17002CC14002C24AD9AD3C1F858D8F05F05A4DFAF316AED"
+      },
+      {
+        "id": "Svg.Animation",
+        "version": "5.1.1",
+        "license": "MIT",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "99771F4A1B198760FDAFBF5F783F01B6FDB2EE40438ECA9C6BED2C074FDB4E87"
+      },
+      {
+        "id": "Svg.Custom",
+        "version": "5.1.1",
+        "license": "MS-PL",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "D30C4DA0024711733B687DCDEA1AB1948886DAC1AE30A88B5AE4B213CD330606"
+      },
+      {
+        "id": "Svg.Model",
+        "version": "5.1.1",
+        "license": "MIT",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "267389628459C6744A45D82251B7F0BF3E0F1C36ADD93CA780233B3BF8CDD986"
+      },
+      {
+        "id": "Svg.SceneGraph",
+        "version": "5.1.1",
+        "license": "MIT",
+        "requiresLicenseAcceptance": false,
+        "nupkgSha256": "51A838202F81C01830E436B0A33A65E3F926F5CC2E2FCBCB0D3B1526DC3DD3DF"
+      }
+    ],
+    "producerShapedWinX64Payload": {
+      "filter": "top-level files excluding .xml and .pdb",
+      "addedFiles": 9,
+      "addedBytes": 5289528,
+      "nonTargetNativeFiles": 0,
+      "excludedHarfBuzzPdbBytes": 20918272,
+      "files": [
+        {
+          "path": "ExCSS.dll",
+          "bytes": 347136,
+          "sha256": "6B166E638181EBA3150F0D10379D1CC8362AF6DFD518E9E9E194AA9A746293C2"
+        },
+        {
+          "path": "HarfBuzzSharp.dll",
+          "bytes": 122400,
+          "sha256": "55E72AC23263F8E12484F3435E02EC22FAC9EFF6E6D169BB0A8C246BE6B99D29"
+        },
+        {
+          "path": "libHarfBuzzSharp.dll",
+          "bytes": 1816088,
+          "sha256": "145ADE963EBA427027D5E1381DB5D51A0EF9E98E9FEF9EFBFA6074CA20DA246F"
+        },
+        {
+          "path": "ShimSkiaSharp.dll",
+          "bytes": 218624,
+          "sha256": "0AC0BE60DAFE273F4CA021BFDA16D111FFBA990F39E97AC9EDC3BCF488E39603"
+        },
+        {
+          "path": "Svg.Animation.dll",
+          "bytes": 124416,
+          "sha256": "97E1674100225717AA2B5313EE6C3735CF87EF9056862DF178EE2B91ECCCF8C9"
+        },
+        {
+          "path": "Svg.Custom.dll",
+          "bytes": 1020416,
+          "sha256": "89242EB48A25E40DD4C06AD839E11ADDCCC5C07412E319953752F7C963291704"
+        },
+        {
+          "path": "Svg.Model.dll",
+          "bytes": 160768,
+          "sha256": "DF2B9EB253873321155E8B3173797D591A92D405F29AE725224E447289DC51CF"
+        },
+        {
+          "path": "Svg.SceneGraph.dll",
+          "bytes": 1186816,
+          "sha256": "C7142D663BD11B898038F68EAC40CB1182065F5CD1A3EC4BC2C18CBF0D3B6ECA"
+        },
+        {
+          "path": "Svg.Skia.dll",
+          "bytes": 292864,
+          "sha256": "7BC7FB1621133B3CA78EDAB82E26B520205107B0AEDFB07B4A73EEB0050FC611"
+        }
+      ]
+    }
+  },
+  "unsafeDefaults": {
+    "alphaType": "Unpremul",
+    "disableDtdProcessing": false,
+    "enableBrokenImagePlaceholders": true,
+    "enableExternalJavaScript": true,
+    "enableJavaScript": false,
+    "externalResourcePolicy": "Enabled"
+  },
+  "canonicalAssets": {
+    "status": "canonical_assets_validated",
+    "manifestSha256": "1006f90e3c1aa5435226c092019f46a3cd6358b0ece2804e42c85052de235630",
+    "assetSetRevision": "sha256:c8f58cb781f50c5a62eff163a04524e89fd6a2ee37c9b66347743d766ac93871",
+    "assetCount": 8,
+    "assetBytes": 99564,
+    "assets": [
+      {
+        "id": "hp.backplate",
+        "path": "hp/backplate.svg",
+        "bytes": 929,
+        "sha256": "a6d983b6e443db5801aa19dc495b1143977631f189f5bb3d568886d8ab3c5fa2",
+        "nonTransparentPixels": 5034
+      },
+      {
+        "id": "hp.fill",
+        "path": "hp/fill.svg",
+        "bytes": 13460,
+        "sha256": "44e12fb5ca01d9a884402f01821919a990089b9c1105f122dc3c106f3a9a6e25",
+        "nonTransparentPixels": 5041
+      },
+      {
+        "id": "hp.rim",
+        "path": "hp/rim.svg",
+        "bytes": 69853,
+        "sha256": "9f8a475255afb74f8e8a1dafcb3c45f75fd7345e28368dd383798c2f2c303790",
+        "nonTransparentPixels": 6353
+      },
+      {
+        "id": "mp.backplate",
+        "path": "mp/backplate.svg",
+        "bytes": 7187,
+        "sha256": "c40f3aa0a43da1a4e6740f0e759a329d9bf30377a3b955a898b845788b0b9492",
+        "nonTransparentPixels": 1330
+      },
+      {
+        "id": "mp.fill",
+        "path": "mp/fill.svg",
+        "bytes": 7032,
+        "sha256": "0043d70033de3ce322d71098dc52d69ad4295eea2a8eb272f71bb9c2b3893603",
+        "nonTransparentPixels": 2189
+      },
+      {
+        "id": "mp.rim",
+        "path": "mp/rim.svg",
+        "bytes": 407,
+        "sha256": "c6aafa525381b94c227133210501d882a1ebfdf94e209ca57ad687c4fa8bf44a",
+        "nonTransparentPixels": 18
+      },
+      {
+        "id": "mp.rim-vf70",
+        "path": "mp/rim-vf70.svg",
+        "bytes": 363,
+        "sha256": "a0fac6e149ccedab01f5ab728c6f64350e832bd56f345dd4ebc199bfb363ea01",
+        "nonTransparentPixels": 18
+      },
+      {
+        "id": "mp.rim-vf91",
+        "path": "mp/rim-vf91.svg",
+        "bytes": 333,
+        "sha256": "c38fb7525243382b2499fb7ebf6221e60ff52bec83b0f6cb26ce6239b84b679a",
+        "nonTransparentPixels": 18
+      }
+    ]
+  },
+  "metrics": {
+    "controlledValueGrammarDocuments": 1,
+    "controlledValueGrammarPixels": 528,
+    "disposeHandleDelta": 0,
+    "disposeIterations": 1000,
+    "disposePrivateBytesDelta": 2658304,
+    "failClosedCases": 78,
+    "independentParallelIterations": 200,
+    "rawPremulBgra": [
+      2,
+      0,
+      125,
+      128
+    ],
+    "referenceDepthAcceptedBoundary": 32,
+    "rendererOnlyExternalPixels": 0,
+    "semanticExpansionAcceptedLevels": 13,
+    "sharedReadonlyParallelIterations": 200,
+    "valueGrammarFailClosedCases": 58
+  },
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "tests": [
+    {
+      "name": "unsafe_defaults_are_documented",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "strict_validator_accepts_qualification_corpus",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "strict_validator_accepts_controlled_value_grammar",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "strict_validator_fail_closed_matrix",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "synthetic_reflect_use_clip_and_premul",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "hp_mp_feature_derived_corpus",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "canonical_asset_manifest_and_eight_svg",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "strict_facade_rejects_empty_picture",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "resource_disabled_alone_is_not_fail_closed",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "independent_parse_raster_parallel_8x25",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "shared_readonly_raster_parallel_8x25",
+      "status": "passed",
+      "error": null
+    },
+    {
+      "name": "parse_raster_dispose_2x500",
+      "status": "passed",
+      "error": null
+    }
+  ]
+}
