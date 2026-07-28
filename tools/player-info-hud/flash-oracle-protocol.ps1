@@ -338,7 +338,9 @@ function Assert-PlayerInfoOracleExactFields {
 
 function Test-PlayerInfoOracleTrace {
     param(
-        [Parameter(Mandatory = $true)][string]$FreshText,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [string]$FreshText,
         [Parameter(Mandatory = $true)][string]$RunId,
         [Parameter(Mandatory = $true)][string]$ExpectedChildPath
     )
@@ -920,6 +922,18 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -ExpectedChildPath $ExpectedChildPath
     if ($parsed.cases.Count -ne 7) {
         throw 'Protocol self-test parser did not return seven cases.'
+    }
+    $emptyTraceRejected = $false
+    try {
+        [void](Test-PlayerInfoOracleTrace `
+            -FreshText '' `
+            -RunId $runId `
+            -ExpectedChildPath $ExpectedChildPath)
+    } catch {
+        $emptyTraceRejected = $true
+    }
+    if (-not $emptyTraceRejected) {
+        throw 'Protocol self-test accepted an empty fresh trace.'
     }
     $expectedUri = [System.Uri]::new(
         [System.IO.Path]::GetFullPath($ExpectedChildPath)).AbsoluteUri

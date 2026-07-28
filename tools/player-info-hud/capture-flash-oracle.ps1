@@ -1384,7 +1384,9 @@ function Get-CurrentFreshFlashLog {
 
 function Get-ExactTerminalKind {
     param(
-        [Parameter(Mandatory = $true)][string]$FreshText,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [string]$FreshText,
         [Parameter(Mandatory = $true)][string]$RunId
     )
 
@@ -1993,6 +1995,19 @@ function Invoke-ValidateOnly {
         $emptyProbe.fullSha256 -cne
             'E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855') {
         throw 'Validate-only empty flashlog watermark handling failed.'
+    }
+    $noTerminal = Get-ExactTerminalKind `
+        -FreshText '' `
+        -RunId '00000000000000000000000000000000'
+    if ($null -ne $noTerminal) {
+        throw 'Validate-only empty flashlog reported a terminal record.'
+    }
+    $terminalAttributes = (Get-Command Get-ExactTerminalKind).Parameters[
+        'FreshText'].Attributes
+    if (-not @($terminalAttributes | Where-Object {
+        $_ -is [System.Management.Automation.AllowEmptyStringAttribute]
+    }).Count) {
+        throw 'Empty flashlog text binding is not admitted by the terminal scanner.'
     }
     foreach ($commandName in @(
         'Get-FreshFlashLogFromFullBytes',
