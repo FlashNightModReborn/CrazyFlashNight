@@ -20,7 +20,7 @@ param(
     [Parameter(ParameterSetName = 'Capture')]
     [ValidatePattern('^[0-9A-Fa-f]{64}$')]
     [string]$ExpectedPlayerSha256 =
-        '30BA7CF81D10556BB123506693C72F62BA27DB1F37A7A2D546E96AC3A8D31B91'
+        '9CDD2F9F880641CED00C2ADE8156E1A5476DB258D6B5D2A4A411E6AADDD3139D'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -48,8 +48,9 @@ $compileOutputPath = Join-Path $scriptsDir 'compile_output.txt'
 $compilerErrorsPath = Join-Path $scriptsDir 'compiler_errors.txt'
 $uiSwfRelativePath = 'flashswf/UI/玩家信息界面.swf'
 $uiSwfPath = Join-Path $projectDir 'flashswf\UI\玩家信息界面.swf'
-$playerRelativePath = 'Adobe Flash Player 20.exe'
-$playerPath = Join-Path $projectDir $playerRelativePath
+$playerLogicalPath =
+    'FlashCS6Task/Players/Debug/FlashPlayerDebugger.exe'
+$playerPath = $null
 $formulaRelativePath = 'scripts/展现/UI交互/UI交互_fs_玩家信息界面.as'
 $formulaPath = Join-Path $projectDir `
     'scripts\展现\UI交互\UI交互_fs_玩家信息界面.as'
@@ -784,6 +785,10 @@ function Assert-RunnerStaticContract {
         'New-PlayerInfoDerivedSwfTransaction',
         'Freeze-PlayerInfoDerivedSwfCompiledIdentity',
         'Get-PlayerInfoCompileRecoveryDecision',
+        'Get-ExactFlashCs6TaskRegistration',
+        'Get-RegisteredFlashDebugPlayerIdentity',
+        'Assert-RegisteredFlashDebugPlayerCurrent',
+        'Players\Debug\FlashPlayerDebugger.exe',
         'Get-StrictCaptureToolingSet',
         'Assert-StrictCaptureToolingCurrent',
         'Assert-PlayerInfoCaptureToolingBindings',
@@ -1289,6 +1294,31 @@ public static class Cf7PlayerInfoOracleNativeMethods
     }
 }
 
+function Get-ExactFlashCs6TaskRegistration {
+    $tasks = @(Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop)
+    if ($tasks.Count -ne 1 -or
+        [string]$tasks[0].TaskName -cne 'FlashCS6Task' -or
+        [string]$tasks[0].TaskPath -cne '\') {
+        throw 'Expected exactly one root \\FlashCS6Task registration.'
+    }
+    $actions = @($tasks[0].Actions)
+    if ($actions.Count -ne 1 -or
+        [string]::IsNullOrWhiteSpace([string]$actions[0].Execute)) {
+        throw 'FlashCS6Task must expose exactly one executable action.'
+    }
+    $actionPath = [System.IO.Path]::GetFullPath(
+        [string]$actions[0].Execute)
+    if ([System.IO.Path]::GetFileName($actionPath) -ine 'Flash.exe' -or
+        -not (Test-Path -LiteralPath $actionPath)) {
+        throw 'FlashCS6Task action is not one existing Flash.exe.'
+    }
+    return [pscustomobject]@{
+        taskName = 'FlashCS6Task'
+        taskPath = '\'
+        actionPath = $actionPath
+    }
+}
+
 function Get-FlashAuthoringIdentity {
     $processes = @(Get-Process -Name Flash -ErrorAction SilentlyContinue)
     $paths = @($processes | ForEach-Object {
@@ -1302,13 +1332,8 @@ function Get-FlashAuthoringIdentity {
             $paths.Count)
     }
     $path = [System.IO.Path]::GetFullPath($paths[0])
-    $task = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
-    $taskPaths = @($task.Actions | ForEach-Object {
-        if (-not [string]::IsNullOrWhiteSpace([string]$_.Execute)) {
-            [System.IO.Path]::GetFullPath([string]$_.Execute)
-        }
-    } | Sort-Object -Unique)
-    if ($taskPaths.Count -ne 1 -or $taskPaths[0] -ine $path) {
+    $registration = Get-ExactFlashCs6TaskRegistration
+    if ($registration.actionPath -ine $path) {
         throw 'Running Flash.exe does not match the registered FlashCS6Task identity.'
     }
     $item = Get-Item -LiteralPath $path
@@ -1318,6 +1343,98 @@ function Get-FlashAuthoringIdentity {
         productVersion = $item.VersionInfo.ProductVersion
         sha256 = Get-PathSha256 -Path $path
         registeredTaskMatched = $true
+    }
+}
+
+function Get-RegisteredFlashDebugPlayerIdentity {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidatePattern('^[0-9A-Fa-f]{64}$')]
+        [string]$ExpectedSha256
+    )
+
+    $registrationBefore = Get-ExactFlashCs6TaskRegistration
+    $authoringRoot = [System.IO.Path]::GetDirectoryName(
+        [string]$registrationBefore.actionPath)
+    $debugRelativePath = 'Players\Debug\FlashPlayerDebugger.exe'
+    $path = [System.IO.Path]::GetFullPath(
+        (Join-Path $authoringRoot $debugRelativePath))
+    $rootPrefix = $authoringRoot.TrimEnd(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar
+    ) + [System.IO.Path]::DirectorySeparatorChar
+    if (-not $path.StartsWith(
+            $rootPrefix,
+            [System.StringComparison]::OrdinalIgnoreCase) -or
+        -not (Test-Path -LiteralPath $path)) {
+        throw 'Registered Flash CS6 debug standalone player is unavailable.'
+    }
+
+    $before = Get-FileIdentity -Path $path
+    if (-not $before.exists) {
+        throw 'Registered Flash CS6 debug player is unavailable.'
+    }
+    $item = Get-Item -LiteralPath $path
+    $hash = [string]$before.sha256
+    if ($hash -cne $ExpectedSha256.ToUpperInvariant()) {
+        throw ("Registered Flash CS6 debug player identity drifted: " +
+            "expected {0}, got {1}." -f
+            $ExpectedSha256.ToUpperInvariant(), $hash)
+    }
+    $signature = Get-AuthenticodeSignature -LiteralPath $path
+    if ($signature.Status -ne
+        [System.Management.Automation.SignatureStatus]::Valid -or
+        $null -eq $signature.SignerCertificate) {
+        throw 'Registered Flash CS6 debug player signature is not valid.'
+    }
+    $after = Get-FileIdentity -Path $path
+    $registrationAfter = Get-ExactFlashCs6TaskRegistration
+    if (-not $after.exists -or
+        $after.length -ne $before.length -or
+        $after.sha256 -cne $before.sha256 -or
+        $after.lastWriteUtc -cne $before.lastWriteUtc -or
+        $item.Length -ne $before.length -or
+        $item.LastWriteTimeUtc.ToString('o') -cne $before.lastWriteUtc -or
+        $registrationAfter.taskPath -cne $registrationBefore.taskPath -or
+        $registrationAfter.actionPath -ine $registrationBefore.actionPath) {
+        throw 'Flash CS6 task/debug-player identity drifted during admission.'
+    }
+
+    return [pscustomobject]@{
+        path = $path
+        logicalPath = $playerLogicalPath
+        registeredTask = 'FlashCS6Task'
+        registeredTaskPath = [string]$registrationBefore.taskPath
+        registeredTaskActionMatched = $true
+        authoringActionPath = [string]$registrationBefore.actionPath
+        relativeToAuthoringRoot =
+            ($debugRelativePath -replace '\\', '/')
+        length = [long]$item.Length
+        lastWriteUtc = $item.LastWriteTimeUtc.ToString('o')
+        sha256 = $hash
+        fileVersion = $item.VersionInfo.FileVersion
+        productVersion = $item.VersionInfo.ProductVersion
+        authenticodeStatus = [string]$signature.Status
+        signerThumbprint =
+            [string]$signature.SignerCertificate.Thumbprint
+    }
+}
+
+function Assert-RegisteredFlashDebugPlayerCurrent {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Expected
+    )
+
+    $registration = Get-ExactFlashCs6TaskRegistration
+    $current = Get-FileIdentity -Path ([string]$Expected.path)
+    if (-not $current.exists -or
+        $registration.taskPath -cne [string]$Expected.registeredTaskPath -or
+        $registration.actionPath -ine [string]$Expected.authoringActionPath -or
+        $current.length -ne [long]$Expected.length -or
+        $current.sha256 -cne [string]$Expected.sha256 -or
+        $current.lastWriteUtc -cne [string]$Expected.lastWriteUtc) {
+        throw 'Registered Flash CS6 debug player identity drifted during capture.'
     }
 }
 
@@ -1936,6 +2053,8 @@ function Invoke-PlayerInfoDerivedSwfTransactionSelfTest {
 }
 
 function Invoke-ValidateOnly {
+    $validatePlayer = Get-RegisteredFlashDebugPlayerIdentity `
+        -ExpectedSha256 $ExpectedPlayerSha256
     $watchedPaths = @(
         $PSCommandPath,
         $scratchRunnerPath,
@@ -1949,7 +2068,8 @@ function Invoke-ValidateOnly {
         $chainPath,
         $scratchMarker,
         $uncertainMarker,
-        $globalFlashLog
+        $globalFlashLog,
+        $validatePlayer.path
     )
     $before = @{}
     foreach ($path in $watchedPaths) {
@@ -2029,6 +2149,7 @@ function Invoke-ValidateOnly {
             throw "Validate-only mutated a watched path: $path"
         }
     }
+    Assert-RegisteredFlashDebugPlayerCurrent -Expected $validatePlayer
     $schemaStatus = if ($evidence -and $evidence.gitCanonicalSchema) {
         ('{0}/git-canonical/{1}-{2}' -f
             $evidence.evidenceRevision,
@@ -2048,6 +2169,7 @@ function Invoke-ValidateOnly {
         "SWF recovery=$($derivedTransaction.recoveryScenarios), " +
         "recovery negatives=$($derivedTransaction.recoveryAdmissionNegatives), " +
         "strictToolIdentity=$($validateTooling.status), " +
+        "player=$($validatePlayer.fileVersion)/registered-debug, " +
         "templateStaticMax=$($template.staticWorstPartChars), " +
         "closure=$schemaStatus; Flash was not started.")
 }
@@ -2059,6 +2181,9 @@ if ($ValidateOnly) {
 
 $template = Assert-OracleTemplate
 Assert-RunnerStaticContract
+$playerRegistration = Get-RegisteredFlashDebugPlayerIdentity `
+    -ExpectedSha256 $ExpectedPlayerSha256
+$playerPath = [string]$playerRegistration.path
 $requiredCapturePaths = @(
     $protocolHelperPath,
     $scratchHelperPath,
@@ -2081,11 +2206,7 @@ if ($uiSwfHash -cne $ExpectedUiSwfSha256.ToUpperInvariant()) {
     throw ("UI child SWF identity drifted: expected {0}, got {1}." -f
         $ExpectedUiSwfSha256.ToUpperInvariant(), $uiSwfHash)
 }
-$playerHash = Get-PathSha256 -Path $playerPath
-if ($playerHash -cne $ExpectedPlayerSha256.ToUpperInvariant()) {
-    throw ("Standalone player identity drifted: expected {0}, got {1}." -f
-        $ExpectedPlayerSha256.ToUpperInvariant(), $playerHash)
-}
+$playerHash = [string]$playerRegistration.sha256
 $b001Evidence = Assert-B001CaptureEvidence
 if (-not $b001Evidence.gitCanonicalSchema) {
     throw ('B0-01A evidence has not yet migrated to gitBlobBytes/gitBlobSha256; ' +
@@ -2336,6 +2457,7 @@ try {
     $flashlogBeforeBytes = Read-SharedBytes -Path $globalFlashLog
     $flashlogWatermark = Get-FileIdentity -Path $globalFlashLog
     $playerStartedUtc = [System.DateTime]::UtcNow
+    Assert-RegisteredFlashDebugPlayerCurrent -Expected $playerRegistration
     $ownedPlayer = Start-Process `
         -FilePath $playerPath `
         -ArgumentList ('"' + $loaderSwfPath + '"') `
@@ -2344,6 +2466,12 @@ try {
     if ($null -eq $ownedPlayer -or $ownedPlayer.Id -le 0) {
         throw 'Start-Process did not return an exact owned player PID.'
     }
+    $ownedPlayer.Refresh()
+    if ([System.IO.Path]::GetFullPath([string]$ownedPlayer.Path) -ine
+        $playerPath) {
+        throw 'Owned standalone player path did not match its frozen registration.'
+    }
+    Assert-RegisteredFlashDebugPlayerCurrent -Expected $playerRegistration
     $ownedPlayerId = $ownedPlayer.Id
     $terminalResult = Wait-ForOwnedPlayerAndStableTrace `
         -Process $ownedPlayer `
@@ -2360,6 +2488,7 @@ try {
         $terminalResult.finalTerminalKind -cne 'COMPLETE') {
         throw 'Final stable trace did not close with a natural exact COMPLETE.'
     }
+    Assert-RegisteredFlashDebugPlayerCurrent -Expected $playerRegistration
     $ownedPlayer.Dispose()
     $ownedPlayer = $null
 
@@ -2521,7 +2650,6 @@ try {
         })
     }
 
-    $playerItem = Get-Item -LiteralPath $playerPath
     $dpi = Get-SystemDpiIdentity
     $manifest = [ordered]@{
         schema = 'cf7.player_info.flash_oracle_manifest.v1'
@@ -2628,10 +2756,22 @@ try {
         }
         runtime = [ordered]@{
             player = [ordered]@{
-                path = $playerRelativePath
-                fileVersion = $playerItem.VersionInfo.FileVersion
-                productVersion = $playerItem.VersionInfo.ProductVersion
+                path = $playerLogicalPath
+                pathKind = 'registered-task-relative'
+                registeredTask = $playerRegistration.registeredTask
+                registeredTaskPath =
+                    $playerRegistration.registeredTaskPath
+                registeredTaskActionMatched = $true
+                relativeToAuthoringRoot =
+                    $playerRegistration.relativeToAuthoringRoot
+                fileVersion = $playerRegistration.fileVersion
+                productVersion = $playerRegistration.productVersion
+                bytes = [long]$playerRegistration.length
                 sha256 = $playerHash
+                authenticodeStatus =
+                    $playerRegistration.authenticodeStatus
+                signerThumbprint =
+                    $playerRegistration.signerThumbprint
                 ownedProcessId = $ownedPlayerId
                 naturalExit = $true
             }
@@ -2885,6 +3025,8 @@ try {
                     foreach ($frozen in $frozenInputs.Values) {
                         Assert-FrozenFileInputCurrent -Frozen $frozen
                     }
+                    Assert-RegisteredFlashDebugPlayerCurrent `
+                        -Expected $playerRegistration
                     Assert-StrictCaptureToolingCurrent `
                         -Expected $strictCaptureTooling `
                         -RunnerFrozen $frozenInputs.captureRunner `
