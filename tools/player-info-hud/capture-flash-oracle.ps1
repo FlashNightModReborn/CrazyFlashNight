@@ -722,14 +722,36 @@ function Assert-OracleTemplate {
         $source -match 'indexOf\("玩家信息界面\.swf"\)') {
         throw 'Oracle template retains an obsolete CHUNK or filename-substring binding.'
     }
-    foreach ($caseId in @('empty', 'min_step', 'p25', 'p50', 'p75', 'p99', 'full')) {
+    $expectedTemplateCases = @(
+        [pscustomobject]@{ caseId = 'empty'; hp = 0; mp = 0 },
+        [pscustomobject]@{ caseId = 'min_step'; hp = 100; mp = 100 },
+        [pscustomobject]@{ caseId = 'p25'; hp = 3200; mp = 2500 },
+        [pscustomobject]@{ caseId = 'p50'; hp = 6400; mp = 5000 },
+        [pscustomobject]@{ caseId = 'p75'; hp = 9600; mp = 7500 },
+        [pscustomobject]@{ caseId = 'p99'; hp = 12672; mp = 9900 },
+        [pscustomobject]@{ caseId = 'full'; hp = 12800; mp = 10000 },
+        [pscustomobject]@{ caseId = 'mp_vf34'; hp = 8576; mp = 6700 },
+        [pscustomobject]@{ caseId = 'mp_vf35'; hp = 8448; mp = 6600 },
+        [pscustomobject]@{ caseId = 'mp_vf70'; hp = 3968; mp = 3100 },
+        [pscustomobject]@{ caseId = 'mp_vf91'; hp = 1280; mp = 1000 }
+    )
+    foreach ($expectedCase in $expectedTemplateCases) {
+        $caseId = [string]$expectedCase.caseId
         if ([regex]::Matches(
                 $source, 'caseId:"' + [regex]::Escape($caseId) + '"').Count -ne 1) {
             throw "Oracle template must define case exactly once: $caseId"
         }
+        $literal = (
+            '{caseId:"' + $caseId +
+            '", hp:' + [string]$expectedCase.hp +
+            ', mp:' + [string]$expectedCase.mp + '}')
+        if ([regex]::Matches(
+                $source, [regex]::Escape($literal)).Count -ne 1) {
+            throw "Oracle template case values drifted: $caseId"
+        }
     }
-    if ([regex]::Matches($source, 'caseId:"').Count -ne 7) {
-        throw 'Oracle template defines a case outside the fixed seven-case corpus.'
+    if ([regex]::Matches($source, 'caseId:"').Count -ne 11) {
+        throw 'Oracle template defines a case outside the fixed eleven-case corpus.'
     }
     foreach ($pair in @(@('{', '}'), @('(', ')'), @('[', ']'))) {
         $openCount = [regex]::Matches(
@@ -788,6 +810,7 @@ function Assert-RunnerStaticContract {
         'Get-ExactFlashCs6TaskRegistration',
         'Get-RegisteredFlashDebugPlayerIdentity',
         'Assert-RegisteredFlashDebugPlayerCurrent',
+        'Get-PlayerInfoStandaloneLaunchPlan',
         'Players\Debug\FlashPlayerDebugger.exe',
         'Get-StrictCaptureToolingSet',
         'Assert-StrictCaptureToolingCurrent',
@@ -829,6 +852,22 @@ function Assert-RunnerStaticContract {
     if ([regex]::Matches(
             $source, '(?m)^\s*\$ownedPlayer\s*=\s*Start-Process\b').Count -ne 1) {
         throw 'Capture runner must start exactly one owned player process.'
+    }
+    $argumentListLinePattern =
+        '(?m)^[ \t]*-ArgumentList[ \t]+\$playerLaunchPlan\.argumentToken[ \t]*`[ \t]*\r?$'
+    $workingDirectoryLinePattern =
+        '(?m)^[ \t]*-WorkingDirectory[ \t]+\$scriptsDir[ \t]*`[ \t]*\r?$'
+    if ([regex]::Matches(
+            $source, '(?m)^[ \t]*-ArgumentList\b').Count -ne 1 -or
+        [regex]::Matches(
+            $source, $argumentListLinePattern).Count -ne 1 -or
+        [regex]::Matches(
+            $source, '(?m)^[ \t]*-WorkingDirectory\b').Count -ne 1 -or
+        [regex]::Matches(
+            $source, $workingDirectoryLinePattern).Count -ne 1) {
+        throw (
+            'Owned player launch must use only the unquoted TestLoader.swf token ' +
+            'from the scripts working directory.')
     }
     if ($source -notmatch (
             '(?m)^\s*captureRunner\s*=\s*New-FrozenFileInput\b') -or
@@ -1435,6 +1474,37 @@ function Assert-RegisteredFlashDebugPlayerCurrent {
         $current.sha256 -cne [string]$Expected.sha256 -or
         $current.lastWriteUtc -cne [string]$Expected.lastWriteUtc) {
         throw 'Registered Flash CS6 debug player identity drifted during capture.'
+    }
+}
+
+function Get-PlayerInfoStandaloneLaunchPlan {
+    param(
+        [Parameter(Mandatory = $true)][string]$ScriptsDirectory,
+        [Parameter(Mandatory = $true)][string]$ExpectedLoaderSwfPath
+    )
+
+    $workingDirectory = [System.IO.Path]::GetFullPath($ScriptsDirectory)
+    $argumentToken = 'TestLoader.swf'
+    if ([System.IO.Path]::IsPathRooted($argumentToken) -or
+        [System.IO.Path]::GetFileName($argumentToken) -cne $argumentToken -or
+        $argumentToken -match '[\s"'']') {
+        throw 'Standalone player argument must be one unquoted, space-free file token.'
+    }
+
+    $resolvedLoaderSwfPath = [System.IO.Path]::GetFullPath(
+        [System.IO.Path]::Combine($workingDirectory, $argumentToken))
+    $normalizedExpectedLoaderSwfPath = [System.IO.Path]::GetFullPath(
+        $ExpectedLoaderSwfPath)
+    if ($resolvedLoaderSwfPath -cne $normalizedExpectedLoaderSwfPath) {
+        throw (
+            'Standalone player relative argument does not reverse-resolve to ' +
+            'the exact expected TestLoader.swf path.')
+    }
+
+    return [pscustomobject]@{
+        workingDirectory = $workingDirectory
+        argumentToken = $argumentToken
+        resolvedLoaderSwfPath = $resolvedLoaderSwfPath
     }
 }
 
@@ -2055,6 +2125,17 @@ function Invoke-PlayerInfoDerivedSwfTransactionSelfTest {
 function Invoke-ValidateOnly {
     $validatePlayer = Get-RegisteredFlashDebugPlayerIdentity `
         -ExpectedSha256 $ExpectedPlayerSha256
+    $validateLaunchPlan = Get-PlayerInfoStandaloneLaunchPlan `
+        -ScriptsDirectory $scriptsDir `
+        -ExpectedLoaderSwfPath $loaderSwfPath
+    if ($validateLaunchPlan.workingDirectory -cne
+            [System.IO.Path]::GetFullPath($scriptsDir) -or
+        $validateLaunchPlan.argumentToken -cne 'TestLoader.swf' -or
+        $validateLaunchPlan.argumentToken -match '[\s"'']' -or
+        $validateLaunchPlan.resolvedLoaderSwfPath -cne
+            [System.IO.Path]::GetFullPath($loaderSwfPath)) {
+        throw 'Validate-only standalone player launch-plan regression failed.'
+    }
     $watchedPaths = @(
         $PSCommandPath,
         $scratchRunnerPath,
@@ -2456,12 +2537,15 @@ try {
 
     $flashlogBeforeBytes = Read-SharedBytes -Path $globalFlashLog
     $flashlogWatermark = Get-FileIdentity -Path $globalFlashLog
+    $playerLaunchPlan = Get-PlayerInfoStandaloneLaunchPlan `
+        -ScriptsDirectory $scriptsDir `
+        -ExpectedLoaderSwfPath $loaderSwfPath
     $playerStartedUtc = [System.DateTime]::UtcNow
     Assert-RegisteredFlashDebugPlayerCurrent -Expected $playerRegistration
     $ownedPlayer = Start-Process `
         -FilePath $playerPath `
-        -ArgumentList ('"' + $loaderSwfPath + '"') `
-        -WorkingDirectory $projectDir `
+        -ArgumentList $playerLaunchPlan.argumentToken `
+        -WorkingDirectory $scriptsDir `
         -PassThru
     if ($null -eq $ownedPlayer -or $ownedPlayer.Id -le 0) {
         throw 'Start-Process did not return an exact owned player PID.'
@@ -2813,7 +2897,8 @@ try {
                 partsPerRow = 8
                 physicalRecordMaxChars = 1000
                 caseOrder = @(
-                    'empty', 'min_step', 'p25', 'p50', 'p75', 'p99', 'full')
+                    'empty', 'min_step', 'p25', 'p50', 'p75', 'p99', 'full',
+                    'mp_vf34', 'mp_vf35', 'mp_vf70', 'mp_vf91')
             }
             canvas = [ordered]@{
                 width = 1024

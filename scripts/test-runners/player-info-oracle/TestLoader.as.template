@@ -42,7 +42,11 @@ var __pioCases:Array = [
     {caseId:"p50", hp:6400, mp:5000},
     {caseId:"p75", hp:9600, mp:7500},
     {caseId:"p99", hp:12672, mp:9900},
-    {caseId:"full", hp:12800, mp:10000}
+    {caseId:"full", hp:12800, mp:10000},
+    {caseId:"mp_vf34", hp:8576, mp:6700},
+    {caseId:"mp_vf35", hp:8448, mp:6600},
+    {caseId:"mp_vf70", hp:3968, mp:3100},
+    {caseId:"mp_vf91", hp:1280, mp:1000}
 ];
 
 function __pioTrace(kind:String, fields:String):Void {

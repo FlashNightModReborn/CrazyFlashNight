@@ -6,7 +6,11 @@
         [pscustomobject]@{ caseId = 'p50'; hp = 6400; mp = 5000 },
         [pscustomobject]@{ caseId = 'p75'; hp = 9600; mp = 7500 },
         [pscustomobject]@{ caseId = 'p99'; hp = 12672; mp = 9900 },
-        [pscustomobject]@{ caseId = 'full'; hp = 12800; mp = 10000 }
+        [pscustomobject]@{ caseId = 'full'; hp = 12800; mp = 10000 },
+        [pscustomobject]@{ caseId = 'mp_vf34'; hp = 8576; mp = 6700 },
+        [pscustomobject]@{ caseId = 'mp_vf35'; hp = 8448; mp = 6600 },
+        [pscustomobject]@{ caseId = 'mp_vf70'; hp = 3968; mp = 3100 },
+        [pscustomobject]@{ caseId = 'mp_vf91'; hp = 1280; mp = 1000 }
     )
     foreach ($row in $rows) {
         $hpFrame = [Math]::Max(
@@ -435,7 +439,7 @@ function Test-PlayerInfoOracleTrace {
     if ($runtimeUrl -cne '../flashswf/UI/玩家信息界面.swf') {
         throw 'Oracle START runtime URL is not the fixed child-relative URL.'
     }
-    Assert-PlayerInfoOracleField $start 'caseCount' '7'
+    Assert-PlayerInfoOracleField $start 'caseCount' '11'
 
     $child = & $expectRecord 'CHILD'
     $cursor++
@@ -524,7 +528,7 @@ function Test-PlayerInfoOracleTrace {
     $complete = & $expectRecord 'COMPLETE'
     $cursor++
     Assert-PlayerInfoOracleExactFields $complete @('runId', 'caseCount')
-    Assert-PlayerInfoOracleField $complete 'caseCount' '7'
+    Assert-PlayerInfoOracleField $complete 'caseCount' '11'
     if ($cursor -ne $matching.Count) {
         throw 'Same-runId oracle records remain after the exact COMPLETE record.'
     }
@@ -565,8 +569,8 @@ function New-PlayerInfoOracleCanonicalSummary {
     param([Parameter(Mandatory = $true)]$Parsed)
 
     if ([string]$Parsed.runId -notmatch '^[0-9a-f]{32}$' -or
-        @($Parsed.cases).Count -ne 7) {
-        throw 'Canonical summary input is not one exact seven-case parsed run.'
+        @($Parsed.cases).Count -ne 11) {
+        throw 'Canonical summary input is not one exact eleven-case parsed run.'
     }
     $lines = [System.Collections.Generic.List[string]]::new()
     $appendRecord = {
@@ -604,7 +608,7 @@ function New-PlayerInfoOracleCanonicalSummary {
         stageWidth = '500'
         stageHeight = '500'
         runtimeUrlEscaped = [string]$Parsed.runtimeUrlEscaped
-        caseCount = '7'
+        caseCount = '11'
     })
     & $appendRecord 'CHILD' ([ordered]@{
         runId = [string]$Parsed.runId
@@ -638,7 +642,7 @@ function New-PlayerInfoOracleCanonicalSummary {
     }
     & $appendRecord 'COMPLETE' ([ordered]@{
         runId = [string]$Parsed.runId
-        caseCount = '7'
+        caseCount = '11'
     })
 
     $text = ($lines -join "`n") + "`n"
@@ -844,7 +848,7 @@ function New-SyntheticPlayerInfoOracleTrace {
         "PLAYER_INFO_ORACLE|START|runId=$RunId|" +
         'schema=cf7.player_info.flash_oracle.v1|quality=MEDIUM|' +
         'stageScaleMode=noScale|stageAlign=TL|stageWidth=500|stageHeight=500|' +
-        "runtimeUrlEscaped=$runtimeEscaped|caseCount=7")
+        "runtimeUrlEscaped=$runtimeEscaped|caseCount=11")
     $lines.Add(
         "PLAYER_INFO_ORACLE|CHILD|runId=$RunId|urlReported=1|" +
         "escapedUrl=$childEscaped")
@@ -868,7 +872,7 @@ function New-SyntheticPlayerInfoOracleTrace {
             }
         }
     }
-    $lines.Add("PLAYER_INFO_ORACLE|COMPLETE|runId=$RunId|caseCount=7")
+    $lines.Add("PLAYER_INFO_ORACLE|COMPLETE|runId=$RunId|caseCount=11")
     return ($lines -join "`n") + "`n"
 }
 
@@ -920,8 +924,41 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -FreshText $trace `
         -RunId $runId `
         -ExpectedChildPath $ExpectedChildPath
-    if ($parsed.cases.Count -ne 7) {
-        throw 'Protocol self-test parser did not return seven cases.'
+    if ($parsed.cases.Count -ne 11) {
+        throw 'Protocol self-test parser did not return eleven cases.'
+    }
+    foreach ($focused in @(
+        [pscustomobject]@{
+            caseId = 'mp_vf34'; hp = 8576; hpFrame = 44
+            mp = 6700; mpFrame = 34
+        },
+        [pscustomobject]@{
+            caseId = 'mp_vf35'; hp = 8448; hpFrame = 45
+            mp = 6600; mpFrame = 35
+        },
+        [pscustomobject]@{
+            caseId = 'mp_vf70'; hp = 3968; hpFrame = 90
+            mp = 3100; mpFrame = 70
+        },
+        [pscustomobject]@{
+            caseId = 'mp_vf91'; hp = 1280; hpFrame = 117
+            mp = 1000; mpFrame = 91
+        }
+    )) {
+        $matchingFocused = @($parsed.cases | Where-Object {
+            [string]$_.expected.caseId -ceq [string]$focused.caseId
+        })
+        if ($matchingFocused.Count -ne 1 -or
+            [int]$matchingFocused[0].expected.hp -ne [int]$focused.hp -or
+            [int]$matchingFocused[0].state.hpTargetFrame -ne
+                [int]$focused.hpFrame -or
+            [int]$matchingFocused[0].expected.mp -ne [int]$focused.mp -or
+            [int]$matchingFocused[0].state.mpTargetFrame -ne
+                [int]$focused.mpFrame) {
+            throw (
+                'Protocol self-test focused virtual-frame case drifted: ' +
+                [string]$focused.caseId)
+        }
     }
     $emptyTraceRejected = $false
     try {
@@ -979,7 +1016,7 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -ExpectedChildPath $ExpectedChildPath `
         -Scenario 'opaque file URI without triple slash'
     $canonicalSummary = New-PlayerInfoOracleCanonicalSummary -Parsed $parsed
-    if ($canonicalSummary.recordCount -ne 10 -or
+    if ($canonicalSummary.recordCount -ne 14 -or
         $canonicalSummary.text -match '\|PART\|' -or
         $canonicalSummary.text -match '(?m)\|escapedUrl=' -or
         $canonicalSummary.text -match [regex]::Escape($expectedUri)) {
@@ -990,8 +1027,8 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
             'PLAYER_INFO_ORACLE|PART|',
             [System.StringComparison]::Ordinal)
     })
-    if ($partLines.Count -ne 3584) {
-        throw "Protocol self-test expected 3584 PART records; got $($partLines.Count)."
+    if ($partLines.Count -ne 5632) {
+        throw "Protocol self-test expected 5632 PART records; got $($partLines.Count)."
     }
     $maxPartLineChars = ($partLines | Measure-Object -Maximum Length).Maximum
     if ($maxPartLineChars -gt 1000) {
@@ -1232,9 +1269,9 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -Scenario 'foreign-run record interleaved inside lifecycle'
 
     $failure = $trace.Replace(
-        "PLAYER_INFO_ORACLE|COMPLETE|runId=$runId|caseCount=7",
+        "PLAYER_INFO_ORACLE|COMPLETE|runId=$runId|caseCount=11",
         "PLAYER_INFO_ORACLE|FAILURE|runId=$runId|code=synthetic`n" +
-        "PLAYER_INFO_ORACLE|COMPLETE|runId=$runId|caseCount=7")
+        "PLAYER_INFO_ORACLE|COMPLETE|runId=$runId|caseCount=11")
     Assert-PlayerInfoOracleTraceRejected `
         -FreshText $failure `
         -RunId $runId `
