@@ -431,7 +431,7 @@ function Test-PlayerInfoOracleTrace {
     Assert-PlayerInfoOracleField $start 'schema' 'cf7.player_info.flash_oracle.v1'
     Assert-PlayerInfoOracleField $start 'quality' 'MEDIUM'
     Assert-PlayerInfoOracleField $start 'stageScaleMode' 'noScale'
-    Assert-PlayerInfoOracleField $start 'stageAlign' 'TL'
+    Assert-PlayerInfoOracleField $start 'stageAlign' 'LT'
     Assert-PlayerInfoOracleField $start 'stageWidth' '500'
     Assert-PlayerInfoOracleField $start 'stageHeight' '500'
     $runtimeUrl = ConvertFrom-Avm1EscapedString -Value (
@@ -604,7 +604,7 @@ function New-PlayerInfoOracleCanonicalSummary {
         sourceSchema = 'cf7.player_info.flash_oracle.v1'
         quality = 'MEDIUM'
         stageScaleMode = 'noScale'
-        stageAlign = 'TL'
+        stageAlign = 'LT'
         stageWidth = '500'
         stageHeight = '500'
         runtimeUrlEscaped = [string]$Parsed.runtimeUrlEscaped
@@ -847,7 +847,7 @@ function New-SyntheticPlayerInfoOracleTrace {
     $lines.Add(
         "PLAYER_INFO_ORACLE|START|runId=$RunId|" +
         'schema=cf7.player_info.flash_oracle.v1|quality=MEDIUM|' +
-        'stageScaleMode=noScale|stageAlign=TL|stageWidth=500|stageHeight=500|' +
+        'stageScaleMode=noScale|stageAlign=LT|stageWidth=500|stageHeight=500|' +
         "runtimeUrlEscaped=$runtimeEscaped|caseCount=11")
     $lines.Add(
         "PLAYER_INFO_ORACLE|CHILD|runId=$RunId|urlReported=1|" +

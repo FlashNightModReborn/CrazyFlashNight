@@ -2,9 +2,9 @@
 
 **文档角色**：`flashswf/UI/玩家信息界面` 的**视觉资源与 NativeHud 渲染基座专项 ADR + B0 可执行台账**。本文只权威定义 SVG 真源、受控子集、渲染器准入、运行时烘焙、模拟信号 harness、视觉对照与施工分片；状态所有权、AS2/C# 边界、停止线、显示公式和总体迁移阶段仍以 [玩家信息界面 → C# NativeHud 迁移架构](玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md) 为准。
 
-**最后核对代码基线**：commit `6452b38020d3c46cf5cec71211f50d18a299c5d4`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4/r5 固化恢复安全和实际 runner/parser 的 Git-canonical 自身份，r6/r7 修复合法空 flashlog 的参数绑定，r8 将播放器收紧为注册 `\FlashCS6Task` 同根的 CS6 Debug Player，r9 修复该旧播放器的相对参数合同并补齐 MP 关键断点 case；本轮 r10 增量收紧跨完整性级别的 Flash authoring 进程路径读取，提交后才允许再次重采。
+**最后核对代码基线**：commit `430ea792f96259b62e3aa0b1a37fb5489cef15f2`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4/r5 固化恢复安全和实际 runner/parser 的 Git-canonical 自身份，r6/r7 修复合法空 flashlog 的参数绑定，r8 将播放器收紧为注册 `\FlashCS6Task` 同根的 CS6 Debug Player，r9 修复该旧播放器的相对参数合同并补齐 MP 关键断点 case，r10 收紧跨完整性级别的 Flash authoring 进程路径读取；本轮 r11 增量冻结 Flash Player 对 `Stage.align` 的运行时规范化回读，提交后才允许再次重采。
 
-**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 是 B0 的唯一候选。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`；B0-02 已把 exact lock graph、真实 HP/MP feature anchors、strict facade 和安全/并发/dispose corpus 固化入仓，状态为 `isolated_qualification_passed`。B0-01B r4-r9 的静态、恢复、空日志、播放器身份、无引号启动和 11-case 协议门均已通过；五次真实 CS6 capture 均 fail-closed 且尚无 candidate。第四次的 0 B trace 已由独立对照定位为尾部字面 `"` 令 SWF 未加载；r9 第五次则 fresh publish 了 389,159 B TestLoader，但在 Player 启动前因 `Get-Process.Path` 跨完整性级别返回空而拒绝继续。原 Flash authoring PID 16952 仍存活，`OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)` + `QueryFullProcessImageNameW` 能读出与注册 `\FlashCS6Task` action 完全相同的 `Flash.exe` 路径，TestLoader AS/SWF 也已精确恢复且无 marker。r10 只把这一 limited-information 路径查询纳入现有唯一进程/注册路径/hash 门；它排除的是 PowerShell `MainModule` 可见性假阴性，不放宽 authoring 身份。正式 r10 capture 尚未执行，仍不得写成 oracle 已捕获。B0-01A/02 允许 B0-04 开始转换，但 Flash 截图尚未达到 `oracle_frozen`，`rendererQualified` 仍为 false，不能冒称生产 `renderer_qualified`。仓库当前也**尚未**把该依赖接入 Launcher、产生 canonical SVG、`PlayerInfoWidget` 或新 `pi_*` 协议。本文落盘不等于 B0 代码完成。
+**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 是 B0 的唯一候选。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`；B0-02 已把 exact lock graph、真实 HP/MP feature anchors、strict facade 和安全/并发/dispose corpus 固化入仓，状态为 `isolated_qualification_passed`。B0-01B r4-r10 的静态、恢复、空日志、播放器/authoring 身份、无引号启动和 11-case 协议门均已通过；六次真实 CS6 capture 均 fail-closed 且尚无 promoted candidate。第六次已经由真实 TestLoader/child 完成 11 case 和 4,463,997 B trace，child canonical path 精确命中；唯一失败是模板请求 `Stage.align="TL"` 后 Flash Player 11.2 规范化回报 `"LT"`，旧 parser 仍硬编码期望 `"TL"`。把运行时回读收紧为 `"LT"` 后，现有完整 trace 可重放为 11/11、14 条 canonical summary，说明像素/状态协议本身已闭合。r11 保留模板请求 token `TL`，只将 manifest 明确拆为 `stageAlignRequested=TL` / `stageAlignReported=LT`；它不是容差放宽。正式 r11 capture 尚未执行，仍不得写成 oracle 已捕获。B0-01A/02 允许 B0-04 开始转换，但 Flash 截图尚未达到 `oracle_frozen`，`rendererQualified` 仍为 false，不能冒称生产 `renderer_qualified`。仓库当前也**尚未**把该依赖接入 Launcher、产生 canonical SVG、`PlayerInfoWidget` 或新 `pi_*` 协议。本文落盘不等于 B0 代码完成。
 
 ---
 
@@ -19,7 +19,7 @@
 - 已完成：本 ADR、B0 分片边界、依赖准入门、runtime build identity 纳入方案与验收词典；Kimi k3/max 的首轮完整文档异构审计见 §9.5。
 - 已完成：B0-01A r3 把 HP/MP placement closure/source-binary ancestry 固化入仓；独立 verifier 从 XFL 重建 17 个定义边/18 个路径展开边，复算 Git-canonical digest `6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368`，并绑定 index/worktree/anchor。它不等于 `oracle_frozen`。
 - 已完成：B0-02 隔离资格化（10/10、16 项 fail-closed、exact XFL feature anchors、依赖/许可/native/payload 结构化审计）；它不等于生产 `renderer_qualified`。
-- 已完成窄中间态：B0-01B r4-r9 静态工具、协议/PNG/事务负例、严格工具自身份、注册 CS6 Debug Player、无引号启动和 11-case ValidateOnly 均通过；第五次 fresh publish 后又在 Player 启动前发现 PowerShell 无权读取高完整性 Flash 的 `.Path`，事务已安全恢复。r10 正用 limited-information Win32 API 保持同一精确身份门，当前仍没有 candidate/accepted capture。
+- 已完成窄中间态：B0-01B r4-r10 静态工具、协议/PNG/事务负例、严格工具自身份、注册 CS6 Debug Player、authoring limited-info 身份、无引号启动和 11-case ValidateOnly 均通过；第六次已取得完整真实 trace，只因 `Stage.align` 的 `TL→LT` 规范化回读在 parser 门失败，事务已安全恢复。r11 已由现有 trace 重放证明 11/11 可解析，当前仍没有 runner 生成的 candidate/accepted capture。
 - 未完成：可重复的独立 Flash 状态截图、生产受控 SVG validator 复用、转换器、canonical SVG、运行时 bake/cache、fixture widget。
 - 未接受：`Svg.Skia 5.1.1` 作为生产依赖。它必须先完成 B0-02 生产级 strict facade/corpus Gate；通过后才在 B0-03b 写入中央包版本、项目引用和 lockfile。
 - 未改变：AS2 游戏状态/输入/冷却权威、`FrameBroadcaster` 协议、旧 HUD 可见性、药剂拖放命中壳、正式 runtime。
@@ -453,6 +453,8 @@ r4 静态工具已用 3,584 条 PART、最大物理行 829 字符、10 条 canon
 
 r9 提交并取得 `strictToolIdentity=strict` 后进行了第五轮：CS6 17 秒生成 fresh `scripts/TestLoader.swf`（387,374 B → 389,159 B），但 runner 在启动 Player 前发现唯一仍存活的 Flash authoring PID 16952 的 PowerShell `.Path` 为空，按身份门 fail-closed。随后以只需 `PROCESS_QUERY_LIMITED_INFORMATION` 的 `QueryFullProcessImageNameW` 对同一 PID 取到注册 `\FlashCS6Task` action 的精确路径；原 AS/SWF 已恢复且无 marker。r10 必须只替换进程路径读取机制，继续要求唯一 Flash PID、注册路径相同以及文件长度/mtime/SHA/签名身份；提交并复验 strict 后重采。仍不得通过延长超时、改用 release player或把窗口截图冒充 accepted oracle 来绕过。
 
+r10 提交并再次取得 `strictToolIdentity=strict` 后进行了第六轮：CS6 15 秒生成相同 389,159 B fresh SWF，注册 Debug Player 随后真实执行 TestLoader 与 child，写出 4,463,997 B flashlog；START/CHILD、11 组 STATE、5,632 条 PART 与 COMPLETE 均存在。parser 在第一个 START 字段即因 `stageAlign` 期望 `TL`、运行时回读 `LT` 而拒绝，未晋升 candidate；原 AS/SWF 又精确恢复且无 marker。AS2 模板仍显式赋值 `Stage.align="TL"`，Adobe Player 11.2 将等价枚举顺序规范化为 `"LT"`。r11 将二者作为 requested/reported 两个事实固定；用第六轮完整 trace 重放已通过 11 case、exact child binding 与 14 条 canonical summary。提交并复验 strict 后仍须重新捕获，不能直接把失败轮日志晋升。
+
 该路径不经过桌面合成，原始透明像素不受窗口遮挡、DWM 或 Windows scale 改写；manifest 仍须记录播放器/Windows 身份，并明确 `captureMethod=AVM1 BitmapData.draw`、逻辑画布与矩阵。窗口截图只作 fallback；FFDec sprite 导出只作交叉检查，二者都不能自行补齐 accepted provenance。
 
 ---
@@ -713,6 +715,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | 现役系统没有安全的精确 HP/MP 只读注入，误用 `/console`/真实槽会污染 oracle 或游戏状态 | B0-01A/01B 拆分；只用 TestLoader scratch 固定 case，禁止生产 AgentControl、任意 console 与 live save；捕获失败不冒称 `oracle_frozen` |
 | CS6 已 fresh publish、Debug Player owned PID 正常响应但 trace 保持 0 B | 已定位为旧 `ArgumentList` 留下尾部字面 `"`，实际未加载 SWF；r9 固定 `scripts/` cwd + 无引号 `TestLoader.swf` token 并反向解析到精确目标。正式重采仍按 exact PID fail-closed 并恢复 TestLoader AS/SWF，不延长超时掩盖、也不回退 release player |
 | 高完整性 Flash authoring 存活但 `Get-Process.Path` 为空 | r10 用 `OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)` + `QueryFullProcessImageNameW` 读取精确路径，并继续与唯一 `\FlashCS6Task` action 和磁盘 identity 交叉绑定；不因 MainModule 不可读而把进程身份降级为名称 |
+| 模板请求 `Stage.align="TL"`，Player 11.2 回读 `"LT"` | r11 分别冻结 requested/reported token，parser 只接受实测 `"LT"`；仍要求 `noScale`、500×500 runtime stage 与 1024×64 identity draw，不把任意 align 值当等价 |
 | 整座 HUD 的 `玩家必要信息界面` 含 BitmapFill | HP/MP closure 明确排除且当前为 0 bitmap；B2 扩域时重新审计两个 `bin/*.dat` payload，不用 `<image>` 偷渡 |
 | fixture-first 误接成第二状态权威 | adapter 接口隔离；B0 禁止真实 `pi_*` 与 AS2 写路径 |
 | asset 未进 build identity | runtime-input regression：改任一 SVG 必改 identity 与 Core closure |
@@ -764,7 +767,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 |---|---|---|---|---|
 | B0-00 | completed | 本 B0-00 commit：两份 ADR 同步；§9.5 k3/max 文档审计；doc governance、链接与 diff check | 无代码/视觉/生产依赖结论 | B0-01A / B0-02 / B0-03a 可并行 |
 | B0-01A | completed (`placement_closure_frozen`) | r3：16-file exact closure、HP/MP/shared=10/5/2、17 authored/18 expanded edge、14 timeline、0 BitmapFill/DOMBitmapInstance；Git-canonical digest `6f4bf9…4368`；index/clean-filter/anchor/source-binary verifier 全绿并经独立复审 ACCEPT | actual TestLoader/player load、截图/crop 与人工来源确认归 B0-01B；不声称 `oracle_frozen` | B0-01B 可开始；B0-04 可开始但视觉 Gate 等 01B |
-| B0-01B | `capture_runtime_diagnostic`; r10_ready; no_candidate | r4-r9 恢复安全、frozen tooling、空日志 binder、注册 Debug Player、无引号 cwd/token 与 **11** case / **5,632** PART / max **829** / **14** summary 均通过；第五轮 fresh SWF **389,159 B** 后在 Player 启动前因高完整性 Flash `.Path` 不可读而 fail-closed，AS/SWF 精确恢复、PID 16952 存活、无 marker；limited-information Win32 查询已对照命中注册 action | r10 提交后的 `strictToolIdentity=strict`；正式 fresh harness capture；真实 PNG/manifest；人工来源、层、crop 与审美确认 | 只替换进程路径读取机制并以 Git-canonical r10 重采；产物保持 candidate，人工验收后才可升为 `oracle_frozen` |
+| B0-01B | `capture_runtime_diagnostic`; r11_ready; no_candidate | r4-r10 恢复安全、frozen tooling、注册 Debug Player/authoring、无引号启动与 **11** case / **5,632** PART / max **829** / **14** summary 均通过；第六轮真实 child 写出 **4,463,997 B** 完整 trace，仅因 `Stage.align` 实测 `LT` 与旧期望 `TL` 不符而未晋升；r11 对该日志重放为 11/11、child exact match、summary SHA-256 `DE4DB205…96EB`，AS/SWF 精确恢复、无 marker | r11 提交后的 `strictToolIdentity=strict`；正式 fresh candidate；人工来源、层、crop 与审美确认 | 固定 requested `TL` / reported `LT` 后以 Git-canonical r11 重采；人工验收后才可升为 `oracle_frozen` |
 | B0-02 | completed (`isolated_qualification_passed`) | exact SDK + locked restore；build 0 warning/error；行为 **10/10**、fail-closed **16**；HP/MP XFL feature anchors；11 包 license/nupkg + 9 文件/5,289,528 B payload 结构化报告 | `rendererQualified=false`；生产 facade/canonical/policy/许可接受仍归 B0-03b | B0-04 可开始；禁止提前写生产 PackageReference |
 | B0-03a | completed | resolver/setup-check 共用 exact 合同；selector + repo-root 集成 **7/7**；setup-check **5/5**；三项首轮并发时序失败隔离复跑 **3/3**，随后全量 xUnit **1257/1257** | 正式 builder 的 10.0.300 证据仍归 B0-03b/发布链 | 继续 B0-01B/B0-04；待真实资产后进 B0-03b |
 | B0-04 | ready; exit_waits_B0-01B | B0-01A r3 closure + B0-02 isolated subset 已满足进入条件；无 canonical asset | converter/validator/canonical SVG 与 accepted oracle parity | 开窄 converter/asset 片；视觉结论等 accepted oracle |

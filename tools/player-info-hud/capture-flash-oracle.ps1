@@ -690,6 +690,8 @@ function Assert-OracleTemplate {
         'var __pioPartChars:Number = 720',
         '#include "展现/UI交互/UI交互_fs_玩家信息界面.as"',
         '_root._quality = "MEDIUM"',
+        'Stage.align = "TL"',
+        '"|stageAlign=" + String(Stage.align)',
         '_root.控制目标 = "oracleHero"',
         '_root.gameworld.oracleHero',
         'MovieClipLoader',
@@ -3074,7 +3076,8 @@ try {
             flash = [ordered]@{
                 quality = 'MEDIUM'
                 stageScaleMode = 'noScale'
-                stageAlign = 'TL'
+                stageAlignRequested = 'TL'
+                stageAlignReported = 'LT'
                 viewport = [ordered]@{ width = 500; height = 500 }
             }
             flashlog = [ordered]@{
