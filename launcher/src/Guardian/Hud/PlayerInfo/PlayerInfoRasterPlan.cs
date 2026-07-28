@@ -54,6 +54,10 @@ internal sealed class PlayerInfoRasterPlan(
 {
     internal Rectangle FlashViewportPhysical { get; } = flashViewportPhysical;
     internal Rectangle StagePhysicalBounds { get; } = stagePhysicalBounds;
+    internal Rectangle TightPhysicalBounds { get; } =
+        PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
+            stagePhysicalBounds,
+            layers);
     internal double PhysicalScale { get; } = physicalScale;
 
     // Telemetry only. PMv2 viewport coordinates are already physical pixels.
@@ -175,6 +179,87 @@ internal static class PlayerInfoRasterPlanner
             layers);
     }
 
+    internal static Rectangle ComputeTightPhysicalBounds(
+        Rectangle stagePhysicalBounds,
+        IReadOnlyList<PlayerInfoRasterLayerPlan> layers)
+    {
+        if (stagePhysicalBounds.Width <= 0 ||
+            stagePhysicalBounds.Height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(stagePhysicalBounds),
+                "PlayerInfo stage bounds must be non-empty.");
+        }
+        ArgumentNullException.ThrowIfNull(layers);
+        if (layers.Count == 0)
+        {
+            throw new InvalidOperationException(
+                "PlayerInfo raster plan must contain at least one layer.");
+        }
+
+        var stageLeft = (long)stagePhysicalBounds.Left;
+        var stageTop = (long)stagePhysicalBounds.Top;
+        var stageRight = stageLeft + stagePhysicalBounds.Width;
+        var stageBottom = stageTop + stagePhysicalBounds.Height;
+        ValidatePhysicalEdges(
+            stageLeft,
+            stageTop,
+            stageRight,
+            stageBottom,
+            "PlayerInfo stage bounds");
+
+        long unionLeft = long.MaxValue;
+        long unionTop = long.MaxValue;
+        long unionRight = long.MinValue;
+        long unionBottom = long.MinValue;
+        for (var index = 0; index < layers.Count; index++)
+        {
+            var layer = layers[index];
+            if (layer is null)
+            {
+                throw new InvalidOperationException(
+                    $"PlayerInfo raster layer at index {index} is null.");
+            }
+
+            var bounds = layer.PhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"PlayerInfo raster layer '{layer.Key.LayerId}' has empty physical bounds.");
+            }
+
+            var right = (long)bounds.Left + bounds.Width;
+            var bottom = (long)bounds.Top + bounds.Height;
+            ValidatePhysicalEdges(
+                bounds.Left,
+                bounds.Top,
+                right,
+                bottom,
+                $"PlayerInfo raster layer '{layer.Key.LayerId}'");
+
+            unionLeft = Math.Min(unionLeft, bounds.Left);
+            unionTop = Math.Min(unionTop, bounds.Top);
+            unionRight = Math.Max(unionRight, right);
+            unionBottom = Math.Max(unionBottom, bottom);
+        }
+
+        var tightLeft = Math.Max(unionLeft, stageLeft);
+        var tightTop = Math.Max(unionTop, stageTop);
+        var tightRight = Math.Min(unionRight, stageRight);
+        var tightBottom = Math.Min(unionBottom, stageBottom);
+        if (tightRight <= tightLeft || tightBottom <= tightTop)
+        {
+            throw new InvalidOperationException(
+                "PlayerInfo layer envelope does not intersect the stage bounds.");
+        }
+
+        return Rectangle.FromLTRB(
+            checked((int)tightLeft),
+            checked((int)tightTop),
+            checked((int)tightRight),
+            checked((int)tightBottom));
+    }
+
     private static Rectangle MapLogicalRect(
         Rectangle flashViewportPhysical,
         double physicalScale,
@@ -214,5 +299,24 @@ internal static class PlayerInfoRasterPlanner
                 "PlayerInfo physical coordinate is non-finite or outside Int32.");
         }
         return checked((int)Math.Ceiling(value));
+    }
+
+    private static void ValidatePhysicalEdges(
+        long left,
+        long top,
+        long right,
+        long bottom,
+        string subject)
+    {
+        if (left < int.MinValue ||
+            top < int.MinValue ||
+            right > int.MaxValue ||
+            bottom > int.MaxValue ||
+            right <= left ||
+            bottom <= top)
+        {
+            throw new InvalidOperationException(
+                subject + " exceed the non-empty Int32 rectangle contract.");
+        }
     }
 }

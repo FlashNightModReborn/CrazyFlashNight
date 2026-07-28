@@ -10,6 +10,15 @@ using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
 {
+    internal interface IPanelHudCompanion
+    {
+        // PanelHost cannot infer whether a throwing implementation changed
+        // state before it failed. Implementations must therefore be
+        // idempotent and must not let suspend/resume exceptions escape.
+        void Suspend();
+        void Resume();
+    }
+
     /// <summary>
     /// Panel 状态机：把 OpenPanel / ClosePanel 序列化为命令队列，按序在 UI 线程执行。
     ///
@@ -143,6 +152,8 @@ namespace CF7Launcher.Guardian
         // panel 打开时 Suspend 让 backdrop 干净遮住；panel 关闭时 SetReady 恢复
         private readonly NotchOverlay _notchOverlay;
         private readonly ToastOverlay _toastOverlay;
+        private readonly IPanelHudCompanion _hudCompanion;
+        private bool _hudCompanionSuspended;
 
         private readonly Queue<PanelCommand> _queue = new Queue<PanelCommand>();
         private readonly List<VisualRetireWaiter> _visualRetireWaiters =
@@ -197,6 +208,35 @@ namespace CF7Launcher.Guardian
             Func<IntPtr> flashHwndProvider,
             NotchOverlay notchOverlay,
             ToastOverlay toastOverlay)
+            : this(
+                ownerForm,
+                web,
+                hud,
+                backdrop,
+                shield,
+                hitNumber,
+                cursor,
+                escSource,
+                flashHwndProvider,
+                notchOverlay,
+                toastOverlay,
+                null)
+        {
+        }
+
+        internal PanelHostController(
+            Form ownerForm,
+            WebOverlayForm web,
+            NativeHudOverlay hud,
+            NativePanelBackdrop backdrop,
+            InputShieldForm shield,
+            HitNumberOverlay hitNumber,
+            INativeCursor cursor,
+            IPanelEscapeSource escSource,
+            Func<IntPtr> flashHwndProvider,
+            NotchOverlay notchOverlay,
+            ToastOverlay toastOverlay,
+            IPanelHudCompanion hudCompanion)
         {
             if (ownerForm == null) throw new ArgumentNullException("ownerForm");
             if (web == null) throw new ArgumentNullException("web");
@@ -214,6 +254,7 @@ namespace CF7Launcher.Guardian
             _flashHwndProvider = flashHwndProvider; // 可空（snapshot 不可用时降级 placeholder）
             _notchOverlay = notchOverlay; // 可空（Phase 3 引入）
             _toastOverlay = toastOverlay; // 可空（Phase 3 引入）
+            _hudCompanion = hudCompanion; // 可空；独立 split surface 仍由 Program 持有/释放
 
             // Backdrop 点击外侧 → web panel_esc（等价 web 端 panels.js 的 backdrop click）
             _backdrop.BackdropClickedOutsidePanel += OnBackdropClickOutsidePanel;
@@ -227,12 +268,21 @@ namespace CF7Launcher.Guardian
         internal PanelHostController(
             Action<Action> pumpDispatcher,
             Action<Action> closedEventDispatcher)
+            : this(pumpDispatcher, closedEventDispatcher, null)
+        {
+        }
+
+        internal PanelHostController(
+            Action<Action> pumpDispatcher,
+            Action<Action> closedEventDispatcher,
+            IPanelHudCompanion hudCompanion)
         {
             if (pumpDispatcher == null)
                 throw new ArgumentNullException("pumpDispatcher");
             _testPumpDispatcher = pumpDispatcher;
             _testClosedEventDispatcher =
                 closedEventDispatcher ?? delegate(Action fire) { fire(); };
+            _hudCompanion = hudCompanion;
         }
 
         private void OnBackdropClickOutsidePanel()
@@ -1297,11 +1347,44 @@ namespace CF7Launcher.Guardian
             DoOpen(name, initDataJson, null, false, null);
         }
 
+        private void SuspendHudCompanion()
+        {
+            if (_hudCompanion == null || _hudCompanionSuspended) return;
+            try
+            {
+                _hudCompanion.Suspend();
+                _hudCompanionSuspended = true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[PanelHost] hud companion.Suspend failed: " +
+                    ex.Message);
+            }
+        }
+
+        private void ResumeHudCompanion()
+        {
+            if (_hudCompanion == null || !_hudCompanionSuspended) return;
+            try
+            {
+                _hudCompanion.Resume();
+                _hudCompanionSuspended = false;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[PanelHost] hud companion.Resume failed: " +
+                    ex.Message);
+            }
+        }
+
         private bool DoOpen(string name, string initDataJson, string reservedPanelInstanceId,
             bool requireTrackedDelivery, Action trackedWebPostAccepted)
         {
             if (_testPumpDispatcher != null)
             {
+                SuspendHudCompanion();
                 string testInstance =
                     string.IsNullOrEmpty(
                         reservedPanelInstanceId)
@@ -1335,6 +1418,9 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
             }
+            // Independent split surfaces must disappear before backdrop capture/show
+            // and before WebOverlay enters panel mode. Calls are idempotent and isolated.
+            SuspendHudCompanion();
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             PerfTrace.Mark("panel.open_start", name);
             Rectangle anchor = ComputeAnchorScreenRect();
@@ -1591,6 +1677,7 @@ namespace CF7Launcher.Guardian
                     }
                     catch { }
                 }
+                ResumeHudCompanion();
                 _activePanel = null;
                 _activePanelInstanceId = null;
                 PostPanelClosed(
@@ -1628,6 +1715,7 @@ namespace CF7Launcher.Guardian
             // Step 4: HUD 复活（NativeHud + Phase 3 NotchOverlay/ToastOverlay 一并复显）
             try { _hud.Resume(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] hud.Resume failed: " + ex.Message); }
+            ResumeHudCompanion();
             if (_notchOverlay != null) try { _notchOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] notch.SetReady failed: " + ex.Message); }
             if (_toastOverlay != null) try { _toastOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] toast.SetReady failed: " + ex.Message); }
             // Step 5: ESC 禁用
@@ -1799,6 +1887,7 @@ namespace CF7Launcher.Guardian
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }
             try { _backdrop.Hide(); } catch { }
             try { _hud.Resume(); } catch { }
+            ResumeHudCompanion();
             if (_notchOverlay != null) { try { _notchOverlay.SetReady(); } catch { } }
             if (_toastOverlay != null) { try { _toastOverlay.SetReady(); } catch { } }
             if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }

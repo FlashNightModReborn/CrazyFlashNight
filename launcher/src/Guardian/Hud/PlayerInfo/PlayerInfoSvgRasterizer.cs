@@ -7,7 +7,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
+using System.Xml;
+using System.Xml.Linq;
 using SkiaSharp;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
@@ -51,29 +54,56 @@ internal sealed class PlayerInfoSvgRasterizer : IPlayerInfoRasterizer
             foreach (var layerPlan in plan.Layers)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                using var qualified = StrictSvgFacade.Load(layerPlan.Asset.Bytes);
-                progress.RecordParse();
-                cancellationToken.ThrowIfCancellationRequested();
-                using var skBitmap = qualified.Rasterize(
-                    layerPlan.PixelWidth,
-                    layerPlan.PixelHeight,
-                    layerPlan.SourceViewBox);
-                progress.RecordRaster();
-                cancellationToken.ThrowIfCancellationRequested();
-
                 Bitmap? bitmap = null;
+                Dictionary<string, Bitmap>? fragments = null;
                 try
                 {
-                    bitmap = PlayerInfoPArgbBridge.Copy(skBitmap);
+                    bitmap = BakeBitmap(
+                        layerPlan.Asset.Bytes,
+                        layerPlan,
+                        cancellationToken,
+                        progress);
+                    if (string.Equals(
+                            layerPlan.Key.LayerId,
+                            "mp.fill",
+                            StringComparison.Ordinal))
+                    {
+                        fragments = new Dictionary<string, Bitmap>(
+                            StringComparer.Ordinal);
+                        var fragmentBytes =
+                            PlayerInfoSvgGroupFragmenter.Create(
+                                layerPlan.Asset.Bytes,
+                                layerPlan.Gauge.ClipBindings);
+                        foreach (var binding in layerPlan.Gauge.ClipBindings)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            fragments.Add(
+                                binding.Id,
+                                BakeBitmap(
+                                    fragmentBytes[binding.Id],
+                                    layerPlan,
+                                    cancellationToken,
+                                    progress));
+                        }
+                    }
                     cancellationToken.ThrowIfCancellationRequested();
                     layers.Add(new PlayerInfoRasterLayer(
                         layerPlan.Key,
-                        bitmap));
+                        bitmap,
+                        fragments));
                     bitmap = null;
+                    fragments = null;
                 }
                 finally
                 {
                     bitmap?.Dispose();
+                    if (fragments is not null)
+                    {
+                        foreach (var fragment in fragments.Values)
+                        {
+                            fragment.Dispose();
+                        }
+                    }
                 }
             }
 
@@ -91,25 +121,272 @@ internal sealed class PlayerInfoSvgRasterizer : IPlayerInfoRasterizer
             throw;
         }
     }
+
+    private static Bitmap BakeBitmap(
+        ReadOnlyMemory<byte> svgBytes,
+        PlayerInfoRasterLayerPlan layerPlan,
+        CancellationToken cancellationToken,
+        PlayerInfoRasterProgress progress)
+    {
+        using var qualified = StrictSvgFacade.Load(svgBytes);
+        progress.RecordParse();
+        cancellationToken.ThrowIfCancellationRequested();
+        using var skBitmap = qualified.Rasterize(
+            layerPlan.PixelWidth,
+            layerPlan.PixelHeight,
+            layerPlan.SourceViewBox);
+        progress.RecordRaster();
+        cancellationToken.ThrowIfCancellationRequested();
+        var bitmap = PlayerInfoPArgbBridge.Copy(skBitmap);
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return bitmap;
+        }
+        catch
+        {
+            bitmap.Dispose();
+            throw;
+        }
+    }
 }
 
-internal sealed class PlayerInfoRasterLayer(
-    PlayerInfoRasterKey key,
-    Bitmap bitmap) : IDisposable
+internal static class PlayerInfoSvgGroupFragmenter
 {
-    private Bitmap? _bitmap = bitmap ?? throw new ArgumentNullException(nameof(bitmap));
+    private static readonly UTF8Encoding StrictUtf8 = new(false, true);
+    private static readonly XNamespace SvgNamespace =
+        "http://www.w3.org/2000/svg";
 
-    internal PlayerInfoRasterKey Key { get; } = key;
+    internal static IReadOnlyDictionary<string, ReadOnlyMemory<byte>> Create(
+        ReadOnlyMemory<byte> canonicalBytes,
+        IReadOnlyList<PlayerInfoClipBinding> bindings)
+    {
+        ArgumentNullException.ThrowIfNull(bindings);
+        if (bindings.Count != 2)
+        {
+            throw new InvalidDataException(
+                "MP fill fragmentation requires exactly two clip bindings.");
+        }
+
+        var canonical = LoadValidatedDocument(canonicalBytes);
+        var fillRoot = FindFillRoot(canonical);
+        var directGroups = fillRoot
+            .Elements(SvgNamespace + "g")
+            .ToArray();
+        if (directGroups.Length == 0 ||
+            fillRoot.Elements().Count() != directGroups.Length)
+        {
+            throw new InvalidDataException(
+                "Canonical MP fill root must contain only direct named groups.");
+        }
+
+        var directIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var group in directGroups)
+        {
+            var id = (string?)group.Attribute("id");
+            if (string.IsNullOrEmpty(id) || !directIds.Add(id))
+            {
+                throw new InvalidDataException(
+                    "Canonical MP fill direct groups must have unique IDs.");
+            }
+        }
+
+        var boundIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var binding in bindings)
+        {
+            if (string.IsNullOrEmpty(binding.Id) ||
+                binding.SvgGroupIds.Count == 0)
+            {
+                throw new InvalidDataException(
+                    "MP fill clip binding is empty.");
+            }
+            foreach (var groupId in binding.SvgGroupIds)
+            {
+                if (!boundIds.Add(groupId))
+                {
+                    throw new InvalidDataException(
+                        $"MP fill group '{groupId}' is bound more than once.");
+                }
+            }
+        }
+        if (!directIds.SetEquals(boundIds))
+        {
+            throw new InvalidDataException(
+                "MP fill clip bindings do not partition every direct group.");
+        }
+
+        var result =
+            new Dictionary<string, ReadOnlyMemory<byte>>(StringComparer.Ordinal);
+        foreach (var binding in bindings)
+        {
+            var fragment = new XDocument(canonical);
+            var fragmentRoot = FindFillRoot(fragment);
+            var keep = binding.SvgGroupIds.ToHashSet(StringComparer.Ordinal);
+            foreach (var group in fragmentRoot
+                         .Elements(SvgNamespace + "g")
+                         .ToArray())
+            {
+                var id = (string?)group.Attribute("id") ??
+                    throw new InvalidDataException(
+                        "Canonical MP fill direct group lost its ID.");
+                if (!keep.Contains(id))
+                {
+                    group.Remove();
+                }
+            }
+            var bytes = StrictUtf8.GetBytes(
+                fragment.ToString(SaveOptions.DisableFormatting));
+            StrictSvgValidator.Validate(bytes);
+            if (!result.TryAdd(binding.Id, bytes))
+            {
+                throw new InvalidDataException(
+                    $"MP fill clip binding '{binding.Id}' is duplicated.");
+            }
+        }
+        return result;
+    }
+
+    private static XDocument LoadValidatedDocument(
+        ReadOnlyMemory<byte> canonicalBytes)
+    {
+        StrictSvgValidator.Validate(canonicalBytes);
+        var xml = StrictUtf8.GetString(canonicalBytes.Span);
+        using var text = new StringReader(xml);
+        using var reader = XmlReader.Create(text, new XmlReaderSettings
+        {
+            DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null,
+            MaxCharactersInDocument = StrictSvgValidator.MaxBytes,
+            MaxCharactersFromEntities = 0
+        });
+        return XDocument.Load(
+            reader,
+            LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
+    }
+
+    private static XElement FindFillRoot(XDocument document)
+    {
+        var roots = document
+            .Descendants(SvgNamespace + "g")
+            .Where(element => string.Equals(
+                (string?)element.Attribute("id"),
+                "mp-fill",
+                StringComparison.Ordinal))
+            .ToArray();
+        if (roots.Length != 1)
+        {
+            throw new InvalidDataException(
+                "Canonical MP fill must contain exactly one mp-fill group.");
+        }
+        return roots[0];
+    }
+}
+
+internal sealed class PlayerInfoRasterLayer : IDisposable
+{
+    private sealed class OwnedPayload(
+        Bitmap bitmap,
+        IReadOnlyDictionary<string, Bitmap> fragments)
+    {
+        internal Bitmap Bitmap { get; } = bitmap;
+        internal IReadOnlyDictionary<string, Bitmap> Fragments { get; } =
+            fragments;
+    }
+
+    private OwnedPayload? _payload;
+
+    internal PlayerInfoRasterLayer(
+        PlayerInfoRasterKey key,
+        Bitmap bitmap)
+        : this(key, bitmap, null)
+    {
+    }
+
+    internal PlayerInfoRasterLayer(
+        PlayerInfoRasterKey key,
+        Bitmap bitmap,
+        IReadOnlyDictionary<string, Bitmap>? fragments)
+    {
+        ArgumentNullException.ThrowIfNull(bitmap);
+        var ownedFragments = fragments is null
+            ? new Dictionary<string, Bitmap>(StringComparer.Ordinal)
+            : new Dictionary<string, Bitmap>(
+                fragments,
+                StringComparer.Ordinal);
+        var fragmentReferences = new HashSet<Bitmap>(
+            ReferenceEqualityComparer.Instance);
+        if (ownedFragments.Any(entry =>
+                string.IsNullOrEmpty(entry.Key) ||
+                entry.Value is null ||
+                ReferenceEquals(entry.Value, bitmap) ||
+                !fragmentReferences.Add(entry.Value)))
+        {
+            throw new ArgumentException(
+                "PlayerInfo raster fragments must have unique IDs and distinct bitmaps.",
+                nameof(fragments));
+        }
+        if (bitmap.Width != key.PixelWidth ||
+            bitmap.Height != key.PixelHeight ||
+            bitmap.PixelFormat != PixelFormat.Format32bppPArgb ||
+            ownedFragments.Values.Any(fragment =>
+                fragment.Width != key.PixelWidth ||
+                fragment.Height != key.PixelHeight ||
+                fragment.PixelFormat != PixelFormat.Format32bppPArgb))
+        {
+            throw new ArgumentException(
+                "PlayerInfo raster layer payload does not match its PArgb key.",
+                nameof(bitmap));
+        }
+
+        Key = key;
+        ByteSize = checked(
+            (long)key.PixelWidth *
+            key.PixelHeight *
+            4L *
+            (1L + ownedFragments.Count));
+        _payload = new OwnedPayload(bitmap, ownedFragments);
+    }
+
+    internal PlayerInfoRasterKey Key { get; }
     internal Bitmap Bitmap =>
-        Volatile.Read(ref _bitmap) ??
+        Volatile.Read(ref _payload)?.Bitmap ??
         throw new ObjectDisposedException(nameof(PlayerInfoRasterLayer));
-    internal long ByteSize { get; } = checked(
-        (long)key.PixelWidth * key.PixelHeight * 4L);
-    internal bool IsDisposed => Volatile.Read(ref _bitmap) is null;
+    internal IEnumerable<string> FragmentIds =>
+        Volatile.Read(ref _payload)?.Fragments.Keys ??
+        throw new ObjectDisposedException(nameof(PlayerInfoRasterLayer));
+    internal long ByteSize { get; }
+    internal bool IsDisposed => Volatile.Read(ref _payload) is null;
+
+    internal Bitmap RequireFragment(string fragmentId)
+    {
+        if (string.IsNullOrEmpty(fragmentId))
+        {
+            throw new ArgumentException(
+                "Fragment ID is required.",
+                nameof(fragmentId));
+        }
+        var payload = Volatile.Read(ref _payload) ??
+            throw new ObjectDisposedException(nameof(PlayerInfoRasterLayer));
+        if (!payload.Fragments.TryGetValue(fragmentId, out var fragment))
+        {
+            throw new InvalidDataException(
+                $"PlayerInfo layer '{Key.LayerId}' lacks fragment '{fragmentId}'.");
+        }
+        return fragment;
+    }
 
     public void Dispose()
     {
-        Interlocked.Exchange(ref _bitmap, null)?.Dispose();
+        var payload = Interlocked.Exchange(ref _payload, null);
+        if (payload is null)
+        {
+            return;
+        }
+        payload.Bitmap.Dispose();
+        foreach (var fragment in payload.Fragments.Values)
+        {
+            fragment.Dispose();
+        }
     }
 }
 

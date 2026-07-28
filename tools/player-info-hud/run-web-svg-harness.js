@@ -8,6 +8,8 @@ const path = require('path');
 const repoRoot = path.resolve(__dirname, '..', '..');
 const playwrightPath = path.join(
     repoRoot, 'launcher', 'perf', 'node_modules', 'playwright');
+const playwrightPackagePath = path.join(
+    playwrightPath, 'package.json');
 const cases = [
     {id:'empty', hpFrame:129, mpFrame:101},
     {id:'min_step', hpFrame:128, mpFrame:100},
@@ -26,10 +28,26 @@ function fail(message) {
     throw new Error(message);
 }
 
-function option(name) {
-    const prefix = `--${name}=`;
-    const value = process.argv.slice(2).find(arg => arg.startsWith(prefix));
-    return value ? value.slice(prefix.length) : null;
+function parseOptions() {
+    const names = ['manifest', 'output'];
+    const result = {};
+    const arguments_ = process.argv.slice(2);
+    if (arguments_.length !== names.length) {
+        fail('Expected exactly --manifest and --output.');
+    }
+    for (const argument of arguments_) {
+        const match = argument.match(/^--(manifest|output)=(.+)$/u);
+        if (!match || Object.hasOwn(result, match[1])) {
+            fail(`Unsupported or duplicate argument: ${argument}`);
+        }
+        result[match[1]] = match[2];
+    }
+    for (const name of names) {
+        if (!Object.hasOwn(result, name)) {
+            fail(`Expected exactly one --${name}=<repo-relative-path>.`);
+        }
+    }
+    return result;
 }
 
 function resolveInsideRepo(value, label) {
@@ -344,8 +362,26 @@ async function main() {
             'Missing launcher/perf Playwright. Run ' +
             '"npm --prefix launcher/perf ci --ignore-scripts".');
     }
-    const manifestPath = resolveInsideRepo(option('manifest'), 'manifest');
-    const outputRoot = resolveInsideRepo(option('output'), 'output');
+    const options = parseOptions();
+    const manifestPath = resolveInsideRepo(options.manifest, 'manifest');
+    const outputRoot = resolveInsideRepo(options.output, 'output');
+    if (fs.existsSync(outputRoot)) {
+        fail('Output directory already exists; use a new path.');
+    }
+    const outputParent = path.dirname(outputRoot);
+    if (!fs.existsSync(outputParent) ||
+        !fs.statSync(outputParent).isDirectory()) {
+        fail('Output parent directory must already exist.');
+    }
+    const harnessBytesBefore = fs.readFileSync(__filename);
+    const playwrightPackageBytes =
+        fs.readFileSync(playwrightPackagePath);
+    const playwrightPackage = JSON.parse(
+        playwrightPackageBytes.toString('utf8'));
+    if (typeof playwrightPackage.version !== 'string' ||
+        playwrightPackage.version.length === 0) {
+        fail('Repository Playwright package has no version.');
+    }
     const manifestBytes = fs.readFileSync(manifestPath);
     const manifest = JSON.parse(manifestBytes.toString('utf8'));
     if (manifest.format !== 'cf7.player-info-hud.asset-manifest' ||
@@ -385,7 +421,9 @@ async function main() {
     if (!edge) {
         fail('Microsoft Edge executable was not found.');
     }
-    fs.mkdirSync(outputRoot, {recursive:true});
+    const edgeBytesBefore = fs.readFileSync(edge);
+    const edgeSha256Before = sha256(edgeBytesBefore);
+    fs.mkdirSync(outputRoot, {recursive:false});
     const chromium = require(playwrightPath).chromium;
     const browser = await chromium.launch({
         executablePath: edge,
@@ -402,7 +440,16 @@ async function main() {
             reducedMotion: 'reduce'
         });
         const pageErrors = [];
+        const networkRequests = [];
         page.on('pageerror', error => pageErrors.push(error.message));
+        page.on('request', request => {
+            const url = request.url();
+            if (url !== 'about:blank' &&
+                !url.startsWith('data:') &&
+                !url.startsWith('blob:')) {
+                networkRequests.push(url);
+            }
+        });
         for (const scenario of cases) {
             pageErrors.length = 0;
             const svg = renderSvg(manifest, assets, scenario);
@@ -443,11 +490,33 @@ async function main() {
                 sha256: sha256(png)
             });
         }
+        if (networkRequests.length !== 0) {
+            fail(
+                'Web harness attempted network/file requests: ' +
+                networkRequests.join(' | '));
+        }
     } finally {
         await browser.close();
     }
 
-    const edgeBytes = fs.readFileSync(edge);
+    const edgeBytesAfter = fs.readFileSync(edge);
+    if (edgeBytesAfter.length !== edgeBytesBefore.length ||
+        sha256(edgeBytesAfter) !== edgeSha256Before) {
+        fail('Microsoft Edge executable changed during rendering.');
+    }
+    const harnessBytesAfter = fs.readFileSync(__filename);
+    if (harnessBytesAfter.length !== harnessBytesBefore.length ||
+        sha256(harnessBytesAfter) !== sha256(harnessBytesBefore)) {
+        fail('Web harness source changed during rendering.');
+    }
+    const playwrightPackageBytesAfter =
+        fs.readFileSync(playwrightPackagePath);
+    if (playwrightPackageBytesAfter.length !==
+            playwrightPackageBytes.length ||
+        sha256(playwrightPackageBytesAfter) !==
+            sha256(playwrightPackageBytes)) {
+        fail('Playwright package identity changed during rendering.');
+    }
     const report = {
         schema: 'cf7.player_info.web_svg_harness.v1',
         status: 'canonical_manifest_rendered_awaiting_human_review',
@@ -470,8 +539,28 @@ async function main() {
         browser: {
             family: 'Microsoft Edge via Playwright chromium',
             version: browserVersion,
-            executableSha256: sha256(edgeBytes),
-            executableBytes: edgeBytes.length
+            executableSha256: edgeSha256Before,
+            executableBytes: edgeBytesBefore.length
+        },
+        tooling: {
+            harness: {
+                path: path.relative(repoRoot, __filename)
+                    .replace(/\\/g, '/'),
+                bytes: harnessBytesBefore.length,
+                sha256: sha256(harnessBytesBefore)
+            },
+            playwright: {
+                path: path.relative(repoRoot, playwrightPackagePath)
+                    .replace(/\\/g, '/'),
+                version: playwrightPackage.version,
+                bytes: playwrightPackageBytes.length,
+                sha256: sha256(playwrightPackageBytes)
+            },
+            edgeIdentityStableDuringRender: true,
+            harnessIdentityStableDuringRender: true,
+            playwrightIdentityStableDuringRender: true,
+            networkUsed: false,
+            packagesInstalled: false
         },
         assets: assets.map(asset => ({
             id: asset.id,
@@ -483,6 +572,23 @@ async function main() {
     };
     const reportPath = path.join(outputRoot, 'web-render-report.json');
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
+    const expectedOutputNames = [
+        ...cases.map(scenario => `${scenario.id}.png`),
+        'web-render-report.json'
+    ].sort();
+    const actualOutputNames = fs.readdirSync(
+        outputRoot,
+        {withFileTypes:true}
+    ).map(entry => {
+        if (!entry.isFile()) {
+            fail('Web harness output closure contains a non-file.');
+        }
+        return entry.name;
+    }).sort();
+    if (JSON.stringify(actualOutputNames) !==
+        JSON.stringify(expectedOutputNames)) {
+        fail('Web harness output directory is not the exact 12-file closure.');
+    }
     process.stdout.write(
         `PlayerInfo Web SVG canonical harness ${results.length}/${cases.length} ` +
         `rendered; report=${path.relative(repoRoot, reportPath)}\n`);

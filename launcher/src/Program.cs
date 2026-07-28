@@ -33,6 +33,52 @@ class Program
         try { f.Hide(); } catch { }
     }
 
+    static void DrainAndDisposePlayerInfoSurface(
+        CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface surface)
+    {
+        if (surface == null) return;
+        try
+        {
+            surface.BeginShutdown();
+            // GuardianForm's process-wide ExitGuard fires at 8 seconds. The
+            // surface cancellation normally drains in milliseconds; keep this
+            // local deadline well inside the remaining shutdown budget.
+            surface.WaitForDrainAsync(TimeSpan.FromSeconds(2))
+                .GetAwaiter()
+                .GetResult();
+        }
+        catch (TimeoutException ex)
+        {
+            LogPlayerInfoLifecycleBestEffort(
+                "[PlayerInfoSplitSurface] shutdown drain timed out: " +
+                ex.Message);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+        catch (Exception ex)
+        {
+            LogPlayerInfoLifecycleBestEffort(
+                "[PlayerInfoSplitSurface] shutdown drain failed: " +
+                ex.Message);
+        }
+        try { surface.Dispose(); }
+        catch (Exception ex)
+        {
+            LogPlayerInfoLifecycleBestEffort(
+                "[PlayerInfoSplitSurface] dispose failed: " + ex.Message);
+        }
+    }
+
+    static void LogPlayerInfoLifecycleBestEffort(string message)
+    {
+        try { LogManager.Log(message); }
+        catch
+        {
+            // A diagnostic sink must not interrupt surface cleanup.
+        }
+    }
+
     static void HandleUiThreadException(Exception ex)
     {
         StartupDiagnostics.Exception("ui_thread_exception", ex);
@@ -981,6 +1027,37 @@ class Program
         NativeHudOverlay nativeHud = null;
         NativePanelBackdrop backdrop = null;
         PanelHostController panelHost = null;
+        CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
+            playerInfoSurface = null;
+        string playerInfoFixtureRaw = Environment.GetEnvironmentVariable(
+            CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
+                .FixtureCaseEnvironment);
+        string playerInfoFixtureCase = null;
+        if (!string.IsNullOrEmpty(playerInfoFixtureRaw))
+        {
+            if (busOnly)
+            {
+                LogManager.Log(
+                    "[PlayerInfoSplitSurface] fixture request rejected: " +
+                    "bus-only mode is not a visual runtime");
+            }
+            else if (!config.UseNativeHud)
+            {
+                LogManager.Log(
+                    "[PlayerInfoSplitSurface] fixture request rejected: " +
+                    "useNativeHud=false");
+            }
+            else if (!CF7Launcher.Guardian.Hud.PlayerInfo
+                .PlayerInfoSplitSurface.TryResolveFixtureCase(
+                    playerInfoFixtureRaw,
+                    out playerInfoFixtureCase))
+            {
+                playerInfoFixtureCase = null;
+                LogManager.Log(
+                    "[PlayerInfoSplitSurface] fixture request rejected: " +
+                    "case ID is not an exact allowlist member");
+            }
+        }
         if (config.UseNativeHud)
         {
             // Phase 3: 通知 WebOverlay 进入 NativeHud 模式：
@@ -990,12 +1067,58 @@ class Program
             webOverlay.SetUseNativeHud(true);
             nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
             backdrop = new NativePanelBackdrop(form);
+            if (playerInfoFixtureCase != null)
+            {
+                CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
+                    candidateSurface = null;
+                try
+                {
+                    candidateSurface =
+                        CF7Launcher.Guardian.Hud.PlayerInfo
+                            .PlayerInfoSplitSurface.CreateFixture(
+                                form,
+                                form.FlashHostPanel,
+                                playerInfoFixtureCase);
+                    if (hnOverlay != null)
+                    {
+                        candidateSurface.SetZOrderInsertAfter(
+                            hnOverlay.Handle);
+                    }
+                    // Publish the owned surface only after all post-create
+                    // configuration succeeds. The catch path retains and
+                    // drains the local candidate instead of orphaning its HWND.
+                    playerInfoSurface = candidateSurface;
+                    candidateSurface = null;
+                    try
+                    {
+                        LogManager.Log(
+                            "[PlayerInfoSplitSurface] fixture-only surface " +
+                            "enabled; case=" + playerInfoFixtureCase +
+                            "; old Flash HUD remains untouched");
+                    }
+                    catch
+                    {
+                        // Ownership is already published. A diagnostic sink
+                        // must not route the successful surface into the
+                        // candidate-failure cleanup path.
+                    }
+                }
+                catch (Exception ex)
+                {
+                    playerInfoSurface = null;
+                    DrainAndDisposePlayerInfoSurface(candidateSurface);
+                    LogManager.Log(
+                        "[PlayerInfoSplitSurface] fixture creation failed " +
+                        "closed; old Flash HUD remains active: " +
+                        ex.Message);
+                }
+            }
             // flashHwndProvider 在 WebOverlay 构造前已声明（snapshot 路径用），此处复用给 PanelHostController；
             // WebOverlay 自身的焦点回推不走 provider 而走 flashFocusRestorer 统一 primitive。
             // Phase 3: 注入 NotchOverlay/ToastOverlay，让 PanelHost 在 panel open/close 时显式 Suspend/Resume
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
-                notchOverlay, toastOverlay);
+                notchOverlay, toastOverlay, playerInfoSurface);
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -1104,6 +1227,7 @@ class Program
             // P2-3 perf：ULW 首帧预提交（1×1 透明）。让 DWM 把 NativeHud / HitNumber / Cursor
             // 加入合成树 + per-pixel α 路径建立；玩家可见的第一次 commit 不再触发"新 layered window 合成"冷路径。
             try { nativeHud.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[NativeHud] PreCommit failed: " + ex.Message); }
+            try { if (playerInfoSurface != null) playerInfoSurface.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[PlayerInfoSplitSurface] PreCommit failed: " + ex.Message); }
             try { if (hnOverlay != null) hnOverlay.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[HitNumber] PreCommit failed: " + ex.Message); }
             try { if (cursorOverlay != null) cursorOverlay.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[Cursor] PreCommit failed: " + ex.Message); }
 
@@ -1493,6 +1617,7 @@ class Program
             //    后面的 _webView.Dispose() 才不会卡住 200-800ms 销毁 Chromium。
             try { if (inputShield != null) inputShield.ExitTelemetryMode(); } catch (Exception ex) { LogManager.Log("[Guardian] ExitTelemetryMode early failed: " + ex.Message); }
             try { if (webOverlay != null) webOverlay.SuspendAfterPanel("shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] SuspendAfterPanel early failed: " + ex.Message); }
+            try { if (playerInfoSurface != null) playerInfoSurface.BeginShutdown(); } catch (Exception ex) { LogManager.Log("[Guardian] PlayerInfo split shutdown start failed: " + ex.Message); }
             try { lootTask.OnTransportDetached(); lootPanelCoordinator.ForceDetach("host_shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] loot detach early failed: " + ex.GetType().Name); }
             try { lootPanelCoordinator.Dispose(); } catch { }
 
@@ -1503,6 +1628,7 @@ class Program
             HideOverlayForm(webOverlay);
             HideOverlayForm(inputShield);
             HideOverlayForm(nativeHud);
+            HideOverlayForm(playerInfoSurface);
             HideOverlayForm(notchOverlay);
             HideOverlayForm(hnOverlay);
             HideOverlayForm(toastOverlay);
@@ -1579,6 +1705,7 @@ class Program
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
             try { if (panelHost != null) panelHost.Dispose(); } catch { }
+            DrainAndDisposePlayerInfoSurface(playerInfoSurface);
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
@@ -1709,6 +1836,22 @@ class Program
                         nativeHud.SetReady();
                     LogManager.Log("[RevealProbe] setready.native_hud " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
                 }
+                if (playerInfoSurface != null)
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope(
+                        "reveal.setready.player_info_split"))
+                    {
+                        playerInfoSurface.SetReady();
+                    }
+                    LogManager.Log(
+                        "[RevealProbe] setready.player_info_split " +
+                        ((System.Diagnostics.Stopwatch.GetTimestamp() - t) *
+                            1000.0 /
+                            System.Diagnostics.Stopwatch.Frequency)
+                        .ToString("0.0") +
+                        "ms");
+                }
                 // 11b-β: Ready 才让托盘可见
                 {
                     long t = System.Diagnostics.Stopwatch.GetTimestamp();
@@ -1800,6 +1943,7 @@ class Program
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (panelHost != null) panelHost.Dispose(); } catch { }
+        DrainAndDisposePlayerInfoSurface(playerInfoSurface);
         try { if (inputShield != null) inputShield.Dispose(); } catch { }
         try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
         try { if (backdrop != null) backdrop.Dispose(); } catch { }

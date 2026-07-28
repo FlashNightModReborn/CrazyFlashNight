@@ -195,7 +195,19 @@ namespace CF7Launcher.Guardian
         private void OnOwnerActivated()
         {
             if (this.IsDisposed || this.Disposing) return;
+            bool visibilityChanged = !_ownerVisible;
             _ownerVisible = true;
+            if (visibilityChanged)
+            {
+                try
+                {
+                    OnOwnerVisibilityChanged(true);
+                }
+                catch (Exception ex)
+                {
+                    LogVisibilityHookFailure("activate", ex);
+                }
+            }
             if (_shown)
             {
                 IntPtr handle;
@@ -208,12 +220,46 @@ namespace CF7Launcher.Guardian
         private void OnOwnerDeactivated()
         {
             if (this.IsDisposed || this.Disposing) return;
+            bool visibilityChanged = _ownerVisible;
             _ownerVisible = false;
+            if (visibilityChanged)
+            {
+                try
+                {
+                    OnOwnerVisibilityChanged(false);
+                }
+                catch (Exception ex)
+                {
+                    LogVisibilityHookFailure("deactivate", ex);
+                }
+            }
             if (_shown)
                 HideOverlay();
             if (!this.IsDisposed && !this.Disposing)
                 OnOwnerBecameHidden();
         }
+
+        private static void LogVisibilityHookFailure(string transition, Exception ex)
+        {
+            try
+            {
+                LogManager.Log(
+                    "[OverlayBase] owner visibility hook failed during " +
+                    transition + ": " + ex.Message);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Owner visibility transition hook that fires even when this overlay
+        /// has not committed content yet. Most overlays only need the legacy
+        /// BecameVisible/BecameHidden hooks; asynchronous surfaces can use this
+        /// hook to stop hidden work and resume a publish that arrived while the
+        /// owner was inactive.
+        /// </summary>
+        protected virtual void OnOwnerVisibilityChanged(bool ownerVisible) { }
 
         /// <summary>Owner 回到前台时调用。子类可 override 以触发重绘。</summary>
         protected virtual void OnOwnerBecameVisible() { }

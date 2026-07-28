@@ -11,6 +11,7 @@ $utf8NoBom = New-Object Text.UTF8Encoding($false)
 $script:assertions = 0
 $createdThumbprints = New-Object 'System.Collections.Generic.List[string]'
 $originalPath = $env:PATH
+$originalReplayMutationPath = $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH
 
 function Write-Cf7FixtureText {
     param([string]$Path,[string]$Text)
@@ -65,6 +66,52 @@ function Get-Cf7DeploymentSnapshot {
         $rows += "$relative`t$((Get-FileHash -Algorithm SHA256 -LiteralPath $full).Hash)"
     }
     return [string]::Join("`n",$rows)
+}
+
+function Get-Cf7TreeSnapshot {
+    param([string]$Root,[switch]$ExcludeGit,[string[]]$ExcludePath = @())
+    if (-not (Test-Path -LiteralPath $Root -PathType Container)) { return '<missing>' }
+    $rootPath = (Resolve-Path -LiteralPath $Root).Path.TrimEnd('\')
+    $excluded = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($path in $ExcludePath) {
+        $fullPath = if ([IO.Path]::IsPathRooted($path)) {
+            [IO.Path]::GetFullPath($path)
+        } else {
+            [IO.Path]::GetFullPath((Join-Path $rootPath ($path -replace '/','\')))
+        }
+        [void]$excluded.Add($fullPath)
+    }
+    $rows = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($item in @(Get-ChildItem -LiteralPath $rootPath -Force -Recurse | Sort-Object FullName)) {
+        if ($excluded.Contains([IO.Path]::GetFullPath($item.FullName))) { continue }
+        $relative = $item.FullName.Substring($rootPath.Length + 1).Replace('\','/')
+        if ($ExcludeGit -and ($relative -eq '.git' -or $relative.StartsWith('.git/'))) { continue }
+        if ($item.PSIsContainer) {
+            $rows.Add("D`t$relative")
+        } else {
+            $rows.Add("F`t$relative`t$($item.Length)`t$((Get-FileHash -Algorithm SHA256 -LiteralPath $item.FullName).Hash)")
+        }
+    }
+    return [string]::Join("`n",$rows.ToArray())
+}
+
+function Assert-Cf7PreflightReportCanonical {
+    param([string]$Path)
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    Assert-Cf7Fixture -Condition ($bytes.Length -gt 1) -Message 'preflight report is empty'
+    Assert-Cf7Fixture -Condition (-not ($bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB)) -Message 'preflight report has a UTF-8 BOM'
+    Assert-Cf7Fixture -Condition ($bytes[$bytes.Length - 1] -eq 0x0A) -Message 'preflight report lacks a final LF'
+    Assert-Cf7Fixture -Condition (-not ($bytes -contains [byte]0x0D)) -Message 'preflight report contains CR bytes'
+}
+
+function Assert-Cf7TextExcludes {
+    param([string]$Text,[string[]]$Values,[string]$Message)
+    foreach ($value in $Values) {
+        if ([string]::IsNullOrWhiteSpace($value)) { continue }
+        Assert-Cf7Fixture -Condition (
+            $Text.IndexOf($value,[StringComparison]::OrdinalIgnoreCase) -lt 0) `
+            -Message "$Message`: $value"
+    }
 }
 
 function Write-Cf7CandidateManifest {
@@ -161,7 +208,14 @@ function Invoke-Cf7ConsensusProcess {
 
 try {
     New-Item -ItemType Directory -Path $fixtureRoot,$queueRoot,$fakeBin -Force | Out-Null
-    foreach ($directory in @('tools','config\build','runtime')) {
+    foreach ($directory in @(
+        'tools',
+        'config\build',
+        'runtime',
+        'launcher\tests\runtime-preflight-protected-long-tree',
+        'docs\evidence',
+        'tools\player-info-hud\evidence\b0-06'
+    )) {
         New-Item -ItemType Directory -Path (Join-Path $fixtureRoot $directory) -Force | Out-Null
     }
     foreach ($name in @(
@@ -178,9 +232,13 @@ try {
 
     Write-Cf7FixtureText -Path (Join-Path $fakeBin 'gh.cmd') -Text ((@'
 @echo off
+if defined CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH (
+  >"%CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH%" echo replay-window-drift
+)
 echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"verifiedTimestamps":[],"statement":{"predicateType":"https://slsa.dev/provenance/v1"}}}]
 '@) -replace "`r?`n","`r`n")
     $env:PATH = $fakeBin + ';' + $originalPath
+    $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = $null
 
     Write-Cf7FixtureText -Path (Join-Path $fixtureRoot 'source.txt') -Text "source-v1`n"
     Write-Cf7FixtureText -Path (Join-Path $fixtureRoot 'producer.txt') -Text "producer-v1`n"
@@ -192,7 +250,12 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
             artifactSource=[ordered]@{fixedFiles=@('source.txt');trees=@()}
             producerRecipe=[ordered]@{fixedFiles=@('producer.txt');trees=@()}
             toolchainLock=[ordered]@{fixedFiles=@('toolchain.txt');trees=@()}
-            policy=[ordered]@{fixedFiles=@('policy.txt','config/build/runtime-inputs.v2.json','config/build/runtime-builders.v2.json','config/build/runtime-github-builder.v2.json');trees=@()}
+            policy=[ordered]@{
+                fixedFiles=@('policy.txt','config/build/runtime-inputs.v2.json','config/build/runtime-builders.v2.json','config/build/runtime-github-builder.v2.json')
+                trees=@([ordered]@{
+                    path='launcher/tests/runtime-preflight-protected-long-tree';includeExtensions=@('.cs');excludePaths=@();excludePrefixes=@()
+                })
+            }
         }
         payload=[ordered]@{fixedRoots=@('CRAZYFLASHER7MercenaryEmpire.exe');trees=@('runtime');excludePaths=@('runtime/cf7-runtime-manifest.tsv');excludePrefixes=@()}
     }
@@ -261,6 +324,283 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $passedProofs = New-Cf7ProofSet -Name 'pass' -Candidate $passedCandidate -Identity $identity -SourceCommitOid $sourceCommit -RegistryPath $registryPath -Thumbprint $thumbprint
     $promotion = Join-Path $fixtureRoot 'tools\promote-runtime-bundle.ps1'
 
+    $preflightPath = Join-Path $fixtureRoot 'docs\evidence\preflight-pass.json'
+    $preflightRepeatPath = Join-Path $fixtureRoot 'docs\evidence\preflight-pass-repeat.json'
+    $projectBeforePreflight = Get-Cf7TreeSnapshot -Root $fixtureRoot -ExcludeGit
+    $queueBeforePreflight = Get-Cf7TreeSnapshot -Root $queueRoot
+    $candidateBeforePreflight = Get-Cf7TreeSnapshot -Root $passedCandidate.root
+    $deploymentBeforePreflight = Get-Cf7DeploymentSnapshot -Root $fixtureRoot
+    $scratchBeforePreflight = [string]::Join("`n",@(
+        Get-ChildItem -LiteralPath ([IO.Path]::GetTempPath()) -Directory -Filter 'cf7-runtime-github-replay-*' -ErrorAction SilentlyContinue |
+            ForEach-Object { $_.Name } | Sort-Object
+    ))
+    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+        -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+        -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.localPath,$passedProofs.cloudPath) `
+        -VerifyOnly -ReportPath $preflightPath
+    Assert-Cf7Fixture -Condition (Test-Path -LiteralPath $preflightPath -PathType Leaf) -Message 'successful VerifyOnly did not create its report'
+    Assert-Cf7Fixture -Condition (
+        (Get-Cf7TreeSnapshot -Root $fixtureRoot -ExcludeGit -ExcludePath $preflightPath) -ceq
+        $projectBeforePreflight) `
+        -Message 'VerifyOnly mutated the fixture project outside its report'
+    Assert-Cf7Fixture -Condition ((Get-Cf7TreeSnapshot -Root $queueRoot) -ceq $queueBeforePreflight) -Message 'VerifyOnly mutated the request queue'
+    Assert-Cf7Fixture -Condition ((Get-Cf7TreeSnapshot -Root $passedCandidate.root) -ceq $candidateBeforePreflight) -Message 'VerifyOnly mutated the selected candidate'
+    Assert-Cf7Fixture -Condition ((Get-Cf7DeploymentSnapshot -Root $fixtureRoot) -ceq $deploymentBeforePreflight) -Message 'VerifyOnly mutated the live deployment'
+    $scratchAfterPreflight = [string]::Join("`n",@(
+        Get-ChildItem -LiteralPath ([IO.Path]::GetTempPath()) -Directory -Filter 'cf7-runtime-github-replay-*' -ErrorAction SilentlyContinue |
+            ForEach-Object { $_.Name } | Sort-Object
+    ))
+    Assert-Cf7Fixture -Condition ($scratchAfterPreflight -ceq $scratchBeforePreflight) -Message 'VerifyOnly left GitHub replay scratch behind'
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath (Join-Path $fixtureRoot 'tmp\runtime-promotions'))) -Message 'VerifyOnly created a promotion transaction root'
+
+    Assert-Cf7PreflightReportCanonical -Path $preflightPath
+    $preflightBytes = [IO.File]::ReadAllBytes($preflightPath)
+    $preflightText = [Text.Encoding]::UTF8.GetString($preflightBytes)
+    $preflight = $preflightText | ConvertFrom-Json
+    Assert-Cf7Fixture -Condition ([string]$preflight.schema -ceq 'cf7-runtime-promotion-preflight.v2') -Message 'preflight report schema is not v2'
+    Assert-Cf7Fixture -Condition ([string]$preflight.status -ceq 'preflight-passed') -Message 'preflight report status is not preflight-passed'
+    Assert-Cf7Fixture -Condition ([string]$preflight.scope -ceq 'promotion-preflight') -Message 'preflight report scope is not promotion-preflight'
+    Assert-Cf7Fixture -Condition ($preflight.runtimeMutationPerformed -eq $false) -Message 'preflight report claims a runtime mutation'
+    Assert-Cf7Fixture -Condition ($preflight.releaseStateMutationPerformed -eq $false) -Message 'preflight report claims a release-state mutation'
+    Assert-Cf7Fixture -Condition ($preflight.reportCreated -eq $true) -Message 'preflight report does not disclose its own CreateNew write'
+    Assert-Cf7Fixture -Condition ($preflight.promotionPerformed -eq $false) -Message 'preflight report claims promotion'
+    Assert-Cf7Fixture -Condition ($preflight.deploymentPerformed -eq $false) -Message 'preflight report claims deployment'
+    Assert-Cf7Fixture -Condition ($preflight.reusableAsPromotionInput -eq $false) -Message 'preflight report claims it is reusable as promotion input'
+    Assert-Cf7Fixture -Condition (@($preflight.limitations) -contains 'This report is not a promotion input.') -Message 'preflight report lacks the promotion-input disclaimer'
+    Assert-Cf7Fixture -Condition (@($preflight.limitations) -contains 'No promotion or deployment was performed.') -Message 'preflight report lacks the no-deployment disclaimer'
+    Assert-Cf7Fixture -Condition ([string]$preflight.request.requestId -ceq $requestId) -Message 'preflight report requestId mismatch'
+    Assert-Cf7Fixture -Condition ([string]$preflight.request.releaseTreeOid -ceq $releaseTree) -Message 'preflight report releaseTreeOid mismatch'
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+        Assert-Cf7Fixture -Condition (
+            ([string]$preflight.request.$field).ToUpperInvariant() -ceq ([string]$identity.$field).ToUpperInvariant()) `
+            -Message "preflight report identity mismatch: $field"
+    }
+    Assert-Cf7Fixture -Condition (
+        ([string]$preflight.candidate.payloadClosureHash).ToUpperInvariant() -ceq
+        ([string]$passedCandidate.closure.payloadClosureHash).ToUpperInvariant()) `
+        -Message 'preflight report payload closure mismatch'
+    $passedManifestHash = (Get-FileHash -Algorithm SHA256 -LiteralPath (
+        Join-Path $passedCandidate.root 'runtime\cf7-runtime-manifest.tsv')).Hash.ToUpperInvariant()
+    Assert-Cf7Fixture -Condition (
+        ([string]$preflight.candidate.manifestSha256).ToUpperInvariant() -ceq $passedManifestHash) `
+        -Message 'preflight report manifest hash mismatch'
+    Assert-Cf7Fixture -Condition (
+        ([string]$preflight.policy.receiptSha256).ToUpperInvariant() -ceq
+        (Get-Cf7BytesSha256 -Bytes ([IO.File]::ReadAllBytes($passedReceipt)))) `
+        -Message 'preflight report policy receipt hash mismatch'
+    Assert-Cf7Fixture -Condition ([int]$preflight.candidate.fileCount -eq @($preflight.candidate.files).Count) -Message 'preflight report fileCount mismatch'
+    Assert-Cf7Fixture -Condition ([string]$preflight.consensus.schema -ceq 'cf7-runtime-build-consensus-result.v2') -Message 'preflight report consensus schema mismatch'
+    Assert-Cf7Fixture -Condition ([int]$preflight.consensus.minimumConsensus -eq 2) -Message 'preflight report minimum consensus mismatch'
+    Assert-Cf7Fixture -Condition ([int]$preflight.consensus.proofCount -eq 2) -Message 'preflight report did not deterministically deduplicate proofs'
+    Assert-Cf7Fixture -Condition (@($preflight.consensus.proofs).Count -eq 2) -Message 'preflight report proof summary count mismatch'
+    $proofSignerIdentities = [string[]]@($preflight.consensus.proofs | ForEach-Object { [string]$_.signerIdentity })
+    $proofFaultDomains = [string[]]@($preflight.consensus.proofs | ForEach-Object { [string]$_.faultDomain })
+    $sortedProofSignerIdentities = [string[]]$proofSignerIdentities.Clone()
+    $sortedProofFaultDomains = [string[]]$proofFaultDomains.Clone()
+    [Array]::Sort($sortedProofSignerIdentities,[StringComparer]::Ordinal)
+    [Array]::Sort($sortedProofFaultDomains,[StringComparer]::Ordinal)
+    Assert-Cf7Fixture -Condition (
+        [string]::Join("`n",@($preflight.consensus.signerIdentities)) -ceq
+        [string]::Join("`n",$sortedProofSignerIdentities)) `
+        -Message 'preflight report signerIdentities do not match the sorted proof set'
+    Assert-Cf7Fixture -Condition (
+        [string]::Join("`n",@($preflight.consensus.faultDomains)) -ceq
+        [string]::Join("`n",$sortedProofFaultDomains)) `
+        -Message 'preflight report faultDomains do not match the sorted proof set'
+    Assert-Cf7Fixture -Condition ($sortedProofSignerIdentities.Count -eq 2 -and $sortedProofSignerIdentities[0] -cne $sortedProofSignerIdentities[1]) -Message 'preflight report lacks two signer identities'
+    Assert-Cf7Fixture -Condition ($sortedProofFaultDomains.Count -eq 2 -and $sortedProofFaultDomains[0] -cne $sortedProofFaultDomains[1]) -Message 'preflight report lacks two fault domains'
+    Assert-Cf7TextExcludes -Text $preflightText -Values @(
+        $testRoot,$fixtureRoot,$queueRoot,$failedCandidate.root,$passedCandidate.root,$fakeBin,
+        $ProjectRoot,[Environment]::UserName,[Environment]::MachineName
+    ) -Message 'preflight report leaked local path or machine identity'
+    Assert-Cf7Fixture -Condition ($preflightText -notmatch '(?i)"[^"]*(AtUtc|timestamp)[^"]*"\s*:') -Message 'preflight report contains a timestamp field'
+    Assert-Cf7Fixture -Condition ($preflightText -notmatch '\d{4}-\d{2}-\d{2}T\d{2}:') -Message 'preflight report contains an ISO timestamp value'
+
+    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+        -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+        -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.localPath,$passedProofs.cloudPath) `
+        -VerifyOnly -ReportPath $preflightRepeatPath
+    Assert-Cf7PreflightReportCanonical -Path $preflightRepeatPath
+    Assert-Cf7Fixture -Condition (
+        [Convert]::ToBase64String([IO.File]::ReadAllBytes($preflightRepeatPath)) -ceq
+        [Convert]::ToBase64String($preflightBytes)) `
+        -Message 'identical VerifyOnly inputs did not produce byte-stable reports'
+
+    $preflightEvidencePath = Join-Path $fixtureRoot 'tools\player-info-hud\evidence\b0-06\runtime-promotion-preflight.json'
+    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+        -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+        -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.localPath,$passedProofs.cloudPath) `
+        -VerifyOnly -ReportPath $preflightEvidencePath
+    Assert-Cf7Fixture -Condition (
+        [Convert]::ToBase64String([IO.File]::ReadAllBytes($preflightEvidencePath)) -ceq
+        [Convert]::ToBase64String($preflightBytes)) `
+        -Message 'tracked-evidence ReportPath changed byte-stable report content'
+    $docsEvidencePath = Join-Path $fixtureRoot 'docs\evidence\runtime-promotion-preflight.json'
+    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+        -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+        -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.localPath,$passedProofs.cloudPath) `
+        -VerifyOnly -ReportPath $docsEvidencePath
+    Assert-Cf7Fixture -Condition (
+        [Convert]::ToBase64String([IO.File]::ReadAllBytes($docsEvidencePath)) -ceq
+        [Convert]::ToBase64String($preflightBytes)) `
+        -Message 'docs evidence ReportPath changed byte-stable report content'
+
+    $outsideReportPath = Join-Path $testRoot 'preflight-outside-project.json'
+    Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted a ReportPath outside ProjectRoot' -Action {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+            -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+            -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+            -VerifyOnly -ReportPath $outsideReportPath
+    }
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $outsideReportPath)) -Message 'outside-project report path was created'
+
+    $preexistingReportBytes = [IO.File]::ReadAllBytes($preflightPath)
+    Expect-Cf7FixtureFailure -Message 'VerifyOnly overwrote a pre-existing report' -Action {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+            -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+            -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+            -VerifyOnly -ReportPath $preflightPath
+    }
+    Assert-Cf7Fixture -Condition (
+        [Convert]::ToBase64String([IO.File]::ReadAllBytes($preflightPath)) -ceq
+        [Convert]::ToBase64String($preexistingReportBytes)) `
+        -Message 'pre-existing report bytes changed after CreateNew rejection'
+
+    foreach ($protectedReportPath in @(
+        (Join-Path $fixtureRoot 'config\build\preflight-protected.json'),
+        (Join-Path $fixtureRoot 'launcher\tests\runtime-preflight-protected-long-tree\preflight-protected.txt'),
+        (Join-Path $fixtureRoot 'runtime\preflight-protected.json'),
+        (Join-Path $queueRoot 'preflight-protected.json'),
+        (Join-Path $passedCandidate.root 'preflight-protected.json')
+    )) {
+        Expect-Cf7FixtureFailure -Message "VerifyOnly wrote a protected report path: $protectedReportPath" -Action {
+            & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+                -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+                -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+                -VerifyOnly -ReportPath $protectedReportPath
+        }
+        Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $protectedReportPath)) -Message "protected report path was created: $protectedReportPath"
+    }
+    $longProtectedTree = Join-Path $fixtureRoot 'launcher\tests\runtime-preflight-protected-long-tree'
+    $shortTreeOutput = @(& cmd.exe /d /c ('for %I in ("{0}") do @echo %~sI' -f $longProtectedTree) 2>$null)
+    $shortTreePath = [string]@($shortTreeOutput | Select-Object -Last 1)
+    $shortTreeLeaf = [IO.Path]::GetFileName($shortTreePath.Trim())
+    if (-not [string]::IsNullOrWhiteSpace($shortTreeLeaf) -and
+            -not $shortTreeLeaf.Equals([IO.Path]::GetFileName($longProtectedTree),[StringComparison]::OrdinalIgnoreCase)) {
+        $shortAliasReport = Join-Path (Join-Path (Split-Path -Parent $longProtectedTree) $shortTreeLeaf) 'preflight-short-alias.txt'
+        $longAliasTarget = Join-Path $longProtectedTree 'preflight-short-alias.txt'
+        Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted a ReportPath through an 8.3 short-path ancestor' -Action {
+            & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+                -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+                -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+                -VerifyOnly -ReportPath $shortAliasReport
+        }
+        Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $longAliasTarget)) -Message '8.3 alias created a report inside a protected input tree'
+    }
+    $junctionPath = Join-Path $fixtureRoot 'docs\evidence\runtime-junction'
+    $junctionTargetReport = Join-Path $fixtureRoot 'runtime\preflight-through-junction.json'
+    try {
+        New-Item -ItemType Junction -Path $junctionPath -Target (Join-Path $fixtureRoot 'runtime') | Out-Null
+        $junctionReportPath = Join-Path $junctionPath 'preflight-through-junction.json'
+        Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted a ReportPath through a junction ancestor' -Action {
+            & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+                -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+                -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+                -VerifyOnly -ReportPath $junctionReportPath
+        }
+        Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $junctionTargetReport)) -Message 'junction alias created a report inside runtime'
+    } finally {
+        if (Test-Path -LiteralPath $junctionPath) { [IO.Directory]::Delete($junctionPath) }
+    }
+
+    $deploymentBeforeReplayDrift = Get-Cf7DeploymentSnapshot -Root $fixtureRoot
+    $replayDriftCases = @(
+        [pscustomobject]@{
+            name='worktree identity'
+            path=(Join-Path $fixtureRoot 'source.txt')
+            report=(Join-Path $fixtureRoot 'docs\evidence\preflight-replay-source-drift.json')
+        },
+        [pscustomobject]@{
+            name='candidate closure'
+            path=(Join-Path $passedCandidate.root 'runtime\core.dll')
+            report=(Join-Path $fixtureRoot 'docs\evidence\preflight-replay-candidate-drift.json')
+        },
+        [pscustomobject]@{
+            name='request record'
+            path=(Join-Path $requestDirectory 'request.json')
+            report=(Join-Path $fixtureRoot 'docs\evidence\preflight-replay-request-drift.json')
+        },
+        [pscustomobject]@{
+            name='policy receipt'
+            path=$passedReceipt
+            report=(Join-Path $fixtureRoot 'docs\evidence\preflight-replay-receipt-drift.json')
+        },
+        [pscustomobject]@{
+            name='builder registry'
+            path=$registryPath
+            report=(Join-Path $fixtureRoot 'docs\evidence\preflight-replay-registry-drift.json')
+        },
+        [pscustomobject]@{
+            name='external proof'
+            path=$passedProofs.localPath
+            report=(Join-Path $fixtureRoot 'docs\evidence\preflight-replay-proof-drift.json')
+        }
+    )
+    foreach ($driftCase in $replayDriftCases) {
+        $originalDriftBytes = [IO.File]::ReadAllBytes([string]$driftCase.path)
+        try {
+            $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = [string]$driftCase.path
+            Expect-Cf7FixtureFailure -Message "VerifyOnly accepted replay-window drift: $($driftCase.name)" -Action {
+                & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+                    -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+                    -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+                    -VerifyOnly -ReportPath ([string]$driftCase.report)
+            }
+        } finally {
+            $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = $null
+            [IO.File]::WriteAllBytes([string]$driftCase.path,$originalDriftBytes)
+        }
+        Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath ([string]$driftCase.report))) `
+            -Message "replay-window drift left a report: $($driftCase.name)"
+        Assert-Cf7Fixture -Condition (
+            [Convert]::ToBase64String([IO.File]::ReadAllBytes([string]$driftCase.path)) -ceq
+            [Convert]::ToBase64String($originalDriftBytes)) `
+            -Message "replay-window drift fixture was not restored: $($driftCase.name)"
+    }
+    Assert-Cf7Fixture -Condition (
+        (Get-Cf7DeploymentSnapshot -Root $fixtureRoot) -ceq $deploymentBeforeReplayDrift) `
+        -Message 'replay-window drift tests mutated deployment'
+    $liveReplayDriftPath = Join-Path $fixtureRoot 'runtime\preflight-replay-live-drift.tmp'
+    $liveReplayDriftReport = Join-Path $fixtureRoot 'docs\evidence\preflight-replay-live-drift.json'
+    try {
+        $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = $liveReplayDriftPath
+        Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted replay-window live deployment drift' -Action {
+            & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+                -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+                -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+                -VerifyOnly -ReportPath $liveReplayDriftReport
+        }
+    } finally {
+        $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = $null
+        if (Test-Path -LiteralPath $liveReplayDriftPath) { Remove-Item -LiteralPath $liveReplayDriftPath -Force }
+    }
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $liveReplayDriftReport)) -Message 'live replay-window drift left a report'
+    Assert-Cf7Fixture -Condition (
+        (Get-Cf7DeploymentSnapshot -Root $fixtureRoot) -ceq $deploymentBeforeReplayDrift) `
+        -Message 'live replay-window drift fixture was not restored'
+
+    $crossCandidateReport = Join-Path $fixtureRoot 'docs\evidence\preflight-cross-candidate.json'
+    $deploymentBeforeCrossCandidate = Get-Cf7DeploymentSnapshot -Root $fixtureRoot
+    Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted a receipt bound to another candidate path' -Action {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+            -PolicyReceiptPath $failedReceipt -CandidateRoot $passedCandidate.root `
+            -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+            -VerifyOnly -ReportPath $crossCandidateReport
+    }
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $crossCandidateReport)) -Message 'cross-candidate VerifyOnly failure left a report'
+    Assert-Cf7Fixture -Condition (
+        (Get-Cf7DeploymentSnapshot -Root $fixtureRoot) -ceq $deploymentBeforeCrossCandidate) `
+        -Message 'cross-candidate VerifyOnly failure mutated deployment'
     Expect-Cf7FixtureFailure -Message 'promotion accepted a receipt bound to another candidate path' -Action {
         & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
             -PolicyReceiptPath $failedReceipt -CandidateRoot $passedCandidate.root `
@@ -270,11 +610,55 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $staleReceiptObject.candidateRoot = [IO.Path]::GetFullPath($passedCandidate.root)
     $staleReceiptPath = Join-Path $testRoot 'receipt-stale-same-path.json'
     Write-Cf7FixtureJson -Path $staleReceiptPath -Value $staleReceiptObject
+    $staleReceiptReport = Join-Path $fixtureRoot 'docs\evidence\preflight-stale-receipt.json'
+    Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted candidate bytes replaced after policy validation at the same path' -Action {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+            -PolicyReceiptPath $staleReceiptPath -CandidateRoot $passedCandidate.root `
+            -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+            -VerifyOnly -ReportPath $staleReceiptReport
+    }
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $staleReceiptReport)) -Message 'stale-receipt VerifyOnly failure left a report'
     Expect-Cf7FixtureFailure -Message 'promotion accepted candidate bytes replaced after policy validation at the same path' -Action {
         & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
             -PolicyReceiptPath $staleReceiptPath -CandidateRoot $passedCandidate.root `
             -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath)
     }
+
+    $proofMismatchReport = Join-Path $fixtureRoot 'docs\evidence\preflight-proof-mismatch.json'
+    Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted producer proofs for another payload closure' -Action {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+            -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+            -ExternalAttestationPath @($failedProofs.localPath,$failedProofs.cloudPath) `
+            -VerifyOnly -ReportPath $proofMismatchReport
+    }
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $proofMismatchReport)) -Message 'proof-mismatch VerifyOnly failure left a report'
+
+    $sourcePath = Join-Path $fixtureRoot 'source.txt'
+    $sourceOriginalBytes = [IO.File]::ReadAllBytes($sourcePath)
+    $requestDriftReport = Join-Path $fixtureRoot 'docs\evidence\preflight-request-drift.json'
+    try {
+        Write-Cf7FixtureText -Path $sourcePath -Text "worktree-request-drift`n"
+        Expect-Cf7FixtureFailure -Message 'VerifyOnly accepted worktree/request identity drift' -Action {
+            & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+                -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
+                -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) `
+                -VerifyOnly -ReportPath $requestDriftReport
+        }
+    } finally {
+        [IO.File]::WriteAllBytes($sourcePath,$sourceOriginalBytes)
+    }
+    Assert-Cf7Fixture -Condition (-not (Test-Path -LiteralPath $requestDriftReport)) -Message 'request-drift VerifyOnly failure left a report'
+
+    $failedBootstrapPreflightPath = Join-Path $fixtureRoot 'docs\evidence\preflight-failed-bootstrap.json'
+    $beforeFailedBootstrapPreflight = Get-Cf7DeploymentSnapshot -Root $fixtureRoot
+    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
+        -PolicyReceiptPath $failedReceipt -CandidateRoot $failedCandidate.root `
+        -ExternalAttestationPath @($failedProofs.localPath,$failedProofs.cloudPath) `
+        -VerifyOnly -ReportPath $failedBootstrapPreflightPath
+    Assert-Cf7Fixture -Condition (Test-Path -LiteralPath $failedBootstrapPreflightPath -PathType Leaf) -Message 'VerifyOnly executed or rejected the formal bootstrap verification phase'
+    Assert-Cf7Fixture -Condition (
+        (Get-Cf7DeploymentSnapshot -Root $fixtureRoot) -ceq $beforeFailedBootstrapPreflight) `
+        -Message 'failed-bootstrap VerifyOnly mutated deployment'
 
     $beforeRollback = Get-Cf7DeploymentSnapshot -Root $fixtureRoot
     Expect-Cf7FixtureFailure -Message 'failing promoted bootstrap did not trigger rollback' -Action {
@@ -295,6 +679,55 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Fixture -Condition (@($record.attestations).Count -eq 2) -Message 'duplicate local proof was not deterministically deduplicated'
     Assert-Cf7Fixture -Condition (@($record.attestations | Where-Object { $_.schema -eq 'cf7-runtime-build-attestation.v2' }).Count -eq 1) -Message 'release record lacks exactly one X509 proof'
     Assert-Cf7Fixture -Condition (@($record.attestations | Where-Object { $_.schema -eq 'cf7-runtime-github-build-attestation.v2' }).Count -eq 1) -Message 'release record lacks exactly one GitHub proof'
+    Assert-Cf7Fixture -Condition ([string]$record.requestId -ceq [string]$preflight.request.requestId) -Message 'preflight/real-promotion requestId parity failed'
+    Assert-Cf7Fixture -Condition ([string]$record.releaseTreeOid -ceq [string]$preflight.request.releaseTreeOid) -Message 'preflight/real-promotion releaseTreeOid parity failed'
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+        Assert-Cf7Fixture -Condition (
+            ([string]$record.$field).ToUpperInvariant() -ceq
+            ([string]$preflight.request.$field).ToUpperInvariant()) `
+            -Message "preflight/real-promotion identity parity failed: $field"
+    }
+    Assert-Cf7Fixture -Condition (
+        ([string]$record.payloadClosureHash).ToUpperInvariant() -ceq
+        ([string]$preflight.candidate.payloadClosureHash).ToUpperInvariant()) `
+        -Message 'preflight/real-promotion payload closure parity failed'
+    Assert-Cf7Fixture -Condition (
+        ([string]$record.manifestSha256).ToUpperInvariant() -ceq
+        ([string]$preflight.candidate.manifestSha256).ToUpperInvariant()) `
+        -Message 'preflight/real-promotion manifest parity failed'
+    Assert-Cf7Fixture -Condition (
+        ([string]$record.policyReceiptSha256).ToUpperInvariant() -ceq
+        ([string]$preflight.policy.receiptSha256).ToUpperInvariant()) `
+        -Message 'preflight/real-promotion policy receipt parity failed'
+    $recordProofSummaries = @(
+        foreach ($proof in @($record.attestations)) {
+            $isX509 = [string]$proof.schema -eq 'cf7-runtime-build-attestation.v2'
+            [pscustomobject][ordered]@{
+                schema = [string]$proof.schema
+                kind = if ($isX509) { 'x509' } else { 'github-oidc' }
+                signerIdentity = if ($isX509) {
+                    'x509:' + ([string]$proof.payload.builderKeyId).ToUpperInvariant()
+                } else {
+                    'github-oidc:' + ([string]$proof.payload.builderIdentityHash).ToUpperInvariant()
+                }
+                faultDomain = [string]$proof.payload.faultDomain
+                canonicalPayloadSha256 = if ($isX509) {
+                    ([string]$proof.signature.canonicalPayloadSha256).ToUpperInvariant()
+                } else {
+                    ([string]$proof.canonicalPayloadSha256).ToUpperInvariant()
+                }
+            }
+        }
+    )
+    Assert-Cf7Fixture -Condition ($recordProofSummaries.Count -eq @($preflight.consensus.proofs).Count) -Message 'preflight/real-promotion proof count parity failed'
+    for ($proofIndex = 0; $proofIndex -lt $recordProofSummaries.Count; $proofIndex++) {
+        foreach ($field in @('schema','kind','signerIdentity','faultDomain','canonicalPayloadSha256')) {
+            Assert-Cf7Fixture -Condition (
+                [string]$recordProofSummaries[$proofIndex].$field -ceq
+                [string]$preflight.consensus.proofs[$proofIndex].$field) `
+                -Message "preflight/real-promotion proof parity failed: index=$proofIndex field=$field"
+        }
+    }
     $verified = Invoke-Cf7ConsensusProcess
     Assert-Cf7Fixture -Condition ($verified.exitCode -eq 0) -Message "fresh mixed consensus record failed: $($verified.output)"
 
@@ -357,6 +790,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Write-Host "[RuntimeReleaseConsensusV2Test] PASS assertions=$script:assertions" -ForegroundColor Green
 } finally {
     $env:PATH = $originalPath
+    $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = $originalReplayMutationPath
     foreach ($thumbprint in $createdThumbprints) {
         $certificatePath = "Cert:\CurrentUser\My\$thumbprint"
         if (Test-Path -LiteralPath $certificatePath) { Remove-Item -LiteralPath $certificatePath -Force }

@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
@@ -49,8 +51,32 @@ internal static class PlayerInfoSvgAssetCatalog
         ArgumentNullException.ThrowIfNull(assembly);
         ValidateNoRepoOnlyResources(assembly);
         ValidateExactResourceSet(assembly);
+        return LoadFromResourceReader(name => ReadResource(assembly, name));
+    }
 
-        var manifestBytes = ReadResource(assembly, ManifestResourceName);
+    internal static PlayerInfoSvgAssetSet LoadFromResources(
+        IReadOnlyDictionary<string, byte[]> resources)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+        ValidateNoRepoOnlyResourceNames(resources.Keys);
+        ValidateExactResourceNames(resources.Keys);
+        return LoadFromResourceReader(name =>
+        {
+            if (!resources.TryGetValue(name, out var bytes) ||
+                bytes is null ||
+                bytes.Length is <= 0 or > MaxEmbeddedResourceBytes)
+            {
+                throw new InvalidDataException(
+                    $"PlayerInfo resource has an invalid byte length: {name}.");
+            }
+            return bytes;
+        });
+    }
+
+    private static PlayerInfoSvgAssetSet LoadFromResourceReader(
+        Func<string, byte[]> readResource)
+    {
+        var manifestBytes = readResource(ManifestResourceName);
         _ = StrictUtf8.GetString(manifestBytes);
         using var document = JsonDocument.Parse(manifestBytes, new JsonDocumentOptions
         {
@@ -61,10 +87,30 @@ internal static class PlayerInfoSvgAssetCatalog
         EnsureNoDuplicateProperties(document.RootElement, "$");
 
         var root = RequireObject(document.RootElement, "$");
+        RequireExactProperties(
+            root,
+            "$",
+            "format",
+            "schemaVersion",
+            "assetSet",
+            "units",
+            "stage",
+            "rendererContract",
+            "assets",
+            "gauges",
+            "effectPolicy");
         RequireString(root, "format", "$", ExpectedFormat);
         RequireInt32(root, "schemaVersion", "$", 1);
 
         var assetSet = RequireObjectProperty(root, "assetSet", "$");
+        RequireExactProperties(
+            assetSet,
+            "$.assetSet",
+            "id",
+            "revision",
+            "revisionAlgorithm",
+            "rasterContractVersion",
+            "runtimeCacheIdentityComponents");
         var assetSetId = RequireString(assetSet, "id", "$.assetSet", ExpectedAssetSetId);
         var revision = RequireString(assetSet, "revision", "$.assetSet");
         RequireString(
@@ -77,8 +123,30 @@ internal static class PlayerInfoSvgAssetCatalog
             "rasterContractVersion",
             "$.assetSet",
             1);
+        var runtimeCacheIdentityComponents = RequireExactStringArray(
+            assetSet,
+            "runtimeCacheIdentityComponents",
+            "$.assetSet",
+            "assetSet.revision",
+            "exact-manifest-sha256");
+
+        var unitsObject = RequireObjectProperty(root, "units", "$");
+        RequireExactProperties(
+            unitsObject,
+            "$.units",
+            "svgUnit",
+            "sourceTwipsPerSvgUnit");
+        var units = new PlayerInfoSvgUnits(
+            RequireString(unitsObject, "svgUnit", "$.units", "logical-pixel"),
+            RequireInt32(unitsObject, "sourceTwipsPerSvgUnit", "$.units", 20));
 
         var stageObject = RequireObjectProperty(root, "stage", "$");
+        RequireExactProperties(
+            stageObject,
+            "$.stage",
+            "logicalWidth",
+            "logicalHeight",
+            "compositeOrder");
         var stage = new PlayerInfoSvgStage(
             RequirePositiveInt32(stageObject, "logicalWidth", "$.stage", 1024),
             RequirePositiveInt32(stageObject, "logicalHeight", "$.stage", 64),
@@ -92,6 +160,18 @@ internal static class PlayerInfoSvgAssetCatalog
         }
 
         var renderer = RequireObjectProperty(root, "rendererContract", "$");
+        RequireExactProperties(
+            renderer,
+            "$.rendererContract",
+            "package",
+            "version",
+            "skiaSharpVersion",
+            "featureSet",
+            "colorType",
+            "alphaType",
+            "externalResources",
+            "scripts",
+            "runtimeTextElements");
         var rendererPackage = RequireString(
             renderer,
             "package",
@@ -150,6 +230,19 @@ internal static class PlayerInfoSvgAssetCatalog
         {
             var path = $"$.assets[{index}]";
             var assetObject = RequireObject(element, path);
+            RequireExactProperties(
+                assetObject,
+                path,
+                "id",
+                "path",
+                "sha256",
+                "viewBox",
+                "sourceGeometryBounds",
+                "registration",
+                "gaugeLayerOrder",
+                "blendMode",
+                "opacity",
+                "cacheable");
             var expected = ExpectedAssets[index];
             RequireString(assetObject, "id", path, expected.Id);
             RequireString(assetObject, "path", path, expected.RelativePath);
@@ -183,7 +276,7 @@ internal static class PlayerInfoSvgAssetCatalog
             }
             var cacheable = RequireBoolean(assetObject, "cacheable", path, true);
 
-            var bytes = ReadResource(assembly, expected.ResourceName);
+            var bytes = readResource(expected.ResourceName);
             var actualHash = Sha256Lower(bytes);
             if (!string.Equals(manifestHash, actualHash, StringComparison.Ordinal))
             {
@@ -208,6 +301,7 @@ internal static class PlayerInfoSvgAssetCatalog
         }
 
         var gauges = LoadGauges(root, stage, loadedAssets);
+        var effectPolicy = LoadEffectPolicy(root, loadedAssets);
         var computedRevision = ComputeAssetSetRevision(loadedAssets);
         var expectedRevision = "sha256:" + computedRevision;
         if (!string.Equals(revision, expectedRevision, StringComparison.Ordinal))
@@ -222,9 +316,12 @@ internal static class PlayerInfoSvgAssetCatalog
             Sha256Lower(manifestBytes),
             rasterContractVersion,
             featureSet,
+            runtimeCacheIdentityComponents,
             rendererIdentity,
+            units,
             stage,
             gauges,
+            effectPolicy,
             manifestBytes,
             loadedAssets);
     }
@@ -235,6 +332,7 @@ internal static class PlayerInfoSvgAssetCatalog
         IReadOnlyList<PlayerInfoSvgAsset> assets)
     {
         var gaugesObject = RequireObjectProperty(root, "gauges", "$");
+        RequireExactProperties(gaugesObject, "$.gauges", "hp", "mp");
         var knownAssetIds = assets
             .Select(asset => asset.Id)
             .ToHashSet(StringComparer.Ordinal);
@@ -245,28 +343,25 @@ internal static class PlayerInfoSvgAssetCatalog
         {
             if (!gauges.TryAdd(
                     gaugeId,
-                    LoadGauge(
-                        RequireObjectProperty(gaugesObject, gaugeId, "$.gauges"),
-                        "$.gauges." + gaugeId,
-                        gaugeId,
-                        knownAssetIds,
-                        assignedAssetIds)))
+                    gaugeId switch
+                    {
+                        "hp" => LoadHpGauge(
+                            RequireObjectProperty(gaugesObject, gaugeId, "$.gauges"),
+                            knownAssetIds,
+                            assignedAssetIds,
+                            assets),
+                        "mp" => LoadMpGauge(
+                            RequireObjectProperty(gaugesObject, gaugeId, "$.gauges"),
+                            knownAssetIds,
+                            assignedAssetIds,
+                            assets),
+                        _ => throw new InvalidDataException(
+                            $"Unsupported PlayerInfo gauge '{gaugeId}'.")
+                    }))
             {
                 throw new InvalidDataException(
                     $"$.stage.compositeOrder contains duplicate gauge '{gaugeId}'.");
             }
-        }
-
-        var unexpectedGauges = gaugesObject.EnumerateObject()
-            .Select(property => property.Name)
-            .Except(gauges.Keys, StringComparer.Ordinal)
-            .OrderBy(name => name, StringComparer.Ordinal)
-            .ToArray();
-        if (unexpectedGauges.Length != 0)
-        {
-            throw new InvalidDataException(
-                "$.gauges contains entries outside stage.compositeOrder: " +
-                string.Join(",", unexpectedGauges) + ".");
         }
 
         var unassigned = knownAssetIds
@@ -283,35 +378,337 @@ internal static class PlayerInfoSvgAssetCatalog
         return gauges;
     }
 
-    private static PlayerInfoSvgGauge LoadGauge(
-        JsonElement gaugeObject,
+    private static PlayerInfoSvgGauge LoadHpGauge(
+        JsonElement gauge,
+        IReadOnlySet<string> knownAssetIds,
+        ISet<string> assignedAssetIds,
+        IReadOnlyList<PlayerInfoSvgAsset> assets)
+    {
+        const string path = "$.gauges.hp";
+        RequireExactProperties(
+            gauge,
+            path,
+            "assetIds",
+            "stageMatrix",
+            "frameMap",
+            "clip",
+            "fillTextureRotation");
+        var directAssetIds = RequireExactStringArray(
+            gauge,
+            "assetIds",
+            path,
+            "hp.backplate",
+            "hp.fill",
+            "hp.rim");
+        var assetIds = RegisterGaugeAssets(
+            path,
+            directAssetIds,
+            [],
+            knownAssetIds,
+            assignedAssetIds);
+
+        var stageMatrix = RequireMatrixArray(gauge, "stageMatrix", path);
+        var expectedMatrix = new PlayerInfoSvgMatrix(
+            0.847213745117188,
+            0,
+            0,
+            0.847213745117188,
+            37.75,
+            5.65);
+        if (stageMatrix != expectedMatrix)
+        {
+            throw new InvalidDataException($"{path}.stageMatrix drifted.");
+        }
+
+        var frameMapObject = RequireObjectProperty(gauge, "frameMap", path);
+        RequireExactProperties(
+            frameMapObject,
+            path + ".frameMap",
+            "stepCount",
+            "virtualFrameCount",
+            "fullVirtualFrame",
+            "emptyVirtualFrame",
+            "reverse",
+            "rounding");
+        var frameMap = new PlayerInfoFrameMap(
+            RequireInt32(frameMapObject, "stepCount", path + ".frameMap", 128),
+            RequireInt32(frameMapObject, "virtualFrameCount", path + ".frameMap", 129),
+            RequireInt32(frameMapObject, "fullVirtualFrame", path + ".frameMap", 1),
+            RequireInt32(frameMapObject, "emptyVirtualFrame", path + ".frameMap", 129),
+            SourceFrameOffset: null,
+            RequireBoolean(frameMapObject, "reverse", path + ".frameMap", true),
+            RequireString(frameMapObject, "rounding", path + ".frameMap", "floor"));
+        ValidateFrameMap(frameMap, path + ".frameMap");
+
+        var clipObject = RequireObjectProperty(gauge, "clip", path);
+        RequireExactProperties(
+            clipObject,
+            path + ".clip",
+            "type",
+            "center",
+            "radius",
+            "startAngleDegrees",
+            "direction");
+        var clip = new PlayerInfoRadialClip(
+            RequireString(clipObject, "type", path + ".clip", "radial-sector"),
+            RequireExactPointArray(clipObject, "center", path + ".clip", 0, 0),
+            RequireExactFiniteDouble(clipObject, "radius", path + ".clip", 128),
+            RequireExactFiniteDouble(
+                clipObject,
+                "startAngleDegrees",
+                path + ".clip",
+                -90),
+            RequireString(
+                clipObject,
+                "direction",
+                path + ".clip",
+                "counterclockwise"));
+
+        var rotationObject = RequireObjectProperty(
+            gauge,
+            "fillTextureRotation",
+            path);
+        RequireExactProperties(
+            rotationObject,
+            path + ".fillTextureRotation",
+            "assetId",
+            "svgGradientIds",
+            "pivot",
+            "sourceFrameOffset",
+            "degreesPerSourceFrame",
+            "positiveDirection");
+        var rotation = new PlayerInfoFillTextureRotation(
+            RequireString(
+                rotationObject,
+                "assetId",
+                path + ".fillTextureRotation",
+                "hp.fill"),
+            RequireExactStringArray(
+                rotationObject,
+                "svgGradientIds",
+                path + ".fillTextureRotation",
+                "hp-fill-gradient-0003"),
+            RequireExactPointArray(
+                rotationObject,
+                "pivot",
+                path + ".fillTextureRotation",
+                0,
+                0),
+            RequireInt32(
+                rotationObject,
+                "sourceFrameOffset",
+                path + ".fillTextureRotation",
+                -1),
+            RequireExactFiniteDouble(
+                rotationObject,
+                "degreesPerSourceFrame",
+                path + ".fillTextureRotation",
+                2.8125),
+            RequireString(
+                rotationObject,
+                "positiveDirection",
+                path + ".fillTextureRotation",
+                "clockwise"));
+        if (!assetIds.Contains(rotation.AssetId, StringComparer.Ordinal))
+        {
+            throw new InvalidDataException(
+                $"{path}.fillTextureRotation.assetId is not assigned to HP.");
+        }
+        RequireExactSvgId(
+            GetAsset(assets, rotation.AssetId),
+            rotation.SvgGradientIds.Single(),
+            element =>
+                element.Name.LocalName is "linearGradient" or "radialGradient" &&
+                element.Attribute("gradientTransform") is not null,
+            path + ".fillTextureRotation.svgGradientIds[0]");
+        if ((frameMap.StepCount * rotation.DegreesPerSourceFrame) != 360)
+        {
+            throw new InvalidDataException(
+                $"{path}.fillTextureRotation does not complete one turn across the frame map.");
+        }
+
+        return new PlayerInfoSvgGauge("hp", stageMatrix, assetIds, frameMap)
+        {
+            Clip = clip,
+            FillTextureRotation = rotation
+        };
+    }
+
+    private static PlayerInfoSvgGauge LoadMpGauge(
+        JsonElement gauge,
+        IReadOnlySet<string> knownAssetIds,
+        ISet<string> assignedAssetIds,
+        IReadOnlyList<PlayerInfoSvgAsset> assets)
+    {
+        const string path = "$.gauges.mp";
+        RequireExactProperties(
+            gauge,
+            path,
+            "assetIds",
+            "stageMatrix",
+            "frameMap",
+            "rimVariants",
+            "maskPaintSemantics",
+            "clipBindings",
+            "topologyBreak",
+            "terminalEmpty",
+            "morphIntervals",
+            "paletteStates");
+        var directAssetIds = RequireExactStringArray(
+            gauge,
+            "assetIds",
+            path,
+            "mp.backplate",
+            "mp.fill");
+
+        var stageMatrix = RequireMatrixArray(gauge, "stageMatrix", path);
+        var expectedMatrix = new PlayerInfoSvgMatrix(
+            1.0810546875,
+            0,
+            0,
+            1.0810546875,
+            90.1,
+            -1.3);
+        if (stageMatrix != expectedMatrix)
+        {
+            throw new InvalidDataException($"{path}.stageMatrix drifted.");
+        }
+
+        var frameMapObject = RequireObjectProperty(gauge, "frameMap", path);
+        RequireExactProperties(
+            frameMapObject,
+            path + ".frameMap",
+            "stepCount",
+            "virtualFrameCount",
+            "fullVirtualFrame",
+            "emptyVirtualFrame",
+            "sourceFrameOffset",
+            "reverse",
+            "rounding");
+        var frameMap = new PlayerInfoFrameMap(
+            RequireInt32(frameMapObject, "stepCount", path + ".frameMap", 100),
+            RequireInt32(frameMapObject, "virtualFrameCount", path + ".frameMap", 101),
+            RequireInt32(frameMapObject, "fullVirtualFrame", path + ".frameMap", 1),
+            RequireInt32(frameMapObject, "emptyVirtualFrame", path + ".frameMap", 101),
+            RequireInt32(frameMapObject, "sourceFrameOffset", path + ".frameMap", -1),
+            RequireBoolean(frameMapObject, "reverse", path + ".frameMap", true),
+            RequireString(frameMapObject, "rounding", path + ".frameMap", "floor"));
+        ValidateFrameMap(frameMap, path + ".frameMap");
+
+        var rimVariants = LoadRimVariants(
+            RequireArrayProperty(gauge, "rimVariants", path),
+            assets);
+        var assetIds = RegisterGaugeAssets(
+            path,
+            directAssetIds,
+            rimVariants.Select(variant => variant.AssetId),
+            knownAssetIds,
+            assignedAssetIds);
+
+        var maskPaintSemantics = RequireString(
+            gauge,
+            "maskPaintSemantics",
+            path,
+            "coverage-only");
+        var clipBindings = LoadClipBindings(
+            RequireArrayProperty(gauge, "clipBindings", path),
+            directAssetIds,
+            assets);
+
+        var topologyObject = RequireObjectProperty(gauge, "topologyBreak", path);
+        RequireExactProperties(
+            topologyObject,
+            path + ".topologyBreak",
+            "lastTwoContourVirtualFrame",
+            "firstOneContourVirtualFrame",
+            "policy");
+        var topologyBreak = new PlayerInfoTopologyBreak(
+            RequireInt32(
+                topologyObject,
+                "lastTwoContourVirtualFrame",
+                path + ".topologyBreak",
+                34),
+            RequireInt32(
+                topologyObject,
+                "firstOneContourVirtualFrame",
+                path + ".topologyBreak",
+                35),
+            RequireString(
+                topologyObject,
+                "policy",
+                path + ".topologyBreak",
+                "hard-cut-no-cross-topology-interpolation"));
+        if (topologyBreak.FirstOneContourVirtualFrame !=
+            topologyBreak.LastTwoContourVirtualFrame + 1)
+        {
+            throw new InvalidDataException(
+                $"{path}.topologyBreak must describe adjacent virtual frames.");
+        }
+
+        var terminalObject = RequireObjectProperty(gauge, "terminalEmpty", path);
+        RequireExactProperties(
+            terminalObject,
+            path + ".terminalEmpty",
+            "previousSourceFrame",
+            "emptySourceFrame",
+            "emptyVirtualFrame");
+        var terminalEmpty = new PlayerInfoTerminalEmpty(
+            RequireInt32(
+                terminalObject,
+                "previousSourceFrame",
+                path + ".terminalEmpty",
+                99),
+            RequireInt32(
+                terminalObject,
+                "emptySourceFrame",
+                path + ".terminalEmpty",
+                100),
+            RequireInt32(
+                terminalObject,
+                "emptyVirtualFrame",
+                path + ".terminalEmpty",
+                101));
+        if (terminalEmpty.EmptySourceFrame != terminalEmpty.PreviousSourceFrame + 1 ||
+            terminalEmpty.EmptyVirtualFrame != frameMap.EmptyVirtualFrame ||
+            terminalEmpty.EmptyVirtualFrame + frameMap.SourceFrameOffset !=
+            terminalEmpty.EmptySourceFrame)
+        {
+            throw new InvalidDataException(
+                $"{path}.terminalEmpty is inconsistent with frameMap.");
+        }
+
+        var morphIntervals = LoadMorphIntervals(
+            RequireArrayProperty(gauge, "morphIntervals", path),
+            clipBindings,
+            topologyBreak,
+            terminalEmpty);
+        var paletteStates = LoadPaletteStates(
+            RequireArrayProperty(gauge, "paletteStates", path),
+            rimVariants,
+            assets);
+
+        return new PlayerInfoSvgGauge("mp", stageMatrix, assetIds, frameMap)
+        {
+            RimVariants = rimVariants,
+            MaskPaintSemantics = maskPaintSemantics,
+            ClipBindings = clipBindings,
+            TopologyBreak = topologyBreak,
+            TerminalEmpty = terminalEmpty,
+            MorphIntervals = morphIntervals,
+            PaletteStates = paletteStates
+        };
+    }
+
+    private static IReadOnlyList<string> RegisterGaugeAssets(
         string path,
-        string gaugeId,
+        IEnumerable<string> directAssetIds,
+        IEnumerable<string> variantAssetIds,
         IReadOnlySet<string> knownAssetIds,
         ISet<string> assignedAssetIds)
     {
-        var assetIds = RequireStringArray(gaugeObject, "assetIds", path).ToList();
-        if (gaugeObject.TryGetProperty("rimVariants", out var variants))
-        {
-            if (variants.ValueKind != JsonValueKind.Array)
-            {
-                throw new InvalidDataException($"{path}.rimVariants must be an array.");
-            }
-            var variantIndex = 0;
-            foreach (var variant in variants.EnumerateArray())
-            {
-                var variantPath = $"{path}.rimVariants[{variantIndex}]";
-                assetIds.Add(RequireString(
-                    RequireObject(variant, variantPath),
-                    "assetId",
-                    variantPath));
-                variantIndex++;
-            }
-        }
-
-        var distinctAssetIds = new List<string>();
+        var result = new List<string>();
         var localIds = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var assetId in assetIds)
+        foreach (var assetId in directAssetIds.Concat(variantAssetIds))
         {
             if (!knownAssetIds.Contains(assetId))
             {
@@ -320,35 +717,508 @@ internal static class PlayerInfoSvgAssetCatalog
             }
             if (!localIds.Add(assetId))
             {
-                continue;
+                throw new InvalidDataException(
+                    $"{path} contains duplicate asset reference '{assetId}'.");
             }
             if (!assignedAssetIds.Add(assetId))
             {
                 throw new InvalidDataException(
                     $"PlayerInfo asset '{assetId}' is assigned to multiple gauges.");
             }
-            distinctAssetIds.Add(assetId);
+            result.Add(assetId);
         }
-        if (distinctAssetIds.Count == 0)
+        if (result.Count == 0)
         {
             throw new InvalidDataException($"{path}.assetIds must not be empty.");
         }
+        return result;
+    }
 
-        return new PlayerInfoSvgGauge(
-            gaugeId,
-            RequireMatrixArray(gaugeObject, "stageMatrix", path),
-            distinctAssetIds);
+    private static IReadOnlyList<PlayerInfoRimVariant> LoadRimVariants(
+        JsonElement variants,
+        IReadOnlyList<PlayerInfoSvgAsset> assets)
+    {
+        const string path = "$.gauges.mp.rimVariants";
+        if (variants.GetArrayLength() != 3)
+        {
+            throw new InvalidDataException($"{path} must contain frames 1/70/91.");
+        }
+        var expectedStarts = new[] { 1, 70, 91 };
+        var expectedIds = new[] { "mp.rim", "mp.rim-vf70", "mp.rim-vf91" };
+        var expectedFills = new[] { "#5EEFFB", "#5EEFFB", "#B6B6B6" };
+        var result = new List<PlayerInfoRimVariant>(3);
+        var seenStarts = new HashSet<int>();
+        var seenIds = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var value in variants.EnumerateArray())
+        {
+            var itemPath = $"{path}[{index}]";
+            var item = RequireObject(value, itemPath);
+            RequireExactProperties(item, itemPath, "startVirtualFrame", "assetId");
+            var start = RequireInt32(
+                item,
+                "startVirtualFrame",
+                itemPath,
+                expectedStarts[index]);
+            var assetId = RequireString(
+                item,
+                "assetId",
+                itemPath,
+                expectedIds[index]);
+            if (!seenStarts.Add(start) || !seenIds.Add(assetId))
+            {
+                throw new InvalidDataException($"{itemPath} duplicates a rim variant.");
+            }
+            RequireOnlySvgPathFill(
+                GetAsset(assets, assetId),
+                expectedFills[index],
+                itemPath + ".assetId");
+            result.Add(new PlayerInfoRimVariant(start, assetId));
+            index++;
+        }
+        return result;
+    }
+
+    private static IReadOnlyList<PlayerInfoClipBinding> LoadClipBindings(
+        JsonElement bindings,
+        IReadOnlyList<string> directAssetIds,
+        IReadOnlyList<PlayerInfoSvgAsset> assets)
+    {
+        const string path = "$.gauges.mp.clipBindings";
+        if (bindings.GetArrayLength() != 2)
+        {
+            throw new InvalidDataException($"{path} must contain exactly two masks.");
+        }
+        var expectedIds = new[] { "mp-left-mask", "mp-right-mask" };
+        var expectedGroups = new[]
+        {
+            new[] { "mp-fill-left-background-copy", "mp-fill-left-slot" },
+            new[] { "mp-fill-right-decoration", "mp-fill-right-slot" }
+        };
+        var result = new List<PlayerInfoClipBinding>(2);
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        var allGroupIds = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var value in bindings.EnumerateArray())
+        {
+            var itemPath = $"{path}[{index}]";
+            var item = RequireObject(value, itemPath);
+            RequireExactProperties(item, itemPath, "id", "assetId", "svgGroupIds");
+            var id = RequireString(item, "id", itemPath, expectedIds[index]);
+            var assetId = RequireString(item, "assetId", itemPath, "mp.fill");
+            var groupIds = RequireExactStringArray(
+                item,
+                "svgGroupIds",
+                itemPath,
+                expectedGroups[index]);
+            if (!ids.Add(id))
+            {
+                throw new InvalidDataException($"{itemPath}.id is duplicated.");
+            }
+            if (!directAssetIds.Contains(assetId, StringComparer.Ordinal))
+            {
+                throw new InvalidDataException(
+                    $"{itemPath}.assetId is not a direct MP asset.");
+            }
+            var asset = GetAsset(assets, assetId);
+            foreach (var groupId in groupIds)
+            {
+                if (!allGroupIds.Add(groupId))
+                {
+                    throw new InvalidDataException(
+                        $"{itemPath}.svgGroupIds duplicates '{groupId}'.");
+                }
+                RequireExactSvgId(
+                    asset,
+                    groupId,
+                    element => element.Name.LocalName == "g",
+                    itemPath + ".svgGroupIds");
+            }
+            result.Add(new PlayerInfoClipBinding(id, assetId, groupIds));
+            index++;
+        }
+        return result;
+    }
+
+    private static IReadOnlyList<PlayerInfoMorphInterval> LoadMorphIntervals(
+        JsonElement intervals,
+        IReadOnlyList<PlayerInfoClipBinding> bindings,
+        PlayerInfoTopologyBreak topologyBreak,
+        PlayerInfoTerminalEmpty terminalEmpty)
+    {
+        const string path = "$.gauges.mp.morphIntervals";
+        if (intervals.GetArrayLength() != 3)
+        {
+            throw new InvalidDataException($"{path} must contain the exact three spans.");
+        }
+        var expected = new[]
+        {
+            (Mask: "mp-left-mask", Start: 0, End: 99, CorrespondenceCount: 1),
+            (Mask: "mp-right-mask", Start: 0, End: 33, CorrespondenceCount: 2),
+            (Mask: "mp-right-mask", Start: 34, End: 99, CorrespondenceCount: 1)
+        };
+        var bindingIds = bindings
+            .Select(binding => binding.Id)
+            .ToHashSet(StringComparer.Ordinal);
+        var result = new List<PlayerInfoMorphInterval>(3);
+        var intervalKeys = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var value in intervals.EnumerateArray())
+        {
+            var itemPath = $"{path}[{index}]";
+            var item = RequireObject(value, itemPath);
+            RequireExactProperties(
+                item,
+                itemPath,
+                "mask",
+                "sourceStart",
+                "sourceEnd",
+                "interpolation",
+                "correspondence");
+            var mask = RequireString(
+                item,
+                "mask",
+                itemPath,
+                expected[index].Mask);
+            var sourceStart = RequireInt32(
+                item,
+                "sourceStart",
+                itemPath,
+                expected[index].Start);
+            var sourceEnd = RequireInt32(
+                item,
+                "sourceEnd",
+                itemPath,
+                expected[index].End);
+            var interpolation = RequireString(
+                item,
+                "interpolation",
+                itemPath,
+                "ordered-line-only-A/B-correspondence");
+            if (!bindingIds.Contains(mask) ||
+                sourceStart < 0 ||
+                sourceEnd < sourceStart ||
+                sourceEnd > terminalEmpty.PreviousSourceFrame ||
+                !intervalKeys.Add($"{mask}\0{sourceStart}\0{sourceEnd}"))
+            {
+                throw new InvalidDataException($"{itemPath} has an invalid mask/range.");
+            }
+
+            var correspondenceArray = RequireArrayProperty(
+                item,
+                "correspondence",
+                itemPath);
+            if (correspondenceArray.GetArrayLength() !=
+                expected[index].CorrespondenceCount)
+            {
+                throw new InvalidDataException(
+                    $"{itemPath}.correspondence count drifted.");
+            }
+            var correspondences = new List<PlayerInfoMorphCorrespondence>();
+            var correspondenceIndex = 0;
+            foreach (var correspondenceValue in correspondenceArray.EnumerateArray())
+            {
+                var correspondencePath =
+                    $"{itemPath}.correspondence[{correspondenceIndex}]";
+                var correspondenceObject = RequireObject(
+                    correspondenceValue,
+                    correspondencePath);
+                RequireExactProperties(
+                    correspondenceObject,
+                    correspondencePath,
+                    "aStartAndAnchorsTwips",
+                    "bStartAndAnchorsTwips");
+                var a = RequireClosedTwipContour(
+                    RequireArrayProperty(
+                        correspondenceObject,
+                        "aStartAndAnchorsTwips",
+                        correspondencePath),
+                    correspondencePath + ".aStartAndAnchorsTwips");
+                var b = RequireClosedTwipContour(
+                    RequireArrayProperty(
+                        correspondenceObject,
+                        "bStartAndAnchorsTwips",
+                        correspondencePath),
+                    correspondencePath + ".bStartAndAnchorsTwips");
+                if (a.Count != b.Count)
+                {
+                    throw new InvalidDataException(
+                        $"{correspondencePath} endpoint cardinality drifted.");
+                }
+                correspondences.Add(new PlayerInfoMorphCorrespondence(a, b));
+                correspondenceIndex++;
+            }
+            result.Add(new PlayerInfoMorphInterval(
+                mask,
+                sourceStart,
+                sourceEnd,
+                interpolation,
+                correspondences));
+            index++;
+        }
+
+        var right = result
+            .Where(interval => interval.MaskId == "mp-right-mask")
+            .OrderBy(interval => interval.SourceStart)
+            .ToArray();
+        if (right.Length != 2 ||
+            right[0].SourceEnd + 1 != right[1].SourceStart ||
+            right[0].SourceEnd + 1 != topologyBreak.LastTwoContourVirtualFrame ||
+            right[1].SourceStart + 1 != topologyBreak.FirstOneContourVirtualFrame)
+        {
+            throw new InvalidDataException(
+                $"{path} does not align with topologyBreak.");
+        }
+        return result;
+    }
+
+    private static IReadOnlyList<PlayerInfoPaletteState> LoadPaletteStates(
+        JsonElement states,
+        IReadOnlyList<PlayerInfoRimVariant> rimVariants,
+        IReadOnlyList<PlayerInfoSvgAsset> assets)
+    {
+        const string path = "$.gauges.mp.paletteStates";
+        if (states.GetArrayLength() != 3)
+        {
+            throw new InvalidDataException($"{path} must contain frames 1/70/91.");
+        }
+        var result = new List<PlayerInfoPaletteState>(3);
+        var starts = new HashSet<int>();
+        var index = 0;
+        foreach (var value in states.EnumerateArray())
+        {
+            var itemPath = $"{path}[{index}]";
+            var item = RequireObject(value, itemPath);
+            RequireExactProperties(
+                item,
+                itemPath,
+                "startVirtualFrame",
+                "rimAssetId",
+                "label",
+                "percent",
+                "current",
+                "max",
+                "decoration",
+                "decorativeCurrent",
+                "decorativeMax");
+            var rimVariant = rimVariants[index];
+            var start = RequireInt32(
+                item,
+                "startVirtualFrame",
+                itemPath,
+                rimVariant.StartVirtualFrame);
+            var rimAssetId = RequireString(
+                item,
+                "rimAssetId",
+                itemPath,
+                rimVariant.AssetId);
+            if (!starts.Add(start))
+            {
+                throw new InvalidDataException(
+                    $"{itemPath}.startVirtualFrame is duplicated.");
+            }
+            var state = new PlayerInfoPaletteState(
+                start,
+                rimAssetId,
+                RequireCanonicalColor(item, "label", itemPath),
+                RequireCanonicalColor(item, "percent", itemPath),
+                RequireCanonicalColor(item, "current", itemPath),
+                RequireCanonicalColor(item, "max", itemPath),
+                RequireCanonicalColor(item, "decoration", itemPath),
+                LoadColorAlpha(
+                    RequireObjectProperty(item, "decorativeCurrent", itemPath),
+                    itemPath + ".decorativeCurrent"),
+                LoadColorAlpha(
+                    RequireObjectProperty(item, "decorativeMax", itemPath),
+                    itemPath + ".decorativeMax"));
+            RequireOnlySvgPathFill(
+                GetAsset(assets, rimAssetId),
+                state.Decoration,
+                itemPath + ".decoration");
+            result.Add(state);
+            index++;
+        }
+        return result;
+    }
+
+    private static PlayerInfoColorAlpha LoadColorAlpha(
+        JsonElement item,
+        string path)
+    {
+        RequireExactProperties(item, path, "color", "alpha");
+        var color = RequireCanonicalColor(item, "color", path);
+        var alpha = RequireFiniteDouble(item, "alpha", path);
+        if (alpha is < 0 or > 1)
+        {
+            throw new InvalidDataException($"{path}.alpha must be within 0..1.");
+        }
+        return new PlayerInfoColorAlpha(color, alpha);
+    }
+
+    private static PlayerInfoEffectPolicy LoadEffectPolicy(
+        JsonElement root,
+        IReadOnlyList<PlayerInfoSvgAsset> assets)
+    {
+        const string path = "$.effectPolicy";
+        var policy = RequireObjectProperty(root, "effectPolicy", "$");
+        RequireExactProperties(policy, path, "includedStatic", "programmaticLayers");
+
+        var includedArray = RequireArrayProperty(policy, "includedStatic", path);
+        if (includedArray.GetArrayLength() != 1)
+        {
+            throw new InvalidDataException(
+                $"{path}.includedStatic must contain the HP bevel.");
+        }
+        var includedPath = path + ".includedStatic[0]";
+        var includedObject = RequireObject(includedArray[0], includedPath);
+        RequireExactProperties(
+            includedObject,
+            includedPath,
+            "id",
+            "implementation",
+            "assetId",
+            "svgGroupId");
+        var included = new PlayerInfoIncludedStaticEffect(
+            RequireString(
+                includedObject,
+                "id",
+                includedPath,
+                "hp-border-bevel"),
+            RequireString(
+                includedObject,
+                "implementation",
+                includedPath,
+                "expanded-vector-gradient"),
+            RequireString(
+                includedObject,
+                "assetId",
+                includedPath,
+                "hp.rim"),
+            RequireString(
+                includedObject,
+                "svgGroupId",
+                includedPath,
+                "hp-rim-static-bevel-expanded"));
+        RequireExactSvgId(
+            GetAsset(assets, included.AssetId),
+            included.SvgGroupId,
+            element => element.Name.LocalName == "g",
+            includedPath + ".svgGroupId");
+
+        var programmaticArray = RequireArrayProperty(
+            policy,
+            "programmaticLayers",
+            path);
+        if (programmaticArray.GetArrayLength() != 3)
+        {
+            throw new InvalidDataException(
+                $"{path}.programmaticLayers must contain three entries.");
+        }
+        var expected = new[]
+        {
+            (
+                Id: "hp-horizontal-line-glow",
+                Owner: "native-effect",
+                After: "hp.fill",
+                Before: "hp.rim",
+                Blend: "source-over",
+                Disposition: PlayerInfoProgrammaticEffectDisposition.DeferredB3),
+            (
+                Id: "hp-light-overlay",
+                Owner: "native-effect",
+                After: "hp.fill",
+                Before: "hp.rim",
+                Blend: "overlay",
+                Disposition: PlayerInfoProgrammaticEffectDisposition.DeferredB3),
+            (
+                Id: "hp-mp-dynamic-text-and-glow",
+                Owner: "native-draw",
+                After: "gauge-static-layers",
+                Before: (string?)null,
+                Blend: "source-over",
+                Disposition: PlayerInfoProgrammaticEffectDisposition.ImplementedActive)
+        };
+        var programmatic = new List<PlayerInfoProgrammaticEffect>(3);
+        var effectIds = new HashSet<string>(StringComparer.Ordinal)
+        {
+            included.Id
+        };
+        for (var index = 0; index < expected.Length; index++)
+        {
+            var itemPath = $"{path}.programmaticLayers[{index}]";
+            var item = RequireObject(programmaticArray[index], itemPath);
+            if (expected[index].Before is null)
+            {
+                RequireExactProperties(
+                    item,
+                    itemPath,
+                    "id",
+                    "rendererOwner",
+                    "compositeAfter",
+                    "blendMode");
+            }
+            else
+            {
+                RequireExactProperties(
+                    item,
+                    itemPath,
+                    "id",
+                    "rendererOwner",
+                    "compositeAfter",
+                    "compositeBefore",
+                    "blendMode");
+            }
+            var effect = new PlayerInfoProgrammaticEffect(
+                RequireString(item, "id", itemPath, expected[index].Id),
+                RequireString(
+                    item,
+                    "rendererOwner",
+                    itemPath,
+                    expected[index].Owner),
+                RequireString(
+                    item,
+                    "compositeAfter",
+                    itemPath,
+                    expected[index].After),
+                expected[index].Before is null
+                    ? null
+                    : RequireString(
+                        item,
+                        "compositeBefore",
+                        itemPath,
+                        expected[index].Before),
+                RequireString(
+                    item,
+                    "blendMode",
+                    itemPath,
+                    expected[index].Blend),
+                expected[index].Disposition);
+            if (!effectIds.Add(effect.Id))
+            {
+                throw new InvalidDataException($"{itemPath}.id is duplicated.");
+            }
+            programmatic.Add(effect);
+        }
+
+        return new PlayerInfoEffectPolicy([included], programmatic);
     }
 
     private static void ValidateExactResourceSet(Assembly assembly)
+    {
+        var actual = assembly.GetManifestResourceNames()
+            .Where(name => name.StartsWith(ResourcePrefix + ".", StringComparison.Ordinal))
+            .ToArray();
+        ValidateExactResourceNames(actual);
+    }
+
+    private static void ValidateExactResourceNames(IEnumerable<string> resourceNames)
     {
         var expected = ExpectedAssets
             .Select(asset => asset.ResourceName)
             .Append(ManifestResourceName)
             .OrderBy(name => name, StringComparer.Ordinal)
             .ToArray();
-        var actual = assembly.GetManifestResourceNames()
-            .Where(name => name.StartsWith(ResourcePrefix + ".", StringComparison.Ordinal))
+        var actual = resourceNames
             .OrderBy(name => name, StringComparer.Ordinal)
             .ToArray();
         var missing = expected.Except(actual, StringComparer.Ordinal).ToArray();
@@ -356,7 +1226,7 @@ internal static class PlayerInfoSvgAssetCatalog
         if (missing.Length != 0 || unexpected.Length != 0)
         {
             throw new InvalidDataException(
-                "Embedded PlayerInfo resource set mismatch: " +
+                "PlayerInfo resource set mismatch: " +
                 $"missing=[{string.Join(",", missing)}] unexpected=[{string.Join(",", unexpected)}].");
         }
     }
@@ -422,6 +1292,236 @@ internal static class PlayerInfoSvgAssetCatalog
 
     private static string Sha256Lower(ReadOnlySpan<byte> bytes) =>
         Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+
+    private static void ValidateFrameMap(PlayerInfoFrameMap frameMap, string path)
+    {
+        if (frameMap.StepCount <= 0 ||
+            frameMap.VirtualFrameCount != frameMap.StepCount + 1 ||
+            frameMap.FullVirtualFrame != 1 ||
+            frameMap.EmptyVirtualFrame != frameMap.VirtualFrameCount ||
+            frameMap.SourceFrameOffset is not (null or -1) ||
+            !frameMap.Reverse ||
+            !string.Equals(frameMap.Rounding, "floor", StringComparison.Ordinal))
+        {
+            throw new InvalidDataException($"{path} is internally inconsistent.");
+        }
+    }
+
+    private static PlayerInfoSvgAsset GetAsset(
+        IReadOnlyList<PlayerInfoSvgAsset> assets,
+        string id) =>
+        assets.SingleOrDefault(asset =>
+            string.Equals(asset.Id, id, StringComparison.Ordinal))
+        ?? throw new InvalidDataException(
+            $"PlayerInfo manifest references unknown asset '{id}'.");
+
+    private static XDocument ParseSvgDocument(PlayerInfoSvgAsset asset)
+    {
+        try
+        {
+            using var stream = new MemoryStream(asset.Bytes.ToArray(), writable: false);
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null,
+                MaxCharactersInDocument = MaxEmbeddedResourceBytes
+            };
+            using var reader = XmlReader.Create(stream, settings);
+            return XDocument.Load(reader, LoadOptions.PreserveWhitespace);
+        }
+        catch (Exception exception) when (
+            exception is XmlException or InvalidOperationException)
+        {
+            throw new InvalidDataException(
+                $"PlayerInfo asset '{asset.Id}' is not well-formed SVG XML.",
+                exception);
+        }
+    }
+
+    private static void RequireExactSvgId(
+        PlayerInfoSvgAsset asset,
+        string id,
+        Func<XElement, bool> predicate,
+        string path)
+    {
+        var matches = ParseSvgDocument(asset)
+            .Descendants()
+            .Where(element =>
+                string.Equals(
+                    element.Attribute("id")?.Value,
+                    id,
+                    StringComparison.Ordinal))
+            .ToArray();
+        if (matches.Length != 1 || !predicate(matches[0]))
+        {
+            throw new InvalidDataException(
+                $"{path} requires exactly one matching SVG element #{id}.");
+        }
+    }
+
+    private static void RequireOnlySvgPathFill(
+        PlayerInfoSvgAsset asset,
+        string expectedFill,
+        string path)
+    {
+        var fills = ParseSvgDocument(asset)
+            .Descendants()
+            .Where(element => element.Name.LocalName == "path")
+            .Select(element => element.Attribute("fill")?.Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (fills.Length != 1 ||
+            !string.Equals(fills[0], expectedFill, StringComparison.Ordinal))
+        {
+            throw new InvalidDataException(
+                $"{path} does not match the authored rim fill.");
+        }
+    }
+
+    private static IReadOnlyList<PlayerInfoSvgPoint> RequireClosedTwipContour(
+        JsonElement value,
+        string path)
+    {
+        if (value.GetArrayLength() < 4)
+        {
+            throw new InvalidDataException(
+                $"{path} must contain a closed contour.");
+        }
+        var points = new List<PlayerInfoSvgPoint>();
+        var index = 0;
+        foreach (var pointValue in value.EnumerateArray())
+        {
+            if (pointValue.ValueKind != JsonValueKind.Array ||
+                pointValue.GetArrayLength() != 2)
+            {
+                throw new InvalidDataException(
+                    $"{path}[{index}] must be an integer x/y pair.");
+            }
+            var coordinates = pointValue.EnumerateArray().ToArray();
+            if (!coordinates[0].TryGetInt32(out var x) ||
+                !coordinates[1].TryGetInt32(out var y) ||
+                Math.Abs((long)x) > 1_000_000 ||
+                Math.Abs((long)y) > 1_000_000)
+            {
+                throw new InvalidDataException(
+                    $"{path}[{index}] must contain bounded integer twips.");
+            }
+            points.Add(new PlayerInfoSvgPoint(x, y));
+            index++;
+        }
+        if (points[0] != points[^1])
+        {
+            throw new InvalidDataException($"{path} must be explicitly closed.");
+        }
+        return points;
+    }
+
+    private static JsonElement RequireArrayProperty(
+        JsonElement parent,
+        string propertyName,
+        string parentPath)
+    {
+        if (!parent.TryGetProperty(propertyName, out var value) ||
+            value.ValueKind != JsonValueKind.Array)
+        {
+            throw new InvalidDataException(
+                $"{parentPath}.{propertyName} must be an array.");
+        }
+        return value;
+    }
+
+    private static void RequireExactProperties(
+        JsonElement item,
+        string path,
+        params string[] propertyNames)
+    {
+        var expected = propertyNames.ToHashSet(StringComparer.Ordinal);
+        var actual = item.EnumerateObject()
+            .Select(property => property.Name)
+            .ToArray();
+        var unknown = actual
+            .Where(name => !expected.Contains(name))
+            .ToArray();
+        var missing = propertyNames
+            .Where(name => !actual.Contains(name, StringComparer.Ordinal))
+            .ToArray();
+        if (unknown.Length != 0 || missing.Length != 0)
+        {
+            throw new InvalidDataException(
+                $"{path} property closure drifted; " +
+                $"unknown=[{string.Join(",", unknown)}] " +
+                $"missing=[{string.Join(",", missing)}].");
+        }
+    }
+
+    private static IReadOnlyList<string> RequireExactStringArray(
+        JsonElement parent,
+        string propertyName,
+        string parentPath,
+        params string[] expected)
+    {
+        var actual = RequireStringArray(parent, propertyName, parentPath);
+        if (!actual.SequenceEqual(expected, StringComparer.Ordinal))
+        {
+            throw new InvalidDataException(
+                $"{parentPath}.{propertyName} values/order drifted.");
+        }
+        if (actual.Distinct(StringComparer.Ordinal).Count() != actual.Count)
+        {
+            throw new InvalidDataException(
+                $"{parentPath}.{propertyName} contains duplicates.");
+        }
+        return actual;
+    }
+
+    private static PlayerInfoSvgPoint RequireExactPointArray(
+        JsonElement parent,
+        string propertyName,
+        string parentPath,
+        double expectedX,
+        double expectedY)
+    {
+        var point = RequirePointArray(parent, propertyName, parentPath);
+        if (point != new PlayerInfoSvgPoint(expectedX, expectedY))
+        {
+            throw new InvalidDataException(
+                $"{parentPath}.{propertyName} drifted.");
+        }
+        return point;
+    }
+
+    private static double RequireExactFiniteDouble(
+        JsonElement parent,
+        string propertyName,
+        string parentPath,
+        double expected)
+    {
+        var actual = RequireFiniteDouble(parent, propertyName, parentPath);
+        if (actual != expected)
+        {
+            throw new InvalidDataException(
+                $"{parentPath}.{propertyName} must equal {expected}.");
+        }
+        return actual;
+    }
+
+    private static string RequireCanonicalColor(
+        JsonElement parent,
+        string propertyName,
+        string parentPath)
+    {
+        var value = RequireString(parent, propertyName, parentPath);
+        if (value.Length != 7 ||
+            value[0] != '#' ||
+            value.Skip(1).Any(character =>
+                character is not (>= '0' and <= '9') and
+                    not (>= 'A' and <= 'F')))
+        {
+            throw new InvalidDataException(
+                $"{parentPath}.{propertyName} must be canonical #RRGGBB.");
+        }
+        return value;
+    }
 
     private static JsonElement RequireObject(JsonElement value, string path)
     {
@@ -742,9 +1842,12 @@ internal sealed class PlayerInfoSvgAssetSet(
     string exactManifestSha256,
     int rasterContractVersion,
     string featureSet,
+    IReadOnlyList<string> runtimeCacheIdentityComponents,
     PlayerInfoRendererIdentity rendererIdentity,
+    PlayerInfoSvgUnits units,
     PlayerInfoSvgStage stage,
     IReadOnlyDictionary<string, PlayerInfoSvgGauge> gauges,
+    PlayerInfoEffectPolicy effectPolicy,
     byte[] manifestBytes,
     IReadOnlyList<PlayerInfoSvgAsset> assets)
 {
@@ -753,9 +1856,13 @@ internal sealed class PlayerInfoSvgAssetSet(
     internal string ExactManifestSha256 { get; } = exactManifestSha256;
     internal int RasterContractVersion { get; } = rasterContractVersion;
     internal string FeatureSet { get; } = featureSet;
+    internal IReadOnlyList<string> RuntimeCacheIdentityComponents { get; } =
+        runtimeCacheIdentityComponents;
     internal PlayerInfoRendererIdentity RendererIdentity { get; } = rendererIdentity;
+    internal PlayerInfoSvgUnits Units { get; } = units;
     internal PlayerInfoSvgStage Stage { get; } = stage;
     internal IReadOnlyDictionary<string, PlayerInfoSvgGauge> Gauges { get; } = gauges;
+    internal PlayerInfoEffectPolicy EffectPolicy { get; } = effectPolicy;
     internal ReadOnlyMemory<byte> ManifestBytes { get; } = manifestBytes;
     internal IReadOnlyList<PlayerInfoSvgAsset> Assets { get; } = assets;
 }
@@ -789,6 +1896,10 @@ internal sealed class PlayerInfoSvgAsset(
 }
 
 internal readonly record struct PlayerInfoSvgPoint(double X, double Y);
+
+internal sealed record PlayerInfoSvgUnits(
+    string SvgUnit,
+    int SourceTwipsPerSvgUnit);
 
 internal readonly record struct PlayerInfoSvgRect(
     double X,
@@ -853,11 +1964,130 @@ internal sealed class PlayerInfoSvgStage(
 internal sealed class PlayerInfoSvgGauge(
     string id,
     PlayerInfoSvgMatrix stageMatrix,
-    IReadOnlyList<string> assetIds)
+    IReadOnlyList<string> assetIds,
+    PlayerInfoFrameMap frameMap)
 {
     internal string Id { get; } = id;
     internal PlayerInfoSvgMatrix StageMatrix { get; } = stageMatrix;
     internal IReadOnlyList<string> AssetIds { get; } = assetIds;
+    internal PlayerInfoFrameMap FrameMap { get; } = frameMap;
+    internal PlayerInfoRadialClip? Clip { get; init; }
+    internal PlayerInfoFillTextureRotation? FillTextureRotation { get; init; }
+    internal IReadOnlyList<PlayerInfoRimVariant> RimVariants { get; init; } = [];
+    internal string? MaskPaintSemantics { get; init; }
+    internal IReadOnlyList<PlayerInfoClipBinding> ClipBindings { get; init; } = [];
+    internal PlayerInfoTopologyBreak? TopologyBreak { get; init; }
+    internal PlayerInfoTerminalEmpty? TerminalEmpty { get; init; }
+    internal IReadOnlyList<PlayerInfoMorphInterval> MorphIntervals { get; init; } = [];
+    internal IReadOnlyList<PlayerInfoPaletteState> PaletteStates { get; init; } = [];
+}
+
+internal sealed record PlayerInfoFrameMap(
+    int StepCount,
+    int VirtualFrameCount,
+    int FullVirtualFrame,
+    int EmptyVirtualFrame,
+    int? SourceFrameOffset,
+    bool Reverse,
+    string Rounding);
+
+internal sealed record PlayerInfoRadialClip(
+    string Type,
+    PlayerInfoSvgPoint Center,
+    double Radius,
+    double StartAngleDegrees,
+    string Direction);
+
+internal sealed record PlayerInfoFillTextureRotation(
+    string AssetId,
+    IReadOnlyList<string> SvgGradientIds,
+    PlayerInfoSvgPoint Pivot,
+    int SourceFrameOffset,
+    double DegreesPerSourceFrame,
+    string PositiveDirection);
+
+internal sealed record PlayerInfoRimVariant(
+    int StartVirtualFrame,
+    string AssetId);
+
+internal sealed record PlayerInfoClipBinding(
+    string Id,
+    string AssetId,
+    IReadOnlyList<string> SvgGroupIds);
+
+internal sealed record PlayerInfoTopologyBreak(
+    int LastTwoContourVirtualFrame,
+    int FirstOneContourVirtualFrame,
+    string Policy);
+
+internal sealed record PlayerInfoTerminalEmpty(
+    int PreviousSourceFrame,
+    int EmptySourceFrame,
+    int EmptyVirtualFrame);
+
+internal sealed record PlayerInfoMorphCorrespondence(
+    IReadOnlyList<PlayerInfoSvgPoint> AStartAndAnchorsTwips,
+    IReadOnlyList<PlayerInfoSvgPoint> BStartAndAnchorsTwips);
+
+internal sealed record PlayerInfoMorphInterval(
+    string MaskId,
+    int SourceStart,
+    int SourceEnd,
+    string Interpolation,
+    IReadOnlyList<PlayerInfoMorphCorrespondence> Correspondence);
+
+internal sealed record PlayerInfoColorAlpha(
+    string Color,
+    double Alpha);
+
+internal sealed record PlayerInfoPaletteState(
+    int StartVirtualFrame,
+    string RimAssetId,
+    string Label,
+    string Percent,
+    string Current,
+    string Max,
+    string Decoration,
+    PlayerInfoColorAlpha DecorativeCurrent,
+    PlayerInfoColorAlpha DecorativeMax);
+
+internal sealed record PlayerInfoIncludedStaticEffect(
+    string Id,
+    string Implementation,
+    string AssetId,
+    string SvgGroupId);
+
+internal enum PlayerInfoProgrammaticEffectDisposition
+{
+    ImplementedActive,
+    DeferredB3
+}
+
+internal sealed record PlayerInfoProgrammaticEffect(
+    string Id,
+    string RendererOwner,
+    string CompositeAfter,
+    string? CompositeBefore,
+    string BlendMode,
+    PlayerInfoProgrammaticEffectDisposition Disposition);
+
+internal sealed record PlayerInfoEffectPolicy(
+    IReadOnlyList<PlayerInfoIncludedStaticEffect> IncludedStatic,
+    IReadOnlyList<PlayerInfoProgrammaticEffect> ProgrammaticLayers)
+{
+    internal IReadOnlyList<PlayerInfoProgrammaticEffect> ImplementedActiveLayers { get; } =
+        ProgrammaticLayers
+            .Where(effect =>
+                effect.Disposition ==
+                PlayerInfoProgrammaticEffectDisposition.ImplementedActive)
+            .ToArray();
+
+    internal IReadOnlyList<PlayerInfoProgrammaticEffect> DeferredB3Layers { get; } =
+        ProgrammaticLayers
+            .Where(effect =>
+                effect.Disposition ==
+                PlayerInfoProgrammaticEffectDisposition.DeferredB3)
+            .ToArray();
 }
 
 internal sealed class PlayerInfoRendererIdentity(

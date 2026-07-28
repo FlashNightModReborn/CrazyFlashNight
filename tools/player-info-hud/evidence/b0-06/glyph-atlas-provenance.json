@@ -1,0 +1,64 @@
+{
+  "schema": "cf7.player-info-hud.glyph-atlas-provenance.v1",
+  "status": "derived_path_atlas_generated",
+  "generator": {
+    "path": "tools/player-info-hud/generate-player-info-glyph-atlas.py",
+    "fontToolsVersion": "4.61.1",
+    "characters": "0123456789/%MP-",
+    "coordinateContract": "font units, y-up; render with translate(originX,baselineY) scale(fontPx/unitsPerEm,-fontPx/unitsPerEm)",
+    "advanceContract": "advance font-space cursor by glyph.advance; apply alignment to the sum of advances before the font-unit transform"
+  },
+  "sourceBinding": {
+    "xfl": "flashswf/UI/玩家信息界面/玩家信息界面.xfl",
+    "xflFontItems": [
+      {
+        "fontId": "lcd-std",
+        "name": "嵌入字体/LCD Std",
+        "itemId": "664e350a-000085f3"
+      },
+      {
+        "fontId": "aero",
+        "name": "嵌入字体/Aero",
+        "itemId": "664e3cd0-00000bd4"
+      }
+    ],
+    "flashCandidateChildPath": "flashswf/UI/玩家信息界面.swf",
+    "flashCandidateChildByteLength": 104124,
+    "flashCandidateChildSha256": "450B1F9A8B445EE3E28C63682EA00124A191F56D05D759B8590210FC0066A615",
+    "extraction": "FFDec font export from the source-bound PlayerInfo child SWF; the exported TTF files remain under ignored tmp/ and are not distributed"
+  },
+  "fonts": [
+    {
+      "id": "lcd-std",
+      "sourceFile": "245_LCD Std.ttf",
+      "sourceByteLength": 28864,
+      "sourceSha256": "8E275872F400FCFD650025BBD195F7AB337B6D65F74AA5A4473FD60E8999AE6B",
+      "unitsPerEm": 1024,
+      "fsType": 0,
+      "glyphCount": 15,
+      "glyphPathClosureSha256": "D28361F2D64C01F0DD09D6AD368C52955D71AC238532CD808C49B3B7E29D0419"
+    },
+    {
+      "id": "aero",
+      "sourceFile": "2_Aero.ttf",
+      "sourceByteLength": 19400,
+      "sourceSha256": "A2EF513276FBA34793B3BFC748F3B37A9112CA0967BC20A2281DBA105D768CC3",
+      "unitsPerEm": 1024,
+      "fsType": 0,
+      "glyphCount": 15,
+      "glyphPathClosureSha256": "F27C8B0FF43DAC9287E40F234775F5E4951DE9A50BC15E0BB38A082B06FBA769"
+    }
+  ],
+  "distributionBoundary": {
+    "runtimeIncludes": "derived outline paths and metrics only",
+    "runtimeExcludes": "TTF/OTF/font program bytes",
+    "os2FsTypeObserved": 0,
+    "licenseConclusion": "fsType=0 permits installable embedding at the font-table level, but is not an independent legal-license conclusion; reuse remains bound to the repository's existing Flash HUD source asset"
+  },
+  "output": {
+    "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.Generated.cs",
+    "byteLength": 10331,
+    "sha256": "B15CA80E20B6823F5BD5F74F964FE6D52E9C16809694F704285A9514F0545D66",
+    "encoding": "UTF-8 without BOM, LF"
+  }
+}

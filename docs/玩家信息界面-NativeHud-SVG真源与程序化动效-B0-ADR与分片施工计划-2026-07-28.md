@@ -2,9 +2,9 @@
 
 **文档角色**：`flashswf/UI/玩家信息界面` 的**视觉资源与 NativeHud 渲染基座专项 ADR + B0 可执行台账**。本文只权威定义 SVG 真源、受控子集、渲染器准入、运行时烘焙、模拟信号 harness、视觉对照与施工分片；状态所有权、AS2/C# 边界、停止线、显示公式和总体迁移阶段仍以 [玩家信息界面 → C# NativeHud 迁移架构](玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md) 为准。
 
-**最后核对代码基线**：B0-05 commit `27364dbc9ff579200ae0dbc9d2d5c6c10151c479` 与同步纳入的 `origin/main` `ef31b39069272304f5831b9028b786ce333aa62e`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4-r11 固化恢复安全、实际 runner/parser 的 Git-canonical 自身份、注册 CS6 Debug Player、无引号相对启动、跨完整性级别 authoring 身份与 `Stage.align` requested/reported 语义。第七轮已从该 strict 基线形成真实 Flash candidate；B0-04 的资产/证据身份、B0-03b 的新鲜 v2 candidate/production Gate 与 B0-05 的机器资格报告只以 §12 和结构化报告为稳定锚，过期临时产物不得回写，且任一 B0 candidate 都不构成正式 runtime。
+**最后核对代码基线**：B0-05 commit `27364dbc9ff579200ae0dbc9d2d5c6c10151c479` 与同步纳入的 `origin/main` `ef31b39069272304f5831b9028b786ce333aa62e`（2026-07-28）。B0-00 审计入口的历史工作树只含“新增本文 + 同步总体迁移 ADR”两项文档改动；B0-01A r3 由 verifier 分别绑定 `HEAD`、index、clean-filter worktree 与 source-binary anchor；B0-01B r4-r11 固化恢复安全、实际 runner/parser 的 Git-canonical 自身份、注册 CS6 Debug Player、无引号相对启动、跨完整性级别 authoring 身份与 `Stage.align` requested/reported 语义。第七轮已从该 strict 基线形成真实 Flash candidate；B0-04 的资产/证据身份、B0-03b 的新鲜 v2 candidate/production Gate 与 B0-05 的机器资格报告只以 §12 和结构化报告为稳定锚，过期临时产物不得回写，且任一 B0 candidate 都不构成正式 runtime。2026-07-29 的 B0-06 pre-origin-sync v3 报告绑定执行时 base commit `b199a0c4310da830278f42fea5756f459ff53653`、32-file sourceTrace closure 与执行二进制，已经冻结为本地候选证据；它不是合入最新上游后的 clean Git 基线。最终 merged tree 的报告与输入闭包身份继续保留为 `TBD_FINAL_EVIDENCE`，不得用 pre-merge 哈希冒充最终结果。
 
-**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 已由 HUD-SVG-005 接受并锁定为 B0 受控子集的生产 renderer。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`。B0-01B 第七轮由 CS6 15 秒生成 389,160 B fresh TestLoader SWF，并由注册 Debug Player `11,2,202,228` 实际加载 SHA-256 `450b1f…a615` 的玩家信息 child；11 个 1024×64 raw、11 个紧边 crop、4,458,323 B 精确 run block 与 manifest `dcc9e11a…bf472` 均已形成 candidate，事务精确恢复，但人工来源/层/crop/审美复核仍为空，所以尚未达到 `oracle_frozen`。B0-02 strict corpus 已扩至 12/12、78 项 fail-closed（其中 58 项值级 grammar），并对当前 8/8 canonical SVG 结构验证通过；其历史状态仍是 `isolated_qualification_passed`，`rendererQualified=false`，不得回写。B0-04 已产生 8 个 SVG（99,564 B）、runtime manifest 与 repo-only provenance；asset-set revision 为 `sha256:c8f58cb7…93871`，manifest SHA-256 为 `1006f90e…5630`。仓内 Playwright + Edge 的两次 11-case Web 输出闭包 A↔B 12/12 文件逐字节一致；FFDec/Web 与 Flash/Web 比较器的两次输出闭包分别 A↔B 34/34 文件逐字节一致。该确定性不表示跨 renderer 像素一致，两类比较均未设置接受阈值，也不替代 Flash Player 或人工验收。B0-03b 已以 fresh v2 candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a` 闭合生产 PackageReference、共享 strict facade、9 项 embedded resource、actual renderer/deps closure、runtime identity/policy/notice、packer 与全量回归，达到 `renderer_qualified`。B0-05 又完成 typed manifest、物理 scale planner、8-layer atomic raster、PArgb bridge、单 worker latest-wins/16 MiB whole-batch LRU、可观察 dispose，以及 fixed-bounds topology 预检；结构化报告为 `passed / synthetic_fixed_bounds`。紧 PlayerInfo `282×46` 与右上 `252×32` 仍会桥接成 `982×564`、占 viewport 93.90%、面积放大 26.33×，故 HUD-SVG-010 裁决为 `split_required`。这没有注册生产 widget，也没有调用实际 `UpdateLayeredWindow`。B0-03b candidate 严格为 `candidate_built / NOT_DEPLOYED`；同步纳入的上游正式 runtime 已推进为 build identity `3F7887AD…F7B44`、payload closure `A9B142A4…022F2` 与 Core `DADE2CC2…CCA1`，但该正式闭包不包含本 PlayerInfo source-ahead candidate。PlayerInfo 的两正式 builder、promotion、标准入口、B0-04 人工视觉、fixture widget 与真实 `pi_*` 均未由本片取得。
+**当前裁决状态**：高层方案已接受；`Svg.Skia 5.1.1` 已由 HUD-SVG-005 接受并锁定为 B0 受控子集的生产 renderer。B0-01A 已以 Git-canonical r3 证据达到 `placement_closure_frozen`。B0-01B 第七轮由 CS6 15 秒生成 389,160 B fresh TestLoader SWF，并由注册 Debug Player `11,2,202,228` 实际加载 SHA-256 `450b1f…a615` 的玩家信息 child；11 个 1024×64 raw、11 个紧边 crop、4,458,323 B 精确 run block 与 manifest `dcc9e11a…bf472` 均已形成 candidate，事务精确恢复，但人工来源/层/crop/审美复核仍为空，所以尚未达到 `oracle_frozen`。B0-02 strict corpus 已扩至 12/12、78 项 fail-closed（其中 58 项值级 grammar），并对当前 8/8 canonical SVG 结构验证通过；其历史状态仍是 `isolated_qualification_passed`，`rendererQualified=false`，不得回写。B0-04 已产生 8 个 SVG（99,564 B）、runtime manifest 与 repo-only provenance；asset-set revision 为 `sha256:c8f58cb7…93871`，manifest SHA-256 为 `1006f90e…5630`。仓内 Playwright + Edge 的两次 11-case Web 输出闭包 A↔B 12/12 文件逐字节一致；FFDec/Web 与 Flash/Web 比较器的两次输出闭包分别 A↔B 34/34 文件逐字节一致。该确定性不表示跨 renderer 像素一致，两类比较均未设置接受阈值，也不替代 Flash Player 或人工验收。B0-03b 已以 fresh v2 candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a` 闭合生产 PackageReference、共享 strict facade、9 项 embedded resource、actual renderer/deps closure、runtime identity/policy/notice、packer 与全量回归，达到 `renderer_qualified`。B0-05 又完成 typed manifest、物理 scale planner、8-layer atomic raster、PArgb bridge、单 worker latest-wins/16 MiB whole-batch LRU、可观察 dispose，以及 fixed-bounds topology 预检；结构化报告为 `passed / synthetic_fixed_bounds`。紧 PlayerInfo `282×46` 与右上 `252×32` 仍会桥接成 `982×564`、占 viewport 93.90%、面积放大 26.33×，故 HUD-SVG-010 裁决为 `split_required`。B0-06 已实现 fixture-only visual state/animation、程序化 HP/MP 合成、MP 双 fragment、HP 固定轮廓与旋转渐变、source-bound path glyph atlas、独立 click-through layered surface、PanelHost suspend/resume 与启动/关闭 drain；该 surface 只由 allowlist 环境开关显式启用，不注册进现有 `NativeHudOverlay`，旧 Flash HUD 未被隐藏或修改。pre-origin-sync v3 formal qualification 为 `passed`、47/47 Gate，run `261978174b6346228b5f8ba4fd750019`、647,307 B、SHA-256 `21BD10F7…717D`；严格 warmup 在第 3 个 100-cycle group 首次收敛，紧邻独立 100-cycle acceptance 的 process/GDI/USER delta=`0/0/0`。两次 C# 36-file、Web 12-file 与 direct-edge 66-PNG 输出闭包分别逐字节一致，仍只到 `diagnostic_awaiting_human_review`。这些均为 pre-merge freeze；最终 merged tree 的同构重跑仍是 `TBD_FINAL_EVIDENCE`，真实游戏 composite、真实手点透传与审美仍待人类。B0-03b candidate 严格为 `candidate_built / NOT_DEPLOYED`；同步纳入的上游正式 runtime 已推进为 build identity `3F7887AD…F7B44`、payload closure `A9B142A4…022F2` 与 Core `DADE2CC2…CCA1`，但该正式闭包不包含本 PlayerInfo source-ahead candidate。B0 Exit 仍需同一最终冻结 commit 的两正式 builder/quorum，但不要求 promotion 或部署；真实 `pi_*` 也未由本片接入。
 
 ---
 
@@ -23,8 +23,8 @@
 - 已完成窄中间态：B0-04 的 8 个 canonical SVG、runtime manifest、repo-only provenance、strict validator 与 Web、FFDec/Web、Flash/Web 诊断已闭合自动结构门；一次性 converter 原型按 stop-loss 已移出权威工具树且不进入 build，视觉 Gate 等待人工。
 - 已完成：B0-03b 以 fresh v2 candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a` 闭合 `Svg.Skia 5.1.1` / `SkiaSharp 3.119.4` 生产包图、共享 strict facade、8 SVG + manifest 的 9 项 embedded resource、notice、窄 artifact-source tree、actual renderer/deps closure、production policy 与全量回归；HUD-SVG-005 已转为 `accepted`，片状态为 `renderer_qualified / NOT_DEPLOYED`。
 - 已完成：B0-05 的 typed runtime manifest、viewport-height/576 物理 scale、8-layer atomic raster/PArgb、单 worker latest-wins、16 MiB active+inactive whole-batch LRU、100 churn/3000 current-hit 与 fixed-bounds topology 预检；资格报告为 `passed`，裁决为 `split_required`，但不含生产 widget、实际 layered-window commit 或视觉结论。
-- 未完成：B0-06 独立 split surface、fixture widget、程序化 HP/MP、完整 NativeHud/split-surface 性能门、视觉矩阵与最终人工验收。
-- 未改变：AS2 游戏状态/输入/冷却权威、`FrameBroadcaster` 协议、旧 HUD 可见性、药剂拖放命中壳、正式 runtime。
+- 已实现但未退出：B0-06 独立 split surface、fixture widget、程序化 HP/MP、MP 双 fragment、HP 固定轮廓/旋转渐变、path glyph atlas、PanelHost 生命周期与 deterministic C# capture/三方 direct-edge 诊断工具。pre-origin-sync v3 formal qualification 已通过 47/47，C#/Web A/B 与 comparison PNG 闭包也已冻结；它们不是最终 merged tree 证据，最终数值/哈希仍为 `TBD_FINAL_EVIDENCE`，也尚未获得 parity 或人工结论。
+- 未改变：AS2 游戏状态/输入/冷却权威、`FrameBroadcaster` 协议、旧 HUD 可见性与旧 XFL/SWF、药剂拖放命中壳、正式 runtime。fixture surface 是显式 opt-in 的并列诊断面，不会自动隐藏旧 Flash HUD。
 - 总体视觉交付严格状态：`canonical_asset_candidate_validated; awaiting_human_review`。不得把结构化验证、FFDec/Web 指标或未签 Flash candidate 写成 `fixture_static_parity`、`fixture_full_parity`、`runtime_integrated`，更不得写成已部署。
 
 ### 0.3 权威顺序
@@ -71,7 +71,7 @@
 
 **Oracle 轨**：对 B0-01B 第七轮 Flash candidate 完成人工来源、状态、层隔离、crop 与审美复核，并形成 review receipt。等待人审不阻塞无关结构施工；未签前只能保持 `candidate_captured; awaiting_human_review`，不得写成 `oracle_frozen`。
 
-**工程轨**：B0-05 已完成 raster/cache/PArgb 与 fixed-bounds topology 预检，裁决为 `split_required`。B0-06 从独立 split surface、fixture visual state 与程序化 HP/MP 开始；`canonical_asset_candidate_validated` 足以施工结构，但 MP fill 分片、HP 固定轮廓/旋转渐变与 path glyph atlas 必须先闭合，人工签收仍阻断 B0-04 视觉退出、B0-06 parity 结论和最终 B0 接受。
+**工程轨**：B0-05 已完成 raster/cache/PArgb 与 fixed-bounds topology 预检，裁决为 `split_required`。B0-06 已实现独立 split surface、fixture visual state、程序化 HP/MP、MP fill 分片、HP 固定轮廓/旋转渐变与 path glyph atlas；pre-origin-sync formal qualification 与双份视觉确定性已闭合，但最终 merged tree 重跑、双 builder/quorum 和人工签收仍阻断 B0-06 parity 结论和最终 B0 接受。
 
 精确 HP/MP 比例状态目前没有安全、确定性的只读注入入口：`/console` 权限过宽，真实存档也不保存可复现实例态。B0-01B 因此另用**测试专用** TestLoader scratch/fixture 驱动已发布 child SWF，固定 HP/MP frame、文字以及三个装饰播放头；静态 corpus 中 light 固定后隐藏并回报 hidden。它不得接生产 `AgentControl`、不得读写真实存档、不得修改旧 XFL。只有截图、实际 loader/player/SWF/closure 身份和人工复核均闭合后才可声明 `oracle_frozen`。
 
@@ -141,7 +141,10 @@ Flash 帧只在转换期承担两种角色：
 B0 fixture 只提供测试输入：
 
 ```text
-PlayerInfoFixture → PlayerInfoVisualState → PlayerInfoWidget
+PlayerInfoFixture
+  → PlayerInfoSplitSurface-owned PlayerInfoAnimationModel
+  → IPlayerInfoVisualStateSource
+  → PlayerInfoWidget
 ```
 
 真实接入仍只有：
@@ -150,10 +153,11 @@ PlayerInfoFixture → PlayerInfoVisualState → PlayerInfoWidget
 AS2 PlayerInfoState(cur/target)
   → frameEnd 批量 FrameBroadcaster.pushUiState
   → NativeHudOverlay full snapshot
+  → B1 runtime adapter / IPlayerInfoVisualStateSource
   → PlayerInfoWidget
 ```
 
-fixture adapter 与 runtime adapter 只能实现同一个只读 visual-state 接口；fixture 代码不得进入生产数据源选择，不得反向写游戏。B0 是总体阶段 4/5 的无业务信号预备切片，不是重开已经完成的“阶段0 行为基线”。
+fixture model 与未来 runtime adapter 只能经同一个 getter-only visual-state 接口供 painter 读取；B0 中 `PlayerInfoSplitSurface` 是 `PlayerInfoAnimationModel` 的唯一 owner/推进方，widget 不保存 model，也不暴露 mutation proxy。fixture 代码不得进入生产数据源选择，不得反向写游戏。B0 是总体阶段 4/5 的无业务信号预备切片，不是重开已经完成的“阶段0 行为基线”。
 
 ### 2.4 首版使用 embedded resource
 
@@ -199,7 +203,7 @@ player-info-hud converter ── validate/fail-closed
                          ▼
           8-layer Format32bppPArgb batch cache
                           │
-fixture / PlayerInfoState ── visual state machine
+fixture / PlayerInfoState ── surface-owned visual state machine
                           │  clip / transform / alpha / text
                           ▼
                  PlayerInfoWidget.Paint
@@ -223,7 +227,13 @@ launcher/src/Guardian/Hud/PlayerInfo/
   PlayerInfoWidget.cs
   PlayerInfoVisualState.cs
   PlayerInfoAnimationModel.cs
+  PlayerInfoFrameCompositor.cs
+  PlayerInfoPathGlyphAtlas.cs
+  PlayerInfoPathGlyphAtlas.Generated.cs
+  PlayerInfoRasterPlan.cs
+  PlayerInfoRasterPipeline.cs
   PlayerInfoSvgRasterizer.cs
+  PlayerInfoSplitSurface.cs
   Assets/
     player-info.manifest.json
     hp/backplate.svg
@@ -241,6 +251,10 @@ tools/player-info-hud/
   capture-ffdec-reference.ps1
   compare-ffdec-web-svg.js
   compare-flash-web-svg.js
+  compare-b0-06-csharp-web-flash.js
+  generate-player-info-glyph-atlas.py
+  run-b0-05-runtime-qualification.ps1
+  run-b0-06-runtime-qualification.ps1
   evidence/
     b0-01/
       closure.json
@@ -248,12 +262,21 @@ tools/player-info-hud/
     b0-04/
       conversion-provenance.json
       canonical-validation-report.json
+    b0-05/
+      runtime-qualification.json
+    b0-06/
+      glyph-atlas-provenance.json
+      runtime-qualification-attempts.json
+      runtime-qualification-premerge-v3.json
+      visual-evidence-premerge-v3.json
+      runtime-qualification.json          # final merged tree，尚未生成
+      visual-evidence.json                # final merged tree，尚未生成
   renderer-qualification/
 
 launcher/tests/Guardian/Hud/PlayerInfo/
 ```
 
-`Assets/`、四个诊断工具、qualification、B0-04 evidence、生产 `PlayerInfoStrictSvg` / `PlayerInfoSvgAssetCatalog` 与专属 focused tests 已形成；`PlayerInfoWidget`、visual state、animation model 与 rasterizer 仍是后续目标。闭包规模很小，B0 不另建一套通用 JSON Schema 目录；manifest/closure 规则由窄 validator 与 focused tests 持有，只有 B2 扩域后出现第二个真实消费者才考虑抽出 schema。现役 SDK glob 已递归收集 `launcher/tests/Guardian/Hud/PlayerInfo/`，无需另造 test runner；qualification 通过 compile link 复用生产 strict facade，不保留第二份 validator。中央高冲突文件（csproj、包版本、lockfile、runtime inputs）只在 B0-03b 集中落盘，没有和 widget/美术实现混片。
+`Assets/`、诊断/qualification 工具、B0-04 evidence、生产 `PlayerInfoStrictSvg` / `PlayerInfoSvgAssetCatalog`、raster pipeline，以及 B0-06 的 `PlayerInfoVisualState`、`PlayerInfoAnimationModel`、`PlayerInfoFrameCompositor`、`PlayerInfoPathGlyphAtlas`、`PlayerInfoWidget`、`PlayerInfoSplitSurface` 与专属 focused tests 已形成。`PlayerInfoSplitSurface` 唯一持有/推进 fixture `PlayerInfoAnimationModel`；`PlayerInfoWidget` 只消费注入的 `IPlayerInfoVisualStateSource`，不持有 model 或 mutation proxy。widget 仍是 fixture-only 内部绘制单元，不实现现役 `INativeHudWidget`，也没有真实 UiData adapter；独立 surface 不是 `NativeHudOverlay.RegisterWidget` 的成员。闭包规模很小，B0 不另建一套通用 JSON Schema 目录；manifest/closure 规则由窄 validator 与 focused tests 持有，只有 B2 扩域后出现第二个真实消费者才考虑抽出 schema。现役 SDK glob 已递归收集 `launcher/tests/Guardian/Hud/PlayerInfo/`；这是有意的领域聚合，仍由现有 `Launcher.Tests.csproj` 递归 glob 收集，不新建测试工程。B0-05/B0-06 各自只有窄 qualification runner。qualification 通过 compile link 复用生产 strict facade，不保留第二份 validator。中央高冲突文件（csproj、包版本、lockfile、runtime inputs）只在 B0-03b 集中落盘，没有和 widget/美术实现混片。
 
 ### 4.2 Runtime manifest 与 provenance evidence 分离
 
@@ -402,7 +425,7 @@ production policy 不会因为存在新的 launcher xUnit 就自动执行它，�
 - **当前单片准入证据**：完整 renderer corpus、依赖/许可/native/payload、9 embedded、source exact bytes、notice、candidate 实际 DLL/native/deps exact closure 与防御负例，已由 §12 的 fresh v2 candidate + policy/全量测试闭合；
 - **长期回流保护**：`candidate-player-info-svg-contract` 已接入 `Get-Cf7ProductionChecks`，对每个待签 receipt 的 exact candidate 重跑 locked production contract；policy 自测固定其项目根、candidate 根、锁定 SDK 与 fail-closed 调用。
 
-两类正式 builder 的 locked restore 与一致 identity/closure 仍是独立的正式发布/B0 Exit 门；本地 candidate 或 production policy 通过不能替代真实跨 faultDomain 证据。该 policy/构建门槛变化已同步 runtime/testing canonical docs；只补 xUnit 或只取得一次 candidate 报告都不得写成“已 promotion / 已部署”。
+两类正式 builder 的 locked restore 与一致 identity/closure 仍是独立的正式发布/B0 Exit 门；本地 candidate 或 production policy 通过不能替代真实跨 faultDomain 证据。B0 最终只授权证明 quorum、不授权部署，因此使用现役 `promote-runtime-bundle.ps1 -VerifyOnly -ReportPath <absolute-new-json>` 重放同一 production 验证链并留下 `cf7-runtime-promotion-preflight.v2`；该报告明确不可作为 promotion 输入，且 runtime/release-state/promotion/deployment 均不改变。不得另造平行 verifier，正式 promotion 仍必须去掉 VerifyOnly 重新跑全链。该 policy/构建门槛变化已同步 runtime/testing canonical docs；只补 xUnit 或只取得一次 candidate 报告都不得写成“已 promotion / 已部署”。
 
 ---
 
@@ -516,7 +539,7 @@ MP 的 shape tween 不保存 101 份路径。B0-01A/B0-04 应提取最少关键 
 ### 7.3 Runtime 约束
 
 - 静态层稳态零 SVG parse/raster；只 draw 已缓存 PArgb bitmap。
-- `PlayerInfoWidget.WantsAnimationTick` 仅在 ratio 过渡、有限动效或确有启用的环境光效时为真。
+- `PlayerInfoAnimationModel.WantsAnimationTick` 仅在 ratio 过渡或有限动效时为真，由 `PlayerInfoSplitSurface.UpdateAnimationTimer()` 读取；widget 不拥有动画时钟。B0 未启用永久环境光效。
 - `PlayerInfoWidget.TryHitTest` 必须恒返回 false；B0 是只读镜像，不能因 NativeHud overlay 自身可命中而吞掉游戏区点击。
 - decorative loop 不得无条件把整层永久拉进高频 repaint；B0 默认静态首帧，B3 再用测量决定 tick rate。
 - 当前 overlay 最短重绘约 33 ms，单个 widget 请求动画仍会重画全部可见 widget 并提交 union；B3 永久环境动画必须先通过全 union 成本门，必要时另做局部子合成。
@@ -525,6 +548,23 @@ MP 的 shape tween 不保存 101 份路径。B0-01A/B0-04 应提取最少关键 
 - `TryUseCurrent` 只在所有权锁内借用 current batch；Bitmap 不得逃逸，回调内 `Request/Dispose` 必须 fail-closed，且回调不得同步等待另一线程的 pipeline mutation，避免可重入 Monitor 提前销毁或跨线程互等。`Dispose` 必须丢弃排队通知，并在非观察者线程调用时等待正在执行的通知退出；返回后不得再投递旧 `BatchPublished`。B0-05 的 `Dispose` 对 active raster worker 只发 cancel，不冒充同步终止；并发 shutdown 的资源终点是随后 `await WaitForIdleAsync()`，B0-06 接入 surface 时必须显式 drain，或先另行转正为可证明无自等死的同步释放合同。
 - 输出统一为 `Format32bppPArgb`，覆盖透明边、半透明渐变和 premultiplied BGRA 对照。
 - B0-05 的 PlayerInfo 专用管线只缓存原子 8-layer batch；active+inactive 合计 16 MiB，单 worker latest-wins，旧 batch 只在新 batch 完整成功后换入。它沿用 byte-budget/LRU 范式，不创建无预算全局字典，也不冒充通用 `BitmapLruCache` 实例。
+
+### 7.4 B0-06 已实现边界
+
+- `CF7_PLAYER_INFO_FIXTURE_CASE=<allowlisted-case>` 是唯一进程入口；空值保持完全不创建，`--bus-only`、`useNativeHud=false` 或非 exact allowlist 值均 fail-closed。现役 11 case 是 `empty/min_step/p25/p50/p75/p99/full/mp_vf34/mp_vf35/mp_vf70/mp_vf91`，只供 fixture/取证，不是用户配置或生产数据源选择。
+- `PlayerInfoFixtureInput → surface-owned PlayerInfoAnimationModel / IPlayerInfoVisualStateSource → PlayerInfoWidget` 保持只读单向关系；surface 是 model 的唯一 owner/推进方，widget 不持有 model 或任何写代理。`PlayerInfoWidget.TryHitTest` 恒 false，不实现真实 UiData consumer，也不存在 `pi_*`。`PlayerInfoSplitSurface` 是单独的 `OverlayBase` / `IPanelHudCompanion` HWND，按 tight bounds 定位、继承 click-through/`HTTRANSPARENT`，不会改变现役 NativeHud union。
+- MP fill 在 bake 时按 manifest 的两个 clip binding 生成独立、不可变、由 batch 所有的 PArgb fragment；合成器按虚拟帧建立 mask。HP 把固定覆盖轮廓与 `hp-fill-gradient-0003` 坐标旋转分开，不能旋转轮廓。数字使用由 XFL/SWF 来源与生成器身份约束的 Aero/LCD Std path glyph atlas，不读取机器字体，不新增运行时字体依赖。effect policy 以 typed disposition 固定为一个 B0 `ImplementedActive` 层（动态文字与 Glow）和两个 `DeferredB3` HP 层；`PlayerInfoCompositionRecipe` 只冻结当前七个文字布局与 HP paint source，compositor 对 disposition/ID 漂移 fail-closed，不建立通用效果图。
+- Program 只在全部入口条件满足后发布 surface ownership，并明确记录“old Flash HUD remains untouched”；fixture 创建失败即清理候选并保留旧 HUD。PanelHost 开/关会 suspend/resume 该 companion；Resume 先置 `_resumePending`，只有 viewport/plan 有效且 `Pipeline.Request(plan)` 已建立时才清除，布局暂时无效或 request 失败会等下一次布局事件重试，不能出现“Host 已恢复但 surface 永久隐藏”的假成功。启动先透明 precommit，reveal 后 ready，owner 隐藏/关闭时停止 timer，shutdown 先 `BeginShutdown`，再等待 raster pipeline idle 后 dispose，旧 batch/迟到通知不得越过终点。
+- 当前 computer-use connector 在 2026-07-29 会话初始化时因 native pipe 缺失（Windows error 2）不可用。该环境故障不削弱 headless Edge/Playwright、实际 HWND/ULW qualification 或结构化 capture，但它也不能被自动化截图“补算”为真实手点、实际游戏 composite 或审美接受；后三项必须由人类完成。
+
+### 7.5 B1 visual-state 接口与字段草案审阅
+
+2026-07-29 对 B0→B1 交接面完成一次显式审阅，结论为 `reviewed_draft_not_integrated`：
+
+- 接受当前 `internal IPlayerInfoVisualStateSource` 作为 B0 内部渲染 seam：它只有 `PlayerInfoVisualState VisualState { get; }`，没有 setter、事件、总线依赖或反向写游戏状态的能力。B0 中 `PlayerInfoSplitSurface` 唯一持有并推进 `PlayerInfoAnimationModel`，`PlayerInfoWidget` 只读消费注入接口；B1 不得把 adapter 的可变 snapshot 直接泄漏给 painter。
+- B1 wire 草案只保留总体 ADR §2.1 已登记的四个原值字段：`pi_hp`、`pi_hpMax`、`pi_mp`、`pi_mpMax`。C# 仍按冻结公式生成 `cur/target` 与 41-tick 等完整缓动序列；不新增影子 frame、百分比文本或通用 CharacterBuild stats 适配。
+- 这四个名称只是经审阅的协议草案，不是本轮 schema/runtime 事实。当前 `launcher/src` 没有 `pi_*` 字段、`IUiDataConsumer` 实现或 PlayerInfo adapter；B0 fixture allowlist 也不能作为生产入口。因此本结论不得写成 `runtime integrated`。
+- B1 在落第一行协议代码前必须另行冻结：frameEnd 原子 snapshot 边界、epoch/sequence 的生成与比较规则、断线/重连/切场景的失效与全量重同步、乱序/重复/缺包处置，以及 invalid 值究竟由 AS2 发布层还是 C# adapter 裁决。未完成这些决策时，`invalid_input` 不能被改称 `stale`，也不能用 last-known-good 无限掩盖旧 epoch。
 
 ---
 
@@ -564,6 +604,9 @@ MP 的 shape tween 不保存 101 份路径。B0-01A/B0-04 应提取最少关键 
 - B0-06 在“全部现役 NativeHud widget 可见 + 视觉矩阵最大 viewport/DPI”下跑 fixture hidden/enabled 的 3000 visual-step A/B。现有 `NativeHudOverlay` 不得因独立 PlayerInfo surface 改变 union；对有可比提交样本的相同工作负载，其 commit p95 回退不得超过 10%。若 hidden 侧提交数为 0，只比较计数/绝对值，禁止对 0 分母制造相对通过。
 - B0-06 的 PlayerInfo split surface 单独记录 `repaintRequest / paint / commit / UpdateLayeredWindow` count 与 p50/p95/p99/max、tight surface 像素/字节；每个可见状态步最多 1 次 repaint、1 次 paint、1 次 commit，UI 同步工作 p95 `≤4 ms`，实际 split commit p95 必须 `<33 ms`。相对门与绝对门是独立拒绝条件，不得沉默放宽。
 - B0-06 同时记录进程 CPU、managed allocation/GC、working-set、process/GDI/USER handle delta；前四项只诊断，handle 无净增长和长循环无单向线性增长仍是 Gate。idle 3000 tick 中 PlayerInfo split surface 的 repaint/commit 必须为 0；永久装饰 tick 不属于 B0。
+- B0-06 专用 runner 已实现 exact SDK 10.0.300、locked restore、单一 opt-in STA HWND/ULW test、fresh runId、canonical LF/无 BOM、报告源/二进制/renderer closure 自身份和 runner 侧重算；测试合同固定 3000 visible visual steps、3000 idle ticks和独立 100 次真实 HWND/surface acceptance lifecycle。lifecycle acceptance 前先在同一 STA/owner 上运行 1–5 个完整 100-cycle excluded warmup group；只有 GDI/USER/process handle 的全部 checkpoint 均不高于该组起点、端点 delta 均不为正且三类都无正向单调趋势时才首次收敛。首次收敛后立即运行一个新的、相邻的 100-cycle acceptance group；若五组仍不收敛，后续只能标 `diagnostic_after_warmup_cap`、`acceptanceMeasurementEligible=false`，第 47 个 `surface_lifecycle_warmup_converged` Gate 必须失败。
+- 两个被拒的 pre-merge run 已由 `runtime-qualification-attempts.json` 固化：v1 run `12f54a0…a3069cb6` 为 622,378 B / SHA-256 `01E68211…D867F`，USER `+2`、process `+35` 且 USER 呈正向趋势，仅 43/46；v2 run `4c3101b…43ae` 为 629,595 B / SHA-256 `C3FB74E7…2011`，固定一组 100-cycle warmup 后 acceptance 仍为 USER `+1`、process `+3` 且二者均呈正向趋势，也仅 43/46。没有为通过而放宽原始零增长或趋势门。
+- pre-origin-sync v3 报告 `runtime-qualification-premerge-v3.json` 为 canonical LF、无 BOM，run `261978174b6346228b5f8ba4fd750019`、647,307 B、SHA-256 `21BD10F720280057F0A2F801B35619803AE29D8411F8D8E0AD2335A74BCA717D`，47/47、0 failure。三个 warmup group 的 process/GDI/USER endpoint delta 依次为 `+37/0/+1`、`+2/0/+1`、`-5/0/0`，第三组首次满足完整 envelope；紧邻 acceptance group 为 `0/0/0` 且三类趋势全 false。NativeHud hidden/enabled commit p95=`7.2358/7.1857 ms`、回退 `-0.6924%`；split surface/request/paint/commit/ULW-only p95=`3.6404/0.0588/2.2657/1.1058/0.2080 ms`；3000 visible 的 request/paint/commit 均为 3000，3000 idle 均为 0。它只证明 pre-merge sourceTrace closure；最终 merged tree 接受报告仍为 `TBD_FINAL_EVIDENCE`。
 
 这些是 B0 的可审阅初值。修改阈值必须在台账记录测量机器、样本和原因，不能沉默放宽。
 
@@ -580,6 +623,12 @@ processCpuMs / allocatedBytes / gcCounts / workingSetDelta
 ```
 
 截图只能作为报告附件；没有结构化结果不能声称 Gate 通过。
+
+### 8.5 B0-06 视觉取证状态
+
+`PlayerInfoB006VisualCaptureTests` 已实现 opt-in、空输出目录、production compositor 直出的结构化捕获：11 case 的 1024×64 透明 full-stage 与 tight crop，四组 viewport/content/DPI 的 full/half/empty，以及 HP full→empty 41 次变化加初始态的 contact sheet。manifest 明确只到 `structural_capture_complete / fixture_only`，排除 Flash/Web parity、阈值、游戏 composite、人工接受、真实 UiData 和部署。
+
+正式收尾必须在两个独立空目录各运行一次 C# capture，并与两份 Web capture 分别形成 direct C#↔Web、C#↔Flash 诊断；比较器只输出 RGBA8/固定深色背景指标、overlay/diff/side-by-side 与输入闭包，不设阈值、不计算 Web↔Flash 边、不作传递推断。pre-origin-sync `visual-evidence-premerge-v3.json` 已绑定：C# A/B 各 36 文件、796,806 B，directory closure `37B4037B…1135D` 且 manifest `2DA576FB…73F7`；Web A/B 各 12 文件、120,280 B，closure `725BC44B…D5CA` 且 report `A9B0164E…887F`；两次 direct-edge 各 66 PNG，排除自引用 report 的输出 closure 均为 `87EA77C…E9668`。两份 comparison report 因如实保留 `-a/-b` 输入路径而分别为 `DA5A7293…F4353` 与 `0A657DEB…079D`，其 66 PNG 逐字节一致。该状态仍为 `diagnostic_awaiting_human_review`；最终 merged tree 的 A/B manifest/closure/hash 仍为 `TBD_FINAL_EVIDENCE`。Flash candidate 仍为未签 oracle，人类还必须查看透明 crop、真实游戏 composite、关键比例/平滑与手工鼠标透传。
 
 ---
 
@@ -600,7 +649,7 @@ processCpuMs / allocatedBytes / gcCounts / workingSetDelta
 | B0-06 | fixture-only `PlayerInfoWidget`、HP/MP clip/虚拟帧缓动、独立 click-through split surface、Web/C#/Flash layout harness | 全视觉矩阵 + 双 surface 3000 tick/实际 ULW；旧 HUD 未隐藏 | 不新增真实 `pi_*`，不注册进现有 NativeHud union |
 | B0-07 | Kimi k3 异构对抗、问题处置、决策转正、B0 验收记录、B1 接口冻结、人工视觉/UI验收 | §9.4 + §11 exit checklist 全满足 | 不顺手扩韧性/经验，不由自动指标代签审美 |
 
-依赖关系：B0-01A、B0-02、B0-03a 在 B0-00 后可并行；B0-01B 等 B0-01A，但可与 B0-02 并行。B0-04 明确依赖 B0-01A + B0-02 后方可开始；其 `canonical_asset_candidate_validated` 结构入口足以启动 B0-03b，也足以在 B0-03b 后启动 B0-05。B0-01B 的 accepted oracle/人工签收只阻断 B0-04 视觉 Exit、B0-06 parity 结论和最终 B0 接受，不阻断 B0-03b/05 的无关结构施工。B0-06 的结构实现现已由 B0-05 放行，但在声明 parity 前还必须闭合 MP fill 独立 mask 分片、HP 固定轮廓/旋转渐变与 path glyph atlas；视觉结论另等 B0-04 人工 Exit。
+依赖关系：B0-01A、B0-02、B0-03a 在 B0-00 后可并行；B0-01B 等 B0-01A，但可与 B0-02 并行。B0-04 明确依赖 B0-01A + B0-02 后方可开始；其 `canonical_asset_candidate_validated` 结构入口足以启动 B0-03b，也足以在 B0-03b 后启动 B0-05。B0-01B 的 accepted oracle/人工签收只阻断 B0-04 视觉 Exit、B0-06 parity 结论和最终 B0 接受，不阻断 B0-03b/05 的无关结构施工。B0-06 已闭合 MP fill 独立 mask fragment、HP 固定轮廓/旋转渐变、path glyph atlas 与独立 surface 的代码结构；其退出仍依赖正式 qualification、双份视觉证据、B0-04 人工 oracle Exit、真实手点和最终人类视觉/UI签收。
 
 ### 9.2 B0 后续
 
@@ -615,7 +664,8 @@ processCpuMs / allocatedBytes / gcCounts / workingSetDelta
 
 - 装备栏/双栏工作台机器：拥有物品投影、装备/药剂交互、管理面板及相关协议。
 - 本 B0：只读旧玩家 HUD，拥有新 `PlayerInfo` C# 目录、HUD SVG/manifest、专用 converter/harness。
-- 共享高冲突文件：csproj、`Directory.Packages.props`、`packages.lock.json`、`runtime-inputs.v2.json`、workflow、`launcher/README.md`。只在 B0-03b 集中修改，开片前先确认另一机器没有同文件未落变更；B0-03a 只碰 resolver/setup-check 及其 focused test/docs，不夹带包图。
+- 共享高冲突文件：csproj、`Directory.Packages.props`、`packages.lock.json`、`runtime-inputs.v2.json`、workflow、`Program.cs`、`PanelHostController.cs`、`launcher/README.md`。包图/identity 文件只在 B0-03b 集中修改；B0-06 只为独立 fixture surface 触及 Program/PanelHost 生命周期，不顺带改协议或现役 widget。开片和收尾都先确认另一机器没有同文件未落变更；B0-03a 只碰 resolver/setup-check 及其 focused test/docs，不夹带包图。
+- B0-06 先把本地候选报告/视觉输入冻结为可审计的 pre-merge 记录，再在独立 clean worktree **集中 merge** 当时的 `origin/main`，按“上游正式 runtime 真值优先、PlayerInfo source-ahead/fixture-only 边界保留”解决冲突并重跑受影响 Gate；不要在未冻结候选输入的脏工作树上连续 rebase。只有合并后新 tree 重建的 qualification/视觉身份才可替换 `TBD_FINAL_EVIDENCE`，pre-merge 哈希不得冒充最终证据。
 - B0/B1 可并行于装备栏迁移；只有 B4 的药剂命中壳退场受物品/药剂主线阻塞。
 - 任何“顺手改旧药剂槽/装备槽”的需求移交对应主线，不扩 B0。
 
@@ -734,7 +784,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | MP `装饰信息` 在 source frame 69/90 改变几何/颜色，单一 rim 会丢关键状态 | 保留 `mp.rim`、`mp.rim-vf70`、`mp.rim-vf91` 三个 authored key variant；manifest 以 virtual frame 1/70/91 切换，不保存逐帧序列 |
 | `mp.fill` 当前单个 SVG 同时含左右槽/装饰/背景四个 group，而左右 mask 绑定不同几何 | B0-06 在 bake 侧按稳定 group ID 生成独立 immutable fragment，或先正式拆 canonical asset/递增 revision；禁止对扁平整图套 union mask 后声称 parity |
 | HP fill 的 source 时间线只旋转渐变坐标，当前静态位图同时包含固定轮廓与渐变 | B0-06 使用固定 coverage/contour + 程序化旋转渐变或等价 texture paint；禁止旋转整张 bitmap，未闭合前不声明 HP 动态 parity |
-| B0 尚无 `0-9 / %` 的 path glyph atlas，机器字体会引入版本与许可漂移 | 只从已绑定的 Flash embedded font source 一次性提取最小 path/advance/baseline atlas并登记 provenance/许可；runtime 不加载 TTF、不使用系统/GDI font 冒充 parity |
+| path glyph atlas 的 source SWF、FFDec 导出字节或 generator 身份漂移，机器字体又会引入版本与许可差异 | 已从 source-bound child SWF 经 FFDec 21.1.1 导出 LCD Std/Aero，生成 `0-9 / %MP-` 的最小 path/advance/baseline atlas；Generated.cs 为 10,331 B、SHA-256 `B15CA80E…5D66`，provenance SHA-256 `9486BEEB…DC3D`。runtime 不分发 TTF、不使用系统/GDI font；任何源 SWF/字体导出/generator 改变都必须重生成并重跑 closure Gate |
 | PArgb 转换产生黑边/色晕 | 透明边、半透明 gradient、BGRA premultiply 专项测试 |
 | converter 变成无底洞 | 只做 HP/MP active subset；允许有 provenance 的手工 canonical SVG |
 | DPI/resize 导致缓存抖动或陈旧图 | pixel-size key、取消旧 bake、原子换入、byte-budget LRU |
@@ -745,9 +795,9 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | CS6 已 fresh publish、Debug Player owned PID 正常响应但 trace 保持 0 B | 已定位为旧 `ArgumentList` 留下尾部字面 `"`，实际未加载 SWF；r9 固定 `scripts/` cwd + 无引号 `TestLoader.swf` token 并反向解析到精确目标。正式重采仍按 exact PID fail-closed 并恢复 TestLoader AS/SWF，不延长超时掩盖、也不回退 release player |
 | 高完整性 Flash authoring 存活但 `Get-Process.Path` 为空 | r10 用 `OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)` + `QueryFullProcessImageNameW` 读取精确路径，并继续与唯一 `\FlashCS6Task` action 和磁盘 identity 交叉绑定；不因 MainModule 不可读而把进程身份降级为名称 |
 | 模板请求 `Stage.align="TL"`，Player 11.2 回读 `"LT"` | r11 分别冻结 requested/reported token，parser 只接受实测 `"LT"`；仍要求 `noScale`、500×500 runtime stage 与 1024×64 identity draw，不把任意 align 值当等价 |
-| 整座 HUD 的 `玩家必要信息界面` 含 BitmapFill | HP/MP closure 明确排除且当前为 0 bitmap；B2 扩域时重新审计两个 `bin/*.dat` payload，不用 `<image>` 偷渡 |
-| fixture-first 误接成第二状态权威 | adapter 接口隔离；B0 禁止真实 `pi_*` 与 AS2 写路径 |
-| 上游 CharacterBuild 的 `PlayerInfoSnapshotBuilder` / `loadout_response` 被误当成 HUD 状态源 | 该链路是 9 组 / 47 行低频 stats 投影，缺 current HP/MP、cur/target、epoch/sequence；B0-06 只接显式 fixture → `PlayerInfoHudVisualState`，禁止 groups 通用适配或复用 `CharacterBuildTask`。其 `stats_unavailable` allowlist 与嵌套 schema 两项 medium 独立跟踪，不借 B0 修补 |
+| 整座 HUD 的 `玩家必要信息界面` 含 BitmapFill，且初看 `LIBRARY/image/` 不存在易误判 payload 缺失 | HP/MP closure 明确排除且当前为 0 bitmap；两个小位图 payload 实际位于 `bin/M 2 1716646761.dat` 与 `bin/M 1 1716646761.dat`。B2 扩域时重新审计引用闭包和精确 CS6 publish fidelity，不用 `<image>` 偷渡，也不能按“缺图”或“已安全”任一方向先验裁决 |
+| fixture-first 误接成第二状态权威 | surface 唯一持有/推进 fixture model，widget 仅 getter-only 消费；B0 禁止真实 `pi_*` 与 AS2 写路径 |
+| 上游 CharacterBuild 的 `PlayerInfoSnapshotBuilder` / `loadout_response` 被误当成 HUD 状态源 | 该链路是 9 组 / 47 行低频 stats 投影，缺 current HP/MP、cur/target、epoch/sequence；B0-06 只接显式 fixture → `PlayerInfoVisualState`，禁止 groups 通用适配或复用 `CharacterBuildTask`。其 `stats_unavailable` allowlist 与嵌套 schema 两项 medium 独立跟踪，不借 B0 修补 |
 | asset 未进 build identity | runtime-input regression：改任一 SVG 必改 identity 与 Core closure |
 | `resolve-dotnet.ps1`/`setup-check.ps1` 与 `rollForward:disable` 口径不一致 | 独立 B0-03a 统一为精确 SDK 命中并做 only-10.0.301 等负例；两 builder 记录实际 `dotnet --version` |
 | 与装备栏机器冲突 | B0-03b 集中共享文件；其余只写新目录；旧 XFL 只读 |
@@ -755,6 +805,7 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | 左下 PlayerInfo 与顶部/侧边 widget 被单一外接 union 合成，HP/MP 过渡时近全屏提交 | B0-05 已测得 tight envelope 仍占 viewport 93.90%、放大 26.33×，接受 `split_required`；B0-06 用独立 click-through surface 并实测双 surface，不得回并现有 union |
 | 永久动效使所有 NativeHud widget 常态 union 重绘 | B0 默认静态；B3 先测全 union，超预算则局部子合成或保持静态 |
 | 资产损坏导致战斗信息全空 | 双轨期加载失败即隐藏 Native widget、保留 Flash；B4 退壳前补不依赖 SVG 的最小 GDI 数字/条形 fail-safe |
+| 当前 computer-use native pipe 不可用，自动化误把无头截图当真实桌面交互 | 无头 Edge 只做 Web/SVG 与 direct-edge 诊断，实际 HWND/ULW 由专用 STA qualification 测；真实游戏 composite、真实手点透传、层级遮挡与审美必须由人类在桌面环境验收，connector 恢复也不能代替签收 |
 
 ### 11.2 Stop-loss
 
@@ -773,18 +824,18 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 - [x] `Svg.Skia` 决策由 provisional 转为 accepted，或已有修订 ADR 明确替代候选。
 - [x] 依赖/许可证/native/security/payload-size 审计有结构化证据。
 - [x] B0-03a exact SDK selector/setup-check 的 only-10.0.301 等负例与 repo-root exact-positive 通过。
-- [ ] 两类正式 builder 可 locked restore，并对同一冻结源形成一致 build identity / payload closure。
+- [ ] 两类正式 builder 可 locked restore，并对同一冻结源形成一致 build identity / payload closure；最终以同一 production promotion 验证链的 `-VerifyOnly` 报告留证，不执行 promotion/deployment，也不把报告回灌为发布输入。
 - [x] canonical SVG/manifest exact closure 已冻结；8 个 SVG 共 99,564 B，asset-set revision `sha256:c8f58cb7…93871`、exact manifest SHA-256 `1006f90e…5630`；strict corpus 12/12、78/78 fail-closed（其中 58 项值级 grammar），Web 两次输出闭包 A↔B 12/12 字节相同。
 - [x] SVG/JSON 与包图进入 artifact source；改资产会改变 build identity 与 Core payload closure。
 - [x] production policy 有快速 SVG grammar/hash/closure 回流保护，不能只靠一次性 xUnit。
 - [x] B0-05 raster pipeline 只在新 7-field batch key bake；3000 次 current-key 请求的 parse/raster/publish delta=`0/0/0`。这不等于真实 widget tick 已测。
 - [x] 物理 scale 已冻结为 Flash content viewport height / 576，monitor DPI 只作 physical-coordinate telemetry；PArgb、透明边、四 viewport/letterbox、16 MiB cache、100 churn、dispose 与 synthetic bake 门通过。
 - [x] fixed-bounds topology 报告已接受 `split_required`；B0-06 不得把 PlayerInfo 注册进现有 `NativeHudOverlay` union。
-- [ ] 最大 viewport/DPI 的 3000 tick A/B 已覆盖完整 NativeHud union repaint/commit；计数/UI p95/union 面积与 handle/长循环 Gate 满足 §8.3，CPU/alloc/GC/working-set 已记录供诊断。
-- [ ] fixture HP/MP 静态视觉矩阵与虚拟帧缓动通过，deferred effect 有显式清单，旧 HUD 未隐藏。
-- [ ] `PlayerInfoWidget.TryHitTest` 恒 false 的 focused test 与真实窗口鼠标透传手点均通过。
-- [x] `launcher/README.md`、testing guide、总体迁移 ADR 与本台账同步现状。
-- [ ] B1 的 visual-state 接口和真实字段草案已审阅，但尚未被误报为 runtime integrated。
+- [ ] B0-06 正式 qualification 已在最终 tree 以 3000 visible + 3000 idle + 独立 100 lifecycle acceptance 覆盖完整 NativeHud union 与独立 split surface；计数/UI p95/union 面积、真实 ULW、handle/长循环 Gate 满足 §8.3，CPU/alloc/GC/working-set 已记录。pre-merge v3 已 47/47，但最终 merged tree 证据仍为 `TBD_FINAL_EVIDENCE`。
+- [ ] fixture HP/MP 静态视觉矩阵与 41-tick HP full→empty 已由最终 tree 的两份独立 C# capture、两份 Web capture 和两份 direct-edge comparison 绑定；deferred effect 有显式清单，旧 HUD 未隐藏。pre-merge A/B 已闭合确定性，最终 manifest/report/hash 仍为 `TBD_FINAL_EVIDENCE`。
+- [ ] `PlayerInfoWidget.TryHitTest` 恒 false 的 focused test、surface `HTTRANSPARENT` 自动合同与真实窗口鼠标透传手点均通过；前两项不得代签最后一项。人类手点证据：`TBD_FINAL_EVIDENCE`。
+- [ ] `launcher/README.md`、testing guide、总体迁移 ADR 与本台账已同步最终 tree 结果，并在同一提交通过 doc governance 与 `git diff --check`。
+- [x] B1 的 visual-state 接口和四字段草案已按 §7.5 审阅，结论为 `reviewed_draft_not_integrated`；epoch/sequence、重连与 invalid 边界明确留给 B1，当前 runtime 仍无 `pi_*`/UiData adapter。
 - [ ] §9.5 文档级 K0 的问题已有逐条 disposition；B0-07 针对最终代码/资产/结构化测试/视觉报告的 K1 也以 `kimi-code/k3`、`max` 完整结束并可复核，均未降 effort/换模型。
 - [ ] 人类已明确接受最终透明 crop、游戏 composite、关键比例、平滑与 UI 交互；自动指标或 Kimi 不代签。
 
@@ -804,8 +855,8 @@ B0 默认只读旧玩家 HUD XFL。B0-01B 可在受控 scratch transaction 中�
 | B0-04 | `canonical_asset_candidate_validated; awaiting_human_review` | **8 SVG / 99,564 B**，manifest SHA `1006f90e…5630`，revision `c8f58cb7…93871`；12/12 + 78 fail-closed（值级 58）；Web 两次输出闭包 A↔B **12/12**，FFDec/Web 与 Flash/Web 比较器的两次输出闭包分别 A↔B **34/34**；provenance/工具边界已落盘 | 跨 renderer 像素并不相同且无接受阈值；Flash candidate 人工复核、Bevel/singular-gradient/MP variants/HP gradient rotation 的视觉接受；不声称 parity | 允许 B0-03b/05 的结构施工；视觉结论等人签 |
 | B0-03b | completed (`renderer_qualified`) | candidate `c-c571959c1f2a-08846e81b3-20260728t130535410z-0b23fc7a`；identity `C571959C1F2AC98341C798E4AD2B6529F0C9972320AE534A0794ADD89812AFEC`；payload `C60757A6636898DB0CEE803D50128C40C2BD9A2DAE14DC7F899646BB30954FB8`；Core `3262F0CB4655CA3BCFD5F2AABB65BFA8C4A5A3BEB69A34E86DF934FCC0C49ED9`；contract 9 resources / 8 assets / 11 actual files / 11 deps / 1 target / notice `1E69FF5A…9287`，防御矩阵 8/8；production policy 22/22；identity 107、queue 17、release-policy 61、release-state 48/0、xUnit 1261/1261（新增 warning 0）、focused 4/4、packer 177 pass + 1 skip、qualification build 0 warning/0 error；1-byte sensitivity 与精确恢复通过 | 两正式 builder / 跨 faultDomain 一致性、promotion、标准入口、B0-04 人工视觉；candidate 为 `NOT_DEPLOYED`；上游正式 Core `DADE2CC2…CCA1` 不包含该 source-ahead candidate | renderer 锁定继续供 B0-05/06 使用；不得把后续源码外推为该 candidate |
 | B0-05 | completed (`raster_pipeline_qualified; split_required`) | typed 8-asset manifest/planner；strict viewBox 四边校验；8-layer atomic `PlayerInfoSvgRasterizer`/PArgb；single-worker latest-wins + active/inactive 16 MiB whole-batch LRU；canonical-LF 报告 `cf7.player-info-hud.b0-05-runtime-qualification` run `68c5252325594787aa5e6daf0cb856e8`、705,417 B、SHA-256 `217F28CD…4C624`，以 pre-commit HEAD `1bb3307…b3443f5c8e` + index/worktree blobs 绑定 37-file closure `6B6B72A1…70C38`、执行 test DLL `8249BDDC…60836`、Core、exact 11-file win-x64 target / exact 15-file test-output renderer-family closure与 10 项 actual-loaded 子集；HarfBuzz managed/native 仅绑定 target、未冒充 loaded。raw samples、nearest-rank summaries 与 31/31 exact Gate 均由 runner 独立复算，0 failure、`passed / synthetic_fixed_bounds`；四类 UI p95 `0.7128/0.3309/0.0013/0.0001 ms`，四 viewport 各 20 次 per-viewport-warmup/round-robin fresh-asset full-batch p95 `61.5230/66.0620/67.5230/62.5188 ms`，peak `3,273,576 B`，3000 current-hit delta `0/0/0`，GDI endpoint delta 0（diagnostic），dispose `5 batch / 40 layer`，worker/fault `1/0`；tight topology `982×564 / 93.90% / 26.33×`。LF 修正后的首个旧采样 run `ae96d30…` 曾以 1600×900 p95 `103.2472 ms` 正确失败；审计确认旧合同只预热 1024 且把四 viewport 分段连续采样，随后在**不抬阈值、不改生产热路径**前提下改为逐 viewport 预热 + round-robin，最终报告才获接受。最终 focused 68 pass + 1 opt-in skip / 69；专用报告 1/1；无测试并发全量 1325 pass + 1 opt-in skip / 1326；全量重建后的 test DLL 仍为 929,280 B / `8249BDDC…60836`，与报告相同；production/runner build 0 error（既有 WindowsBase warning），qualification build 0 warning/0 error | 无生产 widget、实际 `UpdateLayeredWindow`、完整 NativeHud 3000 A/B、视觉/人审、UiData/部署；GDI/USER/process handle/内存仅端点诊断 | B0-06 实现独立 split surface；不回并现有 NativeHud union |
-| B0-06 | ready_for_fixture_implementation; parity_exit_blocked_by_asset_contract_and_human_review | B0-05 raster/split 决策、canonical SVG 与 Playwright/Edge harness 可复用 | MP fill 独立 mask fragment、HP 固定轮廓+旋转渐变、path glyph atlas；fixture widget/split surface/实际 ULW/双向视觉证据；parity 另等 B0-04 人签 | 先闭合三项资产合同，再实现 fixture state/widget/split surface |
-| B0-07 | blocked_by_B0-06 | §9.5 已完成文档建设 k3/max 审计 | 最终实现包 k3/max 再审、全 Exit Gate、人工接受 | 等全片 |
+| B0-06 | `qualification_premerge_passed; final_tree_visual_and_human_exit_pending` | 已实现单表驱动的 11-case `PlayerInfoFixtureInput`、surface 独占的 visual state/41-tick HP 式动画、getter-only widget seam、MP 双 fragment、HP 固定轮廓/旋转渐变、Aero/LCD Std path glyph atlas、typed active/deferred effect policy、窄 composition recipe、恒 false hit-test widget、带可靠 resume pending 的独立 click-through `PlayerInfoSplitSurface`、PanelHost companion 与 Program allowlist opt-in；代码未发起旧 Flash HUD 修改/隐藏。pre-merge v3 为 47/47，run `26197817…0019`、647,307 B、SHA `21BD10F7…717D`；最新 focused 为 134 pass + 3 opt-in skip / 137。C# 36-file A/B、Web 12-file A/B、comparison 66-PNG A/B 均逐字节一致 | 最终 merged tree 的 qualification/视觉闭包=`TBD_FINAL_EVIDENCE`；旧 Flash 同屏可见性、B0-04 oracle 人签、真实游戏 composite、真实手点、审美与同一最终 commit 的双 builder/quorum 均未完成；promotion/标准入口/部署不属于 B0 Exit，预期仍为 `NOT_DEPLOYED`；不声称 `fixture_static_parity` 或 `fixture_full_parity` | 先以本提交冻结本地候选，再集中 merge 最新上游；在 merge tree 重取正式证据、完成双 builder/quorum、K1，最后交人工 |
+| B0-07 | blocked_by_B0-06_exit_and_human_review | §9.5 已完成文档建设 k3/max 审计 | 最终实现包 k3/max 再审、全 Exit Gate、人工接受；computer-use native pipe 当前不健康，不得以无头截图代替桌面人审 | 等 B0-06 最终证据与人类签收 |
 
 **上游整合复核（2026-07-29）**：B0-05 commit `27364dbc9ff579200ae0dbc9d2d5c6c10151c479` 已在安全分支之外的独立 worktree 以 merge（不 rebase）纳入 `origin/main` `ef31b39069272304f5831b9028b786ce333aa62e`。三处文档冲突按“上游正式 runtime 真值优先、PlayerInfo source-ahead/`NOT_DEPLOYED` 边界保留”解决；自动合并的 release policy 同时保留上游 workbench closure 与 PlayerInfo candidate contract。合并树通过 doc governance、release policy `61/61`、release-state `48/0`、runtime consensus `15` assertions、PlayerInfo production contract 与防御矩阵 `8/8`、全量 xUnit `1651 pass + 1 opt-in skip / 1652`，PlayerInfo focused 为 `69 pass + 1 opt-in skip / 70`。这些是合并兼容性证据，不重写 B0-05 报告所绑定的 pre-merge 37-file closure/test DLL，也不把最新正式 Core `DADE2CC2…CCA1` 外推为已包含 PlayerInfo。
 
@@ -827,7 +878,7 @@ rg -n -F '"includeExtensions"' config/build/runtime-inputs.v2.json
 
 ### 12.3 下次会话开场
 
-> Oracle 轨保留 B0-01B 第七轮 candidate，等待人类签署来源、状态、层隔离、crop 与审美 review receipt；不得用 FFDec/Web/Flash-Web 指标代签。工程轨已完成 B0-05 raster/cache/PArgb，并因 near-full bridge 接受 `split_required`；B0-06 从 MP fill fragment、HP 固定轮廓/旋转渐变、path glyph atlas 与独立 click-through surface 开始，绝不注册进现有 NativeHud union。两正式 builder 一致性未取得真实跨 faultDomain 证据前继续保持 Exit 未勾，且不得冒称 promotion、标准入口或部署。任何一片完成都在同提交回写 §12。
+> Oracle 轨保留 B0-01B 第七轮 candidate，等待人类签署来源、状态、层隔离、crop 与审美 review receipt；不得用 FFDec/Web/Flash-Web 指标代签。工程轨的 B0-06 pre-origin-sync v3 已通过 47/47，C#/Web/comparison A/B 确定性已冻结，fixture state/widget、MP fragment、HP 固定轮廓/旋转渐变、path glyph atlas 与独立 click-through surface 绝不注册进现有 NativeHud union，代码也不隐藏/修改旧 Flash HUD。下一步以本提交冻结本地候选后集中 merge 最新上游；只对冻结后的 merge tree 重跑 formal qualification、C#/Web A/B capture 与两份 direct-edge 诊断并替换全部 `TBD_FINAL_EVIDENCE`，再完成同一 commit 的双 builder/quorum、Kimi k3/max K1 与人类旧 HUD 同屏、游戏 composite、手点和审美签收。B0 不要求 promotion、标准入口或部署；但两正式 builder 一致性未取得真实跨 faultDomain 证据前 Exit 仍不勾，任何自动结果也不得冒称 parity 或代替人签。每完成一片都在同提交回写 §12。
 
 ---
 

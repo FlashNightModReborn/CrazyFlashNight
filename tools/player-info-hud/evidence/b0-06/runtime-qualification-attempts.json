@@ -1,0 +1,105 @@
+{
+  "schema": "cf7.player-info-hud.b0-06-runtime-qualification-attempts.v1",
+  "status": "premerge_attempts_frozen",
+  "finalTreeQualificationPending": true,
+  "baseCommitAtExecution": "b199a0c4310da830278f42fea5756f459ff53653",
+  "attempts": [
+    {
+      "attempt": "v1-no-explicit-lifecycle-warmup",
+      "disposition": "rejected",
+      "runId": "12f54a0063c244c28078496ca3069cb6",
+      "byteLength": 622378,
+      "sha256": "01E68211FE09C334F90A1E3C2FCE9FA78EA72D9FF4193CA0EC11AC89484D867F",
+      "gatesPassed": 43,
+      "gatesTotal": 46,
+      "lifecycleAcceptance": {
+        "cycles": 100,
+        "processHandleEndpointDelta": 35,
+        "gdiObjectEndpointDelta": 0,
+        "userObjectEndpointDelta": 2,
+        "processPositiveMonotonicGrowth": false,
+        "gdiPositiveMonotonicGrowth": false,
+        "userPositiveMonotonicGrowth": true
+      },
+      "reason": "First-use handle growth contaminated the acceptance interval; the original zero-growth and no-positive-trend Gates correctly failed."
+    },
+    {
+      "attempt": "v2-one-fixed-100-cycle-warmup",
+      "disposition": "rejected",
+      "runId": "4c3101b1023f4f1a8e18fe29543a43ae",
+      "byteLength": 629595,
+      "sha256": "C3FB74E723AF1C61D08257ACC76517A76C6C6878B88605B731893BEAED512011",
+      "gatesPassed": 43,
+      "gatesTotal": 46,
+      "lifecycleAcceptance": {
+        "excludedWarmupCycles": 100,
+        "cycles": 100,
+        "processHandleEndpointDelta": 3,
+        "gdiObjectEndpointDelta": 0,
+        "userObjectEndpointDelta": 1,
+        "processPositiveMonotonicGrowth": true,
+        "gdiPositiveMonotonicGrowth": false,
+        "userPositiveMonotonicGrowth": true
+      },
+      "reason": "One fixed warmup group was insufficient; the immediately following interval still crossed sparse first-use steps and correctly failed the unchanged Gates."
+    },
+    {
+      "attempt": "v3-strict-convergence-then-adjacent-acceptance",
+      "disposition": "accepted_as_premerge_only",
+      "runId": "261978174b6346228b5f8ba4fd750019",
+      "reportPath": "tools/player-info-hud/evidence/b0-06/runtime-qualification-premerge-v3.json",
+      "byteLength": 647307,
+      "sha256": "21BD10F720280057F0A2F801B35619803AE29D8411F8D8E0AD2335A74BCA717D",
+      "gatesPassed": 47,
+      "gatesTotal": 47,
+      "warmup": {
+        "cycleCountPerGroup": 100,
+        "maximumGroups": 5,
+        "groupsRun": 3,
+        "convergedGroupIndex": 3,
+        "endpointDeltasByGroup": [
+          {
+            "group": 1,
+            "processHandles": 37,
+            "gdiObjects": 0,
+            "userObjects": 1,
+            "converged": false
+          },
+          {
+            "group": 2,
+            "processHandles": 2,
+            "gdiObjects": 0,
+            "userObjects": 1,
+            "converged": false
+          },
+          {
+            "group": 3,
+            "processHandles": -5,
+            "gdiObjects": 0,
+            "userObjects": 0,
+            "noCheckpointAboveStart": true,
+            "positiveMonotonicGrowth": false,
+            "converged": true
+          }
+        ]
+      },
+      "acceptanceMeasurement": {
+        "role": "acceptance_measurement",
+        "eligible": true,
+        "immediatelyFollowsConvergedWarmupGroup": true,
+        "cycles": 100,
+        "processHandleEndpointDelta": 0,
+        "gdiObjectEndpointDelta": 0,
+        "userObjectEndpointDelta": 0,
+        "positiveMonotonicGrowth": false
+      },
+      "reason": "The first strictly converged excluded group is followed immediately by a new independent 100-cycle acceptance group; no original acceptance threshold was relaxed."
+    }
+  ],
+  "contract": {
+    "warmup": "Run one to five complete 100-cycle groups on the same STA thread and owner. A group converges only when every GDI, USER, and process-handle checkpoint is at or below that group's start, endpoint deltas are non-positive, and no positive monotonic trend exists.",
+    "acceptance": "After the first converged warmup group, run one immediately adjacent independent 100-cycle group and apply the original endpoint and trend Gates.",
+    "capFailure": "If five warmup groups do not converge, any following group is diagnostic_after_warmup_cap, acceptanceMeasurementEligible is false, and surface_lifecycle_warmup_converged fails."
+  },
+  "scopeBoundary": "All three reports bind a pre-origin-sync worktree. Only a fresh report produced from the final merged tree may become the final B0-06 qualification evidence."
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "cf7.player-info-hud.b0-06-visual-evidence-index.v1",
+  "status": "premerge_diagnostic_awaiting_human_review",
+  "baseCommitAtExecution": "b199a0c4310da830278f42fea5756f459ff53653",
+  "finalTreeEvidencePending": true,
+  "canonicalDirectoryClosure": "sorted UTF-8 relative path + NUL + exact file bytes + NUL",
+  "csharp": {
+    "captureA": "tmp/player-info-hud-b006-premerge-v3-csharp-a",
+    "captureB": "tmp/player-info-hud-b006-premerge-v3-csharp-b",
+    "fileCountEach": 36,
+    "pngCountEach": 35,
+    "totalBytesEach": 796806,
+    "directoryClosureSha256": "37B4037BA08D0EE7F1ADEB2E6AD853CF54E64FCD3869D1B2B186951CD631135D",
+    "allFilesByteIdentical": true,
+    "manifest": {
+      "byteLength": 162661,
+      "sha256": "2DA576FB8BBC0CEE4E4547870C94F3AD399E106ED4408C56FC239CAD529473F7",
+      "status": "structural_capture_complete",
+      "scope": "fixture_only",
+      "pngOutputClosure": {
+        "fileCount": 35,
+        "totalBytes": 634145,
+        "sha256": "0263EFF7FAD9E319ADE3DEE8967FEE0876D44E4ACEB5891C562783086369F3D4"
+      }
+    }
+  },
+  "web": {
+    "captureA": "tmp/player-info-hud-b006-premerge-v3-web-a",
+    "captureB": "tmp/player-info-hud-b006-premerge-v3-web-b",
+    "fileCountEach": 12,
+    "pngCountEach": 11,
+    "totalBytesEach": 120280,
+    "directoryClosureSha256": "725BC44BC67641AD7A58653E1C8751DA2CE6BA48F2FE6FEB577032645B3DD5CA",
+    "allFilesByteIdentical": true,
+    "report": {
+      "byteLength": 5485,
+      "sha256": "A9B0164E4A186CC56C629B4706CEBEFE94BF0E3105D9C44502D29088DFE4887F",
+      "status": "canonical_manifest_rendered_awaiting_human_review"
+    }
+  },
+  "flashCandidate": {
+    "manifestPath": "tmp/player-info-hud/oracle/20260728T101414Z-d643ecd574a147009c8ada8d6ee1dc9d/oracle-manifest.json",
+    "manifestByteLength": 61487,
+    "manifestSha256": "DCC9E11AF07CDDB8296851EE4541A035CD0AAB1E9B9D430FF82F4B8D265BF472",
+    "oracleFrozen": false,
+    "humanReviewPending": [
+      "source",
+      "state",
+      "layerIsolation",
+      "crop",
+      "visualQuality"
+    ]
+  },
+  "directEdgeDiagnostics": {
+    "comparisonA": "tmp/player-info-hud-b006-premerge-v3-direct-a",
+    "comparisonB": "tmp/player-info-hud-b006-premerge-v3-direct-b",
+    "fileCountEach": 67,
+    "pngCountEach": 66,
+    "pngsByteIdentical": true,
+    "reportA": {
+      "byteLength": 184026,
+      "sha256": "DA5A7293411E2CFD5CF89AC88335C7DCCC3DA05EA6EBC4CC981736064D9F4353"
+    },
+    "reportB": {
+      "byteLength": 184026,
+      "sha256": "0A657DEB758037A634C936390236A903BB2ABC9B1C359C7A7A67A0F05005079D"
+    },
+    "reportDifference": "The reports intentionally retain their distinct -a/-b repository-relative input paths. All other diagnostic output files are byte-identical.",
+    "outputClosureExcludingReport": {
+      "fileCount": 66,
+      "totalBytes": 1449236,
+      "sha256": "87EA77C8EF6B7B6C52772B1CDB7CF902319929E5BF29363F928C1C89F77E9668"
+    },
+    "status": "diagnostic_awaiting_human_review",
+    "edges": [
+      "CSharp_to_Web",
+      "CSharp_to_Flash"
+    ]
+  },
+  "automatedClaims": [
+    "C# A/B captures are byte-identical across their complete 36-file closures.",
+    "Web A/B captures are byte-identical across their complete 12-file closures.",
+    "Both direct-edge runs emit byte-identical 66-PNG diagnostic closures.",
+    "The comparator validates input identities and emits metrics without an acceptance threshold."
+  ],
+  "explicitlyUnverified": [
+    "cross-renderer pixel parity",
+    "Flash candidate acceptance",
+    "real game composite",
+    "real UiData integration",
+    "real desktop mouse click-through",
+    "visual aesthetics",
+    "deployment"
+  ],
+  "scopeBoundary": "This index freezes a pre-origin-sync diagnostic. Final B0 evidence must be regenerated from the merged final tree, and human review remains mandatory."
+}

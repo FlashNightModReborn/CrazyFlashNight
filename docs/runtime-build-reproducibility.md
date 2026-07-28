@@ -180,6 +180,22 @@ promotion 自动读取 queue 中匹配 build identity 的本地签名结果，�
   -ExternalAttestationPath tmp\runtime-cloud-result\verified-github-proof.v2.json
 ```
 
+若某个验收门只要求证明“同一冻结源已有两张真实 builder 票且闭包一致”，但明确**不授权部署**，必须复用同一 promotion 验证链的 `-VerifyOnly` 出口，不能另写第二套 quorum 解析器：
+
+```powershell
+$reportDir = [IO.Path]::GetFullPath('tmp\runtime-promotion-preflight')
+New-Item -ItemType Directory -Path $reportDir -Force | Out-Null
+.\tools\promote-runtime-bundle.ps1 `
+  -QueueRoot <queue-root> -RequestId $requestId `
+  -CandidateRoot <verified-candidate> `
+  -PolicyReceiptPath tmp\runtime-policy-receipts\release.v2.json `
+  -ExternalAttestationPath tmp\runtime-cloud-result\verified-github-proof.v2.json `
+  -VerifyOnly `
+  -ReportPath (Join-Path $reportDir 'preflight.v2.json')
+```
+
+`ReportPath` 必须是项目根内、父目录已存在、目标尚不存在的绝对 long path；其祖先不得是 reparse point/8.3 alias，并且不得落入 `.git`、`config/build`、queue、candidate、live deployment、任一四域输入树或 payload 输入。脚本声明的唯一仓内输出是以 CreateNew 写一份 canonical UTF-8/LF 的 `cf7-runtime-promotion-preflight.v2`：`status=preflight-passed`、`reportCreated=true`，同时明确 `runtimeMutationPerformed=false`、`releaseStateMutationPerformed=false`、`promotionPerformed=false`、`deploymentPerformed=false`、`reusableAsPromotionInput=false`；这不对 Git/gh 自身在仓外的实现缓存作无范围断言。报告绑定 request 五域、candidate manifest/逐文件 payload closure、policy receipt hash、去重后的 signer/faultDomain/proof 摘要；不含时间戳、本机绝对路径、用户名或机器名。写前和写后都会重验 request/bundle、registry、receipt、proof、worktree/tree、candidate closure/manifest 与 live deployment cleanliness；窗口漂移会删除本轮新报告并失败。该报告只能作验收证据，正式 promotion 必须不带 `-VerifyOnly/-ReportPath` 重新执行全链和事务检查。
+
 promotion 重新验证 request/worktree/receipt/candidate/所有证明，要求至少两个不同 signer identity + faultDomain 且五项共同产物字段（前三域、build identity、payload closure）全等；随后在 `tmp/runtime-promotions/` 组装 next/previous，事务替换正式 runtime、bootstrap 与 `config/build/runtime-release-consensus.json`。v2 consensus 内嵌 policy receipt 与全部签名/Provenance proof；正式安装完成后同步、有界等待 full-install bootstrap `--verify-only` 并检查真实 exit code，两个 verify 模式同时出现会按 CLI 误用拒绝。任何失败或 120 秒超时都进入自动回滚，previous 保留供人工恢复。
 
 ## CI 事后 Audit 状态机

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
@@ -51,7 +52,7 @@ public sealed class PlayerInfoSvgRasterizerTests
     }
 
     [Fact]
-    public void Bake_ProducesOneAtomicPArgbLayerForEveryCanonicalAsset()
+    public void Bake_ProducesEightCanonicalLayersWithOwnedMpStableGroupFragments()
     {
         PlayerInfoSvgAssetSet assetSet =
             PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
@@ -60,12 +61,15 @@ public sealed class PlayerInfoSvgRasterizerTests
             new System.Drawing.Rectangle(0, 0, 1024, 576),
             1f);
         var rasterizer = new PlayerInfoSvgRasterizer();
+        var progress = new PlayerInfoRasterProgress();
 
         using PlayerInfoRasterBatch batch =
-            rasterizer.Bake(plan, CancellationToken.None);
+            rasterizer.Bake(plan, CancellationToken.None, progress);
 
         Assert.Equal(plan.BatchKey, batch.BatchKey);
         Assert.Equal(8, batch.Layers.Count);
+        Assert.Equal(10, progress.ParseCount);
+        Assert.Equal(10, progress.RasterCount);
         Assert.Equal(
             plan.Layers.Select(layer => layer.Key),
             batch.Layers.Select(layer => layer.Key));
@@ -75,6 +79,93 @@ public sealed class PlayerInfoSvgRasterizerTests
             Assert.Equal(layer.Key.PixelWidth, layer.Bitmap.Width);
             Assert.Equal(layer.Key.PixelHeight, layer.Bitmap.Height);
         });
+        PlayerInfoRasterLayer mpFill = batch.Layers.Single(
+            layer => layer.Key.LayerId == "mp.fill");
+        Assert.Equal(
+            new[] { "mp-left-mask", "mp-right-mask" },
+            mpFill.FragmentIds.OrderBy(id => id, StringComparer.Ordinal));
+        Assert.All(
+            new[] { "mp-left-mask", "mp-right-mask" },
+            fragmentId =>
+            {
+                System.Drawing.Bitmap fragment =
+                    mpFill.RequireFragment(fragmentId);
+                Assert.Equal(
+                    PixelFormat.Format32bppPArgb,
+                    fragment.PixelFormat);
+                Assert.Equal(mpFill.Key.PixelWidth, fragment.Width);
+                Assert.Equal(mpFill.Key.PixelHeight, fragment.Height);
+            });
+        Assert.All(
+            batch.Layers.Where(layer => layer.Key.LayerId != "mp.fill"),
+            layer => Assert.Empty(layer.FragmentIds));
+        long expectedBytes = batch.Layers.Sum(layer =>
+            checked(
+                (long)layer.Key.PixelWidth *
+                layer.Key.PixelHeight *
+                4L *
+                (layer.Key.LayerId == "mp.fill" ? 3L : 1L)));
+        Assert.Equal(expectedBytes, batch.ByteSize);
+        Assert.True(
+            batch.ByteSize < PlayerInfoRasterPipeline.DefaultMaxCacheBytes);
+    }
+
+    [Fact]
+    public void MpFragmenter_RejectsAnyBindingThatDoesNotPartitionDirectGroups()
+    {
+        PlayerInfoSvgAssetSet assetSet =
+            PlayerInfoSvgAssetContract.LoadProductionEmbedded(
+                minimumRaster: false);
+        PlayerInfoSvgAsset fill = assetSet.Assets.Single(
+            asset => asset.Id == "mp.fill");
+
+        Assert.Throws<System.IO.InvalidDataException>(() =>
+            PlayerInfoSvgGroupFragmenter.Create(
+                fill.Bytes,
+                [
+                    new PlayerInfoClipBinding(
+                        "mp-left-mask",
+                        "mp.fill",
+                        ["mp-fill-left-slot"]),
+                    new PlayerInfoClipBinding(
+                        "mp-right-mask",
+                        "mp.fill",
+                        [
+                            "mp-fill-right-decoration",
+                            "mp-fill-right-slot"
+                        ])
+                ]));
+    }
+
+    [Fact]
+    public void RasterLayer_RejectsAliasedOwnedFragmentBitmaps()
+    {
+        PlayerInfoSvgAssetSet assetSet =
+            PlayerInfoSvgAssetContract.LoadProductionEmbedded(
+                minimumRaster: false);
+        PlayerInfoRasterPlan plan = PlayerInfoRasterPlanner.Create(
+            assetSet,
+            new Rectangle(0, 0, 1024, 576),
+            1f);
+        PlayerInfoRasterKey key = plan.Layers[0].Key;
+        using var bitmap = new Bitmap(
+            key.PixelWidth,
+            key.PixelHeight,
+            PixelFormat.Format32bppPArgb);
+        using var aliasedFragment = new Bitmap(
+            key.PixelWidth,
+            key.PixelHeight,
+            PixelFormat.Format32bppPArgb);
+
+        Assert.Throws<ArgumentException>(() =>
+            new PlayerInfoRasterLayer(
+                key,
+                bitmap,
+                new Dictionary<string, Bitmap>(StringComparer.Ordinal)
+                {
+                    ["fragment-a"] = aliasedFragment,
+                    ["fragment-b"] = aliasedFragment
+                }));
     }
 
     [Fact]
