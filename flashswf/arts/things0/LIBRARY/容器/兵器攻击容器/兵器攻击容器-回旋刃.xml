@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-回旋刃" itemID="6a5cf955-00002a09" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-回旋刃" lastModified="1785084482" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-回旋刃" itemID="6a5cf955-00002a09" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-回旋刃" lastModified="1785347983" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-回旋刃" currentFrame="29">
+    <DOMTimeline name="兵器攻击容器-回旋刃" currentFrame="2">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,12 +10,51 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("百万突刺开始");]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="29" duration="13" keyMode="9728">
@@ -88,7 +127,7 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
    //_parent.攻击时斜向移动(-20,-25);
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(0,10);
 }
 ]]></script>
                   </Actionscript>
@@ -122,7 +161,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -177,7 +216,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -237,7 +275,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -297,7 +334,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -357,7 +393,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -417,7 +452,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -477,7 +511,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -537,7 +570,6 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -635,7 +667,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1084,7 +1116,7 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.5;
+	子弹属性.血量上限击溃 = 0.2;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1122,7 +1154,7 @@
             </DOMFrame>
             <DOMFrame index="31" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="251.7" centerPoint3DY="85.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="251.7" centerPoint3DY="85.95">
                   <matrix>
                     <Matrix a="56.6293640136719" d="40.6424255371094" tx="589" ty="-202.1"/>
                   </matrix>
@@ -1144,7 +1176,7 @@
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 1;
+	子弹属性.血量上限击溃 = 0.5;
 	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1498,7 +1530,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_5" color="#009999" locked="true">
+        <DOMLayer name="图层_5" color="#009999" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
