@@ -11,6 +11,8 @@ const playwrightPath = path.join(
 const playwrightPackagePath = path.join(
     playwrightPath, 'package.json');
 const canonicalStaticLayerScope = 'canonical_static_svg_layers_only';
+const mainViewport = {width:1024, height:576};
+const exportedSymbolMainY = 512;
 const cases = [
     {id:'empty', hpFrame:129, mpFrame:101},
     {id:'min_step', hpFrame:128, mpFrame:100},
@@ -36,9 +38,12 @@ function assertRenderSemanticsContract(value) {
     }
     const expectedKeys = [
         'capturedLayerScope',
+        'coordinateSpace',
         'compositeOrder',
         'csharpProgrammaticDynamicTextIncluded',
         'csharpProgrammaticGlowIncluded',
+        'childDocumentWrapperExcluded',
+        'exportedSymbolMainY',
         'hpFillDegreesPerSourceFrame',
         'mpRimVariantStarts'
     ].sort();
@@ -47,8 +52,11 @@ function assertRenderSemanticsContract(value) {
         fail('Web renderSemantics keys drifted.');
     }
     if (value.capturedLayerScope !== canonicalStaticLayerScope ||
+        value.coordinateSpace !== 'main_flash_content_viewport' ||
         value.csharpProgrammaticDynamicTextIncluded !== false ||
-        value.csharpProgrammaticGlowIncluded !== false) {
+        value.csharpProgrammaticGlowIncluded !== false ||
+        value.childDocumentWrapperExcluded !== true ||
+        value.exportedSymbolMainY !== exportedSymbolMainY) {
         fail('Web renderSemantics capture scope drifted.');
     }
 }
@@ -362,9 +370,11 @@ function renderSvg(manifest, assets, scenario) {
 
     return [
         '<svg id="player-info-render" xmlns="http://www.w3.org/2000/svg"',
-        ' width="1024" height="64" viewBox="0 0 1024 64"',
+        ` width="${mainViewport.width}" height="${mainViewport.height}"` +
+            ` viewBox="0 0 ${mainViewport.width} ${mainViewport.height}"`,
         ' preserveAspectRatio="none">',
         defs,
+        `<g id="player-info-exported-symbol" transform="translate(0 ${exportedSymbolMainY})">`,
         `<g id="mp" transform="${matrix(manifest.gauges.mp.stageMatrix)}">`,
         layer('mp.backplate'),
         `<g data-layer="mp.fill">${mpFill}</g>`,
@@ -376,6 +386,7 @@ function renderSvg(manifest, assets, scenario) {
         hpFill,
         '</g>',
         layer('hp.rim'),
+        '</g>',
         '</g>',
         '</svg>'
     ].join('');
@@ -459,7 +470,7 @@ async function main() {
     try {
         browserVersion = browser.version();
         const page = await browser.newPage({
-            viewport: {width: 1024, height: 64},
+            viewport: mainViewport,
             deviceScaleFactor: 1,
             colorScheme: 'dark',
             reducedMotion: 'reduce'
@@ -480,7 +491,8 @@ async function main() {
             const svg = renderSvg(manifest, assets, scenario);
             await page.setContent(
                 '<!doctype html><meta charset="utf-8">' +
-                '<style>html,body{margin:0;width:1024px;height:64px;' +
+                `<style>html,body{margin:0;width:${mainViewport.width}px;` +
+                `height:${mainViewport.height}px;` +
                 'overflow:hidden;background:transparent}</style>' + svg,
                 {waitUntil: 'load'});
             if (pageErrors.length) {
@@ -495,7 +507,8 @@ async function main() {
                         dpr: window.devicePixelRatio
                     };
                 });
-            if (metrics.width !== 1024 || metrics.height !== 64 ||
+            if (metrics.width !== mainViewport.width ||
+                metrics.height !== mainViewport.height ||
                 metrics.dpr !== 1) {
                 fail(`${scenario.id} viewport/DPR drifted.`);
             }
@@ -544,8 +557,11 @@ async function main() {
     }
     const renderSemantics = {
         capturedLayerScope: canonicalStaticLayerScope,
+        coordinateSpace: 'main_flash_content_viewport',
         csharpProgrammaticDynamicTextIncluded: false,
         csharpProgrammaticGlowIncluded: false,
+        childDocumentWrapperExcluded: true,
+        exportedSymbolMainY,
         compositeOrder: manifest.stage.compositeOrder,
         hpFillDegreesPerSourceFrame:
             manifest.gauges.hp.fillTextureRotation.degreesPerSourceFrame,
@@ -554,9 +570,9 @@ async function main() {
     };
     assertRenderSemanticsContract(renderSemantics);
     const report = {
-        schema: 'cf7.player_info.web_svg_harness.v1',
+        schema: 'cf7.player_info.web_svg_harness.v2',
         status: 'canonical_manifest_rendered_awaiting_human_review',
-        viewport: [1024, 64],
+        viewport: [mainViewport.width, mainViewport.height],
         deviceScaleFactor: 1,
         background: 'transparent',
         manifest: {

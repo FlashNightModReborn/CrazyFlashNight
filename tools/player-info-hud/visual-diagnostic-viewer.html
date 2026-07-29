@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlayerInfo C# / Flash 交互诊断</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090d12;
+      --panel: #121922;
+      --panel-2: #18212c;
+      --line: #2b3948;
+      --text: #e8eef5;
+      --muted: #91a1b3;
+      --cyan: #4de9ff;
+      --magenta: #ff36d5;
+      --green: #55f28a;
+      --amber: #ffc46b;
+      --red: #ff6b7a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 720px;
+      background:
+        radial-gradient(circle at 15% -10%, #153044 0, transparent 32rem),
+        var(--bg);
+      color: var(--text);
+      font: 14px/1.45 system-ui, "Segoe UI", sans-serif;
+    }
+
+    main {
+      max-width: 2140px;
+      margin: 0 auto;
+      padding: 18px 20px 28px;
+    }
+
+    header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: .015em;
+    }
+
+    #identity {
+      overflow: hidden;
+      color: var(--muted);
+      font: 12px/1.35 ui-monospace, "Cascadia Mono", monospace;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 10px 14px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--panel) 94%, transparent);
+    }
+
+    .control {
+      display: grid;
+      gap: 5px;
+    }
+
+    .control > span,
+    .control > label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    select,
+    button,
+    input {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-2);
+      color: var(--text);
+      font: inherit;
+    }
+
+    select,
+    button {
+      padding: 5px 10px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: #49627a;
+    }
+
+    button[aria-pressed="true"] {
+      border-color: var(--cyan);
+      background: #163441;
+      box-shadow: inset 0 0 0 1px #2d8ba0;
+      color: #dffaff;
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    input[type="range"] {
+      width: 180px;
+      padding: 0 7px;
+      accent-color: var(--cyan);
+    }
+
+    .value {
+      min-width: 54px;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stage-shell {
+      position: relative;
+      margin-top: 14px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background:
+        linear-gradient(45deg, #0d131b 25%, transparent 25%),
+        linear-gradient(-45deg, #0d131b 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #0d131b 75%),
+        linear-gradient(-45deg, transparent 75%, #0d131b 75%),
+        #111923;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-size: 16px 16px;
+    }
+
+    .stage {
+      position: relative;
+      width: max-content;
+      min-width: 100%;
+      padding: 42px 18px 18px;
+    }
+
+    canvas {
+      display: block;
+      border: 1px solid #344557;
+      background: #0b1017;
+      image-rendering: pixelated;
+      cursor: default;
+    }
+
+    canvas[data-mode="wipe"] {
+      cursor: col-resize;
+    }
+
+    .stage-label {
+      position: absolute;
+      top: 13px;
+      z-index: 2;
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #0a1017dd;
+      color: var(--muted);
+      font: 12px/1.25 ui-monospace, "Cascadia Mono", monospace;
+      pointer-events: none;
+    }
+
+    #leftLabel {
+      left: 18px;
+    }
+
+    #rightLabel {
+      right: 18px;
+    }
+
+    #phaseLabel {
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--cyan);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      align-items: center;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      border-radius: 3px;
+      vertical-align: -2px;
+    }
+
+    .magenta {
+      background: var(--magenta);
+    }
+
+    .green {
+      background: var(--green);
+    }
+
+    .dark {
+      border: 1px solid #344557;
+      background: #0c1118;
+    }
+
+    .notes {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    #normalizationNote {
+      margin-top: 4px;
+      color: #ffc46b;
+    }
+
+    #status {
+      color: #b7c7d8;
+      font: 12px/1.4 ui-monospace, "Cascadia Mono", monospace;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .alignment-card {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    .alignment-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .alignment-header h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    #alignmentStatus {
+      color: var(--muted);
+      font: 12px/1.4 ui-monospace, "Cascadia Mono", monospace;
+    }
+
+    #alignmentStatus[data-status="aligned"] {
+      color: var(--green);
+    }
+
+    #alignmentStatus[data-status="failed"] {
+      color: var(--red);
+    }
+
+    .alignment-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .alignment-field {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-2);
+      font: 12px/1.45 ui-monospace, "Cascadia Mono", monospace;
+    }
+
+    .alignment-field[data-status="aligned"] {
+      border-color: color-mix(in srgb, var(--green) 60%, var(--line));
+    }
+
+    .alignment-field:not([data-status="aligned"]) {
+      border-color: color-mix(in srgb, var(--red) 70%, var(--line));
+    }
+
+    .alignment-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>PlayerInfo C# / Flash 交互诊断</h1>
+      <div id="identity">载入中…</div>
+    </header>
+
+    <section class="controls" aria-label="诊断控制">
+      <label class="control">
+        <span>Case</span>
+        <select id="caseSelect"></select>
+      </label>
+
+      <div class="control">
+        <span>Primary mode</span>
+        <div class="mode-buttons" id="modeButtons">
+          <button type="button" data-mode="blink">A/B Blink</button>
+          <button type="button" data-mode="wipe">Hard Wipe</button>
+          <button type="button" data-mode="signed">Signed Diff</button>
+        </div>
+      </div>
+
+      <div class="control">
+        <span>Auxiliary</span>
+        <div class="mode-buttons">
+          <button type="button" data-mode="difference">Difference</button>
+          <button type="button" data-mode="invert">Invert</button>
+        </div>
+      </div>
+
+      <div class="control" id="blinkControl">
+        <label for="blinkHz">Blink Hz</label>
+        <div>
+          <input
+            id="blinkHz"
+            type="range"
+            min="2"
+            max="3"
+            step=".1"
+            value="2.5">
+          <span class="value" id="blinkHzValue">2.5 Hz</span>
+          <button type="button" id="pauseButton">Pause</button>
+        </div>
+      </div>
+
+      <label class="control" id="wipeControl" hidden>
+        <span>Wipe position</span>
+        <span>
+          <input
+            id="wipePosition"
+            type="range"
+            min="0"
+            max="100"
+            step=".1"
+            value="50">
+          <span class="value" id="wipeValue">50.0%</span>
+        </span>
+      </label>
+
+      <label class="control">
+        <span>Pixel zoom</span>
+        <select id="zoomSelect">
+          <option value="1">1×</option>
+          <option value="2" selected>2×</option>
+          <option value="3">3×</option>
+          <option value="4">4×</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="stage-shell" aria-label="视觉比较画布">
+      <div class="stage">
+        <span class="stage-label" id="leftLabel">C#</span>
+        <span class="stage-label" id="phaseLabel">载入中</span>
+        <span class="stage-label" id="rightLabel">Flash</span>
+        <canvas id="stageCanvas" tabindex="0"></canvas>
+      </div>
+    </section>
+
+    <div class="legend" id="signedLegend" hidden>
+      <span><i class="swatch magenta"></i>C# residual / only</span>
+      <span><i class="swatch green"></i>Flash residual / only</span>
+      <span><i class="swatch dark"></i>exact overlap / no signal</span>
+      <span>同一像素若双方各有不同通道残差，会混合显示。</span>
+    </div>
+
+    <div class="notes">
+      <div>
+        <div id="modeNote">
+          Blink 以完整 A/B 周期计频；默认 2.5 Hz，每侧显示 200 ms。
+        </div>
+        <div id="normalizationNote"></div>
+      </div>
+      <div id="status">载入中…</div>
+    </div>
+
+    <section class="alignment-card" aria-label="MP 文字水平配准诊断">
+      <div class="alignment-header">
+        <h2>MP 文字水平配准 · p50 / vf51</h2>
+        <div id="alignmentStatus">载入中…</div>
+      </div>
+      <div class="alignment-grid" id="alignmentGrid"></div>
+      <div class="alignment-note">
+        固定 dy=0；仅比较高 alpha 青色实心像素。best dx 的符号表示
+        C# 像素在 Flash 中应查询的水平偏移。
+      </div>
+    </section>
+  </main>
+
+  <script id="diagnosticData" type="application/json">
+__CF7_VISUAL_DIAGNOSTIC_DATA__
+  </script>
+  <script>
+  (() => {
+    'use strict';
+
+    const data = JSON.parse(
+        document.getElementById('diagnosticData').textContent);
+    if (data.schema !== 'cf7.player_info.visual_diagnostic_viewer.v2') {
+      throw new Error('Unexpected visual diagnostic payload schema.');
+    }
+
+    const elements = {
+      caseSelect: document.getElementById('caseSelect'),
+      modeButtons: Array.from(
+          document.querySelectorAll('button[data-mode]')),
+      blinkControl: document.getElementById('blinkControl'),
+      blinkHz: document.getElementById('blinkHz'),
+      blinkHzValue: document.getElementById('blinkHzValue'),
+      pauseButton: document.getElementById('pauseButton'),
+      wipeControl: document.getElementById('wipeControl'),
+      wipePosition: document.getElementById('wipePosition'),
+      wipeValue: document.getElementById('wipeValue'),
+      zoomSelect: document.getElementById('zoomSelect'),
+      canvas: document.getElementById('stageCanvas'),
+      identity: document.getElementById('identity'),
+      leftLabel: document.getElementById('leftLabel'),
+      phaseLabel: document.getElementById('phaseLabel'),
+      rightLabel: document.getElementById('rightLabel'),
+      signedLegend: document.getElementById('signedLegend'),
+      modeNote: document.getElementById('modeNote'),
+      normalizationNote: document.getElementById('normalizationNote'),
+      status: document.getElementById('status'),
+      alignmentStatus: document.getElementById('alignmentStatus'),
+      alignmentGrid: document.getElementById('alignmentGrid')
+    };
+    const context = elements.canvas.getContext('2d', {
+      alpha: false,
+      willReadFrequently: true
+    });
+    const state = {
+      caseId: data.cases[0].caseId,
+      mode: data.defaults.mode,
+      blinkHz: data.defaults.blinkHz,
+      blinkRunning: true,
+      blinkPhase: 0,
+      blinkEpoch: performance.now(),
+      wipeFraction: data.defaults.wipeFraction,
+      zoom: data.defaults.zoom,
+      decoded: null,
+      renderVersion: 0
+    };
+    const decodedCases = new Map();
+    const dark = [10, 15, 22];
+    const flashOffset = data.placementNormalization.flashOffsetPixels;
+
+    elements.canvas.width = data.canvas.width;
+    elements.canvas.height = data.canvas.height;
+    elements.identity.textContent =
+        `${data.source.edgeId} · ${data.placementNormalization.id} · ` +
+        `${data.source.reportSha256.slice(0, 16)}…`;
+    elements.identity.title =
+        `${data.source.reportPath}\nSHA-256 ${data.source.reportSha256}`;
+
+    for (const item of data.cases) {
+      const option = document.createElement('option');
+      option.value = item.caseId;
+      option.textContent =
+          `${item.caseId} · HP vf${item.hpVirtualFrame} · ` +
+          `MP vf${item.mpVirtualFrame}`;
+      elements.caseSelect.append(option);
+    }
+
+    function clamp(value, minimum, maximum) {
+      return Math.min(maximum, Math.max(minimum, value));
+    }
+
+    function loadImage(dataUrl) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.addEventListener('load', () => resolve(image), { once: true });
+        image.addEventListener(
+            'error', () => reject(new Error('Embedded PNG decode failed.')),
+            { once: true });
+        image.src = dataUrl;
+      });
+    }
+
+    elements.normalizationNote.textContent =
+        data.placementNormalization.label +
+        (data.placementNormalization.semantics
+            ? `；${data.placementNormalization.semantics}`
+            : '');
+    elements.rightLabel.textContent =
+        flashOffset.x === 0 && flashOffset.y === 0
+            ? 'Flash'
+            : `Flash normalized (${flashOffset.x}, ${flashOffset.y})`;
+
+    const alignmentLabels = {
+      label: 'MP 标签',
+      current: '当前值',
+      maximum: '最大值',
+      percent: '百分比'
+    };
+    elements.alignmentStatus.textContent =
+        data.mpHorizontalAlignment.allFieldsAligned
+            ? '4/4 unique best dx = 0'
+            : '存在水平配准残差';
+    elements.alignmentStatus.dataset.status =
+        data.mpHorizontalAlignment.allFieldsAligned
+            ? 'aligned'
+            : 'failed';
+    for (const field of data.mpHorizontalAlignment.fields) {
+      const item = document.createElement('div');
+      item.className = 'alignment-field';
+      item.dataset.status = field.status;
+      item.textContent =
+          `${alignmentLabels[field.id] || field.id} · dx ${field.bestDx} · ` +
+          `J ${field.bestJaccard.toFixed(3)} · ${field.status}`;
+      item.title =
+          `ROI ${field.roi.x},${field.roi.y} ` +
+          `${field.roi.width}×${field.roi.height}\n` +
+          `C# ${field.csharpPixelCount} px · ` +
+          `Flash ${field.flashPixelCount} px`;
+      elements.alignmentGrid.append(item);
+    }
+
+    function imagePixels(image, offset = { x: 0, y: 0 }) {
+      const canvas = document.createElement('canvas');
+      canvas.width = data.canvas.width;
+      canvas.height = data.canvas.height;
+      const imageContext = canvas.getContext('2d', {
+        alpha: true,
+        willReadFrequently: true
+      });
+      imageContext.clearRect(0, 0, canvas.width, canvas.height);
+      imageContext.drawImage(image, offset.x, offset.y);
+      return imageContext.getImageData(0, 0, canvas.width, canvas.height);
+    }
+
+    function buildDerived(leftPixels, rightPixels) {
+      const signed = new ImageData(data.canvas.width, data.canvas.height);
+      const difference =
+          new ImageData(data.canvas.width, data.canvas.height);
+      const invert = new ImageData(data.canvas.width, data.canvas.height);
+      const left = leftPixels.data;
+      const right = rightPixels.data;
+
+      for (let offset = 0; offset < left.length; offset += 4) {
+        const leftAlpha = left[offset + 3] / 255;
+        const rightAlpha = right[offset + 3] / 255;
+        let leftResidual = Math.max(
+            0, left[offset + 3] - right[offset + 3]);
+        let rightResidual = Math.max(
+            0, right[offset + 3] - left[offset + 3]);
+
+        for (let channel = 0; channel < 3; channel++) {
+          const leftPremultiplied =
+              left[offset + channel] * leftAlpha;
+          const rightPremultiplied =
+              right[offset + channel] * rightAlpha;
+          const delta = leftPremultiplied - rightPremultiplied;
+          leftResidual = Math.max(leftResidual, delta);
+          rightResidual = Math.max(rightResidual, -delta);
+          const absolute = Math.max(
+              Math.round(Math.abs(delta)),
+              Math.abs(left[offset + 3] - right[offset + 3]));
+          difference.data[offset + channel] = absolute;
+          invert.data[offset + channel] = 255 - absolute;
+        }
+
+        signed.data[offset] = clamp(
+            dark[0] + Math.round(leftResidual * .96), 0, 255);
+        signed.data[offset + 1] = clamp(
+            dark[1] + Math.round(rightResidual * .94), 0, 255);
+        signed.data[offset + 2] = clamp(
+            dark[2] + Math.round(leftResidual * .91), 0, 255);
+        signed.data[offset + 3] = 255;
+        difference.data[offset + 3] = 255;
+        invert.data[offset + 3] = 255;
+      }
+      return { signed, difference, invert };
+    }
+
+    async function decodeCase(item) {
+      if (!decodedCases.has(item.caseId)) {
+        decodedCases.set(item.caseId, (async () => {
+          const [csharpImage, flashImage] = await Promise.all([
+            loadImage(item.csharp.dataUrl),
+            loadImage(item.flash.dataUrl)
+          ]);
+          if (csharpImage.naturalWidth !== data.canvas.width ||
+              csharpImage.naturalHeight !== data.canvas.height ||
+              flashImage.naturalWidth !== data.canvas.width ||
+              flashImage.naturalHeight !== data.canvas.height) {
+            throw new Error('Embedded PNG canvas changed after decode.');
+          }
+          const csharpPixels = imagePixels(csharpImage);
+          const flashPixels = imagePixels(flashImage, flashOffset);
+          return {
+            item,
+            csharpImage,
+            flashImage,
+            csharpPixels,
+            flashPixels,
+            ...buildDerived(csharpPixels, flashPixels)
+          };
+        })());
+      }
+      return decodedCases.get(item.caseId);
+    }
+
+    function selectedCase() {
+      return data.cases.find(item => item.caseId === state.caseId);
+    }
+
+    function fillDark() {
+      context.fillStyle = `rgb(${dark.join(',')})`;
+      context.fillRect(0, 0, data.canvas.width, data.canvas.height);
+    }
+
+    function drawImage(image, source) {
+      const offset = source === 'flash'
+          ? flashOffset
+          : { x: 0, y: 0 };
+      context.drawImage(image, offset.x, offset.y);
+    }
+
+    function drawWipe() {
+      const boundary = Math.round(
+          state.wipeFraction * data.canvas.width);
+      fillDark();
+      context.save();
+      context.beginPath();
+      context.rect(0, 0, boundary, data.canvas.height);
+      context.clip();
+      drawImage(state.decoded.csharpImage, 'csharp');
+      context.restore();
+      context.save();
+      context.beginPath();
+      context.rect(
+          boundary, 0, data.canvas.width - boundary, data.canvas.height);
+      context.clip();
+      drawImage(state.decoded.flashImage, 'flash');
+      context.restore();
+      context.fillStyle = '#f4f8ff';
+      context.fillRect(
+          clamp(boundary, 0, data.canvas.width - 1), 0,
+          1, data.canvas.height);
+    }
+
+    function updateModeUi() {
+      for (const button of elements.modeButtons) {
+        button.setAttribute(
+            'aria-pressed',
+            String(button.dataset.mode === state.mode));
+      }
+      elements.blinkControl.hidden = state.mode !== 'blink';
+      elements.wipeControl.hidden = state.mode !== 'wipe';
+      elements.signedLegend.hidden = state.mode !== 'signed';
+      elements.canvas.dataset.mode = state.mode;
+      elements.leftLabel.hidden =
+          !['blink', 'wipe'].includes(state.mode);
+      elements.rightLabel.hidden =
+          !['blink', 'wipe'].includes(state.mode);
+      const notes = {
+        blink:
+          'Blink 以完整 A/B 周期计频；默认 2.5 Hz，每侧显示 200 ms。',
+        wipe:
+          '硬切边：左侧 C#，右侧 Flash。可直接在画布上拖动分界线。',
+        signed:
+          '预乘 RGBA 残差：C# 正残差为品红，Flash 正残差为绿色；' +
+          '完全一致保持暗色。',
+        difference:
+          '辅助视图：预乘 RGB 的逐通道绝对差；黑色表示一致。',
+        invert:
+          '辅助视图：Difference 的反相，仅用于快速寻找暗色细节。'
+      };
+      elements.modeNote.textContent = notes[state.mode];
+    }
+
+    function updateStatus(activeSide) {
+      const item = selectedCase();
+      elements.status.textContent =
+          `${item.caseId} · ${data.canvas.width}×${data.canvas.height}` +
+          (activeSide ? ` · ${activeSide}` : '');
+    }
+
+    function render(now) {
+      requestAnimationFrame(render);
+      if (!state.decoded) {
+        return;
+      }
+      let activeSide = null;
+      if (state.mode === 'blink') {
+        if (state.blinkRunning) {
+          const halfPeriod = 500 / state.blinkHz;
+          state.blinkPhase = Math.floor(
+              (now - state.blinkEpoch) / halfPeriod) % 2;
+        }
+        fillDark();
+        if (state.blinkPhase === 0) {
+          drawImage(state.decoded.csharpImage, 'csharp');
+          activeSide = 'C#';
+        } else {
+          drawImage(state.decoded.flashImage, 'flash');
+          activeSide = 'Flash';
+        }
+        elements.phaseLabel.textContent =
+            `${activeSide} · ${state.blinkHz.toFixed(1)} Hz`;
+      } else if (state.mode === 'wipe') {
+        drawWipe();
+        elements.phaseLabel.textContent =
+            `wipe ${(state.wipeFraction * 100).toFixed(1)}%`;
+      } else {
+        context.putImageData(state.decoded[state.mode], 0, 0);
+        elements.phaseLabel.textContent =
+            state.mode === 'signed'
+                ? 'signed residual'
+                : state.mode === 'difference'
+                    ? 'difference · auxiliary'
+                    : 'invert · auxiliary';
+      }
+      updateStatus(activeSide);
+    }
+
+    function setZoom(zoom) {
+      state.zoom = clamp(Number(zoom), 1, 4);
+      elements.zoomSelect.value = String(state.zoom);
+      elements.canvas.style.width =
+          `${data.canvas.width * state.zoom}px`;
+      elements.canvas.style.height =
+          `${data.canvas.height * state.zoom}px`;
+    }
+
+    function setBlinkHz(value) {
+      const priorPhase = state.blinkPhase;
+      state.blinkHz = clamp(Number(value), 2, 3);
+      elements.blinkHz.value = String(state.blinkHz);
+      elements.blinkHzValue.textContent =
+          `${state.blinkHz.toFixed(1)} Hz`;
+      state.blinkEpoch =
+          performance.now() - priorPhase * (500 / state.blinkHz);
+    }
+
+    function setWipeFraction(value) {
+      state.wipeFraction = clamp(Number(value), 0, 1);
+      elements.wipePosition.value =
+          String(state.wipeFraction * 100);
+      elements.wipeValue.textContent =
+          `${(state.wipeFraction * 100).toFixed(1)}%`;
+    }
+
+    function setMode(mode) {
+      if (!['blink', 'wipe', 'signed', 'difference', 'invert']
+          .includes(mode)) {
+        throw new Error(`Unknown diagnostic mode: ${mode}`);
+      }
+      state.mode = mode;
+      state.blinkEpoch = performance.now();
+      updateModeUi();
+    }
+
+    async function setCase(caseId) {
+      const item = data.cases.find(candidate => candidate.caseId === caseId);
+      if (!item) {
+        throw new Error(`Unknown diagnostic case: ${caseId}`);
+      }
+      const version = ++state.renderVersion;
+      elements.status.textContent = `${caseId} · decoding`;
+      const decoded = await decodeCase(item);
+      if (version !== state.renderVersion) {
+        return;
+      }
+      state.caseId = caseId;
+      state.decoded = decoded;
+      elements.caseSelect.value = caseId;
+    }
+
+    function setBlinkRunning(running) {
+      state.blinkRunning = Boolean(running);
+      state.blinkEpoch =
+          performance.now() -
+          state.blinkPhase * (500 / state.blinkHz);
+      elements.pauseButton.textContent =
+          state.blinkRunning ? 'Pause' : 'Resume';
+    }
+
+    function wipeFromPointer(event) {
+      const rectangle = elements.canvas.getBoundingClientRect();
+      setWipeFraction((event.clientX - rectangle.left) / rectangle.width);
+    }
+
+    elements.caseSelect.addEventListener('change', () => {
+      void setCase(elements.caseSelect.value);
+    });
+    for (const button of elements.modeButtons) {
+      button.addEventListener(
+          'click', () => setMode(button.dataset.mode));
+    }
+    elements.blinkHz.addEventListener(
+        'input', () => setBlinkHz(elements.blinkHz.value));
+    elements.pauseButton.addEventListener(
+        'click', () => setBlinkRunning(!state.blinkRunning));
+    elements.wipePosition.addEventListener(
+        'input',
+        () => setWipeFraction(Number(elements.wipePosition.value) / 100));
+    elements.zoomSelect.addEventListener(
+        'change', () => setZoom(elements.zoomSelect.value));
+    elements.canvas.addEventListener('pointerdown', event => {
+      if (state.mode !== 'wipe') {
+        return;
+      }
+      elements.canvas.setPointerCapture(event.pointerId);
+      wipeFromPointer(event);
+    });
+    elements.canvas.addEventListener('pointermove', event => {
+      if (state.mode === 'wipe' &&
+          elements.canvas.hasPointerCapture(event.pointerId)) {
+        wipeFromPointer(event);
+      }
+    });
+    window.addEventListener('keydown', event => {
+      if (event.code === 'Space' && state.mode === 'blink' &&
+          event.target === document.body) {
+        event.preventDefault();
+        setBlinkRunning(!state.blinkRunning);
+      }
+    });
+
+    const query = new URLSearchParams(location.search);
+    const initialCase = query.get('case');
+    const initialMode = query.get('mode');
+    setZoom(query.get('zoom') || data.defaults.zoom);
+    setBlinkHz(query.get('hz') || data.defaults.blinkHz);
+    setWipeFraction(query.has('wipe')
+        ? Number(query.get('wipe'))
+        : data.defaults.wipeFraction);
+    setMode(initialMode || data.defaults.mode);
+
+    const api = {
+      schema: data.schema,
+      ready: false,
+      setCase,
+      setMode,
+      setBlinkHz,
+      setBlinkRunning,
+      setWipeFraction,
+      setZoom,
+      getState() {
+        return {
+          caseId: state.caseId,
+          mode: state.mode,
+          blinkHz: state.blinkHz,
+          blinkRunning: state.blinkRunning,
+          blinkPhase: state.blinkPhase,
+          wipeFraction: state.wipeFraction,
+          zoom: state.zoom,
+          canvas: { ...data.canvas },
+          placementNormalization: {
+            id: data.placementNormalization.id,
+            flashOffsetPixels: { ...flashOffset }
+          }
+        };
+      },
+      samplePixel(x, y) {
+        return Array.from(context.getImageData(x, y, 1, 1).data);
+      },
+      snapshotDataUrl() {
+        return elements.canvas.toDataURL('image/png');
+      }
+    };
+    window.__cf7VisualDiagnostic = api;
+    requestAnimationFrame(render);
+    void setCase(
+        data.cases.some(item => item.caseId === initialCase)
+            ? initialCase
+            : data.cases[0].caseId)
+        .then(() => {
+          api.ready = true;
+          document.documentElement.dataset.diagnosticReady = 'true';
+        })
+        .catch(error => {
+          elements.status.textContent = error.message;
+          document.documentElement.dataset.diagnosticReady = 'error';
+          throw error;
+        });
+  })();
+  </script>
+</body>
+</html>

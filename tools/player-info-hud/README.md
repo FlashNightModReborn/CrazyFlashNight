@@ -13,6 +13,47 @@ deliberately separate:
 - The one-time converter is not a build step and is not retained. The
   canonical SVGs are maintained directly after B0.
 
+## B0-01 placement and Flash-oracle boundary
+
+Evidence revision `b0-01a-r4` separates two placement profiles that must never
+be treated as interchangeable:
+
+- `standalone_child_document_wrapper`: directly loading
+  `flashswf/UI/玩家信息界面.swf` executes its document timeline. That timeline
+  places the linkage-exported `玩家信息界面` symbol at `ty=3`, so HP/MP compose
+  to `ty=5.65/-1.3`.
+- `main_rsl_exported_symbol`: the main SWF imports linkage identifier
+  `玩家信息界面` from that child RSL and places the exported symbol directly.
+  Relative to the main instance its root is identity (`ty=0`), so HP/MP use
+  their symbol-local `ty=2.65/-4.3`. The main-stage instance itself is
+  separately placed at `ty=512`.
+
+The seventh-round TestLoader candidate used `MovieClipLoader` on the whole
+child SWF. Its images and hashes remain valid historical diagnostics for the
+first profile, but they are not a main-runtime placement oracle and cannot be
+promoted to `oracle_frozen` by human review alone.
+
+The v2 runner instead loads the exact child SWF, extracts the
+linkage-exported-symbol instance below the child document wrapper, and draws
+that instance into a 1024×576 main-stage canvas at `ty=512`. Its contract binds
+`capturedPlacementProfile=main_rsl_exported_symbol_equivalent`,
+`extractionMode=loaded_child_exported_symbol_instance`,
+`childDocumentWrapperApplied=false`, and
+`mainRslPlacementEquivalent=true`. The main SWF is an identity-chain reference;
+it is not executed by the oracle. Validate the protocol without starting Flash,
+then run the real capture only after the runner and protocol are source-frozen:
+
+```powershell
+chcp.com 65001 | Out-Null
+& tools/player-info-hud/capture-flash-oracle.ps1 -ValidateOnly
+& tools/player-info-hud/capture-flash-oracle.ps1
+```
+
+The real command publishes only the dedicated TestLoader through the guarded
+Flash CS6 transaction, restores its temporary source/SWF state, and writes an
+ignored candidate beneath `tmp/player-info-hud/oracle/`. It does not publish or
+modify the production main or child SWF.
+
 ## Exact structural validation
 
 Run from the repository root with the exact SDK:
@@ -127,12 +168,14 @@ UiData consumer or `pi_*` fields. The surface is the sole owner and driver of
 `IPlayerInfoVisualStateSource`. Resume remains pending until a valid placement
 and raster request are established, so a transient invalid layout cannot leave
 the companion logically resumed but permanently hidden. The runtime effect
-contract exposes one B0 active dynamic-text/glow effect and two explicitly
-deferred B3 HP effects; a narrow composition recipe freezes the seven text
-placements instead of introducing a generic effect graph. The three HP text
-placements use the source-resolved red Glow; MP has no Glow. `sigma=1` and
-`alpha=220` are an explicit single-pass Skia approximation of the authored
-Flash blur/strength, not a pixel-parity claim.
+contract exposes two active B0 effects—dynamic text/HP Glow and the HP
+horizontal-line highlight—and one deferred B3 light-overlay effect. A narrow
+composition recipe freezes nine text placements instead of introducing a
+generic effect graph. The three HP text placements use the source-resolved red
+Glow; MP has no Glow. MP's two low-alpha decorative fields reproduce the
+authored `00000` text at their distinct anchors. The HP Glow uses `sigma=1`
+with two alpha passes (`255` and `128`) to model authored Flash strength `1.5`;
+this remains an explicit Skia approximation, not a pixel-parity claim.
 
 The formal runtime runner resolves exact SDK `10.0.300`, performs a locked
 restore, selects the single STA HWND/ULW qualification, then verifies its
@@ -249,12 +292,17 @@ try {
 ```
 
 Each invocation is structurally required to emit 35 PNGs plus `manifest.json`:
-11 transparent full-stage images, 11 tight crops, 12 viewport/state images,
-and one HP full-to-empty contact sheet. The manifest status is only
+11 transparent 1024×576 main-viewport images, 11 tight crops, 12
+viewport/state images, and one HP full-to-empty contact sheet. The child
+document's authored 1024×64 frame metadata is not a runtime clip. At the
+baseline viewport, the raw main-space layer union is
+`(-3,474,285,81)` and its visible tight rectangle is `(0,474,282,81)`.
+The manifest status is only
 `structural_capture_complete`, scope `fixture_only`; it explicitly excludes
 cross-renderer parity, a visual threshold, game composite, human acceptance,
 real UiData, and deployment. The final implementation-base A/B snapshots are
-complete 36-file closures and are byte-identical: each is 834,893 B with
+historical v1 1024×64 captures only. They were complete 36-file closures and
+byte-identical: each is 834,893 B with
 closure SHA-256
 `44C22A045B4CA0AC19C4ECB7664024E5C318E39B2290F1E8856C19F1F6BEE06F`;
 the identical manifest is 162,661 B with SHA-256
@@ -280,14 +328,22 @@ node tools/player-info-hud/compare-b0-06-csharp-web-flash.js `
   --output=tmp/player-info-hud-b006-direct-b
 ```
 
-The comparator validates exact case order, C#/Web canonical manifest identity,
-Flash candidate/receipt provenance, and Edge/Playwright identity. It emits 66
-diagnostic PNGs plus
+The v2 comparator validates exact case order; C#/Web canonical manifest
+identity; the Flash candidate, receipt, compile, tooling, source-binary,
+placement-closure, and 40-file Flash-directory provenance; Edge/Playwright
+identity; and exact geometry for all four physical viewport profiles. It
+rejects historical v1 inputs and performs no standalone-to-main coordinate
+normalization. The `p50` case also measures the MP label, current value,
+maximum value, and percentage independently over fixed ROIs; all four must
+have a unique best horizontal registration at `dx=0` for manual Exit-Gate
+review. It emits 66 diagnostic PNGs plus
 `csharp-web-flash-comparison-report.json` for the direct C#↔Web and C#↔Flash
 edges. This three-input report itself does not emit a Web↔Flash edge;
 `compare-flash-web-svg.js` below emits an independent supplemental diagnostic.
 Neither report provides a threshold, transitive inference, parity verdict, or
-Flash-oracle acceptance, so status remains `diagnostic_awaiting_human_review`.
+Flash-oracle acceptance. The seventh-round direct-child manifest is therefore
+retained only as a historical standalone diagnostic and cannot be fed to the
+v2 comparator.
 Web scope is exactly `canonical_static_svg_layers_only`; the Web
 captures do not include C# programmatic dynamic text or Glow. Consequently the
 C#↔Web metrics compare a full C# fixture composite with only those Web static
@@ -300,13 +356,27 @@ both 5,644 B Web reports have SHA-256
 `7826B89DAF49BFFF409B2CEC066B4D8853BF593EF1EA3675C88D3FCA9C8BF97F`.
 Both direct-edge runs emit the same 66-PNG closure, 1,470,180 B /
 `5207F27B2ACEE5E7A3F04D89EE627DEE6E4C58CBCD93F4AF975E778C5803C234`.
-Their 184,472 B reports differ only because they retain distinct `-a/-b` input
-paths; report hashes are
+Their historical v1 184,472 B reports differ only because they retain distinct
+`-a/-b` input paths; report hashes are
 `519CF97BC632F5F921C30ED64B81B80864F4C626D86885E8D9CB98CA319783C1`
 and
 `081B05E2E729A2C7E6C7987530C4D2D361B02E4DBD6C7CAC2E0F0F3F2E78B356`.
-The exact final index is `evidence/b0-06/visual-evidence.json`; the pre-origin
-index remains historical evidence only.
+These hashes and the corresponding entries in
+`evidence/b0-06/visual-evidence.json` are historical evidence only; the final
+v2 main-space index must be regenerated from the frozen source.
+
+Build the local review viewer from either direct-edge report:
+
+```powershell
+node tools/player-info-hud/build-visual-diagnostic-viewer.js `
+  --report=tmp/player-info-hud-b006-direct-a/csharp-web-flash-comparison-report.json `
+  --output=tmp/player-info-hud-b006-viewer
+```
+
+The viewer provides A/B blink, hard wipe, signed residual, Difference, and
+Invert diagnostics at native main-stage coordinates. Difference and Invert are
+inspection aids only; production composition remains ordinary source-over
+except for the one authored deferred HP light-overlay layer.
 
 ## Headless Web, FFDec, and Flash diagnostics
 
@@ -355,10 +425,12 @@ The two FFDec↔Web runs each emit 33 byte-identical PNGs, 698,799 B, SHA-256
 their distinct-path reports are indexed in
 `evidence/b0-06/visual-evidence.json`.
 
-`compare-flash-web-svg.js` performs the analogous diagnostic against the
-actual Flash Player candidate's 1024×64 raw captures. A Flash candidate remains
-unaccepted until a human reviews its source, state, layer isolation, crop, and
-visual quality:
+`compare-flash-web-svg.js` is the historical standalone-v1 diagnostic against
+a Flash Player candidate's 1024×64 raw captures. For the seventh-round
+candidate this means the standalone child-document profile described above,
+not the actual main RSL placement. It is not the v2 formal comparator. A
+placement-correct v2 candidate remains unaccepted until a human reviews its
+source, state, layer isolation, crop, and visual quality:
 
 ```powershell
 node tools/player-info-hud/compare-flash-web-svg.js `
@@ -372,34 +444,28 @@ node tools/player-info-hud/compare-flash-web-svg.js `
   --output=tmp/player-info-hud-flash-web-canonical-b
 ```
 
-The two Flash-candidate↔Web runs likewise emit 33 byte-identical PNGs,
+The two historical standalone-candidate↔Web runs likewise emit 33
+byte-identical PNGs,
 661,944 B, SHA-256
 `6141D3870BC5ED6B40AD3C1FD19A11945D47C5973C6B1711F323220E778CC185`;
 their reports and hashes are frozen in the same final evidence index. This
-repeatability says nothing about acceptance of the still-unsigned Flash
-candidate.
+repeatability says nothing about main-runtime placement or acceptance of the
+still-unsigned Flash candidate.
 
 ## Acceptance boundary
 
 Automated hashes and metrics can freeze structure and expose differences; they
 cannot promote a Flash candidate to `oracle_frozen`, assert visual parity, or
-accept the UI aesthetic. Only a human may sign those checks. Until then the
-B0-01B/B0-04 state is `awaiting_human_review`, and the old Flash HUD remains
-the active visual reference. An earlier 2026-07-29 ChatGPT app observation
-reported successful Computer Use initialization and a Flash authoring-window
-capture showing `TestLoader.xfl` and `Compile | done.`. That is only a
-historical, non-runtime authoring observation; it does not establish which SWF
-is loaded now.
-
-In the current app session the Computer Use package is discoverable, but its
-native interaction pipe is unavailable (`os error 2`). The in-app Browser can
-initialize, but exposes no controllable browser backend
-(`agent.browsers.list()` is empty). Current Flash windows therefore cannot be
-enumerated or inspected through those Apps, and this document makes no
-current-tense claim about an open XFL, Test Movie, or loaded SWF.
+accept the UI aesthetic. Human review is necessary but cannot repair a wrong
+placement profile. Until a source-bound v2 run is captured and reviewed,
+B0-01B remains
+`standalone_child_diagnostic_captured; main_rsl_equivalent_oracle_pending`,
+B0-04 remains without accepted visual parity, and the old Flash HUD remains
+the active visual reference.
 
 The repository-owned Playwright/local-Edge harness remains valid for
-deterministic Web/direct-edge rendering without either App backend; FFDec
+deterministic Web/direct-edge rendering without an interactive App backend;
+FFDec
 remains a binary-SWF diagnostic, and the formal runner exercises real HWND/ULW
 calls with an offscreen owner. None of these routes proves visible desktop DWM
 composition, z-order/occlusion over the running game, a real hand click,

@@ -2,13 +2,15 @@
 'use strict';
 
 const crypto = require('crypto');
+const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
 const repoRoot = path.resolve(__dirname, '..', '..');
 const playwrightRoot = path.join(
     repoRoot, 'launcher', 'perf', 'node_modules', 'playwright');
-const viewport = {width:1024, height:64};
+const viewport = {width:1024, height:576};
+const childAuthoringStage = {width:1024, height:64};
 const darkBackground = {
     id:'fixed-diagnostic-dark-game-matte-v1',
     css:'#181c20',
@@ -16,7 +18,7 @@ const darkBackground = {
 };
 const canonicalStaticLayerScope = 'canonical_static_svg_layers_only';
 const comparisonScope =
-    '11_case_direct_csharp_full_fixture_composite_to_web_canonical_' +
+    '11_case_direct_csharp_main_viewport_composite_to_web_canonical_' +
     'static_layers_and_csharp_to_flash';
 const expectedCases = [
     {id:'empty', hpFrame:129, mpFrame:101},
@@ -69,12 +71,66 @@ const expectedRendererBinaryNames = [
     'runtimes/win-x64/native/libHarfBuzzSharp.dll',
     'runtimes/win-x64/native/libSkiaSharp.dll'
 ];
-const expectedViewportIds = [
-    'viewport_1024x576_dpi100',
-    'viewport_1600x900_dpi125',
-    'viewport_1920x1080_dpi150',
-    'host_1280x960_letterbox_content_1280x720_dpi175'
+const expectedViewportContracts = [
+    {
+        id:'viewport_1024x576_dpi100',
+        host:{x:0, y:0, width:1024, height:576},
+        content:{x:0, y:0, width:1024, height:576},
+        monitorDpiScale:1,
+        physicalScale:1,
+        stage:{x:0, y:512, width:1024, height:64},
+        tight:{x:0, y:474, width:282, height:81}
+    },
+    {
+        id:'viewport_1600x900_dpi125',
+        host:{x:0, y:0, width:1600, height:900},
+        content:{x:0, y:0, width:1600, height:900},
+        monitorDpiScale:1.25,
+        physicalScale:1.5625,
+        stage:{x:0, y:800, width:1600, height:100},
+        tight:{x:0, y:741, width:440, height:126}
+    },
+    {
+        id:'viewport_1920x1080_dpi150',
+        host:{x:0, y:0, width:1920, height:1080},
+        content:{x:0, y:0, width:1920, height:1080},
+        monitorDpiScale:1.5,
+        physicalScale:1.875,
+        stage:{x:0, y:960, width:1920, height:120},
+        tight:{x:0, y:890, width:528, height:150}
+    },
+    {
+        id:'host_1280x960_letterbox_content_1280x720_dpi175',
+        host:{x:0, y:0, width:1280, height:960},
+        content:{x:0, y:120, width:1280, height:720},
+        monitorDpiScale:1.75,
+        physicalScale:1.25,
+        stage:{x:0, y:760, width:1280, height:80},
+        tight:{x:0, y:713, width:352, height:101}
+    }
 ];
+const expectedViewportIds =
+    expectedViewportContracts.map(contract => contract.id);
+const mpHorizontalAlignmentContract = {
+    caseId:'p50',
+    canvas:{width:1024, height:576, yNormalization:0},
+    dxSearch:{minimum:-8, maximum:8, fixedDy:0},
+    minimumPixelCount:32,
+    minimumJaccard:0.35,
+    mask:{
+        alphaMinimum:224,
+        greenMinimum:170,
+        blueMinimum:170,
+        greenMinusRedMinimum:40,
+        blueMinusRedMinimum:40
+    },
+    fields:[
+        {id:'label', roi:{x:91, y:514, width:30, height:16}},
+        {id:'current', roi:{x:126, y:516, width:50, height:14}},
+        {id:'maximum', roi:{x:176, y:516, width:50, height:14}},
+        {id:'percent', roi:{x:86, y:530, width:31, height:13}}
+    ]
+};
 const expectedHpFullToEmptyFrames = [
     1, 10, 18, 26, 33, 40, 46, 52, 58, 63, 68, 73, 77, 81,
     85, 88, 91, 94, 97, 100, 102, 104, 106, 108, 110, 112,
@@ -238,6 +294,49 @@ function assertExactDirectoryClosure(root, expectedPaths, label) {
 
 function sha256(bytes) {
     return crypto.createHash('sha256').update(bytes).digest('hex');
+}
+
+function readGitBlob(commit, relativePath, expectedOid, label) {
+    const commitId = assertHex(commit, 40, `${label}.commit`);
+    const pathValue = relativePath.replace(/\\/gu, '/');
+    const resolvedPath = resolveInsideRepo(pathValue, `${label}.path`);
+    if (repoRelative(resolvedPath) !== pathValue) {
+        fail(`${label}.path is not canonical repo-relative syntax.`);
+    }
+    let actualOid;
+    let bytes;
+    try {
+        actualOid = childProcess.execFileSync(
+            'git',
+            ['-C', repoRoot, 'rev-parse', `${commitId}:${pathValue}`],
+            {
+                encoding:'utf8',
+                windowsHide:true,
+                maxBuffer:1024 * 1024
+            }).trim().toLowerCase();
+        bytes = childProcess.execFileSync(
+            'git',
+            ['-C', repoRoot, 'cat-file', 'blob', actualOid],
+            {
+                encoding:null,
+                windowsHide:true,
+                maxBuffer:64 * 1024 * 1024
+            });
+    } catch (error) {
+        fail(`${label} Git blob could not be read: ${error.message}`);
+    }
+    const expected = assertHex(expectedOid, 40, `${label}.gitBlobOid`);
+    if (actualOid !== expected) {
+        fail(`${label} Git blob OID drifted.`);
+    }
+    return {
+        oid:actualOid,
+        bytes,
+        identity: {
+            bytes:bytes.length,
+            sha256:sha256(bytes)
+        }
+    };
 }
 
 function assertSha(value, label) {
@@ -450,7 +549,7 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
     assertExactKeys(csharp, baseKeys, 'C# capture manifest');
     if (csharp.schema !==
             'cf7.player-info-hud.b0-06-csharp-visual-capture' ||
-        csharp.schemaVersion !== 1 ||
+        csharp.schemaVersion !== 2 ||
         csharp.status !== 'structural_capture_complete' ||
         csharp.scope !== 'fixture_only') {
         fail('Unsupported C# B0-06 visual capture contract.');
@@ -617,7 +716,7 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         'C# baseline.stagePhysicalBounds');
     assertRect(
         csharp.baseline.tightPhysicalBounds,
-        {x:0, y:512, width:282, height:46},
+        {x:0, y:474, width:282, height:81},
         'C# baseline.tightPhysicalBounds');
     assertNonEmptyString(csharp.baseline.batchKey, 'C# baseline.batchKey');
 
@@ -635,6 +734,7 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         'sourcePixelFormat',
         'physicalScale',
         'monitorDpiScale',
+        'flashViewportPhysical',
         'stagePhysicalBounds',
         'tightPhysicalBounds',
         'alphaBounds',
@@ -672,6 +772,9 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         assertFiniteNumber(output.physicalScale, `${label}.physicalScale`);
         assertFiniteNumber(
             output.monitorDpiScale, `${label}.monitorDpiScale`);
+        assertRect(
+            output.flashViewportPhysical, null,
+            `${label}.flashViewportPhysical`);
         assertRect(
             output.stagePhysicalBounds, null,
             `${label}.stagePhysicalBounds`);
@@ -716,7 +819,7 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
     }
     const expectedCsharpOutputPaths = [
         ...expectedCases.flatMap(item => [
-            `cases/${item.id}.full.png`,
+            `cases/${item.id}.main.png`,
             `cases/${item.id}.tight.png`
         ]),
         ...expectedViewportIds.flatMap(viewportId => [
@@ -733,8 +836,8 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         fail('C# capture output paths are not the exact 35-file matrix.');
     }
     for (const item of expectedCases) {
-        if (outputByPath.get(`cases/${item.id}.full.png`).kind !==
-                'fixture-full-stage' ||
+        if (outputByPath.get(`cases/${item.id}.main.png`).kind !==
+                'fixture-main-viewport' ||
             outputByPath.get(`cases/${item.id}.tight.png`).kind !==
                 'fixture-alpha-tight-crop') {
             fail(`C# case output kinds drifted at ${item.id}.`);
@@ -744,7 +847,7 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         for (const stateId of ['empty', 'full', 'half']) {
             const output = outputByPath.get(
                 `viewports/${viewportId}/${stateId}.png`);
-            if (output.kind !== 'viewport-key-state-full-stage' ||
+            if (output.kind !== 'viewport-key-state-main-viewport' ||
                 output.viewportId !== viewportId) {
                 fail(
                     `C# viewport output contract drifted at ` +
@@ -773,12 +876,12 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
             'caseId',
             'visualState',
             'paintResult',
-            'fullStagePng',
+            'mainViewportPng',
             'tightCropPng'
         ], label);
         if (actual.caseId !== expected.id ||
-            actual.fullStagePng !==
-                `cases/${expected.id}.full.png` ||
+            actual.mainViewportPng !==
+                `cases/${expected.id}.main.png` ||
             actual.tightCropPng !==
                 `cases/${expected.id}.tight.png`) {
             fail(`${label} path/order contract drifted.`);
@@ -823,17 +926,18 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
             actual.paintResult.mpPaletteStart,
             `${label}.paintResult.mpPaletteStart`);
 
-        const output = outputByPath.get(actual.fullStagePng);
+        const output = outputByPath.get(actual.mainViewportPng);
         const tightOutput = outputByPath.get(actual.tightCropPng);
         if (!output ||
-            output.kind !== 'fixture-full-stage' ||
+            output.kind !== 'fixture-main-viewport' ||
             output.viewportId !== csharp.baseline.viewportId ||
             output.stateId !== expected.id ||
             output.width !== viewport.width ||
             output.height !== viewport.height ||
             output.physicalScale !== 1 ||
             output.monitorDpiScale !== 1) {
-            fail(`${label} has no exact baseline full-stage output record.`);
+            fail(
+                `${label} has no exact baseline main-viewport output record.`);
         }
         if (!tightOutput ||
             tightOutput.kind !== 'fixture-alpha-tight-crop' ||
@@ -844,6 +948,10 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
             fail(`${label} has no exact baseline tight-crop output record.`);
         }
         assertRect(
+            output.flashViewportPhysical,
+            csharp.baseline.contentViewport,
+            `${label} output.flashViewportPhysical`);
+        assertRect(
             output.stagePhysicalBounds,
             csharp.baseline.stagePhysicalBounds,
             `${label} output.stagePhysicalBounds`);
@@ -851,9 +959,10 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
             output.tightPhysicalBounds,
             csharp.baseline.tightPhysicalBounds,
             `${label} output.tightPhysicalBounds`);
-        const verified = verifiedOutputByPath.get(actual.fullStagePng);
+        const verified = verifiedOutputByPath.get(actual.mainViewportPng);
         if (!verified) {
-            fail(`${label} full-stage PNG was not read from the closure.`);
+            fail(
+                `${label} main-viewport PNG was not read from the closure.`);
         }
         return {
             id:expected.id,
@@ -879,7 +988,8 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
     ];
     for (const [index, viewportCapture] of
         csharp.viewportMatrix.entries()) {
-        const viewportId = expectedViewportIds[index];
+        const expectedViewport = expectedViewportContracts[index];
+        const viewportId = expectedViewport.id;
         const label = `C# viewportMatrix[${index}]`;
         assertExactKeys(
             viewportCapture,
@@ -888,7 +998,10 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         if (viewportCapture.viewportId !== viewportId) {
             fail(`${label}.viewportId/order drifted.`);
         }
-        assertRect(viewportCapture.hostViewport, null, `${label}.hostViewport`);
+        assertRect(
+            viewportCapture.hostViewport,
+            expectedViewport.host,
+            `${label}.hostViewport`);
         assertExactKeys(viewportCapture.plan, [
             'viewportId',
             'contentViewport',
@@ -903,15 +1016,15 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         }
         assertRect(
             viewportCapture.plan.contentViewport,
-            null,
+            expectedViewport.content,
             `${label}.plan.contentViewport`);
         assertRect(
             viewportCapture.plan.stagePhysicalBounds,
-            null,
+            expectedViewport.stage,
             `${label}.plan.stagePhysicalBounds`);
         assertRect(
             viewportCapture.plan.tightPhysicalBounds,
-            null,
+            expectedViewport.tight,
             `${label}.plan.tightPhysicalBounds`);
         assertFiniteNumber(
             viewportCapture.plan.monitorDpiScale,
@@ -919,6 +1032,12 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
         assertFiniteNumber(
             viewportCapture.plan.physicalScale,
             `${label}.plan.physicalScale`);
+        if (viewportCapture.plan.monitorDpiScale !==
+                expectedViewport.monitorDpiScale ||
+            viewportCapture.plan.physicalScale !==
+                expectedViewport.physicalScale) {
+            fail(`${label}.plan scale contract drifted.`);
+        }
         assertNonEmptyString(
             viewportCapture.plan.batchKey,
             `${label}.plan.batchKey`);
@@ -940,12 +1059,33 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
             ], stateLabel);
             const expectedPath =
                 `viewports/${viewportId}/${expectedState.stateId}.png`;
+            const stateOutput = outputByPath.get(expectedPath);
             if (state.stateId !== expectedState.stateId ||
                 state.caseId !== expectedState.caseId ||
                 state.png !== expectedPath ||
-                !outputByPath.has(expectedPath)) {
+                !stateOutput) {
                 fail(`${stateLabel} reference drifted.`);
             }
+            if (stateOutput.width !== expectedViewport.content.width ||
+                stateOutput.height !== expectedViewport.content.height ||
+                stateOutput.monitorDpiScale !==
+                    expectedViewport.monitorDpiScale ||
+                stateOutput.physicalScale !==
+                    expectedViewport.physicalScale) {
+                fail(`${stateLabel} output dimension/scale drifted.`);
+            }
+            assertRect(
+                stateOutput.flashViewportPhysical,
+                expectedViewport.content,
+                `${stateLabel} output.flashViewportPhysical`);
+            assertRect(
+                stateOutput.stagePhysicalBounds,
+                expectedViewport.stage,
+                `${stateLabel} output.stagePhysicalBounds`);
+            assertRect(
+                stateOutput.tightPhysicalBounds,
+                expectedViewport.tight,
+                `${stateLabel} output.tightPhysicalBounds`);
         }
     }
 
@@ -1028,6 +1168,14 @@ function validateCsharpManifest(csharp, reportPath, tracker) {
             colorType:csharp.asset.colorType,
             alphaType:csharp.asset.alphaType
         },
+        baselineGeometry: {
+            viewportId:csharp.baseline.viewportId,
+            contentViewport:csharp.baseline.contentViewport,
+            monitorDpiScale:csharp.baseline.monitorDpiScale,
+            physicalScale:csharp.baseline.physicalScale,
+            stagePhysicalBounds:csharp.baseline.stagePhysicalBounds,
+            tightPhysicalBounds:csharp.baseline.tightPhysicalBounds
+        },
         canvasContractPresent:true,
         selectedArtifactCount:cases.length,
         cases
@@ -1049,7 +1197,7 @@ function validateWebReport(web, reportPath, tracker) {
         'assets',
         'cases'
     ], 'Web render report');
-    if (web.schema !== 'cf7.player_info.web_svg_harness.v1' ||
+    if (web.schema !== 'cf7.player_info.web_svg_harness.v2' ||
         web.status !==
             'canonical_manifest_rendered_awaiting_human_review' ||
         JSON.stringify(web.viewport) !==
@@ -1202,8 +1350,8 @@ function validateWebReport(web, reportPath, tracker) {
             ]) ||
         manifest.units.svgUnit !== 'logical-pixel' ||
         manifest.units.sourceTwipsPerSvgUnit !== 20 ||
-        manifest.stage.logicalWidth !== viewport.width ||
-        manifest.stage.logicalHeight !== viewport.height ||
+        manifest.stage.logicalWidth !== childAuthoringStage.width ||
+        manifest.stage.logicalHeight !== childAuthoringStage.height ||
         JSON.stringify(manifest.stage.compositeOrder) !==
             JSON.stringify(['mp', 'hp'])) {
         fail('Web canonical manifest identity/unit/stage contract drifted.');
@@ -1223,17 +1371,24 @@ function validateWebReport(web, reportPath, tracker) {
 
     assertExactKeys(web.renderSemantics, [
         'capturedLayerScope',
+        'coordinateSpace',
         'compositeOrder',
         'csharpProgrammaticDynamicTextIncluded',
         'csharpProgrammaticGlowIncluded',
+        'childDocumentWrapperExcluded',
+        'exportedSymbolMainY',
         'hpFillDegreesPerSourceFrame',
         'mpRimVariantStarts'
     ], 'Web renderSemantics');
     if (web.renderSemantics.capturedLayerScope !==
             canonicalStaticLayerScope ||
+        web.renderSemantics.coordinateSpace !==
+            'main_flash_content_viewport' ||
         web.renderSemantics.csharpProgrammaticDynamicTextIncluded !==
             false ||
         web.renderSemantics.csharpProgrammaticGlowIncluded !== false ||
+        web.renderSemantics.childDocumentWrapperExcluded !== true ||
+        web.renderSemantics.exportedSymbolMainY !== 512 ||
         JSON.stringify(web.renderSemantics.compositeOrder) !==
             JSON.stringify(['mp', 'hp']) ||
         web.renderSemantics.hpFillDegreesPerSourceFrame !== 2.8125 ||
@@ -1365,10 +1520,16 @@ function validateWebReport(web, reportPath, tracker) {
         renderSemantics: {
             capturedLayerScope:
                 web.renderSemantics.capturedLayerScope,
+            coordinateSpace:
+                web.renderSemantics.coordinateSpace,
             csharpProgrammaticDynamicTextIncluded:
                 web.renderSemantics.csharpProgrammaticDynamicTextIncluded,
             csharpProgrammaticGlowIncluded:
-                web.renderSemantics.csharpProgrammaticGlowIncluded
+                web.renderSemantics.csharpProgrammaticGlowIncluded,
+            childDocumentWrapperExcluded:
+                web.renderSemantics.childDocumentWrapperExcluded,
+            exportedSymbolMainY:
+                web.renderSemantics.exportedSymbolMainY
         },
         selectedArtifactCount:cases.length,
         cases
@@ -1409,8 +1570,12 @@ function validateSnapshot(
     reportRoot,
     tracker,
     expectedSha,
-    label) {
-    assertExactKeys(snapshot, ['path', 'bytes', 'sha256'], label);
+    label,
+    extraKeys = []) {
+    assertExactKeys(
+        snapshot,
+        ['path', 'bytes', 'sha256', ...extraKeys],
+        label);
     assertPositiveSafeInteger(snapshot.bytes, `${label}.bytes`);
     const snapshotPath = resolveBelow(
         reportRoot, snapshot.path, `${label}.path`);
@@ -1428,20 +1593,82 @@ function validateSnapshot(
     };
 }
 
-function validateDerivedIdentity(value, label) {
+function validateRepoBoundSnapshot(
+    relativePath,
+    snapshot,
+    reportRoot,
+    tracker,
+    label) {
+    const repoPath = resolveInsideRepo(relativePath, `${label}.repoPath`);
+    const repoInput = tracker.read(repoPath, `${label} current repo input`);
+    const verified = validateSnapshot(
+        snapshot,
+        reportRoot,
+        tracker,
+        repoInput.identity.sha256,
+        `${label}.snapshot`);
+    if (repoInput.identity.bytes !== verified.bytes) {
+        fail(`${label} snapshot byte length differs from current repo input.`);
+    }
+    return {
+        path:repoRelative(repoPath),
+        bytes:repoInput.identity.bytes,
+        sha256:repoInput.identity.sha256,
+        snapshot:verified
+    };
+}
+
+function validateDerivedIdentity(
+    value,
+    label,
+    {requireExists = false} = {}) {
     assertExactKeys(value, [
         'exists', 'bytes', 'sha256', 'lastWriteUtc'
     ], label);
-    if (value.exists !== true) {
-        fail(`${label}.exists must be true.`);
+    if (typeof value.exists !== 'boolean') {
+        fail(`${label}.exists must be boolean.`);
+    }
+    if (!value.exists) {
+        if (requireExists) {
+            fail(`${label}.exists must be true.`);
+        }
+        if (value.bytes !== 0 ||
+            ![null, ''].includes(value.sha256) ||
+            ![null, ''].includes(value.lastWriteUtc)) {
+            fail(`${label} absent-file identity must be 0/null-or-empty.`);
+        }
+        return {
+            exists:false,
+            bytes:0,
+            sha256:null,
+            lastWriteUtc:null
+        };
     }
     assertPositiveSafeInteger(value.bytes, `${label}.bytes`);
     const digest = assertSha(value.sha256, `${label}.sha256`);
     assertNonEmptyString(value.lastWriteUtc, `${label}.lastWriteUtc`);
     return {
+        exists:true,
         bytes:value.bytes,
         sha256:digest,
         lastWriteUtc:value.lastWriteUtc
+    };
+}
+
+function validateRestoredDerivedIdentity(value, label) {
+    assertExactKeys(value, [
+        'exists', 'bytes', 'sha256', 'lastWriteUtc', 'verifiedUtc'
+    ], label);
+    const identity = validateDerivedIdentity({
+        exists:value.exists,
+        bytes:value.bytes,
+        sha256:value.sha256,
+        lastWriteUtc:value.lastWriteUtc
+    }, label);
+    assertNonEmptyString(value.verifiedUtc, `${label}.verifiedUtc`);
+    return {
+        ...identity,
+        verifiedUtc:value.verifiedUtc
     };
 }
 
@@ -1458,6 +1685,7 @@ function validateFlashReceipt(
         'schema',
         'status',
         'runId',
+        'placement',
         'manifest',
         'scratchRestoredByteExact',
         'sourceScratch',
@@ -1468,7 +1696,7 @@ function validateFlashReceipt(
         'requiresHumanReview'
     ], 'Flash candidate receipt');
     if (receipt.schema !==
-            'cf7.player_info.flash_oracle_candidate_receipt.v1' ||
+            'cf7.player_info.flash_oracle_candidate_receipt.v2' ||
         receipt.status !== 'candidate_ready_after_restore' ||
         receipt.runId !== flash.runId ||
         receipt.scratchRestoredByteExact !== true ||
@@ -1477,14 +1705,41 @@ function validateFlashReceipt(
         receipt.requiresHumanReview !== true) {
         fail('Flash candidate receipt boundary drifted.');
     }
-    assertExactKeys(
-        receipt.manifest, ['path', 'sha256'],
-        'Flash candidate receipt manifest');
-    if (receipt.manifest.path !== path.basename(receiptPath) &&
-        receipt.manifest.path !== 'oracle-manifest.json') {
-        fail('Flash candidate receipt manifest path drifted.');
+    assertExactKeys(receipt.placement, [
+        'placementProfile',
+        'referencePlacementProfile',
+        'extractionMode',
+        'mainRslPlacementEquivalent',
+        'mainParticipatesInCapture',
+        'mainBinaryRole',
+        'childDocumentWrapperApplied',
+        'exportedSymbolRootTy',
+        'mainPlacementY',
+        'canvas'
+    ], 'Flash candidate receipt placement');
+    if (receipt.placement.placementProfile !==
+            'main_rsl_exported_symbol_equivalent' ||
+        receipt.placement.referencePlacementProfile !==
+            'main_rsl_exported_symbol' ||
+        receipt.placement.extractionMode !==
+            'loaded_child_exported_symbol_instance' ||
+        receipt.placement.mainRslPlacementEquivalent !== true ||
+        receipt.placement.mainParticipatesInCapture !== false ||
+        receipt.placement.mainBinaryRole !==
+            'identity_chain_reference_only' ||
+        receipt.placement.childDocumentWrapperApplied !== false ||
+        receipt.placement.exportedSymbolRootTy !== 0 ||
+        receipt.placement.mainPlacementY !== 512 ||
+        JSON.stringify(receipt.placement.canvas) !==
+            JSON.stringify([viewport.width, viewport.height])) {
+        fail('Flash candidate receipt placement boundary drifted.');
     }
+    assertExactKeys(
+        receipt.manifest, ['path', 'schema', 'sha256'],
+        'Flash candidate receipt manifest');
     if (receipt.manifest.path !== 'oracle-manifest.json' ||
+        receipt.manifest.schema !==
+            'cf7.player_info.flash_oracle_manifest.v2' ||
         assertSha(
             receipt.manifest.sha256,
             'Flash candidate receipt manifest SHA-256') !==
@@ -1507,35 +1762,18 @@ function validateFlashReceipt(
         'Flash receipt derivedSwf.original');
     const receiptCompiled = validateDerivedIdentity(
         receipt.derivedSwf.compiled,
-        'Flash receipt derivedSwf.compiled');
-    assertExactKeys(receipt.derivedSwf.restored, [
-        'exists', 'bytes', 'sha256', 'lastWriteUtc', 'verifiedUtc'
-    ], 'Flash receipt derivedSwf.restored');
-    const receiptRestored = {
-        bytes:receipt.derivedSwf.restored.bytes,
-        sha256:assertSha(
-            receipt.derivedSwf.restored.sha256,
-            'Flash receipt derivedSwf.restored.sha256'),
-        lastWriteUtc:receipt.derivedSwf.restored.lastWriteUtc
-    };
-    if (receipt.derivedSwf.restored.exists !== true) {
-        fail('Flash receipt restored SWF does not exist.');
-    }
-    assertPositiveSafeInteger(
-        receiptRestored.bytes,
-        'Flash receipt derivedSwf.restored.bytes');
-    assertNonEmptyString(
-        receiptRestored.lastWriteUtc,
-        'Flash receipt derivedSwf.restored.lastWriteUtc');
-    assertNonEmptyString(
-        receipt.derivedSwf.restored.verifiedUtc,
-        'Flash receipt derivedSwf.restored.verifiedUtc');
+        'Flash receipt derivedSwf.compiled',
+        {requireExists:true});
+    const receiptRestored = validateRestoredDerivedIdentity(
+        receipt.derivedSwf.restored,
+        'Flash receipt derivedSwf.restored');
     for (const [receiptValue, manifestValue, label] of [
         [receiptOriginal, original, 'original'],
         [receiptCompiled, compiled, 'compiled'],
         [receiptRestored, restored, 'restored']
     ]) {
-        if (receiptValue.bytes !== manifestValue.bytes ||
+        if (receiptValue.exists !== manifestValue.exists ||
+            receiptValue.bytes !== manifestValue.bytes ||
             receiptValue.sha256 !== manifestValue.sha256 ||
             receiptValue.lastWriteUtc !== manifestValue.lastWriteUtc) {
             fail(`Flash receipt ${label} identity differs from manifest.`);
@@ -1547,6 +1785,7 @@ function validateFlashReceipt(
         sha256:receiptInput.sha256,
         schema:receipt.schema,
         status:receipt.status,
+        placement:receipt.placement,
         requiresHumanReview:true
     };
 }
@@ -1571,7 +1810,7 @@ function validateFlashManifest(
         'humanReview'
     ], 'Flash oracle manifest');
     if (flash.schema !==
-            'cf7.player_info.flash_oracle_manifest.v1' ||
+            'cf7.player_info.flash_oracle_manifest.v2' ||
         flash.status !== 'candidate' ||
         flash.requiresHumanReview !== true) {
         fail('Flash input is not a candidate requiring human review.');
@@ -1603,14 +1842,122 @@ function validateFlashManifest(
         'sourceBinaryChain',
         'formula',
         'uiSwf',
+        'mainSwf',
         'loaderSwf',
         'childRuntimeBinding',
         'captureLoaderContract',
         'compile'
     ], 'Flash source');
+    assertExactKeys(flash.source.placementClosure, [
+        'path',
+        'evidenceRevision',
+        'closureDigest',
+        'placementCardinality',
+        'capturedPlacementProfile',
+        'referencePlacementProfile',
+        'mainRslPlacementEquivalent',
+        'extractionMode',
+        'mainParticipatesInCapture',
+        'mainBinaryRole',
+        'childDocumentWrapperApplied',
+        'exportedSymbolRootTy',
+        'mainPlacementY',
+        'standaloneDocumentWrapperMatrix',
+        'mainRslReference',
+        'snapshot'
+    ], 'Flash source.placementClosure');
+    if (flash.source.placementClosure.capturedPlacementProfile !==
+            'main_rsl_exported_symbol_equivalent' ||
+        flash.source.placementClosure.referencePlacementProfile !==
+            'main_rsl_exported_symbol' ||
+        flash.source.placementClosure.mainRslPlacementEquivalent !== true ||
+        flash.source.placementClosure.extractionMode !==
+            'loaded_child_exported_symbol_instance' ||
+        flash.source.placementClosure.mainParticipatesInCapture !== false ||
+        flash.source.placementClosure.mainBinaryRole !==
+            'identity_chain_reference_only' ||
+        flash.source.placementClosure.childDocumentWrapperApplied !== false ||
+        flash.source.placementClosure.exportedSymbolRootTy !== 0 ||
+        flash.source.placementClosure.mainPlacementY !== 512 ||
+        JSON.stringify(
+            flash.source.placementClosure.standaloneDocumentWrapperMatrix) !==
+            JSON.stringify([1, 0, 0, 1, 0, 3])) {
+        fail('Flash placement-closure capture profile drifted.');
+    }
+    if (flash.source.placementClosure.path !==
+            'tools/player-info-hud/evidence/b0-01/closure.json' ||
+        flash.source.placementClosure.evidenceRevision !== 'b0-01a-r4') {
+        fail('Flash placement-closure evidence identity drifted.');
+    }
     assertExactKeys(
-        flash.source.uiSwf, ['path', 'sha256', 'snapshot'],
+        flash.source.placementClosure.placementCardinality,
+        ['authoredDefinitionEdges', 'pathExpandedRuntimeEdges'],
+        'Flash source.placementClosure.placementCardinality');
+    if (flash.source.placementClosure.placementCardinality
+            .authoredDefinitionEdges !== 17 ||
+        flash.source.placementClosure.placementCardinality
+            .pathExpandedRuntimeEdges !== 18) {
+        fail('Flash placement-closure cardinality drifted.');
+    }
+    assertExactKeys(
+        flash.source.placementClosure.closureDigest,
+        ['algorithm', 'canonicalization', 'value'],
+        'Flash source.placementClosure.closureDigest');
+    if (flash.source.placementClosure.closureDigest.algorithm !== 'sha256' ||
+        flash.source.placementClosure.closureDigest.value !==
+            '6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368') {
+        fail('Flash placement-closure digest drifted.');
+    }
+    assertExactKeys(flash.source.placementClosure.mainRslReference, [
+        'placementProfile',
+        'exportedSymbolRootMatrix',
+        'hpRelativeMatrix',
+        'mpRelativeMatrix'
+    ], 'Flash source.placementClosure.mainRslReference');
+    if (flash.source.placementClosure.mainRslReference.placementProfile !==
+            'main_rsl_exported_symbol' ||
+        JSON.stringify(
+            flash.source.placementClosure.mainRslReference
+                .exportedSymbolRootMatrix) !==
+            JSON.stringify([1, 0, 0, 1, 0, 0]) ||
+        JSON.stringify(
+            flash.source.placementClosure.mainRslReference
+                .hpRelativeMatrix) !==
+            JSON.stringify([
+                0.847213745117188,
+                0,
+                0,
+                0.847213745117188,
+                37.75,
+                2.65
+            ]) ||
+        JSON.stringify(
+            flash.source.placementClosure.mainRslReference
+                .mpRelativeMatrix) !==
+            JSON.stringify([
+                1.0810546875,
+                0,
+                0,
+                1.0810546875,
+                90.1,
+                -4.3
+            ])) {
+        fail('Flash main-RSL reference profile drifted.');
+    }
+    assertExactKeys(
+        flash.source.uiSwf,
+        ['path', 'sha256', 'executionRole', 'snapshot'],
         'Flash source.uiSwf');
+    assertExactKeys(
+        flash.source.mainSwf,
+        [
+            'path',
+            'sha256',
+            'executionRole',
+            'mainParticipatesInCapture',
+            'snapshot'
+        ],
+        'Flash source.mainSwf');
     assertExactKeys(
         flash.source.loaderSwf, ['path', 'sha256', 'snapshot'],
         'Flash source.loaderSwf');
@@ -1621,18 +1968,68 @@ function validateFlashManifest(
         'Flash loader SWF SHA-256');
     if (flash.source.uiSwf.path !==
             'flashswf/UI/玩家信息界面.swf' ||
+        flash.source.uiSwf.executionRole !==
+            'loaded_exported_symbol_source' ||
+        flash.source.mainSwf.path !==
+            'CRAZYFLASHER7MercenaryEmpire.swf' ||
+        flash.source.mainSwf.executionRole !==
+            'identity_chain_reference_only' ||
+        flash.source.mainSwf.mainParticipatesInCapture !== false ||
         flash.source.loaderSwf.path !== 'scripts/TestLoader.swf') {
-        fail('Flash child/candidate loader paths drifted.');
+        fail('Flash child/main-reference/candidate-loader roles drifted.');
     }
+    const mainSha = assertSha(
+        flash.source.mainSwf.sha256, 'Flash main SWF SHA-256');
 
     assertExactKeys(flash.source.sourceBinaryChain, [
-        'path', 'evidenceRevision', 'childSha256', 'snapshot'
+        'path',
+        'evidenceRevision',
+        'childSha256',
+        'mainSha256',
+        'captureContractRole',
+        'snapshot'
     ], 'Flash sourceBinaryChain');
     if (assertSha(
         flash.source.sourceBinaryChain.childSha256,
-        'Flash sourceBinaryChain.childSha256') !== childSha) {
-        fail('Flash source binary chain does not bind the child SWF.');
+        'Flash sourceBinaryChain.childSha256') !== childSha ||
+        assertSha(
+            flash.source.sourceBinaryChain.mainSha256,
+            'Flash sourceBinaryChain.mainSha256') !== mainSha ||
+        flash.source.sourceBinaryChain.captureContractRole !==
+            'historical_pre_v2_plan_and_identity_chain_only') {
+        fail('Flash source binary chain does not bind child/main roles.');
     }
+    if (flash.source.sourceBinaryChain.path !==
+            'tools/player-info-hud/evidence/b0-01/source-binary-chain.json' ||
+        flash.source.sourceBinaryChain.evidenceRevision !== 'b0-01a-r4') {
+        fail('Flash source binary chain evidence identity drifted.');
+    }
+    const placementEvidence = validateRepoBoundSnapshot(
+        flash.source.placementClosure.path,
+        flash.source.placementClosure.snapshot,
+        reportRoot,
+        tracker,
+        'Flash placement closure');
+    const sourceBinaryEvidence = validateRepoBoundSnapshot(
+        flash.source.sourceBinaryChain.path,
+        flash.source.sourceBinaryChain.snapshot,
+        reportRoot,
+        tracker,
+        'Flash source binary chain');
+    assertExactKeys(
+        flash.source.formula,
+        ['path', 'snapshot'],
+        'Flash source.formula');
+    if (flash.source.formula.path !==
+            'scripts/展现/UI交互/UI交互_fs_玩家信息界面.as') {
+        fail('Flash display formula path drifted.');
+    }
+    const formulaEvidence = validateRepoBoundSnapshot(
+        flash.source.formula.path,
+        flash.source.formula.snapshot,
+        reportRoot,
+        tracker,
+        'Flash display formula');
     assertExactKeys(flash.source.childRuntimeBinding, [
         'expectedRepoRelativePath',
         'exactCanonicalMatch',
@@ -1659,8 +2056,16 @@ function validateFlashManifest(
         'actualCaptureLoaderVerified',
         'actualLoaderPath',
         'childPathVerified',
+        'placementProfile',
+        'referencePlacementProfile',
+        'extractionMode',
+        'mainRslPlacementEquivalent',
         'mainParticipatesInCapture',
-        'asLoaderParticipatesInCapture'
+        'mainBinaryRole',
+        'asLoaderParticipatesInCapture',
+        'childDocumentWrapperApplied',
+        'exportedSymbolRootTy',
+        'mainPlacementY'
     ], 'Flash captureLoaderContract');
     if (flash.source.captureLoaderContract
             .actualCaptureLoaderVerified !== true ||
@@ -1668,10 +2073,24 @@ function validateFlashManifest(
             flash.source.loaderSwf.path ||
         flash.source.captureLoaderContract.childPathVerified !==
             flash.source.uiSwf.path ||
+        flash.source.captureLoaderContract.placementProfile !==
+            'main_rsl_exported_symbol_equivalent' ||
+        flash.source.captureLoaderContract.referencePlacementProfile !==
+            'main_rsl_exported_symbol' ||
+        flash.source.captureLoaderContract.extractionMode !==
+            'loaded_child_exported_symbol_instance' ||
+        flash.source.captureLoaderContract
+            .mainRslPlacementEquivalent !== true ||
         flash.source.captureLoaderContract
             .mainParticipatesInCapture !== false ||
+        flash.source.captureLoaderContract.mainBinaryRole !==
+            'identity_chain_reference_only' ||
         flash.source.captureLoaderContract
-            .asLoaderParticipatesInCapture !== false) {
+            .asLoaderParticipatesInCapture !== false ||
+        flash.source.captureLoaderContract
+            .childDocumentWrapperApplied !== false ||
+        flash.source.captureLoaderContract.exportedSymbolRootTy !== 0 ||
+        flash.source.captureLoaderContract.mainPlacementY !== 512) {
         fail('Flash capture loader/child boundary drifted.');
     }
 
@@ -1687,12 +2106,180 @@ function validateFlashManifest(
         tracker,
         childSha,
         'Flash UI SWF candidate snapshot');
+    const mainRepoPath = resolveInsideRepo(
+        flash.source.mainSwf.path, 'Flash main SWF path');
+    const mainRepo = tracker.read(
+        mainRepoPath, 'Flash main SWF identity-chain reference');
+    if (mainRepo.identity.sha256 !== mainSha) {
+        fail('Flash main SWF identity-chain reference bytes changed.');
+    }
+    const mainSnapshot = validateSnapshot(
+        flash.source.mainSwf.snapshot,
+        reportRoot,
+        tracker,
+        mainSha,
+        'Flash main SWF identity-chain snapshot');
     const loaderSnapshot = validateSnapshot(
         flash.source.loaderSwf.snapshot,
         reportRoot,
         tracker,
         loaderSha,
         'Flash loader SWF candidate snapshot');
+
+    assertExactKeys(flash.captureTooling, [
+        'strictToolIdentity',
+        'headCommit',
+        'files'
+    ], 'Flash captureTooling');
+    if (flash.captureTooling.strictToolIdentity !==
+            'head_index_clean_filter_equal') {
+        fail('Flash capture tooling strict identity status drifted.');
+    }
+    const captureToolHead = assertHex(
+        flash.captureTooling.headCommit,
+        40,
+        'Flash captureTooling.headCommit');
+    const expectedCaptureTools = [
+        {
+            role:'capture_runner',
+            path:'tools/player-info-hud/capture-flash-oracle.ps1'
+        },
+        {
+            role:'protocol_helper',
+            path:'tools/player-info-hud/flash-oracle-protocol.ps1'
+        }
+    ];
+    if (!Array.isArray(flash.captureTooling.files) ||
+        flash.captureTooling.files.length !== expectedCaptureTools.length) {
+        fail('Flash capture tooling closure must contain exactly two files.');
+    }
+    const captureToolEvidence = expectedCaptureTools.map(
+        (expected, index) => {
+            const actual = flash.captureTooling.files[index];
+            const label = `Flash captureTooling.files[${index}]`;
+            assertExactKeys(actual, [
+                'role',
+                'path',
+                'bytes',
+                'sha256',
+                'gitBlobOid',
+                'gitBlobBytes',
+                'gitBlobSha256',
+                'snapshot'
+            ], label);
+            if (actual.role !== expected.role ||
+                actual.path !== expected.path) {
+                fail(`${label} role/path/order drifted.`);
+            }
+            assertPositiveSafeInteger(actual.bytes, `${label}.bytes`);
+            assertPositiveSafeInteger(
+                actual.gitBlobBytes,
+                `${label}.gitBlobBytes`);
+            const rawSha = assertSha(actual.sha256, `${label}.sha256`);
+            const canonicalSha = assertSha(
+                actual.gitBlobSha256,
+                `${label}.gitBlobSha256`);
+            const currentPath = resolveInsideRepo(
+                actual.path, `${label}.path`);
+            const current = tracker.read(currentPath, `${label} current`);
+            if (current.identity.bytes !== actual.bytes ||
+                current.identity.sha256 !== rawSha) {
+                fail(`${label} current worktree bytes drifted.`);
+            }
+            const snapshot = validateSnapshot(
+                actual.snapshot,
+                reportRoot,
+                tracker,
+                rawSha,
+                `${label}.snapshot`);
+            if (snapshot.bytes !== actual.bytes) {
+                fail(`${label} snapshot byte length drifted.`);
+            }
+            const gitBlob = readGitBlob(
+                captureToolHead,
+                actual.path,
+                actual.gitBlobOid,
+                label);
+            if (gitBlob.identity.bytes !== actual.gitBlobBytes ||
+                gitBlob.identity.sha256 !== canonicalSha) {
+                fail(`${label} canonical Git blob identity drifted.`);
+            }
+            return {
+                role:actual.role,
+                path:actual.path,
+                bytes:actual.bytes,
+                sha256:rawSha,
+                gitBlobOid:gitBlob.oid,
+                gitBlobBytes:gitBlob.identity.bytes,
+                gitBlobSha256:gitBlob.identity.sha256,
+                snapshot
+            };
+        });
+
+    assertExactKeys(flash.source.compile, [
+        'command',
+        'publishProfile',
+        'compileOutput',
+        'compilerErrors',
+        'compiledTestLoaderSource',
+        'template',
+        'flashAuthoring'
+    ], 'Flash source.compile');
+    if (flash.source.compile.command !==
+            'scripts/compile_test.ps1 -Target test -PublishOnly ' +
+            '-VerifySwf scripts/TestLoader.swf') {
+        fail('Flash capture compile command drifted.');
+    }
+    const publishProfileEvidence = validateRepoBoundSnapshot(
+        'scripts/TestLoader/PublishSettings.xml',
+        flash.source.compile.publishProfile,
+        reportRoot,
+        tracker,
+        'Flash TestLoader publish profile');
+    const templateEvidence = validateRepoBoundSnapshot(
+        'scripts/test-runners/player-info-oracle/TestLoader.as.template',
+        flash.source.compile.template,
+        reportRoot,
+        tracker,
+        'Flash TestLoader template');
+    const compileOutputSnapshot = validateSnapshot(
+        flash.source.compile.compileOutput,
+        reportRoot,
+        tracker,
+        null,
+        'Flash compile output snapshot');
+    const compilerErrorsSnapshot = validateSnapshot(
+        flash.source.compile.compilerErrors,
+        reportRoot,
+        tracker,
+        null,
+        'Flash compiler errors snapshot');
+    const compiledSourceSnapshot = validateSnapshot(
+        flash.source.compile.compiledTestLoaderSource,
+        reportRoot,
+        tracker,
+        null,
+        'Flash compiled TestLoader source snapshot');
+    assertExactKeys(flash.source.compile.flashAuthoring, [
+        'fileName',
+        'fileVersion',
+        'productVersion',
+        'sha256',
+        'registeredTaskMatched'
+    ], 'Flash source.compile.flashAuthoring');
+    if (flash.source.compile.flashAuthoring.fileName !== 'Flash.exe' ||
+        flash.source.compile.flashAuthoring.registeredTaskMatched !== true) {
+        fail('Flash authoring identity contract drifted.');
+    }
+    assertNonEmptyString(
+        flash.source.compile.flashAuthoring.fileVersion,
+        'Flash source.compile.flashAuthoring.fileVersion');
+    assertNonEmptyString(
+        flash.source.compile.flashAuthoring.productVersion,
+        'Flash source.compile.flashAuthoring.productVersion');
+    assertSha(
+        flash.source.compile.flashAuthoring.sha256,
+        'Flash source.compile.flashAuthoring.sha256');
 
     assertExactKeys(
         flash.runtime, ['player', 'windows', 'flash', 'flashlog'],
@@ -1734,6 +2321,92 @@ function validateFlashManifest(
         40,
         'Flash Player signer thumbprint');
 
+    assertExactKeys(flash.runtime.flashlog, [
+        'watermark',
+        'consumptionMode',
+        'finalFullLength',
+        'finalFullSha256',
+        'stablePolls',
+        'stabilityPollMilliseconds',
+        'freshSnapshot',
+        'exactRunBlock',
+        'canonicalRunSummary',
+        'canonicalRunSummaryRecordCount',
+        'physicalRecordCount'
+    ], 'Flash runtime.flashlog');
+    assertExactKeys(flash.runtime.flashlog.watermark, [
+        'exists', 'length', 'sha256', 'lastWriteUtc'
+    ], 'Flash runtime.flashlog.watermark');
+    if (flash.runtime.flashlog.watermark.exists !== true ||
+        !Number.isSafeInteger(flash.runtime.flashlog.watermark.length) ||
+        flash.runtime.flashlog.watermark.length < 0) {
+        fail('Flash flashlog watermark identity drifted.');
+    }
+    assertSha(
+        flash.runtime.flashlog.watermark.sha256,
+        'Flash runtime.flashlog.watermark.sha256');
+    assertNonEmptyString(
+        flash.runtime.flashlog.watermark.lastWriteUtc,
+        'Flash runtime.flashlog.watermark.lastWriteUtc');
+    if (![
+        'exact_prefix_tail',
+        'post_launch_rewrite'
+    ].includes(flash.runtime.flashlog.consumptionMode)) {
+        fail('Flash flashlog consumption mode drifted.');
+    }
+    assertPositiveSafeInteger(
+        flash.runtime.flashlog.finalFullLength,
+        'Flash runtime.flashlog.finalFullLength');
+    const finalFullSha = assertSha(
+        flash.runtime.flashlog.finalFullSha256,
+        'Flash runtime.flashlog.finalFullSha256');
+    assertPositiveSafeInteger(
+        flash.runtime.flashlog.stablePolls,
+        'Flash runtime.flashlog.stablePolls');
+    assertPositiveSafeInteger(
+        flash.runtime.flashlog.stabilityPollMilliseconds,
+        'Flash runtime.flashlog.stabilityPollMilliseconds');
+    const freshFlashlogSnapshot = validateSnapshot(
+        flash.runtime.flashlog.freshSnapshot,
+        reportRoot,
+        tracker,
+        finalFullSha,
+        'Flash fresh flashlog snapshot',
+        ['localOnlyDoNotPromote', 'mayContainEscapedAbsolutePath']);
+    if (flash.runtime.flashlog.freshSnapshot.localOnlyDoNotPromote !== true ||
+        flash.runtime.flashlog.freshSnapshot
+            .mayContainEscapedAbsolutePath !== true ||
+        freshFlashlogSnapshot.bytes !==
+            flash.runtime.flashlog.finalFullLength) {
+        fail('Flash fresh flashlog snapshot policy/length drifted.');
+    }
+    const exactRunBlockSnapshot = validateSnapshot(
+        flash.runtime.flashlog.exactRunBlock,
+        reportRoot,
+        tracker,
+        null,
+        'Flash exact oracle run-block snapshot',
+        ['localOnlyDoNotPromote', 'mayContainEscapedAbsolutePath']);
+    if (flash.runtime.flashlog.exactRunBlock.localOnlyDoNotPromote !== true ||
+        flash.runtime.flashlog.exactRunBlock
+            .mayContainEscapedAbsolutePath !== true) {
+        fail('Flash exact run-block local-only policy drifted.');
+    }
+    const canonicalRunSummarySnapshot = validateSnapshot(
+        flash.runtime.flashlog.canonicalRunSummary,
+        reportRoot,
+        tracker,
+        null,
+        'Flash canonical run summary snapshot',
+        ['promotable']);
+    if (flash.runtime.flashlog.canonicalRunSummary.promotable !== true ||
+        flash.runtime.flashlog.canonicalRunSummaryRecordCount !== 14) {
+        fail('Flash canonical run summary contract drifted.');
+    }
+    assertPositiveSafeInteger(
+        flash.runtime.flashlog.physicalRecordCount,
+        'Flash runtime.flashlog.physicalRecordCount');
+
     assertExactKeys(flash.capture, [
         'captureMethod', 'protocol', 'canvas', 'cases'
     ], 'Flash capture');
@@ -1741,6 +2414,11 @@ function validateFlashManifest(
         'width',
         'height',
         'matrix',
+        'coordinateSpace',
+        'contentViewport',
+        'source',
+        'sourceDocumentInstanceMatrix',
+        'childDocumentWrapperApplied',
         'pixelFormat',
         'background',
         'compositeBackgroundId'
@@ -1749,7 +2427,15 @@ function validateFlashManifest(
         flash.capture.canvas.width !== viewport.width ||
         flash.capture.canvas.height !== viewport.height ||
         JSON.stringify(flash.capture.canvas.matrix) !==
-            JSON.stringify([1, 0, 0, 1, 0, 0]) ||
+            JSON.stringify([1, 0, 0, 1, 0, 512]) ||
+        flash.capture.canvas.coordinateSpace !== 'main_stage' ||
+        JSON.stringify(flash.capture.canvas.contentViewport) !==
+            JSON.stringify([0, 0, viewport.width, viewport.height]) ||
+        flash.capture.canvas.source !==
+            'loaded_child_exported_symbol_instance' ||
+        JSON.stringify(flash.capture.canvas.sourceDocumentInstanceMatrix) !==
+            JSON.stringify([1, 0, 0, 1, 0, 3]) ||
+        flash.capture.canvas.childDocumentWrapperApplied !== false ||
         flash.capture.canvas.pixelFormat !== 'straight_argb32' ||
         flash.capture.canvas.background !== 'transparent_argb_0' ||
         flash.capture.canvas.compositeBackgroundId !== null) {
@@ -1757,11 +2443,41 @@ function validateFlashManifest(
     }
     assertExactKeys(flash.capture.protocol, [
         'rowBytes',
+        'rowsPerCase',
         'partPayloadChars',
         'partsPerRow',
+        'zeroRowRecord',
+        'zeroRowValue',
+        'observedPartRecords',
+        'observedClearRecords',
         'physicalRecordMaxChars',
         'caseOrder'
     ], 'Flash capture.protocol');
+    if (flash.capture.protocol.rowBytes !== 4096 ||
+        flash.capture.protocol.rowsPerCase !== viewport.height ||
+        flash.capture.protocol.partPayloadChars !== 720 ||
+        flash.capture.protocol.partsPerRow !== 8 ||
+        flash.capture.protocol.zeroRowRecord !== 'CLEAR' ||
+        flash.capture.protocol.zeroRowValue !== '00000000' ||
+        !Number.isSafeInteger(
+            flash.capture.protocol.observedPartRecords) ||
+        flash.capture.protocol.observedPartRecords < 0 ||
+        !Number.isSafeInteger(
+            flash.capture.protocol.observedClearRecords) ||
+        flash.capture.protocol.observedClearRecords < 0 ||
+        flash.capture.protocol.physicalRecordMaxChars !== 1000) {
+        fail('Flash capture protocol contract drifted.');
+    }
+    if (flash.capture.protocol.observedPartRecords % 8 !== 0 ||
+        (flash.capture.protocol.observedPartRecords / 8) +
+            flash.capture.protocol.observedClearRecords !==
+            expectedCases.length * viewport.height ||
+        flash.runtime.flashlog.physicalRecordCount !==
+            flash.capture.protocol.observedPartRecords +
+            flash.capture.protocol.observedClearRecords +
+            flash.runtime.flashlog.canonicalRunSummaryRecordCount) {
+        fail('Flash capture physical-record accounting drifted.');
+    }
     assertJsonEqual(
         flash.capture.protocol.caseOrder,
         expectedCases.map(item => item.id),
@@ -1817,7 +2533,9 @@ function validateFlashManifest(
             cropRectangle.y < 0 ||
             cropRectangle.x + cropRectangle.width > viewport.width ||
             cropRectangle.y + cropRectangle.height > viewport.height) {
-            fail(`${label} crop escapes the raw 1024x64 canvas.`);
+            fail(
+                `${label} crop escapes the raw ` +
+                `${viewport.width}x${viewport.height} main-stage canvas.`);
         }
         const verifiedCrop = readVerifiedPng(
             tracker,
@@ -1857,6 +2575,36 @@ function validateFlashManifest(
             .compileMutexReleasedBeforeCandidatePromotion !== true) {
         fail('Flash compile/restore transaction is incomplete.');
     }
+    assertExactKeys(flash.transaction.sourceScratch, [
+        'markerPath',
+        'markerBodySha256',
+        'originalExisted',
+        'originalSha256',
+        'installedSha256',
+        'restoredByteExact'
+    ], 'Flash transaction.sourceScratch');
+    if (flash.transaction.sourceScratch.markerPath !==
+            'scripts/testloader_scratch_inflight.marker' ||
+        typeof flash.transaction.sourceScratch.originalExisted !== 'boolean' ||
+        flash.transaction.sourceScratch.restoredByteExact !== true) {
+        fail('Flash source-scratch transaction contract drifted.');
+    }
+    const sourceMarkerSha = assertSha(
+        flash.transaction.sourceScratch.markerBodySha256,
+        'Flash transaction.sourceScratch.markerBodySha256');
+    let originalSourceSha = null;
+    if (flash.transaction.sourceScratch.originalExisted) {
+        originalSourceSha = assertSha(
+            flash.transaction.sourceScratch.originalSha256,
+            'Flash transaction.sourceScratch.originalSha256');
+    } else if (flash.transaction.sourceScratch.originalSha256 !== null) {
+        fail(
+            'Flash transaction.sourceScratch.originalSha256 must be null ' +
+            'when the original source did not exist.');
+    }
+    const installedSourceSha = assertSha(
+        flash.transaction.sourceScratch.installedSha256,
+        'Flash transaction.sourceScratch.installedSha256');
     assertExactKeys(flash.transaction.derivedSwf, [
         'schema',
         'token',
@@ -1880,31 +2628,13 @@ function validateFlashManifest(
         'Flash transaction derivedSwf.original');
     const compiled = validateDerivedIdentity(
         flash.transaction.derivedSwf.compiled,
-        'Flash transaction derivedSwf.compiled');
-    assertExactKeys(flash.transaction.derivedSwf.restored, [
-        'exists', 'bytes', 'sha256', 'lastWriteUtc', 'verifiedUtc'
-    ], 'Flash transaction derivedSwf.restored');
-    const restored = {
-        bytes:flash.transaction.derivedSwf.restored.bytes,
-        sha256:assertSha(
-            flash.transaction.derivedSwf.restored.sha256,
-            'Flash transaction derivedSwf.restored.sha256'),
-        lastWriteUtc:
-            flash.transaction.derivedSwf.restored.lastWriteUtc
-    };
-    if (flash.transaction.derivedSwf.restored.exists !== true) {
-        fail('Flash restored derived SWF is missing.');
-    }
-    assertPositiveSafeInteger(
-        restored.bytes,
-        'Flash transaction derivedSwf.restored.bytes');
-    assertNonEmptyString(
-        restored.lastWriteUtc,
-        'Flash transaction derivedSwf.restored.lastWriteUtc');
-    assertNonEmptyString(
-        flash.transaction.derivedSwf.restored.verifiedUtc,
-        'Flash transaction derivedSwf.restored.verifiedUtc');
-    if (original.bytes !== restored.bytes ||
+        'Flash transaction derivedSwf.compiled',
+        {requireExists:true});
+    const restored = validateRestoredDerivedIdentity(
+        flash.transaction.derivedSwf.restored,
+        'Flash transaction derivedSwf.restored');
+    if (original.exists !== restored.exists ||
+        original.bytes !== restored.bytes ||
         original.sha256 !== restored.sha256 ||
         original.lastWriteUtc !== restored.lastWriteUtc ||
         compiled.bytes !== loaderSnapshot.bytes ||
@@ -1923,6 +2653,67 @@ function validateFlashManifest(
         compiled,
         original,
         restored);
+    assertExactKeys(receiptInput.value.sourceScratch, [
+        'markerBodySha256',
+        'originalSha256',
+        'installedSha256',
+        'restoredByteExact'
+    ], 'Flash receipt sourceScratch');
+    if (assertSha(
+            receiptInput.value.sourceScratch.markerBodySha256,
+            'Flash receipt sourceScratch.markerBodySha256') !==
+            sourceMarkerSha ||
+        (originalSourceSha === null
+            ? receiptInput.value.sourceScratch.originalSha256 !== null
+            : assertSha(
+                receiptInput.value.sourceScratch.originalSha256,
+                'Flash receipt sourceScratch.originalSha256') !==
+                originalSourceSha) ||
+        assertSha(
+            receiptInput.value.sourceScratch.installedSha256,
+            'Flash receipt sourceScratch.installedSha256') !==
+            installedSourceSha ||
+        receiptInput.value.sourceScratch.restoredByteExact !== true) {
+        fail('Flash receipt source-scratch cross-binding drifted.');
+    }
+    assertJsonEqual(
+        receiptInput.value.canonicalRunSummary,
+        flash.runtime.flashlog.canonicalRunSummary,
+        'Flash receipt canonicalRunSummary');
+
+    const flashSnapshotRecords = [
+        flash.source.placementClosure.snapshot,
+        flash.source.sourceBinaryChain.snapshot,
+        flash.source.formula.snapshot,
+        flash.source.uiSwf.snapshot,
+        flash.source.mainSwf.snapshot,
+        flash.source.loaderSwf.snapshot,
+        flash.source.compile.publishProfile,
+        flash.source.compile.compileOutput,
+        flash.source.compile.compilerErrors,
+        flash.source.compile.compiledTestLoaderSource,
+        flash.source.compile.template,
+        ...flash.captureTooling.files.map(file => file.snapshot),
+        flash.runtime.flashlog.freshSnapshot,
+        flash.runtime.flashlog.exactRunBlock,
+        flash.runtime.flashlog.canonicalRunSummary
+    ];
+    const flashExpectedPaths = [
+        path.basename(flashReportPath),
+        path.basename(receiptPath),
+        ...flash.capture.cases.flatMap(item => [
+            item.raw.path,
+            item.crop.path
+        ]),
+        ...flashSnapshotRecords.map(snapshot => snapshot.path)
+    ];
+    if (new Set(flashExpectedPaths).size !== 40) {
+        fail('Flash candidate exact closure must contain 40 unique files.');
+    }
+    assertExactDirectoryClosure(
+        reportRoot,
+        flashExpectedPaths,
+        'Flash candidate root');
 
     return {
         runId:flash.runId,
@@ -1936,12 +2727,37 @@ function validateFlashManifest(
             snapshot:childSnapshot,
             exactCanonicalRuntimeBinding:true
         },
+        provenance: {
+            placementEvidence,
+            sourceBinaryEvidence,
+            formulaEvidence,
+            captureToolHead,
+            captureTools:captureToolEvidence,
+            publishProfile:publishProfileEvidence,
+            template:templateEvidence,
+            compileOutput:compileOutputSnapshot,
+            compilerErrors:compilerErrorsSnapshot,
+            compiledSource:compiledSourceSnapshot,
+            freshFlashlog:freshFlashlogSnapshot,
+            exactRunBlock:exactRunBlockSnapshot,
+            canonicalRunSummary:canonicalRunSummarySnapshot,
+            exactDirectoryFileCount:flashExpectedPaths.length
+        },
+        mainReference: {
+            path:repoRelative(mainRepoPath),
+            bytes:mainRepo.identity.bytes,
+            sha256:mainRepo.identity.sha256,
+            snapshot:mainSnapshot,
+            executionRole:'identity_chain_reference_only',
+            mainParticipatesInCapture:false
+        },
         loaderCandidate: {
             targetPath:flash.source.loaderSwf.path,
             bytes:compiled.bytes,
             sha256:compiled.sha256,
             snapshot:loaderSnapshot,
             restoredOriginal: {
+                exists:restored.exists,
                 bytes:restored.bytes,
                 sha256:restored.sha256
             }
@@ -2011,13 +2827,20 @@ function assertBrowserMatches(actual, expected, label) {
     }
 }
 
-async function compareEdgeCase(page, leftCase, rightCase) {
+async function compareEdgeCase(
+    page,
+    leftCase,
+    rightCase,
+    includeMpHorizontalAlignment) {
     const payload = {
         width:viewport.width,
         height:viewport.height,
         leftImage:dataUrl(leftCase.bytes),
         rightImage:dataUrl(rightCase.bytes),
-        darkBackgroundRgb8:darkBackground.rgb8
+        darkBackgroundRgb8:darkBackground.rgb8,
+        mpHorizontalAlignment:includeMpHorizontalAlignment
+            ? mpHorizontalAlignmentContract
+            : null
     };
     return page.evaluate(async input => {
         const loadImage = source => new Promise((resolve, reject) => {
@@ -2264,6 +3087,190 @@ async function compareEdgeCase(page, leftCase, rightCase) {
             return result;
         };
 
+        const buildFilteredMask = (data, contract, roi) => {
+            const coordinates = new Set();
+            let left = input.width;
+            let top = input.height;
+            let right = -1;
+            let bottom = -1;
+            for (let y = roi.y; y < roi.y + roi.height; y++) {
+                for (let x = roi.x; x < roi.x + roi.width; x++) {
+                    const offset = ((y * input.width) + x) * 4;
+                    const red = data[offset];
+                    const green = data[offset + 1];
+                    const blue = data[offset + 2];
+                    const alpha = data[offset + 3];
+                    if (alpha < contract.mask.alphaMinimum ||
+                        green < contract.mask.greenMinimum ||
+                        blue < contract.mask.blueMinimum ||
+                        green - red <
+                            contract.mask.greenMinusRedMinimum ||
+                        blue - red <
+                            contract.mask.blueMinusRedMinimum) {
+                        continue;
+                    }
+                    coordinates.add(`${x},${y}`);
+                    left = Math.min(left, x);
+                    top = Math.min(top, y);
+                    right = Math.max(right, x);
+                    bottom = Math.max(bottom, y);
+                }
+            }
+            return {
+                coordinates,
+                bounds:right < 0
+                    ? null
+                    : {
+                        left,
+                        top,
+                        rightInclusive:right,
+                        bottomInclusive:bottom,
+                        width:right - left + 1,
+                        height:bottom - top + 1
+                    }
+            };
+        };
+
+        const compareFractions = (left, right) => {
+            if (left.union === 0 || right.union === 0) {
+                if (left.union === 0 && right.union === 0) {
+                    return 0;
+                }
+                return left.union === 0 ? -1 : 1;
+            }
+            const leftCross = left.intersection * right.union;
+            const rightCross = right.intersection * left.union;
+            return leftCross === rightCross
+                ? 0
+                : leftCross < rightCross
+                    ? -1
+                    : 1;
+        };
+
+        const horizontalAlignment = (
+            leftData,
+            rightData,
+            contract) => {
+            if (contract === null) {
+                return null;
+            }
+            const fields = contract.fields.map(field => {
+                const leftMask = buildFilteredMask(
+                    leftData, contract, field.roi);
+                const rightMask = buildFilteredMask(
+                    rightData, contract, field.roi);
+                const scores = [];
+                for (let dx = contract.dxSearch.minimum;
+                    dx <= contract.dxSearch.maximum;
+                    dx++) {
+                    let intersection = 0;
+                    for (const coordinate of leftMask.coordinates) {
+                        const separator = coordinate.indexOf(',');
+                        const x = Number(
+                            coordinate.slice(0, separator));
+                        const y = coordinate.slice(separator + 1);
+                        if (rightMask.coordinates.has(
+                            `${x + dx},${y}`)) {
+                            intersection++;
+                        }
+                    }
+                    const union =
+                        leftMask.coordinates.size +
+                        rightMask.coordinates.size -
+                        intersection;
+                    scores.push({
+                        dx,
+                        intersection,
+                        union,
+                        jaccard:union === 0
+                            ? 0
+                            : intersection / union
+                    });
+                }
+                let bestScores = [];
+                for (const score of scores) {
+                    if (bestScores.length === 0) {
+                        bestScores = [score];
+                        continue;
+                    }
+                    const comparison = compareFractions(
+                        score, bestScores[0]);
+                    if (comparison > 0) {
+                        bestScores = [score];
+                    } else if (comparison === 0) {
+                        bestScores.push(score);
+                    }
+                }
+                bestScores.sort((left, right) =>
+                    Math.abs(left.dx) - Math.abs(right.dx) ||
+                    left.dx - right.dx);
+                const best = bestScores[0];
+                const runners = scores
+                    .filter(score => score.dx !== best.dx)
+                    .sort((left, right) => {
+                        const comparison = compareFractions(right, left);
+                        return comparison ||
+                            Math.abs(left.dx) - Math.abs(right.dx) ||
+                            left.dx - right.dx;
+                    });
+                const runnerUp = runners[0];
+                const sufficientPixels =
+                    leftMask.coordinates.size >=
+                        contract.minimumPixelCount &&
+                    rightMask.coordinates.size >=
+                        contract.minimumPixelCount;
+                const sufficientSimilarity =
+                    best.jaccard >= contract.minimumJaccard;
+                const uniqueBest = bestScores.length === 1;
+                const aligned =
+                    sufficientPixels &&
+                    sufficientSimilarity &&
+                    uniqueBest &&
+                    best.dx === 0;
+                let status = 'aligned';
+                if (!sufficientPixels) {
+                    status = 'insufficient_pixels';
+                } else if (!sufficientSimilarity) {
+                    status = 'low_similarity';
+                } else if (!uniqueBest) {
+                    status = 'ambiguous';
+                } else if (best.dx !== 0) {
+                    status = 'offset';
+                }
+                return {
+                    id:field.id,
+                    roi:field.roi,
+                    csharpPixelCount:leftMask.coordinates.size,
+                    flashPixelCount:rightMask.coordinates.size,
+                    csharpBounds:leftMask.bounds,
+                    flashBounds:rightMask.bounds,
+                    scores,
+                    bestDx:best.dx,
+                    bestDxCandidates:bestScores.map(score => score.dx),
+                    bestJaccard:best.jaccard,
+                    runnerUpDx:runnerUp.dx,
+                    runnerUpJaccard:runnerUp.jaccard,
+                    scoreMargin:
+                        best.jaccard - runnerUp.jaccard,
+                    status,
+                    aligned
+                };
+            });
+            return {
+                caseId:'mp-p50-vf51',
+                canvas:contract.canvas,
+                mask:contract.mask,
+                dxConvention:
+                    'compare CSharp(x,y) with Flash(x+dx,y)',
+                dxSearch:contract.dxSearch,
+                minimumPixelCount:contract.minimumPixelCount,
+                minimumJaccard:contract.minimumJaccard,
+                fields,
+                allFieldsAligned:
+                    fields.every(field => field.aligned)
+            };
+        };
+
         const overlayPixels =
             new ImageData(input.width, input.height);
         const differencePixels =
@@ -2341,7 +3348,11 @@ async function compareEdgeCase(page, leftCase, rightCase) {
                 leftDark,
                 rightDark,
                 channelNamesRgb,
-                3)
+                3),
+            mpHorizontalAlignment:horizontalAlignment(
+                leftPixels.data,
+                rightPixels.data,
+                input.mpHorizontalAlignment)
         };
     }, payload);
 }
@@ -2463,6 +3474,7 @@ async function runDirectEdge(
     rightCases) {
     const caseResults = [];
     const artifacts = [];
+    let mpHorizontalAlignment = null;
     for (let index = 0; index < expectedCases.length; index++) {
         const expected = expectedCases[index];
         const left = leftCases[index];
@@ -2475,7 +3487,58 @@ async function runDirectEdge(
             right.mpFrame !== expected.mpFrame) {
             fail(`${edgeId} case/frame mismatch at ${expected.id}.`);
         }
-        const compared = await compareEdgeCase(page, left, right);
+        const includeMpHorizontalAlignment =
+            edgeId === 'csharp-flash' &&
+            expected.id === mpHorizontalAlignmentContract.caseId;
+        const compared = await compareEdgeCase(
+            page,
+            left,
+            right,
+            includeMpHorizontalAlignment);
+        if (edgeId === 'csharp-flash') {
+            const crop = right.crop && right.crop.rectangle;
+            const bounds = compared.alpha.right.bounds;
+            if (!crop || !bounds ||
+                crop.x !== bounds.left ||
+                crop.y !== bounds.top ||
+                crop.width !== bounds.width ||
+                crop.height !== bounds.height) {
+                fail(
+                    `${expected.id} Flash crop is not the decoded raw ` +
+                    'alpha-tight bound.');
+            }
+            const canonicalTight =
+                expectedViewportContracts[0].tight;
+            if (crop.x < canonicalTight.x ||
+                crop.y < canonicalTight.y ||
+                crop.x + crop.width >
+                    canonicalTight.x + canonicalTight.width ||
+                crop.y + crop.height >
+                    canonicalTight.y + canonicalTight.height) {
+                fail(
+                    `${expected.id} Flash alpha crop escapes the ` +
+                    'canonical main-stage tight envelope.');
+            }
+        }
+        let caseMpHorizontalAlignment = null;
+        if (includeMpHorizontalAlignment) {
+            if (compared.mpHorizontalAlignment === null ||
+                mpHorizontalAlignment !== null) {
+                fail(
+                    'C#↔Flash MP horizontal alignment diagnostic ' +
+                    'cardinality drifted.');
+            }
+            caseMpHorizontalAlignment = {
+                ...compared.mpHorizontalAlignment,
+                inputs: {
+                    csharpPngSha256:left.identity.sha256,
+                    flashPngSha256:right.identity.sha256
+                }
+            };
+            mpHorizontalAlignment = caseMpHorizontalAlignment;
+        } else if (compared.mpHorizontalAlignment !== null) {
+            fail('Unexpected MP horizontal alignment diagnostic.');
+        }
         const sideBySide = writePng(
             outputRoot,
             `${edgeId}/side-by-side/${expected.id}.png`,
@@ -2529,8 +3592,20 @@ async function runDirectEdge(
                 rawRgba8:compared.rawRgba8,
                 fixedDarkBackgroundRgb8:
                     compared.fixedDarkBackgroundRgb8
+            },
+            diagnostics: {
+                mpHorizontalAlignment:
+                    caseMpHorizontalAlignment
             }
         });
+    }
+    if (edgeId === 'csharp-flash' &&
+        mpHorizontalAlignment === null) {
+        fail('C#↔Flash MP horizontal alignment diagnostic is missing.');
+    }
+    if (edgeId !== 'csharp-flash' &&
+        mpHorizontalAlignment !== null) {
+        fail('Non-Flash edge produced an MP alignment diagnostic.');
     }
     return {
         report: {
@@ -2545,6 +3620,9 @@ async function runDirectEdge(
                     aggregateDifferenceMetrics(
                         caseResults,
                         'fixedDarkBackgroundRgb8')
+            },
+            diagnostics: {
+                mpHorizontalAlignment
             },
             cases:caseResults
         },
@@ -2815,8 +3893,8 @@ async function main() {
 
     const report = {
         schema:
-            'cf7.player_info.b0_06_csharp_web_flash_diagnostic.v1',
-        schemaVersion:1,
+            'cf7.player_info.b0_06_csharp_web_flash_diagnostic.v2',
+        schemaVersion:2,
         status:'diagnostic_awaiting_human_review',
         scope:comparisonScope,
         claims: {
@@ -2839,8 +3917,9 @@ async function main() {
             metricsOnly:true,
             limitation:
                 'The Flash input remains an unaccepted candidate. ' +
-                'The C#-to-Web edge compares the C# full fixture ' +
-                'composite against canonical static SVG layers only, so ' +
+                'The C#-to-Web edge compares the C# main-content-viewport ' +
+                'fixture composite against canonical static SVG layers ' +
+                'only, so ' +
                 'its metrics include the scope difference from C# ' +
                 'programmatic dynamic text and Glow. ' +
                 'Metrics and images are diagnostic evidence only; no ' +
@@ -2873,6 +3952,8 @@ async function main() {
                 },
                 canvasContractPresent:
                     csharpValidated.canvasContractPresent,
+                baselineGeometry:
+                    csharpValidated.baselineGeometry,
                 selectedArtifactCount:
                     csharpValidated.selectedArtifactCount
             },
@@ -2886,6 +3967,7 @@ async function main() {
                 },
                 manifest:webValidated.manifestIdentity,
                 assets:webValidated.assets,
+                renderSemantics:webValidated.renderSemantics,
                 selectedArtifactCount:
                     webValidated.selectedArtifactCount
             },
@@ -2903,7 +3985,9 @@ async function main() {
                     flashValidated.requiresHumanReview,
                 humanReviewStatus:
                     flashValidated.humanReviewStatus,
+                provenance:flashValidated.provenance,
                 child:flashValidated.child,
+                mainReference:flashValidated.mainReference,
                 loaderCandidate:flashValidated.loaderCandidate,
                 player:flashValidated.player,
                 receipt:flashValidated.receipt,
@@ -2959,7 +4043,8 @@ async function main() {
                 'Opaque RGB; each output color channel is max(that color ' +
                 'difference, alpha difference).',
             sideBySide:
-                '2048x64 transparent canvas in each edge declared ' +
+                `${viewport.width * 2}x${viewport.height} transparent ` +
+                'canvas in each edge declared ' +
                 'left-then-right order.'
         },
         edges: {
