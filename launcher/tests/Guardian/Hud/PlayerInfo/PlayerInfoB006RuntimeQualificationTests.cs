@@ -54,6 +54,10 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         "CF7_PLAYER_INFO_B006_SDK_VERSION";
     private const string ProjectRootEnvironment =
         "CF7_PLAYER_INFO_B006_PROJECT_ROOT";
+    private const string ExpectedPriorityClassEnvironment =
+        "CF7_PLAYER_INFO_B006_EXPECTED_PRIORITY_CLASS";
+    private const string ExpectedAffinityMaskEnvironment =
+        "CF7_PLAYER_INFO_B006_EXPECTED_AFFINITY_MASK";
     private const string ReportSchema =
         "cf7.player-info-hud.b0-06-runtime-qualification";
     private const string MeasurementKind =
@@ -62,6 +66,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
     private const int IdleTickCount = 3_000;
     private const int LifecycleWarmupCycleCount = 100;
     private const int LifecycleWarmupMaxGroupCount = 5;
+    private const int LifecycleWarmupRequiredConsecutiveConvergedGroups = 2;
     private const int LifecycleCycleCount = 100;
     private const int LifecycleCheckpointInterval = 10;
     private const int ResourceCheckpointInterval = 250;
@@ -73,6 +78,21 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
     private const double SurfaceP95LimitMilliseconds = 4.0;
     private const double CommitP95LimitMilliseconds = 33.0;
     private const double NativeHudCommitRegressionLimitPercent = 10.0;
+    private static readonly string[] PerformanceOverrideEnvironmentNames =
+    [
+        "DOTNET_TieredPGO",
+        "COMPlus_TieredPGO",
+        "DOTNET_TieredCompilation",
+        "COMPlus_TieredCompilation",
+        "DOTNET_ReadyToRun",
+        "COMPlus_ReadyToRun",
+        "DOTNET_TC_QuickJit",
+        "COMPlus_TC_QuickJit",
+        "DOTNET_TC_QuickJitForLoops",
+        "COMPlus_TC_QuickJitForLoops",
+        "DOTNET_gcServer",
+        "COMPlus_gcServer"
+    ];
     private static readonly string[] SourceTraceRelativePaths =
     [
         "launcher/src/Program.cs",
@@ -92,6 +112,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         "launcher/src/Guardian/Hud/ToastWidget.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoAnimationModel.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoFrameCompositor.cs",
+        "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoLayeredDibSurface.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.Generated.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoRasterPipeline.cs",
@@ -144,6 +165,154 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
             string.IsNullOrWhiteSpace(
                 Environment.GetEnvironmentVariable(ProjectRootEnvironment)),
             $"{ProjectRootEnvironment} must be absent from the normal suite.");
+        Assert.True(
+            string.IsNullOrWhiteSpace(
+                Environment.GetEnvironmentVariable(
+                    ExpectedPriorityClassEnvironment)),
+            $"{ExpectedPriorityClassEnvironment} must be absent from the normal suite.");
+        Assert.True(
+            string.IsNullOrWhiteSpace(
+                Environment.GetEnvironmentVariable(
+                    ExpectedAffinityMaskEnvironment)),
+            $"{ExpectedAffinityMaskEnvironment} must be absent from the normal suite.");
+    }
+
+    [Fact]
+    [Trait("Category", "PlayerInfoB006QualificationContract")]
+    public void B0_06_LifecycleWarmup_RequiresFirstConsecutiveConvergedPair()
+    {
+        Assert.Null(
+            FindFirstLifecycleWarmupConvergedPairEndIndex(
+                [false, true]));
+        Assert.Equal(
+            5,
+            FindFirstLifecycleWarmupConvergedPairEndIndex(
+                [false, true, false, true, true]));
+        Assert.Equal(
+            3,
+            FindFirstLifecycleWarmupConvergedPairEndIndex(
+                [false, true, true]));
+        Assert.Null(
+            FindFirstLifecycleWarmupConvergedPairEndIndex(
+                [false, true, false, true, false]));
+    }
+
+    [Fact]
+    [Trait("Category", "PlayerInfoB006QualificationContract")]
+    public void B0_06_PerformanceEnvironment_RejectsEveryFrozenMutation()
+    {
+        string[] expectedOverrideNames =
+        [
+            "DOTNET_TieredPGO",
+            "COMPlus_TieredPGO",
+            "DOTNET_TieredCompilation",
+            "COMPlus_TieredCompilation",
+            "DOTNET_ReadyToRun",
+            "COMPlus_ReadyToRun",
+            "DOTNET_TC_QuickJit",
+            "COMPlus_TC_QuickJit",
+            "DOTNET_TC_QuickJitForLoops",
+            "COMPlus_TC_QuickJitForLoops",
+            "DOTNET_gcServer",
+            "COMPlus_gcServer"
+        ];
+        Assert.Equal(
+            expectedOverrideNames,
+            PerformanceOverrideEnvironmentNames);
+        Assert.Equal(
+            PerformanceOverrideEnvironmentNames.Length,
+            PerformanceOverrideEnvironmentNames
+                .Distinct(StringComparer.Ordinal)
+                .Count());
+
+        Dictionary<string, string?> overrides =
+            PerformanceOverrideEnvironmentNames.ToDictionary(
+                name => name,
+                _ => (string?)null,
+                StringComparer.Ordinal);
+        const string affinity = "000000000000000F";
+        Assert.True(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                serverGc: false));
+
+        foreach (string name in PerformanceOverrideEnvironmentNames)
+        {
+            overrides[name] = "1";
+            Assert.False(
+                IsPerformanceEnvironmentQualified(
+                    overrides,
+                    ProcessPriorityClass.Normal.ToString(),
+                    affinity,
+                    ProcessPriorityClass.Normal.ToString(),
+                    affinity,
+                    serverGc: false),
+                name);
+            overrides[name] = null;
+        }
+
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.High.ToString(),
+                affinity,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                serverGc: false));
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                ProcessPriorityClass.High.ToString(),
+                affinity,
+                serverGc: false));
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                "0000000000000003",
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                serverGc: false));
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                ProcessPriorityClass.Normal.ToString(),
+                expectedAffinityMask: null,
+                serverGc: false));
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                "0000000000000000",
+                ProcessPriorityClass.Normal.ToString(),
+                "0000000000000000",
+                serverGc: false));
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                serverGc: true));
+
+        overrides["unexpected"] = null;
+        Assert.False(
+            IsPerformanceEnvironmentQualified(
+                overrides,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                ProcessPriorityClass.Normal.ToString(),
+                affinity,
+                serverGc: false));
     }
 
     [B006QualificationFact]
@@ -214,6 +383,59 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
     {
         var gates = new List<QualificationGate>();
         var failures = new List<string>();
+        Dictionary<string, string?> inheritedPerformanceOverrides =
+            PerformanceOverrideEnvironmentNames.ToDictionary(
+                name => name,
+                name => Environment.GetEnvironmentVariable(name),
+                StringComparer.Ordinal);
+        string processPriorityClass;
+        string processorAffinityMask;
+        using (Process currentProcess = Process.GetCurrentProcess())
+        {
+            processPriorityClass = currentProcess.PriorityClass.ToString();
+            processorAffinityMask = FormatAffinityMask(
+                currentProcess.ProcessorAffinity);
+        }
+        string? expectedPriorityClass =
+            Environment.GetEnvironmentVariable(
+                ExpectedPriorityClassEnvironment);
+        string? expectedAffinityMask =
+            Environment.GetEnvironmentVariable(
+                ExpectedAffinityMaskEnvironment);
+        bool serverGc = System.Runtime.GCSettings.IsServerGC;
+        bool performanceEnvironmentQualified =
+            IsPerformanceEnvironmentQualified(
+                inheritedPerformanceOverrides,
+                processPriorityClass,
+                processorAffinityMask,
+                expectedPriorityClass,
+                expectedAffinityMask,
+                serverGc);
+        if (!performanceEnvironmentQualified)
+        {
+            failures.Add(
+                "runtime_performance_environment: actual=" +
+                JsonSerializer.Serialize(new
+                {
+                    inheritedPerformanceOverrides,
+                    processPriorityClass,
+                    processorAffinityMask,
+                    serverGc
+                }) +
+                " expected=" +
+                JsonSerializer.Serialize(new
+                {
+                    inheritedPerformanceOverrides =
+                        PerformanceOverrideEnvironmentNames.ToDictionary(
+                            name => name,
+                            _ => (string?)null,
+                            StringComparer.Ordinal),
+                    processPriorityClass =
+                        ProcessPriorityClass.Normal.ToString(),
+                    processorAffinityMask = expectedAffinityMask,
+                    serverGc = false
+                }));
+        }
         string baseCommitAtExecution =
             RunGit(projectRoot, "rev-parse", "HEAD");
         var splitObserver = new RecordingCommitObserver();
@@ -294,10 +516,11 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         using (Form lifecycleOwner =
             CreateHost(out Panel lifecycleAnchor))
         {
-            // Run complete isomorphic groups until every disposed checkpoint
-            // stays within its group's starting handle envelope. This is a
-            // fail-closed process first-use convergence gate, not a retry of
-            // the measured sample and not a relaxed positive-growth limit.
+            // Run complete isomorphic groups until two consecutive groups
+            // independently stay within their respective starting handle
+            // envelopes. This is a fail-closed process first-use convergence
+            // gate, not a retry of the measured sample and not a relaxed
+            // positive-growth limit.
             for (var group = 1;
                 group <= LifecycleWarmupMaxGroupCount;
                 group++)
@@ -313,14 +536,17 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                     Enumerable.Range(1, LifecycleWarmupCycleCount),
                     warmup.Rounds.Select(round => round.Cycle));
                 lifecycleWarmups.Add(warmup);
-                if (IsLifecycleWarmupConverged(warmup))
+                if (FindFirstLifecycleWarmupConvergedPairEndIndex(
+                        lifecycleWarmups.Select(
+                            IsLifecycleWarmupConverged).ToArray()) is not null)
                 {
                     break;
                 }
             }
-            // The next group is the acceptance sample only after convergence.
-            // If the cap is exhausted it remains a diagnostic-after-cap group,
-            // and the explicit warmup Gate fails while preserving full data.
+            // The next group is the acceptance sample only after a consecutive
+            // converged pair. If the cap is exhausted it remains a
+            // diagnostic-after-cap group, and the explicit warmup Gate fails
+            // while preserving full data.
             lifecycleChurn = RunSurfaceLifecycleChurn(
                 lifecycleOwner,
                 lifecycleAnchor);
@@ -527,14 +753,18 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         ProcessMetrics resourceDelta =
             ProcessMetrics.Delta(resourceStart, resourceEnd);
         HandleTrend handleTrend = AnalyzeHandleTrend(resourceSamples);
+        bool[] lifecycleWarmupConvergenceSequence =
+            lifecycleWarmups.Select(
+                IsLifecycleWarmupConverged).ToArray();
+        int? lifecycleWarmupConvergedPairEndGroupIndex =
+            FindFirstLifecycleWarmupConvergedPairEndIndex(
+                lifecycleWarmupConvergenceSequence);
         bool lifecycleWarmupConverged =
-            lifecycleWarmups.Count is >= 1 and <=
+            lifecycleWarmups.Count is >=
+                LifecycleWarmupRequiredConsecutiveConvergedGroups and <=
                 LifecycleWarmupMaxGroupCount &&
-            lifecycleWarmups
-                .Take(lifecycleWarmups.Count - 1)
-                .All(warmup =>
-                    !IsLifecycleWarmupConverged(warmup)) &&
-            IsLifecycleWarmupConverged(lifecycleWarmups[^1]) &&
+            lifecycleWarmupConvergedPairEndGroupIndex ==
+                lifecycleWarmups.Count &&
             lifecycleWarmups.All(warmup =>
                 warmup.Rounds.Length ==
                     LifecycleWarmupCycleCount &&
@@ -571,29 +801,28 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                 totalCycles =
                     lifecycleWarmups.Count *
                     LifecycleWarmupCycleCount,
-                precedingGroupsConverged =
-                    lifecycleWarmups
-                        .Take(lifecycleWarmups.Count - 1)
-                        .Select(IsLifecycleWarmupConverged)
-                        .ToArray(),
-                finalGroupConverged =
-                    IsLifecycleWarmupConverged(
-                        lifecycleWarmups[^1])
+                convergedGroups =
+                    lifecycleWarmupConvergenceSequence,
+                requiredConsecutiveConvergedGroups =
+                    LifecycleWarmupRequiredConsecutiveConvergedGroups,
+                convergedPairEndGroupIndex =
+                    lifecycleWarmupConvergedPairEndGroupIndex
             },
             new
             {
-                groupsRunMinimum = 1,
+                groupsRunMinimum =
+                    LifecycleWarmupRequiredConsecutiveConvergedGroups,
                 groupsRunMaximum =
                     LifecycleWarmupMaxGroupCount,
                 groupCycleCount =
                     LifecycleWarmupCycleCount,
-                precedingGroupsConverged =
-                    Array.Empty<bool>(),
-                finalGroupConverged = true
+                requiredConsecutiveConvergedGroups =
+                    LifecycleWarmupRequiredConsecutiveConvergedGroups,
+                convergedPairEndsAtGroupsRun = true
             },
-            "strict_first_converged_group",
+            "strict_first_consecutive_converged_pair",
             "lifecycle_group",
-            "At most five complete excluded groups may establish the process first-use envelope; the first converged group must be followed by a new measured 100-cycle group.");
+            "At most five complete excluded groups may establish the process first-use envelope; the first pair of consecutive strictly converged groups must be followed by a new measured 100-cycle group.");
         AddGate(
             gates,
             "surface_lifecycle_cycle_count",
@@ -1306,7 +1535,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
             CommitP95LimitMilliseconds,
             "less_than",
             "ms",
-            "LayeredWindowCommitResult measures the actual GDI/UpdateLayeredWindow/cleanup transaction.");
+            "LayeredWindowCommitResult measures the actual prepared-memory-DC UpdateLayeredWindow transaction; reusable top-down PArgb DIB/memory-DC setup and cleanup are amortized across frames and remain covered by lifecycle resource gates.");
 
         AddGate(
             gates,
@@ -1480,6 +1709,8 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                     LifecycleWarmupCycleCount,
                 lifecycleWarmupMaxGroups =
                     LifecycleWarmupMaxGroupCount,
+                lifecycleWarmupRequiredConsecutiveConvergedGroups =
+                    LifecycleWarmupRequiredConsecutiveConvergedGroups,
                 lifecycleCycles = LifecycleCycleCount,
                 lifecycleCheckpointInterval =
                     LifecycleCheckpointInterval,
@@ -1501,7 +1732,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                 resourceEndpointPreparation =
                     "symmetric Application.DoEvents + full GC/finalizer drain before active_start and idle_end",
                 lifecycleResourceEndpointPreparation =
-                    "one to five full 100-cycle isomorphic lifecycle groups until strict checkpoint-envelope convergence, then symmetric Application.DoEvents + full GC/finalizer drain before a new measured lifecycle_start and lifecycle_end"
+                    "up to five full 100-cycle isomorphic lifecycle groups until two consecutive groups independently satisfy strict checkpoint-envelope convergence, then symmetric Application.DoEvents + full GC/finalizer drain before a new measured lifecycle_start and lifecycle_end"
             },
             sourceIdentity = new
             {
@@ -1529,6 +1760,30 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                     },
                     meaning =
                         "observed execution environment; not byte-bound by this report"
+                }
+            },
+            runtime = new
+            {
+                RuntimeInformation.FrameworkDescription,
+                RuntimeInformation.RuntimeIdentifier,
+                RuntimeInformation.ProcessArchitecture,
+                environmentVersion = Environment.Version.ToString(),
+                qualificationSdkVersion =
+                    Environment.GetEnvironmentVariable(
+                        SdkVersionEnvironment) ?? string.Empty,
+                is64BitProcess = Environment.Is64BitProcess,
+                serverGc,
+                performanceEnvironmentQualified,
+                performanceEnvironment = new
+                {
+                    inheritedOverrides =
+                        inheritedPerformanceOverrides,
+                    processPriorityClass,
+                    processorAffinityMask,
+                    expectedProcessPriorityClass =
+                        expectedPriorityClass,
+                    expectedProcessorAffinityMask =
+                        expectedAffinityMask
                 }
             },
             machine = new
@@ -1585,6 +1840,8 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                         LifecycleWarmupCycleCount,
                     maxGroups =
                         LifecycleWarmupMaxGroupCount,
+                    requiredConsecutiveConvergedGroups =
+                        LifecycleWarmupRequiredConsecutiveConvergedGroups,
                     groupsRun = lifecycleWarmups.Count,
                     totalCycles =
                         lifecycleWarmups.Count *
@@ -1593,14 +1850,14 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                         LifecycleCheckpointInterval,
                     converged =
                         lifecycleWarmupConverged,
-                    convergedGroupIndex =
+                    convergedPairEndGroupIndex =
                         lifecycleWarmupConverged
                             ? lifecycleWarmups.Count
                             : (int?)null,
-                    acceptanceMeasurementImmediatelyFollowsConvergedGroup =
+                    acceptanceMeasurementImmediatelyFollowsConvergedPair =
                         lifecycleWarmupConverged,
                     convergenceRule =
-                        "first complete group whose GDI, USER, and process handle checkpoints never exceed the group start, endpoint deltas are <= 0, and positive-monotonic trends are all false",
+                        "first pair of consecutive complete groups where each group's GDI, USER, and process handle checkpoints never exceed that group's start, endpoint deltas are <= 0, and positive-monotonic trends are all false",
                     groups = lifecycleWarmups.Select(
                         (warmup, index) => new
                         {
@@ -1634,7 +1891,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                             }
                         }).ToArray(),
                     exclusionReason =
-                        "process-level first-use stabilization exercised only by complete isomorphic PlayerInfo lifecycle groups; the immediately following independent 100 cycles retain the unchanged zero-growth gates"
+                        "process-level first-use stabilization exercised only by complete isomorphic PlayerInfo lifecycle groups; the independent 100 cycles immediately following the first consecutive converged pair retain the unchanged zero-growth gates"
                 },
                 acceptanceMeasurementEligible =
                     lifecycleWarmupConverged,
@@ -1740,6 +1997,8 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                         splitObservedCommitSamples,
                     observerCommitSummary =
                         splitObservedCommitSummary,
+                    observerCommitMeasurementScope =
+                        "actual prepared-memory-DC UpdateLayeredWindow transaction; reusable top-down PArgb DIB/memory-DC setup and cleanup are amortized across frames and guarded by lifecycle GDI/USER/process zero-growth checks",
                     observerCommitGeometry =
                         observedSplitCommitGeometries,
                     updateLayeredWindowOnlySamples =
@@ -1805,12 +2064,13 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                     "manifest plus eight SVG source hashes and aggregate asset revision",
                     "sample counts and counter deltas equal 3000",
                     "nearest-rank p50/p95/p99/max summaries",
+                    "absent frozen JIT/GC overrides, Normal testhost priority, exact nonzero runner-inherited affinity mask, and server GC disabled",
                     "surface p95 <= 4 ms",
-                    "actual commit p95 < 33 ms",
+                    "prepared-memory-DC UpdateLayeredWindow transaction p95 < 33 ms; reusable DIB/DC lifecycle is amortized and covered by resource gates",
                     "NativeHud A/B union, count, dimensions, success, and p95 regression",
                     "canonical layer, exact fragment ownership, byte accounting, and owned disposal",
                     "real pipeline parse/raster=10, cache budget, and drained shutdown",
-                    "one to five complete 100-cycle isomorphic groups until the first strict checkpoint-envelope convergence, followed immediately by 100 independently measured real HWND publish/ULW/drain/dispose cycles with IsWindow, owner-root, late-commit, and unchanged zero-growth handle checks",
+                    "up to five complete 100-cycle isomorphic groups until the first pair of consecutive strict checkpoint-envelope convergences, followed immediately by 100 independently measured real HWND publish/ULW/drain/dispose cycles with IsWindow, owner-root, late-commit, and unchanged zero-growth handle checks",
                     "idle 3000 repaint/paint/commit deltas are zero",
                     "GDI/USER/process handle endpoint and checkpoint trend"
                 }
@@ -2588,6 +2848,68 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         observation.ResourceDelta.UserObjects <= 0 &&
         observation.ResourceDelta.ProcessHandles <= 0 &&
         !observation.HandleTrend.AnyPositiveMonotonicGrowth;
+
+    private static int? FindFirstLifecycleWarmupConvergedPairEndIndex(
+        IReadOnlyList<bool> convergenceSequence)
+    {
+        var consecutiveConvergedGroups = 0;
+        for (var index = 0; index < convergenceSequence.Count; index++)
+        {
+            consecutiveConvergedGroups = convergenceSequence[index]
+                ? consecutiveConvergedGroups + 1
+                : 0;
+            if (consecutiveConvergedGroups >=
+                LifecycleWarmupRequiredConsecutiveConvergedGroups)
+            {
+                return index + 1;
+            }
+        }
+        return null;
+    }
+
+    private static bool IsPerformanceEnvironmentQualified(
+        IReadOnlyDictionary<string, string?>
+            inheritedPerformanceOverrides,
+        string processPriorityClass,
+        string processorAffinityMask,
+        string? expectedPriorityClass,
+        string? expectedAffinityMask,
+        bool serverGc)
+    {
+        bool expectedAffinityIsNonZero =
+            ulong.TryParse(
+                expectedAffinityMask,
+                NumberStyles.AllowHexSpecifier,
+                CultureInfo.InvariantCulture,
+                out ulong expectedAffinity) &&
+            expectedAffinity != 0;
+        return
+            inheritedPerformanceOverrides.Count ==
+                PerformanceOverrideEnvironmentNames.Length &&
+            PerformanceOverrideEnvironmentNames.All(name =>
+                inheritedPerformanceOverrides.TryGetValue(
+                    name,
+                    out string? value) &&
+                value is null) &&
+            string.Equals(
+                processPriorityClass,
+                ProcessPriorityClass.Normal.ToString(),
+                StringComparison.Ordinal) &&
+            string.Equals(
+                expectedPriorityClass,
+                ProcessPriorityClass.Normal.ToString(),
+                StringComparison.Ordinal) &&
+            expectedAffinityIsNonZero &&
+            string.Equals(
+                processorAffinityMask,
+                expectedAffinityMask,
+                StringComparison.Ordinal) &&
+            !serverGc;
+    }
+
+    private static string FormatAffinityMask(IntPtr affinity) =>
+        unchecked((ulong)affinity.ToInt64())
+            .ToString("X16", CultureInfo.InvariantCulture);
 
     private static bool IsPositiveMonotonicGrowth(
         IEnumerable<int> source)

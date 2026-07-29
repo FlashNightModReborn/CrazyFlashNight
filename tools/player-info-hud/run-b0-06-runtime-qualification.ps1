@@ -9,6 +9,21 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+[string[]]$performanceOverrideEnvironmentNames = @(
+    'DOTNET_TieredPGO'
+    'COMPlus_TieredPGO'
+    'DOTNET_TieredCompilation'
+    'COMPlus_TieredCompilation'
+    'DOTNET_ReadyToRun'
+    'COMPlus_ReadyToRun'
+    'DOTNET_TC_QuickJit'
+    'COMPlus_TC_QuickJit'
+    'DOTNET_TC_QuickJitForLoops'
+    'COMPlus_TC_QuickJitForLoops'
+    'DOTNET_gcServer'
+    'COMPlus_gcServer'
+)
+
 function ConvertTo-ProcessArgument {
     param([AllowEmptyString()][string]$Value)
 
@@ -137,6 +152,52 @@ function Assert-Equal {
     if (-not [object]::Equals($Actual, $Expected)) {
         throw "$Label mismatch: expected='$Expected' actual='$Actual'."
     }
+}
+
+function Get-ExactBoolean {
+    param(
+        [AllowNull()]$Value,
+        [Parameter(Mandatory)][string]$Label
+    )
+
+    if ($null -eq $Value -or $Value -isnot [System.Boolean]) {
+        $actualType = if ($null -eq $Value) {
+            '<null>'
+        } else {
+            $Value.GetType().FullName
+        }
+        throw "$Label must be a JSON boolean; actualType='$actualType'."
+    }
+    return [bool]$Value
+}
+
+function Assert-ExactStringSet {
+    param(
+        [Parameter(Mandatory)][string[]]$Actual,
+        [Parameter(Mandatory)][string[]]$Expected,
+        [Parameter(Mandatory)][string]$Label
+    )
+
+    [string[]]$actualSorted = @($Actual)
+    [string[]]$expectedSorted = @($Expected)
+    [array]::Sort($actualSorted, [System.StringComparer]::Ordinal)
+    [array]::Sort($expectedSorted, [System.StringComparer]::Ordinal)
+    Assert-Equal $actualSorted.Count $expectedSorted.Count "$Label.count"
+    for ($index = 0; $index -lt $expectedSorted.Count; $index++) {
+        Assert-Equal $actualSorted[$index] $expectedSorted[$index] `
+            "$Label[$index]"
+    }
+}
+
+function Assert-ExactPropertySet {
+    param(
+        [Parameter(Mandatory)]$Value,
+        [Parameter(Mandatory)][string[]]$Expected,
+        [Parameter(Mandatory)][string]$Label
+    )
+
+    [string[]]$actual = @($Value.PSObject.Properties.Name)
+    Assert-ExactStringSet -Actual $actual -Expected $Expected -Label $Label
 }
 
 function Assert-Near {
@@ -354,7 +415,8 @@ function Get-PlayerInfoAssetRevision {
 function Test-ReportContract {
     param(
         [Parameter(Mandatory)]$Report,
-        [Parameter(Mandatory)][string]$ExpectedRunId
+        [Parameter(Mandatory)][string]$ExpectedRunId,
+        [Parameter(Mandatory)][string]$ExpectedAffinityMask
     )
 
     Assert-Equal ([string]$Report.schema) `
@@ -372,9 +434,13 @@ function Test-ReportContract {
         'qualification.lifecycleWarmupCycleCountPerGroup'
     Assert-Equal ([int]$Report.qualification.lifecycleWarmupMaxGroups) 5 `
         'qualification.lifecycleWarmupMaxGroups'
+    Assert-Equal `
+        ([int]$Report.qualification.lifecycleWarmupRequiredConsecutiveConvergedGroups) `
+        2 `
+        'qualification.lifecycleWarmupRequiredConsecutiveConvergedGroups'
     [int]$lifecycleWarmupCycles =
         [int]$Report.qualification.lifecycleWarmupCycles
-    if ($lifecycleWarmupCycles -lt 100 -or
+    if ($lifecycleWarmupCycles -lt 200 -or
         $lifecycleWarmupCycles -gt 500 -or
         ($lifecycleWarmupCycles % 100) -ne 0) {
         throw "qualification.lifecycleWarmupCycles is invalid: $lifecycleWarmupCycles"
@@ -404,7 +470,7 @@ function Test-ReportContract {
         'qualification.resourceEndpointPreparation'
     Assert-Equal `
         ([string]$Report.qualification.lifecycleResourceEndpointPreparation) `
-        'one to five full 100-cycle isomorphic lifecycle groups until strict checkpoint-envelope convergence, then symmetric Application.DoEvents + full GC/finalizer drain before a new measured lifecycle_start and lifecycle_end' `
+        'up to five full 100-cycle isomorphic lifecycle groups until two consecutive groups independently satisfy strict checkpoint-envelope convergence, then symmetric Application.DoEvents + full GC/finalizer drain before a new measured lifecycle_start and lifecycle_end' `
         'qualification.lifecycleResourceEndpointPreparation'
     Assert-Equal ([string]$Report.machine.staThread) 'STA' 'machine.staThread'
     Assert-Equal ([bool]$Report.splitSurface.hwnd.created) $true `
@@ -427,6 +493,75 @@ function Test-ReportContract {
         'sourceIdentity.commitBindingSemantics'
     Assert-Equal ([string]$Report.sourceIdentity.sdkVersion) '10.0.300' `
         'sourceIdentity.sdkVersion'
+    Assert-Equal ([string]$Report.runtime.qualificationSdkVersion) `
+        '10.0.300' 'runtime.qualificationSdkVersion'
+
+    if ($ExpectedAffinityMask -notmatch '^[0-9A-F]{16}$') {
+        throw "Expected runner affinity mask is invalid: '$ExpectedAffinityMask'."
+    }
+    [uint64]$expectedAffinityValue = [uint64]::Parse(
+        $ExpectedAffinityMask,
+        [System.Globalization.NumberStyles]::AllowHexSpecifier,
+        [System.Globalization.CultureInfo]::InvariantCulture)
+    if ($expectedAffinityValue -eq 0) {
+        throw 'Expected runner affinity mask must be nonzero.'
+    }
+
+    $runtimeEnvironment = $Report.runtime.performanceEnvironment
+    Assert-ExactPropertySet `
+        -Value $runtimeEnvironment `
+        -Expected @(
+            'inheritedOverrides',
+            'processPriorityClass',
+            'processorAffinityMask',
+            'expectedProcessPriorityClass',
+            'expectedProcessorAffinityMask') `
+        -Label 'runtime.performanceEnvironment'
+    Assert-ExactPropertySet `
+        -Value $runtimeEnvironment.inheritedOverrides `
+        -Expected $performanceOverrideEnvironmentNames `
+        -Label 'runtime.performanceEnvironment.inheritedOverrides'
+    $allOverridesAbsent = $true
+    foreach ($name in $performanceOverrideEnvironmentNames) {
+        if ($null -ne $runtimeEnvironment.inheritedOverrides.$name) {
+            $allOverridesAbsent = $false
+        }
+        Assert-Equal $runtimeEnvironment.inheritedOverrides.$name `
+            $null "runtime.performanceEnvironment.inheritedOverrides.$name"
+    }
+    Assert-Equal ([string]$runtimeEnvironment.processPriorityClass) `
+        'Normal' 'runtime.performanceEnvironment.processPriorityClass'
+    Assert-Equal ([string]$runtimeEnvironment.expectedProcessPriorityClass) `
+        'Normal' 'runtime.performanceEnvironment.expectedProcessPriorityClass'
+    Assert-Equal ([string]$runtimeEnvironment.processorAffinityMask) `
+        $ExpectedAffinityMask `
+        'runtime.performanceEnvironment.processorAffinityMask'
+    Assert-Equal ([string]$runtimeEnvironment.expectedProcessorAffinityMask) `
+        $ExpectedAffinityMask `
+        'runtime.performanceEnvironment.expectedProcessorAffinityMask'
+    $serverGc = Get-ExactBoolean `
+        -Value $Report.runtime.serverGc `
+        -Label 'runtime.serverGc'
+    $performanceEnvironmentQualified = Get-ExactBoolean `
+        -Value $Report.runtime.performanceEnvironmentQualified `
+        -Label 'runtime.performanceEnvironmentQualified'
+    Assert-Equal $serverGc $false 'runtime.serverGc'
+    $independentlyQualifiedPerformanceEnvironment =
+        $allOverridesAbsent -and
+        ([string]$runtimeEnvironment.processPriorityClass -ceq 'Normal') -and
+        ([string]$runtimeEnvironment.expectedProcessPriorityClass -ceq
+            'Normal') -and
+        ([string]$runtimeEnvironment.processorAffinityMask -ceq
+            $ExpectedAffinityMask) -and
+        ([string]$runtimeEnvironment.expectedProcessorAffinityMask -ceq
+            $ExpectedAffinityMask) -and
+        $expectedAffinityValue -ne 0 -and
+        -not $serverGc
+    Assert-Equal $performanceEnvironmentQualified `
+        $independentlyQualifiedPerformanceEnvironment `
+        'runtime.performanceEnvironmentQualified.reconstructed'
+    Assert-Equal $independentlyQualifiedPerformanceEnvironment $true `
+        'runtime.performanceEnvironmentQualified'
 
     Assert-FileIdentityClosure `
         -Items $Report.sourceIdentity.projectAssemblies `
@@ -478,6 +613,7 @@ function Test-ReportContract {
             'launcher/src/Guardian/Hud/ToastWidget.cs'
             'launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoAnimationModel.cs'
             'launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoFrameCompositor.cs'
+            'launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoLayeredDibSurface.cs'
             'launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.cs'
             'launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.Generated.cs'
             'launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoRasterPipeline.cs'
@@ -769,32 +905,35 @@ function Test-ReportContract {
         'surfaceLifecycle.warmup.groupCycleCount'
     Assert-Equal ([int]$lifecycleWarmup.maxGroups) 5 `
         'surfaceLifecycle.warmup.maxGroups'
+    Assert-Equal `
+        ([int]$lifecycleWarmup.requiredConsecutiveConvergedGroups) 2 `
+        'surfaceLifecycle.warmup.requiredConsecutiveConvergedGroups'
     Assert-Equal ([int]$lifecycleWarmup.checkpointInterval) 10 `
         'surfaceLifecycle.warmup.checkpointInterval'
     Assert-Equal ([bool]$lifecycleWarmup.converged) $true `
         'surfaceLifecycle.warmup.converged'
     Assert-Equal `
-        ([bool]$lifecycleWarmup.acceptanceMeasurementImmediatelyFollowsConvergedGroup) `
+        ([bool]$lifecycleWarmup.acceptanceMeasurementImmediatelyFollowsConvergedPair) `
         $true `
-        'surfaceLifecycle.warmup.acceptanceMeasurementImmediatelyFollowsConvergedGroup'
+        'surfaceLifecycle.warmup.acceptanceMeasurementImmediatelyFollowsConvergedPair'
     Assert-Equal ([string]$lifecycleWarmup.convergenceRule) `
-        'first complete group whose GDI, USER, and process handle checkpoints never exceed the group start, endpoint deltas are <= 0, and positive-monotonic trends are all false' `
+        "first pair of consecutive complete groups where each group's GDI, USER, and process handle checkpoints never exceed that group's start, endpoint deltas are <= 0, and positive-monotonic trends are all false" `
         'surfaceLifecycle.warmup.convergenceRule'
     Assert-Equal ([string]$lifecycleWarmup.exclusionReason) `
-        'process-level first-use stabilization exercised only by complete isomorphic PlayerInfo lifecycle groups; the immediately following independent 100 cycles retain the unchanged zero-growth gates' `
+        'process-level first-use stabilization exercised only by complete isomorphic PlayerInfo lifecycle groups; the independent 100 cycles immediately following the first consecutive converged pair retain the unchanged zero-growth gates' `
         'surfaceLifecycle.warmup.exclusionReason'
 
     $lifecycleWarmupGroups = @($lifecycleWarmup.groups)
-    if ($lifecycleWarmupGroups.Count -lt 1 -or
+    if ($lifecycleWarmupGroups.Count -lt 2 -or
         $lifecycleWarmupGroups.Count -gt 5) {
         throw "surfaceLifecycle.warmup.groups count is invalid: $($lifecycleWarmupGroups.Count)"
     }
     Assert-Equal ([int]$lifecycleWarmup.groupsRun) `
         $lifecycleWarmupGroups.Count `
         'surfaceLifecycle.warmup.groupsRun'
-    Assert-Equal ([int]$lifecycleWarmup.convergedGroupIndex) `
+    Assert-Equal ([int]$lifecycleWarmup.convergedPairEndGroupIndex) `
         $lifecycleWarmupGroups.Count `
-        'surfaceLifecycle.warmup.convergedGroupIndex'
+        'surfaceLifecycle.warmup.convergedPairEndGroupIndex'
     Assert-Equal ([int]$lifecycleWarmup.totalCycles) `
         ($lifecycleWarmupGroups.Count * 100) `
         'surfaceLifecycle.warmup.totalCycles'
@@ -806,6 +945,8 @@ function Test-ReportContract {
         0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
     )
     $previousWarmupResources = $null
+    [System.Collections.Generic.List[bool]]$warmupConvergenceSequence =
+        [System.Collections.Generic.List[bool]]::new()
     for ($groupIndex = 0;
         $groupIndex -lt $lifecycleWarmupGroups.Count;
         $groupIndex++) {
@@ -943,14 +1084,7 @@ function Test-ReportContract {
         )
         Assert-Equal ([bool]$group.converged) $groupConverged `
             "$groupLabel.converged"
-        if ($groupIndex -lt $lifecycleWarmupGroups.Count - 1 -and
-            $groupConverged) {
-            throw "$groupLabel converged before the reported first stable group."
-        }
-        if ($groupIndex -eq $lifecycleWarmupGroups.Count - 1 -and
-            -not $groupConverged) {
-            throw "$groupLabel is not a converged final warmup group."
-        }
+        $warmupConvergenceSequence.Add($groupConverged)
 
         if ($null -ne $previousWarmupResources) {
             foreach ($property in @(
@@ -967,6 +1101,25 @@ function Test-ReportContract {
         }
         $previousWarmupResources = $groupResources
     }
+    $firstConvergedPairEndGroupIndex = $null
+    for ($groupIndex = 1;
+        $groupIndex -lt $warmupConvergenceSequence.Count;
+        $groupIndex++) {
+        if ($warmupConvergenceSequence[$groupIndex - 1] -and
+            $warmupConvergenceSequence[$groupIndex]) {
+            $firstConvergedPairEndGroupIndex = $groupIndex + 1
+            break
+        }
+    }
+    if ($null -eq $firstConvergedPairEndGroupIndex) {
+        throw 'No consecutive pair of independently converged lifecycle warmup groups was reconstructed.'
+    }
+    Assert-Equal ([int]$firstConvergedPairEndGroupIndex) `
+        $lifecycleWarmupGroups.Count `
+        'surfaceLifecycle.warmup.firstConvergedPairEndsAtGroupsRun'
+    Assert-Equal ([int]$lifecycleWarmup.convergedPairEndGroupIndex) `
+        ([int]$firstConvergedPairEndGroupIndex) `
+        'surfaceLifecycle.warmup.convergedPairEndGroupIndexReconstructed'
     foreach ($property in @(
             'cpuMilliseconds',
             'allocatedBytes',
@@ -975,7 +1128,7 @@ function Test-ReportContract {
             'gc2')) {
         if ([double]$lifecycle.resources.before.$property -lt
             [double]$previousWarmupResources.after.$property) {
-            throw "Measured lifecycle '$property' precedes its converged warmup endpoint."
+            throw "Measured lifecycle '$property' precedes its converged warmup-pair endpoint."
         }
     }
     Assert-Equal ([bool]$lifecycle.acceptanceMeasurementEligible) $true `
@@ -1288,6 +1441,9 @@ function Test-ReportContract {
     }
     Assert-Equal ([long]$active.counters.commitFailureCount) 0 `
         'split.active.counters.commitFailureCount'
+    Assert-Equal ([string]$active.observerCommitMeasurementScope) `
+        'actual prepared-memory-DC UpdateLayeredWindow transaction; reusable top-down PArgb DIB/memory-DC setup and cleanup are amortized across frames and guarded by lifecycle GDI/USER/process zero-growth checks' `
+        'split.active.observerCommitMeasurementScope'
 
     $requestSamples = ConvertTo-FiniteSamples $active.requestSamples `
         'split.active.requestSamples' 3000
@@ -1578,6 +1734,42 @@ if (-not (Test-Path -LiteralPath $resolver -PathType Leaf)) {
 [System.IO.Directory]::CreateDirectory(
     (Split-Path -Parent $ReportPath)) | Out-Null
 
+$definedPerformanceOverrides = @(
+    $performanceOverrideEnvironmentNames | Where-Object {
+        $null -ne [System.Environment]::GetEnvironmentVariable(
+            $_,
+            [System.EnvironmentVariableTarget]::Process)
+    })
+if ($definedPerformanceOverrides.Count -ne 0) {
+    throw (
+        'B0-06 qualification requires these JIT/GC overrides to be absent: ' +
+        ($definedPerformanceOverrides -join ', '))
+}
+
+$runnerProcess = [System.Diagnostics.Process]::GetCurrentProcess()
+try {
+    $expectedPriorityClass = $runnerProcess.PriorityClass.ToString()
+    if ($expectedPriorityClass -cne 'Normal') {
+        throw (
+            'B0-06 qualification requires Normal runner priority; got ' +
+            "'$expectedPriorityClass'.")
+    }
+    [long]$signedAffinityMask =
+        $runnerProcess.ProcessorAffinity.ToInt64()
+    [byte[]]$affinityBytes =
+        [System.BitConverter]::GetBytes($signedAffinityMask)
+    [uint64]$unsignedAffinityMask =
+        [System.BitConverter]::ToUInt64($affinityBytes, 0)
+    if ($unsignedAffinityMask -eq 0) {
+        throw 'B0-06 qualification requires a nonzero runner affinity mask.'
+    }
+    $expectedAffinityMask = $unsignedAffinityMask.ToString(
+        'X16',
+        [System.Globalization.CultureInfo]::InvariantCulture)
+} finally {
+    $runnerProcess.Dispose()
+}
+
 . $resolver
 $dotnet = Resolve-Cf7Dotnet -ProjectRoot $ProjectRoot
 $sdkVersion = (& $dotnet --version 2>&1 | Out-String).Trim()
@@ -1590,10 +1782,18 @@ $previousReport = $env:CF7_PLAYER_INFO_B006_REPORT_PATH
 $previousRunId = $env:CF7_PLAYER_INFO_B006_RUN_ID
 $previousSdk = $env:CF7_PLAYER_INFO_B006_SDK_VERSION
 $previousRoot = $env:CF7_PLAYER_INFO_B006_PROJECT_ROOT
+$previousExpectedPriorityClass =
+    $env:CF7_PLAYER_INFO_B006_EXPECTED_PRIORITY_CLASS
+$previousExpectedAffinityMask =
+    $env:CF7_PLAYER_INFO_B006_EXPECTED_AFFINITY_MASK
 $env:CF7_PLAYER_INFO_B006_REPORT_PATH = $ReportPath
 $env:CF7_PLAYER_INFO_B006_RUN_ID = $runId
 $env:CF7_PLAYER_INFO_B006_SDK_VERSION = $sdkVersion
 $env:CF7_PLAYER_INFO_B006_PROJECT_ROOT = $ProjectRoot
+$env:CF7_PLAYER_INFO_B006_EXPECTED_PRIORITY_CLASS =
+    $expectedPriorityClass
+$env:CF7_PLAYER_INFO_B006_EXPECTED_AFFINITY_MASK =
+    $expectedAffinityMask
 $testExitCode = $null
 try {
     $restore = Invoke-ProcessWithTimeout `
@@ -1641,6 +1841,10 @@ try {
     $env:CF7_PLAYER_INFO_B006_RUN_ID = $previousRunId
     $env:CF7_PLAYER_INFO_B006_SDK_VERSION = $previousSdk
     $env:CF7_PLAYER_INFO_B006_PROJECT_ROOT = $previousRoot
+    $env:CF7_PLAYER_INFO_B006_EXPECTED_PRIORITY_CLASS =
+        $previousExpectedPriorityClass
+    $env:CF7_PLAYER_INFO_B006_EXPECTED_AFFINITY_MASK =
+        $previousExpectedAffinityMask
 }
 
 if (-not (Test-Path -LiteralPath $ReportPath -PathType Leaf)) {
@@ -1660,7 +1864,10 @@ if ($reportBytes.Length -eq 0 -or
 }
 $report = Get-Content -LiteralPath $ReportPath -Raw -Encoding utf8 |
     ConvertFrom-Json
-Test-ReportContract -Report $report -ExpectedRunId $runId
+Test-ReportContract `
+    -Report $report `
+    -ExpectedRunId $runId `
+    -ExpectedAffinityMask $expectedAffinityMask
 
 if ($testExitCode -ne 0) {
     throw "B0-06 focused qualification failed with exit code $testExitCode."

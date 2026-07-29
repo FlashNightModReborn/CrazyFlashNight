@@ -28,7 +28,7 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         protected static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         protected static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
@@ -70,6 +70,7 @@ namespace CF7Launcher.Guardian
         protected const uint SWP_NOMOVE = 0x0002;
         protected const uint SWP_NOSIZE = 0x0001;
         protected const uint SWP_NOACTIVATE = 0x0010;
+        protected const uint SWP_SHOWWINDOW = 0x0040;
         private const byte AC_SRC_OVER = 0x00;
         private const byte AC_SRC_ALPHA = 0x01;
         private const uint ULW_ALPHA = 0x02;
@@ -484,6 +485,43 @@ namespace CF7Launcher.Guardian
                     (string.IsNullOrEmpty(result.CleanupError)
                         ? ""
                         : " cleanup=" + result.CleanupError));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// PlayerInfo split-surface fast path for a caller-owned top-down
+        /// PArgb DIB that remains selected into a reusable memory DC.
+        /// </summary>
+        private protected LayeredWindowCommitResult CommitPreparedDibObserved(
+            IntPtr sourceDc,
+            int width,
+            int height,
+            int screenX,
+            int screenY,
+            byte globalAlpha)
+        {
+            IntPtr handle;
+            TryGetExistingHandle(out handle);
+            LayeredWindowCommitResult result =
+                LayeredWindowCommitExecutor.ExecutePrepared(
+                    handle,
+                    sourceDc,
+                    width,
+                    height,
+                    screenX,
+                    screenY,
+                    globalAlpha,
+                    Win32LayeredWindowCommitNativeApi.Instance);
+            _commitObservation.Publish(result);
+
+            if (!result.Succeeded)
+            {
+                LogManager.Log(
+                    "[OverlayBase] prepared DIB commit failed: " +
+                    result.ErrorValue +
+                    " nativeError=" + result.NativeErrorCode +
+                    " message=" + result.ErrorMessage);
             }
             return result;
         }

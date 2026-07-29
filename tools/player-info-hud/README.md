@@ -209,9 +209,14 @@ anchor. The HP Glow uses `sigma=1`
 with two alpha passes (`255` and `128`) to model authored Flash strength `1.5`;
 this remains an explicit Skia approximation, not a pixel-parity claim.
 
-The formal runtime runner resolves exact SDK `10.0.300`, performs a locked
-restore, selects the single STA HWND/ULW qualification, then verifies its
-canonical report and identities:
+Before starting any `dotnet` host, the formal runtime runner rejects the same
+12 frozen `DOTNET_*` / `COMPlus_*` JIT/GC overrides as B0-05, requires Normal
+runner priority, and freezes its nonzero affinity mask. It then resolves exact
+SDK `10.0.300`, performs a locked restore, selects the single STA HWND/ULW
+qualification, and independently verifies that JSON boolean fields are actual
+booleans (no string coercion) and that the testhost retained Normal
+priority, the exact inherited affinity mask, and server GC disabled, in
+addition to the canonical report and identities:
 
 ```powershell
 chcp.com 65001 | Out-Null
@@ -221,14 +226,22 @@ chcp.com 65001 | Out-Null
 
 Its contract is 3000 visible visual steps, 3000 idle ticks, and an independent
 100-cycle real surface/HWND acceptance interval. Before acceptance, the same
-STA thread and owner run one to five complete excluded 100-cycle warmup groups.
+STA thread and owner run at most five complete excluded 100-cycle warmup groups.
 A group converges only if every GDI, USER, and process-handle checkpoint is at
 or below its start, all endpoint deltas are non-positive, and none of the three
-series has positive monotonic growth. The first converged group is followed
-immediately by a new acceptance group. If five groups do not converge, any
-following group is diagnostic-only, `acceptanceMeasurementEligible=false`, and
-the 47th warmup-convergence Gate fails. The runner binds source, binary,
+series has positive monotonic growth. Acceptance requires two consecutive
+groups to independently meet that strict rule; the first qualifying pair is
+followed immediately by a new acceptance group. If five groups contain no such
+pair, any following group is diagnostic-only,
+`acceptanceMeasurementEligible=false`, and the existing
+warmup-convergence Gate fails. The runner binds source, binary,
 renderer, and runner closures and independently recomputes every Gate.
+For B0-06 `ExecutePrepared`, `LayeredWindowCommitResult` measures only the
+actual prepared-memory-DC `UpdateLayeredWindow` transaction. The split surface
+owns one reusable
+top-down PArgb DIB and memory DC, so their setup/cleanup is amortized across
+frames; lifecycle GDI/USER/process zero-growth checks continue to guard that
+long-lived native ownership.
 
 `evidence/b0-06/runtime-qualification-attempts.json` preserves two rejected
 pre-merge attempts without relaxing the original thresholds: v1 was 43/46

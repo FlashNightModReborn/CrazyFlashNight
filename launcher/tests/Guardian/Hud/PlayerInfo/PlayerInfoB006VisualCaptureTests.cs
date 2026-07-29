@@ -83,6 +83,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
     [
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoAnimationModel.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoFrameCompositor.cs",
+        "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoLayeredDibSurface.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoPathGlyphAtlas.Generated.cs",
         "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoRasterPipeline.cs",

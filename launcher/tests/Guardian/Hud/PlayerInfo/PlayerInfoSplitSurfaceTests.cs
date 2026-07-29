@@ -638,6 +638,14 @@ public sealed class PlayerInfoSplitSurfaceTests
             Assert.Equal(0, firstCommit.CommitFailureCount);
             Assert.True(firstCommit.Shown);
 
+            long beforeZOrderReassert = surface.Counters.CommitCount;
+            surface.SetZOrderInsertAfter(IntPtr.Zero);
+            PumpUntil(
+                () => surface.Counters.CommitCount > beforeZOrderReassert,
+                TimeSpan.FromSeconds(10),
+                "Repeating the same z-order anchor did not reassert the real HWND placement.");
+            Assert.True(surface.Snapshot.Shown);
+
             surface.Suspend();
             PlayerInfoSplitSurfaceSnapshot suspended = surface.Snapshot;
             Assert.True(suspended.Suspended);

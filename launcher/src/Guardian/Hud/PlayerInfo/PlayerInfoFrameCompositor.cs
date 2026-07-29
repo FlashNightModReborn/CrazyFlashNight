@@ -245,6 +245,10 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     private readonly PlayerInfoSvgGauge _hp;
     private readonly PlayerInfoSvgGauge _mp;
     private readonly PlayerInfoPathGlyphAtlas _glyphs;
+    private readonly MpMaskResult?[] _mpLeftMaskCache;
+    private readonly MpMaskResult?[] _mpRightMaskCache;
+    private readonly string[] _mpRimByVirtualFrame;
+    private readonly PlayerInfoPaletteState?[] _mpPaletteByVirtualFrame;
     private PlayerInfoHpPaintSource? _hpPaint;
     private PlayerInfoHpHorizontalLineSource? _hpHorizontalLine;
     private bool _disposed;
@@ -259,6 +263,19 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
                 "PlayerInfo compositor requires typed HP and MP gauges.");
         }
         PlayerInfoCompositionRecipe.ValidateEffectPolicy(assetSet.EffectPolicy);
+        var lastMpFrame = _mp.FrameMap.EmptyVirtualFrame;
+        _mpLeftMaskCache = new MpMaskResult?[lastMpFrame + 1];
+        _mpRightMaskCache = new MpMaskResult?[lastMpFrame + 1];
+        _mpRimByVirtualFrame = new string[lastMpFrame + 1];
+        _mpPaletteByVirtualFrame =
+            new PlayerInfoPaletteState?[lastMpFrame + 1];
+        for (var frame = _mp.FrameMap.FullVirtualFrame;
+             frame <= lastMpFrame;
+             frame++)
+        {
+            _mpRimByVirtualFrame[frame] = ResolveRim(frame);
+            _mpPaletteByVirtualFrame[frame] = ResolvePalette(frame);
+        }
         _glyphs = new PlayerInfoPathGlyphAtlas();
         try
         {
@@ -308,9 +325,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
                 "PlayerInfo batch and placement plan identities differ.");
         }
 
-        var layers = batch.Layers.ToDictionary(
-            layer => layer.Key.LayerId,
-            StringComparer.Ordinal);
+        IReadOnlyList<PlayerInfoRasterLayer> layers = batch.Layers;
         if (layers.Count != PlayerInfoSvgAssetCatalog.ExpectedAssetCount)
         {
             throw new InvalidDataException(
@@ -321,12 +336,14 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         var mpFrame = visualState.Mp.CurrentVirtualFrame;
         ValidateVirtualFrame(_hp, hpFrame);
         ValidateVirtualFrame(_mp, mpFrame);
-        var leftMask = BuildMpMask(MpLeftMask, mpFrame);
-        var rightMask = BuildMpMask(MpRightMask, mpFrame);
-        using var leftPath = leftMask.Path;
-        using var rightPath = rightMask.Path;
-        var palette = SelectPalette(mpFrame);
-        var rimAssetId = SelectRim(mpFrame);
+        var leftMask = GetMpMask(MpLeftMask, mpFrame);
+        var rightMask = GetMpMask(MpRightMask, mpFrame);
+        var palette = _mpPaletteByVirtualFrame[mpFrame] ??
+            throw new InvalidDataException(
+                $"No cached MP palette for virtual frame {mpFrame}.");
+        var rimAssetId = _mpRimByVirtualFrame[mpFrame] ??
+            throw new InvalidDataException(
+                $"No cached MP rim for virtual frame {mpFrame}.");
 
         BitmapData? locked = null;
         try
@@ -352,25 +369,24 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             var canvas = surface.Canvas;
             canvas.Clear(SKColors.Transparent);
 
-            DrawLayer(canvas, layers[MpBackplate], plan);
+            DrawLayer(canvas, RequireLayer(layers, MpBackplate), plan);
             if (mpFrame != _mp.FrameMap.EmptyVirtualFrame)
             {
                 DrawMpFill(
                     canvas,
-                    layers[MpFill],
+                    RequireLayer(layers, MpFill),
                     plan,
-                    leftPath,
-                    rightPath);
+                    leftMask.Path,
+                    rightMask.Path);
             }
-            DrawLayer(canvas, layers[rimAssetId], plan);
+            DrawLayer(canvas, RequireLayer(layers, rimAssetId), plan);
 
-            DrawLayer(canvas, layers[HpBackplate], plan);
+            DrawLayer(canvas, RequireLayer(layers, HpBackplate), plan);
             DrawHpFill(canvas, plan, hpFrame);
-            DrawLayer(canvas, layers[HpRim], plan);
+            DrawLayer(canvas, RequireLayer(layers, HpRim), plan);
 
             DrawText(canvas, plan, visualState, palette);
             DrawHpHorizontalLine(canvas, plan);
-            canvas.Flush();
             surface.Flush();
         }
         finally
@@ -401,6 +417,8 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         _hpHorizontalLine = null;
         _hpPaint?.Dispose();
         _hpPaint = null;
+        DisposeMpMaskCache(_mpLeftMaskCache);
+        DisposeMpMaskCache(_mpRightMaskCache);
         _glyphs.Dispose();
     }
 
@@ -552,6 +570,29 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             path.Close();
         }
         return new MpMaskResult(path, interval.Correspondence.Count);
+    }
+
+    private MpMaskResult GetMpMask(string maskId, int virtualFrame)
+    {
+        MpMaskResult?[] cache = string.Equals(
+            maskId,
+            MpLeftMask,
+            StringComparison.Ordinal)
+            ? _mpLeftMaskCache
+            : string.Equals(maskId, MpRightMask, StringComparison.Ordinal)
+                ? _mpRightMaskCache
+                : throw new InvalidDataException(
+                    $"Unknown PlayerInfo MP mask '{maskId}'.");
+        return cache[virtualFrame] ??=
+            BuildMpMask(maskId, virtualFrame);
+    }
+
+    private static void DisposeMpMaskCache(MpMaskResult?[] cache)
+    {
+        foreach (MpMaskResult? mask in cache)
+        {
+            mask?.Path.Dispose();
+        }
     }
 
     private static void DrawMpFill(
@@ -812,7 +853,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         }
     }
 
-    private string SelectRim(int virtualFrame) =>
+    private string ResolveRim(int virtualFrame) =>
         _mp.RimVariants
             .Where(variant => virtualFrame >= variant.StartVirtualFrame)
             .OrderBy(variant => variant.StartVirtualFrame)
@@ -820,13 +861,32 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         throw new InvalidDataException(
             $"No typed MP rim for virtual frame {virtualFrame}.");
 
-    private PlayerInfoPaletteState SelectPalette(int virtualFrame) =>
+    private PlayerInfoPaletteState ResolvePalette(int virtualFrame) =>
         _mp.PaletteStates
             .Where(state => virtualFrame >= state.StartVirtualFrame)
             .OrderBy(state => state.StartVirtualFrame)
             .LastOrDefault() ??
         throw new InvalidDataException(
             $"No typed MP palette for virtual frame {virtualFrame}.");
+
+    private static PlayerInfoRasterLayer RequireLayer(
+        IReadOnlyList<PlayerInfoRasterLayer> layers,
+        string layerId)
+    {
+        for (var index = 0; index < layers.Count; index++)
+        {
+            PlayerInfoRasterLayer layer = layers[index];
+            if (string.Equals(
+                    layer.Key.LayerId,
+                    layerId,
+                    StringComparison.Ordinal))
+            {
+                return layer;
+            }
+        }
+        throw new InvalidDataException(
+            $"PlayerInfo raster batch is missing exact layer '{layerId}'.");
+    }
 
     private static PlayerInfoRasterLayerPlan FindLayerPlan(
         PlayerInfoRasterPlan plan,
@@ -885,11 +945,40 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     {
         private const string SvgNamespace = "http://www.w3.org/2000/svg";
         private const float GlowSigmaPixels = 2.5f;
+        private SKMaskFilter? _blur;
+        private SKPaint? _glow;
+        private SKPaint? _core;
         private bool _disposed;
 
         private PlayerInfoHpHorizontalLineSource(SKPath path)
         {
             Path = path;
+            try
+            {
+                _blur = SKMaskFilter.CreateBlur(
+                    SKBlurStyle.Normal,
+                    GlowSigmaPixels);
+                _glow = new SKPaint
+                {
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Fill,
+                    Color = new SKColor(255, 0, 0, 255),
+                    MaskFilter = _blur
+                };
+                _core = new SKPaint
+                {
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Fill,
+                    Color = SKColors.White
+                };
+            }
+            catch
+            {
+                _core?.Dispose();
+                _glow?.Dispose();
+                _blur?.Dispose();
+                throw;
+            }
         }
 
         private SKPath Path { get; }
@@ -977,24 +1066,16 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         {
             ArgumentNullException.ThrowIfNull(canvas);
             ObjectDisposedException.ThrowIf(_disposed, this);
-            using var blur = SKMaskFilter.CreateBlur(
-                SKBlurStyle.Normal,
-                GlowSigmaPixels);
-            using var glow = new SKPaint
-            {
-                IsAntialias = true,
-                Style = SKPaintStyle.Fill,
-                Color = new SKColor(255, 0, 0, 255),
-                MaskFilter = blur
-            };
-            using var core = new SKPaint
-            {
-                IsAntialias = true,
-                Style = SKPaintStyle.Fill,
-                Color = SKColors.White
-            };
-            canvas.DrawPath(Path, glow);
-            canvas.DrawPath(Path, core);
+            canvas.DrawPath(
+                Path,
+                _glow ??
+                    throw new ObjectDisposedException(
+                        nameof(PlayerInfoHpHorizontalLineSource)));
+            canvas.DrawPath(
+                Path,
+                _core ??
+                    throw new ObjectDisposedException(
+                        nameof(PlayerInfoHpHorizontalLineSource)));
         }
 
         public void Dispose()
@@ -1004,6 +1085,12 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
                 return;
             }
             _disposed = true;
+            _core?.Dispose();
+            _core = null;
+            _glow?.Dispose();
+            _glow = null;
+            _blur?.Dispose();
+            _blur = null;
             Path.Dispose();
         }
 

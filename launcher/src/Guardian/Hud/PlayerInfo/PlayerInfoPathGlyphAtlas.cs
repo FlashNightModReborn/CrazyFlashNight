@@ -42,6 +42,12 @@ internal sealed class PlayerInfoPathGlyphAtlas : IDisposable
     internal const string Aero = "aero";
 
     private Dictionary<string, FontFace>? _fonts;
+    private SKPaint? _solidPaint;
+    private SKMaskFilter? _glowBlur;
+    private SKPaint? _fullGlowPaint;
+    private SKPaint? _halfGlowPaint;
+    private float _cachedGlowSigma = float.NaN;
+    private SKColor _cachedGlowColor;
 
     internal PlayerInfoPathGlyphAtlas()
     {
@@ -69,10 +75,17 @@ internal sealed class PlayerInfoPathGlyphAtlas : IDisposable
                 throw new InvalidDataException(
                     "PlayerInfo path atlas must contain exactly LCD Std and Aero.");
             }
+            _solidPaint = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
+            };
             _fonts = fonts;
         }
         catch
         {
+            _solidPaint?.Dispose();
+            _solidPaint = null;
             foreach (var font in fonts.Values)
             {
                 font.Dispose();
@@ -203,40 +216,45 @@ internal sealed class PlayerInfoPathGlyphAtlas : IDisposable
             alignment);
         if (glowSigmaPixels > 0)
         {
-            using var blur = SKMaskFilter.CreateBlur(
-                SKBlurStyle.Normal,
-                glowSigmaPixels);
             var sourceColor = glowColor!.Value;
-            using var fullGlow = new SKPaint
-            {
-                IsAntialias = true,
-                Style = SKPaintStyle.Fill,
-                Color = sourceColor.WithAlpha(255),
-                MaskFilter = blur
-            };
-            using var halfGlow = new SKPaint
-            {
-                IsAntialias = true,
-                Style = SKPaintStyle.Fill,
-                Color = sourceColor.WithAlpha(128),
-                MaskFilter = blur
-            };
-            canvas.DrawPath(path, fullGlow);
-            canvas.DrawPath(path, halfGlow);
+            EnsureGlowPaints(glowSigmaPixels, sourceColor);
+            canvas.DrawPath(
+                path,
+                _fullGlowPaint ??
+                    throw new ObjectDisposedException(
+                        nameof(PlayerInfoPathGlyphAtlas)));
+            canvas.DrawPath(
+                path,
+                _halfGlowPaint ??
+                    throw new ObjectDisposedException(
+                        nameof(PlayerInfoPathGlyphAtlas)));
         }
 
-        using var paint = new SKPaint
-        {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Color = color
-        };
+        var paint = _solidPaint ??
+            throw new ObjectDisposedException(nameof(PlayerInfoPathGlyphAtlas));
+        paint.Color = color;
         canvas.DrawPath(path, paint);
     }
 
     public void Dispose()
     {
         var fonts = System.Threading.Interlocked.Exchange(ref _fonts, null);
+        var solidPaint = System.Threading.Interlocked.Exchange(
+            ref _solidPaint,
+            null);
+        var fullGlowPaint = System.Threading.Interlocked.Exchange(
+            ref _fullGlowPaint,
+            null);
+        var halfGlowPaint = System.Threading.Interlocked.Exchange(
+            ref _halfGlowPaint,
+            null);
+        var glowBlur = System.Threading.Interlocked.Exchange(
+            ref _glowBlur,
+            null);
+        solidPaint?.Dispose();
+        fullGlowPaint?.Dispose();
+        halfGlowPaint?.Dispose();
+        glowBlur?.Dispose();
         if (fonts is null)
         {
             return;
@@ -244,6 +262,60 @@ internal sealed class PlayerInfoPathGlyphAtlas : IDisposable
         foreach (var font in fonts.Values)
         {
             font.Dispose();
+        }
+    }
+
+    private void EnsureGlowPaints(float sigma, SKColor color)
+    {
+        var opaque = color.WithAlpha(255);
+        if (_glowBlur is not null &&
+            _fullGlowPaint is not null &&
+            _halfGlowPaint is not null &&
+            _cachedGlowSigma == sigma &&
+            _cachedGlowColor == opaque)
+        {
+            return;
+        }
+
+        _fullGlowPaint?.Dispose();
+        _fullGlowPaint = null;
+        _halfGlowPaint?.Dispose();
+        _halfGlowPaint = null;
+        _glowBlur?.Dispose();
+        _glowBlur = null;
+
+        SKMaskFilter? blur = null;
+        SKPaint? full = null;
+        SKPaint? half = null;
+        try
+        {
+            blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma);
+            full = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Color = opaque,
+                MaskFilter = blur
+            };
+            half = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Color = opaque.WithAlpha(128),
+                MaskFilter = blur
+            };
+            _glowBlur = blur;
+            _fullGlowPaint = full;
+            _halfGlowPaint = half;
+            _cachedGlowSigma = sigma;
+            _cachedGlowColor = opaque;
+        }
+        catch
+        {
+            half?.Dispose();
+            full?.Dispose();
+            blur?.Dispose();
+            throw;
         }
     }
 

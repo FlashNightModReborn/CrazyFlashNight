@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -68,12 +68,14 @@ internal sealed class PlayerInfoSplitSurface :
     private readonly List<double> _paintMilliseconds = [];
     private readonly List<double> _commitMilliseconds = [];
 
-    private Bitmap? _composed;
+    private PlayerInfoLayeredDibSurface? _composedSurface;
     private string? _desiredBatchKey;
     private Rectangle _tightPhysicalBounds;
     private Point _committedOrigin;
     private Size _committedSize;
+    private IntPtr _committedZOrderInsertAfter;
     private IntPtr _zOrderInsertAfter;
+    private bool _zOrderDirty = true;
     private Task _drainTask = Task.CompletedTask;
     private long _lastAnimationTimestamp;
     private int _renderPostPending;
@@ -235,6 +237,7 @@ internal sealed class PlayerInfoSplitSurface :
     {
         ThrowIfDisposed();
         _zOrderInsertAfter = handle;
+        _zOrderDirty = true;
         if (_shown && !_suspended && !_shutdown)
         {
             ScheduleRender();
@@ -543,7 +546,7 @@ internal sealed class PlayerInfoSplitSurface :
                 _animationTimer.Dispose();
                 _animationTimer = null;
             }
-            Interlocked.Exchange(ref _composed, null)?.Dispose();
+            Interlocked.Exchange(ref _composedSurface, null)?.Dispose();
             _widget?.Dispose();
             _widget = null;
             _animation = null;
@@ -666,8 +669,17 @@ internal sealed class PlayerInfoSplitSurface :
             _paintMilliseconds.Add(paintMs);
         }
 
-        var commit = CommitBitmapObserved(
-            composed,
+        var preparedSurface = _composedSurface;
+        if (preparedSurface is null ||
+            !ReferenceEquals(preparedSurface.Bitmap, composed))
+        {
+            throw new InvalidOperationException(
+                "PlayerInfo prepared DIB changed during its UI-thread paint transaction.");
+        }
+        var commit = CommitPreparedDibObserved(
+            preparedSurface.MemoryDc,
+            preparedSurface.Width,
+            preparedSurface.Height,
             tight.Left,
             tight.Top,
             255);
@@ -695,26 +707,43 @@ internal sealed class PlayerInfoSplitSurface :
         var size = tight.Size;
         var insertAfter =
             _zOrderInsertAfter == IntPtr.Zero ? HWND_TOP : _zOrderInsertAfter;
-        if (!_shown || origin != _committedOrigin || size != _committedSize)
+        var firstShow = !_shown;
+        if (firstShow ||
+            origin != _committedOrigin ||
+            size != _committedSize ||
+            insertAfter != _committedZOrderInsertAfter ||
+            _zOrderDirty)
         {
-            SetWindowPos(
+            var positioned = SetWindowPos(
                 Handle,
                 insertAfter,
                 origin.X,
                 origin.Y,
                 size.Width,
                 size.Height,
-                SWP_NOACTIVATE);
-            _committedOrigin = origin;
-            _committedSize = size;
-        }
-        ShowOverlayBelow(insertAfter);
-        try
-        {
-            ShowWindow(Handle, SW_SHOWNOACTIVATE);
-        }
-        catch
-        {
+                SWP_NOACTIVATE |
+                (firstShow ? SWP_SHOWWINDOW : 0));
+            if (positioned)
+            {
+                _committedOrigin = origin;
+                _committedSize = size;
+                _committedZOrderInsertAfter = insertAfter;
+                _zOrderDirty = false;
+                _shown = true;
+            }
+            else
+            {
+                LogBestEffort(
+                    "[PlayerInfoSplitSurface] SetWindowPos rejected " +
+                    $"firstShow={firstShow} nativeError=" +
+                    Marshal.GetLastWin32Error() + ".");
+                if (firstShow)
+                {
+                    RecordSurfaceMilliseconds(surfaceStart);
+                    DismissOverlay();
+                    return;
+                }
+            }
         }
         RecordSurfaceMilliseconds(surfaceStart);
     }
@@ -727,18 +756,15 @@ internal sealed class PlayerInfoSplitSurface :
                 nameof(width),
                 "PlayerInfo tight surface must be non-empty.");
         }
-        if (_composed is not null &&
-            _composed.Width == width &&
-            _composed.Height == height)
+        if (_composedSurface is not null &&
+            _composedSurface.Width == width &&
+            _composedSurface.Height == height)
         {
-            return _composed;
+            return _composedSurface.Bitmap;
         }
-        var replacement = new Bitmap(
-            width,
-            height,
-            PixelFormat.Format32bppPArgb);
-        Interlocked.Exchange(ref _composed, replacement)?.Dispose();
-        return replacement;
+        var replacement = new PlayerInfoLayeredDibSurface(width, height);
+        Interlocked.Exchange(ref _composedSurface, replacement)?.Dispose();
+        return replacement.Bitmap;
     }
 
     private void OnAnimationTick(object? sender, EventArgs args)

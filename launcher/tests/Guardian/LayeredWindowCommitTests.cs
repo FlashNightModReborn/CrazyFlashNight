@@ -232,6 +232,36 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void PreparedDibCommit_UsesOnlyCallerOwnedSourceDc()
+        {
+            FakeNativeApi native = new FakeNativeApi
+            {
+                ExpectPreparedSource = true
+            };
+
+            LayeredWindowCommitResult result =
+                LayeredWindowCommitExecutor.ExecutePrepared(
+                    new IntPtr(1),
+                    new IntPtr(22),
+                    12,
+                    7,
+                    20,
+                    30,
+                    255,
+                    native);
+
+            Assert.True(result.Succeeded);
+            Assert.Equal(LayeredWindowCommitError.None, result.Error);
+            Assert.Equal(12, result.Width);
+            Assert.Equal(7, result.Height);
+            Assert.Equal(84, result.PixelCount);
+            Assert.Equal(336, result.ByteCount);
+            Assert.Equal(new[] { "update" }, native.Calls);
+            Assert.False(native.BitmapHandleIsLive);
+            Assert.False(native.MemoryDcIsLive);
+        }
+
+        [Fact]
         public void ObserverSlot_IsDisabledByDefault_AndCanBeInstalledThenRemoved()
         {
             LayeredWindowCommitObserverSlot slot = new LayeredWindowCommitObserverSlot();
@@ -319,6 +349,7 @@ namespace CF7Launcher.Tests.Guardian
             public bool DeleteMemorySucceeds = true;
             public bool RestoreSucceeds = true;
             public bool ThrowWhenCreatingBitmap;
+            public bool ExpectPreparedSource;
             public int LastError;
             public bool BitmapHandleIsLive;
             public bool MemoryDcIsLive;
@@ -405,7 +436,9 @@ namespace CF7Launcher.Tests.Guardian
                 byte globalAlpha)
             {
                 Assert.Equal(new IntPtr(1), windowHandle);
-                Assert.Equal(ScreenDc, screenDc);
+                Assert.Equal(
+                    ExpectPreparedSource ? IntPtr.Zero : ScreenDc,
+                    screenDc);
                 Assert.Equal(MemoryDc, memoryDc);
                 Calls.Add("update");
                 return UpdateSucceeds;

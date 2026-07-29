@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
 using SkiaSharp;
@@ -362,6 +363,96 @@ public sealed class PlayerInfoFrameCompositorTests
     }
 
     [Fact]
+    public void Paint_PreparedDibMatchesManagedPArgbByteForByte()
+    {
+        PlayerInfoSvgAssetSet assets =
+            PlayerInfoSvgAssetContract.LoadProductionEmbedded(
+                minimumRaster: false);
+        PlayerInfoRasterPlan plan = PlayerInfoRasterPlanner.Create(
+            assets,
+            new Rectangle(0, 0, 1920, 1080),
+            monitorDpiScale: 1.75f);
+        using PlayerInfoRasterBatch batch =
+            new PlayerInfoSvgRasterizer().Bake(
+                plan,
+                System.Threading.CancellationToken.None);
+        var model = new PlayerInfoAnimationModel();
+        model.ApplyFixture(PlayerInfoFixtureInput.FromCaseId("full"));
+        using var compositor = new PlayerInfoFrameCompositor(assets);
+        using var managed = NewDestination(plan);
+        using var prepared =
+            new PlayerInfoLayeredDibSurface(
+                plan.TightPhysicalBounds.Width,
+                plan.TightPhysicalBounds.Height);
+
+        PlayerInfoFramePaintResult managedResult = compositor.Paint(
+            managed,
+            batch,
+            plan,
+            model.VisualState);
+        PlayerInfoFramePaintResult preparedResult = compositor.Paint(
+            prepared.Bitmap,
+            batch,
+            plan,
+            model.VisualState);
+
+        Assert.Equal(managedResult, preparedResult);
+        Assert.Equal(HashBitmap(managed), HashBitmap(prepared.Bitmap));
+        Assert.NotEqual(IntPtr.Zero, prepared.MemoryDc);
+    }
+
+    [Fact]
+    public void PreparedDib_SelectedDcSeesTopDownPremultipliedPixels()
+    {
+        using var prepared = new PlayerInfoLayeredDibSurface(2, 2);
+        BitmapData? locked = null;
+        try
+        {
+            locked = prepared.Bitmap.LockBits(
+                new Rectangle(0, 0, 2, 2),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format32bppPArgb);
+            Assert.Equal(8, locked.Stride);
+            byte[] topDownPremultipliedBgra =
+            [
+                0, 0, 255, 255,
+                0, 64, 0, 128,
+                32, 0, 0, 64,
+                0, 0, 0, 0
+            ];
+            Marshal.Copy(
+                topDownPremultipliedBgra,
+                0,
+                locked.Scan0,
+                topDownPremultipliedBgra.Length);
+        }
+        finally
+        {
+            if (locked is not null)
+            {
+                prepared.Bitmap.UnlockBits(locked);
+            }
+        }
+
+        Assert.Equal(0x000000FFu, GetPixel(prepared.MemoryDc, 0, 0));
+        Assert.Equal(0x00004000u, GetPixel(prepared.MemoryDc, 1, 0));
+        Assert.Equal(0x00200000u, GetPixel(prepared.MemoryDc, 0, 1));
+        Assert.Equal(0x00000000u, GetPixel(prepared.MemoryDc, 1, 1));
+    }
+
+    [Fact]
+    public void PreparedDib_DisposeIsIdempotentAndClosesManagedViews()
+    {
+        var prepared = new PlayerInfoLayeredDibSurface(3, 2);
+
+        prepared.Dispose();
+        prepared.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => prepared.Bitmap);
+        Assert.Throws<ObjectDisposedException>(() => prepared.MemoryDc);
+    }
+
+    [Fact]
     public void Compositor_DisposeIsIdempotentAndRejectsPaint()
     {
         PlayerInfoSvgAssetSet assets =
@@ -460,4 +551,7 @@ public sealed class PlayerInfoFrameCompositorTests
             }
         }
     }
+
+    [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
+    private static extern uint GetPixel(IntPtr deviceContext, int x, int y);
 }

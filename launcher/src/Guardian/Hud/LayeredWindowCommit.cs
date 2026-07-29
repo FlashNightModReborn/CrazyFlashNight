@@ -22,7 +22,10 @@ namespace CF7Launcher.Guardian.Hud
     }
 
     /// <summary>
-    /// One UpdateLayeredWindow attempt, including GDI setup/cleanup time.
+    /// One UpdateLayeredWindow attempt. Elapsed time covers every operation
+    /// performed by that transaction: the general bitmap path includes its
+    /// per-call GDI setup/cleanup, while a prepared-DIB path owns those
+    /// resources across calls and reports only its real prepared-DC commit.
     /// The result is immutable so observers may safely retain it.
     /// </summary>
     internal sealed class LayeredWindowCommitResult
@@ -422,6 +425,117 @@ namespace CF7Launcher.Guardian.Hud
                 nativeErrorCode,
                 errorMessage,
                 cleanupError);
+        }
+
+        /// <summary>
+        /// Commits an already selected, caller-owned 32-bit source DIB.
+        /// Resource creation and disposal remain the caller's responsibility;
+        /// this method measures only the real prepared-DC transaction.
+        /// </summary>
+        internal static LayeredWindowCommitResult ExecutePrepared(
+            IntPtr windowHandle,
+            IntPtr sourceDc,
+            int width,
+            int height,
+            int screenX,
+            int screenY,
+            byte globalAlpha,
+            ILayeredWindowCommitNativeApi nativeApi)
+        {
+            if (nativeApi == null) throw new ArgumentNullException("nativeApi");
+
+            long started = Stopwatch.GetTimestamp();
+            long updateTicks = 0;
+            LayeredWindowCommitError error = LayeredWindowCommitError.None;
+            int nativeErrorCode = 0;
+            string errorMessage = null;
+
+            if (windowHandle == IntPtr.Zero)
+            {
+                SetFailure(
+                    ref error,
+                    ref nativeErrorCode,
+                    ref errorMessage,
+                    LayeredWindowCommitError.WindowHandleUnavailable,
+                    0,
+                    "The layered window handle is not available.");
+            }
+            else if (sourceDc == IntPtr.Zero || width <= 0 || height <= 0)
+            {
+                SetFailure(
+                    ref error,
+                    ref nativeErrorCode,
+                    ref errorMessage,
+                    LayeredWindowCommitError.InvalidBitmap,
+                    0,
+                    "The prepared layered-window source DIB is unavailable or empty.");
+            }
+            else
+            {
+                try
+                {
+                    long updateStarted = Stopwatch.GetTimestamp();
+                    long monitorStarted = UlwCommitMonitor.StartTick();
+                    bool updated;
+                    int updateError;
+                    try
+                    {
+                        updated = nativeApi.UpdateLayeredWindow(
+                            windowHandle,
+                            IntPtr.Zero,
+                            sourceDc,
+                            screenX,
+                            screenY,
+                            width,
+                            height,
+                            globalAlpha);
+                        updateError = updated
+                            ? 0
+                            : nativeApi.GetLastError();
+                    }
+                    finally
+                    {
+                        updateTicks =
+                            Stopwatch.GetTimestamp() - updateStarted;
+                        UlwCommitMonitor.RecordCommit(monitorStarted);
+                    }
+                    if (!updated)
+                    {
+                        SetFailure(
+                            ref error,
+                            ref nativeErrorCode,
+                            ref errorMessage,
+                            LayeredWindowCommitError.UpdateLayeredWindowFailed,
+                            updateError,
+                            "UpdateLayeredWindow returned false.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    SetFailure(
+                        ref error,
+                        ref nativeErrorCode,
+                        ref errorMessage,
+                        LayeredWindowCommitError.UpdateLayeredWindowFailed,
+                        ex.HResult,
+                        ex.GetType().Name + ": " + ex.Message);
+                }
+            }
+
+            long elapsedTicks = Stopwatch.GetTimestamp() - started;
+            return new LayeredWindowCommitResult(
+                error == LayeredWindowCommitError.None,
+                screenX,
+                screenY,
+                width,
+                height,
+                globalAlpha,
+                elapsedTicks,
+                updateTicks,
+                error,
+                nativeErrorCode,
+                errorMessage,
+                null);
         }
 
         private static void SetFailure(
