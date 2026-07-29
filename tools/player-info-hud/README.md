@@ -370,7 +370,7 @@ Build the local review viewer from either direct-edge report:
 ```powershell
 node tools/player-info-hud/build-visual-diagnostic-viewer.js `
   --report=tmp/player-info-hud-b006-direct-a/csharp-web-flash-comparison-report.json `
-  --output=tmp/player-info-hud-b006-viewer
+  --output=tmp/player-info-hud-b006-viewer.html
 ```
 
 The viewer provides A/B blink, hard wipe, signed residual, Difference, and

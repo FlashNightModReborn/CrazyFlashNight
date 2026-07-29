@@ -46,12 +46,21 @@ function parseArguments(argv) {
             process.stdout.write(`${usage()}\n`);
             process.exit(0);
         }
-        const value = argv[index + 1];
+        const equalsIndex = argument.indexOf('=');
+        const option = equalsIndex > 0
+            ? argument.slice(0, equalsIndex)
+            : argument;
+        let value;
+        if (equalsIndex > 0) {
+            value = argument.slice(equalsIndex + 1);
+        } else {
+            value = argv[index + 1];
+            index++;
+        }
         if (!value || value.startsWith('--')) {
             fail(`Missing value for ${argument}.\n${usage()}`);
         }
-        index++;
-        switch (argument) {
+        switch (option) {
         case '--report':
             result.report = path.resolve(value);
             break;
@@ -307,6 +316,9 @@ function main() {
     if (options.output === templatePath ||
         options.output === options.report) {
         fail('Output must not overwrite the template or input report.');
+    }
+    if (fs.existsSync(options.output)) {
+        fail(`Output already exists: ${options.output}`);
     }
     fs.mkdirSync(path.dirname(options.output), { recursive: true });
     fs.writeFileSync(options.output, outputBytes);
