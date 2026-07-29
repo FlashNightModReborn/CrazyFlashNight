@@ -92,9 +92,14 @@ if ((& $dotnetHost --version) -ne '10.0.300') {
 The validator checks the exact eight-file closure, hashes, asset-set revision,
 manifest grammar, semantic IDs, frame/morph contracts, and the strict SVG
 element, attribute, value, path, transform, reference, and cycle grammar.
-The committed B0-04 snapshot is
-`evidence/b0-04/canonical-validation-report.json`; ordinary reruns stay under
-ignored `tmp/`. The historical B0-02 report is immutable and must not be
+The committed `evidence/b0-04/canonical-validation-report.json` is an
+**historical v1 byte snapshot**: its canonical-asset section records 99,564 B,
+revision `sha256:c8f58cb7...93871`, and manifest
+`1006f90e...5630`. It must not be cited as current 99,576 B main-space v2
+asset validation. Current v2 bytes are independently bound by the tracked
+B0-05/B0-06 reports and `visual-evidence.json`; ordinary B0-04 reruns stay
+under ignored `tmp/` until a dedicated reproducible evidence-refresh slice is
+approved. The historical B0-02 report is immutable and must not be
 overwritten. Passing this command does not set `rendererQualified`.
 
 ## B0-05 runtime raster qualification
@@ -297,6 +302,16 @@ commit `40853287e7ed04714d68935c0002f8ad6d8aea05`: run
 prepared-DIB dirty preflight and the historical v1 qualification for v2
 approval, but they do not create a runtime build, promotion, deployment, or
 human visual result.
+
+The final main-space v2 heterogeneous audit ran against clean evidence/docs
+commit `884fbf436f21c5e27ed3370c445cbae941349496` in the same Kimi Code session
+before and after a host reboot. All 165 wire requests used `kimi-code/k3` with
+the CLI's highest available effort `high`; the result was
+`APPROVE_AUTOMATED_CLOSEOUT / K1_AUTOMATED_GATE=PASS`, with P0=0 and P1=0.
+That audit did not rerun the qualification commands and cannot accept the
+Flash oracle, visible desktop composition, mouse click-through, visual
+aesthetics, promotion, or deployment. Exact audit identities and P2
+dispositions are recorded in the B0 ADR §9.7.
 
 ## Historical v1 F source freeze and non-deploying builder quorum
 
