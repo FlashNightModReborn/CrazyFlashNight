@@ -1899,13 +1899,10 @@ function validateFlashManifest(
             .pathExpandedRuntimeEdges !== 18) {
         fail('Flash placement-closure cardinality drifted.');
     }
-    assertExactKeys(
-        flash.source.placementClosure.closureDigest,
-        ['algorithm', 'canonicalization', 'value'],
-        'Flash source.placementClosure.closureDigest');
-    if (flash.source.placementClosure.closureDigest.algorithm !== 'sha256' ||
-        flash.source.placementClosure.closureDigest.value !==
-            '6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368') {
+    if (assertSha(
+            flash.source.placementClosure.closureDigest,
+            'Flash source.placementClosure.closureDigest') !==
+        '6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368') {
         fail('Flash placement-closure digest drifted.');
     }
     assertExactKeys(flash.source.placementClosure.mainRslReference, [
