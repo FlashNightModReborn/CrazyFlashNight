@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-裸体兽化僵尸1" itemID="67bc37ef-00000618" linkageExportForAS="true" linkageIdentifier="敌人-裸体兽化僵尸1" lastModified="1755018855" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-裸体兽化僵尸1" itemID="67bc37ef-00000618" linkageExportForAS="true" linkageIdentifier="敌人-裸体兽化僵尸1" lastModified="1785299338" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-裸体兽化僵尸1">
+    <DOMTimeline name="敌人-裸体兽化僵尸1" currentFrame="113">
       <layers>
         <DOMLayer name="Labels Layer" color="#CD7B53">
           <frames>
@@ -119,7 +119,7 @@ if(!身高)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#89EA2E">
+        <DOMLayer name="Layer 3" color="#89EA2E" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -244,7 +244,7 @@ if(!身高)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#3877DC" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#3877DC">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -450,7 +450,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="113" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/裸体兽化僵尸 登场" name="man" selected="true" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/裸体兽化僵尸 登场" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
