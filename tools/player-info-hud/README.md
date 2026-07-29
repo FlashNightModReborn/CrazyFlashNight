@@ -54,6 +54,14 @@ Flash CS6 transaction, restores its temporary source/SWF state, and writes an
 ignored candidate beneath `tmp/player-info-hud/oracle/`. It does not publish or
 modify the production main or child SWF.
 
+The current main-stage candidate
+`20260729T143326Z-32f8ec2142ec47e29c5b191cf2ee339c` contains all 11 cases and
+records `strictToolIdentity=head_index_clean_filter_equal` for the two tracked
+capture-tool files; this does not assert a clean whole worktree. Its four
+manifest human-review fields and the independent source-identity onsite review
+remain unsigned, so its status is only
+`candidate_captured; awaiting_human_review`, never `oracle_frozen`.
+
 ## Exact structural validation
 
 Run from the repository root with the exact SDK:
@@ -101,9 +109,10 @@ chcp.com 65001 | Out-Null
   -ReportPath tmp/player-info-hud-b0-05-runtime-qualification.json
 ```
 
-The committed snapshot is
-`evidence/b0-05/runtime-qualification.json`. The accepted form is UTF-8
-without BOM and canonical LF, with the exact 31 Gate IDs, 37-file executable
+The currently committed snapshot
+`evidence/b0-05/runtime-qualification.json` is historical v1 evidence and does
+not approve the corrected main-space v2 source. The accepted report form is UTF-8
+without BOM and canonical LF, with the exact 32 Gate IDs, 37-file executable
 source closure, executing test assembly, Core plus the exact win-x64
 11-file renderer target closure, an independently enumerated exact 15-file
 renderer-family closure under the test output, and a separately enumerated
@@ -114,14 +123,32 @@ recomputes nearest-rank summaries and Gate values from the raw timing samples;
 it does not trust the report's `passed` fields alone.
 
 The report covers the production embedded asset/renderer identity, four
-physical viewports (including 4:3 letterbox), eight-layer PArgb raster batches,
-the 16 MiB active+inactive cache, 100 resize requests, 3000 current-key
+physical viewports (including 4:3 letterbox), eight logical raster layers that
+own ten PArgb payloads (`mp.fill` owns its canonical payload plus two clip
+fragments), the full eight-field raster key including
+`sourceToBitmapIdentity`, the 16 MiB active+inactive cache, 100 resize requests,
+3000 current-key
 requests, ownership/disposal counters, and a fixed-bounds topology probe. Its
 scope is deliberately
 `measurementKind=synthetic_fixed_bounds`: it does not register a production
 `PlayerInfoWidget`, invoke an actual `UpdateLayeredWindow`, measure the final
 split surface, establish Flash/Web/C# visual parity, or replace human review.
 The accepted B0-05 topology decision is `split_required`.
+
+The corrected v2 timing contract runs 16 fixed excluded round-robin rounds over
+all four viewports (64 recorded samples) through the same background
+`Task.Run`/fresh parse+raster/PArgb `Bake` path as acceptance. It has no
+adaptive early stop or priority mutation. Before any dotnet host is launched,
+the runner rejects the frozen performance-affecting `DOTNET_*` / `COMPlus_*`
+JIT/GC overrides; the report and verifier also bind Normal priority, inherited
+processor affinity and server-GC state. Parse/raster counters are aggregate
+completed StrictSvg/Skia payload-slot operations, not PArgb-copy completion or
+independently observed per-logical-layer attribution. The separate PArgb-copy
+diagnostic copies one representative payload per logical layer and excludes
+the two `mp.fill` fragments. Only after that excluded phase does
+it collect 20 independent acceptance samples per viewport; each nearest-rank
+p95 must remain at or below 100 ms. A dirty-tree diagnostic cannot replace the
+fresh clean source-frozen qualification.
 
 ## Source-bound path glyph atlas
 
@@ -173,7 +200,12 @@ horizontal-line highlight—and one deferred B3 light-overlay effect. A narrow
 composition recipe freezes nine text placements instead of introducing a
 generic effect graph. The three HP text placements use the source-resolved red
 Glow; MP has no Glow. MP's two low-alpha decorative fields reproduce the
-authored `00000` text at their distinct anchors. The HP Glow uses `sigma=1`
+authored `00000` text at their distinct anchors. MP current keeps its
+source-derived right anchor at `74.55`; the XFL-authored maximum left anchor is
+`80.65`, while the C# path rasterizer applies a `+0.30` local phase correction
+for Flash standard-text coverage, producing an effective runtime anchor of
+`80.95`. Each decorative field is relationship-tested against its foreground
+anchor. The HP Glow uses `sigma=1`
 with two alpha passes (`255` and `128`) to model authored Flash strength `1.5`;
 this remains an explicit Skia approximation, not a pixel-parity claim.
 
@@ -205,7 +237,7 @@ pre-merge attempts without relaxing the original thresholds: v1 was 43/46
 pre-origin-sync v3 snapshot remains historical evidence in
 `evidence/b0-06/runtime-qualification-premerge-v3.json`.
 
-The final implementation-base result is
+The historical v1 implementation-base result is
 `evidence/b0-06/runtime-qualification.json`: base commit
 `bf8dd2c410267855c8ea12f25a594042b3158479`, run
 `a6aadeb6e3264577bb9da8fe90857a7b`, 647,234 B, SHA-256
@@ -218,10 +250,10 @@ with no positive trend. NativeHud hidden/enabled commit p95 was
 closure plus the executed binary/renderer closure. Tool existence or a
 focused test run is not a qualification result.
 
-On that clean base, the focused PlayerInfo plus
+On that historical clean base, the focused PlayerInfo plus
 `PanelHostHudCompanionTests` run is 136 passed + 3 opt-in skipped / 139 total;
 the complete Launcher run is 1,737 passed + 3 opt-in skipped / 1,740 total.
-The later clean source-freeze commit
+The later historical v1 clean source-freeze commit
 `cb38600aae51f5019d09f87c33bd9e67d2b1f511` was verified separately:
 Runtime Lane C is 11/11, exit 0, with 566 scalar assertions. Its guardrails
 remain a distinct `scripts=3 / unsafeCandidateCases=3` count and are not
@@ -229,9 +261,9 @@ relabelled as additional homogeneous scalar assertions. This source-freeze
 verification does not rebind the implementation-base qualification or visual
 reports described above.
 
-## F source freeze and non-deploying builder quorum
+## Historical v1 F source freeze and non-deploying builder quorum
 
-The final B0 source input is commit
+The historical v1 source input is commit
 `cb38600aae51f5019d09f87c33bd9e67d2b1f511`, tree
 `c74cc66f445921f5fcda1da04a2de0f013fef8ef`, frozen by
 `runtime-build-v2/20260729-player-info-nativehud-b0-v1`. Request
@@ -300,8 +332,8 @@ baseline viewport, the raw main-space layer union is
 The manifest status is only
 `structural_capture_complete`, scope `fixture_only`; it explicitly excludes
 cross-renderer parity, a visual threshold, game composite, human acceptance,
-real UiData, and deployment. The final implementation-base A/B snapshots are
-historical v1 1024×64 captures only. They were complete 36-file closures and
+real UiData, and deployment. The historical v1 implementation-base A/B
+snapshots are 1024×64 captures only. They were complete 36-file closures and
 byte-identical: each is 834,893 B with
 closure SHA-256
 `44C22A045B4CA0AC19C4ECB7664024E5C318E39B2290F1E8856C19F1F6BEE06F`;
@@ -335,8 +367,13 @@ identity; and exact geometry for all four physical viewport profiles. It
 rejects historical v1 inputs and performs no standalone-to-main coordinate
 normalization. The `p50` case also measures the MP label, current value,
 maximum value, and percentage independently over fixed ROIs; all four must
-have a unique best horizontal registration at `dx=0` for manual Exit-Gate
-review. It emits 66 diagnostic PNGs plus
+have both a unique best horizontal registration at `dx=0` and an exact
+anchor-edge delta of zero for manual Exit-Gate review. Left-aligned label,
+maximum, and percentage fields use their leading edge; the right-aligned
+current field uses its trailing edge. The edge check prevents repeated digits
+from hiding a one-pixel field-origin error behind a stronger whole-glyph
+overlap score. A cyan-weighted centroid delta is retained as a diagnostic but
+is not an acceptance threshold. It emits 66 diagnostic PNGs plus
 `csharp-web-flash-comparison-report.json` for the direct C#↔Web and C#↔Flash
 edges. This three-input report itself does not emit a Web↔Flash edge;
 `compare-flash-web-svg.js` below emits an independent supplemental diagnostic.
@@ -349,7 +386,8 @@ captures do not include C# programmatic dynamic text or Glow. Consequently the
 C#↔Web metrics compare a full C# fixture composite with only those Web static
 layers and intentionally include that layer-scope difference.
 
-The final implementation-base Web A/B 12-file closures are byte-identical at
+The historical v1 implementation-base Web A/B 12-file closures are
+byte-identical at
 120,439 B / SHA-256
 `2F18FAAB0D3490FF2F3DDEE632EE228ED709F924806D6577805418B1F579E6F6`;
 both 5,644 B Web reports have SHA-256
@@ -375,8 +413,15 @@ node tools/player-info-hud/build-visual-diagnostic-viewer.js `
 
 The viewer provides A/B blink, hard wipe, signed residual, Difference, and
 Invert diagnostics at native main-stage coordinates. Difference and Invert are
-inspection aids only; production composition remains ordinary source-over
-except for the one authored deferred HP light-overlay layer.
+inspection aids only. Every B0-rendered effect uses ordinary source-over. The
+HP light-overlay preserves authored `overlay` metadata but is deferred and is
+not rendered in B0. The builder independently validates the exact
+field/order/anchor and canvas/search/mask/threshold/ROI contract. From each
+exact 17-score vector it re-derives the Jaccard ratios, best/runner-up summaries,
+bounds-derived edge deltas, centroid delta, per-field status and the 4/4
+aggregate, and binds the diagnostic SHA values to the actual p50 C#/Flash PNGs.
+A legitimate `insufficient_pixels` result remains buildable and displays
+missing edge/centroid values as `n/a`; it can never render as aligned.
 
 ## Headless Web, FFDec, and Flash diagnostics
 
@@ -457,9 +502,12 @@ still-unsigned Flash candidate.
 Automated hashes and metrics can freeze structure and expose differences; they
 cannot promote a Flash candidate to `oracle_frozen`, assert visual parity, or
 accept the UI aesthetic. Human review is necessary but cannot repair a wrong
-placement profile. Until a source-bound v2 run is captured and reviewed,
-B0-01B remains
-`standalone_child_diagnostic_captured; main_rsl_equivalent_oracle_pending`,
+placement profile. A source-bound v2 run has been captured as
+`20260729T143326Z-32f8ec2142ec47e29c5b191cf2ee339c`, with 1024×576
+main-stage/exported-symbol/wrapper-excluded semantics and strict tooling
+identity. Its four manifest human-review checks and independent source-identity
+onsite review remain unsigned, so B0-01B remains
+`standalone_child_diagnostic_captured; main_rsl_equivalent_candidate_captured; awaiting_human_review`,
 B0-04 remains without accepted visual parity, and the old Flash HUD remains
 the active visual reference.
 

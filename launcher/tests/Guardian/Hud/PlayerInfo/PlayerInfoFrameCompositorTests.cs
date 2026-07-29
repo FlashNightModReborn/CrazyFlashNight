@@ -58,7 +58,7 @@ public sealed class PlayerInfoFrameCompositorTests
                     "mp-maximum",
                     PlayerInfoPathGlyphAtlas.Aero,
                     13.0048f,
-                    80.65f,
+                    80.95f,
                     17.85f,
                     PlayerInfoPathTextAlignment.Left,
                     0f,
@@ -78,7 +78,7 @@ public sealed class PlayerInfoFrameCompositorTests
                     "mp-decorative-maximum",
                     PlayerInfoPathGlyphAtlas.Aero,
                     13.0048f,
-                    80.65f,
+                    80.95f,
                     18.05f,
                     PlayerInfoPathTextAlignment.Left,
                     0f,
@@ -116,6 +116,13 @@ public sealed class PlayerInfoFrameCompositorTests
                     new SKColor(255, 0, 0, 255))
             },
             PlayerInfoCompositionRecipe.TextLayouts);
+
+        Assert.Equal(
+            PlayerInfoCompositionRecipe.MpCurrent.AnchorX,
+            PlayerInfoCompositionRecipe.MpDecorativeCurrent.AnchorX);
+        Assert.Equal(
+            PlayerInfoCompositionRecipe.MpMaximum.AnchorX,
+            PlayerInfoCompositionRecipe.MpDecorativeMaximum.AnchorX);
 
         using var atlas = new PlayerInfoPathGlyphAtlas();
         foreach (PlayerInfoTextLayout layout in

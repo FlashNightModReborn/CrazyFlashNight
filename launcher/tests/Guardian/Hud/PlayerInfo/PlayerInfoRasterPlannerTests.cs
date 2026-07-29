@@ -167,6 +167,60 @@ public sealed class PlayerInfoRasterPlannerTests
     }
 
     [Fact]
+    public void RasterKey_EachOfEightFieldsChangesCacheIdentity()
+    {
+        var baseline = new PlayerInfoRasterKey(
+            "revision-a",
+            new string('a', 64),
+            "mp.fill",
+            200,
+            40,
+            "3FF0000000000000:3FF0000000000000:0000000000000000:0000000000000000",
+            "renderer-a",
+            1);
+        string baselineIdentity = baseline.ToCacheIdentity();
+        PlayerInfoRasterKey[] oneFieldMutations =
+        [
+            baseline with { AssetSetRevision = "revision-b" },
+            baseline with { ExactManifestSha256 = new string('b', 64) },
+            baseline with { LayerId = "mp.rim" },
+            baseline with { PixelWidth = 201 },
+            baseline with { PixelHeight = 41 },
+            baseline with
+            {
+                SourceToBitmapIdentity =
+                    "4000000000000000:3FF0000000000000:0000000000000000:0000000000000000"
+            },
+            baseline with { RendererIdentity = "renderer-b" },
+            baseline with { RasterContractVersion = 2 }
+        ];
+
+        Assert.Equal(
+            string.Join(
+                "\u001f",
+                "revision-a",
+                new string('a', 64),
+                "mp.fill",
+                "200",
+                "40",
+                "3FF0000000000000:3FF0000000000000:0000000000000000:0000000000000000",
+                "renderer-a",
+                "1"),
+            baselineIdentity);
+        Assert.All(
+            oneFieldMutations,
+            candidate => Assert.NotEqual(
+                baselineIdentity,
+                candidate.ToCacheIdentity()));
+        Assert.Equal(
+            oneFieldMutations.Length,
+            oneFieldMutations
+                .Select(candidate => candidate.ToCacheIdentity())
+                .Distinct(StringComparer.Ordinal)
+                .Count());
+    }
+
+    [Fact]
     public void SamePhysicalSizeAtDifferentScreenOrigin_ReusesKeysButNotPlacement()
     {
         PlayerInfoRasterPlan first = Create(

@@ -9,6 +9,21 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+[string[]]$performanceOverrideEnvironmentNames = @(
+    'DOTNET_TieredPGO'
+    'COMPlus_TieredPGO'
+    'DOTNET_TieredCompilation'
+    'COMPlus_TieredCompilation'
+    'DOTNET_ReadyToRun'
+    'COMPlus_ReadyToRun'
+    'DOTNET_TC_QuickJit'
+    'COMPlus_TC_QuickJit'
+    'DOTNET_TC_QuickJitForLoops'
+    'COMPlus_TC_QuickJitForLoops'
+    'DOTNET_gcServer'
+    'COMPlus_gcServer'
+)
+
 function ConvertTo-ProcessArgument {
     param([AllowEmptyString()][string]$Value)
 
@@ -1345,6 +1360,16 @@ function Test-AndVerifyTimingContract {
                 }
             }
         })
+    $expectedExcludedWarmup = @(
+        for ($sampleIndex = 1; $sampleIndex -le 16; $sampleIndex++) {
+            foreach ($viewportId in $ViewportIds) {
+                [pscustomobject]@{
+                    Phase = 'excluded_warmup_{0:00}' -f $sampleIndex
+                    Scenario = $viewportId
+                    Result = $null
+                }
+            }
+        })
     $expectedPipelineCold = @(
         foreach ($viewportId in $ViewportIds) {
             [pscustomobject]@{
@@ -1445,6 +1470,88 @@ function Test-AndVerifyTimingContract {
     Assert-ContractEqual $uiSampleCount 3108L `
         'timings.uiRequest.sampleCount frozen'
 
+    Assert-ContractEqual `
+        ([string]$Report.timings.warmedFreshBake.execution) `
+        '16 fixed excluded round-robin background warmup rounds, then 20 independent round-robin acceptance rounds; every operation performs a fresh SVG parse+raster+PArgb batch' `
+        'timings.warmedFreshBake.execution'
+    Assert-ContractEqual `
+        ([string]$Report.timings.warmedFreshBake.sampleSemantics) `
+        'warmed process; fresh asset work; not process-cold' `
+        'timings.warmedFreshBake.sampleSemantics'
+
+    $excludedWarmup = $Report.timings.warmedFreshBake.excludedWarmup
+    Assert-ExactPropertySet `
+        -Value $excludedWarmup `
+        -Expected @(
+            'execution',
+            'rounds',
+            'samplesPerViewport',
+            'sampleCount',
+            'overallSummaryDiagnosticOnly',
+            'byViewport',
+            'samples') `
+        -Label 'timings.warmedFreshBake.excludedWarmup properties'
+    Assert-ContractEqual ([string]$excludedWarmup.execution) `
+        'same Task.Run background path as acceptance; fixed count; no adaptive threshold stop' `
+        'timings.warmedFreshBake.excludedWarmup.execution'
+    $excludedWarmupRounds = ConvertTo-ExactInt64 `
+        -Value $excludedWarmup.rounds `
+        -Label 'timings.warmedFreshBake.excludedWarmup.rounds' `
+        -NonNegative
+    $excludedWarmupSamplesPerViewport = ConvertTo-ExactInt64 `
+        -Value $excludedWarmup.samplesPerViewport `
+        -Label (
+            'timings.warmedFreshBake.excludedWarmup.' +
+            'samplesPerViewport') `
+        -NonNegative
+    $excludedWarmupSampleCount = ConvertTo-ExactInt64 `
+        -Value $excludedWarmup.sampleCount `
+        -Label 'timings.warmedFreshBake.excludedWarmup.sampleCount' `
+        -NonNegative
+    Assert-ContractEqual $excludedWarmupRounds 16L `
+        'timings.warmedFreshBake.excludedWarmup.rounds'
+    Assert-ContractEqual $excludedWarmupSamplesPerViewport 16L `
+        'timings.warmedFreshBake.excludedWarmup.samplesPerViewport'
+    Assert-ContractEqual $excludedWarmupSampleCount 64L `
+        'timings.warmedFreshBake.excludedWarmup.sampleCount'
+
+    $excludedWarmupSamples = @($excludedWarmup.samples)
+    $excludedWarmupOverall = Test-AndRecomputeTimingBlock `
+        -Samples $excludedWarmupSamples `
+        -ExpectedRows $expectedExcludedWarmup `
+        -ReportedSummary $excludedWarmup.overallSummaryDiagnosticOnly `
+        -Label 'timings.warmedFreshBake.excludedWarmup'
+    Assert-ContractEqual ([long]$excludedWarmupOverall.Count) `
+        $excludedWarmupSampleCount `
+        'timings.warmedFreshBake.excludedWarmup recomputed sampleCount'
+    $excludedWarmupViewportRows = @($excludedWarmup.byViewport)
+    Assert-ExactStringSequence `
+        -Actual @($excludedWarmupViewportRows | ForEach-Object {
+            [string]$_.viewportId
+        }) `
+        -Expected $ViewportIds `
+        -Label (
+            'timings.warmedFreshBake.excludedWarmup.' +
+            'byViewport order')
+    foreach ($viewportId in $ViewportIds) {
+        $row = @($excludedWarmupViewportRows | Where-Object {
+            [string]$_.viewportId -ceq $viewportId
+        })[0]
+        $viewportSamples = @($excludedWarmupSamples | Where-Object {
+            [string]$_.scenario -ceq $viewportId
+        })
+        $viewportExpected = @($expectedExcludedWarmup | Where-Object {
+            [string]$_.Scenario -ceq $viewportId
+        })
+        $null = Test-AndRecomputeTimingBlock `
+            -Samples $viewportSamples `
+            -ExpectedRows $viewportExpected `
+            -ReportedSummary $row.summary `
+            -Label (
+                'timings.warmedFreshBake.excludedWarmup.' +
+                $viewportId)
+    }
+
     $freshSamples = @($Report.timings.warmedFreshBake.samples)
     $freshOverall = Test-AndRecomputeTimingBlock `
         -Samples $freshSamples `
@@ -1452,14 +1559,6 @@ function Test-AndVerifyTimingContract {
         -ReportedSummary `
             $Report.timings.warmedFreshBake.overallSummaryDiagnosticOnly `
         -Label 'timings.warmedFreshBake'
-    Assert-ContractEqual `
-        ([string]$Report.timings.warmedFreshBake.execution) `
-        'one excluded native/JIT warmup per viewport, then round-robin samples each perform a fresh background SVG parse+raster+PArgb batch' `
-        'timings.warmedFreshBake.execution'
-    Assert-ContractEqual `
-        ([string]$Report.timings.warmedFreshBake.sampleSemantics) `
-        'warmed process; fresh asset work; not process-cold' `
-        'timings.warmedFreshBake.sampleSemantics'
     $freshSamplesPerViewport = ConvertTo-ExactInt64 `
         -Value $Report.timings.warmedFreshBake.samplesPerViewport `
         -Label 'timings.warmedFreshBake.samplesPerViewport' `
@@ -1508,7 +1607,7 @@ function Test-AndVerifyTimingContract {
         -ReportedSummary $Report.timings.pArgbCopy.summary `
         -Label 'timings.pArgbCopy'
     Assert-ContractEqual ([string]$Report.timings.pArgbCopy.execution) `
-        'synthetic Bgra8888/Premul source at exact layer dimensions' `
+        'one representative synthetic Bgra8888/Premul copy per logical layer at exact layer dimensions; mp.fill fragments excluded' `
         'timings.pArgbCopy.execution'
 
     $warmAliasSamples = @($Report.timings.warmCacheLookup.samples)
@@ -1810,15 +1909,12 @@ function Test-AndVerifyViewportContract {
                 -NonNegative) `
             ([long]$expected.LetterboxBottom) `
             "visualMatrix.$($expected.Id).letterbox.bottomPixels"
-        if ([string]::IsNullOrEmpty([string]$row.batchKey)) {
-            throw "visualMatrix.$($expected.Id).batchKey is empty."
-        }
-
         $layers = @($row.layers)
         Assert-ExactStringSequence `
             -Actual @($layers | ForEach-Object { [string]$_.layerId }) `
             -Expected $layerIds `
             -Label "visualMatrix.$($expected.Id).layers"
+        [string[]]$layerKeyIdentities = @()
         foreach ($layer in $layers) {
             Assert-ExactPropertySet `
                 -Value $layer `
@@ -1931,7 +2027,36 @@ function Test-AndVerifyViewportContract {
                 (
                     "visualMatrix.$($expected.Id).$($layer.layerId)." +
                     'key.rasterContractVersion')
+            [string[]]$keyParts = @(
+                [string]$layer.key.assetSetRevision
+                [string]$layer.key.exactManifestSha256
+                [string]$layer.key.layerId
+                $pixelWidth.ToString(
+                    [System.Globalization.CultureInfo]::InvariantCulture)
+                $pixelHeight.ToString(
+                    [System.Globalization.CultureInfo]::InvariantCulture)
+                [string]$layer.key.sourceToBitmapIdentity
+                [string]$layer.key.rendererIdentity
+                (
+                    ConvertTo-ExactInt64 `
+                        -Value $layer.key.rasterContractVersion `
+                        -Label (
+                            "visualMatrix.$($expected.Id)." +
+                            "$($layer.layerId).key.rasterContractVersion") `
+                        -NonNegative
+                ).ToString(
+                    [System.Globalization.CultureInfo]::InvariantCulture)
+            )
+            $layerKeyIdentities += [string]::Join(
+                [string][char]0x1F,
+                $keyParts)
         }
+        $reconstructedBatchKey = [string]::Join(
+            [string][char]0x1E,
+            $layerKeyIdentities)
+        Assert-ContractEqual ([string]$row.batchKey) `
+            $reconstructedBatchKey `
+            "visualMatrix.$($expected.Id).batchKey reconstructed"
 
         $physicalGateId = "physical_scale_$($expected.Id)"
         $physicalGate = Get-ContractGate `
@@ -1978,6 +2103,30 @@ function Test-AndVerifyPipelineContract {
         [Parameter(Mandatory)]$Report,
         [Parameter(Mandatory)]$Gates
     )
+
+    $assetCount = ConvertTo-ExactInt64 `
+        -Value $Report.raster.assetCount `
+        -Label 'raster.assetCount' `
+        -NonNegative
+    $logicalLayerCount = ConvertTo-ExactInt64 `
+        -Value $Report.raster.logicalLayerCount `
+        -Label 'raster.logicalLayerCount' `
+        -NonNegative
+    $ownedPArgbPayloadsPerBatch = ConvertTo-ExactInt64 `
+        -Value $Report.raster.ownedPArgbPayloadsPerBatch `
+        -Label 'raster.ownedPArgbPayloadsPerBatch' `
+        -NonNegative
+    Assert-ContractEqual $assetCount 8L 'raster.assetCount'
+    Assert-ContractEqual $logicalLayerCount 8L `
+        'raster.logicalLayerCount'
+    Assert-ContractEqual $ownedPArgbPayloadsPerBatch 10L `
+        'raster.ownedPArgbPayloadsPerBatch'
+    Assert-ContractEqual ([string]$Report.raster.outputContract) `
+        'System.Drawing.Format32bppPArgb' `
+        'raster.outputContract'
+    Assert-ContractEqual ([string]$Report.raster.parseRasterCounterUnit) `
+        'completed StrictSvg parse / Skia raster operation for an intended payload slot; PArgb copy completion is not separately counted; mp.fill fragment XDocument parse is outside parseCount' `
+        'raster.parseRasterCounterUnit'
 
     [string[]]$counterProperties = @(
         'generation',
@@ -2044,8 +2193,8 @@ function Test-AndVerifyPipelineContract {
         cacheHitCount = 0
         currentLayerHitCount = 0
         cacheLayerHitCount = 0
-        parseCount = 32
-        rasterCount = 32
+        parseCount = 4L * $ownedPArgbPayloadsPerBatch
+        rasterCount = 4L * $ownedPArgbPayloadsPerBatch
         activeWorkers = 0
         maxConcurrentWorkers = 1
         faultCount = 0
@@ -2075,8 +2224,8 @@ function Test-AndVerifyPipelineContract {
         cacheHitCount = 4
         currentLayerHitCount = 0
         cacheLayerHitCount = 32
-        parseCount = 32
-        rasterCount = 32
+        parseCount = 4L * $ownedPArgbPayloadsPerBatch
+        rasterCount = 4L * $ownedPArgbPayloadsPerBatch
         activeWorkers = 0
         maxConcurrentWorkers = 1
         faultCount = 0
@@ -2401,16 +2550,12 @@ function Test-AndVerifyPipelineContract {
         }) `
         -Expected $layerIds `
         -Label 'raster.layerActivity order'
-    $parseSum = 0L
-    $rasterSum = 0L
     foreach ($layer in $layerActivity) {
         Assert-ExactPropertySet `
             -Value $layer `
             -Expected @(
                 'layerId',
                 'desiredGenerationCount',
-                'parseCount',
-                'rasterCount',
                 'currentHitCount',
                 'inactiveCacheHitCount',
                 'inferredBatchDisposalCount') `
@@ -2438,17 +2583,7 @@ function Test-AndVerifyPipelineContract {
                 -NonNegative) `
             $disposedBatchCount `
             "$($layer.layerId).inferredBatchDisposalCount"
-        $parseSum += ConvertTo-ExactInt64 `
-            -Value $layer.parseCount `
-            -Label "$($layer.layerId).parseCount" -NonNegative
-        $rasterSum += ConvertTo-ExactInt64 `
-            -Value $layer.rasterCount `
-            -Label "$($layer.layerId).rasterCount" -NonNegative
     }
-    Assert-ContractEqual $parseSum ([long]$afterSteady.parseCount) `
-        'raster.layerActivity parse sum'
-    Assert-ContractEqual $rasterSum ([long]$afterSteady.rasterCount) `
-        'raster.layerActivity raster sum'
 
     Assert-UpperBoundGate `
         -Gates $Gates `
@@ -3027,7 +3162,7 @@ function Test-AndVerifyScopeContract {
         'static layers parsed, rasterized and copied to PArgb'
         'single-worker latest-wins cache pipeline exercised'
         '3000 current-key requests caused zero parse/raster/publish'
-        'fixed-bounds full/tight geometry requires an explicit topology decision'
+        'fixed-bounds full/main-viewport-clipped geometry requires an explicit topology decision'
         'recorded B0-05 topology decision is split_required'
     )
     Assert-ExactStringSequence `
@@ -3238,6 +3373,7 @@ function Test-AndVerifyQualificationContract {
     param([Parameter(Mandatory)]$Report)
 
     [string[]]$expectedGateIds = @(
+        'runtime_performance_environment'
         'physical_scale_viewport_1024x576_dpi100'
         'dpi_telemetry_only_viewport_1024x576_dpi100'
         'physical_scale_viewport_1600x900_dpi125'
@@ -3275,6 +3411,101 @@ function Test-AndVerifyQualificationContract {
         -Actual @($gates | ForEach-Object { [string]$_.id }) `
         -Expected $expectedGateIds `
         -Label 'qualification gate IDs'
+
+    Assert-ExactPropertySet `
+        -Value $Report.runtime.performanceEnvironment `
+        -Expected @(
+            'inheritedOverrides',
+            'processPriorityClass',
+            'processorAffinityMask',
+            'expectedProcessPriorityClass',
+            'expectedProcessorAffinityMask') `
+        -Label 'runtime.performanceEnvironment properties'
+    Assert-ExactPropertySet `
+        -Value $Report.runtime.performanceEnvironment.inheritedOverrides `
+        -Expected $performanceOverrideEnvironmentNames `
+        -Label 'runtime.performanceEnvironment.inheritedOverrides'
+    foreach ($name in $performanceOverrideEnvironmentNames) {
+        Assert-ContractEqual `
+            $Report.runtime.performanceEnvironment.inheritedOverrides.$name `
+            $null "runtime.performanceEnvironment.inheritedOverrides.$name"
+    }
+    Assert-ContractEqual `
+        ([string]$Report.runtime.performanceEnvironment.processPriorityClass) `
+        'Normal' 'runtime.performanceEnvironment.processPriorityClass'
+    Assert-ContractEqual `
+        ([string]$Report.runtime.performanceEnvironment.
+            expectedProcessPriorityClass) `
+        'Normal' `
+        'runtime.performanceEnvironment.expectedProcessPriorityClass'
+    Assert-ContractEqual `
+        ([string]$Report.runtime.performanceEnvironment.
+            processorAffinityMask) `
+        $expectedAffinityMask `
+        'runtime.performanceEnvironment.processorAffinityMask'
+    Assert-ContractEqual `
+        ([string]$Report.runtime.performanceEnvironment.
+            expectedProcessorAffinityMask) `
+        $expectedAffinityMask `
+        'runtime.performanceEnvironment.expectedProcessorAffinityMask'
+    Assert-ContractEqual ([bool]$Report.runtime.serverGc) `
+        $false 'runtime.serverGc'
+    $runtimeGate = Get-ContractGate `
+        -Gates $gates `
+        -Id 'runtime_performance_environment' `
+        -Phase 'runtime' `
+        -Comparison 'equals' `
+        -Unit 'environment_and_process_state'
+    Assert-ContractEqual ([bool]$runtimeGate.passed) `
+        $true 'runtime_performance_environment.passed'
+    foreach ($side in @('actual', 'expected')) {
+        $gateEnvironment = $runtimeGate.$side
+        Assert-ExactPropertySet `
+            -Value $gateEnvironment `
+            -Expected @(
+                'inheritedPerformanceOverrides',
+                'processPriorityClass',
+                'processorAffinityMask',
+                'serverGc') `
+            -Label "runtime_performance_environment.$side properties"
+        Assert-ExactPropertySet `
+            -Value $gateEnvironment.inheritedPerformanceOverrides `
+            -Expected $performanceOverrideEnvironmentNames `
+            -Label (
+                "runtime_performance_environment.$side." +
+                'inheritedPerformanceOverrides')
+        foreach ($name in $performanceOverrideEnvironmentNames) {
+            Assert-ContractEqual `
+                $gateEnvironment.inheritedPerformanceOverrides.$name `
+                $null (
+                    "runtime_performance_environment.$side." +
+                    "inheritedPerformanceOverrides.$name")
+        }
+        Assert-ContractEqual `
+            ([string]$gateEnvironment.processPriorityClass) `
+            'Normal' `
+            "runtime_performance_environment.$side.processPriorityClass"
+        Assert-ContractEqual `
+            ([string]$gateEnvironment.processorAffinityMask) `
+            $expectedAffinityMask `
+            "runtime_performance_environment.$side.processorAffinityMask"
+        Assert-ContractEqual `
+            ([bool]$gateEnvironment.serverGc) `
+            $false `
+            "runtime_performance_environment.$side.serverGc"
+    }
+    Assert-ContractEqual `
+        ([string]$runtimeGate.actual.processPriorityClass) `
+        ([string]$Report.runtime.performanceEnvironment.processPriorityClass) `
+        'runtime performance gate/report priority consistency'
+    Assert-ContractEqual `
+        ([string]$runtimeGate.actual.processorAffinityMask) `
+        ([string]$Report.runtime.performanceEnvironment.processorAffinityMask) `
+        'runtime performance gate/report affinity consistency'
+    Assert-ContractEqual `
+        ([bool]$runtimeGate.actual.serverGc) `
+        ([bool]$Report.runtime.serverGc) `
+        'runtime performance gate/report server GC consistency'
 
     [string[]]$contractViewportIds = @(
         'viewport_1024x576_dpi100'
@@ -3345,6 +3576,20 @@ function Test-AndVerifyQualificationContract {
         ([double]$Report.timings.warmedFreshBake.thresholdP95Ms) `
         100.0 'timings.warmedFreshBake.thresholdP95Ms'
     Assert-ContractEqual `
+        ([int]$Report.timings.warmedFreshBake.excludedWarmup.rounds) `
+        16 'timings.warmedFreshBake.excludedWarmup.rounds'
+    Assert-ContractEqual `
+        ([int]$Report.timings.warmedFreshBake.excludedWarmup.
+            samplesPerViewport) `
+        16 `
+        'timings.warmedFreshBake.excludedWarmup.samplesPerViewport'
+    Assert-ContractEqual `
+        ([int]$Report.timings.warmedFreshBake.excludedWarmup.sampleCount) `
+        64 'timings.warmedFreshBake.excludedWarmup.sampleCount'
+    Assert-ContractEqual `
+        (@($Report.timings.warmedFreshBake.excludedWarmup.samples).Count) `
+        64 'timings.warmedFreshBake.excludedWarmup.samples.count'
+    Assert-ContractEqual `
         ([int]$Report.timings.warmedFreshBake.samplesPerViewport) `
         20 'timings.warmedFreshBake.samplesPerViewport'
     Assert-ContractEqual `
@@ -3377,6 +3622,11 @@ function Test-AndVerifyQualificationContract {
 
     Assert-ContractEqual ([int]$Report.raster.assetCount) `
         8 'raster.assetCount'
+    Assert-ContractEqual ([int]$Report.raster.logicalLayerCount) `
+        8 'raster.logicalLayerCount'
+    Assert-ContractEqual `
+        ([int]$Report.raster.ownedPArgbPayloadsPerBatch) `
+        10 'raster.ownedPArgbPayloadsPerBatch'
     Assert-ContractEqual ([long]$Report.cache.budgetBytes) `
         ([long]16777216) 'cache.budgetBytes'
     if ([long]$Report.cache.peakBytes -gt 16777216) {
@@ -3463,6 +3713,38 @@ if (-not (Test-Path -LiteralPath $resolver -PathType Leaf)) {
 $reportDirectory = Split-Path -Parent $ReportPath
 [System.IO.Directory]::CreateDirectory($reportDirectory) | Out-Null
 
+$definedPerformanceOverrides = @(
+    $performanceOverrideEnvironmentNames | Where-Object {
+        $null -ne [System.Environment]::GetEnvironmentVariable(
+            $_,
+            [System.EnvironmentVariableTarget]::Process)
+    })
+if ($definedPerformanceOverrides.Count -ne 0) {
+    throw (
+        'B0-05 qualification requires these JIT/GC overrides to be absent: ' +
+        ($definedPerformanceOverrides -join ', '))
+}
+
+$runnerProcess = [System.Diagnostics.Process]::GetCurrentProcess()
+try {
+    $expectedPriorityClass = $runnerProcess.PriorityClass.ToString()
+    if ($expectedPriorityClass -cne 'Normal') {
+        throw (
+            'B0-05 qualification requires Normal runner priority; got ' +
+            "'$expectedPriorityClass'.")
+    }
+    [long]$signedAffinityMask = $runnerProcess.ProcessorAffinity.ToInt64()
+    [byte[]]$affinityBytes =
+        [System.BitConverter]::GetBytes($signedAffinityMask)
+    [uint64]$unsignedAffinityMask =
+        [System.BitConverter]::ToUInt64($affinityBytes, 0)
+    $expectedAffinityMask = $unsignedAffinityMask.ToString(
+        'X16',
+        [System.Globalization.CultureInfo]::InvariantCulture)
+} finally {
+    $runnerProcess.Dispose()
+}
+
 . $resolver
 $dotnet = Resolve-Cf7Dotnet -ProjectRoot $ProjectRoot
 $sdkVersion = (& $dotnet --version 2>&1 | Out-String).Trim()
@@ -3475,10 +3757,18 @@ $previousReport = $env:CF7_PLAYER_INFO_B005_REPORT_PATH
 $previousRunId = $env:CF7_PLAYER_INFO_B005_RUN_ID
 $previousSdkVersion = $env:CF7_PLAYER_INFO_B005_SDK_VERSION
 $previousProjectRoot = $env:CF7_PLAYER_INFO_B005_PROJECT_ROOT
+$previousExpectedPriorityClass =
+    $env:CF7_PLAYER_INFO_B005_EXPECTED_PRIORITY_CLASS
+$previousExpectedAffinityMask =
+    $env:CF7_PLAYER_INFO_B005_EXPECTED_AFFINITY_MASK
 $env:CF7_PLAYER_INFO_B005_REPORT_PATH = $ReportPath
 $env:CF7_PLAYER_INFO_B005_RUN_ID = $runId
 $env:CF7_PLAYER_INFO_B005_SDK_VERSION = $sdkVersion
 $env:CF7_PLAYER_INFO_B005_PROJECT_ROOT = $ProjectRoot
+$env:CF7_PLAYER_INFO_B005_EXPECTED_PRIORITY_CLASS =
+    $expectedPriorityClass
+$env:CF7_PLAYER_INFO_B005_EXPECTED_AFFINITY_MASK =
+    $expectedAffinityMask
 $testExitCode = $null
 
 try {
@@ -3512,6 +3802,10 @@ try {
     $env:CF7_PLAYER_INFO_B005_RUN_ID = $previousRunId
     $env:CF7_PLAYER_INFO_B005_SDK_VERSION = $previousSdkVersion
     $env:CF7_PLAYER_INFO_B005_PROJECT_ROOT = $previousProjectRoot
+    $env:CF7_PLAYER_INFO_B005_EXPECTED_PRIORITY_CLASS =
+        $previousExpectedPriorityClass
+    $env:CF7_PLAYER_INFO_B005_EXPECTED_AFFINITY_MASK =
+        $previousExpectedAffinityMask
 }
 
 if (-not (Test-Path -LiteralPath $ReportPath -PathType Leaf)) {

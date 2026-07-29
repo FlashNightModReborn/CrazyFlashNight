@@ -115,6 +115,7 @@ const mpHorizontalAlignmentContract = {
     caseId:'p50',
     canvas:{width:1024, height:576, yNormalization:0},
     dxSearch:{minimum:-8, maximum:8, fixedDy:0},
+    requiredAnchorEdgeDx:0,
     minimumPixelCount:32,
     minimumJaccard:0.35,
     mask:{
@@ -125,10 +126,26 @@ const mpHorizontalAlignmentContract = {
         blueMinusRedMinimum:40
     },
     fields:[
-        {id:'label', roi:{x:91, y:514, width:30, height:16}},
-        {id:'current', roi:{x:126, y:516, width:50, height:14}},
-        {id:'maximum', roi:{x:176, y:516, width:50, height:14}},
-        {id:'percent', roi:{x:86, y:530, width:31, height:13}}
+        {
+            id:'label',
+            anchorEdge:'leading',
+            roi:{x:91, y:514, width:30, height:16}
+        },
+        {
+            id:'current',
+            anchorEdge:'trailing',
+            roi:{x:126, y:516, width:50, height:14}
+        },
+        {
+            id:'maximum',
+            anchorEdge:'leading',
+            roi:{x:176, y:516, width:50, height:14}
+        },
+        {
+            id:'percent',
+            anchorEdge:'leading',
+            roi:{x:86, y:530, width:31, height:13}
+        }
     ]
 };
 const expectedHpFullToEmptyFrames = [
@@ -3090,6 +3107,8 @@ async function compareEdgeCase(
             let top = input.height;
             let right = -1;
             let bottom = -1;
+            let cyanWeightTotal = 0;
+            let cyanWeightedXTotal = 0;
             for (let y = roi.y; y < roi.y + roi.height; y++) {
                 for (let x = roi.x; x < roi.x + roi.width; x++) {
                     const offset = ((y * input.width) + x) * 4;
@@ -3111,10 +3130,19 @@ async function compareEdgeCase(
                     top = Math.min(top, y);
                     right = Math.max(right, x);
                     bottom = Math.max(bottom, y);
+                    const cyanWeight =
+                        alpha * Math.max(
+                            0,
+                            ((green + blue) / 2) - red);
+                    cyanWeightTotal += cyanWeight;
+                    cyanWeightedXTotal += x * cyanWeight;
                 }
             }
             return {
                 coordinates,
+                weightedCyanCentroidX:cyanWeightTotal === 0
+                    ? null
+                    : cyanWeightedXTotal / cyanWeightTotal,
                 bounds:right < 0
                     ? null
                     : {
@@ -3219,10 +3247,34 @@ async function compareEdgeCase(
                 const sufficientSimilarity =
                     best.jaccard >= contract.minimumJaccard;
                 const uniqueBest = bestScores.length === 1;
+                const leadingEdgeDx =
+                    rightMask.bounds === null ||
+                    leftMask.bounds === null
+                        ? null
+                        : rightMask.bounds.left -
+                            leftMask.bounds.left;
+                const trailingEdgeDx =
+                    rightMask.bounds === null ||
+                    leftMask.bounds === null
+                        ? null
+                        : rightMask.bounds.rightInclusive -
+                            leftMask.bounds.rightInclusive;
+                const anchorEdgeDx = field.anchorEdge === 'leading'
+                    ? leadingEdgeDx
+                    : trailingEdgeDx;
+                const anchorEdgeAligned =
+                    anchorEdgeDx === contract.requiredAnchorEdgeDx;
+                const weightedCyanCentroidDx =
+                    rightMask.weightedCyanCentroidX === null ||
+                    leftMask.weightedCyanCentroidX === null
+                        ? null
+                        : rightMask.weightedCyanCentroidX -
+                            leftMask.weightedCyanCentroidX;
                 const aligned =
                     sufficientPixels &&
                     sufficientSimilarity &&
                     uniqueBest &&
+                    anchorEdgeAligned &&
                     best.dx === 0;
                 let status = 'aligned';
                 if (!sufficientPixels) {
@@ -3231,6 +3283,8 @@ async function compareEdgeCase(
                     status = 'low_similarity';
                 } else if (!uniqueBest) {
                     status = 'ambiguous';
+                } else if (!anchorEdgeAligned) {
+                    status = 'anchor_edge_offset';
                 } else if (best.dx !== 0) {
                     status = 'offset';
                 }
@@ -3241,6 +3295,16 @@ async function compareEdgeCase(
                     flashPixelCount:rightMask.coordinates.size,
                     csharpBounds:leftMask.bounds,
                     flashBounds:rightMask.bounds,
+                    leadingEdgeDx,
+                    trailingEdgeDx,
+                    anchorEdge:field.anchorEdge,
+                    anchorEdgeDx,
+                    anchorEdgeAligned,
+                    csharpWeightedCyanCentroidX:
+                        leftMask.weightedCyanCentroidX,
+                    flashWeightedCyanCentroidX:
+                        rightMask.weightedCyanCentroidX,
+                    weightedCyanCentroidDx,
                     scores,
                     bestDx:best.dx,
                     bestDxCandidates:bestScores.map(score => score.dx),
@@ -3260,6 +3324,8 @@ async function compareEdgeCase(
                 dxConvention:
                     'compare CSharp(x,y) with Flash(x+dx,y)',
                 dxSearch:contract.dxSearch,
+                requiredAnchorEdgeDx:
+                    contract.requiredAnchorEdgeDx,
                 minimumPixelCount:contract.minimumPixelCount,
                 minimumJaccard:contract.minimumJaccard,
                 fields,

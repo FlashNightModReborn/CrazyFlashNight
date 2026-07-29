@@ -536,7 +536,7 @@ __CF7_VISUAL_DIAGNOSTIC_DATA__
     };
     elements.alignmentStatus.textContent =
         data.mpHorizontalAlignment.allFieldsAligned
-            ? '4/4 unique best dx = 0'
+            ? '4/4 unique best dx = 0 · anchor edge = 0'
             : '存在水平配准残差';
     elements.alignmentStatus.dataset.status =
         data.mpHorizontalAlignment.allFieldsAligned
@@ -546,14 +546,24 @@ __CF7_VISUAL_DIAGNOSTIC_DATA__
       const item = document.createElement('div');
       item.className = 'alignment-field';
       item.dataset.status = field.status;
+      const edgeLabel = field.anchorEdge === 'leading' ? '左缘' : '右缘';
+      const anchorEdgeDx = Number.isFinite(field.anchorEdgeDx)
+          ? field.anchorEdgeDx
+          : 'n/a';
+      const centroidDx = Number.isFinite(field.weightedCyanCentroidDx)
+          ? field.weightedCyanCentroidDx.toFixed(4)
+          : 'n/a';
       item.textContent =
           `${alignmentLabels[field.id] || field.id} · dx ${field.bestDx} · ` +
+          `${edgeLabel} ${anchorEdgeDx} · ` +
           `J ${field.bestJaccard.toFixed(3)} · ${field.status}`;
       item.title =
           `ROI ${field.roi.x},${field.roi.y} ` +
           `${field.roi.width}×${field.roi.height}\n` +
           `C# ${field.csharpPixelCount} px · ` +
-          `Flash ${field.flashPixelCount} px`;
+          `Flash ${field.flashPixelCount} px\n` +
+          `weighted cyan centroid Δx ` +
+          centroidDx;
       elements.alignmentGrid.append(item);
     }
 

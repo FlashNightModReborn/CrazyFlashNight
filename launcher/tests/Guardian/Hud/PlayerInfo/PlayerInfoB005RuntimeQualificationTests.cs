@@ -52,6 +52,10 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
         "CF7_PLAYER_INFO_B005_SDK_VERSION";
     private const string ProjectRootEnvironment =
         "CF7_PLAYER_INFO_B005_PROJECT_ROOT";
+    private const string ExpectedPriorityClassEnvironment =
+        "CF7_PLAYER_INFO_B005_EXPECTED_PRIORITY_CLASS";
+    private const string ExpectedAffinityMaskEnvironment =
+        "CF7_PLAYER_INFO_B005_EXPECTED_AFFINITY_MASK";
     private const string ReportSchema =
         "cf7.player-info-hud.b0-05-runtime-qualification";
     private const string MeasurementKind = "synthetic_fixed_bounds";
@@ -61,9 +65,25 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
     private const double UiRequestP95LimitMs = 4.0;
     private const double WarmedFreshBakeP95LimitMs = 100.0;
     private const double WarmLookupP95LimitMs = 1.0;
+    private const int WarmedFreshExcludedWarmupRounds = 16;
     private const int WarmedFreshSamplesPerViewport = 20;
     private const int PendingCoalescingRequestCount = 100;
     private const int SteadyRequestCount = 3000;
+    private static readonly string[] PerformanceOverrideEnvironmentNames =
+    [
+        "DOTNET_TieredPGO",
+        "COMPlus_TieredPGO",
+        "DOTNET_TieredCompilation",
+        "COMPlus_TieredCompilation",
+        "DOTNET_ReadyToRun",
+        "COMPlus_ReadyToRun",
+        "DOTNET_TC_QuickJit",
+        "COMPlus_TC_QuickJit",
+        "DOTNET_TC_QuickJitForLoops",
+        "COMPlus_TC_QuickJitForLoops",
+        "DOTNET_gcServer",
+        "COMPlus_gcServer"
+    ];
     private static readonly ExecutionBinaryContract[] ExpectedExecutionBinaries =
     [
         new(
@@ -150,6 +170,16 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             string.IsNullOrWhiteSpace(
                 Environment.GetEnvironmentVariable(ProjectRootEnvironment)),
             $"{ProjectRootEnvironment} must be absent from the normal suite.");
+        Assert.True(
+            string.IsNullOrWhiteSpace(
+                Environment.GetEnvironmentVariable(
+                    ExpectedPriorityClassEnvironment)),
+            $"{ExpectedPriorityClassEnvironment} must be absent from the normal suite.");
+        Assert.True(
+            string.IsNullOrWhiteSpace(
+                Environment.GetEnvironmentVariable(
+                    ExpectedAffinityMaskEnvironment)),
+            $"{ExpectedAffinityMaskEnvironment} must be absent from the normal suite.");
     }
 
     [B005QualificationFact]
@@ -232,6 +262,68 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
         string projectRoot)
     {
         var gates = new List<QualificationGate>();
+        Dictionary<string, string?> inheritedPerformanceOverrides =
+            PerformanceOverrideEnvironmentNames.ToDictionary(
+                name => name,
+                name => Environment.GetEnvironmentVariable(name),
+                StringComparer.Ordinal);
+        string processPriorityClass;
+        string processorAffinityMask;
+        using (Process currentProcess = Process.GetCurrentProcess())
+        {
+            processPriorityClass = currentProcess.PriorityClass.ToString();
+            processorAffinityMask = FormatAffinityMask(
+                currentProcess.ProcessorAffinity);
+        }
+        string? expectedPriorityClass =
+            Environment.GetEnvironmentVariable(
+                ExpectedPriorityClassEnvironment);
+        string? expectedAffinityMask =
+            Environment.GetEnvironmentVariable(
+                ExpectedAffinityMaskEnvironment);
+        bool serverGc = System.Runtime.GCSettings.IsServerGC;
+        bool performanceEnvironmentPassed =
+            inheritedPerformanceOverrides.Values.All(
+                value => value is null) &&
+            string.Equals(
+                processPriorityClass,
+                ProcessPriorityClass.Normal.ToString(),
+                StringComparison.Ordinal) &&
+            string.Equals(
+                expectedPriorityClass,
+                ProcessPriorityClass.Normal.ToString(),
+                StringComparison.Ordinal) &&
+            !string.IsNullOrEmpty(expectedAffinityMask) &&
+            string.Equals(
+                processorAffinityMask,
+                expectedAffinityMask,
+                StringComparison.Ordinal) &&
+            !serverGc;
+        AddExactGate(
+            gates,
+            "runtime_performance_environment",
+            "runtime",
+            performanceEnvironmentPassed,
+            new
+            {
+                inheritedPerformanceOverrides,
+                processPriorityClass,
+                processorAffinityMask,
+                serverGc
+            },
+            new
+            {
+                inheritedPerformanceOverrides =
+                    PerformanceOverrideEnvironmentNames.ToDictionary(
+                        name => name,
+                        _ => (string?)null,
+                        StringComparer.Ordinal),
+                processPriorityClass = expectedPriorityClass,
+                processorAffinityMask = expectedAffinityMask,
+                serverGc = false
+            },
+            "environment_and_process_state",
+            "Formal B0-05 timing requires absent frozen JIT/GC overrides, Normal priority, and the runner-inherited affinity mask.");
         PlayerInfoSvgAssetSet assetSet =
             PlayerInfoSvgAssetContract.LoadProductionEmbedded(
                 minimumRaster: false);
@@ -246,21 +338,37 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
         ValidateViewportContracts(viewportCases, plans, assetSet, gates);
 
         var productionRasterizer = new PlayerInfoSvgRasterizer();
-        // Exclude one size-specific JIT/native initialization bake per
-        // viewport. The measured operation below still performs a fresh SVG
-        // parse+raster+PArgb batch every sample.
-        foreach (PlayerInfoRasterPlan plan in plans)
-        {
-            WarmNativePaths(productionRasterizer, plan);
-        }
+        // Exercise the exact background path used by the acceptance samples.
+        // Fixed round-robin rounds let tiered JIT/native paths settle without
+        // adaptively warming to the threshold. Every excluded timing remains
+        // in the report for independent review.
+        List<TimedSample> warmedFreshExcludedWarmupSamples =
+            await MeasureFreshBakesAsync(
+                productionRasterizer,
+                viewportCases,
+                plans,
+                WarmedFreshExcludedWarmupRounds,
+                "excluded_warmup");
+        TimingSummary warmedFreshExcludedWarmupOverall = Summarize(
+            warmedFreshExcludedWarmupSamples.Select(
+                sample => sample.Milliseconds));
+        ViewportTiming[] warmedFreshExcludedWarmupByViewport = viewportCases
+            .Select(viewportCase => new ViewportTiming(
+                viewportCase.Id,
+                Summarize(warmedFreshExcludedWarmupSamples
+                    .Where(sample => sample.Scenario == viewportCase.Id)
+                    .Select(sample => sample.Milliseconds))))
+            .ToArray();
         ForceManagedCleanup();
         ProcessMetrics processBefore = CaptureProcessMetrics();
 
         List<TimedSample> warmedFreshBakeSamples =
-            await MeasureWarmedFreshBakesAsync(
+            await MeasureFreshBakesAsync(
                 productionRasterizer,
                 viewportCases,
-                plans);
+                plans,
+                WarmedFreshSamplesPerViewport,
+                "warmed_fresh");
         TimingSummary warmedFreshBakeOverall = Summarize(
             warmedFreshBakeSamples.Select(sample => sample.Milliseconds));
         ViewportTiming[] warmedFreshBakeByViewport = viewportCases
@@ -276,9 +384,8 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
         TimingSummary copyTiming = Summarize(
             copySamples.Select(sample => sample.Milliseconds));
 
-        var countingRasterizer = new QualificationCountingRasterizer(
+        var pipeline = new PlayerInfoRasterPipeline(
             new PlayerInfoSvgRasterizer());
-        var pipeline = new PlayerInfoRasterPipeline(countingRasterizer);
         var uiRequestSamples = new List<TimedSample>(
             plans.Length * 2 + PendingCoalescingRequestCount +
             SteadyRequestCount);
@@ -619,12 +726,6 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             "lifecycle_state",
             "Dispose must release every pipeline-owned atomic batch and clear all live state.");
 
-        foreach ((string layerId, LayerCounts counts) in
-                 countingRasterizer.Snapshot())
-        {
-            layerActivity[layerId].ParseCount = counts.ParseCount;
-            layerActivity[layerId].RasterCount = counts.RasterCount;
-        }
         foreach (MutableLayerActivity activity in layerActivity.Values)
         {
             // Every pipeline-owned batch is contractually an atomic 8-layer
@@ -882,7 +983,15 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                 qualificationSdkVersion =
                     Environment.GetEnvironmentVariable(SdkVersionEnvironment),
                 is64BitProcess = Environment.Is64BitProcess,
-                serverGc = System.Runtime.GCSettings.IsServerGC
+                serverGc,
+                performanceEnvironment = new
+                {
+                    inheritedOverrides = inheritedPerformanceOverrides,
+                    processPriorityClass,
+                    processorAffinityMask,
+                    expectedProcessPriorityClass = expectedPriorityClass,
+                    expectedProcessorAffinityMask = expectedAffinityMask
+                }
             },
             sourceClosure,
             testAssembly,
@@ -1009,10 +1118,26 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                 },
                 warmedFreshBake = new
                 {
-                        execution =
-                            "one excluded native/JIT warmup per viewport, then round-robin samples each perform a fresh background SVG parse+raster+PArgb batch",
+                    execution =
+                        "16 fixed excluded round-robin background warmup rounds, then 20 independent round-robin acceptance rounds; every operation performs a fresh SVG parse+raster+PArgb batch",
                     sampleSemantics =
                         "warmed process; fresh asset work; not process-cold",
+                    excludedWarmup = new
+                    {
+                        execution =
+                            "same Task.Run background path as acceptance; fixed count; no adaptive threshold stop",
+                        rounds = WarmedFreshExcludedWarmupRounds,
+                        samplesPerViewport =
+                            WarmedFreshExcludedWarmupRounds,
+                        sampleCount =
+                            warmedFreshExcludedWarmupSamples.Count,
+                        overallSummaryDiagnosticOnly =
+                            warmedFreshExcludedWarmupOverall,
+                        byViewport =
+                            warmedFreshExcludedWarmupByViewport,
+                        samples =
+                            warmedFreshExcludedWarmupSamples
+                    },
                     overallSummaryDiagnosticOnly = warmedFreshBakeOverall,
                     byViewport = warmedFreshBakeByViewport,
                     thresholdP95Ms = WarmedFreshBakeP95LimitMs,
@@ -1028,7 +1153,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                 pArgbCopy = new
                 {
                     execution =
-                        "synthetic Bgra8888/Premul source at exact layer dimensions",
+                        "one representative synthetic Bgra8888/Premul copy per logical layer at exact layer dimensions; mp.fill fragments excluded",
                     summary = copyTiming,
                     samples = copySamples
                 },
@@ -1056,8 +1181,12 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             raster = new
             {
                 assetCount = assetSet.Assets.Count,
+                logicalLayerCount = plans[0].Layers.Count,
+                ownedPArgbPayloadsPerBatch =
+                    plans[0].Layers.Sum(OwnedPArgbPayloadCount),
                 outputContract = "System.Drawing.Format32bppPArgb",
-                parseRasterCounterUnit = "successfully completed layer",
+                parseRasterCounterUnit =
+                    "completed StrictSvg parse / Skia raster operation for an intended payload slot; PArgb copy completion is not separately counted; mp.fill fragment XDocument parse is outside parseCount",
                 pipelineCounters = new
                 {
                     afterCold = Snapshot(afterCold),
@@ -1074,8 +1203,6 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                     {
                         activity.LayerId,
                         activity.DesiredGenerationCount,
-                        activity.ParseCount,
-                        activity.RasterCount,
                         activity.CurrentHitCount,
                         activity.InactiveCacheHitCount,
                         activity.InferredBatchDisposalCount
@@ -1281,17 +1408,31 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
     }
 
     private static async Task<List<TimedSample>>
-        MeasureWarmedFreshBakesAsync(
+        MeasureFreshBakesAsync(
         PlayerInfoSvgRasterizer rasterizer,
         IReadOnlyList<ViewportCase> viewportCases,
-        IReadOnlyList<PlayerInfoRasterPlan> plans)
+        IReadOnlyList<PlayerInfoRasterPlan> plans,
+        int rounds,
+        string phasePrefix)
     {
+        if (rounds <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(rounds),
+                "Fresh-bake rounds must be positive.");
+        }
+        if (string.IsNullOrEmpty(phasePrefix))
+        {
+            throw new ArgumentException(
+                "Fresh-bake phase prefix is required.",
+                nameof(phasePrefix));
+        }
         var samples = new List<TimedSample>(
-            viewportCases.Count * WarmedFreshSamplesPerViewport);
+            viewportCases.Count * rounds);
         // Round-robin the viewports so a short machine-load or thermal phase
         // cannot be assigned wholesale to one resolution's percentile.
         for (var sampleIndex = 0;
-             sampleIndex < WarmedFreshSamplesPerViewport;
+             sampleIndex < rounds;
              sampleIndex++)
         {
             for (var viewportIndex = 0;
@@ -1306,7 +1447,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                         CancellationToken.None);
                 });
                 samples.Add(new TimedSample(
-                    $"warmed_fresh_{sampleIndex + 1:00}",
+                    $"{phasePrefix}_{sampleIndex + 1:00}",
                     viewportCases[viewportIndex].Id,
                     ElapsedMilliseconds(started)));
             }
@@ -1387,21 +1528,16 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
         await pipeline.WaitForIdleAsync(timeout.Token);
     }
 
-    private static void WarmNativePaths(
-        PlayerInfoSvgRasterizer rasterizer,
-        PlayerInfoRasterPlan plan)
+    private static int OwnedPArgbPayloadCount(
+        PlayerInfoRasterLayerPlan layer)
     {
-        using PlayerInfoRasterBatch batch = rasterizer.Bake(
-            plan,
-            CancellationToken.None);
-        PlayerInfoRasterLayerPlan first = plan.Layers[0];
-        using var source = new SKBitmap(new SKImageInfo(
-            first.PixelWidth,
-            first.PixelHeight,
-            SKColorType.Bgra8888,
-            SKAlphaType.Premul));
-        source.Erase(SKColors.Transparent);
-        using Bitmap copy = PlayerInfoPArgbBridge.Copy(source);
+        ArgumentNullException.ThrowIfNull(layer);
+        return string.Equals(
+            layer.Key.LayerId,
+            "mp.fill",
+            StringComparison.Ordinal)
+            ? checked(1 + layer.Gauge.ClipBindings.Count)
+            : 1;
     }
 
     private static void ObservePeakCache(
@@ -1436,6 +1572,10 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             checked((int)Math.Ceiling(quantile * ordered.Length)));
         return ordered[rank - 1];
     }
+
+    private static string FormatAffinityMask(IntPtr affinity) =>
+        unchecked((ulong)affinity.ToInt64())
+            .ToString("X16", CultureInfo.InvariantCulture);
 
     private static void AddUpperBoundGate(
         ICollection<QualificationGate> gates,
@@ -2221,78 +2361,13 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
         string StandardOutput,
         string StandardError);
 
-    private sealed record LayerCounts(
-        long ParseCount,
-        long RasterCount);
-
     private sealed class MutableLayerActivity(string layerId)
     {
         internal string LayerId { get; } = layerId;
         internal long DesiredGenerationCount { get; set; }
-        internal long ParseCount { get; set; }
-        internal long RasterCount { get; set; }
         internal long CurrentHitCount { get; set; }
         internal long InactiveCacheHitCount { get; set; }
         internal long InferredBatchDisposalCount { get; set; }
-    }
-
-    private sealed class QualificationCountingRasterizer(
-        IPlayerInfoRasterizer inner) : IPlayerInfoRasterizer
-    {
-        private readonly object _gate = new();
-        private readonly Dictionary<string, LayerCounts> _counts =
-            new(StringComparer.Ordinal);
-
-        public PlayerInfoRasterBatch Bake(
-            PlayerInfoRasterPlan plan,
-            CancellationToken cancellationToken,
-            PlayerInfoRasterProgress progress)
-        {
-            int parseBefore = progress.ParseCount;
-            int rasterBefore = progress.RasterCount;
-            try
-            {
-                return inner.Bake(plan, cancellationToken, progress);
-            }
-            finally
-            {
-                int parseDelta = progress.ParseCount - parseBefore;
-                int rasterDelta = progress.RasterCount - rasterBefore;
-                lock (_gate)
-                {
-                    for (var index = 0;
-                         index < parseDelta && index < plan.Layers.Count;
-                         index++)
-                    {
-                        Add(plan.Layers[index].Key.LayerId, parse: 1, raster: 0);
-                    }
-                    for (var index = 0;
-                         index < rasterDelta && index < plan.Layers.Count;
-                         index++)
-                    {
-                        Add(plan.Layers[index].Key.LayerId, parse: 0, raster: 1);
-                    }
-                }
-            }
-        }
-
-        internal IReadOnlyDictionary<string, LayerCounts> Snapshot()
-        {
-            lock (_gate)
-            {
-                return new Dictionary<string, LayerCounts>(
-                    _counts,
-                    StringComparer.Ordinal);
-            }
-        }
-
-        private void Add(string layerId, long parse, long raster)
-        {
-            _counts.TryGetValue(layerId, out LayerCounts? current);
-            _counts[layerId] = new LayerCounts(
-                checked((current?.ParseCount ?? 0) + parse),
-                checked((current?.RasterCount ?? 0) + raster));
-        }
     }
 
     private sealed record ProcessMetrics(

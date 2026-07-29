@@ -92,7 +92,10 @@ internal static class PlayerInfoCompositionRecipe
         "mp-maximum",
         PlayerInfoPathGlyphAtlas.Aero,
         13.0048f,
-        80.65f,
+        // The XFL field starts at 80.65. Flash standard-text coverage lands
+        // one pixel later at the 1x main-stage oracle; a 0.30 logical-unit
+        // phase correction aligns the leading edge without a full-pixel move.
+        80.95f,
         17.85f,
         PlayerInfoPathTextAlignment.Left,
         0f,
@@ -114,7 +117,9 @@ internal static class PlayerInfoCompositionRecipe
         "mp-decorative-maximum",
         PlayerInfoPathGlyphAtlas.Aero,
         13.0048f,
-        80.65f,
+        // Keep the authored low-alpha backing text on the same corrected
+        // field origin as the visible maximum.
+        80.95f,
         18.05f,
         PlayerInfoPathTextAlignment.Left,
         0f,

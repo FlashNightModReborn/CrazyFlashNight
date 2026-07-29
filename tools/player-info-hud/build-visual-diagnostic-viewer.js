@@ -10,6 +10,44 @@ const templatePath = path.join(
 const templateMarker = '__CF7_VISUAL_DIAGNOSTIC_DATA__';
 const expectedReportSchema =
     'cf7.player_info.b0_06_csharp_web_flash_diagnostic.v2';
+const expectedMpHorizontalAlignmentContract = {
+    caseId:'mp-p50-vf51',
+    canvas:{width:1024, height:576, yNormalization:0},
+    dxConvention:'compare CSharp(x,y) with Flash(x+dx,y)',
+    dxSearch:{minimum:-8, maximum:8, fixedDy:0},
+    requiredAnchorEdgeDx:0,
+    minimumPixelCount:32,
+    minimumJaccard:0.35,
+    mask:{
+        alphaMinimum:224,
+        greenMinimum:170,
+        blueMinimum:170,
+        greenMinusRedMinimum:40,
+        blueMinusRedMinimum:40
+    },
+    fields:[
+        {
+            id:'label',
+            anchorEdge:'leading',
+            roi:{x:91, y:514, width:30, height:16}
+        },
+        {
+            id:'current',
+            anchorEdge:'trailing',
+            roi:{x:126, y:516, width:50, height:14}
+        },
+        {
+            id:'maximum',
+            anchorEdge:'leading',
+            roi:{x:176, y:516, width:50, height:14}
+        },
+        {
+            id:'percent',
+            anchorEdge:'leading',
+            roi:{x:86, y:530, width:31, height:13}
+        }
+    ]
+};
 
 function fail(message) {
     throw new Error(message);
@@ -174,6 +212,31 @@ function resolveInput(inputRoot, input, label, expectedCanvas) {
     };
 }
 
+function sameExactObject(actual, expected) {
+    if (!actual || typeof actual !== 'object') {
+        return false;
+    }
+    return Object.keys(actual).length === Object.keys(expected).length &&
+        Object.entries(expected).every(
+            ([key, value]) => actual[key] === value);
+}
+
+function compareFractions(left, right) {
+    if (left.union === 0 || right.union === 0) {
+        if (left.union === 0 && right.union === 0) {
+            return 0;
+        }
+        return left.union === 0 ? -1 : 1;
+    }
+    const leftCross = left.intersection * right.union;
+    const rightCross = right.intersection * left.union;
+    return leftCross === rightCross
+        ? 0
+        : leftCross < rightCross
+            ? -1
+            : 1;
+}
+
 function validateReport(report, caseId) {
     if (!report || report.schema !== expectedReportSchema ||
         report.schemaVersion !== 2) {
@@ -186,12 +249,284 @@ function validateReport(report, caseId) {
     }
     const alignment = edge.diagnostics &&
         edge.diagnostics.mpHorizontalAlignment;
+    const contract = expectedMpHorizontalAlignmentContract;
     if (!alignment ||
-        alignment.caseId !== 'mp-p50-vf51' ||
+        alignment.caseId !== contract.caseId ||
+        !sameExactObject(alignment.canvas, contract.canvas) ||
+        alignment.dxConvention !== contract.dxConvention ||
+        !sameExactObject(alignment.dxSearch, contract.dxSearch) ||
+        !sameExactObject(alignment.mask, contract.mask) ||
         !Array.isArray(alignment.fields) ||
-        alignment.fields.length !== 4 ||
+        alignment.fields.length !== contract.fields.length ||
+        alignment.requiredAnchorEdgeDx !== contract.requiredAnchorEdgeDx ||
+        alignment.minimumPixelCount !== contract.minimumPixelCount ||
+        alignment.minimumJaccard !== contract.minimumJaccard ||
         typeof alignment.allFieldsAligned !== 'boolean') {
         fail('Report has no complete MP horizontal-alignment diagnostic.');
+    }
+    const integerOrNull = value =>
+        value === null || Number.isSafeInteger(value);
+    const finiteOrNull = value =>
+        value === null || Number.isFinite(value);
+    const nearlyEqual = (left, right) =>
+        Math.abs(left - right) <=
+            Number.EPSILON * Math.max(1, Math.abs(left), Math.abs(right)) * 8;
+    const validBounds = (value, roi) => {
+        if (!value || typeof value !== 'object' ||
+            Object.keys(value).length !== 6 ||
+            !Number.isSafeInteger(value.left) ||
+            !Number.isSafeInteger(value.top) ||
+            !Number.isSafeInteger(value.rightInclusive) ||
+            !Number.isSafeInteger(value.bottomInclusive) ||
+            !Number.isSafeInteger(value.width) ||
+            !Number.isSafeInteger(value.height) ||
+            value.rightInclusive < value.left ||
+            value.bottomInclusive < value.top ||
+            value.width !== value.rightInclusive - value.left + 1 ||
+            value.height !== value.bottomInclusive - value.top + 1) {
+            return false;
+        }
+        return value.left >= roi.x &&
+            value.top >= roi.y &&
+            value.rightInclusive < roi.x + roi.width &&
+            value.bottomInclusive < roi.y + roi.height;
+    };
+    const validateMaskGeometry = (
+        expected,
+        side,
+        pixelCount,
+        bounds,
+        centroid) => {
+        if (!Number.isSafeInteger(pixelCount) ||
+            pixelCount < 0 ||
+            pixelCount > expected.roi.width * expected.roi.height) {
+            fail(
+                `MP field ${expected.id} ${side} pixel count is invalid.`);
+        }
+        if (pixelCount === 0) {
+            if (bounds !== null || centroid !== null) {
+                fail(
+                    `MP field ${expected.id} ${side} empty mask must have ` +
+                    'null bounds and centroid.');
+            }
+            return;
+        }
+        if (!validBounds(bounds, expected.roi) ||
+            !Number.isFinite(centroid) ||
+            centroid < bounds.left ||
+            centroid > bounds.rightInclusive ||
+            pixelCount > bounds.width * bounds.height) {
+            fail(
+                `MP field ${expected.id} ${side} non-empty mask geometry ` +
+                'is inconsistent.');
+        }
+    };
+    for (let index = 0; index < contract.fields.length; index++) {
+        const field = alignment.fields[index];
+        const expected = contract.fields[index];
+        if (!field || field.id !== expected.id ||
+            field.anchorEdge !== expected.anchorEdge ||
+            !sameExactObject(field.roi, expected.roi) ||
+            !integerOrNull(field.leadingEdgeDx) ||
+            !integerOrNull(field.trailingEdgeDx) ||
+            !integerOrNull(field.anchorEdgeDx) ||
+            typeof field.anchorEdgeAligned !== 'boolean' ||
+            typeof field.aligned !== 'boolean' ||
+            !Number.isSafeInteger(field.bestDx) ||
+            !Array.isArray(field.bestDxCandidates) ||
+            !field.bestDxCandidates.every(
+                candidate => Number.isSafeInteger(candidate)) ||
+            !field.bestDxCandidates.includes(field.bestDx) ||
+            new Set(field.bestDxCandidates).size !==
+                field.bestDxCandidates.length ||
+            !Number.isFinite(field.bestJaccard) ||
+            !finiteOrNull(field.csharpWeightedCyanCentroidX) ||
+            !finiteOrNull(field.flashWeightedCyanCentroidX) ||
+            !finiteOrNull(field.weightedCyanCentroidDx) ||
+            !Array.isArray(field.scores) ||
+            field.scores.length !==
+                contract.dxSearch.maximum -
+                contract.dxSearch.minimum + 1) {
+            fail(`MP field ${expected.id} has an invalid diagnostic shape.`);
+        }
+        validateMaskGeometry(
+            expected,
+            'C#',
+            field.csharpPixelCount,
+            field.csharpBounds,
+            field.csharpWeightedCyanCentroidX);
+        validateMaskGeometry(
+            expected,
+            'Flash',
+            field.flashPixelCount,
+            field.flashBounds,
+            field.flashWeightedCyanCentroidX);
+        const scores = field.scores.map((score, scoreIndex) => {
+            const expectedDx =
+                contract.dxSearch.minimum + scoreIndex;
+            if (!score ||
+                score.dx !== expectedDx ||
+                !Number.isSafeInteger(score.intersection) ||
+                score.intersection < 0 ||
+                !Number.isSafeInteger(score.union) ||
+                score.union < 0 ||
+                score.intersection >
+                    Math.min(
+                        field.csharpPixelCount,
+                        field.flashPixelCount) ||
+                score.union !==
+                    field.csharpPixelCount +
+                    field.flashPixelCount -
+                    score.intersection ||
+                !Number.isFinite(score.jaccard) ||
+                score.jaccard < 0 ||
+                score.jaccard > 1) {
+                fail(
+                    `MP field ${expected.id} score dx=${expectedDx} ` +
+                    'is invalid.');
+            }
+            const expectedJaccard = score.union === 0
+                ? 0
+                : score.intersection / score.union;
+            if (!nearlyEqual(score.jaccard, expectedJaccard)) {
+                fail(
+                    `MP field ${expected.id} score dx=${expectedDx} ` +
+                    'has inconsistent Jaccard data.');
+            }
+            return {
+                dx:score.dx,
+                intersection:score.intersection,
+                union:score.union,
+                jaccard:expectedJaccard
+            };
+        });
+        let bestScores = [];
+        for (const score of scores) {
+            if (bestScores.length === 0) {
+                bestScores = [score];
+                continue;
+            }
+            const comparison = compareFractions(score, bestScores[0]);
+            if (comparison > 0) {
+                bestScores = [score];
+            } else if (comparison === 0) {
+                bestScores.push(score);
+            }
+        }
+        bestScores.sort((left, right) =>
+            Math.abs(left.dx) - Math.abs(right.dx) ||
+            left.dx - right.dx);
+        const best = bestScores[0];
+        const expectedBestCandidates =
+            bestScores.map(score => score.dx);
+        const runners = scores
+            .filter(score => score.dx !== best.dx)
+            .sort((left, right) => {
+                const comparison = compareFractions(right, left);
+                return comparison ||
+                    Math.abs(left.dx) - Math.abs(right.dx) ||
+                    left.dx - right.dx;
+            });
+        const runnerUp = runners[0];
+        if (field.bestDx !== best.dx ||
+            field.bestDxCandidates.length !==
+                expectedBestCandidates.length ||
+            !field.bestDxCandidates.every(
+                (candidate, candidateIndex) =>
+                    candidate ===
+                        expectedBestCandidates[candidateIndex]) ||
+            !nearlyEqual(field.bestJaccard, best.jaccard) ||
+            field.runnerUpDx !== runnerUp.dx ||
+            !Number.isFinite(field.runnerUpJaccard) ||
+            !nearlyEqual(field.runnerUpJaccard, runnerUp.jaccard) ||
+            !Number.isFinite(field.scoreMargin) ||
+            !nearlyEqual(
+                field.scoreMargin,
+                best.jaccard - runnerUp.jaccard)) {
+            fail(`MP field ${expected.id} has inconsistent score summary.`);
+        }
+        const hasBothBounds =
+            field.csharpBounds !== null &&
+            field.flashBounds !== null;
+        const expectedLeadingEdgeDx = hasBothBounds
+            ? field.flashBounds.left - field.csharpBounds.left
+            : null;
+        const expectedTrailingEdgeDx = hasBothBounds
+            ? field.flashBounds.rightInclusive -
+                field.csharpBounds.rightInclusive
+            : null;
+        if (field.leadingEdgeDx !== expectedLeadingEdgeDx ||
+            field.trailingEdgeDx !== expectedTrailingEdgeDx) {
+            fail(`MP field ${expected.id} has inconsistent edge deltas.`);
+        }
+        const expectedAnchorEdgeDx = field.anchorEdge === 'leading'
+            ? field.leadingEdgeDx
+            : field.trailingEdgeDx;
+        if (field.anchorEdgeDx !== expectedAnchorEdgeDx ||
+            field.anchorEdgeAligned !==
+                (field.anchorEdgeDx === alignment.requiredAnchorEdgeDx)) {
+            fail(`MP field ${expected.id} has inconsistent anchor-edge data.`);
+        }
+        const hasBothCentroids =
+            field.csharpWeightedCyanCentroidX !== null &&
+            field.flashWeightedCyanCentroidX !== null;
+        if (hasBothCentroids) {
+            const expectedCentroidDx =
+                field.flashWeightedCyanCentroidX -
+                field.csharpWeightedCyanCentroidX;
+            if (field.weightedCyanCentroidDx === null ||
+                !nearlyEqual(
+                    field.weightedCyanCentroidDx,
+                    expectedCentroidDx)) {
+                fail(
+                    `MP field ${expected.id} has inconsistent centroid data.`);
+            }
+        } else if (field.weightedCyanCentroidDx !== null) {
+            fail(`MP field ${expected.id} must use null centroid delta.`);
+        }
+        const sufficientPixels =
+            field.csharpPixelCount >= contract.minimumPixelCount &&
+            field.flashPixelCount >= contract.minimumPixelCount;
+        const sufficientSimilarity =
+            best.jaccard >= contract.minimumJaccard;
+        const uniqueBest = bestScores.length === 1;
+        const expectedAligned =
+            sufficientPixels &&
+            sufficientSimilarity &&
+            uniqueBest &&
+            field.anchorEdgeAligned &&
+            best.dx === 0;
+        let expectedStatus = 'aligned';
+        if (!sufficientPixels) {
+            expectedStatus = 'insufficient_pixels';
+        } else if (!sufficientSimilarity) {
+            expectedStatus = 'low_similarity';
+        } else if (!uniqueBest) {
+            expectedStatus = 'ambiguous';
+        } else if (!field.anchorEdgeAligned) {
+            expectedStatus = 'anchor_edge_offset';
+        } else if (best.dx !== 0) {
+            expectedStatus = 'offset';
+        }
+        if (field.aligned !== expectedAligned ||
+            field.status !== expectedStatus) {
+            fail(`MP field ${expected.id} has inconsistent alignment state.`);
+        }
+    }
+    if (alignment.allFieldsAligned !==
+        alignment.fields.every(field => field.aligned)) {
+        fail('MP allFieldsAligned is inconsistent with its four fields.');
+    }
+    const alignmentCase = edge.cases.find(
+        candidate => candidate.caseId === 'p50');
+    if (!alignmentCase || !alignmentCase.inputs ||
+        !alignmentCase.inputs.left || !alignmentCase.inputs.right ||
+        !alignment.inputs ||
+        alignment.inputs.csharpPngSha256 !==
+            alignmentCase.inputs.left.sha256 ||
+        alignment.inputs.flashPngSha256 !==
+            alignmentCase.inputs.right.sha256) {
+        fail('MP alignment input identity is not bound to the p50 pair.');
     }
     let cases = edge.cases;
     if (caseId !== null) {
@@ -200,7 +535,7 @@ function validateReport(report, caseId) {
             fail(`Report has no unique csharp-flash case ${caseId}.`);
         }
     }
-    return { edge, cases, alignment };
+    return { edge, cases, alignment, alignmentCase };
 }
 
 function canvasFromCase(comparisonCase) {
@@ -246,6 +581,27 @@ function main() {
     const reportInput = readJson(options.report, 'comparison report');
     const validated = validateReport(reportInput.value, options.caseId);
     const canvas = canvasFromCase(validated.cases[0]);
+    const alignmentCanvas = canvasFromCase(validated.alignmentCase);
+    if (alignmentCanvas.width !== canvas.width ||
+        alignmentCanvas.height !== canvas.height) {
+        fail('MP alignment p50 canvas differs from the selected cases.');
+    }
+    const alignmentCsharp = resolveInput(
+        options.inputRoot,
+        validated.alignmentCase.inputs.left,
+        'MP alignment p50 C#',
+        alignmentCanvas);
+    const alignmentFlash = resolveInput(
+        options.inputRoot,
+        validated.alignmentCase.inputs.right,
+        'MP alignment p50 Flash',
+        alignmentCanvas);
+    if (validated.alignment.inputs.csharpPngSha256 !==
+            alignmentCsharp.sha256 ||
+        validated.alignment.inputs.flashPngSha256 !==
+            alignmentFlash.sha256) {
+        fail('MP alignment SHA-256 values do not match the p50 PNG files.');
+    }
     const caseIds = new Set();
     const cases = validated.cases.map(comparisonCase => {
         if (typeof comparisonCase.caseId !== 'string' ||
