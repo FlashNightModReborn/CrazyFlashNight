@@ -246,7 +246,7 @@
                 <Load>1</Load>
             </Animation>
             <Background>flashswf/backgrounds/gk9_4_BG.swf</Background>
-            <PlayerX>1016</PlayerX>
+            <PlayerX>1050</PlayerX>
             <PlayerY>489</PlayerY>
             <BGM>
                 <Command>play</Command>
@@ -311,6 +311,9 @@
                 </Parameters>
             </Instance>
         </Instances>
+        <Trigger id="0">
+            <Xmax>900</Xmax>
+        </Trigger>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
@@ -326,6 +329,32 @@
                 <Text>速度太快了，数量太多！！赶快撤离吧！一直向左跑！</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>TriggerPressed</EventName>
+            <Parameter>0</Parameter>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>100</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>600</x>
+                <y>350</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>100</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>500</x>
+                <y>470</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -335,14 +364,14 @@
                     <Enemy>
                         <Type>兵种10</Type>
                         <Interval>100</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种39</Type>
-                        <Interval>100</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>200</Interval>
+                        <Quantity>4</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -353,7 +382,7 @@
     <SubStage id="4">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk9_5_BG.swf</Background>
-            <PlayerX>1196</PlayerX>
+            <PlayerX>1200</PlayerX>
             <PlayerY>538</PlayerY>
         </BasicInformation>
         <SpawnPoint>
@@ -408,6 +437,46 @@
                 </Parameters>
             </Instance>
         </Instances>
+        <Trigger id="0">
+            <Xmax>900</Xmax>
+        </Trigger>
+        <Event>
+            <EventName>TriggerPressed</EventName>
+            <Parameter>0</Parameter>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>50</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>700</x>
+                <y>380</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>200</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>300</x>
+                <y>520</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>400</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>600</x>
+                <y>450</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -417,14 +486,14 @@
                     <Enemy>
                         <Type>兵种10</Type>
                         <Interval>100</Interval>
-                        <Quantity>9</Quantity>
+                        <Quantity>6</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种39</Type>
                         <Interval>100</Interval>
-                        <Quantity>6</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -435,7 +504,7 @@
     <SubStage id="5">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk9_6_BG.swf</Background>
-            <PlayerX>1090</PlayerX>
+            <PlayerX>1100</PlayerX>
             <PlayerY>562</PlayerY>
         </BasicInformation>
         <SpawnPoint>
@@ -500,6 +569,9 @@
         <Trigger id="0">
             <Xmax>200</Xmax>
         </Trigger>
+        <Trigger id="1">
+            <Xmax>900</Xmax>
+        </Trigger>
         <Event>
             <EventName>TriggerPressed</EventName>
             <Parameter>0</Parameter>
@@ -511,6 +583,43 @@
             </Dialogue>
             <StageProgress>Finish</StageProgress>
         </Event>
+        <Event>
+            <EventName>TriggerPressed</EventName>
+            <Parameter>1</Parameter>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>50</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>800</x>
+                <y>390</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>200</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>600</x>
+                <y>540</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+            <Enemy>
+                <Type>兵种10</Type>
+                <Interval>400</Interval>
+                <Quantity>1</Quantity>
+                <Level>20</Level>
+                <x>400</x>
+                <y>430</y>
+                <Parameters>
+                    <登场动画>坠落</登场动画>
+                </Parameters>
+            </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -520,7 +629,7 @@
                     <Enemy>
                         <Type>兵种10</Type>
                         <Interval>100</Interval>
-                        <Quantity>13</Quantity>
+                        <Quantity>10</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
