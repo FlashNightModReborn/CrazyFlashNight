@@ -108,7 +108,11 @@ python tools/player-info-hud/generate-player-info-glyph-atlas.py `
 The accepted generated C# file is 10,331 B with SHA-256
 `B15CA80E...5D66`; the provenance file is 2,670 B with SHA-256
 `9486BEEB...DC3D`. A source SWF, font-export byte, generator, or fontTools
-change requires regeneration and the full B0-06 closure/visual rerun.
+change requires regeneration and the full B0-06 closure/visual rerun. A
+fail-closed xUnit synchronization Gate independently checks the generated
+source's tracked path, UTF-8-without-BOM/canonical-LF encoding, byte length,
+and SHA-256 against that provenance; a green renderer test alone cannot mask
+stale generated glyph data.
 
 ## B0-06 fixture surface qualification and visual evidence
 
@@ -125,7 +129,10 @@ and raster request are established, so a transient invalid layout cannot leave
 the companion logically resumed but permanently hidden. The runtime effect
 contract exposes one B0 active dynamic-text/glow effect and two explicitly
 deferred B3 HP effects; a narrow composition recipe freezes the seven text
-placements instead of introducing a generic effect graph.
+placements instead of introducing a generic effect graph. The three HP text
+placements use the source-resolved red Glow; MP has no Glow. `sigma=1` and
+`alpha=220` are an explicit single-pass Skia approximation of the authored
+Flash blur/strength, not a pixel-parity claim.
 
 The formal runtime runner resolves exact SDK `10.0.300`, performs a locked
 restore, selects the single STA HWND/ULW qualification, then verifies its
@@ -157,15 +164,23 @@ pre-origin-sync v3 snapshot remains historical evidence in
 
 The final implementation-base result is
 `evidence/b0-06/runtime-qualification.json`: base commit
-`0215c03b4594221f02e993bf8d58dd1bc669e815`, run
-`c53cd48cd1054f6e9b988d11f5f06c85`, 647,221 B, SHA-256
-`E41F8CFC...FBFAB`, 47/47. Its third warmup group first converged, and the
+`bf8dd2c410267855c8ea12f25a594042b3158479`, run
+`a6aadeb6e3264577bb9da8fe90857a7b`, 647,234 B, SHA-256
+`656286825CE9717D0DC31BDF9DFE00F3ECB57AB515C5C130601BDF23D319CD74`,
+47/47. Its third warmup group first converged, and the
 immediately adjacent acceptance interval had process/GDI/USER deltas `-3/0/0`
 with no positive trend. NativeHud hidden/enabled commit p95 was
-`7.3670/7.2699 ms`; split surface/observer-commit p95 was
-`3.6748/1.1382 ms`. The report binds an exact 32-file sourceTrace Git-blob
+`7.3485/7.2711 ms`; split surface/observer-commit p95 was
+`3.5610/1.0918 ms`. The report binds an exact 32-file sourceTrace Git-blob
 closure plus the executed binary/renderer closure. Tool existence or a
 focused test run is not a qualification result.
+
+On that clean base, the focused PlayerInfo plus
+`PanelHostHudCompanionTests` run is 136 passed + 3 opt-in skipped / 139 total;
+the complete Launcher run is 1,737 passed + 3 opt-in skipped / 1,740 total.
+Runtime Lane C is separately 11/11, exit 0, with 566 scalar assertions.
+Its guardrails remain a distinct `scripts=3 / unsafeCandidateCases=3` count
+and are not relabelled as additional homogeneous scalar assertions.
 
 The C# capture is deliberately opt-in. Run it twice against two empty absolute
 output directories after exact-SDK locked restore:
@@ -202,10 +217,13 @@ and one HP full-to-empty contact sheet. The manifest status is only
 `structural_capture_complete`, scope `fixture_only`; it explicitly excludes
 cross-renderer parity, a visual threshold, game composite, human acceptance,
 real UiData, and deployment. The final implementation-base A/B snapshots are
-complete 36-file closures and are byte-identical: each is 796,806 B with
-closure SHA-256 `53F019EB...47000`; the identical manifest is 162,661 B with
-SHA-256 `16B78FB3...66855`, and its 35-PNG output closure is
-634,145 B / `0263EFF7...F3D4`.
+complete 36-file closures and are byte-identical: each is 834,893 B with
+closure SHA-256
+`44C22A045B4CA0AC19C4ECB7664024E5C318E39B2290F1E8856C19F1F6BEE06F`;
+the identical manifest is 162,661 B with SHA-256
+`ADE926A6385BDB47D573061F2F0AF574DA6D93022F94C3E815137AB4C5EB4E08`,
+and its 35-PNG output closure is 672,232 B /
+`3C3901A64DFD4D3658D4BBC929B4D0DD54AE938DFD0C3289C4E4660C589A907E`.
 
 After producing the two Web reports below, run the direct-edge diagnostic once
 for each independent C#/Web pair. All paths must be repository-relative, each
@@ -229,16 +247,29 @@ The comparator validates exact case order, C#/Web canonical manifest identity,
 Flash candidate/receipt provenance, and Edge/Playwright identity. It emits 66
 diagnostic PNGs plus
 `csharp-web-flash-comparison-report.json` for the direct C#↔Web and C#↔Flash
-edges. Status remains `diagnostic_awaiting_human_review`: there is no threshold,
-Web↔Flash edge, transitive inference, parity verdict, or Flash-oracle
-acceptance. The final implementation-base Web A/B 12-file closures are
-byte-identical at 120,280 B / SHA-256 `2608142C...D1388`; both Web reports are
-5,485 B / `C6B6C8E7...BD38`. Both direct-edge runs emit the same 66-PNG
-closure, 1,449,236 B / `87EA77C8...E9668`. Their reports are 183,816 B and
-differ only because they retain distinct `-a/-b` input paths; report hashes
-are `963A16BD...2D2F6` and `23D012E6...3097D`. The exact final index is
-`evidence/b0-06/visual-evidence.json`; the pre-origin index remains historical
-evidence only.
+edges. This three-input report itself does not emit a Web↔Flash edge;
+`compare-flash-web-svg.js` below emits an independent supplemental diagnostic.
+Neither report provides a threshold, transitive inference, parity verdict, or
+Flash-oracle acceptance, so status remains `diagnostic_awaiting_human_review`.
+Web scope is exactly `canonical_static_svg_layers_only`; the Web
+captures do not include C# programmatic dynamic text or Glow. Consequently the
+C#↔Web metrics compare a full C# fixture composite with only those Web static
+layers and intentionally include that layer-scope difference.
+
+The final implementation-base Web A/B 12-file closures are byte-identical at
+120,439 B / SHA-256
+`2F18FAAB0D3490FF2F3DDEE632EE228ED709F924806D6577805418B1F579E6F6`;
+both 5,644 B Web reports have SHA-256
+`7826B89DAF49BFFF409B2CEC066B4D8853BF593EF1EA3675C88D3FCA9C8BF97F`.
+Both direct-edge runs emit the same 66-PNG closure, 1,470,180 B /
+`5207F27B2ACEE5E7A3F04D89EE627DEE6E4C58CBCD93F4AF975E778C5803C234`.
+Their 184,472 B reports differ only because they retain distinct `-a/-b` input
+paths; report hashes are
+`519CF97BC632F5F921C30ED64B81B80864F4C626D86885E8D9CB98CA319783C1`
+and
+`081B05E2E729A2C7E6C7987530C4D2D361B02E4DBD6C7CAC2E0F0F3F2E78B356`.
+The exact final index is `evidence/b0-06/visual-evidence.json`; the pre-origin
+index remains historical evidence only.
 
 ## Headless Web, FFDec, and Flash diagnostics
 
@@ -268,11 +299,24 @@ node tools/player-info-hud/compare-ffdec-web-svg.js `
   --ffdec=tmp/player-info-hud-ffdec-reference-fresh/ffdec-reference-report.json `
   --web=tmp/player-info-hud-web-canonical-a/web-render-report.json `
   --output=tmp/player-info-hud-ffdec-web-canonical-a
+
+node tools/player-info-hud/compare-ffdec-web-svg.js `
+  --ffdec=tmp/player-info-hud-ffdec-reference-fresh/ffdec-reference-report.json `
+  --web=tmp/player-info-hud-web-canonical-b/web-render-report.json `
+  --output=tmp/player-info-hud-ffdec-web-canonical-b
 ```
 
 The comparison emits composites, 50/50 overlays, absolute-difference
 heatmaps, and metrics without an acceptance threshold. FFDec does not execute
-Adobe Flash Player and is never equivalent to the Flash runtime oracle.
+Adobe Flash Player and is never equivalent to the Flash runtime oracle. The
+frozen final reference is a 23-file/22-PNG closure, 276,020 B, SHA-256
+`AEC84002B2D9C030BA8528B075D522486449290245122F28CE61D298EE287E59`;
+its 30,433 B report has SHA-256
+`069BFD2B12EF284F11B7F9937BCFC4B1D419D0772AF6DF5D1C733FF475784167`.
+The two FFDec↔Web runs each emit 33 byte-identical PNGs, 698,799 B, SHA-256
+`BC2A83D15AB6D918C0DEBE5DF22A5FE61B8D54E7B6040E1F0C6D50684629E08A`;
+their distinct-path reports are indexed in
+`evidence/b0-06/visual-evidence.json`.
 
 `compare-flash-web-svg.js` performs the analogous diagnostic against the
 actual Flash Player candidate's 1024×64 raw captures. A Flash candidate remains
@@ -284,7 +328,19 @@ node tools/player-info-hud/compare-flash-web-svg.js `
   --flash=tmp/player-info-hud/oracle/<run>/oracle-manifest.json `
   --web=tmp/player-info-hud-web-canonical-a/web-render-report.json `
   --output=tmp/player-info-hud-flash-web-canonical-a
+
+node tools/player-info-hud/compare-flash-web-svg.js `
+  --flash=tmp/player-info-hud/oracle/<run>/oracle-manifest.json `
+  --web=tmp/player-info-hud-web-canonical-b/web-render-report.json `
+  --output=tmp/player-info-hud-flash-web-canonical-b
 ```
+
+The two Flash-candidate↔Web runs likewise emit 33 byte-identical PNGs,
+661,944 B, SHA-256
+`6141D3870BC5ED6B40AD3C1FD19A11945D47C5973C6B1711F323220E778CC185`;
+their reports and hashes are frozen in the same final evidence index. This
+repeatability says nothing about acceptance of the still-unsigned Flash
+candidate.
 
 ## Acceptance boundary
 
@@ -292,10 +348,16 @@ Automated hashes and metrics can freeze structure and expose differences; they
 cannot promote a Flash candidate to `oracle_frozen`, assert visual parity, or
 accept the UI aesthetic. Only a human may sign those checks. Until then the
 B0-01B/B0-04 state is `awaiting_human_review`, and the old Flash HUD remains
-the active visual reference. In the 2026-07-29 agent session the computer-use
-connector could not initialize its native pipe (Windows error 2). Headless
-Playwright/Edge remains valid for deterministic Web and direct-edge rendering,
-and the formal runner exercises real HWND/ULW calls, but neither route proves a
-real hand click, desktop z-order over the running game, game-scene composite,
-or aesthetic quality. Those items remain mandatory human evidence even if the
-connector later becomes healthy.
+the active visual reference. In the later 2026-07-29 ChatGPT app session,
+Computer Use recovered initialization, window enumeration, explicit activation,
+and screenshot capture. It confirmed that Flash CS6 currently has
+`TestLoader.xfl` open and shows `Compile | done.`; the first occluded capture
+incorrectly returned the foreground ChatGPT window, while capture after explicit
+Flash activation was correct. Flash UIA exposes only the window/title bar, and
+there is no separate Test Movie/SWF window, so this proves the authoring target
+but not the SWF actually loaded at runtime. Headless Playwright/Edge remains
+valid for deterministic Web/direct-edge rendering, and the formal runner
+exercises real HWND/ULW calls with an offscreen owner. None of these routes
+proves visible desktop DWM composition, z-order/occlusion over the running game,
+a real hand click, game-scene composite, temporal smoothness, or aesthetic
+quality. Those items remain mandatory human evidence.
