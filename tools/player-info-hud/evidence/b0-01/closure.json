@@ -1,7 +1,7 @@
 {
   "format": "cf7.player-info-hud.placement-closure",
-  "formatVersion": 1,
-  "evidenceRevision": "b0-01a-r3",
+  "formatVersion": 2,
+  "evidenceRevision": "b0-01a-r4",
   "status": "placement_closure_frozen",
   "scope": {
     "xflRoot": "flashswf/UI/玩家信息界面",
@@ -28,7 +28,7 @@
       "mpBranchEdges": 5,
       "sharedDefinitionEdgesExpandedTwice": 1
     },
-    "selectionRule": "Start at the document placement of 玩家信息界面, follow only the placed sprite/主角hp显示界面 and sprite/主角mp显示界面 edges, then follow every descendant DOMSymbolInstance edge at every authored frame. Keep script-reachable stopped descendants. Do not expand sibling library items merely because DOMDocument.xml includes them.",
+    "selectionRule": "Resolve the linkage-exported library symbol 玩家信息界面, follow only its placed sprite/主角hp显示界面 and sprite/主角mp显示界面 edges, then follow every descendant DOMSymbolInstance edge at every authored frame. Independently retain the child DOMDocument stage placement as the standalone-document wrapper profile; it is not prepended to the main RSL imported-symbol profile. Keep script-reachable stopped descendants. Do not expand sibling library items merely because DOMDocument.xml includes them.",
     "notClaimed": [
       "oracle_frozen",
       "svg_parity",
@@ -47,7 +47,7 @@
     "rawWorktreeFields": "Diagnostic snapshot only; never used for closureDigest and allowed to differ on a fresh checkout with another core.autocrlf/EOL materialization."
   },
   "sourceAnchor": {
-    "reviewBaselineCommit": "2d89a78fdb2798dac03f6a18d5405dd1d9cdfce5",
+    "reviewBaselineCommit": "a8009f3baf0413c307f5dfda8b58974abd9d25ec",
     "sourceBinaryAnchorCommit": "9845dd9084f7b285dbbf1ed603dad7b201a6a324",
     "xflTreeOidAtReviewBaseline": "9cf7b65efcbd207f59588f28da833b9c5905be28",
     "xflTreeOidAtSourceBinaryAnchor": "9cf7b65efcbd207f59588f28da833b9c5905be28",
@@ -460,10 +460,23 @@
     ],
     "note": "transformationPoint and centerPoint3D are authoring pivots recorded separately; the placement matrix maps the library registration origin."
   },
-  "stagePlacementContracts": {
-    "documentRoot": {
-      "path": "_stage/玩家信息界面",
-      "matrix": [
+  "rootPlacementProfiles": {
+    "exportedSymbol": {
+      "sourcePath": "flashswf/UI/玩家信息界面/LIBRARY/玩家信息界面.xml",
+      "symbol": "玩家信息界面",
+      "linkageExportForAS": true,
+      "linkageIdentifier": "玩家信息界面",
+      "registrationOrigin": [
+        0,
+        0
+      ]
+    },
+    "standaloneChildDocumentWrapper": {
+      "profileId": "standalone_child_document_wrapper",
+      "usage": "Directly loading flashswf/UI/玩家信息界面.swf executes the child document timeline and therefore includes this authoring-only document wrapper. This is the profile captured by the historical TestLoader MovieClipLoader candidate; it is diagnostic and is not the main-game RSL placement.",
+      "mainRuntimeEquivalent": false,
+      "rootPath": "_stage/玩家信息界面",
+      "rootMatrix": [
         1,
         0,
         0,
@@ -474,19 +487,8 @@
       "transformationPoint": [
         499.65,
         36.6
-      ]
-    },
-    "hp": {
-      "path": "_stage/玩家信息界面/主角hp显示界面",
-      "localMatrix": [
-        0.847213745117188,
-        0,
-        0,
-        0.847213745117188,
-        37.75,
-        2.65
       ],
-      "composedStageMatrix": [
+      "hpComposedMatrix": [
         0.847213745117188,
         0,
         0,
@@ -494,32 +496,44 @@
         37.75,
         5.65
       ],
-      "transformationPoint": [
-        0,
-        0
-      ]
-    },
-    "mp": {
-      "path": "_stage/玩家信息界面/主角mp显示界面",
-      "localMatrix": [
-        1.0810546875,
-        0,
-        0,
-        1.0810546875,
-        90.1,
-        -4.3
-      ],
-      "composedStageMatrix": [
+      "mpComposedMatrix": [
         1.0810546875,
         0,
         0,
         1.0810546875,
         90.1,
         -1.3
-      ],
-      "transformationPoint": [
+      ]
+    },
+    "mainRslExportedSymbol": {
+      "profileId": "main_rsl_exported_symbol",
+      "usage": "CRAZYFLASHER7MercenaryEmpire imports linkageIdentifier 玩家信息界面 from the child RSL and places that exported symbol directly. Relative to the imported instance, the exported-symbol root is identity (ty=0); the child DOMDocument ty=3 wrapper is not part of this runtime path. The main-stage instance matrix ty=512 is recorded separately in source-binary-chain.json.",
+      "runtimeTruth": true,
+      "documentWrapperApplied": false,
+      "rootPath": "linkage:玩家信息界面",
+      "rootMatrix": [
+        1,
+        0,
+        0,
+        1,
         0,
         0
+      ],
+      "hpRelativeMatrix": [
+        0.847213745117188,
+        0,
+        0,
+        0.847213745117188,
+        37.75,
+        2.65
+      ],
+      "mpRelativeMatrix": [
+        1.0810546875,
+        0,
+        0,
+        1.0810546875,
+        90.1,
+        -4.3
       ]
     }
   },
@@ -1201,6 +1215,9 @@
     "allReferencedHpMpSymbolsResolved": true,
     "includedClosureBitmapFillCountIsZero": true,
     "scriptReachableStoppedDescendantsRetained": true,
+    "standaloneDocumentWrapperTyIsThree": true,
+    "mainRslExportedSymbolRootTyIsZero": true,
+    "standaloneCaptureIsNotMainRuntimeEquivalent": true,
     "placementClosureFrozen": true,
     "oracleFrozen": false
   }

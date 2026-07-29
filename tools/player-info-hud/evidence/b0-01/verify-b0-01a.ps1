@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..\..'))
 $ClosurePath = Join-Path $PSScriptRoot 'closure.json'
 $ChainPath = Join-Path $PSScriptRoot 'source-binary-chain.json'
-$ExpectedRevision = 'b0-01a-r3'
+$ExpectedRevision = 'b0-01a-r4'
 $ExpectedDigest = '6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368'
 $ExpectedAnchor = '9845dd9084f7b285dbbf1ed603dad7b201a6a324'
 $XflRoot = 'flashswf/UI/玩家信息界面'
@@ -420,6 +420,8 @@ try {
     Assert-True (Test-Path -LiteralPath $ChainPath -PathType Leaf) 'source-binary-chain.json missing'
     $closure = Get-Content -LiteralPath $ClosurePath -Raw -Encoding UTF8 | ConvertFrom-Json
     $chain = Get-Content -LiteralPath $ChainPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    Assert-True ([int]$closure.formatVersion -eq 2) 'closure format version mismatch'
+    Assert-True ([int]$chain.formatVersion -eq 2) 'chain format version mismatch'
     Assert-True ($closure.evidenceRevision -eq $ExpectedRevision) 'closure evidence revision mismatch'
     Assert-True ($chain.evidenceRevision -eq $ExpectedRevision) 'chain evidence revision mismatch'
     Assert-True ($closure.status -eq 'placement_closure_frozen') 'closure status mismatch'
@@ -434,6 +436,9 @@ try {
         'allReferencedHpMpSymbolsResolved',
         'includedClosureBitmapFillCountIsZero',
         'scriptReachableStoppedDescendantsRetained',
+        'standaloneDocumentWrapperTyIsThree',
+        'mainRslExportedSymbolRootTyIsZero',
+        'standaloneCaptureIsNotMainRuntimeEquivalent',
         'placementClosureFrozen'
     )) {
         Assert-True ([bool]$closure.assertions.$assertionName) (
@@ -458,6 +463,13 @@ try {
     Assert-True ($stageRoots.Count -eq 1) "expected one placed 玩家信息界面 stage root, got $($stageRoots.Count)"
     Assert-True ($libraryMap.ContainsKey($PlayerInfoSymbol)) '玩家信息界面 library symbol missing'
     $playerInfoDocument = $libraryMap[$PlayerInfoSymbol].Document
+    $playerInfoRoot = $playerInfoDocument.DocumentElement
+    Assert-True ($playerInfoRoot.GetAttribute('linkageExportForAS') -eq 'true') (
+        '玩家信息界面 must be linkage-exported by the child RSL'
+    )
+    Assert-True ($playerInfoRoot.GetAttribute('linkageIdentifier') -eq $PlayerInfoSymbol) (
+        '玩家信息界面 child linkage identifier mismatch'
+    )
     $hpPlacements = @($playerInfoDocument.SelectNodes(
         '//*[local-name()="DOMSymbolInstance" and @libraryItemName="sprite/主角hp显示界面"]'
     ))
@@ -643,6 +655,100 @@ try {
             "exportAsBitmap mismatch: $($expected.id)"
         )
     }
+
+    # Keep the directly loaded child document wrapper separate from the exported
+    # symbol that the main RSL import instantiates. The former contributes ty=3;
+    # the latter starts at identity relative to the main placed instance.
+    $stageRootFact = New-PlacementFact -Source '_stage' -Instance $stageRoots[0]
+    $hpRootFact = New-PlacementFact -Source $PlayerInfoSymbol -Instance $hpPlacements[0]
+    $mpRootFact = New-PlacementFact -Source $PlayerInfoSymbol -Instance $mpPlacements[0]
+    $profiles = $closure.rootPlacementProfiles
+    $exportedSymbol = $profiles.exportedSymbol
+    Assert-True ([string]$exportedSymbol.sourcePath -eq $libraryMap[$PlayerInfoSymbol].Path) (
+        'exported-symbol source path mismatch'
+    )
+    Assert-True ([string]$exportedSymbol.symbol -eq $PlayerInfoSymbol) (
+        'exported-symbol name mismatch'
+    )
+    Assert-True ([bool]$exportedSymbol.linkageExportForAS) (
+        'exported-symbol contract must declare linkageExportForAS'
+    )
+    Assert-True ([string]$exportedSymbol.linkageIdentifier -eq $PlayerInfoSymbol) (
+        'exported-symbol contract linkage identifier mismatch'
+    )
+    Assert-NumberArrayEqual @($exportedSymbol.registrationOrigin) @(0, 0) (
+        'exported-symbol registration origin'
+    )
+
+    $standaloneProfile = $profiles.standaloneChildDocumentWrapper
+    Assert-True (
+        [string]$standaloneProfile.profileId -eq 'standalone_child_document_wrapper'
+    ) 'standalone placement profile ID mismatch'
+    Assert-True (-not [bool]$standaloneProfile.mainRuntimeEquivalent) (
+        'standalone child document wrapper must not claim main-runtime equivalence'
+    )
+    Assert-NumberArrayEqual @($standaloneProfile.rootMatrix) @($stageRootFact.Matrix) (
+        'standalone child document root matrix'
+    )
+    Assert-NumberArrayEqual @($standaloneProfile.transformationPoint) @(
+        $stageRootFact.TransformationPoint
+    ) 'standalone child document transformation point'
+    Assert-NumberArrayEqual @($standaloneProfile.hpComposedMatrix)[0..4] @(
+        $hpRootFact.Matrix
+    )[0..4] 'standalone child HP composed matrix non-y components'
+    Assert-True (
+        [math]::Abs(
+            [double]($standaloneProfile.hpComposedMatrix[5]) -
+            (
+                [double]($stageRootFact.Matrix[5]) +
+                [double]($hpRootFact.Matrix[5])
+            )
+        ) -le 0.000000000001
+    ) 'standalone child HP composed ty mismatch'
+    Assert-NumberArrayEqual @($standaloneProfile.mpComposedMatrix)[0..4] @(
+        $mpRootFact.Matrix
+    )[0..4] 'standalone child MP composed matrix non-y components'
+    Assert-True (
+        [math]::Abs(
+            [double]($standaloneProfile.mpComposedMatrix[5]) -
+            (
+                [double]($stageRootFact.Matrix[5]) +
+                [double]($mpRootFact.Matrix[5])
+            )
+        ) -le 0.000000000001
+    ) 'standalone child MP composed ty mismatch'
+    Assert-True ([double]$standaloneProfile.rootMatrix[5] -eq 3) (
+        'standalone child document wrapper ty must be 3'
+    )
+
+    $mainRslProfile = $profiles.mainRslExportedSymbol
+    Assert-True ([string]$mainRslProfile.profileId -eq 'main_rsl_exported_symbol') (
+        'main RSL placement profile ID mismatch'
+    )
+    Assert-True ([bool]$mainRslProfile.runtimeTruth) (
+        'main RSL placement profile must be marked runtime truth'
+    )
+    Assert-True (-not [bool]$mainRslProfile.documentWrapperApplied) (
+        'main RSL placement must not apply the standalone document wrapper'
+    )
+    Assert-NumberArrayEqual @($mainRslProfile.rootMatrix) @(1, 0, 0, 1, 0, 0) (
+        'main RSL exported-symbol root matrix'
+    )
+    Assert-NumberArrayEqual @($mainRslProfile.hpRelativeMatrix) @($hpRootFact.Matrix) (
+        'main RSL HP relative matrix'
+    )
+    Assert-NumberArrayEqual @($mainRslProfile.mpRelativeMatrix) @($mpRootFact.Matrix) (
+        'main RSL MP relative matrix'
+    )
+    Assert-True ([double]$mainRslProfile.rootMatrix[5] -eq 0) (
+        'main RSL exported-symbol root ty must be 0'
+    )
+    Assert-True ([double]$mainRslProfile.hpRelativeMatrix[5] -eq 2.65) (
+        'main RSL HP relative ty must be 2.65'
+    )
+    Assert-True ([double]$mainRslProfile.mpRelativeMatrix[5] -eq -4.3) (
+        'main RSL MP relative ty must be -4.3'
+    )
     $hpLoadScript = @(@($hpPlacements[0].SelectNodes(
         './*[local-name()="Actionscript"]/*[local-name()="script"]'
     )) | ForEach-Object { $_.InnerText })
@@ -856,7 +962,50 @@ try {
         Assert-NumberArrayEqual @($mainFact.TransformationPoint) @($declaredMain.transformationPoint) (
             "main transformation point at $revision"
         )
+        $chainMainProfile = $chain.runtimeRelationship.placementProfiles.mainRslExportedSymbol
+        Assert-NumberArrayEqual @($chainMainProfile.mainStageInstanceMatrix) @($mainFact.Matrix) (
+            "main RSL profile stage matrix at $revision"
+        )
     }
+
+    $chainStandaloneProfile =
+        $chain.runtimeRelationship.placementProfiles.standaloneChildDocumentWrapper
+    $chainMainProfile =
+        $chain.runtimeRelationship.placementProfiles.mainRslExportedSymbol
+    Assert-True (
+        [string]$chainStandaloneProfile.profileId -eq
+            [string]$standaloneProfile.profileId
+    ) 'closure/chain standalone placement profile ID mismatch'
+    Assert-True (-not [bool]$chainStandaloneProfile.mainRuntimeEquivalent) (
+        'chain standalone placement profile must not claim main-runtime equivalence'
+    )
+    Assert-NumberArrayEqual @($chainStandaloneProfile.documentWrapperMatrix) @(
+        $standaloneProfile.rootMatrix
+    ) 'closure/chain standalone wrapper matrix'
+    Assert-NumberArrayEqual @($chainStandaloneProfile.hpRelativeToLoadedChildStage) @(
+        $standaloneProfile.hpComposedMatrix
+    ) 'closure/chain standalone HP matrix'
+    Assert-NumberArrayEqual @($chainStandaloneProfile.mpRelativeToLoadedChildStage) @(
+        $standaloneProfile.mpComposedMatrix
+    ) 'closure/chain standalone MP matrix'
+    Assert-True (
+        [string]$chainMainProfile.profileId -eq [string]$mainRslProfile.profileId
+    ) 'closure/chain main RSL placement profile ID mismatch'
+    Assert-True ([bool]$chainMainProfile.runtimeTruth) (
+        'chain main RSL placement profile must be marked runtime truth'
+    )
+    Assert-True (-not [bool]$chainMainProfile.childDocumentWrapperApplied) (
+        'chain main RSL placement must not apply the child document wrapper'
+    )
+    Assert-NumberArrayEqual @($chainMainProfile.exportedSymbolRootMatrixWithinMainInstance) @(
+        $mainRslProfile.rootMatrix
+    ) 'closure/chain main RSL root matrix'
+    Assert-NumberArrayEqual @($chainMainProfile.hpRelativeToMainInstance) @(
+        $mainRslProfile.hpRelativeMatrix
+    ) 'closure/chain main RSL HP matrix'
+    Assert-NumberArrayEqual @($chainMainProfile.mpRelativeToMainInstance) @(
+        $mainRslProfile.mpRelativeMatrix
+    ) 'closure/chain main RSL MP matrix'
 
     # Anchor commit metadata and binary identities are regenerated from Git.
     Assert-True ($chain.sourceBinaryAnchorCommit.commit -eq $ExpectedAnchor) 'chain anchor commit mismatch'
@@ -984,6 +1133,12 @@ try {
     Assert-True (-not [bool]$conclusions.actualCaptureProcessLoadVerified) (
         'B0-01A must not claim actual capture process-load verification'
     )
+    Assert-True ([bool]$conclusions.mainRslPlacementContractVerified) (
+        'B0-01A must record the verified main RSL placement contract'
+    )
+    Assert-True (-not [bool]$conclusions.standaloneCaptureEquivalentToMainRsl) (
+        'standalone child capture must not claim main RSL equivalence'
+    )
     Assert-True (-not [bool]$conclusions.oracleFrozen) 'B0-01A must not claim oracle_frozen'
     Assert-True ([string]$conclusions.allowedStatus -eq 'placement_closure_frozen') (
         'allowed status conclusion mismatch'
@@ -1006,6 +1161,13 @@ try {
         [string]$captureLoader.childPathToVerify -eq 'flashswf/UI/玩家信息界面.swf'
     ) 'capture child path contract mismatch'
     Assert-True (
+        [string]$captureLoader.capturePlacementProfile -eq
+            'standalone_child_document_wrapper'
+    ) 'capture placement profile contract mismatch'
+    Assert-True (-not [bool]$captureLoader.capturesMainRslPlacement) (
+        'planned direct-child capture must not claim the main RSL placement'
+    )
+    Assert-True (
         [bool]$chain.reviewBaseline.relevantTrackedPathsMatchHeadInIndexAndAfterCleanFilter
     ) 'tracked-path clean binding conclusion must be true'
 
@@ -1020,6 +1182,11 @@ try {
         "sourceBinary=childSame:true,mainSame:false,asLoaderSame:false; " +
         "mainImport=head+anchor; sourceLinks=6/6; scriptSemantics=5/5; " +
         "rawDiagnosticDrift=$rawDiagnosticDrift"
+    )
+    Write-Output (
+        'placementProfiles=standalone_child_document_wrapper:' +
+        'mainRuntimeEquivalent=false,rootTy=3,hpTy=5.65,mpTy=-1.3;' +
+        'main_rsl_exported_symbol:runtimeTruth=true,rootTy=0,hpTy=2.65,mpTy=-4.3'
     )
     Write-Output 'status=placement_closure_frozen; oracleFrozen=false'
 }

@@ -9,8 +9,8 @@ param(
     [int]$CompileTimeoutSeconds = 240,
 
     [Parameter(ParameterSetName = 'Capture')]
-    [ValidateRange(30, 600)]
-    [int]$CaptureTimeoutSeconds = 180,
+    [ValidateRange(30, 1800)]
+    [int]$CaptureTimeoutSeconds = 600,
 
     [Parameter(ParameterSetName = 'Capture')]
     [ValidatePattern('^[0-9A-Fa-f]{64}$')]
@@ -48,6 +48,8 @@ $compileOutputPath = Join-Path $scriptsDir 'compile_output.txt'
 $compilerErrorsPath = Join-Path $scriptsDir 'compiler_errors.txt'
 $uiSwfRelativePath = 'flashswf/UI/玩家信息界面.swf'
 $uiSwfPath = Join-Path $projectDir 'flashswf\UI\玩家信息界面.swf'
+$mainSwfRelativePath = 'CRAZYFLASHER7MercenaryEmpire.swf'
+$mainSwfPath = Join-Path $projectDir 'CRAZYFLASHER7MercenaryEmpire.swf'
 $playerLogicalPath =
     'FlashCS6Task/Players/Debug/FlashPlayerDebugger.exe'
 $playerPath = $null
@@ -687,6 +689,8 @@ function Assert-OracleTemplate {
     }
     $required = @(
         'var __pioRuntimeUrl:String = "../flashswf/UI/玩家信息界面.swf"',
+        'var __pioCanvasHeight:Number = 576',
+        'var __pioMainPlacementY:Number = 512',
         'var __pioPartChars:Number = 720',
         '#include "展现/UI交互/UI交互_fs_玩家信息界面.as"',
         '_root._quality = "MEDIUM"',
@@ -701,12 +705,24 @@ function Assert-OracleTemplate {
         'runtimeUrlEscaped=',
         'new BitmapData(',
         '0x00000000',
-        'bitmap.draw(__pioHolder, new Matrix())',
+        'bitmap.draw(',
+        '__pioUi,',
+        'new Matrix(1, 0, 0, 1, 0, __pioMainPlacementY)',
+        'placementProfile=main_rsl_exported_symbol_equivalent',
+        'referencePlacementProfile=main_rsl_exported_symbol',
+        'extractionMode=loaded_child_exported_symbol_instance',
+        'mainParticipatesInCapture=0',
+        'mainBinaryRole=identity_chain_reference_only',
+        'childDocumentWrapperApplied=0',
+        'exportedSymbolRootTy=0',
         '"PART"',
+        '"CLEAR"',
         '|partCount=',
         '|b64=',
         'partsPerRow=8',
         'partRecordMaxChars=1000',
+        'zeroRowRecord=CLEAR',
+        'zeroRowArgb=00000000',
         'HP当前值',
         'MP数据显示',
         '网格动画',
@@ -721,8 +737,11 @@ function Assert-OracleTemplate {
     }
     if ($source -match '\bCHUNK\b' -or
         $source -match 'childUrlMatched' -or
-        $source -match 'indexOf\("玩家信息界面\.swf"\)') {
-        throw 'Oracle template retains an obsolete CHUNK or filename-substring binding.'
+        $source -match 'indexOf\("玩家信息界面\.swf"\)' -or
+        $source -match 'bitmap\.draw\(__pioHolder') {
+        throw (
+            'Oracle template retains an obsolete CHUNK, filename-substring ' +
+            'binding, or standalone document-wrapper draw.')
     }
     $expectedTemplateCases = @(
         [pscustomobject]@{ caseId = 'empty'; hp = 0; mp = 0 },
@@ -784,7 +803,7 @@ function Assert-OracleTemplate {
     }
     $worstPartLine = (
         'PLAYER_INFO_ORACLE|PART|runId=' + ('f' * 32) +
-        '|caseId=min_step|row=63|part=7|partCount=8|b64=' + ('A' * 720))
+        '|caseId=min_step|row=575|part=7|partCount=8|b64=' + ('A' * 720))
     if ($worstPartLine.Length -gt 1000 -or
         $worstPartLine -match '[^\x00-\x7F]') {
         throw 'Static PART boundary proof exceeds 1000 ASCII characters.'
@@ -845,6 +864,15 @@ function Assert-RunnerStaticContract {
         'canonicalRunSummary',
         'captureTooling',
         'strictToolIdentity',
+        'cf7.player_info.flash_oracle_manifest.v2',
+        'cf7.player_info.flash_oracle_candidate_receipt.v2',
+        'main-identity-reference.swf',
+        'identity_chain_reference_only',
+        'main_rsl_exported_symbol_equivalent',
+        'Test-PlayerInfoOracleContractMember',
+        'Assert-PlayerInfoOracleV2ManifestContract',
+        'Assert-PlayerInfoOracleV2ReceiptContract',
+        'Invoke-PlayerInfoOracleV2ArtifactContractSelfTest',
         'restoredSwfIdentityVerifiedUnderMutex',
         'Assert-CandidateSnapshotSet',
         'compile-output.txt',
@@ -859,6 +887,10 @@ function Assert-RunnerStaticContract {
     if ([regex]::Matches(
             $source, '(?m)^\s*\$ownedPlayer\s*=\s*Start-Process\b').Count -ne 1) {
         throw 'Capture runner must start exactly one owned player process.'
+    }
+    if ($source -match 'flash_oracle_manifest\.v1' -or
+        $source -match 'flash_oracle_candidate_receipt\.v1') {
+        throw 'Capture runner retains a historical v1 manifest or receipt schema.'
     }
     $authoringDefinition =
         (Get-Command Get-FlashAuthoringIdentity -ErrorAction Stop).Definition
@@ -1180,16 +1212,35 @@ function Assert-StrictCaptureToolingCurrent {
     }
 }
 
+function Assert-ExactNumberArray {
+    param(
+        [Parameter(Mandatory = $true)][object[]]$Actual,
+        [Parameter(Mandatory = $true)][object[]]$Expected,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+
+    if ($Actual.Count -ne $Expected.Count) {
+        throw "$Label length mismatch."
+    }
+    for ($index = 0; $index -lt $Actual.Count; $index++) {
+        if ([math]::Abs(
+                [double]($Actual[$index]) -
+                [double]($Expected[$index])) -gt 0.000000000001) {
+            throw "$Label differs at index $index."
+        }
+    }
+}
+
 function Assert-B001CaptureEvidence {
     $closure = [System.IO.File]::ReadAllText(
         $closurePath, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
     $chain = [System.IO.File]::ReadAllText(
         $chainPath, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
     if ([string]$closure.format -cne 'cf7.player-info-hud.placement-closure' -or
-        [int]$closure.formatVersion -ne 1 -or
-        [string]$closure.evidenceRevision -cne 'b0-01a-r3' -or
+        [int]$closure.formatVersion -ne 2 -or
+        [string]$closure.evidenceRevision -cne 'b0-01a-r4' -or
         [string]$closure.status -cne 'placement_closure_frozen') {
-        throw 'B0-01A closure evidence is not the frozen r3 contract.'
+        throw 'B0-01A closure evidence is not the frozen r4 contract.'
     }
     $files = @($closure.files)
     if ($files.Count -ne 16 -or [int]$closure.scope.fileCount -ne 16) {
@@ -1249,19 +1300,56 @@ function Assert-B001CaptureEvidence {
         }
         if ($reproducedDigest -cne
             '6f4bf9f36563c1bd16993c7472c4ebf49321852ab19eebb0bdf6b58df9264368') {
-            throw 'B0-01A Git-canonical closure digest is not the reviewed r3 digest.'
+            throw 'B0-01A Git-canonical closure digest is not the reviewed r4 digest.'
         }
     }
 
+    $standaloneProfile =
+        $closure.rootPlacementProfiles.standaloneChildDocumentWrapper
+    $mainRslProfile = $closure.rootPlacementProfiles.mainRslExportedSymbol
+    if ([string]$standaloneProfile.profileId -cne
+            'standalone_child_document_wrapper' -or
+        [bool]$standaloneProfile.mainRuntimeEquivalent -or
+        [string]$mainRslProfile.profileId -cne
+            'main_rsl_exported_symbol' -or
+        -not [bool]$mainRslProfile.runtimeTruth -or
+        [bool]$mainRslProfile.documentWrapperApplied) {
+        throw 'B0-01A r4 placement-profile identities drifted.'
+    }
+    Assert-ExactNumberArray `
+        -Actual @($standaloneProfile.rootMatrix) `
+        -Expected @(1, 0, 0, 1, 0, 3) `
+        -Label 'B0-01A standalone child wrapper matrix'
+    Assert-ExactNumberArray `
+        -Actual @($standaloneProfile.hpComposedMatrix) `
+        -Expected @(0.847213745117188, 0, 0, 0.847213745117188, 37.75, 5.65) `
+        -Label 'B0-01A standalone child HP matrix'
+    Assert-ExactNumberArray `
+        -Actual @($standaloneProfile.mpComposedMatrix) `
+        -Expected @(1.0810546875, 0, 0, 1.0810546875, 90.1, -1.3) `
+        -Label 'B0-01A standalone child MP matrix'
+    Assert-ExactNumberArray `
+        -Actual @($mainRslProfile.rootMatrix) `
+        -Expected @(1, 0, 0, 1, 0, 0) `
+        -Label 'B0-01A main RSL exported-symbol root matrix'
+    Assert-ExactNumberArray `
+        -Actual @($mainRslProfile.hpRelativeMatrix) `
+        -Expected @(0.847213745117188, 0, 0, 0.847213745117188, 37.75, 2.65) `
+        -Label 'B0-01A main RSL HP matrix'
+    Assert-ExactNumberArray `
+        -Actual @($mainRslProfile.mpRelativeMatrix) `
+        -Expected @(1.0810546875, 0, 0, 1.0810546875, 90.1, -4.3) `
+        -Label 'B0-01A main RSL MP matrix'
+
     if ([string]$chain.format -cne 'cf7.player-info-hud.source-binary-chain' -or
-        [int]$chain.formatVersion -ne 1 -or
-        [string]$chain.evidenceRevision -cne 'b0-01a-r3' -or
+        [int]$chain.formatVersion -ne 2 -or
+        [string]$chain.evidenceRevision -cne 'b0-01a-r4' -or
         [string]$chain.status -cne 'repository_ancestry_verified' -or
         -not [bool]$chain.reviewBaseline.
             relevantTrackedPathsMatchHeadInIndexAndAfterCleanFilter -or
         -not [bool]$chain.conclusions.repositoryAncestryVerified -or
         [bool]$chain.conclusions.reproducibleBuildReceiptPresent) {
-        throw 'B0-01A source-binary chain is not the ancestry-only r3 contract.'
+        throw 'B0-01A source-binary chain is not the ancestry-only r4 contract.'
     }
     $captureLoader = $chain.runtimeRelationship.captureLoaderContract
     if ([string]$captureLoader.plannedLoaderPath -cne 'scripts/TestLoader.swf' -or
@@ -1269,12 +1357,54 @@ function Assert-B001CaptureEvidence {
         [bool]$captureLoader.mainParticipatesInCapture -or
         [bool]$captureLoader.asLoaderParticipatesInCapture -or
         [string]$captureLoader.childPathToVerify -cne $uiSwfRelativePath -or
+        [string]$captureLoader.capturePlacementProfile -cne
+            'standalone_child_document_wrapper' -or
+        [bool]$captureLoader.capturesMainRslPlacement -or
         [bool]$chain.conclusions.actualCaptureProcessLoadVerified -or
+        -not [bool]$chain.conclusions.mainRslPlacementContractVerified -or
+        [bool]$chain.conclusions.standaloneCaptureEquivalentToMainRsl -or
         [bool]$chain.conclusions.oracleFrozen -or
         [string]$chain.conclusions.allowedStatus -cne
             'placement_closure_frozen') {
-        throw 'B0-01A r3 capture-loader handoff contract drifted.'
+        throw 'B0-01A r4 capture-loader handoff contract drifted.'
     }
+    $chainStandalone =
+        $chain.runtimeRelationship.placementProfiles.standaloneChildDocumentWrapper
+    $chainMainRsl =
+        $chain.runtimeRelationship.placementProfiles.mainRslExportedSymbol
+    if ([string]$chainStandalone.profileId -cne
+            [string]$standaloneProfile.profileId -or
+        [bool]$chainStandalone.mainRuntimeEquivalent -or
+        [string]$chainMainRsl.profileId -cne
+            [string]$mainRslProfile.profileId -or
+        -not [bool]$chainMainRsl.runtimeTruth -or
+        [bool]$chainMainRsl.childDocumentWrapperApplied) {
+        throw 'B0-01A closure/source-binary placement profiles disagree.'
+    }
+    Assert-ExactNumberArray `
+        -Actual @($chainStandalone.documentWrapperMatrix) `
+        -Expected @($standaloneProfile.rootMatrix) `
+        -Label 'B0-01A chain standalone wrapper matrix'
+    Assert-ExactNumberArray `
+        -Actual @($chainStandalone.hpRelativeToLoadedChildStage) `
+        -Expected @($standaloneProfile.hpComposedMatrix) `
+        -Label 'B0-01A chain standalone HP matrix'
+    Assert-ExactNumberArray `
+        -Actual @($chainStandalone.mpRelativeToLoadedChildStage) `
+        -Expected @($standaloneProfile.mpComposedMatrix) `
+        -Label 'B0-01A chain standalone MP matrix'
+    Assert-ExactNumberArray `
+        -Actual @($chainMainRsl.exportedSymbolRootMatrixWithinMainInstance) `
+        -Expected @($mainRslProfile.rootMatrix) `
+        -Label 'B0-01A chain main RSL root matrix'
+    Assert-ExactNumberArray `
+        -Actual @($chainMainRsl.hpRelativeToMainInstance) `
+        -Expected @($mainRslProfile.hpRelativeMatrix) `
+        -Label 'B0-01A chain main RSL HP matrix'
+    Assert-ExactNumberArray `
+        -Actual @($chainMainRsl.mpRelativeToMainInstance) `
+        -Expected @($mainRslProfile.mpRelativeMatrix) `
+        -Label 'B0-01A chain main RSL MP matrix'
     $child = @($chain.binaries | Where-Object {
         [string]$_.role -ceq 'child' -and
         [string]$_.path -ceq $uiSwfRelativePath
@@ -1286,6 +1416,18 @@ function Assert-B001CaptureEvidence {
         [string]$child[0].reviewBaseline.sha256).ToUpperInvariant()
     if ($chainUiHash -cne (Get-PathSha256 -Path $uiSwfPath)) {
         throw 'Current child SWF does not match B0-01A source-binary ancestry.'
+    }
+    $main = @($chain.binaries | Where-Object {
+        [string]$_.role -ceq 'main' -and
+        [string]$_.path -ceq $mainSwfRelativePath
+    })
+    if ($main.Count -ne 1) {
+        throw 'B0-01A source-binary chain has no unique main identity entry.'
+    }
+    $chainMainHash = (
+        [string]$main[0].reviewBaseline.sha256).ToUpperInvariant()
+    if ($chainMainHash -cne (Get-PathSha256 -Path $mainSwfPath)) {
+        throw 'Current main SWF does not match B0-01A identity-chain evidence.'
     }
     $formula = @($chain.sourceLinkEvidence | Where-Object {
         [string]$_.path -ceq $formulaRelativePath
@@ -1315,6 +1457,308 @@ function Assert-B001CaptureEvidence {
         gitCanonicalSchema = $hasGitCanonicalFields
         authoredDefinitionEdges = 17
         pathExpandedRuntimeEdges = 18
+        capturePlacementProfile = 'main_rsl_exported_symbol_equivalent'
+        captureReferencePlacementProfile = [string]$mainRslProfile.profileId
+        captureMainRslPlacementEquivalent = $true
+        captureExtractionMode = 'loaded_child_exported_symbol_instance'
+        captureMainParticipates = $false
+        captureMainBinaryRole = 'identity_chain_reference_only'
+        captureChildDocumentWrapperApplied = $false
+        captureExportedSymbolRootTy = 0
+        captureMainPlacementY = 512
+        captureCanvas = @(1024, 576)
+        chainMainSha256 = $chainMainHash
+        standaloneDocumentWrapperMatrix = @($standaloneProfile.rootMatrix)
+        mainRslPlacementProfile = [string]$mainRslProfile.profileId
+        mainRslExportedSymbolRootMatrix = @($mainRslProfile.rootMatrix)
+        mainRslHpRelativeMatrix = @($mainRslProfile.hpRelativeMatrix)
+        mainRslMpRelativeMatrix = @($mainRslProfile.mpRelativeMatrix)
+    }
+}
+
+function Test-PlayerInfoOracleContractMember {
+    param(
+        [Parameter(Mandatory = $true)]$Value,
+        [Parameter(Mandatory = $true)][string]$Name
+    )
+
+    if ($Value -is [System.Collections.IDictionary]) {
+        return [bool]$Value.Contains($Name)
+    }
+    return $null -ne $Value.PSObject.Properties[$Name]
+}
+
+function Assert-PlayerInfoOracleV2ManifestContract {
+    param([Parameter(Mandatory = $true)]$Manifest)
+
+    if ([string]$Manifest.schema -cne
+            'cf7.player_info.flash_oracle_manifest.v2' -or
+        [string]$Manifest.status -cne 'candidate' -or
+        -not [bool]$Manifest.requiresHumanReview) {
+        throw 'Flash oracle manifest is not the current v2 candidate contract.'
+    }
+    $placement = $Manifest.source.placementClosure
+    if ([string]$placement.capturedPlacementProfile -cne
+            'main_rsl_exported_symbol_equivalent' -or
+        [string]$placement.referencePlacementProfile -cne
+            'main_rsl_exported_symbol' -or
+        -not [bool]$placement.mainRslPlacementEquivalent -or
+        [string]$placement.extractionMode -cne
+            'loaded_child_exported_symbol_instance' -or
+        [bool]$placement.mainParticipatesInCapture -or
+        [string]$placement.mainBinaryRole -cne
+            'identity_chain_reference_only' -or
+        [bool]$placement.childDocumentWrapperApplied -or
+        [int]$placement.exportedSymbolRootTy -ne 0 -or
+        [int]$placement.mainPlacementY -ne 512 -or
+        (Test-PlayerInfoOracleContractMember `
+            -Value $placement -Name 'mainRuntimeEquivalent')) {
+        throw 'Flash oracle manifest placement semantics drifted from v2.'
+    }
+    $loader = $Manifest.source.captureLoaderContract
+    if (-not [bool]$loader.actualCaptureLoaderVerified -or
+        [string]$loader.actualLoaderPath -cne 'scripts/TestLoader.swf' -or
+        [string]$loader.childPathVerified -cne $uiSwfRelativePath -or
+        [string]$loader.placementProfile -cne
+            'main_rsl_exported_symbol_equivalent' -or
+        [string]$loader.referencePlacementProfile -cne
+            'main_rsl_exported_symbol' -or
+        [string]$loader.extractionMode -cne
+            'loaded_child_exported_symbol_instance' -or
+        -not [bool]$loader.mainRslPlacementEquivalent -or
+        [bool]$loader.mainParticipatesInCapture -or
+        [string]$loader.mainBinaryRole -cne
+            'identity_chain_reference_only' -or
+        [bool]$loader.asLoaderParticipatesInCapture -or
+        [bool]$loader.childDocumentWrapperApplied -or
+        [int]$loader.exportedSymbolRootTy -ne 0 -or
+        [int]$loader.mainPlacementY -ne 512) {
+        throw 'Flash oracle manifest capture-loader semantics drifted from v2.'
+    }
+    $main = $Manifest.source.mainSwf
+    if ([string]$main.path -cne $mainSwfRelativePath -or
+        [string]$main.executionRole -cne
+            'identity_chain_reference_only' -or
+        [bool]$main.mainParticipatesInCapture -or
+        [string]$main.sha256 -notmatch '^[0-9A-F]{64}$') {
+        throw 'Flash oracle manifest main identity-only binding drifted.'
+    }
+    $canvas = $Manifest.capture.canvas
+    if ([int]$canvas.width -ne 1024 -or
+        [int]$canvas.height -ne 576 -or
+        [string]$canvas.coordinateSpace -cne 'main_stage' -or
+        [string]$canvas.source -cne
+            'loaded_child_exported_symbol_instance' -or
+        [bool]$canvas.childDocumentWrapperApplied -or
+        [string]$canvas.pixelFormat -cne 'straight_argb32' -or
+        [string]$canvas.background -cne 'transparent_argb_0') {
+        throw 'Flash oracle manifest canvas semantics drifted from v2.'
+    }
+    Assert-ExactNumberArray `
+        -Actual @($canvas.matrix) `
+        -Expected @(1, 0, 0, 1, 0, 512) `
+        -Label 'Flash oracle v2 main-space draw matrix'
+    Assert-ExactNumberArray `
+        -Actual @($canvas.contentViewport) `
+        -Expected @(0, 0, 1024, 576) `
+        -Label 'Flash oracle v2 main content viewport'
+    Assert-ExactNumberArray `
+        -Actual @($canvas.sourceDocumentInstanceMatrix) `
+        -Expected @(1, 0, 0, 1, 0, 3) `
+        -Label 'Flash oracle v2 source document instance matrix'
+    if (@($Manifest.capture.cases).Count -ne 11) {
+        throw 'Flash oracle v2 manifest must contain exactly eleven cases.'
+    }
+    foreach ($case in @($Manifest.capture.cases)) {
+        if ([int]$case.raw.width -ne 1024 -or
+            [int]$case.raw.height -ne 576 -or
+            [int]$case.crop.rectangle.x -lt 0 -or
+            [int]$case.crop.rectangle.y -lt 0 -or
+            [int]$case.crop.rectangle.width -le 0 -or
+            [int]$case.crop.rectangle.height -le 0 -or
+            ([int]$case.crop.rectangle.x +
+                [int]$case.crop.rectangle.width) -gt 1024 -or
+            ([int]$case.crop.rectangle.y +
+                [int]$case.crop.rectangle.height) -gt 576) {
+            throw "Flash oracle v2 case geometry is invalid: $($case.caseId)"
+        }
+    }
+}
+
+function Assert-PlayerInfoOracleV2ReceiptContract {
+    param(
+        [Parameter(Mandatory = $true)]$Receipt,
+        [Parameter(Mandatory = $true)][string]$ManifestSha256
+    )
+
+    if ([string]$Receipt.schema -cne
+            'cf7.player_info.flash_oracle_candidate_receipt.v2' -or
+        [string]$Receipt.status -cne 'candidate_ready_after_restore' -or
+        [string]$Receipt.manifest.schema -cne
+            'cf7.player_info.flash_oracle_manifest.v2' -or
+        [string]$Receipt.manifest.sha256 -cne $ManifestSha256 -or
+        [string]$Receipt.placement.placementProfile -cne
+            'main_rsl_exported_symbol_equivalent' -or
+        [string]$Receipt.placement.referencePlacementProfile -cne
+            'main_rsl_exported_symbol' -or
+        [string]$Receipt.placement.extractionMode -cne
+            'loaded_child_exported_symbol_instance' -or
+        -not [bool]$Receipt.placement.mainRslPlacementEquivalent -or
+        [bool]$Receipt.placement.mainParticipatesInCapture -or
+        [string]$Receipt.placement.mainBinaryRole -cne
+            'identity_chain_reference_only' -or
+        [bool]$Receipt.placement.childDocumentWrapperApplied -or
+        [int]$Receipt.placement.exportedSymbolRootTy -ne 0 -or
+        [int]$Receipt.placement.mainPlacementY -ne 512) {
+        throw 'Flash oracle candidate receipt drifted from the v2 contract.'
+    }
+    Assert-ExactNumberArray `
+        -Actual @($Receipt.placement.canvas) `
+        -Expected @(1024, 576) `
+        -Label 'Flash oracle v2 receipt canvas'
+}
+
+function Invoke-PlayerInfoOracleV2ArtifactContractSelfTest {
+    $fixtureCases = @(
+        Get-PlayerInfoOracleExpectedCases | ForEach-Object {
+            [pscustomobject]@{
+                caseId = [string]$_.caseId
+                raw = [pscustomobject]@{
+                    width = 1024
+                    height = 576
+                }
+                crop = [pscustomobject]@{
+                    rectangle = [pscustomobject]@{
+                        x = 0
+                        y = 474
+                        width = 282
+                        height = 81
+                    }
+                }
+            }
+        }
+    )
+    $manifest = [pscustomobject]@{
+        schema = 'cf7.player_info.flash_oracle_manifest.v2'
+        status = 'candidate'
+        requiresHumanReview = $true
+        source = [pscustomobject]@{
+            placementClosure = [ordered]@{
+                capturedPlacementProfile =
+                    'main_rsl_exported_symbol_equivalent'
+                referencePlacementProfile = 'main_rsl_exported_symbol'
+                mainRslPlacementEquivalent = $true
+                extractionMode = 'loaded_child_exported_symbol_instance'
+                mainParticipatesInCapture = $false
+                mainBinaryRole = 'identity_chain_reference_only'
+                childDocumentWrapperApplied = $false
+                exportedSymbolRootTy = 0
+                mainPlacementY = 512
+            }
+            captureLoaderContract = [pscustomobject]@{
+                actualCaptureLoaderVerified = $true
+                actualLoaderPath = 'scripts/TestLoader.swf'
+                childPathVerified = $uiSwfRelativePath
+                placementProfile = 'main_rsl_exported_symbol_equivalent'
+                referencePlacementProfile = 'main_rsl_exported_symbol'
+                extractionMode = 'loaded_child_exported_symbol_instance'
+                mainRslPlacementEquivalent = $true
+                mainParticipatesInCapture = $false
+                mainBinaryRole = 'identity_chain_reference_only'
+                asLoaderParticipatesInCapture = $false
+                childDocumentWrapperApplied = $false
+                exportedSymbolRootTy = 0
+                mainPlacementY = 512
+            }
+            mainSwf = [pscustomobject]@{
+                path = $mainSwfRelativePath
+                sha256 = ('A' * 64) -join ''
+                executionRole = 'identity_chain_reference_only'
+                mainParticipatesInCapture = $false
+            }
+        }
+        capture = [pscustomobject]@{
+            canvas = [pscustomobject]@{
+                width = 1024
+                height = 576
+                matrix = @(1, 0, 0, 1, 0, 512)
+                coordinateSpace = 'main_stage'
+                contentViewport = @(0, 0, 1024, 576)
+                source = 'loaded_child_exported_symbol_instance'
+                sourceDocumentInstanceMatrix = @(1, 0, 0, 1, 0, 3)
+                childDocumentWrapperApplied = $false
+                pixelFormat = 'straight_argb32'
+                background = 'transparent_argb_0'
+            }
+            cases = $fixtureCases
+        }
+    }
+    Assert-PlayerInfoOracleV2ManifestContract -Manifest $manifest
+    $manifestSha256 = ('B' * 64) -join ''
+    $receipt = [pscustomobject]@{
+        schema = 'cf7.player_info.flash_oracle_candidate_receipt.v2'
+        status = 'candidate_ready_after_restore'
+        manifest = [pscustomobject]@{
+            schema = 'cf7.player_info.flash_oracle_manifest.v2'
+            sha256 = $manifestSha256
+        }
+        placement = [pscustomobject]@{
+            placementProfile = 'main_rsl_exported_symbol_equivalent'
+            referencePlacementProfile = 'main_rsl_exported_symbol'
+            extractionMode = 'loaded_child_exported_symbol_instance'
+            mainRslPlacementEquivalent = $true
+            mainParticipatesInCapture = $false
+            mainBinaryRole = 'identity_chain_reference_only'
+            childDocumentWrapperApplied = $false
+            exportedSymbolRootTy = 0
+            mainPlacementY = 512
+            canvas = @(1024, 576)
+        }
+    }
+    Assert-PlayerInfoOracleV2ReceiptContract `
+        -Receipt $receipt -ManifestSha256 $manifestSha256
+
+    $manifest.source.placementClosure['mainRuntimeEquivalent'] = $true
+    $falseRuntimeClaimRejected = $false
+    try {
+        Assert-PlayerInfoOracleV2ManifestContract -Manifest $manifest
+    } catch {
+        $falseRuntimeClaimRejected = $true
+    }
+    if (-not $falseRuntimeClaimRejected) {
+        throw (
+            'Artifact-contract self-test accepted a false main-runtime ' +
+            'equivalence claim.')
+    }
+    $manifest.source.placementClosure.Remove('mainRuntimeEquivalent')
+    $manifest.schema = 'cf7.player_info.flash_oracle_manifest.' + 'v1'
+    $v1ManifestRejected = $false
+    try {
+        Assert-PlayerInfoOracleV2ManifestContract -Manifest $manifest
+    } catch {
+        $v1ManifestRejected = $true
+    }
+    if (-not $v1ManifestRejected) {
+        throw 'Artifact-contract self-test accepted a historical v1 manifest.'
+    }
+    $receipt.schema =
+        'cf7.player_info.flash_oracle_candidate_receipt.' + 'v1'
+    $v1ReceiptRejected = $false
+    try {
+        Assert-PlayerInfoOracleV2ReceiptContract `
+            -Receipt $receipt -ManifestSha256 $manifestSha256
+    } catch {
+        $v1ReceiptRejected = $true
+    }
+    if (-not $v1ReceiptRejected) {
+        throw 'Artifact-contract self-test accepted a historical v1 receipt.'
+    }
+    return [pscustomobject]@{
+        manifestSchema = 'cf7.player_info.flash_oracle_manifest.v2'
+        receiptSchema = 'cf7.player_info.flash_oracle_candidate_receipt.v2'
+        cases = $fixtureCases.Count
+        falseRuntimeClaimRejected = $true
+        historicalV1Rejected = $true
     }
 }
 
@@ -2335,6 +2779,7 @@ function Invoke-ValidateOnly {
         $scratchRunnerPath,
         $loaderSwfPath,
         $uiSwfPath,
+        $mainSwfPath,
         $compileOutputPath,
         $compilerErrorsPath,
         $templatePath,
@@ -2367,6 +2812,8 @@ function Invoke-ValidateOnly {
     }
     $protocol = Invoke-PlayerInfoOracleProtocolSelfTest `
         -ExpectedChildPath $uiSwfPath
+    $artifactContract =
+        Invoke-PlayerInfoOracleV2ArtifactContractSelfTest
     $derivedTransaction =
         Invoke-PlayerInfoDerivedSwfTransactionSelfTest
     $dpi = Get-SystemDpiIdentity
@@ -2449,9 +2896,14 @@ function Invoke-ValidateOnly {
     Write-Host (
         '[OK] player-info oracle validate-only passed; ' +
         "PART records=$($protocol.partRecordCount), " +
+        "CLEAR records=$($protocol.clearRecordCount), " +
         "maxPART=$($protocol.maxPartLineChars), " +
         "canonicalSummaryRecords=$($protocol.canonicalSummaryRecords), " +
         "PNG roundTrips=$($protocol.pngRoundTrips), " +
+        "artifactSchemas=v2/v2, " +
+        "artifactCases=$($artifactContract.cases), " +
+        "falseRuntimeClaimRejected=$($artifactContract.falseRuntimeClaimRejected), " +
+        "historicalV1Rejected=$($artifactContract.historicalV1Rejected), " +
         "SWF recovery=$($derivedTransaction.recoveryScenarios), " +
         "recovery negatives=$($derivedTransaction.recoveryAdmissionNegatives), " +
         "strictToolIdentity=$($validateTooling.status), " +
@@ -2478,6 +2930,7 @@ $requiredCapturePaths = @(
     $compilePath,
     $publishProfilePath,
     $uiSwfPath,
+    $mainSwfPath,
     $playerPath,
     $formulaPath,
     $closurePath,
@@ -2507,6 +2960,8 @@ $frozenInputs = [ordered]@{
         -Path $protocolHelperPath -Label $protocolHelperRelativePath
     childSwf = New-FrozenFileInput `
         -Path $uiSwfPath -Label $uiSwfRelativePath
+    mainSwf = New-FrozenFileInput `
+        -Path $mainSwfPath -Label $mainSwfRelativePath
     template = New-FrozenFileInput `
         -Path $templatePath `
         -Label 'scripts/test-runners/player-info-oracle/TestLoader.as.template'
@@ -2518,8 +2973,9 @@ $frozenInputs = [ordered]@{
         -Path $chainPath -Label $chainRelativePath
 }
 if ($frozenInputs.childSwf.sha256 -cne $uiSwfHash -or
+    $frozenInputs.mainSwf.sha256 -cne $b001Evidence.chainMainSha256 -or
     $frozenInputs.template.sha256 -cne $template.sha256) {
-    throw 'Prevalidated child/template identity changed before capture freeze.'
+    throw 'Prevalidated child/main/template identity changed before capture freeze.'
 }
 $strictCaptureTooling = Get-StrictCaptureToolingSet `
     -RunnerFrozen $frozenInputs.captureRunner `
@@ -2810,6 +3266,10 @@ try {
         -EvidenceDirectory $evidenceDir `
         -Name 'player-info-child.swf' `
         -Bytes $frozenInputs.childSwf.bytes
+    $snapshots.mainSwf = New-CandidateSnapshot `
+        -EvidenceDirectory $evidenceDir `
+        -Name 'main-identity-reference.swf' `
+        -Bytes $frozenInputs.mainSwf.bytes
     $snapshots.freshFlashlog = New-CandidateSnapshot `
         -EvidenceDirectory $evidenceDir `
         -Name 'flashlog-fresh.bin' `
@@ -2893,9 +3353,9 @@ try {
     foreach ($case in $parsed.cases) {
         $caseId = [string]$case.expected.caseId
         $bounds = Get-PlayerInfoOracleAlphaBounds `
-            -Argb $case.argb -Width 1024 -Height 64
+            -Argb $case.argb -Width 1024 -Height 576
         $rawPng = Convert-PlayerInfoOracleArgbToPngBytes `
-            -Argb $case.argb -Width 1024 -Height 64
+            -Argb $case.argb -Width 1024 -Height 576
         $croppedArgb = Get-PlayerInfoOracleCroppedArgb `
             -Argb $case.argb -SourceWidth 1024 -Bounds $bounds
         $cropPng = Convert-PlayerInfoOracleArgbToPngBytes `
@@ -2906,7 +3366,7 @@ try {
             -PngBytes $rawPng `
             -ExpectedArgb $case.argb `
             -ExpectedWidth 1024 `
-            -ExpectedHeight 64 `
+            -ExpectedHeight 576 `
             -Scenario "$caseId raw capture"
         Assert-PlayerInfoOraclePngPixels `
             -PngBytes $cropPng `
@@ -2925,7 +3385,7 @@ try {
             raw = [ordered]@{
                 path = $rawName
                 width = 1024
-                height = 64
+                height = 576
                 sha256 = Get-PlayerInfoOracleBytesSha256 -Bytes $rawPng
             }
             crop = [ordered]@{
@@ -2943,7 +3403,7 @@ try {
 
     $dpi = Get-SystemDpiIdentity
     $manifest = [ordered]@{
-        schema = 'cf7.player_info.flash_oracle_manifest.v1'
+        schema = 'cf7.player_info.flash_oracle_manifest.v2'
         status = 'candidate'
         runId = $runId
         capturedUtc = [System.DateTime]::UtcNow.ToString('o')
@@ -2959,12 +3419,45 @@ try {
                     pathExpandedRuntimeEdges =
                         $b001Evidence.pathExpandedRuntimeEdges
                 }
+                capturedPlacementProfile =
+                    $b001Evidence.capturePlacementProfile
+                referencePlacementProfile =
+                    $b001Evidence.captureReferencePlacementProfile
+                mainRslPlacementEquivalent =
+                    $b001Evidence.captureMainRslPlacementEquivalent
+                extractionMode =
+                    $b001Evidence.captureExtractionMode
+                mainParticipatesInCapture =
+                    $b001Evidence.captureMainParticipates
+                mainBinaryRole =
+                    $b001Evidence.captureMainBinaryRole
+                childDocumentWrapperApplied =
+                    $b001Evidence.captureChildDocumentWrapperApplied
+                exportedSymbolRootTy =
+                    $b001Evidence.captureExportedSymbolRootTy
+                mainPlacementY =
+                    $b001Evidence.captureMainPlacementY
+                standaloneDocumentWrapperMatrix =
+                    $b001Evidence.standaloneDocumentWrapperMatrix
+                mainRslReference = [ordered]@{
+                    placementProfile =
+                        $b001Evidence.mainRslPlacementProfile
+                    exportedSymbolRootMatrix =
+                        $b001Evidence.mainRslExportedSymbolRootMatrix
+                    hpRelativeMatrix =
+                        $b001Evidence.mainRslHpRelativeMatrix
+                    mpRelativeMatrix =
+                        $b001Evidence.mainRslMpRelativeMatrix
+                }
                 snapshot = $snapshots.placementClosure
             }
             sourceBinaryChain = [ordered]@{
                 path = $chainRelativePath
                 evidenceRevision = $b001Evidence.sourceBinaryRevision
                 childSha256 = $b001Evidence.chainUiSha256
+                mainSha256 = $b001Evidence.chainMainSha256
+                captureContractRole =
+                    'historical_pre_v2_plan_and_identity_chain_only'
                 snapshot = $snapshots.sourceBinaryChain
             }
             formula = [ordered]@{
@@ -2974,7 +3467,15 @@ try {
             uiSwf = [ordered]@{
                 path = $uiSwfRelativePath
                 sha256 = $uiSwfHash
+                executionRole = 'loaded_exported_symbol_source'
                 snapshot = $snapshots.childSwf
+            }
+            mainSwf = [ordered]@{
+                path = $mainSwfRelativePath
+                sha256 = $b001Evidence.chainMainSha256
+                executionRole = 'identity_chain_reference_only'
+                mainParticipatesInCapture = $false
+                snapshot = $snapshots.mainSwf
             }
             loaderSwf = [ordered]@{
                 path = 'scripts/TestLoader.swf'
@@ -2992,8 +3493,19 @@ try {
                 actualCaptureLoaderVerified = $true
                 actualLoaderPath = 'scripts/TestLoader.swf'
                 childPathVerified = $uiSwfRelativePath
+                placementProfile =
+                    $b001Evidence.capturePlacementProfile
+                referencePlacementProfile =
+                    $b001Evidence.captureReferencePlacementProfile
+                extractionMode =
+                    $b001Evidence.captureExtractionMode
+                mainRslPlacementEquivalent = $true
                 mainParticipatesInCapture = $false
+                mainBinaryRole = 'identity_chain_reference_only'
                 asLoaderParticipatesInCapture = $false
+                childDocumentWrapperApplied = $false
+                exportedSymbolRootTy = 0
+                mainPlacementY = 512
             }
             compile = [ordered]@{
                 command = (
@@ -3101,8 +3613,13 @@ try {
             captureMethod = 'AVM1 BitmapData.draw'
             protocol = [ordered]@{
                 rowBytes = 4096
+                rowsPerCase = 576
                 partPayloadChars = 720
                 partsPerRow = 8
+                zeroRowRecord = 'CLEAR'
+                zeroRowValue = '00000000'
+                observedPartRecords = [int]$parsed.partRecordCount
+                observedClearRecords = [int]$parsed.clearRecordCount
                 physicalRecordMaxChars = 1000
                 caseOrder = @(
                     'empty', 'min_step', 'p25', 'p50', 'p75', 'p99', 'full',
@@ -3110,8 +3627,13 @@ try {
             }
             canvas = [ordered]@{
                 width = 1024
-                height = 64
-                matrix = @(1, 0, 0, 1, 0, 0)
+                height = 576
+                matrix = @(1, 0, 0, 1, 0, 512)
+                coordinateSpace = 'main_stage'
+                contentViewport = @(0, 0, 1024, 576)
+                source = 'loaded_child_exported_symbol_instance'
+                sourceDocumentInstanceMatrix = @(1, 0, 0, 1, 0, 3)
+                childDocumentWrapperApplied = $false
                 pixelFormat = 'straight_argb32'
                 background = 'transparent_argb_0'
                 compositeBackgroundId = $null
@@ -3176,6 +3698,7 @@ try {
                 'run summary is promotable protocol evidence.')
         }
     }
+    Assert-PlayerInfoOracleV2ManifestContract -Manifest $manifest
     foreach ($frozen in $frozenInputs.Values) {
         Assert-FrozenFileInputCurrent -Frozen $frozen
     }
@@ -3384,6 +3907,7 @@ Assert-PlayerInfoCaptureToolingBindings `
 if ($snapshots.loaderSwf.sha256 -cne
         [string]$derivedSwfTransaction.Record.compiled.sha256 -or
     $snapshots.childSwf.sha256 -cne $frozenInputs.childSwf.sha256 -or
+    $snapshots.mainSwf.sha256 -cne $frozenInputs.mainSwf.sha256 -or
     $snapshots.template.sha256 -cne $frozenInputs.template.sha256 -or
     $snapshots.displayFormula.sha256 -cne
         $frozenInputs.displayFormula.sha256 -or
@@ -3396,11 +3920,24 @@ if ($snapshots.loaderSwf.sha256 -cne
 $manifestPath = Join-Path $workDir 'oracle-manifest.json'
 Write-AtomicUtf8Json -Path $manifestPath -Value $manifest
 $receipt = [ordered]@{
-    schema = 'cf7.player_info.flash_oracle_candidate_receipt.v1'
+    schema = 'cf7.player_info.flash_oracle_candidate_receipt.v2'
     status = 'candidate_ready_after_restore'
     runId = $runId
+    placement = [ordered]@{
+        placementProfile = 'main_rsl_exported_symbol_equivalent'
+        referencePlacementProfile = 'main_rsl_exported_symbol'
+        extractionMode = 'loaded_child_exported_symbol_instance'
+        mainRslPlacementEquivalent = $true
+        mainParticipatesInCapture = $false
+        mainBinaryRole = 'identity_chain_reference_only'
+        childDocumentWrapperApplied = $false
+        exportedSymbolRootTy = 0
+        mainPlacementY = 512
+        canvas = @(1024, 576)
+    }
     manifest = [ordered]@{
         path = 'oracle-manifest.json'
+        schema = 'cf7.player_info.flash_oracle_manifest.v2'
         sha256 = Get-PathSha256 -Path $manifestPath
     }
     scratchRestoredByteExact = $true
@@ -3424,6 +3961,10 @@ $receipt = [ordered]@{
     compileMutexReleased = $true
     requiresHumanReview = $true
 }
+$manifestCandidateSha256 = Get-PathSha256 -Path $manifestPath
+Assert-PlayerInfoOracleV2ReceiptContract `
+    -Receipt $receipt `
+    -ManifestSha256 $manifestCandidateSha256
 $receiptPath = Join-Path $workDir 'candidate-receipt.json'
 Write-AtomicUtf8Json -Path $receiptPath -Value $receipt
 Assert-CandidateSnapshotSet `

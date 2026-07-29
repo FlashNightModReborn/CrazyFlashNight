@@ -5,10 +5,13 @@ import org.flashNight.gesh.string.*;
 
 // B0-01B 独立 Flash oracle。此文件只会被 runner 复制到 scripts/TestLoader.as。
 // 不得在这里接入存档、网络、控制台或生产 Launcher；状态只来自内存 fixture。
+// v2 从已精确绑定的 child SWF 中提取 exported-symbol 实例本身，再用主文件
+// placement ty=512 直接 draw；child DOMDocument 的 author-time ty=3 不参与捕获。
 var __pioRunId:String = "__PLAYER_INFO_ORACLE_RUN_ID__";
 var __pioRuntimeUrl:String = "../flashswf/UI/玩家信息界面.swf";
 var __pioCanvasWidth:Number = 1024;
-var __pioCanvasHeight:Number = 64;
+var __pioCanvasHeight:Number = 576;
+var __pioMainPlacementY:Number = 512;
 var __pioPartChars:Number = 720;
 var __pioCaseIndex:Number = -1;
 var __pioPendingCapture:Boolean = false;
@@ -16,6 +19,8 @@ var __pioFailed:Boolean = false;
 var __pioUi:MovieClip = null;
 var __pioChildUrlReported:Boolean = false;
 var __pioCaseState:Object = null;
+var __pioSourceDocumentInstanceTx:Number = 0;
+var __pioSourceDocumentInstanceTy:Number = 0;
 
 _root._quality = "MEDIUM";
 Stage.scaleMode = "noScale";
@@ -209,16 +214,23 @@ function __pioBase64(bytes:Array):String {
     return result;
 }
 
-function __pioEncodeRow(bitmap:BitmapData, row:Number):String {
+function __pioEncodeRow(bitmap:BitmapData, row:Number):Object {
     var bytes:Array = [];
+    var allZero:Boolean = true;
     for (var x:Number = 0; x < __pioCanvasWidth; x++) {
         var pixel:Number = bitmap.getPixel32(x, row);
+        if (pixel != 0) {
+            allZero = false;
+        }
         bytes.push((pixel >>> 24) & 255);
         bytes.push((pixel >>> 16) & 255);
         bytes.push((pixel >>> 8) & 255);
         bytes.push(pixel & 255);
     }
-    return __pioBase64(bytes);
+    return {
+        allZero:allZero,
+        encoded:allZero ? "" : __pioBase64(bytes)
+    };
 }
 
 function __pioStateFields(state:Object):String {
@@ -231,6 +243,8 @@ function __pioStateFields(state:Object):String {
     fields.push("partChars=" + __pioPartChars);
     fields.push("partsPerRow=8");
     fields.push("partRecordMaxChars=1000");
+    fields.push("zeroRowRecord=CLEAR");
+    fields.push("zeroRowArgb=00000000");
     fields.push("pixelFormat=ARGB32");
     fields.push("childUrlReported=" + __pioBool(__pioChildUrlReported));
     fields.push("hpRaw=" + state.hpRaw);
@@ -295,10 +309,23 @@ function __pioCaptureCase():Void {
         true,
         0x00000000
     );
-    bitmap.draw(__pioHolder, new Matrix());
+    bitmap.draw(
+        __pioUi,
+        new Matrix(1, 0, 0, 1, 0, __pioMainPlacementY)
+    );
 
     for (var row:Number = 0; row < __pioCanvasHeight; row++) {
-        var encoded:String = __pioEncodeRow(bitmap, row);
+        var rowEncoding:Object = __pioEncodeRow(bitmap, row);
+        if (rowEncoding.allZero) {
+            __pioTrace(
+                "CLEAR",
+                "caseId=" + state.caseId +
+                "|row=" + row +
+                "|argb=00000000"
+            );
+            continue;
+        }
+        var encoded:String = String(rowEncoding.encoded);
         var partCount:Number = Math.ceil(encoded.length / __pioPartChars);
         for (var part:Number = 0; part < partCount; part++) {
             var payload:String = encoded.substr(
@@ -405,11 +432,6 @@ var __pioListener:Object = {};
 __pioListener.onLoadInit = function(target:MovieClip):Void {
     var childUrl:String = String(target._url);
     __pioChildUrlReported = childUrl.length > 0;
-    __pioTrace(
-        "CHILD",
-        "urlReported=" + __pioBool(__pioChildUrlReported) +
-        "|escapedUrl=" + escape(childUrl)
-    );
     if (!__pioChildUrlReported) {
         __pioFail("child_url_missing", "");
         return;
@@ -419,6 +441,39 @@ __pioListener.onLoadInit = function(target:MovieClip):Void {
         __pioFail("player_info_instance_missing", childUrl);
         return;
     }
+    if (__pioUi === target) {
+        __pioFail("exported_symbol_instance_not_isolated", childUrl);
+        return;
+    }
+    __pioSourceDocumentInstanceTx = Number(__pioUi._x);
+    __pioSourceDocumentInstanceTy = Number(__pioUi._y);
+    if (__pioSourceDocumentInstanceTx != 0 ||
+        __pioSourceDocumentInstanceTy != 3 ||
+        Number(__pioUi._xscale) != 100 ||
+        Number(__pioUi._yscale) != 100 ||
+        Number(__pioUi._rotation) != 0) {
+        __pioFail(
+            "source_document_placement_drift",
+            __pioSourceDocumentInstanceTx + ":" +
+            __pioSourceDocumentInstanceTy + ":" +
+            __pioUi._xscale + ":" +
+            __pioUi._yscale + ":" +
+            __pioUi._rotation
+        );
+        return;
+    }
+    __pioTrace(
+        "CHILD",
+        "urlReported=" + __pioBool(__pioChildUrlReported) +
+        "|escapedUrl=" + escape(childUrl) +
+        "|extractionMode=loaded_child_exported_symbol_instance" +
+        "|sourceDocumentInstanceTx=" + __pioSourceDocumentInstanceTx +
+        "|sourceDocumentInstanceTy=" + __pioSourceDocumentInstanceTy +
+        "|sourceDocumentInstanceScaleX=" + __pioUi._xscale +
+        "|sourceDocumentInstanceScaleY=" + __pioUi._yscale +
+        "|sourceDocumentInstanceRotation=" + __pioUi._rotation +
+        "|childDocumentWrapperApplied=0"
+    );
     __pioUi.onEnterFrame = null;
     __pioHideDeferredAndOutOfScope(__pioUi);
     __pioBeginNextCase();
@@ -434,12 +489,22 @@ __pioLoader.addListener(__pioListener);
 
 __pioTrace(
     "START",
-    "schema=cf7.player_info.flash_oracle.v1" +
+    "schema=cf7.player_info.flash_oracle.v2" +
     "|quality=" + String(_root._quality) +
     "|stageScaleMode=" + String(Stage.scaleMode) +
     "|stageAlign=" + String(Stage.align) +
     "|stageWidth=" + String(Stage.width) +
     "|stageHeight=" + String(Stage.height) +
+    "|placementProfile=main_rsl_exported_symbol_equivalent" +
+    "|referencePlacementProfile=main_rsl_exported_symbol" +
+    "|extractionMode=loaded_child_exported_symbol_instance" +
+    "|mainParticipatesInCapture=0" +
+    "|mainBinaryRole=identity_chain_reference_only" +
+    "|childDocumentWrapperApplied=0" +
+    "|exportedSymbolRootTy=0" +
+    "|mainPlacementY=" + __pioMainPlacementY +
+    "|canvasWidth=" + __pioCanvasWidth +
+    "|canvasHeight=" + __pioCanvasHeight +
     "|runtimeUrlEscaped=" + escape(__pioRuntimeUrl) +
     "|caseCount=" + __pioCases.length
 );

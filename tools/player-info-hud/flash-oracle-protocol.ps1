@@ -41,11 +41,13 @@ function Get-PlayerInfoOracleExpectedStateFields {
         caseId = [string]$Expected.caseId
         quality = 'MEDIUM'
         width = '1024'
-        height = '64'
-        rowCount = '64'
+        height = '576'
+        rowCount = '576'
         partChars = '720'
         partsPerRow = '8'
         partRecordMaxChars = '1000'
+        zeroRowRecord = 'CLEAR'
+        zeroRowArgb = '00000000'
         pixelFormat = 'ARGB32'
         childUrlReported = '1'
         hpRaw = [string]$Expected.hp
@@ -366,7 +368,8 @@ function Test-PlayerInfoOracleTrace {
     $matching = @($records | Where-Object {
         $_.fields['runId'] -ceq $RunId
     })
-    $knownTypes = @('START', 'CHILD', 'STATE', 'PART', 'COMPLETE', 'FAILURE')
+    $knownTypes = @(
+        'START', 'CHILD', 'STATE', 'CLEAR', 'PART', 'COMPLETE', 'FAILURE')
     foreach ($record in $matching) {
         if ($knownTypes -cnotcontains [string]$record.type) {
             throw "Oracle lifecycle contains unknown record type '$($record.type)'."
@@ -427,13 +430,32 @@ function Test-PlayerInfoOracleTrace {
     $cursor++
     Assert-PlayerInfoOracleExactFields $start @(
         'runId', 'schema', 'quality', 'stageScaleMode', 'stageAlign',
-        'stageWidth', 'stageHeight', 'runtimeUrlEscaped', 'caseCount')
-    Assert-PlayerInfoOracleField $start 'schema' 'cf7.player_info.flash_oracle.v1'
+        'stageWidth', 'stageHeight', 'placementProfile',
+        'referencePlacementProfile', 'extractionMode',
+        'mainParticipatesInCapture', 'mainBinaryRole',
+        'childDocumentWrapperApplied', 'exportedSymbolRootTy',
+        'mainPlacementY', 'canvasWidth', 'canvasHeight',
+        'runtimeUrlEscaped', 'caseCount')
+    Assert-PlayerInfoOracleField $start 'schema' 'cf7.player_info.flash_oracle.v2'
     Assert-PlayerInfoOracleField $start 'quality' 'MEDIUM'
     Assert-PlayerInfoOracleField $start 'stageScaleMode' 'noScale'
     Assert-PlayerInfoOracleField $start 'stageAlign' 'LT'
     Assert-PlayerInfoOracleField $start 'stageWidth' '500'
     Assert-PlayerInfoOracleField $start 'stageHeight' '500'
+    Assert-PlayerInfoOracleField $start `
+        'placementProfile' 'main_rsl_exported_symbol_equivalent'
+    Assert-PlayerInfoOracleField $start `
+        'referencePlacementProfile' 'main_rsl_exported_symbol'
+    Assert-PlayerInfoOracleField $start `
+        'extractionMode' 'loaded_child_exported_symbol_instance'
+    Assert-PlayerInfoOracleField $start 'mainParticipatesInCapture' '0'
+    Assert-PlayerInfoOracleField $start `
+        'mainBinaryRole' 'identity_chain_reference_only'
+    Assert-PlayerInfoOracleField $start 'childDocumentWrapperApplied' '0'
+    Assert-PlayerInfoOracleField $start 'exportedSymbolRootTy' '0'
+    Assert-PlayerInfoOracleField $start 'mainPlacementY' '512'
+    Assert-PlayerInfoOracleField $start 'canvasWidth' '1024'
+    Assert-PlayerInfoOracleField $start 'canvasHeight' '576'
     $runtimeUrl = ConvertFrom-Avm1EscapedString -Value (
         Get-PlayerInfoOracleRequiredField $start 'runtimeUrlEscaped')
     if ($runtimeUrl -cne '../flashswf/UI/玩家信息界面.swf') {
@@ -444,8 +466,19 @@ function Test-PlayerInfoOracleTrace {
     $child = & $expectRecord 'CHILD'
     $cursor++
     Assert-PlayerInfoOracleExactFields $child @(
-        'runId', 'urlReported', 'escapedUrl')
+        'runId', 'urlReported', 'escapedUrl', 'extractionMode',
+        'sourceDocumentInstanceTx', 'sourceDocumentInstanceTy',
+        'sourceDocumentInstanceScaleX', 'sourceDocumentInstanceScaleY',
+        'sourceDocumentInstanceRotation', 'childDocumentWrapperApplied')
     Assert-PlayerInfoOracleField $child 'urlReported' '1'
+    Assert-PlayerInfoOracleField $child `
+        'extractionMode' 'loaded_child_exported_symbol_instance'
+    Assert-PlayerInfoOracleField $child 'sourceDocumentInstanceTx' '0'
+    Assert-PlayerInfoOracleField $child 'sourceDocumentInstanceTy' '3'
+    Assert-PlayerInfoOracleField $child 'sourceDocumentInstanceScaleX' '100'
+    Assert-PlayerInfoOracleField $child 'sourceDocumentInstanceScaleY' '100'
+    Assert-PlayerInfoOracleField $child 'sourceDocumentInstanceRotation' '0'
+    Assert-PlayerInfoOracleField $child 'childDocumentWrapperApplied' '0'
     $childBinding = Resolve-PlayerInfoOracleChildBinding `
         -EscapedUrl (Get-PlayerInfoOracleRequiredField $child 'escapedUrl') `
         -ExpectedChildPath $ExpectedChildPath
@@ -462,8 +495,19 @@ function Test-PlayerInfoOracleTrace {
             Assert-PlayerInfoOracleField $state $entry.Key ([string]$entry.Value)
         }
 
-        $argb = [byte[]]::new(1024 * 64 * 4)
-        for ($row = 0; $row -lt 64; $row++) {
+        $argb = [byte[]]::new(1024 * 576 * 4)
+        for ($row = 0; $row -lt 576; $row++) {
+            if ($cursor -lt $matching.Count -and
+                [string]$matching[$cursor].type -ceq 'CLEAR') {
+                $clear = & $expectRecord 'CLEAR'
+                $cursor++
+                Assert-PlayerInfoOracleExactFields $clear @(
+                    'runId', 'caseId', 'row', 'argb')
+                Assert-PlayerInfoOracleField $clear 'caseId' $expected.caseId
+                Assert-PlayerInfoOracleField $clear 'row' ([string]$row)
+                Assert-PlayerInfoOracleField $clear 'argb' '00000000'
+                continue
+            }
             $encodedBuilder = [System.Text.StringBuilder]::new(5464)
             for ($part = 0; $part -lt 8; $part++) {
                 $record = & $expectRecord 'PART'
@@ -539,9 +583,33 @@ function Test-PlayerInfoOracleTrace {
         startLineNumber = $startLine
         completeLineNumber = $completeLine
         physicalRecordCount = $matching.Count
+        partRecordCount = @($matching | Where-Object {
+            [string]$_.type -ceq 'PART'
+        }).Count
+        clearRecordCount = @($matching | Where-Object {
+            [string]$_.type -ceq 'CLEAR'
+        }).Count
         runId = $RunId
         runtimeUrlEscaped = Get-PlayerInfoOracleRequiredField `
             $start 'runtimeUrlEscaped'
+        placement = [ordered]@{
+            placementProfile = Get-PlayerInfoOracleRequiredField `
+                $start 'placementProfile'
+            referencePlacementProfile = Get-PlayerInfoOracleRequiredField `
+                $start 'referencePlacementProfile'
+            extractionMode = Get-PlayerInfoOracleRequiredField `
+                $start 'extractionMode'
+            mainParticipatesInCapture = $false
+            mainBinaryRole = Get-PlayerInfoOracleRequiredField `
+                $start 'mainBinaryRole'
+            childDocumentWrapperApplied = $false
+            exportedSymbolRootTy = 0
+            mainPlacementY = 512
+            canvasWidth = 1024
+            canvasHeight = 576
+            sourceDocumentInstanceTx = 0
+            sourceDocumentInstanceTy = 3
+        }
     }
 }
 
@@ -600,19 +668,34 @@ function New-PlayerInfoOracleCanonicalSummary {
 
     & $appendRecord 'START' ([ordered]@{
         runId = [string]$Parsed.runId
-        schema = 'cf7.player_info.flash_oracle_summary.v1'
-        sourceSchema = 'cf7.player_info.flash_oracle.v1'
+        schema = 'cf7.player_info.flash_oracle_summary.v2'
+        sourceSchema = 'cf7.player_info.flash_oracle.v2'
         quality = 'MEDIUM'
         stageScaleMode = 'noScale'
         stageAlign = 'LT'
         stageWidth = '500'
         stageHeight = '500'
+        placementProfile = [string]$Parsed.placement.placementProfile
+        referencePlacementProfile =
+            [string]$Parsed.placement.referencePlacementProfile
+        extractionMode = [string]$Parsed.placement.extractionMode
+        mainParticipatesInCapture = $false
+        mainBinaryRole = [string]$Parsed.placement.mainBinaryRole
+        childDocumentWrapperApplied = $false
+        exportedSymbolRootTy = 0
+        mainPlacementY = 512
+        canvasWidth = 1024
+        canvasHeight = 576
         runtimeUrlEscaped = [string]$Parsed.runtimeUrlEscaped
         caseCount = '11'
     })
     & $appendRecord 'CHILD' ([ordered]@{
         runId = [string]$Parsed.runId
         exactCanonicalMatch = '1'
+        extractionMode = [string]$Parsed.placement.extractionMode
+        sourceDocumentInstanceTx = 0
+        sourceDocumentInstanceTy = 3
+        childDocumentWrapperApplied = $false
         escapedUrlSha256 = [string]$Parsed.childBinding.escapedUrlSha256
         reportedUrlSha256 = [string]$Parsed.childBinding.reportedUrlSha256
         canonicalPathSha256 = [string]$Parsed.childBinding.canonicalPathSha256
@@ -647,9 +730,10 @@ function New-PlayerInfoOracleCanonicalSummary {
 
     $text = ($lines -join "`n") + "`n"
     if ($text -match '\|PART\|' -or
+        $text -match '\|CLEAR\|' -or
         $text -match '(?m)\|escapedUrl=' -or
         $text -match '(?i)\bfile:') {
-        throw 'Canonical summary leaked PART payload or an absolute child URL.'
+        throw 'Canonical summary leaked pixel transport or an absolute child URL.'
     }
     $bytes = [System.Text.Encoding]::ASCII.GetBytes($text)
     return [pscustomobject]@{
@@ -832,8 +916,6 @@ function New-SyntheticPlayerInfoOracleTrace {
     $rowBytes[2] = 100
     $rowBytes[3] = 150
     $visibleRow = [System.Convert]::ToBase64String($rowBytes)
-    [System.Array]::Clear($rowBytes, 0, $rowBytes.Length)
-    $transparentRow = [System.Convert]::ToBase64String($rowBytes)
     $runtimeEscaped = ConvertTo-SyntheticAvm1EscapedString `
         -Value '../flashswf/UI/玩家信息界面.swf'
     $childUri = [System.Uri]::new(
@@ -846,20 +928,37 @@ function New-SyntheticPlayerInfoOracleTrace {
         'PLAYER_INFO_ORACLE|COMPLETE|runId=stale000000000000000000000000000|caseCount=0')
     $lines.Add(
         "PLAYER_INFO_ORACLE|START|runId=$RunId|" +
-        'schema=cf7.player_info.flash_oracle.v1|quality=MEDIUM|' +
+        'schema=cf7.player_info.flash_oracle.v2|quality=MEDIUM|' +
         'stageScaleMode=noScale|stageAlign=LT|stageWidth=500|stageHeight=500|' +
+        'placementProfile=main_rsl_exported_symbol_equivalent|' +
+        'referencePlacementProfile=main_rsl_exported_symbol|' +
+        'extractionMode=loaded_child_exported_symbol_instance|' +
+        'mainParticipatesInCapture=0|' +
+        'mainBinaryRole=identity_chain_reference_only|' +
+        'childDocumentWrapperApplied=0|exportedSymbolRootTy=0|' +
+        'mainPlacementY=512|canvasWidth=1024|canvasHeight=576|' +
         "runtimeUrlEscaped=$runtimeEscaped|caseCount=11")
     $lines.Add(
         "PLAYER_INFO_ORACLE|CHILD|runId=$RunId|urlReported=1|" +
-        "escapedUrl=$childEscaped")
+        "escapedUrl=$childEscaped|" +
+        'extractionMode=loaded_child_exported_symbol_instance|' +
+        'sourceDocumentInstanceTx=0|sourceDocumentInstanceTy=3|' +
+        'sourceDocumentInstanceScaleX=100|sourceDocumentInstanceScaleY=100|' +
+        'sourceDocumentInstanceRotation=0|childDocumentWrapperApplied=0')
     foreach ($expected in @(Get-PlayerInfoOracleExpectedCases)) {
         $state = Get-PlayerInfoOracleExpectedStateFields -Expected $expected
         $stateText = ($state.GetEnumerator() | ForEach-Object {
             $_.Key + '=' + [string]$_.Value
         }) -join '|'
         $lines.Add("PLAYER_INFO_ORACLE|STATE|runId=$RunId|$stateText")
-        for ($row = 0; $row -lt 64; $row++) {
-            $encoded = if ($row -eq 0) { $visibleRow } else { $transparentRow }
+        for ($row = 0; $row -lt 576; $row++) {
+            if ($row -ne 0) {
+                $lines.Add(
+                    "PLAYER_INFO_ORACLE|CLEAR|runId=$RunId|" +
+                    "caseId=$($expected.caseId)|row=$row|argb=00000000")
+                continue
+            }
+            $encoded = $visibleRow
             for ($part = 0; $part -lt 8; $part++) {
                 $payload = $encoded.Substring(
                     $part * 720,
@@ -926,6 +1025,21 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -ExpectedChildPath $ExpectedChildPath
     if ($parsed.cases.Count -ne 11) {
         throw 'Protocol self-test parser did not return eleven cases.'
+    }
+    if ([string]$parsed.placement.placementProfile -cne
+            'main_rsl_exported_symbol_equivalent' -or
+        [string]$parsed.placement.referencePlacementProfile -cne
+            'main_rsl_exported_symbol' -or
+        [string]$parsed.placement.extractionMode -cne
+            'loaded_child_exported_symbol_instance' -or
+        [bool]$parsed.placement.mainParticipatesInCapture -or
+        [bool]$parsed.placement.childDocumentWrapperApplied -or
+        [int]$parsed.placement.exportedSymbolRootTy -ne 0 -or
+        [int]$parsed.placement.mainPlacementY -ne 512 -or
+        [int]$parsed.placement.canvasWidth -ne 1024 -or
+        [int]$parsed.placement.canvasHeight -ne 576 -or
+        [int]$parsed.placement.sourceDocumentInstanceTy -ne 3) {
+        throw 'Protocol self-test main-RSL-equivalent placement contract drifted.'
     }
     foreach ($focused in @(
         [pscustomobject]@{
@@ -1018,8 +1132,19 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
     $canonicalSummary = New-PlayerInfoOracleCanonicalSummary -Parsed $parsed
     if ($canonicalSummary.recordCount -ne 14 -or
         $canonicalSummary.text -match '\|PART\|' -or
+        $canonicalSummary.text -match '\|CLEAR\|' -or
         $canonicalSummary.text -match '(?m)\|escapedUrl=' -or
-        $canonicalSummary.text -match [regex]::Escape($expectedUri)) {
+        $canonicalSummary.text -match [regex]::Escape($expectedUri) -or
+        $canonicalSummary.text -notmatch
+            'schema=cf7\.player_info\.flash_oracle_summary\.v2' -or
+        $canonicalSummary.text -notmatch
+            'sourceSchema=cf7\.player_info\.flash_oracle\.v2' -or
+        $canonicalSummary.text -notmatch
+            'placementProfile=main_rsl_exported_symbol_equivalent' -or
+        $canonicalSummary.text -notmatch
+            'mainParticipatesInCapture=0' -or
+        $canonicalSummary.text -notmatch
+            'mainPlacementY=512\|canvasWidth=1024\|canvasHeight=576') {
         throw 'Protocol self-test canonical summary is not compact/path-free.'
     }
     $partLines = @([regex]::Split($trace, '\r?\n') | Where-Object {
@@ -1027,8 +1152,11 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
             'PLAYER_INFO_ORACLE|PART|',
             [System.StringComparison]::Ordinal)
     })
-    if ($partLines.Count -ne 5632) {
-        throw "Protocol self-test expected 5632 PART records; got $($partLines.Count)."
+    if ($partLines.Count -ne 88) {
+        throw "Protocol self-test expected 88 PART records; got $($partLines.Count)."
+    }
+    if ([int]$parsed.partRecordCount -ne $partLines.Count) {
+        throw 'Protocol self-test parsed PART count disagrees with physical trace.'
     }
     $maxPartLineChars = ($partLines | Measure-Object -Maximum Length).Maximum
     if ($maxPartLineChars -gt 1000) {
@@ -1037,6 +1165,24 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
     foreach ($line in $partLines) {
         if ($line -match '[^\x00-\x7F]') {
             throw 'Protocol self-test generated a non-ASCII PART record.'
+        }
+    }
+    $clearLines = @([regex]::Split($trace, '\r?\n') | Where-Object {
+        $_.StartsWith(
+            'PLAYER_INFO_ORACLE|CLEAR|',
+            [System.StringComparison]::Ordinal)
+    })
+    if ($clearLines.Count -ne 6325) {
+        throw (
+            'Protocol self-test expected 6325 exact-zero CLEAR records; got ' +
+            "$($clearLines.Count).")
+    }
+    if ([int]$parsed.clearRecordCount -ne $clearLines.Count) {
+        throw 'Protocol self-test parsed CLEAR count disagrees with physical trace.'
+    }
+    foreach ($line in $clearLines) {
+        if ($line.Length -gt 1000 -or $line -match '[^\x00-\x7F]') {
+            throw 'Protocol self-test generated an invalid CLEAR record.'
         }
     }
     $boundaryPrefix = (
@@ -1060,13 +1206,13 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
 
     $first = $parsed.cases[0]
     $bounds = Get-PlayerInfoOracleAlphaBounds `
-        -Argb $first.argb -Width 1024 -Height 64
+        -Argb $first.argb -Width 1024 -Height 576
     if ($bounds.x -ne 0 -or $bounds.y -ne 0 -or
         $bounds.width -ne 1 -or $bounds.height -ne 1) {
         throw 'Protocol self-test alpha crop bounds are incorrect.'
     }
     $png = Convert-PlayerInfoOracleArgbToPngBytes `
-        -Argb $first.argb -Width 1024 -Height 64
+        -Argb $first.argb -Width 1024 -Height 576
     if ($png.Length -lt 8 -or
         $png[0] -ne 137 -or $png[1] -ne 80 -or
         $png[2] -ne 78 -or $png[3] -ne 71) {
@@ -1213,6 +1359,14 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -ExpectedChildPath $ExpectedChildPath `
         -Scenario 'state mismatch'
 
+    $badClear = [regex]::Replace(
+        $trace, '\|argb=00000000', '|argb=00000001', 1)
+    Assert-PlayerInfoOracleTraceRejected `
+        -FreshText $badClear `
+        -RunId $runId `
+        -ExpectedChildPath $ExpectedChildPath `
+        -Scenario 'nonzero CLEAR row'
+
     $unknownField = [regex]::Replace(
         $trace,
         '(?m)^(PLAYER_INFO_ORACLE\|START\|[^\r\n]+)$',
@@ -1223,6 +1377,15 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
         -RunId $runId `
         -ExpectedChildPath $ExpectedChildPath `
         -Scenario 'unknown START field'
+
+    $historicalV1 = $trace.Replace(
+        'schema=cf7.player_info.flash_oracle.v2',
+        'schema=cf7.player_info.flash_oracle.v1')
+    Assert-PlayerInfoOracleTraceRejected `
+        -FreshText $historicalV1 `
+        -RunId $runId `
+        -ExpectedChildPath $ExpectedChildPath `
+        -Scenario 'historical v1 trace is not a current oracle'
 
     $unknownType = $trace.Replace(
         "PLAYER_INFO_ORACLE|STATE|runId=$runId|caseId=empty",
@@ -1288,6 +1451,7 @@ function Invoke-PlayerInfoOracleProtocolSelfTest {
 
     return [pscustomobject]@{
         partRecordCount = $partLines.Count
+        clearRecordCount = $clearLines.Count
         maxPartLineChars = [int]$maxPartLineChars
         cases = $parsed.cases.Count
         canonicalSummaryRecords = [int]$canonicalSummary.recordCount

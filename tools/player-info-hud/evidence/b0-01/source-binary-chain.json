@@ -1,11 +1,11 @@
 {
   "format": "cf7.player-info-hud.source-binary-chain",
-  "formatVersion": 1,
-  "evidenceRevision": "b0-01a-r3",
+  "formatVersion": 2,
+  "evidenceRevision": "b0-01a-r4",
   "status": "repository_ancestry_verified",
   "reviewBaseline": {
-    "commit": "2d89a78fdb2798dac03f6a18d5405dd1d9cdfce5",
-    "tree": "2fad8fb6c2883fbd1c8fcaa3e149dded3ddb4b56",
+    "commit": "a8009f3baf0413c307f5dfda8b58974abd9d25ec",
+    "tree": "3109750ae3eb4c9114a53bb426771f9f51abe9e5",
     "xflTreePath": "flashswf/UI/玩家信息界面",
     "xflTreeOid": "9cf7b65efcbd207f59588f28da833b9c5905be28",
     "relevantTrackedPathsMatchHeadInIndexAndAfterCleanFilter": true
@@ -31,11 +31,14 @@
       "actualCaptureLoaderVerified": false,
       "mainParticipatesInCapture": false,
       "asLoaderParticipatesInCapture": false,
-      "childPathToVerify": "flashswf/UI/玩家信息界面.swf"
+      "childPathToVerify": "flashswf/UI/玩家信息界面.swf",
+      "capturePlacementProfile": "standalone_child_document_wrapper",
+      "capturesMainRslPlacement": false,
+      "qualification": "The existing TestLoader MovieClipLoader path executes the child SWF document timeline. It therefore captures the child DOMDocument ty=3 wrapper, not the exported linkage symbol at the identity root used by the main RSL import."
     },
     "child": {
       "path": "flashswf/UI/玩家信息界面.swf",
-      "role": "runtime shared-library child containing linkageIdentifier 玩家信息界面"
+      "role": "runtime shared-library child exporting linkageIdentifier 玩家信息界面; its standalone document timeline separately places that exported symbol through a ty=3 wrapper"
     },
     "main": {
       "path": "CRAZYFLASHER7MercenaryEmpire.swf",
@@ -65,7 +68,76 @@
       "path": "scripts/asLoader.swf",
       "role": "behavior provider; frame41 includes the player-info display formulas, and the display-list engine advances the three HP descendant animations. It is not represented as the child SWF loader."
     },
-    "oracleRule": "B0-01B must record the loader that actually loads the child. Under the accepted TestLoader plan that loader is scripts/TestLoader.swf; main/asLoader are not mandatory capture identities unless they really participate in that capture."
+    "placementProfiles": {
+      "standaloneChildDocumentWrapper": {
+        "profileId": "standalone_child_document_wrapper",
+        "loaderMechanism": "MovieClipLoader loads the child SWF root document timeline",
+        "documentWrapperMatrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          3
+        ],
+        "hpRelativeToLoadedChildStage": [
+          0.847213745117188,
+          0,
+          0,
+          0.847213745117188,
+          37.75,
+          5.65
+        ],
+        "mpRelativeToLoadedChildStage": [
+          1.0810546875,
+          0,
+          0,
+          1.0810546875,
+          90.1,
+          -1.3
+        ],
+        "mainRuntimeEquivalent": false
+      },
+      "mainRslExportedSymbol": {
+        "profileId": "main_rsl_exported_symbol",
+        "loaderMechanism": "The main SWF imports linkageIdentifier 玩家信息界面 from flashswf/UI/玩家信息界面.swf and places the exported symbol directly",
+        "mainStageInstanceMatrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          512
+        ],
+        "exportedSymbolRootMatrixWithinMainInstance": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "hpRelativeToMainInstance": [
+          0.847213745117188,
+          0,
+          0,
+          0.847213745117188,
+          37.75,
+          2.65
+        ],
+        "mpRelativeToMainInstance": [
+          1.0810546875,
+          0,
+          0,
+          1.0810546875,
+          90.1,
+          -4.3
+        ],
+        "childDocumentWrapperApplied": false,
+        "runtimeTruth": true
+      }
+    },
+    "oracleRule": "B0-01B must record both the loader and the placement profile actually captured. The historical TestLoader MovieClipLoader candidate is standalone_child_document_wrapper and cannot become the main RSL oracle by human signature alone. A main-runtime oracle must either capture the actual main RSL instance or instantiate linkageIdentifier 玩家信息界面 at an identity root after loading the RSL, and must prove that profile in trace/manifest. main/asLoader identities are mandatory only when they really participate in that capture."
   },
   "sourceLinkEvidence": [
     {
@@ -217,10 +289,10 @@
       "role": "asLoader",
       "path": "scripts/asLoader.swf",
       "reviewBaseline": {
-        "lastPathChangeCommit": "60f42e1cc9673d18d9c2ed37b232e959b49f0519",
-        "gitBlobOid": "67204cbdca773bd0520da03f32f5119f2ef66a13",
-        "bytes": 1035069,
-        "sha256": "cc6b4e93989d9ec2daa6c3526ab25749728b4a187128ed3023ad91511be38a8e"
+        "lastPathChangeCommit": "7b21f679cb6bb82d108a3b8fe8cbd19af050a073",
+        "gitBlobOid": "4e1d05866f263bc1f1e016426c2dedb27c75c343",
+        "bytes": 1064450,
+        "sha256": "7abdae15848ff516a622142d75a630fa6a8783aa541c1b4dfbb6bc7b81451bd8"
       },
       "sourceBinaryAnchor": {
         "gitBlobOid": "4310ebfed10ca1d4fbbc8839687098301d06d14f",
@@ -241,13 +313,17 @@
     "repositoryAncestryVerified": true,
     "reproducibleBuildReceiptPresent": false,
     "actualCaptureProcessLoadVerified": false,
+    "mainRslPlacementContractVerified": true,
+    "standaloneCaptureEquivalentToMainRsl": false,
     "oracleFrozen": false,
     "allowedStatus": "placement_closure_frozen"
   },
   "failClosedNextEvidence": [
     "B0-01B must prove the actual process loaded child SHA-256 450b1f9a8b445ee3e28c63682ea00124a191f56d05d759b8590210fc0066a615.",
     "B0-01B must bind the actual TestLoader SWF and player executable path/version/SHA-256, not substitute current main/asLoader identities.",
-    "B0-01B must bind fixed case state, Flash quality, draw matrix/canvas, raw image and crop hashes, and a human source/layer/crop confirmation.",
+    "B0-01B must bind fixed case state, Flash quality, draw matrix/canvas, placement profile, raw image and crop hashes, and a human source/layer/crop confirmation.",
+    "The historical direct-child TestLoader candidate remains a standalone_child_document_wrapper diagnostic because it includes the child DOMDocument ty=3 wrapper. It cannot be promoted to the main RSL oracle by human review alone.",
+    "A replacement main-runtime oracle must prove either the actual main RSL instance or an identity-root instance of exported linkageIdentifier 玩家信息界面; its HP/MP matrices relative to that instance are ty=2.65 and ty=-4.3.",
     "If the existing child cannot be bound to the capture or visual fidelity is inadequate, an exact independent UI XFL publish/verify with fresh CS6 evidence is required before oracle_frozen."
   ]
 }
