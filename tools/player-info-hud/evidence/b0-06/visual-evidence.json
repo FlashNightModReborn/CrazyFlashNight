@@ -1,163 +1,283 @@
 {
-  "schema": "cf7.player-info-hud.b0-06-visual-evidence-index.v1",
+  "schema": "cf7.player-info-hud.b0-06-visual-evidence-index.v2",
   "status": "final_tree_diagnostic_awaiting_human_review",
-  "baseCommitAtExecution": "bf8dd2c410267855c8ea12f25a594042b3158479",
-  "commitBindingSemantics": "The captures execute the frozen implementation base commit before evidence-only closeout. The containing commit must be verified externally to change only evidence and documentation.",
+  "baseCommitAtExecution": "40853287e7ed04714d68935c0002f8ad6d8aea05",
+  "commitBindingSemantics": "The C#, Web, and direct-comparison artifacts execute or bind the frozen implementation tree at baseCommitAtExecution. The Flash artifact is the separately identified v2 candidate consumed by the direct comparison. The containing closeout commit must be verified externally to change only evidence and documentation.",
   "finalTreeEvidencePending": false,
-  "canonicalDirectoryClosure": "sorted UTF-8 relative path + NUL + exact file bytes + NUL",
+  "closureDefinitions": {
+    "completeDirectory": "sorted UTF-8 relative path + NUL + exact file bytes + NUL",
+    "reportExcludedOutput": "sorted UTF-8 relative path + NUL + exact file bytes + NUL, excluding the self-referential report",
+    "csharpManifestPngOutput": "sorted relativePath + NUL + decimal byte length + NUL + uppercase SHA-256 + LF"
+  },
   "csharp": {
-    "captureA": "tmp/player-info-hud-b006-kimi-final-csharp-a",
-    "captureB": "tmp/player-info-hud-b006-kimi-final-csharp-b",
-    "fileCountEach": 36,
-    "pngCountEach": 35,
-    "totalBytesEach": 834893,
-    "directoryClosureSha256": "44C22A045B4CA0AC19C4ECB7664024E5C318E39B2290F1E8856C19F1F6BEE06F",
-    "allFilesByteIdentical": true,
-    "manifest": {
-      "byteLength": 162661,
-      "sha256": "ADE926A6385BDB47D573061F2F0AF574DA6D93022F94C3E815137AB4C5EB4E08",
+    "captureA": "tmp/player-info-hud-b006-csharp-v2-f40853287-a",
+    "captureB": "tmp/player-info-hud-b006-csharp-v2-f40853287-b",
+    "completeDirectoryEach": {
+      "fileCount": 36,
+      "pngCount": 35,
+      "totalBytes": 1261624,
+      "sha256": "DD58CA7C84D70ADB1890A75AD133755BC9A7BA1051072DA282A8AF1B4956661E"
+    },
+    "aAndB": {
+      "pathSetsEqual": true,
+      "allFilesByteIdentical": true
+    },
+    "manifestA": {
+      "path": "tmp/player-info-hud-b006-csharp-v2-f40853287-a/manifest.json",
+      "byteLength": 170263,
+      "sha256": "462E8E59F98C0CE1BF8C7262ED8AD6333EF5AF9C9796C39BC4A60FBE018A8869"
+    },
+    "manifestB": {
+      "path": "tmp/player-info-hud-b006-csharp-v2-f40853287-b/manifest.json",
+      "byteLength": 170263,
+      "sha256": "462E8E59F98C0CE1BF8C7262ED8AD6333EF5AF9C9796C39BC4A60FBE018A8869"
+    },
+    "manifestContract": {
+      "schema": "cf7.player-info-hud.b0-06-csharp-visual-capture",
+      "schemaVersion": 2,
       "status": "structural_capture_complete",
       "scope": "fixture_only",
+      "assetSetId": "player-info-hp-mp-b0",
+      "assetSetRevision": "sha256:d67ab427748f5256bd18ea5669c9f1d045a6adaac30dce96f9660ea20c892ba1",
+      "exactAssetManifestSha256": "6f0aaa452343319f861eba8ed678ade24e8b2b87ccd7cd01795d3d6b45fef826",
       "pngOutputClosure": {
-        "canonicalFormat": "sorted UTF-8 relative path + NUL + decimal byte length + NUL + uppercase SHA-256 + LF",
         "fileCount": 35,
-        "totalBytes": 672232,
-        "sha256": "3C3901A64DFD4D3658D4BBC929B4D0DD54AE938DFD0C3289C4E4660C589A907E"
+        "totalBytes": 1091361,
+        "sha256": "150DF572731A64F8134AEB3F22E1E6B2DAB251893EA1131F8F922502E018EB79"
       }
     }
   },
   "web": {
-    "captureA": "tmp/player-info-hud-b006-kimi-final-web-a",
-    "captureB": "tmp/player-info-hud-b006-kimi-final-web-b",
-    "fileCountEach": 12,
-    "pngCountEach": 11,
-    "totalBytesEach": 120439,
-    "directoryClosureSha256": "2F18FAAB0D3490FF2F3DDEE632EE228ED709F924806D6577805418B1F579E6F6",
-    "allFilesByteIdentical": true,
-    "report": {
-      "byteLength": 5644,
-      "sha256": "7826B89DAF49BFFF409B2CEC066B4D8853BF593EF1EA3675C88D3FCA9C8BF97F",
+    "captureA": "tmp/player-info-hud-web-canonical-v2-f40853287-a",
+    "captureB": "tmp/player-info-hud-web-canonical-v2-f40853287-b",
+    "completeDirectoryEach": {
+      "fileCount": 12,
+      "pngCount": 11,
+      "totalBytes": 221781,
+      "sha256": "9D21D823AD4B905011AF0C253A5456C04CE0224AD92296686C13E2A77E817A7B"
+    },
+    "aAndB": {
+      "pathSetsEqual": true,
+      "allFilesByteIdentical": true
+    },
+    "reportA": {
+      "path": "tmp/player-info-hud-web-canonical-v2-f40853287-a/web-render-report.json",
+      "byteLength": 5773,
+      "sha256": "AB1445C9DCDC253B70192B57B3BE1EEBF34A4B7785D83471579F67A2C20A3DD9"
+    },
+    "reportB": {
+      "path": "tmp/player-info-hud-web-canonical-v2-f40853287-b/web-render-report.json",
+      "byteLength": 5773,
+      "sha256": "AB1445C9DCDC253B70192B57B3BE1EEBF34A4B7785D83471579F67A2C20A3DD9"
+    },
+    "reportContract": {
+      "schema": "cf7.player_info.web_svg_harness.v2",
       "status": "canonical_manifest_rendered_awaiting_human_review",
-      "renderSemantics": {
-        "capturedLayerScope": "canonical_static_svg_layers_only",
-        "csharpProgrammaticDynamicTextIncluded": false,
-        "csharpProgrammaticGlowIncluded": false
-      }
+      "capturedLayerScope": "canonical_static_svg_layers_only",
+      "csharpProgrammaticDynamicTextIncluded": false,
+      "csharpProgrammaticGlowIncluded": false,
+      "assetSetRevision": "sha256:d67ab427748f5256bd18ea5669c9f1d045a6adaac30dce96f9660ea20c892ba1",
+      "exactAssetManifestSha256": "6f0aaa452343319f861eba8ed678ade24e8b2b87ccd7cd01795d3d6b45fef826"
     }
   },
   "flashCandidate": {
-    "manifestPath": "tmp/player-info-hud/oracle/20260728T101414Z-d643ecd574a147009c8ada8d6ee1dc9d/oracle-manifest.json",
-    "manifestByteLength": 61487,
-    "manifestSha256": "DCC9E11AF07CDDB8296851EE4541A035CD0AAB1E9B9D430FF82F4B8D265BF472",
+    "manifest": {
+      "path": "tmp/player-info-hud/oracle/20260729T143326Z-32f8ec2142ec47e29c5b191cf2ee339c/oracle-manifest.json",
+      "byteLength": 69191,
+      "sha256": "399B72E7D76444335215D14A15CDEFC200130B46BC805AF0FB28A057B9DDA68E",
+      "schema": "cf7.player_info.flash_oracle_manifest.v2",
+      "status": "candidate",
+      "runId": "32f8ec2142ec47e29c5b191cf2ee339c",
+      "capturedUtc": "2026-07-29T14:35:37.8679532Z"
+    },
+    "candidateReceipt": {
+      "path": "tmp/player-info-hud/oracle/20260729T143326Z-32f8ec2142ec47e29c5b191cf2ee339c/candidate-receipt.json",
+      "byteLength": 3700,
+      "sha256": "F782588C558CDC560A3325E42757B807A5116AEE75B3C2B6455473789727BFA1",
+      "schema": "cf7.player_info.flash_oracle_candidate_receipt.v2",
+      "status": "candidate_ready_after_restore"
+    },
+    "capturePngClosure": {
+      "selection": "the 22 top-level raw and crop PNG files declared by the manifest",
+      "fileCount": 22,
+      "pngCount": 22,
+      "totalBytes": 371550,
+      "sha256": "0197E9D2D77454CEB6174539B2931A6F2117B4339A1255A78325CF11A1D391BA"
+    },
+    "comparatorSelectedRawPngCount": 11,
+    "sourceBinaryIdentities": {
+      "childSha256": "450B1F9A8B445EE3E28C63682EA00124A191F56D05D759B8590210FC0066A615",
+      "mainReferenceSha256": "A45804E29C27CF04CA8964E0982DE6F1676B1CEF96DED11BADEC7F173D5994B2",
+      "loaderCandidateSha256": "1528C9DD78F35CFFDC6F74C282062ADCFEC7F794F142049268194590919A5DBF"
+    },
+    "capturePlacement": {
+      "profile": "main_rsl_exported_symbol_equivalent",
+      "extractionMode": "loaded_child_exported_symbol_instance",
+      "childDocumentWrapperApplied": false,
+      "mainParticipatesInCapture": false,
+      "mainBinaryRole": "identity_chain_reference_only"
+    },
     "oracleFrozen": false,
-    "humanReviewPending": [
-      "source",
-      "state",
-      "layerIsolation",
-      "crop",
-      "visualQuality"
-    ]
+    "requiresHumanReview": true,
+    "humanReviewStatus": "required"
   },
   "directEdgeDiagnostics": {
-    "comparisonA": "tmp/player-info-hud-b006-kimi-final-direct-a",
-    "comparisonB": "tmp/player-info-hud-b006-kimi-final-direct-b",
-    "fileCountEach": 67,
-    "pngCountEach": 66,
-    "pngsByteIdentical": true,
+    "comparisonA": "tmp/player-info-hud-b006-direct-v2-f40853287-a",
+    "comparisonB": "tmp/player-info-hud-b006-direct-v2-f40853287-b",
+    "completeDirectoryA": {
+      "fileCount": 67,
+      "pngCount": 66,
+      "totalBytes": 3351312,
+      "sha256": "0684D95E6FEE6AD4F37DA8B334E2B66E93A13A277DCF5990D422A0DFCEB01A1A"
+    },
+    "completeDirectoryB": {
+      "fileCount": 67,
+      "pngCount": 66,
+      "totalBytes": 3351312,
+      "sha256": "92F978F7C581D10BDA185053FD9AD08FDFCB0D81C77D8AA04D3C1A4963DF3F79"
+    },
     "reportA": {
-      "byteLength": 184472,
-      "sha256": "519CF97BC632F5F921C30ED64B81B80864F4C626D86885E8D9CB98CA319783C1"
+      "path": "tmp/player-info-hud-b006-direct-v2-f40853287-a/csharp-web-flash-comparison-report.json",
+      "byteLength": 236862,
+      "sha256": "B2FF695A54CA872AA35F143AF72C6DBC03B9C0AD6C5379D68ED3F84C7C017095"
     },
     "reportB": {
-      "byteLength": 184472,
-      "sha256": "081B05E2E729A2C7E6C7987530C4D2D361B02E4DBD6C7CAC2E0F0F3F2E78B356"
+      "path": "tmp/player-info-hud-b006-direct-v2-f40853287-b/csharp-web-flash-comparison-report.json",
+      "byteLength": 236862,
+      "sha256": "F5C57984D7E617CBC300D9AC9344114A707BB4E6C1F438FDB57B175BA244F0C5"
     },
-    "reportDifference": "The reports intentionally retain their distinct -a/-b repository-relative input paths. All other diagnostic output files are byte-identical.",
+    "aAndB": {
+      "pathSetsEqual": true,
+      "all66PngFilesByteIdentical": true,
+      "reportsEqualAfterNormalizingOnlyTheAAndBRepositoryRelativeInputPaths": true,
+      "reportDifference": "The reports intentionally retain their distinct -a/-b repository-relative input paths."
+    },
     "outputClosureExcludingReport": {
       "fileCount": 66,
-      "totalBytes": 1470180,
-      "sha256": "5207F27B2ACEE5E7A3F04D89EE627DEE6E4C58CBCD93F4AF975E778C5803C234"
+      "pngCount": 66,
+      "totalBytes": 3114450,
+      "sha256": "F05AE7F77CA5034D3F645480FCE110D745913F6539FBB767682AFC4AA8B50ABF"
     },
-    "status": "diagnostic_awaiting_human_review",
-    "edges": [
-      "CSharp_to_Web",
-      "CSharp_to_Flash"
-    ],
-    "csharpWebScope": {
-      "csharp": "full_fixture_composite",
-      "web": "canonical_static_svg_layers_only",
-      "metricsIncludeLayerScopeDifference": true
+    "reportContract": {
+      "schema": "cf7.player_info.b0_06_csharp_web_flash_diagnostic.v2",
+      "schemaVersion": 2,
+      "status": "diagnostic_awaiting_human_review",
+      "scope": "11_case_direct_csharp_main_viewport_composite_to_web_canonical_static_layers_and_csharp_to_flash",
+      "edges": [
+        "csharp-web",
+        "csharp-flash"
+      ],
+      "acceptanceThreshold": null,
+      "metricsOnly": true,
+      "parityClaimed": false,
+      "flashOracleAccepted": false,
+      "humanReviewRequired": true
     }
   },
-  "ffdecReference": {
-    "capture": "tmp/player-info-hud-b006-kimi-final-ffdec-reference",
-    "fileCount": 23,
-    "pngCount": 22,
-    "totalBytes": 276020,
-    "directoryClosureSha256": "AEC84002B2D9C030BA8528B075D522486449290245122F28CE61D298EE287E59",
-    "report": {
-      "byteLength": 30433,
-      "sha256": "069BFD2B12EF284F11B7F9937BCFC4B1D419D0772AF6DF5D1C733FF475784167",
-      "status": "ffdec_binary_reference_frozen",
-      "referenceSetRevision": "sha256:a8369211446916f0b30f504a4e6fee02f860047dff6f68bc7712fc1eaf4a79c0"
+  "viewer": {
+    "path": "tmp/player-info-hud-b006-viewer-v2-f40853287-a.html",
+    "byteLength": 651451,
+    "sha256": "2F71A3ED50F2626E497999A88E6F0F6E35EDD0ACD593411B5794921E64501BC2",
+    "embeddedPayloadSchema": "cf7.player_info.visual_diagnostic_viewer.v2",
+    "sourceReport": {
+      "path": "tmp/player-info-hud-b006-direct-v2-f40853287-a/csharp-web-flash-comparison-report.json",
+      "byteLength": 236862,
+      "sha256": "B2FF695A54CA872AA35F143AF72C6DBC03B9C0AD6C5379D68ED3F84C7C017095",
+      "edge": "csharp-flash"
     },
-    "flashPlayerRuntimeOracleEquivalent": false
+    "diagnosticOnly": true,
+    "requiresHumanReview": true
   },
-  "supplementalWebDiagnostics": {
-    "ffdecWeb": {
-      "comparisonA": "tmp/player-info-hud-b006-kimi-final-ffdec-web-a",
-      "comparisonB": "tmp/player-info-hud-b006-kimi-final-ffdec-web-b",
-      "fileCountEach": 34,
-      "pngCountEach": 33,
-      "pngsByteIdentical": true,
-      "reportA": {
-        "byteLength": 36038,
-        "sha256": "4B48CECB1024C7B008C1DB584772CD46472C2435FA7E419B596B83DCCEA7FE9A"
+  "mpHorizontalAlignment": {
+    "source": "directEdgeDiagnostics.reportA.edges.csharpFlash.diagnostics.mpHorizontalAlignment",
+    "caseId": "mp-p50-vf51",
+    "dxConvention": "compare CSharp(x,y) with Flash(x+dx,y)",
+    "fixedDy": 0,
+    "fieldCount": 4,
+    "alignedFieldCount": 4,
+    "allFieldsAligned": true,
+    "requiredAnchorEdgeDx": 0,
+    "fields": [
+      {
+        "id": "label",
+        "anchorEdge": "leading",
+        "bestDx": 0,
+        "bestDxCandidates": [
+          0
+        ],
+        "anchorEdgeDx": 0,
+        "bestJaccard": 0.9041916167664671,
+        "aligned": true
       },
-      "reportB": {
-        "byteLength": 36038,
-        "sha256": "18739C4BF3812DC0E47A46860997DC692D07E36A79CCC364F205B5F8333CF137"
+      {
+        "id": "current",
+        "anchorEdge": "trailing",
+        "bestDx": 0,
+        "bestDxCandidates": [
+          0
+        ],
+        "anchorEdgeDx": 0,
+        "bestJaccard": 0.7345971563981043,
+        "aligned": true
       },
-      "outputClosureExcludingReport": {
-        "fileCount": 33,
-        "totalBytes": 698799,
-        "sha256": "BC2A83D15AB6D918C0DEBE5DF22A5FE61B8D54E7B6040E1F0C6D50684629E08A"
+      {
+        "id": "maximum",
+        "anchorEdge": "leading",
+        "bestDx": 0,
+        "bestDxCandidates": [
+          0
+        ],
+        "anchorEdgeDx": 0,
+        "bestJaccard": 0.7966804979253111,
+        "aligned": true
       },
-      "status": "diagnostic_cross_renderer_comparison"
-    },
-    "flashCandidateWeb": {
-      "comparisonA": "tmp/player-info-hud-b006-kimi-final-flash-web-a",
-      "comparisonB": "tmp/player-info-hud-b006-kimi-final-flash-web-b",
-      "fileCountEach": 34,
-      "pngCountEach": 33,
-      "pngsByteIdentical": true,
-      "reportA": {
-        "byteLength": 52472,
-        "sha256": "2C484161B9BE0C4334C3DD491EB4AD94B4BDB84BB2FB058AD0632E5D56EDE515"
-      },
-      "reportB": {
-        "byteLength": 52472,
-        "sha256": "9BA282E2C775B0833272945A8AEC1F9F0494820C6DAA7EF969E2D3F7C2D37B14"
-      },
-      "outputClosureExcludingReport": {
-        "fileCount": 33,
-        "totalBytes": 661944,
-        "sha256": "6141D3870BC5ED6B40AD3C1FD19A11945D47C5973C6B1711F323220E778CC185"
-      },
-      "status": "diagnostic_visual_review_package_awaiting_human_review"
-    },
-    "webScope": "canonical_static_svg_layers_only",
-    "acceptanceThreshold": null,
-    "parityClaimed": false
+      {
+        "id": "percent",
+        "anchorEdge": "leading",
+        "bestDx": 0,
+        "bestDxCandidates": [
+          0
+        ],
+        "anchorEdgeDx": 0,
+        "bestJaccard": 0.42857142857142855,
+        "aligned": true
+      }
+    ],
+    "summary": "4/4 MP text fields have a unique bestDx of 0 and the required anchor-edge dx of 0 in the fixed-dy diagnostic."
   },
   "automatedClaims": [
     "C# A/B captures are byte-identical across their complete 36-file closures.",
     "Web A/B captures are byte-identical across their complete 12-file closures.",
-    "Both direct-edge runs emit byte-identical 66-PNG diagnostic closures.",
-    "FFDec/Web and Flash-candidate/Web A/B runs each emit byte-identical 33-PNG diagnostic closures.",
-    "The C#-to-Web metrics compare the full C# fixture composite to Web canonical static SVG layers and therefore include the dynamic-text/Glow layer-scope difference.",
-    "Every comparator validates input identities and emits metrics without an acceptance threshold."
+    "Direct-comparison A/B runs emit byte-identical 66-PNG report-excluded closures; their reports differ only in the retained A/B repository-relative input paths.",
+    "The direct C#-to-Flash p50 diagnostic finds a unique bestDx of 0 and the required anchor-edge dx of 0 for all four MP text fields.",
+    "The direct comparator validates input identities and emits metrics without an acceptance threshold."
   ],
+  "humanReview": {
+    "status": "pending",
+    "required": true,
+    "reviewer": null,
+    "decision": null,
+    "pendingChecks": [
+      "Flash candidate state correctness and layer isolation",
+      "crop integrity",
+      "real game composite",
+      "visible desktop DWM composition, z-order, and occlusion over the running game",
+      "old Flash HUD same-screen visibility",
+      "real UiData integration",
+      "real desktop mouse click-through",
+      "temporal smoothness under the actual compositor clock",
+      "mixed-DPI desktop appearance",
+      "visual aesthetics"
+    ]
+  },
+  "acceptanceState": {
+    "crossRendererParityClaimed": false,
+    "flashOracleAccepted": false,
+    "humanVisualAcceptance": "PENDING",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "promotionClaimed": false,
+    "standardEntryVerifiedClaimed": false
+  },
   "explicitlyUnverified": [
     "cross-renderer pixel parity",
     "Flash candidate acceptance",
@@ -171,5 +291,5 @@
     "visual aesthetics",
     "deployment"
   ],
-  "scopeBoundary": "This index freezes deterministic automated evidence for the final implementation base tree. C# images are offscreen bitmap captures, Web images are rendered by headless Edge, FFDec is a binary-SWF cross-renderer reference, Flash images come from an unaccepted candidate, and the formal HWND/ULW runner places its owner offscreen. None of these artifacts proves visible desktop DWM composition, game z-order/occlusion, a real hand click, temporal smoothness on the actual compositor clock, pixel parity, aesthetics, or deployment; those human checks remain mandatory."
+  "scopeBoundary": "This index freezes deterministic automated evidence for the final implementation tree. C# images are offscreen fixture captures, Web images are headless Edge renders of canonical static SVG layers, Flash images remain an unaccepted v2 candidate, direct metrics have no acceptance threshold, and the viewer is diagnostic. The artifacts do not prove cross-renderer pixel parity, visible desktop/game integration, human visual acceptance, promotion, standard-entry verification, or deployment."
 }

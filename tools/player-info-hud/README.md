@@ -109,9 +109,10 @@ chcp.com 65001 | Out-Null
   -ReportPath tmp/player-info-hud-b0-05-runtime-qualification.json
 ```
 
-The currently committed snapshot
-`evidence/b0-05/runtime-qualification.json` is historical v1 evidence and does
-not approve the corrected main-space v2 source. The accepted report form is UTF-8
+The historical v1 snapshot formerly stored at
+`evidence/b0-05/runtime-qualification.json` remains available through Git
+history and does not approve main-space v2. The tracked path now names the
+current v2 snapshot described below. The accepted report form is UTF-8
 without BOM and canonical LF, with the exact 32 Gate IDs, 37-file executable
 source closure, executing test assembly, Core plus the exact win-x64
 11-file renderer target closure, an independently enumerated exact 15-file
@@ -149,6 +150,17 @@ the two `mp.fill` fragments. Only after that excluded phase does
 it collect 20 independent acceptance samples per viewport; each nearest-rank
 p95 must remain at or below 100 ms. A dirty-tree diagnostic cannot replace the
 fresh clean source-frozen qualification.
+
+The current main-space v2 accepted machine snapshot is
+`evidence/b0-05/runtime-qualification.json`, bound to clean merge commit
+`40853287e7ed04714d68935c0002f8ad6d8aea05`: run
+`c42d755dfa294ea5898366c7870e6ab8`, 738,872 B, SHA-256
+`3C738AC233136B98978285F8BC8069A3890511742123F2BA58E8AC74D7B1C514`,
+32/32, with `recordedDecision=split_required`. It supersedes the intermediate
+clean report whose executable closure predated the reusable prepared-DIB
+surface, as well as every dirty diagnostic. Its status proves only the
+synthetic raster/cache/topology contract; it does not freeze the Flash oracle,
+assert parity, or accept the visible UI.
 
 ## Source-bound path glyph atlas
 
@@ -250,8 +262,9 @@ pre-merge attempts without relaxing the original thresholds: v1 was 43/46
 pre-origin-sync v3 snapshot remains historical evidence in
 `evidence/b0-06/runtime-qualification-premerge-v3.json`.
 
-The historical v1 implementation-base result is
-`evidence/b0-06/runtime-qualification.json`: base commit
+The historical v1 implementation-base result formerly stored at
+`evidence/b0-06/runtime-qualification.json` remains available through Git
+history: base commit
 `bf8dd2c410267855c8ea12f25a594042b3158479`, run
 `a6aadeb6e3264577bb9da8fe90857a7b`, 647,234 B, SHA-256
 `656286825CE9717D0DC31BDF9DFE00F3ECB57AB515C5C130601BDF23D319CD74`,
@@ -273,6 +286,17 @@ remain a distinct `scripts=3 / unsafeCandidateCases=3` count and are not
 relabelled as additional homogeneous scalar assertions. This source-freeze
 verification does not rebind the implementation-base qualification or visual
 reports described above.
+
+The current main-space v2 machine snapshot is
+`evidence/b0-06/runtime-qualification.json`, directly bound to clean merge
+commit `40853287e7ed04714d68935c0002f8ad6d8aea05`: run
+`ed61d7275fdd4a96a73f762c5c2a4d71`, 653,904 B, SHA-256
+`182C7DC9DE106B41AAF8073399DD390CA03A857347EA69A958E707CE771CA8E1`,
+48/48. The complete clean Launcher run on the same source is 1,747 passed +
+3 opt-in skipped / 1,750 total. These current results supersede the
+prepared-DIB dirty preflight and the historical v1 qualification for v2
+approval, but they do not create a runtime build, promotion, deployment, or
+human visual result.
 
 ## Historical v1 F source freeze and non-deploying builder quorum
 
@@ -412,9 +436,34 @@ Their historical v1 184,472 B reports differ only because they retain distinct
 `519CF97BC632F5F921C30ED64B81B80864F4C626D86885E8D9CB98CA319783C1`
 and
 `081B05E2E729A2C7E6C7987530C4D2D361B02E4DBD6C7CAC2E0F0F3F2E78B356`.
-These hashes and the corresponding entries in
-`evidence/b0-06/visual-evidence.json` are historical evidence only; the final
-v2 main-space index must be regenerated from the frozen source.
+These v1 hashes remain available through Git history. The tracked
+`evidence/b0-06/visual-evidence.json` has now been regenerated as the current
+v2 main-space index:
+
+- C# A/B are byte-identical complete directories of 36 files / 35 PNG /
+  1,261,624 B, SHA-256
+  `DD58CA7C84D70ADB1890A75AD133755BC9A7BA1051072DA282A8AF1B4956661E`.
+- Web A/B are byte-identical complete directories of 12 files / 11 PNG /
+  221,781 B, SHA-256
+  `9D21D823AD4B905011AF0C253A5456C04CE0224AD92296686C13E2A77E817A7B`.
+- Direct A/B each contain a report-excluded 66-PNG / 3,114,450 B output
+  closure, SHA-256
+  `F05AE7F77CA5034D3F645480FCE110D745913F6539FBB767682AFC4AA8B50ABF`.
+  Their 236,862 B reports intentionally differ by A/B input paths and hash to
+  `B2FF695A54CA872AA35F143AF72C6DBC03B9C0AD6C5379D68ED3F84C7C017095`
+  and
+  `F5C57984D7E617CBC300D9AC9344114A707BB4E6C1F438FDB57B175BA244F0C5`.
+- The generated review viewer is 651,451 B / SHA-256
+  `2F71A3ED50F2626E497999A88E6F0F6E35EDD0ACD593411B5794921E64501BC2`.
+
+The v2 index binds clean merge
+`40853287e7ed04714d68935c0002f8ad6d8aea05` and the canonical directory
+contract; ad-hoc path/length/hash summaries are not interchangeable with that
+contract. Both direct reports independently produce a unique `bestDx=0` for
+MP label/current/maximum/percent. Label, maximum, and percent also have leading
+`anchorEdgeDx=0`; the right-aligned current value has trailing
+`anchorEdgeDx=0`. The reports remain `diagnostic_awaiting_human_review`, with
+`parityClaimed=false` and `flashOracleAccepted=false`.
 
 Build the local review viewer from either direct-edge report:
 
@@ -525,8 +574,10 @@ B0-04 remains without accepted visual parity, and the old Flash HUD remains
 the active visual reference.
 
 The repository-owned Playwright/local-Edge harness remains valid for
-deterministic Web/direct-edge rendering without an interactive App backend;
-FFDec
+deterministic Web/direct-edge rendering without an interactive App backend.
+As of 2026-07-29 the ChatGPT App exposes Computer Use/Browser skills, but no
+control session has yet been initialized; skill visibility is not backend or
+desktop evidence. FFDec
 remains a binary-SWF diagnostic, and the formal runner exercises real HWND/ULW
 calls with an offscreen owner. None of these routes proves visible desktop DWM
 composition, z-order/occlusion over the running game, a real hand click,
