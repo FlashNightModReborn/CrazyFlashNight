@@ -40,7 +40,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
 {
     private const string CaptureSchema =
         "cf7.player-info-hud.b0-06-csharp-visual-capture";
-    private const int CaptureSchemaVersion = 1;
+    private const int CaptureSchemaVersion = 2;
     private const int ContactSheetColumns = 7;
     private const int ContactSheetGap = 2;
 
@@ -162,18 +162,18 @@ public sealed class PlayerInfoB006VisualCaptureTests
                 expected.MpVirtualFrame,
                 rendered.PaintResult.MpVirtualFrame);
 
-            string fullPath =
-                $"cases/{expected.CaseId}.full.png";
+            string mainPath =
+                $"cases/{expected.CaseId}.main.png";
             string tightPath =
                 $"cases/{expected.CaseId}.tight.png";
             outputs.Add(WriteBitmapOutput(
                 outputRoot,
-                fullPath,
-                "fixture-full-stage",
+                mainPath,
+                "fixture-main-viewport",
                 baselineViewport.Id,
                 expected.CaseId,
                 baselinePlan,
-                rendered.FullStage));
+                rendered.MainViewport));
             outputs.Add(WriteBitmapOutput(
                 outputRoot,
                 tightPath,
@@ -186,7 +186,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
                 expected.CaseId,
                 rendered.VisualState,
                 rendered.PaintResult,
-                fullPath,
+                mainPath,
                 tightPath));
         }
 
@@ -214,11 +214,11 @@ public sealed class PlayerInfoB006VisualCaptureTests
                 outputs.Add(WriteBitmapOutput(
                     outputRoot,
                     relativePath,
-                    "viewport-key-state-full-stage",
+                    "viewport-key-state-main-viewport",
                     viewport.Id,
                     caseId,
                     plan,
-                    rendered.FullStage));
+                    rendered.MainViewport));
                 states.Add(new ViewportStateEvidence(
                     stateId,
                     caseId,
@@ -298,10 +298,10 @@ public sealed class PlayerInfoB006VisualCaptureTests
             "fixture_only",
             new CanvasContractEvidence(
                 assetSet.Stage.LogicalWidth,
-                assetSet.Stage.LogicalHeight,
+                (int)PlayerInfoRasterPlanner.MainStageLogicalHeight,
                 "transparent_argb_0",
                 null,
-                "Full-stage PNGs contain no substituted checkerboard, matte, or game-scene background."),
+                "Main Flash content-viewport PNGs place the imported PlayerInfo sprite at main y=512 and contain no substituted checkerboard, matte, or game-scene background."),
             new DeterminismEvidence(
                 true,
                 true,
@@ -347,7 +347,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
                 "production PlayerInfoRasterPipeline supplied every borrowed atomic batch",
                 "production PlayerInfoWidget and its production compositor painted every state",
                 "11-case allowlist and key virtual-frame mapping matched the frozen contract",
-                "four ADR viewport/content/DPI plans matched stage and tight physical bounds",
+                "four ADR viewport/content/DPI plans matched child-stage metadata, main viewport, and tight physical bounds",
                 "global MP-to-HP and exact eight-layer raster order matched the typed contract",
                 "every source bitmap satisfied Format32bppPArgb and byte-level premultiplication",
                 "same input produced identical top-down PArgb bytes, paint result, and PNG bytes",
@@ -437,18 +437,19 @@ public sealed class PlayerInfoB006VisualCaptureTests
         ValidatePArgb(firstTight);
         ValidatePArgb(secondTight);
 
-        Bitmap fullStage = PlaceTightOnStage(firstTight, plan);
-        using Bitmap secondFullStage = PlaceTightOnStage(secondTight, plan);
+        Bitmap mainViewport = PlaceTightOnMainViewport(firstTight, plan);
+        using Bitmap secondMainViewport =
+            PlaceTightOnMainViewport(secondTight, plan);
         Assert.Equal(
-            ExtractPArgbBytes(fullStage),
-            ExtractPArgbBytes(secondFullStage));
+            ExtractPArgbBytes(mainViewport),
+            ExtractPArgbBytes(secondMainViewport));
         Assert.Equal(
-            EncodePng(fullStage),
-            EncodePng(secondFullStage));
-        Rectangle alphaBounds = FindAlphaBounds(fullStage);
+            EncodePng(mainViewport),
+            EncodePng(secondMainViewport));
+        Rectangle alphaBounds = FindAlphaBounds(mainViewport);
         Assert.False(alphaBounds.IsEmpty);
-        Bitmap alphaTightCrop = CopyRegion(fullStage, alphaBounds);
-        ValidatePArgb(fullStage);
+        Bitmap alphaTightCrop = CopyRegion(mainViewport, alphaBounds);
+        ValidatePArgb(mainViewport);
         ValidatePArgb(alphaTightCrop);
         Assert.Equal(
             new Rectangle(
@@ -459,7 +460,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
             FindAlphaBounds(alphaTightCrop));
 
         return new RenderedFixture(
-            fullStage,
+            mainViewport,
             alphaTightCrop,
             visualState,
             PaintResult(firstPaint));
@@ -583,30 +584,30 @@ public sealed class PlayerInfoB006VisualCaptureTests
             plan.TightPhysicalBounds.Height,
             PixelFormat.Format32bppPArgb);
 
-    private static Bitmap PlaceTightOnStage(
+    private static Bitmap PlaceTightOnMainViewport(
         Bitmap tight,
         PlayerInfoRasterPlan plan)
     {
-        var stage = new Bitmap(
-            plan.StagePhysicalBounds.Width,
-            plan.StagePhysicalBounds.Height,
+        var mainViewport = new Bitmap(
+            plan.FlashViewportPhysical.Width,
+            plan.FlashViewportPhysical.Height,
             PixelFormat.Format32bppPArgb);
         try
         {
             CopyBitmap(
                 tight,
                 new Rectangle(0, 0, tight.Width, tight.Height),
-                stage,
+                mainViewport,
                 new Point(
                     plan.TightPhysicalBounds.Left -
-                    plan.StagePhysicalBounds.Left,
+                    plan.FlashViewportPhysical.Left,
                     plan.TightPhysicalBounds.Top -
-                    plan.StagePhysicalBounds.Top));
-            return stage;
+                    plan.FlashViewportPhysical.Top));
+            return mainViewport;
         }
         catch
         {
-            stage.Dispose();
+            mainViewport.Dispose();
             throw;
         }
     }
@@ -743,6 +744,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
             "Format32bppPArgb",
             plan.PhysicalScale,
             plan.MonitorDpiScale,
+            Rect(plan.FlashViewportPhysical),
             Rect(plan.StagePhysicalBounds),
             Rect(plan.TightPhysicalBounds),
             Rect(FindAlphaBounds(bitmap)),
@@ -1135,7 +1137,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
             1.00f,
             1d,
             new Rectangle(0, 512, 1024, 64),
-            new Rectangle(0, 512, 282, 46)),
+            new Rectangle(0, 474, 282, 81)),
         new(
             "viewport_1600x900_dpi125",
             new Rectangle(0, 0, 1600, 900),
@@ -1143,7 +1145,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
             1.25f,
             1.5625d,
             new Rectangle(0, 800, 1600, 100),
-            new Rectangle(0, 800, 440, 72)),
+            new Rectangle(0, 741, 440, 126)),
         new(
             "viewport_1920x1080_dpi150",
             new Rectangle(0, 0, 1920, 1080),
@@ -1151,7 +1153,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
             1.50f,
             1.875d,
             new Rectangle(0, 960, 1920, 120),
-            new Rectangle(0, 960, 528, 86)),
+            new Rectangle(0, 890, 528, 150)),
         new(
             "host_1280x960_letterbox_content_1280x720_dpi175",
             new Rectangle(0, 0, 1280, 960),
@@ -1159,16 +1161,16 @@ public sealed class PlayerInfoB006VisualCaptureTests
             1.75f,
             1.25d,
             new Rectangle(0, 760, 1280, 80),
-            new Rectangle(0, 760, 352, 57))
+            new Rectangle(0, 713, 352, 101))
     ];
 
     private sealed class RenderedFixture(
-        Bitmap fullStage,
+        Bitmap mainViewport,
         Bitmap alphaTightCrop,
         PlayerInfoVisualStateEvidence visualState,
         PaintResultEvidence paintResult) : IDisposable
     {
-        internal Bitmap FullStage { get; } = fullStage;
+        internal Bitmap MainViewport { get; } = mainViewport;
         internal Bitmap AlphaTightCrop { get; } = alphaTightCrop;
         internal PlayerInfoVisualStateEvidence VisualState { get; } =
             visualState;
@@ -1176,7 +1178,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
 
         public void Dispose()
         {
-            FullStage.Dispose();
+            MainViewport.Dispose();
             AlphaTightCrop.Dispose();
         }
     }
@@ -1245,6 +1247,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
         string SourcePixelFormat,
         double PhysicalScale,
         float MonitorDpiScale,
+        RectEvidence FlashViewportPhysical,
         RectEvidence StagePhysicalBounds,
         RectEvidence TightPhysicalBounds,
         RectEvidence AlphaBounds,
@@ -1256,7 +1259,7 @@ public sealed class PlayerInfoB006VisualCaptureTests
         string CaseId,
         PlayerInfoVisualStateEvidence VisualState,
         PaintResultEvidence PaintResult,
-        string FullStagePng,
+        string MainViewportPng,
         string TightCropPng);
 
     private sealed record ViewportStateEvidence(

@@ -39,7 +39,7 @@ public sealed class PlayerInfoManifestRuntimeContractTests
                 0,
                 0.847213745117188,
                 37.75,
-                5.65),
+                2.65),
             hp.StageMatrix);
         Assert.Equal(
             new[] { "hp.backplate", "hp.fill", "hp.rim" },
@@ -67,6 +67,15 @@ public sealed class PlayerInfoManifestRuntimeContractTests
         Assert.Equal("clockwise", hp.FillTextureRotation.PositiveDirection);
 
         PlayerInfoSvgGauge mp = assetSet.Gauges["mp"];
+        Assert.Equal(
+            new PlayerInfoSvgMatrix(
+                1.0810546875,
+                0,
+                0,
+                1.0810546875,
+                90.1,
+                -4.3),
+            mp.StageMatrix);
         Assert.Equal(
             new[]
             {
@@ -112,29 +121,33 @@ public sealed class PlayerInfoManifestRuntimeContractTests
         Assert.Equal(
             new[]
             {
-                "hp-horizontal-line-glow",
                 "hp-light-overlay",
-                "hp-mp-dynamic-text-and-glow"
+                "hp-mp-dynamic-text-and-glow",
+                "hp-horizontal-line-glow"
             },
             assetSet.EffectPolicy.ProgrammaticLayers.Select(effect => effect.Id));
         Assert.Equal(
-            new[] { "source-over", "overlay", "source-over" },
+            new[] { "overlay", "source-over", "source-over" },
             assetSet.EffectPolicy.ProgrammaticLayers.Select(effect => effect.BlendMode));
         Assert.Equal(
             new[]
             {
                 PlayerInfoProgrammaticEffectDisposition.DeferredB3,
-                PlayerInfoProgrammaticEffectDisposition.DeferredB3,
+                PlayerInfoProgrammaticEffectDisposition.ImplementedActive,
                 PlayerInfoProgrammaticEffectDisposition.ImplementedActive
             },
             assetSet.EffectPolicy.ProgrammaticLayers.Select(
                 effect => effect.Disposition));
         Assert.Equal(
-            new[] { "hp-mp-dynamic-text-and-glow" },
+            new[]
+            {
+                "hp-mp-dynamic-text-and-glow",
+                "hp-horizontal-line-glow"
+            },
             assetSet.EffectPolicy.ImplementedActiveLayers.Select(
                 effect => effect.Id));
         Assert.Equal(
-            new[] { "hp-horizontal-line-glow", "hp-light-overlay" },
+            new[] { "hp-light-overlay" },
             assetSet.EffectPolicy.DeferredB3Layers.Select(effect => effect.Id));
 
         Assert.All(assetSet.Assets, asset =>
@@ -149,7 +162,7 @@ public sealed class PlayerInfoManifestRuntimeContractTests
     }
 
     [Fact]
-    public void RasterKey_ContainsOnlyFrozenSevenDimensions()
+    public void RasterKey_ContainsAuthoredTransformAndExcludesTelemetryDpi()
     {
         PlayerInfoSvgAssetSet assetSet =
             PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
@@ -164,6 +177,10 @@ public sealed class PlayerInfoManifestRuntimeContractTests
         Assert.False(string.IsNullOrWhiteSpace(key.LayerId));
         Assert.True(key.PixelWidth > 0);
         Assert.True(key.PixelHeight > 0);
+        Assert.False(string.IsNullOrWhiteSpace(key.SourceToBitmapIdentity));
+        Assert.Equal(
+            plan.Layers[0].SourceToBitmap.ToCacheIdentity(),
+            key.SourceToBitmapIdentity);
         Assert.Equal(assetSet.RendererIdentity.CacheIdentity, key.RendererIdentity);
         Assert.Equal(assetSet.RasterContractVersion, key.RasterContractVersion);
         Assert.DoesNotContain("1.75", key.ToCacheIdentity(), StringComparison.Ordinal);

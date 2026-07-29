@@ -1677,6 +1677,7 @@ function Test-AndVerifyViewportContract {
             Dpi = 1.0
             Scale = 1.0
             Stage = @(0, 512, 1024, 64)
+            Tight = @(0, 474, 282, 81)
             Letterbox = $false
             LetterboxTop = 0
             LetterboxBottom = 0
@@ -1688,6 +1689,7 @@ function Test-AndVerifyViewportContract {
             Dpi = 1.25
             Scale = 1.5625
             Stage = @(0, 800, 1600, 100)
+            Tight = @(0, 741, 440, 126)
             Letterbox = $false
             LetterboxTop = 0
             LetterboxBottom = 0
@@ -1699,6 +1701,7 @@ function Test-AndVerifyViewportContract {
             Dpi = 1.50
             Scale = 1.875
             Stage = @(0, 960, 1920, 120)
+            Tight = @(0, 890, 528, 150)
             Letterbox = $false
             LetterboxTop = 0
             LetterboxBottom = 0
@@ -1710,6 +1713,7 @@ function Test-AndVerifyViewportContract {
             Dpi = 1.75
             Scale = 1.25
             Stage = @(0, 760, 1280, 80)
+            Tight = @(0, 713, 352, 101)
             Letterbox = $true
             LetterboxTop = 120
             LetterboxBottom = 120
@@ -1742,6 +1746,7 @@ function Test-AndVerifyViewportContract {
                 'monitorDpiScale',
                 'physicalScale',
                 'stagePhysicalBounds',
+                'tightPhysicalBounds',
                 'letterbox',
                 'batchKey',
                 'layers') `
@@ -1767,6 +1772,13 @@ function Test-AndVerifyViewportContract {
             -Width $expected.Stage[2] `
             -Height $expected.Stage[3] `
             -Label "visualMatrix.$($expected.Id).stagePhysicalBounds"
+        Assert-RectangleContract `
+            -Rectangle $row.tightPhysicalBounds `
+            -X $expected.Tight[0] `
+            -Y $expected.Tight[1] `
+            -Width $expected.Tight[2] `
+            -Height $expected.Tight[3] `
+            -Label "visualMatrix.$($expected.Id).tightPhysicalBounds"
         $dpi = ConvertTo-NonNegativeFiniteDouble `
             -Value $row.monitorDpiScale `
             -Label "visualMatrix.$($expected.Id).monitorDpiScale"
@@ -1862,6 +1874,7 @@ function Test-AndVerifyViewportContract {
                     'layerId',
                     'pixelWidth',
                     'pixelHeight',
+                    'sourceToBitmapIdentity',
                     'rendererIdentity',
                     'rasterContractVersion') `
                 -Label (
@@ -1894,6 +1907,16 @@ function Test-AndVerifyViewportContract {
                     -NonNegative) `
                 $pixelHeight `
                 "visualMatrix.$($expected.Id).$($layer.layerId).key.pixelHeight"
+            $sourceToBitmapIdentity =
+                [string]$layer.key.sourceToBitmapIdentity
+            if (-not [regex]::IsMatch(
+                    $sourceToBitmapIdentity,
+                    '^[0-9A-F]{16}(?::[0-9A-F]{16}){3}$',
+                    [System.Text.RegularExpressions.RegexOptions]::CultureInvariant)) {
+                throw (
+                    "visualMatrix.$($expected.Id).$($layer.layerId)." +
+                    'key.sourceToBitmapIdentity is not four exact double bit patterns.')
+            }
             Assert-ContractEqual ([string]$layer.key.rendererIdentity) `
                 ([string]$Report.renderer.cacheIdentity) `
                 "visualMatrix.$($expected.Id).$($layer.layerId).renderer"
@@ -2730,9 +2753,9 @@ function Test-AndVerifyTopologyContract {
             'viewport',
             'productionRightTopFixedBounds',
             'rawCanonicalLayerEnvelope',
-            'stageClippedCanonicalEnvelope',
+            'viewportClippedCanonicalEnvelope',
             'fullStage',
-            'stageClippedCanonicalEnvelopeProbe',
+            'viewportClippedCanonicalEnvelopeProbe',
             'actualUpdateLayeredWindowMeasured') `
         -Label 'topology properties'
     Assert-ContractEqual ([string]$topology.geometryConclusion) `
@@ -2756,12 +2779,12 @@ function Test-AndVerifyTopologyContract {
         -Label 'topology.productionRightTopFixedBounds'
     Assert-RectangleContract `
         -Rectangle $topology.rawCanonicalLayerEnvelope `
-        -X -3 -Y 477 -Width 285 -Height 81 `
+        -X -3 -Y 474 -Width 285 -Height 81 `
         -Label 'topology.rawCanonicalLayerEnvelope'
     Assert-RectangleContract `
-        -Rectangle $topology.stageClippedCanonicalEnvelope `
-        -X 0 -Y 512 -Width 282 -Height 46 `
-        -Label 'topology.stageClippedCanonicalEnvelope'
+        -Rectangle $topology.viewportClippedCanonicalEnvelope `
+        -X 0 -Y 474 -Width 282 -Height 81 `
+        -Label 'topology.viewportClippedCanonicalEnvelope'
     Assert-ContractEqual $topology.actualUpdateLayeredWindowMeasured `
         $false 'topology.actualUpdateLayeredWindowMeasured'
     Assert-ContractEqual $Report.scope.productionWidgetRegistered `
@@ -2782,15 +2805,15 @@ function Test-AndVerifyTopologyContract {
         -Label 'topology.fullStage'
     $tightBounds = @(
         @(724, 0, 252, 32),
-        @(0, 512, 282, 46))
+        @(0, 474, 282, 81))
     Assert-TopologyProbeContract `
-        -Probe $topology.stageClippedCanonicalEnvelopeProbe `
+        -Probe $topology.viewportClippedCanonicalEnvelopeProbe `
         -Bounds $tightBounds `
-        -RawOuterUnion @(0, 0, 976, 558) `
-        -InflatedOuterUnion @(-6, -6, 988, 570) `
-        -ClippedSurface @(0, 0, 982, 564) `
+        -RawOuterUnion @(0, 0, 976, 555) `
+        -InflatedOuterUnion @(-6, -6, 988, 567) `
+        -ClippedSurface @(0, 0, 982, 561) `
         -FullViewportBridge $false `
-        -Label 'topology.stageClippedCanonicalEnvelopeProbe'
+        -Label 'topology.viewportClippedCanonicalEnvelopeProbe'
 
     $fullGate = Get-ContractGate `
         -Gates $Gates `
@@ -2820,36 +2843,36 @@ function Test-AndVerifyTopologyContract {
 
     $tightGate = Get-ContractGate `
         -Gates $Gates `
-        -Id 'topology_stage_clipped_canonical_exact_geometry' `
+        -Id 'topology_viewport_clipped_canonical_exact_geometry' `
         -Phase 'topology' `
         -Comparison 'equals' `
         -Unit 'geometry'
     Assert-ExactPropertySet `
         -Value $tightGate.actual `
-        -Expected @('rawLayerEnvelope', 'stageClippedEnvelope', 'probe') `
+        -Expected @('rawLayerEnvelope', 'viewportClippedEnvelope', 'probe') `
         -Label (
-            'topology_stage_clipped_canonical_exact_geometry.actual ' +
+            'topology_viewport_clipped_canonical_exact_geometry.actual ' +
             'properties')
     Assert-JsonEquivalent `
         -Actual $tightGate.actual.rawLayerEnvelope `
         -Expected $topology.rawCanonicalLayerEnvelope `
         -Label (
-            'topology_stage_clipped_canonical_exact_geometry.actual.' +
+            'topology_viewport_clipped_canonical_exact_geometry.actual.' +
             'rawLayerEnvelope')
     Assert-JsonEquivalent `
-        -Actual $tightGate.actual.stageClippedEnvelope `
-        -Expected $topology.stageClippedCanonicalEnvelope `
+        -Actual $tightGate.actual.viewportClippedEnvelope `
+        -Expected $topology.viewportClippedCanonicalEnvelope `
         -Label (
-            'topology_stage_clipped_canonical_exact_geometry.actual.' +
-            'stageClippedEnvelope')
+            'topology_viewport_clipped_canonical_exact_geometry.actual.' +
+            'viewportClippedEnvelope')
     Assert-JsonEquivalent `
         -Actual $tightGate.actual.probe `
-        -Expected $topology.stageClippedCanonicalEnvelopeProbe `
+        -Expected $topology.viewportClippedCanonicalEnvelopeProbe `
         -Label (
-            'topology_stage_clipped_canonical_exact_geometry.actual.probe')
+            'topology_viewport_clipped_canonical_exact_geometry.actual.probe')
     Assert-ContractEqual ([string]$tightGate.expected) `
-        'B0-04 manifest layer envelope clipped to the 1024x64 child stage; near bridge; requires decision' `
-        'topology_stage_clipped_canonical_exact_geometry.expected'
+        'B0-04 manifest layer envelope clipped to the main Flash viewport; near bridge; requires decision' `
+        'topology_viewport_clipped_canonical_exact_geometry.expected'
 }
 
 function Test-AndVerifyProcessDiagnosticsContract {
@@ -3046,7 +3069,7 @@ function Test-AndVerifyAssetRendererContract {
     Assert-ContractEqual ([string]$Report.asset.assetSetId) `
         'player-info-hp-mp-b0' 'asset.assetSetId'
     Assert-ContractEqual ([string]$Report.asset.assetSetRevision) `
-        'sha256:c8f58cb781f50c5a62eff163a04524e89fd6a2ee37c9b66347743d766ac93871' `
+        'sha256:d67ab427748f5256bd18ea5669c9f1d045a6adaac30dce96f9660ea20c892ba1' `
         'asset.assetSetRevision'
     Assert-ContractEqual `
         (ConvertTo-ExactInt64 `
@@ -3242,7 +3265,7 @@ function Test-AndVerifyQualificationContract {
         'pending_coalescing_latest_wins'
         'pipeline_dispose_returns_to_zero'
         'topology_full_stage_exact_geometry'
-        'topology_stage_clipped_canonical_exact_geometry'
+        'topology_viewport_clipped_canonical_exact_geometry'
         'source_closure_bound'
         'test_assembly_bound'
         'execution_binaries_bound'
@@ -3391,19 +3414,19 @@ function Test-AndVerifyQualificationContract {
     Assert-ContractEqual ([int]$Report.topology.inflatePixels) `
         6 'topology.inflatePixels'
     Assert-ContractEqual `
-        ([int]$Report.topology.stageClippedCanonicalEnvelope.width) `
-        282 'topology.stageClippedCanonicalEnvelope.width'
+        ([int]$Report.topology.viewportClippedCanonicalEnvelope.width) `
+        282 'topology.viewportClippedCanonicalEnvelope.width'
     Assert-ContractEqual `
-        ([int]$Report.topology.stageClippedCanonicalEnvelope.height) `
-        46 'topology.stageClippedCanonicalEnvelope.height'
+        ([int]$Report.topology.viewportClippedCanonicalEnvelope.height) `
+        81 'topology.viewportClippedCanonicalEnvelope.height'
     Assert-ContractEqual `
-        ([int]$Report.topology.stageClippedCanonicalEnvelopeProbe.clippedSurface.width) `
+        ([int]$Report.topology.viewportClippedCanonicalEnvelopeProbe.clippedSurface.width) `
         982 'topology.tight.clippedSurface.width'
     Assert-ContractEqual `
-        ([int]$Report.topology.stageClippedCanonicalEnvelopeProbe.clippedSurface.height) `
-        564 'topology.tight.clippedSurface.height'
+        ([int]$Report.topology.viewportClippedCanonicalEnvelopeProbe.clippedSurface.height) `
+        561 'topology.tight.clippedSurface.height'
     Assert-ContractEqual `
-        ([bool]$Report.topology.stageClippedCanonicalEnvelopeProbe.requiresDecision) `
+        ([bool]$Report.topology.viewportClippedCanonicalEnvelopeProbe.requiresDecision) `
         $true 'topology.tight.requiresDecision'
     Assert-ContractEqual `
         ([bool]$Report.topology.actualUpdateLayeredWindowMeasured) `

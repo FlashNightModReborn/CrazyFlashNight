@@ -1219,6 +1219,25 @@ internal sealed class QualifiedSvg(
         int height,
         PlayerInfoSvgRect sourceViewBox)
     {
+        var scaleX = width / sourceViewBox.Width;
+        var scaleY = height / sourceViewBox.Height;
+        return Rasterize(
+            width,
+            height,
+            sourceViewBox,
+            new PlayerInfoRasterTransform(
+                scaleX,
+                scaleY,
+                -sourceViewBox.Left * scaleX,
+                -sourceViewBox.Top * scaleY));
+    }
+
+    internal SKBitmap Rasterize(
+        int width,
+        int height,
+        PlayerInfoSvgRect sourceViewBox,
+        PlayerInfoRasterTransform sourceToBitmap)
+    {
         var liveSvg = _svg ??
             throw new ObjectDisposedException(nameof(QualifiedSvg));
         if (width is <= 0 or > StrictSvgValidator.MaxDimension ||
@@ -1270,14 +1289,28 @@ internal sealed class QualifiedSvg(
         {
             using var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.Transparent);
-            var scaleX = checked((float)(width / _pictureBounds.Width));
-            var scaleY = checked((float)(height / _pictureBounds.Height));
-            var translateX = checked((float)(-_pictureBounds.Left * scaleX));
-            var translateY = checked((float)(-_pictureBounds.Top * scaleY));
+            var scaleX = checked((float)(
+                sourceToBitmap.ScaleX *
+                sourceViewBox.Width /
+                _pictureBounds.Width));
+            var scaleY = checked((float)(
+                sourceToBitmap.ScaleY *
+                sourceViewBox.Height /
+                _pictureBounds.Height));
+            var translateX = checked((float)(
+                sourceToBitmap.TranslateX +
+                (sourceToBitmap.ScaleX * sourceViewBox.Left) -
+                (_pictureBounds.Left * scaleX)));
+            var translateY = checked((float)(
+                sourceToBitmap.TranslateY +
+                (sourceToBitmap.ScaleY * sourceViewBox.Top) -
+                (_pictureBounds.Top * scaleY)));
             if (!float.IsFinite(scaleX) ||
                 !float.IsFinite(scaleY) ||
                 !float.IsFinite(translateX) ||
-                !float.IsFinite(translateY))
+                !float.IsFinite(translateY) ||
+                scaleX <= 0 ||
+                scaleY <= 0)
             {
                 throw new InvalidDataException("ViewBox-to-target transform is non-finite.");
             }

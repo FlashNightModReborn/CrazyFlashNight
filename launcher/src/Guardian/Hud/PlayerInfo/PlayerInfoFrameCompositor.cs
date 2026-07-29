@@ -29,25 +29,31 @@ internal readonly record struct PlayerInfoTextLayout(
     float BaselineY,
     PlayerInfoPathTextAlignment Alignment,
     float GlowSigmaPixels,
+    float GlowStrength,
     SKColor? GlowColor);
 
 /// <summary>
 /// Narrow, source-derived composition contract for the effects implemented in
-/// B0. It deliberately excludes the two B3-deferred HP effects.
+/// B0. It deliberately excludes the B3-deferred HP light overlay.
 /// </summary>
 internal static class PlayerInfoCompositionRecipe
 {
     internal const string HpFillAssetId = "hp.fill";
+    internal const string HpRimAssetId = "hp.rim";
+    internal const string HpHorizontalLineEffectId =
+        "hp-horizontal-line-glow";
     internal const string DynamicTextEffectId =
         "hp-mp-dynamic-text-and-glow";
     private const float HpTextGlowSigmaPixels = 1f;
+    private const float HpTextGlowStrength = 1.5f;
 
     // `LIBRARY/sprite/主角hp显示界面.xml` gives all three HP text glows
     // blurX/blurY=2 and strength=1.5 while omitting color/alpha. Flash's
-    // GlowFilter defaults (also resolved in the compiled SWF) make that red;
-    // sigma=1 and alpha=220 remain the existing single-pass Skia approximation.
+    // GlowFilter defaults (also resolved in the compiled SWF) make that opaque
+    // red. Skia has no strength parameter, so the atlas uses two source-over
+    // blur passes (alpha 255 + 128) at sigma=1.
     private static readonly SKColor HpTextGlowColor =
-        new(255, 0, 0, 220);
+        new(255, 0, 0, 255);
 
     internal static PlayerInfoTextLayout MpLabel { get; } = new(
         "mp-label",
@@ -56,6 +62,7 @@ internal static class PlayerInfoCompositionRecipe
         2.8f,
         18.55f,
         PlayerInfoPathTextAlignment.Left,
+        0f,
         0f,
         null);
 
@@ -67,15 +74,17 @@ internal static class PlayerInfoCompositionRecipe
         30.5f,
         PlayerInfoPathTextAlignment.Left,
         0f,
+        0f,
         null);
 
     internal static PlayerInfoTextLayout MpCurrent { get; } = new(
         "mp-current",
         PlayerInfoPathGlyphAtlas.Aero,
         13.0048f,
-        78.55f,
+        74.55f,
         17.85f,
         PlayerInfoPathTextAlignment.Right,
+        0f,
         0f,
         null);
 
@@ -87,6 +96,29 @@ internal static class PlayerInfoCompositionRecipe
         17.85f,
         PlayerInfoPathTextAlignment.Left,
         0f,
+        0f,
+        null);
+
+    internal static PlayerInfoTextLayout MpDecorativeCurrent { get; } = new(
+        "mp-decorative-current",
+        PlayerInfoPathGlyphAtlas.Aero,
+        13.0048f,
+        74.55f,
+        18.05f,
+        PlayerInfoPathTextAlignment.Right,
+        0f,
+        0f,
+        null);
+
+    internal static PlayerInfoTextLayout MpDecorativeMaximum { get; } = new(
+        "mp-decorative-maximum",
+        PlayerInfoPathGlyphAtlas.Aero,
+        13.0048f,
+        80.65f,
+        18.05f,
+        PlayerInfoPathTextAlignment.Left,
+        0f,
+        0f,
         null);
 
     internal static PlayerInfoTextLayout HpPercent { get; } = new(
@@ -97,6 +129,7 @@ internal static class PlayerInfoCompositionRecipe
         -4.5f,
         PlayerInfoPathTextAlignment.Right,
         HpTextGlowSigmaPixels,
+        HpTextGlowStrength,
         HpTextGlowColor);
 
     internal static PlayerInfoTextLayout HpMaximum { get; } = new(
@@ -107,6 +140,7 @@ internal static class PlayerInfoCompositionRecipe
         19.95f,
         PlayerInfoPathTextAlignment.Center,
         HpTextGlowSigmaPixels,
+        HpTextGlowStrength,
         HpTextGlowColor);
 
     internal static PlayerInfoTextLayout HpCurrent { get; } = new(
@@ -117,6 +151,7 @@ internal static class PlayerInfoCompositionRecipe
         7.7f,
         PlayerInfoPathTextAlignment.Center,
         HpTextGlowSigmaPixels,
+        HpTextGlowStrength,
         HpTextGlowColor);
 
     internal static IReadOnlyList<PlayerInfoTextLayout> TextLayouts { get; } =
@@ -127,6 +162,8 @@ internal static class PlayerInfoCompositionRecipe
             MpPercent,
             MpCurrent,
             MpMaximum,
+            MpDecorativeCurrent,
+            MpDecorativeMaximum,
             HpPercent,
             HpMaximum,
             HpCurrent
@@ -139,25 +176,25 @@ internal static class PlayerInfoCompositionRecipe
             .Select(effect => effect.Id)
             .ToArray();
         if (!activeIds.SequenceEqual(
-                [DynamicTextEffectId],
+                [
+                    DynamicTextEffectId,
+                    HpHorizontalLineEffectId
+                ],
                 StringComparer.Ordinal))
         {
             throw new InvalidDataException(
-                "PlayerInfo composition recipe requires exactly the active dynamic-text effect.");
+                "PlayerInfo composition recipe requires the active dynamic-text and horizontal-line effects in source order.");
         }
 
         var deferredIds = policy.DeferredB3Layers
             .Select(effect => effect.Id)
             .ToArray();
         if (!deferredIds.SequenceEqual(
-            [
-                "hp-horizontal-line-glow",
-                "hp-light-overlay"
-            ],
+            ["hp-light-overlay"],
             StringComparer.Ordinal))
         {
             throw new InvalidDataException(
-                "PlayerInfo composition recipe requires the exact two B3-deferred HP effects.");
+                "PlayerInfo composition recipe requires exactly the B3-deferred HP light overlay.");
         }
     }
 
@@ -169,6 +206,17 @@ internal static class PlayerInfoCompositionRecipe
             string.Equals(
                 asset.Id,
                 HpFillAssetId,
+                StringComparison.Ordinal));
+    }
+
+    internal static PlayerInfoSvgAsset GetHpRimSourceAsset(
+        PlayerInfoSvgAssetSet assetSet)
+    {
+        ArgumentNullException.ThrowIfNull(assetSet);
+        return assetSet.Assets.Single(asset =>
+            string.Equals(
+                asset.Id,
+                HpRimAssetId,
                 StringComparison.Ordinal));
     }
 }
@@ -193,6 +241,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     private readonly PlayerInfoSvgGauge _mp;
     private readonly PlayerInfoPathGlyphAtlas _glyphs;
     private PlayerInfoHpPaintSource? _hpPaint;
+    private PlayerInfoHpHorizontalLineSource? _hpHorizontalLine;
     private bool _disposed;
 
     internal PlayerInfoFrameCompositor(PlayerInfoSvgAssetSet assetSet)
@@ -211,9 +260,15 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             _hpPaint = PlayerInfoHpPaintSource.Load(
                 PlayerInfoCompositionRecipe.GetHpPaintSourceAsset(assetSet),
                 _hp);
+            _hpHorizontalLine = PlayerInfoHpHorizontalLineSource.Load(
+                PlayerInfoCompositionRecipe.GetHpRimSourceAsset(assetSet));
         }
         catch
         {
+            _hpHorizontalLine?.Dispose();
+            _hpHorizontalLine = null;
+            _hpPaint?.Dispose();
+            _hpPaint = null;
             _glyphs.Dispose();
             throw;
         }
@@ -309,6 +364,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             DrawLayer(canvas, layers[HpRim], plan);
 
             DrawText(canvas, plan, visualState, palette);
+            DrawHpHorizontalLine(canvas, plan);
             canvas.Flush();
             surface.Flush();
         }
@@ -336,6 +392,8 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             return;
         }
         _disposed = true;
+        _hpHorizontalLine?.Dispose();
+        _hpHorizontalLine = null;
         _hpPaint?.Dispose();
         _hpPaint = null;
         _glyphs.Dispose();
@@ -358,9 +416,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         var target = ToLocalRect(
             layerPlan.PhysicalBounds,
             plan.TightPhysicalBounds);
-        var viewBox = layerPlan.SourceViewBox;
-        var scaleX = target.Width / (float)viewBox.Width;
-        var scaleY = target.Height / (float)viewBox.Height;
+        var transform = layerPlan.SourceToBitmap;
         var hpPaint = _hpPaint ??
             throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
 
@@ -368,9 +424,11 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         try
         {
             canvas.Translate(
-                target.Left - ((float)viewBox.Left * scaleX),
-                target.Top - ((float)viewBox.Top * scaleY));
-            canvas.Scale(scaleX, scaleY);
+                target.Left + (float)transform.TranslateX,
+                target.Top + (float)transform.TranslateY);
+            canvas.Scale(
+                (float)transform.ScaleX,
+                (float)transform.ScaleY);
             if (fraction < 1)
             {
                 using var sector = BuildHpSector(fraction);
@@ -523,17 +581,15 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         var destination = ToLocalRect(
             layerPlan.PhysicalBounds,
             plan.TightPhysicalBounds);
-        var viewBox = layerPlan.SourceViewBox;
+        var transform = layerPlan.SourceToBitmap;
         using var mappedMask = new SKPath();
         var matrix = new SKMatrix(
-            destination.Width / (float)viewBox.Width,
+            (float)transform.ScaleX,
             0f,
-            destination.Left -
-                ((float)viewBox.Left * destination.Width / (float)viewBox.Width),
+            destination.Left + (float)transform.TranslateX,
             0f,
-            destination.Height / (float)viewBox.Height,
-            destination.Top -
-                ((float)viewBox.Top * destination.Height / (float)viewBox.Height),
+            (float)transform.ScaleY,
+            destination.Top + (float)transform.TranslateY,
             0f,
             0f,
             1f);
@@ -617,7 +673,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         PlayerInfoVisualState state,
         PlayerInfoPaletteState palette)
     {
-        DrawGaugeText(canvas, plan, _mp, () =>
+        DrawInGaugeCoordinates(canvas, plan, _mp, () =>
         {
             var label = ParseColor(palette.Label);
             var percent = ParseColor(palette.Percent);
@@ -648,7 +704,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
                 maximum);
         });
 
-        DrawGaugeText(canvas, plan, _hp, () =>
+        DrawInGaugeCoordinates(canvas, plan, _hp, () =>
         {
             var white = SKColors.White;
             DrawPathText(
@@ -681,13 +737,13 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             palette.DecorativeMax.Alpha);
         DrawPathText(
             canvas,
-            PlayerInfoCompositionRecipe.MpCurrent,
-            "99999",
+            PlayerInfoCompositionRecipe.MpDecorativeCurrent,
+            "00000",
             current);
         DrawPathText(
             canvas,
-            PlayerInfoCompositionRecipe.MpMaximum,
-            "99999",
+            PlayerInfoCompositionRecipe.MpDecorativeMaximum,
+            "00000",
             maximum);
     }
 
@@ -706,9 +762,23 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             layout.Alignment,
             color,
             layout.GlowSigmaPixels,
+            layout.GlowStrength,
             layout.GlowColor);
 
-    private static void DrawGaugeText(
+    private void DrawHpHorizontalLine(
+        SKCanvas canvas,
+        PlayerInfoRasterPlan plan)
+    {
+        var source = _hpHorizontalLine ??
+            throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
+        DrawInGaugeCoordinates(
+            canvas,
+            plan,
+            _hp,
+            () => source.Draw(canvas));
+    }
+
+    private static void DrawInGaugeCoordinates(
         SKCanvas canvas,
         PlayerInfoRasterPlan plan,
         PlayerInfoSvgGauge gauge,
@@ -805,6 +875,193 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     }
 
     private sealed record MpMaskResult(SKPath Path, int ContourCount);
+
+    private sealed class PlayerInfoHpHorizontalLineSource : IDisposable
+    {
+        private const string SvgNamespace = "http://www.w3.org/2000/svg";
+        private const float GlowSigmaPixels = 2.5f;
+        private bool _disposed;
+
+        private PlayerInfoHpHorizontalLineSource(SKPath path)
+        {
+            Path = path;
+        }
+
+        private SKPath Path { get; }
+
+        internal static PlayerInfoHpHorizontalLineSource Load(
+            PlayerInfoSvgAsset rimAsset)
+        {
+            ArgumentNullException.ThrowIfNull(rimAsset);
+            var text = new UTF8Encoding(false, true)
+                .GetString(rimAsset.Bytes.Span);
+            var document = XDocument.Parse(text, LoadOptions.None);
+            var ns = XNamespace.Get(SvgNamespace);
+            var layer = RequireSingleId(
+                document,
+                ns + "g",
+                "hp-rim-layer-0025");
+            if (!string.Equals(
+                    (string?)layer.Attribute("opacity"),
+                    "0",
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    "Canonical HP horizontal-line source must be hidden from the static rim raster.");
+            }
+            var instance = RequireSingleId(
+                layer,
+                ns + "g",
+                "hp-rim-instance-0026");
+            var shape = RequireSingleId(
+                instance,
+                ns + "g",
+                "hp-rim-shape-0027");
+            var pathElement = RequireSingleId(
+                shape,
+                ns + "path",
+                "hp-rim-path-0028");
+            if (!string.Equals(
+                    (string?)pathElement.Attribute("fill"),
+                    "#FFFFFF",
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    (string?)pathElement.Attribute("fill-rule"),
+                    "evenodd",
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    "Canonical HP horizontal-line fill contract drifted.");
+            }
+
+            var parsed = SKPath.ParseSvgPathData(
+                (string?)pathElement.Attribute("d")) ??
+                throw new InvalidDataException(
+                    "Canonical HP horizontal-line path did not parse.");
+            parsed.FillType = SKPathFillType.EvenOdd;
+            try
+            {
+                using var shaped = new SKPath();
+                parsed.Transform(
+                    ParseMatrix((string?)shape.Attribute("transform")),
+                    shaped);
+                var positioned = new SKPath
+                {
+                    FillType = SKPathFillType.EvenOdd
+                };
+                try
+                {
+                    shaped.Transform(
+                        ParseMatrix((string?)instance.Attribute("transform")),
+                        positioned);
+                    return new PlayerInfoHpHorizontalLineSource(positioned);
+                }
+                catch
+                {
+                    positioned.Dispose();
+                    throw;
+                }
+            }
+            finally
+            {
+                parsed.Dispose();
+            }
+        }
+
+        internal void Draw(SKCanvas canvas)
+        {
+            ArgumentNullException.ThrowIfNull(canvas);
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            using var blur = SKMaskFilter.CreateBlur(
+                SKBlurStyle.Normal,
+                GlowSigmaPixels);
+            using var glow = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Color = new SKColor(255, 0, 0, 255),
+                MaskFilter = blur
+            };
+            using var core = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Color = SKColors.White
+            };
+            canvas.DrawPath(Path, glow);
+            canvas.DrawPath(Path, core);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+            _disposed = true;
+            Path.Dispose();
+        }
+
+        private static XElement RequireSingleId(
+            XContainer container,
+            XName name,
+            string id) =>
+            container
+                .Descendants(name)
+                .SingleOrDefault(element =>
+                    string.Equals(
+                        (string?)element.Attribute("id"),
+                        id,
+                        StringComparison.Ordinal)) ??
+                throw new InvalidDataException(
+                    $"Canonical HP horizontal-line source '#{id}' is missing or duplicated.");
+
+        private static SKMatrix ParseMatrix(string? value)
+        {
+            const string prefix = "matrix(";
+            if (value is null ||
+                !value.StartsWith(prefix, StringComparison.Ordinal) ||
+                !value.EndsWith(")", StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    "Canonical HP horizontal-line matrix is missing.");
+            }
+            var values = value[prefix.Length..^1]
+                .Split(
+                    (char[]?)null,
+                    StringSplitOptions.RemoveEmptyEntries)
+                .Select(token =>
+                {
+                    if (!float.TryParse(
+                            token,
+                            NumberStyles.Float,
+                            CultureInfo.InvariantCulture,
+                            out var number) ||
+                        !float.IsFinite(number))
+                    {
+                        throw new InvalidDataException(
+                            "Canonical HP horizontal-line matrix is non-finite.");
+                    }
+                    return number;
+                })
+                .ToArray();
+            if (values.Length != 6)
+            {
+                throw new InvalidDataException(
+                    "Canonical HP horizontal-line matrix must have six components.");
+            }
+            return new SKMatrix(
+                values[0],
+                values[2],
+                values[4],
+                values[1],
+                values[3],
+                values[5],
+                0f,
+                0f,
+                1f);
+        }
+    }
 
     private sealed class PlayerInfoHpPaintSource : IDisposable
     {

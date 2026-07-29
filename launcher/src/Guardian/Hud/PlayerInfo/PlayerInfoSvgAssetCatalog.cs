@@ -414,7 +414,7 @@ internal static class PlayerInfoSvgAssetCatalog
             0,
             0.847213745117188,
             37.75,
-            5.65);
+            2.65);
         if (stageMatrix != expectedMatrix)
         {
             throw new InvalidDataException($"{path}.stageMatrix drifted.");
@@ -568,7 +568,7 @@ internal static class PlayerInfoSvgAssetCatalog
             0,
             1.0810546875,
             90.1,
-            -1.3);
+            -4.3);
         if (stageMatrix != expectedMatrix)
         {
             throw new InvalidDataException($"{path}.stageMatrix drifted.");
@@ -1117,13 +1117,6 @@ internal static class PlayerInfoSvgAssetCatalog
         var expected = new[]
         {
             (
-                Id: "hp-horizontal-line-glow",
-                Owner: "native-effect",
-                After: "hp.fill",
-                Before: "hp.rim",
-                Blend: "source-over",
-                Disposition: PlayerInfoProgrammaticEffectDisposition.DeferredB3),
-            (
                 Id: "hp-light-overlay",
                 Owner: "native-effect",
                 After: "hp.fill",
@@ -1134,6 +1127,13 @@ internal static class PlayerInfoSvgAssetCatalog
                 Id: "hp-mp-dynamic-text-and-glow",
                 Owner: "native-draw",
                 After: "gauge-static-layers",
+                Before: (string?)null,
+                Blend: "source-over",
+                Disposition: PlayerInfoProgrammaticEffectDisposition.ImplementedActive),
+            (
+                Id: "hp-horizontal-line-glow",
+                Owner: "native-effect",
+                After: "hp-mp-dynamic-text-and-glow",
                 Before: (string?)null,
                 Blend: "source-over",
                 Disposition: PlayerInfoProgrammaticEffectDisposition.ImplementedActive)

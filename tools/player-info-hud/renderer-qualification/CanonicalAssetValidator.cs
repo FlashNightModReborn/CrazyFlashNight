@@ -286,7 +286,7 @@ internal static class CanonicalAssetValidator
         RequireNumberArray(
             hp,
             "stageMatrix",
-            [0.847213745117188, 0, 0, 0.847213745117188, 37.75, 5.65],
+            [0.847213745117188, 0, 0, 0.847213745117188, 37.75, 2.65],
             context);
         var frameMap = RequireObjectProperty(hp, "frameMap", context);
         RequireExactProperties(
@@ -401,7 +401,7 @@ internal static class CanonicalAssetValidator
         RequireNumberArray(
             mp,
             "stageMatrix",
-            [1.0810546875, 0, 0, 1.0810546875, 90.1, -1.3],
+            [1.0810546875, 0, 0, 1.0810546875, 90.1, -4.3],
             context);
         var frameMap = RequireObjectProperty(mp, "frameMap", context);
         RequireExactProperties(
@@ -720,12 +720,6 @@ internal static class CanonicalAssetValidator
         var expected = new[]
         {
             (
-                "hp-horizontal-line-glow",
-                "native-effect",
-                "hp.fill",
-                "hp.rim",
-                "source-over"),
-            (
                 "hp-light-overlay",
                 "native-effect",
                 "hp.fill",
@@ -735,6 +729,12 @@ internal static class CanonicalAssetValidator
                 "hp-mp-dynamic-text-and-glow",
                 "native-draw",
                 "gauge-static-layers",
+                (string?)null,
+                "source-over"),
+            (
+                "hp-horizontal-line-glow",
+                "native-effect",
+                "hp-mp-dynamic-text-and-glow",
                 (string?)null,
                 "source-over")
         };

@@ -15,7 +15,7 @@ public sealed class PlayerInfoRasterPlannerTests
         [
             new Rectangle(0, 0, 1024, 576),
             new Rectangle(0, 512, 1024, 64),
-            new Rectangle(0, 512, 282, 46),
+            new Rectangle(0, 474, 282, 81),
             1d,
             1.00f
         ];
@@ -23,7 +23,7 @@ public sealed class PlayerInfoRasterPlannerTests
         [
             new Rectangle(0, 0, 1600, 900),
             new Rectangle(0, 800, 1600, 100),
-            new Rectangle(0, 800, 440, 72),
+            new Rectangle(0, 741, 440, 126),
             1.5625d,
             1.25f
         ];
@@ -31,7 +31,7 @@ public sealed class PlayerInfoRasterPlannerTests
         [
             new Rectangle(0, 0, 1920, 1080),
             new Rectangle(0, 960, 1920, 120),
-            new Rectangle(0, 960, 528, 86),
+            new Rectangle(0, 890, 528, 150),
             1.875d,
             1.50f
         ];
@@ -39,7 +39,7 @@ public sealed class PlayerInfoRasterPlannerTests
         [
             new Rectangle(0, 120, 1280, 720),
             new Rectangle(0, 760, 1280, 80),
-            new Rectangle(0, 760, 352, 57),
+            new Rectangle(0, 713, 352, 101),
             1.25d,
             1.75f
         ];
@@ -66,8 +66,11 @@ public sealed class PlayerInfoRasterPlannerTests
             .Select(layer => layer.PhysicalBounds)
             .Aggregate(Rectangle.Union);
         Assert.Equal(
-            Rectangle.Intersect(layerEnvelope, plan.StagePhysicalBounds),
+            Rectangle.Intersect(layerEnvelope, plan.FlashViewportPhysical),
             plan.TightPhysicalBounds);
+        Assert.True(
+            plan.TightPhysicalBounds.Top < plan.StagePhysicalBounds.Top,
+            "The main-RSL sprite must retain authored pixels above its child document stage.");
         Assert.All(plan.Layers, layer =>
         {
             Assert.True(layer.PhysicalBounds.Width > 0);
@@ -118,6 +121,49 @@ public sealed class PlayerInfoRasterPlannerTests
         double exactWidth =
             hp.SourceViewBox.Width * hp.Gauge.StageMatrix.A * expectedScale;
         Assert.InRange(hp.PixelWidth, (int)Math.Floor(exactWidth), (int)Math.Ceiling(exactWidth) + 1);
+    }
+
+    [Fact]
+    public void AuthoredTransform_PreservesMpFractionalPhaseInsideOutwardEnvelope()
+    {
+        PlayerInfoRasterPlan plan = Create(
+            new Rectangle(0, 0, 1024, 576),
+            1f);
+        PlayerInfoRasterLayerPlan mp = plan.Layers.Single(
+            layer => layer.Key.LayerId == "mp.fill");
+        PlayerInfoRasterTransform transform = mp.SourceToBitmap;
+
+        Assert.Equal(mp.Gauge.StageMatrix.A, transform.ScaleX, 12);
+        Assert.Equal(mp.Gauge.StageMatrix.D, transform.ScaleY, 12);
+        Assert.Equal(45.1d, transform.TranslateX, 12);
+        Assert.Equal(3.7d, transform.TranslateY, 12);
+        Assert.NotEqual(
+            mp.PixelWidth / mp.SourceViewBox.Width,
+            transform.ScaleX);
+        Assert.NotEqual(
+            mp.PixelHeight / mp.SourceViewBox.Height,
+            transform.ScaleY);
+
+        double mappedLeft =
+            (transform.ScaleX * mp.SourceViewBox.Left) +
+            transform.TranslateX;
+        double mappedTop =
+            (transform.ScaleY * mp.SourceViewBox.Top) +
+            transform.TranslateY;
+        double mappedRight =
+            (transform.ScaleX * mp.SourceViewBox.Right) +
+            transform.TranslateX;
+        double mappedBottom =
+            (transform.ScaleY * mp.SourceViewBox.Bottom) +
+            transform.TranslateY;
+
+        Assert.InRange(mappedLeft, 0d, 1d);
+        Assert.InRange(mappedTop, 0d, 1d);
+        Assert.InRange(mappedRight, mp.PixelWidth - 1d, (double)mp.PixelWidth);
+        Assert.InRange(mappedBottom, mp.PixelHeight - 1d, (double)mp.PixelHeight);
+        Assert.Equal(
+            transform.ToCacheIdentity(),
+            mp.Key.SourceToBitmapIdentity);
     }
 
     [Fact]
@@ -204,7 +250,7 @@ public sealed class PlayerInfoRasterPlannerTests
     {
         Assert.Throws<ArgumentNullException>(() =>
             PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-                new Rectangle(0, 512, 1024, 64),
+                new Rectangle(0, 0, 1024, 576),
                 null!));
     }
 
@@ -213,7 +259,7 @@ public sealed class PlayerInfoRasterPlannerTests
     {
         Assert.Throws<InvalidOperationException>(() =>
             PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-                new Rectangle(0, 512, 1024, 64),
+                new Rectangle(0, 0, 1024, 576),
                 Array.Empty<PlayerInfoRasterLayerPlan>()));
     }
 
@@ -222,13 +268,13 @@ public sealed class PlayerInfoRasterPlannerTests
     [InlineData(1024, 0)]
     [InlineData(-1, 64)]
     [InlineData(1024, -1)]
-    public void ComputeTightPhysicalBounds_DegenerateStageFailsClosed(
+    public void ComputeTightPhysicalBounds_DegenerateViewportFailsClosed(
         int width,
         int height)
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-                new Rectangle(0, 512, width, height),
+                new Rectangle(0, 0, width, height),
                 [CreateLayer(new Rectangle(0, 512, 1, 1))]));
     }
 
@@ -243,7 +289,7 @@ public sealed class PlayerInfoRasterPlannerTests
     {
         Assert.Throws<InvalidOperationException>(() =>
             PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-                new Rectangle(0, 512, 1024, 64),
+                new Rectangle(0, 0, 1024, 576),
                 [CreateLayer(new Rectangle(0, 512, width, height))]));
     }
 
@@ -252,8 +298,8 @@ public sealed class PlayerInfoRasterPlannerTests
     {
         Assert.Throws<InvalidOperationException>(() =>
             PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-                new Rectangle(0, 512, 1024, 64),
-                [CreateLayer(new Rectangle(0, 0, 10, 10))]));
+                new Rectangle(0, 0, 1024, 576),
+                [CreateLayer(new Rectangle(0, 600, 10, 10))]));
     }
 
     [Fact]
@@ -261,7 +307,7 @@ public sealed class PlayerInfoRasterPlannerTests
     {
         Assert.Throws<InvalidOperationException>(() =>
             PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-                new Rectangle(0, 512, 1024, 64),
+                new Rectangle(0, 0, 1024, 576),
                 [
                     CreateLayer(
                         new Rectangle(int.MaxValue - 1, 512, 2, 1))
@@ -289,6 +335,7 @@ public sealed class PlayerInfoRasterPlannerTests
             template.Asset,
             template.Gauge,
             template.Key,
-            bounds);
+            bounds,
+            template.SourceToBitmap);
     }
 }

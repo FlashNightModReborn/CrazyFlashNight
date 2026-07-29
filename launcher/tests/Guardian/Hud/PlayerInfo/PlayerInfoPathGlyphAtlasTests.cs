@@ -129,6 +129,50 @@ public sealed class PlayerInfoPathGlyphAtlasTests
     }
 
     [Fact]
+    public void DrawText_StrengthOnePointFiveMatchesOpaquePlusHalfAlphaGlowPasses()
+    {
+        const int width = 96;
+        const int height = 64;
+        using var atlas = new PlayerInfoPathGlyphAtlas();
+        using var actual = NewBitmap(width, height);
+        using var expected = NewBitmap(width, height);
+        using var singlePass = NewBitmap(width, height);
+
+        using (var canvas = new SKCanvas(actual))
+        {
+            canvas.Clear(SKColors.Transparent);
+            atlas.DrawText(
+                canvas,
+                PlayerInfoPathGlyphAtlas.LcdStd,
+                "100",
+                20f,
+                48f,
+                38f,
+                PlayerInfoPathTextAlignment.Center,
+                SKColors.White,
+                1f,
+                1.5f,
+                new SKColor(255, 0, 0, 255));
+            canvas.Flush();
+        }
+
+        using SKPath path = atlas.BuildTextPath(
+            PlayerInfoPathGlyphAtlas.LcdStd,
+            "100",
+            20f,
+            48f,
+            38f,
+            PlayerInfoPathTextAlignment.Center);
+        DrawExpectedText(expected, path, includeHalfAlphaPass: true);
+        DrawExpectedText(singlePass, path, includeHalfAlphaPass: false);
+
+        AssertBitmapsEqual(expected, actual);
+        Assert.True(
+            CountDifferentPixels(singlePass, actual) > 0,
+            "The strength=1.5 result must retain a measurable half-alpha second glow pass.");
+    }
+
+    [Fact]
     public void Atlas_FailsClosedForUnknownFaceOrGlyph()
     {
         using var atlas = new PlayerInfoPathGlyphAtlas();
@@ -149,6 +193,82 @@ public sealed class PlayerInfoPathGlyphAtlasTests
 
         Assert.Throws<ObjectDisposedException>(() =>
             atlas.MeasureText(PlayerInfoPathGlyphAtlas.LcdStd, "1", 12f));
+    }
+
+    private static SKBitmap NewBitmap(int width, int height) =>
+        new(
+            width,
+            height,
+            SKColorType.Bgra8888,
+            SKAlphaType.Premul);
+
+    private static void DrawExpectedText(
+        SKBitmap bitmap,
+        SKPath path,
+        bool includeHalfAlphaPass)
+    {
+        using var canvas = new SKCanvas(bitmap);
+        canvas.Clear(SKColors.Transparent);
+        using var blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 1f);
+        using var fullGlow = new SKPaint
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Color = new SKColor(255, 0, 0, 255),
+            MaskFilter = blur
+        };
+        canvas.DrawPath(path, fullGlow);
+        if (includeHalfAlphaPass)
+        {
+            using var halfGlow = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Color = new SKColor(255, 0, 0, 128),
+                MaskFilter = blur
+            };
+            canvas.DrawPath(path, halfGlow);
+        }
+
+        using var glyph = new SKPaint
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Color = SKColors.White
+        };
+        canvas.DrawPath(path, glyph);
+        canvas.Flush();
+    }
+
+    private static void AssertBitmapsEqual(SKBitmap expected, SKBitmap actual)
+    {
+        Assert.Equal(expected.Width, actual.Width);
+        Assert.Equal(expected.Height, actual.Height);
+        for (var y = 0; y < expected.Height; y++)
+        {
+            for (var x = 0; x < expected.Width; x++)
+            {
+                Assert.Equal(expected.GetPixel(x, y), actual.GetPixel(x, y));
+            }
+        }
+    }
+
+    private static int CountDifferentPixels(SKBitmap left, SKBitmap right)
+    {
+        Assert.Equal(left.Width, right.Width);
+        Assert.Equal(left.Height, right.Height);
+        var count = 0;
+        for (var y = 0; y < left.Height; y++)
+        {
+            for (var x = 0; x < left.Width; x++)
+            {
+                if (left.GetPixel(x, y) != right.GetPixel(x, y))
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     private static bool HasUtf8Bom(byte[] bytes) =>

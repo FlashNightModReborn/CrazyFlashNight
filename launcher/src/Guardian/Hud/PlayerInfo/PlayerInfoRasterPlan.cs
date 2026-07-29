@@ -14,6 +14,7 @@ internal readonly record struct PlayerInfoRasterKey(
     string LayerId,
     int PixelWidth,
     int PixelHeight,
+    string SourceToBitmapIdentity,
     string RendererIdentity,
     int RasterContractVersion)
 {
@@ -25,20 +26,43 @@ internal readonly record struct PlayerInfoRasterKey(
             LayerId,
             PixelWidth.ToString(CultureInfo.InvariantCulture),
             PixelHeight.ToString(CultureInfo.InvariantCulture),
+            SourceToBitmapIdentity,
             RendererIdentity,
             RasterContractVersion.ToString(CultureInfo.InvariantCulture));
+}
+
+internal readonly record struct PlayerInfoRasterTransform(
+    double ScaleX,
+    double ScaleY,
+    double TranslateX,
+    double TranslateY)
+{
+    internal string ToCacheIdentity() =>
+        string.Join(
+            ":",
+            ToBits(ScaleX),
+            ToBits(ScaleY),
+            ToBits(TranslateX),
+            ToBits(TranslateY));
+
+    private static string ToBits(double value) =>
+        BitConverter.DoubleToInt64Bits(value)
+            .ToString("X16", CultureInfo.InvariantCulture);
 }
 
 internal sealed class PlayerInfoRasterLayerPlan(
     PlayerInfoSvgAsset asset,
     PlayerInfoSvgGauge gauge,
     PlayerInfoRasterKey key,
-    Rectangle physicalBounds)
+    Rectangle physicalBounds,
+    PlayerInfoRasterTransform sourceToBitmap)
 {
     internal PlayerInfoSvgAsset Asset { get; } = asset;
     internal PlayerInfoSvgGauge Gauge { get; } = gauge;
     internal PlayerInfoRasterKey Key { get; } = key;
     internal Rectangle PhysicalBounds { get; } = physicalBounds;
+    internal PlayerInfoRasterTransform SourceToBitmap { get; } =
+        sourceToBitmap;
     internal PlayerInfoSvgRect SourceViewBox => Asset.ViewBox;
     internal PlayerInfoSvgPoint Registration => Asset.Registration;
     internal int PixelWidth => Key.PixelWidth;
@@ -56,7 +80,7 @@ internal sealed class PlayerInfoRasterPlan(
     internal Rectangle StagePhysicalBounds { get; } = stagePhysicalBounds;
     internal Rectangle TightPhysicalBounds { get; } =
         PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
-            stagePhysicalBounds,
+            flashViewportPhysical,
             layers);
     internal double PhysicalScale { get; } = physicalScale;
 
@@ -146,19 +170,30 @@ internal static class PlayerInfoRasterPlanner
                         $"PlayerInfo layer '{asset.Id}' exceeds the raster dimension contract.");
                 }
 
+                var sourceToBitmap = new PlayerInfoRasterTransform(
+                    gauge.StageMatrix.A * physicalScale,
+                    gauge.StageMatrix.D * physicalScale,
+                    (gauge.StageMatrix.Tx * physicalScale) -
+                        (physicalBounds.Left - flashViewportPhysical.Left),
+                    ((stageTopLogical + gauge.StageMatrix.Ty) *
+                     physicalScale) -
+                        (physicalBounds.Top - flashViewportPhysical.Top));
+                ValidateSourceToBitmap(sourceToBitmap, asset.Id);
                 var key = new PlayerInfoRasterKey(
                     assetSet.Revision,
                     assetSet.ExactManifestSha256,
                     asset.Id,
                     physicalBounds.Width,
                     physicalBounds.Height,
+                    sourceToBitmap.ToCacheIdentity(),
                     assetSet.RendererIdentity.CacheIdentity,
                     assetSet.RasterContractVersion);
                 layers.Add(new PlayerInfoRasterLayerPlan(
                     asset,
                     gauge,
                     key,
-                    physicalBounds));
+                    physicalBounds,
+                    sourceToBitmap));
             }
         }
 
@@ -179,16 +214,32 @@ internal static class PlayerInfoRasterPlanner
             layers);
     }
 
+    private static void ValidateSourceToBitmap(
+        PlayerInfoRasterTransform transform,
+        string layerId)
+    {
+        if (!double.IsFinite(transform.ScaleX) ||
+            !double.IsFinite(transform.ScaleY) ||
+            !double.IsFinite(transform.TranslateX) ||
+            !double.IsFinite(transform.TranslateY) ||
+            transform.ScaleX <= 0 ||
+            transform.ScaleY <= 0)
+        {
+            throw new InvalidOperationException(
+                $"PlayerInfo layer '{layerId}' has a non-finite or non-positive authored raster transform.");
+        }
+    }
+
     internal static Rectangle ComputeTightPhysicalBounds(
-        Rectangle stagePhysicalBounds,
+        Rectangle flashViewportPhysical,
         IReadOnlyList<PlayerInfoRasterLayerPlan> layers)
     {
-        if (stagePhysicalBounds.Width <= 0 ||
-            stagePhysicalBounds.Height <= 0)
+        if (flashViewportPhysical.Width <= 0 ||
+            flashViewportPhysical.Height <= 0)
         {
             throw new ArgumentOutOfRangeException(
-                nameof(stagePhysicalBounds),
-                "PlayerInfo stage bounds must be non-empty.");
+                nameof(flashViewportPhysical),
+                "Flash viewport bounds must be non-empty.");
         }
         ArgumentNullException.ThrowIfNull(layers);
         if (layers.Count == 0)
@@ -197,16 +248,16 @@ internal static class PlayerInfoRasterPlanner
                 "PlayerInfo raster plan must contain at least one layer.");
         }
 
-        var stageLeft = (long)stagePhysicalBounds.Left;
-        var stageTop = (long)stagePhysicalBounds.Top;
-        var stageRight = stageLeft + stagePhysicalBounds.Width;
-        var stageBottom = stageTop + stagePhysicalBounds.Height;
+        var viewportLeft = (long)flashViewportPhysical.Left;
+        var viewportTop = (long)flashViewportPhysical.Top;
+        var viewportRight = viewportLeft + flashViewportPhysical.Width;
+        var viewportBottom = viewportTop + flashViewportPhysical.Height;
         ValidatePhysicalEdges(
-            stageLeft,
-            stageTop,
-            stageRight,
-            stageBottom,
-            "PlayerInfo stage bounds");
+            viewportLeft,
+            viewportTop,
+            viewportRight,
+            viewportBottom,
+            "Flash viewport bounds");
 
         long unionLeft = long.MaxValue;
         long unionTop = long.MaxValue;
@@ -243,14 +294,18 @@ internal static class PlayerInfoRasterPlanner
             unionBottom = Math.Max(unionBottom, bottom);
         }
 
-        var tightLeft = Math.Max(unionLeft, stageLeft);
-        var tightTop = Math.Max(unionTop, stageTop);
-        var tightRight = Math.Min(unionRight, stageRight);
-        var tightBottom = Math.Min(unionBottom, stageBottom);
+        // The imported PlayerInfo DefineSprite is placed directly on the main
+        // timeline. Its authoring document's 1024x64 stage is placement
+        // metadata, not a child clip rectangle. Clip only to the actual Flash
+        // content viewport so negative-local-y HP artwork remains visible.
+        var tightLeft = Math.Max(unionLeft, viewportLeft);
+        var tightTop = Math.Max(unionTop, viewportTop);
+        var tightRight = Math.Min(unionRight, viewportRight);
+        var tightBottom = Math.Min(unionBottom, viewportBottom);
         if (tightRight <= tightLeft || tightBottom <= tightTop)
         {
             throw new InvalidOperationException(
-                "PlayerInfo layer envelope does not intersect the stage bounds.");
+                "PlayerInfo layer envelope does not intersect the Flash viewport.");
         }
 
         return Rectangle.FromLTRB(

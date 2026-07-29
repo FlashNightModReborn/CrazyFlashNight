@@ -66,8 +66,10 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void TightEnvelopePlayerInfo_IsNearFullBridge_NotFullBridge()
         {
-            // B0-04 canonical stageMatrix + viewBox-derived 1x envelope.
-            Rectangle tightPlayerInfo = new Rectangle(0, 512, 282, 46);
+            // B0-04 canonical stageMatrix + viewBox-derived 1x envelope,
+            // clipped only to the main Flash viewport. The imported sprite is
+            // allowed to extend above its 1024x64 authoring stage.
+            Rectangle tightPlayerInfo = new Rectangle(0, 474, 282, 81);
             Rectangle[] fixedBounds = { ExistingRightTopHud, tightPlayerInfo };
 
             NativeHudTopologyProbeResult result = NativeHudTopologyProbe.Capture(
@@ -76,9 +78,9 @@ namespace CF7Launcher.Tests.Guardian
                 6,
                 NativeHudTopologyDecision.SplitRequired);
 
-            Assert.Equal(new Rectangle(0, 0, 976, 558), result.RawOuterUnion);
-            Assert.Equal(new Rectangle(-6, -6, 988, 570), result.InflatedOuterUnion);
-            Assert.Equal(new Rectangle(0, 0, 982, 564), result.ClippedSurface);
+            Assert.Equal(new Rectangle(0, 0, 976, 555), result.RawOuterUnion);
+            Assert.Equal(new Rectangle(-6, -6, 988, 567), result.InflatedOuterUnion);
+            Assert.Equal(new Rectangle(0, 0, 982, 561), result.ClippedSurface);
             Assert.Equal(2, result.Components);
             Assert.False(result.FullViewportBridge);
             Assert.True(result.NearFullBridge);

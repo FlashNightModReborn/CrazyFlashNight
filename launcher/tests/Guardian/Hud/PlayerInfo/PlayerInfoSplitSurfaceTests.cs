@@ -615,6 +615,26 @@ public sealed class PlayerInfoSplitSurfaceTests
                 observer.LastResult.ErrorValue +
                 " nativeError=" +
                 observer.LastResult.NativeErrorCode);
+            Assert.Equal(
+                firstCommit.TightPhysicalBounds.Left,
+                observer.LastResult.ScreenX);
+            Assert.Equal(
+                firstCommit.TightPhysicalBounds.Top,
+                observer.LastResult.ScreenY);
+            Assert.Equal(
+                firstCommit.TightPhysicalBounds.Width,
+                observer.LastResult.Width);
+            Assert.Equal(
+                firstCommit.TightPhysicalBounds.Height,
+                observer.LastResult.Height);
+            Point viewportOrigin = anchor.PointToScreen(Point.Empty);
+            Assert.Equal(
+                new Rectangle(
+                    viewportOrigin.X,
+                    viewportOrigin.Y + 474,
+                    282,
+                    81),
+                firstCommit.TightPhysicalBounds);
             Assert.Equal(0, firstCommit.CommitFailureCount);
             Assert.True(firstCommit.Shown);
 

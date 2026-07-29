@@ -174,13 +174,24 @@ internal sealed class PlayerInfoPathGlyphAtlas : IDisposable
         float baselineY,
         PlayerInfoPathTextAlignment alignment,
         SKColor color,
-        float glowSigmaPixels = 0f,
-        SKColor? glowColor = null)
+        float glowSigmaPixels,
+        float glowStrength,
+        SKColor? glowColor)
     {
         ArgumentNullException.ThrowIfNull(canvas);
         if (!float.IsFinite(glowSigmaPixels) || glowSigmaPixels < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(glowSigmaPixels));
+        }
+        if (!float.IsFinite(glowStrength) ||
+            (glowSigmaPixels == 0f &&
+             (glowStrength != 0f || glowColor.HasValue)) ||
+            (glowSigmaPixels > 0f &&
+             (glowStrength != 1.5f || !glowColor.HasValue)))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(glowStrength),
+                "PlayerInfo path text accepts either no glow or the exact source-derived strength 1.5 glow.");
         }
 
         using var path = BuildTextPath(
@@ -195,14 +206,23 @@ internal sealed class PlayerInfoPathGlyphAtlas : IDisposable
             using var blur = SKMaskFilter.CreateBlur(
                 SKBlurStyle.Normal,
                 glowSigmaPixels);
-            using var glow = new SKPaint
+            var sourceColor = glowColor!.Value;
+            using var fullGlow = new SKPaint
             {
                 IsAntialias = true,
                 Style = SKPaintStyle.Fill,
-                Color = glowColor ?? color,
+                Color = sourceColor.WithAlpha(255),
                 MaskFilter = blur
             };
-            canvas.DrawPath(path, glow);
+            using var halfGlow = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Color = sourceColor.WithAlpha(128),
+                MaskFilter = blur
+            };
+            canvas.DrawPath(path, fullGlow);
+            canvas.DrawPath(path, halfGlow);
         }
 
         using var paint = new SKPaint

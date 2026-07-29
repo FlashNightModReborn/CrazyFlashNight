@@ -32,6 +32,7 @@ public sealed class PlayerInfoFrameCompositorTests
                     18.55f,
                     PlayerInfoPathTextAlignment.Left,
                     0f,
+                    0f,
                     null),
                 new PlayerInfoTextLayout(
                     "mp-percent",
@@ -41,14 +42,16 @@ public sealed class PlayerInfoFrameCompositorTests
                     30.5f,
                     PlayerInfoPathTextAlignment.Left,
                     0f,
+                    0f,
                     null),
                 new PlayerInfoTextLayout(
                     "mp-current",
                     PlayerInfoPathGlyphAtlas.Aero,
                     13.0048f,
-                    78.55f,
+                    74.55f,
                     17.85f,
                     PlayerInfoPathTextAlignment.Right,
+                    0f,
                     0f,
                     null),
                 new PlayerInfoTextLayout(
@@ -59,6 +62,27 @@ public sealed class PlayerInfoFrameCompositorTests
                     17.85f,
                     PlayerInfoPathTextAlignment.Left,
                     0f,
+                    0f,
+                    null),
+                new PlayerInfoTextLayout(
+                    "mp-decorative-current",
+                    PlayerInfoPathGlyphAtlas.Aero,
+                    13.0048f,
+                    74.55f,
+                    18.05f,
+                    PlayerInfoPathTextAlignment.Right,
+                    0f,
+                    0f,
+                    null),
+                new PlayerInfoTextLayout(
+                    "mp-decorative-maximum",
+                    PlayerInfoPathGlyphAtlas.Aero,
+                    13.0048f,
+                    80.65f,
+                    18.05f,
+                    PlayerInfoPathTextAlignment.Left,
+                    0f,
+                    0f,
                     null),
                 new PlayerInfoTextLayout(
                     "hp-percent",
@@ -68,7 +92,8 @@ public sealed class PlayerInfoFrameCompositorTests
                     -4.5f,
                     PlayerInfoPathTextAlignment.Right,
                     1f,
-                    new SKColor(255, 0, 0, 220)),
+                    1.5f,
+                    new SKColor(255, 0, 0, 255)),
                 new PlayerInfoTextLayout(
                     "hp-maximum",
                     PlayerInfoPathGlyphAtlas.LcdStd,
@@ -77,7 +102,8 @@ public sealed class PlayerInfoFrameCompositorTests
                     19.95f,
                     PlayerInfoPathTextAlignment.Center,
                     1f,
-                    new SKColor(255, 0, 0, 220)),
+                    1.5f,
+                    new SKColor(255, 0, 0, 255)),
                 new PlayerInfoTextLayout(
                     "hp-current",
                     PlayerInfoPathGlyphAtlas.LcdStd,
@@ -86,7 +112,8 @@ public sealed class PlayerInfoFrameCompositorTests
                     7.7f,
                     PlayerInfoPathTextAlignment.Center,
                     1f,
-                    new SKColor(255, 0, 0, 220))
+                    1.5f,
+                    new SKColor(255, 0, 0, 255))
             },
             PlayerInfoCompositionRecipe.TextLayouts);
 
@@ -94,7 +121,13 @@ public sealed class PlayerInfoFrameCompositorTests
         foreach (PlayerInfoTextLayout layout in
                  PlayerInfoCompositionRecipe.TextLayouts)
         {
-            string sample = layout.Id == "mp-label" ? "MP" : "99999";
+            string sample = layout.Id == "mp-label"
+                ? "MP"
+                : layout.Id.StartsWith(
+                    "mp-decorative-",
+                    StringComparison.Ordinal)
+                    ? "00000"
+                    : "99999";
             using SKPath path = atlas.BuildTextPath(
                 layout.FontId,
                 sample,
@@ -117,8 +150,10 @@ public sealed class PlayerInfoFrameCompositorTests
                 layout.BaselineY + (layout.FontPixels * 0.5f));
         }
 
+        Assert.Equal(2, assets.EffectPolicy.ImplementedActiveLayers.Count);
         PlayerInfoProgrammaticEffect active =
-            Assert.Single(assets.EffectPolicy.ImplementedActiveLayers);
+            assets.EffectPolicy.ImplementedActiveLayers.Single(effect =>
+                effect.Id == PlayerInfoCompositionRecipe.DynamicTextEffectId);
         var invalidPolicy = new PlayerInfoEffectPolicy(
             assets.EffectPolicy.IncludedStatic,
             assets.EffectPolicy.ProgrammaticLayers
@@ -147,9 +182,10 @@ public sealed class PlayerInfoFrameCompositorTests
         Assert.All(hpLayouts, layout =>
         {
             Assert.Equal(1f, layout.GlowSigmaPixels);
+            Assert.Equal(1.5f, layout.GlowStrength);
             Assert.True(layout.GlowColor.HasValue);
             Assert.Equal(
-                new SKColor(255, 0, 0, 220),
+                new SKColor(255, 0, 0, 255),
                 layout.GlowColor.Value);
         });
 
@@ -158,10 +194,11 @@ public sealed class PlayerInfoFrameCompositorTests
                 .Where(layout =>
                     layout.Id.StartsWith("mp-", StringComparison.Ordinal))
                 .ToArray();
-        Assert.Equal(4, mpLayouts.Length);
+        Assert.Equal(6, mpLayouts.Length);
         Assert.All(mpLayouts, layout =>
         {
             Assert.Equal(0f, layout.GlowSigmaPixels);
+            Assert.Equal(0f, layout.GlowStrength);
             Assert.Null(layout.GlowColor);
         });
     }
@@ -215,6 +252,19 @@ public sealed class PlayerInfoFrameCompositorTests
                 ExpectedPaletteStart(result.MpVirtualFrame).ToString(),
                 result.MpPaletteStart);
             Assert.True(CountNonTransparent(bitmap) > 100);
+            int aboveChildStageHeight =
+                plan.StagePhysicalBounds.Top -
+                plan.TightPhysicalBounds.Top;
+            Assert.True(aboveChildStageHeight > 0);
+            Assert.True(
+                CountNonTransparent(
+                    bitmap,
+                    new Rectangle(
+                        0,
+                        0,
+                        bitmap.Width,
+                        aboveChildStageHeight)) > 100,
+                "The composed bitmap must retain the HP ball and text above the child authoring stage.");
             Assert.True(hashes.Add(HashBitmap(bitmap)));
         }
 
@@ -348,12 +398,22 @@ public sealed class PlayerInfoFrameCompositorTests
     private static int ExpectedPaletteStart(int virtualFrame) =>
         virtualFrame >= 91 ? 91 : virtualFrame >= 70 ? 70 : 1;
 
-    private static int CountNonTransparent(Bitmap bitmap)
+    private static int CountNonTransparent(Bitmap bitmap) =>
+        CountNonTransparent(
+            bitmap,
+            new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+
+    private static int CountNonTransparent(
+        Bitmap bitmap,
+        Rectangle bounds)
     {
+        Assert.True(
+            new Rectangle(0, 0, bitmap.Width, bitmap.Height)
+                .Contains(bounds));
         var count = 0;
-        for (var y = 0; y < bitmap.Height; y++)
+        for (var y = bounds.Top; y < bounds.Bottom; y++)
         {
-            for (var x = 0; x < bitmap.Width; x++)
+            for (var x = bounds.Left; x < bounds.Right; x++)
             {
                 if (bitmap.GetPixel(x, y).A != 0)
                 {

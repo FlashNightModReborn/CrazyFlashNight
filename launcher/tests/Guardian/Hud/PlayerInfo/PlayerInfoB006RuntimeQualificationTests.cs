@@ -188,6 +188,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                 new
                 {
                     schema = ReportSchema,
+                    schemaVersion = 2,
                     runId,
                     status = "failed",
                     measurementKind = MeasurementKind,
@@ -408,6 +409,20 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
             splitObserver.Slice(enabledSplitObserverStart);
         Assert.Equal(VisualStepCount, enabledNativeResults.Length);
         Assert.Equal(VisualStepCount, enabledSplitObserverResults.Length);
+        var expectedSplitCommitGeometry = new CommitGeometry(
+            activeEnd.TightPhysicalBounds.Left,
+            activeEnd.TightPhysicalBounds.Top,
+            activeEnd.TightPhysicalBounds.Width,
+            activeEnd.TightPhysicalBounds.Height);
+        CommitGeometry[] observedSplitCommitGeometries =
+            enabledSplitObserverResults
+                .Select(result => new CommitGeometry(
+                    result.ScreenX,
+                    result.ScreenY,
+                    result.Width,
+                    result.Height))
+                .Distinct()
+                .ToArray();
 
         Rectangle nativeUnionAfter =
             NativeHudOverlay.ComputeBoundsUnion(widgets, padding: 6) ??
@@ -1236,6 +1251,18 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
             "Snapshot and observer independently agree that every actual commit succeeded.");
         AddGate(
             gates,
+            "split_commit_geometry_matches_tight",
+            "split_active",
+            observedSplitCommitGeometries.Length == 1 &&
+            observedSplitCommitGeometries[0] ==
+                expectedSplitCommitGeometry,
+            observedSplitCommitGeometries,
+            new[] { expectedSplitCommitGeometry },
+            "equals",
+            "physical_pixel_rectangle",
+            "Every actual split-surface ULW commit must use the main-viewport-clipped tight bounds, including the HP pixels above the child authoring stage.");
+        AddGate(
+            gates,
             "split_sample_counts",
             "split_active",
             surfaceSamples.Length == VisualStepCount &&
@@ -1435,7 +1462,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         object report = new
         {
             schema = ReportSchema,
-            schemaVersion = 1,
+            schemaVersion = 2,
             runId,
             status = failures.Count == 0 ? "passed" : "failed",
             measurementKind = MeasurementKind,
@@ -1713,6 +1740,8 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
                         splitObservedCommitSamples,
                     observerCommitSummary =
                         splitObservedCommitSummary,
+                    observerCommitGeometry =
+                        observedSplitCommitGeometries,
                     updateLayeredWindowOnlySamples =
                         splitUlwOnlySamples,
                     updateLayeredWindowOnlySummary =
@@ -3123,6 +3152,12 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         bool UserPositiveMonotonicGrowth,
         bool ProcessPositiveMonotonicGrowth,
         bool AnyPositiveMonotonicGrowth);
+
+    private sealed record CommitGeometry(
+        int ScreenX,
+        int ScreenY,
+        int Width,
+        int Height);
 
     private sealed record Dimension(
         int Width,

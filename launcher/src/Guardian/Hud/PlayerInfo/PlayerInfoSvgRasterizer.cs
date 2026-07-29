@@ -134,7 +134,8 @@ internal sealed class PlayerInfoSvgRasterizer : IPlayerInfoRasterizer
         using var skBitmap = qualified.Rasterize(
             layerPlan.PixelWidth,
             layerPlan.PixelHeight,
-            layerPlan.SourceViewBox);
+            layerPlan.SourceViewBox,
+            layerPlan.SourceToBitmap);
         progress.RecordRaster();
         cancellationToken.ThrowIfCancellationRequested();
         var bitmap = PlayerInfoPArgbBridge.Copy(skBitmap);

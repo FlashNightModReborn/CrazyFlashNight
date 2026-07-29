@@ -646,7 +646,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             .Aggregate(Rectangle.Union);
         Rectangle tightPlayerInfo = Rectangle.Intersect(
             rawLayerEnvelope,
-            plans[0].StagePhysicalBounds);
+            plans[0].FlashViewportPhysical);
         fullTopology = NativeHudTopologyProbe.Capture(
             topologyViewport,
             new[] { rightTop, fullPlayerInfo },
@@ -672,14 +672,14 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             fullTopology.NearFullBridge &&
             fullTopology.RequiresDecision;
         bool tightTopologyGeometry =
-            rawLayerEnvelope == new Rectangle(-3, 477, 285, 81) &&
-            tightPlayerInfo == new Rectangle(0, 512, 282, 46) &&
+            rawLayerEnvelope == new Rectangle(-3, 474, 285, 81) &&
+            tightPlayerInfo == new Rectangle(0, 474, 282, 81) &&
             tightTopology.RawOuterUnion ==
-                new Rectangle(0, 0, 976, 558) &&
+                new Rectangle(0, 0, 976, 555) &&
             tightTopology.InflatedOuterUnion ==
-                new Rectangle(-6, -6, 988, 570) &&
+                new Rectangle(-6, -6, 988, 567) &&
             tightTopology.ClippedSurface ==
-                new Rectangle(0, 0, 982, 564) &&
+                new Rectangle(0, 0, 982, 561) &&
             tightTopology.Components == 2 &&
             !tightTopology.FullViewportBridge &&
             tightTopology.NearFullBridge &&
@@ -700,18 +700,18 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             "The inference comes from geometry, not from the caller-recorded decision.");
         AddExactGate(
             gates,
-            "topology_stage_clipped_canonical_exact_geometry",
+            "topology_viewport_clipped_canonical_exact_geometry",
             "topology",
             tightTopologyGeometry,
             new
             {
                 rawLayerEnvelope = Rect(rawLayerEnvelope),
-                stageClippedEnvelope = Rect(tightPlayerInfo),
+                viewportClippedEnvelope = Rect(tightPlayerInfo),
                 probe = Topology(tightTopology)
             },
-            "B0-04 manifest layer envelope clipped to the 1024x64 child stage; near bridge; requires decision",
+            "B0-04 manifest layer envelope clipped to the main Flash viewport; near bridge; requires decision",
             "geometry",
-            "282x46 is a stage-clipped canonical envelope, not a visual-parity claim.");
+            "282x81 preserves the main-RSL sprite above its 1024x64 authoring stage; this remains a geometry result, not a visual-parity claim.");
 
         SourceClosure sourceClosure = CaptureSourceClosure(projectRoot);
         TestAssemblyIdentity testAssembly =
@@ -944,6 +944,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                 pair.First.MonitorDpiScale,
                 pair.Second.PhysicalScale,
                 stagePhysicalBounds = Rect(pair.Second.StagePhysicalBounds),
+                tightPhysicalBounds = Rect(pair.Second.TightPhysicalBounds),
                 letterbox = new
                 {
                     present =
@@ -969,6 +970,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                         layer.Key.LayerId,
                         layer.Key.PixelWidth,
                         layer.Key.PixelHeight,
+                        layer.Key.SourceToBitmapIdentity,
                         layer.Key.RendererIdentity,
                         layer.Key.RasterContractVersion
                     }
@@ -1130,9 +1132,9 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                 viewport = Rect(topologyViewport),
                 productionRightTopFixedBounds = Rect(rightTop),
                 rawCanonicalLayerEnvelope = Rect(rawLayerEnvelope),
-                stageClippedCanonicalEnvelope = Rect(tightPlayerInfo),
+                viewportClippedCanonicalEnvelope = Rect(tightPlayerInfo),
                 fullStage = Topology(fullTopology),
-                stageClippedCanonicalEnvelopeProbe =
+                viewportClippedCanonicalEnvelopeProbe =
                     Topology(tightTopology),
                 actualUpdateLayeredWindowMeasured = false
             },
@@ -1145,7 +1147,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
                 "static layers parsed, rasterized and copied to PArgb",
                 "single-worker latest-wins cache pipeline exercised",
                 "3000 current-key requests caused zero parse/raster/publish",
-                "fixed-bounds full/tight geometry requires an explicit topology decision",
+                "fixed-bounds full/main-viewport-clipped geometry requires an explicit topology decision",
                 "recorded B0-05 topology decision is split_required"
             },
             unverified = UnverifiedClaims

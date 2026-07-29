@@ -359,7 +359,7 @@ function Test-ReportContract {
 
     Assert-Equal ([string]$Report.schema) `
         'cf7.player-info-hud.b0-06-runtime-qualification' 'schema'
-    Assert-Equal ([int]$Report.schemaVersion) 1 'schemaVersion'
+    Assert-Equal ([int]$Report.schemaVersion) 2 'schemaVersion'
     Assert-Equal ([string]$Report.runId) $ExpectedRunId 'runId'
     Assert-Equal ([string]$Report.measurementKind) `
         'actual_sta_hwnd_update_layered_window' 'measurementKind'
@@ -1320,6 +1320,27 @@ function Test-ReportContract {
     if ([double]$computedSummaries.observerCommitSummary.p95 -ge 33.0) {
         throw "Split actual commit p95 must be below 33 ms."
     }
+    $observerGeometry = @($active.observerCommitGeometry)
+    Assert-Equal $observerGeometry.Count 1 `
+        'split.active.observerCommitGeometry.count'
+    Assert-Equal ([int]$observerGeometry[0].screenX) `
+        ([int]$Report.viewport.tightPhysicalBounds.x) `
+        'split.active.observerCommitGeometry.screenX'
+    Assert-Equal ([int]$observerGeometry[0].screenY) `
+        ([int]$Report.viewport.tightPhysicalBounds.y) `
+        'split.active.observerCommitGeometry.screenY'
+    Assert-Equal ([int]$observerGeometry[0].width) 528 `
+        'split.active.observerCommitGeometry.width'
+    Assert-Equal ([int]$observerGeometry[0].height) 150 `
+        'split.active.observerCommitGeometry.height'
+    Assert-Equal ([int]$Report.viewport.tightPhysicalBounds.width) 528 `
+        'viewport.tightPhysicalBounds.width'
+    Assert-Equal ([int]$Report.viewport.tightPhysicalBounds.height) 150 `
+        'viewport.tightPhysicalBounds.height'
+    Assert-Equal ([long]$Report.viewport.tightPixels) 79200 `
+        'viewport.tightPixels'
+    Assert-Equal ([long]$Report.viewport.tightBytes) 316800 `
+        'viewport.tightBytes'
 
     $idle = $Report.splitSurface.idle
     Assert-Equal ([int]$idle.ticks) 3000 'split.idle.ticks'
@@ -1482,6 +1503,7 @@ function Test-ReportContract {
         'raster_batch_raster_count'
         'split_actual_commit_p95'
         'split_commit_count'
+        'split_commit_geometry_matches_tight'
         'split_commit_success_count'
         'split_idle_commit_zero'
         'split_idle_paint_zero'

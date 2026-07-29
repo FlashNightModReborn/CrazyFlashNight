@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "assetSet": {
     "id": "player-info-hp-mp-b0",
-    "revision": "sha256:c8f58cb781f50c5a62eff163a04524e89fd6a2ee37c9b66347743d766ac93871",
+    "revision": "sha256:d67ab427748f5256bd18ea5669c9f1d045a6adaac30dce96f9660ea20c892ba1",
     "revisionAlgorithm": "sha256(sorted UTF-8 relative path + NUL + exact file bytes + NUL)",
     "rasterContractVersion": 1,
     "runtimeCacheIdentityComponents": [
@@ -59,7 +59,7 @@
     {
       "id": "hp.rim",
       "path": "hp/rim.svg",
-      "sha256": "9f8a475255afb74f8e8a1dafcb3c45f75fd7345e28368dd383798c2f2c303790",
+      "sha256": "e2737e1b1dd616b58193b811dceedbdf598891a4b06931daa1eec2c54269205b",
       "viewBox": [-47, -47, 94, 94],
       "sourceGeometryBounds": [-45.45, -45.4, 45.4, 45.45],
       "registration": [0, 0],
@@ -132,7 +132,7 @@
   "gauges": {
     "hp": {
       "assetIds": ["hp.backplate", "hp.fill", "hp.rim"],
-      "stageMatrix": [0.847213745117188, 0, 0, 0.847213745117188, 37.75, 5.65],
+      "stageMatrix": [0.847213745117188, 0, 0, 0.847213745117188, 37.75, 2.65],
       "frameMap": {
         "stepCount": 128,
         "virtualFrameCount": 129,
@@ -159,7 +159,7 @@
     },
     "mp": {
       "assetIds": ["mp.backplate", "mp.fill"],
-      "stageMatrix": [1.0810546875, 0, 0, 1.0810546875, 90.1, -1.3],
+      "stageMatrix": [1.0810546875, 0, 0, 1.0810546875, 90.1, -4.3],
       "frameMap": {
         "stepCount": 100,
         "virtualFrameCount": 101,
@@ -293,13 +293,6 @@
     ],
     "programmaticLayers": [
       {
-        "id": "hp-horizontal-line-glow",
-        "rendererOwner": "native-effect",
-        "compositeAfter": "hp.fill",
-        "compositeBefore": "hp.rim",
-        "blendMode": "source-over"
-      },
-      {
         "id": "hp-light-overlay",
         "rendererOwner": "native-effect",
         "compositeAfter": "hp.fill",
@@ -310,6 +303,12 @@
         "id": "hp-mp-dynamic-text-and-glow",
         "rendererOwner": "native-draw",
         "compositeAfter": "gauge-static-layers",
+        "blendMode": "source-over"
+      },
+      {
+        "id": "hp-horizontal-line-glow",
+        "rendererOwner": "native-effect",
+        "compositeAfter": "hp-mp-dynamic-text-and-glow",
         "blendMode": "source-over"
       }
     ]
