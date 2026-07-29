@@ -263,9 +263,6 @@ internal sealed class PlayerInfoVisualState
     internal bool HasRenderableState =>
         Hp.HasRenderableState && Mp.HasRenderableState;
 
-    internal bool HasAnyRenderableGauge =>
-        Hp.HasRenderableState || Mp.HasRenderableState;
-
     internal bool WantsAnimationTick =>
         Hp.WantsAnimationTick || Mp.WantsAnimationTick;
 }

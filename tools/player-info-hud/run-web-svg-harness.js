@@ -10,6 +10,7 @@ const playwrightPath = path.join(
     repoRoot, 'launcher', 'perf', 'node_modules', 'playwright');
 const playwrightPackagePath = path.join(
     playwrightPath, 'package.json');
+const canonicalStaticLayerScope = 'canonical_static_svg_layers_only';
 const cases = [
     {id:'empty', hpFrame:129, mpFrame:101},
     {id:'min_step', hpFrame:128, mpFrame:100},
@@ -26,6 +27,30 @@ const cases = [
 
 function fail(message) {
     throw new Error(message);
+}
+
+function assertRenderSemanticsContract(value) {
+    if (value === null || typeof value !== 'object' ||
+        Array.isArray(value)) {
+        fail('Web renderSemantics must be an object.');
+    }
+    const expectedKeys = [
+        'capturedLayerScope',
+        'compositeOrder',
+        'csharpProgrammaticDynamicTextIncluded',
+        'csharpProgrammaticGlowIncluded',
+        'hpFillDegreesPerSourceFrame',
+        'mpRimVariantStarts'
+    ].sort();
+    if (JSON.stringify(Object.keys(value).sort()) !==
+        JSON.stringify(expectedKeys)) {
+        fail('Web renderSemantics keys drifted.');
+    }
+    if (value.capturedLayerScope !== canonicalStaticLayerScope ||
+        value.csharpProgrammaticDynamicTextIncluded !== false ||
+        value.csharpProgrammaticGlowIncluded !== false) {
+        fail('Web renderSemantics capture scope drifted.');
+    }
 }
 
 function parseOptions() {
@@ -517,6 +542,17 @@ async function main() {
             sha256(playwrightPackageBytes)) {
         fail('Playwright package identity changed during rendering.');
     }
+    const renderSemantics = {
+        capturedLayerScope: canonicalStaticLayerScope,
+        csharpProgrammaticDynamicTextIncluded: false,
+        csharpProgrammaticGlowIncluded: false,
+        compositeOrder: manifest.stage.compositeOrder,
+        hpFillDegreesPerSourceFrame:
+            manifest.gauges.hp.fillTextureRotation.degreesPerSourceFrame,
+        mpRimVariantStarts:
+            manifest.gauges.mp.rimVariants.map(item => item.startVirtualFrame)
+    };
+    assertRenderSemanticsContract(renderSemantics);
     const report = {
         schema: 'cf7.player_info.web_svg_harness.v1',
         status: 'canonical_manifest_rendered_awaiting_human_review',
@@ -529,13 +565,7 @@ async function main() {
             assetSetRevision: manifest.assetSet.revision,
             schemaVersion: manifest.schemaVersion
         },
-        renderSemantics: {
-            compositeOrder: manifest.stage.compositeOrder,
-            hpFillDegreesPerSourceFrame:
-                manifest.gauges.hp.fillTextureRotation.degreesPerSourceFrame,
-            mpRimVariantStarts:
-                manifest.gauges.mp.rimVariants.map(item => item.startVirtualFrame)
-        },
+        renderSemantics,
         browser: {
             family: 'Microsoft Edge via Playwright chromium',
             version: browserVersion,

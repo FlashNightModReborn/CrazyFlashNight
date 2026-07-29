@@ -14,6 +14,10 @@ const darkBackground = {
     css:'#181c20',
     rgb8:[24, 28, 32]
 };
+const canonicalStaticLayerScope = 'canonical_static_svg_layers_only';
+const comparisonScope =
+    '11_case_direct_csharp_full_fixture_composite_to_web_canonical_' +
+    'static_layers_and_csharp_to_flash';
 const expectedCases = [
     {id:'empty', hpFrame:129, mpFrame:101},
     {id:'min_step', hpFrame:128, mpFrame:100},
@@ -1218,11 +1222,19 @@ function validateWebReport(web, reportPath, tracker) {
     }
 
     assertExactKeys(web.renderSemantics, [
+        'capturedLayerScope',
         'compositeOrder',
+        'csharpProgrammaticDynamicTextIncluded',
+        'csharpProgrammaticGlowIncluded',
         'hpFillDegreesPerSourceFrame',
         'mpRimVariantStarts'
     ], 'Web renderSemantics');
-    if (JSON.stringify(web.renderSemantics.compositeOrder) !==
+    if (web.renderSemantics.capturedLayerScope !==
+            canonicalStaticLayerScope ||
+        web.renderSemantics.csharpProgrammaticDynamicTextIncluded !==
+            false ||
+        web.renderSemantics.csharpProgrammaticGlowIncluded !== false ||
+        JSON.stringify(web.renderSemantics.compositeOrder) !==
             JSON.stringify(['mp', 'hp']) ||
         web.renderSemantics.hpFillDegreesPerSourceFrame !== 2.8125 ||
         JSON.stringify(web.renderSemantics.mpRimVariantStarts) !==
@@ -1350,9 +1362,46 @@ function validateWebReport(web, reportPath, tracker) {
             assetSetRevision:manifest.assetSet.revision
         },
         assets:assets.map(({exactBytes, ...record}) => record),
+        renderSemantics: {
+            capturedLayerScope:
+                web.renderSemantics.capturedLayerScope,
+            csharpProgrammaticDynamicTextIncluded:
+                web.renderSemantics.csharpProgrammaticDynamicTextIncluded,
+            csharpProgrammaticGlowIncluded:
+                web.renderSemantics.csharpProgrammaticGlowIncluded
+        },
         selectedArtifactCount:cases.length,
         cases
     };
+}
+
+function assertComparisonScopeClaims(report) {
+    if (report.scope !== comparisonScope) {
+        fail('Comparison report scope drifted.');
+    }
+    assertExactKeys(report.claims, [
+        'acceptanceThreshold',
+        'csharpWebMetricsIncludeLayerScopeDifference',
+        'directEdges',
+        'flashOracleAccepted',
+        'humanReviewRequired',
+        'limitation',
+        'metricsOnly',
+        'parityClaimed',
+        'transitiveInferenceUsed',
+        'webCapturedLayerScope',
+        'webCaptureIncludesCsharpProgrammaticDynamicText',
+        'webCaptureIncludesCsharpProgrammaticGlow',
+        'webFlashEdgeComputed'
+    ], 'Comparison report claims');
+    if (report.claims.webCapturedLayerScope !==
+            canonicalStaticLayerScope ||
+        report.claims.webCaptureIncludesCsharpProgrammaticDynamicText !==
+            false ||
+        report.claims.webCaptureIncludesCsharpProgrammaticGlow !== false ||
+        report.claims.csharpWebMetricsIncludeLayerScopeDifference !== true) {
+        fail('Comparison report layer-scope claims drifted.');
+    }
 }
 
 function validateSnapshot(
@@ -2769,12 +2818,20 @@ async function main() {
             'cf7.player_info.b0_06_csharp_web_flash_diagnostic.v1',
         schemaVersion:1,
         status:'diagnostic_awaiting_human_review',
-        scope:
-            '11_case_direct_csharp_to_web_and_csharp_to_flash',
+        scope:comparisonScope,
         claims: {
             directEdges:['csharp-web', 'csharp-flash'],
             webFlashEdgeComputed:false,
             transitiveInferenceUsed:false,
+            webCapturedLayerScope:
+                webValidated.renderSemantics.capturedLayerScope,
+            webCaptureIncludesCsharpProgrammaticDynamicText:
+                webValidated.renderSemantics
+                    .csharpProgrammaticDynamicTextIncluded,
+            webCaptureIncludesCsharpProgrammaticGlow:
+                webValidated.renderSemantics
+                    .csharpProgrammaticGlowIncluded,
+            csharpWebMetricsIncludeLayerScopeDifference:true,
             acceptanceThreshold:null,
             parityClaimed:false,
             flashOracleAccepted:false,
@@ -2782,6 +2839,10 @@ async function main() {
             metricsOnly:true,
             limitation:
                 'The Flash input remains an unaccepted candidate. ' +
+                'The C#-to-Web edge compares the C# full fixture ' +
+                'composite against canonical static SVG layers only, so ' +
+                'its metrics include the scope difference from C# ' +
+                'programmatic dynamic text and Glow. ' +
                 'Metrics and images are diagnostic evidence only; no ' +
                 'threshold, renderer-parity verdict, oracle acceptance, ' +
                 'or transitive Web-to-Flash inference is applied.'
@@ -2907,6 +2968,7 @@ async function main() {
         },
         outputClosure
     };
+    assertComparisonScopeClaims(report);
     const reportName =
         'csharp-web-flash-comparison-report.json';
     const reportIdentity = writeCanonicalJson(

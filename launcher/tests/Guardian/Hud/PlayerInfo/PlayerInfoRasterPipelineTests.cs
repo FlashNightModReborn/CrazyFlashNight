@@ -385,11 +385,14 @@ public sealed class PlayerInfoRasterPipelineTests
             pipeline.Dispose();
         });
         Assert.True(disposeStarted.Wait(TimeSpan.FromSeconds(5)));
-        await Task.Delay(50);
+        Assert.True(
+            SpinWait.SpinUntil(
+                () => pipeline.Snapshot.DesiredBatchKey is null,
+                TimeSpan.FromSeconds(5)),
+            "Dispose did not enter its active-observer drain state.");
         Assert.False(disposeTask.IsCompleted);
         releaseFirstObserver.Set();
         await disposeTask.WaitAsync(TimeSpan.FromSeconds(5));
-        await Task.Delay(50);
 
         Assert.Equal(1, Volatile.Read(ref observerCalls));
         Assert.Throws<ObjectDisposedException>(() =>

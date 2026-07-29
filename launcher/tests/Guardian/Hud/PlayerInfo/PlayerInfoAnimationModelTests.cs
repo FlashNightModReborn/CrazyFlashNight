@@ -136,7 +136,8 @@ public sealed class PlayerInfoAnimationModelTests
         Assert.False(model.ApplyFixture(fixture));
 
         Assert.False(model.VisualState.HasRenderableState);
-        Assert.False(model.VisualState.HasAnyRenderableGauge);
+        Assert.False(model.VisualState.Hp.HasRenderableState);
+        Assert.False(model.VisualState.Mp.HasRenderableState);
         AssertInvalid(
             model.VisualState.Hp,
             PlayerInfoInvalidInputReasons.CurrentNonFinite);

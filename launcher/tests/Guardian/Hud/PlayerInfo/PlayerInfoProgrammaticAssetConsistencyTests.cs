@@ -17,7 +17,7 @@ using Xunit;
 
 namespace CF7Launcher.Tests.Guardian.Hud.PlayerInfo;
 
-public sealed class PlayerInfoProgrammaticAssetParityTests
+public sealed class PlayerInfoProgrammaticAssetConsistencyTests
 {
     private const string MpFillAssetId = "mp.fill";
     private const string MpLeftMaskId = "mp-left-mask";
@@ -27,7 +27,7 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
         "http://www.w3.org/2000/svg";
 
     [Fact]
-    public void MpFlattenedFill_DualStableGroupMasksMatchProductionWithoutCrossLeak()
+    public void MpFlattenedFill_DualStableGroupMasksAreSelfConsistentWithoutCrossLeak()
     {
         PlayerInfoSvgAssetSet assets =
             PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
@@ -214,7 +214,7 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
     }
 
     [Fact]
-    public void HpGradient_LocalRByMMatchesWebManifestOracleAndRejectsGlobalRotation()
+    public void HpGradient_LocalRByMIsSelfConsistentWithManifestOracleAndRejectsGlobalRotation()
     {
         PlayerInfoSvgAssetSet assets =
             PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
@@ -224,18 +224,11 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
             assets,
             new Rectangle(0, 0, 1024, 576),
             monitorDpiScale: 1f);
-        using PlayerInfoRasterBatch batch =
-            new PlayerInfoSvgRasterizer().Bake(
-                plan,
-                System.Threading.CancellationToken.None);
-        PlayerInfoRasterLayer productionFill = batch.Layers.Single(
-            layer => layer.Key.LayerId == HpFillAssetId);
         PlayerInfoRasterLayerPlan fillPlan = FindLayerPlan(plan, HpFillAssetId);
         using var compositor = new PlayerInfoFrameCompositor(assets);
         MethodInfo drawProductionHpFill = RequirePrivateMethod(
             "DrawHpFill",
             typeof(SKCanvas),
-            typeof(PlayerInfoRasterLayer),
             typeof(PlayerInfoRasterPlan),
             typeof(int));
 
@@ -273,7 +266,6 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
                 plan,
                 compositor,
                 drawProductionHpFill,
-                productionFill,
                 virtualFrame);
             using SKBitmap oracle = RenderHpSvgOracle(
                 oracleSvg,
@@ -297,7 +289,6 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
                    plan,
                    compositor,
                    drawProductionHpFill,
-                   productionFill,
                    hp.FrameMap.EmptyVirtualFrame))
         {
             Assert.Equal(0, CountOpaqueOrTranslucent(terminal));
@@ -577,7 +568,6 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
         PlayerInfoRasterPlan plan,
         PlayerInfoFrameCompositor compositor,
         MethodInfo drawMethod,
-        PlayerInfoRasterLayer fill,
         int virtualFrame)
     {
         SKBitmap target = NewTarget(plan);
@@ -587,7 +577,7 @@ public sealed class PlayerInfoProgrammaticAssetParityTests
             canvas.Clear(SKColors.Transparent);
             drawMethod.Invoke(
                 compositor,
-                [canvas, fill, plan, virtualFrame]);
+                [canvas, plan, virtualFrame]);
             canvas.Flush();
             return target;
         }

@@ -40,6 +40,14 @@ internal static class PlayerInfoCompositionRecipe
     internal const string HpFillAssetId = "hp.fill";
     internal const string DynamicTextEffectId =
         "hp-mp-dynamic-text-and-glow";
+    private const float HpTextGlowSigmaPixels = 1f;
+
+    // `LIBRARY/sprite/主角hp显示界面.xml` gives all three HP text glows
+    // blurX/blurY=2 and strength=1.5 while omitting color/alpha. Flash's
+    // GlowFilter defaults (also resolved in the compiled SWF) make that red;
+    // sigma=1 and alpha=220 remain the existing single-pass Skia approximation.
+    private static readonly SKColor HpTextGlowColor =
+        new(255, 0, 0, 220);
 
     internal static PlayerInfoTextLayout MpLabel { get; } = new(
         "mp-label",
@@ -88,8 +96,8 @@ internal static class PlayerInfoCompositionRecipe
         13.45f,
         -4.5f,
         PlayerInfoPathTextAlignment.Right,
-        1f,
-        new SKColor(0, 0, 0, 220));
+        HpTextGlowSigmaPixels,
+        HpTextGlowColor);
 
     internal static PlayerInfoTextLayout HpMaximum { get; } = new(
         "hp-maximum",
@@ -98,8 +106,8 @@ internal static class PlayerInfoCompositionRecipe
         8.975f,
         19.95f,
         PlayerInfoPathTextAlignment.Center,
-        1f,
-        new SKColor(0, 0, 0, 220));
+        HpTextGlowSigmaPixels,
+        HpTextGlowColor);
 
     internal static PlayerInfoTextLayout HpCurrent { get; } = new(
         "hp-current",
@@ -108,8 +116,8 @@ internal static class PlayerInfoCompositionRecipe
         -5.775f,
         7.7f,
         PlayerInfoPathTextAlignment.Center,
-        1f,
-        new SKColor(0, 0, 0, 220));
+        HpTextGlowSigmaPixels,
+        HpTextGlowColor);
 
     internal static IReadOnlyList<PlayerInfoTextLayout> TextLayouts { get; } =
         Array.AsReadOnly(
@@ -297,7 +305,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             DrawLayer(canvas, layers[rimAssetId], plan);
 
             DrawLayer(canvas, layers[HpBackplate], plan);
-            DrawHpFill(canvas, layers[HpFill], plan, hpFrame);
+            DrawHpFill(canvas, plan, hpFrame);
             DrawLayer(canvas, layers[HpRim], plan);
 
             DrawText(canvas, plan, visualState, palette);
@@ -335,7 +343,6 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
 
     private void DrawHpFill(
         SKCanvas canvas,
-        PlayerInfoRasterLayer layer,
         PlayerInfoRasterPlan plan,
         int virtualFrame)
     {

@@ -450,7 +450,6 @@ internal sealed class PlayerInfoRasterPipeline : IDisposable
         _currentPlan = plan;
 
         var inactiveBudget = _maxCacheBytes - batch.ByteSize;
-        _cache.TrimTo(inactiveBudget);
         if (previous is not null)
         {
             if (!_cache.TryStore(previous, inactiveBudget))

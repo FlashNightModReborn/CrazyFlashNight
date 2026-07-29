@@ -68,7 +68,7 @@ public sealed class PlayerInfoFrameCompositorTests
                     -4.5f,
                     PlayerInfoPathTextAlignment.Right,
                     1f,
-                    new SKColor(0, 0, 0, 220)),
+                    new SKColor(255, 0, 0, 220)),
                 new PlayerInfoTextLayout(
                     "hp-maximum",
                     PlayerInfoPathGlyphAtlas.LcdStd,
@@ -77,7 +77,7 @@ public sealed class PlayerInfoFrameCompositorTests
                     19.95f,
                     PlayerInfoPathTextAlignment.Center,
                     1f,
-                    new SKColor(0, 0, 0, 220)),
+                    new SKColor(255, 0, 0, 220)),
                 new PlayerInfoTextLayout(
                     "hp-current",
                     PlayerInfoPathGlyphAtlas.LcdStd,
@@ -86,7 +86,7 @@ public sealed class PlayerInfoFrameCompositorTests
                     7.7f,
                     PlayerInfoPathTextAlignment.Center,
                     1f,
-                    new SKColor(0, 0, 0, 220))
+                    new SKColor(255, 0, 0, 220))
             },
             PlayerInfoCompositionRecipe.TextLayouts);
 
@@ -133,6 +133,37 @@ public sealed class PlayerInfoFrameCompositorTests
                 .ToArray());
         Assert.Throws<System.IO.InvalidDataException>(() =>
             PlayerInfoCompositionRecipe.ValidateEffectPolicy(invalidPolicy));
+    }
+
+    [Fact]
+    public void CompositionRecipe_AppliesSourceRedGlowOnlyToHpText()
+    {
+        PlayerInfoTextLayout[] hpLayouts =
+            PlayerInfoCompositionRecipe.TextLayouts
+                .Where(layout =>
+                    layout.Id.StartsWith("hp-", StringComparison.Ordinal))
+                .ToArray();
+        Assert.Equal(3, hpLayouts.Length);
+        Assert.All(hpLayouts, layout =>
+        {
+            Assert.Equal(1f, layout.GlowSigmaPixels);
+            Assert.True(layout.GlowColor.HasValue);
+            Assert.Equal(
+                new SKColor(255, 0, 0, 220),
+                layout.GlowColor.Value);
+        });
+
+        PlayerInfoTextLayout[] mpLayouts =
+            PlayerInfoCompositionRecipe.TextLayouts
+                .Where(layout =>
+                    layout.Id.StartsWith("mp-", StringComparison.Ordinal))
+                .ToArray();
+        Assert.Equal(4, mpLayouts.Length);
+        Assert.All(mpLayouts, layout =>
+        {
+            Assert.Equal(0f, layout.GlowSigmaPixels);
+            Assert.Null(layout.GlowColor);
+        });
     }
 
     [Fact]

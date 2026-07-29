@@ -9,6 +9,15 @@ const repoRoot = path.resolve(__dirname, '..', '..');
 const playwrightRoot = path.join(
     repoRoot, 'launcher', 'perf', 'node_modules', 'playwright');
 const viewport = {width:1024, height:64};
+const canonicalStaticLayerScope = 'canonical_static_svg_layers_only';
+const webRenderSemanticsKeys = [
+    'capturedLayerScope',
+    'compositeOrder',
+    'csharpProgrammaticDynamicTextIncluded',
+    'csharpProgrammaticGlowIncluded',
+    'hpFillDegreesPerSourceFrame',
+    'mpRimVariantStarts'
+].sort();
 const expectedCases = [
     {id:'empty', hpFrame:129, mpFrame:101},
     {id:'min_step', hpFrame:128, mpFrame:100},
@@ -396,6 +405,12 @@ function validateWebReport(web, reportRoot, tracker) {
         fail('Web canonical renderer contract drifted.');
     }
     if (!web.renderSemantics ||
+        JSON.stringify(Object.keys(web.renderSemantics).sort()) !==
+            JSON.stringify(webRenderSemanticsKeys) ||
+        web.renderSemantics.capturedLayerScope !==
+            canonicalStaticLayerScope ||
+        web.renderSemantics.csharpProgrammaticDynamicTextIncluded !== false ||
+        web.renderSemantics.csharpProgrammaticGlowIncluded !== false ||
         JSON.stringify(web.renderSemantics.compositeOrder) !==
             JSON.stringify(['mp', 'hp']) ||
         web.renderSemantics.hpFillDegreesPerSourceFrame !== 2.8125 ||
@@ -490,6 +505,14 @@ function validateWebReport(web, reportRoot, tracker) {
             assetSetRevision: manifest.assetSet.revision
         },
         assets: assets.map(({exactBytes, ...record}) => record),
+        renderSemantics: {
+            capturedLayerScope:
+                web.renderSemantics.capturedLayerScope,
+            csharpProgrammaticDynamicTextIncluded:
+                web.renderSemantics.csharpProgrammaticDynamicTextIncluded,
+            csharpProgrammaticGlowIncluded:
+                web.renderSemantics.csharpProgrammaticGlowIncluded
+        },
         cases
     };
 }
@@ -994,6 +1017,14 @@ async function main() {
         scope:'11_case_flash_player_candidate_raw_vs_canonical_web_svg',
         claims: {
             flashInputStatus:'candidate',
+            webCapturedLayerScope:
+                webValidated.renderSemantics.capturedLayerScope,
+            webCaptureIncludesCsharpProgrammaticDynamicText:
+                webValidated.renderSemantics
+                    .csharpProgrammaticDynamicTextIncluded,
+            webCaptureIncludesCsharpProgrammaticGlow:
+                webValidated.renderSemantics
+                    .csharpProgrammaticGlowIncluded,
             flashCandidateHumanReviewRequired:true,
             oracleFrozenClaimed:false,
             closesOracleFrozenGate:false,
@@ -1034,6 +1065,7 @@ async function main() {
                 status:webInput.value.status,
                 manifest:webValidated.manifestIdentity,
                 assets:webValidated.assets,
+                renderSemantics:webValidated.renderSemantics,
                 renderArtifactCount:webValidated.cases.length
             },
             caseIdsAndFramesMatch:true,

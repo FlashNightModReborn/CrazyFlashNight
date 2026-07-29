@@ -519,24 +519,59 @@ public sealed class PlayerInfoSplitSurfaceTests
                 owner,
                 anchor,
                 "full");
+            using var rasterizer = new CancellationBlockingRasterizer();
+            FieldInfo pipelineField = typeof(PlayerInfoSplitSurface).GetField(
+                "_pipeline",
+                BindingFlags.Instance | BindingFlags.NonPublic) ??
+                throw new MissingFieldException(
+                    typeof(PlayerInfoSplitSurface).FullName,
+                    "_pipeline");
+            var originalPipeline =
+                (PlayerInfoRasterPipeline)(pipelineField.GetValue(surface) ??
+                    throw new InvalidOperationException(
+                        "Direct-dispose test could not capture the live pipeline."));
+            var blockingPipeline =
+                new PlayerInfoRasterPipeline(rasterizer);
+            pipelineField.SetValue(surface, blockingPipeline);
+            originalPipeline.Dispose();
             IntPtr handle = surface.Handle;
             Assert.True(IsWindow(handle));
             surface.SetReady();
             Assert.True(
-                SpinWait.SpinUntil(
-                    () => surface.Counters.Pipeline.ActiveWorkers > 0,
-                    TimeSpan.FromSeconds(5)),
-                "The direct-dispose test did not observe an active raster worker.");
+                rasterizer.Started.Wait(TimeSpan.FromSeconds(5)),
+                "The direct-dispose raster worker did not start.");
+            Assert.Equal(1, surface.Counters.Pipeline.ActiveWorkers);
 
-            surface.Dispose();
-            surface.WaitForDrainAsync(TimeSpan.FromSeconds(10))
-                .GetAwaiter()
-                .GetResult();
-            Application.DoEvents();
+            try
+            {
+                surface.Dispose();
+                Assert.True(
+                    rasterizer.CancellationObserved.Wait(
+                        TimeSpan.FromSeconds(5)),
+                    "Direct dispose did not cancel the active raster worker.");
+                surface.WaitForDrainAsync(TimeSpan.FromSeconds(5))
+                    .GetAwaiter()
+                    .GetResult();
+                PlayerInfoRasterPipelineSnapshot drained =
+                    blockingPipeline.Snapshot;
+                Assert.Equal(1, drained.CancelCount);
+                Assert.Equal(0, drained.FaultCount);
+                Assert.Null(drained.LastFault);
+                Application.DoEvents();
 
-            Assert.False(IsWindow(handle));
-            Assert.False(surface.IsHandleCreated);
-            Assert.Equal(ownedBaseline, owner.OwnedForms.Length);
+                Assert.False(IsWindow(handle));
+                Assert.False(surface.IsHandleCreated);
+                Assert.Equal(ownedBaseline, owner.OwnedForms.Length);
+            }
+            finally
+            {
+                // A broken cancellation path must fail the assertions above,
+                // but the test release prevents that failure from leaking a
+                // permanently blocked worker into the process.
+                rasterizer.TestRelease.Set();
+                surface.Dispose();
+                blockingPipeline.Dispose();
+            }
         }, TimeSpan.FromSeconds(20));
     }
 
@@ -745,6 +780,43 @@ public sealed class PlayerInfoSplitSurfaceTests
                 typeof(OverlayBase).FullName,
                 methodName);
         method.Invoke(surface, null);
+    }
+
+    private sealed class CancellationBlockingRasterizer :
+        IPlayerInfoRasterizer,
+        IDisposable
+    {
+        internal ManualResetEventSlim Started { get; } = new(false);
+        internal ManualResetEventSlim CancellationObserved { get; } =
+            new(false);
+        internal ManualResetEventSlim TestRelease { get; } = new(false);
+
+        public PlayerInfoRasterBatch Bake(
+            PlayerInfoRasterPlan plan,
+            CancellationToken cancellationToken,
+            PlayerInfoRasterProgress progress)
+        {
+            Started.Set();
+            int signaled = WaitHandle.WaitAny(
+            [
+                cancellationToken.WaitHandle,
+                TestRelease.WaitHandle
+            ]);
+            if (signaled == 0)
+            {
+                CancellationObserved.Set();
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            throw new InvalidOperationException(
+                "The test released the raster worker before cancellation.");
+        }
+
+        public void Dispose()
+        {
+            Started.Dispose();
+            CancellationObserved.Dispose();
+            TestRelease.Dispose();
+        }
     }
 
     private static void RunOnSta(

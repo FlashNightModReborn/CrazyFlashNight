@@ -8,6 +8,15 @@ const path = require('path');
 const repoRoot = path.resolve(__dirname, '..', '..');
 const playwrightRoot = path.join(
     repoRoot, 'launcher', 'perf', 'node_modules', 'playwright');
+const canonicalStaticLayerScope = 'canonical_static_svg_layers_only';
+const webRenderSemanticsKeys = [
+    'capturedLayerScope',
+    'compositeOrder',
+    'csharpProgrammaticDynamicTextIncluded',
+    'csharpProgrammaticGlowIncluded',
+    'hpFillDegreesPerSourceFrame',
+    'mpRimVariantStarts'
+].sort();
 const expectedCases = [
     {id:'empty', hpFrame:129, mpFrame:101},
     {id:'min_step', hpFrame:128, mpFrame:100},
@@ -382,6 +391,12 @@ function validateWebReport(web, reportRoot) {
         JSON.stringify(manifest.stage.compositeOrder) !==
             JSON.stringify(['mp', 'hp']) ||
         !web.renderSemantics ||
+        JSON.stringify(Object.keys(web.renderSemantics).sort()) !==
+            JSON.stringify(webRenderSemanticsKeys) ||
+        web.renderSemantics.capturedLayerScope !==
+            canonicalStaticLayerScope ||
+        web.renderSemantics.csharpProgrammaticDynamicTextIncluded !== false ||
+        web.renderSemantics.csharpProgrammaticGlowIncluded !== false ||
         JSON.stringify(web.renderSemantics.compositeOrder) !==
             JSON.stringify(manifest.stage.compositeOrder) ||
         web.renderSemantics.hpFillDegreesPerSourceFrame !== 2.8125 ||
@@ -464,6 +479,14 @@ function validateWebReport(web, reportRoot) {
             assetSetRevision: manifest.assetSet.revision
         },
         assets,
+        renderSemantics: {
+            capturedLayerScope:
+                web.renderSemantics.capturedLayerScope,
+            csharpProgrammaticDynamicTextIncluded:
+                web.renderSemantics.csharpProgrammaticDynamicTextIncluded,
+            csharpProgrammaticGlowIncluded:
+                web.renderSemantics.csharpProgrammaticGlowIncluded
+        },
         cases
     };
 }
@@ -903,6 +926,14 @@ async function main() {
         scope: '11_case_ffdec_binary_reference_vs_canonical_web_svg',
         claims: {
             flashPlayerRuntimeOracleEquivalent: false,
+            webCapturedLayerScope:
+                webValidated.renderSemantics.capturedLayerScope,
+            webCaptureIncludesCsharpProgrammaticDynamicText:
+                webValidated.renderSemantics
+                    .csharpProgrammaticDynamicTextIncluded,
+            webCaptureIncludesCsharpProgrammaticGlow:
+                webValidated.renderSemantics
+                    .csharpProgrammaticGlowIncluded,
             closesOracleFrozenGate: false,
             rendererParityClaimed: false,
             passThresholdApplied: false,
@@ -933,7 +964,8 @@ async function main() {
                 manifest: webValidated.manifestIdentity,
                 assetSetRevision:
                     webInput.value.manifest.assetSetRevision,
-                assets: webValidated.assets
+                assets: webValidated.assets,
+                renderSemantics:webValidated.renderSemantics
             },
             caseIdsAndFramesMatch: true,
             browserIdentityMatch: true
