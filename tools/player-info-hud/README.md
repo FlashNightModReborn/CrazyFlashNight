@@ -178,9 +178,46 @@ focused test run is not a qualification result.
 On that clean base, the focused PlayerInfo plus
 `PanelHostHudCompanionTests` run is 136 passed + 3 opt-in skipped / 139 total;
 the complete Launcher run is 1,737 passed + 3 opt-in skipped / 1,740 total.
-Runtime Lane C is separately 11/11, exit 0, with 566 scalar assertions.
-Its guardrails remain a distinct `scripts=3 / unsafeCandidateCases=3` count
-and are not relabelled as additional homogeneous scalar assertions.
+The later clean source-freeze commit
+`cb38600aae51f5019d09f87c33bd9e67d2b1f511` was verified separately:
+Runtime Lane C is 11/11, exit 0, with 566 scalar assertions. Its guardrails
+remain a distinct `scripts=3 / unsafeCandidateCases=3` count and are not
+relabelled as additional homogeneous scalar assertions. This source-freeze
+verification does not rebind the implementation-base qualification or visual
+reports described above.
+
+## F source freeze and non-deploying builder quorum
+
+The final B0 source input is commit
+`cb38600aae51f5019d09f87c33bd9e67d2b1f511`, tree
+`c74cc66f445921f5fcda1da04a2de0f013fef8ef`, frozen by
+`runtime-build-v2/20260729-player-info-nativehud-b0-v1`. Request
+`839C74FD1DF61ACC1DA580041F6FA71CA13A84DF1F43A55237BF9BEEF8648FB2`
+binds that source and tree to build identity
+`7687B56106F0C19EFD4463DCA2B69B3892BD3EE39503A3FD5521ED6DB0257A9F`.
+The local X509 builder in `physical-host-b` and the GitHub OIDC builder in
+`github-hosted-windows` independently produced the same 33-file payload
+closure
+`AF2E9E5727E9B6ADE056EBE4CA52BE93AD518116F10FF3307DA4409059CC724B`.
+
+The canonical quorum result is
+`evidence/b0-06/runtime-promotion-preflight.v2.json`: 15,128 B, SHA-256
+`5B13C629833165452A6229913AB8449632B0E2E949145CE7274D3DD746CEEC14`,
+schema `cf7-runtime-promotion-preflight.v2`, status `preflight-passed`, and
+`proofCount=2`. It was created by the production promotion verifier in
+`-VerifyOnly` mode. The report explicitly records
+`runtimeMutationPerformed=false`, `releaseStateMutationPerformed=false`,
+`promotionPerformed=false`, `deploymentPerformed=false`, and
+`reusableAsPromotionInput=false`. Therefore the strict result is
+`candidate_built / NOT_DEPLOYED`: it is not `candidate_executed`,
+`e2e_verified`, `promoted`, or `standard_entry_verified`.
+
+The report is acceptance evidence only. It must never be supplied, copied, or
+treated as cached approval for a later promotion. A formal promotion must omit
+`-VerifyOnly` and `-ReportPath`, rerun the complete validation and transaction
+checks, and produce the normal deployment consensus. The later documentation
+commit that carries this report is likewise not the source commit built by the
+two builders.
 
 The C# capture is deliberately opt-in. Run it twice against two empty absolute
 output directories after exact-SDK locked restore:
@@ -348,16 +385,25 @@ Automated hashes and metrics can freeze structure and expose differences; they
 cannot promote a Flash candidate to `oracle_frozen`, assert visual parity, or
 accept the UI aesthetic. Only a human may sign those checks. Until then the
 B0-01B/B0-04 state is `awaiting_human_review`, and the old Flash HUD remains
-the active visual reference. In the later 2026-07-29 ChatGPT app session,
-Computer Use recovered initialization, window enumeration, explicit activation,
-and screenshot capture. It confirmed that Flash CS6 currently has
-`TestLoader.xfl` open and shows `Compile | done.`; the first occluded capture
-incorrectly returned the foreground ChatGPT window, while capture after explicit
-Flash activation was correct. Flash UIA exposes only the window/title bar, and
-there is no separate Test Movie/SWF window, so this proves the authoring target
-but not the SWF actually loaded at runtime. Headless Playwright/Edge remains
-valid for deterministic Web/direct-edge rendering, and the formal runner
-exercises real HWND/ULW calls with an offscreen owner. None of these routes
-proves visible desktop DWM composition, z-order/occlusion over the running game,
-a real hand click, game-scene composite, temporal smoothness, or aesthetic
-quality. Those items remain mandatory human evidence.
+the active visual reference. An earlier 2026-07-29 ChatGPT app observation
+reported successful Computer Use initialization and a Flash authoring-window
+capture showing `TestLoader.xfl` and `Compile | done.`. That is only a
+historical, non-runtime authoring observation; it does not establish which SWF
+is loaded now.
+
+In the current app session the Computer Use package is discoverable, but its
+native interaction pipe is unavailable (`os error 2`). The in-app Browser can
+initialize, but exposes no controllable browser backend
+(`agent.browsers.list()` is empty). Current Flash windows therefore cannot be
+enumerated or inspected through those Apps, and this document makes no
+current-tense claim about an open XFL, Test Movie, or loaded SWF.
+
+The repository-owned Playwright/local-Edge harness remains valid for
+deterministic Web/direct-edge rendering without either App backend; FFDec
+remains a binary-SWF diagnostic, and the formal runner exercises real HWND/ULW
+calls with an offscreen owner. None of these routes proves visible desktop DWM
+composition, z-order/occlusion over the running game, a real hand click,
+game-scene composite, temporal smoothness, or aesthetic quality. Those items
+remain mandatory human evidence. Independently, the Launcher result remains
+`NOT_DEPLOYED`; human acceptance is still pending and does not itself imply a
+deployment.

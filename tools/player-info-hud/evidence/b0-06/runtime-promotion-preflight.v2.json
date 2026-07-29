@@ -1,0 +1,231 @@
+{
+    "schema":  "cf7-runtime-promotion-preflight.v2",
+    "status":  "preflight-passed",
+    "scope":  "promotion-preflight",
+    "runtimeMutationPerformed":  false,
+    "releaseStateMutationPerformed":  false,
+    "reportCreated":  true,
+    "promotionPerformed":  false,
+    "deploymentPerformed":  false,
+    "reusableAsPromotionInput":  false,
+    "request":  {
+                    "requestId":  "839C74FD1DF61ACC1DA580041F6FA71CA13A84DF1F43A55237BF9BEEF8648FB2",
+                    "sourceCommitOid":  "cb38600aae51f5019d09f87c33bd9e67d2b1f511",
+                    "requestCommitOid":  "83e287f09bb1a2746a50673225afde3baf4e2f89",
+                    "releaseTreeOid":  "c74cc66f445921f5fcda1da04a2de0f013fef8ef",
+                    "artifactSourceHash":  "A7190F548851A505F9C6ACCE9F132E1741BAB4B47597473801C79DE32589DBC8",
+                    "producerRecipeHash":  "B97998EA7246D6AB667902BCBBD7994DFA5F658A37CFA427D2EEEABA6924DE28",
+                    "toolchainLockHash":  "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+                    "policyHash":  "0E52F22FD3A42C5770B5B0C7C58E48662097C01CACA8306595991AD61E4DF105",
+                    "buildIdentityHash":  "7687B56106F0C19EFD4463DCA2B69B3892BD3EE39503A3FD5521ED6DB0257A9F"
+                },
+    "candidate":  {
+                      "payloadClosureHash":  "AF2E9E5727E9B6ADE056EBE4CA52BE93AD518116F10FF3307DA4409059CC724B",
+                      "manifestSha256":  "C6D205772A828BF02C3480F23BED0008320D05D054E72E91928E8C3528DC28EB",
+                      "fileCount":  33,
+                      "files":  [
+                                    {
+                                        "path":  "CRAZYFLASHER7MercenaryEmpire.exe",
+                                        "size":  310784,
+                                        "sha256":  "55EABB5C3280FDFEE8302843D969C6B6354808F1AF4DC24DB5E2397AA80499D8"
+                                    },
+                                    {
+                                        "path":  "runtime/CRAZYFLASHER7MercenaryEmpire.Core.deps.json",
+                                        "size":  15866,
+                                        "sha256":  "D82FC96C81658A10F7F7D665CCC1A9CADABA6DEA18DB17EC506D146EE0D572E5"
+                                    },
+                                    {
+                                        "path":  "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+                                        "size":  1621504,
+                                        "sha256":  "A45471CF4CB2286CCE3036AB7B6E72A99FD62B62DDBAF16E0E42234AF17FB652"
+                                    },
+                                    {
+                                        "path":  "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+                                        "size":  261120,
+                                        "sha256":  "86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD"
+                                    },
+                                    {
+                                        "path":  "runtime/CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json",
+                                        "size":  554,
+                                        "sha256":  "472B676EBDF55DDD7970837CBD81265E28D96053CE17FD22123DB8FE802A940C"
+                                    },
+                                    {
+                                        "path":  "runtime/ClearScript.Core.dll",
+                                        "size":  479680,
+                                        "sha256":  "839ADFAA05A8F57BF1BA6FBFFBE56B7A8E588B639E94677C2B630936BDDAB723"
+                                    },
+                                    {
+                                        "path":  "runtime/ClearScript.V8.ICUData.dll",
+                                        "size":  10742920,
+                                        "sha256":  "0E908C1C261C251CBE9C49C4849E42E9D705F8643508B74E46140D66EED0F64E"
+                                    },
+                                    {
+                                        "path":  "runtime/ClearScript.V8.dll",
+                                        "size":  332720,
+                                        "sha256":  "D589DC227365284C4F1B00CF028B06E5C7C06F43085EB8EFF10518FE9F029757"
+                                    },
+                                    {
+                                        "path":  "runtime/ClearScriptV8.win-x64.dll",
+                                        "size":  22564752,
+                                        "sha256":  "8520C8B3EABA2F3BA19DE03F9DE06C68824B24EF484A2B3376FD0D6E49FD08FA"
+                                    },
+                                    {
+                                        "path":  "runtime/ExCSS.dll",
+                                        "size":  347136,
+                                        "sha256":  "6B166E638181EBA3150F0D10379D1CC8362AF6DFD518E9E9E194AA9A746293C2"
+                                    },
+                                    {
+                                        "path":  "runtime/HarfBuzzSharp.dll",
+                                        "size":  122400,
+                                        "sha256":  "55E72AC23263F8E12484F3435E02EC22FAC9EFF6E6D169BB0A8C246BE6B99D29"
+                                    },
+                                    {
+                                        "path":  "runtime/Microsoft.Web.WebView2.Core.dll",
+                                        "size":  649800,
+                                        "sha256":  "8219A3135436C147F8EB02FB831E99596103EEBC18B6D7B794CA93F4C67018A2"
+                                    },
+                                    {
+                                        "path":  "runtime/Microsoft.Web.WebView2.WinForms.dll",
+                                        "size":  39496,
+                                        "sha256":  "69D70EF3061A5A973942B56BA0472A71F52A26BA22D58E7CB1D6C25B48ED544B"
+                                    },
+                                    {
+                                        "path":  "runtime/Microsoft.Web.WebView2.Wpf.dll",
+                                        "size":  83016,
+                                        "sha256":  "7C4E4BE02427F8B4C9BD0FABC285F02EA5FCF6256DB7CFE12DB479AE41E4667F"
+                                    },
+                                    {
+                                        "path":  "runtime/Newtonsoft.Json.dll",
+                                        "size":  712464,
+                                        "sha256":  "22C649F75FCE5BE7C7CCDA8880473B634EF69ECF33F5D1AB8AD892CAF47D5A07"
+                                    },
+                                    {
+                                        "path":  "runtime/SharpGen.Runtime.COM.dll",
+                                        "size":  168960,
+                                        "sha256":  "2686187B458ABA592E845D8C47F28C730EFCCA23EAE77E3950A5178A9846D9BA"
+                                    },
+                                    {
+                                        "path":  "runtime/SharpGen.Runtime.dll",
+                                        "size":  79872,
+                                        "sha256":  "0E6ACD59AB2173A6467626D69CF9F5B5B7651111FFEE6E30FB7818DE59335B4B"
+                                    },
+                                    {
+                                        "path":  "runtime/ShimSkiaSharp.dll",
+                                        "size":  218624,
+                                        "sha256":  "0AC0BE60DAFE273F4CA021BFDA16D111FFBA990F39E97AC9EDC3BCF488E39603"
+                                    },
+                                    {
+                                        "path":  "runtime/SkiaSharp.dll",
+                                        "size":  489824,
+                                        "sha256":  "AAAAA18C68BA1F3A3408B00DFF28B11D5705198E17BA9D3AA59222BFD35407C8"
+                                    },
+                                    {
+                                        "path":  "runtime/Svg.Animation.dll",
+                                        "size":  124416,
+                                        "sha256":  "97E1674100225717AA2B5313EE6C3735CF87EF9056862DF178EE2B91ECCCF8C9"
+                                    },
+                                    {
+                                        "path":  "runtime/Svg.Custom.dll",
+                                        "size":  1020416,
+                                        "sha256":  "89242EB48A25E40DD4C06AD839E11ADDCCC5C07412E319953752F7C963291704"
+                                    },
+                                    {
+                                        "path":  "runtime/Svg.Model.dll",
+                                        "size":  160768,
+                                        "sha256":  "DF2B9EB253873321155E8B3173797D591A92D405F29AE725224E447289DC51CF"
+                                    },
+                                    {
+                                        "path":  "runtime/Svg.SceneGraph.dll",
+                                        "size":  1186816,
+                                        "sha256":  "C7142D663BD11B898038F68EAC40CB1182065F5CD1A3EC4BC2C18CBF0D3B6ECA"
+                                    },
+                                    {
+                                        "path":  "runtime/Svg.Skia.dll",
+                                        "size":  292864,
+                                        "sha256":  "7BC7FB1621133B3CA78EDAB82E26B520205107B0AEDFB07B4A73EEB0050FC611"
+                                    },
+                                    {
+                                        "path":  "runtime/THIRD-PARTY-NOTICES.txt",
+                                        "size":  145974,
+                                        "sha256":  "1E69FF5A5EE7579EB9C9C32A74319D9A261B3102BC191F90C0C2AB601A489287"
+                                    },
+                                    {
+                                        "path":  "runtime/Vortice.DXGI.dll",
+                                        "size":  91136,
+                                        "sha256":  "616983BED0D84C6AD499D1963EDF12BB5BFE701E60A3BA860D1768516BF56D20"
+                                    },
+                                    {
+                                        "path":  "runtime/Vortice.DirectX.dll",
+                                        "size":  274944,
+                                        "sha256":  "5E1DA8C22E0A33CC24078965C80CA4093A2C806AA580076441EB0F27EF38B56F"
+                                    },
+                                    {
+                                        "path":  "runtime/Vortice.Mathematics.dll",
+                                        "size":  125440,
+                                        "sha256":  "BF8AA203D01C565A26811E5B32AFBA5030C7C6E05298487C6D24608E4FB43FAD"
+                                    },
+                                    {
+                                        "path":  "runtime/WebView2Loader.dll",
+                                        "size":  161864,
+                                        "sha256":  "EB5335EDEAA6F2122C044E82AAB2351DC8C9B4E0FE5E578C71922FB61BE285E7"
+                                    },
+                                    {
+                                        "path":  "runtime/libHarfBuzzSharp.dll",
+                                        "size":  1816088,
+                                        "sha256":  "145ADE963EBA427027D5E1381DB5D51A0EF9E98E9FEF9EFBFA6074CA20DA246F"
+                                    },
+                                    {
+                                        "path":  "runtime/libSkiaSharp.dll",
+                                        "size":  11628896,
+                                        "sha256":  "7DEC3BA900AB353491E6446F0083739924C6F8DD668832E2F09D38EBFFDBBE1C"
+                                    },
+                                    {
+                                        "path":  "runtime/miniaudio.dll",
+                                        "size":  778240,
+                                        "sha256":  "D022E69501D9589FE464038DA818F3EBF4241511C3EA0C18D19F384071811E2D"
+                                    },
+                                    {
+                                        "path":  "runtime/sol_parser.dll",
+                                        "size":  225280,
+                                        "sha256":  "3AC55BD6839B05090BB3C61AB28F930ED5F1EC59F6595A57FA086DC490FA8F92"
+                                    }
+                                ]
+                  },
+    "policy":  {
+                   "receiptSha256":  "0E4E81E2D5D433277A726920A5FBBBB19CA10FEA3CBB47A66D3D237CEC0B02D0"
+               },
+    "consensus":  {
+                      "schema":  "cf7-runtime-build-consensus-result.v2",
+                      "minimumConsensus":  2,
+                      "proofCount":  2,
+                      "signerIdentities":  [
+                                               "github-oidc:FA7BFFEB064C9B263B3A8BB6CFB5A655891CD9A9065B02D3BD6862DBD42C34F4",
+                                               "x509:EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5"
+                                           ],
+                      "faultDomains":  [
+                                           "github-hosted-windows",
+                                           "physical-host-b"
+                                       ],
+                      "proofs":  [
+                                     {
+                                         "schema":  "cf7-runtime-github-build-attestation.v2",
+                                         "kind":  "github-oidc",
+                                         "signerIdentity":  "github-oidc:FA7BFFEB064C9B263B3A8BB6CFB5A655891CD9A9065B02D3BD6862DBD42C34F4",
+                                         "faultDomain":  "github-hosted-windows",
+                                         "canonicalPayloadSha256":  "44B14EA1EF70A4C804F13A2F838C264D813769F1965701E01F5E2DFB5617AC7D"
+                                     },
+                                     {
+                                         "schema":  "cf7-runtime-build-attestation.v2",
+                                         "kind":  "x509",
+                                         "signerIdentity":  "x509:EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+                                         "faultDomain":  "physical-host-b",
+                                         "canonicalPayloadSha256":  "FD6BA71008D537F66FE8CB64835CA0FCB9B3900FEE7346596041AB50C8EE734A"
+                                     }
+                                 ]
+                  },
+    "limitations":  [
+                        "This report is not a promotion input.",
+                        "No promotion or deployment was performed.",
+                        "Formal promotion must rerun every validation and execute its transaction checks."
+                    ]
+}
