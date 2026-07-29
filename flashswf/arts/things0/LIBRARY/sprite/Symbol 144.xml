@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1782236657" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1785354643" lastUniqueIdentifier="41">
   <timeline>
-    <DOMTimeline name="Symbol 144" currentFrame="54">
+    <DOMTimeline name="Symbol 144" currentFrame="2">
       <layers>
         <DOMLayer name="连段标识" color="#AE8F69" locked="true" autoNamed="false">
           <frames>
@@ -44,14 +44,14 @@ _parent.死亡检测();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A1AC76" locked="true">
+        <DOMLayer name="Layer 2" color="#A1AC76" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -62,20 +62,13 @@ _parent.死亡检测();
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent.hp > 0 && _parent._parent._name == _root.控制目标 && _parent._parent.被动技能.裂地拳.启用)
 	{
-		// 按下攻击键J后触发：写法1
+		// 倒地时按下攻击键J：通过空手攻击路由触发回旋踢（搓招派生）
 		if (Key.isDown(_parent._parent.A键))
 		{
 			_parent.受身反制 = true;
-			_parent.gotoAndPlay("回旋踢");
 			_parent._parent.状态改变("空手战立");
+			_root.空手攻击路由.空手攻击标签跳转(_parent._parent, "回旋踢");
 		}
-		// 按下跳跃键K后触发：写法2  
-		/*if (_parent._parent.动作B)
-		{
-			_parent._parent.状态改变("兵器跳");
-			_parent.受身反制 = true;
-			_root.空手攻击路由.跨容器标签跳转(_parent._parent, "回旋踢", "回旋踢");
-		}*/
 	}
 }]]></script>
                   </Actionscript>
@@ -284,7 +277,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击代码" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -540,7 +533,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码2" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="攻击代码2" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -5984,10 +5977,10 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="24" keyMode="9728" soundEffect="custom" soundName="sound/sound143.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32769" level1="32769"/>
-              </SoundEnvelope>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound143.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
