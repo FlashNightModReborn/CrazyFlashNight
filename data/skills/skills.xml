@@ -586,10 +586,10 @@
         <Type>被动&amp;主动</Type>
         <Description>被动&amp;主动类技能装备时才会触发被动效果。
 被动效果：
-装备该技能后在地面空手战斗时J+K可以使用上勾拳。
-同时可以装备于技能栏主动释放升龙拳，可以快速提升高度且将敌方向上击飞。
-解锁燃烧指节：攻击后摇期间→+K。解锁狼炮时，再按J+K键追加狼炮。
-【狼炮需MP上限大于800，每次使用消耗10%最大MP值，“内力爆发”被动等级1级时解锁】
+装备该技能后在地面空手战斗时&lt;font color="#ffee00"&gt;J+K&lt;/font&gt;可以使用&lt;font color="#ffee00"&gt;上勾拳&lt;/font&gt;。
+同时可以&lt;font color="#ffee00"&gt;装备于技能栏&lt;/font&gt;主动释放&lt;font color="#ffee00"&gt;升龙拳&lt;/font&gt;，可以快速提升高度且将敌方向上击飞。
+解锁&lt;font color="#ffee00"&gt;燃烧指节&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;→+K&lt;/font&gt;。解锁&lt;font color="#ffee00"&gt;狼炮&lt;/font&gt;时，再按&lt;font color="#ffee00"&gt;→+K&lt;/font&gt;追加狼炮。
+&lt;font color="#00ff15"&gt;【狼炮需MP上限大于800，每次使用消耗10%最大MP值，“内力爆发”被动等级1级时解锁】&lt;/font&gt;
 技能升级可以略微增加伤害。
 主动技基础强度：可用，主动技升级收益：正常。</Description>
         <UnlockLevel>5</UnlockLevel>
@@ -604,9 +604,9 @@
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
-解锁能量喷泉：攻击后摇期间↓+K，再按K键追加后续派生。
-解锁回旋踢：攻击后摇期间↓+J或倒地时按J快速起身，该技能可在施放过程中移动，拳脚空中攻击等级大于2时，在回旋踢后摇中按J可派生前冲追击、按K可派生浮空截击，倒地起身时不适用。
-在空中空手战斗时按K键可以使用裂地拳，砸向敌人并略微拉近一定距离的敌人。
+解锁&lt;font color="#ffee00"&gt;能量喷泉&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↓+K&lt;/font&gt;，再按&lt;font color="#ffee00"&gt;K&lt;/font&gt;键追加后续派生。
+解锁&lt;font color="#ffee00"&gt;回旋踢&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↓+J&lt;/font&gt;或倒地时按&lt;font color="#ffee00"&gt;J&lt;/font&gt;快速起身，该技能可在施放过程中移动，&lt;font color="#00ff77"&gt;拳脚空中攻击&lt;/font&gt;等级大于2时，在后摇中按&lt;font color="#ffee00"&gt;J&lt;/font&gt;可派生前冲追击、按&lt;font color="#ffee00"&gt;K&lt;/font&gt;可派生浮空截击。
+在空中空手战斗时按&lt;font color="#ffee00"&gt;K&lt;/font&gt;键可以使用裂地拳，砸向敌人并略微拉近一定距离的敌人。
 伤害由滞空时间决定，技能升级可以略微增加伤害。
         </Description>
         <UnlockLevel>5</UnlockLevel>
@@ -621,7 +621,7 @@
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
-解锁多段冲刺攻击：攻击后摇期间再次按J。
+解锁&lt;font color="#00ff4c"&gt;多段冲刺攻击&lt;/font&gt;：攻击后摇期间再次按&lt;font color="#ffee00"&gt;J&lt;/font&gt;发动，攻击会随着空手攻击模组改变。
 在空中空手战斗时按J键可以触发三段空中连招，技能升级可以略微增加伤害。
         </Description>
         <UnlockLevel>15</UnlockLevel>
@@ -638,19 +638,15 @@
 被动效果：
 在地面冷兵器战斗时，
 &lt;font color="#ffee00"&gt;J+K&lt;/font&gt;可以使用&lt;font color="#ffee00"&gt;上挑&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;见切&lt;/font&gt;可小幅度斜向后撤，
+&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;见切（轻武器）；重架（重武器）；微风拂柳（长武器）；交叠（双刀）&lt;/font&gt;可小幅度斜向后撤，
 攻击后摇时&lt;font color="#ffee00"&gt;Shift+←&lt;/font&gt;，
-长按&lt;font color="#ffee00"&gt;R&lt;/font&gt;进入&lt;font color="#ffee00"&gt;特殊纳刀&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;粉碎切割&lt;/font&gt;
+长按&lt;font color="#ffee00"&gt;R&lt;/font&gt;进入&lt;font color="#ffee00"&gt;特殊纳刀（仅限轻武器）&lt;/font&gt;再按&lt;font color="#ffee00"&gt;J&lt;/font&gt;追加后续攻击。
+&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;粉碎切割（轻武器）；疾空旋风破（重武器，可小幅度移动）；狂乱龙卷（长武器）；双旋轮切（双刀）&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;↑+R&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;十六夜月华(轻武器)&lt;/font&gt;
+&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;十六夜月华(轻武器)；千山破晓钟(重武器)；日耀三段突（长武器）；双龙连斩（双刀）；迅捷连斩（直剑、迅捷）&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;↑←+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;千山破晓钟(重武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑←+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;月光斩(轻武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;，再按&lt;font color="#ffee00"&gt;J&lt;/font&gt;追加后续派生。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;全垒打(重武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;。
+&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;月光斩(轻武器)；全垒打(重武器)；无双击（长武器）；外斩劈裂（双刀）&lt;/font&gt;
+攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;，再按&lt;font color="#ffee00"&gt;J&lt;/font&gt;追加后续派生（仅限轻武器、长武器）。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -669,11 +665,9 @@
 &lt;font color="#ffee00"&gt;Shift+K&lt;/font&gt;可以&lt;font color="#ffee00"&gt;飞扑下劈&lt;/font&gt;。
 &lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;蓄力重劈&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;Shift+↓+J&lt;/font&gt;，蓄满3段后增加范围。
-&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;百万突刺&lt;/font&gt;
+&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;百万突刺（轻武器）；回旋刃（重武器）；迷踪连刺（长武器）；百裂刺（双刀）；&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;Shift+→+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;猎影十字(轻武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↓←+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;空坠强袭(重武器)&lt;/font&gt;
+&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;猎影十字(轻武器)；空坠强袭(重武器)；交叉斩（双刀）&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;↓←+J&lt;/font&gt;。
 &lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;幻影剑舞&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;Shift+→+R(消耗MP，不足时无法释放)&lt;/font&gt;。
@@ -696,11 +690,9 @@
 被击飞时按&lt;font color="#ffee00"&gt;J&lt;/font&gt;。
 &lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;飞燕&lt;/font&gt;
 空中攻击后摇时&lt;font color="#ffee00"&gt;→→&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;次元斩(轻武器)&lt;/font&gt;
+&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;次元斩(轻武器)；追地祀(重武器)&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;↓+R&lt;/font&gt;。
-收刀后精准按&lt;font color="#ffee00"&gt;R&lt;/font&gt;可连续使用。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;追地祀(重武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↓+R&lt;/font&gt;。
+次元斩收刀后精准按&lt;font color="#ffee00"&gt;R&lt;/font&gt;可连续使用。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>15</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -797,12 +789,10 @@
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
 刀剑跳劈可以通过反作用力浮空。
-&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;多段冲刺攻击&lt;/font&gt;，攻击后摇时再次按&lt;font color="#ffee00"&gt;J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;贯穿突刺&lt;/font&gt;
+&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;多段冲刺攻击&lt;/font&gt;，攻击后摇时再次按&lt;font color="#ffee00"&gt;J&lt;/font&gt;，攻击会根据武器类型改变。
+&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;贯穿突刺（轻武器）；飞跃砸击（重武器）&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;→→&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;剑气释放(轻武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↓→+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;飞沙走石(重武器)&lt;/font&gt;
+&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;剑气释放(轻武器)；飞沙走石(重武器)&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;↓→+J&lt;/font&gt;。
 增加刀剑普通攻击的基础伤害，技能升级时伤害将线性提升。
 初始收益：较高。升级收益：中等。</Description>
@@ -832,11 +822,11 @@
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
 空手飞踢可以通过反作用力浮空。
-解锁诛杀步：攻击后摇期间shift+→，期间按J派生破极拳第5式。
-解锁后撤步：攻击后摇期间Shift+←，期间按J派生截拳第5式。
+解锁&lt;font color="#ffee00"&gt;诛杀步&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;shift+→&lt;/font&gt;，期间按&lt;font color="#ffee00"&gt;J&lt;/font&gt;派生&lt;font color="#ffee00"&gt;破极拳第5式&lt;/font&gt;。
+解锁&lt;font color="#ffee00"&gt;后撤步&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;shift+←&lt;/font&gt;，期间按&lt;font color="#ffee00"&gt;J&lt;/font&gt;派生&lt;font color="#ffee00"&gt;截拳第5式&lt;/font&gt;。
 诛杀步与后撤步均可小幅度斜向移动。
 &lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;连环踢&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;，在LV5时，连环踢后摇中按J可派生连环踢2段。
+攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;，技能升级至&lt;font color="#ffee00"&gt;LV5&lt;/font&gt;，后摇中按&lt;font color="#ffee00"&gt;J&lt;/font&gt;可派生连环踢2段。
 增加空手普通攻击的基础伤害，技能升级时伤害将线性提升。
 初始收益：较高。升级收益：中等。
         </Description>
