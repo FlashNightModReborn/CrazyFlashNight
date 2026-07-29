@@ -307,7 +307,7 @@
                 <Skill name="上挑" minLevel="1"/>
             </Requirements>
         </Command>
-    </Commands>
+
 
     <Derivations>
         <Derive from="剑气释放">
@@ -317,7 +317,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>交叉斩</To>
@@ -330,7 +329,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>交叉斩</To>
@@ -343,7 +341,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>交叉斩</To>
@@ -356,7 +353,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>交叉斩</To>
@@ -369,7 +365,6 @@
             <To>蓄力重劈</To>
             <To>猎影十字</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>交叉斩</To>
@@ -382,7 +377,6 @@
             <To>蓄力重劈</To>
             <To>猎影十字</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>双旋轮切</To>
             <To>双龙连斩</To>
             <To>交叉斩</To>
@@ -397,7 +391,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>交叉斩</To>
             <To>迅捷连斩</To>
         </Derive>
@@ -410,7 +403,6 @@
             <To>猎影十字</To>
             <To>外斩劈裂</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>交叉斩</To>
             <To>迅捷连斩</To>
         </Derive>
@@ -423,7 +415,6 @@
             <To>粉碎切割</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>交叉斩</To>
             <To>迅捷连斩</To>
         </Derive>
@@ -436,7 +427,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>交叉斩</To>
             <To>迅捷连斩</To>
         </Derive>
@@ -449,7 +439,6 @@
             <To>猎影十字</To>
             <To>外斩劈裂</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>交叉斩</To>
             <To>迅捷连斩</To>
         </Derive>
@@ -465,19 +454,6 @@
             <To>交叉斩</To>
             <To>迅捷连斩</To>
         </Derive>
-        <Derive from="交叠">
-            <To>剑气释放</To>
-            <To>贯穿突刺</To>
-            <To>百万突刺</To>
-            <To>蓄力重劈</To>
-            <To>猎影十字</To>
-            <To>月光斩</To>
-            <To>粉碎切割</To>
-            <To>十六夜月华</To>
-            <To>见切</To>
-            <To>交叉斩</To>
-            <To>迅捷连斩</To>
-        </Derive>
         <Derive from="交叉斩">
             <To>剑气释放</To>
             <To>贯穿突刺</To>
@@ -486,7 +462,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>迅捷连斩</To>
@@ -500,7 +475,6 @@
             <To>猎影十字</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>交叠</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
             <To>交叉斩</To>

@@ -273,7 +273,6 @@
                 <Skill name="上挑" minLevel="1"/>
             </Requirements>
         </Command>
-    </Commands>
 
         <!-- 微风拂柳: 后 + C，要求上挑 Lv1 -->
         <Command name="微风拂柳" action="微风拂柳" priority="7">
@@ -289,7 +288,7 @@
                 <Skill name="上挑" minLevel="1"/>
             </Requirements>
         </Command>
-    </Commands>
+
 
     <Derivations>
         <Derive from="飞沙走石">
@@ -298,8 +297,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -314,8 +311,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -330,8 +325,6 @@
             <To>百万突刺</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -346,8 +339,6 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -365,8 +356,6 @@
             <To>空坠强袭</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>飞跃砸击</To>
             <To>迷踪连刺</To>
             <To>回旋刃</To>
@@ -378,8 +367,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>十六夜月华</To>
             <To>飞跃砸击</To>
@@ -393,8 +380,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>十六夜月华</To>
             <To>飞跃砸击</To>
@@ -411,8 +396,6 @@
             <To>粉碎切割</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>飞跃砸击</To>
             <To>迷踪连刺</To>
             <To>回旋刃</To>
@@ -426,8 +409,6 @@
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>飞跃砸击</To>
             <To>迷踪连刺</To>
             <To>回旋刃</To>
@@ -441,8 +422,6 @@
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>飞跃砸击</To>
             <To>迷踪连刺</To>
             <To>回旋刃</To>
@@ -457,8 +436,6 @@
             <To>空坠强袭</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>飞跃砸击</To>
             <To>迷踪连刺</To>
             <To>回旋刃</To>
@@ -478,38 +455,6 @@
             <To>回旋刃</To>
             <To>疾空旋风破</To>
         </Derive>
-        <Derive from="重架">
-            <To>飞沙走石</To>
-            <To>贯穿突刺</To>
-            <To>百万突刺</To>
-            <To>蓄力重劈</To>
-            <To>空坠强袭</To>
-            <To>月光斩</To>
-            <To>粉碎切割</To>
-            <To>十六夜月华</To>
-            <To>见切</To>
-            <To>微风拂柳</To>
-            <To>飞跃砸击</To>
-            <To>迷踪连刺</To>
-            <To>回旋刃</To>
-            <To>疾空旋风破</To>
-        </Derive>
-        <Derive from="微风拂柳">
-            <To>飞沙走石</To>
-            <To>贯穿突刺</To>
-            <To>百万突刺</To>
-            <To>蓄力重劈</To>
-            <To>空坠强袭</To>
-            <To>月光斩</To>
-            <To>粉碎切割</To>
-            <To>十六夜月华</To>
-            <To>见切</To>
-            <To>重架</To>
-            <To>飞跃砸击</To>
-            <To>迷踪连刺</To>
-            <To>回旋刃</To>
-            <To>疾空旋风破</To>
-        </Derive>
         <Derive from="飞跃砸击">
             <To>飞沙走石</To>
             <To>贯穿突刺</To>
@@ -517,8 +462,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -534,8 +477,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -551,8 +492,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
@@ -568,8 +507,6 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>重架</To>
-            <To>微风拂柳</To>
             <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>

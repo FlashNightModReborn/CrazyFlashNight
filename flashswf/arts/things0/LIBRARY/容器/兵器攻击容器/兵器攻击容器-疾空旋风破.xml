@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾空旋风破" itemID="6a5cf5df-00002904" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾空旋风破" lastModified="1785091157" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾空旋风破" itemID="6a5cf5df-00002904" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾空旋风破" lastModified="1785348085" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-疾空旋风破">
+    <DOMTimeline name="兵器攻击容器-疾空旋风破" currentFrame="2">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -166,14 +166,14 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="102" centerPoint3DY="40">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="102" centerPoint3DY="40">
                   <matrix>
                     <Matrix a="35.2920837402344" d="34.6744384765625" tx="172.55" ty="-174.45"/>
                   </matrix>
@@ -578,7 +578,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
@@ -649,7 +649,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -709,7 +709,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -769,7 +769,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -829,7 +829,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -889,7 +889,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -949,7 +949,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1009,7 +1009,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1069,7 +1069,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1129,7 +1129,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1189,7 +1189,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1249,7 +1249,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1309,7 +1309,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1369,7 +1369,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.01;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1429,7 +1429,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1467,7 +1467,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1499,7 +1499,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1559,7 +1559,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1619,7 +1619,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1679,7 +1679,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1739,7 +1739,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1799,7 +1799,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1859,7 +1859,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1919,7 +1919,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -1979,7 +1979,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -2039,7 +2039,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -2099,7 +2099,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -2159,7 +2159,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -2197,7 +2197,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="38" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-162.05" centerPoint3DY="157">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-162.05" centerPoint3DY="157">
                   <matrix>
                     <Matrix a="47.952880859375" d="44.0358123779297" tx="65.65" ty="-175.45"/>
                   </matrix>
@@ -2219,7 +2219,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 0.005;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
@@ -2279,7 +2279,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
-	子弹属性.血量上限击溃 = 0.003;
+	子弹属性.血量上限击溃 = 1;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	
